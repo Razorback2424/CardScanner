@@ -346,6 +346,77 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertTrue(rows.allSatisfy { $0.quantity == 1 })
     }
 
+    func testCSVImportMergesLegacyAndCanonicalRowsInsteadOfInsertingAThirdRow() throws {
+        let context = try makeContext()
+        let legacyKey = "magic:csv-ambiguous#foil"
+        let canonicalKey = legacyKey + "#treatment=surgefoil"
+
+        let legacy = CollectedCard(
+            collectionKey: legacyKey,
+            game: .magic,
+            providerID: "csv-ambiguous",
+            name: "CSV Magic Card",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            quantity: 1
+        )
+        let canonical = CollectedCard(
+            collectionKey: canonicalKey,
+            game: .magic,
+            providerID: "csv-ambiguous",
+            name: "CSV Magic Card",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: "https://example.com/card.png",
+            thumbnailURL: "https://example.com/card-thumb.png",
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            quantity: 1,
+            magicTreatments: [.surgeFoil]
+        )
+        context.insert(legacy)
+        context.insert(canonical)
+        try context.save()
+
+        let entry = CollectionCSVEntry(
+            collectionKey: legacyKey,
+            game: .magic,
+            providerID: "csv-ambiguous",
+            name: "CSV Magic Card",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            importedMarketPriceUSD: nil,
+            importedPriceAsOf: nil,
+            quantity: 1,
+            dateAdded: Date(timeIntervalSince1970: 500)
+        )
+        let result = try CollectionCSV.apply(
+            CollectionCSVImportPlan(entries: [entry], skippedRows: 0, skippedCSVText: nil),
+            to: context
+        )
+
+        XCTAssertEqual(result.insertedEntries, 0)
+        XCTAssertEqual(result.mergedEntries, 1)
+        XCTAssertEqual(result.failedRows.count, 0)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.map(\.collectionKey), [canonicalKey])
+        XCTAssertEqual(rows.first?.quantity, 3)
+        XCTAssertEqual(rows.first?.imageURL, "https://example.com/card.png")
+    }
+
     func testCSVImportCommitsAndReportsDurableBatches() throws {
         let context = try makeContext()
         let plan = CollectionCSVImportPlan(

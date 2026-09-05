@@ -506,17 +506,43 @@ struct CollectionStore {
     /// they preserve the spelling of an unknown future treatment.
     func card(
         forAnyKey canonicalKey: String,
-        magicTreatmentIDsRaw suppliedTreatmentIDs: [String] = []
+        magicTreatmentIDsRaw suppliedTreatmentIDs: [String] = [],
+        resolveLegacyIdentity: Bool = true
     ) throws -> CollectedCard? {
-        let resolvedCanonicalKey = try canonicalKeyForLegacyRow(canonicalKey)
-            ?? canonicalKey
-        let keys = Array(
+        // Direct ownership lookup is still the common path, but a treatment-free
+        // Magic key cannot use an empty result as proof that no position exists.
+        // A newer device may already have synced only the treatment-qualified
+        // row, leaving no local legacy row for the direct lookup to find. Probe
+        // that shape even when `directRows` is empty, or the next scan creates a
+        // second position under the old key. Bulk callers can pass
+        // `resolveLegacyIdentity: false` after building one projection-wide
+        // alias index; that keeps a large import or delete from repeating the
+        // three unindexed prefix scans.
+        let directKeys = Array(
             Set(
-                [canonicalKey, resolvedCanonicalKey]
-                    + MagicTreatmentKeyCodec.legacyCollectionKeys(for: resolvedCanonicalKey)
+                [canonicalKey]
+                    + MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey)
             )
         )
-        let rows = try keys.flatMap(cards(forKey:))
+        let directRows = try directKeys.flatMap(cards(forKey:))
+        let shouldProbeLegacyIdentity = MagicTreatmentKeyCodec
+            .collectionTreatmentIDs(from: canonicalKey)
+            .isEmpty
+        let resolvedCanonicalKey = resolveLegacyIdentity && shouldProbeLegacyIdentity
+            ? (try canonicalKeyForLegacyRow(canonicalKey) ?? canonicalKey)
+            : canonicalKey
+        let rows: [CollectedCard]
+        if resolvedCanonicalKey == canonicalKey, !directRows.isEmpty {
+            rows = directRows
+        } else {
+            let keys = Array(
+                Set(
+                    [canonicalKey, resolvedCanonicalKey]
+                        + MagicTreatmentKeyCodec.legacyCollectionKeys(for: resolvedCanonicalKey)
+                )
+            )
+            rows = try keys.flatMap(cards(forKey:))
+        }
         let requestedTreatmentIDs = try validatedTreatmentIDs(
             for: resolvedCanonicalKey,
             suppliedTreatmentIDs: suppliedTreatmentIDs
@@ -1996,11 +2022,26 @@ struct CollectionStore {
         do {
             let physicalCards = try context.fetch(FetchDescriptor<CollectedCard>())
             let projection = LogicalCollection.project(cards: physicalCards, ledger: ledger)
+            let collectionKeyAliases = LogicalCollection.readThroughAliases(
+                projection: projection,
+                eventKeys: Set(ledger.read().events.map(\.collectionKey))
+            )
             let occurredAt = Date.now
             for position in projection.positions {
+                // If another device already rekeyed the ledger, address the
+                // position through that canonical key so the row is repaired as
+                // part of this deletion. This also keeps delete-all from
+                // invoking the per-row legacy prefix probe for every card.
+                let writeKey = collectionKeyAliases.first {
+                    $0.value == position.collectionKey
+                }?.key ?? position.collectionKey
                 guard let card = try self.card(
-                    forAnyKey: position.collectionKey,
-                    magicTreatmentIDsRaw: position.representative.magicTreatmentIDsRaw
+                    forAnyKey: writeKey,
+                    magicTreatmentIDsRaw: position.representative.magicTreatmentIDsRaw,
+                    // `readThroughAliases` above is the bulk identity index
+                    // for this destructive operation. Avoid rebuilding the
+                    // prefix-scan alias search for every position.
+                    resolveLegacyIdentity: false
                 ) else {
                     throw CollectionStoreError.missingDestinationRow(position.collectionKey)
                 }

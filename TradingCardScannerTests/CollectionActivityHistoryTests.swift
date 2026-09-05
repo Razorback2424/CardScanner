@@ -638,6 +638,58 @@ final class CollectionActivityHistoryTests: XCTestCase {
         )
     }
 
+    func testLegacyLookupFindsCanonicalRowWhenLegacyRowIsAbsent() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let card = try magicIdentifiedCard()
+        let legacyKey = "magic:\(card.providerID)#foil"
+        let canonicalKey = card.collectionKey(variant: .foil)
+        let canonicalRow = CollectedCard(
+            collectionKey: canonicalKey,
+            game: .magic,
+            providerID: card.providerID,
+            name: card.name,
+            setName: card.setName,
+            setCode: card.setCode,
+            cardNumber: card.cardNumber,
+            rarity: card.rarity,
+            imageURL: card.displayImageURL?.absoluteString,
+            thumbnailURL: card.thumbnailImageURL?.absoluteString,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            quantity: 2,
+            magicTreatments: [.surgeFoil]
+        )
+        context.insert(canonicalRow)
+
+        let operationID = UUID()
+        guard case .appended = InventoryLedger(context: context).record(
+            canonicalRow,
+            kind: .acquire,
+            source: .scan,
+            deltaQuantity: 2,
+            operationID: operationID
+        ) else {
+            return XCTFail("Expected the canonical acquisition event to be appended")
+        }
+        try context.save()
+
+        // This is the mixed-version direction the old gate missed: the newer
+        // canonical row and ledger are local, while the caller still presents
+        // the treatment-free key.
+        let resolved = try XCTUnwrap(try store.card(forAnyKey: legacyKey))
+        XCTAssertEqual(resolved.collectionKey, canonicalKey)
+        XCTAssertEqual(resolved.quantity, 2)
+        XCTAssertEqual(
+            try context.fetch(FetchDescriptor<CollectedCard>()).map(\.collectionKey),
+            [canonicalKey]
+        )
+        XCTAssertEqual(
+            Set(try context.fetch(FetchDescriptor<InventoryEvent>()).map(\.collectionKey)),
+            [canonicalKey]
+        )
+    }
+
     func testDuplicatePhysicalRowsAreMergedBeforeEveryOwnershipMutation() throws {
         func seed(
             in context: ModelContext,

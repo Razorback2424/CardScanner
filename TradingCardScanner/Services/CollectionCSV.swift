@@ -452,7 +452,11 @@ enum CollectionCSV {
                 observations: priceObservations,
                 records: priceRecords
             )
-            func loadCardsByKey() throws -> [String: CollectedCard] {
+            func loadCardsByKey() throws -> (
+                cardsByKey: [String: CollectedCard],
+                claimedKeys: Set<String>,
+                canonicalKeysByLegacy: [String: Set<String>]
+            ) {
                 let storedCards = try context.fetch(FetchDescriptor<CollectedCard>())
                 // `Dictionary(uniqueKeysWithValues:)` traps on a duplicate key,
                 // and a duplicate `collectionKey` is a state CloudKit produces
@@ -465,6 +469,13 @@ enum CollectionCSV {
                 var cardsByKey = storedProjection
                     .byKey
                     .mapValues(\.representative)
+                // Keep physical-key presence separate from the representative
+                // lookup. An ambiguous legacy alias must not resolve to a row,
+                // but it still proves that the identity is already claimed. If
+                // it were removed from both maps, an import would insert a new
+                // physical row under a key that already exists.
+                var claimedKeys = Set(storedCards.map(\.collectionKey))
+                var canonicalKeysByLegacy: [String: Set<String>] = [:]
                 // A pre-Slice-5 export has only the finish-qualified key. If the
                 // current store already knows the same printing under its newer
                 // treatment-qualified key, make that legacy key an import alias
@@ -476,6 +487,10 @@ enum CollectionCSV {
                     for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
                         for: position.collectionKey
                     ) {
+                        claimedKeys.insert(legacyKey)
+                        canonicalKeysByLegacy[legacyKey, default: []].insert(
+                            position.collectionKey
+                        )
                         guard !ambiguousLegacyKeys.contains(legacyKey) else { continue }
                         if let existing = cardsByKey[legacyKey],
                            existing.collectionKey != position.collectionKey {
@@ -486,10 +501,45 @@ enum CollectionCSV {
                         }
                     }
                 }
-                return cardsByKey
+                // A mixed-version device may have received the canonical
+                // ledger lineage before the collection row was rekeyed. Treat
+                // those event keys as identity evidence too, otherwise a CSV
+                // entry using the legacy key would be written back under that
+                // key and split the ledger a second time.
+                for eventKey in Set(ledger.read().events.map(\.collectionKey)) {
+                    for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
+                        for: eventKey
+                    ) {
+                        claimedKeys.insert(legacyKey)
+                        canonicalKeysByLegacy[legacyKey, default: []].insert(eventKey)
+                        if canonicalKeysByLegacy[legacyKey]?.count ?? 0 > 1 {
+                            cardsByKey.removeValue(forKey: legacyKey)
+                            ambiguousLegacyKeys.insert(legacyKey)
+                        }
+                    }
+                }
+                return (cardsByKey, claimedKeys, canonicalKeysByLegacy)
             }
 
-            var cardsByKey = try loadCardsByKey()
+            let initialIndex = try loadCardsByKey()
+            var cardsByKey = initialIndex.cardsByKey
+            var claimedKeys = initialIndex.claimedKeys
+            var canonicalKeysByLegacy = initialIndex.canonicalKeysByLegacy
+            func indexCard(_ card: CollectedCard) {
+                cardsByKey[card.collectionKey] = card
+                claimedKeys.insert(card.collectionKey)
+                for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(
+                    for: card.collectionKey
+                ) {
+                    claimedKeys.insert(legacyKey)
+                    canonicalKeysByLegacy[legacyKey, default: []].insert(card.collectionKey)
+                    if canonicalKeysByLegacy[legacyKey]?.count == 1 {
+                        cardsByKey[legacyKey] = card
+                    } else {
+                        cardsByKey.removeValue(forKey: legacyKey)
+                    }
+                }
+            }
             // One instant for the whole import, so every row lands on the same side
             // of a day boundary no matter how long the import takes.
             let recordedAt = Date.now
@@ -502,16 +552,19 @@ enum CollectionCSV {
             var batchStart = 0
             while batchStart < plan.entries.count {
                 let batchEnd = min(batchStart + safeBatchSize, plan.entries.count)
-                var failedOffsets = Set<Int>()
-                var batchInserted = 0
-                var batchMerged = 0
-                var batchImportedQuantity = 0
+                for index in batchStart..<batchEnd {
+                    // A row failure must not replay or re-project the already
+                    // committed prefix of this progress batch. These value
+                    // snapshots restore the in-memory accelerator after the
+                    // context rolls back the failed row.
+                    let cardsBeforeRow = cardsByKey
+                    let claimedKeysBeforeRow = claimedKeys
+                    let canonicalKeysBeforeRow = canonicalKeysByLegacy
+                    var rowInserted = 0
+                    var rowMerged = 0
+                    var rowImportedQuantity = 0
 
-                while true {
-                    var currentIndex: Int?
                     do {
-                        for index in batchStart..<batchEnd where !failedOffsets.contains(index) {
-                            currentIndex = index
                             let entry = plan.entries[index]
                             let storedCard: CollectedCard
                             var deltaQuantity = 0
@@ -522,20 +575,56 @@ enum CollectionCSV {
                             // repairs, so both go through the same store the
                             // scanner writes with rather than a second copy of it.
                             //
-                            // The projection index decides *whether* to ask. It is
-                            // built from every stored row plus each position's
-                            // legacy aliases, so a miss proves no stored row can
-                            // claim this entry and a fresh import pays no lookups
-                            // at all.
-                            let claimsThisEntry = ([entry.collectionKey]
-                                + MagicTreatmentKeyCodec.legacyCollectionKeys(for: entry.collectionKey))
-                                .contains { cardsByKey[$0] != nil }
+                            // The index accelerates the common case but is not
+                            // treated as a complete identity oracle. Presence
+                            // and resolution are separate: an ambiguous legacy
+                            // alias still sends the row to the store, where it
+                            // fails conservatively instead of being inserted.
+                            let candidateKeys = [entry.collectionKey]
+                                + MagicTreatmentKeyCodec.legacyCollectionKeys(for: entry.collectionKey)
+                            let claimsThisEntry = candidateKeys.contains {
+                                claimedKeys.contains($0)
+                            }
+                            if canonicalKeysByLegacy[entry.collectionKey]?.count ?? 0 > 1 {
+                                throw CollectionStoreError.ledgerConflict(
+                                    "CSV entry matches multiple treatment identities"
+                                )
+                            }
+                            // A treatment-qualified CSV key carries the identity
+                            // needed to rekey a legacy row. Do not replace it with
+                            // the legacy alias just because that is the indexed
+                            // representative: `CollectionStore` needs the
+                            // canonical key to validate and persist the treatment
+                            // axis. For a treatment-free entry, resolve an
+                            // unambiguous canonical alias when one is present.
+                            let entryHasTreatment = !MagicTreatmentKeyCodec
+                                .collectionTreatmentIDs(from: entry.collectionKey)
+                                .isEmpty
+                            let lookupKey = entryHasTreatment
+                                ? entry.collectionKey
+                                : candidateKeys.compactMap { key in
+                                    if let canonicalKeys = canonicalKeysByLegacy[key],
+                                       canonicalKeys.count == 1 {
+                                        return canonicalKeys.first
+                                    }
+                                    return cardsByKey[key]?.collectionKey
+                                }.first ?? entry.collectionKey
                             let existing = claimsThisEntry
                                 ? try collectionStore.card(
-                                    forAnyKey: entry.collectionKey,
-                                    magicTreatmentIDsRaw: entry.magicTreatmentIDsRaw
+                                    forAnyKey: lookupKey,
+                                    magicTreatmentIDsRaw: entry.magicTreatmentIDsRaw,
+                                    // The import index already resolved the
+                                    // legacy/canonical relationship for this
+                                    // row. Do not repeat the three-table
+                                    // prefix probe once per CSV entry.
+                                    resolveLegacyIdentity: false
                                 )
                                 : nil
+                            if claimsThisEntry, existing == nil {
+                                throw CollectionStoreError.ledgerConflict(
+                                    "CSV entry matches an ambiguous collection identity"
+                                )
+                            }
                             if let existing {
                                 if !existing.allowsQuantityAggregation || isCertified(entry) {
                                     // A non-aggregating row is one physical object. A
@@ -566,8 +655,9 @@ enum CollectionCSV {
                                 }
                                 storedCard = existing
                                 cardsByKey[entry.collectionKey] = existing
-                                cardsByKey[existing.collectionKey] = existing
-                                batchMerged += 1
+                                claimedKeys.insert(entry.collectionKey)
+                                indexCard(existing)
+                                rowMerged += 1
                             } else {
                                 let card = CollectedCard(
                                     collectionKey: entry.collectionKey,
@@ -607,10 +697,10 @@ enum CollectionCSV {
                                 // though the current computed enum projects it to regular.
                                 card.magicContentKindRaw = entry.magicContentKindRaw
                                 context.insert(card)
-                                cardsByKey[entry.collectionKey] = card
+                                indexCard(card)
                                 storedCard = card
                                 deltaQuantity = entry.quantity
-                                batchInserted += 1
+                                rowInserted += 1
                             }
 
                             if let amount = entry.importedMarketPriceUSD {
@@ -664,38 +754,30 @@ enum CollectionCSV {
                                     ledgerOperationIDs: [operationID],
                                     occurredAt: recordedAt
                                 )
-                                batchImportedQuantity += deltaQuantity
+                                rowImportedQuantity += deltaQuantity
                             }
-                            currentIndex = nil
-                        }
-
-                        // Earlier batches are durable before a later malformed or
-                        // conflicting row is encountered. A row failure rolls back only
-                        // this batch in the isolated production context, then the valid
-                        // rows are retried against a fresh projection.
+                        // Commit each row. `ModelContext.rollback()` is context-wide,
+                        // so a batch save cannot safely isolate a malformed row from
+                        // its valid siblings. `batchSize` remains the progress and
+                        // scheduling granularity, not the durability boundary.
                         try context.save()
-                        inserted += batchInserted
-                        merged += batchMerged
-                        importedQuantity += batchImportedQuantity
-                        progress?(batchEnd, plan.entries.count)
-                        break
+                        inserted += rowInserted
+                        merged += rowMerged
+                        importedQuantity += rowImportedQuantity
                     } catch {
-                        guard let failedIndex = currentIndex else { throw error }
-                        failedOffsets.insert(failedIndex)
                         failedRows.append(
                             CollectionCSVImportFailure(
-                                collectionKey: plan.entries[failedIndex].collectionKey,
+                                collectionKey: plan.entries[index].collectionKey,
                                 detail: error.localizedDescription
                             )
                         )
                         context.rollback()
-                        cardsByKey = try loadCardsByKey()
-                        batchInserted = 0
-                        batchMerged = 0
-                        batchImportedQuantity = 0
+                        cardsByKey = cardsBeforeRow
+                        claimedKeys = claimedKeysBeforeRow
+                        canonicalKeysByLegacy = canonicalKeysBeforeRow
                     }
                 }
-
+                progress?(batchEnd, plan.entries.count)
                 batchStart = batchEnd
             }
 
