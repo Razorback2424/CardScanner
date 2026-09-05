@@ -1365,14 +1365,14 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
-    private static func rows(
+    nonisolated private static func rows(
         for ids: [PersistentIdentifier],
         in context: ModelContext
     ) -> [CollectedCard] {
         ids.compactMap { context.model(for: $0) as? CollectedCard }
     }
 
-    private static func materializedRows(
+    nonisolated private static func materializedRows(
         from index: [String: [PersistentIdentifier]],
         in context: ModelContext
     ) -> [String: [CollectedCard]] {
@@ -1383,7 +1383,7 @@ final class PriceRefreshController: ObservableObject {
     /// has a market price. A completed response without a usable marketplace
     /// image is stamped at the current resolver version so an already-priced
     /// row does not spend one request per refresh learning the same fact.
-    static func recordSealedArtwork(
+    nonisolated static func recordSealedArtwork(
         from marketCard: JustTCGCard,
         for owners: [MarketPriceTarget],
         rowsByPriceKey: [String: [CollectedCard]],
@@ -1414,7 +1414,7 @@ final class PriceRefreshController: ObservableObject {
     /// Only ever called for a non-delta response, where absence is a real
     /// answer rather than "unchanged since the cutoff". No price is touched: a
     /// missing listing is not evidence that a stored amount is wrong.
-    static func recordSealedArtworkMiss(
+    nonisolated static func recordSealedArtworkMiss(
         for owners: [MarketPriceTarget],
         rowsByPriceKey: [String: [CollectedCard]],
         checkedAt: Date = .now
@@ -1430,7 +1430,7 @@ final class PriceRefreshController: ObservableObject {
         }
     }
 
-    private static func recordSealedArtworkMiss(
+    nonisolated private static func recordSealedArtworkMiss(
         for owners: [MarketPriceTarget],
         rowIDsByPriceKey: [String: [PersistentIdentifier]],
         context: ModelContext,
@@ -1447,7 +1447,7 @@ final class PriceRefreshController: ObservableObject {
     /// artwork deliberately happen before the optional price so a null market
     /// amount cannot discard valid product metadata.
     @discardableResult
-    static func applyVendorBatchHit(
+    nonisolated static func applyVendorBatchHit(
         card: JustTCGCard,
         variant: JustTCGVariant,
         owners: [MarketPriceTarget],
@@ -1528,7 +1528,7 @@ final class PriceRefreshController: ObservableObject {
     }
 
     @discardableResult
-    private static func applyVendorBatchHit(
+    nonisolated private static func applyVendorBatchHit(
         card: JustTCGCard,
         variant: JustTCGVariant,
         owners: [MarketPriceTarget],
@@ -1566,7 +1566,7 @@ final class PriceRefreshController: ObservableObject {
     /// backfill, but existing support/test callers should keep compiling while
     /// they migrate to the two-index form.
     @discardableResult
-    static func applyVendorBatchHit(
+    nonisolated static func applyVendorBatchHit(
         card: JustTCGCard,
         variant: JustTCGVariant,
         owners: [MarketPriceTarget],

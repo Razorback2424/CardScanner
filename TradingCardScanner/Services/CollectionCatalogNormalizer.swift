@@ -280,7 +280,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// The sole writer for the catalog normalizer's retry watermark. Other
     /// services may discover metadata or sealed artwork, but they must report
     /// that observation through this method instead of mutating the gate.
-    static func recordCatalogMetadataCheck(
+    nonisolated static func recordCatalogMetadataCheck(
         on card: CollectedCard,
         at checkedAt: Date,
         version: Int = metadataVersion
@@ -292,7 +292,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// Records a completed artwork lookup while the sealed row is still
     /// missing artwork. The caller invokes this before applying a returned
     /// image so the same helper remains valid for both a hit and a miss.
-    static func recordSealedArtworkCheck(
+    nonisolated static func recordSealedArtworkCheck(
         on card: CollectedCard,
         at checkedAt: Date
     ) {

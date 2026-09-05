@@ -42,8 +42,17 @@ enum BackgroundPriceRefresh {
         }
     }
 
-    static let processingIdentifier = "com.example.TradingCardScanner.priceRefresh.processing"
-    static let appRefreshIdentifier = "com.example.TradingCardScanner.priceRefresh.appRefresh"
+    /// Derived from the bundle id, and the `Info.plist` entries are derived
+    /// from the same build setting. `BGTaskScheduler.register` throws when an
+    /// identifier is absent from `BGTaskSchedulerPermittedIdentifiers`, and a
+    /// scheduled request for an unpermitted identifier simply never fires — so
+    /// a bundle rename that updated three of the four hard-coded strings would
+    /// have disabled overnight price refresh with no error anywhere. One
+    /// source now, in the project settings.
+    private static let identifierPrefix =
+        Bundle.main.bundleIdentifier ?? "com.example.TradingCardScanner"
+    static let processingIdentifier = "\(identifierPrefix).priceRefresh.processing"
+    static let appRefreshIdentifier = "\(identifierPrefix).priceRefresh.appRefresh"
 
     /// Three vendor fall-throughs fit comfortably within an opportunistic
     /// app-refresh window even when each needs one paced identity request.

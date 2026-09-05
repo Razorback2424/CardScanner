@@ -24,8 +24,8 @@
 	<string>Scan card details and take card photos for centering checks.</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.example.TradingCardScanner.priceRefresh.processing</string>
-		<string>com.example.TradingCardScanner.priceRefresh.appRefresh</string>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER).priceRefresh.processing</string>
+		<string>$(PRODUCT_BUNDLE_IDENTIFIER).priceRefresh.appRefresh</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>

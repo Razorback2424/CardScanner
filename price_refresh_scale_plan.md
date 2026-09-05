@@ -313,9 +313,19 @@ context, the index, target construction, record writes and saves.
 Boundary is mostly clean: `PriceTarget`, `PriceLookup`, `IdentifiedCard` and
 the summary types are already value types, and the pure statics tests depend on
 (`staleTargets`, `needsFallback`, `permitsVendorWork`, `hasFinishedPrice`,
-`isTransientSuccessStatus`, `applyVendorBatchHit`) are already `nonisolated
-static` and must stay exactly where they are — **all 34 test files touch only
-those**, so this slice should not require test changes.
+`isTransientSuccessStatus`) are `nonisolated static` and must stay exactly
+where they are.
+
+**Corrected 2026-09-05:** this paragraph originally also listed
+`applyVendorBatchHit` as `nonisolated static` and concluded the slice "should
+not require test changes". Both were wrong. It was `static func` on a
+`@MainActor` class — main-actor isolated, the per-result write path this slice
+relocates, and called from `CollectionItemKindTests`. Marking it `nonisolated`
+transitively required de-isolating `ProductIdentityStore`,
+`ProductIdentityIndex`, `recordSealedArtwork*`, `materializedRows`,
+`rows(for:in:)` and two `CollectionCatalogNormalizer` statics. That work is
+done and is on the branch as slice 7 of the remediation plan, so this slice's
+boundary is now what the paragraph originally claimed it was.
 
 **Hazards specific to this slice:**
 - The refresh mutates `CollectedCard` rows (`applyCatalogMetadata`,

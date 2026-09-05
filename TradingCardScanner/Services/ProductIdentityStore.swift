@@ -7,7 +7,10 @@ import SwiftData
 /// different lifetimes — the handle is resolved once and kept, the price is
 /// replaced on every refresh — and keeping the writers apart is what stops one
 /// subsystem's bookkeeping from becoming another's retry gate.
-@MainActor
+/// Context-owned rather than `@MainActor`, matching `PriceStore` and
+/// `PriceRefreshDataIndex`: callers must create and use it on the executor that
+/// owns its `ModelContext`. The foreground refresh currently owns both on the
+/// main actor; the type does not impose that on other context owners.
 final class ProductIdentityIndex {
     private(set) var byKey: [String: ProductIdentity]
     private let loadedSuccessfully: Bool
@@ -40,7 +43,7 @@ final class ProductIdentityIndex {
     var isUsable: Bool { loadedSuccessfully }
 }
 
-@MainActor
+/// Context-owned rather than `@MainActor`. See `ProductIdentityIndex`.
 struct ProductIdentityStore {
     let context: ModelContext
 

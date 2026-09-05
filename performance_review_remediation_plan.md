@@ -17,13 +17,13 @@ numbers drift; follow symbol names.
 | 4 — R1 retention | gated on 1 | |
 | 5 — R3 field trimming | gated on 1 | |
 | 6 — R6 + R7 | not started | |
-| 7 — de-isolate write path | in progress | |
+| 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. Build clean, 847 tests green. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
 | 8 — R4 ModelActor | gated on 1 and 7 | |
 | 9 — device pass | blocked (device) | |
 | 10 — R5 `#Index` | not started | deployment-target decision |
-| 11 — R10 checklist | in progress | |
+| 11 — R10 checklist | **done** | BG task identifiers derive from `Bundle.main.bundleIdentifier`, and `Info.plist` from `$(PRODUCT_BUNDLE_IDENTIFIER)`; verified in the built plist. `progress.md:31` corrected. `price_refresh_scale_plan.md:316-318` corrected in place with a dated note. |
 
-Suite after slices 2–3: **847 tests, 0 failures** (846 before; the new one is the C2 convergence test).
+Suite after slices 2, 3, 7 and 11: **847 tests, 0 failures** (846 before; the new one is the C2 convergence test). Nothing below slice 1's gate has been touched.
 
 ---
 
