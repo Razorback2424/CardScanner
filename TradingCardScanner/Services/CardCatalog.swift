@@ -550,6 +550,12 @@ actor ResolvedPokemonCardCache {
     private var entries: [String: Entry] = [:]
     private var didLoad = false
 
+    struct CachedCard: Sendable {
+        let card: TCGdexCard
+        let setCode: String
+        let storedAt: Date
+    }
+
     init(root: URL? = nil, appVersion: String? = nil) {
         let cacheRoot = root ?? FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)
@@ -565,7 +571,7 @@ actor ResolvedPokemonCardCache {
         loadIfNeeded()
     }
 
-    func card(for key: String) -> (card: TCGdexCard, setCode: String)? {
+    func card(for key: String) -> CachedCard? {
         loadIfNeeded()
         guard let entry = entries[key] else { return nil }
         guard Date.now.timeIntervalSince(entry.storedAt) <= Self.maxAge else {
@@ -614,7 +620,7 @@ actor ResolvedPokemonCardCache {
                     )
                 }
         )
-        return (card, entry.setCode)
+        return CachedCard(card: card, setCode: entry.setCode, storedAt: entry.storedAt)
     }
 
     func store(
@@ -742,17 +748,26 @@ actor CardCatalog {
     struct CatalogResolution: Sendable {
         let card: IdentifiedCard
         let isPersistable: Bool
+        /// The time the card payload was obtained. A session-cache hit keeps
+        /// this original provider time instead of manufacturing a new price
+        /// retrieval timestamp at the next scan.
+        let retrievedAt: Date
 
-        init(_ card: IdentifiedCard, isPersistable: Bool = false) {
+        init(
+            _ card: IdentifiedCard,
+            isPersistable: Bool = false,
+            retrievedAt: Date = .now
+        ) {
             self.card = card
             self.isPersistable = isPersistable
+            self.retrievedAt = retrievedAt
         }
     }
 
     /// Bounded: see `BoundedCache`. Large enough that re-scanning a stack never
     /// evicts anything the user is actually working through, small enough that
     /// unstable OCR cannot grow it without limit.
-    private var resolved = BoundedCache<ScanIdentifier, IdentifiedCard>(capacity: 256)
+    private var resolved = BoundedCache<ScanIdentifier, CatalogResolution>(capacity: 256)
     /// The token travels with the task so a stale completion can never clear a
     /// newer lookup registered for the same identifier.
     private struct InFlightLookup {
@@ -791,13 +806,17 @@ actor CardCatalog {
     }
 
     func card(for identifier: ScanIdentifier) async throws -> IdentifiedCard {
+        try await resolution(for: identifier).card
+    }
+
+    func resolution(for identifier: ScanIdentifier) async throws -> CatalogResolution {
         if let card = resolved[identifier] { return card }
         let lookup = inFlight[identifier] ?? start(identifier)
         return try await complete(identifier, lookup: lookup).get()
     }
 
     func cachedCard(for identifier: ScanIdentifier) -> IdentifiedCard? {
-        resolved[identifier]
+        resolved[identifier]?.card
     }
 
     func card(
@@ -835,7 +854,10 @@ actor CardCatalog {
         let task = Task<CatalogResolution, Error> {
             if let diskKey,
                let cached = await resolvedDiskCache.card(for: diskKey) {
-                return CatalogResolution(.pokemon(cached.card, setCode: cached.setCode))
+                return CatalogResolution(
+                    .pokemon(cached.card, setCode: cached.setCode),
+                    retrievedAt: cached.storedAt
+                )
             }
 
             switch identifier {
@@ -1110,12 +1132,12 @@ actor CardCatalog {
     private func complete(
         _ identifier: ScanIdentifier,
         lookup: InFlightLookup
-    ) async -> Result<IdentifiedCard, Error> {
+    ) async -> Result<CatalogResolution, Error> {
         let result = await lookup.task.result
         let ownsRegistration = inFlight[identifier]?.token == lookup.token
         if ownsRegistration, case let .success(resolution) = result {
             let card = resolution.card
-            resolved[identifier] = card
+            resolved[identifier] = resolution
             // Only a live primary-provider response is written through. A
             // degraded fallback record would otherwise outlive the outage that
             // produced it, and a bundled-checklist record is already on disk
@@ -1146,7 +1168,7 @@ actor CardCatalog {
         if inFlight[identifier]?.token == lookup.token {
             inFlight[identifier] = nil
         }
-        return result.map(\.card)
+        return result
     }
 }
 

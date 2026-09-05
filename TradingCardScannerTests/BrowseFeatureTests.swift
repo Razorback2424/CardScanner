@@ -1884,6 +1884,40 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(counts.fallback, 0)
     }
 
+    func testSessionCatalogCachePreservesOriginalResolutionTime() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let source = CountingPokemonCardSource(
+            primary: .card(try makeTCGdexCard(setID: "sv10", localID: "085")),
+            fallback: .failure(.badResponse)
+        )
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil)
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0)
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        )
+
+        let first = try await catalog.resolution(for: identifier)
+        let second = try await catalog.resolution(for: identifier)
+
+        XCTAssertEqual(first.retrievedAt, second.retrievedAt)
+        let counts = await source.requestCounts()
+        XCTAssertEqual(counts.primary, 1)
+    }
+
     private func makeTCGdexCard(setID: String, localID: String) throws -> TCGdexCard {
         try decode(TCGdexCard.self, from: """
         {"id":"\(setID)-\(localID)","localId":"\(localID)","name":"Resolved Card","image":null,

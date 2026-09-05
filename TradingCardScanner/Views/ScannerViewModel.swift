@@ -93,6 +93,23 @@ struct ResolvedScan {
     let resolved: ResolvedVariant
     let pokemonPrintRun: PokemonPrintRun?
     let options: [PhysicalVariant]
+    let catalogRetrievedAt: Date
+
+    init(
+        request: ScanRequest,
+        card: IdentifiedCard,
+        resolved: ResolvedVariant,
+        pokemonPrintRun: PokemonPrintRun?,
+        options: [PhysicalVariant],
+        catalogRetrievedAt: Date = .now
+    ) {
+        self.request = request
+        self.card = card
+        self.resolved = resolved
+        self.pokemonPrintRun = pokemonPrintRun
+        self.options = options
+        self.catalogRetrievedAt = catalogRetrievedAt
+    }
 }
 
 /// The fully resolved value that may be detached from generation-owned work.
@@ -106,6 +123,7 @@ struct CollectionCommitCandidate {
     let pokemonPrintRun: PokemonPrintRun?
     let options: [PhysicalVariant]
     let price: PriceLookup
+    let catalogRetrievedAt: Date
     let encounterID: UUID
     let heldRepeatAuthorizationID: UUID?
 
@@ -120,8 +138,10 @@ struct CollectionCommitCandidate {
             for: resolvedScan.card,
             variant: resolvedScan.resolved.variant,
             magicTreatments: resolvedScan.card.magicTreatments(for: resolvedScan.resolved.variant),
-            pokemonPrintRun: resolvedScan.pokemonPrintRun
+            pokemonPrintRun: resolvedScan.pokemonPrintRun,
+            at: resolvedScan.catalogRetrievedAt
         )
+        catalogRetrievedAt = resolvedScan.catalogRetrievedAt
         encounterID = resolvedScan.request.encounterID
         heldRepeatAuthorizationID = resolvedScan.request.heldRepeatAuthorizationID
     }
@@ -138,6 +158,7 @@ struct CollectionCommitCandidate {
         pokemonPrintRun: PokemonPrintRun?,
         options: [PhysicalVariant],
         price: PriceLookup,
+        catalogRetrievedAt: Date,
         encounterID: UUID,
         heldRepeatAuthorizationID: UUID?
     ) {
@@ -148,6 +169,7 @@ struct CollectionCommitCandidate {
         self.pokemonPrintRun = pokemonPrintRun
         self.options = options
         self.price = price
+        self.catalogRetrievedAt = catalogRetrievedAt
         self.encounterID = encounterID
         self.heldRepeatAuthorizationID = heldRepeatAuthorizationID
     }
@@ -385,6 +407,7 @@ struct RecentScan: Identifiable, Equatable {
     let card: IdentifiedCard
     let resolved: ResolvedVariant
     let pokemonPrintRun: PokemonPrintRun?
+    let catalogRetrievedAt: Date
     /// Every variant this printing could physically have been, kept so the same
     /// question can be re-asked later without another catalog round trip.
     let options: [PhysicalVariant]
@@ -396,6 +419,7 @@ struct RecentScan: Identifiable, Equatable {
         card: IdentifiedCard,
         resolved: ResolvedVariant,
         pokemonPrintRun: PokemonPrintRun? = nil,
+        catalogRetrievedAt: Date = .now,
         options: [PhysicalVariant],
         mutation: CollectionMutation
     ) {
@@ -404,6 +428,7 @@ struct RecentScan: Identifiable, Equatable {
         self.card = card
         self.resolved = resolved
         self.pokemonPrintRun = pokemonPrintRun
+        self.catalogRetrievedAt = catalogRetrievedAt
         self.options = options
         self.mutation = mutation
     }
@@ -444,6 +469,7 @@ struct PendingVariantChoice: Identifiable, Equatable {
     let card: IdentifiedCard
     let options: [PhysicalVariant]
     let pokemonPrintRun: PokemonPrintRun?
+    let catalogRetrievedAt: Date
     /// Set when Finish Lock named a variant this printing does not exist in. The
     /// lock is evidence, not an override, so the user is told rather than obeyed.
     let lockDidNotApply: PhysicalVariant?
@@ -461,6 +487,7 @@ struct PendingPrintRunChoice: Identifiable, Equatable {
     let request: ScanRequest
     let card: IdentifiedCard
     let options: [PokemonPrintRun]
+    let catalogRetrievedAt: Date
 
     var identifier: ScanIdentifier { request.identifier }
 
@@ -1244,7 +1271,8 @@ final class ScannerViewModel: ObservableObject {
                 card: pending.card,
                 resolved: ResolvedVariant(variant: variant, resolution: .userConfirmed),
                 pokemonPrintRun: pending.pokemonPrintRun,
-                options: pending.options
+                options: pending.options,
+                catalogRetrievedAt: pending.catalogRetrievedAt
             )
         )
         // No-ops if routing raised a new question of its own — the duplicate
@@ -1269,7 +1297,8 @@ final class ScannerViewModel: ObservableObject {
         resolveVariant(
             for: pending.request,
             card: pending.card,
-            pokemonPrintRun: printRun
+            pokemonPrintRun: printRun,
+            catalogRetrievedAt: pending.catalogRetrievedAt
         )
         resumeRecognitionIfPossible()
         processNextIdentificationIfPossible()
@@ -1300,7 +1329,11 @@ final class ScannerViewModel: ObservableObject {
                       self.isCurrent(pending.request),
                       self.pendingIdentityChoice?.id == pending.id else { return }
                 self.pendingIdentityChoice = nil
-                self.resolvePrintRun(for: pending.request, card: card)
+                self.resolvePrintRun(
+                    for: pending.request,
+                    card: card,
+                    catalogRetrievedAt: .now
+                )
                 self.resumeRecognitionIfPossible()
                 self.processNextIdentificationIfPossible()
             } catch {
@@ -1432,6 +1465,7 @@ final class ScannerViewModel: ObservableObject {
             card: scan.card,
             resolved: corrected,
             pokemonPrintRun: scan.pokemonPrintRun,
+            catalogRetrievedAt: scan.catalogRetrievedAt,
             options: scan.options,
             mutation: mutation
         )
@@ -1446,7 +1480,8 @@ final class ScannerViewModel: ObservableObject {
             for: scan.card,
             variant: variant,
             magicTreatments: scan.card.magicTreatments(for: variant),
-            pokemonPrintRun: scan.pokemonPrintRun
+            pokemonPrintRun: scan.pokemonPrintRun,
+            at: scan.catalogRetrievedAt
         )
         recordPrice(
             for: scan.card,
@@ -1558,7 +1593,8 @@ final class ScannerViewModel: ObservableObject {
         defer { endIdentification() }
 
         do {
-            let card = try await catalog.card(for: request.identifier)
+            let resolution = try await catalog.resolution(for: request.identifier)
+            let card = resolution.card
             guard !Task.isCancelled, isCurrent(request) else { return }
             if catalogMissVerification?.suppressionKey == request.identifier.suppressionKey {
                 catalogMissVerification = nil
@@ -1572,7 +1608,11 @@ final class ScannerViewModel: ObservableObject {
                 identificationQueue.insert(request, at: 0)
                 return
             }
-            resolvePrintRun(for: request, card: card)
+            resolvePrintRun(
+                for: request,
+                card: card,
+                catalogRetrievedAt: resolution.retrievedAt
+            )
         } catch let error as PokemonHistoricalCatalogError {
             guard !Task.isCancelled, isCurrent(request) else { return }
             handleHistoricalResolution(error, request: request)
@@ -1625,13 +1665,22 @@ final class ScannerViewModel: ObservableObject {
         isSlowIdentifying = false
     }
 
-    private func resolvePrintRun(for request: ScanRequest, card: IdentifiedCard) {
+    private func resolvePrintRun(
+        for request: ScanRequest,
+        card: IdentifiedCard,
+        catalogRetrievedAt: Date
+    ) {
         guard isCurrent(request) else { return }
         let options = card.game == .pokemon
             ? PokemonMasterSetDefinition.printRuns(forSetProviderID: card.variantEvidence.setID)
             : []
         guard !options.isEmpty else {
-            resolveVariant(for: request, card: card, pokemonPrintRun: nil)
+            resolveVariant(
+                for: request,
+                card: card,
+                pokemonPrintRun: nil,
+                catalogRetrievedAt: catalogRetrievedAt
+            )
             return
         }
 
@@ -1640,7 +1689,8 @@ final class ScannerViewModel: ObservableObject {
         pendingPrintRunChoice = PendingPrintRunChoice(
             request: request,
             card: card,
-            options: options
+            options: options,
+            catalogRetrievedAt: catalogRetrievedAt
         )
         scanner.pauseRecognition()
         feedback.needsChoice()
@@ -1649,7 +1699,8 @@ final class ScannerViewModel: ObservableObject {
     private func resolveVariant(
         for request: ScanRequest,
         card: IdentifiedCard,
-        pokemonPrintRun: PokemonPrintRun?
+        pokemonPrintRun: PokemonPrintRun?,
+        catalogRetrievedAt: Date
     ) {
         guard isCurrent(request) else { return }
         // The print run question was just answered, and TCGdex reports 1st
@@ -1668,7 +1719,8 @@ final class ScannerViewModel: ObservableObject {
                     card: card,
                     resolved: resolved,
                     pokemonPrintRun: pokemonPrintRun,
-                    options: VariantResolver.options(for: evidence)
+                    options: VariantResolver.options(for: evidence),
+                    catalogRetrievedAt: catalogRetrievedAt
                 )
             )
 
@@ -1680,6 +1732,7 @@ final class ScannerViewModel: ObservableObject {
                 card: card,
                 options: options,
                 pokemonPrintRun: pokemonPrintRun,
+                catalogRetrievedAt: catalogRetrievedAt,
                 lockDidNotApply: lockDidNotApply
             )
             scanner.pauseRecognition()
@@ -1714,6 +1767,7 @@ final class ScannerViewModel: ObservableObject {
             card: candidate.card,
             resolved: candidate.resolved,
             pokemonPrintRun: candidate.pokemonPrintRun,
+            catalogRetrievedAt: candidate.catalogRetrievedAt,
             options: candidate.options,
             mutation: mutation
         )

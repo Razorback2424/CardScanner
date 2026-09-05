@@ -149,6 +149,20 @@ build-for-testing passes; source changes are limited to `ScannerViewModel`,
 `ScannerView`, and the existing `CardLatchTests` file. Rollback is the
 slice-local commit.
 
+### Slice 2 — catalog price freshness
+
+- [x] Preserve catalog resolution time through session and disk identity-cache
+  hits.
+- [x] Carry that time through scanner finish/print-run choices, collection
+  commits, corrections, and Price Check.
+- [x] Compare a catalog quote with newer local evidence before selecting it;
+  stale selected evidence keeps the existing auto-refresh path enabled.
+- [x] Add regressions for session timestamp preservation and a cached `$10`
+  catalog quote versus a newer local `$20` quote.
+
+Status: implemented, generic build-for-testing passes. Simulator test execution
+is unavailable because CoreSimulatorService has no discoverable runtime.
+
 ## Audit pass 1 remaining remediation — L1 through L3
 
 The remaining findings from `audit_pass1_remaining_plan.md` are implemented on
