@@ -258,6 +258,175 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(PriceStore.record(for: row, in: recordsByKey)?.key, detailInstrument)
     }
 
+    // MARK: - Coverage retention (R1)
+
+    private func replayDay(
+        _ day: Date,
+        closeValue: Double,
+        coverage: PortfolioCoverage
+    ) -> PortfolioReplayDay {
+        PortfolioReplayDay(
+            displayDay: day,
+            boundary: day.addingTimeInterval(86_400),
+            closeValue: money(closeValue),
+            market: .zero,
+            added: .zero,
+            removed: .zero,
+            corrections: .zero,
+            newlyAddedValue: .zero,
+            pricingAdjustment: .zero,
+            performanceFactor: nil,
+            pricedPositionCount: 1,
+            excludedQuantity: 0,
+            coverage: coverage,
+            carriedForwardValue: .zero,
+            contributions: [:],
+            movementDetails: [:],
+            hasEligibleMarketMovement: false
+        )
+    }
+
+    /// Coverage for a day whose `PriceCheckDay` rows have been pruned comes
+    /// from the close already published, not from a recompute that would see
+    /// no checks and report the whole holding as carried forward.
+    ///
+    /// The contract this pins is the one the retention window trades away, so
+    /// it is asserted in the two halves that matter separately: a pruned day
+    /// must not be revised at all merely because its evidence is gone, and a
+    /// pruned day that a late event genuinely does revise must keep its
+    /// original coverage counts while its value changes.
+    func testPrunedDaysKeepPublishedCoverage() throws {
+        let context = try makeContext()
+        let zone = TimeZone(identifier: "America/Chicago") ?? .current
+        let old = PortfolioCalendar.day(
+            containing: Date(timeIntervalSince1970: 1_700_000_000),
+            in: zone
+        )
+        let recent = PortfolioCalendar.day(
+            containing: old.addingTimeInterval(500 * 86_400),
+            in: zone
+        )
+        let windowStart = PortfolioCalendar.day(
+            containing: old.addingTimeInterval(400 * 86_400),
+            in: zone
+        )
+        let measured = PortfolioCoverage(refreshed: 3, carriedForward: 1, state: .partial)
+        // What a recompute produces once the rows behind it are gone.
+        let pruned = PortfolioCoverage(refreshed: 0, carriedForward: 4, state: .unknown)
+
+        // Published while the evidence still existed.
+        _ = PortfolioEngine.publish(
+            [
+                replayDay(old, closeValue: 10, coverage: measured),
+                replayDay(recent, closeValue: 20, coverage: measured)
+            ],
+            timeZone: zone,
+            context: context
+        )
+        try context.save()
+
+        // The rows are pruned; the replay now derives nothing for the old day.
+        _ = PortfolioEngine.publish(
+            [
+                replayDay(old, closeValue: 10, coverage: pruned),
+                replayDay(recent, closeValue: 20, coverage: measured)
+            ],
+            timeZone: zone,
+            coverageWindowStart: windowStart,
+            context: context
+        )
+        try context.save()
+
+        let afterPrune = try PortfolioEngine.allCloses(in: context)
+        XCTAssertEqual(afterPrune.count, 2, "a pruned day must not be revised for lost evidence")
+        let oldClose = try XCTUnwrap(afterPrune.first { $0.date == old })
+        XCTAssertEqual(oldClose.revision, 1)
+        XCTAssertEqual(oldClose.refreshedInstrumentCount, 3)
+        XCTAssertEqual(oldClose.carriedForwardInstrumentCount, 1)
+        XCTAssertEqual(oldClose.coverageState, .partial)
+
+        // A late inventory event genuinely revises the same pruned day.
+        _ = PortfolioEngine.publish(
+            [
+                replayDay(old, closeValue: 12, coverage: pruned),
+                replayDay(recent, closeValue: 20, coverage: measured)
+            ],
+            timeZone: zone,
+            coverageWindowStart: windowStart,
+            context: context
+        )
+        try context.save()
+
+        let revised = try XCTUnwrap(
+            try PortfolioEngine.allCloses(in: context)
+                .filter { $0.date == old }
+                .max { $0.revision < $1.revision }
+        )
+        XCTAssertEqual(revised.revision, 2)
+        XCTAssertEqual(revised.closeValue, money(12), "value still replays from events")
+        XCTAssertEqual(revised.refreshedInstrumentCount, 3, "coverage is carried, not recomputed")
+        XCTAssertEqual(revised.carriedForwardInstrumentCount, 1)
+
+        // Inside the window nothing is carried: a real coverage change is a
+        // real revision.
+        _ = PortfolioEngine.publish(
+            [
+                replayDay(old, closeValue: 12, coverage: pruned),
+                replayDay(
+                    recent,
+                    closeValue: 20,
+                    coverage: PortfolioCoverage(refreshed: 4, carriedForward: 0, state: .complete)
+                )
+            ],
+            timeZone: zone,
+            coverageWindowStart: windowStart,
+            context: context
+        )
+        try context.save()
+
+        let recentClose = try XCTUnwrap(
+            try PortfolioEngine.allCloses(in: context)
+                .filter { $0.date == recent }
+                .max { $0.revision < $1.revision }
+        )
+        XCTAssertEqual(recentClose.revision, 2)
+        XCTAssertEqual(recentClose.refreshedInstrumentCount, 4)
+        XCTAssertEqual(recentClose.coverageState, .complete)
+    }
+
+    /// The window bounds the read without changing what an unaged store sees.
+    func testCoverageWindowOnlyConstrainsHistoryOlderThanTheWindow() throws {
+        let context = try makeContext()
+        let zone = TimeZone(identifier: "America/Chicago") ?? .current
+        let today = PortfolioCalendar.day(containing: .now, in: zone)
+        let youngEpoch = PortfolioCalendar.day(
+            containing: today.addingTimeInterval(-30 * 86_400),
+            in: zone
+        )
+        context.insert(
+            PriceCheckDay(
+                instrumentKey: "instrument",
+                portfolioDay: youngEpoch,
+                lastSuccessfulCheckAt: youngEpoch,
+                source: .tcgplayer
+            )
+        )
+        try context.save()
+
+        let index = PortfolioReplaySnapshotBuilder.coverageIndex(
+            context: context,
+            from: youngEpoch,
+            through: today,
+            timeZone: zone
+        )
+        XCTAssertNil(
+            index.windowStart,
+            "a store younger than the window is answered in full, so nothing is carried"
+        )
+        XCTAssertTrue(index.covers(youngEpoch))
+        XCTAssertEqual(index.checkedInstruments(on: youngEpoch), ["instrument"])
+    }
+
     // MARK: - Slice 1 baseline
 
     /// Measures the two whole-table reads the remediation plan's gated slices

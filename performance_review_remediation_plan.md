@@ -14,7 +14,7 @@ numbers drift; follow symbol names.
 | 1 — Measure | **done (simulator); device pass still worthwhile** | `OSSignposter` intervals at `PriceRefreshDataIndex.init`, `ProductIdentityIndex.init`, `coverageIndex`, `PortfolioComputationActor.compute` and `CollectionStore.add`, plus counted events at `makeCachedProjection` and `startRecompute`. `testAgedStoreBaseline` seeds an aged store and reports the two whole-table reads; opt-in via `PERF_BASELINE`, skipped in the default run. Numbers in §3.1. They un-gate slices 4 and 8. |
 | 2 — R2 holding-detail projection | **done** | `PortfolioOwnedCardDestination` uses the closure overload; `testHoldingDetailResolvesTheSameInstrumentAsTheGrid` pins the C2 convergence on the one input where the two rules disagree. |
 | 3 — R9 dead code | **done** | `LedgerIntegrityLog` and its three writes deleted; three test lines removed per T3; `startedAt(context:)` parameter dropped with all four call sites updated. `cancelRecompute` kept, as recommended. |
-| 4 — R1 retention | **un-gated, next** | §3.1 confirms it as the top finding: the coverage read is linear in instruments × days and already costs ~1.5 s inside every recompute for a 300-card collection one year old. Needs the `PortfolioHistoryRange.all` decision before it can start — see §3.2. |
+| 4 — R1 retention | **done** | 400-day window, `.all` kept (decision taken 2026-09-05). `coverageIndexThrowing` clamps to the window and reports it; `PriceObservationLog.pruneCheckDays` discards rows behind it from the computation actor; `PortfolioEngine.publish` reads pruned days' coverage from the close it already wrote. Measured flat past the window — see §3.4. |
 | 5 — R3 field trimming | still gated on 1 | Its two signposts are counts during a live refresh, which the seeded fixture cannot produce. Needs one profiled refresh. |
 | 6 — R6 + R7 | **done, P4 deliberately not done** | `PortfolioView` no longer observes the refresh controller: `PortfolioRefreshButton`, `PortfolioAttentionBadge` and a shared `PriceRefreshActivityRow` observe it instead, and `needsPortfolioAttention` is split so the parent keeps only the half that reads the portfolio. Collection's pull-to-refresh returns after 500 ms and reports the pass in its summary through the same row, so both screens describe one pass identically. P4 rejected — see below. |
 | 7 — de-isolate write path | **done** | `ProductIdentityStore`, `ProductIdentityIndex`, `applyVendorBatchHit` (all three overloads) and `recordSealedArtwork*` are context-owned rather than `@MainActor`. The compiler then named three dependencies neither plan predicted — `materializedRows`, `rows(for:in:)` and two `CollectionCatalogNormalizer` statics — which is precisely the audit this slice exists to perform. Build clean, 847 tests green. Slice 8's boundary is now what the scale plan wrongly assumed it already was. |
@@ -25,7 +25,7 @@ numbers drift; follow symbol names.
 
 **P4 (artwork override fetch in `body`) was investigated and rejected, not deferred.** R7 was its main justification: the fetch cost 5 unindexed lookups per Portfolio render, and the render rate during a refresh was 4 Hz. With R7 landed, Portfolio re-renders only on genuine portfolio changes, so the cost is now negligible. Removing it entirely means resolving the override into `holdingSnapshots` on the computation actor — but `PortfolioInputObserver` does not query `LocalArtworkOverride`, so a snapshot-carried filename would not update until the next recompute, and setting a custom artwork would silently fail to appear in Portfolio. Fixing *that* means adding a fifth whole-table query to the observer R3 exists to slim down. The remedy costs more than the problem; the fetch stays.
 
-Suite after slices 1, 2, 3, 6, 7, 11 and the P3/U4 cleanup: **848 tests, 1 skipped, 0 failures** (846 before; the C2 convergence test, and the opt-in aged-store baseline that skips unless `PERF_BASELINE` is set).
+Suite after slices 1, 2, 3, 4, 6, 7, 11 and the P3/U4 cleanup: **850 tests, 1 skipped, 0 failures** (846 before: the C2 convergence test, the two R1 retention tests, and the opt-in aged-store baseline that skips unless `PERF_BASELINE` is set).
 
 ---
 
@@ -196,6 +196,28 @@ window. The remedy stands — coverage for pruned days is read back from the
 revised historical day reports (T2), and the window length is a judgement about
 how much history the app promises to recompute rather than replay. That is the
 open question blocking slice 4, and it is a decision, not a measurement.
+
+## 3.4 Slice 4 result
+
+Same fixture, after the window:
+
+| instruments × days | `PriceCheckDay` rows | `coverageIndex` |
+|---|---|---|
+| 300 × 500 | 150,000 | 1.64 s |
+| 300 × 800 | 240,000 | 1.66 s |
+
+Flat. At the pre-R1 rate of 13.8 µs/row the 800-day store would have cost
+~3.3 s, and would have kept climbing; the read is now bounded by the window
+rather than by the store's age, and `pruneCheckDays` keeps the rows off disk as
+well as out of the read. What remains inside the window is genuine work: ~1.6 s
+for 300 instruments is still the largest single cost in a recompute, and
+shrinking it further means a narrower window or a resumable replay, both of
+which are product decisions rather than optimisations.
+
+`testPrunedDaysKeepPublishedCoverage` pins the trade the window makes: a pruned
+day is not revised merely because its evidence is gone, and a pruned day that a
+late event genuinely does revise keeps its original coverage counts while its
+value changes.
 
 ## 3.3 Measurement plan (remaining)
 

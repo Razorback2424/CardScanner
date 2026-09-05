@@ -374,7 +374,12 @@ final class PortfolioEngine: ObservableObject {
             // so an explanation defect does not make the close itself unsafe.
             // Keep publishing the close while surfacing the residual below.
             if summary.isAuthoritative {
-                summary.revisionNote = Self.publish(replay.days, timeZone: timeZone, context: context)?
+                summary.revisionNote = Self.publish(
+                    replay.days,
+                    timeZone: timeZone,
+                    coverageWindowStart: computation.coverage.windowStart,
+                    context: context
+                )?
                     .revisionNote
             }
         }
@@ -547,6 +552,10 @@ final class PortfolioEngine: ObservableObject {
     static func publish(
         _ days: [PortfolioReplayDay],
         timeZone: TimeZone,
+        /// The first day the coverage index could answer for. Days before it
+        /// keep the coverage their published close already records — see
+        /// `resolvedCoverage`. `nil` means the index covered everything.
+        coverageWindowStart: Date? = nil,
         context: ModelContext
     ) -> PortfolioDailyClose? {
         guard !days.isEmpty else { return nil }
@@ -569,7 +578,12 @@ final class PortfolioEngine: ObservableObject {
 
         for day in days {
             let existing = stored[day.displayDay]
-            if let existing, matches(existing, day) {
+            let coverage = resolvedCoverage(
+                for: day,
+                existing: existing,
+                windowStart: coverageWindowStart
+            )
+            if let existing, matches(existing, day, coverage: coverage) {
                 latest = existing
                 continue
             }
@@ -585,9 +599,9 @@ final class PortfolioEngine: ObservableObject {
                 newlyAddedValue: day.newlyAddedValue,
                 pricingAdjustment: day.pricingAdjustment,
                 carriedForwardValue: day.carriedForwardValue,
-                coverage: day.coverage.state,
-                refreshedInstrumentCount: day.coverage.refreshed,
-                carriedForwardInstrumentCount: day.coverage.carriedForward,
+                coverage: coverage.state,
+                refreshedInstrumentCount: coverage.refreshed,
+                carriedForwardInstrumentCount: coverage.carriedForward,
                 pricedPositionCount: day.pricedPositionCount,
                 excludedCount: day.excludedQuantity,
                 inputsFingerprint: "",
@@ -620,8 +634,51 @@ final class PortfolioEngine: ObservableObject {
         return latest
     }
 
+    /// What a day's coverage should be published as.
+    ///
+    /// Inside the coverage window the replay recomputed it from `PriceCheckDay`
+    /// rows. Outside the window those rows are pruned, so a recomputed answer
+    /// would report every held instrument as carried forward and revise every
+    /// historical day to say the app checked nothing that day. The close
+    /// already published is the record of what coverage actually was, so
+    /// outside the window it is the answer.
+    ///
+    /// The consequence, stated rather than discovered: a pruned day that a late
+    /// inventory event revises keeps its original coverage counts, which were
+    /// measured against the holdings known at the time. Value, market and flow
+    /// are unaffected — they replay from events and observations, neither of
+    /// which is pruned.
+    private struct ResolvedCoverage {
+        var state: PortfolioCoverageState
+        var refreshed: Int
+        var carriedForward: Int
+    }
+
+    private static func resolvedCoverage(
+        for day: PortfolioReplayDay,
+        existing: PortfolioDailyClose?,
+        windowStart: Date?
+    ) -> ResolvedCoverage {
+        if let windowStart, day.displayDay < windowStart, let existing {
+            return ResolvedCoverage(
+                state: existing.coverageState,
+                refreshed: existing.refreshedInstrumentCount,
+                carriedForward: existing.carriedForwardInstrumentCount
+            )
+        }
+        return ResolvedCoverage(
+            state: day.coverage.state,
+            refreshed: day.coverage.refreshed,
+            carriedForward: day.coverage.carriedForward
+        )
+    }
+
     /// Whether a stored close already says exactly what the replay derived.
-    private static func matches(_ stored: PortfolioDailyClose, _ day: PortfolioReplayDay) -> Bool {
+    private static func matches(
+        _ stored: PortfolioDailyClose,
+        _ day: PortfolioReplayDay,
+        coverage: ResolvedCoverage
+    ) -> Bool {
         stored.closeValue == day.closeValue
             && stored.marketContribution == day.market
             && stored.flowContribution == day.flow
@@ -631,9 +688,9 @@ final class PortfolioEngine: ObservableObject {
             && stored.newlyAddedValue == day.newlyAddedValue
             && stored.pricingAdjustment == day.pricingAdjustment
             && stored.carriedForwardValue == day.carriedForwardValue
-            && stored.coverageState == day.coverage.state
-            && stored.refreshedInstrumentCount == day.coverage.refreshed
-            && stored.carriedForwardInstrumentCount == day.coverage.carriedForward
+            && stored.coverageState == coverage.state
+            && stored.refreshedInstrumentCount == coverage.refreshed
+            && stored.carriedForwardInstrumentCount == coverage.carriedForward
             && stored.pricedPositionCount == day.pricedPositionCount
             && stored.excludedCount == day.excludedQuantity
     }

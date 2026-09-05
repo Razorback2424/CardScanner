@@ -356,6 +356,29 @@ enum PortfolioReplaySnapshotBuilder {
         )) ?? PortfolioCoverageIndex(checkedByDay: [:])
     }
 
+    /// How far back coverage is recomputed rather than replayed from the
+    /// closes already published.
+    ///
+    /// `PriceCheckDay` gains one row per instrument per checked day and nothing
+    /// pruned it, so this read grew with calendar time whether or not the
+    /// collection did: measured at ~13.8 µs per row, a 1,500-instrument
+    /// collection one year old put roughly seven seconds inside every
+    /// recompute. 400 days is the longest range the picker offers (`1Y`) plus
+    /// enough margin that a device idle for a month still recomputes every day
+    /// its chart can show. `ALL` still renders: `PortfolioDailyClose` stores
+    /// each day's coverage counts and is never pruned.
+    static let coverageRetentionDays = 400
+
+    static func coverageWindowStart(
+        endingAt end: Date,
+        timeZone: TimeZone
+    ) -> Date {
+        PortfolioCalendar.day(
+            containing: end.addingTimeInterval(-Double(coverageRetentionDays) * 86_400),
+            in: timeZone
+        )
+    }
+
     private static func coverageIndexThrowing(
         context: ModelContext,
         from start: Date,
@@ -367,8 +390,13 @@ enum PortfolioReplaySnapshotBuilder {
         // The last day the replay can close is the one containing `end`, so the
         // index has to reach that day's start.
         let lastDay = PortfolioCalendar.day(containing: end, in: timeZone)
+        // Bounded below by the retention window as well as by the epoch, so the
+        // read stops growing once the window fills. A store younger than the
+        // window is unaffected: `start` still wins.
+        let retentionStart = coverageWindowStart(endingAt: end, timeZone: timeZone)
+        let windowStart = max(start, retentionStart)
         let descriptor = FetchDescriptor<PriceCheckDay>(
-            predicate: #Predicate { $0.portfolioDay >= start && $0.portfolioDay <= lastDay }
+            predicate: #Predicate { $0.portfolioDay >= windowStart && $0.portfolioDay <= lastDay }
         )
         let checks = try context.fetch(descriptor)
 
@@ -376,7 +404,13 @@ enum PortfolioReplaySnapshotBuilder {
         for check in checks {
             checkedByDay[check.portfolioDay, default: []].insert(check.instrumentKey)
         }
-        return PortfolioCoverageIndex(checkedByDay: checkedByDay)
+        return PortfolioCoverageIndex(
+            checkedByDay: checkedByDay,
+            // Only a window narrower than what was asked for constrains the
+            // answer. Reporting one otherwise would make the publisher defer to
+            // stored closes on days the index can perfectly well recompute.
+            windowStart: windowStart > start ? windowStart : nil
+        )
     }
 }
 
@@ -416,8 +450,25 @@ actor PortfolioComputationActor {
         // process-wide backfill lock. That lock must cover the fetch itself;
         // fetching here first would let a second context carry a stale empty
         // snapshot into the critical section.
-        let observations = PriceObservationLog(context: modelContext)
-            .reconcileSyncedRecordsAndReturnObservations()
+        let log = PriceObservationLog(context: modelContext)
+
+        // Retention runs here rather than at launch: this actor already owns a
+        // context off the main actor, and a recompute is exactly when the rows
+        // are about to be read. Steady state is one day's rows per day, and a
+        // failed save costs nothing — the rows are simply pruned on the next
+        // pass. Deliberately before the replay, so the read below is bounded by
+        // the same window the rows now are.
+        let timeZone = TimeZone(identifier: timeZoneIdentifier) ?? .current
+        let retentionStart = PortfolioReplaySnapshotBuilder.coverageWindowStart(
+            endingAt: through,
+            timeZone: timeZone
+        )
+        // Never prunes into history the books themselves have not reached.
+        if retentionStart > epoch, log.pruneCheckDays(before: retentionStart) > 0 {
+            try? modelContext.save()
+        }
+
+        let observations = log.reconcileSyncedRecordsAndReturnObservations()
         if observations.isEmpty {
             // An empty result may be a genuinely empty log or an unreadable
             // table. Let the builder perform its normal fetch so the latter is
@@ -427,7 +478,7 @@ actor PortfolioComputationActor {
                 context: modelContext,
                 epoch: epoch,
                 through: through,
-                timeZone: TimeZone(identifier: timeZoneIdentifier) ?? .current
+                timeZone: timeZone
             )
         }
 
@@ -435,7 +486,7 @@ actor PortfolioComputationActor {
             context: modelContext,
             epoch: epoch,
             through: through,
-            timeZone: TimeZone(identifier: timeZoneIdentifier) ?? .current,
+            timeZone: timeZone,
             existingObservations: observations
         )
     }

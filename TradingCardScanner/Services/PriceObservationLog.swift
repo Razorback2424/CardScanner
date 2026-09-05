@@ -325,6 +325,27 @@ struct PriceObservationLog {
         index?.insert(checkDay)
     }
 
+    /// Discards check days older than the coverage window.
+    ///
+    /// The counterpart to the window in `coverageIndexThrowing`: bounding the
+    /// read alone would leave the rows on disk forever, and this table is the
+    /// one that grows with calendar time no matter what the user does. What is
+    /// lost is only the ability to *recompute* coverage for those days —
+    /// `PortfolioDailyClose` records what it was, and is never pruned.
+    ///
+    /// Observations are deliberately not pruned here. They are the valuation
+    /// history the replay walks, and `PriceObservationRules.decide` already
+    /// keeps them from growing on unchanged prices.
+    @discardableResult
+    func pruneCheckDays(before day: Date) -> Int {
+        let descriptor = FetchDescriptor<PriceCheckDay>(
+            predicate: #Predicate { $0.portfolioDay < day }
+        )
+        guard let stale = try? context.fetch(descriptor), !stale.isEmpty else { return 0 }
+        for row in stale { context.delete(row) }
+        return stale.count
+    }
+
     // MARK: - Synced-record reconciliation
 
     /// Reconciles the current synced price-record state into this device's

@@ -10,9 +10,22 @@ import Foundation
 /// read a dictionary.
 struct PortfolioCoverageIndex: Sendable, Equatable {
     private let checkedByDay: [Date: Set<String>]
+    /// The first day this index can answer for. `PriceCheckDay` rows are
+    /// pruned behind a retention window, so an empty answer for a day before
+    /// this is absence of evidence, not evidence of absence — the publisher
+    /// reads those days' coverage from the close it already wrote instead.
+    /// `nil` means the index covers everything it was asked for.
+    let windowStart: Date?
 
-    init(checkedByDay: [Date: Set<String>] = [:]) {
+    init(checkedByDay: [Date: Set<String>] = [:], windowStart: Date? = nil) {
         self.checkedByDay = checkedByDay
+        self.windowStart = windowStart
+    }
+
+    /// Whether this index is entitled to answer for `day` at all.
+    func covers(_ day: Date) -> Bool {
+        guard let windowStart else { return true }
+        return day >= windowStart
     }
 
     func wasChecked(_ instrument: String, on day: Date) -> Bool {
