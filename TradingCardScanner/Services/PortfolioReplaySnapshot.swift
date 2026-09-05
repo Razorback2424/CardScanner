@@ -24,22 +24,29 @@ import SwiftData
 /// two.
 struct InstrumentValuationIndex: Sendable {
     private let byInstrument: [String: InventoryValuation]
+    private let explicitlyAuthoritativeKeys: Set<String>
 
-    init(byInstrument: [String: InventoryValuation]) {
+    init(
+        byInstrument: [String: InventoryValuation],
+        explicitlyAuthoritativeKeys: Set<String> = []
+    ) {
         self.byInstrument = byInstrument
+        self.explicitlyAuthoritativeKeys = explicitlyAuthoritativeKeys
     }
 
     func valuation(for instrument: String) -> InventoryValuation {
         byInstrument[instrument] ?? .unpriced
     }
 
-    /// The key a card is valued through: the first of its lookup keys that
-    /// actually holds a value, matching what `PriceStore` prefers so the ledger
-    /// and the grid never disagree about which number is in use.
+    /// The key a card is valued through. Explicit invalidation is authoritative
+    /// even when a legacy alias still has a value, matching scalar ledger reads
+    /// and `PriceStore`'s canonical precedence.
     func priceStorageKey(for card: CollectedCard) -> String {
         let keys = card.priceLookupKeys
-        for key in keys where byInstrument[key]?.unitPrice != nil {
-            return key
+        for key in keys {
+            if explicitlyAuthoritativeKeys.contains(key) || byInstrument[key]?.unitPrice != nil {
+                return key
+            }
         }
         return keys.first ?? card.priceKey
     }
@@ -294,7 +301,17 @@ enum PortfolioReplaySnapshotBuilder {
             )
         }
 
-        return InstrumentValuationIndex(byInstrument: index)
+        let explicitlyAuthoritativeKeys = Set(
+            newest
+                .filter { $0.value.kind == .explicitInvalidation }
+                .map(\.key)
+        ).union(
+            records.filter(\.isInvalidated).map(\.key)
+        )
+        return InstrumentValuationIndex(
+            byInstrument: index,
+            explicitlyAuthoritativeKeys: explicitlyAuthoritativeKeys
+        )
     }
 
     /// One query for the whole range, reduced in memory.

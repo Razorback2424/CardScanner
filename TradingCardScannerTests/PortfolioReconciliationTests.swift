@@ -1679,6 +1679,21 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertNil(visible?.unitMarketPriceUSD)
         XCTAssertNil(visible?.display.amount)
         XCTAssertEqual(canonical.invalidatedAt, invalidatedAt)
+
+        XCTAssertEqual(
+            InventoryLedger(context: context).priceStorageKey(for: card),
+            canonical.key,
+            "Scalar ledger attribution must retain the invalidated canonical key."
+        )
+        let bulk = PortfolioReplaySnapshotBuilder.valuationIndex(
+            observations: try context.fetch(FetchDescriptor<PriceObservation>()),
+            records: try context.fetch(FetchDescriptor<PriceRecord>())
+        )
+        XCTAssertEqual(
+            bulk.priceStorageKey(for: card),
+            canonical.key,
+            "Bulk attribution must retain the invalidated canonical key."
+        )
     }
 
     func testInvalidationStillWinsOverNewerUnusableObservationInScalarAndBulkReads() throws {

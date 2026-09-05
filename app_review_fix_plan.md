@@ -173,6 +173,16 @@ is unavailable because CoreSimulatorService has no discoverable runtime.
 Status: implemented in `1c7fa64`, generic build-for-testing passes. No exchange-rate behavior
 was introduced.
 
+### Slice 4 — canonical invalidation precedence
+
+- [x] Make scalar ledger key selection preserve an explicitly invalidated
+  canonical key.
+- [x] Carry the same authoritative-key marker into bulk portfolio replay.
+- [x] Verify collection read, scalar ledger, and bulk valuation precedence
+  against a priced legacy alias.
+
+Status: implemented, generic build-for-testing passes.
+
 ## Audit pass 1 remaining remediation — L1 through L3
 
 The remaining findings from `audit_pass1_remaining_plan.md` are implemented on
