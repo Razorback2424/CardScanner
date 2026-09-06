@@ -601,20 +601,18 @@ struct SealedProductTile: View {
 // MARK: - Product detail
 
 struct SealedProductDetailView: View {
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let game: CardGame
     let product: SealedProductSummary
 
     @Environment(\.modelContext) private var modelContext
-    @Query private var owned: [CollectedCard]
     @State private var pendingMutation: CollectionMutation?
     @State private var undoTask: Task<Void, Never>?
     @State private var addFailure: String?
 
     private var ownedQuantity: Int {
-        owned
-            .filter { $0.itemKind == .sealedProduct && $0.justTCGCardID == product.id }
-            .filter { $0.justTCGVariantID == product.variantID }
-            .reduce(0) { $0 + $1.quantity }
+        (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: []))
+            .sealedQuantity(productID: product.id, variantID: product.variantID)
     }
 
     var body: some View {

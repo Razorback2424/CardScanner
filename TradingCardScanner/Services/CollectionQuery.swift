@@ -5,7 +5,7 @@ import Foundation
 /// Filtering and sorting operate on these, never on the network. Changing a chip
 /// or a sort order is a local computation over values that are already loaded, so
 /// it stays instant at thousands of cards.
-struct CollectionRow: Identifiable, Equatable {
+struct CollectionRow: Identifiable, Equatable, Sendable {
     let id: String
     let game: CardGame
     let name: String
@@ -17,7 +17,7 @@ struct CollectionRow: Identifiable, Equatable {
     let variantLabel: String?
     let quantity: Int
     let dateAdded: Date
-    let price: PriceDisplay
+    var price: PriceDisplay
     /// The exact instrument used for this logical position's price record and
     /// history. Passing it through the projection keeps detail views from
     /// resolving a key with fetch-all work during rendering.
@@ -41,6 +41,11 @@ struct CollectionRow: Identifiable, Equatable {
     /// so half grades and non-numeric grades retain their exact identity.
     var gradingCompany: GradingCompany? = nil
     var gradeValue: String? = nil
+    /// Tile fields are part of the value snapshot so a price-only update never
+    /// faults a live `CollectedCard` for every visible row.
+    var lowImageURL: URL? = nil
+    var highImageURL: URL? = nil
+    var userArtworkFilename: String? = nil
 
     var variant: PhysicalVariant? {
         guard let variantID else { return nil }
@@ -227,7 +232,7 @@ struct CollectionFilters: Equatable {
     static let none = CollectionFilters()
 }
 
-enum CollectionSort: String, CaseIterable, Identifiable {
+enum CollectionSort: String, CaseIterable, Identifiable, Equatable {
     case cardNumber
     case setAndCardNumber
     case priceHighToLow

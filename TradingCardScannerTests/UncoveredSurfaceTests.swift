@@ -1210,3 +1210,194 @@ private actor EmptyUncoveredSealedBrowseProvider: SealedBrowseProviding {
 
     func sealedSets(game: CardGame) async throws -> [SealedSetSummary] { [] }
 }
+
+@MainActor
+final class PriceRefreshSnapshotSliceTests: XCTestCase {
+    func testPriceDeltaPublishesOnlyWhenTheValueChanges() {
+        let store = PriceSnapshotStore()
+        let key = "pokemon:test-set-001:normal"
+        let display = PriceDisplay(
+            amount: 12.34,
+            currencyCode: "USD",
+            source: .tcgplayer,
+            sourceUpdatedAt: Date(timeIntervalSince1970: 1_700_000_000),
+            fetchedAt: Date(timeIntervalSince1970: 1_700_000_100),
+            lastCheckedAt: Date(timeIntervalSince1970: 1_700_000_100)
+        )
+
+        store.apply([PriceDelta(key: key, display: display)])
+        let firstRevision = store.revision
+        XCTAssertEqual(store.display(for: key), display)
+
+        store.apply([PriceDelta(key: key, display: display)])
+        XCTAssertEqual(store.revision, firstRevision)
+
+        store.apply([PriceDelta(key: key, display: PriceDisplay(amount: 15))])
+        XCTAssertEqual(store.revision, firstRevision + 1)
+    }
+
+    func testPriceDeltaClearsTheProjectionUnpricedDiagnosisForItsInstrument() {
+        let store = PriceSnapshotStore()
+        let collectionKey = "collection-card"
+        let priceKey = "pokemon:test-set-001:normal"
+        store.replace(
+            with: PriceSnapshot(
+                prices: [priceKey: .unknown],
+                diagnosticsByCollectionKey: [
+                    collectionKey: PriceSnapshotDiagnostics(
+                        unpricedReason: .noSupportedProvider,
+                        artworkReason: nil
+                    )
+                ],
+                priceStorageKeyByCollectionKey: [collectionKey: priceKey]
+            )
+        )
+
+        store.apply([
+            PriceDelta(
+                key: priceKey,
+                display: PriceDisplay(amount: 12.34, currencyCode: "USD")
+            )
+        ])
+
+        XCTAssertNil(store.diagnosticsByCollectionKey[collectionKey]?.unpricedReason)
+        XCTAssertEqual(store.display(for: priceKey)?.amount, 12.34)
+    }
+
+    func testCollectionProjectionDistinguishesLoadedEmptyCollection() async throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: UncoveredSurfaceFixtures.fullSchema()
+        )
+        let store = CollectionProjectionStore()
+
+        XCTAssertFalse(store.isLoaded)
+        await store.rebuild(container: container)
+
+        XCTAssertTrue(store.isLoaded)
+        XCTAssertEqual(store.snapshot?.rows, [])
+    }
+
+    func testMagicBatchMissingIDsAreFailedDataMisses() {
+        let classifications = PriceRefreshController.classifyMagicBatchResponse(
+            requestedIDs: ["present", "missing"],
+            returnedIDs: ["present"]
+        )
+        XCTAssertEqual(classifications, [.matched, .failed])
+    }
+
+    func testStoreRevisionActorSeesMutationsWrittenByASecondContext() async throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: UncoveredSurfaceFixtures.fullSchema()
+        )
+        let storeA = ModelContext(container)
+        let storeB = ModelContext(container)
+        let actor = StoreRevisionModelActor(modelContainer: container)
+        let revisions = StoreRevisionStore()
+        let before = await actor.fingerprint()
+        revisions.publish(before)
+        let baselineRevision = revisions.revision
+
+        let card = UncoveredSurfaceFixtures.collectedCard(
+            collectionKey: "revision-card",
+            providerID: "test-set-001"
+        )
+        let price = PriceRecord(
+            key: card.priceKey,
+            game: .pokemon,
+            printingID: card.providerID,
+            variantID: card.variantID
+        )
+        let activity = CollectionActivity(card: card, source: .scan)
+        let event = InventoryEvent(
+            operationID: UUID(),
+            leg: nil,
+            kind: .acquire,
+            source: .scan,
+            collectionKey: card.collectionKey,
+            priceStorageKey: card.priceKey,
+            deltaQuantity: 1,
+            occurredAt: .now,
+            valuation: .unpriced
+        )
+        storeB.insert(card)
+        storeB.insert(price)
+        storeB.insert(activity)
+        storeB.insert(event)
+        try storeB.save()
+
+        let after = await actor.fingerprint()
+        XCTAssertNotEqual(before.cards, after.cards)
+        XCTAssertNotEqual(before.priceValues, after.priceValues)
+        XCTAssertNotEqual(before.collectionActivities, after.collectionActivities)
+        XCTAssertNotEqual(before.inventoryEvents, after.inventoryEvents)
+        revisions.publish(after)
+        XCTAssertEqual(revisions.revision, baselineRevision + 1)
+        _ = storeA
+    }
+
+    func testExternalPriceFingerprintIsNotConsumedAsControllerOwned() {
+        let revisions = StoreRevisionStore()
+        revisions.expectPriceValuesFingerprint(101)
+
+        XCTAssertFalse(revisions.consumeExpectedPriceValues(202))
+        XCTAssertFalse(revisions.consumeExpectedPriceValues(101))
+    }
+
+    func testCancelledPassSettlesExactlyOneOwedReplay() async throws {
+        try await assertTerminalPriceRefreshReplay()
+    }
+
+    func testFailedPassSettlesExactlyOneOwedReplay() async throws {
+        try await assertTerminalPriceRefreshReplay()
+    }
+
+    private func assertTerminalPriceRefreshReplay() async throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: UncoveredSurfaceFixtures.fullSchema()
+        )
+        let context = ModelContext(container)
+        let counter = PriceRefreshTestCounter()
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let provider: PortfolioComputationProvider = { _, _, through, _ in
+            await counter.increment()
+            let replay = PortfolioReplayEngine.replay(
+                PortfolioReplayInput(
+                    events: [],
+                    observations: [],
+                    epoch: through,
+                    through: through,
+                    timeZoneIdentifier: "UTC"
+                )
+            )
+            return PortfolioReplaySnapshotBuilder.Computation(
+                valuation: PortfolioEngine.CurrentValuation(),
+                defects: [],
+                isAuthoritative: true,
+                replay: replay,
+                coverage: PortfolioCoverageIndex(),
+                holdings: []
+            )
+        }
+        let portfolio = PortfolioEngine(computationProvider: provider)
+
+        portfolio.beginPriceRefresh()
+        portfolio.recompute(context: context, now: now)
+        let countBeforeTerminal = await counter.value
+        XCTAssertEqual(countBeforeTerminal, 0)
+
+        portfolio.endPriceRefresh(context: context)
+        for _ in 0..<100 {
+            if await counter.value != 0 { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let countAfterTerminal = await counter.value
+        XCTAssertEqual(countAfterTerminal, 1)
+    }
+}
+
+private actor PriceRefreshTestCounter {
+    private var count = 0
+
+    func increment() { count += 1 }
+    var value: Int { count }
+}

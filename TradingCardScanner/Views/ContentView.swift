@@ -14,9 +14,12 @@ struct ContentView: View {
 
     @State private var selectedTab: Tab
     @StateObject private var portfolio = PortfolioEngine()
+    @StateObject private var priceSnapshot = PriceSnapshotStore.shared
+    @StateObject private var projectionStore = CollectionProjectionStore()
+    @StateObject private var revisionStore = StoreRevisionStore()
     /// The root passes this app-scoped service to the small views that observe
     /// the fields they render. It must remain a plain reference here: refresh
-    /// progress publishes every 250 ms, and observing it at the root would
+    /// progress publishes on a one-second cadence, and observing it at the root would
     /// rebuild the whole tab tree and re-run CollectionView's projection token.
     private let refresh = PriceRefreshController.shared
     @StateObject private var history = PortfolioHistoryStore()
@@ -101,6 +104,9 @@ struct ContentView: View {
                 }
                 .tag(Tab.centering)
         }
+        .environmentObject(priceSnapshot)
+        .environmentObject(projectionStore)
+        .environmentObject(revisionStore)
 #if DEBUG
         .overlay {
             if debugRoute == "MagicTreatmentSlice4" {
@@ -148,8 +154,15 @@ struct ContentView: View {
             hasStartedPortfolio = true
         }
 #endif
+        .task {
+            refresh.registerPortfolio(portfolio)
+            refresh.registerPriceSnapshotStore(priceSnapshot)
+            refresh.registerRevisionStore(revisionStore)
+            await priceSnapshot.bootstrap(container: modelContext.container)
+        }
         .task(id: hasStartedPortfolio) {
             guard hasStartedPortfolio else { return }
+            await projectionStore.rebuild(container: modelContext.container)
             _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(in: modelContext)
             guard !Task.isCancelled else { return }
             // Network enrichment can add treatments or rekey rows after the
@@ -165,10 +178,19 @@ struct ContentView: View {
         // all a running refresh, which publishes progress while it runs. Down
         // there it observes only what it actually reacts to.
         .background(
-            PortfolioInputObserver(
+            StoreRevisionMonitor(
+                portfolio: portfolio,
+                projectionStore: projectionStore,
+                priceSnapshot: priceSnapshot,
+                revisionStore: revisionStore,
+                refresh: refresh,
+                hasStartedPortfolio: hasStartedPortfolio
+            )
+        )
+        .background(
+            StoreRevisionHistoryMonitor(
                 portfolio: portfolio,
                 history: history,
-                refresh: refresh,
                 hasStartedPortfolio: hasStartedPortfolio
             )
         )
@@ -265,9 +287,7 @@ struct ContentView: View {
             )
             return (await refresh.refresh(request, container: modelContext.container)).didRun
         }
-        if didRefresh {
-            portfolio.recompute(context: modelContext)
-        }
+        _ = didRefresh
         dismissRefreshStatusLater()
     }
 
@@ -332,192 +352,5 @@ struct ContentView: View {
 #endif
 }
 
-/// Watches the collection's inputs and drives the recomputes that depend on
-/// them.
-///
-/// Its own view precisely so that deciding "did anything change?" is not paid
-/// for on every unrelated redraw. Answering that means walking every row of
-/// four tables, and the parent can re-render whenever a refresh publishes its
-/// progress. The controller is therefore held as a plain reference rather than
-/// an `ObservedObject`: this view calls it, but must never re-render because of
-/// it.
-private struct PortfolioInputObserver: View {
-    @Environment(\.modelContext) private var modelContext
-
-    @Query(sort: \CollectedCard.dateAdded, order: .reverse)
-    private var cards: [CollectedCard]
-    @Query private var inventoryEvents: [InventoryEvent]
-    @Query private var collectionActivities: [CollectionActivity]
-    @Query private var priceRecords: [PriceRecord]
-
-    @ObservedObject var portfolio: PortfolioEngine
-    @ObservedObject var history: PortfolioHistoryStore
-    /// Deliberately unobserved. See the type's note.
-    let refresh: PriceRefreshController
-    let hasStartedPortfolio: Bool
-
-    @AppStorage("usesPriceFallback") private var usesPriceFallback = false
-    @State private var hasCheckedForStalePrices = false
-    @State private var hasEstablishedMagicTreatmentBaseline = false
-
-    var body: some View {
-        Color.clear
-            // The ledger is synced separately from collection rows, so both
-            // tables are part of the trigger; CloudKit can deliver either first.
-            .task(id: portfolioInputTaskID) {
-                guard hasStartedPortfolio else { return }
-                // A refresh pass or an arriving CloudKit batch changes these
-                // tables many times in quick succession, and each change used to
-                // buy its own full recompute. Settling first collapses the burst
-                // into one; `task(id:)` cancels the sleep when the next change
-                // supersedes it. This paces the recompute only — the identity
-                // above is still derived from every payload field, because that
-                // is what notices a late event or a repaired row.
-                try? await Task.sleep(for: .milliseconds(300))
-                guard !Task.isCancelled else { return }
-                // CloudKit can deliver a canonical treatment row without
-                // crossing any local CollectionStore save path. Clear the
-                // settled session memo before resolving identities again so a
-                // cached negative lookup cannot split the next scan.
-                CollectionStore(context: modelContext).invalidateIdentityAliasCache()
-                // Finish the baseline replay before the automatic refresh can
-                // write new price evidence. Otherwise the replay's `through`
-                // time can precede the current valuation's price rows and the
-                // first pass reports a false unexplained change.
-                await portfolio.recomputeAndWait(context: modelContext)
-                await refreshStalePricesIfNeeded()
-            }
-            .task(id: portfolioHistoryTaskID) {
-                guard hasStartedPortfolio else { return }
-                history.recompute(
-                    context: modelContext,
-                    summary: portfolio.summary,
-                    factors: portfolio.performanceFactors,
-                    contributions: portfolio.contributionIndex
-                )
-            }
-            // A collection row can arrive after the one-time launch migration,
-            // including through CloudKit. Establish the launch snapshot first;
-            // later Magic-row changes invalidate the memo and rerun enrichment.
-            .task(id: magicTreatmentInputTaskID) {
-                guard hasStartedPortfolio else { return }
-                guard hasEstablishedMagicTreatmentBaseline else {
-                    hasEstablishedMagicTreatmentBaseline = true
-                    return
-                }
-                MagicTreatmentMigrationCoordinator.shared.invalidateCompletedReports()
-                _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(in: modelContext)
-                guard !Task.isCancelled else { return }
-                portfolio.recompute(context: modelContext)
-            }
-    }
-
-    private var portfolioInputTaskID: Int {
-        var hasher = Hasher()
-        hasher.combine(hasStartedPortfolio)
-
-        for card in cards {
-            hasher.combine(card.collectionKey)
-            hasher.combine(card.quantity)
-            hasher.combine(card.priceKey)
-        }
-
-        // Inventory events are synced independently from CollectedCard rows.
-        // Include payload fields, not just the count, so a late-arriving event
-        // or a repaired conflicting row causes a fresh reconciliation pass.
-        for event in inventoryEvents {
-            hasher.combine(event.eventID)
-            hasher.combine(event.idempotencyKey)
-            hasher.combine(event.kindRaw)
-            hasher.combine(event.sourceRaw)
-            hasher.combine(event.collectionKey)
-            hasher.combine(event.priceStorageKey)
-            hasher.combine(event.deltaQuantity)
-            hasher.combine(event.occurredAt)
-            hasher.combine(event.unitPriceUSDTenThousandths)
-            hasher.combine(event.reversesEventID)
-        }
-
-        for activity in collectionActivities {
-            hasher.combine(activity.id)
-            hasher.combine(activity.kindRaw)
-            hasher.combine(activity.collectionKey)
-            hasher.combine(activity.deltaQuantity)
-            hasher.combine(activity.quantity)
-            hasher.combine(activity.resolvedQuantity)
-            hasher.combine(activity.ledgerOperationIDs)
-        }
-
-        // Price records can arrive independently through CloudKit. Include
-        // their value and provider freshness fields so the portfolio is
-        // recomputed when another device changes the evidence it is valued
-        // from. Deliberately omit local fetch/check timestamps: refresh paths
-        // explicitly recompute after completion, while including those fields
-        // would replay the entire portfolio on every checkpoint save without
-        // changing its value or market inputs.
-        for record in priceRecords {
-            hasher.combine(record.key)
-            hasher.combine(record.effectiveUnitMarketPriceUSD)
-            hasher.combine(record.currencyCode)
-            hasher.combine(record.sourceRaw)
-            hasher.combine(record.sourceUpdatedAt)
-            hasher.combine(record.invalidatedAt)
-        }
-
-        hasher.combine(cards.count)
-        hasher.combine(inventoryEvents.count)
-        hasher.combine(collectionActivities.count)
-        hasher.combine(priceRecords.count)
-        return hasher.finalize()
-    }
-
-    private var portfolioHistoryTaskID: String {
-        "\(portfolio.inputRevision)-\(history.mode.rawValue)-\(history.range.rawValue)"
-    }
-
-    private var magicTreatmentInputTaskID: Int {
-        var hasher = Hasher()
-        hasher.combine(hasStartedPortfolio)
-        let magicCards = cards.filter { $0.cardGame == .magic }
-        hasher.combine(magicCards.count)
-        for card in magicCards {
-            hasher.combine(card.collectionKey)
-            hasher.combine(card.quantity)
-            hasher.combine(card.variantID)
-            hasher.combine(card.magicTreatmentMigrationVersion)
-            hasher.combine(card.magicTreatmentIDsRaw)
-        }
-        return hasher.finalize()
-    }
-
-    /// The controller owns the pass this starts, so a saved batch invalidating
-    /// the id above cancels this caller without tearing the work down partway
-    /// through and leaving the collection unrefreshed.
-    @MainActor
-    private func refreshStalePricesIfNeeded() async {
-        guard !hasCheckedForStalePrices, !cards.isEmpty else { return }
-        hasCheckedForStalePrices = true
-        let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
-            in: modelContext
-        ) {
-            let request = PriceRefreshRequest(
-                usesPriceFallback: usesPriceFallback,
-                includeImported: true,
-                forceUnsupportedRetry: false,
-                sortOldestFirst: false,
-                maximumTargetCount: nil,
-                markRecentlyCheckedIfEmpty: false
-            )
-            let result = await refresh.refresh(request, container: modelContext.container)
-            if result.targetBuildFailed {
-                hasCheckedForStalePrices = false
-            }
-            return result.didRun
-        }
-        guard didRefresh else { return }
-        // The automatic stale check is silent when it works. When it does not,
-        // the failure is still the app's to surface.
-        refresh.dismissTransientSuccessSummary()
-        portfolio.recompute(context: modelContext)
-    }
-}
+/// Legacy input-observer implementation removed in favour of the single
+/// store-driven `StoreRevisionMonitor` in `Services/StoreRevisionMonitor.swift`.

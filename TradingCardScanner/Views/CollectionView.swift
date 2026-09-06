@@ -17,9 +17,9 @@ enum CollectionProjectionToken {
         hasher.combine(cards.count)
         for card in cards {
             // Only fields that change the logical projection or the value row
-            // belong here. Artwork and diagnostic-only metadata remain on the
-            // live model passed to each tile, so changing them must not rebuild
-            // every CollectionRow.
+            // belong here. The production grid uses the actor-owned value
+            // snapshot below; this helper remains for focused token tests and
+            // compatibility with the earlier projection contract.
             hasher.combine(card.collectionKey)
             hasher.combine(card.dateAdded)
             hasher.combine(card.providerID)
@@ -83,12 +83,8 @@ enum CollectionProjectionToken {
 /// accounting and price refresh ownership remain app-scoped in `ContentView`.
 struct CollectionView: View {
     @Environment(\.modelContext) private var modelContext
-
-    @Query(sort: \CollectedCard.dateAdded, order: .reverse)
-    private var cards: [CollectedCard]
-
-    @Query private var priceRecords: [PriceRecord]
-    @Query private var artworkOverrides: [LocalArtworkOverride]
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @EnvironmentObject private var priceSnapshot: PriceSnapshotStore
     let catalog: any BrowseCatalogProviding
     let history: PortfolioHistoryStore
     /// Deliberately unobserved, like Portfolio's. Only `PriceRefreshActivityRow`
@@ -179,6 +175,7 @@ struct CollectionView: View {
     }
 
     var body: some View {
+        PerformanceSignpost.signposter.emitEvent("CollectionView.body")
         // Built once per render and threaded through so filtering, sorting, and
         // filter-option counts always describe the same logical collection.
         let snapshot = makeSnapshot()
@@ -270,7 +267,9 @@ struct CollectionView: View {
     @ViewBuilder
     private func collectionRoot(_ snapshot: Snapshot) -> some View {
         Group {
-            if cards.isEmpty {
+            if !projectionStore.isLoaded {
+                loadingCollection
+            } else if snapshot.all.isEmpty {
                 emptyCollection
             } else {
                 content(snapshot)
@@ -315,6 +314,11 @@ struct CollectionView: View {
         }
     }
 
+    private var loadingCollection: some View {
+        ProgressView("Loading collection…")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
     /// Replaces whatever the detail column is showing. Replacing rather than
     /// appending keeps the column one level deep: picking a second card from the
     /// grid should show that card, not stack it behind the first.
@@ -331,15 +335,12 @@ struct CollectionView: View {
             CollectionActivityLogView()
         case let .card(id):
             if let entry = snapshot.entries.first(where: { $0.id == id }) {
-                CollectionCardDetailView(
-                    card: entry.card,
-                    price: entry.row.price,
-                    history: history,
+                CollectionCardDestination(
+                    row: entry.row,
                     unpricedReason: entry.unpricedReason,
                     artworkReason: entry.artworkReason,
-                    logicalQuantity: entry.row.quantity,
                     isLogicalConflict: entry.isLogicalConflict,
-                    instrumentKey: entry.row.priceStorageKey,
+                    history: history,
                     onRemoved: presentUndo(for:)
                 )
             } else {
@@ -354,12 +355,7 @@ struct CollectionView: View {
             }
         case let .movement(id):
             if let entry = snapshot.entries.first(where: { $0.id == id }) {
-                MovementDetailsView(
-                    card: entry.card,
-                    price: entry.row.price,
-                    history: history,
-                    quantity: entry.row.quantity
-                )
+                CollectionMovementDestination(row: entry.row, history: history)
             } else {
                 ContentUnavailableView(
                     "Card not shown",
@@ -379,10 +375,6 @@ struct CollectionView: View {
     }
 
     private func content(_ snapshot: Snapshot) -> some View {
-        let artworkByKey = Dictionary(
-            artworkOverrides.map { ($0.collectionKey, $0.filename) },
-            uniquingKeysWith: { first, _ in first }
-        )
         return ScrollView {
             LazyVStack(spacing: 12) {
                 collectionSummary(snapshot)
@@ -401,11 +393,7 @@ struct CollectionView: View {
                                 select(.card(entry.id))
                             } label: {
                                 CollectionCardTile(
-                                    card: entry.card,
-                                    userArtworkFilename: artworkByKey[entry.card.collectionKey]
-                                        ?? entry.card.userArtworkFilename,
-                                    quantity: entry.row.quantity,
-                                    price: entry.row.price,
+                                    row: entry.row,
                                     unpricedReason: entry.unpricedReason,
                                     artworkReason: entry.artworkReason
                                 )
@@ -587,7 +575,6 @@ struct CollectionView: View {
     struct Snapshot {
         struct Entry: Identifiable {
             let row: CollectionRow
-            let card: CollectedCard
             let unpricedReason: PricingDiagnosticReason?
             let artworkReason: ArtworkDiagnosticReason?
             let isLogicalConflict: Bool
@@ -603,140 +590,134 @@ struct CollectionView: View {
     /// intentionally absent so typing remains a local operation over `all`.
     private struct CachedProjection {
         let all: [CollectionRow]
-        let cardsByKey: [String: CollectedCard]
-        let priceRecordsByCollectionKey: [String: PriceRecord]
-        let localArtworkKeys: Set<String>
+        let diagnosticsByCollectionKey: [String: CollectionRowDiagnostics]
         let physicalRowCountsByKey: [String: Int]
     }
 
+    private struct QueryCacheKey: Equatable {
+        let projectionRevision: UInt
+        let priceRevision: UInt
+        let searchQuery: String
+        let filters: CollectionFilters
+        let sort: CollectionSort
+    }
+
+    private struct PricedRowsCacheKey: Equatable {
+        let projectionRevision: UInt
+        let priceRevision: UInt
+    }
+
     private final class ProjectionCache {
-        private var token: Int?
+        private var projectionRevision: UInt?
         private var cachedValue: CachedProjection?
+        private var pricedRowsKey: PricedRowsCacheKey?
+        private var pricedRowsValue: [CollectionRow] = []
+        private var visibleKey: QueryCacheKey?
+        private var visibleValue: [CollectionRow] = []
 
         func value(
-            for token: Int,
+            for revision: UInt,
             build: () -> CachedProjection
         ) -> CachedProjection {
-            if self.token == token, let cachedValue { return cachedValue }
+            if projectionRevision == revision, let cachedValue { return cachedValue }
             let value = build()
-            self.token = token
+            projectionRevision = revision
             self.cachedValue = value
+            pricedRowsKey = nil
+            pricedRowsValue = []
+            visibleKey = nil
+            visibleValue = []
+            return value
+        }
+
+        func pricedRows(
+            for key: PricedRowsCacheKey,
+            build: () -> [CollectionRow]
+        ) -> [CollectionRow] {
+            if pricedRowsKey == key { return pricedRowsValue }
+            let value = build()
+            pricedRowsKey = key
+            pricedRowsValue = value
+            visibleKey = nil
+            visibleValue = []
+            return value
+        }
+
+        func visible(
+            for key: QueryCacheKey,
+            build: () -> [CollectionRow]
+        ) -> [CollectionRow] {
+            if visibleKey == key { return visibleValue }
+            let value = build()
+            visibleKey = key
+            visibleValue = value
             return value
         }
     }
 
     @MainActor
     private func makeSnapshot() -> Snapshot {
-        let cached = projectionCache.value(for: makeProjectionToken()) {
-            makeCachedProjection()
+        guard let projected = projectionStore.snapshot else {
+            return Snapshot(all: [], entries: [])
         }
 
-        let visible = CollectionQuery.apply(
-            nameQuery: searchQuery,
-            filters: filters,
-            sort: sort,
-            to: cached.all
-        )
-
-        return Snapshot(
-            all: cached.all,
-            entries: visible.compactMap { row -> Snapshot.Entry? in
-                guard let card = cached.cardsByKey[row.id] else { return nil }
-                let record = cached.priceRecordsByCollectionKey[row.id]
-                return Snapshot.Entry(
-                    row: row,
-                    card: card,
-                    unpricedReason: row.unitPrice == nil
-                        ? PricingDiagnostics.unpricedReason(for: card, record: record)
-                        : nil,
-                    artworkReason: ArtworkDiagnostics.reason(
-                        for: card,
-                        hasLocalOverride: cached.localArtworkKeys.contains(card.collectionKey)
-                    ),
-                    isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
-                )
-            }
-        )
-    }
-
-    /// Hashes persisted inputs rather than deriving the projection just to ask
-    /// whether the projection changed. SwiftData has no cheap query revision;
-    /// this fingerprint is still much less work than faulting every property,
-    /// allocating lookup keys, grouping rows, and rebuilding every tile row.
-    @MainActor
-    private func makeProjectionToken() -> Int {
-        CollectionProjectionToken.make(
-            cards: cards,
-            priceRecords: priceRecords,
-            artworkOverrides: artworkOverrides
-        )
-    }
-
-    @MainActor
-    private func makeCachedProjection() -> CachedProjection {
-        // Counted, not timed: R3 is decided by how many times a refresh's
-        // checkpoint saves force this rebuild, not by what one rebuild costs.
-        PerformanceSignpost.signposter.emitEvent("makeCachedProjection")
-        let recordsByKey = Dictionary(priceRecords.map { ($0.key, $0) }, uniquingKeysWith: { first, _ in first })
-        let localArtworkKeys = Set(artworkOverrides.map(\.collectionKey))
-
-        // One collection key can legitimately have more than one row, so what
-        // is owned comes from the shared projection rather than from whichever
-        // row this fetch happened to return first. See `LogicalCollection`.
-        //
-        // The closure overload, not the `ledger:` one. That form resolves each
-        // position's instrument by asking the ledger, and the ledger answers
-        // with two predicate fetches per candidate key — so projecting this way
-        // cost several thousand fetches per render on a large collection, on
-        // the main thread, for a field this view never reads. `body` re-runs on
-        // every keystroke in the search field, which is what made it bite.
-        //
-        // Answered from the price records already in hand instead. This is the
-        // same rule `PriceStore.record(for:in:)` uses to pick the record whose
-        // price is displayed below, so the instrument a position is attributed
-        // to and the number shown for it now come from one decision.
-        let projection = LogicalCollection.project(cards: cards) { card in
-            PriceStore.priceStorageKey(for: card, in: recordsByKey)
-        }
-        let cardsByKey = projection.byKey.mapValues(\.representative)
-        let priceRecordsByCollectionKey: [String: PriceRecord] = Dictionary(
-            uniqueKeysWithValues: projection.positions.compactMap { position in
-                PriceStore.record(for: position.representative, in: recordsByKey)
-                    .map { (position.collectionKey, $0) }
-            }
-        )
-
-        let all = projection.positions.map { position in
-            let card = position.representative
-            return CollectionRow(
-                id: card.collectionKey,
-                game: card.cardGame,
-                name: card.name,
-                setCode: card.setCode,
-                setName: card.setName,
-                setReleaseOrder: card.setReleaseOrder,
-                cardNumber: card.cardNumber,
-                variantID: card.variantID,
-                variantLabel: card.variantLabel,
-                quantity: position.quantity,
-                dateAdded: position.dateAdded,
-                price: priceRecordsByCollectionKey[position.collectionKey]?.display ?? .unknown,
-                priceStorageKey: position.priceStorageKey,
-                magicTreatmentIDsRaw: card.magicTreatmentIDsRaw,
-                magicTreatmentQualifiers: card.magicTreatmentQualifiers,
-                itemKind: card.itemKind,
-                itemKindLabel: card.itemKindLabel,
-                gradingCompany: card.gradingCompany,
-                gradeValue: card.gradeRaw
+        let cached = projectionCache.value(for: projectionStore.revision) {
+            CachedProjection(
+                all: projected.rows,
+                diagnosticsByCollectionKey: projected.diagnosticsByCollectionKey,
+                physicalRowCountsByKey: projected.physicalRowCountsByKey
             )
         }
 
-        return CachedProjection(
-            all: all,
-            cardsByKey: cardsByKey,
-            priceRecordsByCollectionKey: priceRecordsByCollectionKey,
-            localArtworkKeys: localArtworkKeys,
-            physicalRowCountsByKey: projection.byKey.mapValues(\.physicalRowCount)
+        let pricedRows = projectionCache.pricedRows(
+            for: PricedRowsCacheKey(
+                projectionRevision: projectionStore.revision,
+                priceRevision: priceSnapshot.revision
+            )
+        ) {
+            cached.all.map { row in
+                var row = row
+                if let price = priceSnapshot.display(for: row.priceStorageKey) {
+                    row.price = price
+                }
+                return row
+            }
+        }
+        let queryKey = QueryCacheKey(
+            projectionRevision: projectionStore.revision,
+            priceRevision: priceSnapshot.revision,
+            searchQuery: searchQuery,
+            filters: filters,
+            sort: sort
+        )
+        let visible = projectionCache.visible(for: queryKey) {
+            CollectionQuery.apply(
+                nameQuery: searchQuery,
+                filters: filters,
+                sort: sort,
+                to: pricedRows
+            )
+        }
+
+        return Snapshot(
+            all: pricedRows,
+            entries: visible.map { row in
+                let liveDiagnostics = priceSnapshot.diagnosticsByCollectionKey[row.id]
+                let projectedDiagnostics = cached.diagnosticsByCollectionKey[row.id]
+                return Snapshot.Entry(
+                    row: row,
+                    // A diagnostic is about the current value, not a permanent
+                    // property of the row. The delta channel clears the live
+                    // reason immediately; this guard also prevents an older
+                    // projection from rendering a warning beside a price.
+                    unpricedReason: row.price.amount == nil
+                        ? (liveDiagnostics?.unpricedReason ?? projectedDiagnostics?.unpricedReason)
+                        : nil,
+                    artworkReason: liveDiagnostics?.artworkReason
+                        ?? projectedDiagnostics?.artworkReason,
+                    isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
+                )
+            }
         )
     }
 
@@ -874,15 +855,100 @@ struct CollectionView: View {
 
 }
 
+private struct CollectionCardDestination: View {
+    @Query private var cards: [CollectedCard]
+
+    let row: CollectionRow
+    let unpricedReason: PricingDiagnosticReason?
+    let artworkReason: ArtworkDiagnosticReason?
+    let isLogicalConflict: Bool
+    @ObservedObject var history: PortfolioHistoryStore
+    let onRemoved: (RemovedCardSnapshot) -> Void
+
+    init(
+        row: CollectionRow,
+        unpricedReason: PricingDiagnosticReason?,
+        artworkReason: ArtworkDiagnosticReason?,
+        isLogicalConflict: Bool,
+        history: PortfolioHistoryStore,
+        onRemoved: @escaping (RemovedCardSnapshot) -> Void
+    ) {
+        self.row = row
+        self.unpricedReason = unpricedReason
+        self.artworkReason = artworkReason
+        self.isLogicalConflict = isLogicalConflict
+        self.history = history
+        self.onRemoved = onRemoved
+        let collectionKey = row.id
+        self._cards = Query(
+            filter: #Predicate<CollectedCard> { $0.collectionKey == collectionKey },
+            sort: [SortDescriptor(\.dateAdded, order: .forward)]
+        )
+    }
+
+    var body: some View {
+        if let card = cards.first {
+            CollectionCardDetailView(
+                card: card,
+                price: row.price,
+                history: history,
+                unpricedReason: unpricedReason,
+                artworkReason: artworkReason,
+                logicalQuantity: row.quantity,
+                isLogicalConflict: isLogicalConflict,
+                instrumentKey: row.priceStorageKey,
+                onRemoved: onRemoved
+            )
+        } else {
+            ContentUnavailableView(
+                "Card not shown",
+                systemImage: "rectangle.stack",
+                description: Text("It was removed, or the current filters exclude it.")
+            )
+        }
+    }
+}
+
+private struct CollectionMovementDestination: View {
+    @Query private var cards: [CollectedCard]
+
+    let row: CollectionRow
+    @ObservedObject var history: PortfolioHistoryStore
+
+    init(row: CollectionRow, history: PortfolioHistoryStore) {
+        self.row = row
+        self.history = history
+        let collectionKey = row.id
+        self._cards = Query(
+            filter: #Predicate<CollectedCard> { $0.collectionKey == collectionKey },
+            sort: [SortDescriptor(\.dateAdded, order: .forward)]
+        )
+    }
+
+    var body: some View {
+        if let card = cards.first {
+            MovementDetailsView(
+                card: card,
+                price: row.price,
+                history: history,
+                quantity: row.quantity
+            )
+        } else {
+            ContentUnavailableView(
+                "Card not shown",
+                systemImage: "rectangle.stack",
+                description: Text("It was removed, or the current filters exclude it.")
+            )
+        }
+    }
+}
+
 private struct CollectionCardTile: View {
-    let card: CollectedCard
-    let userArtworkFilename: String?
-    /// The projected quantity for the position, not `card.quantity`. The card
+    let row: CollectionRow
+    /// The projected quantity for the position, not a physical row's quantity. The row
     /// is one physical row, and CloudKit can legitimately split a position
     /// across several of them; the badge and the detail view must agree about
     /// how many are owned.
-    let quantity: Int
-    let price: PriceDisplay
     let unpricedReason: PricingDiagnosticReason?
     let artworkReason: ArtworkDiagnosticReason?
 
@@ -890,9 +956,9 @@ private struct CollectionCardTile: View {
         VStack(spacing: 8) {
             ZStack {
                 CollectionCardArtwork(
-                    userArtworkFilename: userArtworkFilename,
-                    thumbnailURL: card.lowImageURL,
-                    fullSizeURL: card.highImageURL,
+                    userArtworkFilename: row.userArtworkFilename,
+                    thumbnailURL: row.lowImageURL,
+                    fullSizeURL: row.highImageURL,
                     placeholderText: artworkReason?.title
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -900,9 +966,9 @@ private struct CollectionCardTile: View {
             .aspectRatio(5.0 / 7.0, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay(alignment: .topTrailing) {
-                if quantity > 1 {
+                if row.quantity > 1 {
                     AppCardBadge(
-                        text: "×\(quantity)",
+                        text: "×\(row.quantity)",
                         systemImage: "number",
                         tint: .teal
                     )
@@ -912,12 +978,12 @@ private struct CollectionCardTile: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(card.name)
+                    Text(row.name)
                         .font(.headline)
                         .lineLimit(2)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    PriceLabel(price: price, style: .compact)
+                    PriceLabel(price: row.price, style: .compact)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity)
@@ -931,9 +997,9 @@ private struct CollectionCardTile: View {
 
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 6) {
-                        switch card.itemKind {
+                        switch row.itemKind {
                         case .rawCard:
-                            if let variant = card.variant {
+                            if let variant = row.variant {
                                 AppCardBadge(
                                     text: variant.label,
                                     systemImage: finishSymbol(for: variant),
@@ -944,14 +1010,14 @@ private struct CollectionCardTile: View {
                             // A slab or a box has no raw finish, so the badge shows
                             // what it actually is: `PSA 10`, `Sealed`.
                             AppCardBadge(
-                                text: card.itemKindLabel,
-                                systemImage: card.itemKind.symbolName,
-                                tint: itemKindTint(for: card.itemKind)
+                                text: row.displayKindLabel,
+                                systemImage: row.itemKind.symbolName,
+                                tint: itemKindTint(for: row.itemKind)
                             )
                         }
 
                         ForEach(
-                            Array(card.displayedMagicTreatmentEvidence.displayLabels.enumerated()),
+                            Array(row.displayedMagicTreatmentEvidence.displayLabels.enumerated()),
                             id: \.offset
                         ) { item in
                             AppCardBadge(
@@ -976,7 +1042,7 @@ private struct CollectionCardTile: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(card.name), \(card.setName), \(accessiblePrice), \(card.itemKindLabel), quantity \(quantity)\(diagnosticAccessibilityText)"
+            "\(row.name), \(row.setName), \(accessiblePrice), \(row.displayKindLabel), quantity \(row.quantity)\(diagnosticAccessibilityText)"
         )
     }
 
@@ -988,14 +1054,14 @@ private struct CollectionCardTile: View {
     }
 
     private var accessiblePrice: String {
-        if let amount = price.amount {
-            return amount.formatted(.currency(code: price.currencyCode))
+        if let amount = row.price.amount {
+            return amount.formatted(.currency(code: row.price.currencyCode))
         }
-        return price.state() == .unavailable ? "price unavailable" : "price not checked"
+        return row.price.state() == .unavailable ? "price unavailable" : "price not checked"
     }
 
     private var identityLine: String {
-        [card.setName, card.setCode, card.cardNumber]
+        [row.setName, row.setCode, row.cardNumber]
             .filter { !$0.isEmpty }
             .joined(separator: "  ·  ")
     }

@@ -75,6 +75,9 @@
 		A0010031 /* PriceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010031 /* PriceProvider.swift */; };
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
+		A00100F0 /* PriceSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F0 /* PriceSnapshotStore.swift */; };
+		A00100F1 /* CollectionProjectionActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F1 /* CollectionProjectionActor.swift */; };
+		A00100F2 /* StoreRevisionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F2 /* StoreRevisionMonitor.swift */; };
 		A00100D0 /* PriceRefreshTargets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D0 /* PriceRefreshTargets.swift */; };
 		A00100D1 /* BackgroundPriceRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D1 /* BackgroundPriceRefresh.swift */; };
 		A00100D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D2 /* AppDelegate.swift */; };
@@ -233,6 +236,9 @@
 		B0010031 /* PriceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceProvider.swift; sourceTree = "<group>"; };
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
+		B00100F0 /* PriceSnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceSnapshotStore.swift; sourceTree = "<group>"; };
+		B00100F1 /* CollectionProjectionActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionProjectionActor.swift; sourceTree = "<group>"; };
+		B00100F2 /* StoreRevisionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreRevisionMonitor.swift; sourceTree = "<group>"; };
 		B00100D0 /* PriceRefreshTargets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshTargets.swift; sourceTree = "<group>"; };
 		B00100D1 /* BackgroundPriceRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundPriceRefresh.swift; sourceTree = "<group>"; };
 		B00100D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -424,6 +430,9 @@
 				B0010031 /* PriceProvider.swift */,
 				B0010032 /* PriceStore.swift */,
 				B0010033 /* PriceRefreshController.swift */,
+				B00100F0 /* PriceSnapshotStore.swift */,
+				B00100F1 /* CollectionProjectionActor.swift */,
+				B00100F2 /* StoreRevisionMonitor.swift */,
 				B00100D0 /* PriceRefreshTargets.swift */,
 				B00100D1 /* BackgroundPriceRefresh.swift */,
 				B0010034 /* CollectionQuery.swift */,
@@ -706,6 +715,9 @@
 				A0010031 /* PriceProvider.swift in Sources */,
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
+				A00100F0 /* PriceSnapshotStore.swift in Sources */,
+				A00100F1 /* CollectionProjectionActor.swift in Sources */,
+				A00100F2 /* StoreRevisionMonitor.swift in Sources */,
 				A00100D0 /* PriceRefreshTargets.swift in Sources */,
 				A00100D1 /* BackgroundPriceRefresh.swift in Sources */,
 				A0010034 /* CollectionQuery.swift in Sources */,

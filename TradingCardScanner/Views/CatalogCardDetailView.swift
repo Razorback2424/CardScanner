@@ -3,7 +3,7 @@ import SwiftUI
 
 struct CatalogCardDetailView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var ownedCards: [CollectedCard]
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let summary: CatalogCardSummary
     let catalog: any BrowseCatalogProviding
 
@@ -333,13 +333,18 @@ struct CatalogCardDetailView: View {
         }
     }
 
-    private func ownedRows(_ card: IdentifiedCard) -> [CollectedCard] {
-        ownedCards.filter { SetCompletionCalculator.owns(summary, cards: [$0]) }
+    private func ownedRows(_ card: IdentifiedCard) -> [CatalogOwnershipCardSnapshot] {
+        let ownership = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
+        return ownership.matchingRows(for: summary)
             .sorted { ($0.variantLabel ?? "") < ($1.variantLabel ?? "") }
     }
 
-    private func ownedLabel(for row: CollectedCard) -> String {
-        [row.variant?.label ?? "Unknown finish", row.displayedMagicTreatmentEvidence.displayLabel]
+    private func ownedLabel(for row: CatalogOwnershipCardSnapshot) -> String {
+        let treatments = MagicTreatmentEvidence(
+            treatments: row.magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:)),
+            qualifiers: [:]
+        )
+        return [row.variant?.label ?? "Unknown finish", treatments.displayLabel]
             .compactMap { $0 }
             .joined(separator: " · ")
     }

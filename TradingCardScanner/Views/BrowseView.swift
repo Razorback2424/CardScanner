@@ -203,7 +203,7 @@ final class BrowseViewModel: ObservableObject {
 
 struct BrowseView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var ownedCards: [CollectedCard]
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let catalog: any BrowseCatalogProviding
     @StateObject private var model: BrowseViewModel
     @State private var showsSetFilter = false
@@ -322,6 +322,7 @@ struct BrowseView: View {
 
     private func backfillPokemonReleaseOrder() {
         guard let sets = model.sets[.pokemon], !sets.isEmpty else { return }
+        let ownedCards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
         var changed = false
         for card in ownedCards where card.cardGame == .pokemon {
             let providerID = card.catalogProviderID ?? card.providerID
@@ -463,6 +464,7 @@ struct BrowseView: View {
     }
 
     @ViewBuilder private func searchSection(_ game: CardGame) -> some View {
+        let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
         let lane = model.lanes[game] ?? .init(isLoading: true)
         Section {
             if lane.cards.isEmpty && lane.isLoading {
@@ -479,7 +481,7 @@ struct BrowseView: View {
                 CatalogCardGrid(
                     cards: lane.cards,
                     catalog: model.catalog,
-                    owned: CatalogOwnershipIndex(ownedCards)
+                    owned: owned
                 )
                 if lane.cursor != nil {
                     HStack { Spacer(); ProgressView(); Spacer() }
@@ -550,11 +552,11 @@ enum CatalogGameCardsOrdering {
 }
 
 private struct CatalogGameCardsView: View {
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let game: CardGame
     let sets: [CatalogSet]
     let catalog: any BrowseCatalogProviding
 
-    @Query private var ownedCards: [CollectedCard]
     @State private var cards: [CatalogCardSummary] = []
     @State private var nextSetIndex = 0
     @State private var activeSetIndex: Int?
@@ -584,7 +586,7 @@ private struct CatalogGameCardsView: View {
     }
 
     var body: some View {
-        let owned = CatalogOwnershipIndex(ownedCards)
+        let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
         return ScrollView {
             if hasSearchText {
                 searchContent(owned: owned)
@@ -816,13 +818,10 @@ private struct CatalogGameCardsView: View {
 }
 
 private struct CatalogSetListView: View {
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let game: CardGame
     let sets: [CatalogSet]
     let catalog: any BrowseCatalogProviding
-    // Queried here rather than passed down: a pushed screen handed an array
-    // keeps the collection as it was when the link was tapped, so adding a card
-    // from the detail screen would leave stale progress behind it.
-    @Query private var ownedCards: [CollectedCard]
     @State private var search = ""
     @State private var showsMasterSetRules = false
 
@@ -836,6 +835,7 @@ private struct CatalogSetListView: View {
     }
 
     var body: some View {
+        let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
         List {
             if game == .pokemon {
                 Section {
@@ -849,7 +849,7 @@ private struct CatalogSetListView: View {
             }
 
             ForEach(visible) { set in
-                let completion = SetCompletionCalculator.progress(for: set, cards: ownedCards)
+                let completion = owned.progress(for: set)
                 NavigationLink {
                     CatalogSetCardsView(set: set, catalog: catalog)
                 } label: {
@@ -891,9 +891,9 @@ private struct CatalogSetListView: View {
 }
 
 private struct CatalogSetCardsView: View {
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let set: CatalogSet
     let catalog: any BrowseCatalogProviding
-    @Query private var ownedCards: [CollectedCard]
     @State private var cards: [CatalogCardSummary] = []
     @State private var cursor: String?
     @State private var isLoading = false
@@ -931,12 +931,12 @@ private struct CatalogSetCardsView: View {
 
     private var completion: SetCompletion {
         self.set.game == .pokemon
-            ? SetCompletionCalculator.progress(for: masterSetSlots, cards: ownedCards)
-            : SetCompletionCalculator.progress(for: set, cards: ownedCards)
+            ? (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])).progress(for: masterSetSlots)
+            : (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])).progress(for: set)
     }
 
     var body: some View {
-        let owned = CatalogOwnershipIndex(ownedCards)
+        let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
         let visible = visibleCards(owned: owned)
         return ScrollView {
             if cards.isEmpty && isLoading {

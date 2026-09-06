@@ -73,11 +73,11 @@ private struct PortfolioDetailsDestination: Identifiable, Hashable {
 struct PortfolioView: View {
     @Environment(\.modelContext) private var modelContext
     @ObservedObject var portfolio: PortfolioEngine
-    /// Deliberately unobserved. A running refresh publishes progress four times
-    /// a second, and observing it here re-evaluated the hero, the chart, the
+    /// Deliberately unobserved. A running refresh publishes progress on a
+    /// one-second cadence, and observing it here re-evaluated the hero, the chart, the
     /// movers and every holding row on each publication. The two places that
-    /// actually read it are child views below — the same isolation
-    /// `PortfolioInputObserver` already applies in `ContentView`.
+    /// actually read it are child views below — the same isolation the
+    /// app-scoped `StoreRevisionMonitor` applies in `ContentView`.
     let refresh: PriceRefreshController
     @ObservedObject var history: PortfolioHistoryStore
     let onRefresh: @MainActor () async -> Void
@@ -508,6 +508,7 @@ struct PortfolioView: View {
                     NavigationLink {
                         PortfolioOwnedCardDestination(
                             collectionKey: holding.collectionKey,
+                            holding: holding,
                             history: history,
                             onRemoved: presentUndo(for:)
                         )
@@ -781,7 +782,12 @@ private struct PortfolioContributorPreview: View {
     private func previewRow(_ row: PortfolioContributionRowModel, maximum: Money) -> some View {
         if let key = row.collectionKey {
             NavigationLink {
-                PortfolioOwnedCardDestination(collectionKey: key, history: history, onRemoved: onRemoved)
+                PortfolioOwnedCardDestination(
+                    collectionKey: key,
+                    holding: row.holding,
+                    history: history,
+                    onRemoved: onRemoved
+                )
             } label: {
                 PortfolioContributionRow(
                     row: row,
@@ -857,7 +863,12 @@ private struct PortfolioContributorsView: View {
                     ForEach(rows) { row in
                         if let key = row.collectionKey {
                             NavigationLink {
-                                PortfolioOwnedCardDestination(collectionKey: key, history: history, onRemoved: onRemoved)
+                                PortfolioOwnedCardDestination(
+                                    collectionKey: key,
+                                    holding: row.holding,
+                                    history: history,
+                                    onRemoved: onRemoved
+                                )
                             } label: {
                                 PortfolioContributionRow(
                                     row: row,
@@ -1039,53 +1050,55 @@ private struct PortfolioArtwork: View {
 }
 
 private struct PortfolioOwnedCardDestination: View {
-    @Query(sort: \CollectedCard.dateAdded, order: .forward) private var cards: [CollectedCard]
-    @Query private var priceRecords: [PriceRecord]
-    @Query private var artworkOverrides: [LocalArtworkOverride]
+    @EnvironmentObject private var priceSnapshot: PriceSnapshotStore
+    @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @Query private var cards: [CollectedCard]
     let collectionKey: String
+    let holding: PortfolioHoldingSnapshot?
     @ObservedObject var history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
 
-    var body: some View {
-        // The closure overload, not the `ledger:` one. That form resolves each
-        // position's instrument by asking the ledger, and the ledger answers
-        // with two to four predicate fetches per candidate key — several
-        // thousand fetches per render on a large collection, on the main
-        // thread, from inside `body`, and again on every price save because
-        // this view holds three whole-table queries. Same reason
-        // `CollectionView.makeCachedProjection` stopped using it.
-        //
-        // Answering from the records already in hand also makes the instrument
-        // a position is attributed to and the price displayed for it one
-        // decision rather than two rules that can disagree: an invalidation
-        // living only in the observation log is visible to the ledger's rule
-        // and not to this one, and the grid already resolves that the same way.
-        let recordsByKey = Dictionary(
-            priceRecords.map { ($0.key, $0) },
-            uniquingKeysWith: { first, _ in first }
+    init(
+        collectionKey: String,
+        holding: PortfolioHoldingSnapshot? = nil,
+        history: PortfolioHistoryStore,
+        onRemoved: @escaping (RemovedCardSnapshot) -> Void
+    ) {
+        self.collectionKey = collectionKey
+        self.holding = holding
+        self.history = history
+        self.onRemoved = onRemoved
+        self._cards = Query(
+            filter: #Predicate<CollectedCard> { $0.collectionKey == collectionKey },
+            sort: [SortDescriptor(\CollectedCard.dateAdded, order: .forward)]
         )
-        let projection = LogicalCollection.project(cards: cards) { card in
-            PriceStore.priceStorageKey(for: card, in: recordsByKey)
-        }
-        if let position = projection.byKey[collectionKey] {
-            let card = position.representative
-            let record = PriceStore.record(for: card, in: recordsByKey)
-            CollectionCardDetailView(
-                card: card,
-                price: record?.display ?? .unknown,
-                history: history,
-                unpricedReason: record?.effectiveUnitMarketPriceUSD == nil
-                    ? PricingDiagnostics.unpricedReason(for: card, record: record)
-                    : nil,
-                artworkReason: ArtworkDiagnostics.reason(
-                    for: card,
-                    hasLocalOverride: artworkOverrides.contains { $0.collectionKey == card.collectionKey }
-                ),
-                logicalQuantity: position.quantity,
-                isLogicalConflict: position.physicalRowCount > 1,
-                instrumentKey: position.priceStorageKey,
-                onRemoved: onRemoved
-            )
+    }
+
+    var body: some View {
+        if let card = cards.first {
+            // Historical contributor rows do not always carry a live holding.
+            // Use the same resolved instrument the collection projection used;
+            // falling back directly to `card.priceKey` can disagree when a
+            // legacy alias or observation-only invalidation is involved.
+            let resolvedInstrumentKey = holding?.priceStorageKey
+                ?? projectionStore.snapshot?.rowsByCollectionKey[collectionKey]?.priceStorageKey
+            if let instrumentKey = resolvedInstrumentKey {
+                let diagnostics = priceSnapshot.diagnosticsByCollectionKey[collectionKey]
+                let price = priceSnapshot.display(for: instrumentKey) ?? .unknown
+                CollectionCardDetailView(
+                    card: card,
+                    price: price,
+                    history: history,
+                    unpricedReason: price.amount == nil ? diagnostics?.unpricedReason : nil,
+                    artworkReason: diagnostics?.artworkReason,
+                    logicalQuantity: holding?.quantity ?? cards.reduce(0) { $0 + $1.quantity },
+                    isLogicalConflict: cards.count > 1,
+                    instrumentKey: instrumentKey,
+                    onRemoved: onRemoved
+                )
+            } else {
+                ProgressView("Loading price…")
+            }
         } else {
             ContentUnavailableView(
                 "Holding unavailable",

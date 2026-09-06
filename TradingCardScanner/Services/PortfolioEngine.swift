@@ -61,6 +61,8 @@ struct PortfolioHoldingSnapshot: Identifiable, Equatable, Sendable {
     var artworkFallbackURL: URL?
     var quantity: Int
     var currentValue: Money?
+    /// The exact price instrument used for live revaluation during a refresh.
+    var priceStorageKey: String
 
     var id: String { collectionKey }
 }
@@ -107,6 +109,10 @@ final class PortfolioEngine: ObservableObject {
     /// changing the visible summary values (for example, a close revision or
     /// two offsetting market updates).
     @Published private(set) var inputRevision: UInt = 0
+    /// Live price movement is deliberately separate from `inputRevision`: a
+    /// refresh may update today's headline without asking the historical writer
+    /// to replay and persist closes at every checkpoint.
+    @Published private(set) var livePriceRevision: UInt = 0
     /// Time-weighted factors from the same replay that produced the summary, so
     /// the history card never runs a second pass.
     @Published private(set) var performanceFactors = PortfolioPerformanceFactors()
@@ -132,6 +138,11 @@ final class PortfolioEngine: ObservableObject {
     /// current pass publishes, rather than repeatedly cancelling work that was
     /// about to update the value.
     private var pendingRecompute: (context: ModelContext, now: Date)?
+    /// Price refresh checkpoints are durability events, not portfolio input
+    /// events. Hold the replay request until the controller reaches a terminal
+    /// state, then settle it exactly once.
+    private var priceRefreshInFlight = false
+    private var priceRefreshReplayOwed = false
 
     var summary: PortfolioSummary? {
         if case let .ready(summary) = status { return summary }
@@ -173,6 +184,60 @@ final class PortfolioEngine: ObservableObject {
         return PortfolioCalendar.day(containing: now, in: timeZone) != lastComputedDay
     }
 
+    /// Called by the app-scoped refresh controller before its model actor starts
+    /// a queue. A replay is owed even if the pass later fails or is cancelled:
+    /// partial writes and rollback decisions still have to settle on one final
+    /// portfolio read.
+    func beginPriceRefresh() {
+        priceRefreshInFlight = true
+        priceRefreshReplayOwed = true
+    }
+
+    /// Ends the refresh gate for every terminal outcome. The controller owns
+    /// the call so failure and cancellation cannot strand a deferred replay.
+    func endPriceRefresh(context: ModelContext) {
+        guard priceRefreshInFlight else { return }
+        priceRefreshInFlight = false
+        guard priceRefreshReplayOwed else { return }
+        priceRefreshReplayOwed = false
+        recompute(context: context)
+    }
+
+    /// Applies committed refresh deltas to already-projected holdings. This is
+    /// the cheap Σ(quantity × price) path; the next terminal replay remains the
+    /// authority for coverage, attribution and historical closes.
+    func applyPriceDeltas(_ deltas: [PriceDelta]) {
+        guard !deltas.isEmpty, var summary = lastUsableSummary else { return }
+        let byKey = Dictionary(deltas.map { ($0.key, $0.display) },
+                               uniquingKeysWith: { _, newest in newest })
+        var total = summary.currentValue
+        var changed = false
+        holdings = holdings.map { holding in
+            guard let display = byKey[holding.priceStorageKey] else { return holding }
+            let oldValue = holding.currentValue
+            let newValue = display.amount
+                .flatMap(Money.init(rounding:))?
+                .multiplied(by: holding.quantity)
+            if oldValue != newValue {
+                total -= oldValue ?? .zero
+                total += newValue ?? .zero
+                changed = true
+            }
+            var updated = holding
+            updated.currentValue = newValue
+            return updated
+        }
+        guard changed else { return }
+        // This is intentionally only the live headline/holding valuation. The
+        // authoritative terminal replay still owns attribution, coverage,
+        // unpriced counts, historical closes, and their persistence; changing
+        // those here would make a partial delta look like a completed replay.
+        summary.currentValue = total
+        lastUsableSummary = summary
+        status = .ready(summary)
+        livePriceRevision &+= 1
+    }
+
     /// Starts a recomputation. Returns immediately; the result is published
     /// when the background computation finishes.
     ///
@@ -181,6 +246,18 @@ final class PortfolioEngine: ObservableObject {
     /// `PortfolioComputationActor`. Only the small act of building the summary
     /// and writing at most a few hundred close rows happens here.
     func recompute(context: ModelContext, now: Date = .now) {
+        recompute(context: context, now: now, bypassPriceRefreshGate: false)
+    }
+
+    private func recompute(
+        context: ModelContext,
+        now: Date,
+        bypassPriceRefreshGate: Bool
+    ) {
+        if priceRefreshInFlight, !bypassPriceRefreshGate {
+            priceRefreshReplayOwed = true
+            return
+        }
         // Recompute is what runs when the inputs change, which is exactly when
         // a deferred baseline becomes decidable: the arriving inventory events
         // are themselves the evidence that no baseline is needed. Costs one
@@ -265,7 +342,14 @@ final class PortfolioEngine: ObservableObject {
     /// continuing use this; the app uses `recompute`.
     func recomputeAndWait(context: ModelContext, now: Date = .now) async {
         let wasAlreadyRecomputing = computationTask != nil
-        recompute(context: context, now: now)
+        // Tests and the headless background path explicitly ask for the result;
+        // preserve that contract even if a foreground controller has a pass in
+        // flight elsewhere in the process.
+        recompute(
+            context: context,
+            now: now,
+            bypassPriceRefreshGate: true
+        )
         // When a pass was already in flight, this request became its one
         // trailing replay. Await both; work requested after that belongs to a
         // later input change and must not keep a background caller waiting.

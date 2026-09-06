@@ -745,6 +745,7 @@ struct PriceStore {
     @discardableResult
     func save() -> Bool {
         guard context.hasChanges else { return true }
+        PerformanceSignpost.signposter.emitEvent("PriceStore.save")
         do {
             try context.save()
             return true

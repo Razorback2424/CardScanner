@@ -1,15 +1,15 @@
 # Performance Review — Remediation Plan (revised)
 
 Status: **implementation complete for the current iOS 17 target; runtime gates
-remain explicit.** Slices 1–8 and 11 are implemented on the working branch,
-R5 is closed by the deployment-target decision recorded below, and the
-remaining P1/U2/U3 items are deliberately hardware-validation gates rather
-than unmeasured code changes. Every claim below was re-read against the source
-after a second-pass audit of the first review; the audit's corrections are
-recorded in §1 with a verdict each. A third pass then checked the second pass's
-own new claims — three needed correcting, and those corrections are applied in
-the findings below and recorded in §1.4. Line numbers drift; follow symbol
-names.
+remain explicit.** Slices 1–8 and 11, plus the price-refresh snapshot pass
+described in §3.10, are implemented on the working branch. R5 is closed by the
+deployment-target decision recorded below, and the remaining P1/U2/U3 and live
+refresh profiling items are deliberately hardware-validation gates rather than
+unmeasured code changes. Every claim below was re-read against the source after
+a second-pass audit of the first review; the audit's corrections are recorded in
+§1 with a verdict each. A third pass then checked the second pass's own new
+claims — three needed correcting, and those corrections are applied in the
+findings below and recorded in §1.4. Line numbers drift; follow symbol names.
 
 ## 0. Progress
 
@@ -26,6 +26,7 @@ names.
 | 9 — device pass | **partly done; P1/U2/U3 remain hardware gates** | P3 and U4 are landed. The app-only iPhone build and signed test bundle build both succeed; the physical run executed 851 tests with 1 skip but exposed one device-only timing/fixture failure in `BrowseFeatureTests.testBrowseSearchDebouncesBeforeStartingBothSearchLanes` (a focused retry reproduced it). P1 (pixel format), U2 (tab bar) and U3 (camera restart) remain unmodified and unverified because no OCR/thermal or manual UI lifecycle measurement was taken. |
 | 10 — R5 `#Index` | **closed by deployment decision (2026-09-05)** | The project remains iOS 17.0. `#Index` requires iOS 18, so no index or CloudKit schema migration is introduced under the current target. This follows the existing deployment guidance to keep the lower target and branch newer APIs when needed; revisit only as an explicit iOS 18 migration decision. |
 | 11 — R10 checklist | **done** | BG task identifiers derive from `Bundle.main.bundleIdentifier`, and `Info.plist` from `$(PRODUCT_BUNDLE_IDENTIFIER)`; verified in the built plist. `progress.md:31` corrected. `price_refresh_scale_plan.md:316-318` corrected in place with a dated note. |
+| Price refresh snapshot pass — Phases 1–4 | **implemented on `price-refresh-snapshot` (simulator green; live profile still required)** | Time/ceiling checkpoints, terminal replay gate, coalesced value deltas, off-main collection projection, one store-driven monitor, browse ownership index, and ≤75-printing Magic batching are landed. The measured before/after record is in §3.10. |
 
 **P4 (artwork override fetch in `body`) was investigated and rejected, not deferred.** R7 was its main justification: the fetch cost 5 unindexed lookups per Portfolio render, and the render rate during a refresh was 4 Hz. With R7 landed, Portfolio re-renders only on genuine portfolio changes, so the cost is now negligible. Removing it entirely means resolving the override into `holdingSnapshots` on the computation actor — but `PortfolioInputObserver` does not query `LocalArtworkOverride`, so a snapshot-carried filename would not update until the next recompute, and setting a custom artwork would silently fail to appear in Portfolio. Fixing *that* means adding a fifth whole-table query to the observer R3 exists to slim down. The remedy costs more than the problem; the fetch stays.
 
@@ -385,6 +386,56 @@ the small views that render refresh state.
 This correction removes the root invalidation source identified in the scale
 plan. It does not claim that checkpoint saves stop `@Query` republishing; that
 residual is the separate R3 amplifier and remains a runtime measurement item.
+
+## 3.10 Price-refresh snapshot pass — Phases 0–4
+
+The implementation is on branch `price-refresh-snapshot`. The branch began from
+the clean `main` checkout below.
+
+### Measurement record
+
+| Check | Before this branch | After this branch | Evidence / limitation |
+|---|---:|---:|---|
+| Full simulator tests | 864 passed, 1 skipped, 0 failures | 870 passed, 1 skipped, 0 failures | 871 discovered after six new slice tests; XcodeBuildMCP, iPhone 17 Pro simulator |
+| Opt-in aged fixture, 300 instruments × 365 days | `coverageIndex` ~1.47 s; `PriceRefreshDataIndex.init` ~0.15 s | `coverageIndex` 1.441 s; `PriceRefreshDataIndex.init` 0.145 s | 109,500 `PriceCheckDay` and 5,700 `PriceObservation` rows; `testAgedStoreBaseline` passed |
+| `PriceStore.save` count during a live refresh | not captured | not captured | Counted `PriceStore.save` signpost added; a provider-backed Instruments pass is still required |
+| `CollectionView.body` / `StoreRevisionMonitor.body` count | not captured | not captured | Body signposts added; no live large-store refresh profile was available |
+| `startRecompute` and `makeCachedProjection` per price-only pass | not captured | not captured | `startRecompute` remains counted; `makeCachedProjection` is now an off-main actor interval; target shape is 1 and 0 respectively, pending live capture |
+
+The existing opt-in `PERF_BASELINE` fixture remains the source for the aged-store
+numbers in §3.1. No live refresh count is invented here: the requested
+K/10-to-1 replay, K/10-to-0 projection, and 10–30× save reduction need an
+Instruments run against a populated provider-backed store.
+
+### Landed changes
+
+- Phase 1 gates portfolio replay while a refresh is in flight, settles one owed
+  replay for completion, cancellation, and failure, commits on a 10-second wall
+  clock or 500 staged writes, hoists fallback row materialisation, narrows the
+  holding detail query, and publishes whole-percent progress no more often than
+  once per second. The progress relay preserves price deltas while coalescing
+  presentation updates.
+- Phase 2 adds the main-actor `PriceSnapshotStore` and off-main bootstrap,
+  publishes `PriceDelta` values from catalog, fallback, and graded checkpoints,
+  overlays the exact instrument price onto stable collection rows, and updates
+  the already-projected portfolio headline with the same `priceStorageKey` rule.
+- Phase 3 moves the collection projection and ownership index to
+  `CollectionProjectionActor`, caches filter/sort work by revision and query,
+  and leaves `StoreRevisionMonitor` as the only unbounded query holder. Its
+  fingerprint actor is store-driven; the two-context regression test proves a
+  mutation written by the second context changes the published revision. A
+  controller-owned terminal price fingerprint prevents a duplicate replay when
+  the durable checkpoint arrives.
+- Phase 4 batches native Magic printings into Scryfall requests of at most 75,
+  maps responses by exact printing id, and classifies omitted ids as `.failed`
+  rather than `.unreachable`. Progress still counts printings. Pokémon remains
+  one request per printing because `TCGdexService.fetchSet(id:)` exposes only
+  brief card identity data and no pricing equivalent for a free batch request.
+
+The full simulator suite was rerun after the final relay and terminal-fingerprint
+corrections; it remained green at 870 passed, 1 skipped, 0 failures. Physical
+end-to-end scrolling during a live refresh and the no-dropped-frame claim remain
+deliberately unverified on this machine.
 
 ---
 

@@ -145,7 +145,8 @@ enum PortfolioReplaySnapshotBuilder {
                 artworkURL: artworkURL,
                 artworkFallbackURL: artworkFallbackURL,
                 quantity: position.quantity,
-                currentValue: price?.multiplied(by: position.quantity)
+                currentValue: price?.multiplied(by: position.quantity),
+                priceStorageKey: position.priceStorageKey
             )
         }
 

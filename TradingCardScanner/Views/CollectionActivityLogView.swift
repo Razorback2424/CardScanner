@@ -3,10 +3,10 @@ import SwiftUI
 
 struct CollectionActivityLogView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \CollectionActivity.occurredAt, order: .reverse)
-    private var activities: [CollectionActivity]
-    @Query private var cards: [CollectedCard]
-    @Query private var inventoryEvents: [InventoryEvent]
+    @StateObject private var revisionStore = StoreRevisionStore()
+    @State private var activities: [CollectionActivity] = []
+    @State private var cards: [CollectedCard] = []
+    @State private var inventoryEvents: [InventoryEvent] = []
     @State private var selectedKind: CollectionActivityKind?
     @State private var pendingRemovalID: UUID?
     @State private var errorMessage: String?
@@ -79,7 +79,15 @@ struct CollectionActivityLogView: View {
         } message: {
             Text("Only the copies claimed by this history entry will be removed.")
         }
-        .task { try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded() }
+        .task(id: revisionStore.revision) {
+            try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+            let descriptor = FetchDescriptor<CollectionActivity>(
+                sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+            )
+            activities = (try? modelContext.fetch(descriptor)) ?? []
+            cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
+            inventoryEvents = (try? modelContext.fetch(FetchDescriptor<InventoryEvent>())) ?? []
+        }
         .alert("History Action Couldn’t Be Saved", isPresented: errorBinding) {
             Button("OK", role: .cancel) {}
         } message: {
