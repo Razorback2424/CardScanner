@@ -249,7 +249,7 @@ struct CollectionView: View {
             guard let entry = snapshot.entries.first else { return }
             navigationPath = [.card(entry.id), .movement(entry.id)]
         }
-        .task {
+        .task(id: opensCardDetailOnLaunch ? snapshot.entries.first?.id : nil) {
             guard opensCardDetailOnLaunch, navigationPath.isEmpty else { return }
             try? await Task.sleep(for: .milliseconds(500))
             guard let entry = snapshot.entries.first else { return }

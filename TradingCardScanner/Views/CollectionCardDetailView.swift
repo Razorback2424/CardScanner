@@ -95,6 +95,10 @@ struct CollectionCardDetailView: View {
         }
         .navigationTitle(card.name)
         .navigationBarTitleDisplayMode(.inline)
+        // The detail destination is a focused surface. Leaving the collection
+        // tab bar visible puts it over the identity block at the hero's resting
+        // height, clipping the card name before the user can scroll.
+        .toolbar(.hidden, for: .tabBar)
         .task(id: card.catalogProviderID ?? card.providerID) {
             await loadMarketplaceLinkIfNeeded()
         }
@@ -422,8 +426,8 @@ struct CollectionCardDetailView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-            } else {
-                AsyncImage(url: card.highImageURL) { phase in
+            } else if let imageURL = card.highImageURL ?? card.lowImageURL {
+                AsyncImage(url: imageURL) { phase in
                     switch phase {
                     case .success(let image):
                         image.resizable().scaledToFit()
@@ -435,6 +439,11 @@ struct CollectionCardDetailView: View {
                         missingArtworkPlaceholder
                     }
                 }
+            } else {
+                // AsyncImage with a nil URL remains in .empty forever. End the
+                // state explicitly so an unresolved catalog row is honest and
+                // usable instead of presenting an infinite spinner.
+                missingArtworkPlaceholder
             }
 
             CardFinishOverlay(
@@ -1460,6 +1469,7 @@ struct PortfolioMovementSummaryCard: View {
     private func secondaryText(for detail: PortfolioContributionDetail) -> String? {
         if detail.hasConsistentQuantity,
            let quantity = detail.affectedQuantities.first,
+           quantity > 1,
            !detail.cumulativeUnitMovement.isZero {
             return "\(signed(detail.cumulativeUnitMovement)) per card × \(quantity)"
         }

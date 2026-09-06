@@ -159,6 +159,7 @@ enum PortfolioDebugFixtures {
     static func seedTodayIfNeeded(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
+        let cardDetailArtworkURL = URL(string: "https://images.pokemontcg.io/base1/4_hires.png")
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
         let today = PortfolioCalendar.day(containing: .now, in: timeZone)
         let epoch = PortfolioCalendar.day(
@@ -185,7 +186,7 @@ enum PortfolioDebugFixtures {
                     variantID: "\(fixture.id)-variant",
                     marketPriceUSD: fixture.current,
                     updatedAt: .now,
-                    imageURL: nil
+                    imageURL: cardDetailArtworkURL
                 ),
                 game: .pokemon
             )
