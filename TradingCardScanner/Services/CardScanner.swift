@@ -279,13 +279,13 @@ struct SpatialExitObservationAccumulator: Equatable, Sendable {
 struct SpatialTrackerSeedGate: Equatable, Sendable {
     private(set) var lostIdentity: ScanSuppressionKey?
 
-    mutating func markLost(_ identifier: ScanIdentifier?) {
-        guard let identifier else { return }
-        lostIdentity = identifier.suppressionKey
+    mutating func markLost(_ subject: ScanSubject?) {
+        guard let subject else { return }
+        lostIdentity = subject.suppressionKey
     }
 
-    mutating func canSeed(_ identifier: ScanIdentifier) -> Bool {
-        guard lostIdentity != identifier.suppressionKey else { return false }
+    mutating func canSeed(_ subject: ScanSubject) -> Bool {
+        guard lostIdentity != subject.suppressionKey else { return false }
         lostIdentity = nil
         return true
     }
@@ -305,17 +305,25 @@ struct SpatialTrackerSeedGate: Equatable, Sendable {
 enum ScanCadenceKind: Equatable, Sendable {
     case tracking
     case ocr
+    case label
 }
 
 struct ScanCadenceScheduler: Equatable, Sendable {
     let trackingInterval: CFAbsoluteTime
     let ocrInterval: CFAbsoluteTime
+    let labelInterval: CFAbsoluteTime
     private(set) var lastTrackingAt: CFAbsoluteTime?
     private(set) var lastOCRAt: CFAbsoluteTime?
+    private(set) var lastLabelAt: CFAbsoluteTime?
 
-    init(trackingRate: Double = 12, ocrInterval: CFAbsoluteTime = 0.24) {
+    init(
+        trackingRate: Double = 12,
+        ocrInterval: CFAbsoluteTime = 0.24,
+        labelInterval: CFAbsoluteTime = 0.5
+    ) {
         trackingInterval = 1.0 / max(1, trackingRate)
         self.ocrInterval = max(0, ocrInterval)
+        self.labelInterval = max(0, labelInterval)
     }
 
     mutating func shouldRun(_ kind: ScanCadenceKind, at now: CFAbsoluteTime) -> Bool {
@@ -332,6 +340,12 @@ struct ScanCadenceScheduler: Equatable, Sendable {
             }
             lastOCRAt = now
             return true
+        case .label:
+            guard lastLabelAt == nil || now - lastLabelAt! >= labelInterval else {
+                return false
+            }
+            lastLabelAt = now
+            return true
         }
     }
 
@@ -341,6 +355,8 @@ struct ScanCadenceScheduler: Equatable, Sendable {
             lastTrackingAt = now
         case .ocr:
             lastOCRAt = now
+        case .label:
+            lastLabelAt = now
         }
     }
 }
@@ -626,6 +642,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// ultra wide, so the toggle must not offer one.
     @Published private(set) var availableLenses: [CameraLens] = []
     @Published private(set) var scanAssistance: ScanAssistance = .none
+    /// Non-nil only after the label has earned its own confirmation window.
+    /// The preview uses this to show the slab proportions and the inner card
+    /// window; nil restores the raw-card guide.
+    @Published private(set) var slabFraming: GradedSlabEvidence?
 #if DEBUG
     @Published private(set) var debugVisionBoxes: [CGRect] = []
 #endif
@@ -634,16 +654,19 @@ final class CardScanner: NSObject, ObservableObject {
     /// Not yet trusted, and never
     /// allowed to touch the collection — this exists so a catalog request can be
     /// in flight while Vision is still looking for its second matching pass.
-    var onPlausibleCandidate: ((ScanIdentifier) -> Void)?
+    var onPlausibleCandidate: ((ScanSubject) -> Void)?
     /// Every parsed frame, including frames suppressed by the latch. This is
     /// used only for local evidence policies that must count fresh observations
     /// without starting another catalog request.
-    var onObservedCandidate: ((ScanIdentifier) -> Void)?
+    var onObservedCandidate: ((ScanSubject) -> Void)?
     /// Identity is established: confirmed across OCR passes and admitted by the
     /// latch as a new physical presentation.
     /// The encounter id is created at the exact frame that confirms the OCR
     /// encounter, before the event crosses to the view model.
-    var onConfirmedCandidate: ((UUID, ScanIdentifier, UUID?) -> Void)?
+    /// Subject-aware callback used by the scanner UI. The subject is the only
+    /// identity emitted by the Vision loop, so slab evidence cannot be lost
+    /// between confirmation and collection routing.
+    var onConfirmedSubjectCandidate: ((UUID, ScanSubject, UUID?) -> Void)?
     /// Positive spatial exit evidence. This is intentionally separate from OCR
     /// and from the latch's weak timeout/absence signals.
     var onSpatialResetProof: ((SpatialResetProof) -> Void)?
@@ -654,7 +677,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// The same printing has been sitting in the band since it was consumed.
     /// Fires once per latch so the UI can explain the one case the latch cannot
     /// tell apart: a second identical copy dropped in without a gap.
-    var onLatchHolding: ((ScanIdentifier, UUID?) -> Void)?
+    var onLatchHolding: ((ScanSubject, UUID?) -> Void)?
     /// The latch released a consumed presentation. The encounter id is kept
     /// when the scanner still owns that continuity; the suppression key is
     /// always present so the view model can clear a stale offer safely.
@@ -673,6 +696,7 @@ final class CardScanner: NSObject, ObservableObject {
     private let videoOutput = AVCaptureVideoDataOutput()
     private let footerRequest = VNRecognizeTextRequest()
     private let titleRequest = VNRecognizeTextRequest()
+    private let labelRequest = VNRecognizeTextRequest()
     private let trackingSequenceHandler = VNSequenceRequestHandler()
 
     private var isConfigured = false
@@ -696,9 +720,19 @@ final class CardScanner: NSObject, ObservableObject {
     private var activeHeldRepeatAuthorization: HeldRepeatAuthorization?
     private var heldRepeatExpiryWorkItem: DispatchWorkItem?
     private var latchEncounterID: UUID?
-    private var lastAnnouncedPlausible: ScanIdentifier?
+    private var lastAnnouncedPlausible: ScanSubject?
     private var profile: RecognitionProfile = .pokemonOnly
     private var historicalAttempt: HistoricalEvidenceRequest?
+    private struct ActiveSlab: Equatable {
+        let evidence: GradedSlabEvidence
+    }
+    private var activeSlab: ActiveSlab?
+    /// The label is sticky while the same footer presentation remains in the
+    /// band. This prevents a momentary glare miss in the label pass from
+    /// turning an already-detected slab into a raw-card commit.
+    private var activeSlabBaseIdentifier: ScanIdentifier?
+    private var activeSlabEmptyFrames = 0
+    private var slabEvidenceWindow = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
     private var assistanceMonitor = CaptureAssistanceMonitor()
     private let spatialTrackingConfiguration: SpatialTrackingConfiguration
     private var trackerRequest: VNTrackObjectRequest?
@@ -712,6 +746,7 @@ final class CardScanner: NSObject, ObservableObject {
     private var spatialExitAccumulator: SpatialExitObservationAccumulator
     private var cadence: ScanCadenceScheduler
     private static let historicalAttemptTTL: CFAbsoluteTime = 1.5
+    private static let slabBandEmptyFramesBeforeClear = 4
     private static let historicalAttemptLimit = 6
 
 
@@ -734,7 +769,8 @@ final class CardScanner: NSObject, ObservableObject {
         )
         cadence = ScanCadenceScheduler(
             trackingRate: spatialTrackingConfiguration.trackingRate,
-            ocrInterval: 0.24
+            ocrInterval: 0.24,
+            labelInterval: 0.5
         )
         super.init()
         configureTextRequest()
@@ -1041,11 +1077,11 @@ final class CardScanner: NSObject, ObservableObject {
     /// confirmation-safe delay. This is intentionally narrower than
     /// `allowImmediateRetry()`: the latter forgets every consumed printing and
     /// is only safe when no card mutation or price-check history was written.
-    func allowRecheck(of identifier: ScanIdentifier) {
+    func allowRecheck(of subject: ScanSubject) {
         visionQueue.async { [weak self] in
             guard let self else { return }
             self.latch.armRecheck(
-                for: identifier,
+                for: subject,
                 at: CFAbsoluteTimeGetCurrent(),
                 after: Self.priceCheckRecheckDelay
             )
@@ -1091,6 +1127,12 @@ final class CardScanner: NSObject, ObservableObject {
         titleRequest.recognitionLanguages = ["en-US"]
         titleRequest.usesLanguageCorrection = true
         titleRequest.regionOfInterest = CardFramingRegion.titleVisionRect
+
+        labelRequest.recognitionLevel = .accurate
+        labelRequest.recognitionLanguages = ["en-US"]
+        labelRequest.usesLanguageCorrection = true
+        labelRequest.customWords = GradedLabelParser.visionCustomWords
+        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect()
     }
 
     private func configureAndStartIfNeeded() {
@@ -1266,13 +1308,13 @@ final class CardScanner: NSObject, ObservableObject {
     /// later OCR result.
     private func seedTracker(
         encounterID: UUID,
-        identifier: ScanIdentifier,
+        subject: ScanSubject,
         pixelBuffer: CVPixelBuffer,
         orientation: CGImagePropertyOrientation,
         at now: CFAbsoluteTime
     ) {
         guard trackerRequest == nil else { return }
-        guard trackerSeedGate.canSeed(identifier) else {
+        guard trackerSeedGate.canSeed(subject) else {
             // Later OCR is not a spatial reset. Keep the identity consumed and
             // let the view model suppress it without creating a new lineage.
             return
@@ -1285,7 +1327,7 @@ final class CardScanner: NSObject, ObservableObject {
         request.trackingLevel = .fast
 
         trackerEncounterID = encounterID
-        trackerSeedIdentifier = identifier
+        trackerSeedSubject = subject
         trackerPresentationToken = nil
         trackerRequest = request
         trackerObservation = seedObservation
@@ -1350,22 +1392,22 @@ final class CardScanner: NSObject, ObservableObject {
                     encounterID: encounterID,
                     presentationToken: trackerPresentationToken
                 )
-                let identifier = trackerIdentifierForExit
+                let subject = trackerSubjectForExit
                 request.isLastFrame = true
                 trackerRequest = nil
                 trackerObservation = nil
                 trackerEncounterID = nil
-                trackerSeedIdentifier = nil
+                trackerSeedSubject = nil
                 trackerPresentationToken = nil
                 trackerLifecycle = .exited(proof: proof)
                 spatialExitAccumulator.reset()
 
                 // Make the latch's consumed identity eligible again, but only
                 // because the independent tracker produced positive exit proof.
-                if let identifier {
+                if let subject {
                     let latchWasEngaged = latch.latched
                     let latchEncounterID = self.latchEncounterID
-                    latch.confirmSpatialExit(for: identifier)
+                    latch.confirmSpatialExit(for: subject)
                     if let latchWasEngaged, latch.latched == nil {
                         self.latchEncounterID = nil
                         if self.activeHeldRepeatAuthorization != nil {
@@ -1377,6 +1419,10 @@ final class CardScanner: NSObject, ObservableObject {
                         )
                     }
                 }
+                // A slab label is presentation state, not a two-second hint.
+                // Positive spatial exit is the authoritative boundary that
+                // lets the next raw card start with a clean subject.
+                clearActiveSlab()
                 recordDiagnostic("spatialProof")
                 DispatchQueue.main.async { [weak self] in
                     self?.onSpatialResetProof?(proof)
@@ -1390,16 +1436,16 @@ final class CardScanner: NSObject, ObservableObject {
 
     /// The identifier is retained only to authorize the local latch release;
     /// persistence and duplicate decisions remain in the view model.
-    private var trackerIdentifierForExit: ScanIdentifier? {
+    private var trackerSubjectForExit: ScanSubject? {
         switch trackerLifecycle {
         case .provisional, .accepted:
-            return trackerSeedIdentifier
+            return trackerSeedSubject
         case .idle, .exited, .continuityLost:
             return nil
         }
     }
 
-    private var trackerSeedIdentifier: ScanIdentifier?
+    private var trackerSeedSubject: ScanSubject?
 
     /// Vision tracking is sequential: the observation returned for this frame
     /// must become the request's input for the next frame. Keep this assignment
@@ -1424,18 +1470,18 @@ final class CardScanner: NSObject, ObservableObject {
     /// request and records that this presentation can no longer authorize a
     /// duplicate prompt.
     private func markTrackerContinuityLost() {
-        let hadTracker = trackerRequest != nil || trackerSeedIdentifier != nil
+        let hadTracker = trackerRequest != nil || trackerSeedSubject != nil
         // Preserve an earlier lost marker when a later lifecycle invalidation
         // arrives after the request has already been released. Passing nil to
         // the gate would accidentally reopen same-identity reseeding.
-        if let trackerSeedIdentifier {
-            trackerSeedGate.markLost(trackerSeedIdentifier)
+        if let trackerSeedSubject {
+            trackerSeedGate.markLost(trackerSeedSubject)
         }
         trackerRequest?.isLastFrame = true
         trackerRequest = nil
         trackerObservation = nil
         trackerEncounterID = nil
-        trackerSeedIdentifier = nil
+        trackerSeedSubject = nil
         trackerPresentationToken = nil
         spatialExitAccumulator.reset()
         trackerLifecycle = .continuityLost
@@ -1452,7 +1498,7 @@ final class CardScanner: NSObject, ObservableObject {
         trackerRequest = nil
         trackerObservation = nil
         trackerEncounterID = nil
-        trackerSeedIdentifier = nil
+        trackerSeedSubject = nil
         trackerPresentationToken = nil
         spatialExitAccumulator.reset()
         trackerLifecycle = .idle
@@ -1538,10 +1584,16 @@ final class CardScanner: NSObject, ObservableObject {
     private func handleFooterOutcome(
         _ outcome: RecognitionOutcome,
         footerLines: [RecognizedLine],
-        historicalIdentifier: ScanIdentifier?,
+        historicalSubject: ScanSubject?,
         at now: CFAbsoluteTime,
         pixelBuffer: CVPixelBuffer?
     ) {
+        updateActiveSlabPresence(
+            outcome: outcome,
+            historicalSubject: historicalSubject,
+            footerLines: footerLines
+        )
+
         // Vision's line grouping is preserved into the parsers, which is what
         // keeps a set code paired with its own collector number when more than
         // one card is visible.
@@ -1554,13 +1606,15 @@ final class CardScanner: NSObject, ObservableObject {
         // never a replacement for the scanner's normal ability to recognise a
         // card — the invariant being that no card is ever unrecognisable
         // because of what happened while looking at a previous one.
-        let parsed: ScanIdentifier?
+        let parsed: ScanSubject?
         switch outcome {
-        case let .identified(identifier):
+        case let .identified(subject):
             historicalAttempt = nil
-            parsed = identifier
+            parsed = activeSlab.map {
+                ScanSubject(identifier: subject.identifier, slab: $0.evidence)
+            } ?? subject
         case .nothing:
-            parsed = historicalIdentifier
+            parsed = historicalSubject
         case .ambiguous, .spatiallyRejectedMagicCollector:
             historicalAttempt = nil
             parsed = nil
@@ -1571,7 +1625,7 @@ final class CardScanner: NSObject, ObservableObject {
         // legible-but-unparseable for most of the movement, and the latch must
         // not read that as the card having left.
         let latchedBeforeObservation = latch.latched
-        let decision = latch.observe(parsed, cardPresent: !footerLines.isEmpty, at: now)
+        let decision = latch.observeSubject(parsed, cardPresent: !footerLines.isEmpty, at: now)
         if let parsed {
             DispatchQueue.main.async { [weak self] in
                 self?.onObservedCandidate?(parsed)
@@ -1587,16 +1641,19 @@ final class CardScanner: NSObject, ObservableObject {
                 encounterID: encounterID,
                 suppressionKey: latchedBeforeObservation.suppressionKey
             )
+            if latchedBeforeObservation.slab != nil {
+                clearActiveSlab()
+            }
         }
 
         switch decision {
         case .holdingLatch:
             announceLatchHoldIfNeeded()
 
-        case let .forward(observation):
+        case let .forwardSubject(observation):
             announcePlausible(observation)
 
-            guard let confirmed = confirmationWindow.observe(observation) else { return }
+            guard let confirmed = confirmationWindow.observeSubject(observation) else { return }
 
             if let authorization = activeHeldRepeatAuthorization {
                 if authorization.isExpired(at: now) {
@@ -1626,20 +1683,20 @@ final class CardScanner: NSObject, ObservableObject {
             if let pixelBuffer {
                 seedTracker(
                     encounterID: encounterID,
-                    identifier: confirmed,
+                    subject: confirmed,
                     pixelBuffer: pixelBuffer,
                     orientation: CardFramingRegion.imageOrientation(forRotationAngle: rotation.currentAngle),
                     at: now
                 )
             }
             DispatchQueue.main.async { [weak self] in
-                self?.onConfirmedCandidate?(encounterID, confirmed, nil)
+                self?.onConfirmedSubjectCandidate?(encounterID, confirmed, nil)
             }
 
-        case let .forwardAuthorized(observation):
+        case let .forwardAuthorizedSubject(observation):
             announcePlausible(observation)
 
-            guard let confirmed = confirmationWindow.observe(observation) else { return }
+            guard let confirmed = confirmationWindow.observeSubject(observation) else { return }
             guard let authorization = activeHeldRepeatAuthorization,
                   confirmed.suppressionKey == authorization.expectedSuppressionKey,
                   latch.consumeHeldRepeatAuthorization(for: authorization.expectedSuppressionKey) else {
@@ -1660,17 +1717,122 @@ final class CardScanner: NSObject, ObservableObject {
             if let pixelBuffer {
                 seedTracker(
                     encounterID: encounterID,
-                    identifier: confirmed,
+                    subject: confirmed,
                     pixelBuffer: pixelBuffer,
                     orientation: CardFramingRegion.imageOrientation(forRotationAngle: rotation.currentAngle),
                     at: now
                 )
             }
             DispatchQueue.main.async { [weak self] in
-                self?.onConfirmedCandidate?(encounterID, confirmed, authorizationID)
+                self?.onConfirmedSubjectCandidate?(encounterID, confirmed, authorizationID)
             }
+
         }
     }
+
+    private func activateSlab(_ evidence: GradedSlabEvidence, at now: CFAbsoluteTime) {
+        activeSlab = ActiveSlab(
+            evidence: evidence
+        )
+        activeSlabBaseIdentifier = nil
+        activeSlabEmptyFrames = 0
+        footerRequest.regionOfInterest = SlabFramingRegion.footerVisionRect(for: evidence.company)
+        titleRequest.regionOfInterest = SlabFramingRegion.titleVisionRect(for: evidence.company)
+        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: evidence.company)
+        DispatchQueue.main.async { [weak self] in
+            self?.slabFraming = evidence
+        }
+    }
+
+    private func clearActiveSlab() {
+        activeSlab = nil
+        activeSlabBaseIdentifier = nil
+        activeSlabEmptyFrames = 0
+        slabEvidenceWindow.reset()
+        footerRequest.regionOfInterest = CardFramingRegion.visionRect
+        titleRequest.regionOfInterest = CardFramingRegion.titleVisionRect
+        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect()
+        DispatchQueue.main.async { [weak self] in
+            self?.slabFraming = nil
+        }
+    }
+
+    /// Label OCR is intentionally lower cadence and can miss through slab
+    /// glare. Once the label has been confirmed, only an empty band or a
+    /// different footer identity may clear it; a label-pass lapse alone never
+    /// downgrades the subject to raw.
+    private func updateActiveSlabPresence(
+        outcome: RecognitionOutcome,
+        historicalSubject: ScanSubject?,
+        footerLines: [RecognizedLine]
+    ) {
+        guard activeSlab != nil else { return }
+
+        if footerLines.isEmpty {
+            activeSlabEmptyFrames += 1
+            if activeSlabEmptyFrames >= Self.slabBandEmptyFramesBeforeClear {
+                clearActiveSlab()
+            }
+            return
+        }
+        activeSlabEmptyFrames = 0
+
+        let footerIdentifier: ScanIdentifier? = switch outcome {
+        case let .identified(subject): subject.identifier
+        case .nothing, .ambiguous, .spatiallyRejectedMagicCollector:
+            historicalSubject?.identifier
+        }
+        guard let footerIdentifier else { return }
+
+        if let activeSlabBaseIdentifier,
+           activeSlabBaseIdentifier != footerIdentifier {
+            clearActiveSlab()
+            return
+        }
+        if activeSlabBaseIdentifier == nil {
+            activeSlabBaseIdentifier = footerIdentifier
+        }
+    }
+
+    private func detectSlabLabelIfDue(
+        handler: VNImageRequestHandler,
+        sourceSize: CGSize,
+        at now: CFAbsoluteTime
+    ) {
+        guard cadence.shouldRun(.label, at: now) else { return }
+
+        let company = activeSlab?.evidence.company
+        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: company)
+        do {
+            try handler.perform([labelRequest])
+            let lines = recognizedLines(
+                from: labelRequest,
+                roi: labelRequest.regionOfInterest,
+                sourceSize: sourceSize
+            )
+#if DEBUG
+            if Self.isGradedLabelCaptureDebugRoute {
+                let raw = lines.map(\.text).joined(separator: " | ")
+                let output = raw.isEmpty ? "<no text>" : raw
+                print("[GradedLabelCapture] \(output)")
+            }
+#endif
+            let evidence = GradedLabelParser.parse(lines)
+            guard let confirmed = slabEvidenceWindow.observe(evidence) else { return }
+            activateSlab(confirmed, at: now)
+        } catch {
+            _ = slabEvidenceWindow.observe(nil)
+        }
+    }
+
+#if DEBUG
+    private static var isGradedLabelCaptureDebugRoute: Bool {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_route"),
+              arguments.indices.contains(index + 1) else { return false }
+        return arguments[index + 1] == "GradedLabelCapture"
+    }
+#endif
 
     /// Creates or advances a short-lived historical attempt and reads the title
     /// from the same pixel buffer. A number must be visible again on every retry,
@@ -1715,7 +1877,7 @@ final class CardScanner: NSObject, ObservableObject {
             try handler.perform([titleRequest])
             let titleLines = recognizedLines(
                 from: titleRequest,
-                roi: CardFramingRegion.titleVisionRect,
+                roi: titleRequest.regionOfInterest,
                 sourceSize: sourceSize
             )
             if case let .pokemonHistorical(evidence)? = PokemonHistoricalScanParser.parse(
@@ -1741,7 +1903,7 @@ final class CardScanner: NSObject, ObservableObject {
 
     /// Speculation, and only speculation. The catalog de-duplicates, so an
     /// identifier that flickers in and out costs at most one request.
-    private func announcePlausible(_ observation: ScanIdentifier?) {
+    private func announcePlausible(_ observation: ScanSubject?) {
         guard let observation, observation != lastAnnouncedPlausible else { return }
         lastAnnouncedPlausible = observation
         DispatchQueue.main.async { [weak self] in
@@ -1776,6 +1938,7 @@ final class CardScanner: NSObject, ObservableObject {
         confirmationWindow.reset()
         latch.releaseAndForget()
         cancelHeldRepeatAuthorizationOnVisionQueue()
+        clearActiveSlab()
         latchEncounterID = nil
         didAnnounceLatchHold = false
         lastAnnouncedPlausible = nil
@@ -1864,8 +2027,10 @@ struct RecognitionProfile {
         switch (pokemon, magicOutcome) {
         case (nil, .nothing):
             return .nothing
-        case let (identifier?, .nothing), let (nil, .identified(identifier)):
-            return .identified(identifier)
+        case let (identifier?, .nothing):
+            return .identified(ScanSubject(identifier: identifier))
+        case let (nil, .identified(identifier)):
+            return .identified(ScanSubject(identifier: identifier))
         case (_?, .identified(_)):
             return .ambiguous
         case (nil, .spatiallyRejectedCollector):
@@ -1873,14 +2038,14 @@ struct RecognitionProfile {
         case let (identifier?, .spatiallyRejectedCollector):
             // Preserve modern Pokemon recognition if it independently earned an
             // identity; the rejected Magic-shaped reading is then irrelevant.
-            return .identified(identifier)
+            return .identified(ScanSubject(identifier: identifier))
         }
     }
 }
 
 enum RecognitionOutcome: Equatable {
     case nothing
-    case identified(ScanIdentifier)
+    case identified(ScanSubject)
     case spatiallyRejectedMagicCollector
     /// Both games produced a valid identifier from one frame.
     case ambiguous
@@ -1962,7 +2127,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             )
             let lines = recognizedLines(
                 from: footerRequest,
-                roi: CardFramingRegion.visionRect,
+                roi: footerRequest.regionOfInterest,
                 sourceSize: sourceSize
             )
             updateAssistance(from: lines)
@@ -1990,9 +2155,16 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             handleFooterOutcome(
                 outcome,
                 footerLines: lines,
-                historicalIdentifier: historical,
+                historicalSubject: historical.map {
+                    ScanSubject(identifier: $0, slab: activeSlab?.evidence)
+                },
                 at: now,
                 pixelBuffer: pixelBuffer
+            )
+            detectSlabLabelIfDue(
+                handler: handler,
+                sourceSize: sourceSize,
+                at: now
             )
         } catch {
 #if DEBUG
@@ -2007,7 +2179,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             handleFooterOutcome(
                 .nothing,
                 footerLines: [],
-                historicalIdentifier: nil,
+                historicalSubject: nil,
                 at: now,
                 pixelBuffer: nil
             )

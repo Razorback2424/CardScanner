@@ -152,6 +152,13 @@
 		A00100B3 /* PriceCheckResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B3 /* PriceCheckResultView.swift */; };
 		A00100B4 /* PriceCheckCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B4 /* PriceCheckCoordinator.swift */; };
 		A00100B5 /* PriceFallbackQuoteResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B5 /* PriceFallbackQuoteResolver.swift */; };
+		A00100B6 /* GradedLabelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B6 /* GradedLabelParser.swift */; };
+		A00100B7 /* SlabFramingRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B7 /* SlabFramingRegion.swift */; };
+		A00100B8 /* ScannedGradedResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B8 /* ScannedGradedResolver.swift */; };
+		A00200F8 /* GradedLabelParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F8 /* GradedLabelParserTests.swift */; };
+		A00200F9 /* SlabFramingRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F9 /* SlabFramingRegionTests.swift */; };
+		A00200FA /* ScanSubjectSuppressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200FA /* ScanSubjectSuppressionTests.swift */; };
+		A00200FB /* ScannedGradedResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200FB /* ScannedGradedResolverTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -314,6 +321,13 @@
 		B00100B3 /* PriceCheckResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceCheckResultView.swift; sourceTree = "<group>"; };
 		B00100B4 /* PriceCheckCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceCheckCoordinator.swift; sourceTree = "<group>"; };
 		B00100B5 /* PriceFallbackQuoteResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceFallbackQuoteResolver.swift; sourceTree = "<group>"; };
+		B00100B6 /* GradedLabelParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradedLabelParser.swift; sourceTree = "<group>"; };
+		B00100B7 /* SlabFramingRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlabFramingRegion.swift; sourceTree = "<group>"; };
+		B00100B8 /* ScannedGradedResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedGradedResolver.swift; sourceTree = "<group>"; };
+		B00200F8 /* GradedLabelParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradedLabelParserTests.swift; sourceTree = "<group>"; };
+		B00200F9 /* SlabFramingRegionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlabFramingRegionTests.swift; sourceTree = "<group>"; };
+		B00200FA /* ScanSubjectSuppressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSubjectSuppressionTests.swift; sourceTree = "<group>"; };
+		B00200FB /* ScannedGradedResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedGradedResolverTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -466,6 +480,9 @@
 				B00100B2 /* PriceQuoteService.swift */,
 				B00100B4 /* PriceCheckCoordinator.swift */,
 				B00100B5 /* PriceFallbackQuoteResolver.swift */,
+				B00100B6 /* GradedLabelParser.swift */,
+				B00100B7 /* SlabFramingRegion.swift */,
+				B00100B8 /* ScannedGradedResolver.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -550,6 +567,10 @@
 				B00200E2 /* MagicTreatmentTests.swift */,
 				B00200F6 /* ScannerViewModelTests.swift */,
 				B00200F7 /* UncoveredSurfaceTests.swift */,
+				B00200F8 /* GradedLabelParserTests.swift */,
+				B00200F9 /* SlabFramingRegionTests.swift */,
+				B00200FA /* ScanSubjectSuppressionTests.swift */,
+				B00200FB /* ScannedGradedResolverTests.swift */,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -666,6 +687,9 @@
 				A00100B3 /* PriceCheckResultView.swift in Sources */,
 				A00100B4 /* PriceCheckCoordinator.swift in Sources */,
 				A00100B5 /* PriceFallbackQuoteResolver.swift in Sources */,
+				A00100B6 /* GradedLabelParser.swift in Sources */,
+				A00100B7 /* SlabFramingRegion.swift in Sources */,
+				A00100B8 /* ScannedGradedResolver.swift in Sources */,
 				A0010070 /* CollectionActivity.swift in Sources */,
 				A0010071 /* CollectionActivityLogView.swift in Sources */,
 				A0010069 /* MagicPhysicalObjects.swift in Sources */,
@@ -804,6 +828,10 @@
 				A00200E2 /* MagicTreatmentTests.swift in Sources */,
 				A00200F6 /* ScannerViewModelTests.swift in Sources */,
 				A00200F7 /* UncoveredSurfaceTests.swift in Sources */,
+				A00200F8 /* GradedLabelParserTests.swift in Sources */,
+				A00200F9 /* SlabFramingRegionTests.swift in Sources */,
+				A00200FA /* ScanSubjectSuppressionTests.swift in Sources */,
+				A00200FB /* ScannedGradedResolverTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

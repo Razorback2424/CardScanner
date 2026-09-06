@@ -49,28 +49,32 @@ final class CardLatchTests: XCTestCase {
         )
     }
 
+    private func subject(_ identifier: ScanIdentifier) -> ScanSubject {
+        ScanSubject(identifier: identifier)
+    }
+
     /// A card left sitting in the band is read over and over. It must go in once.
     func testContinuouslyVisibleCardIsConsumedOnlyOnce() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in 1...40 {
-            XCTAssertEqual(latch.observe(card, at: Double(pass) * 0.25), .holdingLatch)
+            XCTAssertEqual(latch.observeSubject(subject(card), at: Double(pass) * 0.25), .holdingLatch)
         }
-        XCTAssertEqual(latch.latched, card)
+        XCTAssertEqual(latch.latched, subject(card))
     }
 
     func testLatchReleasesOnceTheIdentifierStopsBeingRead() {
         var latch = CardLatch(releaseAfterAbsences: 4)
-        latch.engage(on: pokemon(223), at: 0)
+        latch.engage(on: subject(pokemon(223)), at: 0)
 
         for pass in 1...3 {
-            XCTAssertEqual(latch.observe(nil, at: Double(pass) * 0.25), .forward(nil))
+            XCTAssertEqual(latch.observeSubject(nil, at: Double(pass) * 0.25), .forwardSubject(nil))
             XCTAssertNotNil(latch.latched)
         }
 
-        XCTAssertEqual(latch.observe(nil, at: 1.0), .forward(nil))
+        XCTAssertEqual(latch.observeSubject(nil, at: 1.0), .forwardSubject(nil))
         XCTAssertNil(latch.latched)
     }
 
@@ -79,21 +83,21 @@ final class CardLatchTests: XCTestCase {
         var latch = CardLatch()
         let first = pokemon(223)
         let second = pokemon(204, code: "PAL")
-        latch.engage(on: first, at: 0)
+        latch.engage(on: subject(first), at: 0)
 
-        XCTAssertEqual(latch.observe(second, at: 0.25), .forward(second))
-        XCTAssertTrue(latch.admits(second))
+        XCTAssertEqual(latch.observeSubject(subject(second), at: 0.25), .forwardSubject(subject(second)))
+        XCTAssertTrue(latch.admits(subject(second)))
     }
 
     /// One garbage reading must not unlock the card that is still sitting there.
     func testSingleStrayReadingDoesNotReleaseTheLatch() {
         var latch = CardLatch(releaseAfterAbsences: 4)
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
-        _ = latch.observe(pokemon(204, code: "PAL"), at: 0.25)
-        XCTAssertEqual(latch.latched, card)
-        XCTAssertEqual(latch.observe(card, at: 0.5), .holdingLatch)
+        _ = latch.observeSubject(subject(pokemon(204, code: "PAL")), at: 0.25)
+        XCTAssertEqual(latch.latched, subject(card))
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 0.5), .holdingLatch)
     }
 
     /// A focus wobble can produce several different valid-looking OCR parses
@@ -103,15 +107,15 @@ final class CardLatchTests: XCTestCase {
         var latch = CardLatch(releaseAfterAbsences: 4, minimumAbsenceBeforeRelatch: 2.0)
         let card = pokemon(223)
         let blurRead = pokemon(204, code: "PAL")
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in 1...8 {
-            _ = latch.observe(blurRead, at: Double(pass) * 0.25)
+            _ = latch.observeSubject(subject(blurRead), at: Double(pass) * 0.25)
         }
 
-        XCTAssertEqual(latch.latched, card)
-        XCTAssertFalse(latch.admits(card))
-        XCTAssertEqual(latch.observe(card, at: 2.25), .holdingLatch)
+        XCTAssertEqual(latch.latched, subject(card))
+        XCTAssertFalse(latch.admits(subject(card)))
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 2.25), .holdingLatch)
     }
 
     /// OCR losing the card to glare is not the card leaving. Even after the latch
@@ -119,49 +123,49 @@ final class CardLatchTests: XCTestCase {
     func testGlareGapCannotProduceADuplicate() {
         var latch = CardLatch(releaseAfterAbsences: 4, minimumAbsenceBeforeRelatch: 2.0)
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in 1...4 {
-            _ = latch.observe(nil, at: Double(pass) * 0.25)
+            _ = latch.observeSubject(nil, at: Double(pass) * 0.25)
         }
         XCTAssertNil(latch.latched, "the absence budget really did run out")
 
         // The card is read continuously from here on, as it would be in a real
         // session at four passes a second.
         for pass in stride(from: 1.25, through: 6.0, by: 0.25) {
-            _ = latch.observe(card, at: pass)
-            XCTAssertFalse(latch.admits(card), "no duplicate while the card is still being read")
+            _ = latch.observeSubject(subject(card), at: pass)
+            XCTAssertFalse(latch.admits(subject(card)), "no duplicate while the card is still being read")
         }
     }
 
     func testShortOCRAbsenceDoesNotReadmitConsumedCard() {
         var latch = CardLatch(releaseAfterAbsences: 4, minimumAbsenceBeforeRelatch: 2.0)
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in 1...6 {
-            _ = latch.observe(nil, at: Double(pass) * 0.25)
+            _ = latch.observeSubject(nil, at: Double(pass) * 0.25)
         }
         XCTAssertNil(latch.latched)
 
-        _ = latch.observe(card, at: 1.75)
-        XCTAssertFalse(latch.admits(card))
+        _ = latch.observeSubject(subject(card), at: 1.75)
+        XCTAssertFalse(latch.admits(subject(card)))
     }
 
     func testPausedRecognitionDoesNotAgeConsumedPrinting() {
         var latch = CardLatch(presumedGoneAfter: 6.0)
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         // No observation reaches the latch while a presentation sheet owns the
         // camera. The explicit clock shift is what the real scanner performs
         // on resume; without it this first blurry/empty frame would make the
         // stationary card look as though it had been gone for 30 seconds.
         latch.advanceObservedClock(by: 30)
-        _ = latch.observe(nil, cardPresent: false, at: 30.25)
-        _ = latch.observe(card, cardPresent: true, at: 30.50)
+        _ = latch.observeSubject(nil, cardPresent: false, at: 30.25)
+        _ = latch.observeSubject(subject(card), cardPresent: true, at: 30.50)
 
-        XCTAssertFalse(latch.admits(card))
+        XCTAssertFalse(latch.admits(subject(card)))
     }
 
     private func historical(_ localID: String, titles: [String]) -> ScanIdentifier {
@@ -188,13 +192,13 @@ final class CardLatchTests: XCTestCase {
         var latch = CardLatch()
         let card = pokemon(40)
         let blurredNeighbour = pokemon(46)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
-        latch.engage(on: blurredNeighbour, at: 0.5)
+        latch.engage(on: subject(blurredNeighbour), at: 0.5)
 
-        _ = latch.observe(card, at: 0.75)
+        _ = latch.observeSubject(subject(card), at: 0.75)
         XCTAssertFalse(
-            latch.admits(card),
+            latch.admits(subject(card)),
             "the card that was just added has not left the band"
         )
     }
@@ -209,13 +213,13 @@ final class CardLatchTests: XCTestCase {
         var latch = CardLatch()
         let firstReading = historical("004", titles: ["CHARIZARD"])
         let driftedReading = historical("004", titles: ["CHARIZARD", "STAGE 2"])
-        latch.engage(on: firstReading, at: 0)
+        latch.engage(on: subject(firstReading), at: 0)
 
-        latch.engage(on: driftedReading, at: 0.5)
+        latch.engage(on: subject(driftedReading), at: 0.5)
 
-        _ = latch.observe(firstReading, at: 0.75)
+        _ = latch.observeSubject(subject(firstReading), at: 0.75)
         XCTAssertFalse(
-            latch.admits(firstReading),
+            latch.admits(subject(firstReading)),
             "one card whose name read differently for a frame is still one card"
         )
     }
@@ -226,14 +230,14 @@ final class CardLatchTests: XCTestCase {
         var latch = CardLatch(releaseAfterAbsences: 2, minimumAbsenceBeforeRelatch: 0.5)
         let first = pokemon(40)
         let second = pokemon(46)
-        latch.engage(on: first, at: 0)
+        latch.engage(on: subject(first), at: 0)
 
         for pass in stride(from: 0.25, through: 1.5, by: 0.25) {
-            _ = latch.observe(nil, at: pass)
+            _ = latch.observeSubject(nil, at: pass)
         }
 
-        _ = latch.observe(second, at: 1.75)
-        XCTAssertTrue(latch.admits(second), "a different card must not be blocked")
+        _ = latch.observeSubject(subject(second), at: 1.75)
+        XCTAssertTrue(latch.admits(subject(second)), "a different card must not be blocked")
     }
 
     /// The reported workflow, exactly: the phone is stationary over the table and
@@ -246,15 +250,15 @@ final class CardLatchTests: XCTestCase {
     func testACardBeingLiftedOutOfTheBandIsNotReadmitted() {
         var latch = CardLatch()
         let card = pokemon(40)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in stride(from: 0.25, through: 2.5, by: 0.25) {
-            _ = latch.observe(nil, cardPresent: true, at: pass)
+            _ = latch.observeSubject(nil, cardPresent: true, at: pass)
         }
 
-        _ = latch.observe(card, cardPresent: true, at: 2.75)
+        _ = latch.observeSubject(subject(card), cardPresent: true, at: 2.75)
         XCTAssertFalse(
-            latch.admits(card),
+            latch.admits(subject(card)),
             "unreadable is not gone — the band was occupied the whole time"
         )
     }
@@ -264,30 +268,30 @@ final class CardLatchTests: XCTestCase {
     func testAMisreadDuringTheLiftDoesNotReadmitTheCard() {
         var latch = CardLatch()
         let card = pokemon(40)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in stride(from: 0.25, through: 1.5, by: 0.25) {
-            _ = latch.observe(nil, cardPresent: true, at: pass)
+            _ = latch.observeSubject(nil, cardPresent: true, at: pass)
         }
-        _ = latch.observe(pokemon(46), cardPresent: true, at: 1.75)
-        _ = latch.observe(pokemon(46), cardPresent: true, at: 2.0)
+        _ = latch.observeSubject(subject(pokemon(46)), cardPresent: true, at: 1.75)
+        _ = latch.observeSubject(subject(pokemon(46)), cardPresent: true, at: 2.0)
 
-        _ = latch.observe(card, cardPresent: true, at: 2.25)
-        XCTAssertFalse(latch.admits(card))
+        _ = latch.observeSubject(subject(card), cardPresent: true, at: 2.25)
+        XCTAssertFalse(latch.admits(subject(card)))
     }
 
     /// The distinction the fix rests on: an empty band still means the card left.
     func testAnEmptyBandStillMeansTheCardLeft() {
         var latch = CardLatch()
         let card = pokemon(40)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in stride(from: 0.25, through: 2.5, by: 0.25) {
-            _ = latch.observe(nil, cardPresent: false, at: pass)
+            _ = latch.observeSubject(nil, cardPresent: false, at: pass)
         }
 
-        _ = latch.observe(card, cardPresent: true, at: 2.75)
-        XCTAssertTrue(latch.admits(card), "nothing was in the band for two seconds")
+        _ = latch.observeSubject(subject(card), cardPresent: true, at: 2.75)
+        XCTAssertTrue(latch.admits(subject(card)), "nothing was in the band for two seconds")
     }
 
     /// Nothing may be suppressed forever. A band that is never empty — because
@@ -296,28 +300,28 @@ final class CardLatchTests: XCTestCase {
     func testAPrintingIsPresumedGoneOnceItHasNotBeenReadForALongTime() {
         var latch = CardLatch(presumedGoneAfter: 6.0)
         let card = pokemon(40)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in stride(from: 0.25, through: 6.5, by: 0.25) {
-            _ = latch.observe(pokemon(46), cardPresent: true, at: pass)
+            _ = latch.observeSubject(subject(pokemon(46)), cardPresent: true, at: pass)
         }
 
-        _ = latch.observe(card, cardPresent: true, at: 6.75)
-        XCTAssertTrue(latch.admits(card))
+        _ = latch.observeSubject(subject(card), cardPresent: true, at: 6.75)
+        XCTAssertTrue(latch.admits(subject(card)))
     }
 
     /// A genuine second copy: the first one leaves, then an identical card lands.
     func testSecondPhysicalCopyIsAdmittedAfterTheFirstLeaves() {
         var latch = CardLatch(releaseAfterAbsences: 2, minimumAbsenceBeforeRelatch: 2.0)
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in stride(from: 0.25, through: 2.0, by: 0.25) {
-            _ = latch.observe(nil, at: pass)
+            _ = latch.observeSubject(nil, at: pass)
         }
 
-        _ = latch.observe(card, at: 2.25)
-        XCTAssertTrue(latch.admits(card))
+        _ = latch.observeSubject(subject(card), at: 2.25)
+        XCTAssertTrue(latch.admits(subject(card)))
     }
 
     /// Undo and dismissing a question both keep the memory: the card is still in
@@ -325,79 +329,79 @@ final class CardLatchTests: XCTestCase {
     func testPlainReleaseKeepsRefusingTheCardStillInView() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
         latch.release()
 
         XCTAssertNil(latch.latched)
-        XCTAssertFalse(latch.admits(card))
+        XCTAssertFalse(latch.admits(subject(card)))
     }
 
     /// A dropped network request wrote nothing, so it must cost a re-read at most.
     func testReleaseAndForgetAdmitsTheVeryNextConfirmation() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
         latch.releaseAndForget()
 
-        XCTAssertEqual(latch.observe(card, at: 0.25), .forward(card))
-        XCTAssertTrue(latch.admits(card))
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 0.25), .forwardSubject(subject(card)))
+        XCTAssertTrue(latch.admits(subject(card)))
     }
 
     func testArmedRecheckBecomesAdmissibleOnlyAfterItsDelay() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
-        latch.armRecheck(for: card, at: 0.5, after: 1.25)
+        latch.engage(on: subject(card), at: 0)
+        latch.armRecheck(for: subject(card), at: 0.5, after: 1.25)
 
-        XCTAssertEqual(latch.observe(card, at: 1.749), .holdingLatch)
-        XCTAssertFalse(latch.admits(card))
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 1.749), .holdingLatch)
+        XCTAssertFalse(latch.admits(subject(card)))
 
-        XCTAssertEqual(latch.observe(card, at: 1.75), .forward(card))
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 1.75), .forwardSubject(subject(card)))
         XCTAssertNil(latch.latched)
-        XCTAssertTrue(latch.admits(card))
+        XCTAssertTrue(latch.admits(subject(card)))
     }
 
     func testArmedRecheckExpiresForAStationaryCardBeforeItsMatchingReadContinues() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
-        latch.armRecheck(for: card, at: 0, after: 1.25)
+        latch.engage(on: subject(card), at: 0)
+        latch.armRecheck(for: subject(card), at: 0, after: 1.25)
 
         for time in stride(from: 0.25, through: 1.0, by: 0.25) {
-            XCTAssertEqual(latch.observe(card, at: time), .holdingLatch)
-            XCTAssertFalse(latch.admits(card))
+            XCTAssertEqual(latch.observeSubject(subject(card), at: time), .holdingLatch)
+            XCTAssertFalse(latch.admits(subject(card)))
         }
 
         // A matching reading used to take the `continue` above, refresh
         // `lastSeenAt`, and keep the price-check latch engaged forever.
-        XCTAssertEqual(latch.observe(card, at: 1.25), .forward(card))
-        XCTAssertTrue(latch.admits(card))
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 1.25), .forwardSubject(subject(card)))
+        XCTAssertTrue(latch.admits(subject(card)))
     }
 
     func testArmingOneRecheckDoesNotForgetOtherConsumedPrintings() {
         var latch = CardLatch()
         let first = pokemon(223)
         let second = pokemon(204, code: "PAL")
-        latch.engage(on: first, at: 0)
-        latch.engage(on: second, at: 0.25)
-        latch.armRecheck(for: first, at: 0.5, after: 1.25)
+        latch.engage(on: subject(first), at: 0)
+        latch.engage(on: subject(second), at: 0.25)
+        latch.armRecheck(for: subject(first), at: 0.5, after: 1.25)
 
-        XCTAssertEqual(latch.observe(first, at: 1.75), .forward(first))
-        XCTAssertTrue(latch.admits(first))
-        XCTAssertFalse(latch.admits(second), "arming one Price Check re-read must keep other duplicate protection")
+        XCTAssertEqual(latch.observeSubject(subject(first), at: 1.75), .forwardSubject(subject(first)))
+        XCTAssertTrue(latch.admits(subject(first)))
+        XCTAssertFalse(latch.admits(subject(second)), "arming one Price Check re-read must keep other duplicate protection")
     }
 
     func testHeldMatchCountTracksHowLongTheSameCardHasBeenSittingThere() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         for pass in 1...5 {
-            _ = latch.observe(card, at: Double(pass) * 0.25)
+            _ = latch.observeSubject(subject(card), at: Double(pass) * 0.25)
         }
         XCTAssertEqual(latch.heldMatchCount, 5)
 
-        latch.engage(on: card, at: 2)
+        latch.engage(on: subject(card), at: 2)
         XCTAssertEqual(latch.heldMatchCount, 0)
     }
 
@@ -453,13 +457,13 @@ final class CardLatchTests: XCTestCase {
         let first = pokemon(223)
         let different = pokemon(204, code: "PAL")
 
-        gate.markLost(first)
-        XCTAssertFalse(gate.canSeed(first))
+        gate.markLost(subject(first))
+        XCTAssertFalse(gate.canSeed(subject(first)))
         gate.markLost(nil)
-        XCTAssertFalse(gate.canSeed(first), "a repeated invalidation cannot clear a lost lineage")
-        XCTAssertTrue(gate.canSeed(different))
+        XCTAssertFalse(gate.canSeed(subject(first)), "a repeated invalidation cannot clear a lost lineage")
+        XCTAssertTrue(gate.canSeed(subject(different)))
         XCTAssertTrue(
-            gate.canSeed(first),
+            gate.canSeed(subject(first)),
             "a different encounter may establish a new lineage and clear the old marker"
         )
     }
@@ -467,34 +471,34 @@ final class CardLatchTests: XCTestCase {
     func testHeldRepeatAuthorizationIsOneShotAndDoesNotMarkSpatialExit() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
         latch.authorizeHeldRepeat(for: card.suppressionKey)
-        XCTAssertEqual(latch.latched, card)
-        XCTAssertFalse(latch.admits(card), "authorization is not spatial exit evidence")
-        XCTAssertEqual(latch.observe(card, at: 0.25), .forwardAuthorized(card))
+        XCTAssertEqual(latch.latched, subject(card))
+        XCTAssertFalse(latch.admits(subject(card)), "authorization is not spatial exit evidence")
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 0.25), .forwardAuthorizedSubject(subject(card)))
         XCTAssertEqual(latch.heldMatchCount, 0, "the authorized frame is not a held presentation")
         XCTAssertTrue(latch.consumeHeldRepeatAuthorization(for: card.suppressionKey))
         XCTAssertFalse(latch.consumeHeldRepeatAuthorization(for: card.suppressionKey))
 
-        XCTAssertEqual(latch.observe(card, at: 0.5), .holdingLatch)
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 0.5), .holdingLatch)
 
-        latch.engage(on: card, at: 1)
-        XCTAssertFalse(latch.admits(card), "the newly authorized copy remains suppressed after its one use")
+        latch.engage(on: subject(card), at: 1)
+        XCTAssertFalse(latch.admits(subject(card)), "the newly authorized copy remains suppressed after its one use")
     }
 
     func testCancellingHeldRepeatRequiresFreshHeldObservationsBeforeAnotherOffer() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
         latch.authorizeHeldRepeat(for: card.suppressionKey)
         latch.cancelHeldRepeatAuthorization()
 
         for pass in 1..<8 {
-            XCTAssertEqual(latch.observe(card, at: Double(pass) * 0.25), .holdingLatch)
+            XCTAssertEqual(latch.observeSubject(subject(card), at: Double(pass) * 0.25), .holdingLatch)
         }
         XCTAssertEqual(latch.heldMatchCount, 7)
-        XCTAssertEqual(latch.observe(card, at: 2.0), .holdingLatch)
+        XCTAssertEqual(latch.observeSubject(subject(card), at: 2.0), .holdingLatch)
         XCTAssertEqual(latch.heldMatchCount, 8)
     }
 
@@ -502,22 +506,22 @@ final class CardLatchTests: XCTestCase {
         var latch = CardLatch()
         let first = pokemon(223)
         let different = pokemon(204, code: "PAL")
-        latch.engage(on: first, at: 0)
+        latch.engage(on: subject(first), at: 0)
         latch.authorizeHeldRepeat(for: first.suppressionKey)
 
         XCTAssertFalse(latch.consumeHeldRepeatAuthorization(for: different.suppressionKey))
         latch.cancelHeldRepeatAuthorization()
-        XCTAssertTrue(latch.admits(different))
+        XCTAssertTrue(latch.admits(subject(different)))
     }
 
     func testHeldRepeatAuthorizationCanReopenOnlyTheLostSeedGate() {
         var gate = SpatialTrackerSeedGate()
         let card = pokemon(223)
-        gate.markLost(card)
-        XCTAssertFalse(gate.canSeed(card))
+        gate.markLost(subject(card))
+        XCTAssertFalse(gate.canSeed(subject(card)))
 
         gate.allowAuthorizedReseed(for: card.suppressionKey)
-        XCTAssertTrue(gate.canSeed(card))
+        XCTAssertTrue(gate.canSeed(subject(card)))
     }
 
     func testHeldRepeatAuthorizationExpiryIsFakeClockable() {
@@ -533,7 +537,7 @@ final class CardLatchTests: XCTestCase {
     func testScanRequestCarriesHeldRepeatAuthorizationThroughResolution() {
         let authorizationID = UUID()
         let request = ScanRequest(
-            identifier: pokemon(223),
+            subject: subject(pokemon(223)),
             purpose: .collection,
             generation: 7,
             heldRepeatAuthorizationID: authorizationID
@@ -555,11 +559,11 @@ final class CardLatchTests: XCTestCase {
     func testOnlyPositiveSpatialExitMakesAConsumedPrintingReadmit() {
         var latch = CardLatch()
         let card = pokemon(223)
-        latch.engage(on: card, at: 0)
+        latch.engage(on: subject(card), at: 0)
 
-        XCTAssertFalse(latch.admits(card))
-        latch.confirmSpatialExit(for: card)
-        XCTAssertTrue(latch.admits(card))
+        XCTAssertFalse(latch.admits(subject(card)))
+        latch.confirmSpatialExit(for: subject(card))
+        XCTAssertTrue(latch.admits(subject(card)))
     }
 
     func testExitRequiresLowGuideOverlapEvenWhenCenterIsOutside() {

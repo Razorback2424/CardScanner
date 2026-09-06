@@ -219,10 +219,12 @@ final class MagicContentKindTests: XCTestCase {
         let regular = profile.parse(["MSH • 0017 • EN"])
         XCTAssertNotNil(token)
         XCTAssertNotNil(regular)
+        let tokenSubject = token.map { ScanSubject(identifier: $0) }
+        let regularSubject = regular.map { ScanSubject(identifier: $0) }
 
-        XCTAssertNil(window.observe(token))
-        XCTAssertNil(window.observe(regular), "a card must not confirm a token")
-        XCTAssertEqual(window.observe(token), token, "two token frames do confirm")
+        XCTAssertNil(window.observeSubject(tokenSubject))
+        XCTAssertNil(window.observeSubject(regularSubject), "a card must not confirm a token")
+        XCTAssertEqual(window.observeSubject(tokenSubject), tokenSubject, "two token frames do confirm")
     }
 
     // MARK: - Item kind stays a separate axis

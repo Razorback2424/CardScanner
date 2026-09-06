@@ -192,10 +192,14 @@ actor PriceRefreshModelActor {
                     >= PriceRefreshController.checkpointBudget
         }
 
-        // Unsupported graded rows still receive their capability stamp, but
-        // they do not spend a catalog request that cannot answer them.
+        // Only rows that cannot even form a graded request receive the
+        // capability stamp here. A scanned slab with a persisted underlying
+        // identity, grader and grade is requestable even when it has not yet
+        // acquired the vendor's variant UUID; refreshGraded owns that lookup.
         let unsupported = targets.filter {
-            $0.itemKind == .gradedCard && $0.marketVariantID == nil
+            $0.itemKind == .gradedCard
+                && $0.marketVariantID == nil
+                && !$0.canResolveGradedVariant
         }
         for target in unsupported {
             stage(store.recordUnsupportedProvider(
@@ -208,10 +212,15 @@ actor PriceRefreshModelActor {
         let unsupportedIDs = Set(unsupported.map(\.id))
         let supportedTargets = targets.filter { !unsupportedIDs.contains($0.id) }
         let vendorNative = supportedTargets.filter(\.isVendorNative)
+        // An unbound graded row is neither a catalog-card request nor a raw
+        // fallback candidate. It is handled by the v2 graded pass below.
+        let catalogTargets = supportedTargets.filter {
+            $0.itemKind != .gradedCard
+        }
 
         var order: [PriceTarget.Printing] = []
         var byPrinting: [PriceTarget.Printing: [PriceTarget]] = [:]
-        for target in supportedTargets where !target.isVendorNative {
+        for target in catalogTargets where !target.isVendorNative {
             if byPrinting[target.printing] == nil { order.append(target.printing) }
             byPrinting[target.printing, default: []].append(target)
         }
@@ -855,7 +864,9 @@ actor PriceRefreshModelActor {
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void
     ) async -> (priced: Int, persistenceFailed: Bool, lookupMisses: Int) {
         let slabs = targets.filter {
-            $0.itemKind == .gradedCard && $0.marketVariantID != nil
+            guard $0.itemKind == .gradedCard else { return false }
+            if $0.marketVariantID != nil { return true }
+            return $0.canResolveGradedVariant
         }
         guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
             return (0, false, 0)
@@ -875,6 +886,67 @@ actor PriceRefreshModelActor {
         var stagedWriteCount = 0
         var lastCommitAt = Date.now
 
+        // Binding is a collection-row mutation, but it happens in the same
+        // model context as the price write. Keeping these maps local avoids a
+        // fetch per slab while a response is being matched, and lets a newly
+        // bound row use its canonical vendor price key immediately.
+        let gradedRows = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        let rowsByCollectionKey = Dictionary(
+            grouping: gradedRows.filter { $0.itemKind == .gradedCard },
+            by: \.collectionKey
+        )
+        var rowsByVariantID = Dictionary(
+            grouping: gradedRows.compactMap { row -> (String, CollectedCard)? in
+                guard row.itemKind == .gradedCard,
+                      let variantID = row.justTCGVariantID else { return nil }
+                return (variantID, row)
+            },
+            by: \.0
+        ).mapValues { $0.map(\.1) }
+
+        func selectGradedVariant(
+            from variants: [GradedVariant],
+            target: PriceTarget
+        ) -> GradedVariant? {
+            guard let company = target.gradingCompany,
+                  let value = target.grade else { return nil }
+            return ScannedGradedResolver.matchingVariant(
+                in: variants,
+                for: GradedSlabEvidence(
+                    company: company,
+                    grade: CardGrade(
+                        value: value,
+                        label: target.gradeLabel,
+                        qualifier: target.gradingQualifier
+                    ),
+                    certificationNumber: nil,
+                    labelCardText: []
+                )
+            )
+        }
+
+        func row(for target: PriceTarget) -> CollectedCard? {
+            if let handle = target.marketVariantID,
+               let existing = rowsByVariantID[handle]?.first {
+                return existing
+            }
+            return rowsByCollectionKey[target.printingID]?.first
+        }
+
+        func bind(
+            _ variant: GradedVariant,
+            to target: PriceTarget
+        ) -> CollectedCard? {
+            guard target.marketVariantID == nil else { return row(for: target) }
+            guard let card = row(for: target) else { return nil }
+            card.justTCGVariantID = variant.id
+            card.justTCGCardID = variant.cardID ?? card.justTCGCardID
+            card.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
+            card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+            rowsByVariantID[variant.id, default: []].append(card)
+            return card
+        }
+
         func checkpoint(force: Bool = false) async {
             let due = force
                 || stagedWriteCount >= PriceRefreshController.stagedWriteCeiling
@@ -888,6 +960,21 @@ actor PriceRefreshModelActor {
                 lastCommitAt = .now
                 let deltas = takePriceDeltas(from: store)
                 if !deltas.isEmpty { await progress(.prices(deltas)) }
+            } else {
+                persistenceFailed = true
+            }
+        }
+
+        func stampUnsupported(_ target: PriceTarget) {
+            let accepted = store.recordUnsupportedProvider(
+                game: target.game,
+                printingID: target.printingID,
+                variantID: target.variantID,
+                treatmentIDs: target.magicTreatmentIDsRaw
+            )
+            if accepted {
+                stagedWriteCount += 1
+                rememberPriceKey(target.id)
             } else {
                 persistenceFailed = true
             }
@@ -911,6 +998,10 @@ actor PriceRefreshModelActor {
                     variants = values
                 case .cardFoundWithoutGradedVariants, .noProductMatch:
                     lookupMisses += group.count
+                    for target in group where target.marketVariantID == nil {
+                        stampUnsupported(target)
+                    }
+                    await checkpoint()
                     continue
                 }
             } catch {
@@ -922,13 +1013,24 @@ actor PriceRefreshModelActor {
                 uniquingKeysWith: { first, _ in first }
             )
             for target in group {
-                guard let handle = target.marketVariantID else { continue }
-                guard let variant = byVariantID[handle] else {
+                let variant: GradedVariant?
+                if let handle = target.marketVariantID {
+                    variant = byVariantID[handle]
+                } else {
+                    variant = selectGradedVariant(from: variants, target: target)
+                }
+                guard let variant else {
                     lookupMisses += 1
+                    if target.marketVariantID == nil {
+                        stampUnsupported(target)
+                    }
                     continue
                 }
-                guard let amount = variant.marketPriceUSD else { continue }
-                let accepted = store.store(
+
+                let owner = bind(variant, to: target)
+                let printingID = owner?.priceStorageID
+                    ?? "justtcg:\(JustTCGV2GradedClient.apiVersion):\(variant.id)"
+                let lookup: PriceLookup = if let amount = variant.marketPriceUSD {
                     .price(
                         NormalizedPrice(
                             unitMarketPriceUSD: amount,
@@ -938,21 +1040,32 @@ actor PriceRefreshModelActor {
                             sourceUpdatedAt: variant.updatedAt,
                             fetchedAt: .now
                         )
-                    ),
+                    )
+                } else {
+                    .unavailable(.justTCG)
+                }
+                let accepted = store.store(
+                    lookup,
                     game: target.game,
-                    printingID: target.printingID,
+                    printingID: printingID,
                     variantID: target.variantID,
                     marketVariantID: variant.id,
                     treatmentIDs: target.magicTreatmentIDsRaw
                 )
-                if let record = store.record(forKey: target.id) {
+                let canonicalKey = PriceRecord.key(
+                    game: target.game,
+                    printingID: printingID,
+                    variantID: target.variantID,
+                    treatmentIDs: target.magicTreatmentIDsRaw
+                )
+                if let record = store.record(forKey: canonicalKey) {
                     record.marketVariantID = variant.id
                     record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
                 }
                 if accepted {
-                    stagedPriced += 1
+                    if variant.marketPriceUSD != nil { stagedPriced += 1 }
                     stagedWriteCount += 1
-                    rememberPriceKey(target.id)
+                    rememberPriceKey(canonicalKey)
                 }
                 else { persistenceFailed = true }
             }
@@ -1008,6 +1121,10 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     /// owned rather than every permutation the vendor publishes.
     var gradingCompany: GradingCompany? = nil
     var grade: String? = nil
+    /// The vendor's grade label and qualifier are part of identity. A BGS 10,
+    /// BGS 10 Black Label and BGS 10 OC are not interchangeable holdings.
+    var gradeLabel: String? = nil
+    var gradingQualifier: String? = nil
     /// Treatment ids are part of the price identity. A direct provider product
     /// handle belongs to the exact printing, so a response may safely write a
     /// treated record under its own key; only handle-less searches are refused.
@@ -1021,14 +1138,26 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     /// These go straight to the vendor, keyed by the handle the row carries.
     ///
     /// Sealed products have no external catalog identity. Graded slabs are
-    /// vendor-native only after their stored variant handle is available; an
-    /// imported slab without that handle is not queryable by either provider
-    /// and is classified as unsupported before the catalog pass. Raw cards are
-    /// intentionally not vendor-native: a catalog response may still provide
-    /// a free price or the identity needed for a later fallback.
+    /// vendor-native only after their stored variant handle is available;
+    /// requestable handle-less slabs are handled by the separate v2 graded
+    /// lookup, while incomplete rows are stamped unsupported before the catalog
+    /// pass. Raw cards are intentionally not vendor-native: a catalog response
+    /// may still provide a free price or the identity needed for a later
+    /// fallback.
     var isVendorNative: Bool {
         itemKind == .sealedProduct
             || (itemKind == .gradedCard && marketVariantID != nil)
+    }
+
+    /// An unbound graded row can be asked about by the v2 catalogue when its
+    /// underlying card, grader and numeric grade are all persisted. The vendor
+    /// variant UUID is deliberately not required here: acquiring that UUID is
+    /// the job of the background graded refresh.
+    var canResolveGradedVariant: Bool {
+        itemKind == .gradedCard
+            && gradedIdentity != nil
+            && gradingCompany != nil
+            && grade != nil
     }
 
     var id: String {

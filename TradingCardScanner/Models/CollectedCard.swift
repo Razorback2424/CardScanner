@@ -385,6 +385,29 @@ final class CollectedCard {
         )
     }
 
+    /// Stable key for a slab read from the camera before the vendor has
+    /// supplied its graded-variant UUID. It deliberately stays in the graded
+    /// namespace so downstream collection and price consumers never treat it
+    /// as the raw printing.
+    static func scannedGradedCollectionKey(
+        game: CardGame,
+        underlyingPrintingID: String,
+        company: GradingCompany,
+        grade: CardGrade,
+        certificationNumber: String?,
+        magicTreatments: [MagicTreatment] = []
+    ) -> String {
+        var base = "graded:\(game.rawValue):\(underlyingPrintingID):g:\(company.rawValue)-\(grade.identityFragment)"
+        if let certificationNumber, !certificationNumber.isEmpty {
+            base += ":cert:\(certificationNumber)"
+        }
+        guard game == .magic else { return base }
+        return MagicTreatmentKeyCodec.appendCollectionSuffix(
+            to: base,
+            treatments: magicTreatments
+        )
+    }
+
     static func sealedCollectionKey(
         game: CardGame,
         productUUID: String,
@@ -430,6 +453,9 @@ final class CollectedCard {
             let version = justTCGAPIVersion ?? (itemKind == .gradedCard ? "v2" : "v1")
             return "justtcg:\(version):\(marketVariantID)"
         }
+        if itemKind == .gradedCard {
+            return collectionKey
+        }
         return pokemonPrintRun.map { "\(providerID)@\($0.rawValue)" } ?? providerID
     }
 
@@ -461,7 +487,8 @@ final class CollectedCard {
                 )
             )
         }
-        if itemKind != .rawCard, justTCGVariantID != nil {
+        if itemKind != .rawCard,
+           justTCGVariantID != nil || itemKind == .gradedCard {
             keys.append(PriceRecord.key(game: cardGame, printingID: providerID, variantID: variantID))
         }
         if itemKind == .rawCard,

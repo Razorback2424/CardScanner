@@ -158,7 +158,11 @@ final class QuoteCacheTests: XCTestCase {
             language: "en",
             contentKind: .regular
         )
-        let request = ScanRequest(identifier: identifier, purpose: .priceCheck, generation: 4)
+        let request = ScanRequest(
+            subject: ScanSubject(identifier: identifier),
+            purpose: .priceCheck,
+            generation: 4
+        )
 
         XCTAssertEqual(request.purpose, .priceCheck)
         XCTAssertEqual(request.generation, 4)
@@ -281,6 +285,48 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertTrue(try context.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
     }
 
+    func testGradedPriceCheckRefreshCachesTheVendorVariantKey() async throws {
+        let context = try makeContext()
+        let gradedVariant = GradedVariant(
+            id: "graded-v2-10",
+            cardID: "graded-card",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "GEM MT"),
+            marketPriceUSD: 125,
+            updatedAt: nil
+        )
+        let coordinator = PriceCheckCoordinator(
+            context: context,
+            gradedResolver: StubGradedResolver(outcome: .bound(gradedVariant))
+        )
+        let result = coordinator.present(
+            priceCheckScan(
+                slab: GradedSlabEvidence(
+                    company: .psa,
+                    grade: CardGrade(value: "10", label: "Gem Mint"),
+                    certificationNumber: "12345678",
+                    labelCardText: []
+                )
+            )
+        )
+
+        XCTAssertTrue(result.shouldAutoRefresh)
+        let refreshed = await coordinator.refresh(result)
+        guard case let .quote(.price(quote)) = refreshed else {
+            XCTFail("Expected a graded quote, got \(refreshed)")
+            return
+        }
+        XCTAssertEqual(quote.unitMarketPriceUSD, 125)
+        XCTAssertEqual(quote.sourceVariantID, gradedVariant.id)
+
+        let cached = QuoteCache(context: context).quote(
+            game: .pokemon,
+            printingID: "justtcg:v2:\(gradedVariant.id)",
+            variantID: nil
+        )
+        XCTAssertEqual(cached?.amount, 125)
+    }
+
     func testPriceCheckPassesTheResolvedVariantToItsRefreshProvider() async throws {
         let context = try makeContext()
         let provider = StubPriceCheckProvider(outcome: .failed(.noExactPrice))
@@ -317,7 +363,9 @@ final class QuoteCacheTests: XCTestCase {
     private func priceCheckScan(
         variant: PhysicalVariant? = nil,
         pricing: TCGdexPricing? = nil,
-        catalogRetrievedAt: Date = .now
+        catalogRetrievedAt: Date = .now,
+        slab: GradedSlabEvidence? = nil,
+        gradedOutcome: ScannedGradedOutcome? = nil
     ) -> ResolvedScan {
         let card = TCGdexCard(
             id: "sv10-085",
@@ -346,7 +394,11 @@ final class QuoteCacheTests: XCTestCase {
             )
         )
         return ResolvedScan(
-            request: ScanRequest(identifier: identifier, purpose: .priceCheck, generation: 0),
+            request: ScanRequest(
+                subject: ScanSubject(identifier: identifier, slab: slab),
+                purpose: .priceCheck,
+                generation: 0
+            ),
             card: .pokemon(card, setCode: "DRI"),
             resolved: ResolvedVariant(
                 variant: variant,
@@ -354,7 +406,8 @@ final class QuoteCacheTests: XCTestCase {
             ),
             pokemonPrintRun: nil,
             options: variant.map { [$0] } ?? [],
-            catalogRetrievedAt: catalogRetrievedAt
+            catalogRetrievedAt: catalogRetrievedAt,
+            gradedOutcome: gradedOutcome
         )
     }
 }
@@ -377,5 +430,17 @@ private final class StubPriceCheckProvider: PriceCheckRefreshProvider {
         calls += 1
         lastVariant = variant
         return outcome
+    }
+}
+
+private struct StubGradedResolver: ScannedGradedResolving {
+    let outcome: ScannedGradedOutcome
+
+    func resolve(
+        card: IdentifiedCard,
+        slab: GradedSlabEvidence,
+        pokemonPrintRun: PokemonPrintRun?
+    ) async -> ScannedGradedOutcome {
+        outcome
     }
 }

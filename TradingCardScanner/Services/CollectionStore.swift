@@ -1538,6 +1538,126 @@ struct CollectionStore {
         }
     }
 
+    /// Add a slab whose label is trusted but whose vendor variant has not yet
+    /// been bound. The row is still a complete graded object; a later refresh
+    /// may attach the vendor handles without changing its ownership identity.
+    @discardableResult
+    func addScannedGraded(
+        underlying card: IdentifiedCard,
+        company: GradingCompany,
+        grade: CardGrade,
+        certificationNumber: String?,
+        setReleaseOrder: Int? = nil
+    ) throws -> CollectionMutation {
+        do {
+            let magicTreatments = card.unambiguousMagicTreatments
+            let magicTreatmentQualifiers = card.variantEvidence.catalogVariants.count == 1
+                ? card.magicTreatmentQualifiers(for: card.variantEvidence.catalogVariants[0])
+                : [:]
+            let key = CollectedCard.scannedGradedCollectionKey(
+                game: card.game,
+                underlyingPrintingID: card.providerID,
+                company: company,
+                grade: grade,
+                certificationNumber: certificationNumber,
+                magicTreatments: magicTreatments
+            )
+            let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
+
+            if certificationNumber == nil,
+               let existing = try uniqueCard(
+                   forAnyKey: key,
+                   magicTreatmentIDsRaw: treatmentIDs
+               ) {
+                existing.quantity += 1
+                existing.dateAdded = .now
+                if existing.magicTreatmentQualifiersJSON == nil {
+                    existing.magicTreatmentQualifiers = magicTreatmentQualifiers
+                }
+                let operationID = UUID()
+                try requireAppended(
+                    ledger.record(
+                        existing,
+                        kind: inventoryKind(for: .gradedCatalog),
+                        source: .gradedCatalog,
+                        deltaQuantity: 1,
+                        operationID: operationID
+                    )
+                )
+                let activity = try appendActivity(
+                    existing,
+                    source: .gradedCatalog,
+                    kind: .added,
+                    deltaQuantity: 1,
+                    ledgerOperationIDs: [operationID]
+                )
+                try commit()
+                return CollectionMutation(
+                    collectionKey: key,
+                    activityID: activity.id,
+                    didInsert: false,
+                    ledgerOperationIDs: [operationID]
+                )
+            }
+
+            let row = CollectedCard(
+                collectionKey: key,
+                game: card.game,
+                providerID: key,
+                name: card.name,
+                setName: card.setName,
+                setCode: card.setCode,
+                cardNumber: card.cardNumber,
+                rarity: card.rarity,
+                imageURL: imageURL(for: card),
+                thumbnailURL: card.thumbnailImageURL?.absoluteString,
+                variant: nil,
+                variantResolution: .userConfirmed,
+                identityResolution: .catalogSelected,
+                setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
+                magicTreatments: magicTreatments,
+                magicTreatmentQualifiers: magicTreatmentQualifiers,
+                magicContentKind: card.magicContentKind
+            )
+            row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+            row.gradingCompanyRaw = company.rawValue
+            row.gradeRaw = grade.value
+            row.gradeLabel = grade.label
+            row.gradingQualifier = grade.qualifier
+            row.certificationNumber = certificationNumber
+            row.catalogProviderID = card.providerID
+            context.insert(row)
+
+            let operationID = UUID()
+            try requireAppended(
+                ledger.record(
+                    row,
+                    kind: inventoryKind(for: .gradedCatalog),
+                    source: .gradedCatalog,
+                    deltaQuantity: 1,
+                    operationID: operationID
+                )
+            )
+            let activity = try appendActivity(
+                row,
+                source: .gradedCatalog,
+                kind: .added,
+                deltaQuantity: 1,
+                ledgerOperationIDs: [operationID]
+            )
+            try commit()
+            return CollectionMutation(
+                collectionKey: key,
+                activityID: activity.id,
+                didInsert: true,
+                ledgerOperationIDs: [operationID]
+            )
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
     /// Add one sealed product. These aggregate normally — three identical
     /// booster boxes are a quantity of three.
     @discardableResult

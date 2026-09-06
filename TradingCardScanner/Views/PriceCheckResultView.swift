@@ -72,12 +72,23 @@ struct PriceCheckResultView: View {
                 .foregroundStyle(.secondary)
             Text(result.card.identifier)
                 .font(.headline.monospacedDigit())
+            if let slab = result.resolvedScan.request.subject.slab {
+                Text(slab.grade.display(company: slab.company))
+                    .font(.subheadline.weight(.semibold))
+                if let certificationNumber = slab.certificationNumber {
+                    Text("Cert \(certificationNumber)")
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+            }
             if let printRun = result.pokemonPrintRun {
                 Text(printRun.label)
                     .font(.subheadline.weight(.semibold))
             }
-            Text(result.resolved.label)
-                .font(.subheadline.weight(.semibold))
+            if result.resolvedScan.request.subject.slab == nil {
+                Text(result.resolved.label)
+                    .font(.subheadline.weight(.semibold))
+            }
             if let rarity = result.card.rarity {
                 Text(rarity)
                     .font(.subheadline)
@@ -118,6 +129,12 @@ struct PriceCheckResultView: View {
                 }
             } else {
                 noQuoteState
+            }
+
+            if result.resolvedScan.request.subject.slab != nil {
+                Text("Beta graded pricing.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             Button {
@@ -179,6 +196,18 @@ struct PriceCheckResultView: View {
                 "Treatment price unavailable",
                 systemImage: "tag.slash",
                 description: Text("The optional fallback provider has no direct product identity for this treatment, so a name/set search is not used to avoid borrowing another printing's price.")
+            )
+        case .gradedGradeNotPriced:
+            ContentUnavailableView(
+                "No graded price published",
+                systemImage: "seal",
+                description: Text("The provider matched the card but has no price for this exact grader and grade.")
+            )
+        case .gradedProductNotMatched:
+            ContentUnavailableView(
+                "Graded product not matched",
+                systemImage: "questionmark.folder",
+                description: Text("The graded pricing provider could not match this card to a product.")
             )
         case .providerUnavailable:
             ContentUnavailableView(
@@ -262,6 +291,10 @@ struct PriceCheckResultView: View {
             return "Finish not supported by the fallback provider — showing last known"
         case .unsupportedTreatment:
             return "Treatment not supported by the fallback provider — showing last known"
+        case .gradedGradeNotPriced:
+            return "No graded price published — showing last known"
+        case .gradedProductNotMatched:
+            return "Graded product not matched — showing last known"
         case .providerUnavailable:
             return "Couldn’t update — showing last known"
         case .fallbackDisabled:

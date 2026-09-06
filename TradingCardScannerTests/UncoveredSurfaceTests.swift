@@ -53,7 +53,7 @@ private enum UncoveredSurfaceFixtures {
         encounterID: UUID = UUID()
     ) -> ScanRequest {
         ScanRequest(
-            identifier: .pokemon(
+            subject: ScanSubject(identifier: .pokemon(
                 setCode: "TST",
                 cardNumber: "001",
                 printedTotal: 10,
@@ -63,7 +63,7 @@ private enum UncoveredSurfaceFixtures {
                     officialCount: 10,
                     releaseIndex: 0
                 )
-            ),
+            )),
             purpose: purpose,
             generation: 1,
             encounterID: encounterID
@@ -85,7 +85,7 @@ private enum UncoveredSurfaceFixtures {
 
     static func recentScan() -> RecentScan {
         RecentScan(
-            identifier: scanRequest().identifier,
+            subject: scanRequest().subject,
             card: identifiedCard(),
             resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
             options: [.normal],
@@ -1018,7 +1018,7 @@ final class ScannerOverlaySmokeTests: XCTestCase {
             previousPresentationToken: UUID(),
             encounterID: resolvedScan.request.encounterID,
             identity: candidate.identity,
-            suppressionKey: resolvedScan.request.identifier.suppressionKey,
+            suppressionKey: resolvedScan.request.subject.suppressionKey,
             cardName: "Test Card",
             printedIdentifier: "TST 001/10"
         )

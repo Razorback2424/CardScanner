@@ -367,22 +367,24 @@ final class ScanParserTests: XCTestCase {
 
     func testConfirmationAllowsOneMissBetweenMatches() {
         let candidate = try! XCTUnwrap(ScanParser.parsePokemon("OBF223/197"))
+        let subject = ScanSubject(identifier: candidate)
         var window = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
 
-        XCTAssertNil(window.observe(candidate))
-        XCTAssertNil(window.observe(nil))
-        XCTAssertEqual(window.observe(candidate), candidate)
+        XCTAssertNil(window.observeSubject(subject))
+        XCTAssertNil(window.observeSubject(nil))
+        XCTAssertEqual(window.observeSubject(subject), subject)
     }
 
     func testConfirmationDoesNotKeepStaleCandidateForever() {
         let candidate = try! XCTUnwrap(ScanParser.parsePokemon("OBF223/197"))
+        let subject = ScanSubject(identifier: candidate)
         var window = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
 
-        XCTAssertNil(window.observe(candidate))
-        XCTAssertNil(window.observe(nil))
-        XCTAssertNil(window.observe(nil))
-        XCTAssertNil(window.observe(nil))
-        XCTAssertNil(window.observe(candidate))
+        XCTAssertNil(window.observeSubject(subject))
+        XCTAssertNil(window.observeSubject(nil))
+        XCTAssertNil(window.observeSubject(nil))
+        XCTAssertNil(window.observeSubject(nil))
+        XCTAssertNil(window.observeSubject(subject))
     }
 
     private func historicalEvidence(
@@ -724,7 +726,7 @@ final class ScanParserTests: XCTestCase {
     func testPokemonCardIsRecognisedWithoutBeingToldTheGame() {
         XCTAssertEqual(
             combinedProfile.identify(["ILLUS. MASCAGNI", "OBF 223/197"]),
-            .identified(ScanParser.parsePokemon("OBF 223/197")!)
+            RecognitionOutcome.identified(ScanSubject(identifier: ScanParser.parsePokemon("OBF 223/197")!))
         )
     }
 

@@ -24,13 +24,13 @@ import Foundation
 /// Time is passed in rather than read so the whole thing is testable.
 struct CardLatch: Equatable {
     enum Decision: Equatable {
-        /// Hand this observation to the confirmation window.
-        case forward(ScanIdentifier?)
+        /// Hand this subject observation to the slab-aware confirmation window.
+        case forwardSubject(ScanSubject?)
         /// Hand this matching observation to the confirmation window under a
         /// user-authorized, one-shot permit. This is deliberately distinct
         /// from ordinary forwarding so admission cannot fall through to
         /// `admits` after the permit is consumed.
-        case forwardAuthorized(ScanIdentifier)
+        case forwardAuthorizedSubject(ScanSubject)
         /// Same physical presentation as the one already consumed. Ignore it.
         case holdingLatch
     }
@@ -66,7 +66,10 @@ struct CardLatch: Equatable {
     /// only has to span one hand movement.
     static let recentlyConsumedLimit = 6
 
-    private(set) var latched: ScanIdentifier?
+    /// The authoritative identity of the consumed presentation, including any
+    /// confirmed slab evidence. Keeping the slab on the latch is what prevents
+    /// a PSA 9 from being treated as the already-consumed PSA 10.
+    private(set) var latched: ScanSubject?
     /// Consecutive readings of the latched printing since it was consumed. Lets
     /// the UI explain the one confusing case — a second identical copy dropped in
     /// too quickly — instead of silently ignoring it.
@@ -116,8 +119,8 @@ struct CardLatch: Equatable {
     ///   being moved spends most of the movement in the second state, and
     ///   counting that as the card leaving is what lets the very same card be
     ///   added again the moment it comes back into focus.
-    mutating func observe(
-        _ observation: ScanIdentifier?,
+    mutating func observeSubject(
+        _ observation: ScanSubject?,
         cardPresent: Bool = false,
         at now: CFAbsoluteTime
     ) -> Decision {
@@ -129,7 +132,7 @@ struct CardLatch: Equatable {
 
         updateConsumedPresence(with: observation, cardPresent: cardPresent, at: now)
 
-        guard latched != nil else { return .forward(observation) }
+        guard latched != nil else { return .forwardSubject(observation) }
 
         if let authorizedKey = heldRepeatAuthorizationKey,
            authorizedKey == latched?.suppressionKey,
@@ -138,7 +141,7 @@ struct CardLatch: Equatable {
             // Keep forwarding the matching confirmation frames while the
             // permit is armed. The scanner consumes the permit only once the
             // normal two-match confirmation window succeeds.
-            return .forwardAuthorized(observation)
+            return .forwardAuthorizedSubject(observation)
         }
 
         if observation?.suppressionKey == latched?.suppressionKey {
@@ -151,7 +154,7 @@ struct CardLatch: Equatable {
         if consecutiveAbsences >= releaseAfterAbsences {
             release()
         }
-        return .forward(observation)
+        return .forwardSubject(observation)
     }
 
     /// Ages every remembered printing against this observation.
@@ -164,7 +167,7 @@ struct CardLatch: Equatable {
     ///
     /// A reading only ever speaks for the one printing it matches.
     private mutating func updateConsumedPresence(
-        with observation: ScanIdentifier?,
+        with observation: ScanSubject?,
         cardPresent: Bool,
         at now: CFAbsoluteTime
     ) {
@@ -213,13 +216,13 @@ struct CardLatch: Equatable {
     ///
     /// Time does not appear here: `observe` is what decides that a consumed
     /// printing has genuinely been away, so this stays a simple fact lookup.
-    func admits(_ confirmed: ScanIdentifier) -> Bool {
+    func admits(_ confirmed: ScanSubject) -> Bool {
         let key = confirmed.suppressionKey
         guard let printing = consumed.first(where: { $0.key == key }) else { return true }
         return printing.hasLeft
     }
 
-    mutating func engage(on identifier: ScanIdentifier, at now: CFAbsoluteTime) {
+    mutating func engage(on identifier: ScanSubject, at now: CFAbsoluteTime) {
         heldRepeatAuthorizationKey = nil
         latched = identifier
         heldMatchCount = 0
@@ -232,7 +235,7 @@ struct CardLatch: Equatable {
     /// this preserves every other consumed printing and all of their duplicate
     /// protections.
     mutating func armRecheck(
-        for identifier: ScanIdentifier,
+        for identifier: ScanSubject,
         at now: CFAbsoluteTime,
         after delay: TimeInterval
     ) {
@@ -278,7 +281,7 @@ struct CardLatch: Equatable {
 
     /// Moves a printing to the front of the memory, forgetting what was known
     /// about it before: it has just been counted, so it is present by definition.
-    private mutating func remember(_ identifier: ScanIdentifier, at now: CFAbsoluteTime) {
+    private mutating func remember(_ identifier: ScanSubject, at now: CFAbsoluteTime) {
         let key = identifier.suppressionKey
         consumed.removeAll { $0.key == key }
         consumed.insert(ConsumedPrinting(key: key, lastSeenAt: now), at: 0)
@@ -303,7 +306,7 @@ struct CardLatch: Equatable {
     /// `SpatialResetProof` before any duplicate mutation.
     /// The latch still owns only suppression state; it does not know why a
     /// collection mutation might happen.
-    mutating func confirmSpatialExit(for identifier: ScanIdentifier) {
+    mutating func confirmSpatialExit(for identifier: ScanSubject) {
         let key = identifier.suppressionKey
         guard let index = consumed.firstIndex(where: { $0.key == key }) else { return }
         consumed[index].hasLeft = true

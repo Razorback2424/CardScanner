@@ -23,6 +23,7 @@ struct CameraPreview: UIViewRepresentable {
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation
+        view.slabFraming = scanner.slabFraming
         view.syncSuccessCount(successCount)
 #if DEBUG
         view.debugVisionBoxes = scanner.debugVisionBoxes
@@ -33,6 +34,7 @@ struct CameraPreview: UIViewRepresentable {
     func updateUIView(_ uiView: PreviewView, context: Context) {
         uiView.previewLayer.session = scanner.session
         uiView.rotation = scanner.rotation
+        uiView.slabFraming = scanner.slabFraming
         uiView.syncSuccessCount(successCount)
 #if DEBUG
         uiView.debugVisionBoxes = scanner.debugVisionBoxes
@@ -50,6 +52,7 @@ final class PreviewView: UIView {
     private var rotationAngle = CameraRotationTracker.defaultAngle
 
     private let cardRegionLayer = CAShapeLayer()
+    private let slabCardRegionLayer = CAShapeLayer()
     private let scanRegionLayer = CALayer()
     private var lastSuccessCount = 0
 #if DEBUG
@@ -58,6 +61,10 @@ final class PreviewView: UIView {
         didSet { setNeedsLayout() }
     }
 #endif
+
+    var slabFraming: GradedSlabEvidence? {
+        didSet { setNeedsLayout() }
+    }
 
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
@@ -102,23 +109,55 @@ final class PreviewView: UIView {
         // ScanRegion explicitly converts Vision's portrait/bottom-left ROI into
         // AVFoundation's unrotated-landscape/top-left metadata coordinates first.
         // The preview layer then applies orientation and aspect-fill geometry.
+        let scanVisionRect: CGRect
+        let outerVisionRect: CGRect
+        let innerVisionRect: CGRect?
+        if let slabFraming {
+            // Success belongs to the card footer that established the catalog
+            // identity. The label outline remains part of the slab guide, but
+            // the green flash must not point at a different OCR band.
+            scanVisionRect = SlabFramingRegion.footerVisionRect(for: slabFraming.company)
+            outerVisionRect = SlabFramingRegion.slabVisionRect(for: slabFraming.company)
+            innerVisionRect = SlabFramingRegion.cardWindowVisionRect(for: slabFraming.company)
+        } else {
+            scanVisionRect = CardFramingRegion.visionRect
+            outerVisionRect = CardFramingRegion.cardVisionRect
+            innerVisionRect = nil
+        }
+
         scanRegionLayer.frame = previewLayer.layerRectConverted(
             fromMetadataOutputRect: CardFramingRegion.metadataRect(
-                fromVisionRect: CardFramingRegion.visionRect,
+                fromVisionRect: scanVisionRect,
                 rotationAngle: rotationAngle
             )
         )
         let cardRect = previewLayer.layerRectConverted(
             fromMetadataOutputRect: CardFramingRegion.metadataRect(
-                fromVisionRect: CardFramingRegion.cardVisionRect,
+                fromVisionRect: outerVisionRect,
                 rotationAngle: rotationAngle
             )
         )
         cardRegionLayer.frame = cardRect
         cardRegionLayer.path = UIBezierPath(
             roundedRect: cardRegionLayer.bounds,
-            cornerRadius: 14
+            cornerRadius: slabFraming == nil ? 14 : 18
         ).cgPath
+
+        if let innerVisionRect {
+            slabCardRegionLayer.isHidden = false
+            slabCardRegionLayer.frame = previewLayer.layerRectConverted(
+                fromMetadataOutputRect: CardFramingRegion.metadataRect(
+                    fromVisionRect: innerVisionRect,
+                    rotationAngle: rotationAngle
+                )
+            )
+            slabCardRegionLayer.path = UIBezierPath(
+                roundedRect: slabCardRegionLayer.bounds,
+                cornerRadius: 8
+            ).cgPath
+        } else {
+            slabCardRegionLayer.isHidden = true
+        }
 
 #if DEBUG
         layoutDebugVisionBoxes()
@@ -165,6 +204,13 @@ final class PreviewView: UIView {
         cardRegionLayer.lineWidth = 2
         cardRegionLayer.lineDashPattern = [8, 6]
         previewLayer.addSublayer(cardRegionLayer)
+
+        slabCardRegionLayer.fillColor = UIColor.clear.cgColor
+        slabCardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.52).cgColor
+        slabCardRegionLayer.lineWidth = 1.5
+        slabCardRegionLayer.lineDashPattern = [5, 5]
+        slabCardRegionLayer.isHidden = true
+        previewLayer.addSublayer(slabCardRegionLayer)
 
         scanRegionLayer.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
         scanRegionLayer.borderColor = UIColor.systemGreen.cgColor

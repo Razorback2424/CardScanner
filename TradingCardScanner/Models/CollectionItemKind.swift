@@ -63,6 +63,7 @@ enum GradingCompany: String, Codable, CaseIterable, Hashable, Sendable {
     case sgc
     case bccg
     case bvg
+    case tag
 
     var label: String {
         switch self {
@@ -72,6 +73,7 @@ enum GradingCompany: String, Codable, CaseIterable, Hashable, Sendable {
         case .sgc: return "SGC"
         case .bccg: return "BCCG"
         case .bvg: return "BVG"
+        case .tag: return "TAG"
         }
     }
 

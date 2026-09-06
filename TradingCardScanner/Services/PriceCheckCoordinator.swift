@@ -16,6 +16,10 @@ enum PriceCheckRefreshIssue: Equatable, Sendable {
     /// resolver did not use a name/set search and the result is not evidence
     /// that the card is absent.
     case unsupportedTreatment
+    /// The card matched, but the exact grader/grade has no published variant.
+    case gradedGradeNotPriced
+    /// The underlying card could not be matched to a graded vendor product.
+    case gradedProductNotMatched
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -33,6 +37,8 @@ enum PriceCheckQuoteState: Equatable, Sendable {
     case notMatched
     case unsupportedFinish
     case unsupportedTreatment
+    case gradedGradeNotPriced
+    case gradedProductNotMatched
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -153,19 +159,79 @@ final class PriceCheckCoordinator {
     private let cache: QuoteCache
     private let collectionPrices: PriceStore
     private let refreshProvider: PriceCheckRefreshProvider
+    private let gradedResolver: ScannedGradedResolving
 
     init(
         context: ModelContext,
-        refreshProvider: PriceCheckRefreshProvider? = nil
+        refreshProvider: PriceCheckRefreshProvider? = nil,
+        gradedResolver: ScannedGradedResolving = ScannedGradedResolver()
     ) {
         cache = QuoteCache(context: context)
         collectionPrices = PriceStore(context: context)
         let fallbackResolver = PriceFallbackQuoteResolver(context: context)
         self.refreshProvider = refreshProvider
             ?? LivePriceCheckRefreshProvider(fallbackResolver: fallbackResolver)
+        self.gradedResolver = gradedResolver
     }
 
     func present(_ resolvedScan: ResolvedScan) -> PriceCheckResult {
+        if resolvedScan.request.subject.slab != nil {
+            let quote: PriceLookup
+            let state: PriceCheckQuoteState
+            switch resolvedScan.gradedOutcome {
+            case let .bound(variant):
+                if let amount = variant.marketPriceUSD {
+                    quote = .price(
+                        NormalizedPrice(
+                            unitMarketPriceUSD: amount,
+                            currencyCode: "USD",
+                            source: .justTCG,
+                            sourceVariantID: variant.id,
+                            sourceUpdatedAt: variant.updatedAt,
+                            fetchedAt: .now
+                        )
+                    )
+                    state = .current
+                } else {
+                    quote = .unavailable(.justTCG)
+                    state = .gradedGradeNotPriced
+                }
+            case .unpricedGrade:
+                quote = .unavailable(.justTCG)
+                state = .gradedGradeNotPriced
+            case .unmatchedProduct:
+                quote = .unavailable(.justTCG)
+                state = .gradedProductNotMatched
+            case .unavailable, .none:
+                quote = .unavailable(PriceVendorCredentials.hasKey ? .justTCG : nil)
+                state = PriceVendorCredentials.hasKey ? .providerUnavailable : .fallbackUnconfigured
+            }
+            let shouldAutoRefresh = state == .providerUnavailable || state == .fallbackUnconfigured
+            if case let .bound(variant)? = resolvedScan.gradedOutcome,
+               case .price = quote {
+                let key = QuoteKey(
+                    game: resolvedScan.card.game,
+                    printingID: "justtcg:v2:\(variant.id)",
+                    variantID: nil,
+                    treatmentIDs: []
+                )
+                _ = cache.store(
+                    quote,
+                    game: key.game,
+                    printingID: key.printingID,
+                    variantID: key.variantID,
+                    treatmentIDs: key.treatmentIDs
+                )
+            }
+            return PriceCheckResult(
+                resolvedScan: resolvedScan,
+                quote: quote,
+                checkedAt: .now,
+                quoteState: state,
+                shouldAutoRefresh: shouldAutoRefresh
+            )
+        }
+
         let catalogQuote = CardPricing.price(
             for: resolvedScan.card,
             variant: resolvedScan.resolved.variant,
@@ -235,6 +301,47 @@ final class PriceCheckCoordinator {
     }
 
     func refresh(_ result: PriceCheckResult) async -> PriceCheckRefreshOutcome {
+        if let slab = result.resolvedScan.request.subject.slab {
+            let outcome = await gradedResolver.resolve(
+                card: result.card,
+                slab: slab,
+                pokemonPrintRun: result.pokemonPrintRun
+            )
+            switch outcome {
+            case let .bound(variant):
+                guard let amount = variant.marketPriceUSD else {
+                    return .failed(.gradedGradeNotPriced)
+                }
+                let quote: PriceLookup = .price(
+                    NormalizedPrice(
+                        unitMarketPriceUSD: amount,
+                        currencyCode: "USD",
+                        source: .justTCG,
+                        sourceVariantID: variant.id,
+                        sourceUpdatedAt: variant.updatedAt,
+                        fetchedAt: .now
+                    )
+                )
+                let key = quoteKey(for: result.resolvedScan, gradedVariant: variant)
+                _ = cache.store(
+                    quote,
+                    game: key.game,
+                    printingID: key.printingID,
+                    variantID: key.variantID,
+                    treatmentIDs: key.treatmentIDs
+                )
+                return .quote(quote)
+            case .unpricedGrade:
+                return .failed(.gradedGradeNotPriced)
+            case .unmatchedProduct:
+                return .failed(.gradedProductNotMatched)
+            case .unavailable:
+                return PriceVendorCredentials.hasKey
+                    ? .failed(.providerUnavailable)
+                    : .failed(.fallbackUnconfigured)
+            }
+        }
+
         let outcome = await refreshProvider.refresh(
             card: result.card,
             variant: result.resolved.variant,
@@ -280,7 +387,10 @@ final class PriceCheckCoordinator {
     }
 
     private func quoteKey(for resolvedScan: ResolvedScan) -> QuoteKey {
-        QuoteKey(
+        if case let .bound(variant)? = resolvedScan.gradedOutcome {
+            return quoteKey(for: resolvedScan, gradedVariant: variant)
+        }
+        return QuoteKey(
             game: resolvedScan.card.game,
             printingID: PriceFallbackQuoteResolver.printingID(
                 for: resolvedScan.card,
@@ -290,6 +400,18 @@ final class PriceCheckCoordinator {
             treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
                 from: resolvedScan.card.magicTreatments(for: resolvedScan.resolved.variant)
             )
+        )
+    }
+
+    private func quoteKey(
+        for resolvedScan: ResolvedScan,
+        gradedVariant: GradedVariant
+    ) -> QuoteKey {
+        QuoteKey(
+            game: resolvedScan.card.game,
+            printingID: "justtcg:v2:\(gradedVariant.id)",
+            variantID: nil,
+            treatmentIDs: []
         )
     }
 

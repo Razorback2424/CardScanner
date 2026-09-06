@@ -62,6 +62,8 @@ enum PriceRefreshTargets {
                     : nil,
                 gradingCompany: card.gradingCompany,
                 grade: card.gradeRaw,
+                gradeLabel: card.gradeLabel,
+                gradingQualifier: card.gradingQualifier,
                 magicTreatmentIDsRaw: card.priceTreatmentIDs
             )
             target.fallbackIdentity = ImportedPriceIdentity(

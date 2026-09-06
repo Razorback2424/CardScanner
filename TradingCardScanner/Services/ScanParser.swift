@@ -117,9 +117,10 @@ enum ScanIdentifier: Equatable, Hashable, Sendable {
 /// same trade the latch already makes for two identical copies back to back, and
 /// it errs the same way: a missed card costs one more pass, a phantom duplicate
 /// quietly corrupts a collection.
-enum ScanSuppressionKey: Hashable, Sendable {
+indirect enum ScanSuppressionKey: Hashable, Sendable {
     case identifier(ScanIdentifier)
     case pokemonPrintedNumber(PokemonPrintedNumberEvidence)
+    case gradedSlab(base: ScanSuppressionKey, slab: String)
 }
 
 extension ScanIdentifier {
@@ -133,18 +134,49 @@ extension ScanIdentifier {
     }
 }
 
+/// What the camera is looking at: the printed card identity plus the slab
+/// label evidence, when the label has earned its own confirmation.
+///
+/// The catalog still resolves only `identifier`. The slab belongs to the
+/// physical-object path that follows resolution, where it affects duplicate
+/// suppression, pricing, and collection identity.
+struct ScanSubject: Equatable, Hashable, Sendable {
+    let identifier: ScanIdentifier
+    let slab: GradedSlabEvidence?
+
+    init(identifier: ScanIdentifier, slab: GradedSlabEvidence? = nil) {
+        self.identifier = identifier
+        self.slab = slab
+    }
+
+    var suppressionKey: ScanSuppressionKey {
+        guard let slab else { return identifier.suppressionKey }
+        return .gradedSlab(
+            base: identifier.suppressionKey,
+            slab: slab.suppressionFragment
+        )
+    }
+
+    var game: CardGame { identifier.game }
+
+    var displayIdentifier: String {
+        guard let slab else { return identifier.displayIdentifier }
+        return "\(slab.grade.display(company: slab.company)) · \(identifier.displayIdentifier)"
+    }
+}
+
 struct CandidateConfirmationWindow {
     let matchesRequired: Int
     let windowSize: Int
 
-    private var observations: [ScanIdentifier?] = []
+    private var observations: [ScanSubject?] = []
 
     init(matchesRequired: Int = 2, windowSize: Int = 4) {
         self.matchesRequired = matchesRequired
         self.windowSize = max(windowSize, matchesRequired)
     }
 
-    mutating func observe(_ candidate: ScanIdentifier?) -> ScanIdentifier? {
+    mutating func observeSubject(_ candidate: ScanSubject?) -> ScanSubject? {
         observations.append(candidate)
         if observations.count > windowSize {
             observations.removeFirst(observations.count - windowSize)

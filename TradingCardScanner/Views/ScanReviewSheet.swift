@@ -49,7 +49,9 @@ struct ScanReviewSheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: 16))
 
                     identity
-                    variantSection
+                    if scan.subject.slab == nil {
+                        variantSection
+                    }
                     scanPrice
 
                     if let correctionFailure {
@@ -103,6 +105,16 @@ struct ScanReviewSheet: View {
 
             Text(scan.identifier.scannerDisplayIdentifier(for: scan.card))
                 .font(.headline.monospacedDigit())
+
+            if let slab = scan.subject.slab {
+                Text(slab.grade.display(company: slab.company))
+                    .font(.subheadline.weight(.semibold))
+                if let certificationNumber = slab.certificationNumber {
+                    Text("Cert \(certificationNumber)")
+                        .font(.caption.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+            }
 
             if let printRun = scan.pokemonPrintRun {
                 Text(printRun.label)

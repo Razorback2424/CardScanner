@@ -82,8 +82,8 @@ final class HistoricalTitleCaptureTests: XCTestCase {
             PokemonHistoricalScanEvidence(number: number, titleCandidates: ["2020 pokemon nintendo"])
         )
 
-        var scans = UnresolvedScan.merging([], with: first)
-        scans = UnresolvedScan.merging(scans, with: second)
+        var scans = UnresolvedScan.merging([], with: ScanSubject(identifier: first))
+        scans = UnresolvedScan.merging(scans, with: ScanSubject(identifier: second))
 
         XCTAssertEqual(scans.count, 1, "one card, one row")
         XCTAssertEqual(
@@ -98,12 +98,12 @@ final class HistoricalTitleCaptureTests: XCTestCase {
         let other = PokemonPrintedNumberEvidence(
             localID: "91", denominator: 202, scheme: .officialSet
         )
-        var scans = UnresolvedScan.merging([], with: .pokemonHistorical(
+        var scans = UnresolvedScan.merging([], with: ScanSubject(identifier: .pokemonHistorical(
             PokemonHistoricalScanEvidence(number: number, titleCandidates: ["a"])
-        ))
-        scans = UnresolvedScan.merging(scans, with: .pokemonHistorical(
+        )))
+        scans = UnresolvedScan.merging(scans, with: ScanSubject(identifier: .pokemonHistorical(
             PokemonHistoricalScanEvidence(number: other, titleCandidates: ["b"])
-        ))
+        )))
 
         XCTAssertEqual(scans.count, 2)
     }
@@ -125,10 +125,10 @@ final class HistoricalTitleCaptureTests: XCTestCase {
         )
         var window = SuppressionKeyVerificationWindow()
 
-        XCTAssertFalse(window.observe(first))
-        XCTAssertFalse(window.observe(different))
-        XCTAssertFalse(window.observe(titleVariant))
-        XCTAssertTrue(window.observe(first))
+        XCTAssertFalse(window.observe(ScanSubject(identifier: first)))
+        XCTAssertFalse(window.observe(ScanSubject(identifier: different)))
+        XCTAssertFalse(window.observe(ScanSubject(identifier: titleVariant)))
+        XCTAssertTrue(window.observe(ScanSubject(identifier: first)))
     }
 
     func testUnresolvedMergeUsesSuppressionKeyAcrossHistoricalTitleVariants() {
@@ -139,8 +139,8 @@ final class HistoricalTitleCaptureTests: XCTestCase {
             PokemonHistoricalScanEvidence(number: number, titleCandidates: ["two"])
         )
 
-        var scans = UnresolvedScan.merging([], with: first)
-        scans = UnresolvedScan.merging(scans, with: second)
+        var scans = UnresolvedScan.merging([], with: ScanSubject(identifier: first))
+        scans = UnresolvedScan.merging(scans, with: ScanSubject(identifier: second))
 
         XCTAssertEqual(scans.count, 1)
         XCTAssertEqual(scans[0].titleCandidates.sorted(), ["one", "two"])

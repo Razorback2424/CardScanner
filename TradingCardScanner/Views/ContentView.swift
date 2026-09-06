@@ -49,7 +49,7 @@ struct ContentView: View {
         switch route {
         case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
-        case "WholeCardScanner", "PriceCheck": initialTab = .scan
+        case "WholeCardScanner", "PriceCheck", "GradedLabelCapture": initialTab = .scan
         case "Centering", "CenteringExpanded": initialTab = .centering
         default: initialTab = .portfolio
         }

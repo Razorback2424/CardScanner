@@ -121,4 +121,74 @@ final class CollectionKeyTests: XCTestCase {
             .needsChoice(options: [.foil, variant], lockDidNotApply: nil)
         )
     }
+
+    func testScannedGradedKeysSeparateGradeAndCertificateWithoutRawCollision() {
+        let psa10 = CollectedCard.scannedGradedCollectionKey(
+            game: .pokemon,
+            underlyingPrintingID: "sv08.5-074",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678"
+        )
+        let psa9 = CollectedCard.scannedGradedCollectionKey(
+            game: .pokemon,
+            underlyingPrintingID: "sv08.5-074",
+            company: .psa,
+            grade: CardGrade(value: "9", label: "Mint"),
+            certificationNumber: "12345678"
+        )
+        let secondPsa10 = CollectedCard.scannedGradedCollectionKey(
+            game: .pokemon,
+            underlyingPrintingID: "sv08.5-074",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "87654321"
+        )
+
+        XCTAssertTrue(psa10.hasPrefix("graded:pokemon:sv08.5-074:g:psa-"))
+        XCTAssertNotEqual(psa10, psa9)
+        XCTAssertNotEqual(psa10, secondPsa10)
+        XCTAssertNotEqual(psa10, "sv08.5-074")
+    }
+
+    func testUnboundCSVGradedRowsStillReadTheirLegacyProviderPriceKey() {
+        let row = CollectedCard(
+            collectionKey: "graded:pokemon:sv08.5-074:g:psa-10|Gem Mint",
+            game: .pokemon,
+            providerID: "sv08.5-074",
+            name: "Eevee",
+            setName: "Prismatic Evolutions",
+            setCode: "PRE",
+            cardNumber: "074",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            variantResolution: .catalogSilent
+        )
+        row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        row.gradingCompanyRaw = GradingCompany.psa.rawValue
+        row.gradeRaw = "10"
+        row.gradeLabel = "Gem Mint"
+
+        let legacyKey = PriceRecord.key(
+            game: .pokemon,
+            printingID: row.providerID,
+            variantID: nil
+        )
+        let record = PriceRecord(
+            key: legacyKey,
+            game: .pokemon,
+            printingID: row.providerID,
+            variantID: nil
+        )
+        record.unitMarketPriceUSD = 42
+
+        XCTAssertEqual(row.priceStorageID, row.collectionKey)
+        XCTAssertTrue(row.legacyPriceKeys.contains(legacyKey))
+        XCTAssertEqual(
+            PriceStore.record(for: row, in: [legacyKey: record])?.effectiveUnitMarketPriceUSD,
+            42
+        )
+    }
 }
