@@ -44,7 +44,7 @@ struct ContentView: View {
         debugRoute = route
         let initialTab: Tab
         switch route {
-        case "Browse", "SealedArtwork", "CardMovement", "MagicTreatmentSlice4": initialTab = .collection
+        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck": initialTab = .scan
         case "Centering", "CenteringExpanded": initialTab = .centering
@@ -79,6 +79,7 @@ struct ContentView: View {
                 refresh: refresh,
                 opensBrowseOnLaunch: isBrowseDebugRoute,
                 opensMovementDetailsOnLaunch: isMovementDebugRoute,
+                opensCardDetailOnLaunch: isCardDetailDebugRoute,
                 onOpenScanner: { selectedTab = .scan },
                 onRefresh: refreshAllPrices,
                 sort: $collectionSort
@@ -117,6 +118,10 @@ struct ContentView: View {
                 seedSealedArtworkQA()
             case "CardMovement":
                 PortfolioDebugFixtures.seedMovementIfNeeded(in: modelContext)
+                history.mode = .marketMovement
+                history.range = .oneMonth
+            case "CardDetail":
+                PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
                 history.mode = .marketMovement
                 history.range = .oneMonth
             case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors":
@@ -231,6 +236,14 @@ struct ContentView: View {
     private var isMovementDebugRoute: Bool {
 #if DEBUG
         return debugRoute == "CardMovement"
+#else
+        return false
+#endif
+    }
+
+    private var isCardDetailDebugRoute: Bool {
+#if DEBUG
+        return debugRoute == "CardDetail"
 #else
         return false
 #endif
