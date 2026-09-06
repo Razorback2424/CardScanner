@@ -2397,6 +2397,33 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
+#if DEBUG
+    /// Seeds the deterministic `WholeCardScanner` route with a receipt so the
+    /// bottom card can be captured without a camera. The values are the layout's
+    /// hard case on purpose: a long name, a full identifier line, and a priced
+    /// printing all competing for one row.
+    func seedReceiptFixtureForScreenshot() {
+        receipt = ScanReceipt(
+            scanID: UUID(),
+            name: "Ragavan, Nimble Pilferer",
+            identifier: "MH2 · 138",
+            variantLabel: "Foil Etched",
+            treatmentDiagnostics: [],
+            thumbnailURL: nil,
+            price: .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 62.47,
+                    currencyCode: "USD",
+                    source: .tcgplayer,
+                    sourceVariantID: "foil-etched",
+                    sourceUpdatedAt: .now,
+                    fetchedAt: .now
+                )
+            )
+        )
+    }
+#endif
+
     private func diagnostic(_ event: String) {
 #if DEBUG
         diagnosticEvents.append(event)

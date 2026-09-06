@@ -378,56 +378,69 @@ struct ScanReceiptCard: View {
     let onOpen: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
-            Button(action: onOpen) {
-                HStack(spacing: 12) {
-                    CardThumbnail(url: receipt.thumbnailURL, width: 40)
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 12) {
+                Button(action: onOpen) {
+                    HStack(spacing: 10) {
+                        // No thumbnail. At 40 pt over a live preview it was too
+                        // small to identify a card by, and it cost the name the
+                        // width that actually confirms the right card was added
+                        // while scanning fast. The rail below still carries the
+                        // artwork for anyone who wants to look back.
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.subheadline)
+                            .foregroundStyle(.green)
 
-                    VStack(alignment: .leading, spacing: 2) {
-                        HStack(spacing: 5) {
+                        VStack(alignment: .leading, spacing: 2) {
                             Text(receipt.name)
                                 .font(.subheadline.weight(.semibold))
                                 .lineLimit(1)
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.caption)
-                                .foregroundStyle(.green)
+                                // A long Magic name loses a little size before it
+                                // loses its last words.
+                                .minimumScaleFactor(0.85)
+                            Text("\(receipt.identifier) · \(receipt.variantLabel)")
+                                .font(.caption.monospacedDigit())
+                                .foregroundStyle(.white.opacity(0.72))
+                                .lineLimit(1)
                         }
-                        Text("\(receipt.identifier) · \(receipt.variantLabel)")
-                            .font(.caption.monospacedDigit())
-                            .foregroundStyle(.white.opacity(0.72))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                        // An amount is never allowed to wrap. Without this the
+                        // trailing column compresses to a few points under the
+                        // name and the button, and the currency typesets one
+                        // character per line.
+                        ScanPriceValue(lookup: receipt.price)
                             .lineLimit(1)
-                        ForEach(receipt.treatmentDiagnostics) { diagnostic in
-                            Label(diagnostic.title, systemImage: "exclamationmark.triangle.fill")
-                                .font(.caption2.weight(.semibold))
-                                .foregroundStyle(.orange)
-                                .lineLimit(2)
-                                .accessibilityValue(diagnostic.detail)
-                        }
+                            .fixedSize(horizontal: true, vertical: false)
+                            .layoutPriority(1)
                     }
-                    .layoutPriority(1)
-
-                    Spacer(minLength: 2)
-
-                    ScanPriceValue(lookup: receipt.price)
-                        .frame(maxWidth: 100, alignment: .trailing)
+                    .contentShape(Rectangle())
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
+                .buttonStyle(.plain)
 
-            Button(action: onUndo) {
-                Label("Undo Scan", systemImage: "arrow.uturn.backward")
-                    .font(.subheadline.weight(.bold))
-                    .lineLimit(1)
-                    .padding(.horizontal, 13)
-                    .padding(.vertical, 9)
-                    .frame(minHeight: 44)
+                // Insurance, not a step in the workflow: it keeps a full 44 pt
+                // target and its complete VoiceOver label, but stops being the
+                // loudest and widest thing on a card about the card just added.
+                Button(action: onUndo) {
+                    Image(systemName: "arrow.uturn.backward")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.bordered)
+                .tint(.red)
+                .accessibilityLabel("Undo scan and remove \(receipt.name) from your collection")
+                .accessibilityHint("Removes the card that was just added and lets you correct its scan details.")
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.red)
-            .accessibilityLabel("Undo scan and remove \(receipt.name) from your collection")
-            .accessibilityHint("Removes the card that was just added and lets you correct its scan details.")
+
+            // Full width under the row: a treatment warning is about the whole
+            // receipt, and inside the title column it stole the name's width.
+            ForEach(receipt.treatmentDiagnostics) { diagnostic in
+                Label(diagnostic.title, systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.orange)
+                    .lineLimit(2)
+                    .accessibilityValue(diagnostic.detail)
+            }
         }
         .foregroundStyle(.white)
         .padding(10)

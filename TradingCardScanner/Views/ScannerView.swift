@@ -51,6 +51,9 @@ struct ScannerView: View {
             if scannerScreenshotRoute == "PriceCheck" {
                 model.setPurpose(.priceCheck)
             }
+            if scannerScreenshotRoute == "WholeCardScanner" {
+                model.seedReceiptFixtureForScreenshot()
+            }
             guard scannerScreenshotRoute == nil else { return }
 #endif
             model.start(
