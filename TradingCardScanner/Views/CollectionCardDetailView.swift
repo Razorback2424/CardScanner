@@ -1102,6 +1102,28 @@ struct PriceHistoryChartModel: Equatable {
         plotRangeStart...plotRangeEnd
     }
 
+    var plotRangeSpan: TimeInterval {
+        plotRangeEnd.timeIntervalSince(plotRangeStart)
+    }
+
+    var isPlotRangeFitted: Bool {
+        plotRangeStart != rangeStart || plotRangeEnd != rangeEnd
+    }
+
+    static func recommendedXAxisTickCount(
+        for span: TimeInterval,
+        isAccessibilitySize: Bool
+    ) -> Int {
+        let daySpan = max(span / (24 * 60 * 60), 1)
+        let estimatedCount = Int(ceil(daySpan / 3)) + 1
+        let maximumCount = isAccessibilitySize ? 2 : 5
+        return min(maximumCount, max(2, estimatedCount))
+    }
+
+    static func usesShortXAxisLabels(for span: TimeInterval) -> Bool {
+        span < 2 * 24 * 60 * 60
+    }
+
     var yDomain: ClosedRange<Double> {
         let values = samples.map { $0.amount.doubleValue }
         guard let minimum = values.min(), let maximum = values.max() else { return 0...1 }
@@ -1370,6 +1392,7 @@ struct PriceHistoryChartView: View {
     let checkDays: [PriceCheckDay]
     let currencyCode: String
     let range: PortfolioHistoryRange
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var model: PriceHistoryChartModel {
         PriceHistoryChartModel.make(
@@ -1382,8 +1405,39 @@ struct PriceHistoryChartView: View {
         )
     }
 
+    private var xAxisTickCount: Int {
+        PriceHistoryChartModel.recommendedXAxisTickCount(
+            for: model.plotRangeSpan,
+            isAccessibilitySize: dynamicTypeSize.isAccessibilitySize
+        )
+    }
+
+    private var xAxisTickDates: [Date] {
+        let count = xAxisTickCount
+        guard count > 1 else { return [model.plotRangeStart] }
+        let span = model.plotRangeSpan
+        return (0..<count).map { index in
+            model.plotRangeStart.addingTimeInterval(
+                span * Double(index) / Double(count - 1)
+            )
+        }
+    }
+
+    private var usesShortAxisLabels: Bool {
+        PriceHistoryChartModel.usesShortXAxisLabels(for: model.plotRangeSpan)
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
+            if model.isPlotRangeFitted {
+                Text("Fitted to available data · \(range.rawValue) selected")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel(
+                        "Chart fitted to available data for \(range.accessibilityName)"
+                    )
+            }
+
             if model.samples.isEmpty {
                 Label("History is being recorded", systemImage: "chart.xyaxis.line")
                     .font(.subheadline.weight(.semibold))
@@ -1443,9 +1497,23 @@ struct PriceHistoryChartView: View {
                     }
                 }
                 .chartXAxis {
-                    AxisMarks(values: .automatic(desiredCount: 4)) {
+                    AxisMarks(values: xAxisTickDates) { value in
                         AxisGridLine()
-                        AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        AxisValueLabel {
+                            if let date = value.as(Date.self) {
+                                if usesShortAxisLabels {
+                                    Text(
+                                        date,
+                                        format: .dateTime
+                                            .month(.abbreviated)
+                                            .day()
+                                            .hour(.defaultDigits(amPM: .abbreviated))
+                                    )
+                                } else {
+                                    Text(date, format: .dateTime.month(.abbreviated).day())
+                                }
+                            }
+                        }
                     }
                 }
                 .frame(height: 210)

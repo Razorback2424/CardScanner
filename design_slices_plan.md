@@ -278,3 +278,17 @@ block, and navigation actions outside the artwork; the first cold frame is
 still intentionally not used as visual evidence. No deployment-target change
 or MeshGradient branch was introduced. The full scheme suite passes 864 tests
 with 1 skipped and 0 failures.
+
+## Chart accessibility follow-up — 2026-09-06
+
+The fitted-domain chart no longer asks Swift Charts for a fixed tick count.
+Tick dates are generated from the actual rendered span, with a short-domain
+date/time label format and a two-label cap at accessibility Dynamic Type sizes.
+When the fitted domain differs from the selected history range, the price
+surface explicitly labels it as fitted to available data. Existing step-line,
+gap, observation-kind, and selected-range data semantics are unchanged.
+
+The route was recaptured in dark, light, and accessibility-large appearance;
+the large-text frame showed no clipped hero or identity content, and the light
+frame retained readable contrast. Focused chart tests and the full suite pass
+864 tests with 1 skipped and 0 failures.

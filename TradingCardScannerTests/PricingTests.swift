@@ -789,8 +789,25 @@ final class PriceHistoryChartModelTests: XCTestCase {
         let requestedSpan = model.rangeEnd.timeIntervalSince(model.rangeStart)
         let plotSpan = model.plotRangeEnd.timeIntervalSince(model.plotRangeStart)
         XCTAssertLessThan(plotSpan, requestedSpan * 0.5)
+        XCTAssertTrue(model.isPlotRangeFitted)
         XCTAssertLessThanOrEqual(model.plotRangeStart, model.samples.first?.date ?? .distantFuture)
         XCTAssertGreaterThanOrEqual(model.plotRangeEnd, model.samples.last?.date ?? .distantPast)
+        XCTAssertEqual(
+            PriceHistoryChartModel.recommendedXAxisTickCount(
+                for: plotSpan,
+                isAccessibilitySize: false
+            ),
+            2
+        )
+        XCTAssertEqual(
+            PriceHistoryChartModel.recommendedXAxisTickCount(
+                for: plotSpan,
+                isAccessibilitySize: true
+            ),
+            2
+        )
+        XCTAssertTrue(PriceHistoryChartModel.usesShortXAxisLabels(for: 36 * 60 * 60))
+        XCTAssertFalse(PriceHistoryChartModel.usesShortXAxisLabels(for: 2 * 24 * 60 * 60))
     }
 
     func testSourceRestatementIsAnnotatedAsNonMarket() throws {
