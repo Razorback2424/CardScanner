@@ -365,8 +365,8 @@ struct CollectionCardDetailView: View {
     private var conditionRow: some View {
         if let conditionLine {
             Text(conditionLine)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(.secondary)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
         }
     }
 
@@ -975,14 +975,14 @@ struct AppCardBadge: View {
     }
 }
 
-/// A compact, stable vocabulary for the common rarity families. Provider
-/// strings remain in the details list; this token only decides whether the
-/// glance chip can use a known visual treatment.
+/// A compact, stable vocabulary for the common rarity families. The enum
+/// classifies the provider value for tinting, but keeps the provider's exact
+/// label because named rarities such as "Illustration Rare" are distinct facts.
 enum CardRarityToken: Equatable, Hashable {
-    case common
-    case uncommon
-    case rare
-    case mythic
+    case common(String)
+    case uncommon(String)
+    case rare(String)
+    case mythic(String)
     case unknown(String)
 
     init?(raw: String?) {
@@ -996,13 +996,13 @@ enum CardRarityToken: Equatable, Hashable {
         // latter substring. More specific named families also win over the
         // broader `rare` match (for example, "mythic rare").
         if normalized.contains("mythic") {
-            self = .mythic
+            self = .mythic(raw)
         } else if normalized.contains("uncommon") {
-            self = .uncommon
+            self = .uncommon(raw)
         } else if normalized.contains("common") {
-            self = .common
+            self = .common(raw)
         } else if normalized.contains("rare") {
-            self = .rare
+            self = .rare(raw)
         } else {
             // An unfamiliar provider value is still a fact. Keep it visible,
             // but let the chip use the neutral styling below.
@@ -1010,26 +1010,28 @@ enum CardRarityToken: Equatable, Hashable {
         }
     }
 
-    var label: String {
+    var rawLabel: String {
         switch self {
-        case .common: return "Common"
-        case .uncommon: return "Uncommon"
-        case .rare: return "Rare"
-        case .mythic: return "Mythic"
-        case let .unknown(raw): return raw
+        case let .common(raw), let .uncommon(raw), let .rare(raw),
+             let .mythic(raw), let .unknown(raw):
+            return raw
         }
+    }
+
+    var label: String {
+        rawLabel
     }
 
     var tint: Color {
         switch self {
-        case .common, .unknown:
+        case .common(_), .unknown(_):
             return .secondary
-        case .uncommon:
-            return .blue
-        case .rare:
-            return .purple
-        case .mythic:
-            return .orange
+        case .uncommon(_):
+            return .gray
+        case .rare(_):
+            return Color(red: 0.68, green: 0.44, blue: 0.08)
+        case .mythic(_):
+            return Color(red: 0.84, green: 0.28, blue: 0.09)
         }
     }
 }

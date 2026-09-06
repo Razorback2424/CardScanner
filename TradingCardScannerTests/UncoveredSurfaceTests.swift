@@ -816,10 +816,30 @@ final class CameraPreviewSurfaceTests: XCTestCase {
 @MainActor
 final class CardDetailIdentityPresentationTests: XCTestCase {
     func testRarityTokenUsesSpecificSubstringMatchesAndKeepsUnknownValues() throws {
-        XCTAssertEqual(CardRarityToken(raw: "Common"), .common)
-        XCTAssertEqual(CardRarityToken(raw: "Uncommon"), .uncommon)
-        XCTAssertEqual(CardRarityToken(raw: "Mythic Rare"), .mythic)
-        XCTAssertEqual(CardRarityToken(raw: "Secret Rare"), .rare)
+        let common = try XCTUnwrap(CardRarityToken(raw: "Common"))
+        guard case .common("Common") = common else {
+            return XCTFail("Common should use the common rarity family")
+        }
+
+        let uncommon = try XCTUnwrap(CardRarityToken(raw: "Uncommon"))
+        guard case .uncommon("Uncommon") = uncommon else {
+            return XCTFail("Uncommon should use the uncommon rarity family")
+        }
+
+        let mythic = try XCTUnwrap(CardRarityToken(raw: "Mythic Rare"))
+        guard case .mythic("Mythic Rare") = mythic else {
+            return XCTFail("Mythic Rare should use the mythic rarity family")
+        }
+
+        let secretRare = try XCTUnwrap(CardRarityToken(raw: "Secret Rare"))
+        guard case .rare("Secret Rare") = secretRare else {
+            return XCTFail("Secret Rare should use the rare rarity family")
+        }
+
+        let illustrationRare = try XCTUnwrap(
+            CardRarityToken(raw: "Illustration Rare")
+        )
+        XCTAssertEqual(illustrationRare.label, "Illustration Rare")
 
         let unknown = try XCTUnwrap(CardRarityToken(raw: "Prismatic Star"))
         guard case let .unknown(raw) = unknown else {
