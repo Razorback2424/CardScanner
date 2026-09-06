@@ -214,8 +214,6 @@ struct CollectionCardDetailView: View {
                 .font(.title2)
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.white)
-                .padding(4)
-                .background(.black.opacity(0.55), in: Circle())
         }
         .accessibilityLabel("Card actions")
         .accessibilityHint("Choose a personal photo, replace it, or return to catalog artwork.")
@@ -1210,8 +1208,13 @@ private struct CollectionCardHistoryView: View {
 
     init(collectionKey: String, cardName: String) {
         self.cardName = cardName
+        // SwiftData predicates should capture a stable local value. Capturing
+        // the initializer parameter directly can leave the dynamic query with
+        // an invalid expression when this destination is pushed from a detail
+        // route, which was the source of the history-screen crash.
+        let key = collectionKey
         self._activities = Query(
-            filter: #Predicate<CollectionActivity> { $0.collectionKey == collectionKey },
+            filter: #Predicate<CollectionActivity> { $0.collectionKey == key },
             sort: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
         )
     }
