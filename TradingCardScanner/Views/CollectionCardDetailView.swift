@@ -167,6 +167,15 @@ struct CollectionCardDetailView: View {
                     removeUserArtwork()
                 }
             }
+
+            Divider()
+
+            // Destructive, and rare. The overflow is the right home for it now
+            // that quantity — the control people actually use — has moved up
+            // into the identity block.
+            Button("Remove from Collection", role: .destructive) {
+                isConfirmingRemoval = true
+            }
         } label: {
             Image(systemName: "ellipsis.circle.fill")
                 .font(.title2)
@@ -175,7 +184,7 @@ struct CollectionCardDetailView: View {
                 .padding(4)
                 .background(.black.opacity(0.55), in: Circle())
         }
-        .accessibilityLabel("Artwork actions")
+        .accessibilityLabel("Card actions")
         .accessibilityHint("Choose a personal photo, replace it, or return to catalog artwork.")
         .onChange(of: selectedArtwork) { _, item in
             guard let item else { return }
@@ -184,39 +193,40 @@ struct CollectionCardDetailView: View {
         }
     }
 
+    /// The printed card's corner. Shared with `CardFinishOverlay` so the sheen
+    /// is masked to exactly the shape the artwork is clipped to.
+    fileprivate static let cardCornerRadius: CGFloat = 20
+
     private var heroSection: some View {
         let movementEnabled = !reduceMotion
-        return ZStack(alignment: .bottom) {
-            artwork
-                .scrollTransition(.interactive, axis: .vertical) { content, phase in
-                    content
-                        .scaleEffect(!movementEnabled || phase.isIdentity ? 1 : 0.96)
-                        .opacity(!movementEnabled || phase.isIdentity ? 1 : 0.94)
-                }
-                .visualEffect { content, proxy in
-                    let minY = proxy.frame(in: .named("CardDetailScroll")).minY
-                    let parallax = movementEnabled ? min(18, max(-18, minY * 0.045)) : 0
-                    return content.offset(y: parallax)
-                }
-
-            if !reduceTransparency {
-                LinearGradient(
-                    colors: [
-                        .clear,
-                        (artworkAccent?.color ?? Color(red: 0.12, green: 0.14, blue: 0.18))
-                            .opacity(0.30),
-                        .black.opacity(0.88)
-                    ],
-                    startPoint: .center,
-                    endPoint: .bottom
-                )
-                .allowsHitTesting(false)
+        return artwork
+            .aspectRatio(0.716, contentMode: .fit)
+            .clipShape(
+                RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
+            )
+            .overlay {
+                // A printed card has an edge. Bleeding the artwork to the screen
+                // edge with square corners read as wallpaper — the wrong claim
+                // for an app whose other half measures borders for a living.
+                RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
+                    .strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
             }
-        }
-        .frame(maxWidth: .infinity)
-        .aspectRatio(0.716, contentMode: .fit)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Artwork for \(card.name)")
+            .shadow(color: .black.opacity(0.55), radius: 24, x: 0, y: 14)
+            .padding(.horizontal, 18)
+            .padding(.top, 4)
+            .scrollTransition(.interactive, axis: .vertical) { content, phase in
+                content
+                    .scaleEffect(!movementEnabled || phase.isIdentity ? 1 : 0.96)
+                    .opacity(!movementEnabled || phase.isIdentity ? 1 : 0.94)
+            }
+            .visualEffect { content, proxy in
+                let minY = proxy.frame(in: .named("CardDetailScroll")).minY
+                let parallax = movementEnabled ? min(18, max(-18, minY * 0.045)) : 0
+                return content.offset(y: parallax)
+            }
+            .frame(maxWidth: .infinity)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Artwork for \(card.name)")
     }
 
     private var identityBlock: some View {
@@ -237,16 +247,66 @@ struct CollectionCardDetailView: View {
                     .font(.headline.monospacedDigit())
 
                 if let rarity = card.rarity, !rarity.isEmpty {
-                    Text(rarity)
+                    // The catalog stores this lowercase. Presenting the raw
+                    // string put "mythic" under a card worth several hundred
+                    // dollars, which reads as a database field rather than a
+                    // fact about the object.
+                    Text(rarity.capitalized)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
 
                 identityBadges
+
+                quantityControl
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .contain)
+    }
+
+    /// How many you own, beside what you own.
+    ///
+    /// This lived at the very bottom of the screen behind a menu, under the
+    /// chart — the one control on the page a collector reaches for repeatedly,
+    /// placed where it could not be found. Quantity is an attribute of the
+    /// holding, so it belongs in the block that describes the holding.
+    private var quantityControl: some View {
+        HStack(spacing: 12) {
+            Text("Quantity")
+                .font(.headline)
+
+            Spacer(minLength: 12)
+
+            Button {
+                updateQuantity(displayedQuantity - 1)
+            } label: {
+                Image(systemName: "minus")
+                    .frame(width: 44, height: 44)
+                    .contentShape(.rect)
+            }
+            .disabled(displayedQuantity <= 1)
+            .accessibilityLabel("Decrease quantity")
+
+            Text("\(displayedQuantity)")
+                .font(.title3.weight(.semibold).monospacedDigit())
+                .frame(minWidth: 32)
+                .contentTransition(.numericText())
+                .animation(.snappy, value: displayedQuantity)
+
+            Button {
+                updateQuantity(displayedQuantity + 1)
+            } label: {
+                Image(systemName: "plus")
+                    .frame(width: 44, height: 44)
+                    .contentShape(.rect)
+            }
+            .accessibilityLabel("Increase quantity")
+        }
+        .buttonStyle(.borderless)
+        .padding(.top, 2)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Quantity, \(displayedQuantity)")
     }
 
     @ViewBuilder
@@ -289,6 +349,13 @@ struct CollectionCardDetailView: View {
         }
     }
 
+    /// What the whole position is worth, as distinct from one copy of it.
+    private var holdingTotal: String? {
+        guard let amount = price.amount, displayedQuantity > 0 else { return nil }
+        return (amount * Double(displayedQuantity))
+            .formatted(.currency(code: price.currencyCode))
+    }
+
     private var priceMovementBlock: some View {
         AppCardSurface {
             VStack(alignment: .leading, spacing: 14) {
@@ -298,6 +365,18 @@ struct CollectionCardDetailView: View {
                     Text("unit")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+
+                // The `unit` qualifier only earns its keep if the total it is
+                // distinguished from is somewhere on the screen. Shown only
+                // when the two genuinely differ.
+                if displayedQuantity > 1, let holdingTotal {
+                    Text("\(holdingTotal) for \(displayedQuantity) copies")
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.secondary)
+                        .accessibilityLabel(
+                            "Holding value \(holdingTotal) for \(displayedQuantity) copies"
+                        )
                 }
 
                 if let source = price.source, price.amount != nil {
@@ -398,30 +477,6 @@ struct CollectionCardDetailView: View {
 
             Divider()
 
-            Menu {
-                Button {
-                    updateQuantity(displayedQuantity - 1)
-                } label: {
-                    Label("Decrease quantity", systemImage: "minus")
-                }
-                .disabled(displayedQuantity <= 1)
-
-                Button {
-                    updateQuantity(displayedQuantity + 1)
-                } label: {
-                    Label("Increase quantity", systemImage: "plus")
-                }
-
-                Button("Remove from Collection", role: .destructive) {
-                    isConfirmingRemoval = true
-                }
-            } label: {
-                CardDetailActionLabel(
-                    title: "Quantity ×\(displayedQuantity)",
-                    systemImage: "number"
-                )
-            }
-            .frame(maxWidth: .infinity)
         }
         .padding(6)
         .frame(minHeight: 52)
@@ -469,7 +524,8 @@ struct CollectionCardDetailView: View {
             CardFinishOverlay(
                 variant: card.variant,
                 resolution: card.variantResolution,
-                treatments: card.displayedMagicTreatmentEvidence.treatments
+                treatments: card.displayedMagicTreatmentEvidence.treatments,
+                cornerRadius: Self.cardCornerRadius
             )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -766,16 +822,26 @@ private struct AppCardDetailBackdrop: View {
         if reduceTransparency {
             Color(uiColor: .systemBackground)
         } else {
-            LinearGradient(
-                colors: [
-                    Color(uiColor: .systemBackground),
-                    (accent?.color ?? Color(uiColor: .secondarySystemBackground)).opacity(0.20),
-                    Color(uiColor: .secondarySystemBackground),
-                    Color(uiColor: .systemBackground)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            // Layered over the system background rather than mixed into a list
+            // of stops, so the strength is a real blend and light and dark both
+            // stay correct without a second palette.
+            //
+            // Weighted to the top, where the card is: the point of extracting a
+            // colour is that The One Ring's page should not look like a bulk
+            // common's, and a single 20%-opacity stop in the middle of a
+            // diagonal was invisible on a device.
+            Color(uiColor: .systemBackground)
+                .overlay {
+                    LinearGradient(
+                        stops: [
+                            .init(color: (accent?.color ?? .clear).opacity(0.34), location: 0),
+                            .init(color: (accent?.color ?? .clear).opacity(0.12), location: 0.34),
+                            .init(color: .clear, location: 0.68)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
         }
     }
 }
@@ -926,24 +992,51 @@ private struct CollectionCardHistoryView: View {
     }
 }
 
+/// Device tilt, normalised and smoothed, for the foil sheen.
+///
+/// Neutral is wherever the phone was held when the card appeared, not flat on a
+/// table, so the sheen is centred for someone reading in bed as much as at a
+/// desk.
+///
+/// The model this replaced reported a raw gravity vector scaled to ±12pt, which
+/// the view then multiplied by 0.3: a peak travel of 3.6 points on a 400pt card,
+/// damped at 0.84 per frame. The motion was running the whole time. It was
+/// simply far too small to see.
 private final class CardFinishMotionModel: ObservableObject {
-    @Published private(set) var offset: CGSize = .zero
+    /// Roll and pitch as −1…1, where ±1 is a comfortable wrist tilt.
+    @Published private(set) var tilt: CGSize = .zero
+
     private let motionManager = CMMotionManager()
+    private var reference: (roll: Double, pitch: Double)?
     private var isRunning = false
+
+    /// Full travel at roughly 25°, which is a wrist movement rather than a
+    /// shoulder one.
+    private static let fullTravel = 0.44
 
     func start() {
         guard !isRunning, motionManager.isDeviceMotionAvailable else { return }
         isRunning = true
-        motionManager.deviceMotionUpdateInterval = 1 / 30
+        reference = nil
+        motionManager.deviceMotionUpdateInterval = 1 / 60
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, _ in
-            guard let self, let gravity = motion?.gravity else { return }
+            guard let self, let attitude = motion?.attitude else { return }
+            if self.reference == nil {
+                self.reference = (attitude.roll, attitude.pitch)
+            }
+            guard let reference = self.reference else { return }
+
             let target = CGSize(
-                width: max(-1, min(1, gravity.x)) * 12,
-                height: max(-1, min(1, gravity.y)) * -12
+                width: Self.normalised(attitude.roll - reference.roll),
+                height: Self.normalised(attitude.pitch - reference.pitch)
             )
-            self.offset = CGSize(
-                width: self.offset.width * 0.84 + target.width * 0.16,
-                height: self.offset.height * 0.84 + target.height * 0.16
+            // Tracks the hand rather than trailing it. At the previous 0.84
+            // coefficient the sheen took most of a second to arrive, which
+            // reads as no movement at all during the quick tilt people
+            // actually use to look for foil.
+            self.tilt = CGSize(
+                width: self.tilt.width * 0.55 + target.width * 0.45,
+                height: self.tilt.height * 0.55 + target.height * 0.45
             )
         }
     }
@@ -952,79 +1045,115 @@ private final class CardFinishMotionModel: ObservableObject {
         guard isRunning else { return }
         isRunning = false
         motionManager.stopDeviceMotionUpdates()
-        offset = .zero
+        reference = nil
+        tilt = .zero
+    }
+
+    private static func normalised(_ radians: Double) -> Double {
+        max(-1, min(1, radians / fullTravel))
     }
 }
 
-/// A treatment-aware finish cue. It only appears for catalog-confirmed rows;
-/// imported and catalog-silent rows remain visually plain so sheen never becomes
-/// an unsupported identity claim. Motion is deliberately bounded and optional.
+/// The card's finish, rendered rather than captioned.
+///
+/// Foil is a *directional band* that sweeps across the surface as the viewing
+/// angle changes. What this replaced drew a rounded rectangle at 82% of the
+/// card's width and screen-blended it at 0.72 — a hard-edged translucent box
+/// sitting on the artwork, lifting its blacks and showing its own corners on
+/// every card. Three rules come out of what foil actually does:
+///
+/// - The band is wider than the card's diagonal and masked to the card, so its
+///   own edges are never in frame.
+/// - It blends with `.softLight`, which brightens light areas and leaves dark
+///   ones alone. That is the luminance-modulated bloom, achieved by blend maths
+///   rather than by loading and masking a second copy of the artwork.
+/// - It travels far enough to read as movement: most of the card across a
+///   comfortable tilt.
+///
+/// Subtle by intent. On a card worth several hundred dollars a sheen that
+/// announces itself looks like a filter; the narrow specular core is the only
+/// element allowed to go bright.
 private struct CardFinishOverlay: View {
     let variant: PhysicalVariant?
     let resolution: VariantResolution?
     let treatments: [MagicTreatment]
+    let cornerRadius: CGFloat
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @StateObject private var motion = CardFinishMotionModel()
+
+    /// One band of the sweep. Several out of phase is what separates a Surge
+    /// Foil ripple from a plain foil's single pass.
+    private struct SheenBand {
+        var phase: Double
+        var width: Double
+        var tint: Color
+        var intensity: Double
+    }
 
     private var isCatalogConfirmed: Bool {
         guard variant != nil, let resolution else { return false }
         return resolution != .catalogSilent && resolution != .imported
     }
 
-    private var activeTreatment: MagicTreatment? {
-        treatments.first
-    }
+    private var activeTreatment: MagicTreatment? { treatments.first }
 
     private var isFoilSurface: Bool {
         guard let variant else { return false }
         return variant.id == PhysicalVariant.holo.id || variant.id == PhysicalVariant.foil.id
     }
 
+    private var isReverseSurface: Bool {
+        variant?.id == PhysicalVariant.reverse.id
+    }
+
+    private var hasSurface: Bool { isFoilSurface || isReverseSurface }
+
+    private var bands: [SheenBand] {
+        switch activeTreatment {
+        case .surgeFoil:
+            return [
+                SheenBand(phase: -0.20, width: 0.15, tint: .pink, intensity: 0.85),
+                SheenBand(phase: 0, width: 0.19, tint: .cyan, intensity: 1),
+                SheenBand(phase: 0.20, width: 0.15, tint: .blue, intensity: 0.8)
+            ]
+        case .neonInk:
+            return [
+                SheenBand(phase: -0.11, width: 0.21, tint: .orange, intensity: 0.9),
+                SheenBand(phase: 0.11, width: 0.21, tint: .green, intensity: 0.85)
+            ]
+        case .unclassified:
+            return [SheenBand(phase: 0, width: 0.28, tint: .purple, intensity: 0.85)]
+        case nil:
+            return [SheenBand(phase: 0, width: 0.30, tint: .cyan, intensity: 1)]
+        }
+    }
+
     var body: some View {
         Group {
-            if isCatalogConfirmed, !reduceTransparency, let variant {
+            if isCatalogConfirmed, !reduceTransparency, hasSurface {
                 GeometryReader { proxy in
                     ZStack {
-                        if isFoilSurface {
-                            RoundedRectangle(
-                                cornerRadius: max(8, proxy.size.width * 0.035),
-                                style: .continuous
-                            )
-                            .fill(
-                                AngularGradient(
-                                    colors: shimmerColors,
-                                    center: .center
-                                )
-                            )
-                            .frame(
-                                width: proxy.size.width * 0.82,
-                                height: proxy.size.height * 0.48
-                            )
-                            .position(
-                                x: proxy.size.width / 2 + motion.offset.width * 0.3,
-                                y: proxy.size.height * 0.37 + motion.offset.height * 0.3
-                            )
-                            .blendMode(.screen)
-                            .opacity(activeTreatment == nil ? 0.72 : 0.84)
+                        ForEach(bands.indices, id: \.self) { index in
+                            sheen(bands[index], in: proxy.size, specular: false)
                         }
-
-                        if variant.id == PhysicalVariant.reverse.id {
-                            RoundedRectangle(
-                                cornerRadius: max(8, proxy.size.width * 0.035),
-                                style: .continuous
-                            )
-                            .stroke(
-                                LinearGradient(
-                                    colors: shimmerColors,
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                ),
-                                lineWidth: max(3, proxy.size.width * 0.018)
-                            )
-                            .padding(proxy.size.width * 0.025)
-                            .blendMode(.screen)
-                            .opacity(0.78)
+                        // A single narrow additive core. Everything else is
+                        // soft-light, so this is the only place the sheen is
+                        // allowed to look like a light source.
+                        if let primary = bands.first {
+                            sheen(primary, in: proxy.size, specular: true)
+                        }
+                    }
+                    .mask {
+                        if isReverseSurface {
+                            // A reverse holo foils the border, not the art
+                            // window, so the sheen is masked to the frame the
+                            // printing actually applies it to.
+                            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                                .strokeBorder(.white, lineWidth: proxy.size.width * 0.10)
+                        } else {
+                            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                         }
                     }
                 }
@@ -1037,24 +1166,47 @@ private struct CardFinishOverlay: View {
         .onChange(of: reduceTransparency) { _, _ in updateMotion() }
     }
 
-    private var shimmerColors: [Color] {
-        switch activeTreatment {
-        case .surgeFoil:
-            return [.white.opacity(0.08), .pink.opacity(0.42), .blue.opacity(0.38), .cyan.opacity(0.28), .white.opacity(0.08)]
-        case .neonInk:
-            return [.white.opacity(0.08), .pink.opacity(0.42), .orange.opacity(0.35), .green.opacity(0.34), .white.opacity(0.08)]
-        case .unclassified:
-            return [.white.opacity(0.08), .cyan.opacity(0.34), .purple.opacity(0.28), .yellow.opacity(0.22), .white.opacity(0.08)]
-        case nil:
-            return [.white.opacity(0.06), .cyan.opacity(0.28), .purple.opacity(0.24), .yellow.opacity(0.18), .white.opacity(0.06)]
-        }
+    private func sheen(_ band: SheenBand, in size: CGSize, specular: Bool) -> some View {
+        let diagonal = sqrt(size.width * size.width + size.height * size.height)
+        // Roll dominates: turning the phone in the hand is how anyone looks for
+        // foil. Pitch contributes so the band still answers a nod.
+        let drive = max(-1, min(1, motion.tilt.width * 0.85 + motion.tilt.height * 0.45))
+        let travel = (drive + band.phase) * diagonal * 0.55
+
+        return LinearGradient(
+            stops: stops(for: band, specular: specular),
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        // Twice the diagonal in both directions, so no edge of the gradient can
+        // enter the card at any travel position or rotation.
+        .frame(width: diagonal * 2, height: diagonal * 2)
+        .offset(y: travel)
+        .rotationEffect(.degrees(-24))
+        .position(x: size.width / 2, y: size.height / 2)
+        .blendMode(specular ? .plusLighter : .softLight)
     }
 
+    private func stops(for band: SheenBand, specular: Bool) -> [Gradient.Stop] {
+        let half = (specular ? band.width * 0.34 : band.width) / 2
+        let core = specular ? 0.13 * band.intensity : 0.5 * band.intensity
+        let shoulder = specular ? 0 : 0.13 * band.intensity
+        let outer = min(0.5, half * 2.2)
+        return [
+            .init(color: .clear, location: 0),
+            .init(color: .clear, location: 0.5 - outer),
+            .init(color: band.tint.opacity(shoulder), location: 0.5 - half),
+            .init(color: .white.opacity(core), location: 0.5),
+            .init(color: band.tint.opacity(shoulder), location: 0.5 + half),
+            .init(color: .clear, location: 0.5 + outer),
+            .init(color: .clear, location: 1)
+        ]
+    }
+
+    /// Reduce Motion keeps the finish and stops the sweep: the band simply
+    /// rests at centre, which is still a foil rather than a flat print.
     private func updateMotion() {
-        if isCatalogConfirmed,
-           !reduceMotion,
-           !reduceTransparency,
-           (isFoilSurface || variant?.id == PhysicalVariant.reverse.id) {
+        if isCatalogConfirmed, !reduceMotion, !reduceTransparency, hasSurface {
             motion.start()
         } else {
             motion.stop()
