@@ -1086,10 +1086,38 @@ private struct CardFinishOverlay: View {
     /// One band of the sweep. Several out of phase is what separates a Surge
     /// Foil ripple from a plain foil's single pass.
     private struct SheenBand {
+        /// Where the band rests when the card is held still.
         var phase: Double
+        /// How the band answers tilt. Negative counter-moves, which is what
+        /// makes two highlights converge and separate rather than slide
+        /// together as one rigid pattern.
+        var travelScale: Double = 1
         var width: Double
         var tint: Color
         var intensity: Double
+        /// Carries the additive specular core. Exactly one band should.
+        var isPrimary: Bool = false
+    }
+
+    /// A dimmer second reflection, resting up and left of the primary and
+    /// travelling against it.
+    ///
+    /// Two things wrong were fixed by one addition. A single band centred at
+    /// rest is easy to miss until you happen to move the phone — you have to
+    /// already know the effect is there. And simply parking the primary
+    /// somewhere more obvious would have staged the card rather than lit it.
+    /// A counter-moving secondary is what foil actually does, puts light in the
+    /// opposite corner so something is visible the moment the card opens, and
+    /// turns the sweep into a scissor that reads far more like a surface than
+    /// one sliding gradient did.
+    private var counterBand: SheenBand {
+        SheenBand(
+            phase: -0.42,
+            travelScale: -0.55,
+            width: 0.26,
+            tint: activeTreatment == .neonInk ? .purple : .white,
+            intensity: 0.42
+        )
     }
 
     private var isCatalogConfirmed: Bool {
@@ -1110,23 +1138,36 @@ private struct CardFinishOverlay: View {
 
     private var hasSurface: Bool { isFoilSurface || isReverseSurface }
 
+    /// The primary is the band that rests at centre and carries the specular
+    /// core. It was previously `bands.first`, which for Surge Foil is the band
+    /// at phase −0.20 — so on a treatment-qualified card the one bright element
+    /// sat off to a corner and the sheen only became legible once the card was
+    /// moved.
     private var bands: [SheenBand] {
         switch activeTreatment {
         case .surgeFoil:
             return [
                 SheenBand(phase: -0.20, width: 0.15, tint: .pink, intensity: 0.85),
-                SheenBand(phase: 0, width: 0.19, tint: .cyan, intensity: 1),
-                SheenBand(phase: 0.20, width: 0.15, tint: .blue, intensity: 0.8)
+                SheenBand(phase: 0, width: 0.19, tint: .cyan, intensity: 1, isPrimary: true),
+                SheenBand(phase: 0.20, width: 0.15, tint: .blue, intensity: 0.8),
+                counterBand
             ]
         case .neonInk:
             return [
-                SheenBand(phase: -0.11, width: 0.21, tint: .orange, intensity: 0.9),
-                SheenBand(phase: 0.11, width: 0.21, tint: .green, intensity: 0.85)
+                SheenBand(phase: -0.10, width: 0.21, tint: .orange, intensity: 0.9),
+                SheenBand(phase: 0.10, width: 0.21, tint: .green, intensity: 0.85, isPrimary: true),
+                counterBand
             ]
         case .unclassified:
-            return [SheenBand(phase: 0, width: 0.28, tint: .purple, intensity: 0.85)]
+            return [
+                SheenBand(phase: 0, width: 0.28, tint: .purple, intensity: 0.85, isPrimary: true),
+                counterBand
+            ]
         case nil:
-            return [SheenBand(phase: 0, width: 0.30, tint: .cyan, intensity: 1)]
+            return [
+                SheenBand(phase: 0, width: 0.30, tint: .cyan, intensity: 1, isPrimary: true),
+                counterBand
+            ]
         }
     }
 
@@ -1138,10 +1179,11 @@ private struct CardFinishOverlay: View {
                         ForEach(bands.indices, id: \.self) { index in
                             sheen(bands[index], in: proxy.size, specular: false)
                         }
-                        // A single narrow additive core. Everything else is
-                        // soft-light, so this is the only place the sheen is
-                        // allowed to look like a light source.
-                        if let primary = bands.first {
+                        // A single narrow additive core, on the band that rests
+                        // at centre. Everything else is soft-light, so this is
+                        // the only place the sheen is allowed to look like a
+                        // light source.
+                        if let primary = bands.first(where: \.isPrimary) {
                             sheen(primary, in: proxy.size, specular: true)
                         }
                     }
@@ -1171,7 +1213,7 @@ private struct CardFinishOverlay: View {
         // Roll dominates: turning the phone in the hand is how anyone looks for
         // foil. Pitch contributes so the band still answers a nod.
         let drive = max(-1, min(1, motion.tilt.width * 0.85 + motion.tilt.height * 0.45))
-        let travel = (drive + band.phase) * diagonal * 0.55
+        let travel = (drive * band.travelScale + band.phase) * diagonal * 0.55
 
         return LinearGradient(
             stops: stops(for: band, specular: specular),
