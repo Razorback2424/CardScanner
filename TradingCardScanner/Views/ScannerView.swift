@@ -217,7 +217,7 @@ private struct ScannerChrome: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
             .frame(height: 34)
-            .scannerPillGlass()
+            .appPillGlass()
         }
         .menuStyle(.button)
         .buttonStyle(.plain)
@@ -304,7 +304,7 @@ private struct ScannerChrome: View {
         .foregroundStyle(.white)
         .padding(.horizontal, 12)
         .frame(height: 34)
-        pill.scannerPillGlass(tint: isLocked ? .red : nil)
+        pill.appPillGlass(tint: isLocked ? .red : nil)
     }
 
     private var settingsButton: some View {
@@ -343,7 +343,7 @@ private struct ScannerChrome: View {
                     onAddAnother: model.addAnother
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
-                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let choice = model.pendingIdentityChoice {
                 IdentityChoiceBar(
                     choice: choice,
@@ -351,7 +351,7 @@ private struct ScannerChrome: View {
                     onDismiss: model.dismissIdentityChoice
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
-                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let choice = model.pendingPrintRunChoice {
                 PrintRunChoiceBar(
                     choice: choice,
@@ -359,7 +359,7 @@ private struct ScannerChrome: View {
                     onDismiss: model.dismissPrintRunChoice
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
-                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let choice = model.pendingChoice {
                 VariantChoiceBar(
                     choice: choice,
@@ -367,7 +367,7 @@ private struct ScannerChrome: View {
                     onDismiss: model.dismissChoice
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
-                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if model.purpose == .collection, let receipt = model.receipt {
                 ScanReceiptCard(
                     receipt: receipt,
@@ -378,7 +378,7 @@ private struct ScannerChrome: View {
                     }
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
-                .scannerGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             }
 
             VStack(alignment: .trailing, spacing: 8) {
@@ -406,7 +406,7 @@ private struct ScannerChrome: View {
                 .foregroundStyle(.white)
                 .padding(.horizontal, 11)
                 .padding(.vertical, 7)
-                .scannerPillGlass(tint: .orange, fallbackTintOpacity: 0.85)
+                .appPillGlass(tint: .orange, fallbackTintOpacity: 0.85)
         }
         .buttonStyle(.plain)
         .accessibilityHint("Shows what was read and why it was not added")

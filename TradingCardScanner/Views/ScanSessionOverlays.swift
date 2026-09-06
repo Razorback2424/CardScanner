@@ -1,113 +1,5 @@
 import SwiftUI
 
-/// Shared chrome style for content floating over the camera.
-///
-/// iOS 26's regular glass is intentionally used for scanner text. A clear glass
-/// surface would let a brightly lit white card wash out the white labels as the
-/// card moves through the viewfinder. The pre-iOS 26 branch keeps the existing
-/// appearance and makes the change reversible without raising the deployment
-/// target.
-private struct GlassBackground: ViewModifier {
-    var cornerRadius: CGFloat = 18
-    var tint: Color?
-    var isCapsule = false
-    var fallbackTintOpacity = 0.36
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            if isCapsule {
-                if let tint {
-                    content.glassEffect(.regular.tint(tint), in: .capsule)
-                } else {
-                    content.glassEffect(.regular, in: .capsule)
-                }
-            } else if let tint {
-                content.glassEffect(.regular.tint(tint), in: .rect(cornerRadius: cornerRadius))
-            } else {
-                content.glassEffect(.regular, in: .rect(cornerRadius: cornerRadius))
-            }
-        } else if isCapsule {
-            content
-                .background(
-                    tint?.opacity(fallbackTintOpacity) ?? Color.black.opacity(0.62),
-                    in: Capsule()
-                )
-                .overlay(Capsule().stroke(.white.opacity(0.14), lineWidth: 1))
-        } else {
-            content
-                .background(
-                    tint?.opacity(fallbackTintOpacity) ?? Color.black.opacity(0.62),
-                    in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(.white.opacity(0.14), lineWidth: 1)
-                )
-        }
-    }
-}
-
-extension View {
-    func scannerGlass(cornerRadius: CGFloat = 18) -> some View {
-        modifier(GlassBackground(cornerRadius: cornerRadius, tint: nil))
-    }
-
-    func scannerPillGlass(
-        tint: Color? = nil,
-        fallbackTintOpacity: Double = 1
-    ) -> some View {
-        modifier(
-            GlassBackground(
-                cornerRadius: 0,
-                tint: tint,
-                isCapsule: true,
-                fallbackTintOpacity: fallbackTintOpacity
-            )
-        )
-    }
-
-    /// Option controls remain equal-weight. On iOS 26 they use the regular glass
-    /// button style; the fallback preserves the pre-glass card's hit target and
-    /// contrast without promoting one unresolved variant over another.
-    func scannerOptionButton(cornerRadius: CGFloat = 13) -> some View {
-        modifier(ScannerOptionButtonModifier(cornerRadius: cornerRadius))
-    }
-
-    /// Gives mutually exclusive scanner surfaces a shared morph identity when
-    /// Liquid Glass is available, while remaining a no-op on older systems.
-    @ViewBuilder
-    func scannerGlassEffectID(_ id: String, in namespace: Namespace.ID) -> some View {
-        if #available(iOS 26.0, *) {
-            glassEffectID(id, in: namespace)
-        } else {
-            self
-        }
-    }
-}
-
-private struct ScannerOptionButtonModifier: ViewModifier {
-    let cornerRadius: CGFloat
-
-    @ViewBuilder
-    func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content.buttonStyle(.glass)
-        } else {
-            content
-                .buttonStyle(.plain)
-                .background(
-                    .white.opacity(0.16),
-                    in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        .stroke(.white.opacity(0.22), lineWidth: 1)
-                )
-        }
-    }
-}
-
 struct ScanAssistanceView: View {
     let message: String
 
@@ -117,7 +9,7 @@ struct ScanAssistanceView: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
-            .scannerGlass(cornerRadius: 14)
+            .appGlass(cornerRadius: 14)
             .accessibilityLabel("Scanner guidance: \(message)")
     }
 }
@@ -156,7 +48,7 @@ struct HeldDuplicateOfferView: View {
         }
         .foregroundStyle(.white)
         .padding(12)
-        .scannerGlass(cornerRadius: 14)
+        .appGlass(cornerRadius: 14)
         .accessibilityElement(children: .contain)
     }
 }
@@ -209,7 +101,7 @@ struct DuplicateConfirmationBar: View {
         }
         .foregroundStyle(.white)
         .padding(14)
-        .scannerGlass()
+        .appGlass()
         .accessibilityElement(children: .contain)
     }
 }
@@ -267,7 +159,7 @@ struct VariantChoiceBar: View {
         }
         .foregroundStyle(.white)
         .padding(14)
-        .scannerGlass()
+        .appGlass()
     }
 
     private var variantChoiceIdentifier: String {
@@ -307,7 +199,7 @@ struct VariantChoiceBar: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)
         }
-        .scannerOptionButton()
+        .appGlassOptionButton()
         .foregroundStyle(.white)
         .accessibilityLabel("Select \(option.label) for \(choice.card.name)")
     }
@@ -366,7 +258,7 @@ struct PrintRunChoiceBar: View {
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
                     }
-                    .scannerOptionButton()
+                    .appGlassOptionButton()
                     .foregroundStyle(.white)
                     .accessibilityLabel("Select \(option.label) for \(choice.card.name)")
                 }
@@ -374,7 +266,7 @@ struct PrintRunChoiceBar: View {
         }
         .foregroundStyle(.white)
         .padding(14)
-        .scannerGlass()
+        .appGlass()
     }
 }
 
@@ -422,14 +314,14 @@ struct IdentityChoiceBar: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: 48)
                 }
-                .scannerOptionButton()
+                .appGlassOptionButton()
                 .foregroundStyle(.white)
                 .accessibilityLabel("Select \(candidate.setName) for \(candidate.name)")
             }
         }
         .foregroundStyle(.white)
         .padding(14)
-        .scannerGlass()
+        .appGlass()
     }
 }
 
@@ -539,7 +431,7 @@ struct ScanReceiptCard: View {
         }
         .foregroundStyle(.white)
         .padding(10)
-        .scannerGlass(cornerRadius: 16)
+        .appGlass(cornerRadius: 16)
     }
 }
 
@@ -579,7 +471,7 @@ struct RecentScanRail: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
-        .scannerGlass(cornerRadius: 14)
+        .appGlass(cornerRadius: 14)
         .accessibilityLabel("Recently scanned cards")
     }
 }

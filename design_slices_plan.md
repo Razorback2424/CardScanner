@@ -1,7 +1,23 @@
-# Three slices: glass, scan price, card detail
+# Product-surface plan: shared glass, scan price, and card detail
 
-Design spec for three changes. No new screens, no navigation changes, no new
-tables. Each slice is independently shippable and none depends on another.
+Design spec for the scanner chrome, scan receipt, and owned-card detail.
+No new persistence tables and no top-level navigation changes.
+
+## Reconciliation note — 2026-09-06
+
+The original statement that these visual slices were independent was wrong.
+Visual-language work shares a foundation: S0 is a common dependency, and S6
+must follow the stabilized card-detail treatment so Collection and Portfolio do
+not grow a third dialect. The implementation decisions are:
+
+- S0 extracts app-scoped glass names and tokens from the scanner surface.
+- S1 uses a neutral gradient. Artwork-derived colour is deferred until a later
+  cache-boundary decision; it must never be computed from `body`.
+- S1 uses iOS 17-compatible linear/radial gradients. `MeshGradient` remains an
+  optional iOS 18 enhancement, not part of this implementation.
+- S6 is included in the definition of done and is implemented after S1–S5.
+- Card detail keeps its instrument-key predicates and the chart's step/gap,
+  observation-kind, and degraded-state semantics unchanged.
 
 ---
 
@@ -143,130 +159,84 @@ Take this or leave it independently of the display change.
 
 ---
 
-## Slice C — Card detail overhaul, with a per-card price chart
+## Slice C — Card detail redesign
 
-### C1. The chart, and what the data actually permits
+The card is the screen, not a row in it. The redesign keeps the scoped
+instrument-key predicates, the chart's economic data rules, and all existing
+collection actions. It changes hierarchy and presentation only.
 
-This is the interesting part, and the data model dictates the design.
+### S0 — Promote the house style
 
-**`PriceObservation` is a change log, not a time series.** A row is appended only
-when the value or its provenance changes; an unchanged price writes nothing, by
-explicit design ("appending here would fill the log with thousands of rows a day
-that say still $42").
+Move the shared glass implementation into an app-scoped surface file and rename
+`scannerGlass`, `scannerGlassEffectID`, `scannerPillGlass`, and
+`scannerOptionButton` to app-scoped names. Scanner call sites remain behaviorally
+identical. Keep the iOS 26 branch and the iOS 17 fallback.
 
-**`PriceCheckDay` is the knowledge record.** One row per instrument per day the
-app successfully asked.
+### S1 — Hero
 
-Together they permit an honest chart and forbid a dishonest one:
+Remove the gray artwork tray and make catalog or personal artwork full-bleed at
+the top of the scroll surface. Use `.scrollTransition` and `.visualEffect` for
+subtle scale/parallax, with no movement when Reduce Motion is enabled. Use a
+neutral iOS 17-compatible gradient behind the screen; do not extract artwork
+colour during rendering and do not add `MeshGradient` in this slice.
 
-- Between two observations **with check days in between**, the price was known
-  and flat → draw a solid step.
-- Across a span **with no check days**, the app did not know → **do not draw a
-  line there.** A continuous line across an unchecked gap is a claim the app
-  cannot support.
+The artwork menu remains attached to the artwork. The old `Card` section header
+goes away. Missing-artwork, loading, and personal-artwork behavior do not change.
 
-So the chart is a **step line with visible gaps**: solid where knowledge exists,
-broken where it does not. This is the pricing promise rendered as a shape, and
-it falls straight out of tables that already exist. It is also the reason this
-chart can be drawn honestly here and essentially nowhere else.
+### S2 — Identity
 
-**Observation kind must be respected.** Only `.marketUpdate` is the market
-moving. A `.sourceRestatement`, `.sourceTransition` or `.explicitInvalidation`
-changes the number for reasons that are not appreciation. Draw the value change
-— the price genuinely was that — but **annotate** the point rather than letting
-it read as a move. This mirrors what the portfolio already does by separating
-`market` from `pricingAdjustments`.
+Replace the separate identity facts with one leading-aligned block containing
+name, set, collector number, rarity, print run, and item kind. Finish, treatment,
+grading company, and grade appear as compact, accessible badges beside the
+identity. No raw enum is the primary label.
 
-**Degradation, in order of how often it will happen:**
+### S3 — Price as the hero block
 
-| Situation | What the chart shows |
-|---|---|
-| No observations for this instrument | "History is being recorded" — the phrase already in use |
-| One observation | The single point and its date. No line, no axis pretending to a range |
-| Two or more, sparse | Steps and gaps. Correct and slightly ugly, which is the honest outcome |
-| Restored to a new device | Say so: this table is local-only by design, so history does not travel. Do not show an empty chart and let it read as "flat" |
+Keep price, source/freshness, range control, chart, and movement together. The
+chart remains a step line only across checked days, with visible gaps across
+unchecked spans; `.marketUpdate` remains visually distinct from restatement,
+transition, and invalidation points. A single observation is a confident point
+with its date, not an axis-heavy empty chart. The holding-impact amount appears
+once, with the unit-movement explanation secondary.
 
-**Range control:** reuse `PortfolioHistoryRange` bound to the shared
-`PortfolioHistoryStore.range`, exactly as the movement summary already is. No new
-vocabulary, no per-screen range state.
+### S4 — Finish rendering
 
-**Performance constraint, non-negotiable:** query both tables with a
-`#Predicate` on `instrumentKey`. At 428 cards a year of check days is ~156,000
-rows; a fetch-all-then-filter in `body` will not survive it. Several existing
-views do fetch-all — do not copy that pattern here.
+Upgrade the existing finish overlay with a treatment-aware, motion-driven sheen.
+Use the existing `CMMotionManager` pattern, throttle it at the same 30 Hz ceiling,
+and stop it when the hero disappears. Surge Foil and Neon Ink get distinct visual
+signatures only when the persisted catalog evidence confirms them. Reduce Motion
+uses the static fallback; Reduce Transparency uses an opaque surface fallback.
 
-### C2. Chart and price are one block, not two panels
+### S5 — Action strip
 
-Today "pricing" is one bordered panel and "movement" is another, with no stated
-relation. They become a single block:
+Replace separate Marketplace, History, and Quantity sections with one quiet
+action strip. Marketplace remains a direct exact-printing link; History opens the
+existing per-card activity rows; Quantity retains increment/decrement and removal
+with the existing confirmation and save behavior. The strip must not draw a
+second chevron inside a `NavigationLink`.
 
-```
-$342.00
-JustTCG · current as of Sep 4, 3:20 PM      [1W 1M 3M 1Y ALL]
-┌──────────────────────────────────────────┐
-│   step chart, gaps where unchecked       │
-└──────────────────────────────────────────┘
-Market movement · 1M      +$42.00 holding impact   ›
-```
+### S6 — Propagate
 
-The chart is the unit price over time. The movement row underneath is what that
-did to *your holding* — unit movement × quantity. Those are genuinely different
-quantities and the app already distinguishes them; putting them adjacent makes
-the distinction legible instead of leaving it implied across two cards.
+Apply the shared card-detail language to Collection tiles and Portfolio holding /
+contribution rows: neutral art treatment, one identity hierarchy, and the same
+badge vocabulary. Do this after the detail screen is stable so the shared
+components are real reuse rather than a third approximation.
 
-### C3. Structure of the rest
+### Accessibility and verification gate
 
-Current state: eight `.quaternary.opacity(0.4)` panels stacked in a `ScrollView`
-— pricing, movement, finish, treatment, marketplace, history, conflict notice,
-stepper, remove. Everything is a card, so nothing is emphasised.
+- Dynamic Type must keep the identity and actions readable without clipping.
+- VoiceOver receives meaningful grouped labels for the hero, price state, chart,
+  and action strip; visual finish is never the only source of finish meaning.
+- Reduce Motion removes scroll and sensor-driven visual motion.
+- Reduce Transparency replaces translucent surfaces with opaque system colors.
+- Verify a rich card and a plain card, one-observation and no-history states,
+  light/dark appearance, and an accessibility-size layout in deterministic
+  simulator captures.
 
-**Recommendation: make this screen a `List` with sections.** This is *less*
-custom UI than what is there now. It gets section grouping, separators, Dynamic
-Type behaviour and inset styling from the system instead of from eleven repeated
-background modifiers, and it matches every other detail screen in iOS.
+### Suggested order
 
-Order:
+`S0 → mockup route/checklist → S1 → S2 → S3 → S4/S5 → S6`
 
-1. **The card.** Sized to what it has. The current 460 pt frame is reserved
-   whether or not artwork exists — when it does not, the most prominent control
-   on a card's own screen is *Choose Photo*. Fix by sizing to content and moving
-   the photo picker into a menu on the artwork itself.
-2. **Identity** — name, set, number, rarity, print run. Leading-aligned, not
-   centred; nothing else in the app centres text.
-3. **Price + chart + movement** (C2).
-4. **Facts** — finish, treatment, grading company, grade — as one
-   `LabeledContent` section. Today finish and treatment are two separate
-   full-width bordered panels each containing one row.
-5. **Marketplace.**
-6. **History.**
-7. **Quantity and removal** in a final section. The stepper currently sits
-   between the history list and the destructive button with no grouping.
-
-**The one complication:** the existing `ViewThatFits` two-column iPad layout.
-A `List` can hold the two-column arrangement in its first section, but this needs
-checking at iPad width before the rest is converted. Do it first, not last.
-
-### C4. Finish rendered, not spelled
-
-Where the card is drawn large, draw the finish: holo foils the art window,
-reverse holo foils the border, because that is what those cards physically are.
-Static — a gradient and a mask, no shader, no motion, no sensor, no
-reduced-motion branch. It carries the information the teal capsule with a
-recycling arrow currently carries in words.
-
-Only where the catalog confirmed the printing exists in that finish. Drawn
-difference is a claim and answers to the same accuracy policy as the rest.
-
----
-
-## Suggested order
-
-| | Slice | Why here |
-|---|---|---|
-| 1 | **A — glass** | One file, deletes code, reversible, improves Reduce Transparency behaviour. Lowest risk, immediate visible payoff |
-| 2 | **B — scan price** | Small, self-contained, no new data. Take the haptic or not |
-| 3 | **C1 — the chart** | The real work. Build the derivation and its four degraded states before touching layout |
-| 4 | **C2–C4 — the screen** | Restructure once the chart exists, so the layout is designed around real content rather than a placeholder |
-
-Nothing in A or B blocks C. C1 should land before C2 so the price/chart block is
-laid out around a chart that actually renders sparse real data.
+S4 and S5 may be implemented independently after S1, but both must reuse the
+same hero/detail surface. S6 is part of the completion gate, not an optional
+follow-up.
