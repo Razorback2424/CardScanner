@@ -1162,18 +1162,26 @@ private struct CardFinishOverlay: View {
     private var bands: [SheenBand] {
         switch activeTreatment {
         case .surgeFoil:
-            // Separated by more than they are wide, so the ripple resolves into
-            // three passes across the card instead of one broad one.
+            // One band, dispersed — not three passes. Separating the components
+            // far enough to resolve individually gave three discrete stripes
+            // sitting across the card, with the outermost parked in a corner:
+            // legible as stripes, nothing like foil. What actually distinguishes
+            // a Surge Foil is *colour* in the sheen, so the components overlap
+            // heavily and separate only at the shoulders, which fringes the one
+            // band rather than multiplying it.
             return [
-                SheenBand(phase: -0.16, width: 0.056, tint: .pink, intensity: 0.85),
-                SheenBand(phase: 0, width: 0.062, tint: .cyan, intensity: 1, isPrimary: true),
-                SheenBand(phase: 0.16, width: 0.056, tint: .blue, intensity: 0.8),
+                SheenBand(phase: -0.03, width: 0.095, tint: .pink, intensity: 0.75),
+                SheenBand(phase: 0, width: 0.105, tint: .cyan, intensity: 1, isPrimary: true),
+                SheenBand(phase: 0.03, width: 0.095, tint: .blue, intensity: 0.75),
                 counterBand
             ]
         case .neonInk:
+            // Same rule, wider fringe: Neon Ink's whole identity is the hue
+            // shift, so the two components sit further apart than Surge Foil's
+            // without ever separating into distinct bands.
             return [
-                SheenBand(phase: -0.14, width: 0.075, tint: .orange, intensity: 0.9),
-                SheenBand(phase: 0.14, width: 0.075, tint: .green, intensity: 0.85, isPrimary: true),
+                SheenBand(phase: -0.035, width: 0.10, tint: .orange, intensity: 0.85),
+                SheenBand(phase: 0.035, width: 0.10, tint: .green, intensity: 1, isPrimary: true),
                 counterBand
             ]
         case .unclassified:
