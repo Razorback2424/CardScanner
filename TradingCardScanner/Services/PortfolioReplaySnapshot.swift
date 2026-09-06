@@ -211,7 +211,6 @@ enum PortfolioReplaySnapshotBuilder {
                 defects.append(Self.unreadableDefect(for: "PriceObservation", error: error))
             }
         }
-        let observations = rows.map { PortfolioEngine.observationEntry(from: $0) }
         let records: [PriceRecord]
         do {
             records = try context.fetch(FetchDescriptor<PriceRecord>())
@@ -244,9 +243,16 @@ enum PortfolioReplaySnapshotBuilder {
             projection: projection,
             eventKeys: Set(reading.events.map(\.collectionKey))
         )
+        let priceIdentityAliases = priceIdentityAliases(for: projection)
         let events = reading.events.map { event -> LedgerEntry in
             var entry = PortfolioEngine.entry(from: event)
             entry.collectionKey = collectionKeyAliases[entry.collectionKey] ?? entry.collectionKey
+            entry.priceStorageKey = priceIdentityAliases[entry.priceStorageKey] ?? entry.priceStorageKey
+            return entry
+        }
+        let observations = rows.map { row -> ObservationEntry in
+            var entry = PortfolioEngine.observationEntry(from: row)
+            entry.instrumentKey = priceIdentityAliases[entry.instrumentKey] ?? entry.instrumentKey
             return entry
         }
         let activityDefects = CollectionActivity.integrityDefects(
@@ -287,6 +293,40 @@ enum PortfolioReplaySnapshotBuilder {
             defects: defects + projection.defects + activityDefects,
             projection: projection
         )
+    }
+
+    /// A treatment-aware collection can be migrated after its ownership event
+    /// was written. The event deliberately keeps its legacy price key so the
+    /// old observation remains historical truth, while a later exact refresh
+    /// writes the canonical treatment key. Replay must reason over one logical
+    /// instrument in that state or the current canonical price appears as an
+    /// unexplained portfolio change.
+    ///
+    /// The alias is only safe when every position that claims a price key
+    /// resolves to the same current instrument. Two treatment-qualified rows
+    /// sharing one legacy key are genuinely ambiguous and must remain visible
+    /// to the existing integrity diagnostics rather than being guessed.
+    private static func priceIdentityAliases(
+        for projection: LogicalCollectionProjection
+    ) -> [String: String] {
+        let conflictedPositions = Set(
+            projection.defects
+                .filter { $0.reason == .duplicatePositionPricingConflict }
+                .map(\.collectionKey)
+        )
+        var targetsByKey: [String: Set<String>] = [:]
+
+        for position in projection.positions where !conflictedPositions.contains(position.collectionKey) {
+            let target = position.priceStorageKey
+            for key in position.representative.priceLookupKeys {
+                targetsByKey[key, default: []].insert(target)
+            }
+        }
+
+        return targetsByKey.compactMapValues { targets in
+            guard targets.count == 1 else { return nil }
+            return targets.first
+        }
     }
 
     private static func unreadableDefect(for table: String, error: Error) -> LedgerIntegrityDefect {

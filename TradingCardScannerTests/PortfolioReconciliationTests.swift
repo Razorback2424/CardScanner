@@ -2769,6 +2769,109 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(computation.replay.live?.attribution.unexplained, .zero)
     }
 
+    func testMigratedPriceAliasKeepsCanonicalRefreshInPortfolioReplay() throws {
+        let context = try makeContext()
+        let epoch = Date(timeIntervalSince1970: 1_700_000_000)
+        let now = epoch.addingTimeInterval(3_600)
+        let card = CollectedCard(
+            collectionKey: "magic:alias-card#foil#treatment=surgefoil",
+            game: .magic,
+            providerID: "alias-card",
+            name: "Alias Card",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .foil,
+            variantResolution: .userConfirmed,
+            magicTreatments: [.surgeFoil]
+        )
+        context.insert(card)
+
+        let canonicalKey = card.priceKey
+        let legacyKey = try XCTUnwrap(card.legacyPriceKeys.first)
+        let record = PriceRecord(
+            key: canonicalKey,
+            game: .magic,
+            printingID: card.priceStorageID,
+            variantID: card.variantID,
+            magicTreatmentIDs: card.priceTreatmentIDs
+        )
+        _ = record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 1.21,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "exact-treatment",
+                sourceUpdatedAt: nil,
+                fetchedAt: epoch.addingTimeInterval(300)
+            )
+        )
+        context.insert(record)
+        context.insert(
+            PriceObservation(
+                instrumentKey: canonicalKey,
+                kind: .sourceTransition,
+                amount: money(1.21),
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "exact-treatment",
+                marketVariantID: nil,
+                effectiveAt: epoch.addingTimeInterval(300),
+                receivedAt: epoch.addingTimeInterval(300),
+                isSourceStamped: false
+            )
+        )
+        let operationID = UUID()
+        context.insert(
+            InventoryEvent(
+                operationID: operationID,
+                leg: nil,
+                kind: .initialBalance,
+                source: .catalog,
+                collectionKey: card.collectionKey,
+                priceStorageKey: legacyKey,
+                deltaQuantity: 1,
+                occurredAt: epoch.addingTimeInterval(60),
+                valuation: .unpriced
+            )
+        )
+        context.insert(
+            CollectionActivity(
+                card: card,
+                source: .catalog,
+                quantity: 1,
+                occurredAt: epoch.addingTimeInterval(60),
+                ledgerOperationIDs: [operationID]
+            )
+        )
+        try context.save()
+
+        let rows = try context.fetch(FetchDescriptor<PriceObservation>())
+        let computation = PortfolioReplaySnapshotBuilder.compute(
+            context: context,
+            epoch: epoch,
+            through: now,
+            timeZone: TimeZone(secondsFromGMT: 0)!,
+            existingObservations: rows
+        )
+        let attribution = try XCTUnwrap(computation.replay.live?.attribution)
+
+        XCTAssertEqual(computation.valuation.value, money(1.21))
+        XCTAssertEqual(attribution.currentValue, money(1.21))
+        XCTAssertEqual(
+            attribution.unexplained,
+            .zero,
+            "a canonical treatment refresh must reconcile with an older event that still names the legacy price key"
+        )
+        XCTAssertFalse(
+            computation.defects.contains { $0.reason == .quantityMismatch },
+            "unexpected quantity defect: \(computation.defects)"
+        )
+    }
+
     // MARK: - Initial-sync deferral
 
     private func epochDefaults(_ name: String) -> UserDefaults {
