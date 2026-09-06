@@ -32,10 +32,17 @@ struct CollectionCardDetailView: View {
     @State private var artworkGeneration = 0
     @State private var pendingArtwork: ArtworkRequest?
     @State private var artworkAccent: ArtworkAccent?
+    @State private var isShowingCardDetails = false
 
     private struct ArtworkRequest: Identifiable {
         let id: Int
         let item: PhotosPickerItem
+    }
+
+    private struct CardFact: Identifiable {
+        let id: Int
+        let label: String
+        let value: String
     }
 
     init(
@@ -74,26 +81,42 @@ struct CollectionCardDetailView: View {
             AppCardDetailBackdrop(accent: artworkAccent)
                 .ignoresSafeArea()
 
-            ScrollView(.vertical, showsIndicators: true) {
-                VStack(spacing: 0) {
-                    heroSection
+            ScrollViewReader { proxy in
+                ScrollView(.vertical, showsIndicators: true) {
+                    VStack(spacing: 0) {
+                        heroSection
 
-                    VStack(alignment: .leading, spacing: 24) {
-                        identityBlock
-                        priceMovementBlock
+                        VStack(alignment: .leading, spacing: 24) {
+                            identityBlock
+                            priceMovementBlock
 
-                        if isLogicalConflict {
-                            conflictNotice
+                            if isLogicalConflict {
+                                conflictNotice
+                            }
+
+                            actionStrip
                         }
-
-                        actionStrip
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 24)
+                        .contentWidthLimit(.standard)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 24)
-                    .contentWidthLimit(.standard)
                 }
+                .coordinateSpace(name: "CardDetailScroll")
+#if DEBUG
+                .onChange(of: isShowingCardDetails) { _, isShowing in
+                    guard isShowing,
+                          CommandLine.arguments.contains("-ui_card_details_expanded") else { return }
+                    // Keep the capture-only expanded route focused on the
+                    // disclosed facts instead of requiring a gesture in the
+                    // deterministic screenshot loop.
+                    DispatchQueue.main.async {
+                        withAnimation(nil) {
+                            proxy.scrollTo("card-detail-facts", anchor: .top)
+                        }
+                    }
+                }
+#endif
             }
-            .coordinateSpace(name: "CardDetailScroll")
         }
         .navigationTitle(card.name)
         .navigationBarTitleDisplayMode(.inline)
@@ -108,6 +131,16 @@ struct CollectionCardDetailView: View {
         // tab bar visible puts it over the identity block at the hero's resting
         // height, clipping the card name before the user can scroll.
         .toolbar(.hidden, for: .tabBar)
+#if DEBUG
+        // Capture-only hook for the deterministic screenshot route. Normal
+        // launches do not pass this argument, so the disclosure always starts
+        // collapsed and never persists across cards.
+        .onAppear {
+            if CommandLine.arguments.contains("-ui_card_details_expanded") {
+                isShowingCardDetails = true
+            }
+        }
+#endif
         .task(id: artworkSourceKey) {
             let localFilename = localArtworkFilename
             let remoteURL = card.highImageURL ?? card.lowImageURL
@@ -230,39 +263,234 @@ struct CollectionCardDetailView: View {
     }
 
     private var identityBlock: some View {
-        AppCardSurface {
-            VStack(alignment: .leading, spacing: 10) {
-                Text(card.name)
-                    .font(.largeTitle.weight(.bold))
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
+        AppCardSurface(accent: artworkAccent?.color) {
+            VStack(alignment: .leading, spacing: 12) {
+                provenanceRow
+                conditionRow
 
-                Text(card.setName)
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(.secondary)
-
-                Text([card.setCode, card.cardNumber]
-                    .filter { !$0.isEmpty }
-                    .joined(separator: "  ·  "))
-                    .font(.headline.monospacedDigit())
-
-                if let rarity = card.rarity, !rarity.isEmpty {
-                    // The catalog stores this lowercase. Presenting the raw
-                    // string put "mythic" under a card worth several hundred
-                    // dollars, which reads as a database field rather than a
-                    // fact about the object.
-                    Text(rarity.capitalized)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-
-                identityBadges
+                Divider()
+                    .overlay(Color.primary.opacity(0.08))
 
                 quantityControl
+
+                Divider()
+                    .overlay(Color.primary.opacity(0.08))
+
+                detailsToggle
+                if isShowingCardDetails {
+                    cardDetailsList
+                        .id("card-detail-facts")
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .contain)
+    }
+
+    /// The collector's canonical short form: where this printing comes from.
+    ///
+    /// This is one fact, so it stays on one line and uses one type treatment.
+    /// The rarity chip is adjacent because rarity belongs to the printing, not
+    /// to the physical copy being held.
+    private var provenanceLine: String {
+        var parts: [String] = []
+        if !card.setName.isEmpty {
+            parts.append(card.setName)
+        }
+
+        let designation = [card.setCode, card.cardNumber]
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+        if !designation.isEmpty {
+            parts.append(designation)
+        }
+
+        if let printRun = card.pokemonPrintRun {
+            parts.append(printRun.label)
+        }
+        return parts.joined(separator: " · ")
+    }
+
+    private var provenanceRow: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            Text(provenanceLine)
+                .font(.headline)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(1)
+
+            Spacer(minLength: 8)
+
+            if let rarity = CardRarityToken(raw: card.rarity) {
+                RarityChip(rarity: rarity)
+            }
+        }
+    }
+
+    /// The most specific true description of this copy, once.
+    ///
+    /// A treatment whose finish is known subsumes that finish for this compact
+    /// row; the details list still keeps both facts. An unclassified treatment
+    /// has no such relationship, so it is shown beside the finish rather than
+    /// guessed into one.
+    private var conditionLine: String? {
+        if let company = card.gradingCompany {
+            // `CardGrade.display(company:)` already includes the company and
+            // qualifier, so do not prepend or append either a second time.
+            return card.cardGrade?.display(company: company)
+                ?? [company.label, card.gradeRaw].compactMap { $0 }.joined(separator: " ")
+        }
+
+        if card.itemKind != .rawCard {
+            return card.itemKindLabel
+        }
+
+        let treatments = card.displayedMagicTreatmentEvidence.treatments
+        guard !treatments.isEmpty else {
+            return card.variant?.label
+        }
+
+        let subsumesFinish = card.variant != nil && treatments.contains { treatment in
+            guard let requiredFinish = treatment.requiredFinish else { return false }
+            return requiredFinish == card.variant
+        }
+        let names = treatments.map(\.label)
+        if subsumesFinish {
+            return names.joined(separator: " · ")
+        }
+        return ([card.variant?.label].compactMap { $0 } + names)
+            .joined(separator: " · ")
+    }
+
+    @ViewBuilder
+    private var conditionRow: some View {
+        if let conditionLine {
+            Text(conditionLine)
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    /// Everything the app knows about this particular copy, in the order a
+    /// collector would ask for it. Facts folded into the glance rows remain
+    /// available here without competing with the quick scan.
+    private var cardFacts: [CardFact] {
+        var raw: [(String, String)] = []
+
+        if !card.setName.isEmpty {
+            raw.append(("Set", card.setName))
+        }
+        if !card.setCode.isEmpty {
+            raw.append(("Set code", card.setCode))
+        }
+        if !card.cardNumber.isEmpty {
+            raw.append(("Number", card.cardNumber))
+        }
+        if let rarity = card.rarity, !rarity.isEmpty {
+            raw.append(("Rarity", rarity.capitalized))
+        }
+        if let finish = card.variant?.label {
+            raw.append(("Finish", finish))
+        }
+
+        for treatment in card.displayedMagicTreatmentEvidence.treatments {
+            raw.append(("Treatment", treatment.label))
+        }
+        if let printRun = card.pokemonPrintRun {
+            raw.append(("Print run", printRun.label))
+        }
+        if card.itemKind != .rawCard {
+            raw.append(("Type", card.itemKindLabel))
+        }
+
+        if let company = card.gradingCompany {
+            raw.append(("Grader", company.label))
+        }
+
+        if let grade = card.cardGrade {
+            var gradeParts = [grade.value].compactMap { $0 }
+            if let label = grade.label,
+               label.caseInsensitiveCompare(grade.value ?? "") != .orderedSame {
+                gradeParts.append(label)
+            }
+            if !gradeParts.isEmpty {
+                raw.append(("Grade", gradeParts.joined(separator: " ")))
+            }
+        } else if let gradeRaw = card.gradeRaw {
+            raw.append(("Grade", gradeRaw))
+        }
+
+        if let qualifier = card.gradingQualifier {
+            raw.append(("Qualifier", qualifier))
+        }
+
+        raw.append((
+            "Added",
+            card.dateAdded.formatted(date: .abbreviated, time: .omitted)
+        ))
+
+        return raw.enumerated().map { index, element in
+            CardFact(id: index, label: element.0, value: element.1)
+        }
+    }
+
+    @ViewBuilder
+    private var cardDetailsList: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach(cardFacts) { fact in
+                LabeledContent(fact.label) {
+                    Text(fact.value)
+                        .font(.callout.weight(.medium))
+                        .multilineTextAlignment(.trailing)
+                }
+                .font(.callout)
+            }
+
+            if let note = identityConfidenceNote {
+                Label(note, systemImage: "questionmark.circle")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 2)
+            }
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    /// The catalog's uncertainty is useful context for a price, not a made-up
+    /// attribute of the card. This mirrors `CardFinishOverlay.isCatalogConfirmed`:
+    /// a missing resolution is also unconfirmed, which keeps old/imported rows
+    /// from silently disagreeing with the finish overlay.
+    private var identityConfidenceNote: String? {
+        guard card.variant == nil
+                || card.variantResolution == nil
+                || card.variantResolution == .catalogSilent
+                || card.variantResolution == .imported else { return nil }
+        return "The catalog hasn't confirmed this printing's finish, so its price may match a different one."
+    }
+
+    private var detailsToggle: some View {
+        Button {
+            if reduceMotion {
+                isShowingCardDetails.toggle()
+            } else {
+                withAnimation(.snappy(duration: 0.28)) {
+                    isShowingCardDetails.toggle()
+                }
+            }
+        } label: {
+            HStack {
+                Text(isShowingCardDetails ? "Hide details" : "Card details")
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .rotationEffect(.degrees(isShowingCardDetails ? 90 : 0))
+                    .font(.footnote.weight(.semibold))
+            }
+            .font(.subheadline.weight(.medium))
+            .contentShape(.rect)
+            .frame(minHeight: 44)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(isShowingCardDetails ? "Hide card details" : "Show card details")
+        .accessibilityIdentifier("card-details-toggle")
     }
 
     /// How many you own, beside what you own.
@@ -307,46 +535,6 @@ struct CollectionCardDetailView: View {
         .padding(.top, 2)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Quantity, \(displayedQuantity)")
-    }
-
-    @ViewBuilder
-    private var identityBadges: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(alignment: .top, spacing: 8) {
-                AppCardBadge(
-                    text: card.variant?.label ?? "Finish unknown",
-                    systemImage: "sparkles",
-                    tint: .teal
-                )
-
-                if let printRun = card.pokemonPrintRun {
-                    AppCardBadge(text: printRun.label, systemImage: "number", tint: .orange)
-                }
-
-                if card.itemKind != .rawCard {
-                    AppCardBadge(
-                        text: card.itemKindLabel,
-                        systemImage: card.itemKind.symbolName,
-                        tint: .indigo
-                    )
-                }
-
-                if let gradingCompany = card.gradingCompany {
-                    let grade = card.cardGrade?.display(company: gradingCompany) ?? card.gradeRaw
-                    AppCardBadge(
-                        text: grade.map { "\(gradingCompany.label) \($0)" } ?? gradingCompany.label,
-                        systemImage: "checkmark.seal",
-                        tint: .purple
-                    )
-                } else if let gradeRaw = card.gradeRaw {
-                    AppCardBadge(text: gradeRaw, systemImage: "checkmark.seal", tint: .purple)
-                }
-
-                ForEach(card.displayedMagicTreatmentEvidence.treatments) { treatment in
-                    AppCardBadge(text: treatment.label, systemImage: "wand.and.stars", tint: .pink)
-                }
-            }
-        }
     }
 
     /// What the whole position is worth, as distinct from one copy of it.
@@ -787,11 +975,107 @@ struct AppCardBadge: View {
     }
 }
 
-struct AppCardSurface<Content: View>: View {
-    private let content: Content
+/// A compact, stable vocabulary for the common rarity families. Provider
+/// strings remain in the details list; this token only decides whether the
+/// glance chip can use a known visual treatment.
+enum CardRarityToken: Equatable, Hashable {
+    case common
+    case uncommon
+    case rare
+    case mythic
+    case unknown(String)
+
+    init?(raw: String?) {
+        guard let raw = raw?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !raw.isEmpty else {
+            return nil
+        }
+
+        let normalized = raw.lowercased()
+        // `uncommon` must be checked before `common` because it contains the
+        // latter substring. More specific named families also win over the
+        // broader `rare` match (for example, "mythic rare").
+        if normalized.contains("mythic") {
+            self = .mythic
+        } else if normalized.contains("uncommon") {
+            self = .uncommon
+        } else if normalized.contains("common") {
+            self = .common
+        } else if normalized.contains("rare") {
+            self = .rare
+        } else {
+            // An unfamiliar provider value is still a fact. Keep it visible,
+            // but let the chip use the neutral styling below.
+            self = .unknown(raw)
+        }
+    }
+
+    var label: String {
+        switch self {
+        case .common: return "Common"
+        case .uncommon: return "Uncommon"
+        case .rare: return "Rare"
+        case .mythic: return "Mythic"
+        case let .unknown(raw): return raw
+        }
+    }
+
+    var tint: Color {
+        switch self {
+        case .common, .unknown:
+            return .secondary
+        case .uncommon:
+            return .blue
+        case .rare:
+            return .purple
+        case .mythic:
+            return .orange
+        }
+    }
+}
+
+struct RarityChip: View {
+    let rarity: CardRarityToken
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
-    init(@ViewBuilder content: () -> Content) {
+    var body: some View {
+        Text(rarity.label.uppercased())
+            .font(.caption.weight(.bold))
+            .tracking(0.5)
+            .foregroundStyle(rarity.tint)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background {
+                if reduceTransparency {
+                    Capsule()
+                        .fill(Color(uiColor: .secondarySystemBackground))
+                } else {
+                    Capsule()
+                        .fill(rarity.tint.opacity(0.15))
+                }
+            }
+            .overlay {
+                Capsule()
+                    .stroke(
+                        rarity.tint.opacity(reduceTransparency ? 0.35 : 0.22),
+                        lineWidth: 1
+                    )
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Rarity")
+            .accessibilityValue(rarity.label)
+    }
+}
+
+struct AppCardSurface<Content: View>: View {
+    private let content: Content
+    private let accent: Color?
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+
+    init(accent: Color? = nil, @ViewBuilder content: () -> Content) {
+        self.accent = accent
         self.content = content()
     }
 
@@ -799,12 +1083,22 @@ struct AppCardSurface<Content: View>: View {
         content
             .padding(16)
             .background {
-                if reduceTransparency {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(Color(uiColor: .secondarySystemBackground))
-                } else {
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(.ultraThinMaterial)
+                ZStack {
+                    if reduceTransparency {
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(Color(uiColor: .secondarySystemBackground))
+                    } else {
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(.ultraThinMaterial)
+                    }
+
+                    if let accent {
+                        // A small, local tint makes the identity surface feel
+                        // connected to its artwork without recolouring every
+                        // card surface on the page.
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(accent.opacity(reduceTransparency ? 0.07 : 0.11))
+                    }
                 }
             }
             .overlay {

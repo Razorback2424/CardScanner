@@ -814,6 +814,23 @@ final class CameraPreviewSurfaceTests: XCTestCase {
 }
 
 @MainActor
+final class CardDetailIdentityPresentationTests: XCTestCase {
+    func testRarityTokenUsesSpecificSubstringMatchesAndKeepsUnknownValues() throws {
+        XCTAssertEqual(CardRarityToken(raw: "Common"), .common)
+        XCTAssertEqual(CardRarityToken(raw: "Uncommon"), .uncommon)
+        XCTAssertEqual(CardRarityToken(raw: "Mythic Rare"), .mythic)
+        XCTAssertEqual(CardRarityToken(raw: "Secret Rare"), .rare)
+
+        let unknown = try XCTUnwrap(CardRarityToken(raw: "Prismatic Star"))
+        guard case let .unknown(raw) = unknown else {
+            return XCTFail("Unrecognised rarity should remain a neutral token")
+        }
+        XCTAssertEqual(raw, "Prismatic Star")
+        _ = RarityChip(rarity: unknown).body
+    }
+}
+
+@MainActor
 final class ViewConstructionSmokeTests: XCTestCase {
     func testStatelessAndStatefulScreensCanBeConstructed() throws {
         let history = PortfolioHistoryStore()
