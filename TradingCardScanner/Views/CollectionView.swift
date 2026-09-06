@@ -97,6 +97,7 @@ struct CollectionView: View {
     let refresh: PriceRefreshController
     let opensBrowseOnLaunch: Bool
     let opensMovementDetailsOnLaunch: Bool
+    let opensCardDetailOnLaunch: Bool
     let onOpenScanner: @MainActor () -> Void
     let onRefresh: @MainActor () async -> Void
     @Binding var sort: CollectionSort
@@ -149,6 +150,7 @@ struct CollectionView: View {
         refresh: PriceRefreshController,
         opensBrowseOnLaunch: Bool,
         opensMovementDetailsOnLaunch: Bool = false,
+        opensCardDetailOnLaunch: Bool = false,
         onOpenScanner: @escaping @MainActor () -> Void,
         onRefresh: @escaping @MainActor () async -> Void,
         sort: Binding<CollectionSort>
@@ -158,6 +160,7 @@ struct CollectionView: View {
         self.refresh = refresh
         self.opensBrowseOnLaunch = opensBrowseOnLaunch
         self.opensMovementDetailsOnLaunch = opensMovementDetailsOnLaunch
+        self.opensCardDetailOnLaunch = opensCardDetailOnLaunch
         self.onOpenScanner = onOpenScanner
         self.onRefresh = onRefresh
         self._sort = sort
@@ -245,6 +248,12 @@ struct CollectionView: View {
             try? await Task.sleep(for: .milliseconds(300))
             guard let entry = snapshot.entries.first else { return }
             navigationPath = [.card(entry.id), .movement(entry.id)]
+        }
+        .task {
+            guard opensCardDetailOnLaunch, navigationPath.isEmpty else { return }
+            try? await Task.sleep(for: .milliseconds(500))
+            guard let entry = snapshot.entries.first else { return }
+            navigationPath = [.card(entry.id)]
         }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
@@ -880,8 +889,6 @@ private struct CollectionCardTile: View {
     var body: some View {
         VStack(spacing: 8) {
             ZStack {
-                Color.secondary.opacity(0.08)
-
                 CollectionCardArtwork(
                     userArtworkFilename: userArtworkFilename,
                     thumbnailURL: card.lowImageURL,
@@ -894,12 +901,11 @@ private struct CollectionCardTile: View {
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay(alignment: .topTrailing) {
                 if quantity > 1 {
-                    Text("×\(quantity)")
-                        .font(.caption.bold())
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 4)
-                        .background(.black.opacity(0.78), in: Capsule())
-                        .foregroundStyle(.white)
+                    AppCardBadge(
+                        text: "×\(quantity)",
+                        systemImage: "number",
+                        tint: .teal
+                    )
                         .padding(5)
                 }
             }
@@ -916,25 +922,31 @@ private struct CollectionCardTile: View {
                 }
                 .frame(maxWidth: .infinity)
 
-                HStack(spacing: 6) {
-                    Text(card.setName)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(identityLine)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                        .lineLimit(2)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    HStack(spacing: 4) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 6) {
                         switch card.itemKind {
                         case .rawCard:
                             if let variant = card.variant {
-                                CollectionFinishBadge(variant: variant)
+                                AppCardBadge(
+                                    text: variant.label,
+                                    systemImage: finishSymbol(for: variant),
+                                    tint: finishTint(for: variant)
+                                )
                             }
                         case .gradedCard, .sealedProduct:
                             // A slab or a box has no raw finish, so the badge shows
                             // what it actually is: `PSA 10`, `Sealed`.
-                            CollectionItemKindBadge(
-                                title: card.itemKindLabel,
-                                kind: card.itemKind
+                            AppCardBadge(
+                                text: card.itemKindLabel,
+                                systemImage: card.itemKind.symbolName,
+                                tint: itemKindTint(for: card.itemKind)
                             )
                         }
 
@@ -942,7 +954,12 @@ private struct CollectionCardTile: View {
                             Array(card.displayedMagicTreatmentEvidence.displayLabels.enumerated()),
                             id: \.offset
                         ) { item in
-                            CollectionTreatmentBadge(label: item.element)
+                            AppCardBadge(
+                                text: item.element,
+                                systemImage: "wand.and.stars",
+                                tint: .pink
+                            )
+                        }
                         }
                     }
                 }
@@ -959,7 +976,7 @@ private struct CollectionCardTile: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(card.name), \(card.setName), \(accessiblePrice), \(card.itemKindLabel), quantity \(card.quantity)\(diagnosticAccessibilityText)"
+            "\(card.name), \(card.setName), \(accessiblePrice), \(card.itemKindLabel), quantity \(quantity)\(diagnosticAccessibilityText)"
         )
     }
 
@@ -976,67 +993,14 @@ private struct CollectionCardTile: View {
         }
         return price.state() == .unavailable ? "price unavailable" : "price not checked"
     }
-}
 
-private struct CollectionTreatmentBadge: View {
-    let label: String
-
-    var body: some View {
-        Label(label, systemImage: "sparkles")
-            .font(.caption.weight(.semibold))
-            .lineLimit(1)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .foregroundStyle(.orange)
-            .background(Color.orange.opacity(0.16), in: Capsule())
-            .fixedSize(horizontal: true, vertical: false)
-    }
-}
-
-/// The badge for a row that is not a raw single.
-///
-/// Deliberately the same shape and weight as the finish badge beside it: a
-/// graded slab and a reverse holo are both "what kind of copy this is", and
-/// making one look like a different class of information would be misleading.
-private struct CollectionItemKindBadge: View {
-    let title: String
-    let kind: CollectionItemKind
-
-    var body: some View {
-        Label(title, systemImage: kind.symbolName)
-            .font(.caption.weight(.semibold))
-            .lineLimit(1)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .foregroundStyle(tint)
-            .background(tint.opacity(0.16), in: Capsule())
-            .fixedSize(horizontal: true, vertical: false)
+    private var identityLine: String {
+        [card.setName, card.setCode, card.cardNumber]
+            .filter { !$0.isEmpty }
+            .joined(separator: "  ·  ")
     }
 
-    private var tint: Color {
-        switch kind {
-        case .gradedCard: return .indigo
-        case .sealedProduct: return .brown
-        case .rawCard: return .secondary
-        }
-    }
-}
-
-private struct CollectionFinishBadge: View {
-    let variant: PhysicalVariant
-
-    var body: some View {
-        Label(variant.label, systemImage: symbol)
-            .font(.caption.weight(.semibold))
-            .lineLimit(1)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .foregroundStyle(tint)
-            .background(tint.opacity(0.16), in: Capsule())
-            .fixedSize(horizontal: true, vertical: false)
-    }
-
-    private var tint: Color {
+    private func finishTint(for variant: PhysicalVariant) -> Color {
         switch variant.id {
         case PhysicalVariant.reverse.id:
             return .teal
@@ -1051,7 +1015,7 @@ private struct CollectionFinishBadge: View {
         }
     }
 
-    private var symbol: String {
+    private func finishSymbol(for variant: PhysicalVariant) -> String {
         switch variant.id {
         case PhysicalVariant.reverse.id:
             return "arrow.triangle.2.circlepath"
@@ -1063,6 +1027,14 @@ private struct CollectionFinishBadge: View {
             return "1.circle"
         default:
             return "circle.fill"
+        }
+    }
+
+    private func itemKindTint(for kind: CollectionItemKind) -> Color {
+        switch kind {
+        case .gradedCard: return .indigo
+        case .sealedProduct: return .brown
+        case .rawCard: return .secondary
         }
     }
 }

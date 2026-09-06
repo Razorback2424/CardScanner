@@ -659,8 +659,7 @@ private struct PortfolioContributionRowModel: Identifiable {
     var detail: String? {
         switch kind {
         case let .holding(holding):
-            let quantity = holding.quantity > 1 ? "×\(holding.quantity)" : nil
-            return [holding.detail, quantity].compactMap { $0 }.joined(separator: " · ")
+            return holding.detail
         case .previouslyOwned, .otherHoldings: return nil
         }
     }
@@ -914,6 +913,13 @@ private struct PortfolioContributionRow: View {
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
+                    if let holding = row.holding, holding.quantity > 1 {
+                        AppCardBadge(
+                            text: "×\(holding.quantity)",
+                            systemImage: "number",
+                            tint: .teal
+                        )
+                    }
                 }
                 Spacer(minLength: 8)
                 VStack(alignment: .trailing, spacing: 2) {
@@ -947,17 +953,30 @@ private struct PortfolioHoldingRow: View {
             PortfolioArtwork(holding: holding)
             VStack(alignment: .leading, spacing: 2) {
                 Text(holding.name).foregroundStyle(.primary)
-                Text([holding.detail, holding.quantity > 1 ? "×\(holding.quantity)" : nil]
-                    .compactMap { $0 }
-                    .joined(separator: " · "))
+                Text(holding.detail)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                if holding.quantity > 1 {
+                    AppCardBadge(
+                        text: "×\(holding.quantity)",
+                        systemImage: "number",
+                        tint: .teal
+                    )
+                }
             }
             Spacer(minLength: 8)
-            Text(holding.currentValue.map { $0.formatted() } ?? "Value unavailable")
-                .font(.subheadline.weight(.semibold).monospacedDigit())
-                .foregroundStyle(.primary)
+            if let currentValue = holding.currentValue {
+                Text(currentValue.formatted())
+                    .font(.subheadline.weight(.semibold).monospacedDigit())
+                    .foregroundStyle(.primary)
+            } else {
+                AppCardBadge(
+                    text: "Value unavailable",
+                    systemImage: "exclamationmark.circle",
+                    tint: .orange
+                )
+            }
         }
         .frame(minHeight: 48)
         .accessibilityElement(children: .ignore)

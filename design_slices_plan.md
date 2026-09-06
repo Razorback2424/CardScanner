@@ -25,10 +25,11 @@ not grow a third dialect. The implementation decisions are:
 
 ### The seam already exists
 
-`ScanSessionOverlays.swift` defines `GlassBackground` as a `ViewModifier` behind
-one `scannerGlass(cornerRadius:)` extension, used at eleven call sites. **The
-material can be replaced in that one file.** Nothing else has to change for the
-basic swap. This is the cheapest slice in the document and it deletes code.
+S0 is complete. `AppGlass.swift` now owns the shared `AppGlassBackground`
+modifier and the app-scoped `appGlass`, `appPillGlass`,
+`appGlassOptionButton`, and `appGlassEffectID` surfaces. The fifteen scanner
+call sites remain in `ScannerView.swift` and `ScanSessionOverlays.swift`; the
+rename was mechanical and the iOS 17 fallback is still in place.
 
 ### The deployment-target decision
 
@@ -36,7 +37,7 @@ basic swap. This is the cheapest slice in the document and it deletes code.
 
 1. **Raise the target to 26.** Simplest, and the bundle id is still
    `com.example.TradingCardScanner`, so there is no installed base to strand.
-2. **Keep 17 and branch inside `scannerGlass()`.** `if #available(iOS 26)` uses
+2. **Keep 17 and branch inside `appGlass()`.** `if #available(iOS 26)` uses
    the real material, else the current black capsule. One branch, one file, no
    call site changes.
 
@@ -56,7 +57,7 @@ card enters and leaves frame.
 | Finish Lock (locked) | solid `Color.red` capsule | `.glassEffect(.regular.tint(.red), in: .capsule)` | Must stay unmissable — a silently applied lock is the thing that most needs to be visible. Tint keeps it loud and joins the material family |
 | Settings button | hand-rolled black circle + white stroke | `.buttonStyle(.glass)` | Deletes the custom circle entirely |
 | Unresolved chip | `.orange.opacity(0.85)` | `.glassEffect(.regular.tint(.orange), in: .capsule)` | Same reasoning as the lock |
-| Receipt, choice bars, rail, assistance, held-duplicate | `scannerGlass()` | `.glassEffect(.regular, in: .rect(cornerRadius:))` | One call site |
+| Receipt, choice bars, rail, assistance, held-duplicate | `appGlass()` | `.glassEffect(.regular, in: .rect(cornerRadius:))` | One call site |
 | Variant / print-run / identity option buttons | `.white.opacity(0.16)` rects | `.buttonStyle(.glass)` | See constraint below |
 | **Scan band** | green stroke + fill on `CALayer` | **unchanged** | It is an alignment guide, not chrome. It must be a crisp stroke against the card, and it lives in the preview layer where glass does not apply |
 | **`ScanNoteView` problem tone** | solid orange capsule | **unchanged, or tinted glass only if it stays clearly orange** | A problem note that becomes ambiguous is worse than an unfashionable one |
@@ -240,3 +241,19 @@ components are real reuse rather than a third approximation.
 S4 and S5 may be implemented independently after S1, but both must reuse the
 same hero/detail surface. S6 is part of the completion gate, not an optional
 follow-up.
+
+## Implementation record — 2026-09-06
+
+S0–S6 are implemented. Card detail now uses a full-bleed hero with bounded
+scroll parallax, a neutral iOS 17-compatible backdrop, a unified identity
+block, shared accessible badges, a price/movement block that preserves the
+scoped instrument-key queries and chart semantics, a treatment-aware
+motion-bounded finish overlay, and one action strip. Collection tiles and
+Portfolio holding/contribution rows reuse the same badge vocabulary. No
+artwork-derived colour extraction or `MeshGradient` was added.
+
+The simulator app build succeeds and the full scheme suite passes with 861
+tests, 1 skipped, and 0 failures. The deterministic `CardDetail` route
+launched successfully, but CoreSimulatorService disconnected before the
+screen could be captured; the visual checklist records that capture as
+pending rather than treating launch as visual verification.
