@@ -95,6 +95,13 @@ struct CollectionCardDetailView: View {
         }
         .navigationTitle(card.name)
         .navigationBarTitleDisplayMode(.inline)
+        // Artwork actions belong in the navigation chrome so they never cover
+        // printed card content in the full-bleed hero.
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                artworkMenu
+            }
+        }
         // The detail destination is a focused surface. Leaving the collection
         // tab bar visible puts it over the identity block at the hero's resting
         // height, clipping the card name before the user can scroll.
@@ -171,10 +178,6 @@ struct CollectionCardDetailView: View {
         let movementEnabled = !reduceMotion
         return ZStack(alignment: .bottom) {
             artwork
-                .overlay(alignment: .topTrailing) {
-                    artworkMenu
-                        .padding(12)
-                }
                 .scrollTransition(.interactive, axis: .vertical) { content, phase in
                     content
                         .scaleEffect(!movementEnabled || phase.isIdentity ? 1 : 0.96)

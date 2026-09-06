@@ -1047,6 +1047,56 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
             3
         )
     }
+
+    func testTodayFixtureKeepsHistoryCountAlignedWithRenderedPoints() throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: Schema([
+                CollectedCard.self,
+                PriceRecord.self,
+                CollectionActivity.self,
+                InventoryEvent.self,
+                PriceObservation.self,
+                PriceCheckDay.self
+            ])
+        )
+        let context = container.mainContext
+        let defaults = UserDefaults.standard
+        let originalEpoch = defaults.object(forKey: PortfolioEpoch.defaultsKey)
+        defer {
+            if let originalEpoch {
+                defaults.set(originalEpoch, forKey: PortfolioEpoch.defaultsKey)
+            } else {
+                defaults.removeObject(forKey: PortfolioEpoch.defaultsKey)
+            }
+        }
+
+        PortfolioDebugFixtures.seedTodayIfNeeded(in: context)
+
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(cards.count, 4)
+
+        let charizard = try XCTUnwrap(cards.first { $0.name == "Charizard ex" })
+        let instrumentKey = InventoryLedger(context: context).priceStorageKey(for: charizard)
+        let observations = try context.fetch(FetchDescriptor<PriceObservation>())
+            .filter { $0.instrumentKey == instrumentKey }
+        let checkDays = try context.fetch(FetchDescriptor<PriceCheckDay>())
+            .filter { $0.instrumentKey == instrumentKey }
+
+        XCTAssertEqual(observations.count, 2)
+        XCTAssertEqual(checkDays.count, 1)
+
+        let model = PriceHistoryChartModel.make(
+            observations: observations,
+            checkDays: checkDays,
+            currencyCode: "USD",
+            range: .oneMonth,
+            now: .now,
+            timeZone: PortfolioCalendar.pinnedTimeZone() ?? .current
+        )
+        XCTAssertEqual(model.observationCount, 2)
+        XCTAssertEqual(model.samples.filter(\.isObservation).count, 2)
+        XCTAssertEqual(model.summary, "2 changed prices across 1 checked day.")
+    }
 }
 #endif
 

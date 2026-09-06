@@ -211,27 +211,10 @@ enum PortfolioDebugFixtures {
                     isSourceStamped: true
                 )
             )
-            modelContext.insert(
-                PriceObservation(
-                    instrumentKey: instrument,
-                    kind: .marketUpdate,
-                    amount: Money(rounding: fixture.current),
-                    source: .justTCG,
-                    sourceVariantID: card.justTCGVariantID,
-                    marketVariantID: card.justTCGVariantID,
-                    effectiveAt: .now,
-                    receivedAt: .now,
-                    isSourceStamped: true
-                )
-            )
-            modelContext.insert(
-                PriceCheckDay(
-                    instrumentKey: instrument,
-                    portfolioDay: today,
-                    lastSuccessfulCheckAt: .now,
-                    source: .justTCG
-                )
-            )
+            // `addSealed` above records the current fixture price through
+            // `PriceStore` and the matching successful check day. Backfill
+            // only the earlier value here; inserting either current evidence
+            // again creates duplicate rows at today's timestamp.
             if let record = PriceStore(context: modelContext).record(forKey: instrument) {
                 record.unitMarketPriceUSD = fixture.current
                 record.fetchedAt = .now
