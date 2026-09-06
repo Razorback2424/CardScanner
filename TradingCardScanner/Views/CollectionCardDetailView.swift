@@ -1083,8 +1083,24 @@ private struct CardFinishOverlay: View {
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @StateObject private var motion = CardFinishMotionModel()
 
+    /// How far the sweep travels at full tilt, as a fraction of the gradient's
+    /// own length. Chosen to preserve the travel distance the previous
+    /// `0.55 × diagonal` produced.
+    private static let driveSpan = 0.275
+
     /// One band of the sweep. Several out of phase is what separates a Surge
     /// Foil ripple from a plain foil's single pass.
+    ///
+    /// `phase` and `width` are both fractions of the gradient's own length,
+    /// which is twice the card's diagonal. Expressing them in one unit is the
+    /// whole point: they were previously measured against different lengths —
+    /// width against the full gradient, phase against `0.55 × diagonal` — so
+    /// numbers that looked comparable were off by a factor of 3.6. A plain
+    /// foil's "band" had an 830pt falloff on a 629pt card, which is not a band
+    /// at all but a wash over the whole surface, and Surge Foil's three bands
+    /// were 415pt wide and 69pt apart, overlapping into a single smear. Both
+    /// read exactly as reported: hard to notice until moved, and never like
+    /// three of anything.
     private struct SheenBand {
         /// Where the band rests when the card is held still.
         var phase: Double
@@ -1112,9 +1128,9 @@ private struct CardFinishOverlay: View {
     /// one sliding gradient did.
     private var counterBand: SheenBand {
         SheenBand(
-            phase: -0.42,
+            phase: -0.20,
             travelScale: -0.55,
-            width: 0.26,
+            width: 0.09,
             tint: activeTreatment == .neonInk ? .purple : .white,
             intensity: 0.42
         )
@@ -1146,26 +1162,30 @@ private struct CardFinishOverlay: View {
     private var bands: [SheenBand] {
         switch activeTreatment {
         case .surgeFoil:
+            // Separated by more than they are wide, so the ripple resolves into
+            // three passes across the card instead of one broad one.
             return [
-                SheenBand(phase: -0.20, width: 0.15, tint: .pink, intensity: 0.85),
-                SheenBand(phase: 0, width: 0.19, tint: .cyan, intensity: 1, isPrimary: true),
-                SheenBand(phase: 0.20, width: 0.15, tint: .blue, intensity: 0.8),
+                SheenBand(phase: -0.16, width: 0.056, tint: .pink, intensity: 0.85),
+                SheenBand(phase: 0, width: 0.062, tint: .cyan, intensity: 1, isPrimary: true),
+                SheenBand(phase: 0.16, width: 0.056, tint: .blue, intensity: 0.8),
                 counterBand
             ]
         case .neonInk:
             return [
-                SheenBand(phase: -0.10, width: 0.21, tint: .orange, intensity: 0.9),
-                SheenBand(phase: 0.10, width: 0.21, tint: .green, intensity: 0.85, isPrimary: true),
+                SheenBand(phase: -0.14, width: 0.075, tint: .orange, intensity: 0.9),
+                SheenBand(phase: 0.14, width: 0.075, tint: .green, intensity: 0.85, isPrimary: true),
                 counterBand
             ]
         case .unclassified:
             return [
-                SheenBand(phase: 0, width: 0.28, tint: .purple, intensity: 0.85, isPrimary: true),
+                SheenBand(phase: 0, width: 0.095, tint: .purple, intensity: 0.85, isPrimary: true),
                 counterBand
             ]
         case nil:
+            // A band with the card either side of it, rather than a wash across
+            // the whole surface.
             return [
-                SheenBand(phase: 0, width: 0.30, tint: .cyan, intensity: 1, isPrimary: true),
+                SheenBand(phase: 0, width: 0.102, tint: .cyan, intensity: 1, isPrimary: true),
                 counterBand
             ]
         }
@@ -1213,7 +1233,7 @@ private struct CardFinishOverlay: View {
         // Roll dominates: turning the phone in the hand is how anyone looks for
         // foil. Pitch contributes so the band still answers a nod.
         let drive = max(-1, min(1, motion.tilt.width * 0.85 + motion.tilt.height * 0.45))
-        let travel = (drive * band.travelScale + band.phase) * diagonal * 0.55
+        let travel = (drive * band.travelScale * Self.driveSpan + band.phase) * diagonal * 2
 
         return LinearGradient(
             stops: stops(for: band, specular: specular),
