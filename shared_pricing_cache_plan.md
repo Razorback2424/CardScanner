@@ -1,18 +1,25 @@
 # Shared Pricing Cache — Implementation Plan
 
 **CardScanner · Pricing Infrastructure**
-Status: Draft validated, three gates open · Date: 28 August 2026 · Verdict: Proceed after Gate A
+Status: Draft validated, three gates open, warming scope added · Date: 06 September 2026 · Verdict: Proceed after Gate A
 
-A server-side cache so one CardScanner user's price observation can serve the next, without
-moving card identity, the collection, or the portfolio ledger off the device.
+A server-side price and market-history cache so one CardScanner user's provider lookup can serve
+the next, without moving card identity, the collection, or the portfolio ledger off the device.
+Firebase Functions keep a defined coverage universe warm within the paid JustTCG plan's quota;
+the phone reads prepopulated provider data instead of waiting for JustTCG on card-detail taps.
 
 ---
 
 ## 1. Verdict
 
-The architecture is sound and I would build it. The draft's boundary — CardScanner owns card
-identity, the backend owns provider access and caching, the local ledger owns historical truth —
-is the right one and should be frozen as written.
+The architecture is sound and I would build it. The boundary is: CardScanner owns card identity,
+the backend owns provider access, bounded market-history caching, and quota-aware warming, and the
+local ledger owns portfolio historical truth. That boundary is the right one and should be frozen
+as written.
+
+The backend's market history is provider evidence for the individual-card detail surface. It is
+not portfolio history, does not become `PriceObservation` or `PriceCheckDay`, and must never alter
+the locally derived portfolio ledger.
 
 What does not survive validation is the draft's picture of the *current* system. Three of its
 premises are contradicted by the code in this repository, and one of those is a commercial
@@ -69,11 +76,13 @@ other people running on CardScanner's subscription. That is squarely permitted o
 *"Cache responses server-side and store price points to power your app's features"* — and
 squarely not permitted on free. **Buying a paid plan is a prerequisite, not a detail.**
 
-#### SCOPE — JustTCG is an opt-in fallback, not the pricing system
+#### SCOPE — JustTCG remains an opt-in quote fallback, but also supplies detail history
 
 The draft never mentions TCGdex, TCGplayer, Cardmarket, or Scryfall. Those are where the great
-majority of prices actually come from. JustTCG is consulted only for what the catalogs cannot
-price, and the whole path is off by default behind `usesPriceFallback = false`.
+majority of current prices actually come from. JustTCG remains the opt-in current-price fallback,
+and that path is still off by default behind `usesPriceFallback = false`. Separately, the detail
+screen may request JustTCG-backed market history for a catalog card when an exact provider mapping
+exists, even if TCGdex or Scryfall supplied the current quote.
 
 > `Models/PriceRecord.swift` · `PriceSource`
 > ```
@@ -85,11 +94,11 @@ price, and the whole path is off by default behind `usesPriceFallback = false`.
 > ```
 
 So the shared cache serves the long tail — Japanese sets, promos, tokens, art cards — plus sealed
-products and graded slabs, which also route through JustTCG. That is a real and growing surface,
-and it is the expensive one per request. But the draft's headline metric, "upstream amplification
-falls dramatically," will be measured against a slice of traffic, not against all pricing. Size
-the project's expected value accordingly, and do not let the cache's hit rate be read as a
-statement about pricing overall.
+products and graded slabs, which also route through JustTCG, and the provider-history series used
+by detail screens. That is a real and growing surface, and it is the expensive one per request.
+The project's headline metric, "upstream amplification falls dramatically," must therefore be
+reported separately for current quotes and history warming; do not let the cache's hit rate be
+read as a statement about pricing overall.
 
 #### DE-RISKS — Most of the backend already exists, working, on the client
 
@@ -193,21 +202,24 @@ PriceRepository                                ← the new seam
    ┌────┴─────────────────────────────┐
    │                                  │
 Catalog path                    RemotePriceRepository
-TCGdex · Scryfall · Cardmarket   JustTCG-backed lookups only
-direct, unchanged, uncached            │
+TCGdex · Scryfall · Cardmarket   JustTCG quotes + detail history
+direct for current quotes             │
                                        ↓
-                            getPrices() callable
-                            Auth + App Check + validation + dedupe
+                         getMarketData() callable
+                         Auth + App Check + validation + dedupe
                                        ↓
-                            Mapping resolver → shared Firestore cache
+                         Mapping + cache read
                                        ↓
-                        ┌──────────────┴──────────────┐
-                   Fresh entry                  Stale or missing
-                   return immediately           refresh lease → quota governor
-                                                → JustTCG → validate → write
+                  ┌──────────────┴────────────────┐
+              Warm cache                    Missing / stale
+          return immediately       enqueue warmer → quota governor
+                                   → JustTCG → validate → write
+                  ↓                            ↓
+       PriceQuote / MarketHistorySeries   client receives cached/stale
+       → local UI only                    data or bounded "warming" state
                                        ↓
-                      PriceQuote → existing PriceRecord / ledger
-                      (local historical truth, unchanged)
+                  Current quote may enter local PriceRecord/ledger
+                  Provider history never enters portfolio evidence
 ```
 
 ### The migration rule, kept verbatim
@@ -218,17 +230,21 @@ backend. Cache-bypass is the kill switch; client fallback is not.
 
 ### Scope note on the catalog path
 
-Do not extend the backend to TCGdex or Scryfall in this project. They are free, public, already
-cached locally, and carry none of the quota pressure that motivates the shared cache. Routing
-them through Firebase would add latency and cost to the majority of lookups in exchange for
-nothing, and would make the backend a hard dependency of the app's primary pricing path. Leave
-them alone.
+Do not route TCGdex or Scryfall's primary current-price requests through Firebase. They are free,
+public, already cached locally, and carry none of the quota pressure that motivates the shared
+cache. Routing them through Firebase would add latency and cost to the majority of lookups in
+exchange for nothing, and would make the backend a hard dependency of the app's primary pricing
+path.
+
+Their identifiers may still be sent to the remote repository as mapping candidates for the
+separate JustTCG detail-history path. That path is allowed to use a TCGdex/Scryfall catalog card
+as input while leaving the catalog provider's current-price path unchanged.
 
 ---
 
 ## 5. Contracts
 
-Freeze these five before writing the server. Each must be defined in terms of the identity types
+Freeze these provider-data contracts before writing the server. Each must be defined in terms of the identity types
 CardScanner already has — a second identity system is the failure mode this section exists to
 prevent.
 
@@ -255,30 +271,58 @@ Never key on names. Document, in the Phase 0 commit, exactly which existing Card
 supplies `canonicalPrintingID` — and add a test that fails if a second source of printing
 identity appears.
 
-### The five types
+### The provider-data types
 
 - **PhysicalCardIdentity** — game, canonical printing ID, finish, language. Condition is *not*
   part of it. The scanner does not determine that a card is Near Mint; the app assumes it.
 - **ValuationPolicy** — condition, market, currency. v1 is Near Mint / US / USD, held explicitly
   so LP, graded, Japanese-market and multi-currency remain reachable later without touching
   identity.
-- **PriceRequest** — request item ID, identity, policy. Deliberately no `provider` field;
-  provider selection is a backend concern.
+- **PriceRequest** — request item ID, identity, policy, and optional history policy. Deliberately
+  no `provider` field; provider selection is a backend concern.
 - **PriceQuote** — amount, currency, and full provenance: `sourceUpdatedAt`, `providerFetchedAt`,
   `servedAt`, freshness, opaque observation ID. Keep all three timestamps separate; they answer
   three different questions and `NormalizedPrice` already keeps two of them apart correctly.
+- **MarketHistoryRequest** — request item ID, exact physical identity, valuation policy, and the
+  requested history horizon. It may carry a known provider variant ID, but the backend remains
+  responsible for validating that mapping before serving data.
+- **MarketHistorySeries** — provider-stamped `{timestamp, price}` points, source, currency,
+  exact provider card/variant identifiers, coverage start/end, provider `lastUpdated`, cache
+  `fetchedAt`, and freshness. A series is market evidence for detail UI, not a local ownership
+  observation.
 - **PriceResult** — `priced`, `noPrice`, `mappingUnavailable`, `temporarilyUnavailable`,
   `invalidRequest`; a priced result additionally carries `freshCache`, `freshlyRefreshed`, or
   `staleFallback`.
+- **HistoryResult** — `available`, `warming`, `notCovered`, `mappingUnavailable`,
+  `temporarilyUnavailable`; an available series additionally carries `freshCache`, `staleCache`,
+  or `freshlyRefreshed`.
 
 ### The repository seam
 
-Plural from day one — `prices(for: [PriceRequest])`, never a singular variant. A scan passes one
-request; a portfolio refresh passes hundreds; chunking to the tier's batch limit happens inside
-`RemotePriceRepository` and is invisible to everything above it.
+Plural from day one — `marketData(for: [PriceRequest])`, never a singular variant. A scan passes
+one request; a portfolio refresh passes hundreds; a detail screen may request one quote plus one
+history series; chunking to the tier's batch limit happens inside `RemotePriceRepository` and is
+invisible to everything above it.
+
+The callable accepts an explicit history policy:
+
+```
+history: none | ifAvailable | required
+historyDuration: 30d | 90d | 180d | 1y
+```
+
+The detail screen uses `ifAvailable`: a warm Firebase hit returns the series immediately, while a
+miss enqueues warming and returns the current quote plus a bounded `warming` state. It must not
+wait on a cold provider fetch merely to render the card detail surface. A background warmer may
+request the canonical maximum horizon once and serve shorter ranges by local slicing.
 
 Make the chunk size tier-configured rather than a constant. It is 20 on free, 100 on Starter and
 Professional, 200 on Enterprise, and `JustTCGTransport.batchSize` is hardcoded to 20 today.
+
+History requests are chunked separately from current-price refreshes when necessary. A batch is
+bounded by both the provider's item limit and the serialized response-size limit; never put many
+one-year series into a single Firestore document or callable response merely because the provider
+allows the request.
 
 ---
 
@@ -298,6 +342,12 @@ one portfolio day. Its comment explains why it cannot be merged with a last-chec
 `PriceRecord` keeps the same split — `lastSuccessfulCheckAt` is separate from when the app last
 asked. Coverage strings like "1,276 of 1,284 repriced today · 8 carried forward" are computed
 from that evidence.
+
+Provider history is a separate evidence class. A `MarketHistorySeries` may populate the card
+detail chart and the Firebase cache, but it never creates a `PriceObservation`, `PriceCheckDay`,
+`PortfolioDailyClose`, or portfolio movement. Historical points from before the user owned a card
+must not retroactively change portfolio performance. A history-only cache hit therefore has no
+row in the table below.
 
 Therefore, mechanically:
 
@@ -329,6 +379,10 @@ repriced.
   fan-out.
 - **R6** — A cache failure may force server-side bypass. It **may not** put the provider secret
   back in the app.
+- **R7** — A provider history point may be served only for the exact validated provider card,
+  variant, condition, market, currency, and mapping fingerprint requested.
+- **R8** — A warming worker may spend only from the shared paid-plan budget. User demand, timer
+  retries, and concurrent workers must not create independent upstream fan-out.
 
 Each of these gets a named test in the matrix at §8. A rule with no test is a wish.
 
@@ -341,16 +395,22 @@ below are corrections and tightenings only.
 
 ### Endpoint and limits
 
-One callable, `getPrices([PriceRequest])`, with `enforceAppCheck: true`. It authenticates,
-verifies App Check, validates, deduplicates within the call, resolves mappings, partitions
-fresh/stale/missing, returns fresh hits immediately, coordinates refreshes under lease and quota,
-validates provider responses, writes cache, and returns results in the caller's original request
-order.
+One callable, `getMarketData([PriceRequest])`, with `enforceAppCheck: true`. It authenticates,
+verifies App Check, validates, deduplicates within the call, resolves mappings, reads current
+quotes and optionally reads provider history, and returns warm results in the caller's original
+request order. It may enqueue a missing or stale history series, but the detail surface does not
+wait for a cold JustTCG fetch.
+
+Scheduled warmer functions use the same repository and quota governor, but are not callable by the
+phone. They select work from the warming queue, acquire refresh leases, batch exact provider
+lookups, validate responses, and write the cache. A user tap can raise a card's priority without
+creating a second provider request for the same key.
 
 Cap unique requests per call at the tier's batch limit — 100 on Starter/Professional — so the
-worst case of an all-miss call is one upstream batch. Enforce serialized size, field lengths,
-enum validity, and duplicate amplification separately. All limits live in configuration, not
-constants.
+worst case of an all-miss quote call is one upstream batch. History responses have a stricter
+configured item and serialized-size cap because one item may contain a long point series. Enforce
+field lengths, enum validity, duplicate amplification, and response-size limits separately. All
+limits live in configuration, not constants.
 
 The client never reads Firestore. Security rules on the pricing collections deny client read and
 write outright; the function reaches Firestore through the Admin SDK, which bypasses those rules
@@ -358,8 +418,16 @@ by design.
 
 ### Collections and versioning
 
-Four collections: `provider_mappings`, `price_cache`, `provider_control`, `provider_budget`.
-Resist adding telemetry collections early; Firestore is not the analytics warehouse.
+Five collections plus a warming queue: `provider_mappings`, `price_cache`,
+`market_history_cache`, `provider_control`, and `provider_budget`. `warming_queue` may be a
+subcollection or task source if that gives stronger lease semantics; it is listed separately
+because warming is now a first-class operation rather than an incidental cache miss. Resist
+adding telemetry collections early; Firestore is not the analytics warehouse.
+
+`price_cache` stores the current quote and its provenance. `market_history_cache` stores one
+provider series per exact variant and market, with a canonical maximum duration and bounded point
+payload. The callable slices that series for shorter UI ranges. Keep current quote freshness and
+history freshness independent.
 
 A cache entry is valid only if *both* version boundaries hold:
 
@@ -377,11 +445,21 @@ Carry over the one-writer discipline from `ProductIdentity`: every field in thes
 exactly one writer, named in a comment. Two subsystems sharing one timestamp is how 248 cards
 were once locked out of identity resolution permanently.
 
-### TTL and negative caching
+### TTL, history coverage, and negative caching
 
 Positive TTL 60 minutes, negative TTL 15 minutes, both configurable. The asymmetry is right: a
 new release can go from no price at 10:00 to a real price at 10:45, and a six-hour negative cache
 would hide that all morning.
+
+Provider history gets a separate positive TTL, initially 6–24 hours depending on the requested
+horizon and provider update cadence. The history warmer should refresh the canonical series on a
+schedule before that TTL expires, so a detail tap normally reads an already-populated series.
+History coverage is explicit: `warm`, `partial`, `warming`, or `notCovered`. A cache miss is not
+reported as an empty chart.
+
+Cache one-year (or the provider's configured maximum) points per exact variant rather than one
+document containing every variant of a card. If a future provider horizon exceeds the Firestore
+document or callable response budget, split by time window; do not silently truncate the series.
 
 Cache a genuine `noPrice`. Never negative-cache a provider error — that is
 `temporarilyUnavailable`, which caches nothing and preserves whatever good value already exists.
@@ -389,6 +467,41 @@ Cache a genuine `noPrice`. Never negative-cache a provider error — that is
 JustTCG's own guidance puts price processing at roughly 6–7 hours per game, so 60 minutes is
 conservative by design. Leave it conservative until telemetry justifies otherwise; the first hour
 of caching captures nearly all of the benefit.
+
+### Scheduled warming and coverage universe
+
+The Firebase cache is warm by scheduled work, not only by demand. Cloud Scheduler invokes a
+warmer coordinator at a bounded cadence. The coordinator selects exact card/variant keys from a
+defined coverage universe, prioritizes them, and hands them to workers that share the global
+quota governor and refresh leases.
+
+The coverage universe is explicit and measurable:
+
+- **Tier 1:** portfolio cards, recently viewed detail cards, and cards currently visible in a
+  browse page. These must be warmed first because they are the strongest sub-second UX promise.
+- **Tier 2:** popular sets, recently released cards, and cards with repeated detail demand.
+- **Tier 3:** the remaining mapped provider catalog, only if the paid plan has enough headroom.
+
+The scheduler must not claim that every random card is warm unless the capacity model proves that
+the chosen paid tier can refresh every mapped variant at the selected cadence. A card that is not
+covered returns `notCovered` or `warming`, never a fabricated empty history. A tap may promote a
+key in the queue, but it does not synchronously bypass the server and call JustTCG.
+
+Current-price refreshes and history refreshes are separate work classes. Current quotes can be
+refreshed more frequently; daily provider history can be refreshed less often. Both reserve from
+the same paid-plan budget, and history batches are size-limited by response payload as well as
+provider item count.
+
+The warmer's success criteria are coverage and age, not merely completed jobs:
+
+```
+warmCoverage = warm exact-variant keys / requested exact-variant keys
+warmLag       = now - last successful history refresh
+```
+
+The callable remains a fast read path. On a warm cache hit it returns immediately. On a miss it
+queues or reprioritizes warming and returns current/stale data plus a bounded history state; it
+does not hold the card-detail screen open behind an upstream provider call.
 
 ### Refresh leases
 
@@ -405,16 +518,19 @@ operation, with best-effort suppression of duplicates.** Not exactly-once. A cra
 successful provider call and the Firestore write will produce a second upstream request, and that
 is acceptable.
 
-Non-owners with a previous value get the stale-good observation immediately. Non-owners with no
-previous value get a short bounded wait and re-read, then `temporarilyUnavailable`. Never start a
-second uncontrolled provider request, and never block scanner UX to shave seconds off freshness.
+Non-owners with a previous value get the stale-good quote or history series immediately. Non-owners
+with no previous history get a short bounded queue acknowledgment and `warming`/`notCovered`, not
+a second uncontrolled provider request. Never block scanner UX to shave seconds off freshness;
+the scheduled warmer is what converts a future tap into a cache hit.
 
 ### Quota governor and circuit breaker
 
 Budget state lives in Firestore, transactionally, because Cloud Functions 2nd gen runs many
 requests per instance across many instances — an in-process counter is not a global quota.
 Reserve before the call; roll minute, day and billing windows; reject when exhausted or when the
-provider is blocked.
+provider is blocked. Reserve separately visible portions of the budget for interactive mapping,
+current-price refreshes, and history warming so a full-day warmer cannot consume the capacity
+needed to serve a card-detail read or a user-requested price check.
 
 Hold an internal ceiling below the provider's published limit — 80% is a sound default, so
 Starter permits 40/min against a documented 50 — leaving headroom for retries, probes and timing
@@ -433,12 +549,14 @@ requests that actually consume upstream quota, and tune from telemetry.
 
 If Firestore is unreachable inside a working function, do not start upstream work. Coordination
 is what keeps quota bounded; without it, every instance would bypass every limit at once and
-drain the subscription. Return `temporarilyUnavailable` and let local values carry the
+drain the subscription. Return `temporarilyUnavailable` for current-price requests and
+`warming`/`notCovered` for history requests; let local values or the last cached series carry the
 experience.
 
 If the callable itself is down: scanning works, collection additions work, existing local prices
-display with their real age, portfolio refresh preserves values and generates no false success
-evidence. Card identification is never affected — that is R1.
+display with their real age, a previously cached detail series may still display locally, portfolio
+refresh preserves values and generates no false success evidence, and a new history request shows
+an honest unavailable/warming state. Card identification is never affected — that is R1.
 
 ---
 
@@ -447,60 +565,80 @@ evidence. Card identification is never affected — that is R1.
 Each phase advances only when its gate is met — not when a week has passed.
 
 **Phase 0 — Commercial gates and frozen contracts.**
-Clear Gates A, B and C. Freeze the five types. Document which existing type supplies the
-canonical printing ID.
+Clear Gates A, B and C. Freeze the provider-data types. Document which existing type supplies the
+canonical printing ID, define the history horizon, and define the warm coverage universe and
+priority tiers.
 *Gate:* Paid JustTCG subscription active. Region decided and written down. Privacy disclosure
-drafted. Existing scanner tests pass unchanged with the new types present.
+drafted. The chosen plan can refresh the target coverage universe at the proposed cadence with
+headroom. Existing scanner tests pass unchanged with the new types present.
 
 **Phase 1 — Repository seam, no behaviour change.**
-Wrap today's pricing path behind `PriceRepository`. No Firebase. No caching change. Nothing
-user-visible. The safest possible first commit.
+Wrap today's pricing path and the future detail-history request behind plural `PriceRepository`
+methods. No Firebase. No warming or caching change. Nothing user-visible. The safest possible
+first commit.
 *Gate:* Price, scanner and portfolio behaviour byte-identical to today across the existing suite.
 
 **Phase 2 — Firebase foundation.**
-Project, Firestore in the chosen region, Functions 2nd gen, Secret Manager, anonymous Auth, App
-Check with App Attest and a debug provider for simulator. No production traffic.
+Project, Firestore in the chosen region, Functions 2nd gen, Cloud Scheduler/task source, Secret
+Manager, anonymous Auth, App Check with App Attest, and a debug provider for simulator. No
+production traffic and no scheduled production warming yet.
 *Gate:* Emulator and deployed callable both work. Authenticated test client succeeds;
 unauthenticated and bad-App-Check clients are rejected. iOS can read neither the secret nor the
-pricing collections.
+pricing collections or warming controls.
 
 **Phase 3 — Server proxy, no cache.**
-Deliberately boring, and the most important phase in the plan. It answers one question in
-isolation: does moving the provider boundary to the server change pricing correctness?
+Deliberately boring, and the most important phase in the plan. It answers two questions in
+isolation: does moving the provider boundary to the server preserve current-price correctness,
+and can it return an exact provider history series without contaminating the local ledger?
 *Gate:* For a fixture set, old and new paths agree exactly on canonical printing, provider card
-UUID, provider variant UUID, condition, printing, language, price, and provider `lastUpdated`.
-Any disagreement blocks Phase 4.
+UUID, provider variant UUID, condition, printing, language, price, history points, currency, and
+provider `lastUpdated`. The history-only path writes no portfolio evidence. Any disagreement
+blocks Phase 4.
 
 **Phase 4 — Read-through cache.**
-60-minute positive TTL, 15-minute negative TTL, mapping fingerprint and strategy version
-validation.
+60-minute current-quote TTL, 6–24-hour history TTL, 15-minute negative TTL, mapping fingerprint,
+strategy version, exact-variant validation, and bounded `warming`/`notCovered` states.
 *Gate:* A fresh hit never calls JustTCG. A stale entry does. A fingerprint mismatch never serves.
 `noPrice` negative-caches correctly. A provider failure never overwrites a good price *(R2)*.
+Warm history returns in one callable read, shorter ranges slice from the canonical series, and a
+history cache hit never writes `PriceObservation` or `PriceCheckDay`.
 
-**Phase 5 — Duplicate suppression.**
+**Phase 5 — Scheduled warming and coverage.**
+Start with a bounded internal coverage universe, seed Tier 1 cards, and run the Cloud Scheduler
+warmer against the paid-plan budget. Add browse-visible and recently viewed cards to the queue;
+do not promise every catalog card until the capacity model proves it.
+*Gate:* The target Tier 1 coverage is warm before its stated freshness deadline; scheduled work
+cannot consume the interactive reserve; a card-detail tap on a warm key requires no JustTCG call;
+an uncovered key returns an honest `warming`/`notCovered` state. The initial device-cold warm-read
+target is p95 ≤ 1 second on representative networks and devices.
+
+**Phase 6 — Duplicate suppression.**
 Refresh leases, tested under 50 simultaneous misses on one key.
 *Gate:* Normal case: one owner, one upstream batch, 49 suppressed. Rare duplicates after crash or
 timeout are acceptable. An old refresh overwriting a newer mapping or result is never acceptable
-*(R4)*.
+*(R4/R8)*.
 
-**Phase 6 — Abuse and quota controls.**
+**Phase 7 — Abuse and quota controls.**
 Per-UID throttling, global budgets, 429 backoff, circuit breaker, request-size enforcement,
-provider headroom. Simulate 429s, outages, and exhausted daily and monthly budgets.
+provider headroom, and separate interactive/history-warming reserves. Simulate 429s, outages, and
+exhausted daily and monthly budgets.
 *Gate:* CardScanner cannot exceed the configured upstream ceiling merely because Cloud Functions
-scaled horizontally *(R5)*.
+scaled horizontally *(R5/R8)*.
 
-**Phase 7 — Internal shadow comparison.**
+**Phase 8 — Internal shadow comparison.**
 100% shadow on internal and TestFlight builds. Log discrepancies by identity, provider IDs,
-price, condition, printing, language and `lastUpdated`. The shadow result never mutates the
-collection or the portfolio.
-*Gate:* Mapping mismatch rate essentially zero. Price disagreements explained, not tolerated.
+price, history coverage, condition, printing, language and `lastUpdated`. The shadow result never
+mutates the collection, provider-history cache, or portfolio.
+*Gate:* Mapping mismatch rate essentially zero. Price disagreements and history-series
+disagreements explained, not tolerated.
 
-**Phase 8 — Sampled production rollout.**
+**Phase 9 — Sampled production rollout.**
 5% → 20% → 50% → 100%, inspecting crash-free behaviour, cache hit rate, latency, price and
-mapping mismatch rates, JustTCG consumption, stale fallback rate and backend errors at each step.
+history coverage, warm lag, mapping mismatch rates, JustTCG consumption, stale fallback rate and
+backend errors at each step.
 *Gate:* Advance because the prior cohort is correct, never because time passed.
 
-**Phase 9 — Retire the client credential.**
+**Phase 10 — Retire the client credential.**
 Adjusted from the draft, because the credential is the user's. Remove the Settings API-key field
 and `PriceVendorCredentials`, remove direct client provider requests, and delete any stored user
 keys from the Keychain on upgrade. There is no app key to rotate — but do confirm no build still
@@ -509,76 +647,86 @@ reads one.
 request path. Users who had supplied their own key have it removed cleanly and are not left with
 a dead settings toggle.
 
-**Phase 10 — Optimize only from telemetry.**
-If a 60-minute TTL yields a high hit rate and modest API usage, stop — build nothing clever.
-Longer TTLs, better batching, Cloud Tasks, Redis, and `updated_after` generation sync are each
-unlocked by a specific measurement, not by anticipation.
+**Phase 11 — Optimize only from telemetry.**
+If the target warm coverage and history age are achieved at acceptable cost, stop — build nothing
+clever. Longer TTLs, better batching, broader catalog warming, Cloud Tasks, Redis, and
+`updated_after` generation sync are each unlocked by a specific measurement, not by anticipation.
 *Gate:* No speculative infrastructure ships without a metric that demanded it.
 
 ### Test matrix
 
 Repeatable coverage required before production, grouped as the draft has it: identity and mapping
-(including a mapping corrected mid-refresh), cache states (fresh, expired, missing, negative,
-expired negative, stale-good, schema and strategy mismatch), concurrency (two and fifty
-simultaneous misses, lease expiry, owner crash, late owner return), provider failure (timeout,
-429, 500, malformed, wrong variant, missing variant, partial batch), quota (each window
-exhausted, per-UID exhausted, circuit open, probe succeeds, probe fails), and client behaviour
-(backend offline, timeout, local value present or absent, scan, Price Check, portfolio refresh,
-relaunch).
+(including a mapping corrected mid-refresh), quote and history cache states (fresh, expired,
+missing, negative, expired negative, stale-good, partial coverage, warming, not covered, schema
+and strategy mismatch), concurrency (two and fifty simultaneous misses, lease expiry, owner crash,
+late owner return), provider failure (timeout, 429, 500, malformed, wrong variant, missing
+variant, partial batch), quota (each window exhausted, interactive reserve exhausted, warming
+reserve exhausted, per-UID exhausted, circuit open, probe succeeds, probe fails), scheduler
+coverage and age, and client behaviour (backend offline, timeout, local value present or absent,
+scan, Price Check, portfolio refresh, detail history, relaunch).
 
-Plus one named test per safety rail R1–R6. The ledger cases are the ones to write first, because
+Plus one named test per safety rail R1–R8. The ledger cases are the ones to write first, because
 they are the ones whose failure is silent.
 
 ---
 
 ## 9. Measurement
 
-Five numbers decide whether this was worth building.
+The following numbers decide whether this was worth building and whether the warmer covers the
+experience it promises.
 
-- **Cache hit rate** — fresh hits over total price requests *on the JustTCG path*. Report it
-  scoped, so it is never mistaken for a claim about all pricing.
-- **Upstream amplification** — JustTCG requests over CardScanner price requests. This is the
-  number the project exists to drive down.
-- **Latency** — cache-hit and upstream-refresh measured separately, or the average hides both.
+- **Quote cache hit rate** and **history cache hit rate** — report them separately on the JustTCG
+  path, so history coverage is not hidden by easy current-price hits.
+- **Warm coverage** — warm exact-variant keys divided by requested exact-variant keys, reported by
+  priority tier and catalog/game.
+- **Warm lag** — age of the oldest and p95 history series in each priority tier.
+- **Upstream amplification** — JustTCG requests over quote/history requests. This is the number
+  the project exists to drive down.
+- **Latency** — Firebase warm-read p50/p95, device-cold detail p50/p95, and upstream refresh
+  separately. A single average hides the cold-miss problem.
 - **Stale fallback rate** — a sustained rise means provider or backend health, not a
   cache-tuning problem.
 - **Mapping mismatch rate** — should be indistinguishable from zero. Anything else is R4 failing.
 
-Instrument from day one as structured counters, not verbose logs: requests, keys, fresh and stale
-hits, misses, negative hits, upstream batches and variants, 429s, 5xx, timeouts, mapping failures
-and mismatches, leases won and contended, quota reserved and remaining, cache age, and result
-counts by status. Respect the Gate C retention policy.
+Instrument from day one as structured counters, not verbose logs: quote/history requests, keys,
+fresh/stale/missing/not-covered/warming hits, coverage tier, upstream batches and variants, 429s,
+5xx, timeouts, mapping failures and mismatches, leases won and contended, scheduler queue age,
+quota reserved and remaining, cache age, series point count, and result counts by status. Respect
+the Gate C retention policy.
 
 ### Costs to track from the start
 
 | Line | Today | After |
 |---|---|---|
 | JustTCG subscription | $0 — users' own free keys | Recurring, tier-dependent, scales with installs |
-| Cloud Functions invocations | $0 | One per price call, plus retries |
-| Firestore reads/writes | $0 | ≥1 read per key; writes on every refresh and lease |
+| Cloud Functions/Scheduler invocations | $0 | Callable reads plus scheduled warming and retries |
+| Firestore reads/writes | $0 | Cache reads; history writes; queue, lease, and budget writes |
+| History egress/storage | $0 | Scales with warmed variants, point count, and response size |
 | Egress and Secret Manager | $0 | Small but non-zero |
 
 Lease acquisition and budget reservation are transactional writes on hot documents. At
 CardScanner's scale a Firestore coordinator is adequate — but watch write costs and contention on
-`provider_budget` specifically, since every upstream request touches it.
+`provider_budget` specifically, since every upstream request touches it. The history warmer adds
+storage and egress even when it succeeds, so measure cost per warm variant rather than only cost
+per user tap.
 
 ---
 
 ## 10. Not in this project
 
-Kept from the draft, and worth defending when the temptation arrives: Firebase-hosted
-collections, cloud accounts and signup UX, cross-device sync, a central portfolio ledger, a
-historical market warehouse, artwork caching, Redis, Cloud Tasks for interactive scans,
-generation logic and `updated_after` sync, predictive warming, scheduled full-database refresh,
-multi-provider blending, condition grading, graded-card pricing beyond today's behaviour, and
-international market pricing.
+Kept from the draft, and worth defending when the temptation arrives: Firebase-hosted user
+collection/portfolio data, cloud accounts and signup UX, cross-device sync, a central portfolio ledger, a full
+historical market warehouse beyond the configured provider horizon, artwork caching, Redis, Cloud
+Tasks for interactive scans, generation logic and `updated_after` sync until measured necessary,
+unbounded all-catalog warming, multi-provider blending, condition grading, graded-card pricing
+beyond today's behaviour, and international market pricing.
 
 Also explicitly out: routing TCGdex, Scryfall or Cardmarket through the backend. See §4.
 
-The v1 system remains small — one callable, four collections, one provider adapter, one mapping
-resolver, one cache coordinator, one quota governor, one Swift repository. That smallness is what
-makes it a narrow infrastructure service rather than a rebuild of CardScanner, and it is worth
-protecting.
+The v1 system remains small — one callable, five bounded collections plus one queue source, one
+provider adapter, one mapping resolver, one scheduled warmer, one cache coordinator, one quota governor,
+one Swift repository. That smallness is what makes it a narrow infrastructure service rather than
+a rebuild of CardScanner, and it is worth protecting.
 
 ---
 
@@ -589,14 +737,21 @@ protecting.
 - **Which tier?** Starter and Professional differ by 5× on daily quota and 2× on per-minute.
   Model against projected installs before committing, and confirm whether sealed and graded
   lookups share the same quota pool.
+- **What is the warm universe?** Decide whether the sub-second promise covers only portfolio and
+  recently browsed cards, prioritized popular cards, or every mapped variant in selected games.
+- **What is the history cadence?** Confirm the canonical horizon and refresh age for each provider
+  history series, and model the resulting request, Firestore, and egress cost before enabling
+  broad warming.
+- **What happens on a globally cold tap?** The default is `warming` plus local/stale fallback;
+  decide whether a bounded server-side miss is allowed for selected priority tiers.
 - **What happens to users on old builds** once the server path is live and their own key still
   works? Decide whether they are migrated, cut over, or left until they update.
 - **Does the app still work for a user who never had a key?** Today the fallback is simply off
   for them. After the migration it is on for everyone at CardScanner's expense — which is a
   product improvement and a cost multiplier at the same time. Confirm that is intended.
-- **Is `/games.last_updated` supported in production responses?** Only relevant at Phase 10, but
+- **Is `/games.last_updated` supported in production responses?** Only relevant at Phase 11, but
   worth asking in the same conversation as the first question.
 
 ---
 
-*Validated against repository HEAD and JustTCG documentation, 28 August 2026.*
+*Validated against repository HEAD and JustTCG documentation, 06 September 2026.*
