@@ -11,8 +11,9 @@ must follow the stabilized card-detail treatment so Collection and Portfolio do
 not grow a third dialect. The implementation decisions are:
 
 - S0 extracts app-scoped glass names and tokens from the scanner surface.
-- S1 uses a neutral gradient. Artwork-derived colour is deferred until a later
-  cache-boundary decision; it must never be computed from `body`.
+- S1 uses a cached artwork accent loaded from the same local/remote source as
+  the hero. Extraction is keyed and asynchronous; it is never computed from
+  `body` or during view evaluation. A neutral system-colour fallback remains.
 - S1 uses iOS 17-compatible linear/radial gradients. `MeshGradient` remains an
   optional iOS 18 enhancement, not part of this implementation.
 - S6 is included in the definition of done and is implemented after S1–S5.
@@ -177,9 +178,9 @@ identical. Keep the iOS 26 branch and the iOS 17 fallback.
 
 Remove the gray artwork tray and make catalog or personal artwork full-bleed at
 the top of the scroll surface. Use `.scrollTransition` and `.visualEffect` for
-subtle scale/parallax, with no movement when Reduce Motion is enabled. Use a
-neutral iOS 17-compatible gradient behind the screen; do not extract artwork
-colour during rendering and do not add `MeshGradient` in this slice.
+subtle scale/parallax, with no movement when Reduce Motion is enabled. Use the
+cached artwork accent to tint the iOS 17-compatible backdrop, with a neutral
+system-colour fallback. Do not add `MeshGradient` in this slice.
 
 The artwork menu remains attached to the artwork. The old `Card` section header
 goes away. Missing-artwork, loading, and personal-artwork behavior do not change.
@@ -242,18 +243,38 @@ S4 and S5 may be implemented independently after S1, but both must reuse the
 same hero/detail surface. S6 is part of the completion gate, not an optional
 follow-up.
 
-## Implementation record — 2026-09-06
+## Initial implementation record — 2026-09-06
 
-S0–S6 are implemented. Card detail now uses a full-bleed hero with bounded
+At the initial S0–S6 landing, Card detail used a full-bleed hero with bounded
 scroll parallax, a neutral iOS 17-compatible backdrop, a unified identity
-block, shared accessible badges, a price/movement block that preserves the
+block, shared accessible badges, a price/movement block that preserved the
 scoped instrument-key queries and chart semantics, a treatment-aware
 motion-bounded finish overlay, and one action strip. Collection tiles and
-Portfolio holding/contribution rows reuse the same badge vocabulary. No
-artwork-derived colour extraction or `MeshGradient` was added.
+Portfolio holding/contribution rows reused the same badge vocabulary. The
+neutral backdrop and unqualified DEBUG fixture were intentional interim states;
+the dated closure below supersedes them.
 
 The simulator app build succeeds and the full scheme suite passes with 861
 tests, 1 skipped, and 0 failures. The deterministic `CardDetail` route
 launched successfully, but CoreSimulatorService disconnected before the
 screen could be captured; the visual checklist records that capture as
 pending rather than treating launch as visual verification.
+
+## Deferred-item closure — 2026-09-06
+
+The three Card Detail follow-ups are now closed. Artwork accents are extracted
+off the view-evaluation path from the existing local/remote artwork source,
+cached by source key, and applied only when Reduce Transparency is disabled.
+The DEBUG CardDetail fixture now uses a catalog-resolved holo card with direct
+artwork and a consistent price/check-day history, so the treatment-aware finish
+overlay and artwork path are exercised instead of the sealed/no-variant path.
+Price history preserves its observation and gap semantics but narrows the plot
+domain to the observed span plus bounded padding when observations are tightly
+clustered inside a larger requested range.
+
+Focused coverage passes for the chart-domain and fixture/accent behavior. The
+settled dark-mode simulator capture shows the loaded hero, visible identity
+block, and navigation actions outside the artwork; the first cold frame is
+still intentionally not used as visual evidence. No deployment-target change
+or MeshGradient branch was introduced. The full scheme suite passes 864 tests
+with 1 skipped and 0 failures.

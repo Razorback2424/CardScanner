@@ -714,13 +714,14 @@ final class PriceHistoryChartModelTests: XCTestCase {
     private func makeModel(
         observations: [PriceObservation],
         checks: [PriceCheckDay],
-        nowDay: Int = 5
+        nowDay: Int = 5,
+        range: PortfolioHistoryRange = .all
     ) -> PriceHistoryChartModel {
         PriceHistoryChartModel.make(
             observations: observations,
             checkDays: checks,
             currencyCode: "USD",
-            range: .all,
+            range: range,
             now: date(day: nowDay, hour: 12),
             timeZone: timeZone
         )
@@ -772,6 +773,24 @@ final class PriceHistoryChartModelTests: XCTestCase {
         XCTAssertEqual(model.segments.count, 2)
         XCTAssertTrue(model.hasGaps)
         XCTAssertTrue(model.segments.allSatisfy { $0.samples.count == 1 })
+    }
+
+    func testClusteredObservationsUseTheirSpanForThePlotDomain() throws {
+        let model = makeModel(
+            observations: [
+                try observation(day: 28, amount: 10),
+                try observation(day: 29, amount: 12)
+            ],
+            checks: [checkDay(day: 28), checkDay(day: 29)],
+            nowDay: 30,
+            range: .oneMonth
+        )
+
+        let requestedSpan = model.rangeEnd.timeIntervalSince(model.rangeStart)
+        let plotSpan = model.plotRangeEnd.timeIntervalSince(model.plotRangeStart)
+        XCTAssertLessThan(plotSpan, requestedSpan * 0.5)
+        XCTAssertLessThanOrEqual(model.plotRangeStart, model.samples.first?.date ?? .distantFuture)
+        XCTAssertGreaterThanOrEqual(model.plotRangeEnd, model.samples.last?.date ?? .distantPast)
     }
 
     func testSourceRestatementIsAnnotatedAsNonMarket() throws {

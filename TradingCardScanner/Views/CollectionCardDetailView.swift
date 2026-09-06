@@ -1,6 +1,7 @@
 import PhotosUI
 import Charts
 import CoreMotion
+import CoreImage
 import SwiftData
 import SwiftUI
 import UIKit
@@ -30,6 +31,7 @@ struct CollectionCardDetailView: View {
     @State private var errorMessage: String?
     @State private var artworkGeneration = 0
     @State private var pendingArtwork: ArtworkRequest?
+    @State private var artworkAccent: ArtworkAccent?
 
     private struct ArtworkRequest: Identifiable {
         let id: Int
@@ -69,7 +71,7 @@ struct CollectionCardDetailView: View {
 
     var body: some View {
         ZStack {
-            AppCardDetailBackdrop()
+            AppCardDetailBackdrop(accent: artworkAccent)
                 .ignoresSafeArea()
 
             ScrollView(.vertical, showsIndicators: true) {
@@ -106,6 +108,14 @@ struct CollectionCardDetailView: View {
         // tab bar visible puts it over the identity block at the hero's resting
         // height, clipping the card name before the user can scroll.
         .toolbar(.hidden, for: .tabBar)
+        .task(id: artworkSourceKey) {
+            let localFilename = localArtworkFilename
+            let remoteURL = card.highImageURL ?? card.lowImageURL
+            artworkAccent = await ArtworkAccentStore.accent(
+                localFilename: localFilename,
+                remoteURL: remoteURL
+            )
+        }
         .task(id: card.catalogProviderID ?? card.providerID) {
             await loadMarketplaceLinkIfNeeded()
         }
@@ -189,12 +199,19 @@ struct CollectionCardDetailView: View {
                     return content.offset(y: parallax)
                 }
 
-            LinearGradient(
-                colors: [.clear, .black.opacity(reduceTransparency ? 0 : 0.18)],
-                startPoint: .center,
-                endPoint: .bottom
-            )
-            .allowsHitTesting(false)
+            if !reduceTransparency {
+                LinearGradient(
+                    colors: [
+                        .clear,
+                        (artworkAccent?.color ?? Color(red: 0.12, green: 0.14, blue: 0.18))
+                            .opacity(0.30),
+                        .black.opacity(0.88)
+                    ],
+                    startPoint: .center,
+                    endPoint: .bottom
+                )
+                .allowsHitTesting(false)
+            }
         }
         .frame(maxWidth: .infinity)
         .aspectRatio(0.716, contentMode: .fit)
@@ -550,6 +567,16 @@ struct CollectionCardDetailView: View {
         )
     }
 
+    private var artworkSourceKey: String {
+        if let localArtworkFilename {
+            return "local:\(localArtworkFilename)"
+        }
+        if let remoteURL = card.highImageURL ?? card.lowImageURL {
+            return "remote:\(remoteURL.absoluteString)"
+        }
+        return "missing:\(card.collectionKey)"
+    }
+
     private var removalMessage: String {
         if displayedQuantity == 1 {
             return "This removes the card. You can undo it."
@@ -732,6 +759,7 @@ struct AppCardSurface<Content: View>: View {
 }
 
 private struct AppCardDetailBackdrop: View {
+    let accent: ArtworkAccent?
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
@@ -741,6 +769,7 @@ private struct AppCardDetailBackdrop: View {
             LinearGradient(
                 colors: [
                     Color(uiColor: .systemBackground),
+                    (accent?.color ?? Color(uiColor: .secondarySystemBackground)).opacity(0.20),
                     Color(uiColor: .secondarySystemBackground),
                     Color(uiColor: .systemBackground)
                 ],
@@ -1058,6 +1087,8 @@ struct PriceHistoryChartModel: Equatable {
     let currencyCode: String
     let rangeStart: Date
     let rangeEnd: Date
+    let plotRangeStart: Date
+    let plotRangeEnd: Date
     let samples: [PriceHistorySample]
     let segments: [PriceHistorySegment]
     let observationCount: Int
@@ -1065,6 +1096,10 @@ struct PriceHistoryChartModel: Equatable {
 
     var hasGaps: Bool {
         segments.count > 1 && observationCount >= 2
+    }
+
+    var plotRange: ClosedRange<Date> {
+        plotRangeStart...plotRangeEnd
     }
 
     var yDomain: ClosedRange<Double> {
@@ -1220,15 +1255,56 @@ struct PriceHistoryChartModel: Equatable {
             )
         }
 
+        let plotRange = plotRange(
+            for: samples,
+            requestedStart: start,
+            requestedEnd: end
+        )
+
         return PriceHistoryChartModel(
             currencyCode: currencyCode,
             rangeStart: start,
             rangeEnd: end,
+            plotRangeStart: plotRange.lowerBound,
+            plotRangeEnd: plotRange.upperBound,
             samples: samples,
             segments: segments,
             observationCount: observationCount,
             checkedDayCount: checkedDaysInRange
         )
+    }
+
+    /// Keep the selected history range as the data contract, but do not force
+    /// a pair of recent observations into the last few pixels of a month-long
+    /// axis. The plot gets a small amount of context around the observed span;
+    /// gaps between observations remain visible because the samples and segment
+    /// rules are unchanged.
+    private static func plotRange(
+        for samples: [PriceHistorySample],
+        requestedStart: Date,
+        requestedEnd: Date
+    ) -> ClosedRange<Date> {
+        guard let first = samples.first?.date,
+              let last = samples.last?.date else {
+            return requestedStart...requestedEnd
+        }
+
+        let requestedSpan = max(requestedEnd.timeIntervalSince(requestedStart), 1)
+        let observedSpan = max(last.timeIntervalSince(first), 0)
+        guard observedSpan < requestedSpan * 0.65 else {
+            return requestedStart...requestedEnd
+        }
+
+        let padding = max(observedSpan * 0.18, 6 * 60 * 60)
+        var lower = first.addingTimeInterval(-padding)
+        var upper = last.addingTimeInterval(padding)
+        let minimumSpan: TimeInterval = 24 * 60 * 60
+        if upper.timeIntervalSince(lower) < minimumSpan {
+            let midpoint = first.addingTimeInterval(last.timeIntervalSince(first) / 2)
+            lower = midpoint.addingTimeInterval(-minimumSpan / 2)
+            upper = midpoint.addingTimeInterval(minimumSpan / 2)
+        }
+        return lower...upper
     }
 
     private struct TimelineEvent {
@@ -1353,7 +1429,7 @@ struct PriceHistoryChartView: View {
                         }
                     }
                 }
-                .chartXScale(domain: model.rangeStart...model.rangeEnd)
+                .chartXScale(domain: model.plotRange)
                 .chartYScale(domain: model.yDomain)
                 .chartYAxis {
                     AxisMarks(position: .leading) { value in
@@ -1619,6 +1695,107 @@ struct MovementDetailsView: View {
 
 /// Everything needed to restore a removed row without another catalog request.
 /// The value safely outlives the deleted SwiftData model.
+struct ArtworkAccent: Equatable, Sendable {
+    let red: Double
+    let green: Double
+    let blue: Double
+
+    var color: Color {
+        Color(red: red, green: green, blue: blue)
+    }
+}
+
+enum ArtworkAccentExtractor {
+    private static let context = CIContext()
+
+    /// Reduce the artwork to one stable accent outside of `body`. A cropped
+    /// area average ignores the card edge and the usual white border, so the
+    /// detail backdrop follows the subject rather than turning every card gray.
+    static func make(from image: UIImage) -> ArtworkAccent? {
+        guard let cgImage = image.cgImage else { return nil }
+        let input = CIImage(cgImage: cgImage)
+        let insetX = input.extent.width * 0.08
+        let insetY = input.extent.height * 0.08
+        let sampleRect = input.extent.insetBy(dx: insetX, dy: insetY)
+        guard !sampleRect.isEmpty,
+              let filter = CIFilter(name: "CIAreaAverage") else { return nil }
+
+        filter.setValue(input, forKey: kCIInputImageKey)
+        filter.setValue(CIVector(cgRect: sampleRect), forKey: kCIInputExtentKey)
+        guard let output = filter.outputImage else { return nil }
+
+        var pixel = [UInt8](repeating: 0, count: 4)
+        context.render(
+            output,
+            toBitmap: &pixel,
+            rowBytes: 4,
+            bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+            format: .RGBA8,
+            colorSpace: CGColorSpaceCreateDeviceRGB()
+        )
+        return ArtworkAccent(
+            red: Double(pixel[0]) / 255,
+            green: Double(pixel[1]) / 255,
+            blue: Double(pixel[2]) / 255
+        )
+    }
+}
+
+enum ArtworkAccentStore {
+    private final class Box: NSObject {
+        let value: ArtworkAccent
+
+        init(_ value: ArtworkAccent) {
+            self.value = value
+        }
+    }
+
+    private static let cache: NSCache<NSString, Box> = {
+        let cache = NSCache<NSString, Box>()
+        cache.countLimit = 120
+        return cache
+    }()
+
+    /// The image view keeps its existing `AsyncImage` behavior. This companion
+    /// task has a separate, keyed color cache so accent extraction happens once
+    /// per artwork source and never as part of a SwiftUI body evaluation.
+    static func accent(
+        localFilename: String?,
+        remoteURL: URL?
+    ) async -> ArtworkAccent? {
+        let key: String
+        if let localFilename {
+            key = "local:\(localFilename)"
+        } else if let remoteURL {
+            key = "remote:\(remoteURL.absoluteString)"
+        } else {
+            return nil
+        }
+
+        if let cached = cache.object(forKey: key as NSString)?.value {
+            return cached
+        }
+
+        let image: UIImage?
+        if let localFilename {
+            image = CollectionArtworkStore.image(filename: localFilename)
+        } else if let remoteURL {
+            guard let (data, _) = try? await URLSession.shared.data(from: remoteURL) else {
+                return nil
+            }
+            image = UIImage(data: data)
+        } else {
+            return nil
+        }
+        guard let image else { return nil }
+        let accent = ArtworkAccentExtractor.make(from: image)
+        if let accent {
+            cache.setObject(Box(accent), forKey: key as NSString)
+        }
+        return accent
+    }
+}
+
 enum CollectionArtworkStore {
     private static var directory: URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?

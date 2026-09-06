@@ -178,6 +178,41 @@ enum PortfolioDebugFixtures {
         ]
         let store = CollectionStore(context: modelContext)
         for fixture in fixtures {
+            if fixture.id == "ui-portfolio-charizard" {
+                let charizard = TCGdexCard(
+                    id: fixture.id,
+                    localId: "004",
+                    name: fixture.name,
+                    image: cardDetailArtworkURL?.absoluteString,
+                    rarity: "Rare",
+                    set: TCGdexSetBrief(
+                        id: "portfolio-qa",
+                        name: "Portfolio QA",
+                        cardCount: TCGdexCardCount(total: 4, official: 4)
+                    ),
+                    variants: TCGdexVariants(
+                        firstEdition: false,
+                        holo: true,
+                        normal: false,
+                        reverse: false,
+                        wPromo: nil
+                    ),
+                    pricing: nil,
+                    variantsDetailed: nil
+                )
+                // This route is the finish-rendering fixture. Keep it on the
+                // normal collection path so the stored item kind, variant
+                // provenance, artwork, and price key agree with one another.
+                _ = try? store.add(
+                    .pokemon(charizard, setCode: "PQA"),
+                    resolved: ResolvedVariant(
+                        variant: .holo,
+                        resolution: .uniqueInCatalog
+                    ),
+                    identityResolution: .catalogSelected
+                )
+                continue
+            }
             _ = try? store.addSealed(
                 SealedProductSummary(
                     id: fixture.id,
@@ -193,19 +228,40 @@ enum PortfolioDebugFixtures {
         }
 
         let cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        if let charizard = cards.first(where: { $0.name == "Charizard ex" }) {
+            let sourceVariantID = charizard.variantID ?? charizard.providerID
+            _ = PriceStore(context: modelContext).store(
+                .price(
+                    NormalizedPrice(
+                        unitMarketPriceUSD: 342,
+                        currencyCode: "USD",
+                        source: .justTCG,
+                        sourceVariantID: sourceVariantID,
+                        sourceUpdatedAt: .now,
+                        fetchedAt: .now
+                    )
+                ),
+                game: .pokemon,
+                printingID: charizard.priceStorageID,
+                variantID: charizard.variantID,
+                marketVariantID: sourceVariantID,
+                at: .now
+            )
+        }
         for (card, fixture) in zip(cards.sorted { $0.name < $1.name }, fixtures.sorted { $0.name < $1.name }) {
             let instrument = InventoryLedger(context: modelContext).priceStorageKey(for: card)
-        for event in (try? InventoryLedger(context: modelContext).events(collectionKey: card.collectionKey)) ?? [] {
+            for event in (try? InventoryLedger(context: modelContext).events(collectionKey: card.collectionKey)) ?? [] {
                 event.occurredAt = epoch.addingTimeInterval(60)
             }
+            let sourceVariantID = card.justTCGVariantID ?? card.variantID ?? card.providerID
             modelContext.insert(
                 PriceObservation(
                     instrumentKey: instrument,
                     kind: .marketUpdate,
                     amount: Money(rounding: fixture.old),
                     source: .justTCG,
-                    sourceVariantID: card.justTCGVariantID,
-                    marketVariantID: card.justTCGVariantID,
+                    sourceVariantID: sourceVariantID,
+                    marketVariantID: sourceVariantID,
                     effectiveAt: epoch.addingTimeInterval(3_600),
                     receivedAt: epoch.addingTimeInterval(3_600),
                     isSourceStamped: true

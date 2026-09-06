@@ -1076,6 +1076,10 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         XCTAssertEqual(cards.count, 4)
 
         let charizard = try XCTUnwrap(cards.first { $0.name == "Charizard ex" })
+        XCTAssertEqual(charizard.itemKind, .rawCard)
+        XCTAssertEqual(charizard.variant, .holo)
+        XCTAssertEqual(charizard.variantResolution, .uniqueInCatalog)
+        XCTAssertNotNil(charizard.highImageURL)
         let instrumentKey = InventoryLedger(context: context).priceStorageKey(for: charizard)
         let observations = try context.fetch(FetchDescriptor<PriceObservation>())
             .filter { $0.instrumentKey == instrumentKey }
@@ -1096,6 +1100,18 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         XCTAssertEqual(model.observationCount, 2)
         XCTAssertEqual(model.samples.filter(\.isObservation).count, 2)
         XCTAssertEqual(model.summary, "2 changed prices across 1 checked day.")
+    }
+
+    func testArtworkAccentExtractorReturnsTheSampledArtworkColor() throws {
+        let image = UIGraphicsImageRenderer(size: CGSize(width: 100, height: 100)).image { context in
+            UIColor(red: 0.8, green: 0.2, blue: 0.1, alpha: 1).setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 100, height: 100))
+        }
+
+        let accent = try XCTUnwrap(ArtworkAccentExtractor.make(from: image))
+        XCTAssertEqual(accent.red, 0.8, accuracy: 0.02)
+        XCTAssertEqual(accent.green, 0.2, accuracy: 0.02)
+        XCTAssertEqual(accent.blue, 0.1, accuracy: 0.02)
     }
 }
 #endif
