@@ -292,3 +292,44 @@ The route was recaptured in dark, light, and accessibility-large appearance;
 the large-text frame showed no clipped hero or identity content, and the light
 frame retained readable contrast. Focused chart tests and the full suite pass
 864 tests with 1 skipped and 0 failures.
+
+## Slice B follow-up — receipt layout — 2026-09-06
+
+Slice B put the price on the receipt but never specified how the row divides its
+width, and the shipped result was broken rather than merely unbalanced. Captured
+on the `WholeCardScanner` route: the `Undo Scan` label — an icon plus bold
+subheadline text in a `.borderedProminent` red capsule — has a large intrinsic
+width and no compression limit, so it won the layout against both the name and
+the price. The price column collapsed to a few points and `$62.47` typeset one
+character per line as a vertical strip, which then set the card's height. The
+name truncated to `Ragavan,…` and the identifier line to `MH2 · 138 · Foil…`.
+
+Changes:
+
+- **Undo is icon-only.** `arrow.uturn.backward` in a 44 pt `.bordered` red
+  button. The full VoiceOver label and hint are unchanged, so nothing is lost
+  for assistive users. This matches what `ScanReceiptCard`'s own doc comment
+  already said the control was: insurance, not a step in the workflow.
+- **An amount may never wrap.** `ScanPriceValue` on the receipt takes
+  `.lineLimit(1)`, `.fixedSize(horizontal: true, vertical: false)` and a
+  layout priority above the title column. A currency figure that reflows is a
+  defect, not a tight fit.
+- **No thumbnail.** At 40 pt over a live preview it was too small to identify a
+  card by, and it cost the name ~50 pt of the width that actually confirms the
+  right card was added while scanning fast. A green `checkmark.circle.fill`
+  leads the row in its place and carries the "added" meaning. The recent-scan
+  rail still carries artwork for looking back.
+- **Treatment diagnostics moved out of the title column** to their own
+  full-width line under the row. A warning about the receipt was narrowing the
+  name.
+- The name keeps `lineLimit(1)` with `minimumScaleFactor(0.85)`, so a long
+  Magic name loses a little size before it loses its last words.
+
+Result on iPhone 17 Pro: card height roughly halved, `Ragavan, Nimble Pilferer`
+and `MH2 · 138 · Foil Etched` both render in full, and the price is the largest
+text on the card as Slice B specified.
+
+The `WholeCardScanner` route now seeds a receipt fixture in DEBUG
+(`ScannerViewModel.seedReceiptFixtureForScreenshot`), because this surface
+previously could not be captured at all without a camera — which is why the
+layout defect shipped. Capture: `artifacts/scan-receipt-card.png`.
