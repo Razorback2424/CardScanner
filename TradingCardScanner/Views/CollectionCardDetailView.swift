@@ -1104,6 +1104,12 @@ private struct CardFinishOverlay: View {
     private struct SheenBand {
         /// Where the band rests when the card is held still.
         var phase: Double
+        /// Chromatic offset from the band's centre, which opens as the card is
+        /// tilted. Real dispersion separates at glancing angles and closes when
+        /// you look straight on, so a fixed fringe reads as a permanently
+        /// rainbow band. Held still this collapses to near-white; moving, the
+        /// colour blooms out of the shoulders.
+        var fringe: Double = 0
         /// How the band answers tilt. Negative counter-moves, which is what
         /// makes two highlights converge and separate rather than slide
         /// together as one rigid pattern.
@@ -1159,43 +1165,58 @@ private struct CardFinishOverlay: View {
     /// at phase −0.20 — so on a treatment-qualified card the one bright element
     /// sat off to a corner and the sheen only became legible once the card was
     /// moved.
+    /// One dispersed band, and for now the finish every foil surface uses.
+    ///
+    /// This began as Surge Foil's treatment and turned out to be the better
+    /// plain foil: three colour components overlapping so heavily that they
+    /// fringe a single band rather than multiplying it. Separating them far
+    /// enough to resolve individually — the earlier attempt — produces stripes,
+    /// which is not what any foil looks like.
+    ///
+    /// It does not yet read as *specifically* a Surge Foil. That is a known
+    /// gap and a later piece of work; what a Surge Foil needs beyond this is a
+    /// pattern, not more colour. The band with the card either side of it is
+    /// the part worth keeping, so it is shared rather than duplicated.
+    private var dispersedFoil: [SheenBand] {
+        [
+            SheenBand(
+                phase: 0,
+                fringe: -0.035,
+                width: 0.095,
+                tint: .pink,
+                intensity: 0.7
+            ),
+            SheenBand(
+                phase: 0,
+                width: 0.105,
+                tint: .cyan,
+                intensity: 1,
+                isPrimary: true
+            ),
+            SheenBand(
+                phase: 0,
+                fringe: 0.035,
+                width: 0.095,
+                tint: .blue,
+                intensity: 0.7
+            ),
+            counterBand
+        ]
+    }
+
     private var bands: [SheenBand] {
         switch activeTreatment {
-        case .surgeFoil:
-            // One band, dispersed — not three passes. Separating the components
-            // far enough to resolve individually gave three discrete stripes
-            // sitting across the card, with the outermost parked in a corner:
-            // legible as stripes, nothing like foil. What actually distinguishes
-            // a Surge Foil is *colour* in the sheen, so the components overlap
-            // heavily and separate only at the shoulders, which fringes the one
-            // band rather than multiplying it.
-            return [
-                SheenBand(phase: -0.03, width: 0.095, tint: .pink, intensity: 0.75),
-                SheenBand(phase: 0, width: 0.105, tint: .cyan, intensity: 1, isPrimary: true),
-                SheenBand(phase: 0.03, width: 0.095, tint: .blue, intensity: 0.75),
-                counterBand
-            ]
         case .neonInk:
-            // Same rule, wider fringe: Neon Ink's whole identity is the hue
-            // shift, so the two components sit further apart than Surge Foil's
-            // without ever separating into distinct bands.
+            // Held back deliberately: Neon Ink's identity is the hue shift, and
+            // giving it its own look is later work.
             return [
-                SheenBand(phase: -0.035, width: 0.10, tint: .orange, intensity: 0.85),
-                SheenBand(phase: 0.035, width: 0.10, tint: .green, intensity: 1, isPrimary: true),
+                SheenBand(phase: 0, fringe: -0.04, width: 0.10, tint: .orange, intensity: 0.85),
+                SheenBand(phase: 0, width: 0.10, tint: .green, intensity: 1, isPrimary: true),
+                SheenBand(phase: 0, fringe: 0.04, width: 0.10, tint: .purple, intensity: 0.85),
                 counterBand
             ]
-        case .unclassified:
-            return [
-                SheenBand(phase: 0, width: 0.095, tint: .purple, intensity: 0.85, isPrimary: true),
-                counterBand
-            ]
-        case nil:
-            // A band with the card either side of it, rather than a wash across
-            // the whole surface.
-            return [
-                SheenBand(phase: 0, width: 0.102, tint: .cyan, intensity: 1, isPrimary: true),
-                counterBand
-            ]
+        case .surgeFoil, .unclassified, .none:
+            return dispersedFoil
         }
     }
 
@@ -1241,7 +1262,14 @@ private struct CardFinishOverlay: View {
         // Roll dominates: turning the phone in the hand is how anyone looks for
         // foil. Pitch contributes so the band still answers a nod.
         let drive = max(-1, min(1, motion.tilt.width * 0.85 + motion.tilt.height * 0.45))
-        let travel = (drive * band.travelScale * Self.driveSpan + band.phase) * diagonal * 2
+        // Closed to roughly a third at rest, fully open at the extremes of a
+        // comfortable tilt.
+        let spread = 0.32 + 0.68 * abs(drive)
+        let travel = (
+            drive * band.travelScale * Self.driveSpan
+                + band.phase
+                + band.fringe * spread
+        ) * diagonal * 2
 
         return LinearGradient(
             stops: stops(for: band, specular: specular),
