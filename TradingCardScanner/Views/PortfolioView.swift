@@ -89,6 +89,7 @@ struct PortfolioView: View {
     @State private var removalErrorMessage: String?
     @State private var isShowingQuantityRepairConfirmation = false
     @State private var quantityRepairError: String?
+    @State private var isRebuildingPortfolioEvidence = false
 
     private var historyRange: PortfolioHistoryRange {
         get { history.range }
@@ -281,6 +282,25 @@ struct PortfolioView: View {
         }
     }
 
+    private var hasAttributionDefect: Bool {
+        let defects = portfolio.summary?.defects ?? portfolio.integrityDefects
+        return defects.contains { $0.reason == .unattributedValueChange }
+    }
+
+    private var integrityWarningTitle: String {
+        let defects = portfolio.summary?.defects ?? portfolio.integrityDefects
+        if defects.isEmpty {
+            return "History is paused while portfolio data reconciles."
+        }
+        if defects.allSatisfy({ $0.reason == .unattributedValueChange }) {
+            return "A portfolio change needs pricing reconciliation."
+        }
+        if defects.allSatisfy({ $0.reason == .quantityMismatch && $0.canRepairQuantity }) {
+            return "History is paused until the collection records reconcile."
+        }
+        return "History is paused until portfolio data reconciles."
+    }
+
     private var periodControl: some View {
         Picker("Portfolio period", selection: Binding(get: { historyRange }, set: { historyRange = $0 })) {
             ForEach(PortfolioHistoryRange.allCases, id: \.self) { item in
@@ -336,13 +356,17 @@ struct PortfolioView: View {
     private func integrityWarning(_ defects: [LedgerIntegrityDefect]) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Label(
-                defects.isEmpty
-                    ? "History is paused while portfolio data reconciles."
-                    : "History is paused until the collection records reconcile.",
+                integrityWarningTitle,
                 systemImage: "exclamationmark.triangle.fill"
             )
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(PortfolioPalette.attention)
+
+            ForEach(defects) { defect in
+                Text(defect.detail)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
 
             if canRepairQuantityDefects {
                 Button("Reconcile with Collection") {
@@ -365,6 +389,23 @@ struct PortfolioView: View {
                     Text("Your collection contents will remain unchanged. Append-only quantity correction events will be recorded for the mismatched positions.")
                 }
             }
+
+            if hasAttributionDefect {
+                Button {
+                    rebuildPortfolioEvidence()
+                } label: {
+                    if isRebuildingPortfolioEvidence {
+                        ProgressView()
+                            .controlSize(.small)
+                    } else {
+                        Text("Rebuild pricing evidence")
+                    }
+                }
+                .font(.subheadline.weight(.semibold))
+                .buttonStyle(.bordered)
+                .disabled(isRebuildingPortfolioEvidence)
+                .accessibilityHint("Re-reads stored price records and rebuilds missing local pricing evidence without changing collection contents")
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
@@ -382,6 +423,15 @@ struct PortfolioView: View {
             portfolio.recompute(context: modelContext)
         } catch {
             quantityRepairError = "No changes were saved. The repair can be retried after the records are available."
+        }
+    }
+
+    private func rebuildPortfolioEvidence() {
+        guard !isRebuildingPortfolioEvidence else { return }
+        isRebuildingPortfolioEvidence = true
+        Task { @MainActor in
+            await portfolio.recomputeAndWait(context: modelContext)
+            isRebuildingPortfolioEvidence = false
         }
     }
 

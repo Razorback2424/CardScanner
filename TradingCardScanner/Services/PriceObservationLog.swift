@@ -28,7 +28,10 @@ enum PriceObservationRules {
     /// A provider answer, normalized into the terms the log reasons in.
     struct Candidate: Equatable, Sendable {
         var value: PriceObservationValue
-        var source: PriceSource
+        /// Legacy records can contain a usable amount without preserving the
+        /// provider that wrote it. Keep that provenance unknown rather than
+        /// inventing a provider merely to make the row backfillable.
+        var source: PriceSource?
         /// The provider's "current through" clock, or `nil` where it publishes
         /// none.
         var sourceUpdatedAt: Date?
@@ -37,7 +40,7 @@ enum PriceObservationRules {
         /// Whether `effectiveAt` will be a real provider claim rather than a
         /// stand-in for the fetch time.
         var isSourceStamped: Bool {
-            source.publishesSourceTimestamp && sourceUpdatedAt != nil
+            source?.publishesSourceTimestamp == true && sourceUpdatedAt != nil
         }
 
         /// What gets stored as `effectiveAt`. Falls back to knowledge time for
@@ -547,8 +550,8 @@ struct PriceObservationLog {
 
             guard let amount = record.effectiveUnitMarketPriceUSD,
                   record.currencyCode == "USD",
-                  let source = record.source,
                   let money = Money(rounding: amount) else { continue }
+            let source = record.source
             if let previous, isOutOfOrder(record: record, comparedTo: previous) {
                 continue
             }
@@ -557,7 +560,7 @@ struct PriceObservationLog {
                 value: PriceObservationValue(
                     amount: money,
                     currencyCode: record.currencyCode,
-                    sourceRaw: source.rawValue,
+                    sourceRaw: source?.rawValue ?? "",
                     sourceVariantID: record.sourceVariantID,
                     marketVariantID: record.marketVariantID
                 ),
@@ -651,13 +654,13 @@ struct PriceObservationLog {
     ) -> PriceObservationRules.Candidate? {
         guard let amount = record.effectiveUnitMarketPriceUSD,
               record.currencyCode == "USD",
-              let source = record.source,
               let money = Money(rounding: amount) else { return nil }
+        let source = record.source
         return PriceObservationRules.Candidate(
             value: PriceObservationValue(
                 amount: money,
                 currencyCode: record.currencyCode,
-                sourceRaw: source.rawValue,
+                sourceRaw: source?.rawValue ?? "",
                 sourceVariantID: record.sourceVariantID,
                 marketVariantID: record.marketVariantID
             ),

@@ -74,7 +74,7 @@ final class PriceObservation {
         kind: PriceObservationKind,
         amount: Money?,
         currencyCode: String = "USD",
-        source: PriceSource,
+        source: PriceSource? = nil,
         sourceVariantID: String?,
         marketVariantID: String?,
         effectiveAt: Date,
@@ -86,7 +86,7 @@ final class PriceObservation {
         self.kindRaw = kind.rawValue
         self.amountUSDTenThousandths = amount?.tenThousandths
         self.currencyCode = currencyCode
-        self.sourceRaw = source.rawValue
+        self.sourceRaw = source?.rawValue ?? ""
         self.sourceVariantID = sourceVariantID
         self.marketVariantID = marketVariantID
         self.effectiveAt = effectiveAt

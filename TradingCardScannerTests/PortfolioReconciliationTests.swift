@@ -2687,6 +2687,88 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(attribution.unexplained, .zero)
     }
 
+    func testSourceLessUSDRecordIsBackfilledWithoutInventingProviderProvenance() throws {
+        let context = try makeContext()
+        let learnedAt = Date(timeIntervalSince1970: 1_700_000_000)
+        let record = PriceRecord(
+            key: "legacy-instrument",
+            game: .pokemon,
+            printingID: "legacy-printing",
+            variantID: nil
+        )
+        record.unitMarketPriceUSD = 1.21
+        record.currencyCode = "USD"
+        record.sourceRaw = nil
+        record.fetchedAt = learnedAt.addingTimeInterval(-60)
+        context.insert(record)
+        try context.save()
+
+        let observations = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(learnedAt: learnedAt)
+        let observation = try XCTUnwrap(
+            observations.first { $0.instrumentKey == record.key }
+        )
+
+        // With no prior local row there is no provider transition to name. The
+        // important contract is that the value is retained as evidence without
+        // fabricating a provider identity; the replay still treats this first
+        // value as pricing adjustment rather than market movement.
+        XCTAssertEqual(observation.kind, .marketUpdate)
+        XCTAssertEqual(observation.amount, money(1.21))
+        XCTAssertNil(observation.source)
+        XCTAssertEqual(observation.receivedAt, learnedAt)
+    }
+
+    func testSourceLessUSDRecordDoesNotLeaveAnUnattributedPortfolioResidual() throws {
+        let context = try makeContext()
+        let epoch = Date(timeIntervalSince1970: 1_700_000_000)
+        let now = epoch.addingTimeInterval(3_600)
+        let owned = card(key: "legacy-position")
+        context.insert(owned)
+        let instrument = owned.priceKey
+        let record = PriceRecord(
+            key: instrument,
+            game: .pokemon,
+            printingID: "legacy-printing",
+            variantID: nil
+        )
+        record.unitMarketPriceUSD = 1.21
+        record.currencyCode = "USD"
+        record.sourceRaw = nil
+        record.fetchedAt = epoch.addingTimeInterval(600)
+        context.insert(record)
+        context.insert(
+            InventoryEvent(
+                operationID: UUID(),
+                leg: nil,
+                kind: .initialBalance,
+                source: .catalog,
+                collectionKey: owned.collectionKey,
+                priceStorageKey: instrument,
+                deltaQuantity: 1,
+                occurredAt: epoch.addingTimeInterval(60),
+                valuation: .unpriced
+            )
+        )
+        try context.save()
+
+        let observations = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(learnedAt: epoch.addingTimeInterval(900))
+        let computation = PortfolioReplaySnapshotBuilder.compute(
+            context: context,
+            epoch: epoch,
+            through: now,
+            timeZone: TimeZone(secondsFromGMT: 0)!,
+            existingObservations: observations
+        )
+
+        XCTAssertFalse(
+            computation.defects.contains { $0.reason == .unattributedValueChange },
+            "a current value inherited without provider provenance must still be explained by the backfilled transition"
+        )
+        XCTAssertEqual(computation.replay.live?.attribution.unexplained, .zero)
+    }
+
     // MARK: - Initial-sync deferral
 
     private func epochDefaults(_ name: String) -> UserDefaults {

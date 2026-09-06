@@ -44,7 +44,7 @@ enum LedgerIntegrityReason: String, Equatable, Sendable {
         case .moneyArithmeticOverflow:
             return "A price multiplied by the stored quantity exceeded the safe accounting range. The affected total is withheld until the provider quote or collection quantity is corrected."
         case .unattributedValueChange:
-            return "The portfolio value changed without a matching market, inventory, correction, or pricing-adjustment record. History is paused until the accounting path is repaired."
+            return "The portfolio value changed without a matching market, inventory, correction, or pricing-adjustment record. The current value remains visible while the missing pricing evidence is rebuilt."
         }
     }
 }
