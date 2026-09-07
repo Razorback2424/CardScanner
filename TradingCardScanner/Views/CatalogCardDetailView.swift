@@ -17,6 +17,7 @@ struct CatalogCardDetailView: View {
     /// Kept separate from `error`, which replaces the whole page with a load
     /// failure. A failed add must not blank the card the user is looking at.
     @State private var addFailure: String?
+    @State private var addAlertTitle = "Couldn't add card"
     /// Keyed by instrument, not a single slot. Cancelling the previous card's
     /// quote on each add meant adding two cards quickly left the first one
     /// unpriced until the next refresh — the request was already in flight and
@@ -39,7 +40,7 @@ struct CatalogCardDetailView: View {
         .navigationTitle("Card")
         .navigationBarTitleDisplayMode(.inline)
         .alert(
-            "Couldn't add to collection",
+            addAlertTitle,
             isPresented: Binding(
                 get: { addFailure != nil },
                 set: { if !$0 { addFailure = nil } }
@@ -237,6 +238,7 @@ struct CatalogCardDetailView: View {
             // Everything below stages price and artwork metadata for a row that
             // does not exist. Returning silently made the button a no-op the
             // user had no way to distinguish from a successful add.
+            addAlertTitle = "Couldn't add card"
             addFailure = error.localizedDescription
             return
         }
@@ -252,14 +254,18 @@ struct CatalogCardDetailView: View {
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: details.card.magicTreatments(for: resolved.variant)
         )
-        prices.store(
+        let priceStored = prices.store(
             catalogLookup,
             game: details.card.game,
             printingID: storageID,
             variantID: resolved.variant?.id,
             treatmentIDs: treatmentIDs
         )
-        prices.save()
+        let priceSaved = priceStored && prices.save()
+        if !priceSaved {
+            addAlertTitle = "Added with price warning"
+            addFailure = "The card was added, but its price could not be saved. It will remain available for a later refresh."
+        }
         queueFallbackPrice(
             for: details.card,
             variant: resolved.variant,
