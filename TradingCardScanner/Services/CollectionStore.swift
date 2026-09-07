@@ -13,17 +13,44 @@ struct CollectionMutation: Equatable, Sendable {
     /// with its acquisition operation; each correction appends another
     /// operation without discarding what came before it.
     let ledgerOperationIDs: [UUID]
+    /// A certified slab re-scan is a successful no-op: the certificate already
+    /// identifies the physical object, so it must not create a second row or a
+    /// second ledger acquisition.
+    let wasDuplicate: Bool
 
     init(
         collectionKey: String,
         activityID: UUID?,
         didInsert: Bool,
-        ledgerOperationIDs: [UUID] = []
+        ledgerOperationIDs: [UUID] = [],
+        wasDuplicate: Bool = false
     ) {
         self.collectionKey = collectionKey
         self.activityID = activityID
         self.didInsert = didInsert
         self.ledgerOperationIDs = ledgerOperationIDs
+        self.wasDuplicate = wasDuplicate
+    }
+}
+
+enum CollectionQuantityLimits {
+    static let maximum = 1_000_000
+
+    static func checkedAdd(_ lhs: Int, _ rhs: Int) throws -> Int {
+        guard lhs >= 0, rhs >= 0 else {
+            throw CollectionStoreError.quantityOutOfRange("negative quantity")
+        }
+        let (sum, overflow) = lhs.addingReportingOverflow(rhs)
+        guard !overflow, sum <= maximum else {
+            throw CollectionStoreError.quantityOutOfRange("quantity exceeds \(maximum)")
+        }
+        return sum
+    }
+
+    static func saturatingAdd(_ lhs: Int, _ rhs: Int) -> Int {
+        let (sum, overflow) = lhs.addingReportingOverflow(rhs)
+        guard !overflow else { return rhs >= 0 ? Int.max : Int.min }
+        return sum
     }
 }
 
@@ -64,19 +91,25 @@ actor ScannerCollectionWriter {
             }
         }
 
-        stagePrice(
-            candidate.price,
-            for: candidate.card,
-            variant: candidate.resolved.variant,
-            pokemonPrintRun: candidate.pokemonPrintRun
-        )
-        return try store.add(
+        // Resolve/import aliases before deriving the price key. Imported rows
+        // deliberately keep their local identity while catalog normalization
+        // may have found a canonical provider id; staging first could write the
+        // quote under the obsolete synthetic key and lose lineage on re-import.
+        let mutation = try store.add(
             candidate.card,
             resolved: candidate.resolved,
             source: .scan,
             pokemonPrintRun: candidate.pokemonPrintRun,
-            matchCatalogAliases: candidate.pokemonPrintRun != nil
+            matchCatalogAliases: true,
+            savesChanges: false
         )
+        guard let stored = try store.card(forAnyKey: mutation.collectionKey) else {
+            modelContext.rollback()
+            throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
+        }
+        stagePrice(candidate.price, for: stored)
+        try modelContext.save()
+        return mutation
     }
 
     func undo(_ mutation: CollectionMutation) throws {
@@ -130,6 +163,16 @@ actor ScannerCollectionWriter {
         return mutation
     }
 
+    private func stagePrice(_ lookup: PriceLookup, for card: CollectedCard) {
+        PriceStore(context: modelContext).store(
+            lookup,
+            game: card.cardGame,
+            printingID: card.priceStorageID,
+            variantID: card.variantID,
+            treatmentIDs: card.priceTreatmentIDs
+        )
+    }
+
     private func stagePrice(
         _ lookup: PriceLookup,
         for card: IdentifiedCard,
@@ -160,6 +203,7 @@ enum CollectionStoreError: Error, Equatable {
     case invalidLedgerOperation(UUID)
     case ledgerConflict(String)
     case insufficientQuantity(String)
+    case quantityOutOfRange(String)
     case restoreConflict(String)
     case staleQuantityDefect(String)
 }
@@ -185,6 +229,8 @@ extension CollectionStoreError: LocalizedError {
             return "The ledger could not be changed: \(detail)"
         case let .insufficientQuantity(key):
             return "The current quantity for \(key) is too small for this action."
+        case let .quantityOutOfRange(detail):
+            return "The quantity is outside the supported range: \(detail)."
         case let .restoreConflict(detail):
             return "This removal cannot be restored: \(detail)."
         case let .staleQuantityDefect(key):
@@ -527,6 +573,47 @@ struct CollectionStore {
     /// history and ledger rows, and deletes only the redundant collection rows.
     /// It deliberately does not save; callers can include the merge in the
     /// mutation transaction that caused the lookup.
+    private func isBoundVendorPriceAlias(
+        _ rows: [CollectedCard],
+        priceKeys: Set<String>
+    ) -> Bool {
+        guard rows.count > 1,
+              priceKeys.count == 2,
+              let representative = rows.first,
+              representative.itemKind != .rawCard,
+              rows.allSatisfy({ row in
+                  row.collectionKey == representative.collectionKey
+                      && row.itemKind == representative.itemKind
+                      && row.cardGame == representative.cardGame
+                      && row.providerID == representative.providerID
+                      && row.variantID == representative.variantID
+                      && row.gradingCompanyRaw == representative.gradingCompanyRaw
+                      && row.gradeRaw == representative.gradeRaw
+                      && row.gradeLabel == representative.gradeLabel
+                      && row.gradingQualifier == representative.gradingQualifier
+                      && row.certificationNumber == representative.certificationNumber
+                      && Set(MagicTreatmentKeyCodec.canonicalIDs(from: row.priceTreatmentIDs))
+                          == Set(MagicTreatmentKeyCodec.canonicalIDs(from: representative.priceTreatmentIDs))
+              }) else {
+            return false
+        }
+
+        let boundRows = rows.filter { $0.justTCGVariantID != nil }
+        let unboundRows = rows.filter { $0.justTCGVariantID == nil }
+        guard !boundRows.isEmpty,
+              !unboundRows.isEmpty,
+              Set(boundRows.compactMap(\.justTCGVariantID)).count == 1,
+              Set(boundRows.map { row in
+                  row.justTCGAPIVersion ?? (row.itemKind == .gradedCard ? "v2" : "v1")
+              }).count == 1,
+              Set(boundRows.map(\.priceKey)).count == 1,
+              Set(unboundRows.map(\.priceKey)).count == 1 else {
+            return false
+        }
+
+        return priceKeys == Set(rows.map(\.priceKey))
+    }
+
     private func mergeCollectionRows(
         _ rows: [CollectedCard],
         canonicalKey: String,
@@ -538,6 +625,7 @@ struct CollectionStore {
         }
 
         let sourceKeys = Set(rows.map(\.collectionKey))
+        let priceKeys = Set(rows.map(\.priceKey))
         if sourceKeys.count > 1, rows.contains(where: { $0.itemKind == .gradedCard }) {
             // A treatment-qualified graded key can describe a different slab
             // when the certificate/market handle is incomplete. Exact duplicate
@@ -556,6 +644,46 @@ struct CollectionStore {
             ? (keyTreatmentIDs.isEmpty ? representativeIDs : keyTreatmentIDs)
             : suppliedIDs
         let finalTreatmentSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: finalTreatmentIDs))
+
+        // A treatment-qualified Magic row and its treatment-free predecessor
+        // intentionally have different price keys until the predecessor is
+        // re-read through the canonical treatment. That is a known alias pair,
+        // not a conflict. Keep the guard strict for every other combination so
+        // two genuinely different price lineages can never be merged merely
+        // because their collection keys look similar.
+        let isKnownTreatmentAliasPair = sourceKeys.count > 1
+            && !finalTreatmentIDs.isEmpty
+            && rows.allSatisfy { row in
+                row.cardGame == .magic
+                    && row.itemKind == .rawCard
+                    && row.providerID == representative.providerID
+                    && row.variantID == representative.variantID
+            }
+        let isBoundVendorAlias = isBoundVendorPriceAlias(rows, priceKeys: priceKeys)
+        if priceKeys.count > 1 {
+            let allowedAliasKeys = isKnownTreatmentAliasPair
+                ? Set(rows.flatMap { row in
+                    [
+                        PriceRecord.key(
+                            game: row.cardGame,
+                            printingID: row.priceStorageID,
+                            variantID: row.variantID
+                        ),
+                        PriceRecord.key(
+                            game: row.cardGame,
+                            printingID: row.priceStorageID,
+                            variantID: row.variantID,
+                            treatmentIDs: finalTreatmentIDs
+                        )
+                    ]
+                })
+                : (isBoundVendorAlias ? priceKeys : [])
+            guard !allowedAliasKeys.isEmpty, priceKeys.isSubset(of: allowedAliasKeys) else {
+                throw CollectionStoreError.ledgerConflict(
+                    "duplicate collection rows use different price identities"
+                )
+            }
+        }
 
         for row in rows {
             let rowIDs = MagicTreatmentKeyCodec.storedIDs(from: row.magicTreatmentIDsRaw)
@@ -653,7 +781,9 @@ struct CollectionStore {
             }
         }
         representative.collectionKey = canonicalKey
-        representative.quantity = rows.reduce(0) { $0 + $1.quantity }
+        representative.quantity = try rows.reduce(into: 0) { total, row in
+            total = try CollectionQuantityLimits.checkedAdd(total, row.quantity)
+        }
         representative.dateAdded = rows.map(\.dateAdded).max() ?? representative.dateAdded
         representative.magicTreatmentIDsRaw = finalTreatmentIDs
         representative.magicTreatmentQualifiers = finalQualifiers
@@ -1545,12 +1675,52 @@ struct CollectionStore {
             )
             let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
 
+            if let certificationNumber,
+               let existing = try certifiedGradedCard(
+                   underlyingProviderID: card.providerID,
+                   company: variant.company,
+                   grade: variant.grade,
+                   certificationNumber: certificationNumber,
+                   treatmentIDs: treatmentIDs
+               ) {
+                if let boundVariantID = existing.justTCGVariantID,
+                   boundVariantID != variant.id {
+                    throw CollectionStoreError.ledgerConflict(
+                        "certificate \(certificationNumber) is bound to a different market variant"
+                    )
+                }
+                if existing.justTCGVariantID == nil {
+                    _ = try rekey(
+                        existing,
+                        to: key,
+                        magicTreatmentIDsRaw: treatmentIDs,
+                        magicTreatmentQualifiers: magicTreatmentQualifiers
+                    )
+                    existing.justTCGVariantID = variant.id
+                    existing.justTCGCardID = variant.cardID
+                    existing.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
+                }
+                storeMarketPrice(
+                    variant.marketPriceUSD,
+                    updatedAt: variant.updatedAt,
+                    marketVariantID: variant.id,
+                    for: existing
+                )
+                try commit()
+                return CollectionMutation(
+                    collectionKey: existing.collectionKey,
+                    activityID: nil,
+                    didInsert: false,
+                    wasDuplicate: true
+                )
+            }
+
             if certificationNumber == nil,
                let existing = try uniqueCard(
                    forAnyKey: key,
                    magicTreatmentIDsRaw: treatmentIDs
                ) {
-            existing.quantity += 1
+            existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, 1)
             existing.dateAdded = .now
             if existing.magicTreatmentQualifiersJSON == nil {
                 existing.magicTreatmentQualifiers = magicTreatmentQualifiers
@@ -1687,12 +1857,31 @@ struct CollectionStore {
             )
             let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
 
+            if let certificationNumber,
+               let existing = try certifiedGradedCard(
+                   underlyingProviderID: card.providerID,
+                   company: company,
+                   grade: grade,
+                   certificationNumber: certificationNumber,
+                   treatmentIDs: treatmentIDs
+               ) {
+                // A bound row is kept bound; an unbound row is already the same
+                // physical slab and is deliberately not incremented.
+                try commit()
+                return CollectionMutation(
+                    collectionKey: existing.collectionKey,
+                    activityID: nil,
+                    didInsert: false,
+                    wasDuplicate: true
+                )
+            }
+
             if certificationNumber == nil,
                let existing = try uniqueCard(
                    forAnyKey: key,
                    magicTreatmentIDsRaw: treatmentIDs
                ) {
-                existing.quantity += 1
+                existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, 1)
                 existing.dateAdded = .now
                 if existing.magicTreatmentQualifiersJSON == nil {
                     existing.magicTreatmentQualifiers = magicTreatmentQualifiers
@@ -1797,7 +1986,7 @@ struct CollectionStore {
             )
 
             if let existing = try uniqueCard(forAnyKey: key) {
-            existing.quantity += 1
+            existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, 1)
             existing.dateAdded = .now
             // Re-adding also heals rows saved before sealed artwork support.
             if existing.imageURL == nil {
@@ -1957,7 +2146,7 @@ struct CollectionStore {
         // that dismisses the choice bar would show up in.
         let signpostState = PerformanceSignpost.signposter.beginInterval("CollectionStore.add")
         defer { PerformanceSignpost.signposter.endInterval("CollectionStore.add", signpostState) }
-        guard quantity > 0 else {
+        guard quantity > 0, quantity <= CollectionQuantityLimits.maximum else {
             throw CollectionStoreError.insufficientQuantity(card.providerID)
         }
         do {
@@ -1982,8 +2171,12 @@ struct CollectionStore {
                 : nil)
 
             if let existing {
-                existing.quantity += quantity
+                existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, quantity)
                 existing.dateAdded = .now
+                if existing.catalogProviderID == nil,
+                   existing.providerID.hasPrefix("csv:") {
+                    existing.catalogProviderID = card.providerID
+                }
                 if existing.magicTreatmentIDsRaw.isEmpty {
                     existing.magicTreatmentIDsRaw = treatmentIDs
                 }
@@ -2078,10 +2271,12 @@ struct CollectionStore {
         // computed view over the stored raw value, which the predicate grammar
         // cannot reach.
         let catalogID: String? = providerID
+        let rawCardKind = CollectionItemKind.rawCard.rawValue
         let rows = try context.fetch(
             FetchDescriptor<CollectedCard>(
                 predicate: #Predicate {
-                    $0.providerID == providerID || $0.catalogProviderID == catalogID
+                    ($0.providerID == providerID || $0.catalogProviderID == catalogID)
+                        && $0.itemKindRaw == rawCardKind
                 }
             )
         ).filter {
@@ -2098,6 +2293,40 @@ struct CollectionStore {
                 )
             }
             return try mergeCollectionRows(rows, canonicalKey: key)
+        }
+        return rows.first
+    }
+
+    private func certifiedGradedCard(
+        underlyingProviderID: String,
+        company: GradingCompany,
+        grade: CardGrade,
+        certificationNumber: String,
+        treatmentIDs: [String]
+    ) throws -> CollectedCard? {
+        let gradedRaw = CollectionItemKind.gradedCard.rawValue
+        let rows = try context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    $0.itemKindRaw == gradedRaw
+                        && $0.certificationNumber == certificationNumber
+                }
+            )
+        ).filter { row in
+            let sharesUnderlyingID = row.catalogProviderID == underlyingProviderID
+                || row.providerID == underlyingProviderID
+            guard sharesUnderlyingID,
+                  row.gradingCompany == company,
+                  row.gradeRaw == grade.value,
+                  row.gradeLabel == grade.label,
+                  row.gradingQualifier == grade.qualifier else { return false }
+            return Set(MagicTreatmentKeyCodec.canonicalIDs(from: row.magicTreatmentIDsRaw))
+                == Set(MagicTreatmentKeyCodec.canonicalIDs(from: treatmentIDs))
+        }
+        guard rows.count <= 1 else {
+            throw CollectionStoreError.ledgerConflict(
+                "certificate \(certificationNumber) matches multiple graded rows"
+            )
         }
         return rows.first
     }
@@ -2582,7 +2811,7 @@ struct CollectionStore {
         quantity: Int = 1
     ) throws -> CollectionMutation? {
         guard current != corrected.variant else { return nil }
-        guard quantity > 0 else {
+        guard quantity > 0, quantity <= CollectionQuantityLimits.maximum else {
             throw CollectionStoreError.insufficientQuantity(card.providerID)
         }
 
@@ -2823,7 +3052,7 @@ struct CollectionStore {
                 forAnyKey: destinationKey,
                 magicTreatmentIDsRaw: correctedTreatmentIDs
             ) {
-                existing.quantity += quantity
+                existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, quantity)
                 existing.dateAdded = .now
                 if existing.magicTreatmentIDsRaw.isEmpty {
                     existing.magicTreatmentIDsRaw = correctedTreatmentIDs
@@ -3031,7 +3260,10 @@ struct RemovedCardSnapshot: Identifiable, Codable {
             )
         )
         if let existing = LogicalCollection.chooseRepresentative(from: rows) {
-            existing.quantity = rows.reduce(0) { $0 + $1.quantity } + quantity
+            let mergedQuantity = try rows.reduce(into: 0) { total, row in
+                total = try CollectionQuantityLimits.checkedAdd(total, row.quantity)
+            }
+            existing.quantity = try CollectionQuantityLimits.checkedAdd(mergedQuantity, quantity)
             existing.dateAdded = max(existing.dateAdded, dateAdded)
             if existing.magicTreatmentIDsRaw.isEmpty {
                 existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(

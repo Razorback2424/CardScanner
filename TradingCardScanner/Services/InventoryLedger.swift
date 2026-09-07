@@ -265,7 +265,11 @@ struct InventoryLedger {
     nonisolated static func quantities(from events: [InventoryEvent]) -> [String: Int] {
         var quantities: [String: Int] = [:]
         for event in events {
-            quantities[event.collectionKey, default: 0] += event.deltaQuantity
+            let current = quantities[event.collectionKey, default: 0]
+            quantities[event.collectionKey] = CollectionQuantityLimits.saturatingAdd(
+                current,
+                event.deltaQuantity
+            )
         }
         return quantities.filter { $0.value != 0 }
     }
@@ -432,13 +436,13 @@ struct InventoryLedger {
             reversesEventID: reversesEventID
         )
 
-        let existing: InventoryEvent?
+        let existing: [InventoryEvent]
         do {
             existing = try context.fetch(
                 FetchDescriptor<InventoryEvent>(
                     predicate: #Predicate { $0.idempotencyKey == idempotencyKey }
                 )
-            ).first
+            )
         } catch {
             return .unreadableStore(
                 LedgerIntegrityDefect(
@@ -450,24 +454,36 @@ struct InventoryLedger {
             )
         }
 
-        if let existing {
-            let equivalent = kind == .initialBalance && existing.kind == .initialBalance
-                ? existing.collectionKey == collectionKey
-                    && existing.priceStorageKey == priceStorageKey
-                    && existing.deltaQuantity == deltaQuantity
-                : existing.payload == candidate
-            guard equivalent else {
+        if !existing.isEmpty {
+            let ordered = existing.sorted { $0.eventID.uuidString < $1.eventID.uuidString }
+            let equivalent: (InventoryEvent) -> Bool = { event in
+                kind == .initialBalance && event.kind == .initialBalance
+                    ? event.collectionKey == collectionKey
+                        && event.priceStorageKey == priceStorageKey
+                        && event.deltaQuantity == deltaQuantity
+                    : event.payload == candidate
+            }
+            guard ordered.allSatisfy(equivalent) else {
+                let first = ordered[0]
                 let defect = LedgerIntegrityDefect(
                     reason: .conflictingPayloadForIdempotencyKey,
                     collectionKey: collectionKey,
-                    detail: "\(idempotencyKey): recorded \(existing.deltaQuantity) of \(existing.collectionKey), attempted \(deltaQuantity) of \(collectionKey)"
+                    detail: "\(idempotencyKey): stored rows disagree (first recorded \(first.deltaQuantity) of \(first.collectionKey)), attempted \(deltaQuantity) of \(collectionKey)"
                 )
                 // Returned rather than published from here: the write path is
                 // no longer main-actor isolated, and the next recomputation's
                 // ledger read finds the same conflict anyway.
                 return .conflict(defect)
             }
-            return .duplicate(existing)
+            let chosen = kind == .initialBalance
+                ? ordered.min {
+                    if $0.occurredAt != $1.occurredAt {
+                        return $0.occurredAt < $1.occurredAt
+                    }
+                    return $0.eventID.uuidString < $1.eventID.uuidString
+                } ?? ordered[0]
+                : ordered[0]
+            return .duplicate(chosen)
         }
 
         let event = InventoryEvent(

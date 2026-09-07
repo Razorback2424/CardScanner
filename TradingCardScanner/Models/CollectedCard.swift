@@ -491,6 +491,20 @@ final class CollectedCard {
            justTCGVariantID != nil || itemKind == .gradedCard {
             keys.append(PriceRecord.key(game: cardGame, printingID: providerID, variantID: variantID))
         }
+        // A graded or sealed row may have been priced under its local
+        // collection identity before a vendor market variant was bound. Keep
+        // that exact pre-bind key visible after promotion; otherwise the
+        // imported acquisition value disappears from collection and replay.
+        if itemKind != .rawCard, justTCGVariantID != nil {
+            keys.append(
+                PriceRecord.key(
+                    game: cardGame,
+                    printingID: collectionKey,
+                    variantID: variantID,
+                    treatmentIDs: priceTreatmentIDs
+                )
+            )
+        }
         if itemKind == .rawCard,
            pokemonPrintRunRaw == nil,
            variantID == PhysicalVariant.firstEdition.id {

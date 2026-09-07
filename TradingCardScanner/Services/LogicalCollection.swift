@@ -44,7 +44,9 @@ struct LogicalCollectionProjection {
         Dictionary(uniqueKeysWithValues: positions.map { ($0.collectionKey, $0.quantity) })
     }
 
-    var totalQuantity: Int { positions.reduce(0) { $0 + $1.quantity } }
+    var totalQuantity: Int {
+        positions.reduce(0) { CollectionQuantityLimits.saturatingAdd($0, $1.quantity) }
+    }
 
     /// A cheap, order-independent signature of what is owned. Used to decide
     /// whether accounting needs recomputing — deliberately not a cryptographic
@@ -147,7 +149,9 @@ enum LogicalCollection {
             positions.append(
                 LogicalCollectedPosition(
                     collectionKey: key,
-                    quantity: rows.reduce(0) { $0 + $1.quantity },
+                    quantity: rows.reduce(0) {
+                        CollectionQuantityLimits.saturatingAdd($0, $1.quantity)
+                    },
                     representative: representative,
                     priceStorageKey: instrument,
                     dateAdded: rows.map(\.dateAdded).max() ?? representative.dateAdded,

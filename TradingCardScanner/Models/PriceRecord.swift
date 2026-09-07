@@ -156,6 +156,9 @@ final class PriceRecord {
 
     @discardableResult
     func apply(_ price: NormalizedPrice) -> Bool {
+        guard price.unitMarketPriceUSD.isFinite, price.unitMarketPriceUSD >= 0 else {
+            return false
+        }
         // A response learned before an invalidation is stale evidence. It may
         // still be useful in the append-only history, but it must not restore
         // the mutable record's value or clear the invalidation watermark.
@@ -179,6 +182,7 @@ final class PriceRecord {
     /// leaving the record eligible for an immediate live provider check.
     @discardableResult
     func applyImported(amount: Double, sourceUpdatedAt: Date?, importedAt: Date = .now) -> Bool {
+        guard amount.isFinite, amount >= 0 else { return false }
         if let invalidatedAt, importedAt <= invalidatedAt { return false }
 
         unitMarketPriceUSD = amount

@@ -1812,7 +1812,7 @@ final class MagicTreatmentMigrationCoordinator {
                 }
                 return report
             }
-            if let localReport {
+            if let localReport, localReport.isComplete {
                 return localReport
             }
             if let localTask {
@@ -1840,7 +1840,9 @@ final class MagicTreatmentMigrationCoordinator {
                 revisionRetries += 1
                 continue
             }
-            localReport = report
+            if report.isComplete {
+                localReport = report
+            }
             return report
         }
     }
@@ -1864,7 +1866,7 @@ final class MagicTreatmentMigrationCoordinator {
     ) async -> MagicTreatmentMigration.Report {
         var revisionRetries = 0
         while true {
-            if let networkReport {
+            if let networkReport, networkReport.isComplete {
                 return networkReport
             }
             if let networkTask {
@@ -1879,7 +1881,7 @@ final class MagicTreatmentMigrationCoordinator {
             }
 
             _ = await runLocalCore(in: context, now: now)
-            if let networkReport {
+            if let networkReport, networkReport.isComplete {
                 return networkReport
             }
             if let networkTask {
@@ -1908,7 +1910,9 @@ final class MagicTreatmentMigrationCoordinator {
                 revisionRetries += 1
                 continue
             }
-            networkReport = report
+            if report.isComplete {
+                networkReport = report
+            }
             return report
         }
     }

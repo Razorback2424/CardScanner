@@ -1071,6 +1071,105 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(Set(rows.map(\.collectionKey)).count, 2)
     }
 
+    func testCSVExportAppendsCatalogProviderWithoutReorderingOriginalColumns() throws {
+        let exportedCard = card(key: "stable-provider")
+        exportedCard.catalogProviderID = "catalog-provider"
+        let lines = CollectionCSV.export([exportedCard]).text
+            .split(separator: "\n", omittingEmptySubsequences: true)
+            .map(String.init)
+        let headers = lines[0].split(separator: ",", omittingEmptySubsequences: false)
+            .map(String.init)
+        let values = lines[1].split(separator: ",", omittingEmptySubsequences: false)
+            .map(String.init)
+
+        XCTAssertEqual(Array(headers.prefix(3)), ["game", "provider_id", "card_name"])
+        XCTAssertEqual(headers.last, "catalog_provider_id")
+        XCTAssertEqual(Array(values.prefix(3)), ["pokemon", "stable-provider", "Portfolio Test Card"])
+        XCTAssertEqual(values.last, "catalog-provider")
+
+        let plan = try CollectionCSV.parse(Data(CollectionCSV.export([exportedCard]).text.utf8))
+        XCTAssertEqual(plan.entries.first?.providerID, "stable-provider")
+        XCTAssertEqual(plan.entries.first?.catalogProviderID, "catalog-provider")
+    }
+
+    func testDuplicateGradedRowsMergeWhenOneHasTheBoundMarketVariant() throws {
+        let context = try makeContext()
+        let key = CollectedCard.gradedCollectionKey(
+            game: .pokemon,
+            underlyingPrintingID: "sv08.5-074",
+            variantUUID: "slab"
+        )
+        let unbound = card(key: key, dateAdded: Date(timeIntervalSince1970: 100))
+        unbound.providerID = "sv08.5-074"
+        unbound.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        unbound.gradingCompanyRaw = GradingCompany.psa.rawValue
+        unbound.gradeRaw = "10"
+        unbound.gradeLabel = "Gem Mint"
+
+        let bound = card(key: key, dateAdded: Date(timeIntervalSince1970: 200))
+        bound.providerID = unbound.providerID
+        bound.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        bound.gradingCompanyRaw = unbound.gradingCompanyRaw
+        bound.gradeRaw = unbound.gradeRaw
+        bound.gradeLabel = unbound.gradeLabel
+        bound.justTCGCardID = "vendor-card"
+        bound.justTCGVariantID = "vendor-variant"
+        bound.justTCGAPIVersion = "v2"
+        let unboundPriceKey = unbound.priceKey
+        let boundPriceKey = bound.priceKey
+        context.insert(unbound)
+        context.insert(bound)
+        try context.save()
+
+        let merged = try XCTUnwrap(
+            try CollectionStore(context: context).card(
+                forAnyKey: key,
+                resolveLegacyIdentity: false
+            )
+        )
+        try context.save()
+
+        XCTAssertEqual(merged.quantity, 2)
+        XCTAssertEqual(merged.priceKey, boundPriceKey)
+        XCTAssertTrue(merged.legacyPriceKeys.contains(unboundPriceKey))
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
+    }
+
+    func testDuplicateSealedRowsMergeWhenOneHasTheBoundMarketVariant() throws {
+        let context = try makeContext()
+        let key = CollectedCard.sealedCollectionKey(
+            game: .pokemon,
+            productUUID: "product-1",
+            variantUUID: "variant-1"
+        )
+        let unbound = card(key: key, dateAdded: Date(timeIntervalSince1970: 100))
+        unbound.providerID = "sealed-source"
+        unbound.itemKindRaw = CollectionItemKind.sealedProduct.rawValue
+
+        let bound = card(key: key, dateAdded: Date(timeIntervalSince1970: 200))
+        bound.providerID = unbound.providerID
+        bound.itemKindRaw = unbound.itemKindRaw
+        bound.justTCGCardID = "vendor-product"
+        bound.justTCGVariantID = "vendor-variant"
+        bound.justTCGAPIVersion = "v1"
+        let boundPriceKey = bound.priceKey
+        context.insert(unbound)
+        context.insert(bound)
+        try context.save()
+
+        let merged = try XCTUnwrap(
+            try CollectionStore(context: context).card(
+                forAnyKey: key,
+                resolveLegacyIdentity: false
+            )
+        )
+        try context.save()
+
+        XCTAssertEqual(merged.quantity, 2)
+        XCTAssertEqual(merged.priceKey, boundPriceKey)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
+    }
+
     private func waitForRecomputeToFinish(
         _ engine: PortfolioEngine,
         file: StaticString = #filePath,
