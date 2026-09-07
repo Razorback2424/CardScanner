@@ -129,6 +129,28 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 for row in rows {
                     let previousVariantID = row.justTCGVariantID
                     let previousPriceKey = row.priceKey
+                    if previousVariantID == nil,
+                       let currentVariantID = metadata.justTCGVariantID {
+                        let apiVersion = metadata.justTCGAPIVersion
+                            ?? (row.itemKind == .gradedCard ? "v2" : "v1")
+                        do {
+                            try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                                for: row,
+                                toMarketVariantID: currentVariantID,
+                                apiVersion: apiVersion,
+                                in: context
+                            )
+                        } catch {
+                            // A binding that cannot read its historical lineage
+                            // must not partially enrich the row. Roll back the
+                            // dedicated normalization context so a later pass
+                            // can retry the complete promotion.
+                            context.rollback()
+                            requestsAnotherPass = false
+                            status = .failed
+                            return
+                        }
+                    }
                     row.applyCatalogMetadata(metadata)
                     Self.recordCatalogMetadataCheck(on: row, at: now)
 

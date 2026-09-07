@@ -377,6 +377,146 @@ final class PriceRefreshDataIndex {
     }
 }
 
+/// Moves one local price identity to its canonical vendor identity while the
+/// owning collection mutation is still in the same SwiftData transaction.
+///
+/// A vendor bind changes more than the mutable `PriceRecord` key: local price
+/// observations, coverage rows, and synced ledger events all name the old
+/// instrument explicitly. Moving only the current record leaves replay and
+/// historical attribution split across two instruments. This helper keeps the
+/// four stores together and fails closed when any source table is unreadable.
+enum PriceIdentityLineageMigration {
+    /// Promotes an unbound non-raw row to a vendor variant identity.
+    /// Callers must invoke this before assigning the vendor id to the row so
+    /// `card.priceKey` still names the complete source identity.
+    static func promoteUnboundPriceIdentity(
+        for card: CollectedCard,
+        toMarketVariantID marketVariantID: String,
+        apiVersion: String,
+        in context: ModelContext,
+        index: PriceRefreshDataIndex? = nil
+    ) throws {
+        guard card.itemKind != .rawCard,
+              card.justTCGVariantID == nil,
+              !marketVariantID.isEmpty else { return }
+
+        let oldKey = card.priceKey
+        let printingID = "justtcg:\(apiVersion):\(marketVariantID)"
+        let newKey = PriceRecord.key(
+            game: card.cardGame,
+            printingID: printingID,
+            variantID: card.variantID,
+            treatmentIDs: card.priceTreatmentIDs
+        )
+        try migrate(
+            from: oldKey,
+            to: newKey,
+            game: card.cardGame,
+            printingID: printingID,
+            variantID: card.variantID,
+            treatmentIDs: card.priceTreatmentIDs,
+            in: context,
+            index: index
+        )
+    }
+
+    /// Retargets every persisted reference to one price instrument. The
+    /// canonical record wins by the same authority rule used by refresh and
+    /// display; duplicate coverage rows are reduced to their monotonic
+    /// preferred row after retargeting.
+    @discardableResult
+    static func migrate(
+        from oldKey: String,
+        to newKey: String,
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        treatmentIDs: [String],
+        in context: ModelContext,
+        index: PriceRefreshDataIndex? = nil
+    ) throws -> Bool {
+        guard oldKey != newKey else { return false }
+
+        let oldRecords = try context.fetch(
+            FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == oldKey })
+        )
+        let newRecords = try context.fetch(
+            FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == newKey })
+        )
+        let records = oldRecords + newRecords
+        if let authoritative = PriceStore.authoritativeRecord(in: records) {
+            let marketVariantID = records.compactMap(\.marketVariantID).first
+            let canonicalMarketID = records.compactMap(\.canonicalMarketID).first
+            let itemKindRaw = records.compactMap(\.itemKindRaw).first
+
+            for record in records where record !== authoritative {
+                context.delete(record)
+            }
+            authoritative.key = newKey
+            authoritative.game = game.rawValue
+            authoritative.printingID = printingID
+            authoritative.variantID = variantID
+            authoritative.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
+                from: treatmentIDs
+            )
+            if authoritative.marketVariantID == nil {
+                authoritative.marketVariantID = marketVariantID
+            }
+            if authoritative.canonicalMarketID == nil {
+                authoritative.canonicalMarketID = canonicalMarketID
+            }
+            if authoritative.itemKindRaw == nil {
+                authoritative.itemKindRaw = itemKindRaw
+            }
+        }
+
+        let observations = try context.fetch(
+            FetchDescriptor<PriceObservation>(
+                predicate: #Predicate { $0.instrumentKey == oldKey }
+            )
+        )
+        for observation in observations {
+            observation.instrumentKey = newKey
+        }
+
+        let oldCheckDays = try context.fetch(
+            FetchDescriptor<PriceCheckDay>(
+                predicate: #Predicate { $0.instrumentKey == oldKey }
+            )
+        )
+        let newCheckDays = try context.fetch(
+            FetchDescriptor<PriceCheckDay>(
+                predicate: #Predicate { $0.instrumentKey == newKey }
+            )
+        )
+        for checkDay in oldCheckDays {
+            checkDay.instrumentKey = newKey
+        }
+        for rows in Dictionary(grouping: oldCheckDays + newCheckDays, by: \.portfolioDay).values
+            where rows.count > 1 {
+            guard let preferred = PriceCheckDay.preferred(from: rows) else { continue }
+            for duplicate in rows where duplicate !== preferred {
+                context.delete(duplicate)
+            }
+        }
+
+        let events = try context.fetch(
+            FetchDescriptor<InventoryEvent>(
+                predicate: #Predicate { $0.priceStorageKey == oldKey }
+            )
+        )
+        for event in events {
+            event.priceStorageKey = newKey
+        }
+
+        // A refresh index may have been materialised before the binding
+        // response arrived. Do not let it resurrect the old record or miss the
+        // observations just moved into the canonical key.
+        index?.reload()
+        return true
+    }
+}
+
 /// Reads and writes `PriceRecord`s.
 ///
 /// Prices are keyed by printing plus variant, never by collection row, so eight

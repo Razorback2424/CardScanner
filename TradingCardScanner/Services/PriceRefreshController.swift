@@ -969,9 +969,16 @@ actor PriceRefreshModelActor {
         func bind(
             _ variant: GradedVariant,
             to target: PriceTarget
-        ) -> CollectedCard? {
+        ) throws -> CollectedCard? {
             guard target.marketVariantID == nil else { return row(for: target) }
             guard let card = row(for: target) else { return nil }
+            try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                for: card,
+                toMarketVariantID: variant.id,
+                apiVersion: JustTCGV2GradedClient.apiVersion,
+                in: modelContext,
+                index: store.index
+            )
             card.justTCGVariantID = variant.id
             card.justTCGCardID = variant.cardID ?? card.justTCGCardID
             card.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
@@ -1066,7 +1073,16 @@ actor PriceRefreshModelActor {
                     continue
                 }
 
-                let owner = bind(variant, to: target)
+                let owner: CollectedCard?
+                do {
+                    owner = try bind(variant, to: target)
+                } catch {
+                    // Do not bind a slab if its old price lineage could not be
+                    // read and retargeted. The isolated refresh remains
+                    // incomplete and the next pass can retry this target.
+                    persistenceFailed = true
+                    continue
+                }
                 let printingID = owner?.priceStorageID
                     ?? "justtcg:\(JustTCGV2GradedClient.apiVersion):\(variant.id)"
                 let lookup: PriceLookup = if let amount = variant.marketPriceUSD {

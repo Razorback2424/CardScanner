@@ -885,6 +885,21 @@ struct CollectionStore {
             activity.removalSnapshotData = snapshotData
         }
         for event in events { event.collectionKey = canonicalKey }
+
+        if representative.itemKind != .rawCard {
+            let canonicalPriceKey = representative.priceKey
+            for legacyPriceKey in priceKeys where legacyPriceKey != canonicalPriceKey {
+                try PriceIdentityLineageMigration.migrate(
+                    from: legacyPriceKey,
+                    to: canonicalPriceKey,
+                    game: representative.cardGame,
+                    printingID: representative.priceStorageID,
+                    variantID: representative.variantID,
+                    treatmentIDs: representative.priceTreatmentIDs,
+                    in: context
+                )
+            }
+        }
         for row in rows where row !== representative { context.delete(row) }
         return representative
     }
@@ -1203,6 +1218,26 @@ struct CollectionStore {
         }
 
         let oldEvents = try ledger.events(collectionKey: oldKey)
+
+        if row.itemKind == .gradedCard,
+           row.justTCGVariantID == nil {
+            let oldPriceKey = row.priceKey
+            let newPriceKey = PriceRecord.key(
+                game: row.cardGame,
+                printingID: canonicalKey,
+                variantID: row.variantID,
+                treatmentIDs: finalTreatmentIDs
+            )
+            try PriceIdentityLineageMigration.migrate(
+                from: oldPriceKey,
+                to: newPriceKey,
+                game: row.cardGame,
+                printingID: canonicalKey,
+                variantID: row.variantID,
+                treatmentIDs: finalTreatmentIDs,
+                in: context
+            )
+        }
 
         row.collectionKey = canonicalKey
         if let inferredRawFinish {
@@ -1683,32 +1718,39 @@ struct CollectionStore {
                    certificationNumber: certificationNumber,
                    treatmentIDs: treatmentIDs
                ) {
-                if let boundVariantID = existing.justTCGVariantID,
+                var owner = existing
+                if let boundVariantID = owner.justTCGVariantID,
                    boundVariantID != variant.id {
                     throw CollectionStoreError.ledgerConflict(
                         "certificate \(certificationNumber) is bound to a different market variant"
                     )
                 }
-                if existing.justTCGVariantID == nil {
-                    _ = try rekey(
-                        existing,
+                if owner.justTCGVariantID == nil {
+                    owner = try rekey(
+                        owner,
                         to: key,
                         magicTreatmentIDsRaw: treatmentIDs,
                         magicTreatmentQualifiers: magicTreatmentQualifiers
                     )
-                    existing.justTCGVariantID = variant.id
-                    existing.justTCGCardID = variant.cardID
-                    existing.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
+                    try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                        for: owner,
+                        toMarketVariantID: variant.id,
+                        apiVersion: JustTCGV2GradedClient.apiVersion,
+                        in: context
+                    )
+                    owner.justTCGVariantID = variant.id
+                    owner.justTCGCardID = variant.cardID
+                    owner.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
                 }
                 storeMarketPrice(
                     variant.marketPriceUSD,
                     updatedAt: variant.updatedAt,
                     marketVariantID: variant.id,
-                    for: existing
+                    for: owner
                 )
                 try commit()
                 return CollectionMutation(
-                    collectionKey: existing.collectionKey,
+                    collectionKey: owner.collectionKey,
                     activityID: nil,
                     didInsert: false,
                     wasDuplicate: true
@@ -1991,6 +2033,18 @@ struct CollectionStore {
             // Re-adding also heals rows saved before sealed artwork support.
             if existing.imageURL == nil {
                 existing.imageURL = product.imageURL?.absoluteString
+            }
+            if existing.justTCGVariantID == nil,
+               let marketVariantID = product.variantID {
+                try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                    for: existing,
+                    toMarketVariantID: marketVariantID,
+                    apiVersion: JustTCGV1Client.apiVersion,
+                    in: context
+                )
+                existing.justTCGCardID = product.id
+                existing.justTCGVariantID = marketVariantID
+                existing.justTCGAPIVersion = JustTCGV1Client.apiVersion
             }
             storeMarketPrice(
                 product.marketPriceUSD,

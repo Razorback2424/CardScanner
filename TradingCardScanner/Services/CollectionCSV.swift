@@ -722,16 +722,29 @@ enum CollectionCSV {
                                 existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
                                 if existing.imageURL == nil { existing.imageURL = entry.imageURL }
                                 if existing.thumbnailURL == nil { existing.thumbnailURL = entry.thumbnailURL }
+                                if existing.magicTreatmentIDsRaw.isEmpty {
+                                    existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
+                                        from: entry.magicTreatmentIDsRaw
+                                    )
+                                }
+                                if existing.itemKind != .rawCard,
+                                   entry.itemKind != .rawCard,
+                                   existing.justTCGVariantID == nil,
+                                   let marketVariantID = entry.justTCGVariantID {
+                                    let apiVersion = entry.justTCGAPIVersion
+                                        ?? (entry.itemKind == .gradedCard ? "v2" : "v1")
+                                    try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                                        for: existing,
+                                        toMarketVariantID: marketVariantID,
+                                        apiVersion: apiVersion,
+                                        in: context
+                                    )
+                                }
                                 if existing.justTCGCardID == nil { existing.justTCGCardID = entry.justTCGCardID }
                                 if existing.justTCGVariantID == nil { existing.justTCGVariantID = entry.justTCGVariantID }
                                 if existing.justTCGAPIVersion == nil { existing.justTCGAPIVersion = entry.justTCGAPIVersion }
                                 if existing.catalogProviderID == nil {
                                     existing.catalogProviderID = entry.catalogProviderID
-                                }
-                                if existing.magicTreatmentIDsRaw.isEmpty {
-                                    existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
-                                        from: entry.magicTreatmentIDsRaw
-                                    )
                                 }
                                 if existing.magicTreatmentQualifiers.isEmpty,
                                    !entry.magicTreatmentQualifiers.isEmpty {

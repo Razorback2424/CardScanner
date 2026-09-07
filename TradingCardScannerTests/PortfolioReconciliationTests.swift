@@ -1135,6 +1135,133 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, 1)
     }
 
+    func testUnboundPriceIdentityPromotionMovesCompleteLineage() throws {
+        let context = try makeContext()
+        let epoch = Date(timeIntervalSince1970: 1_800_000_000)
+        let card = CollectedCard(
+            collectionKey: CollectedCard.scannedGradedCollectionKey(
+                game: .pokemon,
+                underlyingPrintingID: "sv08.5-074",
+                company: .psa,
+                grade: CardGrade(value: "10", label: "Gem Mint", qualifier: nil),
+                certificationNumber: "CERT-1"
+            ),
+            game: .pokemon,
+            providerID: "sv08.5-074",
+            name: "Lineage Fixture",
+            setName: "Fixture Set",
+            setCode: "FIC",
+            cardNumber: "074",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            variantResolution: .imported
+        )
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        card.gradingCompanyRaw = GradingCompany.psa.rawValue
+        card.gradeRaw = "10"
+        card.gradeLabel = "Gem Mint"
+        card.certificationNumber = "CERT-1"
+        context.insert(card)
+
+        let oldKey = card.priceKey
+        let oldRecord = PriceRecord(
+            key: oldKey,
+            game: .pokemon,
+            printingID: card.priceStorageID,
+            variantID: card.variantID
+        )
+        _ = oldRecord.applyImported(
+            amount: 12,
+            sourceUpdatedAt: epoch,
+            importedAt: epoch.addingTimeInterval(60)
+        )
+        context.insert(oldRecord)
+        context.insert(
+            PriceObservation(
+                instrumentKey: oldKey,
+                kind: .marketUpdate,
+                amount: money(12),
+                currencyCode: "USD",
+                source: .importedCSV,
+                sourceVariantID: oldKey,
+                marketVariantID: nil,
+                effectiveAt: epoch,
+                receivedAt: epoch.addingTimeInterval(60),
+                isSourceStamped: true
+            )
+        )
+        context.insert(
+            PriceCheckDay(
+                instrumentKey: oldKey,
+                portfolioDay: epoch,
+                lastSuccessfulCheckAt: epoch.addingTimeInterval(60),
+                source: .importedCSV
+            )
+        )
+        let operationID = UUID()
+        context.insert(
+            InventoryEvent(
+                operationID: operationID,
+                leg: nil,
+                kind: .recordExisting,
+                source: .csvImport,
+                collectionKey: card.collectionKey,
+                priceStorageKey: oldKey,
+                deltaQuantity: 1,
+                occurredAt: epoch,
+                valuation: .unpriced
+            )
+        )
+        try context.save()
+
+        try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+            for: card,
+            toMarketVariantID: "graded-market-1",
+            apiVersion: "v2",
+            in: context
+        )
+        card.justTCGCardID = "graded-card-1"
+        card.justTCGVariantID = "graded-market-1"
+        card.justTCGAPIVersion = "v2"
+        try context.save()
+
+        let newKey = card.priceKey
+        XCTAssertNotEqual(oldKey, newKey)
+        XCTAssertNil(
+            try context.fetch(
+                FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == oldKey })
+            ).first
+        )
+        XCTAssertEqual(
+            try context.fetch(
+                FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == newKey })
+            ).count,
+            1
+        )
+        XCTAssertFalse(
+            try context.fetch(FetchDescriptor<PriceObservation>())
+                .contains { $0.instrumentKey == oldKey }
+        )
+        XCTAssertTrue(
+            try context.fetch(FetchDescriptor<PriceObservation>())
+                .contains { $0.instrumentKey == newKey }
+        )
+        XCTAssertFalse(
+            try context.fetch(FetchDescriptor<PriceCheckDay>())
+                .contains { $0.instrumentKey == oldKey }
+        )
+        XCTAssertTrue(
+            try context.fetch(FetchDescriptor<PriceCheckDay>())
+                .contains { $0.instrumentKey == newKey }
+        )
+        XCTAssertTrue(
+            try context.fetch(FetchDescriptor<InventoryEvent>())
+                .allSatisfy { $0.priceStorageKey == newKey }
+        )
+    }
+
     func testDuplicateSealedRowsMergeWhenOneHasTheBoundMarketVariant() throws {
         let context = try makeContext()
         let key = CollectedCard.sealedCollectionKey(
