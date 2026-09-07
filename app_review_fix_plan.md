@@ -117,6 +117,37 @@ Verification on 2026-09-04:
 - Full `xcodebuild test-without-building` suite — 755 passed, 0 failed, 0 skipped.
 - `git diff --check` — clean.
 
+## Consolidated audit pass 3 — 2026-09-07
+
+Baseline: `a04072c` on `codex/development`, clean worktree, and pass 2
+verification recorded as 915 passed, 1 skipped, 0 failed. This pass selects
+the only remaining high-confidence, code-level data-integrity item: durable
+price-lineage migration when an unbound graded or sealed row receives its
+vendor variant identity.
+
+- [x] 7 — migrate the complete old price identity, including `PriceRecord`,
+  `PriceObservation`, `PriceCheckDay`, and `InventoryEvent` references, before
+  the row's vendor binding is persisted. Keep the operation in the caller's
+  existing SwiftData transaction and fail closed if the lineage cannot be
+  read. The migration now runs for graded and sealed binding, catalog
+  normalization, CSV import, collection rekey/merge, and refresh paths; the
+  refresh index is reloaded after moves so the same pass cannot write stale
+  pre-migration references.
+- [ ] 11/12, 21, 35, 40, 43, 44, and ProductIdentity miss performance — remain
+  confirmation or measurement work under the evidence gate.
+- [ ] 45 — remains a product-owner/deployment confirmation: the production
+  bundle ID, entitlements, CloudKit container, and provisioning identity are
+  not present in the repository.
+
+Verification completed for this pass: all six changed Swift files passed
+`swiftc -frontend -parse`, `git diff --check` passed, and the single final
+simulator `xcodebuild test` passed with 916 tests executed, 1 skipped, and 0
+failures. No second build/test was required.
+
+Status: implemented in the pending pass-3 commit. The remaining items below
+are evidence, measurement, product-owner, or manual/runtime gates rather than
+safe code-only closures in this repository.
+
 ## Consolidated audit first pass — 2026-09-07
 
 The attached `TradingCardScanner-consolidated-audit.md` was implemented in
@@ -226,10 +257,11 @@ Static verification for these corrections passed after each slice with
 
 ### Still open
 
-- [ ] 7 — migrate the full historical price lineage when an unbound graded or
+- [x] 7 — migrate the full historical price lineage when an unbound graded or
   sealed row is rebound to a vendor variant. The immediate collection/replay
-  read-through is fixed, including delayed baseline replay; atomic migration of
-  every historical observation and event remains open.
+  read-through is fixed, including delayed baseline replay; pass 3 now also
+  atomically migrates the historical record, observations, check-day rows, and
+  inventory-event references before the vendor binding is persisted.
 - [ ] 11/12 — confirm stale vendor-variant invalidation and make provider
   matching fail closed for ambiguous or incomplete evidence.
 - [ ] 21 — globally serialize migration, normalization, import, and scanner
