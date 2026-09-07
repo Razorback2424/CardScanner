@@ -13,7 +13,7 @@ extension ScanIdentifier {
     }
 }
 
-enum ScanPurpose: String, CaseIterable, Identifiable, Hashable {
+enum ScanPurpose: String, CaseIterable, Identifiable, Hashable, Sendable {
     case collection
     case priceCheck
 
@@ -46,6 +46,16 @@ struct ScannerRecognitionEligibility: Equatable {
         !isBlockedByPresentation &&
         !isCameraInterrupted
     }
+}
+
+/// Lifecycle identity captured by `CardScanner` on the same serial queue as
+/// the confirmation frame. A late callback must match every field before it
+/// can enter the current scanner session.
+struct ScannerConfirmationToken: Equatable, Sendable {
+    let sessionID: UUID
+    let generation: Int
+    let purpose: ScanPurpose
+    let visibilityEpoch: UUID
 }
 
 /// A scanner-domain encounter. Its id is created by `CardScanner` at the exact
@@ -897,6 +907,10 @@ final class ScannerViewModel: ObservableObject {
     private var presentedPriceCheckSubject: ScanSubject?
     private var scanGeneration = 0
     private var recognitionEligibility = ScannerRecognitionEligibility()
+    /// Changes whenever the visible scanner surface crosses a lifecycle or
+    /// presentation boundary. It prevents a callback queued before a sheet or
+    /// tab transition from being accepted after that transition.
+    private var visibilityEpoch = UUID()
     /// Proofs arrive independently of catalog resolution. A provisional proof
     /// is held by encounter id until its successful commit can associate it with
     /// a committed presentation.
@@ -969,9 +983,19 @@ final class ScannerViewModel: ObservableObject {
             }
         }
 
-        let handleConfirmedCandidate: (UUID, ScanSubject, UUID?) -> Void = { [weak self] encounterID, subject, authorizationID in
+        let handleConfirmedCandidate: (ScannerConfirmationToken?, UUID, ScanSubject, UUID?) -> Void = { [weak self] token, encounterID, subject, authorizationID in
             guard let self else { return }
             Task { @MainActor in
+                guard self.isScannerSessionActive,
+                      self.recognitionEligibility.allowsRecognition else {
+                    self.diagnostic("staleConfirmationDropped")
+                    return
+                }
+                if let token,
+                   token != self.currentConfirmationToken {
+                    self.diagnostic("staleConfirmationDropped")
+                    return
+                }
                 if self.purpose == .collection {
                     // Recognition is an honest, earlier acknowledgement than a
                     // durable add. It lets the person move to the next card while
@@ -1019,11 +1043,16 @@ final class ScannerViewModel: ObservableObject {
                 self.enqueueIdentification(
                     subject,
                     encounterID: encounterID,
-                    heldRepeatAuthorizationID: authorizationID
+                    heldRepeatAuthorizationID: authorizationID,
+                    purpose: token?.purpose,
+                    generation: token?.generation
                 )
             }
         }
-        scanner.onConfirmedSubjectCandidate = handleConfirmedCandidate
+        scanner.onConfirmedSubjectCandidate = { encounterID, subject, authorizationID in
+            handleConfirmedCandidate(nil, encounterID, subject, authorizationID)
+        }
+        scanner.onConfirmedSubjectCandidateWithContext = handleConfirmedCandidate
 
         scanner.onHeldRepeatAuthorizationTerminated = { [weak self] authorizationID, outcome in
             Task { @MainActor in
@@ -1088,6 +1117,21 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
+    private var currentConfirmationToken: ScannerConfirmationToken? {
+        guard isScannerSessionActive,
+              recognitionEligibility.allowsRecognition else { return nil }
+        return ScannerConfirmationToken(
+            sessionID: scannerSessionID,
+            generation: scanGeneration,
+            purpose: purpose,
+            visibilityEpoch: visibilityEpoch
+        )
+    }
+
+    private func updateScannerConfirmationContext() {
+        scanner.updateConfirmationContext(currentConfirmationToken)
+    }
+
     // MARK: - Session lifecycle
 
     func start(
@@ -1112,6 +1156,8 @@ final class ScannerViewModel: ObservableObject {
             )
             recognitionEligibility.isScannerVisible = true
             recognitionEligibility.isSceneActive = isSceneActive
+            visibilityEpoch = UUID()
+            updateScannerConfirmationContext()
             return
         }
         let beginsNewSession = !isScannerSessionActive
@@ -1125,6 +1171,7 @@ final class ScannerViewModel: ObservableObject {
         }
         if beginsNewSession {
             scannerSessionID = UUID()
+            visibilityEpoch = UUID()
             successCount = 0
             recognitionCount = 0
         }
@@ -1134,6 +1181,7 @@ final class ScannerViewModel: ObservableObject {
         // platform interruption ended while the tab was away, its stale
         // callback must not keep the new session paused forever.
         recognitionEligibility.isCameraInterrupted = false
+        updateScannerConfirmationContext()
         // Price Check is an independent, network-paced persistence flow. Keep
         // its quote/price context separate so QuoteCache.save cannot commit or
         // roll back an in-flight collection mutation.
@@ -1175,6 +1223,8 @@ final class ScannerViewModel: ObservableObject {
     func viewDisappeared() {
         let shouldFinalize = isScannerSessionActive && recognitionEligibility.isSceneActive
         recognitionEligibility.isScannerVisible = false
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
         guard shouldFinalize else {
             scanner.stop()
             return
@@ -1188,7 +1238,6 @@ final class ScannerViewModel: ObservableObject {
         // A write that has already reached the writer is allowed to finish. The
         // final report must describe durable state, not the state visible at the
         // instant the tab disappeared.
-        let identificationTask = self.identificationTask
         let finalizingSessionID = scannerSessionID
         isScannerSessionActive = false
         invalidatePendingScan()
@@ -1196,8 +1245,16 @@ final class ScannerViewModel: ObservableObject {
 
         sessionFinalizationTask = Task { @MainActor [weak self] in
             guard let self else { return }
-            await identificationTask?.value
             let deadline = Date.now.addingTimeInterval(Self.sessionFinalizationDrainTimeout)
+            // Cancellation is the invalidation fence. Do not await an
+            // uncooperative identification task before starting the bounded
+            // drain, because a hung provider would otherwise keep the next
+            // scanner appearance blocked forever.
+            while self.identificationTask != nil,
+                  !Task.isCancelled,
+                  Date.now < deadline {
+                try? await Task.sleep(for: .milliseconds(10))
+            }
             while self.pendingWriteCounts[finalizingSessionID, default: 0] > 0,
                   !Task.isCancelled,
                   Date.now < deadline {
@@ -1290,11 +1347,14 @@ final class ScannerViewModel: ObservableObject {
 
     func scenePhaseChanged(isActive: Bool) {
         recognitionEligibility.isSceneActive = isActive
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
         if isActive {
             // Returning to the foreground is itself a valid recovery boundary;
             // recognition must not depend on AVCaptureSession delivering its
             // separate interruption-ended notification.
             recognitionEligibility.isCameraInterrupted = false
+            updateScannerConfirmationContext()
             if recognitionEligibility.isScannerVisible {
                 scanner.start()
                 // `start()` restores the capture session, but it deliberately
@@ -1316,6 +1376,8 @@ final class ScannerViewModel: ObservableObject {
 
     private func cameraInterruptionStarted() {
         recognitionEligibility.isCameraInterrupted = true
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
         invalidatePendingScan()
         show(ScanNote(text: "Camera interrupted — scan again when it returns", tone: .info))
     }
@@ -1325,6 +1387,8 @@ final class ScannerViewModel: ObservableObject {
     /// nobody saw being added.
     func pauseForPresentation() {
         recognitionEligibility.isBlockedByPresentation = true
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
         dismissReceipt()
         scanner.pauseRecognition()
     }
@@ -1340,6 +1404,8 @@ final class ScannerViewModel: ObservableObject {
     /// and cannot represent this later user action.
     func settingsDismissed() {
         recognitionEligibility.isBlockedByPresentation = false
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
         feedback.prepare()
         resumeRecognitionIfPossible()
         guard let result = priceCheckResult,
@@ -1352,6 +1418,8 @@ final class ScannerViewModel: ObservableObject {
 
     func dismissPriceCheckResult() {
         recognitionEligibility.isBlockedByPresentation = false
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
         let dismissedSubject = priceCheckResult?.resolvedScan.request.subject
             ?? presentedPriceCheckSubject
         cancelPriceCheckRefresh()
@@ -1371,6 +1439,8 @@ final class ScannerViewModel: ObservableObject {
 
         invalidatePendingScan()
         purpose = newPurpose
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
         resumeRecognitionIfPossible()
         feedback.choiceMade()
         UIAccessibility.post(notification: .announcement, argument: "\(newPurpose.title). \(newPurpose.statusText)")
@@ -1381,6 +1451,7 @@ final class ScannerViewModel: ObservableObject {
         // Existing completions are allowed to finish their network work but can
         // no longer affect any UI or destination.
         scanGeneration += 1
+        updateScannerConfirmationContext()
         cancelPriceCheckRefresh()
         identificationTask?.cancel()
         activeIdentificationRequestID = nil
@@ -1624,6 +1695,8 @@ final class ScannerViewModel: ObservableObject {
     func endSession() {
         invalidatePendingScan()
         scannerSessionID = UUID()
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
         clearSessionState()
         isScannerSessionActive = false
         scanner.endSession()
@@ -1943,17 +2016,21 @@ final class ScannerViewModel: ObservableObject {
     private func enqueueIdentification(
         _ subject: ScanSubject,
         encounterID: UUID,
-        heldRepeatAuthorizationID: UUID? = nil
+        heldRepeatAuthorizationID: UUID? = nil,
+        purpose capturedPurpose: ScanPurpose? = nil,
+        generation capturedGeneration: Int? = nil
     ) {
+        let requestPurpose = capturedPurpose ?? purpose
+        let requestGeneration = capturedGeneration ?? scanGeneration
         let encounter = ScanEncounter(
             encounterID: encounterID,
             subject: subject,
-            generation: scanGeneration,
+            generation: requestGeneration,
             heldRepeatAuthorizationID: heldRepeatAuthorizationID
         )
         let request = ScanRequest(
             subject: encounter.subject,
-            purpose: purpose,
+            purpose: requestPurpose,
             generation: encounter.generation,
             encounterID: encounter.encounterID,
             heldRepeatAuthorizationID: encounter.heldRepeatAuthorizationID
@@ -2009,6 +2086,11 @@ final class ScannerViewModel: ObservableObject {
         isProcessingIdentification = false
         identificationTask = nil
         activeIdentificationRequestID = nil
+        // A choice is cleared before its operation begins. If that operation
+        // fails, there is no prompt left to keep the camera paused; resume at
+        // the single pipeline boundary unless another terminal presentation
+        // (Price Check or duplicate confirmation) still owns the screen.
+        resumeRecognitionIfPossible()
         drainDeferredHeldDuplicateOfferIfPossible()
         processNextIdentificationIfPossible()
     }
@@ -2467,6 +2549,16 @@ final class ScannerViewModel: ObservableObject {
         do {
             let mutation = try await collectionWriter.add(candidate)
             guard writeSessionID == scannerSessionID else { return false }
+
+            if mutation.wasDuplicate {
+                show(ScanNote(text: "This certified card is already in your collection", tone: .info))
+                if pendingChoice?.request.id == candidate.requestID {
+                    pendingChoice = nil
+                }
+                resumeRecognitionIfPossible()
+                diagnostic("certifiedDuplicateNoOp")
+                return true
+            }
 
             if let slab = candidate.subject.slab {
                 if let outcome = candidate.gradedOutcome {

@@ -694,6 +694,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// identity emitted by the Vision loop, so slab evidence cannot be lost
     /// between confirmation and collection routing.
     var onConfirmedSubjectCandidate: ((UUID, ScanSubject, UUID?) -> Void)?
+    /// Production confirmation callback carrying the lifecycle fence captured
+    /// on the Vision queue at the exact confirmation frame. The legacy
+    /// callback remains available for deterministic tests and older callers.
+    var onConfirmedSubjectCandidateWithContext: ((ScannerConfirmationToken, UUID, ScanSubject, UUID?) -> Void)?
     /// Positive spatial exit evidence. This is intentionally separate from OCR
     /// and from the latch's weak timeout/absence signals.
     var onSpatialResetProof: ((SpatialResetProof) -> Void)?
@@ -728,6 +732,11 @@ final class CardScanner: NSObject, ObservableObject {
 
     private var isConfigured = false
     private var isPaused = false
+    /// All capture-session starts are tied to the latest lifecycle request.
+    /// Permission callbacks can arrive after the scanner has disappeared; a
+    /// stale callback must not resurrect the camera off-screen.
+    private var wantsRunning = false
+    private var startRequestID = UUID()
     /// Wall-clock time at which recognition was paused. The latch's absence
     /// clock is compensated on resume because no OCR observations were produced
     /// during this interval.
@@ -738,6 +747,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// Written on `sessionQueue`; `lens` is the main-thread mirror for the UI.
     private var currentLens: CameraLens = .standard
     private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
+    /// Main-actor lifecycle state is mirrored here before a Vision frame can
+    /// publish a confirmation. A callback carrying an older token is ignored
+    /// by the view model instead of being reinterpreted by the current screen.
+    private var confirmationContext: ScannerConfirmationToken?
     private var latch = CardLatch()
     /// A Price Check result needs a short breather before the same stationary
     /// card can be confirmed again. The confirmation window adds roughly half
@@ -869,18 +882,36 @@ final class CardScanner: NSObject, ObservableObject {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
             setCameraIssue(nil)
-            configureAndStartIfNeeded()
+            let requestID = UUID()
+            sessionQueue.async { [weak self] in
+                self?.wantsRunning = true
+                self?.startRequestID = requestID
+            }
+            configureAndStartIfNeeded(for: requestID)
         case .notDetermined:
+            let requestID = UUID()
+            sessionQueue.async { [weak self] in
+                self?.wantsRunning = true
+                self?.startRequestID = requestID
+            }
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 guard let self else { return }
                 if granted {
                     self.setCameraIssue(nil)
-                    self.configureAndStartIfNeeded()
+                    self.configureAndStartIfNeeded(for: requestID)
                 } else {
+                    self.sessionQueue.async {
+                        self.wantsRunning = false
+                        self.startRequestID = UUID()
+                    }
                     self.setCameraIssue(.permissionDenied)
                 }
             }
         default:
+            sessionQueue.async { [weak self] in
+                self?.wantsRunning = false
+                self?.startRequestID = UUID()
+            }
             setCameraIssue(.permissionDenied)
         }
     }
@@ -890,8 +921,19 @@ final class CardScanner: NSObject, ObservableObject {
             self?.cancelHeldRepeatAuthorizationOnVisionQueue()
         }
         sessionQueue.async { [weak self] in
-            guard let self, self.session.isRunning else { return }
-            self.session.stopRunning()
+            guard let self else { return }
+            self.wantsRunning = false
+            self.startRequestID = UUID()
+            if self.session.isRunning { self.session.stopRunning() }
+        }
+    }
+
+    /// Updates the lifecycle fence used by the confirmation callback. This is
+    /// intentionally queued with Vision work so the token belongs to the same
+    /// serial stream as the frame that may emit it.
+    func updateConfirmationContext(_ context: ScannerConfirmationToken?) {
+        visionQueue.async { [weak self] in
+            self?.confirmationContext = context
         }
     }
 
@@ -906,8 +948,10 @@ final class CardScanner: NSObject, ObservableObject {
             self.resetObservationState()
         }
         sessionQueue.async { [weak self] in
-            guard let self, self.session.isRunning else { return }
-            self.session.stopRunning()
+            guard let self else { return }
+            self.wantsRunning = false
+            self.startRequestID = UUID()
+            if self.session.isRunning { self.session.stopRunning() }
         }
     }
 
@@ -1162,9 +1206,10 @@ final class CardScanner: NSObject, ObservableObject {
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect()
     }
 
-    private func configureAndStartIfNeeded() {
+    private func configureAndStartIfNeeded(for requestID: UUID) {
         sessionQueue.async { [weak self] in
             guard let self else { return }
+            guard self.wantsRunning, self.startRequestID == requestID else { return }
 
             if !self.isConfigured {
                 do {
@@ -1179,6 +1224,7 @@ final class CardScanner: NSObject, ObservableObject {
                 }
             }
 
+            guard self.wantsRunning, self.startRequestID == requestID else { return }
             if !self.session.isRunning {
                 self.session.startRunning()
             }
@@ -1340,7 +1386,13 @@ final class CardScanner: NSObject, ObservableObject {
         orientation: CGImagePropertyOrientation,
         at now: CFAbsoluteTime
     ) {
-        guard trackerRequest == nil else { return }
+        if trackerRequest != nil {
+            // OCR confirmation of a different identity is enough to start a
+            // new lineage, but it is never proof that the old presentation
+            // physically exited. Drop the old tracker without publishing an
+            // exit event, then seed this confirmed encounter.
+            terminateTrackerWithoutSpatialProof()
+        }
         guard trackerSeedGate.canSeed(subject) else {
             // Later OCR is not a spatial reset. Keep the identity consumed and
             // let the view model suppress it without creating a new lineage.
@@ -1716,8 +1768,18 @@ final class CardScanner: NSObject, ObservableObject {
                     at: now
                 )
             }
+            let context = confirmationContext
             DispatchQueue.main.async { [weak self] in
-                self?.onConfirmedSubjectCandidate?(encounterID, confirmed, nil)
+                if let context {
+                    self?.onConfirmedSubjectCandidateWithContext?(
+                        context,
+                        encounterID,
+                        confirmed,
+                        nil
+                    )
+                } else {
+                    self?.onConfirmedSubjectCandidate?(encounterID, confirmed, nil)
+                }
             }
 
         case let .forwardAuthorizedSubject(observation):
@@ -1751,8 +1813,18 @@ final class CardScanner: NSObject, ObservableObject {
                     at: now
                 )
             }
+            let context = confirmationContext
             DispatchQueue.main.async { [weak self] in
-                self?.onConfirmedSubjectCandidate?(encounterID, confirmed, authorizationID)
+                if let context {
+                    self?.onConfirmedSubjectCandidateWithContext?(
+                        context,
+                        encounterID,
+                        confirmed,
+                        authorizationID
+                    )
+                } else {
+                    self?.onConfirmedSubjectCandidate?(encounterID, confirmed, authorizationID)
+                }
             }
 
         }

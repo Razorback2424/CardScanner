@@ -86,9 +86,11 @@ struct ScannerView: View {
                             await model.correct(scanID: scan.id, to: variant)
                         },
                         onDelete: {
-                            if await model.undoScan(scanID: scan.id) {
+                            let didDelete = await model.undoScan(scanID: scan.id)
+                            if didDelete {
                                 reviewing = nil
                             }
+                            return didDelete
                         }
                     )
         }

@@ -11,7 +11,7 @@ struct ScanReviewSheet: View {
 
     let scan: RecentScan
     let onCorrect: (PhysicalVariant) async -> ScanCorrectionOutcome
-    let onDelete: () async -> Void
+    let onDelete: () async -> Bool
 
     @State private var variant: PhysicalVariant?
     @State private var resolution: VariantResolution
@@ -22,7 +22,7 @@ struct ScanReviewSheet: View {
     init(
         scan: RecentScan,
         onCorrect: @escaping (PhysicalVariant) async -> ScanCorrectionOutcome,
-        onDelete: @escaping () async -> Void
+        onDelete: @escaping () async -> Bool
     ) {
         self.scan = scan
         self.onCorrect = onCorrect
@@ -41,7 +41,10 @@ struct ScanReviewSheet: View {
     ) {
         self.scan = scan
         self.onCorrect = { variant in onCorrect(variant) }
-        self.onDelete = { onDelete() }
+        self.onDelete = {
+            onDelete()
+            return true
+        }
         _variant = State(initialValue: scan.resolved.variant)
         _resolution = State(initialValue: scan.resolved.resolution)
     }
@@ -103,8 +106,9 @@ struct ScanReviewSheet: View {
             ) {
                 Button("Undo Scan", role: .destructive) {
                     Task { @MainActor in
-                        await onDelete()
-                        dismiss()
+                        if await onDelete() {
+                            dismiss()
+                        }
                     }
                 }
                 Button("Cancel", role: .cancel) {}
@@ -287,7 +291,7 @@ struct ScanSessionReviewSheet: View {
                         await model.correct(scanID: scan.id, to: variant)
                     },
                     onDelete: {
-                        _ = await model.undoScan(scanID: scan.id)
+                        await model.undoScan(scanID: scan.id)
                     }
                 )
             }

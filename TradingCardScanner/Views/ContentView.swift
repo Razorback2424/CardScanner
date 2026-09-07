@@ -288,8 +288,15 @@ struct ContentView: View {
             )
             return (await refresh.refresh(request, container: modelContext.container)).didRun
         }
-        _ = didRefresh
-        dismissRefreshStatusLater()
+        if didRefresh {
+            dismissRefreshStatusLater()
+        } else {
+            // An empty pass can still publish the transient "already checked"
+            // state, while a target-build failure must remain visible. Let the
+            // controller apply that distinction instead of discarding the
+            // result and unconditionally scheduling a dismissal.
+            refresh.dismissTransientSuccessSummary()
+        }
     }
 
     /// Success fades; an unresolved failure does not.
