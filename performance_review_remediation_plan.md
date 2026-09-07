@@ -159,16 +159,18 @@ Ordering is by real-world value with M1 first because its cost grows with time e
 - **U4:** `CatalogCardDetailView.queueFallbackPrice` cancels the previous card's task; adopt `ScannerViewModel`'s keyed `fallbackQuoteTasks` dedupe.
 
 ### R9 — Dead code (cost corrected per C1)
-- `LedgerIntegrityLog` (written 3× in `PortfolioEngine`, read only by tests): delete the type, the three `replaceAll` writes, and the test lines at `PortfolioReconciliationTests.swift:211, 1688, 2413`. Per T3, both assertions are safe to delete outright rather than re-expressed: `:2412` already asserts `engine.integrityDefects == summary.defects`, so rewriting `:2413` would only duplicate it; and `:1688` asserts the log does *not* contain a `conflictingPayloadForIdempotencyKey` defect in a test that never triggers a recompute, so with only three `PortfolioEngine.replaceAll` writers nothing writes the log on that path. Neither line covers behaviour that survives the type.
+- `LedgerIntegrityLog` (written 3× in `PortfolioEngine`, read only by tests): **closed**. The type, its three `replaceAll` writes, and the test lines at `PortfolioReconciliationTests.swift:211, 1688, 2413` were removed per T3. Neither assertion covered behavior that survives the type.
 - `PortfolioEngine.cancelRecompute`: production-unused; test `:739` exercises the cancellation path — keep the test's intent by cancelling `computationTask` through a test-only seam, or accept keeping the method. Recommend keeping it; it is four lines and the test is valuable.
-- `PortfolioEpoch.startedAt(context:)` unused parameter: remove and update `ScannerSettingsView.swift:263`, `PortfolioHistoryEngine.swift:310`, tests `:1086, 1412`.
-- `PortfolioHistoryMode`: single value, optional cleanup, lowest priority.
+- `PortfolioEpoch.startedAt(context:)` unused parameter: **closed**; the parameter and all four call sites were removed.
+- `PortfolioHistoryMode`: **closed**; removed because the product exposes one
+  market-movement history presentation. Remaining measurement/device follow-ups
+  are tracked in `release_followups.md`.
 
 ### R10 — Release checklist items (M2, C8)
 - Bundle id rename must update `PRODUCT_BUNDLE_IDENTIFIER`, both constants in `BackgroundPriceRefresh.swift`, and both `Info.plist` entries together. Derive the two identifiers from `Bundle.main.bundleIdentifier` so there is one source.
-- Update `progress.md:31`: `recordInvalidation` **is** called, from `CollectionCatalogNormalizer` on a marketplace-variant change.
+- Update `progress.md:31`: **done**; it now records that `CollectionCatalogNormalizer` calls `recordInvalidation` on a marketplace-variant change and that grid/portfolio selection is converged.
 - Before slice 8, `PriceRefreshController.refresh` returned `Void`; a joined caller whose pending batch was cleared by `cancelRefresh` returned as if it ran. Slice 8 now returns `PriceRefreshResult.didRun` and surfaces target-build failure to the automatic stale-check caller.
-- Correct `price_refresh_scale_plan.md:316-318` (T1): `applyVendorBatchHit` is **not** `nonisolated static`, so "all 34 test files touch only those, so this slice should not require test changes" is wrong. Its hazard list should also gain the `ProductIdentityStore` / `ProductIdentityIndex` isolation prerequisite. Two planning documents currently disagree with the source in the same place; fix it there as well as here.
+- Correct `price_refresh_scale_plan.md:316-318` (T1): **done**; the plan now records the `applyVendorBatchHit` isolation prerequisite and the `ProductIdentityStore` / `ProductIdentityIndex` dependency.
 
 ---
 
