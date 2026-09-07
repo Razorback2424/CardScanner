@@ -228,24 +228,28 @@ Static verification for these corrections passed after each slice with
 
 - [ ] 7 — migrate the full historical price lineage when an unbound graded or
   sealed row is rebound to a vendor variant. The immediate collection/replay
-  read-through is fixed; atomic migration of every historical observation and
-  event remains open.
+  read-through is fixed, including delayed baseline replay; atomic migration of
+  every historical observation and event remains open.
 - [ ] 11/12 — confirm stale vendor-variant invalidation and make provider
   matching fail closed for ambiguous or incomplete evidence.
 - [ ] 21 — globally serialize migration, normalization, import, and scanner
   rekeying, or add optimistic version/conflict handling.
-- [ ] 33/35 — replace the fixed portfolio grace-window assumption and scope
-  epoch/timezone metadata to the selected store/account.
-- [ ] 38/39 — downsample local artwork off the rendering path and share one
-  detail-view image load between the hero image and accent extraction.
+- [x] 33 — late pre-baseline ownership events are rebased during portfolio
+  replay so a provisional baseline cannot double-count the delayed holding.
+  A durable CloudKit ownership barrier remains a future improvement.
+- [ ] 35 — scope epoch/timezone metadata to the selected store/account.
+- [x] 38/39 — device-local artwork is normalized to a bounded derivative and
+  detail artwork/accent extraction share the catalog image loader. Existing
+  original files are safely downsampled on read; runtime memory measurements
+  on real devices remain open.
 - [ ] 40/43/44 — measure store-monitor fan-out, large scanner sessions, and
   long-term observation growth before changing their algorithms. The stale-pass
   self-trigger gate is covered statically, but metered-request behavior still
   needs runtime instrumentation.
 - [ ] ProductIdentity index misses — the keyed fallback fetch is intentionally
   retained for correctness; measure unresolved-key volume before optimizing it.
-- [ ] 42 — refine the portfolio “Updating value” label/accessibility copy to
-  distinguish a full replay from a price request.
+- [x] 42 — portfolio recomputation now says “Recalculating portfolio value” in
+  both the visible label and accessibility copy.
 - [ ] 45 — replace `com.example.TradingCardScanner` only after the production
   bundle ID, entitlements, CloudKit container, and provisioning identity are
   supplied/confirmed.
@@ -253,6 +257,37 @@ Static verification for these corrections passed after each slice with
 Runtime fault-injection, CloudKit conflict testing, real-device performance
 measurement, and production release-signing verification remain outside this
 first pass.
+
+## Consolidated audit pass 2 — 2026-09-07
+
+Baseline: `def3d17` on `codex/development`, clean worktree, and the required
+post-review simulator suite already recorded as 913 passed, 1 skipped, 0
+failed. This pass targets the remaining locally actionable slices without
+inventing production configuration or changing measure-first algorithms.
+
+- [x] 33 — reconcile delayed pre-baseline ownership events in portfolio replay.
+- [x] 38/39 — normalize device-local artwork at import and share the existing
+  catalog image loader between detail artwork and accent extraction.
+- [x] 42 — record the already-landed precise portfolio recomputation wording.
+- [x] 7 read-through — retain the existing price-key read-through; full durable
+  historical migration remains a separate lineage design task.
+- [ ] 11/12, 21, 35, 40, 43, 44, and ProductIdentity miss performance — remain
+  confirmation/measurement work under the evidence gate.
+- [ ] 45 — Needs confirmation: requires the production bundle ID, entitlements,
+  CloudKit container, and provisioning identity from the product owner.
+
+### Pass 2 verification
+
+- Static parsing passed for the portfolio replay, artwork, and new regression
+  test slices; `git diff --check` passed.
+- Full simulator verification with `SWIFT_ENABLE_EXPLICIT_MODULES=NO`:
+  `** TEST SUCCEEDED **`; 915 tests passed, 1 skipped, 0 failed.
+- New coverage passed for delayed pre-baseline ownership replay and bounded
+  local artwork storage/decoding. The remaining warnings are simulator/AppIntents
+  notices, existing test-only Swift 6 diagnostics, and the existing SwiftUI
+  smoke-test state warning.
+- Real-device artwork memory/quality measurements, CloudKit convergence, and
+  production release-signing remain unverified.
 
 ## Follow-up against updated review
 
