@@ -10,22 +10,38 @@ struct ScanReviewSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     let scan: RecentScan
-    let onCorrect: (PhysicalVariant) -> ScanCorrectionOutcome
-    let onDelete: () -> Void
+    let onCorrect: (PhysicalVariant) async -> ScanCorrectionOutcome
+    let onDelete: () async -> Void
 
     @State private var variant: PhysicalVariant?
     @State private var resolution: VariantResolution
     @State private var isConfirmingDelete = false
     @State private var correctionFailure: String?
+    @State private var isUpdatingCorrection = false
 
+    init(
+        scan: RecentScan,
+        onCorrect: @escaping (PhysicalVariant) async -> ScanCorrectionOutcome,
+        onDelete: @escaping () async -> Void
+    ) {
+        self.scan = scan
+        self.onCorrect = onCorrect
+        self.onDelete = onDelete
+        _variant = State(initialValue: scan.resolved.variant)
+        _resolution = State(initialValue: scan.resolved.resolution)
+    }
+
+    /// Source-compatible convenience for lightweight construction and previews.
+    /// Production callers use the async form so the sheet reflects the writer's
+    /// durable result instead of optimistically changing the selected finish.
     init(
         scan: RecentScan,
         onCorrect: @escaping (PhysicalVariant) -> ScanCorrectionOutcome,
         onDelete: @escaping () -> Void
     ) {
         self.scan = scan
-        self.onCorrect = onCorrect
-        self.onDelete = onDelete
+        self.onCorrect = { variant in onCorrect(variant) }
+        self.onDelete = { onDelete() }
         _variant = State(initialValue: scan.resolved.variant)
         _resolution = State(initialValue: scan.resolved.resolution)
     }
@@ -86,8 +102,10 @@ struct ScanReviewSheet: View {
                 titleVisibility: .visible
             ) {
                 Button("Undo Scan", role: .destructive) {
-                    onDelete()
-                    dismiss()
+                    Task { @MainActor in
+                        await onDelete()
+                        dismiss()
+                    }
                 }
                 Button("Cancel", role: .cancel) {}
             }
@@ -147,15 +165,21 @@ struct ScanReviewSheet: View {
                 Picker("Finish", selection: Binding<PhysicalVariant?>(
                     get: { variant },
                     set: { newValue in
-                        guard let newValue, newValue != variant else { return }
-                        let outcome = onCorrect(newValue)
-                        guard case .saved = outcome else {
-                            correctionFailure = outcome.failureMessage
-                            return
+                        guard let newValue,
+                              newValue != variant,
+                              !isUpdatingCorrection else { return }
+                        isUpdatingCorrection = true
+                        Task { @MainActor in
+                            let outcome = await onCorrect(newValue)
+                            isUpdatingCorrection = false
+                            guard case .saved = outcome else {
+                                correctionFailure = outcome.failureMessage
+                                return
+                            }
+                            correctionFailure = nil
+                            variant = newValue
+                            resolution = .userConfirmed
                         }
-                        correctionFailure = nil
-                        variant = newValue
-                        resolution = .userConfirmed
                     }
                 )) {
                     ForEach(scan.options) { option in
@@ -163,6 +187,12 @@ struct ScanReviewSheet: View {
                     }
                 }
                 .pickerStyle(.segmented)
+                .disabled(isUpdatingCorrection)
+                if isUpdatingCorrection {
+                    ProgressView("Saving correction…")
+                        .font(.caption)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             } else {
                 HStack {
                     Text(variant?.label ?? "Unknown finish")
@@ -205,5 +235,130 @@ struct ScanReviewSheet: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
         .accessibilityElement(children: .contain)
+    }
+}
+
+/// The complete history for one visit to the scanner. The camera keeps only a
+/// compact five-card rail; this sheet is deliberately fed by the uncapped
+/// session projection so older successful scans remain correctable and undoable.
+struct ScanSessionReviewSheet: View {
+    @EnvironmentObject private var model: ScannerViewModel
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var selectedScan: RecentScan?
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    sessionSummary
+                }
+
+                Section("This session") {
+                    ForEach(model.sessionScans) { scan in
+                        Button {
+                            selectedScan = scan
+                        } label: {
+                            SessionScanRow(scan: scan)
+                        }
+                        .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button("Undo", role: .destructive) {
+                                Task { @MainActor in
+                                    _ = await model.undoScan(scanID: scan.id)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Review session")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .sheet(item: $selectedScan) { scan in
+                ScanReviewSheet(
+                    scan: scan,
+                    onCorrect: { variant in
+                        await model.correct(scanID: scan.id, to: variant)
+                    },
+                    onDelete: {
+                        _ = await model.undoScan(scanID: scan.id)
+                    }
+                )
+            }
+        }
+    }
+
+    private var sessionSummary: some View {
+        let pricedScans = model.sessionScans.compactMap { scan -> Money? in
+            guard case let .price(price) = scan.price else { return nil }
+            return Money(rounding: price.unitMarketPriceUSD)
+        }
+        let knownValue = pricedScans.sum()
+        let unpricedCount = model.sessionScans.count - pricedScans.count
+
+        return VStack(alignment: .leading, spacing: 4) {
+            Text("\(model.sessionScans.count) card\(model.sessionScans.count == 1 ? "" : "s") added")
+                .font(.headline)
+            if unpricedCount == model.sessionScans.count, !model.sessionScans.isEmpty {
+                Text("Value unavailable")
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("\(knownValue.formatted()) known value\(unpricedCount > 0 ? " · \(unpricedCount) unpriced" : "")")
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+private struct SessionScanRow: View {
+    let scan: RecentScan
+
+    private var variantLabel: String {
+        if let slab = scan.subject.slab {
+            return slab.grade.display(company: slab.company)
+        }
+        return [
+            scan.pokemonPrintRun?.label,
+            scan.card.finishAndTreatmentDisplayLabel(for: scan.resolved.variant)
+        ]
+            .compactMap { $0 }
+            .joined(separator: " · ")
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            CardThumbnail(url: scan.thumbnailURL, width: 42)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(scan.card.name)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(2)
+                Text(scan.identifier.scannerDisplayIdentifier(for: scan.card))
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                Text(variantLabel)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer(minLength: 8)
+            ScanPriceValue(lookup: scan.price, style: .review)
+                .scaleEffect(0.72, anchor: .trailing)
+                .fixedSize(horizontal: true, vertical: false)
+        }
+        .contentShape(Rectangle())
+        .padding(.vertical, 3)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(scan.card.name), \(scan.identifier.scannerDisplayIdentifier(for: scan.card))")
     }
 }

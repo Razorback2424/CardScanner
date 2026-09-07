@@ -14,6 +14,57 @@ struct ScanAssistanceView: View {
     }
 }
 
+/// Immediate feedback for the card that has just crossed the two-frame OCR
+/// boundary. It stays truthful while the writer is busy: only the failed state
+/// says that the card was not added, and only the receipt says that the write
+/// completed.
+struct ScanAcknowledgementCard: View {
+    let acknowledgement: ScanAcknowledgement
+
+    private var isFailure: Bool {
+        acknowledgement.phase == .failed
+    }
+
+    var body: some View {
+        HStack(spacing: 11) {
+            Image(systemName: isFailure ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                .font(.title3)
+                .foregroundStyle(isFailure ? .orange : .cyan)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(isFailure ? "Not added" : "Recognized")
+                    .font(.subheadline.weight(.bold))
+                Text(acknowledgement.subject.displayIdentifier)
+                    .font(.caption.monospacedDigit())
+                    .foregroundStyle(.white.opacity(0.76))
+                    .lineLimit(1)
+                if let message = acknowledgement.message {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.86))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            Spacer(minLength: 8)
+            if !isFailure {
+                ProgressView()
+                    .tint(.cyan)
+                    .accessibilityLabel("Saving")
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(12)
+        .appGlass(cornerRadius: 16)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(
+            isFailure
+                ? "Not added. \(acknowledgement.message ?? "Try again")"
+                : "Recognized. \(acknowledgement.message ?? "Saving")"
+        )
+    }
+}
+
 /// A nonblocking fallback for an identical card that never produces reliable
 /// spatial exit evidence. Its button is secondary because ignoring it remains
 /// the safe default and a different card may continue through the scanner.
@@ -458,7 +509,7 @@ struct RecentScanRail: View {
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(scans) { scan in
+                ForEach(scans.prefix(5)) { scan in
                     Button {
                         onSelect(scan)
                     } label: {
@@ -522,5 +573,46 @@ struct ScanNoteView: View {
                 (note.tone == .problem ? Color.orange.opacity(0.9) : Color.black.opacity(0.66)),
                 in: Capsule()
             )
+    }
+}
+
+/// App-scoped departure feedback. It observes only the summary store, so a live
+/// scanner write never invalidates the destination tab's entire hierarchy.
+struct ScanSessionSummaryBanner: View {
+    @EnvironmentObject private var summaryStore: ScanSessionSummaryStore
+
+    var body: some View {
+        Group {
+            if let summary = summaryStore.summary {
+                HStack(spacing: 10) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.green)
+                    Text(summary.message)
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 4)
+                    Button {
+                        summaryStore.dismiss()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.caption.weight(.bold))
+                            .frame(width: 34, height: 34)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Dismiss scan summary")
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 13)
+                .padding(.vertical, 10)
+                .appGlass(cornerRadius: 16)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Scan complete. \(summary.message)")
+            }
+        }
+        .animation(.spring(response: 0.34, dampingFraction: 0.86), value: summaryStore.summary)
     }
 }

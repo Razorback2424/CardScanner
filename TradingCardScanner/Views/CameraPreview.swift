@@ -11,10 +11,14 @@ struct CameraPreview: UIViewRepresentable {
     /// card is the cheapest possible way to say "consumed, give me the next
     /// one" without moving the user anywhere.
     var successCount: Int
+    /// Increments at OCR confirmation, before catalog resolution and persistence.
+    /// This is the immediate "recognized" pulse, distinct from the green add pulse.
+    var recognitionCount: Int
 
-    init(scanner: CardScanner, successCount: Int) {
+    init(scanner: CardScanner, successCount: Int, recognitionCount: Int = 0) {
         self.scanner = scanner
         self.successCount = successCount
+        self.recognitionCount = recognitionCount
         _rotationTracker = ObservedObject(wrappedValue: scanner.rotation)
     }
 
@@ -24,6 +28,7 @@ struct CameraPreview: UIViewRepresentable {
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation
         view.slabFraming = scanner.slabFraming
+        view.syncRecognitionCount(recognitionCount)
         view.syncSuccessCount(successCount)
 #if DEBUG
         view.debugVisionBoxes = scanner.debugVisionBoxes
@@ -35,6 +40,7 @@ struct CameraPreview: UIViewRepresentable {
         uiView.previewLayer.session = scanner.session
         uiView.rotation = scanner.rotation
         uiView.slabFraming = scanner.slabFraming
+        uiView.syncRecognitionCount(recognitionCount)
         uiView.syncSuccessCount(successCount)
 #if DEBUG
         uiView.debugVisionBoxes = scanner.debugVisionBoxes
@@ -55,6 +61,7 @@ final class PreviewView: UIView {
     private let slabCardRegionLayer = CAShapeLayer()
     private let scanRegionLayer = CALayer()
     private var lastSuccessCount = 0
+    private var lastRecognitionCount = 0
 #if DEBUG
     private var debugBoxLayers: [CAShapeLayer] = []
     var debugVisionBoxes: [CGRect] = [] {
@@ -185,6 +192,29 @@ final class PreviewView: UIView {
 
         scanRegionLayer.add(border, forKey: "successBorderFlash")
         scanRegionLayer.add(fill, forKey: "successFillFlash")
+    }
+
+    /// A lighter pulse at recognition confirmation. The later green pulse still
+    /// marks the durable add, so a slow catalog or save never gets misread as a
+    /// successful collection mutation.
+    func syncRecognitionCount(_ count: Int) {
+        guard count != lastRecognitionCount else { return }
+        let isFirstSync = lastRecognitionCount == 0 && count == 0
+        lastRecognitionCount = count
+        guard !isFirstSync else { return }
+
+        let border = CABasicAnimation(keyPath: "borderColor")
+        border.fromValue = UIColor.white.cgColor
+        border.toValue = UIColor.systemCyan.cgColor
+        border.duration = 0.24
+
+        let fill = CABasicAnimation(keyPath: "backgroundColor")
+        fill.fromValue = UIColor.systemCyan.withAlphaComponent(0.26).cgColor
+        fill.toValue = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
+        fill.duration = 0.24
+
+        scanRegionLayer.add(border, forKey: "recognitionBorderFlash")
+        scanRegionLayer.add(fill, forKey: "recognitionFillFlash")
     }
 
     private func applyRotationAngle() {

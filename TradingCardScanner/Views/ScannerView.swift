@@ -7,11 +7,13 @@ import SwiftUI
 /// card is already being read.
 struct ScannerView: View {
     @EnvironmentObject private var model: ScannerViewModel
+    @EnvironmentObject private var summaryStore: ScanSessionSummaryStore
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var isShowingSettings = false
     @State private var reviewing: RecentScan?
+    @State private var isShowingSessionReview = false
     @State private var isShowingUnresolved = false
 
 #if DEBUG
@@ -26,7 +28,11 @@ struct ScannerView: View {
 
     var body: some View {
         ZStack {
-            CameraPreview(scanner: model.scanner, successCount: model.successCount)
+            CameraPreview(
+                scanner: model.scanner,
+                successCount: model.successCount,
+                recognitionCount: model.recognitionCount
+            )
                 .ignoresSafeArea()
 
             ScannerChrome(
@@ -43,6 +49,10 @@ struct ScannerView: View {
                 openUnresolved: {
                     model.pauseForPresentation()
                     isShowingUnresolved = true
+                },
+                openSessionReview: {
+                    model.pauseForPresentation()
+                    isShowingSessionReview = true
                 }
             )
         }
@@ -58,7 +68,8 @@ struct ScannerView: View {
 #endif
             model.start(
                 context: modelContext,
-                isSceneActive: scenePhase == .active
+                isSceneActive: scenePhase == .active,
+                summaryStore: summaryStore
             )
         }
         .onDisappear { model.viewDisappeared() }
@@ -72,10 +83,10 @@ struct ScannerView: View {
                     ScanReviewSheet(
                         scan: scan,
                         onCorrect: { variant in
-                            model.correct(scanID: scan.id, to: variant)
+                            await model.correct(scanID: scan.id, to: variant)
                         },
                         onDelete: {
-                            if model.undoScan(scanID: scan.id) {
+                            if await model.undoScan(scanID: scan.id) {
                                 reviewing = nil
                             }
                         }
@@ -90,6 +101,9 @@ struct ScannerView: View {
         .sheet(item: $model.priceCheckResult, onDismiss: model.dismissPriceCheckResult) { result in
             PriceCheckResultView(initialResult: result)
         }
+        .sheet(isPresented: $isShowingSessionReview, onDismiss: model.resumeAfterPresentation) {
+            ScanSessionReviewSheet()
+        }
         .toolbar(isThumbZoneContested ? .hidden : .visible, for: .tabBar)
     }
 
@@ -101,6 +115,7 @@ struct ScannerView: View {
             || model.pendingPrintRunChoice != nil
             || model.pendingIdentityChoice != nil
             || model.pendingDuplicateConfirmation != nil
+            || model.scanAcknowledgement != nil
             || model.receipt != nil
     }
 }
@@ -119,6 +134,7 @@ private struct ScannerChrome: View {
     let openSettings: () -> Void
     let openReview: (RecentScan) -> Void
     let openUnresolved: () -> Void
+    let openSessionReview: () -> Void
 
     @Namespace private var glassNamespace
 
@@ -161,6 +177,7 @@ private struct ScannerChrome: View {
             }
         }
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.receipt)
+        .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.scanAcknowledgement)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingChoice)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingPrintRunChoice)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
@@ -168,6 +185,7 @@ private struct ScannerChrome: View {
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.heldDuplicateOffer)
         .animation(.easeOut(duration: 0.2), value: model.finishLocks)
         .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
+        .animation(.easeOut(duration: 0.18), value: model.sessionScans.count)
         .animation(.easeOut(duration: 0.18), value: model.note)
         .animation(.easeOut(duration: 0.18), value: scanner.scanAssistance)
     }
@@ -371,12 +389,20 @@ private struct ScannerChrome: View {
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+            } else if let acknowledgement = model.scanAcknowledgement {
+                ScanAcknowledgementCard(acknowledgement: acknowledgement)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                    .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if model.purpose == .collection, let receipt = model.receipt {
                 ScanReceiptCard(
                     receipt: receipt,
-                    onUndo: { model.undoScan(scanID: receipt.scanID) },
+                    onUndo: {
+                        Task { @MainActor in
+                            _ = await model.undoScan(scanID: receipt.scanID)
+                        }
+                    },
                     onOpen: {
-                        guard let scan = model.recent.first(where: { $0.id == receipt.scanID }) else { return }
+                        guard let scan = model.sessionScans.first(where: { $0.id == receipt.scanID }) else { return }
                         openReview(scan)
                     }
                 )
@@ -389,9 +415,28 @@ private struct ScannerChrome: View {
                     RecentScanRail(
                         scans: model.recent,
                         onSelect: openReview,
-                        onDelete: { model.undoScan(scanID: $0.id) }
+                        onDelete: model.deleteRecentScan
                     )
                         .frame(maxWidth: .infinity)
+
+                    if model.sessionScans.count > 5 {
+                        Button {
+                            openSessionReview()
+                        } label: {
+                            Label(
+                                "Review session · \(model.sessionScans.count) cards",
+                                systemImage: "list.bullet.rectangle"
+                            )
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 11)
+                            .padding(.vertical, 7)
+                            .appPillGlass()
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Review session, \(model.sessionScans.count) cards")
+                        .accessibilityHint("Opens every card added during this scanner visit.")
+                    }
                 }
 
                 if model.unresolvedCount > 0 {

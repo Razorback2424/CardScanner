@@ -5,6 +5,7 @@ import SwiftData
 struct TradingCardScannerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var scannerModel = ScannerViewModel()
+    @StateObject private var scanSummaryStore = ScanSessionSummaryStore()
     enum StorageMode: Equatable {
         case cloudKit
         case localOnly
@@ -46,6 +47,7 @@ struct TradingCardScannerApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(scannerModel)
+                .environmentObject(scanSummaryStore)
         }
         .modelContainer(Self.container)
     }

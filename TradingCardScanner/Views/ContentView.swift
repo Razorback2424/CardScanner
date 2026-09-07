@@ -4,6 +4,7 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject private var scanSummaryStore: ScanSessionSummaryStore
 
     private enum Tab: Hashable {
         case portfolio
@@ -107,6 +108,10 @@ struct ContentView: View {
         .environmentObject(priceSnapshot)
         .environmentObject(projectionStore)
         .environmentObject(revisionStore)
+        .overlay(alignment: .top) {
+            ScanSessionSummaryBanner()
+                .environmentObject(scanSummaryStore)
+        }
 #if DEBUG
         .overlay {
             if debugRoute == "MagicTreatmentSlice4" {
