@@ -188,6 +188,54 @@ enum ArtworkDiagnostics {
     }
 }
 
+/// The record-backed instrument-selection rule shared by the collection
+/// projection and portfolio replay. The observation log still supplies the
+/// valuation for whichever instrument is selected; it does not change which
+/// legacy or canonical record-backed instrument the UI attributes the position
+/// to.
+struct PriceRecordKeySelection: Sendable {
+    private let existingKeys: Set<String>
+    private let valuedKeys: Set<String>
+    private let invalidatedKeys: Set<String>
+
+    static let empty = PriceRecordKeySelection(
+        existingKeys: [],
+        valuedKeys: [],
+        invalidatedKeys: []
+    )
+
+    init(records: [PriceRecord]) {
+        self.init(
+            existingKeys: Set(records.map(\.key)),
+            valuedKeys: Set(
+                records
+                    .filter { $0.effectiveUnitMarketPriceUSD != nil }
+                    .map(\.key)
+            ),
+            invalidatedKeys: Set(records.filter(\.isInvalidated).map(\.key))
+        )
+    }
+
+    private init(
+        existingKeys: Set<String>,
+        valuedKeys: Set<String>,
+        invalidatedKeys: Set<String>
+    ) {
+        self.existingKeys = existingKeys
+        self.valuedKeys = valuedKeys
+        self.invalidatedKeys = invalidatedKeys
+    }
+
+    func priceStorageKey(for card: CollectedCard) -> String {
+        let keys = card.priceLookupKeys
+        guard let primaryKey = keys.first(where: existingKeys.contains) else {
+            return keys.first ?? card.priceKey
+        }
+        if invalidatedKeys.contains(primaryKey) { return primaryKey }
+        return keys.first(where: valuedKeys.contains) ?? primaryKey
+    }
+}
+
 /// The refresh pipeline owns one of these for its isolated context. It replaces
 /// the three per-instrument predicate scans with one materialization per pass,
 /// while keeping the scalar store APIs best-effort when no pass index is used.
@@ -500,7 +548,7 @@ struct PriceStore {
         // resurrect the very value the invalidation withdrew.
         if primary.isInvalidated { return primary }
 
-        // Prefer a real observation over an empty canonical placeholder. The
+        // Prefer a real record value over an empty canonical placeholder. The
         // legacy value is for the same exact object and remains better evidence
         // until the new key receives its own price.
         return candidates.first(where: { $0.effectiveUnitMarketPriceUSD != nil }) ?? primary
@@ -508,23 +556,16 @@ struct PriceStore {
 
     /// The key of the record `record(for:in:)` would choose.
     ///
-    /// Sits beside it deliberately: a position's instrument and the price shown
-    /// for that position must be one decision, not two rules that drift. The
-    /// bulk form exists because the ledger's `priceStorageKey(for:)` answers the
-    /// same question with two predicate fetches per candidate key, which is fine
-    /// for a one-off write path and ruinous inside a view's `body`.
+    /// A position's instrument and the price shown for that position must be one
+    /// decision, not two rules that drift. The bulk form is record-backed so it
+    /// can be shared by the portfolio without observation-log fetches from a
+    /// view's `body`.
     nonisolated static func priceStorageKey(
         for card: CollectedCard,
         in recordsByKey: [String: PriceRecord]
     ) -> String {
-        let keys = card.priceLookupKeys
-        guard let primaryKey = keys.first(where: { recordsByKey[$0] != nil }) else {
-            return keys.first ?? card.priceKey
-        }
-        // An invalidated canonical record is authoritative; falling through to a
-        // legacy key would attribute the position to the value it withdrew.
-        if recordsByKey[primaryKey]?.isInvalidated == true { return primaryKey }
-        return keys.first { recordsByKey[$0]?.effectiveUnitMarketPriceUSD != nil } ?? primaryKey
+        PriceRecordKeySelection(records: Array(recordsByKey.values))
+            .priceStorageKey(for: card)
     }
 
     func importedCardsByProviderID() -> [String: [CollectedCard]] {

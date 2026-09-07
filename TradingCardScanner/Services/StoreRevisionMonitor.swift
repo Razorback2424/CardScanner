@@ -94,6 +94,11 @@ struct StoreRevisionMonitor: View {
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @StateObject private var ticker = StoreRevisionTicker()
     @State private var previousFingerprint: StoreRevisionFingerprint?
+    /// Multiple debounced observations can overlap while a derived store is
+    /// suspended. Only the newest apply may commit its fingerprint; otherwise
+    /// an older continuation can move the token backwards after a newer one
+    /// has already finished.
+    @State private var applyGeneration: UInt = 0
     @State private var hasCheckedForStalePrices = false
     @State private var hasEstablishedMagicTreatmentBaseline = false
 
@@ -124,16 +129,13 @@ struct StoreRevisionMonitor: View {
 
     @MainActor
     private func apply(_ fingerprint: StoreRevisionFingerprint) async {
+        let generation = applyGeneration &+ 1
+        applyGeneration = generation
+
         guard let previousFingerprint else {
             self.previousFingerprint = fingerprint
             return
         }
-        // This monitor is driven by the unstructured MainActor task above. The
-        // fingerprint read and every await below are non-throwing, and there is
-        // no cancellation exit inside `apply`, so this assignment is safe as
-        // the coalescing token. If this becomes a throwing/structured child,
-        // move it to the terminal path after the derived work completes.
-        self.previousFingerprint = fingerprint
 
         let cardsChanged = fingerprint.cards != previousFingerprint.cards
         let inventoryChanged = fingerprint.inventoryEvents != previousFingerprint.inventoryEvents
@@ -176,6 +178,8 @@ struct StoreRevisionMonitor: View {
         if magicChanged {
             guard hasEstablishedMagicTreatmentBaseline else {
                 hasEstablishedMagicTreatmentBaseline = true
+                guard generation == applyGeneration else { return }
+                self.previousFingerprint = fingerprint
                 return
             }
             MagicTreatmentMigrationCoordinator.shared.invalidateCompletedReports()
@@ -187,6 +191,12 @@ struct StoreRevisionMonitor: View {
                 await portfolio.recomputeAndWait(context: modelContext)
             }
         }
+
+        // Commit only after every derived consumer has settled. The generation
+        // guard prevents an older apply, resumed after a newer one, from
+        // overwriting the newer coalescing token.
+        guard generation == applyGeneration else { return }
+        self.previousFingerprint = fingerprint
     }
 
     private var isRefreshInFlight: Bool {
@@ -229,7 +239,7 @@ struct StoreRevisionHistoryMonitor: View {
     let hasStartedPortfolio: Bool
 
     private var taskID: String {
-        "\(hasStartedPortfolio)-\(portfolio.inputRevision)-\(history.mode.rawValue)-\(history.range.rawValue)"
+        "\(hasStartedPortfolio)-\(portfolio.inputRevision)-\(history.range.rawValue)"
     }
 
     var body: some View {
@@ -269,6 +279,7 @@ actor StoreRevisionModelActor {
         for card in cards {
             cardHasher.combine(card.collectionKey)
             cardHasher.combine(card.quantity)
+            cardHasher.combine(card.dateAdded)
             cardHasher.combine(card.priceKey)
             cardHasher.combine(card.name)
             cardHasher.combine(card.game)
@@ -286,6 +297,11 @@ actor StoreRevisionModelActor {
             cardHasher.combine(card.highImageURL)
             cardHasher.combine(card.userArtworkFilename)
             cardHasher.combine(card.setReleaseOrder)
+            cardHasher.combine(card.catalogMetadataCheckedAt != nil)
+            cardHasher.combine(card.catalogMetadataVersion)
+            cardHasher.combine(card.catalogProviderID)
+            cardHasher.combine(card.gradeLabel)
+            cardHasher.combine(card.gradingQualifier)
 
             if card.cardGame == .magic {
                 magicHasher.combine(card.collectionKey)

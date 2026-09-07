@@ -177,12 +177,13 @@ actor PriceSnapshotModelActor {
 
         let recordsByKey = Dictionary(grouping: records, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
+        let keySelection = PriceRecordKeySelection(records: Array(recordsByKey.values))
         let prices = recordsByKey.mapValues(\.display)
         let localArtworkKeys = Set(artworkOverrides.map(\.collectionKey))
         var diagnostics: [String: PriceSnapshotDiagnostics] = [:]
         var priceStorageKeys: [String: String] = [:]
         for card in cards {
-            let priceStorageKey = PriceStore.priceStorageKey(for: card, in: recordsByKey)
+            let priceStorageKey = keySelection.priceStorageKey(for: card)
             let record = recordsByKey[priceStorageKey]
             priceStorageKeys[card.collectionKey] = priceStorageKey
             diagnostics[card.collectionKey] = PriceSnapshotDiagnostics(

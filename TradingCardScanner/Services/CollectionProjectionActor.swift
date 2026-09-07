@@ -83,9 +83,10 @@ actor CollectionProjectionActor {
         let artworkOverrides = (try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? []
         let recordsByKey = Dictionary(grouping: records, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
+        let keySelection = PriceRecordKeySelection(records: Array(recordsByKey.values))
         let localArtworkKeys = Set(artworkOverrides.map(\.collectionKey))
         let projection = LogicalCollection.project(cards: cards) { card in
-            PriceStore.priceStorageKey(for: card, in: recordsByKey)
+            keySelection.priceStorageKey(for: card)
         }
 
         var rows: [CollectionRow] = []
@@ -93,7 +94,7 @@ actor CollectionProjectionActor {
         rows.reserveCapacity(projection.positions.count)
         for position in projection.positions {
             let card = position.representative
-            let record = PriceStore.record(for: card, in: recordsByKey)
+            let record = recordsByKey[position.priceStorageKey]
             rows.append(
                 CollectionRow(
                     id: card.collectionKey,

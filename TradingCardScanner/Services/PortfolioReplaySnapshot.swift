@@ -25,31 +25,26 @@ import SwiftData
 /// two.
 struct InstrumentValuationIndex: Sendable {
     private let byInstrument: [String: InventoryValuation]
-    private let explicitlyAuthoritativeKeys: Set<String>
+    private let recordKeySelection: PriceRecordKeySelection
 
     init(
         byInstrument: [String: InventoryValuation],
-        explicitlyAuthoritativeKeys: Set<String> = []
+        recordKeySelection: PriceRecordKeySelection = .empty
     ) {
         self.byInstrument = byInstrument
-        self.explicitlyAuthoritativeKeys = explicitlyAuthoritativeKeys
+        self.recordKeySelection = recordKeySelection
     }
 
     func valuation(for instrument: String) -> InventoryValuation {
         byInstrument[instrument] ?? .unpriced
     }
 
-    /// The key a card is valued through. Explicit invalidation is authoritative
-    /// even when a legacy alias still has a value, matching scalar ledger reads
-    /// and `PriceStore`'s canonical precedence.
+    /// The key a card is valued through. This deliberately follows the same
+    /// record-backed selection as the collection grid and detail view. Once the
+    /// instrument is selected, its valuation still comes from the observation-
+    /// aware bulk evidence index.
     func priceStorageKey(for card: CollectedCard) -> String {
-        let keys = card.priceLookupKeys
-        for key in keys {
-            if explicitlyAuthoritativeKeys.contains(key) || byInstrument[key]?.unitPrice != nil {
-                return key
-            }
-        }
-        return keys.first ?? card.priceKey
+        recordKeySelection.priceStorageKey(for: card)
     }
 }
 
@@ -344,7 +339,8 @@ enum PortfolioReplaySnapshotBuilder {
     /// The newest usable USD observation wins; a `PriceRecord` fills in when
     /// the newest observation cannot be used for a USD total. An explicit
     /// invalidation blocks that fallback. The evidence-resolution rule lives
-    /// in `InventoryLedger` and is shared with scalar reads.
+    /// in `InventoryLedger` and is shared with scalar reads; instrument key
+    /// selection separately follows `PriceStore` so portfolio and grid agree.
     static func valuationIndex(
         observations: [PriceObservation],
         records: [PriceRecord],
@@ -386,16 +382,9 @@ enum PortfolioReplaySnapshotBuilder {
             )
         }
 
-        let explicitlyAuthoritativeKeys = Set(
-            newest
-                .filter { $0.value.kind == .explicitInvalidation }
-                .map(\.key)
-        ).union(
-            eligibleRecords.filter(\.isInvalidated).map(\.key)
-        )
         return InstrumentValuationIndex(
             byInstrument: index,
-            explicitlyAuthoritativeKeys: explicitlyAuthoritativeKeys
+            recordKeySelection: PriceRecordKeySelection(records: Array(recordsByKey.values))
         )
     }
 

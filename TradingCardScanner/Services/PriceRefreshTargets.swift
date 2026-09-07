@@ -17,8 +17,9 @@ enum PriceRefreshTargets {
             priceRecords.map { ($0.key, $0) },
             uniquingKeysWith: { first, _ in first }
         )
+        let keySelection = PriceRecordKeySelection(records: Array(recordsByKey.values))
         let projection = LogicalCollection.project(cards: cards) { card in
-            PriceStore.priceStorageKey(for: card, in: recordsByKey)
+            keySelection.priceStorageKey(for: card)
         }
         var seen = Set<String>()
         var result: [PriceTarget] = []
@@ -27,7 +28,7 @@ enum PriceRefreshTargets {
             let card = position.representative
             if card.providerID.hasPrefix("csv:"), !includeImported { continue }
             guard seen.insert(card.priceKey).inserted else { continue }
-            let record = PriceStore.record(for: card, in: recordsByKey)
+            let record = recordsByKey[position.priceStorageKey]
             var target = PriceTarget(
                 game: card.cardGame,
                 printingID: card.priceStorageID,

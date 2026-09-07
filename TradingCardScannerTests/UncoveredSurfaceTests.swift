@@ -1363,6 +1363,65 @@ final class PriceRefreshSnapshotSliceTests: XCTestCase {
         _ = storeA
     }
 
+    func testStoreRevisionCardFingerprintIncludesDerivedStateInputs() async throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: UncoveredSurfaceFixtures.fullSchema()
+        )
+        let context = ModelContext(container)
+        let actor = StoreRevisionModelActor(modelContainer: container)
+        let card = UncoveredSurfaceFixtures.collectedCard(
+            collectionKey: "revision-derived-state",
+            providerID: "test-set-001"
+        )
+        context.insert(card)
+        try context.save()
+
+        var before = await actor.fingerprint()
+        let mutations: [(String, () -> Void)] = [
+            ("catalog metadata checked state", {
+                card.catalogMetadataCheckedAt = Date(timeIntervalSince1970: 100)
+            }),
+            ("catalog metadata version", {
+                card.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+            }),
+            ("date added", {
+                card.dateAdded = Date(timeIntervalSince1970: 200)
+            }),
+            ("catalog provider id", {
+                card.catalogProviderID = "catalog-001"
+            }),
+            ("grade label", {
+                card.gradeLabel = "Gem Mint"
+            }),
+            ("grading qualifier", {
+                card.gradingQualifier = "OC"
+            })
+        ]
+
+        for (label, mutate) in mutations {
+            mutate()
+            try context.save()
+            let after = await actor.fingerprint()
+            XCTAssertNotEqual(
+                before.cards,
+                after.cards,
+                "card fingerprint must change when \(label) changes"
+            )
+            before = after
+        }
+
+        // Re-stamping an already-known metadata check changes the timestamp but
+        // not the diagnostic state, so it must not create projection churn.
+        card.catalogMetadataCheckedAt = Date(timeIntervalSince1970: 300)
+        try context.save()
+        let restamped = await actor.fingerprint()
+        XCTAssertEqual(
+            before.cards,
+            restamped.cards,
+            "metadata timestamp churn should not invalidate the projection"
+        )
+    }
+
     func testExternalPriceFingerprintIsNotConsumedAsControllerOwned() {
         let revisions = StoreRevisionStore()
         revisions.expectPriceValuesFingerprint(101)

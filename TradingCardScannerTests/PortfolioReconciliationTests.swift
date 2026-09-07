@@ -247,6 +247,16 @@ final class PortfolioReconciliationTests: XCTestCase {
             "the record-only rule cannot see it, and falls through to the priced key"
         )
 
+        let valuations = PortfolioReplaySnapshotBuilder.valuationIndex(
+            observations: try context.fetch(FetchDescriptor<PriceObservation>()),
+            records: try context.fetch(FetchDescriptor<PriceRecord>())
+        )
+        XCTAssertEqual(
+            valuations.priceStorageKey(for: row),
+            legacyKey,
+            "portfolio attribution must use the same record-backed instrument as the grid"
+        )
+
         // The property the change rests on: the instrument holding detail
         // attributes the position to is the instrument whose price it shows,
         // and both match what the grid computes from the same records.
