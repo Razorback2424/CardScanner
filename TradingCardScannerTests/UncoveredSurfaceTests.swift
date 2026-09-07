@@ -616,7 +616,7 @@ final class JustTCGV2GradedSurfaceTests: XCTestCase {
         )
         psa.itemKindRaw = CollectionItemKind.gradedCard.rawValue
         psa.gradingCompanyRaw = GradingCompany.psa.rawValue
-        psa.gradeRaw = "10"
+        psa.gradeRaw = "10.0"
 
         let cgc = UncoveredSurfaceFixtures.collectedCard(
             collectionKey: "graded-cgc",
@@ -631,7 +631,15 @@ final class JustTCGV2GradedSurfaceTests: XCTestCase {
             providerID: "test-set-003"
         )
 
-        let filters = JustTCGV2GradedClient.ownedFilters(for: [psa, cgc, raw])
+        let tag = UncoveredSurfaceFixtures.collectedCard(
+            collectionKey: "graded-tag",
+            providerID: "test-set-004"
+        )
+        tag.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        tag.gradingCompanyRaw = GradingCompany.tag.rawValue
+        tag.gradeRaw = "Authentic"
+
+        let filters = JustTCGV2GradedClient.ownedFilters(for: [psa, cgc, raw, tag])
         XCTAssertEqual(filters.companies, [.psa, .cgc])
         XCTAssertEqual(filters.grades, ["10", "9.5"])
     }

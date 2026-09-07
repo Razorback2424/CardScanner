@@ -231,6 +231,9 @@ struct JustTCGVariant: Decodable, Sendable {
     /// documentation's parameter name is `variantId` and the response's field
     /// name is not.
     let uuid: String?
+    /// The API discriminator. Graded lookup must use this stated contract
+    /// rather than inferring kind from the optional grading payload.
+    let type: String?
     let condition: String?
     let printing: String?
     let language: String?
@@ -317,7 +320,7 @@ struct JustTCGVariant: Decodable, Sendable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, uuid, condition, printing, language, tcgplayerSkuId
+        case id, uuid, type, condition, printing, language, tcgplayerSkuId
         case price, currency, lastUpdated, grading, markets
         case priceChange24hr, priceChange7d, minPrice7d, maxPrice7d
         case covPrice7d, priceChangesCount7d
@@ -340,7 +343,7 @@ struct JustTCGMarket: Decodable, Sendable {
 /// The grading block on a v2 variant.
 struct JustTCGGrading: Decodable, Sendable {
     private enum CodingKeys: String, CodingKey {
-        case company, grade, qualifier
+        case company, grade, qualifier, canonical
         case label
         case gradeLabel = "grade_label"
     }
@@ -350,6 +353,7 @@ struct JustTCGGrading: Decodable, Sendable {
         company = try container.decodeIfPresent(String.self, forKey: .company)
         grade = try container.decodeIfPresent(Double.self, forKey: .grade)
         qualifier = try container.decodeIfPresent(String.self, forKey: .qualifier)
+        canonical = try container.decodeIfPresent(String.self, forKey: .canonical)
         // v2 publishes `grade_label`; the flat `label` spelling is kept so a
         // change back does not silently drop the label again.
         label = try container.decodeIfPresent(String.self, forKey: .label)
@@ -360,6 +364,9 @@ struct JustTCGGrading: Decodable, Sendable {
     /// Numeric for most slabs; `null` for Authentic, which the vendor models
     /// deliberately rather than inventing a number.
     let grade: Double?
+    /// The vendor's ready-to-display grading string, including the company.
+    /// It is also the fallback for non-numeric grades such as Authentic.
+    let canonical: String?
     let label: String?
     let qualifier: String?
 
@@ -371,13 +378,35 @@ struct JustTCGGrading: Decodable, Sendable {
     /// `9.5`.
     var gradeText: String? {
         guard let grade else { return nil }
-        return grade == grade.rounded()
-            ? String(Int(grade))
-            : String(grade)
+        if grade == grade.rounded(), let integer = Int(exactly: grade) {
+            return String(integer)
+        }
+        return String(grade)
     }
 
     var cardGrade: CardGrade {
-        CardGrade(value: gradeText, label: label, qualifier: qualifier)
+        CardGrade(
+            value: gradeText,
+            label: label ?? (grade == nil ? canonicalLabel : nil),
+            qualifier: qualifier
+        )
+    }
+
+    /// CardGrade stores the company separately, so remove that prefix before
+    /// using `canonical` as its non-numeric label. `CGC Authentic` therefore
+    /// becomes `CGC Authentic` when displayed, rather than the bare `CGC`.
+    private var canonicalLabel: String? {
+        guard let canonical = canonical?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !canonical.isEmpty else { return nil }
+        guard let company = gradingCompany else { return canonical }
+        let prefix = company.label
+        guard canonical.count >= prefix.count,
+              canonical.prefix(prefix.count).caseInsensitiveCompare(prefix) == .orderedSame else {
+            return canonical
+        }
+        let suffixStart = canonical.index(canonical.startIndex, offsetBy: prefix.count)
+        let suffix = canonical[suffixStart...].trimmingCharacters(in: .whitespacesAndNewlines)
+        return suffix.isEmpty ? nil : String(suffix)
     }
 }
 
@@ -498,10 +527,36 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
     var cardID: String? = nil
     let company: GradingCompany
     let grade: CardGrade
+    /// Exact provider display when available, e.g. `CGC Authentic`.
+    let canonical: String?
     let marketPriceUSD: Double?
     let updatedAt: Date?
 
-    var displayName: String { grade.display(company: company) }
+    init(
+        id: String,
+        cardID: String? = nil,
+        company: GradingCompany,
+        grade: CardGrade,
+        canonical: String? = nil,
+        marketPriceUSD: Double?,
+        updatedAt: Date?
+    ) {
+        self.id = id
+        self.cardID = cardID
+        self.company = company
+        self.grade = grade
+        self.canonical = canonical
+        self.marketPriceUSD = marketPriceUSD
+        self.updatedAt = updatedAt
+    }
+
+    var displayName: String {
+        if let canonical {
+            let trimmed = canonical.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !trimmed.isEmpty { return trimmed }
+        }
+        return grade.display(company: company)
+    }
 }
 
 // MARK: - Sync checkpoints

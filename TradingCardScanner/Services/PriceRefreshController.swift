@@ -908,15 +908,19 @@ actor PriceRefreshModelActor {
             from variants: [GradedVariant],
             target: PriceTarget
         ) -> GradedVariant? {
-            guard let company = target.gradingCompany,
-                  let value = target.grade else { return nil }
+            guard let company = target.gradingCompany else { return nil }
+            let value = JustTCGV2GradedClient.normalizedVendorGrade(target.grade)
+            let label = target.gradeLabel ?? (value == nil ? target.grade : nil)
+            guard value != nil || label != nil || target.gradingQualifier != nil else {
+                return nil
+            }
             return ScannedGradedResolver.matchingVariant(
                 in: variants,
                 for: GradedSlabEvidence(
                     company: company,
                     grade: CardGrade(
                         value: value,
-                        label: target.gradeLabel,
+                        label: label,
                         qualifier: target.gradingQualifier
                     ),
                     certificationNumber: nil,

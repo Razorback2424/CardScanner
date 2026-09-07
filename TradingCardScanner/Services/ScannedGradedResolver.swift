@@ -120,6 +120,15 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
     }
 
     private static func normalized(_ value: String?) -> String? {
-        value?.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard let value else { return nil }
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if let number = Double(trimmed), number.isFinite {
+            if number == number.rounded(), let integer = Int(exactly: number) {
+                return String(integer)
+            }
+            return String(number)
+        }
+        return trimmed.uppercased()
     }
 }

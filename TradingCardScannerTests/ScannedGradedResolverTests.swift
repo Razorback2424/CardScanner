@@ -43,6 +43,21 @@ final class ScannedGradedResolverTests: XCTestCase {
         XCTAssertEqual(match, blackLabel)
     }
 
+    func testMatchingNormalizesNumericGradeFormatting() {
+        let vendorVariant = variant(
+            id: "psa-10",
+            company: .psa,
+            grade: CardGrade(value: "10")
+        )
+
+        let match = ScannedGradedResolver.matchingVariant(
+            in: [vendorVariant],
+            for: slab(company: .psa, value: "10.0")
+        )
+
+        XCTAssertEqual(match, vendorVariant)
+    }
+
     func testResolverMapsVendorOutcomesAndCredentialGate() async {
         let unpriced = await resolve(.cardFoundWithoutGradedVariants)
         XCTAssertEqual(unpriced, .unpricedGrade)

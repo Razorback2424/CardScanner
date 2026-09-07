@@ -128,13 +128,58 @@ struct JustTCGV2GradedClient: Sendable {
         if let setSlug {
             query.insert(("set", setSlug), at: 1)
         }
-        if companies.count == 1, let company = companies.first {
-            query.append(("grading_company", company.rawValue))
-            if grades.count == 1, let grade = grades.first {
+        if companies.count == 1,
+           let company = companies.first,
+           let vendorCompany = vendorCompanyValue(company) {
+            query.append(("grading_company", vendorCompany))
+            if let grade = normalizedGradeFilter(grades) {
                 query.append(("grade", grade))
             }
         }
         return query
+    }
+
+    /// JustTCG documents the company filter with uppercase tokens. TAG is a
+    /// scanner-recognised grader, but it is not one of the vendor's six filter
+    /// values; leaving the filter off is safer than turning a TAG refresh into
+    /// an undocumented empty result.
+    private static func vendorCompanyValue(_ company: GradingCompany) -> String? {
+        switch company {
+        case .tag:
+            return nil
+        case .psa, .bgs, .cgc, .bccg, .bvg, .sgc:
+            return company.label
+        }
+    }
+
+    /// The API accepts bare numeric grades, not persisted display strings.
+    /// Invalid or named grades (including Authentic) intentionally produce no
+    /// grade filter, so a refresh can still inspect the returned variants.
+    static func normalizedVendorGrade(_ raw: String?) -> String? {
+        guard let raw else { return nil }
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty,
+              let value = Double(trimmed),
+              value.isFinite else { return nil }
+        if value == value.rounded() {
+            guard let integer = Int(exactly: value) else { return nil }
+            return String(integer)
+        }
+        return String(value)
+    }
+
+    private static func normalizedGradeFilter(_ grades: Set<String>) -> String? {
+        guard !grades.isEmpty else { return nil }
+        let normalized = grades.compactMap(normalizedVendorGrade)
+        // If one owned row contains an unrecognised display string, omit the
+        // whole narrowing filter rather than silently excluding that row.
+        guard normalized.count == grades.count else { return nil }
+        let unique = Set(normalized)
+        return unique.sorted {
+            (Double($0) ?? .greatestFiniteMagnitude)
+                < (Double($1) ?? .greatestFiniteMagnitude)
+        }
+        .joined(separator: ",")
     }
 
     /// Resolve the vendor set before constructing the graded request. An empty
@@ -167,9 +212,9 @@ struct JustTCGV2GradedClient: Sendable {
     /// surcharge and returns data the raw path already has. Filtering to the
     /// owned graders and grades keeps the response small — a card can have well
     /// over a hundred grader/grade permutations, almost none of them owned.
-    /// The graded variants of one card, found by set and name.
     ///
-    /// Not by `cardId`. v2 **ignores** that parameter and answers with a browse:
+    /// The variants are found by set and name, not by `cardId`. v2 **ignores**
+    /// that parameter and answers with a browse:
     /// asking for `cardId=base1-4` returns twenty arbitrary graded cards from
     /// across the game — Charizard Star, Shining Celebi, Rayquaza VMAX — and
     /// nothing in the response says it was not a hit. The existing note that a
@@ -204,25 +249,13 @@ struct JustTCGV2GradedClient: Sendable {
             game: game,
             directory: directory
         )
-        var query = Self.requestQuery(
+        let query = Self.requestQuery(
             identity: identity,
             game: game,
-            setSlug: setSlug
+            setSlug: setSlug,
+            companies: companies,
+            grades: grades
         )
-        // The parameter is `grading_company`, not `company`: sending the latter
-        // is accepted right up until a `grade` accompanies it, at which point v2
-        // answers 400 — "grade requires grading_company". And only a single
-        // value of each is sent, because comma-separated lists are not verified
-        // here and a filter the vendor reads differently than intended would
-        // silently drop owned slabs from the response rather than erroring.
-        // Omitting both returns every graded variant, which is the same one
-        // request; the caller matches on its stored handle regardless.
-        if companies.count == 1, let company = companies.first {
-            query.append(("grading_company", company.rawValue))
-            if grades.count == 1, let grade = grades.first {
-                query.append(("grade", grade))
-            }
-        }
 
         let response: GradedResponse = try await transport.get(
             "v2/cards",
@@ -232,27 +265,30 @@ struct JustTCGV2GradedClient: Sendable {
 
         // Only cards that are demonstrably the one asked for.
         let matchingCards = response.data.filter { identity.matches($0, game: game) }
-        let variants = matchingCards.flatMap { card in
-            (card.variants ?? []).compactMap { variant -> GradedVariant? in
-                guard let id = variant.variantId,
+        var variants: [GradedVariant] = []
+        for card in matchingCards {
+            for variant in card.variants ?? [] {
+                guard variant.type?.caseInsensitiveCompare("graded") == .orderedSame,
+                      let id = variant.variantId,
                       let grading = variant.grading,
                       let company = grading.gradingCompany else {
-                    return nil
+                    continue
                 }
-                return GradedVariant(
+                variants.append(GradedVariant(
                     id: id,
                     // Kept so a later refresh can find this slab again without
                     // paying to resolve the card a second time.
                     cardID: card.uuid ?? card.id,
                     company: company,
                     grade: grading.cardGrade,
+                    canonical: grading.canonical,
                     // `null` is a real answer: the vendor does not manufacture a
                     // number for every grader/grade permutation, and an absent
                     // price must read as "no reliable market price" rather than
                     // as zero.
                     marketPriceUSD: variant.marketPriceUSD,
                     updatedAt: variant.updatedAt
-                )
+                ))
             }
         }
         if !variants.isEmpty { return .matched(variants) }
@@ -280,16 +316,22 @@ struct JustTCGV2GradedClient: Sendable {
         }
     }
 
-    /// The graders and grades a set of owned slabs covers, so a refresh asks
-    /// only about those.
+    /// The documented graders and numeric grades a set of owned slabs covers,
+    /// so a refresh can narrow the request without sending an undocumented TAG
+    /// company or a persisted display string such as `Authentic`.
     static func ownedFilters(
         for cards: [CollectedCard]
     ) -> (companies: Set<GradingCompany>, grades: Set<String>) {
         var companies: Set<GradingCompany> = []
         var grades: Set<String> = []
         for card in cards where card.itemKind == .gradedCard {
-            if let company = card.gradingCompany { companies.insert(company) }
-            if let grade = card.gradeRaw { grades.insert(grade) }
+            if let company = card.gradingCompany,
+               vendorCompanyValue(company) != nil {
+                companies.insert(company)
+            }
+            if let grade = normalizedVendorGrade(card.gradeRaw) {
+                grades.insert(grade)
+            }
         }
         return (companies, grades)
     }

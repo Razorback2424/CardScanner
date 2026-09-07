@@ -813,11 +813,34 @@ final class JustTCGContractTests: XCTestCase {
         let variant = try JSONDecoder().decode(JustTCGVariant.self, from: Data(json.utf8))
 
         XCTAssertNil(variant.price, "v2 publishes no flat price")
+        XCTAssertEqual(variant.type, "graded")
         XCTAssertEqual(variant.marketPriceUSD, 3999.99)
         XCTAssertEqual(variant.updatedAt, Date(timeIntervalSince1970: 1_784_585_831))
         XCTAssertEqual(variant.variantId, "v2-variant")
         XCTAssertEqual(variant.grading?.label, "GEM MT")
+        XCTAssertEqual(variant.grading?.canonical, "PSA 10")
         XCTAssertEqual(variant.grading?.gradeText, "10")
+    }
+
+    func testAuthenticUsesCanonicalWhenVendorOmitsTheGradeLabel() throws {
+        let json = """
+        { "company": "CGC", "grade": null, "canonical": "CGC Authentic" }
+        """
+        let grading = try JSONDecoder().decode(
+            JustTCGGrading.self,
+            from: Data(json.utf8)
+        )
+
+        XCTAssertEqual(grading.cardGrade.display(company: .cgc), "CGC Authentic")
+        let variant = GradedVariant(
+            id: "authentic",
+            company: .cgc,
+            grade: grading.cardGrade,
+            canonical: grading.canonical,
+            marketPriceUSD: 40,
+            updatedAt: nil
+        )
+        XCTAssertEqual(variant.displayName, "CGC Authentic")
     }
 
     /// v1's flat price keeps working; the two schemas share one type.
@@ -969,6 +992,61 @@ final class JustTCGContractTests: XCTestCase {
         )
         XCTAssertNil(query.first { $0.0 == "set" })
         XCTAssertEqual(query.first { $0.0 == "game" }?.1, "magic-the-gathering")
+    }
+
+    func testGradedRequestUsesDocumentedCompanyAndNumericGradeTokens() {
+        let identity = GradedCardIdentity(
+            name: "Charizard",
+            setName: "Base Set",
+            collectorNumber: "004/102"
+        )
+
+        let normalized = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .pokemon,
+            setSlug: nil,
+            companies: [.psa],
+            grades: ["10.0"]
+        )
+        XCTAssertEqual(normalized.first { $0.0 == "grading_company" }?.1, "PSA")
+        XCTAssertEqual(normalized.first { $0.0 == "grade" }?.1, "10")
+
+        let malformedGrade = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .pokemon,
+            setSlug: nil,
+            companies: [.psa],
+            grades: ["PSA 10"]
+        )
+        XCTAssertNil(malformedGrade.first { $0.0 == "grade" })
+
+        let authentic = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .pokemon,
+            setSlug: nil,
+            companies: [.cgc],
+            grades: ["Authentic"]
+        )
+        XCTAssertNil(authentic.first { $0.0 == "grade" })
+
+        let tag = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .pokemon,
+            setSlug: nil,
+            companies: [.tag],
+            grades: ["10"]
+        )
+        XCTAssertNil(tag.first { $0.0 == "grading_company" })
+        XCTAssertNil(tag.first { $0.0 == "grade" })
+
+        let gradeList = JustTCGV2GradedClient.requestQuery(
+            identity: identity,
+            game: .pokemon,
+            setSlug: nil,
+            companies: [.psa],
+            grades: ["10.0", "9"]
+        )
+        XCTAssertEqual(gradeList.first { $0.0 == "grade" }?.1, "9,10")
     }
 
     func testGradedRequestRoutesJapanesePokemonThroughItsOwnGameAndSet() throws {
