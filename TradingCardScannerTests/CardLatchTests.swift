@@ -413,16 +413,55 @@ final class CardLatchTests: XCTestCase {
         XCTAssertFalse(scheduler.shouldRun(.tracking, at: 0.05))
         XCTAssertFalse(scheduler.shouldRun(.ocr, at: 0.05))
 
-        // Tracking continues at roughly 12 Hz while OCR is still inside its
+        // Tracking continues at roughly 8 Hz while OCR is still inside its
         // 0.24-second window.
-        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0.084))
-        XCTAssertFalse(scheduler.shouldRun(.ocr, at: 0.084))
-        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0.168))
-        XCTAssertFalse(scheduler.shouldRun(.ocr, at: 0.168))
+        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0.13))
+        XCTAssertFalse(scheduler.shouldRun(.ocr, at: 0.13))
         XCTAssertTrue(scheduler.shouldRun(.ocr, at: 0.24))
 
         // An OCR start does not postpone the next tracking start.
-        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0.252))
+        XCTAssertTrue(scheduler.shouldRun(.tracking, at: 0.26))
+    }
+
+    func testOCRWinsWhenTrackingAndOCRAreDueOnTheSameFrame() {
+        var scheduler = ScanCadenceScheduler(trackingRate: 8)
+
+        XCTAssertEqual(scheduler.nextVisionWork(at: 0, ocrAllowed: true), .ocr)
+        XCTAssertEqual(scheduler.nextVisionWork(at: 0.13, ocrAllowed: true), .tracking)
+
+        // At this timestamp both clocks are due. The footer owns the frame and
+        // tracking waits for the next non-OCR frame.
+        XCTAssertEqual(scheduler.nextVisionWork(at: 0.25, ocrAllowed: true), .ocr)
+        XCTAssertEqual(scheduler.nextVisionWork(at: 0.26, ocrAllowed: true), .tracking)
+
+        // A paused OCR pipeline still permits tracking to preserve the spatial
+        // exit proof while a choice sheet is visible.
+        XCTAssertEqual(scheduler.nextVisionWork(at: 0.50, ocrAllowed: false), .tracking)
+    }
+
+    func testDepartureSummaryUsesAddedFormatWhenEveryCardHasAValue() {
+        let summary = ScanSessionSummary(
+            addedCount: 14,
+            knownValue: Money(rounding: 186.42)!,
+            unpricedCount: 0,
+            unresolvedCount: 0
+        )
+
+        XCTAssertEqual(summary.message, "14 cards · \(summary.knownValue.formatted()) added")
+    }
+
+    func testDepartureSummaryKeepsPartialPricingHonest() {
+        let summary = ScanSessionSummary(
+            addedCount: 14,
+            knownValue: Money(rounding: 186.42)!,
+            unpricedCount: 2,
+            unresolvedCount: 0
+        )
+
+        XCTAssertEqual(
+            summary.message,
+            "14 cards · \(summary.knownValue.formatted()) known value · 2 unpriced"
+        )
     }
 
     func testQualifyingExitCompletesOnceAfterTwoObservations() {
@@ -549,7 +588,7 @@ final class CardLatchTests: XCTestCase {
     func testSpatialConfigurationUsesStrictExperimentalDefaults() {
         let configuration = SpatialTrackingConfiguration.experimental
 
-        XCTAssertEqual(configuration.trackingRate, 12)
+        XCTAssertEqual(configuration.trackingRate, 8)
         XCTAssertEqual(configuration.seedInsetFraction, 0.06)
         XCTAssertEqual(configuration.minimumConfidence, 0.50)
         XCTAssertEqual(configuration.requiredExitObservations, 2)

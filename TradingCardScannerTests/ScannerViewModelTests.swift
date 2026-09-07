@@ -367,6 +367,63 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(model.unresolvedScans.isEmpty)
     }
 
+    func testLeavingScanPublishesSummaryClearsSessionAndReturnsFresh() async throws {
+        let model = try makeModel(variants: [.normal])
+        let summaryStore = ScanSessionSummaryStore()
+        model.start(
+            context: context(),
+            startCamera: false,
+            shouldRefreshMagicDirectory: false,
+            summaryStore: summaryStore
+        )
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+
+        model.viewDisappeared()
+        let finalized = await waitUntil { summaryStore.summary != nil }
+        XCTAssertTrue(finalized)
+        XCTAssertEqual(summaryStore.summary?.addedCount, 1)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertTrue(model.recent.isEmpty)
+
+        // The next appearance does not inherit the prior visit's receipt,
+        // duplicate lineage, or success animation counter.
+        model.start(
+            context: context(),
+            startCamera: false,
+            shouldRefreshMagicDirectory: false,
+            summaryStore: summaryStore
+        )
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertEqual(model.successCount, 0)
+    }
+
+    func testBackgroundingDoesNotFinalizeTheVisibleScanSession() async throws {
+        let model = try makeModel(variants: [.normal])
+        let summaryStore = ScanSessionSummaryStore()
+        model.start(
+            context: context(),
+            startCamera: false,
+            shouldRefreshMagicDirectory: false,
+            summaryStore: summaryStore
+        )
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+
+        model.scenePhaseChanged(isActive: false)
+        model.viewDisappeared()
+        await settle()
+
+        XCTAssertEqual(model.sessionScans.count, 1)
+        XCTAssertEqual(model.recent.count, 1)
+        XCTAssertNil(summaryStore.summary)
+    }
+
     func testChangingPurposeInvalidatesPendingCollectionChoice() async throws {
         let model = try makeModel(variants: [.normal, .holo])
 

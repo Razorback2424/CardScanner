@@ -122,7 +122,7 @@ struct ResolvedScan {
 /// The fully resolved value that may be detached from generation-owned work.
 /// Once constructed, collection routing and duplicate confirmation no longer
 /// depend on an identification task or its generation.
-struct CollectionCommitCandidate {
+struct CollectionCommitCandidate: Sendable {
     let requestID: UUID
     let subject: ScanSubject
     let card: IdentifiedCard
@@ -691,6 +691,107 @@ struct ScanNote: Identifiable, Equatable {
     static func == (lhs: ScanNote, rhs: ScanNote) -> Bool { lhs.id == rhs.id }
 }
 
+/// Presentation acknowledgement for a confirmed collection scan. Recognition
+/// and persistence are separate states: the first is emitted at the OCR
+/// confirmation boundary, while the second is emitted only after the writer's
+/// transaction succeeds.
+enum ScanAcknowledgementPhase: Equatable, Sendable {
+    case recognized
+    case failed
+}
+
+struct ScanAcknowledgement: Identifiable, Equatable, Sendable {
+    let id: UUID
+    let subject: ScanSubject
+    let phase: ScanAcknowledgementPhase
+    let message: String?
+
+    init(
+        id: UUID = UUID(),
+        subject: ScanSubject,
+        phase: ScanAcknowledgementPhase,
+        message: String? = nil
+    ) {
+        self.id = id
+        self.subject = subject
+        self.phase = phase
+        self.message = message
+    }
+}
+
+/// A value-only departure report. It intentionally contains no scanner model
+/// reference so the global banner can observe one small app-level state change
+/// without invalidating the tab hierarchy during a live scan.
+struct ScanSessionSummary: Identifiable, Equatable, Sendable {
+    let id: UUID
+    let addedCount: Int
+    let knownValue: Money
+    let unpricedCount: Int
+    let unresolvedCount: Int
+    let createdAt: Date
+
+    init(
+        id: UUID = UUID(),
+        addedCount: Int,
+        knownValue: Money,
+        unpricedCount: Int,
+        unresolvedCount: Int,
+        createdAt: Date = .now
+    ) {
+        self.id = id
+        self.addedCount = addedCount
+        self.knownValue = knownValue
+        self.unpricedCount = unpricedCount
+        self.unresolvedCount = unresolvedCount
+        self.createdAt = createdAt
+    }
+
+    var message: String {
+        var parts: [String] = []
+        if addedCount > 0 {
+            parts.append("\(addedCount) card\(addedCount == 1 ? "" : "s")")
+            if knownValue.isZero, unpricedCount == addedCount {
+                parts.append("value unavailable")
+            } else if unpricedCount > 0 {
+                // Keep the partial value explicit. The absence of the word
+                // "added" here is intentional: the unpriced count is the
+                // important qualification in the departure summary.
+                parts.append("\(knownValue.formatted()) known value")
+                parts.append("\(unpricedCount) unpriced")
+            } else {
+                parts.append("\(knownValue.formatted()) added")
+            }
+        }
+        if unresolvedCount > 0 {
+            parts.append("\(unresolvedCount) needs attention")
+        }
+        return parts.isEmpty ? "No cards added" : parts.joined(separator: " · ")
+    }
+}
+
+@MainActor
+final class ScanSessionSummaryStore: ObservableObject {
+    @Published private(set) var summary: ScanSessionSummary?
+    private var dismissTask: Task<Void, Never>?
+
+    func publish(_ summary: ScanSessionSummary) {
+        dismissTask?.cancel()
+        self.summary = summary
+        dismissTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(8))
+            guard !Task.isCancelled else { return }
+            guard self?.summary?.id == summary.id else { return }
+            self?.summary = nil
+        }
+    }
+
+    func dismiss() {
+        dismissTask?.cancel()
+        dismissTask = nil
+        summary = nil
+    }
+}
+
 enum ScanCorrectionOutcome: Equatable {
     case saved
     case sourceMissing
@@ -718,10 +819,14 @@ final class ScannerViewModel: ObservableObject {
     @Published private(set) var heldDuplicateOffer: HeldDuplicateOffer?
     @Published private(set) var receipt: ScanReceipt?
     @Published private(set) var recent: [RecentScan] = []
+    /// The complete successful session projection. `recent` is intentionally
+    /// capped to the five-card inline rail and is never used for accounting.
+    @Published private(set) var sessionScans: [RecentScan] = []
     /// Authoritative consecutive-scan history. `recent` is only the visual rail;
     /// duplicate correctness never depends on its ordering or contents.
     private(set) var committedSessionHistory: [CommittedSessionScan] = []
     @Published private(set) var note: ScanNote?
+    @Published private(set) var scanAcknowledgement: ScanAcknowledgement?
     @Published var priceCheckResult: PriceCheckResult?
     /// Cards whose identity was read but which could not be resolved. Counted so
     /// the session can end with an honest total instead of a stream of alerts.
@@ -732,8 +837,12 @@ final class ScannerViewModel: ObservableObject {
     /// finish before this ever flips, and a spinner that blinks on every card
     /// would be noise rather than reassurance.
     @Published private(set) var isSlowIdentifying = false
-    /// Increments on every successful add so the preview can flash the band.
+    /// Increments on every successful add so the preview can show its green
+    /// persistence acknowledgement.
     @Published private(set) var successCount = 0
+    /// Increments at OCR confirmation so the preview can acknowledge that the
+    /// card was consumed before catalog and persistence work finishes.
+    @Published private(set) var recognitionCount = 0
     /// One lock per game, because a Pokémon lock says nothing about a Magic card
     /// and the scanner no longer knows which is coming next. Only the lock for
     /// the game of the card just identified is ever consulted.
@@ -745,15 +854,15 @@ final class ScannerViewModel: ObservableObject {
     /// The UI rail keeps a few more cards for a useful visual history, but no
     /// scanner session should retain every decoded catalog payload forever.
     private static let committedHistoryLimit = CardLatch.recentlyConsumedLimit
-    private static let recentScanLimit = 12
+    private static let recentScanLimit = 5
 
     private let catalog: CardCatalog
     private let feedback: ScanFeedback
     private let gradedResolver: ScannedGradedResolving
     private let scryfall = ScryfallService()
 
-    private var store: CollectionStore?
-    private var prices: PriceStore?
+    private var collectionWriter: ScannerCollectionWriter?
+    private var modelContainer: ModelContainer?
     private var priceCheckCoordinator: PriceCheckCoordinator?
     private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     /// What the scanner was last given, so an unchanged directory costs a
@@ -798,6 +907,29 @@ final class ScannerViewModel: ObservableObject {
     private var heldRepeatAuthorizationState: HeldRepeatAuthorizationState?
     private var deferredHeldDuplicateOffer: DeferredHeldDuplicateOffer?
     private var catalogMissVerification: CatalogMissVerification?
+    private weak var summaryStore: ScanSessionSummaryStore?
+    private var isScannerSessionActive = false
+    /// A completion from an ended session must never publish into the next one.
+    /// This token remains stable while finalization drains, then changes before
+    /// the old projections are cleared.
+    private var scannerSessionID = UUID()
+    private var sessionFinalizationTask: Task<Void, Never>?
+    /// Counts are keyed by session because a timed-out old writer may finish
+    /// after a new session has started; one session's defer must not decrement
+    /// another session's in-flight count.
+    private var pendingWriteCounts: [UUID: Int] = [:]
+    private static let sessionFinalizationDrainTimeout: TimeInterval = 2
+    /// A tab can be revisited while the previous session is waiting for its
+    /// last writer operation. Hold the new appearance until that old session
+    /// has published its summary and cleared its projections.
+    private struct PendingSessionStart {
+        let container: ModelContainer
+        let isSceneActive: Bool
+        let startCamera: Bool
+        let shouldRefreshMagicDirectory: Bool
+        let summaryStore: ScanSessionSummaryStore?
+    }
+    private var pendingSessionStart: PendingSessionStart?
 #if DEBUG
     private var diagnosticEvents: [String] = []
 #endif
@@ -840,6 +972,20 @@ final class ScannerViewModel: ObservableObject {
         let handleConfirmedCandidate: (UUID, ScanSubject, UUID?) -> Void = { [weak self] encounterID, subject, authorizationID in
             guard let self else { return }
             Task { @MainActor in
+                if self.purpose == .collection {
+                    // Recognition is an honest, earlier acknowledgement than a
+                    // durable add. It lets the person move to the next card while
+                    // catalog resolution and the writer finish in the background.
+                    self.dismissReceipt()
+                    self.scanAcknowledgement = ScanAcknowledgement(
+                        subject: subject,
+                        phase: .recognized,
+                        message: "Saving to your collection…"
+                    )
+                    self.recognitionCount += 1
+                    self.feedback.recognized()
+                    self.diagnostic("recognitionAcknowledgement")
+                }
                 if let state = self.heldRepeatAuthorizationState,
                    authorizationID == Optional(state.authorization.id) {
                     // The scanner has consumed the one-shot permit. Keep its
@@ -948,16 +1094,46 @@ final class ScannerViewModel: ObservableObject {
         context: ModelContext,
         isSceneActive: Bool = true,
         startCamera: Bool = true,
-        shouldRefreshMagicDirectory: Bool = true
+        shouldRefreshMagicDirectory: Bool = true,
+        summaryStore: ScanSessionSummaryStore? = nil
     ) {
+        self.summaryStore = summaryStore
+        if sessionFinalizationTask != nil {
+            // `viewDisappeared()` has already stopped recognition, but its
+            // finalizer may still be waiting for an in-flight durable write.
+            // Starting the next session here would let the old completion
+            // append into the new session's arrays.
+            pendingSessionStart = PendingSessionStart(
+                container: context.container,
+                isSceneActive: isSceneActive,
+                startCamera: startCamera,
+                shouldRefreshMagicDirectory: shouldRefreshMagicDirectory,
+                summaryStore: summaryStore
+            )
+            recognitionEligibility.isScannerVisible = true
+            recognitionEligibility.isSceneActive = isSceneActive
+            return
+        }
+        let beginsNewSession = !isScannerSessionActive
+        if !isScannerSessionActive {
+            isScannerSessionActive = true
+            modelContainer = context.container
+            collectionWriter = ScannerCollectionWriter(modelContainer: context.container)
+        } else if collectionWriter == nil {
+            modelContainer = context.container
+            collectionWriter = ScannerCollectionWriter(modelContainer: context.container)
+        }
+        if beginsNewSession {
+            scannerSessionID = UUID()
+            successCount = 0
+            recognitionCount = 0
+        }
         recognitionEligibility.isScannerVisible = true
         recognitionEligibility.isSceneActive = isSceneActive
         // A fresh visible scanner owns a new camera-session opportunity. If a
         // platform interruption ended while the tab was away, its stale
         // callback must not keep the new session paused forever.
         recognitionEligibility.isCameraInterrupted = false
-        store = CollectionStore(context: context)
-        prices = PriceStore(context: context)
         // Price Check is an independent, network-paced persistence flow. Keep
         // its quote/price context separate so QuoteCache.save cannot commit or
         // roll back an in-flight collection mutation.
@@ -982,11 +1158,9 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
-    /// Leaving the tab is not a session boundary. The rail, the unresolved
-    /// list, and the undo lineage are what the person came back for, and the
-    /// latch's consumed-printing memory is what stops the card still lying in
-    /// the band from being counted twice on return. Both are kept; only the
-    /// camera stops. `endSession()` remains the one deliberate reset.
+    /// Leaving the Scan tab is the session boundary. Backgrounding the app is
+    /// deliberately handled by `scenePhaseChanged` instead, so an OS lifecycle
+    /// transition cannot publish a false departure report.
     /// `useMagicDefinitions` compiles the vocabulary regex on the caller's
     /// thread and only then hands it to the vision queue, which compares it
     /// against what is already installed. `start` runs on every Scan-tab
@@ -999,9 +1173,119 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func viewDisappeared() {
+        let shouldFinalize = isScannerSessionActive && recognitionEligibility.isSceneActive
         recognitionEligibility.isScannerVisible = false
+        guard shouldFinalize else {
+            scanner.stop()
+            return
+        }
+        beginSessionFinalization()
+    }
+
+    private func beginSessionFinalization() {
+        guard sessionFinalizationTask == nil else { return }
+
+        // A write that has already reached the writer is allowed to finish. The
+        // final report must describe durable state, not the state visible at the
+        // instant the tab disappeared.
+        let identificationTask = self.identificationTask
+        let finalizingSessionID = scannerSessionID
+        isScannerSessionActive = false
         invalidatePendingScan()
-        scanner.stop()
+        scanner.endSession()
+
+        sessionFinalizationTask = Task { @MainActor [weak self] in
+            guard let self else { return }
+            await identificationTask?.value
+            let deadline = Date.now.addingTimeInterval(Self.sessionFinalizationDrainTimeout)
+            while self.pendingWriteCounts[finalizingSessionID, default: 0] > 0,
+                  !Task.isCancelled,
+                  Date.now < deadline {
+                try? await Task.sleep(for: .milliseconds(10))
+            }
+
+            if self.pendingWriteCounts[finalizingSessionID, default: 0] > 0 {
+                // A wedged local write must not make every later Scan visit
+                // wait forever. Its eventual completion is fenced by the
+                // session token below, so it cannot append into fresh state.
+                PerformanceSignpost.signposter.emitEvent("scannerFinalizationTimedOut")
+            }
+
+            if let summary = self.makeSessionSummary() {
+                self.summaryStore?.publish(summary)
+            }
+            self.scannerSessionID = UUID()
+            if self.pendingWriteCounts[finalizingSessionID] == 0 {
+                self.pendingWriteCounts.removeValue(forKey: finalizingSessionID)
+            }
+            self.clearSessionState()
+            let pendingStart = self.pendingSessionStart
+            self.pendingSessionStart = nil
+            self.sessionFinalizationTask = nil
+            guard let pendingStart,
+                  self.recognitionEligibility.isScannerVisible else { return }
+            self.start(
+                context: ModelContext(pendingStart.container),
+                isSceneActive: pendingStart.isSceneActive,
+                startCamera: pendingStart.startCamera,
+                shouldRefreshMagicDirectory: pendingStart.shouldRefreshMagicDirectory,
+                summaryStore: pendingStart.summaryStore
+            )
+        }
+    }
+
+    private func beginTrackedWrite(for sessionID: UUID) {
+        pendingWriteCounts[sessionID, default: 0] += 1
+    }
+
+    private func endTrackedWrite(for sessionID: UUID) {
+        guard let count = pendingWriteCounts[sessionID] else { return }
+        if count <= 1 {
+            pendingWriteCounts.removeValue(forKey: sessionID)
+        } else {
+            pendingWriteCounts[sessionID] = count - 1
+        }
+    }
+
+    private func makeSessionSummary() -> ScanSessionSummary? {
+        let addedCount = sessionScans.count
+        let unresolvedCount = unresolvedScans.count
+        guard addedCount > 0 || unresolvedCount > 0 else { return nil }
+
+        let prices = sessionScans.compactMap { scan -> Money? in
+            guard case let .price(price) = scan.price else { return nil }
+            return Money(rounding: price.unitMarketPriceUSD)
+        }
+        return ScanSessionSummary(
+            addedCount: addedCount,
+            knownValue: prices.sum(),
+            unpricedCount: sessionScans.count - prices.count,
+            unresolvedCount: unresolvedCount
+        )
+    }
+
+    private func clearSessionState() {
+        pendingChoice = nil
+        pendingPrintRunChoice = nil
+        pendingIdentityChoice = nil
+        pendingDuplicateConfirmation = nil
+        heldDuplicateOffer = nil
+        scanAcknowledgement = nil
+        receipt = nil
+        quoteRefreshTask?.cancel()
+        quoteRefreshTask = nil
+        activeQuoteRefreshID = nil
+        priceCheckResult = nil
+        presentedPriceCheckSubject = nil
+        recent.removeAll()
+        sessionScans.removeAll()
+        committedSessionHistory.removeAll()
+        unresolvedScans.removeAll()
+        spatialResetProofs.removeAll()
+        lastAdd = nil
+        deferredHeldDuplicateOffer = nil
+        catalogMissVerification = nil
+        heldRepeatAuthorizationState = nil
     }
 
     func scenePhaseChanged(isActive: Bool) {
@@ -1116,6 +1400,7 @@ final class ScannerViewModel: ObservableObject {
         receipt = nil
         noteTask?.cancel()
         note = nil
+        scanAcknowledgement = nil
         scanner.invalidateSpatialContinuity()
         scanner.pauseRecognition()
     }
@@ -1166,7 +1451,7 @@ final class ScannerViewModel: ObservableObject {
               pendingDuplicateConfirmation == nil,
               let encounterID else { return }
 
-        let recentByID = Dictionary(uniqueKeysWithValues: recent.map { ($0.id, $0) })
+        let recentByID = Dictionary(uniqueKeysWithValues: sessionScans.map { ($0.id, $0) })
         let history = committedSessionHistory.compactMap { committed -> HeldDuplicatePublicationHistoryEntry? in
             guard let scan = recentByID[committed.id] else { return nil }
             return HeldDuplicatePublicationHistoryEntry(
@@ -1192,7 +1477,7 @@ final class ScannerViewModel: ObservableObject {
         case .suppress:
             return
         case .publish(let selected):
-            guard let previousScan = recent.first(where: { $0.id == selected.committed.id }),
+            guard let previousScan = sessionScans.first(where: { $0.id == selected.committed.id }),
                   previousScan.subject.suppressionKey == subject.suppressionKey else {
                 return
             }
@@ -1270,20 +1555,22 @@ final class ScannerViewModel: ObservableObject {
     func addAnother() {
         guard let pending = pendingDuplicateConfirmation else { return }
         pendingDuplicateConfirmation = nil
+        beginPendingResolution(requestID: pending.candidate.requestID) { [weak self] in
+            guard let self else { return }
+            guard await self.commitAuthorizedCollectionCandidate(
+                pending.candidate,
+                authorization: .addAnother
+            ) else {
+                self.pendingDuplicateConfirmation = pending
+                self.scanner.pauseRecognition()
+                return
+            }
 
-        guard commitAuthorizedCollectionCandidate(
-            pending.candidate,
-            authorization: .addAnother
-        ) else {
-            pendingDuplicateConfirmation = pending
-            scanner.pauseRecognition()
-            return
+            // A different card commit is the boundary at which any unrelated
+            // outstanding proof is no longer useful. The candidate's own proof is
+            // carried by its tracker and may arrive after the commit.
+            self.spatialResetProofs.removeAll { $0.encounterID != pending.encounterID }
         }
-
-        // A different card commit is the boundary at which any unrelated
-        // outstanding proof is no longer useful. The candidate's own proof is
-        // carried by its tracker and may arrive after the commit.
-        spatialResetProofs.removeAll { $0.encounterID != pending.encounterID }
     }
 
     /// Creates one short-lived, scanner-verified permit for the card that is
@@ -1331,15 +1618,14 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
-    /// Explicitly ends the scanner session. The app-level view model normally
-    /// owns this history for its lifetime; this method is the only deliberate
-    /// reset boundary.
+    /// Explicitly ends the scanner session without publishing a departure
+    /// banner. The tab lifecycle uses `viewDisappeared()` so it can publish the
+    /// net result before clearing the same state.
     func endSession() {
         invalidatePendingScan()
-        committedSessionHistory.removeAll()
-        recent.removeAll()
-        unresolvedScans.removeAll()
-        lastAdd = nil
+        scannerSessionID = UUID()
+        clearSessionState()
+        isScannerSessionActive = false
         scanner.endSession()
     }
 
@@ -1385,20 +1671,18 @@ final class ScannerViewModel: ObservableObject {
         // `processNextIdentificationIfPossible`. The answer has been consumed
         // by the time we route, so this is where it stops being pending.
         pendingChoice = nil
-        route(
-            ResolvedScan(
-                request: pending.request,
-                card: pending.card,
-                resolved: ResolvedVariant(variant: variant, resolution: .userConfirmed),
-                pokemonPrintRun: pending.pokemonPrintRun,
-                options: pending.options,
-                catalogRetrievedAt: pending.catalogRetrievedAt
-            )
+        let resolved = ResolvedScan(
+            request: pending.request,
+            card: pending.card,
+            resolved: ResolvedVariant(variant: variant, resolution: .userConfirmed),
+            pokemonPrintRun: pending.pokemonPrintRun,
+            options: pending.options,
+            catalogRetrievedAt: pending.catalogRetrievedAt
         )
-        // No-ops if routing raised a new question of its own — the duplicate
-        // prompt, or a Price Check sheet. See `resumeRecognitionIfPossible`.
-        resumeRecognitionIfPossible()
-        processNextIdentificationIfPossible()
+        beginPendingResolution(requestID: pending.request.id) { [weak self] in
+            guard let self else { return }
+            await self.route(resolved)
+        }
     }
 
     /// Walking away from a question writes nothing. The latch stays engaged, so
@@ -1417,14 +1701,15 @@ final class ScannerViewModel: ObservableObject {
               pending.options.contains(printRun) else { return }
         feedback.choiceMade()
         pendingPrintRunChoice = nil
-        resolveVariant(
-            for: pending.request,
-            card: pending.card,
-            pokemonPrintRun: printRun,
-            catalogRetrievedAt: pending.catalogRetrievedAt
-        )
-        resumeRecognitionIfPossible()
-        processNextIdentificationIfPossible()
+        beginPendingResolution(requestID: pending.request.id) { [weak self] in
+            guard let self else { return }
+            await self.resolveVariant(
+                for: pending.request,
+                card: pending.card,
+                pokemonPrintRun: printRun,
+                catalogRetrievedAt: pending.catalogRetrievedAt
+            )
+        }
     }
 
     func dismissPrintRunChoice() {
@@ -1441,8 +1726,8 @@ final class ScannerViewModel: ObservableObject {
               pending.candidates.contains(candidate) else { return }
         feedback.choiceMade()
 
-        resolutionTask?.cancel()
-        resolutionTask = Task { @MainActor [weak self] in
+        pendingIdentityChoice = nil
+        beginPendingResolution(requestID: pending.request.id) { [weak self] in
             guard let self else { return }
             self.beginIdentification()
             defer { self.endIdentification() }
@@ -1452,19 +1737,19 @@ final class ScannerViewModel: ObservableObject {
                     matching: pending.evidence
                 )
                 guard !Task.isCancelled,
-                      self.isCurrent(pending.request),
-                      self.pendingIdentityChoice?.id == pending.id else { return }
-                self.pendingIdentityChoice = nil
-                self.resolvePrintRun(
+                      self.isCurrent(pending.request) else { return }
+                await self.resolvePrintRun(
                     for: pending.request,
                     card: card,
                     catalogRetrievedAt: .now
                 )
-                self.resumeRecognitionIfPossible()
-                self.processNextIdentificationIfPossible()
             } catch {
                 guard !Task.isCancelled, self.isCurrent(pending.request) else { return }
                 self.show(ScanNote(text: "Lookup failed — tap the set to retry", tone: .problem))
+                self.failAcknowledgement(
+                    for: pending.request.subject,
+                    message: "This card was recognized but was not added. Tap the set to retry."
+                )
                 self.feedback.problem()
             }
         }
@@ -1483,25 +1768,38 @@ final class ScannerViewModel: ObservableObject {
     /// stable scan ID is resolved at tap time, so a corrected scan cannot undo
     /// an older value still held by a view.
     @discardableResult
-    func undoScan(scanID: RecentScan.ID) -> Bool {
-        guard let store else { return false }
-        guard let scan = recent.first(where: { $0.id == scanID }) else {
+    func undoScan(scanID: RecentScan.ID) async -> Bool {
+        guard let collectionWriter else {
+            show(ScanNote(text: "Undo could not be saved", tone: .problem))
+            feedback.problem()
+            return false
+        }
+        guard let scan = sessionScans.first(where: { $0.id == scanID }) else {
             show(ScanNote(text: "Undo could not find that scan", tone: .problem))
             feedback.problem()
             return false
         }
         let removedHistoryEntry = committedSessionHistory.first { $0.id == scanID }
+        let writeSessionID = scannerSessionID
 
+        // The scan exists here only because appendCommittedScan ran after its
+        // add awaited the writer. That UI projection is the ordering fence:
+        // the actor itself does not promise FIFO for separately awaiting calls.
+        beginTrackedWrite(for: writeSessionID)
+        defer { endTrackedWrite(for: writeSessionID) }
         do {
-            try store.undo(scan.mutation)
+            try await collectionWriter.undo(scan.mutation)
         } catch {
+            guard writeSessionID == scannerSessionID else { return false }
             // Keep the receipt/review state intact so the person can retry after
             // a transient save or synchronization failure.
             show(ScanNote(text: "Undo could not be saved", tone: .problem))
             feedback.problem()
             return false
         }
+        guard writeSessionID == scannerSessionID else { return false }
 
+        sessionScans.removeAll { $0.id == scanID }
         recent.removeAll { $0.id == scanID }
         removeCommittedHistory(for: scanID)
         spatialResetProofs.removeAll { $0.encounterID == removedHistoryEntry?.encounterID }
@@ -1520,6 +1818,7 @@ final class ScannerViewModel: ObservableObject {
             receipt = nil
             receiptTask?.cancel()
         }
+        scanAcknowledgement = nil
         if let removedHistoryEntry {
             scanner.restoreAcceptedPresentation(presentationToken: removedHistoryEntry.presentationToken)
         }
@@ -1530,11 +1829,15 @@ final class ScannerViewModel: ObservableObject {
 
     func undoLastAdd() {
         guard let scanID = receipt?.scanID ?? lastAdd?.id else { return }
-        undoScan(scanID: scanID)
+        Task { @MainActor [weak self] in
+            _ = await self?.undoScan(scanID: scanID)
+        }
     }
 
     func deleteRecentScan(_ scan: RecentScan) {
-        undoScan(scanID: scan.id)
+        Task { @MainActor [weak self] in
+            _ = await self?.undoScan(scanID: scan.id)
+        }
     }
 
     private func removeCommittedHistory(for scanID: RecentScan.ID) {
@@ -1553,40 +1856,17 @@ final class ScannerViewModel: ObservableObject {
     /// Takes an id rather than a value so a second correction in the same sitting
     /// moves the copy from where it actually is now, not from where it started.
     @discardableResult
-    func correct(scanID: RecentScan.ID, to variant: PhysicalVariant) -> ScanCorrectionOutcome {
-        guard let store else {
+    func correct(scanID: RecentScan.ID, to variant: PhysicalVariant) async -> ScanCorrectionOutcome {
+        guard let collectionWriter else {
             show(ScanNote(text: "Correction could not be saved", tone: .problem))
             feedback.problem()
             return .failed
         }
-        guard let scan = recent.first(where: { $0.id == scanID }),
+        guard let scan = sessionScans.first(where: { $0.id == scanID }),
               scan.subject.slab == nil,
               scan.resolved.variant != variant else { return .failed }
 
         let corrected = ResolvedVariant(variant: variant, resolution: .userConfirmed)
-        let mutation: CollectionMutation?
-        do {
-            mutation = try store.recordVariantCorrection(
-                for: scan.card,
-                from: scan.resolved.variant,
-                to: corrected,
-                pokemonPrintRun: scan.pokemonPrintRun,
-                previousCollectionKey: scan.mutation.collectionKey,
-                previousLedgerOperationIDs: scan.mutation.ledgerOperationIDs,
-                activityID: scan.mutation.activityID,
-                quantity: 1
-            )
-        } catch {
-            show(ScanNote(text: "Correction could not be saved", tone: .problem))
-            feedback.problem()
-            return .failed
-        }
-        guard let mutation else {
-            show(ScanNote(text: "This scan is no longer in your collection", tone: .problem))
-            feedback.problem()
-            return .sourceMissing
-        }
-
         let correctedLookup = CardPricing.price(
             for: scan.card,
             variant: variant,
@@ -1594,6 +1874,36 @@ final class ScannerViewModel: ObservableObject {
             pokemonPrintRun: scan.pokemonPrintRun,
             at: scan.catalogRetrievedAt
         )
+
+        let writeSessionID = scannerSessionID
+        beginTrackedWrite(for: writeSessionID)
+        defer { endTrackedWrite(for: writeSessionID) }
+
+        let mutation: CollectionMutation?
+        do {
+            mutation = try await collectionWriter.correct(
+                card: scan.card,
+                from: scan.resolved.variant,
+                to: corrected,
+                pokemonPrintRun: scan.pokemonPrintRun,
+                previousCollectionKey: scan.mutation.collectionKey,
+                previousLedgerOperationIDs: scan.mutation.ledgerOperationIDs,
+                activityID: scan.mutation.activityID,
+                quantity: 1,
+                price: correctedLookup
+            )
+        } catch {
+            guard writeSessionID == scannerSessionID else { return .failed }
+            show(ScanNote(text: "Correction could not be saved", tone: .problem))
+            feedback.problem()
+            return .failed
+        }
+        guard writeSessionID == scannerSessionID else { return .failed }
+        guard let mutation else {
+            show(ScanNote(text: "This scan is no longer in your collection", tone: .problem))
+            feedback.problem()
+            return .sourceMissing
+        }
 
         // Reuse the id so the rail thumbnail stays the same item rather than
         // animating out and back in for what the user experienced as an edit.
@@ -1609,18 +1919,15 @@ final class ScannerViewModel: ObservableObject {
             price: correctedLookup
         )
 
+        if let index = sessionScans.firstIndex(where: { $0.id == scan.id }) {
+            sessionScans[index] = replacement
+        }
         if let index = recent.firstIndex(where: { $0.id == scan.id }) {
             recent[index] = replacement
         }
         if lastAdd?.id == scan.id {
             lastAdd = replacement
         }
-        recordPrice(
-            for: scan.card,
-            variant: variant,
-            pokemonPrintRun: scan.pokemonPrintRun,
-            lookup: correctedLookup
-        )
         queueFallbackPrice(
             for: scan.card,
             variant: variant,
@@ -1629,41 +1936,6 @@ final class ScannerViewModel: ObservableObject {
         )
         feedback.choiceMade()
         return .saved
-    }
-
-    /// Writes the price the identification already carried.
-    ///
-    /// `savingImmediately` exists because the price store and the collection
-    /// store share one `ModelContext`: a caller that is about to write the card
-    /// anyway can let that write's save carry this one too. Two saves in a row
-    /// cost two passes over every `@Query` in the app — including the
-    /// collection tab, which stays alive behind the scanner — and the second
-    /// one lands inside the tap that is trying to animate the choice bar away.
-    private func recordPrice(
-        for card: IdentifiedCard,
-        variant: PhysicalVariant?,
-        pokemonPrintRun: PokemonPrintRun? = nil,
-        lookup: PriceLookup? = nil,
-        savingImmediately: Bool = true
-    ) {
-        guard let prices else { return }
-        prices.store(
-            lookup ?? CardPricing.price(
-                for: card,
-                variant: variant,
-                magicTreatments: card.magicTreatments(for: variant),
-                pokemonPrintRun: pokemonPrintRun
-            ),
-            game: card.game,
-            printingID: pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
-                ?? card.providerID,
-            variantID: variant?.id,
-            treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
-                from: card.magicTreatments(for: variant)
-            )
-        )
-        guard savingImmediately else { return }
-        prices.save()
     }
 
     // MARK: - Identification
@@ -1711,56 +1983,84 @@ final class ScannerViewModel: ObservableObject {
         identificationTask = Task { @MainActor [weak self] in
             guard let self else { return }
             await self.identify(request)
-            guard self.activeIdentificationRequestID == request.id else { return }
-            self.isProcessingIdentification = false
-            self.identificationTask = nil
-            self.activeIdentificationRequestID = nil
-            self.drainDeferredHeldDuplicateOfferIfPossible()
-            self.processNextIdentificationIfPossible()
+            self.finishIdentificationRequest(request.id)
         }
+    }
+
+    /// User answers to a finish, print-run, or catalog-choice bar become part
+    /// of the same ordered pipeline as automatic recognition. In particular, a
+    /// later OCR confirmation cannot make a duplicate decision while this task
+    /// is waiting for the writer's background transaction.
+    private func beginPendingResolution(
+        requestID: UUID,
+        operation: @escaping () async -> Void
+    ) {
+        guard !isProcessingIdentification else { return }
+        isProcessingIdentification = true
+        activeIdentificationRequestID = requestID
+        identificationTask = Task { @MainActor [weak self] in
+            await operation()
+            self?.finishIdentificationRequest(requestID)
+        }
+    }
+
+    private func finishIdentificationRequest(_ requestID: UUID) {
+        guard activeIdentificationRequestID == requestID else { return }
+        isProcessingIdentification = false
+        identificationTask = nil
+        activeIdentificationRequestID = nil
+        drainDeferredHeldDuplicateOfferIfPossible()
+        processNextIdentificationIfPossible()
     }
 
     private func identify(_ request: ScanRequest) async {
         beginIdentification()
         defer { endIdentification() }
-
+        let resolution: CardCatalog.CatalogResolution
         do {
-            let resolution = try await catalog.resolution(for: request.identifier)
-            let card = resolution.card
-            guard !Task.isCancelled, isCurrent(request) else { return }
-            if catalogMissVerification?.suppressionKey == request.subject.suppressionKey {
-                catalogMissVerification = nil
+            let catalogState = PerformanceSignpost.signposter.beginInterval("catalogResolution")
+            defer {
+                PerformanceSignpost.signposter.endInterval("catalogResolution", catalogState)
             }
-            // Undo can restore a finish question while this lookup is awaiting
-            // the network. Put this already-cached result back at the front
-            // instead of replacing the question the user is answering.
-            guard pendingChoice == nil,
-                  pendingPrintRunChoice == nil,
-                  pendingIdentityChoice == nil else {
-                identificationQueue.insert(request, at: 0)
-                return
-            }
-            if let slab = request.subject.slab {
-                let gradedOutcome = await gradedResolver.resolve(
-                    card: card,
-                    slab: slab,
-                    pokemonPrintRun: nil
-                )
-                guard !Task.isCancelled, isCurrent(request) else { return }
-                scannedGradedOutcomes[request.id] = gradedOutcome
-            }
-            resolvePrintRun(
-                for: request,
-                card: card,
-                catalogRetrievedAt: resolution.retrievedAt
-            )
+            resolution = try await catalog.resolution(for: request.identifier)
         } catch let error as PokemonHistoricalCatalogError {
             guard !Task.isCancelled, isCurrent(request) else { return }
             handleHistoricalResolution(error, request: request)
+            return
         } catch {
             guard !Task.isCancelled, isCurrent(request) else { return }
             handleLookupFailure(request, error)
+            return
         }
+
+        let card = resolution.card
+        guard !Task.isCancelled, isCurrent(request) else { return }
+        if catalogMissVerification?.suppressionKey == request.subject.suppressionKey {
+            catalogMissVerification = nil
+        }
+        // Undo can restore a finish question while this lookup is awaiting
+        // the network. Put this already-cached result back at the front
+        // instead of replacing the question the user is answering.
+        guard pendingChoice == nil,
+              pendingPrintRunChoice == nil,
+              pendingIdentityChoice == nil else {
+            identificationQueue.insert(request, at: 0)
+            return
+        }
+        if let slab = request.subject.slab {
+            let gradedOutcome = await gradedResolver.resolve(
+                card: card,
+                slab: slab,
+                pokemonPrintRun: nil
+            )
+            guard !Task.isCancelled, isCurrent(request) else { return }
+            scannedGradedOutcomes[request.id] = gradedOutcome
+        }
+        await resolvePrintRun(
+            for: request,
+            card: card,
+            catalogRetrievedAt: resolution.retrievedAt
+        )
     }
 
     private func handleHistoricalResolution(
@@ -1810,13 +2110,13 @@ final class ScannerViewModel: ObservableObject {
         for request: ScanRequest,
         card: IdentifiedCard,
         catalogRetrievedAt: Date
-    ) {
+    ) async {
         guard isCurrent(request) else { return }
         let options = card.game == .pokemon
             ? PokemonMasterSetDefinition.printRuns(forSetProviderID: card.variantEvidence.setID)
             : []
         guard !options.isEmpty else {
-            resolveVariant(
+            await resolveVariant(
                 for: request,
                 card: card,
                 pokemonPrintRun: nil,
@@ -1842,7 +2142,7 @@ final class ScannerViewModel: ObservableObject {
         card: IdentifiedCard,
         pokemonPrintRun: PokemonPrintRun?,
         catalogRetrievedAt: Date
-    ) {
+    ) async {
         guard isCurrent(request) else { return }
         // The print run question was just answered, and TCGdex reports 1st
         // Edition as a finish as well as a run. Left in, it comes straight back
@@ -1854,7 +2154,7 @@ final class ScannerViewModel: ObservableObject {
 
         switch VariantResolver.resolve(evidence, finishLock: finishLocks[card.game]) {
         case let .resolved(resolved):
-            route(
+            await route(
                 ResolvedScan(
                     request: request,
                     card: card,
@@ -1886,7 +2186,7 @@ final class ScannerViewModel: ObservableObject {
 
     // MARK: - Resolved destinations
 
-    private func route(_ resolvedScan: ResolvedScan) {
+    private func route(_ resolvedScan: ResolvedScan) async {
         guard isCurrent(resolvedScan.request) else { return }
         var resolvedScan = resolvedScan
         if resolvedScan.gradedOutcome == nil {
@@ -1896,7 +2196,7 @@ final class ScannerViewModel: ObservableObject {
         }
         switch resolvedScan.request.purpose {
         case .collection:
-            routeCollectionCandidate(CollectionCommitCandidate(resolvedScan: resolvedScan))
+            await routeCollectionCandidate(CollectionCommitCandidate(resolvedScan: resolvedScan))
         case .priceCheck:
             presentPriceCheck(resolvedScan)
         }
@@ -1926,7 +2226,9 @@ final class ScannerViewModel: ObservableObject {
             encounterID: candidate.encounterID
         )
 
-        // Both are projections of the same successful store mutation.
+        // Both are projections of the same successful store mutation. The full
+        // session list is kept for review and accounting; only the rail is capped.
+        sessionScans.insert(scan, at: 0)
         recent.insert(scan, at: 0)
         if recent.count > Self.recentScanLimit {
             recent.removeLast(recent.count - Self.recentScanLimit)
@@ -1960,11 +2262,18 @@ final class ScannerViewModel: ObservableObject {
             )
         })
         lastAdd = scan
+        // A newer OCR confirmation may already be waiting while this write is
+        // finishing. Do not erase that newer acknowledgement when the older
+        // card becomes durable.
+        if scanAcknowledgement?.subject == candidate.subject {
+            scanAcknowledgement = nil
+        }
         scanner.acceptedPresentation(
             encounterID: candidate.encounterID,
             presentationToken: committed.presentationToken
         )
         successCount += 1
+        PerformanceSignpost.signposter.emitEvent("successUIPublication")
 
         // The append is the persistence acknowledgement. The actual offer is
         // drained once the identification state also becomes idle; an automatic
@@ -2007,7 +2316,7 @@ final class ScannerViewModel: ObservableObject {
               let committed = committedSessionHistory.last(where: {
                   $0.encounterID == deferred.encounterID
               }),
-              let scan = recent.first(where: { $0.id == committed.id }),
+              let scan = sessionScans.first(where: { $0.id == committed.id }),
               scan.subject.suppressionKey == deferred.subject.suppressionKey else {
             return
         }
@@ -2030,9 +2339,9 @@ final class ScannerViewModel: ObservableObject {
     /// Collection routing is identity-first. A matching identity can reach a
     /// prompt only with a one-shot proof tied to the previous presentation.
     /// No proof means suppression, never a reseed or collection mutation.
-    private func routeCollectionCandidate(_ candidate: CollectionCommitCandidate) {
+    private func routeCollectionCandidate(_ candidate: CollectionCommitCandidate) async {
         if let authorizationID = candidate.heldRepeatAuthorizationID {
-            routeHeldRepeatCandidate(candidate, authorizationID: authorizationID)
+            await routeHeldRepeatCandidate(candidate, authorizationID: authorizationID)
             return
         }
 
@@ -2046,7 +2355,7 @@ final class ScannerViewModel: ObservableObject {
         switch decision {
         case .automatic:
             diagnostic("routingAutomatic")
-            guard commitAuthorizedCollectionCandidate(candidate, authorization: .automatic) else { return }
+            guard await commitAuthorizedCollectionCandidate(candidate, authorization: .automatic) else { return }
             // A candidate may have exited before its successful commit. Keep
             // only that candidate's proof and discard evidence belonging to
             // older or unrelated presentations.
@@ -2097,7 +2406,7 @@ final class ScannerViewModel: ObservableObject {
     private func routeHeldRepeatCandidate(
         _ candidate: CollectionCommitCandidate,
         authorizationID: UUID
-    ) {
+    ) async {
         guard let state = heldRepeatAuthorizationState,
               state.authorization.id == authorizationID,
               state.wasConsumedByEncounter,
@@ -2125,7 +2434,7 @@ final class ScannerViewModel: ObservableObject {
         heldRepeatAuthorizationState = nil
         heldDuplicateOffer = nil
 
-        guard commitAuthorizedCollectionCandidate(candidate, authorization: .heldRepeat) else {
+        guard await commitAuthorizedCollectionCandidate(candidate, authorization: .heldRepeat) else {
             // The consumed permit is never restored. Publish a fresh offer and
             // make the next tap create a new scanner-owned authorization.
             heldDuplicateOffer = state.offer
@@ -2142,106 +2451,64 @@ final class ScannerViewModel: ObservableObject {
     private func commitAuthorizedCollectionCandidate(
         _ candidate: CollectionCommitCandidate,
         authorization: CollectionCommitAuthorization
-    ) -> Bool {
-        guard let store else { return false }
+    ) async -> Bool {
+        guard let collectionWriter else {
+            failAcknowledgement(
+                for: candidate.subject,
+                message: "This card was recognized but could not be added. Try again."
+            )
+            return false
+        }
 
-        if let slab = candidate.subject.slab {
-            let mutation: CollectionMutation?
-            do {
-                switch candidate.gradedOutcome {
-                case let .bound(variant):
-                    mutation = try store.addGraded(
-                        underlying: candidate.card,
-                        variant: variant,
-                        certificationNumber: slab.certificationNumber,
-                        setReleaseOrder: candidate.card.setReleaseOrder
-                    )
-                case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
-                    mutation = try store.addScannedGraded(
-                        underlying: candidate.card,
-                        company: slab.company,
-                        grade: slab.grade,
-                        certificationNumber: slab.certificationNumber,
-                        setReleaseOrder: candidate.card.setReleaseOrder
-                    )
-                }
-            } catch {
-                show(ScanNote(text: "Card could not be saved", tone: .problem))
-                feedback.problem()
-                return false
-            }
+        let writeSessionID = scannerSessionID
+        beginTrackedWrite(for: writeSessionID)
+        defer { endTrackedWrite(for: writeSessionID) }
 
-            guard let mutation else { return false }
-            if let outcome = candidate.gradedOutcome {
-                let message: String?
-                switch outcome {
-                case .bound:
-                    message = nil
-                case .unpricedGrade:
-                    message = "\(slab.grade.display(company: slab.company)) added — no graded price published"
-                case .unmatchedProduct:
-                    message = "\(slab.grade.display(company: slab.company)) added — no vendor match"
-                case .unavailable:
-                    message = "\(slab.grade.display(company: slab.company)) added — price pending"
+        do {
+            let mutation = try await collectionWriter.add(candidate)
+            guard writeSessionID == scannerSessionID else { return false }
+
+            if let slab = candidate.subject.slab {
+                if let outcome = candidate.gradedOutcome {
+                    let message: String?
+                    switch outcome {
+                    case .bound:
+                        message = nil
+                    case .unpricedGrade:
+                        message = "\(slab.grade.display(company: slab.company)) added — no graded price published"
+                    case .unmatchedProduct:
+                        message = "\(slab.grade.display(company: slab.company)) added — no vendor match"
+                    case .unavailable:
+                        message = "\(slab.grade.display(company: slab.company)) added — price pending"
+                    }
+                    if let message {
+                        show(ScanNote(text: message, tone: .info))
+                    }
                 }
-                if let message {
-                    show(ScanNote(text: message, tone: .info))
-                }
+            } else {
+                queueFallbackPrice(
+                    for: candidate.card,
+                    variant: candidate.resolved.variant,
+                    pokemonPrintRun: candidate.pokemonPrintRun,
+                    catalogLookup: candidate.price
+                )
             }
             if pendingChoice?.request.id == candidate.requestID {
                 pendingChoice = nil
             }
             appendCommittedScan(candidate, mutation: mutation)
             resumeRecognitionIfPossible()
-            diagnostic("gradedCollectionCommit")
+            diagnostic(candidate.subject.slab == nil ? "collectionCommit" : "gradedCollectionCommit")
             return true
-        }
-
-        // Pricing is secondary mutable metadata and must never be in the way of
-        // "card added". Nothing here touches the network: the price rides along
-        // in the catalog response the identification already made, and a card
-        // whose response carried none simply waits for the next price refresh.
-        //
-        // Staged before the add rather than after it so the add's own save is
-        // the only save this tap performs. Both stores hold the same context,
-        // and nothing in the add reads a price record, so the order is free.
-        recordPrice(
-            for: candidate.card,
-            variant: candidate.resolved.variant,
-            pokemonPrintRun: candidate.pokemonPrintRun,
-            lookup: candidate.price,
-            savingImmediately: false
-        )
-
-        guard let mutation = try? store.add(
-            candidate.card,
-            resolved: candidate.resolved,
-            source: .scan,
-            pokemonPrintRun: candidate.pokemonPrintRun,
-            matchCatalogAliases: candidate.pokemonPrintRun != nil
-        ) else {
-            show(ScanNote(text: "Card could not be saved", tone: .problem))
+        } catch {
+            guard writeSessionID == scannerSessionID else { return false }
+            failAcknowledgement(
+                for: candidate.subject,
+                message: "This card was recognized but was not added. Try again."
+            )
             feedback.problem()
             return false
         }
-
-        // A catalog outage can leave a newly identified card with no usable
-        // USD quote. The card is already safely saved; resolve its price in the
-        // background through the same fallback path used by Price Check.
-        queueFallbackPrice(
-            for: candidate.card,
-            variant: candidate.resolved.variant,
-            pokemonPrintRun: candidate.pokemonPrintRun,
-            catalogLookup: candidate.price
-        )
-
-        if pendingChoice?.request.id == candidate.requestID {
-            pendingChoice = nil
-        }
-        appendCommittedScan(candidate, mutation: mutation)
-        resumeRecognitionIfPossible()
-        diagnostic("collectionCommit")
-        return true
     }
 
     /// Price metadata is secondary to a successful collection mutation. This
@@ -2254,7 +2521,7 @@ final class ScannerViewModel: ObservableObject {
         catalogLookup: PriceLookup
     ) {
         guard PriceFallbackQuoteResolver.needsFallback(catalogLookup),
-              let prices,
+              let modelContainer,
               PriceVendorCredentials.hasKey else { return }
 
         let printingID = pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
@@ -2273,7 +2540,7 @@ final class ScannerViewModel: ObservableObject {
         // Price Check/fallback writes are independent of the scanner's main
         // context. The identity is a value snapshot, so no SwiftData model is
         // retained while the paced vendor request is in flight.
-        let fallbackContext = ModelContext(prices.context.container)
+        let fallbackContext = ModelContext(modelContainer)
         let fallbackPrices = PriceStore(context: fallbackContext)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         let task = Task { @MainActor [weak self] in
@@ -2474,6 +2741,12 @@ final class ScannerViewModel: ObservableObject {
 
     private func handleLookupFailure(_ request: ScanRequest, _ error: Error) {
         let subject = request.subject
+        if request.purpose == .collection {
+            failAcknowledgement(
+                for: subject,
+                message: "This card was recognized but was not added. Try again."
+            )
+        }
         feedback.problem()
 
         switch CardCatalog.classify(error) {
@@ -2509,6 +2782,15 @@ final class ScannerViewModel: ObservableObject {
     }
 
     // MARK: - Transient UI
+
+    private func failAcknowledgement(for subject: ScanSubject, message: String) {
+        scanAcknowledgement = ScanAcknowledgement(
+            subject: subject,
+            phase: .failed,
+            message: message
+        )
+        diagnostic("recognitionAcknowledgementFailed")
+    }
 
     private func showReceipt(_ newReceipt: ScanReceipt) {
         receiptTask?.cancel()

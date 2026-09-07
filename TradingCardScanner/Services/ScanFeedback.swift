@@ -30,6 +30,14 @@ final class ScanFeedback {
         addedGenerator.prepare()
     }
 
+    /// OCR confirmed a card. This is intentionally lighter than `added()` so
+    /// the person gets an immediate rhythm cue without implying that the
+    /// background transaction has already succeeded.
+    func recognized() {
+        attentionGenerator.impactOccurred(intensity: 0.45)
+        attentionGenerator.prepare()
+    }
+
     /// The app knows the card but needs one fact only the person holding it has.
     func needsChoice() {
         attentionGenerator.impactOccurred(intensity: 0.7)

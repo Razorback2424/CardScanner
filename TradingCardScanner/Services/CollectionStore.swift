@@ -27,6 +27,129 @@ struct CollectionMutation: Equatable, Sendable {
     }
 }
 
+/// Owns the scanner's durable writes on a SwiftData model actor.
+///
+/// The scanner view model is deliberately main-actor isolated because it owns
+/// presentation and recognition state. This actor owns the context used for
+/// collection identity lookup, price staging, inventory/activity writes, undo,
+/// and variant correction. Only value snapshots and `CollectionMutation` cross
+/// the boundary; no SwiftData model object is returned to the view model.
+@ModelActor
+actor ScannerCollectionWriter {
+    func add(_ candidate: CollectionCommitCandidate) throws -> CollectionMutation {
+        let signpostState = PerformanceSignpost.signposter.beginInterval("scannerPersistence")
+        defer {
+            PerformanceSignpost.signposter.endInterval("scannerPersistence", signpostState)
+        }
+
+        let store = CollectionStore(context: modelContext)
+
+        if let slab = candidate.subject.slab {
+            switch candidate.gradedOutcome {
+            case let .bound(variant):
+                return try store.addGraded(
+                    underlying: candidate.card,
+                    variant: variant,
+                    certificationNumber: slab.certificationNumber,
+                    setReleaseOrder: candidate.card.setReleaseOrder
+                )
+            case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
+                return try store.addScannedGraded(
+                    underlying: candidate.card,
+                    company: slab.company,
+                    grade: slab.grade,
+                    certificationNumber: slab.certificationNumber,
+                    setReleaseOrder: candidate.card.setReleaseOrder
+                )
+            }
+        }
+
+        stagePrice(
+            candidate.price,
+            for: candidate.card,
+            variant: candidate.resolved.variant,
+            pokemonPrintRun: candidate.pokemonPrintRun
+        )
+        return try store.add(
+            candidate.card,
+            resolved: candidate.resolved,
+            source: .scan,
+            pokemonPrintRun: candidate.pokemonPrintRun,
+            matchCatalogAliases: candidate.pokemonPrintRun != nil
+        )
+    }
+
+    func undo(_ mutation: CollectionMutation) throws {
+        let signpostState = PerformanceSignpost.signposter.beginInterval("scannerPersistence")
+        defer {
+            PerformanceSignpost.signposter.endInterval("scannerPersistence", signpostState)
+        }
+        try CollectionStore(context: modelContext).undo(mutation)
+    }
+
+    func correct(
+        card: IdentifiedCard,
+        from current: PhysicalVariant?,
+        to corrected: ResolvedVariant,
+        pokemonPrintRun: PokemonPrintRun?,
+        previousCollectionKey: String,
+        previousLedgerOperationIDs: [UUID],
+        activityID: UUID?,
+        quantity: Int,
+        price: PriceLookup
+    ) throws -> CollectionMutation? {
+        let signpostState = PerformanceSignpost.signposter.beginInterval("scannerPersistence")
+        defer {
+            PerformanceSignpost.signposter.endInterval("scannerPersistence", signpostState)
+        }
+
+        stagePrice(
+            price,
+            for: card,
+            variant: corrected.variant,
+            pokemonPrintRun: pokemonPrintRun
+        )
+
+        let mutation = try CollectionStore(context: modelContext).recordVariantCorrection(
+            for: card,
+            from: current,
+            to: corrected,
+            pokemonPrintRun: pokemonPrintRun,
+            previousCollectionKey: previousCollectionKey,
+            previousLedgerOperationIDs: previousLedgerOperationIDs,
+            activityID: activityID,
+            quantity: quantity
+        )
+        guard mutation != nil else {
+            // Price staging happens before correction so a successful correction
+            // saves both facts atomically. A missing/stale source must not leave
+            // an unsaved price mutation in this actor's context for a later call.
+            modelContext.rollback()
+            return nil
+        }
+        return mutation
+    }
+
+    private func stagePrice(
+        _ lookup: PriceLookup,
+        for card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) {
+        let printingID = pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
+            ?? card.providerID
+        PriceStore(context: modelContext).store(
+            lookup,
+            game: card.game,
+            printingID: printingID,
+            variantID: variant?.id,
+            treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
+                from: card.magicTreatments(for: variant)
+            )
+        )
+    }
+}
+
 enum CollectionStoreError: Error, Equatable {
     case missingDestinationRow(String)
     case missingActivity(UUID)
