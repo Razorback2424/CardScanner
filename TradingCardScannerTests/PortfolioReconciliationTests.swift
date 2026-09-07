@@ -3305,6 +3305,44 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(PortfolioEpoch.startedAt(defaults: defaults), afterGrace)
     }
 
+    /// If the bounded sync wait expires before an older ownership event arrives,
+    /// the visible collection has already included that event's quantity. Replay
+    /// must rebase the provisional initial balance instead of counting both.
+    func testDelayedPreBaselineOwnershipEventIsRebasedDuringReplay() throws {
+        let baselineDate = Date(timeIntervalSince1970: 2_000_000_000)
+        let acquisitionDate = baselineDate.addingTimeInterval(-60)
+        let baseline = entry(
+            kind: .initialBalance,
+            delta: 3,
+            at: baselineDate
+        )
+        let delayedAcquisition = entry(
+            kind: .acquire,
+            delta: 3,
+            at: acquisitionDate
+        )
+
+        let events = PortfolioReplaySnapshotBuilder.rebaseDelayedInitialBalances([
+            baseline,
+            delayedAcquisition
+        ])
+        XCTAssertEqual(events.first(where: { $0.kind == .initialBalance })?.deltaQuantity, 0)
+
+        let replay = PortfolioReplayEngine.replay(
+            PortfolioReplayInput(
+                events: events,
+                observations: [observation(10, at: acquisitionDate.addingTimeInterval(-1))],
+                epoch: acquisitionDate.addingTimeInterval(-3_600),
+                through: baselineDate.addingTimeInterval(1),
+                timeZoneIdentifier: "UTC"
+            )
+        )
+
+        let live = try XCTUnwrap(replay.live)
+        XCTAssertEqual(live.attribution.added, money(30))
+        XCTAssertEqual(live.attribution.currentValue, money(30))
+    }
+
     /// The ordinary resolution, and the one that happens in practice: the
     /// events arrive, which is itself proof that no baseline is needed. It must
     /// not wait out the grace period to notice.

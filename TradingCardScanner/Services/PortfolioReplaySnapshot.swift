@@ -240,12 +240,12 @@ enum PortfolioReplaySnapshotBuilder {
             eventKeys: Set(reading.events.map(\.collectionKey))
         )
         let priceIdentityAliases = priceIdentityAliases(for: projection)
-        let events = reading.events.map { event -> LedgerEntry in
+        let events = rebaseDelayedInitialBalances(reading.events.map { event -> LedgerEntry in
             var entry = PortfolioEngine.entry(from: event)
             entry.collectionKey = collectionKeyAliases[entry.collectionKey] ?? entry.collectionKey
             entry.priceStorageKey = priceIdentityAliases[entry.priceStorageKey] ?? entry.priceStorageKey
             return entry
-        }
+        })
         let observations = rows.map { row -> ObservationEntry in
             var entry = PortfolioEngine.observationEntry(from: row)
             entry.instrumentKey = priceIdentityAliases[entry.instrumentKey] ?? entry.instrumentKey
@@ -289,6 +289,43 @@ enum PortfolioReplaySnapshotBuilder {
             defects: defects + projection.defects + activityDefects,
             projection: projection
         )
+    }
+
+    /// A CloudKit-backed collection can arrive before the ownership event that
+    /// explains it. If the bounded sync wait expires, `PortfolioEpoch` writes
+    /// an initial balance for the visible quantity. When the older ownership
+    /// event arrives later, replay must treat that baseline as provisional for
+    /// the portion already explained by the delayed event; otherwise the same
+    /// holding is counted once by the baseline and once by the acquisition (or
+    /// disposal).
+    ///
+    /// This stays in the value-only replay boundary instead of mutating the
+    /// append-only ledger. Events dated after the baseline are genuine later
+    /// activity and remain untouched. Arithmetic overflow leaves the input
+    /// unchanged so the normal integrity diagnostics can report it.
+    static func rebaseDelayedInitialBalances(_ events: [LedgerEntry]) -> [LedgerEntry] {
+        var rebased = events
+
+        for index in rebased.indices {
+            let baseline = rebased[index]
+            guard baseline.kind == .initialBalance,
+                  baseline.reversesEventID == nil else { continue }
+
+            var delayedNet = 0
+            for event in events where event.collectionKey == baseline.collectionKey
+                && !(event.kind == .initialBalance && event.reversesEventID == nil)
+                && event.occurredAt <= baseline.occurredAt {
+                let (sum, overflow) = delayedNet.addingReportingOverflow(event.deltaQuantity)
+                guard !overflow else { return events }
+                delayedNet = sum
+            }
+
+            let (adjustedDelta, overflow) = baseline.deltaQuantity.subtractingReportingOverflow(delayedNet)
+            guard !overflow else { return events }
+            rebased[index].deltaQuantity = adjustedDelta
+        }
+
+        return rebased
     }
 
     /// A treatment-aware collection can be migrated after its ownership event
