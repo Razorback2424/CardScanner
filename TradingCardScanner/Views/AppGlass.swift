@@ -9,21 +9,22 @@ struct AppGlassBackground: ViewModifier {
     var cornerRadius: CGFloat = 18
     var tint: Color?
     var isCapsule = false
+    var isInteractive = false
     var fallbackTintOpacity = 0.36
 
     @ViewBuilder
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             if isCapsule {
-                if let tint {
-                    content.glassEffect(.regular.tint(tint), in: .capsule)
-                } else {
-                    content.glassEffect(.regular, in: .capsule)
-                }
-            } else if let tint {
-                content.glassEffect(.regular.tint(tint), in: .rect(cornerRadius: cornerRadius))
+                content.glassEffect(
+                    .regular.tint(tint).interactive(isInteractive),
+                    in: .capsule
+                )
             } else {
-                content.glassEffect(.regular, in: .rect(cornerRadius: cornerRadius))
+                content.glassEffect(
+                    .regular.tint(tint).interactive(isInteractive),
+                    in: .rect(cornerRadius: cornerRadius)
+                )
             }
         } else if isCapsule {
             content
@@ -53,13 +54,15 @@ extension View {
 
     func appPillGlass(
         tint: Color? = nil,
-        fallbackTintOpacity: Double = 1
+        fallbackTintOpacity: Double = 1,
+        interactive: Bool = false
     ) -> some View {
         modifier(
             AppGlassBackground(
                 cornerRadius: 0,
                 tint: tint,
                 isCapsule: true,
+                isInteractive: interactive,
                 fallbackTintOpacity: fallbackTintOpacity
             )
         )
@@ -76,6 +79,17 @@ extension View {
     func appGlassEffectID(_ id: String, in namespace: Namespace.ID) -> some View {
         if #available(iOS 26.0, *) {
             glassEffectID(id, in: namespace)
+        } else {
+            self
+        }
+    }
+
+    /// Groups related Liquid Glass surfaces so the system can blend them as a
+    /// single control cluster while remaining a no-op on older systems.
+    @ViewBuilder
+    func appGlassEffectUnion(_ id: String, in namespace: Namespace.ID) -> some View {
+        if #available(iOS 26.0, *) {
+            glassEffectUnion(id: id, namespace: namespace)
         } else {
             self
         }

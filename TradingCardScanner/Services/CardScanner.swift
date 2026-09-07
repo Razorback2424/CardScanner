@@ -660,6 +660,20 @@ enum CameraLens: String, CaseIterable, Identifiable {
 
 }
 
+#if DEBUG
+/// Debug-only Vision geometry belongs to the preview, not to the scanner's
+/// shared publication stream. Keeping it in its own observable object prevents
+/// every OCR pass from invalidating unrelated scanner chrome.
+final class ScannerDebugVisionOverlay: ObservableObject {
+    @Published private(set) var boxes: [CGRect] = []
+
+    func update(_ boxes: [CGRect]) {
+        guard self.boxes != boxes else { return }
+        self.boxes = boxes
+    }
+}
+#endif
+
 final class CardScanner: NSObject, ObservableObject {
     let session = AVCaptureSession()
 
@@ -674,7 +688,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// window; nil restores the raw-card guide.
     @Published private(set) var slabFraming: GradedSlabEvidence?
 #if DEBUG
-    @Published private(set) var debugVisionBoxes: [CGRect] = []
+    let debugVisionOverlay = ScannerDebugVisionOverlay()
 #endif
 
     /// A plausible identifier or historical evidence key has been read once.
@@ -1840,7 +1854,8 @@ final class CardScanner: NSObject, ObservableObject {
         titleRequest.regionOfInterest = SlabFramingRegion.titleVisionRect(for: evidence.company)
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: evidence.company)
         DispatchQueue.main.async { [weak self] in
-            self?.slabFraming = evidence
+            guard let self, self.slabFraming != evidence else { return }
+            self.slabFraming = evidence
         }
     }
 
@@ -1853,7 +1868,8 @@ final class CardScanner: NSObject, ObservableObject {
         titleRequest.regionOfInterest = CardFramingRegion.titleVisionRect
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect()
         DispatchQueue.main.async { [weak self] in
-            self?.slabFraming = nil
+            guard let self, self.slabFraming != nil else { return }
+            self.slabFraming = nil
         }
     }
 
@@ -2268,7 +2284,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
 #if DEBUG
             let boxes = footerRequest.results?.map(\.boundingBox) ?? []
             DispatchQueue.main.async { [weak self] in
-                self?.debugVisionBoxes = boxes
+                self?.debugVisionOverlay.update(boxes)
             }
 #endif
 
@@ -2289,7 +2305,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         } catch {
 #if DEBUG
             DispatchQueue.main.async { [weak self] in
-                self?.debugVisionBoxes = []
+                self?.debugVisionOverlay.update([])
             }
 #endif
             // A bad frame is expected occasionally. Run it through the normal

@@ -122,17 +122,12 @@ struct ScannerView: View {
     }
 }
 
-/// Everything that reads `CardScanner` state lives here, behind an `@ObservedObject`.
-///
-/// `ScannerView` observes the view model, and the scanner is a *second*
-/// `ObservableObject` hanging off it. SwiftUI does not follow that second hop: a
-/// `@Published` change on the scanner invalidates nothing unless some view holds the
-/// scanner itself as an observed object. Reading `model.scanner.lens` from
-/// `ScannerView` compiles and returns the right value, but never redraws — the lens
-/// switched while the UI stayed frozen on the old selection.
+/// The chrome observes the view model, while scanner-owned status is isolated to
+/// small child views. A Vision publication therefore cannot rebuild the menu
+/// hierarchy just because the camera preview received another frame.
 private struct ScannerChrome: View {
     @ObservedObject var model: ScannerViewModel
-    @ObservedObject var scanner: CardScanner
+    let scanner: CardScanner
     let openSettings: () -> Void
     let openReview: (RecentScan) -> Void
     let openUnresolved: () -> Void
@@ -142,17 +137,22 @@ private struct ScannerChrome: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            topBarCluster
+            ScannerTopBar(
+                purpose: model.purpose,
+                finishLocks: model.finishLocks,
+                isSlowIdentifying: model.isSlowIdentifying,
+                setPurpose: model.setPurpose,
+                setFinishLock: model.setFinishLock,
+                openSettings: openSettings
+            )
+            .equatable()
 
             if let note = model.note {
                 ScanNoteView(note: note)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
-            if let message = scanner.scanAssistance.message {
-                ScanAssistanceView(message: message)
-                    .transition(.opacity)
-            }
+            ScannerStatusView(scanner: scanner)
 
             if let offer = model.heldDuplicateOffer {
                 HeldDuplicateOfferView(
@@ -174,9 +174,7 @@ private struct ScannerChrome: View {
         // between a mode toggle and the shutter beneath it.
         .contentWidthLimit(.standard)
         .overlay {
-            if let issue = scanner.cameraIssue {
-                cameraIssueMessage(issue)
-            }
+            ScannerCameraIssueOverlay(scanner: scanner)
         }
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.receipt)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.scanAcknowledgement)
@@ -185,174 +183,9 @@ private struct ScannerChrome: View {
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingIdentityChoice)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.pendingDuplicateConfirmation)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.heldDuplicateOffer)
-        .animation(.easeOut(duration: 0.2), value: model.finishLocks)
         .animation(.spring(response: 0.34, dampingFraction: 0.82), value: model.recent)
         .animation(.easeOut(duration: 0.18), value: model.sessionScans.count)
         .animation(.easeOut(duration: 0.18), value: model.note)
-        .animation(.easeOut(duration: 0.18), value: scanner.scanAssistance)
-    }
-
-    // MARK: - Top
-
-    @ViewBuilder
-    private var topBarCluster: some View {
-        if #available(iOS 26.0, *) {
-            GlassEffectContainer(spacing: 8) {
-                topBar
-            }
-        } else {
-            topBar
-        }
-    }
-
-    /// The mode you are in, not the modes you could be in.
-    ///
-    /// A segmented control spends half its width showing the option you did not
-    /// pick, and on a camera screen the useful fact is which mode is live — the
-    /// consequence of `collection` is silent and accumulating, so it has to be
-    /// readable at a glance without dominating the viewfinder. The alternatives,
-    /// and what each one does, live one tap away in the menu, which is where they
-    /// are needed: at the moment of deciding.
-    private var purposeControl: some View {
-        Menu {
-            ForEach(ScanPurpose.allCases) { purpose in
-                Button {
-                    model.setPurpose(purpose)
-                } label: {
-                    Text(purpose.title)
-                    Text(purpose.statusText)
-                    if model.purpose == purpose {
-                        Image(systemName: "checkmark")
-                    }
-                }
-            }
-        } label: {
-            HStack(spacing: 6) {
-                Image(systemName: model.purpose.symbolName)
-                    .font(.system(size: 13, weight: .semibold))
-                Text(model.purpose.title)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.7))
-            }
-            .foregroundStyle(.white)
-            .padding(.horizontal, 12)
-            .frame(height: 34)
-            .appPillGlass()
-        }
-        .menuStyle(.button)
-        .buttonStyle(.plain)
-        .accessibilityLabel("Scan mode: \(model.purpose.title)")
-        .accessibilityHint("Changes whether resolved cards are added to your collection or only priced.")
-    }
-
-    /// Almost nothing. There is no game picker because the printed identifier
-    /// already says which game the card is, and asking the user to pre-declare it
-    /// was asking for information the card carries.
-    private var topBar: some View {
-        HStack(spacing: 8) {
-            purposeControl
-
-            finishLockControl
-
-            if model.isSlowIdentifying {
-                ProgressView()
-                    .tint(.white)
-                    .controlSize(.small)
-                    .transition(.opacity)
-            }
-
-            Spacer(minLength: 0)
-
-            settingsButton
-        }
-        .animation(.easeOut(duration: 0.2), value: model.isSlowIdentifying)
-    }
-
-    private var finishLockControl: some View {
-        let locks = model.activeFinishLocks
-        let summary = locks.isEmpty
-            ? "Auto"
-            : locks.map { $0.variant.label }.joined(separator: " · ")
-
-        return Menu {
-            Section("Finish Lock") {
-                ForEach(CardGame.allCases) { game in
-                    Menu(game.label) {
-                        Button {
-                            model.setFinishLock(nil, for: game)
-                        } label: {
-                            Text("Auto")
-                            if model.finishLock(for: game) == nil {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-
-                        ForEach(PhysicalVariant.selectable(for: game)) { variant in
-                            Button {
-                                model.setFinishLock(variant, for: game)
-                            } label: {
-                                Text(variant.label)
-                                if model.finishLock(for: game) == variant {
-                                    Image(systemName: "checkmark")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } label: {
-            finishLockPill(summary: summary, isLocked: !locks.isEmpty)
-        }
-        .menuStyle(.button)
-        .buttonStyle(.plain)
-        .accessibilityLabel("Finish lock: \(summary)")
-        .accessibilityHint("A finish lock applies only where the catalog agrees the finish is physically possible, so it can never record a variant that was never printed.")
-    }
-
-    @ViewBuilder
-    private func finishLockPill(summary: String, isLocked: Bool) -> some View {
-        let pill = HStack(spacing: 6) {
-            Image(systemName: isLocked ? "lock.fill" : "lock.open")
-                .font(.system(size: 13, weight: .semibold))
-            Text(summary)
-                .font(.subheadline.weight(.semibold))
-                .lineLimit(1)
-            Image(systemName: "chevron.down")
-                .font(.system(size: 10, weight: .bold))
-                .foregroundStyle(.white.opacity(0.7))
-        }
-        .foregroundStyle(.white)
-        .padding(.horizontal, 12)
-        .frame(height: 34)
-        pill.appPillGlass(tint: isLocked ? .red : nil)
-    }
-
-    private var settingsButton: some View {
-        Group {
-            if #available(iOS 26.0, *) {
-                Button(action: openSettings) {
-                    Image(systemName: "gearshape")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 44, height: 44)
-                }
-                .buttonStyle(.glass)
-            } else {
-                Button(action: openSettings) {
-                    Image(systemName: "gearshape")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 34, height: 34)
-                        .background(.black.opacity(0.55), in: Circle())
-                        .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .accessibilityLabel("Settings")
     }
 
     // MARK: - Bottom
@@ -462,16 +295,235 @@ private struct ScannerChrome: View {
         .accessibilityHint("Shows what was read and why it was not added")
     }
 
-    private func cameraIssueMessage(_ issue: CameraIssue) -> some View {
-        VStack(spacing: 12) {
-            Image(systemName: "camera.fill")
-                .font(.largeTitle)
-            Text(issue.message)
-                .multilineTextAlignment(.center)
+}
+
+private struct ScannerStatusView: View {
+    @ObservedObject var scanner: CardScanner
+
+    var body: some View {
+        Group {
+            if let message = scanner.scanAssistance.message {
+                ScanAssistanceView(message: message)
+                    .transition(.opacity)
+            }
         }
-        .padding(24)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
-        .padding(30)
+        .animation(.easeOut(duration: 0.18), value: scanner.scanAssistance)
+    }
+}
+
+private struct ScannerCameraIssueOverlay: View {
+    @ObservedObject var scanner: CardScanner
+
+    var body: some View {
+        Group {
+            if let issue = scanner.cameraIssue {
+                VStack(spacing: 12) {
+                    Image(systemName: "camera.fill")
+                        .font(.largeTitle)
+                    Text(issue.message)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(24)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 20))
+                .padding(30)
+            }
+        }
+    }
+}
+
+private struct ScannerTopBar: View, Equatable {
+    let purpose: ScanPurpose
+    let finishLocks: [CardGame: PhysicalVariant]
+    let isSlowIdentifying: Bool
+    let setPurpose: (ScanPurpose) -> Void
+    let setFinishLock: (PhysicalVariant?, CardGame) -> Void
+    let openSettings: () -> Void
+
+    @Namespace private var glassNamespace
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.purpose == rhs.purpose
+            && lhs.finishLocks == rhs.finishLocks
+            && lhs.isSlowIdentifying == rhs.isSlowIdentifying
+    }
+
+    var body: some View {
+        topBarCluster
+    }
+
+    @ViewBuilder
+    private var topBarCluster: some View {
+        if #available(iOS 26.0, *) {
+            GlassEffectContainer(spacing: 8) {
+                topBar
+            }
+        } else {
+            topBar
+        }
+    }
+
+    /// The mode you are in, not the modes you could be in.
+    ///
+    /// A segmented control spends half its width showing the option you did not
+    /// pick, and on a camera screen the useful fact is which mode is live — the
+    /// consequence of `collection` is silent and accumulating, so it has to be
+    /// readable at a glance without dominating the viewfinder. The alternatives,
+    /// and what each one does, live one tap away in the menu, which is where they
+    /// are needed: at the moment of deciding.
+    private var purposeControl: some View {
+        Menu {
+            ForEach(ScanPurpose.allCases) { purpose in
+                Button {
+                    setPurpose(purpose)
+                } label: {
+                    Text(purpose.title)
+                    Text(purpose.statusText)
+                    if self.purpose == purpose {
+                        Image(systemName: "checkmark")
+                    }
+                }
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: purpose.symbolName)
+                    .font(.system(size: 13, weight: .semibold))
+                Text(purpose.title)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.7))
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .frame(height: 44)
+            .appPillGlass(interactive: true)
+            .appGlassEffectID("scanner-purpose", in: glassNamespace)
+            .appGlassEffectUnion("scanner-top-controls", in: glassNamespace)
+        }
+        .menuStyle(.button)
+        .buttonStyle(.plain)
+        .accessibilityLabel("Scan mode: \(purpose.title)")
+        .accessibilityHint("Changes whether resolved cards are added to your collection or only priced.")
+    }
+
+    /// Almost nothing. There is no game picker because the printed identifier
+    /// already says which game the card is, and asking the user to pre-declare it
+    /// was asking for information the card carries.
+    private var topBar: some View {
+        HStack(spacing: 8) {
+            purposeControl
+
+            FinishLockControl(
+                locks: finishLocks,
+                setLock: setFinishLock,
+                glassNamespace: glassNamespace
+            )
+            .equatable()
+
+            if isSlowIdentifying {
+                ProgressView()
+                    .tint(.white)
+                    .controlSize(.small)
+                    .transition(.opacity)
+            }
+
+            Spacer(minLength: 0)
+
+            settingsButton
+        }
+        .animation(.easeOut(duration: 0.2), value: isSlowIdentifying)
+    }
+
+    private var settingsButton: some View {
+        Group {
+            if #available(iOS 26.0, *) {
+                Button(action: openSettings) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.glass)
+            } else {
+                Button(action: openSettings) {
+                    Image(systemName: "gearshape")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                        .background(.black.opacity(0.55), in: Circle())
+                        .overlay(Circle().stroke(.white.opacity(0.18), lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .appGlassEffectID("scanner-settings", in: glassNamespace)
+        .accessibilityLabel("Settings")
+    }
+}
+
+private struct FinishLockControl: View, Equatable {
+    let locks: [CardGame: PhysicalVariant]
+    let setLock: (PhysicalVariant?, CardGame) -> Void
+    let glassNamespace: Namespace.ID
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.locks == rhs.locks
+    }
+
+    private var summary: String {
+        let activeLocks = CardGame.allCases.compactMap { game in
+            locks[game].map { (game, $0) }
+        }
+        return activeLocks.isEmpty
+            ? "Auto"
+            : activeLocks.map { $0.1.label }.joined(separator: " · ")
+    }
+
+    var body: some View {
+        Menu {
+            ForEach(CardGame.allCases) { game in
+                Section(game.label) {
+                    Picker(
+                        game.label,
+                        selection: Binding<PhysicalVariant?>(
+                            get: { locks[game] },
+                            set: { setLock($0, game) }
+                        )
+                    ) {
+                        Text("Auto")
+                            .tag(PhysicalVariant?.none)
+                        ForEach(PhysicalVariant.selectable(for: game)) { variant in
+                            Text(variant.label)
+                                .tag(PhysicalVariant?.some(variant))
+                        }
+                    }
+                    .pickerStyle(.inline)
+                }
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: locks.isEmpty ? "lock.open" : "lock.fill")
+                    .font(.system(size: 13, weight: .semibold))
+                Text(summary)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
+                Image(systemName: "chevron.down")
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundStyle(.white.opacity(0.7))
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .frame(height: 44)
+            .appPillGlass(tint: locks.isEmpty ? nil : .red, interactive: true)
+            .appGlassEffectID("scanner-finish-lock", in: glassNamespace)
+            .appGlassEffectUnion("scanner-top-controls", in: glassNamespace)
+            .animation(.easeOut(duration: 0.2), value: locks)
+        }
+        .menuStyle(.button)
+        .buttonStyle(.plain)
+        .accessibilityLabel("Finish lock: \(summary)")
+        .accessibilityHint("A finish lock applies only where the catalog agrees the finish is physically possible, so it can never record a variant that was never printed.")
     }
 }
 

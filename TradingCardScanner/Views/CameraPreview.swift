@@ -4,6 +4,9 @@ import UIKit
 
 struct CameraPreview: UIViewRepresentable {
     @ObservedObject var scanner: CardScanner
+#if DEBUG
+    @ObservedObject private var debugVisionOverlay: ScannerDebugVisionOverlay
+#endif
     /// Observed so an iPad's preview and guide overlays re-lay-out when the window
     /// turns. On iPhone this never changes value.
     @ObservedObject private var rotationTracker: CameraRotationTracker
@@ -19,6 +22,9 @@ struct CameraPreview: UIViewRepresentable {
         self.scanner = scanner
         self.successCount = successCount
         self.recognitionCount = recognitionCount
+#if DEBUG
+        _debugVisionOverlay = ObservedObject(wrappedValue: scanner.debugVisionOverlay)
+#endif
         _rotationTracker = ObservedObject(wrappedValue: scanner.rotation)
     }
 
@@ -31,7 +37,7 @@ struct CameraPreview: UIViewRepresentable {
         view.syncRecognitionCount(recognitionCount)
         view.syncSuccessCount(successCount)
 #if DEBUG
-        view.debugVisionBoxes = scanner.debugVisionBoxes
+        view.debugVisionBoxes = debugVisionOverlay.boxes
 #endif
         return view
     }
@@ -43,7 +49,7 @@ struct CameraPreview: UIViewRepresentable {
         uiView.syncRecognitionCount(recognitionCount)
         uiView.syncSuccessCount(successCount)
 #if DEBUG
-        uiView.debugVisionBoxes = scanner.debugVisionBoxes
+        uiView.debugVisionBoxes = debugVisionOverlay.boxes
 #endif
         uiView.setNeedsLayout()
     }
