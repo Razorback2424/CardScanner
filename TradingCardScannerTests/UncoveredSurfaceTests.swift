@@ -1158,6 +1158,23 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         XCTAssertEqual(accent.green, 0.2, accuracy: 0.02)
         XCTAssertEqual(accent.blue, 0.1, accuracy: 0.02)
     }
+
+    func testCollectionArtworkIsDownsampledBeforeStorageAndDecode() throws {
+        let source = UIGraphicsImageRenderer(size: CGSize(width: 4_096, height: 3_072)).image { context in
+            UIColor.systemBlue.setFill()
+            context.fill(CGRect(x: 0, y: 0, width: 4_096, height: 3_072))
+        }
+        let data = try XCTUnwrap(source.jpegData(compressionQuality: 0.9))
+        let filename = try XCTUnwrap(CollectionArtworkStore.save(data))
+        defer { CollectionArtworkStore.remove(filename: filename) }
+
+        let loaded = try XCTUnwrap(CollectionArtworkStore.image(filename: filename))
+        let longestDimension = max(loaded.size.width * loaded.scale, loaded.size.height * loaded.scale)
+        XCTAssertLessThanOrEqual(
+            longestDimension,
+            CGFloat(CollectionArtworkStore.maximumPixelDimension)
+        )
+    }
 }
 #endif
 

@@ -2,6 +2,7 @@ import PhotosUI
 import Charts
 import CoreMotion
 import CoreImage
+import ImageIO
 import SwiftData
 import SwiftUI
 import UIKit
@@ -688,18 +689,11 @@ struct CollectionCardDetailView: View {
                     .resizable()
                     .scaledToFit()
             } else if let imageURL = card.highImageURL ?? card.lowImageURL {
-                AsyncImage(url: imageURL) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image.resizable().scaledToFit()
-                    case .empty:
-                        ProgressView()
-                    case .failure:
-                        missingArtworkPlaceholder
-                    @unknown default:
-                        missingArtworkPlaceholder
-                    }
-                }
+                CatalogCachedImage(
+                    url: imageURL,
+                    fallbackURL: card.lowImageURL == imageURL ? nil : card.lowImageURL,
+                    placeholderText: artworkReason?.title
+                )
             } else {
                 // AsyncImage with a nil URL remains in .empty forever. End the
                 // state explicitly so an unresolved catalog row is honest and
@@ -2397,10 +2391,7 @@ enum ArtworkAccentStore {
         if let localFilename {
             image = CollectionArtworkStore.image(filename: localFilename)
         } else if let remoteURL {
-            guard let (data, _) = try? await URLSession.shared.data(from: remoteURL) else {
-                return nil
-            }
-            image = UIImage(data: data)
+            image = try? await CatalogImageCache.shared.image(for: remoteURL)
         } else {
             return nil
         }
@@ -2414,6 +2405,12 @@ enum ArtworkAccentStore {
 }
 
 enum CollectionArtworkStore {
+    /// A detail hero is the largest consumer of a local artwork image. Keeping
+    /// the stored derivative below this bound still gives a sharp 3x image on
+    /// current iPhones while preventing a camera-roll original from becoming a
+    /// multi-hundred-megabyte decoded tile cache entry.
+    static let maximumPixelDimension = 2_048
+
     private static var directory: URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
             .appendingPathComponent("CollectionArtwork", isDirectory: true)
@@ -2520,14 +2517,14 @@ enum CollectionArtworkStore {
     }
 
     static func save(_ data: Data) -> String? {
-        guard UIImage(data: data) != nil, let directory else { return nil }
+        guard let normalized = normalizedData(from: data), let directory else { return nil }
         do {
             try FileManager.default.createDirectory(
                 at: directory,
                 withIntermediateDirectories: true
             )
             let filename = UUID().uuidString + ".image"
-            try data.write(to: directory.appendingPathComponent(filename), options: .atomic)
+            try normalized.write(to: directory.appendingPathComponent(filename), options: .atomic)
             return filename
         } catch {
             return nil
@@ -2538,12 +2535,32 @@ enum CollectionArtworkStore {
         guard let filename, let directory else { return nil }
         let cacheKey = filename as NSString
         if let cached = imageCache.object(forKey: cacheKey) { return cached }
-        guard let image = UIImage(
-            contentsOfFile: directory.appendingPathComponent(filename).path
-        ) else { return nil }
+        let fileURL = directory.appendingPathComponent(filename)
+        guard let source = CGImageSourceCreateWithURL(fileURL as CFURL, nil),
+              let image = downsampledImage(from: source) else { return nil }
         let cost = image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
         imageCache.setObject(image, forKey: cacheKey, cost: cost)
         return image
+    }
+
+    private static func normalizedData(from data: Data) -> Data? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+              let image = downsampledImage(from: source) else { return nil }
+        return image.pngData()
+    }
+
+    private static func downsampledImage(from source: CGImageSource) -> UIImage? {
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maximumPixelDimension
+        ]
+        guard let image = CGImageSourceCreateThumbnailAtIndex(
+            source,
+            0,
+            options as CFDictionary
+        ) else { return nil }
+        return UIImage(cgImage: image)
     }
 
     static func remove(filename: String?) {
