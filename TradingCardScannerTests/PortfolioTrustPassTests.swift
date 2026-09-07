@@ -6,14 +6,10 @@ import XCTest
 /// clear a problem nobody fixed.
 final class PortfolioTrustPassTests: XCTestCase {
 
-    // MARK: - A result belongs to exactly one selection
+    // MARK: - A result belongs to exactly one range
 
-    private func result(
-        range: PortfolioHistoryRange,
-        mode: PortfolioHistoryMode
-    ) -> PortfolioHistoryResult {
+    private func result(range: PortfolioHistoryRange) -> PortfolioHistoryResult {
         PortfolioHistoryResult(
-            mode: mode,
             range: range,
             points: [],
             accounting: nil,
@@ -29,38 +25,17 @@ final class PortfolioTrustPassTests: XCTestCase {
         )
     }
 
-    func testAResultOnlyMatchesItsOwnRangeAndMode() {
-        let oneMonth = result(range: .oneMonth, mode: .performance)
+    func testAResultOnlyMatchesItsOwnRange() {
+        let oneMonth = result(range: .oneMonth)
 
-        XCTAssertTrue(oneMonth.matches(range: .oneMonth, mode: .performance))
+        XCTAssertTrue(oneMonth.matches(range: .oneMonth))
         // Stale range: this is the 1M total that must never render under a 3M
         // heading while the replacement computes.
-        XCTAssertFalse(oneMonth.matches(range: .threeMonths, mode: .performance))
-        // Stale mode: a percentage must never be presented as a dollar total.
-        XCTAssertFalse(oneMonth.matches(range: .oneMonth, mode: .value))
-        XCTAssertFalse(oneMonth.matches(range: .threeMonths, mode: .value))
-    }
-
-    func testEveryRangeAndModeCombinationIsDistinguishable() {
-        for range in PortfolioHistoryRange.allCases {
-            for mode in PortfolioHistoryMode.allCases {
-                let subject = result(range: range, mode: mode)
-                for otherRange in PortfolioHistoryRange.allCases {
-                    for otherMode in PortfolioHistoryMode.allCases {
-                        let expected = range == otherRange && mode == otherMode
-                        XCTAssertEqual(
-                            subject.matches(range: otherRange, mode: otherMode),
-                            expected,
-                            "\(range)/\(mode) vs \(otherRange)/\(otherMode)"
-                        )
-                    }
-                }
-            }
-        }
+        XCTAssertFalse(oneMonth.matches(range: .threeMonths))
     }
 
     func testCardMovementStateKeepsRecordingAndNoMovementVisible() {
-        let recording = result(range: .oneMonth, mode: .performance)
+        let recording = result(range: .oneMonth)
         XCTAssertEqual(recording.cardMovement(for: "card"), .historyRecording)
 
         var settled = recording

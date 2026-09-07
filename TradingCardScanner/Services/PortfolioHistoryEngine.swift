@@ -8,7 +8,6 @@ import SwiftData
 enum PortfolioHistoryEngine {
     static func calculate(
         input: PortfolioHistoryInput,
-        mode: PortfolioHistoryMode,
         range: PortfolioHistoryRange
     ) -> PortfolioHistoryResult {
         let timeZone = TimeZone(identifier: input.timeZoneIdentifier) ?? .current
@@ -23,7 +22,7 @@ enum PortfolioHistoryEngine {
         )
         guard let anchor = latest.first(where: { $0.date >= requestedStart }) ?? latest.first else {
             return PortfolioHistoryResult(
-                mode: mode, range: range, points: [], accounting: nil,
+                range: range, points: [], accounting: nil,
                 performanceFactor: nil, performanceAvailable: true,
                 coverage: PortfolioHistoryCoverage(), revisions: [],
                 trackingBeganDate: nil, hasTwoPublishedPoints: false,
@@ -126,7 +125,6 @@ enum PortfolioHistoryEngine {
         let performanceFactor = factorAvailable ? factors.last ?? 1 : nil
 
         return PortfolioHistoryResult(
-            mode: mode,
             range: range,
             points: points,
             accounting: accounting,
@@ -228,13 +226,6 @@ enum PortfolioHistoryEngine {
 
 @MainActor
 final class PortfolioHistoryStore: ObservableObject {
-    @Published var mode: PortfolioHistoryMode {
-        didSet {
-            UserDefaults.standard.set(mode.rawValue, forKey: "portfolioHistoryMode")
-            if oldValue != mode { result = nil }
-        }
-    }
-
     @Published var range: PortfolioHistoryRange {
         didSet {
             UserDefaults.standard.set(range.rawValue, forKey: "portfolioHistoryRange")
@@ -245,18 +236,14 @@ final class PortfolioHistoryStore: ObservableObject {
     @Published private(set) var result: PortfolioHistoryResult?
 
     init() {
-        // The primary Portfolio screen has one period metric. Ignore the
-        // legacy Performance/Collection Value preference so an old setting
-        // cannot restore the ambiguous presentation.
-        mode = .marketMovement
         range = PortfolioHistoryRange(
             rawValue: UserDefaults.standard.string(forKey: "portfolioHistoryRange") ?? ""
         ) ?? .oneMonth
     }
 
-    /// Result scoped to the currently selected period and presentation mode.
+    /// Result scoped to the currently selected period.
     var activeResult: PortfolioHistoryResult? {
-        guard let result, result.matches(range: range, mode: mode) else { return nil }
+        guard let result, result.matches(range: range) else { return nil }
         return result
     }
 
@@ -313,7 +300,6 @@ final class PortfolioHistoryStore: ObservableObject {
                 factors: factors,
                 contributions: contributions
             ),
-            mode: mode,
             range: range
         )
     }

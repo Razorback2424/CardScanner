@@ -1,27 +1,5 @@
 import Foundation
 
-enum PortfolioHistoryMode: String, CaseIterable, Codable, Sendable {
-    case marketMovement
-    case performance
-    case value
-
-    var title: String {
-        switch self {
-        case .marketMovement: return "Market movement"
-        case .performance: return "Performance"
-        case .value: return "Collection Value"
-        }
-    }
-
-    var chartLabel: String {
-        switch self {
-        case .marketMovement: return "Market movement"
-        case .performance: return "Return in dollars"
-        case .value: return "Collection value"
-        }
-    }
-}
-
 enum PortfolioHistoryRange: String, CaseIterable, Codable, Sendable {
     case oneWeek = "1W"
     case oneMonth = "1M"
@@ -346,7 +324,6 @@ struct PortfolioHistoryAccounting: Equatable, Sendable {
 }
 
 struct PortfolioHistoryResult: Equatable, Sendable {
-    var mode: PortfolioHistoryMode
     var range: PortfolioHistoryRange
     var points: [PortfolioHistoryPoint]
     var accounting: PortfolioHistoryAccounting?
@@ -363,14 +340,14 @@ struct PortfolioHistoryResult: Equatable, Sendable {
 
     var isEmpty: Bool { points.isEmpty }
 
-    /// Whether this result actually describes the given selection.
+    /// Whether this result actually describes the given range selection.
     ///
     /// Results arrive asynchronously, so a view holding one has no guarantee it
     /// still matches what the range control says. Presenting a mismatched
     /// result puts a 1M total under a 3M heading, which a person has no way to
     /// detect — so every period-scoped surface asks this first.
-    func matches(range: PortfolioHistoryRange, mode: PortfolioHistoryMode) -> Bool {
-        self.range == range && self.mode == mode
+    func matches(range: PortfolioHistoryRange) -> Bool {
+        self.range == range
     }
 
     func movement(for collectionKey: String) -> PortfolioContributionDetail? {
@@ -392,27 +369,6 @@ struct PortfolioHistoryResult: Equatable, Sendable {
 /// is a time-weighted index, so its dollar projection is always anchored to the
 /// selected period's starting value.
 enum PortfolioHistoryDisplay {
-    static let performanceUnavailable = "Return isn't available for this period"
-
-    static func periodChange(
-        for mode: PortfolioHistoryMode,
-        accounting: PortfolioHistoryAccounting,
-        performanceFactor: Decimal?
-    ) -> Money? {
-        switch mode {
-        case .marketMovement:
-            return accounting.market
-        case .value:
-            return accounting.totalChange
-        case .performance:
-            guard let dollars = performanceDollars(
-                factor: performanceFactor,
-                anchorValue: accounting.anchorValue
-            ) else { return nil }
-            return Money(rounding: dollars)
-        }
-    }
-
     static func percentChange(amount: Money, anchor: Money) -> Double? {
         guard !anchor.isZero else { return nil }
         return amount.doubleValue / anchor.doubleValue

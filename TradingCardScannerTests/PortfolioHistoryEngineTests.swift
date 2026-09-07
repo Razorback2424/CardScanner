@@ -133,7 +133,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                     byDay: [dayOne: ["anchor": money(100)], dayTwo: ["card": money(30)]]
                 )
             ),
-            mode: .value,
             range: .all
         )
 
@@ -142,36 +141,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertEqual(result.accountingInterval?.includedClosedDays, [dayTwo])
     }
 
-    func testPeriodChangeUsesTimeWeightedDollarsForPerformanceAndTotalForValue() throws {
-        let accounting = PortfolioHistoryAccounting(
-            anchorValue: money(100),
-            endValue: money(107),
-            market: money(-10),
-            added: money(17),
-            removed: .zero,
-            corrections: .zero,
-            newlyAddedValue: .zero,
-            pricingAdjustments: .zero,
-            unexplained: .zero
-        )
-
-        XCTAssertEqual(
-            PortfolioHistoryDisplay.periodChange(
-                for: .performance,
-                accounting: accounting,
-                performanceFactor: Decimal(string: "1.25")
-            ),
-            Optional(money(25))
-        )
-        XCTAssertEqual(
-            PortfolioHistoryDisplay.periodChange(
-                for: .value,
-                accounting: accounting,
-                performanceFactor: nil
-            ),
-            Optional(money(7))
-        )
-
+    func testPerformanceFactorExcludesLargeInventoryFlow() {
         let initial = event(quantity: 1, at: date(1, hour: 1))
         let inflow = event(quantity: 500, at: date(2, hour: 1))
         let inflowResult = PortfolioHistoryEngine.calculate(
@@ -188,42 +158,11 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 currentValue: 55_110,
                 now: date(3, hour: 1)
             ),
-            mode: .performance,
             range: .all
         )
 
         XCTAssertEqual(inflowResult.accounting?.market, money(5_010))
-        XCTAssertEqual(
-            PortfolioHistoryDisplay.periodChange(
-                for: .performance,
-                accounting: try XCTUnwrap(inflowResult.accounting),
-                performanceFactor: inflowResult.performanceFactor
-            ),
-            Optional(money(10))
-        )
-    }
-
-    func testMarketMovementPeriodChangeUsesAccountingMarket() {
-        let accounting = PortfolioHistoryAccounting(
-            anchorValue: money(100),
-            endValue: money(107),
-            market: money(-17),
-            added: money(24),
-            removed: .zero,
-            corrections: .zero,
-            newlyAddedValue: .zero,
-            pricingAdjustments: .zero,
-            unexplained: .zero
-        )
-
-        XCTAssertEqual(
-            PortfolioHistoryDisplay.periodChange(
-                for: .marketMovement,
-                accounting: accounting,
-                performanceFactor: Decimal(string: "1.25")
-            ),
-            Optional(money(-17))
-        )
+        XCTAssertEqual(inflowResult.performanceFactor, Decimal(string: "1.1"))
     }
 
     func testHistoryAccountingSeparatesAddedAndRemovedValue() {
@@ -238,7 +177,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 now: date(2, hour: 1),
                 attribution: attribution
             ),
-            mode: .value,
             range: .all
         )
 
@@ -258,7 +196,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 currentValue: 300,
                 now: date(3, hour: 1)
             ),
-            mode: .value,
             range: .all
         )
         let accounting = try XCTUnwrap(result.accounting)
@@ -283,7 +220,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 now: date(4, hour: 1),
                 attribution: attribution
             ),
-            mode: .marketMovement,
             range: .all
         )
 
@@ -339,7 +275,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         for (range, expectedDollars) in expectedMarkets {
             let result = PortfolioHistoryEngine.calculate(
                 input: historyInput,
-                mode: .marketMovement,
                 range: range
             )
             let expected = money(expectedDollars)
@@ -361,7 +296,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 currentValue: 50_100,
                 now: date(2)
             ),
-            mode: .marketMovement,
             range: .all
         )
 
@@ -384,7 +318,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 currentValue: 110,
                 now: date(2)
             ),
-            mode: .marketMovement,
             range: .all
         )
 
@@ -394,22 +327,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertEqual(result.accounting?.pricingAdjustments, money(4))
         XCTAssertEqual(result.accounting?.unexplained, .zero)
         XCTAssertTrue(result.contributions.isEmpty)
-    }
-
-    @MainActor
-    func testLegacyPerformancePreferenceCannotRestorePrimaryHistoryMode() {
-        let defaults = UserDefaults.standard
-        let previous = defaults.object(forKey: "portfolioHistoryMode")
-        defer {
-            if let previous {
-                defaults.set(previous, forKey: "portfolioHistoryMode")
-            } else {
-                defaults.removeObject(forKey: "portfolioHistoryMode")
-            }
-        }
-
-        defaults.set(PortfolioHistoryMode.performance.rawValue, forKey: "portfolioHistoryMode")
-        XCTAssertEqual(PortfolioHistoryStore().mode, .marketMovement)
     }
 
     func testNewlyAddedValueFlowsThroughHistoryWithoutBecomingPricingAdjustment() {
@@ -422,7 +339,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 currentValue: 100,
                 now: date(3, hour: 1)
             ),
-            mode: .value,
             range: .all
         )
 
@@ -442,25 +358,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
     }
 
     func testZeroAnchorOmitsPerformancePercentageAndDollarScaling() {
-        let accounting = PortfolioHistoryAccounting(
-            anchorValue: .zero,
-            endValue: money(10),
-            market: money(10),
-            added: .zero,
-            removed: .zero,
-            corrections: .zero,
-            newlyAddedValue: .zero,
-            pricingAdjustments: .zero,
-            unexplained: .zero
-        )
-
-        XCTAssertNil(
-            PortfolioHistoryDisplay.periodChange(
-                for: .performance,
-                accounting: accounting,
-                performanceFactor: Decimal(string: "1.25")
-            )
-        )
         XCTAssertNil(
             PortfolioHistoryDisplay.percentChange(amount: money(10), anchor: .zero)
         )
@@ -468,28 +365,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             PortfolioHistoryDisplay.performanceDollars(
                 factor: Decimal(string: "1.25"),
                 anchorValue: .zero
-            )
-        )
-    }
-
-    func testUnavailablePerformanceFactorProducesNoPeriodChange() {
-        let accounting = PortfolioHistoryAccounting(
-            anchorValue: money(100),
-            endValue: money(100),
-            market: .zero,
-            added: .zero,
-            removed: .zero,
-            corrections: .zero,
-            newlyAddedValue: .zero,
-            pricingAdjustments: .zero,
-            unexplained: .zero
-        )
-
-        XCTAssertNil(
-            PortfolioHistoryDisplay.periodChange(
-                for: .performance,
-                accounting: accounting,
-                performanceFactor: nil
             )
         )
     }
@@ -613,7 +488,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 events: events, observations: [observation(100, at: date(1, hour: 1))],
                 currentValue: 50_100, now: date(3, hour: 1)
             ),
-            mode: .performance, range: .all
+            range: .all
         )
 
         XCTAssertEqual(result.points.last?.value, money(50_100))
@@ -634,7 +509,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 ],
                 currentValue: 121, now: date(4, hour: 1)
             ),
-            mode: .performance, range: .all
+            range: .all
         )
 
         XCTAssertEqual(result.performanceFactor, Decimal(string: "1.21"))
@@ -648,7 +523,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 observations: [observation(0, at: date(1)), observation(10, at: date(2))],
                 currentValue: 10, now: date(3, hour: 1)
             ),
-            mode: .performance, range: .all
+            range: .all
         )
 
         XCTAssertFalse(result.performanceAvailable)
@@ -666,7 +541,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 ],
                 currentValue: 120, now: date(3)
             ),
-            mode: .value, range: .all
+            range: .all
         )
 
         XCTAssertEqual(result.points.filter { !$0.isLive }.map(\.value), [money(100), money(115), money(120)])
@@ -681,7 +556,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 closes: [close(1, value: 100, market: 100), close(2, value: 120, market: 20)],
                 currentValue: 120, now: date(2)
             ),
-            mode: .value, range: .all
+            range: .all
         )
 
         XCTAssertEqual(result.accounting?.market, money(20))
@@ -703,7 +578,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 ],
                 currentValue: 160, now: date(3, hour: 1)
             ),
-            mode: .performance, range: .all
+            range: .all
         )
 
         XCTAssertEqual(result.performanceFactor, Decimal(string: "1.0666666666666667"))
@@ -724,7 +599,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 ],
                 currentValue: 100, now: date(3, hour: 1)
             ),
-            mode: .performance, range: .all
+            range: .all
         )
 
         XCTAssertTrue(result.performanceAvailable)
@@ -795,7 +670,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 closes: [springClose, nextClose], currentValue: 100,
                 now: zonedDay(2024, 4, 10, timeZoneID: zone)
             ),
-            mode: .value, range: .oneMonth
+            range: .oneMonth
         )
         XCTAssertEqual(result.points.first?.displayDay, march10)
     }
@@ -804,11 +679,11 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         let closeBoundary = PortfolioCalendar.boundary(afterDay: date(2), in: TimeZone(secondsFromGMT: 0)!)
         let atBoundary = PortfolioHistoryEngine.calculate(
             input: input(closes: [close(1, value: 100), close(2, value: 110)], currentValue: 110, now: closeBoundary),
-            mode: .value, range: .all
+            range: .all
         )
         let afterBoundary = PortfolioHistoryEngine.calculate(
             input: input(closes: [close(1, value: 100), close(2, value: 110)], currentValue: 110, now: date(3, hour: 1)),
-            mode: .value, range: .all
+            range: .all
         )
 
         XCTAssertEqual(atBoundary.points.count, 2)
@@ -818,7 +693,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
 
     func testEmptyHistoryIsExplicitlyEmpty() {
         let empty = PortfolioHistoryEngine.calculate(
-            input: input(closes: [], currentValue: 0, now: date(3)), mode: .value, range: .all
+            input: input(closes: [], currentValue: 0, now: date(3)), range: .all
         )
 
         XCTAssertTrue(empty.isEmpty)
@@ -830,7 +705,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         // there would draw the same moment twice under two different labels.
         let atBoundary = PortfolioHistoryEngine.calculate(
             input: input(closes: [close(2, value: 100)], currentValue: 100, now: date(3)),
-            mode: .value, range: .all
+            range: .all
         )
 
         XCTAssertEqual(atBoundary.points.count, 1)
@@ -844,7 +719,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         // unavailable.
         let afterBoundary = PortfolioHistoryEngine.calculate(
             input: input(closes: [close(2, value: 100)], currentValue: 100, now: date(3, hour: 1)),
-            mode: .value, range: .all
+            range: .all
         )
 
         XCTAssertEqual(afterBoundary.points.count, 2)
@@ -870,12 +745,10 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         )
         let resultForThreeMonths = PortfolioHistoryEngine.calculate(
             input: historyInput,
-            mode: .marketMovement,
             range: .threeMonths
         )
         let resultForOneWeek = PortfolioHistoryEngine.calculate(
             input: historyInput,
-            mode: .marketMovement,
             range: .oneWeek
         )
 
@@ -904,7 +777,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         for range in PortfolioHistoryRange.allCases {
             let result = PortfolioHistoryEngine.calculate(
                 input: historyInput,
-                mode: .value,
                 range: range
             )
             let interval = try XCTUnwrap(result.accountingInterval)
@@ -937,11 +809,11 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         let closes = [close(1, value: 0), close(2, value: 33)]
         let baseline = PortfolioHistoryEngine.calculate(
             input: input(closes: closes, events: [first, second], observations: observations, currentValue: 33, now: date(3)),
-            mode: .performance, range: .all
+            range: .all
         )
         let shuffled = PortfolioHistoryEngine.calculate(
             input: input(closes: closes.reversed(), events: [second, first], observations: observations.reversed(), currentValue: 33, now: date(3)),
-            mode: .performance, range: .all
+            range: .all
         )
 
         XCTAssertEqual(baseline, shuffled)

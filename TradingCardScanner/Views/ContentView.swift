@@ -129,19 +129,15 @@ struct ContentView: View {
                 seedSealedArtworkQA()
             case "CardMovement":
                 PortfolioDebugFixtures.seedMovementIfNeeded(in: modelContext)
-                history.mode = .marketMovement
                 history.range = .oneMonth
             case "CardDetail":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
-                history.mode = .marketMovement
                 history.range = .oneMonth
             case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
-                history.mode = .marketMovement
                 history.range = .oneWeek
             case "PortfolioHistory":
                 PortfolioDebugFixtures.seedHistoryIfNeeded(in: modelContext)
-                history.mode = .marketMovement
                 history.range = .all
             default:
                 break

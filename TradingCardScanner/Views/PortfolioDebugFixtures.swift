@@ -93,7 +93,6 @@ enum PortfolioDebugFixtures {
             in: timeZone
         )
         UserDefaults.standard.set(epochDay.timeIntervalSince1970, forKey: PortfolioEpoch.defaultsKey)
-        UserDefaults.standard.set(PortfolioHistoryMode.marketMovement.rawValue, forKey: "portfolioHistoryMode")
         UserDefaults.standard.set(PortfolioHistoryRange.all.rawValue, forKey: "portfolioHistoryRange")
 
         _ = try? CollectionStore(context: modelContext).addSealed(
