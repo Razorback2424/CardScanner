@@ -30,7 +30,11 @@ struct CollectionCSVImportPlan: Sendable {
     let skippedRows: Int
     let skippedCSVText: String?
 
-    var totalQuantity: Int { entries.reduce(0) { $0 + $1.quantity } }
+    var totalQuantity: Int {
+        entries.reduce(0) {
+            CollectionQuantityLimits.saturatingAdd($0, $1.quantity)
+        }
+    }
 }
 
 struct CollectionCSVImportResult: Sendable {
@@ -61,6 +65,10 @@ struct CollectionCSVEntry: Sendable, Equatable {
     let collectionKey: String
     let game: CardGame
     let providerID: String
+    /// Keep the synthetic/local provider id separate from the catalog identity
+    /// discovered later. Re-exporting one as the other can create a second
+    /// price lineage on the next import.
+    var catalogProviderID: String? = nil
     let name: String
     let setName: String
     let setCode: String
@@ -101,6 +109,7 @@ enum CollectionCSVError: LocalizedError {
     case missingColumns
     case noCards
     case invalidTreatmentID(String)
+    case quantityOutOfRange(String)
 
     var errorDescription: String? {
         switch self {
@@ -112,6 +121,8 @@ enum CollectionCSVError: LocalizedError {
             return "No importable cards were found in this CSV."
         case let .invalidTreatmentID(id):
             return "The CSV contains an unsupported Magic treatment id: \(id)."
+        case let .quantityOutOfRange(detail):
+            return "The CSV contains an unsupported quantity: \(detail)."
         }
     }
 }
@@ -128,7 +139,7 @@ enum CollectionCSV {
         "justtcg_api_version", "grading_company", "grade", "grade_label",
         "grading_qualifier", "certification_number", "market_region",
         "pokemon_print_run", "magic_treatment_ids", "magic_treatment_qualifiers",
-        "magic_content_kind"
+        "magic_content_kind", "catalog_provider_id"
     ]
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -142,7 +153,7 @@ enum CollectionCSV {
         }.map { card in
             [
                 card.game,
-                card.catalogProviderID ?? card.providerID,
+                card.providerID,
                 card.name,
                 card.setName,
                 card.setCode,
@@ -169,7 +180,8 @@ enum CollectionCSV {
                 card.pokemonPrintRun?.rawValue ?? "",
                 encodedTreatmentIDs(card.magicTreatmentIDsRaw),
                 MagicTreatmentKeyCodec.encodeQualifiers(card.magicTreatmentQualifiers) ?? "",
-                card.magicContentKindRaw
+                card.magicContentKindRaw,
+                card.catalogProviderID ?? ""
             ]
         }
 
@@ -213,7 +225,8 @@ enum CollectionCSV {
                 entry.pokemonPrintRun?.rawValue ?? "",
                 encodedTreatmentIDs(entry.magicTreatmentIDsRaw),
                 MagicTreatmentKeyCodec.encodeQualifiers(entry.magicTreatmentQualifiers) ?? "",
-                entry.magicContentKindRaw
+                entry.magicContentKindRaw,
+                entry.catalogProviderID ?? ""
             ]
         }
         return CollectionCSVDocument(text: csvText(headers: exportHeaders, rows: rows))
@@ -306,10 +319,8 @@ enum CollectionCSV {
         _ cards: [CollectedCard],
         priceRecords: [PriceRecord]
     ) -> CollectionCSVDocument {
-        let recordsByKey = Dictionary(
-            priceRecords.map { ($0.key, $0) },
-            uniquingKeysWith: { first, _ in first }
-        )
+        let recordsByKey = Dictionary(grouping: priceRecords, by: \.key)
+            .compactMapValues(PriceStore.authoritativeRecord(in:))
         return diagnosticExport(
             cards.filter { card in
                 PriceStore.record(for: card, in: recordsByKey)?.effectiveUnitMarketPriceUSD == nil
@@ -343,10 +354,8 @@ enum CollectionCSV {
         diagnostic: (CollectedCard, PriceRecord?) -> String
     ) -> CollectionCSVDocument {
         let formatter = ISO8601DateFormatter()
-        let recordsByKey = Dictionary(
-            priceRecords.map { ($0.key, $0) },
-            uniquingKeysWith: { first, _ in first }
-        )
+        let recordsByKey = Dictionary(grouping: priceRecords, by: \.key)
+            .compactMapValues(PriceStore.authoritativeRecord(in:))
         let headers = [
             "game", "local_provider_id", "catalog_provider_id", "card_name",
             "set_name", "set_code", "card_number", "finish", "finish_name",
@@ -464,13 +473,22 @@ enum CollectionCSV {
             }
 
             for entry in parsed {
+                guard entry.quantity > 0,
+                      entry.quantity <= CollectionQuantityLimits.maximum else {
+                    throw CollectionCSVError.quantityOutOfRange(
+                        "\(entry.quantity) for \(entry.collectionKey)"
+                    )
+                }
                 if var existing = entriesByKey[entry.collectionKey] {
                     if isCertified(entry) || isCertified(existing) {
                         // A certificate identifies one physical slab. Duplicate
                         // export rows must not turn that slab into a stack.
                         existing.quantity = 1
                     } else {
-                        existing.quantity += entry.quantity
+                        existing.quantity = try CollectionQuantityLimits.checkedAdd(
+                            existing.quantity,
+                            entry.quantity
+                        )
                     }
                     entriesByKey[entry.collectionKey] = existing
                 } else {
@@ -623,6 +641,12 @@ enum CollectionCSV {
 
                     do {
                         let entry = plan.entries[index]
+                        guard entry.quantity > 0,
+                              entry.quantity <= CollectionQuantityLimits.maximum else {
+                            throw CollectionCSVError.quantityOutOfRange(
+                                "\(entry.quantity) for \(entry.collectionKey)"
+                            )
+                        }
                         try validateImportedTreatmentIDs(entry.magicTreatmentIDsRaw)
                         let storedCard: CollectedCard
                         var deltaQuantity = 0
@@ -689,7 +713,10 @@ enum CollectionCSV {
                                     // repeated import is metadata refresh, never a second
                                     // ownership event and never a silent quantity repair.
                                 } else {
-                                    existing.quantity += entry.quantity
+                                    existing.quantity = try CollectionQuantityLimits.checkedAdd(
+                                        existing.quantity,
+                                        entry.quantity
+                                    )
                                     deltaQuantity = entry.quantity
                                 }
                                 existing.dateAdded = max(existing.dateAdded, entry.dateAdded)
@@ -698,6 +725,9 @@ enum CollectionCSV {
                                 if existing.justTCGCardID == nil { existing.justTCGCardID = entry.justTCGCardID }
                                 if existing.justTCGVariantID == nil { existing.justTCGVariantID = entry.justTCGVariantID }
                                 if existing.justTCGAPIVersion == nil { existing.justTCGAPIVersion = entry.justTCGAPIVersion }
+                                if existing.catalogProviderID == nil {
+                                    existing.catalogProviderID = entry.catalogProviderID
+                                }
                                 if existing.magicTreatmentIDsRaw.isEmpty {
                                     existing.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
                                         from: entry.magicTreatmentIDsRaw
@@ -751,6 +781,7 @@ enum CollectionCSV {
                                 card.justTCGAPIVersion = entry.justTCGAPIVersion
                                 card.certificationNumber = entry.certificationNumber
                                 card.marketRegionRaw = entry.marketRegionRaw
+                                card.catalogProviderID = entry.catalogProviderID
                                 // Preserve an unknown future content-kind string even
                                 // though the current computed enum projects it to regular.
                                 card.magicContentKindRaw = entry.magicContentKindRaw
@@ -882,6 +913,7 @@ enum CollectionCSV {
               let name = value(["card_name", "name", "english_card_name"], in: row), !name.isEmpty else {
             return []
         }
+        let catalogProviderID = nonempty(value(["catalog_provider_id"], in: row))
 
         let isScryfallExport = !(row["scryfall_uuid"] ?? "").isEmpty
         let game = CardGame(rawValue: value(["game"], in: row)?.lowercased() ?? "")
@@ -913,7 +945,8 @@ enum CollectionCSV {
             let treatmentIDs = decodedTreatmentIDs(value(["magic_treatment_ids"], in: row))
             if nonfoilQuantity > 0 {
                 result.append(makeEntry(
-                    game: game, providerID: providerID, name: name, setName: setName,
+                    game: game, providerID: providerID, catalogProviderID: catalogProviderID,
+                    name: name, setName: setName,
                     setCode: setCode, cardNumber: cardNumber, rarity: rarity,
                     imageURL: imageURL, thumbnailURL: thumbnailURL,
                     variant: .nonfoil, quantity: nonfoilQuantity, dateAdded: importedDate,
@@ -924,7 +957,8 @@ enum CollectionCSV {
             }
             if foilQuantity > 0 {
                 result.append(makeEntry(
-                    game: game, providerID: providerID, name: name, setName: setName,
+                    game: game, providerID: providerID, catalogProviderID: catalogProviderID,
+                    name: name, setName: setName,
                     setCode: setCode, cardNumber: cardNumber, rarity: rarity,
                     imageURL: imageURL, thumbnailURL: thumbnailURL,
                     variant: .foil, quantity: foilQuantity, dateAdded: importedDate,
@@ -961,7 +995,8 @@ enum CollectionCSV {
             )
         }
         return [makeEntry(
-            game: game, providerID: providerID, name: name, setName: setName,
+            game: game, providerID: providerID, catalogProviderID: catalogProviderID,
+            name: name, setName: setName,
             setCode: setCode, cardNumber: cardNumber, rarity: rarity,
             imageURL: imageURL, thumbnailURL: thumbnailURL,
             variant: variant, quantity: quantity, dateAdded: importedDate,
@@ -1062,6 +1097,7 @@ enum CollectionCSV {
     private static func makeEntry(
         game: CardGame,
         providerID: String,
+        catalogProviderID: String? = nil,
         name: String,
         setName: String,
         setCode: String,
@@ -1179,6 +1215,7 @@ enum CollectionCSV {
             collectionKey: key,
             game: game,
             providerID: providerID,
+            catalogProviderID: catalogProviderID,
             name: name,
             setName: setName,
             setCode: setCode,
@@ -1385,7 +1422,7 @@ enum CollectionCSV {
     ) -> (amount: Double, asOf: Date?)? {
         guard let field = row.first(where: { $0.key.hasPrefix("market_price") }),
               let amount = currencyAmount(field.value),
-              amount > 0 else {
+              amount.isFinite, amount >= 0 else {
             return nil
         }
         return (amount, dateEmbedded(in: field.key))

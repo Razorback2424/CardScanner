@@ -165,6 +165,15 @@ final class ImportedItemKindTests: XCTestCase {
         XCTAssertEqual(entry.importedMarketPriceUSD, 400.00)
     }
 
+    func testZeroPortfolioPriceIsPreservedAsAnExplicitPrice() throws {
+        let csv = portfolioCSV([
+            "Pokemon,SV: 151,Charizard ex,199/165,Rare,,Ungraded,1,0.00,false"
+        ])
+        let entry = try XCTUnwrap(try CollectionCSV.parse(csv).entries.first)
+
+        XCTAssertEqual(entry.importedMarketPriceUSD, 0)
+    }
+
     func testAppExportIdentifiersRoundTripForGradedAndSealedRows() throws {
         let header = [
             "game", "provider_id", "card_name", "set_name", "set_code",
