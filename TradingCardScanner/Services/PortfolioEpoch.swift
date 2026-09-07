@@ -89,9 +89,10 @@ enum PortfolioEpoch {
         defaults: UserDefaults = .standard,
         at date: Date = .now,
         // Injected rather than read inline so the deferral is testable without a
-        // keychain. This is the same condition `makeContainer()` uses to decide
-        // whether SwiftData gets a mirrored configuration.
-        isCloudSyncing: Bool = AppleAccountCredentials.isSignedIn,
+        // keychain. Production callers must pass the storage mode selected by
+        // `TradingCardScannerApp.makeContainer()`; account credentials alone
+        // do not prove that this launch is using a mirrored container.
+        isCloudSyncing: Bool,
         save: (ModelContext) throws -> Void = { try $0.save() }
     ) throws -> Date {
         let ledger = InventoryLedger(context: context)

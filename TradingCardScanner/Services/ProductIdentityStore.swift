@@ -14,25 +14,16 @@ import SwiftData
 /// main actor; the type does not impose that on other context owners.
 final class ProductIdentityIndex {
     private(set) var byKey: [String: ProductIdentity]
-    private let loadedSuccessfully: Bool
+    private let context: ModelContext
+    private(set) var loadedSuccessfully: Bool
 
     init(context: ModelContext) {
+        self.context = context
         let signpostState = PerformanceSignpost.signposter.beginInterval("ProductIdentityIndex.init")
         defer { PerformanceSignpost.signposter.endInterval("ProductIdentityIndex.init", signpostState) }
-        do {
-            let identities = try context.fetch(FetchDescriptor<ProductIdentity>())
-            self.byKey = Dictionary(
-                identities.map { ($0.key, $0) },
-                uniquingKeysWith: { first, _ in first }
-            )
-            self.loadedSuccessfully = true
-        } catch {
-            // Preserve the old best-effort behavior if the index fetch itself
-            // is unreadable. Callers fall back to the keyed fetch methods and
-            // therefore never turn a read failure into a duplicate insert.
-            self.byKey = [:]
-            self.loadedSuccessfully = false
-        }
+        self.byKey = [:]
+        self.loadedSuccessfully = false
+        reload()
     }
 
     func identity(forKey key: String) -> ProductIdentity? {
@@ -44,6 +35,37 @@ final class ProductIdentityIndex {
     }
 
     var isUsable: Bool { loadedSuccessfully }
+
+    /// Rollback invalidates references to inserted/deleted model objects. A
+    /// refresh worker must rebuild its materialized index before attempting the
+    /// next write, otherwise a rolled-back identity can be reused as if it were
+    /// durable.
+    func reload() {
+        do {
+            let identities = try context.fetch(FetchDescriptor<ProductIdentity>())
+            byKey = Dictionary(grouping: identities, by: \.key)
+                .compactMapValues(Self.authoritativeIdentity(in:))
+            loadedSuccessfully = true
+        } catch {
+            byKey = [:]
+            loadedSuccessfully = false
+        }
+    }
+
+    private static func authoritativeIdentity(in identities: [ProductIdentity]) -> ProductIdentity? {
+        identities.reduce(nil) { incumbent, candidate in
+            guard let incumbent else { return candidate }
+            let candidateDate = candidate.resolvedAt ?? candidate.unmatchedAt ?? .distantPast
+            let incumbentDate = incumbent.resolvedAt ?? incumbent.unmatchedAt ?? .distantPast
+            if candidateDate != incumbentDate { return candidateDate > incumbentDate ? candidate : incumbent }
+            if (candidate.vendorCardID != nil) != (incumbent.vendorCardID != nil) {
+                return candidate.vendorCardID != nil ? candidate : incumbent
+            }
+            return (candidate.vendorVariantID ?? "") > (incumbent.vendorVariantID ?? "")
+                ? candidate
+                : incumbent
+        }
+    }
 }
 
 /// Context-owned rather than `@MainActor`. See `ProductIdentityIndex`.
@@ -51,9 +73,65 @@ struct ProductIdentityStore {
     let context: ModelContext
 
     func identity(forKey key: String) -> ProductIdentity? {
-        var descriptor = FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
+        guard let matches = try? context.fetch(
+            FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
+        ) else { return nil }
+        return Self.authoritativeIdentity(in: matches)
+    }
+
+    /// A write may create a missing identity only after a complete keyed read.
+    /// An unreadable fetch returns nil and the caller leaves the context alone;
+    /// it is never interpreted as permission to insert another row.
+    private func identityForWrite(
+        key: String,
+        treatmentIDs: [String],
+        using index: ProductIdentityIndex?
+    ) -> ProductIdentity? {
+        if let index, index.isUsable {
+            if let existing = index.identity(forKey: key) { return existing }
+            // The index is a snapshot. A sibling context may have created the
+            // key after it was built, so an indexed miss still needs a keyed
+            // read before creation.
+            do {
+                let matches = try context.fetch(
+                    FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
+                )
+                if let existing = Self.authoritativeIdentity(in: matches) {
+                    index.insert(existing)
+                    return existing
+                }
+            } catch {
+                return nil
+            }
+            let created = ProductIdentity(
+                key: key,
+                vendor: .justTCG,
+                magicTreatmentIDs: treatmentIDs
+            )
+            context.insert(created)
+            index.insert(created)
+            return created
+        }
+
+        do {
+            let matches = try context.fetch(
+                FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
+            )
+            if let existing = Self.authoritativeIdentity(in: matches) {
+                index?.insert(existing)
+                return existing
+            }
+            let created = ProductIdentity(
+                key: key,
+                vendor: .justTCG,
+                magicTreatmentIDs: treatmentIDs
+            )
+            context.insert(created)
+            index?.insert(created)
+            return created
+        } catch {
+            return nil
+        }
     }
 
     private func identity(
@@ -61,7 +139,13 @@ struct ProductIdentityStore {
         using index: ProductIdentityIndex?
     ) -> ProductIdentity? {
         guard let index, index.isUsable else { return identity(forKey: key) }
-        return index.identity(forKey: key)
+        if let cached = index.identity(forKey: key) { return cached }
+        guard let fetched = try? context.fetch(
+            FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
+        ) else { return nil }
+        let authoritative = Self.authoritativeIdentity(in: fetched)
+        if let authoritative { index.insert(authoritative) }
+        return authoritative
     }
 
     /// Whether the resolver should look this card up at all.
@@ -92,6 +176,7 @@ struct ProductIdentityStore {
 
     /// Remember what a batched response resolved, so the next refresh can go
     /// straight to the keyed lookup.
+    @discardableResult
     func recordBatchResolution(
         forKey key: String,
         cardID: String?,
@@ -99,18 +184,13 @@ struct ProductIdentityStore {
         treatmentIDs: [String] = [],
         at date: Date = .now,
         using index: ProductIdentityIndex? = nil
-    ) {
-        guard cardID != nil || variantID != nil else { return }
-        let identity = self.identity(forKey: key, using: index) ?? {
-            let created = ProductIdentity(
-                key: key,
-                vendor: .justTCG,
-                magicTreatmentIDs: treatmentIDs
-            )
-            context.insert(created)
-            index?.insert(created)
-            return created
-        }()
+    ) -> Bool {
+        guard cardID != nil || variantID != nil else { return true }
+        guard let identity = identityForWrite(
+            key: key,
+            treatmentIDs: treatmentIDs,
+            using: index
+        ) else { return false }
         if identity.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
             identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
@@ -119,6 +199,7 @@ struct ProductIdentityStore {
         if let variantID { identity.vendorVariantID = variantID }
         identity.resolvedAt = date
         identity.unmatchedAt = nil
+        return true
     }
 
     func cachedCardID(
@@ -136,30 +217,26 @@ struct ProductIdentityStore {
     /// A miss is written as deliberately as a hit. Network, budget and rate-limit
     /// outcomes write nothing at all: scheduling or transport state is not
     /// evidence about whether the vendor carries the card.
+    @discardableResult
     func record(
         _ outcome: ProductPriceOutcome,
         forKey key: String,
         treatmentIDs: [String] = [],
         at date: Date = .now,
         using index: ProductIdentityIndex? = nil
-    ) {
+    ) -> Bool {
         switch outcome {
         case .requestFailed, .unsupportedFinish, .unsupportedTreatment, .budgetReached, .rateLimited:
-            return
+            return true
         case .price, .noListingForVariant, .noProductMatch:
             break
         }
 
-        let identity = self.identity(forKey: key, using: index) ?? {
-            let created = ProductIdentity(
-                key: key,
-                vendor: .justTCG,
-                magicTreatmentIDs: treatmentIDs
-            )
-            context.insert(created)
-            index?.insert(created)
-            return created
-        }()
+        guard let identity = identityForWrite(
+            key: key,
+            treatmentIDs: treatmentIDs,
+            using: index
+        ) else { return false }
         if identity.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
             identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
@@ -193,17 +270,34 @@ struct ProductIdentityStore {
         case .requestFailed, .unsupportedFinish, .unsupportedTreatment, .budgetReached, .rateLimited:
             break
         }
+        return true
     }
 
     @discardableResult
-    func save() -> Bool {
+    func save(index: ProductIdentityIndex? = nil) -> Bool {
         guard context.hasChanges else { return true }
         do {
             try context.save()
             return true
         } catch {
             context.rollback()
+            index?.reload()
             return false
+        }
+    }
+
+    private static func authoritativeIdentity(in identities: [ProductIdentity]) -> ProductIdentity? {
+        identities.reduce(nil) { incumbent, candidate in
+            guard let incumbent else { return candidate }
+            let candidateDate = candidate.resolvedAt ?? candidate.unmatchedAt ?? .distantPast
+            let incumbentDate = incumbent.resolvedAt ?? incumbent.unmatchedAt ?? .distantPast
+            if candidateDate != incumbentDate { return candidateDate > incumbentDate ? candidate : incumbent }
+            if (candidate.vendorCardID != nil) != (incumbent.vendorCardID != nil) {
+                return candidate.vendorCardID != nil ? candidate : incumbent
+            }
+            return (candidate.vendorVariantID ?? "") > (incumbent.vendorVariantID ?? "")
+                ? candidate
+                : incumbent
         }
     }
 }

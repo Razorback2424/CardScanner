@@ -249,6 +249,7 @@ final class PriceRefreshDataIndex {
         let portfolioDay: Date
     }
 
+    private let context: ModelContext
     private(set) var recordsByKey: [String: [PriceRecord]]
     /// Refresh decisions only need the newest observation for each instrument.
     /// Keeping the full append-only history here made a multi-minute refresh
@@ -256,11 +257,24 @@ final class PriceRefreshDataIndex {
     private(set) var newestObservationsByInstrumentKey: [String: PriceObservation]
     private(set) var checkDaysByKey: [CheckDayKey: PriceCheckDay]
     private(set) var indexedPortfolioDays: Set<Date>
-    private let loadedSuccessfully: Bool
+    private(set) var loadedSuccessfully: Bool
 
     init(context: ModelContext) {
+        self.context = context
         let signpostState = PerformanceSignpost.signposter.beginInterval("PriceRefreshDataIndex.init")
         defer { PerformanceSignpost.signposter.endInterval("PriceRefreshDataIndex.init", signpostState) }
+        self.recordsByKey = [:]
+        self.newestObservationsByInstrumentKey = [:]
+        self.checkDaysByKey = [:]
+        self.indexedPortfolioDays = []
+        self.loadedSuccessfully = false
+        reload()
+    }
+
+    /// Rebuilds all materialized reads after a context rollback. Model objects
+    /// inserted or deleted before a failed save are not safe cache entries for
+    /// the next provider response.
+    func reload() {
         do {
             let records = try context.fetch(FetchDescriptor<PriceRecord>())
             let observations = try context.fetch(FetchDescriptor<PriceObservation>())
@@ -286,16 +300,12 @@ final class PriceRefreshDataIndex {
             }
             self.newestObservationsByInstrumentKey = newestByInstrumentKey
             self.checkDaysByKey = Dictionary(
-                checkDays.map {
-                    (CheckDayKey(instrumentKey: $0.instrumentKey, portfolioDay: $0.portfolioDay), $0)
-                },
-                uniquingKeysWith: { first, _ in first }
-            )
+                grouping: checkDays,
+                by: { CheckDayKey(instrumentKey: $0.instrumentKey, portfolioDay: $0.portfolioDay) }
+            ).compactMapValues { PriceCheckDay.preferred(from: $0) }
             self.indexedPortfolioDays = [indexedDay]
             self.loadedSuccessfully = true
         } catch {
-            // Fall back to the original keyed fetches if one table cannot be
-            // read. A partial index must never be mistaken for an empty store.
             self.recordsByKey = [:]
             self.newestObservationsByInstrumentKey = [:]
             self.checkDaysByKey = [:]
@@ -346,9 +356,13 @@ final class PriceRefreshDataIndex {
     }
 
     func insert(_ checkDay: PriceCheckDay) {
-        checkDaysByKey[
-            CheckDayKey(instrumentKey: checkDay.instrumentKey, portfolioDay: checkDay.portfolioDay)
-        ] = checkDay
+        let key = CheckDayKey(instrumentKey: checkDay.instrumentKey, portfolioDay: checkDay.portfolioDay)
+        if let existing = checkDaysByKey[key],
+           let preferred = PriceCheckDay.preferred(from: [existing, checkDay]) {
+            checkDaysByKey[key] = preferred
+        } else {
+            checkDaysByKey[key] = checkDay
+        }
         indexedPortfolioDays.insert(checkDay.portfolioDay)
     }
 
@@ -449,8 +463,7 @@ struct PriceStore {
         [
             record.invalidatedAt,
             record.lastSuccessfulCheckAt,
-            record.fetchedAt,
-            record.lastCheckedAt
+            record.fetchedAt
         ]
         .compactMap { $0 }
         .max() ?? .distantPast
@@ -792,6 +805,7 @@ struct PriceStore {
             return true
         } catch {
             context.rollback()
+            index?.reload()
             return false
         }
     }

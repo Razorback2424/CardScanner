@@ -136,6 +136,7 @@ final class PriceSnapshotStore: ObservableObject {
                 let startingRevision = self.revision
                 let actor = PriceSnapshotModelActor(modelContainer: container)
                 let snapshot = await actor.snapshot()
+                guard await actor.readSucceeded() else { return }
                 guard !Task.isCancelled else { return }
 
                 // A delta or another requested rebuild landed while the actor
@@ -170,10 +171,27 @@ final class PriceSnapshotStore: ObservableObject {
 /// needs to hash or refetch a whole price table after an individual delta.
 @ModelActor
 actor PriceSnapshotModelActor {
+    private var lastGoodSnapshot: PriceSnapshot?
+    private var lastReadSucceeded = false
+
+    func readSucceeded() -> Bool { lastReadSucceeded }
+
     func snapshot() -> PriceSnapshot {
-        let records = (try? modelContext.fetch(FetchDescriptor<PriceRecord>())) ?? []
-        let cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        let artworkOverrides = (try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? []
+        let records: [PriceRecord]
+        let cards: [CollectedCard]
+        let artworkOverrides: [LocalArtworkOverride]
+        do {
+            records = try modelContext.fetch(FetchDescriptor<PriceRecord>())
+            cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
+            artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
+        } catch {
+            lastReadSucceeded = false
+            return lastGoodSnapshot ?? PriceSnapshot(
+                prices: [:],
+                diagnosticsByCollectionKey: [:],
+                priceStorageKeyByCollectionKey: [:]
+            )
+        }
 
         let recordsByKey = Dictionary(grouping: records, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
@@ -196,10 +214,13 @@ actor PriceSnapshotModelActor {
                 )
             )
         }
-        return PriceSnapshot(
+        let snapshot = PriceSnapshot(
             prices: prices,
             diagnosticsByCollectionKey: diagnostics,
             priceStorageKeyByCollectionKey: priceStorageKeys
         )
+        lastGoodSnapshot = snapshot
+        lastReadSucceeded = true
+        return snapshot
     }
 }

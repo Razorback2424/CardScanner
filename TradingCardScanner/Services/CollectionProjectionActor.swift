@@ -40,6 +40,7 @@ final class CollectionProjectionStore: ObservableObject {
                 self.rebuildRequested = false
                 let actor = CollectionProjectionActor(modelContainer: container)
                 let snapshot = await actor.snapshot()
+                guard await actor.readSucceeded() else { return }
                 guard !Task.isCancelled else { return }
 
                 // Serialize overlapping requests and let the newest read win.
@@ -66,6 +67,11 @@ final class CollectionProjectionStore: ObservableObject {
 /// representative and derive diagnostics away from the main actor.
 @ModelActor
 actor CollectionProjectionActor {
+    private var lastGoodSnapshot: CollectionProjectionSnapshot?
+    private var lastReadSucceeded = false
+
+    func readSucceeded() -> Bool { lastReadSucceeded }
+
     func snapshot() -> CollectionProjectionSnapshot {
         let signpostState = PerformanceSignpost.signposter
             .beginInterval("makeCachedProjection")
@@ -74,17 +80,38 @@ actor CollectionProjectionActor {
                 .endInterval("makeCachedProjection", signpostState)
         }
 
-        let cards = (try? modelContext.fetch(
-            FetchDescriptor<CollectedCard>(
-                sortBy: [SortDescriptor(\CollectedCard.dateAdded, order: .reverse)]
+        let cards: [CollectedCard]
+        let records: [PriceRecord]
+        let artworkOverrides: [LocalArtworkOverride]
+        do {
+            cards = try modelContext.fetch(
+                FetchDescriptor<CollectedCard>(
+                    sortBy: [SortDescriptor(\CollectedCard.dateAdded, order: .reverse)]
+                )
             )
-        )) ?? []
-        let records = (try? modelContext.fetch(FetchDescriptor<PriceRecord>())) ?? []
-        let artworkOverrides = (try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? []
+            records = try modelContext.fetch(FetchDescriptor<PriceRecord>())
+            artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
+        } catch {
+            lastReadSucceeded = false
+            return lastGoodSnapshot ?? CollectionProjectionSnapshot(
+                rows: [],
+                rowsByCollectionKey: [:],
+                diagnosticsByCollectionKey: [:],
+                physicalRowCountsByKey: [:],
+                ownership: CatalogOwnershipIndex(rows: [])
+            )
+        }
         let recordsByKey = Dictionary(grouping: records, by: \.key)
             .compactMapValues(PriceStore.authoritativeRecord(in:))
         let keySelection = PriceRecordKeySelection(records: Array(recordsByKey.values))
-        let localArtworkKeys = Set(artworkOverrides.map(\.collectionKey))
+        let artworkByKey = Dictionary(grouping: artworkOverrides, by: \.collectionKey)
+            .compactMapValues { rows in
+                rows.max {
+                    if $0.updatedAt != $1.updatedAt { return $0.updatedAt < $1.updatedAt }
+                    return $0.filename < $1.filename
+                }
+            }
+        let localArtworkKeys = Set(artworkByKey.keys)
         let projection = LogicalCollection.project(cards: cards) { card in
             keySelection.priceStorageKey(for: card)
         }
@@ -118,7 +145,8 @@ actor CollectionProjectionActor {
                     gradeValue: card.gradeRaw,
                     lowImageURL: card.lowImageURL,
                     highImageURL: card.highImageURL,
-                    userArtworkFilename: card.userArtworkFilename
+                    userArtworkFilename: artworkByKey[card.collectionKey]?.filename
+                        ?? card.userArtworkFilename
                 )
             )
             diagnostics[card.collectionKey] = CollectionRowDiagnostics(
@@ -132,7 +160,7 @@ actor CollectionProjectionActor {
             )
         }
 
-        return CollectionProjectionSnapshot(
+        let snapshot = CollectionProjectionSnapshot(
             rows: rows,
             rowsByCollectionKey: Dictionary(
                 uniqueKeysWithValues: rows.map { ($0.id, $0) }
@@ -141,5 +169,8 @@ actor CollectionProjectionActor {
             physicalRowCountsByKey: projection.byKey.mapValues(\.physicalRowCount),
             ownership: CatalogOwnershipIndex(rows: cards.map(CatalogOwnershipCardSnapshot.init))
         )
+        lastGoodSnapshot = snapshot
+        lastReadSucceeded = true
+        return snapshot
     }
 }

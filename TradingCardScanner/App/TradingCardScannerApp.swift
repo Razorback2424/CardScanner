@@ -45,9 +45,13 @@ struct TradingCardScannerApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(scannerModel)
-                .environmentObject(scanSummaryStore)
+            if let message = Self.storageRecoveryMessage {
+                StorageRecoveryView(message: message)
+            } else {
+                ContentView()
+                    .environmentObject(scannerModel)
+                    .environmentObject(scanSummaryStore)
+            }
         }
         .modelContainer(Self.container)
     }
@@ -107,6 +111,8 @@ struct TradingCardScannerApp: App {
     /// back to a local-only container instead of crashing. Local persistence
     /// is the fallback in both the literal and the design sense: sync is
     /// additive, never a requirement to use the app.
+    private(set) static var storageRecoveryMessage: String?
+
     private static func makeContainer() -> ModelContainer {
         // A separate store for the local-only models, so CloudKit mirroring is
         // decided per configuration rather than per container.
@@ -142,9 +148,42 @@ struct TradingCardScannerApp: App {
             return container
         }
 
-        // Only reachable if even a local store can't be created (disk full,
-        // corrupt store) — matches what SwiftData's own `.modelContainer(for:)`
-        // convenience modifier does in the same situation.
-        fatalError("Could not create a local ModelContainer.")
+        // A disk-full or corrupt local store must not make the launch itself
+        // crash. Keep the original store untouched and provide a temporary,
+        // clearly-labeled recovery container so the app can explain the state
+        // and be quit/reopened after the underlying storage problem is fixed.
+        let recoveryConfiguration = ModelConfiguration(
+            "Recovery",
+            schema: fullSchema,
+            isStoredInMemoryOnly: true,
+            cloudKitDatabase: .none
+        )
+        if let container = try? ModelContainer(
+            for: fullSchema,
+            configurations: [recoveryConfiguration]
+        ) {
+            activeStorageMode = .localOnly
+            storageRecoveryMessage = "Your saved collection could not be opened. The original store was left untouched, and this launch is using temporary recovery storage. Quit and reopen after fixing the device storage issue."
+            return container
+        }
+
+        // SwiftData could not construct even an in-memory container. There is
+        // no model context that can safely be injected into the app in this
+        // process; preserve the diagnostic rather than claiming the collection
+        // is empty. This is an unrecoverable framework/bootstrap failure.
+        preconditionFailure("Could not create a recovery ModelContainer.")
+    }
+}
+
+private struct StorageRecoveryView: View {
+    let message: String
+
+    var body: some View {
+        ContentUnavailableView {
+            Label("Storage recovery required", systemImage: "externaldrive.badge.exclamationmark")
+        } description: {
+            Text(message)
+        }
+        .padding(24)
     }
 }
