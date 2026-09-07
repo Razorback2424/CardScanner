@@ -117,6 +117,143 @@ Verification on 2026-09-04:
 - Full `xcodebuild test-without-building` suite — 755 passed, 0 failed, 0 skipped.
 - `git diff --check` — clean.
 
+## Consolidated audit first pass — 2026-09-07
+
+The attached `TradingCardScanner-consolidated-audit.md` was implemented in
+the prescribed order as far as the repository and available verification made
+possible. The safe-fixer workflow was used for the high-confidence blocker and
+high-severity items. An attempted creation of the slash-named safe-fixer branch
+was rejected by the current tool sandbox; that is not evidence that `.git/refs`
+is filesystem-unwritable. At the time of this audit pass, the changes remained
+on `codex/development` and were intentionally uncommitted; they are now being
+recorded in reviewable commits on that branch.
+
+### Completed slices
+
+- [x] Release/runtime safety: recoverable persistent-store failure now gets an
+  in-memory recovery path and a visible recovery screen; the ultimate
+  precondition remains only for failure to create even that fallback.
+- [x] Scanner lifecycle: session/purpose/visibility/generation fencing,
+  permission callback fencing, tracker teardown/reseeding, bounded
+  finalization, and recognition resumption after choice/identification failure.
+- [x] Identity and pricing arbitration: deterministic authoritative
+  `PriceRecord`, `PriceCheckDay`, and `ProductIdentity` election; rollback and
+  sibling-context index reloads; negative/non-finite quote rejection; and
+  explicit treatment-free versus treatment-qualified price alias handling.
+- [x] Collection integrity: duplicate certified-slab no-op, raw/graded
+  separation, checked/saturating quantity arithmetic, strict price-identity
+  merge blocking with a narrowly defined legacy-treatment alias exception,
+  catalog-provider provenance, and scanner price staging after canonical row
+  resolution.
+- [x] Fail-closed state: strict projection/snapshot/revision reads retain the
+  last good state instead of publishing empty data; incomplete migration
+  reports are not cached as terminal; graded refresh groups continue after a
+  transport failure; manual, browse-add, fallback-price, and target-build
+  persistence failures are surfaced.
+- [x] Portfolio/storage/refresh: production epoch calls use actual storage mode,
+  stale target refreshes use target fingerprints, local artwork is included in
+  collection rows, and CSV exports preserve local and catalog provider IDs
+  separately.
+- [x] Input validation and UI recovery: CSV quantity bounds, provider market
+  price validation, zero-valued portfolio prices, undo failure propagation,
+  and price-persistence warnings.
+
+### Files changed
+
+The current working tree changes 27 production files: `TradingCardScannerApp.swift`,
+`CollectedCard.swift`, `PriceCheckDay.swift`, `PriceRecord.swift`, `CardScanner.swift`,
+`CollectionCSV.swift`, `CollectionProjectionActor.swift`, `CollectionStore.swift`,
+`InventoryLedger.swift`, `LogicalCollection.swift`, `MagicTreatmentMigration.swift`,
+`PortfolioEngine.swift`, `PortfolioEpoch.swift`, `PriceFallbackQuoteResolver.swift`,
+`PriceObservationLog.swift`, `PriceRefreshController.swift`,
+`PriceRefreshTargets.swift`, `PriceSnapshotStore.swift`, `PriceStore.swift`,
+`ProductIdentityStore.swift`, `StoreRevisionMonitor.swift`,
+`CatalogCardDetailView.swift`, `ContentView.swift`, `PortfolioView.swift`,
+`ScanReviewSheet.swift`, `ScannerView.swift`, and `ScannerViewModel.swift`.
+It also includes regression coverage in `ImportedItemKindTests.swift` and
+`PortfolioReconciliationTests.swift`, plus this plan file.
+
+### Verification
+
+- Static verification after each implementation slice: `swiftc -frontend -parse`
+  over changed Swift files and `git diff --check` passed.
+- The generic simulator destination was rejected before compilation because
+  XCTest requires a concrete simulator. A concrete first pass found and fixed
+  three CSV initializer argument-order errors, then a predicate compile error.
+- The resulting suite found four legacy/canonical CSV reconciliation failures.
+  The merge guard was narrowed to permit only the known treatment alias pair;
+  unrelated price-identity conflicts still fail closed.
+- Earlier first-pass concrete verification:
+  `xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner
+  -destination 'platform=iOS Simulator,id=EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86'
+  -derivedDataPath /private/tmp/trading-card-scanner-audit-final3
+  SWIFT_ENABLE_EXPLICIT_MODULES=NO` — build succeeded; 909 tests passed, 1
+  skipped, 0 failed.
+- The final result bundle still records 11 non-failing warnings: standard
+  signed XCTest simulator-binary notices and two test-only Swift 6
+  `SendableClosureCaptures` warnings in `JustTCGContractTests`; no production
+  failure or test failure remains.
+- First post-review verification:
+  `xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner
+  -destination 'platform=iOS Simulator,id=EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86'
+  -derivedDataPath /private/tmp/trading-card-scanner-audit-followup1
+  SWIFT_ENABLE_EXPLICIT_MODULES=NO` — build succeeded; 913 tests passed, 1
+  skipped, 0 failed. The four newly added regression tests all passed.
+- Final required second verification:
+  `xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner
+  -destination 'platform=iOS Simulator,id=EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86'
+  -derivedDataPath /private/tmp/trading-card-scanner-audit-followup2
+  SWIFT_ENABLE_EXPLICIT_MODULES=NO` — `** TEST SUCCEEDED **`; 913 tests
+  passed, 1 skipped, 0 failed.
+
+### Follow-up corrections from review verification
+
+- [x] Same-key bound/unbound graded and sealed duplicates now merge only when
+  their physical identity, item kind, treatment set, and vendor variant agree;
+  unrelated price identities still fail closed. The pre-bind local price key is
+  also a read-through alias after vendor binding.
+- [x] Collection CSV export keeps the original positional columns unchanged and
+  appends `catalog_provider_id` at the end. Zero portfolio prices remain valid
+  explicit prices rather than being confused with a blank value.
+- [x] The automatic stale-price pass suppresses metadata/vendor-binding writes
+  from re-enqueuing the same collection identity set while a pass is active,
+  but still queues a trailing pass for a genuinely new collection identity.
+- [x] Catalog-add alerts distinguish an add failure from a successful add whose
+  price persistence needs a later retry.
+
+Static verification for these corrections passed after each slice with
+`swiftc -frontend -parse` and `git diff --check`.
+
+### Still open
+
+- [ ] 7 — migrate the full historical price lineage when an unbound graded or
+  sealed row is rebound to a vendor variant. The immediate collection/replay
+  read-through is fixed; atomic migration of every historical observation and
+  event remains open.
+- [ ] 11/12 — confirm stale vendor-variant invalidation and make provider
+  matching fail closed for ambiguous or incomplete evidence.
+- [ ] 21 — globally serialize migration, normalization, import, and scanner
+  rekeying, or add optimistic version/conflict handling.
+- [ ] 33/35 — replace the fixed portfolio grace-window assumption and scope
+  epoch/timezone metadata to the selected store/account.
+- [ ] 38/39 — downsample local artwork off the rendering path and share one
+  detail-view image load between the hero image and accent extraction.
+- [ ] 40/43/44 — measure store-monitor fan-out, large scanner sessions, and
+  long-term observation growth before changing their algorithms. The stale-pass
+  self-trigger gate is covered statically, but metered-request behavior still
+  needs runtime instrumentation.
+- [ ] ProductIdentity index misses — the keyed fallback fetch is intentionally
+  retained for correctness; measure unresolved-key volume before optimizing it.
+- [ ] 42 — refine the portfolio “Updating value” label/accessibility copy to
+  distinguish a full replay from a price request.
+- [ ] 45 — replace `com.example.TradingCardScanner` only after the production
+  bundle ID, entitlements, CloudKit container, and provisioning identity are
+  supplied/confirmed.
+
+Runtime fault-injection, CloudKit conflict testing, real-device performance
+measurement, and production release-signing verification remain outside this
+first pass.
+
 ## Follow-up against updated review
 
 ### Scanner foreground recovery
