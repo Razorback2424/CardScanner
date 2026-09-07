@@ -187,11 +187,10 @@ struct PriceObservationLog {
         if let index, index.isUsable, index.canReadCheckDay(day) {
             return index.checkDay(instrumentKey: instrumentKey, day: day)
         }
-        var descriptor = FetchDescriptor<PriceCheckDay>(
+        let descriptor = FetchDescriptor<PriceCheckDay>(
             predicate: #Predicate { $0.instrumentKey == instrumentKey && $0.portfolioDay == day }
         )
-        descriptor.fetchLimit = 1
-        return try? context.fetch(descriptor).first
+        return try? PriceCheckDay.preferred(from: context.fetch(descriptor))
     }
 
     // MARK: - Writing
@@ -215,7 +214,9 @@ struct PriceObservationLog {
 
         switch lookup {
         case let .price(price):
-            guard let amount = Money(rounding: price.unitMarketPriceUSD) else {
+            guard price.unitMarketPriceUSD.isFinite,
+                  price.unitMarketPriceUSD >= 0,
+                  let amount = Money(rounding: price.unitMarketPriceUSD) else {
                 return .rejectedInvalidQuote
             }
             let candidate = PriceObservationRules.Candidate(

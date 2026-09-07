@@ -260,7 +260,7 @@ struct PortfolioView: View {
                 : "Collection value unavailable"
         }
         let value = "Collection value, \(summary.currentValue.formatted())"
-        return portfolio.isRecomputing ? "\(value). Updating to latest prices." : value
+        return portfolio.isRecomputing ? "\(value). Recalculating portfolio value." : value
     }
 
     /// The half of "needs attention" that does not read the refresh
@@ -1252,10 +1252,14 @@ private struct PortfolioDetailsView: View {
                 LabeledContent("Checking prices", value: "\(completed) of \(total)")
             case let .finished(result):
                 Text(
-                    result.providerUnreachable
+                    result.targetBuildFailed
+                        ? "Prices could not be read. Try again."
+                        : result.providerUnreachable
                         ? "The card catalog is unreachable. Check your connection and try again."
                         : result.persistenceFailed
                             ? "Some price updates could not be saved. Try again."
+                            : result.gradedTransportFailures > 0
+                                ? "Some graded price checks could not be completed. Try again."
                             : result.gradedLookupMisses > 0
                                 ? "Prices checked; no graded listing was found for \(result.gradedLookupMisses) owned \(result.gradedLookupMisses == 1 ? "slab" : "slabs")."
                             : result.reconciledDuplicateRecords > 0
@@ -1264,9 +1268,11 @@ private struct PortfolioDetailsView: View {
                 )
                     .font(.subheadline)
                     .foregroundStyle(
-                        result.providerUnreachable
+                        result.targetBuildFailed
+                            || result.providerUnreachable
                             || result.failed > 0
                             || result.persistenceFailed
+                            || result.gradedTransportFailures > 0
                             || result.gradedLookupMisses > 0
                             || result.reconciledDuplicateRecords > 0
                             ? PortfolioPalette.attention
@@ -1330,9 +1336,11 @@ private struct PortfolioAttentionBadge: ViewModifier {
         }
         if needsAttentionFromPortfolio { return true }
         if case let .finished(result) = refresh.status {
-            return result.providerUnreachable
+            return result.targetBuildFailed
+                || result.providerUnreachable
                 || result.failed > 0
                 || result.persistenceFailed
+                || result.gradedTransportFailures > 0
                 || result.gradedLookupMisses > 0
                 || result.reconciledDuplicateRecords > 0
         }
@@ -1382,10 +1390,10 @@ struct PriceRefreshActivityRow: View {
             .accessibilityLabel("Checking prices \(completed) of \(total)")
         case .idle, .recentlyChecked, .finished:
             if isRecomputing {
-                Label("Updating value", systemImage: "arrow.triangle.2.circlepath")
+                Label("Recalculating portfolio value", systemImage: "arrow.triangle.2.circlepath")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                    .accessibilityLabel("Updating portfolio value")
+                    .accessibilityLabel("Recalculating portfolio value")
             } else {
                 EmptyView()
             }

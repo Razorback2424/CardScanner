@@ -99,7 +99,15 @@ struct StoreRevisionMonitor: View {
     /// an older continuation can move the token backwards after a newer one
     /// has already finished.
     @State private var applyGeneration: UInt = 0
-    @State private var hasCheckedForStalePrices = false
+    /// One automatic pass per target set, rather than one pass per view
+    /// lifetime. A card arriving from CloudKit or an import must be eligible
+    /// immediately even when the monitor already ran earlier in the session.
+    @State private var lastStalePriceTargetFingerprint: Int?
+    /// Metadata and vendor bindings are written by the refresh itself. While
+    /// that pass is active, those fields must not enqueue a second pass for the
+    /// same collection. A changed collection identity still queues a trailing
+    /// request so a card arriving from sync/import is not lost.
+    @State private var activeStalePriceCollectionFingerprint: Int?
     @State private var hasEstablishedMagicTreatmentBaseline = false
 
     var body: some View {
@@ -121,6 +129,7 @@ struct StoreRevisionMonitor: View {
 
                 let actor = StoreRevisionModelActor(modelContainer: modelContext.container)
                 let fingerprint = await actor.fingerprint()
+                guard await actor.readSucceeded() else { return }
                 guard !Task.isCancelled else { return }
                 revisionStore.publish(fingerprint)
                 await apply(fingerprint)
@@ -205,8 +214,18 @@ struct StoreRevisionMonitor: View {
 
     @MainActor
     private func refreshStalePricesIfNeeded() async {
-        guard !hasCheckedForStalePrices, !cards.isEmpty else { return }
-        hasCheckedForStalePrices = true
+        guard !cards.isEmpty else { return }
+        let targetFingerprint = stalePriceTargetFingerprint()
+        if isRefreshInFlight,
+           let activeCollectionFingerprint = activeStalePriceCollectionFingerprint,
+           activeCollectionFingerprint == stalePriceCollectionFingerprint() {
+            // The active pass owns its catalog metadata, vendor binding, and
+            // price writes. Do not turn those writes into a metered retry.
+            return
+        }
+        guard lastStalePriceTargetFingerprint != targetFingerprint else { return }
+        lastStalePriceTargetFingerprint = targetFingerprint
+        activeStalePriceCollectionFingerprint = stalePriceCollectionFingerprint()
         let result = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
             in: modelContext
         ) {
@@ -220,11 +239,39 @@ struct StoreRevisionMonitor: View {
             )
             return await refresh.refresh(request, container: modelContext.container)
         }
+        activeStalePriceCollectionFingerprint = nil
         if result.targetBuildFailed {
-            hasCheckedForStalePrices = false
+            lastStalePriceTargetFingerprint = nil
+        } else {
+            // The pass may have changed a vendor binding or catalog metadata;
+            // absorb that expected target-set revision after the queue settles.
+            lastStalePriceTargetFingerprint = stalePriceTargetFingerprint()
         }
         guard result.didRun else { return }
         refresh.dismissTransientSuccessSummary()
+    }
+
+    private func stalePriceCollectionFingerprint() -> Int {
+        var hasher = Hasher()
+        for card in cards.sorted(by: { $0.collectionKey < $1.collectionKey }) {
+            hasher.combine(card.collectionKey)
+            hasher.combine(card.itemKindRaw)
+        }
+        return hasher.finalize()
+    }
+
+    private func stalePriceTargetFingerprint() -> Int {
+        var hasher = Hasher()
+        for card in cards.sorted(by: { $0.collectionKey < $1.collectionKey }) {
+            hasher.combine(card.collectionKey)
+            hasher.combine(card.priceKey)
+            hasher.combine(card.itemKindRaw)
+            hasher.combine(card.catalogProviderID)
+            hasher.combine(card.justTCGCardID)
+            hasher.combine(card.justTCGVariantID)
+            hasher.combine(card.catalogMetadataVersion)
+        }
+        return hasher.finalize()
     }
 }
 
@@ -257,16 +304,41 @@ struct StoreRevisionHistoryMonitor: View {
 
 @ModelActor
 actor StoreRevisionModelActor {
+    private var lastReadSucceeded = false
+    private var lastGoodFingerprint: StoreRevisionFingerprint?
+
+    func readSucceeded() -> Bool { lastReadSucceeded }
+
     func fingerprint() -> StoreRevisionFingerprint {
-        let cards = ((try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? [])
+        do {
+            let fingerprint = try makeFingerprint()
+            lastGoodFingerprint = fingerprint
+            lastReadSucceeded = true
+            return fingerprint
+        } catch {
+            lastReadSucceeded = false
+            return lastGoodFingerprint ?? StoreRevisionFingerprint(
+                cards: 0,
+                inventoryEvents: 0,
+                collectionActivities: 0,
+                priceValues: 0,
+                priceShape: 0,
+                artwork: 0,
+                magicCards: 0
+            )
+        }
+    }
+
+    private func makeFingerprint() throws -> StoreRevisionFingerprint {
+        let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
             .sorted { $0.collectionKey < $1.collectionKey }
-        let inventoryEvents = ((try? modelContext.fetch(FetchDescriptor<InventoryEvent>())) ?? [])
+        let inventoryEvents = try modelContext.fetch(FetchDescriptor<InventoryEvent>())
             .sorted { $0.eventID.uuidString < $1.eventID.uuidString }
-        let collectionActivities = ((try? modelContext.fetch(FetchDescriptor<CollectionActivity>())) ?? [])
+        let collectionActivities = try modelContext.fetch(FetchDescriptor<CollectionActivity>())
             .sorted { $0.id.uuidString < $1.id.uuidString }
-        let priceRecords = ((try? modelContext.fetch(FetchDescriptor<PriceRecord>())) ?? [])
+        let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
             .sorted { $0.key < $1.key }
-        let artworkOverrides = ((try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? [])
+        let artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
             .sorted {
                 if $0.collectionKey != $1.collectionKey {
                     return $0.collectionKey < $1.collectionKey

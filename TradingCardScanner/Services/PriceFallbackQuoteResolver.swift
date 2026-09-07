@@ -266,8 +266,10 @@ final class PriceFallbackQuoteResolver {
         // The expensive search is also the mapping resolution. Persist it
         // before returning the quote so the next Price Check or collection
         // refresh can use a keyed batch request instead of searching again.
-        identities.record(outcome, forKey: key, treatmentIDs: treatmentIDs)
-        identities.save()
+        guard identities.record(outcome, forKey: key, treatmentIDs: treatmentIDs),
+              identities.save() else {
+            return .failed(.requestFailed)
+        }
         switch outcome {
         case let .price(price, _, _):
             return .lookup(.price(price))
@@ -412,14 +414,15 @@ final class PriceFallbackQuoteResolver {
                 response: response
             ) {
             case let .matched(card, variant):
-                identities.recordBatchResolution(
+                guard identities.recordBatchResolution(
                     forKey: identityKey,
                     cardID: card.uuid ?? card.id,
                     variantID: variant.variantId,
                     treatmentIDs: target.magicTreatmentIDsRaw,
                     at: .now
-                )
-                identities.save()
+                ), identities.save() else {
+                    return .failed(.requestFailed)
+                }
                 // A returned exact listing without a usable amount is not an
                 // exact-listing miss. Match collection refresh by preserving a
                 // prior quote instead of converting missing market data into a
@@ -441,12 +444,13 @@ final class PriceFallbackQuoteResolver {
                 )
             case .noExactListing:
                 if let card = Self.card(for: lookup, in: response) {
-                    identities.record(
+                    guard identities.record(
                         .noListingForVariant(vendorCardID: card.uuid ?? card.id),
                         forKey: identityKey,
                         treatmentIDs: target.magicTreatmentIDsRaw
-                    )
-                    identities.save()
+                    ), identities.save() else {
+                        return .failed(.requestFailed)
+                    }
                 }
                 return .lookup(.unavailable(.justTCG))
             case .unresolved:

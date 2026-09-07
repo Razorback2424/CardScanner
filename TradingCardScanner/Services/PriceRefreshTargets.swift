@@ -13,10 +13,12 @@ enum PriceRefreshTargets {
         usesPriceFallback: Bool,
         includeImported: Bool
     ) -> [PriceTarget] {
-        let recordsByKey = Dictionary(
-            priceRecords.map { ($0.key, $0) },
-            uniquingKeysWith: { first, _ in first }
-        )
+        // CloudKit has no uniqueness constraint. Never let fetch order decide
+        // which duplicate supplies the refresh metadata or its legacy-key
+        // fallback; use the same deterministic reducer as every other price
+        // read path.
+        let recordsByKey = Dictionary(grouping: priceRecords, by: \.key)
+            .compactMapValues(PriceStore.authoritativeRecord(in:))
         let keySelection = PriceRecordKeySelection(records: Array(recordsByKey.values))
         let projection = LogicalCollection.project(cards: cards) { card in
             keySelection.priceStorageKey(for: card)

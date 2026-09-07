@@ -35,4 +35,17 @@ final class PriceCheckDay {
     }
 
     var source: PriceSource? { PriceSource(rawValue: sourceRaw) }
+
+    /// CloudKit retries and older imports can leave more than one row for the
+    /// same instrument/day. Coverage is monotonic: the latest successful
+    /// answer is the only deterministic fact that can be retained from that
+    /// duplicate set.
+    static func preferred(from rows: [PriceCheckDay]) -> PriceCheckDay? {
+        rows.max {
+            if $0.lastSuccessfulCheckAt != $1.lastSuccessfulCheckAt {
+                return $0.lastSuccessfulCheckAt < $1.lastSuccessfulCheckAt
+            }
+            return $0.sourceRaw < $1.sourceRaw
+        }
+    }
 }

@@ -112,8 +112,10 @@ actor PriceRefreshModelActor {
         return store
     }
 
-    fileprivate func priceValuesFingerprint() -> Int {
-        let records = (try? modelContext.fetch(FetchDescriptor<PriceRecord>())) ?? []
+    fileprivate func priceValuesFingerprint() -> Int? {
+        guard let records = try? modelContext.fetch(FetchDescriptor<PriceRecord>()) else {
+            return nil
+        }
         return StoreRevisionFingerprinting.priceValues(records)
     }
 
@@ -142,6 +144,7 @@ actor PriceRefreshModelActor {
         var changedPrices = false
         var persistenceFailed = false
         var gradedLookupMisses = 0
+        var gradedTransportFailures = 0
         var reconciledDuplicateRecords = 0
         var stagedPriced = 0
         var stagedChangedPrices = false
@@ -465,6 +468,7 @@ actor PriceRefreshModelActor {
         }
         persistenceFailed = persistenceFailed || gradedResult.persistenceFailed
         gradedLookupMisses += gradedResult.lookupMisses
+        gradedTransportFailures += gradedResult.transportFailures
 
         if Task.isCancelled { return .cancelled }
         let latest = latestSourceUpdate ?? previousLatest
@@ -481,6 +485,7 @@ actor PriceRefreshModelActor {
                 providerUnreachable: providerUnreachable,
                 persistenceFailed: persistenceFailed,
                 gradedLookupMisses: gradedLookupMisses,
+                gradedTransportFailures: gradedTransportFailures,
                 reconciledDuplicateRecords: reconciledDuplicateRecords,
                 priceDeltas: finalPriceDeltas
             )
@@ -550,7 +555,11 @@ actor PriceRefreshModelActor {
         // Both wrappers point at this actor's one context. Keep the existing
         // identity-then-price checkpoint order; changing it would widen the
         // already-known non-atomic window between synced and local stores.
-        return identities.save() && store.save()
+        guard identities.save(index: identityIndex) else {
+            refreshStore?.index?.reload()
+            return false
+        }
+        return store.save()
     }
 
     /// The coordinator calls its checkpoint callback after a successful vendor
@@ -798,12 +807,18 @@ actor PriceRefreshModelActor {
                 variant: candidate.target.variantID.map(PhysicalVariant.resolving),
                 lane: .background
             )
-            identities.record(
+            let identityStored = identities.record(
                 outcome,
                 forKey: key,
                 treatmentIDs: candidate.target.magicTreatmentIDsRaw,
                 using: identityIndex
             )
+            guard identityStored else {
+                persistenceFailed = true
+                completed += 1
+                await publishFallbackProgress()
+                continue
+            }
 
             switch outcome {
             case let .price(price, _, _):
@@ -862,14 +877,19 @@ actor PriceRefreshModelActor {
         usesPriceFallback: Bool,
         store: PriceStore,
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void
-    ) async -> (priced: Int, persistenceFailed: Bool, lookupMisses: Int) {
+    ) async -> (
+        priced: Int,
+        persistenceFailed: Bool,
+        lookupMisses: Int,
+        transportFailures: Int
+    ) {
         let slabs = targets.filter {
             guard $0.itemKind == .gradedCard else { return false }
             if $0.marketVariantID != nil { return true }
             return $0.canResolveGradedVariant
         }
         guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
-            return (0, false, 0)
+            return (0, false, 0, 0)
         }
 
         var byCard: [String: [PriceTarget]] = [:]
@@ -882,6 +902,7 @@ actor PriceRefreshModelActor {
         var priced = 0
         var persistenceFailed = false
         var lookupMisses = 0
+        var transportFailures = 0
         var stagedPriced = 0
         var stagedWriteCount = 0
         var lastCommitAt = Date.now
@@ -890,7 +911,15 @@ actor PriceRefreshModelActor {
         // model context as the price write. Keeping these maps local avoids a
         // fetch per slab while a response is being matched, and lets a newly
         // bound row use its canonical vendor price key immediately.
-        let gradedRows = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        let gradedRows: [CollectedCard]
+        do {
+            gradedRows = try modelContext.fetch(FetchDescriptor<CollectedCard>())
+        } catch {
+            // A graded response must never be written against a fabricated
+            // empty ownership table. Keep the prior state and report the pass
+            // as incomplete so a later refresh can retry.
+            return (0, true, 0, 0)
+        }
         let rowsByCollectionKey = Dictionary(
             grouping: gradedRows.filter { $0.itemKind == .gradedCard },
             by: \.collectionKey
@@ -1009,7 +1038,13 @@ actor PriceRefreshModelActor {
                     continue
                 }
             } catch {
-                break
+                // A single graded product lookup is independent of the other
+                // groups. Do not abandon every later slab because one request
+                // failed; leave this group untouched so its prior price and
+                // retry state remain honest, then continue the bounded pass.
+                if Task.isCancelled { break }
+                transportFailures += group.count
+                continue
             }
 
             let byVariantID = Dictionary(
@@ -1076,7 +1111,7 @@ actor PriceRefreshModelActor {
             await checkpoint()
         }
         await checkpoint(force: true)
-        return (priced, persistenceFailed, lookupMisses)
+        return (priced, persistenceFailed, lookupMisses, transportFailures)
     }
 }
 
@@ -1306,6 +1341,9 @@ fileprivate struct PriceRefreshWorkResult: Sendable {
     /// product or variant. This is distinct from a priced target and remains
     /// visible instead of being reported as though no slab needed attention.
     let gradedLookupMisses: Int
+    /// Graded product requests that failed at the transport layer. These are
+    /// distinct from a provider response with no matching listing.
+    let gradedTransportFailures: Int
     let reconciledDuplicateRecords: Int
     let priceDeltas: [PriceDelta]
 }
@@ -1368,6 +1406,10 @@ final class PriceRefreshController: ObservableObject {
         var reconciledDuplicateRecords = 0
         /// Owned graded targets with no matching vendor graded result.
         var gradedLookupMisses = 0
+        /// Owned graded targets whose product lookup could not complete.
+        var gradedTransportFailures = 0
+        /// The target snapshot could not be read, so no refresh claim is safe.
+        var targetBuildFailed = false
     }
 
     enum Status: Equatable {
@@ -1527,7 +1569,8 @@ final class PriceRefreshController: ObservableObject {
                 providerUnreachable: result.providerUnreachable,
                 persistenceFailed: result.persistenceFailed,
                 reconciledDuplicateRecords: result.reconciledDuplicateRecords,
-                gradedLookupMisses: result.gradedLookupMisses
+                gradedLookupMisses: result.gradedLookupMisses,
+                gradedTransportFailures: result.gradedTransportFailures
             )
         )
     }
@@ -1684,10 +1727,22 @@ final class PriceRefreshController: ObservableObject {
                 }
             case .targetBuildFailed:
                 targetBuildFailed = true
-            case .cancelled:
-                registeredRevisionStore?.expectPriceValuesFingerprint(
-                    await worker.priceValuesFingerprint()
+                status = .finished(
+                    Summary(
+                        checkedAt: .now,
+                        priced: 0,
+                        failed: 0,
+                        latestSourceUpdate: nil,
+                        checkedUnstampedProvider: false,
+                        changedPrices: false,
+                        foundNothingNewer: false,
+                        targetBuildFailed: true
+                    )
                 )
+            case .cancelled:
+                if let fingerprint = await worker.priceValuesFingerprint() {
+                    registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
+                }
                 // Cancellation can happen after one or more durable
                 // checkpoints. The live delta channel may have been partial;
                 // finish with the same authoritative read used by success so
@@ -1700,9 +1755,9 @@ final class PriceRefreshController: ObservableObject {
                 )
             case let .completed(result):
                 didRun = true
-                registeredRevisionStore?.expectPriceValuesFingerprint(
-                    await worker.priceValuesFingerprint()
-                )
+                if let fingerprint = await worker.priceValuesFingerprint() {
+                    registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
+                }
                 if !result.priceDeltas.isEmpty {
                     consume(.prices(result.priceDeltas))
                 }
@@ -1711,9 +1766,9 @@ final class PriceRefreshController: ObservableObject {
             }
 
             guard !Task.isCancelled else {
-                registeredRevisionStore?.expectPriceValuesFingerprint(
-                    await worker.priceValuesFingerprint()
-                )
+                if let fingerprint = await worker.priceValuesFingerprint() {
+                    registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
+                }
                 await registeredPriceSnapshotStore?.rebuild(container: container)
                 status = .idle
                 return PriceRefreshResult(
@@ -2005,7 +2060,7 @@ final class PriceRefreshController: ObservableObject {
             checkedAt: fetchedAt
         )
         for owner in owners {
-            identities.recordBatchResolution(
+            let identityStored = identities.recordBatchResolution(
                 forKey: owner.priceKey,
                 cardID: card.uuid ?? card.id,
                 variantID: variant.variantId,
@@ -2013,6 +2068,7 @@ final class PriceRefreshController: ObservableObject {
                 at: fetchedAt,
                 using: identityIndex
             )
+            guard identityStored else { return false }
             // Marketplace identity is catalog metadata: once the vendor has
             // told us which TCGplayer product this printing is, that stays
             // local, so opening the marketplace never needs a live request.
@@ -2171,10 +2227,12 @@ final class PriceRefreshController: ObservableObject {
     nonisolated static func isTransientSuccessStatus(_ status: Status) -> Bool {
         switch status {
         case let .finished(summary):
-            return !summary.providerUnreachable
+            return !summary.targetBuildFailed
+                && !summary.providerUnreachable
                 && summary.failed == 0
                 && !summary.persistenceFailed
                 && summary.gradedLookupMisses == 0
+                && summary.gradedTransportFailures == 0
                 && summary.reconciledDuplicateRecords == 0
         case .recentlyChecked:
             return true
