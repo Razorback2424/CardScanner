@@ -140,11 +140,14 @@ vendor variant identity.
   not present in the repository.
 
 Verification completed for this pass: all six changed Swift files passed
-`swiftc -frontend -parse`, `git diff --check` passed, and the single final
+`swiftc -frontend -parse`, `git diff --check` passed, the initial end-of-pass
 simulator `xcodebuild test` passed with 916 tests executed, 1 skipped, and 0
-failures. No second build/test was required.
+failures, and the required second final simulator `xcodebuild test` also
+passed with 916 tests executed, 1 skipped, and 0 failures. No findings needed
+correction between the two runs.
 
-Status: implemented in the pending pass-3 commit. The remaining items below
+Status: implementation committed in `71a45d2`, with the audit record in
+`a229396` plus the follow-up verification commit. The remaining items below
 are evidence, measurement, product-owner, or manual/runtime gates rather than
 safe code-only closures in this repository.
 
