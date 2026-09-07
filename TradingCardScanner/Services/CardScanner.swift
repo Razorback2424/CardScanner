@@ -197,7 +197,7 @@ struct SpatialTrackingConfiguration: Equatable, Sendable {
     let maximumGuideOverlap: CGFloat
 
     static let experimental = SpatialTrackingConfiguration(
-        trackingRate: 12,
+        trackingRate: 8,
         seedInsetFraction: 0.06,
         minimumConfidence: 0.50,
         requiredExitObservations: 2,
@@ -205,7 +205,7 @@ struct SpatialTrackingConfiguration: Equatable, Sendable {
     )
 
     init(
-        trackingRate: Double = 12,
+        trackingRate: Double = 8,
         seedInsetFraction: CGFloat = 0.06,
         minimumConfidence: Float = 0.50,
         requiredExitObservations: Int = 2,
@@ -300,8 +300,9 @@ struct SpatialTrackerSeedGate: Equatable, Sendable {
 }
 
 /// The camera output may arrive faster or slower than either Vision workload.
-/// Keeping both last-run timestamps here makes the 12 Hz tracker and 0.24 s OCR
-/// throttle independently fake-clockable.
+/// Keeping both last-run timestamps here makes the 8 Hz tracker and 0.24 s OCR
+/// throttle independently fake-clockable. The scheduler also owns the tie-break
+/// between the two workloads: a footer read wins when both are due for one frame.
 enum ScanCadenceKind: Equatable, Sendable {
     case tracking
     case ocr
@@ -317,7 +318,7 @@ struct ScanCadenceScheduler: Equatable, Sendable {
     private(set) var lastLabelAt: CFAbsoluteTime?
 
     init(
-        trackingRate: Double = 12,
+        trackingRate: Double = 8,
         ocrInterval: CFAbsoluteTime = 0.24,
         labelInterval: CFAbsoluteTime = 0.5
     ) {
@@ -327,25 +328,51 @@ struct ScanCadenceScheduler: Equatable, Sendable {
     }
 
     mutating func shouldRun(_ kind: ScanCadenceKind, at now: CFAbsoluteTime) -> Bool {
+        guard isDue(kind, at: now) else { return false }
+        markRan(kind, at: now)
+        return true
+    }
+
+    /// Chooses the one Vision workload allowed to start for this frame.
+    ///
+    /// Tracking is intentionally not run immediately before a due footer OCR
+    /// pass. That ordering used to let a tracker pass consume the frame queue
+    /// first and turn the nominal 240 ms OCR cadence into a longer, device-
+    /// dependent delay. If OCR is paused by a user choice, tracking may still
+    /// run so the existing spatial continuity proof remains alive.
+    mutating func nextVisionWork(
+        at now: CFAbsoluteTime,
+        ocrAllowed: Bool
+    ) -> ScanCadenceKind? {
+        if ocrAllowed, isDue(.ocr, at: now) {
+            markRan(.ocr, at: now)
+            return .ocr
+        }
+        guard isDue(.tracking, at: now) else { return nil }
+        markRan(.tracking, at: now)
+        return .tracking
+    }
+
+    /// Pulls the next footer pass forward after the first plausible reading.
+    /// The current pass has already been marked as run; this makes the next
+    /// eligible pass happen after `delay`, without changing the steady-state
+    /// cadence once confirmation succeeds or the candidate disappears.
+    mutating func prioritizeOCR(
+        at now: CFAbsoluteTime,
+        after delay: CFAbsoluteTime
+    ) {
+        guard ocrInterval > 0 else { return }
+        lastOCRAt = now - ocrInterval + max(0, delay)
+    }
+
+    private func isDue(_ kind: ScanCadenceKind, at now: CFAbsoluteTime) -> Bool {
         switch kind {
         case .tracking:
-            guard lastTrackingAt == nil || now - lastTrackingAt! >= trackingInterval else {
-                return false
-            }
-            lastTrackingAt = now
-            return true
+            return lastTrackingAt == nil || now - lastTrackingAt! >= trackingInterval
         case .ocr:
-            guard lastOCRAt == nil || now - lastOCRAt! >= ocrInterval else {
-                return false
-            }
-            lastOCRAt = now
-            return true
+            return lastOCRAt == nil || now - lastOCRAt! >= ocrInterval
         case .label:
-            guard lastLabelAt == nil || now - lastLabelAt! >= labelInterval else {
-                return false
-            }
-            lastLabelAt = now
-            return true
+            return lastLabelAt == nil || now - lastLabelAt! >= labelInterval
         }
     }
 
@@ -1353,16 +1380,15 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
-    /// Runs independently of OCR at the configured maximum rate. This method
-    /// is called before the OCR pause/due checks, so a pending user choice does
-    /// not stop the tracker that owns its encounter.
-    private func trackIfDue(
+    /// Runs on a frame selected by `ScanCadenceScheduler`. The scheduler has
+    /// already marked tracking as run, which prevents a tracker pass from being
+    /// selected again ahead of the next footer OCR pass.
+    private func trackCurrentFrame(
         pixelBuffer: CVPixelBuffer,
         orientation: CGImagePropertyOrientation,
         at now: CFAbsoluteTime
     ) {
         guard let request = trackerRequest else { return }
-        guard cadence.shouldRun(.tracking, at: now) else { return }
 
         do {
             try trackingSequenceHandler.perform(
@@ -1651,9 +1677,10 @@ final class CardScanner: NSObject, ObservableObject {
             announceLatchHoldIfNeeded()
 
         case let .forwardSubject(observation):
-            announcePlausible(observation)
+            announcePlausible(observation, at: now)
 
             guard let confirmed = confirmationWindow.observeSubject(observation) else { return }
+            PerformanceSignpost.signposter.emitEvent("twoFrameConfirmation")
 
             if let authorization = activeHeldRepeatAuthorization {
                 if authorization.isExpired(at: now) {
@@ -1694,9 +1721,10 @@ final class CardScanner: NSObject, ObservableObject {
             }
 
         case let .forwardAuthorizedSubject(observation):
-            announcePlausible(observation)
+            announcePlausible(observation, at: now)
 
             guard let confirmed = confirmationWindow.observeSubject(observation) else { return }
+            PerformanceSignpost.signposter.emitEvent("twoFrameConfirmation")
             guard let authorization = activeHeldRepeatAuthorization,
                   confirmed.suppressionKey == authorization.expectedSuppressionKey,
                   latch.consumeHeldRepeatAuthorization(for: authorization.expectedSuppressionKey) else {
@@ -1799,6 +1827,9 @@ final class CardScanner: NSObject, ObservableObject {
         sourceSize: CGSize,
         at now: CFAbsoluteTime
     ) {
+        // Raw-card scanning must never pay for slab-label OCR. The old cadence
+        // check ran this request every 500 ms even while no slab was active.
+        guard activeSlab != nil else { return }
         guard cadence.shouldRun(.label, at: now) else { return }
 
         let company = activeSlab?.evidence.company
@@ -1903,9 +1934,11 @@ final class CardScanner: NSObject, ObservableObject {
 
     /// Speculation, and only speculation. The catalog de-duplicates, so an
     /// identifier that flickers in and out costs at most one request.
-    private func announcePlausible(_ observation: ScanSubject?) {
+    private func announcePlausible(_ observation: ScanSubject?, at now: CFAbsoluteTime) {
         guard let observation, observation != lastAnnouncedPlausible else { return }
         lastAnnouncedPlausible = observation
+        cadence.prioritizeOCR(at: now, after: 0.08)
+        PerformanceSignpost.signposter.emitEvent("firstPlausibleReading")
         DispatchQueue.main.async { [weak self] in
             self?.onPlausibleCandidate?(observation)
         }
@@ -2092,15 +2125,26 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         from connection: AVCaptureConnection
     ) {
         let now = CFAbsoluteTimeGetCurrent()
+        PerformanceSignpost.signposter.emitEvent("frameReceived")
         let rotationAngle = rotation.currentAngle
         let orientation = CardFramingRegion.imageOrientation(forRotationAngle: rotationAngle)
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
-        // Tracking is intentionally first and independent from OCR throttling or
-        // recognition pauses for finish/duplicate choices.
-        trackIfDue(pixelBuffer: pixelBuffer, orientation: orientation, at: now)
-        guard !isPaused else { return }
-        guard cadence.shouldRun(.ocr, at: now) else { return }
+        // OCR owns a simultaneous due frame. Tracking is still allowed on
+        // non-OCR frames, including while OCR is paused for a user choice.
+        guard let work = cadence.nextVisionWork(at: now, ocrAllowed: !isPaused) else {
+            return
+        }
+        if work == .tracking {
+            let trackingState = PerformanceSignpost.signposter.beginInterval("tracking")
+            defer { PerformanceSignpost.signposter.endInterval("tracking", trackingState) }
+            trackCurrentFrame(
+                pixelBuffer: pixelBuffer,
+                orientation: orientation,
+                at: now
+            )
+            return
+        }
 
         do {
             let handler = VNImageRequestHandler(
@@ -2108,7 +2152,11 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 orientation: orientation,
                 options: [:]
             )
-            try handler.perform([footerRequest])
+            let footerState = PerformanceSignpost.signposter.beginInterval("footerOCR")
+            do {
+                defer { PerformanceSignpost.signposter.endInterval("footerOCR", footerState) }
+                try handler.perform([footerRequest])
+            }
 
             // Guarded like every other optional on this path. A buffer that
             // already yielded an image buffer will essentially always carry a
