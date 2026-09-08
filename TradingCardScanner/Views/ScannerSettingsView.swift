@@ -20,6 +20,10 @@ struct SettingsView: View {
     @State private var csvMessage: CSVMessage?
     @State private var csvImportProgress: CSVImportProgress?
     @State private var csvImportToken = UUID()
+    @State private var portfolioCloseCount = 0
+    @State private var collectionCardCount = 0
+    @State private var priceRecordCount = 0
+    @State private var missingArtworkCount = 0
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
 
     private struct CSVMessage: Identifiable {
@@ -102,6 +106,7 @@ struct SettingsView: View {
                     Button("Done") { dismiss() }
                 }
             }
+            .task { loadCounts() }
             .confirmationDialog(
                 "Delete entire collection?",
                 isPresented: $isConfirmingCollectionDeletion,
@@ -263,23 +268,24 @@ struct SettingsView: View {
         PortfolioEpoch.startedAt()
     }
 
-    private var portfolioCloseCount: Int {
-        (try? modelContext.fetchCount(FetchDescriptor<PortfolioDailyClose>())) ?? 0
-    }
-
-    private var collectionCardCount: Int {
-        (try? modelContext.fetchCount(FetchDescriptor<CollectedCard>())) ?? 0
-    }
-
-    private var priceRecordCount: Int {
-        (try? modelContext.fetchCount(FetchDescriptor<PriceRecord>())) ?? 0
-    }
-
-    private var missingArtworkCount: Int {
-        let descriptor = FetchDescriptor<CollectedCard>(
-            predicate: #Predicate { $0.imageURL == nil }
-        )
-        return (try? modelContext.fetchCount(descriptor)) ?? 0
+    /// These counts only drive export affordances. Resolve them once when the
+    /// settings surface appears instead of synchronously querying SwiftData
+    /// every time a preference or disclosure state redraws the form.
+    private func loadCounts() {
+        portfolioCloseCount = (try? modelContext.fetchCount(
+            FetchDescriptor<PortfolioDailyClose>()
+        )) ?? 0
+        collectionCardCount = (try? modelContext.fetchCount(
+            FetchDescriptor<CollectedCard>()
+        )) ?? 0
+        priceRecordCount = (try? modelContext.fetchCount(
+            FetchDescriptor<PriceRecord>()
+        )) ?? 0
+        missingArtworkCount = (try? modelContext.fetchCount(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.imageURL == nil }
+            )
+        )) ?? 0
     }
 
     private var developerSection: some View {
@@ -389,6 +395,7 @@ struct SettingsView: View {
                         }
                     }
                 )
+                loadCounts()
                 Task { await catalogNormalizer.normalizeImportedCards(in: container) }
                 var details = "Added \(result.importedQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
                 if result.mergedEntries > 0 { details += " \(result.mergedEntries) matched existing entries." }
@@ -461,6 +468,7 @@ struct SettingsView: View {
     private func deleteCollection() {
         do {
             try CollectionStore(context: modelContext).deleteAll()
+            loadCounts()
         } catch {
             deletionError = error.localizedDescription
         }
