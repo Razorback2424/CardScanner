@@ -100,3 +100,24 @@ enum PriceRefreshTargets {
         )
     }
 }
+
+/// Keeps the settings-only fallback count off the main actor. The count is an
+/// affordance, not portfolio truth, so a failed read preserves the existing
+/// conservative empty-count behavior used by the foreground path.
+@ModelActor
+actor PriceRefreshTargetModelActor {
+    func pendingCount(
+        usesPriceFallback: Bool,
+        includeImported: Bool
+    ) -> Int {
+        let targets = (try? PriceRefreshTargets.make(
+            context: modelContext,
+            usesPriceFallback: usesPriceFallback,
+            includeImported: includeImported
+        )) ?? []
+        return PriceRefreshController.staleTargets(
+            from: targets,
+            usesPriceFallback: usesPriceFallback
+        ).count
+    }
+}

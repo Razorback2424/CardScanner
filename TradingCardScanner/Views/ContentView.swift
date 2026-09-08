@@ -14,16 +14,20 @@ struct ContentView: View {
     }
 
     @State private var selectedTab: Tab
-    @StateObject private var portfolio = PortfolioEngine()
-    @StateObject private var priceSnapshot = PriceSnapshotStore.shared
-    @StateObject private var projectionStore = CollectionProjectionStore()
-    @StateObject private var revisionStore = StoreRevisionStore()
+    /// These services are owned by the root but deliberately not observed here.
+    /// Their child views subscribe only to the fields they render, so a price
+    /// checkpoint cannot re-evaluate the complete tab tree.
+    @State private var portfolio = PortfolioEngine()
+    @State private var priceSnapshot = PriceSnapshotStore.shared
+    @State private var projectionStore = CollectionProjectionStore()
+    @State private var revisionStore = StoreRevisionStore()
     /// The root passes this app-scoped service to the small views that observe
     /// the fields they render. It must remain a plain reference here: refresh
-    /// progress publishes on a one-second cadence, and observing it at the root would
-    /// rebuild the whole tab tree and re-run CollectionView's projection token.
+    /// progress publishes on a one-second cadence, and observing it at the root
+    /// would rebuild the whole tab tree and repeat collection projection work.
     private let refresh = PriceRefreshController.shared
-    @StateObject private var history = PortfolioHistoryStore()
+    @State private var history = PortfolioHistoryStore()
+    @State private var writeCoordinator = DerivedStateWriteCoordinator()
     /// One catalog actor is shared by every Collection/Browse route in this
     /// app session. Its protected checklist and in-memory caches therefore do
     /// not reset when the user pushes into a set and returns.
@@ -49,7 +53,7 @@ struct ContentView: View {
         let initialTab: Tab
         switch route {
         case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "CollectionTiles", "MagicTreatmentSlice4": initialTab = .collection
-        case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
+        case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck", "GradedLabelCapture": initialTab = .scan
         case "Centering", "CenteringExpanded": initialTab = .centering
         default: initialTab = .portfolio
@@ -135,7 +139,7 @@ struct ContentView: View {
             case "CardDetail":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
                 history.range = .oneMonth
-            case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors":
+            case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
                 history.range = .oneWeek
             case "PortfolioHistory":
@@ -176,7 +180,7 @@ struct ContentView: View {
         // Portfolio truth is app-scoped: scanning or importing must recompute it
         // even if Collection has never been selected in this app session. This
         // lives in its own view rather than here because deciding whether the
-        // inputs changed means walking every row of four tables, and this view
+        // inputs changed means walking every row of several tables, and this view
         // re-renders for reasons that have nothing to do with them — most of
         // all a running refresh, which publishes progress while it runs. Down
         // there it observes only what it actually reacts to.
@@ -230,19 +234,18 @@ struct ContentView: View {
             // is derived from the price records the refresh itself writes.
             refresh.cancelRefresh()
         }
+        // Keep the coordinator in the outer environment so the background
+        // monitor receives it as well as the tab content above it.
+        .environmentObject(writeCoordinator)
     }
 
     @MainActor
     private func updateFallbackAvailability() async {
-        let targets = (try? PriceRefreshTargets.make(
-            context: modelContext,
+        let actor = PriceRefreshTargetModelActor(modelContainer: modelContext.container)
+        let pending = await actor.pendingCount(
             usesPriceFallback: usesPriceFallback,
             includeImported: true
-        )) ?? []
-        let pending = PriceRefreshController.staleTargets(
-            from: targets,
-            usesPriceFallback: usesPriceFallback
-        ).count
+        )
         await refresh.updateFallbackAvailability(pending: pending)
     }
 

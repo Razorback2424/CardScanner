@@ -958,6 +958,7 @@ final class ScannerViewModel: ObservableObject {
     private var deferredHeldDuplicateOffer: DeferredHeldDuplicateOffer?
     private var catalogMissVerification: CatalogMissVerification?
     private weak var summaryStore: ScanSessionSummaryStore?
+    private weak var writeCoordinator: DerivedStateWriteCoordinator?
     private var isScannerSessionActive = false
     /// A completion from an ended session must never publish into the next one.
     /// This token remains stable while finalization drains, then changes before
@@ -978,6 +979,7 @@ final class ScannerViewModel: ObservableObject {
         let startCamera: Bool
         let shouldRefreshMagicDirectory: Bool
         let summaryStore: ScanSessionSummaryStore?
+        let writeCoordinator: DerivedStateWriteCoordinator?
     }
     private var pendingSessionStart: PendingSessionStart?
 #if DEBUG
@@ -1173,9 +1175,11 @@ final class ScannerViewModel: ObservableObject {
         isSceneActive: Bool = true,
         startCamera: Bool = true,
         shouldRefreshMagicDirectory: Bool = true,
-        summaryStore: ScanSessionSummaryStore? = nil
+        summaryStore: ScanSessionSummaryStore? = nil,
+        writeCoordinator: DerivedStateWriteCoordinator? = nil
     ) {
         self.summaryStore = summaryStore
+        self.writeCoordinator = writeCoordinator ?? self.writeCoordinator
         if sessionFinalizationTask != nil {
             // `viewDisappeared()` has already stopped recognition, but its
             // finalizer may still be waiting for an in-flight durable write.
@@ -1186,7 +1190,8 @@ final class ScannerViewModel: ObservableObject {
                 isSceneActive: isSceneActive,
                 startCamera: startCamera,
                 shouldRefreshMagicDirectory: shouldRefreshMagicDirectory,
-                summaryStore: summaryStore
+                summaryStore: summaryStore,
+                writeCoordinator: writeCoordinator ?? self.writeCoordinator
             )
             recognitionEligibility.isScannerVisible = true
             recognitionEligibility.isSceneActive = isSceneActive
@@ -1208,6 +1213,7 @@ final class ScannerViewModel: ObservableObject {
             visibilityEpoch = UUID()
             successCount = 0
             recognitionCount = 0
+            writeCoordinator?.beginBulkWrite()
         }
         recognitionEligibility.isScannerVisible = true
         recognitionEligibility.isSceneActive = isSceneActive
@@ -1313,6 +1319,7 @@ final class ScannerViewModel: ObservableObject {
             let pendingStart = self.pendingSessionStart
             self.pendingSessionStart = nil
             self.sessionFinalizationTask = nil
+            self.writeCoordinator?.endBulkWrite()
             guard let pendingStart,
                   self.recognitionEligibility.isScannerVisible else { return }
             self.start(
@@ -1320,7 +1327,8 @@ final class ScannerViewModel: ObservableObject {
                 isSceneActive: pendingStart.isSceneActive,
                 startCamera: pendingStart.startCamera,
                 shouldRefreshMagicDirectory: pendingStart.shouldRefreshMagicDirectory,
-                summaryStore: pendingStart.summaryStore
+                summaryStore: pendingStart.summaryStore,
+                writeCoordinator: pendingStart.writeCoordinator
             )
         }
     }

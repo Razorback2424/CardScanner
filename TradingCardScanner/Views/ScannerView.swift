@@ -8,6 +8,7 @@ import SwiftUI
 struct ScannerView: View {
     @EnvironmentObject private var model: ScannerViewModel
     @EnvironmentObject private var summaryStore: ScanSessionSummaryStore
+    @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
 
@@ -69,7 +70,8 @@ struct ScannerView: View {
             model.start(
                 context: modelContext,
                 isSceneActive: scenePhase == .active,
-                summaryStore: summaryStore
+                summaryStore: summaryStore,
+                writeCoordinator: writeCoordinator
             )
         }
         .onDisappear { model.viewDisappeared() }

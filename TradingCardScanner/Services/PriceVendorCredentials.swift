@@ -16,6 +16,8 @@ enum PriceVendorCredentials {
     /// not collide with — or silently overwrite — this one.
     private static let service = "com.tradingcardscanner.pricing"
     private static let account = "justtcg.api-key"
+    private static let cacheLock = NSLock()
+    private static var cachedHasKey: Bool?
 
     /// `kSecAttrAccessibleAfterFirstUnlock` rather than `WhenUnlocked`: price
     /// refreshes run in the background, and a key readable only while the phone
@@ -34,7 +36,18 @@ enum PriceVendorCredentials {
     }
 
     static var hasKey: Bool {
-        key?.isEmpty == false
+        cacheLock.lock()
+        if let cachedHasKey {
+            cacheLock.unlock()
+            return cachedHasKey
+        }
+        cacheLock.unlock()
+
+        let present = key?.isEmpty == false
+        cacheLock.lock()
+        cachedHasKey = present
+        cacheLock.unlock()
+        return present
     }
 
     static var key: String? {
@@ -66,7 +79,10 @@ enum PriceVendorCredentials {
             baseQuery as CFDictionary,
             [kSecValueData as String: data] as CFDictionary
         )
-        if updateStatus == errSecSuccess { return }
+        if updateStatus == errSecSuccess {
+            setCachedHasKey(true)
+            return
+        }
         guard updateStatus == errSecItemNotFound else {
             throw CredentialError.storeFailed(updateStatus)
         }
@@ -79,12 +95,21 @@ enum PriceVendorCredentials {
         guard addStatus == errSecSuccess else {
             throw CredentialError.storeFailed(addStatus)
         }
+        setCachedHasKey(true)
     }
 
     @discardableResult
     static func remove() -> Bool {
         let status = SecItemDelete(baseQuery as CFDictionary)
-        return status == errSecSuccess || status == errSecItemNotFound
+        let succeeded = status == errSecSuccess || status == errSecItemNotFound
+        if succeeded { setCachedHasKey(false) }
+        return succeeded
+    }
+
+    private static func setCachedHasKey(_ value: Bool) {
+        cacheLock.lock()
+        cachedHasKey = value
+        cacheLock.unlock()
     }
 
     private static var baseQuery: [String: Any] {

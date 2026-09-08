@@ -6,12 +6,15 @@ import SwiftUI
 /// The hashes are session-local change tokens, not persisted identifiers.
 struct StoreRevisionFingerprint: Equatable, Sendable {
     let cards: Int
+    let cardCount: Int
     let inventoryEvents: Int
     let collectionActivities: Int
     let priceValues: Int
     let priceShape: Int
     let artwork: Int
     let magicCards: Int
+    let stalePriceCollectionFingerprint: Int
+    let stalePriceTargetFingerprint: Int
 }
 
 @MainActor
@@ -58,31 +61,35 @@ enum StoreRevisionFingerprinting {
     }
 }
 
-/// A reference that lets the monitor's body advance an O(1) observation token.
-/// It deliberately publishes nothing: the token only restarts the debounced
-/// actor read after SwiftData has invalidated this view.
+/// Coordinates one logical durable-write operation. Scanner sessions and CSV
+/// imports can perform many saves, but derived consumers only need the final
+/// store state. The generation changes once when the outermost operation ends,
+/// which gives the monitor one trailing observation to reconcile everything.
 @MainActor
-private final class StoreRevisionTicker: ObservableObject {
-    private var value: UInt = 0
+final class DerivedStateWriteCoordinator: ObservableObject {
+    @Published private(set) var generation: UInt = 0
+    private var depth = 0
 
-    func next() -> UInt {
-        value &+= 1
-        return value
+    var isBulkWriteInFlight: Bool { depth > 0 }
+
+    func beginBulkWrite() {
+        depth += 1
+    }
+
+    func endBulkWrite() {
+        guard depth > 0 else { return }
+        depth -= 1
+        guard depth == 0 else { return }
+        generation &+= 1
     }
 }
 
-/// The only app view that observes whole-table SwiftData queries. Its body does
-/// not hash or project those rows; it advances a counter and lets the model
-/// actor decide which table revisions actually changed.
+/// The app-scoped invalidation bridge for durable SwiftData changes. Its body
+/// does not materialize or hash any table; it advances a counter and lets the
+/// model actor decide which table revisions actually changed.
 struct StoreRevisionMonitor: View {
     @Environment(\.modelContext) private var modelContext
-
-    @Query(sort: \CollectedCard.dateAdded, order: .reverse)
-    private var cards: [CollectedCard]
-    @Query private var inventoryEvents: [InventoryEvent]
-    @Query private var collectionActivities: [CollectionActivity]
-    @Query private var priceRecords: [PriceRecord]
-    @Query private var artworkOverrides: [LocalArtworkOverride]
+    @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
 
     let portfolio: PortfolioEngine
     let projectionStore: CollectionProjectionStore
@@ -92,7 +99,7 @@ struct StoreRevisionMonitor: View {
     let hasStartedPortfolio: Bool
 
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
-    @StateObject private var ticker = StoreRevisionTicker()
+    @State private var saveGeneration: UInt = 0
     @State private var previousFingerprint: StoreRevisionFingerprint?
     /// Multiple debounced observations can overlap while a derived store is
     /// suspended. Only the newest apply may commit its fingerprint; otherwise
@@ -112,25 +119,21 @@ struct StoreRevisionMonitor: View {
 
     var body: some View {
         PerformanceSignpost.signposter.emitEvent("StoreRevisionMonitor.body")
-        let observation = ticker.next()
-        // Touch each @Query without walking it. SwiftData invalidation causes
-        // this body to run for field changes as well as insert/delete changes.
-        let _ = cards.count
-        let _ = inventoryEvents.count
-        let _ = collectionActivities.count
-        let _ = priceRecords.count
-        let _ = artworkOverrides.count
+        let observation = "\(hasStartedPortfolio)-\(saveGeneration)-\(writeCoordinator.generation)"
 
         return Color.clear
+            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+                saveGeneration &+= 1
+            }
             .task(id: observation) {
-                guard hasStartedPortfolio else { return }
+                guard hasStartedPortfolio, !writeCoordinator.isBulkWriteInFlight else { return }
                 try? await Task.sleep(for: .milliseconds(300))
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, !writeCoordinator.isBulkWriteInFlight else { return }
 
                 let actor = StoreRevisionModelActor(modelContainer: modelContext.container)
                 let fingerprint = await actor.fingerprint()
                 guard await actor.readSucceeded() else { return }
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, !writeCoordinator.isBulkWriteInFlight else { return }
                 revisionStore.publish(fingerprint)
                 await apply(fingerprint)
             }
@@ -145,6 +148,7 @@ struct StoreRevisionMonitor: View {
             self.previousFingerprint = fingerprint
             return
         }
+        guard !writeCoordinator.isBulkWriteInFlight else { return }
 
         let cardsChanged = fingerprint.cards != previousFingerprint.cards
         let inventoryChanged = fingerprint.inventoryEvents != previousFingerprint.inventoryEvents
@@ -177,11 +181,11 @@ struct StoreRevisionMonitor: View {
             if !isRefreshInFlight {
                 await portfolio.recomputeAndWait(context: modelContext)
             }
-            await refreshStalePricesIfNeeded()
+            await refreshStalePricesIfNeeded(using: fingerprint)
         } else if pricesChanged && !isRefreshInFlight && !controllerOwnedPriceChange {
             CollectionStore(context: modelContext).invalidateIdentityAliasCache()
             await portfolio.recomputeAndWait(context: modelContext)
-            await refreshStalePricesIfNeeded()
+            await refreshStalePricesIfNeeded(using: fingerprint)
         }
 
         if magicChanged {
@@ -213,19 +217,21 @@ struct StoreRevisionMonitor: View {
     }
 
     @MainActor
-    private func refreshStalePricesIfNeeded() async {
-        guard !cards.isEmpty else { return }
-        let targetFingerprint = stalePriceTargetFingerprint()
+    private func refreshStalePricesIfNeeded(
+        using fingerprint: StoreRevisionFingerprint
+    ) async {
+        guard fingerprint.cardCount > 0 else { return }
+        let targetFingerprint = fingerprint.stalePriceTargetFingerprint
         if isRefreshInFlight,
            let activeCollectionFingerprint = activeStalePriceCollectionFingerprint,
-           activeCollectionFingerprint == stalePriceCollectionFingerprint() {
+           activeCollectionFingerprint == fingerprint.stalePriceCollectionFingerprint {
             // The active pass owns its catalog metadata, vendor binding, and
             // price writes. Do not turn those writes into a metered retry.
             return
         }
         guard lastStalePriceTargetFingerprint != targetFingerprint else { return }
         lastStalePriceTargetFingerprint = targetFingerprint
-        activeStalePriceCollectionFingerprint = stalePriceCollectionFingerprint()
+        activeStalePriceCollectionFingerprint = fingerprint.stalePriceCollectionFingerprint
         let result = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
             in: modelContext
         ) {
@@ -243,35 +249,13 @@ struct StoreRevisionMonitor: View {
         if result.targetBuildFailed {
             lastStalePriceTargetFingerprint = nil
         } else {
-            // The pass may have changed a vendor binding or catalog metadata;
-            // absorb that expected target-set revision after the queue settles.
-            lastStalePriceTargetFingerprint = stalePriceTargetFingerprint()
+            // The pass may have changed a vendor binding or catalog metadata.
+            // Keep the pre-pass token; the next didSave fingerprint will decide
+            // whether that target-set change needs a trailing pass.
+            lastStalePriceTargetFingerprint = targetFingerprint
         }
         guard result.didRun else { return }
         refresh.dismissTransientSuccessSummary()
-    }
-
-    private func stalePriceCollectionFingerprint() -> Int {
-        var hasher = Hasher()
-        for card in cards.sorted(by: { $0.collectionKey < $1.collectionKey }) {
-            hasher.combine(card.collectionKey)
-            hasher.combine(card.itemKindRaw)
-        }
-        return hasher.finalize()
-    }
-
-    private func stalePriceTargetFingerprint() -> Int {
-        var hasher = Hasher()
-        for card in cards.sorted(by: { $0.collectionKey < $1.collectionKey }) {
-            hasher.combine(card.collectionKey)
-            hasher.combine(card.priceKey)
-            hasher.combine(card.itemKindRaw)
-            hasher.combine(card.catalogProviderID)
-            hasher.combine(card.justTCGCardID)
-            hasher.combine(card.justTCGVariantID)
-            hasher.combine(card.catalogMetadataVersion)
-        }
-        return hasher.finalize()
     }
 }
 
@@ -317,12 +301,15 @@ actor StoreRevisionModelActor {
             lastReadSucceeded = false
             return StoreRevisionFingerprint(
                 cards: 0,
+                cardCount: 0,
                 inventoryEvents: 0,
                 collectionActivities: 0,
                 priceValues: 0,
                 priceShape: 0,
                 artwork: 0,
-                magicCards: 0
+                magicCards: 0,
+                stalePriceCollectionFingerprint: 0,
+                stalePriceTargetFingerprint: 0
             )
         }
     }
@@ -346,6 +333,8 @@ actor StoreRevisionModelActor {
 
         var cardHasher = Hasher()
         var magicHasher = Hasher()
+        var stalePriceCollectionHasher = Hasher()
+        var stalePriceTargetHasher = Hasher()
         for card in cards {
             cardHasher.combine(card.collectionKey)
             cardHasher.combine(card.quantity)
@@ -372,6 +361,16 @@ actor StoreRevisionModelActor {
             cardHasher.combine(card.catalogProviderID)
             cardHasher.combine(card.gradeLabel)
             cardHasher.combine(card.gradingQualifier)
+
+            stalePriceCollectionHasher.combine(card.collectionKey)
+            stalePriceCollectionHasher.combine(card.itemKindRaw)
+            stalePriceTargetHasher.combine(card.collectionKey)
+            stalePriceTargetHasher.combine(card.priceKey)
+            stalePriceTargetHasher.combine(card.itemKindRaw)
+            stalePriceTargetHasher.combine(card.catalogProviderID)
+            stalePriceTargetHasher.combine(card.justTCGCardID)
+            stalePriceTargetHasher.combine(card.justTCGVariantID)
+            stalePriceTargetHasher.combine(card.catalogMetadataVersion)
 
             if card.cardGame == .magic {
                 magicHasher.combine(card.collectionKey)
@@ -422,12 +421,15 @@ actor StoreRevisionModelActor {
 
         return StoreRevisionFingerprint(
             cards: cardHasher.finalize(),
+            cardCount: cards.count,
             inventoryEvents: inventoryHasher.finalize(),
             collectionActivities: activityHasher.finalize(),
             priceValues: StoreRevisionFingerprinting.priceValues(priceRecords),
             priceShape: priceShapeHasher.finalize(),
             artwork: artworkHasher.finalize(),
-            magicCards: magicHasher.finalize()
+            magicCards: magicHasher.finalize(),
+            stalePriceCollectionFingerprint: stalePriceCollectionHasher.finalize(),
+            stalePriceTargetFingerprint: stalePriceTargetHasher.finalize()
         )
     }
 }

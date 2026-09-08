@@ -8,6 +8,7 @@ import UniformTypeIdentifiers
 /// low-frequency control before finding the one they need.
 struct SettingsView: View {
     @EnvironmentObject private var scannerModel: ScannerViewModel
+    @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @State private var isConfirmingCollectionDeletion = false
@@ -369,8 +370,10 @@ struct SettingsView: View {
             completedEntries: 0,
             totalEntries: plan.entries.count
         )
+        writeCoordinator.beginBulkWrite()
         Task { @MainActor in
             defer {
+                writeCoordinator.endBulkWrite()
                 if csvImportToken == token {
                     // Progress callbacks are delivered through unstructured
                     // MainActor tasks from the isolated importer. Invalidate
