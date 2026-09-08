@@ -34,6 +34,7 @@ struct CollectionCardDetailView: View {
     @State private var pendingArtwork: ArtworkRequest?
     @State private var artworkAccent: ArtworkAccent?
     @State private var isShowingCardDetails = false
+    @State private var projectedQuantity: Int?
 
     private struct ArtworkRequest: Identifiable {
         let id: Int
@@ -152,6 +153,9 @@ struct CollectionCardDetailView: View {
         }
         .task(id: card.catalogProviderID ?? card.providerID) {
             await loadMarketplaceLinkIfNeeded()
+        }
+        .task(id: card.collectionKey) {
+            refreshDisplayedQuantity()
         }
         .task(id: pendingArtwork?.id) {
             guard let request = pendingArtwork else { return }
@@ -821,14 +825,21 @@ struct CollectionCardDetailView: View {
     }
 
     private var displayedQuantity: Int {
-        // The projected quantity is authoritative while duplicate rows are
-        // being healed. Recompute it from the query rather than retaining the
-        // route-time snapshot: the first Stepper tap merges the physical rows,
-        // and the next tap must start from the merged quantity.
         guard isLogicalConflict else { return card.quantity }
+        return projectedQuantity ?? logicalQuantity ?? card.quantity
+    }
+
+    /// The projected quantity is authoritative while duplicate rows are being
+    /// healed. Read it on appearance and after a quantity mutation rather than
+    /// rebuilding a full projection for every unrelated detail-view render.
+    private func refreshDisplayedQuantity() {
+        guard isLogicalConflict else {
+            projectedQuantity = nil
+            return
+        }
         let cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
         let projection = LogicalCollection.project(cards: cards) { $0.priceKey }
-        return projection.byKey[card.collectionKey]?.quantity
+        projectedQuantity = projection.byKey[card.collectionKey]?.quantity
             ?? logicalQuantity
             ?? card.quantity
     }
@@ -840,6 +851,7 @@ struct CollectionCardDetailView: View {
                 newQuantity,
                 for: card
             )
+            refreshDisplayedQuantity()
         } catch {
             errorMessage = error.localizedDescription
         }
