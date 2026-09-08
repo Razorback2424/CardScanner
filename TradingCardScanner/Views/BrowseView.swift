@@ -202,6 +202,10 @@ final class BrowseViewModel: ObservableObject {
 }
 
 struct BrowseView: View {
+    private static let pokemonReleaseOrderBackfillVersionKey =
+        "browse.pokemonReleaseOrderBackfillVersion"
+    private static let pokemonReleaseOrderBackfillVersion = 1
+
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let catalog: any BrowseCatalogProviding
@@ -321,34 +325,69 @@ struct BrowseView: View {
     }
 
     private func backfillPokemonReleaseOrder() {
+        guard UserDefaults.standard.integer(
+            forKey: Self.pokemonReleaseOrderBackfillVersionKey
+        ) < Self.pokemonReleaseOrderBackfillVersion else { return }
         guard let sets = model.sets[.pokemon], !sets.isEmpty else { return }
-        let ownedCards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        var changed = false
-        for card in ownedCards where card.cardGame == .pokemon {
-            let providerID = card.catalogProviderID ?? card.providerID
-            guard let set = sets
-                .filter({ providerID.hasPrefix($0.providerID + "-") })
-                .max(by: { $0.providerID.count < $1.providerID.count }) else { continue }
 
-            // Repair rows tagged with a print run their set never had. The
-            // e-card sets were split into 1st Edition and Unlimited runs that
-            // were never printed, and a row still carrying one would stop
-            // counting toward its set and keep pricing under a storage id that
-            // names an edition the vendor has no listing for.
-            if card.pokemonPrintRunRaw != nil,
-               !PokemonMasterSetDefinition.hasSeparatePrintRuns(
-                    setProviderID: set.providerID
-               ) {
-                card.pokemonPrintRunRaw = nil
-                changed = true
-            }
-
-            if card.setReleaseOrder != set.sortRank {
-                card.setReleaseOrder = set.sortRank
-                changed = true
-            }
+        // Resolve the longest set prefix without scanning every catalog set for
+        // each owned row. Provider card ids are set-id/card-id, so walking the
+        // candidate prefixes from longest to shortest preserves the old
+        // longest-prefix rule while keeping the lookup bounded by the id's
+        // number of components.
+        let setByProviderID = sets.reduce(into: [String: CatalogSet]()) { result, set in
+            result[set.providerID] = result[set.providerID] ?? set
         }
-        if changed { try? modelContext.save() }
+
+        func set(for providerID: String) -> CatalogSet? {
+            let components = providerID.split(separator: "-")
+            guard components.count > 1 else { return nil }
+            for end in stride(from: components.count - 1, through: 1, by: -1) {
+                let prefix = components[..<end].joined(separator: "-")
+                if let set = setByProviderID[prefix] { return set }
+            }
+            return nil
+        }
+
+        do {
+            let pokemonRawValue = CardGame.pokemon.rawValue
+            let ownedCards = try modelContext.fetch(
+                FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.game == pokemonRawValue }
+                )
+            )
+            var changed = false
+            for card in ownedCards {
+                let providerID = card.catalogProviderID ?? card.providerID
+                guard let set = set(for: providerID) else { continue }
+
+                // Repair rows tagged with a print run their set never had. The
+                // e-card sets were split into 1st Edition and Unlimited runs that
+                // were never printed, and a row still carrying one would stop
+                // counting toward its set and keep pricing under a storage id that
+                // names an edition the vendor has no listing for.
+                if card.pokemonPrintRunRaw != nil,
+                   !PokemonMasterSetDefinition.hasSeparatePrintRuns(
+                        setProviderID: set.providerID
+                   ) {
+                    card.pokemonPrintRunRaw = nil
+                    changed = true
+                }
+
+                if card.setReleaseOrder != set.sortRank {
+                    card.setReleaseOrder = set.sortRank
+                    changed = true
+                }
+            }
+            if changed { try modelContext.save() }
+            UserDefaults.standard.set(
+                Self.pokemonReleaseOrderBackfillVersion,
+                forKey: Self.pokemonReleaseOrderBackfillVersionKey
+            )
+        } catch {
+            // Leave the watermark untouched so a transient store failure can
+            // retry on the next Browse appearance.
+        }
     }
 
     private var searchField: some View {
