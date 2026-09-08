@@ -689,7 +689,7 @@ final class ScannerViewModelTests: XCTestCase {
         _ subject: ScanSubject,
         encounterID: UUID
     ) {
-        model.scanner.onConfirmedSubjectCandidate?(encounterID, subject, nil)
+        model.scanner.onConfirmedSubjectCandidate?(nil, encounterID, subject, nil)
     }
 
     private func gradedSubject(

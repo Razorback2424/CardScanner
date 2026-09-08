@@ -439,6 +439,61 @@ final class CardLatchTests: XCTestCase {
         XCTAssertEqual(scheduler.nextVisionWork(at: 0.50, ocrAllowed: false), .tracking)
     }
 
+#if DEBUG
+    /// A slab label is allowed to bootstrap framing from the unbound scanner,
+    /// but only after the footer has produced text and two label passes agree.
+    /// This is the camera-path state transition that cannot be exercised by the
+    /// simulator's camera, so feed the parsed Vision evidence through the same
+    /// CardScanner seam used by the production cadence gate.
+    func testUnboundSlabLabelEvidenceCanActivateCardScanner() {
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678",
+            labelCardText: []
+        )
+
+        XCTAssertNil(
+            scanner.receiveSlabLabelEvidenceForTesting(
+                evidence,
+                footerHasText: false,
+                at: 0
+            )
+        )
+        XCTAssertNil(
+            scanner.receiveSlabLabelEvidenceForTesting(
+                evidence,
+                footerHasText: true,
+                at: 0
+            )
+        )
+        // The unbound probe is deliberately slower than the bound 0.5 s pass.
+        XCTAssertNil(
+            scanner.receiveSlabLabelEvidenceForTesting(
+                evidence,
+                footerHasText: true,
+                at: 0.5
+            )
+        )
+        XCTAssertEqual(
+            scanner.receiveSlabLabelEvidenceForTesting(
+                evidence,
+                footerHasText: true,
+                at: 1.5
+            ),
+            evidence
+        )
+
+        let published = expectation(description: "slab framing is published")
+        DispatchQueue.main.async {
+            XCTAssertEqual(scanner.slabFraming, evidence)
+            published.fulfill()
+        }
+        wait(for: [published], timeout: 1)
+    }
+#endif
+
     func testDepartureSummaryUsesAddedFormatWhenEveryCardHasAValue() {
         let summary = ScanSessionSummary(
             addedCount: 14,

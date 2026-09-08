@@ -1049,10 +1049,7 @@ final class ScannerViewModel: ObservableObject {
                 )
             }
         }
-        scanner.onConfirmedSubjectCandidate = { encounterID, subject, authorizationID in
-            handleConfirmedCandidate(nil, encounterID, subject, authorizationID)
-        }
-        scanner.onConfirmedSubjectCandidateWithContext = handleConfirmedCandidate
+        scanner.onConfirmedSubjectCandidate = handleConfirmedCandidate
 
         scanner.onHeldRepeatAuthorizationTerminated = { [weak self] authorizationID, outcome in
             Task { @MainActor in

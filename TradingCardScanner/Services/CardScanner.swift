@@ -300,19 +300,23 @@ struct SpatialTrackerSeedGate: Equatable, Sendable {
 }
 
 /// The camera output may arrive faster or slower than either Vision workload.
-/// Keeping both last-run timestamps here makes the 8 Hz tracker and 0.24 s OCR
-/// throttle independently fake-clockable. The scheduler also owns the tie-break
-/// between the two workloads: a footer read wins when both are due for one frame.
+/// Keeping the last-run timestamps here makes the 8 Hz tracker, 0.24 s OCR, and
+/// label throttles independently fake-clockable. The scheduler also owns the
+/// tie-break between the two workloads: a footer read wins when both are due for
+/// one frame. Unbound label probes use a slower cadence because they are only
+/// looking for the evidence that can bootstrap slab framing.
 enum ScanCadenceKind: Equatable, Sendable {
     case tracking
     case ocr
     case label
+    case unboundLabel
 }
 
 struct ScanCadenceScheduler: Equatable, Sendable {
     let trackingInterval: CFAbsoluteTime
     let ocrInterval: CFAbsoluteTime
     let labelInterval: CFAbsoluteTime
+    let unboundLabelInterval: CFAbsoluteTime
     private(set) var lastTrackingAt: CFAbsoluteTime?
     private(set) var lastOCRAt: CFAbsoluteTime?
     private(set) var lastLabelAt: CFAbsoluteTime?
@@ -320,11 +324,13 @@ struct ScanCadenceScheduler: Equatable, Sendable {
     init(
         trackingRate: Double = 8,
         ocrInterval: CFAbsoluteTime = 0.24,
-        labelInterval: CFAbsoluteTime = 0.5
+        labelInterval: CFAbsoluteTime = 0.5,
+        unboundLabelInterval: CFAbsoluteTime = 1.5
     ) {
         trackingInterval = 1.0 / max(1, trackingRate)
         self.ocrInterval = max(0, ocrInterval)
         self.labelInterval = max(0, labelInterval)
+        self.unboundLabelInterval = max(self.labelInterval, max(0, unboundLabelInterval))
     }
 
     mutating func shouldRun(_ kind: ScanCadenceKind, at now: CFAbsoluteTime) -> Bool {
@@ -373,6 +379,8 @@ struct ScanCadenceScheduler: Equatable, Sendable {
             return lastOCRAt == nil || now - lastOCRAt! >= ocrInterval
         case .label:
             return lastLabelAt == nil || now - lastLabelAt! >= labelInterval
+        case .unboundLabel:
+            return lastLabelAt == nil || now - lastLabelAt! >= unboundLabelInterval
         }
     }
 
@@ -383,6 +391,8 @@ struct ScanCadenceScheduler: Equatable, Sendable {
         case .ocr:
             lastOCRAt = now
         case .label:
+            lastLabelAt = now
+        case .unboundLabel:
             lastLabelAt = now
         }
     }
@@ -704,14 +714,11 @@ final class CardScanner: NSObject, ObservableObject {
     /// latch as a new physical presentation.
     /// The encounter id is created at the exact frame that confirms the OCR
     /// encounter, before the event crosses to the view model.
-    /// Subject-aware callback used by the scanner UI. The subject is the only
-    /// identity emitted by the Vision loop, so slab evidence cannot be lost
-    /// between confirmation and collection routing.
-    var onConfirmedSubjectCandidate: ((UUID, ScanSubject, UUID?) -> Void)?
-    /// Production confirmation callback carrying the lifecycle fence captured
-    /// on the Vision queue at the exact confirmation frame. The legacy
-    /// callback remains available for deterministic tests and older callers.
-    var onConfirmedSubjectCandidateWithContext: ((ScannerConfirmationToken, UUID, ScanSubject, UUID?) -> Void)?
+    /// Subject-aware callback used by the scanner UI. The optional lifecycle
+    /// fence is nil for deterministic callers that do not model a session, but
+    /// production always supplies the token captured on the Vision queue at the
+    /// exact confirmation frame.
+    var onConfirmedSubjectCandidate: ((ScannerConfirmationToken?, UUID, ScanSubject, UUID?) -> Void)?
     /// Positive spatial exit evidence. This is intentionally separate from OCR
     /// and from the latch's weak timeout/absence signals.
     var onSpatialResetProof: ((SpatialResetProof) -> Void)?
@@ -1784,16 +1791,12 @@ final class CardScanner: NSObject, ObservableObject {
             }
             let context = confirmationContext
             DispatchQueue.main.async { [weak self] in
-                if let context {
-                    self?.onConfirmedSubjectCandidateWithContext?(
-                        context,
-                        encounterID,
-                        confirmed,
-                        nil
-                    )
-                } else {
-                    self?.onConfirmedSubjectCandidate?(encounterID, confirmed, nil)
-                }
+                self?.onConfirmedSubjectCandidate?(
+                    context,
+                    encounterID,
+                    confirmed,
+                    nil
+                )
             }
 
         case let .forwardAuthorizedSubject(observation):
@@ -1829,16 +1832,12 @@ final class CardScanner: NSObject, ObservableObject {
             }
             let context = confirmationContext
             DispatchQueue.main.async { [weak self] in
-                if let context {
-                    self?.onConfirmedSubjectCandidateWithContext?(
-                        context,
-                        encounterID,
-                        confirmed,
-                        authorizationID
-                    )
-                } else {
-                    self?.onConfirmedSubjectCandidate?(encounterID, confirmed, authorizationID)
-                }
+                self?.onConfirmedSubjectCandidate?(
+                    context,
+                    encounterID,
+                    confirmed,
+                    authorizationID
+                )
             }
 
         }
@@ -1913,12 +1912,11 @@ final class CardScanner: NSObject, ObservableObject {
     private func detectSlabLabelIfDue(
         handler: VNImageRequestHandler,
         sourceSize: CGSize,
+        footerHasText: Bool,
         at now: CFAbsoluteTime
     ) {
-        // Raw-card scanning must never pay for slab-label OCR. The old cadence
-        // check ran this request every 500 ms even while no slab was active.
-        guard activeSlab != nil else { return }
-        guard cadence.shouldRun(.label, at: now) else { return }
+        guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
+              cadence.shouldRun(cadenceKind, at: now) else { return }
 
         let company = activeSlab?.evidence.company
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: company)
@@ -1937,12 +1935,52 @@ final class CardScanner: NSObject, ObservableObject {
             }
 #endif
             let evidence = GradedLabelParser.parse(lines)
-            guard let confirmed = slabEvidenceWindow.observe(evidence) else { return }
-            activateSlab(confirmed, at: now)
+            _ = applySlabLabelEvidence(evidence, at: now)
         } catch {
             _ = slabEvidenceWindow.observe(nil)
         }
     }
+
+    /// Label OCR is allowed to bootstrap a slab only when the regular footer
+    /// pass found text in the same frame. Once a slab is active, its label can
+    /// keep running at the faster bound cadence even through a brief footer
+    /// miss, because the existing sticky-presence rule owns clearing it.
+    private func slabLabelCadenceKind(footerHasText: Bool) -> ScanCadenceKind? {
+        guard activeSlab != nil || footerHasText else {
+            // Do not carry label evidence across a frame where the card itself
+            // disappeared from the footer band.
+            slabEvidenceWindow.reset()
+            return nil
+        }
+        return activeSlab == nil ? .unboundLabel : .label
+    }
+
+    @discardableResult
+    private func applySlabLabelEvidence(
+        _ evidence: GradedSlabEvidence?,
+        at now: CFAbsoluteTime
+    ) -> GradedSlabEvidence? {
+        guard let confirmed = slabEvidenceWindow.observe(evidence) else { return nil }
+        activateSlab(confirmed, at: now)
+        return confirmed
+    }
+
+#if DEBUG
+    /// Test/support seam for the state transition after Vision has produced a
+    /// parsed label. The capture path above uses the same cadence gate and
+    /// evidence application helpers; this avoids manufacturing a camera frame
+    /// just to exercise the bootstrap that a simulator cannot reach naturally.
+    @discardableResult
+    func receiveSlabLabelEvidenceForTesting(
+        _ evidence: GradedSlabEvidence?,
+        footerHasText: Bool,
+        at now: CFAbsoluteTime
+    ) -> GradedSlabEvidence? {
+        guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
+              cadence.shouldRun(cadenceKind, at: now) else { return nil }
+        return applySlabLabelEvidence(evidence, at: now)
+    }
+#endif
 
 #if DEBUG
     private static var isGradedLabelCaptureDebugRoute: Bool {
@@ -2300,6 +2338,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             detectSlabLabelIfDue(
                 handler: handler,
                 sourceSize: sourceSize,
+                footerHasText: !lines.isEmpty,
                 at: now
             )
         } catch {
