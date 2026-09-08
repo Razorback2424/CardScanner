@@ -1077,18 +1077,11 @@ private struct PortfolioMagnitudeBar: View {
 }
 
 private struct PortfolioArtwork: View {
-    @Environment(\.modelContext) private var modelContext
     let holding: PortfolioHoldingSnapshot
 
     var body: some View {
         Group {
-            if let image = CollectionArtworkStore.image(
-                filename: CollectionArtworkStore.filename(
-                    for: holding.collectionKey,
-                    legacyFilename: holding.userArtworkFilename,
-                    in: modelContext
-                )
-            ) {
+            if let image = CollectionArtworkStore.image(filename: holding.userArtworkFilename) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()

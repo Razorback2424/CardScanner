@@ -61,6 +61,9 @@ enum PortfolioReplaySnapshotBuilder {
         var isAuthoritative: Bool
         var defects: [LedgerIntegrityDefect]
         var projection: LogicalCollectionProjection
+        /// Device-local artwork is resolved with the rest of the computation so
+        /// the dashboard never asks SwiftData for an override from `body`.
+        var artworkFilenameByCollectionKey: [String: String]
     }
 
     /// The computation as it crosses back to the UI: fully `Sendable`, with no
@@ -116,13 +119,18 @@ enum PortfolioReplaySnapshotBuilder {
             isAuthoritative: snapshot.isAuthoritative && defects.isEmpty,
             replay: replay,
             coverage: snapshot.input.coverage,
-            holdings: holdingSnapshots(projection: snapshot.projection, valuations: snapshot.valuations)
+            holdings: holdingSnapshots(
+                projection: snapshot.projection,
+                valuations: snapshot.valuations,
+                artworkFilenameByCollectionKey: snapshot.artworkFilenameByCollectionKey
+            )
         )
     }
 
     private static func holdingSnapshots(
         projection: LogicalCollectionProjection,
-        valuations: InstrumentValuationIndex
+        valuations: InstrumentValuationIndex,
+        artworkFilenameByCollectionKey: [String: String]
     ) -> [PortfolioHoldingSnapshot] {
         let holdings: [PortfolioHoldingSnapshot] = projection.positions.compactMap { position in
             guard position.quantity > 0 else { return nil }
@@ -136,7 +144,8 @@ enum PortfolioReplaySnapshotBuilder {
                 collectionKey: position.collectionKey,
                 name: card.name,
                 detail: detailParts.joined(separator: " · "),
-                userArtworkFilename: card.userArtworkFilename,
+                userArtworkFilename: artworkFilenameByCollectionKey[card.collectionKey]
+                    ?? card.userArtworkFilename,
                 artworkURL: artworkURL,
                 artworkFallbackURL: artworkFallbackURL,
                 quantity: position.quantity,
@@ -187,6 +196,28 @@ enum PortfolioReplaySnapshotBuilder {
         } catch {
             activities = []
             defects.append(Self.unreadableDefect(for: "CollectionActivity", error: error))
+        }
+
+        let artworkFilenameByCollectionKey: [String: String]
+        do {
+            let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+            artworkFilenameByCollectionKey = Dictionary(grouping: overrides, by: \.collectionKey)
+                .compactMapValues { rows in
+                    guard let row = rows.max(
+                        by: {
+                            if $0.updatedAt != $1.updatedAt {
+                                return $0.updatedAt < $1.updatedAt
+                            }
+                            return $0.filename < $1.filename
+                        }
+                    ), !row.filename.isEmpty else { return nil }
+                    return row.filename
+                }
+        } catch {
+            // Artwork is presentation metadata. A failed local override read
+            // must not make an otherwise valid portfolio computation unusable;
+            // holding snapshots fall back to the legacy card field below.
+            artworkFilenameByCollectionKey = [:]
         }
 
         // One materialisation of each table, reused. Fetching the observation
@@ -287,7 +318,8 @@ enum PortfolioReplaySnapshotBuilder {
                 && projection.defects.isEmpty
                 && activityDefects.isEmpty,
             defects: defects + projection.defects + activityDefects,
-            projection: projection
+            projection: projection,
+            artworkFilenameByCollectionKey: artworkFilenameByCollectionKey
         )
     }
 
