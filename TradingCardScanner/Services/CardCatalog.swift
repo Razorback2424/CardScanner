@@ -549,6 +549,8 @@ actor ResolvedPokemonCardCache {
     private let appVersion: String
     private var entries: [String: Entry] = [:]
     private var didLoad = false
+    private var isLoading = false
+    private var loadWaiters: [CheckedContinuation<Void, Never>] = []
 
     struct CachedCard: Sendable {
         let card: TCGdexCard
@@ -568,11 +570,11 @@ actor ResolvedPokemonCardCache {
     }
 
     func prewarm() async {
-        loadIfNeeded()
+        await loadIfNeeded()
     }
 
-    func card(for key: String) -> CachedCard? {
-        loadIfNeeded()
+    func card(for key: String) async -> CachedCard? {
+        await loadIfNeeded()
         guard let entry = entries[key] else { return nil }
         guard Date.now.timeIntervalSince(entry.storedAt) <= Self.maxAge else {
             entries[key] = nil
@@ -628,8 +630,8 @@ actor ResolvedPokemonCardCache {
         setCode: String,
         key: String,
         officialCount: Int? = nil
-    ) {
-        loadIfNeeded()
+    ) async {
+        await loadIfNeeded()
         let variants = card.catalogVariants
         guard !variants.isEmpty else {
             // An incomplete live response is not evidence that an already
@@ -661,31 +663,49 @@ actor ResolvedPokemonCardCache {
         persist()
     }
 
-    private func loadIfNeeded() {
+    private func loadIfNeeded() async {
         guard !didLoad else { return }
-        didLoad = true
-        // A cold cache reader may be a new catalog instance racing the prior
-        // instance's background write. Flush the shared utility queue before
-        // reading, while resolution itself never awaits the write operation.
-        Self.writeQueue.sync {}
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        guard let data = try? Data(contentsOf: fileURL),
-              let file = try? decoder.decode(File.self, from: data),
-              file.appVersion == appVersion,
-              file.schemaGeneration == Self.schemaGeneration else {
+        if isLoading {
+            await withCheckedContinuation { continuation in
+                loadWaiters.append(continuation)
+            }
             return
         }
-        let cutoff = Date.now.addingTimeInterval(-Self.maxAge)
-        entries = file.entries.reduce(into: [:]) { values, entry in
-            guard !entry.key.isEmpty, entry.storedAt >= cutoff else { return }
-            // A partially recovered or hand-edited cache may contain duplicate
-            // keys. Keep the newest record rather than crashing the scanner
-            // while constructing a dictionary with uniqueKeysWithValues.
-            if let current = values[entry.key], current.storedAt >= entry.storedAt {
-                return
+        isLoading = true
+        // A cold cache reader may be a new catalog instance racing the prior
+        // instance's background write. Flush the shared utility queue before
+        // reading, suspending this actor instead of blocking its executor
+        // thread while the filesystem write drains.
+        await withCheckedContinuation { continuation in
+            Self.writeQueue.async {
+                continuation.resume()
             }
-            values[entry.key] = entry
+        }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        if let data = try? Data(contentsOf: fileURL),
+           let file = try? decoder.decode(File.self, from: data),
+           file.appVersion == appVersion,
+           file.schemaGeneration == Self.schemaGeneration {
+            let cutoff = Date.now.addingTimeInterval(-Self.maxAge)
+            entries = file.entries.reduce(into: [:]) { values, entry in
+                guard !entry.key.isEmpty, entry.storedAt >= cutoff else { return }
+                // A partially recovered or hand-edited cache may contain duplicate
+                // keys. Keep the newest record rather than crashing the scanner
+                // while constructing a dictionary with uniqueKeysWithValues.
+                if let current = values[entry.key], current.storedAt >= entry.storedAt {
+                    return
+                }
+                values[entry.key] = entry
+            }
+        }
+
+        didLoad = true
+        isLoading = false
+        let waiters = loadWaiters
+        loadWaiters.removeAll()
+        for waiter in waiters {
+            waiter.resume()
         }
     }
 
