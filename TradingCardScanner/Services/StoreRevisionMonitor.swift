@@ -305,19 +305,17 @@ struct StoreRevisionHistoryMonitor: View {
 @ModelActor
 actor StoreRevisionModelActor {
     private var lastReadSucceeded = false
-    private var lastGoodFingerprint: StoreRevisionFingerprint?
 
     func readSucceeded() -> Bool { lastReadSucceeded }
 
     func fingerprint() -> StoreRevisionFingerprint {
         do {
             let fingerprint = try makeFingerprint()
-            lastGoodFingerprint = fingerprint
             lastReadSucceeded = true
             return fingerprint
         } catch {
             lastReadSucceeded = false
-            return lastGoodFingerprint ?? StoreRevisionFingerprint(
+            return StoreRevisionFingerprint(
                 cards: 0,
                 inventoryEvents: 0,
                 collectionActivities: 0,

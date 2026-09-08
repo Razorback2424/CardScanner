@@ -67,7 +67,6 @@ final class CollectionProjectionStore: ObservableObject {
 /// representative and derive diagnostics away from the main actor.
 @ModelActor
 actor CollectionProjectionActor {
-    private var lastGoodSnapshot: CollectionProjectionSnapshot?
     private var lastReadSucceeded = false
 
     func readSucceeded() -> Bool { lastReadSucceeded }
@@ -93,7 +92,7 @@ actor CollectionProjectionActor {
             artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
         } catch {
             lastReadSucceeded = false
-            return lastGoodSnapshot ?? CollectionProjectionSnapshot(
+            return CollectionProjectionSnapshot(
                 rows: [],
                 rowsByCollectionKey: [:],
                 diagnosticsByCollectionKey: [:],
@@ -169,7 +168,6 @@ actor CollectionProjectionActor {
             physicalRowCountsByKey: projection.byKey.mapValues(\.physicalRowCount),
             ownership: CatalogOwnershipIndex(rows: cards.map(CatalogOwnershipCardSnapshot.init))
         )
-        lastGoodSnapshot = snapshot
         lastReadSucceeded = true
         return snapshot
     }

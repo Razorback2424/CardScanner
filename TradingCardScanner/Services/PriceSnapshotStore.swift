@@ -171,7 +171,6 @@ final class PriceSnapshotStore: ObservableObject {
 /// needs to hash or refetch a whole price table after an individual delta.
 @ModelActor
 actor PriceSnapshotModelActor {
-    private var lastGoodSnapshot: PriceSnapshot?
     private var lastReadSucceeded = false
 
     func readSucceeded() -> Bool { lastReadSucceeded }
@@ -186,7 +185,7 @@ actor PriceSnapshotModelActor {
             artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
         } catch {
             lastReadSucceeded = false
-            return lastGoodSnapshot ?? PriceSnapshot(
+            return PriceSnapshot(
                 prices: [:],
                 diagnosticsByCollectionKey: [:],
                 priceStorageKeyByCollectionKey: [:]
@@ -219,7 +218,6 @@ actor PriceSnapshotModelActor {
             diagnosticsByCollectionKey: diagnostics,
             priceStorageKeyByCollectionKey: priceStorageKeys
         )
-        lastGoodSnapshot = snapshot
         lastReadSucceeded = true
         return snapshot
     }
