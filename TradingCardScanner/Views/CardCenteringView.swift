@@ -197,6 +197,7 @@ final class CardCenteringViewModel: ObservableObject {
 
 struct CardCenteringView: View {
     @StateObject private var model = CardCenteringViewModel()
+    @FocusState private var focusedEdgeField: EdgeField?
     @State private var zoom: CGFloat = 1
     @State private var lastZoom: CGFloat = 1
     @State private var panOffset: CGSize = .zero
@@ -216,6 +217,17 @@ struct CardCenteringView: View {
         let imageRevision: Int
         let measurement: CardCenteringMeasurement?
         let rotationDegrees: Double
+    }
+
+    private enum EdgeField: Hashable {
+        case outerLeft
+        case outerRight
+        case outerTop
+        case outerBottom
+        case innerLeft
+        case innerRight
+        case innerTop
+        case innerBottom
     }
 
     var body: some View {
@@ -306,6 +318,13 @@ struct CardCenteringView: View {
             }
             .navigationTitle("Centering")
             .toolbar {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        focusedEdgeField = nil
+                    }
+                }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Settings", systemImage: "gearshape") {
                         isShowingSettings = true
@@ -555,20 +574,20 @@ struct CardCenteringView: View {
 
             DisclosureGroup("Outer card edge", isExpanded: $isOuterExpanded) {
                 VStack(spacing: 10) {
-                    edgeStepper("Left", value: outerBinding(\.left, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
-                    edgeStepper("Right", value: outerBinding(\.right, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
-                    edgeStepper("Top", value: outerBinding(\.top, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
-                    edgeStepper("Bottom", value: outerBinding(\.bottom, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
+                    edgeStepper("Left", field: .outerLeft, value: outerBinding(\.left, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
+                    edgeStepper("Right", field: .outerRight, value: outerBinding(\.right, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
+                    edgeStepper("Top", field: .outerTop, value: outerBinding(\.top, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
+                    edgeStepper("Bottom", field: .outerBottom, value: outerBinding(\.bottom, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
                 }
                 .padding(.top, 10)
             }
 
             DisclosureGroup("Inner frame", isExpanded: $isInnerExpanded) {
                 VStack(spacing: 10) {
-                    edgeStepper("Left", value: innerBinding(\.left, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
-                    edgeStepper("Right", value: innerBinding(\.right, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
-                    edgeStepper("Top", value: innerBinding(\.top, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
-                    edgeStepper("Bottom", value: innerBinding(\.bottom, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
+                    edgeStepper("Left", field: .innerLeft, value: innerBinding(\.left, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
+                    edgeStepper("Right", field: .innerRight, value: innerBinding(\.right, range: 0...(measurement.imageWidth - 1)), range: 0...(measurement.imageWidth - 1))
+                    edgeStepper("Top", field: .innerTop, value: innerBinding(\.top, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
+                    edgeStepper("Bottom", field: .innerBottom, value: innerBinding(\.bottom, range: 0...(measurement.imageHeight - 1)), range: 0...(measurement.imageHeight - 1))
                 }
                 .padding(.top, 10)
             }
@@ -577,13 +596,19 @@ struct CardCenteringView: View {
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    private func edgeStepper(_ label: String, value: Binding<Int>, range: ClosedRange<Int>) -> some View {
+    private func edgeStepper(
+        _ label: String,
+        field: EdgeField,
+        value: Binding<Int>,
+        range: ClosedRange<Int>
+    ) -> some View {
         Stepper(value: value, in: range) {
             HStack(spacing: 10) {
                 Text(label)
                 Spacer(minLength: 8)
                 TextField("0", value: value, format: .number)
                     .keyboardType(.numberPad)
+                    .focused($focusedEdgeField, equals: field)
                     .multilineTextAlignment(.trailing)
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 82)
