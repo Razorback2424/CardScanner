@@ -2569,6 +2569,12 @@ final class ScannerViewModel: ObservableObject {
         authorization: CollectionCommitAuthorization
     ) async -> Bool {
         guard let collectionWriter else {
+            show(
+                ScanNote(
+                    text: "This card was recognized but could not be added. Try again.",
+                    tone: .problem
+                )
+            )
             failAcknowledgement(
                 for: candidate.encounterID,
                 message: "This card was recognized but could not be added. Try again."
@@ -2630,6 +2636,12 @@ final class ScannerViewModel: ObservableObject {
             return true
         } catch {
             guard writeSessionID == scannerSessionID else { return false }
+            show(
+                ScanNote(
+                    text: "This card was recognized but was not added. Try again.",
+                    tone: .problem
+                )
+            )
             failAcknowledgement(
                 for: candidate.encounterID,
                 message: "This card was recognized but was not added. Try again."
