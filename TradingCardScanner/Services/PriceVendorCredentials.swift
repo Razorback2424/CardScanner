@@ -64,10 +64,7 @@ enum PriceVendorCredentials {
         let data = Data(trimmed.utf8)
         let updateStatus = SecItemUpdate(
             baseQuery as CFDictionary,
-            [
-                kSecValueData as String: data,
-                kSecAttrAccessible as String: accessibility
-            ] as CFDictionary
+            [kSecValueData as String: data] as CFDictionary
         )
         if updateStatus == errSecSuccess { return }
         guard updateStatus == errSecItemNotFound else {

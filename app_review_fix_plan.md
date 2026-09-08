@@ -607,3 +607,9 @@ Deferred by the supplied plan: published departure-summary mutation, performance
 - `xcodebuild build -quiet -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'generic/platform=iOS' -derivedDataPath /private/tmp/trading-card-scanner-audit-slice2-nosign SWIFT_ENABLE_EXPLICIT_MODULES=NO CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO` — passed.
 - The signed equivalent was blocked after CoreSimulatorService disconnected because the repository's example bundle ID has no provisioning profile; no Swift compilation diagnostic was emitted.
 - `git diff --check` — passed. Simulator/device, Keychain fault injection, and CloudKit synchronization remain unverified.
+
+### Final identity-fence refinement
+
+- Fallback work remains deduplicated by exact price key, while interested scan IDs are partitioned by scanner session; a late result updates only surviving projections in the current matching session.
+- Failure acknowledgements now require the currently displayed acknowledgement to carry the same encounter ID; an older terminal path cannot create a new banner after a newer acknowledgement has cleared.
+- The changed scanner, camera, and credential sources pass `swiftc -frontend -parse`; no runtime claims are added for simulator, physical-camera, Keychain fault injection, or CloudKit behavior.

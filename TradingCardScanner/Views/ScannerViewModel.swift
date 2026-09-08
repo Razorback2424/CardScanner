@@ -906,13 +906,11 @@ final class ScannerViewModel: ObservableObject {
     private var collectionWriter: ScannerCollectionWriter?
     private var modelContainer: ModelContainer?
     private var priceCheckCoordinator: PriceCheckCoordinator?
-    private struct FallbackQuoteTaskKey: Hashable {
-        let sessionID: UUID
-        let priceKey: String
-    }
-
-    private var fallbackQuoteTasks: [FallbackQuoteTaskKey: Task<Void, Never>] = [:]
-    private var fallbackQuoteScanIDs: [FallbackQuoteTaskKey: Set<UUID>] = [:]
+    private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
+    /// One fallback response may serve copies in more than one scanner session
+    /// while a departure is still draining. Keep the session fence beside the
+    /// interested scan IDs so a late response can never recreate old state.
+    private var fallbackQuoteScanIDs: [String: [UUID: Set<UUID>]] = [:]
     /// What the scanner was last given, so an unchanged directory costs a
     /// comparison rather than a regex compile. See `installMagicDefinitions`.
     private var installedMagicDefinitions: [MagicSetDefinition]?
@@ -1857,7 +1855,6 @@ final class ScannerViewModel: ObservableObject {
                 self.show(ScanNote(text: "Lookup failed — tap the set to retry", tone: .problem))
                 self.failAcknowledgement(
                     for: pending.request.encounterID,
-                    subject: pending.request.subject,
                     message: "This card was recognized but was not added. Tap the set to retry."
                 )
                 self.feedback.problem()
@@ -2574,7 +2571,6 @@ final class ScannerViewModel: ObservableObject {
         guard let collectionWriter else {
             failAcknowledgement(
                 for: candidate.encounterID,
-                subject: candidate.subject,
                 message: "This card was recognized but could not be added. Try again."
             )
             return false
@@ -2636,7 +2632,6 @@ final class ScannerViewModel: ObservableObject {
             guard writeSessionID == scannerSessionID else { return false }
             failAcknowledgement(
                 for: candidate.encounterID,
-                subject: candidate.subject,
                 message: "This card was recognized but was not added. Try again."
             )
             feedback.problem()
@@ -2668,20 +2663,18 @@ final class ScannerViewModel: ObservableObject {
             variantID: variant?.id,
             treatmentIDs: treatmentIDs
         )
-        let taskKey = FallbackQuoteTaskKey(
-            sessionID: scannerSessionID,
-            priceKey: key
-        )
+        let sessionID = scannerSessionID
         let interestedScanIDs = Set(
             sessionScans
                 .filter { fallbackPriceKey(for: $0) == key }
                 .map(\.id)
         )
-        if fallbackQuoteTasks[taskKey] != nil {
-            fallbackQuoteScanIDs[taskKey, default: []].formUnion(interestedScanIDs)
+        if fallbackQuoteTasks[key] != nil {
+            fallbackQuoteScanIDs[key, default: [:]][sessionID, default: []]
+                .formUnion(interestedScanIDs)
             return
         }
-        fallbackQuoteScanIDs[taskKey] = interestedScanIDs
+        fallbackQuoteScanIDs[key] = [sessionID: interestedScanIDs]
 
         // Price Check/fallback writes are independent of the scanner's main
         // context. The identity is a value snapshot, so no SwiftData model is
@@ -2691,8 +2684,8 @@ final class ScannerViewModel: ObservableObject {
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         let task = Task { @MainActor [weak self] in
             defer {
-                self?.fallbackQuoteTasks[taskKey] = nil
-                self?.fallbackQuoteScanIDs[taskKey] = nil
+                self?.fallbackQuoteTasks[key] = nil
+                self?.fallbackQuoteScanIDs[key] = nil
             }
             guard !Task.isCancelled else { return }
 
@@ -2720,18 +2713,17 @@ final class ScannerViewModel: ObservableObject {
                     treatmentIDs: treatmentIDs
                 ) else { return }
                 guard fallbackPrices.save(),
-                      let self,
-                      self.scannerSessionID == taskKey.sessionID else { return }
+                      let self else { return }
                 self.applyFallbackQuote(
                     quote,
-                    for: taskKey,
-                    scanIDs: self.fallbackQuoteScanIDs[taskKey] ?? []
+                    priceKey: key,
+                    scanIDsBySession: self.fallbackQuoteScanIDs[key] ?? [:]
                 )
             case .failed:
                 break
             }
         }
-        fallbackQuoteTasks[taskKey] = task
+        fallbackQuoteTasks[key] = task
     }
 
     private func fallbackPriceKey(
@@ -2762,16 +2754,17 @@ final class ScannerViewModel: ObservableObject {
 
     private func applyFallbackQuote(
         _ quote: PriceLookup,
-        for taskKey: FallbackQuoteTaskKey,
-        scanIDs: Set<UUID>
+        priceKey: String,
+        scanIDsBySession: [UUID: Set<UUID>]
     ) {
-        guard scannerSessionID == taskKey.sessionID else { return }
+        let scanIDs = scanIDsBySession[scannerSessionID] ?? []
+        guard !scanIDs.isEmpty else { return }
 
         var updatedScanIDs = Set<UUID>()
         for index in sessionScans.indices {
             let scan = sessionScans[index]
             guard scanIDs.contains(scan.id),
-                  fallbackPriceKey(for: scan) == taskKey.priceKey else { continue }
+                  fallbackPriceKey(for: scan) == priceKey else { continue }
 
             let replacement = scan.updating(price: quote)
             sessionScans[index] = replacement
@@ -2959,7 +2952,6 @@ final class ScannerViewModel: ObservableObject {
         if request.purpose == .collection {
             failAcknowledgement(
                 for: request.encounterID,
-                subject: subject,
                 message: "This card was recognized but was not added. Try again."
             )
         }
@@ -3004,18 +2996,12 @@ final class ScannerViewModel: ObservableObject {
         scanAcknowledgement = nil
     }
 
-    private func failAcknowledgement(
-        for encounterID: UUID,
-        subject: ScanSubject,
-        message: String
-    ) {
-        if let acknowledgement = scanAcknowledgement,
-           acknowledgement.encounterID != encounterID {
-            return
-        }
+    private func failAcknowledgement(for encounterID: UUID, message: String) {
+        guard let acknowledgement = scanAcknowledgement,
+              acknowledgement.encounterID == encounterID else { return }
         scanAcknowledgement = ScanAcknowledgement(
             encounterID: encounterID,
-            subject: subject,
+            subject: acknowledgement.subject,
             phase: .failed,
             message: message
         )
