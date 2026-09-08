@@ -1742,6 +1742,7 @@ struct CollectionStore {
                     owner.justTCGCardID = variant.cardID
                     owner.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
                 }
+                markLiveMagicTreatmentMigrationComplete(for: card, on: owner)
                 storeMarketPrice(
                     variant.marketPriceUSD,
                     updatedAt: variant.updatedAt,
@@ -1770,6 +1771,7 @@ struct CollectionStore {
             if existing.magicContentKind == .regular {
                 existing.magicContentKindRaw = card.magicContentKind.rawValue
             }
+            markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
             storeMarketPrice(
                 variant.marketPriceUSD,
                 updatedAt: variant.updatedAt,
@@ -1836,6 +1838,7 @@ struct CollectionStore {
         row.gradingQualifier = variant.grade.qualifier
         row.certificationNumber = certificationNumber
         row.catalogProviderID = card.providerID
+        markLiveMagicTreatmentMigrationComplete(for: card, on: row)
         context.insert(row)
         storeMarketPrice(
             variant.marketPriceUSD,
@@ -1909,6 +1912,7 @@ struct CollectionStore {
                ) {
                 // A bound row is kept bound; an unbound row is already the same
                 // physical slab and is deliberately not incremented.
+                markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
                 try commit()
                 return CollectionMutation(
                     collectionKey: existing.collectionKey,
@@ -1928,6 +1932,7 @@ struct CollectionStore {
                 if existing.magicTreatmentQualifiersJSON == nil {
                     existing.magicTreatmentQualifiers = magicTreatmentQualifiers
                 }
+                markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
                 let operationID = UUID()
                 try requireAppended(
                     ledger.record(
@@ -1980,6 +1985,7 @@ struct CollectionStore {
             row.gradingQualifier = grade.qualifier
             row.certificationNumber = certificationNumber
             row.catalogProviderID = card.providerID
+            markLiveMagicTreatmentMigrationComplete(for: card, on: row)
             context.insert(row)
 
             let operationID = UUID()
@@ -2030,6 +2036,9 @@ struct CollectionStore {
             if let existing = try uniqueCard(forAnyKey: key) {
             existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, 1)
             existing.dateAdded = .now
+            if game == .magic {
+                existing.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion
+            }
             // Re-adding also heals rows saved before sealed artwork support.
             if existing.imageURL == nil {
                 existing.imageURL = product.imageURL?.absoluteString
@@ -2101,6 +2110,9 @@ struct CollectionStore {
         row.justTCGVariantID = product.variantID
         row.tcgplayerProductID = product.tcgplayerProductID
         row.justTCGAPIVersion = JustTCGV1Client.apiVersion
+        if game == .magic {
+            row.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion
+        }
         context.insert(row)
         storeMarketPrice(
             product.marketPriceUSD,
@@ -2143,6 +2155,17 @@ struct CollectionStore {
         case let .pokemon(pokemon, _): return pokemon.image
         case .magic: return card.displayImageURL?.absoluteString
         }
+    }
+
+    /// Scanner and catalog paths already carry the exact live provider evidence
+    /// needed by Magic treatment migration. Stamp those rows so migration stays
+    /// reserved for historical and imported rows.
+    private func markLiveMagicTreatmentMigrationComplete(
+        for card: IdentifiedCard,
+        on row: CollectedCard
+    ) {
+        guard card.game == .magic else { return }
+        row.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion
     }
 
     /// Sealed and graded browse responses already contain the exact variant's
@@ -2262,6 +2285,8 @@ struct CollectionStore {
                 mutation = CollectionMutation(collectionKey: key, activityID: nil, didInsert: true)
                 stored = inserted
             }
+
+            markLiveMagicTreatmentMigrationComplete(for: card, on: stored)
 
             if let stamped = PokemonStampedReleaseCatalog.entry(
                 providerID: card.providerID,
