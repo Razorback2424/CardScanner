@@ -469,6 +469,7 @@ struct PortfolioView: View {
                         contributions: contributions,
                         total: total,
                         holdings: portfolio.holdings,
+                        movementDetails: active.movementDetails,
                         history: history,
                         onRemoved: presentUndo(for:)
                     )
@@ -563,6 +564,7 @@ struct PortfolioView: View {
             title: "Today’s market movement",
             total: attribution.market,
             contributions: portfolio.contributionIndex.byDay[today, default: [:]],
+            movementDetails: portfolio.contributionIndex.detailsByDay[today, default: [:]],
             hasEligibleMarketMovement: portfolio.contributionIndex.daysWithEligibleMarketMovement.contains(today),
             coverageDescription: todayCoverageDescription(portfolio.summary?.coverage)
         )
@@ -574,6 +576,7 @@ struct PortfolioView: View {
             title: "Contributors · \(result.range.rawValue)",
             total: result.accounting?.market ?? .zero,
             contributions: result.contributions,
+            movementDetails: result.movementDetails,
             hasEligibleMarketMovement: result.hasEligibleMarketMovement,
             coverageDescription: historyCoverageDescription(result.coverage)
         )
@@ -619,6 +622,7 @@ private struct PortfolioContributorContext: Identifiable, Hashable {
     let title: String
     let total: Money
     let contributions: [String: Money]
+    let movementDetails: [String: PortfolioContributionDetail]
     let hasEligibleMarketMovement: Bool
     let coverageDescription: String?
 
@@ -635,6 +639,7 @@ private struct PortfolioContributionRowModel: Identifiable {
 
     let kind: Kind
     let amount: Money
+    let movementDetail: PortfolioContributionDetail?
 
     var id: String {
         switch kind {
@@ -682,20 +687,33 @@ private enum PortfolioContributionOrder: String, CaseIterable, Identifiable {
 private enum PortfolioContributionPresentation {
     static func rows(
         contributions: [String: Money],
-        holdings: [PortfolioHoldingSnapshot]
+        holdings: [PortfolioHoldingSnapshot],
+        movementDetails: [String: PortfolioContributionDetail] = [:]
     ) -> [PortfolioContributionRowModel] {
         let byKey = Dictionary(holdings.map { ($0.collectionKey, $0) }, uniquingKeysWith: { first, _ in first })
         var result: [PortfolioContributionRowModel] = []
         var unknown = Money.zero
         for (key, amount) in contributions where !amount.isZero {
             if let holding = byKey[key] {
-                result.append(PortfolioContributionRowModel(kind: .holding(holding), amount: amount))
+                result.append(
+                    PortfolioContributionRowModel(
+                        kind: .holding(holding),
+                        amount: amount,
+                        movementDetail: movementDetails[key]
+                    )
+                )
             } else {
                 unknown += amount
             }
         }
         if !unknown.isZero {
-            result.append(PortfolioContributionRowModel(kind: .previouslyOwned, amount: unknown))
+            result.append(
+                PortfolioContributionRowModel(
+                    kind: .previouslyOwned,
+                    amount: unknown,
+                    movementDetail: nil
+                )
+            )
         }
         return result
     }
@@ -731,6 +749,25 @@ private enum PortfolioContributionPresentation {
 
     static func color(_ amount: Money) -> Color { PortfolioPalette.direction(amount) }
 
+    static func movementBreakdownText(for row: PortfolioContributionRowModel) -> String? {
+        guard let holding = row.holding, holding.quantity > 1 else { return nil }
+
+        guard let detail = row.movementDetail,
+              detail.totalImpact == row.amount,
+              detail.hasConsistentQuantity,
+              let quantity = detail.affectedQuantities.first,
+              quantity > 0,
+              !detail.cumulativeUnitMovement.isZero else {
+            if row.movementDetail?.affectedQuantities.count ?? 0 > 1 {
+                return "Quantity varied · per-card movement unavailable"
+            }
+            return "\(holding.quantity) copies · per-card movement unavailable"
+        }
+
+        let copyLabel = quantity == 1 ? "copy" : "copies"
+        return "\(quantity) \(copyLabel) × \(signed(detail.cumulativeUnitMovement)) per card"
+    }
+
     static func magnitudeFraction(_ amount: Money, maximum: Money) -> CGFloat {
         guard amount.isValid,
               maximum.isValid,
@@ -754,12 +791,17 @@ private struct PortfolioContributorPreview: View {
     let contributions: [String: Money]
     let total: Money
     let holdings: [PortfolioHoldingSnapshot]
+    let movementDetails: [String: PortfolioContributionDetail]
     let history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     var body: some View {
         let all = PortfolioContributionPresentation.sorted(
-            PortfolioContributionPresentation.rows(contributions: contributions, holdings: holdings),
+            PortfolioContributionPresentation.rows(
+                contributions: contributions,
+                holdings: holdings,
+                movementDetails: movementDetails
+            ),
             order: .impact
         )
         let displayed = Array(all.prefix(3))
@@ -771,7 +813,11 @@ private struct PortfolioContributorPreview: View {
             }
             if all.count > displayed.count, !residual.isZero {
                 previewRow(
-                    PortfolioContributionRowModel(kind: .otherHoldings, amount: residual),
+                    PortfolioContributionRowModel(
+                        kind: .otherHoldings,
+                        amount: residual,
+                        movementDetail: nil
+                    ),
                     maximum: maximum
                 )
             }
@@ -816,7 +862,11 @@ private struct PortfolioContributorsView: View {
 
     var body: some View {
         let rows = PortfolioContributionPresentation.sorted(
-            PortfolioContributionPresentation.rows(contributions: context.contributions, holdings: holdings),
+            PortfolioContributionPresentation.rows(
+                contributions: context.contributions,
+                holdings: holdings,
+                movementDetails: context.movementDetails
+            ),
             order: order
         )
         let maximum = rows.map(\.amount.magnitude).max() ?? .zero
@@ -924,12 +974,12 @@ private struct PortfolioContributionRow: View {
                             .foregroundStyle(.secondary)
                             .lineLimit(1)
                     }
-                    if let holding = row.holding, holding.quantity > 1 {
-                        AppCardBadge(
-                            text: "×\(holding.quantity)",
-                            systemImage: "number",
-                            tint: .teal
-                        )
+                    if let movementBreakdown = PortfolioContributionPresentation.movementBreakdownText(for: row) {
+                        Text(movementBreakdown)
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 Spacer(minLength: 8)
@@ -937,6 +987,12 @@ private struct PortfolioContributionRow: View {
                     Text(PortfolioContributionPresentation.signed(row.amount))
                         .font(.subheadline.weight(.semibold).monospacedDigit())
                         .foregroundStyle(PortfolioContributionPresentation.color(row.amount))
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
+                    Text("Total movement")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                     if showsHoldingShare,
                        let share = PortfolioContributionPresentation.shareOfCurrentHolding(row) {
                         Text("\(share.formatted(.percent.precision(.fractionLength(1)))) of current value")
