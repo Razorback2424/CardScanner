@@ -1949,7 +1949,7 @@ struct PriceHistoryChartView: View {
     let range: PortfolioHistoryRange
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    private var model: PriceHistoryChartModel {
+    private func makeModel() -> PriceHistoryChartModel {
         PriceHistoryChartModel.make(
             observations: observations,
             checkDays: checkDays,
@@ -1960,29 +1960,28 @@ struct PriceHistoryChartView: View {
         )
     }
 
-    private var xAxisTickCount: Int {
-        PriceHistoryChartModel.recommendedXAxisTickCount(
+    var body: some View {
+        // Build the chart model once. It sorts and merges the complete history;
+        // keeping it as a local value also makes every branch use the same
+        // captured `now` rather than rebuilding with slightly different times.
+        let model = makeModel()
+        let xAxisTickCount = PriceHistoryChartModel.recommendedXAxisTickCount(
             for: model.plotRangeSpan,
             isAccessibilitySize: dynamicTypeSize.isAccessibilitySize
         )
-    }
+        let xAxisTickDates: [Date] = {
+            guard xAxisTickCount > 1 else { return [model.plotRangeStart] }
+            let span = model.plotRangeSpan
+            return (0..<xAxisTickCount).map { index in
+                model.plotRangeStart.addingTimeInterval(
+                    span * Double(index) / Double(xAxisTickCount - 1)
+                )
+            }
+        }()
+        let usesShortAxisLabels = PriceHistoryChartModel.usesShortXAxisLabels(
+            for: model.plotRangeSpan
+        )
 
-    private var xAxisTickDates: [Date] {
-        let count = xAxisTickCount
-        guard count > 1 else { return [model.plotRangeStart] }
-        let span = model.plotRangeSpan
-        return (0..<count).map { index in
-            model.plotRangeStart.addingTimeInterval(
-                span * Double(index) / Double(count - 1)
-            )
-        }
-    }
-
-    private var usesShortAxisLabels: Bool {
-        PriceHistoryChartModel.usesShortXAxisLabels(for: model.plotRangeSpan)
-    }
-
-    var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if model.isPlotRangeFitted {
                 Text("Fitted to available data · \(range.rawValue) selected")
@@ -2543,13 +2542,20 @@ enum CollectionArtworkStore {
         }
     }
 
-    static func image(filename: String?) -> UIImage? {
+    static func image(
+        filename: String?,
+        maximumPixelDimension: Int = Self.maximumPixelDimension
+    ) -> UIImage? {
         guard let filename, let directory else { return nil }
-        let cacheKey = filename as NSString
+        let targetPixelSize = min(max(maximumPixelDimension, 1), Self.maximumPixelDimension)
+        let cacheKey = "\(filename)#pixel=\(targetPixelSize)" as NSString
         if let cached = imageCache.object(forKey: cacheKey) { return cached }
         let fileURL = directory.appendingPathComponent(filename)
         guard let source = CGImageSourceCreateWithURL(fileURL as CFURL, nil),
-              let image = downsampledImage(from: source) else { return nil }
+              let image = downsampledImage(
+                from: source,
+                targetPixelSize: targetPixelSize
+              ) else { return nil }
         let cost = image.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
         imageCache.setObject(image, forKey: cacheKey, cost: cost)
         return image
@@ -2561,11 +2567,14 @@ enum CollectionArtworkStore {
         return image.pngData()
     }
 
-    private static func downsampledImage(from source: CGImageSource) -> UIImage? {
+    private static func downsampledImage(
+        from source: CGImageSource,
+        targetPixelSize: Int = maximumPixelDimension
+    ) -> UIImage? {
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
             kCGImageSourceCreateThumbnailWithTransform: true,
-            kCGImageSourceThumbnailMaxPixelSize: maximumPixelDimension
+            kCGImageSourceThumbnailMaxPixelSize: targetPixelSize
         ]
         guard let image = CGImageSourceCreateThumbnailAtIndex(
             source,
@@ -2577,7 +2586,10 @@ enum CollectionArtworkStore {
 
     static func remove(filename: String?) {
         guard let filename, let directory else { return }
-        imageCache.removeObject(forKey: filename as NSString)
+        // The cache is keyed by derivative size. Removing all derivatives for
+        // one filename keeps an arbitrary caller-provided size from surviving
+        // after the backing file is deleted.
+        imageCache.removeAllObjects()
         try? FileManager.default.removeItem(at: directory.appendingPathComponent(filename))
     }
 }

@@ -2,11 +2,15 @@ import SwiftData
 import SwiftUI
 
 struct CollectionActivityLogView: View {
+    private static let activityPageSize = 300
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var revisionStore: StoreRevisionStore
     @State private var activities: [CollectionActivity] = []
     @State private var cards: [CollectedCard] = []
     @State private var inventoryEvents: [InventoryEvent] = []
+    @State private var index: ActivityIndex?
+    @State private var activityLimit = Self.activityPageSize
+    @State private var hasMoreActivities = false
     @State private var selectedKind: CollectionActivityKind?
     @State private var pendingRemovalID: UUID?
     @State private var errorMessage: String?
@@ -19,45 +23,55 @@ struct CollectionActivityLogView: View {
     }
 
     var body: some View {
-        let index = makeIndex()
-
         Group {
-            if visibleActivities.isEmpty {
-                ContentUnavailableView(
-                    "No Activity Yet",
-                    systemImage: "clock.arrow.circlepath",
-                    description: Text(
-                        selectedKind == nil
-                            ? "New scans, imports, and collection changes will appear here."
-                            : "No \(selectedKind?.label.lowercased() ?? "matching") history yet."
+            if let index {
+                if visibleActivities.isEmpty {
+                    ContentUnavailableView(
+                        "No Activity Yet",
+                        systemImage: "clock.arrow.circlepath",
+                        description: Text(
+                            selectedKind == nil
+                                ? "New scans, imports, and collection changes will appear here."
+                                : "No \(selectedKind?.label.lowercased() ?? "matching") history yet."
+                        )
                     )
-                )
-            } else {
-                List {
-                    ForEach(visibleActivities) { activity in
-                        HStack(spacing: 8) {
-                            NavigationLink {
-                                CollectionActivityEditor(activity: activity)
-                            } label: {
-                                activityRow(activity)
+                } else {
+                    List {
+                        ForEach(visibleActivities) { activity in
+                            HStack(spacing: 8) {
+                                NavigationLink {
+                                    CollectionActivityEditor(activity: activity)
+                                } label: {
+                                    activityRow(activity)
+                                }
+                                activityActions(for: activity, using: index)
                             }
-                            activityActions(for: activity, using: index)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                if canRemove(activity, using: index) {
+                                    Button("Remove", role: .destructive) {
+                                        pendingRemovalID = activity.id
+                                    }
+                                }
+                                if canRestore(activity, using: index) {
+                                    Button("Restore") {
+                                        restore(activity)
+                                    }
+                                    .tint(.green)
+                                }
+                            }
                         }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            if canRemove(activity, using: index) {
-                                Button("Remove", role: .destructive) {
-                                    pendingRemovalID = activity.id
-                                }
+
+                        if hasMoreActivities {
+                            Button("Show more history") {
+                                activityLimit += Self.activityPageSize
+                                reload()
                             }
-                            if canRestore(activity, using: index) {
-                                Button("Restore") {
-                                    restore(activity)
-                                }
-                                .tint(.green)
-                            }
+                            .frame(maxWidth: .infinity)
                         }
                     }
                 }
+            } else {
+                ProgressView("Loading history…")
             }
         }
         .navigationTitle("Collection Activity")
@@ -113,7 +127,10 @@ struct CollectionActivityLogView: View {
         )
     }
 
-    private func makeIndex() -> ActivityIndex {
+    private func makeIndex(
+        cards: [CollectedCard],
+        inventoryEvents: [InventoryEvent]
+    ) -> ActivityIndex {
         let projection = LogicalCollection.project(cards: cards) { $0.priceKey }
         return ActivityIndex(
             cardsByCollectionKey: projection.byKey.mapValues(\.representative),
@@ -125,12 +142,16 @@ struct CollectionActivityLogView: View {
 
     private func reload() {
         try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
-        let descriptor = FetchDescriptor<CollectionActivity>(
+        var descriptor = FetchDescriptor<CollectionActivity>(
             sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
         )
-        activities = (try? modelContext.fetch(descriptor)) ?? []
+        descriptor.fetchLimit = activityLimit + 1
+        let fetchedActivities = (try? modelContext.fetch(descriptor)) ?? []
+        hasMoreActivities = fetchedActivities.count > activityLimit
+        activities = Array(fetchedActivities.prefix(activityLimit))
         cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
         inventoryEvents = (try? modelContext.fetch(FetchDescriptor<InventoryEvent>())) ?? []
+        index = makeIndex(cards: cards, inventoryEvents: inventoryEvents)
     }
 
     private var kindFilter: some View {

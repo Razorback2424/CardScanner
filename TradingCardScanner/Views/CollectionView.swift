@@ -2,83 +2,6 @@ import OSLog
 import SwiftData
 import SwiftUI
 
-/// Inputs that can change the cached collection projection. Search text and
-/// filter state intentionally do not participate: they only transform the
-/// already-projected rows. Keeping this fingerprint separate makes the cache's
-/// invalidation contract testable without rendering a full SwiftUI hierarchy.
-enum CollectionProjectionToken {
-    @MainActor
-    static func make(
-        cards: [CollectedCard],
-        priceRecords: [PriceRecord],
-        artworkOverrides: [LocalArtworkOverride]
-    ) -> Int {
-        var hasher = Hasher()
-        hasher.combine(cards.count)
-        for card in cards {
-            // Only fields that change the logical projection or the value row
-            // belong here. The production grid uses the actor-owned value
-            // snapshot below; this helper remains for focused token tests and
-            // compatibility with the earlier projection contract.
-            hasher.combine(card.collectionKey)
-            hasher.combine(card.dateAdded)
-            hasher.combine(card.providerID)
-            hasher.combine(card.catalogProviderID)
-            hasher.combine(card.name)
-            hasher.combine(card.quantity)
-            hasher.combine(card.game)
-            hasher.combine(card.setName)
-            hasher.combine(card.setCode)
-            hasher.combine(card.cardNumber)
-            hasher.combine(card.variantID)
-            hasher.combine(card.variantLabel)
-            hasher.combine(card.magicTreatmentIDsRaw)
-            hasher.combine(card.magicTreatmentQualifiersJSON)
-            hasher.combine(card.magicContentKindRaw)
-            hasher.combine(card.pokemonPrintRunRaw)
-            hasher.combine(card.setReleaseOrder)
-            hasher.combine(card.itemKindRaw)
-            hasher.combine(card.justTCGVariantID)
-            hasher.combine(card.justTCGAPIVersion)
-            hasher.combine(card.gradingCompanyRaw)
-            hasher.combine(card.gradeRaw)
-            hasher.combine(card.gradeLabel)
-            hasher.combine(card.gradingQualifier)
-        }
-
-        hasher.combine(priceRecords.count)
-        for record in priceRecords {
-            hasher.combine(record.key)
-            hasher.combine(record.game)
-            hasher.combine(record.magicTreatmentIDsRaw)
-            hasher.combine(record.unitMarketPriceUSD)
-            hasher.combine(record.currencyCode)
-            hasher.combine(record.sourceRaw)
-            hasher.combine(record.sourceVariantID)
-            hasher.combine(record.sourceUpdatedAt)
-            // A stamped provider's market timestamp is the freshness fact the
-            // tile renders. The local fetch time and exact check time only
-            // churn the token without changing that answer. Unstamped
-            // providers fall back to `fetchedAt`, so keep that exact value for
-            // them; the presence bits preserve unknown/not-checked changes.
-            hasher.combine(record.fetchedAt != nil)
-            hasher.combine(record.lastCheckedAt != nil)
-            if record.sourceUpdatedAt == nil {
-                hasher.combine(record.fetchedAt)
-            }
-            hasher.combine(record.lastFailureAt)
-            hasher.combine(record.lastFailureReasonRaw)
-            hasher.combine(record.invalidatedAt)
-        }
-
-        hasher.combine(artworkOverrides.count)
-        for override in artworkOverrides {
-            hasher.combine(override.collectionKey)
-        }
-        return hasher.finalize()
-    }
-}
-
 /// Collection is for finding, filtering, and managing owned items. Portfolio
 /// accounting and price refresh ownership remain app-scoped in `ContentView`.
 struct CollectionView: View {
@@ -268,7 +191,9 @@ struct CollectionView: View {
     @ViewBuilder
     private func collectionRoot(_ snapshot: Snapshot) -> some View {
         Group {
-            if !projectionStore.isLoaded {
+            if projectionStore.loadFailed {
+                projectionLoadFailed
+            } else if !projectionStore.isLoaded {
                 loadingCollection
             } else if snapshot.all.isEmpty {
                 emptyCollection
@@ -318,6 +243,22 @@ struct CollectionView: View {
     private var loadingCollection: some View {
         ProgressView("Loading collection…")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var projectionLoadFailed: some View {
+        ContentUnavailableView {
+            Label("Collection Couldn’t Load", systemImage: "exclamationmark.triangle")
+        } description: {
+            Text("The collection store could not be read. Try again.")
+        } actions: {
+            Button("Retry") {
+                Task {
+                    await projectionStore.rebuild(container: modelContext.container)
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     /// Replaces whatever the detail column is showing. Replacing rather than
@@ -430,31 +371,22 @@ struct CollectionView: View {
     }
 
     private func collectionSummary(_ snapshot: Snapshot) -> some View {
-        let total = snapshot.entries.reduce(Money.zero) { total, entry in
-            guard entry.row.price.currencyCode == "USD",
-                  let unitPrice = entry.row.price.amount,
-                  let money = Money(rounding: unitPrice) else {
-                return total
-            }
-            return total + money * entry.row.quantity
-        }
-
         return VStack(alignment: .leading, spacing: 4) {
             HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Shown value")
-                    .font(.subheadline)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Shown value")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Text(snapshot.shownValue.formatted())
+                        .font(.system(.title2, design: .rounded).weight(.bold))
+                        .monospacedDigit()
+                        .contentTransition(.numericText())
+                        .accessibilityLabel("Shown collection value, \(snapshot.shownValue.formatted())")
+                }
+                Spacer(minLength: 12)
+                Text("\(snapshot.entries.count) \(snapshot.entries.count == 1 ? "item" : "items")")
+                    .font(.caption)
                     .foregroundStyle(.secondary)
-                Text(total.formatted())
-                    .font(.system(.title2, design: .rounded).weight(.bold))
-                    .monospacedDigit()
-                    .contentTransition(.numericText())
-                    .accessibilityLabel("Shown collection value, \(total.formatted())")
-            }
-            Spacer(minLength: 12)
-            Text("\(snapshot.entries.count) \(snapshot.entries.count == 1 ? "item" : "items")")
-                .font(.caption)
-                .foregroundStyle(.secondary)
             }
 
             // Pull-to-refresh returns immediately, so this is where a running
@@ -586,6 +518,7 @@ struct CollectionView: View {
 
         let all: [CollectionRow]
         let entries: [Entry]
+        let shownValue: Money
     }
 
     /// The expensive half of a collection render. Search and filter state are
@@ -660,7 +593,7 @@ struct CollectionView: View {
     @MainActor
     private func makeSnapshot() -> Snapshot {
         guard let projected = projectionStore.snapshot else {
-            return Snapshot(all: [], entries: [])
+            return Snapshot(all: [], entries: [], shownValue: .zero)
         }
 
         let cached = projectionCache.value(for: projectionStore.revision) {
@@ -701,25 +634,36 @@ struct CollectionView: View {
             )
         }
 
+        let entries = visible.map { row in
+            let liveDiagnostics = priceSnapshot.diagnosticsByCollectionKey[row.id]
+            let projectedDiagnostics = cached.diagnosticsByCollectionKey[row.id]
+            return Snapshot.Entry(
+                row: row,
+                // A diagnostic is about the current value, not a permanent
+                // property of the row. The delta channel clears the live
+                // reason immediately; this guard also prevents an older
+                // projection from rendering a warning beside a price.
+                unpricedReason: row.price.amount == nil
+                    ? (liveDiagnostics?.unpricedReason ?? projectedDiagnostics?.unpricedReason)
+                    : nil,
+                artworkReason: liveDiagnostics?.artworkReason
+                    ?? projectedDiagnostics?.artworkReason,
+                isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
+            )
+        }
+        let shownValue = entries.reduce(Money.zero) { total, entry in
+            guard entry.row.price.currencyCode == "USD",
+                  let unitPrice = entry.row.price.amount,
+                  let money = Money(rounding: unitPrice) else {
+                return total
+            }
+            return total + money * entry.row.quantity
+        }
+
         return Snapshot(
             all: pricedRows,
-            entries: visible.map { row in
-                let liveDiagnostics = priceSnapshot.diagnosticsByCollectionKey[row.id]
-                let projectedDiagnostics = cached.diagnosticsByCollectionKey[row.id]
-                return Snapshot.Entry(
-                    row: row,
-                    // A diagnostic is about the current value, not a permanent
-                    // property of the row. The delta channel clears the live
-                    // reason immediately; this guard also prevents an older
-                    // projection from rendering a warning beside a price.
-                    unpricedReason: row.price.amount == nil
-                        ? (liveDiagnostics?.unpricedReason ?? projectedDiagnostics?.unpricedReason)
-                        : nil,
-                    artworkReason: liveDiagnostics?.artworkReason
-                        ?? projectedDiagnostics?.artworkReason,
-                    isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
-                )
-            }
+            entries: entries,
+            shownValue: shownValue
         )
     }
 
@@ -1227,7 +1171,10 @@ private struct CollectionCardArtwork: View {
     }
 
     var body: some View {
-        if let image = CollectionArtworkStore.image(filename: userArtworkFilename) {
+        if let image = CollectionArtworkStore.image(
+            filename: userArtworkFilename,
+            maximumPixelDimension: 512
+        ) {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()

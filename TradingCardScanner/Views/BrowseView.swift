@@ -1350,12 +1350,19 @@ struct CatalogCachedImage: View {
             }
         }
         .task(id: LoadID(url: url, targetPixelSize: resolvedTargetPixelSize)) {
+            guard let resolvedTargetPixelSize else { return }
             loader.load(url, targetPixelSize: resolvedTargetPixelSize)
         }
     }
 
     private var resolvedTargetPixelSize: Int? {
-        targetPixelSize ?? measuredTargetPixelSize
+        targetPixelSize.map(Self.quantizedPixelSize)
+            ?? measuredTargetPixelSize.map(Self.quantizedPixelSize)
+    }
+
+    private static func quantizedPixelSize(_ size: Int) -> Int {
+        let clamped = min(max(size, 128), 4_096)
+        return min(((clamped + 127) / 128) * 128, 4_096)
     }
 
     private func updateMeasuredTarget(for size: CGSize) {
@@ -1363,8 +1370,9 @@ struct CatalogCachedImage: View {
         let maximumPointDimension = max(size.width, size.height)
         guard maximumPointDimension.isFinite, maximumPointDimension > 1 else { return }
         let measured = Int(ceil(maximumPointDimension * displayScale))
-        guard measured > 0, measured != measuredTargetPixelSize else { return }
-        measuredTargetPixelSize = measured
+        let bucket = Self.quantizedPixelSize(measured)
+        guard bucket != measuredTargetPixelSize else { return }
+        measuredTargetPixelSize = bucket
     }
 
     private var placeholder: some View {
@@ -1468,11 +1476,10 @@ actor CatalogImageCache {
         }
 
         let data = try await data(for: url)
-        let sourceOptions: [CFString: Any] = [
-            kCGImageSourceShouldCache: false
-        ]
-        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions as CFDictionary),
-              let image = Self.downsampledImage(from: source, targetPixelSize: targetPixelSize) else {
+        let image = await Task.detached(priority: .userInitiated) {
+            Self.downsampledImage(from: data, targetPixelSize: targetPixelSize)
+        }.value
+        guard let image else {
             throw BrowseCatalogError.badResponse
         }
         let cost = image.cgImage.map { $0.bytesPerRow * $0.height }
@@ -1493,9 +1500,16 @@ actor CatalogImageCache {
     }
 
     private static func downsampledImage(
-        from source: CGImageSource,
+        from data: Data,
         targetPixelSize: Int
     ) -> UIImage? {
+        let sourceOptions: [CFString: Any] = [
+            kCGImageSourceShouldCache: false
+        ]
+        guard let source = CGImageSourceCreateWithData(
+            data as CFData,
+            sourceOptions as CFDictionary
+        ) else { return nil }
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
             kCGImageSourceCreateThumbnailWithTransform: true,
@@ -1512,10 +1526,10 @@ actor CatalogImageCache {
     }
 
     private func data(for url: URL) async throws -> Data {
-        trimAtStartupIfNeeded()
+        await trimAtStartupIfNeeded()
         let file = directory.appendingPathComponent(filename(for: url))
-        if let cached = try? Data(contentsOf: file) {
-            touchIfNeeded(file, for: url)
+        if let cached = try? await Self.readData(from: file) {
+            await touchIfNeeded(file, for: url)
             return cached
         }
 
@@ -1545,19 +1559,15 @@ actor CatalogImageCache {
             // Only one waiter writes the completed response. This also avoids
             // duplicate LRU timestamps when several visible cells share a URL.
             if inFlight[url]?.id == requestID {
-                inFlight[url] = nil
                 if data.count <= Self.maximumAssetBytes {
-                    try? FileManager.default.createDirectory(
-                        at: directory,
-                        withIntermediateDirectories: true
-                    )
-                    try? data.write(to: file, options: .atomic)
+                    await Self.writeData(data, to: file, directory: directory)
                     bytesSinceTrim += data.count
                     if bytesSinceTrim >= Self.trimThresholdBytes {
-                        trim()
                         bytesSinceTrim = 0
+                        await trimOffActor()
                     }
                 }
+                inFlight[url] = nil
             }
             return data
         } catch {
@@ -1568,7 +1578,7 @@ actor CatalogImageCache {
         }
     }
 
-    private func touchIfNeeded(_ file: URL, for sourceURL: URL) {
+    private func touchIfNeeded(_ file: URL, for sourceURL: URL) async {
         let now = Date.now
         guard now.timeIntervalSince(lastTouchAt[sourceURL] ?? .distantPast) >= Self.touchInterval else {
             return
@@ -1579,19 +1589,51 @@ actor CatalogImageCache {
             lastTouchAt.removeValue(forKey: oldest)
         }
         lastTouchAt[sourceURL] = now
-        try? FileManager.default.setAttributes([.modificationDate: now], ofItemAtPath: file.path)
+        await Self.touch(file: file, at: now)
     }
 
-    private func trimAtStartupIfNeeded() {
+    private func trimAtStartupIfNeeded() async {
         guard !didTrimAtStartup else { return }
         didTrimAtStartup = true
         // A previous process may have left the disk cache at its ceiling. One
         // lazy startup trim restores the limit without enumerating the entire
         // directory on every image download.
-        trim()
+        await trimOffActor()
     }
 
-    private func trim() {
+    private func trimOffActor() async {
+        let directory = self.directory
+        await Task.detached(priority: .utility) {
+            Self.trim(directory: directory)
+        }.value
+    }
+
+    private static func readData(from file: URL) async throws -> Data {
+        try await Task.detached(priority: .utility) {
+            try Data(contentsOf: file)
+        }.value
+    }
+
+    private static func writeData(_ data: Data, to file: URL, directory: URL) async {
+        await Task.detached(priority: .utility) {
+            try? FileManager.default.createDirectory(
+                at: directory,
+                withIntermediateDirectories: true
+            )
+            try? data.write(to: file, options: .atomic)
+        }.value
+    }
+
+    private static func touch(file: URL, at date: Date) async {
+        await Task.detached(priority: .utility) {
+            try? FileManager.default.setAttributes(
+                [.modificationDate: date],
+                ofItemAtPath: file.path
+            )
+        }.value
+    }
+
+    private static func trim(directory: URL) {
         let keys: Set<URLResourceKey> = [.fileSizeKey, .contentModificationDateKey]
         guard let urls = try? FileManager.default.contentsOfDirectory(
             at: directory,
