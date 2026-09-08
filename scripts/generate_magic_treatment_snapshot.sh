@@ -80,7 +80,7 @@ generated_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 echo "Generating the committed Magic treatment audit snapshot..."
 generator_binary="$temporary_directory/magic-treatment-snapshot-generator"
 xcrun swiftc -D DEBUG \
-    "$project_root/TradingCardScanner/Services/MagicTreatmentSnapshot.swift" \
+    "$project_root/TradingCardScannerTests/MagicTreatmentSnapshot.swift" \
     "$project_root/scripts/magic_treatment_snapshot_generator.swift" \
     -o "$generator_binary"
 MAGIC_TREATMENT_SNAPSHOT_INPUT="$bulk_data_file" \
