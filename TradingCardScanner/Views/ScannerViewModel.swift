@@ -2569,16 +2569,17 @@ final class ScannerViewModel: ObservableObject {
         authorization: CollectionCommitAuthorization
     ) async -> Bool {
         guard let collectionWriter else {
-            show(
-                ScanNote(
-                    text: "This card was recognized but could not be added. Try again.",
-                    tone: .problem
-                )
-            )
-            failAcknowledgement(
+            if !failAcknowledgement(
                 for: candidate.encounterID,
                 message: "This card was recognized but could not be added. Try again."
-            )
+            ) {
+                show(
+                    ScanNote(
+                        text: "This card was recognized but could not be added. Try again.",
+                        tone: .problem
+                    )
+                )
+            }
             return false
         }
 
@@ -2636,16 +2637,17 @@ final class ScannerViewModel: ObservableObject {
             return true
         } catch {
             guard writeSessionID == scannerSessionID else { return false }
-            show(
-                ScanNote(
-                    text: "This card was recognized but was not added. Try again.",
-                    tone: .problem
-                )
-            )
-            failAcknowledgement(
+            if !failAcknowledgement(
                 for: candidate.encounterID,
                 message: "This card was recognized but was not added. Try again."
-            )
+            ) {
+                show(
+                    ScanNote(
+                        text: "This card was recognized but was not added. Try again.",
+                        tone: .problem
+                    )
+                )
+            }
             feedback.problem()
             return false
         }
@@ -3008,9 +3010,10 @@ final class ScannerViewModel: ObservableObject {
         scanAcknowledgement = nil
     }
 
-    private func failAcknowledgement(for encounterID: UUID, message: String) {
+    @discardableResult
+    private func failAcknowledgement(for encounterID: UUID, message: String) -> Bool {
         guard let acknowledgement = scanAcknowledgement,
-              acknowledgement.encounterID == encounterID else { return }
+              acknowledgement.encounterID == encounterID else { return false }
         scanAcknowledgement = ScanAcknowledgement(
             encounterID: encounterID,
             subject: acknowledgement.subject,
@@ -3018,6 +3021,7 @@ final class ScannerViewModel: ObservableObject {
             message: message
         )
         diagnostic("recognitionAcknowledgementFailed")
+        return true
     }
 
     private func showReceipt(_ newReceipt: ScanReceipt) {
