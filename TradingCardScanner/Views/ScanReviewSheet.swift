@@ -31,24 +31,6 @@ struct ScanReviewSheet: View {
         _resolution = State(initialValue: scan.resolved.resolution)
     }
 
-    /// Source-compatible convenience for lightweight construction and previews.
-    /// Production callers use the async form so the sheet reflects the writer's
-    /// durable result instead of optimistically changing the selected finish.
-    init(
-        scan: RecentScan,
-        onCorrect: @escaping (PhysicalVariant) -> ScanCorrectionOutcome,
-        onDelete: @escaping () -> Void
-    ) {
-        self.scan = scan
-        self.onCorrect = { variant in onCorrect(variant) }
-        self.onDelete = {
-            onDelete()
-            return true
-        }
-        _variant = State(initialValue: scan.resolved.variant)
-        _resolution = State(initialValue: scan.resolved.resolution)
-    }
-
     var body: some View {
         NavigationStack {
             ScrollView {

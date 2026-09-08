@@ -913,7 +913,7 @@ final class ViewConstructionSmokeTests: XCTestCase {
             quote: UncoveredSurfaceFixtures.priceLookup(),
             checkedAt: .now
         ))
-        _ = ScanReviewSheet(scan: recent, onCorrect: { _ in .saved }, onDelete: {})
+        _ = ScanReviewSheet(scan: recent, onCorrect: { _ in .saved }, onDelete: { true })
         _ = GradedVariantPickerView(
             card: identified,
             setReleaseOrder: 0,
