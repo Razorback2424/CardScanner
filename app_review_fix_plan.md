@@ -573,3 +573,30 @@ Verification on 2026-09-04:
 - Full `xcodebuild test-without-building` suite — 765 passed, 0 failed, 0
   skipped.
 - `git diff --check` — clean.
+
+## Audit pass 4 — scanner projections, acknowledgement identity, undo recovery, and credential safety
+
+Baseline captured before code edits on `fix/app-review-preflight`:
+
+- `xcodebuild build -quiet -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'generic/platform=iOS' -derivedDataPath /private/tmp/trading-card-scanner-audit-baseline-20260908 SWIFT_ENABLE_EXPLICIT_MODULES=NO` — passed.
+- Simulator discovery is unavailable because CoreSimulatorService reports no discoverable runtime; XCTest execution is therefore pending environment recovery.
+- The repository was clean before this slice. Existing unresolved Keychain test evidence remains unresolved and is not reclassified as an entitlement diagnosis.
+
+The supplied audit is the evidence and acceptance source for this slice. The implementation is intentionally limited to:
+
+- [x] Correlate scanner fallback quotes by session and exact price key, update surviving session/recent/last-add projections, and update an existing receipt in place without recreating undone scans or mutating published departure snapshots.
+- [x] Carry encounter IDs through scanner acknowledgements; clear/fail only the matching encounter, including certified-duplicate terminal no-ops.
+- [ ] Consume the app-scoped revision store in the activity log and centralize reloads after local remove/restore success.
+- [ ] Surface catalog/sealed Undo local-persistence failures, preserve retryable mutations, and cancel the sealed timer when Undo starts.
+- [ ] Transfer immutable camera-assistance device values from session queue to vision queue without synchronously blocking frame processing.
+- [ ] Replace credential delete-then-add with update-when-present/insert-when-absent semantics.
+- [ ] Gate unpriced export on `collectionCardCount == 0`.
+- [ ] Remove the production-only unused `trackerObservation` state without broadening the camera refactor.
+
+Deferred by the supplied plan: published departure-summary mutation, performance restructuring, migration-watermark changes, portfolio-engine serialization, Keychain entitlement diagnosis, and CloudKit synchronization claims. Verification will record simulator/device/network fault-injection gaps separately.
+
+### Slice 1 verification
+
+- Status: implemented.
+- `xcodebuild build -quiet -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'generic/platform=iOS' -derivedDataPath /private/tmp/trading-card-scanner-audit-slice1 SWIFT_ENABLE_EXPLICIT_MODULES=NO` — passed.
+- `git diff --check` — passed. Simulator XCTest execution remains unavailable.

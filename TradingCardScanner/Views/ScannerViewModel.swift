@@ -494,6 +494,20 @@ struct RecentScan: Identifiable, Equatable {
         self.mutation = mutation
     }
 
+    func updating(price: PriceLookup) -> RecentScan {
+        RecentScan(
+            id: id,
+            subject: subject,
+            card: card,
+            resolved: resolved,
+            pokemonPrintRun: pokemonPrintRun,
+            catalogRetrievedAt: catalogRetrievedAt,
+            options: options,
+            mutation: mutation,
+            price: price
+        )
+    }
+
     private var stampedRelease: PokemonStampedReleaseCatalog.Entry? {
         PokemonStampedReleaseCatalog.entry(
             providerID: card.providerID,
@@ -659,7 +673,7 @@ struct UnresolvedScan: Identifiable, Equatable {
 /// The transparent receipt. Visible by default, interactive only if something is
 /// wrong — it never asks the user to approve what already happened.
 struct ScanReceipt: Identifiable, Equatable {
-    let id = UUID()
+    let id: UUID
     let scanID: RecentScan.ID
     let name: String
     let identifier: String
@@ -669,6 +683,7 @@ struct ScanReceipt: Identifiable, Equatable {
     let price: PriceLookup
 
     init(
+        id: UUID = UUID(),
         scanID: RecentScan.ID,
         name: String,
         identifier: String,
@@ -677,6 +692,7 @@ struct ScanReceipt: Identifiable, Equatable {
         thumbnailURL: URL?,
         price: PriceLookup = .unavailable(nil)
     ) {
+        self.id = id
         self.scanID = scanID
         self.name = name
         self.identifier = identifier
@@ -684,6 +700,19 @@ struct ScanReceipt: Identifiable, Equatable {
         self.treatmentDiagnostics = treatmentDiagnostics
         self.thumbnailURL = thumbnailURL
         self.price = price
+    }
+
+    func updating(price: PriceLookup) -> ScanReceipt {
+        ScanReceipt(
+            id: id,
+            scanID: scanID,
+            name: name,
+            identifier: identifier,
+            variantLabel: variantLabel,
+            treatmentDiagnostics: treatmentDiagnostics,
+            thumbnailURL: thumbnailURL,
+            price: price
+        )
     }
 
     static func == (lhs: ScanReceipt, rhs: ScanReceipt) -> Bool { lhs.id == rhs.id }
@@ -712,17 +741,20 @@ enum ScanAcknowledgementPhase: Equatable, Sendable {
 
 struct ScanAcknowledgement: Identifiable, Equatable, Sendable {
     let id: UUID
+    let encounterID: UUID
     let subject: ScanSubject
     let phase: ScanAcknowledgementPhase
     let message: String?
 
     init(
         id: UUID = UUID(),
+        encounterID: UUID,
         subject: ScanSubject,
         phase: ScanAcknowledgementPhase,
         message: String? = nil
     ) {
         self.id = id
+        self.encounterID = encounterID
         self.subject = subject
         self.phase = phase
         self.message = message
@@ -874,7 +906,13 @@ final class ScannerViewModel: ObservableObject {
     private var collectionWriter: ScannerCollectionWriter?
     private var modelContainer: ModelContainer?
     private var priceCheckCoordinator: PriceCheckCoordinator?
-    private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
+    private struct FallbackQuoteTaskKey: Hashable {
+        let sessionID: UUID
+        let priceKey: String
+    }
+
+    private var fallbackQuoteTasks: [FallbackQuoteTaskKey: Task<Void, Never>] = [:]
+    private var fallbackQuoteScanIDs: [FallbackQuoteTaskKey: Set<UUID>] = [:]
     /// What the scanner was last given, so an unchanged directory costs a
     /// comparison rather than a regex compile. See `installMagicDefinitions`.
     private var installedMagicDefinitions: [MagicSetDefinition]?
@@ -1002,6 +1040,7 @@ final class ScannerViewModel: ObservableObject {
                     // catalog resolution and the writer finish in the background.
                     self.dismissReceipt()
                     self.scanAcknowledgement = ScanAcknowledgement(
+                        encounterID: encounterID,
                         subject: subject,
                         phase: .recognized,
                         message: "Saving to your collection…"
@@ -1817,7 +1856,8 @@ final class ScannerViewModel: ObservableObject {
                 guard !Task.isCancelled, self.isCurrent(pending.request) else { return }
                 self.show(ScanNote(text: "Lookup failed — tap the set to retry", tone: .problem))
                 self.failAcknowledgement(
-                    for: pending.request.subject,
+                    for: pending.request.encounterID,
+                    subject: pending.request.subject,
                     message: "This card was recognized but was not added. Tap the set to retry."
                 )
                 self.feedback.problem()
@@ -1888,7 +1928,9 @@ final class ScannerViewModel: ObservableObject {
             receipt = nil
             receiptTask?.cancel()
         }
-        scanAcknowledgement = nil
+        if let removedHistoryEntry {
+            clearAcknowledgement(for: removedHistoryEntry.encounterID)
+        }
         if let removedHistoryEntry {
             scanner.restoreAcceptedPresentation(presentationToken: removedHistoryEntry.presentationToken)
         }
@@ -2344,9 +2386,7 @@ final class ScannerViewModel: ObservableObject {
         // A newer OCR confirmation may already be waiting while this write is
         // finishing. Do not erase that newer acknowledgement when the older
         // card becomes durable.
-        if scanAcknowledgement?.subject == candidate.subject {
-            scanAcknowledgement = nil
-        }
+        clearAcknowledgement(for: candidate.encounterID)
         scanner.acceptedPresentation(
             encounterID: candidate.encounterID,
             presentationToken: committed.presentationToken
@@ -2533,7 +2573,8 @@ final class ScannerViewModel: ObservableObject {
     ) async -> Bool {
         guard let collectionWriter else {
             failAcknowledgement(
-                for: candidate.subject,
+                for: candidate.encounterID,
+                subject: candidate.subject,
                 message: "This card was recognized but could not be added. Try again."
             )
             return false
@@ -2549,6 +2590,7 @@ final class ScannerViewModel: ObservableObject {
 
             if mutation.wasDuplicate {
                 show(ScanNote(text: "This certified card is already in your collection", tone: .info))
+                clearAcknowledgement(for: candidate.encounterID)
                 if pendingChoice?.request.id == candidate.requestID {
                     pendingChoice = nil
                 }
@@ -2574,7 +2616,12 @@ final class ScannerViewModel: ObservableObject {
                         show(ScanNote(text: message, tone: .info))
                     }
                 }
-            } else {
+            }
+            if pendingChoice?.request.id == candidate.requestID {
+                pendingChoice = nil
+            }
+            appendCommittedScan(candidate, mutation: mutation)
+            if candidate.subject.slab == nil {
                 queueFallbackPrice(
                     for: candidate.card,
                     variant: candidate.resolved.variant,
@@ -2582,17 +2629,14 @@ final class ScannerViewModel: ObservableObject {
                     catalogLookup: candidate.price
                 )
             }
-            if pendingChoice?.request.id == candidate.requestID {
-                pendingChoice = nil
-            }
-            appendCommittedScan(candidate, mutation: mutation)
             resumeRecognitionIfPossible()
             diagnostic(candidate.subject.slab == nil ? "collectionCommit" : "gradedCollectionCommit")
             return true
         } catch {
             guard writeSessionID == scannerSessionID else { return false }
             failAcknowledgement(
-                for: candidate.subject,
+                for: candidate.encounterID,
+                subject: candidate.subject,
                 message: "This card was recognized but was not added. Try again."
             )
             feedback.problem()
@@ -2624,7 +2668,20 @@ final class ScannerViewModel: ObservableObject {
             variantID: variant?.id,
             treatmentIDs: treatmentIDs
         )
-        guard fallbackQuoteTasks[key] == nil else { return }
+        let taskKey = FallbackQuoteTaskKey(
+            sessionID: scannerSessionID,
+            priceKey: key
+        )
+        let interestedScanIDs = Set(
+            sessionScans
+                .filter { fallbackPriceKey(for: $0) == key }
+                .map(\.id)
+        )
+        if fallbackQuoteTasks[taskKey] != nil {
+            fallbackQuoteScanIDs[taskKey, default: []].formUnion(interestedScanIDs)
+            return
+        }
+        fallbackQuoteScanIDs[taskKey] = interestedScanIDs
 
         // Price Check/fallback writes are independent of the scanner's main
         // context. The identity is a value snapshot, so no SwiftData model is
@@ -2633,7 +2690,10 @@ final class ScannerViewModel: ObservableObject {
         let fallbackPrices = PriceStore(context: fallbackContext)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         let task = Task { @MainActor [weak self] in
-            defer { self?.fallbackQuoteTasks[key] = nil }
+            defer {
+                self?.fallbackQuoteTasks[taskKey] = nil
+                self?.fallbackQuoteScanIDs[taskKey] = nil
+            }
             guard !Task.isCancelled else { return }
 
             switch await resolver.resolve(
@@ -2651,20 +2711,86 @@ final class ScannerViewModel: ObservableObject {
                 )
                 let marketVariantID = ProductIdentityStore(context: fallbackContext)
                     .cachedVariantID(forKey: identityKey)
-                fallbackPrices.store(
+                guard fallbackPrices.store(
                     quote,
                     game: card.game,
                     printingID: printingID,
                     variantID: variant?.id,
                     marketVariantID: marketVariantID,
                     treatmentIDs: treatmentIDs
+                ) else { return }
+                guard fallbackPrices.save(),
+                      let self,
+                      self.scannerSessionID == taskKey.sessionID else { return }
+                self.applyFallbackQuote(
+                    quote,
+                    for: taskKey,
+                    scanIDs: self.fallbackQuoteScanIDs[taskKey] ?? []
                 )
-                _ = fallbackPrices.save()
             case .failed:
                 break
             }
         }
-        fallbackQuoteTasks[key] = task
+        fallbackQuoteTasks[taskKey] = task
+    }
+
+    private func fallbackPriceKey(
+        for card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) -> String {
+        let printingID = pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
+            ?? card.providerID
+        let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: card.magicTreatments(for: variant)
+        )
+        return PriceRecord.key(
+            game: card.game,
+            printingID: printingID,
+            variantID: variant?.id,
+            treatmentIDs: treatmentIDs
+        )
+    }
+
+    private func fallbackPriceKey(for scan: RecentScan) -> String {
+        fallbackPriceKey(
+            for: scan.card,
+            variant: scan.resolved.variant,
+            pokemonPrintRun: scan.pokemonPrintRun
+        )
+    }
+
+    private func applyFallbackQuote(
+        _ quote: PriceLookup,
+        for taskKey: FallbackQuoteTaskKey,
+        scanIDs: Set<UUID>
+    ) {
+        guard scannerSessionID == taskKey.sessionID else { return }
+
+        var updatedScanIDs = Set<UUID>()
+        for index in sessionScans.indices {
+            let scan = sessionScans[index]
+            guard scanIDs.contains(scan.id),
+                  fallbackPriceKey(for: scan) == taskKey.priceKey else { continue }
+
+            let replacement = scan.updating(price: quote)
+            sessionScans[index] = replacement
+            if let recentIndex = recent.firstIndex(where: { $0.id == scan.id }) {
+                recent[recentIndex] = replacement
+            }
+            if lastAdd?.id == scan.id {
+                lastAdd = replacement
+            }
+            updatedScanIDs.insert(scan.id)
+        }
+
+        // A fallback answer is a projection correction, not a new scanner add.
+        // Keep the existing receipt identity and timer, and never recreate a
+        // scan that was undone while the request was in flight.
+        if let currentReceipt = receipt,
+           updatedScanIDs.contains(currentReceipt.scanID) {
+            receipt = currentReceipt.updating(price: quote)
+        }
     }
 
     private func invalidateResolutionForDuplicatePrompt() {
@@ -2832,7 +2958,8 @@ final class ScannerViewModel: ObservableObject {
         let subject = request.subject
         if request.purpose == .collection {
             failAcknowledgement(
-                for: subject,
+                for: request.encounterID,
+                subject: subject,
                 message: "This card was recognized but was not added. Try again."
             )
         }
@@ -2872,8 +2999,22 @@ final class ScannerViewModel: ObservableObject {
 
     // MARK: - Transient UI
 
-    private func failAcknowledgement(for subject: ScanSubject, message: String) {
+    private func clearAcknowledgement(for encounterID: UUID) {
+        guard scanAcknowledgement?.encounterID == encounterID else { return }
+        scanAcknowledgement = nil
+    }
+
+    private func failAcknowledgement(
+        for encounterID: UUID,
+        subject: ScanSubject,
+        message: String
+    ) {
+        if let acknowledgement = scanAcknowledgement,
+           acknowledgement.encounterID != encounterID {
+            return
+        }
         scanAcknowledgement = ScanAcknowledgement(
+            encounterID: encounterID,
             subject: subject,
             phase: .failed,
             message: message
