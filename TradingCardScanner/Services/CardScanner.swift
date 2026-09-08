@@ -1316,7 +1316,11 @@ final class CardScanner: NSObject, ObservableObject {
 
         videoOutput.alwaysDiscardsLateVideoFrames = true
         videoOutput.videoSettings = [
-            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
+            // Vision consumes the camera's native biplanar YUV format. Keeping
+            // capture in that format avoids a full 4K BGRA conversion and cuts
+            // the continuously allocated frame bandwidth roughly in half.
+            kCVPixelBufferPixelFormatTypeKey as String:
+                kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
         ]
         videoOutput.setSampleBufferDelegate(self, queue: visionQueue)
 

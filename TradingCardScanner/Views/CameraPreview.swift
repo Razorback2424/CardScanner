@@ -43,15 +43,28 @@ struct CameraPreview: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
+        let rotationChanged = uiView.rotation !== scanner.rotation
+            || uiView.rotation?.previewAngle != scanner.rotation.previewAngle
+        let slabFramingChanged = uiView.slabFraming != scanner.slabFraming
+#if DEBUG
+        let debugBoxesChanged = uiView.debugVisionBoxes != debugVisionOverlay.boxes
+#endif
         uiView.previewLayer.session = scanner.session
-        uiView.rotation = scanner.rotation
-        uiView.slabFraming = scanner.slabFraming
+        if rotationChanged { uiView.rotation = scanner.rotation }
+        if slabFramingChanged { uiView.slabFraming = scanner.slabFraming }
         uiView.syncRecognitionCount(recognitionCount)
         uiView.syncSuccessCount(successCount)
 #if DEBUG
-        uiView.debugVisionBoxes = debugVisionOverlay.boxes
+        if debugBoxesChanged { uiView.debugVisionBoxes = debugVisionOverlay.boxes }
 #endif
-        uiView.setNeedsLayout()
+#if DEBUG
+        let needsLayout = rotationChanged || slabFramingChanged || debugBoxesChanged
+#else
+        let needsLayout = rotationChanged || slabFramingChanged
+#endif
+        if needsLayout {
+            uiView.setNeedsLayout()
+        }
     }
 }
 
@@ -75,9 +88,7 @@ final class PreviewView: UIView {
     }
 #endif
 
-    var slabFraming: GradedSlabEvidence? {
-        didSet { setNeedsLayout() }
-    }
+    var slabFraming: GradedSlabEvidence?
 
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
