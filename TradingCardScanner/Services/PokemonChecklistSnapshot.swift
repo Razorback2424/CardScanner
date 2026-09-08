@@ -492,8 +492,10 @@ actor PokemonChecklistStore {
     private let refreshStateURL: URL
     private var downloadedManifestCache: PokemonChecklistSnapshotManifest?
     private var didLoadDownloadedManifest = false
+    private var downloadedValidEntriesCache: [PokemonChecklistSnapshotEntry]?
     private var bundledManifestCache: PokemonChecklistSnapshotManifest?
     private var didLoadBundledManifest = false
+    private var bundledValidEntriesCache: [PokemonChecklistSnapshotEntry]?
 
     // These caches are deliberately per set. The production catalog only needs
     // the set currently being displayed, while the legacy snapshot methods
@@ -576,8 +578,8 @@ actor PokemonChecklistStore {
     func mergedEntries() -> [PokemonChecklistSnapshotEntry] {
         installMemoryWarningObserverIfNeeded()
         return mergeEntries(
-            bundled: validEntries(from: bundledManifest(), directory: bundledRoot),
-            downloaded: validEntries(from: downloadedManifest(), directory: root)
+            bundled: bundledValidEntries(),
+            downloaded: downloadedValidEntries()
         )
     }
 
@@ -657,13 +659,12 @@ actor PokemonChecklistStore {
     }
 
     private func downloadedEntry(for setID: String) -> PokemonChecklistSnapshotEntry? {
-        validEntries(from: downloadedManifest(), directory: root)
+        downloadedValidEntries()
             .first { $0.set.id == setID }
     }
 
     private func bundledEntry(for setID: String) -> PokemonChecklistSnapshotEntry? {
-        guard let bundledRoot else { return nil }
-        return validEntries(from: bundledManifest(), directory: bundledRoot)
+        bundledValidEntries()
             .first { $0.set.id == setID }
     }
 
@@ -898,7 +899,7 @@ actor PokemonChecklistStore {
         // opts out because its output must be an exact directory replacement.
         let merged: PokemonChecklistSnapshot?
         if mergingExisting {
-            let existingEntries = validEntries(from: downloadedManifest(), directory: root)
+            let existingEntries = downloadedValidEntries()
             let entries = mergeEntries(
                 bundled: existingEntries,
                 downloaded: snapshot.manifest.entries
@@ -963,6 +964,7 @@ actor PokemonChecklistStore {
         downloadedSnapshotCache = nil
         downloadedManifestCache = publishable.manifest
         didLoadDownloadedManifest = true
+        downloadedValidEntriesCache = nil
         for entry in snapshot.manifest.entries {
             if let cards = snapshot.checklists[entry.set.id] {
                 downloadedChecklistCache[entry.set.id] = cards
@@ -1025,6 +1027,7 @@ actor PokemonChecklistStore {
         guard !didLoadDownloadedManifest else { return downloadedManifestCache }
         didLoadDownloadedManifest = true
         downloadedManifestCache = loadManifest(from: root)
+        downloadedValidEntriesCache = nil
         return downloadedManifestCache
     }
 
@@ -1034,7 +1037,22 @@ actor PokemonChecklistStore {
         }
         didLoadBundledManifest = true
         bundledManifestCache = loadManifest(from: bundledRoot)
+        bundledValidEntriesCache = nil
         return bundledManifestCache
+    }
+
+    private func downloadedValidEntries() -> [PokemonChecklistSnapshotEntry] {
+        if let downloadedValidEntriesCache { return downloadedValidEntriesCache }
+        let entries = validEntries(from: downloadedManifest(), directory: root)
+        downloadedValidEntriesCache = entries
+        return entries
+    }
+
+    private func bundledValidEntries() -> [PokemonChecklistSnapshotEntry] {
+        if let bundledValidEntriesCache { return bundledValidEntriesCache }
+        let entries = validEntries(from: bundledManifest(), directory: bundledRoot)
+        bundledValidEntriesCache = entries
+        return entries
     }
 
     private func validEntries(
