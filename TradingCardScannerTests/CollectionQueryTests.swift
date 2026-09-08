@@ -246,6 +246,32 @@ final class CollectionQueryTests: XCTestCase {
         XCTAssertEqual(CollectionQuery.filter(rows, with: filters).map(\.id), ["surge"])
     }
 
+    func testMinimumQuantityFilterMatchesRowsAtOrAboveThreshold() {
+        let rows = [
+            row(id: "single", quantity: 1, price: 1),
+            row(id: "double", quantity: 2, price: 1),
+            row(id: "triple", quantity: 3, price: 1)
+        ]
+        var filters = CollectionFilters.none
+        filters.minimumQuantity = 2
+
+        XCTAssertTrue(filters.isActive)
+        XCTAssertEqual(
+            Set(CollectionQuery.filter(rows, with: filters).map(\.id)),
+            ["double", "triple"]
+        )
+    }
+
+    func testNoMinimumQuantityFilterLeavesEveryQuantityVisible() {
+        let rows = [
+            row(id: "single", quantity: 1, price: 1),
+            row(id: "bulk", quantity: 12, price: 1)
+        ]
+
+        XCTAssertFalse(CollectionFilters.none.isActive)
+        XCTAssertEqual(CollectionQuery.filter(rows, with: .none).map(\.id), ["single", "bulk"])
+    }
+
     func testUnknownTreatmentCanBeFilteredWithoutBecomingAFinish() {
         let row = row(
             id: "future",

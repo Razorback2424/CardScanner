@@ -101,6 +101,11 @@ struct CollectionFilterSheet: View {
                             value: selectionLabel(filters.treatmentIDs, singular: "treatment")
                         )
                     }
+                    NavigationLink {
+                        QuantityFilterView(selection: $filters.minimumQuantity)
+                    } label: {
+                        detailRow("Quantity", value: minimumQuantityLabel)
+                    }
                 }
 
                 if filters.itemKinds.isEmpty || filters.itemKinds.contains(.gradedCard) {
@@ -173,6 +178,13 @@ struct CollectionFilterSheet: View {
         )
     }
 
+    private var minimumQuantityLabel: String {
+        guard let minimumQuantity = filters.minimumQuantity, minimumQuantity > 1 else {
+            return "Any"
+        }
+        return "\(minimumQuantity)+ copies"
+    }
+
     private var gameSelection: Binding<CardGame?> {
         Binding(
             get: { filters.game },
@@ -223,6 +235,84 @@ struct CollectionFilterSheet: View {
             Spacer()
             Text(value).foregroundStyle(.secondary)
         }
+    }
+}
+
+/// Quantity is a threshold rather than a set of exact values: the useful
+/// question is usually "which entries have duplicates?", while the custom
+/// field keeps the filter useful for larger holdings too.
+struct QuantityFilterView: View {
+    @Binding var selection: Int?
+
+    @State private var customMinimum = ""
+
+    private let presets = [2, 3, 5, 10]
+
+    var body: some View {
+        List {
+            Section {
+                row(title: "Any", isSelected: selection == nil) {
+                    selection = nil
+                }
+
+                ForEach(presets, id: \.self) { minimum in
+                    row(
+                        title: "\(minimum)+ copies",
+                        isSelected: selection == minimum
+                    ) {
+                        selection = minimum
+                        customMinimum = String(minimum)
+                    }
+                }
+            } footer: {
+                Text("Only entries with at least this many copies are shown.")
+            }
+
+            Section("Custom") {
+                HStack {
+                    Text("At least")
+                    TextField("Any", text: $customMinimum)
+                        .keyboardType(.numberPad)
+                        .multilineTextAlignment(.trailing)
+                }
+
+                Button("Apply minimum") {
+                    applyCustomMinimum()
+                }
+                .disabled(customMinimumValue == nil)
+            }
+        }
+        .navigationTitle("Quantity")
+        .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            customMinimum = selection.map(String.init) ?? ""
+        }
+    }
+
+    private var customMinimumValue: Int? {
+        guard let value = Int(customMinimum), value >= 1 else { return nil }
+        return value
+    }
+
+    private func applyCustomMinimum() {
+        guard let value = customMinimumValue else { return }
+        // Every persisted collection row represents at least one owned copy,
+        // so a threshold of one is the same as clearing the filter.
+        selection = value > 1 ? value : nil
+    }
+
+    private func row(title: String, isSelected: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            HStack {
+                Text(title)
+                Spacer()
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(Color.accentColor)
+                }
+            }
+        }
+        .buttonStyle(.plain)
     }
 }
 

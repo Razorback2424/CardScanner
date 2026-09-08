@@ -217,6 +217,9 @@ struct CollectionFilters: Equatable {
     var setCodes: Set<String> = []
     var variantIDs: Set<String> = []
     var treatmentIDs: Set<String> = []
+    /// `nil` means any owned quantity. A value is the minimum number of copies
+    /// an entry must contain to remain visible.
+    var minimumQuantity: Int?
     var price: PriceFilter?
     /// Empty means every kind, which is what "All Items" selects.
     var itemKinds: Set<CollectionItemKind> = []
@@ -225,7 +228,7 @@ struct CollectionFilters: Equatable {
 
     var isActive: Bool {
         game != nil || !setCodes.isEmpty || !variantIDs.isEmpty || !treatmentIDs.isEmpty
-            || price != nil || !itemKinds.isEmpty
+            || minimumQuantity != nil || price != nil || !itemKinds.isEmpty
             || !gradingCompanies.isEmpty || !gradeValues.isEmpty
     }
 
@@ -326,6 +329,9 @@ enum CollectionQuery {
                 MagicTreatmentKeyCodec.canonicalIDs(from: row.displayedMagicTreatments)
             )
             guard !rowTreatmentIDs.isDisjoint(with: requestedTreatmentIDs) else { return false }
+        }
+        if let minimumQuantity = filters.minimumQuantity, row.quantity < minimumQuantity {
+            return false
         }
         if !filters.itemKinds.isEmpty, !filters.itemKinds.contains(row.itemKind) { return false }
         if !filters.gradingCompanies.isEmpty {

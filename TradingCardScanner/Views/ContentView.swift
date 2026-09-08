@@ -48,7 +48,7 @@ struct ContentView: View {
         debugRoute = route
         let initialTab: Tab
         switch route {
-        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "MagicTreatmentSlice4": initialTab = .collection
+        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "CollectionTiles", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck", "GradedLabelCapture": initialTab = .scan
         case "Centering", "CenteringExpanded": initialTab = .centering
@@ -125,6 +125,8 @@ struct ContentView: View {
 #if DEBUG
         .task {
             switch debugRoute {
+            case "CollectionTiles":
+                PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
             case "SealedArtwork":
                 seedSealedArtworkQA()
             case "CardMovement":

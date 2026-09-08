@@ -146,6 +146,17 @@ struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
         }
     }
 
+    /// A known treatment can make the physical finish redundant in compact
+    /// presentation. Unknown treatments deliberately return false: retaining
+    /// both facts is safer than guessing a future treatment's finish.
+    func impliesFinish(_ finish: PhysicalVariant?) -> Bool {
+        guard let finish else { return false }
+        return treatments.contains { treatment in
+            guard let requiredFinish = treatment.requiredFinish else { return false }
+            return finish.id.caseInsensitiveCompare(requiredFinish.id) == .orderedSame
+        }
+    }
+
     func displayLabel(with finish: PhysicalVariant?) -> String? {
         let compatibleLabels = applicableTreatments(for: finish)
             .map { treatmentLabel(for: $0) }
@@ -153,7 +164,8 @@ struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
         guard !compatibleLabels.isEmpty else {
             return finish?.label
         }
-        return [finish?.label, compatibleLabels.joined(separator: " · ")]
+        let finishLabel = impliesFinish(finish) ? nil : finish?.label
+        return [finishLabel, compatibleLabels.joined(separator: " · ")]
             .compactMap { $0 }
             .joined(separator: " · ")
     }

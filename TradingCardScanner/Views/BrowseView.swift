@@ -1,4 +1,5 @@
 import Combine
+import ImageIO
 import SwiftData
 import SwiftUI
 import UIKit
@@ -1306,9 +1307,21 @@ struct CatalogArtworkView: View {
 struct CatalogCachedImage: View {
     let url: URL?
     var fallbackURL: URL? = nil
+    /// An explicit maximum decoded dimension is useful for callers that know
+    /// their drawing size. Most callers leave this nil and the view measures
+    /// its laid-out bounds so the cache can keep separate derivatives for a
+    /// grid tile, a portfolio thumbnail, and a detail hero.
+    var targetPixelSize: Int? = nil
     var placeholderSymbol = "photo"
     var placeholderText: String? = nil
     @StateObject private var loader = CatalogImageLoader()
+    @Environment(\.displayScale) private var displayScale
+    @State private var measuredTargetPixelSize: Int?
+
+    private struct LoadID: Equatable {
+        let url: URL?
+        let targetPixelSize: Int?
+    }
 
     var body: some View {
         Group {
@@ -1319,6 +1332,7 @@ struct CatalogCachedImage: View {
             } else if loader.failed, let fallbackURL, fallbackURL != url {
                 CatalogCachedImage(
                     url: fallbackURL,
+                    targetPixelSize: targetPixelSize,
                     placeholderSymbol: placeholderSymbol,
                     placeholderText: placeholderText
                 )
@@ -1326,7 +1340,31 @@ struct CatalogCachedImage: View {
                 placeholder
             }
         }
-        .task(id: url) { loader.load(url) }
+        .background {
+            GeometryReader { proxy in
+                Color.clear
+                    .onAppear { updateMeasuredTarget(for: proxy.size) }
+                    .onChange(of: proxy.size) { _, size in
+                        updateMeasuredTarget(for: size)
+                    }
+            }
+        }
+        .task(id: LoadID(url: url, targetPixelSize: resolvedTargetPixelSize)) {
+            loader.load(url, targetPixelSize: resolvedTargetPixelSize)
+        }
+    }
+
+    private var resolvedTargetPixelSize: Int? {
+        targetPixelSize ?? measuredTargetPixelSize
+    }
+
+    private func updateMeasuredTarget(for size: CGSize) {
+        guard targetPixelSize == nil else { return }
+        let maximumPointDimension = max(size.width, size.height)
+        guard maximumPointDimension.isFinite, maximumPointDimension > 1 else { return }
+        let measured = Int(ceil(maximumPointDimension * displayScale))
+        guard measured > 0, measured != measuredTargetPixelSize else { return }
+        measuredTargetPixelSize = measured
     }
 
     private var placeholder: some View {
@@ -1360,7 +1398,7 @@ private final class CatalogImageLoader: ObservableObject {
 
     deinit { task?.cancel() }
 
-    func load(_ url: URL?) {
+    func load(_ url: URL?, targetPixelSize: Int?) {
         task?.cancel()
         image = nil
         failed = false
@@ -1371,7 +1409,10 @@ private final class CatalogImageLoader: ObservableObject {
         isLoading = true
         task = Task { [weak self] in
             do {
-                let image = try await CatalogImageCache.shared.image(for: url)
+                let image = try await CatalogImageCache.shared.image(
+                    for: url,
+                    targetPixelSize: targetPixelSize
+                )
                 guard !Task.isCancelled else { return }
                 self?.image = image
             } catch {
@@ -1391,10 +1432,14 @@ actor CatalogImageCache {
     private static let trimThresholdBytes = 10 * 1_024 * 1_024
     private static let touchInterval: TimeInterval = 60
     private static let maximumTouchEntries = 512
+    /// A short-lived fallback for non-view consumers such as accent sampling.
+    /// `CatalogCachedImage` normally replaces this with its measured bounds.
+    private static let defaultTargetPixelSize = 1_024
+    private static let maximumTargetPixelSize = 4_096
 
     private let directory: URL
-    private let memoryCache: NSCache<NSURL, UIImage> = {
-        let cache = NSCache<NSURL, UIImage>()
+    private let memoryCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 60
         cache.totalCostLimit = 48 * 1_024 * 1_024
         return cache
@@ -1415,19 +1460,55 @@ actor CatalogImageCache {
             .appendingPathComponent("BrowseArtworkCache", isDirectory: true)
     }
 
-    func image(for url: URL) async throws -> UIImage {
-        if let cached = memoryCache.object(forKey: url as NSURL) {
+    func image(for url: URL, targetPixelSize: Int? = nil) async throws -> UIImage {
+        let targetPixelSize = Self.normalizedTargetPixelSize(targetPixelSize)
+        let cacheKey = Self.memoryKey(for: url, targetPixelSize: targetPixelSize)
+        if let cached = memoryCache.object(forKey: cacheKey) {
             return cached
         }
 
         let data = try await data(for: url)
-        guard let image = UIImage(data: data) else {
+        let sourceOptions: [CFString: Any] = [
+            kCGImageSourceShouldCache: false
+        ]
+        guard let source = CGImageSourceCreateWithData(data as CFData, sourceOptions as CFDictionary),
+              let image = Self.downsampledImage(from: source, targetPixelSize: targetPixelSize) else {
             throw BrowseCatalogError.badResponse
         }
         let cost = image.cgImage.map { $0.bytesPerRow * $0.height }
             ?? max(Int(image.size.width * image.scale * image.size.height * image.scale * 4), 1)
-        memoryCache.setObject(image, forKey: url as NSURL, cost: cost)
+        memoryCache.setObject(image, forKey: cacheKey, cost: cost)
         return image
+    }
+
+    private static func normalizedTargetPixelSize(_ targetPixelSize: Int?) -> Int {
+        min(
+            max(targetPixelSize ?? defaultTargetPixelSize, 1),
+            maximumTargetPixelSize
+        )
+    }
+
+    private static func memoryKey(for url: URL, targetPixelSize: Int) -> NSString {
+        "\(url.absoluteString)#pixel=\(targetPixelSize)" as NSString
+    }
+
+    private static func downsampledImage(
+        from source: CGImageSource,
+        targetPixelSize: Int
+    ) -> UIImage? {
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: targetPixelSize
+        ]
+        guard let image = CGImageSourceCreateThumbnailAtIndex(
+            source,
+            0,
+            options as CFDictionary
+        ) else {
+            return nil
+        }
+        return UIImage(cgImage: image)
     }
 
     private func data(for url: URL) async throws -> Data {

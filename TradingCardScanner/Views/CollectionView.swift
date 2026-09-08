@@ -179,6 +179,7 @@ struct CollectionView: View {
         // Built once per render and threaded through so filtering, sorting, and
         // filter-option counts always describe the same logical collection.
         let snapshot = makeSnapshot()
+        let optionRows = isShowingFilters ? rowsForOptions(snapshot) : []
 
         return Group {
             if horizontalSizeClass == .compact {
@@ -219,11 +220,11 @@ struct CollectionView: View {
                     isPresented: $isShowingFilters,
                     filters: $filters,
                     sort: $sort,
-                    setOptions: setOptions(snapshot),
-                    finishOptions: finishOptions(snapshot),
-                    treatmentOptions: treatmentOptions(snapshot),
-                    gradingCompanyOptions: gradingCompanyOptions(snapshot),
-                    gradeOptions: gradeOptions(snapshot)
+                    setOptions: setOptions(optionRows),
+                    finishOptions: finishOptions(optionRows),
+                    treatmentOptions: treatmentOptions(optionRows),
+                    gradingCompanyOptions: gradingCompanyOptions(optionRows),
+                    gradeOptions: gradeOptions(optionRows)
                 )
             }
         }
@@ -565,6 +566,7 @@ struct CollectionView: View {
             + (filters.price == nil ? 0 : 1)
             + (filters.variantIDs.isEmpty ? 0 : 1)
             + (filters.treatmentIDs.isEmpty ? 0 : 1)
+            + (filters.minimumQuantity == nil ? 0 : 1)
             + (filters.gradingCompanies.isEmpty ? 0 : 1)
             + (filters.gradeValues.isEmpty ? 0 : 1)
     }
@@ -739,10 +741,10 @@ struct CollectionView: View {
         var sortValue: Int
     }
 
-    private func setOptions(_ snapshot: Snapshot) -> [FilterOption] {
+    private func setOptions(_ rows: [CollectionRow]) -> [FilterOption] {
         var tallies: [String: OptionTally] = [:]
 
-        for row in rowsForOptions(snapshot) {
+        for row in rows {
             if var existing = tallies[row.setFilterID] {
                 existing.count += row.quantity
                 tallies[row.setFilterID] = existing
@@ -761,10 +763,10 @@ struct CollectionView: View {
         return orderedOptions(from: tallies)
     }
 
-    private func finishOptions(_ snapshot: Snapshot) -> [FilterOption] {
+    private func finishOptions(_ rows: [CollectionRow]) -> [FilterOption] {
         var tallies: [String: OptionTally] = [:]
 
-        for row in rowsForOptions(snapshot) {
+        for row in rows {
             guard let variant = row.variant else { continue }
             if var existing = tallies[variant.id] {
                 existing.count += row.quantity
@@ -783,10 +785,10 @@ struct CollectionView: View {
         return orderedOptions(from: tallies)
     }
 
-    private func treatmentOptions(_ snapshot: Snapshot) -> [FilterOption] {
+    private func treatmentOptions(_ rows: [CollectionRow]) -> [FilterOption] {
         var tallies: [String: OptionTally] = [:]
 
-        for row in rowsForOptions(snapshot) {
+        for row in rows {
             for treatment in row.displayedMagicTreatments {
                 let id = treatment.id
                 if var existing = tallies[id] {
@@ -807,9 +809,9 @@ struct CollectionView: View {
         return orderedOptions(from: tallies)
     }
 
-    private func gradingCompanyOptions(_ snapshot: Snapshot) -> [FilterOption] {
+    private func gradingCompanyOptions(_ rows: [CollectionRow]) -> [FilterOption] {
         var counts: [GradingCompany: Int] = [:]
-        for row in rowsForOptions(snapshot) where row.itemKind == .gradedCard {
+        for row in rows where row.itemKind == .gradedCard {
             guard let company = row.gradingCompany else { continue }
             counts[company, default: 0] += row.quantity
         }
@@ -819,9 +821,9 @@ struct CollectionView: View {
         }
     }
 
-    private func gradeOptions(_ snapshot: Snapshot) -> [FilterOption] {
+    private func gradeOptions(_ rows: [CollectionRow]) -> [FilterOption] {
         var counts: [String: Int] = [:]
-        for row in rowsForOptions(snapshot) where row.itemKind == .gradedCard {
+        for row in rows where row.itemKind == .gradedCard {
             guard let grade = row.gradeValue, !grade.isEmpty else { continue }
             counts[grade, default: 0] += row.quantity
         }
@@ -965,77 +967,33 @@ private struct CollectionCardTile: View {
             }
             .aspectRatio(5.0 / 7.0, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-            .overlay(alignment: .topTrailing) {
-                if row.quantity > 1 {
-                    AppCardBadge(
-                        text: "×\(row.quantity)",
-                        systemImage: "number",
-                        tint: .teal
-                    )
-                        .padding(5)
-                }
-            }
 
-            VStack(alignment: .leading, spacing: 4) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(row.name)
-                        .font(.headline)
-                        .lineLimit(2)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 5) {
+                Text(row.name)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, minHeight: 36, alignment: .topLeading)
 
-                    PriceLabel(price: row.price, style: .compact)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .frame(maxWidth: .infinity)
+                Text(identityLine)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(identityLine)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 6) {
-                        switch row.itemKind {
-                        case .rawCard:
-                            if let variant = row.variant {
-                                AppCardBadge(
-                                    text: variant.label,
-                                    systemImage: finishSymbol(for: variant),
-                                    tint: finishTint(for: variant)
-                                )
-                            }
-                        case .gradedCard, .sealedProduct:
-                            // A slab or a box has no raw finish, so the badge shows
-                            // what it actually is: `PSA 10`, `Sealed`.
-                            AppCardBadge(
-                                text: row.displayKindLabel,
-                                systemImage: row.itemKind.symbolName,
-                                tint: itemKindTint(for: row.itemKind)
-                            )
-                        }
-
-                        ForEach(
-                            Array(row.displayedMagicTreatmentEvidence.displayLabels.enumerated()),
-                            id: \.offset
-                        ) { item in
-                            AppCardBadge(
-                                text: item.element,
-                                systemImage: "wand.and.stars",
-                                tint: .pink
-                            )
-                        }
-                        }
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        PriceLabel(price: row.price, style: .compact)
+                            .fixedSize(horizontal: true, vertical: false)
+                        Spacer(minLength: 4)
+                        inlineBadgeRow
                     }
-                }
 
-                if let unpricedReason {
-                    Label(unpricedReason.title, systemImage: "exclamationmark.circle")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    VStack(alignment: .leading, spacing: 4) {
+                        PriceLabel(price: row.price, style: .compact)
+                        badgeContent
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
             }
             .frame(maxWidth: .infinity)
@@ -1061,9 +1019,63 @@ private struct CollectionCardTile: View {
     }
 
     private var identityLine: String {
-        [row.setName, row.setCode, row.cardNumber]
+        [row.setCode, row.cardNumber, row.setName]
             .filter { !$0.isEmpty }
-            .joined(separator: "  ·  ")
+            .joined(separator: " · ")
+    }
+
+    @ViewBuilder
+    private var inlineBadgeRow: some View {
+        badgeContent
+            .fixedSize(horizontal: true, vertical: false)
+    }
+
+    @ViewBuilder
+    private var badgeContent: some View {
+        CollectionBadgeWrapLayout(itemSpacing: 6, rowSpacing: 4) {
+            switch row.itemKind {
+            case .rawCard:
+                if let variant = row.variant,
+                   !row.displayedMagicTreatmentEvidence.impliesFinish(variant) {
+                    AppCardBadge(
+                        text: variant.label,
+                        systemImage: finishSymbol(for: variant),
+                        tint: finishTint(for: variant)
+                    )
+                }
+            case .gradedCard, .sealedProduct:
+                // A slab or a box has no raw finish, so the badge shows what it
+                // actually is: `PSA 10`, `Sealed`.
+                AppCardBadge(
+                    text: row.displayKindLabel,
+                    systemImage: row.itemKind.symbolName,
+                    tint: itemKindTint(for: row.itemKind)
+                )
+            }
+
+            ForEach(
+                Array(row.displayedMagicTreatmentEvidence.displayLabels.enumerated()),
+                id: \.offset
+            ) { item in
+                AppCardBadge(
+                    text: item.element,
+                    systemImage: "wand.and.stars",
+                    tint: .pink
+                )
+            }
+
+            if row.quantity > 1 {
+                AppCardBadge(text: "×\(row.quantity)", tint: .teal)
+            }
+
+            if let unpricedReason {
+                AppCardBadge(
+                    text: unpricedReason.title,
+                    systemImage: "exclamationmark.circle",
+                    tint: .orange
+                )
+            }
+        }
     }
 
     private func finishTint(for variant: PhysicalVariant) -> Color {
@@ -1105,6 +1117,96 @@ private struct CollectionCardTile: View {
     }
 }
 
+/// Keeps the compact badge vocabulary visible without introducing a nested
+/// horizontal scroll view inside the collection's vertical grid scroll view.
+/// The layout is intentionally small and local: badges keep their intrinsic
+/// width and move to a new line when the footer or Dynamic Type leaves less
+/// room for them.
+private struct CollectionBadgeWrapLayout: Layout {
+    let itemSpacing: CGFloat
+    let rowSpacing: CGFloat
+
+    func sizeThatFits(
+        proposal: ProposedViewSize,
+        subviews: Subviews,
+        cache: inout ()
+    ) -> CGSize {
+        let availableWidth = proposal.width ?? intrinsicWidth(of: subviews)
+        guard !subviews.isEmpty else { return .zero }
+
+        var rowWidth: CGFloat = 0
+        var rowHeight: CGFloat = 0
+        var totalHeight: CGFloat = 0
+        var maximumRowWidth: CGFloat = 0
+
+        for subview in subviews {
+            let size = badgeSize(for: subview, availableWidth: availableWidth)
+            let proposedRowWidth = rowWidth == 0 ? size.width : rowWidth + itemSpacing + size.width
+
+            if rowWidth > 0, proposedRowWidth > availableWidth {
+                totalHeight += rowHeight
+                totalHeight += rowSpacing
+                maximumRowWidth = max(maximumRowWidth, rowWidth)
+                rowWidth = size.width
+                rowHeight = size.height
+            } else {
+                rowWidth = proposedRowWidth
+                rowHeight = max(rowHeight, size.height)
+            }
+        }
+
+        totalHeight += rowHeight
+        maximumRowWidth = max(maximumRowWidth, rowWidth)
+        return CGSize(
+            width: proposal.width ?? maximumRowWidth,
+            height: totalHeight
+        )
+    }
+
+    func placeSubviews(
+        in bounds: CGRect,
+        proposal: ProposedViewSize,
+        subviews: Subviews,
+        cache: inout ()
+    ) {
+        guard !subviews.isEmpty else { return }
+
+        let availableWidth = bounds.width
+        var x = bounds.minX
+        var y = bounds.minY
+        var rowHeight: CGFloat = 0
+
+        for subview in subviews {
+            let size = badgeSize(for: subview, availableWidth: availableWidth)
+            if x > bounds.minX, x + size.width > bounds.maxX {
+                x = bounds.minX
+                y += rowHeight + rowSpacing
+                rowHeight = 0
+            }
+
+            subview.place(
+                at: CGPoint(x: x, y: y),
+                anchor: .topLeading,
+                proposal: ProposedViewSize(width: size.width, height: size.height)
+            )
+            x += size.width + itemSpacing
+            rowHeight = max(rowHeight, size.height)
+        }
+    }
+
+    private func intrinsicWidth(of subviews: Subviews) -> CGFloat {
+        subviews.reduce(0) { width, subview in
+            width + (width == 0 ? 0 : itemSpacing) + badgeSize(for: subview, availableWidth: nil).width
+        }
+    }
+
+    private func badgeSize(for subview: LayoutSubviews.Element, availableWidth: CGFloat?) -> CGSize {
+        subview.sizeThatFits(
+            ProposedViewSize(width: availableWidth, height: nil)
+        )
+    }
+}
+
 /// Use the same URL that powers the detail screen. Some newly returned catalog
 /// records have a working full-size image while their thumbnail endpoint remains
 /// unavailable, which otherwise leaves the grid stuck on a placeholder.
@@ -1114,15 +1216,14 @@ private struct CollectionCardArtwork: View {
     let fullSizeURL: URL?
     let placeholderText: String?
 
-    /// The grid draws these at tile size, so the thumbnail is the correct
-    /// request: preferring the full-size scan fetched megabytes per tile for no
-    /// visible gain. The larger asset stays as the fallback, which is what keeps
-    /// the printings described above off a permanent placeholder.
-    private var primaryURL: URL? { thumbnailURL ?? fullSizeURL }
+    /// The grid is now large enough that Scryfall's `small` asset is visibly
+    /// blurry. The normal-sized asset is the primary, while the thumbnail
+    /// remains a cheap fallback when a provider has not filled the larger URL.
+    private var primaryURL: URL? { fullSizeURL ?? thumbnailURL }
 
     private var fallbackURL: URL? {
-        guard let fullSizeURL, fullSizeURL != primaryURL else { return nil }
-        return fullSizeURL
+        guard let thumbnailURL, thumbnailURL != primaryURL else { return nil }
+        return thumbnailURL
     }
 
     var body: some View {
@@ -1165,20 +1266,19 @@ struct PriceLabel: View {
 
         case .unavailable:
             Text(style == .compact ? "—" : "Price unavailable")
-                .font(style == .compact ? .headline : .subheadline)
+                .font(style == .compact ? .title3.weight(.semibold).monospacedDigit() : .subheadline)
                 .foregroundStyle(.secondary)
 
         case .unknown:
             Text(style == .compact ? "—" : "Not checked yet")
-                .font(style == .compact ? .headline : .subheadline)
+                .font(style == .compact ? .title3.weight(.semibold).monospacedDigit() : .subheadline)
                 .foregroundStyle(.tertiary)
         }
     }
 
     private func amount(_ shade: HierarchicalShapeStyle) -> some View {
         Text(price.amount ?? 0, format: .currency(code: price.currencyCode))
-            .font(.headline)
-            .monospacedDigit()
+            .font(.title3.weight(.semibold).monospacedDigit())
             .foregroundStyle(shade)
             .lineLimit(1)
             .minimumScaleFactor(0.8)

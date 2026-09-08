@@ -173,7 +173,7 @@ final class MagicTreatmentTests: XCTestCase {
         )
         XCTAssertEqual(
             IdentifiedCard.magic(card).finishAndTreatmentDisplayLabel(for: .foil),
-            "Foil · Neon Ink"
+            "Neon Ink"
         )
     }
 
@@ -190,7 +190,7 @@ final class MagicTreatmentTests: XCTestCase {
         )
         let evidence = card.magicTreatmentEvidence(using: .empty)
 
-        XCTAssertEqual(evidence.displayLabel(with: .foil), "Foil · Surge Foil")
+        XCTAssertEqual(evidence.displayLabel(with: .foil), "Surge Foil")
         XCTAssertEqual(evidence.displayLabel(with: .nonfoil), "Nonfoil")
         XCTAssertEqual(card.magicTreatmentDisplayLabel(using: .empty), "Surge Foil")
         XCTAssertTrue(card.magicTreatmentDiagnostics(using: .empty).isEmpty)
@@ -201,6 +201,21 @@ final class MagicTreatmentTests: XCTestCase {
         XCTAssertEqual(
             IdentifiedCard.magic(card).finishAndTreatmentDisplayLabel(for: nil),
             "Unknown finish · Surge Foil"
+        )
+    }
+
+    func testKnownTreatmentSuppressesItsImpliedFinishButUnknownTreatmentDoesNot() {
+        let surge = MagicTreatmentEvidence(treatments: [.surgeFoil])
+        XCTAssertTrue(surge.impliesFinish(.foil))
+        XCTAssertEqual(surge.displayLabel(with: .foil), "Surge Foil")
+
+        let unknown = MagicTreatmentEvidence(
+            treatments: [.unclassified("future-treatment")]
+        )
+        XCTAssertFalse(unknown.impliesFinish(.foil))
+        XCTAssertEqual(
+            unknown.displayLabel(with: .foil),
+            "Foil · Unclassified · future-treatment"
         )
     }
 
@@ -237,7 +252,7 @@ final class MagicTreatmentTests: XCTestCase {
         )
         XCTAssertEqual(
             evidence.displayLabel(with: .foil),
-            "Foil · Surge Foil"
+            "Surge Foil"
         )
         XCTAssertEqual(
             identified.collectionKey(variant: .foil),
@@ -425,7 +440,7 @@ final class MagicTreatmentTests: XCTestCase {
         )
         XCTAssertEqual(
             identified.finishAndTreatmentDisplayLabel(for: .foil),
-            "Foil · Surge Foil"
+            "Surge Foil"
         )
     }
 

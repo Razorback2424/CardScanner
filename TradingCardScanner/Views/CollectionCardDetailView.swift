@@ -2421,7 +2421,7 @@ enum CollectionArtworkStore {
     /// the stored derivative below this bound still gives a sharp 3x image on
     /// current iPhones while preventing a camera-roll original from becoming a
     /// multi-hundred-megabyte decoded tile cache entry.
-    static let maximumPixelDimension = 2_048
+    static let maximumPixelDimension = 1_600
 
     private static var directory: URL? {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?
