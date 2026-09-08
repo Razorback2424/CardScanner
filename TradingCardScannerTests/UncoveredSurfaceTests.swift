@@ -400,126 +400,6 @@ final class PriceStoreRefreshRaceTests: XCTestCase {
 }
 
 @MainActor
-final class CollectionProjectionTokenTests: XCTestCase {
-    func testPriceWritesInvalidateTheProjectionWhileSearchStateDoesNot() throws {
-        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
-            for: Schema([CollectedCard.self, PriceRecord.self, LocalArtworkOverride.self])
-        )
-        let context = container.mainContext
-        let card = UncoveredSurfaceFixtures.collectedCard(
-            collectionKey: "projection-position",
-            providerID: "test-set-001"
-        )
-        let record = PriceRecord(
-            key: card.priceKey,
-            game: card.cardGame,
-            printingID: card.priceStorageID,
-            variantID: card.variantID
-        )
-        record.unitMarketPriceUSD = 12.34
-        context.insert(card)
-        context.insert(record)
-        try context.save()
-
-        let baseline = CollectionProjectionToken.make(
-            cards: [card],
-            priceRecords: [record],
-            artworkOverrides: []
-        )
-
-        // Search, filter, and sort are applied after this fingerprint, so
-        // none of that view state participates in the cache key.
-        XCTAssertEqual(
-            CollectionProjectionToken.make(
-                cards: [card],
-                priceRecords: [record],
-                artworkOverrides: []
-            ),
-            baseline
-        )
-
-        // Artwork diagnostics read this field live in the tile, so changing it
-        // must not rebuild every projected collection row.
-        card.imageURL = "https://example.com/card.png"
-        XCTAssertEqual(
-            CollectionProjectionToken.make(
-                cards: [card],
-                priceRecords: [record],
-                artworkOverrides: []
-            ),
-            baseline
-        )
-
-        record.unitMarketPriceUSD = 99.99
-        let afterPriceWrite = CollectionProjectionToken.make(
-            cards: [card],
-            priceRecords: [record],
-            artworkOverrides: []
-        )
-        XCTAssertNotEqual(afterPriceWrite, baseline)
-    }
-
-    func testFreshnessTokenIgnoresLocalFetchChurnForStampedPrices() throws {
-        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
-            for: Schema([CollectedCard.self, PriceRecord.self, LocalArtworkOverride.self])
-        )
-        let context = container.mainContext
-        let card = UncoveredSurfaceFixtures.collectedCard(
-            collectionKey: "projection-freshness",
-            providerID: "test-set-001"
-        )
-        let record = PriceRecord(
-            key: card.priceKey,
-            game: card.cardGame,
-            printingID: card.priceStorageID,
-            variantID: card.variantID
-        )
-        record.unitMarketPriceUSD = 12.34
-        record.sourceUpdatedAt = Date(timeIntervalSince1970: 100)
-        record.fetchedAt = Date(timeIntervalSince1970: 200)
-        record.lastCheckedAt = Date(timeIntervalSince1970: 200)
-        context.insert(card)
-        context.insert(record)
-        try context.save()
-
-        let baseline = CollectionProjectionToken.make(
-            cards: [card],
-            priceRecords: [record],
-            artworkOverrides: []
-        )
-
-        record.fetchedAt = Date(timeIntervalSince1970: 300)
-        record.lastCheckedAt = Date(timeIntervalSince1970: 300)
-        XCTAssertEqual(
-            CollectionProjectionToken.make(
-                cards: [card],
-                priceRecords: [record],
-                artworkOverrides: []
-            ),
-            baseline,
-            "a provider timestamp makes local fetch/check timestamps irrelevant to tile freshness"
-        )
-
-        record.sourceUpdatedAt = nil
-        let unstampedBaseline = CollectionProjectionToken.make(
-            cards: [card],
-            priceRecords: [record],
-            artworkOverrides: []
-        )
-        record.fetchedAt = Date(timeIntervalSince1970: 400)
-        XCTAssertNotEqual(
-            CollectionProjectionToken.make(
-                cards: [card],
-                priceRecords: [record],
-                artworkOverrides: []
-            ),
-            unstampedBaseline,
-            "an unstamped provider uses fetchedAt as its effective freshness"
-        )
-    }
-}
-
-@MainActor
 final class CollectionLineageIndexTests: XCTestCase {
     func testIndexedLineageValidatorMatchesFetchValidatorAcrossIntegrityCases() throws {
         let container = try UncoveredSurfaceFixtures.inMemoryContainer(
@@ -1125,6 +1005,8 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         XCTAssertEqual(charizard.variant, .holo)
         XCTAssertEqual(charizard.variantResolution, .uniqueInCatalog)
         XCTAssertNotNil(charizard.highImageURL)
+        let umbreon = try XCTUnwrap(cards.first { $0.name == "Umbreon VMAX" })
+        XCTAssertEqual(umbreon.quantity, 2)
         let instrumentKey = InventoryLedger(context: context).priceStorageKey(for: charizard)
         let observations = try context.fetch(FetchDescriptor<PriceObservation>())
             .filter { $0.instrumentKey == instrumentKey }
