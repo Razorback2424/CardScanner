@@ -130,6 +130,17 @@ struct PortfolioView: View {
 #endif
     }
 
+    private var startsAtMostValuableCardsDebugSection: Bool {
+#if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_route"),
+              arguments.indices.contains(index + 1) else { return false }
+        return arguments[index + 1] == "PortfolioMostValuable"
+#else
+        return false
+#endif
+    }
+
     var body: some View {
         NavigationStack {
             ScrollViewReader { proxy in
@@ -161,7 +172,8 @@ struct PortfolioView: View {
 
                             biggestMovers()
                                 .id("phase3-movers")
-                            largestHoldings
+                            mostValuableCardsOwned
+                                .id("most-valuable-cards-owned")
                         }
 
                     } else if !portfolio.integrityDefects.isEmpty {
@@ -173,6 +185,11 @@ struct PortfolioView: View {
                     }
                     .padding(16)
                     .contentWidthLimit(.wide)
+                }
+                .task(id: portfolio.inputRevision) {
+                    guard startsAtMostValuableCardsDebugSection else { return }
+                    try? await Task.sleep(for: .milliseconds(250))
+                    proxy.scrollTo("most-valuable-cards-owned", anchor: .top)
                 }
                 .task {
                     guard startsAtPhase3DebugSection else { return }
@@ -485,17 +502,23 @@ struct PortfolioView: View {
     }
 
     @ViewBuilder
-    private var largestHoldings: some View {
+    private var mostValuableCardsOwned: some View {
         // The publisher orders priced holdings before unpriced holdings, so
         // stop at the first missing value instead of allocating a filtered
         // copy of the entire holdings array on every body evaluation.
-        let ranked = portfolio.holdings.prefix(while: { $0.currentValue != nil })
+        let ranked = portfolio.holdings.prefix(while: { $0.holdingValue != nil })
 
         if !ranked.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    Text("Largest holdings")
-                        .font(.headline)
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Most valuable cards owned")
+                            .font(.headline)
+                        Text("Ranked by price per card · total value includes all copies")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                     Spacer()
                     if ranked.count > 5 {
                         Button("See all") {
@@ -729,17 +752,57 @@ private enum PortfolioContributionPresentation {
         case .losers: filtered = rows.filter { $0.amount.tenThousandths < 0 }
         }
         return filtered.sorted { lhs, rhs in
-            switch order {
-            case .impact:
-                if lhs.amount.magnitude != rhs.amount.magnitude { return lhs.amount.magnitude > rhs.amount.magnitude }
-                if lhs.amount != rhs.amount { return lhs.amount > rhs.amount }
-            case .gainers:
-                if lhs.amount != rhs.amount { return lhs.amount > rhs.amount }
-            case .losers:
-                if lhs.amount != rhs.amount { return lhs.amount < rhs.amount }
-            }
-            return lhs.id < rhs.id
+            comesBefore(lhs, rhs, order: order)
         }
+    }
+
+    /// Selects the leading rows without sorting the entire contribution list.
+    /// The preview only renders three rows, while the full contributor sheet
+    /// still uses `sorted` when it needs the complete order.
+    static func top(
+        _ rows: [PortfolioContributionRowModel],
+        order: PortfolioContributionOrder,
+        limit: Int
+    ) -> [PortfolioContributionRowModel] {
+        guard limit > 0 else { return [] }
+        let filtered: [PortfolioContributionRowModel]
+        switch order {
+        case .impact: filtered = rows
+        case .gainers: filtered = rows.filter { $0.amount.tenThousandths > 0 }
+        case .losers: filtered = rows.filter { $0.amount.tenThousandths < 0 }
+        }
+
+        var selected: [PortfolioContributionRowModel] = []
+        selected.reserveCapacity(min(limit, filtered.count))
+        for row in filtered {
+            let insertionIndex = selected.firstIndex {
+                comesBefore(row, $0, order: order)
+            }
+            if let insertionIndex {
+                selected.insert(row, at: insertionIndex)
+            } else {
+                selected.append(row)
+            }
+            if selected.count > limit { selected.removeLast() }
+        }
+        return selected
+    }
+
+    private static func comesBefore(
+        _ lhs: PortfolioContributionRowModel,
+        _ rhs: PortfolioContributionRowModel,
+        order: PortfolioContributionOrder
+    ) -> Bool {
+        switch order {
+        case .impact:
+            if lhs.amount.magnitude != rhs.amount.magnitude { return lhs.amount.magnitude > rhs.amount.magnitude }
+            if lhs.amount != rhs.amount { return lhs.amount > rhs.amount }
+        case .gainers:
+            if lhs.amount != rhs.amount { return lhs.amount > rhs.amount }
+        case .losers:
+            if lhs.amount != rhs.amount { return lhs.amount < rhs.amount }
+        }
+        return lhs.id < rhs.id
     }
 
     static func signed(_ amount: Money) -> String {
@@ -778,7 +841,7 @@ private enum PortfolioContributionPresentation {
     }
 
     static func shareOfCurrentHolding(_ row: PortfolioContributionRowModel) -> Double? {
-        guard let value = row.holding?.currentValue,
+        guard let value = row.holding?.holdingValue,
               value.isValid,
               !value.isZero,
               row.amount.isValid else { return nil }
@@ -796,15 +859,16 @@ private struct PortfolioContributorPreview: View {
     let onRemoved: (RemovedCardSnapshot) -> Void
 
     var body: some View {
-        let all = PortfolioContributionPresentation.sorted(
-            PortfolioContributionPresentation.rows(
-                contributions: contributions,
-                holdings: holdings,
-                movementDetails: movementDetails
-            ),
-            order: .impact
+        let all = PortfolioContributionPresentation.rows(
+            contributions: contributions,
+            holdings: holdings,
+            movementDetails: movementDetails
         )
-        let displayed = Array(all.prefix(3))
+        let displayed = PortfolioContributionPresentation.top(
+            all,
+            order: .impact,
+            limit: 3
+        )
         let residual = total - displayed.map(\.amount).sum()
         let maximum = all.map(\.amount.magnitude).max() ?? .zero
         VStack(spacing: 8) {
@@ -1033,10 +1097,22 @@ private struct PortfolioHoldingRow: View {
                 }
             }
             Spacer(minLength: 8)
-            if let currentValue = holding.currentValue {
-                Text(currentValue.formatted())
+            if let holdingValue = holding.holdingValue {
+                VStack(alignment: .trailing, spacing: 2) {
+                    Text(
+                        holding.quantity > 1
+                            ? "\(holdingValue.formatted()) total"
+                            : holdingValue.formatted()
+                    )
                     .font(.subheadline.weight(.semibold).monospacedDigit())
                     .foregroundStyle(.primary)
+
+                    if holding.quantity > 1, let unitPrice = holding.unitPrice {
+                        Text("\(unitPrice.formatted())/card")
+                            .font(.caption.monospacedDigit())
+                            .foregroundStyle(.secondary)
+                    }
+                }
             } else {
                 AppCardBadge(
                     text: "Value unavailable",
@@ -1052,8 +1128,9 @@ private struct PortfolioHoldingRow: View {
 
     private var holdingAccessibilityLabel: String {
         let quantity = holding.quantity > 1 ? ", quantity \(holding.quantity)" : ""
-        let value = holding.currentValue.map { $0.formatted() } ?? "Value unavailable"
-        return "\(holding.name), \(holding.detail)\(quantity), \(value)"
+        let unitPrice = holding.unitPrice.map { ", \($0.formatted()) per card" } ?? ""
+        let value = holding.holdingValue.map { ", total owned value \($0.formatted())" } ?? ", value unavailable"
+        return "\(holding.name), \(holding.detail)\(quantity)\(unitPrice)\(value)"
     }
 
 }
@@ -1081,7 +1158,10 @@ private struct PortfolioArtwork: View {
 
     var body: some View {
         Group {
-            if let image = CollectionArtworkStore.image(filename: holding.userArtworkFilename) {
+            if let image = CollectionArtworkStore.image(
+                filename: holding.userArtworkFilename,
+                maximumPixelDimension: 512
+            ) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()

@@ -149,28 +149,18 @@ enum PortfolioReplaySnapshotBuilder {
                 artworkURL: artworkURL,
                 artworkFallbackURL: artworkFallbackURL,
                 quantity: position.quantity,
-                currentValue: price?.multiplied(by: position.quantity),
+                unitPrice: price,
+                holdingValue: price?.multiplied(by: position.quantity),
                 priceStorageKey: position.priceStorageKey
             )
         }
 
-        // The dashboard's largest-holdings section only needs the first five.
+        // The dashboard's most-valuable-cards section only needs the first five.
         // Publish the expensive ordering with the snapshot so SwiftUI does not
         // sort the entire portfolio every time an unrelated state change redraws
-        // the screen. Priced holdings remain ahead of unpriced holdings.
-        return holdings.sorted { lhs, rhs in
-            switch (lhs.currentValue, rhs.currentValue) {
-            case let (lhsValue?, rhsValue?):
-                if lhsValue != rhsValue { return lhsValue > rhsValue }
-            case (_?, nil):
-                return true
-            case (nil, _?):
-                return false
-            case (nil, nil):
-                break
-            }
-            return lhs.collectionKey < rhs.collectionKey
-        }
+        // the screen. Ranking is by one-card price, not the combined position
+        // value, so duplicate copies never pollute the ordering.
+        return PortfolioHoldingSnapshot.rankedByUnitPrice(holdings)
     }
 
     static func make(

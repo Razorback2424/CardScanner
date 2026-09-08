@@ -125,3 +125,68 @@ final class PortfolioTrustPassTests: XCTestCase {
         )
     }
 }
+
+final class PortfolioHoldingRankingTests: XCTestCase {
+    private func money(_ dollars: Double) -> Money {
+        guard let money = Money(rounding: dollars) else {
+            fatalError("Test money must be representable")
+        }
+        return money
+    }
+
+    private func holding(
+        key: String,
+        unitPrice: Double?,
+        quantity: Int
+    ) -> PortfolioHoldingSnapshot {
+        let unit = unitPrice.map(money)
+        return PortfolioHoldingSnapshot(
+            collectionKey: key,
+            name: key,
+            detail: "Test set",
+            userArtworkFilename: nil,
+            artworkURL: nil,
+            artworkFallbackURL: nil,
+            quantity: quantity,
+            unitPrice: unit,
+            holdingValue: unit?.multiplied(by: quantity),
+            priceStorageKey: "price-\(key)"
+        )
+    }
+
+    func testMostValuableCardsRankBySingleCardPrice() {
+        let duplicate = holding(key: "duplicate", unitPrice: 20, quantity: 3)
+        let higherSingle = holding(key: "higher-single", unitPrice: 25, quantity: 1)
+        let lowerSingle = holding(key: "lower-single", unitPrice: 15, quantity: 1)
+
+        let ranked = PortfolioHoldingSnapshot.rankedByUnitPrice([
+            duplicate,
+            lowerSingle,
+            higherSingle
+        ])
+
+        XCTAssertEqual(ranked.map(\.collectionKey), [
+            "higher-single",
+            "duplicate",
+            "lower-single"
+        ])
+        XCTAssertEqual(ranked[1].unitPrice, money(20))
+        XCTAssertEqual(ranked[1].holdingValue, money(60))
+    }
+
+    func testEqualPricesUseStableKeyAndUnpricedHoldingsRemainLast() {
+        let unpriced = holding(key: "unpriced", unitPrice: nil, quantity: 2)
+        let tiedLater = holding(key: "z-tied", unitPrice: 10, quantity: 4)
+        let tiedEarlier = holding(key: "a-tied", unitPrice: 10, quantity: 1)
+
+        let ranked = PortfolioHoldingSnapshot.rankedByUnitPrice([
+            unpriced,
+            tiedLater,
+            tiedEarlier
+        ])
+
+        XCTAssertEqual(ranked.map(\.collectionKey), ["a-tied", "z-tied", "unpriced"])
+        XCTAssertNil(ranked.last?.unitPrice)
+        XCTAssertNil(ranked.last?.holdingValue)
+    }
+}

@@ -212,18 +212,23 @@ enum PortfolioDebugFixtures {
                 )
                 continue
             }
-            _ = try? store.addSealed(
-                SealedProductSummary(
-                    id: fixture.id,
-                    name: fixture.name,
-                    setName: "Portfolio QA",
-                    variantID: "\(fixture.id)-variant",
-                    marketPriceUSD: fixture.current,
-                    updatedAt: .now,
-                    imageURL: cardDetailArtworkURL
-                ),
-                game: .pokemon
+            let product = SealedProductSummary(
+                id: fixture.id,
+                name: fixture.name,
+                setName: "Portfolio QA",
+                variantID: "\(fixture.id)-variant",
+                marketPriceUSD: fixture.current,
+                updatedAt: .now,
+                imageURL: cardDetailArtworkURL
             )
+            // Keep one duplicate position in the deterministic portfolio
+            // route. Its $542 combined value must not outrank Charizard's
+            // $342 single-card price; the row should still make the two-copy
+            // total obvious.
+            let quantity = fixture.id == "ui-portfolio-umbreon" ? 2 : 1
+            for _ in 0..<quantity {
+                _ = try? store.addSealed(product, game: .pokemon)
+            }
         }
 
         let cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []

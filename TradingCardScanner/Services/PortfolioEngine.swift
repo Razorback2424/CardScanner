@@ -60,11 +60,35 @@ struct PortfolioHoldingSnapshot: Identifiable, Equatable, Sendable {
     /// Retried only when the preferred artwork cannot load.
     var artworkFallbackURL: URL?
     var quantity: Int
-    var currentValue: Money?
+    /// The current market price for one copy. This is the ranking value used
+    /// by the dashboard's "Most valuable cards owned" section.
+    var unitPrice: Money?
+    /// The current market value of the whole position (`unitPrice × quantity`).
+    /// This remains the value shown on the row and contributes to portfolio
+    /// totals; it must never be used to rank positions by card price.
+    var holdingValue: Money?
     /// The exact price instrument used for live revaluation during a refresh.
     var priceStorageKey: String
 
     var id: String { collectionKey }
+
+    /// Stable dashboard ordering: the most expensive individual card first,
+    /// then unpriced positions, with a deterministic key tie-breaker.
+    static func rankedByUnitPrice(_ holdings: [Self]) -> [Self] {
+        holdings.sorted { lhs, rhs in
+            switch (lhs.unitPrice, rhs.unitPrice) {
+            case let (lhsPrice?, rhsPrice?):
+                if lhsPrice != rhsPrice { return lhsPrice > rhsPrice }
+            case (_?, nil):
+                return true
+            case (nil, _?):
+                return false
+            case (nil, nil):
+                break
+            }
+            return lhs.collectionKey < rhs.collectionKey
+        }
+    }
 }
 
 /// Injectable boundary around the expensive replay. The app uses the default
@@ -218,20 +242,24 @@ final class PortfolioEngine: ObservableObject {
         var changed = false
         holdings = holdings.map { holding in
             guard let display = byKey[holding.priceStorageKey] else { return holding }
-            let oldValue = holding.currentValue
-            let newValue = display.amount
-                .flatMap(Money.init(rounding:))?
-                .multiplied(by: holding.quantity)
+            let oldValue = holding.holdingValue
+            let newUnitPrice = display.amount.flatMap(Money.init(rounding:))
+            let newValue = newUnitPrice?.multiplied(by: holding.quantity)
             if oldValue != newValue {
                 total -= oldValue ?? .zero
                 total += newValue ?? .zero
                 changed = true
             }
+            if holding.unitPrice != newUnitPrice {
+                changed = true
+            }
             var updated = holding
-            updated.currentValue = newValue
+            updated.unitPrice = newUnitPrice
+            updated.holdingValue = newValue
             return updated
         }
         guard changed else { return }
+        holdings = PortfolioHoldingSnapshot.rankedByUnitPrice(holdings)
         // This is intentionally only the live headline/holding valuation. The
         // authoritative terminal replay still owns attribution, coverage,
         // unpriced counts, historical closes, and their persistence; changing
