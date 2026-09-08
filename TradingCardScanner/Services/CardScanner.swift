@@ -797,7 +797,6 @@ final class CardScanner: NSObject, ObservableObject {
     private var assistanceMonitor = CaptureAssistanceMonitor()
     private let spatialTrackingConfiguration: SpatialTrackingConfiguration
     private var trackerRequest: VNTrackObjectRequest?
-    private var trackerObservation: VNDetectedObjectObservation?
     private var trackerEncounterID: UUID?
     private var trackerPresentationToken: UUID?
     private var trackerLifecycle: SpatialTrackerLifecycle = .idle
@@ -814,6 +813,34 @@ final class CardScanner: NSObject, ObservableObject {
     /// Consecutive readings of an already-consumed card before the UI mentions it.
     /// Long enough that simply finishing a movement never triggers it.
     private static let latchHoldHintMatches = 8
+
+    private struct AssistanceTextMetrics: Sendable {
+        let textPixelHeight: Float?
+        let meanOCRConfidence: Float?
+        let hasFooterText: Bool
+    }
+
+    private struct AssistanceDeviceState: Sendable {
+        let isAdjustingFocus: Bool
+        let isAdjustingExposure: Bool
+        let exposureDuration: Double
+        let iso: Float
+        let lensPosition: Float?
+        let minimumFocusDistance: Int?
+
+        init(device: AVCaptureDevice) {
+            isAdjustingFocus = device.isAdjustingFocus
+            isAdjustingExposure = device.isAdjustingExposure
+            exposureDuration = CMTimeGetSeconds(device.exposureDuration)
+            iso = device.iso
+            lensPosition = device.isFocusModeSupported(.continuousAutoFocus)
+                ? device.lensPosition
+                : nil
+            minimumFocusDistance = device.minimumFocusDistance >= 0
+                ? device.minimumFocusDistance
+                : nil
+        }
+    }
 
 #if DEBUG
     private var diagnosticEvents: [String] = []
@@ -1430,7 +1457,6 @@ final class CardScanner: NSObject, ObservableObject {
         trackerSeedSubject = subject
         trackerPresentationToken = nil
         trackerRequest = request
-        trackerObservation = seedObservation
         trackerLifecycle = .provisional(encounterID: encounterID)
         spatialExitAccumulator.reset()
         cadence.markRan(.tracking, at: now)
@@ -1494,7 +1520,6 @@ final class CardScanner: NSObject, ObservableObject {
                 let subject = trackerSubjectForExit
                 request.isLastFrame = true
                 trackerRequest = nil
-                trackerObservation = nil
                 trackerEncounterID = nil
                 trackerSeedSubject = nil
                 trackerPresentationToken = nil
@@ -1561,7 +1586,6 @@ final class CardScanner: NSObject, ObservableObject {
         _ observation: VNDetectedObjectObservation,
         into request: VNTrackObjectRequest
     ) {
-        trackerObservation = observation
         Self.feedForwardTrackerObservation(observation, into: request)
     }
 
@@ -1578,7 +1602,6 @@ final class CardScanner: NSObject, ObservableObject {
         }
         trackerRequest?.isLastFrame = true
         trackerRequest = nil
-        trackerObservation = nil
         trackerEncounterID = nil
         trackerSeedSubject = nil
         trackerPresentationToken = nil
@@ -1595,7 +1618,6 @@ final class CardScanner: NSObject, ObservableObject {
     private func terminateTrackerWithoutSpatialProof() {
         trackerRequest?.isLastFrame = true
         trackerRequest = nil
-        trackerObservation = nil
         trackerEncounterID = nil
         trackerSeedSubject = nil
         trackerPresentationToken = nil
@@ -2120,27 +2142,53 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     private func updateAssistance(from lines: [RecognizedLine]) {
-        guard let device = videoInput?.device else { return }
-        let heights = lines.compactMap { $0.sourcePixelRect.map { Float($0.height) } }
-        let confidences = lines.compactMap(\.confidence)
+        let metrics = AssistanceTextMetrics(
+            textPixelHeight: lines.compactMap { $0.sourcePixelRect.map { Float($0.height) } }.max(),
+            meanOCRConfidence: {
+                let confidences = lines.compactMap(\.confidence)
+                return confidences.isEmpty
+                    ? nil
+                    : confidences.reduce(0, +) / Float(confidences.count)
+            }(),
+            hasFooterText: !lines.isEmpty
+        )
+
+        // `videoInput` belongs to sessionQueue. Sample the mutable device on
+        // that queue, then hand immutable values back to visionQueue in the
+        // same order as the OCR updates. This keeps focus/exposure guidance
+        // fresh without synchronously blocking frame processing.
+        sessionQueue.async { [weak self] in
+            guard let self, let device = self.videoInput?.device else { return }
+            let deviceState = AssistanceDeviceState(device: device)
+            self.visionQueue.async { [weak self] in
+                self?.applyAssistance(metrics: metrics, device: deviceState)
+            }
+        }
+    }
+
+    private func applyAssistance(
+        metrics: AssistanceTextMetrics,
+        device: AssistanceDeviceState
+    ) {
         let assessment = CaptureAssessment(
             detailSharpness: nil,
             horizontalMotion: nil,
             verticalMotion: nil,
-            textPixelHeight: heights.max(),
+            textPixelHeight: metrics.textPixelHeight,
             localContrast: nil,
             clippedHighlightArea: nil,
-            meanOCRConfidence: confidences.isEmpty
-                ? nil
-                : confidences.reduce(0, +) / Float(confidences.count),
+            meanOCRConfidence: metrics.meanOCRConfidence,
             isAdjustingFocus: device.isAdjustingFocus,
             isAdjustingExposure: device.isAdjustingExposure,
-            exposureDuration: CMTimeGetSeconds(device.exposureDuration),
+            exposureDuration: device.exposureDuration,
             iso: device.iso,
-            lensPosition: device.isFocusModeSupported(.continuousAutoFocus) ? device.lensPosition : nil,
-            minimumFocusDistance: device.minimumFocusDistance >= 0 ? device.minimumFocusDistance : nil
+            lensPosition: device.lensPosition,
+            minimumFocusDistance: device.minimumFocusDistance
         )
-        let assistance = assistanceMonitor.observe(assessment, hasFooterText: !lines.isEmpty)
+        let assistance = assistanceMonitor.observe(
+            assessment,
+            hasFooterText: metrics.hasFooterText
+        )
         DispatchQueue.main.async { [weak self] in
             guard self?.scanAssistance != assistance else { return }
             self?.scanAssistance = assistance

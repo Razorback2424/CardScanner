@@ -586,12 +586,12 @@ The supplied audit is the evidence and acceptance source for this slice. The imp
 
 - [x] Correlate scanner fallback quotes by session and exact price key, update surviving session/recent/last-add projections, and update an existing receipt in place without recreating undone scans or mutating published departure snapshots.
 - [x] Carry encounter IDs through scanner acknowledgements; clear/fail only the matching encounter, including certified-duplicate terminal no-ops.
-- [ ] Consume the app-scoped revision store in the activity log and centralize reloads after local remove/restore success.
-- [ ] Surface catalog/sealed Undo local-persistence failures, preserve retryable mutations, and cancel the sealed timer when Undo starts.
-- [ ] Transfer immutable camera-assistance device values from session queue to vision queue without synchronously blocking frame processing.
-- [ ] Replace credential delete-then-add with update-when-present/insert-when-absent semantics.
-- [ ] Gate unpriced export on `collectionCardCount == 0`.
-- [ ] Remove the production-only unused `trackerObservation` state without broadening the camera refactor.
+- [x] Consume the app-scoped revision store in the activity log and centralize reloads after local remove/restore success.
+- [x] Surface catalog/sealed Undo local-persistence failures, preserve retryable mutations, and cancel the sealed timer when Undo starts.
+- [x] Transfer immutable camera-assistance device values from session queue to vision queue without synchronously blocking frame processing.
+- [x] Replace credential delete-then-add with update-when-present/insert-when-absent semantics.
+- [x] Gate unpriced export on `collectionCardCount == 0`.
+- [x] Remove the production-only unused `trackerObservation` state without broadening the camera refactor.
 
 Deferred by the supplied plan: published departure-summary mutation, performance restructuring, migration-watermark changes, portfolio-engine serialization, Keychain entitlement diagnosis, and CloudKit synchronization claims. Verification will record simulator/device/network fault-injection gaps separately.
 
@@ -600,3 +600,10 @@ Deferred by the supplied plan: published departure-summary mutation, performance
 - Status: implemented.
 - `xcodebuild build -quiet -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'generic/platform=iOS' -derivedDataPath /private/tmp/trading-card-scanner-audit-slice1 SWIFT_ENABLE_EXPLICIT_MODULES=NO` — passed.
 - `git diff --check` — passed. Simulator XCTest execution remains unavailable.
+
+### Slice 2 verification
+
+- Status: implemented.
+- `xcodebuild build -quiet -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'generic/platform=iOS' -derivedDataPath /private/tmp/trading-card-scanner-audit-slice2-nosign SWIFT_ENABLE_EXPLICIT_MODULES=NO CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO` — passed.
+- The signed equivalent was blocked after CoreSimulatorService disconnected because the repository's example bundle ID has no provisioning profile; no Swift compilation diagnostic was emitted.
+- `git diff --check` — passed. Simulator/device, Keychain fault injection, and CloudKit synchronization remain unverified.

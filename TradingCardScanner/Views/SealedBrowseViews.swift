@@ -609,6 +609,7 @@ struct SealedProductDetailView: View {
     @State private var pendingMutation: CollectionMutation?
     @State private var undoTask: Task<Void, Never>?
     @State private var addFailure: String?
+    @State private var addAlertTitle = "Couldn't add to collection"
 
     private var ownedQuantity: Int {
         (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: []))
@@ -668,7 +669,7 @@ struct SealedProductDetailView: View {
         }
         .onDisappear { undoTask?.cancel() }
         .alert(
-            "Couldn't add to collection",
+            addAlertTitle,
             isPresented: Binding(
                 get: { addFailure != nil },
                 set: { if !$0 { addFailure = nil } }
@@ -708,6 +709,7 @@ struct SealedProductDetailView: View {
             // A sealed box is not something to lose silently.
             pendingMutation = try store.addSealed(product, game: game)
         } catch {
+            addAlertTitle = "Couldn't add to collection"
             addFailure = error.localizedDescription
             return
         }
@@ -719,10 +721,14 @@ struct SealedProductDetailView: View {
     }
 
     private func undo() {
+        undoTask?.cancel()
         guard let pendingMutation else { return }
-        if (try? CollectionStore(context: modelContext).undo(pendingMutation)) != nil {
+        do {
+            try CollectionStore(context: modelContext).undo(pendingMutation)
             self.pendingMutation = nil
-            undoTask?.cancel()
+        } catch {
+            addAlertTitle = "Couldn't undo addition"
+            addFailure = "The local collection change could not be undone. \(error.localizedDescription)"
         }
     }
 }

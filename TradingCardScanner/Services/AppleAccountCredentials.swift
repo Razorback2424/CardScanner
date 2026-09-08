@@ -79,19 +79,33 @@ enum AppleAccountCredentials {
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
         let query = baseQuery(account: account)
 
-        // Delete-then-add rather than SecItemUpdate: one path instead of two,
-        // and it cannot leave a stale attribute behind from an earlier write.
-        SecItemDelete(query as CFDictionary)
+        guard !trimmed.isEmpty else {
+            // Empty values are an intentional clear, kept separate from
+            // replacement so a failed update can never erase the old value.
+            remove(account: account)
+            return
+        }
 
-        guard !trimmed.isEmpty else { return }
+        let data = Data(trimmed.utf8)
+        let updateStatus = SecItemUpdate(
+            query as CFDictionary,
+            [
+                kSecValueData as String: data,
+                kSecAttrAccessible as String: accessibility
+            ] as CFDictionary
+        )
+        if updateStatus == errSecSuccess { return }
+        guard updateStatus == errSecItemNotFound else {
+            throw CredentialError.storeFailed(updateStatus)
+        }
 
         var attributes = query
-        attributes[kSecValueData as String] = Data(trimmed.utf8)
+        attributes[kSecValueData as String] = data
         attributes[kSecAttrAccessible as String] = accessibility
 
-        let status = SecItemAdd(attributes as CFDictionary, nil)
-        guard status == errSecSuccess else {
-            throw CredentialError.storeFailed(status)
+        let addStatus = SecItemAdd(attributes as CFDictionary, nil)
+        guard addStatus == errSecSuccess else {
+            throw CredentialError.storeFailed(addStatus)
         }
     }
 

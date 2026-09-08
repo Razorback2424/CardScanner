@@ -361,8 +361,12 @@ struct CatalogCardDetailView: View {
             Spacer()
             Button("Undo") {
                 undoTask?.cancel()
-                if (try? CollectionStore(context: modelContext).undo(mutation)) != nil {
+                do {
+                    try CollectionStore(context: modelContext).undo(mutation)
                     pendingMutation = nil
+                } catch {
+                    addAlertTitle = "Couldn't undo card"
+                    addFailure = "The local collection change could not be undone. \(error.localizedDescription)"
                 }
             }
             .fontWeight(.semibold)

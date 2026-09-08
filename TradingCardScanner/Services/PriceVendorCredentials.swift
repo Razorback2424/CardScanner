@@ -61,17 +61,26 @@ enum PriceVendorCredentials {
             return
         }
 
-        // Delete-then-add rather than SecItemUpdate: it is one path instead of
-        // two, and it cannot leave a stale attribute behind from an earlier write.
-        SecItemDelete(baseQuery as CFDictionary)
+        let data = Data(trimmed.utf8)
+        let updateStatus = SecItemUpdate(
+            baseQuery as CFDictionary,
+            [
+                kSecValueData as String: data,
+                kSecAttrAccessible as String: accessibility
+            ] as CFDictionary
+        )
+        if updateStatus == errSecSuccess { return }
+        guard updateStatus == errSecItemNotFound else {
+            throw CredentialError.storeFailed(updateStatus)
+        }
 
         var attributes = baseQuery
-        attributes[kSecValueData as String] = Data(trimmed.utf8)
+        attributes[kSecValueData as String] = data
         attributes[kSecAttrAccessible as String] = accessibility
 
-        let status = SecItemAdd(attributes as CFDictionary, nil)
-        guard status == errSecSuccess else {
-            throw CredentialError.storeFailed(status)
+        let addStatus = SecItemAdd(attributes as CFDictionary, nil)
+        guard addStatus == errSecSuccess else {
+            throw CredentialError.storeFailed(addStatus)
         }
     }
 

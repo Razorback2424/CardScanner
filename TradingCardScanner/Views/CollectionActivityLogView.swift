@@ -3,7 +3,7 @@ import SwiftUI
 
 struct CollectionActivityLogView: View {
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var revisionStore = StoreRevisionStore()
+    @EnvironmentObject private var revisionStore: StoreRevisionStore
     @State private var activities: [CollectionActivity] = []
     @State private var cards: [CollectedCard] = []
     @State private var inventoryEvents: [InventoryEvent] = []
@@ -80,13 +80,7 @@ struct CollectionActivityLogView: View {
             Text("Only the copies claimed by this history entry will be removed.")
         }
         .task(id: revisionStore.revision) {
-            try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
-            let descriptor = FetchDescriptor<CollectionActivity>(
-                sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
-            )
-            activities = (try? modelContext.fetch(descriptor)) ?? []
-            cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
-            inventoryEvents = (try? modelContext.fetch(FetchDescriptor<InventoryEvent>())) ?? []
+            reload()
         }
         .alert("History Action Couldn’t Be Saved", isPresented: errorBinding) {
             Button("OK", role: .cancel) {}
@@ -127,6 +121,16 @@ struct CollectionActivityLogView: View {
             lineage: CollectionStore.LineageIndex(events: inventoryEvents),
             eventsByCollectionKey: Dictionary(grouping: inventoryEvents, by: \.collectionKey)
         )
+    }
+
+    private func reload() {
+        try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+        let descriptor = FetchDescriptor<CollectionActivity>(
+            sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+        )
+        activities = (try? modelContext.fetch(descriptor)) ?? []
+        cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        inventoryEvents = (try? modelContext.fetch(FetchDescriptor<InventoryEvent>())) ?? []
     }
 
     private var kindFilter: some View {
@@ -395,6 +399,7 @@ struct CollectionActivityLogView: View {
         pendingRemovalID = nil
         do {
             _ = try CollectionStore(context: modelContext).remove(activity)
+            reload()
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -403,6 +408,7 @@ struct CollectionActivityLogView: View {
     private func restore(_ activity: CollectionActivity) {
         do {
             try CollectionStore(context: modelContext).restore(activity)
+            reload()
         } catch {
             errorMessage = error.localizedDescription
         }

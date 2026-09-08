@@ -306,7 +306,7 @@ struct SettingsView: View {
                         )
                     }
                 }
-                .disabled(priceRecordCount == 0)
+                .disabled(collectionCardCount == 0)
 
                 Button("Export Missing Artwork", systemImage: "photo") {
                     do {
