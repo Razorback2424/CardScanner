@@ -629,3 +629,13 @@ Status: implemented in `4a5b341`. The focused source parse, diff check, and
 device-SDK no-signing build passed. Normal-signing simulator execution and the
 writer fault-injection scenario were not rerun in this environment; the user
 reported the normal-signing suite result above.
+
+### Follow-up — deduplicated write-failure messaging
+
+- [x] Make acknowledgement failure report whether it attached, and show the
+  top problem note only when no matching acknowledgement remains.
+
+Status: implemented in `4b31d49`. This preserves one visible failure message for
+both the ordinary and superseded-acknowledgement cases. The changed source
+parsed and the device-SDK no-signing build passed; the user separately verified
+920 passed, 1 skipped, 0 failures on the prior signed build.
