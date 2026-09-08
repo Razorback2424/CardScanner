@@ -619,4 +619,13 @@ Deferred by the supplied plan: published departure-summary mutation, performance
 - Device-SDK `xcodebuild build` with signing disabled — passed.
 - Full scheme `xcodebuild test` on the available iOS Simulator — executed, with five failures concentrated in credential setup: the Apple-account surface test, three pricing-credential tests, and the direct Magic fallback test. Targeted runs report `storeFailed(-34018)` (`errSecMissingEntitlement`) before their behavioral assertions, matching the unresolved Keychain test evidence rather than a Swift compilation failure.
 - Final changed-source `swiftc -frontend -parse` and `git diff --check` — passed; the working tree is clean.
-- Physical-camera concurrency, injected local-persistence failures, CloudKit synchronization, and credential-fault injection remain unverified. The prior 920-test count is not independently confirmed by this run.
+- Physical-camera concurrency, injected local-persistence failures, CloudKit synchronization, and credential-fault injection remain unverified. This no-signing run did not independently confirm the prior 920-test count; the user subsequently confirmed a normally signed run with 920 passed, 1 skipped, and 0 failed.
+
+### Follow-up — visible collection-write failures
+
+- [x] Add a problem `ScanNote` when the collection writer is unavailable and when a durable collection write throws, while retaining the encounter-scoped acknowledgement fence.
+
+Status: implemented in `4a5b341`. The focused source parse, diff check, and
+device-SDK no-signing build passed. Normal-signing simulator execution and the
+writer fault-injection scenario were not rerun in this environment; the user
+reported the normal-signing suite result above.
