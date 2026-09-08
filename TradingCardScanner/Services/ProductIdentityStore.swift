@@ -2,6 +2,25 @@ import Foundation
 import OSLog
 import SwiftData
 
+private enum ProductIdentitySelection {
+    static func authoritativeIdentity(in identities: [ProductIdentity]) -> ProductIdentity? {
+        identities.reduce(nil) { incumbent, candidate in
+            guard let incumbent else { return candidate }
+            let candidateDate = candidate.resolvedAt ?? candidate.unmatchedAt ?? .distantPast
+            let incumbentDate = incumbent.resolvedAt ?? incumbent.unmatchedAt ?? .distantPast
+            if candidateDate != incumbentDate {
+                return candidateDate > incumbentDate ? candidate : incumbent
+            }
+            if (candidate.vendorCardID != nil) != (incumbent.vendorCardID != nil) {
+                return candidate.vendorCardID != nil ? candidate : incumbent
+            }
+            return (candidate.vendorVariantID ?? "") > (incumbent.vendorVariantID ?? "")
+                ? candidate
+                : incumbent
+        }
+    }
+}
+
 /// Reads and writes `ProductIdentity` records.
 ///
 /// Separate from `PriceStore` on purpose. A vendor handle and a price have
@@ -44,7 +63,7 @@ final class ProductIdentityIndex {
         do {
             let identities = try context.fetch(FetchDescriptor<ProductIdentity>())
             byKey = Dictionary(grouping: identities, by: \.key)
-                .compactMapValues(Self.authoritativeIdentity(in:))
+                .compactMapValues(ProductIdentitySelection.authoritativeIdentity(in:))
             loadedSuccessfully = true
         } catch {
             byKey = [:]
@@ -52,20 +71,6 @@ final class ProductIdentityIndex {
         }
     }
 
-    private static func authoritativeIdentity(in identities: [ProductIdentity]) -> ProductIdentity? {
-        identities.reduce(nil) { incumbent, candidate in
-            guard let incumbent else { return candidate }
-            let candidateDate = candidate.resolvedAt ?? candidate.unmatchedAt ?? .distantPast
-            let incumbentDate = incumbent.resolvedAt ?? incumbent.unmatchedAt ?? .distantPast
-            if candidateDate != incumbentDate { return candidateDate > incumbentDate ? candidate : incumbent }
-            if (candidate.vendorCardID != nil) != (incumbent.vendorCardID != nil) {
-                return candidate.vendorCardID != nil ? candidate : incumbent
-            }
-            return (candidate.vendorVariantID ?? "") > (incumbent.vendorVariantID ?? "")
-                ? candidate
-                : incumbent
-        }
-    }
 }
 
 /// Context-owned rather than `@MainActor`. See `ProductIdentityIndex`.
@@ -76,7 +81,7 @@ struct ProductIdentityStore {
         guard let matches = try? context.fetch(
             FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
         ) else { return nil }
-        return Self.authoritativeIdentity(in: matches)
+        return ProductIdentitySelection.authoritativeIdentity(in: matches)
     }
 
     /// A write may create a missing identity only after a complete keyed read.
@@ -96,7 +101,7 @@ struct ProductIdentityStore {
                 let matches = try context.fetch(
                     FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
                 )
-                if let existing = Self.authoritativeIdentity(in: matches) {
+                if let existing = ProductIdentitySelection.authoritativeIdentity(in: matches) {
                     index.insert(existing)
                     return existing
                 }
@@ -117,7 +122,7 @@ struct ProductIdentityStore {
             let matches = try context.fetch(
                 FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
             )
-            if let existing = Self.authoritativeIdentity(in: matches) {
+            if let existing = ProductIdentitySelection.authoritativeIdentity(in: matches) {
                 index?.insert(existing)
                 return existing
             }
@@ -143,7 +148,7 @@ struct ProductIdentityStore {
         guard let fetched = try? context.fetch(
             FetchDescriptor<ProductIdentity>(predicate: #Predicate { $0.key == key })
         ) else { return nil }
-        let authoritative = Self.authoritativeIdentity(in: fetched)
+        let authoritative = ProductIdentitySelection.authoritativeIdentity(in: fetched)
         if let authoritative { index.insert(authoritative) }
         return authoritative
     }
@@ -286,18 +291,4 @@ struct ProductIdentityStore {
         }
     }
 
-    private static func authoritativeIdentity(in identities: [ProductIdentity]) -> ProductIdentity? {
-        identities.reduce(nil) { incumbent, candidate in
-            guard let incumbent else { return candidate }
-            let candidateDate = candidate.resolvedAt ?? candidate.unmatchedAt ?? .distantPast
-            let incumbentDate = incumbent.resolvedAt ?? incumbent.unmatchedAt ?? .distantPast
-            if candidateDate != incumbentDate { return candidateDate > incumbentDate ? candidate : incumbent }
-            if (candidate.vendorCardID != nil) != (incumbent.vendorCardID != nil) {
-                return candidate.vendorCardID != nil ? candidate : incumbent
-            }
-            return (candidate.vendorVariantID ?? "") > (incumbent.vendorVariantID ?? "")
-                ? candidate
-                : incumbent
-        }
-    }
 }
