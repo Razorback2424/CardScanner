@@ -21,9 +21,12 @@ final class CollectionProjectionStore: ObservableObject {
     @Published private(set) var snapshot: CollectionProjectionSnapshot?
     @Published private(set) var revision: UInt = 0
     @Published private(set) var isLoaded = false
+    @Published private(set) var loadFailed = false
 
     private var rebuildTask: Task<Void, Never>?
     private var rebuildRequested = false
+    private static let maximumReadAttempts = 3
+    private static let readRetryDelay: Duration = .milliseconds(80)
 
     func rebuild(container: ModelContainer) async {
         rebuildRequested = true
@@ -38,9 +41,34 @@ final class CollectionProjectionStore: ObservableObject {
 
             while self.rebuildRequested {
                 self.rebuildRequested = false
-                let actor = CollectionProjectionActor(modelContainer: container)
-                let snapshot = await actor.snapshot()
-                guard await actor.readSucceeded() else { return }
+                self.loadFailed = false
+                var snapshot: CollectionProjectionSnapshot?
+                var readSucceeded = false
+                for attempt in 0..<Self.maximumReadAttempts {
+                    let actor = CollectionProjectionActor(modelContainer: container)
+                    let candidate = await actor.snapshot()
+                    if await actor.readSucceeded() {
+                        snapshot = candidate
+                        readSucceeded = true
+                        break
+                    }
+                    guard attempt + 1 < Self.maximumReadAttempts else { break }
+                    try? await Task.sleep(for: Self.readRetryDelay)
+                    guard !Task.isCancelled else { return }
+                }
+                guard readSucceeded, let snapshot else {
+                    // A request can arrive while the actor is suspended for
+                    // its final read. Preserve that request instead of turning
+                    // a transient failure into another dropped rebuild.
+                    if self.rebuildRequested {
+                        continue
+                    }
+                    // Keep the failure visible. A later SwiftData save or the
+                    // explicit retry affordance can make progress without
+                    // leaving the tab on an infinite loading spinner.
+                    self.loadFailed = true
+                    return
+                }
                 guard !Task.isCancelled else { return }
 
                 // Serialize overlapping requests and let the newest read win.
@@ -56,6 +84,7 @@ final class CollectionProjectionStore: ObservableObject {
                     self.revision &+= 1
                 }
                 self.isLoaded = true
+                self.loadFailed = false
             }
         }
         rebuildTask = task
@@ -145,7 +174,9 @@ actor CollectionProjectionActor {
                     lowImageURL: card.lowImageURL,
                     highImageURL: card.highImageURL,
                     userArtworkFilename: artworkByKey[card.collectionKey]?.filename
-                        ?? card.userArtworkFilename
+                        ?? card.userArtworkFilename,
+                    normalizedName: CardNameSearch.normalize(card.name),
+                    collectorNumberSortKey: CollectorNumber.key(for: card.cardNumber)
                 )
             )
             diagnostics[card.collectionKey] = CollectionRowDiagnostics(

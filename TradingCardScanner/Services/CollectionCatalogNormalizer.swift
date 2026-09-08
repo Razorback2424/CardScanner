@@ -55,6 +55,11 @@ private struct ImportedCatalogResolution: Sendable {
     var definitiveSealedMisses: Set<String> = []
 }
 
+fileprivate struct ImportedCatalogNormalizationInputs: Sendable {
+    let requests: [ImportedCatalogRequest]
+    let cardIDsByProviderID: [String: [PersistentIdentifier]]
+}
+
 /// Imports stay local and immediate. This second layer quietly turns their
 /// human-readable identity into provider metadata without involving pricing.
 @MainActor
@@ -69,7 +74,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     @Published private(set) var status: Status = .idle
 
     private let resolver: ImportedCatalogBatchResolver
-    private static let retryInterval: TimeInterval = 8 * 60 * 60
+    private nonisolated static let retryInterval: TimeInterval = 8 * 60 * 60
     /// Bumped whenever the resolver learns to match something it previously
     /// could not, so existing collections re-run against the new rules instead
     /// of waiting out `retryInterval` on a stale result.
@@ -80,6 +85,11 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// and locally rewrite legacy gateway URLs without spending a request.
     nonisolated static let metadataVersion = 8
     private var requestsAnotherPass = false
+    /// Input discovery now suspends at the model actor. Keep the same
+    /// single-flight guarantee that the old synchronous discovery had, so a
+    /// second view appearance cannot start a duplicate provider crawl while
+    /// the first one is still reading the collection.
+    private var isCollectingInputs = false
 
     init(tcgdex: any TCGdexCatalogSource = TCGdexService()) {
         self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex)
@@ -98,13 +108,26 @@ final class CollectionCatalogNormalizer: ObservableObject {
             requestsAnotherPass = true
             return
         }
+        if isCollectingInputs {
+            requestsAnotherPass = true
+            return
+        }
 
         let now = Date.now
-        let inputs = normalizationInputs(in: context, now: now)
+        isCollectingInputs = true
+        let inputActor = CollectionCatalogNormalizationInputActor(
+            modelContainer: context.container
+        )
+        let inputs = await inputActor.inputs(now: now)
+        isCollectingInputs = false
         let requests = inputs.requests
 
         guard !requests.isEmpty else {
+            let shouldRunAnotherPass = requestsAnotherPass
             requestsAnotherPass = false
+            if shouldRunAnotherPass {
+                await normalizeImportedCards(in: context)
+            }
             return
         }
         // Network resolution may take minutes. Keep only persistent ids across
@@ -221,58 +244,11 @@ final class CollectionCatalogNormalizer: ObservableObject {
         }
     }
 
-    /// Materialises model objects only long enough to repair local artwork and
-    /// capture value requests plus persistent ids. The returned inputs contain
-    /// no SwiftData references, so the paced resolver cannot outlive the rows it
-    /// inspected.
-    private func normalizationInputs(
-        in context: ModelContext,
-        now: Date
-    ) -> (
-        requests: [ImportedCatalogRequest],
-        cardIDsByProviderID: [String: [PersistentIdentifier]]
-    ) {
-        let allCards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        if Self.repairLegacySealedArtworkURLs(in: allCards) {
-            do {
-                try context.save()
-            } catch {
-                // This context is dedicated to normalization. Discard only the
-                // failed artwork rewrite before continuing with the network
-                // pass; a later normalization can retry it safely.
-                context.rollback()
-            }
-        }
-        let candidates = allCards.filter { Self.needsNormalization($0, now: now) }
-        let requests = Dictionary(
-            candidates.map { card in
-                (
-                    card.providerID,
-                    ImportedCatalogRequest(
-                        sourceProviderID: card.providerID,
-                        game: card.cardGame,
-                        name: card.name,
-                        setName: card.setName,
-                        cardNumber: card.cardNumber,
-                        itemKind: card.itemKind
-                    )
-                )
-            },
-            uniquingKeysWith: { first, _ in first }
-        ).values.sorted { $0.sourceProviderID < $1.sourceProviderID }
-        let cardIDsByProviderID = candidates.reduce(
-            into: [String: [PersistentIdentifier]]()
-        ) { result, card in
-            result[card.providerID, default: []].append(card.persistentModelID)
-        }
-        return (requests, cardIDsByProviderID)
-    }
-
     /// Definitive sealed misses stay asleep until the resolver version changes.
     /// Transient failures never receive the current version stamp, so they
     /// remain eligible without turning a deterministic miss into an 8-hour
     /// metered request loop.
-    static func needsNormalization(_ card: CollectedCard, now: Date = .now) -> Bool {
+    nonisolated static func needsNormalization(_ card: CollectedCard, now: Date = .now) -> Bool {
         guard card.providerID.hasPrefix("csv:"),
               card.catalogProviderID == nil || card.imageURL == nil else {
             return false
@@ -327,7 +303,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// imported CSV rows they are intentionally not candidates for identity
     /// normalization.
     @discardableResult
-    static func repairLegacySealedArtworkURLs(in cards: [CollectedCard]) -> Bool {
+    nonisolated static func repairLegacySealedArtworkURLs(in cards: [CollectedCard]) -> Bool {
         var changed = false
         for card in cards where card.itemKind == .sealedProduct {
             guard let migrated = JustTCGV1Client.migratedProductImageURL(
@@ -342,6 +318,56 @@ final class CollectionCatalogNormalizer: ObservableObject {
         return changed
     }
 
+}
+
+/// Reads and repairs the normalizer's durable inputs away from the main actor.
+/// Only value requests and persistent ids cross back to the UI-owned
+/// normalizer, so no SwiftData model object is retained across the provider
+/// suspension.
+@ModelActor
+actor CollectionCatalogNormalizationInputActor {
+    fileprivate func inputs(now: Date) -> ImportedCatalogNormalizationInputs {
+        let allCards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        if CollectionCatalogNormalizer.repairLegacySealedArtworkURLs(in: allCards) {
+            do {
+                try modelContext.save()
+            } catch {
+                // This context is dedicated to normalization. Discard only the
+                // failed artwork rewrite before continuing; a later pass can
+                // retry it safely.
+                modelContext.rollback()
+            }
+        }
+
+        let candidates = allCards.filter {
+            CollectionCatalogNormalizer.needsNormalization($0, now: now)
+        }
+        let requests = Dictionary(
+            candidates.map { card in
+                (
+                    card.providerID,
+                    ImportedCatalogRequest(
+                        sourceProviderID: card.providerID,
+                        game: card.cardGame,
+                        name: card.name,
+                        setName: card.setName,
+                        cardNumber: card.cardNumber,
+                        itemKind: card.itemKind
+                    )
+                )
+            },
+            uniquingKeysWith: { first, _ in first }
+        ).values.sorted { $0.sourceProviderID < $1.sourceProviderID }
+        let cardIDsByProviderID = candidates.reduce(
+            into: [String: [PersistentIdentifier]]()
+        ) { result, card in
+            result[card.providerID, default: []].append(card.persistentModelID)
+        }
+        return ImportedCatalogNormalizationInputs(
+            requests: requests,
+            cardIDsByProviderID: cardIDsByProviderID
+        )
+    }
 }
 
 /// Stateless and Sendable so the two provider-specific strategies can run in

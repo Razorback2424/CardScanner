@@ -46,6 +46,11 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
     var lowImageURL: URL? = nil
     var highImageURL: URL? = nil
     var userArtworkFilename: String? = nil
+    /// Projection-time keys. Search and collector-number sorting read these
+    /// values instead of folding or reparsing the same strings on every body
+    /// evaluation and every sort comparison.
+    var normalizedName: String = ""
+    var collectorNumberSortKey: CollectorNumber.SortKey = .empty
 
     var variant: PhysicalVariant? {
         guard let variantID else { return nil }
@@ -294,8 +299,12 @@ enum CardNameSearch {
     /// An empty query matches everything: the box narrows whatever view is
     /// already there rather than being a mode of its own.
     static func matches(name: String, normalizedQuery: String) -> Bool {
+        matches(normalizedName: normalize(name), normalizedQuery: normalizedQuery)
+    }
+
+    static func matches(normalizedName: String, normalizedQuery: String) -> Bool {
         guard !normalizedQuery.isEmpty else { return true }
-        return normalize(name).contains(normalizedQuery)
+        return normalizedName.contains(normalizedQuery)
     }
 }
 
@@ -307,23 +316,37 @@ enum CollectionQuery {
     ) -> [CollectionRow] {
         // Normalized once, not once per row.
         let normalizedQuery = CardNameSearch.normalize(nameQuery)
+        let requestedTreatmentIDs = Set(
+            filters.treatmentIDs.compactMap { MagicTreatment(id: $0)?.id }
+        )
 
         return rows.filter { row in
-            guard CardNameSearch.matches(name: row.name, normalizedQuery: normalizedQuery) else { return false }
-            return matchesFilters(row, filters)
+            let normalizedName = row.normalizedName.isEmpty
+                ? CardNameSearch.normalize(row.name)
+                : row.normalizedName
+            guard CardNameSearch.matches(
+                normalizedName: normalizedName,
+                normalizedQuery: normalizedQuery
+            ) else { return false }
+            return matchesFilters(
+                row,
+                filters,
+                requestedTreatmentIDs: requestedTreatmentIDs
+            )
         }
     }
 
-    private static func matchesFilters(_ row: CollectionRow, _ filters: CollectionFilters) -> Bool {
+    private static func matchesFilters(
+        _ row: CollectionRow,
+        _ filters: CollectionFilters,
+        requestedTreatmentIDs: Set<String>
+    ) -> Bool {
         if let game = filters.game, row.game != game { return false }
         if !filters.setCodes.isEmpty, !filters.setCodes.contains(row.setFilterID) { return false }
         if !filters.variantIDs.isEmpty {
             guard let variantID = row.variantID, filters.variantIDs.contains(variantID) else { return false }
         }
         if !filters.treatmentIDs.isEmpty {
-            let requestedTreatmentIDs = Set(
-                filters.treatmentIDs.compactMap { MagicTreatment(id: $0)?.id }
-            )
             guard !requestedTreatmentIDs.isEmpty else { return false }
             let rowTreatmentIDs = Set(
                 MagicTreatmentKeyCodec.canonicalIDs(from: row.displayedMagicTreatments)
@@ -348,7 +371,10 @@ enum CollectionQuery {
         switch sort {
         case .cardNumber:
             return rows.sorted { left, right in
-                let byNumber = CollectorNumber.compare(left.cardNumber, right.cardNumber)
+                let byNumber = CollectorNumber.compare(
+                    collectorNumberKey(for: left),
+                    collectorNumberKey(for: right)
+                )
                 if byNumber != .orderedSame { return byNumber == .orderedAscending }
                 return tieBreak(left, right)
             }
@@ -360,7 +386,10 @@ enum CollectionQuery {
                 if left.game != right.game { return left.game.rawValue < right.game.rawValue }
                 if left.setReleaseOrder != right.setReleaseOrder { return left.setReleaseOrder > right.setReleaseOrder }
                 if left.setCode != right.setCode { return left.setCode < right.setCode }
-                let byNumber = CollectorNumber.compare(left.cardNumber, right.cardNumber)
+                let byNumber = CollectorNumber.compare(
+                    collectorNumberKey(for: left),
+                    collectorNumberKey(for: right)
+                )
                 if byNumber != .orderedSame { return byNumber == .orderedAscending }
                 return tieBreak(left, right)
             }
@@ -408,15 +437,42 @@ enum CollectionQuery {
         if left.name != right.name { return left.name < right.name }
         return left.id < right.id
     }
+
+    private static func collectorNumberKey(for row: CollectionRow) -> CollectorNumber.SortKey {
+        row.collectorNumberSortKey == .empty
+            ? CollectorNumber.key(for: row.cardNumber)
+            : row.collectorNumberSortKey
+    }
 }
 
 /// Collector numbers are not integers. `223`, `0218`, `GG01` and `218a` all
 /// appear, so comparison splits a leading number from whatever follows and
 /// compares the number numerically — otherwise `100` sorts before `9`.
 enum CollectorNumber {
+    struct SortKey: Equatable, Sendable {
+        let prefix: String
+        let number: Int?
+        let suffix: String
+
+        static let empty = SortKey(prefix: "", number: nil, suffix: "")
+    }
+
     static func compare(_ left: String, _ right: String) -> ComparisonResult {
-        let (leftPrefix, leftNumber, leftSuffix) = parts(of: left)
-        let (rightPrefix, rightNumber, rightSuffix) = parts(of: right)
+        compare(key(for: left), key(for: right))
+    }
+
+    static func key(for value: String) -> SortKey {
+        let (prefix, number, suffix) = parts(of: value)
+        return SortKey(prefix: prefix, number: number, suffix: suffix)
+    }
+
+    static func compare(_ left: SortKey, _ right: SortKey) -> ComparisonResult {
+        let leftPrefix = left.prefix
+        let leftNumber = left.number
+        let leftSuffix = left.suffix
+        let rightPrefix = right.prefix
+        let rightNumber = right.number
+        let rightSuffix = right.suffix
 
         if leftPrefix != rightPrefix {
             return leftPrefix < rightPrefix ? .orderedAscending : .orderedDescending
