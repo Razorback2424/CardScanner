@@ -613,3 +613,10 @@ Deferred by the supplied plan: published departure-summary mutation, performance
 - Fallback work remains deduplicated by exact price key, while interested scan IDs are partitioned by scanner session; a late result updates only surviving projections in the current matching session.
 - Failure acknowledgements now require the currently displayed acknowledgement to carry the same encounter ID; an older terminal path cannot create a new banner after a newer acknowledgement has cleared.
 - The changed scanner, camera, and credential sources pass `swiftc -frontend -parse`; no runtime claims are added for simulator, physical-camera, Keychain fault injection, or CloudKit behavior.
+
+### Final verification
+
+- Device-SDK `xcodebuild build` with signing disabled — passed.
+- Full scheme `xcodebuild test` on the available iOS Simulator — executed, with five failures concentrated in credential setup: the Apple-account surface test, three pricing-credential tests, and the direct Magic fallback test. Targeted runs report `storeFailed(-34018)` (`errSecMissingEntitlement`) before their behavioral assertions, matching the unresolved Keychain test evidence rather than a Swift compilation failure.
+- Final changed-source `swiftc -frontend -parse` and `git diff --check` — passed; the working tree is clean.
+- Physical-camera concurrency, injected local-persistence failures, CloudKit synchronization, and credential-fault injection remain unverified. The prior 920-test count is not independently confirmed by this run.
