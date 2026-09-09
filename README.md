@@ -4,6 +4,12 @@ A high-throughput, high-trust collection intake system for iPhone. The camera an
 OCR are the mechanism; the product is being able to move through a stack of cards
 rhythmically while the software stays out of the way.
 
+For the current implementation checkpoint, simulator evidence, and the remaining
+device/provider/review gates, see [`documentation_audit.md`](documentation_audit.md).
+The chronological implementation log remains in [`progress.md`](progress.md),
+while validation work that cannot be retired by simulator tests is centralized in
+[`release_followups.md`](release_followups.md).
+
 ## Three principles
 
 **Fast.** Speed comes from removing interactions that carry no information and

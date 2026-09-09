@@ -3,6 +3,11 @@
 **CardScanner · Pricing Infrastructure**
 Status: Draft validated, three gates open, warming scope added · Date: 06 September 2026 · Verdict: Proceed after Gate A
 
+This is a future, gated backend project—not a partially landed app slice. The
+current implementation remains device-local and the three gates below must be
+resolved before Firebase work starts. See [`documentation_audit.md`](documentation_audit.md)
+for the repository-wide status map.
+
 A server-side price and market-history cache so one CardScanner user's provider lookup can serve
 the next, without moving card identity, the collection, or the portfolio ledger off the device.
 Firebase Functions keep a defined coverage universe warm within the paid JustTCG plan's quota;

@@ -1,5 +1,11 @@
 # App Review Preflight
 
+This file records the original preflight and its focused fixes. For the
+current repository-wide checkpoint and the surviving review gates, see
+[`documentation_audit.md`](documentation_audit.md) and the unchecked items in
+[`app_review_fix_plan.md`](app_review_fix_plan.md). The older test counts below
+are historical evidence, not the current suite status.
+
 ## Baseline
 
 - Branch: `fix/app-review-preflight`

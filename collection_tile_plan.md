@@ -1,9 +1,11 @@
 # Collection tile — quantity, artwork resolution, footer, finish badges
 
-Plan only. No code changed. Four reported problems, investigated against
-`Views/CollectionView.swift` (`CollectionCardTile`, `CollectionCardArtwork`),
-`Views/BrowseView.swift` (`CatalogImageCache`), `Models/CollectedCard.swift`
-and `Models/MagicTreatment.swift`.
+Historical implementation plan. The investigation below is retained because
+it explains the design tradeoffs, but the collection-tile recommendations have
+landed in the current code and were exercised by the deterministic
+`CollectionTiles` route. Current evidence/status is summarized in
+[`documentation_audit.md`](documentation_audit.md); this file is not a live
+unchecked work queue.
 
 Two of the four turned out to have a shared root cause worth fixing once, and
 the investigation surfaced a separate latent memory hazard that is present
@@ -208,14 +210,15 @@ are.
 
 **Same-rule site:** `IdentifiedCard.finishAndTreatmentDisplayLabel(for:)`
 (`Models/TCGdexCard.swift:852-862`) composes the same redundant pair as a
-string (`"Foil · Surge Foil"`). Apply the rule there too, or the scanner and
-the grid will describe one card two ways.
+string (`"Foil · Surge Foil"`). The current implementation applies the same
+implication rule there, so the scanner and grid no longer describe one card two
+ways. The wording above is retained as the historical problem statement.
 
 ---
 
 ## Sequencing
 
-1. §4 badge rule — smallest, self-contained, no layout risk.
+1. §4 badge rule — smallest, self-contained, no layout risk. **Landed.**
 2. §1 quantity badge into the footer row.
 3. §3 footer rebuild — subsumes 1 and 2's placement, so land them first and
    move the finished badge row wholesale.
@@ -236,3 +239,13 @@ the grid will describe one card two ways.
 - A unit test on the §4 rule: `.surgeFoil` + `.foil` yields one badge;
   `.unclassified` + `.foil` yields two.
 - Existing suite stays green (873 tests, 1 skipped at time of writing).
+
+## Implementation record — 2026-09-07
+
+The quantity/footer hierarchy, finish/treatment suppression, target-sized
+artwork decoding, bounded local artwork storage, and `CollectionTiles` QA route
+were implemented. Focused treatment/downsampling tests, dark/light and
+accessibility-large captures, and the current full simulator suite pass. Any
+future cache-limit tuning belongs in the measurement gates in
+[`release_followups.md`](release_followups.md), not as an implied unfinished
+collection-tile slice.

@@ -45,8 +45,9 @@ profile shows meaningful main-thread or churn cost.
 ### RF-4 — Graded label parser coverage
 
 When more real slab samples are available, add focused cases for BCCG/BVG,
-ambiguous labels, proximity boundaries, and the confirmation window. This is
-test debt, not a reported misread.
+ambiguous labels, proximity boundaries, and the confirmation window. Include
+PSA labels with the observed 8- and 9-digit certificate formats before widening
+the parser range again. This is test debt, not a reported misread.
 
 ### RF-5 — Existing performance device gates
 

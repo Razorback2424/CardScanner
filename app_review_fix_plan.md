@@ -1,5 +1,11 @@
 # App Review Fix Plan
 
+This file retains the detailed review history and its evidence gates. The
+supplied high-confidence findings are closed; the remaining unchecked items
+are confirmation, measurement, or deployment-owner decisions. See
+[`documentation_audit.md`](documentation_audit.md) for the current suite and
+repository-wide status instead of the historical baselines below.
+
 ## Progress
 
 - [x] Fix tracker observation feed-forward and terminal request lifecycle — High confidence / High severity — verified

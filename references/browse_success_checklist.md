@@ -1,11 +1,15 @@
 Target screen: Browse root
 Route name: Browse
-Expected device: PA Quality iPhone 16 Pro
+Expected device: PA Quality iPhone 17 Pro
+
+The current simulator evidence covers the root chooser and the bundled local
+Pokémon lane. It does not claim the full remote/provider interaction matrix.
 
 Visual checklist:
-1. [ ] Search field is first and clearly spans both games
-2. [ ] Pokémon and Magic chooser cards have clear hierarchy and 44-point targets
-3. [ ] Browse appears as the fourth native tab without clipping
+1. [x] Search field is first and clearly spans both games.
+2. [x] Pokémon and Magic chooser cards have clear hierarchy and 44-point
+   targets.
+3. [x] Browse appears as the fourth native tab without clipping.
 4. [ ] Dynamic Type produces no clipped labels or overlapping controls
 5. [ ] Loading, error, short-query, no-result, and populated states remain legible
 6. [ ] Card artwork preserves trading-card aspect ratio and owned badges remain readable
@@ -17,7 +21,8 @@ Visual checklist:
 
 Behavior checklist:
 1. [ ] Root search reaches both games and filters by game/multiple sets
-2. [ ] Game chooser opens newest-first set directory and set card grid
+2. [x] The game chooser opens the bundled Pokémon lane and its set/card
+   surface; newest-first remote directory ordering still needs a provider pass.
 3. [ ] Exact printing opens detail; finish choice appears only when necessary
 4. [ ] Add increments the correct variant and Undo reverses it
 5. [ ] Multiple quantities/finishes of one collector number count once toward set completion

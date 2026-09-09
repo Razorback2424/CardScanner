@@ -10,6 +10,11 @@ implemented; the remaining proposed scale slices are still planning-only.
 Runtime claims below remain marked as either *traced statically* (I read the
 code path) or *needs measurement* (I inferred cost but did not profile).
 
+Use [`documentation_audit.md`](documentation_audit.md) for the current
+repository-wide status. This plan intentionally keeps the remaining scale
+slices and live-provider measurements open; the green simulator suite does not
+retire them.
+
 ---
 
 ## 1. What the code does today

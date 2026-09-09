@@ -11,6 +11,11 @@ a second-pass audit of the first review; the audit's corrections are recorded in
 claims — three needed correcting, and those corrections are applied in the
 findings below and recorded in §1.4. Line numbers drift; follow symbol names.
 
+The current repository-wide checkpoint is recorded in
+[`documentation_audit.md`](documentation_audit.md). The simulator suite has
+since reached 940 discovered tests (939 passed, 1 skipped, 0 failed); the
+runtime/device gates below remain open until their stated measurements exist.
+
 ## 0. Progress
 
 | Slice | State | Evidence |
