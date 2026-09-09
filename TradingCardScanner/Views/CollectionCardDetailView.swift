@@ -15,6 +15,7 @@ struct CollectionCardDetailView: View {
     @Bindable var card: CollectedCard
     @Query private var priceObservations: [PriceObservation]
     @Query private var priceCheckDays: [PriceCheckDay]
+    @Query private var collectionActivities: [CollectionActivity]
     let price: PriceDisplay
     @ObservedObject var history: PortfolioHistoryStore
     let unpricedReason: PricingDiagnosticReason?
@@ -68,6 +69,33 @@ struct CollectionCardDetailView: View {
             filter: #Predicate<PriceCheckDay> { $0.instrumentKey == resolvedInstrumentKey },
             sort: [SortDescriptor(\PriceCheckDay.portfolioDay, order: .forward)]
         )
+        let resolvedCollectionKey = card.collectionKey
+        if card.itemKind == .gradedCard {
+            let gradedKindRaw = CollectionItemKind.gradedCard.rawValue
+            let addedKindRaw = CollectionActivityKind.added.rawValue
+            let restoredKindRaw = CollectionActivityKind.restored.rawValue
+            var descriptor = FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate<CollectionActivity> {
+                    $0.collectionKey == resolvedCollectionKey
+                        && $0.itemKindRaw == gradedKindRaw
+                        && ($0.kindRaw == addedKindRaw || $0.kindRaw == restoredKindRaw)
+                },
+                sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+            )
+            descriptor.fetchLimit = 1
+            self._collectionActivities = Query(descriptor)
+        } else {
+            // Raw and sealed rows never read acquisition history. Keep their
+            // query empty so unrelated activity writes cannot re-fetch a full
+            // history just to evaluate an unused graded-only block.
+            var descriptor = FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate<CollectionActivity> {
+                    $0.itemKindRaw == "__graded_detail_query_disabled__"
+                }
+            )
+            descriptor.fetchLimit = 1
+            self._collectionActivities = Query(descriptor)
+        }
         self.price = price
         self.history = history
         self.unpricedReason = unpricedReason
@@ -270,6 +298,9 @@ struct CollectionCardDetailView: View {
             VStack(alignment: .leading, spacing: 12) {
                 provenanceRow
                 conditionRow
+                if card.itemKind == .gradedCard {
+                    gradedVariantCorrectionBlock
+                }
 
                 Divider()
                     .overlay(Color.primary.opacity(0.08))
@@ -370,6 +401,89 @@ struct CollectionCardDetailView: View {
             Text(conditionLine)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.primary)
+        }
+    }
+
+    @ViewBuilder
+    private var gradedVariantCorrectionBlock: some View {
+        if let activity = latestGradedAcquisition {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Printed finish")
+                            .font(.subheadline.weight(.semibold))
+                        Text(card.variant?.label ?? "Not determined")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 8)
+                    Menu {
+                        ForEach(gradedVariantOptions) { option in
+                            Button {
+                                correctGradedVariant(option, activity: activity)
+                            } label: {
+                                if option == card.variant {
+                                    Label(option.label, systemImage: "checkmark")
+                                } else {
+                                    Text(option.label)
+                                }
+                            }
+                        }
+                    } label: {
+                        Label("Fix finish", systemImage: "pencil")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .accessibilityLabel("Fix graded card finish")
+                }
+                Text("The slab stays the same card; this only corrects its printed finish.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 2)
+        }
+    }
+
+    private var latestGradedAcquisition: CollectionActivity? {
+        collectionActivities.first {
+            $0.itemKind == .gradedCard
+                && $0.kind.hasQuantityClaim
+                && $0.remainingQuantity > 0
+        }
+    }
+
+    private var gradedVariantOptions: [PhysicalVariant] {
+        var evidence = VariantEvidence(
+            game: card.cardGame,
+            setID: card.providerID.split(separator: "-", maxSplits: 1).first.map(String.init)
+                ?? card.providerID,
+            cardNumber: card.cardNumber,
+            catalogVariants: card.variant.map { [$0] } ?? []
+        )
+        if card.pokemonPrintRun != nil {
+            evidence = evidence.excludingFirstEditionPseudoFinish()
+        }
+        // The persisted row is the only catalog finish fact available to this
+        // offline detail surface. Do not widen it to the UI's global selectable
+        // list, and do not re-add 1st Edition after it has been removed from the
+        // finish axis above.
+        return VariantResolver.options(for: evidence)
+    }
+
+    private func correctGradedVariant(
+        _ variant: PhysicalVariant,
+        activity: CollectionActivity
+    ) {
+        guard variant != card.variant else { return }
+        do {
+            let corrected = ResolvedVariant(variant: variant, resolution: .userConfirmed)
+            _ = try CollectionStore(context: modelContext).recordVariantCorrection(
+                for: card,
+                to: corrected,
+                activityID: activity.id,
+                quantity: min(activity.remainingQuantity, card.quantity)
+            )
+        } catch {
+            errorMessage = error.localizedDescription
         }
     }
 

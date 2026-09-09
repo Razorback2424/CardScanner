@@ -746,6 +746,41 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertEqual(correction.collectionKey, mutation.collectionKey)
     }
 
+    func testGradedVariantCorrectionStaysOnTheCertificateRow() throws {
+        let context = try makeContext()
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        let store = CollectionStore(context: context)
+        let acquired = try store.addScannedGraded(
+            underlying: card,
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678",
+            resolved: ResolvedVariant(variant: .normal, resolution: .catalogSilent)
+        )
+        let row = try XCTUnwrap(store.card(forKey: acquired.collectionKey))
+        let activityID = try XCTUnwrap(acquired.activityID)
+
+        let corrected = try XCTUnwrap(
+            try store.recordVariantCorrection(
+                for: row,
+                to: ResolvedVariant(variant: .holo, resolution: .userConfirmed),
+                activityID: activityID,
+                quantity: 1
+            )
+        )
+
+        let updated = try XCTUnwrap(store.card(forKey: corrected.collectionKey))
+        XCTAssertEqual(updated.collectionKey, row.collectionKey)
+        XCTAssertEqual(updated.itemKind, .gradedCard)
+        XCTAssertEqual(updated.variant, .holo)
+        XCTAssertEqual(updated.variantResolution, .userConfirmed)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+        XCTAssertEqual(
+            try context.fetch(FetchDescriptor<CollectionActivity>()).filter { $0.kind == .corrected }.count,
+            1
+        )
+    }
+
     func testVariantCorrectionPreservesPokemonPrintRunIdentity() throws {
         let context = try makeContext()
         let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "BASE1")
