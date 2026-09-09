@@ -54,7 +54,7 @@ struct ContentView: View {
         switch route {
         case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "CollectionTiles", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
-        case "WholeCardScanner", "PriceCheck", "GradedLabelCapture": initialTab = .scan
+        case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "GradedLabelCapture": initialTab = .scan
         case "Centering", "CenteringExpanded": initialTab = .centering
         default: initialTab = .portfolio
         }
@@ -120,6 +120,7 @@ struct ContentView: View {
         .overlay {
             if debugRoute == "MagicTreatmentSlice4" {
                 MagicTreatmentSlice4DebugView()
+                    .environmentObject(projectionStore)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color(uiColor: .systemBackground))
                     .ignoresSafeArea()

@@ -56,6 +56,9 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
     ) async -> ScannedGradedOutcome {
         guard credentialsAvailable ?? PriceVendorCredentials.hasKey else { return .unavailable }
 
+        // The timeout task is created here, after catalog/label resolution has
+        // completed. OCR and catalog latency therefore cannot spend the
+        // vendor lookup's 2.5-second budget.
         let identity = GradedCardIdentity(card, pokemonPrintRun: pokemonPrintRun)
         let gradeFilter = slab.grade.value ?? slab.grade.label
 

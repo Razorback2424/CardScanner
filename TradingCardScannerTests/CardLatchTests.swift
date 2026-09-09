@@ -447,23 +447,29 @@ final class CardLatchTests: XCTestCase {
     /// CardScanner seam used by the production cadence gate.
     func testUnboundSlabLabelEvidenceCanActivateCardScanner() {
         let scanner = CardScanner()
-        let evidence = GradedSlabEvidence(
+        let firstEvidence = GradedSlabEvidence(
             company: .psa,
             grade: CardGrade(value: "10", label: "Gem Mint"),
             certificationNumber: "12345678",
-            labelCardText: []
+            labelCardText: ["CHARIZARD"]
+        )
+        let latestEvidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD HOLO"]
         )
 
         XCTAssertNil(
             scanner.receiveSlabLabelEvidenceForTesting(
-                evidence,
+                firstEvidence,
                 footerHasText: false,
                 at: 0
             )
         )
         XCTAssertNil(
             scanner.receiveSlabLabelEvidenceForTesting(
-                evidence,
+                firstEvidence,
                 footerHasText: true,
                 at: 0
             )
@@ -471,26 +477,135 @@ final class CardLatchTests: XCTestCase {
         // The unbound probe is deliberately slower than the bound 0.5 s pass.
         XCTAssertNil(
             scanner.receiveSlabLabelEvidenceForTesting(
-                evidence,
+                latestEvidence,
                 footerHasText: true,
                 at: 0.5
             )
         )
         XCTAssertEqual(
             scanner.receiveSlabLabelEvidenceForTesting(
-                evidence,
+                latestEvidence,
                 footerHasText: true,
                 at: 1.5
             ),
-            evidence
+            latestEvidence
         )
 
         let published = expectation(description: "slab framing is published")
         DispatchQueue.main.async {
-            XCTAssertEqual(scanner.slabFraming, evidence)
+            XCTAssertEqual(scanner.slabFraming, latestEvidence)
             published.fulfill()
         }
         wait(for: [published], timeout: 1)
+    }
+
+    func testInterleavedEmptyFooterDoesNotStarveNextUnboundLabelPass() {
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD"]
+        )
+
+        XCTAssertNil(scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 0))
+        XCTAssertNil(scanner.receiveSlabLabelEvidenceForTesting(nil, footerHasText: false, at: 0.24))
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 1.5), evidence)
+    }
+
+    func testSlabReconfirmationPreservesFooterIdentityBaseline() {
+        let scanner = CardScanner()
+        let first = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD"]
+        )
+        let sameIdentity = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD HOLO"]
+        )
+        let firstIdentifier = pokemon(223)
+        let differentIdentifier = pokemon(224)
+
+        _ = scanner.receiveSlabLabelEvidenceForTesting(first, footerHasText: true, at: 0)
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(first, footerHasText: true, at: 1.5), first)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: firstIdentifier, hasText: true)
+
+        _ = scanner.receiveSlabLabelEvidenceForTesting(sameIdentity, footerHasText: true, at: 2.0)
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(sameIdentity, footerHasText: true, at: 2.5), sameIdentity)
+
+        // If re-confirmation had erased the baseline, this different footer
+        // identity would be accepted instead of clearing the slab state.
+        scanner.receiveSlabFooterPresenceForTesting(identifier: differentIdentifier, hasText: true)
+        let cleared = expectation(description: "slab framing clears on different footer identity")
+        DispatchQueue.main.async {
+            XCTAssertNil(scanner.slabFraming)
+            cleared.fulfill()
+        }
+        wait(for: [cleared], timeout: 1)
+    }
+
+    func testSlabGuideHintClearsWhenLabelNoLongerNamesACompany() {
+        let scanner = CardScanner()
+        let shown = expectation(description: "slab guide hint is shown")
+        scanner.receiveSlabGuideHintForTesting(.psa)
+        DispatchQueue.main.async {
+            XCTAssertEqual(scanner.slabGuideHint, .psa)
+            shown.fulfill()
+        }
+        wait(for: [shown], timeout: 1)
+
+        let cleared = expectation(description: "slab guide hint clears")
+        scanner.receiveSlabGuideHintForTesting(nil)
+        DispatchQueue.main.async {
+            XCTAssertNil(scanner.slabGuideHint)
+            cleared.fulfill()
+        }
+        wait(for: [cleared], timeout: 1)
+    }
+
+    func testSlabReconfirmationResetsAccumulatedEmptyFooterFrames() {
+        let scanner = CardScanner()
+        let first = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD"]
+        )
+        let reconfirmed = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD HOLO"]
+        )
+        let identifier = pokemon(223)
+
+        _ = scanner.receiveSlabLabelEvidenceForTesting(first, footerHasText: true, at: 0)
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(first, footerHasText: true, at: 1.5), first)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: identifier, hasText: true)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: nil, hasText: false)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: nil, hasText: false)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: nil, hasText: false)
+
+        _ = scanner.receiveSlabLabelEvidenceForTesting(reconfirmed, footerHasText: true, at: 2.0)
+        XCTAssertEqual(
+            scanner.receiveSlabLabelEvidenceForTesting(reconfirmed, footerHasText: true, at: 2.5),
+            reconfirmed
+        )
+
+        scanner.receiveSlabFooterPresenceForTesting(identifier: nil, hasText: false)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: nil, hasText: false)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: nil, hasText: false)
+
+        let remainsActive = expectation(description: "reconfirmed slab remains active")
+        DispatchQueue.main.async {
+            XCTAssertNotNil(scanner.slabFraming)
+            remainsActive.fulfill()
+        }
+        wait(for: [remainsActive], timeout: 1)
     }
 #endif
 

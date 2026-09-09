@@ -23,7 +23,7 @@ struct ScannerView: View {
         guard let index = arguments.firstIndex(of: "-ui_debug_route"),
               arguments.indices.contains(index + 1) else { return nil }
         let route = arguments[index + 1]
-        return ["WholeCardScanner", "PriceCheck"].contains(route) ? route : nil
+        return ["WholeCardScanner", "PriceCheck", "ScanChoiceCancellation"].contains(route) ? route : nil
     }
 #endif
 
@@ -64,6 +64,9 @@ struct ScannerView: View {
             }
             if scannerScreenshotRoute == "WholeCardScanner" {
                 model.seedReceiptFixtureForScreenshot()
+            }
+            if scannerScreenshotRoute == "ScanChoiceCancellation" {
+                model.seedVariantChoiceCancellationFixtureForScreenshot()
             }
             guard scannerScreenshotRoute == nil else { return }
 #endif
@@ -145,6 +148,7 @@ private struct ScannerChrome: View {
                 isSlowIdentifying: model.isSlowIdentifying,
                 setPurpose: model.setPurpose,
                 setFinishLock: model.setFinishLock,
+                clearFinishLocks: model.clearFinishLocks,
                 openSettings: openSettings
             )
             .equatable()
@@ -160,6 +164,15 @@ private struct ScannerChrome: View {
                 HeldDuplicateOfferView(
                     offer: offer,
                     onAddAnother: model.addAnotherHeldCopy
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
+
+            if let correction = model.pendingGradedVariantCorrection {
+                GradedVariantCorrectionOfferView(
+                    correction: correction,
+                    onChoose: model.chooseGradedVariant,
+                    onDismiss: model.dismissGradedVariantCorrection
                 )
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
@@ -339,6 +352,7 @@ private struct ScannerTopBar: View, Equatable {
     let isSlowIdentifying: Bool
     let setPurpose: (ScanPurpose) -> Void
     let setFinishLock: (PhysicalVariant?, CardGame) -> Void
+    let clearFinishLocks: () -> Void
     let openSettings: () -> Void
 
     @Namespace private var glassNamespace
@@ -419,6 +433,7 @@ private struct ScannerTopBar: View, Equatable {
             FinishLockControl(
                 locks: finishLocks,
                 setLock: setFinishLock,
+                clearLocks: clearFinishLocks,
                 glassNamespace: glassNamespace
             )
             .equatable()
@@ -467,25 +482,38 @@ private struct ScannerTopBar: View, Equatable {
 private struct FinishLockControl: View, Equatable {
     let locks: [CardGame: PhysicalVariant]
     let setLock: (PhysicalVariant?, CardGame) -> Void
+    let clearLocks: () -> Void
     let glassNamespace: Namespace.ID
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.locks == rhs.locks
     }
 
-    private var summary: String {
-        let activeLocks = CardGame.allCases.compactMap { game in
-            locks[game].map { (game, $0) }
+    private var activeLocks: [(game: CardGame, variant: PhysicalVariant)] {
+        CardGame.allCases.compactMap { game in
+            locks[game].map { (game: game, variant: $0) }
         }
+    }
+
+    private var summary: String {
         return activeLocks.isEmpty
             ? "Auto"
-            : activeLocks.map { $0.1.label }.joined(separator: " · ")
+            : activeLocks.map { "\($0.game.label) \($0.variant.label)" }.joined(separator: " · ")
     }
 
     var body: some View {
         Menu {
+            Button(action: clearLocks) {
+                Text("Auto")
+                if locks.isEmpty {
+                    Image(systemName: "checkmark")
+                }
+            }
+
+            Divider()
+
             ForEach(CardGame.allCases) { game in
-                Section(game.label) {
+                Menu {
                     Picker(
                         game.label,
                         selection: Binding<PhysicalVariant?>(
@@ -500,7 +528,8 @@ private struct FinishLockControl: View, Equatable {
                                 .tag(PhysicalVariant?.some(variant))
                         }
                     }
-                    .pickerStyle(.inline)
+                } label: {
+                    Text(locks[game].map { "\(game.label)  \($0.label)" } ?? game.label)
                 }
             }
         } label: {

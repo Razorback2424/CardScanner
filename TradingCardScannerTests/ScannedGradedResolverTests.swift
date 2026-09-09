@@ -91,6 +91,50 @@ final class ScannedGradedResolverTests: XCTestCase {
         XCTAssertEqual(timedOut, .unavailable)
     }
 
+    func testResolverPassesTheResolvedPrintRunIntoTheVendorIdentity() async {
+        let recorder = GradedIdentityRecorder()
+        let resolver = ScannedGradedResolver(
+            client: StubLookupClient(
+                result: .matched([]),
+                identityRecorder: recorder
+            ),
+            timeout: .seconds(1),
+            credentialsAvailable: true
+        )
+
+        _ = await resolver.resolve(
+            card: card,
+            slab: slab(company: .psa, value: "10"),
+            pokemonPrintRun: .firstEdition
+        )
+
+        let identity = await recorder.lastIdentity
+        XCTAssertEqual(identity?.pokemonPrintRun, .firstEdition)
+    }
+
+    func testResolvedPrintRunSelectsTheEditionSpecificVendorSetSlug() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "base-set-pokemon", name: "Base Set"),
+            (id: "base-set-shadowless-pokemon", name: "Base Set — Shadowless")
+        ])
+        let identity = GradedCardIdentity(
+            name: "Charizard",
+            setName: "Base Set",
+            collectorNumber: "4",
+            catalogID: "base1-4",
+            pokemonPrintRun: .firstEdition
+        )
+
+        XCTAssertEqual(
+            JustTCGV2GradedClient.resolvedSetSlug(
+                identity: identity,
+                game: .pokemon,
+                directory: directory
+            ),
+            "base-set-shadowless-pokemon"
+        )
+    }
+
     private func resolve(_ result: GradedVariantLookupResult) async -> ScannedGradedOutcome {
         await ScannedGradedResolver(
             client: StubLookupClient(result: result),
@@ -152,15 +196,18 @@ private struct StubLookupClient: ScannedGradedLookupClient {
     let result: GradedVariantLookupResult
     let delayNanoseconds: UInt64
     let throwsError: Bool
+    let identityRecorder: GradedIdentityRecorder?
 
     init(
         result: GradedVariantLookupResult = .matched([]),
         delayNanoseconds: UInt64 = 0,
-        throwsError: Bool = false
+        throwsError: Bool = false,
+        identityRecorder: GradedIdentityRecorder? = nil
     ) {
         self.result = result
         self.delayNanoseconds = delayNanoseconds
         self.throwsError = throwsError
+        self.identityRecorder = identityRecorder
     }
 
     func lookup(
@@ -170,10 +217,19 @@ private struct StubLookupClient: ScannedGradedLookupClient {
         grades: Set<String>,
         lane: JustTCGRequestLane
     ) async throws -> GradedVariantLookupResult {
+        await identityRecorder?.record(identity)
         if delayNanoseconds > 0 {
             try await Task.sleep(nanoseconds: delayNanoseconds)
         }
         if throwsError { throw StubError.failed }
         return result
+    }
+}
+
+private actor GradedIdentityRecorder {
+    private(set) var lastIdentity: GradedCardIdentity?
+
+    func record(_ identity: GradedCardIdentity) {
+        lastIdentity = identity
     }
 }

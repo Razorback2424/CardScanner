@@ -124,6 +124,18 @@ struct CardLatch: Equatable {
         cardPresent: Bool = false,
         at now: CFAbsoluteTime
     ) -> Decision {
+        let latchState = PerformanceSignpost.beginInterval(
+            "cardLatch",
+            id: PerformanceSignpost.makeID(),
+            "observation=\(observation == nil ? "none" : "subject")"
+        )
+        defer {
+            PerformanceSignpost.endInterval(
+                "cardLatch",
+                latchState,
+                "latched=\(latched != nil)"
+            )
+        }
         if observation == nil, !cardPresent {
             consecutiveAbsences += 1
         } else {

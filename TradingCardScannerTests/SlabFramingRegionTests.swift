@@ -22,6 +22,22 @@ final class SlabFramingRegionTests: XCTestCase {
         XCTAssertEqual(SlabFramingRegion.labelVisionRect(), SlabFramingRegion.labelVisionRect(for: nil))
     }
 
+    func testGenericLabelRegionIsContainedByProvisionalGuide() {
+        let provisionalGuide = SlabFramingRegion.slabVisionRect(for: nil)
+        let labelRegion = SlabFramingRegion.labelVisionRect(for: nil)
+
+        XCTAssertTrue(provisionalGuide.contains(labelRegion))
+    }
+
+    func testUnboundFooterROIUsesTheProductionUnion() {
+        let rawFooterRegion = CardFramingRegion.visionRect
+        let slabFooterRegion = SlabFramingRegion.footerVisionRect(for: nil)
+        let expected = rawFooterRegion.union(slabFooterRegion)
+        let scanner = CardScanner()
+
+        XCTAssertEqual(scanner.footerRegionOfInterestForTesting, expected)
+    }
+
     func testOuterSlabGuideHasExpectedPhysicalAspect() {
         let rect = SlabFramingRegion.slabVisionRect(for: .cgc)
         let normalizedAspect = rect.width / rect.height

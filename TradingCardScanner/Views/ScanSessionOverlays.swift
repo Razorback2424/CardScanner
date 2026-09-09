@@ -104,6 +104,56 @@ struct HeldDuplicateOfferView: View {
     }
 }
 
+/// A graded card is already committed when label evidence is ambiguous. This
+/// compact correction surface deliberately does not own camera pause/resume.
+struct GradedVariantCorrectionOfferView: View {
+    let correction: PendingGradedVariantCorrection
+    let onChoose: (PhysicalVariant) -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Label("Finish not confirmed", systemImage: "wand.and.stars")
+                    .font(.subheadline.weight(.bold))
+                Spacer(minLength: 4)
+                Button(action: onDismiss) {
+                    Image(systemName: "xmark")
+                        .font(.caption.weight(.bold))
+                        .frame(width: 30, height: 30)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Dismiss finish correction")
+            }
+
+            Text(correction.cardName)
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.78))
+                .lineLimit(1)
+
+            HStack(spacing: 8) {
+                ForEach(correction.options) { option in
+                    Button(option.label) {
+                        onChoose(option)
+                    }
+                    .font(.caption.weight(.semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 40)
+                    .buttonStyle(.bordered)
+                    .tint(.white)
+                    .accessibilityLabel("Set \(option.label) for \(correction.cardName)")
+                }
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(12)
+        .appGlass(cornerRadius: 14)
+        .accessibilityElement(children: .contain)
+    }
+}
+
 /// Confirmation required before a resolved card with the same printing identity
 /// can change collection quantity. The safer no-mutation answer is first and
 /// remains the visually safer default over Add another.

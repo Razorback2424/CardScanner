@@ -52,13 +52,23 @@ private struct ScannerStubPokemonSource: PokemonCardSource {
 
 private struct ScannerStubGradedResolver: ScannedGradedResolving {
     let outcome: ScannedGradedOutcome
+    let recorder: ScannerPrintRunRecorder?
 
     func resolve(
         card: IdentifiedCard,
         slab: GradedSlabEvidence,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> ScannedGradedOutcome {
-        outcome
+        await recorder?.record(pokemonPrintRun)
+        return outcome
+    }
+}
+
+private actor ScannerPrintRunRecorder {
+    private(set) var values: [PokemonPrintRun?] = []
+
+    func record(_ value: PokemonPrintRun?) {
+        values.append(value)
     }
 }
 
@@ -112,6 +122,35 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 2)
     }
 
+    func testDismissingVariantChoiceClearsSavingAcknowledgementWithoutAdding() async throws {
+        let fetchGate = ScannerFetchGate()
+        let model = try makeModel(
+            variants: [.normal, .holo],
+            delayNanoseconds: 500_000_000,
+            fetchGate: fetchGate
+        )
+        let encounterID = UUID()
+
+        confirm(model, scannerIdentifier(), encounterID: encounterID)
+        await fetchGate.waitUntilStarted()
+        XCTAssertNil(model.scanAcknowledgement)
+
+        let choiceAppeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(choiceAppeared)
+        XCTAssertNil(model.scanAcknowledgement)
+
+        model.dismissChoice()
+
+        let cancelled = await waitUntil {
+            model.pendingChoice == nil && model.scanAcknowledgement == nil
+        }
+        XCTAssertTrue(cancelled)
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+    }
+
     func testAutomaticRouteCommitsCardAndLeavesNoPendingChoice() async throws {
         let model = try makeModel(variants: [.normal])
 
@@ -157,6 +196,137 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertNil(rows.first?.justTCGVariantID)
         XCTAssertTrue(rows.first?.collectionKey.contains(":g:psa-") == true)
         XCTAssertEqual(model.recent.first?.subject.slab?.certificationNumber, "12345678")
+    }
+
+    func testGradedLabelPrintRunIsPassedBeforeVendorResolutionAndPrintedFinishIsPersisted() async throws {
+        let recorder = ScannerPrintRunRecorder()
+        let model = try makeModel(
+            variants: [.normal, .holo],
+            gradedOutcome: .unavailable,
+            setProviderID: "base1",
+            gradedRunRecorder: recorder
+        )
+        let subject = ScanSubject(
+            identifier: scannerIdentifier(setProviderID: "base1"),
+            slab: GradedSlabEvidence(
+                company: .psa,
+                grade: CardGrade(value: "10", label: "Gem Mint"),
+                certificationNumber: "12345678",
+                labelCardText: ["HOLO"],
+                printedFinish: .holo,
+                printedPrintRun: .firstEdition
+            )
+        )
+
+        confirm(model, subject, encounterID: UUID())
+        let committed = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(committed)
+
+        let observed = await recorder.values
+        XCTAssertEqual(observed, [.firstEdition])
+        let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(row.pokemonPrintRun, .firstEdition)
+        XCTAssertEqual(row.variant, .holo)
+        XCTAssertEqual(row.variantResolution, .printedLabel)
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertNil(model.pendingGradedVariantCorrection)
+    }
+
+    func testAmbiguousGradedFinishCommitsWithoutPausingAndCanBeCorrectedInPlace() async throws {
+        let model = try makeModel(
+            variants: [.normal, .holo],
+            gradedOutcome: .unavailable
+        )
+        let subject = ScanSubject(
+            identifier: scannerIdentifier(),
+            slab: GradedSlabEvidence(
+                company: .psa,
+                grade: CardGrade(value: "10", label: "Gem Mint"),
+                certificationNumber: "87654321",
+                labelCardText: ["CHARIZARD"]
+            )
+        )
+
+        confirm(model, subject, encounterID: UUID())
+        let committed = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(committed)
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertNotNil(model.pendingGradedVariantCorrection)
+        XCTAssertNil(model.recent.first?.resolved.variant)
+        XCTAssertNil(try context().fetch(FetchDescriptor<CollectedCard>()).first?.variant)
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
+
+        model.chooseGradedVariant(.holo)
+        let corrected = await waitUntil { model.recent.first?.resolved.variant == .holo }
+        XCTAssertTrue(corrected)
+        XCTAssertNil(model.pendingGradedVariantCorrection)
+        XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.variant, .holo)
+    }
+
+    func testImpossibleGradedLabelPrintRunIsDroppedBeforeVendorAndPersistence() async throws {
+        let recorder = ScannerPrintRunRecorder()
+        let model = try makeModel(
+            variants: [.normal],
+            gradedOutcome: .unavailable,
+            setProviderID: "sv03",
+            gradedRunRecorder: recorder
+        )
+        let subject = ScanSubject(
+            identifier: scannerIdentifier(setProviderID: "sv03"),
+            slab: GradedSlabEvidence(
+                company: .psa,
+                grade: CardGrade(value: "10", label: "Gem Mint"),
+                certificationNumber: "12345678",
+                labelCardText: ["CHARIZARD"],
+                printedPrintRun: .firstEdition
+            )
+        )
+
+        confirm(model, subject, encounterID: UUID())
+        let committed = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(committed)
+
+        let observed = await recorder.values
+        XCTAssertEqual(observed, [nil])
+        let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertNil(row.pokemonPrintRun)
+    }
+
+    func testCorrectedGradedScanKeepsItsResolvedPrice() async throws {
+        let gradedVariant = GradedVariant(
+            id: "graded-v2-correction",
+            cardID: "graded-card-correction",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            marketPriceUSD: 250,
+            updatedAt: nil
+        )
+        let model = try makeModel(
+            variants: [.holo],
+            gradedOutcome: .bound(gradedVariant)
+        )
+        let subject = ScanSubject(
+            identifier: scannerIdentifier(),
+            slab: GradedSlabEvidence(
+                company: .psa,
+                grade: CardGrade(value: "10", label: "Gem Mint"),
+                certificationNumber: "12345678",
+                labelCardText: []
+            )
+        )
+
+        confirm(model, subject, encounterID: UUID())
+        let committed = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(committed)
+        let scanID = try XCTUnwrap(model.recent.first?.id)
+
+        let correction = await model.correct(scanID: scanID, to: .normal)
+        XCTAssertEqual(correction, .saved)
+        guard case let .price(price) = model.recent.first?.price else {
+            return XCTFail("graded correction should retain the previously resolved price")
+        }
+        XCTAssertEqual(price.unitMarketPriceUSD, 250)
+        XCTAssertEqual(price.source, .justTCG)
     }
 
     func testDifferentSlabsOfOnePrintingBothCommitWithoutSpatialProof() async throws {
@@ -424,6 +594,33 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertNil(summaryStore.summary)
     }
 
+    func testLeavingScanWhileSceneInactiveClosesTheBulkWriteInterval() throws {
+        let coordinator = DerivedStateWriteCoordinator()
+        let model = try makeModel(
+            variants: [.normal],
+            writeCoordinator: coordinator
+        )
+
+        XCTAssertTrue(coordinator.isBulkWriteInFlight)
+        model.scenePhaseChanged(isActive: false)
+        model.viewDisappeared()
+
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+    }
+
+    func testExplicitScannerEndClosesTheBulkWriteInterval() throws {
+        let coordinator = DerivedStateWriteCoordinator()
+        let model = try makeModel(
+            variants: [.normal],
+            writeCoordinator: coordinator
+        )
+
+        XCTAssertTrue(coordinator.isBulkWriteInFlight)
+        model.endSession()
+
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+    }
+
     func testChangingPurposeInvalidatesPendingCollectionChoice() async throws {
         let model = try makeModel(variants: [.normal, .holo])
 
@@ -606,7 +803,10 @@ final class ScannerViewModelTests: XCTestCase {
         secondaryVariants: [PhysicalVariant]? = nil,
         delayNanoseconds: UInt64 = 0,
         fetchGate: ScannerFetchGate? = nil,
-        gradedOutcome: ScannedGradedOutcome? = nil
+        gradedOutcome: ScannedGradedOutcome? = nil,
+        setProviderID: String = "test-set",
+        gradedRunRecorder: ScannerPrintRunRecorder? = nil,
+        writeCoordinator: DerivedStateWriteCoordinator? = nil
     ) throws -> ScannerViewModel {
         let context = try makeContext()
         let root = FileManager.default.temporaryDirectory
@@ -623,10 +823,11 @@ final class ScannerViewModelTests: XCTestCase {
         let catalog = CardCatalog(
             source: ScannerStubPokemonSource(
                 cardsByLocalID: [
-                    "001": catalogCard(variants: variants, localID: "001"),
+                    "001": catalogCard(variants: variants, localID: "001", setID: setProviderID),
                     "002": catalogCard(
                         variants: secondaryVariants ?? variants,
-                        localID: "002"
+                        localID: "002",
+                        setID: setProviderID
                     )
                 ],
                 delayNanoseconds: delayNanoseconds,
@@ -643,14 +844,17 @@ final class ScannerViewModelTests: XCTestCase {
             scanner: CardScanner(),
             catalog: catalog,
             feedback: ScanFeedback(),
-            gradedResolver: gradedOutcome.map(ScannerStubGradedResolver.init)
+            gradedResolver: gradedOutcome.map {
+                ScannerStubGradedResolver(outcome: $0, recorder: gradedRunRecorder)
+            }
                 ?? ScannedGradedResolver()
         )
         model.start(
             context: context,
             isSceneActive: true,
             startCamera: false,
-            shouldRefreshMagicDirectory: false
+            shouldRefreshMagicDirectory: false,
+            writeCoordinator: writeCoordinator
         )
         return model
     }
@@ -723,27 +927,31 @@ final class ScannerViewModelTests: XCTestCase {
         try? await Task.sleep(for: .milliseconds(100))
     }
 
-    private func fixtureSetDefinition() -> PokemonSetDefinition {
+    private func fixtureSetDefinition(setID: String = "test-set") -> PokemonSetDefinition {
         PokemonSetDefinition(
             printedCode: "TST",
-            tcgdexSetID: "test-set",
+            tcgdexSetID: setID,
             officialCount: 10,
             releaseIndex: 0
         )
     }
 
-    private func scannerIdentifier(cardNumber: String = "001") -> ScanIdentifier {
+    private func scannerIdentifier(
+        cardNumber: String = "001",
+        setProviderID: String = "test-set"
+    ) -> ScanIdentifier {
         .pokemon(
             setCode: "TST",
             cardNumber: cardNumber,
             printedTotal: 10,
-            setDefinition: fixtureSetDefinition()
+            setDefinition: fixtureSetDefinition(setID: setProviderID)
         )
     }
 
     private func catalogCard(
         variants: [PhysicalVariant],
-        localID: String
+        localID: String,
+        setID: String = "test-set"
     ) -> TCGdexCard {
         TCGdexCard(
             id: "test-set-\(localID)",
@@ -752,7 +960,7 @@ final class ScannerViewModelTests: XCTestCase {
             image: nil,
             rarity: "Common",
             set: TCGdexSetBrief(
-                id: "test-set",
+                id: setID,
                 name: "Test Set",
                 cardCount: TCGdexCardCount(total: 10, official: 10)
             ),

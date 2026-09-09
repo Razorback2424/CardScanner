@@ -11,6 +11,26 @@ struct GradedSlabEvidence: Equatable, Hashable, Sendable {
     let grade: CardGrade
     let certificationNumber: String?
     let labelCardText: [String]
+    /// Optional physical evidence read from leftover label text. Slab
+    /// identity does not depend on either field.
+    let printedFinish: PhysicalVariant?
+    let printedPrintRun: PokemonPrintRun?
+
+    init(
+        company: GradingCompany,
+        grade: CardGrade,
+        certificationNumber: String?,
+        labelCardText: [String],
+        printedFinish: PhysicalVariant? = nil,
+        printedPrintRun: PokemonPrintRun? = nil
+    ) {
+        self.company = company
+        self.grade = grade
+        self.certificationNumber = certificationNumber
+        self.labelCardText = labelCardText
+        self.printedFinish = printedFinish
+        self.printedPrintRun = printedPrintRun
+    }
 
     /// Stable enough to carry through confirmation and suppression, while
     /// retaining the distinction between an unread certificate and a known
@@ -78,10 +98,36 @@ enum GradedLabelParser {
     private struct LocatedPhrase: Hashable, Sendable {
         let lineIndex: Int
         let startTokenIndex: Int
+        let endLineIndex: Int
         let endTokenIndex: Int
+        let tokenPositions: [TokenPosition]
 
         var position: TokenPosition {
             TokenPosition(lineIndex: lineIndex, tokenIndex: startTokenIndex)
+        }
+
+        init(lineIndex: Int, startTokenIndex: Int, endTokenIndex: Int) {
+            self.lineIndex = lineIndex
+            self.startTokenIndex = startTokenIndex
+            self.endLineIndex = lineIndex
+            self.endTokenIndex = endTokenIndex
+            self.tokenPositions = (startTokenIndex...endTokenIndex).map {
+                TokenPosition(lineIndex: lineIndex, tokenIndex: $0)
+            }
+        }
+
+        init(
+            lineIndex: Int,
+            startTokenIndex: Int,
+            endLineIndex: Int,
+            endTokenIndex: Int,
+            tokenPositions: [TokenPosition]
+        ) {
+            self.lineIndex = lineIndex
+            self.startTokenIndex = startTokenIndex
+            self.endLineIndex = endLineIndex
+            self.endTokenIndex = endTokenIndex
+            self.tokenPositions = tokenPositions
         }
     }
 
@@ -213,9 +259,29 @@ enum GradedLabelParser {
     /// parser remains authoritative; these words only make the OCR candidate
     /// list less likely to lose short grader tokens such as `PSA` or `TAG`.
     static var visionCustomWords: [String] {
-        specs.flatMap { spec in
+        let graderWords = specs.flatMap { spec in
             spec.companyTokens.flatMap { $0 } + spec.gradeWords.flatMap { $0.tokens }
-        }.uniqued()
+        }
+        return (graderWords + [
+            "HOLO", "HOLOFOIL", "REVERSE", "REV", "1ST", "FIRST",
+            "EDITION", "SHADOWLESS", "UNLIMITED"
+        ]).uniqued()
+    }
+
+    /// Bootstrap-only evidence for the provisional camera guide. A company
+    /// match is intentionally weaker than a parsed slab and never activates
+    /// slab identity on its own.
+    static func company(in lines: [RecognizedLine]) -> GradingCompany? {
+        let parsedLines = lines.compactMap { line -> ParsedLine? in
+            let original = line.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !original.isEmpty else { return nil }
+            return ParsedLine(original: original, tokens: tokenize(original))
+        }
+        let matches = specs.compactMap { spec -> GradingCompany? in
+            phraseMatches(spec.companyTokens, in: parsedLines).isEmpty ? nil : spec.company
+        }
+        let companies = Set(matches)
+        return companies.count == 1 ? companies.first : nil
     }
 
     /// Parses a label band conservatively. A company by itself is never enough
@@ -325,6 +391,7 @@ enum GradedLabelParser {
             }
             return hasCardText ? line.original : nil
         }
+        let printedEvidence = printedEvidence(from: labelCardText)
 
         return GradedSlabEvidence(
             company: spec.company,
@@ -334,8 +401,54 @@ enum GradedLabelParser {
                 qualifier: qualifier
             ),
             certificationNumber: certificationNumber,
-            labelCardText: labelCardText
+            labelCardText: labelCardText,
+            printedFinish: printedEvidence.finish,
+            printedPrintRun: printedEvidence.printRun
         )
+    }
+
+    private static func printedEvidence(
+        from lines: [String]
+    ) -> (finish: PhysicalVariant?, printRun: PokemonPrintRun?) {
+        // Keep phrases on their source line. Flattening all leftover text lets
+        // unrelated label rows combine into a finish or print-run assertion.
+        let tokenLines = lines.map { tokenize($0).map(\.text) }
+
+        func contains(_ phrase: [String]) -> Bool {
+            tokenLines.contains { tokens in
+                guard !phrase.isEmpty, tokens.count >= phrase.count else { return false }
+                return (0...(tokens.count - phrase.count)).contains { start in
+                    Array(tokens[start..<(start + phrase.count)]) == phrase
+                }
+            }
+        }
+
+        // A negated phrase is not positive finish evidence. Leave the finish
+        // unresolved so the catalog/user correction path, rather than a parser
+        // guess, owns the answer.
+        let negatesHolo = contains(["NON", "HOLO"])
+            || contains(["NON", "HOLOFOIL"])
+            || contains(["NON", "REVERSE", "HOLO"])
+        let negatesFoil = contains(["NON", "FOIL"])
+
+        let finish: PhysicalVariant?
+        if !negatesHolo && !negatesFoil
+            && (contains(["REVERSE", "HOLO"]) || contains(["REV", "HOLO"])) {
+            finish = .reverse
+        } else if !negatesHolo && !negatesFoil
+                    && tokenLines.contains(where: { $0.contains("HOLO") || $0.contains("HOLOFOIL") }) {
+            finish = .holo
+        } else {
+            finish = nil
+        }
+
+        let printRuns: [PokemonPrintRun] = [
+            (contains(["1ST", "EDITION"]) || contains(["FIRST", "EDITION"])) ? .firstEdition : nil,
+            tokenLines.contains(where: { $0.contains("SHADOWLESS") }) ? .shadowless : nil,
+            tokenLines.contains(where: { $0.contains("UNLIMITED") }) ? .unlimited : nil
+        ].compactMap { $0 }
+        let printRun = Set(printRuns).count == 1 ? printRuns.first : nil
+        return (finish, printRun)
     }
 
     private static let labelOnlyTokens: Set<String> = [
@@ -404,6 +517,46 @@ enum GradedLabelParser {
                     )
                 }
             }
+
+            // Some real labels wrap a two-token grade at the line boundary,
+            // e.g. GEM at the end of one OCR line and MT at the start of the
+            // next. Keep this exact and adjacent; line proximity is widened
+            // separately by `isNear`.
+            guard phrase.count > 1, lines.count > 1 else { continue }
+            for lineIndex in 0..<(lines.count - 1) {
+                let line = lines[lineIndex]
+                let nextLine = lines[lineIndex + 1]
+                for split in 1..<phrase.count {
+                    let leftCount = split
+                    let rightCount = phrase.count - split
+                    guard line.tokens.count >= leftCount,
+                          nextLine.tokens.count >= rightCount else { continue }
+
+                    let leftStart = line.tokens.count - leftCount
+                    let leftTokens = line.tokens[leftStart...]
+                    let rightTokens = nextLine.tokens[..<rightCount]
+                    guard zip(phrase[..<split], leftTokens).allSatisfy({ expected, actual in
+                        expected == actual.text
+                    }), zip(phrase[split...], rightTokens).allSatisfy({ expected, actual in
+                        expected == actual.text
+                    }) else { continue }
+
+                    let positions = leftTokens.enumerated().map { offset, _ in
+                        TokenPosition(lineIndex: lineIndex, tokenIndex: leftStart + offset)
+                    } + rightTokens.enumerated().map { offset, _ in
+                        TokenPosition(lineIndex: lineIndex + 1, tokenIndex: offset)
+                    }
+                    matches.append(
+                        LocatedPhrase(
+                            lineIndex: lineIndex,
+                            startTokenIndex: leftStart,
+                            endLineIndex: lineIndex + 1,
+                            endTokenIndex: rightCount - 1,
+                            tokenPositions: positions
+                        )
+                    )
+                }
+            }
         }
         return matches
     }
@@ -424,7 +577,7 @@ enum GradedLabelParser {
         _ otherLocations: [LocatedPhrase]
     ) -> Bool {
         otherLocations.contains { other in
-            abs(location.lineIndex - other.lineIndex) <= 1
+            lineDistance(location, other) <= 2
                 && (location.lineIndex != other.lineIndex
                     || location.startTokenIndex <= other.endTokenIndex + 4
                     && other.startTokenIndex <= location.endTokenIndex + 4)
@@ -436,7 +589,7 @@ enum GradedLabelParser {
         _ otherLocations: [LocatedPhrase]
     ) -> Bool {
         otherLocations.contains { other in
-            abs(position.lineIndex - other.lineIndex) <= 1
+            lineDistance(position, other) <= 2
                 && (position.lineIndex != other.lineIndex
                     || position.tokenIndex >= other.startTokenIndex - 4
                     && position.tokenIndex <= other.endTokenIndex + 4)
@@ -447,10 +600,22 @@ enum GradedLabelParser {
         _ location: LocatedPhrase,
         _ position: TokenPosition
     ) -> Bool {
-        abs(location.lineIndex - position.lineIndex) <= 1
+        lineDistance(position, location) <= 2
             && (location.lineIndex != position.lineIndex
                 || position.tokenIndex >= location.startTokenIndex - 4
                 && position.tokenIndex <= location.endTokenIndex + 4)
+    }
+
+    private static func lineDistance(_ lhs: LocatedPhrase, _ rhs: LocatedPhrase) -> Int {
+        if lhs.endLineIndex < rhs.lineIndex { return rhs.lineIndex - lhs.endLineIndex }
+        if rhs.endLineIndex < lhs.lineIndex { return lhs.lineIndex - rhs.endLineIndex }
+        return 0
+    }
+
+    private static func lineDistance(_ position: TokenPosition, _ phrase: LocatedPhrase) -> Int {
+        if position.lineIndex < phrase.lineIndex { return phrase.lineIndex - position.lineIndex }
+        if position.lineIndex > phrase.endLineIndex { return position.lineIndex - phrase.endLineIndex }
+        return 0
     }
 
     private static func proximity(
@@ -458,7 +623,7 @@ enum GradedLabelParser {
         to otherLocations: [LocatedPhrase]
     ) -> Int {
         otherLocations.map { other in
-            abs(location.lineIndex - other.lineIndex) * 10
+            lineDistance(location, other) * 10
                 + abs(location.startTokenIndex - other.startTokenIndex)
         }.min() ?? Int.max
     }
@@ -470,7 +635,7 @@ enum GradedLabelParser {
         position: GradingNumberPosition
     ) -> Int {
         var score = companyLocations.map { company in
-            abs(number.position.lineIndex - company.lineIndex) * 10
+            lineDistance(number.position, company) * 10
                 + abs(number.position.tokenIndex - company.startTokenIndex)
         }.min() ?? Int.max / 2
 
@@ -482,7 +647,7 @@ enum GradedLabelParser {
             case .afterWord:
                 expectedTokenIndex = wordLocation.endTokenIndex + 1
             }
-            score += abs(number.position.lineIndex - wordLocation.lineIndex) * 20
+            score += lineDistance(number.position, wordLocation) * 20
                 + abs(number.position.tokenIndex - expectedTokenIndex)
         }
         return score
@@ -581,12 +746,7 @@ enum GradedLabelParser {
         _ phrase: LocatedPhrase,
         in positions: inout Set<TokenPosition>
     ) {
-        guard phrase.startTokenIndex <= phrase.endTokenIndex else { return }
-        for tokenIndex in phrase.startTokenIndex...phrase.endTokenIndex {
-            positions.insert(
-                TokenPosition(lineIndex: phrase.lineIndex, tokenIndex: tokenIndex)
-            )
-        }
+        positions.formUnion(phrase.tokenPositions)
     }
 }
 
@@ -607,15 +767,86 @@ struct SlabEvidenceConfirmationWindow: Equatable, Sendable {
         if observations.count > windowSize {
             observations.removeFirst(observations.count - windowSize)
         }
-        guard let evidence,
-              observations.compactMap({ $0 }).filter({ $0 == evidence }).count >= matchesRequired
-        else { return nil }
+        guard let evidence else { return nil }
+        let matchingObservations = observations.compactMap { observation -> GradedSlabEvidence? in
+            guard let observation, matches(observation, evidence) else { return nil }
+            return observation
+        }
+        guard matchingObservations.count >= matchesRequired else { return nil }
+
         reset()
         return evidence
     }
 
     mutating func reset() {
         observations.removeAll(keepingCapacity: true)
+    }
+
+    private func matches(_ lhs: GradedSlabEvidence, _ rhs: GradedSlabEvidence) -> Bool {
+        guard lhs.suppressionFragment == rhs.suppressionFragment else { return false }
+        guard lhs.certificationNumber == nil, rhs.certificationNumber == nil else { return true }
+
+        let lhsLines = lhs.labelCardText
+            .map(Self.normalizedLabelTokens)
+            .filter { !$0.isEmpty }
+        let rhsLines = rhs.labelCardText
+            .map(Self.normalizedLabelTokens)
+            .filter { !$0.isEmpty }
+
+        // A glare-obscured label can legitimately leave no card text at all;
+        // the shared company/grade/certificate-less suppression fragment is the
+        // only evidence available, and it must match itself.
+        guard !lhsLines.isEmpty || !rhsLines.isEmpty else { return true }
+        guard !lhsLines.isEmpty, !rhsLines.isEmpty else { return false }
+
+        // Require a majority of the larger line's tokens to match. Matching is
+        // tolerant of one OCR character substitution, but a single shared word
+        // cannot make two different card labels the same slab.
+        return lhsLines.contains { lhsTokens in
+            rhsLines.contains { rhsTokens in
+                let matched = lhsTokens.filter { lhsToken in
+                    rhsTokens.contains { rhsToken in
+                        Self.tokensMatch(lhsToken, rhsToken)
+                    }
+                }.count
+                return matched * 2 > max(lhsTokens.count, rhsTokens.count)
+            }
+        }
+    }
+
+    private static func normalizedLabelLine(_ line: String) -> String {
+        let scalars = line.uppercased().unicodeScalars.map { scalar in
+            CharacterSet.alphanumerics.contains(scalar) || scalar == " " ? scalar : " "
+        }
+        return scalars
+            .map(String.init)
+            .joined()
+            .split(whereSeparator: { $0 == " " })
+            .joined(separator: " ")
+    }
+
+    private static func normalizedLabelTokens(_ line: String) -> [String] {
+        normalizedLabelLine(line).split(separator: " ").map(String.init)
+    }
+
+    private static func tokensMatch(_ lhs: String, _ rhs: String) -> Bool {
+        guard lhs != rhs else { return true }
+        guard lhs.count >= 3, rhs.count >= 3 else { return false }
+        let left = Array(lhs)
+        let right = Array(rhs)
+        var previous = Array(0...right.count)
+        for (leftIndex, leftCharacter) in left.enumerated() {
+            var current = [leftIndex + 1]
+            current.reserveCapacity(right.count + 1)
+            for (rightIndex, rightCharacter) in right.enumerated() {
+                let substitution = previous[rightIndex] + (leftCharacter == rightCharacter ? 0 : 1)
+                let insertion = current[rightIndex] + 1
+                let deletion = previous[rightIndex + 1] + 1
+                current.append(min(substitution, insertion, deletion))
+            }
+            previous = current
+        }
+        return previous[right.count] <= 1
     }
 }
 

@@ -335,6 +335,8 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
     case deterministicSetRule
     /// The user's Finish Lock named a variant the catalog agrees is possible.
     case finishLock
+    /// The graded label itself named a finish the catalog agrees is possible.
+    case printedLabel
     /// The user tapped it.
     case userConfirmed
     /// The finish came from an imported collection file.
@@ -348,6 +350,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
         case .uniqueInCatalog: return "Only variant printed"
         case .deterministicSetRule: return "Set rule"
         case .finishLock: return "Finish Lock"
+        case .printedLabel: return "Printed label"
         case .userConfirmed: return "You confirmed"
         case .imported: return "Imported"
         case .catalogSilent: return "Not published"
@@ -358,7 +361,7 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
     /// User choices and imported records stay as supplied.
     var isAutomatic: Bool {
         switch self {
-        case .userConfirmed, .finishLock, .imported: return false
+        case .userConfirmed, .finishLock, .printedLabel, .imported: return false
         case .uniqueInCatalog, .deterministicSetRule, .catalogSilent: return true
         }
     }

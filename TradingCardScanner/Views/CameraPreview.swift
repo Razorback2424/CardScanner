@@ -34,6 +34,7 @@ struct CameraPreview: UIViewRepresentable {
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation
         view.slabFraming = scanner.slabFraming
+        view.slabGuideHint = scanner.slabGuideHint
         view.syncRecognitionCount(recognitionCount)
         view.syncSuccessCount(successCount)
 #if DEBUG
@@ -46,21 +47,23 @@ struct CameraPreview: UIViewRepresentable {
         let rotationChanged = uiView.rotation !== scanner.rotation
             || uiView.rotation?.previewAngle != scanner.rotation.previewAngle
         let slabFramingChanged = uiView.slabFraming != scanner.slabFraming
+        let slabGuideHintChanged = uiView.slabGuideHint != scanner.slabGuideHint
 #if DEBUG
         let debugBoxesChanged = uiView.debugVisionBoxes != debugVisionOverlay.boxes
 #endif
         uiView.previewLayer.session = scanner.session
         if rotationChanged { uiView.rotation = scanner.rotation }
         if slabFramingChanged { uiView.slabFraming = scanner.slabFraming }
+        if slabGuideHintChanged { uiView.slabGuideHint = scanner.slabGuideHint }
         uiView.syncRecognitionCount(recognitionCount)
         uiView.syncSuccessCount(successCount)
 #if DEBUG
         if debugBoxesChanged { uiView.debugVisionBoxes = debugVisionOverlay.boxes }
 #endif
 #if DEBUG
-        let needsLayout = rotationChanged || slabFramingChanged || debugBoxesChanged
+        let needsLayout = rotationChanged || slabFramingChanged || slabGuideHintChanged || debugBoxesChanged
 #else
-        let needsLayout = rotationChanged || slabFramingChanged
+        let needsLayout = rotationChanged || slabFramingChanged || slabGuideHintChanged
 #endif
         if needsLayout {
             uiView.setNeedsLayout()
@@ -89,6 +92,7 @@ final class PreviewView: UIView {
 #endif
 
     var slabFraming: GradedSlabEvidence?
+    var slabGuideHint: GradingCompany?
 
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
@@ -136,6 +140,7 @@ final class PreviewView: UIView {
         let scanVisionRect: CGRect
         let outerVisionRect: CGRect
         let innerVisionRect: CGRect?
+        let isProvisionalSlabGuide: Bool
         if let slabFraming {
             // Success belongs to the card footer that established the catalog
             // identity. The label outline remains part of the slab guide, but
@@ -143,10 +148,20 @@ final class PreviewView: UIView {
             scanVisionRect = SlabFramingRegion.footerVisionRect(for: slabFraming.company)
             outerVisionRect = SlabFramingRegion.slabVisionRect(for: slabFraming.company)
             innerVisionRect = SlabFramingRegion.cardWindowVisionRect(for: slabFraming.company)
+            isProvisionalSlabGuide = false
+        } else if slabGuideHint != nil {
+            // A company token is enough to tell the user where the slab label
+            // belongs, but not enough to claim that the slab identity is known.
+            // Keep this envelope generic until the confirmation window closes.
+            scanVisionRect = SlabFramingRegion.footerVisionRect(for: nil)
+            outerVisionRect = SlabFramingRegion.slabVisionRect(for: nil)
+            innerVisionRect = SlabFramingRegion.cardWindowVisionRect(for: nil)
+            isProvisionalSlabGuide = true
         } else {
             scanVisionRect = CardFramingRegion.visionRect
             outerVisionRect = CardFramingRegion.cardVisionRect
             innerVisionRect = nil
+            isProvisionalSlabGuide = false
         }
 
         scanRegionLayer.frame = previewLayer.layerRectConverted(
@@ -164,8 +179,21 @@ final class PreviewView: UIView {
         cardRegionLayer.frame = cardRect
         cardRegionLayer.path = UIBezierPath(
             roundedRect: cardRegionLayer.bounds,
-            cornerRadius: slabFraming == nil ? 14 : 18
+            cornerRadius: innerVisionRect == nil ? 14 : 18
         ).cgPath
+        cardRegionLayer.strokeColor = UIColor.white
+            .withAlphaComponent(isProvisionalSlabGuide ? 0.42 : 0.78)
+            .cgColor
+        cardRegionLayer.lineDashPattern = isProvisionalSlabGuide ? [4, 8] : [8, 6]
+        slabCardRegionLayer.strokeColor = UIColor.white
+            .withAlphaComponent(isProvisionalSlabGuide ? 0.28 : 0.52)
+            .cgColor
+        scanRegionLayer.backgroundColor = UIColor.systemGreen
+            .withAlphaComponent(isProvisionalSlabGuide ? 0.07 : 0.14)
+            .cgColor
+        scanRegionLayer.borderColor = UIColor.systemGreen
+            .withAlphaComponent(isProvisionalSlabGuide ? 0.62 : 1)
+            .cgColor
 
         if let innerVisionRect {
             slabCardRegionLayer.isHidden = false

@@ -17,6 +17,78 @@ final class GradedLabelParserTests: XCTestCase {
         XCTAssertEqual(evidence.labelCardText, ["1999 POKEMON GAME", "4 CHARIZARD-HOLO"])
     }
 
+    func testPSARequiresAnEightOrNineDigitCertificate() throws {
+        let nineDigit = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA GEM MT 10"),
+            RecognizedLine(text: "123456789")
+        ]))
+        XCTAssertEqual(nineDigit.certificationNumber, "123456789")
+
+        let tenDigit = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA GEM MT 10"),
+            RecognizedLine(text: "1234567890")
+        ]))
+        XCTAssertNil(tenDigit.certificationNumber)
+    }
+
+    func testGradeWordMayBeWrappedAcrossAdjacentLines() throws {
+        let evidence = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA"),
+            RecognizedLine(text: "GEM"),
+            RecognizedLine(text: "MT 10"),
+            RecognizedLine(text: "12345678")
+        ]))
+
+        XCTAssertEqual(evidence.grade, CardGrade(value: "10", label: "Gem Mint"))
+        XCTAssertEqual(evidence.certificationNumber, "12345678")
+    }
+
+    func testCompanyAndGradeMayBeSeparatedByTwoVisionLines() throws {
+        let evidence = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA"),
+            RecognizedLine(text: "1999 POKEMON"),
+            RecognizedLine(text: "GEM MT 10"),
+            RecognizedLine(text: "12345678")
+        ]))
+
+        XCTAssertEqual(evidence.company, .psa)
+        XCTAssertEqual(evidence.grade.value, "10")
+    }
+
+    func testPrintedFinishAndPrintRunComeFromLeftoverLabelText() throws {
+        let evidence = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA GEM MT 10"),
+            RecognizedLine(text: "1999 POKEMON GAME"),
+            RecognizedLine(text: "CHARIZARD REVERSE HOLO 1ST EDITION"),
+            RecognizedLine(text: "12345678")
+        ]))
+
+        XCTAssertEqual(evidence.printedFinish, .reverse)
+        XCTAssertEqual(evidence.printedPrintRun, .firstEdition)
+    }
+
+    func testNegatedFinishTokensNeverBecomePositiveFinishEvidence() throws {
+        let evidence = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA GEM MT 10"),
+            RecognizedLine(text: "CHARIZARD NON-HOLO NON-FOIL"),
+            RecognizedLine(text: "12345678")
+        ]))
+
+        XCTAssertNil(evidence.printedFinish)
+    }
+
+    func testFinishPhrasesDoNotCrossUnrelatedLabelLines() throws {
+        let evidence = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA GEM MT 10"),
+            RecognizedLine(text: "CHARIZARD"),
+            RecognizedLine(text: "REVERSE"),
+            RecognizedLine(text: "PRINTING"),
+            RecognizedLine(text: "12345678")
+        ]))
+
+        XCTAssertNil(evidence.printedFinish)
+    }
+
     func testBGSReadsBlackLabelAndTenDigitCertificate() throws {
         let evidence = try XCTUnwrap(GradedLabelParser.parse([
             RecognizedLine(text: "BECKETT"),

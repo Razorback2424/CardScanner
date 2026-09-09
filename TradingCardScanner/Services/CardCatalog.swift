@@ -20,6 +20,12 @@ enum PokemonHistoricalCatalogError: Error, Sendable {
     case ambiguous([PokemonCatalogCardIdentity])
     case unsupported
 }
+
+enum CatalogResolutionPath: String, Sendable {
+    case cacheHit = "cache-hit"
+    case network
+    case historicalFallback = "historical-fallback"
+}
 /// A small, identity-only Pokémon record assembled from the on-device Browse
 /// checklist. The checklist is authoritative for the set/card relationship, but
 /// it deliberately does not pretend to contain live market data.
@@ -768,6 +774,7 @@ actor CardCatalog {
     struct CatalogResolution: Sendable {
         let card: IdentifiedCard
         let isPersistable: Bool
+        let path: CatalogResolutionPath
         /// The time the card payload was obtained. A session-cache hit keeps
         /// this original provider time instead of manufacturing a new price
         /// retrieval timestamp at the next scan.
@@ -776,11 +783,13 @@ actor CardCatalog {
         init(
             _ card: IdentifiedCard,
             isPersistable: Bool = false,
-            retrievedAt: Date = .now
+            retrievedAt: Date = .now,
+            path: CatalogResolutionPath = .network
         ) {
             self.card = card
             self.isPersistable = isPersistable
             self.retrievedAt = retrievedAt
+            self.path = path
         }
     }
 
@@ -830,9 +839,33 @@ actor CardCatalog {
     }
 
     func resolution(for identifier: ScanIdentifier) async throws -> CatalogResolution {
-        if let card = resolved[identifier] { return card }
+        let resolutionID = PerformanceSignpost.makeID()
+        var outcome = "unknown"
+        let resolutionState = PerformanceSignpost.beginInterval(
+            "cardCatalogResolution",
+            id: resolutionID,
+            "identifier=\(String(describing: identifier))"
+        )
+        defer {
+            PerformanceSignpost.endInterval(
+                "cardCatalogResolution",
+                resolutionState,
+                "outcome=\(outcome)"
+            )
+        }
+
+        if let card = resolved[identifier] {
+            outcome = CatalogResolutionPath.cacheHit.rawValue
+            return card
+        }
         let lookup = inFlight[identifier] ?? start(identifier)
-        return try await complete(identifier, lookup: lookup).get()
+        let result = await complete(identifier, lookup: lookup)
+        if case let .success(resolution) = result {
+            outcome = resolution.path.rawValue
+        } else {
+            outcome = "error"
+        }
+        return try result.get()
     }
 
     func cachedCard(for identifier: ScanIdentifier) -> IdentifiedCard? {
@@ -876,7 +909,8 @@ actor CardCatalog {
                let cached = await resolvedDiskCache.card(for: diskKey) {
                 return CatalogResolution(
                     .pokemon(cached.card, setCode: cached.setCode),
-                    retrievedAt: cached.storedAt
+                    retrievedAt: cached.storedAt,
+                    path: .cacheHit
                 )
             }
 
@@ -887,7 +921,7 @@ actor CardCatalog {
                     localID: cardNumber,
                     expectedOfficialCount: printedTotal
                 ) {
-                    return CatalogResolution(.pokemon(card, setCode: setCode))
+                    return CatalogResolution(.pokemon(card, setCode: setCode), path: .cacheHit)
                 }
                 return try await Self.resolveModernPokemon(
                     setCode: setCode,
@@ -903,7 +937,7 @@ actor CardCatalog {
                     localID: localID,
                     expectedOfficialCount: nil
                 ) {
-                    return CatalogResolution(.pokemon(card, setCode: prefix))
+                    return CatalogResolution(.pokemon(card, setCode: prefix), path: .cacheHit)
                 }
                 return try await Self.resolvePromoPokemon(
                     prefix: prefix,
@@ -915,9 +949,12 @@ actor CardCatalog {
 
             case let .pokemonHistorical(evidence):
                 if let card = await offline.historicalCard(for: evidence) {
-                    return CatalogResolution(card)
+                    return CatalogResolution(card, path: .cacheHit)
                 }
-                return CatalogResolution(try await historicalPokemon.card(for: evidence))
+                return CatalogResolution(
+                    try await historicalPokemon.card(for: evidence),
+                    path: .historicalFallback
+                )
 
             case let .magic(setCode, collectorNumber, language, contentKind):
                 guard contentKind != .regular else {
@@ -1069,7 +1106,8 @@ actor CardCatalog {
                 try validate(card, setID: setDefinition.tcgdexSetID, localID: cardNumber)
                 return CatalogResolution(
                     .pokemon(card, setCode: setCode),
-                    isPersistable: true
+                    isPersistable: true,
+                    path: .network
                 )
             } catch let error as TCGdexError {
                 switch error {
@@ -1099,7 +1137,10 @@ actor CardCatalog {
         // Deliberately not persistable. This record exists only because the
         // primary provider was unreachable, and it carries neither finishes nor
         // pricing; the session cache is the right lifetime for it.
-        return CatalogResolution(.pokemon(card, setCode: setCode))
+        return CatalogResolution(
+            .pokemon(card, setCode: setCode),
+            path: .historicalFallback
+        )
     }
 
     private static func resolvePromoPokemon(
@@ -1119,7 +1160,8 @@ actor CardCatalog {
                 try validate(card, setID: setDefinition.tcgdexSetID, localID: localID)
                 return CatalogResolution(
                     .pokemon(card, setCode: prefix),
-                    isPersistable: true
+                    isPersistable: true,
+                    path: .network
                 )
             } catch let error as TCGdexError {
                 switch error {
@@ -1146,7 +1188,10 @@ actor CardCatalog {
             requestedLocalID: localID
         )
         // Outage-time evidence only. See `resolveModernPokemon`.
-        return CatalogResolution(.pokemon(card, setCode: prefix))
+        return CatalogResolution(
+            .pokemon(card, setCode: prefix),
+            path: .historicalFallback
+        )
     }
 
     private func complete(

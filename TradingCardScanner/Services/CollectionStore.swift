@@ -64,9 +64,14 @@ enum CollectionQuantityLimits {
 @ModelActor
 actor ScannerCollectionWriter {
     func add(_ candidate: CollectionCommitCandidate) throws -> CollectionMutation {
-        let signpostState = PerformanceSignpost.signposter.beginInterval("scannerPersistence")
+        let persistenceID = PerformanceSignpost.makeID()
+        let signpostState = PerformanceSignpost.beginInterval(
+            "scannerPersistence",
+            id: persistenceID,
+            "operation=add"
+        )
         defer {
-            PerformanceSignpost.signposter.endInterval("scannerPersistence", signpostState)
+            PerformanceSignpost.endInterval("scannerPersistence", signpostState, "operation=add")
         }
 
         let store = CollectionStore(context: modelContext)
@@ -78,7 +83,9 @@ actor ScannerCollectionWriter {
                     underlying: candidate.card,
                     variant: variant,
                     certificationNumber: slab.certificationNumber,
-                    setReleaseOrder: candidate.card.setReleaseOrder
+                    setReleaseOrder: candidate.card.setReleaseOrder,
+                    pokemonPrintRun: candidate.pokemonPrintRun,
+                    resolved: candidate.resolved
                 )
             case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
                 return try store.addScannedGraded(
@@ -86,7 +93,9 @@ actor ScannerCollectionWriter {
                     company: slab.company,
                     grade: slab.grade,
                     certificationNumber: slab.certificationNumber,
-                    setReleaseOrder: candidate.card.setReleaseOrder
+                    setReleaseOrder: candidate.card.setReleaseOrder,
+                    pokemonPrintRun: candidate.pokemonPrintRun,
+                    resolved: candidate.resolved
                 )
             }
         }
@@ -101,7 +110,8 @@ actor ScannerCollectionWriter {
             source: .scan,
             pokemonPrintRun: candidate.pokemonPrintRun,
             matchCatalogAliases: true,
-            savesChanges: false
+            savesChanges: false,
+            signpostID: persistenceID
         )
         guard let stored = try store.card(forAnyKey: mutation.collectionKey) else {
             modelContext.rollback()
@@ -113,9 +123,14 @@ actor ScannerCollectionWriter {
     }
 
     func undo(_ mutation: CollectionMutation) throws {
-        let signpostState = PerformanceSignpost.signposter.beginInterval("scannerPersistence")
+        let signpostID = PerformanceSignpost.makeID()
+        let signpostState = PerformanceSignpost.beginInterval(
+            "scannerPersistence",
+            id: signpostID,
+            "operation=undo"
+        )
         defer {
-            PerformanceSignpost.signposter.endInterval("scannerPersistence", signpostState)
+            PerformanceSignpost.endInterval("scannerPersistence", signpostState, "operation=undo")
         }
         try CollectionStore(context: modelContext).undo(mutation)
     }
@@ -129,19 +144,27 @@ actor ScannerCollectionWriter {
         previousLedgerOperationIDs: [UUID],
         activityID: UUID?,
         quantity: Int,
-        price: PriceLookup
+        price: PriceLookup,
+        isGraded: Bool = false
     ) throws -> CollectionMutation? {
-        let signpostState = PerformanceSignpost.signposter.beginInterval("scannerPersistence")
+        let signpostID = PerformanceSignpost.makeID()
+        let signpostState = PerformanceSignpost.beginInterval(
+            "scannerPersistence",
+            id: signpostID,
+            "operation=correct"
+        )
         defer {
-            PerformanceSignpost.signposter.endInterval("scannerPersistence", signpostState)
+            PerformanceSignpost.endInterval("scannerPersistence", signpostState, "operation=correct")
         }
 
-        stagePrice(
-            price,
-            for: card,
-            variant: corrected.variant,
-            pokemonPrintRun: pokemonPrintRun
-        )
+        if !isGraded {
+            stagePrice(
+                price,
+                for: card,
+                variant: corrected.variant,
+                pokemonPrintRun: pokemonPrintRun
+            )
+        }
 
         let mutation = try CollectionStore(context: modelContext).recordVariantCorrection(
             for: card,
@@ -1694,7 +1717,12 @@ struct CollectionStore {
         underlying card: IdentifiedCard,
         variant: GradedVariant,
         certificationNumber: String?,
-        setReleaseOrder: Int? = nil
+        setReleaseOrder: Int? = nil,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        resolved: ResolvedVariant = ResolvedVariant(
+            variant: nil,
+            resolution: .userConfirmed
+        )
     ) throws -> CollectionMutation {
         do {
             let magicTreatments = card.unambiguousMagicTreatments
@@ -1742,6 +1770,14 @@ struct CollectionStore {
                     owner.justTCGCardID = variant.cardID
                     owner.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
                 }
+                if owner.variantID == nil, let printedVariant = resolved.variant {
+                    owner.variantID = printedVariant.id
+                    owner.variantLabel = printedVariant.label
+                    owner.variantResolutionRaw = resolved.resolution.rawValue
+                }
+                if owner.pokemonPrintRunRaw == nil {
+                    owner.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
+                }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: owner)
                 storeMarketPrice(
                     variant.marketPriceUSD,
@@ -1770,6 +1806,14 @@ struct CollectionStore {
             }
             if existing.magicContentKind == .regular {
                 existing.magicContentKindRaw = card.magicContentKind.rawValue
+            }
+            if existing.variantID == nil, let printedVariant = resolved.variant {
+                existing.variantID = printedVariant.id
+                existing.variantLabel = printedVariant.label
+                existing.variantResolutionRaw = resolved.resolution.rawValue
+            }
+            if existing.pokemonPrintRunRaw == nil {
+                existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
             }
             markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
             storeMarketPrice(
@@ -1817,8 +1861,8 @@ struct CollectionStore {
             thumbnailURL: card.thumbnailImageURL?.absoluteString,
             // A slab has no raw finish. `PhysicalVariant` stays raw-only, and the
             // grade lives in its own fields.
-            variant: nil,
-            variantResolution: .userConfirmed,
+            variant: resolved.variant,
+            variantResolution: resolved.resolution,
             identityResolution: .catalogSelected,
             setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
             magicTreatments: magicTreatments,
@@ -1837,6 +1881,7 @@ struct CollectionStore {
         row.gradeLabel = variant.grade.label
         row.gradingQualifier = variant.grade.qualifier
         row.certificationNumber = certificationNumber
+        row.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
         row.catalogProviderID = card.providerID
         markLiveMagicTreatmentMigrationComplete(for: card, on: row)
         context.insert(row)
@@ -1885,7 +1930,12 @@ struct CollectionStore {
         company: GradingCompany,
         grade: CardGrade,
         certificationNumber: String?,
-        setReleaseOrder: Int? = nil
+        setReleaseOrder: Int? = nil,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        resolved: ResolvedVariant = ResolvedVariant(
+            variant: nil,
+            resolution: .userConfirmed
+        )
     ) throws -> CollectionMutation {
         do {
             let magicTreatments = card.unambiguousMagicTreatments
@@ -1912,6 +1962,14 @@ struct CollectionStore {
                ) {
                 // A bound row is kept bound; an unbound row is already the same
                 // physical slab and is deliberately not incremented.
+                if existing.variantID == nil, let printedVariant = resolved.variant {
+                    existing.variantID = printedVariant.id
+                    existing.variantLabel = printedVariant.label
+                    existing.variantResolutionRaw = resolved.resolution.rawValue
+                }
+                if existing.pokemonPrintRunRaw == nil {
+                    existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
+                }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
                 try commit()
                 return CollectionMutation(
@@ -1931,6 +1989,14 @@ struct CollectionStore {
                 existing.dateAdded = .now
                 if existing.magicTreatmentQualifiersJSON == nil {
                     existing.magicTreatmentQualifiers = magicTreatmentQualifiers
+                }
+                if existing.variantID == nil, let printedVariant = resolved.variant {
+                    existing.variantID = printedVariant.id
+                    existing.variantLabel = printedVariant.label
+                    existing.variantResolutionRaw = resolved.resolution.rawValue
+                }
+                if existing.pokemonPrintRunRaw == nil {
+                    existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
                 }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
                 let operationID = UUID()
@@ -1970,8 +2036,8 @@ struct CollectionStore {
                 rarity: card.rarity,
                 imageURL: imageURL(for: card),
                 thumbnailURL: card.thumbnailImageURL?.absoluteString,
-                variant: nil,
-                variantResolution: .userConfirmed,
+                variant: resolved.variant,
+                variantResolution: resolved.resolution,
                 identityResolution: .catalogSelected,
                 setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
                 magicTreatments: magicTreatments,
@@ -1984,6 +2050,7 @@ struct CollectionStore {
             row.gradeLabel = grade.label
             row.gradingQualifier = grade.qualifier
             row.certificationNumber = certificationNumber
+            row.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
             row.catalogProviderID = card.providerID
             markLiveMagicTreatmentMigrationComplete(for: card, on: row)
             context.insert(row)
@@ -2217,12 +2284,24 @@ struct CollectionStore {
         writesInventoryEvent: Bool = true,
         /// False only while a larger ledger-bearing mutation is being staged.
         /// The caller then writes every event and performs the single save.
-        savesChanges: Bool = true
+        savesChanges: Bool = true,
+        signpostID: OSSignpostID? = nil
     ) throws -> CollectionMutation {
         // The scan commit's persistence half, which is what a hitch on the tap
         // that dismisses the choice bar would show up in.
-        let signpostState = PerformanceSignpost.signposter.beginInterval("CollectionStore.add")
-        defer { PerformanceSignpost.signposter.endInterval("CollectionStore.add", signpostState) }
+        let addID = signpostID ?? PerformanceSignpost.makeID()
+        let signpostState = PerformanceSignpost.beginInterval(
+            "CollectionStore.add",
+            id: addID,
+            "source=\(source.rawValue)"
+        )
+        defer {
+            PerformanceSignpost.endInterval(
+                "CollectionStore.add",
+                signpostState,
+                "source=\(source.rawValue)"
+            )
+        }
         guard quantity > 0, quantity <= CollectionQuantityLimits.maximum else {
             throw CollectionStoreError.insufficientQuantity(card.providerID)
         }
@@ -2959,6 +3038,33 @@ struct CollectionStore {
             expectedQuantity: quantity
         )
 
+        // A graded row's collection identity is the slab/grade/certificate,
+        // not its raw-card finish. The printed finish can therefore be corrected
+        // in place without manufacturing a second slab row or rewriting the
+        // certificate ledger lineage.
+        if previous.itemKind == .gradedCard {
+            previous.variantID = corrected.variant?.id
+            previous.variantLabel = corrected.variant?.label
+            previous.variantResolutionRaw = corrected.resolution.rawValue
+            activityToRetarget.variantID = previous.variantID
+            activityToRetarget.variantLabel = previous.variantLabel
+            activityToRetarget.correctedAt = .now
+            _ = try appendActivity(
+                previous,
+                source: .correction,
+                kind: .corrected,
+                deltaQuantity: 0,
+                ledgerOperationIDs: operationIDs
+            )
+            try commit()
+            return CollectionMutation(
+                collectionKey: previousKey,
+                activityID: activityToRetarget.id,
+                didInsert: false,
+                ledgerOperationIDs: operationIDs
+            )
+        }
+
         // Read the outgoing side's price key before the row is decremented or
         // deleted — afterwards there is nothing left to ask.
         let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
@@ -3091,6 +3197,29 @@ struct CollectionStore {
             )
             guard previous.quantity >= quantity else {
                 throw CollectionStoreError.insufficientQuantity(previousKey)
+            }
+
+            if previous.itemKind == .gradedCard {
+                previous.variantID = corrected.variant?.id
+                previous.variantLabel = corrected.variant?.label
+                previous.variantResolutionRaw = corrected.resolution.rawValue
+                activityToRetarget.variantID = previous.variantID
+                activityToRetarget.variantLabel = previous.variantLabel
+                activityToRetarget.correctedAt = .now
+                _ = try appendActivity(
+                    previous,
+                    source: .correction,
+                    kind: .corrected,
+                    deltaQuantity: 0,
+                    ledgerOperationIDs: operationIDs
+                )
+                try commit()
+                return CollectionMutation(
+                    collectionKey: previousKey,
+                    activityID: activityToRetarget.id,
+                    didInsert: false,
+                    ledgerOperationIDs: operationIDs
+                )
             }
 
             let parts = previous.collectionKey.split(separator: "@", maxSplits: 1)

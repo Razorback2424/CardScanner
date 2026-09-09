@@ -24,6 +24,65 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: nil, resolution: .catalogSilent)))
     }
 
+    func testSingleCatalogVariantWinsOverAConflictingPrintedLabel() {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "sv03", variants: [.holo]),
+            printedFinish: .reverse
+        )
+
+        XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)))
+    }
+
+    func testPrintedLabelDisagreementFallsBackToCatalogOptions() {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "sv03", variants: [.holo]),
+            printedFinish: .reverse
+        )
+
+        XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)))
+    }
+
+    func testPrintedLabelDisagreementLeavesMultipleCatalogOptionsForTheUser() {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "sv03", variants: [.normal, .holo]),
+            printedFinish: .reverse
+        )
+
+        XCTAssertEqual(outcome, .needsChoice(options: [.normal, .holo], lockDidNotApply: nil))
+    }
+
+    func testPrintedLabelCanResolveOnlyAfterTheCatalogLeavesMultipleUnstampedOptions() {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "sv03", variants: [.normal, .holo]),
+            printedFinish: .holo
+        )
+
+        XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .holo, resolution: .printedLabel)))
+    }
+
+    func testFinishLockWinsOverAConflictingPrintedLabel() {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "sv03", variants: [.normal, .holo]),
+            finishLock: .normal,
+            printedFinish: .holo
+        )
+
+        XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .normal, resolution: .finishLock)))
+    }
+
+    func testPrintedLabelCannotSilentlyAnswerAStampedVariantQuestion() {
+        let outcome = VariantResolver.resolve(
+            pokemon(setID: "swsh11", variants: [.holo, .reverse], number: "066"),
+            printedFinish: .holo
+        )
+
+        guard case let .needsChoice(options, lockDidNotApply) = outcome else {
+            return XCTFail("A printed finish must not dismiss a catalog stamp choice")
+        }
+        XCTAssertNil(lockDidNotApply)
+        XCTAssertTrue(options.contains { $0.id == "trickOrTrade2023Holofoil" })
+    }
+
     // MARK: - One tap where the human holds the missing fact
 
     func testTwoPossibleVariantsAskWithTheLikelierOptionFirst() {

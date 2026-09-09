@@ -52,7 +52,25 @@ enum VariantOutcome: Equatable {
 /// list and must never be added to it: an optical model may one day *rank* the
 /// options under the user's thumb, but it may not answer for them.
 enum VariantResolver {
-    static func resolve(_ evidence: VariantEvidence, finishLock: PhysicalVariant? = nil) -> VariantOutcome {
+    static func resolve(
+        _ evidence: VariantEvidence,
+        finishLock: PhysicalVariant? = nil,
+        printedFinish: PhysicalVariant? = nil
+    ) -> VariantOutcome {
+        let resolutionID = PerformanceSignpost.makeID()
+        let resolutionState = PerformanceSignpost.beginInterval(
+            "variantResolution",
+            id: resolutionID,
+            "set=\(evidence.setID)"
+        )
+        defer {
+            PerformanceSignpost.endInterval(
+                "variantResolution",
+                resolutionState,
+                "set=\(evidence.setID)"
+            )
+        }
+
         let ruled = PokemonVariantRules.apply(to: evidence)
         let stamped = stampedVariants(for: evidence)
         let possible = ScanText.unique(ruled.variants + stamped)
@@ -84,6 +102,21 @@ enum VariantResolver {
                 return .resolved(ResolvedVariant(variant: finishLock, resolution: .finishLock))
             }
             return .needsChoice(options: ordered(possible), lockDidNotApply: finishLock)
+        }
+
+        // A graded label is useful evidence only when the catalog agrees that
+        // the asserted finish exists for this exact printing. It follows the
+        // same authority rule as Finish Lock, but keeps its provenance distinct
+        // so later audits can tell the two automatic paths apart. It must stay
+        // below the unique-catalog tier and the user's Finish Lock, and it must
+        // never answer a stamped-release question.
+        if let printedFinish, stamped.isEmpty, !includesCatalogStampChoice {
+            if possible.contains(printedFinish) {
+                return .resolved(
+                    ResolvedVariant(variant: printedFinish, resolution: .printedLabel)
+                )
+            }
+            return .needsChoice(options: ordered(possible), lockDidNotApply: nil)
         }
 
         return .needsChoice(options: ordered(possible), lockDidNotApply: nil)

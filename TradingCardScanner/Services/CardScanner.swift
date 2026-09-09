@@ -697,6 +697,9 @@ final class CardScanner: NSObject, ObservableObject {
     /// The preview uses this to show the slab proportions and the inner card
     /// window; nil restores the raw-card guide.
     @Published private(set) var slabFraming: GradedSlabEvidence?
+    /// A company token seen during the unbound label pass. This is deliberately
+    /// separate from `slabFraming`: it is a guide hint, not an identity claim.
+    @Published private(set) var slabGuideHint: GradingCompany?
 #if DEBUG
     let debugVisionOverlay = ScannerDebugVisionOverlay()
 #endif
@@ -793,6 +796,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// turning an already-detected slab into a raw-card commit.
     private var activeSlabBaseIdentifier: ScanIdentifier?
     private var activeSlabEmptyFrames = 0
+    private var unboundFooterEmptyFrames = 0
     private var slabEvidenceWindow = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
     private var assistanceMonitor = CaptureAssistanceMonitor()
     private let spatialTrackingConfiguration: SpatialTrackingConfiguration
@@ -807,6 +811,10 @@ final class CardScanner: NSObject, ObservableObject {
     private var cadence: ScanCadenceScheduler
     private static let historicalAttemptTTL: CFAbsoluteTime = 1.5
     private static let slabBandEmptyFramesBeforeClear = 4
+    /// The footer runs much faster than the unbound label pass. A single empty
+    /// footer frame must not erase a label observation that is still waiting for
+    /// its next 1.5-second confirmation pass.
+    private static let unboundFooterEmptyFramesBeforeReset = 9
     private static let historicalAttemptLimit = 6
 
 
@@ -1240,7 +1248,9 @@ final class CardScanner: NSObject, ObservableObject {
         // numeric-heavy identifier strip; keep the custom set vocabulary for MVP.
         footerRequest.usesLanguageCorrection = true
         footerRequest.customWords = profile.customWords
-        footerRequest.regionOfInterest = CardFramingRegion.visionRect
+        footerRequest.regionOfInterest = CardFramingRegion.visionRect.union(
+            SlabFramingRegion.footerVisionRect(for: nil)
+        )
 
         titleRequest.recognitionLevel = .accurate
         titleRequest.recognitionLanguages = ["en-US"]
@@ -1779,7 +1789,7 @@ final class CardScanner: NSObject, ObservableObject {
             announcePlausible(observation, at: now)
 
             guard let confirmed = confirmationWindow.observeSubject(observation) else { return }
-            PerformanceSignpost.signposter.emitEvent("twoFrameConfirmation")
+            PerformanceSignpost.emitEvent("twoFrameConfirmation", "ordinary")
 
             if let authorization = activeHeldRepeatAuthorization {
                 if authorization.isExpired(at: now) {
@@ -1829,7 +1839,7 @@ final class CardScanner: NSObject, ObservableObject {
             announcePlausible(observation, at: now)
 
             guard let confirmed = confirmationWindow.observeSubject(observation) else { return }
-            PerformanceSignpost.signposter.emitEvent("twoFrameConfirmation")
+            PerformanceSignpost.emitEvent("twoFrameConfirmation", "held-repeat")
             guard let authorization = activeHeldRepeatAuthorization,
                   confirmed.suppressionKey == authorization.expectedSuppressionKey,
                   latch.consumeHeldRepeatAuthorization(for: authorization.expectedSuppressionKey) else {
@@ -1870,16 +1880,26 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     private func activateSlab(_ evidence: GradedSlabEvidence, at now: CFAbsoluteTime) {
+        let establishesNewSlab = activeSlab?.evidence.suppressionFragment != evidence.suppressionFragment
         activeSlab = ActiveSlab(
             evidence: evidence
         )
-        activeSlabBaseIdentifier = nil
+        if establishesNewSlab {
+            activeSlabBaseIdentifier = nil
+        }
+        // A successful label re-confirmation is fresh presence evidence even
+        // when it describes the same slab, so footer glare cannot carry the
+        // old empty-frame count through the next bound pass.
         activeSlabEmptyFrames = 0
         footerRequest.regionOfInterest = SlabFramingRegion.footerVisionRect(for: evidence.company)
         titleRequest.regionOfInterest = SlabFramingRegion.titleVisionRect(for: evidence.company)
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: evidence.company)
         DispatchQueue.main.async { [weak self] in
-            guard let self, self.slabFraming != evidence else { return }
+            guard let self else { return }
+            if self.slabGuideHint != nil {
+                self.slabGuideHint = nil
+            }
+            guard self.slabFraming != evidence else { return }
             self.slabFraming = evidence
         }
     }
@@ -1888,12 +1908,19 @@ final class CardScanner: NSObject, ObservableObject {
         activeSlab = nil
         activeSlabBaseIdentifier = nil
         activeSlabEmptyFrames = 0
+        unboundFooterEmptyFrames = 0
         slabEvidenceWindow.reset()
-        footerRequest.regionOfInterest = CardFramingRegion.visionRect
+        footerRequest.regionOfInterest = CardFramingRegion.visionRect.union(
+            SlabFramingRegion.footerVisionRect(for: nil)
+        )
         titleRequest.regionOfInterest = CardFramingRegion.titleVisionRect
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect()
         DispatchQueue.main.async { [weak self] in
-            guard let self, self.slabFraming != nil else { return }
+            guard let self else { return }
+            if self.slabGuideHint != nil {
+                self.slabGuideHint = nil
+            }
+            guard self.slabFraming != nil else { return }
             self.slabFraming = nil
         }
     }
@@ -1947,12 +1974,28 @@ final class CardScanner: NSObject, ObservableObject {
         let company = activeSlab?.evidence.company
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: company)
         do {
+            let labelID = PerformanceSignpost.makeID()
+            let labelState = PerformanceSignpost.beginInterval(
+                "labelOCR",
+                id: labelID,
+                "encounter=\(latchEncounterID?.uuidString ?? "none")"
+            )
+            defer {
+                PerformanceSignpost.endInterval(
+                    "labelOCR",
+                    labelState,
+                    "encounter=\(latchEncounterID?.uuidString ?? "none")"
+                )
+            }
             try handler.perform([labelRequest])
             let lines = recognizedLines(
                 from: labelRequest,
                 roi: labelRequest.regionOfInterest,
                 sourceSize: sourceSize
             )
+            if activeSlab == nil {
+                updateSlabGuideHint(GradedLabelParser.company(in: lines))
+            }
 #if DEBUG
             if Self.isGradedLabelCaptureDebugRoute {
                 let raw = lines.map(\.text).joined(separator: " | ")
@@ -1973,11 +2016,15 @@ final class CardScanner: NSObject, ObservableObject {
     /// miss, because the existing sticky-presence rule owns clearing it.
     private func slabLabelCadenceKind(footerHasText: Bool) -> ScanCadenceKind? {
         guard activeSlab != nil || footerHasText else {
-            // Do not carry label evidence across a frame where the card itself
-            // disappeared from the footer band.
-            slabEvidenceWindow.reset()
+            unboundFooterEmptyFrames += 1
+            if unboundFooterEmptyFrames >= Self.unboundFooterEmptyFramesBeforeReset {
+                unboundFooterEmptyFrames = 0
+                slabEvidenceWindow.reset()
+                updateSlabGuideHint(nil)
+            }
             return nil
         }
+        unboundFooterEmptyFrames = 0
         return activeSlab == nil ? .unboundLabel : .label
     }
 
@@ -1991,7 +2038,20 @@ final class CardScanner: NSObject, ObservableObject {
         return confirmed
     }
 
+    private func updateSlabGuideHint(_ hint: GradingCompany?) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.slabFraming == nil else { return }
+            guard self.slabGuideHint != hint else { return }
+            self.slabGuideHint = hint
+        }
+    }
+
 #if DEBUG
+    /// Test-only visibility for the non-blocking graded correction contract.
+    /// Production UI never needs to know whether recognition is paused; tests do
+    /// need to prove that this path never entered the pause state.
+    var isRecognitionPausedForTesting: Bool { isPaused }
+
     /// Test/support seam for the state transition after Vision has produced a
     /// parsed label. The capture path above uses the same cadence gate and
     /// evidence application helpers; this avoids manufacturing a camera frame
@@ -2005,6 +2065,31 @@ final class CardScanner: NSObject, ObservableObject {
         guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
               cadence.shouldRun(cadenceKind, at: now) else { return nil }
         return applySlabLabelEvidence(evidence, at: now)
+    }
+
+    /// Debug-only seam for the sticky footer identity rule. It mirrors the
+    /// production update with a tiny value input so tests can prove that a
+    /// routine label re-confirmation does not erase the baseline.
+    func receiveSlabFooterPresenceForTesting(
+        identifier: ScanIdentifier?,
+        hasText: Bool
+    ) {
+        let outcome: RecognitionOutcome = identifier.map {
+            .identified(ScanSubject(identifier: $0))
+        } ?? .nothing
+        updateActiveSlabPresence(
+            outcome: outcome,
+            historicalSubject: nil,
+            footerLines: hasText ? [RecognizedLine(text: "footer")] : []
+        )
+    }
+
+    func receiveSlabGuideHintForTesting(_ hint: GradingCompany?) {
+        updateSlabGuideHint(hint)
+    }
+
+    var footerRegionOfInterestForTesting: CGRect {
+        footerRequest.regionOfInterest
     }
 #endif
 
@@ -2057,6 +2142,19 @@ final class CardScanner: NSObject, ObservableObject {
         attempt.retryCount += 1
         attempt.lastObservedAt = now
         do {
+            let titleID = PerformanceSignpost.makeID()
+            let titleState = PerformanceSignpost.beginInterval(
+                "titleOCR",
+                id: titleID,
+                "encounter=\(latchEncounterID?.uuidString ?? "none")"
+            )
+            defer {
+                PerformanceSignpost.endInterval(
+                    "titleOCR",
+                    titleState,
+                    "encounter=\(latchEncounterID?.uuidString ?? "none")"
+                )
+            }
             try handler.perform([titleRequest])
             let titleLines = recognizedLines(
                 from: titleRequest,
@@ -2303,7 +2401,10 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         from connection: AVCaptureConnection
     ) {
         let now = CFAbsoluteTimeGetCurrent()
-        PerformanceSignpost.signposter.emitEvent("frameReceived")
+        PerformanceSignpost.emitEvent(
+            "frameReceived",
+            latchEncounterID?.uuidString ?? "none"
+        )
         let rotationAngle = rotation.currentAngle
         let orientation = CardFramingRegion.imageOrientation(forRotationAngle: rotationAngle)
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
@@ -2330,9 +2431,19 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 orientation: orientation,
                 options: [:]
             )
-            let footerState = PerformanceSignpost.signposter.beginInterval("footerOCR")
+            let footerState = PerformanceSignpost.beginInterval(
+                "footerOCR",
+                id: PerformanceSignpost.makeID(),
+                "encounter=\(latchEncounterID?.uuidString ?? "none")"
+            )
             do {
-                defer { PerformanceSignpost.signposter.endInterval("footerOCR", footerState) }
+                defer {
+                    PerformanceSignpost.endInterval(
+                        "footerOCR",
+                        footerState,
+                        "encounter=\(latchEncounterID?.uuidString ?? "none")"
+                    )
+                }
                 try handler.perform([footerRequest])
             }
 
@@ -2351,13 +2462,30 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 sensorWidth: Int(dimensions.width),
                 sensorHeight: Int(dimensions.height)
             )
-            let lines = recognizedLines(
-                from: footerRequest,
-                roi: footerRequest.regionOfInterest,
-                sourceSize: sourceSize
+            let parseID = PerformanceSignpost.makeID()
+            let parseState = PerformanceSignpost.beginInterval(
+                "footerParse",
+                id: parseID,
+                "encounter=\(latchEncounterID?.uuidString ?? "none")"
             )
-            updateAssistance(from: lines)
-            let outcome = profile.identify(lines)
+            let lines: [RecognizedLine]
+            let outcome: RecognitionOutcome
+            do {
+                defer {
+                    PerformanceSignpost.endInterval(
+                        "footerParse",
+                        parseState,
+                        "encounter=\(latchEncounterID?.uuidString ?? "none")"
+                    )
+                }
+                lines = recognizedLines(
+                    from: footerRequest,
+                    roi: footerRequest.regionOfInterest,
+                    sourceSize: sourceSize
+                )
+                updateAssistance(from: lines)
+                outcome = profile.identify(lines)
+            }
             var historical: ScanIdentifier?
             if let number = HistoricalTitleRequestPolicy.number(for: outcome, footerLines: lines) {
                 historical = historicalIdentifier(

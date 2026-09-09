@@ -159,6 +159,7 @@
 		A00200F9 /* SlabFramingRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F9 /* SlabFramingRegionTests.swift */; };
 		A00200FA /* ScanSubjectSuppressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200FA /* ScanSubjectSuppressionTests.swift */; };
 		A00200FB /* ScannedGradedResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200FB /* ScannedGradedResolverTests.swift */; };
+		A0020100 /* SlabEvidenceConfirmationWindowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020100 /* SlabEvidenceConfirmationWindowTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -328,6 +329,7 @@
 		B00200F9 /* SlabFramingRegionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlabFramingRegionTests.swift; sourceTree = "<group>"; };
 		B00200FA /* ScanSubjectSuppressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSubjectSuppressionTests.swift; sourceTree = "<group>"; };
 		B00200FB /* ScannedGradedResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedGradedResolverTests.swift; sourceTree = "<group>"; };
+		B0020100 /* SlabEvidenceConfirmationWindowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlabEvidenceConfirmationWindowTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -571,6 +573,7 @@
 				B00200F9 /* SlabFramingRegionTests.swift */,
 				B00200FA /* ScanSubjectSuppressionTests.swift */,
 				B00200FB /* ScannedGradedResolverTests.swift */,
+				B0020100 /* SlabEvidenceConfirmationWindowTests.swift */,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -832,6 +835,7 @@
 				A00200F9 /* SlabFramingRegionTests.swift in Sources */,
 				A00200FA /* ScanSubjectSuppressionTests.swift in Sources */,
 				A00200FB /* ScannedGradedResolverTests.swift in Sources */,
+				A0020100 /* SlabEvidenceConfirmationWindowTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
