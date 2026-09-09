@@ -791,6 +791,11 @@ final class CardScanner: NSObject, ObservableObject {
         let evidence: GradedSlabEvidence
     }
     private var activeSlab: ActiveSlab?
+    /// A provisional grader hint gets a bounded window for the slower label
+    /// evidence to arrive before identity confirmation may commit the subject
+    /// as raw. It is only active while the hint is visible and no slab is
+    /// confirmed yet.
+    private var slabGraceDeadline: CFAbsoluteTime?
     /// The label is sticky while the same footer presentation remains in the
     /// band. This prevents a momentary glare miss in the label pass from
     /// turning an already-detected slab into a raw-card commit.
@@ -811,6 +816,9 @@ final class CardScanner: NSObject, ObservableObject {
     private var cadence: ScanCadenceScheduler
     private static let historicalAttemptTTL: CFAbsoluteTime = 1.5
     private static let slabBandEmptyFramesBeforeClear = 4
+    /// Two unbound label probes are normally enough to confirm a slab. Keep
+    /// this grace bounded so a false-positive guide hint cannot stall scanning.
+    private static let slabGraceDuration: CFAbsoluteTime = 3.0
     /// The footer runs much faster than the unbound label pass. A single empty
     /// footer frame must not erase a label observation that is still waiting for
     /// its next 1.5-second confirmation pass.
@@ -1788,6 +1796,11 @@ final class CardScanner: NSObject, ObservableObject {
         case let .forwardSubject(observation):
             announcePlausible(observation, at: now)
 
+            if shouldHoldForSlabGrace(at: now) {
+                announceLatchHoldIfNeeded()
+                return
+            }
+
             guard let confirmed = confirmationWindow.observeSubject(observation) else { return }
             PerformanceSignpost.emitEvent("twoFrameConfirmation", "ordinary")
 
@@ -1838,6 +1851,11 @@ final class CardScanner: NSObject, ObservableObject {
         case let .forwardAuthorizedSubject(observation):
             announcePlausible(observation, at: now)
 
+            if shouldHoldForSlabGrace(at: now) {
+                announceLatchHoldIfNeeded()
+                return
+            }
+
             guard let confirmed = confirmationWindow.observeSubject(observation) else { return }
             PerformanceSignpost.emitEvent("twoFrameConfirmation", "held-repeat")
             guard let authorization = activeHeldRepeatAuthorization,
@@ -1884,6 +1902,7 @@ final class CardScanner: NSObject, ObservableObject {
         activeSlab = ActiveSlab(
             evidence: evidence
         )
+        slabGraceDeadline = nil
         if establishesNewSlab {
             activeSlabBaseIdentifier = nil
         }
@@ -1906,6 +1925,7 @@ final class CardScanner: NSObject, ObservableObject {
 
     private func clearActiveSlab() {
         activeSlab = nil
+        slabGraceDeadline = nil
         activeSlabBaseIdentifier = nil
         activeSlabEmptyFrames = 0
         unboundFooterEmptyFrames = 0
@@ -2039,11 +2059,24 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     private func updateSlabGuideHint(_ hint: GradingCompany?) {
+        if hint == nil {
+            slabGraceDeadline = nil
+        } else if slabGuideHint == nil, slabGraceDeadline == nil, activeSlab == nil {
+            slabGraceDeadline = CFAbsoluteTimeGetCurrent() + Self.slabGraceDuration
+        }
+
         DispatchQueue.main.async { [weak self] in
             guard let self, self.slabFraming == nil else { return }
             guard self.slabGuideHint != hint else { return }
             self.slabGuideHint = hint
         }
+    }
+
+    private func shouldHoldForSlabGrace(at now: CFAbsoluteTime) -> Bool {
+        guard activeSlab == nil,
+              slabGuideHint != nil,
+              let slabGraceDeadline else { return false }
+        return now < slabGraceDeadline
     }
 
 #if DEBUG
