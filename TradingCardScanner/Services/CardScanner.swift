@@ -796,6 +796,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// as raw. It is only active while the hint is visible and no slab is
     /// confirmed yet.
     private var slabGraceDeadline: CFAbsoluteTime?
+    /// Vision-queue state for the commit gate. The @Published `slabGuideHint`
+    /// mirror below is for the UI and lands a hop later, which is too late to
+    /// safely decide whether this frame may confirm.
+    private var slabGuideHintForGate: GradingCompany?
     /// The label is sticky while the same footer presentation remains in the
     /// band. This prevents a momentary glare miss in the label pass from
     /// turning an already-detected slab into a raw-card commit.
@@ -1903,6 +1907,7 @@ final class CardScanner: NSObject, ObservableObject {
             evidence: evidence
         )
         slabGraceDeadline = nil
+        slabGuideHintForGate = nil
         if establishesNewSlab {
             activeSlabBaseIdentifier = nil
         }
@@ -1926,6 +1931,7 @@ final class CardScanner: NSObject, ObservableObject {
     private func clearActiveSlab() {
         activeSlab = nil
         slabGraceDeadline = nil
+        slabGuideHintForGate = nil
         activeSlabBaseIdentifier = nil
         activeSlabEmptyFrames = 0
         unboundFooterEmptyFrames = 0
@@ -2061,9 +2067,10 @@ final class CardScanner: NSObject, ObservableObject {
     private func updateSlabGuideHint(_ hint: GradingCompany?) {
         if hint == nil {
             slabGraceDeadline = nil
-        } else if slabGuideHint == nil, slabGraceDeadline == nil, activeSlab == nil {
+        } else if slabGuideHintForGate == nil, slabGraceDeadline == nil, activeSlab == nil {
             slabGraceDeadline = CFAbsoluteTimeGetCurrent() + Self.slabGraceDuration
         }
+        slabGuideHintForGate = hint
 
         DispatchQueue.main.async { [weak self] in
             guard let self, self.slabFraming == nil else { return }
@@ -2074,7 +2081,7 @@ final class CardScanner: NSObject, ObservableObject {
 
     private func shouldHoldForSlabGrace(at now: CFAbsoluteTime) -> Bool {
         guard activeSlab == nil,
-              slabGuideHint != nil,
+              slabGuideHintForGate != nil,
               let slabGraceDeadline else { return false }
         return now < slabGraceDeadline
     }
@@ -2119,6 +2126,26 @@ final class CardScanner: NSObject, ObservableObject {
 
     func receiveSlabGuideHintForTesting(_ hint: GradingCompany?) {
         updateSlabGuideHint(hint)
+    }
+
+    /// Debug-only seam for the footer confirmation gate. It runs the real
+    /// frame outcome path without manufacturing a camera pixel buffer.
+    func receiveFooterOutcomeForTesting(
+        _ outcome: RecognitionOutcome,
+        footerHasText: Bool = true,
+        at now: CFAbsoluteTime
+    ) {
+        handleFooterOutcome(
+            outcome,
+            footerLines: footerHasText ? [RecognizedLine(text: "footer")] : [],
+            historicalSubject: nil,
+            at: now,
+            pixelBuffer: nil
+        )
+    }
+
+    var latchedSubjectForTesting: ScanSubject? {
+        latch.latched
     }
 
     var footerRegionOfInterestForTesting: CGRect {

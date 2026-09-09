@@ -567,6 +567,39 @@ final class CardLatchTests: XCTestCase {
         wait(for: [cleared], timeout: 1)
     }
 
+    func testSlabGuideHintGraceHoldsIdentityConfirmationUntilDeadline() {
+        let scanner = CardScanner()
+        let expected = subject(pokemon(223))
+        let start = CFAbsoluteTimeGetCurrent()
+
+        scanner.receiveSlabGuideHintForTesting(.psa)
+        scanner.receiveFooterOutcomeForTesting(
+            .identified(expected),
+            at: start + 0.25
+        )
+        scanner.receiveFooterOutcomeForTesting(
+            .identified(expected),
+            at: start + 0.5
+        )
+
+        // The two identity observations above must not reach the confirmation
+        // window while the vision-queue slab hint is waiting for label proof.
+        XCTAssertNil(scanner.latchedSubjectForTesting)
+
+        // Once the bounded grace expires, the ordinary two-frame confirmation
+        // path is allowed to commit again.
+        scanner.receiveFooterOutcomeForTesting(
+            .identified(expected),
+            at: start + 3.5
+        )
+        XCTAssertNil(scanner.latchedSubjectForTesting)
+        scanner.receiveFooterOutcomeForTesting(
+            .identified(expected),
+            at: start + 3.75
+        )
+        XCTAssertEqual(scanner.latchedSubjectForTesting, expected)
+    }
+
     func testSlabReconfirmationResetsAccumulatedEmptyFooterFrames() {
         let scanner = CardScanner()
         let first = GradedSlabEvidence(
