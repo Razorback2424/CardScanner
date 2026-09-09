@@ -19,6 +19,9 @@ enum PortfolioPalette {
     /// The valuation itself. Deliberately not a signal colour — it is the
     /// subject of the screen, not a judgement about it.
     static let value = Color.primary
+    /// The refresh glyph beside the hero value — money/refresh association,
+    /// distinct from the neutral value text and from gain/loss direction.
+    static let refreshAccent = Color(red: 0.18, green: 0.55, blue: 0.34)
 
     static func direction(_ amount: Money) -> Color {
         if amount.isZero { return .secondary }
@@ -172,7 +175,7 @@ struct PortfolioView: View {
 
                             biggestMovers()
                                 .id("phase3-movers")
-                            mostValuableCardsOwned
+                            bestCardsRail
                                 .id("most-valuable-cards-owned")
                         }
 
@@ -319,14 +322,24 @@ struct PortfolioView: View {
     }
 
     private var periodControl: some View {
-        Picker("Portfolio period", selection: Binding(get: { historyRange }, set: { historyRange = $0 })) {
-            ForEach(PortfolioHistoryRange.allCases, id: \.self) { item in
-                Text(item.rawValue)
-                    .accessibilityLabel(item.accessibilityName)
-                    .tag(item)
+        let activeColor = PortfolioPalette.direction(activeHistoryResult?.accounting?.totalChange ?? .zero)
+        return HStack(spacing: 8) {
+            ForEach(PortfolioHistoryRange.allCases, id: \.self) { range in
+                let isSelected = range == historyRange
+                Button(range.rawValue) {
+                    historyRange = range
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(isSelected ? activeColor : .secondary)
+                .padding(.horizontal, 15)
+                .padding(.vertical, 6)
+                .background(isSelected ? activeColor.opacity(0.14) : .clear, in: Capsule())
+                .accessibilityLabel(range.accessibilityName)
+                .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
         }
-        .pickerStyle(.segmented)
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .contain)
         .accessibilityHint("Choose the period used for the portfolio summary, chart, and movers.")
     }
 
@@ -341,17 +354,51 @@ struct PortfolioView: View {
                 .foregroundStyle(.secondary)
 
             HStack(spacing: 10) {
-                Text(portfolio.summary?.currentValue.formatted() ?? "Value unavailable")
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
-                    .foregroundStyle(PortfolioPalette.value)
-                    .monospacedDigit()
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.65)
-                    .contentTransition(.numericText())
-                    .animation(.snappy, value: portfolio.summary?.currentValue)
-                    .accessibilityLabel(portfolioValueAccessibilityLabel)
+                HStack(alignment: .firstTextBaseline, spacing: 0) {
+                    if let currentValue = portfolio.summary?.currentValue {
+                        let parts = currentValue.heroParts()
+                        Text(parts.whole)
+                            .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .foregroundStyle(PortfolioPalette.value)
+                        if !parts.fraction.isEmpty {
+                            Text(parts.fraction)
+                                .font(.system(size: 26, weight: .bold, design: .rounded))
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Text("Value unavailable")
+                            .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .foregroundStyle(PortfolioPalette.value)
+                    }
+                }
+                .monospacedDigit()
+                .lineLimit(1)
+                .minimumScaleFactor(0.65)
+                .contentTransition(.numericText())
+                .animation(.snappy, value: portfolio.summary?.currentValue)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(portfolioValueAccessibilityLabel)
 
                 PortfolioRefreshButton(refresh: refresh, onRefresh: onRefresh)
+            }
+
+            if portfolio.summary?.isAuthoritative == true,
+               let accounting = activeHistoryResult?.accounting {
+                HStack(spacing: 8) {
+                    PortfolioAmountPill(amount: accounting.totalChange, showsArrow: true)
+                    if let pct = PortfolioHistoryDisplay.percentChange(
+                        amount: accounting.totalChange,
+                        anchor: accounting.anchorValue
+                    ) {
+                        Text("· \(PortfolioHistoryDisplay.signedPercent(pct))")
+                            .font(.subheadline.weight(.semibold).monospacedDigit())
+                            .foregroundStyle(PortfolioPalette.direction(accounting.totalChange))
+                    }
+                    Text(historyRange.pastPeriodPhrase)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .accessibilityElement(children: .combine)
             }
 
             PriceRefreshActivityRow(
@@ -466,7 +513,7 @@ struct PortfolioView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     HStack(alignment: .firstTextBaseline) {
                         HStack(spacing: 6) {
-                            Text("Market movement by holding · \(active.range.rawValue)")
+                            Text("What moved · \(active.range.rawValue)")
                                 .font(.headline)
                             PortfolioInfoButton(label: "About market movers") {
                                 Text(portfolioMoversExplanation)
@@ -502,23 +549,17 @@ struct PortfolioView: View {
     }
 
     @ViewBuilder
-    private var mostValuableCardsOwned: some View {
+    private var bestCardsRail: some View {
         // The publisher orders priced holdings before unpriced holdings, so
         // stop at the first missing value instead of allocating a filtered
         // copy of the entire holdings array on every body evaluation.
         let ranked = portfolio.holdings.prefix(while: { $0.holdingValue != nil })
 
         if !ranked.isEmpty {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Most valuable cards owned")
-                            .font(.headline)
-                        Text("Ranked by price per card · total value includes all copies")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .firstTextBaseline) {
+                    Text("Your best cards")
+                        .font(.title3.weight(.bold))
                     Spacer()
                     if ranked.count > 5 {
                         Button("See all") {
@@ -528,22 +569,29 @@ struct PortfolioView: View {
                         .accessibilityHint("Opens Collection sorted by price, highest first")
                     }
                 }
-                ForEach(ranked.prefix(5)) { holding in
-                    NavigationLink {
-                        PortfolioOwnedCardDestination(
-                            collectionKey: holding.collectionKey,
-                            holding: holding,
-                            history: history,
-                            onRemoved: presentUndo(for:)
-                        )
-                    } label: {
-                        PortfolioHoldingRow(holding: holding)
+                .accessibilityElement(children: .combine)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(alignment: .top, spacing: 14) {
+                        ForEach(ranked.prefix(5)) { holding in
+                            NavigationLink {
+                                PortfolioOwnedCardDestination(
+                                    collectionKey: holding.collectionKey,
+                                    holding: holding,
+                                    history: history,
+                                    onRemoved: presentUndo(for:)
+                                )
+                            } label: {
+                                PortfolioBestCardTile(
+                                    holding: holding,
+                                    unitMovement: activeHistoryResult?.movement(for: holding.collectionKey)?.cumulativeUnitMovement
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
-                    .buttonStyle(.plain)
                 }
             }
-            .padding(16)
-            .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
 
@@ -813,8 +861,7 @@ private enum PortfolioContributionPresentation {
     static func color(_ amount: Money) -> Color { PortfolioPalette.direction(amount) }
 
     static func movementBreakdownText(for row: PortfolioContributionRowModel) -> String? {
-        guard let holding = row.holding, holding.quantity > 1 else { return nil }
-
+        guard row.holding != nil else { return nil }
         guard let detail = row.movementDetail,
               detail.totalImpact == row.amount,
               detail.hasConsistentQuantity,
@@ -824,20 +871,14 @@ private enum PortfolioContributionPresentation {
             if row.movementDetail?.affectedQuantities.count ?? 0 > 1 {
                 return "Quantity varied · per-card movement unavailable"
             }
-            return "\(holding.quantity) copies · per-card movement unavailable"
+            return nil
         }
 
-        let copyLabel = quantity == 1 ? "copy" : "copies"
+        if quantity == 1 {
+            return "\(signed(detail.cumulativeUnitMovement)) per card"
+        }
+        let copyLabel = "copies"
         return "\(quantity) \(copyLabel) × \(signed(detail.cumulativeUnitMovement)) per card"
-    }
-
-    static func magnitudeFraction(_ amount: Money, maximum: Money) -> CGFloat {
-        guard amount.isValid,
-              maximum.isValid,
-              maximum.tenThousandths > 0 else { return 0 }
-        let fraction = amount.magnitude.doubleValue / maximum.doubleValue
-        guard fraction.isFinite else { return 0 }
-        return min(1, CGFloat(fraction))
     }
 
     static func shareOfCurrentHolding(_ row: PortfolioContributionRowModel) -> Double? {
@@ -870,10 +911,9 @@ private struct PortfolioContributorPreview: View {
             limit: 3
         )
         let residual = total - displayed.map(\.amount).sum()
-        let maximum = all.map(\.amount.magnitude).max() ?? .zero
         VStack(spacing: 8) {
             ForEach(displayed) { row in
-                previewRow(row, maximum: maximum)
+                previewRow(row)
             }
             if all.count > displayed.count, !residual.isZero {
                 previewRow(
@@ -881,15 +921,14 @@ private struct PortfolioContributorPreview: View {
                         kind: .otherHoldings,
                         amount: residual,
                         movementDetail: nil
-                    ),
-                    maximum: maximum
+                    )
                 )
             }
         }
     }
 
     @ViewBuilder
-    private func previewRow(_ row: PortfolioContributionRowModel, maximum: Money) -> some View {
+    private func previewRow(_ row: PortfolioContributionRowModel) -> some View {
         if let key = row.collectionKey {
             NavigationLink {
                 PortfolioOwnedCardDestination(
@@ -901,7 +940,6 @@ private struct PortfolioContributorPreview: View {
             } label: {
                 PortfolioContributionRow(
                     row: row,
-                    magnitudeFraction: PortfolioContributionPresentation.magnitudeFraction(row.amount, maximum: maximum),
                     showsHoldingShare: false
                 )
             }
@@ -910,7 +948,6 @@ private struct PortfolioContributorPreview: View {
         } else {
             PortfolioContributionRow(
                 row: row,
-                magnitudeFraction: PortfolioContributionPresentation.magnitudeFraction(row.amount, maximum: maximum),
                 showsHoldingShare: false
             )
         }
@@ -933,7 +970,6 @@ private struct PortfolioContributorsView: View {
             ),
             order: order
         )
-        let maximum = rows.map(\.amount.magnitude).max() ?? .zero
         List {
             Section {
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
@@ -986,14 +1022,12 @@ private struct PortfolioContributorsView: View {
                             } label: {
                                 PortfolioContributionRow(
                                     row: row,
-                                    magnitudeFraction: PortfolioContributionPresentation.magnitudeFraction(row.amount, maximum: maximum),
                                     showsHoldingShare: true
                                 )
                             }
                         } else {
                             PortfolioContributionRow(
                                 row: row,
-                                magnitudeFraction: PortfolioContributionPresentation.magnitudeFraction(row.amount, maximum: maximum),
                                 showsHoldingShare: true
                             )
                         }
@@ -1016,145 +1050,123 @@ private struct PortfolioContributorsView: View {
 
 private struct PortfolioContributionRow: View {
     let row: PortfolioContributionRowModel
-    let magnitudeFraction: CGFloat
     let showsHoldingShare: Bool
 
     var body: some View {
-        VStack(spacing: 5) {
-            HStack(spacing: 10) {
-                if let holding = row.holding {
-                    PortfolioArtwork(holding: holding)
-                } else {
-                    Image(systemName: "clock.arrow.circlepath")
-                        .foregroundStyle(.secondary)
-                        .frame(width: 34, height: 44)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(row.title)
-                        .foregroundStyle(.primary)
-                    if let detail = row.detail, !detail.isEmpty {
-                        Text(detail)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                    }
-                    if let movementBreakdown = PortfolioContributionPresentation.movementBreakdownText(for: row) {
-                        Text(movementBreakdown)
-                            .font(.caption.monospacedDigit())
-                            .foregroundStyle(.secondary)
-                            .lineLimit(2)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                }
-                Spacer(minLength: 8)
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(PortfolioContributionPresentation.signed(row.amount))
-                        .font(.subheadline.weight(.semibold).monospacedDigit())
-                        .foregroundStyle(PortfolioContributionPresentation.color(row.amount))
-                        .lineLimit(1)
-                        .fixedSize(horizontal: true, vertical: false)
-                    Text("Total movement")
-                        .font(.caption2)
+        HStack(spacing: 10) {
+            if let holding = row.holding {
+                PortfolioArtwork(holding: holding)
+            } else {
+                Image(systemName: "clock.arrow.circlepath")
+                    .foregroundStyle(.secondary)
+                    .frame(width: 34, height: 44)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(row.title)
+                    .foregroundStyle(.primary)
+                if let subtitle = PortfolioContributionPresentation.movementBreakdownText(for: row) ?? row.detail,
+                   !subtitle.isEmpty {
+                    Text(subtitle)
+                        .font(.caption)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
-                    if showsHoldingShare,
-                       let share = PortfolioContributionPresentation.shareOfCurrentHolding(row) {
-                        Text("\(share.formatted(.percent.precision(.fractionLength(1)))) of current value")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
                 }
             }
-            PortfolioMagnitudeBar(
-                fraction: magnitudeFraction,
-                color: PortfolioContributionPresentation.color(row.amount)
-            )
-            .padding(.leading, 44)
+            Spacer(minLength: 8)
+            VStack(alignment: .trailing, spacing: 2) {
+                PortfolioAmountPill(amount: row.amount)
+                if showsHoldingShare,
+                   let share = PortfolioContributionPresentation.shareOfCurrentHolding(row) {
+                    Text("\(share.formatted(.percent.precision(.fractionLength(1)))) of current value")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
         }
         .frame(minHeight: 44)
         .accessibilityElement(children: .combine)
     }
 }
 
-private struct PortfolioHoldingRow: View {
+private struct PortfolioBestCardTile: View {
     let holding: PortfolioHoldingSnapshot
+    /// Per-copy market movement for the active period, when known. Omitted
+    /// (not zero-filled) when there's nothing to say — never fabricate a
+    /// number the ledger hasn't actually produced.
+    let unitMovement: Money?
 
     var body: some View {
-        HStack(spacing: 10) {
-            PortfolioArtwork(holding: holding)
+        VStack(alignment: .leading, spacing: 8) {
+            PortfolioArtwork(holding: holding, width: 136, height: 190, cornerRadius: 10)
             VStack(alignment: .leading, spacing: 2) {
-                Text(holding.name).foregroundStyle(.primary)
-                Text(holding.detail)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                if holding.quantity > 1 {
-                    AppCardBadge(
-                        text: "×\(holding.quantity)",
-                        systemImage: "number",
-                        tint: .teal
-                    )
-                }
-            }
-            Spacer(minLength: 8)
-            if let holdingValue = holding.holdingValue {
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text(
-                        holding.quantity > 1
-                            ? "\(holdingValue.formatted()) total"
-                            : holdingValue.formatted()
-                    )
-                    .font(.subheadline.weight(.semibold).monospacedDigit())
+                Text(holding.name)
+                    .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.primary)
-
-                    if holding.quantity > 1, let unitPrice = holding.unitPrice {
-                        Text("\(unitPrice.formatted())/card")
-                            .font(.caption.monospacedDigit())
+                    .lineLimit(1)
+                HStack(alignment: .firstTextBaseline, spacing: 5) {
+                    if let value = holding.holdingValue {
+                        Text(value.formatted())
+                            .font(.callout.weight(.bold).monospacedDigit())
+                    }
+                    if holding.quantity > 1 {
+                        Text("×\(holding.quantity)")
+                            .font(.caption)
                             .foregroundStyle(.secondary)
+                            .monospacedDigit()
                     }
                 }
-            } else {
-                AppCardBadge(
-                    text: "Value unavailable",
-                    systemImage: "exclamationmark.circle",
-                    tint: .orange
-                )
+                if let unitMovement, !unitMovement.isZero {
+                    Text("\(PortfolioContributionPresentation.signed(unitMovement)) per card")
+                        .font(.caption.weight(.semibold).monospacedDigit())
+                        .foregroundStyle(PortfolioPalette.direction(unitMovement))
+                }
             }
         }
-        .frame(minHeight: 48)
+        .frame(width: 136, alignment: .leading)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(holdingAccessibilityLabel)
+        .accessibilityLabel(
+            [
+                holding.name,
+                holding.holdingValue.map {
+                    "\($0.formatted())\(holding.quantity > 1 ? " total" : "")"
+                },
+                holding.quantity > 1 ? "quantity \(holding.quantity)" : nil,
+                unitMovement.flatMap {
+                    $0.isZero ? nil : "\(PortfolioContributionPresentation.signed($0)) per card"
+                }
+            ]
+            .compactMap { $0 }
+            .joined(separator: ", ")
+        )
     }
-
-    private var holdingAccessibilityLabel: String {
-        let quantity = holding.quantity > 1 ? ", quantity \(holding.quantity)" : ""
-        let unitPrice = holding.unitPrice.map { ", \($0.formatted()) per card" } ?? ""
-        let value = holding.holdingValue.map { ", total owned value \($0.formatted())" } ?? ", value unavailable"
-        return "\(holding.name), \(holding.detail)\(quantity)\(unitPrice)\(value)"
-    }
-
 }
 
-private struct PortfolioMagnitudeBar: View {
-    let fraction: CGFloat
-    let color: Color
+private struct PortfolioAmountPill: View {
+    let amount: Money
+    var showsArrow: Bool = false
 
     var body: some View {
-        GeometryReader { geometry in
-            Capsule()
-                .fill(.quaternary)
-                .overlay(alignment: .leading) {
-                    Capsule()
-                        .fill(color.opacity(0.65))
-                        .frame(width: geometry.size.width * fraction)
-                }
+        let color = PortfolioPalette.direction(amount)
+        HStack(spacing: 3) {
+            if showsArrow, !amount.isZero {
+                Image(systemName: amount < .zero ? "arrow.down" : "arrow.up")
+                    .font(.caption2.weight(.semibold))
+            }
+            Text(PortfolioContributionPresentation.signed(amount))
         }
-        .frame(height: 4)
+        .font(.subheadline.weight(.semibold).monospacedDigit())
+        .foregroundStyle(color)
+        .padding(.horizontal, 9)
+        .padding(.vertical, 4)
+        .background(color.opacity(0.14), in: Capsule())
     }
 }
 
 private struct PortfolioArtwork: View {
     let holding: PortfolioHoldingSnapshot
+    var width: CGFloat = 34
+    var height: CGFloat = 46
+    var cornerRadius: CGFloat = 5
 
     var body: some View {
         Group {
@@ -1173,8 +1185,8 @@ private struct PortfolioArtwork: View {
                 )
             }
         }
-        .frame(width: 34, height: 46)
-        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+        .frame(width: width, height: height)
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
     }
 }
 
@@ -1442,6 +1454,7 @@ private struct PortfolioRefreshButton: View {
         }
         .labelStyle(.iconOnly)
         .font(.headline.weight(.semibold))
+        .foregroundStyle(PortfolioPalette.refreshAccent)
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
         .disabled(isRefreshing)
