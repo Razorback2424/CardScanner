@@ -161,7 +161,14 @@ final class PortfolioEngine: ObservableObject {
     /// answers. Keep only the newest request and replay once more after the
     /// current pass publishes, rather than repeatedly cancelling work that was
     /// about to update the value.
-    private var pendingRecompute: (context: ModelContext, now: Date)?
+    private var pendingRecompute: (
+        context: ModelContext,
+        now: Date,
+        intervalState: OSSignpostIntervalState,
+        intervalMetadata: String
+    )?
+    private var activeRecomputeIntervalState: OSSignpostIntervalState?
+    private var activeRecomputeIntervalMetadata: String?
     /// Price refresh checkpoints are durability events, not portfolio input
     /// events. Hold the replay request until the controller reaches a terminal
     /// state, then settle it exactly once.
@@ -278,16 +285,35 @@ final class PortfolioEngine: ObservableObject {
     /// `PortfolioComputationActor`. Only the small act of building the summary
     /// and writing at most a few hundred close rows happens here.
     func recompute(context: ModelContext, now: Date = .now) {
-        recompute(context: context, now: now, bypassPriceRefreshGate: false)
+        let intervalMetadata = "api=recompute"
+        let intervalState = PerformanceSignpost.beginInterval(
+            "portfolio.recompute",
+            id: PerformanceSignpost.makeID(),
+            intervalMetadata
+        )
+        recompute(
+            context: context,
+            now: now,
+            bypassPriceRefreshGate: false,
+            intervalState: intervalState,
+            intervalMetadata: intervalMetadata
+        )
     }
 
     private func recompute(
         context: ModelContext,
         now: Date,
-        bypassPriceRefreshGate: Bool
+        bypassPriceRefreshGate: Bool,
+        intervalState: OSSignpostIntervalState,
+        intervalMetadata: String
     ) {
         if priceRefreshInFlight, !bypassPriceRefreshGate {
             priceRefreshReplayOwed = true
+            PerformanceSignpost.endInterval(
+                "portfolio.recompute",
+                intervalState,
+                "\(intervalMetadata),outcome=deferred-price-refresh"
+            )
             return
         }
         // Recompute is what runs when the inputs change, which is exactly when
@@ -297,11 +323,28 @@ final class PortfolioEngine: ObservableObject {
         retryEpochIfNeeded(context: context, now: now)
 
         guard computationTask == nil else {
-            pendingRecompute = (context, now)
+            if let pendingRecompute {
+                PerformanceSignpost.endInterval(
+                    "portfolio.recompute",
+                    pendingRecompute.intervalState,
+                    "\(pendingRecompute.intervalMetadata),outcome=coalesced"
+                )
+            }
+            pendingRecompute = (
+                context,
+                now,
+                intervalState,
+                intervalMetadata
+            )
             return
         }
 
-        startRecompute(context: context, now: now)
+        startRecompute(
+            context: context,
+            now: now,
+            intervalState: intervalState,
+            intervalMetadata: intervalMetadata
+        )
     }
 
     /// Cancels only the computation currently in flight. A newer request that
@@ -311,7 +354,14 @@ final class PortfolioEngine: ObservableObject {
         computationTask?.cancel()
     }
 
-    private func startRecompute(context: ModelContext, now: Date) {
+    private func startRecompute(
+        context: ModelContext,
+        now: Date,
+        intervalState: OSSignpostIntervalState,
+        intervalMetadata: String
+    ) {
+        activeRecomputeIntervalState = intervalState
+        activeRecomputeIntervalMetadata = intervalMetadata
         // Counted for the same reason as `makeCachedProjection`: the question
         // R3 asks is how many replays one refresh pass buys.
         PerformanceSignpost.signposter.emitEvent("startRecompute")
@@ -378,13 +428,21 @@ final class PortfolioEngine: ObservableObject {
     /// continuing use this; the app uses `recompute`.
     func recomputeAndWait(context: ModelContext, now: Date = .now) async {
         let wasAlreadyRecomputing = computationTask != nil
+        let intervalMetadata = "api=recomputeAndWait"
+        let intervalState = PerformanceSignpost.beginInterval(
+            "portfolio.recompute",
+            id: PerformanceSignpost.makeID(),
+            intervalMetadata
+        )
         // Tests and the headless background path explicitly ask for the result;
         // preserve that contract even if a foreground controller has a pass in
         // flight elsewhere in the process.
         recompute(
             context: context,
             now: now,
-            bypassPriceRefreshGate: true
+            bypassPriceRefreshGate: true,
+            intervalState: intervalState,
+            intervalMetadata: intervalMetadata
         )
         // When a pass was already in flight, this request became its one
         // trailing replay. Await both; work requested after that belongs to a
@@ -530,21 +588,44 @@ final class PortfolioEngine: ObservableObject {
     }
 
     private func finishAppliedComputation() {
+        finishRecomputeInterval(outcome: "completed")
         computationTask = nil
         isRecomputing = false
 
         guard let pendingRecompute else { return }
         self.pendingRecompute = nil
-        startRecompute(context: pendingRecompute.context, now: pendingRecompute.now)
+        startRecompute(
+            context: pendingRecompute.context,
+            now: pendingRecompute.now,
+            intervalState: pendingRecompute.intervalState,
+            intervalMetadata: pendingRecompute.intervalMetadata
+        )
     }
 
     private func finishCancelledComputation() {
+        finishRecomputeInterval(outcome: "cancelled")
         computationTask = nil
         isRecomputing = false
 
         guard let pendingRecompute else { return }
         self.pendingRecompute = nil
-        startRecompute(context: pendingRecompute.context, now: pendingRecompute.now)
+        startRecompute(
+            context: pendingRecompute.context,
+            now: pendingRecompute.now,
+            intervalState: pendingRecompute.intervalState,
+            intervalMetadata: pendingRecompute.intervalMetadata
+        )
+    }
+
+    private func finishRecomputeInterval(outcome: String) {
+        guard let activeRecomputeIntervalState else { return }
+        PerformanceSignpost.endInterval(
+            "portfolio.recompute",
+            activeRecomputeIntervalState,
+            "\(activeRecomputeIntervalMetadata ?? "api=unknown"),outcome=\(outcome)"
+        )
+        self.activeRecomputeIntervalState = nil
+        activeRecomputeIntervalMetadata = nil
     }
 
     // MARK: - Current value, measured independently of the walk

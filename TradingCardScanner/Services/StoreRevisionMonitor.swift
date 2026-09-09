@@ -1,4 +1,5 @@
 import Combine
+import OSLog
 import SwiftData
 import SwiftUI
 
@@ -69,10 +70,18 @@ enum StoreRevisionFingerprinting {
 final class DerivedStateWriteCoordinator: ObservableObject {
     @Published private(set) var generation: UInt = 0
     private var depth = 0
+    private var bulkIntervalState: OSSignpostIntervalState?
 
     var isBulkWriteInFlight: Bool { depth > 0 }
 
     func beginBulkWrite() {
+        if depth == 0 {
+            bulkIntervalState = PerformanceSignpost.beginInterval(
+                "derivedStateBulkWrite",
+                id: PerformanceSignpost.makeID(),
+                "generation=\(generation)"
+            )
+        }
         depth += 1
     }
 
@@ -80,7 +89,16 @@ final class DerivedStateWriteCoordinator: ObservableObject {
         guard depth > 0 else { return }
         depth -= 1
         guard depth == 0 else { return }
+        let completedGeneration = generation
         generation &+= 1
+        if let bulkIntervalState {
+            PerformanceSignpost.endInterval(
+                "derivedStateBulkWrite",
+                bulkIntervalState,
+                "generation=\(completedGeneration)"
+            )
+        }
+        bulkIntervalState = nil
     }
 }
 
@@ -160,17 +178,42 @@ struct StoreRevisionMonitor: View {
         let controllerOwnedPriceChange = pricesChanged
             && revisionStore.consumeExpectedPriceValues(fingerprint.priceValues)
 
+        PerformanceSignpost.emitEvent(
+            "storeRevisionApply",
+            "cards=\(cardsChanged ? 1 : 0),inventory=\(inventoryChanged ? 1 : 0),activities=\(activitiesChanged ? 1 : 0),prices=\(pricesChanged ? 1 : 0),shape=\(priceShapeChanged ? 1 : 0),artwork=\(artworkChanged ? 1 : 0),magic=\(magicChanged ? 1 : 0)"
+        )
+
         if pricesChanged || cardsChanged || artworkChanged {
             // During a refresh, deltas already update this store in O(changed).
             // The terminal controller rebuild remains authoritative, so avoid
             // turning each durable checkpoint into a second whole-table read.
             if !isRefreshInFlight && !controllerOwnedPriceChange {
+                let state = PerformanceSignpost.beginInterval(
+                    "storeRevision.priceSnapshotRebuild",
+                    id: PerformanceSignpost.makeID(),
+                    "generation=\(generation)"
+                )
                 await priceSnapshot.rebuild(container: modelContext.container)
+                PerformanceSignpost.endInterval(
+                    "storeRevision.priceSnapshotRebuild",
+                    state,
+                    "generation=\(generation)"
+                )
             }
         }
 
         if cardsChanged || priceShapeChanged || artworkChanged {
+            let state = PerformanceSignpost.beginInterval(
+                "storeRevision.projectionRebuild",
+                id: PerformanceSignpost.makeID(),
+                "generation=\(generation)"
+            )
             await projectionStore.rebuild(container: modelContext.container)
+            PerformanceSignpost.endInterval(
+                "storeRevision.projectionRebuild",
+                state,
+                "generation=\(generation)"
+            )
         }
 
         if cardsChanged || inventoryChanged || activitiesChanged {
@@ -179,13 +222,53 @@ struct StoreRevisionMonitor: View {
             // Once a pass is already in flight, its terminal gate owns the one
             // trailing replay instead.
             if !isRefreshInFlight {
+                let portfolioState = PerformanceSignpost.beginInterval(
+                    "storeRevision.portfolioRecompute",
+                    id: PerformanceSignpost.makeID(),
+                    "generation=\(generation)"
+                )
                 await portfolio.recomputeAndWait(context: modelContext)
+                PerformanceSignpost.endInterval(
+                    "storeRevision.portfolioRecompute",
+                    portfolioState,
+                    "generation=\(generation)"
+                )
             }
+            let refreshState = PerformanceSignpost.beginInterval(
+                "storeRevision.refreshStalePrices",
+                id: PerformanceSignpost.makeID(),
+                "generation=\(generation)"
+            )
             await refreshStalePricesIfNeeded(using: fingerprint)
+            PerformanceSignpost.endInterval(
+                "storeRevision.refreshStalePrices",
+                refreshState,
+                "generation=\(generation)"
+            )
         } else if pricesChanged && !isRefreshInFlight && !controllerOwnedPriceChange {
             CollectionStore(context: modelContext).invalidateIdentityAliasCache()
+            let portfolioState = PerformanceSignpost.beginInterval(
+                "storeRevision.portfolioRecompute",
+                id: PerformanceSignpost.makeID(),
+                "generation=\(generation)"
+            )
             await portfolio.recomputeAndWait(context: modelContext)
+            PerformanceSignpost.endInterval(
+                "storeRevision.portfolioRecompute",
+                portfolioState,
+                "generation=\(generation)"
+            )
+            let refreshState = PerformanceSignpost.beginInterval(
+                "storeRevision.refreshStalePrices",
+                id: PerformanceSignpost.makeID(),
+                "generation=\(generation)"
+            )
             await refreshStalePricesIfNeeded(using: fingerprint)
+            PerformanceSignpost.endInterval(
+                "storeRevision.refreshStalePrices",
+                refreshState,
+                "generation=\(generation)"
+            )
         }
 
         if magicChanged {
@@ -196,12 +279,42 @@ struct StoreRevisionMonitor: View {
                 return
             }
             MagicTreatmentMigrationCoordinator.shared.invalidateCompletedReports()
+            let migrationState = PerformanceSignpost.beginInterval(
+                "storeRevision.magicMigration",
+                id: PerformanceSignpost.makeID(),
+                "generation=\(generation)"
+            )
             _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(in: modelContext)
+            PerformanceSignpost.endInterval(
+                "storeRevision.magicMigration",
+                migrationState,
+                "generation=\(generation)"
+            )
             guard !Task.isCancelled else { return }
             if isRefreshInFlight {
+                let portfolioState = PerformanceSignpost.beginInterval(
+                    "storeRevision.portfolioRecompute",
+                    id: PerformanceSignpost.makeID(),
+                    "generation=\(generation),mode=queued"
+                )
                 portfolio.recompute(context: modelContext)
+                PerformanceSignpost.endInterval(
+                    "storeRevision.portfolioRecompute",
+                    portfolioState,
+                    "generation=\(generation),mode=queued"
+                )
             } else {
+                let portfolioState = PerformanceSignpost.beginInterval(
+                    "storeRevision.portfolioRecompute",
+                    id: PerformanceSignpost.makeID(),
+                    "generation=\(generation),mode=wait"
+                )
                 await portfolio.recomputeAndWait(context: modelContext)
+                PerformanceSignpost.endInterval(
+                    "storeRevision.portfolioRecompute",
+                    portfolioState,
+                    "generation=\(generation),mode=wait"
+                )
             }
         }
 

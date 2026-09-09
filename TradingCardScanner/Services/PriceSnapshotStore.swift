@@ -54,11 +54,25 @@ final class PriceSnapshotStore: ObservableObject {
     /// Applies only values that changed. A refresh may send repeated keys across
     /// checkpoint boundaries; those do not cause another publication.
     func apply(_ deltas: [PriceDelta]) {
+        let applyState = PerformanceSignpost.beginInterval(
+            "priceSnapshot.apply",
+            id: PerformanceSignpost.makeID(),
+            "deltas=\(deltas.count)"
+        )
+        var changedCount = 0
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceSnapshot.apply",
+                applyState,
+                "deltas=\(deltas.count),changed=\(changedCount)"
+            )
+        }
         var changed = false
         for delta in deltas {
             if prices[delta.key] != delta.display {
                 prices[delta.key] = delta.display
                 changed = true
+                changedCount += 1
             }
 
             // A projection can correctly retain its shape while the answer for
@@ -119,6 +133,18 @@ final class PriceSnapshotStore: ObservableObject {
     }
 
     func rebuild(container: ModelContainer) async {
+        let rebuildState = PerformanceSignpost.beginInterval(
+            "priceSnapshot.rebuild",
+            id: PerformanceSignpost.makeID(),
+            "requested=true"
+        )
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceSnapshot.rebuild",
+                rebuildState,
+                "requested=\(rebuildRequested ? 1 : 0)"
+            )
+        }
         rebuildRequested = true
         guard rebuildTask == nil else {
             await rebuildTask?.value

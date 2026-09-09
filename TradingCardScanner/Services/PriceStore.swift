@@ -12,6 +12,31 @@ enum PerformanceSignpost {
         subsystem: "TradingCardScanner",
         category: "Performance"
     )
+
+    static func makeID() -> OSSignpostID {
+        signposter.makeSignpostID()
+    }
+
+    @discardableResult
+    static func beginInterval(
+        _ name: StaticString,
+        id: OSSignpostID,
+        _ metadata: String
+    ) -> OSSignpostIntervalState {
+        signposter.beginInterval(name, id: id, "\(metadata, privacy: .public)")
+    }
+
+    static func endInterval(
+        _ name: StaticString,
+        _ state: OSSignpostIntervalState,
+        _ metadata: String
+    ) {
+        signposter.endInterval(name, state, "\(metadata, privacy: .public)")
+    }
+
+    static func emitEvent(_ name: StaticString, _ argument: String) {
+        signposter.emitEvent(name, "\(argument, privacy: .public)")
+    }
 }
 
 /// A stable diagnosis for an owned item that has no exact market price.
@@ -939,9 +964,22 @@ struct PriceStore {
     @discardableResult
     func save() -> Bool {
         guard context.hasChanges else { return true }
-        PerformanceSignpost.signposter.emitEvent("PriceStore.save")
+        let saveState = PerformanceSignpost.beginInterval(
+            "PriceStore.save",
+            id: PerformanceSignpost.makeID(),
+            "changed=true"
+        )
+        var outcome = "failed"
+        defer {
+            PerformanceSignpost.endInterval(
+                "PriceStore.save",
+                saveState,
+                "outcome=\(outcome)"
+            )
+        }
         do {
             try context.save()
+            outcome = "saved"
             return true
         } catch {
             context.rollback()

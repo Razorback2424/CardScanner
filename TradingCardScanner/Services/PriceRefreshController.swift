@@ -63,6 +63,20 @@ actor PriceRefreshModelActor {
         _ request: PriceRefreshRequest,
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void
     ) async -> PriceRefreshWorkOutcome {
+        let runState = PerformanceSignpost.beginInterval(
+            "priceRefresh.run",
+            id: PerformanceSignpost.makeID(),
+            "targets=unknown"
+        )
+        var runOutcome = "target-build-failed"
+        var targetCount = "unknown"
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceRefresh.run",
+                runState,
+                "targets=\(targetCount),outcome=\(runOutcome)"
+            )
+        }
         let store = makeStore()
         let targets: [PriceTarget]
         do {
@@ -90,13 +104,24 @@ actor PriceRefreshModelActor {
             return .targetBuildFailed
         }
 
-        guard !targets.isEmpty else { return .noTargets }
-        return await performRefresh(
+        targetCount = String(targets.count)
+        guard !targets.isEmpty else {
+            runOutcome = "no-targets"
+            return .noTargets
+        }
+        let result = await performRefresh(
             targets,
             request: request,
             store: store,
             progress: progress
         )
+        runOutcome = switch result {
+        case .noTargets: "no-targets"
+        case .targetBuildFailed: "target-build-failed"
+        case .cancelled: "cancelled"
+        case .completed: "completed"
+        }
+        return result
     }
 
     private func makeStore() -> PriceStore {
@@ -137,6 +162,19 @@ actor PriceRefreshModelActor {
         store: PriceStore,
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void
     ) async -> PriceRefreshWorkOutcome {
+        let refreshState = PerformanceSignpost.beginInterval(
+            "priceRefresh.performRefresh",
+            id: PerformanceSignpost.makeID(),
+            "targets=\(targets.count)"
+        )
+        var refreshOutcome = "cancelled"
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceRefresh.performRefresh",
+                refreshState,
+                "targets=\(targets.count),outcome=\(refreshOutcome)"
+            )
+        }
         var priced = 0
         var failed = 0
         var latestSourceUpdate: Date?
@@ -159,6 +197,18 @@ actor PriceRefreshModelActor {
             priced: Bool = false,
             changed: Bool = false
         ) {
+            let stageState = PerformanceSignpost.beginInterval(
+                "priceRefresh.stage",
+                id: PerformanceSignpost.makeID(),
+                "accepted=\(accepted ? 1 : 0),priced=\(priced ? 1 : 0),changed=\(changed ? 1 : 0)"
+            )
+            defer {
+                PerformanceSignpost.endInterval(
+                    "priceRefresh.stage",
+                    stageState,
+                    "accepted=\(accepted ? 1 : 0)"
+                )
+            }
             guard accepted else {
                 persistenceFailed = true
                 return
@@ -171,6 +221,12 @@ actor PriceRefreshModelActor {
 
         @discardableResult
         func commitStaged() async -> Bool {
+            let writeCount = stagedWriteCount
+            let commitState = PerformanceSignpost.beginInterval(
+                "priceRefresh.commitStaged",
+                id: PerformanceSignpost.makeID(),
+                "writes=\(writeCount)"
+            )
             let saved = store.save()
             if saved {
                 priced += stagedPriced
@@ -186,6 +242,11 @@ actor PriceRefreshModelActor {
             stagedDuplicateRepairs = 0
             stagedWriteCount = 0
             lastCommitAt = .now
+            PerformanceSignpost.endInterval(
+                "priceRefresh.commitStaged",
+                commitState,
+                "writes=\(writeCount),saved=\(saved ? 1 : 0)"
+            )
             return saved
         }
 
@@ -287,9 +348,11 @@ actor PriceRefreshModelActor {
             for _ in 0..<initial {
                 let batch = requestBatches[cursor]
                 cursor += 1
+                let batchID = UUID()
                 group.addTask { [tcgdex, scryfall, importedResolver] in
                     await PriceRefreshController.fetchBatch(
                         batch,
+                        batchID: batchID,
                         tcgdex: tcgdex,
                         scryfall: scryfall,
                         importedResolver: importedResolver
@@ -426,9 +489,11 @@ actor PriceRefreshModelActor {
                    !Task.isCancelled {
                     let batch = requestBatches[cursor]
                     cursor += 1
+                    let batchID = UUID()
                     group.addTask { [tcgdex, scryfall, importedResolver] in
                         await PriceRefreshController.fetchBatch(
                             batch,
+                            batchID: batchID,
                             tcgdex: tcgdex,
                             scryfall: scryfall,
                             importedResolver: importedResolver
@@ -441,6 +506,7 @@ actor PriceRefreshModelActor {
         await publishCatalogProgress(force: true)
         _ = await commitStaged()
         if wasCancelled || Task.isCancelled {
+            refreshOutcome = "cancelled"
             return .cancelled
         }
 
@@ -470,9 +536,13 @@ actor PriceRefreshModelActor {
         gradedLookupMisses += gradedResult.lookupMisses
         gradedTransportFailures += gradedResult.transportFailures
 
-        if Task.isCancelled { return .cancelled }
+        if Task.isCancelled {
+            refreshOutcome = "cancelled"
+            return .cancelled
+        }
         let latest = latestSourceUpdate ?? previousLatest
         let finalPriceDeltas = takePriceDeltas(from: store)
+        refreshOutcome = "completed"
         return .completed(
             PriceRefreshWorkResult(
                 checkedAt: .now,
@@ -566,6 +636,19 @@ actor PriceRefreshModelActor {
     /// batch. That callback is a durability opportunity, not a requirement to
     /// save every batch: keep the same wall-clock budget as the other lanes.
     private func checkpointActiveContextIfDue() -> Bool {
+        let checkpointState = PerformanceSignpost.beginInterval(
+            "priceRefresh.checkpointActiveContext",
+            id: PerformanceSignpost.makeID(),
+            "staged=\(activeFallbackStagedWrites)"
+        )
+        var checkpointOutcome = "not-due"
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceRefresh.checkpointActiveContext",
+                checkpointState,
+                "staged=\(activeFallbackStagedWrites),outcome=\(checkpointOutcome)"
+            )
+        }
         let due = activeFallbackStagedWrites >= PriceRefreshController.stagedWriteCeiling
             || Date.now.timeIntervalSince(activeFallbackLastCommitAt)
                 >= PriceRefreshController.checkpointBudget
@@ -574,6 +657,9 @@ actor PriceRefreshModelActor {
         if saved {
             activeFallbackStagedWrites = 0
             activeFallbackLastCommitAt = .now
+            checkpointOutcome = "saved"
+        } else {
+            checkpointOutcome = "failed"
         }
         return saved
     }
@@ -584,6 +670,19 @@ actor PriceRefreshModelActor {
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void,
         store: PriceStore
     ) async -> (priced: Int, persistenceFailed: Bool) {
+        let fallbackState = PerformanceSignpost.beginInterval(
+            "priceRefresh.runFallback",
+            id: PerformanceSignpost.makeID(),
+            "candidates=\(candidates.count)"
+        )
+        var fallbackOutcome = "skipped"
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceRefresh.runFallback",
+                fallbackState,
+                "candidates=\(candidates.count),outcome=\(fallbackOutcome)"
+            )
+        }
         guard !candidates.isEmpty else {
             await progress(.fallbackIdle)
             return (0, false)
@@ -604,6 +703,7 @@ actor PriceRefreshModelActor {
             await progress(.fallbackUnconfigured(pending: eligibleCandidates.count))
             return (0, false)
         }
+        fallbackOutcome = "running"
 
         let (identities, identityIndex) = makeIdentityState()
         let artworkPending = PriceRefreshController.rowsMissingArtworkIDs(in: modelContext)
@@ -669,6 +769,19 @@ actor PriceRefreshModelActor {
 
         @discardableResult
         func checkpoint(force: Bool = false) async -> Bool {
+            let checkpointState = PerformanceSignpost.beginInterval(
+                "priceRefresh.fallbackCheckpoint",
+                id: PerformanceSignpost.makeID(),
+                "force=\(force ? 1 : 0),staged=\(activeFallbackStagedWrites)"
+            )
+            var checkpointOutcome = "not-due"
+            defer {
+                PerformanceSignpost.endInterval(
+                    "priceRefresh.fallbackCheckpoint",
+                    checkpointState,
+                    "force=\(force ? 1 : 0),outcome=\(checkpointOutcome)"
+                )
+            }
             let due = force
                 || activeFallbackStagedWrites >= PriceRefreshController.stagedWriteCeiling
                 || Date.now.timeIntervalSince(activeFallbackLastCommitAt)
@@ -681,8 +794,10 @@ actor PriceRefreshModelActor {
                 activeFallbackLastCommitAt = .now
                 let deltas = takePriceDeltas(from: store)
                 if !deltas.isEmpty { await progress(.prices(deltas)) }
+                checkpointOutcome = "saved"
             } else {
                 persistenceFailed = true
+                checkpointOutcome = "failed"
             }
             stagedPriced = 0
             return saved
@@ -869,6 +984,7 @@ actor PriceRefreshModelActor {
                 remainingToday: budget.remainingToday
             ))
         }
+        fallbackOutcome = stoppedByAllowance ? "stopped" : (Task.isCancelled ? "cancelled" : "completed")
         return (priced, persistenceFailed)
     }
 
@@ -883,6 +999,19 @@ actor PriceRefreshModelActor {
         lookupMisses: Int,
         transportFailures: Int
     ) {
+        let gradedState = PerformanceSignpost.beginInterval(
+            "priceRefresh.refreshGraded",
+            id: PerformanceSignpost.makeID(),
+            "targets=\(targets.count)"
+        )
+        var gradedOutcome = "skipped"
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceRefresh.refreshGraded",
+                gradedState,
+                "targets=\(targets.count),outcome=\(gradedOutcome)"
+            )
+        }
         let slabs = targets.filter {
             guard $0.itemKind == .gradedCard else { return false }
             if $0.marketVariantID != nil { return true }
@@ -891,6 +1020,7 @@ actor PriceRefreshModelActor {
         guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
             return (0, false, 0, 0)
         }
+        gradedOutcome = "running"
 
         var byCard: [String: [PriceTarget]] = [:]
         for slab in slabs {
@@ -988,6 +1118,19 @@ actor PriceRefreshModelActor {
         }
 
         func checkpoint(force: Bool = false) async {
+            let checkpointState = PerformanceSignpost.beginInterval(
+                "priceRefresh.gradedCheckpoint",
+                id: PerformanceSignpost.makeID(),
+                "force=\(force ? 1 : 0),writes=\(stagedWriteCount)"
+            )
+            var checkpointOutcome = "not-due"
+            defer {
+                PerformanceSignpost.endInterval(
+                    "priceRefresh.gradedCheckpoint",
+                    checkpointState,
+                    "force=\(force ? 1 : 0),outcome=\(checkpointOutcome)"
+                )
+            }
             let due = force
                 || stagedWriteCount >= PriceRefreshController.stagedWriteCeiling
                 || Date.now.timeIntervalSince(lastCommitAt)
@@ -1000,8 +1143,10 @@ actor PriceRefreshModelActor {
                 lastCommitAt = .now
                 let deltas = takePriceDeltas(from: store)
                 if !deltas.isEmpty { await progress(.prices(deltas)) }
+                checkpointOutcome = "saved"
             } else {
                 persistenceFailed = true
+                checkpointOutcome = "failed"
             }
         }
 
@@ -1127,6 +1272,7 @@ actor PriceRefreshModelActor {
             await checkpoint()
         }
         await checkpoint(force: true)
+        gradedOutcome = Task.isCancelled ? "cancelled" : "completed"
         return (priced, persistenceFailed, lookupMisses, transportFailures)
     }
 }
@@ -1675,6 +1821,19 @@ final class PriceRefreshController: ObservableObject {
         _ request: PriceRefreshRequest,
         container: ModelContainer
     ) async -> PriceRefreshResult {
+        let controllerState = PerformanceSignpost.beginInterval(
+            "priceRefresh.controller",
+            id: PerformanceSignpost.makeID(),
+            "maxTargets=\(request.maximumTargetCount.map(String.init) ?? "all")"
+        )
+        var controllerOutcome = "joined"
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceRefresh.controller",
+                controllerState,
+                "outcome=\(controllerOutcome)"
+            )
+        }
         if let activeRefresh {
             enqueuePending(request)
             return await activeRefresh.value
@@ -1694,6 +1853,7 @@ final class PriceRefreshController: ObservableObject {
         if let pending = pendingFallbackWork {
             await updateFallbackAvailability(pending: pending)
         }
+        controllerOutcome = result.targetBuildFailed ? "target-build-failed" : (result.didRun ? "completed" : "empty-or-cancelled")
         return result
     }
 
@@ -2303,18 +2463,34 @@ final class PriceRefreshController: ObservableObject {
 
     fileprivate nonisolated static func fetchBatch(
         _ printings: [PriceTarget.Printing],
+        batchID: UUID,
         tcgdex: TCGdexService,
         scryfall: ScryfallService,
         importedResolver: ImportedCardResolver
     ) async -> [PriceFetchOutcome] {
+        let batchState = PerformanceSignpost.beginInterval(
+            "priceRefresh.fetchBatch",
+            id: PerformanceSignpost.makeID(),
+            "batch=\(batchID.uuidString),count=\(printings.count)"
+        )
+        var batchOutcome = "empty"
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceRefresh.fetchBatch",
+                batchState,
+                "batch=\(batchID.uuidString),outcome=\(batchOutcome)"
+            )
+        }
         guard !printings.isEmpty else { return [] }
         guard printings.count > 1,
               printings.allSatisfy({ $0.game == .magic && $0.importedIdentity == nil }) else {
+            batchOutcome = "parallel"
             return await withTaskGroup(of: PriceFetchOutcome.self) { group in
                 for printing in printings {
                     group.addTask {
                         await fetch(
                             printing,
+                            batchID: batchID,
                             tcgdex: tcgdex,
                             scryfall: scryfall,
                             importedResolver: importedResolver
@@ -2328,6 +2504,7 @@ final class PriceRefreshController: ObservableObject {
         }
 
         do {
+            batchOutcome = "magic-batch"
             let cards = try await scryfall.fetchCards(
                 identifiers: printings.map { ScryfallCardIdentifier(id: $0.printingID) }
             )
@@ -2352,10 +2529,13 @@ final class PriceRefreshController: ObservableObject {
                 return PriceFetchOutcome(printing: printing, result: .card(.magic(card)))
             }
         } catch is CancellationError {
+            batchOutcome = "cancelled"
             return printings.map { PriceFetchOutcome(printing: $0, result: .cancelled) }
         } catch let error as URLError where error.code == .cancelled {
+            batchOutcome = "cancelled"
             return printings.map { PriceFetchOutcome(printing: $0, result: .cancelled) }
         } catch let error as URLError where PriceFetchOutcome.isUnreachable(error) {
+            batchOutcome = "unreachable"
             return printings.map { PriceFetchOutcome(printing: $0, result: .unreachable) }
         } catch let error as ScryfallError {
             let result: PriceFetchOutcome.Result
@@ -2365,8 +2545,13 @@ final class PriceRefreshController: ObservableObject {
             default:
                 result = .failed
             }
+            batchOutcome = switch result {
+            case .unreachable: "unreachable"
+            default: "failed"
+            }
             return printings.map { PriceFetchOutcome(printing: $0, result: result) }
         } catch {
+            batchOutcome = "failed"
             return printings.map { PriceFetchOutcome(printing: $0, result: .failed) }
         }
     }
@@ -2388,10 +2573,23 @@ final class PriceRefreshController: ObservableObject {
 
     fileprivate nonisolated static func fetch(
         _ printing: PriceTarget.Printing,
+        batchID: UUID,
         tcgdex: TCGdexService,
         scryfall: ScryfallService,
         importedResolver: ImportedCardResolver
     ) async -> PriceFetchOutcome {
+        let fetchState = PerformanceSignpost.beginInterval(
+            "priceRefresh.fetch",
+            id: PerformanceSignpost.makeID(),
+            "batch=\(batchID.uuidString),printing=\(printing.printingID)"
+        )
+        defer {
+            PerformanceSignpost.endInterval(
+                "priceRefresh.fetch",
+                fetchState,
+                "batch=\(batchID.uuidString),printing=\(printing.printingID)"
+            )
+        }
         do {
             if let identity = printing.importedIdentity {
                 let card = try await importedResolver.resolve(
