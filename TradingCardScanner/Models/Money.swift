@@ -147,6 +147,18 @@ extension Money {
         guard isValid else { return "Value unavailable" }
         return doubleValue.formatted(.currency(code: currencyCode).precision(.fractionLength(2)))
     }
+
+    /// Splits the formatted amount into a leading whole-dollar part (with
+    /// currency symbol and grouping) and a trailing fractional part, so a
+    /// hero display can render them at different sizes/weights — e.g.
+    /// "$12,482" + ".17". Falls back to the plain formatted string as the
+    /// whole part with an empty fraction when the formatter doesn't produce a
+    /// two-part decimal (invalid amounts, some locales).
+    func heroParts(currencyCode: String = "USD") -> (whole: String, fraction: String) {
+        let full = formatted(currencyCode: currencyCode)
+        guard let dot = full.lastIndex(of: "."), isValid else { return (full, "") }
+        return (String(full[full.startIndex..<dot]), String(full[dot...]))
+    }
 }
 
 extension Sequence where Element == Money {
