@@ -284,5 +284,67 @@ enum PortfolioDebugFixtures {
         }
         try? modelContext.save()
     }
+
+    @MainActor
+    static func seedCollectionFooter4aIfNeeded(in modelContext: ModelContext) {
+        guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
+
+        let card = TCGdexCard(
+            id: "ui-collection-footer-4a",
+            localId: "084",
+            name: "Bilbo Baggins, Ring-Bearer",
+            image: "https://images.pokemontcg.io/base1/4_hires.png",
+            rarity: "Rare",
+            set: TCGdexSetBrief(
+                id: "hobbit-eternal",
+                name: "The Hobbit Eternal",
+                cardCount: TCGdexCardCount(total: 1, official: 1)
+            ),
+            variants: TCGdexVariants(
+                firstEdition: false,
+                holo: false,
+                normal: false,
+                reverse: true,
+                wPromo: nil
+            ),
+            pricing: nil,
+            variantsDetailed: nil
+        )
+        let reverseHolo = PhysicalVariant(
+            id: PhysicalVariant.reverse.id,
+            label: "Reverse holo"
+        )
+        let store = CollectionStore(context: modelContext)
+        _ = try? store.add(
+            .pokemon(card, setCode: "HOB"),
+            resolved: ResolvedVariant(
+                variant: reverseHolo,
+                resolution: .userConfirmed
+            ),
+            identityResolution: .catalogSelected,
+            quantity: 12
+        )
+
+        guard let stored = try? modelContext.fetch(FetchDescriptor<CollectedCard>()).first else { return }
+        let marketVariantID = stored.justTCGVariantID ?? stored.variantID ?? stored.providerID
+        _ = PriceStore(context: modelContext).store(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 1_234.56,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: marketVariantID,
+                    sourceUpdatedAt: .now,
+                    fetchedAt: .now
+                )
+            ),
+            game: .pokemon,
+            printingID: stored.priceStorageID,
+            variantID: stored.variantID,
+            marketVariantID: marketVariantID,
+            at: .now
+        )
+        try? modelContext.save()
+    }
 }
 #endif

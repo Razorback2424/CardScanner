@@ -336,7 +336,7 @@ struct CollectionView: View {
                 if snapshot.entries.isEmpty {
                     noMatches
                 } else {
-                    LazyVGrid(columns: columns, spacing: 22) {
+                    LazyVGrid(columns: columns, spacing: 28) {
                         ForEach(snapshot.entries) { entry in
                             // A button driving the detail column's path rather than a
                             // `NavigationLink`: links push onto the stack that encloses
@@ -1020,12 +1020,12 @@ private struct CollectionCardTile: View {
         row.artworkAccent ?? loadedArtworkAccent
     }
 
-    private var rowHeights: (price: CGFloat?, meta: CGFloat?) {
-        dynamicTypeSize > .xxxLarge ? (nil, nil) : (26, 16)
+    private var nameMinHeight: CGFloat? {
+        dynamicTypeSize > .xxxLarge ? nil : 46
     }
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             ZStack {
                 CollectionArtworkGlow(
                     accent: artworkAccent,
@@ -1057,48 +1057,24 @@ private struct CollectionCardTile: View {
             }
             .aspectRatio(5.0 / 7.0, contentMode: .fit)
 
-            VStack(alignment: .leading, spacing: 6) {
-                Text(row.name)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(2)
-                    .frame(maxWidth: .infinity, minHeight: 40, alignment: .topLeading)
+            VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(row.name)
+                        .font(.system(size: 18, weight: .semibold))
+                        .tracking(-0.18)
+                        .lineLimit(2)
+                        .frame(maxWidth: .infinity, minHeight: nameMinHeight, alignment: .topLeading)
 
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    PriceLabel(price: row.price, style: .compact)
-                        .fixedSize(horizontal: true, vertical: false)
-
-                    if row.quantity > 1 {
-                        Text("×\(row.quantity)")
-                            .font(.footnote)
-                            .monospacedDigit()
-                            .foregroundStyle(.secondary)
-                    }
-
-                    if let priceCaveat {
-                        Text(priceCaveat)
-                            .font(.footnote)
-                            .foregroundStyle(.orange)
-                            .lineLimit(1)
-                            .truncationMode(.tail)
-                    }
-
-                    Spacer(minLength: 0)
+                    Text(identityLine)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(Color("TileIdentity"))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .frame(height: rowHeights.price)
 
-                Text(identityLine)
-                    .font(.caption)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+                quietLine
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .frame(height: rowHeights.meta)
-
-                statusRow
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .frame(height: rowHeights.meta)
             }
             .frame(maxWidth: .infinity)
         }
@@ -1137,7 +1113,7 @@ private struct CollectionCardTile: View {
         if let amount = row.price.amount {
             return amount.formatted(.currency(code: row.price.currencyCode))
         }
-        return row.price.state() == .unavailable ? "price unavailable" : "price not checked"
+        return row.price.state() == .unavailable ? "Price unavailable" : "Not checked yet"
     }
 
     private var accessibleStatus: String {
@@ -1146,33 +1122,55 @@ private struct CollectionCardTile: View {
     }
 
     private var identityLine: String {
-        [row.setCode, row.cardNumber]
+        [row.setName, row.cardNumber]
             .filter { !$0.isEmpty }
             .joined(separator: " · ")
     }
 
-    private var priceCaveat: String? {
-        guard row.price.amount == nil else { return unpricedReason?.title }
+    private var priceReplacementCaveat: String? {
+        guard row.price.amount == nil else { return nil }
         if let unpricedReason { return unpricedReason.title }
         return row.price.state() == .unavailable ? "Price unavailable" : "Not checked yet"
     }
 
     @ViewBuilder
-    private var statusRow: some View {
-        if let status = CollectionFinishStatus.resolve(
-            row: row,
-            showDefaultFinish: showDefaultFinish
-        ) {
-            HStack(alignment: .firstTextBaseline, spacing: 5) {
-                CollectionFinishDot(style: statusDotStyle(for: status))
-                Text(status.label)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(statusTint(for: status))
+    private var quietLine: some View {
+        HStack(alignment: .center, spacing: 8) {
+            if let caveat = priceReplacementCaveat {
+                Text(caveat)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.orange)
                     .lineLimit(1)
                     .truncationMode(.tail)
+            } else {
+                PriceLabel(price: row.price, style: .tile)
+                    .fixedSize(horizontal: true, vertical: false)
             }
-        } else {
-            Color.clear
+
+            if row.quantity > 1 {
+                Text("×\(row.quantity)")
+                    .font(.footnote)
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: true, vertical: false)
+            }
+
+            Spacer(minLength: 4)
+
+            if let status = CollectionFinishStatus.resolve(
+                row: row,
+                showDefaultFinish: showDefaultFinish
+            ) {
+                HStack(spacing: 5) {
+                    CollectionFinishDot(style: statusDotStyle(for: status))
+                    Text(status.label)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(statusTint(for: status))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                }
+                .layoutPriority(1)
+            }
         }
     }
 
@@ -1306,7 +1304,7 @@ private struct CollectionCardArtwork: View {
 
 /// One place decides how a price is allowed to be described.
 struct PriceLabel: View {
-    enum Style { case compact, detailed }
+    enum Style { case compact, detailed, tile }
 
     let price: PriceDisplay
     var style: Style = .compact
@@ -1328,12 +1326,12 @@ struct PriceLabel: View {
 
         case .unavailable:
             Text(style == .compact ? "—" : "Price unavailable")
-                .font(style == .compact ? compactPriceFont : .subheadline)
+                .font(style == .compact ? compactPriceFont : priceFont)
                 .foregroundStyle(.secondary)
 
         case .unknown:
             Text(style == .compact ? "—" : "Not checked yet")
-                .font(style == .compact ? compactPriceFont : .subheadline)
+                .font(style == .compact ? compactPriceFont : priceFont)
                 .foregroundStyle(.tertiary)
         }
     }
@@ -1342,9 +1340,17 @@ struct PriceLabel: View {
         .system(size: 22, weight: .bold, design: .rounded).monospacedDigit()
     }
 
+    private var tilePriceFont: Font {
+        .system(size: 15, weight: .semibold).monospacedDigit()
+    }
+
+    private var priceFont: Font {
+        style == .tile ? tilePriceFont : .subheadline
+    }
+
     private func amount(_ shade: HierarchicalShapeStyle) -> some View {
         Text(price.amount ?? 0, format: .currency(code: price.currencyCode))
-            .font(compactPriceFont)
+            .font(style == .tile ? tilePriceFont : compactPriceFont)
             .foregroundStyle(shade)
             .lineLimit(1)
             .minimumScaleFactor(0.8)
