@@ -1,6 +1,7 @@
 import Foundation
 
 enum PortfolioHistoryRange: String, CaseIterable, Codable, Sendable {
+    case oneDay = "1D"
     case oneWeek = "1W"
     case oneMonth = "1M"
     case threeMonths = "3M"
@@ -9,6 +10,7 @@ enum PortfolioHistoryRange: String, CaseIterable, Codable, Sendable {
 
     var accessibilityName: String {
         switch self {
+        case .oneDay: return "One day"
         case .oneWeek: return "One week"
         case .oneMonth: return "One month"
         case .threeMonths: return "Three months"
@@ -20,6 +22,8 @@ enum PortfolioHistoryRange: String, CaseIterable, Codable, Sendable {
     func requestedStart(now: Date, calendar: Calendar, earliest: Date?) -> Date {
         let rawStart: Date
         switch self {
+        case .oneDay:
+            rawStart = calendar.date(byAdding: .day, value: -1, to: now) ?? now
         case .oneWeek:
             rawStart = calendar.date(byAdding: .weekOfYear, value: -1, to: now) ?? now
         case .oneMonth:
@@ -32,6 +36,21 @@ enum PortfolioHistoryRange: String, CaseIterable, Codable, Sendable {
             rawStart = earliest ?? now
         }
         return calendar.startOfDay(for: rawStart)
+    }
+}
+
+extension PortfolioHistoryRange {
+    /// "past month" style phrase for the hero's change badge, matching the
+    /// app's factual, second-person-free copy voice.
+    var pastPeriodPhrase: String {
+        switch self {
+        case .oneDay: return "past day"
+        case .oneWeek: return "past week"
+        case .oneMonth: return "past month"
+        case .threeMonths: return "past 3 months"
+        case .oneYear: return "past year"
+        case .all: return "all time"
+        }
     }
 }
 
@@ -390,10 +409,6 @@ enum PortfolioHistoryDisplay {
             || !accounting.newlyAddedValue.isZero
             || !accounting.pricingAdjustments.isZero
             || !accounting.unexplained.isZero
-    }
-
-    static func currencyFractionDigits(forSpan span: Double) -> Int {
-        span < 10 ? 2 : 0
     }
 
     static func signedCurrency(_ amount: Money) -> String {

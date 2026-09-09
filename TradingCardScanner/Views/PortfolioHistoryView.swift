@@ -23,7 +23,7 @@ struct PortfolioHistoryView: View {
                 historyChart(result)
                     .frame(height: 190)
 
-                if !result.hasTwoPublishedPoints {
+                if result.range != .oneDay, !result.hasTwoPublishedPoints {
                     Text("History is being recorded.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -75,40 +75,39 @@ struct PortfolioHistoryView: View {
 
     @ViewBuilder
     private func historyChart(_ result: PortfolioHistoryResult) -> some View {
-        historyChartPlot(result)
+        VStack(alignment: .leading, spacing: 4) {
+            historyChartPlot(result)
+
+            HStack {
+                if let firstPoint = result.points.first {
+                    Text(firstPoint.displayDay.formatted(.dateTime.month(.abbreviated).day()))
+                }
+                Spacer()
+                if let lastPoint = result.points.last {
+                    Text(
+                        lastPoint.isLive
+                            ? "today"
+                            : lastPoint.displayDay.formatted(.dateTime.month(.abbreviated).day())
+                    )
+                }
+            }
+            .font(.caption2)
+            .foregroundStyle(.secondary)
+        }
     }
 
     @ViewBuilder
     private func historyChartPlot(_ result: PortfolioHistoryResult) -> some View {
         let selectionID = selectedID(in: result)
         let domain = yDomain(result)
-        let fractionDigits = PortfolioHistoryDisplay.currencyFractionDigits(
-            forSpan: domain.upperBound - domain.lowerBound
-        )
         Chart {
             ForEach(result.points) { point in
                 historyLine(point, result: result, selectionID: selectionID)
             }
         }
         .chartYScale(domain: domain)
-        .chartYAxis {
-            AxisMarks(position: .leading) { value in
-                AxisGridLine()
-                AxisTick()
-                AxisValueLabel {
-                    if let amount = value.as(Double.self) {
-                        Text(amount.formatted(.currency(code: "USD").precision(.fractionLength(fractionDigits))))
-                    }
-                }
-            }
-        }
-        .chartXAxis {
-            if chartSpansOnlyDays(result) {
-                AxisMarks(values: .stride(by: .day))
-            } else {
-                AxisMarks(values: .automatic(desiredCount: 3))
-            }
-        }
+        .chartYAxis(.hidden)
+        .chartXAxis(.hidden)
         .chartOverlay { proxy in
             GeometryReader { geometry in
                 if let plotFrameAnchor = proxy.plotFrame {
@@ -154,6 +153,25 @@ struct PortfolioHistoryView: View {
         result: PortfolioHistoryResult,
         selectionID: String?
     ) -> some ChartContent {
+        AreaMark(
+            x: .value("Date", point.instant),
+            y: .value(
+                "Market movement",
+                chartValue(point)
+            )
+        )
+        .foregroundStyle(
+            .linearGradient(
+                colors: [
+                    seriesColor(result).opacity(0.26),
+                    seriesColor(result).opacity(0.09),
+                    seriesColor(result).opacity(0)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
+
         LineMark(
             x: .value("Date", point.instant),
             y: .value(
@@ -192,12 +210,6 @@ struct PortfolioHistoryView: View {
     private func selectedPoint(in result: PortfolioHistoryResult) -> PortfolioHistoryPoint? {
         guard let id = selectedID(in: result) else { return nil }
         return result.points.first { $0.id == id }
-    }
-
-    private func chartSpansOnlyDays(_ result: PortfolioHistoryResult) -> Bool {
-        guard let first = result.points.first?.instant,
-              let last = result.points.last?.instant else { return false }
-        return last.timeIntervalSince(first) <= 7 * 24 * 60 * 60
     }
 
     private func pointHeaderLabel(_ point: PortfolioHistoryPoint) -> String {

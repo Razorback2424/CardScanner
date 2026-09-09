@@ -265,6 +265,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         )
 
         let expectedMarkets: [(PortfolioHistoryRange, Int64)] = [
+            (.oneDay, 8),
             (.oneWeek, 15),
             (.oneMonth, 21),
             (.threeMonths, 26),
@@ -416,12 +417,6 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         ] {
             XCTAssertTrue(PortfolioHistoryDisplay.hasBreakdown(component))
         }
-    }
-
-    func testCurrencyAxisPrecisionFollowsDomainSpan() {
-        XCTAssertEqual(PortfolioHistoryDisplay.currencyFractionDigits(forSpan: 9.99), 2)
-        XCTAssertEqual(PortfolioHistoryDisplay.currencyFractionDigits(forSpan: 10), 0)
-        XCTAssertEqual(PortfolioHistoryDisplay.currencyFractionDigits(forSpan: 100), 0)
     }
 
     func testSignedDisplayLeavesZeroUnsigned() {
@@ -795,6 +790,29 @@ final class PortfolioHistoryEngineTests: XCTestCase {
                 "range \(range.rawValue)"
             )
         }
+    }
+
+    func testOneDayRangeUsesPreviousDayAnchorAndLiveEndpoint() throws {
+        let now = date(10, hour: 12)
+        let result = PortfolioHistoryEngine.calculate(
+            input: PortfolioHistoryInput(
+                closes: [
+                    close(8, value: 80),
+                    close(9, value: 90)
+                ],
+                summary: PortfolioSummary(currentValue: money(100)),
+                epoch: date(8),
+                timeZoneIdentifier: "UTC",
+                now: now
+            ),
+            range: .oneDay
+        )
+
+        XCTAssertEqual(result.accountingInterval?.anchorDate, date(9))
+        XCTAssertEqual(result.accountingInterval?.includedClosedDays, [])
+        XCTAssertEqual(result.accountingInterval?.liveDay, date(10))
+        XCTAssertEqual(result.points.map(\.displayDay), [date(9), date(10)])
+        XCTAssertTrue(try XCTUnwrap(result.points.last).isLive)
     }
 
     func testShuffledInputsProduceIdenticalHistory() {
