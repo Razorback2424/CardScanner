@@ -6,7 +6,6 @@ import UIKit
 struct PortfolioHistoryView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ObservedObject var history: PortfolioHistoryStore
-    let onOpenDetails: (PortfolioHistoryResult) -> Void
 
     @State private var selectedPointID: String?
     @State private var lastHapticPointID: String?
@@ -19,14 +18,13 @@ struct PortfolioHistoryView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let result = history.activeResult, !result.isEmpty {
-                historyHeader(result)
                 historyChart(result)
-                    .frame(height: 190)
 
                 if result.range != .oneDay, !result.hasTwoPublishedPoints {
                     Text("History is being recorded.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .padding(.horizontal, 16)
                 }
 
             } else {
@@ -35,8 +33,7 @@ struct PortfolioHistoryView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(14)
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .frame(maxWidth: .infinity, alignment: .leading)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: history.range)
         .onChange(of: history.range) { _, _ in
             resetSelection()
@@ -46,54 +43,33 @@ struct PortfolioHistoryView: View {
         }
     }
 
-    private func historyHeader(_ result: PortfolioHistoryResult) -> some View {
-        let point = selectedPoint(in: result)
-        let amount = point?.cumulativeMarketMovement ?? result.accounting?.market ?? .zero
-
-        return HStack(alignment: .firstTextBaseline, spacing: 10) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(point.map(pointHeaderLabel) ?? "Market movement · \(result.range.rawValue)")
-                    .font(.headline)
-                Text(PortfolioHistoryDisplay.signedCurrency(amount))
-                    .font(.title2.bold().monospacedDigit())
-                    .foregroundStyle(PortfolioPalette.direction(amount))
-            }
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel(point.map(pointHeaderLabel) ?? "Market movement · \(result.range.rawValue)")
-            .accessibilityValue(PortfolioHistoryDisplay.signedCurrency(amount))
-
-            Spacer(minLength: 8)
-
-            PortfolioInfoButton(label: "About market movement") {
-                PortfolioHistoryInfoPopover(
-                    result: result,
-                    onOpenDetails: onOpenDetails
-                )
-            }
-        }
-    }
-
+    /// The date rail sits *inside* the plot rather than under it, so the chart
+    /// block is exactly its stated height and the range chips below it are not
+    /// pushed down by a caption row.
     @ViewBuilder
     private func historyChart(_ result: PortfolioHistoryResult) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            historyChartPlot(result)
-
-            HStack {
-                if let firstPoint = result.points.first {
-                    Text(firstPoint.displayDay.formatted(.dateTime.month(.abbreviated).day()))
+        historyChartPlot(result)
+            .frame(height: 196)
+            .overlay(alignment: .bottom) {
+                HStack {
+                    if let firstPoint = result.points.first {
+                        Text(firstPoint.displayDay.formatted(.dateTime.month(.abbreviated).day()))
+                    }
+                    Spacer()
+                    if let lastPoint = result.points.last {
+                        Text(
+                            lastPoint.isLive
+                                ? "today"
+                                : lastPoint.displayDay.formatted(.dateTime.month(.abbreviated).day())
+                        )
+                    }
                 }
-                Spacer()
-                if let lastPoint = result.points.last {
-                    Text(
-                        lastPoint.isLive
-                            ? "today"
-                            : lastPoint.displayDay.formatted(.dateTime.month(.abbreviated).day())
-                    )
-                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 4)
+                .allowsHitTesting(false)
             }
-            .font(.caption2)
-            .foregroundStyle(.secondary)
-        }
     }
 
     @ViewBuilder
@@ -101,6 +77,12 @@ struct PortfolioHistoryView: View {
         let selectionID = selectedID(in: result)
         let domain = yDomain(result)
         Chart {
+            if let anchor = result.accounting?.anchorValue {
+                RuleMark(y: .value("Period start", anchor.doubleValue))
+                    .foregroundStyle(.secondary.opacity(0.22))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+            }
+
             ForEach(result.points) { point in
                 historyLine(point, result: result, selectionID: selectionID)
             }
@@ -142,7 +124,7 @@ struct PortfolioHistoryView: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Market movement")
+        .accessibilityLabel("Portfolio value")
         .accessibilityValue(chartSummary(result))
         .accessibilityChartDescriptor(PortfolioChartDescriptor(result: result))
     }
@@ -153,39 +135,31 @@ struct PortfolioHistoryView: View {
         result: PortfolioHistoryResult,
         selectionID: String?
     ) -> some ChartContent {
+        let periodStart = result.accounting?.anchorValue.doubleValue
+            ?? result.points.first?.value.doubleValue
+            ?? chartValue(point)
         AreaMark(
             x: .value("Date", point.instant),
-            y: .value(
-                "Market movement",
-                chartValue(point)
-            )
+            yStart: .value("Period start", periodStart),
+            yEnd: .value("Portfolio value", chartValue(point))
         )
-        .foregroundStyle(
-            .linearGradient(
-                colors: [
-                    seriesColor(result).opacity(0.26),
-                    seriesColor(result).opacity(0.09),
-                    seriesColor(result).opacity(0)
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-        )
+        .foregroundStyle(areaGradient(result))
 
         LineMark(
             x: .value("Date", point.instant),
             y: .value(
-                "Market movement",
+                "Portfolio value",
                 chartValue(point)
             )
         )
         .foregroundStyle(seriesColor(result))
+        .lineStyle(StrokeStyle(lineWidth: 2.4, lineCap: .round, lineJoin: .round))
 
         if let selectionID, point.id == selectionID {
             PointMark(
                 x: .value("Date", point.instant),
                 y: .value(
-                    "Market movement",
+                    "Portfolio value",
                     chartValue(point)
                 )
             )
@@ -196,9 +170,35 @@ struct PortfolioHistoryView: View {
         }
     }
 
-    /// The line colour describes the selected period's net market movement.
+    /// The line colour agrees with the hero's total portfolio value change.
     private func seriesColor(_ result: PortfolioHistoryResult) -> Color {
-        PortfolioPalette.direction(result.accounting?.market ?? .zero)
+        PortfolioPalette.direction(result.accounting?.totalChange ?? .zero)
+    }
+
+    /// The fill is densest against the plotted line and fades toward the
+    /// period-start baseline. On a losing period the band hangs *below* that
+    /// baseline, so the stops invert — otherwise the density would sit on the
+    /// baseline and the shading would look detached from the line it belongs to.
+    private func areaGradient(_ result: PortfolioHistoryResult) -> LinearGradient {
+        let color = seriesColor(result)
+        // 0 / 0.55 / 1 — the fade holds longer near the line than an even
+        // three-stop ramp would.
+        let stops = [
+            Gradient.Stop(color: color.opacity(0.26), location: 0),
+            Gradient.Stop(color: color.opacity(0.09), location: 0.55),
+            Gradient.Stop(color: color.opacity(0), location: 1)
+        ]
+        let isLosing = (result.accounting?.totalChange ?? .zero) < .zero
+        let ordered = isLosing
+            ? stops.reversed().enumerated().map { index, stop in
+                Gradient.Stop(color: stop.color, location: [0, 0.45, 1][index])
+            }
+            : stops
+        return .linearGradient(
+            stops: ordered,
+            startPoint: .top,
+            endPoint: .bottom
+        )
     }
 
     private func selectedID(in result: PortfolioHistoryResult) -> String? {
@@ -207,74 +207,43 @@ struct PortfolioHistoryView: View {
         return selectedPointID
     }
 
-    private func selectedPoint(in result: PortfolioHistoryResult) -> PortfolioHistoryPoint? {
-        guard let id = selectedID(in: result) else { return nil }
-        return result.points.first { $0.id == id }
-    }
-
-    private func pointHeaderLabel(_ point: PortfolioHistoryPoint) -> String {
-        if point.isLive {
-            return "Through today"
-        }
-        return "Through \(point.displayDay.formatted(.dateTime.month(.abbreviated).day()))"
-    }
-
     private func resetSelection() {
         selectedPointID = nil
         lastHapticPointID = nil
     }
 
     private func chartValue(_ point: PortfolioHistoryPoint) -> Double {
-        point.cumulativeMarketMovement.doubleValue
+        point.value.doubleValue
     }
 
     private func yDomain(_ result: PortfolioHistoryResult) -> ClosedRange<Double> {
         let values = result.points.map(chartValue)
         guard let minimum = values.min(), let maximum = values.max() else { return 0...1 }
-        let low = min(minimum, 0)
-        let high = max(maximum, 0)
-        if low == high { return (low - 1)...(high + 1) }
-        let padding = max((high - low) * 0.12, 1)
-        return (low - padding)...(high + padding)
+        if minimum == maximum { return (minimum - 1)...(maximum + 1) }
+        let padding = max((maximum - minimum) * 0.12, 1)
+        return (minimum - padding)...(maximum + padding)
     }
 
     private func chartSummary(_ result: PortfolioHistoryResult) -> String {
-        guard let accounting = result.accounting else { return "No published history yet." }
-        return "From $0.00 to \(PortfolioHistoryDisplay.signedCurrency(accounting.market)). \(result.points.count) real points."
-    }
-
-}
-
-private struct PortfolioHistoryInfoPopover: View {
-    let result: PortfolioHistoryResult
-    let onOpenDetails: (PortfolioHistoryResult) -> Void
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Price changes only. Cards added or removed are excluded.")
-                .font(.body)
-            Button("Full accounting") {
-                dismiss()
-                onOpenDetails(result)
-            }
-            .font(.subheadline.weight(.semibold))
+        guard let first = result.points.first,
+              let last = result.points.last else {
+            return "No published history yet."
         }
-        .frame(maxWidth: 280, alignment: .leading)
-        .padding()
+        return "Portfolio value from \(first.value.formatted()) to \(last.value.formatted()) across \(result.points.count) real points."
     }
+
 }
 
 private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
     let result: PortfolioHistoryResult
 
     func makeChartDescriptor() -> AXChartDescriptor {
-        let pointValues = result.points.map { $0.cumulativeMarketMovement.doubleValue }
-        let lower = min(pointValues.min() ?? 0, 0)
-        let upper = max(pointValues.max() ?? 0, 0)
+        let pointValues = result.points.map { $0.value.doubleValue }
+        let lower = pointValues.min() ?? 0
+        let upper = pointValues.max() ?? 0
         let yRange = lower == upper ? (lower - 1)...(upper + 1) : lower...upper
         let yAxis = AXNumericDataAxisDescriptor(
-            title: "Market movement",
+            title: "Portfolio value",
             range: yRange,
             gridlinePositions: [],
             valueDescriptionProvider: { value in
@@ -283,8 +252,8 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
         )
         let dateLabels = result.points.map {
             $0.isLive
-                ? "Market movement through today"
-                : "Market movement through \($0.displayDay.formatted(date: .abbreviated, time: .omitted))"
+                ? "Portfolio value today"
+                : "Portfolio value on \($0.displayDay.formatted(date: .abbreviated, time: .omitted))"
         }
         let xAxis = AXCategoricalDataAxisDescriptor(title: "Date", categoryOrder: dateLabels)
         let points = result.points.enumerated().compactMap { index, point -> AXDataPoint? in
@@ -295,10 +264,10 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
                 label: "\(dateLabels[index]), \(valueDescription(value))"
             )
         }
-        let series = AXDataSeriesDescriptor(name: "Market movement", isContinuous: true, dataPoints: points)
+        let series = AXDataSeriesDescriptor(name: "Portfolio value", isContinuous: true, dataPoints: points)
         return AXChartDescriptor(
-            title: "Market movement",
-            summary: "Cumulative market movement from $0.00 across \(result.points.count) real points. The final point is \(PortfolioHistoryDisplay.signedCurrency(result.accounting?.market ?? .zero)).",
+            title: "Portfolio value",
+            summary: chartSummary,
             xAxis: xAxis,
             yAxis: yAxis,
             series: [series]
@@ -307,6 +276,14 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
 
     private func valueDescription(_ value: Double) -> String {
         value.formatted(.currency(code: "USD").precision(.fractionLength(2)))
+    }
+
+    private var chartSummary: String {
+        guard let first = result.points.first,
+              let last = result.points.last else {
+            return "No published history yet."
+        }
+        return "Portfolio value from \(first.value.formatted()) to \(last.value.formatted()) across \(result.points.count) real points."
     }
 }
 

@@ -11,21 +11,28 @@ import UIKit
 /// can actually act on.
 enum PortfolioPalette {
     /// Positive market or performance movement, and nothing else.
-    static let gain = Color(uiColor: .systemGreen)
+    static let gain = Color(red: 0.118, green: 0.557, blue: 0.243)
     /// Negative movement, and nothing else.
-    static let loss = Color(uiColor: .systemRed)
+    static let loss = Color(red: 0.788, green: 0.231, blue: 0.192)
     /// An actionable integrity or provider problem. Never decoration.
     static let attention = Color(uiColor: .systemOrange)
     /// The valuation itself. Deliberately not a signal colour — it is the
     /// subject of the screen, not a judgement about it.
     static let value = Color.primary
-    /// The refresh glyph beside the hero value — money/refresh association,
+    /// The money/refresh accent shared by collection and portfolio controls,
     /// distinct from the neutral value text and from gain/loss direction.
-    static let refreshAccent = Color(red: 0.18, green: 0.55, blue: 0.34)
+    static let money = Color(red: 0.18, green: 0.55, blue: 0.34)
 
     static func direction(_ amount: Money) -> Color {
         if amount.isZero { return .secondary }
         return amount < .zero ? loss : gain
+    }
+
+    static func directionFill(_ amount: Money) -> Color {
+        if amount.isZero { return Color(uiColor: .systemGray).opacity(0.12) }
+        return amount < .zero
+            ? Color(uiColor: .systemRed).opacity(0.12)
+            : Color(uiColor: .systemGreen).opacity(0.14)
     }
 }
 
@@ -148,45 +155,46 @@ struct PortfolioView: View {
         NavigationStack {
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 20) {
-                    // Order is the argument: what it is worth, then over what
-                    // period, then everything scoped to that period. The range
-                    // control precedes every range-scoped number so no figure
-                    // is ever read before its scope.
-                    portfolioHero
+                    LazyVStack(alignment: .leading, spacing: 24) {
+                        portfolioHero
+                            .padding(.horizontal, 16)
 
-                    if let summary = portfolio.summary {
-                        if !summary.defects.isEmpty {
-                            integrityWarning(summary.defects)
-                        }
+                        if let summary = portfolio.summary {
+                            if !summary.defects.isEmpty {
+                                integrityWarning(summary.defects)
+                                    .padding(.horizontal, 16)
+                            }
 
-                        if summary.isAuthoritative {
-                            periodControl
+                            if summary.isAuthoritative {
+                                VStack(alignment: .leading, spacing: 14) {
+                                    PortfolioHistoryView(history: history)
+                                    periodControl
+                                        .padding(.horizontal, 16)
+                                }
+                                .frame(maxWidth: .infinity, alignment: .leading)
 
-                            PortfolioHistoryView(
-                                history: history,
-                                onOpenDetails: { result in
+                                bestCardsRail
+                                    .id("most-valuable-cards-owned")
+
+                                biggestMovers { result in
                                     detailsDestination = PortfolioDetailsDestination(
                                         summary: summary,
                                         historyResult: result
                                     )
                                 }
-                            )
-
-                            biggestMovers()
+                                .padding(.horizontal, 16)
                                 .id("phase3-movers")
-                            bestCardsRail
-                                .id("most-valuable-cards-owned")
-                        }
+                            }
 
-                    } else if !portfolio.integrityDefects.isEmpty {
-                        integrityWarning(portfolio.integrityDefects)
-                    } else {
-                        ProgressView("Calculating portfolio…")
-                            .frame(maxWidth: .infinity, minHeight: 140)
+                        } else if !portfolio.integrityDefects.isEmpty {
+                            integrityWarning(portfolio.integrityDefects)
+                                .padding(.horizontal, 16)
+                        } else {
+                            ProgressView("Calculating portfolio…")
+                                .frame(maxWidth: .infinity, minHeight: 140)
+                        }
                     }
-                    }
-                    .padding(16)
+                    .padding(.bottom, 8)
                     .contentWidthLimit(.wide)
                 }
                 .task(id: portfolio.inputRevision) {
@@ -322,20 +330,40 @@ struct PortfolioView: View {
     }
 
     private var periodControl: some View {
-        let activeColor = PortfolioPalette.direction(activeHistoryResult?.accounting?.totalChange ?? .zero)
-        return HStack(spacing: 8) {
-            ForEach(PortfolioHistoryRange.allCases, id: \.self) { range in
+        let activeChange = activeHistoryResult?.accounting?.totalChange ?? .zero
+        let ranges = PortfolioHistoryRange.allCases
+        // Chips hug their own text and the gaps between them absorb the slack —
+        // the first sits flush against the leading gutter and the last against
+        // the trailing one. Equal-width slots would centre "ALL" inside a wider
+        // cell and leave a gap after it.
+        return HStack(spacing: 0) {
+            ForEach(Array(ranges.enumerated()), id: \.element) { index, range in
                 let isSelected = range == historyRange
-                Button(range.rawValue) {
+                Button {
                     historyRange = range
+                } label: {
+                    Text(range.rawValue)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(
+                            isSelected
+                                ? PortfolioPalette.direction(activeChange)
+                                : .secondary
+                        )
+                        .padding(.horizontal, 13)
+                        .padding(.vertical, 6)
+                        .background(
+                            isSelected
+                                ? PortfolioPalette.directionFill(activeChange)
+                                : .clear,
+                            in: Capsule()
+                        )
                 }
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(isSelected ? activeColor : .secondary)
-                .padding(.horizontal, 15)
-                .padding(.vertical, 6)
-                .background(isSelected ? activeColor.opacity(0.14) : .clear, in: Capsule())
                 .accessibilityLabel(range.accessibilityName)
                 .accessibilityAddTraits(isSelected ? .isSelected : [])
+
+                if index < ranges.count - 1 {
+                    Spacer(minLength: 0)
+                }
             }
         }
         .buttonStyle(.plain)
@@ -348,30 +376,35 @@ struct PortfolioView: View {
     /// The decorative sparkline is gone: there is one authoritative trend
     /// display, and it is the chart a person can actually scrub.
     private var portfolioHero: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: 9) {
             Text("Current value")
-                .font(.subheadline)
+                .font(.footnote)
                 .foregroundStyle(.secondary)
 
-            HStack(spacing: 10) {
+            HStack(alignment: .center, spacing: 10) {
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
                     if let currentValue = portfolio.summary?.currentValue {
                         let parts = currentValue.heroParts()
                         Text(parts.whole)
-                            .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .font(.system(size: 54, weight: .bold, design: .rounded))
                             .foregroundStyle(PortfolioPalette.value)
                         if !parts.fraction.isEmpty {
                             Text(parts.fraction)
-                                .font(.system(size: 26, weight: .bold, design: .rounded))
-                                .foregroundStyle(.secondary)
+                                // Between .secondary and .tertiary: the cents
+                                // recede without dropping out of the number.
+                                .font(.system(size: 34, weight: .bold, design: .rounded))
+                                .foregroundStyle(.secondary.opacity(0.75))
                         }
                     } else {
                         Text("Value unavailable")
-                            .font(.system(size: 40, weight: .bold, design: .rounded))
+                            .font(.system(size: 54, weight: .bold, design: .rounded))
                             .foregroundStyle(PortfolioPalette.value)
                     }
                 }
                 .monospacedDigit()
+                // −0.02em at 54pt. Tabular figures set loose at display size;
+                // the mockup pulls them back together.
+                .tracking(-1.08)
                 .lineLimit(1)
                 .minimumScaleFactor(0.65)
                 .contentTransition(.numericText())
@@ -384,16 +417,16 @@ struct PortfolioView: View {
 
             if portfolio.summary?.isAuthoritative == true,
                let accounting = activeHistoryResult?.accounting {
+                let trailingText = PortfolioHistoryDisplay.percentChange(
+                    amount: accounting.totalChange,
+                    anchor: accounting.anchorValue
+                ).map { "· \(abs($0).formatted(.percent.precision(.fractionLength(2))))" }
                 HStack(spacing: 8) {
-                    PortfolioAmountPill(amount: accounting.totalChange, showsArrow: true)
-                    if let pct = PortfolioHistoryDisplay.percentChange(
+                    PortfolioAmountPill(
                         amount: accounting.totalChange,
-                        anchor: accounting.anchorValue
-                    ) {
-                        Text("· \(PortfolioHistoryDisplay.signedPercent(pct))")
-                            .font(.subheadline.weight(.semibold).monospacedDigit())
-                            .foregroundStyle(PortfolioPalette.direction(accounting.totalChange))
-                    }
+                        showsArrow: true,
+                        trailingText: trailingText
+                    )
                     Text(historyRange.pastPeriodPhrase)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -500,37 +533,42 @@ struct PortfolioView: View {
     }
 
     @ViewBuilder
-    private func biggestMovers() -> some View {
-        let active = activeHistoryResult
-        if let active {
-            if !active.hasEligibleMarketMovement {
-                Label("No market movement in \(active.range.rawValue)", systemImage: "minus.circle")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } else {
-                let contributions = active.contributions
-                let total = active.accounting?.market ?? .zero
-                VStack(alignment: .leading, spacing: 10) {
-                    HStack(alignment: .firstTextBaseline) {
-                        HStack(spacing: 6) {
-                            Text("What moved · \(active.range.rawValue)")
-                                .font(.headline)
-                            PortfolioInfoButton(label: "About market movers") {
-                                Text(portfolioMoversExplanation)
-                                    .font(.body)
-                                    .frame(maxWidth: 280, alignment: .leading)
-                                    .padding()
-                            }
+    private func biggestMovers(
+        _ onOpenDetails: @escaping (PortfolioHistoryResult) -> Void
+    ) -> some View {
+        if let active = activeHistoryResult {
+            let total = active.accounting?.market ?? .zero
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .firstTextBaseline) {
+                    HStack(spacing: 6) {
+                        Text("What moved · \(active.range.rawValue)")
+                            .font(.title3.weight(.bold))
+                        PortfolioInfoButton(label: "About market movers") {
+                            PortfolioMoversInfoPopover(
+                                result: active,
+                                onOpenDetails: onOpenDetails
+                            )
                         }
-                        Spacer()
-                        Button("See all") {
-                            contributorContext = historicalContext(from: active)
-                        }
-                        .font(.subheadline.weight(.semibold))
+                        .imageScale(.small)
                     }
+                    Spacer(minLength: 8)
+                    Button("See all") {
+                        contributorContext = historicalContext(from: active)
+                    }
+                    .font(.subheadline.weight(.semibold))
+                }
 
+                Text(PortfolioHistoryDisplay.signedCurrency(total))
+                    .font(.title2.bold().monospacedDigit())
+                    .foregroundStyle(PortfolioPalette.direction(total))
+
+                if !active.hasEligibleMarketMovement {
+                    Label("No market movement in \(active.range.rawValue)", systemImage: "minus.circle")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                } else {
                     PortfolioContributorPreview(
-                        contributions: contributions,
+                        contributions: active.contributions,
                         total: total,
                         holdings: portfolio.holdings,
                         movementDetails: active.movementDetails,
@@ -538,9 +576,8 @@ struct PortfolioView: View {
                         onRemoved: presentUndo(for:)
                     )
                 }
-                .padding(16)
-                .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
         } else {
             // Recomputing for a newly chosen period. Say nothing rather than
             // claim the market was flat.
@@ -561,13 +598,11 @@ struct PortfolioView: View {
                     Text("Your best cards")
                         .font(.title3.weight(.bold))
                     Spacer()
-                    if ranked.count > 5 {
-                        Button("See all") {
-                            onOpenCollectionSortedByPrice()
-                        }
-                        .font(.subheadline.weight(.semibold))
-                        .accessibilityHint("Opens Collection sorted by price, highest first")
+                    Button("See all") {
+                        onOpenCollectionSortedByPrice()
                     }
+                    .font(.subheadline.weight(.semibold))
+                    .accessibilityHint("Opens Collection sorted by price, highest first")
                 }
                 .accessibilityElement(children: .combine)
 
@@ -591,6 +626,8 @@ struct PortfolioView: View {
                         }
                     }
                 }
+                .contentMargins(.horizontal, 16, for: .scrollContent)
+                .contentMargins(.bottom, 4, for: .scrollContent)
             }
         }
     }
@@ -686,6 +723,26 @@ struct PortfolioView: View {
         }
     }
 
+}
+
+private struct PortfolioMoversInfoPopover: View {
+    let result: PortfolioHistoryResult
+    let onOpenDetails: (PortfolioHistoryResult) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(portfolioMoversExplanation)
+                .font(.body)
+            Button("Full accounting") {
+                dismiss()
+                onOpenDetails(result)
+            }
+            .font(.subheadline.weight(.semibold))
+        }
+        .frame(maxWidth: 280, alignment: .leading)
+        .padding()
+    }
 }
 
 private struct PortfolioContributorContext: Identifiable, Hashable {
@@ -899,7 +956,7 @@ private struct PortfolioContributorPreview: View {
     let history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
 
-    var body: some View {
+    private var previewRows: [PortfolioContributionRowModel] {
         let all = PortfolioContributionPresentation.rows(
             contributions: contributions,
             holdings: holdings,
@@ -911,20 +968,33 @@ private struct PortfolioContributorPreview: View {
             limit: 3
         )
         let residual = total - displayed.map(\.amount).sum()
-        VStack(spacing: 8) {
-            ForEach(displayed) { row in
-                previewRow(row)
-            }
-            if all.count > displayed.count, !residual.isZero {
-                previewRow(
-                    PortfolioContributionRowModel(
-                        kind: .otherHoldings,
-                        amount: residual,
-                        movementDetail: nil
-                    )
+        var previewRows = displayed
+        if all.count > displayed.count {
+            previewRows.append(
+                PortfolioContributionRowModel(
+                    kind: .otherHoldings,
+                    amount: residual,
+                    movementDetail: nil
                 )
+            )
+        }
+        return previewRows
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(Array(previewRows.enumerated()), id: \.element.id) { index, row in
+                previewRow(row)
+                    .padding(.vertical, 8)
+
+                if index < previewRows.count - 1 {
+                    Color(uiColor: .quaternaryLabel)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 0.5)
+                }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     @ViewBuilder
@@ -940,7 +1010,8 @@ private struct PortfolioContributorPreview: View {
             } label: {
                 PortfolioContributionRow(
                     row: row,
-                    showsHoldingShare: false
+                    showsHoldingShare: false,
+                    style: .mover
                 )
             }
             .buttonStyle(.plain)
@@ -948,7 +1019,8 @@ private struct PortfolioContributorPreview: View {
         } else {
             PortfolioContributionRow(
                 row: row,
-                showsHoldingShare: false
+                showsHoldingShare: false,
+                style: .mover
             )
         }
     }
@@ -1049,25 +1121,73 @@ private struct PortfolioContributorsView: View {
 }
 
 private struct PortfolioContributionRow: View {
+    enum Style: Equatable {
+        case standard
+        case mover
+
+        var artworkWidth: CGFloat { self == .mover ? 38 : 34 }
+        var artworkHeight: CGFloat { self == .mover ? 52 : 46 }
+        var artworkCornerRadius: CGFloat { 5 }
+        var horizontalSpacing: CGFloat { self == .mover ? 12 : 10 }
+        var minHeight: CGFloat { self == .mover ? 56 : 44 }
+        var titleFont: Font? {
+            self == .mover
+                ? .system(size: 16, weight: .regular)
+                : nil
+        }
+        /// Monospaced *digits*, not a monospaced face: the subtitle carries
+        /// set names and finishes as often as it carries figures.
+        var subtitleFont: Font {
+            self == .mover
+                ? .system(size: 12, weight: .regular).monospacedDigit()
+                : .caption
+        }
+        var placeholderFont: Font? {
+            self == .mover
+                ? .system(size: 20, weight: .regular)
+                : nil
+        }
+        var titleLineLimit: Int? { self == .mover ? 1 : nil }
+    }
+
     let row: PortfolioContributionRowModel
     let showsHoldingShare: Bool
+    let style: Style
+
+    init(
+        row: PortfolioContributionRowModel,
+        showsHoldingShare: Bool,
+        style: Style = .standard
+    ) {
+        self.row = row
+        self.showsHoldingShare = showsHoldingShare
+        self.style = style
+    }
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: style.horizontalSpacing) {
             if let holding = row.holding {
-                PortfolioArtwork(holding: holding)
+                PortfolioArtwork(
+                    holding: holding,
+                    width: style.artworkWidth,
+                    height: style.artworkHeight,
+                    cornerRadius: style.artworkCornerRadius
+                )
             } else {
                 Image(systemName: "clock.arrow.circlepath")
+                    .font(style.placeholderFont)
                     .foregroundStyle(.secondary)
-                    .frame(width: 34, height: 44)
+                    .frame(width: style.artworkWidth, height: style.artworkHeight)
             }
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: style == .mover ? 1 : 2) {
                 Text(row.title)
+                    .font(style.titleFont)
                     .foregroundStyle(.primary)
+                    .lineLimit(style.titleLineLimit)
                 if let subtitle = PortfolioContributionPresentation.movementBreakdownText(for: row) ?? row.detail,
                    !subtitle.isEmpty {
                     Text(subtitle)
-                        .font(.caption)
+                        .font(style.subtitleFont)
                         .foregroundStyle(.secondary)
                         .lineLimit(1)
                 }
@@ -1083,7 +1203,7 @@ private struct PortfolioContributionRow: View {
                 }
             }
         }
-        .frame(minHeight: 44)
+        .frame(minHeight: style.minHeight)
         .accessibilityElement(children: .combine)
     }
 }
@@ -1106,7 +1226,7 @@ private struct PortfolioBestCardTile: View {
                 HStack(alignment: .firstTextBaseline, spacing: 5) {
                     if let value = holding.holdingValue {
                         Text(value.formatted())
-                            .font(.callout.weight(.bold).monospacedDigit())
+                            .font(.system(size: 16, weight: .bold, design: .rounded).monospacedDigit())
                     }
                     if holding.quantity > 1 {
                         Text("×\(holding.quantity)")
@@ -1144,21 +1264,60 @@ private struct PortfolioBestCardTile: View {
 private struct PortfolioAmountPill: View {
     let amount: Money
     var showsArrow: Bool = false
+    var trailingText: String? = nil
+
+    private var arrowReplacesSign: Bool {
+        showsArrow && !amount.isZero
+    }
+
+    private var visibleAmountText: String {
+        arrowReplacesSign
+            ? amount.magnitude.formatted()
+            : PortfolioContributionPresentation.signed(amount)
+    }
+
+    private var spokenLabel: String {
+        let amountLabel = visibleAmountText
+        let trailingLabel = trailingText?
+            .replacingOccurrences(of: "·", with: "")
+            .replacingOccurrences(of: "%", with: " percent")
+            .trimmingCharacters(in: .whitespaces)
+
+        if arrowReplacesSign {
+            let direction = amount < .zero ? "down" : "up"
+            if let trailingLabel, !trailingLabel.isEmpty {
+                return "\(direction) \(amountLabel), \(trailingLabel)"
+            }
+            return "\(direction) \(amountLabel)"
+        }
+
+        if let trailingLabel, !trailingLabel.isEmpty {
+            return "\(amountLabel), \(trailingLabel)"
+        }
+        return amountLabel
+    }
 
     var body: some View {
-        let color = PortfolioPalette.direction(amount)
         HStack(spacing: 3) {
-            if showsArrow, !amount.isZero {
+            if arrowReplacesSign {
                 Image(systemName: amount < .zero ? "arrow.down" : "arrow.up")
-                    .font(.caption2.weight(.semibold))
+                    .font(.system(size: 15, weight: .semibold))
             }
-            Text(PortfolioContributionPresentation.signed(amount))
+            Text(visibleAmountText)
+            if let trailingText {
+                Text(trailingText)
+            }
         }
-        .font(.subheadline.weight(.semibold).monospacedDigit())
-        .foregroundStyle(color)
-        .padding(.horizontal, 9)
+        .font(.system(size: 14, weight: .semibold).monospacedDigit())
+        .foregroundStyle(PortfolioPalette.direction(amount))
+        // Asymmetric on purpose: the arrow's own side bearing already reads as
+        // space, so the leading inset is tighter than the trailing one.
+        .padding(.leading, arrowReplacesSign ? 7 : 9)
+        .padding(.trailing, arrowReplacesSign ? 10 : 9)
         .padding(.vertical, 4)
-        .background(color.opacity(0.14), in: Capsule())
+        .background(PortfolioPalette.directionFill(amount), in: Capsule())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spokenLabel)
     }
 }
 
@@ -1449,13 +1608,16 @@ private struct PortfolioRefreshButton: View {
     }
 
     var body: some View {
-        Button("Refresh Prices", systemImage: "arrow.clockwise") {
+        Button("Refresh Prices", systemImage: "arrow.triangle.2.circlepath") {
             Task { await onRefresh() }
         }
         .labelStyle(.iconOnly)
-        .font(.headline.weight(.semibold))
-        .foregroundStyle(PortfolioPalette.refreshAccent)
+        .font(.system(size: 21, weight: .semibold))
+        .foregroundStyle(PortfolioPalette.money)
+        // 44×44 stays the tap target; the nudge sits the glyph against the
+        // numerals' optical centre rather than the line box's.
         .frame(width: 44, height: 44)
+        .offset(y: 6)
         .contentShape(Rectangle())
         .disabled(isRefreshing)
         .accessibilityLabel("Refresh prices")
@@ -1500,7 +1662,14 @@ private struct PortfolioAttentionBadge: ViewModifier {
                 if needsAttention {
                     Circle()
                         .fill(PortfolioPalette.attention)
-                        .frame(width: 7, height: 7)
+                        .frame(width: 8, height: 8)
+                        .overlay(
+                            Circle()
+                                .strokeBorder(
+                                    Color(uiColor: .systemBackground),
+                                    lineWidth: 1.5
+                                )
+                        )
                         .accessibilityHidden(true)
                 }
             }

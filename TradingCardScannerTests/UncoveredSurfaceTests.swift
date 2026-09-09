@@ -787,7 +787,7 @@ final class ViewConstructionSmokeTests: XCTestCase {
             onRefresh: {},
             onOpenCollectionSortedByPrice: {}
         )
-        _ = PortfolioHistoryView(history: history, onOpenDetails: { _ in })
+        _ = PortfolioHistoryView(history: history)
         _ = PriceCheckResultView(initialResult: PriceCheckResult(
             resolvedScan: UncoveredSurfaceFixtures.resolvedScan(purpose: .priceCheck),
             quote: UncoveredSurfaceFixtures.priceLookup(),
