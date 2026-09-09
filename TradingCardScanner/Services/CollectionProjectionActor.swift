@@ -150,6 +150,8 @@ actor CollectionProjectionActor {
         for position in projection.positions {
             let card = position.representative
             let record = recordsByKey[position.priceStorageKey]
+            let artworkFilename = artworkByKey[card.collectionKey]?.filename
+                ?? card.userArtworkFilename
             rows.append(
                 CollectionRow(
                     id: card.collectionKey,
@@ -173,10 +175,11 @@ actor CollectionProjectionActor {
                     gradeValue: card.gradeRaw,
                     lowImageURL: card.lowImageURL,
                     highImageURL: card.highImageURL,
-                    userArtworkFilename: artworkByKey[card.collectionKey]?.filename
-                        ?? card.userArtworkFilename,
+                    userArtworkFilename: artworkFilename,
                     normalizedName: CardNameSearch.normalize(card.name),
-                    collectorNumberSortKey: CollectorNumber.key(for: card.cardNumber)
+                    collectorNumberSortKey: CollectorNumber.key(for: card.cardNumber),
+                    variantResolution: card.variantResolution,
+                    artworkAccent: ArtworkAccentStore.cachedAccent(localFilename: artworkFilename)
                 )
             )
             diagnostics[card.collectionKey] = CollectionRowDiagnostics(

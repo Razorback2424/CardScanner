@@ -57,6 +57,10 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
         return PhysicalVariant(id: variantID, label: variantLabel ?? variantID.capitalized)
     }
 
+    /// The provenance of the selected finish. The collection tile uses the
+    /// same confidence gate as the detail surface before drawing a sheen.
+    var variantResolution: VariantResolution? = nil
+
     var magicTreatments: [MagicTreatment] {
         magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:))
     }
@@ -111,6 +115,36 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
     var displayKindLabel: String {
         itemKindLabel ?? variantLabel ?? PhysicalVariant.normal.label
     }
+
+    /// Whether the artwork has a finish that can carry the shared specular
+    /// overlay. Graded and sealed rows describe an object rather than a raw
+    /// surface, so their defining status remains the only visual treatment.
+    /// Unknown treatment evidence may stay visible without inventing a finish;
+    /// when a finish is known, the existing variant still decides whether the
+    /// surface is actually foil-bearing.
+    var hasSpecularFinish: Bool {
+        guard itemKind == .rawCard, let variant else { return false }
+
+        let specularIDs = [
+            PhysicalVariant.reverse.id,
+            PhysicalVariant.foil.id,
+            PhysicalVariant.holo.id
+        ]
+        guard specularIDs.contains(variant.id) else { return false }
+
+        let evidence = displayedMagicTreatmentEvidence
+        guard !evidence.isEmpty else { return true }
+        return evidence.treatments.allSatisfy { treatment in
+            treatment.requiredFinish == nil
+                || treatment.requiredFinish?.id == variant.id
+        }
+    }
+
+    /// Accent extracted from the artwork source when projection already had a
+    /// cached local image. Remote artwork fills this asynchronously in the
+    /// tile, but keeping the value on the row lets a cached projection reuse it
+    /// without another model lookup.
+    var artworkAccent: ArtworkAccent? = nil
 
     /// Which slot this row occupies for set-completion purposes.
     ///

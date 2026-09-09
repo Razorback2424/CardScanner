@@ -314,6 +314,85 @@ final class CollectionQueryTests: XCTestCase {
         XCTAssertTrue(CollectionQuery.filter(rows, with: filters).isEmpty)
     }
 
+    // MARK: - Collection tile status
+
+    func testCollectionStatusPrioritizesSlabsAndSealedProducts() {
+        var graded = row(
+            id: "graded",
+            game: .magic,
+            variant: .foil,
+            price: 42,
+            treatmentIDs: [MagicTreatment.surgeFoil.id]
+        )
+        graded.itemKind = .gradedCard
+        graded.itemKindLabel = "PSA 10"
+
+        var sealed = row(id: "sealed", variant: nil, price: 18)
+        sealed.itemKind = .sealedProduct
+        sealed.itemKindLabel = "Sealed"
+
+        XCTAssertEqual(
+            CollectionFinishStatus.resolve(row: graded),
+            CollectionFinishStatus(kind: .flat, label: "PSA 10")
+        )
+        XCTAssertEqual(
+            CollectionFinishStatus.resolve(row: sealed),
+            CollectionFinishStatus(kind: .flat, label: "Sealed")
+        )
+    }
+
+    func testCollectionStatusShowsTreatmentAndExtraCountBeforeFinish() {
+        let treated = row(
+            id: "treated",
+            game: .magic,
+            variant: .foil,
+            price: 9,
+            treatmentIDs: [MagicTreatment.surgeFoil.id, MagicTreatment.neonInk.id, "future-treatment"]
+        )
+
+        XCTAssertEqual(
+            CollectionFinishStatus.resolve(row: treated),
+            CollectionFinishStatus(kind: .treatment, label: "Surge Foil +2")
+        )
+    }
+
+    func testCollectionStatusCanHideDefaultPlainFinish() {
+        let plain = row(id: "plain", variant: .normal, price: 1)
+
+        XCTAssertEqual(
+            CollectionFinishStatus.resolve(row: plain),
+            CollectionFinishStatus(kind: .plain, label: "Normal")
+        )
+        XCTAssertNil(CollectionFinishStatus.resolve(row: plain, showDefaultFinish: false))
+    }
+
+    func testSpecularFinishMatchesRawSurfaceAndTreatmentEvidence() {
+        XCTAssertTrue(row(id: "foil", variant: .foil, price: 1).hasSpecularFinish)
+        XCTAssertTrue(row(id: "reverse", variant: .reverse, price: 1).hasSpecularFinish)
+        XCTAssertFalse(row(id: "normal", variant: .normal, price: 1).hasSpecularFinish)
+
+        let foilTreatment = row(
+            id: "foil-treatment",
+            game: .magic,
+            variant: .foil,
+            price: 1,
+            treatmentIDs: [MagicTreatment.surgeFoil.id]
+        )
+        let wrongFinishTreatment = row(
+            id: "nonfoil-treatment",
+            game: .magic,
+            variant: .nonfoil,
+            price: 1,
+            treatmentIDs: [MagicTreatment.surgeFoil.id]
+        )
+        XCTAssertTrue(foilTreatment.hasSpecularFinish)
+        XCTAssertFalse(wrongFinishTreatment.hasSpecularFinish)
+
+        var graded = row(id: "graded", variant: .foil, price: 1)
+        graded.itemKind = .gradedCard
+        XCTAssertFalse(graded.hasSpecularFinish)
+    }
+
     func testNoFiltersLeavesEverythingVisible() {
         let rows = [row(price: 1), row(price: nil), row(game: .magic, variant: .foil, price: 3)]
 

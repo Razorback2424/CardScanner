@@ -2,6 +2,13 @@ import OSLog
 import SwiftData
 import SwiftUI
 
+private enum CollectionArtworkLog {
+    static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "TradingCardScanner",
+        category: "CollectionArtwork"
+    )
+}
+
 /// Collection is for finding, filtering, and managing owned items. Portfolio
 /// accounting and price refresh ownership remain app-scoped in `ContentView`.
 struct CollectionView: View {
@@ -10,9 +17,10 @@ struct CollectionView: View {
     @EnvironmentObject private var priceSnapshot: PriceSnapshotStore
     let catalog: any BrowseCatalogProviding
     let history: PortfolioHistoryStore
-    /// Deliberately unobserved, like Portfolio's. Only `PriceRefreshActivityRow`
-    /// reads it, and rebuilding the grid on every progress publication is
-    /// exactly the cost this screen's projection cache exists to avoid.
+    /// Deliberately unobserved, like Portfolio's. The refresh button and
+    /// `PriceRefreshActivityRow` read it in leaf views, and rebuilding the grid
+    /// on every progress publication is exactly the cost this screen's
+    /// projection cache exists to avoid.
     let refresh: PriceRefreshController
     let opensBrowseOnLaunch: Bool
     let opensMovementDetailsOnLaunch: Bool
@@ -51,6 +59,7 @@ struct CollectionView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.cardFinishMotionSource) private var cardFinishMotion
 
     /// Both of the collection's destinations, so one hierarchy drives a push on a
     /// phone-sized window and a second column on an iPad-sized one. `card` carries
@@ -317,6 +326,8 @@ struct CollectionView: View {
     }
 
     private func content(_ snapshot: Snapshot) -> some View {
+        let hasSpecularFinish = snapshot.entries.contains { $0.row.hasSpecularFinish }
+
         return ScrollView {
             LazyVStack(spacing: 12) {
                 collectionSummary(snapshot)
@@ -340,7 +351,7 @@ struct CollectionView: View {
                                     artworkReason: entry.artworkReason
                                 )
                             }
-                            .buttonStyle(.plain)
+                            .buttonStyle(CollectionTileButtonStyle())
                             // A plain button only takes hits on its drawn pixels, which
                             // leaves the gaps inside a tile dead to both touch and the
                             // pointer. The tile is one target, so say so.
@@ -368,25 +379,47 @@ struct CollectionView: View {
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
         .animation(.easeOut(duration: 0.2), value: searchQuery)
+        .onAppear {
+            if hasSpecularFinish {
+                cardFinishMotion.startGrid()
+            }
+        }
+        .onChange(of: hasSpecularFinish) { _, isActive in
+            if isActive {
+                cardFinishMotion.startGrid()
+            } else {
+                cardFinishMotion.stopGrid()
+            }
+        }
+        .onDisappear { cardFinishMotion.stopGrid() }
     }
 
     private func collectionSummary(_ snapshot: Snapshot) -> some View {
         return VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstTextBaseline) {
+            HStack(alignment: .center, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Shown value")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    Text(snapshot.shownValue.formatted())
-                        .font(.system(.title2, design: .rounded).weight(.bold))
-                        .monospacedDigit()
-                        .contentTransition(.numericText())
-                        .accessibilityLabel("Shown collection value, \(snapshot.shownValue.formatted())")
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text(snapshot.shownValue.formatted())
+                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                            .monospacedDigit()
+                            .foregroundStyle(PortfolioPalette.money)
+                            .contentTransition(.numericText())
+                            .animation(.snappy, value: snapshot.shownValue)
+                            .accessibilityLabel("Shown collection value, \(snapshot.shownValue.formatted())")
+
+                        Text(snapshot.countSummary)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                    }
                 }
-                Spacer(minLength: 12)
-                Text("\(snapshot.entries.count) \(snapshot.entries.count == 1 ? "item" : "items")")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                .layoutPriority(1)
+                Spacer(minLength: 0)
+                CollectionRefreshButton(refresh: refresh, onRefresh: onRefresh)
             }
 
             // Pull-to-refresh returns immediately, so this is where a running
@@ -519,6 +552,15 @@ struct CollectionView: View {
         let all: [CollectionRow]
         let entries: [Entry]
         let shownValue: Money
+        let unpricedCount: Int
+
+        var countSummary: String {
+            let itemLabel = entries.count == 1 ? "item" : "items"
+            guard unpricedCount > 0 else {
+                return "\(entries.count) \(itemLabel)"
+            }
+            return "\(entries.count) \(itemLabel) · \(unpricedCount) unpriced"
+        }
     }
 
     /// The expensive half of a collection render. Search and filter state are
@@ -593,7 +635,7 @@ struct CollectionView: View {
     @MainActor
     private func makeSnapshot() -> Snapshot {
         guard let projected = projectionStore.snapshot else {
-            return Snapshot(all: [], entries: [], shownValue: .zero)
+            return Snapshot(all: [], entries: [], shownValue: .zero, unpricedCount: 0)
         }
 
         let cached = projectionCache.value(for: projectionStore.revision) {
@@ -663,7 +705,8 @@ struct CollectionView: View {
         return Snapshot(
             all: pricedRows,
             entries: entries,
-            shownValue: shownValue
+            shownValue: shownValue,
+            unpricedCount: entries.filter { $0.row.price.amount == nil }.count
         )
     }
 
@@ -889,63 +932,198 @@ private struct CollectionMovementDestination: View {
     }
 }
 
-private struct CollectionCardTile: View {
-    let row: CollectionRow
-    /// The projected quantity for the position, not a physical row's quantity. The row
-    /// is one physical row, and CloudKit can legitimately split a position
-    /// across several of them; the badge and the detail view must agree about
-    /// how many are owned.
-    let unpricedReason: PricingDiagnosticReason?
-    let artworkReason: ArtworkDiagnosticReason?
+private struct CollectionTileButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .opacity(configuration.isPressed ? 0.65 : 1)
+    }
+}
+
+private struct CollectionRefreshButton: View {
+    @ObservedObject var refresh: PriceRefreshController
+    let onRefresh: @MainActor () async -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var isRefreshing: Bool {
+        if case .refreshing = refresh.status { return true }
+        return false
+    }
 
     var body: some View {
-        VStack(spacing: 8) {
+        Button {
+            Task { await onRefresh() }
+        } label: {
+            if dynamicTypeSize > .xxxLarge {
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .imageScale(.medium)
+            } else {
+                Label("Refresh", systemImage: "arrow.triangle.2.circlepath")
+                    .labelStyle(.titleAndIcon)
+                    .font(.footnote.weight(.semibold))
+                    .imageScale(.medium)
+            }
+        }
+        .foregroundStyle(Color("RefreshAccent"))
+        .padding(.horizontal, 14)
+        .frame(minWidth: 44)
+        .frame(height: 44)
+        .background(PortfolioPalette.money.opacity(0.18), in: Capsule())
+        .disabled(isRefreshing)
+        .accessibilityLabel("Refresh prices")
+        .accessibilityValue(isRefreshing ? "In progress" : "")
+    }
+}
+
+private struct CollectionCardTile: View {
+    let row: CollectionRow
+    /// The projected quantity for the position, not a physical row's quantity.
+    /// CloudKit can legitimately split a position across several rows; the
+    /// footer and detail view must agree about how many are owned.
+    let unpricedReason: PricingDiagnosticReason?
+    let artworkReason: ArtworkDiagnosticReason?
+    let showDefaultFinish: Bool
+
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.cardFinishMotionSource) private var cardFinishMotion
+    @State private var loadedArtworkAccent: ArtworkAccent?
+
+    private struct ArtworkSource: Equatable {
+        let localFilename: String?
+        let remoteURL: URL?
+        let fallbackURL: URL?
+    }
+
+    init(
+        row: CollectionRow,
+        unpricedReason: PricingDiagnosticReason?,
+        artworkReason: ArtworkDiagnosticReason?,
+        showDefaultFinish: Bool = true
+    ) {
+        self.row = row
+        self.unpricedReason = unpricedReason
+        self.artworkReason = artworkReason
+        self.showDefaultFinish = showDefaultFinish
+    }
+
+    private var artworkSource: ArtworkSource {
+        let primaryURL = row.highImageURL ?? row.lowImageURL
+        return ArtworkSource(
+            localFilename: row.userArtworkFilename,
+            remoteURL: primaryURL,
+            fallbackURL: row.lowImageURL == primaryURL ? nil : row.lowImageURL
+        )
+    }
+
+    private var artworkAccent: ArtworkAccent? {
+        row.artworkAccent ?? loadedArtworkAccent
+    }
+
+    private var rowHeights: (price: CGFloat?, meta: CGFloat?) {
+        dynamicTypeSize > .xxxLarge ? (nil, nil) : (26, 16)
+    }
+
+    var body: some View {
+        VStack(spacing: 12) {
             ZStack {
-                CollectionCardArtwork(
-                    userArtworkFilename: row.userArtworkFilename,
-                    thumbnailURL: row.lowImageURL,
-                    fullSizeURL: row.highImageURL,
-                    placeholderText: artworkReason?.title
+                CollectionArtworkGlow(
+                    accent: artworkAccent,
+                    colorScheme: colorScheme,
+                    reduceTransparency: reduceTransparency
                 )
+
+                ZStack {
+                    CollectionCardArtwork(
+                        userArtworkFilename: row.userArtworkFilename,
+                        thumbnailURL: row.lowImageURL,
+                        fullSizeURL: row.highImageURL,
+                        placeholderText: artworkReason?.title
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                    if row.hasSpecularFinish {
+                        CardFinishOverlay(
+                            variant: row.variant,
+                            resolution: row.variantResolution,
+                            treatments: row.displayedMagicTreatmentEvidence.treatments,
+                            cornerRadius: 10,
+                            motionSource: cardFinishMotion
+                        )
+                    }
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
             }
             .aspectRatio(5.0 / 7.0, contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
 
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(row.name)
                     .font(.subheadline.weight(.semibold))
                     .lineLimit(2)
-                    .frame(maxWidth: .infinity, minHeight: 36, alignment: .topLeading)
+                    .frame(maxWidth: .infinity, minHeight: 40, alignment: .topLeading)
+
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    PriceLabel(price: row.price, style: .compact)
+                        .fixedSize(horizontal: true, vertical: false)
+
+                    if row.quantity > 1 {
+                        Text("×\(row.quantity)")
+                            .font(.footnote)
+                            .monospacedDigit()
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let priceCaveat {
+                        Text(priceCaveat)
+                            .font(.footnote)
+                            .foregroundStyle(.orange)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                    }
+
+                    Spacer(minLength: 0)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(height: rowHeights.price)
 
                 Text(identityLine)
                     .font(.caption)
+                    .monospacedDigit()
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(height: rowHeights.meta)
 
-                ViewThatFits(in: .horizontal) {
-                    HStack(alignment: .firstTextBaseline, spacing: 6) {
-                        PriceLabel(price: row.price, style: .compact)
-                            .fixedSize(horizontal: true, vertical: false)
-                        Spacer(minLength: 4)
-                        inlineBadgeRow
-                    }
-
-                    VStack(alignment: .leading, spacing: 4) {
-                        PriceLabel(price: row.price, style: .compact)
-                        badgeContent
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                }
+                statusRow
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(height: rowHeights.meta)
             }
             .frame(maxWidth: .infinity)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(
-            "\(row.name), \(row.setName), \(accessiblePrice), \(row.displayKindLabel), quantity \(row.quantity)\(diagnosticAccessibilityText)"
+            "\(row.name), \(row.setName), \(accessiblePrice), \(accessibleStatus), quantity \(row.quantity)\(diagnosticAccessibilityText)"
         )
+        .task(id: artworkSource) {
+            guard row.artworkAccent == nil else {
+                loadedArtworkAccent = nil
+                return
+            }
+            let accent = await ArtworkAccentStore.accent(
+                localFilename: artworkSource.localFilename,
+                remoteURL: artworkSource.remoteURL,
+                fallbackRemoteURL: artworkSource.fallbackURL
+            )
+            guard !Task.isCancelled else { return }
+            loadedArtworkAccent = accent
+#if DEBUG
+            CollectionArtworkLog.logger.notice(
+                "Collection tile accent \(accent == nil ? "missing" : "loaded", privacy: .public) source=\(artworkSource.remoteURL?.absoluteString ?? artworkSource.localFilename ?? "none", privacy: .public) fallback=\(artworkSource.fallbackURL?.absoluteString ?? "none", privacy: .public)"
+            )
+#endif
+        }
     }
 
     private var diagnosticAccessibilityText: String {
@@ -962,62 +1140,74 @@ private struct CollectionCardTile: View {
         return row.price.state() == .unavailable ? "price unavailable" : "price not checked"
     }
 
+    private var accessibleStatus: String {
+        CollectionFinishStatus.resolve(row: row, showDefaultFinish: showDefaultFinish)?.label
+            ?? row.displayKindLabel
+    }
+
     private var identityLine: String {
-        [row.setCode, row.cardNumber, row.setName]
+        [row.setCode, row.cardNumber]
             .filter { !$0.isEmpty }
             .joined(separator: " · ")
     }
 
-    @ViewBuilder
-    private var inlineBadgeRow: some View {
-        badgeContent
-            .fixedSize(horizontal: true, vertical: false)
+    private var priceCaveat: String? {
+        guard row.price.amount == nil else { return unpricedReason?.title }
+        if let unpricedReason { return unpricedReason.title }
+        return row.price.state() == .unavailable ? "Price unavailable" : "Not checked yet"
     }
 
     @ViewBuilder
-    private var badgeContent: some View {
-        CollectionBadgeWrapLayout(itemSpacing: 6, rowSpacing: 4) {
+    private var statusRow: some View {
+        if let status = CollectionFinishStatus.resolve(
+            row: row,
+            showDefaultFinish: showDefaultFinish
+        ) {
+            HStack(alignment: .firstTextBaseline, spacing: 5) {
+                CollectionFinishDot(style: statusDotStyle(for: status))
+                Text(status.label)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(statusTint(for: status))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+            }
+        } else {
+            Color.clear
+        }
+    }
+
+    private func statusDotStyle(for status: CollectionFinishStatus) -> CollectionFinishDot.Style {
+        switch status.kind {
+        case .treatment:
+            return .treatment
+        case .foil:
+            return .foil
+        case .reverse:
+            return .reverse
+        case .plain:
+            return .plain
+        case .flat:
             switch row.itemKind {
-            case .rawCard:
-                if let variant = row.variant,
-                   !row.displayedMagicTreatmentEvidence.impliesFinish(variant) {
-                    AppCardBadge(
-                        text: variant.label,
-                        systemImage: finishSymbol(for: variant),
-                        tint: finishTint(for: variant)
-                    )
-                }
             case .gradedCard, .sealedProduct:
-                // A slab or a box has no raw finish, so the badge shows what it
-                // actually is: `PSA 10`, `Sealed`.
-                AppCardBadge(
-                    text: row.displayKindLabel,
-                    systemImage: row.itemKind.symbolName,
-                    tint: itemKindTint(for: row.itemKind)
-                )
+                return .flat(itemKindTint(for: row.itemKind))
+            case .rawCard:
+                return .flat(row.variant.map(finishTint(for:)) ?? .secondary)
             }
+        }
+    }
 
-            ForEach(
-                Array(row.displayedMagicTreatmentEvidence.displayLabels.enumerated()),
-                id: \.offset
-            ) { item in
-                AppCardBadge(
-                    text: item.element,
-                    systemImage: "wand.and.stars",
-                    tint: .pink
-                )
-            }
-
-            if row.quantity > 1 {
-                AppCardBadge(text: "×\(row.quantity)", tint: .teal)
-            }
-
-            if let unpricedReason {
-                AppCardBadge(
-                    text: unpricedReason.title,
-                    systemImage: "exclamationmark.circle",
-                    tint: .orange
-                )
+    private func statusTint(for status: CollectionFinishStatus) -> Color {
+        switch status.kind {
+        case .treatment:
+            return .finishTreatment
+        case .foil, .reverse, .plain:
+            return row.variant.map(finishTint(for:)) ?? .secondary
+        case .flat:
+            switch row.itemKind {
+            case .gradedCard, .sealedProduct:
+                return itemKindTint(for: row.itemKind)
+            case .rawCard:
+                return row.variant.map(finishTint(for:)) ?? .secondary
             }
         }
     }
@@ -1025,9 +1215,9 @@ private struct CollectionCardTile: View {
     private func finishTint(for variant: PhysicalVariant) -> Color {
         switch variant.id {
         case PhysicalVariant.reverse.id:
-            return .teal
+            return .finishReverse
         case PhysicalVariant.foil.id, PhysicalVariant.holo.id, PhysicalVariant.etched.id:
-            return .purple
+            return .finishFoil
         case PhysicalVariant.pokeBall.id, PhysicalVariant.masterBall.id, PhysicalVariant.firstEdition.id:
             return .orange
         case PhysicalVariant.normal.id, PhysicalVariant.nonfoil.id:
@@ -1037,117 +1227,42 @@ private struct CollectionCardTile: View {
         }
     }
 
-    private func finishSymbol(for variant: PhysicalVariant) -> String {
-        switch variant.id {
-        case PhysicalVariant.reverse.id:
-            return "arrow.triangle.2.circlepath"
-        case PhysicalVariant.foil.id, PhysicalVariant.holo.id, PhysicalVariant.etched.id:
-            return "sparkles"
-        case PhysicalVariant.pokeBall.id, PhysicalVariant.masterBall.id:
-            return "circle.circle"
-        case PhysicalVariant.firstEdition.id:
-            return "1.circle"
-        default:
-            return "circle.fill"
-        }
-    }
-
     private func itemKindTint(for kind: CollectionItemKind) -> Color {
         switch kind {
-        case .gradedCard: return .indigo
-        case .sealedProduct: return .brown
+        case .gradedCard: return .finishGraded
+        case .sealedProduct: return .finishSealed
         case .rawCard: return .secondary
         }
     }
 }
 
-/// Keeps the compact badge vocabulary visible without introducing a nested
-/// horizontal scroll view inside the collection's vertical grid scroll view.
-/// The layout is intentionally small and local: badges keep their intrinsic
-/// width and move to a new line when the footer or Dynamic Type leaves less
-/// room for them.
-private struct CollectionBadgeWrapLayout: Layout {
-    let itemSpacing: CGFloat
-    let rowSpacing: CGFloat
+private struct CollectionArtworkGlow: View {
+    let accent: ArtworkAccent?
+    let colorScheme: ColorScheme
+    let reduceTransparency: Bool
 
-    func sizeThatFits(
-        proposal: ProposedViewSize,
-        subviews: Subviews,
-        cache: inout ()
-    ) -> CGSize {
-        let availableWidth = proposal.width ?? intrinsicWidth(of: subviews)
-        guard !subviews.isEmpty else { return .zero }
-
-        var rowWidth: CGFloat = 0
-        var rowHeight: CGFloat = 0
-        var totalHeight: CGFloat = 0
-        var maximumRowWidth: CGFloat = 0
-
-        for subview in subviews {
-            let size = badgeSize(for: subview, availableWidth: availableWidth)
-            let proposedRowWidth = rowWidth == 0 ? size.width : rowWidth + itemSpacing + size.width
-
-            if rowWidth > 0, proposedRowWidth > availableWidth {
-                totalHeight += rowHeight
-                totalHeight += rowSpacing
-                maximumRowWidth = max(maximumRowWidth, rowWidth)
-                rowWidth = size.width
-                rowHeight = size.height
-            } else {
-                rowWidth = proposedRowWidth
-                rowHeight = max(rowHeight, size.height)
+    var body: some View {
+        if let glowColor = accent?.color, !reduceTransparency {
+            GeometryReader { geo in
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(
+                        RadialGradient(
+                            colors: [
+                                glowColor.opacity(colorScheme == .dark ? 0.55 : 0.22),
+                                .clear
+                            ],
+                            center: .init(x: 0.5, y: 0.6),
+                            startRadius: 0,
+                            endRadius: geo.size.width * 0.6
+                        )
+                    )
+                    .blur(radius: 16)
+                    .padding(.horizontal, geo.size.width * 0.10)
+                    .padding(.top, geo.size.height * 0.18)
+                    .padding(.bottom, -geo.size.height * 0.04)
             }
+            .allowsHitTesting(false)
         }
-
-        totalHeight += rowHeight
-        maximumRowWidth = max(maximumRowWidth, rowWidth)
-        return CGSize(
-            width: proposal.width ?? maximumRowWidth,
-            height: totalHeight
-        )
-    }
-
-    func placeSubviews(
-        in bounds: CGRect,
-        proposal: ProposedViewSize,
-        subviews: Subviews,
-        cache: inout ()
-    ) {
-        guard !subviews.isEmpty else { return }
-
-        let availableWidth = bounds.width
-        var x = bounds.minX
-        var y = bounds.minY
-        var rowHeight: CGFloat = 0
-
-        for subview in subviews {
-            let size = badgeSize(for: subview, availableWidth: availableWidth)
-            if x > bounds.minX, x + size.width > bounds.maxX {
-                x = bounds.minX
-                y += rowHeight + rowSpacing
-                rowHeight = 0
-            }
-
-            subview.place(
-                at: CGPoint(x: x, y: y),
-                anchor: .topLeading,
-                proposal: ProposedViewSize(width: size.width, height: size.height)
-            )
-            x += size.width + itemSpacing
-            rowHeight = max(rowHeight, size.height)
-        }
-    }
-
-    private func intrinsicWidth(of subviews: Subviews) -> CGFloat {
-        subviews.reduce(0) { width, subview in
-            width + (width == 0 ? 0 : itemSpacing) + badgeSize(for: subview, availableWidth: nil).width
-        }
-    }
-
-    private func badgeSize(for subview: LayoutSubviews.Element, availableWidth: CGFloat?) -> CGSize {
-        subview.sizeThatFits(
-            ProposedViewSize(width: availableWidth, height: nil)
-        )
     }
 }
 
@@ -1213,21 +1328,27 @@ struct PriceLabel: View {
 
         case .unavailable:
             Text(style == .compact ? "—" : "Price unavailable")
-                .font(style == .compact ? .title3.weight(.semibold).monospacedDigit() : .subheadline)
+                .font(style == .compact ? compactPriceFont : .subheadline)
                 .foregroundStyle(.secondary)
 
         case .unknown:
             Text(style == .compact ? "—" : "Not checked yet")
-                .font(style == .compact ? .title3.weight(.semibold).monospacedDigit() : .subheadline)
+                .font(style == .compact ? compactPriceFont : .subheadline)
                 .foregroundStyle(.tertiary)
         }
     }
 
+    private var compactPriceFont: Font {
+        .system(size: 22, weight: .bold, design: .rounded).monospacedDigit()
+    }
+
     private func amount(_ shade: HierarchicalShapeStyle) -> some View {
         Text(price.amount ?? 0, format: .currency(code: price.currencyCode))
-            .font(.title3.weight(.semibold).monospacedDigit())
+            .font(compactPriceFont)
             .foregroundStyle(shade)
             .lineLimit(1)
             .minimumScaleFactor(0.8)
+            .contentTransition(.numericText())
+            .animation(.snappy, value: price.amount)
     }
 }

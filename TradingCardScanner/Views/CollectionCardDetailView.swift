@@ -1,6 +1,5 @@
 import PhotosUI
 import Charts
-import CoreMotion
 import CoreImage
 import ImageIO
 import SwiftData
@@ -12,6 +11,7 @@ struct CollectionCardDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.cardFinishMotionSource) private var cardFinishMotion
     @Bindable var card: CollectedCard
     @Query private var priceObservations: [PriceObservation]
     @Query private var priceCheckDays: [PriceCheckDay]
@@ -823,7 +823,9 @@ struct CollectionCardDetailView: View {
                 variant: card.variant,
                 resolution: card.variantResolution,
                 treatments: card.displayedMagicTreatmentEvidence.treatments,
-                cornerRadius: Self.cardCornerRadius
+                cornerRadius: Self.cardCornerRadius,
+                motionSource: cardFinishMotion,
+                motionUsage: .detail
             )
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -1407,326 +1409,6 @@ private struct CollectionCardHistoryView: View {
         case .corrected: return .orange
         case .quantityAdjusted: return .blue
         case .undone: return .purple
-        }
-    }
-}
-
-/// Device tilt, normalised and smoothed, for the foil sheen.
-///
-/// Neutral is wherever the phone was held when the card appeared, not flat on a
-/// table, so the sheen is centred for someone reading in bed as much as at a
-/// desk.
-///
-/// The model this replaced reported a raw gravity vector scaled to ±12pt, which
-/// the view then multiplied by 0.3: a peak travel of 3.6 points on a 400pt card,
-/// damped at 0.84 per frame. The motion was running the whole time. It was
-/// simply far too small to see.
-private final class CardFinishMotionModel: ObservableObject {
-    /// Roll and pitch as −1…1, where ±1 is a comfortable wrist tilt.
-    @Published private(set) var tilt: CGSize = .zero
-
-    private let motionManager = CMMotionManager()
-    private var reference: (roll: Double, pitch: Double)?
-    private var isRunning = false
-
-    /// Full travel at roughly 25°, which is a wrist movement rather than a
-    /// shoulder one.
-    private static let fullTravel = 0.44
-
-    func start() {
-        guard !isRunning, motionManager.isDeviceMotionAvailable else { return }
-        isRunning = true
-        reference = nil
-        motionManager.deviceMotionUpdateInterval = 1 / 60
-        motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, _ in
-            guard let self, let attitude = motion?.attitude else { return }
-            if self.reference == nil {
-                self.reference = (attitude.roll, attitude.pitch)
-            }
-            guard let reference = self.reference else { return }
-
-            let target = CGSize(
-                width: Self.normalised(attitude.roll - reference.roll),
-                height: Self.normalised(attitude.pitch - reference.pitch)
-            )
-            // Tracks the hand rather than trailing it. At the previous 0.84
-            // coefficient the sheen took most of a second to arrive, which
-            // reads as no movement at all during the quick tilt people
-            // actually use to look for foil.
-            self.tilt = CGSize(
-                width: self.tilt.width * 0.55 + target.width * 0.45,
-                height: self.tilt.height * 0.55 + target.height * 0.45
-            )
-        }
-    }
-
-    func stop() {
-        guard isRunning else { return }
-        isRunning = false
-        motionManager.stopDeviceMotionUpdates()
-        reference = nil
-        tilt = .zero
-    }
-
-    private static func normalised(_ radians: Double) -> Double {
-        max(-1, min(1, radians / fullTravel))
-    }
-}
-
-/// The card's finish, rendered rather than captioned.
-///
-/// Foil is a *directional band* that sweeps across the surface as the viewing
-/// angle changes. What this replaced drew a rounded rectangle at 82% of the
-/// card's width and screen-blended it at 0.72 — a hard-edged translucent box
-/// sitting on the artwork, lifting its blacks and showing its own corners on
-/// every card. Three rules come out of what foil actually does:
-///
-/// - The band is wider than the card's diagonal and masked to the card, so its
-///   own edges are never in frame.
-/// - It blends with `.softLight`, which brightens light areas and leaves dark
-///   ones alone. That is the luminance-modulated bloom, achieved by blend maths
-///   rather than by loading and masking a second copy of the artwork.
-/// - It travels far enough to read as movement: most of the card across a
-///   comfortable tilt.
-///
-/// Subtle by intent. On a card worth several hundred dollars a sheen that
-/// announces itself looks like a filter; the narrow specular core is the only
-/// element allowed to go bright.
-private struct CardFinishOverlay: View {
-    let variant: PhysicalVariant?
-    let resolution: VariantResolution?
-    let treatments: [MagicTreatment]
-    let cornerRadius: CGFloat
-
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-    @StateObject private var motion = CardFinishMotionModel()
-
-    /// How far the sweep travels at full tilt, as a fraction of the gradient's
-    /// own length. Chosen to preserve the travel distance the previous
-    /// `0.55 × diagonal` produced.
-    private static let driveSpan = 0.275
-
-    /// One band of the sweep. Several out of phase is what separates a Surge
-    /// Foil ripple from a plain foil's single pass.
-    ///
-    /// `phase` and `width` are both fractions of the gradient's own length,
-    /// which is twice the card's diagonal. Expressing them in one unit is the
-    /// whole point: they were previously measured against different lengths —
-    /// width against the full gradient, phase against `0.55 × diagonal` — so
-    /// numbers that looked comparable were off by a factor of 3.6. A plain
-    /// foil's "band" had an 830pt falloff on a 629pt card, which is not a band
-    /// at all but a wash over the whole surface, and Surge Foil's three bands
-    /// were 415pt wide and 69pt apart, overlapping into a single smear. Both
-    /// read exactly as reported: hard to notice until moved, and never like
-    /// three of anything.
-    private struct SheenBand {
-        /// Where the band rests when the card is held still.
-        var phase: Double
-        /// Chromatic offset from the band's centre, which opens as the card is
-        /// tilted. Real dispersion separates at glancing angles and closes when
-        /// you look straight on, so a fixed fringe reads as a permanently
-        /// rainbow band. Held still this collapses to near-white; moving, the
-        /// colour blooms out of the shoulders.
-        var fringe: Double = 0
-        /// How the band answers tilt. Negative counter-moves, which is what
-        /// makes two highlights converge and separate rather than slide
-        /// together as one rigid pattern.
-        var travelScale: Double = 1
-        var width: Double
-        var tint: Color
-        var intensity: Double
-        /// Carries the additive specular core. Exactly one band should.
-        var isPrimary: Bool = false
-    }
-
-    /// A dimmer second reflection, resting up and left of the primary and
-    /// travelling against it.
-    ///
-    /// Two things wrong were fixed by one addition. A single band centred at
-    /// rest is easy to miss until you happen to move the phone — you have to
-    /// already know the effect is there. And simply parking the primary
-    /// somewhere more obvious would have staged the card rather than lit it.
-    /// A counter-moving secondary is what foil actually does, puts light in the
-    /// opposite corner so something is visible the moment the card opens, and
-    /// turns the sweep into a scissor that reads far more like a surface than
-    /// one sliding gradient did.
-    private var counterBand: SheenBand {
-        SheenBand(
-            phase: -0.20,
-            travelScale: -0.55,
-            width: 0.09,
-            tint: activeTreatment == .neonInk ? .purple : .white,
-            intensity: 0.42
-        )
-    }
-
-    private var isCatalogConfirmed: Bool {
-        guard variant != nil, let resolution else { return false }
-        return resolution != .catalogSilent && resolution != .imported
-    }
-
-    private var activeTreatment: MagicTreatment? { treatments.first }
-
-    private var isFoilSurface: Bool {
-        guard let variant else { return false }
-        return variant.id == PhysicalVariant.holo.id || variant.id == PhysicalVariant.foil.id
-    }
-
-    private var isReverseSurface: Bool {
-        variant?.id == PhysicalVariant.reverse.id
-    }
-
-    private var hasSurface: Bool { isFoilSurface || isReverseSurface }
-
-    /// The primary is the band that rests at centre and carries the specular
-    /// core. It was previously `bands.first`, which for Surge Foil is the band
-    /// at phase −0.20 — so on a treatment-qualified card the one bright element
-    /// sat off to a corner and the sheen only became legible once the card was
-    /// moved.
-    /// One dispersed band, and for now the finish every foil surface uses.
-    ///
-    /// This began as Surge Foil's treatment and turned out to be the better
-    /// plain foil: three colour components overlapping so heavily that they
-    /// fringe a single band rather than multiplying it. Separating them far
-    /// enough to resolve individually — the earlier attempt — produces stripes,
-    /// which is not what any foil looks like.
-    ///
-    /// It does not yet read as *specifically* a Surge Foil. That is a known
-    /// gap and a later piece of work; what a Surge Foil needs beyond this is a
-    /// pattern, not more colour. The band with the card either side of it is
-    /// the part worth keeping, so it is shared rather than duplicated.
-    private var dispersedFoil: [SheenBand] {
-        [
-            SheenBand(
-                phase: 0,
-                fringe: -0.035,
-                width: 0.095,
-                tint: .pink,
-                intensity: 0.7
-            ),
-            SheenBand(
-                phase: 0,
-                width: 0.105,
-                tint: .cyan,
-                intensity: 1,
-                isPrimary: true
-            ),
-            SheenBand(
-                phase: 0,
-                fringe: 0.035,
-                width: 0.095,
-                tint: .blue,
-                intensity: 0.7
-            ),
-            counterBand
-        ]
-    }
-
-    private var bands: [SheenBand] {
-        switch activeTreatment {
-        case .neonInk:
-            // Held back deliberately: Neon Ink's identity is the hue shift, and
-            // giving it its own look is later work.
-            return [
-                SheenBand(phase: 0, fringe: -0.04, width: 0.10, tint: .orange, intensity: 0.85),
-                SheenBand(phase: 0, width: 0.10, tint: .green, intensity: 1, isPrimary: true),
-                SheenBand(phase: 0, fringe: 0.04, width: 0.10, tint: .purple, intensity: 0.85),
-                counterBand
-            ]
-        case .surgeFoil, .unclassified, .none:
-            return dispersedFoil
-        }
-    }
-
-    var body: some View {
-        Group {
-            if isCatalogConfirmed, !reduceTransparency, hasSurface {
-                GeometryReader { proxy in
-                    ZStack {
-                        ForEach(bands.indices, id: \.self) { index in
-                            sheen(bands[index], in: proxy.size, specular: false)
-                        }
-                        // A single narrow additive core, on the band that rests
-                        // at centre. Everything else is soft-light, so this is
-                        // the only place the sheen is allowed to look like a
-                        // light source.
-                        if let primary = bands.first(where: \.isPrimary) {
-                            sheen(primary, in: proxy.size, specular: true)
-                        }
-                    }
-                    .mask {
-                        if isReverseSurface {
-                            // A reverse holo foils the border, not the art
-                            // window, so the sheen is masked to the frame the
-                            // printing actually applies it to.
-                            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                                .strokeBorder(.white, lineWidth: proxy.size.width * 0.10)
-                        } else {
-                            RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                        }
-                    }
-                }
-                .allowsHitTesting(false)
-            }
-        }
-        .onAppear { updateMotion() }
-        .onDisappear { motion.stop() }
-        .onChange(of: reduceMotion) { _, _ in updateMotion() }
-        .onChange(of: reduceTransparency) { _, _ in updateMotion() }
-    }
-
-    private func sheen(_ band: SheenBand, in size: CGSize, specular: Bool) -> some View {
-        let diagonal = sqrt(size.width * size.width + size.height * size.height)
-        // Roll dominates: turning the phone in the hand is how anyone looks for
-        // foil. Pitch contributes so the band still answers a nod.
-        let drive = max(-1, min(1, motion.tilt.width * 0.85 + motion.tilt.height * 0.45))
-        // Closed to roughly a third at rest, fully open at the extremes of a
-        // comfortable tilt.
-        let spread = 0.32 + 0.68 * abs(drive)
-        let travel = (
-            drive * band.travelScale * Self.driveSpan
-                + band.phase
-                + band.fringe * spread
-        ) * diagonal * 2
-
-        return LinearGradient(
-            stops: stops(for: band, specular: specular),
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        // Twice the diagonal in both directions, so no edge of the gradient can
-        // enter the card at any travel position or rotation.
-        .frame(width: diagonal * 2, height: diagonal * 2)
-        .offset(y: travel)
-        .rotationEffect(.degrees(-24))
-        .position(x: size.width / 2, y: size.height / 2)
-        .blendMode(specular ? .plusLighter : .softLight)
-    }
-
-    private func stops(for band: SheenBand, specular: Bool) -> [Gradient.Stop] {
-        let half = (specular ? band.width * 0.34 : band.width) / 2
-        let core = specular ? 0.13 * band.intensity : 0.5 * band.intensity
-        let shoulder = specular ? 0 : 0.13 * band.intensity
-        let outer = min(0.5, half * 2.2)
-        return [
-            .init(color: .clear, location: 0),
-            .init(color: .clear, location: 0.5 - outer),
-            .init(color: band.tint.opacity(shoulder), location: 0.5 - half),
-            .init(color: .white.opacity(core), location: 0.5),
-            .init(color: band.tint.opacity(shoulder), location: 0.5 + half),
-            .init(color: .clear, location: 0.5 + outer),
-            .init(color: .clear, location: 1)
-        ]
-    }
-
-    /// Reduce Motion keeps the finish and stops the sweep: the band simply
-    /// rests at centre, which is still a foil rather than a flat print.
-    private func updateMotion() {
-        if isCatalogConfirmed, !reduceMotion, !reduceTransparency, hasSurface {
-            motion.start()
-        } else {
-            motion.stop()
         }
     }
 }
@@ -2492,38 +2174,76 @@ enum ArtworkAccentStore {
         return cache
     }()
 
+    /// Projection can reuse a local accent that was already decoded without
+    /// doing asynchronous work while it is flattening the collection. Remote
+    /// sources still use `accent(localFilename:remoteURL:)` from the tile or
+    /// detail task.
+    static func cachedAccent(localFilename: String?) -> ArtworkAccent? {
+        guard let localFilename, !localFilename.isEmpty else { return nil }
+        let key = "local:\(localFilename)" as NSString
+        if let cached = cache.object(forKey: key)?.value {
+            return cached
+        }
+        guard let image = CollectionArtworkStore.image(filename: localFilename),
+              let accent = ArtworkAccentExtractor.make(from: image) else {
+            return nil
+        }
+        cache.setObject(Box(accent), forKey: key)
+        return accent
+    }
+
     /// The image view keeps its existing `AsyncImage` behavior. This companion
     /// task has a separate, keyed color cache so accent extraction happens once
     /// per artwork source and never as part of a SwiftUI body evaluation.
     static func accent(
         localFilename: String?,
-        remoteURL: URL?
+        remoteURL: URL?,
+        fallbackRemoteURL: URL? = nil
     ) async -> ArtworkAccent? {
-        let key: String
-        if let localFilename {
-            key = "local:\(localFilename)"
-        } else if let remoteURL {
-            key = "remote:\(remoteURL.absoluteString)"
-        } else {
+        let effectiveLocalFilename = localFilename?.isEmpty == false ? localFilename : nil
+        let localKey = effectiveLocalFilename.map { "local:\($0)" }
+        var remoteURLs: [URL] = []
+        for url in [remoteURL, fallbackRemoteURL].compactMap({ $0 }) {
+            guard !remoteURLs.contains(url) else { continue }
+            remoteURLs.append(url)
+        }
+        let remoteKeys = remoteURLs.map { "remote:\($0.absoluteString)" }
+
+        guard localKey != nil || !remoteURLs.isEmpty else {
             return nil
         }
 
-        if let cached = cache.object(forKey: key as NSString)?.value {
-            return cached
+        var cacheKeys = remoteKeys
+        if let localKey {
+            cacheKeys.insert(localKey, at: 0)
+        }
+        for cacheKey in cacheKeys {
+            if let cached = cache.object(forKey: cacheKey as NSString)?.value {
+                return cached
+            }
         }
 
-        let image: UIImage?
-        if let localFilename {
-            image = CollectionArtworkStore.image(filename: localFilename)
-        } else if let remoteURL {
-            image = try? await CatalogImageCache.shared.image(for: remoteURL)
+        var selectedImage: UIImage?
+        var selectedKey: String?
+        if let effectiveLocalFilename,
+           let localKey,
+           let localImage = CollectionArtworkStore.image(filename: effectiveLocalFilename) {
+            selectedImage = localImage
+            selectedKey = localKey
         } else {
-            return nil
+            for (url, key) in zip(remoteURLs, remoteKeys) {
+                if let remoteImage = try? await CatalogImageCache.shared.image(for: url) {
+                    selectedImage = remoteImage
+                    selectedKey = key
+                    break
+                }
+            }
         }
-        guard let image else { return nil }
-        let accent = ArtworkAccentExtractor.make(from: image)
+
+        guard let selectedImage, let selectedKey else { return nil }
+        let accent = ArtworkAccentExtractor.make(from: selectedImage)
         if let accent {
-            cache.setObject(Box(accent), forKey: key as NSString)
+            cache.setObject(Box(accent), forKey: selectedKey as NSString)
         }
         return accent
     }

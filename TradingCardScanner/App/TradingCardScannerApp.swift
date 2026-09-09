@@ -6,6 +6,7 @@ struct TradingCardScannerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var scannerModel = ScannerViewModel()
     @StateObject private var scanSummaryStore = ScanSessionSummaryStore()
+    @StateObject private var cardFinishMotion = CardFinishMotionSource()
     enum StorageMode: Equatable {
         case cloudKit
         case localOnly
@@ -51,6 +52,7 @@ struct TradingCardScannerApp: App {
                 ContentView()
                     .environmentObject(scannerModel)
                     .environmentObject(scanSummaryStore)
+                    .environment(\.cardFinishMotionSource, cardFinishMotion)
             }
         }
         .modelContainer(Self.container)
