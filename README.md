@@ -362,10 +362,14 @@ that rides along in the catalog response the identification already made.
 
 ## Scan tuning
 
-The two main values are in `Services/CardScanner.swift`:
+The cadence and confirmation values are in `Services/CardScanner.swift`:
 
 ```swift
-private let minimumVisionInterval: CFAbsoluteTime = 0.24
+ScanCadenceScheduler(
+    ocrInterval: 0.24,
+    labelInterval: 0.5,
+    unboundLabelInterval: 1.5
+)
 private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
 ```
 
@@ -374,13 +378,17 @@ that recognition now runs continuously rather than pausing between cards, so the
 duty cycle is higher than it was; if battery becomes a problem, the interval is
 the lever.
 
-`CardLatch`'s two constants are the duplicate-protection budget:
+`CardLatch`'s three constants are the duplicate-protection budget:
 
 ```swift
-CardLatch(releaseAfterAbsences: 4, minimumAbsenceBeforeRelatch: 1.2)
+CardLatch(
+    releaseAfterAbsences: 4,
+    minimumAbsenceBeforeRelatch: 2.0,
+    presumedGoneAfter: 6.0
+)
 ```
 
-Raising either makes duplicates harder and back-to-back identical copies slower.
+Raising any of them makes duplicates harder and back-to-back identical copies slower.
 
 ## Adding a set
 
