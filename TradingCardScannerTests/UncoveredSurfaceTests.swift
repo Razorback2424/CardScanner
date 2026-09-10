@@ -934,6 +934,78 @@ final class ScannerOverlaySmokeTests: XCTestCase {
         _ = CardThumbnail(url: nil, width: 40).body
         _ = ScanNoteView(note: ScanNote(text: "No exact finish", tone: .problem)).body
     }
+
+    func testScannerWriterRollsBackAStagedAddWhenTheFinalSaveFails() async throws {
+        struct InjectedSaveFailure: Error {}
+
+        let syncedSchema = Schema([
+            CollectedCard.self,
+            PriceRecord.self,
+            ProductIdentity.self,
+            CollectionActivity.self,
+            InventoryEvent.self
+        ])
+        let localSchema = Schema([
+            ReferenceQuote.self,
+            PriceObservation.self,
+            PriceCheckDay.self,
+            PortfolioDailyClose.self,
+            LocalArtworkOverride.self
+        ])
+        let container = try ModelContainer(
+            for: Schema([
+                CollectedCard.self,
+                PriceRecord.self,
+                ProductIdentity.self,
+                CollectionActivity.self,
+                InventoryEvent.self,
+                ReferenceQuote.self,
+                PriceObservation.self,
+                PriceCheckDay.self,
+                PortfolioDailyClose.self,
+                LocalArtworkOverride.self
+            ]),
+            configurations: [
+                ModelConfiguration(
+                    "WriterSynced",
+                    schema: syncedSchema,
+                    isStoredInMemoryOnly: true,
+                    cloudKitDatabase: .none
+                ),
+                ModelConfiguration(
+                    "WriterLocal",
+                    schema: localSchema,
+                    isStoredInMemoryOnly: true,
+                    cloudKitDatabase: .none
+                )
+            ]
+        )
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        let candidate = CollectionCommitCandidate(
+            resolvedScan: UncoveredSurfaceFixtures.resolvedScan()
+        )
+
+        await writer.setSaveOverrideForTesting {
+            throw InjectedSaveFailure()
+        }
+        do {
+            _ = try await writer.add(candidate)
+            XCTFail("the injected final save should fail")
+        } catch is InjectedSaveFailure {
+            // Expected: the failed transaction must be rolled back before the
+            // writer can accept the next scan.
+        }
+
+        let mutation = try await writer.add(candidate)
+        XCTAssertTrue(mutation.didInsert)
+
+        let context = ModelContext(container)
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(cards.count, 1)
+        XCTAssertEqual(cards.first?.quantity, 1)
+        XCTAssertEqual(events.count, 1)
+    }
 }
 
 #if DEBUG
@@ -1264,6 +1336,40 @@ final class PriceRefreshSnapshotSliceTests: XCTestCase {
         revisions.publish(after)
         XCTAssertEqual(revisions.revision, baselineRevision + 1)
         _ = storeA
+    }
+
+    func testPriceFingerprintIncludesAllFreshnessWatermarks() {
+        let record = PriceRecord(
+            key: "fingerprint-price",
+            game: .pokemon,
+            printingID: "printing",
+            variantID: nil
+        )
+        let first = Date(timeIntervalSince1970: 100)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "variant",
+                sourceUpdatedAt: first,
+                fetchedAt: first
+            )
+        )
+
+        var before = StoreRevisionFingerprinting.priceValues([record])
+        record.fetchedAt = Date(timeIntervalSince1970: 200)
+        var after = StoreRevisionFingerprinting.priceValues([record])
+        XCTAssertNotEqual(before, after)
+
+        record.lastCheckedAt = Date(timeIntervalSince1970: 300)
+        after = StoreRevisionFingerprinting.priceValues([record])
+        XCTAssertNotEqual(before, after)
+        before = after
+
+        record.lastSuccessfulCheckAt = Date(timeIntervalSince1970: 400)
+        after = StoreRevisionFingerprinting.priceValues([record])
+        XCTAssertNotEqual(before, after)
     }
 
     func testStoreRevisionCardFingerprintIncludesDerivedStateInputs() async throws {

@@ -63,6 +63,14 @@ enum CollectionQuantityLimits {
 /// the boundary; no SwiftData model object is returned to the view model.
 @ModelActor
 actor ScannerCollectionWriter {
+    #if DEBUG
+    private var saveOverrideForTesting: (@Sendable () throws -> Void)?
+
+    func setSaveOverrideForTesting(_ override: (@Sendable () throws -> Void)?) {
+        saveOverrideForTesting = override
+    }
+    #endif
+
     func add(_ candidate: CollectionCommitCandidate) throws -> CollectionMutation {
         let persistenceID = PerformanceSignpost.makeID()
         let signpostState = PerformanceSignpost.beginInterval(
@@ -74,52 +82,71 @@ actor ScannerCollectionWriter {
             PerformanceSignpost.endInterval("scannerPersistence", signpostState, "operation=add")
         }
 
-        let store = CollectionStore(context: modelContext)
+        do {
+            let store = CollectionStore(context: modelContext)
 
-        if let slab = candidate.subject.slab {
-            switch candidate.gradedOutcome {
-            case let .bound(variant):
-                return try store.addGraded(
-                    underlying: candidate.card,
-                    variant: variant,
-                    certificationNumber: slab.certificationNumber,
-                    setReleaseOrder: candidate.card.setReleaseOrder,
-                    pokemonPrintRun: candidate.pokemonPrintRun,
-                    resolved: candidate.resolved
-                )
-            case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
-                return try store.addScannedGraded(
-                    underlying: candidate.card,
-                    company: slab.company,
-                    grade: slab.grade,
-                    certificationNumber: slab.certificationNumber,
-                    setReleaseOrder: candidate.card.setReleaseOrder,
-                    pokemonPrintRun: candidate.pokemonPrintRun,
-                    resolved: candidate.resolved
-                )
+            if let slab = candidate.subject.slab {
+                switch candidate.gradedOutcome {
+                case let .bound(variant):
+                    return try store.addGraded(
+                        underlying: candidate.card,
+                        variant: variant,
+                        certificationNumber: slab.certificationNumber,
+                        setReleaseOrder: candidate.card.setReleaseOrder,
+                        pokemonPrintRun: candidate.pokemonPrintRun,
+                        resolved: candidate.resolved
+                    )
+                case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
+                    return try store.addScannedGraded(
+                        underlying: candidate.card,
+                        company: slab.company,
+                        grade: slab.grade,
+                        certificationNumber: slab.certificationNumber,
+                        setReleaseOrder: candidate.card.setReleaseOrder,
+                        pokemonPrintRun: candidate.pokemonPrintRun,
+                        resolved: candidate.resolved
+                    )
+                }
             }
-        }
 
-        // Resolve/import aliases before deriving the price key. Imported rows
-        // deliberately keep their local identity while catalog normalization
-        // may have found a canonical provider id; staging first could write the
-        // quote under the obsolete synthetic key and lose lineage on re-import.
-        let mutation = try store.add(
-            candidate.card,
-            resolved: candidate.resolved,
-            source: .scan,
-            pokemonPrintRun: candidate.pokemonPrintRun,
-            matchCatalogAliases: true,
-            savesChanges: false,
-            signpostID: persistenceID
-        )
-        guard let stored = try store.card(forAnyKey: mutation.collectionKey) else {
+            // Resolve/import aliases before deriving the price key. Imported rows
+            // deliberately keep their local identity while catalog normalization
+            // may have found a canonical provider id; staging first could write the
+            // quote under the obsolete synthetic key and lose lineage on re-import.
+            let mutation = try store.add(
+                candidate.card,
+                resolved: candidate.resolved,
+                source: .scan,
+                pokemonPrintRun: candidate.pokemonPrintRun,
+                matchCatalogAliases: true,
+                savesChanges: false,
+                signpostID: persistenceID
+            )
+            guard let stored = try store.card(forAnyKey: mutation.collectionKey) else {
+                throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
+            }
+            stagePrice(candidate.price, for: stored)
+            try saveModelContext()
+            return mutation
+        } catch {
+            // The staged add, ledger event, activity and price write are one
+            // transaction from the writer's perspective. In particular, a
+            // failed final save must not leave the context carrying the add
+            // into the next successful scan.
             modelContext.rollback()
-            throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
+            throw error
         }
-        stagePrice(candidate.price, for: stored)
+    }
+
+    private func saveModelContext() throws {
+        #if DEBUG
+        if let saveOverrideForTesting {
+            self.saveOverrideForTesting = nil
+            try saveOverrideForTesting()
+            return
+        }
+        #endif
         try modelContext.save()
-        return mutation
     }
 
     func undo(_ mutation: CollectionMutation) throws {

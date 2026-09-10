@@ -1391,7 +1391,7 @@ final class PortfolioReconciliationTests: XCTestCase {
                 let actor = PortfolioComputationActor(modelContainer: container)
                 return await actor.compute(
                     epoch: epoch,
-                    through: through,
+                    liveInstant: through,
                     timeZoneIdentifier: timeZoneIdentifier
                 )
             }
@@ -3006,6 +3006,300 @@ final class PortfolioReconciliationTests: XCTestCase {
         var attribution = try XCTUnwrap(replay.live?.attribution)
         attribution.currentValue = try XCTUnwrap(asOf.valuation(for: "instrument").unitPrice)
         XCTAssertEqual(attribution.unexplained, .zero)
+    }
+
+    func testLiveComputationUsesACutoffAfterSamePassReconciliationBackfill() async throws {
+        let context = try makeContext()
+        let through = Date.now.addingTimeInterval(-60)
+        let epoch = through.addingTimeInterval(-3_600)
+        let owned = card(key: "live-backfill", dateAdded: epoch)
+        context.insert(owned)
+
+        let record = PriceRecord(
+            key: owned.priceKey,
+            game: .pokemon,
+            printingID: owned.providerID,
+            variantID: owned.variantID
+        )
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 42,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "backfill",
+                sourceUpdatedAt: through.addingTimeInterval(-20),
+                fetchedAt: through.addingTimeInterval(-20)
+            )
+        )
+        context.insert(record)
+        context.insert(
+            InventoryEvent(
+                operationID: UUID(),
+                leg: nil,
+                kind: .initialBalance,
+                source: .catalog,
+                collectionKey: owned.collectionKey,
+                priceStorageKey: owned.priceKey,
+                deltaQuantity: 1,
+                occurredAt: epoch,
+                valuation: .unpriced
+            )
+        )
+        try context.save()
+
+        let actor = PortfolioComputationActor(modelContainer: context.container)
+        let computation = await actor.compute(
+            epoch: epoch,
+            liveInstant: through,
+            timeZoneIdentifier: "UTC"
+        )
+
+        XCTAssertEqual(computation.valuation.value, money(42))
+        XCTAssertEqual(computation.holdings.first?.unitPrice, money(42))
+    }
+
+    func testLivePriceDeltasExcludeUnsupportedCurrenciesAndHandleTransitions() async throws {
+        let context = try makeContext()
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        let owned = card(key: "currency-transition", dateAdded: now)
+        context.insert(owned)
+
+        let record = PriceRecord(
+            key: owned.priceKey,
+            game: .pokemon,
+            printingID: owned.providerID,
+            variantID: owned.variantID
+        )
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "usd",
+                sourceUpdatedAt: now,
+                fetchedAt: now
+            )
+        )
+        context.insert(record)
+        context.insert(
+            InventoryEvent(
+                operationID: UUID(),
+                leg: nil,
+                kind: .initialBalance,
+                source: .catalog,
+                collectionKey: owned.collectionKey,
+                priceStorageKey: owned.priceKey,
+                deltaQuantity: 1,
+                occurredAt: now,
+                valuation: .unpriced
+            )
+        )
+        try context.save()
+
+        let engine = PortfolioEngine()
+        await engine.recomputeAndWait(context: context, now: now)
+        XCTAssertEqual(engine.summary?.currentValue, money(10))
+
+        engine.applyPriceDeltas([
+            PriceDelta(
+                key: owned.priceKey,
+                display: PriceDisplay(amount: 25, currencyCode: "EUR")
+            )
+        ])
+        XCTAssertEqual(engine.summary?.currentValue, .zero)
+        XCTAssertNil(engine.holdings.first?.unitPrice)
+
+        engine.applyPriceDeltas([
+            PriceDelta(
+                key: owned.priceKey,
+                display: PriceDisplay(amount: 30, currencyCode: "USD")
+            )
+        ])
+        XCTAssertEqual(engine.summary?.currentValue, money(30))
+        XCTAssertEqual(engine.holdings.first?.unitPrice, money(30))
+
+        engine.applyPriceDeltas([
+            PriceDelta(
+                key: owned.priceKey,
+                display: PriceDisplay(amount: 5, currencyCode: "EUR")
+            )
+        ])
+        XCTAssertEqual(engine.summary?.currentValue, .zero)
+        XCTAssertNil(engine.holdings.first?.unitPrice)
+    }
+
+    func testFastAndAuthoritativeValuationAgreeAcrossCurrencyAndInvalidationTransitions() async throws {
+        let context = try makeContext()
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        let usdCard = card(key: "mixed-usd", quantity: 2, dateAdded: now)
+        let eurCard = card(key: "mixed-eur", quantity: 1, dateAdded: now)
+        context.insert(usdCard)
+        context.insert(eurCard)
+
+        let usdRecord = PriceRecord(
+            key: usdCard.priceKey,
+            game: .pokemon,
+            printingID: usdCard.providerID,
+            variantID: usdCard.variantID
+        )
+        _ = usdRecord.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 10,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "usd-initial",
+                sourceUpdatedAt: now,
+                fetchedAt: now
+            )
+        )
+
+        let eurRecord = PriceRecord(
+            key: eurCard.priceKey,
+            game: .pokemon,
+            printingID: eurCard.providerID,
+            variantID: eurCard.variantID
+        )
+        _ = eurRecord.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 20,
+                currencyCode: "EUR",
+                source: .cardmarket,
+                sourceVariantID: "eur-initial",
+                sourceUpdatedAt: now,
+                fetchedAt: now
+            )
+        )
+        context.insert(usdRecord)
+        context.insert(eurRecord)
+
+        for owned in [usdCard, eurCard] {
+            context.insert(
+                InventoryEvent(
+                    operationID: UUID(),
+                    leg: nil,
+                    kind: .initialBalance,
+                    source: .catalog,
+                    collectionKey: owned.collectionKey,
+                    priceStorageKey: owned.priceKey,
+                    deltaQuantity: owned.quantity,
+                    occurredAt: now,
+                    valuation: .unpriced
+                )
+            )
+        }
+        try context.save()
+
+        let engine = PortfolioEngine()
+
+        func collectionValue() -> Money {
+            CollectionValuation.shownValue(
+                for: [usdCard, eurCard].map { owned in
+                    let record = owned.collectionKey == usdCard.collectionKey ? usdRecord : eurRecord
+                    return CollectionRow(
+                        id: owned.collectionKey,
+                        game: owned.cardGame,
+                        name: owned.name,
+                        setCode: owned.setCode,
+                        setName: owned.setName,
+                        setReleaseOrder: owned.setReleaseOrder,
+                        cardNumber: owned.cardNumber,
+                        variantID: owned.variantID,
+                        variantLabel: owned.variantLabel,
+                        quantity: owned.quantity,
+                        dateAdded: owned.dateAdded,
+                        price: record.display,
+                        priceStorageKey: record.key
+                    )
+                }
+            )
+        }
+
+        func assertAllValuationSurfaces(_ message: String) {
+            XCTAssertEqual(engine.summary?.currentValue, collectionValue(), message)
+            XCTAssertEqual(
+                engine.summary?.currentValue,
+                engine.holdings.reduce(Money.zero) { total, holding in
+                    total + (holding.holdingValue ?? .zero)
+                },
+                "portfolio holdings disagree with its headline: \(message)"
+            )
+        }
+
+        await engine.recomputeAndWait(context: context, now: now)
+        XCTAssertEqual(engine.summary?.currentValue, money(20))
+        assertAllValuationSurfaces("initial mixed USD/EUR valuation")
+
+        _ = usdRecord.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 15,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "usd-replacement",
+                sourceUpdatedAt: now.addingTimeInterval(1),
+                fetchedAt: now.addingTimeInterval(1)
+            )
+        )
+        try context.save()
+        engine.applyPriceDeltas([
+            PriceDelta(
+                key: usdRecord.key,
+                display: usdRecord.display
+            )
+        ])
+        XCTAssertEqual(engine.summary?.currentValue, money(30))
+        XCTAssertEqual(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.holdingValue, money(30))
+        await engine.recomputeAndWait(context: context, now: now.addingTimeInterval(1))
+        assertAllValuationSurfaces("plain USD replacement")
+
+        // Both transitions arrive in one checkpoint. The fast path must remove
+        // the old USD position, add the newly eligible one, and leave the EUR
+        // quote visible but outside the USD total.
+        _ = usdRecord.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 25,
+                currencyCode: "EUR",
+                source: .cardmarket,
+                sourceVariantID: "usd-became-eur",
+                sourceUpdatedAt: now.addingTimeInterval(2),
+                fetchedAt: now.addingTimeInterval(2)
+            )
+        )
+        _ = eurRecord.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 30,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "eur-became-usd",
+                sourceUpdatedAt: now.addingTimeInterval(2),
+                fetchedAt: now.addingTimeInterval(2)
+            )
+        )
+        try context.save()
+        engine.applyPriceDeltas([
+            PriceDelta(key: usdRecord.key, display: usdRecord.display),
+            PriceDelta(key: eurRecord.key, display: eurRecord.display)
+        ])
+        XCTAssertEqual(engine.summary?.currentValue, money(30))
+        XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.unitPrice)
+        XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.holdingValue)
+        XCTAssertEqual(engine.holdings.first(where: { $0.priceStorageKey == eurRecord.key })?.holdingValue, money(30))
+        await engine.recomputeAndWait(context: context, now: now.addingTimeInterval(2))
+        assertAllValuationSurfaces("simultaneous USD/EUR transitions")
+
+        let invalidationDate = now.addingTimeInterval(3)
+        XCTAssertTrue(eurRecord.invalidate(at: invalidationDate))
+        try context.save()
+        engine.applyPriceDeltas([
+            PriceDelta(
+                key: eurRecord.key,
+                display: PriceDisplay(amount: nil, currencyCode: "USD")
+            )
+        ])
+        XCTAssertEqual(engine.summary?.currentValue, .zero)
+        XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == eurRecord.key })?.unitPrice)
+        XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == eurRecord.key })?.holdingValue)
+        await engine.recomputeAndWait(context: context, now: invalidationDate)
+        assertAllValuationSurfaces("USD invalidation")
     }
 
     func testSourceLessUSDRecordIsBackfilledWithoutInventingProviderProvenance() throws {

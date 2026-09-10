@@ -398,7 +398,7 @@ final class PortfolioEngine: ObservableObject {
                 let actor = PortfolioComputationActor(modelContainer: container)
                 computation = await actor.compute(
                     epoch: epoch,
-                    through: now,
+                    liveInstant: now,
                     timeZoneIdentifier: timeZone.identifier
                 )
             }

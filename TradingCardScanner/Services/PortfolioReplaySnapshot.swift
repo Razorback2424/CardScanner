@@ -579,9 +579,18 @@ enum PortfolioReplaySnapshotBuilder {
 /// check-day rows. That is the work that has to leave.
 @ModelActor
 actor PortfolioComputationActor {
+    /// Computes live portfolio state only.
+    ///
+    /// `liveInstant` is the current instant captured by the live caller. A
+    /// future value is honored; a past value is unsupported and is advanced to
+    /// the current instant after reconciliation so newly learned live prices
+    /// are included in the same pass. Historical replay must call
+    /// `PortfolioReplaySnapshotBuilder.compute(through:)` directly. Its
+    /// day-boundary logic, rather than this live-only parameter, enforces
+    /// no-lookahead for past days.
     func compute(
         epoch: Date,
-        through: Date,
+        liveInstant: Date,
         timeZoneIdentifier: String
     ) -> PortfolioReplaySnapshotBuilder.Computation {
         let signpostState = PerformanceSignpost.signposter
@@ -616,7 +625,7 @@ actor PortfolioComputationActor {
         // the same window the rows now are.
         let timeZone = TimeZone(identifier: timeZoneIdentifier) ?? .current
         let retentionStart = PortfolioReplaySnapshotBuilder.coverageWindowStart(
-            endingAt: through,
+            endingAt: liveInstant,
             timeZone: timeZone
         )
         // Never prunes into history the books themselves have not reached.
@@ -625,6 +634,14 @@ actor PortfolioComputationActor {
         }
 
         let observations = log.reconcileSyncedRecordsAndReturnObservations()
+        // Reconciliation may append a device-local observation after the
+        // caller captured `liveInstant`. This actor is live-only, so establish
+        // one coherent cutoff after that write rather than filtering the newly
+        // learned value out of the same pass. A caller-supplied future instant
+        // remains authoritative; past instants are unsupported and are
+        // advanced to now. Historical no-lookahead belongs to the builder's
+        // day-boundary logic, not this parameter.
+        let effectiveThrough = max(liveInstant, Date.now)
         if observations.isEmpty {
             // An empty result may be a genuinely empty log or an unreadable
             // table. Let the builder perform its normal fetch so the latter is
@@ -633,7 +650,7 @@ actor PortfolioComputationActor {
             return PortfolioReplaySnapshotBuilder.compute(
                 context: modelContext,
                 epoch: epoch,
-                through: through,
+                through: effectiveThrough,
                 timeZone: timeZone
             )
         }
@@ -641,7 +658,7 @@ actor PortfolioComputationActor {
         return PortfolioReplaySnapshotBuilder.compute(
             context: modelContext,
             epoch: epoch,
-            through: through,
+            through: effectiveThrough,
             timeZone: timeZone,
             existingObservations: observations
         )

@@ -1677,4 +1677,41 @@ final class JustTCGContractTests: XCTestCase {
             "a failed save must leave the delta checkpoint eligible for retry"
         )
     }
+
+    @MainActor
+    func testDeferredBatchCheckpointNeedsADurableFinalSaveBeforeAdvancingDelta() async throws {
+        let suite = "JustTCGDelta.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+
+        let (coordinator, syncLedger) = makeCoordinator(defaults: defaults)
+        let deferred = await coordinator.refresh(
+            [target(key: "priced", variant: "variant-priced", requiresFullResponse: false)],
+            game: .pokemon,
+            apply: { _, _, _ in true },
+            checkpoint: { true },
+            finalCheckpoint: { false }
+        )
+
+        XCTAssertTrue(deferred.persistenceFailed)
+        XCTAssertFalse(deferred.completedFully)
+        XCTAssertNil(
+            syncLedger.deltaCutoff(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion),
+            "a deferred batch must not advance the clock before the final save"
+        )
+
+        let committed = await coordinator.refresh(
+            [target(key: "priced", variant: "variant-priced", requiresFullResponse: false)],
+            game: .pokemon,
+            apply: { _, _, _ in true },
+            checkpoint: { true },
+            finalCheckpoint: { true }
+        )
+
+        XCTAssertTrue(committed.completedFully)
+        XCTAssertNotNil(
+            syncLedger.deltaCutoff(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion)
+        )
+    }
 }

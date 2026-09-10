@@ -164,6 +164,10 @@ struct JustTCGRefreshCoordinator {
     ///   of SwiftData and stays testable.
     /// - Parameter checkpoint: called after each successful batch, so a
     ///   cancelled or rate-limited run keeps the work it already paid for.
+    /// - Parameter finalCheckpoint: called after every batch has completed and
+    ///   must represent a durable save. A regular checkpoint may legitimately
+    ///   defer its save for cadence reasons; the sync watermark must not move
+    ///   until this final durability boundary succeeds.
     func refresh(
         _ targets: [MarketPriceTarget],
         game: CardGame,
@@ -172,7 +176,8 @@ struct JustTCGRefreshCoordinator {
         onProgress: @Sendable (MarketRefreshReport) async -> Void = { _ in },
         apply: @Sendable (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) async -> Bool,
         unmatched: @Sendable ([MarketPriceTarget]) async -> Void = { _ in },
-        checkpoint: @Sendable () async -> Bool
+        checkpoint: @Sendable () async -> Bool,
+        finalCheckpoint: @Sendable () async -> Bool = { true }
     ) async -> MarketRefreshReport {
         let (batched, unresolved) = Self.deduplicate(targets)
         var report = MarketRefreshReport()
@@ -306,6 +311,11 @@ struct JustTCGRefreshCoordinator {
         report.completedFully = report.batchesCompleted == report.batchesPlanned
             && !report.persistenceFailed
         if report.completedFully, unresolved.isEmpty {
+            guard await finalCheckpoint() else {
+                report.persistenceFailed = true
+                report.completedFully = false
+                return report
+            }
             syncLedger.recordCompleteSync(game: game, apiVersion: JustTCGV1Client.apiVersion)
         }
         return report

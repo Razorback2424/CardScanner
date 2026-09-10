@@ -635,7 +635,7 @@ actor PriceRefreshModelActor {
     /// The coordinator calls its checkpoint callback after a successful vendor
     /// batch. That callback is a durability opportunity, not a requirement to
     /// save every batch: keep the same wall-clock budget as the other lanes.
-    private func checkpointActiveContextIfDue() -> Bool {
+    private func checkpointActiveContextIfDue(force: Bool = false) -> Bool {
         let checkpointState = PerformanceSignpost.beginInterval(
             "priceRefresh.checkpointActiveContext",
             id: PerformanceSignpost.makeID(),
@@ -649,7 +649,8 @@ actor PriceRefreshModelActor {
                 "staged=\(activeFallbackStagedWrites),outcome=\(checkpointOutcome)"
             )
         }
-        let due = activeFallbackStagedWrites >= PriceRefreshController.stagedWriteCeiling
+        let due = force
+            || activeFallbackStagedWrites >= PriceRefreshController.stagedWriteCeiling
             || Date.now.timeIntervalSince(activeFallbackLastCommitAt)
                 >= PriceRefreshController.checkpointBudget
         guard due else { return true }
@@ -872,6 +873,9 @@ actor PriceRefreshModelActor {
                 },
                 checkpoint: { [self] in
                     await self.checkpointActiveContextIfDue()
+                },
+                finalCheckpoint: { [self] in
+                    await self.checkpointActiveContextIfDue(force: true)
                 }
             )
             priced += report.variantsUpdated
