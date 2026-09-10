@@ -530,6 +530,38 @@ final class PortfolioReplayEngineTests: XCTestCase {
         }
     }
 
+    func testAsyncPriceArrivalOrderCannotChangeFinalStateWhenKnowledgeTimesAreStable() {
+        let events = [event(.initialBalance, delta: 1, at: at(1, hour: 9))]
+        let observations = [
+            observation(10, at: at(1, hour: 8)),
+            observation(12, at: at(2, hour: 10)),
+            observation(11, at: at(2, hour: 11))
+        ]
+
+        let inChronologicalArrivalOrder = PortfolioReplayEngine.replay(
+            input(
+                events: events,
+                observations: observations,
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+        let inReverseArrivalOrder = PortfolioReplayEngine.replay(
+            input(
+                events: events,
+                observations: Array(observations.reversed()),
+                epoch: at(1, hour: 0),
+                through: at(2, hour: 20)
+            )
+        )
+
+        XCTAssertEqual(
+            inReverseArrivalOrder,
+            inChronologicalArrivalOrder,
+            "arrival order must not change the final state when each observation retains its knowledge time"
+        )
+    }
+
     // MARK: - High cardinality
 
     /// Gate 14: a year of high-cardinality history behaves exactly like a small

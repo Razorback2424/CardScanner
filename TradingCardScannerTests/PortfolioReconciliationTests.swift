@@ -1941,6 +1941,91 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(rows.first?.amount, money(20))
     }
 
+    func testNewerSourceClockIsAcceptedEvenWhenItsReceiptIsOlderThanLocalKnowledge() throws {
+        let context = try makeContext()
+        let previousSourceClock = Date(timeIntervalSince1970: 1_000)
+        let localReceipt = Date(timeIntervalSince1970: 2_000)
+        let newerSourceClock = Date(timeIntervalSince1970: 1_500)
+        let record = PriceRecord(key: "instrument", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 30,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "newer",
+                sourceUpdatedAt: newerSourceClock,
+                fetchedAt: newerSourceClock
+            )
+        )
+        context.insert(record)
+        context.insert(
+            PriceObservation(
+                instrumentKey: "instrument",
+                kind: .marketUpdate,
+                amount: money(20),
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "older",
+                marketVariantID: nil,
+                effectiveAt: previousSourceClock,
+                receivedAt: localReceipt,
+                isSourceStamped: true
+            )
+        )
+        try context.save()
+
+        let rows = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(
+                learnedAt: localReceipt.addingTimeInterval(60)
+            )
+        let instrumentRows = rows.filter { $0.instrumentKey == "instrument" }
+        XCTAssertEqual(instrumentRows.count, 2)
+        XCTAssertEqual(instrumentRows.max(by: { $0.receivedAt < $1.receivedAt })?.amount, money(30))
+    }
+
+    func testEqualSourceClockAcceptsAChangedValueForDecisionRules() throws {
+        let context = try makeContext()
+        let sourceClock = Date(timeIntervalSince1970: 3_000)
+        let learnedAt = Date(timeIntervalSince1970: 4_000)
+        let record = PriceRecord(key: "equal-stamp", game: .pokemon, printingID: "p", variantID: nil)
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 30,
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "new",
+                sourceUpdatedAt: sourceClock,
+                fetchedAt: sourceClock
+            )
+        )
+        context.insert(record)
+        context.insert(
+            PriceObservation(
+                instrumentKey: "equal-stamp",
+                kind: .marketUpdate,
+                amount: money(20),
+                currencyCode: "USD",
+                source: .justTCG,
+                sourceVariantID: "old",
+                marketVariantID: nil,
+                effectiveAt: sourceClock,
+                receivedAt: sourceClock,
+                isSourceStamped: true
+            )
+        )
+        try context.save()
+
+        let rows = PriceObservationLog(context: context)
+            .reconcileSyncedRecordsAndReturnObservations(learnedAt: learnedAt)
+
+        let instrumentRows = rows.filter { $0.instrumentKey == "equal-stamp" }
+        XCTAssertEqual(instrumentRows.count, 2)
+        XCTAssertEqual(
+            instrumentRows.max(by: { $0.receivedAt < $1.receivedAt })?.amount,
+            money(30)
+        )
+    }
+
     func testSyncedInvalidationCreatesLocalKnowledgeEvenWithoutPriorObservation() throws {
         let context = try makeContext()
         let remoteFetch = Date(timeIntervalSince1970: 1_900_000_000)

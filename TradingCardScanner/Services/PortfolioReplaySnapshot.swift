@@ -401,9 +401,10 @@ enum PortfolioReplaySnapshotBuilder {
 
     /// Current value per instrument, from two bulk reads.
     ///
-    /// The newest usable USD observation wins; a `PriceRecord` fills in when
-    /// the newest observation cannot be used for a USD total. An explicit
-    /// invalidation blocks that fallback. The evidence-resolution rule lives
+    /// The observation log and mutable records are resolved by one shared
+    /// precedence rule. A newer current record can supersede an observation,
+    /// including a transition to a non-USD or invalidated state; an explicit
+    /// invalidation remains authoritative. The evidence-resolution rule lives
     /// in `InventoryLedger` and is shared with scalar reads; instrument key
     /// selection separately follows `PriceStore` so portfolio and grid agree.
     static func valuationIndex(

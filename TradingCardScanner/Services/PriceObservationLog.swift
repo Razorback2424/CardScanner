@@ -698,9 +698,18 @@ struct PriceObservationLog {
         .max() ?? .distantPast
 
         if let sourceUpdatedAt = record.sourceUpdatedAt,
-           previous.isSourceStamped,
-           sourceUpdatedAt < previous.effectiveAt {
-            return remoteKnowledge <= previous.receivedAt
+           record.source?.publishesSourceTimestamp == true,
+           previous.isSourceStamped {
+            // Once both sides carry the provider's market clock, a delayed
+            // response is still newer when its source timestamp is newer. The
+            // local receipt watermark is only the fallback for providers that
+            // cannot make that claim; comparing it here would discard a real
+            // market update merely because it arrived after another device's
+            // observation was learned locally. Equality is accepted on
+            // purpose: a provider may reuse a coarse timestamp for a changed
+            // value, and PriceObservationRules.decide must resolve the
+            // unchanged-versus-append policy after this ordering gate.
+            return sourceUpdatedAt < previous.effectiveAt
         }
         return remoteKnowledge <= previous.receivedAt
     }

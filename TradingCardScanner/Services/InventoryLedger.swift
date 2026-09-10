@@ -297,11 +297,12 @@ struct InventoryLedger {
 
     /// The price evidence in force right now for one instrument.
     ///
-    /// Prefers the observation log when it provides a usable USD value,
-    /// because its `receivedAt` is the exact knowledge time the portfolio walk
-    /// orders on. Falls back to the `PriceRecord` when the newest observation
-    /// cannot be used for a USD total; an explicit invalidation is the one
-    /// observation that blocks that fallback.
+    /// Resolves the append-only observation against the mutable current record.
+    /// An observation remains authoritative until a record with newer source
+    /// chronology (or a newer conservative receipt watermark) supersedes it.
+    /// That matters for transitions the observation log intentionally does not
+    /// append, such as USD -> EUR. An explicit invalidation is the one
+    /// observation that always blocks the record fallback.
     func valuation(forPriceKey key: String) -> InventoryValuation {
         Self.resolveValuation(
             observation: PriceObservationLog(context: context)
@@ -313,12 +314,12 @@ struct InventoryLedger {
     /// Resolves one instrument's current evidence for both scalar reads and
     /// bulk reads.
     ///
-    /// An explicit invalidation is the only observation that blocks the
-    /// legacy record: it deliberately withdraws a value. A newer observation
-    /// in another currency cannot be used for a USD portfolio, so it falls
-    /// through to the older USD `PriceRecord` just as a malformed observation
-    /// does. Keeping that rule here prevents the scalar and bulk paths from
-    /// making different choices about the same evidence.
+    /// An explicit invalidation is the only observation that unconditionally
+    /// blocks the mutable record: it deliberately withdraws a value. A newer
+    /// current record can also supersede an older observation, including when
+    /// that record becomes ineligible for a USD total. Keeping the precedence
+    /// here prevents scalar and bulk paths from making different choices about
+    /// the same evidence.
     static func resolveValuation(
         observation: PriceObservation?,
         record: PriceRecord?
@@ -334,6 +335,19 @@ struct InventoryLedger {
             if let invalidatedAt = record?.invalidatedAt,
                observation.receivedAt <= invalidatedAt {
                 return .unpriced
+            }
+            // PriceRecord is the mutable current-state projection while the
+            // observation is the append-only local knowledge history. A
+            // record can legitimately be newer than the latest local
+            // observation (including a USD -> EUR transition, which the USD
+            // observation log deliberately does not append). Let its current
+            // state win when the same source chronology says it supersedes
+            // the observation; otherwise an old USD observation would keep a
+            // newly ineligible record in the portfolio total.
+            if let record,
+               !record.isInvalidated,
+               Self.recordSupersedes(record, observation: observation) {
+                return Self.valuation(for: record) ?? .unpriced
             }
             if let amount = observation.effectiveUSDAmount {
                 return InventoryValuation(
@@ -372,6 +386,28 @@ struct InventoryLedger {
             receivedAt: record.fetchedAt,
             observationID: nil
         )
+    }
+
+    /// Mirrors the observation log's ordering gate for the mutable current
+    /// record. Source-stamped values compare provider clocks, including equal
+    /// clocks; unstamped values use the conservative local knowledge watermark.
+    private static func recordSupersedes(
+        _ record: PriceRecord,
+        observation: PriceObservation
+    ) -> Bool {
+        guard let sourceUpdatedAt = record.sourceUpdatedAt,
+              record.source?.publishesSourceTimestamp == true,
+              observation.isSourceStamped else {
+            let remoteKnowledge = [
+                record.fetchedAt,
+                record.lastSuccessfulCheckAt,
+                record.lastCheckedAt
+            ]
+            .compactMap { $0 }
+            .max() ?? .distantPast
+            return remoteKnowledge > observation.receivedAt
+        }
+        return sourceUpdatedAt >= observation.effectiveAt
     }
 
     private func usableValue(forPriceKey key: String) -> Money? {
