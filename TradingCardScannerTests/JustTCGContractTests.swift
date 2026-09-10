@@ -897,6 +897,147 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertFalse(asked.matches(returned, game: .pokemon))
     }
 
+    func testGradedIdentityRequiresTheSetAndFullCollectorNumberToMatch() throws {
+        let wrongSet = try JSONDecoder().decode(
+            JustTCGCard.self,
+            from: Data("""
+            { "id": "wrong-set", "name": "Charizard", "number": "4/102",
+              "set_name": "Base Set 2", "variants": [] }
+            """.utf8)
+        )
+        let wrongDenominator = try JSONDecoder().decode(
+            JustTCGCard.self,
+            from: Data("""
+            { "id": "wrong-number", "name": "Charizard", "number": "4/130",
+              "set_name": "Base Set", "variants": [] }
+            """.utf8)
+        )
+        let asked = GradedCardIdentity(
+            name: "Charizard", setName: "Base Set", collectorNumber: "004/102"
+        )
+
+        XCTAssertFalse(asked.matches(wrongSet, game: .pokemon))
+        XCTAssertFalse(asked.matches(wrongDenominator, game: .pokemon))
+    }
+
+    func testGradedIdentityRejectsAnAmbiguousMissingCollectorNumber() throws {
+        let returned = try JSONDecoder().decode(
+            JustTCGCard.self,
+            from: Data("""
+            { "id": "missing-number", "name": "Charizard",
+              "set_name": "Base Set", "variants": [] }
+            """.utf8)
+        )
+        let asked = GradedCardIdentity(
+            name: "Charizard", setName: "Base Set", collectorNumber: "4/102"
+        )
+
+        XCTAssertFalse(asked.matches(returned, game: .pokemon))
+    }
+
+    func testGradedIdentityProjectionNamesMatchStoredProperties() {
+        let identity = GradedCardIdentity(
+            name: "Charizard",
+            setName: "Base Set",
+            collectorNumber: "004/102",
+            catalogID: "base1-4",
+            pokemonPrintRun: .firstEdition
+        )
+
+        let stored = Set(Mirror(reflecting: identity).children.compactMap(\.label))
+        let projected = Set(Mirror(reflecting: identity.exhaustiveProjection).children.compactMap(\.label))
+        XCTAssertEqual(stored, projected)
+
+        for value in identity.exhaustiveProjection.values {
+            XCTAssertTrue(
+                identity.groupingKey(game: .pokemon).contains(value.lowercased()),
+                "groupingKey dropped projection value \(value)"
+            )
+        }
+    }
+
+    func testGradedVendorProductMustMatchGameSetAndPrintRunBeforeBinding() throws {
+        let identity = GradedCardIdentity(
+            name: "Charizard",
+            setName: "Base Set",
+            collectorNumber: "004/102",
+            catalogID: "base1-4",
+            pokemonPrintRun: .firstEdition
+        )
+        let rightCard = try JSONDecoder().decode(
+            JustTCGCard.self,
+            from: Data("""
+            { "id": "right", "game": "pokemon", "set": "base-set-shadowless-pokemon",
+              "name": "Charizard", "number": "004/102", "set_name": "Base Set",
+              "variants": [{ "id": "right-variant", "type": "graded",
+                "printing": "1st Edition Holofoil",
+                "grading": { "company": "PSA", "grade": 10 } }] }
+            """.utf8)
+        )
+        let rightVariant = try XCTUnwrap(rightCard.variants?.first)
+        XCTAssertTrue(
+            identity.matches(
+                rightCard,
+                variant: rightVariant,
+                game: .pokemon,
+                expectedSetSlug: "base-set-shadowless-pokemon"
+            )
+        )
+
+        let wrongGame = try JSONDecoder().decode(
+            JustTCGCard.self,
+            from: Data("""
+            { "id": "wrong-game", "game": "magic-the-gathering",
+              "set": "base-set-shadowless-pokemon", "name": "Charizard", "number": "004/102",
+              "set_name": "Base Set", "variants": [{ "id": "wrong-game-variant", "type": "graded",
+                "printing": "1st Edition Holofoil", "grading": { "company": "PSA", "grade": 10 } }] }
+            """.utf8)
+        )
+        let wrongSet = try JSONDecoder().decode(
+            JustTCGCard.self,
+            from: Data("""
+            { "id": "wrong-set", "game": "pokemon", "set": "base-set-pokemon",
+              "name": "Charizard", "number": "004/102", "set_name": "Base Set",
+              "variants": [{ "id": "wrong-set-variant", "type": "graded",
+                "printing": "1st Edition Holofoil", "grading": { "company": "PSA", "grade": 10 } }] }
+            """.utf8)
+        )
+        let wrongPrinting = try JSONDecoder().decode(
+            JustTCGCard.self,
+            from: Data("""
+            { "id": "wrong-printing", "game": "pokemon", "set": "base-set-shadowless-pokemon",
+              "name": "Charizard", "number": "004/102", "set_name": "Base Set",
+              "variants": [{ "id": "wrong-printing-variant", "type": "graded",
+                "printing": "Holofoil", "grading": { "company": "PSA", "grade": 10 } }] }
+            """.utf8)
+        )
+
+        XCTAssertFalse(
+            identity.matches(
+                wrongGame,
+                variant: try XCTUnwrap(wrongGame.variants?.first),
+                game: .pokemon,
+                expectedSetSlug: "base-set-shadowless-pokemon"
+            )
+        )
+        XCTAssertFalse(
+            identity.matches(
+                wrongSet,
+                variant: try XCTUnwrap(wrongSet.variants?.first),
+                game: .pokemon,
+                expectedSetSlug: "base-set-shadowless-pokemon"
+            )
+        )
+        XCTAssertFalse(
+            identity.matches(
+                wrongPrinting,
+                variant: try XCTUnwrap(wrongPrinting.variants?.first),
+                game: .pokemon,
+                expectedSetSlug: "base-set-shadowless-pokemon"
+            )
+        )
+    }
+
     func testGradedIdentityAcceptsTheCardItAskedFor() throws {
         let json = """
         { "id": "right", "name": "Charizard", "number": "4/102",
@@ -1127,6 +1268,26 @@ final class JustTCGContractTests: XCTestCase {
 
         XCTAssertEqual(psa9.groupingKey(game: .pokemon), psa10.groupingKey(game: .pokemon))
         XCTAssertNotEqual(psa9.groupingKey(game: .pokemon), other.groupingKey(game: .pokemon))
+    }
+
+    func testDifferentPokemonPrintRunsDoNotShareAGradedLookupGroup() {
+        let firstEdition = GradedCardIdentity(
+            name: "Charizard",
+            setName: "Base Set",
+            collectorNumber: "004/102",
+            pokemonPrintRun: .firstEdition
+        )
+        let unlimited = GradedCardIdentity(
+            name: "Charizard",
+            setName: "Base Set",
+            collectorNumber: "004/102",
+            pokemonPrintRun: .unlimited
+        )
+
+        XCTAssertNotEqual(
+            firstEdition.groupingKey(game: .pokemon),
+            unlimited.groupingKey(game: .pokemon)
+        )
     }
 
     /// Pinned from the live v2 response for Base Set Charizard, which is the

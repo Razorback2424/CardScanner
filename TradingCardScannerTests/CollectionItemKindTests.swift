@@ -260,6 +260,35 @@ final class CollectionItemKindTests: XCTestCase {
         XCTAssertEqual(prices.first?.sourceVariantID, "g-uuid")
     }
 
+    func testGradedPrintRunSurvivesThePickerPersistenceRoundTrip() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let card = try identifiedPokemonCard()
+        let variant = GradedVariant(
+            id: "first-edition-grade",
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            marketPriceUSD: 500,
+            updatedAt: nil
+        )
+
+        let mutation = try store.addGraded(
+            underlying: card,
+            variant: variant,
+            certificationNumber: nil,
+            pokemonPrintRun: .firstEdition
+        )
+        let persisted = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        let refetched = try XCTUnwrap(
+            try context.fetch(FetchDescriptor<CollectedCard>()).first {
+                $0.collectionKey == mutation.collectionKey
+            }
+        )
+
+        XCTAssertEqual(persisted.pokemonPrintRun, .firstEdition)
+        XCTAssertEqual(refetched.pokemonPrintRun, .firstEdition)
+    }
+
     /// Without a certificate the app cannot tell two identical slabs apart, so
     /// they aggregate the way raw copies do.
     func testUncertifiedSlabsAggregate() throws {

@@ -101,15 +101,7 @@ struct GradedVariantPickerView: View {
                     Section(group.company.label) {
                         ForEach(group.variants) { variant in
                             NavigationLink {
-                                GradedSlabConfirmationView(
-                                    card: card,
-                                    variant: variant,
-                                    setReleaseOrder: setReleaseOrder,
-                                    onAdded: { summary in
-                                        addedSummary = summary
-                                        dismiss()
-                                    }
-                                )
+                                confirmationView(for: variant)
                             } label: {
                                 gradeRow(variant)
                             }
@@ -157,6 +149,19 @@ struct GradedVariantPickerView: View {
         .frame(minHeight: 44)
         .accessibilityElement(children: .combine)
     }
+
+    private func confirmationView(for variant: GradedVariant) -> some View {
+        GradedSlabConfirmationView(
+            card: card,
+            variant: variant,
+            setReleaseOrder: setReleaseOrder,
+            pokemonPrintRun: pokemonPrintRun,
+            onAdded: { summary in
+                addedSummary = summary
+                dismiss()
+            }
+        )
+    }
 }
 
 /// The last step: review the price, optionally record a certificate, add.
@@ -164,11 +169,26 @@ struct GradedSlabConfirmationView: View {
     let card: IdentifiedCard
     let variant: GradedVariant
     let setReleaseOrder: Int?
+    let pokemonPrintRun: PokemonPrintRun?
     let onAdded: (String) -> Void
 
     @Environment(\.modelContext) private var modelContext
     @State private var certificationNumber = ""
     @State private var addFailure: String?
+
+    init(
+        card: IdentifiedCard,
+        variant: GradedVariant,
+        setReleaseOrder: Int?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        onAdded: @escaping (String) -> Void
+    ) {
+        self.card = card
+        self.variant = variant
+        self.setReleaseOrder = setReleaseOrder
+        self.pokemonPrintRun = pokemonPrintRun
+        self.onAdded = onAdded
+    }
 
     var body: some View {
         List {
@@ -241,7 +261,8 @@ struct GradedSlabConfirmationView: View {
                 underlying: card,
                 variant: variant,
                 certificationNumber: trimmed.isEmpty ? nil : trimmed,
-                setReleaseOrder: setReleaseOrder
+                setReleaseOrder: setReleaseOrder,
+                pokemonPrintRun: pokemonPrintRun
             )
         } catch {
             addFailure = error.localizedDescription

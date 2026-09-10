@@ -487,7 +487,7 @@ final class JustTCGV2GradedSurfaceTests: XCTestCase {
         )
         XCTAssertEqual(
             identity.groupingKey(game: .pokemon),
-            "pokemon|base set|004/102| charizard "
+            "pokemon|base set|004/102| charizard |none|none"
         )
 
         let psa = UncoveredSurfaceFixtures.collectedCard(
@@ -807,12 +807,14 @@ final class ViewConstructionSmokeTests: XCTestCase {
                 apiKeyOverride: nil
             )
         )
-        _ = GradedSlabConfirmationView(
+        let confirmation = GradedSlabConfirmationView(
             card: identified,
             variant: graded,
             setReleaseOrder: 0,
+            pokemonPrintRun: .firstEdition,
             onAdded: { _ in }
         )
+        XCTAssertEqual(confirmation.pokemonPrintRun, .firstEdition)
         _ = RemovalUndoBanner(name: "Test Card", onUndo: {}, onDismiss: {})
         _ = PriceFallbackSettingsSection().body
 

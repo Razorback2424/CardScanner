@@ -22,6 +22,38 @@ import Foundation
 /// Collector number carries the check: a set can hold two cards with the same
 /// name, but not at the same number.
 struct GradedCardIdentity: Hashable, Sendable {
+    /// A value projection kept deliberately exhaustive. It is not another
+    /// identity boundary; it is the checklist every derived lookup/match
+    /// projection must consume. The structural test mirrors these stored
+    /// fields so a future discriminator cannot disappear silently.
+    struct Projection: Hashable, Sendable {
+        let name: String
+        let setName: String
+        let collectorNumber: String
+        let catalogID: String?
+        let pokemonPrintRun: PokemonPrintRun?
+
+        var groupingValues: [String] {
+            [
+                setName,
+                collectorNumber,
+                name,
+                catalogID ?? "none",
+                pokemonPrintRun?.rawValue ?? "none"
+            ]
+        }
+
+        var values: [String] {
+            [
+                name,
+                setName,
+                collectorNumber,
+                catalogID ?? "none",
+                pokemonPrintRun?.rawValue ?? "none"
+            ]
+        }
+    }
+
     let name: String
     let setName: String
     let collectorNumber: String
@@ -60,28 +92,98 @@ struct GradedCardIdentity: Hashable, Sendable {
         catalogID.flatMap(PriceFallbackQuoteResolver.japaneseSetID(forCatalogCardID:))
     }
 
+    var exhaustiveProjection: Projection {
+        Projection(
+            name: name,
+            setName: setName,
+            collectorNumber: collectorNumber,
+            catalogID: catalogID,
+            pokemonPrintRun: pokemonPrintRun
+        )
+    }
+
     /// Identifies the underlying card, so every owned grade of it shares one
     /// request.
     func groupingKey(game: CardGame) -> String {
-        [vendorGame(for: game).rawValue, setName, collectorNumber, name]
+        ([vendorGame(for: game).rawValue] + exhaustiveProjection.groupingValues)
             .map { $0.lowercased() }
             .joined(separator: "|")
     }
 
-    func matches(_ card: JustTCGCard, game: CardGame) -> Bool {
+    func matches(
+        _ card: JustTCGCard,
+        game: CardGame,
+        expectedSetSlug: String? = nil
+    ) -> Bool {
+        let projection = exhaustiveProjection
+
+        if let expectedSetSlug {
+            guard let candidateGame = card.game,
+                  candidateGame.caseInsensitiveCompare(vendorGame(for: game).rawValue) == .orderedSame,
+                  let candidateSet = card.set,
+                  candidateSet.caseInsensitiveCompare(expectedSetSlug) == .orderedSame
+            else { return false }
+        } else if let candidateGame = card.game,
+                  !candidateGame.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  candidateGame.caseInsensitiveCompare(vendorGame(for: game).rawValue) != .orderedSame {
+            return false
+        }
+
         guard let candidateName = card.name else { return false }
         guard CatalogIdentityNormalization.namesMatch(
-            imported: name,
+            imported: projection.name,
             catalog: candidateName
         ) else { return false }
-        // A number is only compared when both sides publish one; sealed rows and
-        // some promos carry none.
-        if let candidateNumber = card.printedNumber, !collectorNumber.isEmpty {
-            return CatalogIdentityNormalization.localNumber(candidateNumber)
-                == CatalogIdentityNormalization.localNumber(collectorNumber)
-        }
-        return CatalogIdentityNormalization.canonicalSetName(setName, game: game)
+        guard CatalogIdentityNormalization.canonicalSetName(projection.setName, game: game)
             == CatalogIdentityNormalization.canonicalSetName(card.setName ?? "", game: game)
+        else { return false }
+
+        let requestedNumber = Self.normalizedCollectorNumber(projection.collectorNumber)
+        let candidateNumber = card.printedNumber.flatMap(Self.normalizedCollectorNumber)
+        switch (requestedNumber, candidateNumber) {
+        case let (requested?, candidate?):
+            return requested == candidate
+        case (nil, nil):
+            return projection.collectorNumber
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .isEmpty
+        default:
+            // One side omitted a discriminator. It is not safe to widen a
+            // numbered graded lookup to an unnumbered product, or vice versa.
+            return false
+        }
+    }
+
+    /// The card and its variant are the external product boundary. Nothing
+    /// from a graded response becomes a durable handle or price until both the
+    /// card identity and the variant's declared print run have passed here.
+    func matches(
+        _ card: JustTCGCard,
+        variant: JustTCGVariant,
+        game: CardGame,
+        expectedSetSlug: String? = nil
+    ) -> Bool {
+        guard matches(card, game: game, expectedSetSlug: expectedSetSlug),
+              variant.type?.caseInsensitiveCompare("graded") == .orderedSame
+        else { return false }
+
+        guard let pokemonPrintRun else { return true }
+        guard let printing = variant.printing else { return false }
+        return ProductEdition.from(pokemonPrintRun).admits(printing: printing)
+    }
+
+    private static func normalizedCollectorNumber(_ value: String) -> [String]? {
+        let parts = value
+            .split(separator: "/", omittingEmptySubsequences: false)
+            .map {
+                let component = $0
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .uppercased()
+                guard !component.isEmpty else { return "" }
+                return Int(component).map(String.init) ?? component
+            }
+        guard parts.count <= 2, parts.allSatisfy({ !$0.isEmpty }) else { return nil }
+        return parts
     }
 }
 
@@ -249,6 +351,12 @@ struct JustTCGV2GradedClient: Sendable {
             game: game,
             directory: directory
         )
+        if identity.pokemonPrintRun != nil, setSlug == nil {
+            // A known print run without a trustworthy vendor set projection is
+            // ambiguous. Do not issue a browse request whose first result could
+            // become an authoritative slab binding.
+            return .noProductMatch
+        }
         let query = Self.requestQuery(
             identity: identity,
             game: game,
@@ -264,11 +372,18 @@ struct JustTCGV2GradedClient: Sendable {
         )
 
         // Only cards that are demonstrably the one asked for.
-        let matchingCards = response.data.filter { identity.matches($0, game: game) }
+        let matchingCards = response.data.filter {
+            identity.matches($0, game: game, expectedSetSlug: setSlug)
+        }
         var variants: [GradedVariant] = []
         for card in matchingCards {
             for variant in card.variants ?? [] {
-                guard variant.type?.caseInsensitiveCompare("graded") == .orderedSame,
+                guard identity.matches(
+                        card,
+                        variant: variant,
+                        game: game,
+                        expectedSetSlug: setSlug
+                    ),
                       let id = variant.variantId,
                       let grading = variant.grading,
                       let company = grading.gradingCompany else {
