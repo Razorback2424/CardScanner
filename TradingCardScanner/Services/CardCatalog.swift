@@ -1263,9 +1263,18 @@ extension TCGdexService: PokemonHistoricalCatalogSource {
 /// remains the pure `PokemonHistoricalIdentityResolver`, so a catalog refresh
 /// cannot turn a collision into a first-candidate selection.
 actor PokemonHistoricalCatalog {
+    /// A request keeps its identity so an evicted task that finishes later
+    /// cannot clear a newer request for the same provider key.
+    private struct TaskMemo<Value> {
+        let id = UUID()
+        let task: Task<Value, Error>
+    }
+
     private let service: any PokemonHistoricalCatalogSource
     private var directoryTask: Task<[CatalogSetReference], Error>?
-    private var setTasks: [String: Task<TCGdexSetCatalog, Error>] = [:]
+    /// Whole-set responses are comparatively large, so keep a modest recent
+    /// window. The capacity is injectable only so eviction remains testable.
+    private var setTasks: BoundedCache<String, TaskMemo<TCGdexSetCatalog>>
     /// Resolved cards, keyed by provider id.
     ///
     /// Title OCR is not stable frame to frame — that is deliberate, and is why
@@ -1275,7 +1284,9 @@ actor PokemonHistoricalCatalog {
     /// not vary that way: it is a function of the printed number and, once
     /// resolved, of the provider id. Keying the memo on those makes re-reading a
     /// card free regardless of how many times Vision reads it.
-    private var cardTasks: [String: Task<TCGdexCard, Error>] = [:]
+    /// Individual card responses are smaller and are commonly revisited by
+    /// OCR retries, so retain a larger recent window than set catalogs.
+    private var cardTasks: BoundedCache<String, TaskMemo<TCGdexCard>>
 
     /// A failed memo is cleared so the next attempt can retry — but not at once.
     /// Clearing with no cooldown turns one stalled request into one request per
@@ -1283,11 +1294,19 @@ actor PokemonHistoricalCatalog {
     /// doomed tasks instead of staying a single timeout.
     private static let failureCooldown: TimeInterval = 3
     private var directoryFailure: (at: Date, error: any Error)?
-    private var setFailures: [String: (at: Date, error: any Error)] = [:]
-    private var cardFailures: [String: (at: Date, error: any Error)] = [:]
+    private var setFailures: BoundedCache<String, (at: Date, error: any Error)>
+    private var cardFailures: BoundedCache<String, (at: Date, error: any Error)>
 
-    init(service: any PokemonHistoricalCatalogSource = TCGdexService()) {
+    init(
+        service: any PokemonHistoricalCatalogSource = TCGdexService(),
+        setTaskCapacity: Int = 64,
+        cardTaskCapacity: Int = 256
+    ) {
         self.service = service
+        self.setTasks = BoundedCache(capacity: setTaskCapacity)
+        self.cardTasks = BoundedCache(capacity: cardTaskCapacity)
+        self.setFailures = BoundedCache(capacity: setTaskCapacity)
+        self.cardFailures = BoundedCache(capacity: cardTaskCapacity)
     }
 
     /// Rethrows the recorded failure while it is still cooling down.
@@ -1403,38 +1422,46 @@ actor PokemonHistoricalCatalog {
 
     private func catalog(for setID: String) async throws -> TCGdexSetCatalog {
         let key = setID.lowercased()
-        if let task = setTasks[key] { return try await task.value }
+        if let memo = setTasks[key] { return try await memo.task.value }
         if let cooling = cooldownError(setFailures[key]) { throw cooling }
 
         let service = service
-        let task = Task { try await service.historicalSet(id: setID) }
-        setTasks[key] = task
+        let memo = TaskMemo(task: Task { try await service.historicalSet(id: setID) })
+        setTasks[key] = memo
         do {
-            let catalog = try await task.value
-            setFailures[key] = nil
+            let catalog = try await memo.task.value
+            if setTasks[key]?.id == memo.id {
+                setFailures[key] = nil
+            }
             return catalog
         } catch {
-            setTasks[key] = nil
-            setFailures[key] = (at: .now, error: error)
+            if setTasks[key]?.id == memo.id {
+                setTasks[key] = nil
+                setFailures[key] = (at: .now, error: error)
+            }
             throw error
         }
     }
 
     /// One request per provider id, however many frames asked for it.
     private func fetchCard(providerID: String) async throws -> TCGdexCard {
-        if let task = cardTasks[providerID] { return try await task.value }
+        if let memo = cardTasks[providerID] { return try await memo.task.value }
         if let cooling = cooldownError(cardFailures[providerID]) { throw cooling }
 
         let service = service
-        let task = Task { try await service.historicalCard(id: providerID) }
-        cardTasks[providerID] = task
+        let memo = TaskMemo(task: Task { try await service.historicalCard(id: providerID) })
+        cardTasks[providerID] = memo
         do {
-            let card = try await task.value
-            cardFailures[providerID] = nil
+            let card = try await memo.task.value
+            if cardTasks[providerID]?.id == memo.id {
+                cardFailures[providerID] = nil
+            }
             return card
         } catch {
-            cardTasks[providerID] = nil
-            cardFailures[providerID] = (at: .now, error: error)
+            if cardTasks[providerID]?.id == memo.id {
+                cardTasks[providerID] = nil
+                cardFailures[providerID] = (at: .now, error: error)
+            }
             throw error
         }
     }
