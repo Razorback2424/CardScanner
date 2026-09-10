@@ -52,6 +52,17 @@ extension PortfolioHistoryRange {
         case .all: return "all time"
         }
     }
+
+    var marketMovementPhrase: String {
+        switch self {
+        case .oneDay: return "market movement past day"
+        case .oneWeek: return "market movement past week"
+        case .oneMonth: return "market movement past month"
+        case .threeMonths: return "market movement past 3 months"
+        case .oneYear: return "market movement past year"
+        case .all: return "market movement, all time"
+        }
+    }
 }
 
 /// A SwiftData-free close snapshot. Retaining this as a value type keeps the

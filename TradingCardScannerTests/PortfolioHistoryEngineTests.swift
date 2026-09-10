@@ -300,11 +300,31 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             range: .all
         )
 
-        XCTAssertEqual(result.accounting?.totalChange, money(50_000))
-        XCTAssertEqual(result.accounting?.added, money(50_000))
-        XCTAssertEqual(result.accounting?.removed, .zero)
-        XCTAssertEqual(result.accounting?.market, .zero)
+        guard let accounting = result.accounting else {
+            XCTFail("Inventory activity scenario should produce accounting")
+            return
+        }
+        XCTAssertEqual(accounting.totalChange, money(50_000))
+        XCTAssertEqual(accounting.added, money(50_000))
+        XCTAssertEqual(accounting.removed, .zero)
+        XCTAssertEqual(accounting.market, .zero)
+        XCTAssertEqual(
+            PortfolioHistoryDisplay.percentChange(
+                amount: accounting.market,
+                anchor: accounting.anchorValue
+            ),
+            0
+        )
+        XCTAssertEqual(
+            result.points.map { accounting.anchorValue + $0.cumulativeMarketMovement },
+            [money(100), money(100)]
+        )
         XCTAssertTrue(result.contributions.isEmpty)
+    }
+
+    func testMarketMovementPhraseNamesTheSelectedRange() {
+        XCTAssertEqual(PortfolioHistoryRange.oneWeek.marketMovementPhrase, "market movement past week")
+        XCTAssertEqual(PortfolioHistoryRange.all.marketMovementPhrase, "market movement, all time")
     }
 
     func testAccountingAdjustmentsDoNotBecomeMarketContributors() {

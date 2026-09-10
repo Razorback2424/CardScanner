@@ -124,7 +124,7 @@ struct PortfolioHistoryView: View {
             }
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Portfolio value")
+        .accessibilityLabel("Market movement")
         .accessibilityValue(chartSummary(result))
         .accessibilityChartDescriptor(PortfolioChartDescriptor(result: result))
     }
@@ -137,19 +137,19 @@ struct PortfolioHistoryView: View {
     ) -> some ChartContent {
         let periodStart = result.accounting?.anchorValue.doubleValue
             ?? result.points.first?.value.doubleValue
-            ?? chartValue(point)
+            ?? chartValue(point, in: result)
         AreaMark(
             x: .value("Date", point.instant),
             yStart: .value("Period start", periodStart),
-            yEnd: .value("Portfolio value", chartValue(point))
+            yEnd: .value("Market movement", chartValue(point, in: result))
         )
         .foregroundStyle(areaGradient(result))
 
         LineMark(
             x: .value("Date", point.instant),
             y: .value(
-                "Portfolio value",
-                chartValue(point)
+                "Market movement",
+                chartValue(point, in: result)
             )
         )
         .foregroundStyle(seriesColor(result))
@@ -159,8 +159,8 @@ struct PortfolioHistoryView: View {
             PointMark(
                 x: .value("Date", point.instant),
                 y: .value(
-                    "Portfolio value",
-                    chartValue(point)
+                    "Market movement",
+                    chartValue(point, in: result)
                 )
             )
             .foregroundStyle(seriesColor(result))
@@ -170,9 +170,9 @@ struct PortfolioHistoryView: View {
         }
     }
 
-    /// The line colour agrees with the hero's total portfolio value change.
+    /// The line colour agrees with the hero's market movement.
     private func seriesColor(_ result: PortfolioHistoryResult) -> Color {
-        PortfolioPalette.direction(result.accounting?.totalChange ?? .zero)
+        PortfolioPalette.direction(result.accounting?.market ?? .zero)
     }
 
     /// The fill is densest against the plotted line and fades toward the
@@ -188,7 +188,7 @@ struct PortfolioHistoryView: View {
             Gradient.Stop(color: color.opacity(0.09), location: 0.55),
             Gradient.Stop(color: color.opacity(0), location: 1)
         ]
-        let isLosing = (result.accounting?.totalChange ?? .zero) < .zero
+        let isLosing = (result.accounting?.market ?? .zero) < .zero
         let ordered = isLosing
             ? stops.reversed().enumerated().map { index, stop in
                 Gradient.Stop(color: stop.color, location: [0, 0.45, 1][index])
@@ -212,12 +212,18 @@ struct PortfolioHistoryView: View {
         lastHapticPointID = nil
     }
 
-    private func chartValue(_ point: PortfolioHistoryPoint) -> Double {
-        point.value.doubleValue
+    private func chartValue(
+        _ point: PortfolioHistoryPoint,
+        in result: PortfolioHistoryResult
+    ) -> Double {
+        guard let anchorValue = result.accounting?.anchorValue else {
+            return point.value.doubleValue
+        }
+        return (anchorValue + point.cumulativeMarketMovement).doubleValue
     }
 
     private func yDomain(_ result: PortfolioHistoryResult) -> ClosedRange<Double> {
-        let values = result.points.map(chartValue)
+        let values = result.points.map { chartValue($0, in: result) }
         guard let minimum = values.min(), let maximum = values.max() else { return 0...1 }
         if minimum == maximum { return (minimum - 1)...(maximum + 1) }
         let padding = max((maximum - minimum) * 0.12, 1)
@@ -229,7 +235,11 @@ struct PortfolioHistoryView: View {
               let last = result.points.last else {
             return "No published history yet."
         }
-        return "Portfolio value from \(first.value.formatted()) to \(last.value.formatted()) across \(result.points.count) real points."
+        let firstValue = result.accounting?.anchorValue ?? first.value
+        let lastValue = result.accounting.map {
+            $0.anchorValue + last.cumulativeMarketMovement
+        } ?? last.value
+        return "Market movement from \(firstValue.formatted()) to \(lastValue.formatted()) across \(result.points.count) real points."
     }
 
 }
@@ -238,12 +248,16 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
     let result: PortfolioHistoryResult
 
     func makeChartDescriptor() -> AXChartDescriptor {
-        let pointValues = result.points.map { $0.value.doubleValue }
+        let pointValues = result.points.map { point in
+            result.accounting.map {
+                ($0.anchorValue + point.cumulativeMarketMovement).doubleValue
+            } ?? point.value.doubleValue
+        }
         let lower = pointValues.min() ?? 0
         let upper = pointValues.max() ?? 0
         let yRange = lower == upper ? (lower - 1)...(upper + 1) : lower...upper
         let yAxis = AXNumericDataAxisDescriptor(
-            title: "Portfolio value",
+            title: "Market movement",
             range: yRange,
             gridlinePositions: [],
             valueDescriptionProvider: { value in
@@ -252,8 +266,8 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
         )
         let dateLabels = result.points.map {
             $0.isLive
-                ? "Portfolio value today"
-                : "Portfolio value on \($0.displayDay.formatted(date: .abbreviated, time: .omitted))"
+                ? "Market movement today"
+                : "Market movement on \($0.displayDay.formatted(date: .abbreviated, time: .omitted))"
         }
         let xAxis = AXCategoricalDataAxisDescriptor(title: "Date", categoryOrder: dateLabels)
         let points = result.points.enumerated().compactMap { index, point -> AXDataPoint? in
@@ -264,9 +278,9 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
                 label: "\(dateLabels[index]), \(valueDescription(value))"
             )
         }
-        let series = AXDataSeriesDescriptor(name: "Portfolio value", isContinuous: true, dataPoints: points)
+        let series = AXDataSeriesDescriptor(name: "Market movement", isContinuous: true, dataPoints: points)
         return AXChartDescriptor(
-            title: "Portfolio value",
+            title: "Market movement",
             summary: chartSummary,
             xAxis: xAxis,
             yAxis: yAxis,
@@ -283,7 +297,11 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
               let last = result.points.last else {
             return "No published history yet."
         }
-        return "Portfolio value from \(first.value.formatted()) to \(last.value.formatted()) across \(result.points.count) real points."
+        let firstValue = result.accounting?.anchorValue ?? first.value
+        let lastValue = result.accounting.map {
+            $0.anchorValue + last.cumulativeMarketMovement
+        } ?? last.value
+        return "Market movement from \(firstValue.formatted()) to \(lastValue.formatted()) across \(result.points.count) real points."
     }
 }
 
