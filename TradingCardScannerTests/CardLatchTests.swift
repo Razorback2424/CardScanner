@@ -168,6 +168,32 @@ final class CardLatchTests: XCTestCase {
         XCTAssertFalse(latch.admits(subject(card)))
     }
 
+    func testUnpausedResumeDoesNotDiscardPartiallyAccumulatedConfirmationWindow() {
+        let scanner = CardScanner()
+        let expected = subject(pokemon(223))
+
+        scanner.receiveFooterOutcomeForTesting(.identified(expected), at: 0.25)
+
+        // The automatic commit path may call resume even though recognition
+        // was never paused. Flush that resume ahead of the next test frame by
+        // queueing a pause after it and waiting for the pause to be visible.
+        scanner.resumeRecognition(at: 1.0)
+        scanner.pauseRecognition(at: 1.1)
+        let deadline = Date().addingTimeInterval(1)
+        while !scanner.isRecognitionPausedForTesting && Date() < deadline {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.01))
+        }
+        XCTAssertTrue(scanner.isRecognitionPausedForTesting)
+
+        scanner.receiveFooterOutcomeForTesting(.identified(expected), at: 0.5)
+
+        XCTAssertEqual(
+            scanner.latchedSubjectForTesting,
+            expected,
+            "a resume without a preceding pause must not erase the first matching reading"
+        )
+    }
+
     private func historical(_ localID: String, titles: [String]) -> ScanIdentifier {
         .pokemonHistorical(
             PokemonHistoricalScanEvidence(
@@ -572,11 +598,11 @@ final class CardLatchTests: XCTestCase {
         let expected = subject(pokemon(223))
         let start = CFAbsoluteTimeGetCurrent()
 
-        scanner.receiveSlabGuideHintForTesting(.psa)
         scanner.receiveFooterOutcomeForTesting(
             .identified(expected),
             at: start + 0.25
         )
+        scanner.receiveSlabGuideHintForTesting(.psa, for: expected.identifier, at: start + 0.25)
         scanner.receiveFooterOutcomeForTesting(
             .identified(expected),
             at: start + 0.5
@@ -598,6 +624,151 @@ final class CardLatchTests: XCTestCase {
             at: start + 3.75
         )
         XCTAssertEqual(scanner.latchedSubjectForTesting, expected)
+    }
+
+    func testAbsenceDrivenSlabClearDoesNotDowngradeTheReturningSameIdentityToRaw() {
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD"]
+        )
+        let identifier = pokemon(223)
+        let graded = ScanSubject(identifier: identifier, slab: evidence)
+        let raw = ScanSubject(identifier: identifier)
+
+        _ = scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 0)
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 1.5), evidence)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: identifier, hasText: true, at: 1.5)
+
+        // Keep one bound label observation in the confirmation window before
+        // footer absence clears the active slab. The returning label should
+        // need only one additional matching observation.
+        XCTAssertNil(scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 2.0))
+
+        for frame in 0..<4 {
+            scanner.receiveSlabFooterPresenceForTesting(
+                identifier: nil,
+                hasText: false,
+                at: 2.25 + (Double(frame) * 0.25)
+            )
+        }
+
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 3.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 3.5)
+
+        XCTAssertNil(
+            scanner.latchedSubjectForTesting,
+            "an absence-driven slab clear must not admit a raw key for the same physical slab"
+        )
+
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 4.0), evidence)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 4.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 4.5)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, graded)
+    }
+
+    func testOrdinaryRawCardConfirmsWhenLabelBandHasTextWithoutCompanyEvidence() {
+        let scanner = CardScanner()
+        let expected = subject(pokemon(223))
+        let start = CFAbsoluteTimeGetCurrent()
+
+        scanner.receiveFooterOutcomeForTesting(
+            .identified(expected),
+            at: start + 0.25
+        )
+        // The label band contains readable card-name text, but the parser
+        // found no grading-company token. That is not slab evidence and must
+        // not delay ordinary raw confirmation.
+        XCTAssertNil(
+            scanner.receiveSlabLabelLinesForTesting(
+                [RecognizedLine(text: "CHARIZARD")],
+                footerHasText: true,
+                for: expected.identifier,
+                at: start + 0.5
+            )
+        )
+        scanner.receiveFooterOutcomeForTesting(
+            .identified(expected),
+            at: start + 0.75
+        )
+
+        XCTAssertEqual(scanner.latchedSubjectForTesting, expected)
+    }
+
+    func testCompanyHintForOneIdentityDoesNotDelayTheNextRawIdentity() {
+        let scanner = CardScanner()
+        let first = subject(pokemon(223))
+        let second = subject(pokemon(224))
+        let start = CFAbsoluteTimeGetCurrent()
+
+        scanner.receiveFooterOutcomeForTesting(.identified(first), at: start + 0.25)
+        scanner.receiveSlabGuideHintForTesting(.psa, for: first.identifier, at: start + 0.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(first), at: start + 0.5)
+        XCTAssertNil(scanner.latchedSubjectForTesting)
+
+        // A different footer identity is positive evidence that the first
+        // hint does not describe this raw card. It should be admitted on the
+        // normal two-frame path without waiting for the old grace deadline.
+        scanner.receiveFooterOutcomeForTesting(.identified(second), at: start + 0.75)
+        scanner.receiveFooterOutcomeForTesting(.identified(second), at: start + 1.0)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, second)
+    }
+
+    func testUnboundLabelTextMissDoesNotDelayRawConfirmation() {
+        let scanner = CardScanner()
+        let identifier = pokemon(223)
+        let raw = ScanSubject(identifier: identifier)
+        let start = CFAbsoluteTimeGetCurrent()
+
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start + 0.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start + 0.5)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, raw)
+
+        // The first unbound label request ran, but its readable text did not
+        // contain a company token. Raw confirmation remains ordinary because
+        // text without a company token is not positive slab evidence.
+        XCTAssertNil(
+            scanner.receiveSlabLabelLinesForTesting(
+                [RecognizedLine(text: "CHARIZARD")],
+                footerHasText: true,
+                for: raw.identifier,
+                at: start + 1.5
+            )
+        )
+        XCTAssertEqual(scanner.latchedSubjectForTesting, raw)
+    }
+
+    func testLateSlabActivationDoesNotCreateASecondEventForTheLatchedRawIdentity() {
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD"]
+        )
+        let identifier = pokemon(223)
+        let raw = ScanSubject(identifier: identifier)
+
+        // A raw card is allowed to confirm before any positive slab evidence
+        // exists. Model the production ordering: the footer pass runs before
+        // each slower label pass.
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 0.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 0.5)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, raw)
+
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 1.5)
+        XCTAssertNil(scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 1.5))
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 3.0)
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 3.0), evidence)
+
+        // The late slab parse changes the presentation axis, but it does not
+        // prove that the physical card left and returned. Keep the original
+        // raw event until the latch sees the normal absence boundary.
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 3.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 3.5)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, raw)
     }
 
     func testSlabReconfirmationResetsAccumulatedEmptyFooterFrames() {

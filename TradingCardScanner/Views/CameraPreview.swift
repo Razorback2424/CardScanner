@@ -51,7 +51,9 @@ struct CameraPreview: UIViewRepresentable {
 #if DEBUG
         let debugBoxesChanged = uiView.debugVisionBoxes != debugVisionOverlay.boxes
 #endif
-        uiView.previewLayer.session = scanner.session
+        if uiView.previewLayer.session !== scanner.session {
+            uiView.previewLayer.session = scanner.session
+        }
         if rotationChanged { uiView.rotation = scanner.rotation }
         if slabFramingChanged { uiView.slabFraming = scanner.slabFraming }
         if slabGuideHintChanged { uiView.slabGuideHint = scanner.slabGuideHint }

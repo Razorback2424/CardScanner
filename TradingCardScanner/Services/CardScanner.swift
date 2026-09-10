@@ -748,6 +748,10 @@ final class CardScanner: NSObject, ObservableObject {
 
     private let sessionQueue = DispatchQueue(label: "cards.camera.session")
     private let visionQueue = DispatchQueue(label: "cards.camera.vision", qos: .userInitiated)
+    private let magicProfileQueue = DispatchQueue(
+        label: "cards.camera.magic-profile",
+        qos: .userInitiated
+    )
     private let videoOutput = AVCaptureVideoDataOutput()
     private let footerRequest = VNRecognizeTextRequest()
     private let titleRequest = VNRecognizeTextRequest()
@@ -771,6 +775,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// Written on `sessionQueue`; `lens` is the main-thread mirror for the UI.
     private var currentLens: CameraLens = .standard
     private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
+    /// A catalog miss verification suppresses speculative work for its exact
+    /// physical identity. It is mirrored from the main actor before the frame
+    /// reaches `announcePlausible`.
+    private var catalogMissSuppressionKey: ScanSuppressionKey?
     /// Main-actor lifecycle state is mirrored here before a Vision frame can
     /// publish a confirmation. A callback carrying an older token is ignored
     /// by the view model instead of being reinterpreted by the current screen.
@@ -790,6 +798,13 @@ final class CardScanner: NSObject, ObservableObject {
     private struct ActiveSlab: Equatable {
         let evidence: GradedSlabEvidence
     }
+    private enum SlabClearCause {
+        case footerAbsence
+        case latchRelease
+        case identityChanged
+        case spatialExit
+        case lifecycle
+    }
     private var activeSlab: ActiveSlab?
     /// A provisional grader hint gets a bounded window for the slower label
     /// evidence to arrive before identity confirmation may commit the subject
@@ -800,10 +815,17 @@ final class CardScanner: NSObject, ObservableObject {
     /// mirror below is for the UI and lands a hop later, which is too late to
     /// safely decide whether this frame may confirm.
     private var slabGuideHintForGate: GradingCompany?
+    /// The footer identity that produced the current positive company hint.
+    /// A hint may delay only that identity's raw confirmation.
+    private var slabGuideHintIdentifier: ScanIdentifier?
     /// The label is sticky while the same footer presentation remains in the
     /// band. This prevents a momentary glare miss in the label pass from
     /// turning an already-detected slab into a raw-card commit.
     private var activeSlabBaseIdentifier: ScanIdentifier?
+    /// An absence-driven slab clear keeps the footer baseline long enough for
+    /// the slower unbound label pass to re-establish the physical-object axis.
+    /// Identity, spatial-exit, and lifecycle clears always discard this state.
+    private var slabRecoveryDeadline: CFAbsoluteTime?
     private var activeSlabEmptyFrames = 0
     private var unboundFooterEmptyFrames = 0
     private var slabEvidenceWindow = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
@@ -823,6 +845,9 @@ final class CardScanner: NSObject, ObservableObject {
     /// Two unbound label probes are normally enough to confirm a slab. Keep
     /// this grace bounded so a false-positive guide hint cannot stall scanning.
     private static let slabGraceDuration: CFAbsoluteTime = 3.0
+    /// The recovery window spans one unbound label interval plus a small margin
+    /// for the next OCR frame to arrive.
+    private static let slabRecoveryGraceMargin: CFAbsoluteTime = 0.5
     /// The footer runs much faster than the unbound label pass. A single empty
     /// footer frame must not erase a label observation that is still waiting for
     /// its next 1.5-second confirmation pass.
@@ -1005,6 +1030,15 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    /// Mirrors the catalog-miss suppression key onto the same queue that decides
+    /// whether a plausible reading should start speculative work. This keeps
+    /// that hot-path decision independent of the main actor.
+    func updateCatalogMissSuppressionKey(_ key: ScanSuppressionKey?) {
+        visionQueue.async { [weak self] in
+            self?.catalogMissSuppressionKey = key
+        }
+    }
+
     /// Stops the camera and clears all presentation-scoped recognition state.
     /// The view model calls this at a real scanner-session boundary, not for an
     /// ordinary recognition pause.
@@ -1037,13 +1071,16 @@ final class CardScanner: NSObject, ObservableObject {
     func resumeRecognition(at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()) {
         visionQueue.async { [weak self] in
             guard let self else { return }
+            let wasPaused = self.isPaused || self.recognitionPausedAt != nil
             if let pausedAt = self.recognitionPausedAt {
                 self.latch.advanceObservedClock(
                     by: max(0, now - pausedAt)
                 )
                 self.recognitionPausedAt = nil
             }
-            self.confirmationWindow.reset()
+            if wasPaused {
+                self.resetConfirmationWindow()
+            }
             self.isPaused = false
         }
     }
@@ -1086,9 +1123,8 @@ final class CardScanner: NSObject, ObservableObject {
                     for: authorization.expectedSuppressionKey
                 )
                 self.latch.authorizeHeldRepeat(for: authorization.expectedSuppressionKey)
-                self.confirmationWindow.reset()
+                self.resetConfirmationWindow()
                 self.historicalAttempt = nil
-                self.lastAnnouncedPlausible = nil
                 self.didAnnounceLatchHold = false
                 self.activeHeldRepeatAuthorization = authorization
                 self.recordDiagnostic("heldRepeatAuthorizationAccepted")
@@ -1119,9 +1155,8 @@ final class CardScanner: NSObject, ObservableObject {
             self.heldRepeatExpiryWorkItem?.cancel()
             self.heldRepeatExpiryWorkItem = nil
             self.latch.cancelHeldRepeatAuthorization()
-            self.confirmationWindow.reset()
+            self.resetConfirmationWindow()
             self.didAnnounceLatchHold = false
-            self.lastAnnouncedPlausible = nil
         }
     }
 
@@ -1133,9 +1168,8 @@ final class CardScanner: NSObject, ObservableObject {
             guard let self else { return }
             self.cancelHeldRepeatAuthorizationOnVisionQueue()
             self.markTrackerContinuityLost()
-            self.confirmationWindow.reset()
+            self.resetConfirmationWindow()
             self.historicalAttempt = nil
-            self.lastAnnouncedPlausible = nil
         }
     }
 
@@ -1206,9 +1240,8 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.async { [weak self] in
             guard let self else { return }
             self.latch.releaseAndForget()
-            self.confirmationWindow.reset()
+            self.resetConfirmationWindow()
             self.didAnnounceLatchHold = false
-            self.lastAnnouncedPlausible = nil
         }
     }
 
@@ -1224,9 +1257,8 @@ final class CardScanner: NSObject, ObservableObject {
                 at: CFAbsoluteTimeGetCurrent(),
                 after: Self.priceCheckRecheckDelay
             )
-            self.confirmationWindow.reset()
+            self.resetConfirmationWindow()
             self.didAnnounceLatchHold = false
-            self.lastAnnouncedPlausible = nil
         }
     }
 
@@ -1239,10 +1271,16 @@ final class CardScanner: NSObject, ObservableObject {
     /// after launch, and throwing away a half-confirmed card for a refresh that
     /// changed nothing the user is looking at would be a stutter for no reason.
     func useMagicDefinitions(_ definitions: [MagicSetDefinition]) {
-        // Compiling the vocabulary regex is the expensive half; do it off the
-        // frame queue.
-        let magic = MagicScanProfile(definitions: definitions)
+        // Compiling the vocabulary regex is the expensive half. Keep it off
+        // both the main actor and the frame queue, while preserving call order
+        // so a live refresh cannot be followed by a stale bundled snapshot.
+        magicProfileQueue.async { [weak self] in
+            let magic = MagicScanProfile(definitions: definitions)
+            self?.useMagicDefinitions(magic)
+        }
+    }
 
+    private func useMagicDefinitions(_ magic: MagicScanProfile) {
         visionQueue.async { [weak self] in
             guard let self, self.profile.magic?.definitions != magic.definitions else { return }
             self.profile = RecognitionProfile(magic: magic)
@@ -1572,7 +1610,7 @@ final class CardScanner: NSObject, ObservableObject {
                 // A slab label is presentation state, not a two-second hint.
                 // Positive spatial exit is the authoritative boundary that
                 // lets the next raw card start with a clean subject.
-                clearActiveSlab()
+                clearActiveSlab(cause: .spatialExit)
                 recordDiagnostic("spatialProof")
                 DispatchQueue.main.async { [weak self] in
                     self?.onSpatialResetProof?(proof)
@@ -1666,9 +1704,8 @@ final class CardScanner: NSObject, ObservableObject {
             self.activeHeldRepeatAuthorization = nil
             self.heldRepeatExpiryWorkItem = nil
             self.latch.cancelHeldRepeatAuthorization()
-            self.confirmationWindow.reset()
+            self.resetConfirmationWindow()
             self.didAnnounceLatchHold = false
-            self.lastAnnouncedPlausible = nil
             self.recordDiagnostic("heldRepeatAuthorizationExpired")
             self.emitHeldRepeatAuthorizationTermination(
                 id: authorization.id,
@@ -1738,7 +1775,8 @@ final class CardScanner: NSObject, ObservableObject {
         updateActiveSlabPresence(
             outcome: outcome,
             historicalSubject: historicalSubject,
-            footerLines: footerLines
+            footerLines: footerLines,
+            at: now
         )
 
         // Vision's line grouping is preserved into the parsers, which is what
@@ -1773,6 +1811,12 @@ final class CardScanner: NSObject, ObservableObject {
         // not read that as the card having left.
         let latchedBeforeObservation = latch.latched
         let decision = latch.observeSubject(parsed, cardPresent: !footerLines.isEmpty, at: now)
+        let isLateSlabUpgradeOfLatchedRaw = parsed.map { observation in
+            guard let latched = latch.latched else { return false }
+            return latched.slab == nil
+                && observation.slab != nil
+                && latched.identifier == observation.identifier
+        } ?? false
         if let parsed {
             DispatchQueue.main.async { [weak self] in
                 self?.onObservedCandidate?(parsed)
@@ -1788,8 +1832,8 @@ final class CardScanner: NSObject, ObservableObject {
                 encounterID: encounterID,
                 suppressionKey: latchedBeforeObservation.suppressionKey
             )
-            if latchedBeforeObservation.slab != nil {
-                clearActiveSlab()
+            if latchedBeforeObservation.slab != nil, activeSlab != nil {
+                clearActiveSlab(cause: .latchRelease, at: now)
             }
         }
 
@@ -1800,7 +1844,17 @@ final class CardScanner: NSObject, ObservableObject {
         case let .forwardSubject(observation):
             announcePlausible(observation, at: now)
 
-            if shouldHoldForSlabGrace(at: now) {
+            if isLateSlabUpgradeOfLatchedRaw {
+                // A late label confirmation can add the slab axis after the
+                // raw subject has already been admitted. It is still the same
+                // physical presentation until the latch sees an absence
+                // boundary, so it must not become a second event. Graded
+                // subjects remain distinct from one another below.
+                resetConfirmationWindow()
+                return
+            }
+
+            if shouldHoldForSlabGrace(for: observation, at: now) {
                 announceLatchHoldIfNeeded()
                 return
             }
@@ -1823,6 +1877,9 @@ final class CardScanner: NSObject, ObservableObject {
 
             // Confirmed, but the same physical card may simply never have left.
             guard latch.admits(confirmed) else {
+                // This is suppression, not a new scanning boundary. Preserve
+                // the plausible marker so a held duplicate does not keep
+                // restarting speculative catalog work.
                 confirmationWindow.reset()
                 return
             }
@@ -1855,7 +1912,12 @@ final class CardScanner: NSObject, ObservableObject {
         case let .forwardAuthorizedSubject(observation):
             announcePlausible(observation, at: now)
 
-            if shouldHoldForSlabGrace(at: now) {
+            if isLateSlabUpgradeOfLatchedRaw {
+                resetConfirmationWindow()
+                return
+            }
+
+            if shouldHoldForSlabGrace(for: observation, at: now) {
                 announceLatchHoldIfNeeded()
                 return
             }
@@ -1867,7 +1929,7 @@ final class CardScanner: NSObject, ObservableObject {
                   latch.consumeHeldRepeatAuthorization(for: authorization.expectedSuppressionKey) else {
                 // A dedicated decision is never allowed to fall through into
                 // ordinary admission if its one-shot token disappeared.
-                confirmationWindow.reset()
+                resetConfirmationWindow()
                 return
             }
 
@@ -1902,13 +1964,18 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     private func activateSlab(_ evidence: GradedSlabEvidence, at now: CFAbsoluteTime) {
+        let isRecoveringAfterAbsence = activeSlab == nil
+            && slabRecoveryDeadline != nil
+            && activeSlabBaseIdentifier != nil
         let establishesNewSlab = activeSlab?.evidence.suppressionFragment != evidence.suppressionFragment
         activeSlab = ActiveSlab(
             evidence: evidence
         )
         slabGraceDeadline = nil
         slabGuideHintForGate = nil
-        if establishesNewSlab {
+        slabGuideHintIdentifier = nil
+        slabRecoveryDeadline = nil
+        if establishesNewSlab && !isRecoveringAfterAbsence {
             activeSlabBaseIdentifier = nil
         }
         // A successful label re-confirmation is fresh presence evidence even
@@ -1928,14 +1995,46 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
-    private func clearActiveSlab() {
+    private func clearActiveSlab(
+        cause: SlabClearCause,
+        at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
+    ) {
+        let retainedBaseIdentifier = activeSlabBaseIdentifier
         activeSlab = nil
         slabGraceDeadline = nil
         slabGuideHintForGate = nil
-        activeSlabBaseIdentifier = nil
+        slabGuideHintIdentifier = nil
+        let preserveEvidenceWindow = retainedBaseIdentifier != nil
+            && (cause == .footerAbsence || cause == .latchRelease)
+        switch cause {
+        case .footerAbsence:
+            slabRecoveryDeadline = retainedBaseIdentifier.map { _ in
+                now + cadence.unboundLabelInterval + Self.slabRecoveryGraceMargin
+            }
+            recordDiagnostic("slabClearAbsence")
+        case .latchRelease:
+            slabRecoveryDeadline = retainedBaseIdentifier.map { _ in
+                now + cadence.unboundLabelInterval + Self.slabRecoveryGraceMargin
+            }
+            recordDiagnostic("slabClearLatchRelease")
+        case .identityChanged:
+            activeSlabBaseIdentifier = nil
+            slabRecoveryDeadline = nil
+            recordDiagnostic("slabClearIdentityChanged")
+        case .spatialExit:
+            activeSlabBaseIdentifier = nil
+            slabRecoveryDeadline = nil
+            recordDiagnostic("slabClearSpatialExit")
+        case .lifecycle:
+            activeSlabBaseIdentifier = nil
+            slabRecoveryDeadline = nil
+            recordDiagnostic("slabClearLifecycle")
+        }
         activeSlabEmptyFrames = 0
         unboundFooterEmptyFrames = 0
-        slabEvidenceWindow.reset()
+        if !preserveEvidenceWindow {
+            slabEvidenceWindow.reset()
+        }
         footerRequest.regionOfInterest = CardFramingRegion.visionRect.union(
             SlabFramingRegion.footerVisionRect(for: nil)
         )
@@ -1955,36 +2054,74 @@ final class CardScanner: NSObject, ObservableObject {
     /// glare. Once the label has been confirmed, only an empty band or a
     /// different footer identity may clear it; a label-pass lapse alone never
     /// downgrades the subject to raw.
+    ///
+    /// State transitions:
+    ///
+    /// | Current state | Observation | Result |
+    /// | --- | --- | --- |
+    /// | active slab | footer text for the same identifier | keep slab and baseline |
+    /// | active slab | four empty footer frames | clear slab, retain baseline briefly |
+    /// | active slab | a different footer identifier | clear slab and discard baseline |
+    /// | recovery | the retained identifier returns | hold raw confirmation for label OCR |
+    /// | recovery | a different identifier returns | release recovery immediately |
+    ///
+    /// Spatial exit and lifecycle reset use their own clear causes and never
+    /// enter the recovery state. This keeps a real new card and a new scanner
+    /// session from inheriting the previous physical object's slab axis.
     private func updateActiveSlabPresence(
         outcome: RecognitionOutcome,
         historicalSubject: ScanSubject?,
-        footerLines: [RecognizedLine]
+        footerLines: [RecognizedLine],
+        at now: CFAbsoluteTime
     ) {
-        guard activeSlab != nil else { return }
-
-        if footerLines.isEmpty {
-            activeSlabEmptyFrames += 1
-            if activeSlabEmptyFrames >= Self.slabBandEmptyFramesBeforeClear {
-                clearActiveSlab()
-            }
-            return
-        }
-        activeSlabEmptyFrames = 0
-
         let footerIdentifier: ScanIdentifier? = switch outcome {
         case let .identified(subject): subject.identifier
         case .nothing, .ambiguous, .spatiallyRejectedMagicCollector:
             historicalSubject?.identifier
         }
-        guard let footerIdentifier else { return }
 
-        if let activeSlabBaseIdentifier,
-           activeSlabBaseIdentifier != footerIdentifier {
-            clearActiveSlab()
+        guard activeSlab == nil else {
+            if footerLines.isEmpty {
+                activeSlabEmptyFrames += 1
+                if activeSlabEmptyFrames >= Self.slabBandEmptyFramesBeforeClear {
+                    clearActiveSlab(cause: .footerAbsence, at: now)
+                }
+                return
+            }
+            activeSlabEmptyFrames = 0
+
+            guard let footerIdentifier else { return }
+
+            if let activeSlabBaseIdentifier,
+               activeSlabBaseIdentifier != footerIdentifier {
+                clearActiveSlab(cause: .identityChanged, at: now)
+            } else if self.activeSlabBaseIdentifier == nil {
+                self.activeSlabBaseIdentifier = footerIdentifier
+            }
             return
         }
-        if activeSlabBaseIdentifier == nil {
-            activeSlabBaseIdentifier = footerIdentifier
+
+        if let slabGraceDeadline, now >= slabGraceDeadline {
+            updateSlabGuideHint(nil, at: now)
+        }
+
+        guard let footerIdentifier else { return }
+
+        if let recoveryDeadline = slabRecoveryDeadline,
+           activeSlabBaseIdentifier != footerIdentifier || now >= recoveryDeadline {
+            let diagnostic = activeSlabBaseIdentifier == footerIdentifier
+                ? "slabRecoveryExpired"
+                : "slabRecoveryReleasedForNewIdentity"
+            activeSlabBaseIdentifier = nil
+            slabRecoveryDeadline = nil
+            slabEvidenceWindow.reset()
+            updateSlabGuideHint(nil, at: now)
+            recordDiagnostic(diagnostic)
+        }
+
+        if let slabGuideHintIdentifier,
+           slabGuideHintIdentifier != footerIdentifier {
+            updateSlabGuideHint(nil, at: now)
         }
     }
 
@@ -1992,11 +2129,13 @@ final class CardScanner: NSObject, ObservableObject {
         handler: VNImageRequestHandler,
         sourceSize: CGSize,
         footerHasText: Bool,
+        footerIdentifier: ScanIdentifier?,
         at now: CFAbsoluteTime
     ) {
         guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
               cadence.shouldRun(cadenceKind, at: now) else { return }
 
+        let wasUnbound = activeSlab == nil
         let company = activeSlab?.evidence.company
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: company)
         do {
@@ -2019,8 +2158,12 @@ final class CardScanner: NSObject, ObservableObject {
                 roi: labelRequest.regionOfInterest,
                 sourceSize: sourceSize
             )
-            if activeSlab == nil {
-                updateSlabGuideHint(GradedLabelParser.company(in: lines))
+            if wasUnbound {
+                updateSlabGuideHint(
+                    GradedLabelParser.company(in: lines),
+                    for: footerIdentifier,
+                    at: now
+                )
             }
 #if DEBUG
             if Self.isGradedLabelCaptureDebugRoute {
@@ -2046,7 +2189,7 @@ final class CardScanner: NSObject, ObservableObject {
             if unboundFooterEmptyFrames >= Self.unboundFooterEmptyFramesBeforeReset {
                 unboundFooterEmptyFrames = 0
                 slabEvidenceWindow.reset()
-                updateSlabGuideHint(nil)
+                updateSlabGuideHint(nil, at: CFAbsoluteTimeGetCurrent())
             }
             return nil
         }
@@ -2064,13 +2207,27 @@ final class CardScanner: NSObject, ObservableObject {
         return confirmed
     }
 
-    private func updateSlabGuideHint(_ hint: GradingCompany?) {
-        if hint == nil {
+    private func updateSlabGuideHint(
+        _ hint: GradingCompany?,
+        for identifier: ScanIdentifier? = nil,
+        at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
+    ) {
+        let startsPositiveHint = activeSlab == nil
+            && hint != nil
+            && slabGuideHintForGate == nil
+        if activeSlab != nil || hint == nil {
             slabGraceDeadline = nil
-        } else if slabGuideHintForGate == nil, slabGraceDeadline == nil, activeSlab == nil {
-            slabGraceDeadline = CFAbsoluteTimeGetCurrent() + Self.slabGraceDuration
+        } else if slabGraceDeadline == nil {
+            slabGraceDeadline = now + Self.slabGraceDuration
+        }
+        if startsPositiveHint {
+            // The footer pass runs before the slower label pass. A raw
+            // observation from that same frame must not combine with a later
+            // post-grace observation and bypass the slab hold.
+            resetConfirmationWindow()
         }
         slabGuideHintForGate = hint
+        slabGuideHintIdentifier = hint == nil ? nil : identifier
 
         DispatchQueue.main.async { [weak self] in
             guard let self, self.slabFraming == nil else { return }
@@ -2079,18 +2236,32 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
-    private func shouldHoldForSlabGrace(at now: CFAbsoluteTime) -> Bool {
-        guard activeSlab == nil,
-              slabGuideHintForGate != nil,
-              let slabGraceDeadline else { return false }
-        return now < slabGraceDeadline
+    private func shouldHoldForSlabGrace(
+        for observation: ScanSubject?,
+        at now: CFAbsoluteTime
+    ) -> Bool {
+        guard activeSlab == nil, let observation else { return false }
+
+        if let slabRecoveryDeadline,
+           activeSlabBaseIdentifier == observation.identifier,
+           now < slabRecoveryDeadline {
+            return true
+        }
+
+        guard slabGuideHintForGate != nil,
+              (slabGuideHintIdentifier == nil || slabGuideHintIdentifier == observation.identifier),
+              let slabGraceDeadline,
+              now < slabGraceDeadline else { return false }
+        return true
     }
 
 #if DEBUG
     /// Test-only visibility for the non-blocking graded correction contract.
     /// Production UI never needs to know whether recognition is paused; tests do
     /// need to prove that this path never entered the pause state.
-    var isRecognitionPausedForTesting: Bool { isPaused }
+    var isRecognitionPausedForTesting: Bool {
+        visionQueue.sync { isPaused }
+    }
 
     /// Test/support seam for the state transition after Vision has produced a
     /// parsed label. The capture path above uses the same cadence gate and
@@ -2100,11 +2271,33 @@ final class CardScanner: NSObject, ObservableObject {
     func receiveSlabLabelEvidenceForTesting(
         _ evidence: GradedSlabEvidence?,
         footerHasText: Bool,
+        for identifier: ScanIdentifier? = nil,
         at now: CFAbsoluteTime
     ) -> GradedSlabEvidence? {
         guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
               cadence.shouldRun(cadenceKind, at: now) else { return nil }
+        if activeSlab == nil {
+            updateSlabGuideHint(evidence?.company, for: identifier, at: now)
+        }
         return applySlabLabelEvidence(evidence, at: now)
+    }
+
+    /// Debug-only seam for the production label-parser boundary. It keeps the
+    /// company hint and the full slab evidence on the same parsed-line path as
+    /// capture output, while still allowing the cadence to be fake-clocked.
+    @discardableResult
+    func receiveSlabLabelLinesForTesting(
+        _ lines: [RecognizedLine],
+        footerHasText: Bool,
+        for identifier: ScanIdentifier? = nil,
+        at now: CFAbsoluteTime
+    ) -> GradedSlabEvidence? {
+        guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
+              cadence.shouldRun(cadenceKind, at: now) else { return nil }
+        if activeSlab == nil {
+            updateSlabGuideHint(GradedLabelParser.company(in: lines), for: identifier, at: now)
+        }
+        return applySlabLabelEvidence(GradedLabelParser.parse(lines), at: now)
     }
 
     /// Debug-only seam for the sticky footer identity rule. It mirrors the
@@ -2112,7 +2305,8 @@ final class CardScanner: NSObject, ObservableObject {
     /// routine label re-confirmation does not erase the baseline.
     func receiveSlabFooterPresenceForTesting(
         identifier: ScanIdentifier?,
-        hasText: Bool
+        hasText: Bool,
+        at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
     ) {
         let outcome: RecognitionOutcome = identifier.map {
             .identified(ScanSubject(identifier: $0))
@@ -2120,12 +2314,17 @@ final class CardScanner: NSObject, ObservableObject {
         updateActiveSlabPresence(
             outcome: outcome,
             historicalSubject: nil,
-            footerLines: hasText ? [RecognizedLine(text: "footer")] : []
+            footerLines: hasText ? [RecognizedLine(text: "footer")] : [],
+            at: now
         )
     }
 
-    func receiveSlabGuideHintForTesting(_ hint: GradingCompany?) {
-        updateSlabGuideHint(hint)
+    func receiveSlabGuideHintForTesting(
+        _ hint: GradingCompany?,
+        for identifier: ScanIdentifier? = nil,
+        at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
+    ) {
+        updateSlabGuideHint(hint, for: identifier, at: now)
     }
 
     /// Debug-only seam for the footer confirmation gate. It runs the real
@@ -2180,7 +2379,7 @@ final class CardScanner: NSObject, ObservableObject {
         if let attempt = historicalAttempt,
            attempt.number != number || now - attempt.startedAt > Self.historicalAttemptTTL {
             historicalAttempt = nil
-            confirmationWindow.reset()
+            resetConfirmationWindow()
         }
 
         if historicalAttempt == nil {
@@ -2245,7 +2444,9 @@ final class CardScanner: NSObject, ObservableObject {
     /// Speculation, and only speculation. The catalog de-duplicates, so an
     /// identifier that flickers in and out costs at most one request.
     private func announcePlausible(_ observation: ScanSubject?, at now: CFAbsoluteTime) {
-        guard let observation, observation != lastAnnouncedPlausible else { return }
+        guard let observation,
+              observation.suppressionKey != catalogMissSuppressionKey,
+              observation != lastAnnouncedPlausible else { return }
         lastAnnouncedPlausible = observation
         cadence.prioritizeOCR(at: now, after: 0.08)
         PerformanceSignpost.signposter.emitEvent("firstPlausibleReading")
@@ -2277,14 +2478,19 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     /// Callers must be on `visionQueue`.
-    private func resetObservationState() {
+    private func resetConfirmationWindow() {
         confirmationWindow.reset()
+        lastAnnouncedPlausible = nil
+    }
+
+    /// Callers must be on `visionQueue`.
+    private func resetObservationState() {
+        resetConfirmationWindow()
         latch.releaseAndForget()
         cancelHeldRepeatAuthorizationOnVisionQueue()
-        clearActiveSlab()
+        clearActiveSlab(cause: .lifecycle)
         latchEncounterID = nil
         didAnnounceLatchHold = false
-        lastAnnouncedPlausible = nil
         historicalAttempt = nil
     }
 
@@ -2566,6 +2772,12 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             }
 #endif
 
+            let footerIdentifier: ScanIdentifier? = switch outcome {
+            case let .identified(subject): subject.identifier
+            case .nothing, .ambiguous, .spatiallyRejectedMagicCollector:
+                historical
+            }
+
             handleFooterOutcome(
                 outcome,
                 footerLines: lines,
@@ -2579,6 +2791,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 handler: handler,
                 sourceSize: sourceSize,
                 footerHasText: !lines.isEmpty,
+                footerIdentifier: footerIdentifier,
                 at: now
             )
         } catch {

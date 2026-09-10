@@ -84,6 +84,17 @@ final class ScannerViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func testInFlightIDGuardSuppressesDuplicateUntilOriginalCompletes() {
+        var guardState = InFlightIDGuard<UUID>()
+        let id = UUID()
+
+        XCTAssertTrue(guardState.begin(id))
+        XCTAssertFalse(guardState.begin(id))
+
+        guardState.end(id)
+        XCTAssertTrue(guardState.begin(id))
+    }
+
     func testPendingChoiceBlocksLaterConfirmedEncounterUntilAnswer() async throws {
         let model = try makeModel(
             variants: [.normal, .holo],
@@ -132,12 +143,17 @@ final class ScannerViewModelTests: XCTestCase {
         let encounterID = UUID()
 
         confirm(model, scannerIdentifier(), encounterID: encounterID)
+        let acknowledged = await waitUntil {
+            model.scanAcknowledgement?.encounterID == encounterID
+                && model.scanAcknowledgement?.phase == .recognized
+        }
+        XCTAssertTrue(acknowledged)
+        XCTAssertEqual(model.scanAcknowledgement?.subject.identifier, scannerIdentifier())
         await fetchGate.waitUntilStarted()
-        XCTAssertNil(model.scanAcknowledgement)
 
         let choiceAppeared = await waitUntil { model.pendingChoice != nil }
         XCTAssertTrue(choiceAppeared)
-        XCTAssertNil(model.scanAcknowledgement)
+        XCTAssertEqual(model.scanAcknowledgement?.encounterID, encounterID)
 
         model.dismissChoice()
 

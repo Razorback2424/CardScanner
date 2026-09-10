@@ -547,6 +547,21 @@ struct RecentScan: Identifiable, Equatable {
     }
 }
 
+/// Small synchronous guard for actions whose work crosses an async boundary.
+/// A repeated tap for the same stable ID is ignored until the first operation
+/// has finished.
+struct InFlightIDGuard<ID: Hashable> {
+    private var activeIDs: Set<ID> = []
+
+    mutating func begin(_ id: ID) -> Bool {
+        activeIDs.insert(id).inserted
+    }
+
+    mutating func end(_ id: ID) {
+        activeIDs.remove(id)
+    }
+}
+
 /// The inline fork. Shown over the live camera, answered with one tap that means
 /// both "this variant" and "continue" — never a variant question followed by a
 /// separate confirmation, because the first tap already expressed the intent.
@@ -972,9 +987,14 @@ final class ScannerViewModel: ObservableObject {
     /// Enough to take back the most recent add, including the question that was
     /// asked at the time so undo can re-ask it.
     private var lastAdd: RecentScan?
+    private var undoingScanIDs = InFlightIDGuard<RecentScan.ID>()
     private var heldRepeatAuthorizationState: HeldRepeatAuthorizationState?
     private var deferredHeldDuplicateOffer: DeferredHeldDuplicateOffer?
-    private var catalogMissVerification: CatalogMissVerification?
+    private var catalogMissVerification: CatalogMissVerification? {
+        didSet {
+            scanner.updateCatalogMissSuppressionKey(catalogMissVerification?.suppressionKey)
+        }
+    }
     private weak var summaryStore: ScanSessionSummaryStore?
     private weak var writeCoordinator: DerivedStateWriteCoordinator?
     /// Keep the coordinator that actually opened the scanner interval. A tab
@@ -1028,14 +1048,14 @@ final class ScannerViewModel: ObservableObject {
         self.feedback = feedback ?? ScanFeedback()
         self.gradedResolver = gradedResolver
 
-        scanner.onPlausibleCandidate = { [weak self] subject in
-            guard let self else { return }
-            // Speculation only. Nothing downstream may act on this.
-            Task { @MainActor in
-                guard self.catalogMissVerification?.suppressionKey != subject.suppressionKey else {
-                    return
-                }
-                await self.catalog.prefetch(subject.identifier)
+        let catalog = self.catalog
+        scanner.onPlausibleCandidate = { subject in
+            // Speculation only. Nothing downstream may act on this. The
+            // scanner already filters the active catalog-miss identity on its
+            // vision queue, so starting the actor request needs no main-actor
+            // hop.
+            Task {
+                await catalog.prefetch(subject.identifier)
             }
         }
 
@@ -1046,8 +1066,8 @@ final class ScannerViewModel: ObservableObject {
         }
 
         let handleConfirmedCandidate: (ScannerConfirmationToken?, UUID, ScanSubject, UUID?) -> Void = { [weak self] token, encounterID, subject, authorizationID in
-            guard let self else { return }
-            Task { @MainActor in
+            MainActor.assumeIsolated {
+                guard let self else { return }
                 guard self.isScannerSessionActive,
                       self.recognitionEligibility.allowsRecognition else {
                     self.diagnostic("staleConfirmationDropped")
@@ -1066,11 +1086,15 @@ final class ScannerViewModel: ObservableObject {
                     )
                 }
                 if self.purpose == .collection {
-                    // Recognition is still acknowledged immediately through
-                    // haptics and the session counter. The visible "Saving..."
-                    // state is published only after identity/variant resolution
-                    // has authorized an actual collection write.
+                    // Keep the recognition acknowledgement visible across the
+                    // identity and persistence gap. The message is upgraded to
+                    // "Saving..." only once a collection write is authorized.
                     self.dismissReceipt()
+                    self.scanAcknowledgement = ScanAcknowledgement(
+                        encounterID: encounterID,
+                        subject: subject,
+                        phase: .recognized
+                    )
                     self.recognitionCount += 1
                     self.feedback.recognized()
                     self.diagnostic("recognitionAcknowledgement")
@@ -1275,11 +1299,11 @@ final class ScannerViewModel: ObservableObject {
     /// Leaving the Scan tab is the session boundary. Backgrounding the app is
     /// deliberately handled by `scenePhaseChanged` instead, so an OS lifecycle
     /// transition cannot publish a false departure report.
-    /// `useMagicDefinitions` compiles the vocabulary regex on the caller's
-    /// thread and only then hands it to the vision queue, which compares it
-    /// against what is already installed. `start` runs on every Scan-tab
-    /// appearance, so that comparison was being paid for with a compile.
-    /// Answer the same question here, before the work.
+    /// `useMagicDefinitions` compiles the vocabulary regex on its dedicated
+    /// background queue and only then hands it to the vision queue, which
+    /// compares it against what is already installed. `start` runs on every
+    /// Scan-tab appearance, so that comparison was being paid for with a
+    /// compile. Answer the same question here, before the work.
     private func installMagicDefinitions(_ definitions: [MagicSetDefinition]) {
         guard installedMagicDefinitions != definitions else { return }
         installedMagicDefinitions = definitions
@@ -1984,6 +2008,9 @@ final class ScannerViewModel: ObservableObject {
     /// an older value still held by a view.
     @discardableResult
     func undoScan(scanID: RecentScan.ID) async -> Bool {
+        guard undoingScanIDs.begin(scanID) else { return false }
+        defer { undoingScanIDs.end(scanID) }
+
         guard let collectionWriter else {
             show(ScanNote(text: "Undo could not be saved", tone: .problem))
             feedback.problem()
