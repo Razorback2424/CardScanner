@@ -4,6 +4,7 @@ set -euo pipefail
 SCHEME="${1:?SCHEME required}"
 BUNDLE_ID="${2:?BUNDLE_ID required}"
 ROUTE="${3:?ROUTE required}"
+STATE="${4:-}"
 DERIVED_DATA="${DERIVED_DATA:-/tmp/TradingCardScannerCodexUIBuild}"
 UI_DEVICE_NAME="${UI_DEVICE_NAME:-PA Quality iPhone 17 Pro}"
 UI_DEVICE_ID="${UI_DEVICE_ID:-EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86}"
@@ -25,14 +26,20 @@ fi
 
 xcrun simctl uninstall "$UI_DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl install "$UI_DEVICE_ID" "$APP_PATH"
-xcrun simctl launch "$UI_DEVICE_ID" "$BUNDLE_ID" -ui_debug_route "$ROUTE"
+LAUNCH_ARGS=("-ui_debug_route" "$ROUTE")
+if [[ -n "$STATE" ]]; then
+  LAUNCH_ARGS+=("-ui_debug_state" "$STATE")
+fi
+xcrun simctl launch "$UI_DEVICE_ID" "$BUNDLE_ID" "${LAUNCH_ARGS[@]}"
 sleep 2.5
 "$(dirname "$0")/ui_screenshot_simctl.sh" "$SCREENSHOT_PATH" "$UI_DEVICE_ID"
 
-python3 - "$META_PATH" "$SCHEME" "$BUNDLE_ID" "$ROUTE" <<'PY'
+python3 - "$META_PATH" "$SCHEME" "$BUNDLE_ID" "$ROUTE" "$STATE" <<'PY'
 import json, sys, time
-path, scheme, bundle_id, route = sys.argv[1:]
+path, scheme, bundle_id, route, state = sys.argv[1:]
 meta = {"scheme": scheme, "bundle_id": bundle_id, "route": route, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S")}
+if state:
+    meta["state"] = state
 with open(path, "w", encoding="utf-8") as handle:
     json.dump(meta, handle, indent=2)
 print(json.dumps(meta, indent=2))

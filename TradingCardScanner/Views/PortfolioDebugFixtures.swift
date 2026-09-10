@@ -285,6 +285,123 @@ enum PortfolioDebugFixtures {
         try? modelContext.save()
     }
 
+    static func debugResolution() -> VariantResolution {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_state"),
+              arguments.indices.contains(index + 1),
+              let resolution = VariantResolution(rawValue: arguments[index + 1]) else {
+            return .catalogSilent
+        }
+        return resolution
+    }
+
+    @MainActor
+    static func seedTrustProvenanceIfNeeded(
+        in modelContext: ModelContext,
+        resolution: VariantResolution
+    ) -> String? {
+        let providerID = "ui-trust-provenance-\(resolution.rawValue)"
+        let existing = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
+        if let existingCard = existing.first(where: { $0.providerID == providerID }) {
+            return existingCard.collectionKey
+        }
+
+        let variants: TCGdexVariants
+        let selected: PhysicalVariant?
+        switch resolution {
+        case .catalogSilent:
+            variants = TCGdexVariants(
+                firstEdition: false,
+                holo: false,
+                normal: false,
+                reverse: false,
+                wPromo: nil
+            )
+            selected = nil
+        case .finishLock:
+            variants = TCGdexVariants(
+                firstEdition: false,
+                holo: false,
+                normal: true,
+                reverse: true,
+                wPromo: nil
+            )
+            selected = .reverse
+        case .userConfirmed:
+            variants = TCGdexVariants(
+                firstEdition: false,
+                holo: true,
+                normal: true,
+                reverse: false,
+                wPromo: nil
+            )
+            selected = .holo
+        case .uniqueInCatalog, .deterministicSetRule, .printedLabel:
+            variants = TCGdexVariants(
+                firstEdition: false,
+                holo: true,
+                normal: false,
+                reverse: false,
+                wPromo: nil
+            )
+            selected = .holo
+        case .imported:
+            variants = TCGdexVariants(
+                firstEdition: false,
+                holo: false,
+                normal: true,
+                reverse: false,
+                wPromo: nil
+            )
+            selected = .normal
+        }
+
+        let card = TCGdexCard(
+            id: providerID,
+            localId: "004",
+            name: "Charizard — Provenance QA",
+            image: "https://images.pokemontcg.io/base1/4_hires.png",
+            rarity: "Rare",
+            set: TCGdexSetBrief(
+                id: "trust-provenance-qa",
+                name: "Trust Provenance QA",
+                cardCount: TCGdexCardCount(total: 1, official: 1)
+            ),
+            variants: variants,
+            pricing: nil,
+            variantsDetailed: nil
+        )
+        let store = CollectionStore(context: modelContext)
+        _ = try? store.add(
+            .pokemon(card, setCode: "TRUST"),
+            resolved: ResolvedVariant(variant: selected, resolution: resolution),
+            identityResolution: .catalogSelected
+        )
+
+        guard let stored = (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?
+            .first(where: { $0.providerID == providerID }) else { return nil }
+        let sourceVariantID = stored.justTCGVariantID ?? stored.variantID ?? stored.providerID
+        _ = PriceStore(context: modelContext).store(
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: 42,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: sourceVariantID,
+                    sourceUpdatedAt: .now,
+                    fetchedAt: .now
+                )
+            ),
+            game: .pokemon,
+            printingID: stored.priceStorageID,
+            variantID: stored.variantID,
+            marketVariantID: sourceVariantID,
+            at: .now
+        )
+        try? modelContext.save()
+        return stored.collectionKey
+    }
+
     @MainActor
     static func seedCollectionFooter4aIfNeeded(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }

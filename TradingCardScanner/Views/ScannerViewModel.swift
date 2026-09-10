@@ -693,6 +693,7 @@ struct ScanReceipt: Identifiable, Equatable {
     let treatmentDiagnostics: [MagicTreatmentDiagnostic]
     let thumbnailURL: URL?
     let price: PriceLookup
+    let resolution: VariantResolution?
 
     init(
         id: UUID = UUID(),
@@ -702,7 +703,8 @@ struct ScanReceipt: Identifiable, Equatable {
         variantLabel: String,
         treatmentDiagnostics: [MagicTreatmentDiagnostic],
         thumbnailURL: URL?,
-        price: PriceLookup = .unavailable(nil)
+        price: PriceLookup = .unavailable(nil),
+        resolution: VariantResolution? = nil
     ) {
         self.id = id
         self.scanID = scanID
@@ -712,6 +714,7 @@ struct ScanReceipt: Identifiable, Equatable {
         self.treatmentDiagnostics = treatmentDiagnostics
         self.thumbnailURL = thumbnailURL
         self.price = price
+        self.resolution = resolution
     }
 
     func updating(price: PriceLookup) -> ScanReceipt {
@@ -723,7 +726,8 @@ struct ScanReceipt: Identifiable, Equatable {
             variantLabel: variantLabel,
             treatmentDiagnostics: treatmentDiagnostics,
             thumbnailURL: thumbnailURL,
-            price: price
+            price: price,
+            resolution: resolution
         )
     }
 
@@ -2637,7 +2641,8 @@ final class ScannerViewModel: ObservableObject {
                     .joined(separator: " · "),
                 treatmentDiagnostics: candidate.card.magicTreatmentDiagnostics,
                 thumbnailURL: scan.thumbnailURL,
-                price: candidate.price
+                price: candidate.price,
+                resolution: candidate.resolved.resolution
             )
         )
         feedback.added()
@@ -3335,11 +3340,28 @@ final class ScannerViewModel: ObservableObject {
     /// hard case on purpose: a long name, a full identifier line, and a priced
     /// printing all competing for one row.
     func seedReceiptFixtureForScreenshot() {
+        let isTrustReceipt = ProcessInfo.processInfo.arguments.contains("TrustScanReceipt")
+        let resolution = isTrustReceipt ? PortfolioDebugFixtures.debugResolution() : nil
+        let variantLabel: String
+        switch resolution {
+        case .catalogSilent?:
+            variantLabel = "Unknown finish"
+        case .finishLock?:
+            variantLabel = "Reverse Holo"
+        case .userConfirmed?:
+            variantLabel = "Holofoil"
+        case .uniqueInCatalog?, .deterministicSetRule?, .printedLabel?:
+            variantLabel = "Holofoil"
+        case .imported?:
+            variantLabel = "Normal"
+        case nil:
+            variantLabel = "Foil Etched"
+        }
         receipt = ScanReceipt(
             scanID: UUID(),
             name: "Ragavan, Nimble Pilferer",
             identifier: "MH2 · 138",
-            variantLabel: "Foil Etched",
+            variantLabel: variantLabel,
             treatmentDiagnostics: [],
             thumbnailURL: nil,
             price: .price(
@@ -3351,7 +3373,8 @@ final class ScannerViewModel: ObservableObject {
                     sourceUpdatedAt: .now,
                     fetchedAt: .now
                 )
-            )
+            ),
+            resolution: resolution
         )
     }
 

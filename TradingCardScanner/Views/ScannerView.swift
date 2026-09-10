@@ -23,7 +23,7 @@ struct ScannerView: View {
         guard let index = arguments.firstIndex(of: "-ui_debug_route"),
               arguments.indices.contains(index + 1) else { return nil }
         let route = arguments[index + 1]
-        return ["WholeCardScanner", "PriceCheck", "ScanChoiceCancellation"].contains(route) ? route : nil
+        return ["WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt"].contains(route) ? route : nil
     }
 #endif
 
@@ -62,7 +62,7 @@ struct ScannerView: View {
             if scannerScreenshotRoute == "PriceCheck" {
                 model.setPurpose(.priceCheck)
             }
-            if scannerScreenshotRoute == "WholeCardScanner" {
+            if scannerScreenshotRoute == "WholeCardScanner" || scannerScreenshotRoute == "TrustScanReceipt" {
                 model.seedReceiptFixtureForScreenshot()
             }
             if scannerScreenshotRoute == "ScanChoiceCancellation" {

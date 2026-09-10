@@ -14,6 +14,77 @@ struct ScanAssistanceView: View {
     }
 }
 
+/// A compact statement of the finish and the evidence behind it. Detail keeps
+/// this visible for every card; receipts reserve the stronger treatment for
+/// resolutions that need a person's attention so routine scans stay quiet.
+enum VariantProvenancePresentation {
+    static func text(
+        finish: String?,
+        resolution: VariantResolution?
+    ) -> String {
+        let finish = finish?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if resolution == .catalogSilent {
+            return "Finish not published"
+        }
+        if let finish, !finish.isEmpty, let resolution {
+            return "\(finish) · \(resolution.label)"
+        }
+        if let finish, !finish.isEmpty {
+            return "\(finish) · Finish provenance unavailable"
+        }
+        if let resolution {
+            return resolution.label
+        }
+        return "Finish provenance unavailable"
+    }
+}
+
+struct VariantProvenanceLabel: View {
+    enum Style: Equatable {
+        case detail
+        case receipt
+    }
+
+    let finish: String?
+    let resolution: VariantResolution?
+    let style: Style
+
+    private var text: String {
+        VariantProvenancePresentation.text(finish: finish, resolution: resolution)
+    }
+
+    private var needsAttention: Bool {
+        resolution?.receiptProminence != .quiet
+    }
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 6) {
+            if style == .receipt, needsAttention {
+                Image(systemName: "questionmark.circle.fill")
+                    .imageScale(.small)
+            }
+            Text(text)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .font(
+            style == .detail
+                ? .caption.weight(.medium)
+                : (needsAttention ? .caption.weight(.semibold) : .caption2)
+        )
+        .foregroundStyle(
+            style == .detail
+                ? (resolution?.certainty == .unresolved
+                    ? AnyShapeStyle(PortfolioPalette.attention)
+                    : AnyShapeStyle(.secondary))
+                : (needsAttention
+                    ? AnyShapeStyle(.orange)
+                    : AnyShapeStyle(.white.opacity(0.72)))
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Variant provenance: \(text)")
+    }
+}
+
 /// Immediate feedback for the card that has just crossed the two-frame OCR
 /// boundary. It stays truthful while the writer is busy: only the failed state
 /// says that the card was not added, and only the receipt says that the write
@@ -532,6 +603,12 @@ struct ScanReceiptCard: View {
                 .accessibilityLabel("Undo scan and remove \(receipt.name) from your collection")
                 .accessibilityHint("Removes the card that was just added and lets you correct its scan details.")
             }
+
+            VariantProvenanceLabel(
+                finish: receipt.variantLabel,
+                resolution: receipt.resolution,
+                style: .receipt
+            )
 
             // Full width under the row: a treatment warning is about the whole
             // receipt, and inside the title column it stole the name's width.

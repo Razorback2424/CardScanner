@@ -329,6 +329,22 @@ extension PhysicalVariant {
 /// be incomplete, every record that leaned on that rule can be found and
 /// reassessed without casting doubt on records the user confirmed by hand.
 enum VariantResolution: String, Codable, Hashable, Sendable {
+    /// How certain the recorded finish is for a person reading a receipt.
+    /// This intentionally does not answer whether a future rule change may
+    /// revisit the record; that is the separate `isAutomatic` policy below.
+    enum Certainty: String, Codable, Hashable, Sendable {
+        case catalogCertain
+        case contextualEvidence
+        case userConfirmed
+        case unresolved
+    }
+
+    /// How much attention a routine scan receipt should draw.
+    enum ReceiptProminence: String, Codable, Hashable, Sendable {
+        case quiet
+        case attention
+    }
+
     /// The catalog says this printing physically exists in exactly one variant.
     case uniqueInCatalog
     /// A set-specific rule this app owns narrowed the possibilities to one.
@@ -357,8 +373,33 @@ enum VariantResolution: String, Codable, Hashable, Sendable {
         }
     }
 
+    var certainty: Certainty {
+        switch self {
+        case .uniqueInCatalog, .deterministicSetRule:
+            return .catalogCertain
+        case .finishLock, .printedLabel:
+            return .contextualEvidence
+        case .userConfirmed:
+            return .userConfirmed
+        case .imported, .catalogSilent:
+            return .unresolved
+        }
+    }
+
+    var receiptProminence: ReceiptProminence {
+        switch self {
+        case .uniqueInCatalog, .deterministicSetRule:
+            return .quiet
+        case .finishLock, .printedLabel, .userConfirmed, .imported, .catalogSilent:
+            return .attention
+        }
+    }
+
     /// Whether the app may revisit the fact automatically if a rule changes.
-    /// User choices and imported records stay as supplied.
+    /// This is a maintenance/revisit policy, not a confidence label: a
+    /// catalog-silent result is automatic because new catalog data may resolve
+    /// it, even though its current certainty is unresolved. User choices and
+    /// imported records stay as supplied.
     var isAutomatic: Bool {
         switch self {
         case .userConfirmed, .finishLock, .printedLabel, .imported: return false

@@ -10,6 +10,77 @@ final class VariantResolverTests: XCTestCase {
         VariantEvidence(game: .pokemon, setID: setID, cardNumber: number, catalogVariants: variants)
     }
 
+    func testResolutionCertaintyDoesNotReuseAutomaticRevisitSemantics() {
+        XCTAssertTrue(VariantResolution.uniqueInCatalog.isAutomatic)
+        XCTAssertEqual(VariantResolution.uniqueInCatalog.certainty, .catalogCertain)
+        XCTAssertTrue(VariantResolution.catalogSilent.isAutomatic)
+        XCTAssertEqual(VariantResolution.catalogSilent.certainty, .unresolved)
+        XCTAssertFalse(VariantResolution.userConfirmed.isAutomatic)
+        XCTAssertEqual(VariantResolution.userConfirmed.certainty, .userConfirmed)
+    }
+
+    func testReceiptProminenceKeepsRoutineCatalogAnswersQuiet() {
+        XCTAssertEqual(VariantResolution.uniqueInCatalog.receiptProminence, .quiet)
+        XCTAssertEqual(VariantResolution.deterministicSetRule.receiptProminence, .quiet)
+        XCTAssertEqual(VariantResolution.finishLock.receiptProminence, .attention)
+        XCTAssertEqual(VariantResolution.userConfirmed.receiptProminence, .attention)
+        XCTAssertEqual(VariantResolution.catalogSilent.receiptProminence, .attention)
+    }
+
+    func testProvenancePresentationStatesFinishAndEvidence() {
+        XCTAssertEqual(
+            VariantProvenancePresentation.text(
+                finish: "Reverse Holo",
+                resolution: .uniqueInCatalog
+            ),
+            "Reverse Holo · Only variant printed"
+        )
+        XCTAssertEqual(
+            VariantProvenancePresentation.text(
+                finish: nil,
+                resolution: .catalogSilent
+            ),
+            "Finish not published"
+        )
+        XCTAssertEqual(
+            VariantProvenancePresentation.text(
+                finish: "Holofoil",
+                resolution: .userConfirmed
+            ),
+            "Holofoil · You confirmed"
+        )
+    }
+
+    func testUncertaintyNeverHardensWhenItCrossesIntoTheScanReceipt() throws {
+        let outcome = VariantResolver.resolve(pokemon(setID: "sv03", variants: []))
+        guard case let .resolved(resolved) = outcome else {
+            return XCTFail("Catalog silence should still produce a receipt, not a guessed variant")
+        }
+
+        XCTAssertNil(resolved.variant)
+        XCTAssertEqual(resolved.resolution, .catalogSilent)
+        XCTAssertEqual(resolved.resolution.certainty, .unresolved)
+
+        let receipt = ScanReceipt(
+            scanID: UUID(),
+            name: "Eevee",
+            identifier: "PRE 074",
+            variantLabel: "Finish unknown",
+            treatmentDiagnostics: [],
+            thumbnailURL: nil,
+            resolution: resolved.resolution
+        )
+        XCTAssertNil(resolved.variant)
+        XCTAssertEqual(receipt.resolution?.certainty, .unresolved)
+        XCTAssertEqual(
+            VariantProvenancePresentation.text(
+                finish: receipt.variantLabel,
+                resolution: receipt.resolution
+            ),
+            "Finish not published"
+        )
+    }
+
     // MARK: - Zero friction where the app can already know
 
     func testSingleCatalogVariantResolvesWithoutAsking() {

@@ -297,7 +297,23 @@ struct CollectionCardDetailView: View {
         AppCardSurface(accent: artworkAccent?.color) {
             VStack(alignment: .leading, spacing: 12) {
                 provenanceRow
-                conditionRow
+                if card.itemKind == .rawCard {
+                    // The provenance label already includes the finish for a
+                    // raw card, so it replaces the compact condition row
+                    // rather than repeating "Reverse Holo" twice.
+                    VariantProvenanceLabel(
+                        finish: detailFinishLabel,
+                        resolution: card.variantResolution,
+                        style: .detail
+                    )
+                } else {
+                    conditionRow
+                    VariantProvenanceLabel(
+                        finish: detailFinishLabel,
+                        resolution: card.variantResolution,
+                        style: .detail
+                    )
+                }
                 if card.itemKind == .gradedCard {
                     gradedVariantCorrectionBlock
                 }
@@ -393,6 +409,16 @@ struct CollectionCardDetailView: View {
         }
         return ([card.variant?.label].compactMap { $0 } + names)
             .joined(separator: " · ")
+    }
+
+    /// `conditionLine` is a compact status row for every item kind. Only its
+    /// raw-card branch is a printed finish; a slab's condition is its grade and
+    /// a sealed product has no finish to claim here.
+    private var detailFinishLabel: String? {
+        if card.itemKind == .rawCard {
+            return conditionLine
+        }
+        return card.variant?.label
     }
 
     @ViewBuilder

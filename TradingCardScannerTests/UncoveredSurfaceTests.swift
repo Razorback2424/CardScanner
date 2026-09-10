@@ -918,8 +918,10 @@ final class ScannerOverlaySmokeTests: XCTestCase {
             identifier: "TST 001/10",
             variantLabel: "Normal",
             treatmentDiagnostics: [],
-            thumbnailURL: nil
+            thumbnailURL: nil,
+            resolution: .catalogSilent
         )
+        XCTAssertEqual(receipt.resolution, .catalogSilent)
 
         _ = ScanAssistanceView(message: "Hold the card steady").body
         _ = HeldDuplicateOfferView(offer: offer, onAddAnother: {}).body

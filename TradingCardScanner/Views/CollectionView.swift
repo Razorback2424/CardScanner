@@ -25,6 +25,8 @@ struct CollectionView: View {
     let opensBrowseOnLaunch: Bool
     let opensMovementDetailsOnLaunch: Bool
     let opensCardDetailOnLaunch: Bool
+    let opensCardDetailForCollectionKey: String?
+    let waitsForCardDetailCollectionKey: Bool
     let onOpenScanner: @MainActor () -> Void
     let onRefresh: @MainActor () async -> Void
     @Binding var sort: CollectionSort
@@ -79,6 +81,8 @@ struct CollectionView: View {
         opensBrowseOnLaunch: Bool,
         opensMovementDetailsOnLaunch: Bool = false,
         opensCardDetailOnLaunch: Bool = false,
+        opensCardDetailForCollectionKey: String? = nil,
+        waitsForCardDetailCollectionKey: Bool = false,
         onOpenScanner: @escaping @MainActor () -> Void,
         onRefresh: @escaping @MainActor () async -> Void,
         sort: Binding<CollectionSort>
@@ -89,6 +93,8 @@ struct CollectionView: View {
         self.opensBrowseOnLaunch = opensBrowseOnLaunch
         self.opensMovementDetailsOnLaunch = opensMovementDetailsOnLaunch
         self.opensCardDetailOnLaunch = opensCardDetailOnLaunch
+        self.opensCardDetailForCollectionKey = opensCardDetailForCollectionKey
+        self.waitsForCardDetailCollectionKey = waitsForCardDetailCollectionKey
         self.onOpenScanner = onOpenScanner
         self.onRefresh = onRefresh
         self._sort = sort
@@ -179,11 +185,18 @@ struct CollectionView: View {
             guard let entry = snapshot.entries.first else { return }
             navigationPath = [.card(entry.id), .movement(entry.id)]
         }
-        .task(id: opensCardDetailOnLaunch ? snapshot.entries.first?.id : nil) {
+        .task(id: opensCardDetailOnLaunch ? cardDetailLaunchTaskID : nil) {
             guard opensCardDetailOnLaunch, navigationPath.isEmpty else { return }
             try? await Task.sleep(for: .milliseconds(500))
-            guard let entry = snapshot.entries.first else { return }
-            navigationPath = [.card(entry.id)]
+            let targetID: String?
+            if waitsForCardDetailCollectionKey {
+                targetID = opensCardDetailForCollectionKey
+            } else {
+                targetID = opensCardDetailForCollectionKey ?? snapshot.entries.first?.id
+            }
+            guard let targetID,
+                  snapshot.entries.contains(where: { $0.id == targetID }) else { return }
+            navigationPath = [.card(targetID)]
         }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
@@ -195,6 +208,14 @@ struct CollectionView: View {
         } message: {
             Text(removalErrorMessage ?? "Please try again.")
         }
+    }
+
+    private var cardDetailLaunchTaskID: String {
+        let projectionRevision = projectionStore.revision
+        if waitsForCardDetailCollectionKey {
+            return "\(opensCardDetailForCollectionKey ?? "waiting-for-card-detail-target")-\(projectionRevision)"
+        }
+        return "\(opensCardDetailForCollectionKey ?? "card-detail-launch")-\(projectionRevision)"
     }
 
     @ViewBuilder

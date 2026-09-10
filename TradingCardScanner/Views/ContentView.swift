@@ -39,6 +39,10 @@ struct ContentView: View {
     /// collection before `PortfolioEpoch` has written its baseline.
     @State private var hasStartedPortfolio = false
     @State private var refreshStatusTask: Task<Void, Never>?
+    /// Debug detail routes target the exact fixture they seed. Without this
+    /// key, an existing fixture from a previous state can win the snapshot's
+    /// sort order and make the screenshot appear to validate the wrong state.
+    @State private var debugCardDetailCollectionKey: String?
 #if DEBUG
     private let debugRoute: String?
 #endif
@@ -52,9 +56,9 @@ struct ContentView: View {
         debugRoute = route
         let initialTab: Tab
         switch route {
-        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "CollectionTiles", "CollectionTilesLongContent", "MagicTreatmentSlice4": initialTab = .collection
+        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles", "CollectionTilesLongContent", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
-        case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "GradedLabelCapture": initialTab = .scan
+        case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt", "GradedLabelCapture": initialTab = .scan
         case "Centering", "CenteringExpanded": initialTab = .centering
         default: initialTab = .portfolio
         }
@@ -88,6 +92,8 @@ struct ContentView: View {
                 opensBrowseOnLaunch: isBrowseDebugRoute,
                 opensMovementDetailsOnLaunch: isMovementDebugRoute,
                 opensCardDetailOnLaunch: isCardDetailDebugRoute,
+                opensCardDetailForCollectionKey: debugCardDetailCollectionKey,
+                waitsForCardDetailCollectionKey: isTrustCardDetailDebugRoute,
                 onOpenScanner: { selectedTab = .scan },
                 onRefresh: refreshAllPrices,
                 sort: $collectionSort
@@ -141,6 +147,12 @@ struct ContentView: View {
                 history.range = .oneMonth
             case "CardDetail":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+                history.range = .oneMonth
+            case "TrustCardDetail":
+                debugCardDetailCollectionKey = PortfolioDebugFixtures.seedTrustProvenanceIfNeeded(
+                    in: modelContext,
+                    resolution: PortfolioDebugFixtures.debugResolution()
+                )
                 history.range = .oneMonth
             case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
@@ -274,7 +286,15 @@ struct ContentView: View {
 
     private var isCardDetailDebugRoute: Bool {
 #if DEBUG
-        return debugRoute == "CardDetail"
+        return debugRoute == "CardDetail" || debugRoute == "TrustCardDetail"
+#else
+        return false
+#endif
+    }
+
+    private var isTrustCardDetailDebugRoute: Bool {
+#if DEBUG
+        return debugRoute == "TrustCardDetail"
 #else
         return false
 #endif
