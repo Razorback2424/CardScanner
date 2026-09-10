@@ -549,9 +549,10 @@ struct PriceObservationLog {
                 continue
             }
 
-            guard let amount = record.effectiveUnitMarketPriceUSD,
-                  record.currencyCode == "USD",
-                  let money = Money(rounding: amount) else { continue }
+            guard let money = PortfolioPriceEligibility.eligibleUnitPrice(
+                amount: record.effectiveUnitMarketPriceUSD,
+                currencyCode: record.currencyCode
+            ) else { continue }
             let source = record.source
             if let previous, isOutOfOrder(record: record, comparedTo: previous) {
                 continue
@@ -653,9 +654,10 @@ struct PriceObservationLog {
         for record: PriceRecord,
         receivedAt: Date
     ) -> PriceObservationRules.Candidate? {
-        guard let amount = record.effectiveUnitMarketPriceUSD,
-              record.currencyCode == "USD",
-              let money = Money(rounding: amount) else { return nil }
+        guard let money = PortfolioPriceEligibility.eligibleUnitPrice(
+            amount: record.effectiveUnitMarketPriceUSD,
+            currencyCode: record.currencyCode
+        ) else { return nil }
         let source = record.source
         return PriceObservationRules.Candidate(
             value: PriceObservationValue(
@@ -672,9 +674,10 @@ struct PriceObservationLog {
     }
 
     private func usableAmount(for record: PriceRecord) -> Money? {
-        guard record.currencyCode == "USD",
-              let amount = record.effectiveUnitMarketPriceUSD else { return nil }
-        return Money(rounding: amount)
+        PortfolioPriceEligibility.eligibleUnitPrice(
+            amount: record.effectiveUnitMarketPriceUSD,
+            currencyCode: record.currencyCode
+        )
     }
 
     // MARK: -

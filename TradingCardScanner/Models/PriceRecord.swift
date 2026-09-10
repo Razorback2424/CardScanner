@@ -37,6 +37,17 @@ enum PriceSource: String, Codable, Hashable, Sendable {
     }
 }
 
+/// The single eligibility rule for a value entering a USD portfolio total.
+/// Display layers may still show a supported provider's native currency, but
+/// no caller may convert it into a USD holding without an exchange-rate policy.
+enum PortfolioPriceEligibility {
+    static func eligibleUnitPrice(amount: Double?, currencyCode: String) -> Money? {
+        guard currencyCode.caseInsensitiveCompare("USD") == .orderedSame,
+              let amount else { return nil }
+        return Money(rounding: amount)
+    }
+}
+
 /// One price observation for one physical variant of one printing.
 ///
 /// Deliberately not a field on the card. A card does not "cost $42 forever"; what

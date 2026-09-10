@@ -14,6 +14,7 @@ final class CollectionQueryTests: XCTestCase {
         quantity: Int = 1,
         price: Double?,
         treatmentIDs: [String] = [],
+        currencyCode: String = "USD",
         asOf: Date? = .now
     ) -> CollectionRow {
         CollectionRow(
@@ -30,12 +31,26 @@ final class CollectionQueryTests: XCTestCase {
             dateAdded: .now,
             price: PriceDisplay(
                 amount: price,
+                currencyCode: currencyCode,
                 source: .tcgplayer,
                 sourceUpdatedAt: price == nil ? nil : asOf,
                 fetchedAt: asOf,
                 lastCheckedAt: asOf
             ),
             magicTreatmentIDsRaw: treatmentIDs
+        )
+    }
+
+    func testCollectionShownValueUsesTheSharedUSDValuationRule() {
+        let rows = [
+            row(id: "usd", quantity: 2, price: 12.3456),
+            row(id: "eur", quantity: 4, price: 99, currencyCode: "EUR"),
+            row(id: "missing", quantity: 1, price: nil)
+        ]
+
+        XCTAssertEqual(
+            CollectionValuation.shownValue(for: rows),
+            Money(rounding: 24.6912)
         )
     }
 

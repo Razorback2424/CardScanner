@@ -693,14 +693,7 @@ struct CollectionView: View {
                 isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
             )
         }
-        let shownValue = entries.reduce(Money.zero) { total, entry in
-            guard entry.row.price.currencyCode == "USD",
-                  let unitPrice = entry.row.price.amount,
-                  let money = Money(rounding: unitPrice) else {
-                return total
-            }
-            return total + money * entry.row.quantity
-        }
+        let shownValue = CollectionValuation.shownValue(for: entries.map(\.row))
 
         return Snapshot(
             all: pricedRows,

@@ -246,7 +246,13 @@ enum PortfolioReplaySnapshotBuilder {
                 observations: rows,
                 asOf: through
             )
-                .filter { $0.effectiveUnitMarketPriceUSD != nil && $0.currencyCode != "USD" }
+                .filter { record in
+                    record.effectiveUnitMarketPriceUSD != nil
+                        && PortfolioPriceEligibility.eligibleUnitPrice(
+                            amount: record.effectiveUnitMarketPriceUSD,
+                            currencyCode: record.currencyCode
+                        ) == nil
+                }
                 .map(\.key)
         )
         let projection = LogicalCollection.project(cards: cards) {

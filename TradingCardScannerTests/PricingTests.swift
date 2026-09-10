@@ -2,6 +2,18 @@ import XCTest
 @testable import TradingCardScanner
 
 final class PricingTests: XCTestCase {
+    func testEligibleUnitPriceIsTheSingleUSDGate() {
+        XCTAssertEqual(
+            PortfolioPriceEligibility.eligibleUnitPrice(amount: 12.3456, currencyCode: "USD"),
+            Money(rounding: 12.3456)
+        )
+        XCTAssertNil(
+            PortfolioPriceEligibility.eligibleUnitPrice(amount: 12.3456, currencyCode: "EUR")
+        )
+        XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: nil, currencyCode: "USD"))
+        XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: .nan, currencyCode: "USD"))
+    }
+
     private func pokemonCard(
         variantsJSON: String = #"{ "firstEdition": false, "holo": false, "normal": true, "reverse": true }"#,
         pricingJSON: String? = #"""

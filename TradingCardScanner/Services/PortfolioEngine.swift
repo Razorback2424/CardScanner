@@ -250,7 +250,14 @@ final class PortfolioEngine: ObservableObject {
         holdings = holdings.map { holding in
             guard let display = byKey[holding.priceStorageKey] else { return holding }
             let oldValue = holding.holdingValue
-            let newUnitPrice = display.amount.flatMap(Money.init(rounding:))
+            // The portfolio has no FX rate. Keep the incremental path aligned
+            // with authoritative replay: unsupported currencies remove the
+            // live USD valuation instead of treating a foreign amount as
+            // dollars (or inventing a conversion).
+            let newUnitPrice = PortfolioPriceEligibility.eligibleUnitPrice(
+                amount: display.amount,
+                currencyCode: display.currencyCode
+            )
             let newValue = newUnitPrice?.multiplied(by: holding.quantity)
             if oldValue != newValue {
                 total -= oldValue ?? .zero
@@ -931,21 +938,22 @@ final class PortfolioEngine: ObservableObject {
     }
 
     nonisolated static func observationEntry(from row: PriceObservation) -> ObservationEntry {
-        ObservationEntry(
+        let eligibleAmount = row.effectiveUSDAmount
+        return ObservationEntry(
             id: row.id,
             instrumentKey: row.instrumentKey,
             kind: row.kind,
             // Non-USD is normalised away here rather than deep in the walk, so
             // exactly one place in the app decides what "not in the total"
             // means.
-            amount: row.effectiveUSDAmount,
+            amount: eligibleAmount,
             receivedAt: row.receivedAt,
             // An explicit invalidation withdraws the prior USD evidence even if
             // its provenance currency is unusual. Other non-USD rows are kept
             // for history but are ignored by the USD replay, matching the
             // current-value fallback in InventoryLedger.
             participatesInPortfolioValue: row.kind == .explicitInvalidation
-                || row.currencyCode == "USD"
+                || eligibleAmount != nil
         )
     }
 }

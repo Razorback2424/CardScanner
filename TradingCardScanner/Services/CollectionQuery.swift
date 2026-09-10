@@ -157,6 +157,24 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
     }
 }
 
+/// The collection's displayed total uses the same eligibility boundary as the
+/// portfolio. A foreign quote may remain visible on a row, but it cannot enter
+/// a USD total until the app has an exchange-rate policy.
+enum CollectionValuation {
+    static func shownValue(for rows: [CollectionRow]) -> Money {
+        rows.reduce(Money.zero) { total, row in
+            guard let unitPrice = PortfolioPriceEligibility.eligibleUnitPrice(
+                amount: row.price.amount,
+                currencyCode: row.price.currencyCode
+            ),
+            let holdingValue = unitPrice.multiplied(by: row.quantity) else {
+                return total
+            }
+            return total + holdingValue
+        }
+    }
+}
+
 /// A price question asked the way collectors ask it. Deliberately bands rather
 /// than a slider: card prices are distributed far too unevenly for a slider to
 /// land where anyone wants it.

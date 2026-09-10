@@ -351,15 +351,20 @@ struct InventoryLedger {
         if record?.isInvalidated == true { return .unpriced }
 
         guard let record,
-              let amount = record.effectiveUnitMarketPriceUSD,
-              record.currencyCode == "USD",
-              let money = Money(rounding: amount) else {
+              let valuation = Self.valuation(for: record) else {
             // Non-USD is unpriced *for portfolio purposes* on purpose: there is
             // no live exchange rate here, and the collection total already
             // excludes those copies and says so.
             return .unpriced
         }
+        return valuation
+    }
 
+    private static func valuation(for record: PriceRecord) -> InventoryValuation? {
+        guard let money = PortfolioPriceEligibility.eligibleUnitPrice(
+            amount: record.effectiveUnitMarketPriceUSD,
+            currencyCode: record.currencyCode
+        ) else { return nil }
         return InventoryValuation(
             unitPrice: money,
             source: record.source,

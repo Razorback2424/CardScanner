@@ -109,8 +109,10 @@ final class PriceObservation {
     /// observations remain visible to diagnostics but cannot enter the USD
     /// valuation.
     var effectiveUSDAmount: Money? {
-        guard currencyCode == "USD" else { return nil }
-        return amount
+        PortfolioPriceEligibility.eligibleUnitPrice(
+            amount: amount?.doubleValue,
+            currencyCode: currencyCode
+        )
     }
 
     /// The value-setting content of this row, as the pure ingestion logic sees
