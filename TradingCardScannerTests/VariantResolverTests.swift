@@ -179,7 +179,13 @@ final class VariantResolverTests: XCTestCase {
             finishLock: .masterBall
         )
 
-        XCTAssertEqual(outcome, .needsChoice(options: [.reverse, .normal], lockDidNotApply: .masterBall))
+        XCTAssertEqual(
+            outcome,
+            .needsChoice(
+                options: [.reverse, .normal],
+                lockDidNotApply: MagicFinishLock(finish: .masterBall)
+            )
+        )
     }
 
     func testFinishLockDoesNotOverrideAPrintingThatOnlyExistsOneWay() {
@@ -300,6 +306,124 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertEqual(
             VariantResolver.resolve(evidence),
             .needsChoice(options: [.nonfoil, .foil], lockDidNotApply: nil)
+        )
+    }
+
+    func testMagicFinishLockMenuIsNarrowAndTreatmentAware() {
+        let magicLocks = MagicFinishLock.selectable(for: .magic)
+        XCTAssertEqual(
+            magicLocks.map(\.label),
+            ["Nonfoil", "Foil", "Etched Foil", "Surge Foil", "Neon Ink"]
+        )
+        XCTAssertEqual(
+            magicLocks.map(\.id),
+            [
+                "nonfoil",
+                "foil",
+                "etched",
+                "foil#treatment=surgefoil",
+                "foil#treatment=neonink"
+            ]
+        )
+
+        XCTAssertEqual(
+            MagicFinishLock.selectable(for: .pokemon).map(\.finish),
+            PhysicalVariant.selectable(for: .pokemon)
+        )
+        XCTAssertTrue(
+            magicLocks.contains {
+                $0.finish == .foil && $0.treatment == .surgeFoil
+            }
+        )
+        for lock in magicLocks.compactMap({ $0.treatment }) {
+            XCTAssertEqual(
+                magicLocks.first(where: { $0.treatment == lock })?.finish,
+                lock.requiredFinishes.first,
+                "Treatment locks should derive their physical finish from the treatment"
+            )
+        }
+    }
+
+    func testMagicTreatmentLockRequiresMatchingEvidenceAndPhysicalFinish() {
+        let lock = MagicFinishLock(finish: .foil, treatment: .surgeFoil)
+        let dualFinishEvidence = VariantEvidence(
+            game: .magic,
+            setID: "fic",
+            cardNumber: "10",
+            catalogVariants: [.nonfoil, .foil],
+            magicTreatments: [.surgeFoil]
+        )
+
+        XCTAssertEqual(
+            VariantResolver.resolve(dualFinishEvidence, finishLock: lock),
+            .resolved(ResolvedVariant(variant: .foil, resolution: .finishLock))
+        )
+
+        let missingTreatment = VariantEvidence(
+            game: .magic,
+            setID: "fic",
+            cardNumber: "10",
+            catalogVariants: [.nonfoil, .foil]
+        )
+        XCTAssertEqual(
+            VariantResolver.resolve(missingTreatment, finishLock: lock),
+            .needsChoice(options: [.nonfoil, .foil], lockDidNotApply: lock)
+        )
+
+        let wrongFinish = VariantEvidence(
+            game: .magic,
+            setID: "fic",
+            cardNumber: "10",
+            catalogVariants: [.nonfoil],
+            magicTreatments: [.surgeFoil]
+        )
+        XCTAssertEqual(
+            VariantResolver.resolve(wrongFinish, finishLock: lock),
+            .resolved(ResolvedVariant(variant: .nonfoil, resolution: .uniqueInCatalog))
+        )
+
+        let differentTreatment = VariantEvidence(
+            game: .magic,
+            setID: "fic",
+            cardNumber: "10",
+            catalogVariants: [.nonfoil, .foil],
+            magicTreatments: [.neonInk]
+        )
+        XCTAssertEqual(
+            VariantResolver.resolve(differentTreatment, finishLock: lock),
+            .needsChoice(options: [.nonfoil, .foil], lockDidNotApply: lock)
+        )
+    }
+
+    func testMagicTreatmentLockReportsNonApplicationWhenTheCatalogIsSilent() {
+        let lock = MagicFinishLock(finish: .foil, treatment: .surgeFoil)
+        let evidence = VariantEvidence(
+            game: .magic,
+            setID: "unknown",
+            cardNumber: "1",
+            catalogVariants: [],
+            magicTreatments: [.surgeFoil]
+        )
+
+        XCTAssertEqual(
+            VariantResolver.resolve(evidence, finishLock: lock),
+            .resolved(ResolvedVariant(variant: nil, resolution: .catalogSilent))
+        )
+    }
+
+    func testMagicTreatmentLockDoesNotApplyAcrossGameBoundaries() {
+        let lock = MagicFinishLock(finish: .holo, treatment: .surgeFoil)
+        let evidence = VariantEvidence(
+            game: .pokemon,
+            setID: "sv08.5",
+            cardNumber: "1",
+            catalogVariants: [.normal, .holo],
+            magicTreatments: [.surgeFoil]
+        )
+
+        XCTAssertEqual(
+            VariantResolver.resolve(evidence, finishLock: lock),
+            .needsChoice(options: [.normal, .holo], lockDidNotApply: lock)
         )
     }
 

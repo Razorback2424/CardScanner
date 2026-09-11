@@ -204,7 +204,8 @@ struct GradedVariantCorrectionOfferView: View {
 
             HStack(spacing: 8) {
                 ForEach(correction.options) { option in
-                    Button(option.label) {
+                    let label = correction.card.finishAndTreatmentDisplayLabel(for: option)
+                    Button(label) {
                         onChoose(option)
                     }
                     .font(.caption.weight(.semibold))
@@ -214,7 +215,7 @@ struct GradedVariantCorrectionOfferView: View {
                     .frame(minHeight: 40)
                     .buttonStyle(.bordered)
                     .tint(.white)
-                    .accessibilityLabel("Set \(option.label) for \(correction.cardName)")
+                    .accessibilityLabel("Set \(label) for \(correction.cardName)")
                 }
             }
         }
@@ -361,10 +362,11 @@ struct VariantChoiceBar: View {
     }
 
     private func button(for option: PhysicalVariant) -> some View {
-        Button {
+        let label = choice.card.finishAndTreatmentDisplayLabel(for: option)
+        return Button {
             onChoose(option)
         } label: {
-            Text(option.label)
+            Text(label)
                 .font(.subheadline.weight(.semibold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
@@ -373,7 +375,7 @@ struct VariantChoiceBar: View {
         }
         .appGlassOptionButton()
         .foregroundStyle(.white)
-        .accessibilityLabel("Select \(option.label) for \(choice.card.name)")
+        .accessibilityLabel("Select \(label) for \(choice.card.name)")
     }
 }
 

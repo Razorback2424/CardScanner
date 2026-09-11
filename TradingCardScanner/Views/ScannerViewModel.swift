@@ -344,10 +344,17 @@ struct HeldDuplicateOffer: Identifiable, Equatable, Sendable {
 /// camera keeps recognizing while the user decides whether to correct it.
 struct PendingGradedVariantCorrection: Identifiable, Equatable, Sendable {
     let scanID: RecentScan.ID
+    let card: IdentifiedCard
     let cardName: String
     let options: [PhysicalVariant]
 
     var id: UUID { scanID }
+
+    static func == (lhs: PendingGradedVariantCorrection, rhs: PendingGradedVariantCorrection) -> Bool {
+        lhs.scanID == rhs.scanID
+            && lhs.cardName == rhs.cardName
+            && lhs.options == rhs.options
+    }
 }
 
 private struct HeldRepeatAuthorizationState: Equatable {
@@ -574,7 +581,7 @@ struct PendingVariantChoice: Identifiable, Equatable {
     let catalogRetrievedAt: Date
     /// Set when Finish Lock named a variant this printing does not exist in. The
     /// lock is evidence, not an override, so the user is told rather than obeyed.
-    let lockDidNotApply: PhysicalVariant?
+    let lockDidNotApply: MagicFinishLock?
 
     var identifier: ScanIdentifier { request.identifier }
 
@@ -920,7 +927,7 @@ final class ScannerViewModel: ObservableObject {
     /// One lock per game, because a Pokémon lock says nothing about a Magic card
     /// and the scanner no longer knows which is coming next. Only the lock for
     /// the game of the card just identified is ever consulted.
-    @Published private(set) var finishLocks: [CardGame: PhysicalVariant] = [:]
+    @Published private(set) var finishLocks: [CardGame: MagicFinishLock] = [:]
 
     let scanner: CardScanner
 
@@ -1837,17 +1844,20 @@ final class ScannerViewModel: ObservableObject {
         scanner.endSession()
     }
 
-    func setFinishLock(_ variant: PhysicalVariant?, for game: CardGame) {
-        finishLocks[game] = variant
+    func setFinishLock(_ lock: MagicFinishLock?, for game: CardGame) {
+        finishLocks[game] = lock
         feedback.choiceMade()
 
         // A lock set while a question is on screen answers that question's
         // premise, so re-run it rather than leaving a stale menu up.
         if let pending = pendingChoice,
            pending.identifier.game == game,
-           let variant,
-           pending.options.contains(variant) {
-            choose(variant)
+           let lock,
+           pending.options.contains(where: {
+               $0.id.caseInsensitiveCompare(lock.finish.id) == .orderedSame
+           }),
+           lock.treatment.map({ pending.card.magicTreatments(for: lock.finish).contains($0) }) ?? true {
+            choose(lock.finish)
         }
     }
 
@@ -1857,11 +1867,11 @@ final class ScannerViewModel: ObservableObject {
         feedback.choiceMade()
     }
 
-    func finishLock(for game: CardGame) -> PhysicalVariant? {
+    func finishLock(for game: CardGame) -> MagicFinishLock? {
         finishLocks[game]
     }
 
-    var activeFinishLocks: [(game: CardGame, variant: PhysicalVariant)] {
+    var activeFinishLocks: [(game: CardGame, lock: MagicFinishLock)] {
         CardGame.allCases.compactMap { game in
             finishLocks[game].map { (game, $0) }
         }
@@ -2605,6 +2615,7 @@ final class ScannerViewModel: ObservableObject {
            !candidate.options.isEmpty {
             pendingGradedVariantCorrection = PendingGradedVariantCorrection(
                 scanID: scan.id,
+                card: candidate.card,
                 cardName: candidate.card.name,
                 options: candidate.options
             )
