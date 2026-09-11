@@ -5,10 +5,11 @@ OCR are the mechanism; the product is being able to move through a stack of card
 rhythmically while the software stays out of the way.
 
 For the current implementation checkpoint, simulator evidence, and the remaining
-device/provider/review gates, see [`documentation_audit.md`](documentation_audit.md).
-The chronological implementation log remains in [`progress.md`](progress.md),
-while validation work that cannot be retired by simulator tests is centralized in
-[`release_followups.md`](release_followups.md).
+device/provider/review gates, see
+[`docs/plans/documentation_audit.md`](docs/plans/documentation_audit.md). The
+chronological implementation log remains in [`progress.md`](progress.md), while
+validation work that cannot be retired by simulator tests is centralized in
+[`docs/plans/release_followups.md`](docs/plans/release_followups.md).
 
 ## Three principles
 
