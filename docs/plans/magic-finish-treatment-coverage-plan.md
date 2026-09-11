@@ -27,34 +27,41 @@ Measured against the committed audit snapshot (`TradingCardScanner/MagicTreatmen
 | **rainbowfoil** | 193 | 50 | 3 |
 | **halofoil** | 159 | 0 | 5 |
 | **firstplacefoil** | 137 | 0 | 2 |
-| …26 more (textured, stepandcompleat, raisedfoil, fracturefoil, manafoil, gilded, confettifoil, oilslick, invisibleink, embossed, magnified, doubleexposure, thick, plastic, metal, glossy, …) | | | |
+| Other modeled signals (textured, stepandcompleat, raisedfoil, fracturefoil, manafoil, gilded, confettifoil, oilslick, invisibleink, embossed, thick, plastic, metal, glossy, …) | | | |
 | neonink ✅ modelled | 28 | 0 | 6 |
 
-The "dual-finish" column is where it actually hurts. **1,487 printings** carry a treatment *and* publish more than one finish, so the scanner puts a choice bar in front of the user
+The "dual-finish" column is where it actually hurts. **1,440 remaining printings** carry a treatment *and* publish more than one finish, so the scanner puts a choice bar in front of the user
 ([VariantChoiceBar](TradingCardScanner/Views/ScanSessionOverlays.swift:288)) whose buttons read
 `Nonfoil` / `Foil` — when the truthful answer is `Nonfoil` / `Silver Foil`. Every Lord of the Rings silver-foil card is in this bucket. The user is being asked to press a button that does not describe the card in their hand, and the row that lands in the portfolio is a bare "Foil" with no treatment in its price key.
 
 **Intended outcome, per the user's direction:**
 
 1. The **lock menu stays short** — Magic gets Nonfoil / Foil / Etched Foil plus **Surge Foil** and
-   **Neon Ink** only. No 33-item picker.
+   **Neon Ink** only. No 31-item picker.
 2. The **scanner resolves everything else automatically** from the Scryfall lookup, across the full treatment vocabulary (foil surfaces + serialized + alt stock), so a user is never asked to select an option that misdescribes their card.
 
 ---
 
 ## Design
 
-### The vocabulary (33 signals, all attested in the snapshot — none speculative)
+### The vocabulary (31 signals, all attested in the snapshot — none speculative)
 
-**Foil-surface treatments (28)** — `requiredFinishes = [.foil]` unless noted:
+**Foil-surface treatments (26)** — `requiredFinishes = [.foil]` unless noted:
 `surgefoil`, `galaxyfoil`, `silverfoil`, `ripplefoil`, `rainbowfoil`, `halofoil`, `doublerainbow`,
 `firstplacefoil`, `textured`, `stepandcompleat`, `raisedfoil`, `fracturefoil`, `manafoil`, `gilded`,
-`confettifoil`, `oilslick`, `invisibleink`, `embossed`, `magnified`, `doubleexposure`, `neonink`,
+`confettifoil`, `oilslick`, `invisibleink`, `embossed`, `neonink`,
 `chocobotrackfoil`, `dazzlefoil`, `dragonscalefoil`, `facetfoil`, `cosmicfoil`, `singularityfoil`,
 `gleaminggold`.
 
 **Open-finish signals (5)** — `requiredFinishes = []` (no finish relationship; applies to any finish):
 `serialized`, `thick`, `plastic`, `metal`, `glossy`.
+
+**Art/frame signals deliberately excluded:** `magnified` and `doubleexposure` describe
+borderless/showcase artwork rather than a foil surface. Their collector-number identities already
+distinguish the printings, so modeling them as treatments would split price identity across both
+finishes. They join `boosterfun`, `showcase`, `extendedart`, `borderless`, `fullart`,
+`universesbeyond`, `prerelease`, `datestamped`, `promopack`, and the other product/provenance labels
+below.
 
 **Deliberately still excluded** (unchanged from today's documented rationale at
 [MagicTreatmentCatalog.swift:210-214](TradingCardScanner/Services/MagicTreatmentCatalog.swift:210)):
@@ -93,12 +100,12 @@ needs to call it instead of reading `option.label` directly. No new model type, 
 
 Each gate is a command or an assertion that passes or fails. No judgment calls.
 
-### R1 — Treatment vocabulary widened to 33 modelled cases
-Edit [MagicTreatment.swift](TradingCardScanner/Models/MagicTreatment.swift): add 31 cases, extend
+### R1 — Treatment vocabulary widened to 31 modelled cases
+Edit [MagicTreatment.swift](TradingCardScanner/Models/MagicTreatment.swift): add 29 cases, extend
 `id`, `providerSignal`, `label`, `requiredFinishes`, `init?(id:)`, `encode(to:)`, add `modelled`.
 
-**Gate:** a test asserts `MagicTreatment.modelled.count == 33`; that every element round-trips
-`MagicTreatment(id: $0.id) == $0`; that `Set(modelled.map(\.id)).count == 33`; and that
+**Gate:** a test asserts `MagicTreatment.modelled.count == 31`; that every element round-trips
+`MagicTreatment(id: $0.id) == $0`; that `Set(modelled.map(\.id)).count == 31`; and that
 `modelled.map(\.providerSignal)` equals the committed `vocabulary.json` list exactly.
 
 ### R2 — `requiredFinishes` replaces `requiredFinish`
@@ -118,12 +125,12 @@ network). Bump `MagicTreatmentSnapshotVersion.auditRules` 1 → 2
 ([MagicTreatmentSnapshot.swift:8](TradingCardScannerTests/MagicTreatmentSnapshot.swift:8))
 since the audit rules changed, and regenerate so `sourceAuditRulesVersion` matches.
 
-**Gate:** `TradingCardScanner/MagicTreatmentCatalog/manifest.json` contains **exactly 5,197 entries**
-(up from 2,537); 4,864 entries have 1 treatment, 332 have 2, 1 has 3; all 33 vocabulary signals appear
+**Gate:** `TradingCardScanner/MagicTreatmentCatalog/manifest.json` contains **exactly 5,150 entries**
+(up from 2,537); 4,822 entries have 1 treatment, 327 have 2, 1 has 3; all 31 vocabulary signals appear
 at least once; the 4 NEO Neon Ink qualifier rows survive with their colors. Update the hardcoded
 count in `testBundledCatalogIsCompactAndContainsAuditedTreatmentCoverage`
-([MagicTreatmentTests.swift:871](TradingCardScannerTests/MagicTreatmentTests.swift:871)) from
-`2_537` to `5_197`.
+([MagicTreatmentTests.swift:1103](TradingCardScannerTests/MagicTreatmentTests.swift:1103)) from
+`2_537` to `5_150`.
 
 ### R5 — Lock menu gains Surge Foil and Neon Ink, and nothing else
 The lock is currently typed `PhysicalVariant`
@@ -158,7 +165,7 @@ Five sites switch exhaustively on `MagicTreatment` and will fail to compile unti
 - [CollectionCSV.swift:1504](TradingCardScanner/Services/CollectionCSV.swift:1504) — `isModeled` gate;
   rewrite as `MagicTreatment.modelled.contains(treatment)`.
 - [CardFinishOverlay.swift:249-257](TradingCardScanner/Views/CardFinishOverlay.swift:249) — `bands`.
-  Do **not** author 33 band sets: add `var sheenFamily: SheenFamily` to `MagicTreatment`
+  Do **not** author 31 band sets: add `var sheenFamily: SheenFamily` to `MagicTreatment`
   (`.neon` for `neonInk`, `.dispersed` otherwise) and switch on that.
 - [CardFinishOverlay.swift:194](TradingCardScanner/Views/CardFinishOverlay.swift:194) — counter-band
   tint; route through `sheenFamily`.
@@ -183,7 +190,7 @@ tested path (`:221`, `:374`, `:823`, `:865`). Rows whose Scryfall id is in the b
 **quantity preserved and no duplicate row created**. A second test asserts an already-v2 row is a no-op. A third asserts a v1 row with no new treatment keeps its exact key.
 
 ### R9 — Diagnostics stay quiet except where the data really is contradictory
-**Gate:** running `diagnostics(for:)` across all 5,197 catalog entries produces **exactly 3**
+**Gate:** running `diagnostics(for:)` across all 5,150 catalog entries produces **exactly 3**
 mismatches (`plst` M3C-246 / M3C-272 / M3C-297, `ripplefoil` on a `nonfoil`-only printing). Assert the
 count is 3 and that no *other* card produces a diagnostic — this is what catches a wrong
 `requiredFinishes` mapping.
@@ -195,21 +202,21 @@ count is 3 and that no *other* card produces a diagnostic — this is what catch
 All nine must hold simultaneously:
 
 1. `xcodebuild build` succeeds; **0** compiler errors, **0** new warnings.
-2. `xcodebuild test` — **100%** of the existing suite passes, including all 54 tests in
-   `MagicTreatmentTests.swift` and all 27 in `VariantResolverTests.swift`.
-3. `MagicTreatment.modelled.count == 33`; **0** signals in the vocabulary lack a snapshot-attested card.
-4. `MagicTreatmentCatalog/manifest.json` has **exactly 5,197** entries and loads with
+2. `xcodebuild test` — **100%** of the existing suite passes, including the focused
+   `MagicTreatmentTests` and `VariantResolverTests` suites.
+3. `MagicTreatment.modelled.count == 31`; **0** signals in the vocabulary lack a snapshot-attested card.
+4. `MagicTreatmentCatalog/manifest.json` has **exactly 5,150** entries and loads with
    `MagicTreatmentCatalogLoadStatus == .ready` (**0** fallback errors).
 5. Across the 41,142-card snapshot, treatment derivation produces **exactly 3** finish/treatment diagnostics.
 6. The Magic lock submenu renders **exactly 5** selectable options (+ Auto). The Pokémon submenu
    renders **exactly 10**, unchanged.
-7. For the **1,487** dual-finish treated printings, the choice bar renders the treatment label; a
+7. For the **1,440** remaining dual-finish treated printings, the choice bar renders the treatment label; a
    parameterised test over a **≥20-card** fixture asserts **0** options labelled with a bare finish
    name where a treatment applies.
 8. Migration: over a **≥50-row** seeded v1 fixture, post-migration row count is **unchanged** (no
    duplicates), total quantity is **unchanged**, and **100%** of rows report
    `magicTreatmentMigrationVersion == 2`.
-9. CSV export → import round-trip over a fixture containing **all 33** treatments returns **0**
+9. CSV export → import round-trip over a fixture containing **all 31** treatments returns **0**
    `invalidTreatmentID` errors and byte-identical treatment ids.
 
 ---
@@ -218,7 +225,7 @@ All nine must hold simultaneously:
 
 | File | Change |
 |---|---|
-| [Models/MagicTreatment.swift](TradingCardScanner/Models/MagicTreatment.swift) | 31 new cases, `modelled`, `requiredFinishes`, `sheenFamily` |
+| [Models/MagicTreatment.swift](TradingCardScanner/Models/MagicTreatment.swift) | 29 new cases, `modelled`, exhaustive `requiredFinishes`, `sheenFamily` |
 | [Services/MagicTreatmentCatalog.swift](TradingCardScanner/Services/MagicTreatmentCatalog.swift) | vocabulary-driven allowlist; `diagnostics` over `requiredFinishes` |
 | [Models/CardVariant.swift](TradingCardScanner/Models/CardVariant.swift) | unchanged finishes; `selectable(for:)` stays 3 for Magic |
 | [Services/VariantResolver.swift](TradingCardScanner/Services/VariantResolver.swift) | treatment-aware lock, catalog-authority rule |
@@ -232,7 +239,7 @@ All nine must hold simultaneously:
 | [Services/MagicTreatmentMigration.swift](TradingCardScanner/Services/MagicTreatmentMigration.swift) | `currentVersion = 2` |
 | [scripts/generate_magic_treatment_catalog.sh](scripts/generate_magic_treatment_catalog.sh) | read `vocabulary.json` |
 | `TradingCardScanner/MagicTreatmentCatalog/vocabulary.json` | **new** — the one vocabulary list |
-| `TradingCardScanner/MagicTreatmentCatalog/manifest.json` | regenerated, 5,197 entries |
+| `TradingCardScanner/MagicTreatmentCatalog/manifest.json` | regenerated, 5,150 entries |
 | [Tests/MagicTreatmentSnapshot.swift](TradingCardScannerTests/MagicTreatmentSnapshot.swift) | `auditRules = 2` |
 | Tests: `MagicTreatmentTests`, `VariantResolverTests`, `PricingTests`, `ScannerViewModelTests`, `CollectionKeyTests` | new + updated assertions |
 
@@ -246,7 +253,7 @@ All nine must hold simultaneously:
 ```bash
 scripts/generate_magic_treatment_catalog.sh && python3 -c "import json;a=json.load(open('TradingCardScanner/MagicTreatmentCatalog/manifest.json'));print(len(a['entries']))"
 ```
-Expect `5197`.
+Expect `5150`.
 
 ```bash
 xcodebuild test -scheme TradingCardScanner -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
