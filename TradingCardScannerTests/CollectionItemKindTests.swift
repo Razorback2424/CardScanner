@@ -227,6 +227,21 @@ final class CollectionItemKindTests: XCTestCase {
         )
     }
 
+    // REQ-004: identity tests must have fixtures that match production's
+    // providerID/catalogProviderID split for graded and sealed rows.
+    func testREQ004ProductionShapedGradedAndSealedFixturesExposeProductionIdentityFields() throws {
+        let context = try makeContext()
+        let graded = try ProductionRowFixtures.gradedRow(in: context)
+        let scannedGraded = try ProductionRowFixtures.scannedGradedRow(in: context)
+        let sealed = try ProductionRowFixtures.sealedRow(in: context)
+
+        for row in [graded, scannedGraded, sealed] {
+            XCTAssertEqual(row.providerID, row.collectionKey)
+            XCTAssertNotNil(row.catalogProviderID)
+            XCTAssertNotEqual(row.catalogProviderID, row.collectionKey)
+        }
+    }
+
     /// A certificate identifies one physical slab, so two of them never stack
     /// even at an identical grade from the same grader.
     func testCertifiedSlabsAreSeparateRows() throws {

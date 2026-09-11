@@ -64,6 +64,23 @@ private struct ScannerStubGradedResolver: ScannedGradedResolving {
     }
 }
 
+@MainActor
+private final class ScannerStubPriceCheckProvider: PriceCheckRefreshProvider {
+    let outcome: PriceCheckRefreshOutcome
+
+    init(outcome: PriceCheckRefreshOutcome) {
+        self.outcome = outcome
+    }
+
+    func refresh(
+        card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) async -> PriceCheckRefreshOutcome {
+        outcome
+    }
+}
+
 private actor ScannerPrintRunRecorder {
     private(set) var values: [PokemonPrintRun?] = []
 
@@ -451,6 +468,40 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
     }
 
+    func testREQ006RefreshedNonUSDQuoteRemainsChecking() async throws {
+        let refreshedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let refreshed = PriceLookup.price(
+            NormalizedPrice(
+                unitMarketPriceUSD: 12,
+                currencyCode: "EUR",
+                source: .cardmarket,
+                sourceVariantID: "reverse-holofoil",
+                sourceUpdatedAt: refreshedAt,
+                fetchedAt: refreshedAt
+            )
+        )
+        let model = try makeModel(
+            variants: [.normal],
+            priceCheckOutcome: .quote(refreshed)
+        )
+        model.setPurpose(.priceCheck)
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let appeared = await waitUntil { model.priceCheckResult != nil }
+        XCTAssertTrue(appeared)
+        let refreshedState = await waitUntil {
+            guard let result = model.priceCheckResult else { return false }
+            return !result.isRefreshing
+                && result.display.currencyCode == "EUR"
+                && result.display.amount == 12
+        }
+
+        XCTAssertTrue(refreshedState)
+        XCTAssertEqual(model.priceCheckResult?.quoteState, .checking)
+        XCTAssertEqual(model.priceCheckResult?.display.currencyCode, "EUR")
+        XCTAssertEqual(model.priceCheckResult?.display.amount, 12)
+    }
+
     func testSameIdentityWithoutSpatialProofIsSuppressed() async throws {
         let model = try makeModel(variants: [.normal])
         let identifier = scannerIdentifier()
@@ -822,7 +873,8 @@ final class ScannerViewModelTests: XCTestCase {
         gradedOutcome: ScannedGradedOutcome? = nil,
         setProviderID: String = "test-set",
         gradedRunRecorder: ScannerPrintRunRecorder? = nil,
-        writeCoordinator: DerivedStateWriteCoordinator? = nil
+        writeCoordinator: DerivedStateWriteCoordinator? = nil,
+        priceCheckOutcome: PriceCheckRefreshOutcome? = nil
     ) throws -> ScannerViewModel {
         let context = try makeContext()
         let root = FileManager.default.temporaryDirectory
@@ -863,7 +915,10 @@ final class ScannerViewModelTests: XCTestCase {
             gradedResolver: gradedOutcome.map {
                 ScannerStubGradedResolver(outcome: $0, recorder: gradedRunRecorder)
             }
-                ?? ScannedGradedResolver()
+                ?? ScannedGradedResolver(),
+            priceCheckRefreshProvider: priceCheckOutcome.map {
+                ScannerStubPriceCheckProvider(outcome: $0)
+            }
         )
         model.start(
             context: context,
@@ -881,6 +936,7 @@ final class ScannerViewModelTests: XCTestCase {
             PriceRecord.self,
             CollectionActivity.self,
             InventoryEvent.self,
+            ReferenceQuote.self,
             PriceObservation.self,
             PriceCheckDay.self
         ])

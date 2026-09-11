@@ -3907,4 +3907,15 @@ final class PortfolioReconciliationTests: XCTestCase {
 
         XCTAssertEqual(PortfolioEpoch.startedAt(defaults: defaults), now)
     }
+
+    // REQ-004: reconciliation coverage must include the production row shape,
+    // not only the legacy bare-provider test fixture above.
+    func testREQ004ReconciliationCounterpartUsesProductionShapedCertifiedRow() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let row = try ProductionRowFixtures.gradedRow(in: container.mainContext)
+
+        XCTAssertEqual(row.providerID, row.collectionKey)
+        XCTAssertNotNil(row.catalogProviderID)
+        XCTAssertNotEqual(row.catalogProviderID, row.collectionKey)
+    }
 }

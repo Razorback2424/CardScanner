@@ -143,6 +143,8 @@
 		A00100E5 /* MagicTreatmentMigration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E5 /* MagicTreatmentMigration.swift */; };
 		A00100E4 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
 		A00200E2 /* MagicTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200E2 /* MagicTreatmentTests.swift */; };
+		A0020101 /* ProductionRowFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020101 /* ProductionRowFixtures.swift */; };
+		A0020102 /* OpusImplementationPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020102 /* OpusImplementationPlanTests.swift */; };
 		A00200F6 /* ScannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F6 /* ScannerViewModelTests.swift */; };
 		A00200F7 /* UncoveredSurfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F7 /* UncoveredSurfaceTests.swift */; };
 		A00200E3 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
@@ -315,6 +317,8 @@
 		B00100E5 /* MagicTreatmentMigration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentMigration.swift; sourceTree = "<group>"; };
 		B00100E4 /* MagicTreatmentCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MagicTreatmentCatalog; sourceTree = "<group>"; };
 		B00200E2 /* MagicTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentTests.swift; sourceTree = "<group>"; };
+		B0020101 /* ProductionRowFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductionRowFixtures.swift; sourceTree = "<group>"; };
+		B0020102 /* OpusImplementationPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpusImplementationPlanTests.swift; sourceTree = "<group>"; };
 		B00200F6 /* ScannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModelTests.swift; sourceTree = "<group>"; };
 		B00200F7 /* UncoveredSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncoveredSurfaceTests.swift; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -573,6 +577,8 @@
 				B00100E0 /* MagicTreatmentSnapshot.swift */,
 				B00200E0 /* MagicTreatmentSnapshotTests.swift */,
 				B00200E2 /* MagicTreatmentTests.swift */,
+				B0020101 /* ProductionRowFixtures.swift */,
+				B0020102 /* OpusImplementationPlanTests.swift */,
 				B00200F6 /* ScannerViewModelTests.swift */,
 				B00200F7 /* UncoveredSurfaceTests.swift */,
 				B00200F8 /* GradedLabelParserTests.swift */,
@@ -837,6 +843,8 @@
 				A00100E0 /* MagicTreatmentSnapshot.swift in Sources */,
 				A00200E0 /* MagicTreatmentSnapshotTests.swift in Sources */,
 				A00200E2 /* MagicTreatmentTests.swift in Sources */,
+				A0020101 /* ProductionRowFixtures.swift in Sources */,
+				A0020102 /* OpusImplementationPlanTests.swift in Sources */,
 				A00200F6 /* ScannerViewModelTests.swift in Sources */,
 				A00200F7 /* UncoveredSurfaceTests.swift in Sources */,
 				A00200F8 /* GradedLabelParserTests.swift in Sources */,

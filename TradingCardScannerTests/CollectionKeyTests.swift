@@ -191,4 +191,76 @@ final class CollectionKeyTests: XCTestCase {
             42
         )
     }
+
+    // REQ-004: the identity counterpart uses the same production-shaped row
+    // that the CSV and variant-correction tests are required to exercise.
+    @MainActor
+    func testREQ004CollectionKeyCounterpartUsesProductionShapedGradedRow() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let row = try ProductionRowFixtures.scannedGradedRow(in: container.mainContext)
+
+        XCTAssertEqual(row.providerID, row.collectionKey)
+        XCTAssertNotNil(row.catalogProviderID)
+        XCTAssertNotEqual(row.catalogProviderID, row.collectionKey)
+    }
+
+    // REQ-001: every item kind resolves the underlying printing/product
+    // identity without interpreting a collection namespace as that identity.
+    @MainActor
+    func testREQ001UnderlyingPrintingIDUsesTheProductionSourceForEveryItemKind() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = container.mainContext
+        let raw = CollectedCard(
+            collectionKey: "sv08.5-074#reverse",
+            game: .pokemon,
+            providerID: ProductionRowFixtures.pokemonPrintingID,
+            name: "Eevee",
+            setName: "Prismatic Evolutions",
+            setCode: "PRE",
+            cardNumber: "074",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .reverse,
+            variantResolution: .userConfirmed
+        )
+        let graded = try ProductionRowFixtures.gradedRow(in: context)
+        let scannedGraded = try ProductionRowFixtures.scannedGradedRow(in: context)
+        let sealed = try ProductionRowFixtures.sealedRow(in: context)
+
+        let directSealedProduct = SealedProductSummary(
+            id: "direct-product",
+            name: "Direct Product",
+            setName: "Prismatic Evolutions",
+            variantID: "direct-variant",
+            marketPriceUSD: nil,
+            updatedAt: nil,
+            imageURL: nil
+        )
+        let directSealedMutation = try CollectionStore(context: context).addSealed(
+            directSealedProduct,
+            game: .pokemon
+        )
+        let directSealed = try XCTUnwrap(
+            CollectionStore(context: context).card(forKey: directSealedMutation.collectionKey)
+        )
+        XCTAssertNil(directSealed.catalogProviderID)
+
+        XCTAssertEqual(raw.underlyingPrintingID, ProductionRowFixtures.pokemonPrintingID)
+        XCTAssertEqual(graded.underlyingPrintingID, ProductionRowFixtures.pokemonPrintingID)
+        XCTAssertEqual(scannedGraded.underlyingPrintingID, ProductionRowFixtures.pokemonPrintingID)
+        XCTAssertEqual(sealed.underlyingPrintingID, ProductionRowFixtures.pokemonProductID)
+        XCTAssertEqual(directSealed.underlyingPrintingID, directSealedProduct.id)
+
+        for value in [
+            raw.underlyingPrintingID,
+            graded.underlyingPrintingID,
+            scannedGraded.underlyingPrintingID,
+            sealed.underlyingPrintingID,
+            directSealed.underlyingPrintingID
+        ] {
+            XCTAssertFalse(value.hasPrefix("graded:"))
+            XCTAssertFalse(value.hasPrefix("sealed:"))
+        }
+    }
 }
