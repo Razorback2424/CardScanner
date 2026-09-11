@@ -275,9 +275,21 @@ final class PriceCheckCoordinator {
                 at: local.retrievedAt,
                 treatmentIDs: key.treatmentIDs
             )
+            let localLookup = PriceLookup.price(local.price)
+            guard Self.isUsableUSD(localLookup) else {
+                // Keep the native-currency evidence visible, but do not call
+                // it a completed USD Price Check. The default refresh flag
+                // schedules the one permitted background attempt.
+                return PriceCheckResult(
+                    resolvedScan: resolvedScan,
+                    quote: localLookup,
+                    checkedAt: local.retrievedAt,
+                    quoteState: .checking
+                )
+            }
             return PriceCheckResult(
                 resolvedScan: resolvedScan,
-                quote: .price(local.price),
+                quote: localLookup,
                 checkedAt: local.retrievedAt,
                 quoteState: .current,
                 shouldAutoRefresh: Self.isStale(local)
@@ -500,7 +512,9 @@ final class PriceCheckCoordinator {
 
     static func isUsableUSD(_ quote: PriceLookup) -> Bool {
         guard case let .price(price) = quote else { return false }
-        return price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame
-            && Money(rounding: price.unitMarketPriceUSD) != nil
+        return PortfolioPriceEligibility.participatesInPortfolioValue(
+            amount: price.unitMarketPriceUSD,
+            currencyCode: price.currencyCode
+        )
     }
 }

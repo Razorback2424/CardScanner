@@ -41,10 +41,21 @@ enum PriceSource: String, Codable, Hashable, Sendable {
 /// Display layers may still show a supported provider's native currency, but
 /// no caller may convert it into a USD holding without an exchange-rate policy.
 enum PortfolioPriceEligibility {
+    /// Returns the only value that is allowed to enter the USD portfolio
+    /// total. Providers may still publish and store a native-currency amount,
+    /// but no caller may treat that amount as dollars without an exchange-rate
+    /// policy.
     static func eligibleUnitPrice(amount: Double?, currencyCode: String) -> Money? {
         guard currencyCode.caseInsensitiveCompare("USD") == .orderedSame,
               let amount else { return nil }
         return Money(rounding: amount)
+    }
+
+    static func participatesInPortfolioValue(
+        amount: Double?,
+        currencyCode: String
+    ) -> Bool {
+        eligibleUnitPrice(amount: amount, currencyCode: currencyCode) != nil
     }
 }
 

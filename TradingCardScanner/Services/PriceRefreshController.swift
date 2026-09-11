@@ -518,8 +518,8 @@ actor PriceRefreshModelActor {
         )
         if fallbackResult.priced > 0 {
             priced += fallbackResult.priced
-            changedPrices = true
         }
+        changedPrices = changedPrices || fallbackResult.changedPrices
         persistenceFailed = persistenceFailed || fallbackResult.persistenceFailed
 
         let gradedResult = await refreshGraded(
@@ -590,11 +590,11 @@ actor PriceRefreshModelActor {
         card: JustTCGCard,
         variant: JustTCGVariant,
         owners: [MarketPriceTarget]
-    ) -> Bool {
+    ) -> MarketRefreshApplyResult {
         guard let store = refreshStore,
               let identities = identityStore,
-              let identityIndex else { return false }
-        let applied = PriceRefreshController.applyVendorBatchHit(
+              let identityIndex else { return .rejected }
+        let applied = PriceRefreshController.applyVendorBatchHitResult(
             card: card,
             variant: variant,
             owners: owners,
@@ -604,7 +604,7 @@ actor PriceRefreshModelActor {
             identityRowsByPriceKey: identityRowsByPriceKey,
             identityIndex: identityIndex
         )
-        if applied {
+        if applied.accepted {
             activeFallbackStagedWrites += owners.count
             owners.forEach { rememberPriceKey($0.priceKey) }
         }
@@ -670,7 +670,7 @@ actor PriceRefreshModelActor {
         usesPriceFallback: Bool,
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void,
         store: PriceStore
-    ) async -> (priced: Int, persistenceFailed: Bool) {
+    ) async -> (priced: Int, persistenceFailed: Bool, changedPrices: Bool) {
         let fallbackState = PerformanceSignpost.beginInterval(
             "priceRefresh.runFallback",
             id: PerformanceSignpost.makeID(),
@@ -686,7 +686,7 @@ actor PriceRefreshModelActor {
         }
         guard !candidates.isEmpty else {
             await progress(.fallbackIdle)
-            return (0, false)
+            return (0, false, false)
         }
 
         let deduplicatedCandidates = PriceRefreshController.collapsingDuplicates(candidates)
@@ -698,11 +698,11 @@ actor PriceRefreshModelActor {
         }
         guard !eligibleCandidates.isEmpty else {
             await progress(.fallbackDisabled(pending: deduplicatedCandidates.count))
-            return (0, false)
+            return (0, false, false)
         }
         guard PriceVendorCredentials.hasKey else {
             await progress(.fallbackUnconfigured(pending: eligibleCandidates.count))
-            return (0, false)
+            return (0, false, false)
         }
         fallbackOutcome = "running"
 
@@ -731,6 +731,7 @@ actor PriceRefreshModelActor {
         }
 
         var priced = 0
+        var changedPrices = false
         var stagedPriced = 0
         var persistenceFailed = false
         var completed = 0
@@ -865,7 +866,7 @@ actor PriceRefreshModelActor {
                 game: game,
                 lane: .background,
                 useDelta: useDelta,
-                apply: { [self] card, variant, owners in
+                applyDetailed: { [self] card, variant, owners in
                     await self.applyActiveBatch(card: card, variant: variant, owners: owners)
                 },
                 unmatched: { [self] owners in
@@ -878,7 +879,11 @@ actor PriceRefreshModelActor {
                     await self.checkpointActiveContextIfDue(force: true)
                 }
             )
-            priced += report.variantsUpdated
+            PriceRefreshController.accumulateMarketRefreshReport(
+                report,
+                priced: &priced,
+                changedPrices: &changedPrices
+            )
             persistenceFailed = persistenceFailed || report.persistenceFailed
             completed += report.variantsRequested
             await publishFallbackProgress()
@@ -949,6 +954,7 @@ actor PriceRefreshModelActor {
                     treatmentIDs: candidate.target.magicTreatmentIDsRaw
                 ) {
                     stagedPriced += 1
+                    changedPrices = true
                     activeFallbackStagedWrites += 1
                     rememberPriceKey(candidate.target.id)
                 } else {
@@ -989,7 +995,7 @@ actor PriceRefreshModelActor {
             ))
         }
         fallbackOutcome = stoppedByAllowance ? "stopped" : (Task.isCancelled ? "cancelled" : "completed")
-        return (priced, persistenceFailed)
+        return (priced, persistenceFailed, changedPrices)
     }
 
     private func refreshGraded(
@@ -2214,6 +2220,15 @@ final class PriceRefreshController: ObservableObject {
     /// One matched vendor response, applied in dependency order. Identity and
     /// artwork deliberately happen before the optional price so a null market
     /// amount cannot discard valid product metadata.
+    nonisolated static func accumulateMarketRefreshReport(
+        _ report: MarketRefreshReport,
+        priced: inout Int,
+        changedPrices: inout Bool
+    ) {
+        priced += report.pricesWritten
+        changedPrices = changedPrices || report.pricesWritten > 0
+    }
+
     @discardableResult
     nonisolated static func applyVendorBatchHit(
         card: JustTCGCard,
@@ -2226,12 +2241,37 @@ final class PriceRefreshController: ObservableObject {
         identityIndex: ProductIdentityIndex? = nil,
         fetchedAt: Date = .now
     ) -> Bool {
+        applyVendorBatchHitResult(
+            card: card,
+            variant: variant,
+            owners: owners,
+            store: store,
+            identities: identities,
+            artworkRowsByPriceKey: artworkRowsByPriceKey,
+            identityRowsByPriceKey: identityRowsByPriceKey,
+            identityIndex: identityIndex,
+            fetchedAt: fetchedAt
+        ).accepted
+    }
+
+    @discardableResult
+    nonisolated static func applyVendorBatchHitResult(
+        card: JustTCGCard,
+        variant: JustTCGVariant,
+        owners: [MarketPriceTarget],
+        store: PriceStore,
+        identities: ProductIdentityStore,
+        artworkRowsByPriceKey: [String: [CollectedCard]],
+        identityRowsByPriceKey: [String: [CollectedCard]],
+        identityIndex: ProductIdentityIndex? = nil,
+        fetchedAt: Date = .now
+    ) -> MarketRefreshApplyResult {
         // This callback is a second line of defence after the coordinator's
         // treatment-aware owner grouping. A response without a direct product
         // handle must never be written to a treatment-qualified Magic key, even
         // if a future caller accidentally supplies a mixed owner array.
         guard owners.allSatisfy({ !$0.isTreatmentQualified || $0.hasDirectVendorHandle }) else {
-            return false
+            return .rejected
         }
         recordSealedArtwork(
             from: card,
@@ -2248,7 +2288,7 @@ final class PriceRefreshController: ObservableObject {
                 at: fetchedAt,
                 using: identityIndex
             )
-            guard identityStored else { return false }
+            guard identityStored else { return .rejected }
             // Marketplace identity is catalog metadata: once the vendor has
             // told us which TCGplayer product this printing is, that stays
             // local, so opening the marketplace never needs a live request.
@@ -2262,7 +2302,9 @@ final class PriceRefreshController: ObservableObject {
             }
         }
 
-        guard let amount = variant.marketPriceUSD else { return true }
+        guard let amount = variant.marketPriceUSD else {
+            return .accepted(metadataApplied: true, priceWritten: false)
+        }
         let normalized = NormalizedPrice(
             unitMarketPriceUSD: amount,
             currencyCode: "USD",
@@ -2294,6 +2336,8 @@ final class PriceRefreshController: ObservableObject {
             }
         }
         return allStored
+            ? .accepted(metadataApplied: true, priceWritten: true)
+            : .rejected
     }
 
     @discardableResult

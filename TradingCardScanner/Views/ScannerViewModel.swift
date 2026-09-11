@@ -433,7 +433,10 @@ struct PriceCheckResult: Identifiable {
 
     var hasUsableAmount: Bool {
         guard case let .price(price) = quote else { return false }
-        return Money(rounding: price.unitMarketPriceUSD) != nil
+        return PortfolioPriceEligibility.participatesInPortfolioValue(
+            amount: price.unitMarketPriceUSD,
+            currencyCode: price.currencyCode
+        )
     }
 
     /// Settings can only resolve the two fallback availability states. Keep the
@@ -945,6 +948,7 @@ final class ScannerViewModel: ObservableObject {
     private var collectionWriter: ScannerCollectionWriter?
     private var modelContainer: ModelContainer?
     private var priceCheckCoordinator: PriceCheckCoordinator?
+    private let priceCheckRefreshProvider: (any PriceCheckRefreshProvider)?
     private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     /// One fallback response may serve copies in more than one scanner session
     /// while a departure is still draining. Keep the session fence beside the
@@ -1048,12 +1052,14 @@ final class ScannerViewModel: ObservableObject {
         scanner: CardScanner = CardScanner(),
         catalog: CardCatalog = CardCatalog(),
         feedback: ScanFeedback? = nil,
-        gradedResolver: ScannedGradedResolving = ScannedGradedResolver()
+        gradedResolver: ScannedGradedResolving = ScannedGradedResolver(),
+        priceCheckRefreshProvider: (any PriceCheckRefreshProvider)? = nil
     ) {
         self.scanner = scanner
         self.catalog = catalog
         self.feedback = feedback ?? ScanFeedback()
         self.gradedResolver = gradedResolver
+        self.priceCheckRefreshProvider = priceCheckRefreshProvider
 
         let catalog = self.catalog
         scanner.onPlausibleCandidate = { subject in
@@ -1283,7 +1289,8 @@ final class ScannerViewModel: ObservableObject {
         // its quote/price context separate so QuoteCache.save cannot commit or
         // roll back an in-flight collection mutation.
         priceCheckCoordinator = PriceCheckCoordinator(
-            context: ModelContext(context.container)
+            context: ModelContext(context.container),
+            refreshProvider: priceCheckRefreshProvider
         )
         feedback.prepare()
         // Decode the merged Pokémon checklist and resolved-card cache before
@@ -3168,7 +3175,7 @@ final class ScannerViewModel: ObservableObject {
                 latest.checkedAt = .now
                 latest.isRefreshing = false
                 latest.refreshFailed = false
-                latest.quoteState = .current
+                latest.quoteState = latest.hasUsableAmount ? .current : .checking
                 self.priceCheckResult = latest
             case let .failed(issue):
                 guard !Task.isCancelled,
