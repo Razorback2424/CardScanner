@@ -16,6 +16,9 @@ xcuserdata/
 # Local Claude settings
 .claude/settings.local.json
 
+# Local Git worktrees
+.worktrees/
+
 # Swift Package Manager
 .build/
 
