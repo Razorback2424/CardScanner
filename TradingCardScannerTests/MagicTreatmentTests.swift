@@ -55,6 +55,28 @@ private actor MagicTreatmentMigrationRunCounter {
     }
 }
 
+private func decodeSnapshotMagicCard(_ snapshotCard: MagicTreatmentSnapshotCard) throws -> ScryfallCard {
+    var payload: [String: Any] = [
+        "id": snapshotCard.id,
+        "name": snapshotCard.name,
+        "set": snapshotCard.setCode,
+        "set_name": snapshotCard.setName,
+        "collector_number": snapshotCard.collectorNumber,
+        "lang": snapshotCard.language,
+        "digital": snapshotCard.digital,
+        "finishes": snapshotCard.finishes,
+        "promo_types": snapshotCard.promoTypes,
+        "frame_effects": snapshotCard.frameEffects
+    ]
+    if let layout = snapshotCard.layout { payload["layout"] = layout }
+    if let rarity = snapshotCard.rarity { payload["rarity"] = rarity }
+    if let releasedAt = snapshotCard.releasedAt { payload["released_at"] = releasedAt }
+    if let variation = snapshotCard.variation { payload["variation"] = variation }
+    if let variationOf = snapshotCard.variationOf { payload["variation_of"] = variationOf }
+    let data = try JSONSerialization.data(withJSONObject: payload)
+    return try JSONDecoder().decode(ScryfallCard.self, from: data)
+}
+
 final class MagicTreatmentTests: XCTestCase {
     func testScryfallCollectionIdentifierEncodesExactID() throws {
         let id = "cb82d614-13d8-40ec-9213-8e6852d37c9c"
@@ -72,19 +94,19 @@ final class MagicTreatmentTests: XCTestCase {
     func testTreatmentsHaveStableIDsAndRemainSeparateFromFoil() throws {
         XCTAssertEqual(MagicTreatment.surgeFoil.id, "surgefoil")
         XCTAssertEqual(MagicTreatment.surgeFoil.label, "Surge Foil")
-        XCTAssertEqual(MagicTreatment.surgeFoil.requiredFinish, .foil)
+        XCTAssertEqual(MagicTreatment.surgeFoil.requiredFinishes, [.foil])
 
         let neonInk = MagicTreatment.neonInk
         XCTAssertEqual(neonInk.id, "neonink")
         XCTAssertEqual(neonInk.label, "Neon Ink")
-        XCTAssertEqual(neonInk.requiredFinish, .foil)
+        XCTAssertEqual(neonInk.requiredFinishes, [.foil])
         XCTAssertEqual(MagicTreatment(id: "NEONINK"), neonInk)
 
         let future = try XCTUnwrap(MagicTreatment(id: "RainbowFoil"))
-        XCTAssertEqual(future, .unclassified("RainbowFoil"))
+        XCTAssertEqual(future, .rainbowFoil)
         XCTAssertEqual(future.id, "rainbowfoil")
-        XCTAssertEqual(future.label, "Unclassified · RainbowFoil")
-        XCTAssertNil(future.requiredFinish)
+        XCTAssertEqual(future.label, "Rainbow Foil")
+        XCTAssertEqual(future.requiredFinishes, [.foil])
         XCTAssertEqual(
             try JSONDecoder().decode(
                 MagicTreatment.self,
@@ -92,6 +114,178 @@ final class MagicTreatmentTests: XCTestCase {
             ),
             future
         )
+    }
+
+    func testAuditedTreatmentSignalsAreRecognizedAsModelledTreatments() throws {
+        let signals = [
+            "surgefoil", "galaxyfoil", "silverfoil", "ripplefoil", "rainbowfoil",
+            "halofoil", "doublerainbow", "firstplacefoil", "textured", "stepandcompleat",
+            "raisedfoil", "fracturefoil", "manafoil", "gilded", "confettifoil",
+            "oilslick", "invisibleink", "embossed",
+            "neonink", "chocobotrackfoil", "dazzlefoil", "dragonscalefoil", "facetfoil",
+            "cosmicfoil", "singularityfoil", "gleaminggold", "serialized", "thick",
+            "plastic", "metal", "glossy"
+        ]
+
+        for signal in signals {
+            let treatment = try XCTUnwrap(MagicTreatment(id: signal))
+            XCTAssertTrue(
+                MagicTreatment.modelled.contains(treatment),
+                "Expected audited signal \(signal) to have a modelled case"
+            )
+        }
+
+        XCTAssertEqual(MagicTreatment.modelled.count, 31)
+        XCTAssertEqual(
+            Set(MagicTreatment.modelled.map(\.id)).count,
+            31
+        )
+        for treatment in MagicTreatment.modelled {
+            XCTAssertEqual(
+                MagicTreatment(id: treatment.id),
+                treatment,
+                "Modelled treatment \(treatment.id) must round-trip through its id"
+            )
+        }
+    }
+
+    func testModelledVocabularyMatchesTheBundledGeneratorSource() throws {
+        let bundles = [
+            Bundle.main,
+            Bundle(identifier: "com.example.TradingCardScanner"),
+            Bundle(for: MagicTreatmentTests.self)
+        ].compactMap { $0 }
+        let vocabularyURL = try XCTUnwrap(
+            bundles.lazy.compactMap {
+                $0.url(forResource: "vocabulary", withExtension: "json", subdirectory: "MagicTreatmentCatalog")
+            }.first,
+            "The reviewed Magic treatment vocabulary must be bundled"
+        )
+        let vocabulary = try JSONDecoder().decode(
+            [String].self,
+            from: Data(contentsOf: vocabularyURL)
+        )
+
+        XCTAssertEqual(
+            vocabulary,
+            MagicTreatment.modelled.map(\.providerSignal)
+        )
+        XCTAssertEqual(Set(vocabulary).count, vocabulary.count)
+    }
+
+    func testEveryModelledTreatmentUsesTheReviewedFinishRelationship() {
+        let expected: [MagicTreatment: Set<PhysicalVariant>] = [
+            .surgeFoil: [.foil],
+            .galaxyFoil: [.foil],
+            .silverFoil: [.foil],
+            .rippleFoil: [.foil, .etched],
+            .rainbowFoil: [.foil],
+            .haloFoil: [.foil],
+            .doubleRainbow: [.foil],
+            .firstPlaceFoil: [.foil],
+            .textured: [.foil],
+            .stepAndCompleat: [.foil],
+            .raisedFoil: [.foil],
+            .fractureFoil: [.foil],
+            .manaFoil: [.foil],
+            .gilded: [.foil],
+            .confettiFoil: [.foil],
+            .oilSlick: [.foil],
+            .invisibleInk: [.foil],
+            .embossed: [.foil],
+            .neonInk: [.foil],
+            .chocoboTrackFoil: [.foil],
+            .dazzleFoil: [.foil],
+            .dragonScaleFoil: [.foil],
+            .facetFoil: [.foil],
+            .cosmicFoil: [.foil],
+            .singularityFoil: [.foil],
+            .gleamingGold: [.foil],
+            .serialized: [],
+            .thick: [],
+            .plastic: [],
+            .metal: [],
+            .glossy: []
+        ]
+
+        XCTAssertEqual(MagicTreatment.modelled.count, 31)
+        XCTAssertEqual(Set(MagicTreatment.modelled), Set(expected.keys))
+        for treatment in MagicTreatment.modelled {
+            XCTAssertEqual(
+                treatment.requiredFinishes,
+                expected[treatment],
+                "Unexpected reviewed finish relationship for \(treatment.id)"
+            )
+        }
+    }
+
+    func testTreatmentQualifiedDisplayLabelUsesTheTreatmentSignal() throws {
+        let card = try decodeMagic(
+            finishes: ["nonfoil", "foil"],
+            promoTypes: ["silverfoil"]
+        )
+        let identified = IdentifiedCard.magic(card)
+
+        XCTAssertEqual(
+            card.catalogVariants.map {
+                identified.finishAndTreatmentDisplayLabel(for: $0)
+            },
+            ["Nonfoil", "Silver Foil"]
+        )
+
+        let ordinary = try decodeMagic(
+            finishes: ["nonfoil", "foil"],
+            promoTypes: []
+        )
+        let ordinaryIdentified = IdentifiedCard.magic(ordinary)
+        XCTAssertEqual(
+            ordinary.catalogVariants.map {
+                ordinaryIdentified.finishAndTreatmentDisplayLabel(for: $0)
+            },
+            ["Nonfoil", "Foil"]
+        )
+    }
+
+    func testTreatmentQualifiedDisplayLabelsCoverAtLeastTwentyDualFinishFixtures() throws {
+        let snapshot = try XCTUnwrap(
+            [Bundle.main, Bundle(for: MagicTreatmentTests.self)]
+                .compactMap { try? MagicTreatmentSnapshotStore.bundled(bundle: $0) }
+                .first,
+            "The exact Magic treatment audit snapshot must be bundled"
+        )
+        let fixtures = snapshot.auditedCards.filter { snapshotCard in
+            let finishes = Set(snapshotCard.finishes)
+            guard finishes.contains("nonfoil"), finishes.contains("foil") else {
+                return false
+            }
+            let signals = Set(snapshotCard.promoTypes + snapshotCard.frameEffects)
+            return MagicTreatment.modelled.contains {
+                signals.contains($0.providerSignal)
+            }
+        }
+        let selectedFixtures = fixtures.prefix(20)
+        XCTAssertEqual(selectedFixtures.count, 20)
+
+        for snapshotCard in selectedFixtures {
+            let card = try decodeSnapshotMagicCard(snapshotCard)
+            let identified = IdentifiedCard.magic(card)
+            let treatments = card.magicTreatmentEvidence(using: .empty)
+                .applicableTreatments(for: .foil)
+                .filter { MagicTreatment.modelled.contains($0) }
+
+            XCTAssertTrue(
+                treatments.contains {
+                    identified.finishAndTreatmentDisplayLabel(for: .foil)
+                        .contains($0.label)
+                },
+                "Expected the selected foil label to retain a real modeled treatment for \(snapshotCard.id)"
+            )
+            XCTAssertEqual(
+                identified.finishAndTreatmentDisplayLabel(for: .nonfoil),
+                "Nonfoil",
+                "A foil treatment must not leak onto the nonfoil copy for \(snapshotCard.id)"
+            )
+        }
     }
 
     func testUnclassifiedTreatmentsCompareAndHashByNormalizedID() throws {
@@ -675,6 +869,35 @@ final class MagicTreatmentTests: XCTestCase {
         XCTAssertEqual(entry.variant, PhysicalVariant.foil)
     }
 
+    func testCollectionCSVRoundTripsEveryModelledTreatmentID() throws {
+        let cards = MagicTreatment.modelled.enumerated().map { index, treatment in
+            CollectedCard(
+                collectionKey: "magic:csv-\(index)#foil#treatment=\(treatment.id)",
+                game: .magic,
+                providerID: "csv-\(index)",
+                name: "Fixture \(treatment.id)",
+                setName: "Fixture Set",
+                setCode: "FIC",
+                cardNumber: String(index + 1),
+                rarity: nil,
+                imageURL: nil,
+                thumbnailURL: nil,
+                variant: .foil,
+                variantResolution: .userConfirmed,
+                magicTreatments: [treatment]
+            )
+        }
+
+        let entries = try CollectionCSV.parse(
+            Data(CollectionCSV.export(cards).text.utf8)
+        ).entries
+        XCTAssertEqual(entries.count, MagicTreatment.modelled.count)
+        XCTAssertEqual(
+            Set(entries.flatMap(\.magicTreatmentIDsRaw)),
+            Set(MagicTreatment.modelled.map(\.id))
+        )
+    }
+
     func testCollectionCSVPreservesUnknownTreatmentAndContentKindValues() throws {
         let unknown = try XCTUnwrap(MagicTreatment(id: "Future / Foil"))
         let key = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
@@ -822,7 +1045,7 @@ final class MagicTreatmentTests: XCTestCase {
         let diagnostics = card.magicTreatmentDiagnostics(using: .empty)
         let diagnostic = try XCTUnwrap(diagnostics.first)
         XCTAssertEqual(diagnostic.treatment, .surgeFoil)
-        XCTAssertEqual(diagnostic.requiredFinish, .foil)
+        XCTAssertEqual(diagnostic.requiredFinishes, [.foil])
         XCTAssertEqual(diagnostic.publishedFinishes, [.nonfoil])
         XCTAssertEqual(diagnostic.title, "Surge Foil / Foil mismatch")
         XCTAssertTrue(diagnostic.detail.contains("published as Nonfoil"))
@@ -865,7 +1088,10 @@ final class MagicTreatmentTests: XCTestCase {
             frameEffects: ["showcase", "borderless"]
         )
 
-        XCTAssertTrue(card.magicTreatmentEvidence(using: .empty).isEmpty)
+        XCTAssertEqual(
+            card.magicTreatmentEvidence(using: .empty).treatments,
+            [.serialized]
+        )
     }
 
     func testBundledCatalogIsCompactAndContainsAuditedTreatmentCoverage() throws {
@@ -877,9 +1103,20 @@ final class MagicTreatmentTests: XCTestCase {
 
         XCTAssertEqual(catalog.artifact.schemaVersion, MagicTreatmentCatalog.schemaVersion)
         XCTAssertEqual(catalog.artifact.sourceAuditSchemaVersion, 2)
-        XCTAssertEqual(catalog.artifact.sourceAuditRulesVersion, 1)
+        XCTAssertEqual(catalog.artifact.sourceAuditRulesVersion, 2)
         XCTAssertEqual(catalog.artifact.sourceBulkDataType, "default_cards")
-        XCTAssertEqual(catalog.artifact.entries.count, 2_537)
+        XCTAssertEqual(catalog.artifact.entries.count, 5_150)
+        XCTAssertEqual(
+            Dictionary(
+                grouping: catalog.artifact.entries,
+                by: { $0.treatments.count }
+            ).mapValues(\.count),
+            [1: 4_822, 2: 327, 3: 1]
+        )
+        XCTAssertEqual(
+            Set(catalog.artifact.entries.flatMap(\.treatments)),
+            Set(MagicTreatment.modelled.map(\.id))
+        )
 
         let neon = try XCTUnwrap(
             catalog.entry(forCardID: "4826991d-c3c3-45ff-9dfc-4246a84b40e0")
@@ -912,6 +1149,53 @@ final class MagicTreatmentTests: XCTestCase {
         XCTAssertEqual(surge.decodedTreatments, [.surgeFoil])
     }
 
+    func testBundledCatalogDiagnosticsMatchTheExactAuditSnapshot() throws {
+        let appBundle = try XCTUnwrap(
+            Bundle(identifier: "com.example.TradingCardScanner"),
+            "The runtime catalog must be validated from the application bundle"
+        )
+        let catalog = try MagicTreatmentCatalogStore.bundled(bundle: appBundle)
+        let snapshot = try XCTUnwrap(
+            [Bundle.main, Bundle(for: MagicTreatmentTests.self)]
+                .compactMap { try? MagicTreatmentSnapshotStore.bundled(bundle: $0) }
+                .first,
+            "The exact Magic treatment audit snapshot must be bundled"
+        )
+        let cardsByID = Dictionary(
+            uniqueKeysWithValues: snapshot.auditedCards.map { ($0.id, $0) }
+        )
+
+        var findings: [(cardID: String, treatment: MagicTreatment, finishes: [PhysicalVariant])] = []
+        for entry in catalog.artifact.entries {
+            let snapshotCard = try XCTUnwrap(
+                cardsByID[entry.id],
+                "Catalog entry (entry.id) must have an exact audit row"
+            )
+            let card = try decodeSnapshotMagicCard(snapshotCard)
+            for diagnostic in catalog.diagnostics(for: card) {
+                findings.append(
+                    (
+                        cardID: entry.id,
+                        treatment: diagnostic.treatment,
+                        finishes: diagnostic.publishedFinishes
+                    )
+                )
+            }
+        }
+
+        XCTAssertEqual(findings.count, 3)
+        XCTAssertEqual(Set(findings.map { $0.treatment }), [.rippleFoil])
+        XCTAssertEqual(
+            Set(findings.map { $0.cardID }),
+            Set([
+                "513d6a59-77fd-4a97-82c3-beebc1e7946f",
+                "bf60850a-0390-475e-b23f-171632e09625",
+                "f8692db5-6f2d-4330-9e23-1c3246898a35"
+            ])
+        )
+        XCTAssertTrue(findings.allSatisfy { $0.finishes == [.nonfoil] })
+    }
+
     func testBundledDefaultReportsAUsableCatalogStatus() {
         XCTAssertEqual(MagicTreatmentCatalogStore.bundledDefaultStatus, .ready)
         XCTAssertNil(MagicTreatmentCatalogStore.bundledDefaultStatus.error)
@@ -921,7 +1205,7 @@ final class MagicTreatmentTests: XCTestCase {
         let artifact = MagicTreatmentCatalogArtifact(
             schemaVersion: MagicTreatmentCatalog.schemaVersion,
             sourceAuditSchemaVersion: 2,
-            sourceAuditRulesVersion: 1,
+            sourceAuditRulesVersion: 2,
             sourceBulkDataID: "bulk",
             sourceBulkDataType: "default_cards",
             sourceContentSHA256: "sha",
@@ -953,7 +1237,7 @@ final class MagicTreatmentTests: XCTestCase {
         let artifact = MagicTreatmentCatalogArtifact(
             schemaVersion: 1,
             sourceAuditSchemaVersion: 2,
-            sourceAuditRulesVersion: 1,
+            sourceAuditRulesVersion: 2,
             sourceBulkDataID: "bulk",
             sourceBulkDataType: "default_cards",
             sourceContentSHA256: "sha",
@@ -971,7 +1255,7 @@ final class MagicTreatmentTests: XCTestCase {
             artifact: MagicTreatmentCatalogArtifact(
                 schemaVersion: MagicTreatmentCatalog.schemaVersion,
                 sourceAuditSchemaVersion: 2,
-                sourceAuditRulesVersion: 1,
+                sourceAuditRulesVersion: 2,
                 sourceBulkDataID: "fixture",
                 sourceBulkDataType: "default_cards",
                 sourceContentSHA256: "fixture",
@@ -1301,6 +1585,172 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         XCTAssertEqual(network.exactLookups, ids.count)
         XCTAssertEqual(network.rekeyedRows, ids.count)
         XCTAssertTrue(network.isComplete)
+    }
+
+    func testMigrationV1LTRSilverFoilRekeysPreservesPriceAliasAndQuantity() async throws {
+        let context = try makeContext()
+        let printingID = "02e9fa6c-f331-4817-9919-d154b1a96c7b"
+        let oldKey = "magic:\(printingID)#foil"
+        let row = makeRow(
+            key: oldKey,
+            providerID: printingID,
+            quantity: 7,
+            treatments: [],
+            setCode: "LTR",
+            cardNumber: "598"
+        )
+        row.magicTreatmentMigrationVersion = 1
+        context.insert(row)
+
+        let genericPriceKey = PriceRecord.key(
+            game: .magic,
+            printingID: printingID,
+            variantID: PhysicalVariant.foil.id
+        )
+        let price = PriceRecord(
+            key: genericPriceKey,
+            game: .magic,
+            printingID: printingID,
+            variantID: PhysicalVariant.foil.id
+        )
+        price.unitMarketPriceUSD = 42.25
+        price.sourceRaw = PriceSource.scryfall.rawValue
+        context.insert(price)
+        try context.save()
+
+        let report = await MagicTreatmentMigration.runLocal(
+            in: context,
+            now: Date(timeIntervalSince1970: 5_000)
+        )
+
+        XCTAssertTrue(report.isComplete)
+        XCTAssertEqual(report.rekeyedRows, 1)
+        XCTAssertEqual(report.enrichedRows, 1)
+
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        let migrated = try XCTUnwrap(rows.first)
+        XCTAssertEqual(
+            migrated.collectionKey,
+            "magic:\(printingID)#foil#treatment=silverfoil"
+        )
+        XCTAssertEqual(migrated.quantity, 7)
+        XCTAssertEqual(migrated.magicTreatmentIDsRaw, ["silverfoil"])
+        XCTAssertEqual(
+            migrated.magicTreatmentMigrationVersion,
+            MagicTreatmentMigration.currentVersion
+        )
+        XCTAssertTrue(migrated.legacyPriceKeys.contains(genericPriceKey))
+
+        let prices = try context.fetch(FetchDescriptor<PriceRecord>())
+        XCTAssertEqual(prices.count, 1)
+        XCTAssertEqual(prices.first?.key, genericPriceKey)
+        XCTAssertEqual(prices.first?.unitMarketPriceUSD, 42.25)
+    }
+
+    func testMigrationV1LargeFixturePreservesRowsQuantityAndWatermarks() async throws {
+        let context = try makeContext()
+        let entries = Array(
+            MagicTreatmentCatalogStore.bundledDefault.artifact.entries.prefix(50)
+        )
+        XCTAssertEqual(entries.count, 50)
+
+        var expectedQuantity = 0
+        for (index, entry) in entries.enumerated() {
+            let quantity = (index % 4) + 1
+            expectedQuantity += quantity
+            let row = makeRow(
+                key: "magic:\(entry.id)#foil",
+                providerID: entry.id,
+                quantity: quantity,
+                treatments: [],
+                setCode: entry.setCode,
+                cardNumber: entry.collectorNumber
+            )
+            row.magicTreatmentMigrationVersion = 1
+            context.insert(row)
+        }
+        try context.save()
+
+        let report = await MagicTreatmentMigration.runLocal(
+            in: context,
+            now: Date(timeIntervalSince1970: 5_000)
+        )
+
+        XCTAssertTrue(report.isComplete)
+        XCTAssertEqual(report.exactLookups, 0)
+        XCTAssertEqual(report.rekeyedRows, entries.count)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, entries.count)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.quantity }, expectedQuantity)
+        XCTAssertTrue(
+            rows.allSatisfy {
+                $0.magicTreatmentMigrationVersion == MagicTreatmentMigration.currentVersion
+                    && !$0.magicTreatmentIDsRaw.isEmpty
+            }
+        )
+    }
+
+    func testCurrentMigrationVersionIsACompleteNoOp() async throws {
+        let context = try makeContext()
+        let key = "magic:v2-no-op#foil#treatment=silverfoil"
+        let row = makeRow(
+            key: key,
+            providerID: "v2-no-op",
+            quantity: 3,
+            treatments: [.silverFoil]
+        )
+        row.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion
+        context.insert(row)
+        try context.save()
+
+        let report = await MagicTreatmentMigration.runLocal(in: context)
+
+        XCTAssertTrue(report.isComplete)
+        XCTAssertFalse(report.didChange)
+        XCTAssertEqual(report.examinedRows, 0)
+        XCTAssertEqual(report.exactLookups, 0)
+        let retained = try XCTUnwrap(
+            context.fetch(FetchDescriptor<CollectedCard>()).first
+        )
+        XCTAssertEqual(retained.collectionKey, key)
+        XCTAssertEqual(retained.quantity, 3)
+        XCTAssertEqual(retained.magicTreatmentIDsRaw, ["silverfoil"])
+    }
+
+    func testUnknownFutureTreatmentSignalDoesNotCreateATreatmentKey() async throws {
+        let context = try makeContext()
+        let printingID = "future-treatment-card"
+        let oldKey = "magic:\(printingID)#foil"
+        context.insert(
+            makeRow(
+                key: oldKey,
+                providerID: printingID,
+                quantity: 2,
+                treatments: []
+            )
+        )
+        try context.save()
+
+        let response = try makeScryfallCard(
+            id: printingID,
+            finishes: ["foil"],
+            promoTypes: ["futurefoil"]
+        )
+        let report = await MagicTreatmentMigration.run(in: context) { _ in response }
+
+        XCTAssertTrue(report.isComplete)
+        XCTAssertEqual(report.exactLookups, 1)
+        XCTAssertEqual(report.rekeyedRows, 0)
+        let retained = try XCTUnwrap(
+            context.fetch(FetchDescriptor<CollectedCard>()).first
+        )
+        XCTAssertEqual(retained.collectionKey, oldKey)
+        XCTAssertTrue(retained.magicTreatmentIDsRaw.isEmpty)
+        XCTAssertEqual(
+            retained.magicTreatmentMigrationVersion,
+            MagicTreatmentMigration.currentVersion
+        )
     }
 
     func testMigrationDoesNotMergeGradedRowsWithMissingOptionalIdentity() async throws {
@@ -2137,6 +2587,8 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         providerID: String = "collision-card",
         quantity: Int,
         treatments: [MagicTreatment],
+        setCode: String = "FIC",
+        cardNumber: String = "10",
         variant: PhysicalVariant? = .foil,
         itemKind: CollectionItemKind = .rawCard,
         certificationNumber: String? = nil
@@ -2147,8 +2599,8 @@ final class MagicTreatmentMigrationTests: XCTestCase {
             providerID: providerID,
             name: "Fixture",
             setName: "Fixture Set",
-            setCode: "FIC",
-            cardNumber: "10",
+            setCode: setCode,
+            cardNumber: cardNumber,
             rarity: nil,
             imageURL: nil,
             thumbnailURL: nil,
@@ -2216,4 +2668,5 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         """
         return try JSONDecoder().decode(ScryfallCard.self, from: Data(json.utf8))
     }
+
 }
