@@ -135,7 +135,7 @@ enum PortfolioHistoryEngine {
                 live: interval.includesLiveDay ? input.summary.coverage : nil
             ),
             revisions: audit,
-            trackingBeganDate: requestedStart < anchor.date ? anchor.date : nil,
+            trackingBeganDate: anchor.date < requestedStart ? anchor.date : nil,
             hasTwoPublishedPoints: selected.count >= 2,
             accountingInterval: interval,
             contributions: input.contributions.contributions(in: interval),

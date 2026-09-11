@@ -32,18 +32,24 @@ struct ObservationEntry: Equatable, Sendable {
     var id: UUID
     var instrumentKey: String
     var kind: PriceObservationKind
-    /// `nil` for an explicit invalidation. Non-USD amounts are normalised to
-    /// `nil` on the way in — the portfolio total has no exchange rate and says
-    /// so rather than guessing one. A non-USD row is retained in the input for
-    /// provenance, but does not withdraw a prior USD value; the current-value
-    /// path deliberately falls back to that older USD record.
+    /// `nil` for an explicit invalidation or an ineligible non-USD amount. The
+    /// original native-currency amount remains on `PriceObservation` for
+    /// display and provenance; this replay boundary carries only the value
+    /// that can participate in the USD total.
     var amount: Money?
+    var currencyCode: String = "USD"
     var receivedAt: Date
-    /// Whether this row can change the USD portfolio state. Non-USD evidence is
-    /// real provider evidence, but it is not a USD valuation transition.
-    /// Defaulting to true keeps literal replay fixtures USD unless they opt in
-    /// to the non-USD rule.
-    var participatesInPortfolioValue: Bool = true
+
+    /// One policy owner answers whether this evidence participates in the USD
+    /// total. A non-USD observation is still a real transition: the replay
+    /// applies it as a de-pricing rather than silently carrying stale dollars.
+    var participatesInPortfolioValue: Bool {
+        if kind == .explicitInvalidation { return true }
+        return PortfolioPriceEligibility.participatesInPortfolioValue(
+            amount: amount?.doubleValue,
+            currencyCode: currencyCode
+        )
+    }
 }
 
 /// Production-owned result values for portfolio attribution.

@@ -20,7 +20,12 @@ struct PortfolioHistoryView: View {
             if let result = history.activeResult, !result.isEmpty {
                 historyChart(result)
 
-                if result.range != .oneDay, !result.hasTwoPublishedPoints {
+                if let disclosure = PortfolioHistoryDisplay.availableHistoryDisclosure(for: result) {
+                    Text(disclosure)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 16)
+                } else if result.range != .oneDay, !result.hasTwoPublishedPoints {
                     Text("History is being recorded.")
                         .font(.caption)
                         .foregroundStyle(.secondary)

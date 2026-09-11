@@ -780,6 +780,8 @@ final class PortfolioEngine: ObservableObject {
         }
         let stored = Dictionary(grouping: storedCloses, by: \.date)
             .compactMapValues { $0.max { $0.revision < $1.revision } }
+        let inventoryEvents = (try? context.fetch(FetchDescriptor<InventoryEvent>())) ?? []
+        let publicationInstant = Date.now
 
         var latest: PortfolioDailyClose?
         var insertedCloses: [PortfolioDailyClose] = []
@@ -813,11 +815,15 @@ final class PortfolioEngine: ObservableObject {
                 pricedPositionCount: day.pricedPositionCount,
                 excludedCount: day.excludedQuantity,
                 inputsFingerprint: "",
-                // A published close can only change because ownership was
-                // incomplete: observations are read by knowledge time, so a
-                // vendor backdating a price cannot reach a day that has already
-                // closed. The wording stays at what the evidence supports.
-                revisionReason: existing == nil ? nil : .recomputed,
+                revisionReason: existing == nil
+                    ? nil
+                    : hasLateInventoryTruth(
+                        for: day.displayDay,
+                        timeZone: timeZone,
+                        existing: existing!,
+                        inventoryEvents: inventoryEvents
+                    ) ? .lateInventoryTruth : .recomputed,
+                publishedAt: publicationInstant,
                 added: day.added,
                 removed: day.removed
             )
@@ -840,6 +846,23 @@ final class PortfolioEngine: ObservableObject {
             }
         }
         return latest
+    }
+
+    private static func hasLateInventoryTruth(
+        for day: Date,
+        timeZone: TimeZone,
+        existing: PortfolioDailyClose,
+        inventoryEvents: [InventoryEvent]
+    ) -> Bool {
+        guard let publishedAt = existing.publishedAt else {
+            // A legacy close has no publication instant. Do not guess from its
+            // accounting day or computedAt and misclassify an ordinary retry.
+            return false
+        }
+        let cutoff = PortfolioCalendar.boundary(afterDay: day, in: timeZone)
+        return inventoryEvents.contains { event in
+            event.occurredAt <= cutoff && event.recordedAt > publishedAt
+        }
     }
 
     /// What a day's coverage should be published as.
@@ -947,13 +970,8 @@ final class PortfolioEngine: ObservableObject {
             // exactly one place in the app decides what "not in the total"
             // means.
             amount: eligibleAmount,
+            currencyCode: row.currencyCode,
             receivedAt: row.receivedAt,
-            // An explicit invalidation withdraws the prior USD evidence even if
-            // its provenance currency is unusual. Other non-USD rows are kept
-            // for history but are ignored by the USD replay, matching the
-            // current-value fallback in InventoryLedger.
-            participatesInPortfolioValue: row.kind == .explicitInvalidation
-                || eligibleAmount != nil
         )
     }
 }
