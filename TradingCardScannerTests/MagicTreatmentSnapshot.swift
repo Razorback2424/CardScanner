@@ -5,7 +5,7 @@ import Foundation
 /// download on the scan path or on ordinary test runs.
 enum MagicTreatmentSnapshotVersion {
     static let schema = 2
-    static let auditRules = 1
+    static let auditRules = 2
     static let sourceBulkDataType = "default_cards"
 }
 

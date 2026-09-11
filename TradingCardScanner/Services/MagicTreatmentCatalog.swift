@@ -207,21 +207,19 @@ struct MagicTreatmentCatalog: Equatable, Sendable {
         let exactEntry = exactEntry(for: card)
         var result = exactEntry?.decodedTreatments ?? []
 
-        // Deliberately closed allowlist. `promoTypes` and `frameEffects` also
-        // carry broad visual/product labels such as `boosterfun`, `showcase`,
-        // and `extendedart`; treating every signal as a treatment would split
-        // ordinary printings and their price identities. New treatment ids must
-        // be reviewed into the model or bundled artifact first.
+        // Deliberately closed allowlist derived from the reviewed model.
+        // `promoTypes` and `frameEffects` also carry broad visual/product labels
+        // such as `boosterfun`, `showcase`, and `extendedart`; treating every
+        // signal as a treatment would split ordinary printings and their price
+        // identities. New treatment ids must be reviewed into the model first.
         let signals = Set(
             ((card.promoTypes ?? []) + (card.frameEffects ?? []))
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() }
                 .filter { !$0.isEmpty }
         )
-        if signals.contains("surgefoil") {
-            appendUnique(.surgeFoil, to: &result)
-        }
-        if signals.contains("neonink") {
-            appendUnique(.neonInk, to: &result)
+        for treatment in MagicTreatment.modelled
+            where signals.contains(treatment.providerSignal) {
+            appendUnique(treatment, to: &result)
         }
         return result
     }
@@ -244,15 +242,18 @@ struct MagicTreatmentCatalog: Equatable, Sendable {
         guard !publishedFinishes.isEmpty else { return [] }
 
         return treatments(for: card).compactMap { treatment in
-            guard let requiredFinish = treatment.requiredFinish,
-                  !publishedFinishes.contains(where: {
-                      $0.id.caseInsensitiveCompare(requiredFinish.id) == .orderedSame
+            let requiredFinishes = treatment.requiredFinishes
+            guard !requiredFinishes.isEmpty,
+                  publishedFinishes.allSatisfy({ published in
+                      !requiredFinishes.contains { required in
+                          published.id.caseInsensitiveCompare(required.id) == .orderedSame
+                      }
                   }) else {
                 return nil
             }
             return MagicTreatmentDiagnostic(
                 treatment: treatment,
-                requiredFinish: requiredFinish,
+                requiredFinishes: requiredFinishes,
                 publishedFinishes: publishedFinishes
             )
         }

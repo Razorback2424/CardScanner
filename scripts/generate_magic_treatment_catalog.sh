@@ -15,7 +15,16 @@ output_directory = pathlib.Path(sys.argv[2])
 manifest_path = audit_directory / "manifest.json"
 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
-known_signals = {"surgefoil", "neonink"}
+vocabulary_path = output_directory / "vocabulary.json"
+vocabulary = json.loads(vocabulary_path.read_text(encoding="utf-8"))
+if (
+    not isinstance(vocabulary, list)
+    or not vocabulary
+    or any(not isinstance(signal, str) or not signal for signal in vocabulary)
+    or len(vocabulary) != len(set(vocabulary))
+):
+    raise SystemExit(f"Invalid Magic treatment vocabulary: {vocabulary_path}")
+
 manual_colors = {
     card["cardID"]: card["value"]
     for mapping in manifest.get("manualMappings", [])
@@ -35,7 +44,7 @@ for set_entry in manifest["entries"]:
             signal.lower()
             for signal in card.get("promoTypes", []) + card.get("frameEffects", [])
         }
-        treatments = sorted(known_signals.intersection(signals))
+        treatments = [signal for signal in vocabulary if signal in signals]
         if not treatments:
             continue
         card_id = card["id"]
