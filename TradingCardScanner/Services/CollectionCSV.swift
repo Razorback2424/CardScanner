@@ -139,7 +139,7 @@ enum CollectionCSV {
         "justtcg_api_version", "grading_company", "grade", "grade_label",
         "grading_qualifier", "certification_number", "market_region",
         "pokemon_print_run", "magic_treatment_ids", "magic_treatment_qualifiers",
-        "magic_content_kind", "catalog_provider_id"
+        "magic_content_kind", "collection_key", "catalog_provider_id"
     ]
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -151,7 +151,22 @@ enum CollectionCSV {
             if byNumber != .orderedSame { return byNumber == .orderedAscending }
             return (left.variantID ?? "") < (right.variantID ?? "")
         }.map { card in
-            [
+            // A few pre-Slice-5 synthetic test/import rows used a literal
+            // `source-(certificate)` provider id for every slab. Do not
+            // persist that malformed collection key into the new explicit
+            // column; letting the importer derive the key from the grader,
+            // grade and certificate keeps those legacy rows distinct. Real
+            // graded rows have catalog/market identity and keep their exact
+            // canonical key for a byte-stable round trip.
+            let exportedCollectionKey: String? = {
+                guard card.itemKind == .gradedCard,
+                      card.catalogProviderID == nil,
+                      card.justTCGVariantID == nil else {
+                    return card.collectionKey
+                }
+                return nil
+            }()
+            return [
                 card.game,
                 card.providerID,
                 card.name,
@@ -181,6 +196,7 @@ enum CollectionCSV {
                 encodedTreatmentIDs(card.magicTreatmentIDsRaw),
                 MagicTreatmentKeyCodec.encodeQualifiers(card.magicTreatmentQualifiers) ?? "",
                 card.magicContentKindRaw,
+                exportedCollectionKey ?? "",
                 card.catalogProviderID ?? ""
             ]
         }
@@ -226,6 +242,7 @@ enum CollectionCSV {
                 encodedTreatmentIDs(entry.magicTreatmentIDsRaw),
                 MagicTreatmentKeyCodec.encodeQualifiers(entry.magicTreatmentQualifiers) ?? "",
                 entry.magicContentKindRaw,
+                entry.collectionKey,
                 entry.catalogProviderID ?? ""
             ]
         }
@@ -927,6 +944,7 @@ enum CollectionCSV {
             return []
         }
         let catalogProviderID = nonempty(value(["catalog_provider_id"], in: row))
+        let explicitCollectionKey = nonempty(value(["collection_key"], in: row))
 
         let isScryfallExport = !(row["scryfall_uuid"] ?? "").isEmpty
         let game = CardGame(rawValue: value(["game"], in: row)?.lowercased() ?? "")
@@ -959,6 +977,7 @@ enum CollectionCSV {
             if nonfoilQuantity > 0 {
                 result.append(makeEntry(
                     game: game, providerID: providerID, catalogProviderID: catalogProviderID,
+                    explicitCollectionKey: explicitCollectionKey,
                     name: name, setName: setName,
                     setCode: setCode, cardNumber: cardNumber, rarity: rarity,
                     imageURL: imageURL, thumbnailURL: thumbnailURL,
@@ -971,6 +990,7 @@ enum CollectionCSV {
             if foilQuantity > 0 {
                 result.append(makeEntry(
                     game: game, providerID: providerID, catalogProviderID: catalogProviderID,
+                    explicitCollectionKey: explicitCollectionKey,
                     name: name, setName: setName,
                     setCode: setCode, cardNumber: cardNumber, rarity: rarity,
                     imageURL: imageURL, thumbnailURL: thumbnailURL,
@@ -1009,6 +1029,7 @@ enum CollectionCSV {
         }
         return [makeEntry(
             game: game, providerID: providerID, catalogProviderID: catalogProviderID,
+            explicitCollectionKey: explicitCollectionKey,
             name: name, setName: setName,
             setCode: setCode, cardNumber: cardNumber, rarity: rarity,
             imageURL: imageURL, thumbnailURL: thumbnailURL,
@@ -1087,6 +1108,7 @@ enum CollectionCSV {
         return [makeEntry(
             game: game,
             providerID: providerID,
+            explicitCollectionKey: nonempty(value(["collection_key"], in: row)),
             name: name,
             setName: setName,
             setCode: setName,
@@ -1111,6 +1133,7 @@ enum CollectionCSV {
         game: CardGame,
         providerID: String,
         catalogProviderID: String? = nil,
+        explicitCollectionKey: String? = nil,
         name: String,
         setName: String,
         setCode: String,
@@ -1161,6 +1184,15 @@ enum CollectionCSV {
             ? 1
             : quantity
         let baseKey = game == .magic ? "magic:\(providerID)" : providerID
+        let alreadyNamespacedKey: String? = catalogProviderID == nil
+            // A legacy sealed row may carry a previously namespaced provider
+            // id and now also expose the exact product/variant ids. Prefer
+            // those production identities so import cannot preserve a stale
+            // alias over the canonical sealed lineage.
+            && !(itemKind == .sealedProduct && justTCGCardID != nil)
+            && (providerID.hasPrefix("graded:") || providerID.hasPrefix("sealed:"))
+            ? providerID
+            : nil
         let key: String
         switch itemKind {
         case .rawCard:
@@ -1178,10 +1210,12 @@ enum CollectionCSV {
             // the export actually states: grader, grade, label and qualifier.
             // Enough to keep a PSA 10 apart from a PSA 10 OC and from the raw
             // copy — and the UUID is adopted later when pricing resolves it.
-            if let justTCGVariantID {
+            if let alreadyNamespacedKey {
+                key = alreadyNamespacedKey
+            } else if let justTCGVariantID {
                 key = CollectedCard.gradedCollectionKey(
                     game: game,
-                    underlyingPrintingID: providerID,
+                    underlyingPrintingID: catalogProviderID ?? providerID,
                     variantUUID: justTCGVariantID,
                     certificationNumber: resolvedCertificationNumber,
                     magicTreatments: treatmentModels
@@ -1206,7 +1240,9 @@ enum CollectionCSV {
             // No collector number to work with, so set plus product name is the
             // identity. The namespace is what stops a booster box from ever
             // sharing a row with a card of the same name.
-            if let justTCGCardID {
+            if let alreadyNamespacedKey {
+                key = alreadyNamespacedKey
+            } else if let justTCGCardID {
                 key = CollectedCard.sealedCollectionKey(
                     game: game,
                     productUUID: justTCGCardID,
@@ -1225,7 +1261,7 @@ enum CollectionCSV {
         }
 
         return CollectionCSVEntry(
-            collectionKey: key,
+            collectionKey: explicitCollectionKey ?? key,
             game: game,
             providerID: providerID,
             catalogProviderID: catalogProviderID,

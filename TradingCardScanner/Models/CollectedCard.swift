@@ -88,6 +88,16 @@ final class CollectedCard {
     /// Lets improved matching rules retry previously unresolved imports once,
     /// without turning every collection launch into another network pass.
     var catalogMetadataVersion: Int = 0
+    /// Per-row coverage marker for the existing-collection activity backfill.
+    /// A new or synced row starts at zero, so a store-level watermark can never
+    /// hide a card that has not yet been checked for history.
+    var activityBackfillVersion: Int = 0
+    /// One durable activity anchor makes the cheap backfill guard resilient to
+    /// a later activity deletion or CloudKit tombstone. SwiftData nullifies
+    /// this optional relationship when its activity disappears, so the row is
+    /// discovered again even though its version marker remains current.
+    @Relationship(inverse: \CollectionActivity.backfillAnchorCard)
+    var activityBackfillAnchor: CollectionActivity?
     /// The real remote identity resolved after a fast local CSV import. The
     /// synthetic provider ID remains the stable ownership/price storage key.
     var catalogProviderID: String?
@@ -140,6 +150,30 @@ final class CollectedCard {
 
     var itemKind: CollectionItemKind {
         CollectionItemKind(rawValue: itemKindRaw) ?? .rawCard
+    }
+
+    /// The provider identity of the printed object represented by this row.
+    ///
+    /// `providerID` is the raw printing id for legacy/raw rows but is the
+    /// collection key for graded and sealed rows. Keep that distinction in one
+    /// accessor so consumers never parse a collection namespace as a catalog
+    /// identity. Sealed rows written directly by `addSealed` carry their
+    /// product identity in `justTCGCardID` until catalog metadata enrichment
+    /// fills `catalogProviderID`.
+    var underlyingPrintingID: String {
+        let candidate = catalogProviderID
+            ?? (itemKind == .sealedProduct ? justTCGCardID : nil)
+            ?? (itemKind == .rawCard ? providerID : nil)
+
+        guard let candidate,
+              !candidate.isEmpty,
+              !candidate.hasPrefix("graded:"),
+              !candidate.hasPrefix("sealed:") else {
+            preconditionFailure(
+                "CollectedCard (collectionKey) has no valid underlying printing/product id"
+            )
+        }
+        return candidate
     }
 
     var gradingCompany: GradingCompany? {

@@ -477,22 +477,33 @@ struct CollectionCardDetailView: View {
         }
     }
 
-    private var gradedVariantOptions: [PhysicalVariant] {
+    /// The finish evidence for an already-owned slab. The catalog id is the
+    /// only reliable source for set routing because graded rows persist their
+    /// collection namespace in `providerID`.
+    static func gradedVariantEvidence(for card: CollectedCard) -> VariantEvidence {
         var evidence = VariantEvidence(
             game: card.cardGame,
-            setID: card.providerID.split(separator: "-", maxSplits: 1).first.map(String.init)
-                ?? card.providerID,
+            setID: card.underlyingPrintingID.split(separator: "-", maxSplits: 1)
+                .first.map(String.init) ?? card.underlyingPrintingID,
             cardNumber: card.cardNumber,
             catalogVariants: card.variant.map { [$0] } ?? []
         )
         if card.pokemonPrintRun != nil {
             evidence = evidence.excludingFirstEditionPseudoFinish()
         }
+        return evidence
+    }
+
+    static func gradedVariantOptions(for card: CollectedCard) -> [PhysicalVariant] {
+        VariantResolver.options(for: gradedVariantEvidence(for: card))
+    }
+
+    private var gradedVariantOptions: [PhysicalVariant] {
         // The persisted row is the only catalog finish fact available to this
         // offline detail surface. Do not widen it to the UI's global selectable
         // list, and do not re-add 1st Edition after it has been removed from the
         // finish axis above.
-        return VariantResolver.options(for: evidence)
+        return Self.gradedVariantOptions(for: card)
     }
 
     private func correctGradedVariant(

@@ -91,8 +91,11 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// the first one is still reading the collection.
     private var isCollectingInputs = false
 
-    init(tcgdex: any TCGdexCatalogSource = TCGdexService()) {
-        self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex)
+    init(
+        tcgdex: any TCGdexCatalogSource = TCGdexService(),
+        justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared)
+    ) {
+        self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex, justTCG: justTCG)
     }
 
     /// Production callers use a context dedicated to catalog normalization.
@@ -175,7 +178,38 @@ final class CollectionCatalogNormalizer: ObservableObject {
                         }
                     }
                     row.applyCatalogMetadata(metadata)
-                    Self.recordCatalogMetadataCheck(on: row, at: now)
+                    let normalizedRow: CollectedCard
+                    if row.itemKind == .sealedProduct,
+                       let productID = metadata.justTCGCardID,
+                       let marketVariantID = metadata.justTCGVariantID {
+                        let canonicalKey = CollectedCard.sealedCollectionKey(
+                            game: row.cardGame,
+                            productUUID: productID,
+                            variantUUID: marketVariantID,
+                            magicTreatments: row.magicTreatments
+                        )
+                        do {
+                            normalizedRow = try CollectionStore(context: context).rekey(
+                                row,
+                                to: canonicalKey,
+                                magicTreatmentIDsRaw: row.magicTreatmentIDsRaw,
+                                magicTreatmentQualifiers: row.magicTreatmentQualifiers
+                            )
+                            // `rekey` may merge an imported row into an
+                            // existing Browse row. Re-apply metadata to the
+                            // surviving representative so both creation paths
+                            // retain the same vendor identity fields.
+                            normalizedRow.applyCatalogMetadata(metadata)
+                        } catch {
+                            context.rollback()
+                            requestsAnotherPass = false
+                            status = .failed
+                            return
+                        }
+                    } else {
+                        normalizedRow = row
+                    }
+                    Self.recordCatalogMetadataCheck(on: normalizedRow, at: now)
 
                     // A changed marketplace variant is a changed priced object,
                     // even though the collection row and its physical finish
@@ -376,11 +410,15 @@ private struct ImportedCatalogBatchResolver: Sendable {
     private let tcgdex: any TCGdexCatalogSource
     private let pokemonArtwork = PokemonTCGAPIService()
     private let scryfall = ScryfallService()
-    private let justTCG = JustTCGV1Client(transport: JustTCGTransport.shared)
+    private let justTCG: JustTCGV1Client
     private static let pokemonConcurrency = 4
 
-    init(tcgdex: any TCGdexCatalogSource = TCGdexService()) {
+    init(
+        tcgdex: any TCGdexCatalogSource = TCGdexService(),
+        justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared)
+    ) {
         self.tcgdex = tcgdex
+        self.justTCG = justTCG
     }
 
     func resolve(_ requests: [ImportedCatalogRequest]) async -> ImportedCatalogResolution {
