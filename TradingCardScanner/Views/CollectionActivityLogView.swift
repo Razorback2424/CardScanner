@@ -492,7 +492,11 @@ struct CollectionActivityEditor: View {
                 Section {
                     Picker("Finish", selection: $variantID) {
                         ForEach(PhysicalVariant.selectable(for: activity.game)) { variant in
-                            Text(variant.label).tag(variant.id as String?)
+                            Text(
+                                activity.magicTreatmentEvidence.displayLabel(with: variant)
+                                    ?? variant.label
+                            )
+                            .tag(variant.id as String?)
                         }
                     }
                 } header: {

@@ -400,8 +400,8 @@ struct CollectionCardDetailView: View {
         }
 
         let subsumesFinish = card.variant != nil && treatments.contains { treatment in
-            guard let requiredFinish = treatment.requiredFinish else { return false }
-            return requiredFinish == card.variant
+            guard treatment.requiredFinishes.count == 1 else { return false }
+            return treatment.requiredFinishes.contains { $0.id == card.variant?.id }
         }
         let names = treatments.map(\.label)
         if subsumesFinish {

@@ -16,7 +16,7 @@ enum MagicTreatmentMigration {
     /// Bump this when the exact-printing enrichment rules change. The watermark
     /// lives on each collection row so a new import, or a row arriving from
     /// another CloudKit device after an earlier launch, is still considered.
-    nonisolated static let currentVersion = 1
+    nonisolated static let currentVersion = 2
 
     struct Report: Equatable, Sendable {
         var examinedRows = 0

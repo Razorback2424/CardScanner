@@ -191,7 +191,7 @@ struct CardFinishOverlay: View {
             phase: -0.20,
             travelScale: -0.55,
             width: 0.09,
-            tint: activeTreatment == .neonInk ? .purple : .white,
+            tint: activeTreatment?.sheenFamily == .neon ? .purple : .white,
             intensity: 0.42
         )
     }
@@ -245,15 +245,15 @@ struct CardFinishOverlay: View {
     }
 
     private var bands: [SheenBand] {
-        switch activeTreatment {
-        case .neonInk:
+        switch activeTreatment?.sheenFamily {
+        case .neon:
             return [
                 SheenBand(phase: 0, fringe: -0.04, width: 0.10, tint: .orange, intensity: 0.85),
                 SheenBand(phase: 0, width: 0.10, tint: .green, intensity: 1, isPrimary: true),
                 SheenBand(phase: 0, fringe: 0.04, width: 0.10, tint: .purple, intensity: 0.85),
                 counterBand
             ]
-        case .surgeFoil, .unclassified, .none:
+        case .dispersed, .none:
             return dispersedFoil
         }
     }

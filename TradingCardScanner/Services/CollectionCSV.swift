@@ -1499,13 +1499,7 @@ enum CollectionCSV {
             guard let treatment = MagicTreatment(id: rawID) else {
                 throw CollectionCSVError.invalidTreatmentID(rawID)
             }
-            let isModeled: Bool
-            switch treatment {
-            case .surgeFoil, .neonInk:
-                isModeled = true
-            case .unclassified:
-                isModeled = false
-            }
+            let isModeled = MagicTreatment.modelled.contains(treatment)
             guard isModeled || bundledArtifactIDs.contains(normalized) else {
                 throw CollectionCSVError.invalidTreatmentID(rawID)
             }

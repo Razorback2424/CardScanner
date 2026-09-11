@@ -801,7 +801,7 @@ struct CollectionView: View {
                         group: row.game.label,
                         groupOrder: row.game.rawValue,
                         count: row.quantity,
-                        sortValue: id == MagicTreatment.neonInk.id ? 1 : 0
+                        sortValue: MagicTreatment.modelled.firstIndex(of: treatment) ?? Int.max
                     )
                 }
             }
