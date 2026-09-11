@@ -795,8 +795,14 @@ final class CardScanner: NSObject, ObservableObject {
     private var lastAnnouncedPlausible: ScanSubject?
     private var profile: RecognitionProfile = .pokemonOnly
     private var historicalAttempt: HistoricalEvidenceRequest?
+    private struct SlabContinuityStamp: Equatable {
+        let presentationToken: UUID
+        let trackerEncounterID: UUID?
+        let trackerPresentationToken: UUID?
+    }
     private struct ActiveSlab: Equatable {
         let evidence: GradedSlabEvidence
+        let continuityStamp: SlabContinuityStamp
     }
     private enum SlabClearCause {
         case footerAbsence
@@ -828,6 +834,10 @@ final class CardScanner: NSObject, ObservableObject {
     private var slabRecoveryDeadline: CFAbsoluteTime?
     private var activeSlabEmptyFrames = 0
     private var unboundFooterEmptyFrames = 0
+    /// Rotated whenever recognition loses physical continuity. A label may
+    /// bootstrap before a footer identity is known, but it can bind later only
+    /// while this stamp still names the same presentation.
+    private var slabContinuityToken = UUID()
     private var slabEvidenceWindow = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
     private var assistanceMonitor = CaptureAssistanceMonitor()
     private let spatialTrackingConfiguration: SpatialTrackingConfiguration
@@ -1011,7 +1021,9 @@ final class CardScanner: NSObject, ObservableObject {
 
     func stop() {
         visionQueue.async { [weak self] in
-            self?.cancelHeldRepeatAuthorizationOnVisionQueue()
+            guard let self else { return }
+            self.cancelHeldRepeatAuthorizationOnVisionQueue()
+            self.clearActiveSlab(cause: .lifecycle)
         }
         sessionQueue.async { [weak self] in
             guard let self else { return }
@@ -1168,6 +1180,7 @@ final class CardScanner: NSObject, ObservableObject {
             guard let self else { return }
             self.cancelHeldRepeatAuthorizationOnVisionQueue()
             self.markTrackerContinuityLost()
+            self.clearActiveSlab(cause: .spatialExit)
             self.resetConfirmationWindow()
             self.historicalAttempt = nil
         }
@@ -1671,6 +1684,9 @@ final class CardScanner: NSObject, ObservableObject {
         trackerPresentationToken = nil
         spatialExitAccumulator.reset()
         trackerLifecycle = .continuityLost
+        if activeSlab != nil {
+            clearActiveSlab(cause: .spatialExit)
+        }
         if hadTracker {
             recordDiagnostic("trackerLost")
         }
@@ -1963,13 +1979,18 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
-    private func activateSlab(_ evidence: GradedSlabEvidence, at now: CFAbsoluteTime) {
+    private func activateSlab(
+        _ evidence: GradedSlabEvidence,
+        continuityStamp: SlabContinuityStamp,
+        at now: CFAbsoluteTime
+    ) {
         let isRecoveringAfterAbsence = activeSlab == nil
             && slabRecoveryDeadline != nil
             && activeSlabBaseIdentifier != nil
         let establishesNewSlab = activeSlab?.evidence.suppressionFragment != evidence.suppressionFragment
         activeSlab = ActiveSlab(
-            evidence: evidence
+            evidence: evidence,
+            continuityStamp: continuityStamp
         )
         slabGraceDeadline = nil
         slabGuideHintForGate = nil
@@ -2018,14 +2039,17 @@ final class CardScanner: NSObject, ObservableObject {
             }
             recordDiagnostic("slabClearLatchRelease")
         case .identityChanged:
+            slabContinuityToken = UUID()
             activeSlabBaseIdentifier = nil
             slabRecoveryDeadline = nil
             recordDiagnostic("slabClearIdentityChanged")
         case .spatialExit:
+            slabContinuityToken = UUID()
             activeSlabBaseIdentifier = nil
             slabRecoveryDeadline = nil
             recordDiagnostic("slabClearSpatialExit")
         case .lifecycle:
+            slabContinuityToken = UUID()
             activeSlabBaseIdentifier = nil
             slabRecoveryDeadline = nil
             recordDiagnostic("slabClearLifecycle")
@@ -2096,6 +2120,11 @@ final class CardScanner: NSObject, ObservableObject {
                activeSlabBaseIdentifier != footerIdentifier {
                 clearActiveSlab(cause: .identityChanged, at: now)
             } else if self.activeSlabBaseIdentifier == nil {
+                guard let activeSlab,
+                      slabContinuityStillMatches(activeSlab.continuityStamp) else {
+                    clearActiveSlab(cause: .spatialExit, at: now)
+                    return
+                }
                 self.activeSlabBaseIdentifier = footerIdentifier
             }
             return
@@ -2203,8 +2232,26 @@ final class CardScanner: NSObject, ObservableObject {
         at now: CFAbsoluteTime
     ) -> GradedSlabEvidence? {
         guard let confirmed = slabEvidenceWindow.observe(evidence) else { return nil }
-        activateSlab(confirmed, at: now)
+        activateSlab(
+            confirmed,
+            continuityStamp: SlabContinuityStamp(
+                presentationToken: slabContinuityToken,
+                trackerEncounterID: trackerEncounterID,
+                trackerPresentationToken: trackerPresentationToken
+            ),
+            at: now
+        )
         return confirmed
+    }
+
+    private func slabContinuityStillMatches(_ stamp: SlabContinuityStamp) -> Bool {
+        guard stamp.presentationToken == slabContinuityToken else { return false }
+        guard let stampedEncounter = stamp.trackerEncounterID else { return true }
+        guard trackerEncounterID == stampedEncounter else { return false }
+        if let stampedPresentation = stamp.trackerPresentationToken {
+            return trackerPresentationToken == stampedPresentation
+        }
+        return true
     }
 
     private func updateSlabGuideHint(
@@ -2256,6 +2303,13 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
 #if DEBUG
+    /// Drains the serial Vision queue after a lifecycle fence. Test code uses
+    /// this instead of sleeping, so assertions observe the same ordering as a
+    /// real frame callback.
+    func drainVisionQueueForTesting() {
+        visionQueue.sync {}
+    }
+
     /// Test-only visibility for the non-blocking graded correction contract.
     /// Production UI never needs to know whether recognition is paused; tests do
     /// need to prove that this path never entered the pause state.
