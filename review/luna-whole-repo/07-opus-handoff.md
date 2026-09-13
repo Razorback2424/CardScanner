@@ -1,5 +1,7 @@
 # Opus Review Handoff
 
+> **Historical snapshot — 2026-09-10.** This handoff summarizes the Luna whole-repository review and its follow-on trust-hardening work at that time. It is retained for historical context and is not the current card-centering handoff. Use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/) for the active work.
+
 ## Bottom line
 
 The repository builds in Debug tests and Release simulator configuration, and the review universe is fully classified. The app’s core architecture has a coherent durable collection/activity/ledger model, append-only price evidence, explicit USD portfolio eligibility, revision fingerprints, migration gates, and bounded refresh checkpoints. The review nevertheless found fourteen evidence-backed findings, led by identity/provenance and current-vs-replay consistency rather than compile failures.
@@ -22,8 +24,8 @@ The Magic migration/projection concern was investigated and not promoted: treatm
 
 ## Evidence index
 
-- Current Debug suite: 1,005 tests, 1 skipped, 0 failures; result bundle recorded in `06-device-and-environment-validation.md`.
-- Current Release simulator build: succeeded.
+- Review-time Debug suite: 1,005 tests, 1 skipped, 0 failures; result bundle recorded in `06-device-and-environment-validation.md`.
+- Review-time Release simulator build: succeeded.
 - Exact production Swift inventory: 105 files; every file is listed once in `02-coverage-ledger.md` (69 deep, 29 context, 7 device-dependent).
 - Data/configuration inventory: manifests, 738 Magic set resources, 160 Pokémon set resources, assets, plist, privacy manifest, and entitlements recorded in `01`/`02`.
 - Device/provider/release boundaries and required records: `06-device-and-environment-validation.md`.

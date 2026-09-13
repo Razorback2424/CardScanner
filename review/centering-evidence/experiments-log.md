@@ -1031,3 +1031,113 @@ are the current benchmark record.
   invariant/L1 rerun after the final per-side change remains pending, and the
   joint selector, semantic branches, stability-aware confidence, and latency
   gates remain open.
+
+## Current post-E-REQ044 baseline and ledger refresh — 2026-09-12
+
+### Full signed suite
+
+- **Question:** What is the current state after the final E-REQ044 per-side
+  fallback, using the required simulator and normal signing?
+- **Run:** Direct signed `xcodebuild test` for the complete `TradingCardScanner`
+  scheme on iPhone 17 Pro / iOS 26.5 /
+  `EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86`. DerivedData and the result bundle
+  were stored under the configured external SSD root. The run did not set
+  `CODE_SIGNING_ALLOWED=NO`.
+- **Result:** The completed xcresult summary reports 1,095 result entries:
+  1,085 passed, 1 skipped, and 9 failed; all nine failed entries are centering
+  failures, including rederived-GT/L1 accuracy, INV-4, INV-5, INV-7, REQ-022,
+  and REQ-043. The known pre-existing Magic-treatment failure from an earlier
+  historical baseline did not recur in this run. The xcodebuild console
+  reported 66 failure entries because several tests emit multiple assertions
+  and retries; the xcresult summary is the authoritative test-entry count. No
+  Keychain entitlement failures occurred.
+- **Passing signal:** `CardCenteringAnalyzerTests` passed 21/21 in the focused
+  signed rerun, the IMG_0782 no-inner-reference safety assertion passed, and
+  the E0/E1 replacement, E-A, E-B, E-D, E-E, and REQ-042 evidence-generation
+  tests completed. This does not make the accuracy or latency gates pass.
+- **Artifact:**
+  [`baseline-post-ereq044-2026-09-12.md`](baseline-post-ereq044-2026-09-12.md)
+  and result bundle `revision-f-full-baseline-2026-09-12.xcresult` on the
+  external SSD.
+
+### Corrected REQ-042 candidate recall
+
+- **Question:** Does the current candidate set contain geometry close enough to
+  the rederived GT, using the exact role-specific tolerances in §5.1?
+- **Run:** The all-fixture DEBUG ledger was regenerated after E-REQ044 on the
+  original HEIC bytes. The diagnostic uses `τ_e` for outer edges and the fixed
+  `0.0035 * H` tolerance for gradeable inner edges. The earlier 29/36 number
+  used the outer GT-band tolerance for inner edges and is retained as a
+  historical preliminary result only.
+- **Result:** Outer recall is 34/40 (85.0%); gradeable inner recall is 28/36
+  (77.8%). The eight inner misses are IMG_0347 left, IMG_0352 left, IMG_0348
+  bottom, IMG_0351 bottom, IMG_0780 right and bottom, IMG_0781 bottom, and
+  IMG_0783 bottom. `bestErrorPx` is the closest candidate available rather
+  than the selected candidate, so these are generator-recall failures. The
+  four IMG_0782 inner sides are correctly excluded because its GT has no inner
+  reference. The analyzer branch is 9 confident / 1 declined, with IMG_0782
+  the only decline; all nine non-`none` outputs still report `art_window`,
+  including all five backs.
+- **Interpretation:** The candidate-generation gate remains open, and the
+  semantic-reference defect is independently confirmed. No selector tuning or
+  sampling-level experiment was justified by this run.
+- **Artifacts:**
+  [`diagnostics/REQ-042/README.md`](diagnostics/REQ-042/README.md),
+  [`candidate-ledger.md`](diagnostics/REQ-042/candidate-ledger.md), and
+  [`candidate-ledger.json`](diagnostics/REQ-042/candidate-ledger.json).
+
+### Corpus intake — 2026-09-12
+
+- **Action:** Added 19 newly supplied HEIC captures to
+  TestFixtures/TradingCards/HEIC, preserving their bytes and removing only the
+  attachment-order prefixes from the filenames.
+- **Verification:** All 19 destination files compare byte-for-byte with their
+  supplied sources. The directory now contains 29 HEIC files: the original ten
+  development fixtures plus the 19 new intake captures.
+- **Interpretation:** This is corpus preparation, not analyzer evidence. The
+  new files have not been classified, assigned ground truth, or inspected for
+  holdout selection. REQ-040 remains open because at least 30 new captures and
+  a frozen capture-diverse holdout are required before the next production
+  perception change.
+
+### Corpus intake extension — 2026-09-12
+
+- **Action:** Added the four remaining HEIC captures and eleven PNG reference
+  images from the user's iCloud Drive `Reference photos` folder to
+  `TestFixtures/TradingCards/HEIC`, preserving their visible filenames. The
+  additional HEIC files are `IMG_0799.HEIC`, `IMG_0802.HEIC`, `IMG_0811.HEIC`,
+  and `IMG_1716.HEIC`.
+- **Verification:** The destination contains 44 files: the original 10 HEIC
+  development fixtures, 23 additional HEIC captures, and 11 PNG reference
+  images. The accidentally created `IMG_1712 copy.HEIC` was moved out of the
+  repository to `/private/tmp/trading-card-centering-recovery/` for recovery;
+  the intended `IMG_1712.HEIC` remains. The iCloud source was copied through
+  Finder, so a shell-level byte comparison against the source was not
+  available; the destination names and count were verified after the copy.
+- **Interpretation:** This is corpus preparation, not analyzer evidence. None
+  of the new files has been classified, assigned ground truth, or frozen for
+  holdout selection. REQ-040 remains open.
+
+### Interim corpus manifest and holdout freeze — 2026-09-12
+
+- **Action:** Classified the 34-image supplementary intake conservatively from
+  file metadata and visible card properties, recorded the ten original files as
+  `DEV-HISTORICAL`, assigned 24 new files to `DEVELOPMENT`, and froze ten new
+  files as `HOLDOUT-INTERIM`. The selected holdout is
+  `Document_2026-06-06_150110.png`, `Document_2026-06-08_091509.png`,
+  `IMG_0796.HEIC`, `IMG_0804.HEIC`, `IMG_0856.HEIC`, `IMG_1023.HEIC`,
+  `IMG_1036.HEIC`, `IMG_1302.HEIC`, `IMG_1475-2.HEIC`, and `IMG_1716.HEIC`.
+- **Verification:** Added `Supplementary/corpus-manifest.json` with SHA-256,
+  dimensions, source cohort, provenance, face/game/reference classifications,
+  split, and explicit analysis/ground-truth status for all 44 files. The
+  test-first contract initially failed because the manifest was absent; after
+  adding it, the focused signed test passed 1/1 on the pinned iPhone 17 Pro /
+  iOS 26.5 simulator. The manifest hash check matched every destination file.
+  The follow-up `CardCenteringGroundTruthTests` check passed 8/12; its four
+  failures are the already-known analyzer accuracy and universal-back-label
+  failures, with no new corpus or manifest failure.
+- **Interpretation:** This is a data/provenance safeguard, not analyzer evidence
+  and not REQ-040 completion. The interim holdout has no analyzer outcomes or
+  ground truth. All camera HEICs are from one iPhone 15 Pro Max, while the PNG
+  capture role is unknown; final cross-device/cross-photographer coverage and
+  independent ground truth remain open.

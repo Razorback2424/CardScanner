@@ -20,33 +20,37 @@ Worktree: `opus-card-centering-implementation`.
 | IMG_0782 no-inner safety test | `CardCenteringGroundTruthTests/testMaskFailureDeclinesWithoutAnInnerReference` | passed at the default 1200-pixel path; refreshed post-REQ-027 E7 artifacts also decline at 1200/1600/2000/2400 |
 | E0/E1 historical plus E7 evidence generation | Same pinned simulator; diagnostics and resolution curves written under `diagnostics/` | Historical E0/E1 and the earlier post-roll E7 run passed in 333.179 s; E0/E1 are not production-equivalent. The refreshed post-REQ-027 E7 run is recorded separately below |
 | E-C raw-HEIC metamorphic harness | `CenteringProfileDumpTests/testE1MetamorphicVariantsCanBeResolutionEqualizedFromRawHEIC`; same pinned simulator and external-SSD paths | Passed in 85.941 s; 12 raw/equalized records written; all GT-derived working short-edge assertions within ±0.5%; IMG_0347 declines at rot90/rot270 in both records |
-| E-D / E-REQ044 guarded outer refinement | Test-first baseline, initial fit, local-offset guard, roll-preservation repair, transition-width guard, and per-side fallback; same pinned simulator and external-SSD paths | Initial fit caused eight assertions across six legacy analyzer tests; the historical guard restored 20/20; the final per-side physical-outer test passed, and the latest analyzer class passed 21/21. Full invariant/L1 rerun remains pending |
+| E-D / E-REQ044 guarded outer refinement | Test-first baseline, initial fit, local-offset guard, roll-preservation repair, transition-width guard, and per-side fallback; same pinned simulator and external-SSD paths | Initial fit caused eight assertions across six legacy analyzer tests; the historical guard restored 20/20; the final per-side physical-outer test passed, and the latest analyzer class passed 21/21. The post-change full invariant/L1 rerun is now complete and remains red on the recorded accuracy/invariant gates |
 | Post-E-D targeted invariant run | `CardCenteringAnalyzerTests` plus INV-3, INV-4, INV-5, INV-7, and INV-8; `post-ED-roll-repair-invariants.xcresult` | 25 tests; 20 analyzer tests and INV-3 passed; six invariant assertions failed: INV-4 1.4 pp, INV-5 0.7/1.4/1.1 pp, INV-7 1.4 pp, INV-8 1.1 pp |
 | E-E post-refinement profile classification | `CenteringProfileDumpTests/testEEDumpPostRefinementProfileNormalization`; raw and resolution-equalized variants for IMG_0783/IMG_0347 | Passed in 90.912 s; 24 snapshots and 96 per-edge records retained; residual classified as both outer-line displacement and profile depth selection |
 | REQ-027 complete production accuracy baseline | `CardCenteringGroundTruthTests` against the rederived records on the pinned simulator; external-SSD result bundle | Pre-E-REQ044 baseline: 12 cases, 8 passed / 4 failed; the complete L1 accuracy comparison remains open after the later production change. Bundle: `Artifacts/req027-ground-truth-after-rederive.xcresult` |
-| Refreshed E7 pre-E-REQ044 benchmark | `CardCenteringInvariantTests/testREQ031ResolutionAccuracyAndLatencyCurve` and `testREQ031LowResolutionDetectionFullResolutionRefinement`; pinned simulator and external-SSD paths | 2/2 tests passed in 330.965 s; the signed pre-change bundle measured full-resolution max/median latency 2.706/2.935 s at 1200 and 7.971/9.723 s at 2400; low-detection/full-refinement was 2.724/2.952 s at 1200 and 3.660/3.848 s at 2400. The tracked E7 files were later overwritten by the intermediate transition-width-guard run before the final per-side fallback (2.733/2.972 s at 1200; 7.974/9.748 s at 2400; low-detection 3.685/3.861 s at 2400). IMG_0782 declines at every tested maximum in both snapshots; no final post-change curve exists |
-| Fresh REQ-039 signed full-suite baseline | Direct `xcodebuild test` on iPhone 17 Pro / iOS 26.5 with no `CODE_SIGNING_ALLOWED=NO`, external-SSD DerivedData and result bundle | 1088 test cases: 1078 passed, 1 skipped, 9 failed test cases / 116 console assertion failures; eight centering test cases and one pre-existing Magic-treatment test. Summary: [baseline-2026-09-12.md](baseline-2026-09-12.md) |
+| Historical E7 benchmark before the final per-side fallback | `CardCenteringInvariantTests/testREQ031ResolutionAccuracyAndLatencyCurve` and `testREQ031LowResolutionDetectionFullResolutionRefinement`; pinned simulator and external-SSD paths | 2/2 tests passed in 330.965 s; the signed pre-change bundle measured full-resolution max/median latency 2.706/2.935 s at 1200 and 7.971/9.723 s at 2400; low-detection/full-refinement was 2.724/2.952 s at 1200 and 3.660/3.848 s at 2400. The tracked E7 files were later overwritten by the intermediate transition-width-guard run before the final per-side fallback (2.733/2.972 s at 1200; 7.974/9.748 s at 2400; low-detection 3.685/3.861 s at 2400). IMG_0782 declined at every tested maximum in both snapshots; the current post-change curve is recorded in `diagnostics/E7/` |
+| Historical REQ-039 signed full-suite baseline | Direct `xcodebuild test` on iPhone 17 Pro / iOS 26.5 with no `CODE_SIGNING_ALLOWED=NO`, external-SSD DerivedData and result bundle | 1088 test cases: 1078 passed, 1 skipped, 9 failed test cases / 116 console assertion failures; eight centering test cases and one pre-existing Magic-treatment test. Summary: [baseline-2026-09-12.md](baseline-2026-09-12.md) |
+| Current post-E-REQ044 signed full-suite baseline | Direct signed `xcodebuild test` on the same pinned simulator with external-SSD DerivedData/result bundle | 1095 result entries: 1085 passed, 1 skipped, 9 failed; all nine failed entries are centering failures. The known pre-existing Magic-treatment failure from an older baseline did not recur; there were 66 console failure entries including repeated assertions/retries. Summary: [baseline-post-ereq044-2026-09-12.md](baseline-post-ereq044-2026-09-12.md) |
 | REQ-041 repeated stage profile | `CardCenteringInvariantTests/testREQ041ProfilesNamedStageTimingsAcrossAllFixtures`; signed DEBUG run on the pinned iOS 26.5 simulator with external-SSD result bundle | Passed: 20 analyses (two per fixture); named stages accounted for 0.999 median/max wall time. Median wall time 2.7548 s; scalar fields 1.4909 s (54.6%) and inner candidate generation 0.8349 s (30.0%) are the measured bottlenecks. Records: [REQ-041 profile](diagnostics/REQ-041/README.md). Bundle: `revision-e-req041-profile-retry2-2026-09-12.xcresult` |
-| REQ-042 all-fixture candidate ledger | `CardCenteringInvariantTests/testREQ042CandidateRecallDiagnosticCoversAllFixtures`; signed DEBUG run on the pinned iOS 26.5 simulator with external-SSD result bundle | Passed as an evidence-generation test: 10/10 original HEIC fixtures emitted complete ledgers in 27.617 s. Preliminary GT-band geometry recall is 34/40 outer and 29/36 gradeable inner edges (80.6%); the seven inner misses are side-structured generator failures, and semantic roles remain mostly untyped, so the REQ-042 95% completion gate is not met. Records: [REQ-042 README](diagnostics/REQ-042/README.md). Bundle: `revision-e-req042-recall-retry-2026-09-12.xcresult` |
+| REQ-042 all-fixture candidate ledger | `CardCenteringInvariantTests/testREQ042CandidateRecallDiagnosticCoversAllFixtures`; signed DEBUG run on the pinned iOS 26.5 simulator with external-SSD result bundle | Passed as an evidence-generation test: all 10 original HEIC fixtures emitted complete post-E-REQ044 ledgers. Corrected geometry recall is 34/40 outer (85.0%) and 28/36 gradeable inner (77.8%) using the fixed `0.0035 * H` inner tolerance; eight inner misses are generator failures and semantic roles remain mostly untyped, so the 95% gate is not met. Records: [REQ-042 README](diagnostics/REQ-042/README.md). Bundle: `revision-f-req042-inner-corrected-2026-09-12.xcresult` |
 | E-REQ044 broad-transition guard regression | `CenteringProfileDumpTests/testREQ044OuterRefinementRejectsBroadAmbiguousTransitions` plus `CardCenteringInvariantTests/testREQ044SelectedOuterTracksPhysicalCardOnDevelopmentBacks`; pinned iOS 26.5 simulator and external-SSD result bundles | Expected-red broad-transition test failed before the guard; guard test passed; all-or-nothing outer selection failed IMG_0347 right, then final per-side fallback passed the physical-outer test. No tolerance or GT change |
 | E-A branch refresh after E-REQ044 | `CenteringProfileDumpTests/testEADiagnoseInnerReferenceBranchForAllRealFixtures`; pinned iOS 26.5 simulator and external-SSD result bundle | 1/1 passed; latest focused branch probe 9 confident / 1 declined; `IMG_0782` is the only decline; all nine non-none outputs still report `art_window` |
 | REQ-043 semantic reference rerun | `CardCenteringInvariantTests/testREQ043ReferenceTypeIsChosenSemanticallyAcrossDevelopmentCorpus`; pinned iOS 26.5 simulator and external-SSD result bundle | 1 test executed, 5 assertions failed: all five backs remain `art_window` instead of `printed_border` |
-| REQ-033 exact documentation guard rerun | `CardCenteringInvariantTests/testREQ033EvidenceStatusClassifiesRecoveredRuntimeAndProvisionalGT`; pinned iOS 26.5 simulator and external-SSD result bundle | 1/1 passed. The first post-edit invocation targeted the wrong class and executed 0 tests; it is discarded. Bundle: `Artifacts/docs-guard-correct-20260912.xcresult` |
+| REQ-033 exact documentation guard rerun | `CardCenteringInvariantTests/testREQ033EvidenceStatusClassifiesRecoveredRuntimeAndProvisionalGT`; pinned iOS 26.5 simulator and external-SSD result bundle | 1/1 passed. The first post-edit invocation targeted the wrong class and executed 0 tests; it is discarded. Current bundle: `/Volumes/Keller Family Photos/June 10 2026 dump (move)/AdditionalStorage/TradingCardScannerMVP_fixed_v4/Results/revision-f-docs-guard-2026-09-12.xcresult` |
 | Real-fixture L3 route | `scripts/centering_ui_build_and_shoot.sh` over all ten HEIC fixtures on the pinned simulator | 10/10 screenshot/metadata pairs captured **before E-B**; historical snapshot 3 confident / 7 declined; all final PNGs under 1.5 MB |
 
 ## Not completed
 
 The fresh signed REQ-039 baseline is immutable historical evidence from before
-the latest E-REQ044 production change. The latest change is narrow and test-first:
+the latest E-REQ044 production change. The current post-E-REQ044 full-suite
+baseline is recorded above and in
+[`baseline-post-ereq044-2026-09-12.md`](baseline-post-ereq044-2026-09-12.md).
+The latest change is narrow and test-first:
 it adds a transition-width guard and per-side fallback for outer refinement.
 It improves the focused physical-outer assertion and preserves the 21/21 analyzer
 regression class, but it does not yet establish current L1, invariant, or latency
 performance:
 
-- REQ-027 is complete; the latest complete accuracy comparison is the pre-E-REQ044 baseline. At 1200
-  px, its sole `ratioPassAt2PP` record is IMG_0782's correct decline, so none
-  of its eight confident numeric readings meets both ratio tolerances. The post-change
-  branch probe is 9 confident / 1 declined, but the full accuracy comparison is pending.
+- REQ-027 is complete; the current complete accuracy comparison is now the
+  post-E-REQ044 full-suite/E7 result. At 1200 px it reports 9 confident / 1
+  declined and 3/10 descriptive ratio passes. The L1 accuracy gate still fails;
+  the pre-E-REQ044 result remains historical.
 - All nine latest E-A records carrying an inner reference still report `art_window`,
   including all five backs; IMG_0782 correctly reports `none`. `outlineHasInner` is mixed.
 - The original holdout is development-exposed and must be replaced.
@@ -59,18 +63,20 @@ performance:
   0.80/1.50-second budget remains unmet; the profile identifies scalar fields
   and inner candidate generation as the next optimization targets.
 - REQ-042 candidate telemetry is now complete as an evidence run, not as an
-  acceptance pass: all ten fixtures emitted ledgers, but preliminary geometry
-  recall is 34/40 outer and 29/36 gradeable inner edges (80.6%), below the 95%
-  gate. The seven inner misses are bottom edges on IMG_0348, IMG_0780, IMG_0781,
-  and IMG_0783, plus left edges on IMG_0347, IMG_0350, and IMG_0352; because
-  `bestErrorPx` is the best available candidate, these are generator failures.
-  The inner roles are also not yet semantically typed. See
+  acceptance pass: all ten fixtures emitted post-E-REQ044 ledgers. Corrected
+  geometry recall is 34/40 outer (85.0%) and 28/36 gradeable inner edges
+  (77.8%), below the 95% gate. The eight inner misses are IMG_0347 left,
+  IMG_0352 left, IMG_0348 bottom, IMG_0351 bottom, IMG_0780 right and bottom,
+  IMG_0781 bottom, and IMG_0783 bottom; because `bestErrorPx` is the best
+  available candidate, these are generator failures. The inner roles are also
+  not yet semantically typed. See
   [`diagnostics/REQ-042/README.md`](diagnostics/REQ-042/README.md).
-- The fresh signed full-suite baseline completed on the pinned simulator with
-  1088 test cases, 1078 passed, 1 skipped, and 9 failed test cases (116 console
-  assertion failures). Eight are centering failures; one is the known
-  pre-existing Magic-treatment label leak. No Keychain entitlement failures
-  appeared. See [`baseline-2026-09-12.md`](../baseline-2026-09-12.md).
+- The current signed full-suite baseline completed on the pinned simulator with
+  1095 result entries, 1085 passed, 1 skipped, and 9 failed. All nine failed
+  entries are centering failures; the known pre-existing Magic-treatment label
+  leak from an older baseline did not recur in this run. No Keychain entitlement
+  failures appeared. See
+  [`baseline-post-ereq044-2026-09-12.md`](baseline-post-ereq044-2026-09-12.md).
 
 The required final L1/L2 accuracy pass and REQ-021 screenshot-pixel
 measurement are not complete. The current production-entry accuracy run has
@@ -88,7 +94,8 @@ limited to its two diagnostic fixtures. The refreshed E7 benchmark confirms
 IMG_0782 declines at all four tested resolution overrides, but the original
 latency budget remains unmet.
 
-The containing `CardCenteringInvariantTests` class was also run while correcting
-the guard filter; its single failure was the known `storeFailed(-34018)`
-Keychain harness artifact under `CODE_SIGNING_ALLOWED=NO`. The exact guard test
-above passed independently and is the result counted for REQ-033.
+The containing `CardCenteringInvariantTests` class was also included in the
+current full suite; its current failures are the recorded INV-4, INV-5, INV-7,
+and REQ-022 gates. The earlier single `storeFailed(-34018)` failure came from
+the `CODE_SIGNING_ALLOWED=NO` harness run and remains excluded. The exact guard
+test above passed independently and is the result counted for REQ-033.

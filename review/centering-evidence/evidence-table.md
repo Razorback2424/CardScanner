@@ -1,10 +1,15 @@
 # Card-centering evidence table
 
-Status date: 2026-09-12 (revision E-REQ044 amendment). The original `TUNE` and `HOLDOUT` labels are
-retained below for chronology, but all ten fixtures are now `DEV-HISTORICAL`: every original
+Status date: 2026-09-12 (revision F-corpus amendment). The original `TUNE` and `HOLDOUT` labels
+are retained below for chronology, but all ten fixtures are now `DEV-HISTORICAL`: every original
 holdout has been inspected or used in repeated diagnostics, and E-B included IMG_0349 and
-IMG_0351. They no longer measure generalisation. REQ-040 requires a new capture-condition-diverse
-frozen holdout; see the [implementation plan](../opus-card-centering-implementation-plan.md).
+IMG_0351. They no longer measure generalisation. The new corpus manifest covers those ten plus
+23 additional raw HEIC captures and 11 PNG reference images, with 24 new files in `DEVELOPMENT`
+and 10 in a cryptographically frozen `HOLDOUT-INTERIM`. This is a provisional safeguard only:
+the HEICs are from one iPhone model, the PNG capture role is unknown, no new ground truth exists,
+and REQ-040's final 30-capture varied-condition gate remains open. See the
+[implementation plan](../opus-card-centering-implementation-plan.md) and
+[corpus manifest](../../TestFixtures/TradingCards/Supplementary/corpus-manifest.json).
 
 The screenshot/metadata cells in the fixture table are a **pre-E-B capture
 snapshot**. They are intentionally preserved because they are the artifacts
@@ -12,13 +17,14 @@ actually captured by the L3 route; their 3-confident/7-declined count is not the
 current analyzer count. The earlier E-A/E-B branch result was 8 confident / 2
 declined; the latest focused E-REQ044 branch result is recorded separately below
 as 9 confident / 1 declined. Accuracy is evaluated against the rederived
-analyzer-free GT. The first complete accuracy and E7 runs predate E-REQ044:
-8/12 test cases passed and 4 failed, and at 1200 px only IMG_0782's correct
-no-ratio decline passed the descriptive ratio check. A complete accuracy/curve
-rerun after the final per-side fallback is pending. The tracked E7 JSON/Markdown
-were subsequently overwritten by the intermediate transition-width-guard run
-before the final per-side fallback; they are explicitly an intermediate snapshot,
-not the current final benchmark.
+   analyzer-free GT. The pre-E-REQ044 accuracy run passed 8/12 cases and failed
+4; it remains historical. The current post-E-REQ044 full suite has 1,095 result
+entries: 1,085 passed, 1 skipped, and 9 failed; all nine failed entries are
+centering failures. The known pre-existing Magic-treatment failure from an
+older baseline did not recur in this run. The current E7 curve is now retained
+in `diagnostics/E7/`:
+at 1200 px it is 9 confident / 1 declined with 3/10 descriptive ratio passes.
+The prior transition-width-guard files are retained only as intermediate history.
 
 `REQ-006 before` is the immutable scalar baseline in
 [`baseline-2026-09-11/baseline.json`](baseline-2026-09-11/baseline.json). Every
@@ -27,10 +33,12 @@ not the current final benchmark.
 The pinned simulator did run after a transient service recovery; the retained
 full-suite classification is in
 [`after/simulator-status-2026-09-11.md`](after/simulator-status-2026-09-11.md).
-The fresh signed REQ-039 baseline is summarized in
-[`baseline-2026-09-12.md`](baseline-2026-09-12.md); its result bundle is on the
-external SSD. It supersedes the earlier harness-contaminated full-suite run as
-the current baseline while preserving that run for historical comparison.
+The historical signed REQ-039 baseline is summarized in
+[`baseline-2026-09-12.md`](baseline-2026-09-12.md). The current post-E-REQ044
+baseline is summarized in
+[`baseline-post-ereq044-2026-09-12.md`](baseline-post-ereq044-2026-09-12.md);
+its result bundle is on the external SSD. Both earlier runs remain available
+for historical comparison.
 Status vocabulary: `FAILING` means a runtime assertion genuinely failed;
 `UNADJUDICATED` means a historical result predates the rederived GT and is
 retained only for chronology;
@@ -129,13 +137,13 @@ captures are not available in this session:
 | REQ-036 production-equivalent metamorphic harness | Named E-C replacement starts all variants from original HEIC bytes, retains raw/equalized records and source dimensions, and passes the ±0.5% GT-derived working-short-edge assertion for IMG_0783 and IMG_0347; the older E0/E1 values remain historical | [E-C README](diagnostics/E1/README.md), [E-C artifact](diagnostics/E1/resolution.json), [E0 comparison](diagnostics/E0/comparison.md) | PASS for harness construction; invariant/accuracy conclusions remain open |
 | REQ-037 deterministic outer refinement | E-D's historical `max(8 px, 2% short edge)` guard preserved the synthetic behavior; E-REQ044 added a general `max(12 px, 2% short edge)` transition-width guard plus per-side fallback. The focused physical-outer test passes and the latest analyzer class is 21/21; full invariant/accuracy stability remains open | [E-D diagnostic](diagnostics/ED/README.md), [experiments log](experiments-log.md), [plan](../opus-card-centering-implementation-plan.md) | PARTIAL / metamorphic stability OPEN |
 | REQ-038 post-refinement inner-profile classification | E-E passed with 24 raw/equalized snapshots and 96 per-edge records; raw/equalized records match at the 1200-pixel cap, and the residual is classified as both outer-line displacement and profile depth selection | [E-D diagnostic](diagnostics/ED/README.md), [E-E JSON](diagnostics/ED/profile-normalization.json), [E-E table](diagnostics/ED/profile-normalization.md), [experiments log](experiments-log.md) | PASS for diagnostic classification; REQ-029 remains failing |
-| REQ-039 closed sampling class / fresh baseline | Sampling, smoothing, interpolation, radius, fixed-offset, and single transition-feature tuning are closed absent candidate-level proof; signed baseline complete, focused IMG_0783 re-audit remains | [baseline summary](baseline-2026-09-12.md), [revision-E plan](../opus-card-centering-implementation-plan.md), [experiments log](experiments-log.md) | PARTIAL / re-audit OPEN |
-| REQ-040 varied corpus and new frozen holdout | Existing ten are `DEV-HISTORICAL`; no varied 30-capture addition or fresh 10-record holdout exists | [supplementary status](../../TestFixtures/TradingCards/Supplementary/README.md), [revision-E plan](../opus-card-centering-implementation-plan.md) | OPEN |
+| REQ-039 closed sampling class / fresh baseline | Sampling, smoothing, interpolation, radius, fixed-offset, and single transition-feature tuning are closed absent candidate-level proof; current signed post-E-REQ044 baseline and ledger refresh are complete, focused IMG_0783 re-audit remains | [current baseline summary](baseline-post-ereq044-2026-09-12.md), [historical baseline](baseline-2026-09-12.md), [revision-E plan](../opus-card-centering-implementation-plan.md), [experiments log](experiments-log.md) | PARTIAL / re-audit OPEN |
+| REQ-040 varied corpus and new frozen holdout | Existing ten are `DEV-HISTORICAL`; the 34-image intake is classified in the corpus manifest, with 24 `DEVELOPMENT` files and 10 cryptographically frozen `HOLDOUT-INTERIM` files. No new ground truth has been assigned. The HEICs are from one iPhone model and the PNG capture role is unknown, so the final varied-condition gate remains open | [corpus manifest](../../TestFixtures/TradingCards/Supplementary/corpus-manifest.json), [supplementary status](../../TestFixtures/TradingCards/Supplementary/README.md), [revision-F plan](../opus-card-centering-implementation-plan.md) | PARTIAL / final gate OPEN |
 | REQ-041 stage timing and 1200 safety cap | Signed repeated profile covers all ten fixtures twice (20 analyses); named stages account for 0.999 median/max wall time. Scalar fields are 54.6% of median wall time and inner candidate generation 30.0%. The 0.80/1.50 s budget still fails and 1200 remains the provisional safety cap | [REQ-041 profile](diagnostics/REQ-041/README.md), [E7 curve](diagnostics/E7/resolution-curve.md), [revision-E plan](../opus-card-centering-implementation-plan.md) | PASS for stage attribution / original budget still FAILING |
-| REQ-042 candidate recall ledger | The signed all-fixture ledger retains outer/inner candidates with source, geometry, support/transition fields, roles, and rejection metadata. Preliminary GT-band geometry recall is 34/40 outer edges (85%) and 29/36 gradeable inner edges (80.6%); the seven inner misses are side-structured generator failures; IMG_0782's no-reference inner edges are excluded. The artifact predates the final E-REQ044 per-side fallback, and roles remain largely untyped, so this is diagnostic progress, not completion | [REQ-042 README](diagnostics/REQ-042/README.md), [ledger JSON](diagnostics/REQ-042/candidate-ledger.json), [ledger table](diagnostics/REQ-042/candidate-ledger.md) | FAILING / semantic and generator spike OPEN |
+| REQ-042 candidate recall ledger | The current post-E-REQ044 ledger retains outer/inner candidates with source, geometry, support/transition fields, roles, and rejection metadata. Corrected recall is 34/40 outer edges (85.0%) and 28/36 gradeable inner edges (77.8%) using the fixed `0.0035 * H` inner tolerance; eight inner misses are generator failures, and IMG_0782's no-reference inner edges are excluded. Roles remain largely untyped, so this is diagnostic progress, not completion | [REQ-042 README](diagnostics/REQ-042/README.md), [ledger JSON](diagnostics/REQ-042/candidate-ledger.json), [ledger table](diagnostics/REQ-042/candidate-ledger.md) | FAILING / semantic and generator spike OPEN |
 | REQ-043 semantic reference branch | All five backs are still mislabeled `art_window`; the focused semantic test failed 5/5 back assertions. Back-template and framed/full-art front branches are not implemented | [E-A summary](diagnostics/EA/summary.json), [experiments log](experiments-log.md), [revision-E plan](../opus-card-centering-implementation-plan.md) | FAILING / spike OPEN |
-| REQ-044 joint selection and stability-aware confidence | Focused outer physical-card assertion passes after per-side fallback; the latest E-A probe is 9 confident / 1 declined, but semantic type and joint/stability selection remain unresolved and the full invariant/L1 rerun is pending | [E-D diagnostic](diagnostics/ED/README.md), [experiments log](experiments-log.md), [E7 curve](diagnostics/E7/resolution-curve.md) | PARTIAL / semantic, metamorphic, and stability work OPEN |
-| REQ-045 hard go/no-go | Frozen-holdout zero-confidently-wrong gate cannot run until REQ-040; the complete pre-E-REQ044 benchmark is 0/8 accurate confident numeric readings, and a full gate rerun after the final per-side fallback is pending | [revision-E plan](../opus-card-centering-implementation-plan.md), [E7 curve](diagnostics/E7/resolution-curve.md), [experiments log](experiments-log.md) | FAILING pre-change baseline / future decision OPEN |
+| REQ-044 joint selection and stability-aware confidence | Focused outer physical-card assertion passes after per-side fallback; the current E-A/E7 branch is 9 confident / 1 declined, but semantic type and joint/stability selection remain unresolved. The full invariant/L1 rerun is complete and still failing | [E-D diagnostic](diagnostics/ED/README.md), [experiments log](experiments-log.md), [E7 curve](diagnostics/E7/resolution-curve.md) | PARTIAL / semantic, metamorphic, and stability work OPEN |
+| REQ-045 hard go/no-go | Frozen-holdout zero-confidently-wrong gate cannot run until REQ-040; the current 1200-pixel curve has 3/10 descriptive ratio passes and the L1 gate fails. The holdout decision remains open | [revision-E plan](../opus-card-centering-implementation-plan.md), [current baseline](baseline-post-ereq044-2026-09-12.md), [E7 curve](diagnostics/E7/resolution-curve.md), [experiments log](experiments-log.md) | FAILING current development baseline / future decision OPEN |
 | Static verification | Device SDK test build, GT validation, baseline checksum, shell syntax, and diff hygiene | [verification record](verification-2026-09-11.md) | PASS |
 
 ## Device-only gates

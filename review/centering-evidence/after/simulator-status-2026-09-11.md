@@ -67,8 +67,28 @@ machine-readable summary, and failure classification are in
 Eight failed test cases are centering failures: rederived-GT/L1 accuracy,
 INV-4, INV-5, INV-7, and REQ-022. One is the unchanged Magic-treatment label
 leak outside the centering diff. No Keychain `-34018` failures occurred in
-this signed run. The fresh result is the active REQ-039 baseline; the earlier
-1076/1045/24/7 run remains historical and is not overwritten.
+this signed run. This pre-E-REQ044 result is historical. The current
+post-E-REQ044 baseline is recorded below and in
+[`../baseline-post-ereq044-2026-09-12.md`](../baseline-post-ereq044-2026-09-12.md).
+The earlier 1076/1045/24/7 run remains historical and is not overwritten.
+
+## Current post-E-REQ044 full-suite baseline — 2026-09-12
+
+The signed full suite was rerun after the final per-side fallback on the same
+pinned iOS 26.5 simulator, with DerivedData and the result bundle on the
+external SSD. The completed result-bundle summary is:
+
+```text
+1095 result entries; 1085 passed; 1 skipped; 9 failed
+```
+
+All nine failed entries are centering failures (rederived-GT/L1 accuracy,
+INV-4, INV-5, INV-7, REQ-022, and REQ-043). The known pre-existing
+Magic-treatment label leak from an older baseline did not recur in this run.
+The console reported 66 failure entries because some tests emit multiple
+assertions and retries. No Keychain `-34018` failures occurred. The exact
+failure identifiers and bundle path are in
+[`../baseline-post-ereq044-2026-09-12.md`](../baseline-post-ereq044-2026-09-12.md).
 
 ## REQ-041 stage profile — 2026-09-12
 
@@ -93,7 +113,7 @@ The complete records and discarded watchdog attempt are described in
 profile identifies the next performance bottleneck; it does not justify
 reopening the closed sampling experiment class.
 
-## REQ-042 candidate recall ledger — 2026-09-12
+## Historical REQ-042 candidate recall ledger — pre-E-REQ044
 
 The signed DEBUG test
 `CardCenteringInvariantTests/testREQ042CandidateRecallDiagnosticCoversAllFixtures`
@@ -103,7 +123,7 @@ and wrote a complete candidate ledger for every fixture. The result bundle is
 `revision-e-req042-recall-retry-2026-09-12.xcresult` on the external SSD; the
 checked-in evidence is under [`../diagnostics/REQ-042/README.md`](../diagnostics/REQ-042/README.md).
 
-At this point the analyzer returned eight confident and two declined fixtures:
+At that point the analyzer returned eight confident and two declined fixtures:
 the five sleeved fixtures retained an inner source, IMG_0781 declined for its
 existing rectification path, and IMG_0782 declined with `innerSource = none`.
 The harness found at least one candidate within the existing rederived-GT
@@ -116,6 +136,26 @@ seven misses are generator-recall failures. This is preliminary geometric
 evidence, not the semantic completion gate: inner candidates are still mostly
 labeled `untyped_inner_reference` or
 `unknown_inner_candidate`, and the 95% REQ-042 target is not met.
+
+## Current REQ-042 candidate recall ledger — post-E-REQ044
+
+The corrected ledger was regenerated after the final per-side fallback on the
+original HEIC bytes. It uses `τ_e` for outer edges and the fixed `0.0035 * H`
+tolerance for gradeable inner edges. The evidence-generation test passed, and
+the checked-in files are current under
+[`../diagnostics/REQ-042/README.md`](../diagnostics/REQ-042/README.md).
+
+```text
+outer: 34/40 (85.0%)
+inner: 28/36 gradeable (77.8%)
+analyzer branch: 9 confident / 1 declined
+```
+
+The eight inner misses are IMG_0347 left, IMG_0352 left, IMG_0348 bottom,
+IMG_0351 bottom, IMG_0780 right and bottom, IMG_0781 bottom, and IMG_0783
+bottom. These are generator-recall misses because `bestErrorPx` is the closest
+available candidate. The earlier 29/36 (80.6%) result used the wrong inner
+tolerance and remains historical only.
 
 ## Historical branch validation after E-A/E-B
 
@@ -168,8 +208,10 @@ report `innerReference = art_window`. The focused REQ-043 semantic test remains 
 5 failures, exactly the five backs expected to report `printed_border`.
 
 A complete invariant-class, L1 accuracy, and E7 resolution rerun after the final per-side
-fallback has not yet been run. The older complete curves and invariant results therefore
-remain historical baselines for the prior implementation state.
+fallback has now run in the full suite. The current invariant failures are INV-4 `1.4 pp`,
+INV-5 `0.7/1.4/1.1 pp` at 90/180/270 degrees, INV-7 `1.4 pp`, plus the recorded L1 and
+REQ-022 failures. The current E7 curve is retained under `../diagnostics/E7/`; the older
+curves remain historical baselines for the prior implementation state.
 
 The exact REQ-028 regression methods were subsequently rerun under the correct
 `CardCenteringAnalyzerTests` XCTest class on the same pinned simulator. Both
@@ -233,11 +275,12 @@ current accuracy failures, not provisional-GT or simulator-availability failures
 
 - The simulator is **not blocked**. The full-suite runtime work was attempted
   and produced actionable failures.
-- The latest E-REQ044 amendment made a narrow production change and adds new focused simulator evidence. REQ-027 remains complete as a ground-truth provenance gate, but its complete accuracy/E7 numbers are the pre-E-REQ044 baseline.
-  At the pre-E-REQ044 1200-pixel baseline, none of the eight confident numeric
-  readings met both ratio tolerances. The one E7 `ratioPassAt2PP` record was IMG_0782's
-  correct no-ratio decline. The latest focused post-change E-A probe is 9 confident / 1
-  declined; its full accuracy comparison is still pending.
+- REQ-027 remains complete as a ground-truth provenance gate. The pre-E-REQ044
+  8/12 accuracy result and its 0/8 confident-numeric ratio result are historical.
+  The current post-E-REQ044 full suite/E7 run is 9 confident / 1 declined at
+  1200 px with 3/10 descriptive ratio passes, and the current L1 accuracy gate
+  still fails. The current result is recorded in
+  [`../baseline-post-ereq044-2026-09-12.md`](../baseline-post-ereq044-2026-09-12.md).
 - All nine latest E-A records with an inner reference report `art_window`, including
   all five backs. `outlineHasInner` is mixed. Reference-type classification is therefore open under
   REQ-043.

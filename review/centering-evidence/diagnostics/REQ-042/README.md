@@ -5,13 +5,16 @@ Device: iPhone 17 Pro, iOS 26.5
 Simulator: `EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86`
 Input: the original ten HEIC fixtures, not pre-downsampled renderer output
 
-## Run
+## Current run
 
 `CardCenteringInvariantTests/testREQ042CandidateRecallDiagnosticCoversAllFixtures`
-passed in `27.617` test seconds. The signed result bundle is
-`revision-e-req042-recall-retry-2026-09-12.xcresult` on the external SSD.
+passed in the signed post-E-REQ044 run on the pinned simulator. The focused
+evidence-generation rerun completed in `27.6` test seconds; the full-suite run
+also regenerated the checked-in files. The focused result bundle is
+`revision-f-req042-inner-corrected-2026-09-12.xcresult` on the external SSD.
 The test wrote [`candidate-ledger.json`](candidate-ledger.json) and the readable
-[`candidate-ledger.md`](candidate-ledger.md).
+[`candidate-ledger.md`](candidate-ledger.md) from the final per-side-fallback
+branch, using the original HEIC inputs.
 
 ## What the ledger contains
 
@@ -21,39 +24,40 @@ producer has them, a proposed semantic role, selection status, and rejection
 reason. The ledger is DEBUG-only observational evidence; production selection
 never reads it.
 
-The all-fixture run emitted a ledger for every fixture. That ledger was captured
-before E-REQ044 and its analyzer result was eight confident and two declined:
-the five sleeved fixtures retained an inner source, IMG_0781 declined for
-rectification, and IMG_0782 correctly returned `innerSource = none`. The later
-E-REQ044 branch probe is nine confident and one declined, but it has not yet
-produced a replacement candidate ledger; the retained ledger must not be read
-as the current branch count.
+The current all-fixture run emitted a ledger for every fixture after E-REQ044.
+Its analyzer result is nine confident and one declined: IMG_0782 correctly
+returns `innerSource = none`; the other nine retain an inner source. The
+earlier eight-confident/two-declined run and its ledger remain historical.
 
-## Preliminary geometric recall
+## Current geometric recall
 
 The harness compares each candidate line's reported native points with the
 corresponding rederived ground-truth edge. `bestErrorPx` is the maximum
 perpendicular distance of those points from that GT edge. `anyWithinTolerance`
-uses the existing GT edge-band tolerance. This is a diagnostic pre-recall
-metric, not a semantic acceptance decision and not a production score.
+uses `τ_e` for outer edges and the fixed `0.0035 * H` contract for inner edges.
+This is a diagnostic pre-recall metric, not a semantic acceptance decision and
+not a production score.
 
-| Family | Gradeable edges | Edges with a candidate within tolerance | Preliminary recall |
+| Family | Gradeable edges | Edges with a candidate within tolerance | Current recall |
 |---|---:|---:|---:|
 | Outer | 40 | 34 | 85.0% |
-| Inner | 36 | 29 | 80.6% |
+| Inner | 36 | 28 | 77.8% |
 
 The four IMG_0782 inner edges are intentionally excluded because the fixture's
 ground truth has no gradeable inner reference. The current result is below
-REQ-042's 95% target for both families. The ledger therefore does not authorize
-selector tuning as if recall were solved.
+REQ-042's 95% target for both families. The earlier 29/36 (80.6%) result used
+the outer GT-band tolerance for inner edges and is preserved only as preliminary
+historical evidence. The ledger therefore does not authorize selector tuning as
+if recall were solved.
 
 ## Interpretation
 
 The candidate set is not empty: many edges have multiple scalar, Vision,
-refinement, and profile proposals. At the same time, six outer and seven
-gradeable inner edges have no proposal within the preliminary tolerance. The
-inner misses are bottom edges on IMG_0348, IMG_0780, IMG_0781, and IMG_0783,
-plus left edges on IMG_0347, IMG_0350, and IMG_0352. Since `bestErrorPx` is the
+refinement, and profile proposals. At the same time, six outer and eight
+gradeable inner edges have no proposal within the current tolerance. The inner
+misses are left edges on IMG_0347 and IMG_0352; bottom edges on IMG_0348,
+IMG_0351, IMG_0780, IMG_0781, and IMG_0783; and the right edge on IMG_0780.
+Since `bestErrorPx` is the
 best candidate available rather than the selected candidate, these are
 candidate-generation failures. This means the next work needs two explicitly
 separate tracks:

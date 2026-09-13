@@ -8,7 +8,7 @@ the perception-architecture pivot, and the candidate-generation-first restart or
 **Investigation author:** Opus; no production code was changed while establishing this plan.
 Subsequent implementation changes and experiment provenance are recorded in the status and
 evidence sections below.
-**Baseline evidence:** `review/centering-evidence/baseline-2026-09-11/`
+**Baseline evidence:** `review/centering-evidence/baseline-post-ereq044-2026-09-12.md`
 
 > Luna: read §0–§8 before writing code. §9 (REQ table) is the contract. §13 (Definition of
 > Done) is the completion gate and was fixed **before** implementation began; it may not be
@@ -41,8 +41,17 @@ The evidence half is now partially exercised: the E0 diagnostic, the named raw-H
 replacement, the E5 EXIF self-check, focused XCTest runs, the E7 resolution curves, the
 guarded E-D outer-refinement experiment, the post-refinement E-E per-edge diagnostic, all ten
 real-fixture app-route screenshots, and the REQ-027 analyzer-free ground-truth rederivation
-are retained. Independent screenshot-pixel measurement, the injected-offset sensitivity
-check, and the manual-correction screenshot are still not complete.
+are retained. The 2026-09-12 intake now has a cryptographically checked corpus
+manifest covering 23 additional raw HEIC captures and 11 PNG reference images.
+The original ten remain `DEV-HISTORICAL`; 24 new files are `DEVELOPMENT` and 10
+new files are frozen as `HOLDOUT-INTERIM` with `sealed_not_evaluated` status.
+The interim split was selected from provenance and visible category coverage
+before any new analyzer work, but it is not the final capture-diverse holdout:
+the 23 HEIC captures are still from one iPhone model, and the PNG capture role
+is only conservatively classified as document/import provenance. New ground
+truth has not been assigned. Independent screenshot-pixel measurement, the
+injected-offset sensitivity check, and the manual-correction screenshot are
+still not complete.
 
 **Historical full-suite result before E-A/E-B/E-D, iPhone 17 Pro / iOS 26.5 /
 `EB1F0EB1-…`, 294 s:**
@@ -54,7 +63,7 @@ check, and the manual-correction screenshot are still not complete.
    17 genuine centering failures     — see §3.5
 ```
 
-**Fresh REQ-039 signed baseline — 2026-09-12, iPhone 17 Pro / iOS 26.5 /
+**Historical REQ-039 signed baseline — 2026-09-12, pre-E-REQ044, iPhone 17 Pro / iOS 26.5 /
 `EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86`:**
 
 ```
@@ -63,26 +72,38 @@ check, and the manual-correction screenshot are still not complete.
 ```
 
 This run supplied no `CODE_SIGNING_ALLOWED=NO` override and produced no
-Keychain entitlement failures. Eight failed test cases are centering failures
-(rederived-GT/L1 accuracy, INV-4, INV-5, INV-7, and REQ-022); one is the known
-pre-existing Magic-treatment label leak outside the centering diff. The
-machine-readable summary and exact classification are retained in
-[`baseline-2026-09-12.md`](centering-evidence/baseline-2026-09-12.md), with the
-`.xcresult` on the external SSD. The fresh run confirms that REQ-039's
-environment/baseline portion is complete; the IMG_0783 re-audit and REQ-042
-onward spike work remain open. The stage-profile portion of REQ-041 is now
-complete.
+Keychain entitlement failures. It is retained as the pre-E-REQ044 comparison
+point; it is no longer the current full-suite baseline.
 
-The first signed REQ-042 candidate-ledger run is also complete: all ten
-development fixtures emitted candidate telemetry, with preliminary GT-band
-geometry recall of 34/40 outer edges and 29/36 gradeable inner edges (80.6%).
-The seven inner misses are bottom edges on IMG_0348, IMG_0780, IMG_0781, and
-IMG_0783, plus left edges on IMG_0347, IMG_0350, and IMG_0352. Because
-`bestErrorPx` is the best candidate available—not the selected candidate—these
-seven are candidate-generation failures, not selector failures. The result is
-below the 95% target and is not a REQ-042 completion; the ledger nevertheless
-establishes that the next work must separate generator repair from semantic
-role/selection.
+**Current post-E-REQ044 signed baseline — 2026-09-12, iPhone 17 Pro / iOS 26.5 /
+`EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86`:**
+
+```
+1095 result entries · 1085 passed · 1 skipped · 9 failed
+66 failure entries in the xcodebuild console (including repeated assertions/retries)
+```
+
+The completed result bundle reports nine failed test entries, all centering
+failures: rederived-GT/L1 accuracy, INV-4, INV-5, INV-7, REQ-022, and REQ-043
+(with the accuracy entries covering multiple named assertions). The known
+pre-existing Magic-treatment label leak from an older baseline did not recur in
+this result bundle. There were no Keychain entitlement failures. The exact
+summary and failure identifiers
+are retained in [`baseline-post-ereq044-2026-09-12.md`](centering-evidence/baseline-post-ereq044-2026-09-12.md),
+with the signed `.xcresult` on the external SSD. The baseline portion of
+REQ-039 is complete.
+
+The current post-E-REQ044 candidate ledger is also complete as an
+evidence-generation run. With outer edges evaluated against `τ_e` and inner
+edges against the required fixed `0.0035 * H` tolerance, it reports 34/40
+outer edges (85.0%) and 28/36 gradeable inner edges (77.8%). The eight inner
+misses are left edges on IMG_0347 and IMG_0352; bottom edges on IMG_0348,
+IMG_0351, IMG_0780, IMG_0781, and IMG_0783; and the right edge on IMG_0780.
+The four IMG_0782 inner edges are excluded because its GT has no inner
+reference. `bestErrorPx` is the best available candidate, not the selected
+candidate, so these misses are generator-recall failures. The corrected
+ledger and its focused result bundle are recorded under
+[`diagnostics/REQ-042/README.md`](centering-evidence/diagnostics/REQ-042/README.md).
 
 **Current blocking items:**
 
@@ -90,32 +111,27 @@ role/selection.
    ground-truth provenance gate is complete: all ten records were rederived by two independent
    analyzer-free profile passes, visually adjudicated against the physical silhouette, and
    validated for aspect, agreement, non-integral coordinates, and exact ambiguity metadata.
-   The first complete production-entry-point run against that rederived set executed 12 tests
-   before the latest E-REQ044 outer-guard change: 8 passed and 4 failed. The failing test cases
-   were the holdout ratio helper (IMG_0349, IMG_0783, IMG_0351), the IMG_0780 art-window ratio
-   check, the all-fixture L1 gate, and the IMG_0348 portrait-art-window check. Its result bundle
-   is `req027-ground-truth-after-rederive.xcresult` on the external SSD. The associated complete E7
-   benchmark at 1200 px reported 8 confident / 2 declined and 1/10 descriptive ratio passes;
-   the sole pass was IMG_0782's correct no-ratio decline, so 0/8 confident numeric readings
-   met both ratio tolerances. Those results remain the adjudicable pre-E-REQ044 baseline.
-   The latest post-E-REQ044 E-A branch probe is a separate focused diagnostic: 9 confident / 1
-   declined. A complete accuracy and resolution-curve rerun after the final per-side fallback
-   is still required before those baseline accuracy numbers are replaced.
+   The current signed post-E-REQ044 full suite executed 1,095 result entries: 1,085 passed,
+   1 skipped, and 9 failed. All nine failed test entries are centering failures covering the
+   rederived-GT/L1 accuracy gates, INV-4, INV-5, INV-7, REQ-022, and REQ-043. The known
+   pre-existing Magic-treatment label leak from an older baseline did not recur in this
+   result bundle. The exact
+   summary is in [`baseline-post-ereq044-2026-09-12.md`](centering-evidence/baseline-post-ereq044-2026-09-12.md),
+   with the signed `.xcresult` on the external SSD. The pre-E-REQ044 8/12 accuracy result
+   remains historical; the current post-change accuracy result is now adjudicable and failing.
 2. **Residual metamorphic drift** (`REQ-029`): the pre-E-REQ044 post-E-D targeted run reports
    mirror `1.4 pp`, quarter-turn `0.7/1.4/1.1 pp` at 90/180/270 degrees, scale `1.4 pp`,
    and benign-crop `1.1 pp`, all above their limits. The roll-preservation repair restored
    INV-3 and the guarded refinement preserved the legacy analyzer class, but E-D did not
    close the resampling/geometry invariants. E-E classifies the residual as both outer-line
    motion and profile depth selection; it does not justify another unmeasured tuning change.
-3. **Latency and resolution safety** (`REQ-031`, `REQ-041`): the original signed pre-E-REQ044
-   post-REQ-027 E7 bundle measures `2.706/2.935 s` median/max at 1200 px, rising to
-   `7.971/9.723 s` at 2400 px, against `0.80/1.50 s`. The tracked E7 JSON/Markdown were later
-   overwritten by the intermediate transition-width-guard invariant run, before the final
-   per-side fallback; that snapshot measures `2.733/2.972 s` at 1200 and `7.974/9.748 s` at
-   2400, with low-detection/full-resolution-refinement at `3.685/3.861 s` at 2400. Neither
-   snapshot is a post-per-side-fallback curve. The lowest measured resolution is already over
-   3x the median budget, so reducing image dimensions alone cannot close the gap. Higher
-   resolution also changes branch outcomes:
+3. **Latency and resolution safety** (`REQ-031`, `REQ-041`): the current signed post-E-REQ044
+   E7 curve measures `2.745/2.965 s` median/max at 1200 px and `8.003/9.828 s` at 2400 px;
+   the low-detection/full-resolution-refinement curve measures `2.786/2.960 s` at 1200 and
+   `3.716/3.916 s` at 2400, all against `0.80/1.50 s`. The older signed pre-E-REQ044
+   measurements remain useful comparison points, but are no longer the current curve. The
+   lowest measured resolution is already over 3x the median budget, so reducing image
+   dimensions alone cannot close the gap. Higher resolution also changes branch outcomes:
    IMG_0349 declines at 1600/2000, then becomes confident at 2400 with 42.83/39.67 pp errors;
    IMG_0781's LR error grows 11.70 -> 27.17 -> 44.04 -> 45.37 pp. The completed REQ-041
    stage profile attributes 99.9% of wall time to named stages: scalar fields are the largest
@@ -131,8 +147,10 @@ role/selection.
    at the default 1200-pixel path, with `IMG_0781` declining for rectification and `IMG_0782` declining
    for missing inner reference. After the E-REQ044 outer-guard/per-side-fallback change, the
    refreshed E-A probe produced 9 confident / 1 declined: `IMG_0782` still declines for missing
-   inner reference and `IMG_0781` now reaches a confident state. This is availability/branch evidence
-   only; the complete L1/E7 accuracy curves have not been rerun after that production change.
+   inner reference and `IMG_0781` now reaches a confident state. The complete post-E-REQ044
+   L1/E7 rerun is now recorded: the 1200-pixel curve is 9 confident / 1 declined with 3/10
+   descriptive ratio passes, while the full-suite L1 and invariant gates remain failing. This
+   is availability/branch evidence only; it is not an accuracy pass.
 6. **The old E0/E1 metamorphic measurements remain diagnostic-only** (`REQ-036`). E0 and
    historical E1 start from a 900x1200 pre-downsampled bitmap and their drift numbers must not
    drive detector tuning. E-C now starts from the original HEIC bytes, retains raw/equalized
@@ -168,10 +186,12 @@ under `REQ-039`–`REQ-045`.
 
 1. Preserve this plan and its cited evidence under version control. They are currently untracked
    in this worktree; stage only the intended review files and do not absorb unrelated user work.
-2. Run the signed post-E-REQ044 full baseline and regenerate the REQ-042 candidate ledger. The
-   retained ledger predates the final per-side fallback, so its 34/40 outer and 29/36 inner recall
-   is the best retained evidence, not a final measurement of the current branch.
-3. Freeze the capture-condition-diverse holdout from REQ-040 before inspecting its outcomes or
+2. **Complete.** Run the signed post-E-REQ044 full baseline and regenerate the REQ-042 candidate
+   ledger. The current baseline is 1,095 result entries (1,085 passed, 1 skipped, 9 failed;
+   all nine failed entries are centering failures). The corrected current ledger is 34/40
+   outer (85.0%) and 28/36 gradeable inner (77.8%) using the fixed `0.0035 * H` inner
+   tolerance. The historical 29/36 result is preserved but is not the current metric.
+3. **Blocking precondition.** Freeze the capture-condition-diverse holdout from REQ-040 before inspecting its outcomes or
    choosing any template, generator, or confidence threshold.
 4. Implement the registered back-template branch first, because it can bypass five currently
    observed missing inner-edge proposals. Then implement the separate front-bottom candidate
@@ -187,12 +207,12 @@ filtered 0-test invocation remains discarded. The guarded E-D acceptance test al
 raw IMG_0783.
 
 The earlier 25-test post-roll invariant run is historical: it predates E-REQ044 and reported
-INV-3 green with INV-4, INV-5, INV-7, and INV-8 above tolerance. An intermediate 23-test
-invariant-class run after the transition-width guard but before the per-side fallback had 14
-failures. The full invariant class and the L1/E7 accuracy curve have not yet been rerun after
-the final per-side fallback, so neither intermediate result is promoted as the current final
-state. E-E's diagnostic still passes with 24 variant/space snapshots and 96 per-edge records.
-E-C's raw/equalized harness test still passes with twelve records.
+INV-3 green with INV-4, INV-5, INV-7, and INV-8 above tolerance. The current full invariant
+class and L1/E7 accuracy curve have now been rerun after the final per-side fallback. Current
+failures are INV-4 `1.4 pp`, INV-5 `0.7/1.4/1.1 pp` at 90/180/270 degrees, INV-7 `1.4 pp`,
+the L1/ground-truth accuracy cases, REQ-022, and REQ-043; the complete curve is recorded
+under `diagnostics/E7/`. E-E's diagnostic still passes with 24 variant/space snapshots and
+96 per-edge records. E-C's raw/equalized harness test still passes with twelve records.
 
 **The simulator is not blocked.** `CoreSimulatorService` had transiently died; a fresh
 `xcrun simctl list devices` recovers it. `review/centering-evidence/after/simulator-status-2026-09-11.md`
@@ -219,6 +239,8 @@ now records both the transient interruption and the recovered runs (`REQ-033`).
 | E-REQ042 | 2026-09-12 | Added DEBUG-only candidate-ledger telemetry and ran it over all ten original HEIC fixtures on the pinned iOS 26.5 simulator. The final 27.617-second run emitted complete ledgers for all fixtures. Preliminary GT-band geometry recall was 34/40 outer and 29/36 gradeable inner edges (80.6%); the seven inner misses are side-structured generator failures, while semantic roles remain largely untyped, so REQ-042 remains open. Two compile/test-harness corrections were made during the test-first telemetry work; no tolerance or production selector behavior changed. |
 | E-REQ044 | 2026-09-12 | Added a general transition-width guard and per-side fallback for outer refinement. The expected-red broad-transition test failed before the guard, the focused guard test passed, an all-or-nothing follow-up discarded valid sibling refinements, and the final per-side physical-outer test passed. The latest focused analyzer class passed 21/21; the refreshed E-A branch probe is 9 confident / 1 declined; REQ-043 still fails all five backs. No GT coordinate or tolerance changed, and the full invariant/L1 rerun remains pending. |
 | F | 2026-09-12 | Corrected the REQ-042 interpretation: 29/36 gradeable inner sides have an in-tolerance candidate and seven sides have no such candidate, so those seven are generation failures rather than selector failures. Made a post-E-REQ044 baseline/ledger refresh and a fresh frozen holdout mandatory before further production changes; ordered registered back templates before the separate front-bottom generator and gated selector work on role-specific recall. Clarified that template registration must measure observed print displacement rather than assume nominally centered printing. No tolerance loosened and no implementation changed. |
+| F-evidence | 2026-09-12 | Completed the signed post-E-REQ044 full-suite baseline and corrected REQ-042 ledger refresh on the pinned iOS 26.5 simulator. The current result-bundle summary is 1,095 entries: 1,085 passed, 1 skipped, 9 failed; all nine failed entries are centering failures, and the known pre-existing Magic-treatment failure from an older baseline did not recur. The current ledger is 34/40 outer and 28/36 gradeable inner (77.8%) using the fixed `0.0035 * H` inner tolerance. The complete current E7 curve still has 3/10 descriptive ratio passes at each tested resolution and misses the original latency budget. No production perception change or tolerance change followed; REQ-040's diverse frozen holdout remains the precondition for the next production change. |
+| F-corpus | 2026-09-12 | Classified the 34-image intake conservatively, recorded SHA-256 and provenance metadata for all 44 corpus files, and froze a reproducible 10-image `HOLDOUT-INTERIM` split before new analyzer work. The manifest contract passed on the pinned iPhone 17 Pro / iOS 26.5 simulator. This is an interim safeguard, not completion of REQ-040: final cross-device/cross-photographer coverage, new ground truth, and final holdout evaluation remain open. |
 
 
 ---
@@ -325,10 +347,11 @@ screen/export guides. The real-fixture test target and review artifacts are pres
 
 The branch-specific evidence is deliberately recorded separately: the historical raw-HEIC
 E-A/E-B run yielded 8 confident and 2 declined fixtures; the latest focused post-E-REQ044 probe
-yields 9 confident and 1 declined; and the captured screenshot batch predates E-B and still shows
-3 confident and 7 declined. None of those availability counts is an accuracy pass. The rederived
-GT and latest complete production-entry-point accuracy result are recorded under REQ-027; a
-complete post-E-REQ044 replacement remains pending. See §3.6 and
+and current E7 curve yield 9 confident and 1 declined at 1200 px; and the captured screenshot
+batch predates E-B and still shows 3 confident and 7 declined. None of those availability counts
+is an accuracy pass. The rederived GT and current complete post-E-REQ044 production-entry-point
+accuracy result are recorded under REQ-027; the current L1/invariant/latency result is failing,
+not pending. See §3.6 and
 `review/centering-evidence/experiments-log.md`.
 
 ---
@@ -1508,18 +1531,19 @@ follow.**
   The retained E7 snapshots also show IMG_0782 declined at 1200,
   1600, 2000, and 2400 pixels. The no-inner safety behavior is confirmed at the four tested
   benchmark maxima. The current rederived-GT production-entry run executed 12 cases and
-  passed 8 / failed 4; its all-fixture accuracy gate remains failing, so broader REQ-030
-  closure is still open even though the missing-inner-reference assertion is green.
+  passed 8 / failed 4; the current post-E-REQ044 signed full suite has now rerun the
+  production-entry accuracy and invariant gates. The all-fixture accuracy gate still fails,
+  so broader REQ-030 closure remains open even though the missing-inner-reference assertion is
+  green.
 - **Completion.** The missing-inner-reference safety test and the four tested benchmark-mode
   decline checks pass; the all-fixture "never confidently wrong" gate remains failing.
 
 #### REQ-031 — Resolve the latency-versus-resolution trade with evidence
 - **Objective.** Reach a defensible budget rather than an unmet one.
 - **Rationale.** RC-14. Revision A set ≤ 0.80 s median before the implementation chose 2400 px
-  and two Vision passes. The signed pre-E-REQ044 post-REQ-027 curve measures 2.706 s even at
-  1200 px; the tracked E7 files now contain a later intermediate transition-guard snapshot,
-  not a final post-per-side-fallback measurement. This may be a miss or a wrong budget; the
-  plan does not currently know which stage dominates.
+  and two Vision passes. The current signed post-E-REQ044 curve measures 2.745 s even at
+  1200 px; the lowest-resolution path is already more than 3x over budget. This may be a miss
+  or a wrong budget, but REQ-041 now identifies the measured cost centres.
 - **Subsystem.** `CardCenteringAnalyzer`, `REQ-022`'s test.
 - **Required behaviour.** Measure accuracy against working resolution at, at minimum, 1200 /
   1600 / 2000 / 2400 px, reporting the §5.1 metrics at each. Then either (a) meet ≤ 0.80 s /
@@ -1531,16 +1555,22 @@ follow.**
   only under §5.2.2; it may not simply be edited in the test.
 - **Validation.** The resolution/accuracy table, committed; `REQ-022`'s test passing at
   whichever budget is agreed.
-- **Current evidence (2026-09-12).** The original signed E7 tests passed 2/2 after REQ-027
-  ground-truth rederivation. That pre-E-REQ044 bundle measured full-resolution detection at
+- **Current evidence (2026-09-12).** The current signed post-E-REQ044 E7 tests passed 2/2 in
+  the full suite. The current full-resolution curve measures median/max `2.745/2.965 s`,
+  `3.910/4.691 s`, `5.373/6.614 s`, and `8.003/9.828 s` at 1200/1600/2000/2400. The
+  current low-detection/full-resolution-refinement curve measures `2.786/2.960`,
+  `3.173/3.378`, `3.403/3.590`, and `3.716/3.916 s` at those points. The descriptive ratio
+  pass count is 3/10 at every current maximum. The current curves are adjudicable against the
+  rederived GT but do not satisfy the L1/REQ-045 gate. The older pre-E-REQ044 bundle measured
+  full-resolution detection at
   median/max `2.706/2.935 s` at 1200 and `7.971/9.723 s` at 2400; low-resolution detection
   with full-resolution refinement measured `2.724/2.952`, `3.130/3.369`, `3.368/3.599`, and
   `3.660/3.848 s` at 1200/1600/2000/2400. The tracked E7 files were later overwritten by
   the intermediate transition-width-guard invariant run, before the final per-side fallback;
   that snapshot measures `2.733/2.972 s` at 1200 and `7.974/9.748 s` at 2400 for full
   detection, and `2.722/2.975 s` and `3.685/3.861 s` at those points for low-detection.
-  Neither is a final post-per-side-fallback curve. The original `0.80/1.50 s` budget is
-  therefore still failing at every retained point, and no revised budget has been agreed.
+  Those are historical comparisons. The original `0.80/1.50 s` budget is still failing at
+  every current point, and no revised budget has been agreed.
   Resolution reduction alone cannot close a 3x+ default-path median gap, and higher resolutions
   create safety regressions under RC-21. A signed DEBUG REQ-041 run then analyzed all ten
   development fixtures twice (20 analyses total): named
@@ -1640,9 +1670,8 @@ the latest focused post-E-REQ044 probe is 9 confident / 1 declined. The original
 post-REQ-027 E7 bundle and the later intermediate tracked E7 snapshot both show IMG_0782
 declined at all four benchmark maxima in both the full-resolution and low-detection curves.
 The safety behavior is confirmed for those tested benchmark modes; broader supported-mode
-coverage remains open. The first current accuracy run against rederived GT is separately
-recorded under REQ-027 and still fails its L1-related test cases, while a complete post-per-side
-fallback accuracy/curve rerun remains pending.
+  coverage remains open. The current post-per-side-fallback accuracy/curve rerun is separately
+  recorded under REQ-027 and still fails its L1-related test cases.
 
 #### REQ-036 — Make metamorphic diagnostics production-equivalent
 - **Objective.** Measure mirror, quarter-turn, and scale behavior from the original HEIC input at
@@ -1755,16 +1784,26 @@ perception hypothesis.
 - **Constraint.** The closed experiment class may be reopened only when candidate-level evidence
   shows that the correct semantic feature already wins and only its subpixel placement remains
   outside tolerance.
-- **Completion.** A dated signed baseline bundle and summary are retained; IMG_0783 is confirmed
-  or corrected through the existing analyzer-free GT procedure; a replacement post-E-REQ044
-  candidate ledger is retained; and the experiment ledger names the closed class explicitly. The
-  signed 2026-09-12 baseline and current candidate ledger predate E-REQ044, so the focused
-  IMG_0783 re-audit, complete post-change invariant/L1 run, and ledger refresh remain open.
+- **Current status.** The dated signed post-E-REQ044 baseline and summary are retained in
+  `centering-evidence/baseline-post-ereq044-2026-09-12.md`; the complete post-change
+  invariant/L1/E7 run is recorded there, and a replacement candidate ledger is retained under
+  `diagnostics/REQ-042/`. The focused IMG_0783 GT re-audit remains open because its
+  `agreementPx = 4.43` is materially higher than the other records. REQ-039's baseline and
+  ledger-refresh portions are complete; the re-audit and the REQ-040 holdout precondition remain
+  open.
 
 #### REQ-040 — Replace the development-exposed holdout with varied capture evidence
 - **Objective.** Restore a meaningful generalisation test.
 - **Rationale.** The original ten fixtures share one photographer, background, lens, and session,
   and every old holdout has been exposed to analysis or tuning decisions.
+- **Current intake.** The repository now contains a versioned corpus manifest covering the ten
+  `DEV-HISTORICAL` fixtures plus 23 additional raw HEIC captures and 11 PNG reference images.
+  The 34 new files are conservatively classified by provenance and visible card properties; 24
+  are `DEVELOPMENT` and 10 are frozen as `HOLDOUT-INTERIM` before new analyzer work. The interim
+  holdout is sealed and has no analyzer results or ground truth, but it is not the final holdout:
+  the 23 HEIC captures are from one iPhone model, and the PNGs are a document/import cohort whose
+  camera capture role is unknown. REQ-040 remains open because the final gate requires at least
+  30 qualifying new captures and genuinely varied capture conditions.
 - **Required behaviour.** Add at least 30 new captures spanning different photographers or
   capture sessions, backgrounds, devices/lenses, Camera.app and in-app capture, imports,
   sleeved/unsleeved cards, backs, conventionally framed fronts, foil/full-art fronts, and slabs
@@ -1776,8 +1815,12 @@ perception hypothesis.
 - **Ground-truth requirement.** Apply the REQ-027 analyzer-free process. For a physical subset,
   compare image-derived ratios with caliper or calibrated-flatbed measurements to test the
   remaining absolute-GT assumption.
-- **Completion.** The new manifest records cohort and capture provenance; no spike constant or
-  branch was chosen after inspecting frozen-holdout outcomes.
+- **Interim slice completion.** The manifest records cohort and capture provenance, validates all
+  file hashes, freezes exactly ten new `HOLDOUT-INTERIM` files, and records that they have not been
+  analyzed. No spike constant or branch was chosen after inspecting holdout outcomes.
+- **Final completion.** Add the missing capture-diverse cohort, assign independent ground truth
+  using REQ-027, promote a final holdout without analyzing it, and satisfy the full quality and
+  generalization gates below. The interim manifest cannot be relabeled as final evidence.
 
 #### REQ-041 — Profile stages and cap resolution as a safety control
 - **Objective.** Attribute the 2.706-second minimum-path median before optimizing or revising the
@@ -1805,34 +1848,30 @@ perception hypothesis.
   inner recall uses the fixed `0.0035 * H` tolerance from section 5.1 rather than borrowing the
   outer edge-band tolerance.
 - **Current evidence (2026-09-12).** A signed DEBUG run on the pinned iPhone 17 Pro / iOS
-  26.5 simulator analyzed the original HEIC bytes for all ten development fixtures and wrote
-  the complete ledgers to `diagnostics/REQ-042/candidate-ledger.json` and
-  `candidate-ledger.md`. This ledger predates E-REQ044's final per-side fallback and must be
-  regenerated before it is treated as the current branch. The run emitted complete outer and
-  inner edge families for every fixture, including the no-reference IMG_0782 case. Using the
-  harness's preliminary metric
-  (maximum perpendicular distance of each candidate line's reported points from the
-  corresponding rederived-GT edge, compared with the existing GT edge-band tolerance), at
-  least one candidate was within tolerance for 34/40 outer edges (85%) and 29/36 gradeable
-  inner edges (80.6%); the seven inner misses are bottom edges on IMG_0348, IMG_0780, IMG_0781,
-  and IMG_0783, plus left edges on IMG_0347, IMG_0350, and IMG_0352. IMG_0782's four inner edges
-  are correctly excluded because its GT has no inner quad. The metric is geometric pre-recall
-  evidence, not a semantic completion gate; `bestErrorPx` is the best available candidate, so
-  a miss means the generator did not supply a candidate within tolerance.
+  26.5 simulator analyzed the original HEIC bytes for all ten development fixtures after the
+  final E-REQ044 per-side fallback and wrote complete ledgers to
+  `diagnostics/REQ-042/candidate-ledger.json` and `candidate-ledger.md`. The run emitted
+  complete outer and inner edge families for every fixture, including the no-reference IMG_0782
+  case. Using the harness metric (maximum perpendicular distance of each candidate line's
+  reported points from the corresponding rederived-GT edge), with outer edges compared to `τ_e`
+  and inner edges compared to the fixed `0.0035 * H` contract, at least one candidate was within
+  tolerance for 34/40 outer edges (85.0%) and 28/36 gradeable inner edges (77.8%). The eight
+  inner misses are left edges on IMG_0347 and IMG_0352; bottom edges on IMG_0348, IMG_0351,
+  IMG_0780, IMG_0781, and IMG_0783; and the right edge on IMG_0780. IMG_0782's four inner
+  edges are correctly excluded because its GT has no inner quad. The metric is geometric
+  pre-recall evidence, not a semantic completion gate; `bestErrorPx` is the best available
+  candidate, so a miss means the generator did not supply a candidate within tolerance.
   Candidate roles are still mostly `untyped_inner_reference` or `unknown_inner_candidate`,
-  while final output continues to report `art_window` for every non-`none` result. Read
-  `bestErrorPx` as the closest candidate available, not as the error of the
-  production-selected candidate: the seven listed misses are candidate-generation failures,
-  not selector failures. The 29/36 sides with an in-tolerance candidate still require separate
-  selection/role evaluation; recall alone does not show that production selected the correct one.
-  The aggregate output also shows a downstream semantic/selection gap because the role labels are
-  not meaningful, but it must not be used to explain the seven absent-candidate sides.
-- **Metric correction required before completion.** The retained harness used the GT edge-band
-  tolerance for both outer and inner recall. That is valid for outer edges but is not the section
-  5.1 inner-edge contract. Preserve 29/36 (80.6%) as the labeled preliminary historical result;
-  compute the replacement inner ledger against `0.0035 * H`. Template-registered border sides
-  count as candidates only when their geometry is produced without GT and the registration's
-  own acceptance and false-positive gates pass.
+  while final output continues to report `art_window` for every non-`none` result. The eight
+  listed misses are candidate-generation failures, not selector failures. The 28/36 sides with
+  an in-tolerance candidate still require separate selection/role evaluation; recall alone does
+  not show that production selected the correct one. The aggregate output also shows a downstream
+  semantic/selection gap, but it must not be used to explain the eight absent-candidate sides.
+- **Metric correction history.** The earlier harness used the GT edge-band tolerance for both
+  outer and inner recall. Preserve its 29/36 (80.6%) result as labeled preliminary historical
+  evidence; the replacement ledger above uses the section 5.1 fixed `0.0035 * H` inner contract.
+  Template-registered border sides count as candidates only when their geometry is produced
+  without GT and the registration's own acceptance and false-positive gates pass.
 - **Sequencing consequence.** Repair deficient generators before tuning a joint selector for the
   affected sides. After the post-E-REQ044 ledger refresh, the first high-yield implementation
   branch is REQ-043's validated back-template path: it can
@@ -1844,9 +1883,9 @@ perception hypothesis.
   item. Do not count the back branch as evidence that the front problem is solved.
 - **Completion.** Correct candidate recall is at least 95% on the development set for each
   declared automatically supported reference class, or the deficient generator is named and
-  the selector spike does not proceed for that class. The current 85%/80.6% preliminary result
-  does not satisfy this gate; at least the seven historical inner misses must be repaired at
-  candidate generation before selector tuning can be evaluated for those sides.
+  the selector spike does not proceed for that class. The current 85.0%/77.8% result does not
+  satisfy this gate; the eight listed inner misses must be repaired at candidate generation
+  before selector tuning can be evaluated for those sides.
 
 #### REQ-043 — Make reference type an explicit semantic decision
 - **Objective.** Replace the universal `art_window` default with a verifiable choice of

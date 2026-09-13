@@ -1,5 +1,7 @@
 # Rejected Hypotheses and Uncertainties
 
+> **Historical snapshot — 2026-09-10.** This disposition records what the Luna whole-repository review rejected or left uncertain at its recorded baseline. It is not a current card-centering status document. For current centering work, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+
 ## Prior defect hypotheses rechecked as fixed
 
 The prior audit in `docs/audits/defect_review_pass_1.md` is historical evidence only. Its nine defects were re-opened against the current source and current test suite. D01–D08 are not current findings:
@@ -65,4 +67,4 @@ This was a review pass over the completed artifacts, not a second list of untest
 
 ## Historical-document reconciliation
 
-`progress.md` and `docs/plans/documentation_audit.md` state an older 940-test simulator baseline. The current Debug run discovered 1,005 tests with one skip and zero failures. Historical “closed” statements were retained only where current source/tests supported them; stale counts and historical artifact links were not used as completion proof. F-014 records the broken root README links; historical links inside older plan documents are treated as archival navigation debt unless they claim current release evidence.
+`progress.md` and `docs/plans/documentation_audit.md` state an older 940-test simulator baseline. The review-time Debug run discovered 1,005 tests with one skip and zero failures. Historical “closed” statements were retained only where the review-time source/tests supported them; stale counts and historical artifact links were not used as completion proof. F-014 records the broken root README links; historical links inside older plan documents are treated as archival navigation debt unless they claim current release evidence.

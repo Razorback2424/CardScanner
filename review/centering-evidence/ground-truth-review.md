@@ -46,10 +46,12 @@ Checklist:
 
 The visual review is intentionally recorded separately from the XCTest schema
 check. The provenance test, schema/aspect checks, and overlay packaging passed
-in the current ground-truth test run. The L1 production-entry-point test still
-fails for four test cases (IMG_0349 holdout ratio, IMG_0780 and IMG_0348 art
-window ratios, and IMG_0347 outer geometry); that is now an adjudicable
-detector-versus-reference result, not a provisional-GT result.
+in the current ground-truth test run. The current signed post-E-REQ044 suite
+still fails the production accuracy entries, including the IMG_0349/IMG_0783/
+IMG_0351 ratio assertions, the IMG_0780 and IMG_0348 art-window checks, and
+the L1 geometry/ratio gate. These are adjudicable detector results, not
+provisional-GT results. See `baseline-post-ereq044-2026-09-12.md` for the exact
+result-bundle failure identifiers.
 
 Revision-E caveat: IMG_0783's recorded `agreementPx` is 4.43156 px, about
 1.6x the next-largest record. Its exact selected physical-card and
