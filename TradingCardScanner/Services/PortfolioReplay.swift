@@ -466,15 +466,14 @@ enum PortfolioReplayEngine {
         into accumulator: inout DayAccumulator,
         pendingNewlyAddedQuantities: inout [String: Int]
     ) {
-        // A non-USD observation cannot be converted into this portfolio's USD
-        // total. Current valuation intentionally carries the prior USD record
-        // forward, so replay must do the same instead of turning the row into a
-        // synthetic withdrawal and creating an unexplained residual.
-        guard observation.participatesInPortfolioValue else { return }
-
         let instrument = observation.instrumentKey
         let old = state.prices[instrument]
-        let new = observation.amount
+        // A non-USD observation is real evidence that supersedes the USD
+        // evidence, but it cannot be converted into this portfolio's total.
+        // Applying it as `nil` keeps replay aligned with current valuation and
+        // records the transition as a pricing adjustment rather than market
+        // movement.
+        let new = observation.participatesInPortfolioValue ? observation.amount : nil
         let quantity = state.quantityPriced(through: instrument)
         let difference = (new ?? .zero) - (old ?? .zero)
         let newlyAddedQuantity: Int

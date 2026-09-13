@@ -1,0 +1,282 @@
+[
+  {
+    "appliedRotation" : 1.2526743718495952,
+    "bB" : 11,
+    "elapsedMs" : 3795.5609560012817,
+    "file" : "IMG_0347.HEIC",
+    "imageH" : 1220,
+    "imageW" : 927,
+    "innerB" : 1125,
+    "innerL" : 76,
+    "innerR" : 766,
+    "innerT" : 98,
+    "lB" : 27,
+    "lr" : "24.8 \/ 75.2",
+    "notes" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ],
+    "ok" : true,
+    "outerB" : 1136,
+    "outerL" : 49,
+    "outerR" : 848,
+    "outerT" : 59,
+    "rB" : 82,
+    "tB" : 39,
+    "tb" : "78.0 \/ 22.0",
+    "warnings" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ]
+  },
+  {
+    "appliedRotation" : 1.863362401396781,
+    "bB" : 28,
+    "elapsedMs" : 3341.7528867721558,
+    "file" : "IMG_0348.HEIC",
+    "imageH" : 1229,
+    "imageW" : 939,
+    "innerB" : 1137,
+    "innerL" : 81,
+    "innerR" : 844,
+    "innerT" : 81,
+    "lB" : 23,
+    "lr" : "44.2 \/ 55.8",
+    "notes" : [
+
+    ],
+    "ok" : true,
+    "outerB" : 1165,
+    "outerL" : 58,
+    "outerR" : 873,
+    "outerT" : 60,
+    "rB" : 29,
+    "tB" : 21,
+    "tb" : "42.9 \/ 57.1",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "appliedRotation" : 0.8870517701748627,
+    "bB" : 11,
+    "elapsedMs" : 3767.3219442367554,
+    "file" : "IMG_0349.HEIC",
+    "imageH" : 1214,
+    "imageW" : 919,
+    "innerB" : 1155,
+    "innerL" : 58,
+    "innerR" : 820,
+    "innerT" : 104,
+    "lB" : 8,
+    "lr" : "21.6 \/ 78.4",
+    "notes" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ],
+    "ok" : true,
+    "outerB" : 1166,
+    "outerL" : 50,
+    "outerR" : 849,
+    "outerT" : 22,
+    "rB" : 29,
+    "tB" : 82,
+    "tb" : "88.2 \/ 11.8",
+    "warnings" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ]
+  },
+  {
+    "appliedRotation" : -0.7152681803239453,
+    "bB" : 11,
+    "elapsedMs" : 3847.447991371155,
+    "file" : "IMG_0350.HEIC",
+    "imageH" : 1212,
+    "imageW" : 915,
+    "innerB" : 1157,
+    "innerL" : 52,
+    "innerR" : 810,
+    "innerT" : 202,
+    "lB" : 31,
+    "lr" : "39.2 \/ 60.8",
+    "notes" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ],
+    "ok" : true,
+    "outerB" : 1168,
+    "outerL" : 21,
+    "outerR" : 858,
+    "outerT" : 47,
+    "rB" : 48,
+    "tB" : 155,
+    "tb" : "93.4 \/ 6.6",
+    "warnings" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ]
+  },
+  {
+    "appliedRotation" : 0,
+    "bB" : 11,
+    "elapsedMs" : 1828.6980390548706,
+    "file" : "IMG_0351.HEIC",
+    "imageH" : 1200,
+    "imageW" : 900,
+    "innerB" : 1145,
+    "innerL" : 64,
+    "innerR" : 797,
+    "innerT" : 82,
+    "lB" : 9,
+    "lr" : "23.7 \/ 76.3",
+    "notes" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ],
+    "ok" : true,
+    "outerB" : 1156,
+    "outerL" : 55,
+    "outerR" : 826,
+    "outerT" : 57,
+    "rB" : 29,
+    "tB" : 25,
+    "tb" : "69.4 \/ 30.6",
+    "warnings" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ]
+  },
+  {
+    "appliedRotation" : 0.7108266967335557,
+    "bB" : 11,
+    "elapsedMs" : 3402.4059772491455,
+    "file" : "IMG_0352.HEIC",
+    "imageH" : 1212,
+    "imageW" : 915,
+    "innerB" : 1153,
+    "innerL" : 65,
+    "innerR" : 803,
+    "innerT" : 126,
+    "lB" : 27,
+    "lr" : "38.6 \/ 61.4",
+    "notes" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ],
+    "ok" : true,
+    "outerB" : 1164,
+    "outerL" : 38,
+    "outerR" : 846,
+    "outerT" : 85,
+    "rB" : 43,
+    "tB" : 41,
+    "tb" : "78.8 \/ 21.2",
+    "warnings" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ]
+  },
+  {
+    "appliedRotation" : 1.0985231006710696,
+    "bB" : 44,
+    "elapsedMs" : 3306.942939758301,
+    "file" : "IMG_0780.HEIC",
+    "imageH" : 1218,
+    "imageW" : 923,
+    "innerB" : 1162,
+    "innerL" : 88,
+    "innerR" : 850,
+    "innerT" : 85,
+    "lB" : 28,
+    "lr" : "75.7 \/ 24.3",
+    "notes" : [
+
+    ],
+    "ok" : true,
+    "outerB" : 1206,
+    "outerL" : 60,
+    "outerR" : 859,
+    "outerT" : 56,
+    "rB" : 9,
+    "tB" : 29,
+    "tb" : "39.7 \/ 60.3",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "appliedRotation" : 0.8406532085998638,
+    "bB" : 72,
+    "elapsedMs" : 3452.939033508301,
+    "file" : "IMG_0781.HEIC",
+    "imageH" : 1214,
+    "imageW" : 918,
+    "innerB" : 1096,
+    "innerL" : 101,
+    "innerR" : 817,
+    "innerT" : 104,
+    "lB" : 37,
+    "lr" : "48.7 \/ 51.3",
+    "notes" : [
+
+    ],
+    "ok" : true,
+    "outerB" : 1168,
+    "outerL" : 64,
+    "outerR" : 856,
+    "outerT" : 62,
+    "rB" : 39,
+    "tB" : 42,
+    "tb" : "36.8 \/ 63.2",
+    "warnings" : [
+
+    ]
+  },
+  {
+    "appliedRotation" : 0.4013393236142546,
+    "bB" : 6,
+    "elapsedMs" : 3614.485025405884,
+    "file" : "IMG_0782.HEIC",
+    "imageH" : 1207,
+    "imageW" : 909,
+    "innerB" : 655,
+    "innerL" : 103,
+    "innerR" : 785,
+    "innerT" : 76,
+    "lB" : 49,
+    "lr" : "44.5 \/ 55.5",
+    "notes" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ],
+    "ok" : true,
+    "outerB" : 661,
+    "outerL" : 54,
+    "outerR" : 846,
+    "outerT" : 39,
+    "rB" : 61,
+    "tB" : 37,
+    "tb" : "86.0 \/ 14.0",
+    "warnings" : [
+      "The border edges could not be followed confidently — check all four guides before reading the result."
+    ]
+  },
+  {
+    "appliedRotation" : 0,
+    "bB" : 102,
+    "elapsedMs" : 2099.540114402771,
+    "file" : "IMG_0783.HEIC",
+    "imageH" : 1200,
+    "imageW" : 900,
+    "innerB" : 1059,
+    "innerL" : 94,
+    "innerR" : 810,
+    "innerT" : 97,
+    "lB" : 41,
+    "lr" : "52.6 \/ 47.4",
+    "notes" : [
+
+    ],
+    "ok" : true,
+    "outerB" : 1161,
+    "outerL" : 53,
+    "outerR" : 847,
+    "outerT" : 55,
+    "rB" : 37,
+    "tB" : 42,
+    "tb" : "29.2 \/ 70.8",
+    "warnings" : [
+
+    ]
+  }
+]

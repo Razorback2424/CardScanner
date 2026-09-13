@@ -4,11 +4,15 @@ A high-throughput, high-trust collection intake system for iPhone. The camera an
 OCR are the mechanism; the product is being able to move through a stack of cards
 rhythmically while the software stays out of the way.
 
-For the current implementation checkpoint, simulator evidence, and the remaining
-device/provider/review gates, see [`documentation_audit.md`](documentation_audit.md).
-The chronological implementation log remains in [`progress.md`](progress.md),
-while validation work that cannot be retired by simulator tests is centralized in
-[`release_followups.md`](release_followups.md).
+For the broader repository audit snapshot and its remaining device/provider/review
+gates, see
+[`docs/plans/documentation_audit.md`](docs/plans/documentation_audit.md). The
+active card-centering contract and evidence are in
+[`review/opus-card-centering-implementation-plan.md`](review/opus-card-centering-implementation-plan.md)
+and [`review/centering-evidence/`](review/centering-evidence/). The
+chronological implementation log remains in [`progress.md`](progress.md), while
+validation work that cannot be retired by simulator tests is centralized in
+[`docs/plans/release_followups.md`](docs/plans/release_followups.md).
 
 ## Three principles
 
@@ -362,10 +366,14 @@ that rides along in the catalog response the identification already made.
 
 ## Scan tuning
 
-The two main values are in `Services/CardScanner.swift`:
+The cadence and confirmation values are in `Services/CardScanner.swift`:
 
 ```swift
-private let minimumVisionInterval: CFAbsoluteTime = 0.24
+ScanCadenceScheduler(
+    ocrInterval: 0.24,
+    labelInterval: 0.5,
+    unboundLabelInterval: 1.5
+)
 private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
 ```
 
@@ -374,13 +382,17 @@ that recognition now runs continuously rather than pausing between cards, so the
 duty cycle is higher than it was; if battery becomes a problem, the interval is
 the lever.
 
-`CardLatch`'s two constants are the duplicate-protection budget:
+`CardLatch`'s three constants are the duplicate-protection budget:
 
 ```swift
-CardLatch(releaseAfterAbsences: 4, minimumAbsenceBeforeRelatch: 1.2)
+CardLatch(
+    releaseAfterAbsences: 4,
+    minimumAbsenceBeforeRelatch: 2.0,
+    presumedGoneAfter: 6.0
+)
 ```
 
-Raising either makes duplicates harder and back-to-back identical copies slower.
+Raising any of them makes duplicates harder and back-to-back identical copies slower.
 
 ## Adding a set
 

@@ -195,7 +195,7 @@ final class PortfolioReplayEngineTests: XCTestCase {
         XCTAssertEqual(result.live?.attribution.unexplained, .zero)
     }
 
-    func testCurrencyFlipKeepsUSDFallbackAsPortfolioEvidence() {
+    func testCurrencyFlipDepricesThePortfolioWithoutMarketMovement() {
         let first = PriceObservation(
             instrumentKey: "instrument",
             kind: .marketUpdate,
@@ -236,10 +236,10 @@ final class PortfolioReplayEngineTests: XCTestCase {
         XCTAssertEqual(result.live?.attribution.market, .zero)
         XCTAssertEqual(
             result.live?.attribution.pricingAdjustment,
-            .zero,
-            "a non-USD observation cannot withdraw the USD fallback value"
+            -usd(10),
+            "a newer non-USD observation de-prices the prior USD evidence"
         )
-        XCTAssertEqual(result.live?.attribution.currentValue, usd(10))
+        XCTAssertEqual(result.live?.attribution.currentValue, .zero)
         XCTAssertEqual(result.live?.attribution.unexplained, .zero)
     }
 

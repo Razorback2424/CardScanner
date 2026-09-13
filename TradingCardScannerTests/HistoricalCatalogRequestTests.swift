@@ -50,13 +50,18 @@ final class HistoricalCatalogRequestTests: XCTestCase {
 
         func historicalCard(id: String) async throws -> TCGdexCard {
             cardRequests += 1
+            let components = id.split(separator: "-", maxSplits: 1).map(String.init)
+            let setID = components.first ?? "base1"
+            let localID = setID == "ecard2"
+                ? "1"
+                : (components.count == 2 ? components[1] : "19")
             return try Self.decode(
                 TCGdexCard.self,
-                from: #"""
-                { "id": "base1-19", "localId": "19", "name": "Dugtrio",
-                  "set": { "id": "base1", "name": "Base Set",
+                from: """
+                { "id": "\(id)", "localId": "\(localID)", "name": "Dugtrio",
+                  "set": { "id": "\(setID)", "name": "Base Set",
                            "cardCount": { "total": 102, "official": 102 } } }
-                """#
+                """
             )
         }
     }
@@ -108,6 +113,40 @@ final class HistoricalCatalogRequestTests: XCTestCase {
         XCTAssertLessThanOrEqual(
             directory, 2,
             "a stalled directory may be retried, but not once per frame (was \(directory))"
+        )
+    }
+
+    func testCardRequestMemoEvictsLeastRecentlyUsedEntries() async throws {
+        let source = CountingSource()
+        let catalog = PokemonHistoricalCatalog(service: source, cardTaskCapacity: 2)
+        let evidence = PokemonHistoricalScanEvidence(
+            number: PokemonPrintedNumberEvidence(
+                localID: "1",
+                denominator: 32,
+                scheme: .subset(prefix: "H")
+            ),
+            titleCandidates: [CatalogIdentityNormalization.canonicalText("Dugtrio")]
+        )
+        let identities = (1...3).map {
+            PokemonCatalogCardIdentity(
+                providerID: "ecard2-\($0)",
+                setID: "ecard2",
+                setName: "e-Card",
+                localID: "1",
+                name: "Dugtrio"
+            )
+        }
+
+        for identity in identities {
+            _ = try await catalog.card(for: identity, matching: evidence)
+        }
+        _ = try await catalog.card(for: identities[0], matching: evidence)
+
+        let cards = await source.cardRequests
+        XCTAssertEqual(
+            cards,
+            4,
+            "the oldest resolved card should be refetched after the two-entry memo fills"
         )
     }
 }

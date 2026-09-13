@@ -789,7 +789,8 @@ enum IdentifiedCard: Identifiable, Sendable {
                 game: .magic,
                 setID: card.setCode.lowercased(),
                 cardNumber: card.collectorNumber,
-                catalogVariants: card.catalogVariants
+                catalogVariants: card.catalogVariants,
+                magicTreatments: card.magicTreatmentEvidence.treatments
             )
         }
     }

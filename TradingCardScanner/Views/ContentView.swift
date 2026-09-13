@@ -43,20 +43,27 @@ struct ContentView: View {
     /// key, an existing fixture from a previous state can win the snapshot's
     /// sort order and make the screenshot appear to validate the wrong state.
     @State private var debugCardDetailCollectionKey: String?
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
     private let debugRoute: String?
 #endif
 
     init() {
         _browseCatalog = State(initialValue: BrowseCatalog())
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
         let arguments = ProcessInfo.processInfo.arguments
         let routeIndex = arguments.firstIndex(of: "-ui_debug_route")
         let route = routeIndex.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+        #if DEBUG
         debugRoute = route
+        #else
+        // The opt-in Release harness must expose only its own route. Keeping
+        // the other DEBUG routes unreachable prevents a profiling binary from
+        // seeding a user's persistent collection.
+        debugRoute = route == "CollectionFinishPerformance" ? route : nil
+        #endif
         let initialTab: Tab
-        switch route {
-        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles", "CollectionTilesLongContent", "MagicTreatmentSlice4": initialTab = .collection
+        switch debugRoute {
+        case "Browse", "SealedArtwork", "CardMovement", "CardDetail", "TrustCardDetail", "CollectionTiles", "CollectionTilesLongContent", "CollectionFinishPerformance", "MagicTreatmentSlice4": initialTab = .collection
         case "PortfolioToday", "PortfolioPhase3", "PortfolioMostValuable", "PortfolioContributors", "PortfolioHistory": initialTab = .portfolio
         case "WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt", "GradedLabelCapture": initialTab = .scan
         case "Centering", "CenteringExpanded": initialTab = .centering
@@ -91,7 +98,7 @@ struct ContentView: View {
                 refresh: refresh,
                 opensBrowseOnLaunch: isBrowseDebugRoute,
                 opensMovementDetailsOnLaunch: isMovementDebugRoute,
-                opensCardDetailOnLaunch: isCardDetailDebugRoute,
+                opensCardDetailOnLaunch: isCardDetailDebugRoute || isCardFinishPerformanceDetailRoute,
                 opensCardDetailForCollectionKey: debugCardDetailCollectionKey,
                 waitsForCardDetailCollectionKey: isTrustCardDetailDebugRoute,
                 onOpenScanner: { selectedTab = .scan },
@@ -118,10 +125,18 @@ struct ContentView: View {
         .environmentObject(priceSnapshot)
         .environmentObject(projectionStore)
         .environmentObject(revisionStore)
+        .environment(\.cardFinishPerformancePolicy, cardFinishPerformancePolicy)
         .overlay(alignment: .top) {
             ScanSessionSummaryBanner()
                 .environmentObject(scanSummaryStore)
         }
+#if DEBUG || CARD_FINISH_PERF_HARNESS
+        .overlay(alignment: .topLeading) {
+            if isCardFinishPerformanceDebugRoute {
+                CardFinishPerformanceHUD()
+            }
+        }
+#endif
 #if DEBUG
         .overlay {
             if debugRoute == "MagicTreatmentSlice4" {
@@ -133,7 +148,7 @@ struct ContentView: View {
             }
         }
 #endif
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
         .task {
             switch debugRoute {
             case "CollectionTiles":
@@ -147,6 +162,11 @@ struct ContentView: View {
                 history.range = .oneMonth
             case "CardDetail":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+                history.range = .oneMonth
+            case "CollectionFinishPerformance":
+                debugCardDetailCollectionKey = PortfolioDebugFixtures.seedCardFinishPerformance(
+                    in: modelContext
+                )
                 history.range = .oneMonth
             case "TrustCardDetail":
                 debugCardDetailCollectionKey = PortfolioDebugFixtures.seedTrustProvenanceIfNeeded(
@@ -269,7 +289,7 @@ struct ContentView: View {
     }
 
     private var isBrowseDebugRoute: Bool {
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
         return debugRoute == "Browse"
 #else
         return false
@@ -277,7 +297,7 @@ struct ContentView: View {
     }
 
     private var isMovementDebugRoute: Bool {
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
         return debugRoute == "CardMovement"
 #else
         return false
@@ -285,7 +305,7 @@ struct ContentView: View {
     }
 
     private var isCardDetailDebugRoute: Bool {
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
         return debugRoute == "CardDetail" || debugRoute == "TrustCardDetail"
 #else
         return false
@@ -293,10 +313,48 @@ struct ContentView: View {
     }
 
     private var isTrustCardDetailDebugRoute: Bool {
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
         return debugRoute == "TrustCardDetail"
 #else
         return false
+#endif
+    }
+
+    private var isCardFinishPerformanceDebugRoute: Bool {
+#if DEBUG || CARD_FINISH_PERF_HARNESS
+        return debugRoute == "CollectionFinishPerformance"
+#else
+        return false
+#endif
+    }
+
+    private var isCardFinishPerformanceDetailRoute: Bool {
+#if DEBUG || CARD_FINISH_PERF_HARNESS
+        guard isCardFinishPerformanceDebugRoute else { return false }
+        switch PortfolioDebugFixtures.cardFinishPerformanceScenario() {
+        case .gridWithDetail, .singleDetail, .singleDetailControl:
+            return true
+        case .gridOnly, .nonfoilControl:
+            return false
+        }
+#else
+        return false
+#endif
+    }
+
+    private var cardFinishPerformancePolicy: CardFinishPerformancePolicy {
+#if DEBUG || CARD_FINISH_PERF_HARNESS
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-card-finish-policy"),
+              arguments.indices.contains(index + 1) else { return .live }
+        switch arguments[index + 1] {
+        case "staticCollection": return .staticCollection
+        case "staticAll": return .staticAll
+        case "disabled": return .disabled
+        default: return .live
+        }
+#else
+        return .live
 #endif
     }
 
@@ -348,7 +406,7 @@ struct ContentView: View {
         }
     }
 
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
     @MainActor
     private func seedSealedArtworkQA() {
         let store = CollectionStore(context: modelContext)

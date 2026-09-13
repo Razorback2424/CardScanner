@@ -3,6 +3,20 @@ import CoreMotion
 import SwiftUI
 import UIKit
 
+enum CenteringCameraLens: String, Codable, Equatable {
+    case macro
+    case wide
+}
+
+struct CenteringCameraOpticsConfiguration: Equatable {
+    let lens: CenteringCameraLens
+    let geometricDistortionCorrectionSupported: Bool
+
+    var requestsGeometricDistortionCorrection: Bool {
+        geometricDistortionCorrectionSupported
+    }
+}
+
 final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     let session = AVCaptureSession()
     /// Which way the sensor is held. The photo connection and the preview layer
@@ -13,6 +27,10 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     @Published private(set) var levelOffset: CGSize = .zero
     @Published private(set) var isLevel = false
     @Published private(set) var capturedData: Data?
+    /// The lens that produced the current camera capture. The image data still
+    /// carries its own EXIF metadata; this field makes the capture path
+    /// explicit for the centering evidence and device checks.
+    @Published private(set) var captureLens: CenteringCameraLens?
 
     private let sessionQueue = DispatchQueue(label: "cards.centering.camera")
     private let photoOutput = AVCapturePhotoOutput()
@@ -117,11 +135,19 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     }
 
     private func configureSession() throws {
-        let cameraType: AVCaptureDevice.DeviceType = CameraCapabilities.hasMacroLens()
+        let lens: CenteringCameraLens = CameraCapabilities.hasMacroLens() ? .macro : .wide
+        let cameraType: AVCaptureDevice.DeviceType = lens == .macro
             ? .builtInUltraWideCamera
             : .builtInWideAngleCamera
         guard let camera = AVCaptureDevice.default(cameraType, for: .video, position: .back) else {
             throw CameraConfigurationError.unavailable
+        }
+        let optics = CenteringCameraOpticsConfiguration(
+            lens: lens,
+            geometricDistortionCorrectionSupported: camera.isGeometricDistortionCorrectionSupported
+        )
+        DispatchQueue.main.async { [weak self] in
+            self?.captureLens = optics.lens
         }
         let input = try AVCaptureDeviceInput(device: camera)
         session.beginConfiguration()
@@ -148,6 +174,9 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             }
             if camera.isSmoothAutoFocusSupported {
                 camera.isSmoothAutoFocusEnabled = false
+            }
+            if optics.requestsGeometricDistortionCorrection {
+                camera.isGeometricDistortionCorrectionEnabled = true
             }
             let focusRect = ScanRegion.metadataRect(rotationAngle: rotation.currentAngle)
             let focusPoint = CGPoint(x: focusRect.midX, y: focusRect.midY)

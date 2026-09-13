@@ -72,6 +72,11 @@ final class PortfolioDailyClose {
     var inputsFingerprint: String = ""
     var revisionReasonRaw: String?
     var computedAt: Date = Date.now
+    /// When this close became durable. Inventory truth recorded after this
+    /// instant can be classified as late only if it still occurred before the
+    /// close's measured day boundary. `nil` is retained for rows migrated from
+    /// the pre-publication schema; those rows are conservatively recomputed.
+    var publishedAt: Date?
 
     init(
         date: Date,
@@ -92,6 +97,7 @@ final class PortfolioDailyClose {
         inputsFingerprint: String,
         revisionReason: PortfolioRevisionReason?,
         computedAt: Date = .now,
+        publishedAt: Date? = .now,
         added: Money? = nil,
         removed: Money? = nil
     ) {
@@ -115,6 +121,7 @@ final class PortfolioDailyClose {
         self.inputsFingerprint = inputsFingerprint
         self.revisionReasonRaw = revisionReason?.rawValue
         self.computedAt = computedAt
+        self.publishedAt = publishedAt
     }
 
     var closeValue: Money { Money(tenThousandths: closeValueTenThousandths) }

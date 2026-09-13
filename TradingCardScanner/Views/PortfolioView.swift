@@ -330,7 +330,7 @@ struct PortfolioView: View {
     }
 
     private var periodControl: some View {
-        let activeChange = activeHistoryResult?.accounting?.totalChange ?? .zero
+        let activeChange = activeHistoryResult?.accounting?.market ?? .zero
         let ranges = PortfolioHistoryRange.allCases
         // Chips hug their own text and the gaps between them absorb the slack —
         // the first sits flush against the leading gutter and the last against
@@ -418,16 +418,16 @@ struct PortfolioView: View {
             if portfolio.summary?.isAuthoritative == true,
                let accounting = activeHistoryResult?.accounting {
                 let trailingText = PortfolioHistoryDisplay.percentChange(
-                    amount: accounting.totalChange,
+                    amount: accounting.market,
                     anchor: accounting.anchorValue
                 ).map { "· \(abs($0).formatted(.percent.precision(.fractionLength(2))))" }
                 HStack(spacing: 8) {
                     PortfolioAmountPill(
-                        amount: accounting.totalChange,
+                        amount: accounting.market,
                         showsArrow: true,
                         trailingText: trailingText
                     )
-                    Text(historyRange.pastPeriodPhrase)
+                    Text(historyRange.marketMovementPhrase)
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }

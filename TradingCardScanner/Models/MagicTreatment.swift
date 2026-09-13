@@ -14,8 +14,54 @@ import Foundation
 /// becoming unrepresentable.
 enum MagicTreatment: Identifiable, Hashable, Sendable, Codable {
     case surgeFoil
+    case galaxyFoil
+    case silverFoil
+    case rippleFoil
+    case rainbowFoil
+    case haloFoil
+    case doubleRainbow
+    case firstPlaceFoil
+    case textured
+    case stepAndCompleat
+    case raisedFoil
+    case fractureFoil
+    case manaFoil
+    case gilded
+    case confettiFoil
+    case oilSlick
+    case invisibleInk
+    case embossed
     case neonInk
+    case chocoboTrackFoil
+    case dazzleFoil
+    case dragonScaleFoil
+    case facetFoil
+    case cosmicFoil
+    case singularityFoil
+    case gleamingGold
+    case serialized
+    case thick
+    case plastic
+    case metal
+    case glossy
     case unclassified(String)
+
+    /// The reviewed vocabulary in provider signal order. This is the single
+    /// source of truth for modelled treatments; the bundled catalog generator
+    /// reads the same order from `MagicTreatmentCatalog/vocabulary.json`.
+    static let modelled: [MagicTreatment] = [
+        .surgeFoil, .galaxyFoil, .silverFoil, .rippleFoil, .rainbowFoil,
+        .haloFoil, .doubleRainbow, .firstPlaceFoil, .textured, .stepAndCompleat,
+        .raisedFoil, .fractureFoil, .manaFoil, .gilded, .confettiFoil,
+        .oilSlick, .invisibleInk, .embossed, .neonInk, .chocoboTrackFoil,
+        .dazzleFoil, .dragonScaleFoil, .facetFoil,
+        .cosmicFoil, .singularityFoil, .gleamingGold, .serialized, .thick,
+        .plastic, .metal, .glossy
+    ]
+
+    /// Treatments that may be selected as a scanner lock. The menu stays
+    /// intentionally narrow even though the model and catalog are exhaustive.
+    static let lockable: [MagicTreatment] = [.surgeFoil, .neonInk]
 
     static func == (lhs: MagicTreatment, rhs: MagicTreatment) -> Bool {
         lhs.id == rhs.id
@@ -29,8 +75,66 @@ enum MagicTreatment: Identifiable, Hashable, Sendable, Codable {
         switch self {
         case .surgeFoil:
             return "surgefoil"
+        case .galaxyFoil:
+            return "galaxyfoil"
+        case .silverFoil:
+            return "silverfoil"
+        case .rippleFoil:
+            return "ripplefoil"
+        case .rainbowFoil:
+            return "rainbowfoil"
+        case .haloFoil:
+            return "halofoil"
+        case .doubleRainbow:
+            return "doublerainbow"
+        case .firstPlaceFoil:
+            return "firstplacefoil"
+        case .textured:
+            return "textured"
+        case .stepAndCompleat:
+            return "stepandcompleat"
+        case .raisedFoil:
+            return "raisedfoil"
+        case .fractureFoil:
+            return "fracturefoil"
+        case .manaFoil:
+            return "manafoil"
+        case .gilded:
+            return "gilded"
+        case .confettiFoil:
+            return "confettifoil"
+        case .oilSlick:
+            return "oilslick"
+        case .invisibleInk:
+            return "invisibleink"
+        case .embossed:
+            return "embossed"
         case .neonInk:
             return "neonink"
+        case .chocoboTrackFoil:
+            return "chocobotrackfoil"
+        case .dazzleFoil:
+            return "dazzlefoil"
+        case .dragonScaleFoil:
+            return "dragonscalefoil"
+        case .facetFoil:
+            return "facetfoil"
+        case .cosmicFoil:
+            return "cosmicfoil"
+        case .singularityFoil:
+            return "singularityfoil"
+        case .gleamingGold:
+            return "gleaminggold"
+        case .serialized:
+            return "serialized"
+        case .thick:
+            return "thick"
+        case .plastic:
+            return "plastic"
+        case .metal:
+            return "metal"
+        case .glossy:
+            return "glossy"
         case let .unclassified(rawValue):
             return rawValue.lowercased()
         }
@@ -39,29 +143,99 @@ enum MagicTreatment: Identifiable, Hashable, Sendable, Codable {
     /// The provider signal this treatment is derived from.
     var providerSignal: String {
         switch self {
-        case .surgeFoil: return "surgefoil"
-        case .neonInk: return "neonink"
         case let .unclassified(rawValue): return rawValue
+        default: return id
         }
     }
 
-    /// Both treatments in this slice are printed on foil cards. This is a
-    /// relationship, not a replacement for the separate `.foil` finish.
-    var requiredFinish: PhysicalVariant? {
+    /// The finishes on which this treatment is published. An empty set means
+    /// the treatment is a product/provenance signal rather than a physical
+    /// surface relationship. This is a relationship, not a replacement for
+    /// the separate `PhysicalVariant` finish axis.
+    var requiredFinishes: Set<PhysicalVariant> {
         switch self {
-        case .surgeFoil, .neonInk:
-            return .foil
-        case .unclassified:
-            return nil
+        case .serialized, .thick, .plastic, .metal, .glossy, .unclassified:
+            return []
+        case .rippleFoil:
+            return [.foil, .etched]
+        case .surgeFoil, .galaxyFoil, .silverFoil, .rainbowFoil, .haloFoil,
+             .doubleRainbow, .firstPlaceFoil, .textured, .stepAndCompleat,
+             .raisedFoil, .fractureFoil, .manaFoil, .gilded, .confettiFoil,
+             .oilSlick, .invisibleInk, .embossed, .neonInk, .chocoboTrackFoil,
+             .dazzleFoil, .dragonScaleFoil, .facetFoil, .cosmicFoil,
+             .singularityFoil, .gleamingGold:
+            return [.foil]
         }
+    }
+
+    var sheenFamily: SheenFamily {
+        self == .neonInk ? .neon : .dispersed
     }
 
     var label: String {
         switch self {
         case .surgeFoil:
             return "Surge Foil"
+        case .galaxyFoil:
+            return "Galaxy Foil"
+        case .silverFoil:
+            return "Silver Foil"
+        case .rippleFoil:
+            return "Ripple Foil"
+        case .rainbowFoil:
+            return "Rainbow Foil"
+        case .haloFoil:
+            return "Halo Foil"
+        case .doubleRainbow:
+            return "Double Rainbow"
+        case .firstPlaceFoil:
+            return "First Place Foil"
+        case .textured:
+            return "Textured"
+        case .stepAndCompleat:
+            return "Step and Compleat"
+        case .raisedFoil:
+            return "Raised Foil"
+        case .fractureFoil:
+            return "Fracture Foil"
+        case .manaFoil:
+            return "Mana Foil"
+        case .gilded:
+            return "Gilded"
+        case .confettiFoil:
+            return "Confetti Foil"
+        case .oilSlick:
+            return "Oil Slick"
+        case .invisibleInk:
+            return "Invisible Ink"
+        case .embossed:
+            return "Embossed"
         case .neonInk:
             return "Neon Ink"
+        case .chocoboTrackFoil:
+            return "Chocobo Track Foil"
+        case .dazzleFoil:
+            return "Dazzle Foil"
+        case .dragonScaleFoil:
+            return "Dragon Scale Foil"
+        case .facetFoil:
+            return "Facet Foil"
+        case .cosmicFoil:
+            return "Cosmic Foil"
+        case .singularityFoil:
+            return "Singularity Foil"
+        case .gleamingGold:
+            return "Gleaming Gold"
+        case .serialized:
+            return "Serialized"
+        case .thick:
+            return "Thick"
+        case .plastic:
+            return "Plastic"
+        case .metal:
+            return "Metal"
+        case .glossy:
+            return "Glossy"
         case let .unclassified(rawValue):
             return "Unclassified · \(rawValue)"
         }
@@ -76,8 +250,66 @@ enum MagicTreatment: Identifiable, Hashable, Sendable, Codable {
         switch normalized {
         case "surgefoil":
             self = .surgeFoil
+        case "galaxyfoil":
+            self = .galaxyFoil
+        case "silverfoil":
+            self = .silverFoil
+        case "ripplefoil":
+            self = .rippleFoil
+        case "rainbowfoil":
+            self = .rainbowFoil
+        case "halofoil":
+            self = .haloFoil
+        case "doublerainbow":
+            self = .doubleRainbow
+        case "firstplacefoil":
+            self = .firstPlaceFoil
+        case "textured":
+            self = .textured
+        case "stepandcompleat":
+            self = .stepAndCompleat
+        case "raisedfoil":
+            self = .raisedFoil
+        case "fracturefoil":
+            self = .fractureFoil
+        case "manafoil":
+            self = .manaFoil
+        case "gilded":
+            self = .gilded
+        case "confettifoil":
+            self = .confettiFoil
+        case "oilslick":
+            self = .oilSlick
+        case "invisibleink":
+            self = .invisibleInk
+        case "embossed":
+            self = .embossed
         case "neonink":
             self = .neonInk
+        case "chocobotrackfoil":
+            self = .chocoboTrackFoil
+        case "dazzlefoil":
+            self = .dazzleFoil
+        case "dragonscalefoil":
+            self = .dragonScaleFoil
+        case "facetfoil":
+            self = .facetFoil
+        case "cosmicfoil":
+            self = .cosmicFoil
+        case "singularityfoil":
+            self = .singularityFoil
+        case "gleaminggold":
+            self = .gleamingGold
+        case "serialized":
+            self = .serialized
+        case "thick":
+            self = .thick
+        case "plastic":
+            self = .plastic
+        case "metal":
+            self = .metal
+        case "glossy":
+            self = .glossy
         default:
             self = .unclassified(id.trimmingCharacters(in: .whitespacesAndNewlines))
         }
@@ -97,13 +329,13 @@ enum MagicTreatment: Identifiable, Hashable, Sendable, Codable {
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        switch self {
-        case .surgeFoil, .neonInk:
-            try container.encode(id)
-        case let .unclassified(rawValue):
-            try container.encode(rawValue)
-        }
+        try container.encode(providerSignal)
     }
+}
+
+enum SheenFamily: Sendable, Equatable {
+    case neon
+    case dispersed
 }
 
 /// Treatment evidence attached to an exact Magic printing.
@@ -140,19 +372,26 @@ struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
     /// finish and are never guessed into a known one.
     func applicableTreatments(for finish: PhysicalVariant?) -> [MagicTreatment] {
         treatments.filter { treatment in
-            guard let requiredFinish = treatment.requiredFinish else { return true }
+            guard !treatment.requiredFinishes.isEmpty else { return true }
             guard let finish else { return false }
-            return finish.id.caseInsensitiveCompare(requiredFinish.id) == .orderedSame
+            return treatment.requiredFinishes.contains { requiredFinish in
+                finish.id.caseInsensitiveCompare(requiredFinish.id) == .orderedSame
+            }
         }
     }
 
     /// A known treatment can make the physical finish redundant in compact
     /// presentation. Unknown treatments deliberately return false: retaining
-    /// both facts is safer than guessing a future treatment's finish.
+    /// both facts is safer than guessing a future treatment's finish. A
+    /// multi-finish treatment also keeps the selected finish visible because
+    /// its signal alone cannot identify which physical surface is owned.
     func impliesFinish(_ finish: PhysicalVariant?) -> Bool {
         guard let finish else { return false }
         return treatments.contains { treatment in
-            guard let requiredFinish = treatment.requiredFinish else { return false }
+            guard treatment.requiredFinishes.count == 1,
+                  let requiredFinish = treatment.requiredFinishes.first else {
+                return false
+            }
             return finish.id.caseInsensitiveCompare(requiredFinish.id) == .orderedSame
         }
     }
@@ -696,17 +935,27 @@ extension MagicTreatmentKeyCodec {
 /// printing.
 struct MagicTreatmentDiagnostic: Equatable, Hashable, Sendable, Identifiable {
     let treatment: MagicTreatment
-    let requiredFinish: PhysicalVariant
+    let requiredFinishes: Set<PhysicalVariant>
     let publishedFinishes: [PhysicalVariant]
 
-    var id: String { "\(treatment.id):\(requiredFinish.id)" }
+    var id: String {
+        let finishes = requiredFinishes.map(\.id).sorted().joined(separator: ",")
+        return "\(treatment.id):\(finishes)"
+    }
 
     var title: String {
-        "\(treatment.label) / \(requiredFinish.label) mismatch"
+        "\(treatment.label) / \(requiredFinishLabel) mismatch"
     }
 
     var detail: String {
         let published = publishedFinishes.map(\.label).joined(separator: " · ")
-        return "This printing is published as \(published), but \(treatment.label) requires \(requiredFinish.label)."
+        return "This printing is published as \(published), but \(treatment.label) requires \(requiredFinishLabel)."
+    }
+
+    private var requiredFinishLabel: String {
+        requiredFinishes
+            .sorted { $0.choicePriority < $1.choicePriority }
+            .map(\.label)
+            .joined(separator: " or ")
     }
 }

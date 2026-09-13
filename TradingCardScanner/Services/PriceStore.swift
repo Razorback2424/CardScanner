@@ -919,7 +919,8 @@ struct PriceStore {
         // A target can become supported after a catalog/schema/provider update.
         // Once that target is actually attempted, the old capability stamp must
         // not continue to suppress it for the long terminal retry interval.
-        if record.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+        if record.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue
+            || record.lastFailureReasonRaw == PricingDiagnosticReason.invalidProviderQuote.rawValue {
             record.lastFailureReasonRaw = nil
         }
         return true

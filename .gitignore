@@ -6,6 +6,7 @@ DerivedData/
 .codex_build/
 .codex_build_device/
 .codex_build_test_device/
+.codex_build_*/
 .codex_ui_build/
 .codex_build_pricing/
 artifacts/
@@ -16,8 +17,17 @@ xcuserdata/
 # Local Claude settings
 .claude/settings.local.json
 
+# Local Git worktrees
+.worktrees/
+
+# Large local-only camera fixtures
+TestFixtures/TradingCards/HEIC/
+
 # Swift Package Manager
 .build/
+
+# Local Python tooling caches
+__pycache__/
 
 # Signing and provisioning artifacts
 *.p12

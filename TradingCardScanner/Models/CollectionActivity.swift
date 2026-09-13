@@ -123,6 +123,10 @@ final class CollectionActivity {
     /// It prevents a repeated tap from applying the same history action twice.
     var resolvedQuantity: Int = 0
     var correctedAt: Date?
+    /// Only the activity chosen as a collection row's backfill anchor uses
+    /// this relationship. It is deliberately optional so older activities
+    /// migrate without inventing a history link.
+    var backfillAnchorCard: CollectedCard?
 
     init(
         card: CollectedCard,

@@ -1,10 +1,17 @@
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
 import Foundation
 import SwiftData
+import UIKit
 
 /// Deterministic portfolio inputs for screenshot routes. The production engine
 /// still derives every close, reconciliation row, and chart point from them.
 enum PortfolioDebugFixtures {
+    /// The performance route is repeatedly relaunched while comparing
+    /// scenarios. A reserved filename lets each run replace its one fixture
+    /// image instead of orphaning a new UUID-backed file in Application
+    /// Support.
+    static let cardFinishPerformanceArtworkFilename = "card-finish-performance.image"
+
     @MainActor
     static func seedMovementIfNeeded(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
@@ -283,6 +290,284 @@ enum PortfolioDebugFixtures {
             }
         }
         try? modelContext.save()
+    }
+
+    enum CardFinishPerformanceScenario: String, CaseIterable, Equatable, Sendable {
+        case gridOnly = "grid-only"
+        case gridWithDetail = "grid-with-detail"
+        case nonfoilControl = "nonfoil-control"
+        case singleDetail = "single-detail"
+        case singleDetailControl = "single-detail-control"
+    }
+
+    struct CardFinishPerformanceFixtureSpec: Equatable, Sendable {
+        let scenario: CardFinishPerformanceScenario
+        let requestedRowCount: Int
+        let eligibleFinishRowCount: Int
+        let nonfoilControlRowCount: Int
+        let sealedControlRowCount: Int
+
+        init(scenario: CardFinishPerformanceScenario, rowCount: Int) {
+            let normalizedRowCount = min(max(rowCount, 12), 48)
+            self.scenario = scenario
+            requestedRowCount = normalizedRowCount
+            sealedControlRowCount = 1
+
+            switch scenario {
+            case .gridOnly, .gridWithDetail, .singleDetail:
+                // The requested count is the number of eligible finish rows.
+                // Controls are added separately so the named 12/24/48 sizes
+                // remain honest rather than being diluted by normal cards.
+                eligibleFinishRowCount = normalizedRowCount
+                nonfoilControlRowCount = 1
+            case .nonfoilControl, .singleDetailControl:
+                eligibleFinishRowCount = 0
+                nonfoilControlRowCount = normalizedRowCount
+            }
+        }
+
+        var rawCardRowCount: Int {
+            eligibleFinishRowCount + nonfoilControlRowCount
+        }
+
+        var totalRowCount: Int {
+            rawCardRowCount + sealedControlRowCount
+        }
+    }
+
+    static func cardFinishPerformanceScenario() -> CardFinishPerformanceScenario {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-scenario"),
+              arguments.indices.contains(index + 1),
+              let scenario = CardFinishPerformanceScenario(rawValue: arguments[index + 1]) else {
+            return .gridOnly
+        }
+        return scenario
+    }
+
+    static func cardFinishPerformanceRowCount() -> Int {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-row-count"),
+              arguments.indices.contains(index + 1),
+              let requested = Int(arguments[index + 1]) else {
+            return 24
+        }
+        return min(max(requested, 12), 48)
+    }
+
+    static func cardFinishPerformanceFixtureSpec(
+        scenario: CardFinishPerformanceScenario,
+        rowCount: Int
+    ) -> CardFinishPerformanceFixtureSpec {
+        CardFinishPerformanceFixtureSpec(scenario: scenario, rowCount: rowCount)
+    }
+
+    private static func prepareCardFinishPerformanceArtwork() -> String {
+        guard let image = UIImage(named: "AppIcon"),
+              let data = image.pngData(),
+              let filename = CollectionArtworkStore.save(
+                  data,
+                  filename: cardFinishPerformanceArtworkFilename
+              ) else {
+            preconditionFailure("Could not prepare the bundled card-finish performance artwork.")
+        }
+        return filename
+    }
+
+    private static func makeCardFinishPerformanceCard(
+        index: Int,
+        rawCardRowCount: Int
+    ) -> TCGdexCard {
+        TCGdexCard(
+            id: "card-finish-performance-\(index)",
+            localId: String(format: "%03d", index + 1),
+            name: "Finish Performance \(index + 1)",
+            // The same local override is attached to every raw and sealed
+            // fixture row below. The catalog object itself stays provider-like;
+            // the local override exercises image decoding and accent caching
+            // without any network dependency.
+            image: nil,
+            rarity: "QA",
+            set: TCGdexSetBrief(
+                id: "card-finish-performance",
+                name: "Card Finish Performance",
+                cardCount: TCGdexCardCount(
+                    total: rawCardRowCount,
+                    official: rawCardRowCount
+                )
+            ),
+            variants: TCGdexVariants(
+                firstEdition: false,
+                holo: true,
+                normal: true,
+                reverse: true,
+                wPromo: nil
+            ),
+            pricing: nil,
+            variantsDetailed: nil
+        )
+    }
+
+    /// Seeds a fresh, deterministic performance collection. The app selects an
+    /// in-memory container before this method runs, so deleting the model rows
+    /// here resets a scenario without ever touching a user's saved collection.
+    @MainActor
+    static func seedCardFinishPerformance(in modelContext: ModelContext) -> String? {
+        let previousArtworkFilenames = Set(
+            ((try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? [])
+                .map(\.filename)
+                .filter { !$0.isEmpty }
+        )
+        for card in (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? [] {
+            modelContext.delete(card)
+        }
+        for activity in (try? modelContext.fetch(FetchDescriptor<CollectionActivity>())) ?? [] {
+            modelContext.delete(activity)
+        }
+        for event in (try? modelContext.fetch(FetchDescriptor<InventoryEvent>())) ?? [] {
+            modelContext.delete(event)
+        }
+        for record in (try? modelContext.fetch(FetchDescriptor<PriceRecord>())) ?? [] {
+            modelContext.delete(record)
+        }
+        for observation in (try? modelContext.fetch(FetchDescriptor<PriceObservation>())) ?? [] {
+            modelContext.delete(observation)
+        }
+        for day in (try? modelContext.fetch(FetchDescriptor<PriceCheckDay>())) ?? [] {
+            modelContext.delete(day)
+        }
+        for close in (try? modelContext.fetch(FetchDescriptor<PortfolioDailyClose>())) ?? [] {
+            modelContext.delete(close)
+        }
+        for quote in (try? modelContext.fetch(FetchDescriptor<ReferenceQuote>())) ?? [] {
+            modelContext.delete(quote)
+        }
+        for identity in (try? modelContext.fetch(FetchDescriptor<ProductIdentity>())) ?? [] {
+            modelContext.delete(identity)
+        }
+        for artwork in (try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? [] {
+            modelContext.delete(artwork)
+        }
+        for filename in previousArtworkFilenames {
+            CollectionArtworkStore.remove(filename: filename)
+        }
+
+        let scenario = cardFinishPerformanceScenario()
+        let fixture = cardFinishPerformanceFixtureSpec(
+            scenario: scenario,
+            rowCount: cardFinishPerformanceRowCount()
+        )
+        let store = CollectionStore(context: modelContext)
+        let artworkFilename = prepareCardFinishPerformanceArtwork()
+        var firstEligibleCollectionKey: String?
+        var insertedRowCount = 0
+
+        for index in 0..<fixture.eligibleFinishRowCount {
+            let variant: PhysicalVariant
+            switch index % 3 {
+            case 0: variant = .foil
+            case 1: variant = .holo
+            default: variant = .reverse
+            }
+
+            do {
+                let mutation = try store.add(
+                    .pokemon(
+                        makeCardFinishPerformanceCard(
+                            index: index,
+                            rawCardRowCount: fixture.rawCardRowCount
+                        ),
+                        setCode: "CFP"
+                    ),
+                    resolved: ResolvedVariant(
+                        variant: variant,
+                        resolution: .uniqueInCatalog
+                    ),
+                    identityResolution: .catalogSelected,
+                    setReleaseOrder: index,
+                    quantity: 1
+                )
+                CollectionArtworkStore.set(
+                    filename: artworkFilename,
+                    for: mutation.collectionKey,
+                    in: modelContext
+                )
+                insertedRowCount += 1
+                if firstEligibleCollectionKey == nil {
+                    firstEligibleCollectionKey = mutation.collectionKey
+                }
+            } catch {
+                preconditionFailure("Could not seed card-finish performance row \(index): \(error)")
+            }
+        }
+
+        for controlIndex in 0..<fixture.nonfoilControlRowCount {
+            let index = fixture.eligibleFinishRowCount + controlIndex
+            do {
+                let mutation = try store.add(
+                    .pokemon(
+                        makeCardFinishPerformanceCard(
+                            index: index,
+                            rawCardRowCount: fixture.rawCardRowCount
+                        ),
+                        setCode: "CFP"
+                    ),
+                    resolved: ResolvedVariant(
+                        variant: .normal,
+                        resolution: .uniqueInCatalog
+                    ),
+                    identityResolution: .catalogSelected,
+                    setReleaseOrder: index,
+                    quantity: 1
+                )
+                CollectionArtworkStore.set(
+                    filename: artworkFilename,
+                    for: mutation.collectionKey,
+                    in: modelContext
+                )
+                insertedRowCount += 1
+            } catch {
+                preconditionFailure("Could not seed nonfoil performance control \(controlIndex): \(error)")
+            }
+        }
+
+        for controlIndex in 0..<fixture.sealedControlRowCount {
+            let product = SealedProductSummary(
+                id: "card-finish-performance-sealed-\(controlIndex)",
+                name: "Finish Performance Sealed Control",
+                setName: "Card Finish Performance",
+                variantID: "card-finish-performance-sealed-variant-\(controlIndex)",
+                marketPriceUSD: nil,
+                updatedAt: .now,
+                imageURL: nil
+            )
+            do {
+                let mutation = try store.addSealed(product, game: .pokemon)
+                CollectionArtworkStore.set(
+                    filename: artworkFilename,
+                    for: mutation.collectionKey,
+                    in: modelContext
+                )
+                insertedRowCount += 1
+            } catch {
+                preconditionFailure("Could not seed sealed performance control \(controlIndex): \(error)")
+            }
+        }
+
+        do {
+            try modelContext.save()
+        } catch {
+            preconditionFailure("Could not save card-finish performance fixture: \(error)")
+        }
+        CardFinishPerformanceDiagnostics.shared.reset(
+            scenario: scenario.rawValue,
+            rowCount: insertedRowCount
+        )
+        PerformanceSignpost.emitEvent(
+            "cardFinishScenario",
+            "scenario=\(scenario.rawValue) rows=\(insertedRowCount) eligible=\(fixture.eligibleFinishRowCount) nonfoil=\(fixture.nonfoilControlRowCount) sealed=\(fixture.sealedControlRowCount)"
+        )
+        return firstEligibleCollectionKey
     }
 
     static func debugResolution() -> VariantResolution {

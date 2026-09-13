@@ -403,6 +403,29 @@ struct CollectionStore {
         "collectionActivity.existingCollectionBackfillVersion"
     private static let existingCollectionBackfillVersion = 1
 
+    static func existingCollectionBackfillVersionKey(
+        for container: ModelContainer
+    ) -> String {
+        let identity = container.configurations
+            .map { configuration -> String in
+                if configuration.isStoredInMemoryOnly {
+                    // In-memory stores have no cross-launch identity and must
+                    // remain independent inside one test/process.
+                    return "memory:\(ObjectIdentifier(container).hashValue)"
+                }
+                return [
+                    configuration.name,
+                    configuration.url.standardizedFileURL.path,
+                    configuration.cloudKitContainerIdentifier ?? "",
+                    String(describing: configuration.cloudKitDatabase)
+                ].joined(separator: "|")
+            }
+            .sorted()
+            .joined(separator: "||")
+        let encodedIdentity = Data(identity.utf8).base64EncodedString()
+        return "\(existingCollectionBackfillVersionKey).store.\(encodedIdentity)"
+    }
+
     private var ledger: InventoryLedger { InventoryLedger(context: context) }
 
     /// Read-only lineage materialized by a history screen. The write path keeps
@@ -464,21 +487,56 @@ struct CollectionStore {
     /// Brings acquisition-only activity rows and collections from older builds
     /// into the history vocabulary. This is intentionally idempotent and saves
     /// once, so opening the history screen cannot create one transaction per row.
-    func backfillExistingCollectionIfNeeded() throws {
+    /// The watermark is scoped to this active container. A process-wide claim
+    /// would let the first store opened on a device suppress the migration for
+    /// a second store or a newly delivered CloudKit store.
+    func backfillExistingCollectionIfNeeded(
+        defaults: UserDefaults = .standard
+    ) throws {
         do {
             let hasLegacyActivities = try context.fetchCount(
                 FetchDescriptor<CollectionActivity>(
                     predicate: #Predicate { $0.kindRaw == "" }
                 )
             ) > 0
-            let hasCompletedWatermark = UserDefaults.standard.integer(
-                forKey: Self.existingCollectionBackfillVersionKey
+            let watermarkKey = Self.existingCollectionBackfillVersionKey(
+                for: context.container
+            )
+            let hasCompletedWatermark = defaults.integer(
+                forKey: watermarkKey
             ) >= Self.existingCollectionBackfillVersion
-            if !hasLegacyActivities, hasCompletedWatermark {
+            let backfillVersion = Self.existingCollectionBackfillVersion
+            let cardCount = try context.fetchCount(
+                FetchDescriptor<CollectedCard>()
+            )
+            let activityCount = try context.fetchCount(
+                FetchDescriptor<CollectionActivity>()
+            )
+            let anchoredActivityCount = try context.fetchCount(
+                FetchDescriptor<CollectionActivity>(
+                    predicate: #Predicate { $0.backfillAnchorCard != nil }
+                )
+            )
+            let hasUncoveredCards = try context.fetchCount(
+                FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate {
+                        $0.activityBackfillVersion < backfillVersion
+                            || $0.activityBackfillAnchor == nil
+                    }
+                )
+            ) > 0
+            let hasMissingAnchor = anchoredActivityCount < cardCount
+            let hasMissingActivity = activityCount < cardCount
+            if !hasLegacyActivities,
+               hasCompletedWatermark,
+               !hasUncoveredCards,
+               !hasMissingAnchor,
+               !hasMissingActivity {
                 return
             }
 
             let existingActivities = try context.fetch(FetchDescriptor<CollectionActivity>())
+            let existingActivityIDs = Set(existingActivities.map(\.id))
             var didChange = false
 
             for activity in existingActivities {
@@ -492,36 +550,47 @@ struct CollectionStore {
                 }
             }
 
-            let loggedKeys = Set(existingActivities.map(\.collectionKey))
+            let activitiesByKey = Dictionary(grouping: existingActivities, by: \.collectionKey)
             let cards = try context.fetch(FetchDescriptor<CollectedCard>())
-            for card in cards where !loggedKeys.contains(card.collectionKey) {
-                let source: CollectionActivitySource
-                switch card.itemKind {
-                case .sealedProduct:
-                    source = .sealedCatalog
-                case .gradedCard:
-                    source = .gradedCatalog
-                case .rawCard:
-                    switch card.identityResolution {
-                    case .imported: source = .csvImport
-                    case .printedIdentifier: source = .scan
-                    case .catalogSelected, .userCorrected, .none: source = .catalog
+            for card in cards {
+                let anchorIsPresent = card.activityBackfillAnchor.map {
+                    existingActivityIDs.contains($0.id)
+                } ?? false
+                guard card.activityBackfillVersion < backfillVersion
+                    || !anchorIsPresent else { continue }
+                if let existing = activitiesByKey[card.collectionKey]?.first {
+                    card.activityBackfillAnchor = existing
+                } else {
+                    let source: CollectionActivitySource
+                    switch card.itemKind {
+                    case .sealedProduct:
+                        source = .sealedCatalog
+                    case .gradedCard:
+                        source = .gradedCatalog
+                    case .rawCard:
+                        switch card.identityResolution {
+                        case .imported: source = .csvImport
+                        case .printedIdentifier: source = .scan
+                        case .catalogSelected, .userCorrected, .none: source = .catalog
+                        }
                     }
+                    let activity = try appendActivity(
+                        card,
+                        source: source,
+                        kind: .added,
+                        deltaQuantity: card.quantity,
+                        occurredAt: card.dateAdded
+                    )
+                    card.activityBackfillAnchor = activity
                 }
-                _ = try appendActivity(
-                    card,
-                    source: source,
-                    kind: .added,
-                    deltaQuantity: card.quantity,
-                    occurredAt: card.dateAdded
-                )
+                card.activityBackfillVersion = backfillVersion
                 didChange = true
             }
 
             if didChange { try commit() }
-            UserDefaults.standard.set(
+            defaults.set(
                 Self.existingCollectionBackfillVersion,
-                forKey: Self.existingCollectionBackfillVersionKey
+                forKey: watermarkKey
             )
         } catch {
             context.rollback()

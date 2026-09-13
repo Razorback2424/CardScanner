@@ -348,10 +348,10 @@ private struct ScannerCameraIssueOverlay: View {
 
 private struct ScannerTopBar: View, Equatable {
     let purpose: ScanPurpose
-    let finishLocks: [CardGame: PhysicalVariant]
+    let finishLocks: [CardGame: MagicFinishLock]
     let isSlowIdentifying: Bool
     let setPurpose: (ScanPurpose) -> Void
-    let setFinishLock: (PhysicalVariant?, CardGame) -> Void
+    let setFinishLock: (MagicFinishLock?, CardGame) -> Void
     let clearFinishLocks: () -> Void
     let openSettings: () -> Void
 
@@ -480,8 +480,8 @@ private struct ScannerTopBar: View, Equatable {
 }
 
 private struct FinishLockControl: View, Equatable {
-    let locks: [CardGame: PhysicalVariant]
-    let setLock: (PhysicalVariant?, CardGame) -> Void
+    let locks: [CardGame: MagicFinishLock]
+    let setLock: (MagicFinishLock?, CardGame) -> Void
     let clearLocks: () -> Void
     let glassNamespace: Namespace.ID
 
@@ -489,16 +489,16 @@ private struct FinishLockControl: View, Equatable {
         lhs.locks == rhs.locks
     }
 
-    private var activeLocks: [(game: CardGame, variant: PhysicalVariant)] {
+    private var activeLocks: [(game: CardGame, lock: MagicFinishLock)] {
         CardGame.allCases.compactMap { game in
-            locks[game].map { (game: game, variant: $0) }
+            locks[game].map { (game: game, lock: $0) }
         }
     }
 
     private var summary: String {
         return activeLocks.isEmpty
             ? "Auto"
-            : activeLocks.map { "\($0.game.label) \($0.variant.label)" }.joined(separator: " · ")
+            : activeLocks.map { "\($0.game.label) \($0.lock.label)" }.joined(separator: " · ")
     }
 
     var body: some View {
@@ -516,16 +516,16 @@ private struct FinishLockControl: View, Equatable {
                 Menu {
                     Picker(
                         game.label,
-                        selection: Binding<PhysicalVariant?>(
+                        selection: Binding<MagicFinishLock?>(
                             get: { locks[game] },
                             set: { setLock($0, game) }
                         )
                     ) {
                         Text("Auto")
-                            .tag(PhysicalVariant?.none)
-                        ForEach(PhysicalVariant.selectable(for: game)) { variant in
-                            Text(variant.label)
-                                .tag(PhysicalVariant?.some(variant))
+                            .tag(MagicFinishLock?.none)
+                        ForEach(MagicFinishLock.selectable(for: game)) { lock in
+                            Text(lock.label)
+                                .tag(MagicFinishLock?.some(lock))
                         }
                     }
                 } label: {

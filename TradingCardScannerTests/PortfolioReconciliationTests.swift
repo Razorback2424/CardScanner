@@ -3907,4 +3907,30 @@ final class PortfolioReconciliationTests: XCTestCase {
 
         XCTAssertEqual(PortfolioEpoch.startedAt(defaults: defaults), now)
     }
+
+    // RM-005: this counterpart must exercise an actual identity/quantity path,
+    // not merely repeat the fixture-shape meta-test.
+    func testREQ004ReconciliationCounterpartUsesProductionShapedCertifiedRow() throws {
+        let sourceContainer = try ProductionRowFixtures.makeContainer()
+        let sourceRow = try ProductionRowFixtures.gradedRow(
+            in: sourceContainer.mainContext,
+            certificationNumber: "RM005-CERT"
+        )
+        let expectedKey = sourceRow.collectionKey
+        let expectedQuantity = sourceRow.quantity
+
+        let plan = try CollectionCSV.parse(
+            Data(CollectionCSV.export([sourceRow]).text.utf8)
+        )
+        let destinationContainer = try ProductionRowFixtures.makeContainer()
+        let result = try CollectionCSV.apply(plan, to: destinationContainer.mainContext)
+        let importedRows = try destinationContainer.mainContext.fetch(
+            FetchDescriptor<CollectedCard>()
+        )
+
+        XCTAssertTrue(result.failedRows.isEmpty)
+        XCTAssertEqual(importedRows.count, 1)
+        XCTAssertEqual(importedRows.first?.collectionKey, expectedKey)
+        XCTAssertEqual(importedRows.first?.quantity, expectedQuantity)
+    }
 }

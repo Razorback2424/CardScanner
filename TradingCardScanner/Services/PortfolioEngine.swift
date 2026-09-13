@@ -780,6 +780,27 @@ final class PortfolioEngine: ObservableObject {
         }
         let stored = Dictionary(grouping: storedCloses, by: \.date)
             .compactMapValues { $0.max { $0.revision < $1.revision } }
+        let revisionCandidates = days.compactMap { day -> LateInventoryTruthCandidate? in
+            guard let existing = stored[day.displayDay] else { return nil }
+            let coverage = resolvedCoverage(
+                for: day,
+                existing: existing,
+                windowStart: coverageWindowStart
+            )
+            guard !matches(existing, day, coverage: coverage),
+                  existing.publishedAt != nil else { return nil }
+            return LateInventoryTruthCandidate(
+                day: day.displayDay,
+                cutoff: PortfolioCalendar.boundary(afterDay: day.displayDay, in: timeZone),
+                existing: existing
+            )
+        }
+        let lateInventoryTruthDays = lateInventoryTruthDays(
+            for: revisionCandidates,
+            timeZone: timeZone,
+            context: context
+        )
+        let publicationInstant = Date.now
 
         var latest: PortfolioDailyClose?
         var insertedCloses: [PortfolioDailyClose] = []
@@ -813,11 +834,12 @@ final class PortfolioEngine: ObservableObject {
                 pricedPositionCount: day.pricedPositionCount,
                 excludedCount: day.excludedQuantity,
                 inputsFingerprint: "",
-                // A published close can only change because ownership was
-                // incomplete: observations are read by knowledge time, so a
-                // vendor backdating a price cannot reach a day that has already
-                // closed. The wording stays at what the evidence supports.
-                revisionReason: existing == nil ? nil : .recomputed,
+                revisionReason: existing == nil
+                    ? nil
+                    : lateInventoryTruthDays.contains(day.displayDay)
+                        ? .lateInventoryTruth
+                        : .recomputed,
+                publishedAt: publicationInstant,
                 added: day.added,
                 removed: day.removed
             )
@@ -840,6 +862,68 @@ final class PortfolioEngine: ObservableObject {
             }
         }
         return latest
+    }
+
+    private struct LateInventoryTruthCandidate {
+        let day: Date
+        let cutoff: Date
+        let existing: PortfolioDailyClose
+    }
+
+    /// Fetch only events that can belong to at least one close currently being
+    /// revised. A normal replay that produces no close changes performs no
+    /// InventoryEvent fetch at all; a revision pass performs one date-bounded
+    /// fetch instead of materializing the whole ledger table.
+    private static func lateInventoryTruthDays(
+        for candidates: [LateInventoryTruthCandidate],
+        timeZone: TimeZone,
+        context: ModelContext
+    ) -> Set<Date> {
+        let candidateDays = candidates.map {
+            PortfolioCalendar.day(containing: $0.day, in: timeZone)
+        }
+        guard let earliestDay = candidateDays.min(),
+              let latestCutoff = candidates.map(\.cutoff).max(),
+              let earliestPublication = candidates.compactMap({ $0.existing.publishedAt }).min()
+        else { return [] }
+
+        let descriptor = FetchDescriptor<InventoryEvent>(
+            predicate: #Predicate {
+                $0.occurredAt >= earliestDay
+                    && $0.occurredAt < latestCutoff
+                    && $0.recordedAt > earliestPublication
+            }
+        )
+        guard let inventoryEvents = try? context.fetch(descriptor) else { return [] }
+
+        return Set(candidates.compactMap { candidate in
+            hasLateInventoryTruth(
+                for: candidate.day,
+                timeZone: timeZone,
+                existing: candidate.existing,
+                inventoryEvents: inventoryEvents
+            ) ? candidate.day : nil
+        })
+    }
+
+    private static func hasLateInventoryTruth(
+        for day: Date,
+        timeZone: TimeZone,
+        existing: PortfolioDailyClose,
+        inventoryEvents: [InventoryEvent]
+    ) -> Bool {
+        guard let publishedAt = existing.publishedAt else {
+            // A legacy close has no publication instant. Do not guess from its
+            // accounting day or computedAt and misclassify an ordinary retry.
+            return false
+        }
+        let dayStart = PortfolioCalendar.day(containing: day, in: timeZone)
+        let cutoff = PortfolioCalendar.boundary(afterDay: day, in: timeZone)
+        return inventoryEvents.contains { event in
+            event.occurredAt >= dayStart
+                && event.occurredAt < cutoff
+                && event.recordedAt > publishedAt
+        }
     }
 
     /// What a day's coverage should be published as.
@@ -947,13 +1031,8 @@ final class PortfolioEngine: ObservableObject {
             // exactly one place in the app decides what "not in the total"
             // means.
             amount: eligibleAmount,
+            currencyCode: row.currencyCode,
             receivedAt: row.receivedAt,
-            // An explicit invalidation withdraws the prior USD evidence even if
-            // its provenance currency is unusual. Other non-USD rows are kept
-            // for history but are ignored by the USD replay, matching the
-            // current-value fallback in InventoryLedger.
-            participatesInPortfolioValue: row.kind == .explicitInvalidation
-                || eligibleAmount != nil
         )
     }
 }

@@ -81,6 +81,29 @@ struct MarketPriceTarget: Hashable, Sendable {
     }
 }
 
+/// What one returned variant callback staged. `accepted` means the caller
+/// durably accepted the response into its context; the other fields separate
+/// catalog metadata from an actual price write.
+struct MarketRefreshApplyResult: Equatable, Sendable {
+    let accepted: Bool
+    let metadataApplied: Bool
+    let priceWritten: Bool
+
+    static let rejected = Self(
+        accepted: false,
+        metadataApplied: false,
+        priceWritten: false
+    )
+
+    static func accepted(metadataApplied: Bool, priceWritten: Bool) -> Self {
+        Self(
+            accepted: true,
+            metadataApplied: metadataApplied,
+            priceWritten: priceWritten
+        )
+    }
+}
+
 /// What one batched refresh pass did.
 struct MarketRefreshReport: Equatable, Sendable {
     var requestsUsed = 0
@@ -88,6 +111,10 @@ struct MarketRefreshReport: Equatable, Sendable {
     var batchesPlanned = 0
     var variantsUpdated = 0
     var variantsRequested = 0
+    /// Metadata can be persisted even when the provider has no current price.
+    var metadataUpdated = 0
+    /// Only a non-nil, accepted USD market amount belongs in priced progress.
+    var pricesWritten = 0
     /// True only when every batch succeeded. The sync checkpoint may only
     /// advance when this holds and every successful response was persisted.
     var completedFully = false
@@ -174,7 +201,8 @@ struct JustTCGRefreshCoordinator {
         lane: JustTCGRequestLane = .background,
         useDelta: Bool = false,
         onProgress: @Sendable (MarketRefreshReport) async -> Void = { _ in },
-        apply: @Sendable (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) async -> Bool,
+        apply: @Sendable (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) async -> Bool = { _, _, _ in false },
+        applyDetailed: (@Sendable (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) async -> MarketRefreshApplyResult)? = nil,
         unmatched: @Sendable ([MarketPriceTarget]) async -> Void = { _ in },
         checkpoint: @Sendable () async -> Bool,
         finalCheckpoint: @Sendable () async -> Bool = { true }
@@ -229,6 +257,8 @@ struct JustTCGRefreshCoordinator {
                 )
                 report.requestsUsed += 1
                 var batchAppliedCount = 0
+                var batchMetadataUpdatedCount = 0
+                var batchPricesWrittenCount = 0
                 var batchPersistenceFailed = false
 
                 for lookup in chunk {
@@ -271,8 +301,23 @@ struct JustTCGRefreshCoordinator {
                             if cutoff == nil { await unmatched(finishOwners) }
                             continue
                         }
-                        if await apply(card, variant, finishOwners) {
+                        let applyResult: MarketRefreshApplyResult
+                        if let applyDetailed {
+                            applyResult = await applyDetailed(card, variant, finishOwners)
+                        } else {
+                            let accepted = await apply(card, variant, finishOwners)
+                            applyResult = accepted
+                                ? .accepted(metadataApplied: true, priceWritten: true)
+                                : .rejected
+                        }
+                        if applyResult.accepted {
                             applied = true
+                            if applyResult.metadataApplied {
+                                batchMetadataUpdatedCount += 1
+                            }
+                            if applyResult.priceWritten {
+                                batchPricesWrittenCount += 1
+                            }
                         } else {
                             batchPersistenceFailed = true
                         }
@@ -292,6 +337,8 @@ struct JustTCGRefreshCoordinator {
                 }
                 report.batchesCompleted += 1
                 report.variantsUpdated += batchAppliedCount
+                report.metadataUpdated += batchMetadataUpdatedCount
+                report.pricesWritten += batchPricesWrittenCount
                 if batchPersistenceFailed {
                     report.persistenceFailed = true
                     await onProgress(report)

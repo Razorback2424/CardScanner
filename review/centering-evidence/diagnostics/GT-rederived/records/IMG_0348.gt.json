@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "fixture": "IMG_0348.HEIC",
+  "sourcePixelSize": {
+    "w": 4032,
+    "h": 3024
+  },
+  "orientedPixelSize": {
+    "w": 3024,
+    "h": 4032
+  },
+  "exifOrientation": 6,
+  "face": "front",
+  "encasement": "penny_sleeve",
+  "capture": "macro_systemcamera",
+  "cardOuterQuad": [
+    [
+      242.41594292059307,
+      162.17094598443748
+    ],
+    [
+      2856.9935282536826,
+      121.63485939012605
+    ],
+    [
+      2872.0366143461974,
+      3752.0329697169955
+    ],
+    [
+      222.35939065458686,
+      3777.3644919320204
+    ]
+  ],
+  "cardCornerRadiusPx": 21.0,
+  "encasementOuterQuad": [
+    [
+      155.00000000000014,
+      100.0
+    ],
+    [
+      2890.0000000000005,
+      70.0
+    ],
+    [
+      2910.0,
+      3830.0000000000005
+    ],
+    [
+      129.99999999999983,
+      3860.0
+    ]
+  ],
+  "innerQuad": [
+    [
+      338.40537352617434,
+      229.7398176032731
+    ],
+    [
+      2752.998152565877,
+      204.10719786824444
+    ],
+    [
+      2767.8203448482336,
+      3583.567038245594
+    ],
+    [
+      318.6425300440599,
+      3609.186053044801
+    ]
+  ],
+  "innerReference": "art_window",
+  "edgeBands": {
+    "left": 27.427742,
+    "top": 16.516863,
+    "right": 8.355257,
+    "bottom": 9.874794
+  },
+  "ambiguousEdges": [],
+  "expected": {
+    "lrRatio": 47.980043,
+    "tbRatio": 30.805152,
+    "skewDegrees": -0.71799
+  },
+  "conditions": [
+    "glare",
+    "sleeve"
+  ],
+  "provenance": {
+    "method": "analyzer_free_dual_profile_fit_with_visual_adjudication",
+    "annotators": [
+      "generic_profile_pass_A",
+      "generic_profile_pass_B"
+    ],
+    "agreementPx": 0.99856,
+    "toolVersion": "gt-tool 3.0-rederive",
+    "date": "2026-09-12",
+    "notes": "Two independent analyzer-free luminance profile passes were visually adjudicated against the physical silhouette; selected transitions and full pass diagnostics are retained in diagnostics/GT-rederived. The physical silhouette was chosen where sleeve, glare, or printed transitions produced multiple candidates. No CardCenteringAnalyzer output seeded or adjusted any field. agreementPx is the maximum pre-reconciliation 50% crossing disagreement across card, sleeve, and inner reference edges."
+  }
+}

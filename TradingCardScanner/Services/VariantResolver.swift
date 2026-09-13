@@ -1,5 +1,44 @@
 import Foundation
 
+/// A scanner finish lock may name either a physical finish or a reviewed Magic
+/// treatment. Treatment locks remain anchored to their physical finish so they
+/// can never invent a printing that the exact catalog does not publish.
+struct MagicFinishLock: Equatable, Hashable, Sendable, Identifiable {
+    let finish: PhysicalVariant
+    let treatment: MagicTreatment?
+
+    init(finish: PhysicalVariant, treatment: MagicTreatment? = nil) {
+        self.finish = finish
+        self.treatment = treatment
+    }
+
+    var id: String {
+        guard let treatment else { return finish.id }
+        return "\(finish.id)#treatment=\(treatment.id)"
+    }
+
+    var label: String {
+        treatment?.label ?? finish.label
+    }
+
+    /// The intentionally narrow menu surface. Magic exposes its three
+    /// provider finishes plus the two reviewed treatment locks; Pokémon keeps
+    /// the existing physical-variant menu unchanged.
+    static func selectable(for game: CardGame) -> [MagicFinishLock] {
+        let finishes = PhysicalVariant.selectable(for: game).map {
+            MagicFinishLock(finish: $0)
+        }
+        guard game == .magic else { return finishes }
+        return finishes + MagicTreatment.lockable.compactMap { treatment in
+            guard treatment.requiredFinishes.count == 1,
+                  let finish = treatment.requiredFinishes.first else {
+                return nil
+            }
+            return MagicFinishLock(finish: finish, treatment: treatment)
+        }
+    }
+}
+
 /// Everything the resolver is allowed to reason from. Deliberately a plain value
 /// rather than the catalog card itself: the resolver must be testable without a
 /// network response, and it must be impossible for it to reach for a "confidence"
@@ -12,6 +51,23 @@ struct VariantEvidence: Equatable, Sendable {
     /// What the catalog itself publishes. Empty means the catalog is silent —
     /// which is a fact, not a licence to guess.
     let catalogVariants: [PhysicalVariant]
+    /// Exact Magic treatment evidence from the identified printing. Pokémon
+    /// leaves this empty so the resolver remains game-neutral.
+    let magicTreatments: [MagicTreatment]
+
+    init(
+        game: CardGame,
+        setID: String,
+        cardNumber: String,
+        catalogVariants: [PhysicalVariant],
+        magicTreatments: [MagicTreatment] = []
+    ) {
+        self.game = game
+        self.setID = setID
+        self.cardNumber = cardNumber
+        self.catalogVariants = catalogVariants
+        self.magicTreatments = magicTreatments
+    }
 
     /// The same evidence with 1st Edition removed from the finish list.
     ///
@@ -30,7 +86,8 @@ struct VariantEvidence: Equatable, Sendable {
             game: game,
             setID: setID,
             cardNumber: cardNumber,
-            catalogVariants: catalogVariants.filter { $0.id != PhysicalVariant.firstEdition.id }
+            catalogVariants: catalogVariants.filter { $0.id != PhysicalVariant.firstEdition.id },
+            magicTreatments: magicTreatments
         )
     }
 }
@@ -39,9 +96,10 @@ enum VariantOutcome: Equatable {
     case resolved(ResolvedVariant)
     /// Two or more physically possible variants remain and the card carries no
     /// deterministic signal separating them. `lockDidNotApply` is set when the
-    /// user's Finish Lock named a variant this printing does not exist in — the
+    /// user's Finish Lock named a variant or treatment this printing does not
+    /// exist in — the
     /// catalog stays authoritative about what is physically possible.
-    case needsChoice(options: [PhysicalVariant], lockDidNotApply: PhysicalVariant?)
+    case needsChoice(options: [PhysicalVariant], lockDidNotApply: MagicFinishLock?)
 }
 
 /// Sits between identity and collection mutation.
@@ -54,7 +112,7 @@ enum VariantOutcome: Equatable {
 enum VariantResolver {
     static func resolve(
         _ evidence: VariantEvidence,
-        finishLock: PhysicalVariant? = nil,
+        finishLock: MagicFinishLock? = nil,
         printedFinish: PhysicalVariant? = nil
     ) -> VariantOutcome {
         let resolutionID = PerformanceSignpost.makeID()
@@ -98,10 +156,26 @@ enum VariantResolver {
         // stamp is present. It must not silently answer the stamped question.
         let includesCatalogStampChoice = possible.contains(where: PokemonCatalogStampVariant.isStamped)
         if let finishLock, stamped.isEmpty, !includesCatalogStampChoice {
-            if possible.contains(finishLock) {
-                return .resolved(ResolvedVariant(variant: finishLock, resolution: .finishLock))
+            let physicalFinishMatches = possible.contains(where: {
+                $0.id.caseInsensitiveCompare(finishLock.finish.id) == .orderedSame
+            })
+            guard physicalFinishMatches else {
+                return .needsChoice(options: ordered(possible), lockDidNotApply: finishLock)
             }
-            return .needsChoice(options: ordered(possible), lockDidNotApply: finishLock)
+
+            if let treatment = finishLock.treatment {
+                let treatmentAppliesToFinish = treatment.requiredFinishes.isEmpty
+                    || treatment.requiredFinishes.contains(finishLock.finish)
+                guard evidence.game == .magic,
+                      evidence.magicTreatments.contains(treatment),
+                      treatmentAppliesToFinish else {
+                    return .needsChoice(options: ordered(possible), lockDidNotApply: finishLock)
+                }
+            }
+
+            return .resolved(
+                ResolvedVariant(variant: finishLock.finish, resolution: .finishLock)
+            )
         }
 
         // A graded label is useful evidence only when the catalog agrees that
@@ -120,6 +194,20 @@ enum VariantResolver {
         }
 
         return .needsChoice(options: ordered(possible), lockDidNotApply: nil)
+    }
+
+    /// Compatibility entry point for callers that lock an ordinary physical
+    /// variant. Treatment-aware scanner callers use the overload above.
+    static func resolve(
+        _ evidence: VariantEvidence,
+        finishLock: PhysicalVariant,
+        printedFinish: PhysicalVariant? = nil
+    ) -> VariantOutcome {
+        resolve(
+            evidence,
+            finishLock: MagicFinishLock(finish: finishLock),
+            printedFinish: printedFinish
+        )
     }
 
     /// Options for correcting an already-recorded card, which is the same

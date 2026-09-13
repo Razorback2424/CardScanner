@@ -400,8 +400,8 @@ struct CollectionCardDetailView: View {
         }
 
         let subsumesFinish = card.variant != nil && treatments.contains { treatment in
-            guard let requiredFinish = treatment.requiredFinish else { return false }
-            return requiredFinish == card.variant
+            guard treatment.requiredFinishes.count == 1 else { return false }
+            return treatment.requiredFinishes.contains { $0.id == card.variant?.id }
         }
         let names = treatments.map(\.label)
         if subsumesFinish {
@@ -477,22 +477,34 @@ struct CollectionCardDetailView: View {
         }
     }
 
-    private var gradedVariantOptions: [PhysicalVariant] {
+    /// The finish evidence for an already-owned slab. The catalog id is the
+    /// only reliable source for set routing because graded rows persist their
+    /// collection namespace in `providerID`.
+    static func gradedVariantEvidence(for card: CollectedCard) -> VariantEvidence {
+        let printingID = card.underlyingPrintingID ?? card.providerID
         var evidence = VariantEvidence(
             game: card.cardGame,
-            setID: card.providerID.split(separator: "-", maxSplits: 1).first.map(String.init)
-                ?? card.providerID,
+            setID: printingID.split(separator: "-", maxSplits: 1)
+                .first.map(String.init) ?? printingID,
             cardNumber: card.cardNumber,
             catalogVariants: card.variant.map { [$0] } ?? []
         )
         if card.pokemonPrintRun != nil {
             evidence = evidence.excludingFirstEditionPseudoFinish()
         }
+        return evidence
+    }
+
+    static func gradedVariantOptions(for card: CollectedCard) -> [PhysicalVariant] {
+        VariantResolver.options(for: gradedVariantEvidence(for: card))
+    }
+
+    private var gradedVariantOptions: [PhysicalVariant] {
         // The persisted row is the only catalog finish fact available to this
         // offline detail surface. Do not widen it to the UI's global selectable
         // list, and do not re-add 1st Edition after it has been removed from the
         // finish axis above.
-        return VariantResolver.options(for: evidence)
+        return Self.gradedVariantOptions(for: card)
     }
 
     private func correctGradedVariant(
@@ -2290,8 +2302,10 @@ enum CollectionArtworkStore {
     /// Decoded artwork, kept in memory because the collection grid asks for it
     /// from inside `body`: every tile pass was re-reading and re-decompressing
     /// the file on the main thread, and scrolling back over a tile paid for it
-    /// again. `save` mints a fresh UUID filename for every write, so an entry
-    /// can never go stale under its key and only deletion has to evict.
+    /// again. The ordinary `save` call mints a fresh UUID filename for every
+    /// write, so an entry can never go stale under its key. Deterministic
+    /// fixtures may pass a filename, which replaces that file and clears the
+    /// decoded cache before it is read again.
     private static let imageCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 60
@@ -2387,15 +2401,21 @@ enum CollectionArtworkStore {
         }
     }
 
-    static func save(_ data: Data) -> String? {
-        guard let normalized = normalizedData(from: data), let directory else { return nil }
+    static func save(_ data: Data, filename requestedFilename: String? = nil) -> String? {
+        let filename = requestedFilename ?? (UUID().uuidString + ".image")
+        guard !filename.isEmpty,
+              filename != ".",
+              filename != "..",
+              URL(fileURLWithPath: filename).lastPathComponent == filename,
+              let normalized = normalizedData(from: data),
+              let directory else { return nil }
         do {
             try FileManager.default.createDirectory(
                 at: directory,
                 withIntermediateDirectories: true
             )
-            let filename = UUID().uuidString + ".image"
             try normalized.write(to: directory.appendingPathComponent(filename), options: .atomic)
+            imageCache.removeAllObjects()
             return filename
         } catch {
             return nil

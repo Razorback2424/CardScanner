@@ -52,6 +52,17 @@ extension PortfolioHistoryRange {
         case .all: return "all time"
         }
     }
+
+    var marketMovementPhrase: String {
+        switch self {
+        case .oneDay: return "market movement past day"
+        case .oneWeek: return "market movement past week"
+        case .oneMonth: return "market movement past month"
+        case .threeMonths: return "market movement past 3 months"
+        case .oneYear: return "market movement past year"
+        case .all: return "market movement, all time"
+        }
+    }
 }
 
 /// A SwiftData-free close snapshot. Retaining this as a value type keeps the
@@ -388,6 +399,18 @@ struct PortfolioHistoryResult: Equatable, Sendable {
 /// is a time-weighted index, so its dollar projection is always anchored to the
 /// selected period's starting value.
 enum PortfolioHistoryDisplay {
+    /// User-facing copy for a selected range whose requested beginning predates
+    /// the oldest close this device can prove. The chart remains useful, but it
+    /// must not look as though the visible first point is the requested start.
+    static func availableHistoryDisclosure(
+        for result: PortfolioHistoryResult
+    ) -> String? {
+        guard let trackingBeganDate = result.trackingBeganDate else { return nil }
+        return "Showing available history from "
+            + trackingBeganDate.formatted(date: .abbreviated, time: .omitted)
+            + "."
+    }
+
     static func percentChange(amount: Money, anchor: Money) -> Double? {
         guard !anchor.isZero else { return nil }
         return amount.doubleValue / anchor.doubleValue

@@ -149,7 +149,7 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertTrue(saved?.isFresh == true)
     }
 
-    func testGameLandingOrdersSetsNewestFirstByReleaseOrder() {
+    func testCatalogSetOrderingIsNewestFirstByReleaseOrder() {
         let older = CatalogSet(
             catalogID: CatalogSetID(game: .pokemon, providerID: "older"),
             name: "Older",
@@ -172,8 +172,36 @@ final class BrowseFeatureTests: XCTestCase {
         )
 
         XCTAssertEqual(
-            CatalogGameCardsOrdering.newestFirst([older, newer]).map(\.id),
+            CatalogSetOrdering.newestFirst([older, newer]).map(\.id),
             [newer.id, older.id]
+        )
+    }
+
+    func testCatalogSetOrderingUsesStableIDForEqualReleaseRanks() {
+        let beta = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "beta"),
+            name: "Beta",
+            code: "BET",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 20
+        )
+        let alpha = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "alpha"),
+            name: "Alpha",
+            code: "ALP",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 20
+        )
+
+        XCTAssertEqual(
+            CatalogSetOrdering.newestFirst([beta, alpha]).map(\.id),
+            [alpha.id, beta.id]
         )
     }
 

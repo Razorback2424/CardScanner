@@ -135,8 +135,8 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
         let evidence = displayedMagicTreatmentEvidence
         guard !evidence.isEmpty else { return true }
         return evidence.treatments.allSatisfy { treatment in
-            treatment.requiredFinish == nil
-                || treatment.requiredFinish?.id == variant.id
+            treatment.requiredFinishes.isEmpty
+                || treatment.requiredFinishes.contains { $0.id == variant.id }
         }
     }
 

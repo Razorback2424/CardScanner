@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "fixture": "IMG_0780.HEIC",
+  "sourcePixelSize": { "w": 4032, "h": 3024 },
+  "orientedPixelSize": { "w": 3024, "h": 4032 },
+  "exifOrientation": 6,
+  "face": "front",
+  "encasement": "none",
+  "capture": "macro_systemcamera",
+  "cardOuterQuad": [[160,150],[2840,150],[2850,3860],[150,3870]],
+  "cardCornerRadiusPx": 21.0,
+  "innerQuad": [[300,480],[2720,480],[2720,2440],[300,2440]],
+  "innerReference": "art_window",
+  "edgeBands": { "left": 12.0, "top": 10.0, "right": 14.0, "bottom": 20.0 },
+  "ambiguousEdges": [],
+  "expected": { "lrRatio": 53.7, "tbRatio": 18.8, "skewDegrees": 0.0 },
+  "conditions": ["low_contrast_edge"],
+  "provenance": {
+    "method": "provisional_five_pixel_grid_estimate",
+    "annotators": ["unverified"],
+    "agreementPx": null,
+    "toolVersion": "gt-tool 1.0",
+    "date": "2026-09-11",
+    "notes": "Provisional 5 px-grid estimate; no independent subpixel annotation or annotator reconciliation was performed. Re-annotation required before L1 accuracy claims. Un-sleeved Magic front; black cut edge is separated from the paper background."
+  }
+}

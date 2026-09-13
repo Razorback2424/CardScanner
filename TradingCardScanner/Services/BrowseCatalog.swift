@@ -904,7 +904,10 @@ actor CatalogCacheStore {
               let envelope = try? JSONDecoder().decode(CacheEnvelope<Value>.self, from: data) else {
             return nil
         }
-        let isFresh = maxAge.map { Date.now.timeIntervalSince(envelope.storedAt) < $0 } ?? true
+        let isFresh = maxAge.map {
+            let age = Date.now.timeIntervalSince(envelope.storedAt)
+            return age >= 0 && age < $0
+        } ?? true
         return Cached(value: envelope.value, storedAt: envelope.storedAt, isFresh: isFresh)
     }
 

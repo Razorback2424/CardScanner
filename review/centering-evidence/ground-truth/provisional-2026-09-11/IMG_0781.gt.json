@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "fixture": "IMG_0781.HEIC",
+  "sourcePixelSize": { "w": 4032, "h": 3024 },
+  "orientedPixelSize": { "w": 3024, "h": 4032 },
+  "exifOrientation": 6,
+  "face": "back",
+  "encasement": "none",
+  "capture": "macro_systemcamera",
+  "cardOuterQuad": [[180,180],[2850,180],[2860,3900],[175,3910]],
+  "cardCornerRadiusPx": 21.0,
+  "innerQuad": [[310,315],[2740,315],[2750,3750],[300,3760]],
+  "innerReference": "printed_border",
+  "edgeBands": { "left": 10.0, "top": 9.0, "right": 12.0, "bottom": 18.0 },
+  "ambiguousEdges": [],
+  "expected": { "lrRatio": 53.7, "tbRatio": 47.4, "skewDegrees": 0.0 },
+  "conditions": ["low_contrast_edge"],
+  "provenance": {
+    "method": "provisional_five_pixel_grid_estimate",
+    "annotators": ["unverified"],
+    "agreementPx": null,
+    "toolVersion": "gt-tool 1.0",
+    "date": "2026-09-11",
+    "notes": "Provisional 5 px-grid estimate; no independent subpixel annotation or annotator reconciliation was performed. Re-annotation required before L1 accuracy claims. High-contrast un-sleeved Magic back; the printed border is distinct from the cut edge."
+  }
+}

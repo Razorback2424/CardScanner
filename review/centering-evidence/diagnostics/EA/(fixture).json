@@ -1,0 +1,145 @@
+{
+  "finalAnalysis" : {
+    "appliedRotationDegrees" : 0,
+    "borderDistances" : {
+      "bottom" : 73.4713506140215,
+      "left" : 65.8321669242159,
+      "right" : 34.85116745558264,
+      "top" : 39.62127291214561
+    },
+    "confidenceScore" : 0.9410658078051196,
+    "confidenceState" : "confident",
+    "detectedSkewDegrees" : -0.23702798316287538,
+    "detectionNotes" : [
+
+    ],
+    "innerQuadNative" : {
+      "bottomLeft" : {
+        "x" : 406.50839240943696,
+        "y" : 3659.6789607597716
+      },
+      "bottomRight" : {
+        "x" : 2741.4819066777845,
+        "y" : 3648.963904632587
+      },
+      "topLeft" : {
+        "x" : 395.94329449520933,
+        "y" : 332.36156693037515
+      },
+      "topRight" : {
+        "x" : 2696.72226714204,
+        "y" : 323.88332260053386
+      }
+    },
+    "innerQuadWorking" : {
+      "bottomLeft" : {
+        "x" : 120.98464059804672,
+        "y" : 1089.1901668927892
+      },
+      "bottomRight" : {
+        "x" : 815.917234130293,
+        "y" : 1086.0011620930318
+      },
+      "topLeft" : {
+        "x" : 117.84026621881232,
+        "y" : 98.91713301499257
+      },
+      "topRight" : {
+        "x" : 802.5959128398929,
+        "y" : 96.39384601206366
+      }
+    },
+    "innerReference" : "art_window",
+    "innerSource" : "profile",
+    "leftRightCentering" : "65.4 \/ 34.6",
+    "measurementImageHeight" : 1200,
+    "measurementImageWidth" : 900,
+    "outerQuadNative" : {
+      "bottomLeft" : {
+        "x" : 186.0376712679863,
+        "y" : 3910.8771818876266
+      },
+      "bottomRight" : {
+        "x" : 2861.8434448242188,
+        "y" : 3898.5980665683746
+      },
+      "topLeft" : {
+        "x" : 174.26065689325333,
+        "y" : 201.88507461547852
+      },
+      "topRight" : {
+        "x" : 2811.950340270996,
+        "y" : 192.16533279418945
+      }
+    },
+    "outerQuadWorking" : {
+      "bottomLeft" : {
+        "x" : 55.36835454404354,
+        "y" : 1163.9515422284603
+      },
+      "bottomRight" : {
+        "x" : 851.7391204833984,
+        "y" : 1160.29704362154
+      },
+      "topLeft" : {
+        "x" : 51.86329074203968,
+        "y" : 60.08484363555908
+      },
+      "topRight" : {
+        "x" : 836.8899822235107,
+        "y" : 57.192063331604004
+      }
+    },
+    "outlineHasInner" : false,
+    "rectification" : {
+      "aspectResidual" : 0.003125608169026228,
+      "isValid" : true,
+      "reprojectionRMS" : 5.0242958677880805e-15,
+      "residualDegrees" : 2.059405912544277e-14,
+      "targetSize" : {
+        "height" : 1103.5385914204112,
+        "width" : 790.705586183279
+      }
+    },
+    "rectifiedInnerQuad" : {
+      "bottomLeft" : {
+        "x" : 65.40803978946656,
+        "y" : 1030.0881742428487
+      },
+      "bottomRight" : {
+        "x" : 756.0787892787157,
+        "y" : 1030.046307369931
+      },
+      "topLeft" : {
+        "x" : 66.25629405896524,
+        "y" : 39.6101658176271
+      },
+      "topRight" : {
+        "x" : 755.6300481766772,
+        "y" : 39.63238000666408
+      }
+    },
+    "rectifiedOuterQuad" : {
+      "bottomLeft" : {
+        "x" : 6.998892365283576e-15,
+        "y" : 1103.5385914204112
+      },
+      "bottomRight" : {
+        "x" : 790.705586183279,
+        "y" : 1103.5385914204114
+      },
+      "topLeft" : {
+        "x" : 7.100116666967237e-15,
+        "y" : 7.100116666967237e-15
+      },
+      "topRight" : {
+        "x" : 790.7055861832791,
+        "y" : -4.973278874202994e-14
+      }
+    },
+    "scalarOuterAgreesWithVision" : true,
+    "scalarPinned" : false,
+    "topBottomCentering" : "35.0 \/ 65.0"
+  },
+  "fixture" : "IMG_0783"
+}
