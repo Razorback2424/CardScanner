@@ -3908,14 +3908,29 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(PortfolioEpoch.startedAt(defaults: defaults), now)
     }
 
-    // REQ-004: reconciliation coverage must include the production row shape,
-    // not only the legacy bare-provider test fixture above.
+    // RM-005: this counterpart must exercise an actual identity/quantity path,
+    // not merely repeat the fixture-shape meta-test.
     func testREQ004ReconciliationCounterpartUsesProductionShapedCertifiedRow() throws {
-        let container = try ProductionRowFixtures.makeContainer()
-        let row = try ProductionRowFixtures.gradedRow(in: container.mainContext)
+        let sourceContainer = try ProductionRowFixtures.makeContainer()
+        let sourceRow = try ProductionRowFixtures.gradedRow(
+            in: sourceContainer.mainContext,
+            certificationNumber: "RM005-CERT"
+        )
+        let expectedKey = sourceRow.collectionKey
+        let expectedQuantity = sourceRow.quantity
 
-        XCTAssertEqual(row.providerID, row.collectionKey)
-        XCTAssertNotNil(row.catalogProviderID)
-        XCTAssertNotEqual(row.catalogProviderID, row.collectionKey)
+        let plan = try CollectionCSV.parse(
+            Data(CollectionCSV.export([sourceRow]).text.utf8)
+        )
+        let destinationContainer = try ProductionRowFixtures.makeContainer()
+        let result = try CollectionCSV.apply(plan, to: destinationContainer.mainContext)
+        let importedRows = try destinationContainer.mainContext.fetch(
+            FetchDescriptor<CollectedCard>()
+        )
+
+        XCTAssertTrue(result.failedRows.isEmpty)
+        XCTAssertEqual(importedRows.count, 1)
+        XCTAssertEqual(importedRows.first?.collectionKey, expectedKey)
+        XCTAssertEqual(importedRows.first?.quantity, expectedQuantity)
     }
 }

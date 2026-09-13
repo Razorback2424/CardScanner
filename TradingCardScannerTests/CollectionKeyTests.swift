@@ -252,13 +252,15 @@ final class CollectionKeyTests: XCTestCase {
         XCTAssertEqual(sealed.underlyingPrintingID, ProductionRowFixtures.pokemonProductID)
         XCTAssertEqual(directSealed.underlyingPrintingID, directSealedProduct.id)
 
-        for value in [
+        let underlyingIDs = [
             raw.underlyingPrintingID,
             graded.underlyingPrintingID,
             scannedGraded.underlyingPrintingID,
             sealed.underlyingPrintingID,
             directSealed.underlyingPrintingID
-        ] {
+        ]
+        XCTAssertTrue(underlyingIDs.allSatisfy { $0 != nil })
+        for value in underlyingIDs.compactMap({ $0 }) {
             XCTAssertFalse(value.hasPrefix("graded:"))
             XCTAssertFalse(value.hasPrefix("sealed:"))
         }
