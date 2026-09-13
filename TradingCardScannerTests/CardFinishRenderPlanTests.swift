@@ -150,4 +150,28 @@ final class CardFinishRenderPlanTests: XCTestCase {
         XCTAssertEqual(disabled.mode, .disabled)
         XCTAssertNil(disabled.family)
     }
+
+#if DEBUG || CARD_FINISH_PERF_HARNESS
+    func testPerformanceFixtureSpecKeepsRequestedFinishCountAndControls() {
+        let finishFixture = PortfolioDebugFixtures.cardFinishPerformanceFixtureSpec(
+            scenario: .gridOnly,
+            rowCount: 48
+        )
+        let controlFixture = PortfolioDebugFixtures.cardFinishPerformanceFixtureSpec(
+            scenario: .nonfoilControl,
+            rowCount: 12
+        )
+
+        XCTAssertEqual(finishFixture.eligibleFinishRowCount, 48)
+        XCTAssertEqual(finishFixture.nonfoilControlRowCount, 1)
+        XCTAssertEqual(finishFixture.sealedControlRowCount, 1)
+        XCTAssertEqual(finishFixture.rawCardRowCount, 49)
+        XCTAssertEqual(finishFixture.totalRowCount, 50)
+
+        XCTAssertEqual(controlFixture.eligibleFinishRowCount, 0)
+        XCTAssertEqual(controlFixture.nonfoilControlRowCount, 12)
+        XCTAssertEqual(controlFixture.sealedControlRowCount, 1)
+        XCTAssertEqual(controlFixture.totalRowCount, 13)
+    }
+#endif
 }

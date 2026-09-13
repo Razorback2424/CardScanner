@@ -1,6 +1,7 @@
 #if DEBUG || CARD_FINISH_PERF_HARNESS
 import Foundation
 import SwiftData
+import UIKit
 
 /// Deterministic portfolio inputs for screenshot routes. The production engine
 /// still derives every close, reconciliation row, and chart point from them.
@@ -285,12 +286,47 @@ enum PortfolioDebugFixtures {
         try? modelContext.save()
     }
 
-    enum CardFinishPerformanceScenario: String, CaseIterable {
+    enum CardFinishPerformanceScenario: String, CaseIterable, Equatable, Sendable {
         case gridOnly = "grid-only"
         case gridWithDetail = "grid-with-detail"
         case nonfoilControl = "nonfoil-control"
         case singleDetail = "single-detail"
         case singleDetailControl = "single-detail-control"
+    }
+
+    struct CardFinishPerformanceFixtureSpec: Equatable, Sendable {
+        let scenario: CardFinishPerformanceScenario
+        let requestedRowCount: Int
+        let eligibleFinishRowCount: Int
+        let nonfoilControlRowCount: Int
+        let sealedControlRowCount: Int
+
+        init(scenario: CardFinishPerformanceScenario, rowCount: Int) {
+            let normalizedRowCount = min(max(rowCount, 12), 48)
+            self.scenario = scenario
+            requestedRowCount = normalizedRowCount
+            sealedControlRowCount = 1
+
+            switch scenario {
+            case .gridOnly, .gridWithDetail, .singleDetail:
+                // The requested count is the number of eligible finish rows.
+                // Controls are added separately so the named 12/24/48 sizes
+                // remain honest rather than being diluted by normal cards.
+                eligibleFinishRowCount = normalizedRowCount
+                nonfoilControlRowCount = 1
+            case .nonfoilControl, .singleDetailControl:
+                eligibleFinishRowCount = 0
+                nonfoilControlRowCount = normalizedRowCount
+            }
+        }
+
+        var rawCardRowCount: Int {
+            eligibleFinishRowCount + nonfoilControlRowCount
+        }
+
+        var totalRowCount: Int {
+            rawCardRowCount + sealedControlRowCount
+        }
     }
 
     static func cardFinishPerformanceScenario() -> CardFinishPerformanceScenario {
@@ -311,6 +347,56 @@ enum PortfolioDebugFixtures {
             return 24
         }
         return min(max(requested, 12), 48)
+    }
+
+    static func cardFinishPerformanceFixtureSpec(
+        scenario: CardFinishPerformanceScenario,
+        rowCount: Int
+    ) -> CardFinishPerformanceFixtureSpec {
+        CardFinishPerformanceFixtureSpec(scenario: scenario, rowCount: rowCount)
+    }
+
+    private static func cardFinishPerformanceArtworkFilename() -> String {
+        guard let image = UIImage(named: "AppIcon"),
+              let data = image.pngData(),
+              let filename = CollectionArtworkStore.save(data) else {
+            preconditionFailure("Could not prepare the bundled card-finish performance artwork.")
+        }
+        return filename
+    }
+
+    private static func makeCardFinishPerformanceCard(
+        index: Int,
+        rawCardRowCount: Int
+    ) -> TCGdexCard {
+        TCGdexCard(
+            id: "card-finish-performance-\(index)",
+            localId: String(format: "%03d", index + 1),
+            name: "Finish Performance \(index + 1)",
+            // The same local override is attached to every raw and sealed
+            // fixture row below. The catalog object itself stays provider-like;
+            // the local override exercises image decoding and accent caching
+            // without any network dependency.
+            image: nil,
+            rarity: "QA",
+            set: TCGdexSetBrief(
+                id: "card-finish-performance",
+                name: "Card Finish Performance",
+                cardCount: TCGdexCardCount(
+                    total: rawCardRowCount,
+                    official: rawCardRowCount
+                )
+            ),
+            variants: TCGdexVariants(
+                firstEdition: false,
+                holo: true,
+                normal: true,
+                reverse: true,
+                wPromo: nil
+            ),
+            pricing: nil,
+            variantsDetailed: nil
+        )
     }
 
     /// Seeds a fresh, deterministic performance collection. The app selects an
@@ -350,71 +436,104 @@ enum PortfolioDebugFixtures {
         }
 
         let scenario = cardFinishPerformanceScenario()
-        let rowCount = cardFinishPerformanceRowCount()
+        let fixture = cardFinishPerformanceFixtureSpec(
+            scenario: scenario,
+            rowCount: cardFinishPerformanceRowCount()
+        )
         let store = CollectionStore(context: modelContext)
+        let artworkFilename = cardFinishPerformanceArtworkFilename()
         var firstEligibleCollectionKey: String?
         var insertedRowCount = 0
 
-        for index in 0..<rowCount {
-            let variant: PhysicalVariant?
-            switch scenario {
-            case .nonfoilControl, .singleDetailControl:
-                variant = .normal
-            default:
-                switch index % 4 {
-                case 0: variant = .foil
-                case 1: variant = .holo
-                case 2: variant = .reverse
-                default: variant = .normal
-                }
+        for index in 0..<fixture.eligibleFinishRowCount {
+            let variant: PhysicalVariant
+            switch index % 3 {
+            case 0: variant = .foil
+            case 1: variant = .holo
+            default: variant = .reverse
             }
 
-            let providerID = "card-finish-performance-\(index)"
-            let card = TCGdexCard(
-                id: providerID,
-                localId: String(format: "%03d", index + 1),
-                name: "Finish Performance \(index + 1)",
-                // Keep both finish and control scenarios on the same local,
-                // offline placeholder path. No network image request or
-                // artwork-derived accent is allowed to decide the comparison.
-                image: nil,
-                rarity: "QA",
-                set: TCGdexSetBrief(
-                    id: "card-finish-performance",
-                    name: "Card Finish Performance",
-                    cardCount: TCGdexCardCount(total: rowCount, official: rowCount)
-                ),
-                variants: TCGdexVariants(
-                    firstEdition: false,
-                    holo: true,
-                    normal: true,
-                    reverse: true,
-                    wPromo: nil
-                ),
-                pricing: nil,
-                variantsDetailed: nil
-            )
             do {
                 let mutation = try store.add(
-                    .pokemon(card, setCode: "CFP"),
+                    .pokemon(
+                        makeCardFinishPerformanceCard(
+                            index: index,
+                            rawCardRowCount: fixture.rawCardRowCount
+                        ),
+                        setCode: "CFP"
+                    ),
                     resolved: ResolvedVariant(
                         variant: variant,
-                        resolution: variant == nil ? .catalogSilent : .uniqueInCatalog
+                        resolution: .uniqueInCatalog
                     ),
                     identityResolution: .catalogSelected,
                     setReleaseOrder: index,
                     quantity: 1
                 )
+                CollectionArtworkStore.set(
+                    filename: artworkFilename,
+                    for: mutation.collectionKey,
+                    in: modelContext
+                )
                 insertedRowCount += 1
-
-                if firstEligibleCollectionKey == nil,
-                   variant?.id == PhysicalVariant.foil.id
-                    || variant?.id == PhysicalVariant.holo.id
-                    || variant?.id == PhysicalVariant.reverse.id {
+                if firstEligibleCollectionKey == nil {
                     firstEligibleCollectionKey = mutation.collectionKey
                 }
             } catch {
                 preconditionFailure("Could not seed card-finish performance row \(index): \(error)")
+            }
+        }
+
+        for controlIndex in 0..<fixture.nonfoilControlRowCount {
+            let index = fixture.eligibleFinishRowCount + controlIndex
+            do {
+                let mutation = try store.add(
+                    .pokemon(
+                        makeCardFinishPerformanceCard(
+                            index: index,
+                            rawCardRowCount: fixture.rawCardRowCount
+                        ),
+                        setCode: "CFP"
+                    ),
+                    resolved: ResolvedVariant(
+                        variant: .normal,
+                        resolution: .uniqueInCatalog
+                    ),
+                    identityResolution: .catalogSelected,
+                    setReleaseOrder: index,
+                    quantity: 1
+                )
+                CollectionArtworkStore.set(
+                    filename: artworkFilename,
+                    for: mutation.collectionKey,
+                    in: modelContext
+                )
+                insertedRowCount += 1
+            } catch {
+                preconditionFailure("Could not seed nonfoil performance control \(controlIndex): \(error)")
+            }
+        }
+
+        for controlIndex in 0..<fixture.sealedControlRowCount {
+            let product = SealedProductSummary(
+                id: "card-finish-performance-sealed-\(controlIndex)",
+                name: "Finish Performance Sealed Control",
+                setName: "Card Finish Performance",
+                variantID: "card-finish-performance-sealed-variant-\(controlIndex)",
+                marketPriceUSD: nil,
+                updatedAt: .now,
+                imageURL: nil
+            )
+            do {
+                let mutation = try store.addSealed(product, game: .pokemon)
+                CollectionArtworkStore.set(
+                    filename: artworkFilename,
+                    for: mutation.collectionKey,
+                    in: modelContext
+                )
+                insertedRowCount += 1
+            } catch {
+                preconditionFailure("Could not seed sealed performance control \(controlIndex): \(error)")
             }
         }
 
@@ -429,7 +548,7 @@ enum PortfolioDebugFixtures {
         )
         PerformanceSignpost.emitEvent(
             "cardFinishScenario",
-            "scenario=\(scenario.rawValue) rows=\(insertedRowCount)"
+            "scenario=\(scenario.rawValue) rows=\(insertedRowCount) eligible=\(fixture.eligibleFinishRowCount) nonfoil=\(fixture.nonfoilControlRowCount) sealed=\(fixture.sealedControlRowCount)"
         )
         return firstEligibleCollectionKey
     }
