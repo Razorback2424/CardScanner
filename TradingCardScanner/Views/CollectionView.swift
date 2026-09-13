@@ -61,7 +61,6 @@ struct CollectionView: View {
     @State private var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.cardFinishMotionSource) private var cardFinishMotion
 
     /// Both of the collection's destinations, so one hierarchy drives a push on a
     /// phone-sized window and a second column on an iPad-sized one. `card` carries
@@ -347,8 +346,6 @@ struct CollectionView: View {
     }
 
     private func content(_ snapshot: Snapshot) -> some View {
-        let hasSpecularFinish = snapshot.entries.contains { $0.row.hasSpecularFinish }
-
         return ScrollView {
             LazyVStack(spacing: 12) {
                 collectionSummary(snapshot)
@@ -400,19 +397,6 @@ struct CollectionView: View {
         .animation(.easeOut(duration: 0.2), value: filters)
         .animation(.easeOut(duration: 0.2), value: sort)
         .animation(.easeOut(duration: 0.2), value: searchQuery)
-        .onAppear {
-            if hasSpecularFinish {
-                cardFinishMotion.startGrid()
-            }
-        }
-        .onChange(of: hasSpecularFinish) { _, isActive in
-            if isActive {
-                cardFinishMotion.startGrid()
-            } else {
-                cardFinishMotion.stopGrid()
-            }
-        }
-        .onDisappear { cardFinishMotion.stopGrid() }
     }
 
     private func collectionSummary(_ snapshot: Snapshot) -> some View {

@@ -1,4 +1,4 @@
-#if DEBUG
+#if DEBUG || CARD_FINISH_PERF_HARNESS
 import Foundation
 import SwiftData
 
@@ -283,6 +283,155 @@ enum PortfolioDebugFixtures {
             }
         }
         try? modelContext.save()
+    }
+
+    enum CardFinishPerformanceScenario: String, CaseIterable {
+        case gridOnly = "grid-only"
+        case gridWithDetail = "grid-with-detail"
+        case nonfoilControl = "nonfoil-control"
+        case singleDetail = "single-detail"
+        case singleDetailControl = "single-detail-control"
+    }
+
+    static func cardFinishPerformanceScenario() -> CardFinishPerformanceScenario {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-scenario"),
+              arguments.indices.contains(index + 1),
+              let scenario = CardFinishPerformanceScenario(rawValue: arguments[index + 1]) else {
+            return .gridOnly
+        }
+        return scenario
+    }
+
+    static func cardFinishPerformanceRowCount() -> Int {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-row-count"),
+              arguments.indices.contains(index + 1),
+              let requested = Int(arguments[index + 1]) else {
+            return 24
+        }
+        return min(max(requested, 12), 48)
+    }
+
+    /// Seeds a fresh, deterministic performance collection. The app selects an
+    /// in-memory container before this method runs, so deleting the model rows
+    /// here resets a scenario without ever touching a user's saved collection.
+    @MainActor
+    static func seedCardFinishPerformance(in modelContext: ModelContext) -> String? {
+        for card in (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? [] {
+            modelContext.delete(card)
+        }
+        for activity in (try? modelContext.fetch(FetchDescriptor<CollectionActivity>())) ?? [] {
+            modelContext.delete(activity)
+        }
+        for event in (try? modelContext.fetch(FetchDescriptor<InventoryEvent>())) ?? [] {
+            modelContext.delete(event)
+        }
+        for record in (try? modelContext.fetch(FetchDescriptor<PriceRecord>())) ?? [] {
+            modelContext.delete(record)
+        }
+        for observation in (try? modelContext.fetch(FetchDescriptor<PriceObservation>())) ?? [] {
+            modelContext.delete(observation)
+        }
+        for day in (try? modelContext.fetch(FetchDescriptor<PriceCheckDay>())) ?? [] {
+            modelContext.delete(day)
+        }
+        for close in (try? modelContext.fetch(FetchDescriptor<PortfolioDailyClose>())) ?? [] {
+            modelContext.delete(close)
+        }
+        for quote in (try? modelContext.fetch(FetchDescriptor<ReferenceQuote>())) ?? [] {
+            modelContext.delete(quote)
+        }
+        for identity in (try? modelContext.fetch(FetchDescriptor<ProductIdentity>())) ?? [] {
+            modelContext.delete(identity)
+        }
+        for artwork in (try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? [] {
+            modelContext.delete(artwork)
+        }
+
+        let scenario = cardFinishPerformanceScenario()
+        let rowCount = cardFinishPerformanceRowCount()
+        let store = CollectionStore(context: modelContext)
+        var firstEligibleCollectionKey: String?
+        var insertedRowCount = 0
+
+        for index in 0..<rowCount {
+            let variant: PhysicalVariant?
+            switch scenario {
+            case .nonfoilControl, .singleDetailControl:
+                variant = .normal
+            default:
+                switch index % 4 {
+                case 0: variant = .foil
+                case 1: variant = .holo
+                case 2: variant = .reverse
+                default: variant = .normal
+                }
+            }
+
+            let providerID = "card-finish-performance-\(index)"
+            let card = TCGdexCard(
+                id: providerID,
+                localId: String(format: "%03d", index + 1),
+                name: "Finish Performance \(index + 1)",
+                // Keep both finish and control scenarios on the same local,
+                // offline placeholder path. No network image request or
+                // artwork-derived accent is allowed to decide the comparison.
+                image: nil,
+                rarity: "QA",
+                set: TCGdexSetBrief(
+                    id: "card-finish-performance",
+                    name: "Card Finish Performance",
+                    cardCount: TCGdexCardCount(total: rowCount, official: rowCount)
+                ),
+                variants: TCGdexVariants(
+                    firstEdition: false,
+                    holo: true,
+                    normal: true,
+                    reverse: true,
+                    wPromo: nil
+                ),
+                pricing: nil,
+                variantsDetailed: nil
+            )
+            do {
+                let mutation = try store.add(
+                    .pokemon(card, setCode: "CFP"),
+                    resolved: ResolvedVariant(
+                        variant: variant,
+                        resolution: variant == nil ? .catalogSilent : .uniqueInCatalog
+                    ),
+                    identityResolution: .catalogSelected,
+                    setReleaseOrder: index,
+                    quantity: 1
+                )
+                insertedRowCount += 1
+
+                if firstEligibleCollectionKey == nil,
+                   variant?.id == PhysicalVariant.foil.id
+                    || variant?.id == PhysicalVariant.holo.id
+                    || variant?.id == PhysicalVariant.reverse.id {
+                    firstEligibleCollectionKey = mutation.collectionKey
+                }
+            } catch {
+                preconditionFailure("Could not seed card-finish performance row \(index): \(error)")
+            }
+        }
+
+        do {
+            try modelContext.save()
+        } catch {
+            preconditionFailure("Could not save card-finish performance fixture: \(error)")
+        }
+        CardFinishPerformanceDiagnostics.shared.reset(
+            scenario: scenario.rawValue,
+            rowCount: insertedRowCount
+        )
+        PerformanceSignpost.emitEvent(
+            "cardFinishScenario",
+            "scenario=\(scenario.rawValue) rows=\(insertedRowCount)"
+        )
+        return firstEligibleCollectionKey
     }
 
     static func debugResolution() -> VariantResolution {

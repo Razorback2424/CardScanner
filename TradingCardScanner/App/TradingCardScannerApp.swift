@@ -99,6 +99,17 @@ struct TradingCardScannerApp: App {
         LocalArtworkOverride.self
     ])
 
+    private static var isCardFinishPerformanceHarnessLaunch: Bool {
+#if DEBUG || CARD_FINISH_PERF_HARNESS
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_route"),
+              arguments.indices.contains(index + 1) else { return false }
+        return arguments[index + 1] == "CollectionFinishPerformance"
+#else
+        return false
+#endif
+    }
+
     /// CloudKit sync is attempted once per launch when the app's sign-in gate
     /// is present. The private database itself belongs to the device's iCloud
     /// account, not the Sign in with Apple credential. Signing in or out again
@@ -116,6 +127,27 @@ struct TradingCardScannerApp: App {
     private(set) static var storageRecoveryMessage: String?
 
     private static func makeContainer() -> ModelContainer {
+        // The performance route is intentionally isolated from both the
+        // CloudKit-backed collection and the normal local store. It is selected
+        // before the app's static container is created and is available only to
+        // the opt-in debug/performance build.
+        if isCardFinishPerformanceHarnessLaunch {
+            let performanceConfiguration = ModelConfiguration(
+                "CardFinishPerformance",
+                schema: fullSchema,
+                isStoredInMemoryOnly: true,
+                cloudKitDatabase: .none
+            )
+            if let container = try? ModelContainer(
+                for: fullSchema,
+                configurations: [performanceConfiguration]
+            ) {
+                activeStorageMode = .localOnly
+                return container
+            }
+            preconditionFailure("Could not create the card-finish performance container.")
+        }
+
         // A separate store for the local-only models, so CloudKit mirroring is
         // decided per configuration rather than per container.
         let localOnlyConfiguration = ModelConfiguration(
