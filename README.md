@@ -4,9 +4,12 @@ A high-throughput, high-trust collection intake system for iPhone. The camera an
 OCR are the mechanism; the product is being able to move through a stack of cards
 rhythmically while the software stays out of the way.
 
-For the current implementation checkpoint, simulator evidence, and the remaining
-device/provider/review gates, see
+For the broader repository audit snapshot and its remaining device/provider/review
+gates, see
 [`docs/plans/documentation_audit.md`](docs/plans/documentation_audit.md). The
+active card-centering contract and evidence are in
+[`review/opus-card-centering-implementation-plan.md`](review/opus-card-centering-implementation-plan.md)
+and [`review/centering-evidence/`](review/centering-evidence/). The
 chronological implementation log remains in [`progress.md`](progress.md), while
 validation work that cannot be retired by simulator tests is centralized in
 [`docs/plans/release_followups.md`](docs/plans/release_followups.md).

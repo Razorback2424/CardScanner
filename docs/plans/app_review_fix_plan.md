@@ -1,5 +1,7 @@
 # App Review Fix Plan
 
+> **Historical plan snapshot.** This file preserves the dated app-review remediation history and its evidence gates. It is not the current card-centering status record; use the [current card-centering plan](../../review/opus-card-centering-implementation-plan.md) and [centering evidence](../../review/centering-evidence/) for that work.
+
 This file retains the detailed review history and its evidence gates. The
 supplied high-confidence findings are closed; the remaining unchecked items
 are confirmation, measurement, or deployment-owner decisions. See

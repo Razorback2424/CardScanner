@@ -53,14 +53,33 @@ enum CardCenteringExport {
         measurement: CardCenteringMeasurement,
         rotationDegrees: Double
     ) -> UIImage {
-        let canvasWidth = max(CGFloat(measurement.imageWidth), minimumCanvasWidth)
+        let baseCanvasWidth = max(CGFloat(measurement.imageWidth), minimumCanvasWidth)
+        let imageAspect = CGFloat(measurement.imageHeight) / CGFloat(max(measurement.imageWidth, 1))
+        let basePhotoSize = CGSize(
+            width: baseCanvasWidth,
+            height: (baseCanvasWidth * imageAspect).rounded()
+        )
+        let radians = CGFloat(rotationDegrees * .pi / 180)
+        let rotatedBounds = CGRect(origin: .zero, size: basePhotoSize)
+            .applying(CGAffineTransform(rotationAngle: radians))
+            .standardized
+        let canvasWidth = max(baseCanvasWidth, ceil(rotatedBounds.width))
+        let photoSize = CGSize(
+            width: canvasWidth,
+            height: ceil(rotatedBounds.height)
+        )
+        let photoRect = CGRect(origin: .zero, size: photoSize)
+        let sourceRect = CGRect(
+            x: (photoRect.width - basePhotoSize.width) / 2,
+            y: (photoRect.height - basePhotoSize.height) / 2,
+            width: basePhotoSize.width,
+            height: basePhotoSize.height
+        )
         let unit = canvasWidth / 1000
         let padding = canvasWidth * 0.045
-        let imageAspect = CGFloat(measurement.imageHeight) / CGFloat(max(measurement.imageWidth, 1))
-        let photoHeight = (canvasWidth * imageAspect).rounded()
 
         let layout = PanelLayout(canvasWidth: canvasWidth, unit: unit, padding: padding, measurement: measurement)
-        let totalHeight = photoHeight + layout.height
+        let totalHeight = photoRect.height + layout.height
 
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
@@ -72,23 +91,28 @@ enum CardCenteringExport {
             Palette.background.setFill()
             context.fill(CGRect(x: 0, y: 0, width: canvasWidth, height: totalHeight))
 
-            let photoRect = CGRect(x: 0, y: 0, width: canvasWidth, height: photoHeight)
             context.cgContext.saveGState()
             context.cgContext.translateBy(x: photoRect.midX, y: photoRect.midY)
-            context.cgContext.rotate(by: CGFloat(rotationDegrees * .pi / 180))
+            context.cgContext.rotate(by: radians)
             image.draw(in: CGRect(
-                x: -photoRect.width / 2,
-                y: -photoRect.height / 2,
-                width: photoRect.width,
-                height: photoRect.height
+                x: -sourceRect.width / 2,
+                y: -sourceRect.height / 2,
+                width: sourceRect.width,
+                height: sourceRect.height
             ))
             context.cgContext.restoreGState()
-            drawGuides(measurement: measurement, in: photoRect, unit: unit, context: context.cgContext)
+            drawGuides(
+                measurement: measurement,
+                in: sourceRect,
+                unit: unit,
+                rotationDegrees: rotationDegrees,
+                context: context.cgContext
+            )
 
             Palette.divider.setFill()
-            context.fill(CGRect(x: 0, y: photoHeight, width: canvasWidth, height: max(1, unit)))
+            context.fill(CGRect(x: 0, y: photoRect.maxY, width: canvasWidth, height: max(1, unit)))
 
-            layout.draw(measurement: measurement, rotationDegrees: rotationDegrees, topEdge: photoHeight)
+            layout.draw(measurement: measurement, rotationDegrees: rotationDegrees, topEdge: photoRect.maxY)
         }
     }
 
@@ -98,29 +122,43 @@ enum CardCenteringExport {
         measurement: CardCenteringMeasurement,
         in rect: CGRect,
         unit: CGFloat,
+        rotationDegrees: Double,
         context: CGContext
     ) {
-        let xScale = rect.width / CGFloat(max(measurement.imageWidth, 1))
-        let yScale = rect.height / CGFloat(max(measurement.imageHeight, 1))
+        let radians = CGFloat(rotationDegrees * .pi / 180)
         let lineWidth = max(2, unit * 3)
 
-        func trace(_ edges: CardCenteringEdges) {
-            for x in [edges.left, edges.right] {
-                let position = rect.minX + CGFloat(x) * xScale
-                context.move(to: CGPoint(x: position, y: rect.minY))
-                context.addLine(to: CGPoint(x: position, y: rect.maxY))
+        func trace(_ quad: CardCenteringQuad) {
+            let points = CardCenteringGuideGeometry.screenPoints(
+                for: quad,
+                imageSize: CardCenteringSize(
+                    width: Double(measurement.imageWidth),
+                    height: Double(measurement.imageHeight)
+                ),
+                in: rect
+            )
+            guard let first = points.first else { return }
+            context.move(to: first)
+            for value in points.dropFirst() {
+                context.addLine(to: value)
             }
-            for y in [edges.top, edges.bottom] {
-                let position = rect.minY + CGFloat(y) * yScale
-                context.move(to: CGPoint(x: rect.minX, y: position))
-                context.addLine(to: CGPoint(x: rect.maxX, y: position))
-            }
+            context.closePath()
         }
 
         // Drawn outer-first so the inner frame stays legible where the two run
         // close together on a badly cut card — which is exactly the case the
         // user is most likely to be exporting.
-        for (edges, colour) in [(measurement.outer, Palette.outer), (measurement.inner, Palette.inner)] {
+        context.saveGState()
+        context.translateBy(x: rect.midX, y: rect.midY)
+        context.rotate(by: radians)
+        context.translateBy(x: -rect.midX, y: -rect.midY)
+        var guides: [(CardCenteringQuad, UIColor)] = [
+            (measurement.geometryOuterQuad, Palette.outer)
+        ]
+        if let inner = measurement.geometryInnerQuad {
+            guides.append((inner, Palette.inner))
+        }
+        for (quad, colour) in guides {
             // A dark casing under each line. Card art is arbitrary, and a red
             // guide laid over red art is invisible in the one export the user
             // most needs to read — the casing costs a pixel either side and
@@ -128,14 +166,15 @@ enum CardCenteringExport {
             context.setStrokeColor(UIColor.black.withAlphaComponent(0.45).cgColor)
             context.setLineWidth(lineWidth * 2.4)
             context.setLineCap(.butt)
-            trace(edges)
+            trace(quad)
             context.strokePath()
 
             context.setStrokeColor(colour.cgColor)
             context.setLineWidth(lineWidth)
-            trace(edges)
+            trace(quad)
             context.strokePath()
         }
+        context.restoreGState()
     }
 
     // MARK: - Panel
@@ -206,10 +245,10 @@ enum CardCenteringExport {
             y += metricTileHeight + gap
 
             let borders = [
-                ("LEFT", measurement.leftBorder),
-                ("RIGHT", measurement.rightBorder),
-                ("TOP", measurement.topBorder),
-                ("BOTTOM", measurement.bottomBorder)
+                ("LEFT", measurement.isDeclined ? "—" : "\(measurement.leftBorder) px"),
+                ("RIGHT", measurement.isDeclined ? "—" : "\(measurement.rightBorder) px"),
+                ("TOP", measurement.isDeclined ? "—" : "\(measurement.topBorder) px"),
+                ("BOTTOM", measurement.isDeclined ? "—" : "\(measurement.bottomBorder) px")
             ]
             let borderGap = unit * 12
             let borderWidth = (contentWidth - borderGap * CGFloat(borders.count - 1)) / CGFloat(borders.count)
@@ -290,7 +329,7 @@ enum CardCenteringExport {
             )
         }
 
-        private func drawBorderTile(title: String, value: Int, rect: CGRect) {
+        private func drawBorderTile(title: String, value: String, rect: CGRect) {
             fillTile(rect)
             draw(
                 title,
@@ -301,7 +340,7 @@ enum CardCenteringExport {
                 offsetY: unit * 20
             )
             draw(
-                "\(value) px",
+                value,
                 font: .monospacedDigitSystemFont(ofSize: unit * 34, weight: .semibold),
                 colour: Palette.primary,
                 kern: 0,

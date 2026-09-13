@@ -1,5 +1,11 @@
+import Foundation
+import CryptoKit
+import CoreImage
+import ImageIO
 import XCTest
 import SwiftData
+import UIKit
+import UniformTypeIdentifiers
 @testable import TradingCardScanner
 
 @MainActor
@@ -738,6 +744,7 @@ final class OpusImplementationPlanTests: XCTestCase {
         XCTAssertEqual(revised.revisionReason, .recomputed)
         XCTAssertNotEqual(revised.revisionReason, .lateInventoryTruth)
     }
+
 
     func testRM004PriceOnlyRevisionIgnoresUnrelatedLateEventFromBeforeThatDay() throws {
         let container = try ModelContainer(
@@ -1647,6 +1654,7 @@ final class OpusImplementationPlanTests: XCTestCase {
         XCTAssertNil(emitted?.slab)
         XCTAssertNil(scanner.latchedSubjectForTesting?.slab)
     }
+
 #endif
 
     private func portfolioClose(for date: Date, value: Int) -> PortfolioPublishedClose {
@@ -1789,6 +1797,3291 @@ final class OpusImplementationPlanTests: XCTestCase {
     private static let pricedBatchJSON = """
     {"data":[{"id":"req011-priced-box","uuid":"req011-priced-product","tcgplayerId":"98581","variants":[{"uuid":"req011-priced-variant","condition":"Sealed","price":25}]}]}
     """
+}
+
+final class CardCenteringGroundTruthTests: XCTestCase {
+    private let fixtureNames = [
+        "IMG_0347", "IMG_0348", "IMG_0349", "IMG_0350", "IMG_0351",
+        "IMG_0352", "IMG_0780", "IMG_0781", "IMG_0782", "IMG_0783"
+    ]
+
+    private var repositoryURL: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+    }
+
+    private func requireVerifiedGroundTruth(
+        _ record: GroundTruthRecord,
+        _ name: String
+    ) throws {
+        guard record.provenance.method != "provisional_five_pixel_grid_estimate" else {
+            throw XCTSkip(
+                "\(name) ground truth is provisional; re-annotation is required before accuracy claims."
+            )
+        }
+    }
+
+    func testRealFixturesAndGroundTruthAreReachableFromTheTestBundle() throws {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+
+        for name in fixtureNames {
+            let imageURL = try XCTUnwrap(
+                bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC"),
+                "missing HEIC fixture \(name)"
+            )
+            XCTAssertGreaterThan(try Data(contentsOf: imageURL).count, 0)
+
+            let groundTruthURL = try XCTUnwrap(
+                bundle.url(forResource: "\(name).gt", withExtension: "json", subdirectory: "TradingCards/GroundTruth"),
+                "missing ground truth \(name)"
+            )
+            XCTAssertGreaterThan(try Data(contentsOf: groundTruthURL).count, 0)
+        }
+    }
+
+    func testGroundTruthRecordsConformToSchemaAndGeometryContract() throws {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+
+        for name in fixtureNames {
+            let url = try XCTUnwrap(
+                bundle.url(
+                    forResource: "\(name).gt",
+                    withExtension: "json",
+                    subdirectory: "TradingCards/GroundTruth"
+                )
+            )
+            let record = try JSONDecoder().decode(
+                GroundTruthRecord.self,
+                from: Data(contentsOf: url)
+            )
+
+            XCTAssertEqual(record.schema, 1, name)
+            XCTAssertEqual(record.fixture, "\(name).HEIC", name)
+            XCTAssertEqual(record.sourcePixelSize, GroundTruthSize(width: 4032, height: 3024), name)
+            XCTAssertEqual(record.orientedPixelSize, GroundTruthSize(width: 3024, height: 4032), name)
+            XCTAssertEqual(record.exifOrientation, 6, name)
+            XCTAssertEqual(record.cardOuterQuad.count, 4, name)
+            XCTAssertTrue(record.cardOuterQuad.allSatisfy { $0.count == 2 && $0.allSatisfy { $0.isFinite } }, name)
+            XCTAssertEqual(record.edgeBands.count, 4, name)
+            XCTAssertTrue(record.edgeBands.allSatisfy { $0.value > 0 }, name)
+            XCTAssertTrue(Set(record.ambiguousEdges).isSubset(of: ["left", "top", "right", "bottom"]), name)
+            let cardHeight = try XCTUnwrap(CardCenteringQuad(record.cardOuterQuad)).rectifiedHeight
+            let agreementTolerance = min(
+                max(cardHeight * 0.0025, record.edgeBands.values.min() ?? 0),
+                cardHeight * 0.01
+            )
+            if let agreementPx = record.provenance.agreementPx {
+                XCTAssertLessThanOrEqual(agreementPx, agreementTolerance, name)
+            } else {
+                XCTAssertEqual(record.provenance.method, "provisional_five_pixel_grid_estimate", name)
+                XCTAssertEqual(record.provenance.annotators, ["unverified"], name)
+            }
+            let expectedAmbiguousEdges = Set(record.edgeBands.compactMap { edge, band in
+                band > cardHeight * 0.01 ? edge : nil
+            })
+            XCTAssertEqual(Set(record.ambiguousEdges), expectedAmbiguousEdges, name)
+
+            let outer = try XCTUnwrap(CardCenteringQuad(record.cardOuterQuad))
+            XCTAssertEqual(outer.rectifiedAspectRatio, 2.5 / 3.5, accuracy: 0.02, name)
+            XCTAssertTrue(record.expected.skewDegrees.isFinite, name)
+
+            if let innerValues = record.innerQuad {
+                let inner = try XCTUnwrap(CardCenteringQuad(innerValues))
+                XCTAssertNotEqual(record.innerReference, .none, name)
+                let distances = outer.borderDistances(to: inner)
+                let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
+                let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+                XCTAssertEqual(lr, try XCTUnwrap(record.expected.lrRatio), accuracy: 0.25, name)
+                XCTAssertEqual(tb, try XCTUnwrap(record.expected.tbRatio), accuracy: 0.25, name)
+            } else {
+                XCTAssertEqual(record.innerReference, .none, name)
+                XCTAssertNil(record.expected.lrRatio, name)
+                XCTAssertNil(record.expected.tbRatio, name)
+            }
+        }
+    }
+
+    func testGroundTruthHasVerifiedDualPassSubpixelProvenance() throws {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        var allCoordinates: [Double] = []
+
+        for name in fixtureNames {
+            let url = try XCTUnwrap(
+                bundle.url(
+                    forResource: "\(name).gt",
+                    withExtension: "json",
+                    subdirectory: "TradingCards/GroundTruth"
+                )
+            )
+            let record = try JSONDecoder().decode(
+                GroundTruthRecord.self,
+                from: Data(contentsOf: url)
+            )
+
+            XCTAssertFalse(record.provenance.method.hasPrefix("provisional_"), name)
+            XCTAssertEqual(
+                record.provenance.method,
+                "analyzer_free_dual_profile_fit_with_visual_adjudication",
+                name
+            )
+            XCTAssertEqual(
+                record.provenance.annotators,
+                ["generic_profile_pass_A", "generic_profile_pass_B"],
+                name
+            )
+            XCTAssertNotNil(record.provenance.agreementPx, name)
+            XCTAssertGreaterThanOrEqual(record.provenance.agreementPx ?? -.infinity, 0, name)
+            XCTAssertTrue(
+                record.provenance.notes.localizedCaseInsensitiveContains("analyzer-free") &&
+                    record.provenance.notes.localizedCaseInsensitiveContains("physical silhouette"),
+                name
+            )
+            allCoordinates.append(contentsOf: record.cardOuterQuad.flatMap { $0 })
+            allCoordinates.append(contentsOf: record.innerQuad?.flatMap { $0 } ?? [])
+            allCoordinates.append(contentsOf: record.encasementOuterQuad?.flatMap { $0 } ?? [])
+        }
+
+        XCTAssertTrue(
+            allCoordinates.contains { abs($0 - $0.rounded()) > 0.0001 },
+            "verified ground truth must retain subpixel coordinates"
+        )
+    }
+
+    func testGroundTruthReviewSheetsArePresentAndStayBelowArtifactLimit() throws {
+        let directory = repositoryURL.appendingPathComponent("review/centering-evidence/ground-truth")
+        for name in fixtureNames {
+            let url = directory.appendingPathComponent("\(name)_gt.png")
+            XCTAssertTrue(FileManager.default.fileExists(atPath: url.path), name)
+            let size = (try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0
+            XCTAssertLessThan(size, 1_500_000, name)
+        }
+    }
+
+    func testBaselineChecksumManifestCoversTheImmutableBaseline() throws {
+        let directory = repositoryURL.appendingPathComponent("review/centering-evidence/baseline-2026-09-11")
+        let manifestURL = directory.appendingPathComponent("SHA256SUMS")
+        let lines = try String(contentsOf: manifestURL, encoding: .utf8)
+            .split(whereSeparator: \.isNewline)
+        XCTAssertFalse(lines.isEmpty)
+        var manifestPaths: [String] = []
+
+        for line in lines {
+            let parts = String(line).components(separatedBy: "  ")
+            guard parts.count == 2 else {
+                XCTFail("malformed checksum line: \(line)")
+                continue
+            }
+            let expected = parts[0]
+            let relativePath = parts[1]
+            manifestPaths.append(relativePath)
+            let fileURL = directory.appendingPathComponent(relativePath)
+            let data = try Data(contentsOf: fileURL)
+            let actual = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+            XCTAssertEqual(actual, expected, relativePath)
+        }
+
+        let expectedPaths = try FileManager.default
+            .contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            .map(\.lastPathComponent)
+            .filter { $0 != "SHA256SUMS" }
+            .sorted()
+        XCTAssertEqual(manifestPaths.sorted(), expectedPaths)
+    }
+
+    func testEvidenceTableReferencesEveryFixtureAndRetainedEvidenceDirectories() throws {
+        let tableURL = repositoryURL.appendingPathComponent("review/centering-evidence/evidence-table.md")
+        let table = try String(contentsOf: tableURL, encoding: .utf8)
+
+        for name in fixtureNames {
+            XCTAssertTrue(table.contains("`\(name)`"), name)
+            XCTAssertTrue(table.contains("GroundTruth/\(name).gt.json"), name)
+            XCTAssertTrue(table.contains("ground-truth/\(name)_gt.png"), name)
+        }
+
+        XCTAssertTrue(table.contains("baseline-2026-09-11/baseline.json"))
+        XCTAssertTrue(table.contains("after/README.md"))
+        XCTAssertTrue(table.contains("DEVICE-PENDING-5"))
+    }
+
+    func testCameraOpticsConfigurationRequestsDistortionCorrectionWhenSupported() {
+        XCTAssertTrue(
+            CenteringCameraOpticsConfiguration(
+                lens: .macro,
+                geometricDistortionCorrectionSupported: true
+            ).requestsGeometricDistortionCorrection
+        )
+        XCTAssertFalse(
+            CenteringCameraOpticsConfiguration(
+                lens: .wide,
+                geometricDistortionCorrectionSupported: false
+            ).requestsGeometricDistortionCorrection
+        )
+    }
+
+    func testAnalyzerMatchesHoldoutGroundTruthThroughProductionEntryPoint() throws {
+        let holdouts = ["IMG_0349", "IMG_0782", "IMG_0783", "IMG_0351"]
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+
+        for name in holdouts {
+            let imageURL = try XCTUnwrap(
+                bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+            )
+            let recordURL = try XCTUnwrap(
+                bundle.url(forResource: "\(name).gt", withExtension: "json", subdirectory: "TradingCards/GroundTruth")
+            )
+            let record = try JSONDecoder().decode(
+                GroundTruthRecord.self,
+                from: Data(contentsOf: recordURL)
+            )
+            try requireVerifiedGroundTruth(record, name)
+            let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: imageURL))
+            let measurement = analysis.measurement
+
+            if record.innerQuad == nil {
+                XCTAssertTrue(measurement.isDeclined, name)
+                XCTAssertNil(measurement.geometryInnerQuad, name)
+                continue
+            }
+
+            XCTAssertFalse(measurement.isDeclined, name)
+            let mapping = try XCTUnwrap(analysis.coordinateMapping, name)
+            let outer = mapping.nativeQuad(fromWorking: measurement.geometryOuterQuad)
+            let inner = try XCTUnwrap(measurement.geometryInnerQuad, name)
+            let nativeInner = mapping.nativeQuad(fromWorking: inner)
+            let distances = outer.borderDistances(to: nativeInner)
+            let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
+            let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+            XCTAssertEqual(lr, try XCTUnwrap(record.expected.lrRatio), accuracy: 2, name)
+            XCTAssertEqual(tb, try XCTUnwrap(record.expected.tbRatio), accuracy: 2, name)
+            XCTAssertEqual(outer.rectifiedAspectRatio, 2.5 / 3.5, accuracy: 0.02, name)
+        }
+    }
+
+    func testFrontArtWindowIsNotReplacedByTheFullCardPrintedBorder() throws {
+        let name = "IMG_0780"
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        let imageURL = try XCTUnwrap(
+            bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+        )
+        let recordURL = try XCTUnwrap(
+            bundle.url(forResource: "\(name).gt", withExtension: "json", subdirectory: "TradingCards/GroundTruth")
+        )
+        let record = try JSONDecoder().decode(
+            GroundTruthRecord.self,
+            from: Data(contentsOf: recordURL)
+        )
+        try requireVerifiedGroundTruth(record, name)
+        let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: imageURL))
+        let mapping = try XCTUnwrap(analysis.coordinateMapping)
+        let outer = mapping.nativeQuad(fromWorking: analysis.measurement.geometryOuterQuad)
+        let inner = try XCTUnwrap(analysis.measurement.geometryInnerQuad)
+        let nativeInner = mapping.nativeQuad(fromWorking: inner)
+        let distances = outer.borderDistances(to: nativeInner)
+        let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
+        let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+
+        XCTAssertEqual(analysis.measurement.innerReference, .artWindow)
+        XCTAssertEqual(lr, try XCTUnwrap(record.expected.lrRatio), accuracy: 2)
+        XCTAssertEqual(tb, try XCTUnwrap(record.expected.tbRatio), accuracy: 2)
+    }
+
+    func testPortraitFrontArtWindowUsesTheGradeableInnerReference() throws {
+        let name = "IMG_0348"
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        let imageURL = try XCTUnwrap(
+            bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+        )
+        let recordURL = try XCTUnwrap(
+            bundle.url(forResource: "\(name).gt", withExtension: "json", subdirectory: "TradingCards/GroundTruth")
+        )
+        let record = try JSONDecoder().decode(
+            GroundTruthRecord.self,
+            from: Data(contentsOf: recordURL)
+        )
+        try requireVerifiedGroundTruth(record, name)
+        let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: imageURL))
+        let mapping = try XCTUnwrap(analysis.coordinateMapping)
+        let inner = try XCTUnwrap(analysis.measurement.geometryInnerQuad)
+        let outerNative = mapping.nativeQuad(fromWorking: analysis.measurement.geometryOuterQuad)
+        let innerNative = mapping.nativeQuad(fromWorking: inner)
+        let distances = outerNative.borderDistances(to: innerNative)
+        let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
+        let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+
+        XCTAssertEqual(analysis.measurement.innerReference, .artWindow)
+        XCTAssertEqual(lr, try XCTUnwrap(record.expected.lrRatio), accuracy: 2)
+        XCTAssertEqual(tb, try XCTUnwrap(record.expected.tbRatio), accuracy: 2)
+    }
+
+    func testMaskFailureDeclinesWithoutAnInnerReference() throws {
+        let name = "IMG_0782"
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        let imageURL = try XCTUnwrap(
+            bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+        )
+        let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: imageURL))
+
+        XCTAssertTrue(analysis.measurement.isDeclined)
+        XCTAssertNil(analysis.measurement.geometryInnerQuad)
+        XCTAssertEqual(analysis.measurement.innerReference, .none)
+    }
+
+    func testL1PublicPipelineReportsEveryFixtureAndNeverConfidentlyWrong() throws {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        var confidentCount = 0
+
+        for name in fixtureNames {
+            let imageURL = try XCTUnwrap(
+                bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+            )
+            let recordURL = try XCTUnwrap(
+                bundle.url(forResource: "\(name).gt", withExtension: "json", subdirectory: "TradingCards/GroundTruth")
+            )
+            let record = try JSONDecoder().decode(
+                GroundTruthRecord.self,
+                from: Data(contentsOf: recordURL)
+            )
+            try requireVerifiedGroundTruth(record, name)
+            let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: imageURL))
+            let measurement = analysis.measurement
+            let mapping = try XCTUnwrap(analysis.coordinateMapping, name)
+            XCTAssertEqual(mapping.orientedSourceSize, CardCenteringSize(width: 3024, height: 4032), name)
+
+            if record.innerQuad == nil {
+                XCTAssertTrue(measurement.isDeclined, name)
+                XCTAssertNil(measurement.geometryInnerQuad, name)
+                continue
+            }
+            guard !measurement.isDeclined else {
+                XCTAssertNotNil(measurement.declineReason, name)
+                continue
+            }
+            confidentCount += 1
+
+            let expectedOuter = try XCTUnwrap(CardCenteringQuad(record.cardOuterQuad), name)
+            let expectedInner = try XCTUnwrap(CardCenteringQuad(record.innerQuad!), name)
+            let detectedOuter = mapping.nativeQuad(fromWorking: measurement.geometryOuterQuad)
+            let detectedInner = mapping.nativeQuad(fromWorking: try XCTUnwrap(measurement.geometryInnerQuad, name))
+
+            // L1 is deliberately expressed in native oriented pixels. Each
+            // edge uses its own measured ambiguity band; ambiguous edges may
+            // use that wider recorded band, but the other edges remain on the
+            // strict clamped tolerance from the implementation plan.
+            let cardHeight = expectedOuter.rectifiedHeight
+            for side in GroundTruthSide.allCases {
+                let error = abs(signedNormalOffset(detectedOuter, from: expectedOuter, side: side))
+                XCTAssertLessThanOrEqual(
+                    error,
+                    groundTruthEdgeTolerance(record, side: side, cardHeight: cardHeight),
+                    "\(name) outer \(side.rawValue) edge"
+                )
+            }
+
+            let cornerSides: [(GroundTruthSide, GroundTruthSide)] = [
+                (.top, .left), (.top, .right), (.bottom, .right), (.bottom, .left)
+            ]
+            for (index, sides) in cornerSides.enumerated() {
+                let error = hypot(
+                    detectedOuter.points[index].x - expectedOuter.points[index].x,
+                    detectedOuter.points[index].y - expectedOuter.points[index].y
+                )
+                let tolerance = sqrt(2) * max(
+                    groundTruthEdgeTolerance(record, side: sides.0, cardHeight: cardHeight),
+                    groundTruthEdgeTolerance(record, side: sides.1, cardHeight: cardHeight)
+                )
+                XCTAssertLessThanOrEqual(error, tolerance, "\(name) outer corner \(index)")
+            }
+
+            let centerError = distance(averagePoint(detectedOuter), averagePoint(expectedOuter))
+            XCTAssertLessThanOrEqual(centerError, cardHeight * 0.002, "\(name) card centre")
+
+            let detectedSkew = try XCTUnwrap(analysis.detectedSkewDegrees, name)
+            XCTAssertEqual(detectedSkew, record.expected.skewDegrees, accuracy: 0.20, name)
+            let expectedAppliedRotation = abs(detectedSkew) >= 0.35 && abs(detectedSkew) <= 25
+                ? -detectedSkew
+                : 0
+            XCTAssertEqual(analysis.appliedRotationDegrees, expectedAppliedRotation, accuracy: 0.20, name)
+
+            let rectification = try XCTUnwrap(measurement.rectification, name)
+            XCTAssertTrue(rectification.isValid, name)
+            XCTAssertLessThanOrEqual(rectification.residualDegrees, 0.30, name)
+            XCTAssertLessThanOrEqual(
+                rectification.reprojectionRMS,
+                max(2.0, min(rectification.targetSize.width, rectification.targetSize.height) * 0.01),
+                name
+            )
+            let expectedAspect = expectedOuter.rectifiedAspectRatio
+            let detectedAspect = detectedOuter.rectifiedAspectRatio
+            XCTAssertLessThanOrEqual(
+                abs(detectedAspect - expectedAspect) / max(expectedAspect, .ulpOfOne),
+                0.015,
+                "\(name) rectified aspect"
+            )
+            let groundTruthRectification = CardCenteringRectification(outerQuad: expectedOuter)
+            let expectedRectified = groundTruthRectification.rectifiedQuad(from: expectedOuter)
+            let detectedRectified = groundTruthRectification.rectifiedQuad(from: detectedOuter)
+            let reprojectionRMS = sqrt(zip(expectedRectified.points, detectedRectified.points).reduce(0.0) { total, pair in
+                let dx = pair.0.x - pair.1.x
+                let dy = pair.0.y - pair.1.y
+                return total + dx * dx + dy * dy
+            } / 4)
+            let strictOuterTolerance = GroundTruthSide.allCases
+                .map { groundTruthEdgeTolerance(record, side: $0, cardHeight: cardHeight) }
+                .max() ?? 0
+            XCTAssertLessThanOrEqual(reprojectionRMS, strictOuterTolerance, "\(name) GT-corner reprojection RMS")
+
+            for side in GroundTruthSide.allCases {
+                let error = abs(signedNormalOffset(detectedInner, from: expectedInner, side: side))
+                XCTAssertLessThanOrEqual(error, cardHeight * 0.0035, "\(name) inner \(side.rawValue) edge")
+            }
+
+            let distances = detectedOuter.borderDistances(to: detectedInner)
+            let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
+            let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+            let expectedLR = try XCTUnwrap(record.expected.lrRatio)
+            let expectedTB = try XCTUnwrap(record.expected.tbRatio)
+            XCTAssertEqual(lr, expectedLR, accuracy: 2, name)
+            XCTAssertEqual(tb, expectedTB, accuracy: 2, name)
+            XCTAssertEqual(measurement.innerReference, record.innerReference, name)
+            XCTAssertEqual(measurement.confidence.state, .confident, name)
+            XCTAssertTrue(measurement.confidence.innerReferencePresent, name)
+            XCTAssertLessThanOrEqual(measurement.confidence.aspectResidual, 0.04, name)
+        }
+
+        XCTAssertGreaterThanOrEqual(confidentCount, 8, "at least eight gradeable fixtures should produce a confident reading")
+    }
+
+}
+
+final class CardCenteringInvariantTests: XCTestCase {
+    private let holdout = "IMG_0783"
+    private let fixtureNames = [
+        "IMG_0347", "IMG_0348", "IMG_0349", "IMG_0350", "IMG_0351",
+        "IMG_0352", "IMG_0780", "IMG_0781", "IMG_0782", "IMG_0783"
+    ]
+
+    private func fixtureData(_ name: String) throws -> Data {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        let url = try XCTUnwrap(
+            bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+        )
+        return try Data(contentsOf: url)
+    }
+
+    private func fixtureRecord(_ name: String) throws -> GroundTruthRecord {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        let url = try XCTUnwrap(
+            bundle.url(forResource: "\(name).gt", withExtension: "json", subdirectory: "TradingCards/GroundTruth")
+        )
+        return try JSONDecoder().decode(GroundTruthRecord.self, from: Data(contentsOf: url))
+    }
+
+    private func normalisedImage(_ data: Data) throws -> UIImage {
+        let source = try XCTUnwrap(UIImage(data: data))
+        let scale = min(1, 1_200 / max(source.size.width, source.size.height))
+        let size = CGSize(width: source.size.width * scale, height: source.size.height * scale)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            source.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+
+    private func renderedVariant(
+        _ data: Data,
+        rotationDegrees: CGFloat = 0,
+        mirrorX: Bool = false,
+        scale: CGFloat = 1
+    ) throws -> Data {
+        let image = try normalisedImage(data)
+        let sourceSize = image.size
+        let drawSize = CGSize(width: sourceSize.width * scale, height: sourceSize.height * scale)
+        let radians = rotationDegrees * .pi / 180
+        let cosine = abs(cos(radians))
+        let sine = abs(sin(radians))
+        let rotatedSize = CGSize(
+            width: cosine * drawSize.width + sine * drawSize.height,
+            height: sine * drawSize.width + cosine * drawSize.height
+        )
+        let margin = max(24, max(rotatedSize.width, rotatedSize.height) * 0.12)
+        let canvasSize = CGSize(
+            width: ceil(rotatedSize.width + margin * 2),
+            height: ceil(rotatedSize.height + margin * 2)
+        )
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let rendered = UIGraphicsImageRenderer(size: canvasSize, format: format).image { context in
+            UIColor(white: 0.76, alpha: 1).setFill()
+            context.fill(CGRect(origin: .zero, size: canvasSize))
+            let cg = context.cgContext
+            cg.translateBy(x: canvasSize.width / 2, y: canvasSize.height / 2)
+            cg.rotate(by: radians)
+            cg.scaleBy(x: mirrorX ? -1 : 1, y: 1)
+            image.draw(in: CGRect(
+                x: -drawSize.width / 2,
+                y: -drawSize.height / 2,
+                width: drawSize.width,
+                height: drawSize.height
+            ))
+        }
+        return try XCTUnwrap(rendered.pngData())
+    }
+
+    private enum EXIFVariantError: Error {
+        case unsupportedOrientation
+        case encodeFailed
+        case renderFailed
+        case selfCheckFailed(Int)
+    }
+
+    private func renderedBitmapBytes(
+        _ image: UIImage,
+        width: Int,
+        height: Int
+    ) throws -> [UInt8] {
+        var pixels = [UInt8](repeating: 0, count: width * height * 4)
+        return try pixels.withUnsafeMutableBytes { rawBuffer in
+            guard let context = CGContext(
+                data: rawBuffer.baseAddress,
+                width: width,
+                height: height,
+                bitsPerComponent: 8,
+                bytesPerRow: width * 4,
+                space: CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+            ) else {
+                throw EXIFVariantError.renderFailed
+            }
+
+            context.setFillColor(UIColor.black.cgColor)
+            context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+            UIGraphicsPushContext(context)
+            image.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
+            UIGraphicsPopContext()
+
+            return Array(rawBuffer.bindMemory(to: UInt8.self))
+        }
+    }
+
+    private func maxChannelDelta(_ lhs: [UInt8], _ rhs: [UInt8]) -> Int {
+        guard lhs.count == rhs.count else { return Int.max }
+        return zip(lhs, rhs).reduce(0) { result, pair in
+            max(result, abs(Int(pair.0) - Int(pair.1)))
+        }
+    }
+
+    private func reencodedVariant(
+        _ data: Data,
+        exifOrientation: Int
+    ) throws -> Data {
+        let canonical = try normalisedImage(data)
+        let rawOrientation: Int
+        switch exifOrientation {
+        case 1: rawOrientation = 1
+        case 3: rawOrientation = 3
+        case 6: rawOrientation = 8
+        case 8: rawOrientation = 6
+        default: throw EXIFVariantError.unsupportedOrientation
+        }
+        let canonicalCGImage = try XCTUnwrap(canonical.cgImage)
+        let rawCGImage: CGImage
+        if exifOrientation == 1 {
+            // Preserve the canonical bitmap byte-for-byte for the identity
+            // encoding. A Core Image round trip can change color-space and
+            // bitmap-provider details enough to move this detector even when
+            // a rendered-pixel self-check still looks identical.
+            rawCGImage = canonicalCGImage
+        } else {
+            // Build the inverse EXIF transform with an exact-axis UIKit
+            // render. This avoids a Core Image color-space conversion while
+            // keeping the raw pixels in the dimensions expected by ImageIO.
+            let sourceSize = canonical.size
+            let rawSize = rawOrientation == 6 || rawOrientation == 8
+                ? CGSize(width: sourceSize.height, height: sourceSize.width)
+                : sourceSize
+            let radians: CGFloat
+            switch rawOrientation {
+            case 3: radians = .pi
+            case 6: radians = .pi / 2
+            case 8: radians = -.pi / 2
+            default: radians = 0
+            }
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1
+            format.opaque = true
+            let rawImage = UIGraphicsImageRenderer(size: rawSize, format: format).image { context in
+                context.cgContext.interpolationQuality = .none
+                context.cgContext.translateBy(x: rawSize.width / 2, y: rawSize.height / 2)
+                context.cgContext.rotate(by: radians)
+                canonical.draw(in: CGRect(
+                    x: -sourceSize.width / 2,
+                    y: -sourceSize.height / 2,
+                    width: sourceSize.width,
+                    height: sourceSize.height
+                ))
+            }
+            rawCGImage = try XCTUnwrap(rawImage.cgImage)
+        }
+        let output = NSMutableData()
+        let destination = try XCTUnwrap(
+            CGImageDestinationCreateWithData(
+                output,
+                UTType.png.identifier as CFString,
+                1,
+                nil
+            )
+        )
+        let properties: [CFString: Any] = [kCGImagePropertyOrientation: exifOrientation]
+        CGImageDestinationAddImage(destination, rawCGImage, properties as CFDictionary)
+        guard CGImageDestinationFinalize(destination) else {
+            throw EXIFVariantError.encodeFailed
+        }
+
+        let encoded = output as Data
+        let decoded = try XCTUnwrap(UIImage(data: encoded))
+        let width = try XCTUnwrap(canonical.cgImage).width
+        let height = try XCTUnwrap(canonical.cgImage).height
+        let expected = try renderedBitmapBytes(canonical, width: width, height: height)
+        let actual = try renderedBitmapBytes(decoded, width: width, height: height)
+        let maximumDelta = maxChannelDelta(expected, actual)
+        guard maximumDelta <= 2 else {
+            XCTFail(
+                "EXIF \(exifOrientation) self-check failed: maximum displayed channel delta (\(maximumDelta)) > 2"
+            )
+            throw EXIFVariantError.selfCheckFailed(maximumDelta)
+        }
+        return encoded
+    }
+
+    private func benignCropVariant(_ data: Data, record: GroundTruthRecord) throws -> Data {
+        let image = try normalisedImage(data)
+        let xScale = image.size.width / 3_024
+        let yScale = image.size.height / 4_032
+        let points = record.cardOuterQuad.map {
+            CGPoint(x: $0[0] * xScale, y: $0[1] * yScale)
+        }
+        let bounds = points.reduce(into: CGRect.null) { result, point in
+            result = result.union(CGRect(origin: point, size: .zero))
+        }
+        let marginX = bounds.width * 0.08
+        let marginY = bounds.height * 0.08
+        let padding = max(24, max(marginX, marginY) + 8)
+        let canvasSize = CGSize(
+            width: image.size.width + padding * 2,
+            height: image.size.height + padding * 2
+        )
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let canvas = UIGraphicsImageRenderer(size: canvasSize, format: format).image { context in
+            UIColor(white: 0.76, alpha: 1).setFill()
+            context.fill(CGRect(origin: .zero, size: canvasSize))
+            image.draw(in: CGRect(
+                x: padding,
+                y: padding,
+                width: image.size.width,
+                height: image.size.height
+            ))
+        }
+        let crop = CGRect(
+            x: padding + bounds.minX - marginX,
+            y: padding + bounds.minY - marginY,
+            width: bounds.width + marginX * 2,
+            height: bounds.height + marginY * 2
+        ).integral
+        let cropped = try XCTUnwrap(canvas.cgImage).cropping(to: crop)
+        return try XCTUnwrap(UIImage(cgImage: try XCTUnwrap(cropped)).pngData())
+    }
+
+    private func ratios(_ measurement: CardCenteringMeasurement) throws -> (lr: Double, tb: Double) {
+        guard !measurement.isDeclined else {
+            throw XCTSkip("measurement declined: \(measurement.declineReason ?? "unknown")")
+        }
+        let lr = try XCTUnwrap(Double(measurement.leftRightCentering.components(separatedBy: " / ").first ?? ""))
+        let tb = try XCTUnwrap(Double(measurement.topBottomCentering.components(separatedBy: " / ").first ?? ""))
+        return (lr, tb)
+    }
+
+    private func confidentRatios(_ data: Data) throws -> (lr: Double, tb: Double) {
+        try ratios(try CardCenteringAnalyzer.analyze(data).measurement)
+    }
+
+    private func ratioError(_ lhs: (lr: Double, tb: Double), _ rhs: (lr: Double, tb: Double)) -> Double {
+        max(abs(lhs.lr - rhs.lr), abs(lhs.tb - rhs.tb))
+    }
+
+    func testINV1RepeatedProductionAnalysisIsByteStable() throws {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        let imageURL = try XCTUnwrap(
+            bundle.url(forResource: holdout, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+        )
+        let data = try Data(contentsOf: imageURL)
+        let first = try CardCenteringAnalyzer.analyze(data).measurement
+
+        for _ in 0..<4 {
+            XCTAssertEqual(
+                try CardCenteringAnalyzer.analyze(data).measurement,
+                first,
+                "repeated production analyses must return identical geometry and confidence"
+            )
+        }
+    }
+
+    func testREQ018DeclinedMeasurementDoesNotExposeARatio() {
+        let outer = CardCenteringQuad(
+            topLeft: CardCenteringPoint(x: 0, y: 0),
+            topRight: CardCenteringPoint(x: 500, y: 0),
+            bottomRight: CardCenteringPoint(x: 500, y: 500),
+            bottomLeft: CardCenteringPoint(x: 0, y: 500)
+        )
+        var measurement = CardCenteringMeasurement(
+            imageWidth: 500,
+            imageHeight: 500,
+            outerQuad: outer,
+            innerQuad: nil,
+            warnings: [],
+            innerReference: .none
+        )
+        measurement.refreshWarnings()
+
+        XCTAssertTrue(measurement.isDeclined)
+        XCTAssertEqual(measurement.leftRightCentering, "—")
+        XCTAssertEqual(measurement.topBottomCentering, "—")
+        XCTAssertNil(measurement.geometryInnerQuad)
+        XCTAssertNotNil(measurement.declineReason)
+    }
+
+    func testREQ041AnalysisDiagnosticReportsNamedStageTimings() throws {
+        var captured: CardCenteringAnalysisDiagnostic?
+        CardCenteringAnalyzer.analysisDiagnosticSink = { captured = $0 }
+        defer { CardCenteringAnalyzer.analysisDiagnosticSink = nil }
+
+        _ = try CardCenteringAnalyzer.analyze(try fixtureData(holdout))
+
+        let diagnostic = try XCTUnwrap(captured)
+        let encoded = try JSONEncoder().encode(diagnostic)
+        let object = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: encoded) as? [String: Any]
+        )
+        let timings = try XCTUnwrap(
+            object["stageTimings"] as? [String: Any],
+            "REQ-041 must expose stage timings through the DEBUG diagnostic"
+        )
+        let requiredStages = [
+            "decodeOrientationDownscale",
+            "colorPreparation",
+            "visionRequests",
+            "scalarFields",
+            "outerCandidateRefinement",
+            "innerCandidateGeneration",
+            "jointSelection",
+            "rectification",
+            "resultConstruction"
+        ]
+        for stage in requiredStages {
+            XCTAssertNotNil(timings[stage], "missing REQ-041 stage timing: \(stage)")
+        }
+    }
+
+#if DEBUG
+    func testREQ042CandidateLedgerRetainsAllEdgeFamiliesBeforeSelection() throws {
+        var captured: CardCenteringCandidateLedgerDiagnostic?
+        CardCenteringAnalyzer.candidateLedgerDiagnosticSink = { captured = $0 }
+        defer { CardCenteringAnalyzer.candidateLedgerDiagnosticSink = nil }
+
+        _ = try CardCenteringAnalyzer.analyze(try fixtureData(holdout))
+
+        let ledger = try XCTUnwrap(
+            captured,
+            "REQ-042 must expose a candidate ledger for the analyzer pass"
+        )
+        let expectedSides = Set(["left", "top", "right", "bottom"])
+        for family in ["outer", "inner"] {
+            let candidates = ledger.candidates.filter { $0.family == family }
+            XCTAssertEqual(
+                Set(candidates.map(\.side)),
+                expectedSides,
+                "REQ-042 must retain (family) candidates for every edge"
+            )
+        }
+        XCTAssertFalse(ledger.candidates.isEmpty)
+        for candidate in ledger.candidates {
+            XCTAssertFalse(candidate.workingGeometry.isEmpty)
+            XCTAssertEqual(candidate.workingGeometry.count, candidate.nativeGeometry.count)
+            XCTAssertEqual(candidate.workingGeometry.count, candidate.normalizedGeometry.count)
+            XCTAssertTrue(candidate.support.isFinite && candidate.support >= 0)
+            XCTAssertTrue(candidate.transitionStrength.isFinite && candidate.transitionStrength >= 0)
+            XCTAssertFalse(candidate.proposedSemanticRole.isEmpty)
+        }
+    }
+
+    func testREQ042CandidateRecallDiagnosticCoversAllFixtures() throws {
+        let repository = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let output = repository
+            .appendingPathComponent("review", isDirectory: true)
+            .appendingPathComponent("centering-evidence", isDirectory: true)
+            .appendingPathComponent("diagnostics", isDirectory: true)
+            .appendingPathComponent("REQ-042", isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+
+        func lineDistance(
+            _ point: CardCenteringPoint,
+            from start: CardCenteringPoint,
+            to end: CardCenteringPoint
+        ) -> Double {
+            let dx = end.x - start.x
+            let dy = end.y - start.y
+            let length = max(hypot(dx, dy), .ulpOfOne)
+            return abs(dx * (point.y - start.y) - dy * (point.x - start.x)) / length
+        }
+
+        func candidateError(
+            _ candidate: CardCenteringCandidateDiagnostic,
+            expected: CardCenteringQuad,
+            side: String
+        ) -> Double? {
+            guard let groundTruthSide = GroundTruthSide(rawValue: side),
+                  !candidate.nativeGeometry.isEmpty else {
+                return nil
+            }
+            let endpoints = edgeEndpoints(expected, side: groundTruthSide)
+            let distances = candidate.nativeGeometry.map {
+                lineDistance($0, from: endpoints.0, to: endpoints.1)
+            }
+            return distances.max()
+        }
+
+        func bestRecall(
+            family: String,
+            side: String,
+            candidates: [CardCenteringCandidateDiagnostic],
+            expected: CardCenteringQuad?,
+            tolerance: Double?
+        ) -> REQ042CandidateRecallRecord {
+            let matching = candidates.filter { $0.family == family && $0.side == side }
+            let measured = matching.compactMap { candidate -> (Double, CardCenteringCandidateDiagnostic)? in
+                guard let expected, let error = candidateError(candidate, expected: expected, side: side) else {
+                    return nil
+                }
+                return (error, candidate)
+            }.sorted { $0.0 < $1.0 }
+            let best = measured.first
+            let withinTolerance = best.flatMap { pair in
+                tolerance.map { pair.0 <= $0 }
+            }
+            return REQ042CandidateRecallRecord(
+                family: family,
+                side: side,
+                candidateCount: matching.count,
+                bestErrorPx: best?.0,
+                bestSource: best?.1.source,
+                bestSemanticRole: best?.1.proposedSemanticRole,
+                tolerancePx: tolerance,
+                anyWithinTolerance: withinTolerance
+            )
+        }
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        var records: [REQ042FixtureDiagnosticRecord] = []
+
+        var capturedAnalysis: CardCenteringAnalysisDiagnostic?
+        var capturedLedger: CardCenteringCandidateLedgerDiagnostic?
+        CardCenteringAnalyzer.analysisDiagnosticSink = { capturedAnalysis = $0 }
+        CardCenteringAnalyzer.candidateLedgerDiagnosticSink = { capturedLedger = $0 }
+        defer {
+            CardCenteringAnalyzer.analysisDiagnosticSink = nil
+            CardCenteringAnalyzer.candidateLedgerDiagnosticSink = nil
+        }
+
+        for fixture in fixtureNames {
+            capturedAnalysis = nil
+            capturedLedger = nil
+            let data = try fixtureData(fixture)
+            let result = try CardCenteringAnalyzer.analyze(data)
+            let analysis = try XCTUnwrap(
+                capturedAnalysis,
+                "REQ-042 must capture branch metadata for \(fixture)"
+            )
+            let ledger = try XCTUnwrap(
+                capturedLedger,
+                "REQ-042 must capture candidate telemetry for \(fixture)"
+            )
+            XCTAssertGreaterThan(ledger.workingWidth, 0, fixture)
+            XCTAssertGreaterThan(ledger.workingHeight, 0, fixture)
+            XCTAssertFalse(ledger.candidates.isEmpty, fixture)
+
+            let groundTruth = try fixtureRecord(fixture)
+            let expectedOuter = try XCTUnwrap(CardCenteringQuad(groundTruth.cardOuterQuad), fixture)
+            let expectedInner = groundTruth.innerQuad.flatMap(CardCenteringQuad.init)
+            let cardHeight = expectedOuter.rectifiedHeight
+            let outerTolerance = Dictionary(uniqueKeysWithValues: GroundTruthSide.allCases.map { side in
+                (side.rawValue, groundTruthEdgeTolerance(groundTruth, side: side, cardHeight: cardHeight))
+            })
+            let innerTolerance = expectedInner.map { inner in
+                Dictionary(uniqueKeysWithValues: GroundTruthSide.allCases.map { side in
+                    (side.rawValue, cardHeight * 0.0035)
+                })
+            }
+            let recall = GroundTruthSide.allCases.flatMap { side in
+                [
+                    bestRecall(
+                        family: "outer",
+                        side: side.rawValue,
+                        candidates: ledger.candidates,
+                        expected: expectedOuter,
+                        tolerance: outerTolerance[side.rawValue]
+                    ),
+                    bestRecall(
+                        family: "inner",
+                        side: side.rawValue,
+                        candidates: ledger.candidates,
+                        expected: expectedInner,
+                        tolerance: innerTolerance?[side.rawValue]
+                    )
+                ]
+            }
+            let record = REQ042FixtureDiagnosticRecord(
+                fixture: fixture,
+                groundTruthInnerReference: groundTruth.innerReference.rawValue,
+                confidenceState: result.measurement.confidence.state.rawValue,
+                selectedInnerSource: analysis.innerSource.rawValue,
+                selectedOuterSource: analysis.selectedOuterSource,
+                analysis: analysis,
+                ledger: ledger,
+                recall: recall
+            )
+            records.append(record)
+            print(
+                "REQ-042 fixture=\(fixture) state=\(record.confidenceState) "
+                    + "innerSource=\(record.selectedInnerSource) "
+                    + "candidates=\(ledger.candidates.count)"
+            )
+        }
+
+        XCTAssertEqual(records.count, fixtureNames.count)
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("candidate-ledger.json"),
+            options: .atomic
+        )
+
+        var markdown = [
+            "# REQ-042 candidate recall diagnostic",
+            "",
+            "Signed DEBUG analyses on the original HEIC fixtures using the iOS 26.5 iPhone 17 Pro simulator.",
+            "The ledger is observational. `bestErrorPx` is the maximum perpendicular distance of the candidate line's reported points from the corresponding GT edge; it is not a production selection score.",
+            "",
+            "| Fixture | GT inner | State | Inner source | Family | Side | Candidates | Best error px | Tolerance px | Best source | Best role | Within GT tolerance |",
+            "|---|---|---|---|---|---|---:|---:|---:|---|---|---|"
+        ]
+        for record in records {
+            for item in record.recall {
+                let bestError = item.bestErrorPx.map { String(format: "%.2f", $0) } ?? "—"
+                let tolerance = item.tolerancePx.map { String(format: "%.2f", $0) } ?? "—"
+                let within = item.anyWithinTolerance.map { $0 ? "true" : "false" } ?? "—"
+                markdown.append(
+                    "| \(record.fixture) | \(record.groundTruthInnerReference) | \(record.confidenceState) | \(record.selectedInnerSource) | \(item.family) | \(item.side) | \(item.candidateCount) | \(bestError) | \(tolerance) | \(item.bestSource ?? "—") | \(item.bestSemanticRole ?? "—") | \(within) |"
+                )
+            }
+        }
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("candidate-ledger.md"),
+            options: .atomic
+        )
+    }
+
+    func testREQ043ReferenceTypeIsChosenSemanticallyAcrossDevelopmentCorpus() throws {
+        for fixture in fixtureNames {
+            let groundTruth = try fixtureRecord(fixture)
+            let result = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+
+            XCTAssertEqual(
+                result.measurement.innerReference,
+                groundTruth.innerReference,
+                "REQ-043 reference type mismatch for \(fixture)"
+            )
+        }
+    }
+
+    func testREQ044SelectedOuterTracksPhysicalCardOnDevelopmentBacks() throws {
+        let backs = ["IMG_0347", "IMG_0350", "IMG_0352", "IMG_0781", "IMG_0783"]
+        for fixture in backs {
+            let groundTruth = try fixtureRecord(fixture)
+            let result = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            let mapping = try XCTUnwrap(result.coordinateMapping, fixture)
+            let rawOuter = try XCTUnwrap(
+                CardCenteringQuad(groundTruth.cardOuterQuad),
+                fixture
+            )
+            let expectedOuter = mapping.workingQuad(fromNative: rawOuter)
+            let actualOuter = result.measurement.geometryOuterQuad
+            let cardHeight = expectedOuter.rectifiedHeight
+
+            for side in GroundTruthSide.allCases {
+                let expectedEdge = edgeEndpoints(expectedOuter, side: side)
+                let actualEdge = edgeEndpoints(actualOuter, side: side)
+                let dx = expectedEdge.1.x - expectedEdge.0.x
+                let dy = expectedEdge.1.y - expectedEdge.0.y
+                let length = max(hypot(dx, dy), .ulpOfOne)
+                let errors = [actualEdge.0, actualEdge.1].map { point in
+                    abs(dx * (point.y - expectedEdge.0.y) - dy * (point.x - expectedEdge.0.x)) / length
+                }
+                XCTAssertLessThanOrEqual(
+                    errors.max() ?? .infinity,
+                    groundTruthEdgeTolerance(groundTruth, side: side, cardHeight: cardHeight),
+                    "REQ-044 selected outer misses the physical \(side.rawValue) edge for \(fixture)"
+                )
+            }
+        }
+    }
+
+    func testREQ041ProfilesNamedStageTimingsAcrossAllFixtures() throws {
+        let repository = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let output = repository
+            .appendingPathComponent("review", isDirectory: true)
+            .appendingPathComponent("centering-evidence", isDirectory: true)
+            .appendingPathComponent("diagnostics", isDirectory: true)
+            .appendingPathComponent("REQ-041", isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+
+        let stageSpecs: [(String, KeyPath<CardCenteringStageTimingDiagnostic, Double>)] = [
+            ("decodeOrientationDownscale", \.decodeOrientationDownscale),
+            ("colorPreparation", \.colorPreparation),
+            ("visionRequests", \.visionRequests),
+            ("scalarFields", \.scalarFields),
+            ("outerCandidateRefinement", \.outerCandidateRefinement),
+            ("innerCandidateGeneration", \.innerCandidateGeneration),
+            ("jointSelection", \.jointSelection),
+            ("rectification", \.rectification),
+            ("resultConstruction", \.resultConstruction)
+        ]
+
+        func median(_ values: [Double]) -> Double {
+            let sorted = values.sorted()
+            let middle = sorted.count / 2
+            return sorted.count.isMultiple(of: 2)
+                ? (sorted[middle - 1] + sorted[middle]) / 2
+                : sorted[middle]
+        }
+
+        var records: [REQ041StageTimingRecord] = []
+        var captured: CardCenteringAnalysisDiagnostic?
+        CardCenteringAnalyzer.analysisDiagnosticSink = { captured = $0 }
+        defer { CardCenteringAnalyzer.analysisDiagnosticSink = nil }
+
+        // Keep the complete repeated corpus below XCTest's per-test watchdog.
+        // The analyzer takes roughly 2.7 seconds per raw HEIC on the pinned
+        // simulator, so two passes still provide repeated median/max data
+        // without turning the diagnostic itself into a timeout experiment.
+        for repetition in 1...2 {
+            for fixture in fixtureNames {
+                captured = nil
+                let start = CFAbsoluteTimeGetCurrent()
+                _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+                let elapsed = CFAbsoluteTimeGetCurrent() - start
+                let diagnostic = try XCTUnwrap(
+                    captured,
+                    "REQ-041 must capture stage timings for \(fixture), repetition \(repetition)"
+                )
+                let timings = diagnostic.stageTimings
+                XCTAssertTrue(elapsed.isFinite && elapsed > 0, "invalid wall time for \(fixture)")
+                for (name, keyPath) in stageSpecs {
+                    let value = timings[keyPath: keyPath]
+                    XCTAssertTrue(value.isFinite && value >= 0, "invalid \(name) timing for \(fixture)")
+                }
+                let attribution = timings.total / elapsed
+                XCTAssertGreaterThanOrEqual(
+                    attribution,
+                    0.90,
+                    "REQ-041 must attribute at least 90% of \(fixture) wall time to named stages"
+                )
+                records.append(
+                    REQ041StageTimingRecord(
+                        fixture: fixture,
+                        repetition: repetition,
+                        elapsedSeconds: elapsed,
+                        stageTimings: timings,
+                        attributedFraction: attribution
+                    )
+                )
+                print(
+                    "REQ-041 fixture=\(fixture) repetition=\(repetition) "
+                        + String(format: "elapsed=%.3f attributed=%.3f", elapsed, attribution)
+                )
+            }
+        }
+
+        XCTAssertEqual(records.count, fixtureNames.count * 2)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("stage-timings.json"),
+            options: .atomic
+        )
+
+        var markdown = [
+            "# REQ-041 named stage timing profile",
+            "",
+            "Signed DEBUG analyses on the iOS 26.5 iPhone 17 Pro simulator. Each fixture was analyzed twice.",
+            "The attribution fraction is the sum of the named stage timers divided by the independently measured wall time.",
+            "",
+            "| Stage | Median seconds | Max seconds | Median share of wall time |",
+            "|---|---:|---:|---:|"
+        ]
+        for (name, keyPath) in stageSpecs {
+            let values = records.map { $0.stageTimings[keyPath: keyPath] }
+            let wall = records.map(\.elapsedSeconds)
+            let shares = zip(values, wall).map { $0 / max($1, .ulpOfOne) }
+            markdown.append(
+                String(
+                    format: "| `%@` | %.4f | %.4f | %.3f |",
+                    name,
+                    median(values),
+                    values.max() ?? 0,
+                    median(shares)
+                )
+            )
+        }
+        let attribution = records.map(\.attributedFraction)
+        markdown.append(contentsOf: [
+            "",
+            String(format: "Named-stage attribution median/max: %.3f / %.3f", median(attribution), attribution.max() ?? 0),
+            String(format: "Wall-time median/max: %.4f / %.4f seconds", median(records.map(\.elapsedSeconds)), records.map(\.elapsedSeconds).max() ?? 0)
+        ])
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("stage-timings.md"),
+            options: .atomic
+        )
+    }
+#endif
+
+    func testINV2SmallRotationPreservesReportedRatios() throws {
+        let data = try fixtureData(holdout)
+        let baseline = try confidentRatios(data)
+        for degrees in [-3.0, 3.0] {
+            let variant = try renderedVariant(data, rotationDegrees: CGFloat(degrees))
+            let measured = try confidentRatios(variant)
+            XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.5, "rotation \(degrees)°")
+        }
+    }
+
+    func testINV3FittedSkewTracksTheAppliedRotationAcrossTheCorpus() throws {
+        let angles: [CGFloat] = [-8, -5, -3, -1, 0, 1, 3, 5, 8]
+        for name in fixtureNames {
+            let data = try fixtureData(name)
+            for angle in angles {
+                let variant = try renderedVariant(data, rotationDegrees: angle)
+                let analysis = try CardCenteringAnalyzer.analyze(variant)
+                if let detected = analysis.detectedSkewDegrees {
+                    XCTAssertEqual(detected, Double(angle), accuracy: 0.25, "\(name) angle \(angle)")
+                    XCTAssertEqual(analysis.appliedRotationDegrees, -Double(angle), accuracy: 0.25, "\(name) angle \(angle)")
+                } else if angle != 0 {
+                    XCTFail("missing fitted skew for \(name) angle \(angle)")
+                }
+            }
+        }
+    }
+
+    func testINV4HorizontalMirrorComplementsLeftRightOnly() throws {
+        let data = try fixtureData(holdout)
+        let baseline = try confidentRatios(data)
+        let mirrored = try confidentRatios(try renderedVariant(data, mirrorX: true))
+        XCTAssertLessThanOrEqual(abs(mirrored.lr - (100 - baseline.lr)), 0.5)
+        XCTAssertLessThanOrEqual(abs(mirrored.tb - baseline.tb), 0.5)
+    }
+
+    func testINV5QuarterTurnsMapThePerSideRatios() throws {
+        let data = try fixtureData(holdout)
+        let baseline = try confidentRatios(data)
+        let expected: [(CGFloat, (Double, Double), (Double, Double))] = [
+            (90, (baseline.tb, 100 - baseline.lr), (100 - baseline.tb, baseline.lr)),
+            (180, (100 - baseline.lr, 100 - baseline.tb), (100 - baseline.lr, 100 - baseline.tb)),
+            (270, (100 - baseline.tb, baseline.lr), (baseline.tb, 100 - baseline.lr))
+        ]
+        for (degrees, first, second) in expected {
+            let measured = try confidentRatios(try renderedVariant(data, rotationDegrees: degrees))
+            let error = min(ratioError(measured, (lr: first.0, tb: first.1)), ratioError(measured, (lr: second.0, tb: second.1)))
+            XCTAssertLessThanOrEqual(error, 0.5, "quarter turn \(degrees)°")
+        }
+    }
+
+    func testINV6ReencodedExifOrientationsPreserveTheSameDisplayedResult() throws {
+        for name in ["IMG_0348", "IMG_0780", holdout] {
+            let data = try fixtureData(name)
+            // Compare every EXIF encoding with the same canonical displayed
+            // bitmap used to construct the variants. Comparing the variants
+            // with the original HEIC would also measure a resolution and
+            // resampling change, which is outside INV-6.
+            let canonicalData = try XCTUnwrap(try normalisedImage(data).pngData())
+            let baseline = try confidentRatios(canonicalData)
+            for orientation in [1, 3, 6, 8] {
+                let variant = try reencodedVariant(data, exifOrientation: orientation)
+                let measured = try confidentRatios(variant)
+                XCTAssertLessThanOrEqual(ratioError(measured, baseline), 0.5, "\(name) EXIF \(orientation)")
+            }
+        }
+    }
+
+    func testINV7UniformScaleDoesNotChangeRatios() throws {
+        let data = try fixtureData(holdout)
+        let baseline = try confidentRatios(data)
+        for scale in [CGFloat(0.6), 1.5] {
+            let measured = try confidentRatios(try renderedVariant(data, scale: scale))
+            XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.0, "scale \(scale)")
+        }
+    }
+
+    func testINV8BenignCropWithEightPercentCardMarginPreservesRatios() throws {
+        let data = try fixtureData(holdout)
+        let baseline = try confidentRatios(data)
+        let record = try fixtureRecord(holdout)
+        let measured = try confidentRatios(try benignCropVariant(data, record: record))
+        XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.0)
+    }
+
+    func testINV9SleevedCardsDoNotSelectTheEncasementQuad() throws {
+        for name in fixtureNames {
+            let record = try fixtureRecord(name)
+            guard let sleeveValues = record.encasementOuterQuad else { continue }
+            let analysis = try CardCenteringAnalyzer.analyze(try fixtureData(name))
+            guard !analysis.measurement.isDeclined else { continue }
+            let mapping = try XCTUnwrap(analysis.coordinateMapping, name)
+            let detected = mapping.nativeQuad(fromWorking: analysis.measurement.geometryOuterQuad)
+            let card = try XCTUnwrap(CardCenteringQuad(record.cardOuterQuad), name)
+            let sleeve = try XCTUnwrap(CardCenteringQuad(sleeveValues), name)
+            XCTAssertLessThan(
+                maxCornerDistance(detected, card),
+                maxCornerDistance(detected, sleeve),
+                "\(name) must select the physical card rather than the encasement"
+            )
+        }
+    }
+
+    func testINV10ConfidentResultsStayInsideTheFourPercentAspectGuard() throws {
+        for name in fixtureNames {
+            let analysis = try CardCenteringAnalyzer.analyze(try fixtureData(name))
+            if !analysis.measurement.isDeclined {
+                XCTAssertLessThanOrEqual(analysis.measurement.confidence.aspectResidual, 0.04, name)
+                XCTAssertTrue(analysis.measurement.confidence.innerReferencePresent, name)
+            }
+        }
+    }
+
+    func testREQ022AnalysisPerformanceOverAllFixtures() throws {
+        var durations: [Double] = []
+        for name in fixtureNames {
+            let data = try fixtureData(name)
+            let start = CFAbsoluteTimeGetCurrent()
+            _ = try CardCenteringAnalyzer.analyze(data)
+            durations.append(CFAbsoluteTimeGetCurrent() - start)
+        }
+        let sorted = durations.sorted()
+        let median = sorted[sorted.count / 2]
+        let maximum = sorted.max() ?? 0
+        XCTAssertLessThanOrEqual(median, 0.8)
+        XCTAssertLessThanOrEqual(maximum, 1.5)
+    }
+
+#if DEBUG
+    func testREQ031ResolutionAccuracyAndLatencyCurve() throws {
+        let dimensions = [1_200, 1_600, 2_000, 2_400]
+        let repository = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let output = repository
+            .appendingPathComponent("review", isDirectory: true)
+            .appendingPathComponent("centering-evidence", isDirectory: true)
+            .appendingPathComponent("diagnostics", isDirectory: true)
+            .appendingPathComponent("E7", isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+
+        func measuredRatios(_ analysis: CardCenteringAnalysis) -> (lr: Double, tb: Double)? {
+            guard let inner = analysis.measurement.geometryInnerQuad else { return nil }
+            let distances = analysis.measurement.geometryOuterQuad.borderDistances(to: inner)
+            return (
+                100 * distances.left / max(distances.left + distances.right, .ulpOfOne),
+                100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+            )
+        }
+
+        var records: [E7ResolutionCurveRecord] = []
+        for dimension in dimensions {
+            for name in fixtureNames {
+                let data = try fixtureData(name)
+                let groundTruth = try fixtureRecord(name)
+                let start = CFAbsoluteTimeGetCurrent()
+                let analysis = try CardCenteringAnalyzer.analyzeForBenchmark(
+                    data,
+                    workingMaxDimension: CGFloat(dimension)
+                )
+                let elapsed = CFAbsoluteTimeGetCurrent() - start
+                let measured = measuredRatios(analysis)
+                let expectedLR = groundTruth.expected.lrRatio
+                let expectedTB = groundTruth.expected.tbRatio
+                let lrError: Double?
+                if let actual = measured?.lr, let expected = expectedLR {
+                    lrError = abs(actual - expected)
+                } else {
+                    lrError = nil
+                }
+                let tbError: Double?
+                if let actual = measured?.tb, let expected = expectedTB {
+                    tbError = abs(actual - expected)
+                } else {
+                    tbError = nil
+                }
+                let ratioPass: Bool
+                if groundTruth.innerQuad == nil {
+                    ratioPass = analysis.measurement.isDeclined
+                } else {
+                    ratioPass = lrError.map { $0 <= 2 } == true
+                        && tbError.map { $0 <= 2 } == true
+                }
+                records.append(
+                    E7ResolutionCurveRecord(
+                        fixture: name,
+                        workingMaxDimension: dimension,
+                        detectionMaxDimension: dimension,
+                        elapsedSeconds: elapsed,
+                        workingWidth: analysis.measurement.imageWidth,
+                        workingHeight: analysis.measurement.imageHeight,
+                        cardHeightWorkingPx: analysis.measurement.geometryOuterQuad.rectifiedHeight,
+                        confidenceState: analysis.measurement.confidence.state.rawValue,
+                        confidenceScore: analysis.measurement.confidence.score,
+                        innerReference: analysis.measurement.innerReference.rawValue,
+                        expectedLR: expectedLR,
+                        expectedTB: expectedTB,
+                        measuredLR: measured?.lr,
+                        measuredTB: measured?.tb,
+                        lrErrorPP: lrError,
+                        tbErrorPP: tbError,
+                        ratioPassAt2PP: ratioPass,
+                        detectedSkewDegrees: analysis.detectedSkewDegrees,
+                        appliedRotationDegrees: analysis.appliedRotationDegrees,
+                        rectificationResidualDegrees: analysis.measurement.rectification?.residualDegrees,
+                        rectificationReprojectionRMS: analysis.measurement.rectification?.reprojectionRMS
+                    )
+                )
+                XCTAssertTrue(elapsed.isFinite, "non-finite latency for \(name) at \(dimension)")
+                XCTAssertGreaterThan(analysis.measurement.imageWidth, 20, "invalid width for \(name) at \(dimension)")
+                XCTAssertGreaterThan(analysis.measurement.imageHeight, 20, "invalid height for \(name) at \(dimension)")
+                print(
+                    "E7_CURVE fixture=\(name) max=\(dimension) "
+                        + String(format: "elapsed=%.3f", elapsed)
+                        + " state=\(analysis.measurement.confidence.state.rawValue) "
+                        + " ratioPassAt2PP=\(ratioPass)"
+                )
+            }
+        }
+
+        XCTAssertEqual(records.count, dimensions.count * fixtureNames.count)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("resolution-curve.json"),
+            options: .atomic
+        )
+
+        var markdown = [
+            "# E7 resolution and latency curve",
+            "",
+            "This diagnostic uses the production analyzer entry point with only its DEBUG benchmark resolution override. Ground truth was rederived under REQ-027; `ratioPassAt2PP` is adjudicable against the current records but does not by itself close the broader L1/REQ-045 gate.",
+            "",
+            "| Max working dimension | Median seconds | Max seconds | Gradeable/confident | Ratio pass at 2 pp |",
+            "|---:|---:|---:|---:|---:|"
+        ]
+        for dimension in dimensions {
+            let subset = records.filter { $0.workingMaxDimension == dimension }
+            let sortedDurations = subset.map(\.elapsedSeconds).sorted()
+            let median = sortedDurations[sortedDurations.count / 2]
+            let maximum = sortedDurations.max() ?? 0
+            let confident = subset.filter { $0.confidenceState == CardCenteringConfidenceState.confident.rawValue }.count
+            let ratioPasses = subset.filter(\.ratioPassAt2PP).count
+            markdown.append(
+                String(
+                    format: "| %d | %.3f | %.3f | %d/%d | %d/%d |",
+                    dimension,
+                    median,
+                    maximum,
+                    confident,
+                    subset.count,
+                    ratioPasses,
+                    subset.count
+                )
+            )
+        }
+        markdown.append(contentsOf: [
+            "",
+            "## Per-fixture records",
+            "",
+            "| Fixture | Working max | Detection max | Seconds | Working size | Card H px | State | LR error pp | TB error pp |",
+            "|---|---:|---:|---:|---:|---:|---|---:|---:|"
+        ])
+        for record in records {
+            let lr = record.lrErrorPP.map { String(format: "%.3f", $0) } ?? "—"
+            let tb = record.tbErrorPP.map { String(format: "%.3f", $0) } ?? "—"
+            markdown.append(
+                String(
+                    format: "| `%@` | %d | %d | %.3f | %dx%d | %.1f | %@ | %@ | %@ |",
+                    record.fixture,
+                    record.workingMaxDimension,
+                    record.detectionMaxDimension,
+                    record.elapsedSeconds,
+                    record.workingWidth,
+                    record.workingHeight,
+                    record.cardHeightWorkingPx,
+                    record.confidenceState,
+                    lr,
+                    tb
+                )
+            )
+        }
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("resolution-curve.md"),
+            options: .atomic
+        )
+    }
+
+    func testREQ031LowResolutionDetectionFullResolutionRefinement() throws {
+        let dimensions = [1_200, 1_600, 2_000, 2_400]
+        let repository = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let output = repository
+            .appendingPathComponent("review", isDirectory: true)
+            .appendingPathComponent("centering-evidence", isDirectory: true)
+            .appendingPathComponent("diagnostics", isDirectory: true)
+            .appendingPathComponent("E7", isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+
+        func measuredRatios(_ analysis: CardCenteringAnalysis) -> (lr: Double, tb: Double)? {
+            guard let inner = analysis.measurement.geometryInnerQuad else { return nil }
+            let distances = analysis.measurement.geometryOuterQuad.borderDistances(to: inner)
+            return (
+                100 * distances.left / max(distances.left + distances.right, .ulpOfOne),
+                100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+            )
+        }
+
+        var records: [E7ResolutionCurveRecord] = []
+        for dimension in dimensions {
+            let detectionDimension = min(1_200, dimension)
+            for name in fixtureNames {
+                let data = try fixtureData(name)
+                let groundTruth = try fixtureRecord(name)
+                let start = CFAbsoluteTimeGetCurrent()
+                let analysis = try CardCenteringAnalyzer.analyzeForBenchmark(
+                    data,
+                    workingMaxDimension: CGFloat(dimension),
+                    detectionMaxDimension: CGFloat(detectionDimension)
+                )
+                let elapsed = CFAbsoluteTimeGetCurrent() - start
+                let measured = measuredRatios(analysis)
+                let expectedLR = groundTruth.expected.lrRatio
+                let expectedTB = groundTruth.expected.tbRatio
+                let lrError: Double?
+                if let actual = measured?.lr, let expected = expectedLR {
+                    lrError = abs(actual - expected)
+                } else {
+                    lrError = nil
+                }
+                let tbError: Double?
+                if let actual = measured?.tb, let expected = expectedTB {
+                    tbError = abs(actual - expected)
+                } else {
+                    tbError = nil
+                }
+                let ratioPass: Bool
+                if groundTruth.innerQuad == nil {
+                    ratioPass = analysis.measurement.isDeclined
+                } else {
+                    ratioPass = lrError.map { $0 <= 2 } == true
+                        && tbError.map { $0 <= 2 } == true
+                }
+                records.append(
+                    E7ResolutionCurveRecord(
+                        fixture: name,
+                        workingMaxDimension: dimension,
+                        detectionMaxDimension: detectionDimension,
+                        elapsedSeconds: elapsed,
+                        workingWidth: analysis.measurement.imageWidth,
+                        workingHeight: analysis.measurement.imageHeight,
+                        cardHeightWorkingPx: analysis.measurement.geometryOuterQuad.rectifiedHeight,
+                        confidenceState: analysis.measurement.confidence.state.rawValue,
+                        confidenceScore: analysis.measurement.confidence.score,
+                        innerReference: analysis.measurement.innerReference.rawValue,
+                        expectedLR: expectedLR,
+                        expectedTB: expectedTB,
+                        measuredLR: measured?.lr,
+                        measuredTB: measured?.tb,
+                        lrErrorPP: lrError,
+                        tbErrorPP: tbError,
+                        ratioPassAt2PP: ratioPass,
+                        detectedSkewDegrees: analysis.detectedSkewDegrees,
+                        appliedRotationDegrees: analysis.appliedRotationDegrees,
+                        rectificationResidualDegrees: analysis.measurement.rectification?.residualDegrees,
+                        rectificationReprojectionRMS: analysis.measurement.rectification?.reprojectionRMS
+                    )
+                )
+                XCTAssertTrue(elapsed.isFinite, "non-finite latency for \(name) at \(dimension)")
+                XCTAssertGreaterThan(analysis.measurement.imageWidth, 20, "invalid width for \(name) at \(dimension)")
+                XCTAssertGreaterThan(analysis.measurement.imageHeight, 20, "invalid height for \(name) at \(dimension)")
+            }
+        }
+
+        XCTAssertEqual(records.count, dimensions.count * fixtureNames.count)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("low-detection-curve.json"),
+            options: .atomic
+        )
+
+        var markdown = [
+            "# E7 low-resolution detection with full-resolution refinement",
+            "",
+            "Vision and scalar outline detection run at the detection maximum; the profile stage runs at the working maximum. Ground truth was rederived under REQ-027, so the ratio-error columns are adjudicable; this benchmark does not by itself close the broader L1/REQ-045 gate.",
+            "",
+            "| Working max | Detection max | Median seconds | Max seconds | Confident | Ratio pass at 2 pp |",
+            "|---:|---:|---:|---:|---:|---:|"
+        ]
+        for dimension in dimensions {
+            let subset = records.filter { $0.workingMaxDimension == dimension }
+            let sortedDurations = subset.map(\.elapsedSeconds).sorted()
+            let median = sortedDurations[sortedDurations.count / 2]
+            let maximum = sortedDurations.max() ?? 0
+            let confident = subset.filter { $0.confidenceState == CardCenteringConfidenceState.confident.rawValue }.count
+            let ratioPasses = subset.filter(\.ratioPassAt2PP).count
+            markdown.append(
+                String(
+                    format: "| %d | %d | %.3f | %.3f | %d/%d | %d/%d |",
+                    dimension,
+                    min(1_200, dimension),
+                    median,
+                    maximum,
+                    confident,
+                    subset.count,
+                    ratioPasses,
+                    subset.count
+                )
+            )
+        }
+        markdown.append(contentsOf: [
+            "",
+            "## Per-fixture records",
+            "",
+            "| Fixture | Working max | Detection max | Seconds | Working size | Card H px | State | LR error pp | TB error pp |",
+            "|---|---:|---:|---:|---:|---:|---|---:|---:|"
+        ])
+        for record in records {
+            let lr = record.lrErrorPP.map { String(format: "%.3f", $0) } ?? "—"
+            let tb = record.tbErrorPP.map { String(format: "%.3f", $0) } ?? "—"
+            markdown.append(
+                String(
+                    format: "| `%@` | %d | %d | %.3f | %dx%d | %.1f | %@ | %@ | %@ |",
+                    record.fixture,
+                    record.workingMaxDimension,
+                    record.detectionMaxDimension,
+                    record.elapsedSeconds,
+                    record.workingWidth,
+                    record.workingHeight,
+                    record.cardHeightWorkingPx,
+                    record.confidenceState,
+                    lr,
+                    tb
+                )
+            )
+        }
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("low-detection-curve.md"),
+            options: .atomic
+        )
+    }
+#endif
+
+    @MainActor
+    func testREQ017ManualGuidesCanRecoverADeclinedMeasurement() {
+        let outer = CardCenteringQuad(
+            topLeft: CardCenteringPoint(x: 0, y: 0),
+            topRight: CardCenteringPoint(x: 500, y: 0),
+            bottomRight: CardCenteringPoint(x: 500, y: 500),
+            bottomLeft: CardCenteringPoint(x: 0, y: 500)
+        )
+        var declined = CardCenteringMeasurement(
+            imageWidth: 1_000,
+            imageHeight: 1_400,
+            outerQuad: outer,
+            innerQuad: nil,
+            warnings: [],
+            innerReference: .none
+        )
+        declined.refreshWarnings()
+
+        let model = CardCenteringViewModel()
+        model.measurement = declined
+        let xRange = 0...999
+        let yRange = 0...1_399
+        model.updateOuter(\.left, to: 0, within: xRange)
+        model.updateOuter(\.right, to: 700, within: xRange)
+        model.updateOuter(\.top, to: 0, within: yRange)
+        model.updateOuter(\.bottom, to: 980, within: yRange)
+        model.updateInner(\.left, to: 70, within: xRange)
+        model.updateInner(\.right, to: 630, within: xRange)
+        model.updateInner(\.top, to: 98, within: yRange)
+        model.updateInner(\.bottom, to: 882, within: yRange)
+
+        let recovered = model.measurement
+        XCTAssertNotNil(recovered)
+        XCTAssertFalse(recovered?.isDeclined ?? true)
+        XCTAssertEqual(recovered?.leftRightCentering, "50.0 / 50.0")
+        XCTAssertEqual(recovered?.topBottomCentering, "50.0 / 50.0")
+    }
+
+    func testREQ024ProductionSourcesDoNotContainFixtureIdentityBranches() throws {
+        let fileManager = FileManager.default
+        let productionURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("TradingCardScanner", isDirectory: true)
+        let fixtureNames = [
+            "IMG_0347", "IMG_0348", "IMG_0349", "IMG_0350", "IMG_0351",
+            "IMG_0352", "IMG_0780", "IMG_0781", "IMG_0782", "IMG_0783"
+        ]
+        let files = try XCTUnwrap(
+            fileManager.enumerator(
+                at: productionURL,
+                includingPropertiesForKeys: [.isRegularFileKey],
+                options: [.skipsHiddenFiles]
+            )
+        )
+
+        for case let url as URL in files where url.pathExtension == "swift" {
+            let source = try String(contentsOf: url, encoding: .utf8)
+            for fixtureName in fixtureNames {
+                XCTAssertFalse(
+                    source.contains(fixtureName),
+                    "production source (url.lastPathComponent) must not branch on (fixtureName)"
+                )
+            }
+        }
+    }
+
+    func testREQ033EvidenceStatusClassifiesRecoveredRuntimeAndProvisionalGT() throws {
+        let repository = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let statusURL = repository
+            .appendingPathComponent("review", isDirectory: true)
+            .appendingPathComponent("centering-evidence", isDirectory: true)
+            .appendingPathComponent("after", isDirectory: true)
+            .appendingPathComponent("simulator-status-2026-09-11.md")
+        let tableURL = repository
+            .appendingPathComponent("review", isDirectory: true)
+            .appendingPathComponent("centering-evidence", isDirectory: true)
+            .appendingPathComponent("evidence-table.md")
+        let status = try String(contentsOf: statusURL, encoding: .utf8)
+        let table = try String(contentsOf: tableURL, encoding: .utf8)
+
+        XCTAssertTrue(status.contains("1,076 tests; 1,045 passed; 24 failed; 7 skipped"))
+        XCTAssertTrue(status.contains("EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86"))
+        XCTAssertTrue(status.localizedCaseInsensitiveContains("not blocked"))
+        XCTAssertTrue(table.contains("UNADJUDICATED"))
+        XCTAssertTrue(table.contains("FAILING"))
+        XCTAssertFalse(table.localizedCaseInsensitiveContains("OPEN — simulator unavailable"))
+    }
+}
+
+#if DEBUG
+private struct E0RendererMetadata: Codable {
+    let sourceWidth: Double
+    let sourceHeight: Double
+    let canvasWidth: Double
+    let canvasHeight: Double
+    let scale: Double
+    let rotationDegrees: Double
+    let mirrorX: Bool
+}
+
+private struct E0VariantDump: Codable {
+    let fixture: String
+    let variant: String
+    let renderer: E0RendererMetadata
+    let workingWidth: Int
+    let workingHeight: Int
+    let outerQuadWorking: CardCenteringQuad
+    let outerQuadNative: CardCenteringQuad?
+    let finalAnalysis: E0FinalAnalysisDiagnostic
+    let profiles: [CardCenteringProfileDiagnostic]
+}
+
+private struct E0DistanceDiagnostic: Codable {
+    let left: Double
+    let top: Double
+    let right: Double
+    let bottom: Double
+}
+
+private struct E0RectificationDiagnostic: Codable {
+    let targetSize: CardCenteringSize
+    let residualDegrees: Double
+    let aspectResidual: Double
+    let reprojectionRMS: Double
+    let isValid: Bool
+}
+
+private struct E0FinalAnalysisDiagnostic: Codable {
+    let measurementImageWidth: Int
+    let measurementImageHeight: Int
+    let appliedRotationDegrees: Double
+    let detectedSkewDegrees: Double?
+    let confidenceState: String
+    let confidenceScore: Double
+    let innerReference: String
+    let confidenceReason: String?
+    let detectionNotes: [String]
+    let outerQuadWorking: CardCenteringQuad
+    let innerQuadWorking: CardCenteringQuad?
+    let outerQuadNative: CardCenteringQuad?
+    let innerQuadNative: CardCenteringQuad?
+    let rectifiedOuterQuad: CardCenteringQuad?
+    let rectifiedInnerQuad: CardCenteringQuad?
+    let borderDistances: E0DistanceDiagnostic?
+    let rectification: E0RectificationDiagnostic?
+    let leftRightCentering: String
+    let topBottomCentering: String
+    let scalarOuterAgreesWithVision: Bool
+    let scalarPinned: Bool?
+    let outlineHasInner: Bool
+    let innerSource: CardCenteringInnerSource
+    let visionOuterQuad: CardCenteringQuad?
+    let scalarOuter: CardCenteringEdges?
+    let scalarInner: CardCenteringEdges?
+    let scalarOutlineQuad: CardCenteringQuad?
+    let selectedOuterSource: String
+    let selectedSleeveAmbiguity: Double
+    let proposedOuterQuad: CardCenteringQuad?
+    let refinedOuterQuad: CardCenteringQuad?
+    let outerRefinementAccepted: Bool
+
+    init(
+        analysis: CardCenteringAnalysis,
+        branch: CardCenteringAnalysisDiagnostic
+    ) {
+        let measurement = analysis.measurement
+        let outerWorking = measurement.geometryOuterQuad
+        let innerWorking = measurement.geometryInnerQuad
+        let mapping = analysis.coordinateMapping
+        let rectification = measurement.rectification
+        let rectifiedOuter = rectification?.rectifiedQuad(from: outerWorking)
+        let rectifiedInner = innerWorking.flatMap { rectification?.rectifiedQuad(from: $0) }
+        let distances: E0DistanceDiagnostic?
+        if let innerWorking {
+            let measured = rectification.map {
+                $0.rectifiedQuad(from: outerWorking).borderDistances(to: $0.rectifiedQuad(from: innerWorking))
+            } ?? outerWorking.borderDistances(to: innerWorking)
+            distances = E0DistanceDiagnostic(
+                left: measured.left,
+                top: measured.top,
+                right: measured.right,
+                bottom: measured.bottom
+            )
+        } else {
+            distances = nil
+        }
+        self.measurementImageWidth = measurement.imageWidth
+        self.measurementImageHeight = measurement.imageHeight
+        self.appliedRotationDegrees = analysis.appliedRotationDegrees
+        self.detectedSkewDegrees = analysis.detectedSkewDegrees
+        self.confidenceState = measurement.confidence.state.rawValue
+        self.confidenceScore = measurement.confidence.score
+        self.innerReference = measurement.innerReference.rawValue
+        self.confidenceReason = measurement.confidence.reason
+        self.detectionNotes = measurement.detectionNotes
+        self.outerQuadWorking = outerWorking
+        self.innerQuadWorking = innerWorking
+        self.outerQuadNative = mapping?.nativeQuad(fromWorking: outerWorking)
+        self.innerQuadNative = innerWorking.flatMap { mapping?.nativeQuad(fromWorking: $0) }
+        self.rectifiedOuterQuad = rectifiedOuter
+        self.rectifiedInnerQuad = rectifiedInner
+        self.borderDistances = distances
+        self.rectification = rectification.map {
+            E0RectificationDiagnostic(
+                targetSize: $0.targetSize,
+                residualDegrees: $0.residualDegrees,
+                aspectResidual: $0.aspectResidual,
+                reprojectionRMS: $0.reprojectionRMS,
+                isValid: $0.isValid
+            )
+        }
+        self.leftRightCentering = measurement.leftRightCentering
+        self.topBottomCentering = measurement.topBottomCentering
+        self.scalarOuterAgreesWithVision = branch.scalarOuterAgreesWithVision
+        self.scalarPinned = branch.scalarPinned
+        self.outlineHasInner = branch.outlineHasInner
+        self.innerSource = branch.innerSource
+        self.visionOuterQuad = branch.visionOuterQuad
+        self.scalarOuter = branch.scalarOuter
+        self.scalarInner = branch.scalarInner
+        self.scalarOutlineQuad = branch.scalarOutlineQuad
+        self.selectedOuterSource = branch.selectedOuterSource
+        self.selectedSleeveAmbiguity = branch.selectedSleeveAmbiguity
+        self.proposedOuterQuad = branch.proposedOuterQuad
+        self.refinedOuterQuad = branch.refinedOuterQuad
+        self.outerRefinementAccepted = branch.outerRefinementAccepted
+    }
+}
+
+private struct EAFixtureDump: Codable {
+    let fixture: String
+    let finalAnalysis: E0FinalAnalysisDiagnostic
+    let profileFailures: [CardCenteringProfileFailureDiagnostic]
+    let profileSelections: [EAFixtureProfileSelection]
+}
+
+private struct EAFixtureProfileSelection: Codable {
+    let side: String
+    let selectedNormalizedDepthBeforeRefinement: Double
+    let selectedNormalizedDepthAfterRefinement: Double
+    let selectedScore: Double
+    let selectedSupport: Double
+    let threshold: Double
+    let shallowCandidateCount: Int
+
+    init(_ diagnostic: CardCenteringProfileDiagnostic) {
+        side = diagnostic.side
+        selectedNormalizedDepthBeforeRefinement = diagnostic.selectedNormalizedDepthBeforeRefinement
+        selectedNormalizedDepthAfterRefinement = diagnostic.selectedNormalizedDepthAfterRefinement
+        selectedScore = diagnostic.scores[diagnostic.selectedIndex]
+        selectedSupport = diagnostic.supports[diagnostic.selectedIndex]
+        threshold = diagnostic.threshold
+        shallowCandidateCount = diagnostic.shallowCandidates.count
+    }
+}
+
+private struct EDOuterRefinementDump: Codable {
+    let fixture: String
+    let reports: [CardCenteringOuterRefinementDiagnostic]
+}
+
+private struct E1ResolutionRecord: Codable {
+    let fixture: String
+    let variant: String
+    let sourceStorageWidth: Int
+    let sourceStorageHeight: Int
+    let sourceDisplayWidth: Double
+    let sourceDisplayHeight: Double
+    let baseWorkingCardWidthPx: Double
+    let baseWorkingCardHeightPx: Double
+    let baseWorkingShortEdgePx: Double
+    let baseWorkingLongEdgePx: Double
+    let rawWorkingCardWidthPx: Double
+    let rawWorkingCardHeightPx: Double
+    let rawWorkingShortEdgePx: Double
+    let rawWorkingLongEdgePx: Double
+    let equalizedWorkingCardHeightPx: Double
+    let equalizedWorkingCardWidthPx: Double
+    let equalizedWorkingShortEdgePx: Double
+    let equalizedWorkingLongEdgePx: Double
+    let rawRelativeToBase: Double
+    let equalizedRelativeToBase: Double
+    let requestedScale: Double
+    let equalizedScale: Double
+    let rawCanvasWidth: Double
+    let rawCanvasHeight: Double
+    let equalizedCanvasWidth: Double
+    let equalizedCanvasHeight: Double
+    let rawConfidenceState: String
+    let rawMeasuredLR: Double?
+    let rawMeasuredTB: Double?
+    let equalizedConfidenceState: String
+    let equalizedMeasuredLR: Double?
+    let equalizedMeasuredTB: Double?
+}
+
+private struct EENormalizationRecord: Codable {
+    let fixture: String
+    let variant: String
+    let space: String
+    let confidenceState: String
+    let innerSource: String
+    let outerRefinementAccepted: Bool
+    let side: String
+    let mappedBaseSide: String?
+    let workingWidth: Int
+    let workingHeight: Int
+    let cardWidthWorkingPx: Double
+    let cardHeightWorkingPx: Double
+    let sampleRadiusPixels: Double
+    let sampleRadiusNormalized: Double
+    let selectedNormalizedDepthBeforeRefinement: Double
+    let selectedNormalizedDepthAfterRefinement: Double
+    let selectedScore: Double
+    let selectedSupport: Double
+    let baseline: Double
+    let mad: Double
+    let threshold: Double
+    let shallowCandidateCount: Int
+    let outerLineDisplacementPixels: Double?
+    let innerLineDisplacementPixels: Double?
+}
+
+private struct EENormalizationDump: Codable {
+    let fixture: String
+    let variant: String
+    let space: String
+    let confidenceState: String
+    let innerSource: String
+    let outerRefinementAccepted: Bool
+    let records: [EENormalizationRecord]
+}
+
+private struct E7ResolutionCurveRecord: Codable {
+    let fixture: String
+    let workingMaxDimension: Int
+    let detectionMaxDimension: Int
+    let elapsedSeconds: Double
+    let workingWidth: Int
+    let workingHeight: Int
+    let cardHeightWorkingPx: Double
+    let confidenceState: String
+    let confidenceScore: Double
+    let innerReference: String
+    let expectedLR: Double?
+    let expectedTB: Double?
+    let measuredLR: Double?
+    let measuredTB: Double?
+    let lrErrorPP: Double?
+    let tbErrorPP: Double?
+    let ratioPassAt2PP: Bool
+    let detectedSkewDegrees: Double?
+    let appliedRotationDegrees: Double
+    let rectificationResidualDegrees: Double?
+    let rectificationReprojectionRMS: Double?
+}
+
+private struct REQ041StageTimingRecord: Codable {
+    let fixture: String
+    let repetition: Int
+    let elapsedSeconds: Double
+    let stageTimings: CardCenteringStageTimingDiagnostic
+    let attributedFraction: Double
+}
+
+private struct REQ042CandidateRecallRecord: Codable {
+    let family: String
+    let side: String
+    let candidateCount: Int
+    let bestErrorPx: Double?
+    let bestSource: String?
+    let bestSemanticRole: String?
+    let tolerancePx: Double?
+    let anyWithinTolerance: Bool?
+}
+
+private struct REQ042FixtureDiagnosticRecord: Codable {
+    let fixture: String
+    let groundTruthInnerReference: String
+    let confidenceState: String
+    let selectedInnerSource: String
+    let selectedOuterSource: String
+    let analysis: CardCenteringAnalysisDiagnostic
+    let ledger: CardCenteringCandidateLedgerDiagnostic
+    let recall: [REQ042CandidateRecallRecord]
+}
+
+/// Differential instrumentation for the current profile implementation.
+/// Keep this test temporary: its purpose is to localize metamorphic drift,
+/// not to become a production correctness gate.
+final class CenteringProfileDumpTests: XCTestCase {
+    private struct Variant {
+        let name: String
+        let rotationDegrees: CGFloat
+        let mirrorX: Bool
+        let scale: CGFloat
+    }
+
+    private let variants = [
+        Variant(name: "base", rotationDegrees: 0, mirrorX: false, scale: 1),
+        Variant(name: "mirrorX", rotationDegrees: 0, mirrorX: true, scale: 1),
+        Variant(name: "rot90", rotationDegrees: 90, mirrorX: false, scale: 1),
+        Variant(name: "rot180", rotationDegrees: 180, mirrorX: false, scale: 1),
+        Variant(name: "rot270", rotationDegrees: 270, mirrorX: false, scale: 1),
+        Variant(name: "scale0.6", rotationDegrees: 0, mirrorX: false, scale: 0.6)
+    ]
+
+    private func fixtureData(_ name: String) throws -> Data {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        let url = try XCTUnwrap(
+            bundle.url(forResource: name, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+        )
+        return try Data(contentsOf: url)
+    }
+
+    private func normalisedImage(_ data: Data) throws -> UIImage {
+        let source = try XCTUnwrap(UIImage(data: data))
+        let scale = min(1, 1_200 / max(source.size.width, source.size.height))
+        let size = CGSize(width: source.size.width * scale, height: source.size.height * scale)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+            source.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+
+    private func renderedVariant(
+        _ data: Data,
+        variant: Variant,
+        appliedScale overrideScale: CGFloat? = nil,
+        rawSource: Bool = false
+    ) throws -> (data: Data, renderer: E0RendererMetadata) {
+        let image = rawSource
+            ? try XCTUnwrap(UIImage(data: data))
+            : try normalisedImage(data)
+        let sourceSize = image.size
+        let appliedScale = overrideScale ?? variant.scale
+        let drawSize = CGSize(
+            width: sourceSize.width * appliedScale,
+            height: sourceSize.height * appliedScale
+        )
+        let radians = variant.rotationDegrees * .pi / 180
+        let cosine = abs(cos(radians))
+        let sine = abs(sin(radians))
+        let rotatedSize = CGSize(
+            width: cosine * drawSize.width + sine * drawSize.height,
+            height: sine * drawSize.width + cosine * drawSize.height
+        )
+        let margin = max(24, max(rotatedSize.width, rotatedSize.height) * 0.12)
+        let canvasSize = CGSize(
+            width: ceil(rotatedSize.width + margin * 2),
+            height: ceil(rotatedSize.height + margin * 2)
+        )
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let rendered = UIGraphicsImageRenderer(size: canvasSize, format: format).image { context in
+            UIColor(white: 0.76, alpha: 1).setFill()
+            context.fill(CGRect(origin: .zero, size: canvasSize))
+            let cg = context.cgContext
+            cg.translateBy(x: canvasSize.width / 2, y: canvasSize.height / 2)
+            cg.rotate(by: radians)
+            cg.scaleBy(x: variant.mirrorX ? -1 : 1, y: 1)
+            image.draw(in: CGRect(
+                x: -drawSize.width / 2,
+                y: -drawSize.height / 2,
+                width: drawSize.width,
+                height: drawSize.height
+            ))
+        }
+        return (
+            try XCTUnwrap(rendered.pngData()),
+            E0RendererMetadata(
+                sourceWidth: sourceSize.width,
+                sourceHeight: sourceSize.height,
+                canvasWidth: canvasSize.width,
+                canvasHeight: canvasSize.height,
+                scale: appliedScale,
+                rotationDegrees: variant.rotationDegrees,
+                mirrorX: variant.mirrorX
+            )
+        )
+    }
+
+    private func fixtureRecord(_ name: String) throws -> GroundTruthRecord {
+        let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
+        let url = try XCTUnwrap(
+            bundle.url(
+                forResource: "\(name).gt",
+                withExtension: "json",
+                subdirectory: "TradingCards/GroundTruth"
+            )
+        )
+        return try JSONDecoder().decode(GroundTruthRecord.self, from: Data(contentsOf: url))
+    }
+
+    private func gtQuad(_ record: GroundTruthRecord, in sourceSize: CGSize) -> CardCenteringQuad {
+        let xScale = sourceSize.width / CGFloat(record.orientedPixelSize.w)
+        let yScale = sourceSize.height / CGFloat(record.orientedPixelSize.h)
+        let points = record.cardOuterQuad.map {
+            CardCenteringPoint(x: $0[0] * Double(xScale), y: $0[1] * Double(yScale))
+        }
+        return CardCenteringQuad(
+            topLeft: points[0],
+            topRight: points[1],
+            bottomRight: points[2],
+            bottomLeft: points[3]
+        )
+    }
+
+    private func transformedGTQuad(
+        _ record: GroundTruthRecord,
+        sourceSize: CGSize,
+        renderer: E0RendererMetadata,
+        variant: Variant
+    ) -> CardCenteringQuad {
+        let sourceQuad = gtQuad(record, in: sourceSize)
+        let sourceCenter = CardCenteringPoint(
+            x: sourceSize.width / 2,
+            y: sourceSize.height / 2
+        )
+        let canvasCenter = CardCenteringPoint(
+            x: renderer.canvasWidth / 2,
+            y: renderer.canvasHeight / 2
+        )
+        let radians = Double(variant.rotationDegrees) * .pi / 180
+        let cosine = cos(radians)
+        let sine = sin(radians)
+
+        func transform(_ point: CardCenteringPoint) -> CardCenteringPoint {
+            let scaledX = (point.x - sourceCenter.x) * renderer.scale
+            let scaledY = (point.y - sourceCenter.y) * renderer.scale
+            let mirroredX = variant.mirrorX ? -scaledX : scaledX
+            return CardCenteringPoint(
+                x: canvasCenter.x + mirroredX * cosine - scaledY * sine,
+                y: canvasCenter.y + mirroredX * sine + scaledY * cosine
+            )
+        }
+
+        return CardCenteringQuad(
+            topLeft: transform(sourceQuad.topLeft),
+            topRight: transform(sourceQuad.topRight),
+            bottomRight: transform(sourceQuad.bottomRight),
+            bottomLeft: transform(sourceQuad.bottomLeft)
+        )
+    }
+
+    private func workingGTQuad(
+        _ record: GroundTruthRecord,
+        sourceSize: CGSize,
+        renderer: E0RendererMetadata,
+        variant: Variant
+    ) -> CardCenteringQuad {
+        let transformed = transformedGTQuad(
+            record,
+            sourceSize: sourceSize,
+            renderer: renderer,
+            variant: variant
+        )
+        let workingScale = min(
+            1,
+            1_200 / max(renderer.canvasWidth, renderer.canvasHeight)
+        )
+
+        func scaled(_ point: CardCenteringPoint) -> CardCenteringPoint {
+            CardCenteringPoint(
+                x: point.x * workingScale,
+                y: point.y * workingScale
+            )
+        }
+
+        return CardCenteringQuad(
+            topLeft: scaled(transformed.topLeft),
+            topRight: scaled(transformed.topRight),
+            bottomRight: scaled(transformed.bottomRight),
+            bottomLeft: scaled(transformed.bottomLeft)
+        )
+    }
+
+    private func equalizedScale(
+        for variant: Variant,
+        sourceSize: CGSize,
+        record: GroundTruthRecord,
+        targetWorkingShortEdge: Double
+    ) -> CGFloat {
+        let quad = gtQuad(record, in: sourceSize)
+        let sourceShortEdge = min(quad.rectifiedWidth, quad.rectifiedHeight)
+
+        // Once the analyzer's 1,200px cap is engaged, increasing the rendered
+        // scale leaves the working card size on a plateau. Choose the first
+        // scale that reaches the target instead of a binary-search endpoint
+        // on that plateau. The short edge is used so a quarter-turn does not
+        // appear to change resolution merely because width and height swap.
+        let scaleAtTarget = targetWorkingShortEdge / sourceShortEdge
+        return CGFloat(max(Double(variant.scale), scaleAtTarget))
+    }
+
+    private func edgeEndpoints(
+        _ side: String,
+        in quad: CardCenteringQuad
+    ) -> (CardCenteringPoint, CardCenteringPoint)? {
+        switch side {
+        case "left": return (quad.topLeft, quad.bottomLeft)
+        case "top": return (quad.topLeft, quad.topRight)
+        case "right": return (quad.topRight, quad.bottomRight)
+        case "bottom": return (quad.bottomLeft, quad.bottomRight)
+        default: return nil
+        }
+    }
+
+    private func edgePoint(
+        _ side: String,
+        in quad: CardCenteringQuad,
+        progress: Double
+    ) -> CardCenteringPoint? {
+        guard let endpoints = edgeEndpoints(side, in: quad) else { return nil }
+        return CardCenteringPoint(
+            x: endpoints.0.x + (endpoints.1.x - endpoints.0.x) * progress,
+            y: endpoints.0.y + (endpoints.1.y - endpoints.0.y) * progress
+        )
+    }
+
+    private func profilePoint(
+        _ diagnostic: CardCenteringProfileDiagnostic,
+        progress: Double,
+        normalizedDepth: Double
+    ) -> CardCenteringPoint? {
+        guard let endpoints = edgeEndpoints(diagnostic.side, in: diagnostic.outerQuadWorking) else {
+            return nil
+        }
+        let tangentX = endpoints.1.x - endpoints.0.x
+        let tangentY = endpoints.1.y - endpoints.0.y
+        let length = max(hypot(tangentX, tangentY), .ulpOfOne)
+        var normalX = -tangentY / length
+        var normalY = tangentX / length
+        let centre = diagnostic.outerQuadWorking.points.reduce(
+            into: CardCenteringPoint(x: 0, y: 0)
+        ) { result, point in
+            result.x += point.x / 4
+            result.y += point.y / 4
+        }
+        let midpoint = edgePoint(diagnostic.side, in: diagnostic.outerQuadWorking, progress: 0.5)!
+        if (centre.x - midpoint.x) * normalX + (centre.y - midpoint.y) * normalY < 0 {
+            normalX = -normalX
+            normalY = -normalY
+        }
+        let origin = edgePoint(diagnostic.side, in: diagnostic.outerQuadWorking, progress: progress)!
+        let axisLength = diagnostic.side == "left" || diagnostic.side == "right"
+            ? diagnostic.cardWidthWorkingPx
+            : diagnostic.cardHeightWorkingPx
+        let distance = normalizedDepth * axisLength
+        return CardCenteringPoint(
+            x: origin.x + normalX * distance,
+            y: origin.y + normalY * distance
+        )
+    }
+
+    private func workingScale(for renderer: E0RendererMetadata) -> Double {
+        min(1, 1_200 / max(renderer.canvasWidth, renderer.canvasHeight))
+    }
+
+    private func sourcePoint(
+        from workingPoint: CardCenteringPoint,
+        renderer: E0RendererMetadata,
+        variant: Variant
+    ) -> CardCenteringPoint {
+        let scale = workingScale(for: renderer)
+        let canvasX = workingPoint.x / scale - renderer.canvasWidth / 2
+        let canvasY = workingPoint.y / scale - renderer.canvasHeight / 2
+        let radians = Double(variant.rotationDegrees) * .pi / 180
+        let cosine = cos(radians)
+        let sine = sin(radians)
+        var unrotatedX = canvasX * cosine + canvasY * sine
+        let unrotatedY = -canvasX * sine + canvasY * cosine
+        if variant.mirrorX { unrotatedX = -unrotatedX }
+        return CardCenteringPoint(
+            x: renderer.sourceWidth / 2 + unrotatedX / renderer.scale,
+            y: renderer.sourceHeight / 2 + unrotatedY / renderer.scale
+        )
+    }
+
+    private func baseWorkingPoint(
+        from sourcePoint: CardCenteringPoint,
+        renderer: E0RendererMetadata
+    ) -> CardCenteringPoint {
+        let x = renderer.canvasWidth / 2
+            + (sourcePoint.x - renderer.sourceWidth / 2) * renderer.scale
+        let y = renderer.canvasHeight / 2
+            + (sourcePoint.y - renderer.sourceHeight / 2) * renderer.scale
+        let scale = workingScale(for: renderer)
+        return CardCenteringPoint(x: x * scale, y: y * scale)
+    }
+
+    private func canonicalWorkingPoint(
+        _ point: CardCenteringPoint,
+        renderer: E0RendererMetadata,
+        variant: Variant,
+        baseRenderer: E0RendererMetadata
+    ) -> CardCenteringPoint {
+        baseWorkingPoint(
+            from: sourcePoint(from: point, renderer: renderer, variant: variant),
+            renderer: baseRenderer
+        )
+    }
+
+    private func pointDistance(_ lhs: CardCenteringPoint, _ rhs: CardCenteringPoint) -> Double {
+        hypot(lhs.x - rhs.x, lhs.y - rhs.y)
+    }
+
+    private func distanceToSegment(
+        _ point: CardCenteringPoint,
+        _ start: CardCenteringPoint,
+        _ end: CardCenteringPoint
+    ) -> Double {
+        let dx = end.x - start.x
+        let dy = end.y - start.y
+        let lengthSquared = dx * dx + dy * dy
+        guard lengthSquared > .ulpOfOne else { return pointDistance(point, start) }
+        let amount = Swift.min(
+            1,
+            Swift.max(0, ((point.x - start.x) * dx + (point.y - start.y) * dy) / lengthSquared)
+        )
+        return pointDistance(
+            point,
+            CardCenteringPoint(x: start.x + dx * amount, y: start.y + dy * amount)
+        )
+    }
+
+    private func nearestBaseSide(
+        for point: CardCenteringPoint,
+        in quad: CardCenteringQuad
+    ) -> String? {
+        let sides = ["left", "top", "right", "bottom"]
+        return sides.min { lhs, rhs in
+            let lhsEndpoints = edgeEndpoints(lhs, in: quad)!
+            let rhsEndpoints = edgeEndpoints(rhs, in: quad)!
+            return distanceToSegment(point, lhsEndpoints.0, lhsEndpoints.1)
+                < distanceToSegment(point, rhsEndpoints.0, rhsEndpoints.1)
+        }
+    }
+
+    private func lineDisplacement(
+        for diagnostic: CardCenteringProfileDiagnostic,
+        inner: Bool,
+        baseProfiles: [String: CardCenteringProfileDiagnostic],
+        baseOuter: CardCenteringQuad,
+        renderer: E0RendererMetadata,
+        variant: Variant,
+        baseRenderer: E0RendererMetadata
+    ) -> (side: String?, displacement: Double?) {
+        let progressValues = [0.15, 0.50, 0.85]
+        let variantPoints: [CardCenteringPoint]
+        if inner {
+            variantPoints = progressValues.compactMap {
+                profilePoint(
+                    diagnostic,
+                    progress: $0,
+                    normalizedDepth: diagnostic.selectedNormalizedDepthAfterRefinement
+                )
+            }
+        } else {
+            variantPoints = progressValues.compactMap {
+                edgePoint(diagnostic.side, in: diagnostic.outerQuadWorking, progress: $0)
+            }
+        }
+        guard variantPoints.count == progressValues.count else { return (nil, nil) }
+        let canonicalPoints = variantPoints.map {
+            canonicalWorkingPoint(
+                $0,
+                renderer: renderer,
+                variant: variant,
+                baseRenderer: baseRenderer
+            )
+        }
+        guard let baseSide = nearestBaseSide(for: canonicalPoints[1], in: baseOuter) else {
+            return (nil, nil)
+        }
+        let expectedPoints: [CardCenteringPoint]
+        if inner {
+            guard let baseDiagnostic = baseProfiles[baseSide] else { return (baseSide, nil) }
+            expectedPoints = progressValues.compactMap {
+                profilePoint(
+                    baseDiagnostic,
+                    progress: $0,
+                    normalizedDepth: baseDiagnostic.selectedNormalizedDepthAfterRefinement
+                )
+            }
+        } else {
+            expectedPoints = progressValues.compactMap {
+                edgePoint(baseSide, in: baseOuter, progress: $0)
+            }
+        }
+        guard expectedPoints.count == progressValues.count else { return (baseSide, nil) }
+
+        let direct = zip(canonicalPoints, expectedPoints)
+            .map { pointDistance($0.0, $0.1) }
+            .reduce(0, +) / Double(progressValues.count)
+        let reversed = zip(canonicalPoints, expectedPoints.reversed())
+            .map { pointDistance($0.0, $0.1) }
+            .reduce(0, +) / Double(progressValues.count)
+        return (baseSide, min(direct, reversed))
+    }
+
+    private func measurementSnapshot(_ data: Data) throws -> (
+        state: String,
+        lr: Double?,
+        tb: Double?
+    ) {
+        let measurement = try CardCenteringAnalyzer.analyze(data).measurement
+        guard let inner = measurement.geometryInnerQuad else {
+            return (measurement.confidence.state.rawValue, nil, nil)
+        }
+        let distances = measurement.geometryOuterQuad.borderDistances(to: inner)
+        return (
+            measurement.confidence.state.rawValue,
+            100 * distances.left / max(distances.left + distances.right, .ulpOfOne),
+            100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+        )
+    }
+
+    private func outputDirectory() throws -> URL {
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let directory = root
+            .appendingPathComponent("review", isDirectory: true)
+            .appendingPathComponent("centering-evidence", isDirectory: true)
+            .appendingPathComponent("diagnostics", isDirectory: true)
+            .appendingPathComponent("E0", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory
+    }
+
+    func testDumpDifferentialProfilesForCleanAndSleevedFixtures() throws {
+        let output = try outputDirectory()
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        var allDumps: [E0VariantDump] = []
+
+        for fixture in ["IMG_0783", "IMG_0347"] {
+            let data = try fixtureData(fixture)
+            for variant in variants {
+                let rendered = try renderedVariant(data, variant: variant)
+                var captured: [CardCenteringProfileDiagnostic] = []
+                var capturedBranch: CardCenteringAnalysisDiagnostic?
+                CardCenteringAnalyzer.profileDiagnosticSink = { diagnostic in
+                    captured.append(diagnostic)
+                }
+                CardCenteringAnalyzer.analysisDiagnosticSink = { diagnostic in
+                    capturedBranch = diagnostic
+                }
+                let analysis: CardCenteringAnalysis
+                defer {
+                    CardCenteringAnalyzer.profileDiagnosticSink = nil
+                    CardCenteringAnalyzer.analysisDiagnosticSink = nil
+                }
+                analysis = try CardCenteringAnalyzer.analyze(rendered.data)
+                let mapping = analysis.coordinateMapping
+                let branch = try XCTUnwrap(
+                    capturedBranch,
+                    "E0 must capture the final analyzer branch for (fixture) / (variant.name)"
+                )
+                let dump = E0VariantDump(
+                    fixture: fixture,
+                    variant: variant.name,
+                    renderer: rendered.renderer,
+                    workingWidth: analysis.measurement.imageWidth,
+                    workingHeight: analysis.measurement.imageHeight,
+                    outerQuadWorking: captured.first?.outerQuadWorking
+                        ?? analysis.measurement.geometryOuterQuad,
+                    outerQuadNative: captured.first.flatMap { diagnostic in
+                        mapping?.nativeQuad(fromWorking: diagnostic.outerQuadWorking)
+                    },
+                    finalAnalysis: E0FinalAnalysisDiagnostic(
+                        analysis: analysis,
+                        branch: branch
+                    ),
+                    profiles: captured
+                )
+                let url = output.appendingPathComponent("\(fixture)_\(variant.name).json")
+                try encoder.encode(dump).write(to: url, options: .atomic)
+                allDumps.append(dump)
+                XCTAssertEqual(
+                    Set(captured.map(\.side)),
+                    Set(["left", "top", "right", "bottom"]),
+                    "E0 must capture all four edges for \(fixture) / \(variant.name)"
+                )
+                print(
+                    "E0_DUMP fixture=\(fixture) variant=\(variant.name) "
+                        + "working=\(dump.workingWidth)x\(dump.workingHeight) "
+                        + "profiles=\(captured.count)"
+                )
+            }
+        }
+
+        let manifestURL = output.appendingPathComponent("manifest.json")
+        try encoder.encode(allDumps).write(to: manifestURL, options: .atomic)
+    }
+
+    func testEADiagnoseInnerReferenceBranchForAllRealFixtures() throws {
+        let root = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let output = root
+            .appendingPathComponent("review", isDirectory: true)
+            .appendingPathComponent("centering-evidence", isDirectory: true)
+            .appendingPathComponent("diagnostics", isDirectory: true)
+            .appendingPathComponent("EA", isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let fixtures = [
+            "IMG_0347", "IMG_0348", "IMG_0349", "IMG_0350", "IMG_0351",
+            "IMG_0352", "IMG_0780", "IMG_0781", "IMG_0782", "IMG_0783"
+        ]
+        var dumps: [EAFixtureDump] = []
+
+        for fixture in fixtures {
+            var capturedBranch: CardCenteringAnalysisDiagnostic?
+            var capturedFailures: [CardCenteringProfileFailureDiagnostic] = []
+            var capturedProfiles: [CardCenteringProfileDiagnostic] = []
+            CardCenteringAnalyzer.profileDiagnosticSink = { diagnostic in
+                capturedProfiles.append(diagnostic)
+            }
+            CardCenteringAnalyzer.profileFailureDiagnosticSink = { diagnostic in
+                capturedFailures.append(diagnostic)
+            }
+            CardCenteringAnalyzer.analysisDiagnosticSink = { diagnostic in
+                capturedBranch = diagnostic
+            }
+            defer {
+                CardCenteringAnalyzer.analysisDiagnosticSink = nil
+                CardCenteringAnalyzer.profileDiagnosticSink = nil
+                CardCenteringAnalyzer.profileFailureDiagnosticSink = nil
+            }
+            let analysis = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            let branch = try XCTUnwrap(
+                capturedBranch,
+                "E-A must capture the final analyzer branch for " + fixture
+            )
+            let dump = EAFixtureDump(
+                fixture: fixture,
+                finalAnalysis: E0FinalAnalysisDiagnostic(
+                    analysis: analysis,
+                    branch: branch
+                ),
+                profileFailures: capturedFailures,
+                profileSelections: capturedProfiles.map(EAFixtureProfileSelection.init)
+            )
+            try encoder.encode(dump).write(
+                to: output.appendingPathComponent(fixture + ".json"),
+                options: .atomic
+            )
+            dumps.append(dump)
+            let scalarPinned = dump.finalAnalysis.scalarPinned.map { String($0) } ?? "nil"
+            print(
+                "E-A fixture=\(fixture) "
+                    + "state=\(dump.finalAnalysis.confidenceState) "
+                    + "innerReference=\(dump.finalAnalysis.innerReference) "
+                    + "innerSource=\(dump.finalAnalysis.innerSource.rawValue) "
+                    + "scalarAgrees=\(dump.finalAnalysis.scalarOuterAgreesWithVision) "
+                    + "scalarPinned=\(scalarPinned) "
+                    + "outlineHasInner=\(dump.finalAnalysis.outlineHasInner) "
+                    + "profileFailures=\(dump.profileFailures.map { $0.reason }.joined(separator: ","))"
+            )
+        }
+
+        try encoder.encode(dumps).write(
+            to: output.appendingPathComponent("summary.json"),
+            options: .atomic
+        )
+        XCTAssertEqual(dumps.count, fixtures.count)
+    }
+
+    func testEBSleevedFixturesAcquireIndependentInnerEvidence() throws {
+        let fixtures = [
+            "IMG_0347", "IMG_0349", "IMG_0350", "IMG_0351", "IMG_0352"
+        ]
+        for fixture in fixtures {
+            let analysis = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            XCTAssertNotEqual(
+                analysis.measurement.innerReference,
+                .none,
+                "E-B (fixture) must not lose its inner reference solely because scalar evidence is pinned"
+            )
+            XCTAssertNotNil(
+                analysis.measurement.geometryInnerQuad,
+                "E-B (fixture) must expose the independently measured inner quad"
+            )
+        }
+    }
+
+    func testEDumpOuterRefinementDecisionsForAllRealFixtures() throws {
+        let output = try outputDirectory().deletingLastPathComponent()
+            .appendingPathComponent("ED", isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        let fixtures = [
+            "IMG_0347", "IMG_0348", "IMG_0349", "IMG_0350", "IMG_0351",
+            "IMG_0352", "IMG_0780", "IMG_0781", "IMG_0782", "IMG_0783"
+        ]
+        var dumps: [EDOuterRefinementDump] = []
+
+        for fixture in fixtures {
+            var reports: [CardCenteringOuterRefinementDiagnostic] = []
+            CardCenteringAnalyzer.outerRefinementDiagnosticSink = { reports.append($0) }
+            defer { CardCenteringAnalyzer.outerRefinementDiagnosticSink = nil }
+            _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            let dump = EDOuterRefinementDump(fixture: fixture, reports: reports)
+            try encoder.encode(dump).write(
+                to: output.appendingPathComponent(fixture + "-outer-refinement.json"),
+                options: .atomic
+            )
+            dumps.append(dump)
+            func median(_ values: [Double]) -> String {
+                guard !values.isEmpty else { return "nil" }
+                let sorted = values.sorted()
+                let middle = sorted.count / 2
+                let value = sorted.count.isMultiple(of: 2)
+                    ? (sorted[middle - 1] + sorted[middle]) / 2
+                    : sorted[middle]
+                return String(format: "%.3f", value)
+            }
+            for report in reports {
+                let offsetMedianText = report.offsetMedian.map { String(format: "%.2f", $0) } ?? "nil"
+                print(
+                    "E-D-OUTER fixture=\(fixture) side=\(report.side) "
+                        + "accepted=\(report.accepted) median=\(offsetMedianText) "
+                        + "width=\(median(report.acceptedTransitionWidths)) "
+                        + "contrast=\(median(report.acceptedContrastDeltas)) "
+                        + "strength=\(median(report.acceptedStrengths)) "
+                        + "count=\(report.acceptedOffsets.count)/\(report.minimumAccepted) "
+                        + "guard=\(String(format: "%.2f", report.maximumLocalOffset)) "
+                        + "reason=\(report.reason ?? "none")"
+                )
+            }
+        }
+
+        try encoder.encode(dumps).write(
+            to: output.appendingPathComponent("outer-refinement.json"),
+            options: .atomic
+        )
+        XCTAssertEqual(dumps.count, fixtures.count)
+    }
+
+    func testREQ044OuterRefinementRejectsBroadAmbiguousTransitions() throws {
+        let fixtures = ["IMG_0347", "IMG_0350"]
+
+        for fixture in fixtures {
+            var reports: [CardCenteringOuterRefinementDiagnostic] = []
+            CardCenteringAnalyzer.outerRefinementDiagnosticSink = { reports.append($0) }
+            defer { CardCenteringAnalyzer.outerRefinementDiagnosticSink = nil }
+
+            _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+
+            let left = try XCTUnwrap(
+                reports.first(where: { $0.side == GroundTruthSide.left.rawValue }),
+                fixture
+            )
+            XCTAssertFalse(
+                left.accepted,
+                "REQ-044 must reject the broad ambiguous left transition for (fixture)"
+            )
+        }
+    }
+
+    func testE1MetamorphicVariantsCanBeResolutionEqualizedFromRawHEIC() throws {
+        let output = try outputDirectory().deletingLastPathComponent()
+            .appendingPathComponent("E1", isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        var records: [E1ResolutionRecord] = []
+
+        for fixture in ["IMG_0783", "IMG_0347"] {
+            let data = try fixtureData(fixture)
+            let source = try XCTUnwrap(UIImage(data: data))
+            let storageWidth = try XCTUnwrap(source.cgImage).width
+            let storageHeight = try XCTUnwrap(source.cgImage).height
+            let groundTruth = try fixtureRecord(fixture)
+            let baseVariant = try XCTUnwrap(variants.first)
+            let baseRendered = try renderedVariant(
+                data,
+                variant: baseVariant,
+                rawSource: true
+            )
+            let baseQuad = workingGTQuad(
+                groundTruth,
+                sourceSize: source.size,
+                renderer: baseRendered.renderer,
+                variant: baseVariant
+            )
+            let baseWidth = baseQuad.rectifiedWidth
+            let baseHeight = baseQuad.rectifiedHeight
+            let baseShortEdge = min(baseWidth, baseHeight)
+            let baseLongEdge = max(baseWidth, baseHeight)
+
+            for variant in variants {
+                // Every variant starts from the original HEIC bytes. The
+                // UIImage draw preserves the fixture's declared display
+                // orientation, while the renderer applies only the requested
+                // metamorphic transform.
+                let rawRendered = try renderedVariant(
+                    data,
+                    variant: variant,
+                    rawSource: true
+                )
+                let rawQuad = workingGTQuad(
+                    groundTruth,
+                    sourceSize: source.size,
+                    renderer: rawRendered.renderer,
+                    variant: variant
+                )
+                let rawWidth = rawQuad.rectifiedWidth
+                let rawHeight = rawQuad.rectifiedHeight
+                let rawShortEdge = min(rawWidth, rawHeight)
+                let rawLongEdge = max(rawWidth, rawHeight)
+                let scale = equalizedScale(
+                    for: variant,
+                    sourceSize: source.size,
+                    record: groundTruth,
+                    targetWorkingShortEdge: baseShortEdge
+                )
+                let equalized = try renderedVariant(
+                    data,
+                    variant: variant,
+                    appliedScale: scale,
+                    rawSource: true
+                )
+                let equalizedQuad = workingGTQuad(
+                    groundTruth,
+                    sourceSize: source.size,
+                    renderer: equalized.renderer,
+                    variant: variant
+                )
+                let equalizedWidth = equalizedQuad.rectifiedWidth
+                let equalizedHeight = equalizedQuad.rectifiedHeight
+                let equalizedShortEdge = min(equalizedWidth, equalizedHeight)
+                let equalizedLongEdge = max(equalizedWidth, equalizedHeight)
+                let equalizedError = abs(equalizedShortEdge - baseShortEdge) / baseShortEdge
+                XCTAssertLessThanOrEqual(
+                    equalizedError,
+                    0.005,
+                    "GT-derived working card short-edge drift for \(fixture)/\(variant.name)"
+                )
+                let rawMeasurement = try measurementSnapshot(rawRendered.data)
+                let equalizedMeasurement = try measurementSnapshot(equalized.data)
+                records.append(
+                    E1ResolutionRecord(
+                        fixture: fixture,
+                        variant: variant.name,
+                        sourceStorageWidth: storageWidth,
+                        sourceStorageHeight: storageHeight,
+                        sourceDisplayWidth: source.size.width,
+                        sourceDisplayHeight: source.size.height,
+                        baseWorkingCardWidthPx: baseWidth,
+                        baseWorkingCardHeightPx: baseHeight,
+                        baseWorkingShortEdgePx: baseShortEdge,
+                        baseWorkingLongEdgePx: baseLongEdge,
+                        rawWorkingCardWidthPx: rawWidth,
+                        rawWorkingCardHeightPx: rawHeight,
+                        rawWorkingShortEdgePx: rawShortEdge,
+                        rawWorkingLongEdgePx: rawLongEdge,
+                        equalizedWorkingCardHeightPx: equalizedHeight,
+                        equalizedWorkingCardWidthPx: equalizedWidth,
+                        equalizedWorkingShortEdgePx: equalizedShortEdge,
+                        equalizedWorkingLongEdgePx: equalizedLongEdge,
+                        rawRelativeToBase: rawShortEdge / baseShortEdge,
+                        equalizedRelativeToBase: equalizedShortEdge / baseShortEdge,
+                        requestedScale: Double(variant.scale),
+                        equalizedScale: Double(scale),
+                        rawCanvasWidth: rawRendered.renderer.canvasWidth,
+                        rawCanvasHeight: rawRendered.renderer.canvasHeight,
+                        equalizedCanvasWidth: equalized.renderer.canvasWidth,
+                        equalizedCanvasHeight: equalized.renderer.canvasHeight,
+                        rawConfidenceState: rawMeasurement.state,
+                        rawMeasuredLR: rawMeasurement.lr,
+                        rawMeasuredTB: rawMeasurement.tb,
+                        equalizedConfidenceState: equalizedMeasurement.state,
+                        equalizedMeasuredLR: equalizedMeasurement.lr,
+                        equalizedMeasuredTB: equalizedMeasurement.tb
+                    )
+                )
+                print(
+                    "E1_RAW_EQ fixture=\(fixture) variant=\(variant.name) "
+                        + String(format: "rawShort=%.1f equalizedShort=%.1f baseShort=%.1f", rawShortEdge, equalizedShortEdge, baseShortEdge)
+                        + " rawState=\(rawMeasurement.state) equalizedState=\(equalizedMeasurement.state)"
+                )
+            }
+        }
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("resolution.json"),
+            options: .atomic
+        )
+    }
+
+    func testEEDumpPostRefinementProfileNormalization() throws {
+        let output = try outputDirectory().deletingLastPathComponent()
+            .appendingPathComponent("ED", isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        var dumps: [EENormalizationDump] = []
+
+        func capture(_ data: Data) throws -> (
+            analysis: CardCenteringAnalysis,
+            branch: CardCenteringAnalysisDiagnostic,
+            profiles: [CardCenteringProfileDiagnostic]
+        ) {
+            var branch: CardCenteringAnalysisDiagnostic?
+            var profiles: [CardCenteringProfileDiagnostic] = []
+            CardCenteringAnalyzer.analysisDiagnosticSink = { branch = $0 }
+            CardCenteringAnalyzer.profileDiagnosticSink = { profiles.append($0) }
+            defer {
+                CardCenteringAnalyzer.analysisDiagnosticSink = nil
+                CardCenteringAnalyzer.profileDiagnosticSink = nil
+            }
+            let analysis = try CardCenteringAnalyzer.analyze(data)
+            return (
+                analysis,
+                try XCTUnwrap(branch, "E-E must capture the final analyzer branch"),
+                profiles
+            )
+        }
+
+        for fixture in ["IMG_0783", "IMG_0347"] {
+            let data = try fixtureData(fixture)
+            let source = try XCTUnwrap(UIImage(data: data))
+            let groundTruth = try fixtureRecord(fixture)
+            let baseVariant = try XCTUnwrap(variants.first)
+            let baseRendered = try renderedVariant(data, variant: baseVariant, rawSource: true)
+            let baseCaptured = try capture(baseRendered.data)
+            let baseProfiles = Dictionary(
+                uniqueKeysWithValues: baseCaptured.profiles.map { ($0.side, $0) }
+            )
+            let baseOuter = try XCTUnwrap(baseCaptured.profiles.first?.outerQuadWorking)
+            let baseWidth = workingGTQuad(
+                groundTruth,
+                sourceSize: source.size,
+                renderer: baseRendered.renderer,
+                variant: baseVariant
+            ).rectifiedWidth
+            let baseHeight = workingGTQuad(
+                groundTruth,
+                sourceSize: source.size,
+                renderer: baseRendered.renderer,
+                variant: baseVariant
+            ).rectifiedHeight
+            let baseShortEdge = min(baseWidth, baseHeight)
+
+            for variant in variants {
+                let raw = try renderedVariant(data, variant: variant, rawSource: true)
+                let equalizedScale = equalizedScale(
+                    for: variant,
+                    sourceSize: source.size,
+                    record: groundTruth,
+                    targetWorkingShortEdge: baseShortEdge
+                )
+                let equalized = try renderedVariant(
+                    data,
+                    variant: variant,
+                    appliedScale: equalizedScale,
+                    rawSource: true
+                )
+
+                for (space, rendered) in [("raw", raw), ("equalized", equalized)] {
+                    let captured = try capture(rendered.data)
+                    let confidenceState = captured.analysis.measurement.confidence.state.rawValue
+                    let innerSource = captured.analysis.measurement.innerReference.rawValue
+                    let records = captured.profiles.map { diagnostic in
+                        let outerDisplacement = lineDisplacement(
+                            for: diagnostic,
+                            inner: false,
+                            baseProfiles: baseProfiles,
+                            baseOuter: baseOuter,
+                            renderer: rendered.renderer,
+                            variant: variant,
+                            baseRenderer: baseRendered.renderer
+                        )
+                        let innerDisplacement = lineDisplacement(
+                            for: diagnostic,
+                            inner: true,
+                            baseProfiles: baseProfiles,
+                            baseOuter: baseOuter,
+                            renderer: rendered.renderer,
+                            variant: variant,
+                            baseRenderer: baseRendered.renderer
+                        )
+                        return EENormalizationRecord(
+                            fixture: fixture,
+                            variant: variant.name,
+                            space: space,
+                            confidenceState: confidenceState,
+                            innerSource: innerSource,
+                            outerRefinementAccepted: captured.branch.outerRefinementAccepted,
+                            side: diagnostic.side,
+                            mappedBaseSide: innerDisplacement.side ?? outerDisplacement.side,
+                            workingWidth: diagnostic.workingWidth,
+                            workingHeight: diagnostic.workingHeight,
+                            cardWidthWorkingPx: diagnostic.cardWidthWorkingPx,
+                            cardHeightWorkingPx: diagnostic.cardHeightWorkingPx,
+                            sampleRadiusPixels: diagnostic.sampleRadiusPixels,
+                            sampleRadiusNormalized: diagnostic.sampleRadiusNormalized,
+                            selectedNormalizedDepthBeforeRefinement: diagnostic.selectedNormalizedDepthBeforeRefinement,
+                            selectedNormalizedDepthAfterRefinement: diagnostic.selectedNormalizedDepthAfterRefinement,
+                            selectedScore: diagnostic.scores[diagnostic.selectedIndex],
+                            selectedSupport: diagnostic.supports[diagnostic.selectedIndex],
+                            baseline: diagnostic.baseline,
+                            mad: diagnostic.mad,
+                            threshold: diagnostic.threshold,
+                            shallowCandidateCount: diagnostic.shallowCandidates.count,
+                            outerLineDisplacementPixels: outerDisplacement.displacement,
+                            innerLineDisplacementPixels: innerDisplacement.displacement
+                        )
+                    }
+                    XCTAssertEqual(
+                        records.count,
+                        4,
+                        "E-E must retain all four edge profiles for \(fixture)/\(variant.name)/\(space)"
+                    )
+                    dumps.append(
+                        EENormalizationDump(
+                            fixture: fixture,
+                            variant: variant.name,
+                            space: space,
+                            confidenceState: confidenceState,
+                            innerSource: innerSource,
+                            outerRefinementAccepted: captured.branch.outerRefinementAccepted,
+                            records: records
+                        )
+                    )
+                    print(
+                        "E-E fixture=\(fixture) variant=\(variant.name) space=\(space) "
+                            + "state=\(confidenceState) profiles=\(records.count)"
+                    )
+                }
+            }
+        }
+
+        XCTAssertEqual(dumps.count, 24)
+        XCTAssertEqual(dumps.flatMap(\.records).count, 96)
+        try encoder.encode(dumps).write(
+            to: output.appendingPathComponent("profile-normalization.json"),
+            options: .atomic
+        )
+
+        var markdown = [
+            "# E-E post-refinement profile normalization",
+            "",
+            "Raw and effective-resolution-equalized variants start from the original HEIC bytes.",
+            "The records are diagnostic only while REQ-027 ground truth remains provisional.",
+            "",
+            "| Fixture | Variant | Space | State | Side | Base side | Depth before | Depth after | Support | Threshold | Outer Δ px | Inner Δ px |",
+            "|---|---|---|---|---|---|---:|---:|---:|---:|---:|---:|"
+        ]
+        for dump in dumps {
+            for record in dump.records {
+                let baseSide = record.mappedBaseSide ?? "—"
+                let outer = record.outerLineDisplacementPixels.map { String(format: "%.3f", $0) } ?? "—"
+                let inner = record.innerLineDisplacementPixels.map { String(format: "%.3f", $0) } ?? "—"
+                markdown.append(
+                    String(
+                        format: "| %@ | %@ | %@ | %@ | %@ | %@ | %.6f | %.6f | %.3f | %.3f | %@ | %@ |",
+                        record.fixture,
+                        record.variant,
+                        record.space,
+                        record.confidenceState,
+                        record.side,
+                        baseSide,
+                        record.selectedNormalizedDepthBeforeRefinement,
+                        record.selectedNormalizedDepthAfterRefinement,
+                        record.selectedSupport,
+                        record.threshold,
+                        outer,
+                        inner
+                    )
+                )
+            }
+        }
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("profile-normalization.md"),
+            options: .atomic
+        )
+    }
+
+    func testEDOuterProposalIsReplacedByDeterministicRefinement() throws {
+        var captured: CardCenteringAnalysisDiagnostic?
+        CardCenteringAnalyzer.analysisDiagnosticSink = { diagnostic in
+            captured = diagnostic
+        }
+        defer { CardCenteringAnalyzer.analysisDiagnosticSink = nil }
+
+        _ = try CardCenteringAnalyzer.analyze(try fixtureData("IMG_0783"))
+        let diagnostic = try XCTUnwrap(captured)
+        XCTAssertNotNil(diagnostic.proposedOuterQuad)
+        XCTAssertTrue(
+            diagnostic.outerRefinementAccepted,
+            "E-D must replace the Vision outer proposal with a deterministic edge fit"
+        )
+        XCTAssertNotNil(diagnostic.refinedOuterQuad)
+    }
+}
+#endif
+
+private enum GroundTruthSide: String, CaseIterable {
+    case left, top, right, bottom
+}
+
+private func groundTruthEdgeTolerance(
+    _ record: GroundTruthRecord,
+    side: GroundTruthSide,
+    cardHeight: Double
+) -> Double {
+    let measuredBand = record.edgeBands[side.rawValue] ?? 0
+    let minimum = cardHeight * 0.0025
+    let maximum = cardHeight * 0.01
+    let clampedBand = min(max(measuredBand, minimum), maximum)
+    return record.ambiguousEdges.contains(side.rawValue)
+        ? max(measuredBand, clampedBand)
+        : clampedBand
+}
+
+private func edgeEndpoints(
+    _ quad: CardCenteringQuad,
+    side: GroundTruthSide
+) -> (CardCenteringPoint, CardCenteringPoint) {
+    switch side {
+    case .left: (quad.topLeft, quad.bottomLeft)
+    case .top: (quad.topLeft, quad.topRight)
+    case .right: (quad.topRight, quad.bottomRight)
+    case .bottom: (quad.bottomLeft, quad.bottomRight)
+    }
+}
+
+/// Signed displacement of the detected edge midpoint along the normal of the
+/// independently annotated GT edge. The sign is useful when inspecting a
+/// failure; the L1 gate applies the absolute magnitude.
+private func signedNormalOffset(
+    _ detected: CardCenteringQuad,
+    from expected: CardCenteringQuad,
+    side: GroundTruthSide
+) -> Double {
+    let expectedEdge = edgeEndpoints(expected, side: side)
+    let detectedEdge = edgeEndpoints(detected, side: side)
+    let dx = expectedEdge.1.x - expectedEdge.0.x
+    let dy = expectedEdge.1.y - expectedEdge.0.y
+    let length = hypot(dx, dy)
+    guard length > .ulpOfOne else { return .infinity }
+    let expectedMid = CardCenteringPoint(
+        x: (expectedEdge.0.x + expectedEdge.1.x) / 2,
+        y: (expectedEdge.0.y + expectedEdge.1.y) / 2
+    )
+    let detectedMid = CardCenteringPoint(
+        x: (detectedEdge.0.x + detectedEdge.1.x) / 2,
+        y: (detectedEdge.0.y + detectedEdge.1.y) / 2
+    )
+    let normalX = -dy / length
+    let normalY = dx / length
+    return (detectedMid.x - expectedMid.x) * normalX
+        + (detectedMid.y - expectedMid.y) * normalY
+}
+
+private func averagePoint(_ quad: CardCenteringQuad) -> CardCenteringPoint {
+    let points = quad.points
+    return CardCenteringPoint(
+        x: points.map(\.x).reduce(0, +) / Double(points.count),
+        y: points.map(\.y).reduce(0, +) / Double(points.count)
+    )
+}
+
+final class CardCenteringCorpusManifestTests: XCTestCase {
+    private let historicalFiles: Set<String> = [
+        "IMG_0347.HEIC", "IMG_0348.HEIC", "IMG_0349.HEIC", "IMG_0350.HEIC",
+        "IMG_0351.HEIC", "IMG_0352.HEIC", "IMG_0780.HEIC", "IMG_0781.HEIC",
+        "IMG_0782.HEIC", "IMG_0783.HEIC"
+    ]
+
+    private let newFiles: Set<String> = [
+        "Document_2026-06-06_150110.png", "Document_2026-06-06_150759.png",
+        "Document_2026-06-06_151610.png", "Document_2026-06-06_152530.png",
+        "Document_2026-06-06_153042.png", "Document_2026-06-06_174520.png",
+        "Document_2026-06-06_175439.png", "Document_2026-06-08_084920.png",
+        "Document_2026-06-08_085837.png", "Document_2026-06-08_090644.png",
+        "Document_2026-06-08_091509.png", "IMG_0795.HEIC", "IMG_0796.HEIC",
+        "IMG_0797.HEIC", "IMG_0798.HEIC", "IMG_0799.HEIC", "IMG_0800.HEIC",
+        "IMG_0801.HEIC", "IMG_0802.HEIC", "IMG_0803.HEIC", "IMG_0804.HEIC",
+        "IMG_0809.HEIC", "IMG_0810.HEIC", "IMG_0811.HEIC", "IMG_0813.HEIC",
+        "IMG_0856.HEIC", "IMG_1023.HEIC", "IMG_1036.HEIC", "IMG_1038.HEIC",
+        "IMG_1302.HEIC", "IMG_1475-2.HEIC", "IMG_1477-2.HEIC", "IMG_1712.HEIC",
+        "IMG_1716.HEIC"
+    ]
+
+    private let interimHoldoutFiles: Set<String> = [
+        "Document_2026-06-06_150110.png", "Document_2026-06-08_091509.png",
+        "IMG_0796.HEIC", "IMG_0804.HEIC", "IMG_0856.HEIC", "IMG_1023.HEIC",
+        "IMG_1036.HEIC", "IMG_1302.HEIC", "IMG_1475-2.HEIC", "IMG_1716.HEIC"
+    ]
+
+    func testCorpusManifestIsCompleteAndCryptographicallyFrozen() throws {
+        let bundle = Bundle(for: CardCenteringCorpusManifestTests.self)
+        let manifestURL = try XCTUnwrap(
+            bundle.url(
+                forResource: "corpus-manifest",
+                withExtension: "json",
+                subdirectory: "TradingCards/Supplementary"
+            ),
+            "missing supplementary corpus manifest"
+        )
+        let manifest = try JSONDecoder().decode(
+            CenteringCorpusManifest.self,
+            from: Data(contentsOf: manifestURL)
+        )
+
+        XCTAssertEqual(manifest.schemaVersion, 1)
+        XCTAssertEqual(manifest.status, "interim_holdout_frozen")
+        XCTAssertEqual(manifest.entries.count, historicalFiles.count + newFiles.count)
+
+        let entriesByFile = Dictionary(uniqueKeysWithValues: manifest.entries.map { ($0.file, $0) })
+        XCTAssertEqual(Set(entriesByFile.keys), historicalFiles.union(newFiles))
+        XCTAssertEqual(
+            Set(manifest.entries.filter { $0.split == "DEV-HISTORICAL" }.map(\.file)),
+            historicalFiles
+        )
+        XCTAssertEqual(
+            Set(manifest.entries.filter { $0.split == "HOLDOUT-INTERIM" }.map(\.file)),
+            interimHoldoutFiles
+        )
+        XCTAssertEqual(
+            manifest.entries.filter { $0.split == "DEVELOPMENT" }.count,
+            newFiles.count - interimHoldoutFiles.count
+        )
+
+        for entry in manifest.entries {
+            XCTAssertEqual(entry.root, "TestFixtures/TradingCards/HEIC", entry.file)
+            XCTAssertEqual(entry.sha256.count, 64, entry.file)
+            XCTAssertTrue(entry.sha256.allSatisfy(\.isHexDigit), entry.file)
+            XCTAssertGreaterThan(entry.width, 0, entry.file)
+            XCTAssertGreaterThan(entry.height, 0, entry.file)
+            XCTAssertFalse(entry.captureCohort.isEmpty, entry.file)
+            XCTAssertFalse(entry.provenance.isEmpty, entry.file)
+            XCTAssertFalse(entry.face.isEmpty, entry.file)
+            XCTAssertFalse(entry.referenceClass.isEmpty, entry.file)
+            XCTAssertFalse(entry.encasement.isEmpty, entry.file)
+            XCTAssertFalse(entry.background.isEmpty, entry.file)
+            XCTAssertFalse(entry.finish.isEmpty, entry.file)
+
+            let fileURL = try XCTUnwrap(
+                bundle.url(
+                    forResource: URL(fileURLWithPath: entry.file).deletingPathExtension().lastPathComponent,
+                    withExtension: URL(fileURLWithPath: entry.file).pathExtension,
+                    subdirectory: "TradingCards/HEIC"
+                ),
+                "missing corpus image \(entry.file)"
+            )
+            let data = try Data(contentsOf: fileURL)
+            let actualHash = SHA256.hash(data: data)
+                .map { String(format: "%02x", $0) }
+                .joined()
+            XCTAssertEqual(actualHash, entry.sha256, entry.file)
+
+            let expectedAnalysisStatus = entry.split == "DEV-HISTORICAL"
+                ? "previously_evaluated"
+                : entry.split == "HOLDOUT-INTERIM" ? "sealed_not_evaluated" : "not_evaluated"
+            XCTAssertEqual(entry.analysisStatus, expectedAnalysisStatus, entry.file)
+            XCTAssertEqual(
+                entry.groundTruthStatus,
+                entry.split == "DEV-HISTORICAL" ? "verified_rederived" : "not_assigned",
+                entry.file
+            )
+        }
+
+        for holdout in interimHoldoutFiles {
+            XCTAssertEqual(entriesByFile[holdout]?.split, "HOLDOUT-INTERIM", holdout)
+            XCTAssertEqual(entriesByFile[holdout]?.analysisStatus, "sealed_not_evaluated", holdout)
+        }
+    }
+}
+
+private func distance(_ lhs: CardCenteringPoint, _ rhs: CardCenteringPoint) -> Double {
+    hypot(lhs.x - rhs.x, lhs.y - rhs.y)
+}
+
+private func maxCornerDistance(_ lhs: CardCenteringQuad, _ rhs: CardCenteringQuad) -> Double {
+    zip(lhs.points, rhs.points).map { first, second in
+        hypot(first.x - second.x, first.y - second.y)
+    }.max() ?? .infinity
+}
+
+private struct GroundTruthRecord: Decodable {
+    let schema: Int
+    let fixture: String
+    let sourcePixelSize: GroundTruthSize
+    let orientedPixelSize: GroundTruthSize
+    let exifOrientation: Int
+    let face: String
+    let encasement: String
+    let capture: String
+    let cardOuterQuad: [[Double]]
+    let cardCornerRadiusPx: Double
+    let encasementOuterQuad: [[Double]]?
+    let innerQuad: [[Double]]?
+    let innerReference: CardCenteringInnerReference
+    let edgeBands: [String: Double]
+    let ambiguousEdges: [String]
+    let expected: GroundTruthExpected
+    let conditions: [String]
+    let provenance: GroundTruthProvenance
+}
+
+private struct GroundTruthSize: Codable, Equatable {
+    let w: Int
+    let h: Int
+
+    init(width: Int, height: Int) {
+        w = width
+        h = height
+    }
+}
+
+private struct GroundTruthExpected: Decodable {
+    let lrRatio: Double?
+    let tbRatio: Double?
+    let skewDegrees: Double
+}
+
+private struct GroundTruthProvenance: Decodable {
+    let method: String
+    let annotators: [String]
+    let agreementPx: Double?
+    let toolVersion: String
+    let date: String
+    let notes: String
+}
+
+private extension CardCenteringQuad {
+    init?(_ values: [[Double]]) {
+        guard values.count == 4,
+              values.allSatisfy({ $0.count == 2 && $0.allSatisfy { $0.isFinite } }) else {
+            return nil
+        }
+        self.init(
+            topLeft: CardCenteringPoint(x: values[0][0], y: values[0][1]),
+            topRight: CardCenteringPoint(x: values[1][0], y: values[1][1]),
+            bottomRight: CardCenteringPoint(x: values[2][0], y: values[2][1]),
+            bottomLeft: CardCenteringPoint(x: values[3][0], y: values[3][1])
+        )
+    }
+}
+
+private struct CenteringCorpusManifest: Decodable {
+    let schemaVersion: Int
+    let status: String
+    let entries: [CenteringCorpusEntry]
+}
+
+private struct CenteringCorpusEntry: Decodable {
+    let file: String
+    let root: String
+    let split: String
+    let sha256: String
+    let width: Int
+    let height: Int
+    let captureCohort: String
+    let provenance: String
+    let face: String
+    let referenceClass: String
+    let encasement: String
+    let background: String
+    let finish: String
+    let analysisStatus: String
+    let groundTruthStatus: String
 }
 
 private struct TestCacheEnvelope<Value: Codable>: Codable {

@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "method": "analyzer_free_visual_transition_adjudication",
+  "date": "2026-09-12",
+  "source": "review/centering-evidence/diagnostics/GT-rederived/selection-manifest.json",
+  "notes": "Targets are analyzer-free visual-adjudication coordinates in the seed quad's inward-normal parameterization. They select the physical card edge or gradeable printed/art reference when the profile contains multiple transitions. Sleeves with no stable luminance boundary use a separately reviewed virtual trace at the seed edge; those lines are retained for REQ-011 but do not define ratios.",
+  "fixtures": {
+    "IMG_0347": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": 11.2, "top": 11.4, "right": 16.9, "bottom": 5.8 } },
+      "encasementOuterQuad": { "selectionMode": "independent_visual_trace", "targetOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passAOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passBOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": 40.0, "top": 11.0, "right": 27.0, "bottom": -13.0 } }
+    },
+    "IMG_0348": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": 32.4, "top": 2.7, "right": -67.0, "bottom": -12.7 } },
+      "encasementOuterQuad": { "selectionMode": "independent_visual_trace", "targetOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passAOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passBOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": 0.0, "top": 25.0, "right": -58.0, "bottom": 16.0 } }
+    },
+    "IMG_0349": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": -12.9, "top": 0.4, "right": 62.8, "bottom": 0.9 } },
+      "encasementOuterQuad": { "selectionMode": "independent_visual_trace", "targetOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passAOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passBOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": -17.0, "top": 20.0, "right": 21.0, "bottom": 22.0 } }
+    },
+    "IMG_0350": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": 7.7, "top": 5.1, "right": 15.1, "bottom": -1.7 } },
+      "encasementOuterQuad": { "selectionMode": "independent_visual_trace", "targetOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passAOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passBOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": -42.0, "top": -1.0, "right": 25.0, "bottom": -40.0 } }
+    },
+    "IMG_0351": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": -5.3, "top": 16.6, "right": 96.9, "bottom": 3.5 } },
+      "encasementOuterQuad": { "selectionMode": "independent_visual_trace", "targetOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passAOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passBOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": -13.0, "top": 1.0, "right": 18.0, "bottom": 15.0 } }
+    },
+    "IMG_0352": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": 7.8, "top": 12.5, "right": 14.0, "bottom": 3.5 } },
+      "encasementOuterQuad": { "selectionMode": "independent_visual_trace", "targetOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passAOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 }, "passBOffsets": { "left": 0.0, "top": 0.0, "right": 0.0, "bottom": 0.0 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": 3.0, "top": 4.0, "right": 21.0, "bottom": 43.0 } }
+    },
+    "IMG_0780": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": 4.2, "top": 3.2, "right": -7.0, "bottom": -11.0 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": 7.0, "top": 1.0, "right": 6.0, "bottom": 8.0 } }
+    },
+    "IMG_0781": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": 5.4, "top": 2.8, "right": 2.7, "bottom": -0.9 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": -1.0, "top": 15.0, "right": 25.0, "bottom": 30.0 } }
+    },
+    "IMG_0782": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": 2.4, "top": 0.2, "right": 17.5, "bottom": 7.0 } }
+    },
+    "IMG_0783": {
+      "cardOuterQuad": { "selectionMode": "profile", "targetOffsets": { "left": 2.2, "top": 2.8, "right": 9.3, "bottom": -1.6 } },
+      "innerQuad": { "selectionMode": "profile", "targetOffsets": { "left": 4.0, "top": 11.0, "right": 22.0, "bottom": 47.0 } }
+    }
+  }
+}

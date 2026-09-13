@@ -1,5 +1,7 @@
 # Opus implementation evidence
 
+> **Historical/superseded snapshot — 2026-09-10.** This evidence records the earlier Luna trust-hardening implementation and its dated validation. It is not the current card-centering evidence record. Use the [current card-centering plan](opus-card-centering-implementation-plan.md) and [centering evidence](centering-evidence/) for active centering work.
+
 Date: 2026-09-10  
 Repository: `TradingCardScannerMVP_fixed_v4`  
 Plan: [`opus-implementation-plan.md`](opus-implementation-plan.md)

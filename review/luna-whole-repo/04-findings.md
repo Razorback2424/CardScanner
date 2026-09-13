@@ -1,5 +1,7 @@
 # Evidence-Backed Findings
 
+> **Historical snapshot — 2026-09-10.** These findings belong to the Luna whole-repository review at its recorded baseline. Their statuses are not a current adjudication of the card-centering branch; in particular, centering behavior has a separate, newer contract and evidence set. Use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/) for that work.
+
 ## Validity rules used
 
 Each promoted item below has a reachable source path, a concrete consequence, a stated trigger condition, current counterevidence, and a verification gap where the existing suite does not exercise the exact boundary. These are review findings, not an implementation plan. Items that did not survive this gate are in `05-rejected-hypotheses-and-uncertainties.md`.

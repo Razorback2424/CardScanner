@@ -1,8 +1,30 @@
-Current checkpoint (2026-09-09): the documentation and artifact audit is
-tracked in `documentation_audit.md`. The current iPhone 17 Pro simulator suite
-discovers 940 tests: 939 passed, 1 skipped, and 0 failed. Use
-`release_followups.md` for live-device, provider, and measurement gates;
-historical “pending” entries below are retained as chronology, not as the
+Current checkpoint (2026-09-12): the repository-wide documentation and artifact
+audit remains tracked in `docs/plans/documentation_audit.md`. The active
+card-centering contract and evidence are tracked in
+`review/opus-card-centering-implementation-plan.md` and
+`review/centering-evidence/`. The current signed post-E-REQ044 full suite on
+the pinned iPhone 17 Pro / iOS 26.5 simulator reports 1,095 result entries:
+1,085 passed, 1 skipped, and 9 failed. All nine failed entries are centering
+gates; the known pre-existing Magic-treatment failure from an older baseline
+did not recur in this run. No Keychain entitlement failures occurred. The
+current production accuracy, invariant, semantic-role, and latency gates remain
+failing.
+
+The rederived ground truth is adjudicable. The current E-A/E7 branch is 9
+confident and 1 declined, with IMG_0782 correctly declining, but 3/10
+development records meet the descriptive ratio target at 1200/1600/2000/2400.
+The corrected REQ-042 ledger finds 34/40 outer candidates (85.0%) and 28/36
+gradeable inner candidates (77.8%) under the exact role-specific tolerances;
+the eight inner misses are generator failures, not selector measurements.
+All nine non-none outputs still report `art_window`, including the five backs.
+The screenshot batch remains a pre-E-B historical 3/7 snapshot. The 34-image
+supplementary intake is now covered by a SHA-256 manifest: 24 new files are
+development data and 10 are sealed as `HOLDOUT-INTERIM` before new analyzer
+work. This is an interim safeguard, not final generalization evidence: the
+HEICs are from one iPhone model, the PNG capture role is unknown, and no new
+ground truth has been assigned. The capture-condition-diverse REQ-040 gate
+therefore remains open; see `review/opus-card-centering-implementation-plan.md`.
+Historical “pending” entries below are retained as chronology, not as the
 current status.
 
 Original prompt: Implement Browse Sets and Cards across Pokémon/TCGdex and Magic/Scryfall.

@@ -1,5 +1,7 @@
 # Whole-Repository Review Control
 
+> **Historical snapshot — 2026-09-10.** This file records the Luna whole-repository review at its recorded baseline and is not the current card-centering implementation status. For the active centering contract, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and its [centering evidence](../centering-evidence/).
+
 ## Contract and scope
 
 - Authoritative contract: [`REVIEW-CONTRACT.md`](REVIEW-CONTRACT.md).
@@ -29,21 +31,21 @@
 | 6. Cross-cutting invariants | COMPLETE | `03` records ownership, identity, ledger, currency, replay, cache, projection, lifecycle, and checkpoint invariants and their evidence. |
 | 7. Finding validity gate | COMPLETE | `04-findings.md` retains 14 findings with reachability, conditions, causal chains, impact, counterevidence, and verification paths. |
 | 8. Rejected hypotheses and uncertainties | COMPLETE | `05-rejected-hypotheses-and-uncertainties.md` records fixed prior hypotheses, rejected cross-system hypotheses, and unresolved boundaries. |
-| 9. Automated evidence | COMPLETE | Current Debug test suite and Release simulator build evidence are recorded in `06-device-and-environment-validation.md`. |
+| 9. Automated evidence | COMPLETE | Review-time Debug test suite and Release simulator build evidence are recorded in `06-device-and-environment-validation.md`. |
 | 10. Device/environment boundary | COMPLETE | `06` separates simulator/source evidence from physical-camera, CloudKit, provider, performance, and release-signing gates. |
 | 11. Cross-subsystem reconciliation | COMPLETE | The distinct reconciliation pass materially promoted F-006/F-010/F-011, linked F-001/F-002, and rejected the mixed-Magic projection hypothesis. |
 | 12. Architecture challenge | COMPLETE | The source-of-truth and ownership model was challenged across durable, append-only, and derived state; no replacement model was warranted. |
 | 13. Adversarial self-review | COMPLETE | `05` records coverage, finding, architecture, concurrency, performance, test, and cross-system challenge actions. |
 | 14. Final coverage reconciliation | COMPLETE | The final repository inventory matched the ledger: 105 unique production Swift paths, no missing/extra paths, 7 device-dependent source entries, and no avoidable `NEEDS-FOLLOWUP`. |
 | 15. Opus handoff | COMPLETE | `07-opus-handoff.md` provides the concise independent verification handoff without an implementation plan. |
-| 16. Mandatory completion audit | COMPLETE | All 36 Definition-of-Done criteria are individually recorded below as `PROVEN`. External validation items remain explicitly blocked in `05`/`06`, as required. |
+| 16. Mandatory completion audit | COMPLETE | All 36 Definition-of-Done criteria were individually recorded below as `PROVEN` for the 2026-09-10 review scope. External validation items remained explicitly blocked in `05`/`06`, as required. |
 
-## Current checkpoints
+## Checkpoints recorded during the review — 2026-09-10
 
 - 2026-09-10: contract read in full from disk; baseline status, commit, repository structure, targets, Swift inventories, and absence of repository instruction files recorded.
 - 2026-09-10: five read-only subsystem subreviews completed and reconciled by the parent; no subagent changed repository files.
-- 2026-09-10: current Debug suite completed successfully: 1,005 tests, 1 skipped, 0 failures.
-- 2026-09-10: current Release simulator build completed successfully.
+- 2026-09-10: review-time Debug suite completed successfully: 1,005 tests, 1 skipped, 0 failures.
+- 2026-09-10: review-time Release simulator build completed successfully.
 - 2026-09-10: exact ledger reconciliation completed: `git ls-files 'TradingCardScanner/**/*.swift'` matched the 105 unique paths in `02`; `git diff --check -- review/luna-whole-repo` was clean.
 - 2026-09-10: full contract reread completed from disk in three contiguous chunks immediately before this final audit.
 

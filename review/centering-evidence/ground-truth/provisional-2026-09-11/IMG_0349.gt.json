@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "fixture": "IMG_0349.HEIC",
+  "sourcePixelSize": { "w": 4032, "h": 3024 },
+  "orientedPixelSize": { "w": 3024, "h": 4032 },
+  "exifOrientation": 6,
+  "face": "front",
+  "encasement": "penny_sleeve",
+  "capture": "macro_systemcamera",
+  "cardOuterQuad": [[170,60],[2880,45],[2890,3850],[150,3870]],
+  "cardCornerRadiusPx": 21.0,
+  "encasementOuterQuad": [[120,25],[2930,20],[2950,3890],[105,3910]],
+  "innerQuad": [[300,135],[2740,120],[2760,3760],[275,3780]],
+  "innerReference": "art_window",
+  "edgeBands": { "left": 34.0, "top": 16.0, "right": 24.0, "bottom": 28.0 },
+  "ambiguousEdges": [],
+  "expected": { "lrRatio": 48.6, "tbRatio": 45.4, "skewDegrees": -0.20 },
+  "conditions": ["glare", "sleeve", "low_contrast_edge"],
+  "provenance": {
+    "method": "provisional_five_pixel_grid_estimate",
+    "annotators": ["unverified"],
+    "agreementPx": null,
+    "toolVersion": "gt-tool 1.0",
+    "date": "2026-09-11",
+    "notes": "Provisional 5 px-grid estimate; no independent subpixel annotation or annotator reconciliation was performed. Re-annotation required before L1 accuracy claims. Reflective sleeve and foil produce multiple parallel side transitions; the card edge is the inner one."
+  }
+}

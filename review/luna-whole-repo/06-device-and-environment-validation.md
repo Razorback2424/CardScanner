@@ -1,5 +1,7 @@
 # Device and Environment Validation
 
+> **Historical snapshot — 2026-09-10.** The simulator commands, test count, and release-build observations below are evidence from the Luna whole-repository review at its recorded baseline. They are not the current card-centering validation result. For current simulator and centering status, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+
 ## Executed evidence
 
 ### Target discovery
@@ -38,7 +40,7 @@ Result: **BUILD SUCCEEDED**. The artifact was compiled, linked, packaged, code-s
 
 - Simulator output emitted CoreMotion/missing-plist and duplicate `UIAccessibilityLoaderWebShared` runtime notices. They did not fail tests.
 - Xcode’s AppIntents metadata processor reported that no `AppIntents.framework` dependency was present. The project has no declared App Intents feature; this is a build notice, not a promoted app defect.
-- No Swift compiler failure or test failure occurred in the current Debug suite.
+- No Swift compiler failure or test failure occurred in the review-time Debug suite.
 
 ## Simulator-covered versus externally blocked
 

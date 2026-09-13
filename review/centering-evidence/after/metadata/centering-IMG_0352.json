@@ -1,0 +1,133 @@
+{
+  "appliedRotationDegrees": -0.42568827523716996,
+  "confidence": {
+    "aspectResidual": 0.0031942873285210724,
+    "edgeSupport": 1,
+    "innerReferencePresent": false,
+    "reason": "The image does not contain a stable gradeable inner reference. Adjust the inner guides manually before reading centering.",
+    "rectificationResidual": 2.610597745594536e-14,
+    "score": 0.49,
+    "sleeveAmbiguity": 0,
+    "state": "declined"
+  },
+  "coordinateMapping": {
+    "appliedRotationDegrees": -0.42568827523716996,
+    "orientedSourceSize": {
+      "height": 4032,
+      "width": 3024
+    },
+    "unrotatedWorkingSize": {
+      "height": 1200,
+      "width": 900
+    },
+    "workingSize": {
+      "height": 1207,
+      "width": 909
+    }
+  },
+  "coordinateSpace": "CardCenteringImage local points; frame is SwiftUI points; screenshot pixels are recorded separately",
+  "detectedMappedScreen": {
+    "inner": null,
+    "outer": [
+      {
+        "x": 24.82030021045695,
+        "y": 28.92208241617282
+      },
+      {
+        "x": 200.5807568301051,
+        "y": 28.25934329889282
+      },
+      {
+        "x": 202.24258711265875,
+        "y": 278.6485565369361
+      },
+      {
+        "x": 22.15423634836539,
+        "y": 278.3001184891078
+      }
+    ]
+  },
+  "detectedSkewDegrees": 0.42568827523716996,
+  "fixture": "IMG_0352",
+  "groundTruthMappedScreen": {
+    "inner": [
+      {
+        "x": 24.643922332469153,
+        "y": 31.112142041600794
+      },
+      {
+        "x": 199.95019323064756,
+        "y": 29.0698988084742
+      },
+      {
+        "x": 202.9008918849532,
+        "y": 276.86520718271214
+      },
+      {
+        "x": 25.011124561886017,
+        "y": 279.6663982039789
+      }
+    ],
+    "outer": [
+      {
+        "x": 15.320578361822776,
+        "y": 20.824871593790416
+      },
+      {
+        "x": 209.11965166613498,
+        "y": 18.645230561414767
+      },
+      {
+        "x": 212.5885959917523,
+        "y": 286.4100175782921
+      },
+      {
+        "x": 15.83617021442864,
+        "y": 289.35135435479305
+      }
+    ]
+  },
+  "imageHeight": 1207,
+  "imageWidth": 909,
+  "innerReference": "none",
+  "leftRightCentering": "\u2014",
+  "metricDeltas": {
+    "innerCornerMaxScreenPoints": null,
+    "leftRightRatioDeltaPp": null,
+    "outerCornerMaxScreenPoints": 12.933683822591686,
+    "topBottomRatioDeltaPp": null
+  },
+  "outerQuad": {
+    "bottomLeft": {
+      "x": 89.13387757492342,
+      "y": 1119.6941433878437
+    },
+    "bottomRight": {
+      "x": 813.6893421499303,
+      "y": 1121.0960258002729
+    },
+    "topLeft": {
+      "x": 99.86034118007179,
+      "y": 116.36317825440199
+    },
+    "topRight": {
+      "x": 807.0032449797893,
+      "y": 113.69675787254545
+    }
+  },
+  "presentedImageFrame": {
+    "height": 300,
+    "width": 225.9320629660315,
+    "x": 0,
+    "y": 0
+  },
+  "reason": "The image does not contain a stable gradeable inner reference. Adjust the inner guides manually before reading centering.",
+  "screenScale": 3,
+  "screenshotPath": "/Users/seankeller/Documents/TradingCardScannerMVP_fixed_v4/.worktrees/opus-card-centering-implementation/review/centering-evidence/after/screenshots/IMG_0352_CenteringExpanded.png",
+  "screenshotPixelSize": {
+    "height": 2000,
+    "width": 920
+  },
+  "state": "declined",
+  "topBottomCentering": "\u2014"
+}

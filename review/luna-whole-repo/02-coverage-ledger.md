@@ -1,5 +1,7 @@
 # Demonstrable File Coverage Ledger
 
+> **Historical snapshot — 2026-09-10.** This ledger records the file inventory and review classifications for the Luna whole-repository pass. It does not supersede the active card-centering contract or its newer evidence. For current centering status, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+
 ## Rules
 
 Every tracked production Swift file is listed exactly once below. `REVIEWED-DEEP` means the file was inspected at symbol/control-flow level and used in the flow, invariant, or finding review. `REVIEWED-CONTEXT` means the file was inspected for its public contract, callers, persistence/network/UI boundary, and interactions, with detailed behavior delegated to the owning subsystem files. `DEVICE-DEPENDENT` means the source was inspected, but an important runtime conclusion still requires physical-device or OS-scheduler evidence. The generated asset-symbol source emitted by Xcode is not tracked and is excluded from this ledger.

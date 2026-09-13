@@ -1,5 +1,7 @@
 # Repository and Architecture Map
 
+> **Historical snapshot — 2026-09-10.** This map describes the repository as reviewed at the recorded baseline. It is retained as historical navigation evidence, not as the current card-centering status. For the active centering contract, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+
 ## Review boundary
 
 Review date: 2026-09-10. Baseline: `e8497ef1fcb81fa0e72d72e6c5009272da4c35d6`, branch `scan-hardening-and-release`.

@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "fixture": "IMG_0782.HEIC",
+  "sourcePixelSize": {
+    "w": 4032,
+    "h": 3024
+  },
+  "orientedPixelSize": {
+    "w": 3024,
+    "h": 4032
+  },
+  "exifOrientation": 6,
+  "face": "front",
+  "encasement": "none",
+  "capture": "macro_systemcamera",
+  "cardOuterQuad": [
+    [
+      172.42949348183765,
+      120.19369659875137
+    ],
+    [
+      2827.7771153875833,
+      120.19369659875137
+    ],
+    [
+      2842.748764206238,
+      3838.153153231536
+    ],
+    [
+      167.43901638080354,
+      3848.080091071334
+    ]
+  ],
+  "cardCornerRadiusPx": 21.0,
+  "encasementOuterQuad": null,
+  "innerQuad": null,
+  "innerReference": "none",
+  "edgeBands": {
+    "left": 11.309571,
+    "top": 4.904338,
+    "right": 17.147784,
+    "bottom": 11.936036
+  },
+  "ambiguousEdges": [],
+  "expected": {
+    "lrRatio": null,
+    "tbRatio": null,
+    "skewDegrees": -0.1063
+  },
+  "conditions": [
+    "low_contrast_edge",
+    "internal_light_region"
+  ],
+  "provenance": {
+    "method": "analyzer_free_dual_profile_fit_with_visual_adjudication",
+    "annotators": [
+      "generic_profile_pass_A",
+      "generic_profile_pass_B"
+    ],
+    "agreementPx": 0.6122,
+    "toolVersion": "gt-tool 3.0-rederive",
+    "date": "2026-09-12",
+    "notes": "Two independent analyzer-free luminance profile passes were visually adjudicated against the physical silhouette; selected transitions and full pass diagnostics are retained in diagnostics/GT-rederived. The physical silhouette was chosen where sleeve, glare, or printed transitions produced multiple candidates. No CardCenteringAnalyzer output seeded or adjusted any field. agreementPx is the maximum pre-reconciliation 50% crossing disagreement across card, sleeve, and inner reference edges."
+  }
+}

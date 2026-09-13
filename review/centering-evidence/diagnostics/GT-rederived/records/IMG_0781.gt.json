@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "fixture": "IMG_0781.HEIC",
+  "sourcePixelSize": {
+    "w": 4032,
+    "h": 3024
+  },
+  "orientedPixelSize": {
+    "w": 3024,
+    "h": 4032
+  },
+  "exifOrientation": 6,
+  "face": "back",
+  "encasement": "none",
+  "capture": "macro_systemcamera",
+  "cardOuterQuad": [
+    [
+      185.3999666408944,
+      182.80001452412083
+    ],
+    [
+      2847.3369677017317,
+      182.80001452412083
+    ],
+    [
+      2857.3318136502553,
+      3900.8827073747084
+    ],
+    [
+      180.4025770508927,
+      3910.8526486655815
+    ]
+  ],
+  "cardCornerRadiusPx": 21.0,
+  "encasementOuterQuad": null,
+  "innerQuad": [
+    [
+      307.499642663016,
+      329.77807737072857
+    ],
+    [
+      2714.607689940412,
+      329.77807737072857
+    ],
+    [
+      2724.4759165474397,
+      3719.5139168844626
+    ],
+    [
+      297.6313078946203,
+      3729.419405083046
+    ]
+  ],
+  "innerReference": "printed_border",
+  "edgeBands": {
+    "left": 14.225257,
+    "top": 6.443712,
+    "right": 20.375788,
+    "bottom": 8.582894
+  },
+  "ambiguousEdges": [],
+  "expected": {
+    "lrRatio": 47.403811,
+    "tbRatio": 44.754861,
+    "skewDegrees": -0.106696
+  },
+  "conditions": [
+    "low_contrast_edge"
+  ],
+  "provenance": {
+    "method": "analyzer_free_dual_profile_fit_with_visual_adjudication",
+    "annotators": [
+      "generic_profile_pass_A",
+      "generic_profile_pass_B"
+    ],
+    "agreementPx": 0.665442,
+    "toolVersion": "gt-tool 3.0-rederive",
+    "date": "2026-09-12",
+    "notes": "Two independent analyzer-free luminance profile passes were visually adjudicated against the physical silhouette; selected transitions and full pass diagnostics are retained in diagnostics/GT-rederived. The physical silhouette was chosen where sleeve, glare, or printed transitions produced multiple candidates. No CardCenteringAnalyzer output seeded or adjusted any field. agreementPx is the maximum pre-reconciliation 50% crossing disagreement across card, sleeve, and inner reference edges."
+  }
+}
