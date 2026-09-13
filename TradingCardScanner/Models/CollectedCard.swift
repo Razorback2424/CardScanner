@@ -160,7 +160,7 @@ final class CollectedCard {
     /// identity. Sealed rows written directly by `addSealed` carry their
     /// product identity in `justTCGCardID` until catalog metadata enrichment
     /// fills `catalogProviderID`.
-    var underlyingPrintingID: String {
+    var underlyingPrintingID: String? {
         let candidate = catalogProviderID
             ?? (itemKind == .sealedProduct ? justTCGCardID : nil)
             ?? (itemKind == .rawCard ? providerID : nil)
@@ -168,11 +168,7 @@ final class CollectedCard {
         guard let candidate,
               !candidate.isEmpty,
               !candidate.hasPrefix("graded:"),
-              !candidate.hasPrefix("sealed:") else {
-            preconditionFailure(
-                "CollectedCard (collectionKey) has no valid underlying printing/product id"
-            )
-        }
+              !candidate.hasPrefix("sealed:") else { return nil }
         return candidate
     }
 

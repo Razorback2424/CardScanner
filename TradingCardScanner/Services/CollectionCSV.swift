@@ -1184,12 +1184,15 @@ enum CollectionCSV {
             ? 1
             : quantity
         let baseKey = game == .magic ? "magic:\(providerID)" : providerID
-        let alreadyNamespacedKey: String? = catalogProviderID == nil
-            // A legacy sealed row may carry a previously namespaced provider
-            // id and now also expose the exact product/variant ids. Prefer
+        let alreadyNamespacedKey: String? =
+            // A legacy row may carry a previously namespaced provider id and
+            // a later export may also expose catalog metadata. Preserve the
+            // provider id when the explicit collection_key column is absent;
+            // it was already the canonical collection identity in that file.
+            // A sealed row with marketplace ids is the exception: prefer
             // those production identities so import cannot preserve a stale
             // alias over the canonical sealed lineage.
-            && !(itemKind == .sealedProduct && justTCGCardID != nil)
+            !(itemKind == .sealedProduct && justTCGCardID != nil)
             && (providerID.hasPrefix("graded:") || providerID.hasPrefix("sealed:"))
             ? providerID
             : nil

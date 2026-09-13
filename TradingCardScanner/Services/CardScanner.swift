@@ -1667,8 +1667,10 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     /// Tracker loss is never exit evidence. It only releases the Vision
-    /// request and records that this presentation can no longer authorize a
-    /// duplicate prompt.
+    /// request, rotates the late-binding authorization token, and records that
+    /// this presentation can no longer authorize a duplicate prompt. A slab
+    /// already bound to a footer remains active through ordinary tracker noise;
+    /// only positive spatial exit is allowed to clear that presentation state.
     private func markTrackerContinuityLost() {
         let hadTracker = trackerRequest != nil || trackerSeedSubject != nil
         // Preserve an earlier lost marker when a later lifecycle invalidation
@@ -1684,9 +1686,10 @@ final class CardScanner: NSObject, ObservableObject {
         trackerPresentationToken = nil
         spatialExitAccumulator.reset()
         trackerLifecycle = .continuityLost
-        if activeSlab != nil {
-            clearActiveSlab(cause: .spatialExit)
-        }
+        // Invalidate a label-first stamp without discarding a slab that is
+        // already bound to its footer identity. `updateActiveSlabPresence`
+        // rejects late binding when this token no longer matches.
+        slabContinuityToken = UUID()
         if hadTracker {
             recordDiagnostic("trackerLost")
         }
@@ -2379,6 +2382,13 @@ final class CardScanner: NSObject, ObservableObject {
         at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
     ) {
         updateSlabGuideHint(hint, for: identifier, at: now)
+    }
+
+    /// Debug-only seam for the shared production transition reached when a
+    /// frame-level tracker pass has no observation or falls below confidence.
+    /// It deliberately calls the same loss handler used by `trackCurrentFrame`.
+    func receiveTrackerContinuityLossForTesting() {
+        markTrackerContinuityLost()
     }
 
     /// Debug-only seam for the footer confirmation gate. It runs the real
