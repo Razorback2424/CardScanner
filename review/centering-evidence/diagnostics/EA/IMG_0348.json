@@ -1,0 +1,264 @@
+{
+  "finalAnalysis" : {
+    "appliedRotationDegrees" : 0,
+    "borderDistances" : {
+      "bottom" : 32.38925369569006,
+      "left" : 20.65563459381355,
+      "right" : 23.26765978354149,
+      "top" : 20.765256620316983
+    },
+    "confidenceScore" : 0.9348517263009919,
+    "confidenceState" : "confident",
+    "detectedSkewDegrees" : 0.04922025405742373,
+    "detectionNotes" : [
+
+    ],
+    "innerQuadNative" : {
+      "bottomLeft" : {
+        "x" : 315.8987363576889,
+        "y" : 3738.254515171051
+      },
+      "bottomRight" : {
+        "x" : 2779.7741832733154,
+        "y" : 3717.873885154724
+      },
+      "topLeft" : {
+        "x" : 301.5220112800598,
+        "y" : 206.57311248779297
+      },
+      "topRight" : {
+        "x" : 2780.8010358810425,
+        "y" : 213.40293502807617
+      }
+    },
+    "innerQuadWorking" : {
+      "bottomLeft" : {
+        "x" : 94.01748105883598,
+        "y" : 1112.5757485628128
+      },
+      "bottomRight" : {
+        "x" : 827.3137450218201,
+        "y" : 1106.5100848674774
+      },
+      "topLeft" : {
+        "x" : 89.73869383335114,
+        "y" : 61.480093002319336
+      },
+      "topRight" : {
+        "x" : 827.6193559169769,
+        "y" : 63.51277828216553
+      }
+    },
+    "innerReference" : "art_window",
+    "innerSource" : "visionArtWindow",
+    "leftRightCentering" : "47.0 \/ 53.0",
+    "measurementImageHeight" : 1200,
+    "measurementImageWidth" : 900,
+    "outerQuadNative" : {
+      "bottomLeft" : {
+        "x" : 246.87349498271942,
+        "y" : 3835.466022491455
+      },
+      "bottomRight" : {
+        "x" : 2859.282711982727,
+        "y" : 3837.2439987659454
+      },
+      "topLeft" : {
+        "x" : 231.82441306114197,
+        "y" : 138.50800323486328
+      },
+      "topRight" : {
+        "x" : 2857.631672859192,
+        "y" : 141.23233795166016
+      }
+    },
+    "outerQuadWorking" : {
+      "bottomLeft" : {
+        "x" : 73.47425445914268,
+        "y" : 1141.5077447891235
+      },
+      "bottomRight" : {
+        "x" : 850.9769976139069,
+        "y" : 1142.0369043946266
+      },
+      "topLeft" : {
+        "x" : 68.99536103010178,
+        "y" : 41.22262001037598
+      },
+      "topRight" : {
+        "x" : 850.4856169223785,
+        "y" : 42.03343391418457
+      }
+    },
+    "outerRefinementAccepted" : false,
+    "outlineHasInner" : true,
+    "proposedOuterQuad" : {
+      "bottomLeft" : {
+        "x" : 73.47425445914268,
+        "y" : 1141.5077447891235
+      },
+      "bottomRight" : {
+        "x" : 850.9769976139069,
+        "y" : 1142.0369043946266
+      },
+      "topLeft" : {
+        "x" : 68.99536103010178,
+        "y" : 41.22262001037598
+      },
+      "topRight" : {
+        "x" : 850.4856169223785,
+        "y" : 42.03343391418457
+      }
+    },
+    "rectification" : {
+      "aspectResidual" : 0.008047447583682588,
+      "isValid" : true,
+      "reprojectionRMS" : 1.1374233532693354e-13,
+      "residualDegrees" : 5.145840571332624e-16,
+      "targetSize" : {
+        "height" : 1100.1489105066544,
+        "width" : 779.4967998679333
+      }
+    },
+    "rectifiedInnerQuad" : {
+      "bottomLeft" : {
+        "x" : 20.706166191099353,
+        "y" : 1071.0617353388352
+      },
+      "bottomRight" : {
+        "x" : 755.7868869645639,
+        "y" : 1064.4575782830932
+      },
+      "topLeft" : {
+        "x" : 20.60510299652773,
+        "y" : 20.132318399998063
+      },
+      "topRight" : {
+        "x" : 756.6713932042197,
+        "y" : 21.398194840636133
+      }
+    },
+    "rectifiedOuterQuad" : {
+      "bottomLeft" : {
+        "x" : 0,
+        "y" : 1100.1489105066541
+      },
+      "bottomRight" : {
+        "x" : 779.4967998679333,
+        "y" : 1100.1489105066544
+      },
+      "topLeft" : {
+        "x" : -1.4213883844608858e-14,
+        "y" : 7.106941922304429e-15
+      },
+      "topRight" : {
+        "x" : 779.4967998679333,
+        "y" : 2.2747981156086374e-13
+      }
+    },
+    "scalarInner" : {
+      "bottom" : 1137,
+      "left" : 97,
+      "right" : 821,
+      "top" : 66
+    },
+    "scalarOuter" : {
+      "bottom" : 1153,
+      "left" : 53,
+      "right" : 851,
+      "top" : 40
+    },
+    "scalarOuterAgreesWithVision" : false,
+    "scalarOutlineQuad" : {
+      "bottomLeft" : {
+        "x" : 53,
+        "y" : 1153
+      },
+      "bottomRight" : {
+        "x" : 851,
+        "y" : 1153
+      },
+      "topLeft" : {
+        "x" : 53,
+        "y" : 40
+      },
+      "topRight" : {
+        "x" : 851,
+        "y" : 40
+      }
+    },
+    "scalarPinned" : false,
+    "selectedOuterSource" : "vision",
+    "selectedSleeveAmbiguity" : 0,
+    "topBottomCentering" : "39.1 \/ 60.9",
+    "visionOuterQuad" : {
+      "bottomLeft" : {
+        "x" : 73.47425445914268,
+        "y" : 1141.5077447891235
+      },
+      "bottomRight" : {
+        "x" : 850.9769976139069,
+        "y" : 1142.0369043946266
+      },
+      "topLeft" : {
+        "x" : 68.99536103010178,
+        "y" : 41.22262001037598
+      },
+      "topRight" : {
+        "x" : 850.4856169223785,
+        "y" : 42.03343391418457
+      }
+    }
+  },
+  "fixture" : "IMG_0348",
+  "profileFailures" : [
+    {
+      "cardHeightWorkingPx" : 1100.1489105066544,
+      "cardWidthWorkingPx" : 779.4967998679333,
+      "innerAspect" : 0.7567112380807525,
+      "innerHeightWorkingPx" : 954.5745305788164,
+      "innerWidthWorkingPx" : 722.3372748746492,
+      "reason" : "inner_coverage_too_small",
+      "workingHeight" : 1200,
+      "workingWidth" : 900
+    }
+  ],
+  "profileSelections" : [
+    {
+      "selectedNormalizedDepthAfterRefinement" : 0.03547833555993414,
+      "selectedNormalizedDepthBeforeRefinement" : 0.035335423197492166,
+      "selectedScore" : 49.4108943939209,
+      "selectedSupport" : 0.7166666666666667,
+      "shallowCandidateCount" : 1,
+      "side" : "left",
+      "threshold" : 3.5202192068099976
+    },
+    {
+      "selectedNormalizedDepthAfterRefinement" : 0.02165242342384366,
+      "selectedNormalizedDepthBeforeRefinement" : 0.02181818181818182,
+      "selectedScore" : 41.57937812805176,
+      "selectedSupport" : 0.7166666666666667,
+      "shallowCandidateCount" : 10,
+      "side" : "top",
+      "threshold" : 4.03559136390686
+    },
+    {
+      "selectedNormalizedDepthAfterRefinement" : 0.03807759708561301,
+      "selectedNormalizedDepthBeforeRefinement" : 0.03779310344827587,
+      "selectedScore" : 63.82186698913574,
+      "selectedSupport" : 0.8416666666666667,
+      "shallowCandidateCount" : 1,
+      "side" : "right",
+      "threshold" : 2.5
+    },
+    {
+      "selectedNormalizedDepthAfterRefinement" : 0.11066952472542314,
+      "selectedNormalizedDepthBeforeRefinement" : 0.11090909090909092,
+      "selectedScore" : 58.293121337890625,
+      "selectedSupport" : 0.7291666666666666,
+      "shallowCandidateCount" : 12,
+      "side" : "bottom",
+      "threshold" : 7.25096321105957
+    }
+  ]
+}

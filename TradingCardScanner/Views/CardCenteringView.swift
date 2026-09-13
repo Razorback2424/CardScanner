@@ -17,6 +17,77 @@ final class CardCenteringViewModel: ObservableObject {
     private var loadGeneration = 0
     private var analysisGeneration = 0
 
+#if DEBUG
+    private struct DebugAnalysisMarker: Codable {
+        let state: String
+        let imageWidth: Int?
+        let imageHeight: Int?
+        let outerQuad: CardCenteringQuad?
+        let innerQuad: CardCenteringQuad?
+        let innerReference: CardCenteringInnerReference?
+        let confidence: CardCenteringConfidence?
+        let appliedRotationDegrees: Double?
+        let detectedSkewDegrees: Double?
+        let reason: String?
+        let screenScale: Double
+        let coordinateMapping: CardCenteringCoordinateMapping?
+        let leftRightCentering: String?
+        let topBottomCentering: String?
+    }
+
+    private var debugSettledMarkerURL: URL? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_ready_path"),
+              arguments.indices.contains(index + 1) else { return nil }
+        return URL(fileURLWithPath: arguments[index + 1])
+    }
+
+    private func clearDebugSettledMarker() {
+        guard let url = debugSettledMarkerURL else { return }
+        try? FileManager.default.removeItem(at: url)
+    }
+
+    private func markDebugAnalysisSettled(
+        _ measurement: CardCenteringMeasurement? = nil,
+        appliedRotationDegrees: Double? = nil,
+        detectedSkewDegrees: Double? = nil
+    ) {
+        guard let url = debugSettledMarkerURL else { return }
+        let marker = DebugAnalysisMarker(
+            state: measurement == nil ? "error" : (measurement?.isDeclined == true ? "declined" : "settled"),
+            imageWidth: measurement?.imageWidth,
+            imageHeight: measurement?.imageHeight,
+            outerQuad: measurement?.geometryOuterQuad,
+            innerQuad: measurement?.geometryInnerQuad,
+            innerReference: measurement?.innerReference,
+            confidence: measurement?.confidence,
+            appliedRotationDegrees: measurement == nil ? nil : (appliedRotationDegrees ?? rotationDegrees),
+            detectedSkewDegrees: measurement == nil ? nil : detectedSkewDegrees,
+            reason: measurement?.declineReason,
+            screenScale: Double(UIScreen.main.scale),
+            coordinateMapping: measurement?.coordinateMapping,
+            leftRightCentering: measurement?.leftRightCentering,
+            topBottomCentering: measurement?.topBottomCentering
+        )
+        guard let data = try? JSONEncoder().encode(marker) else { return }
+        try? data.write(to: url, options: .atomic)
+    }
+
+    func recordDebugImageFrame(_ frame: CGRect) {
+        guard let url = debugSettledMarkerURL,
+              let data = try? Data(contentsOf: url),
+              var object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return }
+        object["presentedImageFrame"] = [
+            "x": frame.origin.x,
+            "y": frame.origin.y,
+            "width": frame.width,
+            "height": frame.height
+        ]
+        guard let updated = try? JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]) else { return }
+        try? updated.write(to: url, options: .atomic)
+    }
+#endif
+
     func loadSelectedPhoto() async {
         guard let selectedPhoto else { return }
         loadGeneration &+= 1
@@ -82,7 +153,10 @@ final class CardCenteringViewModel: ObservableObject {
         within range: ClosedRange<Int>
     ) {
         guard var measurement else { return }
-        measurement.outer[keyPath: keyPath] = min(range.upperBound, max(range.lowerBound, value))
+        measurement.setManualOuterEdge(
+            keyPath,
+            to: min(range.upperBound, max(range.lowerBound, value))
+        )
         measurement.refreshWarnings()
         self.measurement = measurement
     }
@@ -93,7 +167,10 @@ final class CardCenteringViewModel: ObservableObject {
         within range: ClosedRange<Int>
     ) {
         guard var measurement else { return }
-        measurement.inner[keyPath: keyPath] = min(range.upperBound, max(range.lowerBound, value))
+        measurement.setManualInnerEdge(
+            keyPath,
+            to: min(range.upperBound, max(range.lowerBound, value))
+        )
         measurement.refreshWarnings()
         self.measurement = measurement
     }
@@ -103,6 +180,14 @@ final class CardCenteringViewModel: ObservableObject {
     /// can be checked without a Photos permission prompt or a camera session.
     func loadDebugFixtureIfNeeded() {
         guard sourceData == nil else { return }
+
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-ui_debug_fixture_path"),
+           arguments.indices.contains(index + 1),
+           let data = try? Data(contentsOf: URL(fileURLWithPath: arguments[index + 1])) {
+            loadImageData(data)
+            return
+        }
 
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
@@ -172,6 +257,9 @@ final class CardCenteringViewModel: ObservableObject {
         let requestID = analysisGeneration
         isAnalyzing = true
         errorMessage = nil
+#if DEBUG
+        clearDebugSettledMarker()
+#endif
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result = Result { try CardCenteringAnalyzer.analyze(data, rotationDegrees: rotationDegrees) }
             DispatchQueue.main.async {
@@ -187,8 +275,18 @@ final class CardCenteringViewModel: ObservableObject {
                     // coordinates. `rotationDegrees` is the person's own display
                     // adjustment and stays theirs — adding the correction to it
                     // would rotate an already-level card a second time.
+#if DEBUG
+                    self.markDebugAnalysisSettled(
+                        analysis.measurement,
+                        appliedRotationDegrees: analysis.appliedRotationDegrees,
+                        detectedSkewDegrees: analysis.detectedSkewDegrees
+                    )
+#endif
                 case let .failure(error):
                     self.errorMessage = error.localizedDescription
+#if DEBUG
+                    self.markDebugAnalysisSettled()
+#endif
                 }
             }
         }
@@ -435,7 +533,16 @@ struct CardCenteringView: View {
     }
 
     private func imageReview(_ image: UIImage, measurement: CardCenteringMeasurement) -> some View {
-        CardCenteringImage(image: image, measurement: measurement, rotationDegrees: model.rotationDegrees)
+        CardCenteringImage(
+            image: image,
+            measurement: measurement,
+            rotationDegrees: model.rotationDegrees,
+            onFrameChange: { frame in
+#if DEBUG
+                model.recordDebugImageFrame(frame)
+#endif
+            }
+        )
             .scaleEffect(zoom)
             .offset(panOffset)
             .frame(maxWidth: .infinity)
@@ -476,7 +583,11 @@ struct CardCenteringView: View {
                     }
                 }
             }
-            .accessibilityLabel("Card image with outer red guides and inner cyan guides")
+            .accessibilityLabel(
+                measurement.geometryInnerQuad == nil
+                    ? "Card image with outer red guides; inner guide unavailable"
+                    : "Card image with outer red guides and inner cyan guides"
+            )
     }
 
     private func resultSummary(_ measurement: CardCenteringMeasurement) -> some View {
@@ -487,10 +598,24 @@ struct CardCenteringView: View {
             }
 
             HStack {
-                borderValue("L", measurement.leftBorder)
-                borderValue("R", measurement.rightBorder)
-                borderValue("T", measurement.topBorder)
-                borderValue("B", measurement.bottomBorder)
+                borderValue("L", measurement.leftBorder, declined: measurement.isDeclined)
+                borderValue("R", measurement.rightBorder, declined: measurement.isDeclined)
+                borderValue("T", measurement.topBorder, declined: measurement.isDeclined)
+                borderValue("B", measurement.bottomBorder, declined: measurement.isDeclined)
+            }
+
+            if measurement.isDeclined {
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Reading declined", systemImage: "hand.raised.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.orange)
+                    Text(measurement.declineReason ?? "Adjust the guides manually before reading centering.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                    Text("Adjust the guides manually to produce a reportable ratio.")
+                        .font(.footnote.weight(.medium))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
 
             if !measurement.warnings.isEmpty {
@@ -514,10 +639,11 @@ struct CardCenteringView: View {
         .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    private func borderValue(_ label: String, _ value: Int) -> some View {
+    private func borderValue(_ label: String, _ value: Int, declined: Bool) -> some View {
         VStack(spacing: 2) {
             Text(label).font(.caption).foregroundStyle(.secondary)
-            Text("\(value) px").font(.subheadline.monospacedDigit())
+            Text(declined ? "—" : "\(value) px")
+                .font(.subheadline.monospacedDigit())
         }
         .frame(maxWidth: .infinity)
     }
@@ -567,7 +693,11 @@ struct CardCenteringView: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text("Red marks the card edge. Cyan marks the inner frame.")
+            Text(
+                measurement.geometryInnerQuad == nil
+                    ? "Red marks the card edge. Adjust the inner frame manually."
+                    : "Red marks the card edge. Cyan marks the inner frame."
+            )
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -655,10 +785,14 @@ private struct CenteringMetric: View {
     }
 }
 
-private struct CardCenteringImage: View {
+/// The image/guide composition is kept as a separate internal view so its
+/// transform can be exercised with injected geometry without invoking the
+/// detector. Production callers still reach it only through `imageReview`.
+struct CardCenteringImage: View {
     let image: UIImage
     let measurement: CardCenteringMeasurement
     let rotationDegrees: Double
+    let onFrameChange: (CGRect) -> Void
 
     var body: some View {
         GeometryReader { proxy in
@@ -671,36 +805,69 @@ private struct CardCenteringImage: View {
                 x: (proxy.size.width - fittedSize.width) / 2,
                 y: (proxy.size.height - fittedSize.height) / 2
             )
+            let imageFrame = CGRect(origin: origin, size: fittedSize)
+            let imageSize = CardCenteringSize(
+                width: Double(measurement.imageWidth),
+                height: Double(measurement.imageHeight)
+            )
+            let _ = onFrameChange(imageFrame)
 
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFit()
-                .frame(width: proxy.size.width, height: proxy.size.height)
-                .rotationEffect(.degrees(rotationDegrees))
+            ZStack {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: proxy.size.width, height: proxy.size.height)
 
-            guideLines(measurement.outer, color: .red, origin: origin, size: fittedSize)
-            guideLines(measurement.inner, color: .cyan, origin: origin, size: fittedSize)
+                guidePath(
+                    measurement.geometryOuterQuad,
+                    color: .red,
+                    imageSize: imageSize,
+                    frame: imageFrame
+                )
+                if let inner = measurement.geometryInnerQuad {
+                    guidePath(inner, color: .cyan, imageSize: imageSize, frame: imageFrame)
+                }
+            }
+            .frame(width: proxy.size.width, height: proxy.size.height)
+            // The guide and the pixels must share one transform. Rotating only
+            // the image makes a physically sloped edge look falsely vertical.
+            .rotationEffect(.degrees(rotationDegrees))
         }
         .aspectRatio(CGFloat(measurement.imageWidth) / CGFloat(measurement.imageHeight), contentMode: .fit)
         .background(Color.black)
     }
 
-    private func guideLines(_ edges: CardCenteringEdges, color: Color, origin: CGPoint, size: CGSize) -> some View {
-        let xScale = size.width / CGFloat(measurement.imageWidth)
-        let yScale = size.height / CGFloat(measurement.imageHeight)
+    private func guidePath(
+        _ quad: CardCenteringQuad,
+        color: Color,
+        imageSize: CardCenteringSize,
+        frame: CGRect
+    ) -> some View {
+        let points = CardCenteringGuideGeometry.screenPoints(
+            for: quad,
+            imageSize: imageSize,
+            in: frame
+        )
         return Path { path in
-            for x in [edges.left, edges.right] {
-                let position = origin.x + CGFloat(x) * xScale
-                path.move(to: CGPoint(x: position, y: origin.y))
-                path.addLine(to: CGPoint(x: position, y: origin.y + size.height))
+            guard let first = points.first else { return }
+            path.move(to: first)
+            for point in points.dropFirst() {
+                path.addLine(to: point)
             }
-            for y in [edges.top, edges.bottom] {
-                let position = origin.y + CGFloat(y) * yScale
-                path.move(to: CGPoint(x: origin.x, y: position))
-                path.addLine(to: CGPoint(x: origin.x + size.width, y: position))
-            }
+            path.closeSubpath()
         }
-        .stroke(color, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+        .stroke(.black.opacity(0.55), style: StrokeStyle(lineWidth: 5, lineCap: .butt))
+        .overlay {
+            Path { path in
+                guard let first = points.first else { return }
+                path.move(to: first)
+                for point in points.dropFirst() {
+                    path.addLine(to: point)
+                }
+                path.closeSubpath()
+            }
+            .stroke(color, style: StrokeStyle(lineWidth: 2, lineCap: .butt))
+        }
         .allowsHitTesting(false)
     }
 }

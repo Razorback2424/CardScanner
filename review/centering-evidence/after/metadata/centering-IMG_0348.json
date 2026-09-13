@@ -1,0 +1,166 @@
+{
+  "appliedRotationDegrees": 0,
+  "confidence": {
+    "aspectResidual": 0.01643424405452196,
+    "edgeSupport": 1,
+    "innerReferencePresent": true,
+    "rectificationResidual": 1.6593081744424953e-14,
+    "score": 0.8486429873296134,
+    "sleeveAmbiguity": 0,
+    "state": "confident"
+  },
+  "coordinateMapping": {
+    "appliedRotationDegrees": 0,
+    "orientedSourceSize": {
+      "height": 4032,
+      "width": 3024
+    },
+    "unrotatedWorkingSize": {
+      "height": 1200,
+      "width": 900
+    },
+    "workingSize": {
+      "height": 1200,
+      "width": 900
+    }
+  },
+  "coordinateSpace": "CardCenteringImage local points; frame is SwiftUI points; screenshot pixels are recorded separately",
+  "detectedMappedScreen": {
+    "inner": [
+      {
+        "x": 24.25,
+        "y": 16.5
+      },
+      {
+        "x": 205.25,
+        "y": 16.5
+      },
+      {
+        "x": 205.25,
+        "y": 284.25
+      },
+      {
+        "x": 24.25,
+        "y": 284.25
+      }
+    ],
+    "outer": [
+      {
+        "x": 22.434673458337784,
+        "y": 15.370023250579834
+      },
+      {
+        "x": 206.90483897924423,
+        "y": 15.878194570541382
+      },
+      {
+        "x": 206.82843625545502,
+        "y": 276.62752121686935
+      },
+      {
+        "x": 23.504370264708996,
+        "y": 278.1439371407032
+      }
+    ]
+  },
+  "detectedSkewDegrees": 0.04922025405742373,
+  "fixture": "IMG_0348",
+  "groundTruthMappedScreen": {
+    "inner": [
+      {
+        "x": 25.29761904761905,
+        "y": 15.252976190476204
+      },
+      {
+        "x": 200.52083333333334,
+        "y": 13.392857142857139
+      },
+      {
+        "x": 201.63690476190476,
+        "y": 267.85714285714283
+      },
+      {
+        "x": 23.809523809523807,
+        "y": 269.7172619047619
+      }
+    ],
+    "outer": [
+      {
+        "x": 15.625,
+        "y": 11.904761904761898
+      },
+      {
+        "x": 207.58928571428572,
+        "y": 8.928571428571416
+      },
+      {
+        "x": 208.70535714285714,
+        "y": 278.2738095238095
+      },
+      {
+        "x": 14.13690476190476,
+        "y": 280.13392857142856
+      }
+    ]
+  },
+  "imageHeight": 1200,
+  "imageWidth": 900,
+  "innerQuad": {
+    "bottomLeft": {
+      "x": 97,
+      "y": 1137
+    },
+    "bottomRight": {
+      "x": 821,
+      "y": 1137
+    },
+    "topLeft": {
+      "x": 97,
+      "y": 66
+    },
+    "topRight": {
+      "x": 821,
+      "y": 66
+    }
+  },
+  "innerReference": "art_window",
+  "leftRightCentering": "43.5 / 56.5",
+  "metricDeltas": {
+    "innerCornerMaxScreenPoints": 16.786310568605295,
+    "leftRightRatioDeltaPp": 14.299999999999997,
+    "outerCornerMaxScreenPoints": 9.576506452803537,
+    "topBottomRatioDeltaPp": 16.2
+  },
+  "outerQuad": {
+    "bottomLeft": {
+      "x": 94.01748105883598,
+      "y": 1112.5757485628128
+    },
+    "bottomRight": {
+      "x": 827.3137450218201,
+      "y": 1106.5100848674774
+    },
+    "topLeft": {
+      "x": 89.73869383335114,
+      "y": 61.480093002319336
+    },
+    "topRight": {
+      "x": 827.6193559169769,
+      "y": 63.51277828216553
+    }
+  },
+  "presentedImageFrame": {
+    "height": 300,
+    "width": 225,
+    "x": 0,
+    "y": 0
+  },
+  "screenScale": 3,
+  "screenshotPath": "/Users/seankeller/Documents/TradingCardScannerMVP_fixed_v4/.worktrees/opus-card-centering-implementation/review/centering-evidence/after/screenshots/IMG_0348_CenteringExpanded.png",
+  "screenshotPixelSize": {
+    "height": 2000,
+    "width": 920
+  },
+  "state": "settled",
+  "topBottomCentering": "11.2 / 88.8"
+}

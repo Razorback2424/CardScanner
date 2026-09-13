@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "fixture": "IMG_0350.HEIC",
+  "sourcePixelSize": { "w": 4032, "h": 3024 },
+  "orientedPixelSize": { "w": 3024, "h": 4032 },
+  "exifOrientation": 6,
+  "face": "back",
+  "encasement": "penny_sleeve",
+  "capture": "macro_systemcamera",
+  "cardOuterQuad": [[155,150],[2870,120],[2890,3880],[135,3900]],
+  "cardCornerRadiusPx": 21.0,
+  "encasementOuterQuad": [[105,95],[2920,65],[2940,3930],[85,3955]],
+  "innerQuad": [[325,300],[2730,270],[2740,3680],[300,3705]],
+  "innerReference": "printed_border",
+  "edgeBands": { "left": 48.0, "top": 24.0, "right": 28.0, "bottom": 35.0 },
+  "ambiguousEdges": ["left"],
+  "expected": { "lrRatio": 53.6, "tbRatio": 43.2, "skewDegrees": -0.55 },
+  "conditions": ["shadow", "sleeve", "low_contrast_edge"],
+  "provenance": {
+    "method": "provisional_five_pixel_grid_estimate",
+    "annotators": ["unverified"],
+    "agreementPx": null,
+    "toolVersion": "gt-tool 1.0",
+    "date": "2026-09-11",
+    "notes": "Provisional 5 px-grid estimate; no independent subpixel annotation or annotator reconciliation was performed. Re-annotation required before L1 accuracy claims. Soft corner shadow overlaps the sleeve; card edge is the dark blue cut edge."
+  }
+}

@@ -481,10 +481,11 @@ struct CollectionCardDetailView: View {
     /// only reliable source for set routing because graded rows persist their
     /// collection namespace in `providerID`.
     static func gradedVariantEvidence(for card: CollectedCard) -> VariantEvidence {
+        let printingID = card.underlyingPrintingID ?? card.providerID
         var evidence = VariantEvidence(
             game: card.cardGame,
-            setID: card.underlyingPrintingID.split(separator: "-", maxSplits: 1)
-                .first.map(String.init) ?? card.underlyingPrintingID,
+            setID: printingID.split(separator: "-", maxSplits: 1)
+                .first.map(String.init) ?? printingID,
             cardNumber: card.cardNumber,
             catalogVariants: card.variant.map { [$0] } ?? []
         )

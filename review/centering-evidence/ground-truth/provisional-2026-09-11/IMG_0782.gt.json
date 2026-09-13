@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "fixture": "IMG_0782.HEIC",
+  "sourcePixelSize": { "w": 4032, "h": 3024 },
+  "orientedPixelSize": { "w": 3024, "h": 4032 },
+  "exifOrientation": 6,
+  "face": "front",
+  "encasement": "none",
+  "capture": "macro_systemcamera",
+  "cardOuterQuad": [[170,120],[2845,120],[2860,3845],[165,3855]],
+  "cardCornerRadiusPx": 21.0,
+  "innerQuad": null,
+  "innerReference": "none",
+  "edgeBands": { "left": 11.0, "top": 8.0, "right": 14.0, "bottom": 48.0 },
+  "ambiguousEdges": ["bottom"],
+  "expected": { "lrRatio": null, "tbRatio": null, "skewDegrees": 0.0 },
+  "conditions": ["low_contrast_edge", "internal_light_region"],
+  "provenance": {
+    "method": "provisional_five_pixel_grid_estimate",
+    "annotators": ["unverified"],
+    "agreementPx": null,
+    "toolVersion": "gt-tool 1.0",
+    "date": "2026-09-11",
+    "notes": "Provisional 5 px-grid estimate; no independent subpixel annotation or annotator reconciliation was performed. Re-annotation required before L1 accuracy claims. Full card outline is recoverable, but the light-grey printed field breaks the inner mask; ratio is an explicit decline."
+  }
+}

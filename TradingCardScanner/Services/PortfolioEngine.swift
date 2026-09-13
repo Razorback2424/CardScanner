@@ -780,7 +780,26 @@ final class PortfolioEngine: ObservableObject {
         }
         let stored = Dictionary(grouping: storedCloses, by: \.date)
             .compactMapValues { $0.max { $0.revision < $1.revision } }
-        let inventoryEvents = (try? context.fetch(FetchDescriptor<InventoryEvent>())) ?? []
+        let revisionCandidates = days.compactMap { day -> LateInventoryTruthCandidate? in
+            guard let existing = stored[day.displayDay] else { return nil }
+            let coverage = resolvedCoverage(
+                for: day,
+                existing: existing,
+                windowStart: coverageWindowStart
+            )
+            guard !matches(existing, day, coverage: coverage),
+                  existing.publishedAt != nil else { return nil }
+            return LateInventoryTruthCandidate(
+                day: day.displayDay,
+                cutoff: PortfolioCalendar.boundary(afterDay: day.displayDay, in: timeZone),
+                existing: existing
+            )
+        }
+        let lateInventoryTruthDays = lateInventoryTruthDays(
+            for: revisionCandidates,
+            timeZone: timeZone,
+            context: context
+        )
         let publicationInstant = Date.now
 
         var latest: PortfolioDailyClose?
@@ -817,12 +836,9 @@ final class PortfolioEngine: ObservableObject {
                 inputsFingerprint: "",
                 revisionReason: existing == nil
                     ? nil
-                    : hasLateInventoryTruth(
-                        for: day.displayDay,
-                        timeZone: timeZone,
-                        existing: existing!,
-                        inventoryEvents: inventoryEvents
-                    ) ? .lateInventoryTruth : .recomputed,
+                    : lateInventoryTruthDays.contains(day.displayDay)
+                        ? .lateInventoryTruth
+                        : .recomputed,
                 publishedAt: publicationInstant,
                 added: day.added,
                 removed: day.removed
@@ -848,6 +864,48 @@ final class PortfolioEngine: ObservableObject {
         return latest
     }
 
+    private struct LateInventoryTruthCandidate {
+        let day: Date
+        let cutoff: Date
+        let existing: PortfolioDailyClose
+    }
+
+    /// Fetch only events that can belong to at least one close currently being
+    /// revised. A normal replay that produces no close changes performs no
+    /// InventoryEvent fetch at all; a revision pass performs one date-bounded
+    /// fetch instead of materializing the whole ledger table.
+    private static func lateInventoryTruthDays(
+        for candidates: [LateInventoryTruthCandidate],
+        timeZone: TimeZone,
+        context: ModelContext
+    ) -> Set<Date> {
+        let candidateDays = candidates.map {
+            PortfolioCalendar.day(containing: $0.day, in: timeZone)
+        }
+        guard let earliestDay = candidateDays.min(),
+              let latestCutoff = candidates.map(\.cutoff).max(),
+              let earliestPublication = candidates.compactMap({ $0.existing.publishedAt }).min()
+        else { return [] }
+
+        let descriptor = FetchDescriptor<InventoryEvent>(
+            predicate: #Predicate {
+                $0.occurredAt >= earliestDay
+                    && $0.occurredAt <= latestCutoff
+                    && $0.recordedAt > earliestPublication
+            }
+        )
+        guard let inventoryEvents = try? context.fetch(descriptor) else { return [] }
+
+        return Set(candidates.compactMap { candidate in
+            hasLateInventoryTruth(
+                for: candidate.day,
+                timeZone: timeZone,
+                existing: candidate.existing,
+                inventoryEvents: inventoryEvents
+            ) ? candidate.day : nil
+        })
+    }
+
     private static func hasLateInventoryTruth(
         for day: Date,
         timeZone: TimeZone,
@@ -859,9 +917,12 @@ final class PortfolioEngine: ObservableObject {
             // accounting day or computedAt and misclassify an ordinary retry.
             return false
         }
+        let dayStart = PortfolioCalendar.day(containing: day, in: timeZone)
         let cutoff = PortfolioCalendar.boundary(afterDay: day, in: timeZone)
         return inventoryEvents.contains { event in
-            event.occurredAt <= cutoff && event.recordedAt > publishedAt
+            event.occurredAt >= dayStart
+                && event.occurredAt <= cutoff
+                && event.recordedAt > publishedAt
         }
     }
 

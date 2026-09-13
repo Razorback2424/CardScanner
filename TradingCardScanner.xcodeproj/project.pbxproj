@@ -145,6 +145,7 @@
 		A00200E2 /* MagicTreatmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200E2 /* MagicTreatmentTests.swift */; };
 		A0020101 /* ProductionRowFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020101 /* ProductionRowFixtures.swift */; };
 		A0020102 /* OpusImplementationPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020102 /* OpusImplementationPlanTests.swift */; };
+		A0020103 /* TradingCards fixtures in Resources */ = {isa = PBXBuildFile; fileRef = B0020103 /* TradingCards */; };
 		A00200F6 /* ScannerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F6 /* ScannerViewModelTests.swift */; };
 		A00200F7 /* UncoveredSurfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F7 /* UncoveredSurfaceTests.swift */; };
 		A00200E3 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
@@ -319,6 +320,7 @@
 		B00200E2 /* MagicTreatmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentTests.swift; sourceTree = "<group>"; };
 		B0020101 /* ProductionRowFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductionRowFixtures.swift; sourceTree = "<group>"; };
 		B0020102 /* OpusImplementationPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpusImplementationPlanTests.swift; sourceTree = "<group>"; };
+		B0020103 /* TradingCardScannerFixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ../TestFixtures/TradingCards; sourceTree = "<group>"; };
 		B00200F6 /* ScannerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModelTests.swift; sourceTree = "<group>"; };
 		B00200F7 /* UncoveredSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncoveredSurfaceTests.swift; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -586,6 +588,7 @@
 				B00200FA /* ScanSubjectSuppressionTests.swift */,
 				B00200FB /* ScannedGradedResolverTests.swift */,
 				B0020100 /* SlabEvidenceConfirmationWindowTests.swift */,
+				B0020103 /* TradingCardScannerFixtures */,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -683,6 +686,7 @@
 			files = (
 				A00200E1 /* MagicTreatmentSnapshot in Resources */,
 				A00200E3 /* MagicTreatmentCatalog in Resources */,
+				A0020103 /* TradingCards fixtures in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

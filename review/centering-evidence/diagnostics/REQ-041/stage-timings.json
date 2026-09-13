@@ -1,0 +1,342 @@
+[
+  {
+    "attributedFraction" : 0.9996563662032772,
+    "elapsedSeconds" : 2.7093509435653687,
+    "fixture" : "IMG_0347",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0.13770794868469238,
+      "decodeOrientationDownscale" : 0.19936096668243408,
+      "innerCandidateGeneration" : 0.8441109657287598,
+      "jointSelection" : 1.0013580322265625e-05,
+      "outerCandidateRefinement" : 0.12026691436767578,
+      "rectification" : 0.00010609626770019531,
+      "resultConstruction" : 1.3947486877441406e-05,
+      "scalarFields" : 1.3856780529022217,
+      "visionRequests" : 0.021165013313293457
+    }
+  },
+  {
+    "attributedFraction" : 0.9997027937526587,
+    "elapsedSeconds" : 2.5666359663009644,
+    "fixture" : "IMG_0348",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0,
+      "decodeOrientationDownscale" : 0.18915605545043945,
+      "innerCandidateGeneration" : 0.8432630300521851,
+      "jointSelection" : 7.987022399902344e-06,
+      "outerCandidateRefinement" : 0.0926210880279541,
+      "rectification" : 9.40561294555664e-05,
+      "resultConstruction" : 1.3947486877441406e-05,
+      "scalarFields" : 1.4210129976272583,
+      "visionRequests" : 0.019703984260559082
+    }
+  },
+  {
+    "attributedFraction" : 0.999538975691684,
+    "elapsedSeconds" : 2.9089670181274414,
+    "fixture" : "IMG_0349",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0.1293569803237915,
+      "decodeOrientationDownscale" : 0.20789790153503418,
+      "innerCandidateGeneration" : 0.821395993232727,
+      "jointSelection" : 1.800060272216797e-05,
+      "outerCandidateRefinement" : 0.11908102035522461,
+      "rectification" : 0.00010001659393310547,
+      "resultConstruction" : 1.895427703857422e-05,
+      "scalarFields" : 1.6083979606628418,
+      "visionRequests" : 0.02135908603668213
+    }
+  },
+  {
+    "attributedFraction" : 0.9995704572275195,
+    "elapsedSeconds" : 2.7330760955810547,
+    "fixture" : "IMG_0350",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0.13308799266815186,
+      "decodeOrientationDownscale" : 0.18291711807250977,
+      "innerCandidateGeneration" : 0.8164039850234985,
+      "jointSelection" : 8.106231689453125e-06,
+      "outerCandidateRefinement" : 0.11835598945617676,
+      "rectification" : 9.500980377197266e-05,
+      "resultConstruction" : 1.3947486877441406e-05,
+      "scalarFields" : 1.4590610265731812,
+      "visionRequests" : 0.02195894718170166
+    }
+  },
+  {
+    "attributedFraction" : 0.9996164140913611,
+    "elapsedSeconds" : 2.591560959815979,
+    "fixture" : "IMG_0351",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0.13213801383972168,
+      "decodeOrientationDownscale" : 0.19340991973876953,
+      "innerCandidateGeneration" : 0.8215138912200928,
+      "jointSelection" : 8.106231689453125e-06,
+      "outerCandidateRefinement" : 0.11685693264007568,
+      "rectification" : 9.799003601074219e-05,
+      "resultConstruction" : 1.800060272216797e-05,
+      "scalarFields" : 1.3061569929122925,
+      "visionRequests" : 0.020367026329040527
+    }
+  },
+  {
+    "attributedFraction" : 0.9996459649084068,
+    "elapsedSeconds" : 2.7425520420074463,
+    "fixture" : "IMG_0352",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0.13797008991241455,
+      "decodeOrientationDownscale" : 0.2031320333480835,
+      "innerCandidateGeneration" : 0.8386180400848389,
+      "jointSelection" : 1.0013580322265625e-05,
+      "outerCandidateRefinement" : 0.08909106254577637,
+      "rectification" : 9.298324584960938e-05,
+      "resultConstruction" : 1.2993812561035156e-05,
+      "scalarFields" : 1.4540319442749023,
+      "visionRequests" : 0.01862192153930664
+    }
+  },
+  {
+    "attributedFraction" : 0.9996759909461614,
+    "elapsedSeconds" : 2.796557068824768,
+    "fixture" : "IMG_0780",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0,
+      "decodeOrientationDownscale" : 0.19876408576965332,
+      "innerCandidateGeneration" : 0.82069993019104,
+      "jointSelection" : 7.033348083496094e-06,
+      "outerCandidateRefinement" : 0.11567997932434082,
+      "rectification" : 0.00010097026824951172,
+      "resultConstruction" : 1.5974044799804688e-05,
+      "scalarFields" : 1.6409310102462769,
+      "visionRequests" : 0.01945197582244873
+    }
+  },
+  {
+    "attributedFraction" : 0.9996493400346508,
+    "elapsedSeconds" : 2.589452028274536,
+    "fixture" : "IMG_0781",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0,
+      "decodeOrientationDownscale" : 0.19609403610229492,
+      "innerCandidateGeneration" : 0.8108199834823608,
+      "jointSelection" : 7.033348083496094e-06,
+      "outerCandidateRefinement" : 0.11648499965667725,
+      "rectification" : 9.298324584960938e-05,
+      "resultConstruction" : 1.3947486877441406e-05,
+      "scalarFields" : 1.4451850652694702,
+      "visionRequests" : 0.019845962524414062
+    }
+  },
+  {
+    "attributedFraction" : 0.9996259529595004,
+    "elapsedSeconds" : 2.802022099494934,
+    "fixture" : "IMG_0782",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 0.1349020004272461,
+      "decodeOrientationDownscale" : 0.1973360776901245,
+      "innerCandidateGeneration" : 0.8182359933853149,
+      "jointSelection" : 1.1086463928222656e-05,
+      "outerCandidateRefinement" : 0.12375092506408691,
+      "rectification" : 9.691715240478516e-05,
+      "resultConstruction" : 2.396106719970703e-05,
+      "scalarFields" : 1.5067710876464844,
+      "visionRequests" : 0.019845962524414062
+    }
+  },
+  {
+    "attributedFraction" : 0.9996649801634977,
+    "elapsedSeconds" : 2.6864980459213257,
+    "fixture" : "IMG_0783",
+    "repetition" : 1,
+    "stageTimings" : {
+      "colorPreparation" : 1.0728836059570312e-06,
+      "decodeOrientationDownscale" : 0.19427800178527832,
+      "innerCandidateGeneration" : 0.8362199068069458,
+      "jointSelection" : 7.033348083496094e-06,
+      "outerCandidateRefinement" : 0.11968803405761719,
+      "rectification" : 9.298324584960938e-05,
+      "resultConstruction" : 1.4066696166992188e-05,
+      "scalarFields" : 1.516098976135254,
+      "visionRequests" : 0.019197940826416016
+    }
+  },
+  {
+    "attributedFraction" : 0.9996339364743687,
+    "elapsedSeconds" : 2.6934670209884644,
+    "fixture" : "IMG_0347",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0.13789904117584229,
+      "decodeOrientationDownscale" : 0.20252501964569092,
+      "innerCandidateGeneration" : 0.8390649557113647,
+      "jointSelection" : 1.0013580322265625e-05,
+      "outerCandidateRefinement" : 0.12345600128173828,
+      "rectification" : 9.40561294555664e-05,
+      "resultConstruction" : 1.5020370483398438e-05,
+      "scalarFields" : 1.368467926979065,
+      "visionRequests" : 0.02094900608062744
+    }
+  },
+  {
+    "attributedFraction" : 0.9996948620284285,
+    "elapsedSeconds" : 2.59211802482605,
+    "fixture" : "IMG_0348",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0,
+      "decodeOrientationDownscale" : 0.1883460283279419,
+      "innerCandidateGeneration" : 0.8414100408554077,
+      "jointSelection" : 7.033348083496094e-06,
+      "outerCandidateRefinement" : 0.09047698974609375,
+      "rectification" : 9.298324584960938e-05,
+      "resultConstruction" : 1.4066696166992188e-05,
+      "scalarFields" : 1.44986093044281,
+      "visionRequests" : 0.021118998527526855
+    }
+  },
+  {
+    "attributedFraction" : 0.9996392782489842,
+    "elapsedSeconds" : 2.946178913116455,
+    "fixture" : "IMG_0349",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0.13342106342315674,
+      "decodeOrientationDownscale" : 0.19873905181884766,
+      "innerCandidateGeneration" : 0.8502990007400513,
+      "jointSelection" : 1.0013580322265625e-05,
+      "outerCandidateRefinement" : 0.12313902378082275,
+      "rectification" : 9.799003601074219e-05,
+      "resultConstruction" : 1.4066696166992188e-05,
+      "scalarFields" : 1.6203269958496094,
+      "visionRequests" : 0.01906895637512207
+    }
+  },
+  {
+    "attributedFraction" : 0.9996666919536829,
+    "elapsedSeconds" : 2.778264045715332,
+    "fixture" : "IMG_0350",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0.13336503505706787,
+      "decodeOrientationDownscale" : 0.19050705432891846,
+      "innerCandidateGeneration" : 0.8208370208740234,
+      "jointSelection" : 7.033348083496094e-06,
+      "outerCandidateRefinement" : 0.122810959815979,
+      "rectification" : 8.893013000488281e-05,
+      "resultConstruction" : 1.2993812561035156e-05,
+      "scalarFields" : 1.489326000213623,
+      "visionRequests" : 0.020383000373840332
+    }
+  },
+  {
+    "attributedFraction" : 0.9996254438766585,
+    "elapsedSeconds" : 2.672816038131714,
+    "fixture" : "IMG_0351",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0.1364150047302246,
+      "decodeOrientationDownscale" : 0.19962799549102783,
+      "innerCandidateGeneration" : 0.8441439867019653,
+      "jointSelection" : 7.033348083496094e-06,
+      "outerCandidateRefinement" : 0.12054598331451416,
+      "rectification" : 0.00010204315185546875,
+      "resultConstruction" : 1.3947486877441406e-05,
+      "scalarFields" : 1.348992943763733,
+      "visionRequests" : 0.021965980529785156
+    }
+  },
+  {
+    "attributedFraction" : 0.9996197585792326,
+    "elapsedSeconds" : 2.729727029800415,
+    "fixture" : "IMG_0352",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0.1301429271697998,
+      "decodeOrientationDownscale" : 0.20260608196258545,
+      "innerCandidateGeneration" : 0.8394460678100586,
+      "jointSelection" : 1.0013580322265625e-05,
+      "outerCandidateRefinement" : 0.08541607856750488,
+      "rectification" : 9.703636169433594e-05,
+      "resultConstruction" : 1.3947486877441406e-05,
+      "scalarFields" : 1.4487890005111694,
+      "visionRequests" : 0.02216792106628418
+    }
+  },
+  {
+    "attributedFraction" : 0.9996763835278036,
+    "elapsedSeconds" : 2.83052396774292,
+    "fixture" : "IMG_0780",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0,
+      "decodeOrientationDownscale" : 0.19687092304229736,
+      "innerCandidateGeneration" : 0.8223119974136353,
+      "jointSelection" : 7.987022399902344e-06,
+      "outerCandidateRefinement" : 0.12277305126190186,
+      "rectification" : 0.00010097026824951172,
+      "resultConstruction" : 1.4066696166992188e-05,
+      "scalarFields" : 1.667860984802246,
+      "visionRequests" : 0.019667983055114746
+    }
+  },
+  {
+    "attributedFraction" : 0.9996351213839875,
+    "elapsedSeconds" : 2.650267004966736,
+    "fixture" : "IMG_0781",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0,
+      "decodeOrientationDownscale" : 0.1997619867324829,
+      "innerCandidateGeneration" : 0.8441680669784546,
+      "jointSelection" : 7.987022399902344e-06,
+      "outerCandidateRefinement" : 0.11977291107177734,
+      "rectification" : 9.703636169433594e-05,
+      "resultConstruction" : 1.3947486877441406e-05,
+      "scalarFields" : 1.4643220901489258,
+      "visionRequests" : 0.021155953407287598
+    }
+  },
+  {
+    "attributedFraction" : 0.9996206145014956,
+    "elapsedSeconds" : 2.8468040227890015,
+    "fixture" : "IMG_0782",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0.13086402416229248,
+      "decodeOrientationDownscale" : 0.20229291915893555,
+      "innerCandidateGeneration" : 0.8171589374542236,
+      "jointSelection" : 1.704692840576172e-05,
+      "outerCandidateRefinement" : 0.12396299839019775,
+      "rectification" : 9.703636169433594e-05,
+      "resultConstruction" : 2.193450927734375e-05,
+      "scalarFields" : 1.5511680841445923,
+      "visionRequests" : 0.020141005516052246
+    }
+  },
+  {
+    "attributedFraction" : 0.9996690943062908,
+    "elapsedSeconds" : 2.6680229902267456,
+    "fixture" : "IMG_0783",
+    "repetition" : 2,
+    "stageTimings" : {
+      "colorPreparation" : 0,
+      "decodeOrientationDownscale" : 0.19266700744628906,
+      "innerCandidateGeneration" : 0.817844033241272,
+      "jointSelection" : 7.987022399902344e-06,
+      "outerCandidateRefinement" : 0.12004697322845459,
+      "rectification" : 9.500980377197266e-05,
+      "resultConstruction" : 1.5020370483398438e-05,
+      "scalarFields" : 1.5169190168380737,
+      "visionRequests" : 0.01954507827758789
+    }
+  }
+]
