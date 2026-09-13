@@ -692,6 +692,53 @@ final class OpusImplementationPlanTests: XCTestCase {
         XCTAssertEqual(revised.revisionReason, .recomputed)
     }
 
+    func testREQ010EventAtNextDayBoundaryBelongsToFollowingDay() throws {
+        let container = try ModelContainer(
+            for: PortfolioDailyClose.self, InventoryEvent.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = container.mainContext
+        let zone = TimeZone(identifier: "UTC")!
+        let day = Date(timeIntervalSince1970: 1_800_000_000)
+        let first = try XCTUnwrap(
+            PortfolioEngine.publish(
+                [portfolioReplayDay(for: day, value: 1)],
+                timeZone: zone,
+                context: context
+            )
+        )
+        let nextDayBoundary = PortfolioCalendar.boundary(afterDay: day, in: zone)
+        context.insert(
+            InventoryEvent(
+                operationID: UUID(),
+                leg: nil,
+                kind: .acquire,
+                source: .scan,
+                collectionKey: "next-day-boundary-event",
+                priceStorageKey: "pokemon:next-day-boundary-event:-",
+                deltaQuantity: 1,
+                occurredAt: nextDayBoundary,
+                recordedAt: try XCTUnwrap(first.publishedAt).addingTimeInterval(1),
+                valuation: .unpriced
+            )
+        )
+        try context.save()
+
+        let revised = try XCTUnwrap(
+            PortfolioEngine.publish(
+                [portfolioReplayDay(for: day, value: 2)],
+                timeZone: zone,
+                context: context
+            )
+        )
+
+        // Portfolio days are half-open: [day start, next day start). An event
+        // exactly at the cutoff belongs to the following accounting day and
+        // must not explain a revision of this one.
+        XCTAssertEqual(revised.revisionReason, .recomputed)
+        XCTAssertNotEqual(revised.revisionReason, .lateInventoryTruth)
+    }
+
     func testRM004PriceOnlyRevisionIgnoresUnrelatedLateEventFromBeforeThatDay() throws {
         let container = try ModelContainer(
             for: PortfolioDailyClose.self, InventoryEvent.self,

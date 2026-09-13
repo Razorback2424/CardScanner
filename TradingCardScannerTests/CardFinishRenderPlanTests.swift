@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 @testable import TradingCardScanner
 
 final class CardFinishRenderPlanTests: XCTestCase {
@@ -172,6 +173,23 @@ final class CardFinishRenderPlanTests: XCTestCase {
         XCTAssertEqual(controlFixture.nonfoilControlRowCount, 12)
         XCTAssertEqual(controlFixture.sealedControlRowCount, 1)
         XCTAssertEqual(controlFixture.totalRowCount, 13)
+    }
+
+    func testPerformanceFixtureUsesOneStableArtworkFilename() {
+        XCTAssertEqual(
+            PortfolioDebugFixtures.cardFinishPerformanceArtworkFilename,
+            "card-finish-performance.image"
+        )
+    }
+
+    func testNamedArtworkSaveReplacesTheSameFixtureFile() throws {
+        let data = try XCTUnwrap(UIImage(systemName: "circle.fill")?.pngData())
+        let filename = "card-finish-performance-test.image"
+        defer { CollectionArtworkStore.remove(filename: filename) }
+
+        XCTAssertEqual(CollectionArtworkStore.save(data, filename: filename), filename)
+        XCTAssertEqual(CollectionArtworkStore.save(data, filename: filename), filename)
+        XCTAssertNotNil(CollectionArtworkStore.image(filename: filename))
     }
 #endif
 }
