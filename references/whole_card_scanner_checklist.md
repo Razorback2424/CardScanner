@@ -23,4 +23,5 @@ performance.
   iPhone 17 Pro simulator route.
 
 Remaining gate: physical camera framing, OCR tracking rate, thermal behavior,
-and slab calibration are tracked in [`release_followups.md`](../release_followups.md).
+and slab calibration are tracked in
+[`release_followups.md`](../docs/plans/release_followups.md).

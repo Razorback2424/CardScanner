@@ -1,5 +1,7 @@
 # Trust Hardening Design
 
+> **Historical approved specification — 2026-09-10.** This design records the earlier trust-hardening scope and is not the active card-centering contract. Its implementation and follow-up evidence are retained in the dated Opus review documents; use the [current card-centering plan](../../../review/opus-card-centering-implementation-plan.md) for centering work.
+
 **Date:** 2026-09-10  
 **Status:** Approved for implementation by the user
 

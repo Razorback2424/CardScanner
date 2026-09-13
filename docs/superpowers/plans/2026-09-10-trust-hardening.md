@@ -1,5 +1,7 @@
 # Trust Hardening Implementation Plan
 
+> **Historical execution plan — 2026-09-10.** This plan is preserved as the original trust-hardening work order; its checkbox state is not a live repository TODO list. The work was subsequently implemented and reviewed in the dated Opus evidence documents. It is separate from the active card-centering contract; use the [current card-centering plan](../../../review/opus-card-centering-implementation-plan.md) for centering work.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox syntax (- [ ]) for tracking.
 
 **Goal:** Make delayed pricing, portfolio valuation, graded identity, and variant provenance converge on one defensible trust contract, then provide a reproducible manual benchmark record.
@@ -437,4 +439,3 @@ Run one final capture for each provenance route/state, inspect the latest PNGs, 
 - [ ] **Step 4: Update progress and benchmark status honestly**
 
 Append final build/test/screenshot evidence to progress.md. Keep the benchmark document marked as not executed unless real competitor sessions have been performed; never fabricate comparative outcomes.
-

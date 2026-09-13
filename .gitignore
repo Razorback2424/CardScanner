@@ -6,6 +6,7 @@ DerivedData/
 .codex_build/
 .codex_build_device/
 .codex_build_test_device/
+.codex_build_*/
 .codex_ui_build/
 .codex_build_pricing/
 artifacts/
@@ -21,6 +22,9 @@ xcuserdata/
 
 # Swift Package Manager
 .build/
+
+# Local Python tooling caches
+__pycache__/
 
 # Signing and provisioning artifacts
 *.p12

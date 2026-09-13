@@ -1,5 +1,7 @@
 # Performance Review — Remediation Plan (revised)
 
+> **Historical plan snapshot.** This document preserves the dated performance-remediation work and its measurements. Its intermediate suite counts are not the current card-centering validation record. For active centering status and the current simulator evidence, use the [card-centering plan](../../review/opus-card-centering-implementation-plan.md) and [centering evidence](../../review/centering-evidence/).
+
 Status: **implementation complete for the current iOS 17 target; runtime gates
 remain explicit.** Slices 1–8 and 11, plus the price-refresh snapshot pass
 described in §3.10, are implemented on the working branch. R5 is closed by the
@@ -11,10 +13,10 @@ a second-pass audit of the first review; the audit's corrections are recorded in
 claims — three needed correcting, and those corrections are applied in the
 findings below and recorded in §1.4. Line numbers drift; follow symbol names.
 
-The current repository-wide checkpoint is recorded in
-[`documentation_audit.md`](documentation_audit.md). The simulator suite has
-since reached 940 discovered tests (939 passed, 1 skipped, 0 failed); the
-runtime/device gates below remain open until their stated measurements exist.
+The repository-wide audit checkpoint is recorded in
+[`documentation_audit.md`](documentation_audit.md). The 940-test result
+described by the original checkpoint is historical; the runtime/device gates
+below remain open until their stated measurements exist.
 
 ## 0. Progress
 

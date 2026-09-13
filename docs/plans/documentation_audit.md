@@ -6,11 +6,13 @@ QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current checkpoint
+> **Amended 2026-09-12.** The checkpoint below is the repository-audit snapshot captured on 2026-09-09. It is historical and must not be used as the current card-centering test count or readiness claim. The active card-centering contract, experiment ledger, simulator evidence, and current branch results are maintained in the [current card-centering plan](../../review/opus-card-centering-implementation-plan.md) and [centering evidence](../../review/centering-evidence/).
 
-- The current Debug build runs on the iPhone 17 Pro simulator
+## Historical checkpoint — 2026-09-09
+
+- The review-time Debug build ran on the iPhone 17 Pro simulator
   (`EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86`).
-- The current simulator suite discovers 940 tests: **939 passed, 1 skipped,
+- The review-time simulator suite discovered 940 tests: **939 passed, 1 skipped,
   0 failed**. The skipped case is the opt-in aged-store/performance fixture.
 - This run emitted 11 non-failing build notices: nine normal signed XCTest
   simulator-binary strip notices and two benign AppIntents metadata notices.
@@ -23,25 +25,31 @@ history.
   launched, scrolled, and inspected successfully. This was a real loose end,
   not documentation-only cleanup.
 
-## Evidence-backed status
+## Current card-centering pointer
 
-“Closed” below means the implementation has current source/test evidence and,
-where applicable, a current simulator capture. “Partial” means a deterministic
+The current centering branch retains the newer quad/Vision/rectification implementation and has a default raw-HEIC E-A/E-B result of 8 confident and 2 declined fixtures. The screenshot batch remains a pre-E-B historical 3-confident/7-declined snapshot. Ground truth was rederived on 2026-09-12 with two analyzer-free profile passes plus physical-silhouette adjudication; its provenance/schema gate passes 10/10, while the first current production-entry-point suite passes 8/12 test cases and fails 4 accuracy cases. The refreshed post-REQ-027 E7 resolution curve keeps the missing-inner-reference fixture declined at all four tested maxima in both benchmark curves. The exact sideways/skewed REQ-028 regression methods also pass 2/2 in a focused current run. The current contract and open gates are recorded in the [card-centering plan](../../review/opus-card-centering-implementation-plan.md), not in this 2026-09-09 audit snapshot.
+
+## Historical evidence-backed status — 2026-09-09
+
+“Closed” below meant the implementation had source/test evidence and, where
+applicable, a simulator capture at audit time. “Partial” meant a deterministic
 surface is verified but the remaining real-device, network, or interaction
-evidence is still named explicitly.
+evidence was still named explicitly at the time of this audit. This table is
+historical for the broader repository; the current centering status is in the
+pointer above and the linked centering contract.
 
-| Area | Current status | Evidence |
+| Area | Status at audit time | Evidence |
 | --- | --- | --- |
-| Finish Lock | **Closed for the current design** | One top-level `Auto` clears all locks; Pokémon and Magic expose variant-only submenus; game-qualified summaries and accessibility labels are present. See [`finish_lock_checklist.md`](artifacts/finish_lock_checklist.md) and the `finish-lock-global-auto-*` captures. |
+| Finish Lock | **Closed for the current design** | One top-level `Auto` clears all locks; Pokémon and Magic expose variant-only submenus; game-qualified summaries and accessibility labels are present. Supporting `finish_lock_checklist.md` and `finish-lock-global-auto-*` captures are ignored local artifacts, not durable repository files. |
 | Card detail / identity / sealed artwork | **Closed for the audited UI slices** | Current dark/light/accessibility-large captures and focused/full-suite coverage are recorded in the three existing checklists. |
-| Collection navigation | **Closed for compact-width behavior** | Collection → card detail → Back returns to the collection grid; current capture: [`collection-navigation-current.jpg`](artifacts/collection-navigation-current.jpg). The intentional iPad split-view empty pane remains a separate behavior. |
-| Card movement | **Closed for the deterministic fixture** | Card detail and Movement Details show the selected period, unit movement, quantity, and holding impact; the three-copy `-$0.05 × 3 = -$0.15` case is captured in [`card-movement-current.jpg`](artifacts/card-movement-current.jpg). |
+| Collection navigation | **Closed for compact-width behavior** | Collection → card detail → Back returns to the collection grid; the `collection-navigation-current.jpg` capture is an ignored local artifact. The intentional iPad split-view empty pane remains a separate behavior. |
+| Card movement | **Closed for the deterministic fixture** | Card detail and Movement Details show the selected period, unit movement, quantity, and holding impact; the three-copy `-$0.05 × 3 = -$0.15` case is captured in the ignored local `card-movement-current.jpg` artifact. |
 | Portfolio Today / Phase 3 / market movement | **Closed for the current additive model** | Current-value hero, reconciliation, movement chart, contributors, and most-valuable-card ranking are captured in the `portfolio-*` artifacts. The old Performance/Collection Value presentation is intentionally gone; [`release_followups.md`](release_followups.md) records that cleanup. |
-| Magic treatment Slice 4 | **Closed for the deterministic route after the environment fix** | Receipt and catalog detail show the FIC #10 treatment path; the nonfoil contradiction remains source/test evidence rather than a separate visual route. See [`magic_treatment_slice4_checklist.md`](artifacts/magic_treatment_slice4_checklist.md). |
+| Magic treatment Slice 4 | **Closed for the deterministic route after the environment fix** | Receipt and catalog detail show the FIC #10 treatment path; the nonfoil contradiction remains source/test evidence rather than a separate visual route. The supporting `magic_treatment_slice4_checklist.md` is an ignored local artifact. |
 | Browse | **Partial but no longer unverified** | Browse root and the bundled Pokémon directory launch without a catalog request; full search, exact-printing add/undo, remote artwork, and fallback-provider behavior remain interaction/provider checks. |
 | Price Check | **Partial but no longer unverified** | The native purpose control and no-add routing are visible. The “Value only · Nothing is added” explanation is intentionally shown at choice time and in the VoiceOver announcement, not as permanent camera copy. A real scan/result/refresh-failure pass remains device/provider work. |
 | Whole-card scanner / scanner chrome | **Partial** | The deterministic route and source-level hit-target/state behavior are available. Real camera guide, OCR-rate, thermal, tab-return, and camera-restart claims remain hardware gates. |
-| Centering | **Partial** | The expanded controls, direct numeric fields, rotation-only copy, scrolling, and keyboard Done path are present and captured. Real camera measurement/orientation validation remains hardware work; the inner controls require scrolling to reveal on the default frame. |
+| Centering | **Tracked in the current card-centering contract** | This 2026-09-09 capture predates E-A/E-B and must not be used for current centering readiness. See the [current plan](../../review/opus-card-centering-implementation-plan.md) and [centering evidence](../../review/centering-evidence/). |
 
 ## Live gates that remain open
 
