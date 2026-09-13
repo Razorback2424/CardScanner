@@ -164,6 +164,8 @@
 		A00200FA /* ScanSubjectSuppressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200FA /* ScanSubjectSuppressionTests.swift */; };
 		A00200FB /* ScannedGradedResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200FB /* ScannedGradedResolverTests.swift */; };
 		A0020100 /* SlabEvidenceConfirmationWindowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020100 /* SlabEvidenceConfirmationWindowTests.swift */; };
+		A0020103 /* CardFinishRenderPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020103 /* CardFinishRenderPlanTests.swift */; };
+		A0020104 /* CardFinishMotionSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020104 /* CardFinishMotionSourceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -338,6 +340,8 @@
 		B00200FA /* ScanSubjectSuppressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSubjectSuppressionTests.swift; sourceTree = "<group>"; };
 		B00200FB /* ScannedGradedResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedGradedResolverTests.swift; sourceTree = "<group>"; };
 		B0020100 /* SlabEvidenceConfirmationWindowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlabEvidenceConfirmationWindowTests.swift; sourceTree = "<group>"; };
+		B0020103 /* CardFinishRenderPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFinishRenderPlanTests.swift; sourceTree = "<group>"; };
+		B0020104 /* CardFinishMotionSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFinishMotionSourceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -586,6 +590,8 @@
 				B00200FA /* ScanSubjectSuppressionTests.swift */,
 				B00200FB /* ScannedGradedResolverTests.swift */,
 				B0020100 /* SlabEvidenceConfirmationWindowTests.swift */,
+				B0020103 /* CardFinishRenderPlanTests.swift */,
+				B0020104 /* CardFinishMotionSourceTests.swift */,
 			);
 			path = TradingCardScannerTests;
 			sourceTree = "<group>";
@@ -852,6 +858,8 @@
 				A00200FA /* ScanSubjectSuppressionTests.swift in Sources */,
 				A00200FB /* ScannedGradedResolverTests.swift in Sources */,
 				A0020100 /* SlabEvidenceConfirmationWindowTests.swift in Sources */,
+				A0020103 /* CardFinishRenderPlanTests.swift in Sources */,
+				A0020104 /* CardFinishMotionSourceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
