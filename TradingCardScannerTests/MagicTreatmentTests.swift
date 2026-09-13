@@ -280,11 +280,20 @@ final class MagicTreatmentTests: XCTestCase {
                 },
                 "Expected the selected foil label to retain a real modeled treatment for \(snapshotCard.id)"
             )
-            XCTAssertEqual(
-                identified.finishAndTreatmentDisplayLabel(for: .nonfoil),
-                "Nonfoil",
-                "A foil treatment must not leak onto the nonfoil copy for \(snapshotCard.id)"
-            )
+            let nonfoilLabel = identified.finishAndTreatmentDisplayLabel(for: .nonfoil)
+            let openFinishTreatments = treatments.filter { $0.requiredFinishes.isEmpty }
+            if openFinishTreatments.isEmpty {
+                XCTAssertEqual(
+                    nonfoilLabel,
+                    "Nonfoil",
+                    "A foil treatment must not leak onto the nonfoil copy for \(snapshotCard.id)"
+                )
+            } else {
+                XCTAssertTrue(
+                    openFinishTreatments.allSatisfy { nonfoilLabel.contains($0.label) },
+                    "An open-finish treatment must remain visible on the nonfoil copy for \(snapshotCard.id)"
+                )
+            }
         }
     }
 

@@ -4,6 +4,48 @@ import SwiftData
 
 @MainActor
 final class OpusImplementationPlanTests: XCTestCase {
+    func testRM001GradedCSVWithoutCatalogProviderIDCanRenderVariantOptions() throws {
+        let gradedKey = CollectedCard.scannedGradedCollectionKey(
+            game: .pokemon,
+            underlyingPrintingID: ProductionRowFixtures.pokemonPrintingID,
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "RM001-GRADED"
+        )
+        let csv = """
+        game,provider_id,card_name,set_name,set_code,card_number,quantity,item_kind,grading_company,grade,grade_label,certification_number
+        pokemon,\(gradedKey),Eevee,Prismatic Evolutions,PRE,074,1,gradedCard,psa,10,Gem Mint,RM001-GRADED
+        """
+        let plan = try CollectionCSV.parse(Data(csv.utf8))
+        let container = try ProductionRowFixtures.makeContainer()
+        _ = try CollectionCSV.apply(plan, to: container.mainContext)
+        let row = try XCTUnwrap(
+            try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first
+        )
+
+        // RM-001: this supported legacy import shape must reach the detail
+        // helper without trapping even though it has no catalog identity.
+        let options = CollectionCardDetailView.gradedVariantOptions(for: row)
+        XCTAssertTrue(options.isEmpty)
+    }
+
+    func testRM001SealedCSVWithoutMarketplaceOrCatalogIDCanRenderVariantOptions() throws {
+        let csv = """
+        game,provider_id,card_name,set_name,set_code,card_number,quantity,item_kind
+        pokemon,sealed:pokemon:legacy-box,Legacy Booster Box,Prismatic Evolutions,,,2,sealedProduct
+        """
+        let plan = try CollectionCSV.parse(Data(csv.utf8))
+        let container = try ProductionRowFixtures.makeContainer()
+        _ = try CollectionCSV.apply(plan, to: container.mainContext)
+        let row = try XCTUnwrap(
+            try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first
+        )
+
+        // RM-001: the analogous unresolved sealed row must also return safely.
+        let options = CollectionCardDetailView.gradedVariantOptions(for: row)
+        XCTAssertTrue(options.isEmpty)
+    }
+
     func testREQ002ProductionRowsRoundTripCollectionKeysAndQuantities() throws {
         let sourceContainer = try ProductionRowFixtures.makeContainer()
         let sourceContext = sourceContainer.mainContext
@@ -101,6 +143,39 @@ final class OpusImplementationPlanTests: XCTestCase {
         XCTAssertEqual(importedRow.collectionKey, originalKey)
     }
 
+    func testRM002PreviousBuildCSVWithCatalogProviderIDPreservesScannedGradedKey() throws {
+        let sourceContainer = try ProductionRowFixtures.makeContainer()
+        let sourceRow = try ProductionRowFixtures.scannedGradedRow(
+            in: sourceContainer.mainContext,
+            certificationNumber: "RM002-CERT"
+        )
+        let originalKey = sourceRow.collectionKey
+        let exportedLines = CollectionCSV.export([sourceRow]).text
+            .split(whereSeparator: \.isNewline)
+            .map { String($0) }
+        var headers = exportedLines[0].split(separator: ",", omittingEmptySubsequences: false)
+            .map(String.init)
+        var values = exportedLines[1].split(separator: ",", omittingEmptySubsequences: false)
+            .map(String.init)
+        let collectionKeyIndex = try XCTUnwrap(headers.firstIndex(of: "collection_key"))
+        headers.remove(at: collectionKeyIndex)
+        values.remove(at: collectionKeyIndex)
+        let previousBuildCSV = "\(headers.joined(separator: ","))\n\(values.joined(separator: ","))\n"
+
+        let plan = try CollectionCSV.parse(Data(previousBuildCSV.utf8))
+        let destinationContainer = try ProductionRowFixtures.makeContainer()
+        _ = try CollectionCSV.apply(plan, to: destinationContainer.mainContext)
+        let importedRows = try destinationContainer.mainContext.fetch(
+            FetchDescriptor<CollectedCard>()
+        )
+
+        // RM-002: the immediately preceding export format carried
+        // catalog_provider_id but not collection_key; provider identity was
+        // already the canonical scanned-slab key in that format.
+        XCTAssertEqual(importedRows.count, 1)
+        XCTAssertEqual(importedRows.first?.collectionKey, originalKey)
+    }
+
     func testREQ003GradedVariantOptionsUseUnderlyingPrintingSetID() throws {
         let container = try ProductionRowFixtures.makeContainer()
         let card = try ProductionRowFixtures.pokemonCard()
@@ -171,6 +246,8 @@ final class OpusImplementationPlanTests: XCTestCase {
         )
         let context = container.mainContext
         let card = try ProductionRowFixtures.pokemonCard()
+        let timeZone = TimeZone(identifier: "UTC")!
+        let acquisitionAt = Date(timeIntervalSince1970: 1_800_000_000)
         let mutation = try CollectionStore(context: context).add(
             card,
             resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
@@ -181,10 +258,22 @@ final class OpusImplementationPlanTests: XCTestCase {
                 $0.collectionKey == mutation.collectionKey
             }
         )
+        row.dateAdded = acquisitionAt
+        let inventoryEvents = try context.fetch(FetchDescriptor<InventoryEvent>())
+        for event in inventoryEvents where event.collectionKey == mutation.collectionKey {
+            event.occurredAt = acquisitionAt
+            event.recordedAt = acquisitionAt
+        }
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        for activity in activities where activity.collectionKey == mutation.collectionKey {
+            activity.occurredAt = acquisitionAt
+        }
+        try context.save()
+
         // The owned quantity must exist before the transition so the replay can
         // attribute the full de-pricing to the two copies rather than treating
         // the first quote as a price for a not-yet-owned position.
-        let firstPriceAt = Date.now.addingTimeInterval(1)
+        let firstPriceAt = acquisitionAt.addingTimeInterval(3_600)
         let secondPriceAt = firstPriceAt.addingTimeInterval(60)
         let priceStore = PriceStore(context: context)
 
@@ -238,9 +327,9 @@ final class OpusImplementationPlanTests: XCTestCase {
         let through = secondPriceAt.addingTimeInterval(1)
         let computation = PortfolioReplaySnapshotBuilder.compute(
             context: context,
-            epoch: Date.now.addingTimeInterval(-3_600),
+            epoch: PortfolioCalendar.day(containing: acquisitionAt, in: timeZone),
             through: through,
-            timeZone: .current
+            timeZone: timeZone
         )
         let attribution = try XCTUnwrap(computation.replay.live?.attribution)
 
@@ -255,10 +344,124 @@ final class OpusImplementationPlanTests: XCTestCase {
         XCTAssertNil(
             PortfolioEngine.unattributedValueChangeDefect(
                 attribution: attribution,
-                periodStart: Date.now.addingTimeInterval(-3_600),
+                periodStart: PortfolioCalendar.day(containing: acquisitionAt, in: timeZone),
                 periodEnd: through
             )
         )
+    }
+
+    func testRM006NonUSDTransitionAcrossDayBoundaryKeepsCurrentAndReplayAligned() throws {
+        let container = try ModelContainer(
+            for: CollectedCard.self,
+            PriceRecord.self,
+            ProductIdentity.self,
+            CollectionActivity.self,
+            InventoryEvent.self,
+            PriceObservation.self,
+            PriceCheckDay.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = container.mainContext
+        let timeZone = TimeZone(identifier: "UTC")!
+        let anchor = Date(timeIntervalSince1970: 1_800_000_000)
+        let dayN = PortfolioCalendar.day(containing: anchor, in: timeZone)
+        let nextDay = PortfolioCalendar.boundary(afterDay: dayN, in: timeZone)
+        let acquisitionAt = dayN.addingTimeInterval(3_600)
+        let firstPriceAt = dayN.addingTimeInterval(7_200)
+        let secondPriceAt = nextDay.addingTimeInterval(3_600)
+        let through = secondPriceAt.addingTimeInterval(1)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let mutation = try CollectionStore(context: context).add(
+            card,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed),
+            quantity: 2
+        )
+        let row = try XCTUnwrap(
+            try context.fetch(FetchDescriptor<CollectedCard>()).first {
+                $0.collectionKey == mutation.collectionKey
+            }
+        )
+        row.dateAdded = acquisitionAt
+        let inventoryEvents = try context.fetch(FetchDescriptor<InventoryEvent>())
+        for event in inventoryEvents where event.collectionKey == mutation.collectionKey {
+            event.occurredAt = acquisitionAt
+            event.recordedAt = acquisitionAt
+        }
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        for activity in activities where activity.collectionKey == mutation.collectionKey {
+            activity.occurredAt = acquisitionAt
+        }
+        try context.save()
+
+        let priceStore = PriceStore(context: context)
+        XCTAssertTrue(
+            priceStore.store(
+                .price(
+                    NormalizedPrice(
+                        unitMarketPriceUSD: 10,
+                        currencyCode: "USD",
+                        source: .justTCG,
+                        sourceVariantID: "usd-boundary",
+                        sourceUpdatedAt: firstPriceAt,
+                        fetchedAt: firstPriceAt
+                    )
+                ),
+                game: row.cardGame,
+                printingID: row.priceStorageID,
+                variantID: row.variantID,
+                at: firstPriceAt
+            )
+        )
+        try context.save()
+
+        XCTAssertTrue(
+            priceStore.store(
+                .price(
+                    NormalizedPrice(
+                        unitMarketPriceUSD: 12,
+                        currencyCode: "EUR",
+                        source: .cardmarket,
+                        sourceVariantID: "eur-boundary",
+                        sourceUpdatedAt: secondPriceAt,
+                        fetchedAt: secondPriceAt
+                    )
+                ),
+                game: row.cardGame,
+                printingID: row.priceStorageID,
+                variantID: row.variantID,
+                at: secondPriceAt
+            )
+        )
+        try context.save()
+
+        let current = InventoryLedger(context: context).valuation(forPriceKey: row.priceKey)
+        XCTAssertNil(current.unitPrice)
+        XCTAssertEqual(
+            try XCTUnwrap(
+                try context.fetch(FetchDescriptor<PriceObservation>()).last
+            ).kind,
+            .sourceTransition
+        )
+
+        let computation = PortfolioReplaySnapshotBuilder.compute(
+            context: context,
+            epoch: dayN,
+            through: through,
+            timeZone: timeZone
+        )
+        let live = try XCTUnwrap(computation.replay.live)
+        let closedDay = try XCTUnwrap(computation.replay.days.first)
+
+        XCTAssertEqual(closedDay.displayDay, dayN)
+        XCTAssertEqual(closedDay.closeValue, Money(rounding: 20)!)
+        XCTAssertEqual(live.day, nextDay)
+        XCTAssertEqual(live.attribution.currentValue, .zero)
+        XCTAssertEqual(live.attribution.currentValue, computation.valuation.value)
+        XCTAssertEqual(live.attribution.pricingAdjustment, -Money(rounding: 20)!)
+        XCTAssertEqual(live.attribution.market, .zero)
+        XCTAssertEqual(live.attribution.unexplained, .zero)
+        XCTAssertEqual(computation.valuation.otherCurrencyCount, 2)
+        XCTAssertEqual(computation.valuation.unpricedCount, 0)
     }
 
     func testREQ006NonUSDLocalPriceRecordIsCheckingButStillVisible() throws {
@@ -487,6 +690,52 @@ final class OpusImplementationPlanTests: XCTestCase {
 
         XCTAssertEqual(revised.revision, 2)
         XCTAssertEqual(revised.revisionReason, .recomputed)
+    }
+
+    func testRM004PriceOnlyRevisionIgnoresUnrelatedLateEventFromBeforeThatDay() throws {
+        let container = try ModelContainer(
+            for: PortfolioDailyClose.self, InventoryEvent.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = container.mainContext
+        let zone = TimeZone(identifier: "UTC")!
+        let day = Date(timeIntervalSince1970: 1_800_000_000)
+        let first = try XCTUnwrap(
+            PortfolioEngine.publish(
+                [portfolioReplayDay(for: day, value: 1)],
+                timeZone: zone,
+                context: context
+            )
+        )
+        context.insert(
+            InventoryEvent(
+                operationID: UUID(),
+                leg: nil,
+                kind: .acquire,
+                source: .scan,
+                collectionKey: "unrelated-earlier-event",
+                priceStorageKey: "pokemon:unrelated-earlier-event:-",
+                deltaQuantity: 1,
+                occurredAt: PortfolioCalendar.day(containing: day, in: zone)
+                    .addingTimeInterval(-3_600),
+                recordedAt: try XCTUnwrap(first.publishedAt).addingTimeInterval(1),
+                valuation: .unpriced
+            )
+        )
+        try context.save()
+
+        let revised = try XCTUnwrap(
+            PortfolioEngine.publish(
+                [portfolioReplayDay(for: day, value: 2)],
+                timeZone: zone,
+                context: context
+            )
+        )
+
+        // RM-004: a price-only close revision must not blame an unrelated
+        // late event that predates the day being republished.
+        XCTAssertEqual(revised.revisionReason, .recomputed)
+        XCTAssertNotEqual(revised.revisionReason, .lateInventoryTruth)
     }
 
     func testREQ010LegacyCloseWithoutPublicationInstantDoesNotGuessLateTruth() throws {
@@ -1208,6 +1457,148 @@ final class OpusImplementationPlanTests: XCTestCase {
 
         XCTAssertEqual(emitted?.identifier, identifier)
         XCTAssertEqual(emitted?.slab, evidence)
+    }
+
+    func testRM003FrameLevelTrackerLossPreservesBoundSlabEvidence() {
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "RM003-PRESERVE",
+            labelCardText: ["CHARIZARD"]
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "OBF",
+            cardNumber: "223",
+            printedTotal: SetCodeMap.definitions["OBF"]!.officialCount,
+            setDefinition: SetCodeMap.definitions["OBF"]!
+        )
+
+        XCTAssertNil(scanner.receiveSlabLabelEvidenceForTesting(
+            evidence,
+            footerHasText: true,
+            at: 0
+        ))
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(
+            evidence,
+            footerHasText: true,
+            at: 1.5
+        ), evidence)
+        scanner.receiveSlabFooterPresenceForTesting(
+            identifier: identifier,
+            hasText: true,
+            at: 2
+        )
+
+        // RM-003: this is the shared production transition for a frame with
+        // no tracker observation or sub-threshold tracker confidence.
+        scanner.receiveTrackerContinuityLossForTesting()
+        let subject = ScanSubject(identifier: identifier)
+        scanner.receiveFooterOutcomeForTesting(.identified(subject), at: 2.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(subject), at: 2.5)
+
+        XCTAssertEqual(scanner.latchedSubjectForTesting?.identifier, identifier)
+        XCTAssertEqual(scanner.latchedSubjectForTesting?.slab, evidence)
+    }
+
+    func testRM003FrameLevelTrackerLossRejectsDifferentFooterIdentity() {
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "RM003-REJECT",
+            labelCardText: ["CHARIZARD"]
+        )
+        let original = ScanIdentifier.pokemon(
+            setCode: "OBF",
+            cardNumber: "223",
+            printedTotal: SetCodeMap.definitions["OBF"]!.officialCount,
+            setDefinition: SetCodeMap.definitions["OBF"]!
+        )
+        let different = ScanIdentifier.pokemon(
+            setCode: "OBF",
+            cardNumber: "224",
+            printedTotal: SetCodeMap.definitions["OBF"]!.officialCount,
+            setDefinition: SetCodeMap.definitions["OBF"]!
+        )
+
+        XCTAssertNil(scanner.receiveSlabLabelEvidenceForTesting(
+            evidence,
+            footerHasText: true,
+            at: 0
+        ))
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(
+            evidence,
+            footerHasText: true,
+            at: 1.5
+        ), evidence)
+        scanner.receiveSlabFooterPresenceForTesting(
+            identifier: original,
+            hasText: true,
+            at: 2
+        )
+        scanner.receiveTrackerContinuityLossForTesting()
+
+        var emitted: ScanSubject?
+        let confirmed = expectation(description: "different footer is emitted without stale slab")
+        scanner.onConfirmedSubjectCandidate = { _, _, subject, _ in
+            emitted = subject
+            confirmed.fulfill()
+        }
+        let subject = ScanSubject(identifier: different)
+        scanner.receiveFooterOutcomeForTesting(.identified(subject), at: 2.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(subject), at: 2.5)
+        wait(for: [confirmed], timeout: 1)
+
+        XCTAssertEqual(emitted?.identifier, different)
+        XCTAssertNil(emitted?.slab)
+    }
+
+    func testRM008FrameLevelTrackerLossRejectsLateSlabBinding() {
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "RM008-LATE-BIND",
+            labelCardText: ["CHARIZARD"]
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "OBF",
+            cardNumber: "223",
+            printedTotal: SetCodeMap.definitions["OBF"]!.officialCount,
+            setDefinition: SetCodeMap.definitions["OBF"]!
+        )
+
+        XCTAssertNil(scanner.receiveSlabLabelEvidenceForTesting(
+            evidence,
+            footerHasText: true,
+            at: 0
+        ))
+        XCTAssertEqual(scanner.receiveSlabLabelEvidenceForTesting(
+            evidence,
+            footerHasText: true,
+            at: 1.5
+        ), evidence)
+
+        // No footer presence confirmation occurred before tracker continuity
+        // was lost. The label is therefore still unbound and must not attach
+        // to the first later footer identity.
+        scanner.receiveTrackerContinuityLossForTesting()
+
+        var emitted: ScanSubject?
+        let confirmed = expectation(description: "late footer is emitted without a stale slab")
+        scanner.onConfirmedSubjectCandidate = { _, _, subject, _ in
+            emitted = subject
+            confirmed.fulfill()
+        }
+        let subject = ScanSubject(identifier: identifier)
+        scanner.receiveFooterOutcomeForTesting(.identified(subject), at: 2)
+        scanner.receiveFooterOutcomeForTesting(.identified(subject), at: 2.25)
+        wait(for: [confirmed], timeout: 1)
+
+        XCTAssertEqual(emitted?.identifier, identifier)
+        XCTAssertNil(emitted?.slab)
+        XCTAssertNil(scanner.latchedSubjectForTesting?.slab)
     }
 #endif
 

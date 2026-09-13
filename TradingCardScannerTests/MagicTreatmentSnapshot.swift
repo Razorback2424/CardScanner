@@ -152,7 +152,12 @@ struct MagicTreatmentSnapshot: Sendable, Equatable {
     }
 
     var auditedCards: [MagicTreatmentSnapshotCard] {
-        cardsBySetCode.values.flatMap { $0 }
+        cardsBySetCode.keys.sorted().flatMap { setCode in
+            (cardsBySetCode[setCode] ?? []).sorted {
+                if $0.id != $1.id { return $0.id < $1.id }
+                return ($0.collectorNumber, $0.name) < ($1.collectorNumber, $1.name)
+            }
+        }
     }
 }
 
