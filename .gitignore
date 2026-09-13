@@ -19,6 +19,9 @@ xcuserdata/
 # Local Git worktrees
 .worktrees/
 
+# Large local-only camera fixtures
+TestFixtures/TradingCards/HEIC/
+
 # Swift Package Manager
 .build/
 

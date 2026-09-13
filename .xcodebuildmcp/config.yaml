@@ -1,0 +1,14 @@
+schemaVersion: 1
+sessionDefaultsProfiles:
+  card-centering-external:
+    projectPath: /Users/seankeller/Documents/TradingCardScannerMVP_fixed_v4/.worktrees/opus-card-centering-implementation/TradingCardScanner.xcodeproj
+    scheme: TradingCardScanner
+    configuration: Debug
+    simulatorName: iPhone 17 Pro
+    simulatorId: EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86
+    simulatorPlatform: iOS Simulator
+    useLatestOS: true
+    derivedDataPath: /Volumes/Keller Family Photos/June 10 2026 dump
+      (move)/AdditionalStorage/TradingCardScannerMVP_fixed_v4/DerivedData
+    preferXcodebuild: true
+activeSessionDefaultsProfile: card-centering-external
