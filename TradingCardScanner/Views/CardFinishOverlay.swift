@@ -263,6 +263,7 @@ final class CardFinishMotionSource: ObservableObject {
 
     private let sampler: CardFinishMotionSampler
     private let now: () -> TimeInterval
+    private let reduceMotionEnabled: @MainActor () -> Bool
     private let collectionChannel = CardFinishMotionChannel(usage: .passive)
     private let detailChannel = CardFinishMotionChannel(usage: .detail)
     private var registrations: [UUID: Registration] = [:]
@@ -280,10 +281,12 @@ final class CardFinishMotionSource: ObservableObject {
 
     init(
         sampler: CardFinishMotionSampler? = nil,
-        now: @escaping () -> TimeInterval = { CACurrentMediaTime() }
+        now: @escaping () -> TimeInterval = { CACurrentMediaTime() },
+        reduceMotionEnabled: @escaping @MainActor () -> Bool = { UIAccessibility.isReduceMotionEnabled }
     ) {
         self.sampler = sampler ?? CardFinishCoreMotionSampler()
         self.now = now
+        self.reduceMotionEnabled = reduceMotionEnabled
         reduceMotionObserver = NotificationCenter.default.addObserver(
             forName: UIAccessibility.reduceMotionStatusDidChangeNotification,
             object: nil,
@@ -393,7 +396,7 @@ final class CardFinishMotionSource: ObservableObject {
 
     private func updateMotion() {
         _ = pruneDeadRegistrations()
-        guard !UIAccessibility.isReduceMotionEnabled,
+        guard !reduceMotionEnabled(),
               !registrations.isEmpty,
               sampler.isDeviceMotionAvailable else {
             stopDeviceMotion()
@@ -422,6 +425,14 @@ final class CardFinishMotionSource: ObservableObject {
     }
 
     private func receive(_ attitude: CardFinishMotionAttitude) {
+        // Core Motion delivers on the main queue, so a callback can already be
+        // queued when the accessibility setting changes. Re-check here rather
+        // than relying only on updateMotion() to keep Reduce Motion a strict
+        // no-live-delivery boundary.
+        guard !reduceMotionEnabled() else {
+            stopDeviceMotion()
+            return
+        }
         if pruneDeadRegistrations() {
             updateMotion()
             guard !registrations.isEmpty else { return }

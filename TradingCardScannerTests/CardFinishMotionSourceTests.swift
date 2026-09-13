@@ -129,6 +129,29 @@ final class CardFinishMotionSourceTests: XCTestCase {
         XCTAssertEqual(source.activeRegistrationCount, 0)
         XCTAssertTrue(sampler.isStopped)
     }
+
+    func testQueuedSensorCallbackAfterReduceMotionStopsWithoutDelivery() {
+        let sampler = TestMotionSampler()
+        var reduceMotionEnabled = false
+        let source = CardFinishMotionSource(
+            sampler: sampler,
+            reduceMotionEnabled: { reduceMotionEnabled }
+        )
+        let collection = source.channel(for: .passive)
+        let owner = TestRegistrationOwner()
+        let token = source.register(.passive, owner: owner)
+
+        sampler.emit(roll: 0.20, pitch: 0)
+        XCTAssertEqual(collection.deliveredSampleCount, 1)
+
+        reduceMotionEnabled = true
+        sampler.emit(roll: 0.40, pitch: 0)
+
+        XCTAssertEqual(collection.deliveredSampleCount, 1)
+        XCTAssertEqual(collection.tilt, .zero)
+        XCTAssertTrue(sampler.isStopped)
+        source.unregister(token)
+    }
 }
 
 private final class TestRegistrationOwner {}
