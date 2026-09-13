@@ -2302,8 +2302,10 @@ enum CollectionArtworkStore {
     /// Decoded artwork, kept in memory because the collection grid asks for it
     /// from inside `body`: every tile pass was re-reading and re-decompressing
     /// the file on the main thread, and scrolling back over a tile paid for it
-    /// again. `save` mints a fresh UUID filename for every write, so an entry
-    /// can never go stale under its key and only deletion has to evict.
+    /// again. The ordinary `save` call mints a fresh UUID filename for every
+    /// write, so an entry can never go stale under its key. Deterministic
+    /// fixtures may pass a filename, which replaces that file and clears the
+    /// decoded cache before it is read again.
     private static let imageCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 60
@@ -2399,15 +2401,21 @@ enum CollectionArtworkStore {
         }
     }
 
-    static func save(_ data: Data) -> String? {
-        guard let normalized = normalizedData(from: data), let directory else { return nil }
+    static func save(_ data: Data, filename requestedFilename: String? = nil) -> String? {
+        let filename = requestedFilename ?? (UUID().uuidString + ".image")
+        guard !filename.isEmpty,
+              filename != ".",
+              filename != "..",
+              URL(fileURLWithPath: filename).lastPathComponent == filename,
+              let normalized = normalizedData(from: data),
+              let directory else { return nil }
         do {
             try FileManager.default.createDirectory(
                 at: directory,
                 withIntermediateDirectories: true
             )
-            let filename = UUID().uuidString + ".image"
             try normalized.write(to: directory.appendingPathComponent(filename), options: .atomic)
+            imageCache.removeAllObjects()
             return filename
         } catch {
             return nil

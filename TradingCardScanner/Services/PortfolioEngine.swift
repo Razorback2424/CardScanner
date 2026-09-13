@@ -890,7 +890,7 @@ final class PortfolioEngine: ObservableObject {
         let descriptor = FetchDescriptor<InventoryEvent>(
             predicate: #Predicate {
                 $0.occurredAt >= earliestDay
-                    && $0.occurredAt <= latestCutoff
+                    && $0.occurredAt < latestCutoff
                     && $0.recordedAt > earliestPublication
             }
         )
@@ -921,7 +921,7 @@ final class PortfolioEngine: ObservableObject {
         let cutoff = PortfolioCalendar.boundary(afterDay: day, in: timeZone)
         return inventoryEvents.contains { event in
             event.occurredAt >= dayStart
-                && event.occurredAt <= cutoff
+                && event.occurredAt < cutoff
                 && event.recordedAt > publishedAt
         }
     }

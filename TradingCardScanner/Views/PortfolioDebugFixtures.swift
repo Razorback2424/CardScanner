@@ -6,6 +6,12 @@ import UIKit
 /// Deterministic portfolio inputs for screenshot routes. The production engine
 /// still derives every close, reconciliation row, and chart point from them.
 enum PortfolioDebugFixtures {
+    /// The performance route is repeatedly relaunched while comparing
+    /// scenarios. A reserved filename lets each run replace its one fixture
+    /// image instead of orphaning a new UUID-backed file in Application
+    /// Support.
+    static let cardFinishPerformanceArtworkFilename = "card-finish-performance.image"
+
     @MainActor
     static func seedMovementIfNeeded(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
@@ -356,10 +362,13 @@ enum PortfolioDebugFixtures {
         CardFinishPerformanceFixtureSpec(scenario: scenario, rowCount: rowCount)
     }
 
-    private static func cardFinishPerformanceArtworkFilename() -> String {
+    private static func prepareCardFinishPerformanceArtwork() -> String {
         guard let image = UIImage(named: "AppIcon"),
               let data = image.pngData(),
-              let filename = CollectionArtworkStore.save(data) else {
+              let filename = CollectionArtworkStore.save(
+                  data,
+                  filename: cardFinishPerformanceArtworkFilename
+              ) else {
             preconditionFailure("Could not prepare the bundled card-finish performance artwork.")
         }
         return filename
@@ -404,6 +413,11 @@ enum PortfolioDebugFixtures {
     /// here resets a scenario without ever touching a user's saved collection.
     @MainActor
     static func seedCardFinishPerformance(in modelContext: ModelContext) -> String? {
+        let previousArtworkFilenames = Set(
+            ((try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? [])
+                .map(\.filename)
+                .filter { !$0.isEmpty }
+        )
         for card in (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? [] {
             modelContext.delete(card)
         }
@@ -434,6 +448,9 @@ enum PortfolioDebugFixtures {
         for artwork in (try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? [] {
             modelContext.delete(artwork)
         }
+        for filename in previousArtworkFilenames {
+            CollectionArtworkStore.remove(filename: filename)
+        }
 
         let scenario = cardFinishPerformanceScenario()
         let fixture = cardFinishPerformanceFixtureSpec(
@@ -441,7 +458,7 @@ enum PortfolioDebugFixtures {
             rowCount: cardFinishPerformanceRowCount()
         )
         let store = CollectionStore(context: modelContext)
-        let artworkFilename = cardFinishPerformanceArtworkFilename()
+        let artworkFilename = prepareCardFinishPerformanceArtwork()
         var firstEligibleCollectionKey: String?
         var insertedRowCount = 0
 
