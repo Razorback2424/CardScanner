@@ -14,25 +14,26 @@ The code-gated portion of this plan is implemented in the working tree. The
 finish now has a pure render plan and one policy boundary, a single main-actor
 motion source with independently throttled collection/detail channels,
 epsilon-deduplicated delivery, weak-owner-backed visible-overlay registration,
-centered static fallbacks, accessibility cleanup, signposts, and passively
-sampled opt-in counters. The
+centered static fallbacks, accessibility cleanup, queued-callback protection,
+signposts, and passively sampled opt-in counters. The
 `CollectionFinishPerformance` route uses an isolated in-memory SwiftData
 container, accepts the documented row-count/scenario/policy launch arguments,
 and reports active renderers, sensor callbacks, channel deliveries, and body
-evaluations. Its fixture deliberately uses the same offline placeholder input
-for finish and non-finish rows so network/image decoding cannot contaminate the
-comparison.
+evaluations. Its fixture supplies the requested eligible 12/24/48 finish rows,
+normal and sealed controls, and one bundled local artwork payload shared across
+the comparison so network/image decoding and accent inputs cannot contaminate
+the result.
 
 Before the review fixes, the focused render/motion suite passed 12 tests, the
 full simulator suite passed 1,055 tests with one existing skip, and the
 `CARD_FINISH_PERF_HARNESS` Release simulator build succeeded. The review fixes
-add dead-owner and static-collection/detail coverage, so those verification
-results are now stale and must be rerun before merging. No physical-device
-Instruments traces have been captured in this environment, so the numeric
-performance gate, default fallback decision, and conditional custom-renderer
-spike remain intentionally open. The production default therefore remains
-`.live`, and the existing SwiftUI renderer remains the reference path until
-device evidence justifies changing it.
+add queued-callback, fixture-count, and shared-artwork coverage; the focused
+render/motion suites now pass 16 tests and a generic iOS Simulator build
+succeeds. No physical-device Instruments traces have been captured in this
+environment, so the numeric performance gate, default fallback decision, and
+conditional custom-renderer spike remain intentionally open. The production
+default therefore remains `.live`, and the existing SwiftUI renderer remains
+the reference path until device evidence justifies changing it.
 
 ---
 
@@ -97,7 +98,7 @@ Do not overwrite the pre-existing unrelated change in `CollectionCardDetailView.
 - [x] Record the current finish contract in tests before changing the renderer: catalog-confirmed raw foil, holo, and reverse rows can animate; graded/sealed collection rows do not receive the overlay; incompatible required finishes disable the collection effect; `neonInk` keeps its neon family; nil, `.catalogSilent`, and `.imported` resolution do not render; Reduce Motion keeps a centered static sheen, while Reduce Transparency removes it and stops motion.
 - [x] Add a deterministic `CollectionFinishPerformance` route seeded entirely from local fixture data. Compile it under `#if DEBUG || CARD_FINISH_PERF_HARNESS`, and build Release profiling artifacts with the opt-in `CARD_FINISH_PERF_HARNESS` condition; do not expose the route in ordinary Release/App Store builds. Apply the same condition to the required `PortfolioDebugFixtures` code.
 - [x] Make the performance-harness launch use an isolated in-memory or dedicated local SwiftData store selected before `TradingCardScannerApp.container` is created. Never clear, reuse, or seed the user's normal CloudKit/local collection. Reset that isolated store between scenarios so total row counts are exact rather than “seed if empty.”
-- [ ] Provide at least 12, 24, and 48 eligible raw rows, mixed across foil/holo/reverse and normal rows, plus a sealed/non-foil control set. Use the exact same bundled/local artwork payload and glow inputs for foil and non-foil controls so network latency, remote image decoding, and artwork-derived styling do not decide the result.
+- [x] Provide at least 12, 24, and 48 eligible raw rows, mixed across foil/holo/reverse and normal rows, plus a sealed/non-foil control set. Use the exact same bundled/local artwork payload and glow inputs for foil and non-foil controls so network latency, remote image decoding, and artwork-derived styling do not decide the result.
 - [x] Make the route expose stable launch arguments for row count and these cases: `grid-only`, `grid-with-detail`, `nonfoil-control`, `single-detail`, and `single-detail-control`. Keep the existing `CollectionTiles` and `CardDetail` routes unchanged.
 - [x] Add cheap signposts and debug-only counters for active finish renderers, sensor callbacks, delivered collection updates, delivered detail updates, and SwiftUI overlay body evaluations. Use signposts for timeline events/intervals and counters for accumulated totals; do not emit one persisted log message per renderer per frame.
 
