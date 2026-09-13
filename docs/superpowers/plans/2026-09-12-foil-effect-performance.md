@@ -8,6 +8,32 @@
 
 **Tech Stack:** SwiftUI, Core Motion, iOS 17, `OSSignposter` through the existing `PerformanceSignpost` helper, XCTest, and Instruments (`SwiftUI`, `Animation Hitches`, `Time Profiler`, and `Metal System Trace`). UIKit/Core Animation or another custom drawing path is conditional on the renderer spike. The project currently has no UI-test target.
 
+## Implementation status — 2026-09-12
+
+The code-gated portion of this plan is implemented in the working tree. The
+finish now has a pure render plan and one policy boundary, a single main-actor
+motion source with independently throttled collection/detail channels,
+epsilon-deduplicated delivery, weak-owner-backed visible-overlay registration,
+centered static fallbacks, accessibility cleanup, signposts, and passively
+sampled opt-in counters. The
+`CollectionFinishPerformance` route uses an isolated in-memory SwiftData
+container, accepts the documented row-count/scenario/policy launch arguments,
+and reports active renderers, sensor callbacks, channel deliveries, and body
+evaluations. Its fixture deliberately uses the same offline placeholder input
+for finish and non-finish rows so network/image decoding cannot contaminate the
+comparison.
+
+Before the review fixes, the focused render/motion suite passed 12 tests, the
+full simulator suite passed 1,055 tests with one existing skip, and the
+`CARD_FINISH_PERF_HARNESS` Release simulator build succeeded. The review fixes
+add dead-owner and static-collection/detail coverage, so those verification
+results are now stale and must be rerun before merging. No physical-device
+Instruments traces have been captured in this environment, so the numeric
+performance gate, default fallback decision, and conditional custom-renderer
+spike remain intentionally open. The production default therefore remains
+`.live`, and the existing SwiftUI renderer remains the reference path until
+device evidence justifies changing it.
+
 ---
 
 ## Investigation findings
@@ -68,12 +94,12 @@ Do not overwrite the pre-existing unrelated change in `CollectionCardDetailView.
 
 ### 1. Freeze the behavioral contract and add a stress fixture
 
-- [ ] Record the current finish contract in tests before changing the renderer: catalog-confirmed raw foil, holo, and reverse rows can animate; graded/sealed collection rows do not receive the overlay; incompatible required finishes disable the collection effect; `neonInk` keeps its neon family; nil, `.catalogSilent`, and `.imported` resolution do not render; Reduce Motion keeps a centered static sheen, while Reduce Transparency removes it and stops motion.
-- [ ] Add a deterministic `CollectionFinishPerformance` route seeded entirely from local fixture data. Compile it under `#if DEBUG || CARD_FINISH_PERF_HARNESS`, and build Release profiling artifacts with the opt-in `CARD_FINISH_PERF_HARNESS` condition; do not expose the route in ordinary Release/App Store builds. Apply the same condition to the required `PortfolioDebugFixtures` code.
-- [ ] Make the performance-harness launch use an isolated in-memory or dedicated local SwiftData store selected before `TradingCardScannerApp.container` is created. Never clear, reuse, or seed the user's normal CloudKit/local collection. Reset that isolated store between scenarios so total row counts are exact rather than “seed if empty.”
+- [x] Record the current finish contract in tests before changing the renderer: catalog-confirmed raw foil, holo, and reverse rows can animate; graded/sealed collection rows do not receive the overlay; incompatible required finishes disable the collection effect; `neonInk` keeps its neon family; nil, `.catalogSilent`, and `.imported` resolution do not render; Reduce Motion keeps a centered static sheen, while Reduce Transparency removes it and stops motion.
+- [x] Add a deterministic `CollectionFinishPerformance` route seeded entirely from local fixture data. Compile it under `#if DEBUG || CARD_FINISH_PERF_HARNESS`, and build Release profiling artifacts with the opt-in `CARD_FINISH_PERF_HARNESS` condition; do not expose the route in ordinary Release/App Store builds. Apply the same condition to the required `PortfolioDebugFixtures` code.
+- [x] Make the performance-harness launch use an isolated in-memory or dedicated local SwiftData store selected before `TradingCardScannerApp.container` is created. Never clear, reuse, or seed the user's normal CloudKit/local collection. Reset that isolated store between scenarios so total row counts are exact rather than “seed if empty.”
 - [ ] Provide at least 12, 24, and 48 eligible raw rows, mixed across foil/holo/reverse and normal rows, plus a sealed/non-foil control set. Use the exact same bundled/local artwork payload and glow inputs for foil and non-foil controls so network latency, remote image decoding, and artwork-derived styling do not decide the result.
-- [ ] Make the route expose stable launch arguments for row count and these cases: `grid-only`, `grid-with-detail`, `nonfoil-control`, `single-detail`, and `single-detail-control`. Keep the existing `CollectionTiles` and `CardDetail` routes unchanged.
-- [ ] Add cheap signposts and debug-only counters for active finish renderers, sensor callbacks, delivered collection updates, delivered detail updates, and SwiftUI overlay body evaluations. Use signposts for timeline events/intervals and counters for accumulated totals; do not emit one persisted log message per renderer per frame.
+- [x] Make the route expose stable launch arguments for row count and these cases: `grid-only`, `grid-with-detail`, `nonfoil-control`, `single-detail`, and `single-detail-control`. Keep the existing `CollectionTiles` and `CardDetail` routes unchanged.
+- [x] Add cheap signposts and debug-only counters for active finish renderers, sensor callbacks, delivered collection updates, delivered detail updates, and SwiftUI overlay body evaluations. Use signposts for timeline events/intervals and counters for accumulated totals; do not emit one persisted log message per renderer per frame.
 
 Expected result: one repeatable route can compare identical local artwork/data with and without the finish, report how many renderers are actually active, and show whether a detail view promotes collection updates to 60 Hz.
 
@@ -88,14 +114,14 @@ Expected result: the plan has trace-backed baseline evidence and can attribute t
 
 ### 3. Extract a pure render plan before changing rendering technology
 
-- [ ] Add a value type near the overlay implementation, or in a new focused file, with only render inputs and derived values. Its shape should be equivalent to:
+- [x] Add a value type near the overlay implementation, or in a new focused file, with only render inputs and derived values. Its shape should be equivalent to:
 
   ```swift
   struct CardFinishRenderPlan: Equatable, Sendable {
       enum Mode: Equatable, Sendable {
           case disabled
           case staticSurface
-          case live(rateHz: Int)
+          case live
       }
 
       let family: SheenFamily?
@@ -104,18 +130,21 @@ Expected result: the plan has trace-backed baseline evidence and can attribute t
   }
   ```
 
-- [ ] Build the plan from the existing variant, resolution, displayed treatment evidence, `motionUsage`, Reduce Motion, Reduce Transparency, and the eventual performance policy. Do not duplicate treatment compatibility logic in the renderer.
-- [ ] Preserve the current visual families: dispersed foil for the ordinary supported foil/reverse variants and neon for `neonInk`. Keep concrete colors, stops, band overlap, and blend implementation in a renderer style/configuration rather than treating them as eligibility policy. Do not prematurely encode a one-gradient approximation in the pure plan.
-- [ ] Make static mode a centered, non-updating plan rather than a hidden/removed identity. Disabled mode is reserved for Reduce Transparency or an explicit emergency fallback.
+  Cadence belongs to `CardFinishMotionUsage` and its delivery channel; the
+  render mode only answers whether the surface is disabled, static, or live.
+
+- [x] Build the plan from the existing variant, resolution, displayed treatment evidence, `motionUsage`, Reduce Motion, Reduce Transparency, and the eventual performance policy. Do not duplicate treatment compatibility logic in the renderer.
+- [x] Preserve the current visual families: dispersed foil for the ordinary supported foil/reverse variants and neon for `neonInk`. Keep concrete colors, stops, band overlap, and blend implementation in a renderer style/configuration rather than treating them as eligibility policy. Do not prematurely encode a one-gradient approximation in the pure plan.
+- [x] Make static mode a centered, non-updating plan rather than a hidden/removed identity. Disabled mode is reserved for Reduce Transparency or an explicit emergency fallback.
 
 Expected result: eligibility, family, cadence policy, and accessibility behavior can be unit-tested without SwiftUI, Core Motion, or a simulator. Pixel output and blend fidelity still require rendered validation.
 
 ### 4. Separate collection/detail delivery and suppress immaterial updates
 
-- [ ] Keep exactly one `CMMotionManager` for the app/environment and make `CardFinishMotionSource` main-actor isolated. Inject the motion sampler and monotonic clock/scheduler seams needed for deterministic tests; tests must not depend on Core Motion hardware or wall-clock sleeps.
-- [ ] First implement separate collection and detail delivery channels. Collection subscribers receive no more than 30 Hz even while detail causes the sensor to sample at 60 Hz; detail subscribers may receive 60 Hz. This can retain a small observable endpoint per channel for the existing SwiftUI renderer during the first re-profile.
-- [ ] Deduplicate negligible *delivered* tilt changes using a named, tested threshold. Keep internal smoothing fed by all sensor samples so the threshold does not change the filter response. Also deliver/reset the centered state when motion stops so the existing Reduce Motion behavior is preserved.
-- [ ] Replace the root `gridIsActive` Boolean with visible eligible-overlay registration (or a reference-counted equivalent) so off-screen eligible data does not keep Core Motion active. Store registrations weakly or return idempotent registration tokens; do not depend on balanced `onAppear`/`onDisappear` calls alone.
+- [x] Keep exactly one `CMMotionManager` for the app/environment and make `CardFinishMotionSource` main-actor isolated. Inject the motion sampler and monotonic clock/scheduler seams needed for deterministic tests; tests must not depend on Core Motion hardware or wall-clock sleeps.
+- [x] First implement separate collection and detail delivery channels. Collection subscribers receive no more than 30 Hz even while detail causes the sensor to sample at 60 Hz; detail subscribers may receive 60 Hz. This can retain a small observable endpoint per channel for the existing SwiftUI renderer during the first re-profile.
+- [x] Deduplicate negligible *delivered* tilt changes using a named, tested threshold. Keep internal smoothing fed by all sensor samples so the threshold does not change the filter response. Also deliver/reset the centered state when motion stops so the existing Reduce Motion behavior is preserved.
+- [x] Replace the root `gridIsActive` Boolean with visible eligible-overlay registration (or a reference-counted equivalent) so off-screen eligible data does not keep Core Motion active. Store registrations weakly or return idempotent registration tokens; do not depend on balanced `onAppear`/`onDisappear` calls alone.
 - [ ] Re-run the baseline scenarios. If this phase meets the accepted budget, stop here: do not introduce a custom renderer solely because it was anticipated by the original plan.
 - [ ] If traces still show SwiftUI body/update cost from motion delivery, introduce a main-actor sink API for a custom renderer similar to:
 
@@ -134,7 +163,7 @@ Expected result: eligibility, family, cadence policy, and accessibility behavior
   ```
 
 - [ ] For the sink path, store weak sink registrations or idempotent registration tokens, track the maximum requested sensor rate, and throttle each sink by monotonic timestamps. A detail sink may receive 60 Hz; a collection sink receives no more than 30 Hz even when the sensor is sampling at 60 Hz for a simultaneously visible detail sink.
-- [ ] Keep motion lifecycle and accessibility transitions explicit. When Reduce Motion becomes enabled, unregister/stop live updates and apply the centered static plan; when it becomes disabled, re-register only visible live sinks.
+- [x] Keep motion lifecycle and accessibility transitions explicit. When Reduce Motion becomes enabled, unregister/stop live updates and apply the centered static plan; when it becomes disabled, re-register only visible live sinks.
 
 Expected result: a split-view detail never makes collection deliveries exceed 30 Hz, immaterial sensor noise does not cause deliveries, and the sensor stops when no visible live finish exists. If a custom renderer is required, its direct sink path causes no motion-driven `CardFinishOverlay.body` evaluations.
 
@@ -153,25 +182,24 @@ Expected result: only if baseline evidence requires it, a tilt update becomes bo
 
 ### 6. Integrate collection, detail, and fallback policy
 
-- [ ] In `CollectionView.swift`, keep `row.hasSpecularFinish` as the eligibility check and preserve stable `entry.id` identity. Use the collection delivery channel or selected custom renderer with `live(rateHz: 30)` when policy allows it.
-- [ ] In `CollectionCardDetailView.swift`, preserve the hero layout and use the detail delivery channel or selected custom renderer with `live(rateHz: 60)` when the detail plan is active. Leave the unrelated graded-printing change intact.
-- [ ] Remove the snapshot-wide `startGrid`/`stopGrid` coupling once visible-overlay registration owns lifetime. A collection containing eligible off-screen rows but no visible live renderer must not keep Core Motion active.
-- [ ] Add a single `CardFinishPerformancePolicy` boundary with explicit collection and detail outcomes, for example `.live`, `.staticCollection`, `.staticAll`, and `.disabled`. Do not overload `.disabled` to mean static detail. The default remains `.live` while the optimized path is being profiled.
+- [x] In `CollectionView.swift`, keep `row.hasSpecularFinish` as the eligibility check and preserve stable `entry.id` identity. Use the collection delivery channel or selected custom renderer in `.live` mode at the collection usage's 30 Hz cadence when policy allows it.
+- [x] In `CollectionCardDetailView.swift`, preserve the hero layout and use the detail delivery channel or selected custom renderer in `.live` mode at the detail usage's 60 Hz cadence when the detail plan is active. Leave the unrelated graded-printing change intact.
+- [x] Remove the snapshot-wide `startGrid`/`stopGrid` coupling once visible-overlay registration owns lifetime. A collection containing eligible off-screen rows but no visible live renderer must not keep Core Motion active.
+- [x] Add a single `CardFinishPerformancePolicy` boundary with explicit collection and detail outcomes, for example `.live`, `.staticCollection`, `.staticAll`, and `.disabled`. Do not overload `.disabled` to mean static detail. The default remains `.live` while the optimized path is being profiled.
 - [ ] If profiling shows only the grid misses budget, switch collection to centered static sheen while keeping detail live. If detail also misses budget after the selected renderer work, use static detail as the explicit rollback. Do not remove treatment labels, finish dots, variant identity, or persisted treatment evidence.
 - [ ] Do not make an unmeasured active-tile threshold the primary fix. If an adaptive threshold is useful after profiling, derive it from measured device budgets, document it in the policy, and test the boundary.
 
 ### 7. Add regression tests before claiming the fix
 
-- [ ] Add `CardFinishRenderPlanTests` covering:
+- [x] Add `CardFinishRenderPlanTests` covering:
   - raw foil, holo, and reverse eligibility;
   - ordinary dispersed and `neonInk` families;
-  - incompatible required finish evidence;
-  - graded and sealed rows;
+  - collection-side incompatible required finish, graded, and sealed eligibility remains covered by the existing `CollectionQueryTests` boundary;
   - catalog-silent/imported resolution;
   - Reduce Motion, Reduce Transparency, static collection fallback, and disabled plans;
   - stable renderer-configuration expectations only for the implementation selected by the measured gate; do not assert an arbitrary layer count in pure policy tests.
-- [ ] Add `CardFinishMotionSourceTests` with a fake motion sampler and monotonic clock. Cover channel registration/unregistration, lifecycle cleanup, epsilon deduplication, 30 Hz collection delivery, 60 Hz detail delivery, and mixed-rate split view delivery. Add weak-sink cleanup tests only if the custom sink path is selected.
-- [ ] Extend the existing collection-query tests only where the render policy depends on an existing eligibility rule. Do not move treatment semantics into performance tests.
+- [x] Add `CardFinishMotionSourceTests` with a fake motion sampler and monotonic clock. Cover channel registration/unregistration, lifecycle cleanup, epsilon deduplication, 30 Hz collection delivery, 60 Hz detail delivery, and mixed-rate split view delivery. Add weak-sink cleanup tests only if the custom sink path is selected.
+- [x] Extend the existing collection-query tests only where the render policy depends on an existing eligibility rule. Do not move treatment semantics into performance tests.
 - [ ] Use the deterministic debug route for a manual/device smoke pass that verifies the finish remains visible in live and static modes, the grid remains scrollable, and Reduce Motion stops live deliveries. If a UI-test target is separately added, automate the same route; do not make that new target a prerequisite for the fix.
 - [ ] Keep Instruments/signposts as the performance harness. XCTest timing on Simulator is not a substitute for the device frame/hitch gate.
 
