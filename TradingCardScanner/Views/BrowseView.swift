@@ -580,7 +580,7 @@ struct BrowseView: View {
     }
 }
 
-enum CatalogGameCardsOrdering {
+enum CatalogSetOrdering {
     static func newestFirst(_ sets: [CatalogSet]) -> [CatalogSet] {
         sets.sorted {
             if $0.releaseOrder != $1.releaseOrder {
@@ -612,7 +612,7 @@ private struct CatalogGameCardsView: View {
     @State private var searchRequestKey: String?
 
     private var orderedSets: [CatalogSet] {
-        CatalogGameCardsOrdering.newestFirst(sets)
+        CatalogSetOrdering.newestFirst(sets)
     }
 
     private var normalizedSearch: String {
@@ -867,11 +867,12 @@ private struct CatalogSetListView: View {
 
     private var visible: [CatalogSet] {
         let query = CardNameSearch.normalize(search)
-        guard !query.isEmpty else { return sets }
-        return sets.filter {
-            CardNameSearch.normalize($0.name).contains(query)
+        let filtered = sets.filter {
+            query.isEmpty
+                || CardNameSearch.normalize($0.name).contains(query)
                 || CardNameSearch.normalize($0.code).contains(query)
         }
+        return CatalogSetOrdering.newestFirst(filtered)
     }
 
     var body: some View {
@@ -1670,10 +1671,14 @@ private struct CatalogSetFilterSheet: View {
 
     private var visible: [CatalogSet] {
         let query = CardNameSearch.normalize(search)
-        return sets.filter { set in
+        let filtered = sets.filter { set in
             (selectedGame == nil || set.game == selectedGame)
-                && (query.isEmpty || CardNameSearch.normalize(set.name + " " + set.code).contains(query))
+                && (
+                    query.isEmpty
+                        || CardNameSearch.normalize(set.name + " " + set.code).contains(query)
+                )
         }
+        return CatalogSetOrdering.newestFirst(filtered)
     }
 
     var body: some View {
