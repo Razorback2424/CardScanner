@@ -75,6 +75,13 @@ final class BrowseFeatureTests: XCTestCase {
         )
     }
 
+    @MainActor
+    func testBrowseSearchDefaultsToAllResultKinds() {
+        let model = BrowseViewModel(catalog: EmptyBrowseCatalog())
+
+        XCTAssertEqual(model.searchScope, .all)
+    }
+
     func testPokemonReleaseOrderCacheUsesProviderSetID() {
         PokemonCatalogReleaseOrder.install(["sv08.5": 312])
         XCTAssertEqual(PokemonCatalogReleaseOrder.order(forSetID: "SV08.5"), 312)
@@ -202,6 +209,173 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(
             CatalogSetOrdering.newestFirst([beta, alpha]).map(\.id),
             [alpha.id, beta.id]
+        )
+    }
+
+    func testCatalogSetOrderingJustReleasedUsesTwoPerGameThenCapsTheRail() {
+        let pokemonNewest = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "pokemon-newest"),
+            name: "Pokémon Newest",
+            code: "PN",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 550
+        )
+        let pokemonSecond = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "pokemon-second"),
+            name: "Pokémon Second",
+            code: "PS",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 450
+        )
+        let pokemonOlder = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "pokemon-older"),
+            name: "Pokémon Older",
+            code: "PO",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let magicNewest = CatalogSet(
+            catalogID: CatalogSetID(game: .magic, providerID: "magic-newest"),
+            name: "Magic Newest",
+            code: "MN",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: Date(timeIntervalSince1970: 500 * 86_400),
+            sortRank: 0
+        )
+        let magicSecond = CatalogSet(
+            catalogID: CatalogSetID(game: .magic, providerID: "magic-second"),
+            name: "Magic Second",
+            code: "MS",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: Date(timeIntervalSince1970: 350 * 86_400),
+            sortRank: 0
+        )
+        let magicOlder = CatalogSet(
+            catalogID: CatalogSetID(game: .magic, providerID: "magic-older"),
+            name: "Magic Older",
+            code: "MO",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: Date(timeIntervalSince1970: 1 * 86_400),
+            sortRank: 0
+        )
+
+        let rail = CatalogSetOrdering.justReleased(
+            from: [
+                .pokemon: [pokemonOlder, pokemonSecond, pokemonNewest],
+                .magic: [magicOlder, magicSecond, magicNewest]
+            ]
+        )
+
+        XCTAssertEqual(rail.count, 3)
+        XCTAssertEqual(
+            rail.map(\.id),
+            [pokemonNewest.id, magicNewest.id, pokemonSecond.id]
+        )
+        XCTAssertFalse(rail.contains(pokemonOlder))
+        XCTAssertFalse(rail.contains(magicOlder))
+    }
+
+    func testCatalogSetOrderingNewBadgeIsNilSafeAndUses45DayWindow() {
+        let now = Date(timeIntervalSince1970: 2_000 * 86_400)
+        func set(releasedAt: Date?) -> CatalogSet {
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: UUID().uuidString),
+                name: "Fixture",
+                code: "FIX",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: nil,
+                releaseDate: releasedAt,
+                sortRank: 1
+            )
+        }
+
+        XCTAssertTrue(
+            CatalogSetOrdering.isNew(
+                set(releasedAt: now.addingTimeInterval(-45 * 86_400)),
+                now: now
+            )
+        )
+        XCTAssertTrue(
+            CatalogSetOrdering.isNew(
+                set(releasedAt: now.addingTimeInterval(-44 * 86_400)),
+                now: now
+            )
+        )
+        XCTAssertFalse(
+            CatalogSetOrdering.isNew(
+                set(releasedAt: now.addingTimeInterval(-45 * 86_400 - 1)),
+                now: now
+            )
+        )
+        XCTAssertFalse(
+            CatalogSetOrdering.isNew(
+                set(releasedAt: now.addingTimeInterval(1)),
+                now: now
+            )
+        )
+        XCTAssertFalse(CatalogSetOrdering.isNew(set(releasedAt: nil), now: now))
+    }
+
+    func testCatalogSetListMostCompleteSortLeavesUnknownTotalsLast() {
+        let complete = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "complete"),
+            name: "Complete",
+            code: "CMP",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let unknown = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "unknown"),
+            name: "Unknown",
+            code: "UNK",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: nil,
+            releaseDate: nil,
+            sortRank: 500
+        )
+        let card = CollectedCard(
+            collectionKey: "catalog-list-complete",
+            game: .pokemon,
+            providerID: "complete-001",
+            name: "Card",
+            setName: "Complete",
+            setCode: "CMP",
+            cardNumber: "001",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .normal,
+            variantResolution: .userConfirmed
+        )
+        let ownership = CatalogOwnershipIndex([card])
+
+        XCTAssertEqual(
+            CatalogSetOrdering.ordered(
+                [unknown, complete],
+                by: .mostComplete,
+                ownership: ownership
+            ).map(\.id),
+            [complete.id, unknown.id]
         )
     }
 

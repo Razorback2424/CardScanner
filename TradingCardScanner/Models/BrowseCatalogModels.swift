@@ -234,6 +234,43 @@ struct SetCompletion: Equatable, Sendable {
     }
 }
 
+/// Sorting options for the catalog's set directory. These are deliberately
+/// separate from `CatalogSetSort`, which sorts cards inside one set.
+enum CatalogSetListSort: String, CaseIterable, Identifiable, Sendable {
+    case newestFirst
+    case oldestFirst
+    case nameAToZ
+    case mostComplete
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .newestFirst: return "Newest first"
+        case .oldestFirst: return "Oldest first"
+        case .nameAToZ: return "Name A–Z"
+        case .mostComplete: return "Most complete"
+        }
+    }
+}
+
+/// The set directory exposes only ownership state that the catalog can answer
+/// locally. Era and series filters are intentionally deferred until both
+/// providers publish a decoded, cached field for them.
+enum CatalogSetListFilter: String, CaseIterable, Identifiable, Sendable {
+    case all
+    case started
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .all: return "All sets"
+        case .started: return "Started"
+        }
+    }
+}
+
 /// Set-list completion counts distinct numbered cards because the provider's
 /// set total is a card count. The loaded set screen uses the separate slot
 /// overload below, where both numerator and denominator are variations.
