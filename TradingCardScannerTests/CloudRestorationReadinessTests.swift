@@ -16,7 +16,10 @@ final class CloudRestorationReadinessTests: XCTestCase {
     }
 
     func testFixedSourcePreservesEmptyAndPopulatedEvidence() async {
-        for expected in [CloudRestorationReadiness.readyEmpty, .readyPopulated] {
+        for expected in [
+            CloudRestorationReadiness.readyEmpty(remoteGeneration: "generation-a"),
+            .readyPopulated(remoteGeneration: "generation-a")
+        ] {
             let source = FixedCloudRestorationReadinessSource(result: expected)
             let result = await source.readiness(
                 storeID: storeID,

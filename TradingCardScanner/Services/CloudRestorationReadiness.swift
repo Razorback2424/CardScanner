@@ -9,8 +9,8 @@ enum CloudRestorationReadiness: Equatable, Sendable {
     case notApplicable
     case checkingRemoteCollection
     case importingRemoteCollection
-    case readyEmpty
-    case readyPopulated
+    case readyEmpty(remoteGeneration: String)
+    case readyPopulated(remoteGeneration: String)
     case failed(category: String)
 
     var isReady: Bool {
@@ -26,13 +26,22 @@ enum CloudRestorationReadiness: Equatable, Sendable {
         if case .failed = self { return true }
         return false
     }
+
+    var remoteGeneration: String? {
+        switch self {
+        case let .readyEmpty(remoteGeneration), let .readyPopulated(remoteGeneration):
+            return remoteGeneration.isEmpty ? nil : remoteGeneration
+        case .notApplicable, .checkingRemoteCollection, .importingRemoteCollection, .failed:
+            return nil
+        }
+    }
 }
 
 enum CloudRestorationReadinessContract {
     /// Bump whenever the evidence mechanism or its ordering contract changes.
     /// A checkpoint written by an older mechanism can never authorize a new
     /// launch as authoritative.
-    static let currentMechanismVersion = 1
+    static let currentMechanismVersion = 2
 }
 
 /// The smallest typed boundary a production readiness implementation must

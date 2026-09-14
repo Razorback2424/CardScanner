@@ -66,59 +66,101 @@ final class CloudCollectionAnchorStoreTests: XCTestCase {
     func testMatchingAndDifferentAnchorsRemainTyped() async {
         let matching = CloudCollectionAnchorStore(
             client: FakeDatabase(
-                mode: .existing(CloudCollectionAnchor(storeID: localID, formatVersion: 1))
+                mode: .existing(CloudCollectionAnchor(
+                    storeID: localID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "generation-a"
+                ))
             )
         )
         let matchingState = await matching.readState()
         XCTAssertEqual(
             matchingState,
-            .found(CloudCollectionAnchor(storeID: localID, formatVersion: 1))
+            .found(CloudCollectionAnchor(
+                storeID: localID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-a"
+            ))
         )
 
         let different = CloudCollectionAnchorStore(
             client: FakeDatabase(
-                mode: .existing(CloudCollectionAnchor(storeID: remoteID, formatVersion: 1))
+                mode: .existing(CloudCollectionAnchor(
+                    storeID: remoteID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "generation-a"
+                ))
             )
         )
         let differentState = await different.readState()
         XCTAssertEqual(
             differentState,
-            .found(CloudCollectionAnchor(storeID: remoteID, formatVersion: 1))
+            .found(CloudCollectionAnchor(
+                storeID: remoteID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-a"
+            ))
         )
     }
 
     func testFirstClaimSucceedsAndReadAfterWriteIsRequiredByClientContract() async {
-        let store = CloudCollectionAnchorStore(client: FakeDatabase(mode: .missing))
+        let store = CloudCollectionAnchorStore(
+            client: FakeDatabase(mode: .missing),
+            generationProvider: { "generation-a" }
+        )
         let firstClaim = await store.claim(storeID: localID)
         XCTAssertEqual(
             firstClaim,
-            .claimed(CloudCollectionAnchor(storeID: localID, formatVersion: 1))
+            .claimed(CloudCollectionAnchor(
+                storeID: localID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-a"
+            ))
         )
         let stateAfterClaim = await store.readState()
         XCTAssertEqual(
             stateAfterClaim,
-            .found(CloudCollectionAnchor(storeID: localID, formatVersion: 1))
+            .found(CloudCollectionAnchor(
+                storeID: localID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-a"
+            ))
         )
     }
 
     func testSecondClaimCannotOverwriteTheFirstIdentity() async {
         let database = FakeDatabase(mode: .missing)
-        let store = CloudCollectionAnchorStore(client: database)
+        let store = CloudCollectionAnchorStore(
+            client: database,
+            generationProvider: { "generation-a" }
+        )
         let first = await store.claim(storeID: localID)
         let second = await store.claim(storeID: remoteID)
 
         XCTAssertEqual(
             first,
-            .claimed(CloudCollectionAnchor(storeID: localID, formatVersion: 1))
+            .claimed(CloudCollectionAnchor(
+                storeID: localID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-a"
+            ))
         )
         XCTAssertEqual(
             second,
-            .alreadyClaimed(CloudCollectionAnchor(storeID: localID, formatVersion: 1))
+            .alreadyClaimed(CloudCollectionAnchor(
+                storeID: localID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-a"
+            ))
         )
         let stateAfterFirstClaim = await store.readState()
         XCTAssertEqual(
             stateAfterFirstClaim,
-            .found(CloudCollectionAnchor(storeID: localID, formatVersion: 1))
+            .found(CloudCollectionAnchor(
+                storeID: localID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-a"
+            ))
         )
     }
 
@@ -135,10 +177,13 @@ final class CloudCollectionAnchorStoreTests: XCTestCase {
         XCTAssertEqual(CloudCollectionAnchorSchema.recordName, "canonical-collection")
         XCTAssertEqual(CloudCollectionAnchorSchema.storeIDField, "storeID")
         XCTAssertEqual(CloudCollectionAnchorSchema.formatVersionField, "formatVersion")
+        XCTAssertEqual(CloudCollectionAnchorSchema.remoteGenerationField, "remoteGeneration")
         XCTAssertEqual(CloudCollectionAnchorSchema.createdAtField, "createdAt")
+        XCTAssertEqual(CloudCollectionAnchorSchema.currentFormatVersion, 2)
         let fields = [
             CloudCollectionAnchorSchema.storeIDField,
             CloudCollectionAnchorSchema.formatVersionField,
+            CloudCollectionAnchorSchema.remoteGenerationField,
             CloudCollectionAnchorSchema.createdAtField
         ]
         XCTAssertFalse(fields.contains { $0.localizedCaseInsensitiveContains("card") })

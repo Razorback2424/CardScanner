@@ -11,12 +11,19 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         account: @escaping @MainActor () async -> CloudAccountAvailability,
         anchor: @escaping @MainActor () async -> CloudCollectionAnchorState = { .missing },
         claim: @escaping @MainActor (UUID) async -> CloudCollectionAnchorClaimResult = { storeID in
-            .claimed(CloudCollectionAnchor(storeID: storeID, formatVersion: 1))
+            .claimed(CloudCollectionAnchor(
+                storeID: storeID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "test-generation"
+            ))
         },
-        readiness: any CloudRestorationReadinessSource = FixedCloudRestorationReadinessSource(result: .readyEmpty),
+        readiness: any CloudRestorationReadinessSource = FixedCloudRestorationReadinessSource(
+            result: .readyEmpty(remoteGeneration: "test-generation")
+        ),
         makeContainer: (@MainActor (CollectionStorageMode) throws -> ModelContainer)? = nil,
         structuredStoreFilePresent: Bool = false,
         structuredStoreBaseFilePresent: Bool? = nil,
+        storeFileIdentityValue: String? = nil,
         directorySuffix: String = UUID().uuidString
     ) throws -> CollectionStorageBootstrapDependencies {
         let directory = FileManager.default.temporaryDirectory
@@ -50,7 +57,10 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             },
             localHasUserData: { false },
             storeFileIdentity: { "test-store-file-identity" },
-            readStoreFileIdentity: { structuredStoreFilePresent ? "test-store-file-identity" : nil },
+            readStoreFileIdentity: {
+                if let storeFileIdentityValue { return storeFileIdentityValue }
+                return structuredStoreFilePresent ? "test-store-file-identity" : nil
+            },
             adoptLegacyStore: { nil },
             localOnlyTransitionProven: true
         )
@@ -118,7 +128,9 @@ final class CollectionStorageBootstrapTests: XCTestCase {
     func testFreshAvailableAccountClaimsAndOpensCloudOnlyAfterReadinessProof() async throws {
         let dependencies = try makeDependencies(
             account: { .available(fingerprint: "account-a") },
-            readiness: FixedCloudRestorationReadinessSource(result: .readyPopulated)
+            readiness: FixedCloudRestorationReadinessSource(
+                result: .readyPopulated(remoteGeneration: "test-generation")
+            )
         )
         let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
 
@@ -135,7 +147,8 @@ final class CollectionStorageBootstrapTests: XCTestCase {
                 storeID: session.storeID,
                 accountFingerprint: "account-a",
                 storeFileIdentity: "test-store-file-identity",
-                mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion
+                mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
+                currentRemoteGeneration: "test-generation"
             )
         )
     }
@@ -189,7 +202,13 @@ final class CollectionStorageBootstrapTests: XCTestCase {
     func testDifferentRemoteCollectionNeverOpensEitherCollection() async throws {
         let dependencies = try makeDependencies(
             account: { .available(fingerprint: "account-a") },
-            anchor: { .found(CloudCollectionAnchor(storeID: self.remoteID, formatVersion: 1)) },
+            anchor: {
+                .found(CloudCollectionAnchor(
+                    storeID: self.remoteID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "test-generation"
+                ))
+            },
             structuredStoreFilePresent: true
         )
         try dependencies.manifestStore.save(CollectionStoreManifest(
@@ -232,6 +251,50 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         XCTAssertNil(try dependencies.manifestStore.load())
     }
 
+    func testCorruptReplicaStatesNeverOpenACloudContainer() async throws {
+        for (basePresent, filePresent, sidecar) in [
+            (true, true, Optional<String>.none),
+            (true, true, Optional("different-file-identity")),
+            (false, true, Optional("test-store-file-identity"))
+        ] {
+            var makeCount = 0
+            let dependencies = try makeDependencies(
+                account: { .available(fingerprint: "account-a") },
+                anchor: {
+                    .found(CloudCollectionAnchor(
+                        storeID: self.localID,
+                        formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                        remoteGeneration: "test-generation"
+                    ))
+                },
+                makeContainer: { _ in
+                    makeCount += 1
+                    return try ModelContainer(
+                        for: CollectionStorageModelSchema.full,
+                        configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                    )
+                },
+                structuredStoreFilePresent: filePresent,
+                structuredStoreBaseFilePresent: basePresent,
+                storeFileIdentityValue: sidecar
+            )
+            try dependencies.manifestStore.save(CollectionStoreManifest(
+                storeID: localID,
+                lastAttachedAccountFingerprint: "account-a",
+                attachmentState: .attached,
+                storeFileIdentity: "test-store-file-identity"
+            ))
+
+            let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+            await bootstrap.start()
+
+            guard case .recoveryRequired = bootstrap.state else {
+                return XCTFail("expected recovery for corrupt replica state")
+            }
+            XCTAssertEqual(makeCount, 0)
+        }
+    }
+
     func testCloudRestorationFailureDoesNotRenderReadyEmptyCollection() async throws {
         let dependencies = try makeDependencies(
             account: { .available(fingerprint: "account-a") },
@@ -247,6 +310,46 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         XCTAssertEqual(category, "test-proof-missing")
     }
 
+    func testSuccessfulMissingReplicaRestorationRotatesStoreFileIdentity() async throws {
+        let dependencies = try makeDependencies(
+            account: { .available(fingerprint: "account-a") },
+            anchor: {
+                .found(CloudCollectionAnchor(
+                    storeID: self.localID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "test-generation"
+                ))
+            },
+            readiness: FixedCloudRestorationReadinessSource(
+                result: .readyPopulated(remoteGeneration: "test-generation")
+            ),
+            structuredStoreFilePresent: false,
+            structuredStoreBaseFilePresent: false,
+            storeFileIdentityValue: nil
+        )
+        try dependencies.manifestStore.save(CollectionStoreManifest(
+            storeID: localID,
+            lastAttachedAccountFingerprint: "account-a",
+            attachmentState: .attached,
+            storeFileIdentity: "old-file-identity"
+        ))
+
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+        await bootstrap.start()
+
+        guard case .ready = bootstrap.state else {
+            return XCTFail("expected restored cloud session")
+        }
+        let manifest = try XCTUnwrap(try dependencies.manifestStore.load())
+        let activeIdentity = try XCTUnwrap(try dependencies.manifestStore.readStoreFileIdentity())
+        XCTAssertEqual(manifest.storeFileIdentity, activeIdentity)
+        XCTAssertNotEqual(activeIdentity, "old-file-identity")
+        XCTAssertEqual(
+            try String(contentsOf: dependencies.manifestStore.previousStoreFileIdentityURL),
+            "old-file-identity"
+        )
+    }
+
     func testConfirmedNewAccountClaimsBeforeConstructingCloudContainer() async throws {
         var claimCount = 0
         var makeCount = 0
@@ -254,7 +357,11 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             account: { .available(fingerprint: "account-b") },
             claim: { storeID in
                 claimCount += 1
-                return .claimed(CloudCollectionAnchor(storeID: storeID, formatVersion: 1))
+                return .claimed(CloudCollectionAnchor(
+                    storeID: storeID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "test-generation"
+                ))
             },
             makeContainer: { _ in
                 makeCount += 1
@@ -288,7 +395,11 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         let dependencies = try makeDependencies(
             account: { .available(fingerprint: "account-b") },
             claim: { _ in
-                .alreadyClaimed(CloudCollectionAnchor(storeID: self.remoteID, formatVersion: 1))
+                .alreadyClaimed(CloudCollectionAnchor(
+                    storeID: self.remoteID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "test-generation"
+                ))
             },
             makeContainer: { _ in
                 makeCount += 1

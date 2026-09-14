@@ -39,14 +39,15 @@ struct TradingCardScannerApp: App {
         }
     }
 
-    /// Background Tasks runs in a fresh process. It may create a new
-    /// explicitly identified container only after the app-level bootstrap has
-    /// established that storage is ready; it never shares a global container.
+    /// Legacy synchronous callers may only borrow the process-authoritative
+    /// session. Fresh/background launches must use the async headless
+    /// preflight, which owns the single-container creation decision.
     @MainActor
     static func makeBackgroundContainer() throws -> ModelContainer {
-        try CollectionStorageBootstrapDependencies.makeContainer(
-            paths: CollectionStoragePaths.production(),
-            mode: activeStorageMode
-        )
+        guard let session = CollectionStorageGeneration.shared.activeSession(),
+              session.isAuthoritative else {
+            throw CollectionStorageBootstrapError.storageSessionUnavailable
+        }
+        return session.container
     }
 }

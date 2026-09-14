@@ -179,6 +179,12 @@ enum BackgroundPriceRefresh {
             // task must remain a no-op rather than minting or attaching data.
             return true
         }
+        guard storage.isAuthoritative else {
+            // A cached populated checkpoint is last-known state only. It must
+            // not authorize price writes or portfolio-close publication until
+            // a fresh foreground restoration proof establishes current state.
+            return true
+        }
         let shouldContinue = storage.continuation
         let container = storage.container
         let context = container.mainContext

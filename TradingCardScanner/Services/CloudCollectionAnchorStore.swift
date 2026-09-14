@@ -6,8 +6,9 @@ enum CloudCollectionAnchorSchema {
     static let recordName = "canonical-collection"
     static let storeIDField = "storeID"
     static let formatVersionField = "formatVersion"
+    static let remoteGenerationField = "remoteGeneration"
     static let createdAtField = "createdAt"
-    static let currentFormatVersion = 1
+    static let currentFormatVersion = 2
 }
 
 enum CloudAnchorDatabaseError: Error, Equatable, Sendable {
@@ -46,6 +47,10 @@ struct CloudKitPrivateAnchorDatabaseClient: CloudAnchorDatabaseClient, @unchecke
     }
 
     func createAnchor(_ anchor: CloudCollectionAnchor) async throws -> CloudCollectionAnchor {
+        guard let remoteGeneration = anchor.remoteGeneration,
+              !remoteGeneration.isEmpty else {
+            throw CloudAnchorDatabaseError.malformed
+        }
         let recordID = CKRecord.ID(recordName: CloudCollectionAnchorSchema.recordName)
         let record = CKRecord(
             recordType: CloudCollectionAnchorSchema.recordType,
@@ -53,6 +58,7 @@ struct CloudKitPrivateAnchorDatabaseClient: CloudAnchorDatabaseClient, @unchecke
         )
         record[CloudCollectionAnchorSchema.storeIDField] = anchor.storeID.uuidString as CKRecordValue
         record[CloudCollectionAnchorSchema.formatVersionField] = NSNumber(value: anchor.formatVersion)
+        record[CloudCollectionAnchorSchema.remoteGenerationField] = remoteGeneration as CKRecordValue
         record[CloudCollectionAnchorSchema.createdAtField] = Date.now as CKRecordValue
 
         do {
@@ -84,12 +90,15 @@ struct CloudKitPrivateAnchorDatabaseClient: CloudAnchorDatabaseClient, @unchecke
               let storeID = UUID(uuidString: rawStoreID),
               let rawVersion = record[CloudCollectionAnchorSchema.formatVersionField] as? NSNumber,
               rawVersion.intValue == CloudCollectionAnchorSchema.currentFormatVersion,
+              let remoteGeneration = record[CloudCollectionAnchorSchema.remoteGenerationField] as? String,
+              !remoteGeneration.isEmpty,
               record[CloudCollectionAnchorSchema.createdAtField] is Date else {
             throw CloudAnchorDatabaseError.malformed
         }
         return CloudCollectionAnchor(
             storeID: storeID,
-            formatVersion: rawVersion.intValue
+            formatVersion: rawVersion.intValue,
+            remoteGeneration: remoteGeneration
         )
     }
 
@@ -116,9 +125,14 @@ enum CloudCollectionAnchorClaimResult: Equatable, Sendable {
 
 struct CloudCollectionAnchorStore: Sendable {
     let client: any CloudAnchorDatabaseClient
+    let generationProvider: @Sendable () -> String
 
-    init(client: any CloudAnchorDatabaseClient) {
+    init(
+        client: any CloudAnchorDatabaseClient,
+        generationProvider: @escaping @Sendable () -> String = { UUID().uuidString }
+    ) {
         self.client = client
+        self.generationProvider = generationProvider
     }
 
     func readState() async -> CloudCollectionAnchorState {
@@ -139,7 +153,8 @@ struct CloudCollectionAnchorStore: Sendable {
     func claim(storeID: UUID) async -> CloudCollectionAnchorClaimResult {
         let desired = CloudCollectionAnchor(
             storeID: storeID,
-            formatVersion: CloudCollectionAnchorSchema.currentFormatVersion
+            formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+            remoteGeneration: generationProvider()
         )
         do {
             let written = try await client.createAnchor(desired)

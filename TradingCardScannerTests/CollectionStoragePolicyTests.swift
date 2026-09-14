@@ -5,6 +5,14 @@ final class CollectionStoragePolicyTests: XCTestCase {
     private let localStoreID = UUID(uuidString: "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE")!
     private let remoteStoreID = UUID(uuidString: "11111111-2222-3333-4444-555555555555")!
 
+    private func anchor(_ storeID: UUID, generation: String = "generation-a") -> CloudCollectionAnchor {
+        CloudCollectionAnchor(
+            storeID: storeID,
+            formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+            remoteGeneration: generation
+        )
+    }
+
     private func fresh(_ proposedID: UUID? = nil) -> CollectionStorageLocalFacts {
         CollectionStorageLocalFacts(
             structuredStoreFilePresent: false,
@@ -62,7 +70,7 @@ final class CollectionStoragePolicyTests: XCTestCase {
             CollectionStoragePolicyInput(
                 local: fresh(),
                 account: .available(fingerprint: "account-a"),
-                anchor: .found(CloudCollectionAnchor(storeID: remoteStoreID, formatVersion: 1))
+                anchor: .found(anchor(remoteStoreID))
             )
         )
         XCTAssertEqual(
@@ -76,7 +84,7 @@ final class CollectionStoragePolicyTests: XCTestCase {
             CollectionStoragePolicyInput(
                 local: existing(),
                 account: .available(fingerprint: "account-a"),
-                anchor: .found(CloudCollectionAnchor(storeID: localStoreID, formatVersion: 1))
+                anchor: .found(anchor(localStoreID))
             )
         )
         XCTAssertEqual(
@@ -119,7 +127,7 @@ final class CollectionStoragePolicyTests: XCTestCase {
             CollectionStoragePolicyInput(
                 local: existing(),
                 account: .available(fingerprint: "account-b"),
-                anchor: .found(CloudCollectionAnchor(storeID: remoteStoreID, formatVersion: 1))
+                anchor: .found(anchor(remoteStoreID))
             )
         )
         XCTAssertEqual(
@@ -129,6 +137,34 @@ final class CollectionStoragePolicyTests: XCTestCase {
                 remoteStoreID: remoteStoreID
             )
         )
+    }
+
+    func testUnsupportedRemoteAnchorFailsClosedBeforeOpeningAStore() {
+        let anchors = [
+            CloudCollectionAnchor(
+                storeID: localStoreID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion - 1,
+                remoteGeneration: "generation-a"
+            ),
+            CloudCollectionAnchor(
+                storeID: localStoreID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: nil
+            )
+        ]
+
+        for anchor in anchors {
+            XCTAssertEqual(
+                CollectionStoragePolicy.decide(
+                    CollectionStoragePolicyInput(
+                        local: existing(),
+                        account: .available(fingerprint: "account-a"),
+                        anchor: .found(anchor)
+                    )
+                ),
+                .retryAccountCheck
+            )
+        }
     }
 
     func testTemporaryAccountStatesUseProvenLocalPathForExistingStore() {
@@ -279,6 +315,7 @@ final class CollectionStoragePolicyTests: XCTestCase {
             storeFileIdentity: "file-a",
             mechanismVersion: 1,
             readiness: .populated,
+            remoteGeneration: "generation-a",
             confirmedAt: Date(timeIntervalSince1970: 100)
         )
         XCTAssertTrue(
@@ -287,7 +324,8 @@ final class CollectionStoragePolicyTests: XCTestCase {
                 storeID: localStoreID,
                 accountFingerprint: "account-a",
                 storeFileIdentity: "file-a",
-                mechanismVersion: 1
+                mechanismVersion: 1,
+                currentRemoteGeneration: "generation-a"
             )
         )
         XCTAssertFalse(
@@ -323,7 +361,40 @@ final class CollectionStoragePolicyTests: XCTestCase {
                 storeID: localStoreID,
                 accountFingerprint: "account-a",
                 storeFileIdentity: "file-a",
-                mechanismVersion: 2
+                mechanismVersion: 2,
+                currentRemoteGeneration: "generation-a"
+            )
+        )
+        XCTAssertFalse(
+            CollectionStoragePolicy.acceptsRestoreCheckpoint(
+                checkpoint,
+                storeID: localStoreID,
+                accountFingerprint: "account-a",
+                storeFileIdentity: "file-a",
+                mechanismVersion: 1,
+                currentRemoteGeneration: "generation-b"
+            )
+        )
+    }
+
+    func testEmptyRestoreCheckpointNeverAuthorizesStartupEvenWhenGenerationMatches() {
+        let checkpoint = CloudRestoreCheckpoint(
+            storeID: localStoreID,
+            accountFingerprint: "account-a",
+            storeFileIdentity: "file-a",
+            mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
+            readiness: .empty,
+            remoteGeneration: "generation-a",
+            confirmedAt: .now
+        )
+        XCTAssertFalse(
+            CollectionStoragePolicy.acceptsRestoreCheckpoint(
+                checkpoint,
+                storeID: localStoreID,
+                accountFingerprint: "account-a",
+                storeFileIdentity: "file-a",
+                mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
+                currentRemoteGeneration: "generation-a"
             )
         )
     }
@@ -357,10 +428,7 @@ final class CollectionStoragePolicyTests: XCTestCase {
                 CollectionStoragePolicyInput(
                     local: local,
                     account: .available(fingerprint: "account-a"),
-                    anchor: .found(CloudCollectionAnchor(
-                        storeID: localStoreID,
-                        formatVersion: 1
-                    )),
+                    anchor: .found(anchor(localStoreID)),
                     localOnlyTransitionProven: false
                 )
             ),

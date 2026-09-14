@@ -33,6 +33,10 @@ struct CloudRestoreCheckpoint: Codable, Equatable, Sendable {
     var storeFileIdentity: String
     var mechanismVersion: Int
     var readiness: CloudRestoreCheckpointReadiness
+    /// The remote generation observed by the affirmative readiness proof.
+    /// Older checkpoints decode without this value and can never authorize a
+    /// later launch.
+    var remoteGeneration: String?
     var confirmedAt: Date
 
     init(
@@ -41,6 +45,7 @@ struct CloudRestoreCheckpoint: Codable, Equatable, Sendable {
         storeFileIdentity: String,
         mechanismVersion: Int,
         readiness: CloudRestoreCheckpointReadiness = .unknown,
+        remoteGeneration: String? = nil,
         confirmedAt: Date
     ) {
         self.storeID = storeID
@@ -48,6 +53,7 @@ struct CloudRestoreCheckpoint: Codable, Equatable, Sendable {
         self.storeFileIdentity = storeFileIdentity
         self.mechanismVersion = mechanismVersion
         self.readiness = readiness
+        self.remoteGeneration = remoteGeneration
         self.confirmedAt = confirmedAt
     }
 
@@ -57,6 +63,7 @@ struct CloudRestoreCheckpoint: Codable, Equatable, Sendable {
         case storeFileIdentity
         case mechanismVersion
         case readiness
+        case remoteGeneration
         case confirmedAt
     }
 
@@ -72,6 +79,7 @@ struct CloudRestoreCheckpoint: Codable, Equatable, Sendable {
             CloudRestoreCheckpointReadiness.self,
             forKey: .readiness
         ) ?? .unknown
+        remoteGeneration = try values.decodeIfPresent(String.self, forKey: .remoteGeneration)
         confirmedAt = try values.decode(Date.self, forKey: .confirmedAt)
     }
 }
@@ -86,6 +94,17 @@ enum CollectionStoreIdentityStatus: Equatable, Sendable {
     case matching
     case missing
     case mismatched
+}
+
+/// Mutually exclusive physical-replica states. Identity corruption and
+/// journal remnants are recovery conditions, not missing replicas that may be
+/// reopened against the current CloudKit account.
+enum CollectionStoreReplicaState: Equatable, Sendable {
+    case replicaCompletelyAbsent
+    case orphanedJournalArtifacts
+    case baseStoreIdentityMissing
+    case baseStoreIdentityMismatch
+    case verifiedExistingStore
 }
 
 /// Durable metadata for the one local collection identity.
@@ -151,6 +170,20 @@ struct CollectionStoreManifest: Codable, Equatable, Sendable {
 struct CloudCollectionAnchor: Equatable, Sendable {
     var storeID: UUID
     var formatVersion: Int
+    /// A remotely observable readiness generation. Production anchors written
+    /// by the current protocol must carry this value; legacy/injected anchors
+    /// without it are never sufficient for checkpoint reuse.
+    var remoteGeneration: String?
+
+    init(
+        storeID: UUID,
+        formatVersion: Int,
+        remoteGeneration: String? = nil
+    ) {
+        self.storeID = storeID
+        self.formatVersion = formatVersion
+        self.remoteGeneration = remoteGeneration
+    }
 }
 
 enum LocalStorageReason: String, Equatable, Sendable {
@@ -216,9 +249,20 @@ struct CollectionStorageLocalFacts: Equatable, Sendable {
         !hasDurableLocalPresence && proposedFreshStoreID != nil
     }
 
-    var hasUnverifiedStore: Bool {
-        guard manifest != nil else { return false }
-        return !structuredStoreBaseFilePresent || storeFileIdentityStatus != .matching
+    var replicaState: CollectionStoreReplicaState {
+        guard structuredStoreBaseFilePresent else {
+            return structuredStoreFilePresent
+                ? .orphanedJournalArtifacts
+                : .replicaCompletelyAbsent
+        }
+        switch storeFileIdentityStatus {
+        case .matching:
+            return .verifiedExistingStore
+        case .missing:
+            return .baseStoreIdentityMissing
+        case .mismatched:
+            return .baseStoreIdentityMismatch
+        }
     }
 }
 
@@ -268,8 +312,17 @@ enum CollectionStoragePolicy {
         if local.manifest == nil && local.hasDurableLocalPresence {
             return .blockUnprovenTransition
         }
-        if local.hasUnverifiedStore {
-            return decideMissingLocalReplica(input)
+        switch local.replicaState {
+        case .replicaCompletelyAbsent:
+            if local.manifest != nil {
+                return decideMissingLocalReplica(input)
+            }
+        case .orphanedJournalArtifacts,
+             .baseStoreIdentityMissing,
+             .baseStoreIdentityMismatch:
+            return .blockUnprovenTransition
+        case .verifiedExistingStore:
+            break
         }
 
         if local.isGenuinelyFresh {
@@ -310,6 +363,9 @@ enum CollectionStoragePolicy {
                 }
                 return .claimCloudAnchor(storeID: storeID, accountFingerprint: fingerprint)
             case let .found(anchor):
+                guard isSupportedRemoteAnchor(anchor) else {
+                    return .retryAccountCheck
+                }
                 guard anchor.storeID == storeID else {
                     return .blockDifferentRemoteCollection(
                         localStoreID: storeID,
@@ -363,14 +419,21 @@ enum CollectionStoragePolicy {
         storeID: UUID,
         accountFingerprint: String,
         storeFileIdentity: String,
-        mechanismVersion: Int
+        mechanismVersion: Int,
+        currentRemoteGeneration: String? = nil
     ) -> Bool {
         guard let checkpoint else { return false }
         return checkpoint.storeID == storeID
             && checkpoint.accountFingerprint == accountFingerprint
             && checkpoint.storeFileIdentity == storeFileIdentity
             && checkpoint.mechanismVersion == mechanismVersion
-            && checkpoint.readiness != .unknown
+            // A cached empty result is never authoritative. A populated
+            // checkpoint is only a last-known-state hint and requires a
+            // current matching remote generation; callers must still keep it
+            // out of ordinary ready/mutation paths until readiness is proven.
+            && checkpoint.readiness == .populated
+            && checkpoint.remoteGeneration?.isEmpty == false
+            && checkpoint.remoteGeneration == currentRemoteGeneration
     }
 
     private static func decideFresh(
@@ -386,6 +449,9 @@ enum CollectionStoragePolicy {
             case .missing:
                 return .openCloud(storeID: freshStoreID, accountFingerprint: fingerprint)
             case let .found(anchor):
+                guard isSupportedRemoteAnchor(anchor) else {
+                    return .retryAccountCheck
+                }
                 return .adoptRemoteCollection(
                     storeID: anchor.storeID,
                     accountFingerprint: fingerprint
@@ -417,16 +483,27 @@ enum CollectionStoragePolicy {
                 storeID: storeID,
                 accountFingerprint: accountFingerprint
             )
-        case let .found(remote) where remote.storeID == storeID:
-            return .openCloud(storeID: storeID, accountFingerprint: accountFingerprint)
         case let .found(remote):
-            return .blockDifferentRemoteCollection(
-                localStoreID: storeID,
-                remoteStoreID: remote.storeID
-            )
+            guard isSupportedRemoteAnchor(remote) else {
+                return .retryAccountCheck
+            }
+            guard remote.storeID == storeID else {
+                return .blockDifferentRemoteCollection(
+                    localStoreID: storeID,
+                    remoteStoreID: remote.storeID
+                )
+            }
+            return .openCloud(storeID: storeID, accountFingerprint: accountFingerprint)
         case .unknown, .temporarilyUnavailable, .malformed:
             return .retryAccountCheck
         }
+    }
+
+    private static func isSupportedRemoteAnchor(
+        _ anchor: CloudCollectionAnchor
+    ) -> Bool {
+        anchor.formatVersion == CloudCollectionAnchorSchema.currentFormatVersion
+            && anchor.remoteGeneration?.isEmpty == false
     }
 
     private static func decideMissingLocalReplica(
@@ -435,16 +512,23 @@ enum CollectionStoragePolicy {
         guard let manifest = input.local.manifest else {
             return .blockUnprovenTransition
         }
+        guard input.local.replicaState == .replicaCompletelyAbsent else {
+            return .blockUnprovenTransition
+        }
 
         switch input.account {
         case let .available(fingerprint):
             switch input.anchor {
-            case let .found(anchor) where anchor.storeID == manifest.storeID:
+            case let .found(anchor)
+                where isSupportedRemoteAnchor(anchor) && anchor.storeID == manifest.storeID:
                 return .restoreMissingLocalReplica(
                     storeID: manifest.storeID,
                     accountFingerprint: fingerprint
                 )
             case let .found(anchor):
+                guard isSupportedRemoteAnchor(anchor) else {
+                    return .retryAccountCheck
+                }
                 return .blockDifferentRemoteCollection(
                     localStoreID: manifest.storeID,
                     remoteStoreID: anchor.storeID

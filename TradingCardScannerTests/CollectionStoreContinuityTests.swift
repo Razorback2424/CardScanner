@@ -31,7 +31,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             localOnlyTransitionProven: false
         )
 
-        XCTAssertTrue(local.hasUnverifiedStore)
+        XCTAssertEqual(local.replicaState, .replicaCompletelyAbsent)
         XCTAssertEqual(
             CollectionStoragePolicy.decide(
                 CollectionStoragePolicyInput(
@@ -63,7 +63,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             localHasUserData: true,
             storeFileIdentityStatus: .missing
         )
-        XCTAssertTrue(missingSidecar.hasUnverifiedStore)
+        XCTAssertEqual(missingSidecar.replicaState, .baseStoreIdentityMissing)
 
         try Data("file-b".utf8).write(to: manifestStore.storeFileIdentityURL)
         XCTAssertEqual(try manifestStore.readStoreFileIdentity(), "file-b")
@@ -73,7 +73,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             localHasUserData: true,
             storeFileIdentityStatus: .mismatched
         )
-        XCTAssertTrue(mismatchedSidecar.hasUnverifiedStore)
+        XCTAssertEqual(mismatchedSidecar.replicaState, .baseStoreIdentityMismatch)
     }
 
     func testStorePresentWithoutManifestBlocksInsteadOfMintingIdentity() {
@@ -121,7 +121,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             storeFileIdentityStatus: .matching
         )
         XCTAssertTrue(local.hasDurableLocalPresence)
-        XCTAssertTrue(local.hasUnverifiedStore)
+        XCTAssertEqual(local.replicaState, .orphanedJournalArtifacts)
     }
 
     func testApplicationSupportResolutionFailureIsFailClosed() throws {
@@ -161,7 +161,8 @@ final class CollectionStoreContinuityTests: XCTestCase {
                     account: .available(fingerprint: "account-a"),
                     anchor: .found(CloudCollectionAnchor(
                         storeID: localStoreID,
-                        formatVersion: 1
+                        formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                        remoteGeneration: "generation-a"
                     )),
                     localOnlyTransitionProven: false
                 )
@@ -223,7 +224,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
         XCTAssertNil(dependencies.storageGeneration.currentToken())
     }
 
-    func testHeadlessPreflightRequiresExactProvenCheckpointAndInvalidatesItOnSuspension() async throws {
+    func testEmptyCheckpointNeverConstructsAHeadlessContainer() async throws {
         let directory = try makeDirectory()
         defer { try? FileManager.default.removeItem(at: directory) }
         let paths = CollectionStoragePaths(
@@ -251,6 +252,69 @@ final class CollectionStoreContinuityTests: XCTestCase {
             storeFileIdentity: "file-a",
             mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
             readiness: .empty,
+            remoteGeneration: "generation-a",
+            confirmedAt: .now
+        )
+        try manifestStore.save(manifest)
+
+        var makeCount = 0
+        let generation = CollectionStorageGeneration()
+        let dependencies = CollectionStorageHeadlessPreflightDependencies(
+            paths: paths,
+            manifestStore: manifestStore,
+            accountAvailability: { .available(fingerprint: "account-a") },
+            anchorState: {
+                .found(CloudCollectionAnchor(
+                    storeID: self.localStoreID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "generation-a"
+                ))
+            },
+            makeContainer: {
+                makeCount += 1
+                return try ModelContainer(
+                    for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                )
+            },
+            storageGeneration: generation
+        )
+
+        let session = await CollectionStorageHeadlessPreflight.prepare(dependencies: dependencies)
+        XCTAssertNil(session)
+        XCTAssertEqual(makeCount, 0)
+        XCTAssertNil(generation.currentToken())
+    }
+
+    func testMatchingPopulatedCheckpointIsLastKnownOnlyAndSessionRegistryPreventsDuplicates() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let paths = CollectionStoragePaths(
+            applicationSupportURL: directory,
+            collectionStorageDirectoryURL: directory.appendingPathComponent("CollectionStorage", isDirectory: true),
+            structuredStoreURL: directory.appendingPathComponent("default.store"),
+            portfolioStoreURL: directory.appendingPathComponent("PortfolioLocal.store")
+        )
+        let manifestStore = CollectionStoreManifestStore(directoryURL: paths.collectionStorageDirectoryURL)
+        try FileManager.default.createDirectory(
+            at: paths.collectionStorageDirectoryURL,
+            withIntermediateDirectories: true
+        )
+        try Data().write(to: paths.structuredStoreURL)
+        try Data("file-a".utf8).write(to: manifestStore.storeFileIdentityURL)
+        var manifest = CollectionStoreManifest(
+            storeID: localStoreID,
+            lastAttachedAccountFingerprint: "account-a",
+            attachmentState: .attached,
+            storeFileIdentity: "file-a"
+        )
+        manifest.cloudRestoreCheckpoint = CloudRestoreCheckpoint(
+            storeID: localStoreID,
+            accountFingerprint: "account-a",
+            storeFileIdentity: "file-a",
+            mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
+            readiness: .populated,
+            remoteGeneration: "generation-a",
             confirmedAt: .now
         )
         try manifestStore.save(manifest)
@@ -261,6 +325,13 @@ final class CollectionStoreContinuityTests: XCTestCase {
             paths: paths,
             manifestStore: manifestStore,
             accountAvailability: { .available(fingerprint: "account-a") },
+            anchorState: {
+                .found(CloudCollectionAnchor(
+                    storeID: self.localStoreID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "generation-a"
+                ))
+            },
             makeContainer: {
                 makeCount += 1
                 return try ModelContainer(
@@ -273,6 +344,11 @@ final class CollectionStoreContinuityTests: XCTestCase {
 
         let session = await CollectionStorageHeadlessPreflight.prepare(dependencies: dependencies)
         XCTAssertNotNil(session)
+        XCTAssertFalse(try XCTUnwrap(session?.isAuthoritative))
+        XCTAssertEqual(makeCount, 1)
+        let reused = await CollectionStorageHeadlessPreflight.prepare(dependencies: dependencies)
+        XCTAssertNotNil(reused)
+        XCTAssertFalse(try XCTUnwrap(reused?.isAuthoritative))
         XCTAssertEqual(makeCount, 1)
         let continuation = try XCTUnwrap(session?.continuation)
         XCTAssertTrue(continuation())
@@ -293,5 +369,135 @@ final class CollectionStoreContinuityTests: XCTestCase {
         )
         XCTAssertNil(missingStoreSession)
         XCTAssertEqual(makeCount, 1)
+    }
+
+    func testForegroundSessionIsReusedWithoutGenerationRotationAndTransitionSkips() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let paths = CollectionStoragePaths(
+            applicationSupportURL: directory,
+            collectionStorageDirectoryURL: directory.appendingPathComponent("CollectionStorage", isDirectory: true),
+            structuredStoreURL: directory.appendingPathComponent("default.store"),
+            portfolioStoreURL: directory.appendingPathComponent("PortfolioLocal.store")
+        )
+        let container = try ModelContainer(
+            for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        let generation = CollectionStorageGeneration()
+        generation.installReady(
+            session: CollectionStorageSession(
+                container: container,
+                storeID: localStoreID,
+                mode: .cloudKit
+            )
+        )
+        let originalToken = try XCTUnwrap(generation.currentToken())
+        var makeCount = 0
+        let dependencies = CollectionStorageHeadlessPreflightDependencies(
+            paths: paths,
+            manifestStore: CollectionStoreManifestStore(directoryURL: paths.collectionStorageDirectoryURL),
+            accountAvailability: { .available(fingerprint: "account-a") },
+            makeContainer: {
+                makeCount += 1
+                return try ModelContainer(
+                    for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                )
+            },
+            storageGeneration: generation
+        )
+
+        let reused = await CollectionStorageHeadlessPreflight.prepare(dependencies: dependencies)
+        XCTAssertTrue(reused?.container === container)
+        XCTAssertTrue(try XCTUnwrap(reused?.isAuthoritative))
+        XCTAssertEqual(reused?.token, originalToken)
+        XCTAssertEqual(generation.currentToken(), originalToken)
+        XCTAssertEqual(makeCount, 0)
+
+        generation.suspend()
+        let transitionSession = await CollectionStorageHeadlessPreflight.prepare(
+            dependencies: dependencies
+        )
+        XCTAssertNil(transitionSession)
+        XCTAssertEqual(makeCount, 0)
+    }
+
+    func testHeadlessPreflightRejectsEveryNonmatchingCurrentAnchorWithoutAContainer() async throws {
+        let anchorStates: [CloudCollectionAnchorState] = [
+            .missing,
+            .temporarilyUnavailable,
+            .malformed,
+            .unknown,
+            .found(CloudCollectionAnchor(
+                storeID: UUID(uuidString: "11111111-2222-3333-4444-555555555555")!,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-a"
+            )),
+            .found(CloudCollectionAnchor(
+                storeID: localStoreID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion - 1,
+                remoteGeneration: "generation-a"
+            )),
+            .found(CloudCollectionAnchor(
+                storeID: localStoreID,
+                formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                remoteGeneration: "generation-b"
+            ))
+        ]
+
+        for (index, anchorState) in anchorStates.enumerated() {
+            let directory = try makeDirectory()
+            defer { try? FileManager.default.removeItem(at: directory) }
+            let paths = CollectionStoragePaths(
+                applicationSupportURL: directory,
+                collectionStorageDirectoryURL: directory.appendingPathComponent("CollectionStorage", isDirectory: true),
+                structuredStoreURL: directory.appendingPathComponent("default.store"),
+                portfolioStoreURL: directory.appendingPathComponent("PortfolioLocal.store")
+            )
+            let manifestStore = CollectionStoreManifestStore(directoryURL: paths.collectionStorageDirectoryURL)
+            try FileManager.default.createDirectory(
+                at: paths.collectionStorageDirectoryURL,
+                withIntermediateDirectories: true
+            )
+            try Data().write(to: paths.structuredStoreURL)
+            try Data("file-a".utf8).write(to: manifestStore.storeFileIdentityURL)
+            var manifest = CollectionStoreManifest(
+                storeID: localStoreID,
+                lastAttachedAccountFingerprint: "account-a",
+                attachmentState: .attached,
+                storeFileIdentity: "file-a"
+            )
+            manifest.cloudRestoreCheckpoint = CloudRestoreCheckpoint(
+                storeID: localStoreID,
+                accountFingerprint: "account-a",
+                storeFileIdentity: "file-a",
+                mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
+                readiness: .populated,
+                remoteGeneration: "generation-a",
+                confirmedAt: .now
+            )
+            try manifestStore.save(manifest)
+
+            var makeCount = 0
+            let dependencies = CollectionStorageHeadlessPreflightDependencies(
+                paths: paths,
+                manifestStore: manifestStore,
+                accountAvailability: { .available(fingerprint: "account-a") },
+                anchorState: { anchorState },
+                makeContainer: {
+                    makeCount += 1
+                    return try ModelContainer(
+                        for: CollectionStorageModelSchema.full,
+                        configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                    )
+                },
+                storageGeneration: CollectionStorageGeneration()
+            )
+
+            let session = await CollectionStorageHeadlessPreflight.prepare(dependencies: dependencies)
+            XCTAssertNil(session, "anchor case \(index) must fail closed")
+            XCTAssertEqual(makeCount, 0, "anchor case \(index) must not construct a container")
+        }
     }
 }
