@@ -152,7 +152,7 @@ final class MagicTreatmentTests: XCTestCase {
     func testModelledVocabularyMatchesTheBundledGeneratorSource() throws {
         let bundles = [
             Bundle.main,
-            Bundle(identifier: "com.example.TradingCardScanner"),
+            Bundle(identifier: "com.seankeller.CardScanner"),
             Bundle(for: MagicTreatmentTests.self)
         ].compactMap { $0 }
         let vocabularyURL = try XCTUnwrap(
@@ -429,7 +429,7 @@ final class MagicTreatmentTests: XCTestCase {
         let identifier = try XCTUnwrap(profile.parse(["FIC • EN", "0010"]))
         XCTAssertEqual(identifier.displayIdentifier, "FIC 10 EN")
 
-        let appBundle = try XCTUnwrap(Bundle(identifier: "com.example.TradingCardScanner"))
+        let appBundle = try XCTUnwrap(Bundle(identifier: "com.seankeller.CardScanner"))
         let catalog = try MagicTreatmentCatalogStore.bundled(bundle: appBundle)
         let card = try decodeMagic(
             id: "cb82d614-13d8-40ec-9213-8e6852d37c9c",
@@ -465,7 +465,7 @@ final class MagicTreatmentTests: XCTestCase {
 
     func testSlice9BundledNeoNeonInkQualifiersCoverAllFourExactPrintings() throws {
         let appBundle = try XCTUnwrap(
-            Bundle(identifier: "com.example.TradingCardScanner"),
+            Bundle(identifier: "com.seankeller.CardScanner"),
             "The runtime catalog must be validated from the application bundle"
         )
         let catalog = try MagicTreatmentCatalogStore.bundled(bundle: appBundle)
@@ -1105,7 +1105,7 @@ final class MagicTreatmentTests: XCTestCase {
 
     func testBundledCatalogIsCompactAndContainsAuditedTreatmentCoverage() throws {
         let appBundle = try XCTUnwrap(
-            Bundle(identifier: "com.example.TradingCardScanner"),
+            Bundle(identifier: "com.seankeller.CardScanner"),
             "The runtime catalog must be validated from the application bundle"
         )
         let catalog = try MagicTreatmentCatalogStore.bundled(bundle: appBundle)
@@ -1160,7 +1160,7 @@ final class MagicTreatmentTests: XCTestCase {
 
     func testBundledCatalogDiagnosticsMatchTheExactAuditSnapshot() throws {
         let appBundle = try XCTUnwrap(
-            Bundle(identifier: "com.example.TradingCardScanner"),
+            Bundle(identifier: "com.seankeller.CardScanner"),
             "The runtime catalog must be validated from the application bundle"
         )
         let catalog = try MagicTreatmentCatalogStore.bundled(bundle: appBundle)

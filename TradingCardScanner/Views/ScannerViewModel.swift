@@ -1035,8 +1035,11 @@ final class ScannerViewModel: ObservableObject {
         let shouldRefreshMagicDirectory: Bool
         let summaryStore: ScanSessionSummaryStore?
         let writeCoordinator: DerivedStateWriteCoordinator?
+        let storageGeneration: CollectionStorageGeneration?
     }
     private var pendingSessionStart: PendingSessionStart?
+    private var storageGeneration: CollectionStorageGeneration?
+    private var storageGenerationToken: StorageGenerationToken?
 #if DEBUG
     private var diagnosticEvents: [String] = []
 #endif
@@ -1239,7 +1242,8 @@ final class ScannerViewModel: ObservableObject {
         startCamera: Bool = true,
         shouldRefreshMagicDirectory: Bool = true,
         summaryStore: ScanSessionSummaryStore? = nil,
-        writeCoordinator: DerivedStateWriteCoordinator? = nil
+        writeCoordinator: DerivedStateWriteCoordinator? = nil,
+        storageGeneration: CollectionStorageGeneration? = nil
     ) {
         self.summaryStore = summaryStore
         self.writeCoordinator = writeCoordinator ?? self.writeCoordinator
@@ -1254,7 +1258,8 @@ final class ScannerViewModel: ObservableObject {
                 startCamera: startCamera,
                 shouldRefreshMagicDirectory: shouldRefreshMagicDirectory,
                 summaryStore: summaryStore,
-                writeCoordinator: writeCoordinator ?? self.writeCoordinator
+                writeCoordinator: writeCoordinator ?? self.writeCoordinator,
+                storageGeneration: storageGeneration
             )
             recognitionEligibility.isScannerVisible = true
             recognitionEligibility.isSceneActive = isSceneActive
@@ -1262,6 +1267,8 @@ final class ScannerViewModel: ObservableObject {
             updateScannerConfirmationContext()
             return
         }
+        self.storageGeneration = storageGeneration
+        storageGenerationToken = storageGeneration?.currentToken()
         let beginsNewSession = !isScannerSessionActive
         if !isScannerSessionActive {
             isScannerSessionActive = true
@@ -1393,7 +1400,8 @@ final class ScannerViewModel: ObservableObject {
                 startCamera: pendingStart.startCamera,
                 shouldRefreshMagicDirectory: pendingStart.shouldRefreshMagicDirectory,
                 summaryStore: pendingStart.summaryStore,
-                writeCoordinator: pendingStart.writeCoordinator
+                writeCoordinator: pendingStart.writeCoordinator,
+                storageGeneration: pendingStart.storageGeneration
             )
         }
     }
@@ -2025,6 +2033,7 @@ final class ScannerViewModel: ObservableObject {
     /// an older value still held by a view.
     @discardableResult
     func undoScan(scanID: RecentScan.ID) async -> Bool {
+        guard isStorageGenerationCurrent else { return false }
         guard undoingScanIDs.begin(scanID) else { return false }
         defer { undoingScanIDs.end(scanID) }
 
@@ -2056,7 +2065,8 @@ final class ScannerViewModel: ObservableObject {
             feedback.problem()
             return false
         }
-        guard writeSessionID == scannerSessionID else { return false }
+        guard writeSessionID == scannerSessionID,
+              isStorageGenerationCurrent else { return false }
 
         sessionScans.removeAll { $0.id == scanID }
         recent.removeAll { $0.id == scanID }
@@ -2120,6 +2130,7 @@ final class ScannerViewModel: ObservableObject {
     /// moves the copy from where it actually is now, not from where it started.
     @discardableResult
     func correct(scanID: RecentScan.ID, to variant: PhysicalVariant) async -> ScanCorrectionOutcome {
+        guard isStorageGenerationCurrent else { return .failed }
         guard let collectionWriter else {
             show(ScanNote(text: "Correction could not be saved", tone: .problem))
             feedback.problem()
@@ -2166,7 +2177,8 @@ final class ScannerViewModel: ObservableObject {
             feedback.problem()
             return .failed
         }
-        guard writeSessionID == scannerSessionID else { return .failed }
+        guard writeSessionID == scannerSessionID,
+              isStorageGenerationCurrent else { return .failed }
         guard let mutation else {
             show(ScanNote(text: "This scan is no longer in your collection", tone: .problem))
             feedback.problem()
@@ -2837,6 +2849,18 @@ final class ScannerViewModel: ObservableObject {
         diagnostic("routingHeldRepeatCommitted")
     }
 
+    private var isStorageGenerationCurrent: Bool {
+        guard let storageGeneration else { return true }
+        guard let storageGenerationToken else { return false }
+        return storageGeneration.isCurrent(storageGenerationToken)
+    }
+
+    private var storageGenerationContinuation: PriceCheckContinuationCheck? {
+        guard let storageGeneration,
+              let storageGenerationToken else { return nil }
+        return storageGeneration.continuation(for: storageGenerationToken)
+    }
+
     /// Takes a detached pending value before persistence starts. The caller for
     /// Add another therefore cannot re-enter duplicate interception, including
     /// on a double tap.
@@ -2844,6 +2868,7 @@ final class ScannerViewModel: ObservableObject {
         _ candidate: CollectionCommitCandidate,
         authorization: CollectionCommitAuthorization
     ) async -> Bool {
+        guard isStorageGenerationCurrent else { return false }
         guard let collectionWriter else {
             if !failAcknowledgement(
                 for: candidate.encounterID,
@@ -2871,7 +2896,8 @@ final class ScannerViewModel: ObservableObject {
 
         do {
             let mutation = try await collectionWriter.add(candidate)
-            guard writeSessionID == scannerSessionID else { return false }
+            guard writeSessionID == scannerSessionID,
+                  isStorageGenerationCurrent else { return false }
 
             if mutation.wasDuplicate {
                 show(ScanNote(text: "This certified card is already in your collection", tone: .info))
@@ -2945,7 +2971,8 @@ final class ScannerViewModel: ObservableObject {
         pokemonPrintRun: PokemonPrintRun?,
         catalogLookup: PriceLookup
     ) {
-        guard PriceFallbackQuoteResolver.needsFallback(catalogLookup),
+        guard isStorageGenerationCurrent,
+              PriceFallbackQuoteResolver.needsFallback(catalogLookup),
               let modelContainer,
               PriceVendorCredentials.hasKey else { return }
 
@@ -2984,7 +3011,7 @@ final class ScannerViewModel: ObservableObject {
                 self?.fallbackQuoteTasks[key] = nil
                 self?.fallbackQuoteScanIDs[key] = nil
             }
-            guard !Task.isCancelled else { return }
+            guard let self, !Task.isCancelled, self.isStorageGenerationCurrent else { return }
 
             switch await resolver.resolve(
                 card: card,
@@ -2992,7 +3019,7 @@ final class ScannerViewModel: ObservableObject {
                 pokemonPrintRun: pokemonPrintRun
             ) {
             case let .lookup(quote):
-                guard !Task.isCancelled else { return }
+                guard !Task.isCancelled, self.isStorageGenerationCurrent else { return }
                 let identityKey = ProductIdentity.key(
                     game: card.game,
                     printingID: printingID,
@@ -3001,6 +3028,7 @@ final class ScannerViewModel: ObservableObject {
                 )
                 let marketVariantID = ProductIdentityStore(context: fallbackContext)
                     .cachedVariantID(forKey: identityKey)
+                guard self.isStorageGenerationCurrent else { return }
                 guard fallbackPrices.store(
                     quote,
                     game: card.game,
@@ -3009,8 +3037,9 @@ final class ScannerViewModel: ObservableObject {
                     marketVariantID: marketVariantID,
                     treatmentIDs: treatmentIDs
                 ) else { return }
-                guard fallbackPrices.save(),
-                      let self else { return }
+                guard self.isStorageGenerationCurrent,
+                      fallbackPrices.save() else { return }
+                guard self.isStorageGenerationCurrent else { return }
                 self.applyFallbackQuote(
                     quote,
                     priceKey: key,
@@ -3054,6 +3083,7 @@ final class ScannerViewModel: ObservableObject {
         priceKey: String,
         scanIDsBySession: [UUID: Set<UUID>]
     ) {
+        guard isStorageGenerationCurrent else { return }
         let scanIDs = scanIDsBySession[scannerSessionID] ?? []
         guard !scanIDs.isEmpty else { return }
 
@@ -3111,7 +3141,9 @@ final class ScannerViewModel: ObservableObject {
 
     /// The Price Check coordinator intentionally has no `CollectionStore`.
     private func presentPriceCheck(_ resolvedScan: ResolvedScan) {
-        guard let priceCheckCoordinator, isCurrent(resolvedScan.request) else {
+        guard isStorageGenerationCurrent,
+              let priceCheckCoordinator,
+              isCurrent(resolvedScan.request) else {
             endOneCardScan(
                 encounterID: resolvedScan.request.encounterID,
                 outcome: "cancelled"
@@ -3135,7 +3167,9 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func refreshPriceCheckQuote() {
-        guard var result = priceCheckResult, !result.isRefreshing else { return }
+        guard isStorageGenerationCurrent,
+              var result = priceCheckResult,
+              !result.isRefreshing else { return }
         result.isRefreshing = true
         result.shouldAutoRefresh = false
         result.quoteState = .checking
@@ -3165,9 +3199,14 @@ final class ScannerViewModel: ObservableObject {
                 self.priceCheckResult = latest
                 return
             }
-            switch await priceCheckCoordinator.refresh(result) {
+            let shouldContinue = self.storageGenerationContinuation
+            switch await priceCheckCoordinator.refresh(
+                result,
+                shouldContinue: shouldContinue
+            ) {
             case let .quote(refreshed):
                 guard !Task.isCancelled,
+                      self.isStorageGenerationCurrent,
                       self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
@@ -3179,6 +3218,7 @@ final class ScannerViewModel: ObservableObject {
                 self.priceCheckResult = latest
             case let .failed(issue):
                 guard !Task.isCancelled,
+                      self.isStorageGenerationCurrent,
                       self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }
@@ -3186,7 +3226,10 @@ final class ScannerViewModel: ObservableObject {
                 // allowance, rate-limit, and transport outcomes are not, so
                 // they must not write a ReferenceQuote failure timestamp.
                 if issue == .noExactPrice {
-                    priceCheckCoordinator.recordRefreshFailure(for: latest)
+                    priceCheckCoordinator.recordRefreshFailure(
+                        for: latest,
+                        shouldContinue: shouldContinue
+                    )
                 }
                 latest.checkedAt = .now
                 latest.isRefreshing = false
@@ -3197,6 +3240,7 @@ final class ScannerViewModel: ObservableObject {
                 self.priceCheckResult = latest
             case .cancelled:
                 guard !Task.isCancelled,
+                      self.isStorageGenerationCurrent,
                       self.activeQuoteRefreshID == refreshID,
                       var latest = self.priceCheckResult,
                       latest.id == resultID else { return }

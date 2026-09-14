@@ -58,11 +58,15 @@ actor PriceRefreshModelActor {
     private var activeFallbackLastCommitAt = Date.distantPast
     private var activeFallbackStagedWrites = 0
     private var priceKeysWritten: Set<String> = []
+    private var storageContinuation: StorageGenerationContinuation?
 
     fileprivate func run(
         _ request: PriceRefreshRequest,
-        progress: @escaping @Sendable (PriceRefreshProgress) async -> Void
+        progress: @escaping @Sendable (PriceRefreshProgress) async -> Void,
+        shouldContinue: StorageGenerationContinuation?
     ) async -> PriceRefreshWorkOutcome {
+        storageContinuation = shouldContinue
+        guard shouldContinue?() ?? true else { return .cancelled }
         let runState = PerformanceSignpost.beginInterval(
             "priceRefresh.run",
             id: PerformanceSignpost.makeID(),
@@ -103,6 +107,7 @@ actor PriceRefreshModelActor {
         } catch {
             return .targetBuildFailed
         }
+        guard shouldContinue?() ?? true else { return .cancelled }
 
         targetCount = String(targets.count)
         guard !targets.isEmpty else {
@@ -221,6 +226,7 @@ actor PriceRefreshModelActor {
 
         @discardableResult
         func commitStaged() async -> Bool {
+            guard storageContinuation?() ?? true, !Task.isCancelled else { return false }
             let writeCount = stagedWriteCount
             let commitState = PerformanceSignpost.beginInterval(
                 "priceRefresh.commitStaged",
@@ -362,6 +368,10 @@ actor PriceRefreshModelActor {
 
             while let outcomes = await group.next() {
                 for outcome in outcomes {
+                    guard storageContinuation?() ?? true, !Task.isCancelled else {
+                        wasCancelled = true
+                        break
+                    }
                     let printing = outcome.printing
                     let now = Date.now
                     switch outcome.result {
@@ -479,6 +489,10 @@ actor PriceRefreshModelActor {
                     await publishCatalogProgress()
 
                     if checkpointIsDue() {
+                        guard storageContinuation?() ?? true, !Task.isCancelled else {
+                            wasCancelled = true
+                            break
+                        }
                         _ = await commitStaged()
                     }
                 }
@@ -505,11 +519,15 @@ actor PriceRefreshModelActor {
 
         await publishCatalogProgress(force: true)
         _ = await commitStaged()
-        if wasCancelled || Task.isCancelled {
+        if wasCancelled || Task.isCancelled || !(storageContinuation?() ?? true) {
             refreshOutcome = "cancelled"
             return .cancelled
         }
 
+        guard storageContinuation?() ?? true else {
+            refreshOutcome = "cancelled"
+            return .cancelled
+        }
         let fallbackResult = await runFallback(
             fallbackSubjects,
             usesPriceFallback: request.usesPriceFallback,
@@ -522,6 +540,10 @@ actor PriceRefreshModelActor {
         changedPrices = changedPrices || fallbackResult.changedPrices
         persistenceFailed = persistenceFailed || fallbackResult.persistenceFailed
 
+        guard storageContinuation?() ?? true, !Task.isCancelled else {
+            refreshOutcome = "cancelled"
+            return .cancelled
+        }
         let gradedResult = await refreshGraded(
             targets,
             usesPriceFallback: request.usesPriceFallback,
@@ -536,7 +558,7 @@ actor PriceRefreshModelActor {
         gradedLookupMisses += gradedResult.lookupMisses
         gradedTransportFailures += gradedResult.transportFailures
 
-        if Task.isCancelled {
+        if Task.isCancelled || !(storageContinuation?() ?? true) {
             refreshOutcome = "cancelled"
             return .cancelled
         }
@@ -591,6 +613,7 @@ actor PriceRefreshModelActor {
         variant: JustTCGVariant,
         owners: [MarketPriceTarget]
     ) -> MarketRefreshApplyResult {
+        guard storageContinuation?() ?? true else { return .rejected }
         guard let store = refreshStore,
               let identities = identityStore,
               let identityIndex else { return .rejected }
@@ -612,6 +635,7 @@ actor PriceRefreshModelActor {
     }
 
     private func recordActiveArtworkMiss(for owners: [MarketPriceTarget]) {
+        guard storageContinuation?() ?? true else { return }
         PriceRefreshController.recordSealedArtworkMiss(
             for: owners,
             rowsByPriceKey: artworkRowsByPriceKey
@@ -621,6 +645,7 @@ actor PriceRefreshModelActor {
 
     @discardableResult
     private func saveActiveContext() -> Bool {
+        guard storageContinuation?() ?? true, !Task.isCancelled else { return false }
         guard let identities = identityStore, let store = refreshStore else { return false }
         // Both wrappers point at this actor's one context. Keep the existing
         // identity-then-price checkpoint order; changing it would widen the
@@ -648,6 +673,10 @@ actor PriceRefreshModelActor {
                 checkpointState,
                 "staged=\(activeFallbackStagedWrites),outcome=\(checkpointOutcome)"
             )
+        }
+        guard storageContinuation?() ?? true, !Task.isCancelled else {
+            checkpointOutcome = "cancelled"
+            return false
         }
         let due = force
             || activeFallbackStagedWrites >= PriceRefreshController.stagedWriteCeiling
@@ -683,6 +712,10 @@ actor PriceRefreshModelActor {
                 fallbackState,
                 "candidates=\(candidates.count),outcome=\(fallbackOutcome)"
             )
+        }
+        guard storageContinuation?() ?? true, !Task.isCancelled else {
+            fallbackOutcome = "cancelled"
+            return (0, false, false)
         }
         guard !candidates.isEmpty else {
             await progress(.fallbackIdle)
@@ -784,6 +817,10 @@ actor PriceRefreshModelActor {
                     "force=\(force ? 1 : 0),outcome=\(checkpointOutcome)"
                 )
             }
+            guard storageContinuation?() ?? true, !Task.isCancelled else {
+                checkpointOutcome = "cancelled"
+                return false
+            }
             let due = force
                 || activeFallbackStagedWrites >= PriceRefreshController.stagedWriteCeiling
                 || Date.now.timeIntervalSince(activeFallbackLastCommitAt)
@@ -857,7 +894,7 @@ actor PriceRefreshModelActor {
             client: JustTCGV1Client(transport: sharedTransport)
         )
         for (game, targets) in batchable {
-            if Task.isCancelled { break }
+            if Task.isCancelled || !(storageContinuation?() ?? true) { break }
             let useDelta = JustTCGSyncLedger()
                 .checkpoint(game: game, apiVersion: JustTCGV1Client.apiVersion)
                 .supportsDeltaSync
@@ -908,7 +945,7 @@ actor PriceRefreshModelActor {
         }
 
         for candidate in (stoppedByAllowance ? [] : needsIdentity) {
-            if Task.isCancelled { break }
+            if Task.isCancelled || !(storageContinuation?() ?? true) { break }
             let key = ProductIdentity.key(
                 game: candidate.target.game,
                 printingID: candidate.target.printingID,
@@ -1141,12 +1178,16 @@ actor PriceRefreshModelActor {
                     "force=\(force ? 1 : 0),outcome=\(checkpointOutcome)"
                 )
             }
+            guard storageContinuation?() ?? true, !Task.isCancelled else {
+                checkpointOutcome = "cancelled"
+                return
+            }
             let due = force
                 || stagedWriteCount >= PriceRefreshController.stagedWriteCeiling
                 || Date.now.timeIntervalSince(lastCommitAt)
                     >= PriceRefreshController.checkpointBudget
             guard due, stagedWriteCount > 0 else { return }
-            if store.save() {
+            if (storageContinuation?() ?? true), !Task.isCancelled, store.save() {
                 priced += stagedPriced
                 stagedPriced = 0
                 stagedWriteCount = 0
@@ -1176,7 +1217,7 @@ actor PriceRefreshModelActor {
         }
 
         for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
-            if Task.isCancelled { break }
+            if Task.isCancelled || !(storageContinuation?() ?? true) { break }
             guard let identity = group.first?.gradedIdentity,
                   let game = group.first?.game else { continue }
             let variants: [GradedVariant]
@@ -1214,6 +1255,7 @@ actor PriceRefreshModelActor {
                 uniquingKeysWith: { first, _ in first }
             )
             for target in group {
+                guard storageContinuation?() ?? true, !Task.isCancelled else { break }
                 let variant: GradedVariant?
                 if let handle = target.marketVariantID {
                     variant = byVariantID[handle]
@@ -1829,7 +1871,8 @@ final class PriceRefreshController: ObservableObject {
     /// startup check looked like a button that did nothing.
     func refresh(
         _ request: PriceRefreshRequest,
-        container: ModelContainer
+        container: ModelContainer,
+        shouldContinue: StorageGenerationContinuation? = nil
     ) async -> PriceRefreshResult {
         let controllerState = PerformanceSignpost.beginInterval(
             "priceRefresh.controller",
@@ -1844,6 +1887,10 @@ final class PriceRefreshController: ObservableObject {
                 "outcome=\(controllerOutcome)"
             )
         }
+        guard shouldContinue?() ?? true else {
+            controllerOutcome = "cancelled"
+            return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+        }
         if let activeRefresh {
             enqueuePending(request)
             return await activeRefresh.value
@@ -1856,7 +1903,11 @@ final class PriceRefreshController: ObservableObject {
             guard let self else {
                 return PriceRefreshResult(didRun: false, targetBuildFailed: false)
             }
-            return await self.runRefreshQueue(startingWith: request, container: container)
+            return await self.runRefreshQueue(
+                startingWith: request,
+                container: container,
+                shouldContinue: shouldContinue
+            )
         }
         activeRefresh = task
         let result = await task.value
@@ -1877,12 +1928,18 @@ final class PriceRefreshController: ObservableObject {
 
     private func runRefreshQueue(
         startingWith initialRequest: PriceRefreshRequest,
-        container: ModelContainer
+        container: ModelContainer,
+        shouldContinue: StorageGenerationContinuation?
     ) async -> PriceRefreshResult {
         // The active marker is cleared in the same actor turn as the final
         // empty-queue check. A late caller can therefore either join a live
         // queue or start a new one; it cannot enqueue work after this queue has
         // already decided there is nothing left to process.
+        guard shouldContinue?() ?? true else {
+            pendingRefreshRequests.removeAll()
+            activeRefresh = nil
+            return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+        }
         registeredPortfolio?.beginPriceRefresh()
         lastProgressPublicationAt = nil
         lastPublishedProgressPercent = nil
@@ -1890,7 +1947,12 @@ final class PriceRefreshController: ObservableObject {
             // The replay gate is settled for every terminal outcome, including
             // cancellation and target-build failure. It is intentionally tied
             // to the controller's queue, not to the happy-path summary.
-            registeredPortfolio?.endPriceRefresh(context: container.mainContext)
+            if shouldContinue?() ?? true {
+                registeredPortfolio?.endPriceRefresh(context: container.mainContext)
+            } else {
+                pendingRefreshRequests.removeAll()
+                registeredPortfolio?.cancelPriceRefresh()
+            }
             activeRefresh = nil
         }
         let worker = PriceRefreshModelActor(modelContainer: container)
@@ -1904,7 +1966,11 @@ final class PriceRefreshController: ObservableObject {
         var didRun = false
         var targetBuildFailed = false
         while true {
-            let outcome = await worker.run(request, progress: progress)
+            let outcome = await worker.run(
+                request,
+                progress: progress,
+                shouldContinue: shouldContinue
+            )
             await relay.flushNow()
             switch outcome {
             case .noTargets:
@@ -1926,20 +1992,31 @@ final class PriceRefreshController: ObservableObject {
                     )
                 )
             case .cancelled:
-                if let fingerprint = await worker.priceValuesFingerprint() {
-                    registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
+                if shouldContinue?() ?? true {
+                    if let fingerprint = await worker.priceValuesFingerprint() {
+                        registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
+                    }
                 }
                 // Cancellation can happen after one or more durable
                 // checkpoints. The live delta channel may have been partial;
                 // finish with the same authoritative read used by success so
                 // the snapshot cannot remain stale until an unrelated edit.
-                await registeredPriceSnapshotStore?.rebuild(container: container)
+                if shouldContinue?() ?? true {
+                    await registeredPriceSnapshotStore?.rebuild(container: container)
+                }
                 status = .idle
                 return PriceRefreshResult(
                     didRun: didRun,
                     targetBuildFailed: targetBuildFailed
                 )
             case let .completed(result):
+                guard shouldContinue?() ?? true else {
+                    status = .idle
+                    return PriceRefreshResult(
+                        didRun: didRun,
+                        targetBuildFailed: targetBuildFailed
+                    )
+                }
                 didRun = true
                 if let fingerprint = await worker.priceValuesFingerprint() {
                     registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
@@ -1952,10 +2029,19 @@ final class PriceRefreshController: ObservableObject {
             }
 
             guard !Task.isCancelled else {
-                if let fingerprint = await worker.priceValuesFingerprint() {
-                    registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
+                if shouldContinue?() ?? true {
+                    if let fingerprint = await worker.priceValuesFingerprint() {
+                        registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
+                    }
+                    await registeredPriceSnapshotStore?.rebuild(container: container)
                 }
-                await registeredPriceSnapshotStore?.rebuild(container: container)
+                status = .idle
+                return PriceRefreshResult(
+                    didRun: didRun,
+                    targetBuildFailed: targetBuildFailed
+                )
+            }
+            guard shouldContinue?() ?? true else {
                 status = .idle
                 return PriceRefreshResult(
                     didRun: didRun,

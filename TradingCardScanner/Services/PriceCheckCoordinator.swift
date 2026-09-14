@@ -54,6 +54,8 @@ enum PriceCheckRefreshOutcome: Equatable, Sendable {
     case cancelled
 }
 
+typealias PriceCheckContinuationCheck = @MainActor @Sendable () -> Bool
+
 /// Small seam around the network portion of Price Check. The live implementation
 /// preserves the provider order, while tests can exercise immediate/cached and
 /// cancellation behavior without a real network request.
@@ -312,13 +314,18 @@ final class PriceCheckCoordinator {
         )
     }
 
-    func refresh(_ result: PriceCheckResult) async -> PriceCheckRefreshOutcome {
+    func refresh(
+        _ result: PriceCheckResult,
+        shouldContinue: PriceCheckContinuationCheck? = nil
+    ) async -> PriceCheckRefreshOutcome {
+        guard shouldContinue?() ?? true else { return .cancelled }
         if let slab = result.resolvedScan.request.subject.slab {
             let outcome = await gradedResolver.resolve(
                 card: result.card,
                 slab: slab,
                 pokemonPrintRun: result.pokemonPrintRun
             )
+            guard shouldContinue?() ?? true else { return .cancelled }
             switch outcome {
             case let .bound(variant):
                 guard let amount = variant.marketPriceUSD else {
@@ -334,6 +341,7 @@ final class PriceCheckCoordinator {
                         fetchedAt: .now
                     )
                 )
+                guard shouldContinue?() ?? true else { return .cancelled }
                 let key = quoteKey(for: result.resolvedScan, gradedVariant: variant)
                 _ = cache.store(
                     quote,
@@ -359,6 +367,7 @@ final class PriceCheckCoordinator {
             variant: result.resolved.variant,
             pokemonPrintRun: result.pokemonPrintRun
         )
+        guard shouldContinue?() ?? true else { return .cancelled }
         if case let .quote(quote) = outcome,
            case .price = quote {
             let key = quoteKey(for: result.resolvedScan)
@@ -376,7 +385,11 @@ final class PriceCheckCoordinator {
         return outcome
     }
 
-    func recordRefreshFailure(for result: PriceCheckResult) {
+    func recordRefreshFailure(
+        for result: PriceCheckResult,
+        shouldContinue: PriceCheckContinuationCheck? = nil
+    ) {
+        guard shouldContinue?() ?? true else { return }
         let key = quoteKey(for: result.resolvedScan)
         _ = cache.recordFailure(
             game: key.game,

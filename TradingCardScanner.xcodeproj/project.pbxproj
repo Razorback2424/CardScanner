@@ -150,7 +150,16 @@
 		A00200F7 /* UncoveredSurfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F7 /* UncoveredSurfaceTests.swift */; };
 		A00200E3 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
 		A0010072 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B0010072 /* PrivacyInfo.xcprivacy */; };
-		A0010074 /* AppleAccountCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010074 /* AppleAccountCredentials.swift */; };
+		A0010106 /* CollectionStorageBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010106 /* CollectionStorageBootstrap.swift */; };
+		A0010107 /* CardScannerExternalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010107 /* CardScannerExternalLinks.swift */; };
+		A0010108 /* CollectionStorageBootstrapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010108 /* CollectionStorageBootstrapView.swift */; };
+		A0010109 /* PrivacyAndSupportSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010109 /* PrivacyAndSupportSettingsView.swift */; };
+		A002010B /* CollectionStorageBootstrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010B /* CollectionStorageBootstrapTests.swift */; };
+		A002010C /* PrivacyAndSupportSurfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010C /* PrivacyAndSupportSurfaceTests.swift */; };
+		A002010D /* CollectionSyncDiagnosticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010D /* CollectionSyncDiagnosticsTests.swift */; };
+		A002010E /* OwnershipLedgerCompletenessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010E /* OwnershipLedgerCompletenessTests.swift */; };
+		A002010F /* CollectionStoreContinuityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010F /* CollectionStoreContinuityTests.swift */; };
+		A0020110 /* CloudRestorationReadinessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020110 /* CloudRestorationReadinessTests.swift */; };
 		A00100B0 /* ReferenceQuote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B0 /* ReferenceQuote.swift */; };
 		A00100B1 /* QuoteCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B1 /* QuoteCache.swift */; };
 		A00100B2 /* PriceQuoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B2 /* PriceQuoteService.swift */; };
@@ -167,6 +176,17 @@
 		A0020100 /* SlabEvidenceConfirmationWindowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020100 /* SlabEvidenceConfirmationWindowTests.swift */; };
 		A0020103 /* CardFinishRenderPlanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020103 /* CardFinishRenderPlanTests.swift */; };
 		A0020104 /* CardFinishMotionSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020104 /* CardFinishMotionSourceTests.swift */; };
+		A0010100 /* CollectionStoragePolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010100 /* CollectionStoragePolicy.swift */; };
+		A0010101 /* CloudRestorationReadiness.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010101 /* CloudRestorationReadiness.swift */; };
+		A0010102 /* CollectionStoreManifestStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010102 /* CollectionStoreManifestStore.swift */; };
+		A0010103 /* CollectionStoreDigest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010103 /* CollectionStoreDigest.swift */; };
+		A0010104 /* CloudAccountProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010104 /* CloudAccountProbe.swift */; };
+		A0010105 /* CloudCollectionAnchorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010105 /* CloudCollectionAnchorStore.swift */; };
+		A0020106 /* CollectionStoragePolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020106 /* CollectionStoragePolicyTests.swift */; };
+		A0020107 /* CloudKitSchemaCompatibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020107 /* CloudKitSchemaCompatibilityTests.swift */; };
+		A0020108 /* CloudAccountProbeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020108 /* CloudAccountProbeTests.swift */; };
+		A0020109 /* CloudCollectionAnchorStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020109 /* CloudCollectionAnchorStoreTests.swift */; };
+		A002010A /* CollectionStoreDigestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010A /* CollectionStoreDigestTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -327,7 +347,16 @@
 		B00200F7 /* UncoveredSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncoveredSurfaceTests.swift; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B0010073 /* TradingCardScanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TradingCardScanner.entitlements; sourceTree = "<group>"; };
-		B0010074 /* AppleAccountCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleAccountCredentials.swift; sourceTree = "<group>"; };
+		B0010106 /* CollectionStorageBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrap.swift; sourceTree = "<group>"; };
+		B0010107 /* CardScannerExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScannerExternalLinks.swift; sourceTree = "<group>"; };
+		B0010108 /* CollectionStorageBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapView.swift; sourceTree = "<group>"; };
+		B0010109 /* PrivacyAndSupportSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyAndSupportSettingsView.swift; sourceTree = "<group>"; };
+		B002010B /* CollectionStorageBootstrapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapTests.swift; sourceTree = "<group>"; };
+		B002010C /* PrivacyAndSupportSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyAndSupportSurfaceTests.swift; sourceTree = "<group>"; };
+		B002010D /* CollectionSyncDiagnosticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionSyncDiagnosticsTests.swift; sourceTree = "<group>"; };
+		B002010E /* OwnershipLedgerCompletenessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnershipLedgerCompletenessTests.swift; sourceTree = "<group>"; };
+		B002010F /* CollectionStoreContinuityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoreContinuityTests.swift; sourceTree = "<group>"; };
+		B0020110 /* CloudRestorationReadinessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudRestorationReadinessTests.swift; sourceTree = "<group>"; };
 		B00100B0 /* ReferenceQuote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceQuote.swift; sourceTree = "<group>"; };
 		B00100B1 /* QuoteCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteCache.swift; sourceTree = "<group>"; };
 		B00100B2 /* PriceQuoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceQuoteService.swift; sourceTree = "<group>"; };
@@ -344,6 +373,17 @@
 		B0020100 /* SlabEvidenceConfirmationWindowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlabEvidenceConfirmationWindowTests.swift; sourceTree = "<group>"; };
 		B0020103 /* CardFinishRenderPlanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFinishRenderPlanTests.swift; sourceTree = "<group>"; };
 		B0020104 /* CardFinishMotionSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardFinishMotionSourceTests.swift; sourceTree = "<group>"; };
+		B0010100 /* CollectionStoragePolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoragePolicy.swift; sourceTree = "<group>"; };
+		B0010101 /* CloudRestorationReadiness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudRestorationReadiness.swift; sourceTree = "<group>"; };
+		B0010102 /* CollectionStoreManifestStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoreManifestStore.swift; sourceTree = "<group>"; };
+		B0010103 /* CollectionStoreDigest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoreDigest.swift; sourceTree = "<group>"; };
+		B0010104 /* CloudAccountProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudAccountProbe.swift; sourceTree = "<group>"; };
+		B0010105 /* CloudCollectionAnchorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCollectionAnchorStore.swift; sourceTree = "<group>"; };
+		B0020106 /* CollectionStoragePolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoragePolicyTests.swift; sourceTree = "<group>"; };
+		B0020107 /* CloudKitSchemaCompatibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSchemaCompatibilityTests.swift; sourceTree = "<group>"; };
+		B0020108 /* CloudAccountProbeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudAccountProbeTests.swift; sourceTree = "<group>"; };
+		B0020109 /* CloudCollectionAnchorStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCollectionAnchorStoreTests.swift; sourceTree = "<group>"; };
+		B002010A /* CollectionStoreDigestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoreDigestTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -441,6 +481,14 @@
 		D0010004 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				B0010106 /* CollectionStorageBootstrap.swift */,
+				B0010107 /* CardScannerExternalLinks.swift */,
+				B0010100 /* CollectionStoragePolicy.swift */,
+				B0010101 /* CloudRestorationReadiness.swift */,
+				B0010102 /* CollectionStoreManifestStore.swift */,
+				B0010103 /* CollectionStoreDigest.swift */,
+				B0010104 /* CloudAccountProbe.swift */,
+				B0010105 /* CloudCollectionAnchorStore.swift */,
 				B0010051 /* BrowseCatalog.swift */,
 				B00100C0 /* PokemonChecklistSnapshot.swift */,
 				B00100E3 /* MagicTreatmentCatalog.swift */,
@@ -471,7 +519,6 @@
 				B0010047 /* CollectionCatalogNormalizer.swift */,
 				B0010048 /* CardCenteringExport.swift */,
 							B0010054 /* PriceVendorCredentials.swift */,
-				B0010074 /* AppleAccountCredentials.swift */,
 							B0010056 /* ProductCatalogIdentity.swift */,
 							B0010057 /* ProductPriceService.swift */,
 							B0010058 /* ProductIdentityStore.swift */,
@@ -505,6 +552,8 @@
 		D0010005 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				B0010108 /* CollectionStorageBootstrapView.swift */,
+				B0010109 /* PrivacyAndSupportSettingsView.swift */,
 				B0010071 /* CollectionActivityLogView.swift */,
 				B0010052 /* BrowseView.swift */,
 				B0010053 /* CatalogCardDetailView.swift */,
@@ -547,6 +596,17 @@
 		D0020001 /* TradingCardScannerTests */ = {
 			isa = PBXGroup;
 			children = (
+				B002010B /* CollectionStorageBootstrapTests.swift */,
+				B002010C /* PrivacyAndSupportSurfaceTests.swift */,
+				B002010D /* CollectionSyncDiagnosticsTests.swift */,
+				B002010E /* OwnershipLedgerCompletenessTests.swift */,
+				B002010F /* CollectionStoreContinuityTests.swift */,
+				B0020110 /* CloudRestorationReadinessTests.swift */,
+				B0020106 /* CollectionStoragePolicyTests.swift */,
+				B0020107 /* CloudKitSchemaCompatibilityTests.swift */,
+				B0020108 /* CloudAccountProbeTests.swift */,
+				B0020109 /* CloudCollectionAnchorStoreTests.swift */,
+				B002010A /* CollectionStoreDigestTests.swift */,
 				B0020001 /* ScanParserTests.swift */,
 				B00200F5 /* WholeCardHistoricalCaptureTests.swift */,
 				B00200F4 /* HistoricalTitleCaptureTests.swift */,
@@ -705,7 +765,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A0010074 /* AppleAccountCredentials.swift in Sources */,
+				A0010106 /* CollectionStorageBootstrap.swift in Sources */,
+				A0010107 /* CardScannerExternalLinks.swift in Sources */,
+				A0010108 /* CollectionStorageBootstrapView.swift in Sources */,
+				A0010109 /* PrivacyAndSupportSettingsView.swift in Sources */,
+				A0010100 /* CollectionStoragePolicy.swift in Sources */,
+				A0010101 /* CloudRestorationReadiness.swift in Sources */,
+				A0010102 /* CollectionStoreManifestStore.swift in Sources */,
+				A0010103 /* CollectionStoreDigest.swift in Sources */,
+				A0010104 /* CloudAccountProbe.swift in Sources */,
+				A0010105 /* CloudCollectionAnchorStore.swift in Sources */,
 				A00100B0 /* ReferenceQuote.swift in Sources */,
 				A00100B1 /* QuoteCache.swift in Sources */,
 				A00100B2 /* PriceQuoteService.swift in Sources */,
@@ -817,6 +886,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A002010B /* CollectionStorageBootstrapTests.swift in Sources */,
+				A002010C /* PrivacyAndSupportSurfaceTests.swift in Sources */,
+				A002010D /* CollectionSyncDiagnosticsTests.swift in Sources */,
+				A002010E /* OwnershipLedgerCompletenessTests.swift in Sources */,
+				A002010F /* CollectionStoreContinuityTests.swift in Sources */,
+				A0020110 /* CloudRestorationReadinessTests.swift in Sources */,
+				A0020106 /* CollectionStoragePolicyTests.swift in Sources */,
+				A0020107 /* CloudKitSchemaCompatibilityTests.swift in Sources */,
+				A0020108 /* CloudAccountProbeTests.swift in Sources */,
+				A0020109 /* CloudCollectionAnchorStoreTests.swift in Sources */,
+				A002010A /* CollectionStoreDigestTests.swift in Sources */,
 				A0020001 /* ScanParserTests.swift in Sources */,
 				A00200F5 /* WholeCardHistoricalCaptureTests.swift in Sources */,
 				A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */,
@@ -910,6 +990,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
 				CODE_SIGN_STYLE = Automatic;
+				CARD_SCANNER_PRIVACY_URL = "";
+				CARD_SCANNER_SUPPORT_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = D4X943SP8Z;
@@ -923,7 +1005,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.TradingCardScanner;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -937,6 +1019,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TradingCardScanner/TradingCardScanner.entitlements;
 				CODE_SIGN_STYLE = Automatic;
+				CARD_SCANNER_PRIVACY_URL = "";
+				CARD_SCANNER_SUPPORT_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = D4X943SP8Z;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -947,7 +1031,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.TradingCardScanner;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -967,7 +1051,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.TradingCardScannerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScannerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -988,7 +1072,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.TradingCardScannerTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScannerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;

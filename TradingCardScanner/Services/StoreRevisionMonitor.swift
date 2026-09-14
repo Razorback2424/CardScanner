@@ -117,6 +117,7 @@ struct StoreRevisionMonitor: View {
     let priceSnapshot: PriceSnapshotStore
     let revisionStore: StoreRevisionStore
     let refresh: PriceRefreshController
+    let storageGeneration: CollectionStorageGeneration
     let hasStartedPortfolio: Bool
 
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
@@ -140,13 +141,15 @@ struct StoreRevisionMonitor: View {
 
     var body: some View {
         PerformanceSignpost.signposter.emitEvent("StoreRevisionMonitor.body")
-        let observation = "\(hasStartedPortfolio)-\(saveGeneration)-\(writeCoordinator.generation)"
+        let storageToken = storageGeneration.currentToken()
+        let observation = "\(hasStartedPortfolio)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)"
 
         return Color.clear
             .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
                 saveGeneration &+= 1
             }
             .task(id: observation) {
+                guard let storageToken else { return }
                 guard hasStartedPortfolio, !writeCoordinator.isBulkWriteInFlight else { return }
                 try? await Task.sleep(for: .milliseconds(300))
                 guard !Task.isCancelled, !writeCoordinator.isBulkWriteInFlight else { return }
@@ -154,14 +157,20 @@ struct StoreRevisionMonitor: View {
                 let actor = StoreRevisionModelActor(modelContainer: modelContext.container)
                 let fingerprint = await actor.fingerprint()
                 guard await actor.readSucceeded() else { return }
-                guard !Task.isCancelled, !writeCoordinator.isBulkWriteInFlight else { return }
+                guard !Task.isCancelled,
+                      !writeCoordinator.isBulkWriteInFlight,
+                      storageGeneration.isCurrent(storageToken) else { return }
                 revisionStore.publish(fingerprint)
-                await apply(fingerprint)
+                await apply(fingerprint, storageToken: storageToken)
             }
     }
 
     @MainActor
-    private func apply(_ fingerprint: StoreRevisionFingerprint) async {
+    private func apply(
+        _ fingerprint: StoreRevisionFingerprint,
+        storageToken: StorageGenerationToken
+    ) async {
+        guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         let generation = applyGeneration &+ 1
         applyGeneration = generation
 
@@ -202,6 +211,7 @@ struct StoreRevisionMonitor: View {
                     state,
                     "generation=\(generation)"
                 )
+                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             }
         }
 
@@ -217,6 +227,7 @@ struct StoreRevisionMonitor: View {
                 state,
                 "generation=\(generation)"
             )
+            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         }
 
         if cardsChanged || inventoryChanged || activitiesChanged {
@@ -236,18 +247,20 @@ struct StoreRevisionMonitor: View {
                     portfolioState,
                     "generation=\(generation)"
                 )
+                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             }
             let refreshState = PerformanceSignpost.beginInterval(
                 "storeRevision.refreshStalePrices",
                 id: PerformanceSignpost.makeID(),
                 "generation=\(generation)"
             )
-            await refreshStalePricesIfNeeded(using: fingerprint)
+            await refreshStalePricesIfNeeded(using: fingerprint, storageToken: storageToken)
             PerformanceSignpost.endInterval(
                 "storeRevision.refreshStalePrices",
                 refreshState,
                 "generation=\(generation)"
             )
+            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         } else if pricesChanged && !isRefreshInFlight && !controllerOwnedPriceChange {
             CollectionStore(context: modelContext).invalidateIdentityAliasCache()
             let portfolioState = PerformanceSignpost.beginInterval(
@@ -261,20 +274,23 @@ struct StoreRevisionMonitor: View {
                 portfolioState,
                 "generation=\(generation)"
             )
+            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             let refreshState = PerformanceSignpost.beginInterval(
                 "storeRevision.refreshStalePrices",
                 id: PerformanceSignpost.makeID(),
                 "generation=\(generation)"
             )
-            await refreshStalePricesIfNeeded(using: fingerprint)
+            await refreshStalePricesIfNeeded(using: fingerprint, storageToken: storageToken)
             PerformanceSignpost.endInterval(
                 "storeRevision.refreshStalePrices",
                 refreshState,
                 "generation=\(generation)"
             )
+            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         }
 
         if magicChanged {
+            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             guard hasEstablishedMagicTreatmentBaseline else {
                 hasEstablishedMagicTreatmentBaseline = true
                 guard generation == applyGeneration else { return }
@@ -287,13 +303,17 @@ struct StoreRevisionMonitor: View {
                 id: PerformanceSignpost.makeID(),
                 "generation=\(generation)"
             )
-            _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(in: modelContext)
+            _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(
+                in: modelContext,
+                storageToken: storageToken,
+                shouldContinue: storageGeneration.continuation(for: storageToken)
+            )
             PerformanceSignpost.endInterval(
                 "storeRevision.magicMigration",
                 migrationState,
                 "generation=\(generation)"
             )
-            guard !Task.isCancelled else { return }
+            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             if isRefreshInFlight {
                 let portfolioState = PerformanceSignpost.beginInterval(
                     "storeRevision.portfolioRecompute",
@@ -318,6 +338,7 @@ struct StoreRevisionMonitor: View {
                     portfolioState,
                     "generation=\(generation),mode=wait"
                 )
+                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             }
         }
 
@@ -334,9 +355,12 @@ struct StoreRevisionMonitor: View {
 
     @MainActor
     private func refreshStalePricesIfNeeded(
-        using fingerprint: StoreRevisionFingerprint
+        using fingerprint: StoreRevisionFingerprint,
+        storageToken: StorageGenerationToken
     ) async {
-        guard fingerprint.cardCount > 0 else { return }
+        guard fingerprint.cardCount > 0,
+              storageGeneration.isCurrent(storageToken),
+              !Task.isCancelled else { return }
         let targetFingerprint = fingerprint.stalePriceTargetFingerprint
         if isRefreshInFlight,
            let activeCollectionFingerprint = activeStalePriceCollectionFingerprint,
@@ -348,19 +372,34 @@ struct StoreRevisionMonitor: View {
         guard lastStalePriceTargetFingerprint != targetFingerprint else { return }
         lastStalePriceTargetFingerprint = targetFingerprint
         activeStalePriceCollectionFingerprint = fingerprint.stalePriceCollectionFingerprint
-        let result = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
-            in: modelContext
-        ) {
-            let request = PriceRefreshRequest(
-                usesPriceFallback: usesPriceFallback,
-                includeImported: true,
-                forceUnsupportedRetry: false,
-                sortOldestFirst: false,
-                maximumTargetCount: nil,
-                markRecentlyCheckedIfEmpty: false
-            )
-            return await refresh.refresh(request, container: modelContext.container)
+        guard let result = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
+            in: modelContext,
+            storageToken: storageToken,
+            shouldContinue: storageGeneration.continuation(for: storageToken),
+            operation: {
+                guard self.storageGeneration.isCurrent(storageToken), !Task.isCancelled else {
+                    return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+                }
+                let shouldContinue = self.storageGeneration.continuation(for: storageToken)
+                let request = PriceRefreshRequest(
+                    usesPriceFallback: usesPriceFallback,
+                    includeImported: true,
+                    forceUnsupportedRetry: false,
+                    sortOldestFirst: false,
+                    maximumTargetCount: nil,
+                    markRecentlyCheckedIfEmpty: false
+                )
+                return await refresh.refresh(
+                    request,
+                    container: modelContext.container,
+                    shouldContinue: shouldContinue
+                )
+            }
+        ) else {
+            activeStalePriceCollectionFingerprint = nil
+            return
         }
+        guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         activeStalePriceCollectionFingerprint = nil
         if result.targetBuildFailed {
             lastStalePriceTargetFingerprint = nil

@@ -7,217 +7,46 @@ struct TradingCardScannerApp: App {
     @StateObject private var scannerModel = ScannerViewModel()
     @StateObject private var scanSummaryStore = ScanSessionSummaryStore()
     @StateObject private var cardFinishMotion = CardFinishMotionSource()
-    enum StorageMode: Equatable {
-        case cloudKit
-        case localOnly
+    @StateObject private var storageBootstrap = CollectionStorageBootstrap()
 
-        var label: String {
-            switch self {
-            case .cloudKit: return "iCloud sync enabled"
-            case .localOnly: return "On this device only"
-            }
-        }
-
-        var detail: String {
-            switch self {
-            case .cloudKit:
-                return "The collection uses this device's iCloud account."
-            case .localOnly:
-                return "The collection is stored locally; this launch is not using a CloudKit-backed container."
-            }
-        }
-
-        var isCloudSyncing: Bool {
-            self == .cloudKit
-        }
-    }
-
-    /// The actual SwiftData configuration selected during this launch. This is
-    /// intentionally separate from Sign in with Apple: that credential gates
-    /// whether the cloud configuration is attempted, while CloudKit uses the
-    /// device's iCloud account for its private database.
-    private(set) static var activeStorageMode: StorageMode = .localOnly
-
-    static let container: ModelContainer = {
-        let container = TradingCardScannerApp.makeContainer()
-        CollectionArtworkStore.migrateLegacyMappings(in: ModelContext(container))
-        return container
-    }()
+    // Compatibility name for existing portfolio/status call sites. The
+    // actual state is owned by CollectionStorageBootstrap.
+    typealias StorageMode = CollectionStorageMode
+    @MainActor static var activeStorageMode: CollectionStorageMode = .onDevice
+    @MainActor static var storageIsReady = false
+    @MainActor static var activeStoreID: UUID?
+    @MainActor static var activeCloudAccountStatusRaw = "unknown"
+    @MainActor static var activeAttachmentStateRaw = "neverAttached"
+    @MainActor static var lastBootstrapErrorCategory: String?
 
     var body: some Scene {
         WindowGroup {
-            if let message = Self.storageRecoveryMessage {
-                StorageRecoveryView(message: message)
-            } else {
-                ContentView()
-                    .environmentObject(scannerModel)
-                    .environmentObject(scanSummaryStore)
-                    .environment(\.cardFinishMotionSource, cardFinishMotion)
+            Group {
+                switch storageBootstrap.state {
+                case .ready(let session):
+                    ContentView()
+                        .modelContainer(session.container)
+                        .environmentObject(scannerModel)
+                        .environmentObject(scanSummaryStore)
+                        .environment(\.cardFinishMotionSource, cardFinishMotion)
+                default:
+                    CollectionStorageBootstrapView(bootstrap: storageBootstrap)
+                }
+            }
+            .task {
+                await storageBootstrap.start()
             }
         }
-        .modelContainer(Self.container)
     }
 
-    // Ownership and pricing are separate entities on purpose: a price is a
-    // mutable observation about a printing-and-variant, shared by every copy
-    // owned, with its own freshness lifecycle.
-    private static let syncedSchema = Schema([
-        CollectedCard.self,
-        PriceRecord.self,
-        ProductIdentity.self,
-        CollectionActivity.self,
-        InventoryEvent.self
-    ])
-
-    /// The portfolio's knowledge history, which never leaves the device.
-    ///
-    /// Not a storage optimisation. These tables record *when this phone learned
-    /// what* — every price observation it received and every day it
-    /// successfully checked. Two devices with different refresh schedules
-    /// legitimately have different knowledge histories, and merging them would
-    /// produce a history neither device actually observed. Closes converge once
-    /// there is a shared, instrument-keyed pricing service to derive them from;
-    /// until then, honest and device-local beats synced and invented.
-    private static let localOnlySchema = Schema([
-        ReferenceQuote.self,
-        PriceObservation.self,
-        PriceCheckDay.self,
-        PortfolioDailyClose.self,
-        LocalArtworkOverride.self
-    ])
-
-    private static let fullSchema = Schema([
-        CollectedCard.self,
-        PriceRecord.self,
-        ProductIdentity.self,
-        CollectionActivity.self,
-        InventoryEvent.self,
-        ReferenceQuote.self,
-        PriceObservation.self,
-        PriceCheckDay.self,
-        PortfolioDailyClose.self,
-        LocalArtworkOverride.self
-    ])
-
-    private static var isCardFinishPerformanceHarnessLaunch: Bool {
-#if DEBUG || CARD_FINISH_PERF_HARNESS
-        let arguments = ProcessInfo.processInfo.arguments
-        guard let index = arguments.firstIndex(of: "-ui_debug_route"),
-              arguments.indices.contains(index + 1) else { return false }
-        return arguments[index + 1] == "CollectionFinishPerformance"
-#else
-        return false
-#endif
-    }
-
-    /// CloudKit sync is attempted once per launch when the app's sign-in gate
-    /// is present. The private database itself belongs to the device's iCloud
-    /// account, not the Sign in with Apple credential. Signing in or out again
-    /// takes effect on the next launch rather than mid-session: SwiftData does
-    /// not support moving a live store between a local-only and a CloudKit-
-    /// mirrored configuration, so `AccountSettingsSection` says "restart to
-    /// finish" instead of quietly doing nothing.
-    ///
-    /// If a CloudKit-backed container can't actually be created — the
-    /// expected case during development without a paid Apple Developer
-    /// Program membership provisioning the iCloud capability — this falls
-    /// back to a local-only container instead of crashing. Local persistence
-    /// is the fallback in both the literal and the design sense: sync is
-    /// additive, never a requirement to use the app.
-    private(set) static var storageRecoveryMessage: String?
-
-    private static func makeContainer() -> ModelContainer {
-        // The performance route is intentionally isolated from both the
-        // CloudKit-backed collection and the normal local store. It is selected
-        // before the app's static container is created and is available only to
-        // the opt-in debug/performance build.
-        if isCardFinishPerformanceHarnessLaunch {
-            let performanceConfiguration = ModelConfiguration(
-                "CardFinishPerformance",
-                schema: fullSchema,
-                isStoredInMemoryOnly: true,
-                cloudKitDatabase: .none
-            )
-            if let container = try? ModelContainer(
-                for: fullSchema,
-                configurations: [performanceConfiguration]
-            ) {
-                activeStorageMode = .localOnly
-                return container
-            }
-            preconditionFailure("Could not create the card-finish performance container.")
-        }
-
-        // A separate store for the local-only models, so CloudKit mirroring is
-        // decided per configuration rather than per container.
-        let localOnlyConfiguration = ModelConfiguration(
-            "PortfolioLocal",
-            schema: localOnlySchema,
-            cloudKitDatabase: .none
+    /// Background Tasks runs in a fresh process. It may create a new
+    /// explicitly identified container only after the app-level bootstrap has
+    /// established that storage is ready; it never shares a global container.
+    @MainActor
+    static func makeBackgroundContainer() throws -> ModelContainer {
+        try CollectionStorageBootstrapDependencies.makeContainer(
+            paths: CollectionStoragePaths.production(),
+            mode: activeStorageMode
         )
-
-        // A build signed by a personal Apple Developer team cannot carry the
-        // iCloud entitlement at all, so there is nothing to attempt. The
-        // fallback below is the same one used when CloudKit is unavailable for
-        // any other reason — this just skips a request that is known to fail.
-#if !LOCAL_ONLY_SIGNING
-        if AppleAccountCredentials.isSignedIn {
-            let cloudConfiguration = ModelConfiguration(schema: syncedSchema, cloudKitDatabase: .automatic)
-            if let container = try? ModelContainer(
-                for: fullSchema,
-                configurations: [cloudConfiguration, localOnlyConfiguration]
-            ) {
-                activeStorageMode = .cloudKit
-                return container
-            }
-        }
-#endif
-
-        let localConfiguration = ModelConfiguration(schema: syncedSchema, cloudKitDatabase: .none)
-        if let container = try? ModelContainer(
-            for: fullSchema,
-            configurations: [localConfiguration, localOnlyConfiguration]
-        ) {
-            activeStorageMode = .localOnly
-            return container
-        }
-
-        // A disk-full or corrupt local store must not make the launch itself
-        // crash. Keep the original store untouched and provide a temporary,
-        // clearly-labeled recovery container so the app can explain the state
-        // and be quit/reopened after the underlying storage problem is fixed.
-        let recoveryConfiguration = ModelConfiguration(
-            "Recovery",
-            schema: fullSchema,
-            isStoredInMemoryOnly: true,
-            cloudKitDatabase: .none
-        )
-        if let container = try? ModelContainer(
-            for: fullSchema,
-            configurations: [recoveryConfiguration]
-        ) {
-            activeStorageMode = .localOnly
-            storageRecoveryMessage = "Your saved collection could not be opened. The original store was left untouched, and this launch is using temporary recovery storage. Quit and reopen after fixing the device storage issue."
-            return container
-        }
-
-        // SwiftData could not construct even an in-memory container. There is
-        // no model context that can safely be injected into the app in this
-        // process; preserve the diagnostic rather than claiming the collection
-        // is empty. This is an unrecoverable framework/bootstrap failure.
-        preconditionFailure("Could not create a recovery ModelContainer.")
-    }
-}
-
-private struct StorageRecoveryView: View {
-    let message: String
-
-    var body: some View {
-        ContentUnavailableView {
-            Label("Storage recovery required", systemImage: "externaldrive.badge.exclamationmark")
-        } description: {
-            Text(message)
-        }
-        .padding(24)
     }
 }

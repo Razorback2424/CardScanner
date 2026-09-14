@@ -104,12 +104,13 @@ struct CollectionCSVEntry: Sendable, Equatable {
     var marketRegionRaw: String?
 }
 
-enum CollectionCSVError: LocalizedError {
+enum CollectionCSVError: LocalizedError, Sendable {
     case unreadableFile
     case missingColumns
     case noCards
     case invalidTreatmentID(String)
     case quantityOutOfRange(String)
+    case storageGenerationChanged
 
     var errorDescription: String? {
         switch self {
@@ -123,6 +124,8 @@ enum CollectionCSVError: LocalizedError {
             return "The CSV contains an unsupported Magic treatment id: \(id)."
         case let .quantityOutOfRange(detail):
             return "The CSV contains an unsupported quantity: \(detail)."
+        case .storageGenerationChanged:
+            return "The collection changed while this import was running."
         }
     }
 }
@@ -528,9 +531,13 @@ enum CollectionCSV {
         _ plan: CollectionCSVImportPlan,
         to context: ModelContext,
         batchSize: Int = 100,
-        progress: (@Sendable (Int, Int) -> Void)? = nil
+        progress: (@Sendable (Int, Int) -> Void)? = nil,
+        shouldContinue: (@Sendable () -> Bool)? = nil
     ) throws -> CollectionCSVImportResult {
         do {
+            guard shouldContinue?() ?? true else {
+                throw CollectionCSVError.storageGenerationChanged
+            }
             let priceStore = PriceStore(context: context)
             let ledger = InventoryLedger(context: context)
             // The same store the scanner writes through. An import is an
@@ -643,6 +650,9 @@ enum CollectionCSV {
             var batchStart = 0
             progress?(0, plan.entries.count)
             while batchStart < plan.entries.count {
+                guard shouldContinue?() ?? true else {
+                    throw CollectionCSVError.storageGenerationChanged
+                }
                 let batchEnd = min(batchStart + safeBatchSize, plan.entries.count)
                 for index in batchStart..<batchEnd {
                     // A row failure must not replay or re-project the already
@@ -879,12 +889,19 @@ enum CollectionCSV {
                         // so a batch save cannot safely isolate a malformed row from
                         // its valid siblings. `batchSize` remains the progress and
                         // scheduling granularity, not the durability boundary.
+                        guard shouldContinue?() ?? true else {
+                            throw CollectionCSVError.storageGenerationChanged
+                        }
                         try context.save()
                         collectionStore.invalidateIdentityAliasCache()
                         inserted += rowInserted
                         merged += rowMerged
                         importedQuantity += rowImportedQuantity
                     } catch {
+                        if let csvError = error as? CollectionCSVError,
+                           case .storageGenerationChanged = csvError {
+                            throw csvError
+                        }
                         failedRows.append(
                             CollectionCSVImportFailure(
                                 collectionKey: plan.entries[index].collectionKey,
@@ -924,13 +941,15 @@ enum CollectionCSV {
         _ plan: CollectionCSVImportPlan,
         to container: ModelContainer,
         batchSize: Int = 100,
-        progress: (@Sendable (Int, Int) -> Void)? = nil
+        progress: (@Sendable (Int, Int) -> Void)? = nil,
+        shouldContinue: (@Sendable () -> Bool)? = nil
     ) async throws -> CollectionCSVImportResult {
         let importer = CollectionCSVImportActor(modelContainer: container)
         return try await importer.apply(
             plan,
             batchSize: batchSize,
-            progress: progress
+            progress: progress,
+            shouldContinue: shouldContinue
         )
     }
 
@@ -1682,13 +1701,15 @@ actor CollectionCSVImportActor {
     func apply(
         _ plan: CollectionCSVImportPlan,
         batchSize: Int,
-        progress: (@Sendable (Int, Int) -> Void)?
+        progress: (@Sendable (Int, Int) -> Void)?,
+        shouldContinue: (@Sendable () -> Bool)?
     ) throws -> CollectionCSVImportResult {
         try CollectionCSV.apply(
             plan,
             to: modelContext,
             batchSize: batchSize,
-            progress: progress
+            progress: progress,
+            shouldContinue: shouldContinue
         )
     }
 }

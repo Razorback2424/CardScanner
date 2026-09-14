@@ -11,6 +11,7 @@ struct ScannerView: View {
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
+    @ObservedObject private var storageGeneration = CollectionStorageGeneration.shared
 
     @State private var isShowingSettings = false
     @State private var reviewing: RecentScan?
@@ -74,7 +75,8 @@ struct ScannerView: View {
                 context: modelContext,
                 isSceneActive: scenePhase == .active,
                 summaryStore: summaryStore,
-                writeCoordinator: writeCoordinator
+                writeCoordinator: writeCoordinator,
+                storageGeneration: storageGeneration
             )
         }
         .onDisappear { model.viewDisappeared() }

@@ -64,6 +64,8 @@ fileprivate struct ImportedCatalogNormalizationInputs: Sendable {
 /// human-readable identity into provider metadata without involving pricing.
 @MainActor
 final class CollectionCatalogNormalizer: ObservableObject {
+    typealias ContinuationCheck = @MainActor @Sendable () -> Bool
+
     enum Status: Equatable {
         case idle
         case normalizing(total: Int)
@@ -101,12 +103,22 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// Production callers use a context dedicated to catalog normalization.
     /// A network-paced task must not hold the UI context's pending mutations or
     /// let its save/rollback interact with a scanner transaction.
-    func normalizeImportedCards(in container: ModelContainer) async {
+    func normalizeImportedCards(
+        in container: ModelContainer,
+        shouldContinue: ContinuationCheck? = nil
+    ) async {
         let normalizationContext = ModelContext(container)
-        await normalizeImportedCards(in: normalizationContext)
+        await normalizeImportedCards(
+            in: normalizationContext,
+            shouldContinue: shouldContinue
+        )
     }
 
-    func normalizeImportedCards(in context: ModelContext) async {
+    func normalizeImportedCards(
+        in context: ModelContext,
+        shouldContinue: ContinuationCheck? = nil
+    ) async {
+        guard shouldContinue?() ?? true else { return }
         if case .normalizing = status {
             requestsAnotherPass = true
             return
@@ -123,13 +135,17 @@ final class CollectionCatalogNormalizer: ObservableObject {
         )
         let inputs = await inputActor.inputs(now: now)
         isCollectingInputs = false
+        guard shouldContinue?() ?? true else { return }
         let requests = inputs.requests
 
         guard !requests.isEmpty else {
             let shouldRunAnotherPass = requestsAnotherPass
             requestsAnotherPass = false
             if shouldRunAnotherPass {
-                await normalizeImportedCards(in: context)
+                await normalizeImportedCards(
+                    in: context,
+                    shouldContinue: shouldContinue
+                )
             }
             return
         }
@@ -141,7 +157,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
         let resolution = await resolver.resolve(Array(requests))
         let matches = resolution.matches
-        guard !Task.isCancelled else {
+        guard !Task.isCancelled, shouldContinue?() ?? true else {
             requestsAnotherPass = false
             status = .idle
             return
@@ -149,6 +165,12 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
         let priceLog = PriceObservationLog(context: context)
         for request in requests {
+            guard shouldContinue?() ?? true else {
+                context.rollback()
+                requestsAnotherPass = false
+                status = .idle
+                return
+            }
             let rows = (cardIDsByProviderID[request.sourceProviderID] ?? [])
                 .compactMap { context.model(for: $0) as? CollectedCard }
             if let metadata = matches[request.sourceProviderID] {
@@ -252,6 +274,12 @@ final class CollectionCatalogNormalizer: ObservableObject {
         }
 
         do {
+            guard shouldContinue?() ?? true else {
+                context.rollback()
+                requestsAnotherPass = false
+                status = .idle
+                return
+            }
             try context.save()
             status = .finished(
                 matched: matches.count,
@@ -265,7 +293,10 @@ final class CollectionCatalogNormalizer: ObservableObject {
             }
             if requestsAnotherPass {
                 requestsAnotherPass = false
-                await normalizeImportedCards(in: context)
+                await normalizeImportedCards(
+                    in: context,
+                    shouldContinue: shouldContinue
+                )
             }
         } catch {
             requestsAnotherPass = false

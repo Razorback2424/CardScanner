@@ -238,6 +238,14 @@ final class PortfolioEngine: ObservableObject {
         recompute(context: context)
     }
 
+    /// Drops a refresh gate whose storage generation is no longer current.
+    /// The old model context must not trigger a replay into the newly installed
+    /// collection; the new session owns its own first authoritative replay.
+    func cancelPriceRefresh() {
+        priceRefreshInFlight = false
+        priceRefreshReplayOwed = false
+    }
+
     /// Applies committed refresh deltas to already-projected holdings. This is
     /// the cheap Σ(quantity × price) path; the next terminal replay remains the
     /// authority for coverage, attribution and historical closes.

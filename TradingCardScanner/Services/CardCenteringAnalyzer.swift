@@ -43,6 +43,14 @@ struct CardCenteringAnalysis {
     }
 }
 
+enum CardCenteringInnerSource: String, Codable, Equatable {
+    case scalarInner
+    case visionPrintedInner
+    case visionArtWindow
+    case profile
+    case none
+}
+
 #if DEBUG
 /// Test-only observability for the profile detector. This deliberately carries
 /// measurements out of the existing scoring path without changing a decision,
@@ -103,14 +111,6 @@ struct CardCenteringStageTimingDiagnostic: Codable, Equatable {
             + rectification
             + resultConstruction
     }
-}
-
-enum CardCenteringInnerSource: String, Codable, Equatable {
-    case scalarInner
-    case visionPrintedInner
-    case visionArtWindow
-    case profile
-    case none
 }
 
 struct CardCenteringAnalysisDiagnostic: Codable, Equatable {

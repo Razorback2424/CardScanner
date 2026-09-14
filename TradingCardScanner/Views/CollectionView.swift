@@ -168,7 +168,17 @@ struct CollectionView: View {
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
-        .task { await catalogNormalizer.normalizeImportedCards(in: modelContext.container) }
+        .task {
+            guard let storageToken = CollectionStorageGeneration.shared.currentToken() else {
+                return
+            }
+            await catalogNormalizer.normalizeImportedCards(
+                in: modelContext.container,
+                shouldContinue: {
+                    CollectionStorageGeneration.shared.isCurrent(storageToken)
+                }
+            )
+        }
         .task(id: searchText) {
             try? await Task.sleep(for: .milliseconds(120))
             guard !Task.isCancelled else { return }

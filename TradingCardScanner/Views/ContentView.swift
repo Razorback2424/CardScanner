@@ -184,14 +184,26 @@ struct ContentView: View {
                 break
             }
             try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
-            _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(in: modelContext)
+            let storageGeneration = CollectionStorageGeneration.shared
+            guard let storageToken = storageGeneration.currentToken() else { return }
+            _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
+                in: modelContext,
+                storageToken: storageToken,
+                shouldContinue: storageGeneration.continuation(for: storageToken)
+            )
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
         }
 #else
         .task {
             try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
-            _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(in: modelContext)
+            let storageGeneration = CollectionStorageGeneration.shared
+            guard let storageToken = storageGeneration.currentToken() else { return }
+            _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
+                in: modelContext,
+                storageToken: storageToken,
+                shouldContinue: storageGeneration.continuation(for: storageToken)
+            )
             portfolio.start(context: modelContext)
             hasStartedPortfolio = true
         }
@@ -204,9 +216,16 @@ struct ContentView: View {
         }
         .task(id: hasStartedPortfolio) {
             guard hasStartedPortfolio else { return }
+            let storageGeneration = CollectionStorageGeneration.shared
+            guard let storageToken = storageGeneration.currentToken() else { return }
+            let shouldContinue = storageGeneration.continuation(for: storageToken)
             await projectionStore.rebuild(container: modelContext.container)
-            _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(in: modelContext)
-            guard !Task.isCancelled else { return }
+            _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(
+                in: modelContext,
+                storageToken: storageToken,
+                shouldContinue: shouldContinue
+            )
+            guard !Task.isCancelled, shouldContinue() else { return }
             // Network enrichment can add treatments or rekey rows after the
             // initial portfolio snapshot. Recompute only after the migration
             // has finished so the user never sees a half-applied result.
@@ -226,6 +245,7 @@ struct ContentView: View {
                 priceSnapshot: priceSnapshot,
                 revisionStore: revisionStore,
                 refresh: refresh,
+                storageGeneration: CollectionStorageGeneration.shared,
                 hasStartedPortfolio: hasStartedPortfolio
             )
         )
@@ -361,19 +381,33 @@ struct ContentView: View {
     @MainActor
     private func refreshAllPrices() async {
         refreshStatusTask?.cancel()
-        let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
-            in: modelContext
-        ) {
-            let request = PriceRefreshRequest(
-                usesPriceFallback: usesPriceFallback,
-                includeImported: true,
-                forceUnsupportedRetry: true,
-                sortOldestFirst: false,
-                maximumTargetCount: nil,
-                markRecentlyCheckedIfEmpty: true
-            )
-            return (await refresh.refresh(request, container: modelContext.container)).didRun
+        let storageGeneration = CollectionStorageGeneration.shared
+        guard let storageToken = storageGeneration.currentToken() else { return }
+        let shouldContinue = storageGeneration.continuation(for: storageToken)
+        guard let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
+            in: modelContext,
+            storageToken: storageToken,
+            shouldContinue: shouldContinue,
+            operation: {
+                guard shouldContinue() else { return false }
+                let request = PriceRefreshRequest(
+                    usesPriceFallback: usesPriceFallback,
+                    includeImported: true,
+                    forceUnsupportedRetry: true,
+                    sortOldestFirst: false,
+                    maximumTargetCount: nil,
+                    markRecentlyCheckedIfEmpty: true
+                )
+                return (await refresh.refresh(
+                    request,
+                    container: modelContext.container,
+                    shouldContinue: shouldContinue
+                )).didRun
+            }
+        ) else {
+            return
         }
+        guard shouldContinue() else { return }
         if didRefresh {
             dismissRefreshStatusLater()
         } else {

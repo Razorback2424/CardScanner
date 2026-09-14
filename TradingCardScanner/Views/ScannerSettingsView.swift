@@ -1,6 +1,6 @@
-import AuthenticationServices
 import SwiftData
 import SwiftUI
+import UIKit
 import UniformTypeIdentifiers
 
 /// Shared settings sheet for the app. The root stays deliberately short: each
@@ -11,11 +11,14 @@ struct SettingsView: View {
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @ObservedObject private var storageGeneration = CollectionStorageGeneration.shared
     @State private var isConfirmingCollectionDeletion = false
     @State private var deletionError: String?
     @State private var isShowingCSVImporter = false
     @State private var isShowingCSVExporter = false
+    @State private var isShowingDiagnosticsExporter = false
     @State private var csvExportDocument: CollectionCSVDocument?
+    @State private var diagnosticsDocument: JSONExportDocument?
     @State private var csvExportFilename = "CardScanner Collection"
     @State private var pendingCSVImport: CollectionCSVImportPlan?
     @State private var csvMessage: CSVMessage?
@@ -82,11 +85,17 @@ struct SettingsView: View {
                     }
 
                     NavigationLink {
-                        SettingsCategoryView("Account & Sync") {
-                            AccountSettingsSection()
+                        SettingsCategoryView("Collection Storage") {
+                            CollectionStorageStatusSection()
                         }
                     } label: {
-                        Label("Account & Sync", systemImage: "person.crop.circle")
+                        Label("Collection Storage", systemImage: "externaldrive.icloud")
+                    }
+
+                    NavigationLink {
+                        PrivacyAndSupportSettingsView()
+                    } label: {
+                        Label("Privacy & Support", systemImage: "hand.raised")
                     }
                 }
 
@@ -135,6 +144,21 @@ struct SettingsView: View {
                 csvExportDocument = nil
                 if case let .failure(error) = result {
                     csvMessage = CSVMessage(title: "Export Failed", message: error.localizedDescription, skippedCSVText: nil)
+                }
+            }
+            .fileExporter(
+                isPresented: $isShowingDiagnosticsExporter,
+                document: diagnosticsDocument,
+                contentType: .json,
+                defaultFilename: "CardScanner Sync Diagnostics"
+            ) { result in
+                diagnosticsDocument = nil
+                if case let .failure(error) = result {
+                    csvMessage = CSVMessage(
+                        title: "Export Failed",
+                        message: error.localizedDescription,
+                        skippedCSVText: nil
+                    )
                 }
             }
             .confirmationDialog("Import CSV?", isPresented: Binding(get: { pendingCSVImport != nil }, set: { if !$0 { pendingCSVImport = nil } }), titleVisibility: .visible) {
@@ -341,7 +365,54 @@ struct SettingsView: View {
                 }
                 .disabled(collectionCardCount == 0)
 #endif
+
+                Button("Export Sync Diagnostics", systemImage: "waveform.path.ecg") {
+                    exportSyncDiagnostics()
+                }
+                .disabled(!TradingCardScannerApp.storageIsReady)
+                Text("Redacted diagnostic data for support. It does not include card names, collection contents, credentials, or images.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
+        }
+    }
+
+    private func exportSyncDiagnostics() {
+        guard TradingCardScannerApp.storageIsReady,
+              let storeID = TradingCardScannerApp.activeStoreID else {
+            csvMessage = CSVMessage(
+                title: "Storage Is Not Ready",
+                message: "Sync diagnostics are available after collection storage finishes opening.",
+                skippedCSVText: nil
+            )
+            return
+        }
+        do {
+            let digest = try CollectionStoreDigester.make(in: modelContext, storeID: storeID)
+            let snapshot = CloudSyncDiagnosticsSnapshot(
+                schemaVersion: 1,
+                appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown",
+                buildNumber: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown",
+                osVersion: UIDevice.current.systemVersion,
+                deviceClass: UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone",
+                storageModeRaw: TradingCardScannerApp.activeStorageMode.rawValue,
+                cloudAccountStatusRaw: TradingCardScannerApp.activeCloudAccountStatusRaw,
+                attachmentStateRaw: TradingCardScannerApp.activeAttachmentStateRaw,
+                storeIDSuffix: digest.storeIDSuffix,
+                digest: digest,
+                lastBootstrapErrorCategory: TradingCardScannerApp.lastBootstrapErrorCategory,
+                generatedAt: .now
+            )
+            diagnosticsDocument = JSONExportDocument(
+                data: try CollectionStoreDigester.redactedJSON(for: snapshot)
+            )
+            isShowingDiagnosticsExporter = true
+        } catch {
+            csvMessage = CSVMessage(
+                title: "Export Failed",
+                message: "CardScanner could not create a redacted diagnostics export.",
+                skippedCSVText: nil
+            )
         }
     }
 
@@ -361,10 +432,12 @@ struct SettingsView: View {
 
     @MainActor
     private func importCSV(_ plan: CollectionCSVImportPlan) {
-        guard csvImportProgress == nil else { return }
+        guard csvImportProgress == nil,
+              let storageToken = storageGeneration.currentToken() else { return }
         pendingCSVImport = nil
         let container = modelContext.container
         let token = UUID()
+        let shouldContinue = storageGeneration.continuation(for: storageToken)
         csvImportToken = token
         csvImportProgress = CSVImportProgress(
             completedEntries: 0,
@@ -390,16 +463,26 @@ struct SettingsView: View {
                     to: container,
                     progress: { completedEntries, totalEntries in
                         Task { @MainActor in
-                            guard csvImportToken == token else { return }
+                            guard csvImportToken == token, shouldContinue() else { return }
                             csvImportProgress = CSVImportProgress(
                                 completedEntries: completedEntries,
                                 totalEntries: totalEntries
                             )
                         }
-                    }
+                    },
+                    shouldContinue: shouldContinue
                 )
+                guard storageGeneration.isCurrent(storageToken) else { return }
                 loadCounts()
-                Task { await catalogNormalizer.normalizeImportedCards(in: container) }
+                Task { @MainActor in
+                    guard storageGeneration.isCurrent(storageToken) else { return }
+                    await catalogNormalizer.normalizeImportedCards(
+                        in: container,
+                        shouldContinue: {
+                            storageGeneration.isCurrent(storageToken)
+                        }
+                    )
+                }
                 var details = "Added \(result.importedQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
                 if result.mergedEntries > 0 { details += " \(result.mergedEntries) matched existing entries." }
                 if result.skippedRows > 0 { details += " Ignored \(result.skippedRows) unsupported, non-English, or non-card rows." }
@@ -416,6 +499,7 @@ struct SettingsView: View {
                         : CollectionCSV.exportFailedEntries(result.failedEntries).text
                 )
             } catch {
+                guard storageGeneration.isCurrent(storageToken) else { return }
                 csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
             }
         }
@@ -580,22 +664,10 @@ struct PriceFallbackSettingsSection: View {
 
 }
 
-/// Sign in with Apple, kept deliberately as the only account option. It gates
-/// whether the app attempts its cloud-backed configuration; the private
-/// CloudKit database itself follows the device's iCloud account.
-///
-/// Whether the *store* SwiftData hands the app is CloudKit-backed is decided
-/// once per launch, in `TradingCardScannerApp.makeContainer()`, and the
-/// selected mode is shown below. Signing in or out here only updates the gate —
-/// it cannot swap the live store underneath the running app, so both directions
-/// say "restart" rather than silently doing nothing.
-struct AccountSettingsSection: View {
-    @Environment(\.colorScheme) private var colorScheme
-    @State private var isSignedIn = AppleAccountCredentials.isSignedIn
-    @State private var displayName = AppleAccountCredentials.displayName
-    @State private var statusMessage: String?
-    @State private var statusIsError = false
-
+/// The app has no CardScanner account. This surface reports the storage mode
+/// selected by the bootstrap and points to the system iCloud settings when a
+/// person needs to change availability or account state.
+struct CollectionStorageStatusSection: View {
     var body: some View {
         Section {
             LabeledContent(
@@ -605,111 +677,39 @@ struct AccountSettingsSection: View {
             Text(TradingCardScannerApp.activeStorageMode.detail)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-#if LOCAL_ONLY_SIGNING
-            // Sign in with Apple and iCloud need a paid Apple Developer Program
-            // membership to provision. Offering the button in a build that
-            // cannot use it would only produce an error on tap.
-            Text("Everything stays on this device in this build. iCloud sync needs a paid Apple Developer Program membership to sign.")
+            Text("Collection sync follows the device's iCloud account. CardScanner does not require a separate account.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-#else
-            if isSignedIn {
-                LabeledContent("Signed in as", value: displayName ?? "Apple ID")
-                Button("Sign Out", role: .destructive) { signOut() }
-            } else {
-                SignInWithAppleButton(.signIn, onRequest: configure, onCompletion: handle)
-                    .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                    .frame(height: 44)
-                    .listRowInsets(EdgeInsets())
-            }
-
-            if let statusMessage {
-                Text(statusMessage)
-                    .font(.footnote)
-                    .foregroundStyle(statusIsError ? .red : .secondary)
-            }
-#endif
+            Button("Open iCloud Settings", action: openSystemSettings)
         } header: {
-            Text("Account")
+            Text("Storage")
         } footer: {
-#if LOCAL_ONLY_SIGNING
-            Text("Your collection is stored locally and is not backed up by this app.")
-#else
-            if TradingCardScannerApp.activeStorageMode.isCloudSyncing {
-                Text("Collection sync uses this device's iCloud account. Sign in with Apple only controls whether the cloud-backed configuration is attempted; restart after changing that sign-in state.")
-            } else if isSignedIn {
-                Text("Sign in with Apple is saved, but this launch is using local storage. Restart after checking iCloud and app provisioning to try the cloud-backed configuration again.")
-            } else {
-                Text("Optional. Sign in with Apple to allow a cloud-backed configuration on the next launch. The actual iCloud account is the device's iCloud account; signed-out use stays on this device.")
-            }
-#endif
-        }
-        .task { await refreshCredentialState() }
-    }
-
-    private func configure(_ request: ASAuthorizationAppleIDRequest) {
-        request.requestedScopes = [.fullName]
-    }
-
-    private func handle(_ result: Result<ASAuthorization, Error>) {
-        switch result {
-        case let .success(authorization):
-            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
-            // Apple only ever returns the name on the *first* authorization for
-            // this app; a resumed sign-in on a later launch won't have it.
-            let name = [credential.fullName?.givenName, credential.fullName?.familyName]
-                .compactMap { $0 }
-                .joined(separator: " ")
-            do {
-                try AppleAccountCredentials.store(
-                    userIdentifier: credential.user,
-                    displayName: name.isEmpty ? nil : name
-                )
-                isSignedIn = true
-                displayName = AppleAccountCredentials.displayName
-                statusIsError = false
-                statusMessage = "Signed in. Restart the app to re-evaluate collection storage."
-            } catch {
-                statusIsError = true
-                statusMessage = error.localizedDescription
-            }
-        case let .failure(error):
-            // The person dismissing the sheet arrives here as an error too —
-            // that's not something worth reporting as a failure.
-            let nsError = error as NSError
-            guard nsError.domain == ASAuthorizationError.errorDomain,
-                  nsError.code == ASAuthorizationError.canceled.rawValue else {
-                statusIsError = true
-                statusMessage = error.localizedDescription
-                return
+            if !TradingCardScannerApp.activeStorageMode.isCloudSyncing {
+                Text("Value History and custom artwork stay on this device. If iCloud becomes available, CardScanner asks before attaching an existing collection to a different account.")
             }
         }
     }
 
-    private func signOut() {
-        AppleAccountCredentials.clear()
-        isSignedIn = false
-        displayName = nil
-        statusIsError = false
-        statusMessage = "Signed out. Restart the app to re-evaluate collection storage."
+    private func openSystemSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
+    }
+}
+
+private struct JSONExportDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.json] }
+
+    let data: Data
+
+    init(data: Data) {
+        self.data = data
     }
 
-    /// Sign-in with Apple can be revoked from the device's Settings app at any
-    /// time, entirely outside this app. Checking here is what keeps "Signed
-    /// in" from lying after that happens instead of only finding out the next
-    /// time a sync attempt silently fails.
-    private func refreshCredentialState() async {
-        guard let userIdentifier = AppleAccountCredentials.userIdentifier else { return }
-        let state: ASAuthorizationAppleIDProvider.CredentialState = await withCheckedContinuation { continuation in
-            ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userIdentifier) { state, _ in
-                continuation.resume(returning: state)
-            }
-        }
-        guard state == .revoked || state == .notFound else { return }
-        AppleAccountCredentials.clear()
-        isSignedIn = false
-        displayName = nil
-        statusIsError = true
-        statusMessage = "Your Apple ID sign-in was revoked. Restart the app to re-evaluate collection storage."
+    init(configuration: ReadConfiguration) throws {
+        data = configuration.file.regularFileContents ?? Data()
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: data)
     }
 }

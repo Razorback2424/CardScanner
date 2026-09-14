@@ -4,7 +4,7 @@ set -euo pipefail
 FIXTURE_NAME="${1:?fixture name required, for example IMG_0347}"
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DEVICE_ID="${UI_DEVICE_ID:-EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86}"
-BUNDLE_ID="${UI_BUNDLE_ID:-com.example.TradingCardScanner}"
+BUNDLE_ID="${UI_BUNDLE_ID:-com.seankeller.CardScanner}"
 DERIVED_DATA="${DERIVED_DATA:-/tmp/TradingCardScannerCenteringUIBuild}"
 EVIDENCE_DIR="${EVIDENCE_DIR:-$REPO_ROOT/review/centering-evidence/after}"
 FIXTURE_SOURCE="$REPO_ROOT/TestFixtures/TradingCards/HEIC/$FIXTURE_NAME.HEIC"

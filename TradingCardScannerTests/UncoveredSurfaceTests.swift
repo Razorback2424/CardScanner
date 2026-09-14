@@ -191,11 +191,11 @@ final class TradingCardScannerAppSurfaceTests: XCTestCase {
         XCTAssertEqual(cloud.detail, "The collection uses this device's iCloud account.")
         XCTAssertTrue(cloud.isCloudSyncing)
 
-        let local = TradingCardScannerApp.StorageMode.localOnly
+        let local = TradingCardScannerApp.StorageMode.onDevice
         XCTAssertEqual(local.label, "On this device only")
         XCTAssertEqual(
             local.detail,
-            "The collection is stored locally; this launch is not using a CloudKit-backed container."
+            "The collection is stored on this device while iCloud is unavailable or not attached."
         )
         XCTAssertFalse(local.isCloudSyncing)
         XCTAssertNotEqual(cloud, local)
@@ -212,48 +212,6 @@ final class AppDelegateSurfaceTests: XCTestCase {
                 didFinishLaunchingWithOptions: nil
             )
         )
-    }
-}
-
-final class AppleAccountCredentialsSurfaceTests: XCTestCase {
-    func testCredentialsTrimAndClearWithoutLosingTheStoredDisplayName() throws {
-        let originalIdentifier = AppleAccountCredentials.userIdentifier
-        let originalDisplayName = AppleAccountCredentials.displayName
-        defer {
-            AppleAccountCredentials.clear()
-            if let originalIdentifier {
-                try? AppleAccountCredentials.store(
-                    userIdentifier: originalIdentifier,
-                    displayName: originalDisplayName
-                )
-            }
-        }
-
-        AppleAccountCredentials.clear()
-        XCTAssertNil(AppleAccountCredentials.userIdentifier)
-        XCTAssertNil(AppleAccountCredentials.displayName)
-        XCTAssertFalse(AppleAccountCredentials.isSignedIn)
-
-        try AppleAccountCredentials.store(
-            userIdentifier: "  test-user-123  ",
-            displayName: "  Test Collector  "
-        )
-        XCTAssertEqual(AppleAccountCredentials.userIdentifier, "test-user-123")
-        XCTAssertEqual(AppleAccountCredentials.displayName, "Test Collector")
-        XCTAssertTrue(AppleAccountCredentials.isSignedIn)
-
-        try AppleAccountCredentials.store(userIdentifier: "test-user-456", displayName: nil)
-        XCTAssertEqual(AppleAccountCredentials.userIdentifier, "test-user-456")
-        XCTAssertEqual(
-            AppleAccountCredentials.displayName,
-            "Test Collector",
-            "a later authorization may omit the name, so the first name is retained"
-        )
-
-        AppleAccountCredentials.clear()
-        XCTAssertNil(AppleAccountCredentials.userIdentifier)
-        XCTAssertNil(AppleAccountCredentials.displayName)
-        XCTAssertFalse(AppleAccountCredentials.isSignedIn)
     }
 }
 

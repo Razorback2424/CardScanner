@@ -97,10 +97,11 @@ enum MagicTreatmentMigration {
     @discardableResult
     static func run(
         in context: ModelContext,
-        now: Date = .now
+        now: Date = .now,
+        shouldContinue: StorageGenerationContinuation? = nil
     ) async -> Report {
-        var report = await runLocal(in: context, now: now)
-        let networkReport = await runNetwork(in: context, now: now)
+        var report = await runLocal(in: context, now: now, shouldContinue: shouldContinue)
+        let networkReport = await runNetwork(in: context, now: now, shouldContinue: shouldContinue)
         report.absorb(networkReport)
         return report
     }
@@ -113,9 +114,15 @@ enum MagicTreatmentMigration {
     @discardableResult
     static func runLocal(
         in context: ModelContext,
-        now: Date = .now
+        now: Date = .now,
+        shouldContinue: StorageGenerationContinuation? = nil
     ) async -> Report {
-        await runPhase(in: context, now: now, fetchBatch: nil)
+        await runPhase(
+            in: context,
+            now: now,
+            fetchBatch: nil,
+            shouldContinue: shouldContinue
+        )
     }
 
     /// Enriches still-unresolved exact printing ids after the portfolio is
@@ -125,9 +132,10 @@ enum MagicTreatmentMigration {
     @discardableResult
     static func runNetwork(
         in context: ModelContext,
-        now: Date = .now
+        now: Date = .now,
+        shouldContinue: StorageGenerationContinuation? = nil
     ) async -> Report {
-        await runNetwork(in: context, now: now) { ids in
+        await runNetwork(in: context, now: now, shouldContinue: shouldContinue) { ids in
             try await ScryfallService().fetchCards(
                 identifiers: ids.map { ScryfallCardIdentifier(id: $0) }
             )
@@ -141,9 +149,15 @@ enum MagicTreatmentMigration {
     static func runNetwork(
         in context: ModelContext,
         now: Date = .now,
+        shouldContinue: StorageGenerationContinuation? = nil,
         fetchCards: @escaping @Sendable ([String]) async throws -> [ScryfallCard]
     ) async -> Report {
-        await runPhase(in: context, now: now, fetchBatch: fetchCards)
+        await runPhase(
+            in: context,
+            now: now,
+            fetchBatch: fetchCards,
+            shouldContinue: shouldContinue
+        )
     }
 
     /// Injectable per-card compatibility form used by existing migration
@@ -154,10 +168,15 @@ enum MagicTreatmentMigration {
     static func run(
         in context: ModelContext,
         now: Date = .now,
-        fetchCard: @escaping @Sendable (String) async throws -> ScryfallCard
+        fetchCard: @escaping @Sendable (String) async throws -> ScryfallCard,
+        shouldContinue: StorageGenerationContinuation? = nil
     ) async -> Report {
-        var report = await runLocal(in: context, now: now)
-        let networkReport = await runNetwork(in: context, now: now) { ids in
+        var report = await runLocal(in: context, now: now, shouldContinue: shouldContinue)
+        let networkReport = await runNetwork(
+            in: context,
+            now: now,
+            shouldContinue: shouldContinue
+        ) { ids in
             var responses: [ScryfallCard] = []
             responses.reserveCapacity(ids.count)
             for id in ids {
@@ -173,10 +192,22 @@ enum MagicTreatmentMigration {
     private static func runPhase(
         in context: ModelContext,
         now: Date,
-        fetchBatch: (@Sendable ([String]) async throws -> [ScryfallCard])?
+        fetchBatch: (@Sendable ([String]) async throws -> [ScryfallCard])?,
+        shouldContinue: StorageGenerationContinuation?
     ) async -> Report {
         var report = Report()
         let collectionStore = CollectionStore(context: context)
+
+        func isCurrent() -> Bool {
+            shouldContinue?() ?? true
+        }
+
+        func cancelAndRollback() -> Report {
+            context.rollback()
+            return report
+        }
+
+        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
 
         // The row watermark is the migration's source of truth. A bounded count
         // keeps steady-state launches from materialising the entire collection
@@ -198,6 +229,7 @@ enum MagicTreatmentMigration {
             report.fail("Could not count Magic collection rows: \(error)")
             return report
         }
+        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
         // Once every row has passed this migration version, this phase must no
         // longer mutate the identity store. In particular, do not clear a
         // treatment-qualified vendor negative on every launch: that negative
@@ -214,7 +246,9 @@ enum MagicTreatmentMigration {
             return report
         }
 
+        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
         clearTreatmentVendorNegatives(in: context, report: &report)
+        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
 
         let candidates = cards.filter {
             $0.cardGame == .magic
@@ -290,10 +324,10 @@ enum MagicTreatmentMigration {
         if let fetchBatch {
             let maximumBatchSize = 75
             for batchStart in stride(from: 0, to: remoteExactIDs.count, by: maximumBatchSize) {
-                guard !Task.isCancelled else { return report }
+                guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
                 if batchStart > 0 {
                     try? await Task.sleep(for: .milliseconds(100))
-                    guard !Task.isCancelled else { return report }
+                    guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
                 }
                 let batchEnd = min(batchStart + maximumBatchSize, remoteExactIDs.count)
                 let batch = Array(remoteExactIDs[batchStart..<batchEnd])
@@ -301,6 +335,7 @@ enum MagicTreatmentMigration {
 
                 do {
                     let responses = try await fetchBatch(batch)
+                    guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
                     var responseByID: [String: ScryfallCard] = [:]
                     var duplicateResponseIDs: Set<String> = []
 
@@ -357,6 +392,7 @@ enum MagicTreatmentMigration {
             }
         }
 
+        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
         var plans: [MigrationPair: PairPlan] = [:]
         for card in cards where card.cardGame == .magic {
             guard let parts = descriptors[ObjectIdentifier(card)] else {
@@ -489,6 +525,7 @@ enum MagicTreatmentMigration {
             by: \.oldKey
         ).mapValues(\.count)
         for pair in plans.keys.sorted(by: pairSort) {
+            guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
             guard let plan = plans[pair] else { continue }
             do {
                 try process(
@@ -505,6 +542,7 @@ enum MagicTreatmentMigration {
         }
 
         do {
+            guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
             if context.hasChanges {
                 try context.save()
                 collectionStore.invalidateIdentityAliasCache()
@@ -1748,7 +1786,7 @@ final class MagicTreatmentMigrationCoordinator {
 
     static let shared = MagicTreatmentMigrationCoordinator()
 
-    private let networkRunner: NetworkRunner
+    private let networkRunner: NetworkRunner?
     private var localTask: Task<MagicTreatmentMigration.Report, Never>?
     private var localTaskRevision: Int?
     private var networkTask: Task<MagicTreatmentMigration.Report, Never>?
@@ -1757,14 +1795,58 @@ final class MagicTreatmentMigrationCoordinator {
     private var networkReport: MagicTreatmentMigration.Report?
     private var collectionRevision = 0
     private var activePriceRefresh: MagicTreatmentPriceRefreshGate?
+    private var activeStorageToken: StorageGenerationToken?
+    private var activeContinuation: StorageGenerationContinuation?
     private static let maximumRevisionRetries = 1
 
-    init(
-        networkRunner: @escaping NetworkRunner = { context, now in
-            await MagicTreatmentMigration.runNetwork(in: context, now: now)
-        }
-    ) {
+    init(networkRunner: NetworkRunner? = nil) {
         self.networkRunner = networkRunner
+    }
+
+    /// Invalidates all work tied to an abandoned persistent store. The static
+    /// migration also receives the continuation so cancellation cannot merely
+    /// stop the coordinator while an old context later saves its rows.
+    func suspendStorageSession() {
+        collectionRevision &+= 1
+        localTask?.cancel()
+        networkTask?.cancel()
+        localTask = nil
+        localTaskRevision = nil
+        networkTask = nil
+        networkTaskRevision = nil
+        localReport = nil
+        networkReport = nil
+        activeStorageToken = nil
+        activeContinuation = nil
+        activePriceRefresh?.release()
+        activePriceRefresh = nil
+    }
+
+    private func activateStorageSession(
+        token: StorageGenerationToken?,
+        continuation: StorageGenerationContinuation?
+    ) {
+        guard let token else {
+            activeContinuation = continuation
+            return
+        }
+        if activeStorageToken != token {
+            localTask?.cancel()
+            networkTask?.cancel()
+            collectionRevision &+= 1
+            localTask = nil
+            localTaskRevision = nil
+            networkTask = nil
+            networkTaskRevision = nil
+            localReport = nil
+            networkReport = nil
+            activeStorageToken = token
+        }
+        activeContinuation = continuation
+    }
+
+    private func isCurrent(_ continuation: StorageGenerationContinuation?) -> Bool {
+        continuation?() ?? true
     }
 
     /// A new collection row can arrive after the first migration pass,
@@ -1790,21 +1872,39 @@ final class MagicTreatmentMigrationCoordinator {
     @discardableResult
     func runLocal(
         in context: ModelContext,
-        now: Date = .now
+        now: Date = .now,
+        storageToken: StorageGenerationToken? = nil,
+        shouldContinue: StorageGenerationContinuation? = nil
     ) async -> MagicTreatmentMigration.Report {
+        activateStorageSession(token: storageToken, continuation: shouldContinue)
+        let effectiveContinuation = shouldContinue ?? activeContinuation
         await waitForPriceRefresh()
-        return await runLocalCore(in: context, now: now)
+        guard isCurrent(effectiveContinuation) else { return .init() }
+        return await runLocalCore(
+            in: context,
+            now: now,
+            shouldContinue: effectiveContinuation
+        )
     }
 
     private func runLocalCore(
         in context: ModelContext,
-        now: Date
+        now: Date,
+        shouldContinue: StorageGenerationContinuation?
     ) async -> MagicTreatmentMigration.Report {
         var revisionRetries = 0
         while true {
+            guard isCurrent(shouldContinue) else {
+                context.rollback()
+                return .init()
+            }
             if let networkTask {
                 let taskRevision = networkTaskRevision ?? collectionRevision
                 let report = await networkTask.value
+                guard isCurrent(shouldContinue) else {
+                    context.rollback()
+                    return .init()
+                }
                 guard taskRevision == collectionRevision else {
                     guard revisionRetries < Self.maximumRevisionRetries else { return report }
                     revisionRetries += 1
@@ -1818,6 +1918,10 @@ final class MagicTreatmentMigrationCoordinator {
             if let localTask {
                 let taskRevision = localTaskRevision ?? collectionRevision
                 let report = await localTask.value
+                guard isCurrent(shouldContinue) else {
+                    context.rollback()
+                    return .init()
+                }
                 guard taskRevision == collectionRevision else {
                     guard revisionRetries < Self.maximumRevisionRetries else { return report }
                     revisionRetries += 1
@@ -1827,14 +1931,23 @@ final class MagicTreatmentMigrationCoordinator {
             }
 
             let taskRevision = collectionRevision
+            let continuation = shouldContinue
             let task = Task { @MainActor in
-                await MagicTreatmentMigration.runLocal(in: context, now: now)
+                await MagicTreatmentMigration.runLocal(
+                    in: context,
+                    now: now,
+                    shouldContinue: continuation
+                )
             }
             localTask = task
             localTaskRevision = taskRevision
             let report = await task.value
             localTask = nil
             localTaskRevision = nil
+            guard isCurrent(shouldContinue) else {
+                context.rollback()
+                return .init()
+            }
             guard taskRevision == collectionRevision else {
                 guard revisionRetries < Self.maximumRevisionRetries else { return report }
                 revisionRetries += 1
@@ -1854,24 +1967,42 @@ final class MagicTreatmentMigrationCoordinator {
     @discardableResult
     func runNetwork(
         in context: ModelContext,
-        now: Date = .now
+        now: Date = .now,
+        storageToken: StorageGenerationToken? = nil,
+        shouldContinue: StorageGenerationContinuation? = nil
     ) async -> MagicTreatmentMigration.Report {
+        activateStorageSession(token: storageToken, continuation: shouldContinue)
+        let effectiveContinuation = shouldContinue ?? activeContinuation
         await waitForPriceRefresh()
-        return await runNetworkCore(in: context, now: now)
+        guard isCurrent(effectiveContinuation) else { return .init() }
+        return await runNetworkCore(
+            in: context,
+            now: now,
+            shouldContinue: effectiveContinuation
+        )
     }
 
     private func runNetworkCore(
         in context: ModelContext,
-        now: Date
+        now: Date,
+        shouldContinue: StorageGenerationContinuation?
     ) async -> MagicTreatmentMigration.Report {
         var revisionRetries = 0
         while true {
+            guard isCurrent(shouldContinue) else {
+                context.rollback()
+                return .init()
+            }
             if let networkReport, networkReport.isComplete {
                 return networkReport
             }
             if let networkTask {
                 let taskRevision = networkTaskRevision ?? collectionRevision
                 let report = await networkTask.value
+                guard isCurrent(shouldContinue) else {
+                    context.rollback()
+                    return .init()
+                }
                 guard taskRevision == collectionRevision else {
                     guard revisionRetries < Self.maximumRevisionRetries else { return report }
                     revisionRetries += 1
@@ -1880,13 +2011,25 @@ final class MagicTreatmentMigrationCoordinator {
                 return report
             }
 
-            _ = await runLocalCore(in: context, now: now)
+            _ = await runLocalCore(
+                in: context,
+                now: now,
+                shouldContinue: shouldContinue
+            )
+            guard isCurrent(shouldContinue) else {
+                context.rollback()
+                return .init()
+            }
             if let networkReport, networkReport.isComplete {
                 return networkReport
             }
             if let networkTask {
                 let taskRevision = networkTaskRevision ?? collectionRevision
                 let report = await networkTask.value
+                guard isCurrent(shouldContinue) else {
+                    context.rollback()
+                    return .init()
+                }
                 guard taskRevision == collectionRevision else {
                     guard revisionRetries < Self.maximumRevisionRetries else { return report }
                     revisionRetries += 1
@@ -1897,14 +2040,26 @@ final class MagicTreatmentMigrationCoordinator {
 
             let taskRevision = collectionRevision
             let runner = networkRunner
+            let continuation = shouldContinue
             let task = Task { @MainActor in
-                await runner(context, now)
+                if let runner {
+                    return await runner(context, now)
+                }
+                return await MagicTreatmentMigration.runNetwork(
+                    in: context,
+                    now: now,
+                    shouldContinue: continuation
+                )
             }
             networkTask = task
             networkTaskRevision = taskRevision
             let report = await task.value
             networkTask = nil
             networkTaskRevision = nil
+            guard isCurrent(shouldContinue) else {
+                context.rollback()
+                return .init()
+            }
             guard taskRevision == collectionRevision else {
                 guard revisionRetries < Self.maximumRevisionRetries else { return report }
                 revisionRetries += 1
@@ -1939,25 +2094,44 @@ final class MagicTreatmentMigrationCoordinator {
         in context: ModelContext,
         now: Date = .now,
         runsNetworkMigration: Bool = true,
+        storageToken: StorageGenerationToken? = nil,
+        shouldContinue: StorageGenerationContinuation? = nil,
         operation: @escaping @MainActor () async -> Result
-    ) async -> Result {
+    ) async -> Result? {
+        activateStorageSession(token: storageToken, continuation: shouldContinue)
+        let effectiveContinuation = shouldContinue ?? activeContinuation
         await waitForPriceRefresh()
+        guard isCurrent(effectiveContinuation), !Task.isCancelled else { return nil }
         let gate = MagicTreatmentPriceRefreshGate()
         activePriceRefresh = gate
         defer {
-            activePriceRefresh = nil
+            if activePriceRefresh === gate {
+                activePriceRefresh = nil
+            }
             gate.release()
         }
 
         // The refresh owns the gate, so call the cores directly. Calling the
         // public methods here would wait on the gate it just acquired.
         if runsNetworkMigration {
-            _ = await runNetworkCore(in: context, now: now)
+            _ = await runNetworkCore(
+                in: context,
+                now: now,
+                shouldContinue: effectiveContinuation
+            )
         } else {
             // Local repairs are bounded and must still precede pricing: they
             // are the phase that can rekey a row from an identity already
             // proven by its own collection key.
-            _ = await runLocalCore(in: context, now: now)
+            _ = await runLocalCore(
+                in: context,
+                now: now,
+                shouldContinue: effectiveContinuation
+            )
+        }
+        if !isCurrent(effectiveContinuation) {
+            context.rollback()
+            return nil
         }
         return await operation()
     }

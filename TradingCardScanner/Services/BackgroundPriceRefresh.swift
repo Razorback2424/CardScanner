@@ -50,7 +50,7 @@ enum BackgroundPriceRefresh {
     /// have disabled overnight price refresh with no error anywhere. One
     /// source now, in the project settings.
     private static let identifierPrefix =
-        Bundle.main.bundleIdentifier ?? "com.example.TradingCardScanner"
+        Bundle.main.bundleIdentifier ?? "com.seankeller.CardScanner"
     static let processingIdentifier = "\(identifierPrefix).priceRefresh.processing"
     static let appRefreshIdentifier = "\(identifierPrefix).priceRefresh.appRefresh"
 
@@ -167,12 +167,21 @@ enum BackgroundPriceRefresh {
         guard allowsForeground || UIApplication.shared.applicationState == .background else {
             return true
         }
-        guard UIApplication.shared.isProtectedDataAvailable,
-              PortfolioEpoch.startedAt() != nil else {
+        guard UIApplication.shared.isProtectedDataAvailable else {
             return true
         }
 
-        let context = TradingCardScannerApp.container.mainContext
+        guard let storage = await CollectionStorageHeadlessPreflight.prepare(
+            dependencies: .production()
+        ) else {
+            // A fresh background process may not run the foreground bootstrap.
+            // Without a previously proven manifest/checkpoint/store tuple, the
+            // task must remain a no-op rather than minting or attaching data.
+            return true
+        }
+        let shouldContinue = storage.continuation
+        let container = storage.container
+        let context = container.mainContext
         let migration = MagicTreatmentMigrationCoordinator.shared
         // Background Tasks has a small, non-renewable budget, and a scheduled
         // launch is normally a *fresh process* — so deferred Scryfall
@@ -183,8 +192,11 @@ enum BackgroundPriceRefresh {
         // it would be if no migration were pending at all.
         await migration.withPriceRefresh(
             in: context,
-            runsNetworkMigration: false
+            runsNetworkMigration: false,
+            storageToken: storage.token,
+            shouldContinue: shouldContinue
         ) {
+            guard shouldContinue() else { return }
             let usesPriceFallback = UserDefaults.standard.bool(forKey: "usesPriceFallback")
             let request = PriceRefreshRequest(
                 usesPriceFallback: usesPriceFallback,
@@ -196,16 +208,17 @@ enum BackgroundPriceRefresh {
             )
             _ = await PriceRefreshController.shared.refresh(
                 request,
-                container: context.container
+                container: context.container,
+                shouldContinue: shouldContinue
             )
         }
-        guard !Task.isCancelled else { return false }
+        guard !Task.isCancelled, shouldContinue() else { return false }
 
         // Do not call `start`: a background launch must never establish a new
         // portfolio epoch. It may only publish a close from an epoch the person
         // has already opened in the app.
         await PortfolioEngine().recomputeAndWait(context: context)
-        return !Task.isCancelled
+        return !Task.isCancelled && shouldContinue()
     }
 }
 
