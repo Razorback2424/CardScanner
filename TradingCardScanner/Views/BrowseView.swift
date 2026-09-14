@@ -21,7 +21,7 @@ final class BrowseViewModel: ObservableObject {
 
     @Published var searchText = "" { didSet { scheduleSearch() } }
     @Published var selectedGame: CardGame? { didSet { scheduleSearch() } }
-    @Published var searchScope: BrowseScope = .cards { didSet { scheduleSearch() } }
+    @Published var searchScope: BrowseScope = .all { didSet { scheduleSearch() } }
     @Published var selectedSets: Set<CatalogSetID> = [] { didSet { scheduleSearch() } }
     @Published private(set) var sets: [CardGame: [CatalogSet]] = [:]
     @Published private(set) var setErrors: [CardGame: String] = [:]
@@ -215,8 +215,6 @@ struct BrowseView: View {
     @State private var isShowingSettings = false
     @FocusState private var searchFocused: Bool
 
-    @State private var browseScope: BrowseScope = .cards
-
     init(catalog: any BrowseCatalogProviding = BrowseCatalog()) {
         self.catalog = catalog
         _model = StateObject(wrappedValue: BrowseViewModel(catalog: catalog))
@@ -226,6 +224,9 @@ struct BrowseView: View {
     /// game's directory costs one request, and only when opened.
     @ViewBuilder private var sealedChooser: some View {
         VStack(alignment: .leading, spacing: 12) {
+            Text("Sealed products")
+                .font(.title3.bold())
+
             ForEach(CardGame.allCases) { game in
                 NavigationLink {
                     SealedSetDirectoryView(game: game, model: model.sealedModel)
@@ -260,29 +261,19 @@ struct BrowseView: View {
                 // Search results stay sectioned by kind and game, so cards and
                 // sealed products can be searched together without pretending
                 // that they are interchangeable catalogue records.
-                Picker("Browse scope", selection: $browseScope) {
-                    if model.isSearching {
-                        Text("All").tag(BrowseScope.all)
-                    }
-                    Text("Cards").tag(BrowseScope.cards)
-                    Text("Sealed").tag(BrowseScope.sealed)
-                }
-                .pickerStyle(.segmented)
-
-                switch browseScope {
-                case .all:
-                    if model.isSearching { searchBody } else { gameChooser }
-                case .cards:
-                    if model.isSearching { searchBody } else { gameChooser }
-                case .sealed:
-                    if model.isSearching { searchBody } else { sealedChooser }
+                if model.isSearching {
+                    searchBody
+                } else {
+                    recentlyReleasedRail
+                    gameChooser
+                    sealedChooser
                 }
             }
             .padding(16)
             .contentWidthLimit(.standard)
         }
         .scrollDismissesKeyboard(.interactively)
-        .navigationTitle("Browse")
+        .navigationTitle("Catalog")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -312,16 +303,6 @@ struct BrowseView: View {
                 selectedGame: model.selectedGame,
                 selection: $model.selectedSets
             )
-        }
-        .onChange(of: model.isSearching) { _, isSearching in
-            if isSearching {
-                browseScope = .all
-            } else if browseScope == .all {
-                browseScope = .cards
-            }
-        }
-        .onChange(of: browseScope) { _, scope in
-            model.searchScope = scope
         }
     }
 
@@ -443,29 +424,58 @@ struct BrowseView: View {
         return model.selectedSets.filter { $0.game == game }.count
     }
 
+    private var justReleasedSets: [CatalogSet] {
+        CatalogSetOrdering.justReleased(from: model.sets)
+    }
+
+    private var ownership: CatalogOwnershipIndex {
+        projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
+    }
+
+    @ViewBuilder
+    private var recentlyReleasedRail: some View {
+        if !justReleasedSets.isEmpty {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Just released")
+                    .font(.title2.bold())
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    LazyHStack(alignment: .top, spacing: 12) {
+                        ForEach(justReleasedSets) { set in
+                            NavigationLink {
+                                CatalogSetCardsView(set: set, catalog: model.catalog)
+                            } label: {
+                                CatalogSetTile(
+                                    set: set,
+                                    completion: ownership.progress(for: set),
+                                    layout: .rail,
+                                    showsNewBadge: CatalogSetOrdering.isNew(set)
+                                )
+                            }
+                            .buttonStyle(.plain)
+                            .frame(width: 248)
+                        }
+                    }
+                    .padding(.vertical, 1)
+                }
+                .scrollIndicators(.hidden)
+            }
+        }
+    }
+
     @ViewBuilder private var gameChooser: some View {
-        Text("Choose a game")
+        Text("Everything in the catalog")
             .font(.title2.bold())
         ForEach(CardGame.allCases) { game in
             if let sets = model.sets[game] {
                 NavigationLink {
                     CatalogGameCardsView(game: game, sets: sets, catalog: model.catalog)
                 } label: {
-                    HStack(spacing: 16) {
-                        Image(systemName: game == .pokemon ? "bolt.fill" : "wand.and.stars")
-                            .font(.title2)
-                            .frame(width: 44, height: 44)
-                            .foregroundStyle(game == .pokemon ? Color.yellow : Color.purple)
-                            .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(game.label).font(.headline)
-                            Text("Browse \(sets.count) sets").font(.subheadline).foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right").foregroundStyle(.tertiary)
-                    }
-                    .padding(16)
-                    .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 16))
+                    CatalogGameRow(
+                        game: game,
+                        sets: sets,
+                        ownedRows: projectionStore.snapshot?.rows ?? []
+                    )
                 }
                 .buttonStyle(.plain)
             } else if let error = model.setErrors[game] {
@@ -482,23 +492,131 @@ struct BrowseView: View {
         }
     }
 
+    private struct CatalogGameArtwork: Identifiable {
+        let slot: Int
+        let url: URL?
+        let fallbackURL: URL?
+        let placeholderText: String
+
+        var id: Int { slot }
+    }
+
+    private struct CatalogGameRow: View {
+        let game: CardGame
+        let sets: [CatalogSet]
+        let ownedRows: [CollectionRow]
+
+        var body: some View {
+            HStack(spacing: 14) {
+                CatalogGameFan(game: game, sets: sets, ownedRows: ownedRows)
+                    .accessibilityHidden(true)
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(game.label)
+                        .font(.headline)
+                    Text("\(sets.count) sets")
+                        .font(.subheadline)
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 8)
+
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.tertiary)
+                    .accessibilityHidden(true)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .frame(minHeight: 86)
+            .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+    }
+
+    private struct CatalogGameFan: View {
+        let game: CardGame
+        let sets: [CatalogSet]
+        let ownedRows: [CollectionRow]
+
+        private var artworks: [CatalogGameArtwork] {
+            let recentRows = ownedRows
+                .filter { $0.game == game && $0.quantity > 0 && $0.itemKind.countsTowardSetCompletion }
+                .sorted {
+                    if $0.dateAdded != $1.dateAdded { return $0.dateAdded > $1.dateAdded }
+                    return $0.id < $1.id
+                }
+                .prefix(3)
+
+            var result = recentRows.enumerated().map { index, row in
+                CatalogGameArtwork(
+                    slot: index,
+                    url: row.lowImageURL ?? row.highImageURL,
+                    fallbackURL: row.lowImageURL == nil ? nil : row.highImageURL,
+                    placeholderText: row.name
+                )
+            }
+
+            for set in CatalogSetOrdering.newestFirst(sets) where result.count < 3 {
+                result.append(
+                    CatalogGameArtwork(
+                        slot: result.count,
+                        url: set.logoURL ?? set.symbolURL,
+                        fallbackURL: set.logoURL == nil ? nil : set.symbolURL,
+                        placeholderText: set.code
+                    )
+                )
+            }
+
+            while result.count < 3 {
+                result.append(
+                    CatalogGameArtwork(
+                        slot: result.count,
+                        url: nil,
+                        fallbackURL: nil,
+                        placeholderText: game.label
+                    )
+                )
+            }
+            return result
+        }
+
+        var body: some View {
+            ZStack(alignment: .topLeading) {
+                ForEach(artworks) { artwork in
+                    let index = artwork.slot
+                    CatalogCachedImage(
+                        url: artwork.url,
+                        fallbackURL: artwork.fallbackURL,
+                        targetPixelSize: 160,
+                        placeholderSymbol: "rectangle.portrait",
+                        placeholderText: artwork.placeholderText
+                    )
+                    .frame(width: 38, height: 52)
+                    .rotationEffect(.degrees(Double(index - 1) * 7))
+                    .offset(
+                        x: CGFloat(index) * 22 + 2,
+                        y: index == 1 ? 3 : 6
+                    )
+                }
+            }
+            .frame(width: 96, height: 62)
+        }
+    }
+
     @ViewBuilder private var searchBody: some View {
         if model.normalizedQuery.count < 2 {
             ContentUnavailableView("Keep typing", systemImage: "text.cursor", description: Text("Enter at least two characters."))
         } else {
-            if browseScope != .sealed {
-                Text("Cards")
-                    .font(.title2.bold())
-                ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
-                    searchSection(game)
-                }
+            Text("Cards")
+                .font(.title2.bold())
+            ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
+                searchSection(game)
             }
-            if browseScope != .cards {
-                Text("Sealed")
-                    .font(.title2.bold())
-                ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
-                    sealedSearchSection(game)
-                }
+            Text("Sealed")
+                .font(.title2.bold())
+            ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
+                sealedSearchSection(game)
             }
         }
     }
@@ -588,6 +706,73 @@ enum CatalogSetOrdering {
             }
             return $0.id < $1.id
         }
+    }
+
+    static func oldestFirst(_ sets: [CatalogSet]) -> [CatalogSet] {
+        sets.sorted {
+            if $0.releaseOrder != $1.releaseOrder {
+                return $0.releaseOrder < $1.releaseOrder
+            }
+            return $0.id < $1.id
+        }
+    }
+
+    static func ordered(
+        _ sets: [CatalogSet],
+        by sort: CatalogSetListSort,
+        ownership: CatalogOwnershipIndex
+    ) -> [CatalogSet] {
+        switch sort {
+        case .newestFirst:
+            return newestFirst(sets)
+        case .oldestFirst:
+            return oldestFirst(sets)
+        case .nameAToZ:
+            return sets.sorted {
+                let comparison = $0.name.localizedCaseInsensitiveCompare($1.name)
+                if comparison != .orderedSame { return comparison == .orderedAscending }
+                return $0.id < $1.id
+            }
+        case .mostComplete:
+            return sets.sorted {
+                let left = ownership.progress(for: $0).fraction ?? -1
+                let right = ownership.progress(for: $1).fraction ?? -1
+                if left != right { return left > right }
+                return isNewer($0, than: $1)
+            }
+        }
+    }
+
+    private static func isNewer(_ lhs: CatalogSet, than rhs: CatalogSet) -> Bool {
+        if lhs.releaseOrder != rhs.releaseOrder {
+            return lhs.releaseOrder > rhs.releaseOrder
+        }
+        return lhs.id < rhs.id
+    }
+
+    /// The rail intentionally uses catalog ordering rather than a calendar
+    /// window: Pokémon's offline snapshot is ranked but undated. Taking two
+    /// from each game keeps the root useful even when one provider is absent.
+    static func justReleased(
+        from setsByGame: [CardGame: [CatalogSet]],
+        perGameLimit: Int = 2,
+        limit: Int = 3
+    ) -> [CatalogSet] {
+        guard perGameLimit > 0, limit > 0 else { return [] }
+        let candidates = CardGame.allCases.flatMap { game in
+            newestFirst(setsByGame[game] ?? []).prefix(perGameLimit)
+        }
+        return Array(newestFirst(candidates).prefix(limit))
+    }
+
+    static func isNew(
+        _ set: CatalogSet,
+        now: Date = .now,
+        window: TimeInterval = 45 * 86_400
+    ) -> Bool {
+        guard let releaseDate = set.releaseDate,
+              releaseDate <= now else { return false }
+        return now.timeIntervalSince(releaseDate) <= window
     }
 }
 
@@ -859,75 +1044,189 @@ private struct CatalogGameCardsView: View {
 
 private struct CatalogSetListView: View {
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let game: CardGame
     let sets: [CatalogSet]
     let catalog: any BrowseCatalogProviding
     @State private var search = ""
     @State private var showsMasterSetRules = false
+    @State private var sort: CatalogSetListSort = .newestFirst
+    @State private var filter: CatalogSetListFilter = .all
 
-    private var visible: [CatalogSet] {
+    private var columns: [GridItem] {
+        if dynamicTypeSize.isAccessibilitySize {
+            return [GridItem(.flexible(), spacing: 16, alignment: .top)]
+        }
+        return [
+            GridItem(.flexible(), spacing: 16, alignment: .top),
+            GridItem(.flexible(), spacing: 16, alignment: .top)
+        ]
+    }
+
+    private func visibleSets(owned: CatalogOwnershipIndex) -> [CatalogSet] {
         let query = CardNameSearch.normalize(search)
         let filtered = sets.filter {
-            query.isEmpty
+            let matchesSearch = query.isEmpty
                 || CardNameSearch.normalize($0.name).contains(query)
                 || CardNameSearch.normalize($0.code).contains(query)
+            let matchesFilter = filter == .all || owned.progress(for: $0).owned > 0
+            return matchesSearch && matchesFilter
         }
-        return CatalogSetOrdering.newestFirst(filtered)
+        return CatalogSetOrdering.ordered(filtered, by: sort, ownership: owned)
+    }
+
+    private func groups(for orderedSets: [CatalogSet]) -> [CatalogSetYearGroup] {
+        var setsByYear: [Int: [CatalogSet]] = [:]
+        var earlier: [CatalogSet] = []
+        let calendar = Calendar.current
+
+        for set in orderedSets {
+            guard let releaseDate = set.releaseDate else {
+                earlier.append(set)
+                continue
+            }
+            let year = calendar.component(.year, from: releaseDate)
+            setsByYear[year, default: []].append(set)
+        }
+
+        let years = setsByYear.keys.sorted {
+            if sort == .oldestFirst { return $0 < $1 }
+            return $0 > $1
+        }
+        var groups = years.compactMap { year -> CatalogSetYearGroup? in
+            guard let sets = setsByYear[year], !sets.isEmpty else { return nil }
+            return CatalogSetYearGroup(title: String(year), sets: sets)
+        }
+        if !earlier.isEmpty {
+            groups.append(CatalogSetYearGroup(title: "Earlier", sets: earlier))
+        }
+        return groups
     }
 
     var body: some View {
         let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
-        List {
-            if game == .pokemon {
-                Section {
+        let visible = visibleSets(owned: owned)
+        return ScrollView {
+            LazyVStack(alignment: .leading, spacing: 18) {
+                if game == .pokemon {
                     DisclosureGroup("Master set rules", isExpanded: $showsMasterSetRules) {
                         Text("Standard includes every English, pack-pulled numbered card, holo, reverse holo, and secret rare. Promos and non-pack products stay out. Expanded adds catalog-confirmed special parallel patterns.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .padding(.top, 4)
                     }
+                    .padding(14)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                 }
-            }
 
-            ForEach(visible) { set in
-                let completion = owned.progress(for: set)
-                NavigationLink {
-                    CatalogSetCardsView(set: set, catalog: catalog)
-                } label: {
-                    HStack(spacing: 12) {
-                        CatalogCachedImage(
-                            url: set.symbolURL ?? set.logoURL,
-                            placeholderSymbol: "square.stack.3d.up"
+                setListFilters
+
+                if visible.isEmpty {
+                    ContentUnavailableView(
+                        filter == .started ? "No started sets" : "No matching sets",
+                        systemImage: "square.stack.3d.up.slash",
+                        description: Text(
+                            filter == .started
+                                ? "Add a card from this game to see its progress here."
+                                : "Try another set name or code."
                         )
-                        .frame(width: 42, height: 42)
-                        .accessibilityHidden(true)
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(set.name).font(.headline)
-                            HStack(spacing: 8) {
-                                Text(completion.label)
-                                    .foregroundStyle(completion.owned > 0 ? Color.green : Color.secondary)
-                                Text(set.code)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .font(.subheadline)
-
-                            if let fraction = completion.fraction {
-                                ProgressView(value: fraction)
-                                    .tint(completion.owned > 0 ? Color.green : Color.secondary)
-                                    .accessibilityHidden(true)
-                            }
-                        }
-                    }
-                    .frame(minHeight: 64)
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(
-                        "\(set.name), \(completion.owned) of \(completion.total.map { String($0) } ?? "unknown") \(completion.unit) collected, set code \(set.code)"
                     )
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 40)
+                } else {
+                    ForEach(groups(for: visible)) { group in
+                        CatalogSetGroupSection(
+                            group: group,
+                            columns: columns,
+                            catalog: catalog,
+                            owned: owned
+                        )
+                    }
                 }
             }
+            .padding(16)
+            .contentWidthLimit(.standard)
         }
         .navigationTitle("\(game.label) Sets")
         .searchable(text: $search, prompt: "Search sets")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Picker("Sort sets", selection: $sort) {
+                        ForEach(CatalogSetListSort.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                } label: {
+                    Label("Sort sets", systemImage: "arrow.up.arrow.down")
+                }
+                .accessibilityLabel("Sort sets, \(sort.label)")
+            }
+        }
+    }
+
+    private var setListFilters: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(CatalogSetListFilter.allCases) { option in
+                    Button {
+                        filter = option
+                    } label: {
+                        Text(option.label)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(filter == option ? Color.white : Color.primary)
+                            .padding(.horizontal, 13)
+                            .padding(.vertical, 8)
+                            .background(
+                                filter == option ? Color.accentColor : Color(uiColor: .tertiarySystemFill),
+                                in: Capsule()
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(filter == option ? .isSelected : [])
+                }
+            }
+        }
+        .scrollIndicators(.hidden)
+    }
+}
+
+private struct CatalogSetYearGroup: Identifiable {
+    let title: String
+    let sets: [CatalogSet]
+
+    var id: String { title }
+}
+
+private struct CatalogSetGroupSection: View {
+    let group: CatalogSetYearGroup
+    let columns: [GridItem]
+    let catalog: any BrowseCatalogProviding
+    let owned: CatalogOwnershipIndex
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(group.title.uppercased())
+                .font(.footnote.weight(.semibold))
+                .tracking(0.5)
+                .foregroundStyle(Color(uiColor: .secondaryLabel))
+                .padding(.top, 2)
+
+            LazyVGrid(columns: columns, alignment: .leading, spacing: 22) {
+                ForEach(group.sets) { set in
+                    NavigationLink {
+                        CatalogSetCardsView(set: set, catalog: catalog)
+                    } label: {
+                        CatalogSetTile(
+                            set: set,
+                            completion: owned.progress(for: set)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
     }
 }
 
