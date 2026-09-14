@@ -37,12 +37,13 @@ final class CollectionStoreContinuityTests: XCTestCase {
     private func makeDiskBootstrapDependencies(
         paths: CollectionStoragePaths,
         manifestStore: CollectionStoreManifestStore,
-        generation: CollectionStorageGeneration
+        generation: CollectionStorageGeneration,
+        account: @escaping @MainActor () async -> CloudAccountAvailability = { .noAccount }
     ) -> CollectionStorageBootstrapDependencies {
         CollectionStorageBootstrapDependencies(
             paths: paths,
             manifestStore: manifestStore,
-            accountAvailability: { .noAccount },
+            accountAvailability: account,
             anchorState: { .unknown },
             claimAnchor: { storeID in
                 .claimed(CloudCollectionAnchor(
@@ -369,6 +370,73 @@ final class CollectionStoreContinuityTests: XCTestCase {
 
         XCTAssertNil(session)
         XCTAssertEqual(makeCount, 0)
+    }
+
+    func testTemporaryUnavailableKeepsAttachedReplicaBehindHeadlessCloudProofGate() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let paths = makePaths(in: directory)
+        let manifestStore = CollectionStoreManifestStore(
+            directoryURL: paths.collectionStorageDirectoryURL
+        )
+        let identity = try manifestStore.ensureStoreFileIdentity()
+        do {
+            _ = try CollectionStorageBootstrapDependencies.makeContainer(
+                paths: paths,
+                mode: .onDevice
+            )
+        }
+        try manifestStore.save(CollectionStoreManifest(
+            storeID: localStoreID,
+            lastAttachedAccountFingerprint: "account-a",
+            attachmentState: .attached,
+            storeFileIdentity: identity
+        ))
+
+        let foregroundGeneration = CollectionStorageGeneration()
+        let foregroundDependencies = makeDiskBootstrapDependencies(
+            paths: paths,
+            manifestStore: manifestStore,
+            generation: foregroundGeneration,
+            account: { .temporarilyUnavailable }
+        )
+        do {
+            let bootstrap = CollectionStorageBootstrap(dependencies: foregroundDependencies)
+            await bootstrap.start()
+            guard case let .ready(session) = bootstrap.state else {
+                return XCTFail("expected a local session during a transient outage")
+            }
+            XCTAssertEqual(session.mode, .onDevice)
+        }
+        foregroundGeneration.suspend()
+
+        let persisted = try XCTUnwrap(try manifestStore.load())
+        XCTAssertEqual(persisted.attachmentState, .attached)
+        XCTAssertEqual(persisted.lastAttachedAccountFingerprint, "account-a")
+
+        var makeCount = 0
+        let headlessGeneration = CollectionStorageGeneration()
+        let headlessDependencies = CollectionStorageHeadlessPreflightDependencies(
+            paths: paths,
+            manifestStore: manifestStore,
+            accountAvailability: { .temporarilyUnavailable },
+            makeContainer: {
+                makeCount += 1
+                return try CollectionStorageBootstrapDependencies.makeContainer(
+                    paths: paths,
+                    mode: .onDevice
+                )
+            },
+            storageGeneration: headlessGeneration
+        )
+
+        let headlessSession = await CollectionStorageHeadlessPreflight.prepare(
+            dependencies: headlessDependencies
+        )
+
+        XCTAssertNil(headlessSession)
+        XCTAssertEqual(makeCount, 0)
+        XCTAssertNil(headlessGeneration.currentToken())
     }
 
     func testOnDeviceRelaunchWithNoAccountPreservesIdenticalDigest() async throws {

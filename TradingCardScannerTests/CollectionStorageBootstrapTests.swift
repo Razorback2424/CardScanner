@@ -507,12 +507,12 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         XCTAssertEqual(session.mode, .onDevice)
         let manifest = try XCTUnwrap(try dependencies.manifestStore.load())
         XCTAssertEqual(manifest.lastAttachedAccountFingerprint, "account-a")
-        XCTAssertEqual(manifest.attachmentState, .suspended)
+        XCTAssertEqual(manifest.attachmentState, .attached)
         XCTAssertEqual(
             TradingCardScannerApp.activeCloudAccountStatusRaw,
             LocalStorageReason.temporarilyUnavailable.rawValue
         )
-        XCTAssertEqual(TradingCardScannerApp.activeAttachmentStateRaw, CloudAttachmentState.suspended.rawValue)
+        XCTAssertEqual(TradingCardScannerApp.activeAttachmentStateRaw, CloudAttachmentState.attached.rawValue)
     }
 
     func testRestrictedAndUnknownAccountAvailabilityOpenExistingStoreLocally() async throws {

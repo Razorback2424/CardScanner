@@ -202,9 +202,15 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
   ready session for no-account, restricted, temporarily unavailable,
   could-not-determine, fresh-install/no-account, and Keep on Device paths. The
   existing attachment bookkeeping remains unchanged: a never-attached store
-  stays `neverAttached`, while an attached store opened locally becomes
-  `suspended`; transient account failure does not overwrite its last attached
-  account fingerprint.
+  stays `neverAttached`, no-account/restricted/Keep on Device demotions become
+  `suspended`, and a transiently unavailable account keeps an attached store
+  `attached` so it remains behind the cloud proof gate. Transient account
+  failure does not overwrite its last attached account fingerprint.
+- Transient-authority regression: an attached manifest plus
+  `.temporarilyUnavailable` opens locally in the foreground without changing
+  its attachment state, and a subsequent headless preflight still returns
+  `nil` without constructing a container. This prevents a temporary iCloud
+  outage from granting authoritative background mutation to a stale replica.
 - Headless availability: a persisted non-attached replica is now eligible for
   an authoritative on-device session in every build configuration. An attached
   replica still remains behind the separate G4 cloud-proof gate and returns
@@ -214,9 +220,9 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
   distinct visibly-unverified message from no-account local storage.
 - Verification: the expanded storage suite (the nine A2 storage suites plus
   the permanent mode-transition and support-surface suites) passed on the
-  iPhone 17 Pro / iOS 26.5 simulator. `DebugProduction`: `113` passed,
+  iPhone 17 Pro / iOS 26.5 simulator. `DebugProduction`: `114` passed,
   `0` failed, with one explicit skip for the opt-in-only production dependency
-  provenance check. `Debug`: `109` passed, `0` failed, with the five private-
+  provenance check. `Debug`: `110` passed, `0` failed, with the five private-
   mode S1/S2/S4/S5/S6 cases explicitly skipped because the unentitled build
   cannot construct a CloudKit-backed configuration. The mode-transition
   regression itself passed all `7/7` cases under `DebugProduction`.
