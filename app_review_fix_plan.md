@@ -16,16 +16,28 @@
 
 ## Remediation buckets
 
-- [ ] Storage architecture and local-only disclosure — Blocker — source guard applied;
-  Task 4B/device proof still required
+- [ ] Storage architecture and local-only disclosure — Blocker — the production
+  factory now keeps `.onDevice` proof-gated and uses explicit CloudKit versus
+  local-only configurations; Task 4B/device proof still required
 - [ ] Manifest/store-file identity and path validation — Blocker — source hardening
-  and continuity coverage applied; runtime execution still required
+  now distinguishes a completely absent replica from orphaned journals and
+  identity corruption, rejects unsafe replacement paths, rotates the physical
+  store identity only after restoration readiness, and keeps failed path
+  resolution fail-closed; runtime execution still required
 - [ ] Confirmed anchor claim ordering — Blocker — source ordering and orchestration
-  tests applied; runtime execution still required
-- [ ] Restoration observability and continuity suites — Blocker — continuity/readiness
-  suites added; production readiness mechanism remains deliberately unproven
-- [ ] Fresh-process background storage preflight — High — headless preflight and
-  checkpoint fencing applied; runtime execution still required
+  tests applied; claim readback now also rejects unsupported anchor format or
+  missing generation before container construction; runtime execution still
+  required
+- [ ] Restoration observability and continuity suites — Blocker — cached empty
+  checkpoints can no longer authorize startup, populated checkpoints are
+  explicitly last-known/non-authoritative, and checkpoints require the current
+  anchor generation; the production readiness mechanism remains deliberately
+  unproven
+- [ ] Fresh-process background storage preflight — High — headless preflight now
+  validates the current anchor, exact generation, store identity tuple, and
+  replica URL before construction; an active process session is reused without
+  rotating the generation, while suspended/transitioning sessions skip safely;
+  runtime execution still required
 - [ ] Magic treatment migration generation fencing — High — token propagation,
   cancellation, rollback, and gate invalidation applied; runtime execution still required
 - [ ] Ownership-ledger production-entry matrix — High/specification gap — disk-backed

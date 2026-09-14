@@ -698,6 +698,8 @@ struct CloudRestoreCheckpoint: Codable, Equatable, Sendable {
     var accountFingerprint: String
     var storeFileIdentity: String
     var mechanismVersion: Int
+    var readiness: CloudRestoreCheckpointReadiness
+    var remoteGeneration: String?
     var confirmedAt: Date
 }
 
@@ -714,6 +716,7 @@ struct CollectionStoreManifest: Codable, Equatable, Sendable {
 struct CloudCollectionAnchor: Equatable, Sendable {
     var storeID: UUID
     var formatVersion: Int
+    var remoteGeneration: String?
 }
 
 enum LocalStorageReason: String, Equatable, Sendable {
@@ -753,7 +756,10 @@ Write named tests for at least these rows:
 
 The policy input must carry explicit local-presence facts—at minimum manifest presence, structured-store-file presence, and `localHasUserData` from a successfully opened/probed local store. It must not infer “fresh empty” from `context.fetch(...).isEmpty` while a cloud import is possible. Add a negative test proving that zero currently fetched rows plus an existing manifest/store is **not** treated as a fresh install.
 
-Add checkpoint tests proving a restore checkpoint is accepted only when its store ID, opaque account fingerprint, store-file identity, and mechanism version all match; any mismatch returns to restoration checking and never to authoritative empty.
+Add checkpoint tests proving a restore checkpoint is accepted only when its
+store ID, opaque account fingerprint, store-file identity, mechanism version,
+nonempty populated readiness, and current remote generation all match; any
+mismatch returns to restoration checking and never to authoritative empty.
 
 - [ ] **Step 2: Run the new test target and confirm failure**
 
@@ -1282,11 +1288,19 @@ enum CloudCollectionAnchorSchema {
     static let recordName = "canonical-collection"
     static let storeIDField = "storeID"
     static let formatVersionField = "formatVersion"
+    static let remoteGenerationField = "remoteGeneration"
     static let createdAtField = "createdAt"
+    static let currentFormatVersion = 2
 }
 ```
 
-These are the required base fields. If Task 4 proves that an additional remote generation/readiness field is necessary, update this schema, its protocol tests, §2.3 if a synced marker model is required, the CloudKit compatibility audit, and the Development schema record **before** Production promotion. Do not silently add a sixth synced model or an anchor field as an implementation detail; that is an explicit architecture/schema decision. If no truthful signal can be produced within the accepted schema, stop at G4 rather than infer readiness.
+These are the required fields for the current source protocol. Task 4's source
+remediation established that a remote-generation/readiness field is necessary,
+so the schema, protocol tests, CloudKit compatibility audit, and Development
+schema record must remain aligned **before** Production promotion. Do not add a
+sixth synced model or silently change this record in Production. The current
+source still lacks the live generation-update and restoration-observer proof;
+until that evidence exists, stop at G4 rather than infer readiness.
 
 Requirements:
 

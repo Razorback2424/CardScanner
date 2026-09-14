@@ -6,11 +6,12 @@
 Candidate: `fix/app-review-preflight` at baseline `a115e4e` with the existing
 working-tree implementation changes preserved.
 
-The candidate remains NO-GO. The supplied review identified four storage
-blockers, one background-refresh regression, two specification/evidence gaps,
-and a screenshot-tool bundle-identifier regression. External enrollment,
-physical-device, and public-link gates remain separate and are not sufficient
-to close these source-level findings.
+The candidate remains NO-GO. The latest remediation pass applies source-level
+fixes for the four storage/readiness findings: cached-empty checkpoints,
+explicit replica-state classification and identity rotation, current-anchor
+validation in headless preflight, and same-process storage-session reuse.
+External enrollment, physical-device, and public-link gates remain separate and
+are not sufficient to certify the candidate.
 
 ## Eligible remediation scope
 
@@ -20,8 +21,18 @@ to close these source-level findings.
 - Blocker: claim a new remote anchor before constructing an exporting store.
 - Blocker: keep restoration readiness fail-closed until an evidence mechanism is
   implemented and tested; add the missing observability/continuity harnesses.
+- Blocker: reject cached empty readiness and require a current remote-generation
+  match before even a cached populated checkpoint may be used; cached populated
+  state remains non-authoritative.
+- Blocker: classify absent replicas, orphaned journals, missing sidecars, and
+  mismatched sidecars separately; only a completely absent replica may enter
+  automatic restoration, and a restored physical store receives a new identity
+  after readiness succeeds.
 - High: make background refresh work from a fresh process only after a persisted
   readiness/checkpoint preflight.
+- High: fetch and validate the current CloudKit anchor during headless preflight,
+  and reuse an active process-authoritative session rather than constructing a
+  second container or rotating the foreground generation.
 - High: fence Magic treatment migration with the storage generation.
 - High: repair the screenshot verification bundle identifier.
 - Specification gap: add production-entry ownership-ledger coverage and retain

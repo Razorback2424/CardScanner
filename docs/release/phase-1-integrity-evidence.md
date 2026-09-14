@@ -80,9 +80,9 @@ They were not reset, overwritten, or folded into a product-code change.
 | G1 — Identity | SOURCE PASS; RUNTIME NOT RUN | Current-tree identity sources typecheck; XCTest execution requires a simulator or physical device. |
 | G2 — Valuation | SOURCE PASS; RUNTIME NOT RUN | Current-tree pricing/portfolio sources typecheck; XCTest execution requires a simulator or physical device. |
 | G3 — Quantity/data | SOURCE PASS; RUNTIME NOT RUN | Current-tree persistence/import/export sources typecheck; XCTest execution requires a simulator or physical device. |
-| G4 — Persistence/sync continuity | SOURCE FAIL/PARTIAL; EXTERNAL NOT RUN | Store-mode, manifest/sidecar, WAL/SHM, missing-store, anchor-ordering, checkpoint, headless-preflight, and continuity tests typecheck; the production restoration observer/readiness mechanism and entitled physical-device matrix remain unproven. |
+| G4 — Persistence/sync continuity | SOURCE FAIL/PARTIAL; EXTERNAL NOT RUN | Source now rejects cached-empty authority, requires a current anchor generation for cached populated state, separates absent/journal/identity-corrupt replicas, rotates identity after successful restoration, validates anchor claim readback, and fences same-process headless reuse. The production restoration observer/readiness mechanism, live remote-generation semantics, and entitled physical-device matrix remain unproven. |
 | G5 — Privacy/compliance | SOURCE PASS; PUBLIC LINK/ASC NOT RUN | Privacy manifest, source disclosures, Settings surface, and redacted diagnostics are implemented; final URLs and App Store metadata remain owner inputs. |
-| G6 — Availability | SOURCE PARTIAL; RUNTIME NOT RUN | Fresh-process background storage now requires a persisted proven tuple and a live generation fence, but simulator/XCTest and physical-device execution remain unavailable. |
+| G6 — Availability | SOURCE PARTIAL; RUNTIME NOT RUN | Fresh-process background storage now requires a persisted proven tuple, current anchor/generation validation, and a live generation fence; active foreground sessions are reused and transitions skip safely. Simulator/XCTest and physical-device execution remain unavailable. |
 
 ## CloudKit compatibility audit
 
@@ -104,8 +104,9 @@ They were not reset, overwritten, or folded into a product-code change.
 - Legacy unnamed-store discovery: `NOT RUN`.
 - Restoration-readiness observability: `SOURCE FAIL — the production dependency
   remains `UnprovenCloudRestorationReadinessSource`; the required event observer,
-  empty/nonempty handshake, row-visibility boundary, and entitled-device proof
-  are not complete.`
+  empty/nonempty handshake, row-visibility boundary, live remote-generation
+  update protocol, and entitled-device proof are not complete. The source guard
+  is deliberately fail-closed.`
 - Entitled account/anchor proof: `BLOCKED — external enrollment`.
 - Physical iPhone/iPad two-device convergence: `BLOCKED — physical devices
   and external enrollment required`.
@@ -149,9 +150,9 @@ They were not reset, overwritten, or folded into a product-code change.
 
 ## Final GO/NO-GO sign-off
 
-`NO-GO — source-level storage/readiness and ledger-authority work is not yet
+`NO-GO — source-level restoration readiness and ledger-authority work is not yet
 complete, and runtime evidence is unavailable. The release cannot be certified
-until the selected storage architecture is proven on entitled devices, the
-restoration mechanism is implemented, the production ledger matrix executes,
-and the external enrollment, public-link, archive, and TestFlight gates run
-against one frozen SHA.`
+until the selected storage architecture and live remote-generation protocol are
+proven on entitled devices, the restoration mechanism is implemented, the
+production ledger matrix executes, and the external enrollment, public-link,
+archive, and TestFlight gates run against one frozen SHA.`

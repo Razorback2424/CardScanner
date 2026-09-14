@@ -4,6 +4,15 @@ Status: local source gate passed; entitled construction and Development /
 Production CloudKit inspection are blocked until the approved App ID and
 container are enrolled.
 
+The collection anchor protocol now uses `CardScannerCollectionAnchor` format 2
+with the base `storeID`, `formatVersion`, and `createdAt` fields plus the
+explicit `remoteGeneration` readiness field. The source decoder fails closed on
+older or malformed records, and headless preflight requires an exact current
+format/generation match. This is a documented schema decision required by the
+readiness plan; it has not been created, inspected, or promoted in CloudKit
+Production. The generation's live update semantics still require Task 4A/4B
+observability and entitled-device proof.
+
 The public 1.0 structured configuration is limited to five synced models:
 `CollectedCard`, `PriceRecord`, `ProductIdentity`, `CollectionActivity`, and
 `InventoryEvent`. Device-local quote, observation, close, and artwork models
