@@ -27,7 +27,8 @@ are not sufficient to certify the candidate.
 - Blocker: classify absent replicas, orphaned journals, missing sidecars, and
   mismatched sidecars separately; only a completely absent replica may enter
   automatic restoration, and a restored physical store receives a new identity
-  after readiness succeeds.
+  at physical store replacement before container construction; readiness
+  authority remains checkpoint-only.
 - High: make background refresh work from a fresh process only after a persisted
   readiness/checkpoint preflight.
 - High: fetch and validate the current CloudKit anchor during headless preflight,
@@ -41,5 +42,7 @@ are not sufficient to certify the candidate.
 ## Explicitly not certified here
 
 Physical Task 4B architecture selection, CloudKit production schema,
-two-device convergence, archive/TestFlight, public URLs, and full XCTest
-execution still require their owner-controlled environments.
+two-device convergence, archive/TestFlight, public URLs, and a clean full-suite
+pass still require owner-controlled follow-up. The current host has recorded
+focused storage results and a 1,205-test Debug baseline/current comparison in
+the evidence ledger.

@@ -286,7 +286,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
         XCTAssertNil(generation.currentToken())
     }
 
-    func testMatchingPopulatedCheckpointIsLastKnownOnlyAndSessionRegistryPreventsDuplicates() async throws {
+    func testMatchingPopulatedCheckpointDoesNotConstructAHeadlessContainer() async throws {
         let directory = try makeDirectory()
         defer { try? FileManager.default.removeItem(at: directory) }
         let paths = CollectionStoragePaths(
@@ -343,24 +343,20 @@ final class CollectionStoreContinuityTests: XCTestCase {
         )
 
         let session = await CollectionStorageHeadlessPreflight.prepare(dependencies: dependencies)
-        XCTAssertNotNil(session)
-        XCTAssertFalse(try XCTUnwrap(session?.isAuthoritative))
-        XCTAssertEqual(makeCount, 1)
+        XCTAssertNil(session)
+        XCTAssertEqual(makeCount, 0)
+        XCTAssertNil(generation.currentToken())
         let reused = await CollectionStorageHeadlessPreflight.prepare(dependencies: dependencies)
-        XCTAssertNotNil(reused)
-        XCTAssertFalse(try XCTUnwrap(reused?.isAuthoritative))
-        XCTAssertEqual(makeCount, 1)
-        let continuation = try XCTUnwrap(session?.continuation)
-        XCTAssertTrue(continuation())
+        XCTAssertNil(reused)
+        XCTAssertEqual(makeCount, 0)
         generation.suspend()
-        XCTAssertFalse(continuation())
 
         dependencies.accountAvailability = { .couldNotDetermine }
         let uncertainAccountSession = await CollectionStorageHeadlessPreflight.prepare(
             dependencies: dependencies
         )
         XCTAssertNil(uncertainAccountSession)
-        XCTAssertEqual(makeCount, 1)
+        XCTAssertEqual(makeCount, 0)
 
         dependencies.accountAvailability = { .available(fingerprint: "account-a") }
         try FileManager.default.removeItem(at: paths.structuredStoreURL)
@@ -368,7 +364,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             dependencies: dependencies
         )
         XCTAssertNil(missingStoreSession)
-        XCTAssertEqual(makeCount, 1)
+        XCTAssertEqual(makeCount, 0)
     }
 
     func testForegroundSessionIsReusedWithoutGenerationRotationAndTransitionSkips() async throws {

@@ -18,7 +18,7 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 
 ## Environment and signing identity
 
-- Evidence timestamp: 2026-09-13; refreshed after the implementation pass.
+- Evidence timestamp: 2026-09-14; refreshed after the post-review verification pass.
 - Xcode: 26.6 (17F113).
 - Internal filesystem free space at baseline: approximately 2.5 GiB.
 - Disposable build directory: `/Volumes/Keller Family Photos/.codex-cardscanner-build`.
@@ -26,8 +26,8 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
   and `PortfolioLocal.store`, preserving the pre-bootstrap SwiftData locations;
   the new `CardScanner/CollectionStorage` directory holds the manifest and
   opaque store-file identity sidecars.
-- CoreSimulator status: `NOT RUN — CoreSimulatorService disconnected and no
-  simulator runtimes were discoverable during baseline inspection.`
+- CoreSimulator status: `AVAILABLE — iOS 26.5 simulator; focused storage suites
+  and the full Debug suite were executed during the remediation pass.`
 - Apple Developer / App ID / CloudKit enrollment: `NOT RUN — owner-controlled
   prerequisite; exact production identity has not been supplied or inspected.`
 - Production signing identity and provisioning profile: `NOT RUN`.
@@ -60,8 +60,29 @@ They were not reset, overwritten, or folded into a product-code change.
 - XCTest source module check: `PASS` — all `TradingCardScannerTests/*.swift`
   typechecked against the freshly emitted app module; this is compile evidence,
   not a substitute for XCTest execution.
-- Full test suite: `NOT RUN — XCTest execution still requires a functioning
-  iOS simulator or entitled physical-device host.`
+- Full test suite: `EXECUTED — 1,205 tests; 45 failures at the pre-remediation
+  baseline and 43 with these fixes. The remaining failures are pre-existing and
+  unrelated: centering-corpus/fixture suites, three source-path-reading tests
+  that resolve relative to `/` under `xcodebuild`, a `CollectionSyncDiagnostics`
+  date-encoding-strategy mismatch, and two tracked
+  `OwnershipLedgerCompletenessTests` assertions. Storage-suite failures: zero.`
+
+## Current remediation-pass verification
+
+- Debug no-signing `build-for-testing`: `PASS` — app and XCTest sources compile
+  with the Debug `LOCAL_ONLY_SIGNING` path; no new warnings were introduced.
+- Release no-signing app-target build: `PASS` — the production no-flag branch
+  compiles.
+- Focused storage XCTest execution: `PASS` — 59 tests, 0 failures across
+  `CollectionStoragePolicyTests`, `CollectionStoreContinuityTests`,
+  `CollectionStorageBootstrapTests`, `CloudCollectionAnchorStoreTests`, and
+  `CloudRestorationReadinessTests`.
+- Full Debug XCTest execution: `EXECUTED` — 1,205 tests; 45 failures at
+  baseline and 43 with these fixes, with zero failures in the storage suites.
+- Release no-flag XCTest coverage: `FOLLOW-UP REQUIRED` — Release does not set
+  `ENABLE_TESTABILITY`, so `@testable import TradingCardScanner` cannot resolve
+  the Release module. Add a `DebugProduction` configuration with testability
+  enabled and without `LOCAL_ONLY_SIGNING`; do not change shipping Release.
 
 ## Phase 0 document freeze
 
@@ -77,12 +98,12 @@ They were not reset, overwritten, or folded into a product-code change.
 
 | Gate | Status | Evidence |
 | --- | --- | --- |
-| G1 — Identity | SOURCE PASS; RUNTIME NOT RUN | Current-tree identity sources typecheck; XCTest execution requires a simulator or physical device. |
-| G2 — Valuation | SOURCE PASS; RUNTIME NOT RUN | Current-tree pricing/portfolio sources typecheck; XCTest execution requires a simulator or physical device. |
-| G3 — Quantity/data | SOURCE PASS; RUNTIME NOT RUN | Current-tree persistence/import/export sources typecheck; XCTest execution requires a simulator or physical device. |
-| G4 — Persistence/sync continuity | SOURCE FAIL/PARTIAL; EXTERNAL NOT RUN | Source now rejects cached-empty authority, requires a current anchor generation for cached populated state, separates absent/journal/identity-corrupt replicas, rotates identity after successful restoration, validates anchor claim readback, and fences same-process headless reuse. The production restoration observer/readiness mechanism, live remote-generation semantics, and entitled physical-device matrix remain unproven. |
+| G1 — Identity | SOURCE PASS; RUNTIME PARTIAL | Full Debug XCTest execution ran 1,205 tests but is not clean because of the documented unrelated failures; no storage-suite failures occurred. |
+| G2 — Valuation | SOURCE PASS; RUNTIME PARTIAL | Full Debug XCTest execution ran 1,205 tests but is not clean because of the documented unrelated failures; no storage-suite failures occurred. |
+| G3 — Quantity/data | SOURCE PASS; RUNTIME PARTIAL | Full Debug XCTest execution ran 1,205 tests but is not clean because of the documented unrelated failures; no storage-suite failures occurred. |
+| G4 — Persistence/sync continuity | SOURCE FAIL/PARTIAL; EXTERNAL NOT RUN | Source now rejects cached-empty authority, requires a current anchor generation for cached populated state, separates absent/journal/identity-corrupt replicas, rotates identity at physical store replacement before container construction, keeps readiness authority checkpoint-only, validates anchor claim readback, and fences same-process headless reuse without constructing a non-authoritative second container. The production restoration observer/readiness mechanism, live remote-generation semantics, and entitled physical-device matrix remain unproven. |
 | G5 — Privacy/compliance | SOURCE PASS; PUBLIC LINK/ASC NOT RUN | Privacy manifest, source disclosures, Settings surface, and redacted diagnostics are implemented; final URLs and App Store metadata remain owner inputs. |
-| G6 — Availability | SOURCE PARTIAL; RUNTIME NOT RUN | Fresh-process background storage now requires a persisted proven tuple, current anchor/generation validation, and a live generation fence; active foreground sessions are reused and transitions skip safely. Simulator/XCTest and physical-device execution remain unavailable. |
+| G6 — Availability | SOURCE PARTIAL; RUNTIME PARTIAL | Fresh-process background storage now requires a persisted proven tuple, current anchor/generation validation, and a live generation fence; while G4 readiness is unproven, matching populated checkpoints are validated then skipped without constructing a non-authoritative container. Active foreground sessions are reused and transitions skip safely. Full-suite Debug XCTest ran but was not clean; physical-device execution remains unavailable. |
 
 ## CloudKit compatibility audit
 

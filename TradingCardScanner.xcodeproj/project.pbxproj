@@ -1058,6 +1058,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScannerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG LOCAL_ONLY_SIGNING";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TradingCardScanner.app/TradingCardScanner";

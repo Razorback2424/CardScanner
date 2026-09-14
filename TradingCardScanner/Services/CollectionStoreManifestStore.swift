@@ -36,7 +36,6 @@ enum CollectionStoreManifestStoreError: LocalizedError, Equatable {
 struct CollectionStoreManifestStore: Sendable {
     static let manifestFilename = "manifest.json"
     static let storeFileIdentityFilename = "store-file.identity"
-    static let previousStoreFileIdentityFilename = "store-file.identity.previous"
 
     let directoryURL: URL
     let isUsable: Bool
@@ -76,10 +75,6 @@ struct CollectionStoreManifestStore: Sendable {
 
     var storeFileIdentityURL: URL {
         directoryURL.appendingPathComponent(Self.storeFileIdentityFilename)
-    }
-
-    var previousStoreFileIdentityURL: URL {
-        directoryURL.appendingPathComponent(Self.previousStoreFileIdentityFilename)
     }
 
     func load() throws -> CollectionStoreManifest? {
@@ -178,8 +173,8 @@ struct CollectionStoreManifestStore: Sendable {
         return token
     }
 
-    /// Mints an identity without writing it. Restoration stages this value and
-    /// commits it only after affirmative readiness succeeds.
+    /// Mints an identity without writing it. Restoration writes the selected
+    /// value before opening the replacement physical store.
     func makeStoreFileIdentity() throws -> String {
         guard isUsable else { throw CollectionStoreManifestStoreError.storageLocationUnavailable }
         return SHA256.hash(data: Data(UUID().uuidString.utf8))
@@ -187,8 +182,7 @@ struct CollectionStoreManifestStore: Sendable {
             .joined()
     }
 
-    /// Writes an explicitly selected identity. This is reserved for a new
-    /// store or a successful restoration commit.
+    /// Writes an explicitly selected identity for a new or replaced store.
     func writeStoreFileIdentity(_ value: String) throws {
         guard isUsable else { throw CollectionStoreManifestStoreError.storageLocationUnavailable }
         guard !value.isEmpty, !value.contains("/") else {
@@ -220,40 +214,6 @@ struct CollectionStoreManifestStore: Sendable {
         } catch {
             throw CollectionStoreManifestStoreError.writeFailure
         }
-    }
-
-    /// Commits a replacement physical-store identity after restoration. The
-    /// previous value is retained as recovery evidence before the active
-    /// sidecar is advanced.
-    func replaceStoreFileIdentity(
-        with value: String,
-        preserving previous: String?
-    ) throws {
-        guard isUsable else { throw CollectionStoreManifestStoreError.storageLocationUnavailable }
-        guard !value.isEmpty, !value.contains("/") else {
-            throw CollectionStoreManifestStoreError.invalidStoreIdentity
-        }
-        let fileManager = FileManager.default
-        if let previous, !previous.isEmpty, previous != value {
-            do {
-                try fileManager.createDirectory(
-                    at: directoryURL,
-                    withIntermediateDirectories: true,
-                    attributes: [.protectionKey: FileProtectionType.completeUnlessOpen]
-                )
-                try Data(previous.utf8).write(
-                    to: previousStoreFileIdentityURL,
-                    options: .atomic
-                )
-                try fileManager.setAttributes(
-                    [.protectionKey: FileProtectionType.completeUnlessOpen],
-                    ofItemAtPath: previousStoreFileIdentityURL.path
-                )
-            } catch {
-                throw CollectionStoreManifestStoreError.writeFailure
-            }
-        }
-        try writeStoreFileIdentity(value)
     }
 
     /// Reads the sidecar without creating it. Startup uses this operation to

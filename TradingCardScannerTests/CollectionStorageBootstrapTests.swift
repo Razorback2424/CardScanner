@@ -23,7 +23,9 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         makeContainer: (@MainActor (CollectionStorageMode) throws -> ModelContainer)? = nil,
         structuredStoreFilePresent: Bool = false,
         structuredStoreBaseFilePresent: Bool? = nil,
+        structuredStorePresence: (@MainActor () -> Bool)? = nil,
         storeFileIdentityValue: String? = nil,
+        sidecarPresent: Bool? = nil,
         directorySuffix: String = UUID().uuidString
     ) throws -> CollectionStorageBootstrapDependencies {
         let directory = FileManager.default.temporaryDirectory
@@ -51,14 +53,24 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             claimAnchor: claim,
             makeContainer: factory,
             readinessSource: readiness,
-            structuredStoreFilePresent: { structuredStoreFilePresent },
+            structuredStoreFilePresent: {
+                structuredStorePresence?() ?? structuredStoreFilePresent
+            },
             structuredStoreBaseFilePresent: {
-                structuredStoreBaseFilePresent ?? structuredStoreFilePresent
+                structuredStorePresence?()
+                    ?? (structuredStoreBaseFilePresent ?? structuredStoreFilePresent)
             },
             localHasUserData: { false },
             storeFileIdentity: { "test-store-file-identity" },
             readStoreFileIdentity: {
+                if let sidecarPresent {
+                    guard sidecarPresent else { return nil }
+                    return storeFileIdentityValue ?? "test-store-file-identity"
+                }
                 if let storeFileIdentityValue { return storeFileIdentityValue }
+                if let persisted = try manifestStore.readStoreFileIdentity() {
+                    return persisted
+                }
                 return structuredStoreFilePresent ? "test-store-file-identity" : nil
             },
             adoptLegacyStore: { nil },
@@ -276,7 +288,8 @@ final class CollectionStorageBootstrapTests: XCTestCase {
                 },
                 structuredStoreFilePresent: filePresent,
                 structuredStoreBaseFilePresent: basePresent,
-                storeFileIdentityValue: sidecar
+                storeFileIdentityValue: sidecar,
+                sidecarPresent: sidecar != nil
             )
             try dependencies.manifestStore.save(CollectionStoreManifest(
                 storeID: localID,
@@ -308,6 +321,61 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             return XCTFail("expected fail-closed restoration state")
         }
         XCTAssertEqual(category, "test-proof-missing")
+    }
+
+    func testFailedRemoteAdoptionRetainsIdentityAndRetriesRestorationOnRelaunch() async throws {
+        var replicaPresent = false
+        let dependencies = try makeDependencies(
+            account: { .available(fingerprint: "account-a") },
+            anchor: {
+                .found(CloudCollectionAnchor(
+                    storeID: self.localID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "test-generation"
+                ))
+            },
+            readiness: FixedCloudRestorationReadinessSource(
+                result: .failed(category: "test-proof-missing")
+            ),
+            makeContainer: { _ in
+                replicaPresent = true
+                return try ModelContainer(
+                    for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                )
+            },
+            structuredStoreFilePresent: false,
+            structuredStoreBaseFilePresent: false,
+            structuredStorePresence: { replicaPresent }
+        )
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+
+        guard case let .restoringFromCloud(.failed(category)) = bootstrap.state else {
+            return XCTFail("expected the first launch to remain in restoration")
+        }
+        XCTAssertEqual(category, "test-proof-missing")
+        XCTAssertTrue(replicaPresent)
+        let firstManifest = try XCTUnwrap(try dependencies.manifestStore.load())
+        let firstIdentity = try XCTUnwrap(
+            try dependencies.manifestStore.readStoreFileIdentity()
+        )
+        XCTAssertEqual(firstManifest.storeFileIdentity, firstIdentity)
+        XCTAssertNil(firstManifest.cloudRestoreCheckpoint)
+
+        await bootstrap.start()
+
+        guard case let .restoringFromCloud(.failed(category)) = bootstrap.state else {
+            return XCTFail("expected relaunch to retry restoration, not require support")
+        }
+        XCTAssertEqual(category, "test-proof-missing")
+        let retryManifest = try XCTUnwrap(try dependencies.manifestStore.load())
+        let retryIdentity = try XCTUnwrap(
+            try dependencies.manifestStore.readStoreFileIdentity()
+        )
+        XCTAssertEqual(retryManifest.storeFileIdentity, firstIdentity)
+        XCTAssertEqual(retryIdentity, firstIdentity)
     }
 
     func testSuccessfulMissingReplicaRestorationRotatesStoreFileIdentity() async throws {
@@ -344,9 +412,12 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         let activeIdentity = try XCTUnwrap(try dependencies.manifestStore.readStoreFileIdentity())
         XCTAssertEqual(manifest.storeFileIdentity, activeIdentity)
         XCTAssertNotEqual(activeIdentity, "old-file-identity")
-        XCTAssertEqual(
-            try String(contentsOf: dependencies.manifestStore.previousStoreFileIdentityURL),
-            "old-file-identity"
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: dependencies.manifestStore.directoryURL
+                    .appendingPathComponent("store-file.identity.previous")
+                    .path
+            )
         )
     }
 

@@ -306,7 +306,7 @@ struct CollectionStorageBootstrapDependencies {
     var paths: CollectionStoragePaths
     var manifestStore: CollectionStoreManifestStore
     var accountAvailability: @MainActor () async -> CloudAccountAvailability
-    var anchorState: @MainActor () async -> CloudCollectionAnchorState = { .missing }
+    var anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
     var claimAnchor: @MainActor (UUID) async -> CloudCollectionAnchorClaimResult
     var makeContainer: @MainActor (CollectionStorageMode) throws -> ModelContainer
     var readinessSource: any CloudRestorationReadinessSource
@@ -379,7 +379,7 @@ struct CollectionStorageBootstrapDependencies {
 
 #if LOCAL_ONLY_SIGNING
         let accountAvailability: @MainActor () async -> CloudAccountAvailability = { .noAccount }
-        let anchorState: @MainActor () async -> CloudCollectionAnchorState = { .missing }
+        let anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
         let claimAnchor: @MainActor (UUID) async -> CloudCollectionAnchorClaimResult = { storeID in
             .claimed(CloudCollectionAnchor(
                 storeID: storeID,
@@ -510,7 +510,7 @@ struct CollectionStorageHeadlessPreflightDependencies {
     var paths: CollectionStoragePaths
     var manifestStore: CollectionStoreManifestStore
     var accountAvailability: @MainActor () async -> CloudAccountAvailability
-    var anchorState: @MainActor () async -> CloudCollectionAnchorState = { .missing }
+    var anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
     var makeContainer: @MainActor () throws -> ModelContainer
     var storageGeneration: CollectionStorageGeneration
 
@@ -526,7 +526,7 @@ struct CollectionStorageHeadlessPreflightDependencies {
         )
 #if LOCAL_ONLY_SIGNING
         let accountAvailability: @MainActor () async -> CloudAccountAvailability = { .noAccount }
-        let anchorState: @MainActor () async -> CloudCollectionAnchorState = { .missing }
+        let anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
 #else
         let accountProbe: CloudAccountProbe? = try? CloudAccountProbe.production()
         let accountAvailability: @MainActor () async -> CloudAccountAvailability = {
@@ -615,15 +615,14 @@ enum CollectionStorageHeadlessPreflight {
             return nil
         }
 
-        let container: ModelContainer
+        let useProvenLocalReplica: Bool
 #if LOCAL_ONLY_SIGNING
-        let useProvenLocalReplica = manifest.attachmentState != .attached
-        if useProvenLocalReplica {
-            guard let localContainer = try? dependencies.makeContainer() else {
-                return nil
-            }
-            container = localContainer
-        } else {
+        useProvenLocalReplica = manifest.attachmentState != .attached
+#else
+        useProvenLocalReplica = false
+#endif
+
+        if !useProvenLocalReplica {
             guard manifest.attachmentState == .attached,
                   let accountFingerprint = manifest.lastAttachedAccountFingerprint,
                   let checkpoint = manifest.cloudRestoreCheckpoint,
@@ -640,39 +639,20 @@ enum CollectionStorageHeadlessPreflight {
                       mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
                       currentRemoteGeneration: anchor.remoteGeneration
                   ),
-                  checkpoint.readiness == .populated,
-                  let cloudContainer = try? dependencies.makeContainer() else {
+                  checkpoint.readiness == .populated else {
                 return nil
             }
-            container = cloudContainer
-        }
-        let mode: CollectionStorageMode = useProvenLocalReplica ? .onDevice : .cloudKit
-        let isAuthoritative = useProvenLocalReplica
-#else
-        guard manifest.attachmentState == .attached,
-              let accountFingerprint = manifest.lastAttachedAccountFingerprint,
-              let checkpoint = manifest.cloudRestoreCheckpoint,
-              case let .available(currentFingerprint) = await dependencies.accountAvailability(),
-              currentFingerprint == accountFingerprint,
-              case let .found(anchor) = await dependencies.anchorState(),
-              anchor.storeID == manifest.storeID,
-              anchor.formatVersion == CloudCollectionAnchorSchema.currentFormatVersion,
-              CollectionStoragePolicy.acceptsRestoreCheckpoint(
-                  checkpoint,
-                  storeID: manifest.storeID,
-                  accountFingerprint: accountFingerprint,
-                  storeFileIdentity: manifest.storeFileIdentity,
-                  mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
-                  currentRemoteGeneration: anchor.remoteGeneration
-              ),
-              checkpoint.readiness == .populated,
-              let cloudContainer = try? dependencies.makeContainer() else {
+            // G4 gate: the production restoration-readiness mechanism is not
+            // proven, so a populated checkpoint is last-known state only. Do
+            // not construct a non-authoritative second CloudKit container.
             return nil
         }
-        container = cloudContainer
-        let mode: CollectionStorageMode = .cloudKit
-        let isAuthoritative = false
-#endif
+
+        guard let container = try? dependencies.makeContainer() else {
+            return nil
+        }
+        let mode: CollectionStorageMode = .onDevice
+        let isAuthoritative = true
         let session = CollectionStorageSession(
             container: container,
             storeID: manifest.storeID,
@@ -719,7 +699,6 @@ final class CollectionStorageBootstrap: ObservableObject {
     private var pendingAttachment: AccountAttachmentRequest?
     private var confirmationAccepted = false
     private var restorationContainer: ModelContainer?
-    private var pendingRestorationStoreFileIdentity: String?
     private var accountChangedObserver: NSObjectProtocol?
     private(set) var lastErrorCategory: String?
 
@@ -754,7 +733,6 @@ final class CollectionStorageBootstrap: ObservableObject {
         confirmationAccepted = false
         pendingAttachment = nil
         restorationContainer = nil
-        pendingRestorationStoreFileIdentity = nil
         lastErrorCategory = nil
 
         if Self.isPerformanceHarnessLaunch {
@@ -1095,15 +1073,18 @@ final class CollectionStorageBootstrap: ObservableObject {
     ) async {
         guard currentGeneration == generation else { return }
         do {
-            pendingRestorationStoreFileIdentity = forceRestoration
-                ? try dependencies.manifestStore.makeStoreFileIdentity()
-                : nil
+            let replacementStoreFileIdentity: String?
+            if forceRestoration {
+                replacementStoreFileIdentity = try dependencies.manifestStore.makeStoreFileIdentity()
+            } else {
+                replacementStoreFileIdentity = nil
+            }
             try persistManifest(
                 storeID: storeID,
                 accountFingerprint: accountFingerprint,
                 attachmentState: .attached,
                 invalidateRestoreCheckpoint: forceRestoration,
-                mintStoreFileIdentity: !forceRestoration
+                replacementStoreFileIdentity: replacementStoreFileIdentity
             )
             TradingCardScannerApp.activeCloudAccountStatusRaw = "available"
             TradingCardScannerApp.activeAttachmentStateRaw = CloudAttachmentState.attached.rawValue
@@ -1126,7 +1107,6 @@ final class CollectionStorageBootstrap: ObservableObject {
                     )
                     return
                 }
-                try commitPendingRestorationStoreFileIdentity(storeID: storeID)
                 try persistRestoreCheckpoint(
                     storeID: storeID,
                     accountFingerprint: accountFingerprint,
@@ -1147,7 +1127,6 @@ final class CollectionStorageBootstrap: ObservableObject {
                 state = .restoringFromCloud(readiness)
             }
         } catch {
-            pendingRestorationStoreFileIdentity = nil
             showRecovery(error, category: "cloud-container")
         }
     }
@@ -1192,14 +1171,22 @@ final class CollectionStorageBootstrap: ObservableObject {
         accountFingerprint: String?,
         attachmentState: CloudAttachmentState,
         invalidateRestoreCheckpoint: Bool = false,
-        mintStoreFileIdentity: Bool = true
+        replacementStoreFileIdentity: String? = nil
     ) throws {
         var manifest = try dependencies.manifestStore.load()
             ?? CollectionStoreManifest(storeID: storeID)
         guard manifest.storeID == storeID else {
             throw CollectionStoreManifestStoreError.invalidStoreIdentity
         }
-        if manifest.storeFileIdentity.isEmpty, mintStoreFileIdentity {
+        if let replacementStoreFileIdentity {
+            // A forced restoration creates/replaces the physical replica. Bind
+            // its new opaque identity before the CloudKit container is opened;
+            // readiness authority remains checkpoint-only.
+            try dependencies.manifestStore.writeStoreFileIdentity(
+                replacementStoreFileIdentity
+            )
+            manifest.storeFileIdentity = replacementStoreFileIdentity
+        } else if manifest.storeFileIdentity.isEmpty {
             manifest.storeFileIdentity = try dependencies.storeFileIdentity()
         }
         let accountChanged = accountFingerprint.map {
@@ -1219,24 +1206,6 @@ final class CollectionStorageBootstrap: ObservableObject {
             manifest.cloudRestoreCheckpoint = nil
         }
         try dependencies.manifestStore.save(manifest)
-    }
-
-    private func commitPendingRestorationStoreFileIdentity(storeID: UUID) throws {
-        guard let replacement = pendingRestorationStoreFileIdentity else { return }
-        var manifest = try dependencies.manifestStore.load()
-            ?? CollectionStoreManifest(storeID: storeID)
-        guard manifest.storeID == storeID else {
-            throw CollectionStoreManifestStoreError.invalidStoreIdentity
-        }
-        let previous = manifest.storeFileIdentity
-            .isEmpty ? try dependencies.manifestStore.readStoreFileIdentity() : manifest.storeFileIdentity
-        try dependencies.manifestStore.replaceStoreFileIdentity(
-            with: replacement,
-            preserving: previous
-        )
-        manifest.storeFileIdentity = replacement
-        try dependencies.manifestStore.save(manifest)
-        pendingRestorationStoreFileIdentity = nil
     }
 
     private func persistRestoreCheckpoint(
@@ -1335,7 +1304,6 @@ final class CollectionStorageBootstrap: ObservableObject {
 
     private func showRecovery(_ error: Error, category: String) {
         lastErrorCategory = category
-        pendingRestorationStoreFileIdentity = nil
         dependencies.storageGeneration.suspend()
         PriceRefreshController.shared.cancelRefresh()
         MagicTreatmentMigrationCoordinator.shared.suspendStorageSession()
