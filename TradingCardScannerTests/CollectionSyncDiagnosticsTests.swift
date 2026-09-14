@@ -32,7 +32,9 @@ final class CollectionSyncDiagnosticsTests: XCTestCase {
         )
 
         let data = try CollectionStoreDigester.redactedJSON(for: snapshot)
-        let decoded = try JSONDecoder().decode(CloudSyncDiagnosticsSnapshot.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode(CloudSyncDiagnosticsSnapshot.self, from: data)
         XCTAssertEqual(decoded, snapshot)
     }
 

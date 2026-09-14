@@ -7,10 +7,10 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 
 ## Candidate identity
 
-- Implementation branch: `fix/app-review-preflight`
+- Implementation branch: `main`
 - Baseline source SHA: `a115e4ee40dfaab93672e7601b358d82183df6be`
-- Current candidate SHA: working tree on `fix/app-review-preflight`; record the
-  final commit SHA before archive.
+- Current candidate SHA: `1ed7223` at the start of A2a; update to the final
+  A2a commit SHA before archive.
 - Marketing version/build: `1.0 (1)` at baseline; re-check before archive.
 - Target: `TradingCardScanner` / `TradingCardScannerTests`
 - Minimum OS: iOS/iPadOS 17.0
@@ -32,21 +32,17 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
   prerequisite; exact production identity has not been supplied or inspected.`
 - Production signing identity and provisioning profile: `NOT RUN`.
 
-## User-owned pre-plan changes
+## Pre-plan checkout
 
-These working-tree changes existed before implementation began and remain
-unstaged unless explicitly listed in a later commit:
-
-- `docs/superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md`
-- `docs/vision/collection-integrity-codebase-gap-analysis.md`
-
-They were not reset, overwritten, or folded into a product-code change.
+- A2a started from a clean `main` checkout at `1ed7223`; no unrelated
+  working-tree changes were present or folded into this implementation.
+- The two planning documents referenced by the prior ledger remain outside the
+  A2a change set.
 
 ## Automated baseline
 
 - `git diff --check`: PASS on the implementation working tree.
-- Branch/HEAD inspection: PASS; `main` at `a115e4e` before the implementation
-  branch was created.
+- Branch/HEAD inspection at A2a start: PASS; clean `main` at `1ed7223`.
 - `xcodebuild -version`: PASS; recorded above.
 - `xcodebuild build-for-testing`: `BLOCKED — the external disposable derived
   data path was used, but actool could not connect to CoreSimulatorService and
@@ -60,29 +56,74 @@ They were not reset, overwritten, or folded into a product-code change.
 - XCTest source module check: `PASS` — all `TradingCardScannerTests/*.swift`
   typechecked against the freshly emitted app module; this is compile evidence,
   not a substitute for XCTest execution.
-- Full test suite: `EXECUTED — 1,205 tests; 45 failures at the pre-remediation
-  baseline and 43 with these fixes. The remaining failures are pre-existing and
-  unrelated: centering-corpus/fixture suites, three source-path-reading tests
-  that resolve relative to `/` under `xcodebuild`, a `CollectionSyncDiagnostics`
-  date-encoding-strategy mismatch, and two tracked
-  `OwnershipLedgerCompletenessTests` assertions. Storage-suite failures: zero.`
+- Historical full test suite: `EXECUTED — 1,205 tests; 45 failures at the
+  pre-remediation baseline and 43 in the prior remediation pass. That run was
+  not the A2a acceptance run; its unrelated failures included centering
+  corpus/fixture suites, source-path-reading tests, the diagnostics date
+  strategy mismatch, and two tracked ownership-ledger assertions. The
+  diagnostics mismatch is corrected in the A2a test set below.
 
 ## Current remediation-pass verification
 
 - Debug no-signing `build-for-testing`: `PASS` — app and XCTest sources compile
   with the Debug `LOCAL_ONLY_SIGNING` path; no new warnings were introduced.
+- DebugProduction `build-for-testing`/test build: `PASS` — the production
+  entitlements and bundle identity are retained while the compiler receives
+  `DEBUG` without `LOCAL_ONLY_SIGNING`.
 - Release no-signing app-target build: `PASS` — the production no-flag branch
-  compiles.
-- Focused storage XCTest execution: `PASS` — 59 tests, 0 failures across
+  compiles; shipping Release was not changed to enable testability.
+- A2a storage-suite execution: `PASS` — the same nine CloudKit/storage suites
+  ran under both configurations: `CloudAccountProbeTests`,
+  `CloudCollectionAnchorStoreTests`, `CloudKitSchemaCompatibilityTests`,
+  `CloudRestorationReadinessTests`, `CollectionStorageBootstrapTests`,
   `CollectionStoragePolicyTests`, `CollectionStoreContinuityTests`,
-  `CollectionStorageBootstrapTests`, `CloudCollectionAnchorStoreTests`, and
-  `CloudRestorationReadinessTests`.
-- Full Debug XCTest execution: `EXECUTED` — 1,205 tests; 45 failures at
-  baseline and 43 with these fixes, with zero failures in the storage suites.
-- Release no-flag XCTest coverage: `FOLLOW-UP REQUIRED` — Release does not set
-  `ENABLE_TESTABILITY`, so `@testable import TradingCardScanner` cannot resolve
-  the Release module. Add a `DebugProduction` configuration with testability
-  enabled and without `LOCAL_ONLY_SIGNING`; do not change shipping Release.
+  `CollectionStoreDigestTests`, and `CollectionSyncDiagnosticsTests`.
+  `Debug`: 92 tests, 0 failures. `DebugProduction`: 94 tests, 1 explicit
+  entitlement-gated skip, 0 failures.
+
+## A2 §0 event-correlation spike
+
+- Run identity: `main` at `1ed7223`, iOS 26.5 simulator, iPhone 17 Pro
+  (`EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86`), with the real production CloudKit
+  entitlements and `LOCAL_ONLY_SIGNING` removed for the temporary test run.
+- Procedure: a `NotificationCenter` observer for
+  `NSPersistentCloudKitContainer.eventChangedNotification` was registered
+  before constructing the real two-configuration container through
+  `CollectionStorageBootstrapDependencies.makeContainer(paths:mode:.cloudKit)`;
+  the process then observed the store for 20 seconds.
+- Observed: `2` notifications, both with event identifier
+  `54AB2C5E-4048-44C6-A645-2AA250F316A0`, setup type (`rawValue: 0`), and
+  store identifier `07398AAA-9DE6-4FBD-8C44-A73A1C091B89`. The first was
+  in-progress (`endDate = nil`, `succeeded = false`, no error); the second was
+  completed with `succeeded = false` and an error. The set of distinct
+  `storeIdentifier` values had cardinality `1`.
+- Verdict: `GO for A2a` correlation implementation. The singleton rule is
+  demonstrated for this process shape; a second distinct store identifier
+  must fail closed. This is not A2b restoration evidence: the simulator had
+  `CKAccountStatusNoAccount`, and no successful import event was observed.
+
+## A2a production restoration-readiness proof
+
+- Contract: `PASS` — the one-shot source is replaced by an armed,
+  notification-backed probe; arming occurs before `makeContainer`, and a
+  `defer` cancels the probe on every exit path, including throwing container
+  construction. Cancellation is idempotent and `deinit` removes observers.
+- Reducer: `PASS` — events are redacted to UUID/type/store identifier/start and
+  end dates/success/error category, bounded to 64 retained events, and reduced
+  only after a successful completed import plus a fresh post-import visibility
+  snapshot. Setup/export, empty fetches, failed/in-progress imports, wrong
+  stores, stale generations, and multiple singleton identifiers cannot
+  authorize readiness; there is no timeout, clock, or elapsed-time path.
+- Anchor/checkpoint: `PASS` — the non-empty anchor generation is threaded from
+  the authoritative anchor read into the request and persisted checkpoint;
+  missing generations fail closed, and the readiness enum no longer carries a
+  second generation value. `currentMechanismVersion` is `3`, so mechanism-2
+  checkpoints are rejected by the existing checkpoint policy.
+- Production default: `INTENTIONALLY UNPROVEN` —
+  `UnprovenCloudRestorationReadinessSource` remains the default until A2b
+  enrollment and the device matrix prove the event/readiness contract.
+- A2a verdict: `GO to land the production-shaped implementation and tests;
+  NO-GO for automatic cloud restoration and Phase 1 release certification.`
 
 ## Phase 0 document freeze
 
@@ -101,15 +142,16 @@ They were not reset, overwritten, or folded into a product-code change.
 | G1 — Identity | SOURCE PASS; RUNTIME PARTIAL | Full Debug XCTest execution ran 1,205 tests but is not clean because of the documented unrelated failures; no storage-suite failures occurred. |
 | G2 — Valuation | SOURCE PASS; RUNTIME PARTIAL | Full Debug XCTest execution ran 1,205 tests but is not clean because of the documented unrelated failures; no storage-suite failures occurred. |
 | G3 — Quantity/data | SOURCE PASS; RUNTIME PARTIAL | Full Debug XCTest execution ran 1,205 tests but is not clean because of the documented unrelated failures; no storage-suite failures occurred. |
-| G4 — Persistence/sync continuity | SOURCE FAIL/PARTIAL; EXTERNAL NOT RUN | Source now rejects cached-empty authority, requires a current anchor generation for cached populated state, separates absent/journal/identity-corrupt replicas, rotates identity at physical store replacement before container construction, keeps readiness authority checkpoint-only, validates anchor claim readback, and fences same-process headless reuse without constructing a non-authoritative second container. The production restoration observer/readiness mechanism, live remote-generation semantics, and entitled physical-device matrix remain unproven. |
+| G4 — Persistence/sync continuity | SOURCE PARTIAL; A2a PASS; EXTERNAL NOT RUN | Source now rejects cached-empty authority, requires a current anchor generation for cached populated state, separates absent/journal/identity-corrupt replicas, rotates identity at physical store replacement before container construction, keeps readiness authority checkpoint-only, validates anchor claim readback, and fences same-process headless reuse without constructing a non-authoritative second container. The armed reducer is covered by deterministic tests, but production remains on the unproven source and live remote-generation/entitled-device matrix evidence is still missing. |
 | G5 — Privacy/compliance | SOURCE PASS; PUBLIC LINK/ASC NOT RUN | Privacy manifest, source disclosures, Settings surface, and redacted diagnostics are implemented; final URLs and App Store metadata remain owner inputs. |
-| G6 — Availability | SOURCE PARTIAL; RUNTIME PARTIAL | Fresh-process background storage now requires a persisted proven tuple, current anchor/generation validation, and a live generation fence; while G4 readiness is unproven, matching populated checkpoints are validated then skipped without constructing a non-authoritative container. Active foreground sessions are reused and transitions skip safely. Full-suite Debug XCTest ran but was not clean; physical-device execution remains unavailable. |
+| G6 — Availability | SOURCE PARTIAL; A2a STORAGE PASS | Fresh-process background storage now requires a persisted proven tuple, current anchor/generation validation, and a live generation fence; while G4 readiness is unproven, matching populated checkpoints are validated then skipped without constructing a non-authoritative container. Active foreground sessions are reused and transitions skip safely. Physical-device execution remains unavailable. |
 
 ## CloudKit compatibility audit
 
 - Source prohibition audit: `PASS — scripts/audit_cloudkit_schema.sh`.
-- Local five-model schema construction: `SOURCE PASS; RUNTIME NOT RUN —
-  direct source typecheck passed; runtime construction awaits a supported host.`
+- Local five-model schema construction: `RUNTIME PASS — the real two-
+  configuration container constructed on the iOS 26.5 simulator; setup events
+  were observed and the singleton store identifier was recorded above.`
 - Entitled host/container construction: `BLOCKED — external enrollment`.
 - Production schema field-by-field audit: `BLOCKED — external enrollment`.
 
@@ -123,14 +165,29 @@ They were not reset, overwritten, or folded into a product-code change.
 
 - Path 0 local control: `NOT RUN`.
 - Legacy unnamed-store discovery: `NOT RUN`.
-- Restoration-readiness observability: `SOURCE FAIL — the production dependency
-  remains `UnprovenCloudRestorationReadinessSource`; the required event observer,
-  empty/nonempty handshake, row-visibility boundary, live remote-generation
-  update protocol, and entitled-device proof are not complete. The source guard
-  is deliberately fail-closed.`
+- Restoration-readiness observability: `§0 PASS; A2a SOURCE/TEST PASS — the
+  observer receives SwiftData-backed CloudKit events and resolves the proven
+  singleton process shape; the reducer, post-import row-visibility boundary,
+  anchor-generation checkpoint threading, and lifecycle fencing are covered by
+  deterministic tests. The production dependency remains
+  `UnprovenCloudRestorationReadinessSource` until A2b; live account/remote-
+  generation semantics and entitled-device proof are not run.`
 - Entitled account/anchor proof: `BLOCKED — external enrollment`.
 - Physical iPhone/iPad two-device convergence: `BLOCKED — physical devices
   and external enrollment required`.
+
+## A2 scope limits that remain on the Phase 1 exit checklist
+
+- `localOnlyTransitionProven` remains hardcoded `false` outside
+  `LOCAL_ONLY_SIGNING`. Consequently no-account, restricted-account,
+  iCloud-unavailable, and “Keep on Device” launches remain blocked in
+  production. A green A2 result proves only the cloud path; it is not a Phase 1
+  exit.
+- The headless preflight still unconditionally returns `nil` behind its G4
+  gate in `CollectionStorageBootstrap.swift` (the gate comment is near the
+  populated-checkpoint branch). When A2b lands, that gate must be re-evaluated
+  or production background sessions remain unavailable even after foreground
+  restoration is proven.
 
 ## Scanner normal/adversarial evidence
 
@@ -171,9 +228,11 @@ They were not reset, overwritten, or folded into a product-code change.
 
 ## Final GO/NO-GO sign-off
 
-`NO-GO — source-level restoration readiness and ledger-authority work is not yet
-complete, and runtime evidence is unavailable. The release cannot be certified
-until the selected storage architecture and live remote-generation protocol are
-proven on entitled devices, the restoration mechanism is implemented, the
-production ledger matrix executes, and the external enrollment, public-link,
-archive, and TestFlight gates run against one frozen SHA.`
+- A2a: `GO — implementation, correlation spike, and both production-shaped
+  storage test runs are complete.`
+- A2b: `NOT RUN — E1–E5 and E9 remain NOT RUN in
+  docs/release/cloudkit-release-matrix.md; enrollment, exact signed candidate,
+  and iPhone/iPad proof are required before swapping the production default.`
+- Phase 1/release: `NO-GO — the non-cloud transition remains deliberately
+  blocked, the headless G4 gate remains, and external enrollment, public-link,
+  archive, and TestFlight gates are outstanding.`

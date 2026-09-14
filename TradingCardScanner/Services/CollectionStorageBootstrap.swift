@@ -317,6 +317,9 @@ struct CollectionStorageBootstrapDependencies {
     var readStoreFileIdentity: @MainActor () throws -> String?
     var adoptLegacyStore: @MainActor () throws -> LegacyCollectionStoreAdoption?
     var localOnlyTransitionProven: Bool
+    /// Test-only provenance guard: production wiring is never acceptable for
+    /// storage-suite fixtures unless an entitled integration test opts in.
+    var usesProductionDependencies: Bool = false
     var storageGeneration: CollectionStorageGeneration = .shared
 
     static func production(
@@ -436,7 +439,8 @@ struct CollectionStorageBootstrapDependencies {
             storeFileIdentity: { try manifestStore.ensureStoreFileIdentity() },
             readStoreFileIdentity: { try manifestStore.readStoreFileIdentity() },
             adoptLegacyStore: adoptLegacyStore,
-            localOnlyTransitionProven: localOnlyTransitionProven
+            localOnlyTransitionProven: localOnlyTransitionProven,
+            usesProductionDependencies: true
         )
     }
 
@@ -693,6 +697,13 @@ final class CollectionStorageBootstrap: ObservableObject {
         dependencies.localOnlyTransitionProven
     }
 
+    /// Test-only provenance guard for the shared bootstrap fixture. Production
+    /// startup uses the default production dependency graph; storage tests must
+    /// make that choice explicit through injection.
+    var usesProductionDependencies: Bool {
+        dependencies.usesProductionDependencies
+    }
+
     private let dependencies: CollectionStorageBootstrapDependencies
     private var generation: UInt = 0
     private var proposedFreshStoreID: UUID?
@@ -813,6 +824,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                 decision,
                 local: local,
                 account: account,
+                anchor: anchor,
                 generation: currentGeneration
             )
         } catch {
@@ -888,9 +900,11 @@ final class CollectionStorageBootstrap: ObservableObject {
         _ decision: CollectionStorageDecision,
         local: CollectionStorageLocalFacts,
         account: CloudAccountAvailability,
+        anchor: CloudCollectionAnchorState,
         generation currentGeneration: UInt
     ) async {
         guard currentGeneration == generation else { return }
+        let existingAnchorGeneration = anchorGeneration(from: anchor)
         switch decision {
         case let .openCloud(storeID, accountFingerprint):
             if local.manifest == nil {
@@ -900,10 +914,17 @@ final class CollectionStorageBootstrap: ObservableObject {
                     generation: currentGeneration
                 )
             } else {
+                guard let existingAnchorGeneration else {
+                    state = .recoveryRequired(
+                        "CloudKit restoration has no anchor generation to verify against."
+                    )
+                    return
+                }
                 await openCloud(
                     storeID: storeID,
                     accountFingerprint: accountFingerprint,
-                    generation: currentGeneration
+                    generation: currentGeneration,
+                    anchorGeneration: existingAnchorGeneration
                 )
             }
 
@@ -915,17 +936,31 @@ final class CollectionStorageBootstrap: ObservableObject {
             )
 
         case let .adoptRemoteCollection(storeID, accountFingerprint):
+            guard let existingAnchorGeneration else {
+                state = .recoveryRequired(
+                    "CloudKit restoration has no anchor generation to verify against."
+                )
+                return
+            }
             await adoptRemoteCollection(
                 storeID: storeID,
                 accountFingerprint: accountFingerprint,
-                generation: currentGeneration
+                generation: currentGeneration,
+                anchorGeneration: existingAnchorGeneration
             )
 
         case let .restoreMissingLocalReplica(storeID, accountFingerprint):
+            guard let existingAnchorGeneration else {
+                state = .recoveryRequired(
+                    "CloudKit restoration has no anchor generation to verify against."
+                )
+                return
+            }
             await openCloud(
                 storeID: storeID,
                 accountFingerprint: accountFingerprint,
                 generation: currentGeneration,
+                anchorGeneration: existingAnchorGeneration,
                 forceRestoration: true
             )
 
@@ -975,10 +1010,17 @@ final class CollectionStorageBootstrap: ObservableObject {
         guard currentGeneration == generation else { return }
         switch await dependencies.claimAnchor(storeID) {
         case let .claimed(anchor) where isUsableAnchor(anchor, storeID: storeID):
-            await openCloud(
+            guard let anchorGeneration = anchorGeneration(from: anchor) else {
+                state = .recoveryRequired(
+                    "The newly claimed iCloud collection has no anchor generation."
+                )
+                return
+            }
+            await claimFreshAnchor(
                 storeID: storeID,
                 accountFingerprint: accountFingerprint,
-                generation: currentGeneration
+                generation: currentGeneration,
+                anchorGeneration: anchorGeneration
             )
         case let .alreadyClaimed(anchor):
             guard isSupportedAnchor(anchor) else {
@@ -987,10 +1029,17 @@ final class CollectionStorageBootstrap: ObservableObject {
                 )
                 return
             }
+            guard let anchorGeneration = anchorGeneration(from: anchor) else {
+                state = .recoveryRequired(
+                    "The existing iCloud collection has no anchor generation."
+                )
+                return
+            }
             await adoptRemoteCollection(
                 storeID: anchor.storeID,
                 accountFingerprint: accountFingerprint,
-                generation: currentGeneration
+                generation: currentGeneration,
+                anchorGeneration: anchorGeneration
             )
         case .claimed, .malformed:
             state = .recoveryRequired(
@@ -1003,6 +1052,31 @@ final class CollectionStorageBootstrap: ObservableObject {
         }
     }
 
+    /// Completes a fresh claim only with the generation read back from the
+    /// authoritative anchor. The overload keeps the pre-claim path free of a
+    /// placeholder generation while making the open-cloud boundary require a
+    /// non-optional value.
+    private func claimFreshAnchor(
+        storeID: UUID,
+        accountFingerprint: String,
+        generation currentGeneration: UInt,
+        anchorGeneration: String
+    ) async {
+        guard !anchorGeneration.isEmpty else {
+            state = .recoveryRequired(
+                "The newly claimed iCloud collection has no anchor generation."
+            )
+            return
+        }
+        await openCloud(
+            storeID: storeID,
+            accountFingerprint: accountFingerprint,
+            generation: currentGeneration,
+            anchorGeneration: anchorGeneration,
+            anchorClaimedThisLaunch: true
+        )
+    }
+
     private func claimExistingAnchor(
         storeID: UUID,
         accountFingerprint: String,
@@ -1011,10 +1085,17 @@ final class CollectionStorageBootstrap: ObservableObject {
         guard currentGeneration == generation else { return }
         switch await dependencies.claimAnchor(storeID) {
         case let .claimed(anchor) where isUsableAnchor(anchor, storeID: storeID):
-            await openCloud(
+            guard let anchorGeneration = anchorGeneration(from: anchor) else {
+                state = .recoveryRequired(
+                    "The newly claimed iCloud collection has no anchor generation."
+                )
+                return
+            }
+            await claimExistingAnchor(
                 storeID: storeID,
                 accountFingerprint: accountFingerprint,
-                generation: currentGeneration
+                generation: currentGeneration,
+                anchorGeneration: anchorGeneration
             )
         case let .alreadyClaimed(anchor):
             guard isSupportedAnchor(anchor) else {
@@ -1022,10 +1103,17 @@ final class CollectionStorageBootstrap: ObservableObject {
                 return
             }
             if anchor.storeID == storeID {
-                await openCloud(
+                guard let anchorGeneration = anchorGeneration(from: anchor) else {
+                    state = .recoveryRequired(
+                        "The existing iCloud collection has no anchor generation."
+                    )
+                    return
+                }
+                await claimExistingAnchor(
                     storeID: storeID,
                     accountFingerprint: accountFingerprint,
-                    generation: currentGeneration
+                    generation: currentGeneration,
+                    anchorGeneration: anchorGeneration
                 )
             } else {
                 state = .accountConflict(AccountConflictSummary(
@@ -1040,6 +1128,28 @@ final class CollectionStorageBootstrap: ObservableObject {
         }
     }
 
+    /// Completes an existing-anchor claim with the freshly read generation,
+    /// which is more authoritative than any pre-claim snapshot.
+    private func claimExistingAnchor(
+        storeID: UUID,
+        accountFingerprint: String,
+        generation currentGeneration: UInt,
+        anchorGeneration: String
+    ) async {
+        guard !anchorGeneration.isEmpty else {
+            state = .recoveryRequired(
+                "The existing iCloud collection has no anchor generation."
+            )
+            return
+        }
+        await openCloud(
+            storeID: storeID,
+            accountFingerprint: accountFingerprint,
+            generation: currentGeneration,
+            anchorGeneration: anchorGeneration
+        )
+    }
+
     private func isUsableAnchor(
         _ anchor: CloudCollectionAnchor,
         storeID: UUID
@@ -1049,18 +1159,33 @@ final class CollectionStorageBootstrap: ObservableObject {
 
     private func isSupportedAnchor(_ anchor: CloudCollectionAnchor) -> Bool {
         anchor.formatVersion == CloudCollectionAnchorSchema.currentFormatVersion
-            && anchor.remoteGeneration?.isEmpty == false
+            && anchorGeneration(from: anchor) != nil
+    }
+
+    private func anchorGeneration(from state: CloudCollectionAnchorState) -> String? {
+        guard case let .found(anchor) = state else { return nil }
+        return anchorGeneration(from: anchor)
+    }
+
+    private func anchorGeneration(from anchor: CloudCollectionAnchor) -> String? {
+        guard let remoteGeneration = anchor.remoteGeneration,
+              !remoteGeneration.isEmpty else {
+            return nil
+        }
+        return remoteGeneration
     }
 
     private func adoptRemoteCollection(
         storeID: UUID,
         accountFingerprint: String,
-        generation currentGeneration: UInt
+        generation currentGeneration: UInt,
+        anchorGeneration: String
     ) async {
         await openCloud(
             storeID: storeID,
             accountFingerprint: accountFingerprint,
             generation: currentGeneration,
+            anchorGeneration: anchorGeneration,
             forceRestoration: true
         )
     }
@@ -1069,9 +1194,17 @@ final class CollectionStorageBootstrap: ObservableObject {
         storeID: UUID,
         accountFingerprint: String,
         generation currentGeneration: UInt,
+        anchorGeneration: String,
+        anchorClaimedThisLaunch: Bool = false,
         forceRestoration: Bool = false
     ) async {
         guard currentGeneration == generation else { return }
+        guard !anchorGeneration.isEmpty else {
+            state = .recoveryRequired(
+                "CloudKit restoration has no anchor generation to verify against."
+            )
+            return
+        }
         do {
             let replacementStoreFileIdentity: String?
             if forceRestoration {
@@ -1088,43 +1221,47 @@ final class CollectionStorageBootstrap: ObservableObject {
             )
             TradingCardScannerApp.activeCloudAccountStatusRaw = "available"
             TradingCardScannerApp.activeAttachmentStateRaw = CloudAttachmentState.attached.rawValue
+            let request = CloudRestorationRequest(
+                bootstrapGeneration: currentGeneration,
+                storeID: storeID,
+                expectedAnchorGeneration: anchorGeneration,
+                accountFingerprint: accountFingerprint,
+                anchorClaimedThisLaunch: anchorClaimedThisLaunch
+            )
+            let probe = dependencies.readinessSource.arm(request)
+            defer { probe.cancel() }
             let container = try dependencies.makeContainer(.cloudKit)
             guard currentGeneration == generation else { return }
             restorationContainer = container
             state = .restoringFromCloud(.checkingRemoteCollection)
 
-            let readiness = await dependencies.readinessSource.readiness(
-                storeID: storeID,
-                accountFingerprint: accountFingerprint,
-                generation: currentGeneration
-            )
-            guard currentGeneration == generation else { return }
-            switch readiness {
-            case let .readyEmpty(remoteGeneration), let .readyPopulated(remoteGeneration):
-                guard !remoteGeneration.isEmpty else {
-                    state = .recoveryRequired(
-                        "CloudKit restoration returned no remote generation proof."
+            var readiness = await probe.awaitReadiness(container: container)
+            while currentGeneration == generation {
+                switch readiness {
+                case .readyEmpty, .readyPopulated:
+                    try persistRestoreCheckpoint(
+                        storeID: storeID,
+                        accountFingerprint: accountFingerprint,
+                        readiness: readiness,
+                        anchorGeneration: anchorGeneration
+                    )
+                    installReady(
+                        session: CollectionStorageSession(
+                            container: container,
+                            storeID: storeID,
+                            mode: .cloudKit
+                        ),
+                        generation: currentGeneration
                     )
                     return
+                case .notApplicable:
+                    state = .recoveryRequired("CloudKit restoration did not provide a readiness proof.")
+                    return
+                case .checkingRemoteCollection, .importingRemoteCollection, .failed:
+                    state = .restoringFromCloud(readiness)
+                    if case .failed = readiness { return }
+                    readiness = await probe.awaitReadiness(container: container)
                 }
-                try persistRestoreCheckpoint(
-                    storeID: storeID,
-                    accountFingerprint: accountFingerprint,
-                    readiness: readiness,
-                    remoteGeneration: remoteGeneration
-                )
-                installReady(
-                    session: CollectionStorageSession(
-                        container: container,
-                        storeID: storeID,
-                        mode: .cloudKit
-                    ),
-                    generation: currentGeneration
-                )
-            case .notApplicable:
-                state = .recoveryRequired("CloudKit restoration did not provide a readiness proof.")
-            case .checkingRemoteCollection, .importingRemoteCollection, .failed:
-                state = .restoringFromCloud(readiness)
             }
         } catch {
             showRecovery(error, category: "cloud-container")
@@ -1212,7 +1349,7 @@ final class CollectionStorageBootstrap: ObservableObject {
         storeID: UUID,
         accountFingerprint: String,
         readiness: CloudRestorationReadiness,
-        remoteGeneration: String
+        anchorGeneration: String
     ) throws {
         var manifest = try dependencies.manifestStore.load()
             ?? CollectionStoreManifest(storeID: storeID)
@@ -1237,7 +1374,7 @@ final class CollectionStorageBootstrap: ObservableObject {
             storeFileIdentity: manifest.storeFileIdentity,
             mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
             readiness: checkpointReadiness,
-            remoteGeneration: remoteGeneration,
+            remoteGeneration: anchorGeneration,
             confirmedAt: .now
         )
         try dependencies.manifestStore.save(manifest)

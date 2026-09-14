@@ -155,6 +155,7 @@
 		A0010107 /* CardScannerExternalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010107 /* CardScannerExternalLinks.swift */; };
 		A0010108 /* CollectionStorageBootstrapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010108 /* CollectionStorageBootstrapView.swift */; };
 		A0010109 /* PrivacyAndSupportSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010109 /* PrivacyAndSupportSettingsView.swift */; };
+		A0010111 /* CloudKitEventReadinessSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010111 /* CloudKitEventReadinessSource.swift */; };
 		A002010B /* CollectionStorageBootstrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010B /* CollectionStorageBootstrapTests.swift */; };
 		A002010C /* PrivacyAndSupportSurfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010C /* PrivacyAndSupportSurfaceTests.swift */; };
 		A002010D /* CollectionSyncDiagnosticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010D /* CollectionSyncDiagnosticsTests.swift */; };
@@ -353,6 +354,7 @@
 		B0010107 /* CardScannerExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScannerExternalLinks.swift; sourceTree = "<group>"; };
 		B0010108 /* CollectionStorageBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapView.swift; sourceTree = "<group>"; };
 		B0010109 /* PrivacyAndSupportSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyAndSupportSettingsView.swift; sourceTree = "<group>"; };
+		B0010111 /* CloudKitEventReadinessSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitEventReadinessSource.swift; sourceTree = "<group>"; };
 		B002010B /* CollectionStorageBootstrapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapTests.swift; sourceTree = "<group>"; };
 		B002010C /* PrivacyAndSupportSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyAndSupportSurfaceTests.swift; sourceTree = "<group>"; };
 		B002010D /* CollectionSyncDiagnosticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionSyncDiagnosticsTests.swift; sourceTree = "<group>"; };
@@ -487,6 +489,7 @@
 				B0010107 /* CardScannerExternalLinks.swift */,
 				B0010100 /* CollectionStoragePolicy.swift */,
 				B0010101 /* CloudRestorationReadiness.swift */,
+				B0010111 /* CloudKitEventReadinessSource.swift */,
 				B0010102 /* CollectionStoreManifestStore.swift */,
 				B0010103 /* CollectionStoreDigest.swift */,
 				B0010104 /* CloudAccountProbe.swift */,
@@ -774,6 +777,7 @@
 				A0010109 /* PrivacyAndSupportSettingsView.swift in Sources */,
 				A0010100 /* CollectionStoragePolicy.swift in Sources */,
 				A0010101 /* CloudRestorationReadiness.swift in Sources */,
+				A0010111 /* CloudKitEventReadinessSource.swift in Sources */,
 				A0010102 /* CollectionStoreManifestStore.swift in Sources */,
 				A0010103 /* CollectionStoreDigest.swift in Sources */,
 				A0010104 /* CloudAccountProbe.swift in Sources */,
@@ -978,6 +982,22 @@
 			};
 			name = Debug;
 		};
+		F0010008 /* DebugProduction */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = DebugProduction;
+		};
 		F0010005 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1016,6 +1036,35 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
+		};
+		F0010009 /* DebugProduction */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TradingCardScanner/TradingCardScanner.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CARD_SCANNER_PRIVACY_URL = "";
+				CARD_SCANNER_SUPPORT_URL = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = D4X943SP8Z;
+				ENABLE_TESTABILITY = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = DebugProduction;
 		};
 		F0010007 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1065,6 +1114,30 @@
 			};
 			name = Debug;
 		};
+		F0020008 /* DebugProduction */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TradingCardScanner.app/TradingCardScanner";
+			};
+			name = DebugProduction;
+		};
 		F0020007 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1093,6 +1166,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F0010004 /* Debug */,
+				F0010008 /* DebugProduction */,
 				F0010005 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1102,6 +1176,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F0010006 /* Debug */,
+				F0010009 /* DebugProduction */,
 				F0010007 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1111,6 +1186,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F0020006 /* Debug */,
+				F0020008 /* DebugProduction */,
 				F0020007 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

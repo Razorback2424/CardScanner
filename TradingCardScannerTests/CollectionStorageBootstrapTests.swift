@@ -2,6 +2,45 @@ import SwiftData
 import XCTest
 @testable import TradingCardScanner
 
+private enum BootstrapTestError: Error {
+    case containerConstruction
+}
+
+@MainActor
+private final class RecordingReadinessProbe: CloudRestorationProbe {
+    let result: CloudRestorationReadiness
+    private var cancelled = false
+
+    init(result: CloudRestorationReadiness) {
+        self.result = result
+    }
+
+    func awaitReadiness(container: ModelContainer) async -> CloudRestorationReadiness {
+        cancelled ? .failed(category: "recording-probe-cancelled") : result
+    }
+
+    func cancel() {
+        cancelled = true
+    }
+}
+
+@MainActor
+private final class RecordingReadinessSource: @unchecked Sendable, CloudRestorationReadinessSource {
+    let result: CloudRestorationReadiness
+    private(set) var requests: [CloudRestorationRequest] = []
+    var armCall: (() -> Void)?
+
+    init(result: CloudRestorationReadiness) {
+        self.result = result
+    }
+
+    func arm(_ request: CloudRestorationRequest) -> any CloudRestorationProbe {
+        requests.append(request)
+        armCall?()
+        return RecordingReadinessProbe(result: result)
+    }
+}
+
 @MainActor
 final class CollectionStorageBootstrapTests: XCTestCase {
     private let localID = UUID(uuidString: "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE")!
@@ -18,7 +57,7 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             ))
         },
         readiness: any CloudRestorationReadinessSource = FixedCloudRestorationReadinessSource(
-            result: .readyEmpty(remoteGeneration: "test-generation")
+            result: .readyEmpty
         ),
         makeContainer: (@MainActor (CollectionStorageMode) throws -> ModelContainer)? = nil,
         structuredStoreFilePresent: Bool = false,
@@ -90,6 +129,10 @@ final class CollectionStorageBootstrapTests: XCTestCase {
 
     #if !LOCAL_ONLY_SIGNING
     func testReleaseProductionDependenciesRejectUnprovenLocalOnlyMode() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["TCS_ENTITLED_INTEGRATION"] == "1",
+            "Production dependency wiring is reserved for explicitly entitled integration tests."
+        )
         let dependencies = CollectionStorageBootstrapDependencies.production()
         XCTAssertThrowsError(try dependencies.makeContainer(.onDevice)) { error in
             XCTAssertEqual(
@@ -98,6 +141,17 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             )
         }
     }
+
+#if DEBUG
+    func testDebugProductionStorageSuiteUsesInjectedAccountAvailability() throws {
+        let dependencies = try makeDependencies(account: { .noAccount })
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+        XCTAssertFalse(
+            bootstrap.usesProductionDependencies,
+            "Storage tests must construct the bootstrap with injected dependencies."
+        )
+    }
+#endif
     #endif
 
     func testStorageGenerationFencesCompletionsFromAnOlderSession() throws {
@@ -141,7 +195,7 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         let dependencies = try makeDependencies(
             account: { .available(fingerprint: "account-a") },
             readiness: FixedCloudRestorationReadinessSource(
-                result: .readyPopulated(remoteGeneration: "test-generation")
+                result: .readyPopulated
             )
         )
         let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
@@ -163,6 +217,85 @@ final class CollectionStorageBootstrapTests: XCTestCase {
                 currentRemoteGeneration: "test-generation"
             )
         )
+    }
+
+    func testReadinessIsArmedBeforeContainerAndNoSessionExistsBeforeProof() async throws {
+        var callOrder: [String] = []
+        let generation = CollectionStorageGeneration()
+        let readiness = RecordingReadinessSource(result: .readyPopulated)
+        readiness.armCall = { callOrder.append("arm") }
+        var dependencies = try makeDependencies(
+            account: { .available(fingerprint: "account-a") },
+            anchor: {
+                .found(CloudCollectionAnchor(
+                    storeID: self.localID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "test-generation"
+                ))
+            },
+            readiness: readiness,
+            makeContainer: { _ in
+                callOrder.append("makeContainer")
+                XCTAssertNil(generation.activeSession())
+                XCTAssertFalse(TradingCardScannerApp.storageIsReady)
+                return try ModelContainer(
+                    for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                )
+            },
+            structuredStoreFilePresent: true
+        )
+        dependencies.storageGeneration = generation
+        try dependencies.manifestStore.save(CollectionStoreManifest(
+            storeID: localID,
+            lastAttachedAccountFingerprint: "account-a",
+            attachmentState: .attached,
+            storeFileIdentity: "test-store-file-identity"
+        ))
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+
+        XCTAssertEqual(callOrder, ["arm", "makeContainer"])
+        XCTAssertEqual(readiness.requests.count, 1)
+        XCTAssertEqual(readiness.requests[0].expectedAnchorGeneration, "test-generation")
+        guard case .ready = bootstrap.state else {
+            return XCTFail("expected readiness proof to install the cloud session")
+        }
+    }
+
+    func testThrowingContainerConstructionCancelsAllArmedObservers() async throws {
+        let notificationCenter = NotificationCenter()
+        let readiness = CloudKitEventReadinessSource(notificationCenter: notificationCenter)
+        let dependencies = try makeDependencies(
+            account: { .available(fingerprint: "account-a") },
+            anchor: {
+                .found(CloudCollectionAnchor(
+                    storeID: self.localID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "test-generation"
+                ))
+            },
+            readiness: readiness,
+            makeContainer: { _ in
+                throw BootstrapTestError.containerConstruction
+            },
+            structuredStoreFilePresent: true
+        )
+        try dependencies.manifestStore.save(CollectionStoreManifest(
+            storeID: localID,
+            lastAttachedAccountFingerprint: "account-a",
+            attachmentState: .attached,
+            storeFileIdentity: "test-store-file-identity"
+        ))
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+
+        XCTAssertEqual(readiness.activeProbeForTesting?.registeredObserverCount, 0)
+        guard case .recoveryRequired = bootstrap.state else {
+            return XCTFail("expected the throwing container to enter recovery")
+        }
     }
 
     func testExistingCollectionWithNewAccountStopsAtConfirmation() async throws {
@@ -389,7 +522,7 @@ final class CollectionStorageBootstrapTests: XCTestCase {
                 ))
             },
             readiness: FixedCloudRestorationReadinessSource(
-                result: .readyPopulated(remoteGeneration: "test-generation")
+                result: .readyPopulated
             ),
             structuredStoreFilePresent: false,
             structuredStoreBaseFilePresent: false,
