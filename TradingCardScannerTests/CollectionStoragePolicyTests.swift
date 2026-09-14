@@ -409,16 +409,14 @@ final class CollectionStoragePolicyTests: XCTestCase {
             ),
             structuredStoreFilePresent: false,
             localHasUserData: false,
-            storeFileIdentityStatus: .missing,
-            localOnlyTransitionProven: false
+            storeFileIdentityStatus: .missing
         )
         XCTAssertEqual(
             CollectionStoragePolicy.decide(
                 CollectionStoragePolicyInput(
                     local: local,
                     account: .noAccount,
-                    anchor: .unknown,
-                    localOnlyTransitionProven: false
+                    anchor: .unknown
                 )
             ),
             .blockUnprovenTransition
@@ -428,8 +426,7 @@ final class CollectionStoragePolicyTests: XCTestCase {
                 CollectionStoragePolicyInput(
                     local: local,
                     account: .available(fingerprint: "account-a"),
-                    anchor: .found(anchor(localStoreID)),
-                    localOnlyTransitionProven: false
+                    anchor: .found(anchor(localStoreID))
                 )
             ),
             .restoreMissingLocalReplica(
@@ -439,17 +436,18 @@ final class CollectionStoragePolicyTests: XCTestCase {
         )
     }
 
-    func testUnprovenLocalTransitionDoesNotOpenFreshOrExistingStore() {
+    func testLocalAvailabilityPathsOpenFreshOrExistingStore() {
         for local in [fresh(), existing()] {
-            let decision = CollectionStoragePolicy.decide(
-                CollectionStoragePolicyInput(
-                    local: local,
-                    account: .noAccount,
-                    anchor: .unknown,
-                    localOnlyTransitionProven: false
-                )
+            XCTAssertEqual(
+                CollectionStoragePolicy.decide(
+                    CollectionStoragePolicyInput(
+                        local: local,
+                        account: .noAccount,
+                        anchor: .unknown
+                    )
+                ),
+                .openProvenLocal(storeID: localStoreID, reason: .noAccount)
             )
-            XCTAssertEqual(decision, .blockUnprovenTransition)
         }
     }
 

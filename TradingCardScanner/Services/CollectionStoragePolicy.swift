@@ -219,7 +219,6 @@ struct CollectionStorageLocalFacts: Equatable, Sendable {
     var localHasUserData: Bool
     var proposedFreshStoreID: UUID?
     var storeFileIdentityStatus: CollectionStoreIdentityStatus
-    var localOnlyTransitionProven: Bool
 
     init(
         manifest: CollectionStoreManifest? = nil,
@@ -228,8 +227,7 @@ struct CollectionStorageLocalFacts: Equatable, Sendable {
         structuredStoreBaseFilePresent: Bool? = nil,
         localHasUserData: Bool,
         proposedFreshStoreID: UUID? = nil,
-        storeFileIdentityStatus: CollectionStoreIdentityStatus = .matching,
-        localOnlyTransitionProven: Bool = true
+        storeFileIdentityStatus: CollectionStoreIdentityStatus = .matching
     ) {
         self.manifest = manifest
         self.manifestIsCorrupt = manifestIsCorrupt
@@ -238,7 +236,6 @@ struct CollectionStorageLocalFacts: Equatable, Sendable {
         self.localHasUserData = localHasUserData
         self.proposedFreshStoreID = proposedFreshStoreID
         self.storeFileIdentityStatus = storeFileIdentityStatus
-        self.localOnlyTransitionProven = localOnlyTransitionProven
     }
 
     var hasDurableLocalPresence: Bool {
@@ -282,20 +279,17 @@ struct CollectionStoragePolicyInput: Equatable, Sendable {
     var account: CloudAccountAvailability
     var anchor: CloudCollectionAnchorState
     var confirmationAccepted: Bool
-    var localOnlyTransitionProven: Bool
 
     init(
         local: CollectionStorageLocalFacts,
         account: CloudAccountAvailability,
         anchor: CloudCollectionAnchorState = .unknown,
-        confirmationAccepted: Bool = false,
-        localOnlyTransitionProven: Bool = true
+        confirmationAccepted: Bool = false
     ) {
         self.local = local
         self.account = account
         self.anchor = anchor
         self.confirmationAccepted = confirmationAccepted
-        self.localOnlyTransitionProven = localOnlyTransitionProven
     }
 }
 
@@ -382,16 +376,13 @@ enum CollectionStoragePolicy {
             }
 
         case .noAccount:
-            guard input.localOnlyTransitionProven else { return .blockUnprovenTransition }
             return .openProvenLocal(storeID: storeID, reason: .noAccount)
         case .restricted:
-            guard input.localOnlyTransitionProven else { return .blockUnprovenTransition }
             return .openProvenLocal(storeID: storeID, reason: .restricted)
         case .temporarilyUnavailable, .couldNotDetermine:
             // A previously opened local replica may remain usable, but it must
             // remain visibly unverified rather than being treated as a cloud
             // transition or a fresh empty collection.
-            guard input.localOnlyTransitionProven else { return .blockUnprovenTransition }
             return .openProvenLocal(storeID: storeID, reason: .temporarilyUnavailable)
         }
     }
@@ -460,7 +451,6 @@ enum CollectionStoragePolicy {
                 return .retryAccountCheck
             }
         case .noAccount, .restricted:
-            guard input.localOnlyTransitionProven else { return .blockUnprovenTransition }
             return .openProvenLocal(
                 storeID: freshStoreID,
                 reason: input.account == .noAccount ? .noAccount : .restricted

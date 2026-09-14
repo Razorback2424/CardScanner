@@ -31,15 +31,15 @@ enum CollectionStorageMode: String, Equatable, Sendable {
 
 enum CollectionStorageBootstrapError: LocalizedError, Equatable {
     case storageLocationUnavailable
-    case localOnlyTransitionNotProven
+    case cloudKitUnavailableInLocalOnlyBuild
     case storageSessionUnavailable
 
     var errorDescription: String? {
         switch self {
         case .storageLocationUnavailable:
             return "CardScanner could not resolve its persistent Application Support location."
-        case .localOnlyTransitionNotProven:
-            return "CardScanner has not yet proven a safe local-only storage transition."
+        case .cloudKitUnavailableInLocalOnlyBuild:
+            return "This build does not contain the CloudKit entitlement required for iCloud storage."
         case .storageSessionUnavailable:
             return "CardScanner has no process-authoritative storage session to borrow."
         }
@@ -316,7 +316,6 @@ struct CollectionStorageBootstrapDependencies {
     var storeFileIdentity: @MainActor () throws -> String
     var readStoreFileIdentity: @MainActor () throws -> String?
     var adoptLegacyStore: @MainActor () throws -> LegacyCollectionStoreAdoption?
-    var localOnlyTransitionProven: Bool
     /// Test-only provenance guard: production wiring is never acceptable for
     /// storage-suite fixtures unless an entitled integration test opts in.
     var usesProductionDependencies: Bool = false
@@ -381,6 +380,9 @@ struct CollectionStorageBootstrapDependencies {
         }
 
 #if LOCAL_ONLY_SIGNING
+        // This build has no CloudKit entitlement, so account and anchor
+        // providers are intentionally inert. This branch does not authorize
+        // or deny reopening the shared store on-device.
         let accountAvailability: @MainActor () async -> CloudAccountAvailability = { .noAccount }
         let anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
         let claimAnchor: @MainActor (UUID) async -> CloudCollectionAnchorClaimResult = { storeID in
@@ -406,13 +408,6 @@ struct CollectionStorageBootstrapDependencies {
             await anchorStore.claim(storeID: storeID)
         }
 #endif
-        let localOnlyTransitionProven: Bool
-#if LOCAL_ONLY_SIGNING
-        localOnlyTransitionProven = true
-#else
-        localOnlyTransitionProven = false
-#endif
-
         return Self(
             paths: paths,
             manifestStore: manifestStore,
@@ -420,9 +415,6 @@ struct CollectionStorageBootstrapDependencies {
             anchorState: anchorState,
             claimAnchor: claimAnchor,
             makeContainer: { mode in
-                guard mode != .onDevice || localOnlyTransitionProven else {
-                    throw CollectionStorageBootstrapError.localOnlyTransitionNotProven
-                }
                 return try Self.makeContainer(paths: paths, mode: mode)
             },
             readinessSource: readinessSource,
@@ -439,7 +431,6 @@ struct CollectionStorageBootstrapDependencies {
             storeFileIdentity: { try manifestStore.ensureStoreFileIdentity() },
             readStoreFileIdentity: { try manifestStore.readStoreFileIdentity() },
             adoptLegacyStore: adoptLegacyStore,
-            localOnlyTransitionProven: localOnlyTransitionProven,
             usesProductionDependencies: true
         )
     }
@@ -454,8 +445,11 @@ struct CollectionStorageBootstrapDependencies {
         }
         let collectionConfiguration: ModelConfiguration
 #if LOCAL_ONLY_SIGNING
+        // LOCAL_ONLY_SIGNING is an entitlement constraint: this build cannot
+        // construct a CloudKit-backed configuration. It does not speak to the
+        // safety of reopening the shared store on-device.
         guard mode == .onDevice else {
-            throw CollectionStorageBootstrapError.localOnlyTransitionNotProven
+            throw CollectionStorageBootstrapError.cloudKitUnavailableInLocalOnlyBuild
         }
         collectionConfiguration = ModelConfiguration(
             "CardScannerCollection",
@@ -529,6 +523,8 @@ struct CollectionStorageHeadlessPreflightDependencies {
             isUsable: paths.isStable
         )
 #if LOCAL_ONLY_SIGNING
+        // A no-entitlement build cannot create the CloudKit-backed background
+        // container; it may still reuse a proven local replica.
         let accountAvailability: @MainActor () async -> CloudAccountAvailability = { .noAccount }
         let anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
 #else
@@ -545,6 +541,9 @@ struct CollectionStorageHeadlessPreflightDependencies {
         }
 #endif
 #if LOCAL_ONLY_SIGNING
+        // Entitlement selection only: an unentitled background build must use
+        // the on-device configuration. The local-replica proof is evaluated
+        // from manifest state below for every build.
         let backgroundMode: CollectionStorageMode = .onDevice
 #else
         let backgroundMode: CollectionStorageMode = .cloudKit
@@ -619,12 +618,7 @@ enum CollectionStorageHeadlessPreflight {
             return nil
         }
 
-        let useProvenLocalReplica: Bool
-#if LOCAL_ONLY_SIGNING
-        useProvenLocalReplica = manifest.attachmentState != .attached
-#else
-        useProvenLocalReplica = false
-#endif
+        let useProvenLocalReplica = manifest.attachmentState != .attached
 
         if !useProvenLocalReplica {
             guard manifest.attachmentState == .attached,
@@ -692,10 +686,6 @@ final class CollectionStorageBootstrap: ObservableObject {
     }
 
     @Published private(set) var state: State = .loading
-
-    var supportsLocalOnlyTransition: Bool {
-        dependencies.localOnlyTransitionProven
-    }
 
     /// Test-only provenance guard for the shared bootstrap fixture. Production
     /// startup uses the default production dependency graph; storage tests must
@@ -771,13 +761,6 @@ final class CollectionStorageBootstrap: ObservableObject {
 
     func keepOnDevice() async {
         guard let request = pendingAttachment else { return }
-        guard dependencies.localOnlyTransitionProven else {
-            showRecovery(
-                CollectionStorageBootstrapError.localOnlyTransitionNotProven,
-                category: "keep-on-device"
-            )
-            return
-        }
         generation &+= 1
         let currentGeneration = generation
         pendingAttachment = nil
@@ -816,8 +799,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                     local: local,
                     account: account,
                     anchor: anchor,
-                    confirmationAccepted: confirmationAccepted,
-                    localOnlyTransitionProven: dependencies.localOnlyTransitionProven
+                    confirmationAccepted: confirmationAccepted
                 )
             )
             await apply(
@@ -860,8 +842,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                     structuredStoreBaseFilePresent: baseFilePresent,
                     localHasUserData: localHasUserData,
                     proposedFreshStoreID: proposedFreshStoreID,
-                    storeFileIdentityStatus: storeFileIdentityStatus,
-                    localOnlyTransitionProven: dependencies.localOnlyTransitionProven
+                    storeFileIdentityStatus: storeFileIdentityStatus
                 )
             }
             guard let sidecar = try dependencies.readStoreFileIdentity() else {
@@ -872,8 +853,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                     structuredStoreBaseFilePresent: baseFilePresent,
                     localHasUserData: localHasUserData,
                     proposedFreshStoreID: proposedFreshStoreID,
-                    storeFileIdentityStatus: storeFileIdentityStatus,
-                    localOnlyTransitionProven: dependencies.localOnlyTransitionProven
+                    storeFileIdentityStatus: storeFileIdentityStatus
                 )
             }
             storeFileIdentityStatus = sidecar == manifest.storeFileIdentity
@@ -891,8 +871,7 @@ final class CollectionStorageBootstrap: ObservableObject {
             structuredStoreBaseFilePresent: baseFilePresent,
             localHasUserData: localHasUserData,
             proposedFreshStoreID: proposedFreshStoreID,
-            storeFileIdentityStatus: storeFileIdentityStatus,
-            localOnlyTransitionProven: dependencies.localOnlyTransitionProven
+            storeFileIdentityStatus: storeFileIdentityStatus
         )
     }
 
@@ -1274,9 +1253,6 @@ final class CollectionStorageBootstrap: ObservableObject {
         generation currentGeneration: UInt
     ) async throws {
         guard currentGeneration == generation else { return }
-        guard dependencies.localOnlyTransitionProven else {
-            throw CollectionStorageBootstrapError.localOnlyTransitionNotProven
-        }
         let existingManifest = try dependencies.manifestStore.load()
         let targetAttachmentState: CloudAttachmentState
         if existingManifest == nil || existingManifest?.attachmentState == .neverAttached {

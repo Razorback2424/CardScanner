@@ -17,6 +17,66 @@ final class CollectionStoreContinuityTests: XCTestCase {
         return directory
     }
 
+    private func makePaths(in directory: URL) -> CollectionStoragePaths {
+        let collectionDirectory = directory.appendingPathComponent(
+            "CollectionStorage",
+            isDirectory: true
+        )
+        return CollectionStoragePaths(
+            applicationSupportURL: directory,
+            collectionStorageDirectoryURL: collectionDirectory,
+            structuredStoreURL: collectionDirectory.appendingPathComponent(
+                "CardScannerCollection.store"
+            ),
+            portfolioStoreURL: collectionDirectory.appendingPathComponent(
+                "PortfolioLocal.store"
+            )
+        )
+    }
+
+    private func makeDiskBootstrapDependencies(
+        paths: CollectionStoragePaths,
+        manifestStore: CollectionStoreManifestStore,
+        generation: CollectionStorageGeneration
+    ) -> CollectionStorageBootstrapDependencies {
+        CollectionStorageBootstrapDependencies(
+            paths: paths,
+            manifestStore: manifestStore,
+            accountAvailability: { .noAccount },
+            anchorState: { .unknown },
+            claimAnchor: { storeID in
+                .claimed(CloudCollectionAnchor(
+                    storeID: storeID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "continuity-test-generation"
+                ))
+            },
+            makeContainer: { mode in
+                try CollectionStorageBootstrapDependencies.makeContainer(
+                    paths: paths,
+                    mode: mode
+                )
+            },
+            readinessSource: UnprovenCloudRestorationReadinessSource(),
+            structuredStoreFilePresent: {
+                CollectionStoreDiscovery.existingLocation(
+                    locations: CollectionStoreDiscovery.locations(
+                        applicationSupportURL: paths.applicationSupportURL,
+                        explicitStructuredStoreURL: paths.structuredStoreURL
+                    )
+                ) != nil
+            },
+            structuredStoreBaseFilePresent: {
+                FileManager.default.fileExists(atPath: paths.structuredStoreURL.path)
+            },
+            localHasUserData: { false },
+            storeFileIdentity: { try manifestStore.ensureStoreFileIdentity() },
+            readStoreFileIdentity: { try manifestStore.readStoreFileIdentity() },
+            adoptLegacyStore: { nil },
+            storageGeneration: generation
+        )
+    }
+
     func testManifestPlusMissingStoreIsUnverifiedAndCannotOpenLocally() {
         let local = CollectionStorageLocalFacts(
             manifest: CollectionStoreManifest(
@@ -27,8 +87,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             ),
             structuredStoreFilePresent: false,
             localHasUserData: false,
-            storeFileIdentityStatus: .matching,
-            localOnlyTransitionProven: false
+            storeFileIdentityStatus: .matching
         )
 
         XCTAssertEqual(local.replicaState, .replicaCompletelyAbsent)
@@ -36,8 +95,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             CollectionStoragePolicy.decide(
                 CollectionStoragePolicyInput(
                     local: local,
-                    account: .noAccount,
-                    localOnlyTransitionProven: false
+                    account: .noAccount
                 )
             ),
             .blockUnprovenTransition
@@ -151,8 +209,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             ),
             structuredStoreFilePresent: false,
             localHasUserData: false,
-            storeFileIdentityStatus: .matching,
-            localOnlyTransitionProven: false
+            storeFileIdentityStatus: .matching
         )
         XCTAssertEqual(
             CollectionStoragePolicy.decide(
@@ -163,8 +220,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
                         storeID: localStoreID,
                         formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
                         remoteGeneration: "generation-a"
-                    )),
-                    localOnlyTransitionProven: false
+                    ))
                 )
             ),
             .restoreMissingLocalReplica(
@@ -222,6 +278,164 @@ final class CollectionStoreContinuityTests: XCTestCase {
         XCTAssertNil(session)
         XCTAssertEqual(makeCount, 0)
         XCTAssertNil(dependencies.storageGeneration.currentToken())
+    }
+
+    func testHeadlessPreflightOpensNeverAttachedReplicaWithoutAnAccount() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let paths = makePaths(in: directory)
+        let manifestStore = CollectionStoreManifestStore(
+            directoryURL: paths.collectionStorageDirectoryURL
+        )
+        let identity = try manifestStore.ensureStoreFileIdentity()
+        do {
+            _ = try CollectionStorageBootstrapDependencies.makeContainer(
+                paths: paths,
+                mode: .onDevice
+            )
+        }
+        try manifestStore.save(CollectionStoreManifest(
+            storeID: localStoreID,
+            attachmentState: .neverAttached,
+            storeFileIdentity: identity
+        ))
+
+        var makeCount = 0
+        let generation = CollectionStorageGeneration()
+        let dependencies = CollectionStorageHeadlessPreflightDependencies(
+            paths: paths,
+            manifestStore: manifestStore,
+            accountAvailability: { .noAccount },
+            makeContainer: {
+                makeCount += 1
+                return try CollectionStorageBootstrapDependencies.makeContainer(
+                    paths: paths,
+                    mode: .onDevice
+                )
+            },
+            storageGeneration: generation
+        )
+
+        let session = await CollectionStorageHeadlessPreflight.prepare(
+            dependencies: dependencies
+        )
+
+        XCTAssertEqual(session?.storeID, localStoreID)
+        XCTAssertEqual(session?.mode, .onDevice)
+        XCTAssertTrue(session?.isAuthoritative == true)
+        XCTAssertEqual(makeCount, 1)
+        generation.suspend()
+    }
+
+    func testHeadlessPreflightKeepsAttachedReplicaBehindCloudProofGate() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let paths = makePaths(in: directory)
+        let manifestStore = CollectionStoreManifestStore(
+            directoryURL: paths.collectionStorageDirectoryURL
+        )
+        let identity = try manifestStore.ensureStoreFileIdentity()
+        do {
+            _ = try CollectionStorageBootstrapDependencies.makeContainer(
+                paths: paths,
+                mode: .onDevice
+            )
+        }
+        try manifestStore.save(CollectionStoreManifest(
+            storeID: localStoreID,
+            lastAttachedAccountFingerprint: "account-a",
+            attachmentState: .attached,
+            storeFileIdentity: identity
+        ))
+
+        var makeCount = 0
+        let dependencies = CollectionStorageHeadlessPreflightDependencies(
+            paths: paths,
+            manifestStore: manifestStore,
+            accountAvailability: { .noAccount },
+            makeContainer: {
+                makeCount += 1
+                return try CollectionStorageBootstrapDependencies.makeContainer(
+                    paths: paths,
+                    mode: .onDevice
+                )
+            },
+            storageGeneration: CollectionStorageGeneration()
+        )
+
+        let session = await CollectionStorageHeadlessPreflight.prepare(
+            dependencies: dependencies
+        )
+
+        XCTAssertNil(session)
+        XCTAssertEqual(makeCount, 0)
+    }
+
+    func testOnDeviceRelaunchWithNoAccountPreservesIdenticalDigest() async throws {
+        let directory = try makeDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let paths = makePaths(in: directory)
+        let manifestStore = CollectionStoreManifestStore(
+            directoryURL: paths.collectionStorageDirectoryURL
+        )
+        let firstGeneration = CollectionStorageGeneration()
+        let firstDependencies = makeDiskBootstrapDependencies(
+            paths: paths,
+            manifestStore: manifestStore,
+            generation: firstGeneration
+        )
+        let firstDigest: CollectionStoreDigest
+        do {
+            let bootstrap = CollectionStorageBootstrap(dependencies: firstDependencies)
+            await bootstrap.start()
+            guard case let .ready(session) = bootstrap.state else {
+                return XCTFail("expected the first local launch to be ready")
+            }
+            let card = CollectedCard(
+                collectionKey: "continuity:card:normal",
+                game: .pokemon,
+                providerID: "continuity-card",
+                name: "Continuity fixture",
+                setName: "Continuity set",
+                setCode: "CNT",
+                cardNumber: "001",
+                rarity: nil,
+                imageURL: nil,
+                thumbnailURL: nil,
+                variant: .normal,
+                variantResolution: .uniqueInCatalog,
+                quantity: 4,
+                dateAdded: Date(timeIntervalSinceReferenceDate: 1234)
+            )
+            session.container.mainContext.insert(card)
+            try session.container.mainContext.save()
+            firstDigest = try CollectionStoreDigester.make(
+                in: session.container.mainContext,
+                storeID: localStoreID
+            )
+        }
+        firstGeneration.suspend()
+
+        let secondGeneration = CollectionStorageGeneration()
+        let secondDependencies = makeDiskBootstrapDependencies(
+            paths: paths,
+            manifestStore: manifestStore,
+            generation: secondGeneration
+        )
+        do {
+            let bootstrap = CollectionStorageBootstrap(dependencies: secondDependencies)
+            await bootstrap.start()
+            guard case let .ready(session) = bootstrap.state else {
+                return XCTFail("expected the relaunch to be ready locally")
+            }
+            let secondDigest = try CollectionStoreDigester.make(
+                in: session.container.mainContext,
+                storeID: localStoreID
+            )
+            XCTAssertEqual(secondDigest, firstDigest)
+            XCTAssertEqual(session.mode, .onDevice)
+        }
+        secondGeneration.suspend()
     }
 
     func testEmptyCheckpointNeverConstructsAHeadlessContainer() async throws {

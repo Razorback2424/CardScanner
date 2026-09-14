@@ -674,9 +674,23 @@ struct CollectionStorageStatusSection: View {
                 "Collection storage",
                 value: TradingCardScannerApp.activeStorageMode.label
             )
+            LabeledContent(
+                "iCloud account",
+                value: cloudAccountStatusLabel
+            )
+            LabeledContent(
+                "Attachment",
+                value: attachmentStateLabel
+            )
             Text(TradingCardScannerApp.activeStorageMode.detail)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
+            if TradingCardScannerApp.activeCloudAccountStatusRaw
+                == LocalStorageReason.temporarilyUnavailable.rawValue {
+                Text("iCloud is temporarily unavailable. This local collection is visibly unverified for syncing and may resume when iCloud is available.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
             Text("Collection sync follows the device's iCloud account. CardScanner does not require a separate account.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
@@ -693,6 +707,27 @@ struct CollectionStorageStatusSection: View {
     private func openSystemSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(url)
+    }
+
+    private var cloudAccountStatusLabel: String {
+        switch TradingCardScannerApp.activeCloudAccountStatusRaw {
+        case "available": return "Available"
+        case LocalStorageReason.noAccount.rawValue: return "No iCloud account"
+        case LocalStorageReason.restricted.rawValue: return "Restricted"
+        case LocalStorageReason.temporarilyUnavailable.rawValue: return "Temporarily unavailable"
+        case LocalStorageReason.attachmentSuspended.rawValue: return "Kept on this device"
+        default: return TradingCardScannerApp.activeCloudAccountStatusRaw
+        }
+    }
+
+    private var attachmentStateLabel: String {
+        switch TradingCardScannerApp.activeAttachmentStateRaw {
+        case CloudAttachmentState.neverAttached.rawValue: return "Never attached"
+        case CloudAttachmentState.attached.rawValue: return "Attached"
+        case CloudAttachmentState.suspended.rawValue: return "Suspended"
+        case CloudAttachmentState.conflict.rawValue: return "Conflict"
+        default: return TradingCardScannerApp.activeAttachmentStateRaw
+        }
     }
 }
 

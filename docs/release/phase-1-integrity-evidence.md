@@ -133,6 +133,94 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 - A2a verdict: `GO to land the production-shaped implementation and tests;
   NO-GO for automatic cloud restoration and Phase 1 release certification.`
 
+## A4 §0 on-device mode-transition spike
+
+- Run identity: `main` based on frozen A2a SHA `8cc1ad1`, iOS 26.5 simulator,
+  iPhone 17 Pro (`EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86`), DebugProduction,
+  with no iCloud account signed in. The permanent regression is
+  `TradingCardScannerTests/CollectionStoreModeTransitionTests.swift`.
+- S0: `PASS` — the real two-configuration
+  `CollectionStorageBootstrapDependencies.makeContainer(paths:mode:.cloudKit)`
+  constructed successfully with the private configuration and no iCloud
+  account.
+- S1: `PASS` — the `.none` fixture contained one row in each synced model,
+  quantity `2`, and material digest
+  `d39c8c27b1df9b3e7c47df33f5aa9ef9a4d43ab543cc7184d765af3f61fd2ae5` before
+  and after the first `.private` open. The SQLite table list before was
+  `ACHANGE, ATRANSACTION, ATRANSACTIONSTRING, ZCOLLECTEDCARD,
+  ZCOLLECTIONACTIVITY, ZINVENTORYEVENT, ZLOCALARTWORKOVERRIDE,
+  ZPORTFOLIODAILYCLOSE, ZPRICECHECKDAY, ZPRICEOBSERVATION, ZPRICERECORD,
+  ZPRODUCTIDENTITY, ZREFERENCEQUOTE, Z_METADATA, Z_MODELCACHE, Z_PRIMARYKEY`.
+  After `.private`, it was the same list plus
+  `ANSCKDATABASEMETADATA, ANSCKEVENT, ANSCKEXPORTEDOBJECT,
+  ANSCKEXPORTMETADATA, ANSCKEXPORTOPERATION, ANSCKHISTORYANALYZERSTATE,
+  ANSCKIMPORTOPERATION, ANSCKIMPORTPENDINGRELATIONSHIP, ANSCKMETADATAENTRY,
+  ANSCKMIRROREDRELATIONSHIP, ANSCKMIRROREDRELATIONSHIPSYSTEMFIELDSASSET,
+  ANSCKRECORDMETADATA, ANSCKRECORDMETADATAENCODEDRECORDASSET,
+  ANSCKRECORDMETADATASYSTEMFIELDSASSET, ANSCKRECORDZONEMETADATA,
+  ANSCKRECORDZONEMETADATAENCODEDSHAREASSET, ANSCKRECORDZONEMOVERECEIPT,
+  ANSCKRECORDZONEQUERY`; the aggregate store-artifact byte count changed from
+  `172032` to `670584`.
+- S2: `PASS` — `.private` → `.none` retained all five counts, total quantity
+  `2`, and material digest
+  `906f9f5cbe71a92b0bb34853db93de05b99d68355d655213a1d89279a544cb87` exactly.
+- S3: `PASS` — the `.none` → `.none` close/reopen control retained all five
+  counts, total quantity `2`, and material digest
+  `53179e31c092f7563d1266c1ba9ebfb51b2887fe24791479a60a4589500f3d65`.
+- S4: `PASS` — `.none` → `.private` → `.none` retained all five counts, total
+  quantity `2`, and material digest
+  `3483aee1bf1fb8aea73a7a6cfd8957b90604e5e5ac60a2a84044f7ec263b68af` at all
+  three boundaries.
+- S5: `PASS` — the structured-store URL remained unchanged and present, the
+  manifest sidecar identity stayed
+  `613c184ee6a368f7857899594af51946b852c5c0eec4e2ac947d7cd907639735`, and
+  the digest stayed at all three boundaries with material digest
+  `761635ef499933313a5e3df80dd81dbd70594bc3280889013eae7b10fa4e13ed`.
+- S6: `PASS` — fixture A written in `.none` and fixture B written in
+  `.private` were both present after reopening `.none`: two rows in each synced
+  model, total quantity `5`, material digest
+  `f2ee687cd1924e7bef41f8b9c6aefcc738054d1ce1c9aab5a3a2adeb73227c34`.
+- Verdict: `GO — Option A`. S2–S6 all passed, so the shared store is safe to
+  reopen with mirroring enabled or disabled. The production kill-switch can be
+  removed; Option B is not warranted, and the store URL must not be split.
+
+## A4a on-device transition implementation
+
+- Selected implementation: `Option A`. `localOnlyTransitionProven` was
+  removed from policy inputs, bootstrap dependencies, and the local-open,
+  keep-on-device, and container paths. `blockUnprovenTransition` remains for
+  corrupt manifests, orphaned journals, missing or mismatched store identity,
+  and other actual continuity hazards.
+- Entitlement decoupling: every remaining `LOCAL_ONLY_SIGNING` site is about
+  the absence of a CloudKit entitlement — inert account/anchor providers,
+  rejection of a CloudKit-backed configuration, or background container-mode
+  selection. No remaining site decides whether reopening the shared SQLite
+  store on-device is safe.
+- Foreground availability: the shipping-shaped bootstrap now reaches a local
+  ready session for no-account, restricted, temporarily unavailable,
+  could-not-determine, fresh-install/no-account, and Keep on Device paths. The
+  existing attachment bookkeeping remains unchanged: a never-attached store
+  stays `neverAttached`, while an attached store opened locally becomes
+  `suspended`; transient account failure does not overwrite its last attached
+  account fingerprint.
+- Headless availability: a persisted non-attached replica is now eligible for
+  an authoritative on-device session in every build configuration. An attached
+  replica still remains behind the separate G4 cloud-proof gate and returns
+  `nil` until A2b proves that path.
+- UI truthfulness: Settings now renders collection storage mode, iCloud account
+  state, and attachment state. Temporarily unavailable local fallback has a
+  distinct visibly-unverified message from no-account local storage.
+- Verification: the expanded storage suite (the nine A2 storage suites plus
+  the permanent mode-transition and support-surface suites) passed on the
+  iPhone 17 Pro / iOS 26.5 simulator. `DebugProduction`: `113` passed,
+  `0` failed, `0` skipped. `Debug`: `109` passed, `0` failed, with the five
+  private-mode S1/S2/S4/S5/S6 cases explicitly skipped because the unentitled
+  build cannot construct a CloudKit-backed configuration. The mode-transition
+  regression itself passed all `7/7` cases under `DebugProduction`.
+- A4a verdict: `GO to land the offline implementation and tests; NO-GO for
+  Phase 1 certification`. A4a removes the deterministic G6 availability
+  block, but it does not retire G4 or authorize automatic cloud restoration.
+
 ## Phase 0 document freeze
 
 - Retention contract: `PASS — frozen in
@@ -152,7 +240,7 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 | G3 — Quantity/data | SOURCE PASS; RUNTIME PARTIAL | Full Debug XCTest execution ran 1,205 tests but is not clean because of the documented unrelated failures; no storage-suite failures occurred. |
 | G4 — Persistence/sync continuity | SOURCE PARTIAL; A2a PASS; EXTERNAL NOT RUN | Source now rejects cached-empty authority, requires a current anchor generation for cached populated state, separates absent/journal/identity-corrupt replicas, rotates identity at physical store replacement before container construction, keeps readiness authority checkpoint-only, validates anchor claim readback, and fences same-process headless reuse without constructing a non-authoritative second container. The armed reducer is covered by deterministic tests, but production remains on the unproven source and live remote-generation/entitled-device matrix evidence is still missing. |
 | G5 — Privacy/compliance | SOURCE PASS; PUBLIC LINK/ASC NOT RUN | Privacy manifest, source disclosures, Settings surface, and redacted diagnostics are implemented; final URLs and App Store metadata remain owner inputs. |
-| G6 — Availability | SOURCE PARTIAL; A2a STORAGE PASS | Fresh-process background storage now requires a persisted proven tuple, current anchor/generation validation, and a live generation fence; while G4 readiness is unproven, matching populated checkpoints are validated then skipped without constructing a non-authoritative container. Active foreground sessions are reused and transitions skip safely. Physical-device execution remains unavailable. |
+| G6 — Availability | SOURCE PASS; A4a OFFLINE PASS; EXTERNAL NOT RUN | A4a proves the shared store can be reopened on-device after `.none`/`.private` transitions and removes the compilation-coupled local-only kill-switch. Foreground no-account, restricted, temporarily unavailable, could-not-determine, fresh-install, and Keep on Device paths open locally; non-attached headless replicas can be reused. Attached populated checkpoints remain behind the separate G4 cloud-proof gate. Physical-device execution and L1–L4 remain unavailable. |
 
 ## CloudKit compatibility audit
 
@@ -171,7 +259,9 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 
 ## CloudKit continuity and two-device matrix
 
-- Path 0 local control: `NOT RUN`.
+- Path 0 local control: `A4 §0 PASS — the permanent disk-backed S0–S6
+  transition regression passed under DebugProduction; the physical-device
+  E3/L1–L4 runs remain NOT RUN.`
 - Legacy unnamed-store discovery: `NOT RUN`.
 - Restoration-readiness observability: `§0 PASS; A2a SOURCE/TEST PASS — the
   observer receives SwiftData-backed CloudKit events and resolves the proven
@@ -184,18 +274,24 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 - Physical iPhone/iPad two-device convergence: `BLOCKED — physical devices
   and external enrollment required`.
 
-## A2 scope limits that remain on the Phase 1 exit checklist
+## A2/A4 scope limits that remain on the Phase 1 exit checklist
 
-- `localOnlyTransitionProven` remains hardcoded `false` outside
-  `LOCAL_ONLY_SIGNING`. Consequently no-account, restricted-account,
-  iCloud-unavailable, and “Keep on Device” launches remain blocked in
-  production. A green A2 result proves only the cloud path; it is not a Phase 1
-  exit.
-- The headless preflight still unconditionally returns `nil` behind its G4
-  gate in `CollectionStorageBootstrap.swift` (the gate comment is near the
-  populated-checkpoint branch). When A2b lands, that gate must be re-evaluated
-  or production background sessions remain unavailable even after foreground
-  restoration is proven.
+- A4a proved the shared `.none`/`.private` store transition and removed the
+  deterministic non-cloud availability block. It does not prove CloudKit
+  restoration, account fencing, remote-generation continuity, or the physical
+  E3/L1–L4 matrix. A green A4a result is not a Phase 1 exit.
+- `LOCAL_ONLY_SIGNING` is now an entitlement-only build condition. The
+  unentitled build still cannot construct a CloudKit-backed container or use a
+  live account/anchor probe; this is separate from the proven local transition.
+- The headless preflight now returns a session for a proven non-attached local
+  replica. It still unconditionally returns `nil` for the attached populated
+  checkpoint branch behind the G4 gate in `CollectionStorageBootstrap.swift`.
+  When A2b lands, that gate must be re-evaluated or attached production
+  background sessions remain unavailable even after foreground restoration is
+  proven.
+- A2b remains intentionally unlanded: `UnprovenCloudRestorationReadinessSource`
+  is still the production default, and the live E1–E5/E9 device matrix is
+  outstanding.
 
 ## Scanner normal/adversarial evidence
 
@@ -241,6 +337,7 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 - A2b: `NOT RUN — E1–E5 and E9 remain NOT RUN in
   docs/release/cloudkit-release-matrix.md; enrollment, exact signed candidate,
   and iPhone/iPad proof are required before swapping the production default.`
-- Phase 1/release: `NO-GO — the non-cloud transition remains deliberately
-  blocked, the headless G4 gate remains, and external enrollment, public-link,
-  archive, and TestFlight gates are outstanding.`
+- Phase 1/release: `NO-GO — A4a removes the deterministic non-cloud block, but
+  the headless attached-replica G4 gate, A2b cloud-restoration proof, physical
+  device matrix, external enrollment, public-link, archive, and TestFlight
+  gates remain outstanding.`

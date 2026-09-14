@@ -35,7 +35,10 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
 
     func testExactDeviceLocalArtworkDisclosureIsStable() throws {
         let source = try String(
-            contentsOf: URL(fileURLWithPath: "TradingCardScanner/Views/PrivacyAndSupportSettingsView.swift"),
+            contentsOf: sourceURL(
+                "TradingCardScanner/Views/PrivacyAndSupportSettingsView.swift",
+                relativeTo: #filePath
+            ),
             encoding: .utf8
         )
         XCTAssertTrue(source.contains(
@@ -47,7 +50,10 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
 
     func testPrivacyManifestCarriesBothRequiredReasonCategories() throws {
         let source = try String(
-            contentsOf: URL(fileURLWithPath: "TradingCardScanner/PrivacyInfo.xcprivacy"),
+            contentsOf: sourceURL(
+                "TradingCardScanner/PrivacyInfo.xcprivacy",
+                relativeTo: #filePath
+            ),
             encoding: .utf8
         )
         XCTAssertTrue(source.contains("NSPrivacyAccessedAPICategoryUserDefaults"))
@@ -58,11 +64,35 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
 
     func testSettingsDoesNotContainLegacyAccountProxyCopy() throws {
         let source = try String(
-            contentsOf: URL(fileURLWithPath: "TradingCardScanner/Views/ScannerSettingsView.swift"),
+            contentsOf: sourceURL(
+                "TradingCardScanner/Views/ScannerSettingsView.swift",
+                relativeTo: #filePath
+            ),
             encoding: .utf8
         )
         XCTAssertFalse(source.contains("SignInWithApple"))
         XCTAssertFalse(source.contains("AppleAccountCredentials"))
         XCTAssertFalse(source.contains("AuthenticationServices"))
+    }
+
+    func testCollectionStorageStatusDistinguishesTransientLocalFallback() throws {
+        let source = try String(
+            contentsOf: sourceURL(
+                "TradingCardScanner/Views/ScannerSettingsView.swift",
+                relativeTo: #filePath
+            ),
+            encoding: .utf8
+        )
+        XCTAssertTrue(source.contains("iCloud account"))
+        XCTAssertTrue(source.contains("Attachment"))
+        XCTAssertTrue(source.contains("Temporarily unavailable"))
+        XCTAssertTrue(source.contains("visibly unverified for syncing"))
+    }
+
+    private func sourceURL(_ relativePath: String, relativeTo testFilePath: String) -> URL {
+        URL(fileURLWithPath: testFilePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent(relativePath)
     }
 }

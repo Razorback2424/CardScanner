@@ -154,8 +154,7 @@ final class CollectionStorageBootstrapTests: XCTestCase {
                 }
                 return structuredStoreFilePresent ? "test-store-file-identity" : nil
             },
-            adoptLegacyStore: { nil },
-            localOnlyTransitionProven: true
+            adoptLegacyStore: { nil }
         )
     }
 
@@ -169,20 +168,17 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         )
     }
 
-    #if !LOCAL_ONLY_SIGNING
-    func testReleaseProductionDependenciesRejectUnprovenLocalOnlyMode() throws {
-        try XCTSkipUnless(
-            ProcessInfo.processInfo.environment["TCS_ENTITLED_INTEGRATION"] == "1",
-            "Production dependency wiring is reserved for explicitly entitled integration tests."
-        )
+    #if LOCAL_ONLY_SIGNING
+    func testLocalOnlyBuildRejectsCloudKitConfigurationForEntitlementReason() throws {
         let dependencies = CollectionStorageBootstrapDependencies.production()
-        XCTAssertThrowsError(try dependencies.makeContainer(.onDevice)) { error in
+        XCTAssertThrowsError(try dependencies.makeContainer(.cloudKit)) { error in
             XCTAssertEqual(
                 error as? CollectionStorageBootstrapError,
-                .localOnlyTransitionNotProven
+                .cloudKitUnavailableInLocalOnlyBuild
             )
         }
     }
+    #endif
 
 #if DEBUG
     func testDebugProductionStorageSuiteUsesInjectedAccountAvailability() throws {
@@ -194,7 +190,6 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         )
     }
 #endif
-    #endif
 
     func testStorageGenerationFencesCompletionsFromAnOlderSession() throws {
         let generation = CollectionStorageGeneration()
@@ -231,6 +226,12 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
         )
         XCTAssertEqual(session.mode, .onDevice)
+        let manifest = try XCTUnwrap(try dependencies.manifestStore.load())
+        XCTAssertEqual(manifest.storeID, session.storeID)
+        XCTAssertEqual(manifest.attachmentState, .neverAttached)
+        XCTAssertNil(manifest.lastAttachedAccountFingerprint)
+        XCTAssertEqual(TradingCardScannerApp.activeCloudAccountStatusRaw, "noAccount")
+        XCTAssertEqual(TradingCardScannerApp.activeAttachmentStateRaw, "neverAttached")
     }
 
     func testFreshAvailableAccountClaimsAndOpensCloudOnlyAfterReadinessProof() async throws {
@@ -418,6 +419,8 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         XCTAssertEqual(session.storeID, localID)
         XCTAssertEqual(session.mode, .onDevice)
         XCTAssertEqual(try dependencies.manifestStore.load()?.attachmentState, .suspended)
+        XCTAssertEqual(TradingCardScannerApp.activeCloudAccountStatusRaw, "attachmentSuspended")
+        XCTAssertEqual(TradingCardScannerApp.activeAttachmentStateRaw, "suspended")
     }
 
     func testDifferentRemoteCollectionNeverOpensEitherCollection() async throws {
@@ -470,6 +473,68 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         }
         XCTAssertEqual(makeCount, 0)
         XCTAssertNil(try dependencies.manifestStore.load())
+    }
+
+    func testTemporaryAccountAvailabilityOpensLocallyWithoutChangingAttachedFingerprint() async throws {
+        let dependencies = try makeDependencies(
+            account: { .temporarilyUnavailable },
+            structuredStoreFilePresent: true
+        )
+        try dependencies.manifestStore.save(CollectionStoreManifest(
+            storeID: localID,
+            lastAttachedAccountFingerprint: "account-a",
+            attachmentState: .attached,
+            storeFileIdentity: "test-store-file-identity"
+        ))
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+
+        guard case let .ready(session) = bootstrap.state else {
+            return XCTFail("expected the existing store to open locally during a transient outage")
+        }
+        XCTAssertEqual(session.mode, .onDevice)
+        let manifest = try XCTUnwrap(try dependencies.manifestStore.load())
+        XCTAssertEqual(manifest.lastAttachedAccountFingerprint, "account-a")
+        XCTAssertEqual(manifest.attachmentState, .suspended)
+        XCTAssertEqual(
+            TradingCardScannerApp.activeCloudAccountStatusRaw,
+            LocalStorageReason.temporarilyUnavailable.rawValue
+        )
+        XCTAssertEqual(TradingCardScannerApp.activeAttachmentStateRaw, CloudAttachmentState.suspended.rawValue)
+    }
+
+    func testRestrictedAndUnknownAccountAvailabilityOpenExistingStoreLocally() async throws {
+        let accountStates: [CloudAccountAvailability] = [
+            .noAccount,
+            .restricted,
+            .couldNotDetermine
+        ]
+        for (index, accountState) in accountStates.enumerated() {
+            let dependencies = try makeDependencies(
+                account: { accountState },
+                structuredStoreFilePresent: true,
+                directorySuffix: "local-availability-\(index)"
+            )
+            try dependencies.manifestStore.save(CollectionStoreManifest(
+                storeID: localID,
+                lastAttachedAccountFingerprint: "account-a",
+                attachmentState: .attached,
+                storeFileIdentity: "test-store-file-identity"
+            ))
+            let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+            await bootstrap.start()
+
+            guard case let .ready(session) = bootstrap.state else {
+                return XCTFail("expected local readiness for account state \(accountState)")
+            }
+            XCTAssertEqual(session.mode, .onDevice)
+            XCTAssertEqual(
+                try dependencies.manifestStore.load()?.lastAttachedAccountFingerprint,
+                "account-a"
+            )
+        }
     }
 
     func testCorruptReplicaStatesNeverOpenACloudContainer() async throws {

@@ -162,6 +162,7 @@
 		A002010E /* OwnershipLedgerCompletenessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010E /* OwnershipLedgerCompletenessTests.swift */; };
 		A002010F /* CollectionStoreContinuityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010F /* CollectionStoreContinuityTests.swift */; };
 		A0020110 /* CloudRestorationReadinessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020110 /* CloudRestorationReadinessTests.swift */; };
+		A0020112 /* CollectionStoreModeTransitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020112 /* CollectionStoreModeTransitionTests.swift */; };
 		A00100B0 /* ReferenceQuote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B0 /* ReferenceQuote.swift */; };
 		A00100B1 /* QuoteCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B1 /* QuoteCache.swift */; };
 		A00100B2 /* PriceQuoteService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B2 /* PriceQuoteService.swift */; };
@@ -361,6 +362,7 @@
 		B002010E /* OwnershipLedgerCompletenessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnershipLedgerCompletenessTests.swift; sourceTree = "<group>"; };
 		B002010F /* CollectionStoreContinuityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoreContinuityTests.swift; sourceTree = "<group>"; };
 		B0020110 /* CloudRestorationReadinessTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudRestorationReadinessTests.swift; sourceTree = "<group>"; };
+		B0020112 /* CollectionStoreModeTransitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoreModeTransitionTests.swift; sourceTree = "<group>"; };
 		B00100B0 /* ReferenceQuote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReferenceQuote.swift; sourceTree = "<group>"; };
 		B00100B1 /* QuoteCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuoteCache.swift; sourceTree = "<group>"; };
 		B00100B2 /* PriceQuoteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceQuoteService.swift; sourceTree = "<group>"; };
@@ -608,6 +610,7 @@
 				B002010E /* OwnershipLedgerCompletenessTests.swift */,
 				B002010F /* CollectionStoreContinuityTests.swift */,
 				B0020110 /* CloudRestorationReadinessTests.swift */,
+				B0020112 /* CollectionStoreModeTransitionTests.swift */,
 				B0020106 /* CollectionStoragePolicyTests.swift */,
 				B0020107 /* CloudKitSchemaCompatibilityTests.swift */,
 				B0020108 /* CloudAccountProbeTests.swift */,
@@ -900,6 +903,7 @@
 				A002010E /* OwnershipLedgerCompletenessTests.swift in Sources */,
 				A002010F /* CollectionStoreContinuityTests.swift in Sources */,
 				A0020110 /* CloudRestorationReadinessTests.swift in Sources */,
+				A0020112 /* CollectionStoreModeTransitionTests.swift in Sources */,
 				A0020106 /* CollectionStoragePolicyTests.swift in Sources */,
 				A0020107 /* CloudKitSchemaCompatibilityTests.swift in Sources */,
 				A0020108 /* CloudAccountProbeTests.swift in Sources */,

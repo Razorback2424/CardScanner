@@ -99,12 +99,10 @@ struct CollectionStorageBootstrapView: View {
                 Task { await bootstrap.confirmAttachment() }
             }
             .buttonStyle(.borderedProminent)
-            if bootstrap.supportsLocalOnlyTransition {
-                Button("Keep on This Device") {
-                    Task { await bootstrap.keepOnDevice() }
-                }
-                .buttonStyle(.bordered)
+            Button("Keep on This Device") {
+                Task { await bootstrap.keepOnDevice() }
             }
+            .buttonStyle(.bordered)
             Button("Open Settings", action: openSystemSettings)
                 .buttonStyle(.borderless)
         }
