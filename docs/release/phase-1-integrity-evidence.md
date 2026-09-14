@@ -9,7 +9,9 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 
 - Implementation branch: `main`
 - Baseline source SHA: `a115e4ee40dfaab93672e7601b358d82183df6be`
-- Current candidate SHA: `8cc1ad1` — the frozen A2a hardening commit.
+- Current candidate SHA: `d049706` — the A4a on-device transition proof
+  implementation commit; it is based on the frozen A2a hardening SHA
+  `8cc1ad1`.
 - Marketing version/build: `1.0 (1)` at baseline; re-check before archive.
 - Target: `TradingCardScanner` / `TradingCardScannerTests`
 - Minimum OS: iOS/iPadOS 17.0
