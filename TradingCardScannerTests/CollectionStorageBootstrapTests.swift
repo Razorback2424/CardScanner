@@ -168,7 +168,7 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         )
     }
 
-    #if LOCAL_ONLY_SIGNING
+#if LOCAL_ONLY_SIGNING
     func testLocalOnlyBuildRejectsCloudKitConfigurationForEntitlementReason() throws {
         let dependencies = CollectionStorageBootstrapDependencies.production()
         XCTAssertThrowsError(try dependencies.makeContainer(.cloudKit)) { error in
@@ -179,6 +179,17 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         }
     }
     #endif
+
+#if !LOCAL_ONLY_SIGNING
+    func testProductionDependencyGraphRequiresExplicitEntitledIntegrationOptIn() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["TCS_ENTITLED_INTEGRATION"] == "1",
+            "Production dependency wiring is reserved for explicitly entitled integration tests."
+        )
+        let dependencies = CollectionStorageBootstrapDependencies.production()
+        XCTAssertTrue(dependencies.usesProductionDependencies)
+    }
+#endif
 
 #if DEBUG
     func testDebugProductionStorageSuiteUsesInjectedAccountAvailability() throws {

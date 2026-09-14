@@ -215,9 +215,10 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 - Verification: the expanded storage suite (the nine A2 storage suites plus
   the permanent mode-transition and support-surface suites) passed on the
   iPhone 17 Pro / iOS 26.5 simulator. `DebugProduction`: `113` passed,
-  `0` failed, `0` skipped. `Debug`: `109` passed, `0` failed, with the five
-  private-mode S1/S2/S4/S5/S6 cases explicitly skipped because the unentitled
-  build cannot construct a CloudKit-backed configuration. The mode-transition
+  `0` failed, with one explicit skip for the opt-in-only production dependency
+  provenance check. `Debug`: `109` passed, `0` failed, with the five private-
+  mode S1/S2/S4/S5/S6 cases explicitly skipped because the unentitled build
+  cannot construct a CloudKit-backed configuration. The mode-transition
   regression itself passed all `7/7` cases under `DebugProduction`.
 - A4a verdict: `GO to land the offline implementation and tests; NO-GO for
   Phase 1 certification`. A4a removes the deterministic G6 availability
