@@ -42,6 +42,48 @@ private final class RecordingReadinessSource: @unchecked Sendable, CloudRestorat
 }
 
 @MainActor
+private final class ScriptedReadinessProbe: CloudRestorationProbe {
+    private var results: [CloudRestorationReadiness]
+    private var cancelled = false
+    private(set) var awaitCount = 0
+
+    init(results: [CloudRestorationReadiness]) {
+        self.results = results
+    }
+
+    func awaitReadiness(container: ModelContainer) async -> CloudRestorationReadiness {
+        awaitCount += 1
+        guard !cancelled else {
+            return .failed(category: "scripted-probe-cancelled")
+        }
+        guard !results.isEmpty else {
+            return .failed(category: "scripted-probe-exhausted")
+        }
+        return results.removeFirst()
+    }
+
+    func cancel() {
+        cancelled = true
+    }
+}
+
+@MainActor
+private final class ScriptedReadinessSource: @unchecked Sendable, CloudRestorationReadinessSource {
+    private let results: [CloudRestorationReadiness]
+    private(set) var probe: ScriptedReadinessProbe?
+
+    init(results: [CloudRestorationReadiness]) {
+        self.results = results
+    }
+
+    func arm(_ request: CloudRestorationRequest) -> any CloudRestorationProbe {
+        let probe = ScriptedReadinessProbe(results: results)
+        self.probe = probe
+        return probe
+    }
+}
+
+@MainActor
 final class CollectionStorageBootstrapTests: XCTestCase {
     private let localID = UUID(uuidString: "AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE")!
     private let remoteID = UUID(uuidString: "11111111-2222-3333-4444-555555555555")!
@@ -261,6 +303,40 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         XCTAssertEqual(readiness.requests[0].expectedAnchorGeneration, "test-generation")
         guard case .ready = bootstrap.state else {
             return XCTFail("expected readiness proof to install the cloud session")
+        }
+    }
+
+    func testOpenCloudReevaluatesReadinessUntilTheProbeReachesReady() async throws {
+        let readiness = ScriptedReadinessSource(results: [
+            .checkingRemoteCollection,
+            .importingRemoteCollection,
+            .readyPopulated
+        ])
+        let dependencies = try makeDependencies(
+            account: { .available(fingerprint: "account-a") },
+            anchor: {
+                .found(CloudCollectionAnchor(
+                    storeID: self.localID,
+                    formatVersion: CloudCollectionAnchorSchema.currentFormatVersion,
+                    remoteGeneration: "test-generation"
+                ))
+            },
+            readiness: readiness,
+            structuredStoreFilePresent: true
+        )
+        try dependencies.manifestStore.save(CollectionStoreManifest(
+            storeID: localID,
+            lastAttachedAccountFingerprint: "account-a",
+            attachmentState: .attached,
+            storeFileIdentity: "test-store-file-identity"
+        ))
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+
+        XCTAssertEqual(readiness.probe?.awaitCount, 3)
+        guard case .ready = bootstrap.state else {
+            return XCTFail("expected the scripted readiness progression to reach ready")
         }
     }
 

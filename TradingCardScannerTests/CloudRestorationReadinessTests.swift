@@ -336,6 +336,42 @@ final class CloudRestorationReadinessTests: XCTestCase {
         XCTAssertEqual(result, .readyPopulated)
     }
 
+    func testDefaultVisibilitySnapshotCountsSyncedHistoryRows() async throws {
+        let container = try makeContainer()
+        let card = CollectedCard(
+            collectionKey: "history-only",
+            game: .pokemon,
+            providerID: "history-only",
+            name: "History-only card",
+            setName: "Test set",
+            setCode: "TST",
+            cardNumber: "001",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .normal,
+            variantResolution: .userConfirmed
+        )
+        container.mainContext.insert(CollectionActivity(card: card, source: .scan))
+        try container.mainContext.save()
+
+        let source = CloudKitEventReadinessSource(
+            correlationTargetResolver: { _ in self.targetStoreIdentifier }
+        )
+        let probe = source.arm(makeRequest()) as! CloudKitEventReadinessProbe
+        defer { probe.cancel() }
+        probe.ingest(makeEvent(
+            identifier: "00000000-0000-0000-0000-000000000013",
+            startOffset: 1,
+            endOffset: 2,
+            succeeded: true
+        ))
+
+        let result = await probe.awaitReadiness(container: container)
+
+        XCTAssertEqual(result, .readyPopulated)
+    }
+
     func testZeroRowsDoNotYieldReadyEmptyByDefault() async throws {
         let source = makeSource(visibleRowCount: 0)
         let probe = arm(source: source)

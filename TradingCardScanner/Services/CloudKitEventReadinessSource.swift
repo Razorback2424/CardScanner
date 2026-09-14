@@ -39,7 +39,7 @@ enum CloudKitEventReadinessCorrelation: Equatable, Sendable {
 }
 
 @MainActor
-final class CloudKitEventReadinessSource: @unchecked Sendable, CloudRestorationReadinessSource {
+final class CloudKitEventReadinessSource: CloudRestorationReadinessSource {
     typealias VisibilityProvider = @MainActor (ModelContainer) throws -> CloudRestorationVisibilitySnapshot
     typealias CorrelationTargetResolver = @MainActor (ModelContainer) -> String?
 
@@ -57,11 +57,18 @@ final class CloudKitEventReadinessSource: @unchecked Sendable, CloudRestorationR
     init(
         notificationCenter: NotificationCenter = .default,
         visibilityProvider: @escaping VisibilityProvider = { container in
-            CloudRestorationVisibilitySnapshot(
-                visibleRowCount: try container.mainContext.fetchCount(
-                    FetchDescriptor<CollectedCard>()
-                )
-            )
+            // Any row in the synced schema proves that the post-import
+            // boundary is visible. This includes history-only collections
+            // whose cards were all deleted, so they do not remain stranded in
+            // the restoring state solely because CollectedCard is empty.
+            let context = container.mainContext
+            let visibleRowCount =
+                try context.fetchCount(FetchDescriptor<CollectedCard>())
+                + context.fetchCount(FetchDescriptor<PriceRecord>())
+                + context.fetchCount(FetchDescriptor<ProductIdentity>())
+                + context.fetchCount(FetchDescriptor<CollectionActivity>())
+                + context.fetchCount(FetchDescriptor<InventoryEvent>())
+            return CloudRestorationVisibilitySnapshot(visibleRowCount: visibleRowCount)
         },
         correlationTargetResolver: @escaping CorrelationTargetResolver = { _ in nil },
         allowReadyEmpty: Bool = false
@@ -107,6 +114,7 @@ final class CloudKitEventReadinessProbe: CloudRestorationProbe {
     private var events: [RedactedCloudKitEvent] = []
     private var eventCursor = 0
     private var eventContinuation: AsyncStream<RedactedCloudKitEvent>.Continuation?
+    private var eventIterator: AsyncStream<RedactedCloudKitEvent>.Iterator?
     private var correlationResolution: CloudKitEventReadinessCorrelation?
     private var terminalResult: CloudRestorationReadiness?
 
@@ -269,8 +277,13 @@ final class CloudKitEventReadinessProbe: CloudRestorationProbe {
                 eventCursor += 1
                 return event
             }
-            var iterator = eventStream.makeAsyncIterator()
-            return await iterator.next()
+            if eventIterator == nil {
+                eventIterator = eventStream.makeAsyncIterator()
+            }
+            guard var iterator = eventIterator else { return nil }
+            let event = await iterator.next()
+            eventIterator = iterator
+            return event
         }, onCancel: { [weak self] in
             Task { @MainActor [weak self] in
                 self?.cancel()

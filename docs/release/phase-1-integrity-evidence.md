@@ -77,7 +77,7 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
   `CloudRestorationReadinessTests`, `CollectionStorageBootstrapTests`,
   `CollectionStoragePolicyTests`, `CollectionStoreContinuityTests`,
   `CollectionStoreDigestTests`, and `CollectionSyncDiagnosticsTests`.
-  `Debug`: 92 tests, 0 failures. `DebugProduction`: 94 tests, 1 explicit
+  `Debug`: 94 tests, 0 failures. `DebugProduction`: 95 tests, 1 explicit
   entitlement-gated skip, 0 failures.
 
 ## A2 §0 event-correlation spike
@@ -113,6 +113,13 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
   snapshot. Setup/export, empty fetches, failed/in-progress imports, wrong
   stores, stale generations, and multiple singleton identifiers cannot
   authorize readiness; there is no timeout, clock, or elapsed-time path.
+- Re-entry and visibility: `PASS` — a scripted bootstrap progression from
+  checking to importing to ready requires three sequential readiness calls; the
+  probe retains one `AsyncStream` iterator. The default visibility snapshot
+  counts rows across all five synced models (`CollectedCard`, `PriceRecord`,
+  `ProductIdentity`, `CollectionActivity`, and `InventoryEvent`), so a
+  history-only collection is not treated as empty merely because it has zero
+  cards. `allowReadyEmpty` remains disabled by default pending A2b proof.
 - Anchor/checkpoint: `PASS` — the non-empty anchor generation is threaded from
   the authoritative anchor read into the request and persisted checkpoint;
   missing generations fail closed, and the readiness enum no longer carries a
