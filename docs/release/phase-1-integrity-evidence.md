@@ -69,8 +69,10 @@ fetch, or an elapsed timeout is not evidence of CloudKit restoration.
 - DebugProduction `build-for-testing`/test build: `PASS` — the production
   entitlements and bundle identity are retained while the compiler receives
   `DEBUG` without `LOCAL_ONLY_SIGNING`.
-- Release no-signing app-target build: `PASS` — the production no-flag branch
-  compiles; shipping Release was not changed to enable testability.
+- Release no-signing app-target build: `BLOCKED ON HOST CAPACITY` — the
+  current hardening candidate reached the final `lipo` step, but the host had
+  only 165 MiB free. The prior A2a candidate's Release compile passed; rerun
+  this check after reclaiming build-cache space before archive.
 - A2a storage-suite execution: `PASS` — the same nine CloudKit/storage suites
   ran under both configurations: `CloudAccountProbeTests`,
   `CloudCollectionAnchorStoreTests`, `CloudKitSchemaCompatibilityTests`,
