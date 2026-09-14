@@ -657,6 +657,23 @@ final class CameraPreviewSurfaceTests: XCTestCase {
         let preview = CameraPreview(scanner: CardScanner(), successCount: 1)
         XCTAssertNotNil(preview)
     }
+
+    func testCounterResetsDoNotAnimateAcknowledgementLayers() throws {
+        let view = PreviewView(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
+        let scanRegionLayer = try XCTUnwrap(view.previewLayer.sublayers?.last)
+
+        view.syncSuccessCount(3)
+        XCTAssertNotNil(scanRegionLayer.animation(forKey: "successBorderFlash"))
+        scanRegionLayer.removeAllAnimations()
+        view.syncSuccessCount(0)
+        XCTAssertNil(scanRegionLayer.animation(forKey: "successBorderFlash"))
+
+        view.syncRecognitionCount(3)
+        XCTAssertNotNil(scanRegionLayer.animation(forKey: "recognitionBorderFlash"))
+        scanRegionLayer.removeAllAnimations()
+        view.syncRecognitionCount(0)
+        XCTAssertNil(scanRegionLayer.animation(forKey: "recognitionBorderFlash"))
+    }
 }
 
 @MainActor

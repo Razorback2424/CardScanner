@@ -116,16 +116,14 @@ struct ScannerView: View {
         .toolbar(isThumbZoneContested ? .hidden : .visible, for: .tabBar)
     }
 
-    /// The tab bar only yields its space while a transient scanner surface is
-    /// occupying the lower thumb zone. Once the scanner is idle, the tab bar is
-    /// visible again so Scan remains a tab rather than becoming a dead end.
+    /// The tab bar only yields its space while a choice or confirmation surface
+    /// is occupying the lower thumb zone. Informational receipts and
+    /// acknowledgements keep the scanner's bottom layout stable.
     private var isThumbZoneContested: Bool {
         model.pendingChoice != nil
             || model.pendingPrintRunChoice != nil
             || model.pendingIdentityChoice != nil
             || model.pendingDuplicateConfirmation != nil
-            || model.scanAcknowledgement != nil
-            || model.receipt != nil
     }
 }
 

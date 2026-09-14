@@ -26,9 +26,13 @@ private struct ScannerStubPokemonSource: PokemonCardSource {
     let cardsByLocalID: [String: TCGdexCard]
     let delayNanoseconds: UInt64
     let fetchGate: ScannerFetchGate?
+    let catalogMiss: Bool
 
     func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
         await fetchGate?.markStarted()
+        if catalogMiss {
+            throw TCGdexError.cardNotFound
+        }
         if delayNanoseconds > 0 {
             try await Task.sleep(nanoseconds: delayNanoseconds)
         }
@@ -604,6 +608,67 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(model.unresolvedScans.isEmpty)
     }
 
+    func testReturningToScanDoesNotWaitForCancelledIdentification() async throws {
+        let fetchGate = ScannerFetchGate()
+        let model = try makeModel(
+            variants: [.normal],
+            delayNanoseconds: 500_000_000,
+            fetchGate: fetchGate
+        )
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await fetchGate.waitUntilStarted()
+
+        model.viewDisappeared()
+        model.start(
+            context: context(),
+            startCamera: false,
+            shouldRefreshMagicDirectory: false
+        )
+        try await Task.sleep(for: .milliseconds(200))
+
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+        let resumed = await waitUntil { model.sessionScans.count == 1 }
+
+        XCTAssertTrue(resumed)
+        XCTAssertEqual(model.sessionScans.first?.card.id, "pokemon:test-set-002")
+    }
+
+    func testCatalogMissVerificationStillFilesUnresolvedCard() async throws {
+        let model = try makeModel(variants: [.normal], catalogMiss: true)
+        let subject = ScanSubject(identifier: scannerIdentifier())
+        let start = CFAbsoluteTimeGetCurrent()
+
+        model.scanner.receiveFooterOutcomeForTesting(
+            .identified(subject),
+            at: start + 0.25
+        )
+        model.scanner.receiveFooterOutcomeForTesting(
+            .identified(subject),
+            at: start + 0.5
+        )
+
+        let recognized = await waitUntil {
+            model.scanAcknowledgement?.phase == .recognized
+        }
+        XCTAssertTrue(recognized)
+        await settle()
+
+        // The model installs the catalog-miss key on the scanner's Vision queue.
+        // Force that mirror to settle before driving the three-of-five window.
+        model.scanner.drainVisionQueueForTesting()
+        for offset in [0.75, 1.0, 1.25] {
+            model.scanner.receiveFooterOutcomeForTesting(
+                .identified(subject),
+                at: start + offset
+            )
+        }
+
+        let filed = await waitUntil { model.unresolvedScans.count == 1 }
+        XCTAssertTrue(filed)
+        XCTAssertEqual(model.unresolvedScans.first?.subject, subject)
+    }
+
     func testLeavingScanPublishesSummaryClearsSessionAndReturnsFresh() async throws {
         let model = try makeModel(variants: [.normal])
         let summaryStore = ScanSessionSummaryStore()
@@ -870,6 +935,7 @@ final class ScannerViewModelTests: XCTestCase {
         secondaryVariants: [PhysicalVariant]? = nil,
         delayNanoseconds: UInt64 = 0,
         fetchGate: ScannerFetchGate? = nil,
+        catalogMiss: Bool = false,
         gradedOutcome: ScannedGradedOutcome? = nil,
         setProviderID: String = "test-set",
         gradedRunRecorder: ScannerPrintRunRecorder? = nil,
@@ -899,7 +965,8 @@ final class ScannerViewModelTests: XCTestCase {
                     )
                 ],
                 delayNanoseconds: delayNanoseconds,
-                fetchGate: fetchGate
+                fetchGate: fetchGate,
+                catalogMiss: catalogMiss
             ),
             offline: PokemonOfflineCatalog(store: checklistStore),
             resolvedDiskCache: ResolvedPokemonCardCache(

@@ -223,9 +223,9 @@ final class PreviewView: UIView {
     /// disables those for the debug overlay.
     func syncSuccessCount(_ count: Int) {
         guard count != lastSuccessCount else { return }
-        let isFirstSync = lastSuccessCount == 0 && count == 0
+        let didReset = count < lastSuccessCount
         lastSuccessCount = count
-        guard !isFirstSync else { return }
+        guard !didReset else { return }
 
         let border = CABasicAnimation(keyPath: "borderColor")
         border.fromValue = UIColor.white.cgColor
@@ -246,9 +246,9 @@ final class PreviewView: UIView {
     /// successful collection mutation.
     func syncRecognitionCount(_ count: Int) {
         guard count != lastRecognitionCount else { return }
-        let isFirstSync = lastRecognitionCount == 0 && count == 0
+        let didReset = count < lastRecognitionCount
         lastRecognitionCount = count
-        guard !isFirstSync else { return }
+        guard !didReset else { return }
 
         let border = CABasicAnimation(keyPath: "borderColor")
         border.fromValue = UIColor.white.cgColor

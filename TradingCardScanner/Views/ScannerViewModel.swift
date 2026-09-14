@@ -976,7 +976,6 @@ final class ScannerViewModel: ObservableObject {
     private var isProcessingIdentification = false
     private var identificationTask: Task<Void, Never>?
     private var activeIdentificationRequestID: UUID?
-    private var resolutionTask: Task<Void, Never>?
     private var scannedGradedOutcomes: [UUID: ScannedGradedOutcome] = [:]
     private var oneCardScanIntervals: [UUID: OSSignpostIntervalState] = [:]
     private var quoteRefreshTask: Task<Void, Never>?
@@ -995,9 +994,6 @@ final class ScannerViewModel: ObservableObject {
     /// is held by encounter id until its successful commit can associate it with
     /// a committed presentation.
     private var spatialResetProofs: [SpatialResetProof] = []
-    /// Enough to take back the most recent add, including the question that was
-    /// asked at the time so undo can re-ask it.
-    private var lastAdd: RecentScan?
     private var undoingScanIDs = InFlightIDGuard<RecentScan.ID>()
     private var heldRepeatAuthorizationState: HeldRepeatAuthorizationState?
     private var deferredHeldDuplicateOffer: DeferredHeldDuplicateOffer?
@@ -1458,7 +1454,6 @@ final class ScannerViewModel: ObservableObject {
         committedSessionHistory.removeAll()
         unresolvedScans.removeAll()
         spatialResetProofs.removeAll()
-        lastAdd = nil
         deferredHeldDuplicateOffer = nil
         catalogMissVerification = nil
         heldRepeatAuthorizationState = nil
@@ -1590,9 +1585,9 @@ final class ScannerViewModel: ObservableObject {
         updateScannerConfirmationContext()
         cancelPriceCheckRefresh()
         identificationTask?.cancel()
+        identificationTask = nil
         activeIdentificationRequestID = nil
         isProcessingIdentification = false
-        resolutionTask?.cancel()
         identificationQueue.removeAll()
         scannedGradedOutcomes.removeAll()
         pendingChoice = nil
@@ -1882,16 +1877,6 @@ final class ScannerViewModel: ObservableObject {
         feedback.choiceMade()
     }
 
-    func finishLock(for game: CardGame) -> MagicFinishLock? {
-        finishLocks[game]
-    }
-
-    var activeFinishLocks: [(game: CardGame, lock: MagicFinishLock)] {
-        CardGame.allCases.compactMap { game in
-            finishLocks[game].map { (game, $0) }
-        }
-    }
-
     // MARK: - The one tap
 
     func choose(_ variant: PhysicalVariant) {
@@ -2082,9 +2067,6 @@ final class ScannerViewModel: ObservableObject {
             endOneCardScan(encounterID: pending.encounterID, outcome: "duplicate-prompt-abandoned")
             pendingDuplicateConfirmation = nil
         }
-        if lastAdd?.id == scanID {
-            lastAdd = nil
-        }
         if receipt?.scanID == scanID {
             receipt = nil
             receiptTask?.cancel()
@@ -2098,13 +2080,6 @@ final class ScannerViewModel: ObservableObject {
         feedback.undone()
         resumeRecognitionIfPossible()
         return true
-    }
-
-    func undoLastAdd() {
-        guard let scanID = receipt?.scanID ?? lastAdd?.id else { return }
-        Task { @MainActor [weak self] in
-            _ = await self?.undoScan(scanID: scanID)
-        }
     }
 
     func deleteRecentScan(_ scan: RecentScan) {
@@ -2204,9 +2179,6 @@ final class ScannerViewModel: ObservableObject {
         }
         if let index = recent.firstIndex(where: { $0.id == scan.id }) {
             recent[index] = replacement
-        }
-        if lastAdd?.id == scan.id {
-            lastAdd = replacement
         }
         if scan.subject.slab == nil {
             queueFallbackPrice(
@@ -2661,7 +2633,6 @@ final class ScannerViewModel: ObservableObject {
                 presentationToken: proof.presentationToken ?? committed.presentationToken
             )
         })
-        lastAdd = scan
         // A newer OCR confirmation may already be waiting while this write is
         // finishing. Do not erase that newer acknowledgement when the older
         // card becomes durable.
@@ -2987,6 +2958,18 @@ final class ScannerViewModel: ObservableObject {
             variantID: variant?.id,
             treatmentIDs: treatmentIDs
         )
+        let queueFallbackPriceState = PerformanceSignpost.beginInterval(
+            "queueFallbackPriceScan",
+            id: PerformanceSignpost.makeID(),
+            "sessionScans=\(sessionScans.count)"
+        )
+        defer {
+            PerformanceSignpost.endInterval(
+                "queueFallbackPriceScan",
+                queueFallbackPriceState,
+                "sessionScans=\(sessionScans.count)"
+            )
+        }
         let sessionID = scannerSessionID
         let interestedScanIDs = Set(
             sessionScans
@@ -3115,9 +3098,6 @@ final class ScannerViewModel: ObservableObject {
             if let recentIndex = recent.firstIndex(where: { $0.id == scan.id }) {
                 recent[recentIndex] = replacement
             }
-            if lastAdd?.id == scan.id {
-                lastAdd = replacement
-            }
             updatedScanIDs.insert(scan.id)
         }
 
@@ -3133,9 +3113,9 @@ final class ScannerViewModel: ObservableObject {
     private func invalidateResolutionForDuplicatePrompt() {
         scanGeneration += 1
         identificationTask?.cancel()
+        identificationTask = nil
         activeIdentificationRequestID = nil
         isProcessingIdentification = false
-        resolutionTask?.cancel()
         identificationQueue.removeAll()
     }
 

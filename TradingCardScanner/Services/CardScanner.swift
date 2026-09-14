@@ -709,9 +709,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// allowed to touch the collection — this exists so a catalog request can be
     /// in flight while Vision is still looking for its second matching pass.
     var onPlausibleCandidate: ((ScanSubject) -> Void)?
-    /// Every parsed frame, including frames suppressed by the latch. This is
-    /// used only for local evidence policies that must count fresh observations
-    /// without starting another catalog request.
+    /// Parsed frames matching the identity currently under catalog-miss
+    /// verification, including frames suppressed by the latch. The gate is
+    /// checked against the vision-queue mirror so local evidence policies can
+    /// count fresh observations without starting another catalog request.
     var onObservedCandidate: ((ScanSubject) -> Void)?
     /// Identity is established: confirmed across OCR passes and admitted by the
     /// latch as a new physical presentation.
@@ -1043,8 +1044,9 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     /// Mirrors the catalog-miss suppression key onto the same queue that decides
-    /// whether a plausible reading should start speculative work. This keeps
-    /// that hot-path decision independent of the main actor.
+    /// whether a plausible reading should start speculative work or emit an
+    /// observed-candidate callback. This keeps both hot-path decisions
+    /// independent of the main actor.
     func updateCatalogMissSuppressionKey(_ key: ScanSuppressionKey?) {
         visionQueue.async { [weak self] in
             self?.catalogMissSuppressionKey = key
@@ -1836,7 +1838,8 @@ final class CardScanner: NSObject, ObservableObject {
                 && observation.slab != nil
                 && latched.identifier == observation.identifier
         } ?? false
-        if let parsed {
+        if let parsed,
+           parsed.suppressionKey == catalogMissSuppressionKey {
             DispatchQueue.main.async { [weak self] in
                 self?.onObservedCandidate?(parsed)
             }
