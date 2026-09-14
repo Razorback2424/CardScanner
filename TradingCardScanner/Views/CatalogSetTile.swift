@@ -81,17 +81,17 @@ struct CatalogSetTile: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)
-                    .background(Color("BrowseSetProgress"), in: Capsule())
+                    .background(Color("BrowseSetBadgeFill"), in: Capsule())
                     .padding(8)
             }
         }
         .frame(maxWidth: .infinity)
         .frame(height: layout.artworkHeight)
+        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
         .overlay {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .stroke(Color(uiColor: .separator), lineWidth: 0.5)
+                .strokeBorder(Color(uiColor: .separator), lineWidth: 0.5)
         }
-        .clipped()
     }
 
     @ViewBuilder
@@ -101,8 +101,7 @@ struct CatalogSetTile: View {
             // iOS, so the first shippable fallback is deliberately textual and
             // never leaves a Magic tile looking like a failed image request.
             Text(set.code)
-                .font(.system(size: 19, weight: .bold, design: .rounded))
-                .monospaced()
+                .font(.system(.title3, design: .monospaced, weight: .bold))
                 .foregroundStyle(.primary)
                 .padding(.horizontal, 14)
                 .padding(.vertical, 10)
@@ -121,7 +120,7 @@ struct CatalogSetTile: View {
     @ViewBuilder
     private var completionFooter: some View {
         if completion.owned > 0 {
-            HStack(spacing: 8) {
+            HStack(alignment: .center, spacing: 8) {
                 if let fraction = completion.fraction {
                     GeometryReader { proxy in
                         let width = proxy.size.width * min(max(fraction, 0), 1)
@@ -133,16 +132,17 @@ struct CatalogSetTile: View {
                                 .frame(width: width)
                         }
                     }
+                    .frame(maxWidth: .infinity)
                     .frame(height: 4)
                     .accessibilityHidden(true)
                 }
-
-                Spacer(minLength: 0)
 
                 Text("\(completion.owned)")
                     .font(.caption.weight(.semibold))
                     .monospacedDigit()
                     .foregroundStyle(Color("BrowseSetProgress"))
+                    .fixedSize()
+                    .accessibilityHidden(true)
             }
             .frame(minHeight: 16)
         }

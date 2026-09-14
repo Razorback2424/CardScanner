@@ -184,6 +184,38 @@ final class BrowseFeatureTests: XCTestCase {
         )
     }
 
+    func testCatalogSetOrderingIsOldestFirstThroughOrdered() {
+        let older = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "older"),
+            name: "Older",
+            code: "OLD",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 10
+        )
+        let newer = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "newer"),
+            name: "Newer",
+            code: "NEW",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 20
+        )
+
+        XCTAssertEqual(
+            CatalogSetOrdering.ordered(
+                [newer, older],
+                by: .oldestFirst,
+                ownership: CatalogOwnershipIndex(rows: [])
+            ).map(\.id),
+            [older.id, newer.id]
+        )
+    }
+
     func testCatalogSetOrderingUsesStableIDForEqualReleaseRanks() {
         let beta = CatalogSet(
             catalogID: CatalogSetID(game: .pokemon, providerID: "beta"),
@@ -379,6 +411,244 @@ final class BrowseFeatureTests: XCTestCase {
         )
     }
 
+    func testCatalogSetStartedFilterIncludesOwnedSetWithUnknownTotal() {
+        let started = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "started"),
+            name: "Started",
+            code: "START",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: nil,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let unstarted = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "unstarted"),
+            name: "Unstarted",
+            code: "EMPTY",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: nil,
+            releaseDate: nil,
+            sortRank: 2
+        )
+        let card = CollectedCard(
+            collectionKey: "catalog-list-started",
+            game: .pokemon,
+            providerID: "started-001",
+            name: "Started card",
+            setName: "Started",
+            setCode: "START",
+            cardNumber: "001",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .normal,
+            variantResolution: .userConfirmed
+        )
+        let ownership = CatalogOwnershipIndex([card])
+
+        let visible = [started, unstarted].filter {
+            CatalogSetListFilter.started.includes($0, ownership: ownership)
+        }
+
+        XCTAssertEqual(visible.map(\.id), [started.id])
+        XCTAssertEqual(ownership.progress(for: started).owned, 1)
+        XCTAssertNil(ownership.progress(for: started).fraction)
+    }
+
+    func testCatalogSetOrderingMostCompleteIsStrictlyDescendingAcrossKnownFractions() {
+        func set(_ providerID: String, _ code: String, cardCount: Int?) -> CatalogSet {
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: providerID),
+                name: providerID,
+                code: code,
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: cardCount,
+                releaseDate: nil,
+                sortRank: 1
+            )
+        }
+
+        func card(_ index: Int, code: String, setName: String) -> CollectedCard {
+            CollectedCard(
+                collectionKey: "ordering-\(code)-\(index)",
+                game: .pokemon,
+                providerID: "\(code)-\(index)",
+                name: "Card \(index)",
+                setName: setName,
+                setCode: code,
+                cardNumber: String(format: "%03d", index),
+                rarity: nil,
+                imageURL: nil,
+                thumbnailURL: nil,
+                variant: .normal,
+                variantResolution: .userConfirmed
+            )
+        }
+
+        let complete = set("complete", "CMP", cardCount: 4)
+        let half = set("half", "HAF", cardCount: 4)
+        let quarter = set("quarter", "QTR", cardCount: 4)
+        let unknown = set("unknown", "UNK", cardCount: nil)
+        let ownership = CatalogOwnershipIndex([
+            card(1, code: "CMP", setName: "complete"),
+            card(2, code: "CMP", setName: "complete"),
+            card(3, code: "CMP", setName: "complete"),
+            card(4, code: "CMP", setName: "complete"),
+            card(1, code: "HAF", setName: "half"),
+            card(2, code: "HAF", setName: "half"),
+            card(1, code: "QTR", setName: "quarter")
+        ])
+
+        let ordered = CatalogSetOrdering.ordered(
+            [unknown, quarter, half, complete],
+            by: .mostComplete,
+            ownership: ownership
+        )
+        let fractions = ordered.map { ownership.progress(for: $0).fraction ?? -1 }
+
+        XCTAssertEqual(ordered.map(\.id), [complete.id, half.id, quarter.id, unknown.id])
+        XCTAssertTrue(zip(fractions, fractions.dropFirst()).allSatisfy { $0 > $1 })
+    }
+
+    func testCatalogSetOrderingMostCompleteUsesStableReleaseAndIDTies() {
+        func set(_ providerID: String, sortRank: Int) -> CatalogSet {
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: providerID),
+                name: providerID,
+                code: providerID.uppercased(),
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 1,
+                releaseDate: nil,
+                sortRank: sortRank
+            )
+        }
+
+        let older = set("older", sortRank: 10)
+        let beta = set("beta", sortRank: 20)
+        let alpha = set("alpha", sortRank: 20)
+        let ownership = CatalogOwnershipIndex(rows: [])
+
+        XCTAssertEqual(
+            CatalogSetOrdering.ordered(
+                [older, beta, alpha],
+                by: .mostComplete,
+                ownership: ownership
+            ).map(\.id),
+            [alpha.id, beta.id, older.id]
+        )
+    }
+
+    func testCatalogSetOrderingNameAToZUsesNameThenStableID() {
+        func set(_ providerID: String, name: String) -> CatalogSet {
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: providerID),
+                name: name,
+                code: providerID.uppercased(),
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 1,
+                releaseDate: nil,
+                sortRank: 1
+            )
+        }
+
+        let beta = set("beta", name: "Alpha")
+        let alpha = set("alpha", name: "Alpha")
+        let zeta = set("zeta", name: "Zeta")
+
+        XCTAssertEqual(
+            CatalogSetOrdering.ordered(
+                [zeta, beta, alpha],
+                by: .nameAToZ,
+                ownership: CatalogOwnershipIndex(rows: [])
+            ).map(\.id),
+            [alpha.id, beta.id, zeta.id]
+        )
+    }
+
+    func testCatalogSetListGroupingLeavesNonChronologicalSortUnlabeled() {
+        let sets = [
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: "dated"),
+                name: "Dated",
+                code: "DAT",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 1,
+                releaseDate: Date(timeIntervalSince1970: 1_700_000_000),
+                sortRank: 1
+            ),
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: "earlier"),
+                name: "Earlier",
+                code: "EAR",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 1,
+                releaseDate: nil,
+                sortRank: 2
+            )
+        ]
+
+        let groups = CatalogSetListGrouping.groups(for: sets, sort: .mostComplete)
+
+        XCTAssertEqual(groups.count, 1)
+        XCTAssertNil(groups[0].title)
+        XCTAssertEqual(groups[0].sets.map(\.id), sets.map(\.id))
+    }
+
+    func testCatalogSetListGroupingLeadsWithEarlierForOldestFirst() {
+        let dated = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "dated"),
+            name: "Dated",
+            code: "DAT",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: Date(timeIntervalSince1970: 1_700_000_000),
+            sortRank: 1
+        )
+        let undated = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "undated"),
+            name: "Undated",
+            code: "UND",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 2
+        )
+
+        let ordered = CatalogSetOrdering.oldestFirst([dated, undated])
+        let groups = CatalogSetListGrouping.groups(for: ordered, sort: .oldestFirst)
+
+        XCTAssertEqual(groups.first?.title, "Earlier")
+        XCTAssertEqual(groups.first?.sets.map(\.id), [undated.id])
+    }
+
+    func testCatalogSetOrderingJustReleasedHandlesMissingGameDirectories() {
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "only"),
+            name: "Only set",
+            code: "ONLY",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 1
+        )
+
+        XCTAssertEqual(
+            CatalogSetOrdering.justReleased(from: [.pokemon: [set]]).map(\.id),
+            [set.id]
+        )
+        XCTAssertTrue(CatalogSetOrdering.justReleased(from: [:]).isEmpty)
+    }
+
     func testSealedSetOrderingUsesReleaseDateNewestFirst() {
         let older = SealedSetSummary(
             id: "older",
@@ -533,7 +803,14 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(earlyCardSearchCount, 0)
         XCTAssertEqual(earlySealedSearchCount, 0)
 
-        try await Task.sleep(for: .milliseconds(450))
+        let bothSearchesStarted = await waitUntil {
+            let cardCount = await catalog.searchCount()
+            let sealedCount = await sealedClient.sealedSearchCount()
+            return cardCount == CardGame.allCases.count
+                && sealedCount == CardGame.allCases.count
+        }
+        XCTAssertTrue(bothSearchesStarted)
+
         let cardSearchCount = await catalog.searchCount()
         let sealedSearchCount = await sealedClient.sealedSearchCount()
         XCTAssertEqual(cardSearchCount, CardGame.allCases.count)

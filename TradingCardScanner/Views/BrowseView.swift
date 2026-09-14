@@ -143,17 +143,13 @@ final class BrowseViewModel: ObservableObject {
             lanes = [:]
         }
 
+        if searchesCards {
+            await searchCardLanes(games: games, query: query, token: token)
+        }
         if searchesSealed {
-            async let sealedSearch = sealedModel.search(query: query, games: games)
-            if searchesCards {
-                await searchCardLanes(games: games, query: query, token: token)
-            }
-            await sealedSearch
+            await sealedModel.search(query: query, games: games)
         } else {
             sealedModel.clearSearch()
-            if searchesCards {
-                await searchCardLanes(games: games, query: query, token: token)
-            }
         }
     }
 
@@ -225,7 +221,7 @@ struct BrowseView: View {
     @ViewBuilder private var sealedChooser: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Sealed products")
-                .font(.title3.bold())
+                .font(.title2.bold())
 
             ForEach(CardGame.allCases) { game in
                 NavigationLink {
@@ -424,6 +420,26 @@ struct BrowseView: View {
         return model.selectedSets.filter { $0.game == game }.count
     }
 
+    private var searchGames: [CardGame] {
+        model.selectedGame.map { [$0] } ?? CardGame.allCases
+    }
+
+    private var recentOwnedRowsByGame: [CardGame: [CollectionRow]] {
+        let eligibleRows = (projectionStore.snapshot?.rows ?? []).filter {
+            $0.quantity > 0 && $0.itemKind.countsTowardSetCompletion
+        }
+        return Dictionary(grouping: eligibleRows, by: \.game).mapValues { rows in
+            Array(rows.sorted {
+                if $0.dateAdded != $1.dateAdded { return $0.dateAdded > $1.dateAdded }
+                return $0.id < $1.id
+            }.prefix(3))
+        }
+    }
+
+    private var isCatalogLoadedForRail: Bool {
+        CardGame.allCases.allSatisfy { model.sets[$0] != nil }
+    }
+
     private var justReleasedSets: [CatalogSet] {
         CatalogSetOrdering.justReleased(from: model.sets)
     }
@@ -434,7 +450,7 @@ struct BrowseView: View {
 
     @ViewBuilder
     private var recentlyReleasedRail: some View {
-        if !justReleasedSets.isEmpty {
+        if isCatalogLoadedForRail, !justReleasedSets.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Just released")
                     .font(.title2.bold())
@@ -464,6 +480,7 @@ struct BrowseView: View {
     }
 
     @ViewBuilder private var gameChooser: some View {
+        let recentRowsByGame = recentOwnedRowsByGame
         Text("Everything in the catalog")
             .font(.title2.bold())
         ForEach(CardGame.allCases) { game in
@@ -474,7 +491,7 @@ struct BrowseView: View {
                     CatalogGameRow(
                         game: game,
                         sets: sets,
-                        ownedRows: projectionStore.snapshot?.rows ?? []
+                        ownedRows: recentRowsByGame[game] ?? []
                     )
                 }
                 .buttonStyle(.plain)
@@ -538,17 +555,10 @@ struct BrowseView: View {
         let game: CardGame
         let sets: [CatalogSet]
         let ownedRows: [CollectionRow]
+        private static let horizontalOffsets: [CGFloat] = [2, 24, 44]
 
         private var artworks: [CatalogGameArtwork] {
-            let recentRows = ownedRows
-                .filter { $0.game == game && $0.quantity > 0 && $0.itemKind.countsTowardSetCompletion }
-                .sorted {
-                    if $0.dateAdded != $1.dateAdded { return $0.dateAdded > $1.dateAdded }
-                    return $0.id < $1.id
-                }
-                .prefix(3)
-
-            var result = recentRows.enumerated().map { index, row in
+            var result = ownedRows.prefix(3).enumerated().map { index, row in
                 CatalogGameArtwork(
                     slot: index,
                     url: row.lowImageURL ?? row.highImageURL,
@@ -595,7 +605,7 @@ struct BrowseView: View {
                     .frame(width: 38, height: 52)
                     .rotationEffect(.degrees(Double(index - 1) * 7))
                     .offset(
-                        x: CGFloat(index) * 22 + 2,
+                        x: Self.horizontalOffsets[index],
                         y: index == 1 ? 3 : 6
                     )
                 }
@@ -604,19 +614,57 @@ struct BrowseView: View {
         }
     }
 
+    private var cardSearchGamesWithContent: [CardGame] {
+        guard model.searchScope != .sealed else { return [] }
+        return searchGames.filter { game in
+            guard let lane = model.lanes[game] else { return true }
+            return !lane.cards.isEmpty || lane.isLoading || lane.error != nil
+        }
+    }
+
+    private var hasCardContent: Bool {
+        !cardSearchGamesWithContent.isEmpty
+    }
+
+    private var sealedSearchGamesWithContent: [CardGame] {
+        searchGames.filter { game in
+            guard let lane = model.sealedModel.searchLanes[game] else { return false }
+            return !lane.products.isEmpty || lane.isLoading || lane.error != nil
+        }
+    }
+
+    private var hasSealedContent: Bool {
+        guard model.searchScope != .cards else { return false }
+        return !sealedSearchGamesWithContent.isEmpty
+    }
+
     @ViewBuilder private var searchBody: some View {
         if model.normalizedQuery.count < 2 {
             ContentUnavailableView("Keep typing", systemImage: "text.cursor", description: Text("Enter at least two characters."))
         } else {
-            Text("Cards")
-                .font(.title2.bold())
-            ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
-                searchSection(game)
+            if hasCardContent {
+                Text("Cards")
+                    .font(.title2.bold())
+                ForEach(cardSearchGamesWithContent, id: \.self) { game in
+                    searchSection(game)
+                }
             }
-            Text("Sealed")
-                .font(.title2.bold())
-            ForEach(model.selectedGame.map { [$0] } ?? CardGame.allCases, id: \.self) { game in
-                sealedSearchSection(game)
+            sealedSearchContent
+        }
+    }
+
+    @ViewBuilder private var sealedSearchContent: some View {
+        if model.searchScope != .cards {
+            if hasSealedContent {
+                Text("Sealed")
+                    .font(.title2.bold())
+                ForEach(sealedSearchGamesWithContent, id: \.self) { game in
+                    sealedSearchSection(game)
+                }
+            } else if !model.sealedModel.isConfigured {
+                Text("Sealed products need a pricing API key — add one in Settings")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -658,9 +706,6 @@ struct BrowseView: View {
             if lane.products.isEmpty && lane.isLoading {
                 HStack { ProgressView(); Text("Searching sealed products…") }
                     .frame(minHeight: 80)
-            } else if lane.products.isEmpty, !model.sealedModel.isConfigured {
-                Text("Add a pricing API key in Settings to browse sealed products.")
-                    .foregroundStyle(.secondary)
             } else if lane.products.isEmpty, let error = lane.error {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("\(game.label) sealed search failed").font(.headline)
@@ -734,12 +779,13 @@ enum CatalogSetOrdering {
                 return $0.id < $1.id
             }
         case .mostComplete:
-            return sets.sorted {
-                let left = ownership.progress(for: $0).fraction ?? -1
-                let right = ownership.progress(for: $1).fraction ?? -1
-                if left != right { return left > right }
-                return isNewer($0, than: $1)
-            }
+            return sets
+                .map { (set: $0, fraction: ownership.progress(for: $0).fraction ?? -1) }
+                .sorted {
+                    if $0.fraction != $1.fraction { return $0.fraction > $1.fraction }
+                    return isNewer($0.set, than: $1.set)
+                }
+                .map(\.set)
         }
     }
 
@@ -1063,49 +1109,26 @@ private struct CatalogSetListView: View {
         ]
     }
 
-    private func visibleSets(owned: CatalogOwnershipIndex) -> [CatalogSet] {
+    private var isChronological: Bool {
+        sort == .newestFirst || sort == .oldestFirst
+    }
+
+    private func makeVisibleSets(owned: CatalogOwnershipIndex) -> [CatalogSet] {
         let query = CardNameSearch.normalize(search)
         let filtered = sets.filter {
             let matchesSearch = query.isEmpty
                 || CardNameSearch.normalize($0.name).contains(query)
                 || CardNameSearch.normalize($0.code).contains(query)
-            let matchesFilter = filter == .all || owned.progress(for: $0).owned > 0
+            let matchesFilter = filter.includes($0, ownership: owned)
             return matchesSearch && matchesFilter
         }
         return CatalogSetOrdering.ordered(filtered, by: sort, ownership: owned)
     }
 
-    private func groups(for orderedSets: [CatalogSet]) -> [CatalogSetYearGroup] {
-        var setsByYear: [Int: [CatalogSet]] = [:]
-        var earlier: [CatalogSet] = []
-        let calendar = Calendar.current
-
-        for set in orderedSets {
-            guard let releaseDate = set.releaseDate else {
-                earlier.append(set)
-                continue
-            }
-            let year = calendar.component(.year, from: releaseDate)
-            setsByYear[year, default: []].append(set)
-        }
-
-        let years = setsByYear.keys.sorted {
-            if sort == .oldestFirst { return $0 < $1 }
-            return $0 > $1
-        }
-        var groups = years.compactMap { year -> CatalogSetYearGroup? in
-            guard let sets = setsByYear[year], !sets.isEmpty else { return nil }
-            return CatalogSetYearGroup(title: String(year), sets: sets)
-        }
-        if !earlier.isEmpty {
-            groups.append(CatalogSetYearGroup(title: "Earlier", sets: earlier))
-        }
-        return groups
-    }
-
     var body: some View {
         let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
-        let visible = visibleSets(owned: owned)
+        let visibleSets = makeVisibleSets(owned: owned)
+        let groups = CatalogSetListGrouping.groups(for: visibleSets, sort: sort)
         return ScrollView {
             LazyVStack(alignment: .leading, spacing: 18) {
                 if game == .pokemon {
@@ -1122,7 +1145,7 @@ private struct CatalogSetListView: View {
 
                 setListFilters
 
-                if visible.isEmpty {
+                if visibleSets.isEmpty {
                     ContentUnavailableView(
                         filter == .started ? "No started sets" : "No matching sets",
                         systemImage: "square.stack.3d.up.slash",
@@ -1134,8 +1157,8 @@ private struct CatalogSetListView: View {
                     )
                     .frame(maxWidth: .infinity)
                     .padding(.top, 40)
-                } else {
-                    ForEach(groups(for: visible)) { group in
+                } else if isChronological {
+                    ForEach(groups) { group in
                         CatalogSetGroupSection(
                             group: group,
                             columns: columns,
@@ -1143,11 +1166,19 @@ private struct CatalogSetListView: View {
                             owned: owned
                         )
                     }
+                } else {
+                    CatalogSetGrid(
+                        sets: visibleSets,
+                        columns: columns,
+                        catalog: catalog,
+                        owned: owned
+                    )
                 }
             }
             .padding(16)
             .contentWidthLimit(.standard)
         }
+        .scrollDismissesKeyboard(.interactively)
         .navigationTitle("\(game.label) Sets")
         .searchable(text: $search, prompt: "Search sets")
         .toolbar {
@@ -1189,14 +1220,71 @@ private struct CatalogSetListView: View {
             }
         }
         .scrollIndicators(.hidden)
+        .contentMargins(.horizontal, 16, for: .scrollContent)
+        .padding(.horizontal, -16)
     }
 }
 
-private struct CatalogSetYearGroup: Identifiable {
-    let title: String
+extension CatalogSetListFilter {
+    func includes(_ set: CatalogSet, ownership: CatalogOwnershipIndex) -> Bool {
+        switch self {
+        case .all:
+            return true
+        case .started:
+            return ownership.progress(for: set).owned > 0
+        }
+    }
+}
+
+struct CatalogSetYearGroup: Identifiable {
+    let title: String?
     let sets: [CatalogSet]
 
-    var id: String { title }
+    var id: String { title ?? "all" }
+}
+
+enum CatalogSetListGrouping {
+    static func groups(
+        for orderedSets: [CatalogSet],
+        sort: CatalogSetListSort
+    ) -> [CatalogSetYearGroup] {
+        guard !orderedSets.isEmpty else { return [] }
+
+        guard sort == .newestFirst || sort == .oldestFirst else {
+            return [CatalogSetYearGroup(title: nil, sets: orderedSets)]
+        }
+
+        var setsByYear: [Int: [CatalogSet]] = [:]
+        var earlier: [CatalogSet] = []
+        let calendar = Calendar.current
+
+        for set in orderedSets {
+            guard let releaseDate = set.releaseDate else {
+                earlier.append(set)
+                continue
+            }
+            let year = calendar.component(.year, from: releaseDate)
+            setsByYear[year, default: []].append(set)
+        }
+
+        let years = setsByYear.keys.sorted {
+            if sort == .oldestFirst { return $0 < $1 }
+            return $0 > $1
+        }
+        var groups = years.compactMap { year -> CatalogSetYearGroup? in
+            guard let sets = setsByYear[year], !sets.isEmpty else { return nil }
+            return CatalogSetYearGroup(title: String(year), sets: sets)
+        }
+        if !earlier.isEmpty {
+            let earlierGroup = CatalogSetYearGroup(title: "Earlier", sets: earlier)
+            if sort == .oldestFirst {
+                groups.insert(earlierGroup, at: 0)
+            } else {
+                groups.append(earlierGroup)
+            }
+        }
+        return groups
+    }
 }
 
 private struct CatalogSetGroupSection: View {
@@ -1207,24 +1295,42 @@ private struct CatalogSetGroupSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(group.title.uppercased())
-                .font(.footnote.weight(.semibold))
-                .tracking(0.5)
-                .foregroundStyle(Color(uiColor: .secondaryLabel))
-                .padding(.top, 2)
+            if let title = group.title {
+                Text(title.uppercased())
+                    .font(.footnote.weight(.semibold))
+                    .tracking(0.5)
+                    .foregroundStyle(Color(uiColor: .secondaryLabel))
+                    .padding(.top, 2)
+            }
 
-            LazyVGrid(columns: columns, alignment: .leading, spacing: 22) {
-                ForEach(group.sets) { set in
-                    NavigationLink {
-                        CatalogSetCardsView(set: set, catalog: catalog)
-                    } label: {
-                        CatalogSetTile(
-                            set: set,
-                            completion: owned.progress(for: set)
-                        )
-                    }
-                    .buttonStyle(.plain)
+            CatalogSetGrid(
+                sets: group.sets,
+                columns: columns,
+                catalog: catalog,
+                owned: owned
+            )
+        }
+    }
+}
+
+private struct CatalogSetGrid: View {
+    let sets: [CatalogSet]
+    let columns: [GridItem]
+    let catalog: any BrowseCatalogProviding
+    let owned: CatalogOwnershipIndex
+
+    var body: some View {
+        LazyVGrid(columns: columns, alignment: .leading, spacing: 22) {
+            ForEach(sets) { set in
+                NavigationLink {
+                    CatalogSetCardsView(set: set, catalog: catalog)
+                } label: {
+                    CatalogSetTile(
+                        set: set,
+                        completion: owned.progress(for: set)
+                    )
                 }
+                .buttonStyle(.plain)
             }
         }
     }
