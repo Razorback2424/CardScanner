@@ -40,8 +40,8 @@ This plan does **not** authorize broad refactors. A change belongs in this relea
 ### 1.1 Current checkout
 
 - Repository: `/Users/seankeller/Documents/TradingCardScannerMVP_fixed_v4`
-- Branch when this plan was written: `scan-hardening-and-release`
-- HEAD when this plan was written: `d647a794edc349be52fb6c643649ce26de2c834a`
+- Source snapshot used for the original plan: branch `scan-hardening-and-release`, HEAD `d647a794edc349be52fb6c643649ce26de2c834a`.
+- Repository state at this review: branch `main`, HEAD `a115e4e` (the earlier snapshot remains reachable). Re-run the baseline and source assertions in Task 1 against the checkout being implemented; neither snapshot line is permission to assume the tree is unchanged.
 - App target: `TradingCardScanner`
 - Test target: `TradingCardScannerTests`
 - Minimum OS: iOS/iPadOS 17.0
@@ -182,6 +182,8 @@ This is a hard launch invariant:
 
 > A change in iCloud availability must never cause CardScanner to open an empty or different collection, upload the existing collection to a different iCloud account without explicit confirmation, or strand records created while iCloud was unavailable. One continuous local collection identity must survive every supported transition. If SwiftData requires separate stores, the transition must be an explicit, idempotent, tested migration whose source remains recoverable until destination verification succeeds.
 
+This invariant is triggered by any change that can alter which persistent store the app opens—including a `ModelConfiguration` name, URL, schema, bundle identity, or store-location convention—not only by a change in iCloud availability. After 1.0 ships, the structured-store URL and naming convention are frozen. Any later change requires a proven migration under the same evidence rules as Path B, with the old store retained until destination verification succeeds.
+
 “The container opened” is not proof of this invariant. Proof requires stable store identity plus pre/post record digests.
 
 ### 2.5 iCloud account-switch policy
@@ -198,7 +200,7 @@ The approved policy is **Suspend and confirm**:
 8. if the new account already has a different `storeID`, refuse an automatic merge in 1.0 and direct the user to export/support;
 9. transient statuses (`couldNotDetermine` and `temporarilyUnavailable`) never authorize deletion, store replacement, a new identity, or an account reattachment.
 
-“Fresh” is not inferred from the absence of fetched SwiftData rows. It means there is no pre-existing structured-store file or manifest, no locally committed user-data evidence, and restoration readiness has established the remote account state. An empty fetch while a cloud import may still be in flight is never a fresh-install signal.
+“Fresh” is not inferred from the absence of fetched SwiftData rows. It means there is no pre-existing structured-store file at any store location this app has ever used—including the unnamed/default configuration used by all pre-1.0 builds—no manifest, no locally committed user-data evidence, and restoration readiness has established the remote account state. An empty fetch while a cloud import may still be in flight is never a fresh-install signal.
 
 Because SwiftData automatic mirroring does not expose a documented live “pause sync” switch, the exact safe local-only transition is a proof obligation. Task 4 must establish it before Tasks 6–8 are accepted. If neither same-file reconfiguration nor an explicit verified migration can satisfy this policy, iCloud is a NO-GO for 1.0; do not weaken the invariant in code.
 
@@ -206,7 +208,7 @@ Because SwiftData automatic mirroring does not expose a documented live “pause
 
 Do not begin by assuming CardScanner needs to alternate one store between `.none` and CloudKit-backed configurations. SwiftData uses `NSPersistentCloudKitContainer`, whose intended architecture is a local persistent store mirrored asynchronously to CloudKit. Task 4 must therefore test candidates in this order:
 
-1. **Path 0 — one always-CloudKit-configured local replica.** Keep one explicit structured-store URL and one explicit private CloudKit configuration through no-account, account-available, offline, reconnect, and account-change conditions. If it remains locally writable/durable without an account and satisfies the suspend-and-confirm policy before any changed-account upload can occur, select it and delete the `.none`↔CloudKit transition/migration design.
+1. **Path 0 — one always-CloudKit-configured local replica.** Keep one explicit structured-store URL and one explicit private CloudKit configuration through no-account, account-available, offline, reconnect, and account-change conditions. The explicit URL must either be the URL the current build already opens (`default.store` from the unnamed structured configuration), or the first launch under the new configuration must complete a proven one-time legacy-default-store adoption before any freshness, attachment, anchor, or `storeID` decision. If it remains locally writable/durable without an account and satisfies the suspend-and-confirm policy before any changed-account upload can occur, select it and delete the `.none`↔CloudKit transition/migration design.
 2. **Path A — same-file reconfiguration.** Only if Path 0 fails, prove that the same explicit store URL can be safely reopened under `.none` and CloudKit-backed configurations without changing identity or content.
 3. **Path B — explicit verified migration.** Only if Paths 0 and A fail, use distinct source/destination URLs and an atomic, resumable copy/validate/commit protocol.
 
@@ -288,7 +290,7 @@ The release is NO-GO if any condition below is known and unresolved in the exact
 | G1 — Identity | A reproducible path silently persists, refetches, imports, resolves, or prices the wrong supported printing/variant/print run/graded or sealed identity. |
 | G2 — Valuation | A reproducible path binds the wrong product, treats unsupported currency as USD, accepts invalid chronology, or makes Collection and Portfolio disagree on the same facts. |
 | G3 — Quantity/data | A reproducible path loses, duplicates, collapses, or changes collection quantity/history without an intentional action. |
-| G4 — Persistence/sync continuity | Launch, iCloud availability, account switching, conflict, retry, reinstall, or cross-device convergence can reveal an empty/different collection, strand local records, upload to a different account without confirmation, or silently lose a valid mutation. |
+| G4 — Persistence/sync continuity | Launch, iCloud availability, account switching, conflict, retry, reinstall, cross-device convergence, or a store-configuration/location change can reveal an empty/different collection, strand local records, upload to a different account without confirmation, or silently lose a valid mutation. A configuration change that causes a device holding an existing collection to open an empty or different collection is an automatic NO-GO. |
 | G5 — Privacy/compliance | Required privacy/support links are missing/broken, declared practices conflict with code, required-reason APIs are undeclared, signing/capabilities are wrong, or material private data appears in logs/diagnostics. |
 | G6 — Availability | A supported critical flow reproducibly crashes, deadlocks, loops forever, or becomes unrecoverable on a supported iPhone/iPad/OS. |
 
@@ -849,6 +851,21 @@ all five model counts and material digest remain identical absent a deliberate e
 
 A failure means the fixture/digest/local persistence basis is invalid. Correct it before any CloudKit conclusion.
 
+- [ ] **Step 2b: Prove legacy store discovery before freshness or attachment decisions**
+
+Enumerate every structured-store location used by the current and pre-1.0 builds. The current `TradingCardScannerApp.makeContainer()` uses unnamed structured `ModelConfiguration` instances, so the legacy location is the default SwiftData store (`Application Support/default.store` or the exact path resolved by the runtime). Confirm that path from a built/current app or runtime inspection; do not guess a replacement filename.
+
+Create a fixture containing user data only at that legacy location and no manifest at the new manifest directory. Prove that startup:
+
+- discovers and opens the legacy store before evaluating freshness, account status, remote anchor, or generating a new `storeID`;
+- enters `legacyAdoptionRequired`, or performs the selected in-place adoption/migration protocol;
+- captures the legacy pre-adoption digest and preserves the source until post-adoption validation succeeds;
+- never classifies the device as fresh or claims an empty remote anchor;
+- preserves counts, quantities, identity/history fields, relationships, and the final `storeID` across relaunch;
+- retries an interrupted adoption idempotently without opening an empty destination.
+
+Record every legacy path checked, the exact runtime-derived URL, pre/post digests, and whether Path 0, Path A, or Path B was used. This test must run before any CloudKit attachment decision.
+
 - [ ] **Step 3: Build the Path 0 test harness before enrollment**
 
 Add a factory that can construct one structured configuration with:
@@ -859,6 +876,8 @@ Add a factory that can construct one structured configuration with:
 - no production decision based on Sign in with Apple.
 
 The harness may compile and run non-network tests before enrollment. A failure caused solely by absent signing/capabilities is `BLOCKED — external enrollment`, not evidence that Path 0 is invalid.
+
+The literal private container identifier is not valid until Gate E1/Task 9 registers and entitles it; the pre-enrollment harness may use an injected placeholder client or compile-time test seam. A container mismatch or entitlement failure before E1 is `BLOCKED — external enrollment`, not a Path 0 product failure. The production configuration must match the signed entitlement actually used for the candidate; until Task 9, the current `iCloud.$(CFBundleIdentifier)` expansion resolves to the placeholder bundle’s container.
 
 - [ ] **Step 4: Build a restoration-readiness observability probe**
 
@@ -1090,6 +1109,8 @@ Cover:
 - reload returns the same `storeID`;
 - a corrupt manifest is reported as corrupt, not interpreted as absent;
 - an existing persistent store with no manifest enters `legacyAdoptionRequired`;
+- a store that exists only at the legacy unnamed/default URL enters `legacyAdoptionRequired` and is never classified as `fresh`;
+- legacy-store discovery/adoption resolves the existing store before minting a `storeID` or evaluating cloud attachment;
 - legacy adoption mints exactly one ID only after the existing store opens and its digest is captured;
 - retrying adoption is idempotent;
 - the manifest never stores a raw CloudKit user record ID;

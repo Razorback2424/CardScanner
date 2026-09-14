@@ -4,7 +4,7 @@
 
 The objective is not to prove Card Scanner is bug-free.
 
-The objective is to decide, consistently and without moving the goalposts, whether Card Scanner 1.0 is safe and useful enough to put in the hands of real paying users.
+The objective is to decide, consistently and without moving the goalposts, whether the free CardScanner 1.0 is safe and useful enough to put in the hands of real users.
 
 The governing product invariant is:
 
@@ -35,7 +35,7 @@ A new user can:
 * reach the scanner/collection;
 * receive appropriate behavior when permissions are denied;
 * initialize required local/cloud/catalog state;
-* reach monetization without becoming stranded.
+* reach the existing scanner and collection without becoming stranded.
 
 ### B. Scan → identify → resolve → save
 
@@ -75,21 +75,14 @@ Pricing information:
 
 Supported fields survive documented collection import/export workflows without silent corruption or identity loss.
 
-### F. Purchase → entitlement → restore
+### F. Free 1.0 scope
 
-Card Scanner 1.0 is defined as a monetized release.
-
-Therefore purchase behavior is not conditional or optional for release readiness.
-
-The user must be able to:
-
-* purchase the offered product;
-* receive the intended entitlement;
-* cancel/fail without receiving an incorrect entitlement;
-* retain correct entitlement state;
-* restore a legitimate purchase.
-
-If the monetization model itself changes before RC, that is a scope change and must occur before the freeze described in §9.
+CardScanner 1.0 is free and contains no StoreKit product, subscription,
+paywall, entitlement, purchase, or restore flow. The release gate is that the
+existing free capabilities remain usable without an account or purchase
+requirement. Future Grade/Sell or Collection Integrity monetization must be
+specified and tested as a separate experiment after behavioral value is
+validated.
 
 Binder-page scanning and physical binder/page/slot mapping are explicitly outside the 1.0 critical flows.
 
@@ -127,9 +120,14 @@ A known reproducible path causes:
 
 Supported collection information predictably disappears, collapses, duplicates or mutates without an intentional user action.
 
-#### G4 — Deterministic purchase/entitlement failure
+#### G4 — Deterministic persistence/sync continuity failure
 
-A normal supported purchase/restore path reproducibly grants, loses or restores the wrong entitlement.
+A normal supported launch, local write, iCloud availability change, account
+change, conflict, retry, reinstall, or cross-device convergence path
+reproducibly reveals an empty/different collection, strands a valid mutation,
+uploads to a newly encountered account without confirmation, or silently loses
+ownership/history data. A store-configuration or store-location change that
+opens a different collection is also a G4 failure.
 
 #### G5 — Material security/privacy/compliance defect
 
@@ -154,7 +152,7 @@ A gate cannot be marked clear merely because nobody happens to have noticed a pr
 | G1 Identity | Identity invariant suite; save/refetch tests; graded/raw matching tests; variant/print-run tests; adversarial identification testing |
 | G2 Valuation | Fast-path/recompute equivalence; currency transitions; invalidation; delayed/out-of-order observation tests; vendor-product binding tests |
 | G3 Collection data | Persistence round trips; clean relaunch; import/export round trips; quantity/update/delete tests; synchronization paths where applicable |
-| G4 Purchase | StoreKit/TestFlight purchase matrix; cancellation; failure; entitlement persistence; restore |
+| G4 Persistence/sync continuity | Canonical-store identity, account-switch, restoration-readiness, conflict, retry, reinstall, and two-device convergence matrix |
 | G5 Privacy/security | Privacy/data-flow review plus App Store privacy/compliance checklist |
 | G6 Availability | Clean-install testing; full regression suite; critical-flow manual tests; TestFlight crash feedback; supported-device/OS smoke matrix |
 
@@ -223,7 +221,7 @@ It cannot establish a 0.25% true rate.
 
 To support a roughly 0.25% upper bound after observing zero failures would require approximately 1,200 independent clean trials.
 
-Card Scanner 1.0 does not need to purchase that level of statistical precision before launch.
+CardScanner 1.0 does not need to collect that level of statistical precision before launch.
 
 ### 4.3 Secondary usability floors
 
@@ -361,9 +359,12 @@ must not silently alter identity or valuation state.
 
 Every field claimed as round-trippable survives the supported export→import cycle.
 
-### Purchase
+### Persistence and synchronization
 
-Every supported product, purchase, failure/cancellation and restore scenario in the defined 1.0 matrix produces the intended entitlement state.
+Every supported local/cloud storage transition preserves the canonical store
+identity, refuses an unproven account transition, separates incomplete cloud
+restoration from a genuinely empty collection, and keeps all supported
+ownership/history mutations recoverable.
 
 These are “all specified tests pass” requirements.
 
@@ -395,7 +396,6 @@ For critical workflows, enough information must be available—through TestFligh
 * unresolved versus user-confirmed state;
 * pricing source/status;
 * invalidation/staleness state where relevant;
-* purchase/entitlement state transitions;
 * import/export failure stage.
 
 Raw card images or personally identifying collection information should not be captured merely for convenience unless separately justified and appropriately consented.
@@ -526,7 +526,7 @@ The initial install base is likely to be small, which bounds the blast radius of
 
 That asymmetry should be recognized.
 
-It does not override deterministic identity, valuation, data, security or entitlement gates.
+It does not override deterministic identity, valuation, data, security, or persistence gates.
 
 ---
 
@@ -569,7 +569,7 @@ The project may still change:
 * hard gates;
 * corpus construction;
 * statistical acceptance rules;
-* monetization design;
+* free 1.0 scope and the absence of StoreKit;
 * diagnostic/containment mechanisms.
 
 Changes must have an explicit reason.
@@ -579,7 +579,7 @@ Changes must have an explicit reason.
 Freeze:
 
 * v1 scope;
-* monetization model;
+* free 1.0 scope and the absence of StoreKit;
 * critical flows;
 * G1–G6;
 * verification matrix;
@@ -595,7 +595,7 @@ After that point, a new finding can reopen GO/NO-GO only if it:
 1. trips G1–G6;
 2. causes an already-frozen deterministic invariant to fail;
 3. causes the statistical acceptance criterion to fail;
-4. invalidates the clean-install or purchase test matrix;
+4. invalidates the clean-install or persistence/sync test matrix;
 5. reveals a material security/privacy/compliance issue not covered by the prior review.
 
 Otherwise it goes through R1/R2/R3 triage.
@@ -634,6 +634,12 @@ Deterministic persistent identity loss.
 
 G1 + G3 → NO-GO.
 
+### StoreKit intentionally absent
+
+No StoreKit implementation exists. This is deliberate for the free 1.0 scope,
+not a release defect. Grade/Sell and any future Collection Integrity packaging
+require a separately approved experiment and release gate.
+
 ### Binder-page scanning absent
 
 No gate violated.
@@ -666,10 +672,10 @@ Post-launch candidate.
 10. Conduct structured external TestFlight testing.
 11. Fix any newly discovered hard-gate violations.
 12. Triage everything else R1/R2/R3 using fix economics.
-13. Finalize monetization, App Store claims and launch materials using measured evidence.
+13. Finalize free 1.0 App Store claims and launch materials using measured evidence.
 14. Declare the release candidate.
 15. Freeze the release framework.
-16. Run the full clean-install, deterministic, persistence, purchase and critical-flow suite against that exact RC.
+16. Run the full clean-install, deterministic, persistence/sync and critical-flow suite against that exact RC.
 17. GO or NO-GO strictly against the frozen criteria.
 18. Launch if GO.
 
@@ -681,7 +687,7 @@ Card Scanner 1.0 ships when all of the following are true:
 
 1. No known G1–G6 violation remains after the defined verification work has been performed.
 
-2. All frozen deterministic identity, valuation, persistence, import/export and purchase invariants pass on the release candidate.
+2. All frozen deterministic identity, valuation, persistence, import/export and free-scope invariants pass on the release candidate.
 
 3. On the frozen 500-card normal corpus, Card Scanner produces no more than one confidently-wrong exact identity; every such result has been root-caused; none is attributable to unresolved deterministic logic.
 
@@ -699,7 +705,7 @@ Card Scanner 1.0 ships when all of the following are true:
 
 10. App Store claims accurately reflect what was measured.
 
-11. The frozen RC passes clean-install and monetization testing.
+11. The frozen RC passes clean-install and persistence/sync testing for its free scope.
 
 At that point, additional improvement is no longer evidence that 1.0 is unready.
 

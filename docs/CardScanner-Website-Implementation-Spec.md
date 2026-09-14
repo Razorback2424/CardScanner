@@ -68,7 +68,7 @@ Build exactly four public routes:
 ├── Home
 ├── /privacy
 ├── /terms
-└── /contact
+└── /support
 ```
 
 Also implement:
@@ -304,7 +304,7 @@ Behavior:
 
 - Logo returns to `/`.
 - Homepage navigation items scroll to their corresponding sections.
-- On Privacy, Terms, and Contact pages, homepage-section links navigate to `/#section-id`.
+- On Privacy, Terms, and Support pages, homepage-section links navigate to `/#section-id`.
 - CTA scrolls to the final waitlist section on the homepage.
 - Header becomes subtly more opaque or gains a very light border/backdrop treatment after scrolling.
 - Do not use a large shadow.
@@ -1026,7 +1026,7 @@ CardScanner
 
 Privacy
 Terms
-Contact
+Support
 ```
 
 Also include:
@@ -1120,12 +1120,12 @@ Missing approved Terms text is a production-deployment blocker.
 
 ---
 
-# 26. Contact page
+# 26. Support page
 
 Route:
 
 ```text
-/contact
+/support
 ```
 
 Eyebrow:
@@ -1325,10 +1325,10 @@ Terms:
 Terms of Use — CardScanner
 ```
 
-Contact:
+Support:
 
 ```text
-Contact — CardScanner
+Support — CardScanner
 ```
 
 Implement:
@@ -1638,7 +1638,7 @@ Example:
   /page.tsx
   /privacy/page.tsx
   /terms/page.tsx
-  /contact/page.tsx
+  /support/page.tsx
   /not-found.tsx
 
 /components
@@ -1742,7 +1742,7 @@ Test:
 [ ] Every CTA
 [ ] Privacy
 [ ] Terms
-[ ] Contact
+[ ] Support
 [ ] Footer links
 [ ] 404 return link
 ```
@@ -1759,7 +1759,7 @@ Test:
 [ ] Failure state
 ```
 
-### Contact
+### Support
 
 If contact form exists:
 
@@ -1859,7 +1859,7 @@ Homepage passes only if:
 
 [ ] /terms exists and contains approved final copy.
 
-[ ] /contact exists and provides a real working contact mechanism.
+[ ] /support exists and provides a real working contact mechanism.
 
 [ ] Header and footer remain consistent across all routes.
 
@@ -1998,7 +1998,7 @@ Build:
 ```text
 /privacy
 /terms
-/contact
+/support
 ```
 
 Apply the same design system.

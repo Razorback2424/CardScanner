@@ -24,13 +24,12 @@ Each stage has a distinct job:
 
 **Reconcile** resolves discrepancies between reality and the database.
 
-**Verify Again** creates the recurring job and determines whether this can become a subscription business.
+**Verify Again** creates the recurring job and determines whether integrity
+maintenance has recurring user value.
 
-The monetization principle is:
-
-> **Free helps collectors establish an accurate representation of their collection. Pro makes maintaining that accuracy inexpensive enough to keep doing.**
-
-This should become the decision framework for the roadmap.
+The first public release is free. Any future packaging or monetization decision
+must follow observed retention behavior and receive a separately versioned
+experiment. This is the decision framework for the current roadmap.
 
 A feature that does not materially improve identity, physical organization, verification, reconciliation, migration, valuation integrity, or maintenance efficiency should face a much higher bar for near-term development.
 
@@ -48,11 +47,10 @@ It is:
 
 > **Collectors with sufficiently large or dynamic collections experience enough drift between their physical cards and their digital records that they will repeatedly use tools that make detecting and correcting that drift substantially easier.**
 
-The commercial hypothesis is:
-
-> **A meaningful subset of those collectors will pay roughly $30–$40 per year to reduce the ongoing effort required to maintain a trustworthy collection record.**
-
-The first version exists to test these hypotheses.
+There is no willingness-to-pay hypothesis in this experiment. The first version
+exists to test whether the recurring integrity job exists and whether serious
+collectors return to it after real-world change. Grade/Sell and economic
+workflows receive a separate future monetization experiment.
 
 Do not require the first version to prove the entire long-term vision.
 
@@ -76,7 +74,7 @@ For an intentionally targeted early cohort of approximately 15 serious collector
 - 8+ complete a real verification;
 - 5+ discover and resolve at least one genuine discrepancy;
 - 4+ voluntarily perform another verification or verify another meaningful location;
-- 2–3 indicate genuine willingness to pay approximately $30–$40/year for unrestricted integrity functionality.
+- 4+ complete a repeat Verify after a qualifying physical collection change within 42 days.
 
 These are directional validation thresholds, not statistical proof.
 
@@ -684,99 +682,27 @@ A collector with thousands of cards can realistically try CardScanner without re
 
 ---
 
-# PHASE 9 — Implement monetization only after the value loop exists
+# PHASE 9 — Separate future packaging from the free 1.0 release
 
-The subscription should monetize **ongoing integrity management**, not access to the camera.
+The public 1.0 contains the complete currently implemented scanner, collection,
+pricing, portfolio, import/export, graded, and sealed capabilities without a
+purchase gate. Place, Verify, Reconcile, Collection Health, and any future
+Grade/Sell workflow remain outside this binary.
 
-## Free
+After the retention experiment has produced evidence, a separate plan may
+define packaging around ongoing integrity maintenance. It must preserve data
+portability and must not gate the first meaningful value loop before that loop
+has been validated.
 
-The Free product should be genuinely useful.
-
-Likely included:
-
-Unlimited ordinary scanning  
-Price Check  
-Collection management  
-Import  
-Basic export  
-Basic portfolio/value functionality  
-Basic physical placement  
-One or a small number of physical containers  
-One complete meaningful Verify experience  
-Basic discrepancy reconciliation  
-Identity/variant uncertainty surfaced honestly
-
-A free user must be able to experience:
-
-> Place → Verify → discover a real discrepancy → resolve it
-
-without paying.
-
-## Pro
-
-Initial Pro hypothesis:
-
-> **$39.99/year**
->
-> Optional monthly price roughly proportional to market norms.
->
-> Founding offer approximately **$29.99 for the first year**, not a permanently discounted price.
-
-Pro should remove the operational friction of maintaining a large collection.
-
-Likely Pro value:
-
-Unlimited physical containers  
-Fast Scan-to-Place workflows  
-Unlimited / whole-collection verification  
-Saved verification sessions  
-Persistent verification history  
-Collection Health management  
-Staleness/freshness views and reminders  
-Cross-container discrepancy queues  
-Advanced reconciliation  
-Advanced migration reconciliation  
-Advanced price-integrity signals later  
-Binder-page verification later  
-Audit / insurance documentation later
-
-Avoid arbitrary usage tokens such as:
-
-> “3 Verifications remaining.”
-
-Prefer structural differences:
-
-> Basic verification is free. Running an authoritative, continuously maintained inventory system is Pro.
-
-## Paywall moment
-
-Do not interrupt the first Verify.
-
-Let the user see value.
-
-A good conversion context might look like:
-
-> **You found 4 discrepancies**
->
-> 71 cards verified  
-> 2 placements corrected  
-> 1 missing card  
-> 1 identity needs confirmation
->
-> Your collection is changing.  
-> **Pro makes keeping all of it verified easier.**
-
-The precise copy should be tested later.
+The free release does not define entitlement boundaries for this future
+subsystem. Any later packaging should preserve the complete first meaningful
+integrity loop and be based on observed maintenance value.
 
 ### Exit criterion
 
-The paid proposition clearly answers:
-
-> **Why should I keep paying next year?**
-
-with something stronger than:
-
-> because you have lots of cards.
+The retention evidence clearly answers whether collectors return to Verify after
+real collection change. Packaging and pricing are deferred until that evidence
+is available.
 
 ---
 
@@ -801,9 +727,8 @@ The core events should allow you to determine:
 | Discrepancy reconciled | Product helped solve problem |
 | Collection changed later | Real drift opportunity |
 | **Second Verify** | **Evidence of recurring job** |
-| Pro screen viewed after integrity event | Monetization context |
-| Pro purchase | Commercial conversion |
-| Verification after purchase | Subscription actually tied to behavior |
+| Later packaging discussion after integrity event | Future product decision context |
+| Repeat Verify after qualifying change | Recurring-job evidence |
 
 Respect the app's privacy/local-first principles.
 
@@ -860,9 +785,9 @@ The strongest possible signal is spontaneous behavior:
 
 ---
 
-# PHASE 12 — Run the commercial experiment
+# PHASE 12 — Run the retention experiment
 
-Once the end-to-end loop works, test the monetization thesis.
+Once the end-to-end loop works, test whether the recurring integrity job exists.
 
 Do not purchase advertising.
 
@@ -884,19 +809,18 @@ That communicates the differentiation.
 
 ### Scenario A
 
-Users Place → Verify → Verify again → pay.
+Users Place → Verify → Verify again.
 
-**Strong validation.**
+**Strong retention validation.**
 
 Invest further.
 
 ### Scenario B
 
-Users Place → Verify → Verify again, but don't pay.
+Users Place → Verify → Verify again, with no monetization decision attached.
 
-The recurring job probably exists.
-
-Investigate pricing, packaging, entitlement boundaries, or perceived value.
+The recurring job probably exists. Investigate frequency, targeting, speed,
+and perceived value before designing a separate packaging experiment.
 
 ### Scenario C
 
@@ -904,7 +828,7 @@ Users Place and Verify once but do not return.
 
 Potential one-time organization utility.
 
-Do not rationalize this into a recurring subscription business.
+Do not rationalize this into a recurring retention conclusion.
 
 Investigate whether another recurring job exists before making large investments.
 
@@ -1203,11 +1127,14 @@ Build one or two excellent incumbent import flows plus reconciliation.
 
 **Done when:** a serious collector can realistically switch without manually rebuilding thousands of records.
 
-## Milestone I — Free/Pro product
+## Milestone I — Future packaging decision
 
-Introduce entitlement boundaries around ongoing integrity maintenance.
+Only after the retention evidence exists, define any separate packaging or
+entitlement boundary without compromising portability or the first meaningful
+integrity loop.
 
-**Done when:** free users can experience the complete idea and Pro clearly reduces recurring maintenance cost.
+**Done when:** a separately approved experiment has a clear value and policy
+question. This milestone is not part of the free 1.0 release.
 
 ## Milestone J — Behavioral validation
 
@@ -1241,9 +1168,7 @@ Do not define success as:
 
 > “Users think Verify is cool.”
 
-Do not even define success initially as:
-
-> “Someone bought Pro.”
+Do not define success initially as a commercial conversion event.
 
 The strongest evidence is:
 
@@ -1263,6 +1188,7 @@ Verification establishes evidence.
 
 Reconciliation repairs drift.
 
-Pro reduces the ongoing maintenance burden.
+Any future packaging decision follows the measured maintenance burden; it is
+not part of the free 1.0 launch contract.
 
 And everything else should become progressively easier to prioritize against that central purpose.

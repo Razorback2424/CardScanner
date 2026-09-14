@@ -6,7 +6,7 @@
 
 **Authoritative goal:** [CardScanner Collection Integrity Strategy — Start-to-Finish Implementation Plan](<./CardScanner Collection Integrity Strategy — Start-to-Finish Implementation Plan.md>)
 
-**Code snapshot:** repository `HEAD` `d647a79`, including the working-tree changes present on September 13, 2026
+**Code snapshot:** repository `HEAD` `d647a79`, including the working-tree changes present on September 13, 2026. This is a historical assessment snapshot; the repository is now on `main` at `a115e4e`, where Task 1 of the active launch plan must revalidate all source claims before implementation. The older commit remains reachable for comparison.
 
 ## 1. Scope and evidence
 
@@ -137,6 +137,7 @@ However, the codebase has not yet proved the plan’s Phase 1 exit criterion bec
 | Scanner intent | [`ScannerViewModel`](../../TradingCardScanner/Views/ScannerViewModel.swift) distinguishes Collection and Price Check behavior | Preserves casual use and prevents Price Check from mutating ownership | No Place or Verify session context |
 | Owned collection | [`CollectedCard`](../../TradingCardScanner/Models/CollectedCard.swift) stores identity, quantity, variant, grading, and pricing bindings | Mature foundation for cataloged ownership | Combines aggregate ownership and item facts; lacks stable physical-copy identity |
 | Collection mutations | [`CollectionActivity`](../../TradingCardScanner/Models/CollectionActivity.swift) records user-facing adds, removes, restores, corrections, and quantity changes | Reusable audit vocabulary and operation identifiers | No placement, observation, discrepancy, or reconciliation evidence |
+| Structured persistence selection | [`TradingCardScannerApp.makeContainer()`](../../TradingCardScanner/App/TradingCardScannerApp.swift) opens the five synced models through unnamed configurations (`.automatic` or `.none`) | Existing records currently live in SwiftData’s default structured-store location | No explicit URL/identity contract; a new named URL can make a pre-existing `default.store` appear fresh unless legacy discovery/adoption runs before any account, anchor, or `storeID` decision |
 | Economic inventory | [`InventoryEvent`](../../TradingCardScanner/Models/InventoryEvent.swift) and [`InventoryLedger`](../../TradingCardScanner/Services/InventoryLedger.swift) support append-only portfolio accounting | Strong value/quantity integrity substrate | “Reconciliation” is ledger consistency, not physical truth |
 | Identity resolution | Variant resolution, catalog normalization, graded/sealed identifiers, and candidate handling preserve meaningful provenance | Directly supports Resolve and uncertainty discipline | Resolution evidence is attached to collection/catalog workflows, not physical observations |
 | Import/export | [`CollectionCSV`](../../TradingCardScanner/Services/CollectionCSV.swift) parses native and portfolio-style CSV and exports collection data | Provides a migration foothold and portability | No source-aware session, mapping review queue, original-row provenance, or per-copy placement round trip |
@@ -226,11 +227,11 @@ The implementation plan calls for explicit invariants before Milestone B. The cu
 24. Individually managed units and placement/provenance data can round-trip without collapsing silently into an aggregate.
 25. Unknown source fields or ambiguous mappings remain available for review rather than being converted into false certainty.
 
-### Entitlements and privacy
+### Privacy and future packaging
 
-26. A free user can complete one meaningful Place → Verify → discrepancy → Reconcile loop.
-27. Losing Pro eligibility cannot make owned data inaccessible or non-exportable.
-28. Entitlement changes do not delete containers, placements, history, or discrepancies.
+26. The future integrity product must allow a free user to complete one meaningful Place → Verify → discrepancy → Reconcile loop.
+27. Any later packaging change cannot make owned data inaccessible or non-exportable.
+28. Any later packaging change cannot delete containers, placements, history, or discrepancies.
 29. Behavioral instrumentation does not upload private card identities, locations, certification numbers, or full inventory contents by default.
 
 ## 6. Phase-by-phase gap matrix
@@ -246,10 +247,10 @@ The implementation plan calls for explicit invariants before Milestone B. The cu
 | 6 — Verification provenance | Missing | Activity and inventory ledgers | Separate placement/verification/reconciliation evidence model and projections |
 | 7 — Collection Health | Missing | Portfolio projection patterns | Integrity dimensions, freshness policy, actionable drill-downs, incremental computation |
 | 8 — Migration acquisition | Early partial | CSV import/export and catalog normalization | Source adapters, staged sessions, mapping classifications, provenance, review queues, large-import resilience |
-| 9 — Monetization | Missing | None in production code | StoreKit, entitlement source of truth, structural Free/Pro policy, purchase/restore, data-safe downgrade behavior |
+| 9 — Future packaging | Intentionally deferred for free 1.0 | No StoreKit code; portability principles | A separately approved future value/packaging experiment, after retention evidence |
 | 10 — Behavioral instrumentation | Missing | Performance diagnostics only | Privacy-safe domain events and derived funnel for change → second Verify |
 | 11 — Private validation | Not a code feature, but support missing | TestFlight/release infrastructure | Cohort/config hooks, consent-aware diagnostics, support bundle for integrity workflows |
-| 12 — Commercial experiment | Missing | None | Paywall-context events, offer configuration, attribution to integrity outcomes, post-purchase behavior |
+| 12 — Retention experiment | Defined, future behavior | Privacy-safe scorecard and event contract | Observe repeat Verify after a qualifying change; no pricing conclusion |
 | 13 — Binder-page recognition | Correctly deferred | Existing single-card CV | No present implementation requirement; keep observations method-independent |
 | 14 — Deepen integrity | Future | Pricing provenance and ledger foundations | Reminders, cross-container analysis, batch workflows, reports; should wait for validation |
 | 15 — Long-term moat | Future | Resolution provenance begins an evidence base | Privacy-safe correction corpus, versioned evidence semantics, feedback/learning governance |
@@ -289,7 +290,10 @@ The Phase 1 exit gate should be a signed-off matrix of silent-integrity risks, n
 
 #### Documentation conflict
 
-The existing 1.0 go/no-go framework describes a monetized 1.0 and treats purchase/restore as launch-critical, while the live app contains no StoreKit implementation and the authoritative strategy defers monetization until after the integrity loop exists. That release document is now strategically stale. It should be revised before it is used as an execution gate.
+The 1.0 go/no-go framework previously described a monetized release and
+purchase/restore as launch-critical. The active launch plan now freezes a free
+1.0 with no StoreKit flow; the framework must remain reconciled with that
+decision before it is used as an execution gate.
 
 ### Milestone B — Physical truth model
 
@@ -517,11 +521,13 @@ There are no verified, named adapters for Collectr, TCGplayer, Dex, or ManaBox. 
 
 Basic export is already free, which is aligned. It must evolve so new physical data can be exported without breaking older aggregate consumers. At minimum, export needs either a versioned richer format or linked holding/unit/placement files that preserve stable IDs and uncertainty. A flattened file that silently loses individualized units or audit state would contradict the portability promise.
 
-### Milestone I — Free/Pro product
+### Milestone I — Future packaging decision
 
-No subscription implementation was found. There are no StoreKit products, purchase/restore flows, entitlement source of truth, feature policy, paywall context, or downgrade behavior.
+No StoreKit implementation was found, intentionally. The free 1.0 release has
+no purchase, restore, paywall, or entitlement flow. A future packaging design
+must follow the retention experiment and preserve data access/export.
 
-#### Architectural requirement
+#### Future architectural requirement
 
 Entitlement checks should live behind a capability policy, not be scattered as ad hoc view conditions. The policy needs to answer questions such as:
 
@@ -533,7 +539,7 @@ Entitlement checks should live behind a capability policy, not be scattered as a
 
 It should not answer “can the user access their data?” with no after a subscription lapse.
 
-#### Free-loop requirement
+#### Future free-loop requirement
 
 Automated tests must prove that Free can complete a meaningful integrity loop and export all owned data. Pro tests should prove structural scale/efficiency benefits without corrupting or hiding previously created state after downgrade.
 
@@ -545,7 +551,7 @@ The current settings flow relies on users supplying a JustTCG key, and the repos
 
 The app has performance instrumentation, but not product-behavior instrumentation.
 
-The strategy’s validation chain requires privacy-safe events for:
+The strategy’s retention validation chain requires privacy-safe events for:
 
 - import start/completion and mapping classes;
 - container creation;
@@ -554,8 +560,8 @@ The strategy’s validation chain requires privacy-safe events for:
 - discrepancy discovery and reconciliation;
 - later collection or placement change;
 - second verification of the relevant scope after that change;
-- Pro screen exposure after an integrity outcome;
-- purchase and verification after purchase.
+- a later collection or placement change;
+- a repeat Verify after that change.
 
 These should be domain events or derived counters with versioned semantics. `CollectionActivity` should not be uploaded as analytics: it contains detailed private collection behavior. Prefer on-device aggregation and transmit only coarse counts, durations, funnel state, and error categories where possible.
 
@@ -571,7 +577,6 @@ The decision gate is primarily strategic, but code must make its evidence trustw
 
 - stable event definitions across releases;
 - app/schema version attached to aggregates;
-- feature/offer configuration so packaging experiments do not require model changes;
 - exportable aggregate experiment summaries;
 - latency and abandonment measurement for Place, Verify, and Reconcile;
 - observation-method timing so “sequential Verify is too slow” can be distinguished from identity failures or setup friction.
@@ -666,14 +671,12 @@ The existing test investment is a major asset. The new work should extend its in
 - unresolved discrepancies survive restart;
 - conflicting reconciliation across devices remains explainable.
 
-### Entitlement tests
+### Future packaging tests
 
-- Free completes the first meaningful loop;
-- Pro unlocks structural scale and history;
-- restore purchases works;
-- offline entitlement behavior is defined;
-- downgrade preserves view/export access and data;
-- paywall appears after value, not before first discrepancy resolution.
+- the free product completes the first meaningful loop;
+- any later packaging preserves view/export access and data;
+- any later purchase/restore behavior is specified only in its own approved
+  release plan.
 
 ### Rendered workflow tests
 
@@ -686,7 +689,7 @@ The authoritative strategy should now govern near-term roadmap decisions, but se
 | Document/area | Current mismatch | Required reconciliation |
 |---|---|---|
 | `README.md` | Positions the product chiefly around scanning/intake, collection, and portfolio | Add the integrity thesis once implementation begins; keep current-state claims honest until then |
-| `docs/release/card-scanner-1.0-go-no-go-framework.md` | Assumes monetized 1.0 and purchase/restore gating; treats physical mapping as later scope | Separate current scanner release readiness from post-loop monetization; make sequential physical integrity the next strategic program |
+| `docs/release/card-scanner-1.0-go-no-go-framework.md` | Previously assumed monetized 1.0 and purchase/restore gating | Keep the free 1.0 persistence/sync gates separate from any future packaging experiment |
 | `docs/plans/documentation_audit.md` | Older test counts and pre-hardening architecture snapshot | Supersede counts with latest verified run and link the new vision/gap report |
 | `docs/plans/release_followups.md` | Contains real-device/provider follow-ups | Retain and promote silent-integrity gates into Milestone A exit evidence |
 | `docs/plans/shared_pricing_cache_plan.md` | Records future commercial pricing infrastructure | Keep as a dependency for scalable free pricing, not as the collection-integrity domain design |
@@ -761,11 +764,11 @@ The authoritative Milestones A–K are sound. From the live codebase, the safest
 - build fixtures, session/provenance model, staged mapping, and review;
 - then add a second adapter only after the first is robust.
 
-### Slice I/J — Entitlements and behavioral truth
+### Slice I/J — Retention evidence, then future packaging
 
-- implement privacy-safe event semantics before cohort validation;
-- add StoreKit and structural Free/Pro policies only after the complete loop works;
-- verify first-loop access, data-safe downgrade, purchase/restore, and post-purchase use.
+- implement the frozen privacy-safe event semantics before cohort validation;
+- observe repeat Verify after a qualifying physical change;
+- only after that evidence, write a separate packaging plan if warranted.
 
 Each slice should preserve existing scanner, Price Check, collection, pricing, portfolio, import/export, graded, and sealed behavior. Large speculative rewrites are unnecessary if the new domains are introduced behind explicit services and projections.
 
