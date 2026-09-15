@@ -314,10 +314,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// remain eligible without turning a deterministic miss into an 8-hour
     /// metered request loop.
     nonisolated static func needsNormalization(_ card: CollectedCard, now: Date = .now) -> Bool {
-        guard card.providerID.hasPrefix("csv:"),
-              card.catalogProviderID == nil || card.imageURL == nil else {
-            return false
-        }
+        guard hasUnresolvedCatalogMetadata(card) else { return false }
         if card.itemKind == .sealedProduct,
            card.justTCGCardID == nil,
            card.justTCGVariantID == nil,
@@ -329,6 +326,27 @@ final class CollectionCatalogNormalizer: ObservableObject {
         if card.catalogMetadataVersion < Self.metadataVersion { return true }
         guard let checkedAt = card.catalogMetadataCheckedAt else { return true }
         return now.timeIntervalSince(checkedAt) >= Self.retryInterval
+    }
+
+    /// Whether the normalizer still has something to repair on this row.
+    ///
+    /// This deliberately asks what the row is *missing* rather than where it
+    /// came from. The gate used to require a synthetic `csv:` provider id,
+    /// which silently assumed every imported row had one. It does not: a CSV
+    /// that carries a real `provider_id` keeps that id verbatim, and only a
+    /// row without one is given a synthetic `csv:` identity. Rows imported
+    /// with real provider ids were therefore excluded from normalization
+    /// permanently, so their rarity, artwork and catalog identity stayed
+    /// empty for the life of the collection with no path back.
+    ///
+    /// Rarity is part of the repair set because a printing always has one —
+    /// except sealed product, which is not a printing and carries no rarity
+    /// by construction, and would otherwise never stop being a candidate.
+    nonisolated static func hasUnresolvedCatalogMetadata(_ card: CollectedCard) -> Bool {
+        if card.catalogProviderID == nil { return true }
+        if card.imageURL == nil { return true }
+        if card.itemKind != .sealedProduct, (card.rarity ?? "").isEmpty { return true }
+        return false
     }
 
     nonisolated static func isDefinitiveSealedMiss(_ card: CollectedCard) -> Bool {

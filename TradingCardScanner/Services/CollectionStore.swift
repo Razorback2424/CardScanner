@@ -2425,8 +2425,12 @@ struct CollectionStore {
             if let existing {
                 existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, quantity)
                 existing.dateAdded = .now
-                if existing.catalogProviderID == nil,
-                   existing.providerID.hasPrefix("csv:") {
+                // Any row still missing its catalog identity can take the one
+                // this scan just resolved. Requiring a synthetic `csv:`
+                // provider id here excluded rows imported with a real
+                // provider id, which are exactly the rows that never get a
+                // catalog identity from normalization either.
+                if existing.catalogProviderID == nil {
                     existing.catalogProviderID = card.providerID
                 }
                 if existing.magicTreatmentIDsRaw.isEmpty {

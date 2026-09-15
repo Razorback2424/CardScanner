@@ -331,6 +331,77 @@ final class CatalogNormalizationTests: XCTestCase {
         )
     }
 
+    // MARK: - Rows imported with a real provider id
+
+    /// A CSV that carries a real `provider_id` keeps that id verbatim; only a
+    /// row without one is given a synthetic `csv:` identity. Gating
+    /// normalization on the `csv:` prefix therefore excluded exactly the rows
+    /// that arrive with catalog identity and rarity unset, and left them that
+    /// way permanently.
+    private func importedCardWithRealProviderID() -> CollectedCard {
+        CollectedCard(
+            collectionKey: "magic:6c45a5df-048e-4b73-89c6-5cdaa330319e#foil",
+            game: .magic,
+            providerID: "6c45a5df-048e-4b73-89c6-5cdaa330319e",
+            name: "Prison Break",
+            setName: "Marvel's Spider-Man",
+            setCode: "spm",
+            cardNumber: "61",
+            rarity: nil,
+            imageURL: "https://cards.scryfall.io/normal/front/6/c/6c45a5df.jpg",
+            thumbnailURL: "https://cards.scryfall.io/small/front/6/c/6c45a5df.jpg",
+            variant: .foil,
+            variantResolution: .imported
+        )
+    }
+
+    func testRowImportedWithRealProviderIDStillNormalizes() {
+        let card = importedCardWithRealProviderID()
+
+        XCTAssertTrue(
+            CollectionCatalogNormalizer.needsNormalization(card),
+            "a row imported with a real provider id has no catalog identity and no rarity, so it must still be repairable"
+        )
+    }
+
+    func testMissingRarityAloneKeepsRowEligible() {
+        let card = importedCardWithRealProviderID()
+        card.catalogProviderID = "6c45a5df-048e-4b73-89c6-5cdaa330319e"
+
+        XCTAssertTrue(
+            CollectionCatalogNormalizer.needsNormalization(card),
+            "rarity is part of a printing's catalog metadata, so a row missing it is not finished"
+        )
+    }
+
+    func testFullyResolvedRowIsNotACandidate() {
+        let card = importedCardWithRealProviderID()
+        card.catalogProviderID = "6c45a5df-048e-4b73-89c6-5cdaa330319e"
+        card.rarity = "uncommon"
+
+        XCTAssertFalse(
+            CollectionCatalogNormalizer.needsNormalization(card),
+            "a row with catalog identity, artwork and rarity has nothing left to repair"
+        )
+    }
+
+    /// Sealed product is not a printing and carries no rarity by construction,
+    /// so the rarity clause must never make it a permanent candidate.
+    func testResolvedSealedProductIsNotHeldOpenByMissingRarity() {
+        let card = importedSealedProduct()
+        card.catalogProviderID = "product-uuid"
+        card.imageURL = "https://example.invalid/product.png"
+        card.justTCGCardID = "product-uuid"
+        card.catalogMetadataCheckedAt = .now
+        card.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion
+
+        XCTAssertNil(card.rarity)
+        XCTAssertFalse(
+            CollectionCatalogNormalizer.needsNormalization(card),
+            "sealed product has no rarity to find, so a resolved row must go quiet"
+        )
+    }
+
     private func importedSealedProduct() -> CollectedCard {
         let card = CollectedCard(
             collectionKey: "sealed:csv:Base Set|Booster Box",
