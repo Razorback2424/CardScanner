@@ -1,14 +1,9 @@
 import Combine
 import ImageIO
+import OSLog
 import SwiftData
 import SwiftUI
 import UIKit
-
-enum BrowseScope: Hashable {
-    case all
-    case cards
-    case sealed
-}
 
 @MainActor
 final class BrowseViewModel: ObservableObject {
@@ -21,15 +16,16 @@ final class BrowseViewModel: ObservableObject {
 
     @Published var searchText = "" { didSet { scheduleSearch() } }
     @Published var selectedGame: CardGame? { didSet { scheduleSearch() } }
-    @Published var searchScope: BrowseScope = .all { didSet { scheduleSearch() } }
     @Published var selectedSets: Set<CatalogSetID> = [] { didSet { scheduleSearch() } }
     @Published private(set) var sets: [CardGame: [CatalogSet]] = [:]
     @Published private(set) var setErrors: [CardGame: String] = [:]
     @Published private(set) var lanes: [CardGame: Lane] = [:]
+    @Published private(set) var searchResults: [CatalogSearchResult] = []
 
     let catalog: any BrowseCatalogProviding
     let sealedModel: SealedBrowseModel
     private var searchTask: Task<Void, Never>?
+    private var searchResultsRefreshTask: Task<Void, Never>?
     private var generation = UUID()
     private var sealedModelCancellable: AnyCancellable? = nil
 
@@ -41,12 +37,108 @@ final class BrowseViewModel: ObservableObject {
         let sealedModel = sealedModel ?? SealedBrowseModel(transport: JustTCGTransport.shared)
         self.sealedModel = sealedModel
         self.sealedModelCancellable = sealedModel.objectWillChange.sink { [weak self] _ in
-            self?.objectWillChange.send()
+            guard let self else { return }
+            self.objectWillChange.send()
+            self.scheduleSearchResultsRefresh()
         }
+        recomputeSearchResults()
     }
 
     var normalizedQuery: String { CardNameSearch.normalize(searchText) }
     var isSearching: Bool { !normalizedQuery.isEmpty }
+
+    var searchGames: [CardGame] {
+        selectedGame.map { [$0] } ?? CardGame.allCases
+    }
+
+    /// A single deterministic stream assembled from the independently paged
+    /// card and sealed lanes. It is refreshed when either lane family changes,
+    /// so a render does not sort the same provider pages more than once.
+    private func recomputeSearchResults() {
+        let cardResults = searchGames.flatMap { game in
+            (lanes[game]?.cards ?? []).map(CatalogSearchResult.card)
+        }
+        let sealedResults = searchGames.flatMap { game in
+            (sealedModel.searchLanes[game]?.products ?? []).map {
+                CatalogSearchResult.sealed(game: game, product: $0)
+            }
+        }
+        let updated = CatalogSearchResultRanking.sorted(
+            cardResults + sealedResults,
+            query: normalizedQuery
+        )
+        if searchResults != updated {
+            searchResults = updated
+        }
+    }
+
+    private func scheduleSearchResultsRefresh() {
+        searchResultsRefreshTask?.cancel()
+        searchResultsRefreshTask = Task { @MainActor [weak self] in
+            await Task.yield()
+            guard !Task.isCancelled, let self else { return }
+            self.recomputeSearchResults()
+        }
+    }
+
+    var searchState: CatalogSearchState {
+        guard normalizedQuery.count >= 2 else { return .idle }
+        let games = searchGames
+        var statuses: [CatalogSearchLaneStatus] = games.map { game in
+            guard let lane = lanes[game] else {
+                return CatalogSearchLaneStatus(isLoading: true)
+            }
+            return CatalogSearchLaneStatus(
+                isLoading: lane.isLoading,
+                error: lane.error
+            )
+        }
+
+        let sealedWasSkipped = !sealedModel.isConfigured
+            && games.contains { !sealedLaneIsRequested(for: $0) }
+        for game in games where sealedLaneIsRequested(for: game) {
+            if let lane = sealedModel.searchLanes[game] {
+                statuses.append(
+                    CatalogSearchLaneStatus(
+                        isLoading: lane.isLoading,
+                        error: lane.error
+                    )
+                )
+            } else {
+                statuses.append(CatalogSearchLaneStatus(isLoading: true))
+            }
+        }
+
+        return CatalogSearchState.reduce(
+            resultCount: searchResults.count,
+            lanes: statuses,
+            sealedWasSkippedForMissingCredentials: sealedWasSkipped
+        )
+    }
+
+    var hasSearchPagination: Bool {
+        guard normalizedQuery.count >= 2 else { return false }
+        return searchGames.contains { game in
+            if let lane = lanes[game], lane.cursor != nil, lane.error == nil {
+                return true
+            }
+            if sealedLaneIsRequested(for: game),
+               let lane = sealedModel.searchLanes[game],
+               lane.nextOffset != nil,
+               lane.error == nil {
+                return true
+            }
+            return false
+        }
+    }
+
+    var searchPaginationKey: String {
+        searchGames.map { game in
+            let card = lanes[game]?.cursor ?? "-"
+            let sealed = sealedModel.searchLanes[game]?.nextOffset.map(String.init) ?? "-"
+            return [game.rawValue, card, sealed].joined(separator: ":")
+        }.joined(separator: "|")
+    }
 
     func loadSets() async {
         for game in CardGame.allCases where sets[game] == nil {
@@ -98,15 +190,58 @@ final class BrowseViewModel: ObservableObject {
             currentLane.cursor = page.nextCursor
             currentLane.error = nil
             lanes[game] = currentLane
+            recomputeSearchResults()
         } catch {
             guard generation == requestedGeneration,
                   CardNameSearch.normalize(searchText) == requestedQuery,
                   var currentLane = lanes[game],
                   currentLane.cursor == cursor else { return }
+            if Task.isCancelled || error is CancellationError || (error as? URLError)?.code == .cancelled {
+                return
+            }
             currentLane.error = error.localizedDescription
             lanes[game] = currentLane
             return
         }
+    }
+
+    /// Loads the next page for every eligible card and sealed lane. Each lane
+    /// remains independent, so a card and sealed page for the same game can be
+    /// in flight together.
+    func loadMoreSearchResults() async {
+        let query = normalizedQuery
+        guard query.count >= 2 else { return }
+        let games = searchGames
+
+        await withTaskGroup(of: Void.self) { group in
+            for game in games {
+                if let lane = lanes[game],
+                   lane.cursor != nil,
+                   !lane.isLoading,
+                   lane.error == nil {
+                    group.addTask { [weak self] in
+                        await self?.loadMore(game)
+                    }
+                }
+
+                if sealedLaneIsRequested(for: game),
+                   let lane = sealedModel.searchLanes[game],
+                   lane.nextOffset != nil,
+                   !lane.isLoading,
+                   lane.error == nil {
+                    group.addTask { [weak self] in
+                        guard let self else { return }
+                        await self.sealedModel.loadMoreSearch(game: game, query: query)
+                    }
+                }
+            }
+            await group.waitForAll()
+        }
+        recomputeSearchResults()
+    }
+
+    func retrySearch() {
+        scheduleSearch()
     }
 
     private func scheduleSearch() {
@@ -117,13 +252,21 @@ final class BrowseViewModel: ObservableObject {
         guard !query.isEmpty else {
             lanes = [:]
             sealedModel.clearSearch()
+            recomputeSearchResults()
             return
         }
         guard query.count >= 2 else {
             lanes = [:]
             sealedModel.clearSearch()
+            recomputeSearchResults()
             return
         }
+        // A new query, game, or card-set filter invalidates both result
+        // families immediately. The debounce then repopulates only the lanes
+        // for the current selection.
+        lanes = [:]
+        sealedModel.clearSearch()
+        recomputeSearchResults()
         searchTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(400))
             guard !Task.isCancelled, let self, self.generation == token else { return }
@@ -132,25 +275,18 @@ final class BrowseViewModel: ObservableObject {
     }
 
     private func runSearch(query: String, token: UUID) async {
-        let games = selectedGame.map { [$0] } ?? CardGame.allCases
-        let searchesCards = searchScope != .sealed
-        let searchesSealed = searchScope != .cards
+        let games = searchGames
+        for game in games { lanes[game] = Lane(isLoading: true) }
+        for game in CardGame.allCases where !games.contains(game) { lanes[game] = nil }
+        recomputeSearchResults()
 
-        if searchesCards {
-            for game in games { lanes[game] = Lane(isLoading: true) }
-            for game in CardGame.allCases where !games.contains(game) { lanes[game] = nil }
-        } else {
-            lanes = [:]
-        }
+        async let cardSearch: Void = searchCardLanes(games: games, query: query, token: token)
+        async let sealedSearch: Void = sealedModel.search(query: query, games: games)
+        _ = await (cardSearch, sealedSearch)
+    }
 
-        if searchesCards {
-            await searchCardLanes(games: games, query: query, token: token)
-        }
-        if searchesSealed {
-            await sealedModel.search(query: query, games: games)
-        } else {
-            sealedModel.clearSearch()
-        }
+    private func sealedLaneIsRequested(for game: CardGame) -> Bool {
+        sealedModel.isConfigured || !(sealedModel.searchLanes[game]?.products.isEmpty ?? true)
     }
 
     private func searchCardLanes(games: [CardGame], query: String, token: UUID) async {
@@ -184,6 +320,7 @@ final class BrowseViewModel: ObservableObject {
                 case let .failure(error):
                     lanes[game] = Lane(error: error.localizedDescription)
                 }
+                recomputeSearchResults()
             }
         }
     }
@@ -216,57 +353,20 @@ struct BrowseView: View {
         _model = StateObject(wrappedValue: BrowseViewModel(catalog: catalog))
     }
 
-    /// Sealed browse is per game, using the vendor's own set directory. Each
-    /// game's directory costs one request, and only when opened.
-    @ViewBuilder private var sealedChooser: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Sealed products")
-                .font(.title2.bold())
-
-            ForEach(CardGame.allCases) { game in
-                NavigationLink {
-                    SealedSetDirectoryView(game: game, model: model.sealedModel)
-                } label: {
-                    HStack {
-                        Label(game.label, systemImage: "shippingbox")
-                            .font(.headline)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(.tertiary)
-                    }
-                    .padding(14)
-                    .frame(minHeight: 44)
-                    .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
-                }
-                .buttonStyle(.plain)
-            }
-
-            if !PriceVendorCredentials.hasKey {
-                Text("Add a pricing API key in Settings to browse sealed products.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 18) {
                 searchField
-                // Search results stay sectioned by kind and game, so cards and
-                // sealed products can be searched together without pretending
-                // that they are interchangeable catalogue records.
                 if model.isSearching {
                     searchBody
                 } else {
                     recentlyReleasedRail
                     gameChooser
-                    sealedChooser
                 }
             }
             .padding(16)
             .contentWidthLimit(.standard)
+            .safeAreaPadding(.bottom, 24)
         }
         .scrollDismissesKeyboard(.interactively)
         .navigationTitle("Catalog")
@@ -372,7 +472,7 @@ struct BrowseView: View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-                TextField("Search cards and sealed products", text: $model.searchText)
+                TextField("Search the catalog", text: $model.searchText)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
                     .focused($searchFocused)
@@ -408,6 +508,7 @@ struct BrowseView: View {
                         )
                     }
                     .buttonStyle(.bordered)
+                    .accessibilityHint("Filters card results only")
                     Spacer()
                 }
                 .font(.subheadline)
@@ -420,28 +521,12 @@ struct BrowseView: View {
         return model.selectedSets.filter { $0.game == game }.count
     }
 
-    private var searchGames: [CardGame] {
-        model.selectedGame.map { [$0] } ?? CardGame.allCases
-    }
-
-    private var recentOwnedRowsByGame: [CardGame: [CollectionRow]] {
-        let eligibleRows = (projectionStore.snapshot?.rows ?? []).filter {
-            $0.quantity > 0 && $0.itemKind.countsTowardSetCompletion
-        }
-        return Dictionary(grouping: eligibleRows, by: \.game).mapValues { rows in
-            Array(rows.sorted {
-                if $0.dateAdded != $1.dateAdded { return $0.dateAdded > $1.dateAdded }
-                return $0.id < $1.id
-            }.prefix(3))
-        }
-    }
-
     private var isCatalogLoadedForRail: Bool {
         CardGame.allCases.allSatisfy { model.sets[$0] != nil }
     }
 
-    private var justReleasedSets: [CatalogSet] {
-        CatalogSetOrdering.justReleased(from: model.sets)
+    private var releaseRail: CatalogReleaseRail {
+        CatalogSetOrdering.releaseRail(from: model.sets)
     }
 
     private var ownership: CatalogOwnershipIndex {
@@ -450,14 +535,14 @@ struct BrowseView: View {
 
     @ViewBuilder
     private var recentlyReleasedRail: some View {
-        if isCatalogLoadedForRail, !justReleasedSets.isEmpty {
+        if isCatalogLoadedForRail, !releaseRail.sets.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Just released")
+                Text(releaseRail.title)
                     .font(.title2.bold())
 
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(alignment: .top, spacing: 12) {
-                        ForEach(justReleasedSets) { set in
+                        ForEach(releaseRail.sets) { set in
                             NavigationLink {
                                 CatalogSetCardsView(set: set, catalog: model.catalog)
                             } label: {
@@ -465,11 +550,13 @@ struct BrowseView: View {
                                     set: set,
                                     completion: ownership.progress(for: set),
                                     layout: .rail,
-                                    showsNewBadge: CatalogSetOrdering.isNew(set)
+                                    showsNewBadge: releaseRail.showsNewBadges
                                 )
                             }
                             .buttonStyle(.plain)
-                            .frame(width: 248)
+                            .containerRelativeFrame(.horizontal) { width, _ in
+                                min(max(width * 0.72, 220), 300)
+                            }
                         }
                     }
                     .padding(.vertical, 1)
@@ -480,19 +567,22 @@ struct BrowseView: View {
     }
 
     @ViewBuilder private var gameChooser: some View {
-        let recentRowsByGame = recentOwnedRowsByGame
-        Text("Everything in the catalog")
-            .font(.title2.bold())
+        let rows = projectionStore.snapshot?.rows ?? []
+        Text("Browse by game")
+            .font(.headline)
         ForEach(CardGame.allCases) { game in
             if let sets = model.sets[game] {
+                let summary = CatalogGameSummary(game: game, sets: sets, rows: rows)
                 NavigationLink {
-                    CatalogGameCardsView(game: game, sets: sets, catalog: model.catalog)
-                } label: {
-                    CatalogGameRow(
+                    CatalogGameBrowseView(
                         game: game,
                         sets: sets,
-                        ownedRows: recentRowsByGame[game] ?? []
+                        catalog: model.catalog,
+                        sealedModel: model.sealedModel,
+                        onOpenSettings: { isShowingSettings = true }
                     )
+                } label: {
+                    CatalogGameRow(summary: summary)
                 }
                 .buttonStyle(.plain)
             } else if let error = model.setErrors[game] {
@@ -512,26 +602,29 @@ struct BrowseView: View {
     private struct CatalogGameArtwork: Identifiable {
         let slot: Int
         let url: URL?
-        let fallbackURL: URL?
+        let fallbacks: [URL]
+        let localAssetName: String?
         let placeholderText: String
 
         var id: Int { slot }
     }
 
     private struct CatalogGameRow: View {
-        let game: CardGame
-        let sets: [CatalogSet]
-        let ownedRows: [CollectionRow]
+        let summary: CatalogGameSummary
 
         var body: some View {
             HStack(spacing: 14) {
-                CatalogGameFan(game: game, sets: sets, ownedRows: ownedRows)
+                CatalogGameFan(
+                    game: summary.game,
+                    ownedRows: summary.recentArtworkRows,
+                    fallbackSets: summary.recentSetArtwork
+                )
                     .accessibilityHidden(true)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(game.label)
+                    Text(summary.game.label)
                         .font(.headline)
-                    Text("\(sets.count) sets")
+                    Text(summary.subtitle)
                         .font(.subheadline)
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
@@ -553,26 +646,37 @@ struct BrowseView: View {
 
     private struct CatalogGameFan: View {
         let game: CardGame
-        let sets: [CatalogSet]
         let ownedRows: [CollectionRow]
+        let fallbackSets: [CatalogSet]
         private static let horizontalOffsets: [CGFloat] = [2, 24, 44]
 
         private var artworks: [CatalogGameArtwork] {
             var result = ownedRows.prefix(3).enumerated().map { index, row in
-                CatalogGameArtwork(
+                let artwork = CatalogCardArtworkSource(
+                    game: row.game,
+                    setCode: row.setCode,
+                    collectorNumber: row.cardNumber,
+                    thumbnailURL: row.lowImageURL,
+                    imageURL: row.highImageURL,
+                    prefersFullSize: false
+                )
+                return CatalogGameArtwork(
                     slot: index,
-                    url: row.lowImageURL ?? row.highImageURL,
-                    fallbackURL: row.lowImageURL == nil ? nil : row.highImageURL,
+                    url: artwork.primaryURL,
+                    fallbacks: artwork.fallbacks,
+                    localAssetName: nil,
                     placeholderText: row.name
                 )
             }
 
-            for set in CatalogSetOrdering.newestFirst(sets) where result.count < 3 {
+            for set in fallbackSets where result.count < 3 {
+                let artwork = PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
                 result.append(
                     CatalogGameArtwork(
                         slot: result.count,
-                        url: set.logoURL ?? set.symbolURL,
-                        fallbackURL: set.logoURL == nil ? nil : set.symbolURL,
+                        url: artwork.primaryURL,
+                        fallbacks: artwork.fallbacks,
+                        localAssetName: artwork.localAssetName,
                         placeholderText: set.code
                     )
                 )
@@ -583,7 +687,8 @@ struct BrowseView: View {
                     CatalogGameArtwork(
                         slot: result.count,
                         url: nil,
-                        fallbackURL: nil,
+                        fallbacks: [],
+                        localAssetName: nil,
                         placeholderText: game.label
                     )
                 )
@@ -597,10 +702,11 @@ struct BrowseView: View {
                     let index = artwork.slot
                     CatalogCachedImage(
                         url: artwork.url,
-                        fallbackURL: artwork.fallbackURL,
+                        fallbacks: artwork.fallbacks,
                         targetPixelSize: 160,
                         placeholderSymbol: "rectangle.portrait",
-                        placeholderText: artwork.placeholderText
+                        placeholderText: artwork.placeholderText,
+                        localAssetName: artwork.localAssetName
                     )
                     .frame(width: 38, height: 52)
                     .rotationEffect(.degrees(Double(index - 1) * 7))
@@ -614,136 +720,202 @@ struct BrowseView: View {
         }
     }
 
-    private var cardSearchGamesWithContent: [CardGame] {
-        guard model.searchScope != .sealed else { return [] }
-        return searchGames.filter { game in
-            guard let lane = model.lanes[game] else { return true }
-            return !lane.cards.isEmpty || lane.isLoading || lane.error != nil
-        }
-    }
-
-    private var hasCardContent: Bool {
-        !cardSearchGamesWithContent.isEmpty
-    }
-
-    private var sealedSearchGamesWithContent: [CardGame] {
-        searchGames.filter { game in
-            guard let lane = model.sealedModel.searchLanes[game] else { return false }
-            return !lane.products.isEmpty || lane.isLoading || lane.error != nil
-        }
-    }
-
-    private var hasSealedContent: Bool {
-        guard model.searchScope != .cards else { return false }
-        return !sealedSearchGamesWithContent.isEmpty
-    }
-
     @ViewBuilder private var searchBody: some View {
         if model.normalizedQuery.count < 2 {
-            ContentUnavailableView("Keep typing", systemImage: "text.cursor", description: Text("Enter at least two characters."))
+            ContentUnavailableView(
+                "Keep typing",
+                systemImage: "text.cursor",
+                description: Text("Enter at least two characters.")
+            )
         } else {
-            if hasCardContent {
-                Text("Cards")
-                    .font(.title2.bold())
-                ForEach(cardSearchGamesWithContent, id: \.self) { game in
-                    searchSection(game)
+            switch model.searchState {
+            case let .results(hasFailures):
+                if hasFailures {
+                    searchPartialFailureBanner
                 }
-            }
-            sealedSearchContent
-        }
-    }
-
-    @ViewBuilder private var sealedSearchContent: some View {
-        if model.searchScope != .cards {
-            if hasSealedContent {
-                Text("Sealed")
-                    .font(.title2.bold())
-                ForEach(sealedSearchGamesWithContent, id: \.self) { game in
-                    sealedSearchSection(game)
-                }
-            } else if !model.sealedModel.isConfigured {
-                Text("Sealed products need a pricing API key — add one in Settings")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    @ViewBuilder private func searchSection(_ game: CardGame) -> some View {
-        let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
-        let lane = model.lanes[game] ?? .init(isLoading: true)
-        Section {
-            if lane.cards.isEmpty && lane.isLoading {
-                HStack { ProgressView(); Text("Searching…") }.frame(minHeight: 80)
-            } else if lane.cards.isEmpty, let error = lane.error {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("\(game.label) search failed").font(.headline)
-                    Text(error).font(.caption).foregroundStyle(.secondary)
-                    Button("Retry") { model.searchText = model.searchText }
-                }
-            } else if lane.cards.isEmpty {
-                Text("No \(game.label) printings found").foregroundStyle(.secondary)
-            } else {
-                CatalogCardGrid(
-                    cards: lane.cards,
-                    catalog: model.catalog,
-                    owned: owned
-                )
-                if lane.cursor != nil {
-                    HStack { Spacer(); ProgressView(); Spacer() }
-                        .padding()
-                        .task { await model.loadMore(game) }
-                }
-            }
-        } header: {
-            Text(game.label).font(.title3.bold())
-        }
-    }
-
-    @ViewBuilder private func sealedSearchSection(_ game: CardGame) -> some View {
-        let lane = model.sealedModel.searchLanes[game] ?? .init(isLoading: true)
-        Section {
-            if lane.products.isEmpty && lane.isLoading {
-                HStack { ProgressView(); Text("Searching sealed products…") }
-                    .frame(minHeight: 80)
-            } else if lane.products.isEmpty, let error = lane.error {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("\(game.label) sealed search failed").font(.headline)
-                    Text(error).font(.caption).foregroundStyle(.secondary)
-                    Button("Retry") { model.searchText = model.searchText }
-                }
-            } else if lane.products.isEmpty {
-                Text("No \(game.label) sealed products found")
-                    .foregroundStyle(.secondary)
-            } else {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 150), spacing: 12)], spacing: 12) {
-                    ForEach(lane.products) { product in
+                LazyVStack(alignment: .leading, spacing: 12) {
+                    ForEach(model.searchResults) { result in
                         NavigationLink {
-                            SealedProductDetailView(game: game, product: product)
+                            searchDestination(for: result)
                         } label: {
-                            SealedProductTile(product: product)
+                            CatalogSearchResultRow(result: result)
                         }
                         .buttonStyle(.plain)
                     }
+                    if model.hasSearchPagination {
+                        ProgressView()
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 16)
+                            .task(id: model.searchPaginationKey) {
+                                await model.loadMoreSearchResults()
+                            }
+                    }
                 }
-                if lane.nextOffset != nil {
-                    HStack { Spacer(); ProgressView(); Spacer() }
-                        .padding()
-                        .task {
-                            await model.sealedModel.loadMoreSearch(
-                                game: game,
-                                query: model.normalizedQuery
-                            )
-                        }
+            case .loading:
+                HStack {
+                    ProgressView()
+                    Text("Searching…")
+                }
+                .frame(maxWidth: .infinity, minHeight: 120)
+            case .idle:
+                EmptyView()
+            case .failed:
+                ContentUnavailableView(
+                    "Search failed",
+                    systemImage: "wifi.exclamationmark",
+                    description: Text("Some catalog providers could not be reached.")
+                )
+                Button("Retry") { model.retrySearch() }
+                    .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: .infinity)
+            case let .empty(needsSealedSetup):
+                ContentUnavailableView(
+                    "No catalog results",
+                    systemImage: "magnifyingglass",
+                    description: Text("Try another card or product name.")
+                )
+                if needsSealedSetup {
+                    Button("Set up sealed browsing", systemImage: "key") {
+                        isShowingSettings = true
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: .infinity)
                 }
             }
-        } header: {
-            Text(game.label).font(.title3.bold())
+        }
+    }
+
+    private var searchPartialFailureBanner: some View {
+        HStack(spacing: 10) {
+            Label("Some results could not load", systemImage: "exclamationmark.triangle")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.orange)
+            Spacer(minLength: 8)
+            Button("Retry") { model.retrySearch() }
+                .font(.footnote.weight(.semibold))
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.orange.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    private func searchDestination(for result: CatalogSearchResult) -> some View {
+        switch result {
+        case let .card(summary):
+            CatalogCardDetailView(summary: summary, catalog: model.catalog)
+        case let .sealed(game, product):
+            SealedProductDetailView(game: game, product: product)
         }
     }
 }
 
+private struct CatalogSearchResultRow: View {
+    let result: CatalogSearchResult
+
+    private var cardArtwork: CatalogCardArtworkSource? {
+        switch result {
+        case let .card(summary):
+            return CatalogCardArtworkSource(
+                game: summary.game,
+                setCode: summary.setCode,
+                collectorNumber: summary.collectorNumber,
+                thumbnailURL: summary.thumbnailURL,
+                imageURL: summary.imageURL,
+                prefersFullSize: false
+            )
+        case .sealed:
+            return nil
+        }
+    }
+
+    private var imageURL: URL? {
+        switch result {
+        case .card:
+            return cardArtwork?.primaryURL
+        case let .sealed(_, product):
+            return product.imageURL
+        }
+    }
+
+    private var imageFallbacks: [URL] { cardArtwork?.fallbacks ?? [] }
+
+    private var secondaryText: String {
+        switch result {
+        case let .card(summary):
+            return "\(summary.setName) · \(summary.setCode) \(summary.collectorNumber)"
+        case let .sealed(_, product):
+            return product.setName ?? "Vendor catalog"
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            CatalogCachedImage(
+                url: imageURL,
+                fallbacks: imageFallbacks,
+                targetPixelSize: 256,
+                placeholderSymbol: result.kind == .card
+                    ? "rectangle.portrait"
+                    : "shippingbox.fill"
+            )
+            .frame(width: 62, height: 82)
+            .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(spacing: 6) {
+                    CatalogSearchBadge(text: result.kind == .card ? "Card" : "Sealed")
+                    CatalogSearchBadge(text: result.game.label)
+                }
+
+                Text(result.name)
+                    .font(.headline)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+
+                Text(secondaryText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+
+            Spacer(minLength: 8)
+            Image(systemName: "chevron.right")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.quaternary.opacity(0.45), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(
+            "\(result.name), \(result.kind == .card ? "Card" : "Sealed"), \(result.game.label), \(secondaryText)"
+        )
+    }
+}
+
+private struct CatalogSearchBadge: View {
+    let text: String
+
+    var body: some View {
+        Text(text)
+            .font(.caption2.weight(.bold))
+            .foregroundStyle(.secondary)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+            .background(.thinMaterial, in: Capsule())
+    }
+}
+
 enum CatalogSetOrdering {
+    static let newReleaseWindow: TimeInterval = 45 * 86_400
+    static let minimumRailCardCount = 10
+    static let releaseRailLimit = 3
+    static let railPerGameFallbackLimit = 2
+
     static func newestFirst(_ sets: [CatalogSet]) -> [CatalogSet] {
         sets.sorted {
             if $0.releaseOrder != $1.releaseOrder {
@@ -796,29 +968,143 @@ enum CatalogSetOrdering {
         return lhs.id < rhs.id
     }
 
-    /// The rail intentionally uses catalog ordering rather than a calendar
-    /// window: Pokémon's offline snapshot is ranked but undated. Taking two
-    /// from each game keeps the root useful even when one provider is absent.
-    static func justReleased(
+    static func releaseRail(
         from setsByGame: [CardGame: [CatalogSet]],
-        perGameLimit: Int = 2,
-        limit: Int = 3
-    ) -> [CatalogSet] {
-        guard perGameLimit > 0, limit > 0 else { return [] }
-        let candidates = CardGame.allCases.flatMap { game in
-            newestFirst(setsByGame[game] ?? []).prefix(perGameLimit)
+        now: Date = .now
+    ) -> CatalogReleaseRail {
+        let eligibleByGame = Dictionary(uniqueKeysWithValues: CardGame.allCases.map { game in
+            (
+                game,
+                (setsByGame[game] ?? []).filter { set in
+                    guard let cardCount = set.cardCount else { return true }
+                    return cardCount >= minimumRailCardCount
+                }
+            )
+        })
+        let eligible = eligibleByGame.values.flatMap { $0 }
+        let datedRecent = eligible
+            .filter { isNew($0, now: now, window: newReleaseWindow) }
+            .sorted {
+                guard let left = $0.releaseDate, let right = $1.releaseDate else {
+                    return $0.id < $1.id
+                }
+                if left != right { return left > right }
+                return $0.id < $1.id
+            }
+
+        if !datedRecent.isEmpty {
+            return CatalogReleaseRail(
+                title: "Just released",
+                sets: Array(datedRecent.prefix(releaseRailLimit)),
+                showsNewBadges: true
+            )
         }
-        return Array(newestFirst(candidates).prefix(limit))
+
+        let fallback = CardGame.allCases.flatMap { game in
+            newestFirst(eligibleByGame[game] ?? []).prefix(railPerGameFallbackLimit)
+        }
+        return CatalogReleaseRail(
+            title: "Recent sets",
+            sets: Array(newestFirst(fallback).prefix(releaseRailLimit)),
+            showsNewBadges: false
+        )
     }
 
     static func isNew(
         _ set: CatalogSet,
         now: Date = .now,
-        window: TimeInterval = 45 * 86_400
+        window: TimeInterval = newReleaseWindow
     ) -> Bool {
         guard let releaseDate = set.releaseDate,
               releaseDate <= now else { return false }
         return now.timeIntervalSince(releaseDate) <= window
+    }
+}
+
+private enum CatalogGameContentKind: String, CaseIterable, Identifiable {
+    case cards = "Cards"
+    case sealed = "Sealed"
+
+    var id: String { rawValue }
+}
+
+enum CatalogGameCardSearchPolicy {
+    /// `normalizedQuery` is expected to have already been normalized by the
+    /// owning view, so this remains a cheap gate on the task's hot path.
+    static func shouldRequest(isActive: Bool, normalizedQuery: String) -> Bool {
+        isActive && normalizedQuery.count >= 2
+    }
+}
+
+private struct CatalogGameBrowseView: View {
+    let game: CardGame
+    let sets: [CatalogSet]
+    let catalog: any BrowseCatalogProviding
+    @ObservedObject var sealedModel: SealedBrowseModel
+    let onOpenSettings: () -> Void
+
+    @State private var contentKind: CatalogGameContentKind = .cards
+    @State private var search = ""
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Picker("Catalog content", selection: $contentKind) {
+                ForEach(CatalogGameContentKind.allCases) { kind in
+                    Text(kind.rawValue).tag(kind)
+                }
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+
+            ZStack {
+                // Keep this subtree alive while Sealed is visible. Its loaded
+                // pages and pagination cursor are local state and must survive
+                // the segment switch.
+                CatalogGameCardsView(
+                    game: game,
+                    sets: sets,
+                    catalog: catalog,
+                    isActive: contentKind == .cards,
+                    search: $search
+                )
+                .opacity(contentKind == .cards ? 1 : 0)
+                .allowsHitTesting(contentKind == .cards)
+                .accessibilityHidden(contentKind != .cards)
+
+                if contentKind == .sealed {
+                    SealedSetDirectoryContent(
+                        game: game,
+                        model: sealedModel,
+                        searchText: search,
+                        onOpenSettings: onOpenSettings
+                    )
+                }
+            }
+        }
+        .navigationTitle(game.label)
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(
+            text: $search,
+            prompt: "Search \(game.label) \(contentKind == .cards ? "cards" : "sets")"
+        )
+        .toolbar {
+            if contentKind == .cards {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        CatalogSetListView(game: game, sets: sets, catalog: catalog)
+                    } label: {
+                        Label("Sets", systemImage: "square.stack.3d.up")
+                    }
+                    .accessibilityLabel("Browse \(game.label) sets")
+                }
+            }
+        }
+        .onChange(of: contentKind) { _, _ in
+            // Card queries are not vendor set filters. A segment change starts
+            // with a clean, shared search field in either direction.
+            search = ""
+        }
     }
 }
 
@@ -827,6 +1113,8 @@ private struct CatalogGameCardsView: View {
     let game: CardGame
     let sets: [CatalogSet]
     let catalog: any BrowseCatalogProviding
+    let isActive: Bool
+    @Binding var search: String
 
     @State private var cards: [CatalogCardSummary] = []
     @State private var nextSetIndex = 0
@@ -834,13 +1122,14 @@ private struct CatalogGameCardsView: View {
     @State private var cursor: String?
     @State private var isLoading = false
     @State private var error: String?
-    @State private var search = ""
     @State private var searchCards: [CatalogCardSummary] = []
     @State private var searchCursor: String?
     @State private var searchIsLoading = false
     @State private var searchError: String?
     @State private var searchRevision = 0
     @State private var searchRequestKey: String?
+    @State private var cardGroups: [CatalogCardDisplayGroup] = []
+    @State private var searchCardGroups: [CatalogCardDisplayGroup] = []
 
     private var orderedSets: [CatalogSet] {
         CatalogSetOrdering.newestFirst(sets)
@@ -865,24 +1154,14 @@ private struct CatalogGameCardsView: View {
                 defaultContent(owned: owned)
             }
         }
-        .navigationTitle("\(game.label) Cards")
-        .navigationBarTitleDisplayMode(.inline)
-        .searchable(text: $search, prompt: "Search \(game.label) cards")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink {
-                    CatalogSetListView(game: game, sets: sets, catalog: catalog)
-                } label: {
-                    Label("Sets", systemImage: "square.stack.3d.up")
-                }
-                .accessibilityLabel("Browse \(game.label) sets")
-            }
-        }
         .task {
             await loadDefaultMore()
         }
-        .task(id: "\(normalizedSearch)-\(searchRevision)") {
-            guard isSearchQuery else {
+        .task(id: "\(isActive)-\(normalizedSearch)-\(searchRevision)") {
+            guard CatalogGameCardSearchPolicy.shouldRequest(
+                isActive: isActive,
+                normalizedQuery: normalizedSearch
+            ) else {
                 searchCards = []
                 searchCursor = nil
                 searchError = nil
@@ -900,6 +1179,13 @@ private struct CatalogGameCardsView: View {
             guard !Task.isCancelled else { return }
             await loadSearch(query: normalizedSearch, requestKey: requestKey)
         }
+        .onChange(of: cards) { _, newCards in
+            cardGroups = CatalogCardDisplayGrouping.groups(for: newCards)
+        }
+        .onChange(of: searchCards) { _, newSearchCards in
+            searchCardGroups = CatalogCardDisplayGrouping.groups(for: newSearchCards)
+        }
+        .safeAreaPadding(.bottom, 24)
     }
 
     @ViewBuilder
@@ -934,7 +1220,11 @@ private struct CatalogGameCardsView: View {
                     description: Text("This game has no cards in the catalogue.")
                 )
             } else {
-                CatalogCardGrid(cards: cards, catalog: catalog, owned: owned)
+                CatalogCardGrid(
+                    groups: cardGroups,
+                    catalog: catalog,
+                    owned: owned
+                )
                     .padding(12)
                     .contentWidthLimit(.wide)
             }
@@ -976,7 +1266,11 @@ private struct CatalogGameCardsView: View {
                 description: Text("Try another card name.")
             )
         } else {
-            CatalogCardGrid(cards: searchCards, catalog: catalog, owned: owned)
+            CatalogCardGrid(
+                groups: searchCardGroups,
+                catalog: catalog,
+                owned: owned
+            )
                 .padding(12)
                 .contentWidthLimit(.wide)
             if searchCursor != nil {
@@ -1025,6 +1319,7 @@ private struct CatalogGameCardsView: View {
     }
 
     private func loadSearch(query: String, requestKey: String) async {
+        guard isActive else { return }
         defer {
             if searchRequestKey == requestKey {
                 searchIsLoading = false
@@ -1051,7 +1346,8 @@ private struct CatalogGameCardsView: View {
     }
 
     private func loadMoreSearch(query: String) async {
-        guard !searchIsLoading,
+        guard isActive,
+              !searchIsLoading,
               isSearchQuery,
               normalizedSearch == query,
               let cursor = searchCursor else { return }
@@ -1132,15 +1428,7 @@ private struct CatalogSetListView: View {
         return ScrollView {
             LazyVStack(alignment: .leading, spacing: 18) {
                 if game == .pokemon {
-                    DisclosureGroup("Master set rules", isExpanded: $showsMasterSetRules) {
-                        Text("Standard includes every English, pack-pulled numbered card, holo, reverse holo, and secret rare. Promos and non-pack products stay out. Expanded adds catalog-confirmed special parallel patterns.")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .padding(.top, 4)
-                    }
-                    .padding(14)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    masterSetRules
                 }
 
                 setListFilters
@@ -1179,22 +1467,40 @@ private struct CatalogSetListView: View {
             .contentWidthLimit(.standard)
         }
         .scrollDismissesKeyboard(.interactively)
+        .safeAreaPadding(.bottom, 24)
         .navigationTitle("\(game.label) Sets")
         .searchable(text: $search, prompt: "Search sets")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Picker("Sort sets", selection: $sort) {
-                        ForEach(CatalogSetListSort.allCases) { option in
-                            Text(option.label).tag(option)
-                        }
-                    }
-                } label: {
-                    Label("Sort sets", systemImage: "arrow.up.arrow.down")
+    }
+
+    private var masterSetRules: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                withAnimation(.snappy) {
+                    showsMasterSetRules.toggle()
                 }
-                .accessibilityLabel("Sort sets, \(sort.label)")
+            } label: {
+                HStack(spacing: 8) {
+                    Text("Master set rules")
+                        .font(.headline)
+                    Spacer(minLength: 8)
+                    Image(systemName: showsMasterSetRules ? "chevron.up" : "chevron.down")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityValue(showsMasterSetRules ? "Expanded" : "Collapsed")
+
+            if showsMasterSetRules {
+                Text("Standard includes every English, pack-pulled numbered card, holo, reverse holo, and secret rare. Promos and non-pack products stay out. Expanded adds catalog-confirmed special parallel patterns.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
         }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var setListFilters: some View {
@@ -1217,6 +1523,26 @@ private struct CatalogSetListView: View {
                     .buttonStyle(.plain)
                     .accessibilityAddTraits(filter == option ? .isSelected : [])
                 }
+
+                Menu {
+                    Picker("Sort sets", selection: $sort) {
+                        ForEach(CatalogSetListSort.allCases) { option in
+                            Text(option.label).tag(option)
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(sort.label)
+                        Image(systemName: "chevron.down")
+                            .font(.caption.weight(.bold))
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.primary)
+                    .padding(.horizontal, 13)
+                    .padding(.vertical, 8)
+                    .background(Color(uiColor: .tertiarySystemFill), in: Capsule())
+                }
+                .accessibilityLabel("Sort sets, \(sort.label)")
             }
         }
         .scrollIndicators(.hidden)
@@ -1354,6 +1680,7 @@ private struct CatalogSetCardsView: View {
     @State private var isLoadingPrices = false
     @State private var hasLoadedPrices = false
     @State private var contentGeneration = UUID()
+    @State private var visibleGroups: [CatalogCardDisplayGroup] = []
     /// Identifies the price request that owns `isLoadingPrices`. Content can
     /// change while a catalog price lookup is suspended, so the content token
     /// alone is not enough to safely clean up the loading state.
@@ -1368,6 +1695,11 @@ private struct CatalogSetCardsView: View {
             owned: owned,
             prices: prices
         )
+    }
+
+    private func refreshVisibleGroups() {
+        let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
+        visibleGroups = CatalogCardDisplayGrouping.groups(for: visibleCards(owned: owned))
     }
 
     private var masterSetSlots: [CatalogCardSummary] {
@@ -1420,7 +1752,12 @@ private struct CatalogSetCardsView: View {
                     )
                     .padding(.top, 60)
                 } else {
-                    CatalogCardGrid(cards: visible, catalog: catalog, owned: owned, prices: prices)
+                    CatalogCardGrid(
+                        groups: visibleGroups,
+                        catalog: catalog,
+                        owned: owned,
+                        prices: prices
+                    )
                         .padding(12)
                         .contentWidthLimit(.wide)
                 }
@@ -1431,6 +1768,7 @@ private struct CatalogSetCardsView: View {
         }
         .navigationTitle(set.name)
         .navigationBarTitleDisplayMode(.inline)
+        .safeAreaPadding(.bottom, 24)
         .searchable(text: $search, prompt: "Name or number")
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
@@ -1458,7 +1796,16 @@ private struct CatalogSetCardsView: View {
             }
         }
         .task { if cards.isEmpty { await load(reset: true) } }
+        .onAppear { refreshVisibleGroups() }
+        .onChange(of: cards) { _, _ in refreshVisibleGroups() }
+        .onChange(of: search) { _, _ in refreshVisibleGroups() }
+        .onChange(of: ownership) { _, _ in refreshVisibleGroups() }
+        .onChange(of: masterSetTier) { _, _ in refreshVisibleGroups() }
+        .onChange(of: prices) { _, _ in refreshVisibleGroups() }
+        .onChange(of: hasLoadedPrices) { _, _ in refreshVisibleGroups() }
+        .onChange(of: projectionStore.revision) { _, _ in refreshVisibleGroups() }
         .onChange(of: sort) { _, newSort in
+            refreshVisibleGroups()
             if newSort.needsPrices { Task { await loadPrices() } }
         }
     }
@@ -1578,7 +1925,7 @@ private struct CatalogSetCardsView: View {
 }
 
 private struct CatalogCardGrid: View {
-    let cards: [CatalogCardSummary]
+    let groups: [CatalogCardDisplayGroup]
     let catalog: any BrowseCatalogProviding
     let owned: CatalogOwnershipIndex
     let prices: [String: Double]
@@ -1588,12 +1935,12 @@ private struct CatalogCardGrid: View {
     private let columns = [GridItem(.adaptive(minimum: 160), spacing: 14)]
 
     init(
-        cards: [CatalogCardSummary],
+        groups: [CatalogCardDisplayGroup],
         catalog: any BrowseCatalogProviding,
         owned: CatalogOwnershipIndex,
         prices: [String: Double] = [:]
     ) {
-        self.cards = cards
+        self.groups = groups
         self.catalog = catalog
         self.owned = owned
         self.prices = prices
@@ -1601,74 +1948,229 @@ private struct CatalogCardGrid: View {
 
     var body: some View {
         LazyVGrid(columns: columns, spacing: 20) {
-            ForEach(cards) { card in
-                NavigationLink {
-                    CatalogCardDetailView(summary: card, catalog: catalog)
-                } label: {
-                    VStack(alignment: .leading, spacing: 7) {
-                        CatalogArtworkView(thumbnailURL: card.thumbnailURL, imageURL: card.imageURL)
-                            .overlay(alignment: .topTrailing) {
-                                if owned.owns(card) {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .font(.title2)
-                                        .symbolRenderingMode(.palette)
-                                        .foregroundStyle(.white, .green)
-                                        .padding(8)
-                                        .accessibilityHidden(true)
-                                }
-                            }
-                        Text(card.name).font(.headline).lineLimit(2)
-                        if let variant = card.masterSetVariantLabel {
-                            Text(variant)
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(card.isExpandedMasterSetVariant ? Color.purple : Color.accentColor)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(
-                                    (card.isExpandedMasterSetVariant ? Color.purple : Color.accentColor).opacity(0.12),
-                                    in: Capsule()
-                                )
-                        }
-                        if let treatment = card.magicTreatmentDisplayLabel {
-                            CatalogTreatmentBadge(label: treatment)
-                        }
-                        if let price = prices[card.id] {
-                            Text(price, format: .currency(code: "USD"))
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.green)
-                        }
-                        HStack {
-                            Text("\(card.setCode) \(card.collectorNumber)")
-                                .font(.caption).foregroundStyle(.secondary).lineLimit(1)
-                            Spacer()
-                            let count = ownedQuantity(card)
-                            if count > 0 { Text("Owned \(count)").font(.caption.bold()).foregroundStyle(.green) }
-                        }
-                    }
-                    .padding(10)
-                    .background(.background, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .overlay {
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .stroke(.quaternary, lineWidth: 1)
-                    }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel(accessibilityLabel(card))
-                }
-                .buttonStyle(.plain)
+            ForEach(groups) { group in
+                CatalogCardDisplayGroupTile(
+                    group: group,
+                    catalog: catalog,
+                    owned: owned,
+                    prices: prices
+                )
             }
         }
     }
+}
 
-    private func ownedQuantity(_ card: CatalogCardSummary) -> Int {
-        owned.quantity(of: card)
+private struct CatalogCardDisplayGroupTile: View {
+    let group: CatalogCardDisplayGroup
+    let catalog: any BrowseCatalogProviding
+    let owned: CatalogOwnershipIndex
+    let prices: [String: Double]
+
+    private var preferred: CatalogCardSummary { group.preferredSummary }
+    private var showsVariantChips: Bool {
+        group.summaries.count > 1 || preferred.masterSetVariantLabel != nil
     }
 
-    private func accessibilityLabel(_ card: CatalogCardSummary) -> String {
-        let owned = ownedQuantity(card)
-        let price = prices[card.id].map { ", price \($0.formatted(.currency(code: "USD")))" } ?? ""
-        let variant = card.masterSetVariantLabel.map { ", \($0) variation" } ?? ""
-        let treatment = card.magicTreatmentDisplayLabel.map { ", \($0) treatment" } ?? ""
-        return "\(card.name), \(card.setName), card \(card.collectorNumber)\(variant)\(treatment)\(price)\(owned > 0 ? ", owned quantity \(owned)" : ", missing")"
+    private var sharedPrice: Double? {
+        let values = group.summaries.compactMap { prices[$0.id] }
+        guard values.count == group.summaries.count,
+              let first = values.first,
+              values.allSatisfy({ $0 == first }) else { return nil }
+        return first
+    }
+
+    private var showsIndividualPrices: Bool { sharedPrice == nil }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            NavigationLink {
+                CatalogCardDetailView(summary: preferred, catalog: catalog)
+            } label: {
+                cardMainContent
+            }
+            .buttonStyle(.plain)
+
+            if showsVariantChips {
+                CatalogVariantChipWrap(horizontalSpacing: 6, verticalSpacing: 6) {
+                    ForEach(group.summaries) { summary in
+                        NavigationLink {
+                            CatalogCardDetailView(summary: summary, catalog: catalog)
+                        } label: {
+                            variantChip(summary)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .accessibilityElement(children: .contain)
+            }
+        }
+        .padding(10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.background, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(.quaternary, lineWidth: 1)
+        }
+    }
+
+    private var cardMainContent: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            CatalogArtworkView(
+                thumbnailURL: preferred.thumbnailURL,
+                imageURL: preferred.imageURL,
+                game: preferred.game,
+                setCode: preferred.setCode,
+                collectorNumber: preferred.collectorNumber
+            )
+                .overlay(alignment: .topTrailing) {
+                    if owned.owns(preferred) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.title2)
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.white, .green)
+                            .padding(8)
+                            .accessibilityHidden(true)
+                    }
+                }
+
+            Text(preferred.name)
+                .font(.headline)
+                .lineLimit(2)
+
+            if let treatment = preferred.magicTreatmentDisplayLabel {
+                CatalogTreatmentBadge(label: treatment)
+            }
+
+            if let sharedPrice {
+                Text(sharedPrice, format: .currency(code: "USD"))
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.green)
+                    .lineLimit(1)
+            }
+
+            HStack {
+                Text("\(preferred.setCode) \(preferred.collectorNumber)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                Spacer()
+                if !showsVariantChips {
+                    let count = ownedQuantity(preferred)
+                    if count > 0 {
+                        Text("Owned \(count)")
+                            .font(.caption.bold())
+                            .foregroundStyle(.green)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel(preferred))
+    }
+
+    private func variantChip(_ summary: CatalogCardSummary) -> some View {
+        let count = ownedQuantity(summary)
+        let label = summary.masterSetVariantLabel ?? "Standard"
+        return HStack(spacing: 4) {
+            Text(label)
+                .font(.caption.weight(.semibold))
+                .lineLimit(1)
+            if count > 0 {
+                Image(systemName: "checkmark")
+                    .font(.caption2.weight(.bold))
+                Text("Owned")
+                    .font(.caption2.weight(.semibold))
+            }
+            if showsIndividualPrices, let price = prices[summary.id] {
+                Text(price, format: .currency(code: "USD"))
+                    .font(.caption2.monospacedDigit())
+                    .lineLimit(1)
+            }
+        }
+        .foregroundStyle(count > 0 ? Color.green : Color.primary)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 6)
+        .background(
+            (count > 0 ? Color.green : Color.accentColor).opacity(0.12),
+            in: Capsule()
+        )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(
+            "\(label)\(count > 0 ? ", Owned quantity \(count)" : ", Not owned")\(prices[summary.id].map { ", price \($0.formatted(.currency(code: "USD")))" } ?? "")"
+        )
+    }
+
+    private func ownedQuantity(_ summary: CatalogCardSummary) -> Int {
+        owned.quantity(of: summary)
+    }
+
+    private func accessibilityLabel(_ summary: CatalogCardSummary) -> String {
+        let ownedQuantity = ownedQuantity(summary)
+        let price = prices[summary.id].map { ", price \($0.formatted(.currency(code: "USD")))" } ?? ""
+        let variant = summary.masterSetVariantLabel.map { ", \($0) variation" } ?? ""
+        let treatment = summary.magicTreatmentDisplayLabel.map { ", \($0) treatment" } ?? ""
+        return "\(summary.name), \(summary.setName), card \(summary.collectorNumber)\(variant)\(treatment)\(price)\(ownedQuantity > 0 ? ", owned quantity \(ownedQuantity)" : ", missing")"
+    }
+}
+
+private struct CatalogVariantChipWrap: Layout {
+    var horizontalSpacing: CGFloat = 6
+    var verticalSpacing: CGFloat = 6
+
+    func sizeThatFits(
+        proposal: ProposedViewSize,
+        subviews: Subviews,
+        cache: inout ()
+    ) -> CGSize {
+        layoutFrames(width: proposal.width ?? .greatestFiniteMagnitude, subviews: subviews).size
+    }
+
+    func placeSubviews(
+        in bounds: CGRect,
+        proposal: ProposedViewSize,
+        subviews: Subviews,
+        cache: inout ()
+    ) {
+        let result = layoutFrames(width: bounds.width, subviews: subviews)
+        for (index, frame) in result.frames.enumerated() {
+            subviews[index].place(
+                at: CGPoint(x: bounds.minX + frame.minX, y: bounds.minY + frame.minY),
+                anchor: .topLeading,
+                proposal: ProposedViewSize(width: frame.width, height: frame.height)
+            )
+        }
+    }
+
+    private func layoutFrames(width: CGFloat, subviews: Subviews) -> (frames: [CGRect], size: CGSize) {
+        let availableWidth = max(width, 1)
+        var frames: [CGRect] = []
+        var x: CGFloat = 0
+        var y: CGFloat = 0
+        var lineHeight: CGFloat = 0
+        var contentWidth: CGFloat = 0
+
+        for subview in subviews {
+            let size = subview.sizeThatFits(
+                ProposedViewSize(width: availableWidth, height: nil)
+            )
+            if x > 0, x + size.width > availableWidth {
+                contentWidth = max(contentWidth, x - horizontalSpacing)
+                y += lineHeight + verticalSpacing
+                x = 0
+                lineHeight = 0
+            }
+            frames.append(CGRect(x: x, y: y, width: size.width, height: size.height))
+            x += size.width + horizontalSpacing
+            lineHeight = max(lineHeight, size.height)
+            contentWidth = max(contentWidth, x - horizontalSpacing)
+        }
+
+        return (
+            frames,
+            CGSize(width: min(contentWidth, availableWidth), height: y + lineHeight)
+        )
     }
 }
 
@@ -1690,18 +2192,26 @@ struct CatalogArtworkView: View {
     let thumbnailURL: URL?
     let imageURL: URL?
     var prefersFullSize = false
+    var game: CardGame? = nil
+    var setCode: String? = nil
+    var collectorNumber: String? = nil
 
-    private var primaryURL: URL? {
-        prefersFullSize ? (imageURL ?? thumbnailURL) : (thumbnailURL ?? imageURL)
-    }
-
-    private var fallbackURL: URL? {
-        guard primaryURL != thumbnailURL else { return imageURL }
-        return thumbnailURL
+    private var artworkSource: CatalogCardArtworkSource {
+        CatalogCardArtworkSource(
+            game: game,
+            setCode: setCode,
+            collectorNumber: collectorNumber,
+            thumbnailURL: thumbnailURL,
+            imageURL: imageURL,
+            prefersFullSize: prefersFullSize
+        )
     }
 
     var body: some View {
-        CatalogCachedImage(url: primaryURL, fallbackURL: fallbackURL)
+        CatalogCachedImage(
+            url: artworkSource.primaryURL,
+            fallbacks: artworkSource.fallbacks
+        )
         .aspectRatio(0.727, contentMode: .fit)
         .clipShape(RoundedRectangle(cornerRadius: 10))
     }
@@ -1712,14 +2222,18 @@ struct CatalogArtworkView: View {
 /// it never becomes synced collection data.
 struct CatalogCachedImage: View {
     let url: URL?
-    var fallbackURL: URL? = nil
+    var fallbacks: [URL] = []
     /// An explicit maximum decoded dimension is useful for callers that know
     /// their drawing size. Most callers leave this nil and the view measures
     /// its laid-out bounds so the cache can keep separate derivatives for a
     /// grid tile, a portfolio thumbnail, and a detail hero.
     var targetPixelSize: Int? = nil
+    var reloadToken: Int = 0
     var placeholderSymbol = "photo"
     var placeholderText: String? = nil
+    var localAssetName: String? = nil
+    var onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
+    private var recursionTier: Int = 0
     @StateObject private var loader = CatalogImageLoader()
     @Environment(\.displayScale) private var displayScale
     @State private var measuredTargetPixelSize: Int?
@@ -1727,6 +2241,51 @@ struct CatalogCachedImage: View {
     private struct LoadID: Equatable {
         let url: URL?
         let targetPixelSize: Int?
+        let reloadToken: Int
+    }
+
+    init(
+        url: URL?,
+        fallbacks: [URL] = [],
+        targetPixelSize: Int? = nil,
+        reloadToken: Int = 0,
+        placeholderSymbol: String = "photo",
+        placeholderText: String? = nil,
+        localAssetName: String? = nil,
+        onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
+    ) {
+        self.url = url
+        self.fallbacks = fallbacks
+        self.targetPixelSize = targetPixelSize
+        self.reloadToken = reloadToken
+        self.placeholderSymbol = placeholderSymbol
+        self.placeholderText = placeholderText
+        self.localAssetName = localAssetName
+        self.onPhaseChange = onPhaseChange
+    }
+
+    private init(
+        url: URL?,
+        fallbacks: [URL],
+        targetPixelSize: Int?,
+        reloadToken: Int,
+        placeholderSymbol: String,
+        placeholderText: String?,
+        localAssetName: String?,
+        onPhaseChange: ((CatalogImageLoadPhase) -> Void)?,
+        recursionTier: Int
+    ) {
+        self.init(
+            url: url,
+            fallbacks: fallbacks,
+            targetPixelSize: targetPixelSize,
+            reloadToken: reloadToken,
+            placeholderSymbol: placeholderSymbol,
+            placeholderText: placeholderText,
+            localAssetName: localAssetName,
+            onPhaseChange: onPhaseChange
+        )
+        self.recursionTier = recursionTier
     }
 
     var body: some View {
@@ -1735,13 +2294,22 @@ struct CatalogCachedImage: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-            } else if loader.failed, let fallbackURL, fallbackURL != url {
+            } else if loader.failed, let nextFallback {
                 CatalogCachedImage(
-                    url: fallbackURL,
+                    url: nextFallback.url,
+                    fallbacks: nextFallback.remaining,
                     targetPixelSize: targetPixelSize,
+                    reloadToken: reloadToken,
                     placeholderSymbol: placeholderSymbol,
-                    placeholderText: placeholderText
+                    placeholderText: placeholderText,
+                    localAssetName: localAssetName,
+                    onPhaseChange: onPhaseChange,
+                    recursionTier: recursionTier + 1
                 )
+            } else if (remoteURL == nil || loader.failed), let localAssetImage {
+                Image(uiImage: localAssetImage)
+                    .resizable()
+                    .scaledToFit()
             } else {
                 placeholder
             }
@@ -1755,10 +2323,47 @@ struct CatalogCachedImage: View {
                     }
             }
         }
-        .task(id: LoadID(url: url, targetPixelSize: resolvedTargetPixelSize)) {
+        .task(id: LoadID(
+            url: remoteURL,
+            targetPixelSize: resolvedTargetPixelSize,
+            reloadToken: reloadToken
+        )) {
             guard let resolvedTargetPixelSize else { return }
-            loader.load(url, targetPixelSize: resolvedTargetPixelSize)
+            loader.load(remoteURL, targetPixelSize: resolvedTargetPixelSize)
         }
+        .onChange(of: loader.phase) { _, phase in
+            if phase == .loaded || phase == .failed {
+                CatalogArtworkLog.log(
+                    phase: phase,
+                    tier: recursionTier,
+                    url: remoteURL
+                )
+            }
+            // A URL may fail while a fallback or local asset is still
+            // available. The caller only sees the terminal state from the
+            // innermost loader.
+            guard !(phase == .failed && (nextFallback != nil || localAssetImage != nil)) else {
+                return
+            }
+            onPhaseChange?(phase)
+        }
+    }
+
+    private var remoteURL: URL? { url ?? fallbacks.first }
+
+    private var nextFallback: (url: URL, remaining: [URL])? {
+        guard let remoteURL else { return nil }
+        guard let index = fallbacks.firstIndex(where: { $0 != remoteURL }) else {
+            return nil
+        }
+        return (
+            url: fallbacks[index],
+            remaining: Array(fallbacks.dropFirst(index + 1))
+        )
+    }
+
+    private var localAssetImage: UIImage? {
+        localAssetName.flatMap { UIImage(named: $0) }
     }
 
     private var resolvedTargetPixelSize: Int? {
@@ -1803,11 +2408,39 @@ struct CatalogCachedImage: View {
     }
 }
 
+enum CatalogImageLoadPhase: Equatable {
+    case idle
+    case loading
+    case loaded
+    case failed
+}
+
+private enum CatalogArtworkLog {
+    static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "TradingCardScanner",
+        category: "CatalogArtwork"
+    )
+
+    static func log(phase: CatalogImageLoadPhase, tier: Int, url: URL?) {
+        let phaseName: String
+        switch phase {
+        case .idle: phaseName = "idle"
+        case .loading: phaseName = "loading"
+        case .loaded: phaseName = "loaded"
+        case .failed: phaseName = "failed"
+        }
+        logger.debug(
+            "phase=\(phaseName, privacy: .public) tier=\(tier, privacy: .public) source=\((url?.absoluteString ?? "none"), privacy: .public)"
+        )
+    }
+}
+
 @MainActor
 private final class CatalogImageLoader: ObservableObject {
     @Published var image: UIImage?
     @Published var isLoading = false
     @Published var failed = false
+    @Published var phase: CatalogImageLoadPhase = .idle
     private var task: Task<Void, Never>?
 
     deinit { task?.cancel() }
@@ -1816,11 +2449,13 @@ private final class CatalogImageLoader: ObservableObject {
         task?.cancel()
         image = nil
         failed = false
+        phase = .idle
         guard let url else {
             isLoading = false
             return
         }
         isLoading = true
+        phase = .loading
         task = Task { [weak self] in
             do {
                 let image = try await CatalogImageCache.shared.image(
@@ -1829,8 +2464,12 @@ private final class CatalogImageLoader: ObservableObject {
                 )
                 guard !Task.isCancelled else { return }
                 self?.image = image
+                self?.phase = .loaded
             } catch {
-                if !Task.isCancelled { self?.failed = true }
+                if !Task.isCancelled {
+                    self?.failed = true
+                    self?.phase = .failed
+                }
             }
             if !Task.isCancelled { self?.isLoading = false }
         }

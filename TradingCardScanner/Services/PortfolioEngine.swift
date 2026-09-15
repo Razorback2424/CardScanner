@@ -70,6 +70,13 @@ struct PortfolioHoldingSnapshot: Identifiable, Equatable, Sendable {
     /// The exact price instrument used for live revaluation during a refresh.
     var priceStorageKey: String
 
+    /// Card identity is retained so the portfolio can use the same derived
+    /// artwork fallback as Browse and Collection without rebuilding a model
+    /// object from SwiftData during rendering.
+    var artworkGame: CardGame? = nil
+    var artworkSetCode: String? = nil
+    var artworkCollectorNumber: String? = nil
+
     var id: String { collectionKey }
 
     /// Stable dashboard ordering: the most expensive individual card first,

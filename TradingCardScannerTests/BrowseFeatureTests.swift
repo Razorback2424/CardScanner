@@ -79,7 +79,272 @@ final class BrowseFeatureTests: XCTestCase {
     func testBrowseSearchDefaultsToAllResultKinds() {
         let model = BrowseViewModel(catalog: EmptyBrowseCatalog())
 
-        XCTAssertEqual(model.searchScope, .all)
+        XCTAssertEqual(model.searchGames, CardGame.allCases)
+        XCTAssertTrue(model.searchResults.isEmpty)
+    }
+
+    func testCatalogSearchResultIDsNamespaceKindsAndOptionalVariants() {
+        let cardSummary = browseDisplaySummary(providerID: "card-1", number: "001")
+        let card = CatalogSearchResult.card(cardSummary)
+        let product = SealedProductSummary(
+            id: "product-1",
+            name: "Booster Box",
+            setName: "Example Set",
+            variantID: nil,
+            marketPriceUSD: nil,
+            updatedAt: nil,
+            imageURL: nil
+        )
+        let sealed = CatalogSearchResult.sealed(game: .pokemon, product: product)
+
+        XCTAssertEqual(card.id, "card:\(cardSummary.id)")
+        XCTAssertEqual(sealed.id, "sealed:pokemon:product-1:")
+        XCTAssertNotEqual(card.id, sealed.id)
+    }
+
+    func testInactiveSealedSegmentDoesNotRequestCardSearch() {
+        let normalizedSetQuery = CardNameSearch.normalize("Vendor Set")
+
+        XCTAssertFalse(
+            CatalogGameCardSearchPolicy.shouldRequest(
+                isActive: false,
+                normalizedQuery: normalizedSetQuery
+            )
+        )
+        XCTAssertTrue(
+            CatalogGameCardSearchPolicy.shouldRequest(
+                isActive: true,
+                normalizedQuery: normalizedSetQuery
+            )
+        )
+        XCTAssertFalse(
+            CatalogGameCardSearchPolicy.shouldRequest(
+                isActive: true,
+                normalizedQuery: "a"
+            )
+        )
+    }
+
+    func testCatalogSearchRankingUsesNameBucketsThenStableTieBreakers() {
+        let values = [
+            CatalogSearchResult.card(browseDisplaySummary(providerID: "exact", name: "Pikachu", number: "001")),
+            CatalogSearchResult.card(browseDisplaySummary(providerID: "prefix", name: "Pika", number: "002")),
+            CatalogSearchResult.card(browseDisplaySummary(providerID: "token", name: "Al Pikachu", number: "003")),
+            CatalogSearchResult.card(browseDisplaySummary(providerID: "contains", name: "Spiky Pikachu", number: "004")),
+            CatalogSearchResult.card(browseDisplaySummary(providerID: "other", name: "Other", number: "005"))
+        ]
+
+        let ranked = CatalogSearchResultRanking.sorted(values, query: " PIKA ")
+
+        XCTAssertEqual(ranked.map(\.name), ["Pika", "Pikachu", "Al Pikachu", "Spiky Pikachu", "Other"])
+    }
+
+    func testCatalogSearchStateReductionKeepsTheSpecifiedPrecedence() {
+        XCTAssertEqual(
+            CatalogSearchState.reduce(
+                resultCount: 1,
+                lanes: [CatalogSearchLaneStatus(isLoading: true, error: "offline")],
+                sealedWasSkippedForMissingCredentials: true
+            ),
+            .results(hasFailures: true)
+        )
+        XCTAssertEqual(
+            CatalogSearchState.reduce(
+                resultCount: 0,
+                lanes: [CatalogSearchLaneStatus(isLoading: true)],
+                sealedWasSkippedForMissingCredentials: false
+            ),
+            .loading
+        )
+        XCTAssertEqual(
+            CatalogSearchState.reduce(
+                resultCount: 0,
+                lanes: [CatalogSearchLaneStatus(error: "offline")],
+                sealedWasSkippedForMissingCredentials: false
+            ),
+            .failed
+        )
+        XCTAssertEqual(
+            CatalogSearchState.reduce(
+                resultCount: 0,
+                lanes: [CatalogSearchLaneStatus()],
+                sealedWasSkippedForMissingCredentials: true
+            ),
+            .empty(needsSealedSetup: true)
+        )
+        XCTAssertEqual(
+            CatalogSearchState.reduce(
+                resultCount: 0,
+                lanes: [CatalogSearchLaneStatus()],
+                sealedWasSkippedForMissingCredentials: false
+            ),
+            .empty(needsSealedSetup: false)
+        )
+    }
+
+    func testCatalogCountCopyUsesSingularAndPluralForms() {
+        XCTAssertEqual(countLabel(1, singular: "card", plural: "cards"), "1 card")
+        XCTAssertEqual(countLabel(2, singular: "card", plural: "cards"), "2 cards")
+        XCTAssertEqual(countLabel(1, singular: "set", plural: "sets"), "1 set")
+        XCTAssertEqual(countLabel(2, singular: "set", plural: "sets"), "2 sets")
+        XCTAssertEqual(
+            countLabel(1, singular: "sealed product", plural: "sealed products"),
+            "1 sealed product"
+        )
+        XCTAssertEqual(
+            countLabel(2, singular: "sealed product", plural: "sealed products"),
+            "2 sealed products"
+        )
+    }
+
+    func testCatalogGameSummaryCountsEveryEligibleRowButKeepsOnlyThreeForArtwork() {
+        let sets = [
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: "one"),
+                name: "One",
+                code: "ONE",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 10,
+                releaseDate: nil,
+                sortRank: 1
+            ),
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: "two"),
+                name: "Two",
+                code: "TWO",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 10,
+                releaseDate: nil,
+                sortRank: 2
+            )
+        ]
+        let now = Date(timeIntervalSince1970: 2_000)
+        let rows = [
+            browseDisplayRow(id: "old", quantity: 4, dateAdded: now.addingTimeInterval(-4)),
+            browseDisplayRow(id: "newest", quantity: 1, dateAdded: now.addingTimeInterval(-1)),
+            browseDisplayRow(id: "middle", quantity: 2, dateAdded: now.addingTimeInterval(-2)),
+            browseDisplayRow(id: "third", quantity: 3, dateAdded: now.addingTimeInterval(-3)),
+            browseDisplayRow(
+                id: "sealed",
+                quantity: 100,
+                dateAdded: now,
+                itemKind: .sealedProduct
+            ),
+            browseDisplayRow(id: "zero", quantity: 0, dateAdded: now)
+        ]
+
+        let summary = CatalogGameSummary(game: .pokemon, sets: sets, rows: rows)
+
+        XCTAssertEqual(summary.setCount, 2)
+        XCTAssertEqual(summary.ownedCardQuantity, 10)
+        XCTAssertEqual(summary.recentArtworkRows.map(\.id), ["newest", "middle", "third"])
+        XCTAssertEqual(summary.subtitle, "2 sets · 10 cards owned")
+    }
+
+    func testCatalogCardDisplayGroupingKeepsFinishAndPrintingBoundaries() {
+        let set = CatalogSetID(game: .pokemon, providerID: "master")
+        let normal = browseDisplaySummary(
+            providerID: "master-001",
+            setID: set,
+            number: "001",
+            variant: .normal
+        )
+        let reverse = browseDisplaySummary(
+            providerID: "master-001",
+            setID: set,
+            number: "001",
+            variant: .reverse
+        )
+        let otherNumber = browseDisplaySummary(
+            providerID: "master-002",
+            setID: set,
+            number: "002",
+            variant: .normal
+        )
+        let firstEdition = browseDisplaySummary(
+            providerID: "master-001",
+            setID: CatalogSetID(
+                game: .pokemon,
+                providerID: "base1",
+                pokemonPrintRun: .firstEdition
+            ),
+            number: "001",
+            variant: .normal
+        )
+        let unlimited = browseDisplaySummary(
+            providerID: "master-001",
+            setID: CatalogSetID(
+                game: .pokemon,
+                providerID: "base1",
+                pokemonPrintRun: .unlimited
+            ),
+            number: "001",
+            variant: .normal
+        )
+
+        let groups = CatalogCardDisplayGrouping.groups(
+            for: [normal, reverse, otherNumber, firstEdition, unlimited]
+        )
+
+        XCTAssertEqual(groups.count, 4)
+        XCTAssertEqual(groups[0].summaries.map(\.id), [normal.id, reverse.id])
+        XCTAssertEqual(groups.map(\.id).count, Set(groups.map(\.id)).count)
+    }
+
+    func testCatalogCardDisplayGroupingKeepsMagicTreatmentsAsSingletons() {
+        let foil = browseDisplaySummary(
+            game: .magic,
+            providerID: "printing-foil",
+            number: "10"
+        )
+        let treated = browseDisplaySummary(
+            game: .magic,
+            providerID: "printing-surge",
+            number: "10"
+        )
+
+        let groups = CatalogCardDisplayGrouping.groups(for: [foil, treated])
+
+        XCTAssertEqual(groups.count, 2)
+        XCTAssertTrue(groups.allSatisfy { $0.summaries.count == 1 })
+        XCTAssertEqual(Set(groups.map(\.id)).count, 2)
+    }
+
+    func testCatalogCardDisplayGroupingDisambiguatesDuplicateMagicIdentities() {
+        let first = browseDisplaySummary(
+            game: .magic,
+            providerID: "duplicate-printing",
+            number: "10"
+        )
+        let second = browseDisplaySummary(
+            game: .magic,
+            providerID: "duplicate-printing",
+            number: "10"
+        )
+
+        let groups = CatalogCardDisplayGrouping.groups(for: [first, second])
+
+        XCTAssertEqual(groups.count, 2)
+        XCTAssertEqual(Set(groups.map(\.id)).count, 2)
+    }
+
+    func testCatalogCardDisplayGroupingKeepsNamedSoleFinishAndUnparseableNumbersVisible() {
+        let named = browseDisplaySummary(
+            providerID: "master-001",
+            number: "001",
+            variant: .reverse,
+            isSoleSlotForCard: true
+        )
+        let punctuation = browseDisplaySummary(providerID: "punctuation", number: "?")
+        let otherPunctuation = browseDisplaySummary(providerID: "punctuation-2", number: "!")
+
+        let groups = CatalogCardDisplayGrouping.groups(for: [named, punctuation, otherPunctuation])
+
+        XCTAssertEqual(groups[0].preferredSummary.masterSetVariantLabel, PhysicalVariant.reverse.label)
+        XCTAssertEqual(groups.count, 3)
+        XCTAssertNotEqual(groups[1].id, groups[2].id)
     }
 
     func testPokemonReleaseOrderCacheUsesProviderSetID() {
@@ -244,82 +509,68 @@ final class BrowseFeatureTests: XCTestCase {
         )
     }
 
-    func testCatalogSetOrderingJustReleasedUsesTwoPerGameThenCapsTheRail() {
-        let pokemonNewest = CatalogSet(
-            catalogID: CatalogSetID(game: .pokemon, providerID: "pokemon-newest"),
-            name: "Pokémon Newest",
-            code: "PN",
-            logoURL: nil,
-            symbolURL: nil,
-            cardCount: 1,
-            releaseDate: nil,
-            sortRank: 550
+    func testCatalogSetOrderingReleaseRailUsesDatedSetsAndOneGameMayFillRail() {
+        let now = Date(timeIntervalSince1970: 2_000 * 86_400)
+        func set(
+            game: CardGame,
+            id: String,
+            daysFromNow: Int,
+            cardCount: Int? = 20,
+            sortRank: Int = 0
+        ) -> CatalogSet {
+            CatalogSet(
+                catalogID: CatalogSetID(game: game, providerID: id),
+                name: id,
+                code: id.prefix(3).uppercased(),
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: cardCount,
+                releaseDate: now.addingTimeInterval(TimeInterval(daysFromNow) * 86_400),
+                sortRank: sortRank
+            )
+        }
+
+        let pokemonNewest = set(game: .pokemon, id: "pokemon-newest", daysFromNow: -1)
+        let pokemonSecond = set(game: .pokemon, id: "pokemon-second", daysFromNow: -2)
+        let pokemonThird = set(game: .pokemon, id: "pokemon-third", daysFromNow: -3)
+        let magicOlder = set(game: .magic, id: "magic-older", daysFromNow: -4)
+        let tooSmall = set(game: .magic, id: "too-small", daysFromNow: -1, cardCount: 9)
+        let future = set(game: .magic, id: "future", daysFromNow: 1)
+        let outsideWindow = set(
+            game: .magic,
+            id: "outside-window",
+            daysFromNow: -46
         )
-        let pokemonSecond = CatalogSet(
-            catalogID: CatalogSetID(game: .pokemon, providerID: "pokemon-second"),
-            name: "Pokémon Second",
-            code: "PS",
-            logoURL: nil,
-            symbolURL: nil,
-            cardCount: 1,
-            releaseDate: nil,
-            sortRank: 450
-        )
-        let pokemonOlder = CatalogSet(
-            catalogID: CatalogSetID(game: .pokemon, providerID: "pokemon-older"),
-            name: "Pokémon Older",
-            code: "PO",
-            logoURL: nil,
-            symbolURL: nil,
-            cardCount: 1,
-            releaseDate: nil,
-            sortRank: 1
-        )
-        let magicNewest = CatalogSet(
-            catalogID: CatalogSetID(game: .magic, providerID: "magic-newest"),
-            name: "Magic Newest",
-            code: "MN",
-            logoURL: nil,
-            symbolURL: nil,
-            cardCount: 1,
-            releaseDate: Date(timeIntervalSince1970: 500 * 86_400),
-            sortRank: 0
-        )
-        let magicSecond = CatalogSet(
-            catalogID: CatalogSetID(game: .magic, providerID: "magic-second"),
-            name: "Magic Second",
-            code: "MS",
-            logoURL: nil,
-            symbolURL: nil,
-            cardCount: 1,
-            releaseDate: Date(timeIntervalSince1970: 350 * 86_400),
-            sortRank: 0
-        )
-        let magicOlder = CatalogSet(
-            catalogID: CatalogSetID(game: .magic, providerID: "magic-older"),
-            name: "Magic Older",
-            code: "MO",
-            logoURL: nil,
-            symbolURL: nil,
-            cardCount: 1,
-            releaseDate: Date(timeIntervalSince1970: 1 * 86_400),
-            sortRank: 0
+        let exactWindowEdge = set(
+            game: .magic,
+            id: "exact-window-edge",
+            daysFromNow: -45
         )
 
-        let rail = CatalogSetOrdering.justReleased(
+        let rail = CatalogSetOrdering.releaseRail(
             from: [
-                .pokemon: [pokemonOlder, pokemonSecond, pokemonNewest],
-                .magic: [magicOlder, magicSecond, magicNewest]
-            ]
+                .pokemon: [pokemonNewest, pokemonSecond, pokemonThird],
+                .magic: [magicOlder, tooSmall, future, outsideWindow, exactWindowEdge]
+            ],
+            now: now
         )
 
-        XCTAssertEqual(rail.count, 3)
+        XCTAssertEqual(rail.title, "Just released")
+        XCTAssertTrue(rail.showsNewBadges)
         XCTAssertEqual(
-            rail.map(\.id),
-            [pokemonNewest.id, magicNewest.id, pokemonSecond.id]
+            rail.sets.map(\.id),
+            [pokemonNewest.id, pokemonSecond.id, pokemonThird.id]
         )
-        XCTAssertFalse(rail.contains(pokemonOlder))
-        XCTAssertFalse(rail.contains(magicOlder))
+        XCTAssertFalse(rail.sets.contains(tooSmall))
+        XCTAssertFalse(rail.sets.contains(future))
+        XCTAssertFalse(rail.sets.contains(outsideWindow))
+
+        let edgeRail = CatalogSetOrdering.releaseRail(
+            from: [.magic: [exactWindowEdge]],
+            now: now
+        )
+        XCTAssertEqual(edgeRail.sets.map(\.id), [exactWindowEdge.id])
+        XCTAssertEqual(magicOlder.game, .magic)
     }
 
     func testCatalogSetOrderingNewBadgeIsNilSafeAndUses45DayWindow() {
@@ -630,23 +881,23 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(groups.first?.sets.map(\.id), [undated.id])
     }
 
-    func testCatalogSetOrderingJustReleasedHandlesMissingGameDirectories() {
+    func testCatalogSetOrderingReleaseRailFallsBackToCatalogOrderWithoutBadging() {
         let set = CatalogSet(
             catalogID: CatalogSetID(game: .pokemon, providerID: "only"),
             name: "Only set",
             code: "ONLY",
             logoURL: nil,
             symbolURL: nil,
-            cardCount: 1,
+            cardCount: nil,
             releaseDate: nil,
             sortRank: 1
         )
 
-        XCTAssertEqual(
-            CatalogSetOrdering.justReleased(from: [.pokemon: [set]]).map(\.id),
-            [set.id]
-        )
-        XCTAssertTrue(CatalogSetOrdering.justReleased(from: [:]).isEmpty)
+        let rail = CatalogSetOrdering.releaseRail(from: [.pokemon: [set]])
+        XCTAssertEqual(rail.title, "Recent sets")
+        XCTAssertFalse(rail.showsNewBadges)
+        XCTAssertEqual(rail.sets.map(\.id), [set.id])
+        XCTAssertTrue(CatalogSetOrdering.releaseRail(from: [:]).sets.isEmpty)
     }
 
     func testSealedSetOrderingUsesReleaseDateNewestFirst() {
@@ -795,7 +1046,6 @@ final class BrowseFeatureTests: XCTestCase {
         let catalog = EmptyBrowseCatalog()
         let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
 
-        model.searchScope = .all
         model.searchText = "box"
         try await Task.sleep(for: .milliseconds(150))
         let earlyCardSearchCount = await catalog.searchCount()
@@ -818,33 +1068,7 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     @MainActor
-    func testBrowseCardsScopeDoesNotStartSealedSearch() async throws {
-        let root = try makeTemporaryCacheDirectory()
-        defer { try? FileManager.default.removeItem(at: root) }
-        let sealedClient = RecordingJustTCGProviding()
-        let sealedModel = SealedBrowseModel(
-            client: sealedClient,
-            cache: CatalogCacheStore(root: root),
-            isConfigured: { true }
-        )
-        let catalog = EmptyBrowseCatalog()
-        let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
-
-        model.searchScope = .cards
-        model.searchText = "box"
-        let cardSearchStarted = await waitUntil {
-            await catalog.searchCount() == CardGame.allCases.count
-        }
-        XCTAssertTrue(cardSearchStarted)
-
-        let cardSearchCount = await catalog.searchCount()
-        let sealedSearchCount = await sealedClient.sealedSearchCount()
-        XCTAssertEqual(cardSearchCount, CardGame.allCases.count)
-        XCTAssertEqual(sealedSearchCount, 0)
-    }
-
-    @MainActor
-    func testBrowseSealedScopePassesTheSelectedGameAndSkipsCardSearch() async throws {
+    func testBrowseSearchUsesSelectedGameForBothResultKinds() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
         let sealedClient = RecordingJustTCGProviding()
@@ -857,17 +1081,105 @@ final class BrowseFeatureTests: XCTestCase {
         let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
 
         model.selectedGame = .magic
-        model.searchScope = .sealed
         model.searchText = "box"
-        let sealedSearchStarted = await waitUntil {
-            await sealedClient.sealedSearchCount() == 1
-        }
-        XCTAssertTrue(sealedSearchStarted)
 
-        let cardSearchCount = await catalog.searchCount()
+        let searchesStarted = await waitUntil {
+            let cardCount = await catalog.searchCount()
+            let sealedCount = await sealedClient.sealedSearchCount()
+            return cardCount == 1 && sealedCount == 1
+        }
+
+        XCTAssertTrue(searchesStarted)
+        XCTAssertEqual(Set(model.lanes.keys), Set([.magic]))
         let searchedGames = await sealedClient.sealedSearchGames()
-        XCTAssertEqual(cardSearchCount, 0)
         XCTAssertEqual(searchedGames, [.magic])
+    }
+
+    @MainActor
+    func testBrowseSearchPaginationAdvancesCardLaneWithoutRecordingError() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let first = browseDisplaySummary(
+            providerID: "page-one",
+            name: "Booster One",
+            number: "001"
+        )
+        let second = browseDisplaySummary(
+            providerID: "page-two",
+            name: "Booster Two",
+            number: "002"
+        )
+        let catalog = PagingBrowseCatalog(first: first, second: second)
+        let sealedModel = SealedBrowseModel(
+            client: RecordingJustTCGProviding(),
+            cache: CatalogCacheStore(root: root),
+            isConfigured: { false }
+        )
+        let model = BrowseViewModel(catalog: catalog, sealedModel: sealedModel)
+
+        model.selectedGame = .pokemon
+        model.searchText = "box"
+
+        let firstPageLoaded = await waitUntil {
+            model.lanes[.pokemon]?.cards.count == 1
+                && model.lanes[.pokemon]?.cursor == "next"
+        }
+        XCTAssertTrue(firstPageLoaded)
+
+        await model.loadMoreSearchResults()
+
+        XCTAssertEqual(model.lanes[.pokemon]?.cards.map(\.id), [first.id, second.id])
+        XCTAssertNil(model.lanes[.pokemon]?.cursor)
+        XCTAssertNil(model.lanes[.pokemon]?.error)
+        let requestedCursors = await catalog.requestedCursors()
+        XCTAssertEqual(requestedCursors, [nil, "next"])
+    }
+
+    private func browseDisplaySummary(
+        game: CardGame = .pokemon,
+        providerID: String,
+        setID: CatalogSetID? = nil,
+        name: String = "Fixture",
+        number: String,
+        variant: PhysicalVariant? = nil,
+        isSoleSlotForCard: Bool = false
+    ) -> CatalogCardSummary {
+        CatalogCardSummary(
+            game: game,
+            providerID: providerID,
+            setID: setID ?? CatalogSetID(game: game, providerID: "display"),
+            setName: "Display Set",
+            setCode: "DSP",
+            name: name,
+            collectorNumber: number,
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: variant,
+            isSoleSlotForCard: isSoleSlotForCard
+        )
+    }
+
+    private func browseDisplayRow(
+        id: String,
+        quantity: Int,
+        dateAdded: Date,
+        itemKind: CollectionItemKind = .rawCard
+    ) -> CollectionRow {
+        CollectionRow(
+            id: id,
+            game: .pokemon,
+            name: id,
+            setCode: "DSP",
+            setName: "Display Set",
+            setReleaseOrder: 0,
+            cardNumber: id,
+            variantID: nil,
+            variantLabel: nil,
+            quantity: quantity,
+            dateAdded: dateAdded,
+            price: .unknown,
+            itemKind: itemKind
+        )
     }
 
     private func makeTemporaryCacheDirectory() throws -> URL {
@@ -3016,6 +3328,109 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertTrue(needsFullSweep)
     }
 
+    func testLimitlessArtworkNormalizesPrintedKeys() {
+        let cases: [(code: String, number: String, key: String)] = [
+            ("SLG", "1", "SLG_001"),
+            ("BRS", "TG01", "BRS_TG1"),
+            ("CRZ", "GG01", "CRZ_GG1"),
+            ("SHF", "SV001", "SHF_SV1"),
+            ("CEL", "CC001", "CEL_CC1"),
+            ("PBL", "119", "PBL_119")
+        ]
+
+        for value in cases {
+            let urls = LimitlessArtwork.urls(
+                setCode: value.code,
+                collectorNumber: value.number
+            )
+            XCTAssertNotNil(urls)
+            XCTAssertEqual(
+                urls?.small.absoluteString,
+                "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/tpci/\(value.code)/\(value.key)_R_EN_XS.png"
+            )
+            XCTAssertEqual(
+                urls?.full.absoluteString,
+                "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/tpci/\(value.code)/\(value.key)_R_EN.png"
+            )
+        }
+
+        XCTAssertNil(LimitlessArtwork.urls(setCode: "AQ", collectorNumber: "050a"))
+        XCTAssertNil(LimitlessArtwork.urls(setCode: "PBL", collectorNumber: "050a"))
+    }
+
+    func testGalleryArtworkInheritsParentLogoAndKeepsProviderIdentity() throws {
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"swsh10tg","name":"Lost Origin Trainer Gallery","cards":[],"cardCount":{"total":0,"official":0}}
+        """)
+        let base = sampleSet(id: "swsh10tg", name: "Lost Origin Trainer Gallery")
+
+        let enriched = PokemonMasterSetChecklistBuilder.enrichedSet(base, providerSet: provider)
+
+        XCTAssertEqual(enriched.providerID, "swsh10tg")
+        XCTAssertEqual(
+            enriched.logoURL?.absoluteString,
+            "https://assets.tcgdex.net/en/swsh/swsh10/logo.png"
+        )
+        XCTAssertNil(enriched.symbolURL)
+    }
+
+    func testArtworkSourceOrdersProviderThenLimitlessFallbacks() {
+        let thumbnail = URL(string: "https://example.com/thumbnail.png")!
+        let full = URL(string: "https://example.com/full.png")!
+        let source = CatalogCardArtworkSource(
+            game: .pokemon,
+            setCode: "BRS",
+            collectorNumber: "TG01",
+            thumbnailURL: thumbnail,
+            imageURL: full,
+            prefersFullSize: true
+        )
+
+        XCTAssertEqual(source.primaryURL, full)
+        XCTAssertEqual(source.fallbacks.first, thumbnail)
+        XCTAssertEqual(
+            source.fallbacks.last?.absoluteString,
+            "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/tpci/BRS/BRS_TG1_R_EN.png"
+        )
+    }
+
+    func testSetArtworkSourceUsesRequestedKindForKnownSnapshotGap() {
+        let logoURL = URL(string: "https://assets.tcgdex.net/en/sv/sv08.5/logo.png")!
+        let set = sampleSet(
+            id: "sv08.5",
+            name: "Prismatic Evolutions",
+            logoURL: logoURL,
+            symbolURL: nil
+        )
+
+        let logoSource = PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
+        XCTAssertEqual(logoSource.primaryURL, logoURL)
+        XCTAssertEqual(logoSource.localAssetName, "PokemonSetArtwork_sv08_5_logo")
+
+        let symbolSource = PokemonArtworkFallbacks.setSource(for: set, kind: .symbol)
+        XCTAssertEqual(symbolSource.primaryURL, logoURL)
+        XCTAssertEqual(symbolSource.localAssetName, "PokemonSetArtwork_sv08_5_symbol")
+    }
+
+    func testSetArtworkSourcePreservesCallerRequestedOrdering() {
+        let logoURL = URL(string: "https://example.com/logo.png")!
+        let symbolURL = URL(string: "https://example.com/symbol.png")!
+        let set = sampleSet(
+            id: "sv08.5",
+            name: "Prismatic Evolutions",
+            logoURL: logoURL,
+            symbolURL: symbolURL
+        )
+
+        let logoSource = PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
+        XCTAssertEqual(logoSource.primaryURL, logoURL)
+        XCTAssertEqual(logoSource.fallbacks.first, symbolURL)
+
+        let symbolSource = PokemonArtworkFallbacks.setSource(for: set, kind: .symbol)
+        XCTAssertEqual(symbolSource.primaryURL, symbolURL)
+        XCTAssertEqual(symbolSource.fallbacks.first, logoURL)
+    }
+
     private func writeSnapshot(
         _ values: [CatalogSet: [CatalogCardSummary]],
         to root: URL
@@ -3042,13 +3457,18 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         try await PokemonChecklistStore(root: root, bundle: nil).publish(snapshot)
     }
 
-    private func sampleSet(id: String, name: String) -> CatalogSet {
+    private func sampleSet(
+        id: String,
+        name: String,
+        logoURL: URL? = nil,
+        symbolURL: URL? = nil
+    ) -> CatalogSet {
         CatalogSet(
             catalogID: CatalogSetID(game: .pokemon, providerID: id),
             name: name,
             code: "FIX",
-            logoURL: nil,
-            symbolURL: nil,
+            logoURL: logoURL,
+            symbolURL: symbolURL,
             cardCount: 1,
             releaseDate: nil,
             sortRank: 1
@@ -3147,6 +3567,45 @@ private actor EmptyBrowseCatalog: BrowseCatalogProviding {
     func prepareCatalog() async {}
 
     func searchCount() -> Int { searches }
+}
+
+private actor PagingBrowseCatalog: BrowseCatalogProviding {
+    private let first: CatalogCardSummary
+    private let second: CatalogCardSummary
+    private var cursors: [String?] = []
+
+    init(first: CatalogCardSummary, second: CatalogCardSummary) {
+        self.first = first
+        self.second = second
+    }
+
+    func sets(for game: CardGame) async throws -> [CatalogSet] { [] }
+
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        CatalogPage(items: [], nextCursor: nil)
+    }
+
+    func searchCards(
+        named query: String,
+        game: CardGame,
+        setIDs: Set<CatalogSetID>,
+        cursor: String?
+    ) async throws -> CatalogPage<CatalogCardSummary> {
+        cursors.append(cursor)
+        if cursor == nil {
+            return CatalogPage(items: [first], nextCursor: "next")
+        }
+        return CatalogPage(items: [second], nextCursor: nil)
+    }
+
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        throw TestError.failed
+    }
+
+    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] { [:] }
+    func prepareCatalog() async {}
+
+    func requestedCursors() -> [String?] { cursors }
 }
 
 private actor FakePokemonBrowseTransport: PokemonBrowseTransport {

@@ -74,7 +74,10 @@ struct CatalogCardDetailView: View {
             CatalogArtworkView(
                 thumbnailURL: summary.thumbnailURL,
                 imageURL: details.card.displayImageURL ?? summary.imageURL,
-                prefersFullSize: true
+                prefersFullSize: true,
+                game: summary.game,
+                setCode: summary.setCode,
+                collectorNumber: summary.collectorNumber
             )
                 .frame(maxHeight: 470)
 

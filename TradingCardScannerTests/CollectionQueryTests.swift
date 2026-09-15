@@ -54,6 +54,112 @@ final class CollectionQueryTests: XCTestCase {
         )
     }
 
+    func testCollectionFooterCountsVisibleLogicalItemsButAllExcludedCopies() {
+        let priced = row(id: "priced", quantity: 4, price: 12)
+        let unpriced = row(id: "unpriced", quantity: 7, price: nil)
+
+        let footer = CollectionView.CollectionFooterPresentation.make(
+            visibleRows: [priced],
+            collectionRows: [priced, unpriced],
+            isNarrowed: true
+        )
+
+        XCTAssertEqual(footer.visibleLogicalItemCount, 1)
+        XCTAssertEqual(footer.excludedFromValueCopyCount, 7)
+        XCTAssertEqual(footer.itemSummary, "1 item shown")
+        XCTAssertEqual(footer.exclusionSummary, "7 copies unpriced, not included in the total.")
+    }
+
+    func testCollectionFooterUsesGenericWordingForNonUSDExcludedQuotes() {
+        let foreignQuote = row(
+            id: "eur",
+            quantity: 2,
+            price: 9,
+            currencyCode: "EUR"
+        )
+
+        let footer = CollectionView.CollectionFooterPresentation.make(
+            visibleRows: [foreignQuote],
+            collectionRows: [foreignQuote],
+            isNarrowed: false
+        )
+
+        XCTAssertEqual(footer.excludedFromValueCopyCount, 2)
+        XCTAssertEqual(
+            footer.exclusionSummary,
+            "2 copies are not included in the collection value."
+        )
+
+        let singularFooter = CollectionView.CollectionFooterPresentation.make(
+            visibleRows: [row(id: "eur-singular", quantity: 1, price: 9, currencyCode: "EUR")],
+            collectionRows: [row(id: "eur-singular", quantity: 1, price: 9, currencyCode: "EUR")],
+            isNarrowed: false
+        )
+        XCTAssertEqual(
+            singularFooter.exclusionSummary,
+            "1 copy is not included in the collection value."
+        )
+    }
+
+    func testCollectionFooterOmitsExclusionNoteWhenEveryCopyIsValued() {
+        let footer = CollectionView.CollectionFooterPresentation.make(
+            visibleRows: [row(id: "priced", quantity: 1, price: 2)],
+            collectionRows: [row(id: "priced", quantity: 1, price: 2)],
+            isNarrowed: false
+        )
+
+        XCTAssertEqual(footer.itemSummary, "1 item")
+        XCTAssertNil(footer.exclusionSummary)
+    }
+
+    func testCollectionRefreshStatusUsesTerminalFacts() {
+        let changedSummary = PriceRefreshController.Summary(
+            checkedAt: .now,
+            priced: 1,
+            failed: 0,
+            latestSourceUpdate: nil,
+            checkedUnstampedProvider: false,
+            changedPrices: true,
+            foundNothingNewer: false
+        )
+        var outcome = CollectionRefreshOutcome(
+            status: .finished(changedSummary),
+            fallbackStatus: .idle
+        )
+
+        XCTAssertEqual(
+            CollectionRefreshStatusResolver.presentation(for: outcome)?.message,
+            "Prices updated"
+        )
+
+        let currentSummary = PriceRefreshController.Summary(
+            checkedAt: .now,
+            priced: 1,
+            failed: 0,
+            latestSourceUpdate: nil,
+            checkedUnstampedProvider: false,
+            changedPrices: false,
+            foundNothingNewer: true
+        )
+        outcome = CollectionRefreshOutcome(
+            status: .finished(currentSummary),
+            fallbackStatus: .idle
+        )
+        XCTAssertEqual(
+            CollectionRefreshStatusResolver.presentation(for: outcome)?.message,
+            "Prices checked — already current"
+        )
+
+        outcome = CollectionRefreshOutcome(
+            status: .finished(currentSummary),
+            fallbackStatus: .budgetReached(pending: 2, resetAt: .now)
+        )
+        XCTAssertEqual(
+            CollectionRefreshStatusResolver.presentation(for: outcome)?.message,
+            "Some prices couldn’t be refreshed"
+        )
+    }
+
     // MARK: - Collector numbers are not integers
 
     func testCardNumberSortIsNumericNotLexical() {

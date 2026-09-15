@@ -1327,6 +1327,17 @@ private struct PortfolioArtwork: View {
     var height: CGFloat = 46
     var cornerRadius: CGFloat = 5
 
+    private var artworkSource: CatalogCardArtworkSource {
+        CatalogCardArtworkSource(
+            game: holding.artworkGame,
+            setCode: holding.artworkSetCode,
+            collectorNumber: holding.artworkCollectorNumber,
+            thumbnailURL: holding.artworkFallbackURL,
+            imageURL: holding.artworkURL,
+            prefersFullSize: true
+        )
+    }
+
     var body: some View {
         Group {
             if let image = CollectionArtworkStore.image(
@@ -1338,8 +1349,8 @@ private struct PortfolioArtwork: View {
                     .scaledToFit()
             } else {
                 CatalogCachedImage(
-                    url: holding.artworkURL,
-                    fallbackURL: holding.artworkFallbackURL,
+                    url: artworkSource.primaryURL,
+                    fallbacks: artworkSource.fallbacks,
                     placeholderSymbol: "rectangle.stack"
                 )
             }

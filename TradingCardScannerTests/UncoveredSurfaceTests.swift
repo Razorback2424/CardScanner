@@ -554,6 +554,7 @@ final class SealedBrowseSurfaceTests: XCTestCase {
             isConfigured: { false }
         )
 
+        await model.loadSetsIfNeeded(game: .magic)
         await model.loadProducts(game: .magic, setID: nil)
 
         XCTAssertEqual(
@@ -562,7 +563,37 @@ final class SealedBrowseSurfaceTests: XCTestCase {
         )
         XCTAssertTrue(model.products.isEmpty)
         let productOffsets = await provider.productOffsets()
+        let setRequestCount = await provider.setRequestCount()
         XCTAssertEqual(productOffsets, [])
+        XCTAssertEqual(setRequestCount, 0)
+    }
+
+    func testSealedBrowseLoadsCachedDirectoryWithoutCredentials() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("SealedBrowseCachedDirectory-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let set = SealedSetSummary(
+            id: "cached-set",
+            name: "Cached Set",
+            sealedCount: 3,
+            game: .pokemon,
+            releaseDate: Date(timeIntervalSince1970: 200)
+        )
+        let cache = CatalogCacheStore(root: root)
+        await cache.storeSealedSets([set], for: .pokemon)
+        let provider = UncoveredSealedBrowseProvider()
+        let model = SealedBrowseModel(
+            client: provider,
+            cache: cache,
+            isConfigured: { false }
+        )
+
+        await model.loadSetsIfNeeded(game: .pokemon)
+
+        XCTAssertEqual(model.sets, [set])
+        let setRequestCount = await provider.setRequestCount()
+        XCTAssertEqual(setRequestCount, 0)
     }
 
     func testSealedBrowseErrorCopyNamesQuotaAndCredentialStates() {
@@ -740,6 +771,7 @@ final class ViewConstructionSmokeTests: XCTestCase {
         _ = ContentView()
         _ = ScannerView()
         _ = SettingsView()
+        _ = BrowseView(catalog: EmptyUncoveredBrowseCatalog())
         _ = CenteringCameraView(onCapture: { _ in })
         _ = CardCenteringView()
         _ = CollectionActivityLogView()
@@ -818,9 +850,32 @@ final class ViewConstructionSmokeTests: XCTestCase {
             isConfigured: { false }
         )
         _ = SealedSetDirectoryView(game: .pokemon, model: sealedModel)
+        _ = SealedSetDirectoryContent(
+            game: .pokemon,
+            model: sealedModel,
+            searchText: "",
+            onOpenSettings: {}
+        )
         _ = SealedProductGridView(game: .pokemon, set: sealedSet, model: sealedModel)
         _ = SealedProductTile(product: sealedProduct).body
         _ = SealedProductDetailView(game: .pokemon, product: sealedProduct)
+
+        let browseSet = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "browse-set"),
+            name: "Browse Set",
+            code: "BRW",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 10,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        _ = CatalogSetTile(
+            set: browseSet,
+            completion: SetCompletion(owned: 1, total: 10),
+            layout: .rail,
+            showsNewBadge: true
+        )
     }
 
     func testContentWidthLimitsRemainTheDocumentedSizes() {

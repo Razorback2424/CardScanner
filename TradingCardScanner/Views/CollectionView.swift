@@ -1,12 +1,118 @@
 import OSLog
 import SwiftData
 import SwiftUI
+import UIKit
 
 private enum CollectionArtworkLog {
     static let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier ?? "TradingCardScanner",
         category: "CollectionArtwork"
     )
+}
+
+/// The root owns the refresh operation, while Collection owns the way a
+/// deliberate Collection refresh is reported. Keeping the terminal snapshot
+/// as a value prevents the root's transient-status cleanup from erasing the
+/// result before Collection can present it.
+struct CollectionRefreshOutcome: Equatable {
+    let status: PriceRefreshController.Status
+    let fallbackStatus: PriceRefreshController.FallbackStatus
+
+    static let idle = CollectionRefreshOutcome(
+        status: .idle,
+        fallbackStatus: .idle
+    )
+}
+
+struct CollectionRefreshStatusPresentation: Equatable {
+    let message: String
+    let isWarning: Bool
+    let isTransient: Bool
+}
+
+enum CollectionRefreshStatusResolver {
+    static let updating = CollectionRefreshStatusPresentation(
+        message: "Updating prices…",
+        isWarning: false,
+        isTransient: false
+    )
+
+    static func presentation(
+        for outcome: CollectionRefreshOutcome
+    ) -> CollectionRefreshStatusPresentation? {
+        let fallbackWarning = hasUnresolvedFallbackWork(outcome.fallbackStatus)
+            ? warning("Some prices couldn’t be refreshed")
+            : nil
+
+        switch outcome.status {
+        case .idle, .refreshing:
+            break
+        case .recentlyChecked:
+            return fallbackWarning ?? transient("Prices already current")
+        case let .finished(summary):
+            if summary.targetBuildFailed {
+                return warning("Couldn’t refresh prices")
+            }
+            if summary.providerUnreachable {
+                return warning("Pricing provider unavailable")
+            }
+            if summary.persistenceFailed {
+                return warning("Some updates couldn’t be saved")
+            }
+            if let fallbackWarning {
+                return fallbackWarning
+            }
+            if summary.failed > 0
+                || summary.gradedLookupMisses > 0
+                || summary.gradedTransportFailures > 0
+                || summary.reconciledDuplicateRecords > 0 {
+                return warning("Prices updated with some issues")
+            }
+            if summary.changedPrices {
+                return transient("Prices updated")
+            }
+            if summary.foundNothingNewer {
+                return transient("Prices checked — already current")
+            }
+            return transient("Prices checked — already current")
+        }
+
+        return fallbackWarning
+    }
+
+    private static func transient(_ message: String) -> CollectionRefreshStatusPresentation {
+        CollectionRefreshStatusPresentation(
+            message: message,
+            isWarning: false,
+            isTransient: true
+        )
+    }
+
+    private static func warning(_ message: String) -> CollectionRefreshStatusPresentation {
+        CollectionRefreshStatusPresentation(
+            message: message,
+            isWarning: true,
+            isTransient: false
+        )
+    }
+
+    private static func hasUnresolvedFallbackWork(
+        _ status: PriceRefreshController.FallbackStatus
+    ) -> Bool {
+        switch status {
+        case let .disabled(pending), let .unconfigured(pending):
+            return pending > 0
+        case let .budgetReached(pending, _), let .rateLimited(pending, _):
+            return pending > 0
+        case .idle, .available, .running, .finished:
+            return false
+        }
+    }
+}
+
+private struct CollectionRefreshFeedback: Equatable {
+    let id: UUID
+    let presentation: CollectionRefreshStatusPresentation
 }
 
 /// Collection is for finding, filtering, and managing owned items. Portfolio
@@ -28,7 +134,7 @@ struct CollectionView: View {
     let opensCardDetailForCollectionKey: String?
     let waitsForCardDetailCollectionKey: Bool
     let onOpenScanner: @MainActor () -> Void
-    let onRefresh: @MainActor () async -> Void
+    let onRefresh: @MainActor () async -> CollectionRefreshOutcome
     @Binding var sort: CollectionSort
 
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
@@ -55,6 +161,10 @@ struct CollectionView: View {
     /// window shrinking to one column and widening back out — resizing must
     /// never throw away where the user was.
     @State private var navigationPath: [Destination] = []
+    /// A Collection-local guard prevents double taps without disabling a
+    /// request that should join an already-running automatic controller pass.
+    @State private var collectionRefreshRequestInFlight = false
+    @State private var collectionRefreshFeedback: CollectionRefreshFeedback?
     /// `.doubleColumn` rather than `.automatic`: automatic hides the grid behind a
     /// toggle in a portrait iPad window, which would land the user on an empty
     /// detail pane in the one orientation an iPad is most often held.
@@ -68,7 +178,6 @@ struct CollectionView: View {
     /// resolving, which is how the detail column falls back to its placeholder.
     private enum Destination: Hashable {
         case browse
-        case history
         case card(String)
         case movement(String)
     }
@@ -83,7 +192,7 @@ struct CollectionView: View {
         opensCardDetailForCollectionKey: String? = nil,
         waitsForCardDetailCollectionKey: Bool = false,
         onOpenScanner: @escaping @MainActor () -> Void,
-        onRefresh: @escaping @MainActor () async -> Void,
+        onRefresh: @escaping @MainActor () async -> CollectionRefreshOutcome,
         sort: Binding<CollectionSort>
     ) {
         self.catalog = catalog
@@ -156,7 +265,6 @@ struct CollectionView: View {
                 CollectionFilterSheet(
                     isPresented: $isShowingFilters,
                     filters: $filters,
-                    sort: $sort,
                     setOptions: setOptions(optionRows),
                     finishOptions: finishOptions(optionRows),
                     treatmentOptions: treatmentOptions(optionRows),
@@ -183,6 +291,16 @@ struct CollectionView: View {
             try? await Task.sleep(for: .milliseconds(120))
             guard !Task.isCancelled else { return }
             searchQuery = searchText
+        }
+        .task(id: collectionRefreshFeedback?.id) {
+            guard let feedback = collectionRefreshFeedback,
+                  feedback.presentation.isTransient else { return }
+            try? await Task.sleep(for: .seconds(2.6))
+            guard !Task.isCancelled,
+                  collectionRefreshFeedback?.id == feedback.id else { return }
+            withAnimation(.easeOut(duration: 0.18)) {
+                collectionRefreshFeedback = nil
+            }
         }
         .task {
             guard opensBrowseOnLaunch, navigationPath.isEmpty else { return }
@@ -240,42 +358,50 @@ struct CollectionView: View {
                 content(snapshot)
             }
         }
-        .navigationTitle("Collection")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItemGroup(placement: .topBarTrailing) {
+        // iOS 26 centers a normal inline title when only two trailing actions
+        // remain, while an explicit leading Text becomes a clipped glass
+        // control. This small safe-area row keeps the requested leading title,
+        // exact spacing, and separator without changing the destination stacks.
+        .toolbar(.hidden, for: .navigationBar)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            collectionNavigationHeader
+        }
+    }
+
+    private var collectionNavigationHeader: some View {
+        HStack(spacing: 0) {
+            Text("Collection")
+                .font(.headline)
+                .lineLimit(1)
+                .accessibilityAddTraits(.isHeader)
+
+            Spacer(minLength: 0)
+
+            HStack(spacing: 18) {
                 Button {
                     select(.browse)
                 } label: {
-                    Label("Find items to add", systemImage: "plus")
+                    Image(systemName: "plus")
+                        .frame(width: 44, height: 44)
                 }
-                .labelStyle(.iconOnly)
                 .accessibilityLabel("Find items to add")
 
-                Button("Filters", systemImage: filters.isActive
-                       ? "line.3.horizontal.decrease.circle.fill"
-                       : "line.3.horizontal.decrease.circle") {
-                    isShowingFilters = true
-                }
-                .labelStyle(.iconOnly)
-                .accessibilityLabel(filters.isActive ? "Filters, \(activeFilterCount) active" : "Filters")
-
                 Button {
-                    select(.history)
-                } label: {
-                    Label("Collection history", systemImage: "clock.arrow.circlepath")
-                }
-                .labelStyle(.iconOnly)
-                .accessibilityLabel("Collection history")
-            }
-
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Settings", systemImage: "gearshape") {
                     isShowingSettings = true
+                } label: {
+                    Image(systemName: "gearshape")
+                        .frame(width: 44, height: 44)
                 }
-                .labelStyle(.iconOnly)
                 .accessibilityLabel("Settings")
             }
+            .foregroundStyle(.primary)
+            .tint(.primary)
+        }
+        .padding(.horizontal, 16)
+        .frame(height: 44)
+        .background(Color(uiColor: .systemBackground))
+        .overlay(alignment: .bottom) {
+            Divider()
         }
     }
 
@@ -312,8 +438,6 @@ struct CollectionView: View {
         switch destination {
         case .browse:
             BrowseView(catalog: catalog)
-        case .history:
-            CollectionActivityLogView()
         case let .card(id):
             if let entry = snapshot.entries.first(where: { $0.id == id }) {
                 CollectionCardDestination(
@@ -357,9 +481,8 @@ struct CollectionView: View {
 
     private func content(_ snapshot: Snapshot) -> some View {
         return ScrollView {
-            LazyVStack(spacing: 12) {
-                collectionSummary(snapshot)
-                filterBar(snapshot)
+            LazyVStack(spacing: 14) {
+                collectionHeader(snapshot)
 
                 if snapshot.entries.isEmpty {
                     noMatches
@@ -387,13 +510,15 @@ struct CollectionView: View {
                         }
                     }
                     .padding(.top, 2)
+                    collectionFooter(snapshot)
                 }
             }
-            .padding(12)
+            .padding(.horizontal, 12)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
             .contentWidthLimit(.wide)
         }
         .scrollDismissesKeyboard(.interactively)
-        .searchable(text: $searchText, prompt: "Search collection")
         .refreshable {
             // `refreshable` holds the grid pushed down under its spinner for
             // as long as this closure is suspended, and a pass over a few
@@ -401,7 +526,7 @@ struct CollectionView: View {
             // Hand the work to a task that outlives the gesture and let the
             // status row above the grid report it — the same progress
             // Portfolio shows, from the same publisher.
-            Task { await onRefresh() }
+            requestCollectionRefresh()
             try? await Task.sleep(for: .milliseconds(500))
         }
         .animation(.easeOut(duration: 0.2), value: filters)
@@ -409,41 +534,46 @@ struct CollectionView: View {
         .animation(.easeOut(duration: 0.2), value: searchQuery)
     }
 
-    private func collectionSummary(_ snapshot: Snapshot) -> some View {
-        return VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .center, spacing: 12) {
+    private func collectionHeader(_ snapshot: Snapshot) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Shown value")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text(snapshot.shownValue.formatted())
-                            .font(.system(size: 28, weight: .bold, design: .rounded))
-                            .monospacedDigit()
-                            .foregroundStyle(PortfolioPalette.money)
-                            .contentTransition(.numericText())
-                            .animation(.snappy, value: snapshot.shownValue)
-                            .accessibilityLabel("Shown collection value, \(snapshot.shownValue.formatted())")
+                    Text(snapshot.collectionValue.formatted())
+                        .font(.system(size: 38, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .tracking(-0.76)
+                        .foregroundStyle(Color("RefreshAccent"))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.72)
+                        .contentTransition(.numericText())
+                        .animation(.snappy, value: snapshot.collectionValue)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(
+                            "Collection value, \(snapshot.collectionValue.formatted())"
+                        )
 
-                        Text(snapshot.countSummary)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.8)
-                    }
+                    CollectionRefreshStatusLine(
+                        refresh: refresh,
+                        isCollectionRequestInFlight: collectionRefreshRequestInFlight,
+                        feedback: collectionRefreshFeedback
+                    )
+                    .frame(height: 18, alignment: .leading)
                 }
                 .layoutPriority(1)
+
                 Spacer(minLength: 0)
-                CollectionRefreshButton(refresh: refresh, onRefresh: onRefresh)
+
+                CollectionRefreshButton(
+                    refresh: refresh,
+                    isRequestInFlight: collectionRefreshRequestInFlight,
+                    onRefresh: requestCollectionRefresh
+                )
             }
 
-            // Pull-to-refresh returns immediately, so this is where a running
-            // pass is actually reported. Entry point and progress live
-            // together rather than in different screens.
-            PriceRefreshActivityRow(refresh: refresh)
+            collectionControls
         }
-        .padding(.horizontal, 4)
-        .padding(.vertical, 4)
+        .padding(.horizontal, 2)
+        .padding(.top, 2)
     }
 
     private var emptyCollection: some View {
@@ -511,32 +641,196 @@ struct CollectionView: View {
         }
     }
 
+    @MainActor
+    private func requestCollectionRefresh() {
+        guard !collectionRefreshRequestInFlight else { return }
+
+        collectionRefreshRequestInFlight = true
+        collectionRefreshFeedback = nil
+
+        Task { @MainActor in
+            defer { collectionRefreshRequestInFlight = false }
+
+            let outcome = await onRefresh()
+            guard !Task.isCancelled,
+                  let presentation = CollectionRefreshStatusResolver.presentation(for: outcome) else {
+                return
+            }
+
+            withAnimation(.easeIn(duration: 0.18)) {
+                collectionRefreshFeedback = CollectionRefreshFeedback(
+                    id: UUID(),
+                    presentation: presentation
+                )
+            }
+            UIAccessibility.post(
+                notification: .announcement,
+                argument: presentation.message
+            )
+        }
+    }
+
     // MARK: - Filters
 
-    private func filterBar(_ snapshot: Snapshot) -> some View {
-        HStack {
-            Spacer()
+    @ViewBuilder
+    private var collectionControls: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            collectionControlsStacked
+        } else {
+            ViewThatFits(in: .horizontal) {
+                collectionControlsRow
+                collectionControlsStacked
+            }
+        }
+    }
 
-            Menu {
-                ForEach(CollectionSort.allCases) { option in
-                    Button {
-                        sort = option
-                    } label: {
-                        if sort == option {
-                            Label(option.label, systemImage: "checkmark")
-                        } else {
-                            Text(option.label)
-                        }
+    private var collectionControlsRow: some View {
+        HStack(spacing: 8) {
+            collectionSearchField
+                .frame(maxWidth: .infinity)
+            collectionFilterButton
+            collectionSortMenu
+        }
+    }
+
+    private var collectionControlsStacked: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            collectionSearchField
+                .frame(maxWidth: .infinity)
+
+            HStack(spacing: 8) {
+                collectionFilterButton
+                collectionSortMenu
+                Spacer(minLength: 0)
+            }
+        }
+    }
+
+    private var collectionControlFill: Color {
+        Color.primary.opacity(0.08)
+    }
+
+    private var collectionSearchField: some View {
+        HStack(spacing: 7) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 17))
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+
+            TextField("Search collection", text: $searchText)
+                .font(.body)
+                .textFieldStyle(.plain)
+                .submitLabel(.search)
+                .accessibilityLabel("Search collection")
+        }
+        .padding(.horizontal, 10)
+        .frame(maxWidth: .infinity)
+        .frame(height: 36)
+        .background(
+            collectionControlFill,
+            in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+        )
+        .frame(minHeight: 44)
+    }
+
+    private var collectionFilterButton: some View {
+        Button {
+            isShowingFilters = true
+        } label: {
+            Image(systemName: "line.3.horizontal.decrease")
+                .font(.system(size: 19, weight: .medium))
+                .foregroundStyle(filters.isActive ? Color("RefreshAccent") : .primary)
+                .frame(width: 36, height: 36)
+                .background(
+                    collectionControlFill,
+                    in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+                )
+        }
+        .frame(width: 44, height: 44)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(filters.isActive ? "Filters, \(activeFilterCount) active" : "Filters")
+    }
+
+    private var collectionSortMenu: some View {
+        Menu {
+            ForEach(CollectionSort.allCases) { option in
+                Button {
+                    sort = option
+                } label: {
+                    if sort == option {
+                        Label(option.label, systemImage: "checkmark")
+                    } else {
+                        Text(option.label)
                     }
                 }
-            } label: {
-                Text(sort.label)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
             }
-            .accessibilityLabel("Sort collection: \(sort.label)")
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "arrow.up.arrow.down")
+                    .font(.system(size: 18, weight: .medium))
+                    .accessibilityHidden(true)
+                Text(sortHeaderLabel)
+                    .font(.system(size: 13, weight: .semibold))
+                    .lineLimit(1)
+                if let sortDirectionSymbol {
+                    Image(systemName: sortDirectionSymbol)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
+                }
+            }
+            .foregroundStyle(.primary)
+            .padding(.horizontal, 10)
+            .frame(height: 36)
+            .background(
+                collectionControlFill,
+                in: RoundedRectangle(cornerRadius: 10, style: .continuous)
+            )
         }
+        .frame(minHeight: 44)
+        .contentShape(Rectangle())
+        .tint(.primary)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Sort collection: \(sort.label)")
+    }
+
+    private var sortHeaderLabel: String {
+        switch sort {
+        case .priceHighToLow, .priceLowToHigh:
+            return "Price"
+        case .cardNumber:
+            return "Card #"
+        case .setAndCardNumber:
+            return "Set + #"
+        }
+    }
+
+    private var sortDirectionSymbol: String? {
+        switch sort {
+        case .priceHighToLow:
+            return "arrow.down"
+        case .priceLowToHigh, .cardNumber:
+            return "arrow.up"
+        case .setAndCardNumber:
+            return nil
+        }
+    }
+
+    private func collectionFooter(_ snapshot: Snapshot) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(snapshot.footer.itemSummary)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+
+            if let exclusionSummary = snapshot.footer.exclusionSummary {
+                Text(exclusionSummary)
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
     }
 
     private var activeFilterCount: Int {
@@ -553,6 +847,52 @@ struct CollectionView: View {
 
     // MARK: - Data
 
+    /// The first line describes logical tiles currently visible. The second
+    /// line explains the full collection total, so its copy count deliberately
+    /// remains collection-wide even when search or filters narrow the grid.
+    struct CollectionFooterPresentation: Equatable {
+        let visibleLogicalItemCount: Int
+        let excludedFromValueCopyCount: Int
+        let hasNonPriceExclusions: Bool
+        let isNarrowed: Bool
+
+        var itemSummary: String {
+            let itemLabel = visibleLogicalItemCount == 1 ? "item" : "items"
+            return "\(visibleLogicalItemCount) \(itemLabel)\(isNarrowed ? " shown" : "")"
+        }
+
+        var exclusionSummary: String? {
+            guard excludedFromValueCopyCount > 0 else { return nil }
+            let copyLabel = excludedFromValueCopyCount == 1 ? "copy" : "copies"
+            if hasNonPriceExclusions {
+                let verb = excludedFromValueCopyCount == 1 ? "is" : "are"
+                return "\(excludedFromValueCopyCount) \(copyLabel) \(verb) not included in the collection value."
+            }
+            return "\(excludedFromValueCopyCount) \(copyLabel) unpriced, not included in the total."
+        }
+
+        static func make(
+            visibleRows: [CollectionRow],
+            collectionRows: [CollectionRow],
+            isNarrowed: Bool
+        ) -> Self {
+            let excludedRows = collectionRows.filter { row in
+                PortfolioPriceEligibility.eligibleUnitPrice(
+                    amount: row.price.amount,
+                    currencyCode: row.price.currencyCode
+                ) == nil
+            }
+            return Self(
+                visibleLogicalItemCount: visibleRows.count,
+                excludedFromValueCopyCount: excludedRows.reduce(0) {
+                    $0 + max(0, $1.quantity)
+                },
+                hasNonPriceExclusions: excludedRows.contains { $0.price.amount != nil },
+                isNarrowed: isNarrowed
+            )
+        }
+    }
+
     /// Everything one render of this screen needs, derived once.
     struct Snapshot {
         struct Entry: Identifiable {
@@ -566,16 +906,8 @@ struct CollectionView: View {
 
         let all: [CollectionRow]
         let entries: [Entry]
-        let shownValue: Money
-        let unpricedCount: Int
-
-        var countSummary: String {
-            let itemLabel = entries.count == 1 ? "item" : "items"
-            guard unpricedCount > 0 else {
-                return "\(entries.count) \(itemLabel)"
-            }
-            return "\(entries.count) \(itemLabel) · \(unpricedCount) unpriced"
-        }
+        let collectionValue: Money
+        let footer: CollectionFooterPresentation
     }
 
     /// The expensive half of a collection render. Search and filter state are
@@ -650,7 +982,12 @@ struct CollectionView: View {
     @MainActor
     private func makeSnapshot() -> Snapshot {
         guard let projected = projectionStore.snapshot else {
-            return Snapshot(all: [], entries: [], shownValue: .zero, unpricedCount: 0)
+            return Snapshot(
+                all: [],
+                entries: [],
+                collectionValue: .zero,
+                footer: .make(visibleRows: [], collectionRows: [], isNarrowed: false)
+            )
         }
 
         let cached = projectionCache.value(for: projectionStore.revision) {
@@ -708,13 +1045,18 @@ struct CollectionView: View {
                 isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
             )
         }
-        let shownValue = CollectionValuation.shownValue(for: entries.map(\.row))
+        let collectionValue = CollectionValuation.shownValue(for: pricedRows)
+        let footer = CollectionFooterPresentation.make(
+            visibleRows: entries.map(\.row),
+            collectionRows: pricedRows,
+            isNarrowed: !searchQuery.isEmpty || filters.isActive
+        )
 
         return Snapshot(
             all: pricedRows,
             entries: entries,
-            shownValue: shownValue,
-            unpricedCount: entries.filter { $0.row.price.amount == nil }.count
+            collectionValue: collectionValue,
+            footer: footer
         )
     }
 
@@ -949,36 +1291,90 @@ private struct CollectionTileButtonStyle: ButtonStyle {
 
 private struct CollectionRefreshButton: View {
     @ObservedObject var refresh: PriceRefreshController
-    let onRefresh: @MainActor () async -> Void
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let isRequestInFlight: Bool
+    let onRefresh: @MainActor () -> Void
 
-    private var isRefreshing: Bool {
-        if case .refreshing = refresh.status { return true }
-        return false
+    private var isRefreshActive: Bool {
+        isRequestInFlight || refresh.isPassInFlight
     }
 
     var body: some View {
-        Button {
-            Task { await onRefresh() }
-        } label: {
-            if dynamicTypeSize > .xxxLarge {
-                Image(systemName: "arrow.triangle.2.circlepath")
-                    .imageScale(.medium)
-            } else {
-                Label("Refresh", systemImage: "arrow.triangle.2.circlepath")
-                    .labelStyle(.titleAndIcon)
-                    .font(.footnote.weight(.semibold))
-                    .imageScale(.medium)
-            }
+        Button(action: onRefresh) {
+            Image(systemName: "arrow.triangle.2.circlepath")
+                .font(.system(size: 20, weight: .semibold))
+                .frame(width: 44, height: 44)
+                .contentShape(Circle())
         }
         .foregroundStyle(Color("RefreshAccent"))
-        .padding(.horizontal, 14)
-        .frame(minWidth: 44)
-        .frame(height: 44)
-        .background(PortfolioPalette.money.opacity(0.18), in: Capsule())
-        .disabled(isRefreshing)
+        .background(
+            PortfolioPalette.money.opacity(0.18),
+            in: Circle()
+        )
+        .contentShape(Circle())
+        .disabled(isRequestInFlight)
         .accessibilityLabel("Refresh prices")
-        .accessibilityValue(isRefreshing ? "In progress" : "")
+        .accessibilityValue(isRefreshActive ? "In progress" : "")
+    }
+}
+
+private struct CollectionRefreshStatusLine: View {
+    @ObservedObject var refresh: PriceRefreshController
+    let isCollectionRequestInFlight: Bool
+    let feedback: CollectionRefreshFeedback?
+
+    private var presentation: CollectionRefreshStatusPresentation? {
+        if isCollectionRequestInFlight || refresh.isPassInFlight {
+            return CollectionRefreshStatusResolver.updating
+        }
+        let currentPresentation = CollectionRefreshStatusResolver.presentation(
+            for: CollectionRefreshOutcome(
+                status: refresh.status,
+                fallbackStatus: refresh.fallbackStatus
+            )
+        )
+
+        // An automatic pass may leave an unresolved warning behind. It must
+        // remain visible even if an older Collection success is still in its
+        // two-and-a-half-second presentation window.
+        if let currentPresentation, currentPresentation.isWarning {
+            return currentPresentation
+        }
+        if let feedback {
+            // A later clean automatic pass resolves a warning left by an older
+            // manual request, so do not keep presenting that stale warning.
+            if feedback.presentation.isWarning,
+               currentPresentation?.isTransient == true {
+                return nil
+            }
+            return feedback.presentation
+        }
+        // A clean terminal state belongs to the initiating surface. Automatic
+        // passes may still leave warnings here, but should not interrupt the
+        // user with a transient success message.
+        return currentPresentation?.isTransient == true ? nil : currentPresentation
+    }
+
+    var body: some View {
+        Group {
+            if let presentation {
+                Text(presentation.message)
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundStyle(
+                        presentation.isWarning
+                            ? PortfolioPalette.attention
+                            : Color("RefreshAccent")
+                    )
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    .transition(.opacity)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(presentation.message)
+            } else {
+                Color.clear
+                    .accessibilityHidden(true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -1044,6 +1440,9 @@ private struct CollectionCardTile: View {
                 ZStack {
                     CollectionCardArtwork(
                         userArtworkFilename: row.userArtworkFilename,
+                        game: row.game,
+                        setCode: row.setCode,
+                        collectorNumber: row.cardNumber,
                         thumbnailURL: row.lowImageURL,
                         fullSizeURL: row.highImageURL,
                         placeholderText: artworkReason?.title
@@ -1277,18 +1676,25 @@ private struct CollectionArtworkGlow: View {
 /// unavailable, which otherwise leaves the grid stuck on a placeholder.
 private struct CollectionCardArtwork: View {
     let userArtworkFilename: String?
+    let game: CardGame
+    let setCode: String
+    let collectorNumber: String
     let thumbnailURL: URL?
     let fullSizeURL: URL?
     let placeholderText: String?
 
-    /// The grid is now large enough that Scryfall's `small` asset is visibly
-    /// blurry. The normal-sized asset is the primary, while the thumbnail
-    /// remains a cheap fallback when a provider has not filled the larger URL.
-    private var primaryURL: URL? { fullSizeURL ?? thumbnailURL }
-
-    private var fallbackURL: URL? {
-        guard let thumbnailURL, thumbnailURL != primaryURL else { return nil }
-        return thumbnailURL
+    private var artworkSource: CatalogCardArtworkSource {
+        CatalogCardArtworkSource(
+            game: game,
+            setCode: setCode,
+            collectorNumber: collectorNumber,
+            thumbnailURL: thumbnailURL,
+            imageURL: fullSizeURL,
+            // The collection grid is large enough that the normal-sized asset
+            // should be primary. The thumbnail and then Limitless full image
+            // remain explicit fallbacks.
+            prefersFullSize: true
+        )
     }
 
     var body: some View {
@@ -1301,8 +1707,8 @@ private struct CollectionCardArtwork: View {
                 .scaledToFit()
         } else {
             CatalogCachedImage(
-                url: primaryURL,
-                fallbackURL: fallbackURL,
+                url: artworkSource.primaryURL,
+                fallbacks: artworkSource.fallbacks,
                 placeholderText: placeholderText
             )
         }

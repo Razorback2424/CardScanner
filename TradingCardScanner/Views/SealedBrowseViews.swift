@@ -100,7 +100,7 @@ final class SealedBrowseModel: ObservableObject {
             )
             var lane = Lane(isLoading: isConfigured)
             if let saved = await cache.sealedProductPage(for: key) {
-                lane.products = saved.value.items
+                lane.products = deduplicated(saved.value.items)
                 lane.nextOffset = Int(saved.value.nextCursor ?? "")
                 if saved.isFresh || !isConfigured {
                     lane.isLoading = false
@@ -157,7 +157,7 @@ final class SealedBrowseModel: ObservableObject {
                 lane.isLoading = false
                 switch result {
                 case let .success(page):
-                    lane.products = page.items
+                    lane.products = deduplicated(page.items)
                     lane.nextOffset = Int(page.nextCursor ?? "")
                     lane.error = nil
                 case let .failure(error):
@@ -196,7 +196,7 @@ final class SealedBrowseModel: ObservableObject {
            saved.isFresh || !isConfigured {
             guard token == searchGeneration, !Task.isCancelled,
                   var lane = searchLanes[game] else { return }
-            lane.products += saved.value.items
+            lane.products = deduplicated(lane.products + saved.value.items)
             lane.nextOffset = Int(saved.value.nextCursor ?? "")
             lane.error = nil
             searchLanes[game] = lane
@@ -226,13 +226,16 @@ final class SealedBrowseModel: ObservableObject {
             await cache.storeSealedProductPage(cachePage, for: cacheKey)
             guard token == searchGeneration, !Task.isCancelled,
                   var lane = searchLanes[game] else { return }
-            lane.products += cachePage.items
+            lane.products = deduplicated(lane.products + cachePage.items)
             lane.nextOffset = Int(cachePage.nextCursor ?? "")
             lane.error = nil
             searchLanes[game] = lane
         } catch {
             guard token == searchGeneration, !Task.isCancelled,
                   var lane = searchLanes[game] else { return }
+            if error is CancellationError || (error as? URLError)?.code == .cancelled {
+                return
+            }
             lane.error = Self.message(for: error)
             searchLanes[game] = lane
         }
@@ -394,6 +397,14 @@ final class SealedBrowseModel: ObservableObject {
         isLoading = isLoadingSets || isLoadingProducts
     }
 
+    private func deduplicated(_ products: [SealedProductSummary]) -> [SealedProductSummary] {
+        var seen: Set<String> = []
+        return products.filter { product in
+            let key = product.id + "|" + (product.variantID ?? "")
+            return seen.insert(key).inserted
+        }
+    }
+
     private func cachePage(from page: MarketCatalogPage<SealedProductSummary>) -> CatalogPage<SealedProductSummary> {
         CatalogPage(
             items: page.items,
@@ -430,10 +441,11 @@ final class SealedBrowseModel: ObservableObject {
 
 // MARK: - Set directory
 
-struct SealedSetDirectoryView: View {
+struct SealedSetDirectoryContent: View {
     let game: CardGame
     @ObservedObject var model: SealedBrowseModel
-    @State private var searchText = ""
+    let searchText: String
+    var onOpenSettings: (() -> Void)? = nil
 
     private var normalizedSearch: String {
         CardNameSearch.normalize(searchText)
@@ -446,32 +458,56 @@ struct SealedSetDirectoryView: View {
         }
     }
 
+    private var hasUsableCachedDirectory: Bool {
+        !model.sets.isEmpty
+    }
+
     var body: some View {
         List {
-            if !model.isConfigured {
+            if !model.isConfigured, !hasUsableCachedDirectory {
                 unconfigured
+            } else if !model.isConfigured, hasUsableCachedDirectory {
+                Text("Showing saved sealed sets. Set up sealed browsing to refresh this directory.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             } else if let errorMessage = model.errorMessage {
                 Text(errorMessage)
                     .font(.footnote)
                     .foregroundStyle(.orange)
             }
 
-            ForEach(visibleSets) { set in
-                NavigationLink {
-                    SealedProductGridView(game: game, set: set, model: model)
-                } label: {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(set.name)
-                            Text("\(set.sealedCount) sealed product\(set.sealedCount == 1 ? "" : "s")")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+            if model.isConfigured || hasUsableCachedDirectory {
+                Section {
+                    ForEach(visibleSets) { set in
+                        NavigationLink {
+                            SealedProductGridView(game: game, set: set, model: model)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(set.name)
+                                    Text(countLabel(
+                                        set.sealedCount,
+                                        singular: "sealed product",
+                                        plural: "sealed products"
+                                    ))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                            }
+                            .frame(minHeight: 44)
+                            .accessibilityElement(children: .combine)
                         }
-                        Spacer()
                     }
-                    // 44pt minimum, and both lines read as one label.
-                    .frame(minHeight: 44)
-                    .accessibilityElement(children: .combine)
+                } header: {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Vendor catalog")
+                            .font(.headline)
+                        Text("Sets are grouped by the pricing vendor.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+                    .textCase(nil)
                 }
             }
         }
@@ -484,7 +520,9 @@ struct SealedSetDirectoryView: View {
                     systemImage: "shippingbox",
                     description: Text("This game has no sealed products in the price catalogue.")
                 )
-            } else if !normalizedSearch.isEmpty, visibleSets.isEmpty {
+            } else if (model.isConfigured || hasUsableCachedDirectory),
+                      !normalizedSearch.isEmpty,
+                      visibleSets.isEmpty {
                 ContentUnavailableView(
                     "No Matching Sets",
                     systemImage: "magnifyingglass",
@@ -492,19 +530,56 @@ struct SealedSetDirectoryView: View {
                 )
             }
         }
+        .safeAreaPadding(.bottom, 24)
+        .task(id: game) {
+            await model.loadSetsIfNeeded(game: game)
+        }
+    }
+
+    @ViewBuilder
+    private var unconfigured: some View {
+        if let onOpenSettings {
+            VStack(alignment: .leading, spacing: 8) {
+                Button {
+                    onOpenSettings()
+                } label: {
+                    Label("Set up sealed browsing", systemImage: "key")
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                }
+                .buttonStyle(.borderedProminent)
+                .accessibilityHint("Opens Settings to add the pricing vendor key")
+
+                Text("Add a pricing API key in Settings to browse sealed products.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            .listRowInsets(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+            .listRowBackground(Color.clear)
+        } else {
+            Label(
+                "Add a pricing API key in Settings to browse sealed products.",
+                systemImage: "key"
+            )
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+        }
+    }
+}
+
+struct SealedSetDirectoryView: View {
+    let game: CardGame
+    @ObservedObject var model: SealedBrowseModel
+    @State private var searchText = ""
+
+    var body: some View {
+        SealedSetDirectoryContent(
+            game: game,
+            model: model,
+            searchText: searchText
+        )
         .navigationTitle("Sealed")
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $searchText, prompt: "Search " + game.label + " sets")
-        .task(id: game) { await model.loadSetsIfNeeded(game: game) }
-    }
-
-    private var unconfigured: some View {
-        Label(
-            "Add a pricing API key in Settings to browse sealed products.",
-            systemImage: "key"
-        )
-        .font(.footnote)
-        .foregroundStyle(.secondary)
     }
 }
 

@@ -160,13 +160,17 @@ enum PokemonMasterSetChecklistBuilder {
                   PokemonMasterSetDefinition.includesInSetDirectory(row) else {
                 return nil
             }
+            let parentLogoURL = PokemonArtworkFallbacks.parentLogoURL(forProviderID: row.id)
             return CatalogSet(
                 catalogID: CatalogSetID(game: .pokemon, providerID: row.id),
                 name: row.name,
                 code: row.tcgOnline?.uppercased()
                     ?? SetCodeMap.printedCode(forTCGdexSetID: row.id)
                     ?? row.id.uppercased(),
-                logoURL: assetURL(row.logo, suffix: ".png"),
+                // Gallery rows inherit the parent provider logo when TCGdex
+                // omits their own assets. This is also applied again in
+                // `enrichedSet` for the generated/offline checklist path.
+                logoURL: assetURL(row.logo, suffix: ".png") ?? parentLogoURL,
                 symbolURL: assetURL(row.symbol, suffix: ".png"),
                 cardCount: row.cardCount.map {
                     PokemonMasterSetDefinition.masterCount(
@@ -293,12 +297,16 @@ enum PokemonMasterSetChecklistBuilder {
         _ set: CatalogSet,
         providerSet: TCGdexSetCatalog
     ) -> CatalogSet {
-        CatalogSet(
+        let parentLogoURL = PokemonArtworkFallbacks.parentLogoURL(forProviderID: providerSet.id)
+        return CatalogSet(
             catalogID: set.catalogID,
             name: set.name,
             code: providerSet.tcgOnline?.uppercased() ?? set.code,
-            logoURL: assetURL(providerSet.logo, suffix: ".png") ?? set.logoURL,
-            symbolURL: assetURL(providerSet.symbol, suffix: ".png") ?? set.symbolURL,
+            logoURL: assetURL(providerSet.logo, suffix: ".png")
+                ?? set.logoURL
+                ?? parentLogoURL,
+            symbolURL: assetURL(providerSet.symbol, suffix: ".png")
+                ?? set.symbolURL,
             cardCount: providerSet.cardCount.map {
                 PokemonMasterSetDefinition.masterCount(
                     cardCount: $0,

@@ -132,7 +132,7 @@ enum PortfolioReplaySnapshotBuilder {
         valuations: InstrumentValuationIndex,
         artworkFilenameByCollectionKey: [String: String]
     ) -> [PortfolioHoldingSnapshot] {
-        let holdings: [PortfolioHoldingSnapshot] = projection.positions.compactMap { position in
+        let holdings: [PortfolioHoldingSnapshot] = projection.positions.compactMap { position -> PortfolioHoldingSnapshot? in
             guard position.quantity > 0 else { return nil }
             let card = position.representative
             let price = valuations.valuation(for: position.priceStorageKey).unitPrice
@@ -151,7 +151,10 @@ enum PortfolioReplaySnapshotBuilder {
                 quantity: position.quantity,
                 unitPrice: price,
                 holdingValue: price?.multiplied(by: position.quantity),
-                priceStorageKey: position.priceStorageKey
+                priceStorageKey: position.priceStorageKey,
+                artworkGame: card.cardGame,
+                artworkSetCode: card.setCode,
+                artworkCollectorNumber: card.cardNumber
             )
         }
 

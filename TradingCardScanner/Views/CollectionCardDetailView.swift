@@ -844,17 +844,28 @@ struct CollectionCardDetailView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-            } else if let imageURL = card.highImageURL ?? card.lowImageURL {
-                CatalogCachedImage(
-                    url: imageURL,
-                    fallbackURL: card.lowImageURL == imageURL ? nil : card.lowImageURL,
-                    placeholderText: artworkReason?.title
-                )
             } else {
-                // AsyncImage with a nil URL remains in .empty forever. End the
-                // state explicitly so an unresolved catalog row is honest and
-                // usable instead of presenting an infinite spinner.
-                missingArtworkPlaceholder
+                let source = CatalogCardArtworkSource(
+                    game: card.cardGame,
+                    setCode: card.setCode,
+                    collectorNumber: card.cardNumber,
+                    thumbnailURL: card.lowImageURL,
+                    imageURL: card.highImageURL,
+                    prefersFullSize: true
+                )
+                if source.primaryURL != nil {
+                    CatalogCachedImage(
+                        url: source.primaryURL,
+                        fallbacks: source.fallbacks,
+                        placeholderText: artworkReason?.title
+                    )
+                } else {
+                    // AsyncImage with a nil URL remains in .empty forever. End
+                    // the state explicitly so an unresolved catalog row is
+                    // honest and usable instead of presenting an infinite
+                    // spinner.
+                    missingArtworkPlaceholder
+                }
             }
 
             CardFinishOverlay(

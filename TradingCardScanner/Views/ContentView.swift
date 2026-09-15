@@ -81,7 +81,7 @@ struct ContentView: View {
                 portfolio: portfolio,
                 refresh: refresh,
                 history: history,
-                onRefresh: refreshAllPrices,
+                onRefresh: { _ = await refreshAllPrices() },
                 onOpenCollectionSortedByPrice: {
                     collectionSort = .priceHighToLow
                     selectedTab = .collection
@@ -102,7 +102,7 @@ struct ContentView: View {
                 opensCardDetailForCollectionKey: debugCardDetailCollectionKey,
                 waitsForCardDetailCollectionKey: isTrustCardDetailDebugRoute,
                 onOpenScanner: { selectedTab = .scan },
-                onRefresh: refreshAllPrices,
+                onRefresh: { await refreshAllPrices() },
                 sort: $collectionSort
             )
                 .tabItem {
@@ -379,10 +379,10 @@ struct ContentView: View {
     }
 
     @MainActor
-    private func refreshAllPrices() async {
+    private func refreshAllPrices() async -> CollectionRefreshOutcome {
         refreshStatusTask?.cancel()
         let storageGeneration = CollectionStorageGeneration.shared
-        guard let storageToken = storageGeneration.currentToken() else { return }
+        guard let storageToken = storageGeneration.currentToken() else { return .idle }
         let shouldContinue = storageGeneration.continuation(for: storageToken)
         guard let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
             in: modelContext,
@@ -405,9 +405,17 @@ struct ContentView: View {
                 )).didRun
             }
         ) else {
-            return
+            return .idle
         }
-        guard shouldContinue() else { return }
+        guard shouldContinue() else { return .idle }
+
+        // Capture the controller's terminal facts before the root applies its
+        // existing Portfolio cleanup. Collection uses this value to distinguish
+        // updated, already-current, and unresolved refresh outcomes.
+        let outcome = CollectionRefreshOutcome(
+            status: refresh.status,
+            fallbackStatus: refresh.fallbackStatus
+        )
         if didRefresh {
             dismissRefreshStatusLater()
         } else {
@@ -417,6 +425,7 @@ struct ContentView: View {
             // result and unconditionally scheduling a dismissal.
             refresh.dismissTransientSuccessSummary()
         }
+        return outcome
     }
 
     /// Success fades; an unresolved failure does not.

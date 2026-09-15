@@ -1,21 +1,28 @@
 import SwiftUI
 import UIKit
 
-enum CatalogSetTileLayout {
+enum CatalogSetTileLayout: Equatable {
     case grid
     case rail
 
     var artworkHeight: CGFloat {
         switch self {
         case .grid: return 104
-        case .rail: return 134
+        case .rail: return 112
+        }
+    }
+
+    var artworkPadding: CGFloat {
+        switch self {
+        case .grid: return 10
+        case .rail: return 8
         }
     }
 
     var nameLineLimit: Int {
         switch self {
         case .grid: return 2
-        case .rail: return 2
+        case .rail: return 3
         }
     }
 }
@@ -28,41 +35,78 @@ struct CatalogSetTile: View {
     let completion: SetCompletion
     var layout: CatalogSetTileLayout = .grid
     var showsNewBadge = false
+    @State private var artworkPhase: CatalogImageLoadPhase = .idle
+    @State private var artworkRetryCount = 0
+    @State private var retriedArtworkOnCurrentAppearance = false
+
+    private var artworkSource: PokemonArtworkFallbacks.SetSource {
+        PokemonArtworkFallbacks.setSource(for: set, kind: .symbol)
+    }
+
+    private var isMissingArtwork: Bool {
+        guard set.game == .pokemon else { return false }
+        guard artworkSource.primaryURL != nil
+                || !artworkSource.fallbacks.isEmpty
+                || artworkSource.localAssetName != nil else {
+            return true
+        }
+        // A local asset is a terminal, app-owned source. It remains useful even
+        // when an earlier TCGdex or parent request failed.
+        guard artworkSource.localAssetName == nil else { return false }
+        return artworkPhase == .failed
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
             artworkBox
 
-            Text(set.name)
-                .font(.subheadline.weight(.semibold))
-                .lineLimit(layout.nameLineLimit)
-                .multilineTextAlignment(.leading)
+            if !isMissingArtwork {
+                Text(set.name)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(layout.nameLineLimit)
+                    .multilineTextAlignment(.leading)
+            }
 
-            Text(metadata)
-                .font(.caption)
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
+            if isMissingArtwork, layout == .grid, let cardCount = set.cardCount {
+                Text(countLabel(cardCount, singular: "card", plural: "cards"))
+                    .font(.caption)
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            } else if !isMissingArtwork {
+                Text(metadata)
+                    .font(.caption)
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
 
             completionFooter
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
-        // Keep this wording in sync with the previous set-list row. The
-        // denominator remains available to VoiceOver even though the compact
-        // visual tile shows only the owned numerator.
         .accessibilityLabel(
-            "\(set.name), \(completion.owned) of \(completion.total.map { String($0) } ?? "unknown") \(completion.unit) collected, set code \(set.code)"
+            accessibilityLabel
         )
     }
 
     private var metadata: String {
         [
-            set.code,
-            set.cardCount.map { "\($0) cards" }
+            (layout == .rail && set.game == .magic) ? nil : set.code,
+            set.cardCount.map { countLabel($0, singular: "card", plural: "cards") }
         ]
         .compactMap { $0 }
         .joined(separator: " · ")
+    }
+
+    private var accessibilityLabel: String {
+        let unitSingular = completion.unit == "variations" ? "variation" : "card"
+        let unitPlural = completion.unit == "variations" ? "variations" : "cards"
+        let owned = countLabel(completion.owned, singular: unitSingular, plural: unitPlural)
+        let progress = completion.total.map { "\(owned) of \($0) \(unitPlural) collected" }
+            ?? "\(owned) collected"
+        let art = isMissingArtwork ? ", artwork unavailable" : ""
+        return "\(set.name), \(progress), set code \(set.code)\(art)"
     }
 
     private var artworkBox: some View {
@@ -70,9 +114,14 @@ struct CatalogSetTile: View {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(Color(tileTintName))
 
-            artwork
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(10)
+            Group {
+                artwork
+                    .opacity(isMissingArtwork ? 0 : 1)
+                    .accessibilityHidden(isMissingArtwork)
+                if isMissingArtwork { missingArtwork }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(layout.artworkPadding)
 
             if showsNewBadge {
                 Text("NEW")
@@ -84,6 +133,18 @@ struct CatalogSetTile: View {
                     .background(Color("BrowseSetBadgeFill"), in: Capsule())
                     .padding(8)
             }
+
+            if layout == .rail {
+                Text(set.game.label)
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(.primary)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 4)
+                    .background(.background.opacity(0.84), in: Capsule())
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                    .padding(8)
+                    .accessibilityHidden(true)
+            }
         }
         .frame(maxWidth: .infinity)
         .frame(height: layout.artworkHeight)
@@ -91,6 +152,16 @@ struct CatalogSetTile: View {
         .overlay {
             RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .strokeBorder(Color(uiColor: .separator), lineWidth: 0.5)
+        }
+        .onAppear {
+            guard isMissingArtwork,
+                  artworkSource.primaryURL != nil || !artworkSource.fallbacks.isEmpty,
+                  !retriedArtworkOnCurrentAppearance else { return }
+            retriedArtworkOnCurrentAppearance = true
+            artworkRetryCount &+= 1
+        }
+        .onDisappear {
+            retriedArtworkOnCurrentAppearance = false
         }
     }
 
@@ -108,13 +179,36 @@ struct CatalogSetTile: View {
                 .background(.background.opacity(0.78), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         } else {
             CatalogCachedImage(
-                url: set.symbolURL ?? set.logoURL,
-                fallbackURL: set.symbolURL == nil ? nil : set.logoURL,
+                url: artworkSource.primaryURL,
+                fallbacks: artworkSource.fallbacks,
                 targetPixelSize: 416,
+                reloadToken: artworkRetryCount,
                 placeholderSymbol: "square.stack.3d.up",
-                placeholderText: set.code
+                placeholderText: set.code,
+                localAssetName: artworkSource.localAssetName,
+                onPhaseChange: { phase in
+                    artworkPhase = phase
+                }
             )
         }
+    }
+
+    private var missingArtwork: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(set.name)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(3)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("\(set.code) · Artwork lookup will retry later")
+                .font(.caption)
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .lineLimit(2)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .padding(4)
     }
 
     @ViewBuilder
@@ -137,7 +231,7 @@ struct CatalogSetTile: View {
                     .accessibilityHidden(true)
                 }
 
-                Text("\(completion.owned)")
+                Text(completionFooterLabel)
                     .font(.caption.weight(.semibold))
                     .monospacedDigit()
                     .foregroundStyle(Color("BrowseSetProgress"))
@@ -146,6 +240,13 @@ struct CatalogSetTile: View {
             }
             .frame(minHeight: 16)
         }
+    }
+
+    private var completionFooterLabel: String {
+        if let total = completion.total {
+            return "\(completion.owned) of \(total)"
+        }
+        return "\(completion.owned) owned"
     }
 
     /// A stable palette assignment preserves the varied pastel treatment from

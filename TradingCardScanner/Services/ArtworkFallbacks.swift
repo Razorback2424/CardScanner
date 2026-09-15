@@ -1,0 +1,228 @@
+import Foundation
+
+/// The two artwork files published by the local set-artwork catalog.
+enum PokemonSetArtworkKind: String, Sendable {
+    case logo
+    case symbol
+}
+
+/// Provider-owned artwork fallbacks for the Browse catalog.
+///
+/// The provider identity stays in `CatalogSet` and `CatalogCardSummary`; this
+/// type only derives alternate sources from that identity. Keeping the policy
+/// here means a provider can be replaced without changing every view that
+/// displays a card or set.
+enum PokemonArtworkFallbacks {
+    struct SetSource: Equatable, Sendable {
+        let primaryURL: URL?
+        let fallbacks: [URL]
+        let localAssetName: String?
+    }
+
+    /// TCGdex exposes gallery rows as separate sets but does not publish their
+    /// own logo or symbol. These are the provider set ids whose parent artwork
+    /// is the honest visual identity for the gallery.
+    private static let parentSetIDs: [String: String] = [
+        "swsh9tg": "swsh9",
+        "swsh10tg": "swsh10",
+        "swsh11tg": "swsh11",
+        "swsh12tg": "swsh12",
+        "swsh12.5gg": "swsh12.5",
+        "swsh4.5sv": "swsh4.5"
+    ]
+
+    /// The source repository uses a few historical ids that do not exactly
+    /// match TCGdex. Values are source ids; keys are always TCGdex ids so local
+    /// asset lookup remains keyed by the app's provider identity.
+    private static let localSourceIDs: [String: String] = [
+        "base1": "base1",
+        "bog": "bp",
+        "cel25cc": "cel25c",
+        "me02": "me2",
+        "sm3.5": "sm35",
+        "sm7.5": "sm75",
+        "sma": "sma",
+        "sv05": "sv5",
+        "sv07": "sv7",
+        "sv08": "sv8",
+        "sv08.5": "sv8pt5",
+        "sve": "sve",
+        "swsh9tg": "swsh9tg",
+        "swsh10tg": "swsh10tg",
+        "swsh11tg": "swsh11tg",
+        "swsh12.5gg": "swsh12pt5gg",
+        "swsh12tg": "swsh12tg",
+        "swsh4.5sv": "swsh45sv"
+    ]
+
+    static func parentLogoURL(forProviderID providerID: String) -> URL? {
+        guard let parentID = parentSetIDs[providerID.lowercased()] else { return nil }
+        return URL(string: "https://assets.tcgdex.net/en/swsh/\(parentID)/logo.png")
+    }
+
+    static func localAssetName(
+        forProviderID providerID: String,
+        kind: PokemonSetArtworkKind
+    ) -> String? {
+        let normalizedID = providerID.lowercased()
+        guard localSourceIDs[normalizedID] != nil else { return nil }
+        let safeID = normalizedID.replacingOccurrences(of: ".", with: "_")
+        return "PokemonSetArtwork_\(safeID)_\(kind.rawValue)"
+    }
+
+    static func setSource(
+        for set: CatalogSet,
+        kind: PokemonSetArtworkKind
+    ) -> SetSource {
+        let requestedURL = kind == .logo ? set.logoURL : set.symbolURL
+        let alternateURL = kind == .logo ? set.symbolURL : set.logoURL
+        let inheritedLogoURL = set.game == .pokemon
+            ? parentLogoURL(forProviderID: set.providerID)
+            : nil
+        let remoteURLs = uniqueURLs([requestedURL, alternateURL, inheritedLogoURL])
+        let localAssetName = set.game == .pokemon
+            ? localAssetName(forProviderID: set.providerID, kind: kind)
+            : nil
+        return SetSource(
+            primaryURL: remoteURLs.first,
+            fallbacks: Array(remoteURLs.dropFirst()),
+            localAssetName: localAssetName
+        )
+    }
+
+    private static func uniqueURLs(_ urls: [URL?]) -> [URL] {
+        var seen = Set<URL>()
+        return urls.compactMap { url in
+            guard let url, seen.insert(url).inserted else { return nil }
+            return url
+        }
+    }
+}
+
+/// The provider order for a card artwork request. TCGdex remains authoritative
+/// when present; the derived Limitless URL is always the last remote candidate.
+struct CatalogCardArtworkSource: Equatable, Sendable {
+    let primaryURL: URL?
+    let fallbacks: [URL]
+
+    init(
+        game: CardGame?,
+        setCode: String?,
+        collectorNumber: String?,
+        thumbnailURL: URL?,
+        imageURL: URL?,
+        prefersFullSize: Bool
+    ) {
+        let providerURLs = prefersFullSize
+            ? [imageURL, thumbnailURL]
+            : [thumbnailURL, imageURL]
+        let derivedURL: URL? = {
+            guard game == .pokemon,
+                  let setCode,
+                  let collectorNumber,
+                  let limitless = LimitlessArtwork.urls(
+                      setCode: setCode,
+                      collectorNumber: collectorNumber
+                  ) else {
+                return nil
+            }
+            return prefersFullSize ? limitless.full : limitless.small
+        }()
+        let urls = Self.uniqueURLs(providerURLs + [derivedURL])
+        primaryURL = urls.first
+        fallbacks = Array(urls.dropFirst())
+    }
+
+    private static func uniqueURLs(_ urls: [URL?]) -> [URL] {
+        var seen = Set<URL>()
+        return urls.compactMap { url in
+            guard let url, seen.insert(url).inserted else { return nil }
+            return url
+        }
+    }
+}
+
+/// Pure derivation of the English TPCi artwork paths used by Limitless.
+///
+/// Limitless returns a 403 for unknown card keys. The closed set allow-list
+/// avoids turning arbitrary OCR or imported text into a third-party request,
+/// while still allowing the provider's known TPCi-era catalog to grow without
+/// baking card URLs into the bundled snapshot.
+enum LimitlessArtwork {
+    private static let baseURL = "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/tpci"
+
+    /// Known English TPCi-era set codes. Pre-TPCi sets and the explicitly
+    /// unsupported sets are intentionally absent. A code can still have no
+    /// individual image on Limitless; the image loader treats that as a normal
+    /// terminal failure and preserves the placeholder.
+    private static let supportedSetCodes: Set<String> = [
+        "HS", "UL", "UD", "TM",
+        "BLW", "EPO", "NVI", "NXD", "DEX", "DRX", "BCR", "PLS", "PLF", "PLB", "LTR",
+        "CL", "DCR", "DRV",
+        "XY", "FLF", "FFI", "PHF", "PRC", "ROS", "AOR", "BKT", "BKP", "FCO", "STS", "EVO",
+        "KSS",
+        "SUM", "GRI", "BUS", "SLG", "CIN", "UPR", "FLI", "CES", "DRM", "LOT", "TEU", "CEL",
+        "UNB", "UNM", "HIF", "CEC", "GEN", "FUT2020",
+        "SSH", "RCL", "DAA", "CPA", "VIV", "SHF", "BST", "CRE", "EVS", "FST", "BRS",
+        "ASR", "LOR", "SIT", "CRZ", "PGO",
+        "SVI", "PAL", "OBF", "MEW", "PAR", "PAF", "TEF", "TWM", "SFA", "SCR", "SSP",
+        "PRE", "JTG", "DRI", "BLK", "WHT", "SVE",
+        "SMA", "MEG", "PFL", "ASC", "POR", "CRI", "PBL"
+    ]
+
+    static func urls(
+        setCode: String,
+        collectorNumber: String
+    ) -> (small: URL, full: URL)? {
+        let code = setCode.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        guard supportedSetCodes.contains(code),
+              let number = normalizedCollectorNumber(collectorNumber) else {
+            return nil
+        }
+
+        let stem = "\(baseURL)/\(code)/\(code)_\(number)_R_EN"
+        guard let small = URL(string: stem + "_XS.png"),
+              let full = URL(string: stem + ".png") else {
+            return nil
+        }
+        return (small: small, full: full)
+    }
+
+    private static func normalizedCollectorNumber(_ value: String) -> String? {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        let scalars = Array(trimmed.unicodeScalars)
+        guard !scalars.isEmpty else { return nil }
+
+        guard let firstDigit = scalars.firstIndex(where: isASCIIDigit) else {
+            return nil
+        }
+        let prefix = scalars[..<firstDigit]
+        guard prefix.allSatisfy(isASCIIUppercaseLetter) else { return nil }
+
+        var end = firstDigit
+        while end < scalars.count, isASCIIDigit(scalars[end]) {
+            end += 1
+        }
+        // A suffix such as 040a or 103b is not a Limitless key. Reject it
+        // rather than silently serving the unsuffixed card.
+        guard end == scalars.count else { return nil }
+
+        let digits = String(String.UnicodeScalarView(scalars[firstDigit..<end]))
+        guard Int(digits) != nil else { return nil }
+        if prefix.isEmpty {
+            return String(repeating: "0", count: max(0, 3 - digits.count)) + digits
+        }
+
+        let stripped = String(digits.drop { $0 == "0" })
+        let prefixString = String(String.UnicodeScalarView(prefix))
+        return "\(prefixString)\(stripped.isEmpty ? "0" : stripped)"
+    }
+
+    private static func isASCIIDigit(_ scalar: Unicode.Scalar) -> Bool {
+        (48...57).contains(scalar.value)
+    }
+
+    private static func isASCIIUppercaseLetter(_ scalar: Unicode.Scalar) -> Bool {
+        (65...90).contains(scalar.value)
+    }
+}

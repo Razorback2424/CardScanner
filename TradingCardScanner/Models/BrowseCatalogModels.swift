@@ -207,6 +207,350 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     }
 }
 
+/// Presentation-only kind labels used by the unified Catalog search surface.
+/// Card and sealed identities remain owned by their respective providers.
+enum CatalogResultKind: String, Hashable, Sendable {
+    case card
+    case sealed
+}
+
+/// One result in the Catalog search stream. The stable id is deliberately
+/// namespaced so a card and a sealed product can never collide in a `ForEach`.
+enum CatalogSearchResult: Identifiable, Hashable, Sendable {
+    case card(CatalogCardSummary)
+    case sealed(game: CardGame, product: SealedProductSummary)
+
+    var kind: CatalogResultKind {
+        switch self {
+        case .card: return .card
+        case .sealed: return .sealed
+        }
+    }
+
+    var game: CardGame {
+        switch self {
+        case let .card(summary): return summary.game
+        case let .sealed(game, _): return game
+        }
+    }
+
+    var name: String {
+        switch self {
+        case let .card(summary): return summary.name
+        case let .sealed(_, product): return product.name
+        }
+    }
+
+    var id: String {
+        switch self {
+        case let .card(summary):
+            return "card:" + summary.id
+        case let .sealed(game, product):
+            return "sealed:" + [
+                game.rawValue,
+                product.id,
+                product.variantID ?? ""
+            ].joined(separator: ":")
+        }
+    }
+}
+
+/// A UI grouping key for one numbered card. It intentionally excludes the
+/// Pokémon master-set finish axis while retaining the provider identity and the
+/// set's print-run-qualified id.
+struct CatalogCardDisplayIdentity: Hashable, Sendable {
+    let game: CardGame
+    let setID: CatalogSetID
+    let providerID: String
+    let collectorNumber: String
+
+    var id: String {
+        [game.rawValue, setID.id, providerID, collectorNumber].joined(separator: "|")
+    }
+}
+
+struct CatalogCardDisplayGroup: Identifiable, Hashable, Sendable {
+    let identity: CatalogCardDisplayIdentity
+    let summaries: [CatalogCardSummary]
+
+    var id: String { identity.id }
+
+    /// Normal is the primary card surface. A nil variant is the ordinary
+    /// printing used by search and Magic, so it is also preferred when present.
+    var preferredSummary: CatalogCardSummary {
+        guard let first = summaries.first else {
+            preconditionFailure("A catalog card display group must contain a summary")
+        }
+        return summaries.first(where: { $0.masterSetVariant?.id == PhysicalVariant.normal.id })
+            ?? summaries.first(where: { $0.masterSetVariant == nil })
+            ?? first
+    }
+}
+
+enum CatalogCardDisplayGrouping {
+    /// The order is a presentation contract: common master-set variants are
+    /// stable even if the provider changes the order of its detailed fields.
+    static let variantOrder: [String] = [
+        PhysicalVariant.normal.id,
+        PhysicalVariant.reverse.id,
+        PhysicalVariant.pokeBall.id,
+        PhysicalVariant.masterBall.id,
+        PhysicalVariant.duskBall.id,
+        PhysicalVariant.friendBall.id,
+        PhysicalVariant.quickBall.id,
+        PhysicalVariant.loveBall.id
+    ]
+
+    static func groups(for summaries: [CatalogCardSummary]) -> [CatalogCardDisplayGroup] {
+        var groups: [CatalogCardDisplayGroup] = []
+        var indexByIdentity: [CatalogCardDisplayIdentity: Int] = [:]
+
+        for summary in summaries {
+            let number = SetCompletionCalculator.canonicalNumber(summary.collectorNumber)
+                ?? summary.collectorNumber.lowercased()
+            var identity = CatalogCardDisplayIdentity(
+                game: summary.game,
+                setID: summary.setID,
+                providerID: summary.providerID,
+                collectorNumber: number
+            )
+
+            // Magic treatments are exact printings. Keep every Magic summary a
+            // singleton, while still disambiguating an unexpectedly duplicated
+            // provider identity so the resulting ForEach ids stay unique.
+            if summary.game == .magic {
+                if indexByIdentity[identity] != nil {
+                    var collisionIndex = groups.count
+                    repeat {
+                        identity = CatalogCardDisplayIdentity(
+                            game: summary.game,
+                            setID: summary.setID,
+                            providerID: summary.providerID,
+                            collectorNumber: "\(number)#\(collisionIndex)"
+                        )
+                        collisionIndex += 1
+                    } while indexByIdentity[identity] != nil
+                }
+                indexByIdentity[identity] = groups.count
+                groups.append(
+                    CatalogCardDisplayGroup(identity: identity, summaries: [summary])
+                )
+                continue
+            }
+
+            if let index = indexByIdentity[identity] {
+                var updated = groups[index].summaries
+                guard !updated.contains(where: { $0.id == summary.id }) else { continue }
+                updated.append(summary)
+                groups[index] = CatalogCardDisplayGroup(identity: identity, summaries: updated)
+            } else {
+                indexByIdentity[identity] = groups.count
+                groups.append(
+                    CatalogCardDisplayGroup(identity: identity, summaries: [summary])
+                )
+            }
+        }
+
+        return groups.map { group in
+            CatalogCardDisplayGroup(
+                identity: group.identity,
+                summaries: group.summaries.sorted(by: variantPrecedes)
+            )
+        }
+    }
+
+    static func variantPrecedes(
+        _ lhs: CatalogCardSummary,
+        _ rhs: CatalogCardSummary
+    ) -> Bool {
+        let leftID = lhs.masterSetVariant?.id ?? PhysicalVariant.normal.id
+        let rightID = rhs.masterSetVariant?.id ?? PhysicalVariant.normal.id
+        let leftRank = variantOrder.firstIndex(of: leftID)
+        let rightRank = variantOrder.firstIndex(of: rightID)
+        switch (leftRank, rightRank) {
+        case let (left?, right?) where left != right:
+            return left < right
+        case (.some, nil):
+            return true
+        case (nil, .some):
+            return false
+        default:
+            let leftLabel = lhs.masterSetVariantLabel ?? "Standard"
+            let rightLabel = rhs.masterSetVariantLabel ?? "Standard"
+            let comparison = leftLabel.localizedCaseInsensitiveCompare(rightLabel)
+            if comparison != .orderedSame { return comparison == .orderedAscending }
+            return lhs.id < rhs.id
+        }
+    }
+}
+
+/// Result of the root's dated-first release-rail policy.
+struct CatalogReleaseRail: Equatable, Sendable {
+    let title: String
+    let sets: [CatalogSet]
+    let showsNewBadges: Bool
+}
+
+/// The small value summary used by the root game rows. The eligible collection
+/// is filtered once, then the full quantity and three-row artwork fan are both
+/// derived from it so the two displays cannot drift.
+struct CatalogGameSummary: Equatable, Sendable {
+    let game: CardGame
+    let setCount: Int
+    let ownedCardQuantity: Int
+    let recentArtworkRows: [CollectionRow]
+    let recentSetArtwork: [CatalogSet]
+
+    init(game: CardGame, sets: [CatalogSet], rows: [CollectionRow]) {
+        self.game = game
+        setCount = sets.count
+        recentSetArtwork = Array(
+            sets.sorted {
+                if $0.releaseOrder != $1.releaseOrder {
+                    return $0.releaseOrder > $1.releaseOrder
+                }
+                return $0.id < $1.id
+            }
+            .prefix(3)
+        )
+        let eligibleRows = rows
+            .filter {
+                $0.game == game
+                    && $0.quantity > 0
+                    && $0.itemKind.countsTowardSetCompletion
+            }
+            .sorted {
+                if $0.dateAdded != $1.dateAdded { return $0.dateAdded > $1.dateAdded }
+                return $0.id < $1.id
+            }
+        ownedCardQuantity = eligibleRows.reduce(0) { $0 + $1.quantity }
+        recentArtworkRows = Array(eligibleRows.prefix(3))
+    }
+
+    var subtitle: String {
+        let setsCopy = countLabel(setCount, singular: "set", plural: "sets")
+        let cardsCopy = ownedCardQuantity > 0
+            ? countLabel(ownedCardQuantity, singular: "card owned", plural: "cards owned")
+            : "No cards owned"
+        return "\(setsCopy) · \(cardsCopy)"
+    }
+}
+
+/// Grammar shared by the browse tiles, directories, and game summaries.
+func countLabel(_ count: Int, singular: String, plural: String) -> String {
+    "\(count) \(count == 1 ? singular : plural)"
+}
+
+struct CatalogSearchLaneStatus: Equatable, Sendable {
+    let isRequested: Bool
+    let isLoading: Bool
+    let error: String?
+
+    var isTerminal: Bool { !isLoading }
+
+    init(
+        isRequested: Bool = true,
+        isLoading: Bool = false,
+        error: String? = nil
+    ) {
+        self.isRequested = isRequested
+        self.isLoading = isLoading
+        self.error = error
+    }
+}
+
+enum CatalogSearchState: Equatable, Sendable {
+    case idle
+    case loading
+    case results(hasFailures: Bool)
+    case failed
+    case empty(needsSealedSetup: Bool)
+
+    static func reduce(
+        resultCount: Int,
+        lanes: [CatalogSearchLaneStatus],
+        sealedWasSkippedForMissingCredentials: Bool
+    ) -> CatalogSearchState {
+        if resultCount > 0 {
+            return .results(hasFailures: lanes.contains { $0.isRequested && $0.error != nil })
+        }
+
+        let requested = lanes.filter(\.isRequested)
+        if requested.contains(where: \.isLoading) {
+            return .loading
+        }
+        if requested.contains(where: { $0.error != nil }) {
+            return .failed
+        }
+        return .empty(needsSealedSetup: sealedWasSkippedForMissingCredentials)
+    }
+}
+
+enum CatalogSearchResultRanking {
+    private struct RankedResult {
+        let bucket: Int
+        let name: String
+        let kind: String
+        let game: String
+        let id: String
+        let result: CatalogSearchResult
+    }
+
+    static func sorted(
+        _ results: [CatalogSearchResult],
+        query: String
+    ) -> [CatalogSearchResult] {
+        let normalizedQuery = CardNameSearch.normalize(query)
+        let ranked = results.map { result in
+            RankedResult(
+                bucket: relevance(
+                    normalizedName: CardNameSearch.normalize(result.name),
+                    normalizedQuery: normalizedQuery
+                ),
+                name: result.name,
+                kind: result.kind.rawValue,
+                game: result.game.rawValue,
+                id: result.id,
+                result: result
+            )
+        }
+        return ranked.sorted { lhs, rhs in
+            if lhs.bucket != rhs.bucket { return lhs.bucket < rhs.bucket }
+
+            let nameOrder = lhs.name.localizedCaseInsensitiveCompare(rhs.name)
+            if nameOrder != .orderedSame {
+                return nameOrder == .orderedAscending
+            }
+            if lhs.kind != rhs.kind {
+                return lhs.kind < rhs.kind
+            }
+            if lhs.game != rhs.game {
+                return lhs.game < rhs.game
+            }
+            return lhs.id < rhs.id
+        }.map(\.result)
+    }
+
+    static func relevance(of name: String, query: String) -> Int {
+        let normalizedName = CardNameSearch.normalize(name)
+        let normalizedQuery = CardNameSearch.normalize(query)
+        return relevance(normalizedName: normalizedName, normalizedQuery: normalizedQuery)
+    }
+
+    private static func relevance(normalizedName: String, normalizedQuery: String) -> Int {
+        guard !normalizedQuery.isEmpty else { return 4 }
+        if normalizedName == normalizedQuery { return 0 }
+        if normalizedName.hasPrefix(normalizedQuery) { return 1 }
+        if normalizedName.split(separator: " ").contains(where: {
+            $0.hasPrefix(normalizedQuery)
+        }) {
+            return 2
+        }
+        if normalizedName.contains(normalizedQuery) { return 3 }
+        return 4
+    }
+}
+
 struct CatalogCardDetails: Sendable {
     let card: IdentifiedCard
     let set: CatalogSet

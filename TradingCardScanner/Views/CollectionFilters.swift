@@ -18,7 +18,6 @@ struct CollectionFilterSheet: View {
     @Binding var isPresented: Bool
 
     @Binding var filters: CollectionFilters
-    @Binding var sort: CollectionSort
     let setOptions: [FilterOption]
     let finishOptions: [FilterOption]
     var treatmentOptions: [FilterOption] = []
@@ -133,14 +132,6 @@ struct CollectionFilterSheet: View {
                                 "Grade",
                                 value: selectionLabel(filters.gradeValues, singular: "grade")
                             )
-                        }
-                    }
-                }
-
-                Section("Order") {
-                    Picker("Sort By", selection: $sort) {
-                        ForEach(CollectionSort.allCases) { option in
-                            Text(option.label).tag(option)
                         }
                     }
                 }
