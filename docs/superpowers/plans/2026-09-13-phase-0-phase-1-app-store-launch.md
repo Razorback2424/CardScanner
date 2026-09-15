@@ -35,14 +35,42 @@ When those sources disagree, this plan controls this release. In particular, it 
 
 This plan does **not** authorize broad refactors. A change belongs in this release only when it closes a named launch gate, makes that gate observable, or is required to build/sign/submit the exact release binary.
 
-## 0.1 Current checkout reconciliation — 2026-09-14
+## 0.1 Current checkout reconciliation — 2026-09-15
 
 The plan was authored against earlier repository snapshots. Its current-source
 references must be revalidated before execution. The checkout now under review
-is branch `codex/scanning-workflow-review-remediation` at `0b4ac34`, with
-marketing/build `1.0 (1)`, bundle identifier `com.seankeller.CardScanner`, and
-iPhone/iPad deployment target 17.0. The current release ledger is
+is branch `codex/scanning-workflow-review-remediation` at `a4375df` (the
+`0b4ac34` locator recorded on 2026-09-14 is superseded), with marketing/build
+`1.0 (1)`, bundle identifier `com.seankeller.CardScanner`, and iPhone/iPad
+deployment target 17.0. The current release ledger is
 [`docs/release/phase-1-integrity-evidence.md`](../../release/phase-1-integrity-evidence.md).
+
+### 0.1.1 Open findings that bind tasks in this plan
+
+Read [`docs/audits/defect_review_pass_2.md`](../../audits/defect_review_pass_2.md)
+before starting any task below. It is the current authority for known defects,
+and several of its findings land inside tasks in this plan rather than beside
+them. Do not treat a task as startable because its section text predates the
+audit.
+
+| Finding | Severity | Binds |
+| --- | --- | --- |
+| F01 — production readiness default strands the clean-install flow in `.restoringFromCloud(.failed)` with no non-cloud continuation | Critical | Task 4, Task 8. Also §4 gate G6 and critical flow A. |
+| F02 — headless preflight builds a CloudKit-mirrored container for `.neverAttached`/`.suspended` stores it then reports as `.onDevice` | High | Task 4, Task 8. Also §2.4 canonical-store invariant and §2.6 selection order. |
+| F03 — `beginPendingResolution` can discard a choose-handler operation after the pending choice is cleared (suspected) | High | Scanner scope; **no owning task in this plan.** Would trip §4 gate G3 if reachability is demonstrated. Carry it into R1/R2/R3 triage per the [release framework](../../release/card-scanner-1.0-go-no-go-framework.md) §10 before RC; it must not fall out of scope simply because no task claims it. |
+| F04 — epoch baseline writes `initialBalance` events with no matching `CollectionActivity` | Medium | **Task 12.** `OwnershipLedgerCompletenessTests` is red; the baseline path that task certifies currently produces a state the integrity check rejects. |
+| F05 — `InventoryLedger.quantities(from:)` retains negative nets; no production callers | Low | Task 12. |
+| F06 — 36 suite failures are absent-fixture failures that `XCTUnwrap` rather than skip | Medium | **Task 1 and Task 11.** The baseline this plan depends on cannot distinguish a regression from a missing fixture until this is fixed. |
+
+### 0.1.2 Open plans outside launch scope
+
+These are current, not backlog, and are deliberately **not** launch-critical.
+They are listed here so they are not lost when execution resumes:
+
+| Plan | State | Relationship to this plan |
+| --- | --- | --- |
+| [`docs/plans/price_history_chart_plan.md`](../../plans/price_history_chart_plan.md) | Proposed 2026-09-14, not implemented | Slice A is presentation-only and independent. **Slice B is blocked on F02** and must not begin before it: raising background refresh throughput multiplies exposure to that defect. Its device measurement is RF-8. |
+| [`docs/plans/release_followups.md`](../../plans/release_followups.md) | Current backlog | RF-6 (centering corpus and suite skip semantics) is the same evidence-mechanism problem as F06 and gates Task 1/Task 11. RF-7 and RF-8 are device gates that open only after F01/F02 land. |
 
 The former gap analysis, candidate evidence ledger, and ownership audit are now
 under [`docs/legacy/`](../../legacy/); they remain useful historical inputs but
@@ -129,10 +157,20 @@ target are already set in the project; Debug uses the local signing path and
 Release retains the CloudKit entitlements. Browse Catalog and scanner-workflow
 changes have focused build/test evidence. Storage/readiness source hardening is
 present, but production CloudKit enrollment, physical continuity, ownership
-ledger certification, and exact release-binary inspection remain open. The
-latest logged full simulator run discovered 1,256 tests and reported 48
-unrelated fixture/source-environment or signal-kill failures. Use the current
-release ledger and the documentation audit before advancing any task below.
+ledger certification, and exact release-binary inspection remain open.
+
+Storage/readiness hardening is scoped to the reviewed policy logic and does
+**not** extend to the production dependency wiring: pass-2 F01 and F02 are open
+source-level defects there, independent of enrollment. See §0.1.1.
+
+The full simulator run at `a4375df` executed 1,277 with 6 skipped and 40
+failures. Per-suite triage is 36 fixture/environment, 1 load-sensitive flake,
+and **3 substantive** — do not reuse the earlier aggregate "48 unrelated
+fixture/source-environment or signal-kill failures" wording, which was recorded
+at `0b4ac34` and is partially incorrect (documentation audit C-11). Use the
+current release ledger, the documentation audit, and
+[`docs/audits/defect_review_pass_2.md`](../../audits/defect_review_pass_2.md)
+before advancing any task below.
 
 ### 1.5 Confirmed model fact: condition
 
@@ -428,6 +466,7 @@ All new Swift files must be added to the correct app/test groups and build phase
 
 ## 7. Execution discipline
 
+- Before starting any task, re-read §0.1.1 and §0.1.2. A task whose section text predates the current defect audit is not startable merely because its own prose looks clear; check whether an open finding binds it first.
 - Implement in an isolated worktree created with `superpowers:using-git-worktrees` after the current user-owned changes are safely committed or intentionally included.
 - Use TDD for production code: failing focused test, minimal implementation, focused pass, relevant suite pass, commit.
 - Never edit Production CloudKit schema before the local audit passes.

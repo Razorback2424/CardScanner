@@ -610,23 +610,33 @@ If there is no answer, the finding does not automatically stop launch.
 
 ## 14. Current checkout status — 2026-09-14
 
-The deterministic defects listed in the next section are historical findings
-from the 2026-09-09/10 audit. They are retained for provenance but are not
-current known defects without a fresh reproduction. The current release
-decision is instead constrained by these verified status items:
+The deterministic defects listed in §15 are historical findings from the
+2026-09-09/10 audit. They are retained for provenance but are not current known
+defects without a fresh reproduction. Current known defects are held in
+[`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md), which
+is the single authority for that concern; the rows below reference it rather
+than duplicating it. The current release decision is constrained by these
+verified status items:
 
 | Area | Current status | Authority |
 | --- | --- | --- |
-| Storage, account, and CloudKit continuity | **Not certified**; source hardening exists, but production enrollment, schema inspection, and two-device convergence remain open | [`app_review_fix_plan.md`](../../app_review_fix_plan.md), [`phase-1-integrity-evidence.md`](phase-1-integrity-evidence.md) |
+| Known deterministic defects | **Open**; six findings at `a4375df` (F01–F06). F01 maps to G6 (+G4), F02 to G4+G5, F03 to G3 if reachable. F01 and F02 are source-level and do not depend on CloudKit enrollment | [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) |
+| Storage, account, and CloudKit continuity | **Not certified**; source hardening exists for the reviewed policy logic, but pass-2 F01/F02 are open defects in the production dependency wiring, and production enrollment, schema inspection, and two-device convergence also remain open | [`app_review_fix_plan.md`](../../app_review_fix_plan.md), [`phase-1-integrity-evidence.md`](phase-1-integrity-evidence.md), [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) |
 | Ownership-ledger completeness | **Not certified for the current checkout** | [`ownership-ledger-completeness-audit.md`](ownership-ledger-completeness-audit.md) |
 | Scanner hardware/provider evidence | **Open**; camera framing, OCR/thermal behavior, slab calibration, and live-provider paths require device/provider runs | [`../plans/release_followups.md`](../plans/release_followups.md), [`../../references/whole_card_scanner_checklist.md`](../../references/whole_card_scanner_checklist.md) |
 | Browse manual sign-off | **Open**; set-tile accessibility, disclosure interaction, dark-mode contrast, and AX5 fit remain | [`../plans/browse_screen_spec.md`](../plans/browse_screen_spec.md), [`../../references/browse_success_checklist.md`](../../references/browse_success_checklist.md) |
 | Card centering | **Open**; current accuracy, invariant, latency, and device-only gates fail or remain unrun | [`../../review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) |
-| Full exact-candidate suite | **Not clean**; the latest logged run discovered 1,256 tests and reported 48 unrelated fixture/source-environment or signal-kill failures | [`../../progress.md`](../../progress.md), [`phase-1-integrity-evidence.md`](phase-1-integrity-evidence.md) |
+| Full exact-candidate suite | **Not clean, and not yet usable as gate evidence**; the run at `a4375df` executed 1,277 with 6 skipped and 40 failures — 36 fixture/environment, 1 load-sensitive flake, and 3 substantive. Corpus-dependent tests fail rather than skip, so the exit status cannot distinguish a regression from an absent fixture | [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) F06, [`../../progress.md`](../../progress.md), [`phase-1-integrity-evidence.md`](phase-1-integrity-evidence.md) |
 
 These are release-evidence states, not a claim that every open item is a code
 defect. A gate becomes GO/NO-GO evidence only after it is rerun against the
 exact release candidate.
+
+§3 requires that each gate have a defined affirmative search. The suite row
+above is therefore load-bearing: while 36 tests fail for fixture reasons and the
+centering accuracy and invariant suites do not execute at all, the deterministic
+searches behind G1, G2, and G6 cannot be recorded as performed, independently of
+whether any defect is currently known.
 
 ## 15. Historical known defects — 2026-09-09/10
 

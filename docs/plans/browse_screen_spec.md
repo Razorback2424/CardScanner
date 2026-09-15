@@ -501,6 +501,15 @@ mostly empty color fields.
 
 ### Progress and grammar
 
+> Superseded in part by Slice B of
+> [`browse_set_directory_remediation_plan.md`](browse_set_directory_remediation_plan.md)
+> (audit C-13). The `n of m` shape, the `3 owned` fallback, the hidden-when-zero
+> rule, and the shared pluralization helper below all stand. What changes is the
+> source of both numbers: they come from the built master-set checklist rather
+> than from `set.cardCount`, and the Pokémon unit becomes `variations` so the
+> tile and the set screen state the same total. Rewrite this subsection when that
+> slice lands.
+
 `CatalogSetTile.completionFooter` shows `3 of 207`, not `3`. When total is unknown it shows
 `3 owned` and omits the progress bar. Continue hiding the footer when owned is zero. Keep the
 existing VoiceOver label and update it to share the same pluralization helper.

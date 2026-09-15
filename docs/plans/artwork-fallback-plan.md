@@ -3,6 +3,14 @@
 **Status:** P0–P3 are implemented in the current working tree; runtime/provider
 validation and image-licensing decisions remain open — reconciled 2026-09-14.
 
+Open defects found in this contract on 2026-09-15 — the set tile requesting the
+symbol rather than the logo, a bundled asset that is unreachable behind a remote
+alternate-kind URL, three wrong vendored assets, and `MEE` missing from the
+Limitless allow-list — are owned by Slice A of
+[`browse_set_directory_remediation_plan.md`](browse_set_directory_remediation_plan.md).
+Update the P2/P3 descriptions and the vendored-asset inventory below when that
+slice lands.
+
 The current code path is `PokemonArtworkFallbacks` for set artwork,
 `CatalogCardArtworkSource` for card artwork, `LimitlessArtwork` for derived
 Pokémon URLs, and `CatalogCachedImage` for ordered fallback traversal. Focused
@@ -72,9 +80,19 @@ SHF SV001→SV1, CEL CC001→CC1, AQ 050a→nil, PBL 119→119).
 
 ### P3 — Bundled set logo/symbol assets — implemented
 
+> Superseded in part. Slice A2/A3 of
+> [`browse_set_directory_remediation_plan.md`](browse_set_directory_remediation_plan.md)
+> reorders the chain so a bundled asset of the *requested* kind outranks a remote
+> URL of the alternate kind, and removes `sve_logo`, `bog_logo`, and
+> `cel25cc_symbol` as wrong artwork. The bundled count becomes 33 image sets.
+
 The 18 matched `logo.png`/`symbol.png` assets are bundled at tile size and
 resolved by TCGdex provider ID. The current chain is TCGdex → parent set →
-bundled asset → placeholder. The source commit SHA is recorded below.
+requested bundled asset → alternate bundled asset → placeholder. The source
+commit SHA is recorded below. The root game fan prioritizes the newest sets
+with bundled logo artwork before filling remaining slots by release order, so
+the local logo fallback remains reachable when the newest catalog rows have no
+bundled art.
 
 ### Out of scope
 - Magic: Scryfall already covers artwork and set icons; no change.
@@ -97,5 +115,6 @@ chain can be re-pointed without touching call sites.
   `sv07→sv7`, `sv08→sv8`, `sv08.5→sv8pt5`, `sve→sve`,
   `swsh9tg→swsh9tg`, `swsh10tg→swsh10tg`, `swsh11tg→swsh11tg`,
   `swsh12.5gg→swsh12pt5gg`, `swsh12tg→swsh12tg`, `swsh4.5sv→swsh45sv`.
-- The 36 PNGs are downscaled to a 160-pixel maximum dimension; the combined
-  bundled payload is 747,191 bytes.
+- The 36 PNGs are downscaled to a 320-pixel maximum dimension; the combined
+  bundled payload is approximately 2.1 MB. Set artwork uses the requested
+  bundled kind first and the alternate kind as a local fallback.
