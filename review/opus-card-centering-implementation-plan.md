@@ -10,6 +10,17 @@ Subsequent implementation changes and experiment provenance are recorded in the 
 evidence sections below.
 **Baseline evidence:** `review/centering-evidence/baseline-post-ereq044-2026-09-12.md`
 
+**Presentation scope (added 2026-09-15):** this plan owns how centering *measures*, not where
+it is presented. A separate, unimplemented plan —
+[`docs/plans/pro_tab_ebay_listing_photos_plan.md`](../docs/plans/pro_tab_ebay_listing_photos_plan.md) —
+replaces the Centering tab with a Pro tab, pushes `CardCenteringView` one navigation level
+deeper (removing its own `NavigationStack`), and adds a capture-configuration parameter to the
+shared `CenteringCameraView`. That parameter must default to today's centering configuration —
+macro lens, `.near` focus-range restriction, existing session preset — because changing the
+capture path changes what the accuracy requirements below are measured against. The
+`Centering` and `CenteringExpanded` debug routes and `scripts/centering_ui_build_and_shoot.sh`
+are preserved unchanged. Nothing in that plan may loosen, renumber, or waive a requirement here.
+
 > Luna: read §0–§8 before writing code. §9 (REQ table) is the contract. §13 (Definition of
 > Done) is the completion gate and was fixed **before** implementation began; it may not be
 > weakened during implementation. If a requirement proves wrong, stop and escalate — do not

@@ -70,6 +70,7 @@ They are listed here so they are not lost when execution resumes:
 | Plan | State | Relationship to this plan |
 | --- | --- | --- |
 | [`docs/plans/price_history_chart_plan.md`](../../plans/price_history_chart_plan.md) | Proposed 2026-09-14, not implemented | Slice A is presentation-only and independent. **Slice B is blocked on F02** and must not begin before it: raising background refresh throughput multiplies exposure to that defect. Its device measurement is RF-8. |
+| [`docs/plans/pro_tab_ebay_listing_photos_plan.md`](../../plans/pro_tab_ebay_listing_photos_plan.md) | Proposed 2026-09-15, not implemented | Post-1.0 seller tooling. Replaces the Centering tab with a **Pro** tab hosting card centering plus a new card-independent eBay listing-photo module. Slice A moves the centering screen one navigation level deeper and Slice B adds a capture configuration to the camera it shares; neither changes centering measurement, and the `Centering`/`CenteringExpanded` debug routes are preserved. **Must not begin before the release candidate is certified (Task 18):** a tab-structure or camera change after evidence collection invalidates the affected centering and scanner acceptance evidence under §7. |
 | [`docs/plans/release_followups.md`](../../plans/release_followups.md) | Current backlog | RF-6 (centering corpus and suite skip semantics) is the same evidence-mechanism problem as F06 and gates Task 1/Task 11. RF-7 and RF-8 are device gates that open only after F01/F02 land. |
 
 The former gap analysis, candidate evidence ledger, and ownership audit are now

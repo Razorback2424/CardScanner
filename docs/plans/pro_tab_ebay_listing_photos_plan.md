@@ -7,6 +7,14 @@ open. The source-behavior claims in *Ported behavior* were read from
 (that tool is a separate, unversioned working copy outside this repository and
 is not a dependency of this app).
 
+**Sequencing:** this is post-1.0 work. It is listed in the active launch plan's
+[§0.1.2 open-plans table](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md)
+as outside launch scope, and **must not begin before the release candidate is
+certified** (that plan's Task 18). Its §7 execution discipline states that a
+source change after evidence collection invalidates the affected evidence, and
+this plan changes both tab structure and the shared capture path — the two things
+the centering and scanner acceptance programs measure against.
+
 **Concern owned:** the tab that today shows only card centering becomes a **Pro**
 tab hosting several seller tools, and the first new tool in it generates the ten
 eBay listing photos (a full front, four overlapping front corner crops, a full
@@ -483,6 +491,8 @@ time, peak footprint independent of queue length.
 | Document | Change this plan introduces | Action when the slice lands |
 | --- | --- | --- |
 | [`docs/README.md`](../README.md) | Adds a current authority row for the Pro tab | Added with this plan |
+| [`2026-09-13-phase-0-phase-1-app-store-launch.md`](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md) | Adds this plan to the §0.1.2 open-plans-outside-launch-scope table, with the post-Task-18 sequencing constraint | Added with this plan |
+| [`browse_screen_spec.md`](browse_screen_spec.md) | Its §12 "do not change … Centering tab structure" constraint now names this plan as the owner of that planned change | Added with this plan |
 | [`documentation_audit.md`](documentation_audit.md) | Adds a Pro tab row to the authority-boundary table | Added with this plan |
 | [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) | Centering is presented one level deeper and no longer owns its own `NavigationStack`; its camera gains a configuration parameter that defaults to today's behavior; route strings unchanged | Note the presentation and camera-parameter changes when Slice A/B land. The centering configuration must remain byte-identical in effect — macro lens, `.near` focus restriction, existing preset — or the centering accuracy gates are invalidated. |
 | [`scripts/centering_ui_build_and_shoot.sh`](../../scripts/centering_ui_build_and_shoot.sh) | No edit expected — A4 preserves the route's landing screen | Re-run and confirm before claiming Slice A complete |
