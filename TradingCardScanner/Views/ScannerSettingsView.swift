@@ -146,20 +146,28 @@ struct SettingsView: View {
                     csvMessage = CSVMessage(title: "Export Failed", message: error.localizedDescription, skippedCSVText: nil)
                 }
             }
-            .fileExporter(
-                isPresented: $isShowingDiagnosticsExporter,
-                document: diagnosticsDocument,
-                contentType: .json,
-                defaultFilename: "CardScanner Sync Diagnostics"
-            ) { result in
-                diagnosticsDocument = nil
-                if case let .failure(error) = result {
-                    csvMessage = CSVMessage(
-                        title: "Export Failed",
-                        message: error.localizedDescription,
-                        skippedCSVText: nil
-                    )
-                }
+            // Two `fileExporter` modifiers on the same view silently collapse
+            // into one: only the last one applied ever presents, so stacking
+            // them here left every CSV export doing nothing at all. Hosting
+            // the diagnostics exporter on its own empty background view keeps
+            // each exporter attached to a distinct view.
+            .background {
+                Color.clear
+                    .fileExporter(
+                        isPresented: $isShowingDiagnosticsExporter,
+                        document: diagnosticsDocument,
+                        contentType: .json,
+                        defaultFilename: "CardScanner Sync Diagnostics"
+                    ) { result in
+                        diagnosticsDocument = nil
+                        if case let .failure(error) = result {
+                            csvMessage = CSVMessage(
+                                title: "Export Failed",
+                                message: error.localizedDescription,
+                                skippedCSVText: nil
+                            )
+                        }
+                    }
             }
             .confirmationDialog("Import CSV?", isPresented: Binding(get: { pendingCSVImport != nil }, set: { if !$0 { pendingCSVImport = nil } }), titleVisibility: .visible) {
                 if let plan = pendingCSVImport {

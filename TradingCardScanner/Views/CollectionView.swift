@@ -71,9 +71,6 @@ enum CollectionRefreshStatusResolver {
             if summary.changedPrices {
                 return transient("Prices updated")
             }
-            if summary.foundNothingNewer {
-                return transient("Prices checked — already current")
-            }
             return transient("Prices checked — already current")
         }
 
