@@ -47,12 +47,14 @@ struct CatalogSetTile: View {
         guard set.game == .pokemon else { return false }
         guard artworkSource.primaryURL != nil
                 || !artworkSource.fallbacks.isEmpty
-                || artworkSource.localAssetName != nil else {
+                || artworkSource.localAssetName != nil
+                || !artworkSource.localFallbackAssetNames.isEmpty else {
             return true
         }
         // A local asset is a terminal, app-owned source. It remains useful even
         // when an earlier TCGdex or parent request failed.
-        guard artworkSource.localAssetName == nil else { return false }
+        guard artworkSource.localAssetName == nil,
+              artworkSource.localFallbackAssetNames.isEmpty else { return false }
         return artworkPhase == .failed
     }
 
@@ -186,6 +188,7 @@ struct CatalogSetTile: View {
                 placeholderSymbol: "square.stack.3d.up",
                 placeholderText: set.code,
                 localAssetName: artworkSource.localAssetName,
+                localFallbackAssetNames: artworkSource.localFallbackAssetNames,
                 onPhaseChange: { phase in
                     artworkPhase = phase
                 }

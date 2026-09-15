@@ -273,17 +273,25 @@ struct CatalogCardDisplayGroup: Identifiable, Hashable, Sendable {
     let identity: CatalogCardDisplayIdentity
     let summaries: [CatalogCardSummary]
 
+    init(identity: CatalogCardDisplayIdentity, summary: CatalogCardSummary) {
+        self.identity = identity
+        self.summaries = [summary]
+    }
+
+    init?(identity: CatalogCardDisplayIdentity, summaries: [CatalogCardSummary]) {
+        guard !summaries.isEmpty else { return nil }
+        self.identity = identity
+        self.summaries = summaries
+    }
+
     var id: String { identity.id }
 
     /// Normal is the primary card surface. A nil variant is the ordinary
     /// printing used by search and Magic, so it is also preferred when present.
     var preferredSummary: CatalogCardSummary {
-        guard let first = summaries.first else {
-            preconditionFailure("A catalog card display group must contain a summary")
-        }
         return summaries.first(where: { $0.masterSetVariant?.id == PhysicalVariant.normal.id })
             ?? summaries.first(where: { $0.masterSetVariant == nil })
-            ?? first
+            ?? summaries[0]
     }
 }
 
@@ -333,7 +341,7 @@ enum CatalogCardDisplayGrouping {
                 }
                 indexByIdentity[identity] = groups.count
                 groups.append(
-                    CatalogCardDisplayGroup(identity: identity, summaries: [summary])
+                    CatalogCardDisplayGroup(identity: identity, summary: summary)
                 )
                 continue
             }
@@ -342,16 +350,21 @@ enum CatalogCardDisplayGrouping {
                 var updated = groups[index].summaries
                 guard !updated.contains(where: { $0.id == summary.id }) else { continue }
                 updated.append(summary)
-                groups[index] = CatalogCardDisplayGroup(identity: identity, summaries: updated)
+                if let replacement = CatalogCardDisplayGroup(
+                    identity: identity,
+                    summaries: updated
+                ) {
+                    groups[index] = replacement
+                }
             } else {
                 indexByIdentity[identity] = groups.count
                 groups.append(
-                    CatalogCardDisplayGroup(identity: identity, summaries: [summary])
+                    CatalogCardDisplayGroup(identity: identity, summary: summary)
                 )
             }
         }
 
-        return groups.map { group in
+        return groups.compactMap { group in
             CatalogCardDisplayGroup(
                 identity: group.identity,
                 summaries: group.summaries.sorted(by: variantPrecedes)
@@ -393,7 +406,9 @@ struct CatalogReleaseRail: Equatable, Sendable {
 
 /// The small value summary used by the root game rows. The eligible collection
 /// is filtered once, then the full quantity and three-row artwork fan are both
-/// derived from it so the two displays cannot drift.
+/// derived from it so the two displays cannot drift. The fan prefers the
+/// newest Pokémon sets with bundled logo artwork, then fills any remaining
+/// slots from the newest catalog rows so its offline fallback stays useful.
 struct CatalogGameSummary: Equatable, Sendable {
     let game: CardGame
     let setCount: Int
@@ -404,15 +419,26 @@ struct CatalogGameSummary: Equatable, Sendable {
     init(game: CardGame, sets: [CatalogSet], rows: [CollectionRow]) {
         self.game = game
         setCount = sets.count
-        recentSetArtwork = Array(
-            sets.sorted {
-                if $0.releaseOrder != $1.releaseOrder {
-                    return $0.releaseOrder > $1.releaseOrder
-                }
-                return $0.id < $1.id
+        let releaseOrderedSets = sets.sorted {
+            if $0.releaseOrder != $1.releaseOrder {
+                return $0.releaseOrder > $1.releaseOrder
             }
-            .prefix(3)
-        )
+            return $0.id < $1.id
+        }
+        let bundledArtworkSets = releaseOrderedSets.filter {
+            $0.game == .pokemon
+                && PokemonArtworkFallbacks.localAssetName(
+                    forProviderID: $0.providerID,
+                    kind: .logo
+                ) != nil
+        }
+        var seenArtworkSetIDs = Set<String>()
+        var artworkCandidates: [CatalogSet] = []
+        for set in bundledArtworkSets + releaseOrderedSets
+            where seenArtworkSetIDs.insert(set.id).inserted {
+            artworkCandidates.append(set)
+        }
+        recentSetArtwork = Array(artworkCandidates.prefix(3))
         let eligibleRows = rows
             .filter {
                 $0.game == game
@@ -445,8 +471,6 @@ struct CatalogSearchLaneStatus: Equatable, Sendable {
     let isRequested: Bool
     let isLoading: Bool
     let error: String?
-
-    var isTerminal: Bool { !isLoading }
 
     init(
         isRequested: Bool = true,

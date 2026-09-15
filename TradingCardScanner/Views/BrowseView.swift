@@ -604,6 +604,7 @@ struct BrowseView: View {
         let url: URL?
         let fallbacks: [URL]
         let localAssetName: String?
+        let localFallbackAssetNames: [String]
         let placeholderText: String
 
         var id: Int { slot }
@@ -665,6 +666,7 @@ struct BrowseView: View {
                     url: artwork.primaryURL,
                     fallbacks: artwork.fallbacks,
                     localAssetName: nil,
+                    localFallbackAssetNames: [],
                     placeholderText: row.name
                 )
             }
@@ -677,6 +679,7 @@ struct BrowseView: View {
                         url: artwork.primaryURL,
                         fallbacks: artwork.fallbacks,
                         localAssetName: artwork.localAssetName,
+                        localFallbackAssetNames: artwork.localFallbackAssetNames,
                         placeholderText: set.code
                     )
                 )
@@ -689,6 +692,7 @@ struct BrowseView: View {
                         url: nil,
                         fallbacks: [],
                         localAssetName: nil,
+                        localFallbackAssetNames: [],
                         placeholderText: game.label
                     )
                 )
@@ -706,7 +710,8 @@ struct BrowseView: View {
                         targetPixelSize: 160,
                         placeholderSymbol: "rectangle.portrait",
                         placeholderText: artwork.placeholderText,
-                        localAssetName: artwork.localAssetName
+                        localAssetName: artwork.localAssetName,
+                        localFallbackAssetNames: artwork.localFallbackAssetNames
                     )
                     .frame(width: 38, height: 52)
                     .rotationEffect(.degrees(Double(index - 1) * 7))
@@ -2232,6 +2237,7 @@ struct CatalogCachedImage: View {
     var placeholderSymbol = "photo"
     var placeholderText: String? = nil
     var localAssetName: String? = nil
+    var localFallbackAssetNames: [String] = []
     var onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
     private var recursionTier: Int = 0
     @StateObject private var loader = CatalogImageLoader()
@@ -2252,6 +2258,7 @@ struct CatalogCachedImage: View {
         placeholderSymbol: String = "photo",
         placeholderText: String? = nil,
         localAssetName: String? = nil,
+        localFallbackAssetNames: [String] = [],
         onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
     ) {
         self.url = url
@@ -2261,6 +2268,7 @@ struct CatalogCachedImage: View {
         self.placeholderSymbol = placeholderSymbol
         self.placeholderText = placeholderText
         self.localAssetName = localAssetName
+        self.localFallbackAssetNames = localFallbackAssetNames
         self.onPhaseChange = onPhaseChange
     }
 
@@ -2272,6 +2280,7 @@ struct CatalogCachedImage: View {
         placeholderSymbol: String,
         placeholderText: String?,
         localAssetName: String?,
+        localFallbackAssetNames: [String],
         onPhaseChange: ((CatalogImageLoadPhase) -> Void)?,
         recursionTier: Int
     ) {
@@ -2283,6 +2292,7 @@ struct CatalogCachedImage: View {
             placeholderSymbol: placeholderSymbol,
             placeholderText: placeholderText,
             localAssetName: localAssetName,
+            localFallbackAssetNames: localFallbackAssetNames,
             onPhaseChange: onPhaseChange
         )
         self.recursionTier = recursionTier
@@ -2303,6 +2313,7 @@ struct CatalogCachedImage: View {
                     placeholderSymbol: placeholderSymbol,
                     placeholderText: placeholderText,
                     localAssetName: localAssetName,
+                    localFallbackAssetNames: localFallbackAssetNames,
                     onPhaseChange: onPhaseChange,
                     recursionTier: recursionTier + 1
                 )
@@ -2363,7 +2374,9 @@ struct CatalogCachedImage: View {
     }
 
     private var localAssetImage: UIImage? {
-        localAssetName.flatMap { UIImage(named: $0) }
+        ([localAssetName].compactMap { $0 } + localFallbackAssetNames)
+            .compactMap { UIImage(named: $0) }
+            .first
     }
 
     private var resolvedTargetPixelSize: Int? {

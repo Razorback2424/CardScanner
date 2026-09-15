@@ -243,6 +243,58 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(summary.subtitle, "2 sets · 10 cards owned")
     }
 
+    func testCatalogGameSummaryPrefersBundledArtworkBeforeStrictRecency() {
+        let sets = [
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: "me05"),
+                name: "Pitch Black",
+                code: "PBL",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 119,
+                releaseDate: nil,
+                sortRank: 218
+            ),
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: "sv08.5"),
+                name: "Prismatic Evolutions",
+                code: "PRE",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 180,
+                releaseDate: nil,
+                sortRank: 217
+            ),
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: "me04"),
+                name: "Chaos Rising",
+                code: "CRI",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 128,
+                releaseDate: nil,
+                sortRank: 216
+            ),
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: "sv08"),
+                name: "Surging Sparks",
+                code: "SSP",
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 252,
+                releaseDate: nil,
+                sortRank: 215
+            )
+        ]
+
+        let summary = CatalogGameSummary(game: .pokemon, sets: sets, rows: [])
+
+        XCTAssertEqual(
+            summary.recentSetArtwork.map(\.providerID),
+            ["sv08.5", "sv08", "me05"]
+        )
+    }
+
     func testCatalogCardDisplayGroupingKeepsFinishAndPrintingBoundaries() {
         let set = CatalogSetID(game: .pokemon, providerID: "master")
         let normal = browseDisplaySummary(
@@ -3406,10 +3458,18 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let logoSource = PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
         XCTAssertEqual(logoSource.primaryURL, logoURL)
         XCTAssertEqual(logoSource.localAssetName, "PokemonSetArtwork_sv08_5_logo")
+        XCTAssertEqual(
+            logoSource.localFallbackAssetNames,
+            ["PokemonSetArtwork_sv08_5_symbol"]
+        )
 
         let symbolSource = PokemonArtworkFallbacks.setSource(for: set, kind: .symbol)
         XCTAssertEqual(symbolSource.primaryURL, logoURL)
         XCTAssertEqual(symbolSource.localAssetName, "PokemonSetArtwork_sv08_5_symbol")
+        XCTAssertEqual(
+            symbolSource.localFallbackAssetNames,
+            ["PokemonSetArtwork_sv08_5_logo"]
+        )
     }
 
     func testSetArtworkSourcePreservesCallerRequestedOrdering() {
@@ -3429,6 +3489,17 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let symbolSource = PokemonArtworkFallbacks.setSource(for: set, kind: .symbol)
         XCTAssertEqual(symbolSource.primaryURL, symbolURL)
         XCTAssertEqual(symbolSource.fallbacks.first, logoURL)
+    }
+
+    func testCatalogCardDisplayGroupRejectsEmptySummaries() {
+        let identity = CatalogCardDisplayIdentity(
+            game: .pokemon,
+            setID: CatalogSetID(game: .pokemon, providerID: "sv08"),
+            providerID: "card-1",
+            collectorNumber: "001"
+        )
+
+        XCTAssertNil(CatalogCardDisplayGroup(identity: identity, summaries: []))
     }
 
     private func writeSnapshot(

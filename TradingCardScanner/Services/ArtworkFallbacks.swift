@@ -17,6 +17,19 @@ enum PokemonArtworkFallbacks {
         let primaryURL: URL?
         let fallbacks: [URL]
         let localAssetName: String?
+        let localFallbackAssetNames: [String]
+
+        init(
+            primaryURL: URL?,
+            fallbacks: [URL],
+            localAssetName: String?,
+            localFallbackAssetNames: [String] = []
+        ) {
+            self.primaryURL = primaryURL
+            self.fallbacks = fallbacks
+            self.localAssetName = localAssetName
+            self.localFallbackAssetNames = localFallbackAssetNames
+        }
     }
 
     /// TCGdex exposes gallery rows as separate sets but does not publish their
@@ -80,13 +93,20 @@ enum PokemonArtworkFallbacks {
             ? parentLogoURL(forProviderID: set.providerID)
             : nil
         let remoteURLs = uniqueURLs([requestedURL, alternateURL, inheritedLogoURL])
-        let localAssetName = set.game == .pokemon
-            ? localAssetName(forProviderID: set.providerID, kind: kind)
-            : nil
+        let localAssetNames: [String] = {
+            guard set.game == .pokemon else { return [] }
+            let alternateKind: PokemonSetArtworkKind = kind == .logo ? .symbol : .logo
+            return [
+                localAssetName(forProviderID: set.providerID, kind: kind),
+                localAssetName(forProviderID: set.providerID, kind: alternateKind)
+            ]
+            .compactMap { $0 }
+        }()
         return SetSource(
             primaryURL: remoteURLs.first,
             fallbacks: Array(remoteURLs.dropFirst()),
-            localAssetName: localAssetName
+            localAssetName: localAssetNames.first,
+            localFallbackAssetNames: Array(localAssetNames.dropFirst())
         )
     }
 
