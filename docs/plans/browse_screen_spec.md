@@ -699,10 +699,11 @@ Do not change:
 - `CatalogOwnershipIndex` / `SetCompletionCalculator` ownership semantics;
 - sealed request budgeting, caching, or credential storage;
 - `backfillPokemonReleaseOrder()` or its task;
-- Portfolio, Scan, or Centering tab structure (the Centering tab's planned
-  replacement by a Pro tab is owned by
+- Portfolio, Scan, or Pro tab structure (the Centering tab's replacement by a
+  Pro tab is owned by
   [`pro_tab_ebay_listing_photos_plan.md`](pro_tab_ebay_listing_photos_plan.md)
-  and is not implemented);
+  and is implemented only on that plan's isolated worktree; this Browse plan
+  does not own or alter it);
 - detail add-to-collection behavior.
 
 ## 13. Implementation order

@@ -1,19 +1,26 @@
 # Pro tab — card centering and eBay listing photos
 
-**Status:** current plan — proposed 2026-09-15, revised 2026-09-15, **not
-implemented**. No code in this plan has landed; every acceptance box below is
-open. The source-behavior claims in *Ported behavior* were read from
+**Status:** implementation candidate — Slices A–C landed on the isolated
+`pro-implementation` worktree (based at `523f3e2`) on 2026-09-15. The latest
+focused remediation verification is green (the remediation selectors pass
+14/14 tests and the Debug simulator build/run succeeds). The
+screenshot, manual, physical-device, provider, and release gates remain open;
+the implementation has not been merged back into `main`. The source-behavior
+claims in *Ported behavior* were read from
 `/Users/seankeller/Documents/eBay Photos/process_and_organize.py` on 2026-09-15
 (that tool is a separate, unversioned working copy outside this repository and
 is not a dependency of this app).
 
 **Sequencing:** this is post-1.0 work. It is listed in the active launch plan's
 [§0.1.2 open-plans table](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md)
-as outside launch scope, and **must not begin before the release candidate is
-certified** (that plan's Task 18). Its §7 execution discipline states that a
-source change after evidence collection invalidates the affected evidence, and
-this plan changes both tab structure and the shared capture path — the two things
-the centering and scanner acceptance programs measure against.
+as outside launch scope. Per the user's request, implementation is isolated on
+`pro-implementation`; it is not merged into the release candidate or used to
+refresh release evidence. The merge/release constraint remains: **do not merge
+or certify this work before the release candidate is certified** (that plan's
+Task 18). Its §7 execution discipline states that a source change after evidence
+collection invalidates the affected evidence, and this plan changes both tab
+structure and the shared capture path — the two things the centering and scanner
+acceptance programs measure against.
 
 **Concern owned:** the tab that today shows only card centering becomes a **Pro**
 tab hosting several seller tools, and the first new tool in it generates the ten
@@ -92,7 +99,8 @@ image destroys. Three consequences are designed for rather than worked around:
 3. **File size, not pixel size, is the pressure valve.** eBay enforces a
    per-image file-size ceiling on upload. If a native-resolution JPEG exceeds
    the configured byte budget, **reduce JPEG quality, never dimensions** —
-   stepping `0.95 → 0.85 → 0.75` and stopping at the first encode that fits.
+   stepping `0.95 → 0.85 → 0.75 → 0.65 → 0.55 → 0.45` and stopping at the
+   first encode that fits.
    Record which outputs, if any, were re-encoded below 0.95 so a quality
    question later has an answer. The exact eBay ceiling is not asserted here;
    confirming the current published limit is a task in *Verification*.
@@ -226,7 +234,7 @@ nowhere and fails silently at runtime.
       editing, export `ShareLink`, camera, photo picker, file importer, Settings.
 - [ ] `scripts/centering_ui_build_and_shoot.sh` still produces its settled
       marker and screenshot with no script edit.
-- [ ] Focused build plus the existing centering unit tests pass.
+- [x] Focused build plus the existing centering unit tests pass.
 
 ---
 
@@ -409,12 +417,21 @@ Because `cropRects` is pure geometry, most cases need no bitmap:
 
 ### B6. Slice B acceptance
 
-- [ ] `EbayQuadrantCropperTests` passes.
+- [x] `EbayQuadrantCropperTests` passes.
 - [ ] Ten previews render in listing order with correct captions and dimensions.
 - [ ] Exported full images match the source pixel dimensions exactly; each corner
       crop matches `Int(dimension × ratio)` exactly. No output is resampled.
-- [ ] A JPEG source with `.up` orientation passes its full images through
+- [x] A JPEG source with `.up` orientation passes its full images through
       byte-for-byte (compare file hashes against the source).
+- [x] An EXIF-rotated JPEG is upright before cropping and is transcoded rather
+      than passed through; the export test verifies the transposed dimensions.
+- [x] Review remediation F1–F7 is implemented: batch file work is detached,
+      the JPEG ladder reaches `0.45`, camera max dimensions are applied after
+      session commit from the output's own maximum, in-flight batch controls
+      are disabled, the orientation path is tested, orphaned temp roots are
+      swept on entry, and the dead camera-view state is removed. The latest
+      remediation selectors pass 14/14; F3's hardware capture acceptance and
+      the other manual/device/archive gates below remain open.
 - [ ] Share sheet receives ten items; Files/AirDrop shows the numbered names.
 - [ ] Re-running with new photos leaves exactly one temp directory behind;
       leaving the screen leaves none.
@@ -457,6 +474,14 @@ time, peak footprint independent of queue length.
 - Acceptance: a 12-pair batch completes, peak memory stays at the single-pair
   level (device evidence), the zip contains 12 directories × 10 correctly
   numbered files, and a swapped row lands in the output swapped.
+- [x] Review remediation F1/F4 is implemented for batching: pair moves and
+  archive creation are off the main actor, and the picker, swap controls, and
+  folder-name fields are disabled while processing. The 12-pair/device
+  acceptance remains open.
+- [x] Follow-up remediation N1–N3 is implemented: archive publication is
+  re-validated after cancellation, and the optimistic batch-processing flag is
+  cleared on an early task exit. The injected-budget export regression test
+  now uses a small fixture and keeps the focused suite fast.
 
 ---
 
@@ -490,13 +515,13 @@ time, peak footprint independent of queue length.
 
 | Document | Change this plan introduces | Action when the slice lands |
 | --- | --- | --- |
-| [`docs/README.md`](../README.md) | Adds a current authority row for the Pro tab | Added with this plan |
-| [`2026-09-13-phase-0-phase-1-app-store-launch.md`](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md) | Adds this plan to the §0.1.2 open-plans-outside-launch-scope table, with the post-Task-18 sequencing constraint | Added with this plan |
-| [`browse_screen_spec.md`](browse_screen_spec.md) | Its §12 "do not change … Centering tab structure" constraint now names this plan as the owner of that planned change | Added with this plan |
-| [`documentation_audit.md`](documentation_audit.md) | Adds a Pro tab row to the authority-boundary table | Added with this plan |
-| [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) | Centering is presented one level deeper and no longer owns its own `NavigationStack`; its camera gains a configuration parameter that defaults to today's behavior; route strings unchanged | Note the presentation and camera-parameter changes when Slice A/B land. The centering configuration must remain byte-identical in effect — macro lens, `.near` focus restriction, existing preset — or the centering accuracy gates are invalidated. |
-| [`scripts/centering_ui_build_and_shoot.sh`](../../scripts/centering_ui_build_and_shoot.sh) | No edit expected — A4 preserves the route's landing screen | Re-run and confirm before claiming Slice A complete |
-| [`progress.md`](../../progress.md) | Dated entry per landed slice | Required by [`docs/AGENTS.md`](../AGENTS.md) rule 4 |
+| [`docs/README.md`](../README.md) | Adds a current authority row for the Pro tab | Authority row is current; its date now reflects the implementation candidate |
+| [`2026-09-13-phase-0-phase-1-app-store-launch.md`](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md) | Adds this plan to the §0.1.2 open-plans-outside-launch-scope table, with the post-Task-18 sequencing constraint | Cross-reference now records the isolated implementation candidate and preserves the merge/release sequencing constraint |
+| [`browse_screen_spec.md`](browse_screen_spec.md) | Its §12 "do not change … Centering tab structure" constraint now names this plan as the owner of that planned change | Constraint now identifies the implemented Pro change as isolated to this plan's worktree |
+| [`documentation_audit.md`](documentation_audit.md) | Adds a Pro tab row to the authority-boundary table | Row now records the implementation and the remaining evidence boundary |
+| [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) | Centering is presented one level deeper and no longer owns its own `NavigationStack`; its camera gains a configuration parameter that defaults to today's behavior; route strings unchanged | Recorded as simulator-focused-verified; the centering accuracy and physical-device gates remain open. The centering configuration remains unchanged in effect — macro lens, `.near` focus restriction, existing preset. |
+| [`scripts/centering_ui_build_and_shoot.sh`](../../scripts/centering_ui_build_and_shoot.sh) | No edit expected — A4 preserves the route's landing screen | Not run at the user's request to skip screenshots; run before claiming the visual Slice A gate |
+| [`progress.md`](../../progress.md) | Dated entry per landed slice and verification result | Added for the implementation and focused simulator verification; screenshot/device gates remain separate |
 
 ---
 
@@ -506,14 +531,26 @@ Deterministic, per [`AGENTS.md`](../../AGENTS.md) ("narrowest relevant
 `xcodebuild` build/test first"):
 
 ```bash
-xcodebuild -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:TradingCardScannerTests/EbayQuadrantCropperTests -only-testing:TradingCardScannerTests/CenteringExportTests test
+xcodebuild -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:TradingCardScannerTests/EbayQuadrantCropperTests -only-testing:TradingCardScannerTests/EbayListingPhotoExportTests -only-testing:TradingCardScannerTests/CenteringExportTests -only-testing:TradingCardScannerTests/ViewConstructionSmokeTests test
 ```
 
 Centering-route regression after Slice A:
 
 ```bash
-./scripts/centering_ui_build_and_shoot.sh
+./scripts/centering_ui_build_and_shoot.sh IMG_0348
 ```
+
+### Recorded verification — 2026-09-15
+
+- The latest focused remediation run executed the cropper, export, and view
+  construction selectors: **14 passed, 0 failed, 0 skipped**.
+- The Debug iOS Simulator build/run succeeded.
+- The current eBay help page publishes a **12 MB per-image limit**; the export
+  pipeline uses a conservative 12,000,000-byte ceiling and the documented
+  `0.95 → 0.85 → 0.75 → 0.65 → 0.55 → 0.45` quality steps. See [eBay's photo requirements](https://www.ebay.com/help/selling/listings/photos-videos?id=4148).
+- The screenshot script and visual/manual checks were intentionally skipped at
+  the user's request. No physical-device, provider, CloudKit, archive, or
+  release-readiness claim is made.
 
 Manual (simulator) — records behavior, not release readiness:
 

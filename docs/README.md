@@ -1,6 +1,6 @@
 # Documentation map
 
-**Status:** current navigation map — 2026-09-14
+**Status:** current navigation map — 2026-09-15
 
 This map defines which repository documents are current authorities. Source code,
 tests, build settings, and the latest recorded evidence outrank older plans and

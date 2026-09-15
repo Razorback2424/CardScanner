@@ -1,12 +1,12 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-09-14
+**Audit date:** 2026-09-15
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — 2026-09-14
+## Current authority boundary — 2026-09-15
 
 This is the repository-wide documentation index and reconciliation record.
 Source code, tests, build settings, and evidence recorded against the current
@@ -27,7 +27,7 @@ release evidence.
 | Legal and future website | [`legal/privacy-policy.md`](../legal/privacy-policy.md), [`legal/support.md`](../legal/support.md), and [`CardScanner-Website-Implementation-Spec.md`](../CardScanner-Website-Implementation-Spec.md) | The website specification is a future website contract; no website source is present in this iOS repository. Its canonical support route is `/support`. |
 | Known production defects | [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) | Audited against `a4375df`: six findings (F01–F06), five confirmed and one suspected, each mapped to a release-framework gate. Pass 1 in `docs/legacy/` is a 2026-09-09/10 snapshot and was not re-reproduced. |
 | Browse set directory defects | [`browse_set_directory_remediation_plan.md`](browse_set_directory_remediation_plan.md) | Proposed 2026-09-15, **not implemented**. Owns the set-tile artwork kind, the set-directory card count, and the set price sort. Slice B changes the tile completion source specified in [`browse_screen_spec.md`](browse_screen_spec.md) § 8; that contradiction is listed below and must be carried into the spec when Slice B lands. |
-| Pro tab and eBay listing photos | [`pro_tab_ebay_listing_photos_plan.md`](pro_tab_ebay_listing_photos_plan.md) | Proposed 2026-09-15, **not implemented**. Owns the Pro tab shell that replaces the centering tab and the new eBay listing-photo module. It changes where card centering is presented (one navigation level deeper, no inner `NavigationStack`) but not how it measures; the centering contract and its open gates stay in [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md). The eBay module is card-independent and outputs native-resolution slices (no resampling). Slice C (multi-pair batching) must not be assumed landed with Slices A/B; SwiftData persistence against a card is out of scope. |
+| Pro tab and eBay listing photos | [`pro_tab_ebay_listing_photos_plan.md`](pro_tab_ebay_listing_photos_plan.md) | Slices A–C and the F1–F7 review remediation are implemented on the isolated `pro-implementation` worktree based at `523f3e2` (2026-09-15); the latest focused remediation selectors pass 14/14 and the Debug simulator build/run succeeds. It owns the Pro tab shell that replaces the centering tab and the new card-independent eBay listing-photo module. It changes where card centering is presented (one navigation level deeper, no inner `NavigationStack`) but not how it measures; the centering contract and its open gates stay in [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md). Screenshot, manual, physical-device, provider, archive, and release gates remain open; SwiftData persistence against a card is out of scope. |
 | Per-card price history chart | [`price_history_chart_plan.md`](price_history_chart_plan.md) | Proposed 2026-09-14, **not implemented**. Slice A is rendering only; Slice B is gated on pass-2 F02 and on an RF-8 device measurement. Provider history backfill is a recorded rejected option, not backlog. |
 
 ## Disposition — 2026-09-14
@@ -54,7 +54,7 @@ the required warning, not a reason to rewrite history.
 
 | ID | Contradictory claims | Current code/evidence check | Resolution |
 | --- | --- | --- | --- |
-| C-01 | Earlier Browse material treated Browse as a fourth/top-level tab; the current navigation model treated it as a Collection child. | `TradingCardScanner/Views/ContentView.swift` defines Portfolio, Collection, Scan, and Centering tabs (the Centering tab's planned rename to Pro is proposed and not implemented); `TradingCardScanner/Views/CollectionView.swift` defines `Destination.browse`. | Resolved. The current Browse plan and checklist say `Collection → Catalog`; the old wording is historical. |
+| C-01 | Earlier Browse material treated Browse as a fourth/top-level tab; the current navigation model treated it as a Collection child. | `TradingCardScanner/Views/ContentView.swift` now defines Portfolio, Collection, Scan, and Pro tabs; `ProView` owns the Pro stack, while `TradingCardScanner/Views/CollectionView.swift` defines `Destination.browse`. | Resolved. The current Browse plan and checklist say `Collection → Catalog`; the old wording is historical. The isolated Pro implementation does not move Browse or alter the Collection navigation contract. |
 | C-02 | The Browse plan read like future implementation work while Browse/Catalog behavior was already present in source and progress. | `CatalogGameBrowseView`, `CatalogSearchResult`, sealed content, release rail, grouping, and fallbacks are in the current source; focused selectors pass 46/46. | Resolved. The current plan is labeled an implemented acceptance contract; only manual, provider, and physical-device gates remain. |
 | C-03 | The Magic treatment plan described two modeled signals and an unimplemented 5,150-entry target. | `MagicTreatment.modelled` contains 31 cases; `MagicTreatmentTests` assert 31 and a 5,150-entry catalog with schema version 2. | Resolved by archiving the old coverage plan. Use source/tests and progress for current coverage. |
 | C-04 | The 2a collection-footer specification and 4a footer plan describe competing layouts and open work. | `TradingCardScanner/Views/CollectionView.swift` renders the settled name, set/number, price, and combined status footer; current collection tests cover the behavior. | Resolved by archiving both snapshots. The current UI/source and tests control; a new footer change needs a new dated plan. |
