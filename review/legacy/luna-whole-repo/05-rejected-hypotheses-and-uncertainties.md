@@ -1,10 +1,10 @@
 # Rejected Hypotheses and Uncertainties
 
-> **Historical snapshot — 2026-09-10.** This disposition records what the Luna whole-repository review rejected or left uncertain at its recorded baseline. It is not a current card-centering status document. For current centering work, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+> **Legacy archive — historical snapshot, 2026-09-10.** This disposition records what the Luna whole-repository review rejected or left uncertain at its recorded baseline. It is not current status. For current centering work, use the [current card-centering plan](../../opus-card-centering-implementation-plan.md) and [centering evidence](../../centering-evidence/).
 
 ## Prior defect hypotheses rechecked as fixed
 
-The prior audit in `docs/audits/defect_review_pass_1.md` is historical evidence only. Its nine defects were re-opened against the current source and current test suite. D01–D08 are not current findings:
+The prior audit in `docs/legacy/defect_review_pass_1.md` is historical evidence only. Its nine defects were re-opened against the current source and current test suite. D01–D08 are not current findings:
 
 | Prior item | Current disposition | Current evidence |
 | --- | --- | --- |

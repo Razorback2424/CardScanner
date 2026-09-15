@@ -1,5 +1,9 @@
 # Collection tile footer — implementation spec (codebase-corrected)
 
+> **Legacy archive — superseded direction 2a specification.** The current tile
+> follows the later 4a direction. This file remains available for design
+> provenance; it is not an active implementation contract.
+
 Target: `CollectionScreen.dc.html` (direction **2a**, "Lit from within"). Written against `main`
 @ 2026-09-09, verified line-by-line against `CollectionView.swift` (1233 lines),
 `CollectionQuery.swift`, and `CollectionCardDetailView.swift`.

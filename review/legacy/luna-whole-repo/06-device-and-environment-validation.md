@@ -1,6 +1,6 @@
 # Device and Environment Validation
 
-> **Historical snapshot — 2026-09-10.** The simulator commands, test count, and release-build observations below are evidence from the Luna whole-repository review at its recorded baseline. They are not the current card-centering validation result. For current simulator and centering status, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+> **Legacy archive — historical snapshot, 2026-09-10.** The simulator commands, test count, and release-build observations below belong to the Luna review baseline. They are not current validation. For current simulator and centering status, use the [current card-centering plan](../../opus-card-centering-implementation-plan.md) and [centering evidence](../../centering-evidence/).
 
 ## Executed evidence
 

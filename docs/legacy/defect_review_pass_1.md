@@ -1,6 +1,10 @@
 # Production Defect Audit — Pass 1
 
-> **Historical snapshot — 2026-09-09/10.** This audit records the repository state and findings from its dated baseline pass. It is retained as historical evidence; later implementation work changed the tree. For current card-centering status, use the [current card-centering plan](../../review/opus-card-centering-implementation-plan.md) and [centering evidence](../../review/centering-evidence/).
+> **Legacy archive — historical snapshot, 2026-09-09/10.** This audit records
+> its dated baseline findings. Later implementation work changed the tree; do
+> not treat these findings as current without a fresh reproduction. Use the
+> [current release ledger](../release/phase-1-integrity-evidence.md),
+> [documentation map](README.md), and active centering plan for present status.
 
 Audit performed September 9–10, 2026. Scope: the existing `TradingCardScanner` scheme and repository state. No application code, tests, schemas, or configuration were changed. This report is the only repository addition.
 

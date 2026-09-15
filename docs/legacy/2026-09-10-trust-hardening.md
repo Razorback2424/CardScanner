@@ -1,6 +1,6 @@
 # Trust Hardening Implementation Plan
 
-> **Historical execution plan — 2026-09-10.** This plan is preserved as the original trust-hardening work order; its checkbox state is not a live repository TODO list. The work was subsequently implemented and reviewed in the dated Opus evidence documents. It is separate from the active card-centering contract; use the [current card-centering plan](../../../review/opus-card-centering-implementation-plan.md) for centering work.
+> **Legacy archive — historical execution plan, 2026-09-10.** This plan is preserved as the original trust-hardening work order; its checkbox state is not a live repository TODO list. The work was subsequently implemented and reviewed in dated evidence. Use the [current card-centering plan](../../review/opus-card-centering-implementation-plan.md) and [documentation map](../README.md) for current work.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox syntax (- [ ]) for tracking.
 

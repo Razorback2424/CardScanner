@@ -1,10 +1,10 @@
 # Collection tile — quantity, artwork resolution, footer, finish badges
 
-Historical implementation plan. The investigation below is retained because
+> **Legacy archive — completed implementation plan.** The investigation below is retained because
 it explains the design tradeoffs, but the collection-tile recommendations have
 landed in the current code and were exercised by the deterministic
 `CollectionTiles` route. Current evidence/status is summarized in
-[`documentation_audit.md`](documentation_audit.md); this file is not a live
+[`documentation_audit.md`](../plans/documentation_audit.md); this file is not a live
 unchecked work queue.
 
 Two of the four turned out to have a shared root cause worth fixing once, and
@@ -247,5 +247,5 @@ artwork decoding, bounded local artwork storage, and `CollectionTiles` QA route
 were implemented. Focused treatment/downsampling tests, dark/light and
 accessibility-large captures, and the current full simulator suite pass. Any
 future cache-limit tuning belongs in the measurement gates in
-[`release_followups.md`](release_followups.md), not as an implied unfinished
+[`release_followups.md`](../plans/release_followups.md), not as an implied unfinished
 collection-tile slice.

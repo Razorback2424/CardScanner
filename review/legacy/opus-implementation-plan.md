@@ -1,9 +1,9 @@
 # Opus Implementation Plan — Authoritative Execution Contract
 
-> **Historical/superseded scope — 2026-09-10.** This contract governs the earlier Luna trust-hardening pass and is authoritative only for that dated scope. It does not describe the current card-centering implementation contract. Use the [current card-centering plan](opus-card-centering-implementation-plan.md) and [centering evidence](centering-evidence/) for active centering work.
+> **Legacy archive — historical/superseded scope, 2026-09-10.** This contract governs the earlier Luna trust-hardening pass and is authoritative only for that dated scope. It does not describe the current card-centering implementation contract. Use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/) for active work.
 
-Independent final review of the Luna whole-repository pass (`review/luna-whole-repo/`).
-This document supersedes `review/luna-whole-repo/04-findings.md` as the driver of implementation.
+Independent final review of the Luna whole-repository pass (`review/legacy/luna-whole-repo/`).
+This document superseded `review/legacy/luna-whole-repo/04-findings.md` as the driver of its historical implementation.
 Luna's artifacts remain valid as evidence and navigation aids.
 
 ---

@@ -1,5 +1,10 @@
 # Price Refresh Scale Plan
 
+> **Legacy archive — detailed investigation snapshot.** The code-gated actor
+> work has since landed and this document's “what the code does today” sections
+> are historical. Use the [current scale plan](../plans/price_refresh_scale_plan.md)
+> and [release follow-ups](../plans/release_followups.md) for open work.
+
 Target: automatic price checking with no refresh button, and a UI that stays
 responsive while thousands of prices are checked, at collection sizes up to
 tens of thousands of distinct printings.
@@ -10,7 +15,7 @@ implemented; the remaining proposed scale slices are still planning-only.
 Runtime claims below remain marked as either *traced statically* (I read the
 code path) or *needs measurement* (I inferred cost but did not profile).
 
-Use [`documentation_audit.md`](documentation_audit.md) for the current
+Use [`documentation_audit.md`](../plans/documentation_audit.md) for the current
 repository-wide status. This plan intentionally keeps the remaining scale
 slices and live-provider measurements open; the green simulator suite does not
 retire them.

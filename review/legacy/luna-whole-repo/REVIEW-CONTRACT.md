@@ -1,3 +1,8 @@
+> **Legacy archive — review contract snapshot, 2026-09-10.** This file is
+> preserved as the original Luna review contract and must not be treated as an
+> active work instruction. Use [`../../../README.md`](../../../README.md) and the
+> current card-centering contract for active review work.
+
 Luna Max Pursue Goal — Exhaustive Whole-Repository Review Contract
 
 0. Authority and Purpose of This Document

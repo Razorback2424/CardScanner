@@ -1,6 +1,6 @@
 # Repository and Architecture Map
 
-> **Historical snapshot — 2026-09-10.** This map describes the repository as reviewed at the recorded baseline. It is retained as historical navigation evidence, not as the current card-centering status. For the active centering contract, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+> **Legacy archive — historical snapshot, 2026-09-10.** This map describes the repository at its recorded baseline. For the active centering contract, use the [current card-centering plan](../../opus-card-centering-implementation-plan.md) and [centering evidence](../../centering-evidence/).
 
 ## Review boundary
 

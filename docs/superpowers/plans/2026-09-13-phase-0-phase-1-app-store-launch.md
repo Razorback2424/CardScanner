@@ -20,9 +20,9 @@ This is the executable implementation plan for:
 It reconciles:
 
 1. [`docs/vision/CardScanner Collection Integrity Strategy — Start-to-Finish Implementation Plan.md`](../../vision/CardScanner%20Collection%20Integrity%20Strategy%20%E2%80%94%20Start-to-Finish%20Implementation%20Plan.md);
-2. [`docs/vision/collection-integrity-codebase-gap-analysis.md`](../../vision/collection-integrity-codebase-gap-analysis.md);
+2. [`docs/legacy/collection-integrity-codebase-gap-analysis.md`](../../legacy/collection-integrity-codebase-gap-analysis.md), as a historical architecture input;
 3. [`docs/release/card-scanner-1.0-go-no-go-framework.md`](../../release/card-scanner-1.0-go-no-go-framework.md);
-4. the live source and tests at `d647a794edc349be52fb6c643649ce26de2c834a`; and
+4. the historical source/test snapshot at `d647a794edc349be52fb6c643649ce26de2c834a`; and
 5. the product-owner corrections recorded on September 13, 2026.
 
 When those sources disagree, this plan controls this release. In particular, it supersedes the following older decisions:
@@ -35,25 +35,45 @@ When those sources disagree, this plan controls this release. In particular, it 
 
 This plan does **not** authorize broad refactors. A change belongs in this release only when it closes a named launch gate, makes that gate observable, or is required to build/sign/submit the exact release binary.
 
+## 0.1 Current checkout reconciliation — 2026-09-14
+
+The plan was authored against earlier repository snapshots. Its current-source
+references must be revalidated before execution. The checkout now under review
+is branch `codex/scanning-workflow-review-remediation` at `0b4ac34`, with
+marketing/build `1.0 (1)`, bundle identifier `com.seankeller.CardScanner`, and
+iPhone/iPad deployment target 17.0. The current release ledger is
+[`docs/release/phase-1-integrity-evidence.md`](../../release/phase-1-integrity-evidence.md).
+
+The former gap analysis, candidate evidence ledger, and ownership audit are now
+under [`docs/legacy/`](../../legacy/); they remain useful historical inputs but
+do not certify this branch. Browse and scanning implementation work has landed
+with focused evidence, while the full simulator run, centering accuracy,
+physical-device, CloudKit production, and App Store gates remain open. Treat
+the current source, current release ledger, and
+[`docs/plans/documentation_audit.md`](../../plans/documentation_audit.md) as the
+status authority.
+
 ## 1. Repository-grounded starting point
 
 ### 1.1 Current checkout
 
 - Repository: `/Users/seankeller/Documents/TradingCardScannerMVP_fixed_v4`
-- Source snapshot used for the original plan: branch `scan-hardening-and-release`, HEAD `d647a794edc349be52fb6c643649ce26de2c834a`.
-- Repository state at this review: branch `main`, HEAD `a115e4e` (the earlier snapshot remains reachable). Re-run the baseline and source assertions in Task 1 against the checkout being implemented; neither snapshot line is permission to assume the tree is unchanged.
+- Historical source snapshot used for the original plan: branch `scan-hardening-and-release`, HEAD `d647a794edc349be52fb6c643649ce26de2c834a`.
+- Historical repository state at plan review: branch `main`, HEAD `a115e4e`. Neither snapshot is the current implementation base; re-run the baseline and source assertions in Task 1 against the checkout being implemented.
+- Current reconciliation: branch `codex/scanning-workflow-review-remediation`, HEAD `0b4ac34`, with user-owned working-tree changes preserved.
 - App target: `TradingCardScanner`
 - Test target: `TradingCardScannerTests`
 - Minimum OS: iOS/iPadOS 17.0
 - Device families: iPhone and iPad (`TARGETED_DEVICE_FAMILY = "1,2"`)
 - Current marketing/build version: `1.0 (1)`
-- Current placeholder bundle ID: `com.example.TradingCardScanner`
-- Approved production bundle ID: `com.seankeller.CardScanner`
+- Current bundle ID: `com.seankeller.CardScanner`
 - Intended CloudKit container: `iCloud.com.seankeller.CardScanner`
 
-### 1.2 User-owned working-tree changes that must be preserved
+### 1.2 Plan-authoring working-tree snapshot — historical
 
-At plan time, these files were already modified:
+At plan-authoring time, these files were already modified. This list is
+historical; use `git status` and the current release ledger for the present
+working tree:
 
 ```text
 TradingCardScanner/Services/PortfolioEngine.swift
@@ -61,13 +81,13 @@ TradingCardScanner/Views/CollectionCardDetailView.swift
 TradingCardScanner/Views/PortfolioDebugFixtures.swift
 TradingCardScannerTests/CardFinishRenderPlanTests.swift
 TradingCardScannerTests/OpusImplementationPlanTests.swift
-docs/CardScanner-Website-Implementation-Spec.md (untracked; appeared during plan preparation)
+docs/CardScanner-Website-Implementation-Spec.md (tracked future website specification; no website source is present in this iOS repository)
 docs/vision/ (untracked)
 ```
 
 The `PortfolioEngine.swift` change corrects a portfolio day to the half-open interval `[dayStart, nextDayStart)` and adds a boundary regression test. The artwork changes make the performance fixture reuse a safe deterministic filename. These are pre-existing user changes, not work created by this plan. Do not reset, overwrite, or silently absorb them into an unrelated commit. Before execution, either commit them as their own reviewed baseline or create the implementation worktree from a commit that intentionally contains them.
 
-### 1.3 What the code already provides
+### 1.3 What the code already provided at plan authoring
 
 The following are real foundations and should be preserved:
 
@@ -80,7 +100,7 @@ The following are real foundations and should be preserved:
 - scanner purposes distinguish Collection from Price Check.
 - the trust-hardening suite is broad; the latest recorded clean run in `progress.md` predates the current dirty tree and therefore is evidence of the prior baseline only.
 
-### 1.4 Current launch-critical gaps
+### 1.4 Launch-critical gaps at plan authoring
 
 The current code still has these release gaps:
 
@@ -97,9 +117,22 @@ The current code still has these release gaps:
 11. the release framework still describes a monetized 1.0 and treats purchase/restore as a hard gate, while no StoreKit code exists and the approved 1.0 is free.
 12. the normal/adversarial scanner evidence, physical iPhone/iPad matrix, exact archive inspection, and exact TestFlight-binary pass remain incomplete.
 13. there is no durable release evidence document for this exact candidate.
-14. the new website specification defines `/contact` and explicitly freezes exactly four routes, while the approved App Store launch contract requires a canonical `/support` URL.
+14. the plan-authoring snapshot described a `/contact` route, while the tracked website specification and approved App Store launch contract use canonical `/support`; this documentation contradiction is reconciled below and remains a future website-deployment concern.
 15. `PortfolioEpoch.initialSyncGrace` uses a 120-second elapsed-time heuristic when collection rows arrive before ledger rows. That may remain a conservative portfolio-baseline guard, but elapsed time is not proof that SwiftData has finished importing a cloud collection and must never authorize an authoritative empty/restored state.
 16. production code has several legitimate quantity-changing paths beyond the ordinary scanner flow—including CSV application, row merge/rekey, graded/sealed operations, correction flows, restore/undo, and Magic treatment migration—but there is no named audit proving that every path leaves a complete, durable, idempotent `InventoryEvent` history from which aggregate quantity can be rebuilt.
+
+### 1.5 Current reconciled status
+
+The plan-authoring gap list above is retained as execution context, not as a
+current defect list. In the current checkout, the bundle identifier and iOS 17
+target are already set in the project; Debug uses the local signing path and
+Release retains the CloudKit entitlements. Browse Catalog and scanner-workflow
+changes have focused build/test evidence. Storage/readiness source hardening is
+present, but production CloudKit enrollment, physical continuity, ownership
+ledger certification, and exact release-binary inspection remain open. The
+latest logged full simulator run discovered 1,256 tests and reported 48
+unrelated fixture/source-environment or signal-kill failures. Use the current
+release ledger and the documentation audit before advancing any task below.
 
 ### 1.5 Confirmed model fact: condition
 
@@ -550,7 +583,7 @@ git commit -m "docs: establish phase 0 and launch baseline"
 - Create: `docs/experiments/collection-integrity-v1-retention-contract.md`
 - Create: `docs/experiments/collection-integrity-v1-scorecard.md`
 - Modify: `docs/vision/CardScanner Collection Integrity Strategy — Start-to-Finish Implementation Plan.md`
-- Modify: `docs/vision/collection-integrity-codebase-gap-analysis.md`
+- Read: `docs/legacy/collection-integrity-codebase-gap-analysis.md` as the historical gap-analysis input
 - Modify: `docs/release/card-scanner-1.0-go-no-go-framework.md`
 - Modify: `docs/CardScanner-Website-Implementation-Spec.md`
 - Modify: `docs/release/phase-1-integrity-evidence.md`
@@ -605,55 +638,73 @@ In Phase 0, replace the commercial hypothesis and willingness-to-pay threshold w
 
 Do not delete the long-term product loop. Correct only the monetization claims that conflict with the approved strategy.
 
-- [ ] **Step 4: Correct the gap analysis**
+- [x] **Step 4: Classify the historical gap analysis**
 
-Update its executive sequence, Phase 9/12 rows, entitlement gaps, and Milestones I–K so they no longer prescribe StoreKit or Integrity WTP as the next validation. Keep the codebase finding “no StoreKit implementation exists,” but classify that as a deliberate non-gap for free 1.0.
+The former gap analysis is preserved under
+`docs/legacy/collection-integrity-codebase-gap-analysis.md`. Its StoreKit and
+Integrity-WTP material is historical; the current strategy and release
+framework define free 1.0 with no StoreKit. Use the current source, release
+ledger, and this plan for remaining validation.
 
-- [ ] **Step 5: Convert the release framework from monetized to free 1.0**
+- [x] **Step 5: Reconcile the release framework's product scope**
 
-In `card-scanner-1.0-go-no-go-framework.md`:
+The current framework records free 1.0/no StoreKit and the current checkout
+status. Its historical defect section remains preserved in place under an
+explicit historical heading. Remaining release gates are evidence work, not a
+request to restore purchase/restore flows.
 
-- remove Purchase → entitlement → restore from release-critical flows;
-- replace old G4 purchase failure with G4 persistence/sync continuity from §4;
-- remove purchase tests from binary invariants and diagnostics;
-- freeze “free 1.0, no StoreKit product” at RC;
-- add the canonical-store and account-switch invariants;
-- keep Place/Verify/Reconcile out of 1.0 critical flows;
-- update “current known defects” to distinguish fixed code paths from evidence still required.
+The original checklist is retained here as a completed reconciliation record:
 
-- [ ] **Step 6: Reconcile the website route contract with App Store support requirements**
+- [x] Purchase → entitlement → restore was removed from release-critical flows.
+- [x] G4 now covers persistence/sync continuity rather than purchase failure.
+- [x] The binary invariants and diagnostics do not require purchase tests.
+- [x] “Free 1.0, no StoreKit product” is frozen at RC scope.
+- [x] Canonical-store and account-switch invariants are represented in the
+  current release framework.
+- [x] Place/Verify/Reconcile remain outside 1.0 critical flows.
+- [x] The framework distinguishes historical defects from current evidence
+  gates.
 
-Update the website specification’s frozen route set from:
+- [x] **Step 6: Reconcile the website route contract with App Store support requirements**
 
-```text
-/, /privacy, /terms, /contact
-```
-
-to:
+The tracked website specification already uses the reconciled frozen route set:
 
 ```text
 /, /privacy, /terms, /support
 ```
 
-The `/support` page owns the contact mechanism and support content; do not add a fifth route merely to keep `/contact`. Update header/footer copy, repository structure, SEO metadata, QA, acceptance criteria, and implementation sequence consistently. If an already-deployed `/contact` URL exists later, it may redirect to `/support`, but `/support` is the canonical URL used by the app and App Store Connect.
+The `/support` page owns the contact mechanism and support content; do not add
+a fifth route merely to keep `/contact`. Header/footer copy, repository
+structure, SEO metadata, QA, acceptance criteria, and implementation sequence
+are already aligned in the specification. If an already-deployed `/contact`
+URL exists later, it may redirect to `/support`, but `/support` is the
+canonical URL used by the app and App Store Connect. Website implementation and
+deployment remain future work outside this iOS repository.
 
-- [ ] **Step 7: Verify the old hypothesis is gone from active documents**
+- [x] **Step 7: Verify the old hypothesis is gone from active documents**
 
-Run:
+The active strategy, scorecard, and release framework now state the negated
+decision explicitly: no Integrity willingness-to-pay criterion and no
+monetized 1.0. References to StoreKit are allowed only when documenting that
+it is intentionally absent from free 1.0. When this plan is revisited, inspect
+hits rather than treating a broad keyword match as a failure:
 
 ```bash
-rg -n '\$30|\$39\.99|willingness.to.pay|Purchase → entitlement|monetized release|StoreKit' \
+rg -n '\$30|\$39\.99|willingness.to.pay|Purchase → entitlement|monetized release' \
   docs/vision \
   docs/release/card-scanner-1.0-go-no-go-framework.md \
   docs/experiments
 ```
 
-Expected: no active statement claims Integrity WTP or a monetized 1.0. Historical documents outside this set may retain chronology, but they must link to this plan if they could otherwise be mistaken for the current decision.
+Expected: any hit is either a negated historical correction or is removed from
+the active decision. Historical documents outside this set may retain
+chronology, but they must link to this plan if they could otherwise be mistaken
+for the current decision.
 
 - [ ] **Step 8: Record and commit the Phase 0 freeze**
 
 ```bash
-git add docs/experiments docs/vision docs/release docs/CardScanner-Website-Implementation-Spec.md
+git add docs/experiments docs/vision docs/release docs/legacy docs/CardScanner-Website-Implementation-Spec.md
 git commit -m "docs: freeze collection integrity retention experiment"
 ```
 

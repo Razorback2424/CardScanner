@@ -1,5 +1,11 @@
 # Magic finish/treatment coverage — full automatic vocabulary, narrow lock menu
 
+> **Legacy archive — completed treatment-coverage plan.** The 31-treatment
+> vocabulary, catalog artifact, migration, and focused tests described below
+> are implemented in the current source. The historical two-treatment premise
+> and unchecked requirements are not current status; use `MagicTreatment.swift`,
+> `MagicTreatmentCatalog/manifest.json`, and the current tests for truth.
+
 ## Context
 
 The scanner's Finish Lock menu offers only **Nonfoil / Foil / Etched Foil** for Magic. That list is

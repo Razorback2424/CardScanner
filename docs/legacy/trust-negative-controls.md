@@ -1,5 +1,9 @@
 # Trust-hardening negative controls
 
+> **Legacy archive — pre-change regression matrix, 2026-09-10.** These controls
+> describe the pre-change comparison and are retained as historical evidence;
+> they do not certify the current checkout.
+
 Recorded 2026-09-10 against pre-change commit `3c390e6`.
 
 This matrix separates regression barriers from tests that only describe the

@@ -1,5 +1,11 @@
 # CardScanner Collection Integrity Strategy
 
+**Status:** current product strategy and retention hypothesis — reconciled
+2026-09-14. This document defines future product direction; it is not release
+certification or a statement that Place/Verify/Reconcile is implemented. Use
+the [current documentation map](../README.md), source/tests, and release ledger
+for implementation and readiness status.
+
 ## 1. Product thesis
 
 CardScanner should evolve from a highly capable card scanner and collection manager into a **verified system of record for a physical trading-card collection**.

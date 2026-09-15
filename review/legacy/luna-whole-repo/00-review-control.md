@@ -1,11 +1,11 @@
 # Whole-Repository Review Control
 
-> **Historical snapshot — 2026-09-10.** This file records the Luna whole-repository review at its recorded baseline and is not the current card-centering implementation status. For the active centering contract, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and its [centering evidence](../centering-evidence/).
+> **Legacy archive — historical snapshot, 2026-09-10.** This file records the Luna whole-repository review at its recorded baseline. For the active centering contract, use the [current card-centering plan](../../opus-card-centering-implementation-plan.md) and [centering evidence](../../centering-evidence/).
 
 ## Contract and scope
 
 - Authoritative contract: [`REVIEW-CONTRACT.md`](REVIEW-CONTRACT.md).
-- Review workspace: `review/luna-whole-repo/`.
+- Review workspace: `review/legacy/luna-whole-repo/`.
 - Scope: all code and configuration capable of materially affecting the shipped Trading Card Scanner application, with supporting tests, scripts, documentation, assets, and generated data inspected as evidence where relevant.
 - Contract-prescribed intentional writes: this review workspace only. Production source, existing tests, dependencies, project configuration, signing configuration, schemes, entitlements, and Git history are not to be changed.
 
@@ -46,7 +46,7 @@
 - 2026-09-10: five read-only subsystem subreviews completed and reconciled by the parent; no subagent changed repository files.
 - 2026-09-10: review-time Debug suite completed successfully: 1,005 tests, 1 skipped, 0 failures.
 - 2026-09-10: review-time Release simulator build completed successfully.
-- 2026-09-10: exact ledger reconciliation completed: `git ls-files 'TradingCardScanner/**/*.swift'` matched the 105 unique paths in `02`; `git diff --check -- review/luna-whole-repo` was clean.
+- 2026-09-10: exact ledger reconciliation completed: `git ls-files 'TradingCardScanner/**/*.swift'` matched the 105 unique paths in `02`; `git diff --check -- review/legacy/luna-whole-repo` was clean.
 - 2026-09-10: full contract reread completed from disk in three contiguous chunks immediately before this final audit.
 
 ## Completion reconciliation

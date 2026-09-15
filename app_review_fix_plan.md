@@ -4,7 +4,24 @@
 > this task. Existing uncommitted work is intentionally not committed or
 > reset by this remediation pass.
 
-## Baseline
+## Current checkout reconciliation — 2026-09-14
+
+This root-level file is the current App Review remediation authority. The
+branch/SHA and suite counts in the original baseline below belong to the
+earlier `fix/app-review-preflight` candidate and are historical context, not
+the current checkout. The current tree is
+`codex/scanning-workflow-review-remediation` at `0b4ac34`, with additional
+user-owned working-tree changes preserved.
+
+Source-level storage hardening and focused regression coverage have progressed,
+but production CloudKit enrollment, physical-device continuity, ownership-ledger
+certification, and a clean exact-candidate suite remain open. The latest logged
+full simulator run discovered 1,256 tests and reported 48 unrelated
+fixture/source-environment or signal-kill failures. See the current
+[`docs/release/phase-1-integrity-evidence.md`](docs/release/phase-1-integrity-evidence.md)
+for the candidate ledger.
+
+## Historical baseline — `fix/app-review-preflight`
 
 - Branch: `fix/app-review-preflight`
 - Baseline commit: `a115e4e`
@@ -73,13 +90,23 @@ Focused storage verification is `PASS — 59 tests, 0 failures` across
 `CollectionStorageBootstrapTests`, `CloudCollectionAnchorStoreTests`, and
 `CloudRestorationReadinessTests` on the iOS 26.5 simulator.
 
-Full-suite verification is `EXECUTED — 1,205 tests; 45 failures at baseline,
-43 with these fixes`. The remaining 43 are pre-existing and unrelated:
+## Historical verification snapshot — pre-current-checkout
+
+The following storage-remediation run belongs to the earlier candidate and is
+retained for implementation evidence only; it is not the current full-suite
+result:
+
+`EXECUTED — 1,205 tests; 45 failures at baseline, 43 with these fixes.` The
+remaining 43 were classified as pre-existing and unrelated:
 centering-corpus/fixture failures, source-path tests that resolve relative to
 `/` under `xcodebuild`, a `CollectionSyncDiagnostics` date-encoding mismatch,
 and two tracked `OwnershipLedgerCompletenessTests` assertions. The storage
 suites have zero failures. No commit hash is claimed until the owner requests
 or approves a commit containing the complete working tree.
+
+The current checkout result is recorded in the [current release ledger](docs/release/phase-1-integrity-evidence.md):
+1,256 tests discovered and 48 classified fixture/source-environment or
+signal-kill failures.
 
 ## Verification and rollback
 

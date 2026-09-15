@@ -1,10 +1,11 @@
 # App Review Preflight
 
-This file records the original preflight and its focused fixes. For the
-current repository-wide checkpoint and the surviving review gates, see
-[`documentation_audit.md`](documentation_audit.md) and the unchecked items in
-[`app_review_fix_plan.md`](app_review_fix_plan.md). The older test counts below
-are historical evidence, not the current suite status.
+> **Legacy archive — historical preflight snapshot.** The candidate and test
+> counts below are not current. Use the [root preflight](../../app_review_preflight.md),
+> [current release ledger](../release/phase-1-integrity-evidence.md), and
+> [documentation map](README.md).
+
+This file records the original preflight and its focused fixes.
 
 ## Baseline
 

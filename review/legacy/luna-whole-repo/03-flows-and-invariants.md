@@ -1,6 +1,6 @@
 # End-to-End Flows and Cross-Cutting Invariants
 
-> **Historical snapshot — 2026-09-10.** These flow traces describe the Luna whole-repository review at its recorded baseline. They are historical evidence and should not be read as the current card-centering implementation or validation record. For current centering status, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+> **Legacy archive — historical snapshot, 2026-09-10.** These flow traces describe the Luna whole-repository review at its recorded baseline. For current centering status, use the [current card-centering plan](../../opus-card-centering-implementation-plan.md) and [centering evidence](../../centering-evidence/).
 
 ## Launch, storage, and derived-state flow
 

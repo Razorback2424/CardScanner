@@ -1,12 +1,23 @@
 # Shared Pricing Cache — Implementation Plan
 
 **CardScanner · Pricing Infrastructure**
-Status: Draft validated, three gates open, warming scope added · Date: 06 September 2026 · Verdict: Proceed after Gate A
+Status: Draft validated, three gates open, warming scope added · Date: 06 September 2026 · Repository reconciliation: 14 September 2026 · Verdict: Proceed after Gate A
 
 This is a future, gated backend project—not a partially landed app slice. The
 current implementation remains device-local and the three gates below must be
 resolved before Firebase work starts. See [`documentation_audit.md`](documentation_audit.md)
 for the repository-wide status map.
+
+## Repository scope reconciliation — 2026-09-14
+
+The “Phase 0” terminology used later in this document belongs to this future
+shared-pricing-backend project: it means commercial, licensing, provider-data,
+and cache-contract gates. It does not replace the active app Phase 0, which is
+the frozen Collection Integrity retention experiment in
+[`../experiments/collection-integrity-v1-retention-contract.md`](../experiments/collection-integrity-v1-retention-contract.md).
+Free 1.0 remains device-local and contains no StoreKit or shared backend. Do
+not create Firebase resources or treat this plan as launch evidence until its
+own Gates A–C are resolved.
 
 A server-side price and market-history cache so one CardScanner user's provider lookup can serve
 the next, without moving card identity, the collection, or the portfolio ledger off the device.
@@ -29,8 +40,9 @@ the locally derived portfolio ledger.
 What does not survive validation is the draft's picture of the *current* system. Three of its
 premises are contradicted by the code in this repository, and one of those is a commercial
 blocker that has to be resolved before any Firebase resource is created. The engineering plan
-below is largely the draft's; the sequencing changes because Phase 0 is now a purchasing and
-licensing decision rather than a contract-freezing exercise.
+below is largely the draft's; the sequencing changes because this backend
+project's Phase 0 is a purchasing and licensing decision rather than the app's
+contract-freezing Phase 0.
 
 Everything the draft cites about JustTCG's published limits checks out. Everything it assumes
 about CardScanner's pricing stack does not.
@@ -569,7 +581,7 @@ an honest unavailable/warming state. Card identification is never affected — t
 
 Each phase advances only when its gate is met — not when a week has passed.
 
-**Phase 0 — Commercial gates and frozen contracts.**
+**Backend Phase 0 — Commercial gates and frozen backend contracts.**
 Clear Gates A, B and C. Freeze the provider-data types. Document which existing type supplies the
 canonical printing ID, define the history horizon, and define the warm coverage universe and
 priority tiers.

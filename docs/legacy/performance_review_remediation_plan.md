@@ -1,6 +1,6 @@
 # Performance Review — Remediation Plan (revised)
 
-> **Historical plan snapshot.** This document preserves the dated performance-remediation work and its measurements. Its intermediate suite counts are not the current card-centering validation record. For active centering status and the current simulator evidence, use the [card-centering plan](../../review/opus-card-centering-implementation-plan.md) and [centering evidence](../../review/centering-evidence/).
+> **Legacy archive — historical performance plan snapshot.** This document preserves dated remediation work and measurements. Its intermediate suite counts are not current release or centering evidence. Use the [current scale plan](../plans/price_refresh_scale_plan.md), [release follow-ups](../plans/release_followups.md), and [active card-centering plan](../../review/opus-card-centering-implementation-plan.md).
 
 Status: **implementation complete for the current iOS 17 target; runtime gates
 remain explicit.** Slices 1–8 and 11, plus the price-refresh snapshot pass
@@ -14,7 +14,7 @@ claims — three needed correcting, and those corrections are applied in the
 findings below and recorded in §1.4. Line numbers drift; follow symbol names.
 
 The repository-wide audit checkpoint is recorded in
-[`documentation_audit.md`](documentation_audit.md). The 940-test result
+[`documentation_audit.md`](../plans/documentation_audit.md). The 940-test result
 described by the original checkpoint is historical; the runtime/device gates
 below remain open until their stated measurements exist.
 

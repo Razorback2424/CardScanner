@@ -1,10 +1,14 @@
 # CardScanner Collection Integrity — Reconciled Codebase Gap Analysis
 
+> **Legacy archive — architecture snapshot, 2026-09-13.** The source SHA and
+> branch references below are historical. Use the active launch plan and current
+> release ledger for present status.
+
 **Status:** Architecture and implementation-readiness assessment; no product code was changed
 
 **Reconciled:** September 13, 2026
 
-**Authoritative goal:** [CardScanner Collection Integrity Strategy — Start-to-Finish Implementation Plan](<./CardScanner Collection Integrity Strategy — Start-to-Finish Implementation Plan.md>)
+**Authoritative goal:** [CardScanner Collection Integrity Strategy — Start-to-Finish Implementation Plan](<../vision/CardScanner Collection Integrity Strategy — Start-to-Finish Implementation Plan.md>)
 
 **Code snapshot:** repository `HEAD` `d647a79`, including the working-tree changes present on September 13, 2026. This is a historical assessment snapshot; the repository is now on `main` at `a115e4e`, where Task 1 of the active launch plan must revalidate all source claims before implementation. The older commit remains reachable for comparison.
 

@@ -1,5 +1,12 @@
 # Release follow-ups
 
+**Status:** current validation and measurement backlog — reconciled 2026-09-14.
+
+This document is the aggregation point for gates that source inspection or the
+ordinary simulator suite cannot retire. Completed implementation plans are
+archived under [`../legacy/`](../legacy/); they are historical context, not
+open work queues.
+
 This is the aggregation point for work that cannot be retired by the ordinary
 simulator suite. Items below are validation or measurement gates, not suspected
 defects. Close an item with the evidence described here, or record the measured
@@ -53,12 +60,18 @@ the parser range again. This is test debt, not a reported misread.
 
 **Status:** hardware/runtime profiling pending.
 
-The remaining gates from `performance_review_remediation_plan.md` are grouped
+The remaining gates from the archived
+[`performance_review_remediation_plan.md`](../legacy/performance_review_remediation_plan.md) are grouped
 here so they do not get lost between plan revisions: verify the explicit camera
 pixel format against OCR hit rate and thermal behavior, evaluate tab-bar
 flicker during repeated scan receipts, measure camera restart latency on tab
 return, and capture one live-provider refresh profile to confirm the off-main
 signposts. Close each sub-item independently when its evidence is available.
+
+The current price-refresh scale plan is
+[`price_refresh_scale_plan.md`](price_refresh_scale_plan.md); its actor boundary
+is landed, while continuous resumable sweeps, Magic batching, and large-store
+measurement remain open.
 
 ## Closed cleanup
 

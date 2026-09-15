@@ -1,3 +1,23 @@
+Current checkpoint (2026-09-14): the current checkout is
+`codex/scanning-workflow-review-remediation` at `0b4ac34`. Browse/Catalog and
+scanning-workflow implementation slices have landed with focused build/test
+evidence. The latest logged focused Browse/Catalog selectors pass 46 tests with
+0 failures, and the settled iPhone 17 Pro Browse capture passes its checklist
+except for the explicitly remaining set-tile accessibility, DisclosureGroup,
+dark-mode, and AX5 manual checks. The scanner workflow review records its
+focused regressions and receipt capture as passing.
+
+The latest logged full simulator run discovered 1,256 tests and reported 48
+failures classified as unrelated fixture/source-environment or signal-kill
+failures; the repository-wide suite is therefore not clean. Card centering still
+has current accuracy, invariant, latency, and device-only gates open under the
+active centering contract. App Review storage/CloudKit, physical-device,
+provider, archive/TestFlight, ownership-ledger, and release-candidate evidence
+also remain open. The current documentation boundary and contradiction matrix
+are in [`docs/plans/documentation_audit.md`](docs/plans/documentation_audit.md).
+
+## Historical checkpoint — 2026-09-12
+
 Current checkpoint (2026-09-12): the repository-wide documentation and artifact
 audit remains tracked in `docs/plans/documentation_audit.md`. The active
 card-centering contract and evidence are tracked in
@@ -142,3 +162,8 @@ Original prompt: Implement Browse Sets and Cards across Pokémon/TCGdex and Magi
 - Browse catalog remediation loop 1 (2026-09-14): fixed non-chronological set sorting/grouping, tile progress and hairline layout, dark progress/badge contrast, lazy sealed search gating, hot-path artwork/set-ordering work, rail readiness, and related accessibility/polish details. The focused BrowseFeatureTests suite passes 28/28 and the app build succeeds; a fresh screenshot attempt was blocked by a recurring CoreSimulatorService connection failure.
 - Browse catalog close-out (2026-09-14): removed the lazy sealed-search trigger and stale directory mirror, restored ordered card-then-sealed search, capped fan artwork defensively, simplified recent-row ordering, and added oldest-first/Started-filter coverage. BrowseFeatureTests passes 30/30 and the iOS Simulator build succeeds. Pre-release manual pass remains: confirm set tiles announce their set name and button trait without exposing artwork/progress internals, DisclosureGroup expands and collapses cleanly, and BrowseSetBadgeFill remains legible in dark mode with tiles fitting at AX5.
 - Scanning workflow review (2026-09-14): completed roadmap Slices 1–5 and Slice 6 instrumentation: invalidated identification tasks are cleared immediately, scan counter resets no longer flash, dead scanner state was removed, catalog-miss observation hops are gated, informational receipts keep the tab bar stable, and fallback-price queue cost is signposted. ScannerViewModel, CameraPreview, and catalog-miss regressions pass; the WholeCardScanner receipt capture confirms tab-bar/safe-area behavior. The XcodeBuildMCP full simulator run discovered 1,256 tests and reported 48 unrelated fixture/source-environment or signal-kill failures, so the repository-wide suite is not recorded as clean.
+- Browse implementation close-out (2026-09-14): implemented the unified card/sealed Catalog search, game-level Cards/Sealed navigation, cached-credential sealed states, dated release rail, game summaries, set sorting/progress copy, missing-art fallback, and grouped Pokémon finish tiles. The prescribed Browse route built and rendered a settled Catalog root with the Collection tab selected, release rail peek, and one row per game. `BrowseFeatureTests` plus `UncoveredSurfaceTests` pass; the full target remains non-clean only in unrelated centering/fixture and scanner-environment tests.
+- Browse implementation visual recheck (2026-09-14): after the final grouped-tile cleanup, the simulator briefly returned a black frame while CoreSimulatorService disconnected; a delayed capture after service recovery again rendered the settled Catalog root correctly.
+- Browse audit remediation (2026-09-14): stabilized unified pagination task identity and cancellation handling, made cached sealed directories load without credentials, gated inactive card search, cached ranking/grouping hot paths, pre-sorted game-row artwork, added tile re-appearance artwork retry and grid card-count fallback, hardened Magic display identities, and completed the Browse cleanup. Focused `BrowseFeatureTests` plus `UncoveredSurfaceTests` pass; the Debug Browse build and settled iPhone 17 Pro capture pass.
+- Browse audit verification follow-up (2026-09-14): corrected the sealed credential test ordering so its provider-call and error-copy assertions are independent, added regression coverage for the inactive Sealed-segment card-search gate, and verified the real `BrowseFeatureTests`, `SealedBrowseSurfaceTests`, and `ViewConstructionSmokeTests` selectors (46 tests, 0 failures). The final Debug Browse build and settled iPhone 17 Pro capture pass; the full target remains non-clean only in the previously identified unrelated suites.
+- Collection header redesign (2026-09-14): implemented the Collection-scoped leading navigation row, full-collection value hero, source-aware refresh status, inline search/filter/sort controls, mixed-scope footer semantics, and Settings-based activity entry point. Focused Collection/view tests pass 43/43; dark, light, accessibility-size, and CardDetail navigation captures were inspected.

@@ -1,6 +1,6 @@
 # Demonstrable File Coverage Ledger
 
-> **Historical snapshot — 2026-09-10.** This ledger records the file inventory and review classifications for the Luna whole-repository pass. It does not supersede the active card-centering contract or its newer evidence. For current centering status, use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/).
+> **Legacy archive — historical snapshot, 2026-09-10.** This ledger records the file inventory and review classifications for the Luna whole-repository pass. It does not supersede the active card-centering contract or its newer evidence. For current centering status, use the [current card-centering plan](../../opus-card-centering-implementation-plan.md) and [centering evidence](../../centering-evidence/).
 
 ## Rules
 

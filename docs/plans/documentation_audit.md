@@ -1,10 +1,90 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-09-09
+**Audit date:** 2026-09-14
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
+
+## Current authority boundary — 2026-09-14
+
+This is the repository-wide documentation index and reconciliation record.
+Source code, tests, build settings, and evidence recorded against the current
+checkout outrank dated plans. A document is current only when it is listed
+below or linked from the current [documentation map](../README.md). Everything
+under `docs/legacy/` or `review/legacy/` is retained for provenance and is not
+release evidence.
+
+| Area | Current authority | Code/evidence boundary |
+| --- | --- | --- |
+| Product scope and roadmap | [`README.md`](../../README.md), [`CardScanner Collection Integrity Strategy`](../vision/CardScanner%20Collection%20Integrity%20Strategy%20%E2%80%94%20Start-to-Finish%20Implementation%20Plan.md), and the [active launch plan](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md) | The current Swift target and tests decide what is implemented; roadmap prose does not add product behavior. |
+| Browse/Catalog | [`browse_screen_spec.md`](browse_screen_spec.md), [`browse_success_checklist.md`](../../references/browse_success_checklist.md), `TradingCardScanner/Views/BrowseView.swift`, and `TradingCardScannerTests/BrowseFeatureTests.swift` | Browse is a Collection push destination. Focused Browse/Catalog selectors pass 46 tests; manual/provider/device checks remain open. |
+| Artwork fallbacks | [`artwork-fallback-plan.md`](artwork-fallback-plan.md), `TradingCardScanner/Services/ArtworkFallbacks.swift`, and Browse tests | P0–P3 are implemented in the current tree; runtime/provider behavior and licensing are still operational gates. |
+| Scanner workflow | `TradingCardScanner/Views/ScannerViewModel.swift`, the current [release follow-ups](release_followups.md), [`scan_cancellation_success_checklist.md`](../../references/scan_cancellation_success_checklist.md), and `progress.md` | The reviewed cancellation/task-lifecycle fixes are landed and focused-verified; camera, thermal, provider, and physical-device evidence remains open. |
+| Pricing and portfolio performance | [`price_refresh_scale_plan.md`](price_refresh_scale_plan.md), [`release_followups.md`](release_followups.md), and the current services/tests | Actor-owned refresh persistence is landed; large-store measurement, Magic batching, resumable sweeps, and physical-provider profiling remain open. |
+| App Review and release | [`app_review_fix_plan.md`](../../app_review_fix_plan.md), [`app_review_preflight.md`](../../app_review_preflight.md), [`card-scanner-1.0-go-no-go-framework.md`](../release/card-scanner-1.0-go-no-go-framework.md), and the [current evidence ledger](../release/phase-1-integrity-evidence.md) | The exact checkout is not certified: CloudKit/ownership, clean full-suite, physical-device, archive/TestFlight, centering, and App Store gates remain open. |
+| Card centering | [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) and [`review/centering-evidence/`](../../review/centering-evidence/) | Dated experiment artifacts remain inside the current evidence ledger; the active contract and its open accuracy/invariant/latency/device gates are authoritative. |
+| Legal and future website | [`legal/privacy-policy.md`](../legal/privacy-policy.md), [`legal/support.md`](../legal/support.md), and [`CardScanner-Website-Implementation-Spec.md`](../CardScanner-Website-Implementation-Spec.md) | The website specification is a future website contract; no website source is present in this iOS repository. Its canonical support route is `/support`. |
+
+## Disposition — 2026-09-14
+
+No documentation was deleted. Completed, superseded, or snapshot-specific
+material was moved into explicit legacy locations, and current replacement
+paths were kept where a caller or release workflow depends on them.
+
+| Material | Legacy location | Current replacement or rule |
+| --- | --- | --- |
+| Duplicate app-review plans and old candidate evidence | `docs/legacy/app_review_fix_plan.md`, `docs/legacy/app_review_preflight.md`, `docs/legacy/phase-1-integrity-evidence.md`, `docs/legacy/ownership-ledger-completeness-audit.md` | Root app-review files and the current release/ownership ledgers are the only current authorities. |
+| Old repository gap and first defect audit | `docs/legacy/collection-integrity-codebase-gap-analysis.md`, `docs/legacy/defect_review_pass_1.md` | Current source/tests, the launch plan, the release framework, and this audit. |
+| Completed or superseded feature plans | `docs/legacy/collection_tile_*`, `design_slices_plan.md`, `graded_price_lookup_fix_plan.md`, `magic-finish-treatment-coverage-plan.md` | Current source, focused tests, `progress.md`, Browse/artwork plans, and release follow-ups. |
+| Historical price/performance snapshots | `docs/legacy/performance_review_remediation_plan.md`, `docs/legacy/price_refresh_scale_plan.md` | Current [`price_refresh_scale_plan.md`](price_refresh_scale_plan.md) plus [`release_followups.md`](release_followups.md). |
+| Scanner workflow review snapshot | `docs/legacy/scanning-workflow-review.md` | Scanner source, cancellation checklist, release follow-ups, and the dated progress entries. |
+| Trust-hardening and whole-repository review snapshots | `docs/legacy/2026-09-10-*`, `review/legacy/` | Current centering contract/evidence and current release ledgers; archived review findings are historical inputs only. |
+
+## Plan contradictions requiring reconciliation
+
+The table distinguishes contradictions that are already resolved in the current
+tree from release decisions that still require evidence. An archived document
+may continue to contain the old side of a contradiction; its legacy banner is
+the required warning, not a reason to rewrite history.
+
+| ID | Contradictory claims | Current code/evidence check | Resolution |
+| --- | --- | --- | --- |
+| C-01 | Earlier Browse material treated Browse as a fourth/top-level tab; the current navigation model treated it as a Collection child. | `TradingCardScanner/Views/ContentView.swift` defines Portfolio, Collection, Scan, and Centering tabs; `TradingCardScanner/Views/CollectionView.swift` defines `Destination.browse`. | Resolved. The current Browse plan and checklist say `Collection → Catalog`; the old wording is historical. |
+| C-02 | The Browse plan read like future implementation work while Browse/Catalog behavior was already present in source and progress. | `CatalogGameBrowseView`, `CatalogSearchResult`, sealed content, release rail, grouping, and fallbacks are in the current source; focused selectors pass 46/46. | Resolved. The current plan is labeled an implemented acceptance contract; only manual, provider, and physical-device gates remain. |
+| C-03 | The Magic treatment plan described two modeled signals and an unimplemented 5,150-entry target. | `MagicTreatment.modelled` contains 31 cases; `MagicTreatmentTests` assert 31 and a 5,150-entry catalog with schema version 2. | Resolved by archiving the old coverage plan. Use source/tests and progress for current coverage. |
+| C-04 | The 2a collection-footer specification and 4a footer plan describe competing layouts and open work. | `TradingCardScanner/Views/CollectionView.swift` renders the settled name, set/number, price, and combined status footer; current collection tests cover the behavior. | Resolved by archiving both snapshots. The current UI/source and tests control; a new footer change needs a new dated plan. |
+| C-05 | The scanner workflow review listed F1–F5 as open defects after their lifecycle fixes landed. | `ScannerViewModel` clears/cancels `identificationTask`; the old `resolutionTask`, `undoLastAdd`, and `activeFinishLocks` symbols are absent from production; focused receipt/cancellation evidence is recorded. | Resolved as documentation status. Physical camera, thermal, provider, and full-suite evidence remain separate open gates. |
+| C-06 | The old performance/price plans described main-actor refresh work and Slice 6 as proposed, while later code moved persistence behind a model actor. | `PriceRefreshModelActor`, `CollectionProjectionActor`, and value snapshots exist; `ContentView` no longer observes refresh as a whole-screen object. `PortfolioInputObserver`, Magic batching, and resumable sweeps are still open. | Resolved by archiving the detailed snapshots and keeping a short current scale plan that separates landed slices from open measurements/work. |
+| C-07 | Duplicate app-review plans used different candidate branches, SHAs, suite counts, and authority locations. | The current branch is `codex/scanning-workflow-review-remediation` at `0b4ac34`; root app-review files now identify old `fix/app-review-preflight`/`a115e4e` data as historical. | Resolved by keeping root files as current summaries and moving the duplicate snapshot plans into `docs/legacy/`. |
+| C-08 | Older release evidence and ownership documents appeared to certify `main`/`a115e4e`/`ec7dc6b`, while the current checkout and dirty tree are different. | Current ledgers identify this branch/SHA and explicitly say NOT CERTIFIED; the latest full run is 1,256 discovered with 48 classified failures. | Resolved as an authority conflict. Production CloudKit, ownership, archive/TestFlight, and clean-candidate evidence are still open. |
+| C-09 | The launch plan's plan-authoring gap list called StoreKit/purchase gating part of the release, while the current strategy and framework define a free 1.0 with no StoreKit. | The active strategy and release framework say free 1.0/no StoreKit; no StoreKit implementation is required for this scope. | Resolved as a product decision. StoreKit remains a future, separately approved monetization experiment, not a current launch defect. |
+| C-10 | The launch plan said the website specification still froze `/contact`; the tracked specification already uses exactly `/, /privacy, /terms, /support`. | `docs/CardScanner-Website-Implementation-Spec.md` lists `/support` as the fourth route and defines its support page. | Resolved at the document level. The launch plan now records the route task as reconciled; website implementation/deployment remains future work. |
+| C-11 | The old 2026-09-12 progress checkpoint and earlier 940/1,205-test snapshots could be read as current repository readiness; 1,095 remains a valid current result only for the separate centering experiment. | The new 2026-09-14 checkpoint and current ledgers identify the 1,256/48 full-run result, while the centering evidence labels its 1,095-result run as the centering baseline. | Resolved by retaining old general-suite entries under historical headings, preserving the scoped centering result, and adding a dated current checkpoint. New evidence must be appended chronologically. |
+| C-12 | The shared-pricing-backend plan calls its commercial/licensing preflight “Phase 0,” while the product strategy and launch plan call retention-contract freeze “Phase 0.” | `docs/plans/shared_pricing_cache_plan.md` describes a future backend with device-local pricing still current; `docs/experiments/collection-integrity-v1-retention-contract.md` freezes the active app Phase 0. | Resolved by making the backend phase name explicitly scoped to that future project. It cannot alter free 1.0 or start Firebase work before its own gates A–C. |
+
+## Update plan
+
+1. Before changing a status line, inspect the named source type, test, build
+   setting, or evidence artifact and record the exact current checkout identity.
+2. Keep one current authority per concern in the [documentation map](../README.md);
+   move completed or superseded snapshots to `docs/legacy/` or `review/legacy/`
+   with a banner and a current pointer. Do not delete them.
+3. Keep current plans concise and status-first: distinguish implemented code,
+   deterministic verification, manual/device/provider evidence, and owner- or
+   vendor-controlled gates. Do not turn an old unchecked task into a current
+   defect without reproducing it.
+4. Add a dated entry to `progress.md` for each verified implementation or
+   evidence change, then update the smallest relevant checklist or ledger.
+5. Run a repository Markdown-link check after moves and review all remaining
+   current-document references for old branches, SHAs, test counts, routes, and
+   monetization claims. Historical references may remain only inside clearly
+   marked archives.
+6. Re-run the release gates in the current ledgers before calling the checkout
+   certified. The current open gates are not closed by this documentation pass:
+   production CloudKit/ownership proof, clean exact-candidate regression,
+   physical scanner/provider validation, Browse manual sign-off, centering,
+   archive/TestFlight inspection, and App Store submission evidence.
 
 > **Amended 2026-09-12.** The checkpoint below is the repository-audit snapshot captured on 2026-09-09. It is historical and must not be used as the current card-centering test count or readiness claim. The active card-centering contract, experiment ledger, simulator evidence, and current branch results are maintained in the [current card-centering plan](../../review/opus-card-centering-implementation-plan.md) and [centering evidence](../../review/centering-evidence/).
 
@@ -58,13 +138,13 @@ These are intentionally not “90% implemented” items to be silently marked do
 - [`release_followups.md`](release_followups.md) is the source of truth for
   collection cold-launch timing, 8 Hz scanner tracking, projection coalescing,
   additional graded-label samples, and live refresh/camera profiling.
-- [`app_review_fix_plan.md`](app_review_fix_plan.md) still has evidence or
+- [`app_review_fix_plan.md`](../../app_review_fix_plan.md) still has evidence or
   product-owner gates for stale vendor-variant invalidation, migration
   serialization, store/account epoch scope, fan-out and large-session
   measurement, ProductIdentity misses, and the production bundle ID and
   entitlements. Its unchecked items are deliberate review gates, not forgotten
   implementation tasks.
-- [`performance_review_remediation_plan.md`](performance_review_remediation_plan.md)
+- [`performance_review_remediation_plan.md`](../legacy/performance_review_remediation_plan.md)
   and [`price_refresh_scale_plan.md`](price_refresh_scale_plan.md) distinguish
   landed simulator work from live-provider/Instruments measurements. Do not
   promote a “needs measurement” line to “done” because the simulator suite is

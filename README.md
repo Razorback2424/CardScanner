@@ -7,6 +7,8 @@ rhythmically while the software stays out of the way.
 For the broader repository audit snapshot and its remaining device/provider/review
 gates, see
 [`docs/plans/documentation_audit.md`](docs/plans/documentation_audit.md). The
+current documentation map and legacy boundary are in
+[`docs/README.md`](docs/README.md). The
 active card-centering contract and evidence are in
 [`review/opus-card-centering-implementation-plan.md`](review/opus-card-centering-implementation-plan.md)
 and [`review/centering-evidence/`](review/centering-evidence/). The

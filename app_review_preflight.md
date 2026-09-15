@@ -3,8 +3,12 @@
 > Bootstrapped by `swift-safe-fixer` from the product-owner review supplied in
 > this task; this is not a substitute for an independent reviewer report.
 
-Candidate: `fix/app-review-preflight` at baseline `a115e4e` with the existing
-working-tree implementation changes preserved.
+**Current checkout:** `codex/scanning-workflow-review-remediation` at
+`0b4ac34`. This is the current preflight summary; the candidate identity below
+is retained as historical context from the earlier remediation pass.
+
+**Historical candidate:** `fix/app-review-preflight` at baseline `a115e4e`, with
+the earlier working-tree implementation changes preserved.
 
 The candidate remains NO-GO. The latest remediation pass applies source-level
 fixes for the four storage/readiness findings: cached-empty checkpoints,
@@ -44,5 +48,6 @@ are not sufficient to certify the candidate.
 Physical Task 4B architecture selection, CloudKit production schema,
 two-device convergence, archive/TestFlight, public URLs, and a clean full-suite
 pass still require owner-controlled follow-up. The current host has recorded
-focused storage results and a 1,205-test Debug baseline/current comparison in
-the evidence ledger.
+focused storage results; the latest logged full run discovered 1,256 tests and
+reported 48 fixture/source-environment or signal-kill failures. The current
+release ledger is the evidence authority.

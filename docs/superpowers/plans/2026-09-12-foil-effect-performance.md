@@ -8,6 +8,12 @@
 
 **Tech Stack:** SwiftUI, Core Motion, iOS 17, `OSSignposter` through the existing `PerformanceSignpost` helper, XCTest, and Instruments (`SwiftUI`, `Animation Hitches`, `Time Profiler`, and `Metal System Trace`). UIKit/Core Animation or another custom drawing path is conditional on the renderer spike. The project currently has no UI-test target.
 
+**Repository reconciliation:** This plan remains current for the finish-effect
+performance gate. Suite counts in the implementation-status section are
+scoped historical baselines; the repository-wide current status is maintained
+in [`docs/plans/documentation_audit.md`](../../plans/documentation_audit.md) and
+the release follow-ups.
+
 ## Implementation status — 2026-09-12
 
 The code-gated portion of this plan is implemented in the working tree. The

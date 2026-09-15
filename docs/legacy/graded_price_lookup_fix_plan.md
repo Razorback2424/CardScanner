@@ -1,5 +1,9 @@
 # Graded price lookup — fix plan
 
+> **Legacy archive — completed fix plan.** The G1–G5 work is recorded for
+> provenance. Current pricing behavior and release gates must be checked in the
+> source, tests, and current release follow-ups.
+
 This is a functional lookup correction, separate from the performance
 remediation plan and the shared pricing-cache plan.
 

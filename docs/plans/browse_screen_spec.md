@@ -1,398 +1,714 @@
-# Catalog (Browse) screen — implementation spec (codebase-corrected)
+# Catalog / Browse — implementation plan
 
-Target: `BrowseScreen.dc.html`, two artboards — **Catalog** (root) and **Pokémon sets** (game → set
-list). Written against `main` @ 2026-09-13, verified line-by-line against `BrowseView.swift`
-(1718 lines), `BrowseCatalog.swift` (1180), `BrowseCatalogModels.swift` (753),
-`SealedBrowseViews.swift`, `JustTCGMarketModels.swift`, and `ContentView.swift`.
+Status: current Browse contract, with the implementation landed in the working
+tree — reconciled 2026-09-14. This document replaces the earlier artboard-led
+plan. The requirements below remain the acceptance contract; the current
+implementation/evidence state is recorded first so the older imperative wording
+cannot be mistaken for an unfinished task list.
 
-> **Corrections are marked ⚠️.** Everything unmarked matched the codebase as written.
+The detailed sections below are retained for acceptance traceability and design
+rationale. They are not a second status ledger: completed implementation is
+reported in the status block above, while the current checklist and release
+follow-ups own remaining manual, provider, and device work.
 
-Files touched:
+Current implementation state:
 
-- `TradingCardScanner/Views/BrowseView.swift` — `BrowseView.body`, `gameChooser`, `sealedChooser`,
-  `CatalogSetListView`, `CatalogSetOrdering`; deletion of the `browseScope` segmented picker
-- `TradingCardScanner/Models/BrowseCatalogModels.swift` — new set-list sort/filter types (§6)
-- One new file: `TradingCardScanner/Views/CatalogSetTile.swift` (the grid tile, §4)
-- ⚠️ Possibly `TradingCardScanner/Views/ContentView.swift` — **only if** the tab decision in §0 goes
-  that way. Do not touch it otherwise.
-- ⚠️ `Assets.xcassets` gains one colour set group for tile backgrounds — see §4.3. It currently
-  contains only `AppIcon.appiconset`; there are still no colour sets in the project.
+- `CollectionView.Destination.browse` pushes Catalog from the Collection tab;
+  Browse is not a fifth native tab.
+- Unified card/sealed search, game-level Cards/Sealed navigation, cached sealed
+  browsing, release rail, game summaries, set sorting/progress, artwork
+  fallbacks, and grouped Pokémon finish tiles are implemented.
+- The latest focused Browse/Catalog selectors pass 46 tests with 0 failures;
+  the final Debug build and settled iPhone 17 Pro capture pass.
+- Remaining pre-release manual checks are set-tile accessibility output,
+  DisclosureGroup expand/collapse behavior, and dark-mode/AX5 badge contrast.
 
----
+Baseline checked against:
 
-## 0. ⚠️ The two artboards disagree about the tab bar, and one of them deletes Portfolio
+- `TradingCardScanner/Views/BrowseView.swift`
+- `TradingCardScanner/Views/CatalogSetTile.swift`
+- `TradingCardScanner/Views/SealedBrowseViews.swift`
+- `TradingCardScanner/Models/BrowseCatalogModels.swift`
+- `TradingCardScanner/Services/BrowseCatalog.swift`
+- `TradingCardScanner/Views/CollectionView.swift`
+- `TradingCardScanner/Views/ContentView.swift`
+- `TradingCardScannerTests/BrowseFeatureTests.swift`
+- `TradingCardScannerTests/UncoveredSurfaceTests.swift`
 
-`BrowseScreen.dc.html` renders its tab bar as:
+## 1. Target navigation model
 
-```js
-tabs: [ collection, catalog, scan, centering ]   // value="catalog"
+Use one hierarchy:
+
+```text
+Collection tab
+└── Catalog
+    ├── search result (card or sealed product)
+    └── game
+        ├── Cards
+        │   ├── all cards
+        │   └── sets → set → grouped card/finish tiles
+        └── Sealed (vendor-grouped sets) → products
 ```
 
-`AppScreen.dc.html` — the Portfolio artboard in the same export — renders:
+Sealed is a content kind within a game, not a second top-level game directory. The vendor's set
+identity remains independent from `CatalogSetID`; this plan changes navigation, not catalog
+identity. Do not join card sets to `SealedSetSummary` by name, code, or fuzzy matching.
 
-```js
-tabs: [ portfolio, collection, scan, centering ] // value="portfolio"
-```
+Keep Catalog as a push destination owned by the Collection tab. `CollectionView.Destination.browse`
+already establishes that route, and `ContentView.Tab` intentionally has Portfolio, Collection,
+Scan, and Centering. Therefore Collection remaining selected on Catalog and its descendants is the
+correct tab state. Do not rename the Collection tab, add a Catalog tab, or remove Portfolio in this
+slice. Screenshot acceptance must assert that Collection stays selected while Catalog is open.
 
-The second matches the shipped app exactly (`ContentView.swift:90–121`: Portfolio, Collection, Scan,
-Centering). The first **replaces Portfolio with Catalog**.
+## 2. Implementation map and type-level contract
 
-Today Browse is not a tab at all. It is a push destination owned by Collection:
+### `TradingCardScanner/Views/BrowseView.swift`
+
+- Delete `sealedChooser` and remove its call from the idle root.
+- Replace `CatalogGameCardsView` with `CatalogGameBrowseView`, or rename it and extend it in place.
+  It owns a local `CatalogGameContentKind` selection (`cards`, `sealed`) and renders a segmented
+  control immediately below the navigation title.
+- Preserve the current Cards implementation and its Sets toolbar destination under `.cards`.
+- Under `.sealed`, render the vendor set directory for the already-selected game. Label the content
+  `Vendor catalog` in supporting copy so the data grouping is honest.
+- Pass an `onOpenSettings` closure from `BrowseView` into `CatalogGameBrowseView`; use the existing
+  `isShowingSettings` sheet at the root instead of presenting a second Settings sheet.
+- Replace sectioned search rendering with the unified result model in §4.
+- Update `CatalogSetOrdering.justReleased` as specified in §7.
+- Surface set sorting in the chip row and replace the master-rules disclosure styling (§8).
+- Add bottom safe-area spacing to root, game, set-list, and set-detail scroll content (§9).
+- Replace `CatalogCardGrid`'s one-summary-per-tile input with display groups (§10).
+
+### `TradingCardScanner/Views/SealedBrowseViews.swift`
+
+- Extract the body of `SealedSetDirectoryView` into an embeddable content view that does not set a
+  navigation title and does not install its own `.searchable` modifier. Because the host screen owns
+  the single `.searchable` field (§5), the content view cannot keep `searchText` as private `@State`.
+  Use:
 
 ```swift
-// CollectionView.swift:314
-case .browse:
-    BrowseView(catalog: catalog)
-```
-
-So the mockup implies a structural change that is nowhere stated: promoting Browse to top level, and
-— as drawn — **removing the Portfolio tab**, which is the entire surface behind the portfolio
-engine, replay, history, and daily closes.
-
-**Do not implement the four-tab bar as drawn.** This is a product decision, not a layout detail.
-Three options, in the order I would recommend them:
-
-1. **Keep Browse as a push destination** (no `ContentView` change). Everything else in this spec
-   still applies; the Catalog artboard gains a back chevron to Collection and loses nothing else.
-   Cheapest, and preserves both features.
-2. **Add Catalog as a fifth tab.** Five tabs fit on iPhone without a "More" overflow. Requires a
-   `Tab.catalog` case, a tab item, and a decision about whether Collection keeps its `.browse`
-   destination (it should, for deep links — `ContentView.swift:66` routes a `"Browse"` debug route
-   through `initialTab = .collection`).
-3. **Replace Portfolio with Catalog** as drawn. Only if the user explicitly confirms Portfolio is
-   moving somewhere else. Nothing in the export says it is.
-
-Pick one before writing any code in §1–§6. Options 1 and 2 leave `ContentView.swift` alone or add to
-it; option 3 is a deletion and needs its own plan.
-
----
-
-## 1. The root screen: one search, no scope picker
-
-The artboard's stated intent is in its own caption:
-
-> "One search over cards and sealed. No scope picker — the kind is a property of a result, not a
-> mode you choose first."
-
-That is a genuine improvement and it is implementable. What it replaces:
-
-```swift
-// BrowseView.swift:263–270 — delete this
-Picker("Browse scope", selection: $browseScope) {
-    if model.isSearching { Text("All").tag(BrowseScope.all) }
-    Text("Cards").tag(BrowseScope.cards)
-    Text("Sealed").tag(BrowseScope.sealed)
-}
-.pickerStyle(.segmented)
-```
-
-⚠️ **`BrowseScope` is load-bearing beyond the picker.** Deleting the control is not enough:
-
-- `BrowseView.swift:271–278` switches on `browseScope` to choose between `searchBody`,
-  `gameChooser`, and `sealedChooser`.
-- `BrowseView.swift:316–325` has two `.onChange` handlers that flip `browseScope` to `.all` when a
-  search begins and back to `.cards` when it ends, and mirror it into `model.searchScope`.
-- `BrowseViewModel.searchScope` (`:24`) is `.cards` by default and `didSet`-triggers `scheduleSearch()`.
-- `searchBody` (`:485`) gates its Cards section on `browseScope != .sealed`.
-
-**Required behavior after the change:**
-
-- `BrowseViewModel.searchScope` defaults to `.all` and is never reassigned from the view.
-- Idle (no query): render the "Just released" rail (§2) then the game rows (§3). No chooser switch.
-- Searching: render one result list with a **Cards** section and a **Sealed** section, both always
-  present when non-empty, in that order. Keep the existing per-game sub-sectioning inside Cards.
-- Keep `BrowseScope` the type — it still describes what a *result* is, and `searchScope` is how the
-  model asks the catalog for both lanes. Only the picker and the mode-switching go away.
-
-Navigation title becomes **"Catalog"** (`BrowseView.swift:285` currently `"Browse"`). The settings
-toolbar button at `:287–295` stays exactly as it is; the artboard draws it in the same position.
-
----
-
-## 2. "Just released" rail
-
-A horizontal rail of up to three set cards, 248pt wide, 134pt artwork box, `NEW` pill on the two
-newest.
-
-**Data.** `CatalogSet.releaseDate` and `CatalogSet.sortRank` already exist
-(`BrowseCatalogModels.swift:33–37`). Use `CatalogSetOrdering.newestFirst` (`BrowseView.swift:584`),
-which is already the app's ordering rule and already handles the Pokémon/Magic difference:
-
-```swift
-// BrowseCatalogModels.swift:45–49
-var releaseOrder: Int {
-    game == .pokemon ? sortRank
-                     : releaseDate.map { Int($0.timeIntervalSince1970 / 86_400) } ?? sortRank
+struct SealedSetDirectoryContent: View {
+    let game: CardGame
+    @ObservedObject var model: SealedBrowseModel
+    let searchText: String
+    var onOpenSettings: (() -> Void)? = nil
 }
 ```
 
-⚠️ **Do not define "just released" as a date window.** Pokémon ordering is `sortRank`, not a date, so
-"released in the last 90 days" is not expressible for half the catalog. Define it as **the first N
-sets of `CatalogSetOrdering.newestFirst` across both games, interleaved** — take the top 2 per game,
-then sort those by `releaseOrder`. That is deterministic, works offline, and needs no new data.
+  The existing `normalizedSearch` / `visibleSets` filtering moves in unchanged and reads the passed
+  `searchText`. Keep the empty-state overlays, including `No Matching Sets`, which still needs the
+  raw `searchText` for its message.
+- Keep `SealedSetDirectoryView` as a thin wrapper that owns `@State private var searchText`, the
+  navigation title, and `.searchable`, so existing direct/deep-link callers are unchanged.
+- When credentials are absent and no cached directory is usable, show one full-width
+  `Button("Set up sealed browsing", systemImage: "key")` and explanatory text; the button calls
+  `onOpenSettings`. Replace the current `unconfigured` `Label` with this. When `onOpenSettings` is
+  nil (the standalone wrapper), keep the current non-interactive `Label` copy instead of rendering a
+  button that does nothing.
+- Move the `.task(id: game) { await model.loadSetsIfNeeded(game: game) }` into the content view and
+  guard it: `guard model.isConfigured || !model.sets.isEmpty else { return }`. Without this guard the
+  unconfigured-and-uncached state in §5 still issues a provider request.
+- Do not create game rows or product links in the unconfigured state. Cached sealed content may
+  remain browsable without credentials, matching `SealedBrowseModel`'s existing cache contract.
 
-⚠️ **The `NEW` pill needs a rule, and the mockup gives it to two of three tiles with no stated
-threshold.** Use: the pill appears on a set whose `releaseDate` is within 45 days of `Date.now`, and
-never when `releaseDate` is nil. Pokémon sets built from the snapshot path have
-`releaseDate: nil` (`PokemonChecklistSnapshot.swift:178`) while the live path populates it (`:309`),
-so a nil-safe rule is mandatory or the pill will flicker between launches.
+### `TradingCardScanner/Models/BrowseCatalogModels.swift`
 
-Tapping a rail tile pushes the same destination a grid tile does (§4) — `CatalogSetCardsView`.
-"All sets" on the right of the header pushes the game's set list; ⚠️ the mockup does not say *which*
-game, and with two games it cannot be one link. **Make the rail header a plain section header with
-no trailing link**, or scope the rail per game. Do not ship an ambiguous "All sets" affordance.
-
----
-
-## 3. "Everything in the catalog" — the two game rows
-
-Each row: a 96×62 fan of three card thumbnails, game name, a counts line, chevron. Replaces
-`gameChooser` (`BrowseView.swift:446–483`), which currently draws an SF Symbol in a rounded square
-and the text `"Browse \(sets.count) sets"`.
-
-**Counts line.** The mockup reads `168 sets · 21,940 cards · 1,204 sealed`.
-
-- `sets` — available: `model.sets[game]?.count`. ✅
-- `cards` — ⚠️ **a lower bound, not a total.** `CatalogSet.cardCount` is `Int?`
-  (`BrowseCatalogModels.swift:35`) and is nil whenever the provider omitted it
-  (`BrowseCatalog.swift:357–363` builds `countsByID` from `compactMap`, so missing counts are simply
-  absent). Summing `compactMap(\.cardCount)` silently under-reports. Either label it honestly or drop
-  it. **Drop it.** "168 sets" is true; "21,940 cards" is a number the app cannot stand behind.
-- `sealed` — ⚠️ **not available at all.** See §5.
-
-So the shipped counts line is `"\(setCount) sets"`, which is what `gameChooser` already says. The
-row's value over today's is the artwork fan, not the numbers.
-
-**The fan.** Three `CatalogCachedImage` views at 38×52, rotated −7°, 0°, +7°, offset left 2/24/44pt,
-top 6/3/6pt. ⚠️ **There is no "representative cards for a game" query.** Do not invent one and do not
-hardcode card IDs — the mockup's are literal Scryfall/TCGdex URLs for specific cards. Two defensible
-sources, in order:
-
-1. The three most recently **owned** cards for that game, from
-   `projectionStore.snapshot` — already an `@EnvironmentObject` in this file
-   (`BrowseView.swift:595`, `:861`). Makes the row personal and needs no network.
-2. If the user owns nothing for that game, fall back to the three newest sets' `logoURL`.
-
-Never leave three empty slots; an empty fan reads as a loading failure.
-
----
-
-## 4. The set grid
-
-Two columns, 16pt gutter, grouped under uppercase year headers. Per tile: a 104pt artwork box with a
-0.5pt hairline and a tinted background, then name (15/19 semibold), then a metadata line
-(12/16, tabular), then — **only when something is owned** — a 4pt progress bar and an owned count.
-
-This replaces the `List` in `CatalogSetListView` (`BrowseView.swift:878–930`), which is a single
-column of 42pt symbols with an always-present `ProgressView`.
-
-### 4.1 Progress — already correct, just re-skinned
-
-`CatalogOwnershipIndex.progress(for:)` (`BrowseCatalogModels.swift:241–251`) already returns
-`SetCompletion(owned:total:unit:)` with a `fraction`, and `CatalogSetListView:894` already calls it.
-Keep all of it. The only change is presentation:
-
-- Show the bar and the count **only when `completion.owned > 0`**. The mockup does this — Surging
-  Sparks and Shrouded Fable have no bar; Stellar Crown, Twilight Masquerade and Obsidian Flames do.
-- Bar: 4pt tall, 2pt radius, track `rgba(60,60,67,0.12)`, fill `#2E8C57`.
-- Trailing number is `completion.owned` alone (`41`, `163`, `221`), not `"41 of 175"`.
-- ⚠️ Keep the existing accessibility label verbatim (`BrowseView.swift:922–924`). It reads
-  "*N of M cards collected*" and is the only place the denominator survives; a sighted user loses it
-  in this design, a VoiceOver user must not.
-- ⚠️ `completion.fraction` is nil when `total` is nil. Guard the bar on `fraction != nil`, not on
-  `owned > 0` alone, or a set with unknown size renders a zero-width fill.
-
-### 4.2 Metadata line
-
-Mockup: `SSP · 252 cards · 14 sealed`. Ship `"\(set.code) · \(count) cards"`, and omit the card
-clause entirely when `cardCount` is nil. The sealed clause is removed — §5.
-
-### 4.3 ⚠️ Tile background tints are light-mode-only literals
-
-The mockup assigns a different pastel per tile (`#F4F1FA`, `#FAF3EF`, `#EFF3F7`, `#F6F0F3`,
-`#F3F0EC`, `#FAF1EF`) against a white screen. The app has no forced colour scheme, so these become
-near-white rectangles with a near-white hairline in dark mode — the tile disappears.
-
-**Do not ship them as `Color(red:green:blue:)` literals.** Either:
-
-- add one colour set per tint to `Assets.xcassets` with a dark variant (the same remedy §3 of
-  `collection_tile_footer_spec.md` prescribes for the status colours), or
-- derive the tint at runtime from the set's own artwork and composite it over
-  `Color(.secondarySystemGroupedBackground)` at low opacity.
-
-The second is less work and self-maintaining. Either way the hairline must be
-`Color(.separator)`, not `rgba(60,60,67,0.14)`.
-
-### 4.4 ⚠️ Magic set symbols are SVG and will not render
+Add presentation-only models; do not alter persisted catalog or collection identity:
 
 ```swift
-// BrowseCatalog.swift:410–417 — both fields are the same SVG
-logoURL:  row.iconSVGURI,
-symbolURL: row.iconSVGURI,
-```
+enum CatalogResultKind: String, Hashable, Sendable { case card, sealed }
 
-`CatalogCachedImage` decodes through `CGImageSourceCreateThumbnailAtIndex`
-(`BrowseView.swift:1508–1520`). **ImageIO does not decode SVG on iOS**, and a grep for `svg` across
-`BrowseView.swift` returns zero matches — there is no special case anywhere. The mockup's Duskmourn
-tile points at `https://svgs.scryfall.io/sets/dsk.svg`, so as drawn **every Magic tile is empty**.
+enum CatalogSearchResult: Identifiable, Hashable, Sendable {
+    case card(CatalogCardSummary)
+    case sealed(game: CardGame, product: SealedProductSummary)
 
-This is the single largest implementation risk in the screen. Options:
+    var kind: CatalogResultKind { ... }
+    var game: CardGame { ... }
+    var name: String { ... }
+    var id: String { ... }
+}
 
-1. Render Magic symbols with `SVGView`/`WebKit` — a new dependency or a `WKWebView` per tile. Too
-   heavy for a grid.
-2. Rasterise on the fly: fetch the SVG, render once through `WKWebView` offscreen, cache the PNG in
-   the existing `CatalogCachedImage` disk cache. One-time cost per set, then free.
-3. **Ship Magic tiles with a typographic fallback**: the set code in a rounded rect, which is what
-   `CatalogCachedImage`'s `placeholderSymbol` slot is for. Pokémon keeps its PNG logo
-   (`PokemonChecklistSnapshot.swift:170` — `assetURL(row.symbol, suffix: ".png")`).
+struct CatalogCardDisplayIdentity: Hashable, Sendable {
+    let game: CardGame
+    let setID: CatalogSetID
+    let providerID: String
+    let collectorNumber: String
 
-Start with (3) so the screen ships, and treat (2) as a follow-up. Do **not** start with (2); it turns
-a layout change into an image-pipeline project.
+    /// Stable string form so the display group can be `Identifiable`.
+    var id: String {
+        [game.rawValue, setID.id, providerID, collectorNumber].joined(separator: "|")
+    }
+}
 
-### 4.5 Year headers
+struct CatalogCardDisplayGroup: Identifiable, Hashable, Sendable {
+    let identity: CatalogCardDisplayIdentity
+    let summaries: [CatalogCardSummary]
 
-Uppercase, 13/16 semibold, `letter-spacing: 0.04em`, `rgba(60,60,67,0.6)` → `Color(.secondaryLabel)`.
-
-⚠️ Group by `Calendar.current.component(.year, from: releaseDate)`, and put every set whose
-`releaseDate` is nil into a single trailing **"Earlier"** bucket rather than a year. Pokémon sets from
-the snapshot path have no date (`PokemonChecklistSnapshot.swift:178`); a nil-crashing or
-1970-bucketing implementation will look fine in the simulator and wrong on a cold offline launch.
-
-Within a year, order by `CatalogSetOrdering.newestFirst`. Do not re-sort by name.
-
----
-
-## 5. ⚠️ "· N sealed" cannot be built, and the architecture says so explicitly
-
-The mockup puts a sealed count on every set tile and every game row. That requires joining the card
-catalog's set directory to the sealed one. The codebase refuses that join, in a comment written for
-exactly this situation:
-
-```swift
-// JustTCGMarketModels.swift:484–489
-/// A set as the vendor groups it, with its sealed inventory count.
-///
-/// Sealed browse uses the vendor's own set directory rather than TCGdex's or
-/// Scryfall's, because mapping between the two groupings is unreliable and a
-/// wrong mapping would show the wrong products.
-struct SealedSetSummary: Identifiable, Hashable, Sendable, Codable {
-    let id: String
-    let name: String
-    let sealedCount: Int
-    ...
+    var id: String { identity.id }
+    var preferredSummary: CatalogCardSummary { ... }
 }
 ```
 
-`sealedCount` exists — but keyed by the **vendor's** set id, not `CatalogSetID`. There is no mapping,
-and building one by name match is the precise failure the comment forbids: a wrong match shows the
-wrong products under a real set.
+`CatalogCardDisplayGroup` must declare `id` explicitly; `identity` is a `Hashable` value, not an
+`Identifiable` one, so the group does not synthesize an id. `CatalogResultKind` and
+`CatalogSearchResult.game` are not decoration: they are the badge sources in §4 and the tie-break
+keys in the §4 ranking, so expose them rather than re-switching on the enum at each call site.
 
-Two further blockers:
+`CatalogSearchResult.id` must be namespaced so kinds cannot collide:
 
-- Sealed is **credential-gated**. `SealedBrowseModel.isConfigured` (`SealedBrowseViews.swift:68`)
-  returns `PriceVendorCredentials.hasKey`. Without a key the count is not merely stale, it is absent.
-- Sealed sets load lazily per game (`loadSetsIfNeeded(game:)`, `:243`). The Catalog root would have
-  to force-load both games' sealed directories before first paint to render counts — a network
-  round-trip on a screen that is otherwise fully offline.
+- card: `"card:" + summary.id`
+- sealed: `"sealed:" + [game.rawValue, product.id, product.variantID ?? ""].joined(separator: ":")`
 
-**Remove every "· N sealed" clause from this screen.** Sealed remains reachable as a section in
-search results (§1) and through the existing sealed browse path. If per-set sealed counts are wanted
-later, they need their own plan with a real identity mapping and a stated confidence rule — not a
-string interpolation on a tile.
+`SealedProductSummary.variantID` is `String?`. Build the id by joining components, never by
+interpolating the optional directly — `"\(product.variantID)"` would emit `Optional("...")` or
+`nil` into a user-invisible but test-visible identity.
 
----
+`CatalogCardDisplayIdentity` is a UI grouping key only. For Pokémon, group summaries that differ
+only by `masterSetVariant`; for Magic, keep treatment-qualified summaries separate. Use
+`SetCompletionCalculator.canonicalNumber` for the collector number, and because it returns `String?`,
+fall back to `summary.collectorNumber.lowercased()` when it returns nil so an unparseable number
+still produces a deterministic key and never silently merges two cards under an empty string. Do not
+change `CatalogCardSummary.id`, collection keys, progress calculation, pricing keys, or detail
+loading.
 
-## 6. Sort control and filter chips
+Grouping by `providerID` is correct against the current builders and must be asserted by test rather
+than assumed: `PokemonMasterSetChecklistBuilder.build` produces every `masterSetVariant` of one card
+from the same `providerID` and `setID`, and `BrowseCatalog.magicCards` assigns each Magic printing
+the Scryfall card id, so distinct treatments already carry distinct `providerID`s.
 
-The Pokémon-sets artboard adds a `swap_vert` toolbar button and a chip rail:
-`All sets · Started · Scarlet & Violet · Sword & Shield`.
+### `TradingCardScanner/Views/CatalogSetTile.swift`
 
-⚠️ **`CatalogSetSort` and `CatalogOwnershipFilter` already exist and are the wrong types.**
-`BrowseCatalogModels.swift:634` and `:652` define them, and `BrowseView.swift:943–944, 1034, 1045`
-use them — but they filter and sort **cards inside one set**. Their cases are
-`priceHighToLow / numberLowToHigh` and `owned / notOwned`. Reusing them for a list of sets would be a
-name collision with no meaning. Declare new types:
+- Change the progress footer from the bare numerator to `"<owned> of <total>"` when total is known,
+  or `"<owned> owned"` when it is not.
+- Centralize count copy so `1 card` / `2 cards` and `1 set` / `2 sets` are correct.
+- Add a game badge for rail layout.
+- Replace the generic failed-art look with the deliberate missing-art state in §6.
+
+### Tests
+
+Extend `TradingCardScannerTests/BrowseFeatureTests.swift` for pure ordering, ranking, grouping,
+pluralization, summary counts, and state reduction. Extend `UncoveredSurfaceTests.swift` only for
+construction/smoke coverage of changed views. Add a UI test or deterministic debug-route screenshot
+coverage for visual and navigation assertions in §12.
+
+## 3. Root screen
+
+The idle root contains, in order:
+
+1. search field (`Search the catalog`),
+2. release rail when eligible,
+3. one `Browse by game` section,
+4. one row per loaded `CardGame`.
+
+Keep the existing per-game failure branch inside the `Browse by game` section: when
+`model.sets[game]` is nil and `model.setErrors[game]` is set, still render the current
+`Couldn't load <game> sets` block with its retry action, in that game's slot. This plan removes the
+sealed hierarchy, not set-load error recovery.
+
+There is no top-level Sealed section. Replace `Everything in the catalog` with `Browse by game`.
+Use `.headline` or `.title3.weight(.semibold)` for this section, leaving `Just released` as the only
+`.title2.bold()` hero heading.
+
+Each game row navigates to `CatalogGameBrowseView` and displays:
+
+```text
+Pokémon
+160 sets · 412 cards owned
+```
+
+Define `cards owned` as the sum of positive quantities for that game's projection rows whose
+`itemKind.countsTowardSetCompletion` is true. Exclude sealed rows. Keep the three most recent
+eligible rows only for the artwork fan, but calculate the ownership count from all eligible rows;
+the current `recentOwnedRowsByGame` prefix must not be reused for the count. If the count is zero,
+show `160 sets · No cards owned`.
+
+Introduce a small pure helper, e.g. `CatalogGameSummary`, which accepts a game, that game's
+`[CatalogSet]`, and the unfiltered `[CollectionRow]` from `projectionStore.snapshot?.rows`, and
+produces `setCount`, `ownedCardQuantity`, and the (at most three) recent artwork rows. The helper —
+not the view — applies the `quantity > 0 && itemKind.countsTowardSetCompletion` filter and the
+`dateAdded` descending, `id` ascending sort, so both outputs derive from one filtered collection and
+cannot drift. Unit-test it so display counts cannot accidentally become limited to the fan's three
+rows.
+
+## 4. Unified search
+
+Delete `BrowseScope` and `BrowseViewModel.searchScope`, including its `didSet { scheduleSearch() }`.
+The root has no kind scope picker and the model always requests cards plus sealed products for the
+selected game(s). Keep the game menu and set-filter sheet. The set filter applies to card searches
+only; add the accessibility hint `Filters card results only` to avoid implying that vendor sets share
+`CatalogSetID`.
+
+`runSearch` currently awaits `searchCardLanes` to completion before it calls `sealedModel.search`.
+Now that both kinds are always requested, run them concurrently — `async let` or a task group over
+the two — so sealed results are not gated on the slower card provider. Both are `@MainActor`, and
+they write disjoint state (`lanes` versus `sealedModel.searchLanes`), so concurrency here is a
+scheduling change, not a data-race change. Keep the existing `generation` token checks on both
+paths.
+
+Replace `searchBody`, `sealedSearchContent`, `searchSection`, and `sealedSearchSection` with one
+`LazyVStack`/`ForEach` over `[CatalogSearchResult]`. Do not render Cards, Sealed, or per-game
+headers. Every result row/tile must carry visible badges:
+
+- kind: `Card` or `Sealed`,
+- game: `Pokémon` or `Magic`.
+
+Navigation switches on the result enum:
+
+- `.card(summary)` → `CatalogCardDetailView(summary:catalog:)`
+- `.sealed(game, product)` → `SealedProductDetailView(game:product:)`
+
+Ranking is deterministic and independent of network completion order. Normalize the query and
+candidate name with `CardNameSearch.normalize`, then sort by:
+
+1. exact normalized-name match,
+2. normalized name starts with the query,
+3. a token starts with the query,
+4. normalized name contains the query,
+5. all other provider-returned matches,
+6. within the same relevance bucket, localized name,
+7. then kind raw value, game raw value, and stable result id.
+
+Do not boost a kind or game. Recompute the merged sorted array when any lane changes. Keep the
+provider calls parallel and the existing 400 ms debounce/generation cancellation behavior.
+
+Pagination remains per underlying lane. Add `BrowseViewModel.loadMoreSearchResults()` that starts
+one next-page request for every requested non-loading lane that still has a cursor/offset, using a
+task group over the existing `loadMore(_ game:)` and `sealedModel.loadMoreSearch(game:query:)`
+entry points, then rebuild the merged list. Specifics that are easy to get wrong:
+
+- Pass the current `normalizedQuery` to `loadMoreSearch`; it re-normalizes and compares against its
+  own `searchQuery`, so a raw `searchText` or a stale query silently no-ops.
+- Honour the same `query.count >= 2` guard the debounce uses, and capture `generation` before the
+  task group so a query change mid-page discards the result.
+- The two lane families key on disjoint state, so the task group is safe, but each game's card lane
+  and sealed lane must remain separate tasks — do not serialize them.
+- `SealedBrowseModel.loadMoreSearch` appends with `+=` and does not deduplicate. Deduplicate sealed
+  pages on `(id, variantID)`, not `id` alone: `SealedProductSummary.id` is the product id and two
+  variants of one product share it. Card lanes keep the existing `deduplicated(_:)` on
+  `CatalogCardSummary.id`.
+
+Trigger pagination from one progress row at the bottom of the unified list. Do not attach pagination
+tasks to each result.
+
+Search state is reduced across all requested card and sealed lanes. Define a lane as *requested*
+only if it could produce results: every card lane for a selected game, and a sealed lane for a
+selected game only when `sealedModel.isConfigured` is true or that lane has cached products.
+`SealedBrowseModel.search` already materializes a `Lane` for every requested game even when
+unconfigured and uncached, so the reducer must apply this predicate itself rather than treat the
+presence of a key in `searchLanes` as proof that a lane was requested. Otherwise an unconfigured
+build reports a terminal-empty sealed lane and the `No catalog results` and `Search failed` branches
+become unreachable in the wrong direction.
+
+Evaluate exactly one state, in this order — the branches are mutually exclusive and the order is the
+tie-breaker where several conditions hold at once:
+
+1. There is at least one result: show the results. If some requested lanes failed, add one compact
+   `Some results could not load` banner with Retry above the list; never insert error or empty rows
+   between results. No credential copy appears in this state.
+2. No results and any requested lane is loading: show one `Searching…` state.
+3. No results, every requested lane is terminal, and at least one failed: show one `Search failed`
+   state with Retry. A mix of failed and empty lanes still resolves here, because an empty result
+   set that is partly explained by a failure must not be reported as a confident `No catalog
+   results`.
+4. No results, every requested lane is terminal and empty, and sealed was skipped for missing
+   credentials: show one `No catalog results` state with the `Set up sealed browsing` CTA beneath
+   it. This is the single place credential copy may appear in the result list, and it replaces
+   rather than duplicates the empty state.
+5. No results, every requested lane is terminal and empty, credentials present or cached sealed
+   results usable: show one `No catalog results` state with no CTA.
+
+Missing credentials never block or fail the card search, and never produce a lane-level error
+message in the list.
+
+Remove/replace the tests `testBrowseCardsScopeDoesNotStartSealedSearch` and
+`testBrowseSealedScopePassesTheSelectedGameAndSkipsCardSearch`. Keep and update the debounce test to
+prove both kinds start, the selected game limits both providers, and no UI scope state exists.
+
+## 5. Game screen: Cards and Sealed
+
+Add:
 
 ```swift
-enum CatalogSetListSort: String, CaseIterable, Identifiable, Sendable {
-    case newestFirst, oldestFirst, nameAToZ, mostComplete
+private enum CatalogGameContentKind: String, CaseIterable, Identifiable {
+    case cards = "Cards"
+    case sealed = "Sealed"
 }
 ```
 
-`mostComplete` sorts by `completion.fraction ?? -1` descending, so unknown-size sets sort last.
+`CatalogGameBrowseView` owns `@State private var contentKind: CatalogGameContentKind = .cards` and
+uses a segmented Picker. The navigation title is only the game name (`Pokémon`, `Magic`), not
+`Pokémon Cards`; the selected segment supplies the kind context.
 
-**Chips.** `All sets` and `Started` are implementable now — `Started` is
-`completion.owned > 0`, from the same index §4.1 uses.
+Cards retains the existing all-card feed, card search, and pagination. Sealed embeds
+`SealedSetDirectoryContent`.
 
-⚠️ **`Scarlet & Violet` and `Sword & Shield` have no data source.** `CatalogSet` carries no series,
-era, or block field — a grep across `BrowseCatalogModels.swift` for `series`/`era` returns only
-unrelated matches. TCGdex publishes a series per set and Scryfall publishes `block`, but neither is
-decoded today (`BrowseCatalog.swift:405–418` decodes `code`, `name`, `iconSVGURI`, `cardCount`,
-`releasedAt`, `setType` and nothing else).
+Search field: the screen keeps exactly one `.searchable`, owned by `CatalogGameBrowseView`, and its
+prompt follows the segment — `Search <game> cards` under `.cards`, `Search <game> sets` under
+`.sealed`. Clear the shared search text on segment change; carrying a card query into a vendor-set
+filter produces a silently empty directory. Pass the text down to `SealedSetDirectoryContent` as
+described in §2 and keep it feeding the existing card-search `.task(id:)` under `.cards`.
 
-Ship **two** chips (`All sets`, `Started`) in this slice. Era chips need a decoder change on both
-providers plus a migration of the cached set directory, and that is a separate slice — the cache
-envelope is versioned (`CatalogCacheStore`, `BrowseCatalog.swift:903–911`) and adding a field
-invalidates it for every user.
+Sets toolbar link: show it only under `.cards`. It navigates to `CatalogSetListView`, which is
+card-set scoped and has no meaning while the vendor directory is on screen.
 
----
+Preserving state across segment switches is a correctness requirement, not a nicety. The existing
+card feed keeps `cards`, `nextSetIndex`, `activeSetIndex`, `cursor`, and the search fields in
+`@State`, and SwiftUI destroys `@State` when a view leaves an `if`/`else` branch — so a naive
+`if contentKind == .cards { … } else { … }` discards every loaded page and re-runs
+`.task { await loadDefaultMore() }` on each toggle, spending provider requests. Either keep both
+subtrees alive and toggle visibility (a `ZStack` with `opacity`/`allowsHitTesting`, or `.hidden`),
+or hoist the card feed's state out of the subview into the container. Add a test or an instrumented
+check that toggling Cards → Sealed → Cards issues no new card request when a page is already
+loaded. `SealedBrowseModel` is a reference type owned by `BrowseViewModel`, so its cache and lanes
+survive either approach.
 
-## 7. Dynamic Type
+Credential behavior:
 
-The mockup is drawn at the default size. Two rules:
+- configured: show/load the vendor directory on first selection of Sealed;
+- unconfigured with cached directory: show cached sets and a non-blocking stale/setup note;
+- unconfigured without cached directory: show only the Settings CTA, no empty game/set rows and no
+  provider request. This requires the `.task` guard in §2; `loadSetsIfNeeded` does not check
+  `isConfigured` itself.
 
-- The metadata line (`SSP · 252 cards`) and the owned count must use `.monospacedDigit()`; the
-  mockup's `font-variant-numeric: tabular-nums` is not decoration, it stops the grid jittering as
-  counts change. `PriceLabel` in `CollectionView.swift` already establishes this pattern.
-- The 104pt artwork box is fixed; the text below it is not. At accessibility sizes the two-column
-  grid must collapse to one column. Use `@Environment(\.dynamicTypeSize)` and switch the `GridItem`
-  count on `dynamicTypeSize.isAccessibilitySize` — that is the exact idiom already in
-  `CollectionView.swift:62` and `CollectionCardDetailView.swift:1784, 1804`. Do not hand-roll a
-  `>= .accessibility1` comparison.
+`SealedBrowseModel.sets` holds one game's directory at a time (`loadedGame`). Entering Sealed for a
+second game replaces it, which is the existing contract — do not treat the replacement as a bug or
+add a per-game directory cache in this slice.
 
----
+## 6. Artwork and missing-art states
 
-## 8. What must not change
+The release rail must not make a generic symbol-on-flat-color placeholder look like failed content.
+For a set whose artwork URL is nil or whose fetch/decode fails, render a text-forward state *inside
+the artwork box*:
 
-- **`CatalogOwnershipIndex.progress(for:)` and `owns(_:)`** (`BrowseCatalogModels.swift:241–288`).
-  This is the ownership contract the whole set-completion feature rests on, including Pokémon print
-  runs, stamped releases and Magic treatments. This screen re-skins its output and nothing more.
-- **`CatalogSetOrdering.newestFirst`** (`BrowseView.swift:584`). Both games' ordering already routes
-  through it, including the Pokémon `sortRank` special case.
-- **`CatalogCachedImage`'s cache and in-flight coalescing** (`BrowseView.swift:1308–1520`). The grid
-  makes more image requests than the list did; it must reuse this, not fetch directly.
-- **The sealed browse path and its credential gate.** §5 removes a count, not a feature.
-- **`CatalogSetFilterSheet`** (`BrowseView.swift:1665`). It is reached from search, not from the set
-  list, and this screen does not replace it.
-- **`backfillPokemonReleaseOrder()`** (`BrowseView.swift:326`) and its `.task` call. It repairs
-  `setReleaseOrder` on owned rows and must keep running when the root screen appears.
+```text
+<full set name, up to 3 lines>
+<set code> · Artwork lookup will retry later
+```
 
----
+`CatalogSetTile` already renders `set.name` below the artwork box and `set.code` in its metadata
+line. When the missing-art state is showing, suppress those two so one tile does not print the name
+twice and the code twice. State that explicitly in the implementation rather than leaving it to the
+reader.
 
-## 9. Order of work
+Precedence, so the rules in this section and §7 cannot contradict each other:
 
-1. **Settle §0** — the tab question. Nothing else is safe to start until this is answered.
-2. `CatalogSetTile` in a new file, with the §4.4 typographic fallback for Magic. Build it against a
-   preview with a nil `cardCount`, a nil `releaseDate` and `owned == 0`, because all three occur.
-3. Replace `CatalogSetListView`'s `List` with the grouped grid (§4, §4.5). Keep the accessibility
-   label. This is the highest-value half of the screen and is independently shippable.
-4. `CatalogSetListSort` + the two chips (§6). Do not add era chips.
-5. Root screen: delete the scope picker and rewire `searchScope` (§1). Verify the sealed section
-   still appears in search results — that is the regression this step risks.
-6. Game rows with the artwork fan (§3), counts reduced to `"N sets"`.
-7. "Just released" rail (§2), including the nil-safe `NEW` rule.
-8. Dark-mode colour sets or runtime tinting (§4.3), and Dynamic Type collapse (§7).
+1. `set.game == .magic` → keep the existing typographic set-code fallback. Magic never enters the
+   missing-art state, because Scryfall set symbols are SVG and a Magic tile is not failing when it
+   shows its code. Note that a Magic rail tile then shows its code in the artwork box, its metadata
+   line, *and* a game badge (§7) — drop the metadata-line code for Magic rail tiles to avoid
+   printing it twice.
+2. Pokémon with both `symbolURL` and `logoURL` nil → missing-art state immediately, with no loader
+   involvement.
+3. Pokémon with a URL → placeholder/spinner while loading, missing-art state only on terminal
+   failure.
 
-Steps 2–4 touch only the Pokémon-sets artboard and can ship before 5–7.
+The state must be visually deliberate: use the existing stable tint, no broken-image symbol, and
+keep the title readable at default and accessibility Dynamic Type sizes.
 
----
+To distinguish loading from failure, extend `CatalogCachedImage` with an optional phase callback or
+extract a `CatalogSetArtwork` loader that reuses the same memory/disk cache and in-flight
+coalescing. Do not add a second URLSession/cache implementation. Two details in the current loader
+make a naive phase callback wrong:
 
-## 10. Deferred, with reasons
+- `CatalogImageLoader.load(nil, …)` returns with `failed == false` and `isLoading == false`. A nil
+  URL never produces a failure phase, so case 2 above must be decided by the caller from the URLs,
+  not by waiting for the loader.
+- `CatalogCachedImage` recurses through `fallbacks` when the primary fails. Terminal failure is only
+  reached when the *last* URL in that chain fails; a callback fired from the outer view would report
+  failure while the fallback is still loading and flash the missing-art state over a request that is
+  about to succeed. Report the phase from the innermost view in the chain, or resolve the chain in
+  the extracted loader.
 
-| Item | Why it is not in this slice |
+Because a nil-URL set has nothing to retry until the next catalog refresh, keep the copy as the
+neutral `Artwork lookup will retry later` in §11 and make sure a catalog refresh does re-evaluate
+the URL; do not promise a retry the tile itself will never perform. Pokémon keeps PNG artwork.
+
+## 7. Release rail
+
+Replace catalog-order-only `justReleased` with a truthful dated-first policy. Use these constants so
+the rule is testable and not scattered through the view:
+
+```swift
+static let newReleaseWindow: TimeInterval = 45 * 86_400
+static let minimumRailCardCount = 10
+static let releaseRailLimit = 3
+static let railPerGameFallbackLimit = 2
+```
+
+`CatalogSetOrdering.isNew` already hard-codes `window: TimeInterval = 45 * 86_400`. Change its
+default to `newReleaseWindow` in the same change so the two cannot drift apart.
+
+Signature, with `now` injected so the dated branch is testable without freezing the clock globally:
+
+```swift
+static func releaseRail(
+    from setsByGame: [CardGame: [CatalogSet]],
+    now: Date = .now
+) -> CatalogReleaseRail
+```
+
+The current `justReleased(from:perGameLimit:limit:)` is replaced by this; update the call site at
+`BrowseView.justReleasedSets` to consume the returned value rather than re-deriving the title or the
+badge flag.
+
+Algorithm at `now`:
+
+1. Exclude sets with known `cardCount < 10`. Unknown counts remain eligible because absence of a
+   provider count is not proof that the set is a stub.
+2. Build `datedRecent` by flattening every game's eligible sets: `releaseDate` is non-nil, not in
+   the future relative to `now`, and within `newReleaseWindow` of `now`. Reuse `isNew(_:now:window:)`
+   so one predicate defines "new" everywhere.
+3. If `datedRecent` is non-empty, sort by actual `releaseDate` descending with an `id` ascending
+   tie-break, take `releaseRailLimit`, title the rail `Just released`, and show `NEW` on every tile.
+   There is deliberately no per-game cap on this branch: if one game genuinely shipped the three
+   most recent sets, the rail says so. Cover that case in a test so a later reader does not
+   "fix" it.
+4. Only when `datedRecent` is empty, take up to `railPerGameFallbackLimit` eligible sets per game via
+   `newestFirst`, merge, re-sort with `newestFirst`, take `releaseRailLimit`, title the rail
+   `Recent sets`, and show no `NEW` badge. This is an explicit fallback, not a claim about release
+   recency.
+
+Note that `CatalogSet.releaseOrder` is `sortRank` for Pokémon and a date-derived integer for Magic,
+so `newestFirst` is a catalog-order sort and is not comparable across games as a date. That is
+precisely why branch 3 sorts on `releaseDate` directly and branch 4 does not claim recency.
+
+Return `CatalogReleaseRail(title:sets:showsNewBadges:)` rather than making the view infer which path
+won; an empty `sets` means the view renders no rail at all. Keep the existing
+`isCatalogLoadedForRail` gate so the rail does not render a half-loaded catalog. Update existing
+ordering tests to cover dated inclusion boundaries (exactly at `now`, exactly at the window edge,
+one second past it), future dates, one-card exclusion, unknown counts, mixed games, one game
+supplying all three, and fallback naming/badge behavior.
+
+Each rail tile shows its game badge. Size tiles relative to the horizontal scroll viewport rather
+than at a fixed 248 points:
+
+```swift
+.containerRelativeFrame(.horizontal) { width, _ in
+    min(max(width * 0.72, 220), 300)
+}
+```
+
+Remove the existing `.frame(width: 248)` from the rail tile when adding this; leaving both applies
+a fixed width inside a container-relative one. Keep 12-point spacing and two/three-line title
+clamping inside the tile. At a standard iPhone width,
+the first tile must be complete and a consistent portion of the second visible; no title may be
+clipped by the viewport. Reduce `CatalogSetTileLayout.rail.artworkHeight` from 134 to 112 points and
+use 8-point artwork padding. Available artwork scales to fit the full container; missing artwork
+uses the text-forward state from §6. This prevents the rail from spending a third of the viewport on
+mostly empty color fields.
+
+## 8. Set directory corrections
+
+### Progress and grammar
+
+`CatalogSetTile.completionFooter` shows `3 of 207`, not `3`. When total is unknown it shows
+`3 owned` and omits the progress bar. Continue hiding the footer when owned is zero. Keep the
+existing VoiceOver label and update it to share the same pluralization helper.
+
+All count copy uses a helper, for example:
+
+```swift
+func countLabel(_ count: Int, singular: String, plural: String) -> String
+```
+
+Required outputs include `1 card`, `2 cards`, `1 set`, `2 sets`, `1 sealed product`, and
+`2 sealed products`.
+
+### Filters and sort
+
+Remove the top-bar sort menu. In `setListFilters`, render these controls in one horizontal row:
+
+- selectable `All sets`,
+- selectable `Started`,
+- a Menu whose label is the active sort, e.g. `Newest first` plus a down chevron.
+
+The sort chip's visible label must update immediately for `Oldest first`, `Name A–Z`, and
+`Most complete`. Keep `CatalogSetListSort` and `CatalogSetListFilter`; they already have the correct
+separation from card-level sort/filter types.
+
+Carry the removed toolbar item's accessibility label onto the chip (`Sort sets, <sort.label>`) so
+the control is still announced as a sort control and not as bare text. The chip row is a horizontal
+`ScrollView` with `contentMargins` and negative horizontal padding; keep that container and add the
+Menu as a third item rather than restructuring the row, and confirm the Menu's popover anchors
+correctly from inside a scroll view at accessibility Dynamic Type sizes.
+
+### Master set rules
+
+Replace the navigation-looking DisclosureGroup label with a custom full-width Button and content:
+
+- collapsed indicator: `chevron.down`,
+- expanded indicator: rotate the same glyph 180 degrees or use `chevron.up`,
+- animate only the indicator and inserted explanatory text,
+- preserve a 44-point target and expose expanded/collapsed accessibility value.
+
+The control must not use blue navigation-link styling or `chevron.right`.
+
+## 9. Layout hierarchy and safe areas
+
+Use one visual hierarchy on the root:
+
+- navigation title: `Catalog`, inline;
+- hero section: `Just released` / `Recent sets`, `.title2.bold()`;
+- game section: `Browse by game`, `.headline` or `.title3.semibold`;
+- no third Sealed heading.
+
+Add `.safeAreaPadding(.bottom, 24)` (or an equivalent `safeAreaInset` spacer) to scroll content on
+Catalog, game, set-list, and set-detail screens. Apply it to content, not a background overlay. Test
+on the real tab-hosted route so the final text/control is fully visible above the tab bar and home
+indicator.
+
+At accessibility Dynamic Type sizes, keep the existing set-grid one-column collapse. Release tiles
+may grow vertically; do not fix the entire tile height. Keep metadata digits monospaced.
+
+## 10. One card tile, multiple finish variants
+
+The Pokémon checklist deliberately expands a numbered card into multiple
+`CatalogCardSummary` values (`masterSetVariant`), but the visual grid must group those summaries.
+
+Build groups before `CatalogCardGrid` renders:
+
+- Pokémon grouping identity: game + set ID + provider ID + canonical collector number, ignoring
+  `masterSetVariant`. `CatalogCardSummary.id` is already `setID.id : providerID :
+  masterSetVariant?.id`, so this is exactly that identity minus the variant component;
+- Magic summaries bypass grouping and each produce a singleton display group, so distinct
+  treatments can never collapse accidentally;
+- preserve first-seen group order so current sorting remains stable;
+- order Pokémon variants using an explicit rank: Normal, Reverse Holo, Poké Ball, Master Ball,
+  Dusk Ball, Friend Ball, Quick Ball, Love Ball, then unknown labels alphabetically.
+
+Render one artwork/name/number block per group. Under it, render a wrapping chip row for all
+available summaries. Each chip uses `masterSetVariantLabel` (or `Standard` when nil), and visually
+indicates ownership using `CatalogOwnershipIndex.owns(_:)`; include `Owned` in its accessibility
+label. This makes the finish distinction readable without duplicating artwork.
+
+Do not nest NavigationLinks. The artwork/name area navigates to the preferred summary (Normal when
+present, otherwise the first ranked variant). Each variant chip is its own NavigationLink to
+`CatalogCardDetailView` with that exact summary.
+
+A group with one summary keeps one whole-tile navigation target, and may omit the chip **only when
+that summary's `masterSetVariantLabel` is nil**. When a card's sole slot is a named finish — the
+builder sets `isSoleSlotForCard` with a non-nil `masterSetVariant` for exactly this case — keep the
+chip. Dropping it would hide that the single owned-or-missing slot is, say, Reverse Holo rather than
+Normal, which is the distinction this whole section exists to make visible.
+
+Price display must not silently merge variants. If prices differ, show price on the corresponding
+variant chip or omit group-level price; only show a group-level price when every summary resolves to
+the same amount. Ownership quantity follows the same rule: do not sum variants into a number that
+looks like one finish's quantity.
+
+Add tests proving:
+
+- Normal and Reverse summaries become one display group with two chips;
+- different numbered cards never group;
+- Pokémon print-run-specific set IDs never group (`CatalogSetID.id` already carries
+  `pokemonPrintRun`, so assert the behaviour rather than adding a second guard for it);
+- different Magic treatments never group, and each yields a distinct group `id`;
+- a group whose sole summary has a non-nil `masterSetVariantLabel` still renders its chip;
+- a summary whose collector number does not canonicalize still produces a distinct group;
+- group `id`s are unique across a whole set's grouped output, so `ForEach` cannot collapse rows;
+- tapping/selecting a variant routes the exact original summary;
+- set completion still counts summary slots and is unchanged by display grouping.
+
+## 11. Copy inventory
+
+Use these strings exactly unless product copy is revised separately:
+
+| Surface | Copy |
 | --- | --- |
-| Per-set and per-game sealed counts | No reliable identity mapping; the architecture explicitly rejects it (§5) |
-| Era/series chips | No decoded field on either provider; needs a cache-invalidating migration (§6) |
-| Magic SVG symbols as artwork | Needs an offscreen rasteriser and a cache format change (§4.4) |
-| Aggregate card counts per game | `cardCount` is optional per set, so any sum under-reports (§3) |
-| Portfolio tab removal | Not a layout change; contradicts `AppScreen.dc.html` (§0) |
+| Root search placeholder | `Search the catalog` |
+| Root game section | `Browse by game` |
+| Dated rail | `Just released` |
+| Undated fallback rail | `Recent sets` |
+| Empty unified search | `No catalog results` |
+| Game segments | `Cards`, `Sealed` |
+| Sealed directory explanation | `Sets are grouped by the pricing vendor.` |
+| Missing artwork | `Artwork lookup will retry later` |
+| Credential CTA | `Set up sealed browsing` |
+
+Delete `Everything in the catalog`, `Search cards and sealed products`, per-game `No … printings
+found`, per-game `No … sealed products found`, and the root `Sealed products` heading.
+
+## 12. Verification and acceptance
+
+### Unit tests
+
+Run `TradingCardScannerTests/BrowseFeatureTests` and add coverage for:
+
+- unified-result IDs and relevance ordering;
+- state reduction for loading, partial success, total empty, partial failure, and total failure;
+- selected-game propagation to both providers;
+- no-credential behavior with and without cached sealed results;
+- game ownership counts using all rows while fan artwork uses only three;
+- release-rail dated/fallback policy and minimum count;
+- singular/plural copy and `owned of total` formatting;
+- card display grouping, variant ordering, and group-id uniqueness;
+- segment switching preserving loaded card pages and issuing no redundant provider request;
+- no sealed directory request while unconfigured and uncached;
+- existing set sort, grouping, completion, cache, and pagination tests remain green.
+
+Delete `BrowseFeatureTests.testBrowseCardsScopeDoesNotStartSealedSearch` and
+`testBrowseSealedScopePassesTheSelectedGameAndSkipsCardSearch`, and drop the
+`XCTAssertEqual(model.searchScope, .all)` assertion and the `model.searchScope = …` lines from the
+remaining tests; `BrowseScope` no longer exists, so leaving any of them breaks compilation of the
+test target rather than failing a test.
+
+### UI / screenshot matrix
+
+Capture the actual Collection → Catalog route at minimum in:
+
+1. credentials configured, default Dynamic Type, light mode;
+2. credentials absent, default Dynamic Type, light mode;
+3. search with mixed card/sealed results;
+4. search with one successful result and all other lanes empty;
+5. total-empty search;
+6. set directory with `1 card` and with owned progress (`3 of 207`);
+7. release rail with missing artwork and mixed games;
+8. Pokémon set with Normal + Reverse variants;
+9. dark mode;
+10. accessibility Dynamic Type.
+
+For every capture verify:
+
+- Collection is the selected tab and Catalog has a normal back path;
+- root has one game row per game and no separate sealed hierarchy;
+- sealed is reachable inside each game;
+- no dead sealed links exist without credentials;
+- result rows are globally interleaved and carry kind/game badges;
+- only one empty statement appears for a fully empty query;
+- rail tiles show an intentional peek, clamp titles, and name their game;
+- no content is obscured by the tab bar or home indicator;
+- the set progress denominator is visible;
+- duplicate finish artwork is eliminated;
+- missing artwork explains itself.
+
+### Regression constraints
+
+Do not change:
+
+- `CatalogSetID`, `CatalogCardSummary.id`, or collection key construction;
+- vendor-native `SealedSetSummary.id` or infer a card-set/sealed-set mapping;
+- `CatalogOwnershipIndex` / `SetCompletionCalculator` ownership semantics;
+- sealed request budgeting, caching, or credential storage;
+- `backfillPokemonReleaseOrder()` or its task;
+- Portfolio, Scan, or Centering tab structure;
+- detail add-to-collection behavior.
+
+## 13. Implementation order
+
+1. Add pure presentation models/helpers and their tests: count grammar, game summary, release rail,
+   unified-result ranking/state, and card display grouping.
+2. Refactor sealed directory into embeddable content without changing its data model.
+3. Replace the root parallel sealed hierarchy with the game-level Cards/Sealed container and wire
+   the Settings closure.
+4. Replace sectioned search with the unified result list and consolidated state/pagination.
+5. Correct release eligibility, tile sizing, game badges, and missing-art handling.
+6. Correct set progress copy, sort chip, disclosure indicator, hierarchy, and bottom safe area.
+7. Group card variants in the grid while preserving exact-summary navigation and ownership.
+8. Run the focused suites, then the full test target, then complete the screenshot matrix.
+
+Steps 2–4 are one architectural slice and should land together: deleting the root sealed chooser
+without adding the in-game destination would temporarily remove discoverability. Step 4 also deletes
+`BrowseScope`, so the scope-based tests named in §12 must be removed in that same commit or the test
+target stops compiling. Step 7 should land
+with its grouping tests because it changes presentation identity while persistence identity must
+remain untouched.

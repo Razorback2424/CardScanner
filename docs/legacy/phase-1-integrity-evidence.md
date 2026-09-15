@@ -1,5 +1,10 @@
 # CardScanner 1.0 Phase 0/1 Release Evidence
 
+> **Legacy archive — candidate evidence snapshot, 2026-09-13.** This ledger is
+> retained for provenance and does not certify the current checkout. Its
+> branch, SHAs, and evidence are historical. Use the [current release ledger](../release/phase-1-integrity-evidence.md)
+> and [documentation map](../README.md) for current status.
+
 This ledger is the authoritative evidence record for the Phase 0 retention
 freeze and App Store-critical Phase 1 work. An unexecuted gate is explicitly
 `NOT RUN`; source inspection, a successful container construction, an empty

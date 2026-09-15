@@ -1,10 +1,10 @@
 # Opus Final Remediation Review
 
-> **Historical/superseded snapshot — 2026-09-10.** This review evaluates the final remediation of the earlier Luna trust-hardening pass. Its readiness decision and test counts belong to that dated scope and are not the current card-centering status. Use the [current card-centering plan](opus-card-centering-implementation-plan.md) and [centering evidence](centering-evidence/) for active centering work.
+> **Legacy archive — historical/superseded snapshot, 2026-09-10.** This review evaluates the earlier Luna trust-hardening pass. Its readiness decision and test counts belong to that dated scope. Use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/) for active work.
 
 Independent verification of the Luna Max remediation pass against
-`review/opus-post-implementation-review.md` (RM-001 – RM-005) and
-`review/opus-implementation-plan.md` (REQ-001 – REQ-016).
+`review/legacy/opus-post-implementation-review.md` (RM-001 – RM-005) and
+`review/legacy/opus-implementation-plan.md` (REQ-001 – REQ-016).
 
 **Overall disposition: NOT READY.**
 

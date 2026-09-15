@@ -1,11 +1,11 @@
 # App Review Fix Plan
 
-> **Historical plan snapshot.** This file preserves the dated app-review remediation history and its evidence gates. It is not the current card-centering status record; use the [current card-centering plan](../../review/opus-card-centering-implementation-plan.md) and [centering evidence](../../review/centering-evidence/) for that work.
+> **Legacy archive — historical app-review plan snapshot.** This file preserves dated remediation history and evidence gates. It is not the current App Review authority; use the [root App Review plan](../../app_review_fix_plan.md), [current release ledger](../release/phase-1-integrity-evidence.md), and [documentation map](README.md).
 
 This file retains the detailed review history and its evidence gates. The
 supplied high-confidence findings are closed; the remaining unchecked items
 are confirmation, measurement, or deployment-owner decisions. See
-[`documentation_audit.md`](documentation_audit.md) for the current suite and
+[`documentation_audit.md`](../plans/documentation_audit.md) for the current suite and
 repository-wide status instead of the historical baselines below.
 
 ## Progress

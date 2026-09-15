@@ -1,5 +1,9 @@
 # CardScanner Website — Executable Build Specification
 
+**Status:** current future-website specification — reconciled 2026-09-14. The
+canonical public routes are `/`, `/privacy`, `/terms`, and `/support`; no
+website source or deployment is present in this iOS repository.
+
 ## 1. Objective
 
 Build a polished, production-ready public website for CardScanner.

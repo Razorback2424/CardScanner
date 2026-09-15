@@ -1,6 +1,6 @@
 # Opus Review Handoff
 
-> **Historical snapshot — 2026-09-10.** This handoff summarizes the Luna whole-repository review and its follow-on trust-hardening work at that time. It is retained for historical context and is not the current card-centering handoff. Use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/) for the active work.
+> **Legacy archive — historical snapshot, 2026-09-10.** This handoff summarizes the Luna whole-repository review and its follow-on trust-hardening work at that time. It is not the current centering handoff. Use the [current card-centering plan](../../opus-card-centering-implementation-plan.md) and [centering evidence](../../centering-evidence/) for active work.
 
 ## Bottom line
 

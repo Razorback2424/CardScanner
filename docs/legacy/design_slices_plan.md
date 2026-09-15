@@ -3,9 +3,9 @@
 Design spec for the scanner chrome, scan receipt, and owned-card detail.
 No new persistence tables and no top-level navigation changes.
 
-This document keeps the design rationale and dated implementation records.
-For the current evidence map and the remaining device/provider gates, use
-[`documentation_audit.md`](documentation_audit.md).
+> **Legacy archive — completed visual-slice plan.** This document keeps the
+> design rationale and dated implementation records. For the current evidence
+> map and remaining device/provider gates, use the [documentation audit](../plans/documentation_audit.md).
 
 ## Reconciliation note — 2026-09-06
 

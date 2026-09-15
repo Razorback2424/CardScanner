@@ -1,5 +1,11 @@
 # Collection tile footer — direction 4a, "Price leads the quiet line"
 
+> **Legacy archive — completed implementation plan.** Direction 4a is the
+> current CollectionCardTile shape in the recorded implementation, but this
+> document is retained as the design-time plan rather than an active TODO list.
+> Verify current behavior against `CollectionView.swift` and the current
+> documentation map.
+
 Target: `CollectionTileFooter.dc.html` **`#4a`** (lines 26–123 of the third export). Reconciled
 against the shipped 2a implementation in `CollectionView.swift` as it stands today.
 

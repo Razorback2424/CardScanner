@@ -1,6 +1,6 @@
 # Evidence-Backed Findings
 
-> **Historical snapshot — 2026-09-10.** These findings belong to the Luna whole-repository review at its recorded baseline. Their statuses are not a current adjudication of the card-centering branch; in particular, centering behavior has a separate, newer contract and evidence set. Use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/) for that work.
+> **Legacy archive — historical snapshot, 2026-09-10.** These findings belong to the Luna whole-repository review at its recorded baseline. Their statuses are not a current adjudication. Use the [current card-centering plan](../../opus-card-centering-implementation-plan.md) and [centering evidence](../../centering-evidence/) for active work.
 
 ## Validity rules used
 

@@ -1,5 +1,11 @@
 # Ownership-ledger completeness audit
 
+> **Legacy archive — candidate audit snapshot, 2026-09-13.** This document is
+> retained for provenance and is not the current ownership-ledger authority.
+> Use [`../release/ownership-ledger-completeness-audit.md`](../release/ownership-ledger-completeness-audit.md)
+> and the [current release ledger](../release/phase-1-integrity-evidence.md)
+> for the current checkout.
+
 Candidate: `fix/app-review-preflight` (source SHA recorded in `phase-1-integrity-evidence.md`)
 
 Audit date: 2026-09-13

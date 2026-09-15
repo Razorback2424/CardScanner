@@ -608,7 +608,27 @@ If there is no answer, the finding does not automatically stop launch.
 
 ---
 
-## 14. Current known defects
+## 14. Current checkout status — 2026-09-14
+
+The deterministic defects listed in the next section are historical findings
+from the 2026-09-09/10 audit. They are retained for provenance but are not
+current known defects without a fresh reproduction. The current release
+decision is instead constrained by these verified status items:
+
+| Area | Current status | Authority |
+| --- | --- | --- |
+| Storage, account, and CloudKit continuity | **Not certified**; source hardening exists, but production enrollment, schema inspection, and two-device convergence remain open | [`app_review_fix_plan.md`](../../app_review_fix_plan.md), [`phase-1-integrity-evidence.md`](phase-1-integrity-evidence.md) |
+| Ownership-ledger completeness | **Not certified for the current checkout** | [`ownership-ledger-completeness-audit.md`](ownership-ledger-completeness-audit.md) |
+| Scanner hardware/provider evidence | **Open**; camera framing, OCR/thermal behavior, slab calibration, and live-provider paths require device/provider runs | [`../plans/release_followups.md`](../plans/release_followups.md), [`../../references/whole_card_scanner_checklist.md`](../../references/whole_card_scanner_checklist.md) |
+| Browse manual sign-off | **Open**; set-tile accessibility, disclosure interaction, dark-mode contrast, and AX5 fit remain | [`../plans/browse_screen_spec.md`](../plans/browse_screen_spec.md), [`../../references/browse_success_checklist.md`](../../references/browse_success_checklist.md) |
+| Card centering | **Open**; current accuracy, invariant, latency, and device-only gates fail or remain unrun | [`../../review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) |
+| Full exact-candidate suite | **Not clean**; the latest logged run discovered 1,256 tests and reported 48 unrelated fixture/source-environment or signal-kill failures | [`../../progress.md`](../../progress.md), [`phase-1-integrity-evidence.md`](phase-1-integrity-evidence.md) |
+
+These are release-evidence states, not a claim that every open item is a code
+defect. A gate becomes GO/NO-GO evidence only after it is rerun against the
+exact release candidate.
+
+## 15. Historical known defects — 2026-09-09/10
 
 ### Source chronology defect
 
@@ -658,7 +678,7 @@ Post-launch candidate.
 
 ---
 
-## 15. Execution sequence
+## 16. Execution sequence
 
 1. Fix existing G1/G2/G3 violations.
 2. Establish the deterministic trust-invariant suite.

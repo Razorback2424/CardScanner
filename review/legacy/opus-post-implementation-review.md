@@ -1,9 +1,9 @@
 # Opus Post-Implementation Review
 
-> **Historical/superseded snapshot — 2026-09-10.** This review evaluates the earlier Luna trust-hardening implementation against its own plan and working-tree state. It is not a current card-centering review. Use the [current card-centering plan](opus-card-centering-implementation-plan.md) and [centering evidence](centering-evidence/) for active centering work.
+> **Legacy archive — historical/superseded snapshot, 2026-09-10.** This review evaluates the earlier Luna trust-hardening implementation against its own plan and working-tree state. It is not current centering review. Use the [current card-centering plan](../opus-card-centering-implementation-plan.md) and [centering evidence](../centering-evidence/) for active work.
 
-Independent review of the implementation executed from `review/opus-implementation-plan.md`,
-against the evidence in `review/opus-implementation-evidence.md` and, authoritatively, against the
+Independent review of the implementation executed from `review/legacy/opus-implementation-plan.md`,
+against the evidence in `review/legacy/opus-implementation-evidence.md` and, authoritatively, against the
 current working tree.
 
 **Overall disposition: NOT READY.**
