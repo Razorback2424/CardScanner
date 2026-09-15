@@ -329,199 +329,198 @@ struct CardCenteringView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Group {
-                if let image = model.image, let measurement = model.measurement {
-                    VStack(spacing: 0) {
-                        GeometryReader { proxy in
-                            imageReview(image, measurement: measurement)
-                                .frame(width: proxy.size.width, height: proxy.size.height)
-                        }
-                        .frame(height: 300)
-                        .padding(.horizontal, 16)
-                        .padding(.top, 8)
+        Group {
+            if let image = model.image, let measurement = model.measurement {
+                VStack(spacing: 0) {
+                    GeometryReader { proxy in
+                        imageReview(image, measurement: measurement)
+                            .frame(width: proxy.size.width, height: proxy.size.height)
+                    }
+                    .frame(height: 300)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
 
-                        Divider()
+                    Divider()
 
-                        ScrollViewReader { reader in
-                            ScrollView {
-                                VStack(spacing: 18) {
-                                    resultSummary(measurement)
-                                    rotationControls
-                                    guideControls(measurement)
-                                        .id("guide-controls")
+                    ScrollViewReader { reader in
+                        ScrollView {
+                            VStack(spacing: 18) {
+                                resultSummary(measurement)
+                                rotationControls
+                                guideControls(measurement)
+                                    .id("guide-controls")
 
-                                    if let errorMessage = model.errorMessage {
-                                        Text(errorMessage)
-                                            .font(.footnote)
-                                            .foregroundStyle(.red)
-                                    }
+                                if let errorMessage = model.errorMessage {
+                                    Text(errorMessage)
+                                        .font(.footnote)
+                                        .foregroundStyle(.red)
                                 }
-                                .padding(16)
-                                .padding(.bottom, 16)
-                                .contentWidthLimit(.standard)
                             }
-                            .scrollIndicators(.visible)
-                            .safeAreaPadding(.bottom, 80)
+                            .padding(16)
+                            .padding(.bottom, 16)
+                            .contentWidthLimit(.standard)
+                        }
+                        .scrollIndicators(.visible)
+                        .safeAreaPadding(.bottom, 80)
 #if DEBUG
-                            .onAppear {
-                                let arguments = ProcessInfo.processInfo.arguments
-                                guard let routeIndex = arguments.firstIndex(of: "-ui_debug_route"),
-                                      arguments.indices.contains(routeIndex + 1),
-                                      arguments[routeIndex + 1] == "CenteringExpanded" else { return }
-                                DispatchQueue.main.async {
-                                    withAnimation(nil) {
-                                        reader.scrollTo("guide-controls", anchor: .top)
-                                    }
+                        .onAppear {
+                            let arguments = ProcessInfo.processInfo.arguments
+                            guard let routeIndex = arguments.firstIndex(of: "-ui_debug_route"),
+                                  arguments.indices.contains(routeIndex + 1),
+                                  arguments[routeIndex + 1] == "CenteringExpanded" else { return }
+                            DispatchQueue.main.async {
+                                withAnimation(nil) {
+                                    reader.scrollTo("guide-controls", anchor: .top)
                                 }
                             }
+                        }
 #endif
-                        }
                     }
-                } else {
-                    ScrollView {
-                        VStack(spacing: 18) {
-                            if model.isAnalyzing {
-                                ProgressView("Finding card edges…")
-                                    .frame(maxWidth: .infinity, minHeight: 360)
-                            } else {
-                                ContentUnavailableView {
-                                    Label("Check Card Centering", systemImage: "square.dashed.inset.filled")
-                                } description: {
-                                    Text("Choose a clear, straight-on card photo or scan.")
-                                } actions: {
-                                    VStack(spacing: 10) {
-                                        Button("Take Photo", systemImage: "camera") {
-                                            isShowingCamera = true
-                                        }
-                                        photoButton("Choose Photo")
-                                        Button("Choose File", systemImage: "folder") {
-                                            isShowingFileImporter = true
-                                        }
+                }
+            } else {
+                ScrollView {
+                    VStack(spacing: 18) {
+                        if model.isAnalyzing {
+                            ProgressView("Finding card edges…")
+                                .frame(maxWidth: .infinity, minHeight: 360)
+                        } else {
+                            ContentUnavailableView {
+                                Label("Check Card Centering", systemImage: "square.dashed.inset.filled")
+                            } description: {
+                                Text("Choose a clear, straight-on card photo or scan.")
+                            } actions: {
+                                VStack(spacing: 10) {
+                                    Button("Take Photo", systemImage: "camera") {
+                                        isShowingCamera = true
+                                    }
+                                    photoButton("Choose Photo")
+                                    Button("Choose File", systemImage: "folder") {
+                                        isShowingFileImporter = true
                                     }
                                 }
-                                .frame(minHeight: 460)
                             }
-
-                            if let errorMessage = model.errorMessage {
-                                Text(errorMessage)
-                                    .font(.footnote)
-                                    .foregroundStyle(.red)
-                            }
+                            .frame(minHeight: 460)
                         }
-                        .padding(16)
-                        .contentWidthLimit(.standard)
+
+                        if let errorMessage = model.errorMessage {
+                            Text(errorMessage)
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                        }
                     }
+                    .padding(16)
+                    .contentWidthLimit(.standard)
                 }
             }
-            .navigationTitle("Centering")
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") {
-                        focusedEdgeField = nil
-                    }
+        }
+        .navigationTitle("Centering")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") {
+                    focusedEdgeField = nil
                 }
+            }
 
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Settings", systemImage: "gearshape") {
-                        isShowingSettings = true
-                    }
-                    .labelStyle(.iconOnly)
-                    .accessibilityLabel("Settings")
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Settings", systemImage: "gearshape") {
+                    isShowingSettings = true
                 }
+                .labelStyle(.iconOnly)
+                .accessibilityLabel("Settings")
+            }
 
-                if model.image != nil {
-                    ToolbarItemGroup(placement: .topBarTrailing) {
-                        if let exportURL {
-                            ShareLink(item: exportURL) {
-                                Label("Export Image", systemImage: "square.and.arrow.up")
-                            }
+            if model.image != nil {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    if let exportURL {
+                        ShareLink(item: exportURL) {
+                            Label("Export Image", systemImage: "square.and.arrow.up")
+                        }
+                        .labelStyle(.iconOnly)
+                        .accessibilityLabel("Export the centering image")
+                    } else {
+                        Button("Export Image", systemImage: "square.and.arrow.up") {}
                             .labelStyle(.iconOnly)
                             .accessibilityLabel("Export the centering image")
-                        } else {
-                            Button("Export Image", systemImage: "square.and.arrow.up") {}
-                                .labelStyle(.iconOnly)
-                                .accessibilityLabel("Export the centering image")
-                                .disabled(true)
-                        }
-
-                        Button("Take Photo", systemImage: "camera") {
-                            isShowingCamera = true
-                        }
-                        .labelStyle(.iconOnly)
-                        .accessibilityLabel("Take a new photo")
-
-                        photoButton("Choose Photo")
-                            .labelStyle(.iconOnly)
-                            .accessibilityLabel("Choose a photo")
-
-                        Button("Choose File", systemImage: "folder") {
-                            isShowingFileImporter = true
-                        }
-                        .labelStyle(.iconOnly)
-                        .accessibilityLabel("Choose an image file")
+                            .disabled(true)
                     }
+
+                    Button("Take Photo", systemImage: "camera") {
+                        isShowingCamera = true
+                    }
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Take a new photo")
+
+                    photoButton("Choose Photo")
+                        .labelStyle(.iconOnly)
+                        .accessibilityLabel("Choose a photo")
+
+                    Button("Choose File", systemImage: "folder") {
+                        isShowingFileImporter = true
+                    }
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Choose an image file")
                 }
             }
-            .onChange(of: model.selectedPhoto) {
-                Task { await model.loadSelectedPhoto() }
-            }
+        }
+        .onChange(of: model.selectedPhoto) {
+            Task { await model.loadSelectedPhoto() }
+        }
 #if DEBUG
-            .task {
-                let arguments = ProcessInfo.processInfo.arguments
-                guard let routeIndex = arguments.firstIndex(of: "-ui_debug_route"),
-                      arguments.indices.contains(routeIndex + 1) else { return }
-                let route = arguments[routeIndex + 1]
-                guard route.hasPrefix("Centering") else { return }
-                model.loadDebugFixtureIfNeeded()
-            }
+        .task {
+            let arguments = ProcessInfo.processInfo.arguments
+            guard let routeIndex = arguments.firstIndex(of: "-ui_debug_route"),
+                  arguments.indices.contains(routeIndex + 1) else { return }
+            let route = arguments[routeIndex + 1]
+            guard route.hasPrefix("Centering") else { return }
+            model.loadDebugFixtureIfNeeded()
+        }
 #endif
-            .overlay {
-                if model.isAnalyzing, model.image != nil {
-                    ZStack {
-                        Color.black.opacity(0.25).ignoresSafeArea()
-                        ProgressView("Measuring…")
-                            .padding(20)
-                            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
-                    }
+        .overlay {
+            if model.isAnalyzing, model.image != nil {
+                ZStack {
+                    Color.black.opacity(0.25).ignoresSafeArea()
+                    ProgressView("Measuring…")
+                        .padding(20)
+                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
                 }
             }
-            .task(
-                id: ExportInput(
-                    imageRevision: model.imageRevision,
-                    measurement: model.measurement,
-                    rotationDegrees: model.rotationDegrees
-                )
-            ) {
-                // Guide steppers can emit a burst of values while a control is
-                // held. Coalesce that burst, and key the task by every input
-                // that changes the pixels so a rotation or a new image cannot
-                // leave the previous export attached to ShareLink.
-                exportURL = nil
-                guard model.image != nil, model.measurement != nil else { return }
-                try? await Task.sleep(for: .milliseconds(180))
-                guard !Task.isCancelled else { return }
-                exportURL = model.makeExportFile()
+        }
+        .task(
+            id: ExportInput(
+                imageRevision: model.imageRevision,
+                measurement: model.measurement,
+                rotationDegrees: model.rotationDegrees
+            )
+        ) {
+            // Guide steppers can emit a burst of values while a control is
+            // held. Coalesce that burst, and key the task by every input
+            // that changes the pixels so a rotation or a new image cannot
+            // leave the previous export attached to ShareLink.
+            exportURL = nil
+            guard model.image != nil, model.measurement != nil else { return }
+            try? await Task.sleep(for: .milliseconds(180))
+            guard !Task.isCancelled else { return }
+            exportURL = model.makeExportFile()
+        }
+        .sheet(isPresented: $isShowingSettings) {
+            SettingsView()
+        }
+        .fullScreenCover(isPresented: $isShowingCamera) {
+            CenteringCameraView { data in
+                model.loadCapturedPhoto(data)
             }
-            .sheet(isPresented: $isShowingSettings) {
-                SettingsView()
-            }
-            .fullScreenCover(isPresented: $isShowingCamera) {
-                CenteringCameraView { data in
-                    model.loadCapturedPhoto(data)
-                }
-            }
-            .fileImporter(
-                isPresented: $isShowingFileImporter,
-                allowedContentTypes: [.image]
-            ) { result in
-                switch result {
-                case let .success(url):
-                    Task { await model.loadFile(at: url) }
-                case let .failure(error):
-                    model.errorMessage = error.localizedDescription
-                }
+        }
+        .fileImporter(
+            isPresented: $isShowingFileImporter,
+            allowedContentTypes: [.image]
+        ) { result in
+            switch result {
+            case let .success(url):
+                Task { await model.loadFile(at: url) }
+            case let .failure(error):
+                model.errorMessage = error.localizedDescription
             }
         }
     }

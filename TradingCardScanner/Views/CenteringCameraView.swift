@@ -17,6 +17,11 @@ struct CenteringCameraOpticsConfiguration: Equatable {
     }
 }
 
+enum CenteringCameraConfiguration: Equatable {
+    case centering
+    case listingPhotos
+}
+
 final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
     let session = AVCaptureSession()
     /// Which way the sensor is held. The photo connection and the preview layer
@@ -35,7 +40,12 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     private let sessionQueue = DispatchQueue(label: "cards.centering.camera")
     private let photoOutput = AVCapturePhotoOutput()
     private let motionManager = CMMotionManager()
+    private let configuration: CenteringCameraConfiguration
     private var isConfigured = false
+    /// Set once the session has committed, because `activeFormat` is not
+    /// settled until then. Only the listing-photo configuration raises it; the
+    /// centering path keeps AVFoundation's default photo dimensions.
+    private var configuredCamera: AVCaptureDevice?
     /// A centering capture is a one-shot interaction. Keep the request marked
     /// active until the view stops so rapid taps cannot queue multiple photos
     /// before the first result dismisses the camera.
@@ -44,6 +54,11 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     /// prevents a delayed permission callback from starting the camera after the
     /// full-screen camera has already disappeared.
     private var requestedStartID: UUID?
+
+    init(configuration: CenteringCameraConfiguration = .centering) {
+        self.configuration = configuration
+        super.init()
+    }
 
     func start() {
         let requestID = UUID()
@@ -84,6 +99,13 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             self.isCaptureInFlight = true
             let settings = AVCapturePhotoSettings()
             settings.photoQualityPrioritization = .quality
+            if self.configuration == .listingPhotos {
+                // Read back from the output rather than from a cached format
+                // value: `maxPhotoDimensions` is the only value guaranteed to
+                // be accepted here, and exceeding it raises an uncatchable
+                // ObjC exception.
+                settings.maxPhotoDimensions = self.photoOutput.maxPhotoDimensions
+            }
             let angle = self.rotation.currentAngle
             if let connection = self.photoOutput.connection(with: .video),
                connection.isVideoRotationAngleSupported(angle) {
@@ -122,6 +144,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
             do {
                 if !self.isConfigured {
                     try self.configureSession()
+                    self.applyMaximumPhotoDimensionsIfNeeded()
                     self.isConfigured = true
                 }
                 guard !self.session.isRunning else { return }
@@ -135,7 +158,16 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     }
 
     private func configureSession() throws {
-        let lens: CenteringCameraLens = CameraCapabilities.hasMacroLens() ? .macro : .wide
+        let lens: CenteringCameraLens
+        switch configuration {
+        case .centering:
+            lens = CameraCapabilities.hasMacroLens() ? .macro : .wide
+        case .listingPhotos:
+            // The ultra-wide macro lens has a much lower maximum still-image
+            // size on high-resolution devices. Listing photos must use the
+            // main wide camera so the export can preserve native pixels.
+            lens = .wide
+        }
         let cameraType: AVCaptureDevice.DeviceType = lens == .macro
             ? .builtInUltraWideCamera
             : .builtInWideAngleCamera
@@ -159,6 +191,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         session.addInput(input)
         session.addOutput(photoOutput)
         photoOutput.maxPhotoQualityPrioritization = .quality
+        configuredCamera = camera
 
         do {
             try camera.lockForConfiguration()
@@ -192,6 +225,21 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         }
     }
 
+    /// Raises the still-image size to the sensor maximum for listing photos.
+    /// This must run after `configureSession` returns, because the session's
+    /// `commitConfiguration` is deferred to that point and `activeFormat` is
+    /// not settled before it.
+    private func applyMaximumPhotoDimensionsIfNeeded() {
+        guard configuration == .listingPhotos, let camera = configuredCamera else { return }
+        guard let dimensions = camera.activeFormat.supportedMaxPhotoDimensions.max(
+            by: { lhs, rhs in
+                Int64(lhs.width) * Int64(lhs.height)
+                    < Int64(rhs.width) * Int64(rhs.height)
+            }
+        ) else { return }
+        photoOutput.maxPhotoDimensions = dimensions
+    }
+
     private func startLevelUpdates() {
         guard motionManager.isDeviceMotionAvailable else { return }
         motionManager.deviceMotionUpdateInterval = 1 / 30
@@ -221,9 +269,19 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
 struct CenteringCameraView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var camera = CenteringCameraController()
+    @StateObject private var camera: CenteringCameraController
 
     let onCapture: (Data) -> Void
+
+    init(
+        configuration: CenteringCameraConfiguration = .centering,
+        onCapture: @escaping (Data) -> Void
+    ) {
+        self.onCapture = onCapture
+        _camera = StateObject(
+            wrappedValue: CenteringCameraController(configuration: configuration)
+        )
+    }
 
     var body: some View {
         ZStack {

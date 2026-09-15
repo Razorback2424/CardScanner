@@ -25,7 +25,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Scan card details and take card photos for centering checks.</string>
+	<string>Scan card details and take card photos for centering checks or eBay listings.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save prepared eBay listing photos to your photo library.</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER).priceRefresh.processing</string>

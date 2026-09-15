@@ -125,6 +125,13 @@
 		A0010042 /* CardCenteringAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010042 /* CardCenteringAnalyzer.swift */; };
 		A0010043 /* CardCenteringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010043 /* CardCenteringView.swift */; };
 		A0010044 /* CenteringCameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010044 /* CenteringCameraView.swift */; };
+		A0010113 /* EbayQuadrantCropper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010113 /* EbayQuadrantCropper.swift */; };
+		A0010114 /* EbayListingPhotoExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010114 /* EbayListingPhotoExport.swift */; };
+		A0010115 /* ProView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010115 /* ProView.swift */; };
+		A0010116 /* EbayListingPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010116 /* EbayListingPhotosView.swift */; };
+		A0010117 /* ListingPhotoLibrarySaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010117 /* ListingPhotoLibrarySaver.swift */; };
+		A0010118 /* ListingPhotoInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010118 /* ListingPhotoInspectorView.swift */; };
+		A0020113 /* EbayQuadrantCropperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020113 /* EbayQuadrantCropperTests.swift */; };
 		A0010045 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0010045 /* Assets.xcassets */; };
 		A0010046 /* CollectionCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010046 /* CollectionCSV.swift */; };
 		A0010047 /* CollectionCatalogNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010047 /* CollectionCatalogNormalizer.swift */; };
@@ -326,6 +333,13 @@
 		B0010042 /* CardCenteringAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringAnalyzer.swift; sourceTree = "<group>"; };
 		B0010043 /* CardCenteringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringView.swift; sourceTree = "<group>"; };
 		B0010044 /* CenteringCameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringCameraView.swift; sourceTree = "<group>"; };
+		B0010113 /* EbayQuadrantCropper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EbayQuadrantCropper.swift; sourceTree = "<group>"; };
+		B0010114 /* EbayListingPhotoExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EbayListingPhotoExport.swift; sourceTree = "<group>"; };
+		B0010115 /* ProView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProView.swift; sourceTree = "<group>"; };
+		B0010116 /* EbayListingPhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EbayListingPhotosView.swift; sourceTree = "<group>"; };
+		B0010117 /* ListingPhotoLibrarySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingPhotoLibrarySaver.swift; sourceTree = "<group>"; };
+		B0010118 /* ListingPhotoInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingPhotoInspectorView.swift; sourceTree = "<group>"; };
+		B0020113 /* EbayQuadrantCropperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EbayQuadrantCropperTests.swift; sourceTree = "<group>"; };
 		B0010045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0010046 /* CollectionCSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCSV.swift; sourceTree = "<group>"; };
 		B0010047 /* CollectionCatalogNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCatalogNormalizer.swift; sourceTree = "<group>"; };
@@ -528,6 +542,9 @@
 				B0010046 /* CollectionCSV.swift */,
 				B0010047 /* CollectionCatalogNormalizer.swift */,
 				B0010048 /* CardCenteringExport.swift */,
+				B0010113 /* EbayQuadrantCropper.swift */,
+				B0010114 /* EbayListingPhotoExport.swift */,
+				B0010117 /* ListingPhotoLibrarySaver.swift */,
 							B0010054 /* PriceVendorCredentials.swift */,
 							B0010056 /* ProductCatalogIdentity.swift */,
 							B0010057 /* ProductPriceService.swift */,
@@ -588,6 +605,9 @@
 				B0010035 /* CollectionFilters.swift */,
 				B0010043 /* CardCenteringView.swift */,
 				B0010044 /* CenteringCameraView.swift */,
+				B0010115 /* ProView.swift */,
+				B0010116 /* EbayListingPhotosView.swift */,
+				B0010118 /* ListingPhotoInspectorView.swift */,
 							B0010066 /* SealedBrowseViews.swift */,
 							B0010067 /* GradedVariantPickerView.swift */,
 				B00100A5 /* RemovalUndoBanner.swift */,
@@ -649,6 +669,7 @@
 				B0020026 /* ProductCatalogIdentityTests.swift */,
 				B0020025 /* ProductIdentityTests.swift */,
 				B0020022 /* CenteringExportTests.swift */,
+				B0020113 /* EbayQuadrantCropperTests.swift */,
 				B0020023 /* CatalogNormalizationTests.swift */,
 				B0020024 /* BrowseFeatureTests.swift */,
 				B00200C0 /* CollectionActivityHistoryTests.swift */,
@@ -881,6 +902,12 @@
 				A0010042 /* CardCenteringAnalyzer.swift in Sources */,
 				A0010043 /* CardCenteringView.swift in Sources */,
 				A0010044 /* CenteringCameraView.swift in Sources */,
+				A0010113 /* EbayQuadrantCropper.swift in Sources */,
+				A0010114 /* EbayListingPhotoExport.swift in Sources */,
+				A0010115 /* ProView.swift in Sources */,
+				A0010116 /* EbayListingPhotosView.swift in Sources */,
+				A0010117 /* ListingPhotoLibrarySaver.swift in Sources */,
+				A0010118 /* ListingPhotoInspectorView.swift in Sources */,
 				A0010046 /* CollectionCSV.swift in Sources */,
 				A0010047 /* CollectionCatalogNormalizer.swift in Sources */,
 				A0010048 /* CardCenteringExport.swift in Sources */,
@@ -943,6 +970,7 @@
 				A0020026 /* ProductCatalogIdentityTests.swift in Sources */,
 				A0020025 /* ProductIdentityTests.swift in Sources */,
 				A0020022 /* CenteringExportTests.swift in Sources */,
+				A0020113 /* EbayQuadrantCropperTests.swift in Sources */,
 				A0020023 /* CatalogNormalizationTests.swift in Sources */,
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
 				A00200C0 /* CollectionActivityHistoryTests.swift in Sources */,

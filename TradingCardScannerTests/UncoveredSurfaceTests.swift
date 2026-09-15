@@ -773,7 +773,14 @@ final class ViewConstructionSmokeTests: XCTestCase {
         _ = SettingsView()
         _ = BrowseView(catalog: EmptyUncoveredBrowseCatalog())
         _ = CenteringCameraView(onCapture: { _ in })
+        _ = CenteringCameraView(configuration: .listingPhotos, onCapture: { _ in })
         _ = CardCenteringView()
+        _ = ProView()
+        _ = EbayListingPhotosView()
+        _ = ListingPhotoInspectorView(
+            url: URL(fileURLWithPath: "/dev/null"),
+            nativeDimensions: EbayListingPhotoExport.PixelDimensions(width: 100, height: 140)
+        )
         _ = CollectionActivityLogView()
         _ = CollectionCardDetailView(
             card: card,
