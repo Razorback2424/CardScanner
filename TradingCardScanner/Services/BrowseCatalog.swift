@@ -39,12 +39,28 @@ enum BrowseRequestBuilder {
 }
 
 actor BrowseCatalog: BrowseCatalogProviding {
+    private struct DetailTaskState {
+        let task: Task<CatalogCardDetails, Error>
+        var waiterIDs: Set<UUID>
+    }
+
+    private struct SortPriceSlot: Sendable {
+        let id: String
+        let price: Double?
+        let resolved: Bool
+    }
+
+    private struct SortPriceGroupResult: Sendable {
+        let slots: [SortPriceSlot]
+    }
+
     private let scryfall = ScryfallService()
     private let cache: CatalogCacheStore
     private let pokemonTransport: any PokemonBrowseTransport
     private let checklistStore: PokemonChecklistStore
     private var setCache: [CardGame: [CatalogSet]] = [:]
     private var detailCache: [String: CatalogCardDetails] = [:]
+    private var detailTasks: [String: DetailTaskState] = [:]
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
     private var pokemonSetCardDetails: [String: [String: TCGdexCard]] = [:]
     private var pokemonSnapshotEntries: [PokemonChecklistSnapshotEntry] = []
@@ -262,7 +278,78 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         installMemoryWarningObserverIfNeeded()
-        if let cached = detailCache[summary.id] { return cached }
+        let key = detailCacheKey(for: summary)
+        if let cached = detailCache[key] { return cached }
+
+        let waiterID = UUID()
+        let task: Task<CatalogCardDetails, Error>
+        if var state = detailTasks[key] {
+            state.waiterIDs.insert(waiterID)
+            task = state.task
+            detailTasks[key] = state
+        } else {
+            let newTask = Task { [self] in
+                try await loadDetails(for: summary)
+            }
+            detailTasks[key] = DetailTaskState(
+                task: newTask,
+                waiterIDs: [waiterID]
+            )
+            task = newTask
+        }
+
+        do {
+            let details = try await awaitDetailTask(task)
+            detailCache[key] = details
+            releaseDetailWaiter(for: key, waiterID: waiterID)
+            return details
+        } catch {
+            releaseDetailWaiter(for: key, waiterID: waiterID)
+            throw error
+        }
+    }
+
+    /// Awaiting a shared task must still respond to cancellation for this
+    /// caller. The stream observer is cancelled per waiter; it never cancels
+    /// the shared fetch, so another waiter can keep that fetch alive.
+    private func awaitDetailTask(
+        _ task: Task<CatalogCardDetails, Error>
+    ) async throws -> CatalogCardDetails {
+        let stream = AsyncThrowingStream<CatalogCardDetails, Error> { continuation in
+            let observer = Task {
+                do {
+                    continuation.yield(try await task.value)
+                    continuation.finish()
+                } catch {
+                    continuation.finish(throwing: error)
+                }
+            }
+            continuation.onTermination = { _ in
+                observer.cancel()
+            }
+        }
+
+        var iterator = stream.makeAsyncIterator()
+        guard let details = try await iterator.next() else {
+            throw CancellationError()
+        }
+        return details
+    }
+
+    private func releaseDetailWaiter(for key: String, waiterID: UUID) {
+        guard var state = detailTasks[key],
+              state.waiterIDs.remove(waiterID) != nil else {
+            return
+        }
+        if state.waiterIDs.isEmpty {
+            state.task.cancel()
+            detailTasks[key] = nil
+        } else {
+            detailTasks[key] = state
+        }
+    }
+
+    private func loadDetails(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         let details: CatalogCardDetails
         switch summary.game {
         case .pokemon:
@@ -280,64 +367,212 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard let set = directorySet else { throw BrowseCatalogError.unknownSet }
             details = CatalogCardDetails(card: .magic(card), set: set)
         }
-        detailCache[summary.id] = details
         return details
     }
 
-    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] {
-        installMemoryWarningObserverIfNeeded()
-        let pending = cards.filter { !resolvedSortPrices.contains($0.id) }
-        var iterator = pending.makeIterator()
+    private func detailCacheKey(for summary: CatalogCardSummary) -> String {
+        "\(summary.game.rawValue):\(summary.providerID.lowercased())"
+    }
 
-        await withTaskGroup(of: (id: String, price: Double?, resolved: Bool).self) { group in
-            for _ in 0..<min(6, pending.count) {
-                guard let card = iterator.next() else { break }
-                group.addTask { await self.sortPrice(for: card) }
-            }
-
-            while let result = await group.next() {
-                if result.resolved { resolvedSortPrices.insert(result.id) }
-                if let price = result.price { sortPriceCache[result.id] = price }
-                if let next = iterator.next() {
-                    group.addTask { await self.sortPrice(for: next) }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        return AsyncStream { continuation in
+            let producer = Task { [weak self] in
+                guard let self else {
+                    continuation.finish()
+                    return
                 }
+                await self.installMemoryWarningObserverIfNeeded()
+                await self.produceSortPrices(for: cards, continuation: continuation)
+            }
+            continuation.onTermination = { @Sendable _ in
+                producer.cancel()
+            }
+        }
+    }
+
+    private func produceSortPrices(
+        for cards: [CatalogCardSummary],
+        continuation: AsyncStream<[String: Double]>.Continuation
+    ) async {
+        // Every early return below leaves the consumer suspended in `for await`
+        // unless the stream is finished, which would strand the set screen in
+        // its loading state. Finishing twice is a no-op, so own it here once.
+        defer { continuation.finish() }
+
+        let cardsBySet = Dictionary(grouping: cards, by: \.setID.id)
+        var freshPersistedPrices: [String: [String: Double]] = [:]
+        for (setID, setCards) in cardsBySet {
+            guard let cached = await cache.sortPrices(for: setID) else { continue }
+            // Only a fresh envelope is worth carrying forward on the write
+            // below; re-storing a stale map would reset its age without
+            // re-pricing the slots this request never looked at.
+            if cached.isFresh { freshPersistedPrices[setID] = cached.value }
+            let currentIDs = Set(setCards.map(\.id))
+            for (id, price) in cached.value where currentIDs.contains(id) {
+                sortPriceCache[id] = price
+                if cached.isFresh { resolvedSortPrices.insert(id) }
             }
         }
 
-        // Same reasoning as `countsByID`: checklist ids should be unique per
-        // set, but nothing here enforces it, and a trap is a poor way to find
-        // out otherwise.
-        return Dictionary(
+        continuation.yield(currentSortPrices(for: cards))
+
+        let pending = providerGroups(from: cards).filter { providerGroup in
+            providerGroup.contains { !resolvedSortPrices.contains($0.id) }
+        }
+        var iterator = pending.makeIterator()
+        var resolvedSinceEmit = 0
+        var lastEmit = Date.now
+
+        do {
+            try await withThrowingTaskGroup(of: SortPriceGroupResult.self) { group in
+                for _ in 0..<min(6, pending.count) {
+                    guard let providerGroup = iterator.next() else { break }
+                    group.addTask { try await self.sortPriceGroup(for: providerGroup) }
+                }
+
+                while let result = try await group.next() {
+                    guard !Task.isCancelled else {
+                        group.cancelAll()
+                        return
+                    }
+                    for slot in result.slots {
+                        if slot.resolved { resolvedSortPrices.insert(slot.id) }
+                        if let price = slot.price { sortPriceCache[slot.id] = price }
+                    }
+                    resolvedSinceEmit += result.slots.filter(\.resolved).count
+
+                    let elapsed = Date.now.timeIntervalSince(lastEmit)
+                    if resolvedSinceEmit >= 25 || elapsed >= 0.25 {
+                        continuation.yield(currentSortPrices(for: cards))
+                        resolvedSinceEmit = 0
+                        lastEmit = Date.now
+                    }
+
+                    if Task.isCancelled {
+                        group.cancelAll()
+                    } else if let providerGroup = iterator.next() {
+                        group.addTask { try await self.sortPriceGroup(for: providerGroup) }
+                    }
+                }
+                if Task.isCancelled { group.cancelAll() }
+            }
+        } catch is CancellationError {
+            return
+        } catch {
+            return
+        }
+
+        guard !Task.isCancelled else { return }
+
+        for (setID, setCards) in cardsBySet {
+            // A request covers only the slots that were loaded, and the price
+            // prefetch runs on the first page. Replacing the stored map would
+            // shrink a fully priced set to one page on every cold open, which
+            // is the relaunch cost this cache exists to remove. Merge instead:
+            // this run's prices win, previously priced slots survive.
+            var prices = freshPersistedPrices[setID] ?? [:]
+            for card in setCards {
+                guard let price = sortPriceCache[card.id] else { continue }
+                prices[card.id] = price
+            }
+            guard !prices.isEmpty else { continue }
+            await cache.storeSortPrices(prices, for: setID)
+        }
+
+        continuation.yield(currentSortPrices(for: cards))
+    }
+
+    private func providerGroups(from cards: [CatalogCardSummary]) -> [[CatalogCardSummary]] {
+        var groups: [[CatalogCardSummary]] = []
+        var indexes: [String: Int] = [:]
+        for card in cards {
+            let key = "\(card.game.rawValue):\(card.providerID.lowercased())"
+            if let index = indexes[key] {
+                groups[index].append(card)
+            } else {
+                indexes[key] = groups.count
+                groups.append([card])
+            }
+        }
+        return groups
+    }
+
+    private func currentSortPrices(for cards: [CatalogCardSummary]) -> [String: Double] {
+        Dictionary(
             cards.compactMap { card in sortPriceCache[card.id].map { (card.id, $0) } },
             uniquingKeysWith: { first, _ in first }
         )
     }
 
-    private func sortPrice(for summary: CatalogCardSummary) async -> (id: String, price: Double?, resolved: Bool) {
+    private func sortPriceGroup(for summaries: [CatalogCardSummary]) async throws -> SortPriceGroupResult {
+        guard let representative = summaries.first(where: { $0.pokemonPrintRun == nil }) else {
+            return SortPriceGroupResult(
+                slots: summaries.map { SortPriceSlot(id: $0.id, price: nil, resolved: true) }
+            )
+        }
+
+        do {
+            let details = try await details(for: representative)
+            return SortPriceGroupResult(
+                slots: summaries.map { summary in
+                    guard summary.pokemonPrintRun == nil else {
+                        // The aggregate card price is not edition-specific. Do
+                        // not use it to sort virtual WotC runs as though it were.
+                        return SortPriceSlot(id: summary.id, price: nil, resolved: true)
+                    }
+                    return sortPrice(for: summary, details: details)
+                }
+            )
+        } catch {
+            if error is CancellationError || Task.isCancelled {
+                throw CancellationError()
+            }
+            return SortPriceGroupResult(
+                slots: summaries.map {
+                    SortPriceSlot(
+                        id: $0.id,
+                        price: nil,
+                        resolved: $0.pokemonPrintRun != nil ? true : false
+                    )
+                }
+            )
+        }
+    }
+
+    private func sortPrice(for summary: CatalogCardSummary) async -> SortPriceSlot {
         guard summary.pokemonPrintRun == nil else {
-            // The aggregate card price is not edition-specific. Do not use it
-            // to sort virtual WotC runs as though it were.
-            return (summary.id, nil, true)
+            return SortPriceSlot(id: summary.id, price: nil, resolved: true)
         }
         do {
             let details = try await details(for: summary)
-            if let variant = summary.masterSetVariant {
-                let lookup = CardPricing.price(
-                    for: details.card,
-                    variant: variant,
-                    magicTreatments: details.card.magicTreatments(for: variant),
-                    pokemonPrintRun: summary.pokemonPrintRun
-                )
-                if case let .price(price) = lookup,
-                   price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
-                    return (summary.id, price.unitMarketPriceUSD, true)
-                }
-                return (summary.id, nil, true)
-            }
-            return (summary.id, CardPricing.highestPublishedUSDPrice(for: details.card), true)
+            return sortPrice(for: summary, details: details)
         } catch {
-            return (summary.id, nil, false)
+            return SortPriceSlot(id: summary.id, price: nil, resolved: false)
         }
+    }
+
+    private func sortPrice(
+        for summary: CatalogCardSummary,
+        details: CatalogCardDetails
+    ) -> SortPriceSlot {
+        if let variant = summary.masterSetVariant {
+            let lookup = CardPricing.price(
+                for: details.card,
+                variant: variant,
+                magicTreatments: details.card.magicTreatments(for: variant),
+                pokemonPrintRun: summary.pokemonPrintRun
+            )
+            if case let .price(price) = lookup,
+               price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
+                return SortPriceSlot(id: summary.id, price: price.unitMarketPriceUSD, resolved: true)
+            }
+            return SortPriceSlot(id: summary.id, price: nil, resolved: true)
+        }
+        return SortPriceSlot(
+            id: summary.id,
+            price: CardPricing.highestPublishedUSDPrice(for: details.card),
+            resolved: true
+        )
     }
 
     private func pokemonSets() async throws -> [CatalogSet] {
@@ -383,6 +618,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
         pokemonSetDetails.removeAll()
         pokemonSetCardDetails.removeAll()
         detailCache.removeAll()
+        let inactiveKeys = detailTasks.compactMap { key, state in
+            state.waiterIDs.isEmpty ? key : nil
+        }
+        for key in inactiveKeys {
+            detailTasks[key]?.task.cancel()
+            detailTasks[key] = nil
+        }
         sortPriceCache.removeAll()
         resolvedSortPrices.removeAll()
     }
@@ -480,7 +722,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 ),
                 magicTreatmentQualifiers: evidence.qualifiers
             )
-            detailCache[summary.id] = CatalogCardDetails(card: .magic(card), set: set)
+            detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(card: .magic(card), set: set)
             return summary
         }
         return CatalogPage(items: items, nextCursor: page.hasMore ? page.nextPage?.absoluteString : nil)
@@ -505,7 +747,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         for value in built {
             for summary in value.cards {
                 guard let card = details[summary.providerID] else { continue }
-                detailCache[summary.id] = CatalogCardDetails(
+                detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(
                     card: .pokemon(card, setCode: summary.setCode),
                     set: value.set
                 )
@@ -812,6 +1054,7 @@ actor CatalogCacheStore {
     private static let sealedSetDirectoryMaxAge: TimeInterval = 7 * 24 * 60 * 60
     private static let sealedProductMaxAge: TimeInterval = 6 * 60 * 60
     private static let magicCardPageMaxAge: TimeInterval = 24 * 60 * 60
+    private static let sortPriceMaxAge: TimeInterval = 24 * 60 * 60
     private static let cardPageLimit = 25 * 1_024 * 1_024
     private static let sealedPageLimit = 10 * 1_024 * 1_024
 
@@ -854,6 +1097,33 @@ actor CatalogCacheStore {
         trim(cardPagesDirectory, maximumBytes: Self.cardPageLimit)
     }
 
+    /// Sort prices are disposable ordering hints. They are never used as
+    /// observation history, a checked-at value, or a price record.
+    func sortPrices(for setID: String) -> Cached<[String: Double]>? {
+        let url = sortPricesDirectory.appendingPathComponent(
+            filename(for: "sortprices|\(setID)")
+        )
+        guard let cached = load(
+            [String: Double].self,
+            from: url,
+            maxAge: Self.sortPriceMaxAge
+        ) else {
+            return nil
+        }
+        touch(url)
+        return cached
+    }
+
+    func storeSortPrices(_ prices: [String: Double], for setID: String) {
+        store(
+            prices,
+            at: sortPricesDirectory.appendingPathComponent(
+                filename(for: "sortprices|\(setID)")
+            )
+        )
+        trim(sortPricesDirectory, maximumBytes: 5 * 1_024 * 1_024)
+    }
+
     func sealedSets(for game: CardGame) -> Cached<[SealedSetSummary]>? {
         load([SealedSetSummary].self, from: sealedSetDirectoryURL(for: game), maxAge: Self.sealedSetDirectoryMaxAge)
     }
@@ -886,6 +1156,7 @@ actor CatalogCacheStore {
 
     private var cardPagesDirectory: URL { root.appendingPathComponent("CardPages", isDirectory: true) }
     private var sealedPagesDirectory: URL { root.appendingPathComponent("SealedPages", isDirectory: true) }
+    private var sortPricesDirectory: URL { root.appendingPathComponent("SortPrices", isDirectory: true) }
 
     private func setDirectoryURL(for game: CardGame) -> URL {
         root.appendingPathComponent("Sets-\(game.rawValue).json")
@@ -1045,7 +1316,7 @@ enum PokemonMasterSetDefinition {
     static func includesInSetDirectory(_ set: TCGdexBrowseSet) -> Bool {
         let name = CatalogIdentityNormalization.canonicalText(set.name)
         let id = set.id.lowercased()
-        if ["basep", "swshp", "svp"].contains(id) { return false }
+        if ["basep", "swshp", "svp", "rc", "sp", "wp"].contains(id) { return false }
         let excludedPhrases = [
             "black star promo", "promos", "promo cards", "pop series",
             "jumbo", "miscellaneous cards", "battle academy", "deck exclusives",
@@ -1064,11 +1335,12 @@ enum PokemonMasterSetDefinition {
         printRun: PokemonPrintRun?
     ) -> Int {
         let publishedBase: Int
-        if cardCount.normal != nil || cardCount.holo != nil {
-            publishedBase = (cardCount.normal ?? 0) + (cardCount.holo ?? 0)
-        } else {
-            publishedBase = cardCount.total
-        }
+        let breakdown = (cardCount.normal ?? 0)
+            + (cardCount.holo ?? 0)
+            + (cardCount.reverse ?? 0)
+        publishedBase = breakdown > 0
+            ? (cardCount.normal ?? 0) + (cardCount.holo ?? 0)
+            : cardCount.total
         let base = printRun == .firstEdition
             ? (cardCount.firstEd ?? publishedBase)
             : publishedBase

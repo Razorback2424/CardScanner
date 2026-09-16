@@ -1193,7 +1193,9 @@ private actor EmptyUncoveredBrowseCatalog: BrowseCatalogProviding {
         throw BrowseCatalogError.badResponse
     }
 
-    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] { [:] }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { continuation in continuation.finish() }
+    }
     func prepareCatalog() async {}
 }
 

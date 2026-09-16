@@ -140,6 +140,7 @@
 		A0010051 /* BrowseCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010051 /* BrowseCatalog.swift */; };
 		A0010052 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010052 /* BrowseView.swift */; };
 		A00100C3 /* ArtworkFallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C3 /* ArtworkFallbacks.swift */; };
+		A00100C4 /* CatalogSetCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C4 /* CatalogSetCompletion.swift */; };
 		A00100C2 /* CatalogSetTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C2 /* CatalogSetTile.swift */; };
 		A0010053 /* CatalogCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010053 /* CatalogCardDetailView.swift */; };
 		A00100C0 /* PokemonChecklistSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C0 /* PokemonChecklistSnapshot.swift */; };
@@ -340,6 +341,7 @@
 		B0010117 /* ListingPhotoLibrarySaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingPhotoLibrarySaver.swift; sourceTree = "<group>"; };
 		B0010118 /* ListingPhotoInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListingPhotoInspectorView.swift; sourceTree = "<group>"; };
 		B0020113 /* EbayQuadrantCropperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EbayQuadrantCropperTests.swift; sourceTree = "<group>"; };
+		B0020114 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0010045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0010046 /* CollectionCSV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCSV.swift; sourceTree = "<group>"; };
 		B0010047 /* CollectionCatalogNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCatalogNormalizer.swift; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 		B0010051 /* BrowseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalog.swift; sourceTree = "<group>"; };
 		B0010052 /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
 		B00100C3 /* ArtworkFallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkFallbacks.swift; sourceTree = "<group>"; };
+		B00100C4 /* CatalogSetCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetCompletion.swift; sourceTree = "<group>"; };
 		B00100C2 /* CatalogSetTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetTile.swift; sourceTree = "<group>"; };
 		B0010053 /* CatalogCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogCardDetailView.swift; sourceTree = "<group>"; };
 		B00100C0 /* PokemonChecklistSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonChecklistSnapshot.swift; sourceTree = "<group>"; };
@@ -513,6 +516,7 @@
 				B0010104 /* CloudAccountProbe.swift */,
 				B0010105 /* CloudCollectionAnchorStore.swift */,
 				B0010051 /* BrowseCatalog.swift */,
+				B00100C4 /* CatalogSetCompletion.swift */,
 				B00100C0 /* PokemonChecklistSnapshot.swift */,
 				B00100C3 /* ArtworkFallbacks.swift */,
 				B00100E3 /* MagicTreatmentCatalog.swift */,
@@ -627,6 +631,7 @@
 		D0020001 /* TradingCardScannerTests */ = {
 			isa = PBXGroup;
 			children = (
+				B0020114 /* Info.plist */,
 				B002010B /* CollectionStorageBootstrapTests.swift */,
 				B002010C /* PrivacyAndSupportSurfaceTests.swift */,
 				B002010D /* CollectionSyncDiagnosticsTests.swift */,
@@ -913,6 +918,7 @@
 				A0010048 /* CardCenteringExport.swift in Sources */,
 				A0010050 /* BrowseCatalogModels.swift in Sources */,
 				A0010051 /* BrowseCatalog.swift in Sources */,
+				A00100C4 /* CatalogSetCompletion.swift in Sources */,
 				A0010052 /* BrowseView.swift in Sources */,
 				A00100C3 /* ArtworkFallbacks.swift in Sources */,
 				A00100C2 /* CatalogSetTile.swift in Sources */,
@@ -1133,7 +1139,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1156,7 +1163,8 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				ENABLE_TESTABILITY = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1179,7 +1187,8 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

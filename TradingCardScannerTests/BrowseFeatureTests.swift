@@ -35,8 +35,12 @@ final class BrowseFeatureTests: XCTestCase {
     /// Developer-only release step. Set POKEMON_SNAPSHOT_OUTPUT to a checkout
     /// directory before running this test; normal unit-test runs are a no-op.
     func testGeneratePokemonChecklistSnapshotWhenRequested() async throws {
-        guard let path = ProcessInfo.processInfo.environment["POKEMON_SNAPSHOT_OUTPUT"],
-              !path.isEmpty else { return }
+        let configuredPath = ProcessInfo.processInfo.environment["POKEMON_SNAPSHOT_OUTPUT"]
+            ?? (Bundle(for: BrowseFeatureTests.self)
+                .object(forInfoDictionaryKey: "POKEMON_SNAPSHOT_OUTPUT") as? String)
+        guard let path = configuredPath,
+              !path.isEmpty,
+              !path.contains("$(") else { return }
         let output = URL(fileURLWithPath: path, isDirectory: true)
         try await PokemonChecklistSnapshotGenerator.generate(
             transport: TCGdexBrowseTransport(),
@@ -445,6 +449,37 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertTrue(saved?.isFresh == true)
     }
 
+    func testSortPriceCacheRoundTripsAndReportsStaleOrderingHints() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let prices = ["card-1": 12.50, "card-2": 1.25]
+
+        let writer = CatalogCacheStore(root: root)
+        await writer.storeSortPrices(prices, for: "sv08.5")
+
+        let reader = CatalogCacheStore(root: root)
+        let saved = await reader.sortPrices(for: "sv08.5")
+        XCTAssertEqual(saved?.value, prices)
+        XCTAssertTrue(saved?.isFresh == true)
+
+        let directory = root.appendingPathComponent("SortPrices", isDirectory: true)
+        let files = try FileManager.default.contentsOfDirectory(
+            at: directory,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )
+        let file = try XCTUnwrap(files.first)
+        var envelope = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any]
+        )
+        envelope["storedAt"] = 0.0
+        try JSONSerialization.data(withJSONObject: envelope).write(to: file, options: .atomic)
+
+        let stale = await CatalogCacheStore(root: root).sortPrices(for: "sv08.5")
+        XCTAssertEqual(stale?.value, prices)
+        XCTAssertFalse(stale?.isFresh == true)
+    }
+
     func testSealedPageCacheRetainsSavedPageAndFreshness() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -622,6 +657,30 @@ final class BrowseFeatureTests: XCTestCase {
             now: now
         )
         XCTAssertEqual(edgeRail.sets.map(\.id), [exactWindowEdge.id])
+
+        let minimumRailCount = set(
+            game: .magic,
+            id: "minimum-rail-count",
+            daysFromNow: -1,
+            cardCount: CatalogSetOrdering.minimumRailCardCount
+        )
+        let minimumRail = CatalogSetOrdering.releaseRail(
+            from: [.magic: [tooSmall, minimumRailCount]],
+            now: now
+        )
+        XCTAssertEqual(minimumRail.sets.map(\.id), [minimumRailCount.id])
+
+        let recoveredFromZeroBreakdown = set(
+            game: .pokemon,
+            id: "recovered-from-zero-breakdown",
+            daysFromNow: -1,
+            cardCount: 69
+        )
+        let recoveredRail = CatalogSetOrdering.releaseRail(
+            from: [.pokemon: [recoveredFromZeroBreakdown]],
+            now: now
+        )
+        XCTAssertEqual(recoveredRail.sets.map(\.id), [recoveredFromZeroBreakdown.id])
         XCTAssertEqual(magicOlder.game, .magic)
     }
 
@@ -816,6 +875,82 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertTrue(zip(fractions, fractions.dropFirst()).allSatisfy { $0 > $1 })
     }
 
+    func testMasterCountTreatsAllZeroVariationBreakdownAsUnpublished() throws {
+        let zeroBreakdown = try decode(TCGdexCardCount.self, from: """
+        {"total":200,"official":200,"normal":0,"holo":0,"reverse":0}
+        """)
+        XCTAssertEqual(
+            PokemonMasterSetDefinition.masterCount(
+                cardCount: zeroBreakdown,
+                setName: "Black and White",
+                printRun: nil
+            ),
+            200
+        )
+
+        let reverseOnly = try decode(TCGdexCardCount.self, from: """
+        {"total":20,"official":20,"normal":0,"holo":0,"reverse":5}
+        """)
+        XCTAssertEqual(
+            PokemonMasterSetDefinition.masterCount(
+                cardCount: reverseOnly,
+                setName: "Fixture",
+                printRun: nil
+            ),
+            5
+        )
+
+        let publishedBreakdown = try decode(TCGdexCardCount.self, from: """
+        {"total":24,"official":24,"normal":40,"holo":0,"reverse":72}
+        """)
+        XCTAssertEqual(
+            PokemonMasterSetDefinition.masterCount(
+                cardCount: publishedBreakdown,
+                setName: "Prismatic Evolutions",
+                printRun: nil
+            ),
+            112
+        )
+
+        let firstEdition = try decode(TCGdexCardCount.self, from: """
+        {"total":69,"official":69,"normal":0,"holo":0,"reverse":0,"firstEd":42}
+        """)
+        XCTAssertEqual(
+            PokemonMasterSetDefinition.masterCount(
+                cardCount: firstEdition,
+                setName: "Base Set",
+                printRun: .firstEdition
+            ),
+            42
+        )
+
+        let baseUnlimited = try decode(TCGdexCardCount.self, from: """
+        {"total":2,"official":2,"normal":0,"holo":0,"reverse":0}
+        """)
+        XCTAssertEqual(
+            PokemonMasterSetDefinition.masterCount(
+                cardCount: baseUnlimited,
+                setName: "Base Set",
+                printRun: .unlimited
+            ),
+            1
+        )
+    }
+
+    func testSetDirectoryExcludesStandalonePromoRows() throws {
+        for id in ["rc", "sp", "wp"] {
+            let row = try decode(TCGdexBrowseSet.self, from: """
+            {"id":"\(id)","name":"\(id.uppercased())","cardCount":{"total":1,"official":1}}
+            """)
+            XCTAssertFalse(PokemonMasterSetDefinition.includesInSetDirectory(row))
+        }
+
+        let normal = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"fixture","name":"A normal set","cardCount":null}
+        """)
+        XCTAssertTrue(PokemonMasterSetDefinition.includesInSetDirectory(normal))
+    }
+
     func testCatalogSetOrderingMostCompleteUsesStableReleaseAndIDTies() {
         func set(_ providerID: String, sortRank: Int) -> CatalogSet {
             CatalogSet(
@@ -842,6 +977,42 @@ final class BrowseFeatureTests: XCTestCase {
                 ownership: ownership
             ).map(\.id),
             [alpha.id, beta.id, older.id]
+        )
+    }
+
+    func testCatalogSetOrderingMostCompleteUsesChecklistCompletionIndex() {
+        func set(_ providerID: String) -> CatalogSet {
+            CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: providerID),
+                name: providerID,
+                code: providerID.uppercased(),
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 99,
+                releaseDate: nil,
+                sortRank: 1
+            )
+        }
+
+        let lower = set("lower")
+        let higher = set("higher")
+        let index = CatalogSetCompletionIndex(
+            completions: [
+                lower.id: SetCompletion(owned: 1, total: 2, unit: "variations"),
+                higher.id: SetCompletion(owned: 2, total: 3, unit: "variations")
+            ],
+            tier: .standard
+        )
+
+        XCTAssertEqual(
+            CatalogSetOrdering.ordered(
+                [lower, higher],
+                by: .mostComplete,
+                ownership: CatalogOwnershipIndex(rows: []),
+                completions: index,
+                tier: .standard
+            ).map(\.id),
+            [higher.id, lower.id]
         )
     }
 
@@ -1239,6 +1410,10 @@ final class BrowseFeatureTests: XCTestCase {
             .appendingPathComponent(UUID().uuidString, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         return directory
+    }
+
+    private func decode<Value: Decodable>(_ type: Value.Type, from string: String) throws -> Value {
+        try JSONDecoder().decode(type, from: Data(string.utf8))
     }
 
     private func waitUntil(
@@ -1891,14 +2066,81 @@ final class BrowseCollectionTests: XCTestCase {
         let cards = [
             summary(id: "set-10", number: "10"),
             summary(id: "set-2", number: "2"),
-            summary(id: "set-1", number: "1")
+            summary(id: "set-1", number: "1"),
+            summary(id: "set-3", number: "3")
         ]
         let prices = [cards[0].id: 4.50, cards[1].id: 12.00]
 
-        XCTAssertEqual(query(cards, sort: .numberLowToHigh).map(\.collectorNumber), ["1", "2", "10"])
-        XCTAssertEqual(query(cards, sort: .numberHighToLow).map(\.collectorNumber), ["10", "2", "1"])
-        XCTAssertEqual(query(cards, sort: .priceHighToLow, prices: prices).map(\.collectorNumber), ["2", "10", "1"])
-        XCTAssertEqual(query(cards, sort: .priceLowToHigh, prices: prices).map(\.collectorNumber), ["10", "2", "1"])
+        XCTAssertEqual(query(cards, sort: .numberLowToHigh).map(\.collectorNumber), ["1", "2", "3", "10"])
+        XCTAssertEqual(query(cards, sort: .numberHighToLow).map(\.collectorNumber), ["10", "3", "2", "1"])
+        XCTAssertEqual(query(cards, sort: .priceHighToLow, prices: prices).map(\.collectorNumber), ["2", "10", "1", "3"])
+        XCTAssertEqual(query(cards, sort: .priceLowToHigh, prices: prices).map(\.collectorNumber), ["10", "2", "1", "3"])
+    }
+
+    func testPriceRequestIdentityRejectsStaleContentRequestsAndCancellation() {
+        let content = UUID()
+        let request = UUID()
+        let identity = CatalogPriceRequestIdentity(
+            contentGeneration: content,
+            requestID: request
+        )
+
+        XCTAssertTrue(
+            identity.matches(
+                contentGeneration: content,
+                requestID: request,
+                isCancelled: false
+            )
+        )
+        XCTAssertFalse(
+            identity.matches(
+                contentGeneration: UUID(),
+                requestID: request,
+                isCancelled: false
+            )
+        )
+        XCTAssertFalse(
+            identity.matches(
+                contentGeneration: content,
+                requestID: UUID(),
+                isCancelled: false
+            )
+        )
+        XCTAssertFalse(
+            identity.matches(
+                contentGeneration: content,
+                requestID: nil,
+                isCancelled: false
+            )
+        )
+        XCTAssertFalse(
+            identity.matches(
+                contentGeneration: content,
+                requestID: request,
+                isCancelled: true
+            )
+        )
+    }
+
+    func testPriceLoadStateRejectsLateCompletionAfterContentChanges() {
+        var state = CatalogPriceLoadState()
+        let oldRequest = UUID()
+        state.begin(requestID: oldRequest)
+        XCTAssertTrue(state.isLoading)
+        XCTAssertFalse(state.hasLoadedPrices)
+
+        state.invalidate()
+        state.finish(requestID: oldRequest, loaded: true)
+        XCTAssertNil(state.requestID)
+        XCTAssertFalse(state.isLoading)
+        XCTAssertFalse(state.hasLoadedPrices)
+
+        let currentRequest = UUID()
+        state.begin(requestID: currentRequest)
+        state.finish(requestID: currentRequest, loaded: true)
+        XCTAssertNil(state.requestID)
+        XCTAssertFalse(state.isLoading)
+        XCTAssertTrue(state.hasLoadedPrices)
     }
 
     func testCatalogSetQuerySortsCollectorNumberSuffixesNaturally() {
@@ -3012,6 +3254,379 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(counts.card, 1)
     }
 
+    func testCatalogDetailsCoalescesVariantRequestsAndPreservesVariantPrices() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"sv08.5","name":"Prismatic Evolutions","tcgOnline":"PRE","cardCount":{"total":1,"official":1}}
+        """)
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"sv08.5","name":"Prismatic Evolutions","cards":[],"cardCount":{"total":1,"official":1}}
+        """)
+        let detail = try decode(TCGdexCard.self, from: """
+        {
+          "id":"sv08.5-001","localId":"001","name":"Eevee","image":null,
+          "set":{"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":1,"official":1}},
+          "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":true,"wPromo":false},
+          "variants_detailed":[
+            {"type":"normal","size":"standard","languages":["en"],"pricing":{"tcgplayer":{"normal":{"marketPrice":1.25}}}},
+            {"type":"reverse","size":"standard","languages":["en"],"pricing":{"tcgplayer":{"reverse-holofoil":{"marketPrice":7.5}}}}
+          ]
+        }
+        """)
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["sv08.5": provider],
+            cards: [detail.id: detail]
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: PokemonChecklistStore(
+                root: root.appendingPathComponent("checklists"),
+                bundle: nil
+            )
+        )
+        let loadedSets = try await catalog.sets(for: .pokemon)
+        let set = try XCTUnwrap(loadedSets.first)
+        let normal = CatalogCardSummary(
+            game: .pokemon,
+            providerID: detail.id,
+            setID: set.catalogID,
+            setName: set.name,
+            setCode: set.code,
+            name: detail.name,
+            collectorNumber: detail.localId,
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .normal,
+            isSoleSlotForCard: false
+        )
+        let reverse = CatalogCardSummary(
+            game: .pokemon,
+            providerID: detail.id,
+            setID: set.catalogID,
+            setName: set.name,
+            setCode: set.code,
+            name: detail.name,
+            collectorNumber: detail.localId,
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .reverse,
+            isSoleSlotForCard: false
+        )
+
+        async let normalDetails = catalog.details(for: normal)
+        async let reverseDetails = catalog.details(for: reverse)
+        _ = try await (normalDetails, reverseDetails)
+
+        var lastPrices: [String: Double] = [:]
+        for await prices in catalog.sortPrices(for: [normal, reverse]) {
+            lastPrices = prices
+        }
+
+        XCTAssertEqual(lastPrices[normal.id], 1.25)
+        XCTAssertEqual(lastPrices[reverse.id], 7.5)
+        let counts = await transport.requestCounts()
+        XCTAssertEqual(counts.card, 1)
+    }
+
+    /// The price prefetch runs on the first page, so a later request routinely
+    /// covers fewer slots than the stored map. Writing that narrower map back
+    /// would truncate a fully priced set to one page on every cold open, which
+    /// is exactly the relaunch cost the sort-price cache exists to remove.
+    func testNarrowerSortPriceRequestDoesNotTruncateTheStoredMap() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let pagesRoot = root.appendingPathComponent("pages")
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"sv08.5","name":"Prismatic Evolutions","tcgOnline":"PRE","cardCount":{"total":2,"official":2}}
+        """)
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"sv08.5","name":"Prismatic Evolutions","cards":[],"cardCount":{"total":2,"official":2}}
+        """)
+        func card(id: String, localId: String, price: Double) throws -> TCGdexCard {
+            try decode(TCGdexCard.self, from: """
+            {
+              "id":"\(id)","localId":"\(localId)","name":"Eevee","image":null,
+              "set":{"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":2,"official":2}},
+              "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":false,"wPromo":false},
+              "variants_detailed":[
+                {"type":"normal","size":"standard","languages":["en"],"pricing":{"tcgplayer":{"normal":{"marketPrice":\(price)}}}}
+              ]
+            }
+            """)
+        }
+        let first = try card(id: "sv08.5-001", localId: "001", price: 1.25)
+        let second = try card(id: "sv08.5-002", localId: "002", price: 9.0)
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["sv08.5": provider],
+            cards: [first.id: first, second.id: second]
+        )
+
+        func makeCatalog() -> BrowseCatalog {
+            BrowseCatalog(
+                cache: CatalogCacheStore(root: pagesRoot),
+                pokemonTransport: transport,
+                checklistStore: PokemonChecklistStore(
+                    root: root.appendingPathComponent("checklists"),
+                    bundle: nil
+                )
+            )
+        }
+
+        let warmCatalog = makeCatalog()
+        let loadedSets = try await warmCatalog.sets(for: .pokemon)
+        let set = try XCTUnwrap(loadedSets.first)
+        func summary(for detail: TCGdexCard) -> CatalogCardSummary {
+            CatalogCardSummary(
+                game: .pokemon,
+                providerID: detail.id,
+                setID: set.catalogID,
+                setName: set.name,
+                setCode: set.code,
+                name: detail.name,
+                collectorNumber: detail.localId,
+                thumbnailURL: nil,
+                imageURL: nil,
+                masterSetVariant: .normal,
+                isSoleSlotForCard: true
+            )
+        }
+        let firstSlot = summary(for: first)
+        let secondSlot = summary(for: second)
+
+        for await _ in warmCatalog.sortPrices(for: [firstSlot, secondSlot]) {}
+        let fullMap = await CatalogCacheStore(root: pagesRoot).sortPrices(for: set.catalogID.id)
+        XCTAssertEqual(fullMap?.value[firstSlot.id], 1.25)
+        XCTAssertEqual(fullMap?.value[secondSlot.id], 9.0)
+        let warmCardRequests = await transport.requestCounts().card
+
+        // A cold catalog sharing the same cache directory, asked for one slot.
+        let coldCatalog = makeCatalog()
+        for await _ in coldCatalog.sortPrices(for: [firstSlot]) {}
+
+        let mergedMap = await CatalogCacheStore(root: pagesRoot).sortPrices(for: set.catalogID.id)
+        XCTAssertEqual(mergedMap?.value[firstSlot.id], 1.25)
+        XCTAssertEqual(
+            mergedMap?.value[secondSlot.id],
+            9.0,
+            "The unrequested slot's ordering hint must survive a narrower request"
+        )
+        let coldCardRequests = await transport.requestCounts().card
+        XCTAssertEqual(
+            coldCardRequests,
+            warmCardRequests,
+            "A fresh cached price must not be re-fetched"
+        )
+    }
+
+    func testSortPriceStreamPublishesIncrementallyForSlowLargeFixture() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"fixture","name":"Slow Fixture","cardCount":{"total":60,"official":60}}
+        """)
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"fixture","name":"Slow Fixture","cards":[],"cardCount":{"total":60,"official":60}}
+        """)
+        var cards: [String: TCGdexCard] = [:]
+        var summaries: [CatalogCardSummary] = []
+        for index in 0..<60 {
+            let providerID = "fixture-\(String(format: "%03d", index + 1))"
+            let detail = try decode(TCGdexCard.self, from: """
+            {"id":"\(providerID)","localId":"\(String(format: "%03d", index + 1))","name":"Card \(index)","image":null,
+             "set":{"id":"fixture","name":"Slow Fixture","cardCount":{"total":60,"official":60}},
+             "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":false,"wPromo":false},
+             "pricing":{"tcgplayer":{"normal":{"marketPrice":\(Double(index + 1))}}}}
+            """)
+            cards[providerID] = detail
+            summaries.append(
+                CatalogCardSummary(
+                    game: .pokemon,
+                    providerID: providerID,
+                    setID: CatalogSetID(game: .pokemon, providerID: "fixture"),
+                    setName: "Slow Fixture",
+                    setCode: "FIX",
+                    name: detail.name,
+                    collectorNumber: detail.localId,
+                    thumbnailURL: nil,
+                    imageURL: nil,
+                    masterSetVariant: .normal,
+                    isSoleSlotForCard: true
+                )
+            )
+        }
+
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["fixture": provider],
+            cards: cards,
+            cardDelayNanoseconds: 60_000_000
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: PokemonChecklistStore(
+                root: root.appendingPathComponent("checklists"),
+                bundle: nil
+            )
+        )
+
+        var emissions: [[String: Double]] = []
+        for await prices in catalog.sortPrices(for: summaries) {
+            emissions.append(prices)
+        }
+
+        XCTAssertGreaterThanOrEqual(emissions.count, 2)
+        let expected = Dictionary(uniqueKeysWithValues: summaries.enumerated().map {
+            ($0.element.id, Double($0.offset + 1))
+        })
+        XCTAssertEqual(emissions.last, expected)
+    }
+
+    func testCancellingSortPriceStreamCancelsInFlightProviderWork() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"fixture","name":"Slow Fixture","cardCount":{"total":1,"official":1}}
+        """)
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"fixture","name":"Slow Fixture","cards":[],"cardCount":{"total":1,"official":1}}
+        """)
+        let detail = try decode(TCGdexCard.self, from: """
+        {"id":"fixture-001","localId":"001","name":"Card","image":null,
+         "set":{"id":"fixture","name":"Slow Fixture","cardCount":{"total":1,"official":1}},
+         "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":false,"wPromo":false},
+         "pricing":{"tcgplayer":{"normal":{"marketPrice":1.0}}}}
+        """)
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["fixture": provider],
+            cards: [detail.id: detail],
+            cardDelayNanoseconds: 5_000_000_000
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: PokemonChecklistStore(
+                root: root.appendingPathComponent("checklists"),
+                bundle: nil
+            )
+        )
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: detail.id,
+            setID: CatalogSetID(game: .pokemon, providerID: "fixture"),
+            setName: "Slow Fixture",
+            setCode: "FIX",
+            name: detail.name,
+            collectorNumber: detail.localId,
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .normal,
+            isSoleSlotForCard: true
+        )
+
+        let consumer = Task {
+            for await _ in catalog.sortPrices(for: [summary]) { }
+        }
+        var requestStarted = false
+        for _ in 0..<100 {
+            if await transport.requestCounts().card > 0 {
+                requestStarted = true
+                break
+            }
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertTrue(requestStarted)
+        consumer.cancel()
+        await consumer.value
+
+        var cancelled = 0
+        for _ in 0..<200 {
+            cancelled = await transport.cancelledCardRequestCount()
+            if cancelled > 0 { break }
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertGreaterThan(cancelled, 0)
+    }
+
+    func testCancellingOneSharedDetailWaiterDoesNotCancelTheOther() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"fixture","name":"Slow Fixture","cardCount":{"total":1,"official":1}}
+        """)
+        let provider = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"fixture","name":"Slow Fixture","cards":[],"cardCount":{"total":1,"official":1}}
+        """)
+        let detail = try decode(TCGdexCard.self, from: """
+        {"id":"fixture-001","localId":"001","name":"Card","image":null,
+         "set":{"id":"fixture","name":"Slow Fixture","cardCount":{"total":1,"official":1}},
+         "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":false,"wPromo":false},
+         "pricing":{"tcgplayer":{"normal":{"marketPrice":1.0}}}}
+        """)
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["fixture": provider],
+            cards: [detail.id: detail],
+            cardDelayNanoseconds: 300_000_000
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: PokemonChecklistStore(
+                root: root.appendingPathComponent("checklists"),
+                bundle: nil
+            )
+        )
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: detail.id,
+            setID: CatalogSetID(game: .pokemon, providerID: "fixture"),
+            setName: "Slow Fixture",
+            setCode: "FIX",
+            name: detail.name,
+            collectorNumber: detail.localId,
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .normal,
+            isSoleSlotForCard: true
+        )
+
+        let cancelledWaiter = Task { try await catalog.details(for: summary) }
+        var requestStarted = false
+        for _ in 0..<100 {
+            if await transport.requestCounts().card > 0 {
+                requestStarted = true
+                break
+            }
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertTrue(requestStarted)
+
+        let survivingWaiter = Task { try await catalog.details(for: summary) }
+        try await Task.sleep(nanoseconds: 20_000_000)
+        cancelledWaiter.cancel()
+
+        let cancelledResult = await cancelledWaiter.result
+        guard case let .failure(error) = cancelledResult else {
+            return XCTFail("The cancelled waiter should not receive a detail result")
+        }
+        XCTAssertTrue(error is CancellationError)
+
+        let survivingResult = await survivingWaiter.result
+        guard case .success = survivingResult else {
+            return XCTFail("The remaining waiter should receive the shared detail result")
+        }
+        let cardRequestCount = await transport.requestCounts().card
+        let cancelledCardRequestCount = await transport.cancelledCardRequestCount()
+        XCTAssertEqual(cardRequestCount, 1)
+        XCTAssertEqual(cancelledCardRequestCount, 0)
+    }
+
     func testBuilderPreservesStandardAndExpandedVariantSlots() throws {
         let provider = try decode(TCGdexSetCatalog.self, from: """
         {
@@ -3043,12 +3658,317 @@ final class PokemonChecklistBrowseTests: XCTestCase {
 
         XCTAssertEqual(built.cards.filter { !$0.isExpandedMasterSetVariant }.count, 2)
         XCTAssertEqual(built.cards.filter(\.isExpandedMasterSetVariant).count, 2)
+        XCTAssertEqual(built.standardSlotCount, 2)
+        XCTAssertEqual(built.expandedSlotCount, 4)
         XCTAssertEqual(Set(built.cards.compactMap { $0.masterSetVariant?.id }), Set([
             PhysicalVariant.normal.id,
             PhysicalVariant.reverse.id,
             PhysicalVariant.pokemonFoilPattern("pokeball").id,
             PhysicalVariant.pokemonFoilPattern("masterball").id
         ]))
+    }
+
+    func testSnapshotEntryDecodesLegacyManifestWithoutSlotCounts() throws {
+        let set = sampleSet(id: "legacy", name: "Legacy Set")
+        let entry = PokemonChecklistSnapshotEntry(
+            set: set,
+            providerID: set.providerID,
+            providerFingerprint: "fixture",
+            officialCount: 12,
+            standardSlotCount: 3,
+            expandedSlotCount: 4,
+            resource: "sets/legacy.json"
+        )
+        var object = try XCTUnwrap(
+            JSONSerialization.jsonObject(
+                with: JSONEncoder().encode(entry)
+            ) as? [String: Any]
+        )
+        object.removeValue(forKey: "standardSlotCount")
+        object.removeValue(forKey: "expandedSlotCount")
+        let legacyData = try JSONSerialization.data(withJSONObject: object)
+
+        let decoded = try JSONDecoder().decode(
+            PokemonChecklistSnapshotEntry.self,
+            from: legacyData
+        )
+        XCTAssertNil(decoded.standardSlotCount)
+        XCTAssertNil(decoded.expandedSlotCount)
+        XCTAssertTrue(
+            PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "fixture",
+                entries: [decoded]
+            ).isSupported
+        )
+    }
+
+    func testBundledChecklistManifestCarriesDirectoryDenominatorParity() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root, bundle: Bundle.main)
+        let optionalSnapshot = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(optionalSnapshot)
+        XCTAssertEqual(snapshot.manifest.entries.count, 157)
+        XCTAssertTrue(
+            snapshot.manifest.entries.allSatisfy {
+                $0.standardSlotCount != nil && $0.expandedSlotCount != nil
+            }
+        )
+
+        let builder = CatalogSetCompletionBuilder(checklistStore: store)
+        let sets = snapshot.manifest.entries.map(\.set)
+        let standard = await builder.build(
+            sets: sets,
+            ownership: CatalogOwnershipIndex(rows: []),
+            tier: .standard
+        )
+        let expanded = await builder.build(
+            sets: sets,
+            ownership: CatalogOwnershipIndex(rows: []),
+            tier: .expanded
+        )
+
+        for entry in snapshot.manifest.entries {
+            let optionalChecklist = await store.mergedChecklist(for: entry.set.catalogID)
+            let checklist = try XCTUnwrap(optionalChecklist)
+            let standardSlots = checklist.filter { !$0.isExpandedMasterSetVariant }
+            let standardCompletion = try XCTUnwrap(
+                standard.completion(for: entry.set, tier: .standard)
+            )
+            let expandedCompletion = try XCTUnwrap(
+                expanded.completion(for: entry.set, tier: .expanded)
+            )
+            XCTAssertEqual(
+                standardCompletion.total,
+                standardSlots.count,
+                "standard denominator drifted for \(entry.providerID)"
+            )
+            XCTAssertEqual(
+                expandedCompletion.total,
+                checklist.count,
+                "expanded denominator drifted for \(entry.providerID)"
+            )
+        }
+    }
+
+    func testCatalogSetCompletionCapsExactChecklistReadsAtFortyCandidates() async {
+        var sets: [CatalogSet] = []
+        var entries: [PokemonChecklistSnapshotEntry] = []
+        var checklists: [String: [CatalogCardSummary]] = [:]
+        var ownedCards: [CollectedCard] = []
+
+        for index in 0..<41 {
+            let providerID = "fixture\(index)"
+            let code = "F\(index)"
+            let set = CatalogSet(
+                catalogID: CatalogSetID(game: .pokemon, providerID: providerID),
+                name: "Fixture \(index)",
+                code: code,
+                logoURL: nil,
+                symbolURL: nil,
+                cardCount: 99,
+                releaseDate: nil,
+                sortRank: index
+            )
+            let slot = CatalogCardSummary(
+                game: .pokemon,
+                providerID: "\(providerID)-001",
+                setID: set.catalogID,
+                setName: set.name,
+                setCode: set.code,
+                name: "Card \(index)",
+                collectorNumber: "001",
+                thumbnailURL: nil,
+                imageURL: nil,
+                masterSetVariant: .normal,
+                isSoleSlotForCard: true
+            )
+            let entry = PokemonChecklistSnapshotEntry(
+                set: set,
+                providerID: providerID,
+                providerFingerprint: "fixture",
+                officialCount: 99,
+                standardSlotCount: 1,
+                expandedSlotCount: 1,
+                resource: "sets/\(providerID).json"
+            )
+            let owned = completionCard(number: "001", variant: .normal)
+            owned.collectionKey = "overflow-\(index)"
+            owned.providerID = slot.providerID
+            owned.setName = set.name
+            owned.setCode = set.code
+
+            sets.append(set)
+            entries.append(entry)
+            checklists[set.id] = [slot]
+            ownedCards.append(owned)
+
+            if index == 40 {
+                let secondOwned = completionCard(number: "002", variant: .normal)
+                secondOwned.collectionKey = "priority-\(index)"
+                secondOwned.providerID = "\(providerID)-002"
+                secondOwned.setName = set.name
+                secondOwned.setCode = set.code
+                ownedCards.append(secondOwned)
+            }
+        }
+
+        let checklistStore = CountingChecklistStore(
+            entries: entries,
+            checklists: checklists
+        )
+        let index = await CatalogSetCompletionBuilder(checklistStore: checklistStore).build(
+            sets: sets,
+            ownership: CatalogOwnershipIndex(ownedCards),
+            tier: .standard
+        )
+
+        XCTAssertEqual(
+            index.completion(for: sets[0], tier: .standard),
+            SetCompletion(owned: 1, total: 1, unit: "variations")
+        )
+        XCTAssertEqual(
+            index.completion(for: sets[40], tier: .standard),
+            SetCompletion(owned: 1, total: 1, unit: "variations")
+        )
+        let overflowSets = sets.filter {
+            index.completion(for: $0, tier: .standard)?.unit == "cards"
+        }
+        XCTAssertEqual(overflowSets.count, 1)
+        XCTAssertNotEqual(overflowSets.first?.id, sets[40].id)
+        let checklistRequests = await checklistStore.checklistRequestCount()
+        XCTAssertEqual(checklistRequests, 40)
+    }
+
+    func testCatalogSetCompletionUsesManifestDenominatorAndSkipsUnownedChecklistReads() async {
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "sv08.5"),
+            name: "Prismatic Evolutions",
+            code: "PRE",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 99,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let normal = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "sv08.5-001",
+            setID: set.catalogID,
+            setName: set.name,
+            setCode: set.code,
+            name: "Eevee",
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .normal,
+            isSoleSlotForCard: false
+        )
+        let masterBall = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "sv08.5-001",
+            setID: set.catalogID,
+            setName: set.name,
+            setCode: set.code,
+            name: "Eevee",
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .masterBall,
+            isExpandedMasterSetVariant: true,
+            isSoleSlotForCard: false
+        )
+        let entry = PokemonChecklistSnapshotEntry(
+            set: set,
+            providerID: set.providerID,
+            providerFingerprint: "fixture",
+            officialCount: 90,
+            standardSlotCount: 1,
+            expandedSlotCount: 2,
+            resource: "sets/fixture.json"
+        )
+        let checklistStore = CountingChecklistStore(
+            entries: [entry],
+            checklists: [set.id: [normal, masterBall]]
+        )
+        let builder = CatalogSetCompletionBuilder(checklistStore: checklistStore)
+
+        let empty = await builder.build(
+            sets: [set],
+            ownership: CatalogOwnershipIndex(rows: []),
+            tier: .standard
+        )
+        XCTAssertEqual(
+            empty.completion(for: set, tier: .standard),
+            SetCompletion(owned: 0, total: 1, unit: "variations")
+        )
+        let emptyChecklistRequests = await checklistStore.checklistRequestCount()
+        XCTAssertEqual(emptyChecklistRequests, 0)
+
+        let ownedCard = completionCard(number: "001", variant: .normal)
+        let owned = CatalogOwnershipIndex([ownedCard])
+        let standard = await builder.build(sets: [set], ownership: owned, tier: .standard)
+        XCTAssertEqual(
+            standard.completion(for: set, tier: .standard),
+            SetCompletionCalculator.progress(for: [normal], cards: [ownedCard])
+        )
+        XCTAssertEqual(
+            standard.completion(for: set, tier: .standard),
+            owned.progress(for: [normal])
+        )
+
+        let expanded = await builder.build(sets: [set], ownership: owned, tier: .expanded)
+        XCTAssertEqual(
+            expanded.completion(for: set, tier: .expanded),
+            SetCompletionCalculator.progress(
+                for: [normal, masterBall],
+                cards: [ownedCard]
+            )
+        )
+        XCTAssertEqual(
+            expanded.completion(for: set, tier: .expanded),
+            owned.progress(for: [normal, masterBall])
+        )
+        let loadedChecklistRequests = await checklistStore.checklistRequestCount()
+        XCTAssertEqual(loadedChecklistRequests, 2)
+    }
+
+    func testCatalogSetCompletionIgnoresCaseDuplicateSetIDs() async {
+        let upper = sampleSet(id: "FIXTURE", name: "Fixture")
+        let lower = sampleSet(id: "fixture", name: "Fixture")
+        let slot = sampleSummary(set: upper, name: "Card")
+        let entry = PokemonChecklistSnapshotEntry(
+            set: upper,
+            providerID: upper.providerID,
+            providerFingerprint: "fixture",
+            officialCount: 1,
+            standardSlotCount: 1,
+            expandedSlotCount: 1,
+            resource: "sets/fixture.json"
+        )
+        let checklistStore = CountingChecklistStore(
+            entries: [entry],
+            checklists: [upper.id: [slot]]
+        )
+        let ownedCard = completionCard(number: "001", variant: .normal)
+        ownedCard.providerID = "fixture-001"
+        ownedCard.setName = "Fixture"
+        ownedCard.setCode = "FIX"
+
+        let index = await CatalogSetCompletionBuilder(checklistStore: checklistStore).build(
+            sets: [upper, lower],
+            ownership: CatalogOwnershipIndex([ownedCard]),
+            tier: .standard
+        )
+
+        let expected = SetCompletion(owned: 1, total: 1, unit: "variations")
+        XCTAssertEqual(index.completion(for: upper, tier: .standard), expected)
+        XCTAssertEqual(index.completion(for: lower, tier: .standard), expected)
+        let checklistRequests = await checklistStore.checklistRequestCount()
+        XCTAssertEqual(checklistRequests, 1)
     }
 
     func testSuccessfulRefreshPublishesCompleteChecklistBeforeBrowseUsesIt() async throws {
@@ -3380,7 +4300,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertTrue(needsFullSweep)
     }
 
-    func testLimitlessArtworkNormalizesPrintedKeys() {
+    func testLimitlessArtworkNormalizesPrintedKeys() throws {
         let cases: [(code: String, number: String, key: String)] = [
             ("SLG", "1", "SLG_001"),
             ("BRS", "TG01", "BRS_TG1"),
@@ -3408,6 +4328,12 @@ final class PokemonChecklistBrowseTests: XCTestCase {
 
         XCTAssertNil(LimitlessArtwork.urls(setCode: "AQ", collectorNumber: "050a"))
         XCTAssertNil(LimitlessArtwork.urls(setCode: "PBL", collectorNumber: "050a"))
+
+        let mee = try XCTUnwrap(
+            LimitlessArtwork.urls(setCode: "MEE", collectorNumber: "001")
+        )
+        XCTAssertTrue(mee.small.absoluteString.hasSuffix("MEE/MEE_001_R_EN_XS.png"))
+        XCTAssertTrue(mee.full.absoluteString.hasSuffix("MEE/MEE_001_R_EN.png"))
     }
 
     func testGalleryArtworkInheritsParentLogoAndKeepsProviderIdentity() throws {
@@ -3444,6 +4370,17 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             source.fallbacks.last?.absoluteString,
             "https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/tpci/BRS/BRS_TG1_R_EN.png"
         )
+
+        let repeated = URL(string: "https://example.com/repeated.png")!
+        let duplicateSource = CatalogCardArtworkSource(
+            game: nil,
+            setCode: nil,
+            collectorNumber: nil,
+            thumbnailURL: repeated,
+            imageURL: repeated,
+            prefersFullSize: true
+        )
+        XCTAssertEqual(duplicateSource.remoteCandidates, [.remote(repeated)])
     }
 
     func testSetArtworkSourceUsesRequestedKindForKnownSnapshotGap() {
@@ -3456,19 +4393,23 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
 
         let logoSource = PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
-        XCTAssertEqual(logoSource.primaryURL, logoURL)
-        XCTAssertEqual(logoSource.localAssetName, "PokemonSetArtwork_sv08_5_logo")
+        XCTAssertEqual(logoSource.candidates.first, .remote(logoURL))
         XCTAssertEqual(
-            logoSource.localFallbackAssetNames,
-            ["PokemonSetArtwork_sv08_5_symbol"]
+            logoSource.candidates.dropFirst().map { $0 },
+            [
+                .bundled("PokemonSetArtwork_sv08_5_logo"),
+                .bundled("PokemonSetArtwork_sv08_5_symbol")
+            ]
         )
 
         let symbolSource = PokemonArtworkFallbacks.setSource(for: set, kind: .symbol)
-        XCTAssertEqual(symbolSource.primaryURL, logoURL)
-        XCTAssertEqual(symbolSource.localAssetName, "PokemonSetArtwork_sv08_5_symbol")
         XCTAssertEqual(
-            symbolSource.localFallbackAssetNames,
-            ["PokemonSetArtwork_sv08_5_logo"]
+            symbolSource.candidates,
+            [
+                .bundled("PokemonSetArtwork_sv08_5_symbol"),
+                .remote(logoURL),
+                .bundled("PokemonSetArtwork_sv08_5_logo")
+            ]
         )
     }
 
@@ -3483,12 +4424,119 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
 
         let logoSource = PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
-        XCTAssertEqual(logoSource.primaryURL, logoURL)
-        XCTAssertEqual(logoSource.fallbacks.first, symbolURL)
+        XCTAssertEqual(
+            logoSource.candidates,
+            [
+                .remote(logoURL),
+                .bundled("PokemonSetArtwork_sv08_5_logo"),
+                .remote(symbolURL),
+                .bundled("PokemonSetArtwork_sv08_5_symbol")
+            ]
+        )
 
         let symbolSource = PokemonArtworkFallbacks.setSource(for: set, kind: .symbol)
-        XCTAssertEqual(symbolSource.primaryURL, symbolURL)
-        XCTAssertEqual(symbolSource.fallbacks.first, logoURL)
+        XCTAssertEqual(
+            symbolSource.candidates,
+            [
+                .remote(symbolURL),
+                .bundled("PokemonSetArtwork_sv08_5_symbol"),
+                .remote(logoURL),
+                .bundled("PokemonSetArtwork_sv08_5_logo")
+            ]
+        )
+    }
+
+    func testSetArtworkSourcePrefersRequestedLogoRemoteWhenBothURLsExist() {
+        let logoURL = URL(string: "https://example.com/logo.png")!
+        let symbolURL = URL(string: "https://example.com/symbol.png")!
+        let set = sampleSet(
+            id: "fixture",
+            name: "Fixture",
+            logoURL: logoURL,
+            symbolURL: symbolURL
+        )
+
+        XCTAssertEqual(
+            PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates,
+            [.remote(logoURL), .remote(symbolURL)]
+        )
+    }
+
+    func testSetArtworkSourcePrefersBundledLogoBeforeRemoteSymbol() {
+        let symbolURL = URL(string: "https://example.com/symbol.png")!
+        let set = sampleSet(
+            id: "sv08.5",
+            name: "Prismatic Evolutions",
+            logoURL: nil,
+            symbolURL: symbolURL
+        )
+
+        let candidates = PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates
+        XCTAssertEqual(candidates.first, .bundled("PokemonSetArtwork_sv08_5_logo"))
+        XCTAssertEqual(candidates.dropFirst().first, .remote(symbolURL))
+    }
+
+    func testSetArtworkSourceUsesCel25ccParentLogoBeforeBundledArtwork() {
+        let set = sampleSet(id: "cel25cc", name: "Celebrations Classic Collection")
+        let candidates = PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates
+        let parent = PokemonArtworkFallbacks.parentLogoURL(forProviderID: "cel25cc")
+
+        XCTAssertEqual(candidates.first, parent.map(PokemonArtworkFallbacks.Candidate.remote))
+        XCTAssertEqual(candidates.dropFirst().first, .bundled("PokemonSetArtwork_cel25cc_logo"))
+    }
+
+    func testCatalogCachedImageSkipsMissingBundledCandidate() {
+        let remote = URL(string: "https://example.com/fallback.png")!
+        let candidates: [PokemonArtworkFallbacks.Candidate] = [
+            .bundled("PokemonSetArtwork_that_does_not_exist"),
+            .remote(remote)
+        ]
+
+        XCTAssertEqual(
+            CatalogCachedImage.candidatesSkippingMissingBundledAssets(candidates),
+            [.remote(remote)]
+        )
+    }
+
+    func testMagicSetArtworkSourceHasNoBundledOrParentCandidates() {
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .magic, providerID: "me02"),
+            name: "Magic fixture",
+            code: "MEE",
+            logoURL: URL(string: "https://example.com/logo.svg"),
+            symbolURL: URL(string: "https://example.com/symbol.svg"),
+            cardCount: 1,
+            releaseDate: nil,
+            sortRank: 1
+        )
+
+        let candidates = PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates
+        XCTAssertTrue(candidates.allSatisfy { if case .remote = $0 { return true }; return false })
+        XCTAssertFalse(candidates.contains { if case .bundled = $0 { return true }; return false })
+    }
+
+    func testBundledSnapshotImageURLLessRowsHaveExplicitLimitlessCoverage() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(
+            root: root,
+            bundle: Bundle.main
+        )
+        let bundledSnapshot = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(bundledSnapshot)
+        let imageURLLessCodes = snapshot.manifest.entries.compactMap { entry -> String? in
+            guard snapshot.checklist(for: entry.set.catalogID)?.contains(where: { $0.imageURL == nil }) == true
+            else { return nil }
+            return entry.set.code.uppercased()
+        }
+
+        for code in Set(imageURLLessCodes) {
+            XCTAssertTrue(
+                LimitlessArtwork.supportedSetCodes.contains(code)
+                    || LimitlessArtwork.knownUncoveredSetCodes.contains(code),
+                "Uncovered image-less code needs an explicit artwork decision: \(code)"
+            )
+        }
     }
 
     func testCatalogCardDisplayGroupRejectsEmptySummaries() {
@@ -3563,6 +4611,35 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
     }
 
+    private func makeTemporaryCacheDirectory() throws -> URL {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        return directory
+    }
+
+    private func completionCard(
+        number: String,
+        variant: PhysicalVariant,
+        quantity: Int = 1
+    ) -> CollectedCard {
+        CollectedCard(
+            collectionKey: "test:\(number)#\(variant.id)",
+            game: .pokemon,
+            providerID: "sv08.5-\(number)",
+            name: "Card \(number)",
+            setName: "Prismatic Evolutions",
+            setCode: "PRE",
+            cardNumber: number,
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: variant,
+            variantResolution: .userConfirmed,
+            quantity: quantity
+        )
+    }
+
     private func decode<Value: Decodable>(_ type: Value.Type, from string: String) throws -> Value {
         try JSONDecoder().decode(type, from: Data(string.utf8))
     }
@@ -3575,6 +4652,33 @@ final class PokemonChecklistBrowseTests: XCTestCase {
 }
 
 private enum TestError: Error { case failed }
+
+private actor CountingChecklistStore: CatalogSetCompletionChecklistStore {
+    private let entries: [PokemonChecklistSnapshotEntry]
+    private let checklists: [String: [CatalogCardSummary]]
+    private var checklistRequests = 0
+
+    init(
+        entries: [PokemonChecklistSnapshotEntry],
+        checklists: [String: [CatalogCardSummary]]
+    ) {
+        self.entries = entries
+        self.checklists = checklists
+    }
+
+    func mergedEntries() async -> [PokemonChecklistSnapshotEntry] {
+        entries
+    }
+
+    func mergedChecklist(for setID: CatalogSetID) async -> [CatalogCardSummary]? {
+        checklistRequests += 1
+        return checklists[setID.id]
+    }
+
+    func checklistRequestCount() -> Int {
+        checklistRequests
+    }
+}
 
 private actor RecordingJustTCGProviding: SealedBrowseProviding {
     private let productsByGame: [CardGame: [SealedProductSummary]]
@@ -3634,7 +4738,9 @@ private actor EmptyBrowseCatalog: BrowseCatalogProviding {
         throw TestError.failed
     }
 
-    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] { [:] }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { continuation in continuation.finish() }
+    }
     func prepareCatalog() async {}
 
     func searchCount() -> Int { searches }
@@ -3673,7 +4779,9 @@ private actor PagingBrowseCatalog: BrowseCatalogProviding {
         throw TestError.failed
     }
 
-    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] { [:] }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { continuation in continuation.finish() }
+    }
     func prepareCatalog() async {}
 
     func requestedCursors() -> [String?] { cursors }
@@ -3685,9 +4793,11 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
     private let cardValues: [String: TCGdexCard]
     private let setError: Error?
     private let failingSetIDs: Set<String>
+    private let cardDelayNanoseconds: UInt64
     private var directoryRequests = 0
     private var setRequests = 0
     private var cardRequests = 0
+    private var cancelledCardRequests = 0
     private var setRequestIDs: [String: Int] = [:]
 
     init(
@@ -3695,13 +4805,15 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
         sets: [String: TCGdexSetCatalog] = [:],
         cards: [String: TCGdexCard] = [:],
         setError: Error? = nil,
-        failingSetIDs: Set<String> = []
+        failingSetIDs: Set<String> = [],
+        cardDelayNanoseconds: UInt64 = 0
     ) {
         self.rows = rows
         self.setValues = sets
         self.cardValues = cards
         self.setError = setError
         self.failingSetIDs = Set(failingSetIDs.map { $0.lowercased() })
+        self.cardDelayNanoseconds = cardDelayNanoseconds
     }
 
     func fetchSetDirectory() async throws -> [TCGdexBrowseSet] {
@@ -3722,6 +4834,14 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
 
     func fetchCard(id: String) async throws -> TCGdexCard {
         cardRequests += 1
+        if cardDelayNanoseconds > 0 {
+            do {
+                try await Task.sleep(nanoseconds: cardDelayNanoseconds)
+            } catch {
+                cancelledCardRequests += 1
+                throw error
+            }
+        }
         return try XCTUnwrap(cardValues[id])
     }
 
@@ -3731,6 +4851,10 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
 
     func setRequestCount(_ id: String) -> Int {
         setRequestIDs[id.lowercased(), default: 0]
+    }
+
+    func cancelledCardRequestCount() -> Int {
+        cancelledCardRequests
     }
 }
 

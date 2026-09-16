@@ -40,22 +40,24 @@ struct CatalogSetTile: View {
     @State private var retriedArtworkOnCurrentAppearance = false
 
     private var artworkSource: PokemonArtworkFallbacks.SetSource {
-        PokemonArtworkFallbacks.setSource(for: set, kind: .symbol)
+        PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
     }
 
     private var isMissingArtwork: Bool {
         guard set.game == .pokemon else { return false }
-        guard artworkSource.primaryURL != nil
-                || !artworkSource.fallbacks.isEmpty
-                || artworkSource.localAssetName != nil
-                || !artworkSource.localFallbackAssetNames.isEmpty else {
+        guard !artworkSource.candidates.isEmpty else {
             return true
         }
-        // A local asset is a terminal, app-owned source. It remains useful even
-        // when an earlier TCGdex or parent request failed.
-        guard artworkSource.localAssetName == nil,
-              artworkSource.localFallbackAssetNames.isEmpty else { return false }
-        return artworkPhase == .failed
+        let hasBundledArtwork = artworkSource.candidates.contains { candidate in
+            guard case let .bundled(name) = candidate else { return false }
+            return UIImage(named: name) != nil
+        }
+        if hasBundledArtwork { return false }
+        let hasRemoteArtwork = artworkSource.candidates.contains { candidate in
+            if case .remote = candidate { return true }
+            return false
+        }
+        return hasRemoteArtwork ? artworkPhase == .failed : true
     }
 
     var body: some View {
@@ -157,7 +159,10 @@ struct CatalogSetTile: View {
         }
         .onAppear {
             guard isMissingArtwork,
-                  artworkSource.primaryURL != nil || !artworkSource.fallbacks.isEmpty,
+                  artworkSource.candidates.contains(where: { candidate in
+                      if case .remote = candidate { return true }
+                      return false
+                  }),
                   !retriedArtworkOnCurrentAppearance else { return }
             retriedArtworkOnCurrentAppearance = true
             artworkRetryCount &+= 1
@@ -181,14 +186,11 @@ struct CatalogSetTile: View {
                 .background(.background.opacity(0.78), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
         } else {
             CatalogCachedImage(
-                url: artworkSource.primaryURL,
-                fallbacks: artworkSource.fallbacks,
+                candidates: artworkSource.candidates,
                 targetPixelSize: 416,
                 reloadToken: artworkRetryCount,
                 placeholderSymbol: "square.stack.3d.up",
                 placeholderText: set.code,
-                localAssetName: artworkSource.localAssetName,
-                localFallbackAssetNames: artworkSource.localFallbackAssetNames,
                 onPhaseChange: { phase in
                     artworkPhase = phase
                 }
@@ -247,7 +249,7 @@ struct CatalogSetTile: View {
 
     private var completionFooterLabel: String {
         if let total = completion.total {
-            return "\(completion.owned) of \(total)"
+            return "\(completion.owned) of \(total) \(completion.unit)"
         }
         return "\(completion.owned) owned"
     }

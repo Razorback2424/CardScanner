@@ -13,35 +13,31 @@ enum PokemonSetArtworkKind: String, Sendable {
 /// here means a provider can be replaced without changing every view that
 /// displays a card or set.
 enum PokemonArtworkFallbacks {
-    struct SetSource: Equatable, Sendable {
-        let primaryURL: URL?
-        let fallbacks: [URL]
-        let localAssetName: String?
-        let localFallbackAssetNames: [String]
+    enum Candidate: Equatable, Sendable {
+        case remote(URL)
+        case bundled(String)
+    }
 
-        init(
-            primaryURL: URL?,
-            fallbacks: [URL],
-            localAssetName: String?,
-            localFallbackAssetNames: [String] = []
-        ) {
-            self.primaryURL = primaryURL
-            self.fallbacks = fallbacks
-            self.localAssetName = localAssetName
-            self.localFallbackAssetNames = localFallbackAssetNames
-        }
+    struct SetSource: Equatable, Sendable {
+        let candidates: [Candidate]
     }
 
     /// TCGdex exposes gallery rows as separate sets but does not publish their
     /// own logo or symbol. These are the provider set ids whose parent artwork
     /// is the honest visual identity for the gallery.
-    private static let parentSetIDs: [String: String] = [
-        "swsh9tg": "swsh9",
-        "swsh10tg": "swsh10",
-        "swsh11tg": "swsh11",
-        "swsh12tg": "swsh12",
-        "swsh12.5gg": "swsh12.5",
-        "swsh4.5sv": "swsh4.5"
+    private struct ParentArtworkRule: Equatable, Sendable {
+        let parentID: String
+        let logoBeforeBundled: Bool
+    }
+
+    private static let parentArtworkRules: [String: ParentArtworkRule] = [
+        "cel25cc": ParentArtworkRule(parentID: "cel25", logoBeforeBundled: true),
+        "swsh9tg": ParentArtworkRule(parentID: "swsh9", logoBeforeBundled: false),
+        "swsh10tg": ParentArtworkRule(parentID: "swsh10", logoBeforeBundled: false),
+        "swsh11tg": ParentArtworkRule(parentID: "swsh11", logoBeforeBundled: false),
+        "swsh12tg": ParentArtworkRule(parentID: "swsh12", logoBeforeBundled: false),
+        "swsh12.5gg": ParentArtworkRule(parentID: "swsh12.5", logoBeforeBundled: false),
+        "swsh4.5sv": ParentArtworkRule(parentID: "swsh4.5", logoBeforeBundled: false)
     ]
 
     /// The source repository uses a few historical ids that do not exactly
@@ -69,8 +65,8 @@ enum PokemonArtworkFallbacks {
     ]
 
     static func parentLogoURL(forProviderID providerID: String) -> URL? {
-        guard let parentID = parentSetIDs[providerID.lowercased()] else { return nil }
-        return URL(string: "https://assets.tcgdex.net/en/swsh/\(parentID)/logo.png")
+        guard let rule = parentArtworkRules[providerID.lowercased()] else { return nil }
+        return URL(string: "https://assets.tcgdex.net/en/swsh/\(rule.parentID)/logo.png")
     }
 
     static func localAssetName(
@@ -92,30 +88,40 @@ enum PokemonArtworkFallbacks {
         let inheritedLogoURL = set.game == .pokemon
             ? parentLogoURL(forProviderID: set.providerID)
             : nil
-        let remoteURLs = uniqueURLs([requestedURL, alternateURL, inheritedLogoURL])
-        let localAssetNames: [String] = {
-            guard set.game == .pokemon else { return [] }
-            let alternateKind: PokemonSetArtworkKind = kind == .logo ? .symbol : .logo
-            return [
-                localAssetName(forProviderID: set.providerID, kind: kind),
-                localAssetName(forProviderID: set.providerID, kind: alternateKind)
-            ]
-            .compactMap { $0 }
-        }()
-        return SetSource(
-            primaryURL: remoteURLs.first,
-            fallbacks: Array(remoteURLs.dropFirst()),
-            localAssetName: localAssetNames.first,
-            localFallbackAssetNames: Array(localAssetNames.dropFirst())
-        )
-    }
+        let alternateKind: PokemonSetArtworkKind = kind == .logo ? .symbol : .logo
+        var candidates: [Candidate] = []
 
-    private static func uniqueURLs(_ urls: [URL?]) -> [URL] {
-        var seen = Set<URL>()
-        return urls.compactMap { url in
-            guard let url, seen.insert(url).inserted else { return nil }
-            return url
+        func append(_ candidate: Candidate?) {
+            guard let candidate, !candidates.contains(candidate) else { return }
+            candidates.append(candidate)
         }
+
+        // The requested provider artwork is authoritative when it exists. A
+        // bundled copy of that same kind is next so an offline set directory
+        // cannot make a tile wait for a network timeout before it can render.
+        append(requestedURL.map(Candidate.remote))
+        if kind == .logo,
+           set.game == .pokemon,
+           parentArtworkRules[set.providerID.lowercased()]?.logoBeforeBundled == true {
+            // Some gallery entries have a parent logo that is more truthful
+            // than their local asset. The per-entry rule keeps this exception
+            // data-driven while preserving the requested candidate order.
+            append(inheritedLogoURL.map(Candidate.remote))
+        }
+        if set.game == .pokemon {
+            append(localAssetName(forProviderID: set.providerID, kind: kind).map(Candidate.bundled))
+        }
+
+        // Symbols and logos are visually interchangeable only as a last resort.
+        append(alternateURL.map(Candidate.remote))
+        if kind == .logo, set.game == .pokemon {
+            append(inheritedLogoURL.map(Candidate.remote))
+        }
+        if set.game == .pokemon {
+            append(localAssetName(forProviderID: set.providerID, kind: alternateKind).map(Candidate.bundled))
+        }
+
+        return SetSource(candidates: candidates)
     }
 }
 
@@ -153,6 +159,14 @@ struct CatalogCardArtworkSource: Equatable, Sendable {
         fallbacks = Array(urls.dropFirst())
     }
 
+    var remoteCandidates: [PokemonArtworkFallbacks.Candidate] {
+        var seen: Set<URL> = []
+        return ([primaryURL] + fallbacks.map(Optional.some)).compactMap { url in
+            guard let url, seen.insert(url).inserted else { return nil }
+            return .remote(url)
+        }
+    }
+
     private static func uniqueURLs(_ urls: [URL?]) -> [URL] {
         var seen = Set<URL>()
         return urls.compactMap { url in
@@ -175,7 +189,7 @@ enum LimitlessArtwork {
     /// unsupported sets are intentionally absent. A code can still have no
     /// individual image on Limitless; the image loader treats that as a normal
     /// terminal failure and preserves the placeholder.
-    private static let supportedSetCodes: Set<String> = [
+    static let supportedSetCodes: Set<String> = [
         "HS", "UL", "UD", "TM",
         "BLW", "EPO", "NVI", "NXD", "DEX", "DRX", "BCR", "PLS", "PLF", "PLB", "LTR",
         "CL", "DCR", "DRV",
@@ -187,7 +201,14 @@ enum LimitlessArtwork {
         "ASR", "LOR", "SIT", "CRZ", "PGO",
         "SVI", "PAL", "OBF", "MEW", "PAR", "PAF", "TEF", "TWM", "SFA", "SCR", "SSP",
         "PRE", "JTG", "DRI", "BLK", "WHT", "SVE",
-        "SMA", "MEG", "PFL", "ASC", "POR", "CRI", "PBL"
+        "SMA", "MEG", "PFL", "ASC", "POR", "CRI", "PBL", "MEE"
+    ]
+
+    /// Printed keys that are intentionally outside the current TPCi allow-list
+    /// and therefore need an explicit future artwork decision before they can
+    /// become remote fallback requests.
+    static let knownUncoveredSetCodes: Set<String> = [
+        "BOG", "AQ", "SK", "EX5.5", "EXU", "MFB", "RR", "XYA"
     ]
 
     static func urls(

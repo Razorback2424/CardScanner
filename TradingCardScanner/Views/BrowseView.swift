@@ -342,11 +342,13 @@ struct BrowseView: View {
 
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @EnvironmentObject private var setCompletionStore: CatalogSetCompletionStore
     let catalog: any BrowseCatalogProviding
     @StateObject private var model: BrowseViewModel
     @State private var showsSetFilter = false
     @State private var isShowingSettings = false
     @FocusState private var searchFocused: Bool
+    @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
 
     init(catalog: any BrowseCatalogProviding = BrowseCatalog()) {
         self.catalog = catalog
@@ -392,6 +394,16 @@ struct BrowseView: View {
         .task {
             await model.loadSets()
             backfillPokemonReleaseOrder()
+            requestSetCompletionRebuild()
+        }
+        .onChange(of: projectionStore.revision) { _, _ in
+            requestSetCompletionRebuild()
+        }
+        .onChange(of: model.sets.mapValues { $0.count }) { _, _ in
+            requestSetCompletionRebuild()
+        }
+        .onChange(of: masterSetTier) { _, _ in
+            requestSetCompletionRebuild()
         }
         .sheet(isPresented: $showsSetFilter) {
             CatalogSetFilterSheet(
@@ -533,6 +545,20 @@ struct BrowseView: View {
         projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
     }
 
+    private func requestSetCompletionRebuild() {
+        let sets = CardGame.allCases.flatMap { model.sets[$0] ?? [] }
+        guard !sets.isEmpty else { return }
+        let currentOwnership = ownership
+        let tier = masterSetTier
+        Task {
+            await setCompletionStore.rebuild(
+                sets: sets,
+                ownership: currentOwnership,
+                tier: tier
+            )
+        }
+    }
+
     @ViewBuilder
     private var recentlyReleasedRail: some View {
         if isCatalogLoadedForRail, !releaseRail.sets.isEmpty {
@@ -548,7 +574,10 @@ struct BrowseView: View {
                             } label: {
                                 CatalogSetTile(
                                     set: set,
-                                    completion: ownership.progress(for: set),
+                                    completion: setCompletionStore.index?.completion(
+                                        for: set,
+                                        tier: masterSetTier
+                                    ) ?? ownership.progress(for: set),
                                     layout: .rail,
                                     showsNewBadge: releaseRail.showsNewBadges
                                 )
@@ -601,10 +630,7 @@ struct BrowseView: View {
 
     private struct CatalogGameArtwork: Identifiable {
         let slot: Int
-        let url: URL?
-        let fallbacks: [URL]
-        let localAssetName: String?
-        let localFallbackAssetNames: [String]
+        let candidates: [PokemonArtworkFallbacks.Candidate]
         let placeholderText: String
 
         var id: Int { slot }
@@ -663,10 +689,7 @@ struct BrowseView: View {
                 )
                 return CatalogGameArtwork(
                     slot: index,
-                    url: artwork.primaryURL,
-                    fallbacks: artwork.fallbacks,
-                    localAssetName: nil,
-                    localFallbackAssetNames: [],
+                    candidates: artwork.remoteCandidates,
                     placeholderText: row.name
                 )
             }
@@ -676,10 +699,7 @@ struct BrowseView: View {
                 result.append(
                     CatalogGameArtwork(
                         slot: result.count,
-                        url: artwork.primaryURL,
-                        fallbacks: artwork.fallbacks,
-                        localAssetName: artwork.localAssetName,
-                        localFallbackAssetNames: artwork.localFallbackAssetNames,
+                        candidates: artwork.candidates,
                         placeholderText: set.code
                     )
                 )
@@ -689,10 +709,7 @@ struct BrowseView: View {
                 result.append(
                     CatalogGameArtwork(
                         slot: result.count,
-                        url: nil,
-                        fallbacks: [],
-                        localAssetName: nil,
-                        localFallbackAssetNames: [],
+                        candidates: [],
                         placeholderText: game.label
                     )
                 )
@@ -705,13 +722,10 @@ struct BrowseView: View {
                 ForEach(artworks) { artwork in
                     let index = artwork.slot
                     CatalogCachedImage(
-                        url: artwork.url,
-                        fallbacks: artwork.fallbacks,
+                        candidates: artwork.candidates,
                         targetPixelSize: 160,
                         placeholderSymbol: "rectangle.portrait",
-                        placeholderText: artwork.placeholderText,
-                        localAssetName: artwork.localAssetName,
-                        localFallbackAssetNames: artwork.localFallbackAssetNames
+                        placeholderText: artwork.placeholderText
                     )
                     .frame(width: 38, height: 52)
                     .rotationEffect(.degrees(Double(index - 1) * 7))
@@ -942,7 +956,9 @@ enum CatalogSetOrdering {
     static func ordered(
         _ sets: [CatalogSet],
         by sort: CatalogSetListSort,
-        ownership: CatalogOwnershipIndex
+        ownership: CatalogOwnershipIndex,
+        completions: CatalogSetCompletionIndex? = nil,
+        tier: PokemonMasterSetTier = .standard
     ) -> [CatalogSet] {
         switch sort {
         case .newestFirst:
@@ -957,7 +973,11 @@ enum CatalogSetOrdering {
             }
         case .mostComplete:
             return sets
-                .map { (set: $0, fraction: ownership.progress(for: $0).fraction ?? -1) }
+                .map {
+                    let completion = completions?.completion(for: $0, tier: tier)
+                        ?? ownership.progress(for: $0)
+                    return (set: $0, fraction: completion.fraction ?? -1)
+                }
                 .sorted {
                     if $0.fraction != $1.fraction { return $0.fraction > $1.fraction }
                     return isNewer($0.set, than: $1.set)
@@ -1038,6 +1058,52 @@ enum CatalogGameCardSearchPolicy {
     /// owning view, so this remains a cheap gate on the task's hot path.
     static func shouldRequest(isActive: Bool, normalizedQuery: String) -> Bool {
         isActive && normalizedQuery.count >= 2
+    }
+}
+
+/// A price stream may outlive the page that requested it. Keep the two pieces
+/// of identity together so every incremental emission is rejected when either
+/// the card content or the owning request has changed.
+struct CatalogPriceRequestIdentity: Equatable, Sendable {
+    let contentGeneration: UUID
+    let requestID: UUID
+
+    func matches(
+        contentGeneration: UUID,
+        requestID: UUID?,
+        isCancelled: Bool
+    ) -> Bool {
+        !isCancelled
+            && self.contentGeneration == contentGeneration
+            && self.requestID == requestID
+    }
+}
+
+/// State owned by one set-screen price request. Keeping the lifecycle in a
+/// value type makes the content-invalidation rule explicit: a late completion
+/// from an old page cannot turn a new page back into a loaded state.
+struct CatalogPriceLoadState: Equatable, Sendable {
+    private(set) var requestID: UUID?
+    private(set) var isLoading = false
+    private(set) var hasLoadedPrices = false
+
+    mutating func begin(requestID: UUID) {
+        self.requestID = requestID
+        isLoading = true
+        hasLoadedPrices = false
+    }
+
+    mutating func invalidate() {
+        requestID = nil
+        isLoading = false
+        hasLoadedPrices = false
+    }
+
+    mutating func finish(requestID: UUID, loaded: Bool) {
+        guard self.requestID == requestID else { return }
+        self.requestID = nil
+        isLoading = false
+        hasLoadedPrices = loaded
     }
 }
 
@@ -1391,6 +1457,7 @@ private struct CatalogGameCardsView: View {
 
 private struct CatalogSetListView: View {
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @EnvironmentObject private var setCompletionStore: CatalogSetCompletionStore
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let game: CardGame
     let sets: [CatalogSet]
@@ -1399,6 +1466,7 @@ private struct CatalogSetListView: View {
     @State private var showsMasterSetRules = false
     @State private var sort: CatalogSetListSort = .newestFirst
     @State private var filter: CatalogSetListFilter = .all
+    @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
 
     private var columns: [GridItem] {
         if dynamicTypeSize.isAccessibilitySize {
@@ -1423,7 +1491,13 @@ private struct CatalogSetListView: View {
             let matchesFilter = filter.includes($0, ownership: owned)
             return matchesSearch && matchesFilter
         }
-        return CatalogSetOrdering.ordered(filtered, by: sort, ownership: owned)
+        return CatalogSetOrdering.ordered(
+            filtered,
+            by: sort,
+            ownership: owned,
+            completions: setCompletionStore.index,
+            tier: masterSetTier
+        )
     }
 
     var body: some View {
@@ -1456,7 +1530,9 @@ private struct CatalogSetListView: View {
                             group: group,
                             columns: columns,
                             catalog: catalog,
-                            owned: owned
+                            owned: owned,
+                            completions: setCompletionStore.index,
+                            tier: masterSetTier
                         )
                     }
                 } else {
@@ -1464,7 +1540,9 @@ private struct CatalogSetListView: View {
                         sets: visibleSets,
                         columns: columns,
                         catalog: catalog,
-                        owned: owned
+                        owned: owned,
+                        completions: setCompletionStore.index,
+                        tier: masterSetTier
                     )
                 }
             }
@@ -1623,6 +1701,8 @@ private struct CatalogSetGroupSection: View {
     let columns: [GridItem]
     let catalog: any BrowseCatalogProviding
     let owned: CatalogOwnershipIndex
+    let completions: CatalogSetCompletionIndex?
+    let tier: PokemonMasterSetTier
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -1638,7 +1718,9 @@ private struct CatalogSetGroupSection: View {
                 sets: group.sets,
                 columns: columns,
                 catalog: catalog,
-                owned: owned
+                owned: owned,
+                completions: completions,
+                tier: tier
             )
         }
     }
@@ -1649,6 +1731,8 @@ private struct CatalogSetGrid: View {
     let columns: [GridItem]
     let catalog: any BrowseCatalogProviding
     let owned: CatalogOwnershipIndex
+    let completions: CatalogSetCompletionIndex?
+    let tier: PokemonMasterSetTier
 
     var body: some View {
         LazyVGrid(columns: columns, alignment: .leading, spacing: 22) {
@@ -1658,7 +1742,8 @@ private struct CatalogSetGrid: View {
                 } label: {
                     CatalogSetTile(
                         set: set,
-                        completion: owned.progress(for: set)
+                        completion: completions?.completion(for: set, tier: tier)
+                            ?? owned.progress(for: set)
                     )
                 }
                 .buttonStyle(.plain)
@@ -1669,6 +1754,7 @@ private struct CatalogSetGrid: View {
 
 private struct CatalogSetCardsView: View {
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @EnvironmentObject private var setCompletionStore: CatalogSetCompletionStore
     let set: CatalogSet
     let catalog: any BrowseCatalogProviding
     @State private var cards: [CatalogCardSummary] = []
@@ -1682,20 +1768,16 @@ private struct CatalogSetCardsView: View {
     /// a per-set preference, so it should not reset every time a set is opened.
     @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
     @State private var prices: [String: Double] = [:]
-    @State private var isLoadingPrices = false
-    @State private var hasLoadedPrices = false
+    @State private var priceLoadState = CatalogPriceLoadState()
     @State private var contentGeneration = UUID()
     @State private var visibleGroups: [CatalogCardDisplayGroup] = []
-    /// Identifies the price request that owns `isLoadingPrices`. Content can
-    /// change while a catalog price lookup is suspended, so the content token
-    /// alone is not enough to safely clean up the loading state.
-    @State private var priceRequestID: UUID?
+    @State private var priceLoadTask: Task<Void, Never>?
 
     private func visibleCards(owned: CatalogOwnershipIndex) -> [CatalogCardSummary] {
         CatalogSetQuery.apply(
             masterSetSlots,
             search: search,
-            sort: sort.needsPrices && !hasLoadedPrices ? .numberLowToHigh : sort,
+            sort: sort,
             ownership: ownership,
             owned: owned,
             prices: prices
@@ -1713,9 +1795,11 @@ private struct CatalogSetCardsView: View {
     }
 
     private var completion: SetCompletion {
-        self.set.game == .pokemon
-            ? (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])).progress(for: masterSetSlots)
-            : (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])).progress(for: set)
+        let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
+        return setCompletionStore.index?.completion(for: set, tier: masterSetTier)
+            ?? (set.game == .pokemon
+                ? owned.progress(for: masterSetSlots)
+                : owned.progress(for: set))
     }
 
     var body: some View {
@@ -1740,10 +1824,13 @@ private struct CatalogSetCardsView: View {
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
                     .contentWidthLimit(.standard)
-                if isLoadingPrices {
+                if priceLoadState.isLoading, sort.needsPrices, !priceLoadState.hasLoadedPrices {
                     HStack(spacing: 8) {
                         ProgressView().controlSize(.small)
-                        Text("Loading prices for this set…")
+                        let pricedCount = masterSetSlots.reduce(0) {
+                            $0 + (prices[$1.id] == nil ? 0 : 1)
+                        }
+                        Text("Sorting by price — \(pricedCount) of \(masterSetSlots.count) priced")
                     }
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
@@ -1807,11 +1894,17 @@ private struct CatalogSetCardsView: View {
         .onChange(of: ownership) { _, _ in refreshVisibleGroups() }
         .onChange(of: masterSetTier) { _, _ in refreshVisibleGroups() }
         .onChange(of: prices) { _, _ in refreshVisibleGroups() }
-        .onChange(of: hasLoadedPrices) { _, _ in refreshVisibleGroups() }
+        .onChange(of: priceLoadState.hasLoadedPrices) { _, _ in refreshVisibleGroups() }
         .onChange(of: projectionStore.revision) { _, _ in refreshVisibleGroups() }
         .onChange(of: sort) { _, newSort in
             refreshVisibleGroups()
-            if newSort.needsPrices { Task { await loadPrices() } }
+            if newSort.needsPrices {
+                startPriceLoading(
+                    for: contentGeneration,
+                    whileLoadingCards: false,
+                    priority: .userInitiated
+                )
+            }
         }
     }
 
@@ -1871,9 +1964,9 @@ private struct CatalogSetCardsView: View {
         // A page load changes the card set even before its response arrives.
         // Invalidate any sort request for the previous set so its result cannot
         // strand the new page in a loading state or mark it fully priced.
-        priceRequestID = nil
-        isLoadingPrices = false
-        hasLoadedPrices = false
+        priceLoadTask?.cancel()
+        priceLoadTask = nil
+        priceLoadState.invalidate()
         isLoading = true
         defer {
             if contentGeneration == requestID { isLoading = false }
@@ -1884,43 +1977,104 @@ private struct CatalogSetCardsView: View {
             guard contentGeneration == requestID, !Task.isCancelled else { return }
             cards = reset ? page.items : deduplicated(cards + page.items)
             cursor = page.nextCursor
-            if sort.needsPrices { await loadPrices(for: requestID, whileLoadingCards: true) }
+            if sort.needsPrices {
+                startPriceLoading(
+                    for: requestID,
+                    whileLoadingCards: true,
+                    priority: .userInitiated
+                )
+            } else if shouldPrefetchPrices {
+                startPriceLoading(
+                    for: requestID,
+                    whileLoadingCards: true,
+                    priority: .utility
+                )
+            }
         } catch {
             guard contentGeneration == requestID, !Task.isCancelled else { return }
             self.error = error.localizedDescription
         }
     }
 
-    private func loadPrices(
-        for expectedContentGeneration: UUID? = nil,
-        whileLoadingCards: Bool = false
-    ) async {
+    private var shouldPrefetchPrices: Bool {
+        let providerKeys = Set(
+            cards.map { "\($0.game.rawValue):\($0.providerID.lowercased())" }
+        )
+        return providerKeys.count <= 400
+            && !ProcessInfo.processInfo.isLowPowerModeEnabled
+    }
+
+    private func startPriceLoading(
+        for expectedContentGeneration: UUID,
+        whileLoadingCards: Bool,
+        priority: TaskPriority
+    ) {
         // Pagination owns the card-content transition. A sort-change task must
         // not snapshot the old card set while that transition is in flight;
         // the page load will start the price request after its page is applied.
         guard !cards.isEmpty,
-              whileLoadingCards || !isLoading else { return }
-        let contentRequestID = expectedContentGeneration ?? contentGeneration
-        guard contentRequestID == contentGeneration else { return }
-        guard priceRequestID == nil else { return }
+              expectedContentGeneration == contentGeneration,
+              whileLoadingCards || !isLoading,
+              priceLoadState.requestID == nil else { return }
 
-        let priceRequestID = UUID()
-        self.priceRequestID = priceRequestID
-        let requestedCardIDs = Set(cards.map(\.id))
-        isLoadingPrices = true
-        hasLoadedPrices = false
+        let requestID = UUID()
+        let requestedCards = cards
+        priceLoadState.begin(requestID: requestID)
+        priceLoadTask = Task(priority: priority) {
+            await loadPrices(
+                for: expectedContentGeneration,
+                requestID: requestID,
+                cards: requestedCards,
+                whileLoadingCards: whileLoadingCards
+            )
+        }
+    }
+
+    private func loadPrices(
+        for expectedContentGeneration: UUID,
+        requestID: UUID,
+        cards requestedCards: [CatalogCardSummary],
+        whileLoadingCards: Bool
+    ) async {
+        guard !requestedCards.isEmpty,
+              whileLoadingCards || !isLoading else { return }
+        let requestIdentity = CatalogPriceRequestIdentity(
+            contentGeneration: expectedContentGeneration,
+            requestID: requestID
+        )
+        guard requestIdentity.matches(
+            contentGeneration: contentGeneration,
+            requestID: priceLoadState.requestID,
+            isCancelled: Task.isCancelled
+        ) else { return }
+        var didComplete = false
         defer {
-            if self.priceRequestID == priceRequestID {
-                self.priceRequestID = nil
-                self.isLoadingPrices = false
+            if priceLoadState.requestID == requestID {
+                self.priceLoadState.finish(
+                    requestID: requestID,
+                    loaded: didComplete
+                )
+                self.priceLoadTask = nil
             }
         }
-        let loadedPrices = await catalog.sortPrices(for: cards)
-        guard contentRequestID == contentGeneration,
-              self.priceRequestID == priceRequestID,
-              !Task.isCancelled else { return }
-        prices.merge(loadedPrices) { _, newest in newest }
-        hasLoadedPrices = requestedCardIDs == Set(cards.map(\.id))
+        for await loadedPrices in catalog.sortPrices(for: requestedCards) {
+            guard requestIdentity.matches(
+                contentGeneration: contentGeneration,
+                requestID: priceLoadState.requestID,
+                isCancelled: Task.isCancelled
+            ) else { return }
+            prices.merge(loadedPrices) { _, newest in newest }
+            refreshVisibleGroups()
+        }
+        guard requestIdentity.matches(
+            contentGeneration: contentGeneration,
+            requestID: priceLoadState.requestID,
+            isCancelled: Task.isCancelled
+        ) else { return }
+        // Completion means the ordering stream drained. A slot can resolve to
+        // no USD price (or be a virtual print-run slot), so price-map coverage
+        // is not a valid definition of whether loading finished.
+        didComplete = true
     }
 
     private func deduplicated(_ values: [CatalogCardSummary]) -> [CatalogCardSummary] {
@@ -2226,8 +2380,7 @@ struct CatalogArtworkView: View {
 /// Caches (not Application Support), so iOS may reclaim it under pressure and
 /// it never becomes synced collection data.
 struct CatalogCachedImage: View {
-    let url: URL?
-    var fallbacks: [URL] = []
+    let candidates: [PokemonArtworkFallbacks.Candidate]
     /// An explicit maximum decoded dimension is useful for callers that know
     /// their drawing size. Most callers leave this nil and the view measures
     /// its laid-out bounds so the cache can keep separate derivatives for a
@@ -2236,20 +2389,38 @@ struct CatalogCachedImage: View {
     var reloadToken: Int = 0
     var placeholderSymbol = "photo"
     var placeholderText: String? = nil
-    var localAssetName: String? = nil
-    var localFallbackAssetNames: [String] = []
     var onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
     private var recursionTier: Int = 0
     @StateObject private var loader = CatalogImageLoader()
     @Environment(\.displayScale) private var displayScale
     @State private var measuredTargetPixelSize: Int?
+    @State private var didReportBundledLoaded = false
 
     private struct LoadID: Equatable {
-        let url: URL?
+        let candidate: PokemonArtworkFallbacks.Candidate?
         let targetPixelSize: Int?
         let reloadToken: Int
     }
 
+    init(
+        candidates: [PokemonArtworkFallbacks.Candidate],
+        targetPixelSize: Int? = nil,
+        reloadToken: Int = 0,
+        placeholderSymbol: String = "photo",
+        placeholderText: String? = nil,
+        onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
+    ) {
+        self.candidates = candidates
+        self.targetPixelSize = targetPixelSize
+        self.reloadToken = reloadToken
+        self.placeholderSymbol = placeholderSymbol
+        self.placeholderText = placeholderText
+        self.onPhaseChange = onPhaseChange
+    }
+
+    /// Compatibility initializer for card artwork and older callers. Set
+    /// artwork uses the typed candidate initializer above; the legacy order is
+    /// preserved here so card artwork keeps its existing provider preference.
     init(
         url: URL?,
         fallbacks: [URL] = [],
@@ -2261,38 +2432,36 @@ struct CatalogCachedImage: View {
         localFallbackAssetNames: [String] = [],
         onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
     ) {
-        self.url = url
-        self.fallbacks = fallbacks
-        self.targetPixelSize = targetPixelSize
-        self.reloadToken = reloadToken
-        self.placeholderSymbol = placeholderSymbol
-        self.placeholderText = placeholderText
-        self.localAssetName = localAssetName
-        self.localFallbackAssetNames = localFallbackAssetNames
-        self.onPhaseChange = onPhaseChange
-    }
-
-    private init(
-        url: URL?,
-        fallbacks: [URL],
-        targetPixelSize: Int?,
-        reloadToken: Int,
-        placeholderSymbol: String,
-        placeholderText: String?,
-        localAssetName: String?,
-        localFallbackAssetNames: [String],
-        onPhaseChange: ((CatalogImageLoadPhase) -> Void)?,
-        recursionTier: Int
-    ) {
         self.init(
-            url: url,
-            fallbacks: fallbacks,
+            candidates: Self.legacyCandidates(
+                url: url,
+                fallbacks: fallbacks,
+                localAssetName: localAssetName,
+                localFallbackAssetNames: localFallbackAssetNames
+            ),
             targetPixelSize: targetPixelSize,
             reloadToken: reloadToken,
             placeholderSymbol: placeholderSymbol,
             placeholderText: placeholderText,
-            localAssetName: localAssetName,
-            localFallbackAssetNames: localFallbackAssetNames,
+            onPhaseChange: onPhaseChange
+        )
+    }
+
+    private init(
+        candidates: [PokemonArtworkFallbacks.Candidate],
+        targetPixelSize: Int?,
+        reloadToken: Int,
+        placeholderSymbol: String,
+        placeholderText: String?,
+        onPhaseChange: ((CatalogImageLoadPhase) -> Void)?,
+        recursionTier: Int
+    ) {
+        self.init(
+            candidates: candidates,
+            targetPixelSize: targetPixelSize,
+            reloadToken: reloadToken,
+            placeholderSymbol: placeholderSymbol,
+            placeholderText: placeholderText,
             onPhaseChange: onPhaseChange
         )
         self.recursionTier = recursionTier
@@ -2304,20 +2473,17 @@ struct CatalogCachedImage: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
-            } else if loader.failed, let nextFallback {
+            } else if loader.failed, hasRemainingCandidate {
                 CatalogCachedImage(
-                    url: nextFallback.url,
-                    fallbacks: nextFallback.remaining,
+                    candidates: Array(resolvedCandidates.dropFirst()),
                     targetPixelSize: targetPixelSize,
                     reloadToken: reloadToken,
                     placeholderSymbol: placeholderSymbol,
                     placeholderText: placeholderText,
-                    localAssetName: localAssetName,
-                    localFallbackAssetNames: localFallbackAssetNames,
                     onPhaseChange: onPhaseChange,
                     recursionTier: recursionTier + 1
                 )
-            } else if (remoteURL == nil || loader.failed), let localAssetImage {
+            } else if let localAssetImage {
                 Image(uiImage: localAssetImage)
                     .resizable()
                     .scaledToFit()
@@ -2335,12 +2501,18 @@ struct CatalogCachedImage: View {
             }
         }
         .task(id: LoadID(
-            url: remoteURL,
+            candidate: activeCandidate,
             targetPixelSize: resolvedTargetPixelSize,
             reloadToken: reloadToken
         )) {
             guard let resolvedTargetPixelSize else { return }
+            guard let remoteURL else { return }
             loader.load(remoteURL, targetPixelSize: resolvedTargetPixelSize)
+        }
+        .onAppear {
+            guard localAssetImage != nil, !didReportBundledLoaded else { return }
+            didReportBundledLoaded = true
+            onPhaseChange?(.loaded)
         }
         .onChange(of: loader.phase) { _, phase in
             if phase == .loaded || phase == .failed {
@@ -2353,30 +2525,64 @@ struct CatalogCachedImage: View {
             // A URL may fail while a fallback or local asset is still
             // available. The caller only sees the terminal state from the
             // innermost loader.
-            guard !(phase == .failed && (nextFallback != nil || localAssetImage != nil)) else {
+            guard !(phase == .failed && (hasRemainingCandidate || localAssetImage != nil)) else {
                 return
             }
             onPhaseChange?(phase)
         }
     }
 
-    private var remoteURL: URL? { url ?? fallbacks.first }
+    private var resolvedCandidates: [PokemonArtworkFallbacks.Candidate] {
+        Self.candidatesSkippingMissingBundledAssets(candidates)
+    }
 
-    private var nextFallback: (url: URL, remaining: [URL])? {
-        guard let remoteURL else { return nil }
-        guard let index = fallbacks.firstIndex(where: { $0 != remoteURL }) else {
-            return nil
+    static func candidatesSkippingMissingBundledAssets(
+        _ candidates: [PokemonArtworkFallbacks.Candidate]
+    ) -> [PokemonArtworkFallbacks.Candidate] {
+        // Every missing bundled candidate is dropped, not only a leading run:
+        // `hasRemainingCandidate` decides whether a terminal `.failed` phase is
+        // suppressed, so a trailing unloadable asset would otherwise swallow the
+        // missing-art signal the tile depends on.
+        candidates.filter { candidate in
+            guard case let .bundled(name) = candidate else { return true }
+            return UIImage(named: name) != nil
         }
-        return (
-            url: fallbacks[index],
-            remaining: Array(fallbacks.dropFirst(index + 1))
-        )
+    }
+
+    private var activeCandidate: PokemonArtworkFallbacks.Candidate? {
+        resolvedCandidates.first
+    }
+
+    private var hasRemainingCandidate: Bool {
+        resolvedCandidates.count > 1
+    }
+
+    private var remoteURL: URL? {
+        guard case let .remote(url) = activeCandidate else { return nil }
+        return url
     }
 
     private var localAssetImage: UIImage? {
-        ([localAssetName].compactMap { $0 } + localFallbackAssetNames)
-            .compactMap { UIImage(named: $0) }
-            .first
+        guard case let .bundled(name) = activeCandidate else { return nil }
+        return UIImage(named: name)
+    }
+
+    private static func legacyCandidates(
+        url: URL?,
+        fallbacks: [URL],
+        localAssetName: String?,
+        localFallbackAssetNames: [String]
+    ) -> [PokemonArtworkFallbacks.Candidate] {
+        let remote = ([url] + fallbacks.map(Optional.some))
+            .compactMap { $0 }
+            .map(PokemonArtworkFallbacks.Candidate.remote)
+        let bundled = ([localAssetName].compactMap { $0 } + localFallbackAssetNames)
+            .map(PokemonArtworkFallbacks.Candidate.bundled)
+        var result: [PokemonArtworkFallbacks.Candidate] = []
+        for candidate in remote + bundled where !result.contains(candidate) {
+            result.append(candidate)
+        }
+        return result
     }
 
     private var resolvedTargetPixelSize: Int? {

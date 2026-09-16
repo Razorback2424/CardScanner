@@ -1,15 +1,15 @@
 # Artwork fallback plan
 
-**Status:** P0–P3 are implemented in the current working tree; runtime/provider
-validation and image-licensing decisions remain open — reconciled 2026-09-14.
+**Status:** P0–P3, the 2026-09-15 Slice A remediation, and the file-level A6
+bundled-logo audit are implemented in the current working tree; runtime/provider
+validation and image-licensing decisions remain open — reconciled 2026-09-15.
 
 Open defects found in this contract on 2026-09-15 — the set tile requesting the
 symbol rather than the logo, a bundled asset that is unreachable behind a remote
 alternate-kind URL, three wrong vendored assets, and `MEE` missing from the
 Limitless allow-list — are owned by Slice A of
 [`browse_set_directory_remediation_plan.md`](browse_set_directory_remediation_plan.md).
-Update the P2/P3 descriptions and the vendored-asset inventory below when that
-slice lands.
+The P2/P3 descriptions and vendored-asset inventory below reflect that slice.
 
 The current code path is `PokemonArtworkFallbacks` for set artwork,
 `CatalogCardArtworkSource` for card artwork, `LimitlessArtwork` for derived
@@ -40,8 +40,9 @@ resolve the licensing caveat below before monetization or broad distribution.
   Resolves **18 / 26** logo+symbol gaps, incl. every gallery subset and modern set.
   TCGdex→ptcg id rule: lowercase, strip leading zeros, `.` → `pt` (`sv08.5`→`sv8pt5`),
   except `swsh4.5sv`→`swsh45sv`, `sm3.5`→`sm35`.
-- `CatalogCachedImage` (Views/BrowseView.swift) recurses through its `fallbacks`
-  array and stops only after the ordered chain is exhausted.
+- `CatalogCachedImage` (Views/BrowseView.swift) recurses through its typed
+  candidate array and stops only after the ordered chain is exhausted, skipping
+  missing bundled names without treating them as a provider failure.
 
 ## Phases
 
@@ -66,7 +67,8 @@ The current tree contains the pure `LimitlessArtwork` type:
 
 Normalization:
 - uppercase set code; reject codes not in an allow-list of TPCi-era sets
-  (excludes AQ/SK/EXU/BOG/XYA/EX5.5 where Limitless has no coverage)
+  (MEE is included; AQ/SK/EXU/BOG/XYA/EX5.5/MFB/RR remain explicit uncovered
+  decisions where Limitless has no approved coverage)
 - split trailing digits from any alpha prefix
 - no prefix → zero-pad digits to 3; prefix present → strip leading zeros
 - reject anything with a letter suffix on the number (`040a`, `103b`) — these
@@ -86,13 +88,36 @@ SHF SV001→SV1, CEL CC001→CC1, AQ 050a→nil, PBL 119→119).
 > URL of the alternate kind, and removes `sve_logo`, `bog_logo`, and
 > `cel25cc_symbol` as wrong artwork. The bundled count becomes 33 image sets.
 
-The 18 matched `logo.png`/`symbol.png` assets are bundled at tile size and
-resolved by TCGdex provider ID. The current chain is TCGdex → parent set →
-requested bundled asset → alternate bundled asset → placeholder. The source
-commit SHA is recorded below. The root game fan prioritizes the newest sets
-with bundled logo artwork before filling remaining slots by release order, so
-the local logo fallback remains reachable when the newest catalog rows have no
-bundled art.
+The remaining 33 PNGs are bundled at tile size and resolved by TCGdex provider
+ID. For a Pokémon set logo, the typed chain is requested remote logo, requested
+bundled logo, remote symbol, inherited parent logo, and bundled symbol; the
+Classic Collection explicitly puts its inherited Celebrations logo before its
+bundled logo. Missing bundled names are skipped. The source commit SHA is
+recorded below. The root game fan prioritizes the newest sets with bundled logo
+artwork before filling remaining slots by release order, so the local logo
+fallback remains reachable when the newest catalog rows have no bundled art.
+
+### A6 file-level audit — 2026-09-15
+
+The eight remaining promoted logo assets were checked against the known generic
+`base1_logo` payload using SHA-256 and PNG dimensions. None is byte-identical to
+that generic payload, and each has a distinct source dimension; no asset was
+removed or substituted. This is a file-level audit only; semantic artwork and
+provider behavior remain part of the deferred visual/provider gates. The cheap
+MD5 pass agrees: the base payload begins `bea522d0…`, all eight promoted files
+have distinct MD5s, and their sizes are plausible at 58–98 KB; the generic
+placeholder signature is absent.
+
+| TCGdex id | PNG dimensions | SHA-256 prefix |
+| --- | ---: | --- |
+| `sv07` | 320 × 128 | `f8f0001f3b94b99c…` |
+| `sv08` | 320 × 141 | `8b963d35f678109f…` |
+| `sv08.5` | 320 × 148 | `7f026f7b92834757…` |
+| `swsh9tg` | 320 × 132 | `322cb1641c69c5d5…` |
+| `swsh10tg` | 320 × 118 | `04959890ced94ae1…` |
+| `swsh11tg` | 320 × 123 | `efdc2a5cd24c1168…` |
+| `swsh12tg` | 320 × 150 | `92e647b4d20fc66f…` |
+| `swsh4.5sv` | 320 × 158 | `c566368d6653d15a…` |
 
 ### Out of scope
 - Magic: Scryfall already covers artwork and set icons; no change.
@@ -115,6 +140,7 @@ chain can be re-pointed without touching call sites.
   `sv07→sv7`, `sv08→sv8`, `sv08.5→sv8pt5`, `sve→sve`,
   `swsh9tg→swsh9tg`, `swsh10tg→swsh10tg`, `swsh11tg→swsh11tg`,
   `swsh12.5gg→swsh12pt5gg`, `swsh12tg→swsh12tg`, `swsh4.5sv→swsh45sv`.
-- The 36 PNGs are downscaled to a 320-pixel maximum dimension; the combined
-  bundled payload is approximately 2.1 MB. Set artwork uses the requested
-  bundled kind first and the alternate kind as a local fallback.
+- The remaining 33 PNGs are downscaled to a 320-pixel maximum dimension; the
+  combined bundled payload is approximately 2.0 MB. Set artwork uses the
+  requested bundled kind first and the alternate kind as a local fallback,
+  with the inherited Classic Collection logo ahead of its local fallback.

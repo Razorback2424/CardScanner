@@ -602,6 +602,30 @@ struct SetCompletion: Equatable, Sendable {
     }
 }
 
+/// Completion values prepared from the same checklist manifest used by the
+/// set screen. The tier is part of the value so an old asynchronous rebuild
+/// cannot be displayed for a newly selected master-set definition.
+struct CatalogSetCompletionIndex: Equatable, Sendable {
+    private let tier: PokemonMasterSetTier
+    private let completions: [String: SetCompletion]
+
+    init(
+        completions: [String: SetCompletion],
+        tier: PokemonMasterSetTier = .standard
+    ) {
+        self.tier = tier
+        self.completions = completions
+    }
+
+    func completion(
+        for set: CatalogSet,
+        tier: PokemonMasterSetTier
+    ) -> SetCompletion? {
+        guard self.tier == tier else { return nil }
+        return completions[set.id]
+    }
+}
+
 /// Sorting options for the catalog's set directory. These are deliberately
 /// separate from `CatalogSetSort`, which sorts cards inside one set.
 enum CatalogSetListSort: String, CaseIterable, Identifiable, Sendable {
@@ -859,12 +883,16 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
     private var byNumber: [String: [CatalogOwnershipCardSnapshot]] = [:]
     private var byProviderID: [String: [CatalogOwnershipCardSnapshot]] = [:]
     private var bySealedProduct: [String: Int] = [:]
+    private var ownedSetCodes: Set<String> = []
+    private var ownedProviderIDs: Set<String> = []
+    private var completionRows: [CatalogOwnershipCardSnapshot] = []
 
     init(_ cards: [CollectedCard]) {
         self.init(rows: cards.map(CatalogOwnershipCardSnapshot.init))
     }
 
     init(rows: [CatalogOwnershipCardSnapshot]) {
+        var seenCompletionRowKeys: Set<String> = []
         for card in rows where card.quantity > 0 {
             if card.itemKind == .sealedProduct,
                let productID = card.sealedProductID {
@@ -872,6 +900,14 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
                 continue
             }
             guard card.itemKind.countsTowardSetCompletion else { continue }
+            ownedSetCodes.insert(Self.normalizedKey(card.setCode))
+            ownedProviderIDs.insert(Self.normalizedKey(card.providerID))
+            if let catalogID = card.catalogProviderID {
+                ownedProviderIDs.insert(Self.normalizedKey(catalogID))
+            }
+            if seenCompletionRowKeys.insert(card.collectionKey).inserted {
+                completionRows.append(card)
+            }
             if let number = SetCompletionCalculator.canonicalNumber(card.cardNumber) {
                 byNumber[number, default: []].append(card)
             }
@@ -947,6 +983,70 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
             total: slots.count,
             unit: "variations"
         )
+    }
+
+    /// Keys used to decide whether loading an on-disk Pokémon checklist can
+    /// pay off. This deliberately exposes only normalized value data; the
+    /// ownership buckets remain private to this index.
+    func ownedSetKeys() -> (codes: Set<String>, providerIDs: Set<String>) {
+        (ownedSetCodes, ownedProviderIDs)
+    }
+
+    /// Counts the positive collection rows belonging to each candidate set in
+    /// one pass. The completion builder calls this before applying its forty
+    /// set bound, so repeating a whole-collection scan once per candidate would
+    /// defeat the bound on the directory's first-frame path.
+    func ownedRowCounts(for sets: [CatalogSet]) -> [String: Int] {
+        guard !sets.isEmpty, !completionRows.isEmpty else { return [:] }
+
+        var setsByCode: [String: [CatalogSet]] = [:]
+        var pokemonSetsByProviderPrefix: [String: [CatalogSet]] = [:]
+        for set in sets {
+            setsByCode[Self.normalizedKey(set.code), default: []].append(set)
+            if set.game == .pokemon {
+                pokemonSetsByProviderPrefix[Self.normalizedKey(set.providerID), default: []]
+                    .append(set)
+            }
+        }
+
+        var counts: [String: Int] = [:]
+        for row in completionRows {
+            guard row.quantity > 0,
+                  !PokemonStampedReleaseCatalog.isStamped(variantID: row.variantID) else {
+                continue
+            }
+
+            var matchingSetIDs: Set<String> = []
+            for set in setsByCode[Self.normalizedKey(row.setCode)] ?? [] {
+                guard row.game == set.game,
+                      Self.pokemonPrintRunMatches(row, required: set.pokemonPrintRun) else {
+                    continue
+                }
+                matchingSetIDs.insert(set.id)
+            }
+
+            if row.game == .pokemon {
+                var providerIDs = Set([row.providerID])
+                if let catalogProviderID = row.catalogProviderID {
+                    providerIDs.insert(catalogProviderID)
+                }
+                for providerID in providerIDs {
+                    for prefix in Self.providerSetPrefixes(Self.normalizedKey(providerID)) {
+                        for set in pokemonSetsByProviderPrefix[prefix] ?? [] {
+                            guard Self.pokemonPrintRunMatches(row, required: set.pokemonPrintRun) else {
+                                continue
+                            }
+                            matchingSetIDs.insert(set.id)
+                        }
+                    }
+                }
+            }
+
+            for setID in matchingSetIDs {
+                counts[setID, default: 0] += 1
+            }
+        }
+        return counts
     }
 
     func sealedQuantity(productID: String, variantID: String?) -> Int {
@@ -1033,6 +1133,20 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
             options: [.caseInsensitive, .diacriticInsensitive],
             locale: Locale(identifier: "en_US_POSIX")
         )
+    }
+
+    private static func normalizedKey(_ value: String) -> String {
+        normalized(value)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+    }
+
+    private static func providerSetPrefixes(_ providerID: String) -> [String] {
+        let components = providerID.split(separator: "-", omittingEmptySubsequences: true)
+        guard components.count > 1 else { return [] }
+        return (1..<components.count).map { end in
+            components[..<end].joined(separator: "-")
+        }
     }
 }
 
@@ -1147,7 +1261,7 @@ protocol BrowseCatalogProviding: Sendable {
         cursor: String?
     ) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
-    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double]
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]>
     /// Starts an opportunistic local-snapshot refresh. Existing test doubles
     /// and non-Pokémon catalog implementations do not need to participate.
     func prepareCatalog() async

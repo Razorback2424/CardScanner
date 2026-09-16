@@ -1,9 +1,12 @@
 # Browse set directory — artwork, counts, and price sort
 
-**Status:** current plan — proposed 2026-09-15, **not implemented**. No code in
-this plan has landed; every acceptance box below is open. Probe results in
-*Verified findings* were taken against the bundled snapshot in this checkout and
-against live TCGdex/Limitless on 2026-09-15.
+**Status:** implementation and deterministic verification landed in the working
+tree 2026-09-15; the focused Browse selectors pass **128/128 with 0 failures**
+after the second hardening pass. The snapshot was regenerated and independently
+checked at 157 entries with denominator parity. The visual gates A8/B6 and the
+provider/device measurement gate C7 remain open by design. Probe results in
+*Verified findings* were taken against the bundled snapshot in this checkout
+and against live TCGdex/Limitless on 2026-09-15.
 
 **Concern owned:** three defects reported from the Pokémon set directory and set
 screen, and the shared cause behind them.
@@ -303,11 +306,11 @@ it.
 
 ### A4 — inherit the Celebrations logo for the Classic Collection
 
-Add to `PokemonArtworkFallbacks.parentSetIDs`
+Add a `parentArtworkRules` entry for `PokemonArtworkFallbacks`
 ([`ArtworkFallbacks.swift:38`](../../TradingCardScanner/Services/ArtworkFallbacks.swift:38)):
 
 ```swift
-"cel25cc": "cel25"
+"cel25cc": ParentArtworkRule(parentID: "cel25", logoBeforeBundled: true)
 ```
 
 `parentLogoURL` hardcodes the `swsh` series path segment. `cel25` is also in the
@@ -329,8 +332,12 @@ exclusions and their rationale already lives in
 A1 promotes the bundled logo from a rarely-reached fallback to the artwork most
 tiles resolve to, so every remaining bundled logo must be looked at once.
 Verified already on 2026-09-15 as correct: `base1`, `cel25cc`, `me02`, `sm3.5`,
-`sm7.5`, `sma`, `sv05`, `swsh12.5gg`. Remaining to check: `sv07`, `sv08`,
-`sv08.5`, `swsh9tg`, `swsh10tg`, `swsh11tg`, `swsh12tg`, `swsh4.5sv`.
+`sm7.5`, `sma`, `sv05`, `swsh12.5gg`. A file-level audit of the remaining
+`sv07`, `sv08`, `sv08.5`, `swsh9tg`, `swsh10tg`, `swsh11tg`, `swsh12tg`, and
+`swsh4.5sv` logos found no byte-identical payload to `base1_logo` (base MD5
+prefix `bea522d0…`), eight distinct MD5s, plausible 58–98 KB PNG sizes, and no
+generic-placeholder signature. Only semantic/visual confirmation remains, and
+that belongs to A8/B6.
 
 The failure signature is the upstream default: the generic "Pokémon Trading Card
 Game" wordmark standing in for a set that has its own logo. Remove any such
@@ -341,21 +348,21 @@ asset per A3 rather than substituting one.
 Add to `BrowseFeatureTests`
 ([`BrowseFeatureTests.swift:5`](../../TradingCardScannerTests/BrowseFeatureTests.swift:5)).
 
-- [ ] `setSource(for:kind:.logo)` on a set with both URLs yields `logoURL` first.
-- [ ] `setSource(for:kind:.logo)` on a set with `symbolURL` only and a bundled
+- [x] `setSource(for:kind:.logo)` on a set with both URLs yields `logoURL` first.
+- [x] `setSource(for:kind:.logo)` on a set with `symbolURL` only and a bundled
       logo yields the bundled logo before the remote symbol (F3).
-- [ ] `setSource(for:kind:.logo)` on `cel25cc` yields the `cel25` parent logo
+- [x] `setSource(for:kind:.logo)` on `cel25cc` yields the `cel25` parent logo
       before any bundled asset (A4).
-- [ ] A `.bundled` candidate naming a non-existent asset is skipped and the next
+- [x] A `.bundled` candidate naming a non-existent asset is skipped and the next
       candidate is used (A3).
-- [ ] `setSource` on a Magic set yields no bundled candidates and no parent logo.
-- [ ] `LimitlessArtwork.urls(setCode: "MEE", collectorNumber: "001")` is non-nil
+- [x] `setSource` on a Magic set yields no bundled candidates and no parent logo.
+- [x] `LimitlessArtwork.urls(setCode: "MEE", collectorNumber: "001")` is non-nil
       and ends `MEE/MEE_001_R_EN_XS.png` / `MEE_001_R_EN.png`.
-- [ ] Every set code appearing on an `imageURL`-less row of the bundled snapshot
+- [x] Every set code appearing on an `imageURL`-less row of the bundled snapshot
       is either in `supportedSetCodes` or in an explicit
       `knownUncoveredSetCodes` constant. This test is the regression guard for
       F6 and must fail when a future snapshot introduces a new uncovered code.
-- [ ] Existing `CatalogCachedImage` fallback-traversal and phase-callback tests
+- [x] Existing `CatalogCachedImage` fallback-traversal and phase-callback tests
       stay green unchanged.
 
 ### A8 — visual verification
@@ -560,40 +567,40 @@ entries; the manifest then holds 157 entries.
 Add to `PokemonChecklistBrowseTests`
 ([`BrowseFeatureTests.swift:2199`](../../TradingCardScannerTests/BrowseFeatureTests.swift:2199)).
 
-- [ ] `masterCount` with `{normal: 0, holo: 0, reverse: 0, total: 69}` returns
+- [x] `masterCount` with `{normal: 0, holo: 0, reverse: 0, total: 69}` returns
       `69`, not `0` (F4, exact `sm115` values).
-- [ ] `masterCount` with `{normal: 40, holo: 0, reverse: 72, total: 24}` returns
+- [x] `masterCount` with `{normal: 40, holo: 0, reverse: 72, total: 24}` returns
       `112` — the published-breakdown path is unchanged (exact `sve` values).
-- [ ] `masterCount` with `{normal: 0, holo: 0, reverse: 8, total: 8}` returns
+- [x] `masterCount` with `{normal: 0, holo: 0, reverse: 8, total: 8}` returns
       `8` — a reverse-only breakdown is not treated as empty.
-- [ ] `masterCount` with `printRun: .firstEdition` and a zero breakdown still
+- [x] `masterCount` with `printRun: .firstEdition` and a zero breakdown still
       prefers `firstEd` when non-zero.
-- [ ] `adjustedCount`'s Base Set Unlimited −1 rule still applies through the new
+- [x] `adjustedCount`'s Base Set Unlimited −1 rule still applies through the new
       branch.
-- [ ] `BuiltSet.standardSlotCount` equals
+- [x] `BuiltSet.standardSlotCount` equals
       `cards.filter { !$0.isExpandedMasterSetVariant }.count` and
       `expandedSlotCount` equals `cards.count`, for a fixture with both tiers.
-- [ ] A `PokemonChecklistSnapshotEntry` decoded from JSON with no
+- [x] A `PokemonChecklistSnapshotEntry` decoded from JSON with no
       `standardSlotCount` / `expandedSlotCount` keys decodes successfully with
       both `nil`, and `isSupported` stays `true` (schema compatibility).
-- [ ] **Denominator parity (the Slice B acceptance test).** For every entry in
+- [x] **Denominator parity (the Slice B acceptance test).** For every entry in
       the bundled snapshot, the total
       `CatalogSetCompletionBuilder` produces for the standard tier equals
       `mergedChecklist(for:).filter { !$0.isExpandedMasterSetVariant }.count`,
       and the same for the expanded tier against the unfiltered count. This is
       the test that fails today for 134 of 160 sets.
-- [ ] A set with no owned rows yields `owned: 0` and does **not** trigger a
+- [x] A set with no owned rows yields `owned: 0` and does **not** trigger a
       `mergedChecklist` load — assert via a checklist store test double that
       counts loads.
-- [ ] A set with owned rows yields the same `SetCompletion` value the set screen
+- [x] A set with owned rows yields the same `SetCompletion` value the set screen
       computes for the same tier.
-- [ ] Above the 40-candidate bound the overflow completions carry
+- [x] Above the 40-candidate bound the overflow completions carry
       `unit: "cards"` and the under-bound ones carry `unit: "variations"`.
-- [ ] `includesInSetDirectory` rejects `rc`, `sp`, `wp` and still accepts a
+- [x] `includesInSetDirectory` rejects `rc`, `sp`, `wp` and still accepts a
       normal set whose `cardCount` is `nil`.
-- [ ] `CatalogSetOrdering.releaseRail` still excludes sets below
+- [x] `CatalogSetOrdering.releaseRail` still excludes sets below
       `minimumRailCardCount`, now measured against a non-zero count.
-- [ ] Regenerated manifest has 157 entries and no entry with
+- [x] Regenerated manifest has 157 entries and no entry with
       `standardSlotCount == nil`.
 
 ### B6 — visual verification
@@ -658,7 +665,8 @@ and every test double in the same change.
 In `CatalogSetCardsView.loadPrices`
 ([`BrowseView.swift:1894`](../../TradingCardScanner/Views/BrowseView.swift:1894)),
 consume the stream and merge into `prices` on each element. Keep every existing
-guard — `contentGeneration`, `priceRequestID`, and the `whileLoadingCards`
+guard — `contentGeneration`, `CatalogPriceLoadState.requestID`, and the
+`whileLoadingCards`
 pagination gate — and re-check `contentGeneration == contentRequestID` inside
 the loop, not only before it, so a set change mid-stream drops the remainder.
 
@@ -699,13 +707,28 @@ back when its stream finishes.
 "checked at" time. A stale ordering price is acceptable; a stale valuation is
 not. Say so in the source comment.
 
+**Write back a merge, not a replacement.** C5 starts the prefetch on the first
+page, so a request routinely covers fewer slots than the stored map. Storing
+that narrower map would truncate a fully priced set to one page on every cold
+open — the exact relaunch cost this cache removes. Merge the run's prices into
+the stored map, and carry forward only a **fresh** envelope: re-storing a stale
+map would reset its age without re-pricing the slots the request never looked
+at. Pinned by `testNarrowerSortPriceRequestDoesNotTruncateTheStoredMap`.
+
+**The producer owns stream termination.** `produceSortPrices` has several early
+returns (cancellation, a task-group throw). Any of them that skips
+`continuation.finish()` leaves `CatalogSetCardsView` suspended in `for await`
+with `isLoadingPrices` stuck true, so the finish belongs in a `defer` at the top
+rather than on the success path.
+
 ### C5 — prefetch on set open
 
 In `CatalogSetCardsView.load(reset:)`
 ([`BrowseView.swift:1867`](../../TradingCardScanner/Views/BrowseView.swift:1867)),
 after the page is applied, start the price stream at `.utility` priority even
-when `sort.needsPrices` is false. It shares `priceRequestID`, so a later sort
-change joins the request in flight instead of starting a second one.
+when `sort.needsPrices` is false. It shares `CatalogPriceLoadState.requestID`,
+so a later sort change joins the request in flight instead of starting a second
+one.
 
 Gate it: skip the prefetch when the set has more than 400 slots after C1's
 dedupe, and skip it when `ProcessInfo.processInfo.isLowPowerModeEnabled`. A
@@ -713,22 +736,24 @@ user who never sorts by price should not cost the provider 400 requests.
 
 ### C6 — deterministic verification
 
-- [ ] Two summaries sharing a `providerID` but differing in `masterSetVariant`
+- [x] Two summaries sharing a `providerID` but differing in `masterSetVariant`
       cause exactly **one** `fetchCard` call — assert against a counting
       transport double.
-- [ ] Both of those summaries still receive their own variant-specific price.
-- [ ] `sortPrices` emits at least two elements for a 60-card fixture with a
+- [x] Both of those summaries still receive their own variant-specific price.
+- [x] `sortPrices` emits at least two elements for a 60-card fixture with a
       slow transport, and the final element equals the whole-set map the current
       implementation returns.
-- [ ] `CatalogSetQuery.apply` with `.priceHighToLow` and a partial price map
+- [x] `CatalogSetQuery.apply` with `.priceHighToLow` and a partial price map
       orders priced before unpriced, descending among priced, by number among
       unpriced — for `.priceLowToHigh` too.
-- [ ] A content change mid-stream discards the remaining elements and leaves
+- [x] A content change mid-stream discards the remaining elements and leaves
       `isLoadingPrices == false` and `hasLoadedPrices == false`.
-- [ ] Cancelling the consuming task cancels the underlying task group.
-- [ ] `storeSortPrices` / `sortPrices(for:)` round-trip, and a map older than
+- [x] Cancelling the consuming task cancels the underlying task group.
+- [x] `storeSortPrices` / `sortPrices(for:)` round-trip, and a map older than
       `sortPriceMaxAge` reports `isFresh == false`.
-- [ ] The existing sort/pagination/price-request-identity tests in
+- [x] A narrower second request merges into the stored map instead of replacing
+      it, and does not re-fetch a slot whose cached price is still fresh.
+- [x] The existing sort/pagination/price-request-identity tests in
       `BrowseCollectionTests` ([`BrowseFeatureTests.swift:1256`](../../TradingCardScannerTests/BrowseFeatureTests.swift:1256))
       stay green after the protocol change.
 
@@ -770,17 +795,64 @@ section is the record required by [`../AGENTS.md`](../AGENTS.md) rule 5.
 
 | Document | Statement | Change |
 | --- | --- | --- |
-| [`browse_screen_spec.md`](browse_screen_spec.md) § 8, *Progress and grammar* | "`CatalogSetTile.completionFooter` shows `3 of 207`" — a collector-number numerator over `set.cardCount`. | Slice B3 keeps the `n of m` shape and the `n owned` / hidden-when-zero rules, and changes the source of both numbers to the built checklist. The Pokémon unit becomes `variations`, matching the set screen. Update § 8 when B lands. |
-| [`browse_screen_spec.md`](browse_screen_spec.md) § 6 | Missing-art precedence and the phase-callback rule. | Unchanged. Slice A2 must preserve both; A7 asserts them. |
+| [`browse_screen_spec.md`](browse_screen_spec.md) § 8, *Progress and grammar* | "`CatalogSetTile.completionFooter` shows `3 of 207`" — a collector-number numerator over `set.cardCount`. | Slice B3 keeps the `n of m` shape and the `n owned` / hidden-when-zero rules, and changes the source of both numbers to the built checklist. The Pokémon unit becomes `variations`, matching the set screen. § 8 was reconciled when B landed on 2026-09-15. |
+| [`browse_screen_spec.md`](browse_screen_spec.md) § 6 | Missing-art precedence and the phase-callback rule. | Unchanged. Slice A2 preserves both; A7 asserts them. The data-driven candidate table has one explicit exception: `cel25cc` inherits the parent logo before its local bundled logo. |
 | [`artwork-fallback-plan.md`](artwork-fallback-plan.md) § P2 | Allow-list "excludes AQ/SK/EXU/BOG/XYA/EX5.5 where Limitless has no coverage." | Still correct, re-probed 2026-09-15. `MEE` was an omission, not an exclusion; add it and record the probe. |
 | [`artwork-fallback-plan.md`](artwork-fallback-plan.md) § P3 / *Vendored asset refresh* | "The 18 matched `logo.png`/`symbol.png` assets are bundled." | Slice A3 removes three; the count becomes 33 image sets. The chain description becomes the A2 candidate order. |
 | [`release_followups.md`](release_followups.md) | — | Add Slice C7 as a measurement item; it cannot be closed from a simulator run. |
 
 ---
 
+## Remaining work and evidence boundary
+
+The follow-up hardening passes apply the working-tree findings recorded after
+the first 125-test focused run:
+
+- F-A: shared detail fetches now track waiter identities; cancellation only
+  cancels the underlying provider task when the final waiter leaves.
+- F-B: price loading is complete when the ordering stream drains, even when a
+  slot has no USD price; content invalidation keeps the old completion state
+  from publishing into the new page.
+- F-C: `BrowseView` is the sole owner of completion-index rebuild triggers;
+  `CatalogSetListView` only consumes the published index.
+- F-D: the forty exact-checklist candidates are selected by descending owned-row
+  count with a stable set-id tie-break, so overflow does not depend on directory
+  order; the count is now computed in one ownership-index pass.
+- Duplicate case-folded set IDs are deduplicated before candidate ranking, and
+  the ownership index no longer allocates or scans the full collection once per
+  candidate.
+- Completion rebuilds also observe set-count changes, so a successful retry
+  repopulates the checklist-backed directory index.
+- Price request identity has one owner (`CatalogPriceLoadState`), memory purge
+  preserves active detail waiters, and detail cancellation does not surface as
+  a user-facing error.
+- Card-fan remote candidates are explicitly deduplicated, and the Classic
+  Collection parent-before-bundled rule is represented in the parent-artwork
+  data rather than a provider-id branch.
+
+The checked-in `TradingCardScannerTests/Info.plist` is intentional plumbing for
+the snapshot generator: `POKEMON_SNAPSHOT_OUTPUT` must reach the simulator test
+process, while all generated snapshot/build/cache/result paths remain redirected
+to the external SSD. It does not change the app's runtime configuration.
+
+The remaining gates are evidence boundaries, not implementation TODOs:
+
+- A8 and B6 require the authorized visual captures and remain open under the
+  no-screenshot instruction.
+- C7/RF-9 requires live-provider/device measurement and remains open; simulator
+  tests cannot retire it.
+- The per-waiter `AsyncThrowingStream` cancellation adapter remains an accepted
+  implementation tradeoff: it is cancellation-correct and covered by the
+  shared-waiter regression, while a continuation registry may be considered if
+  profiling shows the adapter allocation matters.
+
+---
+
 ## Verification order
 
-1. Slice A in full, including the A8 capture. It is independently shippable.
+1. Slice A in full, including the A8 capture when visual verification is
+   authorized. It is independently shippable; A8 is intentionally deferred in
+   the current no-screenshot run.
 2. Slice C1 alone, with its two C6 fetch-count assertions. Independently
    shippable and reduces provider load immediately.
 3. Slice B1 + B2 + B3 as one change, then regenerate the snapshot, then B5's
@@ -790,12 +862,25 @@ section is the record required by [`../AGENTS.md`](../AGENTS.md) rule 5.
 Run the narrowest relevant selectors first per [`../../AGENTS.md`](../../AGENTS.md):
 
 ```bash
-xcodebuild -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'platform=iOS Simulator,name=iPhone 17 Pro' -only-testing:TradingCardScannerTests/BrowseFeatureTests -only-testing:TradingCardScannerTests/BrowseCollectionTests -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests test
+external_build_root="/Volumes/Keller Family Photos/.codex-cardscanner-build/browse-set-remediation"
+TMPDIR="$external_build_root/tmp" \
+CLANG_MODULE_CACHE_PATH="$external_build_root/ModuleCache.noindex" \
+SWIFT_MODULECACHE_PATH="$external_build_root/ModuleCache.noindex" \
+xcodebuild -project TradingCardScanner.xcodeproj -scheme TradingCardScanner \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -derivedDataPath "$external_build_root/DerivedData" \
+  -resultBundlePath "$external_build_root/results/browse-focused.xcresult" \
+  -only-testing:TradingCardScannerTests/BrowseFeatureTests \
+  -only-testing:TradingCardScannerTests/BrowseCollectionTests \
+  -only-testing:TradingCardScannerTests/PokemonChecklistBrowseTests test
 ```
 
 Snapshot regeneration is a separate, network-dependent step:
 
 ```bash
+POKEMON_SNAPSHOT_DERIVED_DATA_PATH="$external_build_root/SnapshotDerivedData" \
+POKEMON_SNAPSHOT_RESULT_BUNDLE_PATH="$external_build_root/results/pokemon-snapshot.xcresult" \
+POKEMON_SNAPSHOT_TMPDIR="$external_build_root/snapshot-tmp" \
 ./scripts/generate_pokemon_snapshot.sh
 ```
 
