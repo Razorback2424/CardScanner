@@ -501,14 +501,16 @@ mostly empty color fields.
 
 ### Progress and grammar
 
-> Superseded in part by Slice B of
+> Reconciled with Slice B of
 > [`browse_set_directory_remediation_plan.md`](browse_set_directory_remediation_plan.md)
-> (audit C-13). The `n of m` shape, the `3 owned` fallback, the hidden-when-zero
-> rule, and the shared pluralization helper below all stand. What changes is the
-> source of both numbers: they come from the built master-set checklist rather
-> than from `set.cardCount`, and the Pokémon unit becomes `variations` so the
-> tile and the set screen state the same total. Rewrite this subsection when that
-> slice lands.
+> on 2026-09-15. The `n of m` shape, the `3 owned` fallback, the hidden-when-zero
+> rule, and the shared pluralization helper below all stand. For Pokémon, both
+> numbers now come from `CatalogSetCompletionIndex`, which uses the built
+> master-set checklist for the selected tier, and the unit is `variations` so the
+> tile and set screen state the same denominator. Magic keeps its provider card
+> denominator and `cards` unit. If a Pokémon collection exceeds the bounded exact
+> checklist candidate set, the tile labels its honest collector-number fallback
+> as `cards` rather than presenting it as variation progress.
 
 `CatalogSetTile.completionFooter` shows `3 of 207`, not `3`. When total is unknown it shows
 `3 owned` and omits the progress bar. Continue hiding the footer when owned is zero. Keep the

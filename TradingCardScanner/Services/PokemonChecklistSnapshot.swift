@@ -32,6 +32,10 @@ struct PokemonChecklistSnapshotEntry: Codable, Sendable, Equatable {
     /// Older manifests omit it and historical matching falls back to the
     /// authoritative modern set map when one exists.
     let officialCount: Int?
+    /// The exact slot totals used by the Browse directory and set screen. These
+    /// are optional only for schema-1 manifests written before the parity fix.
+    let standardSlotCount: Int?
+    let expandedSlotCount: Int?
     /// Relative to the bundled snapshot directory or the protected overlay
     /// directory. Keeping this in the manifest makes resource names opaque to
     /// the provider and lets a future schema change use a new path safely.
@@ -42,12 +46,16 @@ struct PokemonChecklistSnapshotEntry: Codable, Sendable, Equatable {
         providerID: String,
         providerFingerprint: String,
         officialCount: Int? = nil,
+        standardSlotCount: Int? = nil,
+        expandedSlotCount: Int? = nil,
         resource: String
     ) {
         self.set = set
         self.providerID = providerID
         self.providerFingerprint = providerFingerprint
         self.officialCount = officialCount
+        self.standardSlotCount = standardSlotCount
+        self.expandedSlotCount = expandedSlotCount
         self.resource = resource
     }
 }
@@ -91,7 +99,24 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
             guard snapshot.manifest.isSupported else { continue }
             for entry in snapshot.manifest.entries {
                 if entriesByID[entry.set.id] == nil { order.append(entry.set.id) }
-                entriesByID[entry.set.id] = entry
+                if let existing = entriesByID[entry.set.id] {
+                    // An older downloaded overlay may omit the optional slot
+                    // counts. Keep its checklist/resource precedence while
+                    // borrowing metadata that only the bundled entry knows.
+                    entriesByID[entry.set.id] = PokemonChecklistSnapshotEntry(
+                        set: entry.set,
+                        providerID: entry.providerID,
+                        providerFingerprint: entry.providerFingerprint,
+                        officialCount: entry.officialCount ?? existing.officialCount,
+                        standardSlotCount: entry.standardSlotCount
+                            ?? existing.standardSlotCount,
+                        expandedSlotCount: entry.expandedSlotCount
+                            ?? existing.expandedSlotCount,
+                        resource: entry.resource
+                    )
+                } else {
+                    entriesByID[entry.set.id] = entry
+                }
                 if let cards = snapshot.checklists[entry.set.id] {
                     checklists[entry.set.id] = cards
                 }
@@ -121,6 +146,8 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                 providerID: value.set.providerID,
                 providerFingerprint: value.providerFingerprint,
                 officialCount: value.officialCount,
+                standardSlotCount: value.standardSlotCount,
+                expandedSlotCount: value.expandedSlotCount,
                 resource: "sets/\(StableCatalogFingerprint.string(value.set.id + value.providerFingerprint)).json"
             )
         }
@@ -147,6 +174,8 @@ enum PokemonMasterSetChecklistBuilder {
         let cards: [CatalogCardSummary]
         let providerFingerprint: String
         let officialCount: Int?
+        let standardSlotCount: Int
+        let expandedSlotCount: Int
     }
 
     static func baseSets(
@@ -234,7 +263,9 @@ enum PokemonMasterSetChecklistBuilder {
                 set: set,
                 cards: summaries,
                 providerFingerprint: providerFingerprint,
-                officialCount: providerSet.cardCount?.official
+                officialCount: providerSet.cardCount?.official,
+                standardSlotCount: summaries.filter { !$0.isExpandedMasterSetVariant }.count,
+                expandedSlotCount: summaries.count
             )
         }
     }

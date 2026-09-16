@@ -386,9 +386,10 @@ struct CatalogCardDetailView: View {
     private func load() async {
         isLoading = true
         error = nil
+        defer { isLoading = false }
         do { details = try await catalog.details(for: summary) }
+        catch is CancellationError { return }
         catch { self.error = error.localizedDescription }
-        isLoading = false
     }
 }
 
@@ -476,7 +477,9 @@ private actor MagicTreatmentSlice4DebugCatalog: BrowseCatalogProviding {
         )
     }
 
-    func sortPrices(for cards: [CatalogCardSummary]) async -> [String: Double] { [:] }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { continuation in continuation.finish() }
+    }
 }
 
 /// DEBUG-only deterministic surface for Slice 4 visual QA. It reuses the

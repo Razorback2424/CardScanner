@@ -20,6 +20,7 @@ struct ContentView: View {
     @State private var portfolio = PortfolioEngine()
     @State private var priceSnapshot = PriceSnapshotStore.shared
     @State private var projectionStore = CollectionProjectionStore()
+    @State private var setCompletionStore = CatalogSetCompletionStore()
     @State private var revisionStore = StoreRevisionStore()
     /// The root passes this app-scoped service to the small views that observe
     /// the fields they render. It must remain a plain reference here: refresh
@@ -124,6 +125,7 @@ struct ContentView: View {
         }
         .environmentObject(priceSnapshot)
         .environmentObject(projectionStore)
+        .environmentObject(setCompletionStore)
         .environmentObject(revisionStore)
         .environment(\.cardFinishPerformancePolicy, cardFinishPerformancePolicy)
         .overlay(alignment: .top) {

@@ -156,6 +156,22 @@ The current price-refresh scale plan is
 is landed, while continuous resumable sweeps, Magic batching, and large-store
 measurement remain open.
 
+### RF-9 — Browse set-directory price-sort measurement
+
+**Status:** open; implementation is landed, but this is a provider/device
+measurement gate and was not retired by deterministic tests.
+
+Record before/after evidence for the Browse remediation on `me02.5` ASC:
+
+- time to first reorder after choosing Price: High to Low on the 629-slot set;
+- total `fetchCard` calls, including the effect of provider-card deduplication;
+- whether opening the set without choosing a price sort stays within the 400
+  distinct-provider prefetch gate, including Low Power Mode behavior.
+
+Keep the result separate from the simulator regression evidence. The source and
+focused tests establish the incremental/cancellable ordering contract, not live
+provider latency or quota behavior.
+
 ## Closed cleanup
 
 `PortfolioHistoryMode` was removed because the product exposes one history
