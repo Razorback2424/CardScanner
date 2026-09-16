@@ -60,7 +60,7 @@ audit.
 | F03 — `beginPendingResolution` can discard a choose-handler operation after the pending choice is cleared (suspected) | High | Scanner scope; **no owning task in this plan.** Would trip §4 gate G3 if reachability is demonstrated. Carry it into R1/R2/R3 triage per the [release framework](../../release/card-scanner-1.0-go-no-go-framework.md) §10 before RC; it must not fall out of scope simply because no task claims it. |
 | F04 — epoch baseline writes `initialBalance` events with no matching `CollectionActivity` | Medium | **Task 12.** `OwnershipLedgerCompletenessTests` is red; the baseline path that task certifies currently produces a state the integrity check rejects. |
 | F05 — `InventoryLedger.quantities(from:)` retains negative nets; no production callers | Low | Task 12. |
-| F06 — 36 suite failures are absent-fixture failures that `XCTUnwrap` rather than skip | Medium | **Task 1 and Task 11.** The baseline this plan depends on cannot distinguish a regression from a missing fixture until this is fixed. |
+| F06 — duplicate PBX IDs kept the committed centering corpus out of the test bundle; the IDs were corrected 2026-09-16, but the focused rerun still has centering assertion failures | Medium | **Task 1 and Task 11.** The resource lookup issue is fixed; these tasks remain blocked on triaging the centering assertions and a complete, clean/triaged exact-candidate baseline. |
 
 ### 0.1.2 Open plans outside launch scope
 
@@ -71,7 +71,7 @@ They are listed here so they are not lost when execution resumes:
 | --- | --- | --- |
 | [`docs/plans/price_history_chart_plan.md`](../../plans/price_history_chart_plan.md) | Proposed 2026-09-14, not implemented | Slice A is presentation-only and independent. **Slice B is blocked on F02** and must not begin before it: raising background refresh throughput multiplies exposure to that defect. Its device measurement is RF-8. |
 | [`docs/plans/pro_tab_ebay_listing_photos_plan.md`](../../plans/pro_tab_ebay_listing_photos_plan.md) | Implementation candidate landed 2026-09-15 on isolated `pro-implementation` worktree; not merged or release-certified | Post-1.0 seller tooling. Replaces the Centering tab with a **Pro** tab hosting card centering plus a new card-independent eBay listing-photo module. Slices A–C are implemented and focused simulator-verified; screenshot, manual, physical-device, provider, archive, and release gates remain open. Slice A moves the centering screen one navigation level deeper and Slice B adds a capture configuration to the camera it shares; neither changes centering measurement, and the `Centering`/`CenteringExpanded` debug routes are preserved. **The sequencing constraint remains for merge/release work: do not merge or claim the feature before the release candidate is certified (Task 18),** because a tab-structure or camera change after evidence collection invalidates the affected centering and scanner acceptance evidence under §7. |
-| [`docs/plans/release_followups.md`](../../plans/release_followups.md) | Current backlog | RF-6 (centering corpus and suite skip semantics) is the same evidence-mechanism problem as F06 and gates Task 1/Task 11. RF-7 and RF-8 are device gates that open only after F01/F02 land. |
+| [`docs/plans/release_followups.md`](../../plans/release_followups.md) | Current backlog | RF-6 (centering corpus bundle wiring and executable suite baseline) is the same evidence problem as F06 and gates Task 1/Task 11. The committed corpus is now bundled; skip guards are not appropriate. RF-7 and RF-8 are device gates that open only after F01/F02 land. |
 
 The former gap analysis, candidate evidence ledger, and ownership audit are now
 under [`docs/legacy/`](../../legacy/); they remain useful historical inputs but
@@ -165,11 +165,17 @@ Storage/readiness hardening is scoped to the reviewed policy logic and does
 source-level defects there, independent of enrollment. See §0.1.1.
 
 The full simulator run at `a4375df` executed 1,277 with 6 skipped and 40
-failures. Per-suite triage is 36 fixture/environment, 1 load-sensitive flake,
-and **3 substantive** — do not reuse the earlier aggregate "48 unrelated
-fixture/source-environment or signal-kill failures" wording, which was recorded
-at `0b4ac34` and is partially incorrect (documentation audit C-11). Use the
-current release ledger, the documentation audit, and
+failures. Per-suite triage is 36 fixture/resource-lookup, 1 load-sensitive
+flake, and **3 substantive**. The 2026-09-16 project-file correction proved the
+centering files were tracked but omitted from the test bundle by duplicate
+PBX IDs. A focused rerun then reached the fixtures and produced 38 results: 28
+passed, 9 test cases failed on centering assertions, and 1 profile-dump test
+was canceled; the direct fixture-reachability and manifest tests passed. The
+rerun was not a full-suite baseline, and profile diagnostic outputs require external-storage
+routing before that suite can complete safely. Do not reuse the earlier
+aggregate "48 unrelated fixture/source-environment or signal-kill failures"
+wording, recorded at `0b4ac34` (documentation audit C-11). Use the current
+release ledger, the documentation audit, and
 [`docs/audits/defect_review_pass_2.md`](../../audits/defect_review_pass_2.md)
 before advancing any task below.
 

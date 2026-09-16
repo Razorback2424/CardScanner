@@ -66,7 +66,7 @@ as hypotheses, not as evidence.
 | F03 | High | Medium | Suspected; concrete failure path | G3 | Pending-resolution guard can silently discard the user's scan answer |
 | F04 | Medium | High | Confirmed; reproduced | Residual | Epoch baseline violates the activity↔ledger invariant and can pause portfolio history |
 | F05 | Low | High | Confirmed; reproduced | Residual | `InventoryLedger.quantities(from:)` reports negative ownership; dead code with a stale contract test |
-| F06 | Medium | High | Confirmed; reproduced | §3 verification | 36 tests fail for fixture/environment reasons and 1 is load-sensitive, so the suite cannot evidence any gate |
+| F06 | Medium | High | Confirmed; reproduced | §3 verification | Duplicate project IDs kept the tracked centering corpus out of the test bundle; the corrected bundle exposes known centering assertion failures |
 
 F03 is ranked above F04 despite lower confidence because its consequence — a
 silent unrecorded scan presented as success — is a G3 collection-data-loss
@@ -450,31 +450,37 @@ problems, not behavior gaps.
 
 ---
 
-## F06 — The suite is structurally red, so it cannot evidence any gate
+## F06 — Duplicate project IDs hid the committed centering corpus from tests
 
 **Severity:** Medium **Confidence:** High **Classification:** Confirmed;
 reproduced. **Gate:** §3 of the release framework — “A gate cannot be marked
 clear merely because nobody happens to have noticed a problem.”
 
-**Location:** `TradingCardScannerTests/OpusImplementationPlanTests.swift`
-(fixture-dependent suites); fixture root `TestFixtures/TradingCards/`;
-flake at `TradingCardScannerTests/ScannerViewModelTests.swift:654`.
+**Location:** `TradingCardScanner.xcodeproj/project.pbxproj`,
+`TradingCardScannerTests/OpusImplementationPlanTests.swift`, fixture root
+`TestFixtures/TradingCards/`, and the load-sensitive test at
+`TradingCardScannerTests/ScannerViewModelTests.swift:654`.
 
 **Mechanism and trigger:** Of 40 failures in the 1,277-test run:
 
 | Suite | Failures | Cause |
 | --- | --- | --- |
-| `CardCenteringInvariantTests` | 19 | `XCTUnwrap` on an absent HEIC corpus |
+| `CardCenteringInvariantTests` | 19 | `Bundle.url` could not find HEIC resources in the test bundle |
 | `CardCenteringGroundTruthTests` | 8 | same |
 | `CenteringProfileDumpTests` | 8 | same |
-| `CardCenteringCorpusManifestTests` | 1 | absent supplementary manifest |
+| `CardCenteringCorpusManifestTests` | 1 | `Bundle.url` could not find the supplementary manifest |
 | `OwnershipLedgerCompletenessTests` | 3 | F04 (1), F05 (2) — **substantive** |
 | `ScannerViewModelTests` | 1 | load-sensitive flake |
 
-`TestFixtures/TradingCards/HEIC/` contains 44 `Document_*.png` files; the tests
-require `IMG_0347`… , which are not in the repository. The 36 corpus-dependent
-tests **fail rather than skip** when the corpus is absent, so
-`** TEST EXECUTE FAILED **` is the permanent steady state.
+The pass-2 report incorrectly concluded that the `IMG_03xx`/`IMG_07xx` HEICs
+and supplementary manifest were absent from the repository. They are checked
+in under `TestFixtures/TradingCards/` (57 tracked files). They were absent from
+the test bundle because `project.pbxproj` reused `A0020103` for both the fixture
+resource build file and `CardFinishRenderPlanTests.swift in Sources`, and reused
+`B0020103` for both the fixture folder and that Swift source file. The test
+group also referred to an undefined `B0020105` fixture reference. The colliding
+resource build-file ID resolved to the Swift source entry, so the fixture folder
+was not copied into `TradingCardScannerTests.xctest`.
 
 `ScannerViewModelTests.testCatalogMissVerificationStillFilesUnresolvedCard`
 fails at `:654` under suite load (3.976 s) and passes in isolation (1.107 s). It
@@ -485,30 +491,41 @@ exceed on a busy machine.
 **Result and guards:** A genuine new failure is invisible: F04 and F05 sat
 inside a 40-failure list that the current documentation characterises in
 aggregate as “unrelated fixture/source-environment or signal-kill failures.”
-That characterisation is accurate for 36 of them and wrong for 3. More
-importantly, the centering analyzer's 36 accuracy and invariant tests do not
-run at all, so the analyzer's numerical **output** is currently unverified by
-anything in the repository — only its memory safety was checked here.
+That characterisation is accurate for the original test run's observed
+intermediate failures and wrong for the substantive F04/F05 failures. The
+fixture failures were caused by test-bundle wiring, not missing repository
+files. The 2026-09-16 run below shows that the centering accuracy and invariant
+tests now execute and expose the analyzer failures already recorded in the
+[centering contract](../../review/opus-card-centering-implementation-plan.md).
 
-**Evidence:** Full-suite run recorded above, plus per-suite triage and two
-isolated `-only-testing` reruns distinguishing deterministic failures from the
-flake.
+**Correction and follow-up (2026-09-16):** Replaced the two colliding fixture
+IDs with unique IDs and repaired the test-group reference in the project file.
+The simulator build succeeded. A focused run selected the four centering
+suites and produced 38 results: 28 passed, 9 test cases failed on centering
+accuracy, invariant, or performance assertions, and 1 profile-dump test was canceled when
+the run was intentionally stopped before more generated diagnostics could be
+written into the repository. Both
+`testRealFixturesAndGroundTruthAreReachableFromTheTestBundle` and
+`testCorpusManifestIsCompleteAndCryptographicallyFrozen` passed; completed tests
+reported no missing fixture or manifest. The nine failing test cases match the
+already documented open centering failures; this was not a clean full-suite
+baseline. Its interrupted result bundle is `f06-fixture-copy-20260916.xcresult`
+on the external SSD. Seven diagnostic files modified by the run were preserved
+there and the tracked repository copies were restored.
 
-**Fix and verification:** Convert corpus-dependent tests to
-`XCTSkipUnless(fixturesPresent)` so an absent corpus reports as skipped, not
-failed, and the exit status reflects real regressions. Replace the scanner
-test's wall-clock wait with a deterministic expectation, or inject its budget.
-Then record a clean or honestly-skipped baseline in
+**Fix and remaining work:** The test-resource graph is corrected. Do not add
+skip guards for the required corpus: its files are repository-owned and now
+reach the test bundle. Triage the centering assertion failures against the
+centering contract, redirect its diagnostic-dump outputs to external storage,
+then complete the selected suites and record a clean or honestly triaged
+baseline in
 [`../release/phase-1-integrity-evidence.md`](../release/phase-1-integrity-evidence.md).
+The `ScannerViewModel` timing flake and substantive F04/F05 findings remain
+separate work.
 
-The corpus itself is a separate question: whether the HEIC originals should be
-committed, fetched by a script, or declared a device/host-only gate belongs in
-[`../plans/release_followups.md`](../plans/release_followups.md) (RF-6) and in
-the [centering contract](../../review/opus-card-centering-implementation-plan.md).
-
-**Existing coverage and missing evidence:** This finding is about the evidence
-mechanism itself. No fixture-presence guard exists in any of the four affected
-suites.
+**Existing coverage and missing evidence:** Fixture reachability and manifest
+tests now exercise the packaged files. The full exact-candidate suite remains
+incomplete and non-clean.
 
 ---
 
@@ -557,7 +574,8 @@ Recorded so a later pass does not re-derive the same negative results.
   fallback); `innerSets` is a complete four-side literal; and
   `roundedRange`/`clamped` cannot invert given the `width > 20, height > 20`
   guard at `:471`. **No crash risk.** This is a memory-safety result only — see
-  F06 for why the analyzer's numerical output is unverified.
+  the centering contract for its current numerical failures, and F06 for the
+  fixture-bundle correction that made those tests reachable.
 - **Progress-percentage integer conversions** — `PriceRefreshController.swift:316`,
   `:784`, `:1719` and `CollectionCardDetailView.swift:1822` are each guarded
   against the empty/one-element divisor, so no `Int(NaN)` trap exists.
@@ -596,7 +614,10 @@ Stated so these are not mistaken for cleared areas.
   timing. Not audited to the depth of the rest. Device evidence remains RF-2 and
   RF-5 in [`../plans/release_followups.md`](../plans/release_followups.md).
 - **`Services/CardCenteringAnalyzer.swift` numerical correctness** (3,445
-  lines). Memory safety and index bounds only; see F06.
+  lines). The 2026-09-16 focused run exercised the corpus and reproduced the
+  already-documented accuracy, invariant, and latency failures; see the
+  [centering contract](../../review/opus-card-centering-implementation-plan.md).
+  The complete suite was not rerun; see F06 for the test-bundle correction.
 - **`Services/MagicTreatmentMigration.swift`** (2,138 lines) — interface level
   only.
 - **CloudKit semantics generally.** F01 means no code path currently attaches to
@@ -636,11 +657,13 @@ defeated by a neighbour that has no such protection and whose errors are
 discarded with `try?`. The remedy shape is the same in all three — write the
 dependent record in the same transaction, and make defensive guards fail loudly.
 
-**Cluster 3 — a suite that is red for infrastructure reasons (F05, F06).** Large
-fixture corpora referenced by path but absent from the repository, and tests
-that `XCTUnwrap` or read `$SRCROOT`-relative paths rather than skipping.
-Consequence: F04's genuine red test sits in a list of 40 and reads as more
-environmental noise.
+**Cluster 3 — mixed evidence failures (F04–F06).** The original full-suite run
+combined substantive ownership-ledger failures with corpus lookup failures from
+a PBX resource-ID collision. The corpus was tracked, but the resource graph
+omitted it from the test bundle. The 2026-09-16 project correction made the
+centering fixtures reachable and exposed the already-documented analyzer
+assertion failures; the full suite has not yet been rerun. F04/F05 must remain
+distinguishable from both classes of centering evidence failure.
 
 ## Where these findings are picked up
 
@@ -660,10 +683,13 @@ cannot keep blocking a task that is now free to start.
 
 ## Re-run rule
 
-These findings are evidence for `a4375df` only. Reproduce F01–F03 by source
-trace and F04–F06 by rerunning the named tests before carrying any of them into
-a later candidate. When a finding is fixed, record the fix and its regression
-test in [`../../progress.md`](../../progress.md), update the gate row in
+The original findings describe `a4375df`; dated follow-ups carry later
+evidence. Reproduce F01–F03 by source trace and F04/F05 by rerunning the named
+tests before carrying them into a later candidate. F06's PBX resource collision
+is corrected on `main` and the focused fixture reachability is verified, but the
+full suite still needs a complete run against the intended candidate. When a
+finding is fixed, record the fix and its regression test in
+[`../../progress.md`](../../progress.md), update the gate row in
 [`../release/card-scanner-1.0-go-no-go-framework.md`](../release/card-scanner-1.0-go-no-go-framework.md)
 §14, and strike the finding here with a dated note rather than deleting it.
 

@@ -1,11 +1,15 @@
 # Browse set directory — artwork, counts, and price sort
 
 **Status:** implementation and deterministic verification landed in the working
-tree 2026-09-15; the focused Browse selectors pass **128/128 with 0 failures**
-after the second hardening pass. The snapshot was regenerated and independently
-checked at 157 entries with denominator parity. The visual gates A8/B6 and the
-provider/device measurement gate C7 remain open by design. Probe results in
-*Verified findings* were taken against the bundled snapshot in this checkout
+tree 2026-09-15; the focused Browse selectors then passed **130/130 with 0
+failures** after the second hardening pass, sort-price cache correction, and
+TCGdex extensionless/WebP artwork fallback. The snapshot was regenerated and
+independently checked at 157 entries with denominator parity. On 2026-09-16,
+additional cache-decoding and symbol-prefix hardening landed; the focused
+Browse selectors now pass **133/133 with 0 failures**. A8 and B6 remain closed
+by the final settled light/dark simulator re-capture on 2026-09-15. The
+provider/device measurement gate C7/RF-9 remains open by design. Probe results
+in *Verified findings* were taken against the bundled snapshot in this checkout
 and against live TCGdex/Limitless on 2026-09-15.
 
 **Concern owned:** three defects reported from the Pokémon set directory and set
@@ -45,13 +49,13 @@ carried into those documents when the slice lands.
 The root release rail requests `kind: .logo`
 ([`BrowseView.swift:675`](../../TradingCardScanner/Views/BrowseView.swift:675)).
 
-`PokemonArtworkFallbacks.setSource`
+Before Slice A, `PokemonArtworkFallbacks.setSource`
 ([`ArtworkFallbacks.swift:86`](../../TradingCardScanner/Services/ArtworkFallbacks.swift:86))
-orders remote candidates as *requested kind → alternate kind → parent logo*. The
-tile therefore shows a symbol wherever TCGdex publishes one and a logo wherever
-it does not. In the bundled snapshot:
+ordered remote candidates as *requested kind → alternate kind → parent logo*.
+The tile therefore showed a symbol wherever TCGdex published one and a logo
+wherever it did not. In the bundled snapshot:
 
-| Condition | Sets | Tile shows today |
+| Condition | Sets | Tile showed before remediation |
 | --- | --- | --- |
 | `logoURL` and `symbolURL` both present | 132 | symbol |
 | `symbolURL` only | 4 (`bog`, `sma`, `sp`, `sv05`) | symbol |
@@ -61,6 +65,24 @@ it does not. In the bundled snapshot:
 This is the reported "Pitch Black has no set artwork": `me05` publishes both, so
 the tile renders the small `PBL` symbol plaque, while `me03`/`me04`/`me02.5`
 publish no symbol and render full logos beside it.
+
+The first A8 capture exposed a second provider detail. A live probe on
+2026-09-15 found that three of the 135 stored `.png` logo URLs are dead
+derivatives — `sv01`/SVI, `ecard1`/EX, and `xy10`/FCO. Their bare TCGdex stems
+returned HTTP 200 but the current assets host returned a short HTML guidance
+response; the explicit `.webp` derivatives returned renderable image data. The
+stored symbol paths use the same `.png` suffix, and their prefix is not
+universal either: a 10-set spot check found nine sampled `/univ/.../symbol.png`
+paths returning 404 while their `/en/` siblings returned PNG data, with `me05`
+as the inverse. `setSource` now keeps each stored `.png` URL first, then its
+extensionless stem and TCGdex `.webp` derivative; symbol candidates also try
+the sibling `/univ/` or `/en/` prefix without replacing the stored path. Both
+transformations are host-gated to `assets.tcgdex.net`, so unrelated `.png`
+sources remain unchanged. `CatalogImageCache` downsamples before persisting,
+validates disk hits, and evicts undecodable legacy entries; the HTTP-200 HTML
+guidance response can no longer poison its LRU. These changes repair current
+and older downloaded overlays without regenerating the snapshot or changing
+requested-kind ordering.
 
 ### F2 — two bundled set assets are the wrong artwork
 
@@ -240,11 +262,27 @@ Resolves F3. In `PokemonArtworkFallbacks.setSource`
 ([`ArtworkFallbacks.swift:86`](../../TradingCardScanner/Services/ArtworkFallbacks.swift:86)),
 the candidate order becomes:
 
-1. remote URL of the **requested** kind, when present
+1. remote URL of the **requested** kind, when present (the stored `.png` URL,
+   then its extensionless stem, then TCGdex's explicit `.webp` derivative; if
+   the requested kind is a TCGdex symbol, its `/univ/` or `/en/` sibling-prefix
+   URL variants follow the stored-prefix candidates)
 2. bundled asset of the **requested** kind, when present
-3. remote URL of the **alternate** kind, when present
-4. inherited parent logo, when present (Pokémon only, `kind == .logo`)
+3. remote URL of the **alternate** kind, when present (the stored `.png` URL,
+   then its extensionless stem, then TCGdex's explicit `.webp` derivative; if
+   the alternate is a TCGdex symbol, its `/univ/` or `/en/` sibling-prefix URL
+   follows those stored-prefix candidates)
+4. inherited parent logo, when present (Pokémon only, `kind == .logo`; the
+   `.png` URL, then its extensionless stem, then its TCGdex `.webp` derivative)
 5. bundled asset of the **alternate** kind, when present
+
+The extensionless and sibling-prefix candidates are emitted only for
+`assets.tcgdex.net`; other hosts' URLs, including `.png` URLs, are preserved
+unchanged. The explicit `.webp` candidate is added only for that host, which
+serves the renderable derivative there. The `cel25cc` data rule still places
+its inherited Celebrations logo before its bundled requested-kind asset.
+`CatalogImageCache` validates decoding before persisting response bytes and
+evicts undecodable disk entries from older versions, so the bare stem's HTTP
+200 HTML response cannot occupy an LRU slot.
 
 `SetSource` currently models this as `primaryURL` + `fallbacks: [URL]` +
 `localAssetName` + `localFallbackAssetNames`, which cannot express a local asset
@@ -335,9 +373,29 @@ Verified already on 2026-09-15 as correct: `base1`, `cel25cc`, `me02`, `sm3.5`,
 `sm7.5`, `sma`, `sv05`, `swsh12.5gg`. A file-level audit of the remaining
 `sv07`, `sv08`, `sv08.5`, `swsh9tg`, `swsh10tg`, `swsh11tg`, `swsh12tg`, and
 `swsh4.5sv` logos found no byte-identical payload to `base1_logo` (base MD5
-prefix `bea522d0…`), eight distinct MD5s, plausible 58–98 KB PNG sizes, and no
-generic-placeholder signature. Only semantic/visual confirmation remains, and
-that belongs to A8/B6.
+`bea522d0f5a36c6c3833825b666ab583`), eight distinct MD5s, plausible 58–98 KB
+PNG sizes, and no generic-placeholder signature. The settled capture then
+confirmed the rendered identities: `sv07`/`SCR` Stellar Crown and `sv08`/`SSP`
+Surging Sparks in [`dark/set-directory-2024-settled.jpg`](../../artifacts/browse-a8-b6-20260915/dark/set-directory-2024-settled.jpg),
+`sv08.5`/`PRE` Prismatic Evolutions in
+[`dark/set-directory-2025.jpg`](../../artifacts/browse-a8-b6-20260915/dark/set-directory-2025.jpg),
+the `swsh9tg`–`swsh12tg` Trainer Gallery logos in
+[`dark/set-directory-2022.jpg`](../../artifacts/browse-a8-b6-20260915/dark/set-directory-2022.jpg),
+and `swsh4.5sv`/`SHF` Shining Fates in
+[`dark/set-directory-2021.jpg`](../../artifacts/browse-a8-b6-20260915/dark/set-directory-2021.jpg).
+The exact MD5 record is retained here so the eight-file audit is not re-run
+from a shortened prefix:
+
+| TCGdex id | Bytes | MD5 |
+| --- | ---: | --- |
+| `sv07` | 61,892 | `5d2dc21c2e6f04539e804cf10de54bb0` |
+| `sv08` | 91,028 | `6ffd8dd00ac7c55ed4f57cd5ef79459a` |
+| `sv08.5` | 81,802 | `6ea2565a08ef881498a7f2829c817f91` |
+| `swsh9tg` | 80,263 | `ff8e7817e252566299b63505cbc0f9d2` |
+| `swsh10tg` | 57,572 | `29cfcc43d84e7485fba85c4c20b4659f` |
+| `swsh11tg` | 68,165 | `00a25d3fcbb53d06c7cbc4660e78e36f` |
+| `swsh12tg` | 83,342 | `def5a5fc5b8c7d1acd320b7e6bac83e5` |
+| `swsh4.5sv` | 97,840 | `c0ba8e31980c9997b5e3bd99d77cdb28` |
 
 The failure signature is the upstream default: the generic "Pokémon Trading Card
 Game" wordmark standing in for a set that has its own logo. Remove any such
@@ -364,16 +422,35 @@ Add to `BrowseFeatureTests`
       F6 and must fail when a future snapshot introduces a new uncovered code.
 - [x] Existing `CatalogCachedImage` fallback-traversal and phase-callback tests
       stay green unchanged.
+- [x] TCGdex `.png` URLs retain their original candidate first, then add the
+      host-gated stem and `.webp`; symbol candidates retain their stored
+      `/univ/` or `/en/` path and include the sibling-prefix path. Non-TCGdex
+      `.png` URLs gain neither transformation.
+- [x] `CatalogImageCache` rejects undecodable HTTP-200 bodies without
+      persisting them, evicts an undecodable legacy disk entry before retrying,
+      persists a successfully decoded response, and serves that response from
+      disk on a later cache instance. Concurrent waiters still share one fetch.
 
 ### A8 — visual verification
 
-- [ ] Debug Browse capture via `scripts/ui_build_and_shoot.sh` at the Pokémon set
-      directory, light and dark, settled.
-- [ ] Confirm in the capture: `me05` PBL, `me04` CRI, `me03` POR, and `me02.5`
+- [x] Re-run the Debug Browse capture via `scripts/ui_build_and_shoot.sh` at the
+      Pokémon set directory, light and dark, settled, after the
+      extensionless/WebP fix. Final evidence is under
+      [`artifacts/browse-a8-b6-20260915/rerun2/`](../../artifacts/browse-a8-b6-20260915/rerun2/).
+- [x] Confirm in the re-capture: `me05` PBL, `me04` CRI, `me03` POR, and `me02.5`
       ASC all render logos at comparable weight; `cel25cc` renders the
       Celebrations wordmark; `sve` renders the SVE symbol plaque.
-- [ ] Capture recorded under `artifacts/` per existing checklist practice and
-      referenced from [`pokemon_browse_checklist.md`](../../artifacts/pokemon_browse_checklist.md).
+- [x] Confirm SVI no longer enters the missing-art state, then record the
+      re-capture under `artifacts/` per existing checklist practice and
+      reference it from [`pokemon_browse_checklist.md`](../../artifacts/pokemon_browse_checklist.md).
+      B6's HIF, CRI denominator, and `rc`/`sp`/`wp` checks were re-recorded
+      in the same session. The settled light/dark evidence is:
+      [`light/set-directory-top.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/light/set-directory-top.jpg),
+      [`dark/set-directory-top.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/dark/set-directory-top.jpg),
+      [`light/set-directory-sve.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/light/set-directory-sve.jpg),
+      [`dark/set-directory-sve.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/dark/set-directory-sve.jpg),
+      [`light/set-directory-cel25cc.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/light/set-directory-cel25cc.jpg),
+      and [`dark/set-directory-cel25cc.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/dark/set-directory-cel25cc.jpg).
 
 ---
 
@@ -605,9 +682,18 @@ Add to `PokemonChecklistBrowseTests`
 
 ### B6 — visual verification
 
-- [ ] Capture the Pokémon set directory and confirm `HIF` reads a non-zero card
+- [x] Capture the Pokémon set directory and confirm `HIF` reads a non-zero card
       count, and that tapping `CRI` shows the same denominator its tile showed.
-- [ ] Confirm `rc`, `sp`, `wp` tiles are gone.
+- [x] Confirm `rc`, `sp`, `wp` tiles are gone.
+      The settled scroll audit covered the 157-entry directory in both
+      appearances; the CRI tile announced `0 variations of 203 variations
+      collected`, and the tapped detail rendered `0/203 variations`.
+      Final rerun2 evidence also records HIF at
+      [`light/set-directory-hif.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/light/set-directory-hif.jpg),
+      [`dark/set-directory-hif.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/dark/set-directory-hif.jpg),
+      and CRI detail at
+      [`light/cri-detail.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/light/cri-detail.jpg)
+      and [`dark/cri-detail.jpg`](../../artifacts/browse-a8-b6-20260915/rerun2/dark/cri-detail.jpg).
 
 ---
 
@@ -769,9 +855,14 @@ user who never sorts by price should not cost the provider 400 requests.
 
 ## Out of scope
 
-- **Removing the missing-art state.** After Slice A only five sets reach it
-  (`ex5.5`, `exu`, `mee`, `mfb`, `xya`). The state and its precedence rules stay
-  exactly as specified in [`browse_screen_spec.md`](browse_screen_spec.md) § 6.
+- **Removing the missing-art state.** Before the extensionless/WebP correction,
+  eight sets could reach it: five deliberate no-URL sets (`ex5.5`, `exu`, `mee`,
+  `mfb`, `xya`) plus `sv01`/SVI, `ecard1`/EX, and `xy10`/FCO with dead `.png`
+  derivatives. The chain now tries each extensionless stem after its `.png`
+  URL and the renderable TCGdex `.webp` derivative after that, so after the fix
+  only the five deliberate no-URL sets remain. The state and its precedence
+  rules stay exactly as specified in
+  [`browse_screen_spec.md`](browse_screen_spec.md) § 6.
 - **Magic set artwork.** Scryfall symbols are SVG and the typographic set-code
   fallback stands ([`CatalogSetTile.swift:172`](../../TradingCardScanner/Views/CatalogSetTile.swift:172)).
 - **A bulk price provider.** JustTCG batch pricing exists
@@ -797,8 +888,9 @@ section is the record required by [`../AGENTS.md`](../AGENTS.md) rule 5.
 | --- | --- | --- |
 | [`browse_screen_spec.md`](browse_screen_spec.md) § 8, *Progress and grammar* | "`CatalogSetTile.completionFooter` shows `3 of 207`" — a collector-number numerator over `set.cardCount`. | Slice B3 keeps the `n of m` shape and the `n owned` / hidden-when-zero rules, and changes the source of both numbers to the built checklist. The Pokémon unit becomes `variations`, matching the set screen. § 8 was reconciled when B landed on 2026-09-15. |
 | [`browse_screen_spec.md`](browse_screen_spec.md) § 6 | Missing-art precedence and the phase-callback rule. | Unchanged. Slice A2 preserves both; A7 asserts them. The data-driven candidate table has one explicit exception: `cel25cc` inherits the parent logo before its local bundled logo. |
+| [`browse_screen_spec.md`](browse_screen_spec.md) § 6 | The provider's stored `.png` artwork paths and `/univ/` symbol prefix were treated as universally live; 200 response bodies were persisted before image decoding. | Live probes found dead logo `.png` derivatives for SVI, EX, and FCO; their bare stems return HTTP 200 HTML guidance, while `.webp` returns images. A 10-set symbol sample found nine `/univ/` paths with working `/en/` siblings and `me05` with the inverse. The fallback retains stored paths, adds TCGdex-only stem/WebP candidates and symbol sibling prefixes, while `CatalogImageCache` decodes before persisting, evicts invalid legacy entries, and coalesces concurrent waiters through persistence. These host-gating and cache regressions pass in the 133/133 focused run. Only the five deliberate no-URL sets reach missing-art. |
 | [`artwork-fallback-plan.md`](artwork-fallback-plan.md) § P2 | Allow-list "excludes AQ/SK/EXU/BOG/XYA/EX5.5 where Limitless has no coverage." | Still correct, re-probed 2026-09-15. `MEE` was an omission, not an exclusion; add it and record the probe. |
-| [`artwork-fallback-plan.md`](artwork-fallback-plan.md) § P3 / *Vendored asset refresh* | "The 18 matched `logo.png`/`symbol.png` assets are bundled." | Slice A3 removes three; the count becomes 33 image sets. The chain description becomes the A2 candidate order. |
+| [`artwork-fallback-plan.md`](artwork-fallback-plan.md) § P3 / *Vendored asset refresh* | "The 18 matched `logo.png`/`symbol.png` assets are bundled." | Slice A3 removes three; the count becomes 33 image sets. The chain description becomes the A2 candidate order, with each `.png` remote followed by its extensionless stem and TCGdex `.webp` derivative. |
 | [`release_followups.md`](release_followups.md) | — | Add Slice C7 as a measurement item; it cannot be closed from a simulator run. |
 
 ---
@@ -837,8 +929,13 @@ to the external SSD. It does not change the app's runtime configuration.
 
 The remaining gates are evidence boundaries, not implementation TODOs:
 
-- A8 and B6 require the authorized visual captures and remain open under the
-  no-screenshot instruction.
+- A8 and B6 were closed by the authorized settled light/dark simulator
+  re-capture recorded under
+  `artifacts/browse-a8-b6-20260915/rerun2/` and linked from the Browse
+  checklist. The initial capture is retained as diagnostic history because it
+  exposed SVI's dead `.png` derivative; the replacement shows SVI with its
+  logo and leaves only the five deliberate no-URL sets in the missing-art
+  state.
 - C7/RF-9 requires live-provider/device measurement and remains open; simulator
   tests cannot retire it.
 - The per-waiter `AsyncThrowingStream` cancellation adapter remains an accepted
@@ -850,9 +947,8 @@ The remaining gates are evidence boundaries, not implementation TODOs:
 
 ## Verification order
 
-1. Slice A in full, including the A8 capture when visual verification is
-   authorized. It is independently shippable; A8 is intentionally deferred in
-   the current no-screenshot run.
+1. Slice A in full, including the authorized A8 re-capture. The replacement
+   light/dark evidence closed A8 alongside B6 on 2026-09-15.
 2. Slice C1 alone, with its two C6 fetch-count assertions. Independently
    shippable and reduces provider load immediately.
 3. Slice B1 + B2 + B3 as one change, then regenerate the snapshot, then B5's

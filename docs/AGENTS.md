@@ -9,11 +9,14 @@ map](README.md) and the [repository documentation audit](plans/documentation_aud
 
 - Source code, tests, build settings, and evidence from the current checkout
   outrank plans and chronological notes.
-- Current release status is **not certified**. The latest logged full simulator
-  run discovered 1,256 tests and reported 48 classified fixture,
-  source-environment, or signal-kill failures. Browse has focused 46/46 evidence;
-  physical-device, provider, CloudKit/ownership, centering, archive/TestFlight,
-  and App Store gates remain open.
+- Current release status is **not certified**. The latest recorded full
+  simulator run at `a4375df` executed 1,277 tests with 6 skipped and 40
+  failures. A 2026-09-16 PBX resource-ID fix made the committed centering
+  corpus reachable; the focused follow-up reported 28 passed, 9 test cases
+  failed on centering assertions, and 1 canceled profile-dump test, so it is
+  not a full suite baseline. Browse has focused 133/133 evidence and its A8/B6
+  capture; physical-device, provider, CloudKit/ownership, centering,
+  archive/TestFlight, and App Store gates remain open.
 - `docs/legacy/` contains preserved completed, superseded, or snapshot-specific
   documents. `review/legacy/` serves the same purpose for repository reviews.
   Their branches, SHAs, test counts, checkboxes, and “current” wording are

@@ -1,6 +1,31 @@
+import Foundation
 import SwiftData
+import UIKit
 import XCTest
 @testable import TradingCardScanner
+
+private actor FixedArtworkResponseDataLoader {
+    private let data: Data
+    private let delayNanoseconds: UInt64
+    private var requestCount = 0
+
+    init(data: Data, delayNanoseconds: UInt64 = 0) {
+        self.data = data
+        self.delayNanoseconds = delayNanoseconds
+    }
+
+    func load() async -> Data {
+        requestCount += 1
+        if delayNanoseconds > 0 {
+            try? await Task.sleep(nanoseconds: delayNanoseconds)
+        }
+        return data
+    }
+
+    func count() -> Int {
+        requestCount
+    }
+}
 
 final class BrowseFeatureTests: XCTestCase {
 #if DEBUG
@@ -1356,6 +1381,79 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertNil(model.lanes[.pokemon]?.error)
         let requestedCursors = await catalog.requestedCursors()
         XCTAssertEqual(requestedCursors, [nil, "next"])
+    }
+
+    func testCatalogImageCacheEvictsUndecodableCachedHTTPBodyAndDoesNotPersistIt() async throws {
+        let directory = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        let url = URL(string: "https://assets.tcgdex.net/en/sv/sv01/logo")!
+        let cacheFile = directory.appendingPathComponent(CatalogImageCache.cacheFilename(for: url))
+        let htmlBody = Data("<html>image extension guidance</html>".utf8)
+        try htmlBody.write(to: cacheFile)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: cacheFile.path))
+
+        let responseDataLoader = FixedArtworkResponseDataLoader(data: htmlBody)
+        let cache = CatalogImageCache(directory: directory) { _ in
+            await responseDataLoader.load()
+        }
+
+        for expectedRequestCount in 1...2 {
+            do {
+                _ = try await cache.image(for: url, targetPixelSize: 64)
+                XCTFail("An HTML response must not decode as cached artwork")
+            } catch BrowseCatalogError.badResponse {
+                // The cache evicts the old body and rejects a fresh copy
+                // without persisting the undecodable response.
+            } catch {
+                XCTFail("Unexpected image-cache error: \(error)")
+            }
+
+            XCTAssertFalse(
+                FileManager.default.fileExists(atPath: cacheFile.path),
+                "Undecodable response was persisted to the artwork cache"
+            )
+            let actualRequestCount = await responseDataLoader.count()
+            XCTAssertEqual(actualRequestCount, expectedRequestCount)
+        }
+    }
+
+    @MainActor
+    func testCatalogImageCachePersistsDecodedResponseAndReloadsItFromDisk() async throws {
+        let directory = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+
+        let size = CGSize(width: 2, height: 2)
+        let imageData = try XCTUnwrap(
+            UIGraphicsImageRenderer(size: size).image { context in
+                context.cgContext.setFillColor(UIColor.systemBlue.cgColor)
+                context.cgContext.fill(CGRect(origin: .zero, size: size))
+            }.pngData()
+        )
+        let url = URL(string: "https://assets.tcgdex.net/en/sv/sv01/logo.webp")!
+        let cacheFile = directory.appendingPathComponent(CatalogImageCache.cacheFilename(for: url))
+        let responseDataLoader = FixedArtworkResponseDataLoader(
+            data: imageData,
+            delayNanoseconds: 50_000_000
+        )
+
+        let firstCache = CatalogImageCache(directory: directory) { _ in
+            await responseDataLoader.load()
+        }
+        async let firstImageTask = firstCache.image(for: url, targetPixelSize: 64)
+        async let coalescedImageTask = firstCache.image(for: url, targetPixelSize: 64)
+        let (firstImage, coalescedImage) = try await (firstImageTask, coalescedImageTask)
+        XCTAssertNotNil(firstImage.cgImage)
+        XCTAssertNotNil(coalescedImage.cgImage)
+        XCTAssertEqual(try Data(contentsOf: cacheFile), imageData)
+
+        let reopenedCache = CatalogImageCache(directory: directory) { _ in
+            await responseDataLoader.load()
+        }
+        let diskCachedImage = try await reopenedCache.image(for: url, targetPixelSize: 64)
+        XCTAssertNotNil(diskCachedImage.cgImage)
+        let actualRequestCount = await responseDataLoader.count()
+        XCTAssertEqual(actualRequestCount, 1)
     }
 
     private func browseDisplaySummary(
@@ -4397,6 +4495,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(
             logoSource.candidates.dropFirst().map { $0 },
             [
+                .remote(URL(string: "https://assets.tcgdex.net/en/sv/sv08.5/logo")!),
+                .remote(URL(string: "https://assets.tcgdex.net/en/sv/sv08.5/logo.webp")!),
                 .bundled("PokemonSetArtwork_sv08_5_logo"),
                 .bundled("PokemonSetArtwork_sv08_5_symbol")
             ]
@@ -4408,6 +4508,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             [
                 .bundled("PokemonSetArtwork_sv08_5_symbol"),
                 .remote(logoURL),
+                .remote(URL(string: "https://assets.tcgdex.net/en/sv/sv08.5/logo")!),
+                .remote(URL(string: "https://assets.tcgdex.net/en/sv/sv08.5/logo.webp")!),
                 .bundled("PokemonSetArtwork_sv08_5_logo")
             ]
         )
@@ -4462,6 +4564,82 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
     }
 
+    func testSetArtworkSourceAddsExtensionlessAndWebPTCGdexCandidatesAfterPNGURL() {
+        let cases: [(id: String, family: String)] = [
+            ("sv01", "sv"),
+            ("ecard1", "ecard"),
+            ("xy10", "xy")
+        ]
+
+        for value in cases {
+            let logoPNG = URL(string: "https://assets.tcgdex.net/en/\(value.family)/\(value.id)/logo.png")!
+            let symbolPNG = URL(string: "https://assets.tcgdex.net/univ/\(value.family)/\(value.id)/symbol.png")!
+            let set = sampleSet(
+                id: value.id,
+                name: value.id,
+                logoURL: logoPNG,
+                symbolURL: symbolPNG
+            )
+
+            XCTAssertEqual(
+                PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates,
+                [
+                    .remote(logoPNG),
+                    .remote(URL(string: "https://assets.tcgdex.net/en/\(value.family)/\(value.id)/logo")!),
+                    .remote(URL(string: "https://assets.tcgdex.net/en/\(value.family)/\(value.id)/logo.webp")!),
+                    .remote(symbolPNG),
+                    .remote(URL(string: "https://assets.tcgdex.net/univ/\(value.family)/\(value.id)/symbol")!),
+                    .remote(URL(string: "https://assets.tcgdex.net/univ/\(value.family)/\(value.id)/symbol.webp")!),
+                    .remote(URL(string: "https://assets.tcgdex.net/en/\(value.family)/\(value.id)/symbol.png")!),
+                    .remote(URL(string: "https://assets.tcgdex.net/en/\(value.family)/\(value.id)/symbol")!),
+                    .remote(URL(string: "https://assets.tcgdex.net/en/\(value.family)/\(value.id)/symbol.webp")!)
+                ],
+                "TCGdex fallback candidates missing for \(value.id)"
+            )
+        }
+    }
+
+    func testTCGdexSymbolCandidatesTrySiblingPrefixWithoutReplacingStoredPath() {
+        let cases: [(id: String, family: String, storedPrefix: String, siblingPrefix: String)] = [
+            ("sv03", "sv", "univ", "en"),
+            ("me05", "me", "en", "univ")
+        ]
+
+        for value in cases {
+            let symbolURL = URL(
+                string: "https://assets.tcgdex.net/\(value.storedPrefix)/\(value.family)/\(value.id)/symbol.png"
+            )!
+            let set = sampleSet(
+                id: value.id,
+                name: value.id,
+                logoURL: nil,
+                symbolURL: symbolURL
+            )
+            let storedStem = URL(
+                string: "https://assets.tcgdex.net/\(value.storedPrefix)/\(value.family)/\(value.id)/symbol"
+            )!
+            let siblingPNG = URL(
+                string: "https://assets.tcgdex.net/\(value.siblingPrefix)/\(value.family)/\(value.id)/symbol.png"
+            )!
+            let siblingStem = URL(
+                string: "https://assets.tcgdex.net/\(value.siblingPrefix)/\(value.family)/\(value.id)/symbol"
+            )!
+
+            XCTAssertEqual(
+                PokemonArtworkFallbacks.setSource(for: set, kind: .symbol).candidates,
+                [
+                    .remote(symbolURL),
+                    .remote(storedStem),
+                    .remote(URL(string: "\(storedStem.absoluteString).webp")!),
+                    .remote(siblingPNG),
+                    .remote(siblingStem),
+                    .remote(URL(string: "\(siblingStem.absoluteString).webp")!)
+                ],
+                "The stored TCGdex symbol path must remain first for \(value.id)"
+            )
+        }
+    }
+
     func testSetArtworkSourcePrefersBundledLogoBeforeRemoteSymbol() {
         let symbolURL = URL(string: "https://example.com/symbol.png")!
         let set = sampleSet(
@@ -4482,7 +4660,17 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let parent = PokemonArtworkFallbacks.parentLogoURL(forProviderID: "cel25cc")
 
         XCTAssertEqual(candidates.first, parent.map(PokemonArtworkFallbacks.Candidate.remote))
-        XCTAssertEqual(candidates.dropFirst().first, .bundled("PokemonSetArtwork_cel25cc_logo"))
+        XCTAssertEqual(
+            candidates.dropFirst().first,
+            parent.flatMap { URL(string: $0.absoluteString.replacingOccurrences(of: ".png", with: "")) }
+                .map(PokemonArtworkFallbacks.Candidate.remote)
+        )
+        XCTAssertEqual(
+            candidates.dropFirst(2).first,
+            parent.flatMap { URL(string: "\($0.absoluteString.replacingOccurrences(of: ".png", with: "")).webp") }
+                .map(PokemonArtworkFallbacks.Candidate.remote)
+        )
+        XCTAssertEqual(candidates.dropFirst(3).first, .bundled("PokemonSetArtwork_cel25cc_logo"))
     }
 
     func testCatalogCachedImageSkipsMissingBundledCandidate() {

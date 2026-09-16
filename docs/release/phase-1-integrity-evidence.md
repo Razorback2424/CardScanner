@@ -1,7 +1,7 @@
 # CardScanner 1.0 Phase 0/1 release evidence
 
 **Status:** current candidate ledger, not release certification — reconciled
-2026-09-14
+2026-09-14; F06 follow-up recorded 2026-09-16
 
 This path is the current evidence authority for the active Phase 0/1 launch
 plan. The previous candidate ledger is retained as the
@@ -12,7 +12,7 @@ branch and `a115e4e`/`ec7dc6b` identities do not describe this checkout.
 
 - Repository: `TradingCardScannerMVP_fixed_v4`
 - Branch: `codex/scanning-workflow-review-remediation`
-- HEAD at this reconciliation: `0b4ac34`
+- HEAD at the 2026-09-14 reconciliation: `0b4ac34`
 - App/test targets: `TradingCardScanner` / `TradingCardScannerTests`
 - Marketing/build version: `1.0 (1)`
 - Bundle identifier: `com.seankeller.CardScanner`
@@ -27,16 +27,44 @@ changes.
 ## Current recorded evidence
 
 - `git diff --check`: PASS at this reconciliation.
-- Latest logged full simulator run: 1,256 tests discovered, with 48 failures
-  classified in the progress log as unrelated fixture/source-environment or
-  signal-kill failures. This is not a clean release-suite result.
-- Latest focused Browse/Catalog verification: 46 tests, 0 failures; the settled
-  iPhone 17 Pro capture and Debug build are recorded in `progress.md` and the
-  Browse checklist.
+- Latest complete full simulator run: `a4375df`, 1,277 executed, 6 skipped,
+  40 failures (36 fixture-resource lookup failures, 1 load-sensitive flake,
+  and 3 substantive failures). This is not a clean release-suite result; see
+  the F06 follow-up below. The earlier 1,256-discovered/48-failure snapshot at
+  `0b4ac34` is historical and must not be reused as the latest run.
+- 2026-09-16 focused F06 follow-up on `main` based at `c381c99`: the PBX
+  resource-ID collision was corrected and the committed corpus reached the
+  test bundle. The selected centering tests produced 38 results (28 passed,
+  9 test cases failed on centering assertions, and 1 profile-dump test was
+  canceled); fixture reachability and manifest tests passed. This is not a
+  full-suite rerun.
+- Latest focused Browse/Catalog verification: 133 tests, 0 failures. A8/B6 are
+  backed by the settled iPhone 17 Pro light/dark capture; C7/RF-9 remains open.
 - Scanner workflow fixes have focused regression/build evidence, but physical
   camera, thermal, and live-provider validation remain open.
 - Card-centering remains blocked by the current accuracy, invariant, latency,
   and device-only gates in the active centering plan.
+
+## F06 follow-up — fixture bundle wiring, 2026-09-16
+
+All 57 files under `TestFixtures/TradingCards/` were tracked at both the
+historical `a4375df` run and the current `main` base `c381c99`. Duplicate
+`PBXBuildFile`/`PBXFileReference` UUIDs caused the test target's fixture resource
+entry to resolve as `CardFinishRenderPlanTests.swift`; the test group also used
+an undefined fixture reference. The project file now has unique resource IDs
+and consistent group/build-phase references.
+
+The external-SSD result bundle `f06-fixture-copy-20260916.xcresult` records 38
+selected results: 28 passed, 9 test cases failed on already-open centering
+accuracy/invariant/performance assertions, and 1 profile-dump test was canceled.
+`testRealFixturesAndGroundTruthAreReachableFromTheTestBundle` and
+`testCorpusManifestIsCompleteAndCryptographicallyFrozen` passed. The profile
+suite writes generated diagnostics into tracked review paths, so it was stopped
+before more workspace outputs accumulated; the seven changed outputs were
+preserved on the external SSD and the tracked files restored. The result is
+partial and does not replace the last full-suite run. The corpus is committed
+input, so skip guards are not appropriate; continue with RF-6 and the centering
+contract's existing analyzer gates.
 
 ## Gates not yet certified
 

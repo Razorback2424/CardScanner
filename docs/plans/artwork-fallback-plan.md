@@ -1,8 +1,10 @@
 # Artwork fallback plan
 
-**Status:** P0–P3, the 2026-09-15 Slice A remediation, and the file-level A6
-bundled-logo audit are implemented in the current working tree; runtime/provider
-validation and image-licensing decisions remain open — reconciled 2026-09-15.
+**Status:** P0–P3, the 2026-09-15 Slice A remediation, the file-level A6
+bundled-logo audit, and the targeted TCGdex provider re-probe are implemented
+in the current working tree. The focused fallback/cache regressions pass
+133/133 with 0 failures as of 2026-09-16; broader provider/device validation
+and image-licensing decisions remain open — reconciled 2026-09-16.
 
 Open defects found in this contract on 2026-09-15 — the set tile requesting the
 symbol rather than the logo, a bundled asset that is unreachable behind a remote
@@ -16,8 +18,9 @@ The current code path is `PokemonArtworkFallbacks` for set artwork,
 Pokémon URLs, and `CatalogCachedImage` for ordered fallback traversal. Focused
 Browse coverage and the Debug Browse build/capture are recorded in
 [`../../progress.md`](../../progress.md). The remaining work is operational:
-recheck live-provider behavior, keep the vendored source commit current, and
-resolve the licensing caveat below before monetization or broad distribution.
+keep the vendored source commit current, measure provider/device behavior beyond
+the targeted fallback probe, and resolve the licensing caveat below before
+monetization or broad distribution.
 
 ## Verified findings (probed 2026-09-14)
 
@@ -31,6 +34,15 @@ resolve the licensing caveat below before monetization or broad distribution.
   (TEF, SCR, SSP, PRE) where TCGdex genuinely 404s on `symbol.png`.
 - Gallery parent `symbol.png` endpoints also 404 for all six inherited parents;
   parent fallback therefore supplies the logo only.
+- TCGdex set-art stems are not universally backed by `.png` derivatives. A
+  2026-09-15 probe found three stored logo derivatives returning 404 —
+  `sv01`/SVI, `ecard1`/EX, and `xy10`/FCO. Their bare stems returned HTTP 200
+  guidance responses, while the explicit `.webp` derivatives returned image
+  data. A 10-set symbol-prefix spot check found nine sampled `/univ/.../symbol.png`
+  paths returning 404 while their `/en/` siblings returned PNG image data;
+  `me05` was the inverse. Symbol fallback therefore preserves the stored path
+  first, then adds its sibling prefix (`/univ/` ↔ `/en/`), with `.png`, bare
+  stem, and `.webp` candidates for each TCGdex path.
 - Limitless CDN: `…/tpci/<CODE>/<CODE>_<NUM>_R_EN.png` (+ `_XS` small tier).
   `_R_` is **constant**, not rarity. Numbering has two rules:
   - pure numeric → zero-pad to 3 (`SLG_1` 403, `SLG_001` 200)
@@ -57,7 +69,21 @@ logo only. Removes ~6 set-tile placeholders for 0 bytes.
 
 `CatalogCachedImage` uses `fallbacks: [URL]` and passes the remaining chain on
 recursion. The current Browse source and focused tests cover ordered fallback
-traversal and retry behavior.
+traversal and retry behavior. For each TCGdex remote set-art URL ending in
+`.png`, `PokemonArtworkFallbacks.setSource` preserves that URL first, adds its
+extensionless stem immediately after it, and adds the explicit TCGdex `.webp`
+derivative after the stem. For symbol candidates under `/univ/` or `/en/`, it
+then adds the sibling-prefix URL variants without replacing the stored path.
+The stem, WebP, and sibling-prefix transformations are all gated to
+`assets.tcgdex.net`; other hosts' `.png` URLs remain untouched.
+
+`CatalogImageCache` now downsamples/decodes each response before saving it to
+the disk LRU. Disk hits are decoded too; an undecodable legacy entry is evicted
+and the URL gets one network retry. Concurrent waiters remain coalesced through
+that decode-and-persist step. Thus the current bare-stem HTML guidance response
+is rejected but never persisted, and older builds' cached guidance responses do
+not permanently suppress the later `.webp` candidate. Focused tests cover the
+invalid-body, legacy-eviction, decoded-disk-hit, and coalesced-fetch cases.
 
 ### P2 — Derived Limitless card fallback — implemented
 
@@ -89,10 +115,12 @@ SHF SV001→SV1, CEL CC001→CC1, AQ 050a→nil, PBL 119→119).
 > `cel25cc_symbol` as wrong artwork. The bundled count becomes 33 image sets.
 
 The remaining 33 PNGs are bundled at tile size and resolved by TCGdex provider
-ID. For a Pokémon set logo, the typed chain is requested remote logo, requested
-bundled logo, remote symbol, inherited parent logo, and bundled symbol; the
-Classic Collection explicitly puts its inherited Celebrations logo before its
-bundled logo. Missing bundled names are skipped. The source commit SHA is
+ID. For a Pokémon set logo, the typed chain is requested remote logo (stored
+`.png`, then extensionless stem, then TCGdex `.webp`), requested bundled logo,
+remote symbol with the same remote variants plus its `/univ/`/`/en/` sibling
+prefix, inherited parent logo with the same remote order, and bundled symbol;
+the Classic Collection explicitly puts its inherited Celebrations logo before
+its bundled logo. Missing bundled names are skipped. The source commit SHA is
 recorded below. The root game fan prioritizes the newest sets with bundled logo
 artwork before filling remaining slots by release order, so the local logo
 fallback remains reachable when the newest catalog rows have no bundled art.
@@ -102,22 +130,24 @@ fallback remains reachable when the newest catalog rows have no bundled art.
 The eight remaining promoted logo assets were checked against the known generic
 `base1_logo` payload using SHA-256 and PNG dimensions. None is byte-identical to
 that generic payload, and each has a distinct source dimension; no asset was
-removed or substituted. This is a file-level audit only; semantic artwork and
-provider behavior remain part of the deferred visual/provider gates. The cheap
-MD5 pass agrees: the base payload begins `bea522d0…`, all eight promoted files
-have distinct MD5s, and their sizes are plausible at 58–98 KB; the generic
-placeholder signature is absent.
+removed or substituted. The cheap MD5 pass agrees: the base payload is
+`bea522d0f5a36c6c3833825b666ab583`, all eight promoted files have distinct MD5s,
+and their sizes are plausible at 58–98 KB; the generic placeholder signature is
+absent. The settled Browse capture then confirmed their semantic identities in
+the rendered tiles: Stellar Crown, Surging Sparks, Prismatic Evolutions, the
+four Trainer Gallery logos, and Shining Fates. The remaining provider behavior
+gate is still separate from this asset audit.
 
-| TCGdex id | PNG dimensions | SHA-256 prefix |
-| --- | ---: | --- |
-| `sv07` | 320 × 128 | `f8f0001f3b94b99c…` |
-| `sv08` | 320 × 141 | `8b963d35f678109f…` |
-| `sv08.5` | 320 × 148 | `7f026f7b92834757…` |
-| `swsh9tg` | 320 × 132 | `322cb1641c69c5d5…` |
-| `swsh10tg` | 320 × 118 | `04959890ced94ae1…` |
-| `swsh11tg` | 320 × 123 | `efdc2a5cd24c1168…` |
-| `swsh12tg` | 320 × 150 | `92e647b4d20fc66f…` |
-| `swsh4.5sv` | 320 × 158 | `c566368d6653d15a…` |
+| TCGdex id | Bytes | MD5 | PNG dimensions | SHA-256 prefix |
+| --- | ---: | --- | ---: | --- |
+| `sv07` | 61,892 | `5d2dc21c2e6f04539e804cf10de54bb0` | 320 × 128 | `f8f0001f3b94b99c…` |
+| `sv08` | 91,028 | `6ffd8dd00ac7c55ed4f57cd5ef79459a` | 320 × 141 | `8b963d35f678109f…` |
+| `sv08.5` | 81,802 | `6ea2565a08ef881498a7f2829c817f91` | 320 × 148 | `7f026f7b92834757…` |
+| `swsh9tg` | 80,263 | `ff8e7817e252566299b63505cbc0f9d2` | 320 × 132 | `322cb1641c69c5d5…` |
+| `swsh10tg` | 57,572 | `29cfcc43d84e7485fba85c4c20b4659f` | 320 × 118 | `04959890ced94ae1…` |
+| `swsh11tg` | 68,165 | `00a25d3fcbb53d06c7cbc4660e78e36f` | 320 × 123 | `efdc2a5cd24c1168…` |
+| `swsh12tg` | 83,342 | `def5a5fc5b8c7d1acd320b7e6bac83e5` | 320 × 150 | `92e647b4d20fc66f…` |
+| `swsh4.5sv` | 97,840 | `c0ba8e31980c9997b5e3bd99d77cdb28` | 320 × 158 | `c566368d6653d15a…` |
 
 ### Out of scope
 - Magic: Scryfall already covers artwork and set icons; no change.
@@ -144,3 +174,9 @@ chain can be re-pointed without touching call sites.
   combined bundled payload is approximately 2.0 MB. Set artwork uses the
   requested bundled kind first and the alternate kind as a local fallback,
   with the inherited Classic Collection logo ahead of its local fallback.
+  Provider `.png` candidates are retained first and followed by their
+  extensionless TCGdex stems and the explicit TCGdex `.webp` derivative,
+  including inherited parent-logo candidates. Symbol candidates retain their
+  stored `/univ/` or `/en/` prefix first and then try the sibling prefix.
+  `CatalogImageCache` validates decoding before persisting response bytes and
+  evicts undecodable disk entries left by older versions.

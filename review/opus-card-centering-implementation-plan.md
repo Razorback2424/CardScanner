@@ -106,6 +106,27 @@ are retained in [`baseline-post-ereq044-2026-09-12.md`](centering-evidence/basel
 with the signed `.xcresult` on the external SSD. The baseline portion of
 REQ-039 is complete.
 
+**Test-bundle correction and focused rerun — 2026-09-16.** In the main checkout,
+the ten historical HEIC fixtures, their ground truth, and the supplementary
+manifest were already tracked (57 files total), but duplicate IDs in
+`TradingCardScanner.xcodeproj/project.pbxproj` caused the test target's resource
+entry to resolve as `CardFinishRenderPlanTests.swift`; its group also referenced
+an undefined fixture ID. The resource build-file and folder-reference IDs are
+now unique, and the group/resource-phase references resolve correctly. The
+simulator build succeeded and the direct fixture-reachability and manifest
+tests passed.
+
+The 2026-09-16 focused selection produced 38 results: 28 passed, 9 test cases
+failed on the already-recorded accuracy, invariant, or performance assertions,
+and 1 `CenteringProfileDumpTests` case was canceled. This is a partial targeted rerun,
+not a replacement for the signed 1,095-result baseline above; it exposed no
+fixture lookup failure and did not change analyzer code or thresholds. The
+profile-dump tests write generated JSON into tracked `review/centering-evidence`
+paths, so the run was stopped before continuing until that output can be
+redirected to external storage. Its interrupted result bundle and the seven
+generated diagnostics are retained on the external SSD; the tracked diagnostic
+files were restored.
+
 The current post-E-REQ044 candidate ledger is also complete as an
 evidence-generation run. With outer edges evaluated against `τ_e` and inner
 edges against the required fixed `0.0035 * H` tolerance, it reports 34/40

@@ -1,7 +1,7 @@
 # Catalog / Browse — implementation plan
 
 Status: current Browse contract, with the implementation landed in the working
-tree — reconciled 2026-09-14. This document replaces the earlier artboard-led
+tree — reconciled 2026-09-16. This document replaces the earlier artboard-led
 plan. The requirements below remain the acceptance contract; the current
 implementation/evidence state is recorded first so the older imperative wording
 cannot be mistaken for an unfinished task list.
@@ -18,8 +18,10 @@ Current implementation state:
 - Unified card/sealed search, game-level Cards/Sealed navigation, cached sealed
   browsing, release rail, game summaries, set sorting/progress, artwork
   fallbacks, and grouped Pokémon finish tiles are implemented.
-- The latest focused Browse/Catalog selectors pass 46 tests with 0 failures;
-  the final Debug build and settled iPhone 17 Pro capture pass.
+- The focused Browse set-directory hardening selectors pass 133/133 with 0
+  failures as of 2026-09-16; their build, result bundle, test products, and logs
+  are stored on the external SSD. A8/B6 visual evidence remains linked from the
+  Browse checklist.
 - Remaining pre-release manual checks are set-tile accessibility output,
   DisclosureGroup expand/collapse behavior, and dark-mode/AX5 badge contrast.
 
@@ -421,7 +423,21 @@ make a naive phase callback wrong:
 
 Because a nil-URL set has nothing to retry until the next catalog refresh, keep the copy as the
 neutral `Artwork lookup will retry later` in §11 and make sure a catalog refresh does re-evaluate
-the URL; do not promise a retry the tile itself will never perform. Pokémon keeps PNG artwork.
+the URL; do not promise a retry the tile itself will never perform. Pokémon keeps the stored PNG
+artwork URL as its first candidate, then tries the extensionless TCGdex stem and its explicit
+`.webp` derivative because the provider does not publish every `.png` derivative.
+
+The 2026-09-15 provider probe found three stored `.png` logo derivatives returning 404 — SVI
+(`sv01`), EX (`ecard1`), and FCO (`xy10`). Their bare stems returned HTTP 200 guidance responses,
+while the explicit `.webp` derivatives returned image data. A 10-set symbol-prefix spot check
+found nine sampled `/univ/.../symbol.png` paths returning 404 while their `/en/` siblings returned
+PNG image data; `me05` was the inverse. Symbol candidates retain the stored prefix first and then
+try its sibling. The `.png`-to-stem, WebP, and sibling-prefix transformations are restricted to
+`assets.tcgdex.net`; non-TCGdex paths are unchanged. `CatalogImageCache` decodes before writing any
+response to its LRU, validates disk hits, and evicts undecodable legacy entries, so a 200 HTML
+guidance body cannot poison the artwork cache. These candidates keep SVI/EX/FCO from incorrectly
+entering the missing-art state; after this correction only the five deliberate no-URL sets reach
+that state.
 
 ## 7. Release rail
 

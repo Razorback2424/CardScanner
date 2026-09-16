@@ -2710,6 +2710,7 @@ actor CatalogImageCache {
     private static let maximumTargetPixelSize = 4_096
 
     private let directory: URL
+    private let responseDataLoader: @Sendable (URLRequest) async throws -> Data
     private let memoryCache: NSCache<NSString, UIImage> = {
         let cache = NSCache<NSString, UIImage>()
         cache.countLimit = 60
@@ -2720,16 +2721,37 @@ actor CatalogImageCache {
         let id: UUID
         let task: Task<Data, Error>
     }
+    private struct CachedDataResponse {
+        enum Source {
+            case disk
+            case network(UUID)
+        }
+
+        let data: Data
+        let source: Source
+    }
     private var inFlight: [URL: InFlight] = [:]
+    private var persistenceInProgress: [URL: UUID] = [:]
     private var lastTouchAt: [URL: Date] = [:]
     private var bytesSinceTrim = 0
     private var didTrimAtStartup = false
 
-    init(directory: URL? = nil) {
+    init(
+        directory: URL? = nil,
+        responseDataLoader: @escaping @Sendable (URLRequest) async throws -> Data = { request in
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let http = response as? HTTPURLResponse,
+                  (200..<300).contains(http.statusCode) else {
+                throw BrowseCatalogError.badResponse
+            }
+            return data
+        }
+    ) {
         self.directory = directory ?? FileManager.default
             .urls(for: .cachesDirectory, in: .userDomainMask)
             .first!
             .appendingPathComponent("BrowseArtworkCache", isDirectory: true)
+        self.responseDataLoader = responseDataLoader
     }
 
     func image(for url: URL, targetPixelSize: Int? = nil) async throws -> UIImage {
@@ -2739,17 +2761,54 @@ actor CatalogImageCache {
             return cached
         }
 
-        let data = try await data(for: url)
-        let image = await Task.detached(priority: .userInitiated) {
-            Self.downsampledImage(from: data, targetPixelSize: targetPixelSize)
-        }.value
+        var response = try await data(for: url)
+        var image = await Self.downsampledImageAsync(
+            from: response.data,
+            targetPixelSize: targetPixelSize
+        )
+
+        if image == nil, case .disk = response.source {
+            // Older app versions persisted every successful HTTP body before
+            // attempting image decoding. Evict those undecodable entries and
+            // make one network attempt so a prior HTML response cannot poison
+            // this URL's disk-cache slot forever.
+            let file = directory.appendingPathComponent(Self.cacheFilename(for: url))
+            await removeCachedData(at: file, for: url)
+            response = try await data(for: url)
+            image = await Self.downsampledImageAsync(
+                from: response.data,
+                targetPixelSize: targetPixelSize
+            )
+        }
+
         guard let image else {
+            if case let .network(requestID) = response.source {
+                finishRejectedResponse(for: url, requestID: requestID)
+            }
             throw BrowseCatalogError.badResponse
         }
+
+        switch response.source {
+        case .disk:
+            let file = directory.appendingPathComponent(Self.cacheFilename(for: url))
+            await touchIfNeeded(file, for: url)
+        case let .network(requestID):
+            await persistDecodedResponse(response.data, for: url, requestID: requestID)
+        }
+
         let cost = image.cgImage.map { $0.bytesPerRow * $0.height }
             ?? max(Int(image.size.width * image.scale * image.size.height * image.scale * 4), 1)
         memoryCache.setObject(image, forKey: cacheKey, cost: cost)
         return image
+    }
+
+    private static func downsampledImageAsync(
+        from data: Data,
+        targetPixelSize: Int
+    ) async -> UIImage? {
+        await Task.detached(priority: .userInitiated) {
+            Self.downsampledImage(from: data, targetPixelSize: targetPixelSize)
+        }.value
     }
 
     private static func normalizedTargetPixelSize(_ targetPixelSize: Int?) -> Int {
@@ -2789,57 +2848,88 @@ actor CatalogImageCache {
         return UIImage(cgImage: image)
     }
 
-    private func data(for url: URL) async throws -> Data {
+    private func data(for url: URL) async throws -> CachedDataResponse {
         await trimAtStartupIfNeeded()
-        let file = directory.appendingPathComponent(filename(for: url))
+        let file = directory.appendingPathComponent(Self.cacheFilename(for: url))
         if let cached = try? await Self.readData(from: file) {
-            await touchIfNeeded(file, for: url)
-            return cached
+            return CachedDataResponse(data: cached, source: .disk)
         }
 
         if let existing = inFlight[url] {
             // A cancelled image owner must not cancel a request another cell is
             // already waiting for. The shared task is intentionally unstructured
-            // and is cleaned up by whichever waiter resumes first.
-            return try await existing.task.value
+            // and is persisted only after a waiter confirms successful decoding.
+            do {
+                let data = try await existing.task.value
+                return CachedDataResponse(data: data, source: .network(existing.id))
+            } catch {
+                if inFlight[url]?.id == existing.id {
+                    inFlight[url] = nil
+                }
+                throw error
+            }
         }
 
         var request = URLRequest(url: url)
         request.timeoutInterval = 15
         request.cachePolicy = .reloadIgnoringLocalCacheData
         let requestID = UUID()
+        let responseDataLoader = self.responseDataLoader
         let task = Task<Data, Error> {
-            let (data, response) = try await URLSession.shared.data(for: request)
-            guard let http = response as? HTTPURLResponse,
-                  (200..<300).contains(http.statusCode) else {
-                throw BrowseCatalogError.badResponse
-            }
-            return data
+            try await responseDataLoader(request)
         }
 
         inFlight[url] = InFlight(id: requestID, task: task)
         do {
             let data = try await task.value
-            // Only one waiter writes the completed response. This also avoids
-            // duplicate LRU timestamps when several visible cells share a URL.
-            if inFlight[url]?.id == requestID {
-                if data.count <= Self.maximumAssetBytes {
-                    await Self.writeData(data, to: file, directory: directory)
-                    bytesSinceTrim += data.count
-                    if bytesSinceTrim >= Self.trimThresholdBytes {
-                        bytesSinceTrim = 0
-                        await trimOffActor()
-                    }
-                }
-                inFlight[url] = nil
-            }
-            return data
+            return CachedDataResponse(data: data, source: .network(requestID))
         } catch {
             if inFlight[url]?.id == requestID {
                 inFlight[url] = nil
             }
             throw error
         }
+    }
+
+    private func persistDecodedResponse(
+        _ data: Data,
+        for url: URL,
+        requestID: UUID
+    ) async {
+        guard inFlight[url]?.id == requestID else { return }
+        guard data.count <= Self.maximumAssetBytes else {
+            inFlight[url] = nil
+            return
+        }
+        // Keep the completed fetch coalesced across the disk-write await. The
+        // actor is re-entrant there, so track the writer separately to prevent
+        // another waiter from writing the same response a second time.
+        guard persistenceInProgress[url] != requestID else { return }
+        persistenceInProgress[url] = requestID
+
+        let file = directory.appendingPathComponent(Self.cacheFilename(for: url))
+        await Self.writeData(data, to: file, directory: directory)
+        guard persistenceInProgress[url] == requestID else { return }
+        persistenceInProgress[url] = nil
+        if inFlight[url]?.id == requestID {
+            inFlight[url] = nil
+        }
+        bytesSinceTrim += data.count
+        if bytesSinceTrim >= Self.trimThresholdBytes {
+            bytesSinceTrim = 0
+            await trimOffActor()
+        }
+    }
+
+    private func finishRejectedResponse(for url: URL, requestID: UUID) {
+        guard inFlight[url]?.id == requestID,
+              persistenceInProgress[url] != requestID else { return }
+        inFlight[url] = nil
+    }
+
+    private func removeCachedData(at file: URL, for sourceURL: URL) async {
+        lastTouchAt.removeValue(forKey: sourceURL)
+        await Self.removeData(from: file)
     }
 
     private func touchIfNeeded(_ file: URL, for sourceURL: URL) async {
@@ -2888,6 +2978,12 @@ actor CatalogImageCache {
         }.value
     }
 
+    private static func removeData(from file: URL) async {
+        await Task.detached(priority: .utility) {
+            try? FileManager.default.removeItem(at: file)
+        }.value
+    }
+
     private static func touch(file: URL, at date: Date) async {
         await Task.detached(priority: .utility) {
             try? FileManager.default.setAttributes(
@@ -2915,7 +3011,7 @@ actor CatalogImageCache {
         }
     }
 
-    private func filename(for url: URL) -> String {
+    static func cacheFilename(for url: URL) -> String {
         var hash: UInt64 = 14_695_981_039_346_656_037
         for byte in url.absoluteString.utf8 {
             hash ^= UInt64(byte)

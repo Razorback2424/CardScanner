@@ -1,20 +1,19 @@
-Current checkpoint (2026-09-14): the current checkout is
-`codex/scanning-workflow-review-remediation` at `0b4ac34`. Browse/Catalog and
-scanning-workflow implementation slices have landed with focused build/test
-evidence. The latest logged focused Browse/Catalog selectors pass 46 tests with
-0 failures, and the settled iPhone 17 Pro Browse capture passes its checklist
-except for the explicitly remaining set-tile accessibility, DisclosureGroup,
-dark-mode, and AX5 manual checks. The scanner workflow review records its
-focused regressions and receipt capture as passing.
+Current checkpoint (2026-09-16): the current branch is `main`; the focused
+Browse/cache and PBX resource correction verification ran on the tree based at
+`c381c99`. Browse selectors pass 133/133, the A8/B6 light/dark visual checks
+are closed, and C7/RF-9 live-provider measurement remains open. The PBX fix
+restored all 57 committed centering corpus files to the test bundle.
 
-The latest logged full simulator run discovered 1,256 tests and reported 48
-failures classified as unrelated fixture/source-environment or signal-kill
-failures; the repository-wide suite is therefore not clean. Card centering still
-has current accuracy, invariant, latency, and device-only gates open under the
-active centering contract. App Review storage/CloudKit, physical-device,
-provider, archive/TestFlight, ownership-ledger, and release-candidate evidence
-also remain open. The current documentation boundary and contradiction matrix
-are in [`docs/plans/documentation_audit.md`](docs/plans/documentation_audit.md).
+The latest complete full simulator run remains the pass-2 run at `a4375df`:
+1,277 executed, 6 skipped, and 40 failures (36 fixture-resource lookup, 1
+load-sensitive, 3 substantive). A focused post-fix centering run produced 38
+results: 28 passed, 9 test cases failed on known centering assertions, and 1 profile-dump
+test canceled; it was not a full-suite baseline. Card-centering accuracy,
+invariant, latency, and device-only gates remain open, as do App Review
+storage/CloudKit, physical-device, provider, archive/TestFlight,
+ownership-ledger, and release-candidate evidence. The current documentation
+boundary and contradiction matrix are in
+[`docs/plans/documentation_audit.md`](docs/plans/documentation_audit.md).
 
 ## Historical checkpoint — 2026-09-12
 
@@ -178,3 +177,7 @@ Original prompt: Implement Browse Sets and Cards across Pokémon/TCGdex and Magi
 - Browse set-directory remediation (2026-09-15): completed the artwork fallback, checklist-backed denominator, empty-set, incremental price-sort, shared-detail cancellation, truthful price-load, completion-index ownership, and deterministic candidate-priority slices. The focused Browse selectors pass 127/127 with 0 failures; the regenerated external-SSD snapshot contains 157 entries with standard/expanded denominator parity and no `rc`/`sp`/`wp` entries. All derived data, build products, module caches, temporary files, and result bundles for this verification were redirected to the external SSD. Screenshots A8/B6 and live-provider/device measurement C7/RF-9 remain intentionally open.
 - Browse set-directory remediation hardening (2026-09-15): fixed case-folded duplicate set-ID checklist reuse, one-pass ownership ranking across provider aliases, retry-triggered completion rebuilds, single price-request identity, memory-warning detail-waiter safety, and artwork candidate deduplication/data-driven parent ordering. The focused Browse selectors pass 128/128 with 0 failures; the regenerated external-SSD snapshot contains 157 entries with standard/expanded denominator parity and no `rc`/`sp`/`wp` entries. All derived data, build products, module caches, temporary files, and result bundles for this verification were redirected to the external SSD. Screenshots A8/B6 and live-provider/device measurement C7/RF-9 remain intentionally open.
 - Browse set-directory sort-price cache correction (2026-09-15): fixed two defects found reviewing the second hardening pass. `BrowseCatalog.produceSortPrices` wrote back only the slots the current request covered, so the C5 first-page prefetch truncated a fully priced set's stored ordering map to one page on every cold open and re-crawled the remainder — it now merges into the stored map and carries forward only a fresh envelope, so a stale map's age is never reset without re-pricing the slots the request skipped. Its early returns on cancellation and on a task-group throw also skipped `continuation.finish()`, which would leave the set screen suspended in `for await` with the price banner stuck; the finish moved to a `defer`. Added `testNarrowerSortPriceRequestDoesNotTruncateTheStoredMap`, confirmed failing against the pre-fix write path before the fix was restored. The focused Browse selectors pass 129/129 with 0 failures on the external SSD. Plan C4 and its C6 box were reconciled. A8/B6 visual verification and C7/RF-9 provider measurement remain open.
+- Browse set-directory visual close-out (2026-09-15): completed the authorized settled light/dark simulator capture at the Pokémon set directory, confirmed the A8 logo-weight/wordmark/plaque checks, HIF's non-zero `69 cards` count, CRI's `203` completion-denominator parity, and the absence of `rc`/`sp`/`wp` tiles. The same scroll session visually confirmed all eight remaining bundled-logo identities; their exact MD5s are recorded in the remediation plan. Evidence is linked from [`artifacts/pokemon_browse_checklist.md`](artifacts/pokemon_browse_checklist.md). A8/B6 are closed; C7/RF-9 remains open.
+- Browse set-directory artwork fallback correction and final revalidation (2026-09-15): the initial A8 frame exposed SVI's dead stored `.png` derivative, so the artwork chain now tries the stored `.png`, its extensionless stem, and the explicit TCGdex `.webp` image derivative in that order, including for older downloaded overlays and inherited parent artwork. The focused Browse selectors pass 130/130 with 0 failures. The final settled light/dark `rerun2` capture shows SVI rendered normally, confirms the logo-weight/wordmark/symbol-plaque checks, HIF's non-zero count, CRI's `0/203` detail denominator, and the absence of `rc`/`sp`/`wp`; A8/B6 are closed again. The eight bundled-logo MD5 results and visual identity checks are recorded in the remediation plan. All build products, caches, temporary files, and result bundles remained on the external SSD; C7/RF-9 remains open.
+- Browse artwork/cache hardening (2026-09-16): added TCGdex-only host gating for extensionless candidates, `/univ/`↔`/en/` symbol-prefix fallback, decode-before-persist with eviction/retry for undecodable legacy cache entries, and regression coverage for both invalid and valid cache bodies plus concurrent fetch coalescing. The focused Browse selectors pass 133/133 with 0 failures. A storage-controlled `xcodebuild` rerun routed `TMPDIR`, Clang/Swift module caches, DerivedData, and the `.xcresult` to the external SSD; the result is `.codex-cardscanner-build/browse-set-remediation-20260915/results/browse-artwork-hardening-20260916-external.xcresult`. The XcodeBuildMCP test-products bundle and logs from the initial run were also moved onto the SSD. No screenshots were taken in this follow-up. A8/B6 remain closed and C7/RF-9 remains open. Xcode emitted one non-failing warning that `CardFinishRenderPlanTests.swift` is in the Copy Bundle Resources phase.
+- Browse artwork batch / F06 project-resource correction (2026-09-16): verified the 57-file centering corpus is tracked and fixed the duplicate PBXBuildFile/PBXFileReference UUIDs plus the dangling fixture-group reference. The simulator build succeeded and fixture-reachability and corpus-manifest tests passed. The focused selection produced 38 results: 28 passed, 9 test cases failed on known centering accuracy/invariant/performance assertions, and 1 profile-dump test was canceled; this was not a full-suite rerun. Diagnostic-dump tests wrote seven tracked outputs in the repository; exact generated versions were copied to `.codex-cardscanner-build/browse-set-remediation-20260915/results/f06-generated-diagnostics-20260916/`, and tracked copies were restored. DerivedData (including Xcode's module and compilation caches), TMPDIR, result bundle (`f06-fixture-copy-20260916.xcresult`), and preserved generated diagnostics are on the external SSD; the package-source clone path was also directed there (no package fetch was needed). No screenshots were taken. F06's missing-bundle cause is corrected; centering assertions and a complete suite baseline remain open.

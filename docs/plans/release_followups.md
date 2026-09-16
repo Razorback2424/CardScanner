@@ -46,33 +46,43 @@ graded slab if available.
 The 8 Hz change should remain unchanged unless this pass produces a concrete
 regression.
 
-### RF-6 — Centering corpus availability and suite skip semantics
+### RF-6 — Centering corpus bundle wiring and executable suite baseline
 
-**Status:** open; blocks the suite from carrying gate evidence.
+**Status:** fixture wiring corrected 2026-09-16; gate remains open for analyzer
+assertions and a complete, storage-safe verification run.
 
-`TestFixtures/TradingCards/HEIC/` holds 44 `Document_*.png` files, while
-`CardCenteringGroundTruthTests`, `CardCenteringInvariantTests`,
-`CenteringProfileDumpTests`, and `CardCenteringCorpusManifestTests` require the
-`IMG_03xx`/`IMG_07xx` HEIC originals and the supplementary manifest. Those are
-not in the repository, and the tests `XCTUnwrap` rather than skip, so 36 tests
-fail on every run and the centering analyzer's numerical output is unverified by
-anything in the repository. See
+The centering corpus is repository-owned: 57 tracked files under
+`TestFixtures/TradingCards/`, including the ten `IMG_03xx`/`IMG_07xx` HEICs,
+their ground truth, and the supplementary manifest. The files were not reaching
+the test bundle because `project.pbxproj` reused two IDs for the fixture
+resource entries and `CardFinishRenderPlanTests.swift`, while the test group
+pointed to an undefined fixture reference. The resource build file and folder
+reference now have unique IDs, and the group and Copy Bundle Resources phase
+refer to those exact objects. The root-cause correction is recorded in
 [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) F06.
 
-Close this item with both halves:
+The 2026-09-16 focused simulator run reached the corpus and manifest. Its
+interrupted result bundle reports 38 selected results: 28 passed, 9 test cases
+failed on centering accuracy, invariant, or performance assertions, and 1
+profile-dump test was canceled. The direct fixture-reachability and
+cryptographic-manifest tests passed. These nine failing test cases correspond
+to the already-open centering gates in the
+[centering contract](../../review/opus-card-centering-implementation-plan.md);
+the run is not a clean baseline, and the full simulator suite was not rerun.
 
-- Decide and record how the corpus is supplied — committed, fetched by a script,
-  or declared a host-only gate — in the
-  [centering contract](../../review/opus-card-centering-implementation-plan.md).
-- Convert the four suites to `XCTSkipUnless(fixturesPresent)` so an absent
-  corpus reports as skipped, and make
-  `OwnershipLedgerCompletenessTests.testSourceInventoryNamesEveryOwnershipEntryPoint`
-  resolve its sources from `#filePath` rather than the process working
-  directory.
+Do **not** add `XCTSkipUnless` guards for these fixtures: they are committed
+inputs, not optional host data. To close this item:
 
-Then record a clean or honestly-skipped baseline in
-[`../release/phase-1-integrity-evidence.md`](../release/phase-1-integrity-evidence.md).
-This is an evidence-mechanism gate, not a centering accuracy claim.
+- Triage the existing centering accuracy, invariant, and latency failures under
+  the centering contract without weakening its frozen thresholds.
+- Make diagnostic-dump output configurable so the corpus suites write only to
+  the external SSD, then rerun all four suites to completion. Their current
+  output path rewrites tracked files under `review/centering-evidence/`.
+- Keep the unrelated `OwnershipLedgerCompletenessTests` source-inventory path
+  check and `ScannerViewModelTests` load-sensitive wait in the full-suite
+  triage; do not classify them as fixture failures.
+- Record a clean or explicitly triaged full-target baseline in
+  [`../release/phase-1-integrity-evidence.md`](../release/phase-1-integrity-evidence.md).
 
 ### RF-7 — Storage-bootstrap production wiring, on an entitled device
 

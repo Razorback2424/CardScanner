@@ -96,32 +96,100 @@ enum PokemonArtworkFallbacks {
             candidates.append(candidate)
         }
 
+        func appendRemoteVariants(_ url: URL) {
+            append(.remote(url))
+            guard let extensionlessURL = Self.extensionlessPNGURL(from: url) else { return }
+            append(.remote(extensionlessURL))
+            // The current assets host answers the bare stem with a short HTML
+            // guidance response, while its explicit WebP derivative is the
+            // renderable content-negotiated form. Keep the bare stem for
+            // providers/edge caches that do negotiate it; the image cache
+            // validates decoding before persisting any response.
+            append(Self.webpURL(fromExtensionlessPNGURL: extensionlessURL).map(Candidate.remote))
+        }
+
+        func appendRemote(_ url: URL?, includingSymbolPrefixSibling: Bool = false) {
+            guard let url else { return }
+            appendRemoteVariants(url)
+            guard includingSymbolPrefixSibling,
+                  let siblingURL = Self.siblingSymbolPrefixURL(from: url) else {
+                return
+            }
+            appendRemoteVariants(siblingURL)
+        }
+
         // The requested provider artwork is authoritative when it exists. A
         // bundled copy of that same kind is next so an offline set directory
         // cannot make a tile wait for a network timeout before it can render.
-        append(requestedURL.map(Candidate.remote))
+        appendRemote(requestedURL, includingSymbolPrefixSibling: kind == .symbol)
         if kind == .logo,
            set.game == .pokemon,
            parentArtworkRules[set.providerID.lowercased()]?.logoBeforeBundled == true {
             // Some gallery entries have a parent logo that is more truthful
             // than their local asset. The per-entry rule keeps this exception
             // data-driven while preserving the requested candidate order.
-            append(inheritedLogoURL.map(Candidate.remote))
+            appendRemote(inheritedLogoURL)
         }
         if set.game == .pokemon {
             append(localAssetName(forProviderID: set.providerID, kind: kind).map(Candidate.bundled))
         }
 
         // Symbols and logos are visually interchangeable only as a last resort.
-        append(alternateURL.map(Candidate.remote))
+        appendRemote(alternateURL, includingSymbolPrefixSibling: alternateKind == .symbol)
         if kind == .logo, set.game == .pokemon {
-            append(inheritedLogoURL.map(Candidate.remote))
+            appendRemote(inheritedLogoURL)
         }
         if set.game == .pokemon {
             append(localAssetName(forProviderID: set.providerID, kind: alternateKind).map(Candidate.bundled))
         }
 
         return SetSource(candidates: candidates)
+    }
+
+    /// TCGdex may omit a renderable `.png` derivative and answer the bare stem
+    /// with HTML guidance. Preserve that compatibility rung, then try the
+    /// explicit `.webp` derivative; `CatalogImageCache` rejects non-image bodies.
+    private static func extensionlessPNGURL(from url: URL) -> URL? {
+        guard url.host?.lowercased() == "assets.tcgdex.net",
+              var components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              components.path.lowercased().hasSuffix(".png") else {
+            return nil
+        }
+        components.path.removeLast(4)
+        return components.url
+    }
+
+    private static func webpURL(fromExtensionlessPNGURL url: URL) -> URL? {
+        guard url.host?.lowercased() == "assets.tcgdex.net" else { return nil }
+        guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+        components.path.append(".webp")
+        return components.url
+    }
+
+    /// TCGdex snapshot symbols use both `/univ/` and `/en/` path prefixes.
+    /// Neither prefix is universally authoritative, so keep the stored URL
+    /// first and add its sibling only for symbol candidates.
+    private static func siblingSymbolPrefixURL(from url: URL) -> URL? {
+        guard url.host?.lowercased() == "assets.tcgdex.net",
+              var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            return nil
+        }
+
+        let prefix: String
+        let siblingPrefix: String
+        if components.path.hasPrefix("/univ/") {
+            prefix = "/univ/"
+            siblingPrefix = "/en/"
+        } else if components.path.hasPrefix("/en/") {
+            prefix = "/en/"
+            siblingPrefix = "/univ/"
+        } else {
+            return nil
+        }
+        components.path = siblingPrefix + String(components.path.dropFirst(prefix.count))
+        return components.url
     }
 }
 

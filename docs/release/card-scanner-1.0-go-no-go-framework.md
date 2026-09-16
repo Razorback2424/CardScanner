@@ -626,17 +626,19 @@ verified status items:
 | Scanner hardware/provider evidence | **Open**; camera framing, OCR/thermal behavior, slab calibration, and live-provider paths require device/provider runs | [`../plans/release_followups.md`](../plans/release_followups.md), [`../../references/whole_card_scanner_checklist.md`](../../references/whole_card_scanner_checklist.md) |
 | Browse manual sign-off | **Open**; set-tile accessibility, disclosure interaction, dark-mode contrast, and AX5 fit remain | [`../plans/browse_screen_spec.md`](../plans/browse_screen_spec.md), [`../../references/browse_success_checklist.md`](../../references/browse_success_checklist.md) |
 | Card centering | **Open**; current accuracy, invariant, latency, and device-only gates fail or remain unrun | [`../../review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) |
-| Full exact-candidate suite | **Not clean, and not yet usable as gate evidence**; the run at `a4375df` executed 1,277 with 6 skipped and 40 failures — 36 fixture/environment, 1 load-sensitive flake, and 3 substantive. Corpus-dependent tests fail rather than skip, so the exit status cannot distinguish a regression from an absent fixture | [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) F06, [`../../progress.md`](../../progress.md), [`phase-1-integrity-evidence.md`](phase-1-integrity-evidence.md) |
+| Full exact-candidate suite | **Not clean, and not yet usable as gate evidence.** The historical run at `a4375df` executed 1,277 with 6 skipped and 40 failures; the 36 corpus lookup failures were caused by duplicate PBX IDs, not absent repository files. The IDs were fixed 2026-09-16. A focused follow-up reached the corpus and reported 38 results: 28 passed, 9 test cases failed on centering assertions, and 1 profile-dump test was canceled; fixture reachability and manifest tests passed. It was not a full-suite rerun, and the analyzer failures remain open. | [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) F06, [`../../progress.md`](../../progress.md), [`phase-1-integrity-evidence.md`](phase-1-integrity-evidence.md) |
 
 These are release-evidence states, not a claim that every open item is a code
 defect. A gate becomes GO/NO-GO evidence only after it is rerun against the
 exact release candidate.
 
 §3 requires that each gate have a defined affirmative search. The suite row
-above is therefore load-bearing: while 36 tests fail for fixture reasons and the
-centering accuracy and invariant suites do not execute at all, the deterministic
-searches behind G1, G2, and G6 cannot be recorded as performed, independently of
-whether any defect is currently known.
+above is therefore load-bearing: after the PBX resource correction, the
+centering accuracy and invariant suites execute, but the focused run still has
+nine test cases failing centering assertions and one canceled profile test.
+The full exact-candidate suite has not been rerun, so its deterministic searches cannot yet be
+recorded as clean gate evidence, independently of whether any defect is
+currently known.
 
 ## 15. Historical known defects — 2026-09-09/10
 
