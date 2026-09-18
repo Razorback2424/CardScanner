@@ -22,6 +22,14 @@
 	<string>$(CARD_SCANNER_PRIVACY_URL)</string>
 	<key>SupportURL</key>
 	<string>$(CARD_SCANNER_SUPPORT_URL)</string>
+	<key>POKEMON_CATALOG_BASE_URL</key>
+	<string>$(POKEMON_CATALOG_BASE_URL)</string>
+	<key>POKEMON_CATALOG_ALLOWED_ORIGIN_HOST</key>
+	<string>$(POKEMON_CATALOG_ALLOWED_ORIGIN_HOST)</string>
+	<key>POKEMON_CATALOG_ROLLOUT_MODE</key>
+	<string>$(POKEMON_CATALOG_ROLLOUT_MODE)</string>
+	<key>POKEMON_CATALOG_PINNED_KEYS</key>
+	<string>$(POKEMON_CATALOG_PINNED_KEYS)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

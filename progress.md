@@ -1,4 +1,37 @@
-Current checkpoint (2026-09-16): the current branch is `main`; the focused
+Catalog publication first-channel readiness (2026-09-18): kept the publisher
+on one Firebase Hosting target and one local site root (`publisher/site`) for
+the first Slice F rehearsal. The publisher environment path is public and is
+the single source used by the CLI and filesystem publisher; staging retains its
+future `staging/v1` namespace but is not wired into the current workflow.
+Added production-only restoration with the existing 404-versus-corruption
+semantics, dot-file Hosting ignores, local `.complete` markers, and a checked-
+in Firebase target example. The app remains `bundled-validation-only`, so the
+production hostname is acting as the rehearsal origin without granting remote
+authority. Core tests pass 8/8 and the DebugProduction simulator build passes;
+the focused Slice F simulator test target built but the runner exited before
+XCTest bootstrapped, so its assertions remain unverified. GitHub PR validation,
+Firebase project/DNS provisioning, production credentials/key pin, and the
+ordered live rollout remain owner-controlled gates. Staging is deferred until
+remote authority is close.
+
+Catalog publication review remediation (2026-09-18): production publication is
+now workflow-dispatch-only while Slice F is incomplete; scheduled runs remain
+validation-only. The production job reconstructs the previously served
+versioned release objects before deploying the fresh Hosting tree, and retains
+the public review report as a 90-day Actions artifact. The Slice E checklist
+now labels its publisher/filesystem and configuration evidence separately from
+the still-open device rehearsal; Slice F records that privacy/support updates
+are complete while App Store metadata confirmation remains open. Pointer fetch
+failures now stop publication; only an explicit 404 is accepted as an initial
+deployment.
+
+Measured catalog rollout guard (2026-09-18): implemented Slice F's bundled-authority rollout mode. Production/default builds now fetch the signed catalog pointer for validation but never load or persist a remote registry; remote authority remains disabled until the future staging boundary and no-op rehearsal are ready. Added fail-closed public-key build configuration, launch/network/validation/activation/disk/memory diagnostics, and focused simulator coverage for validation-and-discard, explicit activation, persisted-release isolation, and configuration parsing. The focused Slice F target built, but its simulator test runner exited before XCTest bootstrapped, so those assertions remain unverified; the app build passes. The live Firebase pointer, production key ceremony and signing secrets, real new-set clean-install/upgrade/offline/cancellation/rollback run, physical-device measurements, and App Store evidence remain open. See [`docs/plans/automatic_pokemon_catalog_updates_plan.md`](docs/plans/automatic_pokemon_catalog_updates_plan.md).
+
+Slice E checkpoint (2026-09-18, before Slice F rollout guard): automatic Pokémon catalog updates Slices A–D are implemented, and Slice E publisher/staging implementation has begun. Slice D makes the shared signed `PokemonCatalogCoordinator` the production Browse activation authority: TCGdex remains transport for authorized provider IDs, provider-only discoveries stay out of Browse until activated, and the checklist refresh validates official counts before publishing. Browse reloads on registry/checklist updates, preserves the previous complete directory on provider failure, uses registry release ordering through rollback, and removes the obsolete UserDefaults ordering authority and Pocket request. Pending sets intentionally render as nothing until active; legacy/diagnostic representations use `Code pending`, never a provider ID. Added `PokemonCatalogSliceDTests.swift`; the focused Slice D run passed 4/4 on the iPhone 17 Pro simulator. Slice C installs the same registry into Scanner; the app build and existing Slice A/B/C catalog/coordinator suites pass. Slice E adds the UIKit-free `PokemonCatalogCore` package, deterministic publisher fixtures, human-input gate, guarded signer, immutable filesystem publication, Firebase cache policy, CI workflow, and staging configuration. Its focused core run passed 7/7, recorded CLI validation passed, and the compile-only iOS build passed. The live Firebase deployment, production signing secret, populated production input, app `pinnedKeys`, provider/device/archive/release gates remain open; no full simulator suite or centering tests were run. See `docs/plans/automatic_pokemon_catalog_updates_plan.md`.
+
+Historical checkpoint (2026-09-17): automatic Pokémon catalog updates Slice A is complete. Created `PokemonCatalogRelease.swift`, `PokemonCatalogRegistry.swift`, `PokemonCatalogSignatureVerifier.swift` (contract, bundled registry, signature verifier); added `PokemonCatalogDiagnostics` diagnostic counters on both `set.id.uppercased()` fallback paths (`PokemonChecklistSnapshot.swift:192` and `CollectionCatalogNormalizer.swift:741`); migrated all nine disposition-table consumers from `SetCodeMap`/`PokemonPromoCodeMap` to the registry (`ScanParser`, `RecognitionProfile.customWords`, `CardCatalog` officialCount, `BrowseCatalog` sort, `PriceRefreshController`, `CollectionCatalogNormalizer`, `PokemonChecklistSnapshot` display code, `TCGdexCard` release order); the generator coverage list at `PokemonChecklistSnapshot.swift:1203` stays on the seed. `CollectionCatalogNormalizer.resolvePokemonSet` receives the registry as a parameter, pinned for the pass. `PokemonCatalogTests.swift` (40 tests, 0 failures) covers round-trip/malformed envelopes, signature success/wrong-key/changed-byte/unknown-key/replay/future-skew, registry collision (expansion, promo, provider ID, cross-namespace) and `scanEnabled`/`.notScannable`, promo pad-width parity for all six series, and the parity gate across all migrated consumers including end-to-end ScanParser parsing. The targeted existing-suite run (ScanParser, BrowseFeature, CatalogNormalization, CardLatch plus all new tests) passed 227 tests with 0 failures. Slices B–F remain unimplemented. See `docs/plans/automatic_pokemon_catalog_updates_plan.md`.
+
+Previous checkpoint (2026-09-16): the current branch is `main`; the focused
 Browse/cache and PBX resource correction verification ran on the tree based at
 `c381c99`. Browse selectors pass 133/133, the A8/B6 light/dark visual checks
 are closed, and C7/RF-9 live-provider measurement remains open. The PBX fix

@@ -1265,8 +1265,15 @@ protocol BrowseCatalogProviding: Sendable {
     /// Starts an opportunistic local-snapshot refresh. Existing test doubles
     /// and non-Pokémon catalog implementations do not need to participate.
     func prepareCatalog() async
+    /// Emits when a signed catalog revision or a per-set checklist becomes
+    /// visible. Existing test doubles may use the empty default stream.
+    func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate>
 }
 
 extension BrowseCatalogProviding {
     func prepareCatalog() async {}
+
+    func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate> {
+        AsyncStream { continuation in continuation.finish() }
+    }
 }

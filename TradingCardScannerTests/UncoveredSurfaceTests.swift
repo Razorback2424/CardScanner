@@ -768,7 +768,7 @@ final class ViewConstructionSmokeTests: XCTestCase {
             updatedAt: .now
         )
 
-        _ = ContentView()
+        _ = ContentView(catalogCoordinator: PokemonCatalogCoordinator())
         _ = ScannerView()
         _ = SettingsView()
         _ = BrowseView(catalog: EmptyUncoveredBrowseCatalog())

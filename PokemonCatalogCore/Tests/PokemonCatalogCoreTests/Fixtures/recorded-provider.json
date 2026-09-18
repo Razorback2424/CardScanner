@@ -1,0 +1,41 @@
+{
+  "directory": [
+    {
+      "id": "sv99",
+      "name": "Recorded Test Set",
+      "logo": "https://assets.tcgdex.net/en/sv99/logo",
+      "symbol": "https://assets.tcgdex.net/en/sv99/symbol",
+      "cardCount": {"total": 2, "official": 2, "normal": 2, "reverse": 0, "holo": 0, "firstEd": 0},
+      "tcgOnline": null,
+      "isUnsupportedProduct": false
+    },
+    {
+      "id": "tcgp01",
+      "name": "Recorded Pocket Product",
+      "logo": "https://assets.tcgdex.net/en/tcgp01/logo",
+      "symbol": "https://assets.tcgdex.net/en/tcgp01/symbol",
+      "cardCount": {"total": 1, "official": 1, "normal": 1, "reverse": 0, "holo": 0, "firstEd": 0},
+      "tcgOnline": null,
+      "isUnsupportedProduct": true
+    }
+  ],
+  "sets": [
+    {
+      "id": "sv99",
+      "name": "Recorded Test Set",
+      "cards": [
+        {"id": "sv99-002", "localId": "002", "name": "Beta", "image": "https://assets.tcgdex.net/en/sv99/sv99-002"},
+        {"id": "sv99-001", "localId": "001", "name": "Alpha", "image": "https://assets.tcgdex.net/en/sv99/sv99-001"}
+      ],
+      "logo": "https://assets.tcgdex.net/en/sv99/logo",
+      "symbol": "https://assets.tcgdex.net/en/sv99/symbol",
+      "releaseDate": "2026-01-01",
+      "tcgOnline": null,
+      "cardCount": {"total": 2, "official": 2, "normal": 2, "reverse": 0, "holo": 0, "firstEd": 0}
+    }
+  ],
+  "cards": [
+    {"id": "sv99-001", "localId": "001", "name": "Alpha", "image": "https://assets.tcgdex.net/en/sv99/sv99-001", "setID": "sv99"},
+    {"id": "sv99-002", "localId": "002", "name": "Beta", "image": "https://assets.tcgdex.net/en/sv99/sv99-002", "setID": "sv99"}
+  ]
+}

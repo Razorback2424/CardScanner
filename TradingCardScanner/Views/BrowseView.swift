@@ -151,6 +151,17 @@ final class BrowseViewModel: ObservableObject {
         }
     }
 
+    func observeCatalogUpdates() async {
+        let updates = await catalog.catalogUpdates()
+        for await _ in updates {
+            guard !Task.isCancelled else { return }
+            sets.removeAll()
+            selectedSets.removeAll()
+            await loadSets()
+            recomputeSearchResults()
+        }
+    }
+
     func retrySets(_ game: CardGame) async {
         setErrors[game] = nil
         do { sets[game] = try await catalog.sets(for: game) }
@@ -395,6 +406,9 @@ struct BrowseView: View {
             await model.loadSets()
             backfillPokemonReleaseOrder()
             requestSetCompletionRebuild()
+        }
+        .task {
+            await model.observeCatalogUpdates()
         }
         .onChange(of: projectionStore.revision) { _, _ in
             requestSetCompletionRebuild()

@@ -1,0 +1,33 @@
+{
+  "hosting": [
+    {
+      "target": "production",
+      "public": "publisher/site",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [
+        {
+          "source": "/v1/current.json",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public,max-age=60,must-revalidate"
+            }
+          ]
+        },
+        {
+          "source": "/v1/releases/**",
+          "headers": [
+            {
+              "key": "Cache-Control",
+              "value": "public,max-age=31536000,immutable"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

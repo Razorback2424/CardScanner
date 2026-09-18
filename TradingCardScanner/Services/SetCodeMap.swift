@@ -32,11 +32,10 @@ struct PokemonPromoSetDefinition: Equatable, Hashable, Sendable {
     let printedPrefix: String
     let tcgdexSetID: String
     let catalogLocalIDPrefix: String
+    let localIDPadWidth: Int
 
     func catalogLocalID(number: Int) -> String {
-        let digits = printedPrefix == "BW" || printedPrefix == "XY" || printedPrefix == "SM"
-            ? String(format: "%02d", number)
-            : String(format: "%03d", number)
+        let digits = String(format: "%0\(localIDPadWidth)d", number)
         return catalogLocalIDPrefix + digits
     }
 }
@@ -47,12 +46,12 @@ enum PokemonPromoCodeMap {
     /// cards do not print an expansion denominator and must never enter the
     /// modern expansion parser's `code + number/total` contract.
     static let definitions: [String: PokemonPromoSetDefinition] = [
-        "BW": .init(printedPrefix: "BW", tcgdexSetID: "bwp", catalogLocalIDPrefix: "BW"),
-        "XY": .init(printedPrefix: "XY", tcgdexSetID: "xyp", catalogLocalIDPrefix: "XY"),
-        "SM": .init(printedPrefix: "SM", tcgdexSetID: "smp", catalogLocalIDPrefix: "SM"),
-        "SWSH": .init(printedPrefix: "SWSH", tcgdexSetID: "swshp", catalogLocalIDPrefix: "SWSH"),
-        "SVP": .init(printedPrefix: "SVP", tcgdexSetID: "svp", catalogLocalIDPrefix: ""),
-        "MEP": .init(printedPrefix: "MEP", tcgdexSetID: "mep", catalogLocalIDPrefix: "")
+        "BW": .init(printedPrefix: "BW", tcgdexSetID: "bwp", catalogLocalIDPrefix: "BW", localIDPadWidth: 2),
+        "XY": .init(printedPrefix: "XY", tcgdexSetID: "xyp", catalogLocalIDPrefix: "XY", localIDPadWidth: 2),
+        "SM": .init(printedPrefix: "SM", tcgdexSetID: "smp", catalogLocalIDPrefix: "SM", localIDPadWidth: 2),
+        "SWSH": .init(printedPrefix: "SWSH", tcgdexSetID: "swshp", catalogLocalIDPrefix: "SWSH", localIDPadWidth: 3),
+        "SVP": .init(printedPrefix: "SVP", tcgdexSetID: "svp", catalogLocalIDPrefix: "", localIDPadWidth: 3),
+        "MEP": .init(printedPrefix: "MEP", tcgdexSetID: "mep", catalogLocalIDPrefix: "", localIDPadWidth: 3)
     ]
 
     static var codes: [String] { definitions.keys.sorted() }
@@ -104,20 +103,5 @@ enum SetCodeMap {
 
     static func printedCode(forTCGdexSetID id: String) -> String? {
         definitions.values.first { $0.tcgdexSetID.caseInsensitiveCompare(id) == .orderedSame }?.printedCode
-    }
-}
-
-/// The full TCGdex directory supplies a stable all-set release rank that the
-/// scanner's deliberately small OCR table cannot. Browse refreshes this cache;
-/// scans can then use the same scale as manually selected historical cards.
-enum PokemonCatalogReleaseOrder {
-    private static let defaultsKey = "pokemonCatalogReleaseOrder.v1"
-
-    static func install(_ values: [String: Int]) {
-        UserDefaults.standard.set(values, forKey: defaultsKey)
-    }
-
-    static func order(forSetID setID: String) -> Int? {
-        (UserDefaults.standard.dictionary(forKey: defaultsKey) as? [String: Int])?[setID.lowercased()]
     }
 }

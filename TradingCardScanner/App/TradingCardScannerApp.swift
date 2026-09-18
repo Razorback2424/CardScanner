@@ -4,10 +4,19 @@ import SwiftData
 @main
 struct TradingCardScannerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @StateObject private var scannerModel = ScannerViewModel()
+    private let catalogCoordinator: PokemonCatalogCoordinator
+    @StateObject private var scannerModel: ScannerViewModel
     @StateObject private var scanSummaryStore = ScanSessionSummaryStore()
     @StateObject private var cardFinishMotion = CardFinishMotionSource()
     @StateObject private var storageBootstrap = CollectionStorageBootstrap()
+
+    init() {
+        let catalogCoordinator = PokemonCatalogCoordinator()
+        self.catalogCoordinator = catalogCoordinator
+        _scannerModel = StateObject(
+            wrappedValue: ScannerViewModel(catalogCoordinator: catalogCoordinator)
+        )
+    }
 
     // Compatibility name for existing portfolio/status call sites. The
     // actual state is owned by CollectionStorageBootstrap.
@@ -24,7 +33,7 @@ struct TradingCardScannerApp: App {
             Group {
                 switch storageBootstrap.state {
                 case .ready(let session):
-                    ContentView()
+                    ContentView(catalogCoordinator: catalogCoordinator)
                         .modelContainer(session.container)
                         .environmentObject(scannerModel)
                         .environmentObject(scanSummaryStore)

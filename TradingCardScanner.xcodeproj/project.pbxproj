@@ -38,6 +38,13 @@
 		A0010002 /* CollectedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010002 /* CollectedCard.swift */; };
 		A0010003 /* TCGdexCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010003 /* TCGdexCard.swift */; };
 		A0010004 /* SetCodeMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010004 /* SetCodeMap.swift */; };
+		A0010119 /* PokemonCatalogRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010119 /* PokemonCatalogRelease.swift */; };
+		A001011A /* PokemonCatalogRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001011A /* PokemonCatalogRegistry.swift */; };
+		A001011B /* PokemonCatalogSignatureVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001011B /* PokemonCatalogSignatureVerifier.swift */; };
+		A001011C /* PokemonCatalogReleaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001011C /* PokemonCatalogReleaseStore.swift */; };
+		A001011D /* PokemonCatalogUpdateClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001011D /* PokemonCatalogUpdateClient.swift */; };
+		A001011E /* PokemonCatalogCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001011E /* PokemonCatalogCoordinator.swift */; };
+		A001011F /* PokemonCatalogRollout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001011F /* PokemonCatalogRollout.swift */; };
 		A0010005 /* ScanParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010005 /* ScanParser.swift */; };
 		A0010006 /* TCGdexService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010006 /* TCGdexService.swift */; };
 		A0010007 /* CardScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010007 /* CardScanner.swift */; };
@@ -199,6 +206,11 @@
 		A0020108 /* CloudAccountProbeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020108 /* CloudAccountProbeTests.swift */; };
 		A0020109 /* CloudCollectionAnchorStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020109 /* CloudCollectionAnchorStoreTests.swift */; };
 		A002010A /* CollectionStoreDigestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010A /* CollectionStoreDigestTests.swift */; };
+		A0020115 /* PokemonCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020115 /* PokemonCatalogTests.swift */; };
+		A0020116 /* PokemonCatalogSliceBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020116 /* PokemonCatalogSliceBTests.swift */; };
+		A0020117 /* PokemonCatalogSliceCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020117 /* PokemonCatalogSliceCTests.swift */; };
+		A0020118 /* PokemonCatalogSliceDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020118 /* PokemonCatalogSliceDTests.swift */; };
+		A0020119 /* PokemonCatalogSliceFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020119 /* PokemonCatalogSliceFTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -243,6 +255,13 @@
 		B0010002 /* CollectedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectedCard.swift; sourceTree = "<group>"; };
 		B0010003 /* TCGdexCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexCard.swift; sourceTree = "<group>"; };
 		B0010004 /* SetCodeMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCodeMap.swift; sourceTree = "<group>"; };
+		B0010119 /* PokemonCatalogRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogRelease.swift; sourceTree = "<group>"; };
+		B001011A /* PokemonCatalogRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogRegistry.swift; sourceTree = "<group>"; };
+		B001011B /* PokemonCatalogSignatureVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogSignatureVerifier.swift; sourceTree = "<group>"; };
+		B001011C /* PokemonCatalogReleaseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogReleaseStore.swift; sourceTree = "<group>"; };
+		B001011D /* PokemonCatalogUpdateClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogUpdateClient.swift; sourceTree = "<group>"; };
+		B001011E /* PokemonCatalogCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogCoordinator.swift; sourceTree = "<group>"; };
+		B001011F /* PokemonCatalogRollout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogRollout.swift; sourceTree = "<group>"; };
 		B0010005 /* ScanParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParser.swift; sourceTree = "<group>"; };
 		B0010006 /* TCGdexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexService.swift; sourceTree = "<group>"; };
 		B0010007 /* CardScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScanner.swift; sourceTree = "<group>"; };
@@ -409,6 +428,11 @@
 		B0020108 /* CloudAccountProbeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudAccountProbeTests.swift; sourceTree = "<group>"; };
 		B0020109 /* CloudCollectionAnchorStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCollectionAnchorStoreTests.swift; sourceTree = "<group>"; };
 		B002010A /* CollectionStoreDigestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStoreDigestTests.swift; sourceTree = "<group>"; };
+		B0020115 /* PokemonCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogTests.swift; sourceTree = "<group>"; };
+		B0020116 /* PokemonCatalogSliceBTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogSliceBTests.swift; sourceTree = "<group>"; };
+		B0020117 /* PokemonCatalogSliceCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogSliceCTests.swift; sourceTree = "<group>"; };
+		B0020118 /* PokemonCatalogSliceDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogSliceDTests.swift; sourceTree = "<group>"; };
+		B0020119 /* PokemonCatalogSliceFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogSliceFTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -522,6 +546,13 @@
 				B00100E3 /* MagicTreatmentCatalog.swift */,
 				B00100E5 /* MagicTreatmentMigration.swift */,
 				B0010004 /* SetCodeMap.swift */,
+				B0010119 /* PokemonCatalogRelease.swift */,
+				B001011A /* PokemonCatalogRegistry.swift */,
+				B001011B /* PokemonCatalogSignatureVerifier.swift */,
+				B001011C /* PokemonCatalogReleaseStore.swift */,
+				B001011D /* PokemonCatalogUpdateClient.swift */,
+				B001011E /* PokemonCatalogCoordinator.swift */,
+				B001011F /* PokemonCatalogRollout.swift */,
 				B0010005 /* ScanParser.swift */,
 				B0010006 /* TCGdexService.swift */,
 				B0010007 /* CardScanner.swift */,
@@ -692,6 +723,11 @@
 				B0020100 /* SlabEvidenceConfirmationWindowTests.swift */,
 				B0020103 /* CardFinishRenderPlanTests.swift */,
 				B0020104 /* CardFinishMotionSourceTests.swift */,
+				B0020115 /* PokemonCatalogTests.swift */,
+				B0020116 /* PokemonCatalogSliceBTests.swift */,
+				B0020117 /* PokemonCatalogSliceCTests.swift */,
+				B0020118 /* PokemonCatalogSliceDTests.swift */,
+				B0020119 /* PokemonCatalogSliceFTests.swift */,
 				B6F06E16B0A2C00200000002 /* TradingCardScannerFixtures */,
 			);
 			path = TradingCardScannerTests;
@@ -711,6 +747,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			packageProductDependencies = (
+				P0010002 /* XCSwiftPackageProductDependency "PokemonCatalogCore" */,
 			);
 			name = TradingCardScanner;
 			productName = TradingCardScanner;
@@ -737,6 +776,21 @@
 		};
 /* End PBXNativeTarget section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		P0010001 /* XCLocalSwiftPackageReference "PokemonCatalogCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PokemonCatalogCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		P0010002 /* XCSwiftPackageProductDependency "PokemonCatalogCore" */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = P0010001 /* XCLocalSwiftPackageReference "PokemonCatalogCore" */;
+			productName = PokemonCatalogCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+
 /* Begin PBXProject section */
 		E0010000 /* Project object */ = {
 			isa = PBXProject;
@@ -762,6 +816,9 @@
 				Base,
 			);
 			mainGroup = D0010000;
+			packageReferences = (
+				P0010001 /* XCLocalSwiftPackageReference "PokemonCatalogCore" */,
+			);
 			productRefGroup = D0010009 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -846,6 +903,13 @@
 				A0010002 /* CollectedCard.swift in Sources */,
 				A0010003 /* TCGdexCard.swift in Sources */,
 				A0010004 /* SetCodeMap.swift in Sources */,
+				A0010119 /* PokemonCatalogRelease.swift in Sources */,
+				A001011A /* PokemonCatalogRegistry.swift in Sources */,
+				A001011B /* PokemonCatalogSignatureVerifier.swift in Sources */,
+				A001011C /* PokemonCatalogReleaseStore.swift in Sources */,
+				A001011D /* PokemonCatalogUpdateClient.swift in Sources */,
+				A001011E /* PokemonCatalogCoordinator.swift in Sources */,
+				A001011F /* PokemonCatalogRollout.swift in Sources */,
 				A0010005 /* ScanParser.swift in Sources */,
 				A0010006 /* TCGdexService.swift in Sources */,
 				A0010007 /* CardScanner.swift in Sources */,
@@ -994,6 +1058,11 @@
 				A0020100 /* SlabEvidenceConfirmationWindowTests.swift in Sources */,
 				A0020103 /* CardFinishRenderPlanTests.swift in Sources */,
 				A0020104 /* CardFinishMotionSourceTests.swift in Sources */,
+				A0020115 /* PokemonCatalogTests.swift in Sources */,
+				A0020116 /* PokemonCatalogSliceBTests.swift in Sources */,
+				A0020117 /* PokemonCatalogSliceCTests.swift in Sources */,
+				A0020118 /* PokemonCatalogSliceDTests.swift in Sources */,
+				A0020119 /* PokemonCatalogSliceFTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1070,8 +1139,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
+			MARKETING_VERSION = 1.0;
+			POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = "catalog.scan-stash.com";
+			POKEMON_CATALOG_BASE_URL = "https://catalog.scan-stash.com";
+			POKEMON_CATALOG_ROLLOUT_MODE = "bundled-validation-only";
+			POKEMON_CATALOG_PINNED_KEYS = "";
+			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -1099,8 +1172,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
+			MARKETING_VERSION = 1.0;
+			POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = "catalog.scan-stash.com";
+			POKEMON_CATALOG_BASE_URL = "https://catalog.scan-stash.com";
+			POKEMON_CATALOG_ROLLOUT_MODE = "bundled-validation-only";
+			POKEMON_CATALOG_PINNED_KEYS = "";
+			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -1125,8 +1202,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
+			MARKETING_VERSION = 1.0;
+			POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = "catalog.scan-stash.com";
+			POKEMON_CATALOG_BASE_URL = "https://catalog.scan-stash.com";
+			POKEMON_CATALOG_ROLLOUT_MODE = "bundled-validation-only";
+			POKEMON_CATALOG_PINNED_KEYS = "";
+			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;

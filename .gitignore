@@ -26,6 +26,12 @@ TestFixtures/TradingCards/HEIC/
 # Swift Package Manager
 .build/
 
+# Generated catalog publisher output
+publisher/site/
+publisher/staging-site/
+publisher/reports/*.json
+
+
 # Local Python tooling caches
 __pycache__/
 

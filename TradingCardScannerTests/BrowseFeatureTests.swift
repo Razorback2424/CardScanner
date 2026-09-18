@@ -428,9 +428,11 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertNotEqual(groups[1].id, groups[2].id)
     }
 
-    func testPokemonReleaseOrderCacheUsesProviderSetID() {
-        PokemonCatalogReleaseOrder.install(["sv08.5": 312])
-        XCTAssertEqual(PokemonCatalogReleaseOrder.order(forSetID: "SV08.5"), 312)
+    func testPokemonReleaseOrderComesFromTheBundledRegistry() {
+        XCTAssertEqual(
+            PokemonCatalogRegistry.bundledSeed.releaseOrder(forProviderSetID: "SV08.5"),
+            SetCodeMap.definitions["PRE"]?.releaseIndex
+        )
     }
 
     func testPokemonSearchURLCarriesNameAndPagination() throws {
@@ -2905,7 +2907,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let definition = PokemonPromoSetDefinition(
             printedPrefix: "SVP",
             tcgdexSetID: "svp",
-            catalogLocalIDPrefix: ""
+            catalogLocalIDPrefix: "",
+            localIDPadWidth: 3
         )
 
         _ = try await catalog.card(for: .pokemonPromo(
@@ -3252,7 +3255,10 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: root) }
         let bundledRoot = root.appendingPathComponent("bundled", isDirectory: true)
         let downloadedRoot = root.appendingPathComponent("downloaded", isDirectory: true)
-        let set = sampleSet(id: "sv08.5", name: "Prismatic Evolutions")
+        // Keep this fixture outside the bundled registry. The test verifies
+        // offline snapshot access and transport silence; using a real bundled
+        // provider ID would intentionally trigger registry metadata enrichment.
+        let set = sampleSet(id: "sv99", name: "Prismatic Evolutions")
         let card = sampleSummary(set: set, name: "Eevee")
         try await writeSnapshot([set: [card]], to: bundledRoot)
 
@@ -5008,8 +5014,6 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
         directoryRequests += 1
         return rows
     }
-
-    func fetchPocketSetIDs() async throws -> Set<String> { [] }
 
     func fetchSet(id: String) async throws -> TCGdexSetCatalog {
         setRequests += 1

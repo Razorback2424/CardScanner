@@ -2828,9 +2828,8 @@ private actor ImportedCardResolver {
                       ) else {
                     continue
                 }
-                let printedCode = SetCodeMap.definitions.values.first {
-                    $0.tcgdexSetID.caseInsensitiveCompare(set.id) == .orderedSame
-                }?.printedCode ?? set.id.uppercased()
+                let printedCode = PokemonCatalogRegistry.bundledSeed.printedCode(forProviderSetID: set.id)
+                    ?? set.id.uppercased()
                 return .pokemon(card, setCode: printedCode)
             }
             throw TCGdexError.identityMismatch

@@ -180,27 +180,45 @@ enum PokemonMasterSetChecklistBuilder {
 
     static func baseSets(
         from rows: [TCGdexBrowseSet],
-        excluding pocketIDs: Set<String>
+        registry: PokemonCatalogRegistry? = nil
     ) -> [CatalogSet] {
         let baseSets = rows.enumerated().compactMap { pair -> CatalogSet? in
             let index = pair.offset
             let row = pair.element
-            guard !pocketIDs.contains(row.id.lowercased()),
-                  PokemonMasterSetDefinition.includesInSetDirectory(row) else {
+            guard PokemonMasterSetDefinition.includesInSetDirectory(row) else {
                 return nil
             }
             let parentLogoURL = PokemonArtworkFallbacks.parentLogoURL(forProviderID: row.id)
+            let descriptor = registry?.descriptor(forProviderSetID: row.id)
+            let displayCode: String
+            if let registryCode = descriptor.flatMap({ descriptor in
+                switch descriptor.recognitionKind {
+                case .expansion: return descriptor.printedCode
+                case .promo: return descriptor.printedPrefix
+                case .notScannable: return descriptor.printedCode ?? descriptor.printedPrefix
+                }
+            })?.uppercased() {
+                displayCode = registryCode
+            } else if let tcgOnline = row.tcgOnline?.uppercased() {
+                displayCode = tcgOnline
+            } else if let registryCode = PokemonCatalogRegistry.bundledSeed.printedCode(forProviderSetID: row.id) {
+                displayCode = registryCode
+            } else {
+                PokemonCatalogDiagnostics.recordDisplayCodeFallback(providerSetID: row.id)
+                displayCode = "Code pending"
+            }
             return CatalogSet(
                 catalogID: CatalogSetID(game: .pokemon, providerID: row.id),
-                name: row.name,
-                code: row.tcgOnline?.uppercased()
-                    ?? SetCodeMap.printedCode(forTCGdexSetID: row.id)
-                    ?? row.id.uppercased(),
+                name: descriptor?.displayName ?? row.name,
+                code: displayCode,
                 // Gallery rows inherit the parent provider logo when TCGdex
                 // omits their own assets. This is also applied again in
                 // `enrichedSet` for the generated/offline checklist path.
-                logoURL: assetURL(row.logo, suffix: ".png") ?? parentLogoURL,
-                symbolURL: assetURL(row.symbol, suffix: ".png"),
+                logoURL: descriptor?.logoURL.flatMap(URL.init(string:))
+                    ?? assetURL(row.logo, suffix: ".png")
+                    ?? parentLogoURL,
+                symbolURL: descriptor?.symbolURL.flatMap(URL.init(string:))
+                    ?? assetURL(row.symbol, suffix: ".png"),
                 cardCount: row.cardCount.map {
                     PokemonMasterSetDefinition.masterCount(
                         cardCount: $0,
@@ -208,8 +226,8 @@ enum PokemonMasterSetChecklistBuilder {
                         printRun: nil
                     )
                 },
-                releaseDate: nil,
-                sortRank: rows.count - index
+                releaseDate: descriptor?.releaseDate.flatMap(FlexibleDate.parse),
+                sortRank: descriptor?.releaseOrder ?? (rows.count - index)
             )
         }
         return baseSets
@@ -332,12 +350,12 @@ enum PokemonMasterSetChecklistBuilder {
         return CatalogSet(
             catalogID: set.catalogID,
             name: set.name,
-            code: providerSet.tcgOnline?.uppercased() ?? set.code,
-            logoURL: assetURL(providerSet.logo, suffix: ".png")
-                ?? set.logoURL
+            code: set.code,
+            logoURL: set.logoURL
+                ?? assetURL(providerSet.logo, suffix: ".png")
                 ?? parentLogoURL,
-            symbolURL: assetURL(providerSet.symbol, suffix: ".png")
-                ?? set.symbolURL,
+            symbolURL: set.symbolURL
+                ?? assetURL(providerSet.symbol, suffix: ".png"),
             cardCount: providerSet.cardCount.map {
                 PokemonMasterSetDefinition.masterCount(
                     cardCount: $0,
@@ -345,7 +363,8 @@ enum PokemonMasterSetChecklistBuilder {
                     printRun: set.pokemonPrintRun
                 )
             } ?? set.cardCount,
-            releaseDate: providerSet.releaseDate.flatMap(FlexibleDate.parse),
+            releaseDate: set.releaseDate
+                ?? providerSet.releaseDate.flatMap(FlexibleDate.parse),
             sortRank: set.sortRank
         )
     }
@@ -405,7 +424,6 @@ enum StableCatalogFingerprint {
 /// snapshot generator. Tests can supply a fake without URL loading or sleeps.
 protocol PokemonBrowseTransport: Sendable {
     func fetchSetDirectory() async throws -> [TCGdexBrowseSet]
-    func fetchPocketSetIDs() async throws -> Set<String>
     func fetchSet(id: String) async throws -> TCGdexSetCatalog
     func fetchCard(id: String) async throws -> TCGdexCard
 }
@@ -426,19 +444,6 @@ struct TCGdexBrowseTransport: PokemonBrowseTransport, Sendable {
         return try JSONDecoder().decode([TCGdexBrowseSet].self, from: data)
     }
 
-    func fetchPocketSetIDs() async throws -> Set<String> {
-        guard let url = URL(string: "https://api.tcgdex.net/v2/en/series/tcgp") else {
-            throw BrowseCatalogError.invalidURL
-        }
-        var request = URLRequest(url: url)
-        request.timeoutInterval = 12
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-            throw BrowseCatalogError.badResponse
-        }
-        return Set(try JSONDecoder().decode(PokemonBrowseSeriesSets.self, from: data).sets.map { $0.id.lowercased() })
-    }
-
     func fetchSet(id: String) async throws -> TCGdexSetCatalog {
         try await service.fetchSet(id: id)
     }
@@ -446,11 +451,6 @@ struct TCGdexBrowseTransport: PokemonBrowseTransport, Sendable {
     func fetchCard(id: String) async throws -> TCGdexCard {
         try await service.fetchCard(id: id)
     }
-}
-
-private struct PokemonBrowseSeriesSets: Decodable {
-    struct Brief: Decodable { let id: String }
-    let sets: [Brief]
 }
 
 /// Protected checklist persistence. This is deliberately not part of the LRU
@@ -620,6 +620,13 @@ actor PokemonChecklistStore {
             bundled: bundledValidEntries(),
             downloaded: downloadedValidEntries()
         )
+    }
+
+    /// Provider ids present in the shipped snapshot. A downloaded overlay may
+    /// contain a set that a later signed release withdraws; Browse keeps the
+    /// historical/bundled directory visible while hiding that remote-only set.
+    func bundledProviderIDs() -> Set<String> {
+        Set(bundledValidEntries().map { $0.providerID.lowercased() })
     }
 
     /// Whether the checklist `mergedEntries()` names for this set is intact.
@@ -841,6 +848,23 @@ actor PokemonChecklistStore {
             PokemonChecklistRefreshState(
                 lastSuccessfulAt: date,
                 lastSweepAt: date,
+                lastAttemptAt: nil,
+                resumeAfterProviderID: nil,
+                failedProviderIDs: []
+            )
+        )
+    }
+
+    /// A new registry revision was activated. The work list changed, so the
+    /// cursor and failure set are stale. The 24-hour cadence timestamp is
+    /// preserved — a registry activation is not evidence the provider has
+    /// changed, and resetting it would trigger an immediate crawl.
+    func clearCursorForRegistryActivation() {
+        let previous = loadRefreshState()
+        writeRefreshState(
+            PokemonChecklistRefreshState(
+                lastSuccessfulAt: previous?.lastSuccessfulAt,
+                lastSweepAt: nil,
                 lastAttemptAt: nil,
                 resumeAfterProviderID: nil,
                 failedProviderIDs: []
@@ -1179,11 +1203,7 @@ enum PokemonChecklistSnapshotGenerator {
         setIDs: Set<String>? = nil
     ) async throws {
         let rows = try await transport.fetchSetDirectory()
-        let pocketIDs = (try? await transport.fetchPocketSetIDs()) ?? []
-        let baseSets = PokemonMasterSetChecklistBuilder.baseSets(
-            from: rows,
-            excluding: pocketIDs
-        )
+        let baseSets = PokemonMasterSetChecklistBuilder.baseSets(from: rows)
         let normalizedFilter = setIDs?.map { $0.lowercased() }
         let selectedSets = normalizedFilter.map { filter in
             baseSets.filter { filter.contains($0.providerID.lowercased()) }

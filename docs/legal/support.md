@@ -4,7 +4,7 @@ This support page covers CardScanner 1.0 on supported iPhone and iPad operating 
 
 ## What to include in a report
 
-Describe whether the issue concerns scanning, card identity or variant selection, pricing, CSV import/export, storage, or iCloud sync. Include the app version, OS version, device model, and the coarse error category shown in the app. If available, attach the redacted diagnostic export.
+Describe whether the issue concerns scanning, card identity or variant selection, pricing, CSV import/export, storage, iCloud sync, or a Pokémon catalog update. Include the app version, OS version, device model, and the coarse error category shown in the app. If available, attach the redacted diagnostic export.
 
 Do not send certificate IDs, a full collection export, or card images unless Support explicitly requests them and you consent.
 

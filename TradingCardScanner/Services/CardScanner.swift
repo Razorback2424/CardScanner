@@ -749,8 +749,8 @@ final class CardScanner: NSObject, ObservableObject {
 
     private let sessionQueue = DispatchQueue(label: "cards.camera.session")
     private let visionQueue = DispatchQueue(label: "cards.camera.vision", qos: .userInitiated)
-    private let magicProfileQueue = DispatchQueue(
-        label: "cards.camera.magic-profile",
+    private let profileQueue = DispatchQueue(
+        label: "cards.camera.profile",
         qos: .userInitiated
     )
     private let videoOutput = AVCaptureVideoDataOutput()
@@ -1289,7 +1289,7 @@ final class CardScanner: NSObject, ObservableObject {
         // Compiling the vocabulary regex is the expensive half. Keep it off
         // both the main actor and the frame queue, while preserving call order
         // so a live refresh cannot be followed by a stale bundled snapshot.
-        magicProfileQueue.async { [weak self] in
+        profileQueue.async { [weak self] in
             let magic = MagicScanProfile(definitions: definitions)
             self?.useMagicDefinitions(magic)
         }
@@ -1298,9 +1298,38 @@ final class CardScanner: NSObject, ObservableObject {
     private func useMagicDefinitions(_ magic: MagicScanProfile) {
         visionQueue.async { [weak self] in
             guard let self, self.profile.magic?.definitions != magic.definitions else { return }
-            self.profile = RecognitionProfile(magic: magic)
+            self.profile = RecognitionProfile(pokemon: self.profile.pokemon, magic: magic)
             self.footerRequest.customWords = self.profile.customWords
             self.resetObservationState()
+        }
+    }
+
+    /// Installs the Pokémon registry used by the frame parser and Vision's OCR
+    /// vocabulary. The profile owns an immutable registry snapshot, so a
+    /// candidate parsed before an activation keeps the `PokemonSetDefinition`
+    /// that gave it meaning even after this method installs a newer profile.
+    ///
+    /// Regex compilation happens on the shared profile queue. Installation is
+    /// serialized on the vision queue with frame parsing, and the confirmation
+    /// window is cleared only when the vocabulary itself changes. Metadata-only
+    /// release updates still replace the profile for future identifiers without
+    /// throwing away a half-confirmed card.
+    func usePokemonRegistry(_ registry: PokemonCatalogRegistry) {
+        profileQueue.async { [weak self] in
+            let pokemon = PokemonScanProfile(registry: registry)
+            self?.usePokemonProfile(pokemon)
+        }
+    }
+
+    private func usePokemonProfile(_ pokemon: PokemonScanProfile) {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            let vocabularyChanged = self.profile.pokemon.vocabulary != pokemon.vocabulary
+            self.profile = RecognitionProfile(pokemon: pokemon, magic: self.profile.magic)
+            self.footerRequest.customWords = self.profile.customWords
+            if vocabularyChanged {
+                self.resetObservationState()
+            }
         }
     }
 
@@ -2316,6 +2345,39 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.sync {}
     }
 
+    /// Drains the profile compiler and its ordered installation hop. This lets
+    /// tests assert the same queue ordering as a live catalog activation without
+    /// sleeping or putting regex construction on the Vision queue.
+    func drainProfileQueuesForTesting() {
+        profileQueue.sync {}
+        visionQueue.sync {}
+    }
+
+    /// Test-only view of the OCR vocabulary installed on the active Vision
+    /// request.
+    var customWordsForTesting: [String] {
+        visionQueue.sync { footerRequest.customWords }
+    }
+
+    /// Test-only parser boundary using the profile installed on the Vision
+    /// queue. Production frame handling calls the same profile value.
+    func recognitionOutcomeForTesting(_ lines: [String]) -> RecognitionOutcome {
+        visionQueue.sync { profile.identify(lines) }
+    }
+
+    /// Feeds one parsed observation through the production confirmation window.
+    /// It intentionally omits latch and camera side effects so the test can focus
+    /// on whether an activation joins or separates the four-frame window.
+    @discardableResult
+    func observeConfirmationForTesting(_ lines: [String]) -> ScanSubject? {
+        visionQueue.sync {
+            guard case let .identified(subject) = profile.identify(lines) else {
+                return confirmationWindow.observeSubject(nil)
+            }
+            return confirmationWindow.observeSubject(subject)
+        }
+    }
+
     /// Test-only visibility for the non-blocking graded correction contract.
     /// Production UI never needs to know whether recognition is paused; tests do
     /// need to prove that this path never entered the pause state.
@@ -2637,18 +2699,28 @@ final class CardScanner: NSObject, ObservableObject {
 /// game it came from — `OBF 223/197` cannot be a Magic footer and `ECL • 0218 •
 /// EN` cannot be a Pokémon one — so asking the user to pick first was asking for
 /// information the card already carries.
-struct RecognitionProfile {
+struct RecognitionProfile: Sendable {
+    /// The active Pokémon vocabulary and its immutable catalog snapshot.
+    let pokemon: PokemonScanProfile
     /// `nil` only before the Magic set directory is installed. Pokémon needs no
-    /// counterpart because its set table is compiled in.
+    /// counterpart because the bundled seed is always available.
     let magic: MagicScanProfile?
 
-    static let pokemonOnly = RecognitionProfile(magic: nil)
+    init(
+        pokemon: PokemonScanProfile = .bundledSeed,
+        magic: MagicScanProfile? = nil
+    ) {
+        self.pokemon = pokemon
+        self.magic = magic
+    }
+
+    static let pokemonOnly = RecognitionProfile(pokemon: .bundledSeed, magic: nil)
 
     /// Vision biases recognition toward these, so it carries both games'
     /// vocabularies at once. Deduplicated because a three-character code can
     /// legitimately belong to both directories.
     var customWords: [String] {
-        ScanText.unique(SetCodeMap.codes + PokemonPromoCodeMap.codes + (magic?.customWords ?? []))
+        ScanText.unique(pokemon.customWords + (magic?.customWords ?? []))
     }
 
     /// Both parsers, every frame.
@@ -2663,10 +2735,10 @@ struct RecognitionProfile {
 
     func identify(_ lines: [RecognizedLine]) -> RecognitionOutcome {
         let text = lines.map(\.text)
-        let pokemon = ScanParser.parsePokemon(text)
+        let pokemonResult = self.pokemon.parse(text)
         let magicOutcome = magic?.parseOutcome(lines) ?? .nothing
 
-        switch (pokemon, magicOutcome) {
+        switch (pokemonResult, magicOutcome) {
         case (nil, .nothing):
             return .nothing
         case let (identifier?, .nothing):

@@ -128,9 +128,13 @@ enum PokemonOfflineCardFactory {
         return nil
     }
 
+    /// The registry is part of the historical lookup contract. Explicitly
+    /// withdrawn sets are excluded here as well as by the actor caller, so a
+    /// future caller cannot accidentally re-open the disabled path.
     static func historicalCard(
         in snapshot: PokemonChecklistSnapshot,
-        evidence: PokemonHistoricalScanEvidence
+        evidence: PokemonHistoricalScanEvidence,
+        registry: PokemonCatalogRegistry = .bundledSeed
     ) -> IdentifiedCard? {
         let candidateSetIDs: Set<String>
         switch evidence.number.scheme {
@@ -140,10 +144,11 @@ enum PokemonOfflineCardFactory {
             // by the snapshot builder, with the modern map as a compatibility
             // fallback for older manifests that predate this field.
             candidateSetIDs = Set(snapshot.manifest.entries.compactMap { entry in
-                let officialCount = entry.officialCount ?? SetCodeMap.definitions.values.first {
-                    $0.tcgdexSetID.caseInsensitiveCompare(entry.providerID) == .orderedSame
-                }?.officialCount
+                let officialCount = entry.officialCount
+                    ?? registry.officialCount(forProviderSetID: entry.providerID)
+                    ?? PokemonCatalogRegistry.bundledSeed.officialCount(forProviderSetID: entry.providerID)
                 return officialCount == evidence.number.denominator
+                    && !registry.isScanDisabled(forProviderSetID: entry.providerID)
                     ? entry.providerID.lowercased()
                     : nil
             })
@@ -152,7 +157,7 @@ enum PokemonOfflineCardFactory {
                 PokemonHistoricalIdentityResolver.candidateSetIDs(
                     for: evidence.number,
                     in: []
-                )
+                ).filter { !registry.isScanDisabled(forProviderSetID: $0) }
             )
         }
         guard !candidateSetIDs.isEmpty else { return nil }
@@ -217,9 +222,18 @@ actor PokemonOfflineCatalog {
     private var entries: [PokemonChecklistSnapshotEntry] = []
     private var didLoad = false
     private var loadTask: Task<[PokemonChecklistSnapshotEntry], Never>?
+    private var registry: PokemonCatalogRegistry
 
-    init(store: PokemonChecklistStore = .shared) {
+    init(
+        store: PokemonChecklistStore = .shared,
+        registry: PokemonCatalogRegistry = .bundledSeed
+    ) {
         self.store = store
+        self.registry = registry
+    }
+
+    func updateRegistry(_ registry: PokemonCatalogRegistry) {
+        self.registry = registry
     }
 
     func card(
@@ -259,14 +273,19 @@ actor PokemonOfflineCatalog {
 
     func historicalCard(for evidence: PokemonHistoricalScanEvidence) async -> IdentifiedCard? {
         await loadIfNeeded()
+        // Pin the immutable snapshot for this lookup. Activation can happen
+        // while checklist files are being read, but one resolution must never
+        // combine candidate filtering from two registry revisions.
+        let registry = self.registry
         let candidateSetIDs: Set<String>
         switch evidence.number.scheme {
         case .officialSet:
             candidateSetIDs = Set(entries.compactMap { entry in
-                let officialCount = entry.officialCount ?? SetCodeMap.definitions.values.first {
-                    $0.tcgdexSetID.caseInsensitiveCompare(entry.providerID) == .orderedSame
-                }?.officialCount
+                let officialCount = entry.officialCount
+                    ?? registry.officialCount(forProviderSetID: entry.providerID)
+                    ?? PokemonCatalogRegistry.bundledSeed.officialCount(forProviderSetID: entry.providerID)
                 return officialCount == evidence.number.denominator
+                    && !registry.isScanDisabled(forProviderSetID: entry.providerID)
                     ? entry.providerID.lowercased()
                     : nil
             })
@@ -275,14 +294,15 @@ actor PokemonOfflineCatalog {
                 PokemonHistoricalIdentityResolver.candidateSetIDs(
                     for: evidence.number,
                     in: []
-                )
+                ).filter { !registry.isScanDisabled(forProviderSetID: $0) }
             )
         }
         guard !candidateSetIDs.isEmpty else { return nil }
 
         var matchingEntries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
-        for entry in entries where candidateSetIDs.contains(entry.providerID.lowercased()) {
+        for entry in entries where candidateSetIDs.contains(entry.providerID.lowercased())
+            && !registry.isScanDisabled(forProviderSetID: entry.providerID) {
             guard let cards = await store.mergedChecklist(for: entry.set.catalogID) else { continue }
             matchingEntries.append(entry)
             checklists[entry.set.id] = cards
@@ -296,11 +316,22 @@ actor PokemonOfflineCatalog {
             entries: matchingEntries
         )
         let snapshot = PokemonChecklistSnapshot(manifest: manifest, checklists: checklists)
-        return PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence)
+        return PokemonOfflineCardFactory.historicalCard(
+            in: snapshot,
+            evidence: evidence,
+            registry: registry
+        )
     }
 
     func prewarm() async {
         await loadIfNeeded()
+    }
+
+    func invalidate() {
+        didLoad = false
+        loadTask?.cancel()
+        loadTask = nil
+        entries = []
     }
 
     private func loadIfNeeded() async {
@@ -669,6 +700,18 @@ actor ResolvedPokemonCardCache {
         persist()
     }
 
+    func invalidateEntries(forSetIDs setIDs: Set<String>) {
+        guard !setIDs.isEmpty else { return }
+        var changed = false
+        for (key, entry) in entries {
+            if setIDs.contains(entry.setID.lowercased()) {
+                entries[key] = nil
+                changed = true
+            }
+        }
+        if changed { persist() }
+    }
+
     private func loadIfNeeded() async {
         guard !didLoad else { return }
         if isLoading {
@@ -761,7 +804,8 @@ actor CardCatalog {
     private let resolvedDiskCache: ResolvedPokemonCardCache
     private let tcgdexBreaker: TCGdexCircuitBreaker
     private let scryfall = ScryfallService()
-    private let historicalPokemon = PokemonHistoricalCatalog()
+    private let historicalPokemon: PokemonHistoricalCatalog
+    private var catalogRegistry: PokemonCatalogRegistry
 
     /// One resolution plus where it came from.
     ///
@@ -807,19 +851,40 @@ actor CardCatalog {
 
     init(
         source: any PokemonCardSource = LivePokemonCardSource(),
-        offline: PokemonOfflineCatalog = PokemonOfflineCatalog(),
+        offline: PokemonOfflineCatalog? = nil,
         resolvedDiskCache: ResolvedPokemonCardCache = ResolvedPokemonCardCache(),
-        tcgdexBreaker: TCGdexCircuitBreaker = .shared
+        tcgdexBreaker: TCGdexCircuitBreaker = .shared,
+        registry: PokemonCatalogRegistry = .bundledSeed
     ) {
         self.pokemonSource = source
-        self.offline = offline
+        self.offline = offline ?? PokemonOfflineCatalog(registry: registry)
         self.resolvedDiskCache = resolvedDiskCache
         self.tcgdexBreaker = tcgdexBreaker
+        self.historicalPokemon = PokemonHistoricalCatalog(registry: registry)
+        self.catalogRegistry = registry
+    }
+
+    /// Installs the same immutable registry snapshot used by the scanner. The
+    /// offline and live historical paths are updated together so a disabled set
+    /// cannot resolve through the provider after it disappears from the OCR
+    /// vocabulary. Existing in-flight resolutions are intentionally not
+    /// cancelled; their identifiers already carry the snapshot that authorized
+    /// them.
+    func updateRegistry(_ registry: PokemonCatalogRegistry) async {
+        guard catalogRegistry.revision != registry.revision
+            || catalogRegistry.descriptors != registry.descriptors else { return }
+        catalogRegistry = registry
+        await offline.updateRegistry(registry)
+        await offline.invalidate()
+        await historicalPokemon.updateRegistry(registry)
+        resolved.removeAll()
     }
 
     /// Starts loading both persistent sources before the camera begins feeding
     /// candidates. The calls are independent and safe to repeat for a session.
     func prewarm() async {
+        await offline.updateRegistry(catalogRegistry)
+        await historicalPokemon.updateRegistry(catalogRegistry)
         async let offlineWarm: Void = offline.prewarm()
         async let diskWarm: Void = resolvedDiskCache.prewarm()
         _ = await (offlineWarm, diskWarm)
@@ -876,7 +941,11 @@ actor CardCatalog {
         for candidate: PokemonCatalogCardIdentity,
         matching evidence: PokemonHistoricalScanEvidence
     ) async throws -> IdentifiedCard {
-        try await historicalPokemon.card(for: candidate, matching: evidence)
+        try await historicalPokemon.card(
+            for: candidate,
+            matching: evidence,
+            registry: catalogRegistry
+        )
     }
 
     static func classify(_ error: Error) -> CatalogFailure {
@@ -903,15 +972,26 @@ actor CardCatalog {
         let tcgdexBreaker = tcgdexBreaker
         let scryfall = scryfall
         let historicalPokemon = historicalPokemon
+        let registry = catalogRegistry
         let diskKey = Self.persistentKey(for: identifier)
         let task = Task<CatalogResolution, Error> {
             if let diskKey,
                let cached = await resolvedDiskCache.card(for: diskKey) {
-                return CatalogResolution(
-                    .pokemon(cached.card, setCode: cached.setCode),
-                    retrievedAt: cached.storedAt,
-                    path: .cacheHit
-                )
+                if case .pokemonHistorical = identifier,
+                   registry.isScanDisabled(forProviderSetID: cached.card.set.id) {
+                    // A historical card can be served by an older persistent
+                    // cache entry even after its set is withdrawn. Remove that
+                    // entry and continue through the registry-gated paths below;
+                    // already-dispatched modern identifiers remain valid because
+                    // their captured definition is part of the identifier.
+                    await resolvedDiskCache.invalidateEntries(forSetIDs: [cached.card.set.id])
+                } else {
+                    return CatalogResolution(
+                        .pokemon(cached.card, setCode: cached.setCode),
+                        retrievedAt: cached.storedAt,
+                        path: .cacheHit
+                    )
+                }
             }
 
             switch identifier {
@@ -952,7 +1032,7 @@ actor CardCatalog {
                     return CatalogResolution(card, path: .cacheHit)
                 }
                 return CatalogResolution(
-                    try await historicalPokemon.card(for: evidence),
+                    try await historicalPokemon.card(for: evidence, registry: registry),
                     path: .historicalFallback
                 )
 
@@ -1296,17 +1376,20 @@ actor PokemonHistoricalCatalog {
     private var directoryFailure: (at: Date, error: any Error)?
     private var setFailures: BoundedCache<String, (at: Date, error: any Error)>
     private var cardFailures: BoundedCache<String, (at: Date, error: any Error)>
+    private var registry = PokemonCatalogRegistry.bundledSeed
 
     init(
         service: any PokemonHistoricalCatalogSource = TCGdexService(),
         setTaskCapacity: Int = 64,
-        cardTaskCapacity: Int = 256
+        cardTaskCapacity: Int = 256,
+        registry: PokemonCatalogRegistry = .bundledSeed
     ) {
         self.service = service
         self.setTasks = BoundedCache(capacity: setTaskCapacity)
         self.cardTasks = BoundedCache(capacity: cardTaskCapacity)
         self.setFailures = BoundedCache(capacity: setTaskCapacity)
         self.cardFailures = BoundedCache(capacity: cardTaskCapacity)
+        self.registry = registry
     }
 
     /// Rethrows the recorded failure while it is still cooling down.
@@ -1319,8 +1402,20 @@ actor PokemonHistoricalCatalog {
         return failure.error
     }
 
+    func updateRegistry(_ registry: PokemonCatalogRegistry) {
+        self.registry = registry
+    }
+
     func card(for evidence: PokemonHistoricalScanEvidence) async throws -> IdentifiedCard {
-        let setIDs = try await candidateSetIDs(for: evidence)
+        let registry = self.registry
+        return try await card(for: evidence, registry: registry)
+    }
+
+    func card(
+        for evidence: PokemonHistoricalScanEvidence,
+        registry: PokemonCatalogRegistry
+    ) async throws -> IdentifiedCard {
+        let setIDs = try await candidateSetIDs(for: evidence, registry: registry)
         guard !setIDs.isEmpty else { throw PokemonHistoricalCatalogError.unsupported }
 
         let catalogs = try await withThrowingTaskGroup(of: TCGdexSetCatalog.self) { group in
@@ -1356,14 +1451,18 @@ actor PokemonHistoricalCatalog {
             throw PokemonHistoricalCatalogError.unsupported
         }
 
-        return try await card(for: identity, matching: evidence)
+        return try await card(for: identity, matching: evidence, registry: registry)
     }
 
     func card(
         for identity: PokemonCatalogCardIdentity,
-        matching evidence: PokemonHistoricalScanEvidence
+        matching evidence: PokemonHistoricalScanEvidence,
+        registry: PokemonCatalogRegistry? = nil
     ) async throws -> IdentifiedCard {
-        let eligibleSets = Set(try await candidateSetIDs(for: evidence))
+        let registrySnapshot = registry ?? self.registry
+        let eligibleSets = Set(
+            try await candidateSetIDs(for: evidence, registry: registrySnapshot)
+        )
         guard eligibleSets.contains(identity.setID.lowercased()),
               PokemonHistoricalIdentityResolver.canonicalLocalID(identity.localID)
                 == PokemonHistoricalIdentityResolver.canonicalLocalID(evidence.number.localID),
@@ -1385,7 +1484,8 @@ actor PokemonHistoricalCatalog {
     }
 
     private func candidateSetIDs(
-        for evidence: PokemonHistoricalScanEvidence
+        for evidence: PokemonHistoricalScanEvidence,
+        registry: PokemonCatalogRegistry
     ) async throws -> [String] {
         let directory: [CatalogSetReference]
         switch evidence.number.scheme {
@@ -1399,7 +1499,7 @@ actor PokemonHistoricalCatalog {
         return PokemonHistoricalIdentityResolver.candidateSetIDs(
             for: evidence,
             in: directory
-        )
+        ).filter { !registry.isScanDisabled(forProviderSetID: $0) }
     }
 
     private func setDirectory() async throws -> [CatalogSetReference] {
@@ -1487,6 +1587,11 @@ struct BoundedCache<Key: Hashable, Value> {
     }
 
     var count: Int { storage.count }
+
+    mutating func removeAll() {
+        storage.removeAll(keepingCapacity: true)
+        usage.removeAll(keepingCapacity: true)
+    }
 
     subscript(key: Key) -> Value? {
         mutating get {

@@ -48,8 +48,10 @@ struct ContentView: View {
     private let debugRoute: String?
 #endif
 
-    init() {
-        _browseCatalog = State(initialValue: BrowseCatalog())
+    init(catalogCoordinator: PokemonCatalogCoordinator) {
+        _browseCatalog = State(
+            initialValue: BrowseCatalog(catalogCoordinator: catalogCoordinator)
+        )
 #if DEBUG || CARD_FINISH_PERF_HARNESS
         let arguments = ProcessInfo.processInfo.arguments
         let routeIndex = arguments.firstIndex(of: "-ui_debug_route")

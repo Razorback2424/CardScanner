@@ -723,7 +723,7 @@ enum IdentifiedCard: Identifiable, Sendable {
 
     var identifier: String {
         switch self {
-        case let .pokemon(card, setCode):
+        case let .pokemon(card, _):
             return "\(setCode) \(card.localId)/\(card.set.cardCount.official)"
         case let .magic(card):
             return "\(card.setCode.uppercased()) \(card.collectorNumber)"
@@ -764,9 +764,8 @@ enum IdentifiedCard: Identifiable, Sendable {
     /// compared against each other.
     var setReleaseOrder: Int {
         switch self {
-        case let .pokemon(card, setCode):
-            return PokemonCatalogReleaseOrder.order(forSetID: card.set.id)
-                ?? SetCodeMap.releaseIndex(forPrintedCode: setCode)
+        case let .pokemon(card, _):
+            return PokemonCatalogRegistry.bundledSeed.releaseOrder(forProviderSetID: card.set.id)
                 ?? 0
         case let .magic(card):
             guard let date = card.releaseDate else { return 0 }

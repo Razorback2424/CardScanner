@@ -960,6 +960,10 @@ final class ScannerViewModel: ObservableObject {
     private var noteTask: Task<Void, Never>?
     private var receiptTask: Task<Void, Never>?
     private var magicDirectoryTask: Task<Void, Never>?
+    /// The app-scoped coordinator pushes immutable catalog snapshots into the
+    /// scanner and CardCatalog. The task is intentionally owned by the model so
+    /// a Scanner tab revisit does not recreate or downgrade the active profile.
+    private var pokemonCatalogTask: Task<Void, Never>?
     /// The best directory available in this process. It begins with the bundled
     /// snapshot and is replaced after a successful live refresh. Keeping the
     /// actual definitions prevents a later view appearance from downgrading the
@@ -1052,7 +1056,11 @@ final class ScannerViewModel: ObservableObject {
         catalog: CardCatalog = CardCatalog(),
         feedback: ScanFeedback? = nil,
         gradedResolver: ScannedGradedResolving = ScannedGradedResolver(),
-        priceCheckRefreshProvider: (any PriceCheckRefreshProvider)? = nil
+        priceCheckRefreshProvider: (any PriceCheckRefreshProvider)? = nil,
+        // Production injects the app-scoped coordinator. Nil is retained only
+        // for isolated scanner tests that intentionally do not exercise live
+        // catalog activation.
+        catalogCoordinator: PokemonCatalogCoordinator? = nil
     ) {
         self.scanner = scanner
         self.catalog = catalog
@@ -1213,6 +1221,31 @@ final class ScannerViewModel: ObservableObject {
                 }
             }
         }
+
+        if let catalogCoordinator {
+            let scanner = self.scanner
+            let catalog = self.catalog
+            pokemonCatalogTask = Task { @MainActor in
+                // Register before loading so an activation racing the initial
+                // read cannot be lost between the bundled seed and the
+                // persisted/current release.
+                let events = await catalogCoordinator.activationEvents()
+                await catalogCoordinator.loadPersistedOrBundled()
+                let initialRegistry = await catalogCoordinator.registry
+                scanner.usePokemonRegistry(initialRegistry)
+                await catalog.updateRegistry(initialRegistry)
+
+                for await event in events {
+                    guard !Task.isCancelled else { return }
+                    scanner.usePokemonRegistry(event.registry)
+                    await catalog.updateRegistry(event.registry)
+                }
+            }
+        }
+    }
+
+    deinit {
+        pokemonCatalogTask?.cancel()
     }
 
     private var currentConfirmationToken: ScannerConfirmationToken? {

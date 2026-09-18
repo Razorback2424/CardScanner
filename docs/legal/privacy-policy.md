@@ -1,6 +1,6 @@
 # CardScanner Privacy Policy
 
-Effective date: 2026-09-13
+Effective date: 2026-09-18
 
 This policy describes the CardScanner 1.0 release. The published privacy URL configured for the App Store must point to the deployed version of this document.
 
@@ -19,6 +19,13 @@ Custom artwork and Value History are not currently synced with iCloud.
 ## Catalog and pricing requests
 
 To identify cards and retrieve catalog or pricing information, CardScanner may send card, set, printing, and search identifiers to the providers used by the app, including TCGdex, Scryfall, Pokémon TCG API, and optional JustTCG requests. A user-provided JustTCG key is stored in the device Keychain. These requests are network transfers for the requested feature; they are not advertising or cross-app tracking.
+
+To keep Pokémon set definitions current, CardScanner may also retrieve a small
+signed catalog-control file from `catalog.scan-stash.com`. It contains app-owned
+set descriptors and release metadata, not collection records, camera frames,
+account identifiers, or a user profile. Production rollout diagnostics are
+local OS logging and performance measurements; CardScanner does not upload them
+as an analytics feed.
 
 CardScanner 1.0 has no advertising tracking or analytics SDK. The app does not sell personal information.
 

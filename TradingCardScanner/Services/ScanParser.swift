@@ -265,6 +265,9 @@ enum ScanText {
             .sorted()
             .map(NSRegularExpression.escapedPattern(for:))
             .joined(separator: "|")
+        guard !alternatives.isEmpty else {
+            return try! NSRegularExpression(pattern: "(?!)", options: [])
+        }
         return try! NSRegularExpression(
             pattern: "(?<![\(boundary)])(?:\(alternatives))(?![\(boundary)])",
             options: []
@@ -472,34 +475,72 @@ enum PokemonHistoricalScanParser {
     }
 }
 
-enum ScanParser {
-    // OCR commonly merges neighboring tokens (OBF223/197, G223/197) and confuses
-    // O/0 or I/L/1 in tiny numeric text. Accept those narrow cases, then validate
-    // the denominator against a known set before returning a candidate.
-    private static let numberRegex = try! NSRegularExpression(
+/// The immutable Pokémon recognition half of a scanner profile.
+///
+/// A profile owns both the registry snapshot used to build identifiers and the
+/// regular expressions used to find those identifiers. The snapshot is carried
+/// into every `PokemonSetDefinition` embedded in a `ScanIdentifier`, so a
+/// catalog update cannot change the meaning of a candidate that was already
+/// dispatched for resolution.
+struct PokemonScanProfile: Sendable {
+    struct Vocabulary: Equatable, Sendable {
+        let expansionCodes: [String]
+        let promoPrefixes: [String]
+    }
+
+    let registry: PokemonCatalogRegistry
+    let vocabulary: Vocabulary
+
+    private let numberRegex = try! NSRegularExpression(
         pattern: #"(?<![0-9])([0-9OIL]{1,3})([AB]?)\s*/\s*([0-9OIL]{1,3})(?![A-Z0-9])"#,
         options: []
     )
+    private let setCodeRegex: NSRegularExpression
+    private let promoRegex: NSRegularExpression
 
-    // A code may touch digits ("OBF223/197"), but must not be embedded inside an
-    // alphabetic word such as "MASCAGNI" -> "ASC".
-    private static let setCodeRegex = ScanText.setCodeRegex(codes: SetCodeMap.codes, boundary: "A-Z")
-    private static let promoRegex: NSRegularExpression = {
-        let prefixes = PokemonPromoCodeMap.codes
+    init(registry: PokemonCatalogRegistry) {
+        let expansionCodes = registry.descriptors
+            .filter { $0.recognitionKind == .expansion && $0.scanEnabled }
+            .compactMap { $0.printedCode?.uppercased() }
+            .sorted()
+        let promoPrefixes = registry.descriptors
+            .filter { $0.recognitionKind == .promo && $0.scanEnabled }
+            .compactMap { $0.printedPrefix?.uppercased() }
+            .sorted()
+
+        self.registry = registry
+        self.vocabulary = Vocabulary(
+            expansionCodes: ScanText.unique(expansionCodes),
+            promoPrefixes: ScanText.unique(promoPrefixes)
+        )
+        self.setCodeRegex = ScanText.setCodeRegex(
+            codes: expansionCodes,
+            boundary: "A-Z"
+        )
+
+        let promoAlternation = promoPrefixes
             .sorted { $0.count > $1.count }
             .map(NSRegularExpression.escapedPattern(for:))
             .joined(separator: "|")
-        return try! NSRegularExpression(
-            pattern: #"(?<![A-Z0-9])("# + prefixes + #")\s*(?:EN\s*)?([0-9OIL]{2,3})(?![A-Z0-9/])"#,
+        self.promoRegex = try! NSRegularExpression(
+            pattern: promoAlternation.isEmpty
+                ? "(?!)"
+                : #"(?<![A-Z0-9])("# + promoAlternation + #")\s*(?:EN\s*)?([0-9OIL]{2,3})(?![A-Z0-9/])"#,
             options: []
         )
-    }()
+    }
+
+    static let bundledSeed = PokemonScanProfile(registry: .bundledSeed)
+
+    var customWords: [String] {
+        ScanText.unique(vocabulary.expansionCodes + vocabulary.promoPrefixes)
+    }
 
     /// Prefer Vision's individual observations so a code stays paired with the
     /// collector number on the same line. Only fall back to joined text when no
     /// individual line resolves, which handles split observations like "OBF" +
     /// "223/197" without making two visible card identifiers ambiguous.
-    static func parsePokemon(_ recognizedLines: [String]) -> ScanIdentifier? {
+    func parse(_ recognizedLines: [String]) -> ScanIdentifier? {
         let lineCandidates = ScanText.unique(
             recognizedLines.compactMap { uniqueCandidate(in: $0) }
         )
@@ -514,11 +555,11 @@ enum ScanParser {
         return uniqueCandidate(in: recognizedLines.joined(separator: " "))
     }
 
-    static func parsePokemon(_ recognizedText: String) -> ScanIdentifier? {
+    func parse(_ recognizedText: String) -> ScanIdentifier? {
         uniqueCandidate(in: recognizedText)
     }
 
-    private static func uniqueCandidate(in recognizedText: String) -> ScanIdentifier? {
+    private func uniqueCandidate(in recognizedText: String) -> ScanIdentifier? {
         let normalized = recognizedText
             .uppercased()
             .replacingOccurrences(of: "\n", with: " ")
@@ -530,7 +571,8 @@ enum ScanParser {
         var candidates: [ScanIdentifier] = promoCandidates
 
         for code in codes {
-            guard let definition = SetCodeMap.definitions[code] else { continue }
+            guard let definition = registry.pokemonSetDefinition(forPrintedCode: code),
+                  registry.isScanEnabled(forProviderSetID: definition.tcgdexSetID) else { continue }
 
             for number in numbers where number.total == definition.officialCount {
                 // Collector number zero is never valid. Avoid an unnecessary /000
@@ -551,7 +593,7 @@ enum ScanParser {
         return unique.count == 1 ? unique[0] : nil
     }
 
-    private static func numberMatches(in text: String) -> [(localID: String, total: Int)] {
+    private func numberMatches(in text: String) -> [(localID: String, total: Int)] {
         let range = NSRange(text.startIndex..<text.endIndex, in: text)
         return numberRegex.matches(in: text, options: [], range: range).compactMap { match in
             guard let cardRange = Range(match.range(at: 1), in: text),
@@ -569,13 +611,14 @@ enum ScanParser {
         }
     }
 
-    private static func promoMatches(in text: String) -> [ScanIdentifier] {
+    private func promoMatches(in text: String) -> [ScanIdentifier] {
         let range = NSRange(text.startIndex..<text.endIndex, in: text)
         return promoRegex.matches(in: text, options: [], range: range).compactMap { match in
             guard let prefixRange = Range(match.range(at: 1), in: text),
                   let numberRange = Range(match.range(at: 2), in: text) else { return nil }
             let prefix = String(text[prefixRange])
-            guard let definition = PokemonPromoCodeMap.definitions[prefix],
+            guard let definition = registry.pokemonPromoSetDefinition(forPrefix: prefix),
+                  registry.isScanEnabled(forProviderSetID: definition.tcgdexSetID),
                   let number = ScanText.normalizedInteger(String(text[numberRange])),
                   number > 0 else { return nil }
             return .pokemonPromo(
@@ -584,6 +627,21 @@ enum ScanParser {
                 setDefinition: definition
             )
         }
+    }
+}
+
+enum ScanParser {
+    /// Compatibility shim for the existing parser tests and non-profile callers.
+    /// Production recognition goes through `RecognitionProfile`, which installs
+    /// a profile built from the active coordinator registry.
+    private static let bundledProfile = PokemonScanProfile.bundledSeed
+
+    static func parsePokemon(_ recognizedLines: [String]) -> ScanIdentifier? {
+        bundledProfile.parse(recognizedLines)
+    }
+
+    static func parsePokemon(_ recognizedText: String) -> ScanIdentifier? {
+        bundledProfile.parse(recognizedText)
     }
 }
 

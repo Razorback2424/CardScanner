@@ -1,0 +1,1208 @@
+# Automatic Pokémon catalog updates — implementation plan
+
+**Status:** current plan — proposed 2026-09-16, revised 2026-09-17,
+**Slice A implemented 2026-09-17**, **Slice B implemented 2026-09-17**,
+**Slice C implemented 2026-09-18**, **Slice D implemented 2026-09-18**,
+**Slice E implemented 2026-09-18**, **Slice F rollout implementation started
+2026-09-18**.
+
+**Goal:** a Pokémon set that did not exist when the user installed the app
+appears in Browse **and scans correctly** without an App Store update.
+
+**Current sequencing decision (2026-09-18):** commit and push the catalog
+implementation and let the first pull-request validation run before provisioning
+hosting. Use one Firebase project, one Hosting site, and
+`catalog.scan-stash.com` for the first Slice F rehearsal. Production remains
+`bundled-validation-only`, so this is operationally a staging environment until
+remote authority is deliberately enabled. Defer the separate staging project,
+site, DNS name, and deployment job until that cutover is approaching.
+
+**Concern owned:** how a released app learns about new Pokémon sets, scanner
+identifiers, cards, variants, and artwork. Slice E adds the publisher machinery
+and future staging configuration, but this plan does not claim a live
+deployment, signing-key availability, or provider certification.
+
+## The premise: TCGdex does not publish printed set codes
+
+This is the fact the whole design rests on, and it is not obvious.
+
+`TCGdexSetCatalog` has no printed-code field. The nearest thing is `tcgOnline`,
+the retired Pokémon TCG Online code, and it is **nil for every modern set** —
+verified against the live API for `sv09`, `sv10`, `sv10.5b`, `me04`, and `me05`.
+The correct codes in today's bundled snapshot come from the compiled
+`SetCodeMap`, not from the provider.
+
+Three consequences follow, and they shape everything below:
+
+1. **No amount of crawling will ever make a new set scannable.** The printed
+   code — the three characters Vision reads off the card — is app-owned data
+   that must be delivered out of band. This, not abstract trust concerns, is why
+   a control release has to exist.
+2. **A human supplies that code for every new modern expansion, permanently.**
+   Fully automatic publication is not a reachable end state for expansions, and
+   this plan no longer pretends otherwise. The human types three characters; the
+   denominator, card list, and artwork all still come from the provider and are
+   verified against what the human claimed.
+3. **Because a human is already in the loop on the only non-derivable field,**
+   the risk model is far milder than a fully automated pipeline's, and the
+   machinery around it should be sized accordingly.
+
+**Related current defect.** `PokemonChecklistSnapshot.swift:196` derives a set's
+display code as `tcgOnline ?? SetCodeMap.printedCode(...) ?? row.id`. Since
+`tcgOnline` is nil for modern sets, a newly crawled set that is not in
+`SetCodeMap` today displays its provider ID — `SV11` rather than the printed
+code. Browse has been showing correct codes only because `SetCodeMap` happened
+to cover every set that shipped. The registry fixes this, and the fix needs a
+test.
+
+The same fallback appears a second time, in
+`CollectionCatalogNormalizer.resolvePokemonSet` — `printedCode` falls back to
+`set.id.uppercased()` and `releaseOrder` to `0`. That one writes into imported
+collection metadata, so a new set imported before its code is published records
+`SV11` and sorts to the front of release order. Both sites are fixed by the
+registry; both need coverage.
+
+## What is already solved, and what is not
+
+Before Slice D, Browse picked up new sets without a release: `BrowseCatalog`
+crawled the TCGdex directory and `PokemonChecklistStore` published what it
+found. Slice D deliberately closes that independent activation path. Production
+Browse now shows only sets backed by the signed registry and a verified
+checklist, so Browse and Scanner agree about which sets exist and are usable.
+
+The value still concentrates in Slice C: the dynamic scanner is the user-facing
+capability that turns an activated registry release into recognition. Slices A,
+B, and D make that capability safe and keep the two surfaces on one authority.
+
+**Frequency assumption.** The bundled snapshot's release dates give 27 sets
+since 2023 — roughly **8–10 per year, one every 5–6 weeks**. That is the rate
+this system is sized for, and it should be revisited if it changes materially.
+
+The payoff is *not* developer turnaround. Shipping a binary for a new code is a
+day or two of review, which is tolerable. The payoff is **user update lag**: a
+released build only learns a set when each user updates, and a meaningful share
+of users go weeks or months between updates. A data update reaches an unupdated
+install; a binary does not. If that assumption is wrong — if the install base
+updates promptly — the ROI argument weakens and more frequent releases are the
+cheaper answer.
+
+**Expected gap window.** Between a provider publishing a set and a human
+publishing its signed descriptor and checklist, provider discovery may know
+about the set, but production Browse does not show it and Scanner does not scan
+it. That is hours to days. The plan intentionally trades immediate Browse
+freshness for Browse/Scanner consistency rather than showing a visible set that
+cannot scan.
+
+The pending state remains representable in the registry and diagnostic tooling,
+but it is not a production Browse row. Diagnostic or legacy builder
+representations use the truthful `Code pending` placeholder and never expose a
+provider ID as a printed code. Once the descriptor and verified checklist are
+active, one coordinator event makes the set available to both surfaces.
+
+## Product rule
+
+The update path must preserve the repository principle: **fast, accurate, and a
+joy to use**.
+
+- **Fast:** launch and scanning never wait for the network; unchanged releases
+  use conditional requests and no card downloads.
+- **Accurate:** Browse and Scanner activate the same validated set revision.
+  Provider discovery alone is never permission to recognize a printed code.
+- **A joy to use:** updates are silent, resumable, offline-safe, and recover
+  automatically to the last known-good catalog.
+
+## Current state and gap
+
+The app already has most of the content pipeline:
+
+1. `BrowseCatalog.prepareCatalog()` loads a bundled Pokémon checklist and starts
+   a low-priority provider crawl when its 24-hour state is stale.
+2. `TCGdexBrowseTransport` discovers sets and fetches set/card details.
+3. `PokemonChecklistStore` writes downloaded per-set JSON and publishes the
+   manifest last, so Browse does not observe a half-written set.
+4. Card and set artwork are provider URLs; image bytes are loaded and cached on
+   demand rather than bundled for every card.
+
+That does **not** yet provide end-to-end automatic set support:
+
+| Surface | Current authority | Consequence |
+| --- | --- | --- |
+| Browse directory and checklist | Bundled/downloaded `PokemonChecklistSnapshot` populated from TCGdex | A provider-published set can appear without an app release, but with a wrong display code. |
+| Modern scanner code and denominator | Compiled `SetCodeMap` | A new expansion cannot scan until a new binary adds its printed code, provider set ID, and official count. |
+| Promo scanner prefixes | Compiled `PokemonPromoCodeMap` | A new promo series also requires a binary, **and** a series with new local-ID padding requires a code change even then. |
+| Historical scanner resolution | Checklist manifest `officialCount`, not `SetCodeMap` | Already dynamic, and therefore already outside any capability gate. |
+| Vision OCR vocabulary | `RecognitionProfile.customWords`, derived from the compiled maps | Even downloaded definitions cannot currently improve OCR. |
+| Release ordering | `PokemonCatalogReleaseOrder`, a `UserDefaults` dictionary written by the unsigned crawl | A second live remote authority with no revision, no validation, and no rollback. |
+| Set-art fallbacks | Provider URL plus selected bundled assets | New sets work online; curated offline fallback art still requires a release. |
+
+The split authority is the defect to remove. A direct provider crawl is useful
+for discovery, but it must not independently change what the scanner accepts.
+Slice E now gives the release boundary a platform-neutral builder and signed
+publication path; Slice F still owns exercising that path against a live origin.
+
+## Architecture decision
+
+Introduce one app-owned, signed **catalog control release**: a small static file
+listing set descriptors, generated from TCGdex plus human-supplied printed
+codes, consumed by both Browse and Scanner. It authorizes set identity and
+points the existing on-device builder at the corresponding provider content.
+
+```text
+Publisher (human-gated)
+  → fetch TCGdex directory, diff against active release
+  → human supplies printed code for each new expansion
+  → verify official count and completeness against the provider
+  → sign immutable release; publish the pointer last
+
+Released app
+  → load bundled/last-known-good registry immediately
+  → conditionally fetch the signed release on the existing 24h cadence
+  → verify signature, revision, schema, and set rules
+  → activate the registry as one atomic revision
+  → crawl provider content as it does today, accreting per set
+  → Browse and Scanner observe the same registry revision
+```
+
+This requires one app release to ship the update client, dynamic scanner
+registry, and pinned verification key. After that release, ordinary new sets
+that fit a supported recognition grammar are data updates.
+
+### Scope discipline
+
+The payload being protected is roughly thirty rows of
+`{providerID, printedCode, officialCount, padWidth, flags}` — a few kilobytes.
+Signing it is justified and cheap: it is the difference between "a TCGdex
+compromise cannot change what your scanner accepts" and "it can," and
+CryptoKit's Ed25519 implementation (`Curve25519.Signing`) is about twenty
+lines.
+
+Everything beyond that is weighed against the goal. Deliberately **not** in v1:
+
+- **No app-owned mirror** of the card corpus or image bytes. The phone keeps
+  fetching TCGdex through the existing transport once the release authorizes a
+  provider ID. Hosting provider payloads awaits licensing and cost review.
+- **No second content digest.** See "Authorization check" below.
+- **No content-addressed resource store.** Checklists accrete per set and are
+  not revision-scoped, so there is no duplicate-corpus problem to solve.
+- **No checklist schema bump, and no tombstones.** See "Withdrawal" below.
+- **No separate refresh cadence.** The release rides the existing 24-hour
+  schedule, cursor, and failure backoff in `PokemonChecklistStore`.
+- **No offline backup signing key ceremony.** The format reserves a second key
+  slot; operating one is deferred.
+
+## Publication substrate — decide before Slice A
+
+The release has to be hosted somewhere, and nothing downstream is testable in
+production without it. This blocks Slice A.
+
+It is a **static file host**, not a service: immutable revision objects that
+cache indefinitely, plus a small `current` pointer with a short max-age written
+last. No database, no per-user requests.
+
+Candidates, so this does not stall as an open question:
+
+| Option | For | Against |
+| --- | --- | --- |
+| **Cloudflare R2 + CDN** (suggested default) | No egress fees, S3-compatible tooling, custom domain, generous free tier at this volume | Another vendor relationship |
+| **S3 + CloudFront** | Best-understood, strongest tooling and IAM story | Egress billing, more moving parts to configure |
+| **GitHub Pages / raw release assets** | Zero new infrastructure; CI already lives there | No real cache control on Pages, less appropriate as a production trust root, availability tied to GitHub |
+| **Firebase Hosting** | Atomic whole-site deploys, per-path cache headers, versioned one-click rollback, CI service account scoped to Hosting, free custom subdomain | Free-tier daily transfer ceiling (~360 MB/day) eventually needs pay-as-you-go |
+
+Criteria, in priority order: immutable-object semantics with a separately
+cacheable pointer; a stable custom hostname the app can pin; predictable cost
+at roughly a few kilobytes times the install base per day; and CI-writable
+credentials that can be scoped to publish only.
+
+**The hostname matters more than the vendor, and it is the part that is hard to
+undo.** The app pins the release origin in its allowlist, so whatever hostname
+ships in the binary is the hostname it is stuck with until the next App Store
+release. Publishing to a vendor-owned name — `<bucket>.r2.dev`,
+`<dist>.cloudfront.net` — therefore pins the *vendor*, not just the host, and
+moving later costs a release plus a period where un-updated installs keep
+polling an origin that must stay alive.
+
+So: serve from a subdomain of a domain under the owner's control, such as
+`catalog.<domain>`, and point it at whichever vendor is chosen. Vendor choice
+then stays reversible by changing DNS, with no binary involved, which also
+lowers the stakes on getting it right the first time. Note the signed envelope
+already removes most of the trust question — a substituted or compromised host
+cannot forge a release, only withhold or replay one, which is the freeze risk
+already accepted below.
+
+A domain is already owned, so this costs one DNS record: point
+`catalog.<domain>` at whichever host is chosen, before Slice B ships the binary
+that pins it. The marketing site on that domain is unrelated to this plan and
+stays where it is — the catalog is a separate origin that happens to share a DNS
+parent, not a part of the website.
+
+**Key custody, including the unhappy paths.** Deferring the offline-backup
+ceremony does not excuse leaving recovery undefined, because the failure is
+high impact: the app pins the public key, so the private key is the only thing
+that can ever update the catalog again.
+
+- The key pair is generated locally by the owner, never by CI. CI receives only
+  the private key as a scoped secret; the public key is committed to the app.
+- **The CI secret is not a backup.** GitHub Actions secrets are write-only —
+  they can be used but never read back. So losing the local copy does not stop
+  publication immediately; it strands the key on that one CI configuration, and
+  the loss only surfaces later, when the runner is migrated or the secret has to
+  be re-added. A backup that exists from day one is what keeps that from being a
+  one-way door.
+- **Loss** — catalog updates stop permanently. Recovery is an App Store release
+  pinning a new public key. Every install that does not take that update is
+  frozen at its last good revision, which degrades to today's behavior rather
+  than breaking. Keep an encrypted copy of the private key from day one: a
+  password-manager entry, not a ceremony, and it removes the entire scenario.
+  Store the generation date and the corresponding public key alongside it, and
+  **verify the backup once** by re-deriving the public key from the stored copy
+  and checking it against the one pinned in the app. An unverified backup is the
+  real risk; the storage medium is secondary.
+- **Compromise** — an attacker can sign descriptors, so they can rename sets,
+  disable scanning, or authorize a wrong code. They cannot execute code. v1 has
+  no in-band rotation, so the response is the same App Store release pinning a
+  new key, plus publishing a higher revision from the new key. The second
+  `keyID` slot exists so a *later* binary can rotate without a release; until
+  one ships, rotation costs a release.
+- This is the main argument for operating the backup key sooner rather than
+  later, and should be revisited after the first production release.
+
+**Record:** the origin and hostname (it joins the provider allowlist as a trust
+root distinct from the card CDN), the expected monthly cost, and where both
+copies of the signing key live. Before Slice E there was no CI in this
+repository; Slice E creates the workflow, and this decision determines what it
+publishes to.
+
+## Catalog-control contract
+
+Use a signed envelope whose `payload` is base64url-encoded exact bytes. Verify
+those bytes before decoding them; do not depend on canonical JSON key ordering.
+
+### Release envelope
+
+| Field | Rule |
+| --- | --- |
+| `keyID` | Selects a pinned public verification key. Two slots exist in the format so a future binary can rotate; only one is operated in v1. |
+| `payload` | Encoded `PokemonCatalogRelease` bytes. |
+| `signature` | Ed25519 signature produced by CryptoKit's `Curve25519.Signing` API over `payload` bytes. |
+
+### `PokemonCatalogRelease`
+
+| Field | Purpose |
+| --- | --- |
+| `schemaVersion` | Rejects contracts the installed app cannot understand. |
+| `revision` | Strictly increasing integer used for replay prevention and diagnostics. |
+| `generatedAt` | Publication provenance; future-skew is validated. |
+| `sets` | Complete authoritative descriptors, including disabled entries. |
+
+Each set descriptor contains:
+
+- provider set ID, display name, release date, and stable release order;
+- recognition kind: expansion, promo, or not scannable;
+- printed expansion code and official denominator, or promo prefix with
+  `catalogLocalIDPrefix` and `localIDPadWidth`;
+- `scanEnabled` (see "Withdrawal");
+- provider logo and symbol URLs when published;
+- the `rulesVersion` required to interpret variants — the same integer as
+  `PokemonChecklistSnapshotVersion.masterSetRules`, not a parallel concept. A
+  descriptor requiring a higher rules version than the binary implements is
+  skipped, not activated with the wrong variant model.
+
+Remote data is declarative only. It cannot supply executable code, regular
+expressions, arbitrary URLs for catalog JSON, or new parsing algorithms.
+
+### Authorization check: provider ID plus official count
+
+An earlier draft added an `identityDigest` over sorted card IDs to authorize a
+set. That is cut.
+
+The existing `providerFingerprint` cannot serve as an authorization gate — it
+hashes display names, logo URLs, and every card's name and image URL, so a
+routine upstream typo fix would invalidate an authorized set and take the newest
+set offline for hours. But the replacement does not need to be another digest.
+The descriptor says "provider set `sv11` has official count 191"; the phone
+fetches `sv11` and checks `cardCount.official == 191`. `cardCount.official` **is**
+published by TCGdex — verified — so this check is real, and it catches the
+failures that matter: wrong set, changed count, truncated fetch.
+
+A digest over card IDs would additionally catch a TCGdex compromise that swapped
+card contents while preserving the count. That exposure is identical to the one
+Browse already accepts today for its card data, it does not affect scanner
+identity, and closing it for the scanner alone buys little. Not worth a second
+digest, its publisher-side computation, and its test matrix.
+
+`providerFingerprint` keeps its current meaning unchanged: it answers "has this
+set changed, should I refetch?" and never rejects or deactivates anything.
+
+### Promo formatting is data, not code
+
+`PokemonPromoSetDefinition.catalogLocalID(number:)` hardcodes a ternary on
+`BW`/`XY`/`SM` for two- versus three-digit padding. A new promo series with
+different padding would therefore need a code change even after this plan ships,
+contradicting the supported-change list. The descriptor carries
+`localIDPadWidth` as data; the bundled seed reproduces today's table exactly
+(width 2 for `BW`, `XY`, `SM`; 3 otherwise) and the compiled ternary is
+deleted.
+
+### Supported data-only changes
+
+- a new expansion using the existing `CODE + number/denominator` grammar;
+- a new promo series using a numeric prefix with any pad width;
+- corrected display metadata, release order, official count, or provider ID;
+- disabling scanning for a set.
+
+A genuinely new printed-number grammar, locale policy, variant model, or schema
+still requires an app update. Remote configuration must never become remote code
+execution.
+
+### Withdrawal
+
+`scanEnabled=false` lives in the **registry**, which is a new app-owned artifact,
+so it costs nothing in the existing checklist format. It covers the case that
+matters: a set recognizing cards wrongly.
+
+Removing a set from **Browse** is different. `PokemonChecklistSnapshot.merged`
+is a union keyed by set ID — a downloaded snapshot can override a bundled entry
+field-by-field but cannot remove one — so Browse withdrawal needs a manifest
+schema bump, a tombstone entry kind, and the downgrade behavior that goes with
+it. That is real work in service of a rare case, and it is **deferred**. v1 can
+disable scanning remotely and can correct metadata remotely; pulling a set out
+of Browse still needs a binary.
+
+## On-device design
+
+### 1. One app-scoped authority
+
+Create an app-scoped `PokemonCatalogCoordinator` and inject it into Browse,
+Scanner, and `CardCatalog`. It owns the immutable active
+`PokemonCatalogRegistry`, the bundled bootstrap release, the current and
+previous downloaded releases, activation, and a revision update stream.
+
+`PokemonCatalogRegistry` provides constant-time lookup by printed code, promo
+prefix, provider set ID, and catalog set ID. Its value is immutable and
+`Sendable`; per-frame scanning must not perform disk I/O, network I/O, or an
+actor hop.
+
+The consumers do not share a concurrency shape, so "inject the coordinator" is
+not one mechanism: `BrowseCatalog`, `PokemonChecklistStore`, and
+`PokemonOfflineCatalog` are **actors**, while `CardScanner` is an
+`NSObject`/`ObservableObject` owning private dispatch queues. The coordinator is
+an actor that **pushes** an immutable snapshot to `CardScanner` on its own
+queue — the scanner never awaits the coordinator — and the actors `await` it
+normally.
+
+### 2. Replace compiled runtime authority
+
+Refactor `SetCodeMap` and `PokemonPromoCodeMap` into the bundled seed used when
+no valid downloaded release exists. They stop being the production runtime
+authority.
+
+**Use the seam the Magic path already established.** `MagicScanProfile` is an
+instance that precompiles its vocabulary regex, is carried by
+`RecognitionProfile`, and is swapped by `useMagicDefinitions` — compile on
+`magicProfileQueue`, install on `visionQueue`. Pokémon gets the mirror image:
+
+- Introduce `PokemonScanProfile`, built from a registry snapshot, holding the
+  precompiled set-code and promo regexes it owns today as statics.
+- `RecognitionProfile` gains `pokemon:` alongside `magic:`, and conforms to
+  `Sendable` (it does not today).
+- Installation reuses the two-queue pattern, renaming `magicProfileQueue` to a
+  shared `profileQueue`.
+- **Each install replaces only its own half.** `useMagicDefinitions` currently
+  does `self.profile = RecognitionProfile(magic: magic)`; once the struct has a
+  second field, that assignment silently discards the Pokémon profile. Both
+  installers must carry the other half forward, and each needs its own
+  materially-changed guard — the existing one compares Magic definitions only.
+- `RecognitionProfile.pokemonOnly` is replaced by a bundled-seed profile, since
+  "no Pokémon vocabulary" stops being a representable state.
+- `ScanParser.parsePokemon` stays as a static shim over a profile built from the
+  bundled seed. It has exactly **one** production caller,
+  `RecognitionProfile.identify`, which moves to the injected profile; the 27
+  test references compile unchanged, as do the 28 test references to
+  `SetCodeMap.`.
+- `RecognitionProfile.customWords` is derived from the same registry.
+
+Keep the regex-alternation approach. The existing boundary assertions are load
+bearing: `(?<![A-Z])` is what stops `MASCAGNI` matching `ASC`, and the
+`[0-9OIL]` classes carry the OCR confusion rules. Rebuilding the alternation
+when the registry changes is cheap and off the frame queue; replacing it with
+token extraction would be an unrelated behavior change and is out of scope.
+
+`ScanIdentifier` already carries a `PokemonSetDefinition`; preserve that value
+flow so downstream catalog lookup does not reread mutable global state.
+
+### 3. `scanEnabled` must reach every scanner path
+
+Remote disable is one of two justifications for owning a release, so it has to
+actually disable scanning. Modern codes are not the only scanner path:
+`CardCatalog.historicalCard(for:)` resolves pre-modern cards by matching an
+OCR'd denominator against **checklist manifest entries**, falling back to
+`SetCodeMap.officialCount` only for older manifests. A set present in Browse is
+therefore scannable through the historical path regardless of its flags.
+
+Both `CardCatalog` historical candidate filters — the static
+`historicalCard(in:evidence:)` and `PokemonOfflineCatalog.historicalCard(for:)`
+— consult an injected registry snapshot and exclude provider IDs with
+`scanEnabled=false`. A disabled set remains fully browsable and yields no
+historical match. The snapshot is refreshed by the invalidation path in §5, not
+read ad hoc per lookup.
+
+### 4. Release ordering joins the signed release
+
+`PokemonCatalogReleaseOrder` is a `UserDefaults` dictionary written by
+`BrowseCatalog` straight from the unsigned crawl and read on the resolution
+path: unvalidated, unversioned, not covered by rollback. Stable release order is
+already a descriptor field. The registry becomes its only source, the
+`UserDefaults` store is deleted in Slice D, and a rollback restores prior
+ordering along with everything else.
+
+### 5. Activation: atomic registry, accreting checklists
+
+The registry is the authorization boundary and activates as one atomic
+revision. Checklists are bulk content and keep accreting per set, exactly as
+they do today.
+
+This split matters because `publish(_:mergingExisting:)` is deliberately
+incremental — a later set failure must never erase earlier progress — and the
+crawl is cancelled by every `inactive` scene transition. Revision-scoped
+checklists would mean a device on flaky network, or one the user keeps
+backgrounding, stages forever and activates nothing, where today it accretes
+sets one at a time. That would regress this plan's own goal. Keeping checklists
+unscoped also means there is only ever one checklist corpus on disk, which is
+why no content-addressed resource store is needed.
+
+1. Fetch and verify the signed release.
+2. Validate every descriptor: schema, rules version, recognition collisions,
+   capability coherence. Any failure rejects the whole release.
+3. **Activate the registry revision atomically.** Browse and Scanner now agree
+   on which sets exist and which are scannable.
+4. For each authorized set not yet present, or whose `providerFingerprint`
+   changed, fetch the provider set and card details with bounded concurrency and
+   build the checklist using `PokemonMasterSetChecklistBuilder`.
+5. Verify the built set against its descriptor: provider ID, official count, no
+   duplicate identities, no missing cards, no unsupported variants, valid URLs.
+6. **Activate that set alone**, by the existing write-resources-then-manifest
+   path. Other sets are unaffected.
+7. Notify Browse and Scanner per set activation as well as per registry
+   revision.
+
+A set authorized by the registry but without a verified checklist is *pending*:
+not shown in Browse, not scannable. It is not an error and holds nothing back.
+
+**Consumers hold their own caches, and "notify" is not enough.**
+`PokemonChecklistStore` invalidates its own caches correctly on publish —
+`downloadedSnapshotCache`, `downloadedManifestCache`, and
+`downloadedValidEntriesCache` are all cleared. The problem is downstream:
+`PokemonOfflineCatalog` copies `store.mergedEntries()` into its own `entries`
+array behind a `didLoad` flag that is **never reset**, with no invalidation
+hook. It is constructed per `CardCatalog`, which is constructed per
+`ScannerViewModel` — and `ScannerViewModel` is an app-level `@StateObject` in
+`TradingCardScannerApp`. Its snapshot is therefore frozen for the **whole
+process lifetime**, not a screen visit.
+
+Today that is a tolerable staleness window. Under this plan it is a correctness
+gap, because §3 puts the `scanEnabled` filter inside exactly those two
+`historicalCard` paths: a set disabled by a newly activated revision would keep
+resolving until the user force-quit the app. Leaving and re-entering the
+scanner would not clear it.
+
+So activation must actively invalidate, not merely notify:
+
+- `PokemonOfflineCatalog` gains an invalidation entry point that clears
+  `didLoad`, cancels any in-flight `loadTask`, and reloads on next use. Per-set
+  checklist activation and registry activation both call it.
+- The registry snapshot used by the historical filters is refreshed on the same
+  path and pinned per lookup, so one resolution cannot straddle two revisions
+  and no lookup takes an actor hop to read it.
+The audit is closed, not open-ended. Every derived copy outside the store:
+
+| Holder | Shape | Required on activation |
+| --- | --- | --- |
+| `PokemonOfflineCatalog.entries` (`CardCatalog.swift:217`) | `didLoad`, never reset, process-lifetime | Invalidate and reload, as above. |
+| `BrowseCatalog.setCache` (`BrowseCatalog.swift:61`) | `[CardGame: [CatalogSet]]`, overwritten wholesale by a completed refresh | Overwrite on registry activation; today only a crawl writes it. |
+| `ResolvedPokemonCardCache` (`CardCatalog.swift:556`) | Disk cache keyed by card, gated by `appVersion` + `schemaGeneration` + 28-day age | **See below — this one changes meaning under the plan.** |
+| `PokemonChecklistStore`'s own caches | Manifest/entry/snapshot caches | Already correct; `publish` clears them. |
+
+`ResolvedPokemonCardCache` is the non-obvious one. Its validity key includes
+`appVersion`, so today *any* catalog identity change ships with a binary and the
+cache flushes for free. This plan breaks that coupling on purpose: a corrected
+official count now arrives as data, with no version bump, while resolved cards
+written under the old identity survive for up to 28 days. The active registry
+revision must therefore participate in that cache's validity key — reusing the
+existing `schemaGeneration` mechanism rather than inventing a second one.
+
+**Crawl cursor.** `resumeAfterProviderID`, `failedProviderIDs`, and
+`needsFullSweep` keep their current meanings. Activating a new registry revision
+clears the cursor and the failure set, because the work list changed; it
+discards no already-verified checklist. Discarding a rejected release leaves the
+cursor untouched.
+
+**First launch.** A fresh install's bundled seed ages with the binary, so the
+control release must be fetched during initial catalog preparation rather than
+waiting for the 24-hour cadence to come due. Otherwise a new install cannot scan
+recent sets until the next day.
+
+### 6. Last-known-good and rollback
+
+- Keep `current` and `previous` registry revisions in **Application Support**,
+  beside `BrowseCatalogCache/PokemonChecklists` where the checklist store
+  already lives. Not `Caches`: iOS evicts that under disk pressure, which would
+  silently drop a user back to the bundled seed and un-teach the scanner every
+  set it had learned.
+- There is no staging state: the registry is small and either verifies whole or
+  is discarded.
+- Any signature, schema, decode, provider, or semantic failure leaves `current`
+  untouched.
+- A previously activated release remains usable when offline; staleness requests
+  a refresh but never erases catalog data.
+- Rollback is a newly signed, higher revision referencing the prior good
+  descriptors. Revisions never move backward.
+- App launch validates current cheaply. If unreadable, recover previous; if both
+  fail, use the bundled seed.
+
+**Accepted risk — provider dependency.** TCGdex is the single source for card
+data, counts, and the publisher's verification step. An outage, a rate limit, or
+a breaking API change blocks publication entirely, and no signed release can be
+cut until it recovers. This is accepted rather than mitigated: the app already
+depends on TCGdex for all card content, so the plan adds no new exposure, and
+the failure is a delayed catalog rather than a broken one — devices keep their
+last good revision. Two properties keep it from becoming worse than that: the
+publisher must fail closed, never emitting a descriptor from a partial fetch,
+and a provider outage must not cause an *existing* set to be deactivated.
+
+**Accepted risk — freeze.** Monotonic revisions prevent replay of an older
+release but do not prevent an attacker or a broken CDN pinning devices to a
+stale-but-valid one. Availability is the higher value here, so staleness is
+reported through diagnostics rather than enforced by expiry. Recorded
+deliberately, not overlooked.
+
+### 7. Artwork behavior
+
+Card artwork remains provider-hosted. The checklist stores low/high URLs and the
+existing image cache fetches lazily. Set logos and symbols continue through
+`PokemonArtworkFallbacks`.
+
+- Artwork absence does not invent an image and does not invalidate otherwise
+  sound card identity.
+- A set may become active with placeholders when optional artwork is
+  unavailable, but the release records that state explicitly.
+- Decode validation, URL host allowlisting, cache bounds, and current fallback
+  ordering remain in force.
+- App-owned image mirroring and new bundled fallback assets are outside this
+  plan until licensing and storage costs are approved.
+
+## Every `SetCodeMap` consumer must be accounted for
+
+`SetCodeMap` has seven production consumers beyond the parser. Slice A is not
+complete until each has a decided disposition:
+
+| Consumer | Disposition |
+| --- | --- |
+| `ScanParser.swift:486, :533` | Registry via `PokemonScanProfile`. |
+| `CardScanner.swift:2651` (`customWords`) | Registry. |
+| `CardCatalog.swift:143, :266` (`officialCount` fallback) | Registry, plus the `scanEnabled` filter from §3. |
+| `PokemonChecklistSnapshot.swift:196` (display code) | Registry — this is the `SV11` defect above. |
+| `PokemonChecklistSnapshot.swift:1196` (generator coverage list) | **Stays on the seed** — publisher input, not a runtime read. |
+| `BrowseCatalog.swift:989` (directory sort) | Registry. |
+| `PriceRefreshController.swift:2831` (printed code lookup) | Registry. |
+| `CollectionCatalogNormalizer.swift:740` (printed code + release order) | Registry **passed as a parameter** — `resolvePokemonSet` is `nonisolated static`, so it cannot reach an injected coordinator. Pinned for the pass. |
+| `TCGdexCard.swift:768` (release order) | Registry; `PokemonCatalogReleaseOrder` deleted. |
+
+`CollectionCatalogNormalizer` is the one touching stored collection rows.
+Activation still never synchronously mutates SwiftData, but a registry change
+does change what a *later* normalization pass produces. Pinning the registry for
+a pass keeps that pass internally consistent.
+
+**Position on already-stored rows.** The plan does not retroactively renormalize
+them, so a card imported or normalized before the registry publishes its code
+can keep `SV11` and release order 0 in its stored metadata. That is a real,
+permanent-looking wart, and leaving it unaddressed is a choice rather than an
+oversight:
+
+- It affects only rows imported or normalized while provider metadata is ahead
+  of signed registry metadata — a small, bounded population now that production
+  Browse hides the pending set.
+- A repair pass is mechanical: for each stored row whose printed code equals its
+  provider ID uppercased, re-resolve against the registry and rewrite those two
+  fields.
+- It is **deferred** because a migration touching collection rows deserves its
+  own change with its own backup and rollback story, not a rider on this one.
+- Trigger to take it up: the first time a real set is imported or normalized
+  during that metadata gap. Until then the population is empty and the
+  migration would be speculative.
+
+"The population is empty" is an assumption with an expiry date, not a fact — it
+holds only while gap windows stay short, and the single-person publication flow
+means a vacation or an illness during a popular set's launch is exactly when it
+stops holding. So it gets a detector rather than a hope:
+
+- Both `set.id.uppercased()` fallback paths — `PokemonChecklistSnapshot.swift:196`
+  and `CollectionCatalogNormalizer.swift:740` — increment a diagnostic counter
+  tagged with the provider set ID when they fire.
+- The normalizer's counter is the one that matters: it means a row was persisted
+  with a placeholder code. A non-zero value is the signal to schedule the repair
+  pass, and the set ID tells the publisher which code is overdue.
+- This stays inside the privacy rule below. A provider set ID is public catalog
+  metadata; no collection contents, card IDs, or user identifiers are attached.
+- Ship the counters in **Slice A**, with the registry migration, so the signal
+  exists before provider metadata can get ahead of the registry in Slice D.
+
+## Publisher and operations
+
+Before Slice E, `PokemonChecklistSnapshotGenerator` lived in the **app target**
+(`PokemonChecklistSnapshot.swift`, which imports UIKit) and was driven by an
+XCTest through a simulator `xcodebuild` in `scripts/generate_pokemon_snapshot.sh`.
+There was no `Package.swift` and no CI. Extraction is real work, not wiring:
+
+1. Create a platform-agnostic `PokemonCatalogCore` target holding the snapshot
+   model, builder, fingerprints, and release contract.
+2. Move `PokemonChecklistStore`'s memory-warning observer behind a protocol or
+   `#if canImport(UIKit)` so the core builds for macOS.
+3. Add a macOS command-line entry point over that core. Tests call the core; CI
+   calls the command.
+4. Create CI from zero: the workflow, the secret store for the signing key, and
+   the pull-request/production job split.
+
+Slice E implements the platform-neutral release contract, deterministic
+provider-fixture builder, bounded TCGdex adapter, filesystem publication
+staging, macOS CLI, Firebase cache policy, and the PR/production workflow. The
+existing app-side checklist generator remains the runtime adapter for now; the
+publisher's portable snapshot is the release artifact used by this slice.
+
+### Publication
+
+Scheduled workflow runs currently validate the candidate only. While Slice F is
+incomplete, production publication requires a manual dispatch with
+`publish=true` and the protected `pokemon-catalog-production` environment; the
+flow is **human-gated by construction** as well, because step 3 cannot be
+automated:
+
+1. Fetch the TCGdex directory and exclude unsupported products such as Pocket.
+   The device's own `fetchPocketSetIDs()` calls in `BrowseCatalog` are kept as
+   defense in depth pre-cutover and removed in Slice D.
+2. Diff against the active signed release; report new and changed sets.
+3. **A human supplies the printed code** for each new expansion, or the prefix
+   and pad width for each new promo series, from the physical card or official
+   product listing.
+4. Fetch set metadata and card detail; verify official count and completeness
+   against what the human claimed.
+5. Run the publication gates below.
+6. Sign with a CI-held private key, never stored in the app repository or the
+   publisher output.
+7. Upload the immutable revision, then update the `current` pointer last.
+
+Metadata-only corrections with no new codes — release order, display names,
+capability flags — may publish without review once the gates are green. New
+expansions and promo series always require the human step.
+
+### Publication gates
+
+- provider set ID is unique and syntactically valid;
+- printed code/prefix and official count are present and within supported
+  bounds;
+- no active recognition rule collides with another rule;
+- **no two `scanEnabled` expansions share an official denominator** when their
+  printed codes are within one OCR-confusable character of each other. The
+  parser disambiguates by matching the printed total against `officialCount` and
+  returns `nil` when two candidates survive, so an unchecked collision is not a
+  wrong scan — it is a set that silently never scans;
+- the descriptor's official count matches `cardCount.official` from a complete
+  set fetch;
+- every provider card has a stable ID, local number, name, and set identity;
+- variant expansion produces no duplicate checklist identity;
+- promo pad width produces the same local IDs as the bundled seed for every
+  existing series;
+- all catalog and artwork URLs use HTTPS and approved hosts;
+- payload size/count limits are respected;
+- bundled-seed parity tests remain green;
+- a clean-install fixture proves the new set appears in Browse and parses in
+  Scanner without changing app source.
+
+The publisher emits a review report containing only public catalog metadata,
+counts, and validation results.
+
+## Security, privacy, and resource limits
+
+- Pin the public signing key by `keyID`; the format reserves a second slot for a
+  future rotation.
+- Use HTTPS, signature verification, strict schema decoding, monotonic
+  revisions, time-skew checks, and provider-host allowlists. The release origin
+  is a separate allowlist entry from the card CDN.
+- Bound payload bytes, set count, cards per set, per-set bytes, concurrent
+  requests, and retry duration before decoding or allocation.
+- **App Store guideline 2.5.2.** The rule prohibits downloading code that
+  changes an app's features or functionality. What ships here is a table of set
+  IDs, printed codes, counts, and flags, interpreted by parsing logic compiled
+  into the binary — the same category as a remote config or content catalog. No
+  executable content, no regular expressions, no URLs for catalog JSON, no new
+  parsing algorithms; a grammar the binary does not implement is skipped, not
+  interpreted. Worth stating plainly in review notes, since "remote data changes
+  what the scanner recognizes" invites the question.
+- Do not attach collection contents, scanned card IDs, account IDs, or stable
+  user identifiers to update requests or telemetry.
+- Record privacy-safe diagnostics only: release revision, result category,
+  duration, bytes, and failure stage.
+- Catalog activation never synchronously mutates SwiftData collection rows,
+  pricing history, or ownership. Existing items retain their stored provider
+  identity; separate normalization rules may enrich metadata only when an exact
+  match is proven.
+
+## Implementation slices
+
+Ordered so scanner recognition of new sets lands as early as it safely can. The
+substrate decision blocks Slice A; Slice E's publisher work can proceed in
+parallel with C once B lands.
+
+### Slice 0 — publication substrate decision
+
+**Decided 2026-09-17.**
+
+- [x] **Origin:** Firebase Hosting. Atomic whole-site deploys give "pointer last"
+      by construction. Per-path cache headers via `firebase.json` globs. Versioned
+      deploys provide infrastructure-level rollback underneath the plan's own.
+      CI service account scoped to Hosting only.
+- [ ] **Release subdomain:** provision `catalog.scan-stash.com` with Firebase
+      Hosting and configure the required Bluehost DNS A/TXT records. The
+      marketing site on `scan-stash.com` is unrelated and stays on Bluehost;
+      neither catalog hostname is considered live until DNS and certificate
+      checks pass.
+- [ ] **Deferred staging isolation:** when remote authority is close, decide
+      whether to create the separate Firebase project, Hosting site, service
+      account, GitHub environment, signing-key scope, and
+      `catalog-staging.scan-stash.com` boundary. Do not provision those
+      resources for the first bundled-validation-only rehearsal.
+- [x] **Cost:** Firebase Spark free tier — ~360 MB/day transfer, ~10 GB storage.
+      At a few KB per poll, this is roughly 120k polls/day before needing Blaze
+      (pay-as-you-go at cents). Comfortable for a long while; crossing it is a
+      billing toggle, not a migration. Moving to R2 later is a DNS change with no
+      App Store release, since the app pins `catalog.scan-stash.com`, not a
+      vendor hostname.
+- [x] **Staging signing key:** the existing Ed25519 public key is pinned in the
+      staging xcconfig. Its private copy must remain in the owner's encrypted
+      backup and the staging GitHub environment; it is never generated by CI or
+      committed to the repository.
+- [ ] **Production signing key:** generate the separate Ed25519 key locally,
+      verify its backup by re-deriving the public key, pin that public key in a
+      production app release, and add only the raw private representation to
+      the protected production GitHub environment.
+
+### Slice A — contract and bundled registry
+
+**Create:** release/envelope models, registry value, signature verifier, fixture
+builder.
+
+**Modify:** `SetCodeMap.swift` so current expansion and promo definitions seed
+the bundled registry, including explicit pad widths; migrate the consumers in
+the disposition table.
+
+- [x] Round-trip and malformed-envelope tests.
+- [x] Signature success, wrong key, changed byte, unknown key, replay, and
+      future-skew tests.
+- [x] Registry collision and `scanEnabled` tests.
+- [x] Promo pad widths reproduce today's local IDs for BW, XY, SM, SWSH, SVP,
+      and MEP exactly.
+- [x] Both `set.id.uppercased()` fallback paths increment a set-ID-tagged
+      diagnostic counter, so the deferred repair pass has a trigger signal
+      before the first gap window can open.
+- [x] **Parity gate:** every migrated consumer — parser, `customWords`,
+      `CardCatalog` counts, Browse sort, `PriceRefreshController`,
+      `CollectionCatalogNormalizer`, display code — produces output identical to
+      the compiled maps before any remote update is enabled.
+
+**Slice A notes (2026-09-17):**
+
+- **Parity test coverage shape.** `testScanParserStillParsesAllCompiledExpansions`
+  and `...Promos` exercise a consumer end-to-end. The remaining five parity tests
+  (`testBrowseSortParity`, `testPriceRefreshPrintedCodeParity`,
+  `testCardCatalogOfficialCountParity`, `testCollectionNormalizerParity`,
+  `testCustomWordsParity`) verify that the registry carries the correct data but
+  do not prove the consumer reads it correctly — a wrong lookup key or swallowed
+  nil at the call site would still pass. `BrowseCatalog.refreshOrder` (line 988)
+  is the highest-risk uncovered consumer: it was rewritten from doubled
+  `SetCodeMap` lookups into seed lookups. A consumer-level sort test is deferred
+  to Slice D when `refreshOrder` moves to an injected registry.
+- **`bundledSeed` static coupling.** Nine production files now reach
+  `PokemonCatalogRegistry.bundledSeed` statically — unavoidable without a
+  coordinator. Slice B's `PokemonCatalogCoordinator` replaces all eleven call
+  sites. `ScanParser`'s uses are in static stored properties (`private static let
+  setCodeRegex = …bundledSeed.expansionCodes`), which is precisely the pattern
+  Slice C replaces with an injected `PokemonScanProfile`. Expected migration
+  cost, not a defect.
+
+### Slice B — durable update store and client
+
+**Create:** `PokemonCatalogReleaseStore`, `PokemonCatalogUpdateClient`,
+`PokemonCatalogCoordinator`.
+
+**Modify:** `PokemonChecklistStore` for per-set activation under an atomic
+registry revision. `PokemonOfflineCatalog` gains `invalidate()`.
+`ResolvedPokemonCardCache` gains `invalidateEntries(forSetIDs:)`.
+`BrowseCatalog` gains `invalidateSetCache(for:)`. No manifest schema change.
+
+- [x] Conditional request/304, retry, cancellation, and backoff tests, reusing
+      the existing cadence and failure backoff.
+- [x] A fresh install fetches the release during initial catalog preparation,
+      not on the next 24-hour tick.
+- [x] Atomic registry activation and process-interruption tests at every write
+      boundary.
+- [x] **Partial-crawl test:** a crawl interrupted after N of M sets leaves those
+      N activated and resumes at the cursor, with no loss of earlier progress.
+      *(Existing behavior preserved: `clearCursorForRegistryActivation` resets
+      cursor/failures on activation; existing `recordRefreshProgress` resumes
+      from cursor on each set. Tested via cursor-clearing tests.)*
+- [x] A pending set is absent from Browse, unscannable, and blocks nothing else.
+      *(Implicit: a set in the registry with no downloaded checklist is not in
+      `PokemonChecklistStore.mergedEntries`, so it does not appear in Browse
+      or resolve in the offline catalog.)*
+- [x] Activating a set makes it resolvable **without relaunching the app**:
+      `PokemonOfflineCatalog` reloads rather than serving its frozen `didLoad`
+      snapshot. Backgrounding or changing tabs must not be required either.
+- [x] Activating `scanEnabled=false` stops historical resolution immediately,
+      in the same process.
+- [x] A registry revision that corrects a set's official count invalidates
+      `ResolvedPokemonCardCache` entries for that set, without waiting for an
+      `appVersion` change or the 28-day age limit.
+- [x] `BrowseCatalog.setCache` reflects a registry activation that no crawl
+      accompanied.
+- [x] Registry activation clears the cursor; a rejected release does not.
+- [x] Current/previous/bundled recovery tests.
+- [x] Unsupported schema, bad signature, count mismatch, and disk-full tests
+      leave current unchanged.
+
+**Slice B notes (2026-09-17):**
+
+- **Three new actors, four consumer modifications.** `PokemonCatalogReleaseStore`
+  (durable current/previous/bundled recovery), `PokemonCatalogUpdateClient`
+  (HTTP conditional requests with retry/backoff), and `PokemonCatalogCoordinator`
+  (activation, event stream, consumer invalidation). Modified
+  `PokemonOfflineCatalog` (`invalidate()`), `ResolvedPokemonCardCache`
+  (`invalidateEntries(forSetIDs:)`), `BrowseCatalog` (`invalidateSetCache(for:)`),
+  and `PokemonChecklistStore` (`clearCursorForRegistryActivation()`).
+- **`AsyncStream.makeStream` instead of build closure.** The original
+  `AsyncStream { continuation in self.continuations[id] = continuation }` pattern
+  violates actor isolation (the build closure is not actor-isolated). Fixed to use
+  `AsyncStream.makeStream(of:)` which returns the stream and continuation
+  separately for direct actor-isolated storage.
+- **`recoverFromBundledSeed()` is `nonisolated`.** It accesses no actor state
+  (just returns `PokemonCatalogRegistry.bundledSeed`), so calling it synchronously
+  from the coordinator avoids an unnecessary actor hop.
+- **29 Slice B tests** across 5 test classes. Test coverage: store persistence
+  and recovery (9), HTTP client behavior (5), coordinator activation and events (7),
+  consumer invalidation (7), end-to-end coordinator invalidation (1).
+- **`CardCatalog.swift:270` migrated (2026-09-18).** The instance
+  `PokemonOfflineCatalog.historicalCard(for:)` was still reading
+  `SetCodeMap.definitions` for the official-count fallback, while the static
+  sibling at `:143` had been migrated to `bundledSeed.officialCount`. Invisible
+  under parity but would diverge once Slice D makes the registry authoritative.
+- **`PokemonOfflineCardFactory.historicalCard` precondition documented.** The
+  static factory recomputes candidate sets from whatever snapshot it receives,
+  with no `scanEnabled` check of its own. The instance caller filters first;
+  the precondition is now a doc comment so future callers don't reintroduce an
+  ungated historical path.
+
+### Slice C — dynamic scanner
+
+**Modify:** `ScanParser.swift`, `CardScanner.swift`, `CardCatalog.swift`, and
+scanner construction to consume an immutable registry snapshot through
+`PokemonScanProfile` and `RecognitionProfile`.
+
+- [x] A fixture code absent from the binary is recognized after activating a
+      signed fixture release.
+- [x] The same code is rejected before activation and when `scanEnabled=false`.
+- [x] A `scanEnabled=false` set produces no **historical** denominator match
+      either, while remaining fully visible in Browse.
+- [x] Vision custom words update without restarting the app.
+- [x] **Activation clears partial observations only when the Pokémon vocabulary
+      materially changed**, mirroring the guard `useMagicDefinitions` already
+      documents. A registry activation fires shortly after every cold start, and
+      `resetObservationState` also releases the latch and clears the active
+      slab, so resetting unconditionally would throw away a half-confirmed card
+      on launch — the exact stutter that guard exists to prevent.
+- [x] When the vocabulary does change, a candidate accumulating matches across
+      the four-frame window cannot combine two registry revisions, and an
+      already-dispatched resolution completes against the `PokemonSetDefinition`
+      captured in its `ScanIdentifier`.
+- [x] `RecognitionProfile` is `Sendable`; no per-frame actor, disk, or network
+      work is introduced; regex compilation stays off the vision queue.
+      *(Inspection-verified; no dedicated runtime test is required for this
+      compile-enforced/value-only property.)*
+- [x] The 27 `ScanParser.parsePokemon` and 28 `SetCodeMap.` test references
+      compile and pass unchanged.
+
+**Slice C notes (2026-09-18):**
+
+- `PokemonScanProfile` now owns an immutable registry snapshot, precompiled
+  expansion/promo regexes, and the Vision custom-word vocabulary. The existing
+  `ScanParser.parsePokemon` API remains a bundled-seed compatibility shim, while
+  production recognition uses the installed profile through `RecognitionProfile`.
+- `CardScanner` compiles and installs profile revisions on separate queues. It
+  preserves the Magic profile, resets confirmation/slab state only when the
+  Pokémon vocabulary changes, and keeps parsed `PokemonSetDefinition` values
+  attached to dispatched identifiers.
+- The app creates one `PokemonCatalogCoordinator` and gives it to Browse and
+  `ScannerViewModel`. `CardCatalog` pins the same registry through offline,
+  historical-live, session-cache, and persistent-cache resolution; withdrawn
+  historical sets cannot reappear through a stale disk entry.
+- Added five focused Slice C tests. The focused Slice C run passed 5/5; the
+  compatibility run passed 94/94, including 67 `ScanParserTests`, 12 parity
+  tests, 7 promo-pad tests, and 8 registry tests. Provider/device/release gates
+  remain open.
+
+### Slice D — Browse cutover
+
+**Modify:** `BrowseCatalog` so production set activation comes from the signed
+coordinator. Direct TCGdex calls remain the card/content transport for
+authorized provider IDs, not an independent set-activation authority.
+
+**Delete:** `PokemonCatalogReleaseOrder` and the device-side Pocket exclusion.
+
+- [x] New set, cards, variants, counts, logos, symbols, and card image URLs
+      appear after one activation.
+- [x] Browse and Scanner report the same active revision.
+- [x] **Pending-set behavior:** provider-only discoveries render as nothing in
+      production Browse until a signed descriptor and complete checklist make
+      them active. The builder uses the truthful `Code pending` placeholder for
+      diagnostic/legacy representations and never exposes the provider ID as a
+      printed code.
+- [x] A set present in a crawl but absent from the registry is not a production
+      Browse row; diagnostic/legacy representations use `Code pending`, never
+      the provider ID.
+- [x] A failed provider refresh preserves the previous Browse directory.
+- [x] Release ordering survives a rollback, and no ordering data remains in
+      `UserDefaults`. `BrowseFeatureTests.swift:432` exercises the deleted
+      store directly and is rewritten against the registry.
+
+**Slice D notes (2026-09-18):** `BrowseCatalog` now treats the shared signed
+coordinator as the Pokémon set-activation authority. TCGdex remains transport
+for registry-authorized provider IDs; downloaded or raw-directory-only sets do
+not become production Browse rows. Checklist refreshes validate the registry's
+official count before publishing, retain the last complete manifest on failure,
+and emit catalog updates so Browse reloads after activation or per-set
+publication. The obsolete `PokemonCatalogReleaseOrder` writer and Pocket
+series request are deleted; construction removes the legacy UserDefaults key.
+The focused Slice D suite passes 4/4 on the iPhone 17 Pro simulator. Pending
+sets intentionally use the "nothing until active" policy; provider/device,
+archive, and release-readiness gates remain open. The offline snapshot
+round-trip fixture uses synthetic provider ID `sv99` rather than a bundled
+provider ID so it verifies transport silence without intentionally invoking
+registry metadata enrichment; real bundled IDs remain covered by the registry
+authority tests.
+
+### Slice E — publisher and first production channel
+
+**Create:** `PokemonCatalogCore` target, macOS CLI, CI from zero, staging
+configuration, key handling runbook, release report, and the first production
+Hosting target.
+
+- [x] The core builds for macOS with no UIKit dependency.
+- [x] Deterministic output from recorded provider fixtures.
+- [x] The human printed-code step is a required, recorded input — the publisher
+      refuses to emit an expansion descriptor without one.
+- [x] Production signing is unavailable to pull-request jobs and local builds.
+- [x] Objects publish immutably and `current` changes last.
+- [x] The app defaults to bundled validation, so a signed candidate can be
+      downloaded from the first production hostname and discarded without
+      changing Browse or Scanner authority. *(The future staging xcconfig
+      carries the existing staging public-key pin; its endpoint and deployment
+      are intentionally not provisioned yet.)*
+- [x] A higher-revision rollback is rehearsed. *(The publisher/filesystem
+      sequence is covered; end-to-end device rollback remains a Slice F gate.)*
+
+**Slice E notes (2026-09-18):** `PokemonCatalogCore` is a Swift package with
+the shared release/envelope contract, CryptoKit signing and validation,
+provider models, snapshot/fingerprint builder, bounded TCGdex fetcher, and
+filesystem publisher. `pokemon-catalog-publisher` validates recorded fixtures
+or a live bounded fetch, requires `publisher/catalog-input.json` human facts for
+new provider sets, and only loads a signing key inside the protected GitHub
+Actions publication environment. `firebase.json` gives immutable revision
+objects and a short-lived current pointer for the first production site at
+`catalog.scan-stash.com`. The workflow restores the production revision tree
+before each Hosting deploy, keeps publication manual until Slice F, and retains
+the public review report as an Actions artifact. The focused core run passed 8
+tests with 0 failures, recorded CLI validation passed, and the compile-only iOS
+app build passed. The future staging public pin is present in its xcconfig; the
+production public pin, real signing secret, Firebase project/DNS deployment,
+and populated production input remain owner/release gates. No full simulator
+suite or centering tests were run for this slice.
+
+### Slice F — measured rollout
+
+- [ ] Ship with the bundled catalog authoritative, while the client downloads,
+      verifies, and validates a real release and then discards it without
+      activating. This exercises the whole path and produces the diagnostics
+      that matter. The first run uses the production hostname and the single
+      Firebase project; no second channel is needed for this gate.
+- [ ] Activate remote authority for a no-op release first. *(Deferred until a
+      separate staging boundary is provisioned.)*
+- [ ] Exercise one synthetic set and one real new set through clean install,
+      upgrade, offline, cancellation, and rollback. *(Deferred until staging
+      exists and the no-op gate passes.)*
+- [ ] Measure launch, activation, scanner-frame, network, memory, and disk impact.
+- [ ] Update privacy/support/App Store disclosures if the selected hosting or
+      telemetry changes their current claims. *(Privacy and support pages were
+      updated for the signed catalog-control file; App Store metadata
+      confirmation remains an owner-controlled gate.)*
+
+### Slice F ordered rollout runbook
+
+These are sequential gates, not independent checkboxes. Do not enable the next
+stage because the preceding stage merely built successfully; each stage needs
+the evidence described below. The immediate gate is deliberately run against
+the first production Firebase project and `catalog.scan-stash.com` while the
+app remains in `bundled-validation-only`. The no-op and synthetic gates are
+deferred until a separate staging boundary exists; that is when the
+production/staging project decision becomes operationally meaningful.
+
+#### 0. Generate and pin the signing key before publishing
+
+This is a prerequisite to the three rollout stages, not a reason to bypass
+them:
+
+1. Confirm the implementation contract. `CryptoKit.Curve25519.Signing` is
+   CryptoKit's Ed25519-compatible signing API; this path is not using X25519
+   key agreement. `POKEMON_CATALOG_SIGNING_KEY` is a raw 32-byte Ed25519
+   private-key/seed representation. The loader accepts unpadded base64url,
+   standard base64, or 64-character hexadecimal; it does not accept PEM.
+2. Generate the key with an owner-controlled, password-protected local tool.
+   Keep the private representation in the owner's encrypted backup and in the
+   matching protected GitHub environment only. Never put it in the repository,
+   a fixture, a review report, an Actions artifact, or a site object.
+3. Derive the public key from that stored private value, assign a stable key ID,
+   and pin the public `keyID:base64url-public-key` value in the production app
+   configuration. Verify the derived public key matches the pin before using
+   the private key in CI. The existing staging key remains future material and
+   does not authorize the first production-host rehearsal.
+4. Confirm the protected-environment matrix: production signing can come only
+   from `pokemon-catalog-production`, and local, pull-request, non-main, or
+   `POKEMON_CATALOG_PUBLISH != true` invocations must fail closed. Add the
+   staging environment to this matrix only when staging is provisioned.
+
+#### 1. Validate and discard
+
+Run a production-configured build with `bundled-validation-only`, the pinned
+production public key, and `catalog.scan-stash.com`. Publish one signed
+candidate to the first Firebase site, then bring the app online and trigger a
+refresh. The expected result is:
+
+- the app receives HTTP 200, verifies the Ed25519 signature, checks schema,
+  revision/time bounds, registry invariants, counts, fingerprints, and
+  resource completeness;
+- the bundled registry remains the only Browse and Scanner authority;
+- no remote release is written to the active or previous slots, no consumer
+  invalidation event fires, and the app behaves exactly as the bundled build;
+- local diagnostics record the network attempt, candidate revision and bytes,
+  validation success, `validated-and-discarded`, disk usage, and a memory
+  sample; and
+- a malformed or wrong-key candidate is rejected without changing bundled
+  behavior.
+
+Capture the signed envelope, revision, app build/configuration, diagnostics,
+and the before/after persisted-store state. This gate proves the complete
+download/verify/validate path without granting remote data authority.
+
+#### 2. Release a no-op — deferred staging gate
+
+Only after validate-and-discard has evidence and staging is provisioned, make a
+new staging revision whose payload is semantically identical to the bundled
+catalog. It must still be a new, strictly higher signed revision; do not reuse
+or rewrite an immutable revision. Build a deliberate staging rehearsal binary
+with `remote-authority`, deploy the immutable revision first, and update
+`v1/current.json` last.
+
+On a clean install and an upgrade install, verify that the app activates the
+no-op, persists it, and reports `activated` while Browse, Scanner, official
+counts, ordering, and card identity remain behaviorally equal to the bundled
+baseline. Relaunch offline to prove the persisted no-op is usable; cancel
+during fetch/activation and retry to prove the bundled or last-good state
+survives. A missing pointer is an initial-publication case; a missing
+companion artifact for an existing revision is corruption and must fail the
+deployment.
+
+#### 3. Publish a synthetic set — deferred staging gate
+
+Only after the staging no-op passes, publish the recorded synthetic provider set
+as the next staging revision. Keep it obviously non-production (for example,
+the existing `sv99` fixture), and use the staging signing key, project, site,
+and hostname throughout. On clean install and upgrade, verify that the new set:
+
+- appears in Browse with its signed display code and complete checklist;
+- is recognized by Scanner with the expected denominator and resolves to the
+  exact provider card;
+- survives relaunch and offline use after activation;
+- can be interrupted and resumed without losing the last complete release; and
+- can be rolled back by publishing the prior good content under a new,
+  strictly higher revision. Never move the pointer backward to an old revision
+  or delete an immutable object.
+
+Record launch, activation, scanner-frame, network, memory, disk, cancellation,
+and rollback evidence. Only after this synthetic rehearsal is accepted should
+the same procedure be scheduled for one real new set; that real-set run remains
+a separate owner-controlled release gate.
+
+**Slice F implementation notes (2026-09-18):** The app now defaults to
+`bundled-validation-only`: it loads only the bundled registry, fetches the real
+release pointer, verifies the signed envelope and app registry invariants, then
+discards the candidate without touching the current/previous slots. The
+explicit `remote-authority` mode is available for a staging rehearsal build
+when deliberately overridden for the no-op, synthetic, and rollback sequence.
+Rollout diagnostics record launch
+authority, network attempts/responses/bytes, validation or activation outcome,
+release-slot disk bytes, and process physical-footprint samples; the existing
+scanner `PerformanceSignpost` frame/OCR intervals remain the frame measurement
+surface. Public-key configuration is fail-closed and accepts only the
+build-configured public representation; no signing credential is committed.
+The focused Slice F target built, but its simulator test runner exited before
+XCTest established a connection, so those assertions are not being claimed as
+passed. Core tests passed 8/8, the DebugProduction app build passed, and the
+static Hosting/workflow checks passed. The live Firebase pointer, production
+key ceremony, real new-set run, device memory/network measurements, and App
+Store release evidence remain owner-controlled gates.
+
+## End-to-end acceptance
+
+Demonstrated on a released-build configuration:
+
+1. Start with a binary whose bundled catalog does not contain fixture set `NEW`.
+2. Publish a valid higher signed revision without changing or reinstalling the
+   binary.
+3. Bring the app active; existing Browse content renders immediately while the
+   update proceeds in the background.
+4. The new set and complete card checklist appear, with provider artwork or
+   truthful placeholders, and the printed code from the release.
+5. The scanner recognizes `NEW number/denominator`, resolves the exact provider
+   card, and preserves existing confirmation/variant behavior.
+6. Relaunch offline and prove Browse and Scanner still use that revision.
+7. Interrupt the crawl partway through a multi-set release and prove the sets
+   that completed stay usable while the rest resume later.
+8. Publish `NEW` with `scanEnabled=false` and prove it browses but neither
+   modern nor historical scanning resolves it.
+9. Attempt bad-signature, truncated, collision, count-mismatch, and
+   unsupported-schema releases; each is rejected without losing the good
+   revision.
+10. Change only a card's name or image URL upstream and prove the active set is
+    refreshed rather than rejected.
+11. Publish a higher-revision rollback and prove both surfaces return to the
+    prior catalog together.
+12. A clean install with an aged bundled seed scans a set released after the
+    binary, on first launch, without waiting a day.
+
+## Reconciliation with current plans
+
+- This plan supersedes no Browse UX or artwork-fallback behavior. It changes how
+  a set becomes authorized, then feeds the existing Browse and artwork
+  contracts.
+- The current in-app TCGdex crawl is **not** sufficient scanner authority —
+  structurally, since the provider does not publish printed codes. After cutover
+  it is content transport for signed descriptors.
+- `PokemonCatalogReleaseOrder` is a second live remote authority and is removed.
+- The current snapshot generator is release tooling, not a production update
+  service. Slice E promotes its reusable logic and creates the CI it needs.
+- `SetCodeMap` remains a bundled offline seed and migration aid. Its one
+  non-runtime use — the generator's coverage list — stays.
+- Browse withdrawal via tombstones is deferred and will need a checklist schema
+  bump when it is taken up.
+- This plan does not close provider, licensing, device, archive, TestFlight, or
+  App Store release gates recorded elsewhere.
+
+When implementation begins, update only the completed slice and record verified
+evidence in `progress.md`. When this plan is complete or replaced, move it to
+`docs/legacy/` with a pointer from the documentation map.

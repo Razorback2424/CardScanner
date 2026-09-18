@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "production": "<production-firebase-project-id>"
+  },
+  "targets": {
+    "<production-firebase-project-id>": {
+      "hosting": {
+        "production": ["<production-hosting-site-id>"]
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+// Future staging configuration. Keep this file out of the first production
+// rehearsal; provision its Firebase project and DNS only before remote
+// authority is enabled.
+// `/$()/` keeps the xcconfig parser from treating the URL's `//` as a
+// comment; Xcode expands the empty variable reference back to `https://`.
+POKEMON_CATALOG_BASE_URL = https:/$()/catalog-staging.scan-stash.com
+POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = catalog-staging.scan-stash.com
+POKEMON_CATALOG_ROLLOUT_MODE = bundled-validation-only
+// Public key material is supplied by the staging release operator, for
+// example: staging-v1:<base64url-32-byte-public-key>
+POKEMON_CATALOG_PINNED_KEYS = pokemon-catalog-staging-2026-09-18-01:8EiFyWqm6pDyZuq3iQPRlWKr_ZfkdRN3I1x9bApYj68

@@ -690,6 +690,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
             .map { (setID: $0.key, requests: $0.value, locale: TCGdexLocale.en) }
             + japaneseRequestsBySetID.sorted { $0.key < $1.key }
                 .map { (setID: $0.key, requests: $0.value, locale: TCGdexLocale.ja) }
+        let registry = PokemonCatalogRegistry.bundledSeed
         var result: [String: ImportedCatalogMetadata] = [:]
         var cursor = 0
 
@@ -703,7 +704,8 @@ private struct ImportedCatalogBatchResolver: Sendable {
                         id: next.setID,
                         requests: next.requests,
                         locale: next.locale,
-                        service: tcgdex
+                        service: tcgdex,
+                        registry: registry
                     )
                 }
             }
@@ -718,7 +720,8 @@ private struct ImportedCatalogBatchResolver: Sendable {
                             id: next.setID,
                             requests: next.requests,
                             locale: next.locale,
-                            service: tcgdex
+                            service: tcgdex,
+                            registry: registry
                         )
                     }
                 }
@@ -731,16 +734,21 @@ private struct ImportedCatalogBatchResolver: Sendable {
         id: String,
         requests: [ImportedCatalogRequest],
         locale: TCGdexLocale = .en,
-        service: any TCGdexCatalogSource
+        service: any TCGdexCatalogSource,
+        registry: PokemonCatalogRegistry
     ) async -> [String: ImportedCatalogMetadata] {
         guard let set = try? await service.fetchSet(id: id, locale: locale) else { return [:] }
         let cardsByNumber = Dictionary(grouping: set.cards) {
             CatalogIdentityNormalization.localNumber($0.localId)
         }
-        let printedCode = SetCodeMap.definitions.values.first {
-            $0.tcgdexSetID.caseInsensitiveCompare(set.id) == .orderedSame
-        }?.printedCode ?? set.id.uppercased()
-        let releaseOrder = SetCodeMap.releaseIndex(forPrintedCode: printedCode) ?? 0
+        let printedCode: String
+        if let registryCode = registry.printedCode(forProviderSetID: set.id) {
+            printedCode = registryCode
+        } else {
+            PokemonCatalogDiagnostics.recordPersistedPlaceholderCode(providerSetID: set.id)
+            printedCode = set.id.uppercased()
+        }
+        let releaseOrder = registry.releaseOrder(forProviderSetID: set.id) ?? 0
 
         var result: [String: ImportedCatalogMetadata] = [:]
         for request in requests {
