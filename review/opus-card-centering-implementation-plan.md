@@ -274,6 +274,7 @@ now records both the transient interruption and the recovered runs (`REQ-033`).
 | E-REQ044 | 2026-09-12 | Added a general transition-width guard and per-side fallback for outer refinement. The expected-red broad-transition test failed before the guard, the focused guard test passed, an all-or-nothing follow-up discarded valid sibling refinements, and the final per-side physical-outer test passed. The latest focused analyzer class passed 21/21; the refreshed E-A branch probe is 9 confident / 1 declined; REQ-043 still fails all five backs. No GT coordinate or tolerance changed, and the full invariant/L1 rerun remains pending. |
 | F | 2026-09-12 | Corrected the REQ-042 interpretation: 29/36 gradeable inner sides have an in-tolerance candidate and seven sides have no such candidate, so those seven are generation failures rather than selector failures. Made a post-E-REQ044 baseline/ledger refresh and a fresh frozen holdout mandatory before further production changes; ordered registered back templates before the separate front-bottom generator and gated selector work on role-specific recall. Clarified that template registration must measure observed print displacement rather than assume nominally centered printing. No tolerance loosened and no implementation changed. |
 | F-evidence | 2026-09-12 | Completed the signed post-E-REQ044 full-suite baseline and corrected REQ-042 ledger refresh on the pinned iOS 26.5 simulator. The current result-bundle summary is 1,095 entries: 1,085 passed, 1 skipped, 9 failed; all nine failed entries are centering failures, and the known pre-existing Magic-treatment failure from an older baseline did not recur. The current ledger is 34/40 outer and 28/36 gradeable inner (77.8%) using the fixed `0.0035 * H` inner tolerance. The complete current E7 curve still has 3/10 descriptive ratio passes at each tested resolution and misses the original latency budget. No production perception change or tolerance change followed; REQ-040's diverse frozen holdout remains the precondition for the next production change. |
+| G-forensic | 2026-09-17 | Added Group K (`REQ-046`–`REQ-052`) and `INV-11`/`INV-12` after transferring method from an external single-image PSA forensic measurement. Adopted the localization-versus-identity confidence split as the group's organising lesson. Recorded that the source analysis had no ground truth and depended on human edge-window selection, so it is a method source and not an accuracy reference. The Group J freeze is **not** lifted: `REQ-046`–`REQ-048` are gated behind it and `REQ-040`, while `REQ-049`–`REQ-051` are harness-only and may proceed. Corrected two claims that had been asserted rather than measured — that the working-resolution cap implies a proportional uncertainty floor, and that robust multi-sample fitting is too expensive for a phone; both now require measurement. No tolerance loosened, no implementation changed. |
 | F-corpus | 2026-09-12 | Classified the 34-image intake conservatively, recorded SHA-256 and provenance metadata for all 44 corpus files, and froze a reproducible 10-image `HOLDOUT-INTERIM` split before new analyzer work. The manifest contract passed on the pinned iPhone 17 Pro / iOS 26.5 simulator. This is an interim safeguard, not completion of REQ-040: final cross-device/cross-photographer coverage, new ground truth, and final holdout evaluation remain open. |
 
 
@@ -1050,6 +1051,8 @@ Each is a test, not a sentiment. `R(θ)` = the fixture re-rendered rotated by θ
 | INV-8 | benign crop (≥ 8 % margin retained around the card) → same ratio | ≤ 1.0 pp | untested |
 | INV-9 | the detected card quad never coincides with `encasementOuterQuad` when both exist | corner distance > 3 × `τ_e` toward the card | **violated on ≥ 6 fixtures today** |
 | INV-10 | `analyze` never returns a confident measurement whose rectified aspect deviates > 4 % from 0.7143 | hard gate | **violated by IMG_0782 (1.273)** |
+| INV-11 | a confident measurement's L/R and T/B ratios vary ≤ `τ_pos` across ≥ 5 positions along the measured span | `τ_pos` calibrated by `REQ-049`, not assumed | untested |
+| INV-12 | the reported ratio's σ across `REQ-050`'s numerical-parameter grid is ≤ `τ_num` | `τ_num` calibrated by `REQ-050`, not assumed | untested |
 
 INV-7 and INV-8 exist specifically to catch a detector that has memorised "the card occupies
 roughly this part of the frame" — the most likely overfitting mode for a 10-image corpus.
@@ -2000,6 +2003,177 @@ perception hypothesis.
 
 
 ---
+
+### Group K — Revision G: forensic-method transfer
+
+**Provenance.** An external, single-image forensic measurement of a graded PSA front scan
+(1445 × 2400, SHA-256 `05abf0dd…402fa9`) produced a left/right result of 50.26 / 49.74 that was
+stable to ±0.13 pp across seven heights and to σ = 0.039 pp across a 64-point perturbation of its
+smoothing, edge-threshold, and RANSAC-residual parameters. Its reproduction script and full
+method statement are the source for this group.
+
+**What that establishes, and what it does not.** It establishes that a four-line model with
+subpixel localization, polarity-constrained gradient search, and robust many-sample fitting is
+numerically very stable. It does **not** establish accuracy: that analysis had no ground truth,
+and its edge windows were chosen by a human inspecting the image. Its own author frames the
+residual uncertainty as semantic — whether the correct physical feature was identified — not
+numerical. An earlier, cruder pass on the same image returned 53 / 47, and the correction came
+from human inspection rather than from the algorithm.
+
+That split is the transferable lesson, and it is sharper than anything currently in §5.1:
+
+> Measurement confidence has two independent dimensions — **localization confidence** and
+> **identity confidence**. An edge can be known to ±0.1 px and still be the wrong edge.
+
+`REQ-046` makes that split explicit in the product. The remaining requirements adopt the
+method's mechanics where they survive the difference between a human-supervised one-off and an
+unattended scanner.
+
+**Sequencing against the Group J freeze.** Group J's prohibition on further sampling,
+smoothing, radius, interpolation, and transition-width tweaks stands and is **not** lifted here.
+`REQ-046`, `REQ-047`, and `REQ-048` change production perception and are therefore gated behind
+`REQ-039`–`REQ-045` and `REQ-040`'s frozen holdout, exactly like any other detector change.
+`REQ-049`, `REQ-050`, and `REQ-051` are harness and diagnostic work that touch no production
+selector, may proceed immediately, and should — they are what will tell us whether the gated
+changes help.
+
+#### REQ-046 — Separate localization confidence from identity confidence
+- **Objective.** Replace the single confidence scalar with two independent axes, and make
+  decline reachable from either.
+- **Rationale.** The forensic result is the existence proof: a measurement can be numerically
+  excellent and semantically wrong. A blended score cannot express high-localization /
+  low-identity, which is precisely the state that must decline. This is also the state
+  `INV-9` and `sleeveAmbiguity` already gesture at without naming.
+- **Subsystem.** `CardCenteringConfidence`, `CardCenteringMeasurement`, analyzer result
+  construction.
+- **Required behaviour.** Confidence carries `localization` (edge position precision: transition
+  strength, support continuity, fit residual, positional spread from `REQ-049`) and `identity`
+  (is this the card's cut edge: competing-edge ambiguity, `sleeveAmbiguity`, encasement
+  proximity per `INV-9`, aspect plausibility per `INV-10`, expected polarity agreement).
+  A confident result requires **both** axes to pass; either alone forces decline.
+- **Constraints.** Identity evidence may never be inferred from localization quality. A tighter
+  fit must not raise the identity axis by any path.
+- **Validation.** A synthetic case with two parallel high-contrast edges 6 px apart (card and
+  sleeve) must produce high localization and low identity, and must decline. A test asserting no
+  identity input is a function of residual or transition strength.
+- **Completion.** Both axes reported and persisted; decline reachable from each independently;
+  the two-parallel-edge case declines; existing decline behaviour unchanged elsewhere.
+
+#### REQ-047 — Subpixel edge localization with polarity constraint
+- **Objective.** Estimate edge position to a fraction of a working pixel, and reject
+  wrong-polarity transitions at selection time.
+- **Rationale.** The current scalar projection is integer-valued. Three-point parabolic
+  interpolation on the gradient peak is ~10 lines and is standard. Separately, searching for the
+  strongest gradient *of the expected sign* — outside-to-inside at an outer edge, the reverse at
+  an inner edge — rejects glare pairs and adjacent reversals that an absolute-magnitude search
+  accepts. Note this improves localization **at the working resolution**; it does not recover
+  information removed by downsampling, and no claim to that effect may be made.
+- **Subsystem.** `CardCenteringAnalyzer.refineOuterQuad` and the inner candidate generator.
+- **Required behaviour.** Peak selection is constrained to the expected polarity per side and
+  per boundary kind. The returned position is `peakIndex + δ` with
+  `δ = 0.5·(s₋₁ − s₊₁) / (s₋₁ − 2s₀ + s₊₁)`, clamped to [−1, +1], with `δ = 0` when the
+  denominator is zero.
+- **Constraints.** Gated behind Group J. No change to search radii, smoothing kernels, or
+  transition-width guards may ride along with this requirement.
+- **Validation.** A synthetic edge rendered at known subpixel offsets 0.0…0.9 recovers each to
+  ≤ 0.15 px. A wrong-polarity decoy adjacent to the true edge is not selected.
+- **Completion.** Both tests pass; `REQ-051` shows no regression; the full invariant suite is
+  no worse.
+
+#### REQ-048 — Robust multi-sample edge fitting at the measurement stage
+- **Objective.** Derive each edge line from many samples along it with a robust estimator,
+  rather than reducing to two endpoints when the ratio is computed.
+- **Rationale.** `CardCenteringQuad.borderDistances` averages the perpendicular distance at two
+  corners per side. Detection already samples along edges (`samplesAlongEdge`, `scores`,
+  `supports`), so the information exists and is discarded at the last step. The forensic method
+  fits ~1,200 detections per inner edge under RANSAC and retains 86–95 % as inliers; the value is
+  not the precision but the rejection of individual bad rows.
+- **Subsystem.** analyzer edge construction; `CardCenteringMeasurement.borderDistances`.
+- **Required behaviour.** Each of the four edges is a line fit over its retained samples with a
+  robust estimator. Inlier count and fraction are reported in diagnostics and feed the
+  localization axis of `REQ-046`.
+- **Constraints.** Gated behind Group J. **Profile before choosing the estimator.** The plan's
+  latency budget is currently failing, so the estimator is selected on measured cost, not
+  assumed cost: a two-parameter fit over ~1,000 points is cheap relative to decode and Vision,
+  and the expense is more likely the per-sample windowed gradient searches that feed it — four
+  edges × N samples. Do not pre-emptively substitute a different estimator without a
+  stage-timing measurement under `REQ-041`'s harness.
+- **Validation.** A synthetic edge with 10 % corrupted rows recovers the true line within
+  0.2 px. Stage timing recorded before and after.
+- **Completion.** Four robust fits in place, inlier statistics reported, latency delta recorded
+  and within the budget in force.
+
+#### REQ-049 — Positional consistency as an internal-consistency signal
+- **Objective.** Evaluate the ratio at several positions along the measured span and record the
+  spread as a first-class diagnostic.
+- **Rationale.** The forensic method's strongest self-check was that L/R stayed within
+  50.12–50.38 over ~1,150 px. A wide spread indicates a wrong edge, unmodelled perspective, or a
+  genuinely miscut card. This is available from geometry already computed.
+- **Subsystem.** harness and `CardCenteringMeasurement` diagnostics. No selector change.
+- **Required behaviour.** Report L/R and T/B at ≥ 5 evenly spaced positions across the measured
+  span, plus min, max, and spread.
+- **Constraints.** **A low spread is not a validation signal and must never raise confidence on
+  its own.** Two parallel sleeve edges produce an excellent spread. It may contribute only as one
+  conjunct of `REQ-046`'s localization axis, alongside expected polarity, continuous support, and
+  plausible border geometry, and it may never contribute to the identity axis. The gate threshold
+  is **not set here**: it must be calibrated from the corpus and recorded, per §5.1's rule that
+  every tolerance derive from a measurement.
+- **Validation.** A test asserting the spread is reported for every confident measurement; a
+  test asserting a synthetic parallel-sleeve case with a low spread still declines.
+- **Completion.** Spread reported across the corpus, distribution recorded in the evidence log,
+  and a calibrated threshold proposed with its supporting measurement.
+
+#### REQ-050 — Numerical-perturbation sensitivity in the harness
+- **Objective.** Quantify how much of the measured error is numerical tuning versus feature
+  identification.
+- **Rationale.** The forensic analysis perturbed smoothing (0.6–1.2 px), edge threshold (4–7),
+  and RANSAC residual (0.6–1.2 px) over 64 combinations and saw σ = 0.039 pp. That cleanly
+  separated two uncertainties this plan currently conflates: §3.4's edge ambiguity is measured,
+  but tuning fragility is not. If our σ is large, we are tuning-fragile; if small, remaining
+  error is identification, and further smoothing/radius work is wasted — which would
+  independently confirm Group J's conclusion.
+- **Subsystem.** `review/centering-harness`. No production change.
+- **Required behaviour.** Sweep the analyzer's numerical parameters over a recorded grid for each
+  fixture; report per-fixture mean, σ, and range of the resulting ratios.
+- **Constraints.** Parameters are swept via injection, not by editing defaults. Results are
+  signed artifacts per `REQ-023`.
+- **Validation.** Grid definition and per-fixture statistics committed as evidence.
+- **Completion.** Sweep run over the corpus and the holdout, σ recorded per fixture, and an
+  explicit statement of whether residual error is dominated by tuning or by identification.
+
+#### REQ-051 — Resolution invariance measured, not derived
+- **Objective.** Establish empirically how much the 1200 px working cap costs, rather than
+  inferring an uncertainty floor from the scale factor.
+- **Rationale.** "One working pixel ≈ 3.4 native px" does not imply ±3.4 px of edge uncertainty:
+  correctly filtered downsampling preserves the intensity mixture that subpixel estimation reads.
+  The honest question is empirical. `INV-7` tests relative scale (0.6×/1.0×/1.5×) but not the
+  native-versus-cap comparison on identical bytes.
+- **Subsystem.** harness.
+- **Required behaviour.** Analyze each fixture at native resolution and at the 1200 px cap from
+  the same source bytes; report the per-fixture ratio delta.
+- **Constraints.** Same decode path and same EXIF handling on both arms, so the only variable is
+  the cap.
+- **Validation.** Recorded per-fixture deltas and their distribution.
+- **Completion.** Deltas recorded; if the median delta exceeds the smallest tolerance in §5.1,
+  the cap is reopened as a design question with that measurement as its justification.
+
+#### REQ-052 — Slab occlusion: fixtures first, method second
+- **Objective.** Make graded-slab centering a stated, gated capability rather than an assumed one.
+- **Rationale.** The forensic image's central difficulty was that the holder's stopper occludes
+  the physical side edges over ~1,400 of 2,400 rows. Its solution was to measure only the exposed
+  windows above and below and fit a line through the obscured span. Our corpus contains **no slab
+  images at all**, and `sleeveAmbiguity` solves a different problem: choosing between two visible
+  nested rectangles, not reconstructing an edge that is physically hidden.
+- **Subsystem.** corpus; later, analyzer outer-edge construction.
+- **Required behaviour.** (a) Add slab fixtures with ground truth per §6 before any method work.
+  (b) Only then, support fitting an outer edge from disjoint exposed segments and extrapolating
+  through the occluded span, with the exposed segments selected by the detector, never by a human.
+- **Constraints.** Until (a) is complete, the product must not present a confident centering
+  result for an image detected as encased. The human window-selection step that the forensic
+  method depends on is not portable and must not be reintroduced as a hidden default.
+- **Validation.** Slab fixtures pass §6 schema and aspect tests; a synthetic occlusion case
+  recovers the true edge within `τ_e`; an encased image without slab support declines.
+- **Completion.** (a) complete before (b) starts; both validated; `INV-9` unaffected.
 
 ## 10. Simulator validation loop
 
