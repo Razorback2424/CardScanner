@@ -6,6 +6,28 @@ import XCTest
 final class PokemonCatalogCoreTests: XCTestCase {
     private let generatedAt = Date(timeIntervalSince1970: 1_768_000_000)
 
+    func testTCGdexPathComponentsEncodePercentExactlyOnce() throws {
+        let base = try XCTUnwrap(URL(string: "https://api.tcgdex.net/v2/en"))
+
+        let escapedQuestionMark = PokemonCatalogTCGdexProviderClient.makeURL(
+            baseURL: base,
+            pathComponents: ["cards", "exu-%3F"]
+        )
+        XCTAssertEqual(
+            escapedQuestionMark.absoluteString,
+            "https://api.tcgdex.net/v2/en/cards/exu-%253F"
+        )
+
+        let ordinaryID = PokemonCatalogTCGdexProviderClient.makeURL(
+            baseURL: base,
+            pathComponents: ["cards", "sv01-001"]
+        )
+        XCTAssertEqual(
+            ordinaryID.absoluteString,
+            "https://api.tcgdex.net/v2/en/cards/sv01-001"
+        )
+    }
+
     func testRecordedProviderFixtureProducesDeterministicReleaseAndSnapshot() throws {
         let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
         let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")

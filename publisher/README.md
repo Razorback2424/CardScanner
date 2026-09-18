@@ -16,15 +16,17 @@ swift run --package-path PokemonCatalogCore pokemon-catalog-publisher validate \
 ```
 
 The fixture directory's `catalog-input.json` is recorded test input. The
-production workflow uses [`publisher/catalog-input.json`](catalog-input.json),
-which is intentionally empty until an owner records the printed code (or promo
-prefix) from the physical card or official product listing. A provider set that
-is not in the active release cannot enter a release without that corresponding
-human input. The builder then checks the provider's official denominator and
-complete card details.
+production workflow uses [`publisher/catalog-input.json`](catalog-input.json)
+as the owner-controlled seed for the bundled catalog. A provider set that is
+not in the active release cannot enter a release without the corresponding
+printed code (or promo prefix) recorded here. The builder then checks the
+provider's official denominator and complete card details.
 
-`--live` replaces the recorded fixture with a bounded TCGdex fetch. It is a
-review/diagnostic command; it does not sign anything.
+`--live` replaces the recorded fixture with a bounded TCGdex fetch. When an
+input file and active release are supplied, the live adapter fetches only the
+authorized provider set IDs from those two sources; it does not crawl
+unrelated TCGdex sets. It is a review/diagnostic command; it does not sign
+anything.
 
 ## Publication model
 
@@ -39,10 +41,12 @@ Each local revision contains four public artifacts — `catalog-release.json`,
 ignores dot-files, so `.complete` is deliberately not part of the hosted
 release contract.
 
-Local and pull-request jobs can validate and emit a public review report, but
-the CLI refuses to load a signing key unless it is running in the protected
-GitHub Actions publication environment. The private key is never checked into
-the repository or written to the site directory.
+Local and pull-request jobs can validate and emit a public review report. The
+production workflow prepares and uploads an unsigned candidate before the
+protected environment gate; the approved job only loads that candidate, signs
+it, and deploys it. The CLI refuses to load a signing key unless it is running
+in the protected GitHub Actions publication environment. The private key is
+never checked into the repository or written to the site directory.
 
 Firebase project selection and the Hosting service account are intentionally
 outside this repository. The first deployment uses the protected

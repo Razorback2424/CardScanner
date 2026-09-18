@@ -41,9 +41,13 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
         self.cardConcurrency = max(1, cardConcurrency)
     }
 
-    public func fetchFixture() async throws -> PokemonCatalogProviderFixture {
-        let rows: [PokemonCatalogProviderDirectoryRow] = try await request(path: "sets")
-        let pocketIDs = try await fetchPocketSetIDs()
+    public func fetchFixture(
+        authorizedSetIDs: Set<String>? = nil
+    ) async throws -> PokemonCatalogProviderFixture {
+        let rows: [PokemonCatalogProviderDirectoryRow] = try await request(
+            pathComponents: ["sets"]
+        )
+        let pocketIDs = authorizedSetIDs == nil ? try await fetchPocketSetIDs() : []
         let markedRows = rows.map { row in
             PokemonCatalogProviderDirectoryRow(
                 id: row.id,
@@ -56,12 +60,18 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
                     || pocketIDs.contains(row.id.lowercased())
             )
         }
-        let supportedRows = markedRows.filter { !$0.isUnsupportedProduct }
+        let scopedRows = markedRows.filter { row in
+            guard let authorizedSetIDs else { return true }
+            return authorizedSetIDs.contains(row.id.lowercased())
+        }
+        let supportedRows = scopedRows.filter { !$0.isUnsupportedProduct }
         let sets = try await mapBounded(
             supportedRows,
             limit: setConcurrency
         ) { row in
-            try await self.request(path: "sets/\(Self.pathComponent(row.id))") as PokemonCatalogProviderSet
+            try await self.request(
+                pathComponents: ["sets", row.id]
+            ) as PokemonCatalogProviderSet
         }
         let briefs = sets.flatMap(\.cards)
         let uniqueBriefs = Dictionary(
@@ -72,10 +82,12 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
             Array(uniqueBriefs.values).sorted { $0.id < $1.id },
             limit: cardConcurrency
         ) { brief in
-            try await self.request(path: "cards/\(Self.pathComponent(brief.id))") as PokemonCatalogProviderCard
+            try await self.request(
+                pathComponents: ["cards", brief.id]
+            ) as PokemonCatalogProviderCard
         }
         return PokemonCatalogProviderFixture(
-            directory: markedRows,
+            directory: scopedRows,
             sets: sets.sorted { $0.id < $1.id },
             cards: cards.sorted { $0.id < $1.id }
         )
@@ -87,17 +99,21 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
             let sets: [Brief]
         }
         do {
-            let response: SeriesResponse = try await request(path: "series/tcgp")
+            let response: SeriesResponse = try await request(
+                pathComponents: ["series", "tcgp"]
+            )
             return Set(response.sets.map { $0.id.lowercased() })
         } catch {
             throw PokemonCatalogProviderFetchError.pocketSeriesUnavailable
         }
     }
 
-    private func request<T: Decodable>(path: String) async throws -> T {
-        guard let url = baseURL.appendingPathComponent(path) as URL? else {
-            throw PokemonCatalogProviderFetchError.invalidURL(path)
+    private func request<T: Decodable>(pathComponents: [String]) async throws -> T {
+        guard !pathComponents.isEmpty else {
+            throw PokemonCatalogProviderFetchError.invalidURL("")
         }
+        let path = pathComponents.joined(separator: "/")
+        let url = Self.makeURL(baseURL: baseURL, pathComponents: pathComponents)
         var request = URLRequest(url: url)
         request.timeoutInterval = 20
         do {
@@ -129,6 +145,14 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
         }
     }
 
+    /// Builds a URL from raw path components. Each component is encoded once
+    /// by Foundation; callers must not pre-encode IDs before passing them here.
+    static func makeURL(baseURL: URL, pathComponents: [String]) -> URL {
+        pathComponents.reduce(baseURL) { partialURL, component in
+            partialURL.appendingPathComponent(component)
+        }
+    }
+
     private func mapBounded<Input: Sendable, Output: Sendable>(
         _ values: [Input],
         limit: Int,
@@ -151,9 +175,5 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
             }
             return results
         }
-    }
-
-    private static func pathComponent(_ value: String) -> String {
-        value.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? value
     }
 }

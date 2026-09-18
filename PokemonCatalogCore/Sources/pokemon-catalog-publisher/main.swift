@@ -22,6 +22,7 @@ struct PokemonCatalogPublisherMain {
         case "validate":
             let result = try await build(options: options, siteRoot: nil, environment: nil)
             try writeReport(result.report, path: options.value("--report"))
+            try writeCandidate(result, rootPath: options.value("--candidate-root"))
             printReport(result.report)
         case "publish":
             guard let rawEnvironment = options.value("--environment"),
@@ -32,11 +33,16 @@ struct PokemonCatalogPublisherMain {
                 )
             }
             let siteRoot = URL(fileURLWithPath: rawSiteRoot, isDirectory: true)
-            let result = try await build(
-                options: options,
-                siteRoot: siteRoot,
-                environment: environment
-            )
+            let result: PokemonCatalogBuildResult
+            if let candidateRoot = options.value("--candidate-root") {
+                result = try loadCandidate(rootPath: candidateRoot)
+            } else {
+                result = try await build(
+                    options: options,
+                    siteRoot: siteRoot,
+                    environment: environment
+                )
+            }
             let material = try PokemonCatalogSigningKeyLoader.load(environment: environment)
             let signed = try PokemonCatalogSigner.sign(result, material: material)
             let publisher = PokemonCatalogFilesystemPublisher(
@@ -63,15 +69,6 @@ struct PokemonCatalogPublisherMain {
             fileURLWithPath: options.value("--fixture-dir") ?? "publisher/fixtures",
             isDirectory: true
         )
-        let fixture: PokemonCatalogProviderFixture
-        if options.value("--live") == "true" {
-            fixture = try await PokemonCatalogTCGdexProviderClient().fetchFixture()
-        } else {
-            fixture = try read(
-                PokemonCatalogProviderFixture.self,
-                from: fixtureDirectory.appendingPathComponent("recorded-provider.json")
-            )
-        }
         let humanInput = try read(
             PokemonCatalogHumanInputFile.self,
             from: URL(
@@ -84,6 +81,21 @@ struct PokemonCatalogPublisherMain {
             siteRoot: siteRoot,
             environment: environment
         )
+        let authorizedSetIDs = Set(
+            humanInput.sets.map(\.providerSetID)
+                + (activeRelease?.sets.map(\.providerSetID) ?? [])
+        )
+        let fixture: PokemonCatalogProviderFixture
+        if options.value("--live") == "true" {
+            fixture = try await PokemonCatalogTCGdexProviderClient().fetchFixture(
+                authorizedSetIDs: authorizedSetIDs
+            )
+        } else {
+            fixture = try read(
+                PokemonCatalogProviderFixture.self,
+                from: fixtureDirectory.appendingPathComponent("recorded-provider.json")
+            )
+        }
         let revision: Int
         if let rawRevision = options.value("--revision") {
             guard let parsed = Int(rawRevision) else {
@@ -159,6 +171,48 @@ struct PokemonCatalogPublisherMain {
         try PokemonCatalogJSON.encode(report).write(to: url, options: .atomic)
     }
 
+    private static func writeCandidate(
+        _ result: PokemonCatalogBuildResult,
+        rootPath: String?
+    ) throws {
+        guard let rootPath else { return }
+        let root = URL(fileURLWithPath: rootPath, isDirectory: true)
+        try FileManager.default.createDirectory(
+            at: root,
+            withIntermediateDirectories: true
+        )
+        try PokemonCatalogJSON.encode(result.release).write(
+            to: root.appendingPathComponent("catalog-payload.json"),
+            options: .atomic
+        )
+        try PokemonCatalogJSON.encode(result.snapshot).write(
+            to: root.appendingPathComponent("pokemon-catalog-snapshot.json"),
+            options: .atomic
+        )
+        try PokemonCatalogJSON.encode(result.report).write(
+            to: root.appendingPathComponent("review-report.json"),
+            options: .atomic
+        )
+    }
+
+    private static func loadCandidate(rootPath: String) throws -> PokemonCatalogBuildResult {
+        let root = URL(fileURLWithPath: rootPath, isDirectory: true)
+        return PokemonCatalogBuildResult(
+            release: try read(
+                PokemonCatalogRelease.self,
+                from: root.appendingPathComponent("catalog-payload.json")
+            ),
+            snapshot: try read(
+                PokemonCatalogSnapshot.self,
+                from: root.appendingPathComponent("pokemon-catalog-snapshot.json")
+            ),
+            report: try read(
+                PokemonCatalogReviewReport.self,
+                from: root.appendingPathComponent("review-report.json")
+            )
+        )
+    }
+
     private static func printReport(_ report: PokemonCatalogReviewReport) {
         if let data = try? PokemonCatalogJSON.encode(report),
            let text = String(data: data, encoding: .utf8) {
@@ -179,6 +233,7 @@ struct PokemonCatalogPublisherMain {
       --revision NUMBER     New strictly higher release revision
       --generated-at DATE   ISO-8601 timestamp (use a fixed value for reproducible output)
       --report PATH         Write the public review report to PATH
+      --candidate-root PATH Write or read the unsigned validated candidate
       --site-root PATH      Firebase Hosting root for publish
       --environment NAME    production or staging
 

@@ -45,9 +45,58 @@ jobs:
           --generated-at 2026-01-01T00:00:00Z
           --report publisher/reports/pull-request.json
 
+  prepare-production:
+    name: Prepare and validate production candidate
+    needs: validate
+    if: >-
+      github.event_name == 'workflow_dispatch' && inputs.publish == true
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the active production pointer
+        run: |
+          active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
+          if ! status="$(curl --location --silent --show-error \
+            "https://catalog.scan-stash.com/v1/current.json" \
+            --output "$active_path" \
+            --write-out '%{http_code}')"; then
+            echo "Failed to read the active production pointer" >&2
+            exit 1
+          fi
+          case "$status" in
+            200)
+              echo "Active production release downloaded to $active_path"
+              ;;
+            404)
+              echo "No active production release is available; preparing initial publication"
+              rm -f "$active_path"
+              ;;
+            *)
+              echo "Unexpected HTTP $status while reading the active production pointer" >&2
+              exit 1
+              ;;
+          esac
+      - name: Validate the scoped live production candidate
+        run: |
+          swift run --package-path PokemonCatalogCore pokemon-catalog-publisher validate \
+            --input publisher/catalog-input.json \
+            --active-release "${RUNNER_TEMP}/pokemon-catalog-production-current.json" \
+            --live true \
+            --candidate-root publisher/candidate \
+            --report publisher/reports/production.json
+      - name: Upload the validated production candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: pokemon-catalog-production-candidate-${{ github.run_id }}
+          path: |
+            publisher/candidate
+            publisher/reports/production.json
+          if-no-files-found: error
+          retention-days: 7
+
   publish-production:
     name: Publish production catalog
-    needs: validate
+    needs: prepare-production
     # Keep production publication human-triggered until Slice F's measured
     # rollout is complete. The protected environment remains the second gate.
     if: >-
@@ -64,6 +113,11 @@ jobs:
       FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
+      - name: Download the validated production candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: pokemon-catalog-production-candidate-${{ github.run_id }}
+          path: .
       - name: Read the active production pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
@@ -100,11 +154,9 @@ jobs:
             active_args+=(--active-release "$active_path")
           fi
           swift run --package-path PokemonCatalogCore pokemon-catalog-publisher publish \
-            --fixture-dir publisher/fixtures \
-            --input publisher/catalog-input.json \
+            --candidate-root publisher/candidate \
             --site-root publisher/site \
             --environment production \
-            --live true \
             "${active_args[@]}" \
             --report publisher/reports/production.json
       - name: Retain the production review report
