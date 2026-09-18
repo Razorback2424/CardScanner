@@ -12,7 +12,9 @@ the focused Slice F simulator test target built but the runner exited before
 XCTest bootstrapped, so its assertions remain unverified. GitHub PR validation,
 Firebase project/DNS provisioning, production credentials/key pin, and the
 ordered live rollout remain owner-controlled gates. Staging is deferred until
-remote authority is close.
+remote authority is close. The first validation-only GitHub Actions dispatch
+after the push passed all four validation steps in 40 seconds (run
+35394732002); publication was skipped because `publish=false`.
 
 Catalog publication review remediation (2026-09-18): production publication is
 now workflow-dispatch-only while Slice F is incomplete; scheduled runs remain
