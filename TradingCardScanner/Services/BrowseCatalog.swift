@@ -82,6 +82,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     /// load that another caller may still need.
     private var pokemonSnapshotLoadTask: Task<[PokemonChecklistSnapshotEntry], Never>?
     private var refreshTask: Task<Void, Never>?
+    private var catalogAuthorityRefreshTask: Task<Void, Never>?
     private var refreshToken = UUID()
     private var catalogEventTask: Task<Void, Never>?
     private var catalogRegistry = PokemonCatalogRegistry.bundledSeed
@@ -118,6 +119,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     deinit {
         catalogEventTask?.cancel()
+        catalogAuthorityRefreshTask?.cancel()
         if let memoryWarningObserver {
             NotificationCenter.default.removeObserver(memoryWarningObserver)
         }
@@ -189,11 +191,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
         if let coordinator = catalogCoordinator {
             await startCatalogEventListenerIfNeeded(coordinator)
             await coordinator.loadPersistedOrBundled()
-            _ = await coordinator.refresh()
             await synchronizeCatalogAuthority()
         }
 
         await loadPokemonSnapshotIfNeeded()
+        if let coordinator = catalogCoordinator {
+            startCatalogAuthorityRefreshIfNeeded(coordinator)
+        }
         if let existingTask = refreshTask {
             // Suspension cancels cooperatively. Keep the task reference until
             // it has unwound so an immediate inactive → active transition
@@ -269,6 +273,25 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 await self?.applyCatalogRegistry(event.registry, revision: event.revision)
             }
         }
+    }
+
+    /// Refresh the signed authority only after the local snapshot has had a
+    /// chance to populate the first Browse render. The coordinator owns its
+    /// own retry/backoff policy, so this task is intentionally independent of
+    /// the view's initial preparation await.
+    private func startCatalogAuthorityRefreshIfNeeded(
+        _ coordinator: PokemonCatalogCoordinator
+    ) {
+        guard catalogAuthorityRefreshTask == nil else { return }
+        catalogAuthorityRefreshTask = Task(priority: .utility) { [weak self, coordinator] in
+            _ = await coordinator.refresh()
+            guard !Task.isCancelled else { return }
+            await self?.finishCatalogAuthorityRefresh()
+        }
+    }
+
+    private func finishCatalogAuthorityRefresh() {
+        catalogAuthorityRefreshTask = nil
     }
 
     private func synchronizeCatalogAuthority() async {
