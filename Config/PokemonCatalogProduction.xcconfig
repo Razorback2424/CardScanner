@@ -2,7 +2,7 @@
 // Remote authority remains disabled until the validation-only rehearsal passes.
 // `/$()/` keeps the xcconfig parser from treating the URL's `//` as a
 // comment; Xcode expands the empty variable reference back to `https://`.
-POKEMON_CATALOG_BASE_URL = https\:/$()/catalog.scan-stash.com
+POKEMON_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
 POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = catalog.scan-stash.com
 POKEMON_CATALOG_ROLLOUT_MODE = bundled-validation-only
 // Public key material is pinned for production signature verification, for

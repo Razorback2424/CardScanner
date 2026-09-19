@@ -456,7 +456,8 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
 
         let coordinator = PokemonCatalogCoordinator(
             store: PokemonCatalogReleaseStore(root: root),
-            keys: [SliceBFixture.pinnedKey]
+            keys: [SliceBFixture.pinnedKey],
+            rolloutMode: .remoteAuthority
         )
         await coordinator.loadPersistedOrBundled()
         let rev = await coordinator.revision
