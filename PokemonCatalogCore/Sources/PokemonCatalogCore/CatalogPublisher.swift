@@ -29,6 +29,7 @@ public struct PokemonCatalogSignedBuild: Sendable {
 public enum PokemonCatalogPublicationError: Error, CustomStringConvertible, Sendable {
     case immutableRevisionConflict(Int)
     case revisionNotMonotonic(received: Int, current: Int)
+    case invalidCurrentPointer
     case publicationInterrupted(String)
     case invalidSigningEnvironment
     case missingSigningSecret
@@ -41,6 +42,8 @@ public enum PokemonCatalogPublicationError: Error, CustomStringConvertible, Send
             return "Immutable catalog revision already exists with different bytes: \(revision)"
         case let .revisionNotMonotonic(received, current):
             return "Cannot publish revision \(received) over current revision \(current)"
+        case .invalidCurrentPointer:
+            return "Cannot publish over an unreadable current catalog pointer"
         case .publicationInterrupted(let reason): return "Publication interrupted: \(reason)"
         case .invalidSigningEnvironment:
             return "Catalog signing is available only to the matching protected GitHub Actions publication job"
@@ -219,24 +222,28 @@ public final class PokemonCatalogFilesystemPublisher: @unchecked Sendable {
         }
 
         let currentURL = namespace.appendingPathComponent("current.json")
-        if let currentData = try? Data(contentsOf: currentURL),
-           let currentEnvelope = try? PokemonCatalogJSON.decode(
-               PokemonCatalogReleaseEnvelope.self,
-               from: currentData
-           ),
-           let currentPayload = PokemonCatalogBase64URL.decode(currentEnvelope.payload),
-           let currentRelease = try? PokemonCatalogJSON.decode(
-               PokemonCatalogRelease.self,
-               from: currentPayload
-           ),
-           currentRelease.revision >= revision {
-            if currentRelease.revision == revision, currentData == envelopeData {
-                return receipt(revision: revision)
+        if FileManager.default.fileExists(atPath: currentURL.path) {
+            guard let currentData = try? Data(contentsOf: currentURL),
+                  let currentEnvelope = try? PokemonCatalogJSON.decode(
+                      PokemonCatalogReleaseEnvelope.self,
+                      from: currentData
+                  ),
+                  let currentPayload = PokemonCatalogBase64URL.decode(currentEnvelope.payload),
+                  let currentRelease = try? PokemonCatalogJSON.decode(
+                      PokemonCatalogRelease.self,
+                      from: currentPayload
+                  ) else {
+                throw PokemonCatalogPublicationError.invalidCurrentPointer
             }
-            throw PokemonCatalogPublicationError.revisionNotMonotonic(
-                received: revision,
-                current: currentRelease.revision
-            )
+            if currentRelease.revision >= revision {
+                if currentRelease.revision == revision, currentData == envelopeData {
+                    return receipt(revision: revision)
+                }
+                throw PokemonCatalogPublicationError.revisionNotMonotonic(
+                    received: revision,
+                    current: currentRelease.revision
+                )
+            }
         }
 
         try beforePointerUpdate?()

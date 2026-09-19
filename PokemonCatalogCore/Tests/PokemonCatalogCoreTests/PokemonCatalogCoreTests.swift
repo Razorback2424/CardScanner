@@ -49,6 +49,54 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertEqual(first.report.excludedProviderSetIDs, ["tcgp01"])
     }
 
+    func testCandidateValidatorBindsReleaseSnapshotAndReportAndEnforcesActiveRevision() throws {
+        let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
+        let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
+        let build = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: input.sets, revision: 1, generatedAt: generatedAt)
+        )
+
+        XCTAssertNoThrow(try PokemonCatalogCandidateValidator.validate(build))
+        XCTAssertThrowsError(
+            try PokemonCatalogCandidateValidator.validate(build, activeRevision: 1)
+        ) { error in
+            guard case let PokemonCatalogCandidateValidationError.revisionNotMonotonic(
+                received,
+                current
+            ) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(received, 1)
+            XCTAssertEqual(current, 1)
+        }
+
+        let mismatchedReport = PokemonCatalogReviewReport(
+            revision: 2,
+            generatedAt: build.report.generatedAt,
+            addedProviderSetIDs: build.report.addedProviderSetIDs,
+            changedProviderSetIDs: build.report.changedProviderSetIDs,
+            excludedProviderSetIDs: build.report.excludedProviderSetIDs,
+            sets: build.report.sets
+        )
+        let tampered = PokemonCatalogBuildResult(
+            release: build.release,
+            snapshot: build.snapshot,
+            report: mismatchedReport
+        )
+        XCTAssertThrowsError(try PokemonCatalogCandidateValidator.validate(tampered)) { error in
+            guard case let PokemonCatalogCandidateValidationError.mismatchedRevision(
+                component,
+                expected,
+                received
+            ) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(component, "report")
+            XCTAssertEqual(expected, 1)
+            XCTAssertEqual(received, 2)
+        }
+    }
+
     func testNewSetCannotBePublishedWithoutHumanPrintedCodeInput() throws {
         let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
         let request = PokemonCatalogBuildRequest(
@@ -267,6 +315,39 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
         XCTAssertEqual(rollbackRelease.revision, 3)
         XCTAssertEqual(rollbackRelease.sets, build1.release.sets)
+    }
+
+    func testFilesystemPublisherRejectsUnreadableCurrentPointer() throws {
+        let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
+        let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
+        let build = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: input.sets, revision: 1, generatedAt: generatedAt)
+        )
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("PokemonCatalogCoreTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let currentURL = root.appendingPathComponent("v1/current.json")
+        try FileManager.default.createDirectory(
+            at: currentURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try Data("not-json".utf8).write(to: currentURL)
+
+        let key = Curve25519.Signing.PrivateKey()
+        let signed = try PokemonCatalogSigner.sign(
+            build,
+            material: .init(keyID: "fixture", privateKey: key)
+        )
+        XCTAssertThrowsError(
+            try PokemonCatalogFilesystemPublisher(
+                root: root,
+                environment: .production
+            ).publish(signed)
+        ) { error in
+            guard case PokemonCatalogPublicationError.invalidCurrentPointer = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
     }
 
     func testSigningRequiresMatchingProtectedEnvironmentAndMainPublicationContext() throws {
