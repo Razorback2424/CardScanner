@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-active_path="${1:?usage: $0 ACTIVE_POINTER_PATH SITE_ROOT}"
-site_root="${2:?usage: $0 ACTIVE_POINTER_PATH SITE_ROOT}"
-origin="https://catalog.scan-stash.com"
+active_path="${1:?usage: $0 ACTIVE_POINTER_PATH SITE_ROOT ORIGIN}"
+site_root="${2:?usage: $0 ACTIVE_POINTER_PATH SITE_ROOT ORIGIN}"
+origin="${3:?usage: $0 ACTIVE_POINTER_PATH SITE_ROOT ORIGIN}"
 namespace="v1"
 expected_site_root="publisher/site"
+
+if [ "$origin" != "https://scanstash-catalog-prod.web.app" ]; then
+  echo "unexpected production catalog restore origin: $origin" >&2
+  exit 2
+fi
 
 if [ "$site_root" != "$expected_site_root" ]; then
   echo "site root $site_root is not the production catalog site root" >&2

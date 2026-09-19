@@ -26,6 +26,9 @@ on:
 permissions:
   contents: read
 
+env:
+  POKEMON_CATALOG_PRODUCTION_READ_ORIGIN: https://scanstash-catalog-prod.web.app
+
 jobs:
   validate:
     name: Validate core and recorded fixture
@@ -57,7 +60,7 @@ jobs:
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
           if ! status="$(curl --location --silent --show-error \
-            "https://catalog.scan-stash.com/v1/current.json" \
+            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
             echo "Failed to read the active production pointer" >&2
@@ -122,7 +125,7 @@ jobs:
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
           if ! status="$(curl --location --silent --show-error \
-            "https://catalog.scan-stash.com/v1/current.json" \
+            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
             echo "Failed to read the active production pointer" >&2
@@ -146,6 +149,7 @@ jobs:
           bash scripts/restore_pokemon_catalog_releases.sh
           "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
           publisher/site
+          "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}"
       - name: Publish the immutable production revision and current pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
