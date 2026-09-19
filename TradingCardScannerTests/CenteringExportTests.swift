@@ -263,6 +263,64 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertEqual(ratios[1].1, ratios[2].1)
     }
 
+    func testPositionalConsistencyReportsFiveSamplesAndBothRatioRanges() throws {
+        let outer = CardCenteringQuad(
+            topLeft: CardCenteringPoint(x: 0, y: 0),
+            topRight: CardCenteringPoint(x: 1_000, y: 0),
+            bottomRight: CardCenteringPoint(x: 1_000, y: 1_400),
+            bottomLeft: CardCenteringPoint(x: 0, y: 1_400)
+        )
+        let inner = CardCenteringQuad(
+            topLeft: CardCenteringPoint(x: 100, y: 120),
+            topRight: CardCenteringPoint(x: 900, y: 170),
+            bottomRight: CardCenteringPoint(x: 860, y: 1_280),
+            bottomLeft: CardCenteringPoint(x: 180, y: 1_240)
+        )
+        let value = CardCenteringMeasurement(
+            imageWidth: 1_000,
+            imageHeight: 1_400,
+            outerQuad: outer,
+            innerQuad: inner,
+            warnings: []
+        )
+
+        let diagnostic = try XCTUnwrap(value.positionalConsistency)
+        XCTAssertEqual(diagnostic.samples.count, 5)
+        XCTAssertEqual(
+            diagnostic.samples.map(\.normalizedPosition),
+            [0, 0.25, 0.5, 0.75, 1]
+        )
+        XCTAssertGreaterThan(diagnostic.leftRight.firstSpread, 0)
+        XCTAssertGreaterThan(diagnostic.topBottom.firstSpread, 0)
+        XCTAssertEqual(
+            diagnostic.leftRight.firstSpread,
+            diagnostic.leftRight.firstMaximum - diagnostic.leftRight.firstMinimum,
+            accuracy: 0.000_001
+        )
+        XCTAssertEqual(
+            diagnostic.topBottom.firstSpread,
+            diagnostic.topBottom.firstMaximum - diagnostic.topBottom.firstMinimum,
+            accuracy: 0.000_001
+        )
+        for sample in diagnostic.samples {
+            XCTAssertEqual(sample.leftRight.firstPercentage + sample.leftRight.secondPercentage, 100, accuracy: 0.000_001)
+            XCTAssertEqual(sample.topBottom.firstPercentage + sample.topBottom.secondPercentage, 100, accuracy: 0.000_001)
+        }
+    }
+
+    func testPositionalConsistencyIsUnavailableWithoutAnInnerReference() {
+        let value = CardCenteringMeasurement(
+            imageWidth: 1_000,
+            imageHeight: 1_400,
+            outerQuad: .axisAligned(CardCenteringEdges(left: 0, top: 0, right: 1_000, bottom: 1_400)),
+            innerQuad: nil,
+            warnings: [],
+            innerReference: .none
+        )
+
+        XCTAssertNil(value.positionalConsistency)
+    }
+
     func testCoordinateMappingRoundTripsNativeAndWorkingPoints() {
         let mapping = CardCenteringCoordinateMapping(
             orientedSourceSize: CardCenteringSize(width: 3024, height: 4032),

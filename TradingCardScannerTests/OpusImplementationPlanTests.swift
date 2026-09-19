@@ -2586,6 +2586,58 @@ final class CardCenteringInvariantTests: XCTestCase {
         }
     }
 
+    func testREQ049AnalysisDiagnosticReportsPositionalConsistency() throws {
+        var captured: CardCenteringAnalysisDiagnostic?
+        CardCenteringAnalyzer.analysisDiagnosticSink = { captured = $0 }
+        defer { CardCenteringAnalyzer.analysisDiagnosticSink = nil }
+
+        _ = try CardCenteringAnalyzer.analyze(try fixtureData(holdout))
+
+        let diagnostic = try XCTUnwrap(captured)
+        let positional = try XCTUnwrap(
+            diagnostic.positionalConsistency,
+            "REQ-049 must report positional ratio evidence when an inner reference exists"
+        )
+        XCTAssertGreaterThanOrEqual(positional.samples.count, 5)
+        XCTAssertTrue(positional.leftRight.firstSpread.isFinite)
+        XCTAssertTrue(positional.topBottom.firstSpread.isFinite)
+
+        let encoded = try JSONEncoder().encode(diagnostic)
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: encoded) as? [String: Any])
+        XCTAssertNotNil(
+            object["positionalConsistency"],
+            "REQ-049 evidence must survive diagnostic serialization"
+        )
+    }
+
+#if DEBUG
+    func testREQ050NumericalSensitivityParametersAreInjectedWithoutChangingDefaults() throws {
+        let defaults = CardCenteringAnalyzer.NumericalParameters.productionDefaults
+        let perturbed = defaults.replacing(
+            scalarSmoothingRadius: 1,
+            scalarPeakThresholdFraction: 0.08,
+            profileRadiusNormalized: 0.001,
+            profileThresholdFloor: 2.0
+        )
+
+        XCTAssertTrue(defaults.isValid)
+        XCTAssertTrue(perturbed.isValid)
+        XCTAssertNotEqual(defaults, perturbed)
+        XCTAssertEqual(
+            CardCenteringAnalyzer.NumericalParameters.productionDefaults,
+            defaults,
+            "sensitivity injection must not mutate the production defaults"
+        )
+
+        let invalid = defaults.replacing(profileRadiusNormalized: 0)
+        XCTAssertFalse(invalid.isValid)
+        XCTAssertThrowsError(
+            try CardCenteringAnalyzer.analyzeForSensitivity(Data(), parameters: invalid),
+            "invalid sensitivity parameters must be rejected before analysis"
+        )
+    }
+#endif
+
 #if DEBUG
     func testREQ042CandidateLedgerRetainsAllEdgeFamiliesBeforeSelection() throws {
         var captured: CardCenteringCandidateLedgerDiagnostic?

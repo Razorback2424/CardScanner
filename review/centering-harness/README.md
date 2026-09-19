@@ -72,3 +72,21 @@ named raw-HEIC/equalized replacement for the two E0 fixtures; it passes the
 working-short-edge construction check and retains raw/equalized measurements,
 but it is not an accuracy pass and does not replace the current rederived-GT
 accuracy or final invariant gates.
+
+## REQ-050 numerical sensitivity
+
+`run_sensitivity.sh` compiles the analyzer with `DEBUG` observability and runs a
+recorded numerical-parameter perturbation grid over every image in the supplied
+fixture directory. The production 1200-pixel working cap remains fixed. The
+grid is injected through `CardCenteringAnalyzer.NumericalParameters`, so the
+production defaults are not edited for the experiment.
+
+```sh
+./run_sensitivity.sh
+```
+
+The harness writes `numerical-sensitivity.json` and
+`numerical-sensitivity.md` to `artifacts/centering-sensitivity/` by default.
+The JSON records the exact grid and per-fixture LR/TB mean, population σ, and
+range, plus confident/declined/error counts. These are numerical-sensitivity
+measurements only; they do not establish edge identity or accuracy.
