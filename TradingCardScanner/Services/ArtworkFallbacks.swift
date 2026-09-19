@@ -97,6 +97,12 @@ enum PokemonArtworkFallbacks {
         }
 
         func appendRemoteVariants(_ url: URL) {
+            // Catalog releases preserve the provider's extensionless TCGdex
+            // stems. The set-artwork CDN answers those stems with HTML, so
+            // try the renderable PNG derivative before the original URL.
+            if let explicitPNGURL = Self.explicitPNGURL(from: url) {
+                append(.remote(explicitPNGURL))
+            }
             append(.remote(url))
             guard let extensionlessURL = Self.extensionlessPNGURL(from: url) else { return }
             append(.remote(extensionlessURL))
@@ -156,6 +162,18 @@ enum PokemonArtworkFallbacks {
             return nil
         }
         components.path.removeLast(4)
+        return components.url
+    }
+
+    private static func explicitPNGURL(from url: URL) -> URL? {
+        guard url.host?.lowercased() == "assets.tcgdex.net",
+              var components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+              !components.path.isEmpty,
+              !components.path.hasSuffix("/"),
+              url.pathExtension.isEmpty else {
+            return nil
+        }
+        components.path.append(".png")
         return components.url
     }
 

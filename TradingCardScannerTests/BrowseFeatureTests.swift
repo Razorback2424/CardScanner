@@ -4605,6 +4605,23 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         }
     }
 
+    func testSetArtworkSourceNormalizesExtensionlessTCGdexProviderURL() {
+        let logoStem = URL(string: "https://assets.tcgdex.net/en/me/30th/logo")!
+        let set = sampleSet(
+            id: "30th",
+            name: "30th Celebration",
+            logoURL: logoStem
+        )
+
+        XCTAssertEqual(
+            PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates,
+            [
+                .remote(URL(string: "https://assets.tcgdex.net/en/me/30th/logo.png")!),
+                .remote(logoStem)
+            ]
+        )
+    }
+
     func testTCGdexSymbolCandidatesTrySiblingPrefixWithoutReplacingStoredPath() {
         let cases: [(id: String, family: String, storedPrefix: String, siblingPrefix: String)] = [
             ("sv03", "sv", "univ", "en"),
