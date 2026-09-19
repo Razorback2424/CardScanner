@@ -185,6 +185,39 @@ actor PokemonCatalogCoordinator {
         let release = verified.release
         let newRegistry = verified.registry
 
+        if let currentRevision = activeRevision {
+            if release.revision < currentRevision {
+                let error = PokemonCatalogSignatureVerifier.VerificationError
+                    .revisionNotMonotonic(
+                        received: release.revision,
+                        current: currentRevision
+                    )
+                await diagnostics.recordRejection(error)
+                Self.logger.warning("Catalog verification failed: \(error)")
+                return .rejected(error)
+            }
+
+            if release.revision == currentRevision {
+                guard let stored = await store.activeRelease,
+                      stored.envelope == envelope else {
+                    let error = PokemonCatalogSignatureVerifier.VerificationError
+                        .revisionNotMonotonic(
+                            received: release.revision,
+                            current: currentRevision
+                        )
+                    await diagnostics.recordRejection(error)
+                    Self.logger.warning(
+                        "Catalog revision \(release.revision) conflicts with the persisted current revision"
+                    )
+                    return .rejected(error)
+                }
+
+                await diagnostics.recordNotModified()
+                Self.logger.info("Catalog revision \(release.revision) is already current")
+                return .notModified
+            }
+        }
+
         let changedCounts = officialCountChanges(
             from: activeRegistry,
             to: newRegistry,
@@ -303,7 +336,7 @@ actor PokemonCatalogCoordinator {
     ) throws -> (release: PokemonCatalogRelease, registry: PokemonCatalogRegistry) {
         let release = try PokemonCatalogSignatureVerifier.verify(
             envelope: envelope,
-            currentRevision: rolloutMode == .remoteAuthority ? activeRevision : nil,
+            currentRevision: nil,
             keys: keys
         )
         try PokemonCatalogRegistry.validate(release)

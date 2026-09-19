@@ -33,18 +33,24 @@ private enum SliceFFixture {
         )
     }
 
-    static func release(revision: Int = 1) -> PokemonCatalogRelease {
+    static func release(
+        revision: Int = 1,
+        officialCount: Int = 2
+    ) -> PokemonCatalogRelease {
         PokemonCatalogRelease(
             schemaVersion: PokemonCatalogRelease.currentSchemaVersion,
             revision: revision,
             generatedAt: Date(timeIntervalSince1970: 1_700_000_000),
-            sets: [descriptor()]
+            sets: [descriptor(officialCount: officialCount)]
         )
     }
 
-    static func envelope(revision: Int = 1) throws -> PokemonCatalogReleaseEnvelope {
+    static func envelope(
+        revision: Int = 1,
+        officialCount: Int = 2
+    ) throws -> PokemonCatalogReleaseEnvelope {
         try PokemonCatalogSignatureVerifier.sign(
-            release: release(revision: revision),
+            release: release(revision: revision, officialCount: officialCount),
             privateKey: privateKey,
             keyID: keyID
         )
@@ -194,6 +200,139 @@ final class PokemonCatalogSliceFTests: XCTestCase {
         XCTAssertGreaterThan(snapshot.lastDiskBytes ?? 0, 0)
         XCTAssertNotNil(snapshot.lastLaunchLoadDuration)
         XCTAssertNotNil(snapshot.lastActivationDuration)
+    }
+
+    func testFreshCoordinatorTreatsIdenticalCurrentEnvelopeAsNotModified() async throws {
+        let diagnostics = PokemonCatalogRolloutDiagnostics()
+        await diagnostics.reset()
+        let envelope = try SliceFFixture.envelope(revision: 1)
+
+        let firstClient = try makeClient(diagnostics: diagnostics, envelope: envelope)
+        let firstStore = PokemonCatalogReleaseStore(root: root)
+        let firstCoordinator = PokemonCatalogCoordinator(
+            store: firstStore,
+            client: firstClient,
+            keys: [SliceFFixture.pinnedKey],
+            rolloutMode: .remoteAuthority,
+            diagnostics: diagnostics
+        )
+        guard case .activated = await firstCoordinator.refresh() else {
+            return XCTFail("Expected initial revision-1 activation")
+        }
+
+        let freshClient = try makeClient(diagnostics: diagnostics, envelope: envelope)
+        let freshStore = PokemonCatalogReleaseStore(root: root)
+        let freshCoordinator = PokemonCatalogCoordinator(
+            store: freshStore,
+            client: freshClient,
+            keys: [SliceFFixture.pinnedKey],
+            rolloutMode: .remoteAuthority,
+            diagnostics: diagnostics
+        )
+
+        guard case .notModified = await freshCoordinator.refresh() else {
+            return XCTFail("Expected the identical current envelope to be notModified")
+        }
+
+        let revision = await freshCoordinator.revision
+        let storeRevision = await freshStore.activeRevision
+        let previousExists = await freshStore.slotFileExists(.previous)
+        XCTAssertEqual(revision, 1)
+        XCTAssertEqual(storeRevision, 1)
+        XCTAssertFalse(previousExists)
+
+        let snapshot = await diagnostics.snapshot()
+        XCTAssertEqual(snapshot.rejectionCount, 0)
+        XCTAssertEqual(snapshot.activationCount, 1)
+        XCTAssertEqual(snapshot.lastOutcome, "not-modified")
+    }
+
+    func testLowerRevisionIsRejectedWithoutRotatingCurrent() async throws {
+        let diagnostics = PokemonCatalogRolloutDiagnostics()
+        await diagnostics.reset()
+        let currentEnvelope = try SliceFFixture.envelope(revision: 2)
+
+        let firstClient = try makeClient(diagnostics: diagnostics, envelope: currentEnvelope)
+        let firstStore = PokemonCatalogReleaseStore(root: root)
+        let firstCoordinator = PokemonCatalogCoordinator(
+            store: firstStore,
+            client: firstClient,
+            keys: [SliceFFixture.pinnedKey],
+            rolloutMode: .remoteAuthority,
+            diagnostics: diagnostics
+        )
+        guard case .activated = await firstCoordinator.refresh() else {
+            return XCTFail("Expected initial revision-2 activation")
+        }
+
+        let lowerEnvelope = try SliceFFixture.envelope(revision: 1)
+        let freshClient = try makeClient(diagnostics: diagnostics, envelope: lowerEnvelope)
+        let freshStore = PokemonCatalogReleaseStore(root: root)
+        let freshCoordinator = PokemonCatalogCoordinator(
+            store: freshStore,
+            client: freshClient,
+            keys: [SliceFFixture.pinnedKey],
+            rolloutMode: .remoteAuthority,
+            diagnostics: diagnostics
+        )
+
+        guard case .rejected = await freshCoordinator.refresh() else {
+            return XCTFail("Expected a lower revision to be rejected")
+        }
+
+        let revision = await freshCoordinator.revision
+        let storeRevision = await freshStore.activeRevision
+        let previousExists = await freshStore.slotFileExists(.previous)
+        XCTAssertEqual(revision, 2)
+        XCTAssertEqual(storeRevision, 2)
+        XCTAssertFalse(previousExists)
+
+        let snapshot = await diagnostics.snapshot()
+        XCTAssertEqual(snapshot.rejectionCount, 1)
+        XCTAssertEqual(snapshot.activationCount, 1)
+    }
+
+    func testSameRevisionDifferentEnvelopeIsRejectedWithoutRotation() async throws {
+        let diagnostics = PokemonCatalogRolloutDiagnostics()
+        await diagnostics.reset()
+        let currentEnvelope = try SliceFFixture.envelope(revision: 1, officialCount: 2)
+
+        let firstClient = try makeClient(diagnostics: diagnostics, envelope: currentEnvelope)
+        let firstStore = PokemonCatalogReleaseStore(root: root)
+        let firstCoordinator = PokemonCatalogCoordinator(
+            store: firstStore,
+            client: firstClient,
+            keys: [SliceFFixture.pinnedKey],
+            rolloutMode: .remoteAuthority,
+            diagnostics: diagnostics
+        )
+        guard case .activated = await firstCoordinator.refresh() else {
+            return XCTFail("Expected initial revision-1 activation")
+        }
+
+        let conflictingEnvelope = try SliceFFixture.envelope(revision: 1, officialCount: 3)
+        let freshClient = try makeClient(diagnostics: diagnostics, envelope: conflictingEnvelope)
+        let freshStore = PokemonCatalogReleaseStore(root: root)
+        let freshCoordinator = PokemonCatalogCoordinator(
+            store: freshStore,
+            client: freshClient,
+            keys: [SliceFFixture.pinnedKey],
+            rolloutMode: .remoteAuthority,
+            diagnostics: diagnostics
+        )
+
+        guard case .rejected = await freshCoordinator.refresh() else {
+            return XCTFail("Expected a conflicting same-revision envelope to be rejected")
+        }
+
+        let stored = await freshStore.activeRelease
+        let previousExists = await freshStore.slotFileExists(.previous)
+        XCTAssertEqual(stored?.envelope, currentEnvelope)
+        XCTAssertFalse(previousExists)
+
+        let snapshot = await diagnostics.snapshot()
+        XCTAssertEqual(snapshot.rejectionCount, 1)
+        XCTAssertEqual(snapshot.activationCount, 1)
     }
 
     func testValidationOnlyIgnoresAPreviouslyPersistedRemoteRelease() async throws {
