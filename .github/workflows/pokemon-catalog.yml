@@ -120,7 +120,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pokemon-catalog-production-candidate-${{ github.run_id }}
-          path: .
+          path: publisher
+      - name: Verify downloaded production candidate
+        run: |
+          test -f publisher/candidate/catalog-payload.json
+          test -f publisher/candidate/pokemon-catalog-snapshot.json
+          test -f publisher/candidate/review-report.json
+          test -f publisher/reports/production.json
       - name: Read the active production pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
