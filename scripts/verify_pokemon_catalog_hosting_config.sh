@@ -16,4 +16,21 @@ jq -e \
    | length == 1' \
   firebase.json >/dev/null
 
-echo "Firebase Hosting production target and dot-file ignore are valid"
+jq -e '
+  .hosting
+  | map(select(.target == "production" and .public == "publisher/site"))
+  | .[0].headers
+  | (map(select(.source == "/v1/current.json" and
+               ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/v1/releases/**" and
+               ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=31536000,immutable")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/magic/v1/current.json" and
+               ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/magic/v1/releases/**" and
+               ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=31536000,immutable")] | length) == 1)) | length == 1)
+' firebase.json >/dev/null
+
+echo "Firebase Hosting production target, dot-file ignore, and four catalog cache classes are valid"

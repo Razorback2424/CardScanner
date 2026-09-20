@@ -832,6 +832,7 @@ actor CardCatalog {
     private let scryfall = ScryfallService()
     private let historicalPokemon: PokemonHistoricalCatalog
     private var catalogRegistry: PokemonCatalogRegistry
+    private let magicCatalogCoordinator: MagicCatalogCoordinator?
 
     /// One resolution plus where it came from.
     ///
@@ -880,7 +881,8 @@ actor CardCatalog {
         offline: PokemonOfflineCatalog? = nil,
         resolvedDiskCache: ResolvedPokemonCardCache = ResolvedPokemonCardCache(),
         tcgdexBreaker: TCGdexCircuitBreaker = .shared,
-        registry: PokemonCatalogRegistry = .bundledSeed
+        registry: PokemonCatalogRegistry = .bundledSeed,
+        magicCatalogCoordinator: MagicCatalogCoordinator? = nil
     ) {
         self.pokemonSource = source
         self.offline = offline ?? PokemonOfflineCatalog(registry: registry)
@@ -888,6 +890,7 @@ actor CardCatalog {
         self.tcgdexBreaker = tcgdexBreaker
         self.historicalPokemon = PokemonHistoricalCatalog(registry: registry)
         self.catalogRegistry = registry
+        self.magicCatalogCoordinator = magicCatalogCoordinator
     }
 
     /// Installs the same immutable registry snapshot used by the scanner. The
@@ -1079,21 +1082,53 @@ actor CardCatalog {
 
                 // A token or art card prints its *parent's* code, so the printed
                 // identity has to be mapped to the child set before anything is
-                // fetched. `T 0017 MSH` is `TMSH 17`, not `MSH 17`.
-                let children = try await scryfall.fetchChildSets()
-                guard let child = ScryfallService.childSet(
-                    for: contentKind,
-                    parentCode: setCode,
-                    in: children
-                ) else {
-                    // No child set, or more than one with no way to choose.
-                    // Refusing is the point: reinterpreting an explicit marker
-                    // as an ordinary card is the bug this exists to prevent.
-                    throw ScryfallError.identityMismatch
+                // fetched. In remote-authority mode this lookup never consults
+                // Scryfall /sets; the signed registry is the only child-routing
+                // authority.
+                let childCode: String
+                let childLayoutKinds: Set<String>
+                if let magicCatalogCoordinator {
+                    await magicCatalogCoordinator.loadPersistedOrBundled()
+                }
+                if let magicCatalogCoordinator,
+                   await magicCatalogCoordinator.currentRolloutMode == .remoteAuthority {
+                    let registry = await magicCatalogCoordinator.registry
+                    guard let child = registry.child(for: contentKind, parentCode: setCode) else {
+                        throw ScryfallError.identityMismatch
+                    }
+                    childCode = child.code
+                    childLayoutKinds = contentKind.acceptedLayouts
+                } else {
+                    let children = try await scryfall.fetchChildSets()
+                    guard let child = ScryfallService.childSet(
+                        for: contentKind,
+                        parentCode: setCode,
+                        in: children
+                    ) else {
+                        // No child set, or more than one with no way to choose.
+                        // Refusing is the point: reinterpreting an explicit marker
+                        // as an ordinary card is the bug this exists to prevent.
+                        throw ScryfallError.identityMismatch
+                    }
+                    childCode = child.code
+                    childLayoutKinds = contentKind.acceptedLayouts
+                    if let magicCatalogCoordinator,
+                       await magicCatalogCoordinator.currentRolloutMode == .remoteValidationOnly {
+                        let registry = await magicCatalogCoordinator.registry
+                        let mismatches = registry.legacyParityMismatches(
+                            scanner: [],
+                            browse: [],
+                            routing: children
+                        )
+                        await magicCatalogCoordinator.recordLegacyParity(
+                            mismatches.filter { $0.surface == .routing },
+                            replacing: [.routing]
+                        )
+                    }
                 }
 
                 let card = try await scryfall.fetchCard(
-                    setCode: child.code,
+                    setCode: childCode,
                     collectorNumber: collectorNumber,
                     language: language,
                     requiresScannableCard: false
@@ -1103,9 +1138,9 @@ actor CardCatalog {
                 // the child set that was asked for, and its layout must match
                 // the kind the marker claimed — otherwise a token could arrive
                 // through an ordinary lookup, which is the same bug reversed.
-                guard card.setCode.caseInsensitiveCompare(child.code) == .orderedSame,
+                guard card.setCode.caseInsensitiveCompare(childCode) == .orderedSame,
                       let layout = card.layout,
-                      contentKind.acceptedLayouts.contains(layout) else {
+                      childLayoutKinds.contains(layout) else {
                     throw ScryfallError.identityMismatch
                 }
                 return CatalogResolution(.magic(card))

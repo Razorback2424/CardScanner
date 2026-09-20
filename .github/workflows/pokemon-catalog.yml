@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "PokemonCatalogCore/**"
+      - "MagicCatalogCore/**"
       - "TradingCardScanner/**"
       - "TradingCardScannerTests/PokemonCatalog*.swift"
       - "TradingCardScanner.xcodeproj/project.pbxproj"
@@ -11,6 +12,7 @@ on:
       - "publisher/**"
       - "publisher/discovery-policy.json"
       - "scripts/restore_pokemon_catalog_releases.sh"
+      - "scripts/restore_catalog_hosting_site.sh"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "firebase.json"
       - ".firebaserc.example"
@@ -169,6 +171,9 @@ jobs:
     needs: prepare-production
     if: >-
       needs.prepare-production.outputs.has_changes == 'true'
+    concurrency:
+      group: scanstash-catalog-production-hosting
+      cancel-in-progress: false
     runs-on: macos-14
     environment:
       name: ${{ needs.prepare-production.outputs.publish_environment }}
@@ -224,14 +229,40 @@ jobs:
               exit 1
               ;;
           esac
+      - name: Read the active Magic production pointer
+        run: |
+          active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
+          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+            "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
+            --output "$active_path" \
+            --write-out '%{http_code}')"; then
+            echo "Failed to read the active Magic production pointer" >&2
+            exit 1
+          fi
+          case "$status" in
+            200)
+              echo "Active Magic production release downloaded to $active_path"
+              ;;
+            404)
+              echo "No active Magic production release is available; treating this as initial publication"
+              rm -f "$active_path"
+              ;;
+            *)
+              echo "Unexpected HTTP $status while reading the active Magic production pointer" >&2
+              exit 1
+              ;;
+          esac
       - name: Restore previously published production revision objects
         run: >-
-          bash scripts/restore_pokemon_catalog_releases.sh
+          bash scripts/restore_catalog_hosting_site.sh
           "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
+          "${RUNNER_TEMP}/magic-catalog-production-current.json"
           publisher/site
           "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}"
           PokemonCatalogCore
           Config/PokemonCatalogProduction.xcconfig
+          MagicCatalogCore
+          Config/MagicCatalogProduction.xcconfig
       - name: Publish the immutable production revision and current pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"

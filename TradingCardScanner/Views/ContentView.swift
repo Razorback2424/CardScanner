@@ -48,9 +48,15 @@ struct ContentView: View {
     private let debugRoute: String?
 #endif
 
-    init(catalogCoordinator: PokemonCatalogCoordinator) {
+    init(
+        catalogCoordinator: PokemonCatalogCoordinator,
+        magicCatalogCoordinator: MagicCatalogCoordinator = MagicCatalogCoordinator()
+    ) {
         _browseCatalog = State(
-            initialValue: BrowseCatalog(catalogCoordinator: catalogCoordinator)
+            initialValue: BrowseCatalog(
+                catalogCoordinator: catalogCoordinator,
+                magicCatalogCoordinator: magicCatalogCoordinator
+            )
         )
 #if DEBUG || CARD_FINISH_PERF_HARNESS
         let arguments = ProcessInfo.processInfo.arguments

@@ -1,0 +1,258 @@
+name: Magic catalog
+
+on:
+  pull_request:
+    paths:
+      - "MagicCatalogCore/**"
+      - "TradingCardScanner/MagicCatalogSeed/**"
+      - "TradingCardScanner/Services/MagicCatalog*.swift"
+      - "TradingCardScanner/Services/BrowseCatalog.swift"
+      - "TradingCardScanner/Services/CardCatalog.swift"
+      - "TradingCardScanner/Views/ScannerViewModel.swift"
+      - "TradingCardScanner/App/TradingCardScannerApp.swift"
+      - "TradingCardScanner.xcodeproj/project.pbxproj"
+      - "Config/**"
+      - "magic-publisher/**"
+      - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/verify_pokemon_catalog_hosting_config.sh"
+      - "firebase.json"
+      - ".github/workflows/magic-catalog.yml"
+  schedule:
+    - cron: "47 6 * * *"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the validated candidate"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+env:
+  MAGIC_CATALOG_PRODUCTION_READ_ORIGIN: https://scanstash-catalog-prod.web.app
+
+jobs:
+  validate:
+    name: Validate Magic core and recorded fixture
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate Firebase Hosting production configuration
+        run: bash scripts/verify_pokemon_catalog_hosting_config.sh
+      - name: Test the macOS core
+        run: swift test --package-path MagicCatalogCore
+      - name: Build the publisher in release mode
+        run: swift build -c release --package-path MagicCatalogCore
+      - name: Validate the recorded provider directory
+        run: >-
+          swift run --package-path MagicCatalogCore magic-catalog-publisher validate
+          --input magic-publisher/fixtures/recorded-provider.json
+          --revision 1
+          --generated-at 2026-01-01T00:00:00Z
+          --candidate-root magic-publisher/ci-candidate
+          --report magic-publisher/reports/pull-request.json
+
+  prepare-production:
+    name: Prepare and validate Magic production candidate
+    needs: validate
+    outputs:
+      has_changes: ${{ steps.prepare.outputs.has_changes }}
+      candidate_manifest_sha256: ${{ steps.candidate_manifest.outputs.sha256 }}
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish == true)
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the active Magic production pointer
+        run: |
+          active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
+          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
+            --output "$active_path" \
+            --write-out '%{http_code}')"; then
+            echo "Failed to read the active Magic production pointer" >&2
+            exit 1
+          fi
+          case "$status" in
+            200)
+              echo "Active Magic production release downloaded to $active_path"
+              ;;
+            404)
+              echo "No active Magic production release is available; preparing initial publication"
+              rm -f "$active_path"
+              ;;
+            *)
+              echo "Unexpected HTTP $status while reading the active Magic production pointer" >&2
+              exit 1
+              ;;
+          esac
+      - name: Validate the live Magic production candidate
+        run: |
+          active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
+          active_args=()
+          if [ -f "$active_path" ]; then
+            active_args+=(--active-release "$active_path")
+          fi
+          swift run --package-path MagicCatalogCore magic-catalog-publisher validate \
+            --live true \
+            --trusted-keys-file Config/MagicCatalogProduction.xcconfig \
+            --candidate-root magic-publisher/candidate \
+            --report magic-publisher/reports/production.json \
+            "${active_args[@]}"
+      - name: Render the candidate review summary
+        run: |
+          {
+            echo "## Magic catalog production candidate"
+            jq -r '"- Revision: \(.revision)", "- Descriptors: \(.descriptorCount)", "- Added: \(.addedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Changed: \(.changedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Removed: \(.removedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Warnings: \(.warnings | length)"' \
+              magic-publisher/reports/production.json
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Create the candidate SHA-256 manifest
+        id: candidate_manifest
+        run: |
+          (
+            cd magic-publisher
+            shasum -a 256 \
+              candidate/catalog-payload.json \
+              candidate/review-report.json \
+              reports/production.json \
+              > reports/production-manifest.sha256
+          )
+          manifest_sha256="$(shasum -a 256 magic-publisher/reports/production-manifest.sha256 | awk '{print $1}')"
+          echo "sha256=$manifest_sha256" >> "$GITHUB_OUTPUT"
+      - name: Determine whether production approval is needed
+        id: prepare
+        run: |
+          has_changes="$(jq -r '((.addedCodes | length) > 0) or ((.changedCodes | length) > 0) or ((.removedCodes | length) > 0)' \
+            magic-publisher/reports/production.json)"
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+          echo "Magic catalog candidate changes: $has_changes"
+      - name: Upload the validated production candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: magic-catalog-production-candidate-${{ github.run_id }}
+          path: |
+            magic-publisher/candidate
+            magic-publisher/reports/production.json
+            magic-publisher/reports/production-manifest.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-production:
+    name: Publish Magic production catalog
+    needs: prepare-production
+    if: >-
+      needs.prepare-production.outputs.has_changes == 'true'
+    concurrency:
+      group: scanstash-catalog-production-hosting
+      cancel-in-progress: false
+    runs-on: macos-14
+    environment: magic-catalog-production
+    env:
+      GITHUB_ENVIRONMENT: magic-catalog-production
+      MAGIC_CATALOG_SIGNING_KEY: ${{ secrets.POKEMON_CATALOG_SIGNING_KEY }}
+      MAGIC_CATALOG_KEY_ID: ${{ secrets.POKEMON_CATALOG_KEY_ID }}
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download the validated production candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: magic-catalog-production-candidate-${{ github.run_id }}
+          path: magic-publisher
+      - name: Verify downloaded production candidate
+        run: |
+          test -f magic-publisher/candidate/catalog-payload.json
+          test -f magic-publisher/candidate/review-report.json
+          test -f magic-publisher/reports/production.json
+          test -f magic-publisher/reports/production-manifest.sha256
+          expected_manifest_sha256="${{ needs.prepare-production.outputs.candidate_manifest_sha256 }}"
+          actual_manifest_sha256="$(shasum -a 256 magic-publisher/reports/production-manifest.sha256 | awk '{print $1}')"
+          test "$actual_manifest_sha256" = "$expected_manifest_sha256"
+          (
+            cd magic-publisher
+            shasum -a 256 -c reports/production-manifest.sha256
+          )
+      - name: Read the active Magic production pointer
+        run: |
+          active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
+          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/magic/v1/current.json" \
+            --output "$active_path" \
+            --write-out '%{http_code}')"; then
+            echo "Failed to read the active Magic production pointer" >&2
+            exit 1
+          fi
+          case "$status" in
+            200) ;;
+            404) rm -f "$active_path" ;;
+            *) echo "Unexpected HTTP $status while reading the active Magic production pointer" >&2; exit 1 ;;
+          esac
+      - name: Read the active Pokémon production pointer
+        run: |
+          active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
+          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
+            "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
+            --output "$active_path" \
+            --write-out '%{http_code}')"; then
+            echo "Failed to read the active Pokémon production pointer" >&2
+            exit 1
+          fi
+          case "$status" in
+            200) ;;
+            404) rm -f "$active_path" ;;
+            *) echo "Unexpected HTTP $status while reading the active Pokémon production pointer" >&2; exit 1 ;;
+          esac
+      - name: Restore the shared production hosting tree
+        run: >-
+          bash scripts/restore_catalog_hosting_site.sh
+          "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
+          "${RUNNER_TEMP}/magic-catalog-production-current.json"
+          publisher/site
+          "${MAGIC_CATALOG_PRODUCTION_READ_ORIGIN}"
+          PokemonCatalogCore
+          Config/PokemonCatalogProduction.xcconfig
+          MagicCatalogCore
+          Config/MagicCatalogProduction.xcconfig
+      - name: Publish the immutable Magic revision and current pointer
+        run: |
+          active_path="${RUNNER_TEMP}/magic-catalog-production-current.json"
+          active_args=()
+          if [ -f "$active_path" ]; then
+            active_args+=(--active-release "$active_path")
+          fi
+          GITHUB_ENVIRONMENT=magic-catalog-production \
+            MAGIC_CATALOG_SIGNING_KEY="$MAGIC_CATALOG_SIGNING_KEY" \
+            MAGIC_CATALOG_KEY_ID="$MAGIC_CATALOG_KEY_ID" \
+            swift run --package-path MagicCatalogCore magic-catalog-publisher publish \
+              --candidate-root magic-publisher/candidate \
+              --site-root publisher/site \
+              --environment production \
+              --trusted-keys-file Config/MagicCatalogProduction.xcconfig \
+              --report magic-publisher/reports/production.json \
+              "${active_args[@]}"
+      - name: Retain the production review report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: magic-catalog-production-report-${{ github.run_id }}
+          path: magic-publisher/reports/production.json
+          if-no-files-found: warn
+          retention-days: 90
+      - name: Install Firebase CLI
+        run: npm install --global firebase-tools@13.35.1
+      - name: Bind and deploy the shared production Firebase Hosting target
+        run: |
+          test -n "$FIREBASE_PROJECT_ID"
+          test -n "$FIREBASE_HOSTING_SITE_ID"
+          service_account_file="${RUNNER_TEMP}/firebase-production-service-account.json"
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$service_account_file"
+          export GOOGLE_APPLICATION_CREDENTIALS="$service_account_file"
+          firebase target:apply hosting production "$FIREBASE_HOSTING_SITE_ID" \
+            --project "$FIREBASE_PROJECT_ID"
+          firebase deploy --only hosting:production \
+            --project "$FIREBASE_PROJECT_ID" --non-interactive

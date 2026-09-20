@@ -30,6 +30,12 @@
 	<string>$(POKEMON_CATALOG_ROLLOUT_MODE)</string>
 	<key>POKEMON_CATALOG_PINNED_KEYS</key>
 	<string>$(POKEMON_CATALOG_PINNED_KEYS)</string>
+	<key>MAGIC_CATALOG_BASE_URL</key>
+	<string>$(MAGIC_CATALOG_BASE_URL)</string>
+	<key>MAGIC_CATALOG_ROLLOUT_MODE</key>
+	<string>$(MAGIC_CATALOG_ROLLOUT_MODE)</string>
+	<key>MAGIC_CATALOG_PINNED_KEYS</key>
+	<string>$(MAGIC_CATALOG_PINNED_KEYS)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

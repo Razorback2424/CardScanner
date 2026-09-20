@@ -1004,6 +1004,7 @@ final class ScannerViewModel: ObservableObject {
     private let feedback: ScanFeedback
     private let gradedResolver: ScannedGradedResolving
     private let scryfall = ScryfallService()
+    private let magicCatalogCoordinator: MagicCatalogCoordinator?
 
     private var collectionWriter: ScannerCollectionWriter?
     private var modelContainer: ModelContainer?
@@ -1024,6 +1025,7 @@ final class ScannerViewModel: ObservableObject {
     /// scanner and CardCatalog. The task is intentionally owned by the model so
     /// a Scanner tab revisit does not recreate or downgrade the active profile.
     private var pokemonCatalogTask: Task<Void, Never>?
+    private var magicCatalogTask: Task<Void, Never>?
     /// The best directory available in this process. It begins with the bundled
     /// snapshot and is replaced after a successful live refresh. Keeping the
     /// actual definitions prevents a later view appearance from downgrading the
@@ -1120,13 +1122,15 @@ final class ScannerViewModel: ObservableObject {
         // Production injects the app-scoped coordinator. Nil is retained only
         // for isolated scanner tests that intentionally do not exercise live
         // catalog activation.
-        catalogCoordinator: PokemonCatalogCoordinator? = nil
+        catalogCoordinator: PokemonCatalogCoordinator? = nil,
+        magicCatalogCoordinator: MagicCatalogCoordinator? = nil
     ) {
         self.scanner = scanner
         self.catalog = catalog
         self.feedback = feedback ?? ScanFeedback()
         self.gradedResolver = gradedResolver
         self.priceCheckRefreshProvider = priceCheckRefreshProvider
+        self.magicCatalogCoordinator = magicCatalogCoordinator
 
         let catalog = self.catalog
         scanner.onPlausibleCandidate = { subject in
@@ -1302,10 +1306,31 @@ final class ScannerViewModel: ObservableObject {
                 }
             }
         }
+
+        if let magicCatalogCoordinator {
+            magicCatalogTask = Task { @MainActor in
+                let events = await magicCatalogCoordinator.activationEvents()
+                await magicCatalogCoordinator.loadPersistedOrBundled()
+                let mode = await magicCatalogCoordinator.currentRolloutMode
+                let initialRegistry = await magicCatalogCoordinator.registry
+                if mode == .remoteAuthority {
+                    self.magicSetDefinitions = initialRegistry.scannerDefinitions
+                    self.installMagicDefinitions(initialRegistry.scannerDefinitions)
+                }
+
+                for await event in events {
+                    guard !Task.isCancelled else { return }
+                    guard event.scannerProjectionChanged else { continue }
+                    self.magicSetDefinitions = event.registry.scannerDefinitions
+                    self.installMagicDefinitions(event.registry.scannerDefinitions)
+                }
+            }
+        }
     }
 
     deinit {
         pokemonCatalogTask?.cancel()
+        magicCatalogTask?.cancel()
     }
 
     private var currentConfirmationToken: ScannerConfirmationToken? {
@@ -3674,12 +3699,35 @@ final class ScannerViewModel: ObservableObject {
             guard let self else { return }
             defer { self.magicDirectoryTask = nil }
 
+            if let coordinator = self.magicCatalogCoordinator {
+                let mode = await coordinator.currentRolloutMode
+                if mode == .remoteAuthority {
+                    _ = await coordinator.refresh()
+                    self.hasRefreshedMagicDirectory = true
+                    return
+                }
+                if mode == .remoteValidationOnly {
+                    Task { await coordinator.refresh() }
+                }
+            }
+
             guard let definitions = try? await self.scryfall.fetchSupportedSets(),
                   !definitions.isEmpty else { return }
 
             self.magicSetDefinitions = definitions
             self.hasRefreshedMagicDirectory = true
             self.installMagicDefinitions(definitions)
+
+            if let coordinator = self.magicCatalogCoordinator,
+               await coordinator.currentRolloutMode == .remoteValidationOnly {
+                let registry = await coordinator.registry
+                let mismatches = registry.legacyParityMismatches(
+                    scanner: definitions,
+                    browse: [],
+                    routing: [:]
+                ).filter { $0.surface == .scanner }
+                await coordinator.recordLegacyParity(mismatches, replacing: [.scanner])
+            }
         }
     }
 }

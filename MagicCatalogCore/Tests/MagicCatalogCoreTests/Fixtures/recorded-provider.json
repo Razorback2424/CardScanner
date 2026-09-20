@@ -1,0 +1,9 @@
+{
+  "sets": [
+    {"id":"00000000-0000-4000-8000-000000000001","code":"ABC","name":"Recorded Expansion","released_at":"2020-01-01","set_type":"expansion","card_count":100,"printed_size":100,"icon_svg_uri":"https://example.test/abc.svg","parent_set_code":null,"digital":false},
+    {"id":"00000000-0000-4000-8000-000000000002","code":"OLD","name":"Recorded Historical Set","released_at":"2010-01-01","set_type":"expansion","card_count":50,"printed_size":50,"icon_svg_uri":"https://example.test/old.svg","parent_set_code":null,"digital":false},
+    {"id":"00000000-0000-4000-8000-000000000003","code":"TABC","name":"Recorded Tokens","released_at":"2020-01-01","set_type":"token","card_count":4,"printed_size":null,"icon_svg_uri":"https://example.test/tabc.svg","parent_set_code":"ABC","digital":false},
+    {"id":"00000000-0000-4000-8000-000000000004","code":"AABC","name":"ABC Art Series","released_at":"2020-01-01","set_type":"memorabilia","card_count":5,"printed_size":null,"icon_svg_uri":"https://example.test/aabc.svg","parent_set_code":"ABC","digital":false},
+    {"id":"00000000-0000-4000-8000-000000000005","code":"DGT","name":"Recorded Digital Set","released_at":"2020-01-01","set_type":"online","card_count":20,"printed_size":20,"icon_svg_uri":null,"parent_set_code":null,"digital":true}
+  ]
+}
