@@ -1,7 +1,7 @@
 # CardScanner 1.0 Phase 0/1 release evidence
 
 **Status:** current candidate ledger, not release certification — reconciled
-2026-09-14; F06 follow-up recorded 2026-09-16
+2026-09-20; F06 follow-up recorded 2026-09-16
 
 This path is the current evidence authority for the active Phase 0/1 launch
 plan. The previous candidate ledger is retained as the
@@ -11,18 +11,18 @@ branch and `a115e4e`/`ec7dc6b` identities do not describe this checkout.
 ## Candidate identity
 
 - Repository: `TradingCardScannerMVP_fixed_v4`
-- Branch: `codex/scanning-workflow-review-remediation`
-- HEAD at the 2026-09-14 reconciliation: `0b4ac34`
+- Branch: `main`
+- HEAD at the 2026-09-20 reconciliation: `31eb97e`
 - App/test targets: `TradingCardScanner` / `TradingCardScannerTests`
 - Marketing/build version: `1.0 (1)`
 - Bundle identifier: `com.seankeller.CardScanner`
 - Minimum OS: iOS/iPadOS 17.0
 - Device families: iPhone and iPad (`1,2`)
 
-The working tree contains user-owned source, test, asset, and documentation
-changes. Evidence must be rerun against the exact tree intended for the release;
-the short SHA above is a locator, not a certification claim for uncommitted
-changes.
+The working tree is clean at this reconciliation. The short SHA above is a
+locator, not a certification claim: the recorded test evidence below predates
+this HEAD unless explicitly stated otherwise, and must be rerun against the
+exact tree intended for release.
 
 ## Current recorded evidence
 
@@ -32,7 +32,8 @@ changes.
   and 3 substantive failures). This is not a clean release-suite result; see
   the F06 follow-up below. The earlier 1,256-discovered/48-failure snapshot at
   `0b4ac34` is historical and must not be reused as the latest run.
-- 2026-09-16 focused F06 follow-up on `main` based at `c381c99`: the PBX
+- 2026-09-16 focused F06 follow-up based at historical `main` commit `c381c99`:
+  the PBX
   resource-ID collision was corrected and the committed corpus reached the
   test bundle. The selected centering tests produced 38 results (28 passed,
   9 test cases failed on centering assertions, and 1 profile-dump test was
@@ -48,7 +49,7 @@ changes.
 ## F06 follow-up — fixture bundle wiring, 2026-09-16
 
 All 57 files under `TestFixtures/TradingCards/` were tracked at both the
-historical `a4375df` run and the current `main` base `c381c99`. Duplicate
+historical `a4375df` run and the F06 follow-up tree based at `c381c99`. Duplicate
 `PBXBuildFile`/`PBXFileReference` UUIDs caused the test target's fixture resource
 entry to resolve as `CardFinishRenderPlanTests.swift`; the test group also used
 an undefined fixture reference. The project file now has unique resource IDs

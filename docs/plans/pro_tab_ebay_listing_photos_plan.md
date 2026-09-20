@@ -1,11 +1,11 @@
 # Pro tab — card centering and eBay listing photos
 
-**Status:** implementation candidate — Slices A–C landed on the isolated
-`pro-implementation` worktree (based at `523f3e2`) on 2026-09-15. The latest
-focused remediation verification is green (the remediation selectors pass
-14/14 tests and the Debug simulator build/run succeeds). The
-screenshot, manual, physical-device, provider, and release gates remain open;
-the implementation has not been merged back into `main`. The source-behavior
+**Status:** Slices A–C are implemented in `main` (merged 2026-09-20 from the
+`pro-implementation` worktree based at `523f3e2`). The latest focused
+remediation verification is green (the remediation selectors pass 14/14 tests
+and the Debug simulator build/run succeeds). The screenshot, manual,
+physical-device, provider, and release gates remain open; release evidence has
+not been refreshed for the merged tree. The source-behavior
 claims in *Ported behavior* were read from
 `/Users/seankeller/Documents/eBay Photos/process_and_organize.py` on 2026-09-15
 (that tool is a separate, unversioned working copy outside this repository and
@@ -13,14 +13,11 @@ is not a dependency of this app).
 
 **Sequencing:** this is post-1.0 work. It is listed in the active launch plan's
 [§0.1.2 open-plans table](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md)
-as outside launch scope. Per the user's request, implementation is isolated on
-`pro-implementation`; it is not merged into the release candidate or used to
-refresh release evidence. The merge/release constraint remains: **do not merge
-or certify this work before the release candidate is certified** (that plan's
-Task 18). Its §7 execution discipline states that a source change after evidence
-collection invalidates the affected evidence, and this plan changes both tab
-structure and the shared capture path — the two things the centering and scanner
-acceptance programs measure against.
+as outside launch scope. The implementation is now present in `main`, but it is
+not release-certified or used as refreshed release evidence. This plan changes
+both tab structure and the shared capture path — the two things the centering
+and scanner acceptance programs measure against — so those gates must be
+refreshed against the current tree before release certification.
 
 **Concern owned:** the tab that today shows only card centering becomes a **Pro**
 tab hosting several seller tools, and the first new tool in it generates the ten
@@ -515,9 +512,9 @@ time, peak footprint independent of queue length.
 
 | Document | Change this plan introduces | Action when the slice lands |
 | --- | --- | --- |
-| [`docs/README.md`](../README.md) | Adds a current authority row for the Pro tab | Authority row is current; its date now reflects the implementation candidate |
-| [`2026-09-13-phase-0-phase-1-app-store-launch.md`](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md) | Adds this plan to the §0.1.2 open-plans-outside-launch-scope table, with the post-Task-18 sequencing constraint | Cross-reference now records the isolated implementation candidate and preserves the merge/release sequencing constraint |
-| [`browse_screen_spec.md`](browse_screen_spec.md) | Its §12 "do not change … Centering tab structure" constraint now names this plan as the owner of that planned change | Constraint now identifies the implemented Pro change as isolated to this plan's worktree |
+| [`docs/README.md`](../README.md) | Adds a current authority row for the Pro tab | Authority row remains current; the map date is reconciled to 2026-09-20 |
+| [`2026-09-13-phase-0-phase-1-app-store-launch.md`](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md) | Adds this plan to the §0.1.2 open-plans-outside-launch-scope table | Cross-reference now records the implementation in `main` and keeps its release gates open |
+| [`browse_screen_spec.md`](browse_screen_spec.md) | Its §12 constraint names this plan as the owner of the Pro presentation change | Constraint now identifies the implemented Pro change in `main`; this Browse plan does not own or alter it |
 | [`documentation_audit.md`](documentation_audit.md) | Adds a Pro tab row to the authority-boundary table | Row now records the implementation and the remaining evidence boundary |
 | [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) | Centering is presented one level deeper and no longer owns its own `NavigationStack`; its camera gains a configuration parameter that defaults to today's behavior; route strings unchanged | Recorded as simulator-focused-verified; the centering accuracy and physical-device gates remain open. The centering configuration remains unchanged in effect — macro lens, `.near` focus restriction, existing preset. |
 | [`scripts/centering_ui_build_and_shoot.sh`](../../scripts/centering_ui_build_and_shoot.sh) | No edit expected — A4 preserves the route's landing screen | Not run at the user's request to skip screenshots; run before claiming the visual Slice A gate |

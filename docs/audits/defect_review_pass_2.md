@@ -1,8 +1,10 @@
 # Production Defect Audit — Pass 2
 
-**Status:** current defect-review authority — audited 2026-09-14 against
-`codex/scanning-workflow-review-remediation` at `a4375df` with a dirty working
-tree (44 entries, all `Assets.xcassets` PNG binaries).
+**Status:** defect-review authority for the 2026-09-14 audit snapshot. It was
+audited against `codex/scanning-workflow-review-remediation` at `a4375df` with
+a dirty working tree (44 entries, all `Assets.xcassets` PNG binaries). F01–F03
+source remediation was subsequently landed and focused-verified on 2026-09-19;
+this audit has not been rerun against current `main`.
 
 **Purpose:** a production-readiness defect review of the whole repository. This
 is a discovery-and-diagnosis pass. No application code, tests, schemas, or

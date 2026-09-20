@@ -1,3 +1,12 @@
+Documentation freshness reconciliation (2026-09-20, current `main` at
+`31eb97e`): updated the current App Review/release ledgers, launch plan, and
+repository audit to distinguish the clean current checkout from historical
+candidate evidence; recorded the committed F01–F03 source remediation while
+keeping entitled-device/runtime and release gates open; and updated the Pro/
+eBay plan and centering contract to reflect their merge into `main`. Dated
+historical evidence and older progress entries were preserved. Documentation
+only; no source, tests, or build settings changed.
+
 Pokemon catalog artwork fingerprint parity fix (2026-09-20, current working
 tree): preserved raw provider `logo`/`symbol` values while carrying resolved
 artwork in transient fields used only by descriptor construction. `v1` now

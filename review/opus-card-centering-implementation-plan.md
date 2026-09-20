@@ -10,8 +10,8 @@ Subsequent implementation changes and experiment provenance are recorded in the 
 evidence sections below.
 **Baseline evidence:** `review/centering-evidence/baseline-post-ereq044-2026-09-12.md`
 
-**Presentation scope (added 2026-09-15):** this plan owns how centering *measures*, not where
-it is presented. A separate plan, implemented on the isolated `pro-implementation` worktree —
+**Presentation scope (updated 2026-09-20):** this plan owns how centering *measures*, not where
+it is presented. A separate plan, now merged into `main` from the `pro-implementation` worktree —
 [`docs/plans/pro_tab_ebay_listing_photos_plan.md`](../docs/plans/pro_tab_ebay_listing_photos_plan.md) —
 replaces the Centering tab with a Pro tab, pushes `CardCenteringView` one navigation level
 deeper (removing its own `NavigationStack`), and adds a capture-configuration parameter to the
@@ -20,7 +20,8 @@ macro lens, `.near` focus-range restriction, existing session preset — because
 capture path changes what the accuracy requirements below are measured against. The
 `Centering` and `CenteringExpanded` debug routes and `scripts/centering_ui_build_and_shoot.sh`
 are preserved unchanged. Nothing in that plan may loosen, renumber, or waive a requirement here.
-Its simulator implementation is focused-verified; the centering accuracy and physical-device
+Its simulator implementation is focused-verified, but the affected release evidence has not
+been refreshed against the current merged tree; the centering accuracy and physical-device
 gates remain open.
 
 > Luna: read §0–§8 before writing code. §9 (REQ table) is the contract. §13 (Definition of

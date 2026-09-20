@@ -17,7 +17,9 @@ reason to leave it unchanged.
 [launch plan](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md)
 §0.1.2 references this document, and §0.1.1 binds the open
 [pass-2 findings](../audits/defect_review_pass_2.md) to the tasks they block.
-RF-6 gates Task 1 and Task 11; RF-7 and RF-8 open only after F01/F02 land.
+RF-6 gates Task 1 and Task 11. F01/F02 source remediation is landed; RF-7 and
+RF-8 remain open for the entitled-device and measurement evidence described
+below.
 
 ## Release validation
 
@@ -88,7 +90,7 @@ inputs, not optional host data. To close this item:
 ### RF-7 — Storage-bootstrap production wiring, on an entitled device
 
 **Status:** open for entitled-device/runtime evidence. The pass-2 F01/F02
-source fixes are present in the working tree; CloudKit enrollment and device
+source fixes are present in the committed tree; CloudKit enrollment and device
 verification remain outstanding.
 
 [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) F01 and

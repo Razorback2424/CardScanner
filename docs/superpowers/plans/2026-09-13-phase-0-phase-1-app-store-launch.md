@@ -35,12 +35,11 @@ When those sources disagree, this plan controls this release. In particular, it 
 
 This plan does **not** authorize broad refactors. A change belongs in this release only when it closes a named launch gate, makes that gate observable, or is required to build/sign/submit the exact release binary.
 
-## 0.1 Current checkout reconciliation — 2026-09-15
+## 0.1 Current checkout reconciliation — 2026-09-20
 
 The plan was authored against earlier repository snapshots. Its current-source
 references must be revalidated before execution. The checkout now under review
-is branch `codex/scanning-workflow-review-remediation` at `a4375df` (the
-`0b4ac34` locator recorded on 2026-09-14 is superseded), with marketing/build
+is clean `main` at `31eb97e`, with marketing/build
 `1.0 (1)`, bundle identifier `com.seankeller.CardScanner`, and iPhone/iPad
 deployment target 17.0. The current release ledger is
 [`docs/release/phase-1-integrity-evidence.md`](../../release/phase-1-integrity-evidence.md).
@@ -57,7 +56,7 @@ audit.
 | --- | --- | --- |
 | F01 — production readiness default strands the clean-install flow in `.restoringFromCloud(.failed)` with no non-cloud continuation | Critical | Task 4, Task 8. Also §4 gate G6 and critical flow A. |
 | F02 — headless preflight builds a CloudKit-mirrored container for `.neverAttached`/`.suspended` stores it then reports as `.onDevice` | High | Task 4, Task 8. Also §2.4 canonical-store invariant and §2.6 selection order. |
-| F03 — `beginPendingResolution` can discard a choose-handler operation after the pending choice is cleared (suspected) | High | Scanner scope; **no owning task in this plan.** Would trip §4 gate G3 if reachability is demonstrated. Carry it into R1/R2/R3 triage per the [release framework](../../release/card-scanner-1.0-go-no-go-framework.md) §10 before RC; it must not fall out of scope simply because no task claims it. |
+| F03 — `beginPendingResolution` could discard a choose-handler operation after the pending choice was cleared (historical suspected finding) | High | Scanner scope; recoverable retention and retry are now focused-verified, but the pass-2 audit has not been rerun at current HEAD. Keep the finding in R1/R2/R3 triage per the [release framework](../../release/card-scanner-1.0-go-no-go-framework.md) §10 before RC; it must not fall out of scope simply because no task claims it. |
 | F04 — epoch baseline writes `initialBalance` events with no matching `CollectionActivity` | Medium | **Task 12.** `OwnershipLedgerCompletenessTests` is red; the baseline path that task certifies currently produces a state the integrity check rejects. |
 | F05 — `InventoryLedger.quantities(from:)` retains negative nets; no production callers | Low | Task 12. |
 | F06 — duplicate PBX IDs kept the committed centering corpus out of the test bundle; the IDs were corrected 2026-09-16, but the focused rerun still has centering assertion failures | Medium | **Task 1 and Task 11.** The resource lookup issue is fixed; these tasks remain blocked on triaging the centering assertions and a complete, clean/triaged exact-candidate baseline. |
@@ -69,9 +68,9 @@ They are listed here so they are not lost when execution resumes:
 
 | Plan | State | Relationship to this plan |
 | --- | --- | --- |
-| [`docs/plans/price_history_chart_plan.md`](../../plans/price_history_chart_plan.md) | Proposed 2026-09-14, not implemented | Slice A is presentation-only and independent. **Slice B is blocked on F02** and must not begin before it: raising background refresh throughput multiplies exposure to that defect. Its device measurement is RF-8. |
-| [`docs/plans/pro_tab_ebay_listing_photos_plan.md`](../../plans/pro_tab_ebay_listing_photos_plan.md) | Implementation candidate landed 2026-09-15 on isolated `pro-implementation` worktree; not merged or release-certified | Post-1.0 seller tooling. Replaces the Centering tab with a **Pro** tab hosting card centering plus a new card-independent eBay listing-photo module. Slices A–C are implemented and focused simulator-verified; screenshot, manual, physical-device, provider, archive, and release gates remain open. Slice A moves the centering screen one navigation level deeper and Slice B adds a capture configuration to the camera it shares; neither changes centering measurement, and the `Centering`/`CenteringExpanded` debug routes are preserved. **The sequencing constraint remains for merge/release work: do not merge or claim the feature before the release candidate is certified (Task 18),** because a tab-structure or camera change after evidence collection invalidates the affected centering and scanner acceptance evidence under §7. |
-| [`docs/plans/release_followups.md`](../../plans/release_followups.md) | Current backlog | RF-6 (centering corpus bundle wiring and executable suite baseline) is the same evidence problem as F06 and gates Task 1/Task 11. The committed corpus is now bundled; skip guards are not appropriate. RF-7 and RF-8 are device gates that open only after F01/F02 land. |
+| [`docs/plans/price_history_chart_plan.md`](../../plans/price_history_chart_plan.md) | Proposed 2026-09-14, not implemented | Slice A is presentation-only and independent. The F02 source dependency is remediated and focused-verified; Slice B remains unimplemented and requires its RF-8 device measurement before throughput is raised. |
+| [`docs/plans/pro_tab_ebay_listing_photos_plan.md`](../../plans/pro_tab_ebay_listing_photos_plan.md) | Slices A–C landed in `main` via the 2026-09-20 catalog/centering merge; not release-certified | Post-1.0 seller tooling. Replaces the Centering tab with a **Pro** tab hosting card centering plus a new card-independent eBay listing-photo module. Slices A–C are implemented and focused simulator-verified; screenshot, manual, physical-device, provider, archive, and release gates remain open. Because the implementation is now in the current tree, the affected centering and scanner acceptance evidence must be refreshed before release certification. |
+| [`docs/plans/release_followups.md`](../../plans/release_followups.md) | Current backlog | RF-6 (centering corpus bundle wiring and executable suite baseline) is the same evidence problem as F06 and gates Task 1/Task 11. The committed corpus is now bundled; skip guards are not appropriate. F01/F02 source remediation is landed; RF-7 and RF-8 remain open for device/runtime and measurement evidence. |
 
 The former gap analysis, candidate evidence ledger, and ownership audit are now
 under [`docs/legacy/`](../../legacy/); they remain useful historical inputs but
@@ -89,7 +88,7 @@ status authority.
 - Repository: `/Users/seankeller/Documents/TradingCardScannerMVP_fixed_v4`
 - Historical source snapshot used for the original plan: branch `scan-hardening-and-release`, HEAD `d647a794edc349be52fb6c643649ce26de2c834a`.
 - Historical repository state at plan review: branch `main`, HEAD `a115e4e`. Neither snapshot is the current implementation base; re-run the baseline and source assertions in Task 1 against the checkout being implemented.
-- Current reconciliation: branch `codex/scanning-workflow-review-remediation`, HEAD `0b4ac34`, with user-owned working-tree changes preserved.
+- Current reconciliation: clean `main`, HEAD `31eb97e`; the current tree includes the merged Pro/eBay implementation, while its release evidence remains open.
 - App target: `TradingCardScanner`
 - Test target: `TradingCardScannerTests`
 - Minimum OS: iOS/iPadOS 17.0

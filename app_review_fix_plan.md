@@ -1,29 +1,28 @@
 # CardScanner App Review Fix Plan
 
 > Bootstrapped by `swift-safe-fixer` from the product-owner review supplied in
-> this task. Existing uncommitted work is intentionally not committed or
-> reset by this remediation pass.
+> this task. The remediation changes are now committed in the repository history;
+> this plan does not constitute release certification.
 
-## Current checkout reconciliation — 2026-09-19
+## Current checkout reconciliation — 2026-09-20
 
 This root-level file is the current App Review remediation authority. The
 branch/SHA and suite counts in the original baseline below belong to the
 earlier `fix/app-review-preflight` candidate and are historical context, not
 the current checkout. The current tree is
-`codex/scanning-workflow-review-remediation` at `0b4ac34`, with additional
-user-owned working-tree changes preserved.
+clean `main` at `31eb97e`.
 
 Source-level storage hardening and focused regression coverage have progressed,
 but production CloudKit enrollment, physical-device continuity, ownership-ledger
 certification, and a clean exact-candidate suite remain open. The latest logged
-full simulator run discovered 1,256 tests and reported 48 unrelated
-fixture/source-environment or signal-kill failures. See the current
+full simulator run remains the historical `a4375df` run: 1,277 executed, 6
+skipped, and 40 failures. See the current
 [`docs/release/phase-1-integrity-evidence.md`](docs/release/phase-1-integrity-evidence.md)
 for the candidate ledger.
 
 ## Pass-2 F01–F03 remediation — 2026-09-19
 
-The three requested pass-2 findings are now addressed in the working tree:
+The three requested pass-2 findings are now addressed in the committed tree:
 
 - [x] F01 — an unproven restoration source is now an explicit policy input.
   Fresh and unsafe-to-recreate iCloud paths stay on-device, failed restoration
@@ -127,14 +126,13 @@ and two tracked `OwnershipLedgerCompletenessTests` assertions. The storage
 suites have zero failures. No commit hash is claimed until the owner requests
 or approves a commit containing the complete working tree.
 
-The current checkout result is recorded in the [current release ledger](docs/release/phase-1-integrity-evidence.md):
-1,256 tests discovered and 48 classified fixture/source-environment or
-signal-kill failures.
+The latest complete full-suite result is recorded in the [current release
+ledger](docs/release/phase-1-integrity-evidence.md): the historical `a4375df`
+run executed 1,277 tests with 6 skipped and 40 failures. No full suite has been
+rerun at current HEAD `31eb97e`.
 
 ## Verification and rollback
 
 Each bucket will be source-checked before the next bucket is advanced. No
-destructive commands or broad worktree reset are permitted. Because the tree
-already contains user-owned implementation and documentation edits, rollback
-is by targeted patch only; no commit hash is claimed until the owner requests
-or approves a commit that includes the complete reviewed working tree.
+destructive commands or broad worktree reset are permitted. Rollback is by
+targeted patch only; release evidence must name the exact candidate it covers.

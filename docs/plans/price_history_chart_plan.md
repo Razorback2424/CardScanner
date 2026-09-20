@@ -6,8 +6,9 @@ this plan has landed; every acceptance box below is open.
 **Where this is picked up:** the active
 [launch plan](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md)
 §0.1.2 lists this plan as current work outside launch scope, so it is not lost
-when Phase 0/1 execution resumes. Slice A is independent of that plan; Slice B
-is blocked on pass-2 F02 and measured by RF-8.
+when Phase 0/1 execution resumes. Slice A is independent of that plan. The
+source dependency identified by pass-2 F02 was remediated and focused-verified
+on 2026-09-19; Slice B remains unimplemented and is measured by RF-8.
 
 **Concern owned:** why the per-card price chart renders as isolated dots, and
 what may honestly be done about it. The chart itself is

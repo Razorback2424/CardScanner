@@ -3,9 +3,10 @@
 > Bootstrapped by `swift-safe-fixer` from the product-owner review supplied in
 > this task; this is not a substitute for an independent reviewer report.
 
-**Current checkout:** `codex/scanning-workflow-review-remediation` at
-`0b4ac34`. This is the current preflight summary; the candidate identity below
-is retained as historical context from the earlier remediation pass.
+**Current checkout:** `main` at `31eb97e` (2026-09-20). This is the current
+preflight summary. The focused remediation evidence below was recorded against
+the preceding remediation commits and remains evidence for those specific runs;
+no full suite was rerun at this HEAD.
 
 **Historical candidate:** `fix/app-review-preflight` at baseline `a115e4e`, with
 the earlier working-tree implementation changes preserved.
@@ -19,7 +20,7 @@ are not sufficient to certify the candidate.
 
 ## Pass-2 F01–F03 status — 2026-09-19
 
-The requested source remediation is present in the working tree. F01 now has a
+The requested source remediation is present in the current committed tree. F01 now has a
 safe local fallback and a recoverable failed-restoration action; F02 derives the
 headless container mode from the manifest and publishes the resulting active
 mode; and F03 retains a pending scanner answer until its resolution task is
@@ -63,6 +64,7 @@ readiness.
 Physical Task 4B architecture selection, CloudKit production schema,
 two-device convergence, archive/TestFlight, public URLs, and a clean full-suite
 pass still require owner-controlled follow-up. The current host has recorded
-focused storage results; the latest logged full run discovered 1,256 tests and
-reported 48 fixture/source-environment or signal-kill failures. The current
-release ledger is the evidence authority.
+focused storage results; the latest complete full run is the historical
+`a4375df` run with 1,277 executed, 6 skipped, and 40 failures. No full suite was
+rerun at current HEAD `31eb97e`; the current release ledger is the evidence
+authority.

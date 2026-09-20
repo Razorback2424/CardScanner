@@ -58,7 +58,7 @@ identity. Do not join card sets to `SealedSetSummary` by name, code, or fuzzy ma
 
 Keep Catalog as a push destination owned by the Collection tab. `CollectionView.Destination.browse`
 already establishes that route, and `ContentView.Tab` intentionally has Portfolio, Collection,
-Scan, and Centering. Therefore Collection remaining selected on Catalog and its descendants is the
+Scan, and Pro. Therefore Collection remaining selected on Catalog and its descendants is the
 correct tab state. Do not rename the Collection tab, add a Catalog tab, or remove Portfolio in this
 slice. Screenshot acceptance must assert that Collection stays selected while Catalog is open.
 
@@ -720,8 +720,7 @@ Do not change:
 - Portfolio, Scan, or Pro tab structure (the Centering tab's replacement by a
   Pro tab is owned by
   [`pro_tab_ebay_listing_photos_plan.md`](pro_tab_ebay_listing_photos_plan.md)
-  and is implemented only on that plan's isolated worktree; this Browse plan
-  does not own or alter it);
+  and is implemented in `main`; this Browse plan does not own or alter it);
 - detail add-to-collection behavior.
 
 ## 13. Implementation order

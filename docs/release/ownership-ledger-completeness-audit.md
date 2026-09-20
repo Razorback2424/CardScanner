@@ -1,7 +1,7 @@
 # Ownership-ledger completeness audit
 
 **Status:** current gate shell — not certified for the current checkout;
-reconciled 2026-09-14
+reconciled 2026-09-20
 
 This document is the current authority for proving that every production
 quantity mutation leaves a complete, durable, idempotent `InventoryEvent`
@@ -11,8 +11,8 @@ carried forward without rerunning it against the current tree.
 
 ## Current candidate
 
-- Branch: `codex/scanning-workflow-review-remediation`
-- HEAD locator: `0b4ac34`
+- Branch: `main`
+- HEAD locator: `31eb97e`
 - Exact release status: **NOT CERTIFIED**
 
 ## Required proof
@@ -31,8 +31,8 @@ restore, and Magic-treatment migration. For each path, prove:
 ## Evidence status
 
 The current source contains `InventoryLedger` and the related mutation paths,
-but the archived candidate matrix is not evidence for `0b4ac34` or the dirty
-working tree. Run the exhaustive inventory and the production-entry/restart/
+but the archived candidate matrix is not evidence for `31eb97e`. Run the
+exhaustive inventory and the production-entry/restart/
 rollback matrix before treating the ledger as CloudKit conflict authority.
 
 Record the result in this file and link the exact result bundle from
@@ -40,8 +40,8 @@ Record the result in this file and link the exact result bundle from
 
 ## Known findings against this proof — 2026-09-14
 
-`OwnershipLedgerCompletenessTests` is currently red at `a4375df` with three
-failures, triaged in
+`OwnershipLedgerCompletenessTests` was red in the historical `a4375df` run with
+three failures, triaged in
 [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md). Two of
 them bear directly on requirement 4 above — that quantities rebuilt from
 canonical events agree with the persisted collection projection — and must be
