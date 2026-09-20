@@ -383,6 +383,7 @@ public struct PokemonCatalogBuilder: Sendable {
         }
 
         let release = PokemonCatalogRelease(
+            catalogKind: PokemonCatalogRelease.currentCatalogKind,
             revision: request.revision,
             generatedAt: request.generatedAt,
             sets: descriptors.sorted(by: descriptorSort)

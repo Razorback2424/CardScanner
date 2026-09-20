@@ -13,6 +13,7 @@ public enum PokemonCatalogCoreContract {
     public static let releaseSchemaVersion = 1
     public static let snapshotSchemaVersion = 1
     public static let rulesVersion = 1
+    public static let catalogKind = "pokemon"
 }
 
 public struct PokemonCatalogReleaseEnvelope: Codable, Equatable, Sendable {
@@ -29,19 +30,25 @@ public struct PokemonCatalogReleaseEnvelope: Codable, Equatable, Sendable {
 
 public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
     public static let currentSchemaVersion = PokemonCatalogCoreContract.releaseSchemaVersion
+    public static let currentCatalogKind = PokemonCatalogCoreContract.catalogKind
 
     public let schemaVersion: Int
+    /// Additive schema-1 domain marker. Legacy releases omit this field and
+    /// remain valid; new publisher-generated releases always carry `pokemon`.
+    public let catalogKind: String?
     public let revision: Int
     public let generatedAt: Date
     public let sets: [PokemonCatalogSetDescriptor]
 
     public init(
         schemaVersion: Int = PokemonCatalogRelease.currentSchemaVersion,
+        catalogKind: String? = nil,
         revision: Int,
         generatedAt: Date,
         sets: [PokemonCatalogSetDescriptor]
     ) {
         self.schemaVersion = schemaVersion
+        self.catalogKind = catalogKind
         self.revision = revision
         self.generatedAt = generatedAt
         self.sets = sets
@@ -297,6 +304,7 @@ public enum PokemonCatalogSignatureError: Error, CustomStringConvertible, Sendab
     case signatureVerificationFailed
     case payloadDecodeFailed(String)
     case unsupportedSchemaVersion(Int)
+    case wrongCatalogKind(String)
     case revisionNotMonotonic(received: Int, current: Int)
     case futureTimestamp(Date)
 
@@ -309,6 +317,8 @@ public enum PokemonCatalogSignatureError: Error, CustomStringConvertible, Sendab
         case .payloadDecodeFailed(let message): return "Payload decode failed: \(message)"
         case .unsupportedSchemaVersion(let version):
             return "Unsupported schema version: \(version)"
+        case .wrongCatalogKind(let kind):
+            return "Expected Pokémon catalog kind, received: \(kind)"
         case .revisionNotMonotonic(let received, let current):
             return "Revision \(received) is not greater than current \(current)"
         case .futureTimestamp(let date): return "Generated timestamp \(date) is in the future"
@@ -360,6 +370,10 @@ public enum PokemonCatalogSignatureVerifier {
                 && release.schemaVersion == PokemonCatalogRelease.currentSchemaVersion - 1)
         guard supportsSchema else {
             throw PokemonCatalogSignatureError.unsupportedSchemaVersion(release.schemaVersion)
+        }
+        if let catalogKind = release.catalogKind,
+           catalogKind != PokemonCatalogRelease.currentCatalogKind {
+            throw PokemonCatalogSignatureError.wrongCatalogKind(catalogKind)
         }
         if let currentRevision {
             guard release.revision > currentRevision else {

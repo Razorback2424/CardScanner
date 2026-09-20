@@ -84,6 +84,7 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
 
         let descriptor = try XCTUnwrap(result.release.sets.first)
+        XCTAssertEqual(result.release.catalogKind, PokemonCatalogRelease.currentCatalogKind)
         XCTAssertEqual(descriptor.printedCode, "TST")
         XCTAssertEqual(descriptor.officialCount, 4)
         XCTAssertTrue(descriptor.scanEnabled)
@@ -1009,6 +1010,54 @@ final class PokemonCatalogCoreTests: XCTestCase {
                 return XCTFail("Unexpected error: \(error)")
             }
             XCTAssertEqual(version, 2)
+        }
+    }
+
+    func testOptionalCatalogKindRejectsWrongDomainButAllowsLegacyRelease() throws {
+        let privateKey = Curve25519.Signing.PrivateKey()
+        let keys = [PokemonCatalogSignatureVerifier.PinnedKey(
+            id: "fixture",
+            publicKey: privateKey.publicKey
+        )]
+        let legacy = PokemonCatalogRelease(
+            revision: 1,
+            generatedAt: generatedAt,
+            sets: [descriptor(providerID: "sv99", code: "TST", count: 2)]
+        )
+        let legacyEnvelope = try PokemonCatalogSignatureVerifier.sign(
+            release: legacy,
+            privateKey: privateKey,
+            keyID: "fixture"
+        )
+        XCTAssertNoThrow(
+            try PokemonCatalogSignatureVerifier.verify(
+                envelope: legacyEnvelope,
+                now: generatedAt.addingTimeInterval(1),
+                keys: keys
+            )
+        )
+
+        let wrongDomain = PokemonCatalogRelease(
+            catalogKind: "magic",
+            revision: 1,
+            generatedAt: generatedAt,
+            sets: legacy.sets
+        )
+        let wrongEnvelope = try PokemonCatalogSignatureVerifier.sign(
+            release: wrongDomain,
+            privateKey: privateKey,
+            keyID: "fixture"
+        )
+        XCTAssertThrowsError(
+            try PokemonCatalogSignatureVerifier.verify(
+                envelope: wrongEnvelope,
+                now: generatedAt.addingTimeInterval(1),
+                keys: keys
+            )
+        ) { error in
+            guard case PokemonCatalogSignatureError.wrongCatalogKind("magic") = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
         }
     }
 
