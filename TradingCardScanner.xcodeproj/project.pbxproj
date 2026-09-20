@@ -389,6 +389,7 @@
 		B00200F7 /* UncoveredSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UncoveredSurfaceTests.swift; sourceTree = "<group>"; };
 		B0010072 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B0010073 /* TradingCardScanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TradingCardScanner.entitlements; sourceTree = "<group>"; };
+		B0010120 /* PokemonCatalogProduction.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/PokemonCatalogProduction.xcconfig; sourceTree = "<group>"; };
 		B0010106 /* CollectionStorageBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrap.swift; sourceTree = "<group>"; };
 		B0010107 /* CardScannerExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScannerExternalLinks.swift; sourceTree = "<group>"; };
 		B0010108 /* CollectionStorageBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapView.swift; sourceTree = "<group>"; };
@@ -469,6 +470,7 @@
 				D0020001 /* TradingCardScannerTests */,
 				D0010009 /* Products */,
 				004FE150303B8479000E0745 /* Recovered References */,
+				B0010120 /* PokemonCatalogProduction.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1154,6 +1156,7 @@
 		};
 		F0010009 /* DebugProduction */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0010120 /* PokemonCatalogProduction.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TradingCardScanner/TradingCardScanner.entitlements;
@@ -1173,10 +1176,6 @@
 					"@executable_path/Frameworks",
 				);
 			MARKETING_VERSION = 1.0;
-			POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = "catalog.scan-stash.com";
-			POKEMON_CATALOG_BASE_URL = "https://catalog.scan-stash.com";
-			POKEMON_CATALOG_ROLLOUT_MODE = "bundled-validation-only";
-			POKEMON_CATALOG_PINNED_KEYS = "";
 			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1187,6 +1186,7 @@
 		};
 		F0010007 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0010120 /* PokemonCatalogProduction.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TradingCardScanner/TradingCardScanner.entitlements;
@@ -1203,10 +1203,6 @@
 					"@executable_path/Frameworks",
 				);
 			MARKETING_VERSION = 1.0;
-			POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = "catalog.scan-stash.com";
-			POKEMON_CATALOG_BASE_URL = "https://catalog.scan-stash.com";
-			POKEMON_CATALOG_ROLLOUT_MODE = "bundled-validation-only";
-			POKEMON_CATALOG_PINNED_KEYS = "";
 			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

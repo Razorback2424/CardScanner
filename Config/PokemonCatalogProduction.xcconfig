@@ -1,5 +1,5 @@
 // Production catalog configuration used for the gated Slice F rollout.
-// Remote authority remains disabled until the validation-only rehearsal passes.
+// Rollout mode is selected explicitly below for each deployment stage.
 // `/$()/` keeps the xcconfig parser from treating the URL's `//` as a
 // comment; Xcode expands the empty variable reference back to `https://`.
 POKEMON_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
