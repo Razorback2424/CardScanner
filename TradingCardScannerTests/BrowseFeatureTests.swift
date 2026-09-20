@@ -4502,11 +4502,15 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertTrue(mee.full.absoluteString.hasSuffix("MEE/MEE_001_R_EN.png"))
     }
 
-    func testGalleryArtworkInheritsParentLogoAndKeepsProviderIdentity() throws {
+    func testGalleryArtworkUsesSignedInheritedLogoAndKeepsProviderIdentity() throws {
         let provider = try decode(TCGdexSetCatalog.self, from: """
         {"id":"swsh10tg","name":"Lost Origin Trainer Gallery","cards":[],"cardCount":{"total":0,"official":0}}
         """)
-        let base = sampleSet(id: "swsh10tg", name: "Lost Origin Trainer Gallery")
+        let base = sampleSet(
+            id: "swsh10tg",
+            name: "Lost Origin Trainer Gallery",
+            logoURL: URL(string: "https://assets.tcgdex.net/en/swsh/swsh10/logo.png")
+        )
 
         let enriched = PokemonMasterSetChecklistBuilder.enrichedSet(base, providerSet: provider)
 
@@ -4778,23 +4782,20 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(candidates.suffix(2), [.remote(cardOne), .remote(cardTwo)])
     }
 
-    func testSetArtworkSourceUsesCel25ccParentLogoBeforeBundledArtwork() {
-        let set = sampleSet(id: "cel25cc", name: "Celebrations Classic Collection")
+    func testSetArtworkSourceUsesSignedInheritedLogoWithoutClientParentRules() {
+        let inheritedLogo = URL(string: "https://assets.tcgdex.net/en/me/30th/logo.png")!
+        let set = sampleSet(
+            id: "30th-c",
+            name: "30th Celebration Classic Collection",
+            logoURL: inheritedLogo
+        )
         let candidates = PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates
-        let parent = PokemonArtworkFallbacks.parentLogoURL(forProviderID: "cel25cc")
 
-        XCTAssertEqual(candidates.first, parent.map(PokemonArtworkFallbacks.Candidate.remote))
-        XCTAssertEqual(
-            candidates.dropFirst().first,
-            parent.flatMap { URL(string: $0.absoluteString.replacingOccurrences(of: ".png", with: "")) }
-                .map(PokemonArtworkFallbacks.Candidate.remote)
-        )
-        XCTAssertEqual(
-            candidates.dropFirst(2).first,
-            parent.flatMap { URL(string: "\($0.absoluteString.replacingOccurrences(of: ".png", with: "")).webp") }
-                .map(PokemonArtworkFallbacks.Candidate.remote)
-        )
-        XCTAssertEqual(candidates.dropFirst(3).first, .bundled("PokemonSetArtwork_cel25cc_logo"))
+        XCTAssertEqual(candidates.first, .remote(inheritedLogo))
+        XCTAssertFalse(candidates.contains { candidate in
+            guard case let .remote(url) = candidate else { return false }
+            return url.path.contains("/swsh/")
+        })
     }
 
     func testCatalogCachedImageSkipsMissingBundledCandidate() {

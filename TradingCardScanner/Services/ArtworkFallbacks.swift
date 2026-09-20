@@ -22,27 +22,10 @@ enum PokemonArtworkFallbacks {
         let candidates: [Candidate]
     }
 
-    /// TCGdex exposes gallery rows as separate sets but does not publish their
-    /// own logo or symbol. These are the provider set ids whose parent artwork
-    /// is the honest visual identity for the gallery.
-    private struct ParentArtworkRule: Equatable, Sendable {
-        let parentID: String
-        let logoBeforeBundled: Bool
-    }
-
-    private static let parentArtworkRules: [String: ParentArtworkRule] = [
-        "cel25cc": ParentArtworkRule(parentID: "cel25", logoBeforeBundled: true),
-        "swsh9tg": ParentArtworkRule(parentID: "swsh9", logoBeforeBundled: false),
-        "swsh10tg": ParentArtworkRule(parentID: "swsh10", logoBeforeBundled: false),
-        "swsh11tg": ParentArtworkRule(parentID: "swsh11", logoBeforeBundled: false),
-        "swsh12tg": ParentArtworkRule(parentID: "swsh12", logoBeforeBundled: false),
-        "swsh12.5gg": ParentArtworkRule(parentID: "swsh12.5", logoBeforeBundled: false),
-        "swsh4.5sv": ParentArtworkRule(parentID: "swsh4.5", logoBeforeBundled: false)
-    ]
-
     /// The source repository uses a few historical ids that do not exactly
-    /// match TCGdex. Values are source ids; keys are always TCGdex ids so local
-    /// asset lookup remains keyed by the app's provider identity.
+    /// match TCGdex. This compatibility map is only for legacy snapshots that
+    /// predate signed `bundledArtworkSourceID` metadata; new mappings belong
+    /// in the signed catalog descriptor.
     private static let localSourceIDs: [String: String] = [
         "base1": "base1",
         "bog": "bp",
@@ -64,17 +47,23 @@ enum PokemonArtworkFallbacks {
         "swsh4.5sv": "swsh45sv"
     ]
 
-    static func parentLogoURL(forProviderID providerID: String) -> URL? {
-        guard let rule = parentArtworkRules[providerID.lowercased()] else { return nil }
-        return URL(string: "https://assets.tcgdex.net/en/swsh/\(rule.parentID)/logo.png")
-    }
-
     static func localAssetName(
         forProviderID providerID: String,
+        sourceID: String? = nil,
         kind: PokemonSetArtworkKind
     ) -> String? {
         let normalizedID = providerID.lowercased()
-        guard localSourceIDs[normalizedID] != nil else { return nil }
+        let hasBundledArtwork: Bool
+        if let sourceID {
+            hasBundledArtwork = !sourceID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        } else {
+            hasBundledArtwork = localSourceIDs[normalizedID] != nil
+        }
+        guard hasBundledArtwork else { return nil }
+
+        // `sourceID` identifies the reviewed source artifact; the compiled
+        // asset name remains keyed by provider ID for compatibility with the
+        // existing asset catalog and its generated names.
         let safeID = normalizedID.replacingOccurrences(of: ".", with: "_")
         return "PokemonSetArtwork_\(safeID)_\(kind.rawValue)"
     }
@@ -85,9 +74,6 @@ enum PokemonArtworkFallbacks {
     ) -> SetSource {
         let requestedURL = kind == .logo ? set.logoURL : set.symbolURL
         let alternateURL = kind == .logo ? set.symbolURL : set.logoURL
-        let inheritedLogoURL = set.game == .pokemon
-            ? parentLogoURL(forProviderID: set.providerID)
-            : nil
         let alternateKind: PokemonSetArtworkKind = kind == .logo ? .symbol : .logo
         var candidates: [Candidate] = []
 
@@ -128,25 +114,26 @@ enum PokemonArtworkFallbacks {
         // bundled copy of that same kind is next so an offline set directory
         // cannot make a tile wait for a network timeout before it can render.
         appendRemote(requestedURL, includingSymbolPrefixSibling: kind == .symbol)
-        if kind == .logo,
-           set.game == .pokemon,
-           parentArtworkRules[set.providerID.lowercased()]?.logoBeforeBundled == true {
-            // Some gallery entries have a parent logo that is more truthful
-            // than their local asset. The per-entry rule keeps this exception
-            // data-driven while preserving the requested candidate order.
-            appendRemote(inheritedLogoURL)
-        }
         if set.game == .pokemon {
-            append(localAssetName(forProviderID: set.providerID, kind: kind).map(Candidate.bundled))
+            append(
+                localAssetName(
+                    forProviderID: set.providerID,
+                    sourceID: set.bundledArtworkSourceID,
+                    kind: kind
+                ).map(Candidate.bundled)
+            )
         }
 
         // Symbols and logos are visually interchangeable only as a last resort.
         appendRemote(alternateURL, includingSymbolPrefixSibling: alternateKind == .symbol)
-        if kind == .logo, set.game == .pokemon {
-            appendRemote(inheritedLogoURL)
-        }
         if set.game == .pokemon {
-            append(localAssetName(forProviderID: set.providerID, kind: alternateKind).map(Candidate.bundled))
+            append(
+                localAssetName(
+                    forProviderID: set.providerID,
+                    sourceID: set.bundledArtworkSourceID,
+                    kind: alternateKind
+                ).map(Candidate.bundled)
+            )
         }
 
         // Card artwork is intentionally a sequential last resort. The

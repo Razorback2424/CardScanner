@@ -116,6 +116,8 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                             cardCount: entry.set.cardCount,
                             releaseDate: entry.set.releaseDate,
                             sortRank: entry.set.sortRank,
+                            bundledArtworkSourceID: entry.set.bundledArtworkSourceID
+                                ?? existing.set.bundledArtworkSourceID,
                             artworkFallbackURLs: artworkFallbackURLs
                         )
                     } else {
@@ -206,7 +208,6 @@ enum PokemonMasterSetChecklistBuilder {
             guard PokemonMasterSetDefinition.includesInSetDirectory(row) else {
                 return nil
             }
-            let parentLogoURL = PokemonArtworkFallbacks.parentLogoURL(forProviderID: row.id)
             let descriptor = registry?.descriptor(forProviderSetID: row.id)
             let displayCode: String
             if let registryCode = descriptor.flatMap({ descriptor in
@@ -229,12 +230,8 @@ enum PokemonMasterSetChecklistBuilder {
                 catalogID: CatalogSetID(game: .pokemon, providerID: row.id),
                 name: descriptor?.displayName ?? row.name,
                 code: displayCode,
-                // Gallery rows inherit the parent provider logo when TCGdex
-                // omits their own assets. This is also applied again in
-                // `enrichedSet` for the generated/offline checklist path.
                 logoURL: descriptor?.logoURL.flatMap(URL.init(string:))
-                    ?? assetURL(row.logo, suffix: ".png")
-                    ?? parentLogoURL,
+                    ?? assetURL(row.logo, suffix: ".png"),
                 symbolURL: descriptor?.symbolURL.flatMap(URL.init(string:))
                     ?? assetURL(row.symbol, suffix: ".png"),
                 cardCount: row.cardCount.map {
@@ -245,7 +242,8 @@ enum PokemonMasterSetChecklistBuilder {
                     )
                 },
                 releaseDate: descriptor?.releaseDate.flatMap(FlexibleDate.parse),
-                sortRank: descriptor?.releaseOrder ?? (rows.count - index)
+                sortRank: descriptor?.releaseOrder ?? (rows.count - index),
+                bundledArtworkSourceID: descriptor?.bundledArtworkSourceID
             )
         }
         return baseSets
@@ -364,14 +362,12 @@ enum PokemonMasterSetChecklistBuilder {
         _ set: CatalogSet,
         providerSet: TCGdexSetCatalog
     ) -> CatalogSet {
-        let parentLogoURL = PokemonArtworkFallbacks.parentLogoURL(forProviderID: providerSet.id)
         return CatalogSet(
             catalogID: set.catalogID,
             name: set.name,
             code: set.code,
             logoURL: set.logoURL
-                ?? assetURL(providerSet.logo, suffix: ".png")
-                ?? parentLogoURL,
+                ?? assetURL(providerSet.logo, suffix: ".png"),
             symbolURL: set.symbolURL
                 ?? assetURL(providerSet.symbol, suffix: ".png"),
             cardCount: providerSet.cardCount.map {
@@ -384,6 +380,7 @@ enum PokemonMasterSetChecklistBuilder {
             releaseDate: set.releaseDate
                 ?? providerSet.releaseDate.flatMap(FlexibleDate.parse),
             sortRank: set.sortRank,
+            bundledArtworkSourceID: set.bundledArtworkSourceID,
             artworkFallbackURLs: set.artworkFallbackURLs
         )
     }
@@ -404,6 +401,7 @@ enum PokemonMasterSetChecklistBuilder {
             cardCount: set.cardCount,
             releaseDate: set.releaseDate,
             sortRank: set.sortRank,
+            bundledArtworkSourceID: set.bundledArtworkSourceID,
             artworkFallbackURLs: limitedURLs.isEmpty ? nil : limitedURLs
         )
     }
