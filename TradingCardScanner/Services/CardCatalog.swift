@@ -34,7 +34,8 @@ enum PokemonOfflineCardFactory {
         summaries: [CatalogCardSummary],
         setName: String,
         providerSetID: String,
-        officialCount: Int
+        officialCount: Int,
+        localID: String? = nil
     ) -> TCGdexCard {
         // One numbered Pokémon card may occupy several checklist rows: normal,
         // holo, reverse, and named parallels are all distinct physical objects.
@@ -73,7 +74,7 @@ enum PokemonOfflineCardFactory {
         )
         return TCGdexCard(
             id: summaries[0].providerID,
-            localId: summaries[0].collectorNumber,
+            localId: localID ?? summaries[0].collectorNumber,
             name: summaries[0].name,
             image: summaries.compactMap { imageBaseURL(for: $0.imageURL) }.first,
             rarity: nil,
@@ -143,7 +144,7 @@ enum PokemonOfflineCardFactory {
             // secret rares/parallel rows. Use the provider denominator saved
             // by the snapshot builder, with the modern map as a compatibility
             // fallback for older manifests that predate this field.
-            candidateSetIDs = Set(snapshot.manifest.entries.compactMap { entry in
+            let liveCandidateSetIDs = Set(snapshot.manifest.entries.compactMap { entry in
                 let officialCount = entry.officialCount
                     ?? registry.officialCount(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.officialCount(forProviderSetID: entry.providerID)
@@ -152,6 +153,12 @@ enum PokemonOfflineCardFactory {
                     ? entry.providerID.lowercased()
                     : nil
             })
+            candidateSetIDs = liveCandidateSetIDs.union(
+                PokemonHistoricalIdentityResolver.membershipSetIDs(
+                    for: evidence,
+                    in: registry
+                )
+            )
         case .subset:
             candidateSetIDs = Set(
                 PokemonHistoricalIdentityResolver.candidateSetIDs(
@@ -173,10 +180,20 @@ enum PokemonOfflineCardFactory {
                     setID: entry.providerID,
                     setName: entry.set.name,
                     localID: summary.collectorNumber,
-                    name: summary.name
+                    name: summary.name,
+                    releaseYear: entry.set.releaseDate.map {
+                        Calendar(identifier: .gregorian).component(.year, from: $0)
+                    }
                 )
                 summariesByProviderID[providerID] = (summary, entry.set)
             }
+        }
+
+        for identity in PokemonHistoricalIdentityResolver.membershipIdentities(
+            for: evidence,
+            in: registry
+        ) where summariesByProviderID[identity.providerID.lowercased()] != nil {
+            identitiesByProviderID[identity.providerID.lowercased()] = identity
         }
 
         switch PokemonHistoricalIdentityResolver.resolve(
@@ -193,7 +210,8 @@ enum PokemonOfflineCardFactory {
                 summaries: [value.summary],
                 setName: identity.setName,
                 providerSetID: identity.setID,
-                officialCount: officialCount
+                officialCount: officialCount,
+                localID: identity.localID
             )
             return .pokemon(card, setCode: value.summary.setCode)
         case .ambiguous, .unsupported:
@@ -277,10 +295,16 @@ actor PokemonOfflineCatalog {
         // while checklist files are being read, but one resolution must never
         // combine candidate filtering from two registry revisions.
         let registry = self.registry
+        let membershipSetIDs = Set(
+            PokemonHistoricalIdentityResolver.membershipSetIDs(
+                for: evidence,
+                in: registry
+            )
+        )
         let candidateSetIDs: Set<String>
         switch evidence.number.scheme {
         case .officialSet:
-            candidateSetIDs = Set(entries.compactMap { entry in
+            let liveCandidateSetIDs = Set(entries.compactMap { entry in
                 let officialCount = entry.officialCount
                     ?? registry.officialCount(forProviderSetID: entry.providerID)
                     ?? PokemonCatalogRegistry.bundledSeed.officialCount(forProviderSetID: entry.providerID)
@@ -289,6 +313,7 @@ actor PokemonOfflineCatalog {
                     ? entry.providerID.lowercased()
                     : nil
             })
+            candidateSetIDs = liveCandidateSetIDs.union(membershipSetIDs)
         case .subset:
             candidateSetIDs = Set(
                 PokemonHistoricalIdentityResolver.candidateSetIDs(
@@ -302,7 +327,8 @@ actor PokemonOfflineCatalog {
         var matchingEntries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
         for entry in entries where candidateSetIDs.contains(entry.providerID.lowercased())
-            && !registry.isScanDisabled(forProviderSetID: entry.providerID) {
+            && (!registry.isScanDisabled(forProviderSetID: entry.providerID)
+                || membershipSetIDs.contains(entry.providerID.lowercased())) {
             guard let cards = await store.mergedChecklist(for: entry.set.catalogID) else { continue }
             matchingEntries.append(entry)
             checklists[entry.set.id] = cards
@@ -1415,11 +1441,16 @@ actor PokemonHistoricalCatalog {
         for evidence: PokemonHistoricalScanEvidence,
         registry: PokemonCatalogRegistry
     ) async throws -> IdentifiedCard {
-        let setIDs = try await candidateSetIDs(for: evidence, registry: registry)
+        let liveSetIDs = try await liveCandidateSetIDs(for: evidence, registry: registry)
+        let membershipSetIDs = PokemonHistoricalIdentityResolver.membershipSetIDs(
+            for: evidence,
+            in: registry
+        )
+        let setIDs = Array(Set(liveSetIDs + membershipSetIDs)).sorted()
         guard !setIDs.isEmpty else { throw PokemonHistoricalCatalogError.unsupported }
 
         let catalogs = try await withThrowingTaskGroup(of: TCGdexSetCatalog.self) { group in
-            for setID in setIDs {
+            for setID in liveSetIDs {
                 group.addTask { try await self.catalog(for: setID) }
             }
             var values: [TCGdexSetCatalog] = []
@@ -1437,6 +1468,10 @@ actor PokemonHistoricalCatalog {
             validatedCatalogs = catalogs
         }
         let identities = PokemonHistoricalIdentityResolver.identities(in: validatedCatalogs)
+            + PokemonHistoricalIdentityResolver.membershipIdentities(
+                for: evidence,
+                in: registry
+            )
         let identity: PokemonCatalogCardIdentity
         switch PokemonHistoricalIdentityResolver.resolve(
             evidence,
@@ -1472,18 +1507,57 @@ actor PokemonHistoricalCatalog {
             throw TCGdexError.identityMismatch
         }
         let card = try await fetchCard(providerID: identity.providerID)
-        guard card.id == identity.providerID,
-              card.set.id.caseInsensitiveCompare(identity.setID) == .orderedSame,
-              PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
-                == PokemonHistoricalIdentityResolver.canonicalLocalID(identity.localID),
+        let isMembership = PokemonHistoricalIdentityResolver.isMembershipIdentity(
+            identity,
+            in: registrySnapshot
+        )
+        guard card.id.caseInsensitiveCompare(identity.providerID) == .orderedSame,
               CatalogIdentityNormalization.canonicalText(card.name)
                 == CatalogIdentityNormalization.canonicalText(identity.name) else {
             throw TCGdexError.identityMismatch
         }
-        return .pokemon(card, setCode: card.set.id.uppercased())
+        if !isMembership {
+            guard card.set.id.caseInsensitiveCompare(identity.setID) == .orderedSame,
+                  PokemonHistoricalIdentityResolver.canonicalLocalID(card.localId)
+                    == PokemonHistoricalIdentityResolver.canonicalLocalID(identity.localID) else {
+                throw TCGdexError.identityMismatch
+            }
+            return .pokemon(card, setCode: card.set.id.uppercased())
+        }
+
+        let printedCount = evidence.number.denominator
+        let materializedSet = TCGdexSetBrief(
+            id: card.set.id,
+            name: identity.setName,
+            cardCount: TCGdexCardCount(total: printedCount, official: printedCount)
+        )
+        let materializedCard = TCGdexCard(
+            id: card.id,
+            localId: identity.localID,
+            name: card.name,
+            image: card.image,
+            rarity: card.rarity,
+            set: materializedSet,
+            variants: card.variants,
+            pricing: card.pricing,
+            variantsDetailed: card.variantsDetailed
+        )
+        return .pokemon(materializedCard, setCode: card.set.id.uppercased())
     }
 
     private func candidateSetIDs(
+        for evidence: PokemonHistoricalScanEvidence,
+        registry: PokemonCatalogRegistry
+    ) async throws -> [String] {
+        let live = try await liveCandidateSetIDs(for: evidence, registry: registry)
+        let membership = PokemonHistoricalIdentityResolver.membershipSetIDs(
+            for: evidence,
+            in: registry
+        )
+        return Array(Set(live + membership)).sorted()
+    }
+
+    private func liveCandidateSetIDs(
         for evidence: PokemonHistoricalScanEvidence,
         registry: PokemonCatalogRegistry
     ) async throws -> [String] {

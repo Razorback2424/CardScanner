@@ -45,6 +45,37 @@ public struct PokemonCatalogRelease: Codable, Equatable, Sendable {
     }
 }
 
+/// A provider-backed membership list for a product whose physical printed
+/// identities are not represented by the provider's local IDs. The provider
+/// card ID remains the stable lookup key; the printed identity is the signed
+/// recognition evidence used by the scanner.
+public struct PokemonCatalogMembershipRecognition: Codable, Equatable, Hashable, Sendable {
+    public struct Member: Codable, Equatable, Hashable, Sendable {
+        public let providerCardID: String
+        public let canonicalName: String
+        public let printedLocalID: String
+        public let printedDenominator: Int
+
+        public init(
+            providerCardID: String,
+            canonicalName: String,
+            printedLocalID: String,
+            printedDenominator: Int
+        ) {
+            self.providerCardID = providerCardID
+            self.canonicalName = canonicalName
+            self.printedLocalID = printedLocalID
+            self.printedDenominator = printedDenominator
+        }
+    }
+
+    public let members: [Member]
+
+    public init(members: [Member]) {
+        self.members = members
+    }
+}
+
 public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendable {
     public enum RecognitionKind: String, Codable, Sendable {
         case expansion
@@ -69,6 +100,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     public let logoURL: String?
     public let symbolURL: String?
     public let rulesVersion: Int
+    public let membershipRecognition: PokemonCatalogMembershipRecognition?
 
     public init(
         providerSetID: String,
@@ -84,7 +116,8 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         scanEnabled: Bool,
         logoURL: String?,
         symbolURL: String?,
-        rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion
+        rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
+        membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
         self.providerSetID = providerSetID
         self.displayName = displayName
@@ -100,6 +133,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         self.logoURL = logoURL
         self.symbolURL = symbolURL
         self.rulesVersion = rulesVersion
+        self.membershipRecognition = membershipRecognition
     }
 
     public func catalogLocalID(number: Int) -> String? {
@@ -313,6 +347,7 @@ public enum PokemonCatalogReleaseValidator {
             guard descriptor.releaseOrder == nil || descriptor.releaseOrder! >= 0 else {
                 throw ValidationError.invalidDescriptor("release order must be non-negative")
             }
+            try validateMembershipRecognition(descriptor.membershipRecognition)
 
             switch descriptor.recognitionKind {
             case .expansion:
@@ -395,6 +430,93 @@ public enum PokemonCatalogReleaseValidator {
         let characters = Array(value.uppercased())
         return (2...6).contains(characters.count)
             && characters.allSatisfy { $0.isLetter || $0.isNumber }
+    }
+
+    private static func validateMembershipRecognition(
+        _ recognition: PokemonCatalogMembershipRecognition?
+    ) throws {
+        guard let recognition else { return }
+        guard !recognition.members.isEmpty else {
+            throw ValidationError.invalidDescriptor(
+                "membership recognition requires at least one member"
+            )
+        }
+
+        var providerCardIDs = Set<String>()
+        var physicalIdentities = Set<String>()
+        for member in recognition.members {
+            let providerCardID = member.providerCardID.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !providerCardID.isEmpty else {
+                throw ValidationError.invalidDescriptor(
+                    "membership rows require a provider card ID"
+                )
+            }
+            guard providerCardIDs.insert(providerCardID.lowercased()).inserted else {
+                throw ValidationError.invalidDescriptor(
+                    "membership rows must have unique provider card IDs"
+                )
+            }
+
+            let canonicalName = canonicalMembershipName(member.canonicalName)
+            guard !canonicalName.isEmpty else {
+                throw ValidationError.invalidDescriptor(
+                    "membership rows require a canonical name"
+                )
+            }
+            guard isPrintedLocalID(member.printedLocalID) else {
+                throw ValidationError.invalidDescriptor(
+                    "membership rows require a printed local ID containing digits"
+                )
+            }
+            guard (1...10_000).contains(member.printedDenominator) else {
+                throw ValidationError.invalidDescriptor(
+                    "membership rows require a printed denominator between 1 and 10,000"
+                )
+            }
+
+            let physicalIdentity = "\(canonicalName)|\(canonicalLocalID(member.printedLocalID))/\(member.printedDenominator)"
+            guard physicalIdentities.insert(physicalIdentity).inserted else {
+                throw ValidationError.invalidDescriptor(
+                    "membership rows must have unique canonical name and printed identity pairs"
+                )
+            }
+        }
+    }
+
+    private static func isPrintedLocalID(_ value: String) -> Bool {
+        let characters = Array(value.trimmingCharacters(in: .whitespacesAndNewlines))
+        guard !characters.isEmpty else { return false }
+        var index = 0
+        while index < characters.count, characters[index].isLetter {
+            index += 1
+        }
+        let digitStart = index
+        while index < characters.count, characters[index].isNumber {
+            index += 1
+        }
+        guard index > digitStart else { return false }
+        return characters[index...].allSatisfy(\.isLetter)
+    }
+
+    private static func canonicalMembershipName(_ value: String) -> String {
+        let folded = value.folding(
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: .current
+        ).replacingOccurrences(of: "&", with: " and ")
+        return folded.unicodeScalars.map { scalar in
+            CharacterSet.alphanumerics.contains(scalar) ? String(scalar) : " "
+        }
+        .joined()
+        .split(whereSeparator: { $0 == " " })
+        .joined(separator: " ")
+    }
+
+    private static func canonicalLocalID(_ value: String) -> String {
+        let compact = value.uppercased().filter { !$0.isWhitespace }
+        let prefix = compact.prefix { $0.isLetter }
+        let suffix = compact.dropFirst(prefix.count)
+        guard let number = Int(suffix) else { return compact }
+        return "\(prefix)\(number)"
     }
 
     private static func areOCRConfusable(_ first: String, _ second: String) -> Bool {

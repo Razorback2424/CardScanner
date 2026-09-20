@@ -692,6 +692,69 @@ struct PokemonCatalogCardIdentity: Equatable, Hashable, Sendable {
     let setName: String
     let localID: String
     let name: String
+    /// Presentation metadata for the one-tap printing picker. It is not part
+    /// of catalog identity: providers may revise a release date without
+    /// changing which card record the user selected.
+    let releaseYear: Int?
+
+    init(
+        providerID: String,
+        setID: String,
+        setName: String,
+        localID: String,
+        name: String,
+        releaseYear: Int? = nil
+    ) {
+        self.providerID = providerID
+        self.setID = setID
+        self.setName = setName
+        self.localID = localID
+        self.name = name
+        self.releaseYear = releaseYear
+    }
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.providerID == rhs.providerID
+            && lhs.setID == rhs.setID
+            && lhs.setName == rhs.setName
+            && lhs.localID == rhs.localID
+            && lhs.name == rhs.name
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(providerID)
+        hasher.combine(setID)
+        hasher.combine(setName)
+        hasher.combine(localID)
+        hasher.combine(name)
+    }
+
+    /// Short, collector-facing copy for the identity choice bar. Full set
+    /// names remain on the resolved card; this label only has to make two
+    /// legitimate printings easy to distinguish under a thumb.
+    var choiceLabel: String {
+        let conciseName = Self.conciseSetName(setName)
+        guard let releaseYear else { return conciseName }
+        return "\(conciseName) · \(releaseYear)"
+    }
+
+    private static func conciseSetName(_ raw: String) -> String {
+        let suffixes = [
+            " Celebration Classic Collection",
+            " Celebrations Classic Collection",
+            " Classic Collection"
+        ]
+        let lowercased = raw.lowercased()
+        for suffix in suffixes {
+            guard lowercased.hasSuffix(suffix.lowercased()) else { continue }
+            let prefix = String(raw.dropLast(suffix.count))
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            if !prefix.isEmpty {
+                return "\(prefix) Classic"
+            }
+        }
+        return raw
+    }
 }
 
 enum PokemonHistoricalIdentityResolution: Equatable, Sendable {
@@ -732,6 +795,83 @@ enum PokemonHistoricalIdentityResolver {
         candidateSetIDs(for: evidence.number, in: directory)
     }
 
+    /// Membership descriptors are an additional source of candidate
+    /// identities. They are intentionally unioned with the live provider
+    /// directory instead of taking precedence over it: a shared printed
+    /// number is a real collision, and uniqueness is decided only after both
+    /// candidate pools have been merged.
+    static func candidateSetIDs(
+        for evidence: PokemonHistoricalScanEvidence,
+        in directory: [CatalogSetReference],
+        registry: PokemonCatalogRegistry
+    ) -> [String] {
+        Array(
+            Set(
+                candidateSetIDs(for: evidence, in: directory)
+                    .filter { !registry.isScanDisabled(forProviderSetID: $0) }
+                    + membershipSetIDs(for: evidence, in: registry)
+            )
+        )
+        .map { $0.lowercased() }
+        .sorted()
+    }
+
+    static func membershipSetIDs(
+        for evidence: PokemonHistoricalScanEvidence,
+        in registry: PokemonCatalogRegistry
+    ) -> [String] {
+        guard case .officialSet = evidence.number.scheme else { return [] }
+        return Array(
+            Set(membershipIdentities(for: evidence, in: registry).map { $0.setID.lowercased() })
+        ).sorted()
+    }
+
+    static func membershipIdentities(
+        for evidence: PokemonHistoricalScanEvidence,
+        in registry: PokemonCatalogRegistry
+    ) -> [PokemonCatalogCardIdentity] {
+        guard case .officialSet = evidence.number.scheme else { return [] }
+        let localID = canonicalLocalID(evidence.number.localID)
+        let titles = Set(evidence.titleCandidates)
+
+        var result: [PokemonCatalogCardIdentity] = []
+        for descriptor in registry.descriptors {
+            guard let recognition = descriptor.membershipRecognition else { continue }
+            for member in recognition.members {
+                guard member.printedDenominator == evidence.number.denominator,
+                      canonicalLocalID(member.printedLocalID) == localID,
+                      titles.contains(CatalogIdentityNormalization.canonicalText(member.canonicalName)) else {
+                    continue
+                }
+                result.append(
+                PokemonCatalogCardIdentity(
+                    providerID: member.providerCardID,
+                    setID: descriptor.providerSetID,
+                    setName: descriptor.displayName ?? descriptor.providerSetID,
+                    localID: member.printedLocalID,
+                    name: member.canonicalName,
+                    releaseYear: descriptor.releaseDate.flatMap(FlexibleDate.parse).map {
+                        Calendar(identifier: .gregorian).component(.year, from: $0)
+                    }
+                )
+                )
+            }
+        }
+        return result
+    }
+
+    static func isMembershipIdentity(
+        _ identity: PokemonCatalogCardIdentity,
+        in registry: PokemonCatalogRegistry
+    ) -> Bool {
+        guard let recognition = registry.membershipRecognition(
+            forProviderSetID: identity.setID
+        ) else { return false }
+        return recognition.members.contains {
+            $0.providerCardID.caseInsensitiveCompare(identity.providerID) == .orderedSame
+        }
+    }
+
     static func candidateSetIDs(
         for number: PokemonPrintedNumberEvidence,
         in directory: [CatalogSetReference]
@@ -764,7 +904,7 @@ enum PokemonHistoricalIdentityResolver {
                 && titles.contains(CatalogIdentityNormalization.canonicalText(card.name))
         }
         let unique = Dictionary(
-            matches.map { ($0.providerID, $0) },
+            matches.map { ($0.providerID.lowercased(), $0) },
             uniquingKeysWith: { first, _ in first }
         ).values.sorted {
             if $0.setID != $1.setID { return $0.setID < $1.setID }
@@ -786,7 +926,10 @@ enum PokemonHistoricalIdentityResolver {
                     setID: set.id,
                     setName: set.name,
                     localID: card.localId,
-                    name: card.name
+                    name: card.name,
+                    releaseYear: set.releaseDate.flatMap(FlexibleDate.parse).map {
+                        Calendar(identifier: .gregorian).component(.year, from: $0)
+                    }
                 )
             }
         }

@@ -475,27 +475,47 @@ struct IdentityChoiceBar: View {
                 .accessibilityLabel("Skip this card")
             }
 
-            Text("The printed details exist in more than one set. Which symbol is on the card?")
+            Text("Which printing is this?")
                 .font(.caption)
                 .foregroundStyle(.white.opacity(0.75))
 
-            ForEach(choice.candidates, id: \.providerID) { candidate in
-                Button {
-                    onChoose(candidate)
-                } label: {
-                    Text(candidate.setName)
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 48)
+            if choice.displayCandidates.count <= 3 {
+                HStack(spacing: 10) {
+                    ForEach(choice.displayCandidates, id: \.providerID) { candidate in
+                        button(for: candidate)
+                    }
                 }
-                .appGlassOptionButton()
-                .foregroundStyle(.white)
-                .accessibilityLabel("Select \(candidate.setName) for \(candidate.name)")
+            } else {
+                LazyVGrid(
+                    columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)],
+                    spacing: 10
+                ) {
+                    ForEach(choice.displayCandidates, id: \.providerID) { candidate in
+                        button(for: candidate)
+                    }
+                }
             }
         }
         .foregroundStyle(.white)
         .padding(14)
         .appGlass()
+    }
+
+    private func button(for candidate: PokemonCatalogCardIdentity) -> some View {
+        let label = candidate.choiceLabel
+        return Button {
+            onChoose(candidate)
+        } label: {
+            Text(label)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+                .frame(maxWidth: .infinity)
+                .frame(height: 50)
+        }
+        .appGlassOptionButton()
+        .foregroundStyle(.white)
+        .accessibilityLabel("Select \(label) for \(candidate.name)")
     }
 }
 

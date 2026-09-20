@@ -94,6 +94,7 @@ actor ScannerCollectionWriter {
                         certificationNumber: slab.certificationNumber,
                         setReleaseOrder: candidate.card.setReleaseOrder,
                         pokemonPrintRun: candidate.pokemonPrintRun,
+                        identityResolution: candidate.identityResolution,
                         resolved: candidate.resolved
                     )
                 case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
@@ -104,6 +105,7 @@ actor ScannerCollectionWriter {
                         certificationNumber: slab.certificationNumber,
                         setReleaseOrder: candidate.card.setReleaseOrder,
                         pokemonPrintRun: candidate.pokemonPrintRun,
+                        identityResolution: candidate.identityResolution,
                         resolved: candidate.resolved
                     )
                 }
@@ -118,6 +120,7 @@ actor ScannerCollectionWriter {
                 resolved: candidate.resolved,
                 source: .scan,
                 pokemonPrintRun: candidate.pokemonPrintRun,
+                identityResolution: candidate.identityResolution,
                 matchCatalogAliases: true,
                 savesChanges: false,
                 signpostID: persistenceID
@@ -570,7 +573,7 @@ struct CollectionStore {
                     case .rawCard:
                         switch card.identityResolution {
                         case .imported: source = .csvImport
-                        case .printedIdentifier: source = .scan
+                        case .printedIdentifier, .userSelectedPrinting: source = .scan
                         case .catalogSelected, .userCorrected, .none: source = .catalog
                         }
                     }
@@ -1815,6 +1818,7 @@ struct CollectionStore {
         certificationNumber: String?,
         setReleaseOrder: Int? = nil,
         pokemonPrintRun: PokemonPrintRun? = nil,
+        identityResolution: IdentityResolution = .catalogSelected,
         resolved: ResolvedVariant = ResolvedVariant(
             variant: nil,
             resolution: .userConfirmed
@@ -1959,7 +1963,7 @@ struct CollectionStore {
             // grade lives in its own fields.
             variant: resolved.variant,
             variantResolution: resolved.resolution,
-            identityResolution: .catalogSelected,
+            identityResolution: identityResolution,
             setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
             magicTreatments: magicTreatments,
             magicTreatmentQualifiers: magicTreatmentQualifiers,
@@ -2028,6 +2032,7 @@ struct CollectionStore {
         certificationNumber: String?,
         setReleaseOrder: Int? = nil,
         pokemonPrintRun: PokemonPrintRun? = nil,
+        identityResolution: IdentityResolution = .catalogSelected,
         resolved: ResolvedVariant = ResolvedVariant(
             variant: nil,
             resolution: .userConfirmed
@@ -2134,7 +2139,7 @@ struct CollectionStore {
                 thumbnailURL: card.thumbnailImageURL?.absoluteString,
                 variant: resolved.variant,
                 variantResolution: resolved.resolution,
-                identityResolution: .catalogSelected,
+                identityResolution: identityResolution,
                 setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
                 magicTreatments: magicTreatments,
                 magicTreatmentQualifiers: magicTreatmentQualifiers,

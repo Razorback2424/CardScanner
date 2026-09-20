@@ -313,6 +313,98 @@ final class ScanParserTests: XCTestCase {
         )
     }
 
+    func testMembershipCandidatesMergeWithLiveHistoricalCandidatesBeforeUniqueness() throws {
+        let membership = PokemonCatalogMembershipRecognition(members: [
+            .init(
+                providerCardID: "30th-c-011",
+                canonicalName: "crobat g",
+                printedLocalID: "47",
+                printedDenominator: 127
+            )
+        ])
+        let descriptor = PokemonCatalogSetDescriptor(
+            providerSetID: "30th-c",
+            displayName: "30th Celebration Classic Collection",
+            releaseDate: "2026-09-16",
+            releaseOrder: 23,
+            recognitionKind: .notScannable,
+            printedCode: nil,
+            officialCount: nil,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: false,
+            logoURL: nil,
+            symbolURL: nil,
+            membershipRecognition: membership
+        )
+        let registry = PokemonCatalogRegistry(
+            release: PokemonCatalogRelease(
+                revision: 1,
+                generatedAt: .now,
+                sets: [descriptor]
+            )
+        )
+        let evidence = try historicalEvidence(number: "47/127", title: "Crobat G")
+        let directory = try historicalDirectory([("pl1", 127, 127)])
+        let candidateSetIDs = PokemonHistoricalIdentityResolver.candidateSetIDs(
+            for: evidence,
+            in: directory,
+            registry: registry
+        )
+        XCTAssertEqual(candidateSetIDs, ["30th-c", "pl1"])
+
+        let live = historicalCard(
+            "pl1-47",
+            set: "pl1",
+            number: "47",
+            name: "Crobat G"
+        )
+        let membershipIdentity = try XCTUnwrap(
+            PokemonHistoricalIdentityResolver.membershipIdentities(
+                for: evidence,
+                in: registry
+            ).first
+        )
+        XCTAssertEqual(membershipIdentity.providerID, "30th-c-011")
+        XCTAssertEqual(membershipIdentity.localID, "47")
+        XCTAssertEqual(membershipIdentity.releaseYear, 2026)
+        XCTAssertEqual(membershipIdentity.choiceLabel, "30th Classic · 2026")
+
+        guard case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(
+            evidence,
+            candidateSetIDs: candidateSetIDs,
+            in: [live, membershipIdentity]
+        ) else {
+            return XCTFail("Classic and historical candidates must remain ambiguous until the user selects a printing")
+        }
+        XCTAssertEqual(matches.map(\.providerID), ["30th-c-011", "pl1-47"])
+    }
+
+    func testPrintingChoicesUseSetAndReleaseYearAndRecordTheirOwnProvenance() {
+        let platinum = PokemonCatalogCardIdentity(
+            providerID: "pl1-47",
+            setID: "pl1",
+            setName: "Platinum",
+            localID: "47",
+            name: "Crobat G",
+            releaseYear: 2009
+        )
+        let classic = PokemonCatalogCardIdentity(
+            providerID: "30th-c-011",
+            setID: "30th-c",
+            setName: "30th Celebration Classic Collection",
+            localID: "47",
+            name: "Crobat G",
+            releaseYear: 2026
+        )
+
+        XCTAssertEqual(platinum.choiceLabel, "Platinum · 2009")
+        XCTAssertEqual(classic.choiceLabel, "30th Classic · 2026")
+        XCTAssertEqual(IdentityResolution.userSelectedPrinting.label, "You selected printing")
+        XCTAssertNotEqual(IdentityResolution.userSelectedPrinting, .catalogSelected)
+    }
+
     func testOfficialCount32DoesNotMasqueradeAsHoloSubset() throws {
         let ordinary = try historicalEvidence(number: "11/32", title: "Houndoom")
         let directory = try historicalDirectory([("ordinary32", 32, 32)])

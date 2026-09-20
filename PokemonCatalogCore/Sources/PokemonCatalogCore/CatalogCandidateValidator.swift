@@ -11,6 +11,7 @@ public enum PokemonCatalogCandidateValidationError: Error, CustomStringConvertib
     case snapshotEntriesDoNotMatchRelease
     case snapshotChecklistsDoNotMatchEntries
     case snapshotFingerprintMismatch
+    case membershipRowsDoNotMatchSnapshot(String)
     case reportSetsDoNotMatchSnapshot
     case reportSetMismatch(String)
     case duplicateReportSet(String)
@@ -38,6 +39,8 @@ public enum PokemonCatalogCandidateValidationError: Error, CustomStringConvertib
             return "Candidate snapshot checklists do not match snapshot entries"
         case .snapshotFingerprintMismatch:
             return "Candidate snapshot directory fingerprint is incorrect"
+        case let .membershipRowsDoNotMatchSnapshot(id):
+            return "Membership recognition rows do not match provider checklist \(id)"
         case .reportSetsDoNotMatchSnapshot:
             return "Candidate review report sets do not match snapshot entries"
         case let .reportSetMismatch(id):
@@ -131,6 +134,30 @@ public enum PokemonCatalogCandidateValidator {
             throw PokemonCatalogCandidateValidationError.snapshotChecklistsDoNotMatchEntries
         }
 
+        for descriptor in build.release.sets {
+            guard let recognition = descriptor.membershipRecognition else { continue }
+            let id = descriptor.providerSetID.lowercased()
+            guard let checklist = build.snapshot.checklists[id] else {
+                throw PokemonCatalogCandidateValidationError.membershipRowsDoNotMatchSnapshot(id)
+            }
+            let checklistByID = Dictionary(
+                checklist.map { ($0.providerCardID.lowercased(), $0) },
+                uniquingKeysWith: { first, _ in first }
+            )
+            let memberIDs = Set(recognition.members.map { $0.providerCardID.lowercased() })
+            guard memberIDs.count == recognition.members.count,
+                  memberIDs == Set(checklistByID.keys) else {
+                throw PokemonCatalogCandidateValidationError.membershipRowsDoNotMatchSnapshot(id)
+            }
+            for member in recognition.members {
+                guard let summary = checklistByID[member.providerCardID.lowercased()],
+                      canonicalMembershipName(member.canonicalName)
+                        == canonicalMembershipName(summary.name) else {
+                    throw PokemonCatalogCandidateValidationError.membershipRowsDoNotMatchSnapshot(id)
+                }
+            }
+        }
+
         for entry in build.snapshot.entries {
             let id = entry.providerSetID
             guard let descriptor = releaseByID[id] else {
@@ -199,5 +226,18 @@ public enum PokemonCatalogCandidateValidator {
                 received: build.report.revision
             )
         }
+    }
+
+    private static func canonicalMembershipName(_ value: String) -> String {
+        let folded = value.folding(
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: .current
+        ).replacingOccurrences(of: "&", with: " and ")
+        return folded.unicodeScalars.map { scalar in
+            CharacterSet.alphanumerics.contains(scalar) ? String(scalar) : " "
+        }
+        .joined()
+        .split(whereSeparator: { $0 == " " })
+        .joined(separator: " ")
     }
 }

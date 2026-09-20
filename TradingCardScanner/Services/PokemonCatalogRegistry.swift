@@ -59,6 +59,10 @@ struct PokemonCatalogRegistry: Sendable {
         byProviderSetID[id.lowercased()]
     }
 
+    func membershipRecognition(forProviderSetID id: String) -> PokemonCatalogMembershipRecognition? {
+        descriptor(forProviderSetID: id)?.membershipRecognition
+    }
+
     var expansionCodes: [String] {
         byPrintedCode.keys.sorted()
     }
