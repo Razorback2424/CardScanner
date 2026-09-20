@@ -200,6 +200,15 @@ struct TCGdexCardCount: Decodable, Sendable {
     }
 }
 
+struct TCGdexSetSeries: Decodable, Sendable {
+    let id: String
+    let name: String?
+}
+
+struct TCGdexSetAbbreviation: Decodable, Sendable {
+    let official: String?
+}
+
 struct TCGdexSetCatalog: Decodable, Sendable {
     let id: String
     let name: String
@@ -209,9 +218,14 @@ struct TCGdexSetCatalog: Decodable, Sendable {
     let releaseDate: String?
     let tcgOnline: String?
     let cardCount: TCGdexCardCount?
+    /// Retained for provider evidence and artwork derivation parity. The app
+    /// never turns this value into scanner authority directly.
+    let serie: TCGdexSetSeries?
+    let abbreviation: TCGdexSetAbbreviation?
 
     enum CodingKeys: String, CodingKey {
         case id, name, cards, logo, symbol, releaseDate, tcgOnline, cardCount
+        case serie, abbreviation
     }
 }
 

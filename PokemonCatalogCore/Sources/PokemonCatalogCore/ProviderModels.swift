@@ -25,12 +25,34 @@ public struct PokemonCatalogProviderCardCount: Codable, Equatable, Hashable, Sen
     }
 }
 
+/// The nested metadata TCGdex publishes on detailed set responses. These
+/// values are provider evidence only; the publisher validates any proposed
+/// code before it can enter a signed release.
+public struct PokemonCatalogProviderSeries: Codable, Equatable, Hashable, Sendable {
+    public let id: String
+    public let name: String?
+
+    public init(id: String, name: String? = nil) {
+        self.id = id
+        self.name = name
+    }
+}
+
+public struct PokemonCatalogProviderAbbreviation: Codable, Equatable, Hashable, Sendable {
+    public let official: String?
+
+    public init(official: String? = nil) {
+        self.official = official
+    }
+}
+
 public struct PokemonCatalogProviderDirectoryRow: Codable, Equatable, Hashable, Sendable {
     public let id: String
     public let name: String
     public let logo: String?
     public let symbol: String?
     public let cardCount: PokemonCatalogProviderCardCount?
+    public let releaseDate: String?
     public let tcgOnline: String?
     /// Recorded fixtures can mark products such as Pokémon Pocket explicitly.
     /// A live adapter may set this from the provider's series endpoint before
@@ -43,6 +65,7 @@ public struct PokemonCatalogProviderDirectoryRow: Codable, Equatable, Hashable, 
         logo: String? = nil,
         symbol: String? = nil,
         cardCount: PokemonCatalogProviderCardCount? = nil,
+        releaseDate: String? = nil,
         tcgOnline: String? = nil,
         isUnsupportedProduct: Bool = false
     ) {
@@ -51,12 +74,13 @@ public struct PokemonCatalogProviderDirectoryRow: Codable, Equatable, Hashable, 
         self.logo = logo
         self.symbol = symbol
         self.cardCount = cardCount
+        self.releaseDate = releaseDate
         self.tcgOnline = tcgOnline
         self.isUnsupportedProduct = isUnsupportedProduct
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, logo, symbol, cardCount, tcgOnline, isUnsupportedProduct
+        case id, name, logo, symbol, cardCount, releaseDate, tcgOnline, isUnsupportedProduct
     }
 
     public init(from decoder: Decoder) throws {
@@ -66,6 +90,7 @@ public struct PokemonCatalogProviderDirectoryRow: Codable, Equatable, Hashable, 
         logo = try container.decodeIfPresent(String.self, forKey: .logo)
         symbol = try container.decodeIfPresent(String.self, forKey: .symbol)
         cardCount = try container.decodeIfPresent(PokemonCatalogProviderCardCount.self, forKey: .cardCount)
+        releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         tcgOnline = try container.decodeIfPresent(String.self, forKey: .tcgOnline)
         isUnsupportedProduct = try container.decodeIfPresent(Bool.self, forKey: .isUnsupportedProduct) ?? false
     }
@@ -113,6 +138,9 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
     public let releaseDate: String?
     public let tcgOnline: String?
     public let cardCount: PokemonCatalogProviderCardCount?
+    /// TCGdex uses the JSON key `serie` for this nested value.
+    public let serie: PokemonCatalogProviderSeries?
+    public let abbreviation: PokemonCatalogProviderAbbreviation?
 
     public init(
         id: String,
@@ -122,7 +150,9 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         symbol: String? = nil,
         releaseDate: String? = nil,
         tcgOnline: String? = nil,
-        cardCount: PokemonCatalogProviderCardCount? = nil
+        cardCount: PokemonCatalogProviderCardCount? = nil,
+        serie: PokemonCatalogProviderSeries? = nil,
+        abbreviation: PokemonCatalogProviderAbbreviation? = nil
     ) {
         self.id = id
         self.name = name
@@ -132,6 +162,8 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         self.releaseDate = releaseDate
         self.tcgOnline = tcgOnline
         self.cardCount = cardCount
+        self.serie = serie
+        self.abbreviation = abbreviation
     }
 }
 
@@ -209,9 +241,13 @@ public struct PokemonCatalogProviderFixture: Codable, Equatable, Sendable {
     }
 }
 
-/// Human-entered facts are kept separate from provider data in the input file.
-/// In particular, a provider row can never silently become a scanner code.
+/// Compatibility model for operator overrides and fallback policy kept separate
+/// from provider evidence. Ordinary expansions may derive their code without a
+/// row here; a provider value still cannot become scanner authority until the
+/// publisher validates and signs the release.
 public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
+    /// Compatibility name for the operator override/fallback file. The input
+    /// is not the scanner authority; only a validated signed release is.
     public let providerSetID: String
     public let recognitionKind: PokemonCatalogSetDescriptor.RecognitionKind
     public let printedCode: String?

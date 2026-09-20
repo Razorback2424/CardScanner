@@ -317,7 +317,7 @@ public enum PokemonCatalogReleaseValidator {
             switch descriptor.recognitionKind {
             case .expansion:
                 guard let code = descriptor.printedCode,
-                      isExpansionCode(code) else {
+                      isValidExpansionCode(code) else {
                     throw ValidationError.invalidDescriptor(
                         "expansions require a three-character printed code"
                     )
@@ -333,7 +333,7 @@ public enum PokemonCatalogReleaseValidator {
                 }
             case .promo:
                 guard let prefix = descriptor.printedPrefix,
-                      isPromoPrefix(prefix),
+                      isValidPromoPrefix(prefix),
                       let width = descriptor.localIDPadWidth,
                       (1...6).contains(width),
                       descriptor.catalogLocalIDPrefix != nil else {
@@ -385,13 +385,13 @@ public enum PokemonCatalogReleaseValidator {
         }
     }
 
-    private static func isExpansionCode(_ value: String) -> Bool {
+    public static func isValidExpansionCode(_ value: String) -> Bool {
         let characters = Array(value.uppercased())
         return characters.count == 3
             && characters.allSatisfy { $0.isLetter || $0.isNumber }
     }
 
-    private static func isPromoPrefix(_ value: String) -> Bool {
+    private static func isValidPromoPrefix(_ value: String) -> Bool {
         let characters = Array(value.uppercased())
         return (2...6).contains(characters.count)
             && characters.allSatisfy { $0.isLetter || $0.isNumber }

@@ -4,7 +4,8 @@
 **Slice A implemented 2026-09-17**, **Slice B implemented 2026-09-17**,
 **Slice C implemented 2026-09-18**, **Slice D implemented 2026-09-18**,
 **Slice E implemented 2026-09-18**, **Slice F rollout implementation started
-2026-09-18**.
+2026-09-18**, **F04 automatic discovery implementation completed 2026-09-19;
+live provider/candidate/device acceptance remains open**.
 
 **Goal:** a Pokémon set that did not exist when the user installed the app
 appears in Browse **and scans correctly** without an App Store update.
@@ -22,30 +23,33 @@ identifiers, cards, variants, and artwork. Slice E adds the publisher machinery
 and future staging configuration, but this plan does not claim a live
 deployment, signing-key availability, or provider certification.
 
-## The premise: TCGdex does not publish printed set codes
+## Provider evidence: TCGdex exposes an official abbreviation
 
-This is the fact the whole design rests on, and it is not obvious.
+The detailed TCGdex set response currently includes
+`abbreviation.official`, alongside `serie.id`, `cardCount.official`, and the
+release date. That value is useful evidence, but it is not scanner authority.
+The publisher normalizes and validates it, checks it against active signed
+metadata, and only a signed catalog release can grant the app permission to
+recognize a printed code.
 
-`TCGdexSetCatalog` has no printed-code field. The nearest thing is `tcgOnline`,
-the retired Pokémon TCG Online code, and it is **nil for every modern set** —
-verified against the live API for `sv09`, `sv10`, `sv10.5b`, `me04`, and `me05`.
-The correct codes in today's bundled snapshot come from the compiled
-`SetCodeMap`, not from the provider.
+`tcgOnline` remains a separate, legacy provider field and is not used as the
+modern printed-code source. The signed release remains the only scanner
+authority even when a provider abbreviation is present.
 
 Three consequences follow, and they shape everything below:
 
-1. **No amount of crawling will ever make a new set scannable.** The printed
-   code — the three characters Vision reads off the card — is app-owned data
-   that must be delivered out of band. This, not abstract trust concerns, is why
-   a control release has to exist.
-2. **A human supplies that code for every new modern expansion, permanently.**
-   Fully automatic publication is not a reachable end state for expansions, and
-   this plan no longer pretends otherwise. The human types three characters; the
-   denominator, card list, and artwork all still come from the provider and are
-   verified against what the human claimed.
-3. **Because a human is already in the loop on the only non-derivable field,**
-   the risk model is far milder than a fully automated pipeline's, and the
-   machinery around it should be sized accordingly.
+1. **Ordinary expansions can be prepared automatically.** A valid provider
+   abbreviation, positive official denominator, valid release date, complete
+   cards, and whole-release collision checks are enough to derive the signed
+   expansion descriptor.
+2. **Overrides remain for exceptional cases.** `publisher/catalog-input.json`
+   is an operator override/fallback file for promos, non-scannable products,
+   missing or unusable provider metadata, and deliberate presentation overrides;
+   it is not a recurring release checklist.
+3. **Ambiguity fails closed.** Missing, malformed, conflicting, or drifting
+   provider metadata stops candidate preparation before the protected signing
+   environment. TCGdex can propose metadata, but it can never become runtime
+   scanner authority directly.
 
 **Related current defect.** `PokemonChecklistSnapshot.swift:196` derives a set's
 display code as `tcgOnline ?? SetCodeMap.printedCode(...) ?? row.id`. Since
@@ -86,8 +90,8 @@ install; a binary does not. If that assumption is wrong — if the install base
 updates promptly — the ROI argument weakens and more frequent releases are the
 cheaper answer.
 
-**Expected gap window.** Between a provider publishing a set and a human
-publishing its signed descriptor and checklist, provider discovery may know
+**Expected gap window.** Between a provider publishing a set and the approved
+workflow publishing its signed descriptor and checklist, provider discovery may know
 about the set, but production Browse does not show it and Scanner does not scan
 it. That is hours to days. The plan intentionally trades immediate Browse
 freshness for Browse/Scanner consistency rather than showing a visible set that
@@ -127,13 +131,13 @@ That does **not** yet provide end-to-end automatic set support:
 
 | Surface | Current authority | Consequence |
 | --- | --- | --- |
-| Browse directory and checklist | Bundled/downloaded `PokemonChecklistSnapshot` populated from TCGdex | A provider-published set can appear without an app release, but with a wrong display code. |
-| Modern scanner code and denominator | Compiled `SetCodeMap` | A new expansion cannot scan until a new binary adds its printed code, provider set ID, and official count. |
-| Promo scanner prefixes | Compiled `PokemonPromoCodeMap` | A new promo series also requires a binary, **and** a series with new local-ID padding requires a code change even then. |
-| Historical scanner resolution | Checklist manifest `officialCount`, not `SetCodeMap` | Already dynamic, and therefore already outside any capability gate. |
-| Vision OCR vocabulary | `RecognitionProfile.customWords`, derived from the compiled maps | Even downloaded definitions cannot currently improve OCR. |
-| Release ordering | `PokemonCatalogReleaseOrder`, a `UserDefaults` dictionary written by the unsigned crawl | A second live remote authority with no revision, no validation, and no rollback. |
-| Set-art fallbacks | Provider URL plus selected bundled assets | New sets work online; curated offline fallback art still requires a release. |
+| Browse directory and checklist | Verified signed registry plus bundled/downloaded `PokemonChecklistSnapshot` | Provider discovery can prepare content, but Browse only activates a set after the signed release and checklist are accepted. |
+| Modern scanner code and denominator | Signed `PokemonCatalogRegistry` revision | A valid provider abbreviation can be prepared automatically, but a new expansion scans only after the release is validated, signed, and activated. |
+| Promo scanner prefixes | Signed `PokemonCatalogRegistry` revision | Promo families remain explicit overrides because provider abbreviations do not prove prefix or padding semantics. |
+| Historical scanner resolution | Signed registry descriptor plus checklist `officialCount` | The same validated descriptor controls historical matching and modern scanning. |
+| Vision OCR vocabulary | `RecognitionProfile.customWords`, derived from the active registry | A downloaded provider response cannot expand OCR vocabulary until its signed descriptor is active. |
+| Release ordering | Signed registry `releaseOrder` | Automatic candidates receive deterministic orders in the publisher; active orders are never renumbered by provider metadata. |
+| Set-art fallbacks | Signed explicit artwork, provider-safe bundled/parent rules, then card-art hints | New sets get publisher-resolved artwork when available, with a sequential defensive fallback chain and textual identity at the end. |
 
 The split authority is the defect to remove. A direct provider crawl is useful
 for discovery, but it must not independently change what the scanner accepts.
@@ -143,15 +147,16 @@ publication path; Slice F still owns exercising that path against a live origin.
 ## Architecture decision
 
 Introduce one app-owned, signed **catalog control release**: a small static file
-listing set descriptors, generated from TCGdex plus human-supplied printed
-codes, consumed by both Browse and Scanner. It authorizes set identity and
+   listing set descriptors, generated from validated TCGdex evidence plus
+   operator overrides, consumed by both Browse and Scanner. It authorizes set identity and
 points the existing on-device builder at the corresponding provider content.
 
 ```text
-Publisher (human-gated)
-  → fetch TCGdex directory, diff against active release
-  → human supplies printed code for each new expansion
-  → verify official count and completeness against the provider
+Publisher (automatic preparation, human approval)
+  → fetch TCGdex directory and apply the discovery policy
+  → derive ordinary expansion code/count/artwork from detailed provider evidence
+  → stop on missing, malformed, conflicting, or drifting metadata
+  → validate the complete candidate and wait for production approval
   → sign immutable release; publish the pointer last
 
 Released app
@@ -670,29 +675,32 @@ publisher's portable snapshot is the release artifact used by this slice.
 
 ### Publication
 
-Scheduled workflow runs currently validate the candidate only. While Slice F is
-incomplete, production publication requires a manual dispatch with
-`publish=true` and the protected `pokemon-catalog-production` environment; the
-flow is **human-gated by construction** as well, because step 3 cannot be
-automated:
+Scheduled workflow runs perform automatic preparation and stop before the
+protected `pokemon-catalog-production` environment when there are no changes.
+When a candidate changes, GitHub approval is the human gate: the exact unsigned
+candidate is reviewed, then the protected job signs and deploys those same
+bytes. Manual `workflow_dispatch` with `publish=true` remains the escape hatch.
 
-1. Fetch the TCGdex directory and exclude unsupported products such as Pocket.
-   The device's own `fetchPocketSetIDs()` calls in `BrowseCatalog` are kept as
-   defense in depth pre-cutover and removed in Slice D.
-2. Diff against the active signed release; report new and changed sets.
-3. **A human supplies the printed code** for each new expansion, or the prefix
-   and pad width for each new promo series, from the physical card or official
-   product listing.
-4. Fetch set metadata and card detail; verify official count and completeness
-   against what the human claimed.
-5. Run the publication gates below.
-6. Sign with a CI-held private key, never stored in the app repository or the
+1. Fetch the lightweight TCGdex directory and Pocket-series metadata, then
+   exclude unsupported products such as Pocket before detailed preparation.
+   The device's signed-registry gate remains defense in depth; provider
+   directory discovery is not runtime scanner authority.
+2. Remove active, unsupported, and known historical IDs; inspect the remaining
+   unknown sets' detailed metadata and classify historical, pending, and due
+   releases.
+3. Fetch full cards only for active sets, due candidates, and explicit override
+   IDs. Derive ordinary expansion code, count, release order, and artwork from
+   validated provider evidence; apply `catalog-input.json` only as an override
+   or fallback policy.
+4. Run the publication gates below. Missing, malformed, conflicting, or
+   drifting metadata fails before the protected environment.
+5. Sign with a CI-held private key, never stored in the app repository or the
    publisher output.
-7. Upload the immutable revision, then update the `current` pointer last.
+6. Upload the immutable revision, then update the `current` pointer last.
 
-Metadata-only corrections with no new codes — release order, display names,
-capability flags — may publish without review once the gates are green. New
-expansions and promo series always require the human step.
+The signed release is still the only scanner authority. A provider abbreviation
+is merely a candidate input until the complete release validator passes and the
+protected approval signs it.
 
 ### Publication gates
 
@@ -995,8 +1003,9 @@ Hosting target.
 
 - [x] The core builds for macOS with no UIKit dependency.
 - [x] Deterministic output from recorded provider fixtures.
-- [x] The human printed-code step is a required, recorded input — the publisher
-      refuses to emit an expansion descriptor without one.
+- [x] Ordinary expansions derive a validated printed code from provider
+      evidence; operator input remains available for exceptional overrides and
+      fallback policy.
 - [x] Production signing is unavailable to pull-request jobs and local builds.
 - [x] Objects publish immutably and `current` changes last.
 - [x] The app defaults to bundled validation, so a signed candidate can be
@@ -1011,15 +1020,16 @@ Hosting target.
 the shared release/envelope contract, CryptoKit signing and validation,
 provider models, snapshot/fingerprint builder, bounded TCGdex fetcher, and
 filesystem publisher. `pokemon-catalog-publisher` validates recorded fixtures
-or a live bounded fetch, requires `publisher/catalog-input.json` human facts for
-new provider sets, and only loads a signing key inside the protected GitHub
+or a live bounded fetch, treats `publisher/catalog-input.json` as overrides and
+fallbacks for exceptional provider cases, and only loads a signing key inside the protected GitHub
 Actions publication environment. `firebase.json` gives immutable revision
 objects and a short-lived current pointer for the first production site at
 `catalog.scan-stash.com`. The workflow restores the production revision tree
-before each Hosting deploy, keeps publication manual until Slice F, and retains
-the public review report as an Actions artifact. The focused core run passed 8
-tests with 0 failures, recorded CLI validation passed, and the compile-only iOS
-app build passed. The future staging public pin is present in its xcconfig; the
+before each Hosting deploy, automatically prepares scheduled candidates, and
+retains the public review report as an Actions artifact; the protected
+environment remains the approval gate. The focused core run passed 8 tests
+with 0 failures, recorded CLI validation passed, and the compile-only iOS app
+build passed. The future staging public pin is present in its xcconfig; the
 production public pin, real signing secret, Firebase project/DNS deployment,
 and populated production input remain owner/release gates. No full simulator
 suite or centering tests were run for this slice.
@@ -1191,8 +1201,9 @@ Demonstrated on a released-build configuration:
   a set becomes authorized, then feeds the existing Browse and artwork
   contracts.
 - The current in-app TCGdex crawl is **not** sufficient scanner authority —
-  structurally, since the provider does not publish printed codes. After cutover
-  it is content transport for signed descriptors.
+  provider metadata is evidence, not permission. After cutover it is content
+  transport for signed descriptors, while publisher validation and the signed
+  release grant scanner authority.
 - `PokemonCatalogReleaseOrder` is a second live remote authority and is removed.
 - The current snapshot generator is release tooling, not a production update
   service. Slice E promotes its reusable logic and creates the CI it needs.

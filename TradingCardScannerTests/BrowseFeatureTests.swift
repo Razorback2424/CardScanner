@@ -1385,6 +1385,64 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(requestedCursors, [nil, "next"])
     }
 
+    func testCatalogImageCacheRejectsHTMLMIMEBeforeImageDecode() async throws {
+        let directory = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = URL(string: "https://assets.tcgdex.net/en/me/30th/logo.png")!
+        let cache = CatalogImageCache(directory: directory, responseLoader: { request in
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: try XCTUnwrap(request.url),
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: ["Content-Type": "text/html; charset=utf-8"]
+                )
+            )
+            return (Data("<html>guidance</html>".utf8), response)
+        })
+
+        do {
+            _ = try await cache.image(for: url, targetPixelSize: 64)
+            XCTFail("HTML artwork must be rejected before caching")
+        } catch BrowseCatalogError.badResponse {
+            // Expected.
+        }
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: directory.appendingPathComponent(CatalogImageCache.cacheFilename(for: url)).path
+            )
+        )
+    }
+
+    func testCatalogImageCacheRejectsUndecodableImageMIMEBodyBeforePersisting() async throws {
+        let directory = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = URL(string: "https://assets.tcgdex.net/en/me/30th/logo.png")!
+        let cache = CatalogImageCache(directory: directory, responseLoader: { request in
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: try XCTUnwrap(request.url),
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: ["Content-Type": "image/png"]
+                )
+            )
+            return (Data("not-a-png".utf8), response)
+        })
+
+        do {
+            _ = try await cache.image(for: url, targetPixelSize: 64)
+            XCTFail("Undecodable image bytes must be rejected")
+        } catch BrowseCatalogError.badResponse {
+            // Expected.
+        }
+        XCTAssertFalse(
+            FileManager.default.fileExists(
+                atPath: directory.appendingPathComponent(CatalogImageCache.cacheFilename(for: url)).path
+            )
+        )
+    }
+
     func testCatalogImageCacheEvictsUndecodableCachedHTTPBodyAndDoesNotPersistIt() async throws {
         let directory = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: directory) }
@@ -3790,6 +3848,10 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
         object.removeValue(forKey: "standardSlotCount")
         object.removeValue(forKey: "expandedSlotCount")
+        if var legacySet = object["set"] as? [String: Any] {
+            legacySet.removeValue(forKey: "artworkFallbackURLs")
+            object["set"] = legacySet
+        }
         let legacyData = try JSONSerialization.data(withJSONObject: object)
 
         let decoded = try JSONDecoder().decode(
@@ -4456,6 +4518,29 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertNil(enriched.symbolURL)
     }
 
+    func testTCGdexSetCatalogRetainsProviderEvidenceAndDecodesOlderRows() throws {
+        let current = try decode(TCGdexSetCatalog.self, from: """
+        {
+          "id": "30th",
+          "name": "30th Celebration",
+          "cards": [],
+          "serie": {"id": "me", "name": "Mega Evolution"},
+          "abbreviation": {"official": "30C"},
+          "cardCount": {"total": 128, "official": 128}
+        }
+        """)
+        XCTAssertEqual(current.serie?.id, "me")
+        XCTAssertEqual(current.serie?.name, "Mega Evolution")
+        XCTAssertEqual(current.abbreviation?.official, "30C")
+        XCTAssertEqual(current.cardCount?.official, 128)
+
+        let older = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"sv99","name":"Recorded Set","cards":[],"cardCount":{"total":1,"official":1}}
+        """)
+        XCTAssertNil(older.serie)
+        XCTAssertNil(older.abbreviation)
+    }
+
     func testArtworkSourceOrdersProviderThenLimitlessFallbacks() {
         let thumbnail = URL(string: "https://example.com/thumbnail.png")!
         let full = URL(string: "https://example.com/full.png")!
@@ -4677,6 +4762,22 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(candidates.dropFirst().first, .remote(symbolURL))
     }
 
+    func testSetArtworkSourceAppendsCardArtworkLastAndRemovesDuplicates() {
+        let logoURL = URL(string: "https://example.com/logo.png")!
+        let cardOne = URL(string: "https://assets.tcgdex.net/en/me/30th/card-1/high.png")!
+        let cardTwo = URL(string: "https://assets.tcgdex.net/en/me/30th/card-2/high.png")!
+        let set = sampleSet(
+            id: "30th-c",
+            name: "30th Classic Collection",
+            logoURL: logoURL,
+            artworkFallbackURLs: [cardOne, cardOne, cardTwo]
+        )
+
+        let candidates = PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates
+        XCTAssertEqual(candidates.dropLast(2), [.remote(logoURL)])
+        XCTAssertEqual(candidates.suffix(2), [.remote(cardOne), .remote(cardTwo)])
+    }
+
     func testSetArtworkSourceUsesCel25ccParentLogoBeforeBundledArtwork() {
         let set = sampleSet(id: "cel25cc", name: "Celebrations Classic Collection")
         let candidates = PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates
@@ -4791,7 +4892,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         id: String,
         name: String,
         logoURL: URL? = nil,
-        symbolURL: URL? = nil
+        symbolURL: URL? = nil,
+        artworkFallbackURLs: [URL]? = nil
     ) -> CatalogSet {
         CatalogSet(
             catalogID: CatalogSetID(game: .pokemon, providerID: id),
@@ -4801,7 +4903,8 @@ final class PokemonChecklistBrowseTests: XCTestCase {
             symbolURL: symbolURL,
             cardCount: 1,
             releaseDate: nil,
-            sortRank: 1
+            sortRank: 1,
+            artworkFallbackURLs: artworkFallbackURLs
         )
     }
 

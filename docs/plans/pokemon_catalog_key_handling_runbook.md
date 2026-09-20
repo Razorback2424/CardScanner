@@ -38,21 +38,22 @@ base64url form so it matches the app's `keyID:public-key` parser.
 
 - Pull requests run the core tests and recorded-fixture validation without any
   signing secret.
-- New expansions and promo series require a matching entry in
-  `publisher/catalog-input.json` supplied from the physical card or official
-  product listing. The fixture directory contains synthetic input for tests.
-- The builder rejects missing human input, denominator mismatch, incomplete
-  provider cards, unsupported URLs, duplicate identities, OCR-confusable code
-  collisions, and unsupported rules versions.
+- Ordinary expansions derive their code from validated TCGdex evidence. Promo,
+  non-scannable, and exceptional cases use matching operator overrides in
+  `publisher/catalog-input.json`; the fixture directory contains synthetic
+  input for tests.
+- The builder rejects missing or malformed provider metadata, conflicting or
+  drifting codes, denominator mismatch, incomplete provider cards, unsupported
+  URLs, duplicate identities, OCR-confusable code collisions, and unsupported
+  rules versions.
 - The publisher writes an immutable revision first and changes `current.json`
   last. It refuses to overwrite a revision with different bytes.
-- Production publication is currently manual while Slice F is incomplete:
-  scheduled workflow runs validate the candidate but do not publish it.
-  Publication requires `workflow_dispatch` with `publish=true`, the protected
-  GitHub Actions environment `pokemon-catalog-production`, its required-reviewer
-  rule, `refs/heads/main`, and a non-pull-request event. Keep the required
-  reviewer rule enabled in GitHub environment settings; that setting is not
-  versioned in this repository.
+- Scheduled runs automatically prepare an unsigned candidate and enter the
+  protected `pokemon-catalog-production` environment only when the report has
+  additions or presentation changes. Publication still requires the protected
+  environment's required-reviewer rule; `workflow_dispatch` with `publish=true`
+  remains the manual escape hatch. Keep the required reviewer rule enabled in
+  GitHub environment settings; that setting is not versioned in this repository.
 - The production workflow restores the previously served revision objects into
   the fresh runner before publishing, so a Hosting deploy does not discard the
   versioned release tree. It also retains the public review report as a

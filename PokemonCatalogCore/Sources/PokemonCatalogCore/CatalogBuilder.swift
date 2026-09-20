@@ -129,6 +129,11 @@ public enum PokemonCatalogBuildError: Error, CustomStringConvertible, Sendable {
     case duplicateHumanInput(String)
     case humanPrintedCodeRequired(String)
     case humanInputForMissingSet(String)
+    case providerPrintedCodeDrift(setID: String, active: String, provider: String)
+    case providerPrintedCodeConflict(setID: String, human: String, provider: String)
+    case invalidProviderPrintedCode(setID: String, value: String?)
+    case missingProviderOfficialCount(String)
+    case missingProviderReleaseDate(String)
     case duplicateProviderSet(String)
     case missingProviderSet(String)
     case missingActiveExpansion(String)
@@ -151,8 +156,18 @@ public enum PokemonCatalogBuildError: Error, CustomStringConvertible, Sendable {
         case .invalidRevision(let revision): return "Invalid release revision: \(revision)"
         case .duplicateHumanInput(let id): return "Duplicate human input for \(id)"
         case .humanPrintedCodeRequired(let id):
-            return "Human printed-code input is required for new set \(id)"
+            return "A valid provider or operator printed code is required for new set \(id)"
         case .humanInputForMissingSet(let id): return "Human input names missing set \(id)"
+        case let .providerPrintedCodeDrift(setID, active, provider):
+            return "Provider printed-code drift for \(setID): active \(active), provider \(provider)"
+        case let .providerPrintedCodeConflict(setID, human, provider):
+            return "Conflicting printed codes for \(setID): operator \(human), provider \(provider)"
+        case let .invalidProviderPrintedCode(setID, value):
+            return "Provider printed code for \(setID) is invalid: \(value ?? "missing")"
+        case .missingProviderOfficialCount(let id):
+            return "Provider official count is required for new set \(id)"
+        case .missingProviderReleaseDate(let id):
+            return "Provider release date is required for new set \(id)"
         case .duplicateProviderSet(let id): return "Duplicate provider set \(id)"
         case .missingProviderSet(let id): return "Provider set details are missing for \(id)"
         case .missingActiveExpansion(let id):
@@ -211,6 +226,13 @@ public struct PokemonCatalogBuilder: Sendable {
 
         let providerSets = try makeProviderSetIndex(request.fixture.sets)
         let providerCards = try makeProviderCardIndex(request.fixture.cards)
+        let automaticReleaseOrders = makeAutomaticReleaseOrders(
+            directory: directory,
+            providerSets: providerSets,
+            activeByID: activeByID,
+            inputByID: inputByID,
+            activeRelease: request.activeRelease
+        )
         var descriptors: [PokemonCatalogSetDescriptor] = []
         var entries: [PokemonCatalogSnapshotEntry] = []
         var checklists: [String: [PokemonCatalogCardSummary]] = [:]
@@ -237,7 +259,8 @@ public struct PokemonCatalogBuilder: Sendable {
                 row: row,
                 providerSet: providerSet,
                 existing: existing,
-                humanInput: inputByID[providerID]
+                humanInput: inputByID[providerID],
+                assignedReleaseOrder: automaticReleaseOrders[providerID]
             )
             try validateArtwork(descriptor)
 
@@ -263,7 +286,8 @@ public struct PokemonCatalogBuilder: Sendable {
                     releaseOrder: descriptor.releaseOrder,
                     providerFingerprint: fingerprint,
                     cardCount: summaries.count,
-                    resource: resource
+                    resource: resource,
+                    artworkFallbackURLs: uniqueArtworkURLs(from: summaries)
                 )
             )
             checklists[providerID] = summaries
@@ -352,6 +376,37 @@ public struct PokemonCatalogBuilder: Sendable {
         return result
     }
 
+    private func makeAutomaticReleaseOrders(
+        directory: [PokemonCatalogProviderDirectoryRow],
+        providerSets: [String: PokemonCatalogProviderSet],
+        activeByID: [String: PokemonCatalogSetDescriptor],
+        inputByID: [String: PokemonCatalogHumanInput],
+        activeRelease: PokemonCatalogRelease?
+    ) -> [String: Int] {
+        let existingOrders = (activeRelease?.sets.compactMap(\.releaseOrder) ?? [])
+            + inputByID.values.compactMap(\.releaseOrder)
+        let base = (existingOrders.max() ?? -1) + 1
+        let candidates = directory
+            .filter { activeByID[$0.id.lowercased()] == nil }
+            .filter { inputByID[$0.id.lowercased()]?.releaseOrder == nil }
+            .sorted { lhs, rhs in
+                let leftDate = inputByID[lhs.id.lowercased()]?.releaseDate
+                    ?? providerSets[lhs.id.lowercased()]?.releaseDate
+                    ?? lhs.releaseDate
+                    ?? ""
+                let rightDate = inputByID[rhs.id.lowercased()]?.releaseDate
+                    ?? providerSets[rhs.id.lowercased()]?.releaseDate
+                    ?? rhs.releaseDate
+                    ?? ""
+                return (leftDate, lhs.id.lowercased()) < (rightDate, rhs.id.lowercased())
+            }
+        return Dictionary(
+            uniqueKeysWithValues: candidates.enumerated().map { index, row in
+                (row.id.lowercased(), base + index)
+            }
+        )
+    }
+
     private func normalizedDirectory(
         _ rows: [PokemonCatalogProviderDirectoryRow]
     ) throws -> [PokemonCatalogProviderDirectoryRow] {
@@ -402,37 +457,213 @@ public struct PokemonCatalogBuilder: Sendable {
         row: PokemonCatalogProviderDirectoryRow,
         providerSet: PokemonCatalogProviderSet,
         existing: PokemonCatalogSetDescriptor?,
-        humanInput: PokemonCatalogHumanInput?
+        humanInput: PokemonCatalogHumanInput?,
+        assignedReleaseOrder: Int?
     ) throws -> PokemonCatalogSetDescriptor {
-        if let humanInput {
-            guard humanInput.providerSetID.caseInsensitiveCompare(row.id) == .orderedSame else {
-                throw PokemonCatalogBuildError.providerSetIDMismatch(
-                    expected: row.id,
-                    received: humanInput.providerSetID
-                )
-            }
-            return PokemonCatalogSetDescriptor(
-                providerSetID: row.id.lowercased(),
-                displayName: humanInput.displayName ?? row.name,
-                releaseDate: humanInput.releaseDate ?? providerSet.releaseDate ?? row.tcgOnline,
-                releaseOrder: humanInput.releaseOrder ?? existing?.releaseOrder,
-                recognitionKind: humanInput.recognitionKind,
-                printedCode: humanInput.printedCode?.uppercased(),
-                officialCount: humanInput.claimedOfficialCount,
-                printedPrefix: humanInput.printedPrefix?.uppercased(),
-                catalogLocalIDPrefix: humanInput.catalogLocalIDPrefix?.uppercased(),
-                localIDPadWidth: humanInput.localIDPadWidth,
-                scanEnabled: humanInput.scanEnabled,
-                logoURL: humanInput.logoURL ?? providerSet.logo ?? row.logo,
-                symbolURL: humanInput.symbolURL ?? providerSet.symbol ?? row.symbol,
-                rulesVersion: humanInput.rulesVersion
+        if let humanInput,
+           humanInput.providerSetID.caseInsensitiveCompare(row.id) != .orderedSame {
+            throw PokemonCatalogBuildError.providerSetIDMismatch(
+                expected: row.id,
+                received: humanInput.providerSetID
             )
         }
 
-        guard let existing else {
-            throw PokemonCatalogBuildError.humanPrintedCodeRequired(row.id)
+        let providerCode = normalizedExpansionCode(providerSet.abbreviation?.official)
+        let providerCount = providerSet.cardCount?.official ?? row.cardCount?.official
+        let providerReleaseDate = providerSet.releaseDate ?? row.releaseDate
+        let providerLogo = nonEmpty(providerSet.logo) ?? nonEmpty(row.logo)
+        let providerSymbol = nonEmpty(providerSet.symbol) ?? nonEmpty(row.symbol)
+
+        if let existing {
+            if existing.recognitionKind == .expansion,
+               let rawProviderCode = providerSet.abbreviation?.official,
+               !rawProviderCode.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                guard let providerCode,
+                      PokemonCatalogReleaseValidator.isValidExpansionCode(providerCode) else {
+                    throw PokemonCatalogBuildError.invalidProviderPrintedCode(
+                        setID: row.id,
+                        value: rawProviderCode
+                    )
+                }
+                if existing.printedCode?.trimmingCharacters(in: .whitespacesAndNewlines)
+                    .uppercased() != providerCode {
+                    throw PokemonCatalogBuildError.providerPrintedCodeDrift(
+                        setID: row.id,
+                        active: existing.printedCode ?? "",
+                        provider: providerCode
+                    )
+                }
+            }
+
+            // Authority fields deliberately come only from the active signed
+            // descriptor. Provider metadata may improve the Browse experience,
+            // but cannot silently change scanner semantics.
+            return PokemonCatalogSetDescriptor(
+                providerSetID: existing.providerSetID,
+                displayName: humanInput?.displayName ?? providerSet.name,
+                releaseDate: humanInput?.releaseDate ?? providerReleaseDate ?? existing.releaseDate,
+                releaseOrder: existing.releaseOrder,
+                recognitionKind: existing.recognitionKind,
+                printedCode: existing.printedCode,
+                officialCount: existing.officialCount,
+                printedPrefix: existing.printedPrefix,
+                catalogLocalIDPrefix: existing.catalogLocalIDPrefix,
+                localIDPadWidth: existing.localIDPadWidth,
+                scanEnabled: existing.scanEnabled,
+                logoURL: humanInput?.logoURL ?? providerLogo ?? existing.logoURL,
+                symbolURL: humanInput?.symbolURL ?? providerSymbol ?? existing.symbolURL,
+                rulesVersion: existing.rulesVersion
+            )
         }
-        return existing
+
+        if let humanInput {
+            switch humanInput.recognitionKind {
+            case .expansion:
+                let humanCode = normalizedExpansionCode(humanInput.printedCode)
+                let code: String
+                if let providerCode,
+                   PokemonCatalogReleaseValidator.isValidExpansionCode(providerCode) {
+                    if let humanCode, humanCode != providerCode {
+                        throw PokemonCatalogBuildError.providerPrintedCodeConflict(
+                            setID: row.id,
+                            human: humanCode,
+                            provider: providerCode
+                        )
+                    }
+                    code = providerCode
+                } else if let humanCode,
+                          PokemonCatalogReleaseValidator.isValidExpansionCode(humanCode) {
+                    code = humanCode
+                } else {
+                    throw PokemonCatalogBuildError.humanPrintedCodeRequired(row.id)
+                }
+
+                let officialCount = humanInput.claimedOfficialCount ?? providerCount
+                if humanInput.claimedOfficialCount == nil {
+                    guard let officialCount, officialCount > 0 else {
+                        throw PokemonCatalogBuildError.missingProviderOfficialCount(row.id)
+                    }
+                }
+
+                return PokemonCatalogSetDescriptor(
+                    providerSetID: row.id.lowercased(),
+                    displayName: humanInput.displayName ?? providerSet.name,
+                    releaseDate: humanInput.releaseDate ?? providerReleaseDate,
+                    releaseOrder: humanInput.releaseOrder ?? assignedReleaseOrder,
+                    recognitionKind: .expansion,
+                    printedCode: code,
+                    officialCount: officialCount,
+                    printedPrefix: nil,
+                    catalogLocalIDPrefix: nil,
+                    localIDPadWidth: nil,
+                    scanEnabled: humanInput.scanEnabled,
+                    logoURL: humanInput.logoURL ?? providerLogo,
+                    symbolURL: humanInput.symbolURL ?? providerSymbol,
+                    rulesVersion: humanInput.rulesVersion
+                )
+
+            case .promo, .notScannable:
+                return PokemonCatalogSetDescriptor(
+                    providerSetID: row.id.lowercased(),
+                    displayName: humanInput.displayName ?? providerSet.name,
+                    releaseDate: humanInput.releaseDate ?? providerReleaseDate,
+                    releaseOrder: humanInput.releaseOrder ?? assignedReleaseOrder,
+                    recognitionKind: humanInput.recognitionKind,
+                    printedCode: normalizedExpansionCode(humanInput.printedCode),
+                    officialCount: humanInput.recognitionKind == .notScannable
+                        ? nil
+                        : humanInput.claimedOfficialCount,
+                    printedPrefix: humanInput.printedPrefix?.trimmingCharacters(
+                        in: .whitespacesAndNewlines
+                    ).uppercased(),
+                    catalogLocalIDPrefix: humanInput.catalogLocalIDPrefix?.uppercased(),
+                    localIDPadWidth: humanInput.localIDPadWidth,
+                    scanEnabled: humanInput.scanEnabled,
+                    logoURL: humanInput.logoURL ?? providerLogo,
+                    symbolURL: humanInput.symbolURL ?? providerSymbol,
+                    rulesVersion: humanInput.rulesVersion
+                )
+            }
+        }
+
+        guard let providerCode else {
+            if providerSet.abbreviation?.official == nil {
+                throw PokemonCatalogBuildError.humanPrintedCodeRequired(row.id)
+            }
+            throw PokemonCatalogBuildError.invalidProviderPrintedCode(
+                setID: row.id,
+                value: providerSet.abbreviation?.official
+            )
+        }
+        guard PokemonCatalogReleaseValidator.isValidExpansionCode(providerCode) else {
+            throw PokemonCatalogBuildError.invalidProviderPrintedCode(
+                setID: row.id,
+                value: providerSet.abbreviation?.official
+            )
+        }
+        guard let providerCount, providerCount > 0 else {
+            throw PokemonCatalogBuildError.missingProviderOfficialCount(row.id)
+        }
+        guard let providerReleaseDate, isValidReleaseDate(providerReleaseDate) else {
+            throw PokemonCatalogBuildError.missingProviderReleaseDate(row.id)
+        }
+        return PokemonCatalogSetDescriptor(
+            providerSetID: row.id.lowercased(),
+            displayName: providerSet.name,
+            releaseDate: providerReleaseDate,
+            releaseOrder: assignedReleaseOrder,
+            recognitionKind: .expansion,
+            printedCode: providerCode,
+            officialCount: providerCount,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: true,
+            logoURL: providerLogo,
+            symbolURL: providerSymbol,
+            rulesVersion: PokemonCatalogCoreContract.rulesVersion
+        )
+    }
+
+    private func normalizedExpansionCode(_ value: String?) -> String? {
+        guard let value else { return nil }
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        return normalized.isEmpty ? nil : normalized
+    }
+
+    private func nonEmpty(_ value: String?) -> String? {
+        guard let value else { return nil }
+        return value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : value
+    }
+
+    private func isValidReleaseDate(_ value: String) -> Bool {
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        let datePrefix = String(trimmed.prefix(10))
+        let parts = datePrefix.split(separator: "-")
+        if parts.count == 3,
+           parts[0].count == 4,
+           parts[1].count == 2,
+           parts[2].count == 2,
+           let year = Int(parts[0]),
+           let month = Int(parts[1]),
+           let day = Int(parts[2]) {
+            var components = DateComponents()
+            components.calendar = Calendar(identifier: .gregorian)
+            components.year = year
+            components.month = month
+            components.day = day
+            return components.calendar?.date(from: components) != nil
+        }
+        return ISO8601DateFormatter().date(from: trimmed) != nil
+    }
+
+    private func uniqueArtworkURLs(
+        from summaries: [PokemonCatalogCardSummary]
+    ) -> [String]? {
+        var seen = Set<String>()
+        let values = summaries.compactMap(\.imageURL).filter { seen.insert($0).inserted }
+        let limited = Array(values.prefix(3))
+        return limited.isEmpty ? nil : limited
     }
 
     private func buildChecklist(

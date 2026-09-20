@@ -81,15 +81,98 @@ struct PokemonCatalogPublisherMain {
             siteRoot: siteRoot,
             environment: environment
         )
-        let authorizedSetIDs = Set(
-            humanInput.sets.map(\.providerSetID)
-                + (activeRelease?.sets.map(\.providerSetID) ?? [])
-        )
+        let generatedAt = try parseDate(options.value("--generated-at"))
         let fixture: PokemonCatalogProviderFixture
         if options.value("--live") == "true" {
-            fixture = try await PokemonCatalogTCGdexProviderClient().fetchFixture(
+            let client = PokemonCatalogTCGdexProviderClient()
+            let directory = try await client.fetchDirectory()
+            let activeIDs = Set(
+                (activeRelease?.sets.map(\.providerSetID) ?? [])
+                    .map { $0.lowercased() }
+            )
+            let overrideIDs = Set(humanInput.sets.map { $0.providerSetID.lowercased() })
+            let policy = try read(
+                PokemonCatalogDiscoveryPolicy.self,
+                from: URL(
+                fileURLWithPath: options.value("--discovery-policy")
+                        ?? "publisher/discovery-policy.json"
+                )
+            )
+            guard policy.schemaVersion == 1 else {
+                throw CLIError.message(
+                    "discovery policy schema \(policy.schemaVersion) is unsupported"
+                )
+            }
+            guard let boundary = catalogDate(policy.automaticDiscoveryStartDate) else {
+                throw CLIError.message(
+                    "discovery policy has an invalid automaticDiscoveryStartDate"
+                )
+            }
+            let unknownRows = directory.filter { row in
+                let key = row.id.lowercased()
+                return !row.isUnsupportedProduct
+                    && !activeIDs.contains(key)
+                    && !overrideIDs.contains(key)
+                    && !policy.ignoredHistoricalIDs.contains(key)
+            }
+            let metadata = try await client.fetchSetMetadata(for: unknownRows)
+            var directoryDates: [String: String] = [:]
+            for row in unknownRows {
+                if let releaseDate = row.releaseDate {
+                    directoryDates[row.id.lowercased()] = releaseDate
+                }
+            }
+            var dueIDs = Set<String>()
+            var historicalIDs: [String] = []
+            var pendingIDs: [String] = []
+            var invalidMetadataIDs: [String] = []
+            for providerSet in metadata {
+                let key = providerSet.id.lowercased()
+                guard let rawDate = providerSet.releaseDate ?? directoryDates[key] else {
+                    invalidMetadataIDs.append(key)
+                    continue
+                }
+                guard let releaseDate = catalogDate(rawDate) else {
+                    invalidMetadataIDs.append(key)
+                    continue
+                }
+                if releaseDate < boundary {
+                    historicalIDs.append(key)
+                } else if releaseDate > generatedAt {
+                    pendingIDs.append(key)
+                } else {
+                    dueIDs.insert(key)
+                }
+            }
+            if !historicalIDs.isEmpty {
+                print(
+                    "discovery historical backfill ignored: "
+                        + historicalIDs.sorted().joined(separator: ", ")
+                )
+            }
+            if !invalidMetadataIDs.isEmpty {
+                // Include anomalous rows in the full candidate so the builder
+                // fails closed on missing/invalid release date, abbreviation,
+                // or denominator instead of silently treating them as pending.
+                print(
+                    "discovery metadata requires intervention: "
+                        + invalidMetadataIDs.sorted().joined(separator: ", ")
+                )
+                dueIDs.formUnion(invalidMetadataIDs)
+            }
+            let authorizedSetIDs = activeIDs
+                .union(overrideIDs)
+                .union(dueIDs)
+            fixture = try await client.fetchFixture(
+                directory: directory,
                 authorizedSetIDs: authorizedSetIDs
             )
+            if !pendingIDs.isEmpty {
+                print(
+                    "discovery pending provider set IDs: "
+                        + pendingIDs.sorted().joined(separator: ", ")
+                )
+            }
         } else {
             fixture = try read(
                 PokemonCatalogProviderFixture.self,
@@ -105,7 +188,6 @@ struct PokemonCatalogPublisherMain {
         } else {
             revision = (activeRelease?.revision ?? 0) + 1
         }
-        let generatedAt = try parseDate(options.value("--generated-at"))
         return try PokemonCatalogBuilder().build(
             PokemonCatalogBuildRequest(
                 fixture: fixture,
@@ -145,10 +227,33 @@ struct PokemonCatalogPublisherMain {
 
     private static func parseDate(_ raw: String?) throws -> Date {
         guard let raw else { return Date() }
-        guard let date = ISO8601DateFormatter().date(from: raw) else {
+        guard let date = catalogDate(raw) else {
             throw CLIError.message("--generated-at must be an ISO-8601 date")
         }
         return date
+    }
+
+    private static func catalogDate(_ raw: String) -> Date? {
+        if let date = ISO8601DateFormatter().date(from: raw) {
+            return date
+        }
+        let parts = raw.split(separator: "-")
+        guard parts.count == 3,
+              parts[0].count == 4,
+              parts[1].count == 2,
+              parts[2].count == 2,
+              let year = Int(parts[0]),
+              let month = Int(parts[1]),
+              let day = Int(parts[2]) else {
+            return nil
+        }
+        var components = DateComponents()
+        components.calendar = Calendar(identifier: .gregorian)
+        components.timeZone = TimeZone(secondsFromGMT: 0)
+        components.year = year
+        components.month = month
+        components.day = day
+        return components.calendar?.date(from: components)
     }
 
     private static func read<T: Decodable>(_ type: T.Type, from url: URL) throws -> T {
@@ -228,7 +333,9 @@ struct PokemonCatalogPublisherMain {
     Options:
       --fixture-dir PATH    Recorded provider fixture directory (default: publisher/fixtures)
       --live true            Fetch a fresh bounded TCGdex fixture instead of the recorded fixture
-      --input PATH          Human-gated catalog input JSON
+      --input PATH          Catalog overrides/fallbacks JSON
+      --discovery-policy PATH
+                             Scheduled discovery policy JSON
       --active-release PATH Existing release envelope or payload
       --revision NUMBER     New strictly higher release revision
       --generated-at DATE   ISO-8601 timestamp (use a fixed value for reproducible output)

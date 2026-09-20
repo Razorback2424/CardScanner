@@ -1,3 +1,18 @@
+F04 automatic Pokémon catalog preparation (2026-09-19, isolated branch
+`codex/automatic-catalog-discovery-f04` from committed `edd8dc6`): added TCGdex
+series/official-abbreviation evidence decoding, provider-side image-MIME-gated
+CDN artwork resolution, safe active-descriptor metadata merges, automatic
+ordinary-expansion code/count/release-order derivation, discovery policy and
+due-set CLI preparation, card-art fallback hints, explicit `30th-c` support,
+and scheduled workflow preparation with protected approval still required.
+The signed release remains the only scanner authority; production config was
+not changed. Verification passed: PokemonCatalogCore 22/22, recorded CLI
+validation, BrowseFeatureTests 49/49, PokemonChecklistBrowseTests 56/56,
+Slice B 29/29, Slice C 6/6, Slice D 4/4, Slice F 8/8, focused legacy snapshot
+compatibility 1/1, and DebugProduction build. Live TCGdex candidate generation,
+production approval/deployment, and device acceptance remain open. The main
+working tree was left untouched.
+
 Catalog publication first-channel readiness (2026-09-18): kept the publisher
 on one Firebase Hosting target and one local site root (`publisher/site`) for
 the first Slice F rehearsal. The publisher environment path is public and is

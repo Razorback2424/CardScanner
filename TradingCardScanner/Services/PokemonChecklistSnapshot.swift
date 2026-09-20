@@ -103,8 +103,26 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                     // An older downloaded overlay may omit the optional slot
                     // counts. Keep its checklist/resource precedence while
                     // borrowing metadata that only the bundled entry knows.
+                    let mergedSet: CatalogSet
+                    if entry.set.artworkFallbackURLs != nil {
+                        mergedSet = entry.set
+                    } else if let artworkFallbackURLs = existing.set.artworkFallbackURLs {
+                        mergedSet = CatalogSet(
+                            catalogID: entry.set.catalogID,
+                            name: entry.set.name,
+                            code: entry.set.code,
+                            logoURL: entry.set.logoURL,
+                            symbolURL: entry.set.symbolURL,
+                            cardCount: entry.set.cardCount,
+                            releaseDate: entry.set.releaseDate,
+                            sortRank: entry.set.sortRank,
+                            artworkFallbackURLs: artworkFallbackURLs
+                        )
+                    } else {
+                        mergedSet = entry.set
+                    }
                     entriesByID[entry.set.id] = PokemonChecklistSnapshotEntry(
-                        set: entry.set,
+                        set: mergedSet,
                         providerID: entry.providerID,
                         providerFingerprint: entry.providerFingerprint,
                         officialCount: entry.officialCount ?? existing.officialCount,
@@ -278,7 +296,7 @@ enum PokemonMasterSetChecklistBuilder {
                     }
                 }
             return BuiltSet(
-                set: set,
+                set: withArtworkFallbacks(set, from: summaries),
                 cards: summaries,
                 providerFingerprint: providerFingerprint,
                 officialCount: providerSet.cardCount?.official,
@@ -365,7 +383,28 @@ enum PokemonMasterSetChecklistBuilder {
             } ?? set.cardCount,
             releaseDate: set.releaseDate
                 ?? providerSet.releaseDate.flatMap(FlexibleDate.parse),
-            sortRank: set.sortRank
+            sortRank: set.sortRank,
+            artworkFallbackURLs: set.artworkFallbackURLs
+        )
+    }
+
+    private static func withArtworkFallbacks(
+        _ set: CatalogSet,
+        from summaries: [CatalogCardSummary]
+    ) -> CatalogSet {
+        var seen = Set<URL>()
+        let urls = summaries.compactMap(\.imageURL).filter { seen.insert($0).inserted }
+        let limitedURLs = Array(urls.prefix(3))
+        return CatalogSet(
+            catalogID: set.catalogID,
+            name: set.name,
+            code: set.code,
+            logoURL: set.logoURL,
+            symbolURL: set.symbolURL,
+            cardCount: set.cardCount,
+            releaseDate: set.releaseDate,
+            sortRank: set.sortRank,
+            artworkFallbackURLs: limitedURLs.isEmpty ? nil : limitedURLs
         )
     }
 

@@ -1,6 +1,8 @@
 # Pokémon catalog publisher
 
-The publisher is the human-gated release boundary for the signed catalog.
+The publisher is the automatic-preparation and approval-gated boundary for the
+signed catalog. TCGdex supplies evidence; only a validated signed release can
+authorize scanner recognition.
 `PokemonCatalogCore` is the reusable macOS library and
 `pokemon-catalog-publisher` is the command-line entry point.
 
@@ -17,16 +19,23 @@ swift run --package-path PokemonCatalogCore pokemon-catalog-publisher validate \
 
 The fixture directory's `catalog-input.json` is recorded test input. The
 production workflow uses [`publisher/catalog-input.json`](catalog-input.json)
-as the owner-controlled seed for the bundled catalog. A provider set that is
-not in the active release cannot enter a release without the corresponding
-printed code (or promo prefix) recorded here. The builder then checks the
-provider's official denominator and complete card details.
+as the owner-controlled override/fallback policy for the bundled catalog.
+Ordinary new expansions can enter through the live discovery path when
+`abbreviation.official`, the official denominator, release date, and complete
+card details validate. Exceptional rows such as promos and non-scannable sets
+remain explicit here.
 
-`--live` replaces the recorded fixture with a bounded TCGdex fetch. When an
-input file and active release are supplied, the live adapter fetches only the
-authorized provider set IDs from those two sources; it does not crawl
-unrelated TCGdex sets. It is a review/diagnostic command; it does not sign
-anything.
+`--live` replaces the recorded fixture with a bounded TCGdex fetch. The live
+adapter fetches active sets, explicit override IDs, and due unknown sets after
+applying `publisher/discovery-policy.json`; future sets remain pending and
+historical IDs are not crawled for card detail. It is a review/diagnostic
+command; it does not sign anything.
+
+`discovery-policy.json` is a one-time migration inventory of historical
+provider IDs plus the automatic-discovery boundary. It is not a recurring
+per-set checklist: do not add announced or future IDs to the historical list.
+Unknown IDs are still inspected at set level so historical backfills can be
+reported and metadata anomalies can fail closed.
 
 ## Publication model
 
@@ -59,10 +68,9 @@ once the owner has the real project and site IDs. A separate staging project,
 site, Firebase credential set, and deployment job are deferred until the
 remote-authority cutover is actually approaching.
 
-Before the first production publication, seed `publisher/catalog-input.json`
-for every currently supported set; later releases need entries only for new
-or changed sets. The recorded fixture and its human input are reserved for
-staging/synthetic rehearsal.
+Before the first production publication, keep `publisher/catalog-input.json`
+limited to exceptional overrides and fallback policy. The recorded fixture and
+its compatibility input are reserved for staging/synthetic rehearsal.
 
 ## Deferred staging app
 

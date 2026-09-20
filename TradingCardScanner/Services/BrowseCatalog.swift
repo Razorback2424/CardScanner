@@ -355,7 +355,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 cardCount: entry.set.cardCount,
                 releaseDate: descriptor.releaseDate.flatMap(FlexibleDate.parse)
                     ?? entry.set.releaseDate,
-                sortRank: descriptor.releaseOrder ?? entry.set.sortRank
+                sortRank: descriptor.releaseOrder ?? entry.set.sortRank,
+                artworkFallbackURLs: entry.set.artworkFallbackURLs
             )
         }
     }
@@ -1478,7 +1479,8 @@ enum PokemonMasterSetDefinition {
                     adjustedCount($0, setName: set.name, printRun: run)
                 },
                 releaseDate: set.releaseDate,
-                sortRank: set.sortRank
+                sortRank: set.sortRank,
+                artworkFallbackURLs: set.artworkFallbackURLs
             )
         }
     }

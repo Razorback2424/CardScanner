@@ -36,6 +36,9 @@ public struct PokemonCatalogSnapshotEntry: Codable, Equatable, Hashable, Sendabl
     public let providerFingerprint: String
     public let cardCount: Int
     public let resource: String
+    /// Up to three card image URLs are a last-resort Browse hint. They are
+    /// presentation metadata and never authorize scanner recognition.
+    public var artworkFallbackURLs: [String]?
 
     public init(
         providerSetID: String,
@@ -45,7 +48,8 @@ public struct PokemonCatalogSnapshotEntry: Codable, Equatable, Hashable, Sendabl
         releaseOrder: Int?,
         providerFingerprint: String,
         cardCount: Int,
-        resource: String
+        resource: String,
+        artworkFallbackURLs: [String]? = nil
     ) {
         self.providerSetID = providerSetID
         self.displayName = displayName
@@ -55,6 +59,7 @@ public struct PokemonCatalogSnapshotEntry: Codable, Equatable, Hashable, Sendabl
         self.providerFingerprint = providerFingerprint
         self.cardCount = cardCount
         self.resource = resource
+        self.artworkFallbackURLs = artworkFallbackURLs
     }
 }
 

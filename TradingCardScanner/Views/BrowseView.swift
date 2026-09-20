@@ -2713,6 +2713,7 @@ private final class CatalogImageLoader: ObservableObject {
 /// source-URL keyed image bytes, never collection photos or provider responses.
 actor CatalogImageCache {
     static let shared = CatalogImageCache()
+    typealias HTTPResponseLoader = @Sendable (URLRequest) async throws -> (Data, HTTPURLResponse)
     private static let maximumBytes = 60 * 1_024 * 1_024
     private static let maximumAssetBytes = 5 * 1_024 * 1_024
     private static let trimThresholdBytes = 10 * 1_024 * 1_024
@@ -2758,6 +2759,14 @@ actor CatalogImageCache {
                   (200..<300).contains(http.statusCode) else {
                 throw BrowseCatalogError.badResponse
             }
+            guard let contentType = http.value(forHTTPHeaderField: "Content-Type")?
+                .split(separator: ";", maxSplits: 1, omittingEmptySubsequences: true)
+                .first?
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .lowercased(),
+                  contentType.hasPrefix("image/") else {
+                throw BrowseCatalogError.badResponse
+            }
             return data
         }
     ) {
@@ -2766,6 +2775,28 @@ actor CatalogImageCache {
             .first!
             .appendingPathComponent("BrowseArtworkCache", isDirectory: true)
         self.responseDataLoader = responseDataLoader
+    }
+
+    /// Test and transport seam that retains HTTP metadata long enough to reject
+    /// HTML guidance responses before they reach ImageIO. The production
+    /// initializer above uses the same status/MIME policy with URLSession.
+    init(
+        directory: URL? = nil,
+        responseLoader: @escaping HTTPResponseLoader
+    ) {
+        self.init(directory: directory, responseDataLoader: { request in
+            let (data, response) = try await responseLoader(request)
+            guard (200..<300).contains(response.statusCode),
+                  let contentType = response.value(forHTTPHeaderField: "Content-Type")?
+                    .split(separator: ";", maxSplits: 1, omittingEmptySubsequences: true)
+                    .first?
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+                    .lowercased(),
+                  contentType.hasPrefix("image/") else {
+                throw BrowseCatalogError.badResponse
+            }
+            return data
+        })
     }
 
     func image(for url: URL, targetPixelSize: Int? = nil) async throws -> UIImage {

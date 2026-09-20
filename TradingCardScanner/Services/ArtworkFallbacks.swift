@@ -149,6 +149,16 @@ enum PokemonArtworkFallbacks {
             append(localAssetName(forProviderID: set.providerID, kind: alternateKind).map(Candidate.bundled))
         }
 
+        // Card artwork is intentionally a sequential last resort. The
+        // publisher stores at most three already-known card image URLs in the
+        // snapshot so a missing set logo never turns into a collage or another
+        // network discovery policy on the device.
+        if set.game == .pokemon {
+            for url in set.artworkFallbackURLs ?? [] {
+                append(.remote(url))
+            }
+        }
+
         return SetSource(candidates: candidates)
     }
 

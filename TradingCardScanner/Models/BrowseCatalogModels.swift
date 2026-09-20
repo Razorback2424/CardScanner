@@ -35,6 +35,32 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
     let cardCount: Int?
     let releaseDate: Date?
     let sortRank: Int
+    /// Publisher-prepared card artwork hints used only after every real set-art
+    /// candidate fails. Optional so old bundled/downloaded manifests decode.
+    var artworkFallbackURLs: [URL]? = nil
+
+    init(
+        catalogID: CatalogSetID,
+        name: String,
+        code: String,
+        logoURL: URL?,
+        symbolURL: URL?,
+        cardCount: Int?,
+        releaseDate: Date?,
+        sortRank: Int,
+        artworkFallbackURLs: [URL]? = nil
+    ) {
+        self.catalogID = catalogID
+        self.name = name
+        self.code = code
+        self.logoURL = logoURL
+        self.symbolURL = symbolURL
+        self.cardCount = cardCount
+        self.releaseDate = releaseDate
+        self.sortRank = sortRank
+        self.artworkFallbackURLs = artworkFallbackURLs
+    }
+
     /// Only virtual WotC set rows carry this. The provider set ID remains the
     /// same because print run is an independent physical attribute.
     var pokemonPrintRun: PokemonPrintRun? { catalogID.pokemonPrintRun }

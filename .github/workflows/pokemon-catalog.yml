@@ -9,6 +9,7 @@ on:
       - "TradingCardScanner.xcodeproj/project.pbxproj"
       - "Config/**"
       - "publisher/**"
+      - "publisher/discovery-policy.json"
       - "scripts/restore_pokemon_catalog_releases.sh"
       - "scripts/verify_pokemon_catalog_hosting_config.sh"
       - "firebase.json"
@@ -51,8 +52,11 @@ jobs:
   prepare-production:
     name: Prepare and validate production candidate
     needs: validate
+    outputs:
+      has_changes: ${{ steps.prepare.outputs.has_changes }}
     if: >-
-      github.event_name == 'workflow_dispatch' && inputs.publish == true
+      github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish == true)
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
@@ -83,10 +87,18 @@ jobs:
         run: |
           swift run --package-path PokemonCatalogCore pokemon-catalog-publisher validate \
             --input publisher/catalog-input.json \
+            --discovery-policy publisher/discovery-policy.json \
             --active-release "${RUNNER_TEMP}/pokemon-catalog-production-current.json" \
             --live true \
             --candidate-root publisher/candidate \
             --report publisher/reports/production.json
+      - name: Determine whether production approval is needed
+        id: prepare
+        run: |
+          has_changes="$(jq -r '((.addedProviderSetIDs | length) > 0) or ((.changedProviderSetIDs | length) > 0)' \
+            publisher/reports/production.json)"
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+          echo "Catalog candidate changes: $has_changes"
       - name: Upload the validated production candidate
         uses: actions/upload-artifact@v4
         with:
@@ -100,10 +112,8 @@ jobs:
   publish-production:
     name: Publish production catalog
     needs: prepare-production
-    # Keep production publication human-triggered until Slice F's measured
-    # rollout is complete. The protected environment remains the second gate.
     if: >-
-      github.event_name == 'workflow_dispatch' && inputs.publish == true
+      needs.prepare-production.outputs.has_changes == 'true'
     runs-on: macos-14
     environment: pokemon-catalog-production
     env:

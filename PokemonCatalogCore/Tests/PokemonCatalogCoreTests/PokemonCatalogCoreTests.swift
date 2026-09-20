@@ -28,6 +28,418 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
     }
 
+    func testDetailedProviderSetDecodesSeriesAndOfficialAbbreviation() throws {
+        let data = Data("""
+        {
+          "id": "30th",
+          "name": "30th Celebration",
+          "cards": [],
+          "serie": {"id": "me", "name": "Mega Evolution"},
+          "abbreviation": {"official": "30C"},
+          "cardCount": {"total": 128, "official": 128}
+        }
+        """.utf8)
+
+        let set = try PokemonCatalogJSON.decode(
+            PokemonCatalogProviderSet.self,
+            from: data
+        )
+
+        XCTAssertEqual(set.serie, .init(id: "me", name: "Mega Evolution"))
+        XCTAssertEqual(set.abbreviation, .init(official: "30C"))
+        XCTAssertEqual(set.cardCount?.official, 128)
+    }
+
+    func testRecordedProviderFixtureWithoutNewMetadataStillDecodes() throws {
+        let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
+        XCTAssertNil(fixture.sets.first?.serie)
+        XCTAssertNil(fixture.sets.first?.abbreviation)
+    }
+
+    func testOrdinaryExpansionDerivesProviderCodeCountAndArtworkFallbackHints() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "TST",
+                    releaseDate: "2026-09-18",
+                    imageURLs: [
+                        "https://assets.tcgdex.net/en/sv/sv99/001",
+                        "https://assets.tcgdex.net/en/sv/sv99/002",
+                        "https://assets.tcgdex.net/en/sv/sv99/003",
+                        "https://assets.tcgdex.net/en/sv/sv99/004"
+                    ]
+                )
+            ]
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: fixture,
+                humanInputs: [],
+                revision: 1,
+                generatedAt: generatedAt
+            )
+        )
+
+        let descriptor = try XCTUnwrap(result.release.sets.first)
+        XCTAssertEqual(descriptor.printedCode, "TST")
+        XCTAssertEqual(descriptor.officialCount, 4)
+        XCTAssertTrue(descriptor.scanEnabled)
+        XCTAssertEqual(
+            result.snapshot.entries.first?.artworkFallbackURLs,
+            Array(fixture.cards.map(\.image).compactMap { $0 }.prefix(3))
+        )
+    }
+
+    func testMissingProviderAbbreviationUsesValidOperatorFallback() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: nil,
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"]
+                )
+            ]
+        )
+        let input = PokemonCatalogHumanInput(
+            providerSetID: "sv99",
+            recognitionKind: .expansion,
+            printedCode: " tst ",
+            claimedOfficialCount: nil
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: fixture,
+                humanInputs: [input],
+                revision: 1,
+                generatedAt: generatedAt
+            )
+        )
+
+        XCTAssertEqual(result.release.sets.first?.printedCode, "TST")
+        XCTAssertEqual(result.release.sets.first?.officialCount, 1)
+    }
+
+    func testMalformedProviderAbbreviationFailsClosedWithoutOverride() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "TOOLONG",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"]
+                )
+            ]
+        )
+
+        XCTAssertThrowsError(
+            try PokemonCatalogBuilder().build(
+                .init(
+                    fixture: fixture,
+                    humanInputs: [],
+                    revision: 1,
+                    generatedAt: generatedAt
+                )
+            )
+        ) { error in
+            guard case let PokemonCatalogBuildError.invalidProviderPrintedCode(id, value) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(id, "sv99")
+            XCTAssertEqual(value, "TOOLONG")
+        }
+    }
+
+    func testValidProviderCodeCannotBeSilentlyOverriddenByOperatorInput() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "TST",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"]
+                )
+            ]
+        )
+        let input = PokemonCatalogHumanInput(
+            providerSetID: "sv99",
+            recognitionKind: .expansion,
+            printedCode: "OLD",
+            claimedOfficialCount: 1
+        )
+
+        XCTAssertThrowsError(
+            try PokemonCatalogBuilder().build(
+                .init(fixture: fixture, humanInputs: [input], revision: 1, generatedAt: generatedAt)
+            )
+        ) { error in
+            guard case let PokemonCatalogBuildError.providerPrintedCodeConflict(id, human, provider) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(id, "sv99")
+            XCTAssertEqual(human, "OLD")
+            XCTAssertEqual(provider, "TST")
+        }
+    }
+
+    func testActiveProviderCodeDriftFailsEvenWhenLegacyInputAgreesWithActiveCode() throws {
+        let initialFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "TST",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"]
+                )
+            ]
+        )
+        let initial = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: initialFixture,
+                humanInputs: [],
+                revision: 1,
+                generatedAt: generatedAt
+            )
+        )
+        let driftFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "NEW",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"]
+                )
+            ]
+        )
+        let legacyInput = PokemonCatalogHumanInput(
+            providerSetID: "sv99",
+            recognitionKind: .expansion,
+            printedCode: "TST",
+            claimedOfficialCount: 1
+        )
+
+        XCTAssertThrowsError(
+            try PokemonCatalogBuilder().build(
+                .init(
+                    fixture: driftFixture,
+                    activeRelease: initial.release,
+                    humanInputs: [legacyInput],
+                    revision: 2,
+                    generatedAt: generatedAt
+                )
+            )
+        ) { error in
+            guard case let PokemonCatalogBuildError.providerPrintedCodeDrift(id, active, provider) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(id, "sv99")
+            XCTAssertEqual(active, "TST")
+            XCTAssertEqual(provider, "NEW")
+        }
+    }
+
+    func testActiveDescriptorPreservesScannerAuthorityWhileRefreshingPresentationMetadata() throws {
+        let initialFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "TST",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"]
+                )
+            ]
+        )
+        let initial = try PokemonCatalogBuilder().build(
+            .init(fixture: initialFixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        let enrichedFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Renamed Recorded Test Set",
+                    code: "TST",
+                    releaseDate: "2026-09-19",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"],
+                    logo: "https://assets.tcgdex.net/en/sv/sv99/logo.png"
+                )
+            ]
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: enrichedFixture,
+                activeRelease: initial.release,
+                humanInputs: [],
+                revision: 2,
+                generatedAt: generatedAt
+            )
+        )
+        let descriptor = try XCTUnwrap(result.release.sets.first)
+        XCTAssertEqual(descriptor.printedCode, "TST")
+        XCTAssertEqual(descriptor.officialCount, 1)
+        XCTAssertTrue(descriptor.scanEnabled)
+        XCTAssertEqual(descriptor.releaseOrder, initial.release.sets.first?.releaseOrder)
+        XCTAssertEqual(descriptor.displayName, "Renamed Recorded Test Set")
+        XCTAssertEqual(descriptor.releaseDate, "2026-09-19")
+        XCTAssertEqual(descriptor.logoURL, "https://assets.tcgdex.net/en/sv/sv99/logo.png")
+        XCTAssertEqual(result.report.changedProviderSetIDs, ["sv99"])
+    }
+
+    func testAutomaticReleaseOrdersUseDateThenProviderIDWithoutRenumberingActiveSets() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "later",
+                    name: "Later",
+                    code: "LAT",
+                    releaseDate: "2026-09-20",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/later/001"]
+                ),
+                .init(
+                    id: "earlier",
+                    name: "Earlier",
+                    code: "EAR",
+                    releaseDate: "2026-09-19",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/earlier/001"]
+                )
+            ]
+        )
+        let result = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: fixture,
+                humanInputs: [],
+                revision: 1,
+                generatedAt: generatedAt
+            )
+        )
+
+        let orders = Dictionary(uniqueKeysWithValues: result.release.sets.map {
+            ($0.providerSetID, $0.releaseOrder)
+        })
+        XCTAssertEqual(orders["earlier"], 0)
+        XCTAssertEqual(orders["later"], 1)
+    }
+
+    func testWholeCandidateCollisionIsRejectedAfterAllDescriptorsAreBuilt() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "first",
+                    name: "First",
+                    code: "SAM",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/first/001"]
+                ),
+                .init(
+                    id: "second",
+                    name: "Second",
+                    code: "SAM",
+                    releaseDate: "2026-09-19",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/second/001"]
+                )
+            ]
+        )
+
+        XCTAssertThrowsError(
+            try PokemonCatalogBuilder().build(
+                .init(
+                    fixture: fixture,
+                    humanInputs: [],
+                    revision: 1,
+                    generatedAt: generatedAt
+                )
+            )
+        ) { error in
+            guard case PokemonCatalogReleaseValidator.ValidationError.duplicatePrintedCode = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
+
+    func testNotScannableSameCodeCoexistsWithExpansionWithoutEnteringExpansionNamespace() throws {
+        let release = PokemonCatalogRelease(
+            revision: 1,
+            generatedAt: generatedAt,
+            sets: [
+                descriptor(providerID: "30th", code: "30C", count: 128),
+                PokemonCatalogSetDescriptor(
+                    providerSetID: "30th-c",
+                    displayName: "30th Classic Collection",
+                    releaseDate: "2026-09-16",
+                    releaseOrder: 23,
+                    recognitionKind: .notScannable,
+                    printedCode: "30C",
+                    officialCount: nil,
+                    printedPrefix: nil,
+                    catalogLocalIDPrefix: nil,
+                    localIDPadWidth: nil,
+                    scanEnabled: false,
+                    logoURL: nil,
+                    symbolURL: nil
+                )
+            ]
+        )
+
+        XCTAssertNoThrow(try PokemonCatalogReleaseValidator.validate(release))
+    }
+
+    func testArtworkResolverAcceptsOnlyImageMIMEAndTriesEnglishThenUniversal() async throws {
+        let resolver = PokemonCatalogTCGdexArtworkResolver { request in
+            let url = try XCTUnwrap(request.url)
+            let isUniversal = url.path.hasPrefix("/univ/")
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: url,
+                    statusCode: isUniversal ? 200 : 200,
+                    httpVersion: nil,
+                    headerFields: [
+                        "Content-Type": isUniversal ? "image/png" : "text/html"
+                    ]
+                )
+            )
+            return (Data(), response)
+        }
+
+        let result = await resolver.resolve(
+            seriesID: "me",
+            setID: "30th",
+            kind: .logo
+        )
+
+        XCTAssertEqual(result, "https://assets.tcgdex.net/univ/me/30th/logo.png")
+    }
+
+    func testSnapshotEntryWithoutOptionalArtworkFieldRemainsReadable() throws {
+        let oldJSON = Data("""
+        {
+          "providerSetID": "sv99",
+          "displayName": "Recorded Test Set",
+          "printedCode": "TST",
+          "officialCount": 1,
+          "releaseOrder": 0,
+          "providerFingerprint": "fixture",
+          "cardCount": 1,
+          "resource": "sets/sv99.json"
+        }
+        """.utf8)
+
+        let entry = try PokemonCatalogJSON.decode(
+            PokemonCatalogSnapshotEntry.self,
+            from: oldJSON
+        )
+        XCTAssertNil(entry.artworkFallbackURLs)
+    }
+
     func testRecordedProviderFixtureProducesDeterministicReleaseAndSnapshot() throws {
         let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
         let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
@@ -49,7 +461,7 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertEqual(first.report.excludedProviderSetIDs, ["tcgp01"])
     }
 
-    func testNewSetCannotBePublishedWithoutHumanPrintedCodeInput() throws {
+    func testNewSetWithoutProviderCodeOrOperatorFallbackIsRejected() throws {
         let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
         let request = PokemonCatalogBuildRequest(
             fixture: fixture,
@@ -386,6 +798,95 @@ final class PokemonCatalogCoreTests: XCTestCase {
     private func load<T: Decodable>(_ type: T.Type, named name: String) throws -> T {
         let url = try XCTUnwrap(Bundle.module.url(forResource: name, withExtension: "json"))
         return try PokemonCatalogJSON.decode(type, from: Data(contentsOf: url))
+    }
+
+    private struct ProviderSetSpec {
+        let id: String
+        let name: String
+        let code: String?
+        let releaseDate: String
+        let imageURLs: [String]
+        let logo: String?
+
+        init(
+            id: String,
+            name: String,
+            code: String?,
+            releaseDate: String,
+            imageURLs: [String],
+            logo: String? = nil
+        ) {
+            self.id = id
+            self.name = name
+            self.code = code
+            self.releaseDate = releaseDate
+            self.imageURLs = imageURLs
+            self.logo = logo
+        }
+    }
+
+    private func providerFixture(
+        sets specs: [ProviderSetSpec]
+    ) -> PokemonCatalogProviderFixture {
+        var rows: [PokemonCatalogProviderDirectoryRow] = []
+        var providerSets: [PokemonCatalogProviderSet] = []
+        var cards: [PokemonCatalogProviderCard] = []
+
+        for spec in specs {
+            let count = PokemonCatalogProviderCardCount(
+                total: spec.imageURLs.count,
+                official: spec.imageURLs.count,
+                normal: spec.imageURLs.count,
+                reverse: 0,
+                holo: 0,
+                firstEd: 0
+            )
+            let briefs = spec.imageURLs.enumerated().map { index, imageURL in
+                let localID = String(format: "%03d", index + 1)
+                let cardID = "\(spec.id)-\(localID)"
+                return PokemonCatalogProviderCardBrief(
+                    id: cardID,
+                    localID: localID,
+                    name: "Card \(localID)",
+                    image: imageURL
+                )
+            }
+            rows.append(
+                PokemonCatalogProviderDirectoryRow(
+                    id: spec.id,
+                    name: spec.name,
+                    cardCount: count,
+                    releaseDate: spec.releaseDate
+                )
+            )
+            providerSets.append(
+                PokemonCatalogProviderSet(
+                    id: spec.id,
+                    name: spec.name,
+                    cards: briefs,
+                    logo: spec.logo,
+                    releaseDate: spec.releaseDate,
+                    cardCount: count,
+                    serie: .init(id: "sv"),
+                    abbreviation: spec.code.map { .init(official: $0) }
+                )
+            )
+            cards += briefs.map { brief in
+                PokemonCatalogProviderCard(
+                    id: brief.id,
+                    localID: brief.localID,
+                    name: brief.name,
+                    image: brief.image,
+                    setID: spec.id
+                )
+            }
+        }
+
+        return PokemonCatalogProviderFixture(
+            directory: rows,
+            sets: providerSets,
+            cards: cards
+        )
     }
 
     private func descriptor(

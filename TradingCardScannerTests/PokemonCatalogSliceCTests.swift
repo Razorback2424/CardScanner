@@ -132,6 +132,46 @@ private enum SliceCFixture {
 }
 
 final class PokemonCatalogSliceCTests: XCTestCase {
+    func test30thClassicCollectionSharesDisplayCodeWithoutClaimingScannerNamespace() {
+        let expansion = SliceCFixture.descriptor(
+            providerSetID: "30th",
+            printedCode: "30C",
+            officialCount: 128,
+            releaseOrder: 22,
+            displayName: "30th Celebration"
+        )
+        let classic = PokemonCatalogSetDescriptor(
+            providerSetID: "30th-c",
+            displayName: "30th Classic Collection",
+            releaseDate: "2026-09-16",
+            releaseOrder: 23,
+            recognitionKind: .notScannable,
+            printedCode: "30C",
+            officialCount: nil,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: false,
+            logoURL: nil,
+            symbolURL: nil
+        )
+        let registry = SliceCFixture.registry(descriptors: [expansion, classic])
+
+        XCTAssertEqual(registry.expansionCodes, ["30C"])
+        XCTAssertEqual(registry.expansion(forPrintedCode: "30C")?.providerSetID, "30th")
+        XCTAssertEqual(registry.printedCode(forProviderSetID: "30th-c"), "30C")
+        XCTAssertFalse(registry.isScanEnabled(forProviderSetID: "30th-c"))
+
+        let scanner = CardScanner()
+        scanner.usePokemonRegistry(registry)
+        scanner.drainProfileQueuesForTesting()
+        guard case let .identified(subject) = scanner.recognitionOutcomeForTesting(["30C 001/128"]),
+              case let .pokemon(_, _, _, definition) = subject.identifier else {
+            return XCTFail("30C should resolve to the scannable 30th expansion")
+        }
+        XCTAssertEqual(definition.tcgdexSetID, "30th")
+    }
+
     func testSignedActivationInstallsFixtureCodeWithoutRestart() async throws {
         let root = SliceCFixture.tempRoot()
         defer { try? FileManager.default.removeItem(at: root) }

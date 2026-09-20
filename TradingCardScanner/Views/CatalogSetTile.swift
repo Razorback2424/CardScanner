@@ -205,7 +205,7 @@ struct CatalogSetTile: View {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("\(set.code) · Artwork lookup will retry later")
+            Text(set.code)
                 .font(.caption)
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
