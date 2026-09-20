@@ -77,6 +77,13 @@ protocol CloudRestorationProbe: AnyObject {
 /// The production readiness boundary. The default implementation is
 /// deliberately conservative until entitled restoration is proven end to end.
 protocol CloudRestorationReadinessSource: Sendable {
+    /// Whether this source is an evidence mechanism that production bootstrap
+    /// may use to open a CloudKit-backed container. A source can still be
+    /// useful in tests while explicitly reporting that its proof is not ready
+    /// for shipping.
+    @MainActor
+    var isProven: Bool { get }
+
     @MainActor
     func arm(_ request: CloudRestorationRequest) -> any CloudRestorationProbe
 }
@@ -101,6 +108,9 @@ private final class UnprovenCloudRestorationProbe: CloudRestorationProbe {
 }
 
 struct UnprovenCloudRestorationReadinessSource: CloudRestorationReadinessSource {
+    @MainActor
+    var isProven: Bool { false }
+
     @MainActor
     func arm(_ request: CloudRestorationRequest) -> any CloudRestorationProbe {
         UnprovenCloudRestorationProbe()
@@ -130,6 +140,9 @@ private final class FixedCloudRestorationProbe: CloudRestorationProbe {
 
 struct FixedCloudRestorationReadinessSource: CloudRestorationReadinessSource {
     let result: CloudRestorationReadiness
+
+    @MainActor
+    var isProven: Bool { true }
 
     @MainActor
     func arm(_ request: CloudRestorationRequest) -> any CloudRestorationProbe {

@@ -78,6 +78,21 @@ final class CollectionStoreContinuityTests: XCTestCase {
         )
     }
 
+    func testProductionHeadlessBindingMapsLocalManifestStatesToOnDeviceMode() {
+        let dependencies = CollectionStorageHeadlessPreflightDependencies.production()
+
+        XCTAssertEqual(
+            dependencies.containerModeForManifest(.neverAttached),
+            .onDevice
+        )
+        XCTAssertEqual(
+            dependencies.containerModeForManifest(.suspended),
+            .onDevice
+        )
+        XCTAssertNil(dependencies.containerModeForManifest(.attached))
+        XCTAssertNil(dependencies.containerModeForManifest(.conflict))
+    }
+
     func testManifestPlusMissingStoreIsUnverifiedAndCannotOpenLocally() {
         let local = CollectionStorageLocalFacts(
             manifest: CollectionStoreManifest(
@@ -265,7 +280,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             paths: paths,
             manifestStore: CollectionStoreManifestStore(directoryURL: paths.collectionStorageDirectoryURL),
             accountAvailability: { .available(fingerprint: "account-a") },
-            makeContainer: {
+            makeContainer: { _ in
                 makeCount += 1
                 return try ModelContainer(
                     for: CollectionStorageModelSchema.full,
@@ -307,7 +322,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             paths: paths,
             manifestStore: manifestStore,
             accountAvailability: { .noAccount },
-            makeContainer: {
+            makeContainer: { _ in
                 makeCount += 1
                 return try CollectionStorageBootstrapDependencies.makeContainer(
                     paths: paths,
@@ -324,6 +339,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
         XCTAssertEqual(session?.storeID, localStoreID)
         XCTAssertEqual(session?.mode, .onDevice)
         XCTAssertTrue(session?.isAuthoritative == true)
+        XCTAssertEqual(TradingCardScannerApp.activeStorageMode, .onDevice)
         XCTAssertEqual(makeCount, 1)
         generation.suspend()
     }
@@ -354,7 +370,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             paths: paths,
             manifestStore: manifestStore,
             accountAvailability: { .noAccount },
-            makeContainer: {
+            makeContainer: { _ in
                 makeCount += 1
                 return try CollectionStorageBootstrapDependencies.makeContainer(
                     paths: paths,
@@ -420,7 +436,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             paths: paths,
             manifestStore: manifestStore,
             accountAvailability: { .temporarilyUnavailable },
-            makeContainer: {
+            makeContainer: { _ in
                 makeCount += 1
                 return try CollectionStorageBootstrapDependencies.makeContainer(
                     paths: paths,
@@ -552,7 +568,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
                     remoteGeneration: "generation-a"
                 ))
             },
-            makeContainer: {
+            makeContainer: { _ in
                 makeCount += 1
                 return try ModelContainer(
                     for: CollectionStorageModelSchema.full,
@@ -614,7 +630,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
                     remoteGeneration: "generation-a"
                 ))
             },
-            makeContainer: {
+            makeContainer: { _ in
                 makeCount += 1
                 return try ModelContainer(
                     for: CollectionStorageModelSchema.full,
@@ -676,7 +692,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
             paths: paths,
             manifestStore: CollectionStoreManifestStore(directoryURL: paths.collectionStorageDirectoryURL),
             accountAvailability: { .available(fingerprint: "account-a") },
-            makeContainer: {
+            makeContainer: { _ in
                 makeCount += 1
                 return try ModelContainer(
                     for: CollectionStorageModelSchema.full,
@@ -763,7 +779,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
                 manifestStore: manifestStore,
                 accountAvailability: { .available(fingerprint: "account-a") },
                 anchorState: { anchorState },
-                makeContainer: {
+                makeContainer: { _ in
                     makeCount += 1
                     return try ModelContainer(
                         for: CollectionStorageModelSchema.full,

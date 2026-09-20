@@ -191,6 +191,7 @@ enum LocalStorageReason: String, Equatable, Sendable {
     case restricted
     case temporarilyUnavailable
     case attachmentSuspended
+    case restorationUnproven
 }
 
 enum CollectionStorageDecision: Equatable, Sendable {
@@ -279,17 +280,23 @@ struct CollectionStoragePolicyInput: Equatable, Sendable {
     var account: CloudAccountAvailability
     var anchor: CloudCollectionAnchorState
     var confirmationAccepted: Bool
+    /// Unit-policy callers default to the proven path. Production bootstrap
+    /// supplies the readiness source's explicit proof status so an unproven
+    /// default cannot route a clean install into CloudKit.
+    var cloudRestorationReadinessProven: Bool
 
     init(
         local: CollectionStorageLocalFacts,
         account: CloudAccountAvailability,
         anchor: CloudCollectionAnchorState = .unknown,
-        confirmationAccepted: Bool = false
+        confirmationAccepted: Bool = false,
+        cloudRestorationReadinessProven: Bool = true
     ) {
         self.local = local
         self.account = account
         self.anchor = anchor
         self.confirmationAccepted = confirmationAccepted
+        self.cloudRestorationReadinessProven = cloudRestorationReadinessProven
     }
 }
 
@@ -309,6 +316,10 @@ enum CollectionStoragePolicy {
         switch local.replicaState {
         case .replicaCompletelyAbsent:
             if local.manifest != nil {
+                if case .available = input.account,
+                   !input.cloudRestorationReadinessProven {
+                    return .blockUnprovenTransition
+                }
                 return decideMissingLocalReplica(input)
             }
         case .orphanedJournalArtifacts,
@@ -330,6 +341,21 @@ enum CollectionStoragePolicy {
         }
 
         let storeID = manifest.storeID
+        if case .available = input.account,
+           !input.cloudRestorationReadinessProven {
+            // A verified existing local replica is safe to use on-device. A
+            // missing or damaged replica is not safe to recreate locally,
+            // because doing so could hide a remote collection or overwrite an
+            // identity boundary that has not been proven.
+            guard local.replicaState == .verifiedExistingStore else {
+                return .blockUnprovenTransition
+            }
+            return .openProvenLocal(
+                storeID: storeID,
+                reason: .restorationUnproven
+            )
+        }
+
         switch input.account {
         case let .available(fingerprint):
             if manifest.lastAttachedAccountFingerprint == fingerprint {
@@ -436,6 +462,12 @@ enum CollectionStoragePolicy {
 
         switch input.account {
         case let .available(fingerprint):
+            guard input.cloudRestorationReadinessProven else {
+                return .openProvenLocal(
+                    storeID: freshStoreID,
+                    reason: .restorationUnproven
+                )
+            }
             switch input.anchor {
             case .missing:
                 return .openCloud(storeID: freshStoreID, accountFingerprint: fingerprint)

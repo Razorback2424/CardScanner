@@ -509,7 +509,18 @@ struct CollectionStorageHeadlessPreflightDependencies {
     var manifestStore: CollectionStoreManifestStore
     var accountAvailability: @MainActor () async -> CloudAccountAvailability
     var anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
-    var makeContainer: @MainActor () throws -> ModelContainer
+    var makeContainer: @MainActor (CollectionStorageMode) throws -> ModelContainer
+    /// Production and tests share the manifest-to-container-mode decision so a
+    /// local-only manifest cannot accidentally inherit the entitled build's
+    /// CloudKit configuration.
+    var containerModeForManifest: @MainActor (CloudAttachmentState) -> CollectionStorageMode? = { attachmentState in
+        switch attachmentState {
+        case .neverAttached, .suspended:
+            return .onDevice
+        case .attached, .conflict:
+            return nil
+        }
+    }
     var storageGeneration: CollectionStorageGeneration
 
     static func production(
@@ -540,24 +551,24 @@ struct CollectionStorageHeadlessPreflightDependencies {
             await anchorStore.readState()
         }
 #endif
-#if LOCAL_ONLY_SIGNING
-        // Entitlement selection only: an unentitled background build must use
-        // the on-device configuration. The local-replica proof is evaluated
-        // from manifest state below for every build.
-        let backgroundMode: CollectionStorageMode = .onDevice
-#else
-        let backgroundMode: CollectionStorageMode = .cloudKit
-#endif
         return Self(
             paths: paths,
             manifestStore: manifestStore,
             accountAvailability: accountAvailability,
             anchorState: anchorState,
-            makeContainer: {
+            makeContainer: { mode in
                 try CollectionStorageBootstrapDependencies.makeContainer(
                     paths: paths,
-                    mode: backgroundMode
+                    mode: mode
                 )
+            },
+            containerModeForManifest: { attachmentState in
+                switch attachmentState {
+                case .neverAttached, .suspended:
+                    return .onDevice
+                case .attached, .conflict:
+                    return nil
+                }
             },
             storageGeneration: storageGeneration
         )
@@ -571,6 +582,8 @@ enum CollectionStorageHeadlessPreflight {
     ) async -> HeadlessCollectionStorageSession? {
         if let activeSession = dependencies.storageGeneration.activeSession(),
            let token = dependencies.storageGeneration.currentToken() {
+            TradingCardScannerApp.activeStorageMode = activeSession.mode
+            TradingCardScannerApp.activeStoreID = activeSession.storeID
             return HeadlessCollectionStorageSession(
                 container: activeSession.container,
                 storeID: activeSession.storeID,
@@ -618,9 +631,7 @@ enum CollectionStorageHeadlessPreflight {
             return nil
         }
 
-        let useProvenLocalReplica = manifest.attachmentState != .attached
-
-        if !useProvenLocalReplica {
+        if manifest.attachmentState == .attached {
             guard manifest.attachmentState == .attached,
                   let accountFingerprint = manifest.lastAttachedAccountFingerprint,
                   let checkpoint = manifest.cloudRestoreCheckpoint,
@@ -646,10 +657,10 @@ enum CollectionStorageHeadlessPreflight {
             return nil
         }
 
-        guard let container = try? dependencies.makeContainer() else {
+        guard let mode = dependencies.containerModeForManifest(manifest.attachmentState),
+              let container = try? dependencies.makeContainer(mode) else {
             return nil
         }
-        let mode: CollectionStorageMode = .onDevice
         let isAuthoritative = true
         let session = CollectionStorageSession(
             container: container,
@@ -661,6 +672,8 @@ enum CollectionStorageHeadlessPreflight {
             return nil
         }
         dependencies.storageGeneration.installReady(session: session)
+        TradingCardScannerApp.activeStorageMode = mode
+        TradingCardScannerApp.activeStoreID = manifest.storeID
         guard let token = dependencies.storageGeneration.currentToken() else { return nil }
         return HeadlessCollectionStorageSession(
             container: container,
@@ -700,6 +713,7 @@ final class CollectionStorageBootstrap: ObservableObject {
     private var pendingAttachment: AccountAttachmentRequest?
     private var confirmationAccepted = false
     private var restorationContainer: ModelContainer?
+    private var pendingRestoration: (storeID: UUID, accountFingerprint: String)?
     private var accountChangedObserver: NSObjectProtocol?
     private(set) var lastErrorCategory: String?
 
@@ -734,6 +748,7 @@ final class CollectionStorageBootstrap: ObservableObject {
         confirmationAccepted = false
         pendingAttachment = nil
         restorationContainer = nil
+        pendingRestoration = nil
         lastErrorCategory = nil
 
         if Self.isPerformanceHarnessLaunch {
@@ -760,7 +775,29 @@ final class CollectionStorageBootstrap: ObservableObject {
     }
 
     func keepOnDevice() async {
-        guard let request = pendingAttachment else { return }
+        if let request = pendingAttachment {
+            await keepOnDevice(request: request)
+            return
+        }
+
+        guard case .restoringFromCloud(.failed) = state,
+              let restoration = pendingRestoration else { return }
+        generation &+= 1
+        let currentGeneration = generation
+        restorationContainer = nil
+        state = .loading
+        do {
+            try await openLocal(
+                storeID: restoration.storeID,
+                reason: .restorationUnproven,
+                generation: currentGeneration
+            )
+        } catch {
+            showRecovery(error, category: "restoration-fallback")
+        }
+    }
+
+    private func keepOnDevice(request: AccountAttachmentRequest) async {
         generation &+= 1
         let currentGeneration = generation
         pendingAttachment = nil
@@ -787,7 +824,8 @@ final class CollectionStorageBootstrap: ObservableObject {
             guard currentGeneration == generation else { return }
 
             let anchor: CloudCollectionAnchorState
-            if case .available = account {
+            if case .available = account,
+               dependencies.readinessSource.isProven {
                 anchor = await dependencies.anchorState()
             } else {
                 anchor = .unknown
@@ -799,7 +837,8 @@ final class CollectionStorageBootstrap: ObservableObject {
                     local: local,
                     account: account,
                     anchor: anchor,
-                    confirmationAccepted: confirmationAccepted
+                    confirmationAccepted: confirmationAccepted,
+                    cloudRestorationReadinessProven: dependencies.readinessSource.isProven
                 )
             )
             await apply(
@@ -1185,21 +1224,25 @@ final class CollectionStorageBootstrap: ObservableObject {
             return
         }
         do {
+            pendingRestoration = (storeID, accountFingerprint)
             let replacementStoreFileIdentity: String?
             if forceRestoration {
                 replacementStoreFileIdentity = try dependencies.manifestStore.makeStoreFileIdentity()
             } else {
                 replacementStoreFileIdentity = nil
             }
+            let preflightAttachmentState = try dependencies.manifestStore.load()?.attachmentState
+                ?? .neverAttached
             try persistManifest(
                 storeID: storeID,
                 accountFingerprint: accountFingerprint,
-                attachmentState: .attached,
+                // Establish identity and physical-file metadata before the
+                // container exists, but do not claim CloudKit attachment until
+                // the affirmative readiness result below.
+                attachmentState: preflightAttachmentState,
                 invalidateRestoreCheckpoint: forceRestoration,
                 replacementStoreFileIdentity: replacementStoreFileIdentity
             )
-            TradingCardScannerApp.activeCloudAccountStatusRaw = "available"
-            TradingCardScannerApp.activeAttachmentStateRaw = CloudAttachmentState.attached.rawValue
             let request = CloudRestorationRequest(
                 bootstrapGeneration: currentGeneration,
                 storeID: storeID,
@@ -1218,12 +1261,19 @@ final class CollectionStorageBootstrap: ObservableObject {
             while currentGeneration == generation {
                 switch readiness {
                 case .readyEmpty, .readyPopulated:
+                    try persistManifest(
+                        storeID: storeID,
+                        accountFingerprint: accountFingerprint,
+                        attachmentState: .attached
+                    )
                     try persistRestoreCheckpoint(
                         storeID: storeID,
                         accountFingerprint: accountFingerprint,
                         readiness: readiness,
                         anchorGeneration: anchorGeneration
                     )
+                    TradingCardScannerApp.activeCloudAccountStatusRaw = "available"
+                    TradingCardScannerApp.activeAttachmentStateRaw = CloudAttachmentState.attached.rawValue
                     installReady(
                         session: CollectionStorageSession(
                             container: container,
@@ -1364,6 +1414,7 @@ final class CollectionStorageBootstrap: ObservableObject {
     ) {
         guard currentGeneration == generation else { return }
         restorationContainer = nil
+        pendingRestoration = nil
         pendingAttachment = nil
         confirmationAccepted = false
         dependencies.storageGeneration.installReady(session: session)

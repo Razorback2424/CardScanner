@@ -86,8 +86,9 @@ inputs, not optional host data. To close this item:
 
 ### RF-7 — Storage-bootstrap production wiring, on an entitled device
 
-**Status:** open; depends on CloudKit enrollment, and on the pass-2 F01/F02
-fixes landing first.
+**Status:** open for entitled-device/runtime evidence. The pass-2 F01/F02
+source fixes are present in the working tree; CloudKit enrollment and device
+verification remain outstanding.
 
 [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) F01 and
 F02 are deterministic source traces and do not need a device to be believed.
@@ -111,7 +112,8 @@ behavior.
 
 ### RF-8 — Background price-check coverage budget
 
-**Status:** open; blocked on pass-2 F02, then device-measured.
+**Status:** open; the source dependency on pass-2 F02 is fixed, and the
+remaining work is device-measured.
 
 Slice B of [`price_history_chart_plan.md`](price_history_chart_plan.md) proposes
 replacing `BackgroundPriceRefresh.appRefreshTargetLimit = 3` with an elapsed-time
@@ -121,9 +123,9 @@ not apply to Scryfall-priced Magic rows.
 
 This cannot be retired in the simulator, and it must not be started early:
 
-- **Blocking.** Fix [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md)
-  F02 first. Raising background throughput while the headless preflight builds a
-  CloudKit container for on-device-only stores multiplies exposure to that defect.
+- **Blocking.** The F02 source fix must remain in the candidate before raising
+  background throughput; device evidence still needs to confirm that headless
+  preflight resolves on-device-only stores without CloudKit mirroring.
 - Measure the real `BGAppRefresh` window on device and record how many targets a
   budgeted pass completes, split by provider.
 - Confirm a large collection does not trip `JustTCGQuota.backgroundDailyCeiling`

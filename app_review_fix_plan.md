@@ -4,7 +4,7 @@
 > this task. Existing uncommitted work is intentionally not committed or
 > reset by this remediation pass.
 
-## Current checkout reconciliation — 2026-09-14
+## Current checkout reconciliation — 2026-09-19
 
 This root-level file is the current App Review remediation authority. The
 branch/SHA and suite counts in the original baseline below belong to the
@@ -20,6 +20,28 @@ full simulator run discovered 1,256 tests and reported 48 unrelated
 fixture/source-environment or signal-kill failures. See the current
 [`docs/release/phase-1-integrity-evidence.md`](docs/release/phase-1-integrity-evidence.md)
 for the candidate ledger.
+
+## Pass-2 F01–F03 remediation — 2026-09-19
+
+The three requested pass-2 findings are now addressed in the working tree:
+
+- [x] F01 — an unproven restoration source is now an explicit policy input.
+  Fresh and unsafe-to-recreate iCloud paths stay on-device, failed restoration
+  exposes **Keep on This Device**, and the manifest is not changed to
+  `.attached` until affirmative readiness.
+- [x] F02 — headless container construction now takes the manifest-derived
+  `CollectionStorageMode`; `.neverAttached` and `.suspended` production paths
+  request `.onDevice`, and headless installation updates the app's active mode.
+- [x] F03 — pending scanner answers are retained until the resolution task is
+  accepted. A busy pipeline reports a recoverable problem and leaves the answer
+  available for retry; the regression test covers the interleaving directly.
+
+Focused evidence on the iPhone 17 Pro iOS 26.5 simulator is 64 storage,
+policy, and continuity tests passing in both Debug and DebugProduction (the
+DebugProduction run has one intentional entitlement-gated skip), 20 readiness
+tests passing, and the new F03 regression passing. This is source and simulator
+evidence only; RF-7 still requires the entitled-device and clean-install/
+background-refresh checks below.
 
 ## Historical baseline — `fix/app-review-preflight`
 
@@ -85,10 +107,11 @@ for the candidate ledger.
 - [x] C4 — dependency defaults for anchor reads are now `.unknown`, preserving
   fail-closed behavior when a caller omits the dependency.
 
-Focused storage verification is `PASS — 59 tests, 0 failures` across
-`CollectionStoragePolicyTests`, `CollectionStoreContinuityTests`,
-`CollectionStorageBootstrapTests`, `CloudCollectionAnchorStoreTests`, and
-`CloudRestorationReadinessTests` on the iOS 26.5 simulator.
+Current focused verification is `PASS` for 64 storage/policy/continuity tests
+in Debug, the same 64 tests in DebugProduction with one intentional skip, 20
+`CloudRestorationReadinessTests`, and the new pending-resolution regression.
+The older 59-test count is retained only in historical notes elsewhere; it is
+not the current evidence count.
 
 ## Historical verification snapshot — pre-current-checkout
 
