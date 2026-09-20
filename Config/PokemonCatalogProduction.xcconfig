@@ -4,7 +4,7 @@
 // comment; Xcode expands the empty variable reference back to `https://`.
 POKEMON_CATALOG_BASE_URL = https:/$()/catalog.scan-stash.com
 POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = catalog.scan-stash.com
-POKEMON_CATALOG_ROLLOUT_MODE = bundled-validation-only
+POKEMON_CATALOG_ROLLOUT_MODE = remote-authority
 // Public key material is pinned for production signature verification, for
 // example: production-v1:<base64url-32-byte-public-key>
 POKEMON_CATALOG_PINNED_KEYS = pokemon-catalog-production-2026-09-18-01:CEQfURmtxBTE170BLAk1hVcKgBmGAgVlR7hhSgO6CLI
