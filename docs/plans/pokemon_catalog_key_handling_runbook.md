@@ -1,6 +1,6 @@
 # Pokémon catalog signing and publication runbook
 
-**Status:** current Slice E/F implementation companion — 2026-09-19
+**Status:** current Slice E/F implementation companion — 2026-09-20
 
 The catalog signing key is the only credential that can authorize a new
 scanner code. Treat the GitHub Actions secret as a use-only copy, not as the
@@ -15,10 +15,11 @@ backup.
    Record its generation date, key ID, and public key fingerprint there.
 3. Verify the backup once by deriving the public key from the stored private
    key and comparing it with the public key pinned by the app release.
-4. Add only the private raw representation to the protected GitHub Actions
-   secret `POKEMON_CATALOG_SIGNING_KEY`; add the non-secret key ID to
-   `POKEMON_CATALOG_KEY_ID`. Never put either value in a fixture, report, site
-   object, or pull-request log.
+4. Add only the private raw representation to the production publication
+   environment secret `POKEMON_CATALOG_SIGNING_KEY`; add the non-secret key ID
+   to `POKEMON_CATALOG_KEY_ID`. The automatic content-only environment must
+   contain the same deployment and signing secrets. Never put either value in a
+   fixture, report, site object, or pull-request log.
 
 The committed production build pins
 `pokemon-catalog-production-2026-09-18-01` to
@@ -26,7 +27,7 @@ The committed production build pins
 `POKEMON_CATALOG_PINNED_KEYS`. The hosted revision-1 signature was independently
 verified against that pin. The private signing value remains only in the
 protected release locations; it is not in the repository, candidate artifact,
-or app. The committed rollout mode remains `bundled-validation-only`.
+or app. The committed rollout mode is `remote-authority`.
 
 The private `POKEMON_CATALOG_SIGNING_KEY` value is not PEM. It must decode to
 exactly 32 raw private-key/seed bytes, supplied as unpadded base64url, standard
@@ -47,14 +48,25 @@ base64url form so it matches the app's `keyID:public-key` parser.
   drifting codes, denominator mismatch, incomplete provider cards, unsupported
   URLs, duplicate identities, OCR-confusable code collisions, and unsupported
   rules versions.
+- Schema 1 carries `providerFingerprint` as an optional additive descriptor
+  field. A legacy descriptor decodes with `nil`; it is not an empty target and
+  does not trigger device reconciliation. The publisher and device call the
+  same canonical Core fingerprint implementation. The separate local probe
+  fingerprint remains exclusive to the independent 24-hour sweep.
+- The optional parentProviderSetID is protected configuration. The publisher
+  resolves a configured parent's actual artwork into the signed child
+  descriptor; the app's compiled parent rules remain only as a legacy fallback.
 - The publisher writes an immutable revision first and changes `current.json`
   last. It refuses to overwrite a revision with different bytes.
-- Scheduled runs automatically prepare an unsigned candidate and enter the
-  protected `pokemon-catalog-production` environment only when the report has
-  additions or presentation changes. Publication still requires the protected
-  environment's required-reviewer rule; `workflow_dispatch` with `publish=true`
-  remains the manual escape hatch. Keep the required reviewer rule enabled in
-  GitHub environment settings; that setting is not versioned in this repository.
+- Scheduled runs automatically prepare an unsigned candidate. The explicit
+  classifier routes the first nil-to-fingerprint population through the
+  protected `pokemon-catalog-production` baseline migration. After that,
+  content-only changes select `pokemon-catalog-production-auto`; a new set,
+  authority change, or unknown/unclassifiable change selects the protected
+  environment and waits for its required reviewer. `workflow_dispatch` with
+  `publish=true` cannot force an authority change through the auto environment.
+  Keep the required reviewer and auto-environment branch restrictions in GitHub
+  settings; those settings are not versioned in this repository.
 - The production workflow restores the previously served revision objects into
   the fresh runner before publishing, so a Hosting deploy does not discard the
   versioned release tree. It also retains the public review report as a
@@ -83,12 +95,9 @@ intentionally deferred. The staging GitHub environment currently contains only
 signing material and must not be treated as deployable until those resources
 exist.
 
-The production-host validation-only rehearsal and a one-off local
-`remote-authority` rehearsal against hosted revision 1 are complete. The latter
-proved activation, persistence, relaunch loading, and same-revision idempotency;
-it did not change the committed xcconfig. Do not enable `remote-authority` in
-the committed production configuration or approve a publication solely for a
-no-op lifecycle test. The deferred physical-device rehearsal, including real
-offline behavior, must pass before production cutover. Staging remains
-optional/deferred and must use separate project/site/key material if later
-provisioned; do not point a production App Store build at it.
+The production-host validation-only rehearsal and the `remote-authority`
+rehearsal against hosted revision 1 are complete. The committed production
+configuration now uses `remote-authority`; the deferred physical-device
+acceptance rehearsal, including real offline behavior, remains open. Staging
+remains optional/deferred and must use separate project/site/key material if
+later provisioned; do not point a production App Store build at it.

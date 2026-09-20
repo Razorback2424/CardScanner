@@ -52,21 +52,28 @@ release contract.
 
 Local and pull-request jobs can validate and emit a public review report. The
 production workflow prepares and uploads an unsigned candidate before the
-protected environment gate; the approved job only loads that candidate, signs
-it, and deploys it. The CLI refuses to load a signing key unless it is running
-in the protected GitHub Actions publication environment. The private key is
-never checked into the repository or written to the site directory.
+publication environment gate. The first nil-to-fingerprint population is a
+protected baseline migration. After that, only the explicit content-only
+allow-list uses `pokemon-catalog-production-auto`; candidates that add a set,
+touch scanner authority, or contain an unknown change use the protected
+`pokemon-catalog-production` environment and wait for its required reviewer.
+The approved job only loads that exact candidate, signs it, and deploys it. The
+CLI refuses to load a signing key outside one of those matching GitHub Actions
+production environments. The private key is never checked into the repository
+or written to the site directory.
 
 Firebase project selection and the Hosting service account are intentionally
 outside this repository. The first deployment uses the protected
-`pokemon-catalog-production` environment with
+`pokemon-catalog-production` environment, and the automatic
+`pokemon-catalog-production-auto` environment must carry the same deployment
+and signing secrets, with
 `POKEMON_CATALOG_SIGNING_KEY`, `POKEMON_CATALOG_KEY_ID`,
 `FIREBASE_SERVICE_ACCOUNT`, `FIREBASE_PROJECT_ID`, and
 `FIREBASE_HOSTING_SITE_ID`. The workflow creates the local production target
 binding before deploying; `.firebaserc.example` shows the equivalent mapping
 once the owner has the real project and site IDs. A separate staging project,
-site, Firebase credential set, and deployment job are deferred until the
-remote-authority cutover is actually approaching.
+site, Firebase credential set, and deployment job remain deferred until a
+distinct staging boundary materially reduces rollout risk.
 
 Before the first production publication, keep `publisher/catalog-input.json`
 limited to exceptional overrides and fallback policy. The recorded fixture and
@@ -77,10 +84,11 @@ its compatibility input are reserved for staging/synthetic rehearsal.
 `Config/PokemonCatalogStaging.xcconfig` and the staging signing key are retained
 as future rollout material, but they are not part of the first production
 deployment. Do not create a staging Firebase project, Hosting site, DNS record,
-or Firebase credential set yet. Add them when the production build is ready to
-switch from `bundled-validation-only` to `remote-authority`; the separate
-project boundary should be chosen at that point.
+or Firebase credential set yet. Add them only when a separate project boundary
+materially reduces rollout risk; keep its credentials and signing key distinct
+from both production publication environments.
 
-The first Slice F rehearsal therefore uses the production hostname with a
-bundled-validation-only build: it downloads, verifies, validates, and discards
-the candidate without changing production authority.
+The earlier Slice F validation-only rehearsal used the production hostname and
+discarded the candidate without changing production authority. The committed
+production configuration now uses `remote-authority`; the remaining physical-
+device/offline acceptance evidence is tracked in the current update plan.

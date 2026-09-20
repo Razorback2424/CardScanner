@@ -1,3 +1,26 @@
+Catalog schema-1 provider-content propagation (2026-09-20, current working
+tree): kept `PokemonCatalogCoreContract.releaseSchemaVersion == 1` and added
+`providerFingerprint` as an optional additive descriptor field. Legacy
+schema-1 releases decode it as `nil`, while new releases can carry a signed
+desired content value without requiring an app update. Added one canonical
+Core fingerprint for publisher/device parity, a distinct local-only probe
+fingerprint for the independent 24-hour sweep, and fail-closed change
+classification for content-only, baseline, authority, new-set, and unknown
+changes. The first nil-to-fingerprint population is therefore protected
+baseline migration; only later explicit content-only changes select
+`pokemon-catalog-production-auto`.
+
+The device now persists `(providerSetID, desiredFingerprint)` reconciliation
+targets, retries mismatches without clearing them, publishes a set overlay only
+after the computed canonical fingerprint matches, preserves full-sweep state,
+and emits a set-specific Browse update. Activation events also carry content
+change IDs and invalidate the existing resolved-card cache path. Verification
+passed: PokemonCatalogCore 36/36 and 37/37 focused catalog app tests on the
+arm64 iPhone 17 Pro simulator, with DerivedData, module caches, temporary files,
+and the xcresult on the external SSD. Protected baseline publication, auto
+environment setup, four-hour scheduling, live-provider, and physical-device
+acceptance remain open.
+
 F04 automatic Pokémon catalog preparation (2026-09-19, isolated branch
 `codex/automatic-catalog-discovery-f04` from committed `edd8dc6`): added TCGdex
 series/official-abbreviation evidence decoding, provider-side image-MIME-gated
