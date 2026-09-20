@@ -69,6 +69,7 @@
 		A0020001 /* ScanParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020001 /* ScanParserTests.swift */; };
 		A00200F5 /* WholeCardHistoricalCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F5 /* WholeCardHistoricalCaptureTests.swift */; };
 		A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F4 /* HistoricalTitleCaptureTests.swift */; };
+		A0020122 /* HistoricalAttemptBoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020122 /* HistoricalAttemptBoundTests.swift */; };
 		A00200F3 /* BoundedCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F3 /* BoundedCacheTests.swift */; };
 		A00200F2 /* PortfolioNameCleaningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F2 /* PortfolioNameCleaningTests.swift */; };
 		A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F1 /* HistoricalCatalogRequestTests.swift */; };
@@ -298,6 +299,7 @@
 		B0020001 /* ScanParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParserTests.swift; sourceTree = "<group>"; };
 		B00200F5 /* WholeCardHistoricalCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholeCardHistoricalCaptureTests.swift; sourceTree = "<group>"; };
 		B00200F4 /* HistoricalTitleCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalTitleCaptureTests.swift; sourceTree = "<group>"; };
+		B0020122 /* HistoricalAttemptBoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalAttemptBoundTests.swift; sourceTree = "<group>"; };
 		B00200F3 /* BoundedCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundedCacheTests.swift; sourceTree = "<group>"; };
 		B00200F2 /* PortfolioNameCleaningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioNameCleaningTests.swift; sourceTree = "<group>"; };
 		B00200F1 /* HistoricalCatalogRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalCatalogRequestTests.swift; sourceTree = "<group>"; };
@@ -710,6 +712,7 @@
 				B0020001 /* ScanParserTests.swift */,
 				B00200F5 /* WholeCardHistoricalCaptureTests.swift */,
 				B00200F4 /* HistoricalTitleCaptureTests.swift */,
+				B0020122 /* HistoricalAttemptBoundTests.swift */,
 				B00200F3 /* BoundedCacheTests.swift */,
 				B00200F2 /* PortfolioNameCleaningTests.swift */,
 				B00200F1 /* HistoricalCatalogRequestTests.swift */,
@@ -1066,6 +1069,7 @@
 				A0020001 /* ScanParserTests.swift in Sources */,
 				A00200F5 /* WholeCardHistoricalCaptureTests.swift in Sources */,
 				A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */,
+				A0020122 /* HistoricalAttemptBoundTests.swift in Sources */,
 				A00200F3 /* BoundedCacheTests.swift in Sources */,
 				A00200F2 /* PortfolioNameCleaningTests.swift in Sources */,
 				A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */,

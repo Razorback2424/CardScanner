@@ -244,21 +244,21 @@ final class CameraCapabilitiesSurfaceTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
 
-        defaults.set(true, forKey: "camera.hasMacroLens")
-        defaults.set(CameraCapabilities.modelIdentifier, forKey: "camera.probedModelIdentifier")
+        defaults.set(true, forKey: "camera.hasMacroLens.v2")
+        defaults.set(CameraCapabilities.modelIdentifier, forKey: "camera.probedModelIdentifier.v2")
         XCTAssertTrue(CameraCapabilities.hasMacroLens(defaults: defaults))
 
-        defaults.set(false, forKey: "camera.hasMacroLens")
+        defaults.set(false, forKey: "camera.hasMacroLens.v2")
         XCTAssertFalse(CameraCapabilities.hasMacroLens(defaults: defaults))
 
         CameraCapabilities.invalidateCache(defaults: defaults)
-        XCTAssertNil(defaults.object(forKey: "camera.hasMacroLens"))
-        XCTAssertNil(defaults.object(forKey: "camera.probedModelIdentifier"))
+        XCTAssertNil(defaults.object(forKey: "camera.hasMacroLens.v2"))
+        XCTAssertNil(defaults.object(forKey: "camera.probedModelIdentifier.v2"))
 
         let probed = CameraCapabilities.hasMacroLens(defaults: defaults)
-        XCTAssertEqual(defaults.bool(forKey: "camera.hasMacroLens"), probed)
+        XCTAssertEqual(defaults.bool(forKey: "camera.hasMacroLens.v2"), probed)
         XCTAssertEqual(
-            defaults.string(forKey: "camera.probedModelIdentifier"),
+            defaults.string(forKey: "camera.probedModelIdentifier.v2"),
             CameraCapabilities.modelIdentifier
         )
     }

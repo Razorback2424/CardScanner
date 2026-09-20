@@ -437,21 +437,13 @@ module, so it exercises the same compiled code the app runs.
 for `.right`-oriented frames. Apple's wording admits the opposite reading, so
 confirm it before trusting any OCR results.
 
-In a DEBUG build the preview draws green boxes around every text observation
-Vision returns. Those boxes are ground truth: they should sit directly on the
-printed words.
-
-1. Set `ScanRegion.calibrationUsesFullFrameROI = true` in
-   `Services/CardScanner.swift`. This widens Vision's ROI to the whole frame.
-   Without it, a mirrored transform aims the ROI at the wrong end of the card,
-   Vision finds nothing, and the overlay draws no boxes at all — no signal in
-   exactly the failure case being diagnosed.
-2. Run and point the camera at a card.
-   - Boxes land on the words: the transform is correct.
-   - Boxes are mirrored to the wrong vertical end: switch to the alternate
-     transform documented on `metadataRect(fromVisionRect:)`.
-3. Set the flag back to `false` and confirm the green band sits over the
-   identifier strip.
+The former `calibrationUsesFullFrameROI`/“boxes are ground truth” procedure is
+superseded. The current [scanner module review](docs/audits/scanner_module_review.md)
+confirms the quarter-turn transform derivations but finds that the debug overlay
+and green scan band can be mapped against a different ROI from the one Vision
+actually reads. Do not use that switch as a calibration escape hatch or treat
+the overlay as authoritative until the installed-ROI publication and preview
+mapping are corrected.
 
 Vision normalizes observation bounding boxes against the request's
 `regionOfInterest`, not the full frame.

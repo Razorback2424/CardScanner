@@ -49,30 +49,6 @@ enum CardFramingRegion {
         )
     }
 
-#if DEBUG
-    /// Calibration switch for the first on-device run.
-    ///
-    /// Set this to `true` to widen Vision's ROI to the whole frame for one build.
-    /// That matters because if `metadataRect(fromVisionRect:rotationAngle:)` has the rotation
-    /// backwards, the normal ROI points at the wrong end of the card, Vision finds
-    /// no text there, and the debug overlay draws nothing — no signal in exactly the
-    /// case the overlay exists to diagnose. With the full frame, Vision reports text
-    /// everywhere and the green boxes reveal the true mapping immediately.
-    ///
-    /// Set it back to `false` once the transform is confirmed.
-    static let calibrationUsesFullFrameROI = false
-#endif
-
-    /// The ROI actually handed to Vision. Observation bounding boxes are normalized
-    /// against *this* rect, not the full frame.
-    static var activeVisionROI: CGRect {
-#if DEBUG
-        return calibrationUsesFullFrameROI ? fullFrameRect : visionRect
-#else
-        return visionRect
-#endif
-    }
-
     static func metadataRect(rotationAngle: CGFloat) -> CGRect {
         metadataRect(fromVisionRect: visionRect, rotationAngle: rotationAngle)
     }
@@ -700,6 +676,12 @@ final class CardScanner: NSObject, ObservableObject {
     /// A company token seen during the unbound label pass. This is deliberately
     /// separate from `slabFraming`: it is a guide hint, not an identity claim.
     @Published private(set) var slabGuideHint: GradingCompany?
+    /// The footer band Vision is currently reading. Published because the
+    /// preview draws this rectangle and the debug overlay denormalizes
+    /// observation boxes against it; re-deriving either from the guide geometry
+    /// pointed both at a different strip than the one being recognized.
+    @Published private(set) var footerRegionOfInterest: CGRect =
+        CardFramingRegion.visionRect.union(SlabFramingRegion.footerVisionRect(for: nil))
 #if DEBUG
     let debugVisionOverlay = ScannerDebugVisionOverlay()
 #endif
@@ -1342,8 +1324,8 @@ final class CardScanner: NSObject, ObservableObject {
         // numeric-heavy identifier strip; keep the custom set vocabulary for MVP.
         footerRequest.usesLanguageCorrection = true
         footerRequest.customWords = profile.customWords
-        footerRequest.regionOfInterest = CardFramingRegion.visionRect.union(
-            SlabFramingRegion.footerVisionRect(for: nil)
+        setFooterRegionOfInterest(
+            CardFramingRegion.visionRect.union(SlabFramingRegion.footerVisionRect(for: nil))
         )
 
         titleRequest.recognitionLevel = .accurate
@@ -2038,7 +2020,7 @@ final class CardScanner: NSObject, ObservableObject {
         // when it describes the same slab, so footer glare cannot carry the
         // old empty-frame count through the next bound pass.
         activeSlabEmptyFrames = 0
-        footerRequest.regionOfInterest = SlabFramingRegion.footerVisionRect(for: evidence.company)
+        setFooterRegionOfInterest(SlabFramingRegion.footerVisionRect(for: evidence.company))
         titleRequest.regionOfInterest = SlabFramingRegion.titleVisionRect(for: evidence.company)
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: evidence.company)
         DispatchQueue.main.async { [weak self] in
@@ -2048,6 +2030,16 @@ final class CardScanner: NSObject, ObservableObject {
             }
             guard self.slabFraming != evidence else { return }
             self.slabFraming = evidence
+        }
+    }
+
+    /// Installs the footer ROI and mirrors it for the preview. Callers must be
+    /// on `visionQueue`.
+    private func setFooterRegionOfInterest(_ rect: CGRect) {
+        footerRequest.regionOfInterest = rect
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.footerRegionOfInterest != rect else { return }
+            self.footerRegionOfInterest = rect
         }
     }
 
@@ -2094,8 +2086,8 @@ final class CardScanner: NSObject, ObservableObject {
         if !preserveEvidenceWindow {
             slabEvidenceWindow.reset()
         }
-        footerRequest.regionOfInterest = CardFramingRegion.visionRect.union(
-            SlabFramingRegion.footerVisionRect(for: nil)
+        setFooterRegionOfInterest(
+            CardFramingRegion.visionRect.union(SlabFramingRegion.footerVisionRect(for: nil))
         )
         titleRequest.regionOfInterest = CardFramingRegion.titleVisionRect
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect()
@@ -2472,6 +2464,16 @@ final class CardScanner: NSObject, ObservableObject {
         )
     }
 
+    /// Debug-only seam for the historical-attempt bound. It calls the same
+    /// bookkeeping the frame path uses, without manufacturing a camera frame.
+    @discardableResult
+    func advanceHistoricalAttemptForTesting(
+        _ number: PokemonPrintedNumberEvidence,
+        at now: CFAbsoluteTime
+    ) -> Bool {
+        visionQueue.sync { advanceHistoricalAttempt(for: number, at: now) }
+    }
+
     var latchedSubjectForTesting: ScanSubject? {
         latch.latched
     }
@@ -2490,21 +2492,18 @@ final class CardScanner: NSObject, ObservableObject {
     }
 #endif
 
-    /// Creates or advances a short-lived historical attempt and reads the title
-    /// from the same pixel buffer. A number must be visible again on every retry,
-    /// which prevents a stale footer from being joined to the next physical card.
-    private func historicalIdentifier(
+    /// Whether this frame may run the title pass, and the attempt bookkeeping
+    /// that decides it. Callers must be on `visionQueue`.
+    ///
+    /// An exhausted attempt is deliberately kept rather than cleared. Clearing
+    /// it let the very next frame build a fresh attempt with `retryCount` 0 and
+    /// `startedAt` set to that frame, which put both the retry cap and the TTL
+    /// permanently out of reach: the cap skipped one frame in seven and the TTL
+    /// never elapsed. The TTL is now the only thing that starts a new attempt.
+    private func advanceHistoricalAttempt(
         for number: PokemonPrintedNumberEvidence,
-        footerLines: [RecognizedLine],
-        handler: VNImageRequestHandler,
-        sourceSize: CGSize,
         at now: CFAbsoluteTime
-    ) -> ScanIdentifier? {
-        guard PokemonHistoricalIdentityResolver.canAttempt(number) else {
-            historicalAttempt = nil
-            return nil
-        }
-
+    ) -> Bool {
         if let attempt = historicalAttempt,
            attempt.number != number || now - attempt.startedAt > Self.historicalAttemptTTL {
             historicalAttempt = nil
@@ -2521,14 +2520,32 @@ final class CardScanner: NSObject, ObservableObject {
                 titleCandidates: []
             )
         }
+
         guard var attempt = historicalAttempt,
-              attempt.retryCount < Self.historicalAttemptLimit else {
-            historicalAttempt = nil
-            return nil
-        }
+              attempt.retryCount < Self.historicalAttemptLimit else { return false }
 
         attempt.retryCount += 1
         attempt.lastObservedAt = now
+        historicalAttempt = attempt
+        return true
+    }
+
+    /// Creates or advances a short-lived historical attempt and reads the title
+    /// from the same pixel buffer. A number must be visible again on every retry,
+    /// which prevents a stale footer from being joined to the next physical card.
+    private func historicalIdentifier(
+        for number: PokemonPrintedNumberEvidence,
+        footerLines: [RecognizedLine],
+        handler: VNImageRequestHandler,
+        sourceSize: CGSize,
+        at now: CFAbsoluteTime
+    ) -> ScanIdentifier? {
+        guard PokemonHistoricalIdentityResolver.canAttempt(number) else {
+            historicalAttempt = nil
+            return nil
+        }
+        guard advanceHistoricalAttempt(for: number, at: now) else { return nil }
+
         do {
             let titleID = PerformanceSignpost.makeID()
             let titleState = PerformanceSignpost.beginInterval(
@@ -2554,14 +2571,14 @@ final class CardScanner: NSObject, ObservableObject {
                 titleLines: titleLines.map(\.text),
                 excludingFooter: PokemonHistoricalScanParser.footerSignature(from: footerLines.map(\.text))
             ) {
-                attempt.titleCandidates.formUnion(evidence.titleCandidates)
+                historicalAttempt?.titleCandidates.formUnion(evidence.titleCandidates)
             }
         } catch {
             // A failed secondary request is a miss. Footer recognition remains
             // authoritative and the next matching frame may retry.
         }
-        historicalAttempt = attempt
-        guard !attempt.titleCandidates.isEmpty else { return nil }
+        guard let attempt = historicalAttempt,
+              !attempt.titleCandidates.isEmpty else { return nil }
         return .pokemonHistorical(
             PokemonHistoricalScanEvidence(
                 number: number,
@@ -2798,6 +2815,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
     /// confirmation window, exactly like a failed Vision pass.
     private enum CameraFrameError: Error {
         case missingFormatDescription
+        case missingImageBuffer
     }
 
     func captureOutput(
@@ -2812,25 +2830,32 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         )
         let rotationAngle = rotation.currentAngle
         let orientation = CardFramingRegion.imageOrientation(forRotationAngle: rotationAngle)
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
 
         // OCR owns a simultaneous due frame. Tracking is still allowed on
         // non-OCR frames, including while OCR is paused for a user choice.
         guard let work = cadence.nextVisionWork(at: now, ocrAllowed: !isPaused) else {
             return
         }
-        if work == .tracking {
-            let trackingState = PerformanceSignpost.signposter.beginInterval("tracking")
-            defer { PerformanceSignpost.signposter.endInterval("tracking", trackingState) }
-            trackCurrentFrame(
-                pixelBuffer: pixelBuffer,
-                orientation: orientation,
-                at: now
-            )
-            return
-        }
 
         do {
+            // A frame with no image buffer is a bad frame, not a non-event. It
+            // has already consumed its cadence slot, so returning here silently
+            // skipped the absence evidence every other failed frame produces.
+            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                throw CameraFrameError.missingImageBuffer
+            }
+
+            if work == .tracking {
+                let trackingState = PerformanceSignpost.signposter.beginInterval("tracking")
+                defer { PerformanceSignpost.signposter.endInterval("tracking", trackingState) }
+                trackCurrentFrame(
+                    pixelBuffer: pixelBuffer,
+                    orientation: orientation,
+                    at: now
+                )
+                return
+            }
+
             let handler = VNImageRequestHandler(
                 cmSampleBuffer: sampleBuffer,
                 orientation: orientation,
@@ -2943,6 +2968,16 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             // pipeline as a miss so it counts as absence evidence for the latch
             // as well as the confirmation window, then let the next frame try.
             historicalAttempt = nil
+            // The label cadence gate never ran for this frame, so the unbound
+            // empty-frame count would not advance. A sustained bad-frame run
+            // would otherwise keep a stale `slabGuideHint` alive and keep
+            // `shouldHoldForSlabGrace` deferring raw confirmations.
+            unboundFooterEmptyFrames += 1
+            if unboundFooterEmptyFrames >= Self.unboundFooterEmptyFramesBeforeReset {
+                unboundFooterEmptyFrames = 0
+                slabEvidenceWindow.reset()
+                updateSlabGuideHint(nil, at: now)
+            }
             handleFooterOutcome(
                 .nothing,
                 footerLines: [],

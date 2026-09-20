@@ -38,6 +38,16 @@ final class SlabFramingRegionTests: XCTestCase {
         XCTAssertEqual(scanner.footerRegionOfInterestForTesting, expected)
     }
 
+    func testPublishedFooterROIMatchesTheInstalledRequestROI() {
+        let scanner = CardScanner()
+
+        XCTAssertEqual(scanner.footerRegionOfInterest, scanner.footerRegionOfInterestForTesting)
+        XCTAssertEqual(
+            scanner.footerRegionOfInterest,
+            CardFramingRegion.visionRect.union(SlabFramingRegion.footerVisionRect(for: nil))
+        )
+    }
+
     func testOuterSlabGuideHasExpectedPhysicalAspect() {
         let rect = SlabFramingRegion.slabVisionRect(for: .cgc)
         let normalizedAspect = rect.width / rect.height
