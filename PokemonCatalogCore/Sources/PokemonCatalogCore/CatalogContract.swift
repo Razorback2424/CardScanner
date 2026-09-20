@@ -109,6 +109,11 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     public let scanEnabled: Bool
     public let logoURL: String?
     public let symbolURL: String?
+    /// Optional reviewed source identifier for a bundled logo/symbol pair.
+    /// This keeps the app's local-artwork availability mapping in signed
+    /// catalog data for newly discovered sets while remaining optional for
+    /// legacy releases.
+    public let bundledArtworkSourceID: String?
     public let rulesVersion: Int
     public let membershipRecognition: PokemonCatalogMembershipRecognition?
 
@@ -128,6 +133,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         symbolURL: String?,
         providerFingerprint: String? = nil,
         parentProviderSetID: String? = nil,
+        bundledArtworkSourceID: String? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
         membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
@@ -146,6 +152,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         self.scanEnabled = scanEnabled
         self.logoURL = logoURL
         self.symbolURL = symbolURL
+        self.bundledArtworkSourceID = bundledArtworkSourceID
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
     }
@@ -166,6 +173,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         case scanEnabled
         case logoURL
         case symbolURL
+        case bundledArtworkSourceID
         case rulesVersion
         case membershipRecognition
     }
@@ -197,6 +205,10 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         scanEnabled = try container.decode(Bool.self, forKey: .scanEnabled)
         logoURL = try container.decodeIfPresent(String.self, forKey: .logoURL)
         symbolURL = try container.decodeIfPresent(String.self, forKey: .symbolURL)
+        bundledArtworkSourceID = try container.decodeIfPresent(
+            String.self,
+            forKey: .bundledArtworkSourceID
+        )
         rulesVersion = try container.decode(Int.self, forKey: .rulesVersion)
         membershipRecognition = try container.decodeIfPresent(
             PokemonCatalogMembershipRecognition.self,
@@ -221,6 +233,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
             symbolURL: symbolURL,
             providerFingerprint: providerFingerprint,
             parentProviderSetID: parentProviderSetID,
+            bundledArtworkSourceID: bundledArtworkSourceID,
             rulesVersion: rulesVersion,
             membershipRecognition: membershipRecognition
         )

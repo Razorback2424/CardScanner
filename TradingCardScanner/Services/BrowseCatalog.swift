@@ -525,6 +525,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 releaseDate: descriptor.releaseDate.flatMap(FlexibleDate.parse)
                     ?? entry.set.releaseDate,
                 sortRank: descriptor.releaseOrder ?? entry.set.sortRank,
+                bundledArtworkSourceID: descriptor.bundledArtworkSourceID
+                    ?? entry.set.bundledArtworkSourceID,
                 artworkFallbackURLs: entry.set.artworkFallbackURLs
             )
         }
@@ -1664,6 +1666,7 @@ enum PokemonMasterSetDefinition {
                 },
                 releaseDate: set.releaseDate,
                 sortRank: set.sortRank,
+                bundledArtworkSourceID: set.bundledArtworkSourceID,
                 artworkFallbackURLs: set.artworkFallbackURLs
             )
         }

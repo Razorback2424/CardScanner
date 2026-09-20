@@ -166,6 +166,53 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
     }
 
+    func testParentArtworkIsResolvedFromProviderSeriesIntoSignedDescriptor() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "30th",
+                    name: "30th Celebration",
+                    code: "30C",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/me/30th/001"],
+                    logo: "https://assets.tcgdex.net/en/me/30th/logo.png",
+                    seriesID: "me"
+                ),
+                .init(
+                    id: "30th-c",
+                    name: "30th Celebration Classic Collection",
+                    code: nil,
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/me/30th-c/001"],
+                    seriesID: "me"
+                )
+            ]
+        )
+        let input = PokemonCatalogHumanInput(
+            providerSetID: "30th-c",
+            recognitionKind: .notScannable,
+            displayName: "30th Celebration Classic Collection",
+            releaseDate: "2026-09-16",
+            scanEnabled: false,
+            parentProviderSetID: "30th",
+            bundledArtworkSourceID: "30th-c"
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: [input], revision: 1, generatedAt: generatedAt)
+        )
+        let descriptor = try XCTUnwrap(
+            result.release.sets.first { $0.providerSetID == "30th-c" }
+        )
+
+        XCTAssertEqual(descriptor.parentProviderSetID, "30th")
+        XCTAssertEqual(descriptor.bundledArtworkSourceID, "30th-c")
+        XCTAssertEqual(
+            descriptor.logoURL,
+            "https://assets.tcgdex.net/en/me/30th/logo.png"
+        )
+    }
+
     func testMissingProviderAbbreviationUsesValidOperatorFallback() throws {
         let fixture = providerFixture(
             sets: [
@@ -1471,6 +1518,7 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertEqual(descriptor.providerFingerprint, "fixture")
         XCTAssertEqual(descriptor.parentProviderSetID, "sv-parent")
         XCTAssertNil(descriptor.membershipRecognition)
+        XCTAssertNil(descriptor.bundledArtworkSourceID)
     }
 
     func testSchemaOneDescriptorWithFutureOptionalFieldStillDecodes() throws {
@@ -1508,6 +1556,7 @@ final class PokemonCatalogCoreTests: XCTestCase {
         let releaseDate: String
         let imageURLs: [String]
         let logo: String?
+        let seriesID: String
 
         init(
             id: String,
@@ -1515,7 +1564,8 @@ final class PokemonCatalogCoreTests: XCTestCase {
             code: String?,
             releaseDate: String,
             imageURLs: [String],
-            logo: String? = nil
+            logo: String? = nil,
+            seriesID: String = "sv"
         ) {
             self.id = id
             self.name = name
@@ -1523,6 +1573,7 @@ final class PokemonCatalogCoreTests: XCTestCase {
             self.releaseDate = releaseDate
             self.imageURLs = imageURLs
             self.logo = logo
+            self.seriesID = seriesID
         }
     }
 
@@ -1568,7 +1619,7 @@ final class PokemonCatalogCoreTests: XCTestCase {
                     logo: spec.logo,
                     releaseDate: spec.releaseDate,
                     cardCount: count,
-                    serie: .init(id: "sv"),
+                    serie: .init(id: spec.seriesID),
                     abbreviation: spec.code.map { .init(official: $0) }
                 )
             )

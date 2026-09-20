@@ -35,6 +35,10 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
     let cardCount: Int?
     let releaseDate: Date?
     let sortRank: Int
+    /// Signed catalog metadata authorizing the corresponding bundled artwork
+    /// source. It is optional so legacy snapshots and non-Pokémon catalogs
+    /// remain readable.
+    var bundledArtworkSourceID: String? = nil
     /// Publisher-prepared card artwork hints used only after every real set-art
     /// candidate fails. Optional so old bundled/downloaded manifests decode.
     var artworkFallbackURLs: [URL]? = nil
@@ -48,6 +52,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         cardCount: Int?,
         releaseDate: Date?,
         sortRank: Int,
+        bundledArtworkSourceID: String? = nil,
         artworkFallbackURLs: [URL]? = nil
     ) {
         self.catalogID = catalogID
@@ -58,6 +63,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         self.cardCount = cardCount
         self.releaseDate = releaseDate
         self.sortRank = sortRank
+        self.bundledArtworkSourceID = bundledArtworkSourceID
         self.artworkFallbackURLs = artworkFallbackURLs
     }
 
@@ -455,6 +461,7 @@ struct CatalogGameSummary: Equatable, Sendable {
             $0.game == .pokemon
                 && PokemonArtworkFallbacks.localAssetName(
                     forProviderID: $0.providerID,
+                    sourceID: $0.bundledArtworkSourceID,
                     kind: .logo
                 ) != nil
         }

@@ -343,6 +343,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
     /// usable artwork of its own. The publisher resolves the parent's final
     /// artwork URL before it enters the signed descriptor.
     public let parentProviderSetID: String?
+    public let bundledArtworkSourceID: String?
     public let rulesVersion: Int
     public let membershipRecognition: PokemonCatalogMembershipRecognition?
 
@@ -361,6 +362,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         logoURL: String? = nil,
         symbolURL: String? = nil,
         parentProviderSetID: String? = nil,
+        bundledArtworkSourceID: String? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
         membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
@@ -378,6 +380,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         self.logoURL = logoURL
         self.symbolURL = symbolURL
         self.parentProviderSetID = parentProviderSetID
+        self.bundledArtworkSourceID = bundledArtworkSourceID
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
     }

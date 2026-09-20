@@ -554,6 +554,9 @@ public struct PokemonCatalogBuilder: Sendable {
             providerSets: providerSets,
             activeByID: activeByID
         )
+        let bundledArtworkSourceID = nonEmpty(
+            humanInput?.bundledArtworkSourceID ?? existing?.bundledArtworkSourceID
+        )
 
         if let existing {
             if existing.recognitionKind == .expansion,
@@ -601,6 +604,7 @@ public struct PokemonCatalogBuilder: Sendable {
                     ?? existing.symbolURL,
                 providerFingerprint: existing.providerFingerprint,
                 parentProviderSetID: parentProviderSetID,
+                bundledArtworkSourceID: bundledArtworkSourceID,
                 rulesVersion: existing.rulesVersion,
                 membershipRecognition: existing.membershipRecognition
             )
@@ -650,6 +654,7 @@ public struct PokemonCatalogBuilder: Sendable {
                     logoURL: humanInput.logoURL ?? providerLogo ?? parentArtwork.logo,
                     symbolURL: humanInput.symbolURL ?? providerSymbol ?? parentArtwork.symbol,
                     parentProviderSetID: parentProviderSetID,
+                    bundledArtworkSourceID: bundledArtworkSourceID,
                     rulesVersion: humanInput.rulesVersion,
                     membershipRecognition: humanInput.membershipRecognition
                 )
@@ -674,6 +679,7 @@ public struct PokemonCatalogBuilder: Sendable {
                     logoURL: humanInput.logoURL ?? providerLogo ?? parentArtwork.logo,
                     symbolURL: humanInput.symbolURL ?? providerSymbol ?? parentArtwork.symbol,
                     parentProviderSetID: parentProviderSetID,
+                    bundledArtworkSourceID: bundledArtworkSourceID,
                     rulesVersion: humanInput.rulesVersion,
                     membershipRecognition: humanInput.membershipRecognition
                 )
@@ -713,9 +719,10 @@ public struct PokemonCatalogBuilder: Sendable {
             catalogLocalIDPrefix: nil,
             localIDPadWidth: nil,
             scanEnabled: true,
-            logoURL: providerLogo,
-            symbolURL: providerSymbol,
+            logoURL: providerLogo ?? parentArtwork.logo,
+            symbolURL: providerSymbol ?? parentArtwork.symbol,
             parentProviderSetID: parentProviderSetID,
+            bundledArtworkSourceID: bundledArtworkSourceID,
             rulesVersion: PokemonCatalogCoreContract.rulesVersion
         )
     }
