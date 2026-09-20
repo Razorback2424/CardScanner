@@ -66,11 +66,11 @@ struct CollectionStorageBootstrapView: View {
         case .failed:
             actionView(
                 title: "iCloud restoration needs attention",
-                message: "CardScanner could not prove that the iCloud collection is ready yet. Retry after the device is online.",
+                message: "CardScanner could not prove that the iCloud collection is ready yet. You can retry, or continue with a local copy on this device.",
                 primaryTitle: "Retry",
                 primaryAction: { await bootstrap.retry() },
-                secondaryTitle: "Open Settings",
-                secondaryAction: openSystemSettings
+                secondaryTitle: "Keep on This Device",
+                secondaryAction: { Task { await bootstrap.keepOnDevice() } }
             )
         case .notApplicable:
             actionView(

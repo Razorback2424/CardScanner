@@ -17,6 +17,21 @@ validation in headless preflight, and same-process storage-session reuse.
 External enrollment, physical-device, and public-link gates remain separate and
 are not sufficient to certify the candidate.
 
+## Pass-2 F01–F03 status — 2026-09-19
+
+The requested source remediation is present in the working tree. F01 now has a
+safe local fallback and a recoverable failed-restoration action; F02 derives the
+headless container mode from the manifest and publishes the resulting active
+mode; and F03 retains a pending scanner answer until its resolution task is
+accepted. F03 uses recoverable retention and retry rather than a formal proof
+that the busy interleaving is unreachable.
+
+Focused simulator evidence passes the 64 storage/policy/continuity tests in
+Debug and DebugProduction, the 20 readiness tests, and the new F03 regression.
+The candidate remains NO-GO because this does not establish entitled-device,
+CloudKit production, clean-install, background-task, archive, or full-suite
+readiness.
+
 ## Eligible remediation scope
 
 - Blocker: make local/cloud storage configuration truthful and fail closed.

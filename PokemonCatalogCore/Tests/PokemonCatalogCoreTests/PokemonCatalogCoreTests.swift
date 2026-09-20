@@ -462,6 +462,72 @@ final class PokemonCatalogCoreTests: XCTestCase {
     }
 
     func testNewSetWithoutProviderCodeOrOperatorFallbackIsRejected() throws {
+
+        let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
+        let request = PokemonCatalogBuildRequest(
+            fixture: fixture,
+            humanInputs: [],
+            revision: 1,
+            generatedAt: generatedAt
+        )
+
+        XCTAssertThrowsError(try PokemonCatalogBuilder().build(request)) { error in
+            guard case let PokemonCatalogBuildError.humanPrintedCodeRequired(id) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(id, "sv99")
+        }
+    }
+
+    func testCandidateValidatorBindsReleaseSnapshotAndReportAndEnforcesActiveRevision() throws {
+        let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
+        let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
+        let build = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: input.sets, revision: 1, generatedAt: generatedAt)
+        )
+
+        XCTAssertNoThrow(try PokemonCatalogCandidateValidator.validate(build))
+        XCTAssertThrowsError(
+            try PokemonCatalogCandidateValidator.validate(build, activeRevision: 1)
+        ) { error in
+            guard case let PokemonCatalogCandidateValidationError.revisionNotMonotonic(
+                received,
+                current
+            ) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(received, 1)
+            XCTAssertEqual(current, 1)
+        }
+
+        let mismatchedReport = PokemonCatalogReviewReport(
+            revision: 2,
+            generatedAt: build.report.generatedAt,
+            addedProviderSetIDs: build.report.addedProviderSetIDs,
+            changedProviderSetIDs: build.report.changedProviderSetIDs,
+            excludedProviderSetIDs: build.report.excludedProviderSetIDs,
+            sets: build.report.sets
+        )
+        let tampered = PokemonCatalogBuildResult(
+            release: build.release,
+            snapshot: build.snapshot,
+            report: mismatchedReport
+        )
+        XCTAssertThrowsError(try PokemonCatalogCandidateValidator.validate(tampered)) { error in
+            guard case let PokemonCatalogCandidateValidationError.mismatchedRevision(
+                component,
+                expected,
+                received
+            ) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(component, "report")
+            XCTAssertEqual(expected, 1)
+            XCTAssertEqual(received, 2)
+        }
+    }
+
+    func testNewSetCannotBePublishedWithoutHumanPrintedCodeInput() throws {
         let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
         let request = PokemonCatalogBuildRequest(
             fixture: fixture,
@@ -681,6 +747,39 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertEqual(rollbackRelease.sets, build1.release.sets)
     }
 
+    func testFilesystemPublisherRejectsUnreadableCurrentPointer() throws {
+        let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
+        let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
+        let build = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: input.sets, revision: 1, generatedAt: generatedAt)
+        )
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("PokemonCatalogCoreTests-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let currentURL = root.appendingPathComponent("v1/current.json")
+        try FileManager.default.createDirectory(
+            at: currentURL.deletingLastPathComponent(),
+            withIntermediateDirectories: true
+        )
+        try Data("not-json".utf8).write(to: currentURL)
+
+        let key = Curve25519.Signing.PrivateKey()
+        let signed = try PokemonCatalogSigner.sign(
+            build,
+            material: .init(keyID: "fixture", privateKey: key)
+        )
+        XCTAssertThrowsError(
+            try PokemonCatalogFilesystemPublisher(
+                root: root,
+                environment: .production
+            ).publish(signed)
+        ) { error in
+            guard case PokemonCatalogPublicationError.invalidCurrentPointer = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
+
     func testSigningRequiresMatchingProtectedEnvironmentAndMainPublicationContext() throws {
         let key = Curve25519.Signing.PrivateKey()
         let validSecret = PokemonCatalogBase64URL.encode(key.rawRepresentation)
@@ -793,6 +892,209 @@ final class PokemonCatalogCoreTests: XCTestCase {
     func testPublicationEnvironmentPathsAreTheSingleNamespaceSource() {
         XCTAssertEqual(PokemonCatalogPublicationEnvironment.production.path, "v1")
         XCTAssertEqual(PokemonCatalogPublicationEnvironment.staging.path, "staging/v1")
+    }
+
+    func testMembershipRowsBindByProviderCardIDAndNotProviderLocalID() throws {
+        let directory = [
+            PokemonCatalogProviderDirectoryRow(
+                id: "future-c",
+                name: "Future Classic Collection",
+                cardCount: .init(total: 2, official: 2)
+            )
+        ]
+        let briefs = [
+            PokemonCatalogProviderCardBrief(
+                id: "future-c-001",
+                localID: "011",
+                name: "Crobat G"
+            ),
+            PokemonCatalogProviderCardBrief(
+                id: "future-c-002",
+                localID: "012",
+                name: "Charizard"
+            )
+        ]
+        let providerSet = PokemonCatalogProviderSet(
+            id: "future-c",
+            name: "Future Classic Collection",
+            cards: briefs,
+            cardCount: .init(total: 2, official: 2)
+        )
+        let details = briefs.map {
+            PokemonCatalogProviderCard(
+                id: $0.id,
+                localID: $0.localID,
+                name: $0.name,
+                setID: "future-c"
+            )
+        }
+        let membership = PokemonCatalogMembershipRecognition(members: [
+            .init(
+                providerCardID: "future-c-001",
+                canonicalName: "crobat g",
+                printedLocalID: "47",
+                printedDenominator: 127
+            ),
+            .init(
+                providerCardID: "future-c-002",
+                canonicalName: "charizard",
+                printedLocalID: "4",
+                printedDenominator: 102
+            )
+        ])
+        let input = PokemonCatalogHumanInput(
+            providerSetID: "future-c",
+            recognitionKind: .expansion,
+            printedCode: "FTR",
+            claimedOfficialCount: 2,
+            displayName: "Future Classic Collection",
+            membershipRecognition: membership
+        )
+        let fixture = PokemonCatalogProviderFixture(
+            directory: directory,
+            sets: [providerSet],
+            cards: details
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: [input], revision: 1, generatedAt: generatedAt)
+        )
+        let descriptor = try XCTUnwrap(result.release.sets.first)
+        XCTAssertEqual(descriptor.membershipRecognition?.members.count, 2)
+        XCTAssertEqual(
+            descriptor.membershipRecognition?.members.first?.providerCardID,
+            "future-c-001"
+        )
+        XCTAssertEqual(
+            descriptor.membershipRecognition?.members.first?.printedLocalID,
+            "47"
+        )
+    }
+
+    func testMembershipRowsRequireCompleteProviderChecklistCoverage() throws {
+        let providerCard = PokemonCatalogProviderCard(
+            id: "future-c-001",
+            localID: "011",
+            name: "Crobat G",
+            setID: "future-c"
+        )
+        let fixture = PokemonCatalogProviderFixture(
+            directory: [
+                .init(
+                    id: "future-c",
+                    name: "Future Classic Collection",
+                    cardCount: .init(total: 1, official: 1)
+                )
+            ],
+            sets: [
+                .init(
+                    id: "future-c",
+                    name: "Future Classic Collection",
+                    cards: [
+                        .init(id: providerCard.id, localID: providerCard.localID, name: providerCard.name)
+                    ],
+                    cardCount: .init(total: 1, official: 1)
+                )
+            ],
+            cards: [providerCard]
+        )
+        let input = PokemonCatalogHumanInput(
+            providerSetID: "future-c",
+            recognitionKind: .notScannable,
+            scanEnabled: false,
+            membershipRecognition: .init(members: [
+                .init(
+                    providerCardID: "missing-card",
+                    canonicalName: "Crobat G",
+                    printedLocalID: "47",
+                    printedDenominator: 127
+                )
+            ])
+        )
+
+        XCTAssertThrowsError(
+            try PokemonCatalogBuilder().build(
+                .init(fixture: fixture, humanInputs: [input], revision: 1, generatedAt: generatedAt)
+            )
+        ) { error in
+            guard case let PokemonCatalogBuildError.membershipProviderCardMissing(setID, cardID) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(setID, "future-c")
+            XCTAssertEqual(cardID, "missing-card")
+        }
+    }
+
+    func testMembershipPhysicalIdentityPairsMustBeUnique() throws {
+        let descriptor = PokemonCatalogSetDescriptor(
+            providerSetID: "future-c",
+            displayName: "Future Classic Collection",
+            releaseDate: nil,
+            releaseOrder: nil,
+            recognitionKind: .notScannable,
+            printedCode: nil,
+            officialCount: nil,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: false,
+            logoURL: nil,
+            symbolURL: nil,
+            membershipRecognition: .init(members: [
+                .init(
+                    providerCardID: "future-c-001",
+                    canonicalName: "crobat g",
+                    printedLocalID: "47",
+                    printedDenominator: 127
+                ),
+                .init(
+                    providerCardID: "future-c-002",
+                    canonicalName: "Crobat G",
+                    printedLocalID: "047",
+                    printedDenominator: 127
+                )
+            ])
+        )
+        let release = PokemonCatalogRelease(
+            revision: 1,
+            generatedAt: generatedAt,
+            sets: [descriptor]
+        )
+
+        XCTAssertThrowsError(try PokemonCatalogReleaseValidator.validate(release)) { error in
+            guard case let PokemonCatalogReleaseValidator.ValidationError.invalidDescriptor(reason) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertTrue(reason.contains("unique canonical name"))
+        }
+    }
+
+    func testOldDescriptorPayloadDecodesWithoutMembershipRecognition() throws {
+        let data = Data(
+            """
+            {
+              "providerSetID":"sv99",
+              "displayName":"Recorded Test Set",
+              "releaseDate":"2026-01-01",
+              "releaseOrder":1,
+              "recognitionKind":"expansion",
+              "printedCode":"TST",
+              "officialCount":2,
+              "printedPrefix":null,
+              "catalogLocalIDPrefix":null,
+              "localIDPadWidth":null,
+              "scanEnabled":true,
+              "logoURL":null,
+              "symbolURL":null,
+              "rulesVersion":1
+            }
+            """.utf8
+        )
+        let descriptor = try PokemonCatalogJSON.decode(
+            PokemonCatalogSetDescriptor.self,
+            from: data
+        )
+        XCTAssertNil(descriptor.membershipRecognition)
     }
 
     private func load<T: Decodable>(_ type: T.Type, named name: String) throws -> T {

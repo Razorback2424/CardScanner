@@ -148,6 +148,9 @@ public enum PokemonCatalogBuildError: Error, CustomStringConvertible, Sendable {
     case tooManyCards(setID: String, count: Int)
     case tooManyTotalCards(Int)
     case invalidDescriptor(String)
+    case membershipCoverageMismatch(setID: String, expected: Int, received: Int)
+    case membershipProviderCardMissing(setID: String, cardID: String)
+    case membershipProviderCardNameMismatch(setID: String, cardID: String, expected: String, received: String)
     case unsupportedArtworkURL(String)
     case invalidProviderFingerprint(String)
 
@@ -192,6 +195,12 @@ public enum PokemonCatalogBuildError: Error, CustomStringConvertible, Sendable {
             return "Provider set \(setID) contains too many cards: \(count)"
         case .tooManyTotalCards(let count): return "Provider fixture contains too many cards: \(count)"
         case .invalidDescriptor(let reason): return "Invalid descriptor: \(reason)"
+        case let .membershipCoverageMismatch(setID, expected, received):
+            return "Membership coverage mismatch for \(setID): expected \(expected) rows, received \(received)"
+        case let .membershipProviderCardMissing(setID, cardID):
+            return "Membership row \(cardID) is not present in provider checklist \(setID)"
+        case let .membershipProviderCardNameMismatch(setID, cardID, expected, received):
+            return "Membership name mismatch for \(cardID) in \(setID): expected \(expected), received \(received)"
         case .unsupportedArtworkURL(let url): return "Unsupported artwork URL: \(url)"
         case .invalidProviderFingerprint(let id): return "Could not fingerprint provider set \(id)"
         }
@@ -512,7 +521,8 @@ public struct PokemonCatalogBuilder: Sendable {
                 scanEnabled: existing.scanEnabled,
                 logoURL: humanInput?.logoURL ?? providerLogo ?? existing.logoURL,
                 symbolURL: humanInput?.symbolURL ?? providerSymbol ?? existing.symbolURL,
-                rulesVersion: existing.rulesVersion
+                rulesVersion: existing.rulesVersion,
+                membershipRecognition: existing.membershipRecognition
             )
         }
 
@@ -559,7 +569,8 @@ public struct PokemonCatalogBuilder: Sendable {
                     scanEnabled: humanInput.scanEnabled,
                     logoURL: humanInput.logoURL ?? providerLogo,
                     symbolURL: humanInput.symbolURL ?? providerSymbol,
-                    rulesVersion: humanInput.rulesVersion
+                    rulesVersion: humanInput.rulesVersion,
+                    membershipRecognition: humanInput.membershipRecognition
                 )
 
             case .promo, .notScannable:
@@ -581,7 +592,8 @@ public struct PokemonCatalogBuilder: Sendable {
                     scanEnabled: humanInput.scanEnabled,
                     logoURL: humanInput.logoURL ?? providerLogo,
                     symbolURL: humanInput.symbolURL ?? providerSymbol,
-                    rulesVersion: humanInput.rulesVersion
+                    rulesVersion: humanInput.rulesVersion,
+                    membershipRecognition: humanInput.membershipRecognition
                 )
             }
         }
@@ -688,6 +700,12 @@ public struct PokemonCatalogBuilder: Sendable {
                 received: providerCount
             )
         }
+        try validateMembershipRecognition(
+            descriptor.membershipRecognition,
+            providerSet: providerSet,
+            providerCards: providerCards,
+            setID: row.id
+        )
 
         var briefIDs = Set<String>()
         var summaries: [PokemonCatalogCardSummary] = []
@@ -765,6 +783,71 @@ public struct PokemonCatalogBuilder: Sendable {
             PokemonCatalogFingerprint.string(fingerprintParts.joined(separator: "\u{1F}")),
             summaries
         )
+    }
+
+    private func validateMembershipRecognition(
+        _ recognition: PokemonCatalogMembershipRecognition?,
+        providerSet: PokemonCatalogProviderSet,
+        providerCards: [String: PokemonCatalogProviderCard],
+        setID: String
+    ) throws {
+        guard let recognition else { return }
+
+        let expectedIDs = Set(providerSet.cards.map { $0.id.lowercased() })
+        guard recognition.members.count == expectedIDs.count else {
+            throw PokemonCatalogBuildError.membershipCoverageMismatch(
+                setID: setID,
+                expected: expectedIDs.count,
+                received: recognition.members.count
+            )
+        }
+
+        var seenIDs = Set<String>()
+        for member in recognition.members {
+            let providerID = member.providerCardID.lowercased()
+            guard expectedIDs.contains(providerID),
+                  let providerCard = providerCards[providerID] else {
+                throw PokemonCatalogBuildError.membershipProviderCardMissing(
+                    setID: setID,
+                    cardID: member.providerCardID
+                )
+            }
+            guard seenIDs.insert(providerID).inserted else {
+                throw PokemonCatalogBuildError.invalidDescriptor(
+                    "membership rows must have unique provider card IDs"
+                )
+            }
+            guard canonicalMembershipName(member.canonicalName)
+                    == canonicalMembershipName(providerCard.name) else {
+                throw PokemonCatalogBuildError.membershipProviderCardNameMismatch(
+                    setID: setID,
+                    cardID: member.providerCardID,
+                    expected: providerCard.name,
+                    received: member.canonicalName
+                )
+            }
+        }
+
+        guard seenIDs == expectedIDs else {
+            throw PokemonCatalogBuildError.membershipCoverageMismatch(
+                setID: setID,
+                expected: expectedIDs.count,
+                received: seenIDs.count
+            )
+        }
+    }
+
+    private func canonicalMembershipName(_ value: String) -> String {
+        let folded = value.folding(
+            options: [.caseInsensitive, .diacriticInsensitive],
+            locale: .current
+        ).replacingOccurrences(of: "&", with: " and ")
+        return folded.unicodeScalars.map { scalar in
+            CharacterSet.alphanumerics.contains(scalar) ? String(scalar) : " "
+        }
+        .joined()
+        .split(whereSeparator: { $0 == " " })
+        .joined(separator: " ")
     }
 
     private func validateArtwork(_ descriptor: PokemonCatalogSetDescriptor) throws {

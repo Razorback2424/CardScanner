@@ -115,6 +115,10 @@ struct CardCenteringStageTimingDiagnostic: Codable, Equatable {
 
 struct CardCenteringAnalysisDiagnostic: Codable, Equatable {
     let stageTimings: CardCenteringStageTimingDiagnostic
+    /// Positional ratio spread is diagnostic evidence only. It is not a
+    /// confidence input and cannot establish that the selected edges are the
+    /// physical card edges.
+    let positionalConsistency: CardCenteringPositionalConsistency?
     let scalarOuterAgreesWithVision: Bool
     let scalarPinned: Bool?
     let outlineHasInner: Bool
@@ -200,6 +204,85 @@ struct CardCenteringCandidateLedgerDiagnostic: Codable, Equatable {
 /// a scanner background, then uses the top border as the reference when
 /// choosing plausible left, right, and bottom frame edges.
 enum CardCenteringAnalyzer {
+    /// Numerical knobs used by the scalar/profile evidence paths. Production
+    /// always uses `productionDefaults`; DEBUG sensitivity runs may inject a
+    /// complete value object so perturbations never require editing defaults.
+    struct NumericalParameters: Codable, Equatable {
+        var scalarSmoothingRadius: Int
+        var scalarPeakThresholdFraction: Double
+        var profileRadiusNormalized: Double
+        var profileSupportThresholdFraction: Double
+        var profileBaselineMADFloor: Double
+        var profileThresholdFloor: Double
+        var profileStrongCandidateFraction: Double
+
+        static let productionDefaults = NumericalParameters(
+            scalarSmoothingRadius: 2,
+            scalarPeakThresholdFraction: 0.12,
+            profileRadiusNormalized: 0.0015,
+            profileSupportThresholdFraction: 0.75,
+            profileBaselineMADFloor: 0.75,
+            profileThresholdFloor: 2.5,
+            profileStrongCandidateFraction: 0.72
+        )
+
+        init(
+            scalarSmoothingRadius: Int,
+            scalarPeakThresholdFraction: Double,
+            profileRadiusNormalized: Double,
+            profileSupportThresholdFraction: Double,
+            profileBaselineMADFloor: Double,
+            profileThresholdFloor: Double,
+            profileStrongCandidateFraction: Double
+        ) {
+            self.scalarSmoothingRadius = scalarSmoothingRadius
+            self.scalarPeakThresholdFraction = scalarPeakThresholdFraction
+            self.profileRadiusNormalized = profileRadiusNormalized
+            self.profileSupportThresholdFraction = profileSupportThresholdFraction
+            self.profileBaselineMADFloor = profileBaselineMADFloor
+            self.profileThresholdFloor = profileThresholdFloor
+            self.profileStrongCandidateFraction = profileStrongCandidateFraction
+        }
+
+        var isValid: Bool {
+            scalarSmoothingRadius >= 0
+                && scalarPeakThresholdFraction.isFinite
+                && (0...1).contains(scalarPeakThresholdFraction)
+                && profileRadiusNormalized.isFinite
+                && profileRadiusNormalized > 0
+                && profileRadiusNormalized <= 0.05
+                && profileSupportThresholdFraction.isFinite
+                && (0...1).contains(profileSupportThresholdFraction)
+                && profileBaselineMADFloor.isFinite
+                && profileBaselineMADFloor >= 0
+                && profileThresholdFloor.isFinite
+                && profileThresholdFloor >= 0
+                && profileStrongCandidateFraction.isFinite
+                && profileStrongCandidateFraction > 0
+                && profileStrongCandidateFraction <= 1
+        }
+
+        func replacing(
+            scalarSmoothingRadius: Int? = nil,
+            scalarPeakThresholdFraction: Double? = nil,
+            profileRadiusNormalized: Double? = nil,
+            profileSupportThresholdFraction: Double? = nil,
+            profileBaselineMADFloor: Double? = nil,
+            profileThresholdFloor: Double? = nil,
+            profileStrongCandidateFraction: Double? = nil
+        ) -> NumericalParameters {
+            NumericalParameters(
+                scalarSmoothingRadius: scalarSmoothingRadius ?? self.scalarSmoothingRadius,
+                scalarPeakThresholdFraction: scalarPeakThresholdFraction ?? self.scalarPeakThresholdFraction,
+                profileRadiusNormalized: profileRadiusNormalized ?? self.profileRadiusNormalized,
+                profileSupportThresholdFraction: profileSupportThresholdFraction ?? self.profileSupportThresholdFraction,
+                profileBaselineMADFloor: profileBaselineMADFloor ?? self.profileBaselineMADFloor,
+                profileThresholdFloor: profileThresholdFloor ?? self.profileThresholdFloor,
+                profileStrongCandidateFraction: profileStrongCandidateFraction ?? self.profileStrongCandidateFraction
+            )
+        }
+    }
+
 #if DEBUG
     /// Installed only by temporary diagnostic tests. The hook is observational
     /// and is never consulted by production decisions.
@@ -435,6 +518,24 @@ enum CardCenteringAnalyzer {
             detectionMaxDimension: detectionMaxDimension
         )
     }
+
+    /// DEBUG-only entry point for REQ-050. It keeps the normal working
+    /// resolution and production pipeline intact while injecting numerical
+    /// parameters for a sensitivity sweep.
+    static func analyzeForSensitivity(
+        _ data: Data,
+        parameters: NumericalParameters
+    ) throws -> CardCenteringAnalysis {
+        guard parameters.isValid else {
+            throw CardCenteringAnalyzerError.renderFailed
+        }
+        return try analyze(
+            data,
+            rotationDegrees: 0,
+            correctingSkew: true,
+            numericalParameters: parameters
+        )
+    }
 #endif
 
     private static func analyze(
@@ -443,7 +544,8 @@ enum CardCenteringAnalyzer {
         correctingSkew: Bool,
         padding: UIColor? = nil,
         workingMaxDimension: CGFloat = 1_200,
-        detectionMaxDimension: CGFloat? = nil
+        detectionMaxDimension: CGFloat? = nil,
+        numericalParameters: NumericalParameters = .productionDefaults
     ) throws -> CardCenteringAnalysis {
         // Auto-correction is a presentation transform applied after this one
         // detector pass. The old implementation rendered and re-analyzed the
@@ -547,7 +649,8 @@ enum CardCenteringAnalyzer {
                 from: detectionImage,
                 outputWidth: width,
                 outputHeight: height,
-                evidenceMaxDimension: detectionMaxDimension ?? workingMaxDimension
+                evidenceMaxDimension: detectionMaxDimension ?? workingMaxDimension,
+                numericalParameters: numericalParameters
             )
             : nil
 #if DEBUG
@@ -730,6 +833,7 @@ enum CardCenteringAnalyzer {
                 distanceScale: 1,
                 minimumPortraitWidthCoverage: profileWidthCoverage,
                 minimumPortraitHeightCoverage: profileHeightCoverage,
+                numericalParameters: numericalParameters,
                 ledgerScaleX: 1,
                 ledgerScaleY: 1
             )
@@ -747,6 +851,7 @@ enum CardCenteringAnalyzer {
                 distanceScale: 1,
                 minimumPortraitWidthCoverage: profileWidthCoverage,
                 minimumPortraitHeightCoverage: profileHeightCoverage,
+                numericalParameters: numericalParameters,
                 ledgerScaleX: scalar.outputScaleX,
                 ledgerScaleY: scalar.outputScaleY
             ).map {
@@ -893,6 +998,7 @@ enum CardCenteringAnalyzer {
 #if DEBUG
         analysisDiagnosticSink?(CardCenteringAnalysisDiagnostic(
             stageTimings: stageTimings.snapshot(),
+            positionalConsistency: measurement.positionalConsistency,
             scalarOuterAgreesWithVision: scalarOuterAgreesWithVision,
             scalarPinned: scalar?.pinned,
             outlineHasInner: outlineHasInner,
@@ -1731,7 +1837,8 @@ enum CardCenteringAnalyzer {
         from image: UIImage,
         outputWidth: Int,
         outputHeight: Int,
-        evidenceMaxDimension: CGFloat
+        evidenceMaxDimension: CGFloat,
+        numericalParameters: NumericalParameters
     ) throws -> ScalarDetection {
         // The scalar detector is evidence arbitration, not the reported
         // working image. Keep the required 1,200px working image for Vision
@@ -1765,14 +1872,29 @@ enum CardCenteringAnalyzer {
         }
 
         let xRange = roundedRange(0.18, 0.82, length: width)
+        let smoothingRadius = numericalParameters.scalarSmoothingRadius
+        let peakThresholdFraction = Float(numericalParameters.scalarPeakThresholdFraction)
+        func makeCandidates(
+            _ scores: [Float],
+            offset: Int,
+            madMultiplier: Float = 1.2
+        ) -> CandidateSet {
+            candidates(
+                scores,
+                offset: offset,
+                madMultiplier: madMultiplier,
+                smoothingRadius: smoothingRadius,
+                peakThresholdFraction: peakThresholdFraction
+            )
+        }
         let outerX = max(20, Int((Double(width) * 0.22).rounded()))
         let outerY = max(20, Int((Double(height) * 0.22).rounded()))
-        let topOuterSet = candidates(
+        let topOuterSet = makeCandidates(
             horizontalScores(gy, width: width, height: height, yRange: 0..<outerY, xRange: xRange),
             offset: 0
         )
         let bottomStart = max(0, height - outerY - 1)
-        let bottomOuterSet = candidates(
+        let bottomOuterSet = makeCandidates(
             horizontalScores(gy, width: width, height: height, yRange: bottomStart..<(height - 1), xRange: xRange),
             offset: bottomStart
         )
@@ -1786,12 +1908,12 @@ enum CardCenteringAnalyzer {
         let yStart = clamped(outerTop + verticalInset, 0, height - 1)
         let yEnd = clamped(outerBottom - verticalInset, yStart + 1, height)
         let yRange = yStart..<yEnd
-        let leftOuterSet = candidates(
+        let leftOuterSet = makeCandidates(
             verticalScores(gx, width: width, height: height, xRange: 0..<outerX, yRange: yRange),
             offset: 0
         )
         let rightStart = max(0, width - outerX - 1)
-        let rightOuterSet = candidates(
+        let rightOuterSet = makeCandidates(
             verticalScores(gx, width: width, height: height, xRange: rightStart..<(width - 1), yRange: yRange),
             offset: rightStart
         )
@@ -1826,22 +1948,22 @@ enum CardCenteringAnalyzer {
         let bottomStartInner = clamped(outer.bottom - maxY, 0, height - 2)
         let bottomEndInner = clamped(outer.bottom - minY, bottomStartInner + 1, height - 1)
         let innerSets: [Side: CandidateSet] = [
-            .left: candidates(
+            .left: makeCandidates(
                 verticalScores(gx, width: width, height: height, xRange: leftStart..<leftEnd, yRange: yRange),
                 offset: leftStart,
                 madMultiplier: 1.1
             ),
-            .right: candidates(
+            .right: makeCandidates(
                 verticalScores(gx, width: width, height: height, xRange: rightStartInner..<rightEndInner, yRange: yRange),
                 offset: rightStartInner,
                 madMultiplier: 1.1
             ),
-            .top: candidates(
+            .top: makeCandidates(
                 horizontalScores(gy, width: width, height: height, yRange: topStart..<topEnd, xRange: xRange),
                 offset: topStart,
                 madMultiplier: 1.1
             ),
-            .bottom: candidates(
+            .bottom: makeCandidates(
                 horizontalScores(gy, width: width, height: height, yRange: bottomStartInner..<bottomEndInner, xRange: xRange),
                 offset: bottomStartInner,
                 madMultiplier: 1.1
@@ -2095,7 +2217,13 @@ enum CardCenteringAnalyzer {
         }
     }
 
-    private static func candidates(_ scores: [Float], offset: Int, madMultiplier: Float = 1.2) -> CandidateSet {
+    private static func candidates(
+        _ scores: [Float],
+        offset: Int,
+        madMultiplier: Float = 1.2,
+        smoothingRadius: Int = 2,
+        peakThresholdFraction: Float = 0.12
+    ) -> CandidateSet {
         guard !scores.isEmpty else {
             return CandidateSet(
                 candidates: [Candidate(position: offset, strength: 0, support: 0)],
@@ -2104,24 +2232,25 @@ enum CardCenteringAnalyzer {
                 threshold: 0
             )
         }
+        let radius = max(0, smoothingRadius)
         let smoothed = scores.indices.map { index -> Float in
-            let range = max(0, index - 2)...min(scores.count - 1, index + 2)
+            let range = max(0, index - radius)...min(scores.count - 1, index + radius)
             return range.reduce(0) { $0 + scores[$1] } / Float(range.count)
         }
         let baseline = median(smoothed)
         let mad = median(smoothed.map { abs($0 - baseline) })
         let maximum = smoothed.max() ?? 0
-        let threshold = max(baseline + madMultiplier * max(mad, 0.000_001), 0.12 * maximum)
+        let threshold = max(baseline + madMultiplier * max(mad, 0.000_001), peakThresholdFraction * maximum)
         var found: [Int: Candidate] = [:]
 
         for index in smoothed.indices {
             let left = index == 0 ? -Float.infinity : smoothed[index - 1]
             let right = index == smoothed.count - 1 ? -Float.infinity : smoothed[index + 1]
             guard smoothed[index] >= left, smoothed[index] >= right, smoothed[index] >= threshold else { continue }
-            let refinement = max(0, index - 2)...min(scores.count - 1, index + 2)
+            let refinement = max(0, index - radius)...min(scores.count - 1, index + radius)
             let rawIndex = refinement.max(by: { scores[$0] < scores[$1] }) ?? index
             let position = offset + rawIndex
-            let supportRange = max(0, rawIndex - 2)...min(scores.count - 1, rawIndex + 2)
+            let supportRange = max(0, rawIndex - radius)...min(scores.count - 1, rawIndex + radius)
             let support = Float(supportRange.filter { smoothed[$0] >= threshold }.count)
                 / Float(max(1, supportRange.count))
             let candidate = Candidate(
@@ -2762,6 +2891,7 @@ enum CardCenteringAnalyzer {
         distanceScale: Double,
         minimumPortraitWidthCoverage: Double = 0.85,
         minimumPortraitHeightCoverage: Double = 0.88,
+        numericalParameters: NumericalParameters = .productionDefaults,
         ledgerScaleX: Double = 1,
         ledgerScaleY: Double = 1
     ) -> InnerProfileResult? {
@@ -2806,7 +2936,7 @@ enum CardCenteringAnalyzer {
                 + (normalizedDepthEnd - normalizedDepthStart)
                 * Double(index) / Double(max(depthSampleCount - 1, 1))
         }
-        let radiusNormalized = 0.0015
+        let radiusNormalized = numericalParameters.profileRadiusNormalized
 
         func edgeEndpoints(_ side: ProfileSide) -> (CardCenteringPoint, CardCenteringPoint) {
             switch side {
@@ -2889,7 +3019,7 @@ enum CardCenteringAnalyzer {
                 }
                 let score = values.isEmpty ? 0 : median(values)
                 scores[index] = score
-                let supportThreshold = max(1.5, score * 0.75)
+                let supportThreshold = max(1.5, score * numericalParameters.profileSupportThresholdFraction)
                 supports[index] = Double(values.filter { $0 >= supportThreshold }.count) / Double(samples)
             }
 
@@ -2903,7 +3033,10 @@ enum CardCenteringAnalyzer {
             // The loudest transition is often a banner or a text row deeper
             // inside the card. Keep a permissive set of local maxima, then
             // prefer the earliest member of the strongest shallow cluster.
-            let threshold = max(baseline + max(0.75, mad), 2.5)
+            let threshold = max(
+                baseline + max(numericalParameters.profileBaselineMADFloor, mad),
+                numericalParameters.profileThresholdFloor
+            )
             let candidates = valid.filter { index in
                 scores[index] >= threshold
                     && scores[index] >= scores[max(valid.first ?? index, index - 1)]
@@ -2917,7 +3050,9 @@ enum CardCenteringAnalyzer {
                 recordFailure(side, "no_shallow_candidate")
                 return nil
             }
-            let strongEnough = shallow.filter { scores[$0] >= maximumScore * 0.72 }
+            let strongEnough = shallow.filter {
+                scores[$0] >= maximumScore * numericalParameters.profileStrongCandidateFraction
+            }
             guard let selected = strongEnough.min() else {
                 recordFailure(side, "no_strong_candidate")
                 return nil

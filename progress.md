@@ -13,6 +13,63 @@ compatibility 1/1, and DebugProduction build. Live TCGdex candidate generation,
 production approval/deployment, and device acceptance remain open. The main
 working tree was left untouched.
 
+Catalog authority rehearsal completed (2026-09-19): commit `54960fd` was
+pushed with the same-revision coordinator fix and its production-configured
+catalog suites passed 8/8 focused and 64/64 broader. The validation-only
+production binary fetched hosted revision 1 from `catalog.scan-stash.com`,
+validated 28/28 descriptors, ran validate-and-discard, and kept remote-store
+disk usage at zero. A one-off external-SSD build with
+`POKEMON_CATALOG_ROLLOUT_MODE=remote-authority` then activated revision 1,
+persisted `current` with no `previous`, survived relaunch, and treated the
+identical HTTP 200 envelope as `notModified`. The committed production
+xcconfig remains `bundled-validation-only`; physical-device and genuine
+offline evidence remain open.
+
+Revision-2 candidate intentionally not published (2026-09-19): workflow run
+[35443012617](https://github.com/Razorback2424/CardScanner/actions/runs/35443012617)
+passed core validation and production candidate preparation from `54960fd`.
+Its revision-2 candidate matched hosted revision 1 across all 28 descriptors,
+provider card counts, provider fingerprints, and snapshot entries, with zero
+added/changed/excluded IDs. The protected publish job was canceled before
+signing or deployment, so hosted revision 1 remains current and the candidate
+and reports are retained as external-SSD evidence only. The first real catalog
+change should become revision 2.
+
+Centering diagnostics slices implemented (2026-09-18): added REQ-049 positional
+consistency diagnostics that report left/right and top/bottom ratios at five
+evenly spaced positions with min/max/spread, without feeding the result into
+selection or confidence. Added REQ-050 numerical-parameter injection with
+unchanged production defaults plus a standalone recorded-grid harness under
+`review/centering-harness/`; the harness has not yet been run over the corpus
+or holdout, so REQ-050 completion and signed evidence remain open. Focused
+simulator verification passed 19 `CenteringExportTests` and the two new
+REQ-049/REQ-050 invariant tests on iPhone 17 Pro, iOS 26.5. The full suite,
+corpus sensitivity sweep, and REQ-051 resolution comparison were intentionally
+deferred. See
+[`review/opus-card-centering-implementation-plan.md`](review/opus-card-centering-implementation-plan.md).
+
+Catalog infrastructure state verified (2026-09-18): recorded the actual
+deployment prerequisites in the plan's "Resume here" table after checking them
+directly rather than inferring them. All catalog work for Slices A-F is in the
+working tree and is **uncommitted and unpushed** at `db50515`, so
+`.github/workflows/pokemon-catalog.yml` has never run and its `validate` job has
+never executed on a runner. `catalog.scan-stash.com` does not resolve;
+`scan-stash.com` resolves to Bluehost, which serves the marketing site and is
+deliberately not the catalog origin. The `pokemon-catalog-production` GitHub
+environment does not exist (HTTP 404); `pokemon-catalog-staging` exists but
+holds only `POKEMON_CATALOG_KEY_ID` and `POKEMON_CATALOG_SIGNING_KEY`, and no
+environment holds `FIREBASE_SERVICE_ACCOUNT` or `FIREBASE_PROJECT_ID`, both of
+which the publish job requires. Also recorded one open gap the plan had been
+claiming as a control: `PokemonCatalogUpdateClient.defaultBaseURL` validates
+HTTPS, host presence, and unexpanded build variables, but implements no host
+allowlist, so the plan's "release origin is a separate allowlist entry" claim is
+aspirational until either the allowlist is added or the claim is dropped. The
+earlier duplicated environment-path mapping in the publisher CLI is confirmed
+fixed: `PokemonCatalogPublicationEnvironment.path` is now `public` and
+`main.swift` consumes it instead of its own ternary. Documentation only; no
+code, tests, or build settings changed. See
+[`docs/plans/automatic_pokemon_catalog_updates_plan.md`](docs/plans/automatic_pokemon_catalog_updates_plan.md).
+
 Catalog publication first-channel readiness (2026-09-18): kept the publisher
 on one Firebase Hosting target and one local site root (`publisher/site`) for
 the first Slice F rehearsal. The publisher environment path is public and is
@@ -231,3 +288,4 @@ Original prompt: Implement Browse Sets and Cards across Pokémon/TCGdex and Magi
 - Browse set-directory artwork fallback correction and final revalidation (2026-09-15): the initial A8 frame exposed SVI's dead stored `.png` derivative, so the artwork chain now tries the stored `.png`, its extensionless stem, and the explicit TCGdex `.webp` image derivative in that order, including for older downloaded overlays and inherited parent artwork. The focused Browse selectors pass 130/130 with 0 failures. The final settled light/dark `rerun2` capture shows SVI rendered normally, confirms the logo-weight/wordmark/symbol-plaque checks, HIF's non-zero count, CRI's `0/203` detail denominator, and the absence of `rc`/`sp`/`wp`; A8/B6 are closed again. The eight bundled-logo MD5 results and visual identity checks are recorded in the remediation plan. All build products, caches, temporary files, and result bundles remained on the external SSD; C7/RF-9 remains open.
 - Browse artwork/cache hardening (2026-09-16): added TCGdex-only host gating for extensionless candidates, `/univ/`↔`/en/` symbol-prefix fallback, decode-before-persist with eviction/retry for undecodable legacy cache entries, and regression coverage for both invalid and valid cache bodies plus concurrent fetch coalescing. The focused Browse selectors pass 133/133 with 0 failures. A storage-controlled `xcodebuild` rerun routed `TMPDIR`, Clang/Swift module caches, DerivedData, and the `.xcresult` to the external SSD; the result is `.codex-cardscanner-build/browse-set-remediation-20260915/results/browse-artwork-hardening-20260916-external.xcresult`. The XcodeBuildMCP test-products bundle and logs from the initial run were also moved onto the SSD. No screenshots were taken in this follow-up. A8/B6 remain closed and C7/RF-9 remains open. Xcode emitted one non-failing warning that `CardFinishRenderPlanTests.swift` is in the Copy Bundle Resources phase.
 - Browse artwork batch / F06 project-resource correction (2026-09-16): verified the 57-file centering corpus is tracked and fixed the duplicate PBXBuildFile/PBXFileReference UUIDs plus the dangling fixture-group reference. The simulator build succeeded and fixture-reachability and corpus-manifest tests passed. The focused selection produced 38 results: 28 passed, 9 test cases failed on known centering accuracy/invariant/performance assertions, and 1 profile-dump test was canceled; this was not a full-suite rerun. Diagnostic-dump tests wrote seven tracked outputs in the repository; exact generated versions were copied to `.codex-cardscanner-build/browse-set-remediation-20260915/results/f06-generated-diagnostics-20260916/`, and tracked copies were restored. DerivedData (including Xcode's module and compilation caches), TMPDIR, result bundle (`f06-fixture-copy-20260916.xcresult`), and preserved generated diagnostics are on the external SSD; the package-source clone path was also directed there (no package fetch was needed). No screenshots were taken. F06's missing-bundle cause is corrected; centering assertions and a complete suite baseline remain open.
+- Pass-2 storage/scanner remediation (2026-09-19): implemented F01's safe local fallback and delayed `.attached` manifest claim, F02's manifest-derived headless container mode plus active-mode publication, and F03's pending-answer retention when the identification pipeline is busy. Focused iPhone 17 Pro iOS 26.5 simulator verification passes 64 storage/policy/continuity tests in Debug, the same 64 in DebugProduction with one intentional entitlement-gated skip, 20 readiness tests, and the new pending-resolution regression. Entitled-device clean-install, background-refresh, CloudKit production, archive, and full-suite gates remain open; F03 chose recoverable retry rather than a formal reachability proof.

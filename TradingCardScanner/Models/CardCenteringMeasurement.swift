@@ -16,6 +16,114 @@ struct CardCenteringPoint: Codable, Equatable, Hashable {
     var y: Double
 }
 
+/// The two percentages that make up one centering axis at a sampled position.
+/// `firstPercentage` is the left or top side; `secondPercentage` is the right
+/// or bottom side, depending on the axis this pair belongs to.
+struct CardCenteringRatioPair: Codable, Equatable {
+    let firstPercentage: Double
+    let secondPercentage: Double
+
+    init?(firstDistance: Double, secondDistance: Double) {
+        let total = firstDistance + secondDistance
+        guard total.isFinite, total > .ulpOfOne,
+              firstDistance.isFinite, secondDistance.isFinite else {
+            return nil
+        }
+        firstPercentage = 100 * firstDistance / total
+        secondPercentage = 100 * secondDistance / total
+    }
+}
+
+/// The observed range of one ratio axis over the positional samples. Both
+/// sides are retained because the complement relationship is useful when
+/// inspecting raw diagnostics and avoids throwing away information.
+struct CardCenteringRatioRange: Codable, Equatable {
+    let firstMinimum: Double
+    let firstMaximum: Double
+    let firstSpread: Double
+    let secondMinimum: Double
+    let secondMaximum: Double
+    let secondSpread: Double
+
+    init?(samples: [CardCenteringRatioPair]) {
+        guard !samples.isEmpty else { return nil }
+        let firstValues = samples.map(\.firstPercentage)
+        let secondValues = samples.map(\.secondPercentage)
+        guard let firstMinimum = firstValues.min(),
+              let firstMaximum = firstValues.max(),
+              let secondMinimum = secondValues.min(),
+              let secondMaximum = secondValues.max() else {
+            return nil
+        }
+        self.firstMinimum = firstMinimum
+        self.firstMaximum = firstMaximum
+        self.firstSpread = firstMaximum - firstMinimum
+        self.secondMinimum = secondMinimum
+        self.secondMaximum = secondMaximum
+        self.secondSpread = secondMaximum - secondMinimum
+    }
+}
+
+/// One positional sample of the reported centering ratios. Positions are
+/// normalized along the corresponding measured span: 0 is the top/left end
+/// and 1 is the bottom/right end.
+struct CardCenteringPositionalRatioSample: Codable, Equatable {
+    let normalizedPosition: Double
+    let leftRight: CardCenteringRatioPair
+    let topBottom: CardCenteringRatioPair
+}
+
+/// Internal-consistency evidence for a measurement. This is observational
+/// only: a low spread must not be treated as proof that the selected edges are
+/// the physical card edges, since parallel sleeve edges can be equally stable.
+struct CardCenteringPositionalConsistency: Codable, Equatable {
+    static let defaultSampleCount = 5
+
+    let samples: [CardCenteringPositionalRatioSample]
+    let leftRight: CardCenteringRatioRange
+    let topBottom: CardCenteringRatioRange
+
+    init?(
+        outer: CardCenteringQuad,
+        inner: CardCenteringQuad,
+        sampleCount: Int = CardCenteringPositionalConsistency.defaultSampleCount
+    ) {
+        guard sampleCount >= CardCenteringPositionalConsistency.defaultSampleCount else {
+            return nil
+        }
+
+        let positions = (0..<sampleCount).map { index in
+            Double(index) / Double(sampleCount - 1)
+        }
+        let samples = positions.compactMap { position -> CardCenteringPositionalRatioSample? in
+            let distances = outer.borderDistances(at: position, to: inner)
+            guard let leftRight = CardCenteringRatioPair(
+                firstDistance: distances.left,
+                secondDistance: distances.right
+            ), let topBottom = CardCenteringRatioPair(
+                firstDistance: distances.top,
+                secondDistance: distances.bottom
+            ) else {
+                return nil
+            }
+            return CardCenteringPositionalRatioSample(
+                normalizedPosition: position,
+                leftRight: leftRight,
+                topBottom: topBottom
+            )
+        }
+        guard samples.count == positions.count,
+              let leftRight = CardCenteringRatioRange(samples: samples.map(\.leftRight)),
+              let topBottom = CardCenteringRatioRange(samples: samples.map(\.topBottom)) else {
+            return nil
+        }
+
+        self.samples = samples
+        self.leftRight = leftRight
+        self.topBottom = topBottom
+    }
+}
+
 struct CardCenteringSize: Codable, Equatable, Hashable {
     var width: Double
     var height: Double
@@ -91,6 +199,27 @@ struct CardCenteringQuad: Codable, Equatable {
         )
     }
 
+    /// Border distances at one normalized position along each corresponding
+    /// edge. This is used only for positional diagnostics; the production
+    /// ratio continues to use the established endpoint-average calculation.
+    func borderDistances(
+        at normalizedPosition: Double,
+        to inner: CardCenteringQuad
+    ) -> (left: Double, top: Double, right: Double, bottom: Double) {
+        let position = min(1, max(0, normalizedPosition))
+        let innerLeft = interpolate(inner.topLeft, inner.bottomLeft, at: position)
+        let innerTop = interpolate(inner.topLeft, inner.topRight, at: position)
+        let innerRight = interpolate(inner.topRight, inner.bottomRight, at: position)
+        let innerBottom = interpolate(inner.bottomLeft, inner.bottomRight, at: position)
+
+        return (
+            left: perpendicularDistance(innerLeft, from: topLeft, to: bottomLeft),
+            top: perpendicularDistance(innerTop, from: topLeft, to: topRight),
+            right: perpendicularDistance(innerRight, from: topRight, to: bottomRight),
+            bottom: perpendicularDistance(innerBottom, from: bottomLeft, to: bottomRight)
+        )
+    }
+
     private func averageDistance(
         _ first: CardCenteringPoint,
         _ second: CardCenteringPoint,
@@ -111,6 +240,17 @@ struct CardCenteringQuad: Codable, Equatable {
         let length = sqrt(dx * dx + dy * dy)
         guard length > .ulpOfOne else { return 0 }
         return abs(dx * (point.y - lineStart.y) - dy * (point.x - lineStart.x)) / length
+    }
+
+    private func interpolate(
+        _ start: CardCenteringPoint,
+        _ end: CardCenteringPoint,
+        at position: Double
+    ) -> CardCenteringPoint {
+        CardCenteringPoint(
+            x: start.x + (end.x - start.x) * position,
+            y: start.y + (end.y - start.y) * position
+        )
     }
 
     private func distance(_ lhs: CardCenteringPoint, _ rhs: CardCenteringPoint) -> Double {
@@ -557,6 +697,20 @@ struct CardCenteringMeasurement: Equatable {
     var geometryInnerQuad: CardCenteringQuad? {
         guard innerReference != .none else { return nil }
         return usesQuadGeometry ? innerQuad : .axisAligned(inner)
+    }
+
+    /// Samples the reported ratios at five evenly spaced positions along the
+    /// measured spans. This is an internal-consistency diagnostic only: it is
+    /// deliberately not folded into confidence or selection because a sleeve
+    /// can produce a stable, low-spread pair of parallel edges too.
+    var positionalConsistency: CardCenteringPositionalConsistency? {
+        guard let inner = geometryInnerQuad else { return nil }
+        let measuredOuter = rectification?.rectifiedQuad(from: geometryOuterQuad) ?? geometryOuterQuad
+        let measuredInner = rectification?.rectifiedQuad(from: inner) ?? inner
+        return CardCenteringPositionalConsistency(
+            outer: measuredOuter,
+            inner: measuredInner
+        )
     }
 
     var leftBorderDistance: Double {

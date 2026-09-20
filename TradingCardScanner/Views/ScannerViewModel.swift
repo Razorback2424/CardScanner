@@ -106,6 +106,7 @@ struct ResolvedScan {
     let request: ScanRequest
     let card: IdentifiedCard
     let resolved: ResolvedVariant
+    let identityResolution: IdentityResolution
     let pokemonPrintRun: PokemonPrintRun?
     let options: [PhysicalVariant]
     let catalogRetrievedAt: Date
@@ -115,6 +116,7 @@ struct ResolvedScan {
         request: ScanRequest,
         card: IdentifiedCard,
         resolved: ResolvedVariant,
+        identityResolution: IdentityResolution = .printedIdentifier,
         pokemonPrintRun: PokemonPrintRun?,
         options: [PhysicalVariant],
         catalogRetrievedAt: Date = .now,
@@ -123,6 +125,7 @@ struct ResolvedScan {
         self.request = request
         self.card = card
         self.resolved = resolved
+        self.identityResolution = identityResolution
         self.pokemonPrintRun = pokemonPrintRun
         self.options = options
         self.catalogRetrievedAt = catalogRetrievedAt
@@ -138,6 +141,7 @@ struct CollectionCommitCandidate: Sendable {
     let subject: ScanSubject
     let card: IdentifiedCard
     let resolved: ResolvedVariant
+    let identityResolution: IdentityResolution
     let pokemonPrintRun: PokemonPrintRun?
     let options: [PhysicalVariant]
     let price: PriceLookup
@@ -153,6 +157,7 @@ struct CollectionCommitCandidate: Sendable {
         subject = resolvedScan.request.subject
         card = resolvedScan.card
         resolved = resolvedScan.resolved
+        identityResolution = resolvedScan.identityResolution
         pokemonPrintRun = resolvedScan.pokemonPrintRun
         options = resolvedScan.options
         if resolvedScan.request.subject.slab != nil {
@@ -199,6 +204,7 @@ struct CollectionCommitCandidate: Sendable {
         subject: ScanSubject,
         card: IdentifiedCard,
         resolved: ResolvedVariant,
+        identityResolution: IdentityResolution,
         pokemonPrintRun: PokemonPrintRun?,
         options: [PhysicalVariant],
         price: PriceLookup,
@@ -211,6 +217,7 @@ struct CollectionCommitCandidate: Sendable {
         self.subject = subject
         self.card = card
         self.resolved = resolved
+        self.identityResolution = identityResolution
         self.pokemonPrintRun = pokemonPrintRun
         self.options = options
         self.price = price
@@ -582,9 +589,28 @@ struct PendingVariantChoice: Identifiable, Equatable {
     let options: [PhysicalVariant]
     let pokemonPrintRun: PokemonPrintRun?
     let catalogRetrievedAt: Date
+    let identityResolution: IdentityResolution
     /// Set when Finish Lock named a variant this printing does not exist in. The
     /// lock is evidence, not an override, so the user is told rather than obeyed.
     let lockDidNotApply: MagicFinishLock?
+
+    init(
+        request: ScanRequest,
+        card: IdentifiedCard,
+        options: [PhysicalVariant],
+        pokemonPrintRun: PokemonPrintRun?,
+        catalogRetrievedAt: Date,
+        identityResolution: IdentityResolution = .printedIdentifier,
+        lockDidNotApply: MagicFinishLock?
+    ) {
+        self.request = request
+        self.card = card
+        self.options = options
+        self.pokemonPrintRun = pokemonPrintRun
+        self.catalogRetrievedAt = catalogRetrievedAt
+        self.identityResolution = identityResolution
+        self.lockDidNotApply = lockDidNotApply
+    }
 
     var identifier: ScanIdentifier { request.identifier }
 
@@ -600,6 +626,21 @@ struct PendingPrintRunChoice: Identifiable, Equatable {
     let card: IdentifiedCard
     let options: [PokemonPrintRun]
     let catalogRetrievedAt: Date
+    let identityResolution: IdentityResolution
+
+    init(
+        request: ScanRequest,
+        card: IdentifiedCard,
+        options: [PokemonPrintRun],
+        catalogRetrievedAt: Date,
+        identityResolution: IdentityResolution = .printedIdentifier
+    ) {
+        self.request = request
+        self.card = card
+        self.options = options
+        self.catalogRetrievedAt = catalogRetrievedAt
+        self.identityResolution = identityResolution
+    }
 
     var identifier: ScanIdentifier { request.identifier }
 
@@ -613,6 +654,25 @@ struct PendingIdentityChoice: Identifiable, Equatable {
     let candidates: [PokemonCatalogCardIdentity]
 
     var identifier: ScanIdentifier { request.identifier }
+
+    /// Put older printings first when the catalog supplies release years. The
+    /// ordering improves thumb reach and comprehension, but never participates
+    /// in identity resolution.
+    var displayCandidates: [PokemonCatalogCardIdentity] {
+        candidates.sorted { left, right in
+            switch (left.releaseYear, right.releaseYear) {
+            case let (leftYear?, rightYear?) where leftYear != rightYear:
+                return leftYear < rightYear
+            case (.some, nil):
+                return true
+            case (nil, .some):
+                return false
+            default:
+                if left.setID != right.setID { return left.setID < right.setID }
+                return left.providerID < right.providerID
+            }
+        }
+    }
 
     static func == (lhs: PendingIdentityChoice, rhs: PendingIdentityChoice) -> Bool { lhs.id == rhs.id }
 }
@@ -1809,8 +1869,7 @@ final class ScannerViewModel: ObservableObject {
     /// be intercepted by duplicate routing a second time.
     func addAnother() {
         guard let pending = pendingDuplicateConfirmation else { return }
-        pendingDuplicateConfirmation = nil
-        beginPendingResolution(requestID: pending.candidate.requestID) { [weak self] in
+        let accepted = beginPendingResolution(requestID: pending.candidate.requestID) { [weak self] in
             guard let self else { return }
             guard await self.commitAuthorizedCollectionCandidate(
                 pending.candidate,
@@ -1826,6 +1885,11 @@ final class ScannerViewModel: ObservableObject {
             // carried by its tracker and may arrive after the commit.
             self.spatialResetProofs.removeAll { $0.encounterID != pending.encounterID }
         }
+        guard accepted else {
+            reportPendingResolutionRejected()
+            return
+        }
+        pendingDuplicateConfirmation = nil
     }
 
     /// Creates one short-lived, scanner-verified permit for the card that is
@@ -1915,31 +1979,24 @@ final class ScannerViewModel: ObservableObject {
     func choose(_ variant: PhysicalVariant) {
         guard let pending = pendingChoice else { return }
         feedback.choiceMade()
-        // Cleared here, the way every sibling `choose` clears its own pending
-        // state, rather than left for `route` to clear on its way past.
-        //
-        // Routing has eight terminal outcomes and only three of them used to
-        // clear this: an automatic commit that succeeded, the spatial-duplicate
-        // prompt, and Price Check. The other five — a suppressed re-scan, a
-        // commit that threw, and the three held-repeat rejections — left the
-        // finish bar on screen showing a question the user had already
-        // answered, with recognition still paused and the identification queue
-        // stalled behind the `pendingChoice == nil` guard in
-        // `processNextIdentificationIfPossible`. The answer has been consumed
-        // by the time we route, so this is where it stops being pending.
-        pendingChoice = nil
         let resolved = ResolvedScan(
             request: pending.request,
             card: pending.card,
             resolved: ResolvedVariant(variant: variant, resolution: .userConfirmed),
+            identityResolution: pending.identityResolution,
             pokemonPrintRun: pending.pokemonPrintRun,
             options: pending.options,
             catalogRetrievedAt: pending.catalogRetrievedAt
         )
-        beginPendingResolution(requestID: pending.request.id) { [weak self] in
+        let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
             guard let self else { return }
             await self.route(resolved)
         }
+        guard accepted else {
+            reportPendingResolutionRejected()
+            return
+        }
+        pendingChoice = nil
     }
 
     /// Walking away from a question writes nothing. The latch stays engaged, so
@@ -1963,16 +2020,21 @@ final class ScannerViewModel: ObservableObject {
         guard let pending = pendingPrintRunChoice,
               pending.options.contains(printRun) else { return }
         feedback.choiceMade()
-        pendingPrintRunChoice = nil
-        beginPendingResolution(requestID: pending.request.id) { [weak self] in
+        let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
             guard let self else { return }
             await self.resolveVariant(
                 for: pending.request,
                 card: pending.card,
                 pokemonPrintRun: printRun,
-                catalogRetrievedAt: pending.catalogRetrievedAt
+                catalogRetrievedAt: pending.catalogRetrievedAt,
+                identityResolution: pending.identityResolution
             )
         }
+        guard accepted else {
+            reportPendingResolutionRejected()
+            return
+        }
+        pendingPrintRunChoice = nil
     }
 
     func dismissPrintRunChoice() {
@@ -1992,8 +2054,7 @@ final class ScannerViewModel: ObservableObject {
               pending.candidates.contains(candidate) else { return }
         feedback.choiceMade()
 
-        pendingIdentityChoice = nil
-        beginPendingResolution(requestID: pending.request.id) { [weak self] in
+        let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
             guard let self else { return }
             self.beginIdentification()
             defer { self.endIdentification() }
@@ -2014,7 +2075,8 @@ final class ScannerViewModel: ObservableObject {
                     for: pending.request,
                     card: card,
                     catalogRetrievedAt: .now,
-                    labelPrintRun: pending.request.subject.slab?.printedPrintRun
+                    labelPrintRun: pending.request.subject.slab?.printedPrintRun,
+                    identityResolution: .userSelectedPrinting
                 )
             } catch {
                 guard !Task.isCancelled, self.isCurrent(pending.request) else {
@@ -2032,6 +2094,11 @@ final class ScannerViewModel: ObservableObject {
                 self.feedback.problem()
             }
         }
+        guard accepted else {
+            reportPendingResolutionRejected()
+            return
+        }
+        pendingIdentityChoice = nil
     }
 
     func dismissIdentityChoice() {
@@ -2301,18 +2368,41 @@ final class ScannerViewModel: ObservableObject {
     /// of the same ordered pipeline as automatic recognition. In particular, a
     /// later OCR confirmation cannot make a duplicate decision while this task
     /// is waiting for the writer's background transaction.
+    @discardableResult
     private func beginPendingResolution(
         requestID: UUID,
         operation: @escaping () async -> Void
-    ) {
-        guard !isProcessingIdentification else { return }
+    ) -> Bool {
+        guard !isProcessingIdentification else { return false }
         isProcessingIdentification = true
         activeIdentificationRequestID = requestID
         identificationTask = Task { @MainActor [weak self] in
             await operation()
             self?.finishIdentificationRequest(requestID)
         }
+        return true
     }
+
+    private func reportPendingResolutionRejected() {
+        diagnostic("pendingResolutionRejected")
+        show(ScanNote(
+            text: "That answer is still processing — tap it again.",
+            tone: .problem
+        ))
+        feedback.problem()
+    }
+
+#if DEBUG
+    /// Test hook for the suspected interleaving in F03. Production callers
+    /// never set identification state directly; the normal queue owns it.
+    func setIdentificationInFlightForTesting(_ isInFlight: Bool) {
+        isProcessingIdentification = isInFlight
+        activeIdentificationRequestID = isInFlight ? UUID() : nil
+        if !isInFlight {
+            identificationTask = nil
+        }
+    }
+#endif
 
     private func finishIdentificationRequest(_ requestID: UUID) {
         guard activeIdentificationRequestID == requestID else { return }
@@ -2435,7 +2525,8 @@ final class ScannerViewModel: ObservableObject {
         for request: ScanRequest,
         card: IdentifiedCard,
         catalogRetrievedAt: Date,
-        labelPrintRun: PokemonPrintRun? = nil
+        labelPrintRun: PokemonPrintRun? = nil,
+        identityResolution: IdentityResolution = .printedIdentifier
     ) async {
         guard isCurrent(request) else {
             endOneCardScan(encounterID: request.encounterID, outcome: "cancelled")
@@ -2469,7 +2560,8 @@ final class ScannerViewModel: ObservableObject {
                 for: request,
                 card: card,
                 pokemonPrintRun: validatedPrintRun,
-                catalogRetrievedAt: catalogRetrievedAt
+                catalogRetrievedAt: catalogRetrievedAt,
+                identityResolution: identityResolution
             )
             return
         }
@@ -2482,7 +2574,8 @@ final class ScannerViewModel: ObservableObject {
                 for: request,
                 card: card,
                 pokemonPrintRun: nil,
-                catalogRetrievedAt: catalogRetrievedAt
+                catalogRetrievedAt: catalogRetrievedAt,
+                identityResolution: identityResolution
             )
             return
         }
@@ -2493,7 +2586,8 @@ final class ScannerViewModel: ObservableObject {
             request: request,
             card: card,
             options: options,
-            catalogRetrievedAt: catalogRetrievedAt
+            catalogRetrievedAt: catalogRetrievedAt,
+            identityResolution: identityResolution
         )
         scanner.pauseRecognition()
         feedback.needsChoice()
@@ -2503,7 +2597,8 @@ final class ScannerViewModel: ObservableObject {
         for request: ScanRequest,
         card: IdentifiedCard,
         pokemonPrintRun: PokemonPrintRun?,
-        catalogRetrievedAt: Date
+        catalogRetrievedAt: Date,
+        identityResolution: IdentityResolution = .printedIdentifier
     ) async {
         guard isCurrent(request) else {
             endOneCardScan(encounterID: request.encounterID, outcome: "cancelled")
@@ -2528,6 +2623,7 @@ final class ScannerViewModel: ObservableObject {
                     request: request,
                     card: card,
                     resolved: resolved,
+                    identityResolution: identityResolution,
                     pokemonPrintRun: pokemonPrintRun,
                     options: VariantResolver.options(for: evidence),
                     catalogRetrievedAt: catalogRetrievedAt
@@ -2547,6 +2643,7 @@ final class ScannerViewModel: ObservableObject {
                             variant: nil,
                             resolution: .catalogSilent
                         ),
+                        identityResolution: identityResolution,
                         pokemonPrintRun: pokemonPrintRun,
                         options: options,
                         catalogRetrievedAt: catalogRetrievedAt
@@ -2562,6 +2659,7 @@ final class ScannerViewModel: ObservableObject {
                 options: options,
                 pokemonPrintRun: pokemonPrintRun,
                 catalogRetrievedAt: catalogRetrievedAt,
+                identityResolution: identityResolution,
                 lockDidNotApply: lockDidNotApply
             )
             scanner.pauseRecognition()

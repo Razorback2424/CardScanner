@@ -30,6 +30,8 @@ private final class RecordingReadinessSource: @unchecked Sendable, CloudRestorat
     private(set) var requests: [CloudRestorationRequest] = []
     var armCall: (() -> Void)?
 
+    var isProven: Bool { true }
+
     init(result: CloudRestorationReadiness) {
         self.result = result
     }
@@ -71,6 +73,8 @@ private final class ScriptedReadinessProbe: CloudRestorationProbe {
 private final class ScriptedReadinessSource: @unchecked Sendable, CloudRestorationReadinessSource {
     private let results: [CloudRestorationReadiness]
     private(set) var probe: ScriptedReadinessProbe?
+
+    var isProven: Bool { true }
 
     init(results: [CloudRestorationReadiness]) {
         self.results = results
@@ -270,6 +274,34 @@ final class CollectionStorageBootstrapTests: XCTestCase {
                 mechanismVersion: CloudRestorationReadinessContract.currentMechanismVersion,
                 currentRemoteGeneration: "test-generation"
             )
+        )
+    }
+
+    func testUnprovenProductionReadinessUsesSafeLocalFallback() async throws {
+        var requestedModes: [CollectionStorageMode] = []
+        let dependencies = try makeDependencies(
+            account: { .available(fingerprint: "account-a") },
+            readiness: UnprovenCloudRestorationReadinessSource(),
+            makeContainer: { mode in
+                requestedModes.append(mode)
+                return try ModelContainer(
+                    for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                )
+            }
+        )
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+
+        guard case let .ready(session) = bootstrap.state else {
+            return XCTFail("an unproven production readiness source must fall back locally")
+        }
+        XCTAssertEqual(session.mode, .onDevice)
+        XCTAssertEqual(requestedModes, [.onDevice])
+        XCTAssertEqual(
+            try dependencies.manifestStore.load()?.attachmentState,
+            .neverAttached
         )
     }
 
@@ -606,6 +638,24 @@ final class CollectionStorageBootstrapTests: XCTestCase {
             return XCTFail("expected fail-closed restoration state")
         }
         XCTAssertEqual(category, "test-proof-missing")
+
+        let failedManifest = try XCTUnwrap(try dependencies.manifestStore.load())
+        XCTAssertEqual(
+            failedManifest.attachmentState,
+            .neverAttached,
+            "a failed readiness attempt must not claim CloudKit attachment"
+        )
+
+        await bootstrap.keepOnDevice()
+
+        guard case let .ready(session) = bootstrap.state else {
+            return XCTFail("failed restoration should offer a local recovery path")
+        }
+        XCTAssertEqual(session.mode, .onDevice)
+        XCTAssertEqual(
+            try dependencies.manifestStore.load()?.attachmentState,
+            .neverAttached
+        )
     }
 
     func testFailedRemoteAdoptionRetainsIdentityAndRetriesRestorationOnRelaunch() async throws {

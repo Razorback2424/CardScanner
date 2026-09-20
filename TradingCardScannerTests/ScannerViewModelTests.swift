@@ -154,6 +154,30 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 2)
     }
 
+    func testPendingChoiceIsRestoredWhenIdentificationPipelineIsBusy() async throws {
+        let model = try makeModel(variants: [.normal, .holo])
+        let encounterID = UUID()
+
+        confirm(model, scannerIdentifier(), encounterID: encounterID)
+        let choiceAppeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(choiceAppeared)
+        let requestID = try XCTUnwrap(model.pendingChoice?.request.id)
+
+        model.setIdentificationInFlightForTesting(true)
+        model.choose(.normal)
+        await settle()
+
+        XCTAssertEqual(model.pendingChoice?.request.id, requestID)
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+
+        model.setIdentificationInFlightForTesting(false)
+        model.choose(.normal)
+        let committed = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(committed)
+        XCTAssertNil(model.pendingChoice)
+    }
+
     func testDismissingVariantChoiceClearsSavingAcknowledgementWithoutAdding() async throws {
         let fetchGate = ScannerFetchGate()
         let model = try makeModel(

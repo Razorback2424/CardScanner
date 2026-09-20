@@ -20,10 +20,35 @@ struct PokemonCatalogPublisherMain {
         let options = try CLIOptions(Array(arguments.dropFirst()))
         switch command {
         case "validate":
-            let result = try await build(options: options, siteRoot: nil, environment: nil)
+            let environment = try parseEnvironment(options.value("--environment"))
+            let result = try await build(
+                options: options,
+                siteRoot: nil,
+                environment: environment
+            )
             try writeReport(result.report, path: options.value("--report"))
             try writeCandidate(result, rootPath: options.value("--candidate-root"))
             printReport(result.report)
+        case "verify-release":
+            guard let path = options.value("--path") else {
+                throw CLIError.message("verify-release requires --path PATH")
+            }
+            guard let environment = try parseEnvironment(options.value("--environment")) else {
+                throw CLIError.message("verify-release requires --environment production|staging")
+            }
+            let release = try loadSignedRelease(
+                from: URL(fileURLWithPath: path),
+                options: options,
+                environment: environment
+            )
+            if let expectedRaw = options.value("--expected-revision") {
+                guard let expected = Int(expectedRaw), release.revision == expected else {
+                    throw CLIError.message(
+                        "verified release revision does not match --expected-revision"
+                    )
+                }
+            }
+            print(release.revision)
         case "publish":
             guard let rawEnvironment = options.value("--environment"),
                   let environment = PokemonCatalogPublicationEnvironment(rawValue: rawEnvironment),
@@ -35,7 +60,16 @@ struct PokemonCatalogPublisherMain {
             let siteRoot = URL(fileURLWithPath: rawSiteRoot, isDirectory: true)
             let result: PokemonCatalogBuildResult
             if let candidateRoot = options.value("--candidate-root") {
-                result = try loadCandidate(rootPath: candidateRoot)
+                let activeRelease = try loadActiveRelease(
+                    explicitPath: options.value("--active-release"),
+                    siteRoot: siteRoot,
+                    environment: environment,
+                    options: options
+                )
+                result = try loadCandidate(
+                    rootPath: candidateRoot,
+                    activeRevision: activeRelease?.revision
+                )
             } else {
                 result = try await build(
                     options: options,
@@ -79,7 +113,8 @@ struct PokemonCatalogPublisherMain {
         let activeRelease = try loadActiveRelease(
             explicitPath: options.value("--active-release"),
             siteRoot: siteRoot,
-            environment: environment
+            environment: environment,
+            options: options
         )
         let generatedAt = try parseDate(options.value("--generated-at"))
         let fixture: PokemonCatalogProviderFixture
@@ -202,7 +237,8 @@ struct PokemonCatalogPublisherMain {
     private static func loadActiveRelease(
         explicitPath: String?,
         siteRoot: URL?,
-        environment: PokemonCatalogPublicationEnvironment?
+        environment: PokemonCatalogPublicationEnvironment?,
+        options: CLIOptions
     ) throws -> PokemonCatalogRelease? {
         let url: URL?
         if let explicitPath {
@@ -215,14 +251,12 @@ struct PokemonCatalogPublisherMain {
             url = nil
         }
         guard let url, FileManager.default.fileExists(atPath: url.path) else { return nil }
-        let data = try Data(contentsOf: url)
-        if let envelope = try? PokemonCatalogJSON.decode(
-            PokemonCatalogReleaseEnvelope.self,
-            from: data
-        ), let payload = PokemonCatalogBase64URL.decode(envelope.payload) {
-            return try PokemonCatalogJSON.decode(PokemonCatalogRelease.self, from: payload)
+        guard let environment else {
+            throw CLIError.message(
+                "--environment is required when reading an active catalog release"
+            )
         }
-        return try PokemonCatalogJSON.decode(PokemonCatalogRelease.self, from: data)
+        return try loadSignedRelease(from: url, options: options, environment: environment)
     }
 
     private static func parseDate(_ raw: String?) throws -> Date {
@@ -300,9 +334,12 @@ struct PokemonCatalogPublisherMain {
         )
     }
 
-    private static func loadCandidate(rootPath: String) throws -> PokemonCatalogBuildResult {
+    private static func loadCandidate(
+        rootPath: String,
+        activeRevision: Int?
+    ) throws -> PokemonCatalogBuildResult {
         let root = URL(fileURLWithPath: rootPath, isDirectory: true)
-        return PokemonCatalogBuildResult(
+        let result = PokemonCatalogBuildResult(
             release: try read(
                 PokemonCatalogRelease.self,
                 from: root.appendingPathComponent("catalog-payload.json")
@@ -316,6 +353,91 @@ struct PokemonCatalogPublisherMain {
                 from: root.appendingPathComponent("review-report.json")
             )
         )
+        try PokemonCatalogCandidateValidator.validate(
+            result,
+            activeRevision: activeRevision
+        )
+        return result
+    }
+
+    private static func loadSignedRelease(
+        from url: URL,
+        options: CLIOptions,
+        environment: PokemonCatalogPublicationEnvironment
+    ) throws -> PokemonCatalogRelease {
+        guard FileManager.default.fileExists(atPath: url.path) else {
+            throw CLIError.message("missing active catalog release: \(url.path)")
+        }
+        let data = try Data(contentsOf: url)
+        let envelope: PokemonCatalogReleaseEnvelope
+        do {
+            envelope = try PokemonCatalogJSON.decode(
+                PokemonCatalogReleaseEnvelope.self,
+                from: data
+            )
+        } catch {
+            throw CLIError.message(
+                "active catalog release must be a signed envelope: \(url.path)"
+            )
+        }
+        let release = try PokemonCatalogSignatureVerifier.verify(
+            envelope: envelope,
+            keys: try trustedKeys(options: options, environment: environment)
+        )
+        return release
+    }
+
+    private static func parseEnvironment(
+        _ raw: String?
+    ) throws -> PokemonCatalogPublicationEnvironment? {
+        guard let raw else { return nil }
+        guard let environment = PokemonCatalogPublicationEnvironment(rawValue: raw) else {
+            throw CLIError.message("--environment must be production or staging")
+        }
+        return environment
+    }
+
+    private static func trustedKeys(
+        options: CLIOptions,
+        environment: PokemonCatalogPublicationEnvironment
+    ) throws -> [PokemonCatalogSignatureVerifier.PinnedKey] {
+        let raw: String
+        if let configured = options.value("--trusted-keys"), !configured.isEmpty {
+            raw = configured
+        } else {
+            let configPath = options.value("--trusted-keys-file")
+                ?? "Config/PokemonCatalog\(environment == .production ? "Production" : "Staging").xcconfig"
+            let configURL = URL(fileURLWithPath: configPath)
+            let config = try String(contentsOf: configURL, encoding: .utf8)
+            guard let line = config.split(whereSeparator: \.isNewline).first(where: {
+                $0.trimmingCharacters(in: .whitespaces).hasPrefix("POKEMON_CATALOG_PINNED_KEYS")
+            }), let separator = line.firstIndex(of: "=") else {
+                throw CLIError.message("missing POKEMON_CATALOG_PINNED_KEYS in \(configPath)")
+            }
+            raw = String(line[line.index(after: separator)...])
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        let keys = raw.split(separator: ";").compactMap { entry -> PokemonCatalogSignatureVerifier.PinnedKey? in
+            let text = String(entry)
+            guard let separator = text.firstIndex(of: ":") ?? text.firstIndex(of: "=") else {
+                return nil
+            }
+            let id = String(text[..<separator]).trimmingCharacters(in: .whitespacesAndNewlines)
+            let encoded = String(text[text.index(after: separator)...])
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !id.isEmpty,
+                  let data = PokemonCatalogBase64URL.decode(encoded),
+                  data.count == 32,
+                  let publicKey = try? Curve25519.Signing.PublicKey(rawRepresentation: data) else {
+                return nil
+            }
+            return PokemonCatalogSignatureVerifier.PinnedKey(id: id, publicKey: publicKey)
+        }
+        guard !keys.isEmpty else {
+            throw CLIError.message("no valid pinned catalog keys are configured")
+        }
+        return keys
     }
 
     private static func printReport(_ report: PokemonCatalogReviewReport) {
@@ -336,13 +458,17 @@ struct PokemonCatalogPublisherMain {
       --input PATH          Catalog overrides/fallbacks JSON
       --discovery-policy PATH
                              Scheduled discovery policy JSON
-      --active-release PATH Existing release envelope or payload
+      --active-release PATH Existing signed release envelope or payload
+      --trusted-keys-file FILE  xcconfig containing POKEMON_CATALOG_PINNED_KEYS
+      --trusted-keys VALUE  semicolon-separated keyID:base64url-public-key list
       --revision NUMBER     New strictly higher release revision
       --generated-at DATE   ISO-8601 timestamp (use a fixed value for reproducible output)
       --report PATH         Write the public review report to PATH
       --candidate-root PATH Write or read the unsigned validated candidate
       --site-root PATH      Firebase Hosting root for publish
       --environment NAME    production or staging
+
+      verify-release --path PATH --environment NAME [--expected-revision NUMBER]
 
     Production publish requires the protected GitHub Actions environment and
     the write-only POKEMON_CATALOG_SIGNING_KEY secret. Local and pull-request

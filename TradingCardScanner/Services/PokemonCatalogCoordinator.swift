@@ -160,6 +160,10 @@ actor PokemonCatalogCoordinator {
     }
 
     func activateEnvelope(_ envelope: PokemonCatalogReleaseEnvelope) async -> RefreshResult {
+        // Keep direct callers (including diagnostics and tests) on the same
+        // persisted-state path as refresh(). Without this, activeRevision can
+        // still be nil when the monotonicity check runs.
+        await loadPersistedOrBundled()
         let activationStart = Date()
         let activationState = PerformanceSignpost.beginInterval(
             "pokemonCatalogActivation",

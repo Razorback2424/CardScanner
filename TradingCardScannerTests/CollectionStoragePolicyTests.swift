@@ -65,6 +65,47 @@ final class CollectionStoragePolicyTests: XCTestCase {
         )
     }
 
+    func testUnprovenReadinessKeepsFreshAvailableInstallOnDevice() {
+        let decision = CollectionStoragePolicy.decide(
+            CollectionStoragePolicyInput(
+                local: fresh(),
+                account: .available(fingerprint: "account-a"),
+                anchor: .missing,
+                cloudRestorationReadinessProven: false
+            )
+        )
+
+        XCTAssertEqual(
+            decision,
+            .openProvenLocal(storeID: localStoreID, reason: .restorationUnproven)
+        )
+    }
+
+    func testUnprovenReadinessDoesNotRecreateMissingLocalReplica() {
+        let local = CollectionStorageLocalFacts(
+            manifest: CollectionStoreManifest(
+                storeID: localStoreID,
+                lastAttachedAccountFingerprint: "account-a",
+                attachmentState: .attached,
+                storeFileIdentity: "file-a"
+            ),
+            structuredStoreFilePresent: false,
+            localHasUserData: false,
+            storeFileIdentityStatus: .matching
+        )
+
+        XCTAssertEqual(
+            CollectionStoragePolicy.decide(
+                CollectionStoragePolicyInput(
+                    local: local,
+                    account: .available(fingerprint: "account-a"),
+                    cloudRestorationReadinessProven: false
+                )
+            ),
+            .blockUnprovenTransition
+        )
+    }
+
     func testFreshEmptyInstallWithRemoteAnchorAdoptsRemoteIdentity() {
         let decision = CollectionStoragePolicy.decide(
             CollectionStoragePolicyInput(

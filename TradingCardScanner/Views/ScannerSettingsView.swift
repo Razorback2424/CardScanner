@@ -699,6 +699,12 @@ struct CollectionStorageStatusSection: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+            if TradingCardScannerApp.activeCloudAccountStatusRaw
+                == LocalStorageReason.restorationUnproven.rawValue {
+                Text("iCloud restoration is not proven yet. This collection is staying on this device until a safe restoration check is available.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
             Text("Collection sync follows the device's iCloud account. CardScanner does not require a separate account.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
@@ -724,6 +730,7 @@ struct CollectionStorageStatusSection: View {
         case LocalStorageReason.restricted.rawValue: return "Restricted"
         case LocalStorageReason.temporarilyUnavailable.rawValue: return "Temporarily unavailable"
         case LocalStorageReason.attachmentSuspended.rawValue: return "Kept on this device"
+        case LocalStorageReason.restorationUnproven.rawValue: return "Restoration not proven"
         default: return TradingCardScannerApp.activeCloudAccountStatusRaw
         }
     }

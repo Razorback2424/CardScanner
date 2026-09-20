@@ -1,6 +1,6 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-09-15
+**Audit date:** 2026-09-19
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
@@ -15,11 +15,30 @@ below or linked from the current [documentation map](../README.md). Everything
 under `docs/legacy/` or `review/legacy/` is retained for provenance and is not
 release evidence.
 
+## Latest catalog rollout evidence — 2026-09-19
+
+The production catalog baseline is hosted revision 1, signed with the pinned
+production public key. The committed app configuration remains
+`bundled-validation-only`. The validation-only online/relaunch rehearsal and
+the focused/broader catalog suites passed after commit `54960fd` (8/8 focused,
+64/64 broader). A one-off external-SSD build with `remote-authority` then
+activated hosted revision 1 on the dedicated simulator, persisted
+`current = 1` with no previous slot, and treated the identical relaunch fetch
+as `notModified` rather than a rejection.
+
+Workflow run [35443012617](https://github.com/Razorback2424/CardScanner/actions/runs/35443012617)
+validated a no-op revision-2 candidate: all 28 descriptors, card counts,
+provider fingerprints, and snapshot entries matched revision 1. The protected
+publish job was canceled before signing or deployment, so hosted revision 1
+remains current and the candidate is evidence only. Physical-device authority,
+the genuine offline case, production cutover, synthetic behavior change, and
+the first real catalog update remain open gates.
+
 | Area | Current authority | Code/evidence boundary |
 | --- | --- | --- |
 | Product scope and roadmap | [`README.md`](../../README.md), [`CardScanner Collection Integrity Strategy`](../vision/CardScanner%20Collection%20Integrity%20Strategy%20%E2%80%94%20Start-to-Finish%20Implementation%20Plan.md), and the [active launch plan](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md) | The current Swift target and tests decide what is implemented; roadmap prose does not add product behavior. The launch plan's §0.1.1 binds open pass-2 findings to the tasks they block, and §0.1.2 lists current plans outside launch scope; both are required reading before a task is started. |
 | Browse/Catalog | [`browse_screen_spec.md`](browse_screen_spec.md), [`browse_success_checklist.md`](../../references/browse_success_checklist.md), `TradingCardScanner/Views/BrowseView.swift`, and `TradingCardScannerTests/BrowseFeatureTests.swift` | Browse is a Collection push destination. The focused set-directory hardening selectors pass 133/133 with 0 failures, including invalid/valid cache bodies and symbol-prefix recovery. A8/B6 remain closed by the settled light/dark rerun2 evidence in [`pokemon_browse_checklist.md`](../../artifacts/pokemon_browse_checklist.md); provider/device checks remain open. |
-| Automatic Pokémon set updates | [`automatic_pokemon_catalog_updates_plan.md`](automatic_pokemon_catalog_updates_plan.md) | Slices A–E are implemented 2026-09-18. The signed `PokemonCatalogCoordinator` is now the production Browse activation authority as well as the Scanner authority; TCGdex remains content transport for authorized IDs, failed checklist refreshes preserve the last complete directory, and the obsolete UserDefaults release-order writer/Pocket request are removed. Slice E adds the UIKit-free publisher, guarded production workflow, revision-tree restoration, and retained review report. Slice F's bundled-authority rollout guard is implemented, while live Firebase/key/device/archive/release gates remain open. |
+| Automatic Pokémon set updates | [`automatic_pokemon_catalog_updates_plan.md`](automatic_pokemon_catalog_updates_plan.md) | Slices A–E are implemented. Slice F's validation-only path, production-host revision-1 rehearsal, same-revision relaunch handling, and focused/broader XCTest evidence are complete as of 2026-09-19. A one-off revision-1 remote-authority simulator rehearsal also passed; the committed app remains `bundled-validation-only`. Physical-device/offline evidence, production cutover, synthetic behavior change, first real catalog update, and release gates remain open. |
 | Artwork fallbacks | [`artwork-fallback-plan.md`](artwork-fallback-plan.md), `TradingCardScanner/Services/ArtworkFallbacks.swift`, and Browse tests | P0–P3 are implemented in the current tree; TCGdex-only stem/WebP candidates, symbol sibling-prefix recovery, decode-before-persist, legacy-cache eviction, and coalesced requests pass in the 133/133 focused run. Broader provider behavior and licensing are still operational gates. |
 | Scanner workflow | `TradingCardScanner/Views/ScannerViewModel.swift`, the current [release follow-ups](release_followups.md), [`scan_cancellation_success_checklist.md`](../../references/scan_cancellation_success_checklist.md), and `progress.md` | The reviewed cancellation/task-lifecycle fixes are landed and focused-verified; camera, thermal, provider, and physical-device evidence remains open. |
 | Pricing and portfolio performance | [`price_refresh_scale_plan.md`](price_refresh_scale_plan.md), [`release_followups.md`](release_followups.md), and the current services/tests | Actor-owned refresh persistence is landed; large-store measurement, Magic batching, resumable sweeps, and physical-provider profiling remain open. |

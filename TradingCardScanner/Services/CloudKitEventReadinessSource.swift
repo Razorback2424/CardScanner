@@ -43,6 +43,11 @@ final class CloudKitEventReadinessSource: CloudRestorationReadinessSource {
     typealias VisibilityProvider = @MainActor (ModelContainer) throws -> CloudRestorationVisibilitySnapshot
     typealias CorrelationTargetResolver = @MainActor (ModelContainer) -> String?
 
+    /// This source implements the selected event/visibility evidence
+    /// mechanism. Production wiring remains opt-in until an entitled device
+    /// rehearsal selects it instead of `UnprovenCloudRestorationReadinessSource`.
+    var isProven: Bool { true }
+
     private let notificationCenter: NotificationCenter
     private let visibilityProvider: VisibilityProvider
     private let correlationTargetResolver: CorrelationTargetResolver

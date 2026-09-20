@@ -418,6 +418,9 @@ enum IdentityResolution: String, Codable, Hashable, Sendable {
     case printedIdentifier
     /// The user selected this exact printing from the remote card catalog.
     case catalogSelected
+    /// The scanner narrowed the visible evidence to multiple exact printings,
+    /// and the user selected this one from the one-tap printing picker.
+    case userSelectedPrinting
     /// The printing identity came from an imported collection file.
     case imported
     /// The user corrected identity metadata after reviewing collection history.
@@ -427,6 +430,7 @@ enum IdentityResolution: String, Codable, Hashable, Sendable {
         switch self {
         case .printedIdentifier: return "Printed identifier"
         case .catalogSelected: return "Selected from catalog"
+        case .userSelectedPrinting: return "You selected printing"
         case .imported: return "Imported"
         case .userCorrected: return "You corrected"
         }

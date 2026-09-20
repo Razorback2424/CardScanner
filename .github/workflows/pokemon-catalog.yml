@@ -54,6 +54,7 @@ jobs:
     needs: validate
     outputs:
       has_changes: ${{ steps.prepare.outputs.has_changes }}
+      candidate_manifest_sha256: ${{ steps.candidate_manifest.outputs.sha256 }}
     if: >-
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && inputs.publish == true)
@@ -63,7 +64,7 @@ jobs:
       - name: Read the active production pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-          if ! status="$(curl --location --silent --show-error \
+          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
             "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
@@ -89,9 +90,31 @@ jobs:
             --input publisher/catalog-input.json \
             --discovery-policy publisher/discovery-policy.json \
             --active-release "${RUNNER_TEMP}/pokemon-catalog-production-current.json" \
+            --environment production \
             --live true \
             --candidate-root publisher/candidate \
             --report publisher/reports/production.json
+      - name: Render the candidate review summary
+        run: |
+          {
+            echo "## Pokémon catalog production candidate"
+            jq -r '"- Revision: \(.revision)", "- Added: \(.addedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Changed: \(.changedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Excluded: \(.excludedProviderSetIDs | if length == 0 then "none" else join(", ") end)"' \
+              publisher/reports/production.json
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Create the candidate SHA-256 manifest
+        id: candidate_manifest
+        run: |
+          (
+            cd publisher
+            shasum -a 256 \
+              candidate/catalog-payload.json \
+              candidate/pokemon-catalog-snapshot.json \
+              candidate/review-report.json \
+              reports/production.json \
+              > reports/production-manifest.sha256
+          )
+          manifest_sha256="$(shasum -a 256 publisher/reports/production-manifest.sha256 | awk '{print $1}')"
+          echo "sha256=$manifest_sha256" >> "$GITHUB_OUTPUT"
       - name: Determine whether production approval is needed
         id: prepare
         run: |
@@ -100,12 +123,14 @@ jobs:
           echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
           echo "Catalog candidate changes: $has_changes"
       - name: Upload the validated production candidate
+        id: upload-candidate
         uses: actions/upload-artifact@v4
         with:
           name: pokemon-catalog-production-candidate-${{ github.run_id }}
           path: |
             publisher/candidate
             publisher/reports/production.json
+            publisher/reports/production-manifest.sha256
           if-no-files-found: error
           retention-days: 7
 
@@ -137,10 +162,18 @@ jobs:
           test -f publisher/candidate/pokemon-catalog-snapshot.json
           test -f publisher/candidate/review-report.json
           test -f publisher/reports/production.json
+          test -f publisher/reports/production-manifest.sha256
+          expected_manifest_sha256="${{ needs.prepare-production.outputs.candidate_manifest_sha256 }}"
+          actual_manifest_sha256="$(shasum -a 256 publisher/reports/production-manifest.sha256 | awk '{print $1}')"
+          test "$actual_manifest_sha256" = "$expected_manifest_sha256"
+          (
+            cd publisher
+            shasum -a 256 -c reports/production-manifest.sha256
+          )
       - name: Read the active production pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"
-          if ! status="$(curl --location --silent --show-error \
+          if ! status="$(curl --location --proto '=https' --tlsv1.2 --max-redirs 3 --silent --show-error \
             "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}/v1/current.json" \
             --output "$active_path" \
             --write-out '%{http_code}')"; then
@@ -166,6 +199,8 @@ jobs:
           "${RUNNER_TEMP}/pokemon-catalog-production-current.json"
           publisher/site
           "${POKEMON_CATALOG_PRODUCTION_READ_ORIGIN}"
+          PokemonCatalogCore
+          Config/PokemonCatalogProduction.xcconfig
       - name: Publish the immutable production revision and current pointer
         run: |
           active_path="${RUNNER_TEMP}/pokemon-catalog-production-current.json"

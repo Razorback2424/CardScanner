@@ -262,6 +262,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
     public let logoURL: String?
     public let symbolURL: String?
     public let rulesVersion: Int
+    public let membershipRecognition: PokemonCatalogMembershipRecognition?
 
     public init(
         providerSetID: String,
@@ -277,7 +278,8 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         scanEnabled: Bool = true,
         logoURL: String? = nil,
         symbolURL: String? = nil,
-        rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion
+        rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
+        membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
         self.providerSetID = providerSetID
         self.recognitionKind = recognitionKind
@@ -293,6 +295,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         self.logoURL = logoURL
         self.symbolURL = symbolURL
         self.rulesVersion = rulesVersion
+        self.membershipRecognition = membershipRecognition
     }
 }
 

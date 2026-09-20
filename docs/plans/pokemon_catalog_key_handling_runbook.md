@@ -1,6 +1,6 @@
 # Pokémon catalog signing and publication runbook
 
-**Status:** current Slice E/F implementation companion — 2026-09-18
+**Status:** current Slice E/F implementation companion — 2026-09-19
 
 The catalog signing key is the only credential that can authorize a new
 scanner code. Treat the GitHub Actions secret as a use-only copy, not as the
@@ -20,12 +20,13 @@ backup.
    `POKEMON_CATALOG_KEY_ID`. Never put either value in a fixture, report, site
    object, or pull-request log.
 
-The current checkout intentionally leaves the production
-`POKEMON_CATALOG_PINNED_KEYS` build setting empty. The app accepts public
-material as a semicolon-separated `keyID:base64url-32-byte-public-key` value;
-invalid or unresolved entries are ignored and the bundled-validation mode stays
-authoritative. A real key is an owner-controlled release gate, not a value the
-publisher should invent.
+The committed production build pins
+`pokemon-catalog-production-2026-09-18-01` to
+`CEQfURmtxBTE170BLAk1hVcKgBmGAgVlR7hhSgO6CLI` in
+`POKEMON_CATALOG_PINNED_KEYS`. The hosted revision-1 signature was independently
+verified against that pin. The private signing value remains only in the
+protected release locations; it is not in the repository, candidate artifact,
+or app. The committed rollout mode remains `bundled-validation-only`.
 
 The private `POKEMON_CATALOG_SIGNING_KEY` value is not PEM. It must decode to
 exactly 32 raw private-key/seed bytes, supplied as unpadded base64url, standard
@@ -82,9 +83,12 @@ intentionally deferred. The staging GitHub environment currently contains only
 signing material and must not be treated as deployable until those resources
 exist.
 
-For the first Slice F rehearsal, use the production project and
-`catalog.scan-stash.com` with a `bundled-validation-only` build. Enable
-`remote-authority` only after a separate staging boundary is provisioned and
-the validate-and-discard gate has passed. At that point, decide whether staging
-uses a separate Firebase project or a same-project site before adding its
-deployment credentials; do not point a production App Store build at it.
+The production-host validation-only rehearsal and a one-off local
+`remote-authority` rehearsal against hosted revision 1 are complete. The latter
+proved activation, persistence, relaunch loading, and same-revision idempotency;
+it did not change the committed xcconfig. Do not enable `remote-authority` in
+the committed production configuration or approve a publication solely for a
+no-op lifecycle test. The deferred physical-device rehearsal, including real
+offline behavior, must pass before production cutover. Staging remains
+optional/deferred and must use separate project/site/key material if later
+provisioned; do not point a production App Store build at it.
