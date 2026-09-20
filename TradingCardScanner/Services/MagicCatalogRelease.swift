@@ -1,0 +1,9 @@
+import MagicCatalogCore
+
+typealias MagicCatalogReleaseEnvelope = MagicCatalogCore.MagicCatalogReleaseEnvelope
+typealias MagicCatalogRelease = MagicCatalogCore.MagicCatalogRelease
+typealias MagicCatalogSetDescriptor = MagicCatalogCore.MagicCatalogSetDescriptor
+typealias MagicCatalogRoutingKind = MagicCatalogCore.MagicCatalogRoutingKind
+typealias MagicCatalogSignatureError = MagicCatalogCore.MagicCatalogSignatureError
+typealias MagicCatalogJSON = MagicCatalogCore.MagicCatalogJSON
+typealias MagicCatalogBase64URL = MagicCatalogCore.MagicCatalogBase64URL

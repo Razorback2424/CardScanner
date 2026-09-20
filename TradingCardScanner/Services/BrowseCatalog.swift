@@ -83,10 +83,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var pokemonSnapshotLoadTask: Task<[PokemonChecklistSnapshotEntry], Never>?
     private var refreshTask: Task<Void, Never>?
     private var catalogAuthorityRefreshTask: Task<Void, Never>?
+    private var magicCatalogAuthorityRefreshTask: Task<Void, Never>?
     private var refreshToken = UUID()
     private var catalogEventTask: Task<Void, Never>?
+    private var magicCatalogEventTask: Task<Void, Never>?
     private var catalogRegistry = PokemonCatalogRegistry.bundledSeed
     private var catalogRevision: Int?
+    private var magicCatalogRegistry = MagicCatalogRegistry.bundledSeed
+    private var magicCatalogRevision: Int?
     private var updateContinuations: [UUID: AsyncStream<BrowseCatalogUpdate>.Continuation] = [:]
     /// `prepareCatalog` suspends before it can install `refreshTask`. This flag
     /// closes that actor-reentrancy window; the desired-state bit lets an
@@ -100,12 +104,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var memoryWarningObserver: NSObjectProtocol?
 
     private let catalogCoordinator: PokemonCatalogCoordinator?
+    private let magicCatalogCoordinator: MagicCatalogCoordinator?
 
     init(
         cache: CatalogCacheStore = .shared,
         pokemonTransport: any PokemonBrowseTransport = TCGdexBrowseTransport(),
         checklistStore: PokemonChecklistStore = .shared,
-        catalogCoordinator: PokemonCatalogCoordinator? = nil
+        catalogCoordinator: PokemonCatalogCoordinator? = nil,
+        magicCatalogCoordinator: MagicCatalogCoordinator? = nil
     ) {
         // The old crawl-installed ordering map was unsigned and had no rollback
         // semantics. Remove it once on construction so upgrades cannot leave a
@@ -115,11 +121,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
         self.pokemonTransport = pokemonTransport
         self.checklistStore = checklistStore
         self.catalogCoordinator = catalogCoordinator
+        self.magicCatalogCoordinator = magicCatalogCoordinator
     }
 
     deinit {
         catalogEventTask?.cancel()
         catalogAuthorityRefreshTask?.cancel()
+        magicCatalogEventTask?.cancel()
+        magicCatalogAuthorityRefreshTask?.cancel()
         if let memoryWarningObserver {
             NotificationCenter.default.removeObserver(memoryWarningObserver)
         }
@@ -129,6 +138,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
         installMemoryWarningObserverIfNeeded()
         if game == .pokemon {
             await synchronizeCatalogAuthority()
+        }
+        if game == .magic {
+            await synchronizeMagicCatalogAuthority()
+            if await usesRemoteMagicAuthority() {
+                let sets = magicCatalogRegistry.browseSets
+                setCache[game] = sets
+                return sets
+            }
         }
         if let cached = setCache[game] { return cached }
 
@@ -158,6 +175,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
     func invalidateSetCache(for game: CardGame) {
         guard game == .pokemon else {
             setCache[game] = nil
+            if game == .magic, magicCatalogCoordinator != nil {
+                Task { [cache] in await cache.removeSets(for: .magic) }
+            }
             return
         }
         resetPokemonSnapshotCache()
@@ -194,9 +214,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
             await synchronizeCatalogAuthority()
         }
 
+        if let magicCoordinator = magicCatalogCoordinator {
+            await startMagicCatalogEventListenerIfNeeded(magicCoordinator)
+            await magicCoordinator.loadPersistedOrBundled()
+            await synchronizeMagicCatalogAuthority()
+        }
+
         await loadPokemonSnapshotIfNeeded()
         if let coordinator = catalogCoordinator {
             startCatalogAuthorityRefreshIfNeeded(coordinator)
+        }
+        if let magicCoordinator = magicCatalogCoordinator {
+            startMagicCatalogAuthorityRefreshIfNeeded(magicCoordinator)
         }
         if let existingTask = refreshTask {
             // Suspension cancels cooperatively. Keep the task reference until
@@ -223,6 +252,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     /// the last complete snapshot remains the usable result.
     func refreshCatalogNow() async {
         await synchronizeCatalogAuthority()
+        await synchronizeMagicCatalogAuthority()
         await loadPokemonSnapshotIfNeeded()
         await refreshPokemonSnapshot()
     }
@@ -275,6 +305,19 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
     }
 
+    private func startMagicCatalogEventListenerIfNeeded(
+        _ coordinator: MagicCatalogCoordinator
+    ) async {
+        guard magicCatalogEventTask == nil else { return }
+        let events = await coordinator.activationEvents()
+        magicCatalogEventTask = Task { [weak self] in
+            for await event in events {
+                guard !Task.isCancelled else { return }
+                await self?.applyMagicCatalogRegistry(event.registry, revision: event.revision)
+            }
+        }
+    }
+
     /// Refresh the signed authority only after the local snapshot has had a
     /// chance to populate the first Browse render. The coordinator owns its
     /// own retry/backoff policy, so this task is intentionally independent of
@@ -294,6 +337,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
         catalogAuthorityRefreshTask = nil
     }
 
+    private func startMagicCatalogAuthorityRefreshIfNeeded(
+        _ coordinator: MagicCatalogCoordinator
+    ) {
+        guard magicCatalogAuthorityRefreshTask == nil else { return }
+        magicCatalogAuthorityRefreshTask = Task(priority: .utility) { [weak self, coordinator] in
+            _ = await coordinator.refresh()
+            guard !Task.isCancelled else { return }
+            await self?.finishMagicCatalogAuthorityRefresh()
+        }
+    }
+
+    private func finishMagicCatalogAuthorityRefresh() {
+        magicCatalogAuthorityRefreshTask = nil
+    }
+
     private func synchronizeCatalogAuthority() async {
         guard let coordinator = catalogCoordinator else { return }
         await coordinator.loadPersistedOrBundled()
@@ -301,6 +359,19 @@ actor BrowseCatalog: BrowseCatalogProviding {
             await coordinator.registry,
             revision: await coordinator.revision
         )
+    }
+
+    private func usesRemoteMagicAuthority() async -> Bool {
+        guard let coordinator = magicCatalogCoordinator else { return false }
+        return await coordinator.currentRolloutMode == .remoteAuthority
+    }
+
+    private func synchronizeMagicCatalogAuthority() async {
+        guard let coordinator = magicCatalogCoordinator else { return }
+        await coordinator.loadPersistedOrBundled()
+        let nextRegistry = await coordinator.registry
+        let nextRevision = await coordinator.revision
+        applyMagicCatalogRegistry(nextRegistry, revision: nextRevision)
     }
 
     private func applyCatalogRegistry(
@@ -312,6 +383,26 @@ actor BrowseCatalog: BrowseCatalogProviding {
         catalogRegistry = registry
         catalogRevision = revision
         resetPokemonSnapshotCache()
+        yieldUpdate(providerSetID: nil)
+    }
+
+    private func applyMagicCatalogRegistry(
+        _ registry: MagicCatalogRegistry,
+        revision: Int?
+    ) {
+        guard magicCatalogRevision != revision
+            || magicCatalogRegistry.descriptors != registry.descriptors else { return }
+        magicCatalogRegistry = registry
+        magicCatalogRevision = revision
+        setCache[.magic] = nil
+        if magicCatalogCoordinator != nil {
+            Task { [weak self, cache] in
+                guard let self else { return }
+                if await self.usesRemoteMagicAuthority() {
+                    await cache.removeSets(for: .magic)
+                }
+            }
+        }
         yieldUpdate(providerSetID: nil)
     }
 
@@ -826,6 +917,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func magicSets() async throws -> [CatalogSet] {
+        if await usesRemoteMagicAuthority() {
+            return magicCatalogRegistry.browseSets
+        }
         guard let url = URL(string: "https://api.scryfall.com/sets") else { throw BrowseCatalogError.invalidURL }
         let (data, response) = try await URLSession.shared.data(for: request(url, scryfall: true))
         try validate(response)
@@ -833,7 +927,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let rows = try JSONDecoder().decode(ScryfallBrowseSetList.self, from: data).data.filter {
             !$0.digital && !excluded.contains($0.setType ?? "")
         }
-        return rows.sorted { ($0.releasedAt ?? "") > ($1.releasedAt ?? "") }.enumerated().map { index, row in
+        let sets = rows.sorted { ($0.releasedAt ?? "") > ($1.releasedAt ?? "") }.enumerated().map { index, row in
             CatalogSet(
                 catalogID: CatalogSetID(game: .magic, providerID: row.code.lowercased()),
                 name: row.name,
@@ -845,6 +939,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 sortRank: rows.count - index
             )
         }
+        if let coordinator = magicCatalogCoordinator,
+           await coordinator.currentRolloutMode == .remoteValidationOnly,
+           let liveScanner = try? await scryfall.fetchSupportedSets(),
+           let liveRouting = try? await scryfall.fetchChildSets() {
+            let mismatches = magicCatalogRegistry.legacyParityMismatches(
+                scanner: liveScanner,
+                browse: sets,
+                routing: liveRouting
+            )
+            await coordinator.recordLegacyParity(mismatches)
+        }
+        return sets
     }
 
     private func searchPokemon(query: String, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
@@ -1292,6 +1398,10 @@ actor CatalogCacheStore {
 
     func storeSets(_ sets: [CatalogSet], for game: CardGame) {
         store(sets, at: setDirectoryURL(for: game))
+    }
+
+    func removeSets(for game: CardGame) {
+        try? FileManager.default.removeItem(at: setDirectoryURL(for: game))
     }
 
     func cardPage(for key: String) -> Cached<CatalogPage<CatalogCardSummary>>? {

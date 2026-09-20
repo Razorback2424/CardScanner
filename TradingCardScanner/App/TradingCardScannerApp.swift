@@ -5,6 +5,7 @@ import SwiftData
 struct TradingCardScannerApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     private let catalogCoordinator: PokemonCatalogCoordinator
+    private let magicCatalogCoordinator: MagicCatalogCoordinator
     @StateObject private var scannerModel: ScannerViewModel
     @StateObject private var scanSummaryStore = ScanSessionSummaryStore()
     @StateObject private var cardFinishMotion = CardFinishMotionSource()
@@ -12,9 +13,15 @@ struct TradingCardScannerApp: App {
 
     init() {
         let catalogCoordinator = PokemonCatalogCoordinator()
+        let magicCatalogCoordinator = MagicCatalogCoordinator()
         self.catalogCoordinator = catalogCoordinator
+        self.magicCatalogCoordinator = magicCatalogCoordinator
         _scannerModel = StateObject(
-            wrappedValue: ScannerViewModel(catalogCoordinator: catalogCoordinator)
+            wrappedValue: ScannerViewModel(
+                catalog: CardCatalog(magicCatalogCoordinator: magicCatalogCoordinator),
+                catalogCoordinator: catalogCoordinator,
+                magicCatalogCoordinator: magicCatalogCoordinator
+            )
         )
     }
 
@@ -33,7 +40,10 @@ struct TradingCardScannerApp: App {
             Group {
                 switch storageBootstrap.state {
                 case .ready(let session):
-                    ContentView(catalogCoordinator: catalogCoordinator)
+                    ContentView(
+                        catalogCoordinator: catalogCoordinator,
+                        magicCatalogCoordinator: magicCatalogCoordinator
+                    )
                         .modelContainer(session.container)
                         .environmentObject(scannerModel)
                         .environmentObject(scanSummaryStore)
