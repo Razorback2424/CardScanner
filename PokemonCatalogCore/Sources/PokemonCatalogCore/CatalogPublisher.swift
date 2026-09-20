@@ -79,12 +79,15 @@ public enum PokemonCatalogSigner {
     }
 }
 
-/// Reads a catalog signing key only in the matching protected GitHub Actions environment.
-/// Local builds and pull-request jobs intentionally cannot reach this path.
+/// Reads a catalog signing key only in a matching GitHub Actions production
+/// publication environment. Authority changes use the protected environment;
+/// content-only changes use the separately named automatic environment. Local
+/// builds and pull-request jobs intentionally cannot reach this path.
 public enum PokemonCatalogSigningKeyLoader {
     public static func load(
         environment: PokemonCatalogPublicationEnvironment,
-        variables: [String: String] = ProcessInfo.processInfo.environment
+        variables: [String: String] = ProcessInfo.processInfo.environment,
+        changeClass: PokemonCatalogChangeClass? = nil
     ) throws -> PokemonCatalogSigningMaterial {
         guard variables["GITHUB_ACTIONS"] == "true",
               variables["GITHUB_EVENT_NAME"] != "pull_request",
@@ -92,14 +95,22 @@ public enum PokemonCatalogSigningKeyLoader {
               variables["POKEMON_CATALOG_PUBLISH"] == "true" else {
             throw PokemonCatalogPublicationError.invalidSigningEnvironment
         }
+        let githubEnvironment = variables["GITHUB_ENVIRONMENT"] ?? ""
         switch environment {
         case .production:
-            guard variables["GITHUB_ENVIRONMENT"] == "pokemon-catalog-production" else {
+            guard [
+                "pokemon-catalog-production",
+                "pokemon-catalog-production-auto"
+            ].contains(githubEnvironment) else {
+                throw PokemonCatalogPublicationError.invalidSigningEnvironment
+            }
+            guard githubEnvironment != "pokemon-catalog-production-auto"
+                || changeClass == .some(.contentOnly) else {
                 throw PokemonCatalogPublicationError.invalidSigningEnvironment
             }
 
         case .staging:
-            guard variables["GITHUB_ENVIRONMENT"] == "pokemon-catalog-staging" else {
+            guard githubEnvironment == "pokemon-catalog-staging" else {
                 throw PokemonCatalogPublicationError.invalidSigningEnvironment
             }
         }

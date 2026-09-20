@@ -93,6 +93,79 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
     }
 
+    func testParentArtworkIsResolvedByPublisherAndProtectedByClassifier() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv-parent",
+                    name: "Parent Set",
+                    code: "PAR",
+                    releaseDate: "2026-09-17",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv-parent/001"],
+                    logo: "https://assets.tcgdex.net/en/sv/sv-parent/logo.png"
+                ),
+                .init(
+                    id: "sv-child",
+                    name: "Gallery Set",
+                    code: "GAL",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv-child/001"]
+                )
+            ]
+        )
+        let result = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: fixture,
+                humanInputs: [
+                    .init(
+                        providerSetID: "sv-child",
+                        recognitionKind: .expansion,
+                        printedCode: "GAL",
+                        parentProviderSetID: "sv-parent"
+                    )
+                ],
+                revision: 1,
+                generatedAt: generatedAt
+            )
+        )
+
+        let child = try XCTUnwrap(
+            result.release.sets.first { $0.providerSetID == "sv-child" }
+        )
+        XCTAssertEqual(child.parentProviderSetID, "sv-parent")
+        XCTAssertEqual(
+            child.logoURL,
+            "https://assets.tcgdex.net/en/sv/sv-parent/logo.png"
+        )
+
+        let changedParent = PokemonCatalogSetDescriptor(
+            providerSetID: child.providerSetID,
+            displayName: child.displayName,
+            releaseDate: child.releaseDate,
+            releaseOrder: child.releaseOrder,
+            recognitionKind: child.recognitionKind,
+            printedCode: child.printedCode,
+            officialCount: child.officialCount,
+            printedPrefix: child.printedPrefix,
+            catalogLocalIDPrefix: child.catalogLocalIDPrefix,
+            localIDPadWidth: child.localIDPadWidth,
+            scanEnabled: child.scanEnabled,
+            logoURL: child.logoURL,
+            symbolURL: child.symbolURL,
+            providerFingerprint: child.providerFingerprint,
+            parentProviderSetID: "sv-other",
+            rulesVersion: child.rulesVersion,
+            membershipRecognition: child.membershipRecognition
+        )
+        XCTAssertEqual(
+            PokemonCatalogChangeClassifier.classify(
+                previous: child,
+                current: changedParent
+            ),
+            .authority
+        )
+    }
+
     func testMissingProviderAbbreviationUsesValidOperatorFallback() throws {
         let fixture = providerFixture(
             sets: [
@@ -293,6 +366,212 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertEqual(descriptor.releaseDate, "2026-09-19")
         XCTAssertEqual(descriptor.logoURL, "https://assets.tcgdex.net/en/sv/sv99/logo.png")
         XCTAssertEqual(result.report.changedProviderSetIDs, ["sv99"])
+    }
+
+    func testProviderContentFingerprintMakesContentChangesVisibleToReleaseDiff() throws {
+        let initialFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "TST",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"]
+                )
+            ]
+        )
+        let initial = try PokemonCatalogBuilder().build(
+            .init(fixture: initialFixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        let contentChangedFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "TST",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/002"]
+                )
+            ]
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: contentChangedFixture,
+                activeRelease: initial.release,
+                humanInputs: [],
+                revision: 2,
+                generatedAt: generatedAt
+            )
+        )
+
+        let oldDescriptor = try XCTUnwrap(initial.release.sets.first)
+        let newDescriptor = try XCTUnwrap(result.release.sets.first)
+        XCTAssertEqual(newDescriptor.printedCode, oldDescriptor.printedCode)
+        XCTAssertEqual(newDescriptor.officialCount, oldDescriptor.officialCount)
+        XCTAssertEqual(newDescriptor.recognitionKind, oldDescriptor.recognitionKind)
+        XCTAssertEqual(newDescriptor.scanEnabled, oldDescriptor.scanEnabled)
+        XCTAssertEqual(newDescriptor.releaseOrder, oldDescriptor.releaseOrder)
+        XCTAssertNotEqual(newDescriptor.providerFingerprint, oldDescriptor.providerFingerprint)
+        XCTAssertEqual(result.report.changedProviderSetIDs, ["sv99"])
+        XCTAssertEqual(result.report.changeClass, .contentOnly)
+        XCTAssertEqual(result.report.contentChangedProviderSetIDs, ["sv99"])
+    }
+
+    func testFirstFingerprintPopulationIsProtectedBaselineMigration() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "sv99",
+                    name: "Recorded Test Set",
+                    code: "TST",
+                    releaseDate: "2026-09-18",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/sv99/001"]
+                )
+            ]
+        )
+        let legacyRelease = PokemonCatalogRelease(
+            revision: 1,
+            generatedAt: generatedAt,
+            sets: [descriptor(providerID: "sv99", code: "TST", count: 1)]
+        )
+        let result = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: fixture,
+                activeRelease: legacyRelease,
+                humanInputs: [],
+                revision: 2,
+                generatedAt: generatedAt
+            )
+        )
+
+        XCTAssertEqual(result.report.changeClass, .baselineMigration)
+        XCTAssertEqual(result.report.baselineFingerprintProviderSetIDs, ["sv99"])
+        XCTAssertTrue(result.report.authorityChangedProviderSetIDs.isEmpty)
+    }
+
+    func testAuthorityChangesNeverUseAutomaticContentLane() {
+        let old = descriptor(providerID: "sv99", code: "TST", count: 1)
+        let changed = PokemonCatalogSetDescriptor(
+            providerSetID: old.providerSetID,
+            displayName: old.displayName,
+            releaseDate: old.releaseDate,
+            releaseOrder: old.releaseOrder,
+            recognitionKind: old.recognitionKind,
+            printedCode: old.printedCode,
+            officialCount: 2,
+            printedPrefix: old.printedPrefix,
+            catalogLocalIDPrefix: old.catalogLocalIDPrefix,
+            localIDPadWidth: old.localIDPadWidth,
+            scanEnabled: old.scanEnabled,
+            logoURL: old.logoURL,
+            symbolURL: old.symbolURL,
+            providerFingerprint: old.providerFingerprint,
+            rulesVersion: old.rulesVersion,
+            membershipRecognition: old.membershipRecognition
+        )
+
+        XCTAssertEqual(
+            PokemonCatalogChangeClassifier.classify(previous: old, current: changed),
+            .authority
+        )
+    }
+
+    func testCanonicalProviderFingerprintIsOrderIndependentAndIncludesRelevantDetail() throws {
+        let firstBrief = PokemonCatalogProviderCardBrief(
+            id: "sv99-002", localID: "002", name: "Second", image: "https://img/002"
+        )
+        let secondBrief = PokemonCatalogProviderCardBrief(
+            id: "sv99-001", localID: "001", name: "First", image: "https://img/001"
+        )
+        let count = PokemonCatalogProviderCardCount(
+            total: 2, official: 2, normal: 2, reverse: 0, holo: 0, firstEd: 0
+        )
+        let variants = PokemonCatalogProviderVariants(
+            firstEdition: false, holo: true, normal: true, reverse: false, wPromo: false
+        )
+        let detailed = PokemonCatalogProviderDetailedVariant(
+            type: "reverse", subtype: "", stamp: ["staff", "set"], foil: "cosmos",
+            size: "normal", variantID: "v2", languages: ["en", "ja"]
+        )
+        let details: [String: PokemonCatalogProviderCard] = [
+            "sv99-001": .init(
+                id: "sv99-001", localID: "001", name: "First", image: "detail-image",
+                setID: "sv99", variants: variants, variantsDetailed: [detailed]
+            ),
+            "sv99-002": .init(
+                id: "sv99-002", localID: "002", name: "Second", image: nil,
+                setID: "sv99", variants: variants, variantsDetailed: [detailed]
+            )
+        ]
+        let set = PokemonCatalogProviderSet(
+            id: "sv99", name: "Set", cards: [firstBrief, secondBrief],
+            logo: "https://img/logo.png",
+            symbol: "https://img/symbol.png",
+            releaseDate: "2026-09-20",
+            tcgOnline: "irrelevant", cardCount: count
+        )
+        let shuffledSet = PokemonCatalogProviderSet(
+            id: "sv99", name: "Set", cards: [secondBrief, firstBrief],
+            logo: "https://img/logo.png",
+            symbol: "https://img/symbol.png",
+            releaseDate: "2026-09-20",
+            tcgOnline: "changed-but-irrelevant", cardCount: count
+        )
+
+        let first = try XCTUnwrap(PokemonCatalogProviderFingerprint.v1(
+            providerSet: set,
+            cardDetails: details
+        ))
+        let shuffled = try XCTUnwrap(PokemonCatalogProviderFingerprint.v1(
+            providerSet: shuffledSet,
+            cardDetails: details
+        ))
+        XCTAssertEqual(first, shuffled)
+
+        let changedMetadata = PokemonCatalogProviderSet(
+            id: "sv99", name: "Set (corrected)", cards: [firstBrief, secondBrief],
+            logo: "https://img/logo-corrected.png",
+            symbol: "https://img/symbol-corrected.png",
+            releaseDate: "2026-09-21",
+            tcgOnline: "irrelevant", cardCount: count
+        )
+        XCTAssertNotEqual(
+            first,
+            try XCTUnwrap(PokemonCatalogProviderFingerprint.v1(
+                providerSet: changedMetadata,
+                cardDetails: details
+            ))
+        )
+
+        let changedDetail = details.merging([
+            "sv99-001": .init(
+                id: "sv99-001", localID: "001", name: "First", image: "detail-image",
+                setID: "sv99", variants: .init(
+                    firstEdition: false, holo: true, normal: true, reverse: true, wPromo: false
+                ), variantsDetailed: [detailed]
+            )
+        ]) { _, newest in newest }
+        XCTAssertNotEqual(
+            first,
+            try XCTUnwrap(PokemonCatalogProviderFingerprint.v1(
+                providerSet: set,
+                cardDetails: changedDetail
+            ))
+        )
+
+        let changedCount = PokemonCatalogProviderSet(
+            id: "sv99", name: "Set", cards: [firstBrief, secondBrief],
+            tcgOnline: "irrelevant",
+            cardCount: .init(total: 3, official: 2, normal: 3, reverse: 0, holo: 0, firstEd: 0)
+        )
+        XCTAssertNotEqual(
+            first,
+            try XCTUnwrap(PokemonCatalogProviderFingerprint.v1(
+                providerSet: changedCount,
+                cardDetails: details
+            ))
+        )
     }
 
     func testAutomaticReleaseOrdersUseDateThenProviderIDWithoutRenumberingActiveSets() throws {
@@ -621,6 +900,71 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertEqual(envelope.payload, PokemonCatalogBase64URL.encode(try PokemonCatalogJSON.encode(release)))
     }
 
+    func testSchemaOneFingerprintIsOptionalAndSchemaTwoRemainsRejected() throws {
+        let release = PokemonCatalogRelease(
+            schemaVersion: PokemonCatalogRelease.currentSchemaVersion,
+            revision: 1,
+            generatedAt: generatedAt,
+            sets: [descriptor(providerID: "sv99", code: "TST", count: 2)]
+        )
+        var object = try XCTUnwrap(
+            JSONSerialization.jsonObject(
+                with: try PokemonCatalogJSON.encode(release)
+            ) as? [String: Any]
+        )
+        var sets = try XCTUnwrap(object["sets"] as? [[String: Any]])
+        sets[0].removeValue(forKey: "providerFingerprint")
+        object["sets"] = sets
+        let payload = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
+        let privateKey = Curve25519.Signing.PrivateKey()
+        let envelope = PokemonCatalogReleaseEnvelope(
+            keyID: "fixture",
+            payload: PokemonCatalogBase64URL.encode(payload),
+            signature: PokemonCatalogBase64URL.encode(try privateKey.signature(for: payload))
+        )
+        let keys = [PokemonCatalogSignatureVerifier.PinnedKey(
+            id: "fixture",
+            publicKey: privateKey.publicKey
+        )]
+
+        let decoded = try PokemonCatalogSignatureVerifier.verify(
+            envelope: envelope,
+            now: generatedAt.addingTimeInterval(1),
+            keys: keys
+        )
+        XCTAssertEqual(decoded.schemaVersion, 1)
+        XCTAssertNil(decoded.sets.first?.providerFingerprint)
+
+        var schemaTwoObject = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: try PokemonCatalogJSON.encode(release))
+                as? [String: Any]
+        )
+        schemaTwoObject["schemaVersion"] = 2
+        let schemaTwoPayload = try JSONSerialization.data(
+            withJSONObject: schemaTwoObject,
+            options: [.sortedKeys]
+        )
+        let schemaTwoEnvelope = PokemonCatalogReleaseEnvelope(
+            keyID: "fixture",
+            payload: PokemonCatalogBase64URL.encode(schemaTwoPayload),
+            signature: PokemonCatalogBase64URL.encode(
+                try privateKey.signature(for: schemaTwoPayload)
+            )
+        )
+        XCTAssertThrowsError(
+            try PokemonCatalogSignatureVerifier.verify(
+                envelope: schemaTwoEnvelope,
+                now: generatedAt.addingTimeInterval(1),
+                keys: keys
+            )
+        ) { error in
+            guard case let PokemonCatalogSignatureError.unsupportedSchemaVersion(version) = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+            XCTAssertEqual(version, 2)
+        }
+    }
+
     func testFilesystemPublisherWritesImmutableObjectsBeforeCurrentPointerAndAllowsHigherRevisionRollback() throws {
         let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
         let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
@@ -827,6 +1171,33 @@ final class PokemonCatalogCoreTests: XCTestCase {
                 variables: production
             )
         )
+
+        var automaticProduction = base
+        automaticProduction["GITHUB_ENVIRONMENT"] = "pokemon-catalog-production-auto"
+        XCTAssertThrowsError(
+            try PokemonCatalogSigningKeyLoader.load(
+                environment: .production,
+                variables: automaticProduction
+            )
+        )
+        XCTAssertNoThrow(
+            try PokemonCatalogSigningKeyLoader.load(
+                environment: .production,
+                variables: automaticProduction,
+                changeClass: .contentOnly
+            )
+        )
+        XCTAssertThrowsError(
+            try PokemonCatalogSigningKeyLoader.load(
+                environment: .production,
+                variables: automaticProduction,
+                changeClass: .authority
+            )
+        ) { error in
+            guard case PokemonCatalogPublicationError.invalidSigningEnvironment = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
 
         for (environment, environmentName) in [
             (PokemonCatalogPublicationEnvironment.production, "pokemon-catalog-staging"),
@@ -1069,11 +1440,13 @@ final class PokemonCatalogCoreTests: XCTestCase {
         }
     }
 
-    func testOldDescriptorPayloadDecodesWithoutMembershipRecognition() throws {
+    func testDescriptorPayloadDecodesWithoutMembershipRecognition() throws {
         let data = Data(
             """
             {
               "providerSetID":"sv99",
+              "providerFingerprint":"fixture",
+              "parentProviderSetID":"sv-parent",
               "displayName":"Recorded Test Set",
               "releaseDate":"2026-01-01",
               "releaseOrder":1,
@@ -1086,7 +1459,8 @@ final class PokemonCatalogCoreTests: XCTestCase {
               "scanEnabled":true,
               "logoURL":null,
               "symbolURL":null,
-              "rulesVersion":1
+              "rulesVersion":1,
+              "futureOptionalField":"ignored-by-schema-one"
             }
             """.utf8
         )
@@ -1094,7 +1468,32 @@ final class PokemonCatalogCoreTests: XCTestCase {
             PokemonCatalogSetDescriptor.self,
             from: data
         )
+        XCTAssertEqual(descriptor.providerFingerprint, "fixture")
+        XCTAssertEqual(descriptor.parentProviderSetID, "sv-parent")
         XCTAssertNil(descriptor.membershipRecognition)
+    }
+
+    func testSchemaOneDescriptorWithFutureOptionalFieldStillDecodes() throws {
+        let data = Data(
+            """
+            {
+              "providerSetID":"sv99",
+              "displayName":"Recorded Test Set",
+              "recognitionKind":"expansion",
+              "printedCode":"TST",
+              "officialCount":2,
+              "scanEnabled":true,
+              "rulesVersion":1,
+              "futureOptionalField":{"meaning":"unknown-to-this-client"}
+            }
+            """.utf8
+        )
+        let descriptor = try PokemonCatalogJSON.decode(
+            PokemonCatalogSetDescriptor.self,
+            from: data
+        )
+        XCTAssertNil(descriptor.providerFingerprint)
+        XCTAssertEqual(descriptor.printedCode, "TST")
     }
 
     private func load<T: Decodable>(_ type: T.Type, named name: String) throws -> T {

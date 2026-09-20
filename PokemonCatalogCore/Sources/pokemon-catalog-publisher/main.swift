@@ -57,6 +57,7 @@ struct PokemonCatalogPublisherMain {
                     "publish requires --environment production|staging and --site-root PATH"
                 )
             }
+            let requestedChangeClass = try parseChangeClass(options.value("--change-class"))
             let siteRoot = URL(fileURLWithPath: rawSiteRoot, isDirectory: true)
             let result: PokemonCatalogBuildResult
             if let candidateRoot = options.value("--candidate-root") {
@@ -77,7 +78,16 @@ struct PokemonCatalogPublisherMain {
                     environment: environment
                 )
             }
-            let material = try PokemonCatalogSigningKeyLoader.load(environment: environment)
+            if let requestedChangeClass,
+               requestedChangeClass != result.report.changeClass {
+                throw CLIError.message(
+                    "--change-class does not match the candidate review report"
+                )
+            }
+            let material = try PokemonCatalogSigningKeyLoader.load(
+                environment: environment,
+                changeClass: requestedChangeClass
+            )
             let signed = try PokemonCatalogSigner.sign(result, material: material)
             let publisher = PokemonCatalogFilesystemPublisher(
                 root: siteRoot,
@@ -198,9 +208,13 @@ struct PokemonCatalogPublisherMain {
             let authorizedSetIDs = activeIDs
                 .union(overrideIDs)
                 .union(dueIDs)
+            let parentArtworkSetIDs = Set(
+                humanInput.sets.compactMap(\.parentProviderSetID).map { $0.lowercased() }
+            )
             fixture = try await client.fetchFixture(
                 directory: directory,
-                authorizedSetIDs: authorizedSetIDs
+                authorizedSetIDs: authorizedSetIDs,
+                additionalSetIDs: parentArtworkSetIDs
             )
             if !pendingIDs.isEmpty {
                 print(
@@ -256,7 +270,12 @@ struct PokemonCatalogPublisherMain {
                 "--environment is required when reading an active catalog release"
             )
         }
-        return try loadSignedRelease(from: url, options: options, environment: environment)
+        return try loadSignedRelease(
+            from: url,
+            options: options,
+            environment: environment,
+            allowPreviousSchemaVersion: true
+        )
     }
 
     private static func parseDate(_ raw: String?) throws -> Date {
@@ -363,7 +382,8 @@ struct PokemonCatalogPublisherMain {
     private static func loadSignedRelease(
         from url: URL,
         options: CLIOptions,
-        environment: PokemonCatalogPublicationEnvironment
+        environment: PokemonCatalogPublicationEnvironment,
+        allowPreviousSchemaVersion: Bool = false
     ) throws -> PokemonCatalogRelease {
         guard FileManager.default.fileExists(atPath: url.path) else {
             throw CLIError.message("missing active catalog release: \(url.path)")
@@ -382,7 +402,8 @@ struct PokemonCatalogPublisherMain {
         }
         let release = try PokemonCatalogSignatureVerifier.verify(
             envelope: envelope,
-            keys: try trustedKeys(options: options, environment: environment)
+            keys: try trustedKeys(options: options, environment: environment),
+            allowPreviousSchemaVersion: allowPreviousSchemaVersion
         )
         return release
     }
@@ -395,6 +416,18 @@ struct PokemonCatalogPublisherMain {
             throw CLIError.message("--environment must be production or staging")
         }
         return environment
+    }
+
+    private static func parseChangeClass(
+        _ raw: String?
+    ) throws -> PokemonCatalogChangeClass? {
+        guard let raw else { return nil }
+        guard let changeClass = PokemonCatalogChangeClass(rawValue: raw) else {
+            throw CLIError.message(
+                "--change-class must be none, contentOnly, baselineMigration, authority, newSet, or unknown"
+            )
+        }
+        return changeClass
     }
 
     private static func trustedKeys(
@@ -467,12 +500,15 @@ struct PokemonCatalogPublisherMain {
       --candidate-root PATH Write or read the unsigned validated candidate
       --site-root PATH      Firebase Hosting root for publish
       --environment NAME    production or staging
+      --change-class NAME   Candidate class selected by prepare-production
 
       verify-release --path PATH --environment NAME [--expected-revision NUMBER]
 
-    Production publish requires the protected GitHub Actions environment and
-    the write-only POKEMON_CATALOG_SIGNING_KEY secret. Local and pull-request
-    invocations can validate and report, but cannot sign or publish.
+    Production publish requires the matching GitHub Actions publication
+    environment and the write-only POKEMON_CATALOG_SIGNING_KEY secret.
+    Authority changes use the protected environment; content-only changes use
+    the automatic production environment. Local and pull-request invocations
+    can validate and report, but cannot sign or publish.
     """
 }
 

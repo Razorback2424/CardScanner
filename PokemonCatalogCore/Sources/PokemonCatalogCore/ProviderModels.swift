@@ -129,6 +129,66 @@ public struct PokemonCatalogProviderCardBrief: Codable, Equatable, Hashable, Sen
     }
 }
 
+/// The flat variant flags TCGdex publishes on a detailed card. These fields
+/// affect the physical rows the app expands from one provider card.
+public struct PokemonCatalogProviderVariants: Codable, Equatable, Hashable, Sendable {
+    public let firstEdition: Bool
+    public let holo: Bool
+    public let normal: Bool
+    public let reverse: Bool
+    public let wPromo: Bool?
+
+    public init(
+        firstEdition: Bool,
+        holo: Bool,
+        normal: Bool,
+        reverse: Bool,
+        wPromo: Bool? = nil
+    ) {
+        self.firstEdition = firstEdition
+        self.holo = holo
+        self.normal = normal
+        self.reverse = reverse
+        self.wPromo = wPromo
+    }
+}
+
+/// Only the detailed-variant fields that can affect checklist expansion are
+/// retained. Pricing and marketplace identifiers are intentionally excluded.
+public struct PokemonCatalogProviderDetailedVariant: Codable, Equatable, Hashable, Sendable {
+    public let type: String?
+    public let subtype: String?
+    public let stamp: [String]?
+    public let foil: String?
+    public let size: String?
+    public let variantID: String?
+    public let languages: [String]?
+
+    public init(
+        type: String?,
+        subtype: String?,
+        stamp: [String]?,
+        foil: String?,
+        size: String?,
+        variantID: String?,
+        languages: [String]?
+    ) {
+        self.type = type
+        self.subtype = subtype
+        self.stamp = stamp
+        self.foil = foil
+        self.size = size
+        self.variantID = variantID
+        self.languages = languages
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case type, subtype, stamp, foil, size
+        case variantID = "variantId"
+        case languages
+    }
+}
+
 public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
     public let id: String
     public let name: String
@@ -173,19 +233,25 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
     public let name: String
     public let image: String?
     public let setID: String?
+    public let variants: PokemonCatalogProviderVariants?
+    public let variantsDetailed: [PokemonCatalogProviderDetailedVariant]?
 
     public init(
         id: String,
         localID: String,
         name: String,
         image: String? = nil,
-        setID: String? = nil
+        setID: String? = nil,
+        variants: PokemonCatalogProviderVariants? = nil,
+        variantsDetailed: [PokemonCatalogProviderDetailedVariant]? = nil
     ) {
         self.id = id
         self.localID = localID
         self.name = name
         self.image = image
         self.setID = setID
+        self.variants = variants
+        self.variantsDetailed = variantsDetailed
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -195,6 +261,8 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         case image
         case setID
         case set
+        case variants
+        case variantsDetailed = "variants_detailed"
     }
 
     private struct SetReference: Decodable {
@@ -213,6 +281,14 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         }
         setID = try container.decodeIfPresent(String.self, forKey: .setID)
             ?? (try? container.decode(SetReference.self, forKey: .set))?.id
+        variants = try container.decodeIfPresent(
+            PokemonCatalogProviderVariants.self,
+            forKey: .variants
+        )
+        variantsDetailed = try container.decodeIfPresent(
+            [PokemonCatalogProviderDetailedVariant].self,
+            forKey: .variantsDetailed
+        )
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -222,6 +298,8 @@ public struct PokemonCatalogProviderCard: Codable, Equatable, Sendable {
         try container.encode(name, forKey: .name)
         try container.encodeIfPresent(image, forKey: .image)
         try container.encodeIfPresent(setID, forKey: .setID)
+        try container.encodeIfPresent(variants, forKey: .variants)
+        try container.encodeIfPresent(variantsDetailed, forKey: .variantsDetailed)
     }
 }
 
@@ -261,6 +339,10 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
     public let scanEnabled: Bool
     public let logoURL: String?
     public let symbolURL: String?
+    /// Manual, protected relationship used when a provider gallery set has no
+    /// usable artwork of its own. The publisher resolves the parent's final
+    /// artwork URL before it enters the signed descriptor.
+    public let parentProviderSetID: String?
     public let rulesVersion: Int
     public let membershipRecognition: PokemonCatalogMembershipRecognition?
 
@@ -278,6 +360,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         scanEnabled: Bool = true,
         logoURL: String? = nil,
         symbolURL: String? = nil,
+        parentProviderSetID: String? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
         membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
@@ -294,6 +377,7 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         self.scanEnabled = scanEnabled
         self.logoURL = logoURL
         self.symbolURL = symbolURL
+        self.parentProviderSetID = parentProviderSetID
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
     }

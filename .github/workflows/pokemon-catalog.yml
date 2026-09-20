@@ -54,6 +54,9 @@ jobs:
     needs: validate
     outputs:
       has_changes: ${{ steps.prepare.outputs.has_changes }}
+      requires_approval: ${{ steps.prepare.outputs.requires_approval }}
+      publish_environment: ${{ steps.prepare.outputs.publish_environment }}
+      change_class: ${{ steps.prepare.outputs.change_class }}
       candidate_manifest_sha256: ${{ steps.candidate_manifest.outputs.sha256 }}
     if: >-
       github.event_name == 'schedule' ||
@@ -94,12 +97,46 @@ jobs:
             --live true \
             --candidate-root publisher/candidate \
             --report publisher/reports/production.json
-      - name: Render the candidate review summary
+      - name: Classify the production candidate
+        id: prepare
         run: |
+          change_class="$(jq -r '.changeClass // "unknown"' publisher/reports/production.json)"
+          case "$change_class" in
+            none)
+              has_changes="false"
+              requires_approval="false"
+              publish_environment=""
+              ;;
+            contentOnly)
+              has_changes="true"
+              requires_approval="false"
+              publish_environment="pokemon-catalog-production-auto"
+              ;;
+            baselineMigration|authority|newSet|unknown)
+              has_changes="true"
+              requires_approval="true"
+              publish_environment="pokemon-catalog-production"
+              ;;
+            *)
+              echo "Unknown catalog change class: $change_class" >&2
+              exit 1
+              ;;
+          esac
+
+          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+          echo "requires_approval=$requires_approval" >> "$GITHUB_OUTPUT"
+          echo "publish_environment=$publish_environment" >> "$GITHUB_OUTPUT"
+          echo "change_class=$change_class" >> "$GITHUB_OUTPUT"
+          echo "Catalog candidate changes: $has_changes"
+          echo "Catalog change class: $change_class"
+          echo "Catalog authority approval required: $requires_approval"
+          echo "Catalog publish environment: $publish_environment"
           {
             echo "## Pokémon catalog production candidate"
-            jq -r '"- Revision: \(.revision)", "- Added: \(.addedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Changed: \(.changedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Excluded: \(.excludedProviderSetIDs | if length == 0 then "none" else join(", ") end)"' \
+            jq -r '"- Revision: \(.revision)", "- Change class: \(.changeClass)", "- Added: \(.addedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Content: \(.contentChangedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Authority: \(.authorityChangedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Baseline: \(.baselineFingerprintProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Excluded: \(.excludedProviderSetIDs | if length == 0 then "none" else join(", ") end)"' \
               publisher/reports/production.json
+            echo "- Approval required: $requires_approval"
+            echo "- Publish environment: $publish_environment"
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Create the candidate SHA-256 manifest
         id: candidate_manifest
@@ -115,13 +152,6 @@ jobs:
           )
           manifest_sha256="$(shasum -a 256 publisher/reports/production-manifest.sha256 | awk '{print $1}')"
           echo "sha256=$manifest_sha256" >> "$GITHUB_OUTPUT"
-      - name: Determine whether production approval is needed
-        id: prepare
-        run: |
-          has_changes="$(jq -r '((.addedProviderSetIDs | length) > 0) or ((.changedProviderSetIDs | length) > 0)' \
-            publisher/reports/production.json)"
-          echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
-          echo "Catalog candidate changes: $has_changes"
       - name: Upload the validated production candidate
         id: upload-candidate
         uses: actions/upload-artifact@v4
@@ -140,9 +170,10 @@ jobs:
     if: >-
       needs.prepare-production.outputs.has_changes == 'true'
     runs-on: macos-14
-    environment: pokemon-catalog-production
+    environment:
+      name: ${{ needs.prepare-production.outputs.publish_environment }}
     env:
-      GITHUB_ENVIRONMENT: pokemon-catalog-production
+      GITHUB_ENVIRONMENT: ${{ needs.prepare-production.outputs.publish_environment }}
       POKEMON_CATALOG_PUBLISH: "true"
       POKEMON_CATALOG_SIGNING_KEY: ${{ secrets.POKEMON_CATALOG_SIGNING_KEY }}
       POKEMON_CATALOG_KEY_ID: ${{ secrets.POKEMON_CATALOG_KEY_ID }}
@@ -212,6 +243,7 @@ jobs:
             --candidate-root publisher/candidate \
             --site-root publisher/site \
             --environment production \
+            --change-class "${{ needs.prepare-production.outputs.change_class }}" \
             "${active_args[@]}" \
             --report publisher/reports/production.json
       - name: Retain the production review report

@@ -7,6 +7,9 @@ import Foundation
 /// therefore verify a release in its normal runtime while the macOS publisher
 /// and CI use the same bytes and validation rules.
 public enum PokemonCatalogCoreContract {
+    // Keep additive provider metadata in schema 1. The installed remote-
+    // authority client is intentionally strict about the release version, but
+    // Codable safely ignores fields it does not know yet.
     public static let releaseSchemaVersion = 1
     public static let snapshotSchemaVersion = 1
     public static let rulesVersion = 1
@@ -84,6 +87,13 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     }
 
     public let providerSetID: String
+    /// Canonical provider content consumed by the checklist materializer.
+    /// `nil` is meaningful: a legacy schema-1 release predates signed
+    /// provider fingerprints and must not be treated as an empty target.
+    public let providerFingerprint: String?
+    /// Optional publisher-resolved artwork relationship. This is protected
+    /// configuration, not an automatic provider-content field.
+    public let parentProviderSetID: String?
     public let displayName: String?
     public let releaseDate: String?
     public let releaseOrder: Int?
@@ -116,10 +126,14 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         scanEnabled: Bool,
         logoURL: String?,
         symbolURL: String?,
+        providerFingerprint: String? = nil,
+        parentProviderSetID: String? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
         membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
         self.providerSetID = providerSetID
+        self.providerFingerprint = providerFingerprint
+        self.parentProviderSetID = parentProviderSetID
         self.displayName = displayName
         self.releaseDate = releaseDate
         self.releaseOrder = releaseOrder
@@ -134,6 +148,82 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         self.symbolURL = symbolURL
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case providerSetID
+        case providerFingerprint
+        case parentProviderSetID
+        case displayName
+        case releaseDate
+        case releaseOrder
+        case recognitionKind
+        case printedCode
+        case officialCount
+        case printedPrefix
+        case catalogLocalIDPrefix
+        case localIDPadWidth
+        case scanEnabled
+        case logoURL
+        case symbolURL
+        case rulesVersion
+        case membershipRecognition
+    }
+
+    /// The optional fingerprint is additive within schema 1. A legacy
+    /// descriptor that predates the field decodes with `nil`, which lets the
+    /// publisher establish the first baseline without making the installed
+    /// schema-1 client reject the release.
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        providerSetID = try container.decode(String.self, forKey: .providerSetID)
+        providerFingerprint = try container.decodeIfPresent(String.self, forKey: .providerFingerprint)
+        parentProviderSetID = try container.decodeIfPresent(String.self, forKey: .parentProviderSetID)
+        displayName = try container.decodeIfPresent(String.self, forKey: .displayName)
+        releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
+        releaseOrder = try container.decodeIfPresent(Int.self, forKey: .releaseOrder)
+        recognitionKind = try container.decode(
+            RecognitionKind.self,
+            forKey: .recognitionKind
+        )
+        printedCode = try container.decodeIfPresent(String.self, forKey: .printedCode)
+        officialCount = try container.decodeIfPresent(Int.self, forKey: .officialCount)
+        printedPrefix = try container.decodeIfPresent(String.self, forKey: .printedPrefix)
+        catalogLocalIDPrefix = try container.decodeIfPresent(
+            String.self,
+            forKey: .catalogLocalIDPrefix
+        )
+        localIDPadWidth = try container.decodeIfPresent(Int.self, forKey: .localIDPadWidth)
+        scanEnabled = try container.decode(Bool.self, forKey: .scanEnabled)
+        logoURL = try container.decodeIfPresent(String.self, forKey: .logoURL)
+        symbolURL = try container.decodeIfPresent(String.self, forKey: .symbolURL)
+        rulesVersion = try container.decode(Int.self, forKey: .rulesVersion)
+        membershipRecognition = try container.decodeIfPresent(
+            PokemonCatalogMembershipRecognition.self,
+            forKey: .membershipRecognition
+        )
+    }
+
+    public func withProviderFingerprint(_ providerFingerprint: String?) -> PokemonCatalogSetDescriptor {
+        PokemonCatalogSetDescriptor(
+            providerSetID: providerSetID,
+            displayName: displayName,
+            releaseDate: releaseDate,
+            releaseOrder: releaseOrder,
+            recognitionKind: recognitionKind,
+            printedCode: printedCode,
+            officialCount: officialCount,
+            printedPrefix: printedPrefix,
+            catalogLocalIDPrefix: catalogLocalIDPrefix,
+            localIDPadWidth: localIDPadWidth,
+            scanEnabled: scanEnabled,
+            logoURL: logoURL,
+            symbolURL: symbolURL,
+            providerFingerprint: providerFingerprint,
+            parentProviderSetID: parentProviderSetID,
+            rulesVersion: rulesVersion,
+            membershipRecognition: membershipRecognition
+        )
     }
 
     public func catalogLocalID(number: Int) -> String? {
@@ -229,7 +319,8 @@ public enum PokemonCatalogSignatureVerifier {
         currentRevision: Int? = nil,
         now: Date = Date(),
         maxFutureSkew: TimeInterval = 3600,
-        keys: [PinnedKey]
+        keys: [PinnedKey],
+        allowPreviousSchemaVersion: Bool = false
     ) throws -> PokemonCatalogRelease {
         guard let publicKey = keys.first(where: { $0.id == envelope.keyID })?.publicKey else {
             throw PokemonCatalogSignatureError.unknownKeyID(envelope.keyID)
@@ -251,7 +342,10 @@ public enum PokemonCatalogSignatureVerifier {
             throw PokemonCatalogSignatureError.payloadDecodeFailed(String(describing: error))
         }
 
-        guard release.schemaVersion == PokemonCatalogRelease.currentSchemaVersion else {
+        let supportsSchema = release.schemaVersion == PokemonCatalogRelease.currentSchemaVersion
+            || (allowPreviousSchemaVersion
+                && release.schemaVersion == PokemonCatalogRelease.currentSchemaVersion - 1)
+        guard supportsSchema else {
             throw PokemonCatalogSignatureError.unsupportedSchemaVersion(release.schemaVersion)
         }
         if let currentRevision {

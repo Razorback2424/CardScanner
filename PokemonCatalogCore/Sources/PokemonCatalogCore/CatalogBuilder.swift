@@ -86,6 +86,10 @@ public struct PokemonCatalogReviewReport: Codable, Equatable, Sendable {
     public let generatedAt: Date
     public let addedProviderSetIDs: [String]
     public let changedProviderSetIDs: [String]
+    public let contentChangedProviderSetIDs: [String]
+    public let authorityChangedProviderSetIDs: [String]
+    public let baselineFingerprintProviderSetIDs: [String]
+    public let changeClass: PokemonCatalogChangeClass
     public let excludedProviderSetIDs: [String]
     public let sets: [PokemonCatalogSetReview]
 
@@ -95,6 +99,10 @@ public struct PokemonCatalogReviewReport: Codable, Equatable, Sendable {
         generatedAt: Date,
         addedProviderSetIDs: [String],
         changedProviderSetIDs: [String],
+        contentChangedProviderSetIDs: [String] = [],
+        authorityChangedProviderSetIDs: [String] = [],
+        baselineFingerprintProviderSetIDs: [String] = [],
+        changeClass: PokemonCatalogChangeClass = .none,
         excludedProviderSetIDs: [String],
         sets: [PokemonCatalogSetReview]
     ) {
@@ -103,8 +111,47 @@ public struct PokemonCatalogReviewReport: Codable, Equatable, Sendable {
         self.generatedAt = generatedAt
         self.addedProviderSetIDs = addedProviderSetIDs
         self.changedProviderSetIDs = changedProviderSetIDs
+        self.contentChangedProviderSetIDs = contentChangedProviderSetIDs
+        self.authorityChangedProviderSetIDs = authorityChangedProviderSetIDs
+        self.baselineFingerprintProviderSetIDs = baselineFingerprintProviderSetIDs
+        self.changeClass = changeClass
         self.excludedProviderSetIDs = excludedProviderSetIDs
         self.sets = sets
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case schemaVersion, revision, generatedAt
+        case addedProviderSetIDs, changedProviderSetIDs
+        case contentChangedProviderSetIDs, authorityChangedProviderSetIDs
+        case baselineFingerprintProviderSetIDs, changeClass
+        case excludedProviderSetIDs, sets
+    }
+
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        schemaVersion = try values.decode(Int.self, forKey: .schemaVersion)
+        revision = try values.decode(Int.self, forKey: .revision)
+        generatedAt = try values.decode(Date.self, forKey: .generatedAt)
+        addedProviderSetIDs = try values.decode([String].self, forKey: .addedProviderSetIDs)
+        changedProviderSetIDs = try values.decode([String].self, forKey: .changedProviderSetIDs)
+        contentChangedProviderSetIDs = try values.decodeIfPresent(
+            [String].self,
+            forKey: .contentChangedProviderSetIDs
+        ) ?? []
+        authorityChangedProviderSetIDs = try values.decodeIfPresent(
+            [String].self,
+            forKey: .authorityChangedProviderSetIDs
+        ) ?? []
+        baselineFingerprintProviderSetIDs = try values.decodeIfPresent(
+            [String].self,
+            forKey: .baselineFingerprintProviderSetIDs
+        ) ?? []
+        changeClass = try values.decodeIfPresent(
+            PokemonCatalogChangeClass.self,
+            forKey: .changeClass
+        ) ?? .unknown
+        excludedProviderSetIDs = try values.decode([String].self, forKey: .excludedProviderSetIDs)
+        sets = try values.decode([PokemonCatalogSetReview].self, forKey: .sets)
     }
 }
 
@@ -137,6 +184,7 @@ public enum PokemonCatalogBuildError: Error, CustomStringConvertible, Sendable {
     case duplicateProviderSet(String)
     case missingProviderSet(String)
     case missingActiveExpansion(String)
+    case invalidParentProviderSetID(child: String, parent: String)
     case providerSetIDMismatch(expected: String, received: String)
     case duplicateProviderCard(setID: String, cardID: String)
     case missingCardDetail(setID: String, cardID: String)
@@ -175,6 +223,8 @@ public enum PokemonCatalogBuildError: Error, CustomStringConvertible, Sendable {
         case .missingProviderSet(let id): return "Provider set details are missing for \(id)"
         case .missingActiveExpansion(let id):
             return "Active expansion \(id) disappeared from the provider directory"
+        case let .invalidParentProviderSetID(child, parent):
+            return "Invalid parent artwork relationship for \(child): \(parent)"
         case let .providerSetIDMismatch(expected, received):
             return "Provider set ID mismatch: expected \(expected), received \(received)"
         case let .duplicateProviderCard(setID, cardID):
@@ -246,8 +296,6 @@ public struct PokemonCatalogBuilder: Sendable {
         var entries: [PokemonCatalogSnapshotEntry] = []
         var checklists: [String: [PokemonCatalogCardSummary]] = [:]
         var setReviews: [PokemonCatalogSetReview] = []
-        var added: [String] = []
-        var changed: [String] = []
         var totalCards = 0
         let directoryIDs = Set(directory.map { $0.id.lowercased() })
 
@@ -264,21 +312,24 @@ public struct PokemonCatalogBuilder: Sendable {
             }
 
             let existing = activeByID[providerID]
-            let descriptor = try makeDescriptor(
+            let descriptorWithoutFingerprint = try makeDescriptor(
                 row: row,
                 providerSet: providerSet,
                 existing: existing,
                 humanInput: inputByID[providerID],
-                assignedReleaseOrder: automaticReleaseOrders[providerID]
+                assignedReleaseOrder: automaticReleaseOrders[providerID],
+                providerSets: providerSets,
+                activeByID: activeByID
             )
-            try validateArtwork(descriptor)
+            try validateArtwork(descriptorWithoutFingerprint)
 
             let (fingerprint, summaries) = try buildChecklist(
                 row: row,
                 providerSet: providerSet,
                 providerCards: providerCards,
-                descriptor: descriptor
+                descriptor: descriptorWithoutFingerprint
             )
+            let descriptor = descriptorWithoutFingerprint.withProviderFingerprint(fingerprint)
             totalCards += summaries.count
             guard totalCards <= configuration.maxTotalCards else {
                 throw PokemonCatalogBuildError.tooManyTotalCards(totalCards)
@@ -312,11 +363,6 @@ public struct PokemonCatalogBuilder: Sendable {
                     status: existing == nil ? "added" : "verified"
                 )
             )
-            if existing == nil {
-                added.append(providerID)
-            } else if existing != descriptor {
-                changed.append(providerID)
-            }
         }
 
         // Promo and explicitly non-scannable entries may not appear in the
@@ -329,7 +375,6 @@ public struct PokemonCatalogBuilder: Sendable {
                 throw PokemonCatalogBuildError.missingActiveExpansion(existing.providerSetID)
             }
             descriptors.append(existing)
-            changed.removeAll { $0 == id }
         }
 
         let knownIDs = Set(directory.map { $0.id.lowercased() })
@@ -357,11 +402,19 @@ public struct PokemonCatalogBuilder: Sendable {
             entries: sortedEntries,
             checklists: checklists
         )
+        let classification = PokemonCatalogChangeClassifier.classify(
+            previousRelease: request.activeRelease,
+            currentRelease: release
+        )
         let report = PokemonCatalogReviewReport(
             revision: request.revision,
             generatedAt: request.generatedAt,
-            addedProviderSetIDs: added.sorted(),
-            changedProviderSetIDs: changed.sorted(),
+            addedProviderSetIDs: classification.addedProviderSetIDs,
+            changedProviderSetIDs: classification.changedProviderSetIDs,
+            contentChangedProviderSetIDs: classification.contentChangedProviderSetIDs,
+            authorityChangedProviderSetIDs: classification.authorityChangedProviderSetIDs,
+            baselineFingerprintProviderSetIDs: classification.baselineFingerprintProviderSetIDs,
+            changeClass: classification.changeClass,
             excludedProviderSetIDs: request.fixture.directory
                 .filter(\.isUnsupportedProduct)
                 .map { $0.id.lowercased() }
@@ -467,7 +520,9 @@ public struct PokemonCatalogBuilder: Sendable {
         providerSet: PokemonCatalogProviderSet,
         existing: PokemonCatalogSetDescriptor?,
         humanInput: PokemonCatalogHumanInput?,
-        assignedReleaseOrder: Int?
+        assignedReleaseOrder: Int?,
+        providerSets: [String: PokemonCatalogProviderSet],
+        activeByID: [String: PokemonCatalogSetDescriptor]
     ) throws -> PokemonCatalogSetDescriptor {
         if let humanInput,
            humanInput.providerSetID.caseInsensitiveCompare(row.id) != .orderedSame {
@@ -482,6 +537,23 @@ public struct PokemonCatalogBuilder: Sendable {
         let providerReleaseDate = providerSet.releaseDate ?? row.releaseDate
         let providerLogo = nonEmpty(providerSet.logo) ?? nonEmpty(row.logo)
         let providerSymbol = nonEmpty(providerSet.symbol) ?? nonEmpty(row.symbol)
+        let configuredParentID = normalizedParentProviderSetID(
+            humanInput?.parentProviderSetID
+        )
+        let parentProviderSetID = configuredParentID
+            ?? existing.flatMap { normalizedParentProviderSetID($0.parentProviderSetID) }
+        if let parentProviderSetID,
+           parentProviderSetID == row.id.lowercased() {
+            throw PokemonCatalogBuildError.invalidParentProviderSetID(
+                child: row.id,
+                parent: parentProviderSetID
+            )
+        }
+        let parentArtwork = parentArtwork(
+            parentProviderSetID: parentProviderSetID,
+            providerSets: providerSets,
+            activeByID: activeByID
+        )
 
         if let existing {
             if existing.recognitionKind == .expansion,
@@ -519,8 +591,16 @@ public struct PokemonCatalogBuilder: Sendable {
                 catalogLocalIDPrefix: existing.catalogLocalIDPrefix,
                 localIDPadWidth: existing.localIDPadWidth,
                 scanEnabled: existing.scanEnabled,
-                logoURL: humanInput?.logoURL ?? providerLogo ?? existing.logoURL,
-                symbolURL: humanInput?.symbolURL ?? providerSymbol ?? existing.symbolURL,
+                logoURL: humanInput?.logoURL
+                    ?? providerLogo
+                    ?? parentArtwork.logo
+                    ?? existing.logoURL,
+                symbolURL: humanInput?.symbolURL
+                    ?? providerSymbol
+                    ?? parentArtwork.symbol
+                    ?? existing.symbolURL,
+                providerFingerprint: existing.providerFingerprint,
+                parentProviderSetID: parentProviderSetID,
                 rulesVersion: existing.rulesVersion,
                 membershipRecognition: existing.membershipRecognition
             )
@@ -567,8 +647,9 @@ public struct PokemonCatalogBuilder: Sendable {
                     catalogLocalIDPrefix: nil,
                     localIDPadWidth: nil,
                     scanEnabled: humanInput.scanEnabled,
-                    logoURL: humanInput.logoURL ?? providerLogo,
-                    symbolURL: humanInput.symbolURL ?? providerSymbol,
+                    logoURL: humanInput.logoURL ?? providerLogo ?? parentArtwork.logo,
+                    symbolURL: humanInput.symbolURL ?? providerSymbol ?? parentArtwork.symbol,
+                    parentProviderSetID: parentProviderSetID,
                     rulesVersion: humanInput.rulesVersion,
                     membershipRecognition: humanInput.membershipRecognition
                 )
@@ -590,8 +671,9 @@ public struct PokemonCatalogBuilder: Sendable {
                     catalogLocalIDPrefix: humanInput.catalogLocalIDPrefix?.uppercased(),
                     localIDPadWidth: humanInput.localIDPadWidth,
                     scanEnabled: humanInput.scanEnabled,
-                    logoURL: humanInput.logoURL ?? providerLogo,
-                    symbolURL: humanInput.symbolURL ?? providerSymbol,
+                    logoURL: humanInput.logoURL ?? providerLogo ?? parentArtwork.logo,
+                    symbolURL: humanInput.symbolURL ?? providerSymbol ?? parentArtwork.symbol,
+                    parentProviderSetID: parentProviderSetID,
                     rulesVersion: humanInput.rulesVersion,
                     membershipRecognition: humanInput.membershipRecognition
                 )
@@ -633,8 +715,30 @@ public struct PokemonCatalogBuilder: Sendable {
             scanEnabled: true,
             logoURL: providerLogo,
             symbolURL: providerSymbol,
+            parentProviderSetID: parentProviderSetID,
             rulesVersion: PokemonCatalogCoreContract.rulesVersion
         )
+    }
+
+    private func normalizedParentProviderSetID(_ value: String?) -> String? {
+        guard let value else { return nil }
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return normalized.isEmpty ? nil : normalized
+    }
+
+    private func parentArtwork(
+        parentProviderSetID: String?,
+        providerSets: [String: PokemonCatalogProviderSet],
+        activeByID: [String: PokemonCatalogSetDescriptor]
+    ) -> (logo: String?, symbol: String?) {
+        guard let parentProviderSetID else { return (nil, nil) }
+        if let provider = providerSets[parentProviderSetID] {
+            return (nonEmpty(provider.logo), nonEmpty(provider.symbol))
+        }
+        if let descriptor = activeByID[parentProviderSetID] {
+            return (nonEmpty(descriptor.logoURL), nonEmpty(descriptor.symbolURL))
+        }
+        return (nil, nil)
     }
 
     private func normalizedExpansionCode(_ value: String?) -> String? {
@@ -709,15 +813,6 @@ public struct PokemonCatalogBuilder: Sendable {
 
         var briefIDs = Set<String>()
         var summaries: [PokemonCatalogCardSummary] = []
-        var fingerprintParts: [String] = [
-            providerSet.id,
-            providerSet.name,
-            providerSet.logo ?? "",
-            providerSet.symbol ?? "",
-            providerSet.releaseDate ?? "",
-            String(providerCount ?? -1)
-        ]
-
         for brief in providerSet.cards {
             let cardKey = brief.id.lowercased()
             guard briefIDs.insert(cardKey).inserted else {
@@ -747,40 +842,35 @@ public struct PokemonCatalogBuilder: Sendable {
                     received: setID
                 )
             }
-            guard !card.localID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                  !card.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            guard !brief.localID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                  !brief.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
                 throw PokemonCatalogBuildError.invalidCard(
                     setID: row.id,
                     cardID: card.id,
                     reason: "stable local ID and name are required"
                 )
             }
-            if let image = card.image { try validateURL(image) }
-            fingerprintParts += [card.id, card.localID, card.name, card.image ?? ""]
+            if let image = brief.image { try validateURL(image) }
             summaries.append(
                 PokemonCatalogCardSummary(
-                    providerCardID: card.id,
-                    localID: card.localID,
-                    name: card.name,
-                    imageURL: card.image
+                    providerCardID: brief.id,
+                    localID: brief.localID,
+                    name: brief.name,
+                    imageURL: brief.image
                 )
             )
         }
         summaries.sort {
             ($0.localID, $0.providerCardID) < ($1.localID, $1.providerCardID)
         }
-        fingerprintParts = [
-            providerSet.id,
-            providerSet.name,
-            providerSet.logo ?? "",
-            providerSet.symbol ?? "",
-            providerSet.releaseDate ?? "",
-            String(providerCount ?? -1)
-        ] + summaries.flatMap {
-            [$0.providerCardID, $0.localID, $0.name, $0.imageURL ?? ""]
+        guard let providerFingerprint = PokemonCatalogProviderFingerprint.v1(
+            providerSet: providerSet,
+            cardDetails: providerCards
+        ) else {
+            throw PokemonCatalogBuildError.invalidProviderFingerprint(row.id)
         }
         return (
-            PokemonCatalogFingerprint.string(fingerprintParts.joined(separator: "\u{1F}")),
+            providerFingerprint,
             summaries
         )
     }

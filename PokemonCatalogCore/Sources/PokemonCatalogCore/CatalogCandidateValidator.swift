@@ -166,6 +166,7 @@ public enum PokemonCatalogCandidateValidator {
             guard entry.printedCode == (descriptor.printedCode ?? descriptor.printedPrefix),
                   entry.officialCount == descriptor.officialCount,
                   entry.releaseOrder == descriptor.releaseOrder,
+                  descriptor.providerFingerprint == entry.providerFingerprint,
                   entry.resource == "sets/\(id)-\(entry.providerFingerprint).json" else {
                 throw PokemonCatalogCandidateValidationError.snapshotEntriesDoNotMatchRelease
             }
@@ -193,6 +194,12 @@ public enum PokemonCatalogCandidateValidator {
         guard build.report.addedProviderSetIDs.allSatisfy({
             reportIDs.contains($0)
         }), build.report.changedProviderSetIDs.allSatisfy({
+            reportIDs.contains($0)
+        }), build.report.contentChangedProviderSetIDs.allSatisfy({
+            reportIDs.contains($0)
+        }), build.report.authorityChangedProviderSetIDs.allSatisfy({
+            reportIDs.contains($0)
+        }), build.report.baselineFingerprintProviderSetIDs.allSatisfy({
             reportIDs.contains($0)
         }) else {
             throw PokemonCatalogCandidateValidationError.reportReferencesUnknownSet(

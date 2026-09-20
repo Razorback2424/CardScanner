@@ -141,10 +141,15 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
     }
 
     public func fetchFixture(
-        authorizedSetIDs: Set<String>? = nil
+        authorizedSetIDs: Set<String>? = nil,
+        additionalSetIDs: Set<String> = []
     ) async throws -> PokemonCatalogProviderFixture {
         let rows = try await fetchDirectory()
-        return try await fetchFixture(directory: rows, authorizedSetIDs: authorizedSetIDs)
+        return try await fetchFixture(
+            directory: rows,
+            authorizedSetIDs: authorizedSetIDs,
+            additionalSetIDs: additionalSetIDs
+        )
     }
 
     /// Builds a fixture from a previously fetched directory. Only the
@@ -152,14 +157,21 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
     /// the only downstream scanner authority.
     public func fetchFixture(
         directory: [PokemonCatalogProviderDirectoryRow],
-        authorizedSetIDs: Set<String>? = nil
+        authorizedSetIDs: Set<String>? = nil,
+        additionalSetIDs: Set<String> = []
     ) async throws -> PokemonCatalogProviderFixture {
         let authorizedKeys = authorizedSetIDs.map { Set($0.map { $0.lowercased() }) }
         let scopedRows = directory.filter { row in
             guard let authorizedKeys else { return true }
             return authorizedKeys.contains(row.id.lowercased())
         }
-        let supportedRows = scopedRows.filter { !$0.isUnsupportedProduct }
+        let scopedKeys = Set(scopedRows.map { $0.id.lowercased() })
+        let supportingKeys = Set(additionalSetIDs.map { $0.lowercased() })
+        let fetchRows = directory.filter { row in
+            scopedKeys.contains(row.id.lowercased())
+                || supportingKeys.contains(row.id.lowercased())
+        }
+        let supportedRows = fetchRows.filter { !$0.isUnsupportedProduct }
         let sets = try await mapBounded(
             supportedRows,
             limit: setConcurrency
@@ -173,7 +185,10 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
                 directorySymbol: row.symbol
             )
         }
-        let briefs = sets.flatMap(\.cards)
+        let materializedKeys = Set(scopedRows.map { $0.id.lowercased() })
+        let briefs = sets
+            .filter { materializedKeys.contains($0.id.lowercased()) }
+            .flatMap(\.cards)
         let uniqueBriefs = Dictionary(
             briefs.map { ($0.id.lowercased(), $0) },
             uniquingKeysWith: { first, _ in first }
