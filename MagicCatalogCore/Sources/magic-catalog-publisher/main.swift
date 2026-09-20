@@ -48,12 +48,36 @@ struct MagicCatalogPublisherMain {
                     "publish requires --environment production|staging --site-root PATH --candidate-root PATH"
                 )
             }
+            let requestedChangeClass = try parseChangeClass(options.value("--change-class"))
+            guard let requestedChangeClass else {
+                throw CLIError.message("--change-class is required for publish")
+            }
             let activeRelease = try loadActiveRelease(options: options)
             let result = try loadCandidate(
                 rootPath: candidateRootRaw,
-                activeRevision: activeRelease?.revision
+                activeRelease: activeRelease
             )
-            let material = try MagicCatalogSigningKeyLoader.load(environment: environment)
+            let expectedSurfaceDiff = MagicCatalogChangeClassifier.surfaceDiff(
+                previousRelease: activeRelease,
+                currentRelease: result.release
+            )
+            let expectedClassification = MagicCatalogChangeClassifier.classify(
+                previousRelease: activeRelease,
+                currentRelease: result.release,
+                surfaceDiff: expectedSurfaceDiff
+            )
+            let recomputedChangeClass = try MagicCatalogCandidateValidator.bindPublicationClass(
+                requestedChangeClass: requestedChangeClass,
+                report: result.report,
+                recomputedClassification: expectedClassification
+            )
+            guard recomputedChangeClass != .none else {
+                throw CLIError.message("cannot publish a candidate with change class none")
+            }
+            let material = try MagicCatalogSigningKeyLoader.load(
+                environment: environment,
+                changeClass: recomputedChangeClass
+            )
             let signed = try MagicCatalogSigner.sign(
                 result,
                 privateKey: material.privateKey,
@@ -76,6 +100,9 @@ struct MagicCatalogPublisherMain {
 
     private static func build(options: CLIOptions) async throws -> MagicCatalogBuildResult {
         let activeRelease = try loadActiveRelease(options: options)
+        let authorizedRemovalCodes = try parseRemovalCodes(
+            options.value("--allow-removal-codes")
+        )
         let generatedAt = options.value("--generated-at") ?? MagicCatalogDate.formatTimestamp(Date())
         guard MagicCatalogDate.parseTimestamp(generatedAt) != nil else {
             throw CLIError.message("--generated-at must be an ISO-8601 timestamp")
@@ -98,7 +125,8 @@ struct MagicCatalogPublisherMain {
                 fixture: fixture,
                 activeRelease: activeRelease,
                 revision: revision,
-                generatedAt: generatedAt
+                generatedAt: generatedAt,
+                authorizedRemovalCodes: authorizedRemovalCodes
             )
         )
     }
@@ -121,6 +149,18 @@ struct MagicCatalogPublisherMain {
             throw CLIError.message("a trusted key file is required to verify a Magic release")
         }
         return try MagicCatalogSignatureVerifier.verify(envelope: envelope, keys: keys)
+    }
+
+    private static func parseChangeClass(
+        _ raw: String?
+    ) throws -> MagicCatalogChangeClass? {
+        guard let raw else { return nil }
+        guard let changeClass = MagicCatalogChangeClass(rawValue: raw) else {
+            throw CLIError.message(
+                "--change-class must be none, contentOnly, authority, newSet, or unknown"
+            )
+        }
+        return changeClass
     }
 
     private static func loadPinnedKeys(path: String?) throws
@@ -186,7 +226,7 @@ struct MagicCatalogPublisherMain {
 
     private static func loadCandidate(
         rootPath: String,
-        activeRevision: Int?
+        activeRelease: MagicCatalogRelease?
     ) throws -> MagicCatalogBuildResult {
         let root = URL(fileURLWithPath: rootPath, isDirectory: true)
         let result = MagicCatalogBuildResult(
@@ -199,7 +239,7 @@ struct MagicCatalogPublisherMain {
                 from: root.appendingPathComponent("review-report.json")
             )
         )
-        try MagicCatalogCandidateValidator.validate(result, activeRevision: activeRevision)
+        try MagicCatalogCandidateValidator.validate(result, activeRelease: activeRelease)
         return result
     }
 
@@ -215,21 +255,44 @@ struct MagicCatalogPublisherMain {
         print("descriptors: \(report.descriptorCount)")
         let added = report.addedCodes.isEmpty ? "none" : report.addedCodes.joined(separator: ", ")
         let changed = report.changedCodes.isEmpty ? "none" : report.changedCodes.joined(separator: ", ")
+        let content = report.contentChangedCodes.isEmpty
+            ? "none"
+            : report.contentChangedCodes.joined(separator: ", ")
+        let authority = report.authorityChangedCodes.isEmpty
+            ? "none"
+            : report.authorityChangedCodes.joined(separator: ", ")
         let removed = report.removedCodes.isEmpty ? "none" : report.removedCodes.joined(separator: ", ")
+        let scanner = report.scannerProjectionChangedCodes.isEmpty
+            ? "none"
+            : report.scannerProjectionChangedCodes.joined(separator: ", ")
+        let browse = report.browseProjectionChangedCodes.isEmpty
+            ? "none"
+            : report.browseProjectionChangedCodes.joined(separator: ", ")
+        let routing = report.routingProjectionChangedCodes.isEmpty
+            ? "none"
+            : report.routingProjectionChangedCodes.joined(separator: ", ")
+        print("change class: \(report.changeClass.rawValue)")
         print("added: \(added)")
         print("changed: \(changed)")
+        print("content: \(content)")
+        print("authority: \(authority)")
         print("removed: \(removed)")
+        print("scanner projection changes: \(scanner)")
+        print("browse projection changes: \(browse)")
+        print("routing projection changes: \(routing)")
+        print("warnings: \(report.warnings.count)")
         print("meaningful changes: \(report.hasMeaningfulChanges)")
     }
 
     private static let usage = """
     magic-catalog-publisher validate [--input PATH | --live true] [--active-release PATH]
         [--trusted-keys-file PATH] [--revision N] [--generated-at ISO8601]
+        [--allow-removal-codes CODE1,CODE2,...]
         [--candidate-root PATH] [--report PATH]
     magic-catalog-publisher verify-release --path PATH --trusted-keys-file PATH
         [--expected-revision N]
     magic-catalog-publisher publish --candidate-root PATH --site-root PATH
-        --environment production|staging [--active-release PATH]
+        --environment production|staging --change-class NAME [--active-release PATH]
     """
 }
 
@@ -249,6 +312,20 @@ private struct CLIOptions {
     }
 
     func value(_ key: String) -> String? { values[key] }
+}
+
+private func parseRemovalCodes(_ raw: String?) throws -> Set<String> {
+    guard let raw else { return [] }
+    guard !raw.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        return []
+    }
+    let values = raw
+        .split(separator: ",", omittingEmptySubsequences: false)
+        .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+    guard !values.contains(where: \.isEmpty) else {
+        throw CLIError.message("--allow-removal-codes contains an empty code entry")
+    }
+    return Set(values.map(MagicCatalogPolicy.normalizedCode))
 }
 
 private enum CLIError: Error, CustomStringConvertible {

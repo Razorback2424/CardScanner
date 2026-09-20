@@ -26,6 +26,11 @@ on:
         required: true
         default: false
         type: boolean
+      allow_removal_codes:
+        description: "Comma-separated active Magic set codes explicitly authorized for removal"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: read
@@ -59,6 +64,9 @@ jobs:
     needs: validate
     outputs:
       has_changes: ${{ steps.prepare.outputs.has_changes }}
+      requires_approval: ${{ steps.prepare.outputs.requires_approval }}
+      publish_environment: ${{ steps.prepare.outputs.publish_environment }}
+      change_class: ${{ steps.prepare.outputs.change_class }}
       candidate_manifest_sha256: ${{ steps.candidate_manifest.outputs.sha256 }}
     if: >-
       github.event_name == 'schedule' ||
@@ -96,19 +104,18 @@ jobs:
           if [ -f "$active_path" ]; then
             active_args+=(--active-release "$active_path")
           fi
+          removal_args=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] \
+            && [ -n "${{ inputs.allow_removal_codes }}" ]; then
+            removal_args+=(--allow-removal-codes "${{ inputs.allow_removal_codes }}")
+          fi
           swift run --package-path MagicCatalogCore magic-catalog-publisher validate \
             --live true \
             --trusted-keys-file Config/MagicCatalogProduction.xcconfig \
             --candidate-root magic-publisher/candidate \
             --report magic-publisher/reports/production.json \
-            "${active_args[@]}"
-      - name: Render the candidate review summary
-        run: |
-          {
-            echo "## Magic catalog production candidate"
-            jq -r '"- Revision: \(.revision)", "- Descriptors: \(.descriptorCount)", "- Added: \(.addedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Changed: \(.changedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Removed: \(.removedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Warnings: \(.warnings | length)"' \
-              magic-publisher/reports/production.json
-          } >> "$GITHUB_STEP_SUMMARY"
+            "${active_args[@]}" \
+            "${removal_args[@]}"
       - name: Create the candidate SHA-256 manifest
         id: candidate_manifest
         run: |
@@ -122,13 +129,47 @@ jobs:
           )
           manifest_sha256="$(shasum -a 256 magic-publisher/reports/production-manifest.sha256 | awk '{print $1}')"
           echo "sha256=$manifest_sha256" >> "$GITHUB_OUTPUT"
-      - name: Determine whether production approval is needed
+      - name: Classify the production candidate
         id: prepare
         run: |
-          has_changes="$(jq -r '((.addedCodes | length) > 0) or ((.changedCodes | length) > 0) or ((.removedCodes | length) > 0)' \
-            magic-publisher/reports/production.json)"
+          change_class="$(jq -r '.changeClass // "unknown"' magic-publisher/reports/production.json)"
+          case "$change_class" in
+            none)
+              has_changes="false"
+              requires_approval="false"
+              publish_environment=""
+              ;;
+            contentOnly)
+              has_changes="true"
+              requires_approval="false"
+              publish_environment="magic-catalog-production-auto"
+              ;;
+            authority|newSet|unknown)
+              has_changes="true"
+              requires_approval="true"
+              publish_environment="magic-catalog-production"
+              ;;
+            *)
+              echo "Unknown Magic catalog change class: $change_class" >&2
+              exit 1
+              ;;
+          esac
+
           echo "has_changes=$has_changes" >> "$GITHUB_OUTPUT"
+          echo "requires_approval=$requires_approval" >> "$GITHUB_OUTPUT"
+          echo "publish_environment=$publish_environment" >> "$GITHUB_OUTPUT"
+          echo "change_class=$change_class" >> "$GITHUB_OUTPUT"
           echo "Magic catalog candidate changes: $has_changes"
+          echo "Magic catalog change class: $change_class"
+          echo "Magic catalog approval required: $requires_approval"
+          echo "Magic catalog publish environment: $publish_environment"
+          {
+            echo "## Magic catalog production candidate"
+            jq -r '"- Revision: \(.revision)", "- Descriptor count: \(.descriptorCount)", "- Change class: \(.changeClass)", "- Added: \(.addedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Content: \(.contentChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Authority: \(.authorityChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Removed: \(.removedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Scanner projection changes: \(.scannerProjectionChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Browse projection changes: \(.browseProjectionChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Routing projection changes: \(.routingProjectionChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Warnings: \(.warnings | length)"' \
+              magic-publisher/reports/production.json
+            echo "- Approval required: $requires_approval"
+            echo "- Publish environment: $publish_environment"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Upload the validated production candidate
         uses: actions/upload-artifact@v4
         with:
@@ -149,11 +190,13 @@ jobs:
       group: scanstash-catalog-production-hosting
       cancel-in-progress: false
     runs-on: macos-14
-    environment: magic-catalog-production
+    environment:
+      name: ${{ needs.prepare-production.outputs.publish_environment }}
     env:
-      GITHUB_ENVIRONMENT: magic-catalog-production
-      MAGIC_CATALOG_SIGNING_KEY: ${{ secrets.POKEMON_CATALOG_SIGNING_KEY }}
-      MAGIC_CATALOG_KEY_ID: ${{ secrets.POKEMON_CATALOG_KEY_ID }}
+      GITHUB_ENVIRONMENT: ${{ needs.prepare-production.outputs.publish_environment }}
+      MAGIC_CATALOG_PUBLISH: "true"
+      MAGIC_CATALOG_SIGNING_KEY: ${{ secrets.MAGIC_CATALOG_SIGNING_KEY }}
+      MAGIC_CATALOG_KEY_ID: ${{ secrets.MAGIC_CATALOG_KEY_ID }}
       FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
       FIREBASE_HOSTING_SITE_ID: ${{ secrets.FIREBASE_HOSTING_SITE_ID }}
@@ -225,16 +268,14 @@ jobs:
           if [ -f "$active_path" ]; then
             active_args+=(--active-release "$active_path")
           fi
-          GITHUB_ENVIRONMENT=magic-catalog-production \
-            MAGIC_CATALOG_SIGNING_KEY="$MAGIC_CATALOG_SIGNING_KEY" \
-            MAGIC_CATALOG_KEY_ID="$MAGIC_CATALOG_KEY_ID" \
-            swift run --package-path MagicCatalogCore magic-catalog-publisher publish \
-              --candidate-root magic-publisher/candidate \
-              --site-root publisher/site \
-              --environment production \
-              --trusted-keys-file Config/MagicCatalogProduction.xcconfig \
-              --report magic-publisher/reports/production.json \
-              "${active_args[@]}"
+          swift run --package-path MagicCatalogCore magic-catalog-publisher publish \
+            --candidate-root magic-publisher/candidate \
+            --site-root publisher/site \
+            --environment production \
+            --change-class "${{ needs.prepare-production.outputs.change_class }}" \
+            --trusted-keys-file Config/MagicCatalogProduction.xcconfig \
+            --report magic-publisher/reports/production.json \
+            "${active_args[@]}"
       - name: Retain the production review report
         if: always()
         uses: actions/upload-artifact@v4
