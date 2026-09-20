@@ -1786,6 +1786,7 @@ private struct CatalogSetCardsView: View {
     @State private var contentGeneration = UUID()
     @State private var visibleGroups: [CatalogCardDisplayGroup] = []
     @State private var priceLoadTask: Task<Void, Never>?
+    @State private var reloadAfterCurrentLoad = false
 
     private func visibleCards(owned: CatalogOwnershipIndex) -> [CatalogCardSummary] {
         CatalogSetQuery.apply(
@@ -1920,6 +1921,18 @@ private struct CatalogSetCardsView: View {
                 )
             }
         }
+        .task(id: set.id) {
+            let updates = await catalog.catalogUpdates()
+            for await update in updates {
+                guard !Task.isCancelled else { return }
+                if let changedProviderSetID = update.providerSetID,
+                   changedProviderSetID.caseInsensitiveCompare(set.providerID)
+                        != .orderedSame {
+                    continue
+                }
+                await requestReload()
+            }
+        }
     }
 
     /// Magic sets showed completion in the set list and then nothing at all on
@@ -1983,7 +1996,13 @@ private struct CatalogSetCardsView: View {
         priceLoadState.invalidate()
         isLoading = true
         defer {
-            if contentGeneration == requestID { isLoading = false }
+            if contentGeneration == requestID {
+                isLoading = false
+                if reloadAfterCurrentLoad {
+                    reloadAfterCurrentLoad = false
+                    Task { await load(reset: true) }
+                }
+            }
         }
         if reset { error = nil; cursor = nil }
         do {
@@ -2008,6 +2027,14 @@ private struct CatalogSetCardsView: View {
             guard contentGeneration == requestID, !Task.isCancelled else { return }
             self.error = error.localizedDescription
         }
+    }
+
+    private func requestReload() async {
+        guard !isLoading else {
+            reloadAfterCurrentLoad = true
+            return
+        }
+        await load(reset: true)
     }
 
     private var shouldPrefetchPrices: Bool {

@@ -17,7 +17,8 @@ private enum SliceBFixture {
         printedCode: String = "TST",
         officialCount: Int = 100,
         releaseOrder: Int = 99,
-        scanEnabled: Bool = true
+        scanEnabled: Bool = true,
+        providerFingerprint: String? = nil
     ) -> PokemonCatalogSetDescriptor {
         PokemonCatalogSetDescriptor(
             providerSetID: providerSetID,
@@ -33,6 +34,7 @@ private enum SliceBFixture {
             scanEnabled: scanEnabled,
             logoURL: nil,
             symbolURL: nil,
+            providerFingerprint: providerFingerprint,
             rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules
         )
     }
@@ -571,6 +573,33 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
             return XCTFail("Expected activated")
         }
         XCTAssertTrue(event.changedOfficialCountSetIDs.contains("sv99"))
+    }
+
+    func testProviderContentChangeDetectedSeparatelyFromAuthority() async throws {
+        let coordinator = PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root),
+            keys: [SliceBFixture.pinnedKey]
+        )
+        await coordinator.loadPersistedOrBundled()
+
+        let release1 = SliceBFixture.release(revision: 1, sets: [
+            SliceBFixture.descriptor(providerFingerprint: "content-a")
+        ])
+        _ = await coordinator.activateEnvelope(
+            try SliceBFixture.signedEnvelope(release: release1)
+        )
+
+        let release2 = SliceBFixture.release(revision: 2, sets: [
+            SliceBFixture.descriptor(providerFingerprint: "content-b")
+        ])
+        let result = await coordinator.activateEnvelope(
+            try SliceBFixture.signedEnvelope(release: release2)
+        )
+        guard case .activated(let event) = result else {
+            return XCTFail("Expected activated")
+        }
+        XCTAssertTrue(event.contentChangedProviderSetIDs.contains("sv99"))
+        XCTAssertTrue(event.changedOfficialCountSetIDs.isEmpty)
     }
 
     func testUnsupportedSchemaRejected() async throws {

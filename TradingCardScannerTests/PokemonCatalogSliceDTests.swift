@@ -110,7 +110,7 @@ private enum SliceDFixture {
         """)
     }
 
-    static func snapshot() -> PokemonChecklistSnapshot {
+    static func snapshot(providerFingerprint: String = "slice-d-fixture") -> PokemonChecklistSnapshot {
         let set = CatalogSet(
             catalogID: CatalogSetID(game: .pokemon, providerID: "sv99"),
             name: "Signed Test Set",
@@ -137,7 +137,7 @@ private enum SliceDFixture {
         let entry = PokemonChecklistSnapshotEntry(
             set: set,
             providerID: "sv99",
-            providerFingerprint: "slice-d-fixture",
+            providerFingerprint: providerFingerprint,
             officialCount: 1,
             standardSlotCount: 1,
             expandedSlotCount: 1,
@@ -147,7 +147,7 @@ private enum SliceDFixture {
             schemaVersion: PokemonChecklistSnapshotVersion.schema,
             rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
             generatedAt: Date(timeIntervalSince1970: 1_700_000_000),
-            directoryFingerprint: "slice-d-fixture",
+            directoryFingerprint: providerFingerprint,
             entries: [entry]
         )
         return PokemonChecklistSnapshot(
@@ -316,6 +316,115 @@ final class PokemonCatalogSliceDTests: XCTestCase {
         XCTAssertEqual(after, before)
         let setRequests = await transport.setRequestCount("sv99")
         XCTAssertEqual(setRequests, 1)
+    }
+
+    func testSignedProviderFingerprintReconcilesOnlyTheStaleChecklist() async throws {
+        let root = SliceDFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let provider = try SliceDFixture.provider()
+        let card = try SliceDFixture.card()
+        let desiredFingerprint = try XCTUnwrap(
+            PokemonMasterSetChecklistBuilder.canonicalFingerprint(
+                of: provider,
+                cardDetails: [card.id: card]
+            )
+        )
+        let descriptor = SliceDFixture.descriptor()
+            .withProviderFingerprint(desiredFingerprint)
+        let coordinator = try await SliceDFixture.coordinator(
+            root: root.appendingPathComponent("releases"),
+            descriptors: [descriptor]
+        )
+        let checklistStore = PokemonChecklistStore(
+            root: root.appendingPathComponent("checklists"),
+            bundle: nil
+        )
+        try await checklistStore.publish(
+            SliceDFixture.snapshot(providerFingerprint: "legacy-probe-only")
+        )
+        let transport = SliceDTransport(
+            rows: [try SliceDFixture.row()],
+            sets: ["sv99": provider],
+            cards: [card.id: card]
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            checklistStore: checklistStore,
+            catalogCoordinator: coordinator
+        )
+
+        await catalog.refreshCatalogNow()
+
+        let entries = await checklistStore.mergedEntries()
+        let entry = try XCTUnwrap(entries.first {
+            $0.providerID.caseInsensitiveCompare("sv99") == .orderedSame
+        })
+        XCTAssertEqual(entry.providerFingerprint, desiredFingerprint)
+        let dueTargets = await checklistStore.dueReconciliationTargets()
+        XCTAssertEqual(dueTargets.count, 0)
+        let page = try await catalog.cards(in: entry.set, cursor: nil)
+        XCTAssertEqual(page.items.count, 1)
+        let setRequestCount = await transport.setRequestCount("sv99")
+        XCTAssertGreaterThanOrEqual(setRequestCount, 1)
+    }
+
+    func testReconciliationQueuePreservesIndependentFullSweepTimestamp() async throws {
+        let root = SliceDFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root, bundle: nil)
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+
+        await store.markRefreshSucceeded(at: now)
+        let initiallyNeedsSweep = await store.needsFullSweep(
+            now: now.addingTimeInterval(1)
+        )
+        XCTAssertFalse(initiallyNeedsSweep)
+        let targets = await store.synchronizeReconciliationTargets(
+            desiredFingerprints: ["sv99": "signed-target"],
+            at: now.addingTimeInterval(1)
+        )
+        XCTAssertEqual(targets.map(\.providerSetID), ["sv99"])
+        let needsSweepAfterQueue = await store.needsFullSweep(
+            now: now.addingTimeInterval(1)
+        )
+        XCTAssertFalse(needsSweepAfterQueue)
+        await store.markReconciliationFailure(
+            providerSetID: "sv99",
+            desiredFingerprint: "signed-target",
+            at: now.addingTimeInterval(1)
+        )
+        let dueAfterFailure = await store.dueReconciliationTargets(
+            now: now.addingTimeInterval(2)
+        )
+        XCTAssertFalse(dueAfterFailure.contains {
+            $0.providerSetID == "sv99"
+        })
+        let needsSweepAfterFailure = await store.needsFullSweep(
+            now: now.addingTimeInterval(2)
+        )
+        XCTAssertFalse(needsSweepAfterFailure)
+    }
+
+    func testOlderReconciliationFailureCannotOverwriteNewerSignedTarget() async {
+        let root = SliceDFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root, bundle: nil)
+
+        _ = await store.synchronizeReconciliationTargets(
+            desiredFingerprints: ["sv99": "old-target"]
+        )
+        _ = await store.synchronizeReconciliationTargets(
+            desiredFingerprints: ["sv99": "new-target"]
+        )
+        await store.markReconciliationFailure(
+            providerSetID: "sv99",
+            desiredFingerprint: "old-target"
+        )
+
+        let targets = await store.dueReconciliationTargets()
+        XCTAssertEqual(targets.map(\.desiredFingerprint), ["new-target"])
     }
 
     func testRollbackUsesRegistryOrderingAndRemovesLegacyUserDefaultsAuthority() async throws {

@@ -82,6 +82,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     /// load that another caller may still need.
     private var pokemonSnapshotLoadTask: Task<[PokemonChecklistSnapshotEntry], Never>?
     private var refreshTask: Task<Void, Never>?
+    private var reconciliationTask: Task<Void, Never>?
     private var catalogAuthorityRefreshTask: Task<Void, Never>?
     private var refreshToken = UUID()
     private var catalogEventTask: Task<Void, Never>?
@@ -120,6 +121,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     deinit {
         catalogEventTask?.cancel()
         catalogAuthorityRefreshTask?.cancel()
+        reconciliationTask?.cancel()
         if let memoryWarningObserver {
             NotificationCenter.default.removeObserver(memoryWarningObserver)
         }
@@ -198,6 +200,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         if let coordinator = catalogCoordinator {
             startCatalogAuthorityRefreshIfNeeded(coordinator)
         }
+        await startTargetedReconciliationIfNeeded()
         if let existingTask = refreshTask {
             // Suspension cancels cooperatively. Keep the task reference until
             // it has unwound so an immediate inactive → active transition
@@ -224,6 +227,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     func refreshCatalogNow() async {
         await synchronizeCatalogAuthority()
         await loadPokemonSnapshotIfNeeded()
+        await reconcilePokemonProviderContent()
         await refreshPokemonSnapshot()
     }
 
@@ -231,6 +235,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         wantsCatalogRefresh = false
         refreshToken = UUID()
         refreshTask?.cancel()
+        reconciliationTask?.cancel()
     }
 
     private func finishRefreshTask(token: UUID) {
@@ -271,6 +276,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             for await event in events {
                 guard !Task.isCancelled else { return }
                 await self?.applyCatalogRegistry(event.registry, revision: event.revision)
+                await self?.startTargetedReconciliationIfNeeded()
             }
         }
     }
@@ -313,6 +319,146 @@ actor BrowseCatalog: BrowseCatalogProviding {
         catalogRevision = revision
         resetPokemonSnapshotCache()
         yieldUpdate(providerSetID: nil)
+    }
+
+    private func startTargetedReconciliationIfNeeded() async {
+        guard wantsCatalogRefresh else { return }
+        let desired = signedProviderFingerprints()
+        let targets = await checklistStore.synchronizeReconciliationTargets(
+            desiredFingerprints: desired
+        )
+        if let existingTask = reconciliationTask {
+            guard existingTask.isCancelled else { return }
+            await existingTask.value
+            reconciliationTask = nil
+        }
+        guard !targets.isEmpty else { return }
+
+        reconciliationTask = Task(priority: .utility) { [weak self] in
+            guard let self else { return }
+            await self.reconcilePokemonProviderContent()
+            await self.finishReconciliationTask()
+        }
+    }
+
+    private func finishReconciliationTask() {
+        guard reconciliationTask != nil else { return }
+        reconciliationTask = nil
+    }
+
+    private func signedProviderFingerprints() -> [String: String] {
+        Dictionary(
+            catalogRegistry.descriptors.compactMap { descriptor in
+                guard let fingerprint = descriptor.providerFingerprint else { return nil }
+                return (descriptor.providerSetID.lowercased(), fingerprint)
+            },
+            uniquingKeysWith: { _, newest in newest }
+        )
+    }
+
+    /// Reconciliation is state-derived and may be called from either the
+    /// foreground preparation path or the activation-event fast path. The
+    /// durable queue is re-derived first so lost in-memory events self-heal.
+    private func reconcilePokemonProviderContent() async {
+        guard !Task.isCancelled else { return }
+        let desired = signedProviderFingerprints()
+        guard !desired.isEmpty else { return }
+        _ = await checklistStore.synchronizeReconciliationTargets(
+            desiredFingerprints: desired
+        )
+
+        while !Task.isCancelled {
+            guard let target = await checklistStore.dueReconciliationTargets().first else {
+                return
+            }
+            await reconcile(target)
+        }
+    }
+
+    private func reconcile(_ target: PokemonChecklistReconciliationTarget) async {
+        do {
+            // Do not let a prior Browse read vouch for a newly signed target.
+            pokemonSetDetails.removeValue(forKey: target.providerSetID.lowercased())
+            pokemonSetCardDetails = pokemonSetCardDetails.filter {
+                !$0.key.hasPrefix(target.providerSetID.lowercased() + "|")
+            }
+            let provider = try await pokemonSet(id: target.providerSetID)
+            let baseSet = try reconciliationBaseSet(
+                provider: provider,
+                providerSetID: target.providerSetID
+            )
+            let details = try await pokemonCardDetails(for: provider)
+            let built = try PokemonMasterSetChecklistBuilder.build(
+                providerSet: provider,
+                baseSet: baseSet,
+                cardDetails: details
+            )
+            guard !built.isEmpty,
+                  built.allSatisfy({ $0.providerFingerprint == target.desiredFingerprint }) else {
+                await checklistStore.markReconciliationFailure(
+                    providerSetID: target.providerSetID,
+                    desiredFingerprint: target.desiredFingerprint
+                )
+                return
+            }
+
+            let snapshot = PokemonChecklistSnapshot.from(builtSets: built)
+            try await checklistStore.publish(snapshot)
+            guard !Task.isCancelled else { return }
+            let entries = await checklistStore.mergedEntries()
+            let visibleEntries = await visibleSnapshotEntries(entries)
+            pokemonSnapshotEntries = visibleEntries
+            pokemonSnapshotLoaded = !visibleEntries.isEmpty
+            setCache[.pokemon] = pokemonSets(from: visibleEntries)
+            await checklistStore.markReconciliationSucceeded(
+                providerSetID: target.providerSetID,
+                desiredFingerprint: target.desiredFingerprint
+            )
+            yieldUpdate(providerSetID: target.providerSetID)
+        } catch is CancellationError {
+            return
+        } catch {
+            await checklistStore.markReconciliationFailure(
+                providerSetID: target.providerSetID,
+                desiredFingerprint: target.desiredFingerprint
+            )
+        }
+    }
+
+    private func reconciliationBaseSet(
+        provider: TCGdexSetCatalog,
+        providerSetID: String
+    ) throws -> CatalogSet {
+        if let existing = pokemonSnapshotEntries.first(where: {
+            $0.providerID.caseInsensitiveCompare(providerSetID) == .orderedSame
+                && $0.set.pokemonPrintRun == nil
+        }) {
+            return existing.set
+        }
+        guard let descriptor = catalogRegistry.descriptor(forProviderSetID: providerSetID) else {
+            throw BrowseCatalogError.unknownSet
+        }
+        let code = descriptor.printedCode
+            ?? descriptor.printedPrefix
+            ?? providerSetID.uppercased()
+        return CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: providerSetID),
+            name: descriptor.displayName ?? provider.name,
+            code: code,
+            logoURL: descriptor.logoURL.flatMap(URL.init(string:))
+                ?? provider.logo.flatMap { URL(string: $0 + ".png") },
+            symbolURL: descriptor.symbolURL.flatMap(URL.init(string:))
+                ?? provider.symbol.flatMap { URL(string: $0 + ".png") },
+            cardCount: provider.cardCount.map {
+                PokemonMasterSetDefinition.masterCount(
+                    cardCount: $0,
+                    setName: provider.name,
+                    printRun: nil
+                )
+            },
+            releaseDate: descriptor.releaseDate.flatMap(FlexibleDate.parse),
+            sortRank: descriptor.releaseOrder ?? 0
+        )
     }
 
     private func resetPokemonSnapshotCache() {
@@ -974,7 +1120,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         // without requiring a new catalog instance.
         let key = provider.id.lowercased()
             + "|"
-            + PokemonMasterSetChecklistBuilder.fingerprint(of: provider)
+            + PokemonMasterSetChecklistBuilder.providerProbeFingerprint(of: provider)
         if let cached = pokemonSetCardDetails[key] { return cached }
 
         var iterator = provider.cards.makeIterator()
@@ -1080,6 +1226,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 ? nil
                 : await checklistStore.refreshResumeAfterProviderID()
             let failedProviderIDs = await checklistStore.refreshFailedProviderIDs()
+            let reconciliationProviderSetIDs = await checklistStore.reconciliationProviderSetIDs()
             let resumeIndex = resumeAfterProviderID.flatMap { resumeID in
                 orderedSets.firstIndex {
                     $0.providerID.caseInsensitiveCompare(resumeID) == .orderedSame
@@ -1088,7 +1235,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
             let firstIndex = resumeIndex.map { $0 + 1 } ?? 0
             let knownFailedIDs = Set(
                 failedProviderIDs.filter { failedID in
-                    orderedSets.contains { $0.providerID.caseInsensitiveCompare(failedID) == .orderedSame }
+                    !reconciliationProviderSetIDs.contains(failedID)
+                        && orderedSets.contains {
+                            $0.providerID.caseInsensitiveCompare(failedID) == .orderedSame
+                        }
                 }
             )
             var unresolvedFailureIDs = knownFailedIDs
@@ -1097,13 +1247,24 @@ actor BrowseCatalog: BrowseCatalogProviding {
             // portion of the directory is retried only after the resumed
             // work, so it cannot rewind the cursor or monopolize the next
             // crawl's first request.
-            let setsToProcess = orderedSets.enumerated().compactMap { index, set in
-                index >= firstIndex ? set : nil
+            let setsToProcess: [CatalogSet] = orderedSets.enumerated().compactMap { pair in
+                let index = pair.offset
+                let set = pair.element
+                guard index >= firstIndex,
+                      !reconciliationProviderSetIDs.contains(set.providerID.lowercased()) else {
+                    return nil
+                }
+                return set
             }
-            let deferredRetrySets = orderedSets.enumerated().compactMap { index, set in
-                index < firstIndex && knownFailedIDs.contains(set.providerID.lowercased())
-                    ? set
-                    : nil
+            let deferredRetrySets: [CatalogSet] = orderedSets.enumerated().compactMap { pair in
+                let index = pair.offset
+                let set = pair.element
+                guard index < firstIndex,
+                      !reconciliationProviderSetIDs.contains(set.providerID.lowercased()),
+                      knownFailedIDs.contains(set.providerID.lowercased()) else {
+                    return nil
+                }
+                return set
             }
             let deferredRetryIDs = Set(deferredRetrySets.map { $0.providerID.lowercased() })
 
@@ -1119,10 +1280,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     let provider = try await pokemonTransport.fetchSet(id: baseSet.providerID)
                     try validatePokemonProviderSet(provider, requestedID: baseSet.providerID)
                     pokemonSetDetails[provider.id.lowercased()] = provider
-                    let fingerprint = PokemonMasterSetChecklistBuilder.fingerprint(of: provider)
+                    let probeFingerprint = PokemonMasterSetChecklistBuilder.providerProbeFingerprint(of: provider)
                     let priorEntries = workingEntries.filter {
                         $0.providerID.caseInsensitiveCompare(baseSet.providerID) == .orderedSame
-                            && $0.providerFingerprint == fingerprint
+                            && $0.providerProbeFingerprint == probeFingerprint
                     }
                     let expectedSetCount = PokemonMasterSetDefinition.virtualSets(
                         baseSet,

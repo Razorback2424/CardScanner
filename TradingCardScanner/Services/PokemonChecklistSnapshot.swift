@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import PokemonCatalogCore
 
 /// The on-device format for the Pokémon Browse snapshot. The manifest is kept
 /// separate from the checklist files so a refresh can write every new file and
@@ -26,7 +27,13 @@ struct PokemonChecklistSnapshotManifest: Codable, Sendable, Equatable {
 struct PokemonChecklistSnapshotEntry: Codable, Sendable, Equatable {
     let set: CatalogSet
     let providerID: String
-    let providerFingerprint: String
+    /// Canonical detailed fingerprint that can be compared with a signed
+    /// descriptor. Nil is retained for manifests written before signed
+    /// fingerprints existed.
+    let providerFingerprint: String?
+    /// Cheap set-endpoint fingerprint used only by the independent 24-hour
+    /// provider sweep. It is never compared with `providerFingerprint`.
+    let providerProbeFingerprint: String
     /// The provider's printed denominator. This is intentionally separate from
     /// `set.cardCount`, which is the expanded master-set count used by Browse.
     /// Older manifests omit it and historical matching falls back to the
@@ -44,7 +51,8 @@ struct PokemonChecklistSnapshotEntry: Codable, Sendable, Equatable {
     init(
         set: CatalogSet,
         providerID: String,
-        providerFingerprint: String,
+        providerFingerprint: String? = nil,
+        providerProbeFingerprint: String? = nil,
         officialCount: Int? = nil,
         standardSlotCount: Int? = nil,
         expandedSlotCount: Int? = nil,
@@ -53,10 +61,52 @@ struct PokemonChecklistSnapshotEntry: Codable, Sendable, Equatable {
         self.set = set
         self.providerID = providerID
         self.providerFingerprint = providerFingerprint
+        self.providerProbeFingerprint = providerProbeFingerprint ?? providerFingerprint ?? ""
         self.officialCount = officialCount
         self.standardSlotCount = standardSlotCount
         self.expandedSlotCount = expandedSlotCount
         self.resource = resource
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case set, providerID, providerFingerprint, providerProbeFingerprint
+        case officialCount, standardSlotCount, expandedSlotCount, resource
+    }
+
+    init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        set = try values.decode(CatalogSet.self, forKey: .set)
+        providerID = try values.decode(String.self, forKey: .providerID)
+        let legacyOrCanonical = try values.decodeIfPresent(
+            String.self,
+            forKey: .providerFingerprint
+        )
+        if let probe = try values.decodeIfPresent(String.self, forKey: .providerProbeFingerprint) {
+            providerFingerprint = legacyOrCanonical
+            providerProbeFingerprint = probe
+        } else {
+            // Before the split, `providerFingerprint` was the cheap probe.
+            // Preserve it under the new probe name and leave the canonical
+            // signed-comparable field unknown.
+            providerFingerprint = nil
+            providerProbeFingerprint = legacyOrCanonical ?? ""
+        }
+        officialCount = try values.decodeIfPresent(Int.self, forKey: .officialCount)
+        standardSlotCount = try values.decodeIfPresent(Int.self, forKey: .standardSlotCount)
+        expandedSlotCount = try values.decodeIfPresent(Int.self, forKey: .expandedSlotCount)
+        resource = try values.decode(String.self, forKey: .resource)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var values = encoder.container(keyedBy: CodingKeys.self)
+        try values.encode(set, forKey: .set)
+        try values.encode(providerID, forKey: .providerID)
+        try values.encodeIfPresent(providerFingerprint, forKey: .providerFingerprint)
+        try values.encode(providerProbeFingerprint, forKey: .providerProbeFingerprint)
+        try values.encodeIfPresent(officialCount, forKey: .officialCount)
+        try values.encodeIfPresent(standardSlotCount, forKey: .standardSlotCount)
+        try values.encodeIfPresent(expandedSlotCount, forKey: .expandedSlotCount)
+        try values.encode(resource, forKey: .resource)
     }
 }
 
@@ -125,6 +175,7 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                         set: mergedSet,
                         providerID: entry.providerID,
                         providerFingerprint: entry.providerFingerprint,
+                        providerProbeFingerprint: entry.providerProbeFingerprint,
                         officialCount: entry.officialCount ?? existing.officialCount,
                         standardSlotCount: entry.standardSlotCount
                             ?? existing.standardSlotCount,
@@ -163,6 +214,7 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                 set: value.set,
                 providerID: value.set.providerID,
                 providerFingerprint: value.providerFingerprint,
+                providerProbeFingerprint: value.providerProbeFingerprint,
                 officialCount: value.officialCount,
                 standardSlotCount: value.standardSlotCount,
                 expandedSlotCount: value.expandedSlotCount,
@@ -191,6 +243,7 @@ enum PokemonMasterSetChecklistBuilder {
         let set: CatalogSet
         let cards: [CatalogCardSummary]
         let providerFingerprint: String
+        let providerProbeFingerprint: String
         let officialCount: Int?
         let standardSlotCount: Int
         let expandedSlotCount: Int
@@ -271,10 +324,15 @@ enum PokemonMasterSetChecklistBuilder {
             throw PokemonChecklistError.incompleteProviderSet(providerSet.id)
         }
 
-        // The set endpoint's card list is the provider/card fingerprint used
-        // for refresh eligibility. Detailed cards are intentionally fetched
-        // only after this fingerprint says the checklist is missing or stale.
-        let providerFingerprint = fingerprint(of: providerSet)
+        // The set endpoint's card list is a local-only probe. The canonical
+        // signed-comparable fingerprint includes detailed variant evidence.
+        let providerProbeFingerprint = providerProbeFingerprint(of: providerSet)
+        guard let providerFingerprint = canonicalFingerprint(
+            of: providerSet,
+            cardDetails: cardDetails
+        ) else {
+            throw PokemonChecklistError.incompleteProviderSet(providerSet.id)
+        }
         return virtualSets.map { set in
             let summaries = orderedCards
                 .filter {
@@ -299,6 +357,7 @@ enum PokemonMasterSetChecklistBuilder {
                 set: withArtworkFallbacks(set, from: summaries),
                 cards: summaries,
                 providerFingerprint: providerFingerprint,
+                providerProbeFingerprint: providerProbeFingerprint,
                 officialCount: providerSet.cardCount?.official,
                 standardSlotCount: summaries.filter { !$0.isExpandedMasterSetVariant }.count,
                 expandedSlotCount: summaries.count
@@ -306,13 +365,12 @@ enum PokemonMasterSetChecklistBuilder {
         }
     }
 
-    static func fingerprint(of providerSet: TCGdexSetCatalog) -> String {
+    static func providerProbeFingerprint(of providerSet: TCGdexSetCatalog) -> String {
         var value = [
             providerSet.id,
             providerSet.name,
             providerSet.logo ?? "",
             providerSet.symbol ?? "",
-            providerSet.tcgOnline ?? "",
             providerSet.releaseDate ?? ""
         ]
         if let count = providerSet.cardCount {
@@ -321,41 +379,93 @@ enum PokemonMasterSetChecklistBuilder {
                 String(count.reverse ?? -1), String(count.holo ?? -1), String(count.firstEd ?? -1)
             ]
         }
-        value += providerSet.cards.flatMap { [$0.id, $0.localId, $0.name, $0.image ?? ""] }
+        value += providerSet.cards
+            .sorted { $0.id < $1.id }
+            .flatMap { [$0.id, $0.localId, $0.name, $0.image ?? ""] }
         return StableCatalogFingerprint.string(value.joined(separator: "\u{1F}"))
     }
 
-    static func fingerprint(
+    /// Compatibility spelling for existing local-only callers. It remains a
+    /// probe and must not be compared with a signed descriptor fingerprint.
+    static func fingerprint(of providerSet: TCGdexSetCatalog) -> String {
+        providerProbeFingerprint(of: providerSet)
+    }
+
+    static func canonicalFingerprint(
         of providerSet: TCGdexSetCatalog,
         cardDetails: [String: TCGdexCard]
-    ) -> String {
-        var value = [fingerprint(of: providerSet)]
-        for brief in providerSet.cards {
-            guard let card = cardDetails[brief.id] else { continue }
-            value += [card.id, card.localId, card.name, card.image ?? ""]
-            if let variants = card.variants {
-                value += [
-                    String(variants.firstEdition), String(variants.holo),
-                    String(variants.normal), String(variants.reverse), String(variants.wPromo ?? false)
-                ]
+    ) -> String? {
+        let coreSet = PokemonCatalogProviderSet(
+            id: providerSet.id,
+            name: providerSet.name,
+            cards: providerSet.cards.map {
+                PokemonCatalogProviderCardBrief(
+                    id: $0.id,
+                    localID: $0.localId,
+                    name: $0.name,
+                    image: $0.image
+                )
+            },
+            logo: providerSet.logo,
+            symbol: providerSet.symbol,
+            releaseDate: providerSet.releaseDate,
+            cardCount: providerSet.cardCount.map {
+                PokemonCatalogProviderCardCount(
+                    total: $0.total,
+                    official: $0.official,
+                    normal: $0.normal,
+                    reverse: $0.reverse,
+                    holo: $0.holo,
+                    firstEd: $0.firstEd
+                )
             }
-            for detailed in card.variantsDetailed ?? [] {
-                value += [
-                    detailed.type ?? "", detailed.subtype ?? "",
-                    detailed.stamp?.sorted().joined(separator: ",") ?? "",
-                    detailed.foil ?? "", detailed.size ?? "", detailed.variantId ?? "",
-                    detailed.languages?.sorted().joined(separator: ",") ?? ""
-                ]
-            }
-        }
-        return StableCatalogFingerprint.string(value.joined(separator: "\u{1F}"))
+        )
+        let coreDetails = Dictionary(
+            cardDetails.map { key, card in
+                (
+                    key.lowercased(),
+                    PokemonCatalogProviderCard(
+                        id: card.id,
+                        localID: card.localId,
+                        name: card.name,
+                        image: card.image,
+                        setID: card.set.id,
+                        variants: card.variants.map {
+                            PokemonCatalogProviderVariants(
+                                firstEdition: $0.firstEdition,
+                                holo: $0.holo,
+                                normal: $0.normal,
+                                reverse: $0.reverse,
+                                wPromo: $0.wPromo
+                            )
+                        },
+                        variantsDetailed: card.variantsDetailed?.map {
+                            PokemonCatalogProviderDetailedVariant(
+                                type: $0.type,
+                                subtype: $0.subtype,
+                                stamp: $0.stamp,
+                                foil: $0.foil,
+                                size: $0.size,
+                                variantID: $0.variantId,
+                                languages: $0.languages
+                            )
+                        }
+                    )
+                )
+            },
+            uniquingKeysWith: { first, _ in first }
+        )
+        return PokemonCatalogProviderFingerprint.v1(
+            providerSet: coreSet,
+            cardDetails: coreDetails
+        )
     }
 
     static func directoryFingerprint(_ entries: [PokemonChecklistSnapshotEntry]) -> String {
         StableCatalogFingerprint.string(
             entries
                 .sorted { $0.set.id < $1.set.id }
-                .map { "\($0.set.id)=\($0.providerFingerprint)" }
+                .map { "\($0.set.id)=\($0.providerFingerprint ?? "<legacy>")" }
                 .joined(separator: "\u{1F}")
         )
     }
@@ -495,6 +605,13 @@ struct TCGdexBrowseTransport: PokemonBrowseTransport, Sendable {
 /// Protected checklist persistence. This is deliberately not part of the LRU
 /// page cache: a user who opened many card pages must not lose offline set
 /// readiness as a side effect.
+struct PokemonChecklistReconciliationTarget: Codable, Equatable, Sendable {
+    let providerSetID: String
+    let desiredFingerprint: String
+    let nextAttemptAt: Date?
+    let attemptCount: Int
+}
+
 private struct PokemonChecklistRefreshState: Codable, Equatable, Sendable {
     /// The last crawl that reached the end of the directory with no failures.
     /// Governs the ordinary 24-hour cadence.
@@ -513,19 +630,22 @@ private struct PokemonChecklistRefreshState: Codable, Equatable, Sendable {
     let lastAttemptAt: Date?
     let resumeAfterProviderID: String?
     let failedProviderIDs: [String]
+    let reconciliationTargets: [PokemonChecklistReconciliationTarget]
 
     init(
         lastSuccessfulAt: Date?,
         lastSweepAt: Date? = nil,
         lastAttemptAt: Date? = nil,
         resumeAfterProviderID: String?,
-        failedProviderIDs: [String] = []
+        failedProviderIDs: [String] = [],
+        reconciliationTargets: [PokemonChecklistReconciliationTarget] = []
     ) {
         self.lastSuccessfulAt = lastSuccessfulAt
         self.lastSweepAt = lastSweepAt
         self.lastAttemptAt = lastAttemptAt
         self.resumeAfterProviderID = resumeAfterProviderID
         self.failedProviderIDs = failedProviderIDs
+        self.reconciliationTargets = reconciliationTargets
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -534,6 +654,7 @@ private struct PokemonChecklistRefreshState: Codable, Equatable, Sendable {
         case lastAttemptAt
         case resumeAfterProviderID
         case failedProviderIDs
+        case reconciliationTargets
     }
 
     init(from decoder: Decoder) throws {
@@ -552,6 +673,10 @@ private struct PokemonChecklistRefreshState: Codable, Equatable, Sendable {
         failedProviderIDs = try values.decodeIfPresent(
             [String].self,
             forKey: .failedProviderIDs
+        ) ?? []
+        reconciliationTargets = try values.decodeIfPresent(
+            [PokemonChecklistReconciliationTarget].self,
+            forKey: .reconciliationTargets
         ) ?? []
     }
 }
@@ -588,6 +713,8 @@ actor PokemonChecklistStore {
 
     nonisolated static let refreshInterval: TimeInterval = 24 * 60 * 60
     nonisolated static let failedRefreshBackoff: TimeInterval = 60 * 60
+    nonisolated static let reconciliationInitialBackoff: TimeInterval = 5 * 60
+    nonisolated static let reconciliationMaxBackoff: TimeInterval = 6 * 60 * 60
 
     init(root: URL? = nil, bundle: Bundle? = .main, bundledRoot: URL? = nil) {
         if let root {
@@ -874,7 +1001,8 @@ actor PokemonChecklistStore {
                 resumeAfterProviderID: advancesCursor
                     ? providerID
                     : previous?.resumeAfterProviderID,
-                failedProviderIDs: failedIDs.sorted()
+                failedProviderIDs: failedIDs.sorted(),
+                reconciliationTargets: previous?.reconciliationTargets ?? []
             )
         )
     }
@@ -889,7 +1017,8 @@ actor PokemonChecklistStore {
                 lastSweepAt: date,
                 lastAttemptAt: nil,
                 resumeAfterProviderID: nil,
-                failedProviderIDs: []
+                failedProviderIDs: [],
+                reconciliationTargets: loadRefreshState()?.reconciliationTargets ?? []
             )
         )
     }
@@ -903,10 +1032,13 @@ actor PokemonChecklistStore {
         writeRefreshState(
             PokemonChecklistRefreshState(
                 lastSuccessfulAt: previous?.lastSuccessfulAt,
-                lastSweepAt: nil,
+                // Activation changes the signed desired set, not evidence that
+                // the provider directory needs a full crawl.
+                lastSweepAt: previous?.lastSweepAt,
                 lastAttemptAt: nil,
                 resumeAfterProviderID: nil,
-                failedProviderIDs: []
+                failedProviderIDs: [],
+                reconciliationTargets: previous?.reconciliationTargets ?? []
             )
         )
     }
@@ -926,7 +1058,8 @@ actor PokemonChecklistStore {
                 lastSweepAt: date,
                 lastAttemptAt: date,
                 resumeAfterProviderID: previous?.resumeAfterProviderID,
-                failedProviderIDs: previous?.failedProviderIDs ?? []
+                failedProviderIDs: previous?.failedProviderIDs ?? [],
+                reconciliationTargets: previous?.reconciliationTargets ?? []
             )
         )
     }
@@ -942,7 +1075,157 @@ actor PokemonChecklistStore {
                 lastSweepAt: previous?.lastSweepAt,
                 lastAttemptAt: date,
                 resumeAfterProviderID: previous?.resumeAfterProviderID,
-                failedProviderIDs: previous?.failedProviderIDs ?? []
+                failedProviderIDs: previous?.failedProviderIDs ?? [],
+                reconciliationTargets: previous?.reconciliationTargets ?? []
+            )
+        )
+    }
+
+    /// Reconciles persisted queue state from the signed desired values and the
+    /// local manifest. This is the source of truth after launch, foreground,
+    /// crashes, and activation events; an in-memory event is only a prompt.
+    func synchronizeReconciliationTargets(
+        desiredFingerprints: [String: String],
+        at date: Date = .now
+    ) -> [PokemonChecklistReconciliationTarget] {
+        let previous = loadRefreshState()
+        let oldTargets = Dictionary(
+            (previous?.reconciliationTargets ?? []).map {
+                ($0.providerSetID.lowercased(), $0)
+            },
+            uniquingKeysWith: { first, _ in first }
+        )
+        let localEntries = mergedEntries()
+        var targets: [PokemonChecklistReconciliationTarget] = []
+
+        for (rawID, desired) in desiredFingerprints {
+            let id = rawID.lowercased()
+            let entries = localEntries.filter {
+                $0.providerID.caseInsensitiveCompare(id) == .orderedSame
+            }
+            let localMatches = !entries.isEmpty
+                && entries.allSatisfy {
+                    $0.providerFingerprint == desired
+                        && hasMergedChecklist(for: $0.set.catalogID)
+                }
+            if localMatches {
+                continue
+            }
+
+            let prior = oldTargets[id]
+            let target: PokemonChecklistReconciliationTarget
+            if let prior, prior.desiredFingerprint == desired {
+                target = prior
+            } else {
+                target = PokemonChecklistReconciliationTarget(
+                    providerSetID: id,
+                    desiredFingerprint: desired,
+                    nextAttemptAt: nil,
+                    attemptCount: 0
+                )
+            }
+            targets.append(target)
+        }
+
+        let sorted = targets.sorted { $0.providerSetID < $1.providerSetID }
+        if sorted != (previous?.reconciliationTargets ?? []) {
+            writeRefreshState(
+                PokemonChecklistRefreshState(
+                    lastSuccessfulAt: previous?.lastSuccessfulAt,
+                    lastSweepAt: previous?.lastSweepAt,
+                    lastAttemptAt: previous?.lastAttemptAt,
+                    resumeAfterProviderID: previous?.resumeAfterProviderID,
+                    failedProviderIDs: previous?.failedProviderIDs ?? [],
+                    reconciliationTargets: sorted
+                )
+            )
+        }
+        _ = date // Kept in the API so foreground reconciliation has one clock.
+        return sorted
+    }
+
+    func dueReconciliationTargets(
+        now: Date = .now
+    ) -> [PokemonChecklistReconciliationTarget] {
+        (loadRefreshState()?.reconciliationTargets ?? [])
+            .filter { target in
+                guard let nextAttemptAt = target.nextAttemptAt else { return true }
+                return nextAttemptAt <= now
+            }
+            .sorted { $0.providerSetID < $1.providerSetID }
+    }
+
+    func reconciliationProviderSetIDs() -> Set<String> {
+        Set(
+            (loadRefreshState()?.reconciliationTargets ?? [])
+                .map { $0.providerSetID.lowercased() }
+        )
+    }
+
+    func markReconciliationSucceeded(
+        providerSetID: String,
+        desiredFingerprint: String
+    ) {
+        let previous = loadRefreshState()
+        let remaining = (previous?.reconciliationTargets ?? []).filter {
+            !($0.providerSetID.caseInsensitiveCompare(providerSetID) == .orderedSame
+                && $0.desiredFingerprint == desiredFingerprint)
+        }
+        writeRefreshState(
+            PokemonChecklistRefreshState(
+                lastSuccessfulAt: previous?.lastSuccessfulAt,
+                lastSweepAt: previous?.lastSweepAt,
+                lastAttemptAt: previous?.lastAttemptAt,
+                resumeAfterProviderID: previous?.resumeAfterProviderID,
+                failedProviderIDs: previous?.failedProviderIDs ?? [],
+                reconciliationTargets: remaining
+            )
+        )
+    }
+
+    func markReconciliationFailure(
+        providerSetID: String,
+        desiredFingerprint: String,
+        at date: Date = .now
+    ) {
+        let previous = loadRefreshState()
+        var targets = previous?.reconciliationTargets ?? []
+        let id = providerSetID.lowercased()
+        guard let currentTarget = targets.first(where: {
+            $0.providerSetID.caseInsensitiveCompare(id) == .orderedSame
+        }) else {
+            return
+        }
+        if currentTarget.desiredFingerprint != desiredFingerprint {
+            // A newer signed release superseded the work that just failed.
+            // Never reinsert an older target over the newer desired value.
+            return
+        }
+        let previousTarget = targets.first {
+            $0.providerSetID.caseInsensitiveCompare(id) == .orderedSame
+                && $0.desiredFingerprint == desiredFingerprint
+        }
+        let attemptCount = (previousTarget?.attemptCount ?? 0) + 1
+        let delay = min(
+            Self.reconciliationMaxBackoff,
+            Self.reconciliationInitialBackoff * pow(2, Double(max(attemptCount - 1, 0)))
+        )
+        let updated = PokemonChecklistReconciliationTarget(
+            providerSetID: id,
+            desiredFingerprint: desiredFingerprint,
+            nextAttemptAt: date.addingTimeInterval(delay),
+            attemptCount: attemptCount
+        )
+        targets.removeAll { $0.providerSetID.caseInsensitiveCompare(id) == .orderedSame }
+        targets.append(updated)
+        writeRefreshState(
+            PokemonChecklistRefreshState(
+                lastSuccessfulAt: previous?.lastSuccessfulAt,
+                lastSweepAt: previous?.lastSweepAt,
+                lastAttemptAt: previous?.lastAttemptAt,
+                resumeAfterProviderID: previous?.resumeAfterProviderID,
+                failedProviderIDs: previous?.failedProviderIDs ?? [],
+                reconciliationTargets: targets.sorted { $0.providerSetID < $1.providerSetID }
             )
         )
     }

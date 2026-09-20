@@ -14,6 +14,7 @@ actor PokemonCatalogCoordinator {
         let previousRevision: Int?
         let registry: PokemonCatalogRegistry
         let changedOfficialCountSetIDs: Set<String>
+        let contentChangedProviderSetIDs: Set<String>
     }
 
     // MARK: - Dependencies
@@ -227,6 +228,10 @@ actor PokemonCatalogCoordinator {
             to: newRegistry,
             release: release
         )
+        let changedContent = providerContentChanges(
+            from: activeRegistry,
+            release: release
+        )
 
         let result: PokemonCatalogReleaseStore.ActivationResult
         do {
@@ -254,13 +259,14 @@ actor PokemonCatalogCoordinator {
                 revision: rev,
                 previousRevision: prev,
                 registry: newRegistry,
-                changedOfficialCountSetIDs: changedCounts
+                changedOfficialCountSetIDs: changedCounts,
+                contentChangedProviderSetIDs: changedContent
             )
             for (_, continuation) in continuations {
                 continuation.yield(event)
             }
             Self.logger.info(
-                "Activated catalog revision \(rev) (previous: \(prev.map(String.init) ?? "none"), changed counts: \(changedCounts.count))"
+                "Activated catalog revision \(rev) (previous: \(prev.map(String.init) ?? "none"), changed counts: \(changedCounts.count), changed content: \(changedContent.count))"
             )
             await diagnostics.recordActivation(
                 revision: rev,
@@ -283,7 +289,11 @@ actor PokemonCatalogCoordinator {
     ) async {
         await offline.updateRegistry(event.registry)
         await offline.invalidate()
-        await resolvedCache.invalidateEntries(forSetIDs: event.changedOfficialCountSetIDs)
+        await resolvedCache.invalidateEntries(
+            forSetIDs: event.changedOfficialCountSetIDs.union(
+                event.contentChangedProviderSetIDs
+            )
+        )
         await browseCatalog.invalidateSetCache(for: .pokemon)
         await checklistStore.clearCursorForRegistryActivation()
     }
@@ -360,6 +370,22 @@ actor PokemonCatalogCoordinator {
             if oldCount != newCount {
                 changed.insert(id.lowercased())
             }
+        }
+        return changed
+    }
+
+    private func providerContentChanges(
+        from old: PokemonCatalogRegistry,
+        release: PokemonCatalogRelease
+    ) -> Set<String> {
+        var changed = Set<String>()
+        for descriptor in release.sets {
+            guard let oldDescriptor = old.descriptor(
+                forProviderSetID: descriptor.providerSetID
+            ),
+            oldDescriptor.providerFingerprint != descriptor.providerFingerprint,
+            descriptor.providerFingerprint != nil else { continue }
+            changed.insert(descriptor.providerSetID.lowercased())
         }
         return changed
     }

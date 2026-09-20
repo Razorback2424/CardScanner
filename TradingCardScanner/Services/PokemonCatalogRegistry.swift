@@ -212,6 +212,7 @@ struct PokemonCatalogRegistry: Sendable {
                     scanEnabled: true,
                     logoURL: nil,
                     symbolURL: nil,
+                    providerFingerprint: nil,
                     rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules
                 )
             }
@@ -233,6 +234,7 @@ struct PokemonCatalogRegistry: Sendable {
                     scanEnabled: true,
                     logoURL: nil,
                     symbolURL: nil,
+                    providerFingerprint: nil,
                     rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules
                 )
             }
