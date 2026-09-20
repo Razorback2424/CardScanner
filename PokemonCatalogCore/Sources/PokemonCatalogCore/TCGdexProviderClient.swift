@@ -224,6 +224,8 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
         directoryLogo: String?,
         directorySymbol: String?
     ) async -> PokemonCatalogProviderSet {
+        // Keep raw provider fields untouched. Resolved values are descriptor
+        // enrichment only and must not enter the provider-content fingerprint.
         let explicitLogo = providerSet.logo ?? directoryLogo
         let explicitSymbol = providerSet.symbol ?? directorySymbol
         let seriesID = providerSet.serie?.id.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -256,13 +258,15 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
             id: providerSet.id,
             name: providerSet.name,
             cards: providerSet.cards,
-            logo: logo,
-            symbol: symbol,
+            logo: providerSet.logo,
+            symbol: providerSet.symbol,
             releaseDate: providerSet.releaseDate,
             tcgOnline: providerSet.tcgOnline,
             cardCount: providerSet.cardCount,
             serie: providerSet.serie,
-            abbreviation: providerSet.abbreviation
+            abbreviation: providerSet.abbreviation,
+            resolvedLogo: logo,
+            resolvedSymbol: symbol
         )
     }
 

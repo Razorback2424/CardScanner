@@ -1,6 +1,6 @@
 # Release follow-ups
 
-**Status:** current validation and measurement backlog — reconciled 2026-09-14.
+**Status:** current validation, measurement, and catalog-hardening backlog — reconciled 2026-09-20.
 
 This document is the aggregation point for gates that source inspection or the
 ordinary simulator suite cannot retire. Completed implementation plans are
@@ -8,7 +8,8 @@ archived under [`../legacy/`](../legacy/); they are historical context, not
 open work queues.
 
 This is the aggregation point for work that cannot be retired by the ordinary
-simulator suite. Items below are validation or measurement gates, not suspected
+simulator suite, plus small catalog-hardening follow-ups from review. Items
+below are validation, measurement, or test/documentation gates, not suspected
 defects. Close an item with the evidence described here, or record the measured
 reason to leave it unchanged.
 
@@ -183,6 +184,43 @@ Record before/after evidence for the Browse remediation on `me02.5` ASC:
 Keep the result separate from the simulator regression evidence. The source and
 focused tests establish the incremental/cancellable ordering contract, not live
 provider latency or quota behavior.
+
+## Catalog fingerprint hardening follow-ups
+
+These items are non-blocking follow-ups to the completed artwork-enrichment
+fingerprint fix. The Core parity test protects the publisher-side enrichment
+boundary; the items below preserve the remaining code intent and close the
+publisher-to-device mapping seam.
+
+### RF-10 — Document the descriptor artwork fallback rung
+
+**Status:** open; documentation hardening.
+
+Keep a code comment at
+[`CatalogBuilder.swift`](../../PokemonCatalogCore/Sources/PokemonCatalogCore/CatalogBuilder.swift)
+explaining that the directory row's `logo`/`symbol` fallback remains
+load-bearing for a raw provider value of `""` when artwork resolution returns
+`nil`. The fallback is descriptor-only and is not redundant with the resolved
+artwork fields or the raw values hashed by `v1`; it should not be removed as a
+cleanup.
+
+Close when the comment lands and `git diff --check` remains clean.
+
+### RF-11 — Add device-side canonical fingerprint parity coverage
+
+**Status:** open; iOS test coverage follow-up.
+
+Add a focused iOS catalog test that maps a `TCGdexSetCatalog` through the real
+device-side `canonicalFingerprint` implementation in
+[`PokemonChecklistSnapshot.swift`](../../TradingCardScanner/Services/PokemonChecklistSnapshot.swift)
+and compares it with
+`PokemonCatalogProviderFingerprint.v1` on the equivalent raw Core model. The
+existing
+[`ArtworkFingerprintParityTests.swift`](../../PokemonCatalogCore/Tests/PokemonCatalogCoreTests/ArtworkFingerprintParityTests.swift)
+exercises `fetchFixture`, all three artwork-enrichment paths, and descriptor
+resolution, but it uses a hand-built Core value rather than the app-target
+mapping. Close when the focused iOS test passes and its test evidence is
+recorded; this does not by itself retire physical-device acceptance.
 
 ## Closed cleanup
 

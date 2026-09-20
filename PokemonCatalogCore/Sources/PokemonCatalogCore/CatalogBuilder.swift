@@ -535,8 +535,12 @@ public struct PokemonCatalogBuilder: Sendable {
         let providerCode = normalizedExpansionCode(providerSet.abbreviation?.official)
         let providerCount = providerSet.cardCount?.official ?? row.cardCount?.official
         let providerReleaseDate = providerSet.releaseDate ?? row.releaseDate
-        let providerLogo = nonEmpty(providerSet.logo) ?? nonEmpty(row.logo)
-        let providerSymbol = nonEmpty(providerSet.symbol) ?? nonEmpty(row.symbol)
+        let providerLogo = nonEmpty(providerSet.resolvedLogo)
+            ?? nonEmpty(providerSet.logo)
+            ?? nonEmpty(row.logo)
+        let providerSymbol = nonEmpty(providerSet.resolvedSymbol)
+            ?? nonEmpty(providerSet.symbol)
+            ?? nonEmpty(row.symbol)
         let configuredParentID = normalizedParentProviderSetID(
             humanInput?.parentProviderSetID
         )
@@ -740,7 +744,10 @@ public struct PokemonCatalogBuilder: Sendable {
     ) -> (logo: String?, symbol: String?) {
         guard let parentProviderSetID else { return (nil, nil) }
         if let provider = providerSets[parentProviderSetID] {
-            return (nonEmpty(provider.logo), nonEmpty(provider.symbol))
+            return (
+                nonEmpty(provider.resolvedLogo) ?? nonEmpty(provider.logo),
+                nonEmpty(provider.resolvedSymbol) ?? nonEmpty(provider.symbol)
+            )
         }
         if let descriptor = activeByID[parentProviderSetID] {
             return (nonEmpty(descriptor.logoURL), nonEmpty(descriptor.symbolURL))

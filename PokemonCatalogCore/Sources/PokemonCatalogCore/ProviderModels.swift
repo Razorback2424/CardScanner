@@ -193,8 +193,14 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
     public let id: String
     public let name: String
     public let cards: [PokemonCatalogProviderCardBrief]
+    /// Raw values decoded from the provider set payload. These are the only
+    /// artwork values that may participate in the provider fingerprint.
     public let logo: String?
     public let symbol: String?
+    /// Publisher-only artwork enrichment. These fields are intentionally not
+    /// part of the Codable provider payload or provider fingerprint.
+    public let resolvedLogo: String?
+    public let resolvedSymbol: String?
     public let releaseDate: String?
     public let tcgOnline: String?
     public let cardCount: PokemonCatalogProviderCardCount?
@@ -212,18 +218,66 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         tcgOnline: String? = nil,
         cardCount: PokemonCatalogProviderCardCount? = nil,
         serie: PokemonCatalogProviderSeries? = nil,
-        abbreviation: PokemonCatalogProviderAbbreviation? = nil
+        abbreviation: PokemonCatalogProviderAbbreviation? = nil,
+        resolvedLogo: String? = nil,
+        resolvedSymbol: String? = nil
     ) {
         self.id = id
         self.name = name
         self.cards = cards
         self.logo = logo
         self.symbol = symbol
+        self.resolvedLogo = resolvedLogo
+        self.resolvedSymbol = resolvedSymbol
         self.releaseDate = releaseDate
         self.tcgOnline = tcgOnline
         self.cardCount = cardCount
         self.serie = serie
         self.abbreviation = abbreviation
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case id, name, cards, logo, symbol, releaseDate, tcgOnline, cardCount
+        case serie, abbreviation
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        cards = try container.decode([PokemonCatalogProviderCardBrief].self, forKey: .cards)
+        logo = try container.decodeIfPresent(String.self, forKey: .logo)
+        symbol = try container.decodeIfPresent(String.self, forKey: .symbol)
+        resolvedLogo = nil
+        resolvedSymbol = nil
+        releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
+        tcgOnline = try container.decodeIfPresent(String.self, forKey: .tcgOnline)
+        cardCount = try container.decodeIfPresent(
+            PokemonCatalogProviderCardCount.self,
+            forKey: .cardCount
+        )
+        serie = try container.decodeIfPresent(
+            PokemonCatalogProviderSeries.self,
+            forKey: .serie
+        )
+        abbreviation = try container.decodeIfPresent(
+            PokemonCatalogProviderAbbreviation.self,
+            forKey: .abbreviation
+        )
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encode(cards, forKey: .cards)
+        try container.encodeIfPresent(logo, forKey: .logo)
+        try container.encodeIfPresent(symbol, forKey: .symbol)
+        try container.encodeIfPresent(releaseDate, forKey: .releaseDate)
+        try container.encodeIfPresent(tcgOnline, forKey: .tcgOnline)
+        try container.encodeIfPresent(cardCount, forKey: .cardCount)
+        try container.encodeIfPresent(serie, forKey: .serie)
+        try container.encodeIfPresent(abbreviation, forKey: .abbreviation)
     }
 }
 

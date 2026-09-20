@@ -1,3 +1,18 @@
+Pokemon catalog artwork fingerprint parity fix (2026-09-20, current working
+tree): preserved raw provider `logo`/`symbol` values while carrying resolved
+artwork in transient fields used only by descriptor construction. `v1` now
+hashes the decoded provider payload, including the distinct `nil`/empty-string
+tokens, so directory fallback, CDN resolution, and resolver failure cannot
+make publisher and device fingerprints diverge. Added a Core parity test that
+drives the real fixture fetch through the directory, CDN, and empty-string
+paths and verifies both fingerprint equality and descriptor artwork delivery.
+Verification passed: PokemonCatalogCore 38/38, the focused parity test,
+`xcodebuild` Debug simulator build, and `git diff --check`. Two non-blocking
+follow-ups are recorded in
+[`docs/plans/release_followups.md`](docs/plans/release_followups.md): document
+the load-bearing directory-row artwork fallback and add an iOS test covering
+the device-side `canonicalFingerprint` mapping.
+
 Catalog schema-1 provider-content propagation (2026-09-20, current working
 tree): kept `PokemonCatalogCoreContract.releaseSchemaVersion == 1` and added
 `providerFingerprint` as an optional additive descriptor field. Legacy
