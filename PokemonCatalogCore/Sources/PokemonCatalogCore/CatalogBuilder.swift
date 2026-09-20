@@ -482,6 +482,16 @@ public struct PokemonCatalogBuilder: Sendable {
         let providerReleaseDate = providerSet.releaseDate ?? row.releaseDate
         let providerLogo = nonEmpty(providerSet.logo) ?? nonEmpty(row.logo)
         let providerSymbol = nonEmpty(providerSet.symbol) ?? nonEmpty(row.symbol)
+        let parentProviderSetID = normalizedIdentifier(
+            humanInput?.parentProviderSetID ?? existing?.parentProviderSetID
+        )
+        let inheritedParentLogo = parentLogoURL(
+            seriesID: providerSet.serie?.id,
+            parentProviderSetID: parentProviderSetID
+        )
+        let bundledArtworkSourceID = nonEmpty(
+            humanInput?.bundledArtworkSourceID ?? existing?.bundledArtworkSourceID
+        )
 
         if let existing {
             if existing.recognitionKind == .expansion,
@@ -519,8 +529,13 @@ public struct PokemonCatalogBuilder: Sendable {
                 catalogLocalIDPrefix: existing.catalogLocalIDPrefix,
                 localIDPadWidth: existing.localIDPadWidth,
                 scanEnabled: existing.scanEnabled,
-                logoURL: humanInput?.logoURL ?? providerLogo ?? existing.logoURL,
+                logoURL: humanInput?.logoURL
+                    ?? providerLogo
+                    ?? inheritedParentLogo
+                    ?? existing.logoURL,
                 symbolURL: humanInput?.symbolURL ?? providerSymbol ?? existing.symbolURL,
+                parentProviderSetID: parentProviderSetID,
+                bundledArtworkSourceID: bundledArtworkSourceID,
                 rulesVersion: existing.rulesVersion,
                 membershipRecognition: existing.membershipRecognition
             )
@@ -567,8 +582,10 @@ public struct PokemonCatalogBuilder: Sendable {
                     catalogLocalIDPrefix: nil,
                     localIDPadWidth: nil,
                     scanEnabled: humanInput.scanEnabled,
-                    logoURL: humanInput.logoURL ?? providerLogo,
+                    logoURL: humanInput.logoURL ?? providerLogo ?? inheritedParentLogo,
                     symbolURL: humanInput.symbolURL ?? providerSymbol,
+                    parentProviderSetID: parentProviderSetID,
+                    bundledArtworkSourceID: bundledArtworkSourceID,
                     rulesVersion: humanInput.rulesVersion,
                     membershipRecognition: humanInput.membershipRecognition
                 )
@@ -590,8 +607,10 @@ public struct PokemonCatalogBuilder: Sendable {
                     catalogLocalIDPrefix: humanInput.catalogLocalIDPrefix?.uppercased(),
                     localIDPadWidth: humanInput.localIDPadWidth,
                     scanEnabled: humanInput.scanEnabled,
-                    logoURL: humanInput.logoURL ?? providerLogo,
+                    logoURL: humanInput.logoURL ?? providerLogo ?? inheritedParentLogo,
                     symbolURL: humanInput.symbolURL ?? providerSymbol,
+                    parentProviderSetID: parentProviderSetID,
+                    bundledArtworkSourceID: bundledArtworkSourceID,
                     rulesVersion: humanInput.rulesVersion,
                     membershipRecognition: humanInput.membershipRecognition
                 )
@@ -631,8 +650,10 @@ public struct PokemonCatalogBuilder: Sendable {
             catalogLocalIDPrefix: nil,
             localIDPadWidth: nil,
             scanEnabled: true,
-            logoURL: providerLogo,
+            logoURL: providerLogo ?? inheritedParentLogo,
             symbolURL: providerSymbol,
+            parentProviderSetID: parentProviderSetID,
+            bundledArtworkSourceID: bundledArtworkSourceID,
             rulesVersion: PokemonCatalogCoreContract.rulesVersion
         )
     }
@@ -646,6 +667,30 @@ public struct PokemonCatalogBuilder: Sendable {
     private func nonEmpty(_ value: String?) -> String? {
         guard let value else { return nil }
         return value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? nil : value
+    }
+
+    private func normalizedIdentifier(_ value: String?) -> String? {
+        guard let value else { return nil }
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed.lowercased()
+    }
+
+    /// Resolve inherited artwork while the provider series is still available.
+    /// The signed descriptor stores the resulting URL, so the iOS client never
+    /// needs to guess which TCGdex path segment belongs to a parent set.
+    private func parentLogoURL(
+        seriesID: String?,
+        parentProviderSetID: String?
+    ) -> String? {
+        guard let seriesID = normalizedIdentifier(seriesID),
+              let parentProviderSetID = normalizedIdentifier(parentProviderSetID) else {
+            return nil
+        }
+        var url = URL(string: "https://assets.tcgdex.net")
+        for component in ["en", seriesID, parentProviderSetID, "logo.png"] {
+            url = url?.appendingPathComponent(component)
+        }
+        return url?.absoluteString
     }
 
     private func isValidReleaseDate(_ value: String) -> Bool {

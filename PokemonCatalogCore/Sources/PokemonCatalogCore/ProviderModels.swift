@@ -261,6 +261,8 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
     public let scanEnabled: Bool
     public let logoURL: String?
     public let symbolURL: String?
+    public let parentProviderSetID: String?
+    public let bundledArtworkSourceID: String?
     public let rulesVersion: Int
     public let membershipRecognition: PokemonCatalogMembershipRecognition?
 
@@ -278,6 +280,8 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         scanEnabled: Bool = true,
         logoURL: String? = nil,
         symbolURL: String? = nil,
+        parentProviderSetID: String? = nil,
+        bundledArtworkSourceID: String? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
         membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
@@ -294,6 +298,8 @@ public struct PokemonCatalogHumanInput: Codable, Equatable, Sendable {
         self.scanEnabled = scanEnabled
         self.logoURL = logoURL
         self.symbolURL = symbolURL
+        self.parentProviderSetID = parentProviderSetID
+        self.bundledArtworkSourceID = bundledArtworkSourceID
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
     }
