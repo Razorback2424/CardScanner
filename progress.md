@@ -1,3 +1,28 @@
+Magic semantic publication hardening (2026-09-20, current working tree): added
+shared Magic surface-diff and fail-closed semantic classification, with only
+displayName, releaseDate, cardCount, and iconSVGURL eligible for the automatic
+content-only lane. Added origin validation for signed icon URLs, explicit
+removal authorization, publish-time candidate/report recomputation, dynamic
+protected-versus-automatic workflow routing, and Magic-specific environment
+guards. Verification passed: MagicCatalogCore 18/18, PokemonCatalogCore 39/39,
+Magic release build, recorded fixture validation, hosting configuration
+validation, and a serialized Debug iPhone 17 Pro Simulator build whose app
+bundle was produced under external-SSD DerivedData. The hosted Magic pointer
+check returned HTTP 404. The old Pokémon public pin remains temporary pending
+owner input for the Magic key ID and public key; rollout remains legacy-live.
+
+Magic catalog signing and domain-separation safeguards (2026-09-20, current
+working tree based at `080db79`): brought `MagicCatalogSigningKeyLoader` to
+parity with Pokémon's four GitHub publication-context checks, added the
+explicit `MAGIC_CATALOG_PUBLISH` workflow marker, and made the variable source
+injectable for unit coverage. Added an additive optional Pokémon schema-1
+`catalogKind` marker: publisher-generated releases emit `pokemon`, the
+verifier rejects a present wrong domain, and legacy releases that omit it stay
+readable. Updated the key runbook to document Magic's second protected
+environment and separate-key custody boundaries. Verification passed:
+MagicCatalogCore 10/10, PokemonCatalogCore 39/39, Debug iOS Simulator build,
+and `git diff --check`.
+
 Documentation freshness reconciliation (2026-09-20, current `main` at
 `31eb97e`): updated the current App Review/release ledgers, launch plan, and
 repository audit to distinguish the clean current checkout from historical
