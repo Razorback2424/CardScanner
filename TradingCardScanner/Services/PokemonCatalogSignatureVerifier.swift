@@ -7,23 +7,28 @@ import PokemonCatalogCore
 /// timestamp, and release decoding are owned by PokemonCatalogCore.
 enum PokemonCatalogSignatureVerifier {
     enum VerificationError: Error, CustomStringConvertible {
+        case noPinnedKeysConfigured
         case unknownKeyID(String)
         case invalidPayloadEncoding
         case invalidSignatureEncoding
         case signatureVerificationFailed
         case payloadDecodeFailed(Error)
         case unsupportedSchemaVersion(Int)
+        case wrongCatalogKind(String)
         case revisionNotMonotonic(received: Int, current: Int)
         case futureTimestamp(Date)
 
         var description: String {
             switch self {
+            case .noPinnedKeysConfigured:
+                return "No Pokémon catalog pinned keys are configured"
             case .unknownKeyID(let id): return "Unknown key ID: \(id)"
             case .invalidPayloadEncoding: return "Payload is not valid base64url"
             case .invalidSignatureEncoding: return "Signature is not valid base64url"
             case .signatureVerificationFailed: return "Signature verification failed"
             case .payloadDecodeFailed(let e): return "Payload decode failed: \(e)"
             case .unsupportedSchemaVersion(let v): return "Unsupported schema version: \(v)"
+            case .wrongCatalogKind(let kind): return "Expected Pokémon catalog kind, received \(kind)"
             case .revisionNotMonotonic(let r, let c): return "Revision \(r) is not greater than current \(c)"
             case .futureTimestamp(let d): return "Generated timestamp \(d) is in the future"
             }
@@ -123,6 +128,7 @@ enum PokemonCatalogSignatureVerifier {
                 )
             )
         case .unsupportedSchemaVersion(let version): return .unsupportedSchemaVersion(version)
+        case .wrongCatalogKind(let kind): return .wrongCatalogKind(kind)
         case .revisionNotMonotonic(let received, let current):
             return .revisionNotMonotonic(received: received, current: current)
         case .futureTimestamp(let date): return .futureTimestamp(date)

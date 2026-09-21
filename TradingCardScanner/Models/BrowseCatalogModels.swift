@@ -42,6 +42,9 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
     /// Publisher-prepared card artwork hints used only after every real set-art
     /// candidate fails. Optional so old bundled/downloaded manifests decode.
     var artworkFallbackURLs: [URL]? = nil
+    /// True only when the active signed catalog authorizes this expansion code
+    /// for the bounded Limitless card-art fallback. Optional for legacy rows.
+    var limitlessArtworkAuthorized: Bool? = nil
 
     init(
         catalogID: CatalogSetID,
@@ -53,7 +56,8 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         releaseDate: Date?,
         sortRank: Int,
         bundledArtworkSourceID: String? = nil,
-        artworkFallbackURLs: [URL]? = nil
+        artworkFallbackURLs: [URL]? = nil,
+        limitlessArtworkAuthorized: Bool? = nil
     ) {
         self.catalogID = catalogID
         self.name = name
@@ -65,6 +69,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         self.sortRank = sortRank
         self.bundledArtworkSourceID = bundledArtworkSourceID
         self.artworkFallbackURLs = artworkFallbackURLs
+        self.limitlessArtworkAuthorized = limitlessArtworkAuthorized
     }
 
     /// Only virtual WotC set rows carry this. The provider set ID remains the
@@ -91,6 +96,9 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     let collectorNumber: String
     let thumbnailURL: URL?
     let imageURL: URL?
+    /// Signed-registry authorization for the bounded Limitless card-art rung.
+    /// It is optional so legacy checklist summaries remain readable.
+    var limitlessArtworkAuthorized: Bool? = nil
     /// Magic treatments are part of the exact printing summary, not another
     /// finish choice. Raw strings keep a newer catalog value readable on an
     /// older build as `MagicTreatment.unclassified` instead of dropping the
@@ -125,7 +133,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         isExpandedMasterSetVariant: Bool = false,
         isSoleSlotForCard: Bool = false,
         magicTreatmentIDsRaw: [String] = [],
-        magicTreatmentQualifiers: [String: String] = [:]
+        magicTreatmentQualifiers: [String: String] = [:],
+        limitlessArtworkAuthorized: Bool? = nil
     ) {
         self.game = game
         self.providerID = providerID
@@ -136,6 +145,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         self.collectorNumber = collectorNumber
         self.thumbnailURL = thumbnailURL
         self.imageURL = imageURL
+        self.limitlessArtworkAuthorized = limitlessArtworkAuthorized
         let storedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDsRaw)
         self.magicTreatmentIDsRaw = storedTreatmentIDs
         let treatmentIDSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: storedTreatmentIDs))
@@ -150,6 +160,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
     enum CodingKeys: String, CodingKey {
         case game, providerID, setID, setName, setCode, name, collectorNumber
         case thumbnailURL, imageURL
+        case limitlessArtworkAuthorized
         case magicTreatmentIDsRaw, magicTreatmentQualifiers
         case masterSetVariant, isExpandedMasterSetVariant, isSoleSlotForCard
     }
@@ -165,6 +176,10 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         collectorNumber = try container.decode(String.self, forKey: .collectorNumber)
         thumbnailURL = try container.decodeIfPresent(URL.self, forKey: .thumbnailURL)
         imageURL = try container.decodeIfPresent(URL.self, forKey: .imageURL)
+        limitlessArtworkAuthorized = try container.decodeIfPresent(
+            Bool.self,
+            forKey: .limitlessArtworkAuthorized
+        )
         let storedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: try container.decodeIfPresent([String].self, forKey: .magicTreatmentIDsRaw) ?? []
         )
@@ -202,6 +217,10 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         try container.encode(collectorNumber, forKey: .collectorNumber)
         try container.encodeIfPresent(thumbnailURL, forKey: .thumbnailURL)
         try container.encodeIfPresent(imageURL, forKey: .imageURL)
+        try container.encodeIfPresent(
+            limitlessArtworkAuthorized,
+            forKey: .limitlessArtworkAuthorized
+        )
         // Keep Pokémon checklist resources byte-compatible and sparse. The
         // absent keys decode as the empty Magic treatment axis above.
         if !magicTreatmentIDsRaw.isEmpty {

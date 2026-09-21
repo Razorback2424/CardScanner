@@ -1,10 +1,10 @@
 # Artwork fallback plan
 
 **Status:** P0–P3, the 2026-09-15 Slice A remediation, the file-level A6
-bundled-logo audit, and the targeted TCGdex provider re-probe are implemented
-in the current working tree. The focused fallback/cache regressions pass
-133/133 with 0 failures as of 2026-09-16; broader provider/device validation
-and image-licensing decisions remain open — reconciled 2026-09-16.
+bundled-logo audit, the targeted TCGdex provider re-probe, and the automatic
+set-art release path are implemented in the current working tree. Core and
+offline publisher verification pass; broader provider/device validation and
+image-licensing decisions remain open — reconciled 2026-09-21.
 
 Open defects found in this contract on 2026-09-15 — the set tile requesting the
 symbol rather than the logo, a bundled asset that is unreachable behind a remote
@@ -149,18 +149,36 @@ gate is still separate from this asset audit.
 | `swsh12tg` | 83,342 | `def5a5fc5b8c7d1acd320b7e6bac83e5` | 320 × 150 | `92e647b4d20fc66f…` |
 | `swsh4.5sv` | 97,840 | `c0ba8e31980c9997b5e3bd99d77cdb28` | 320 × 158 | `c566368d6653d15a…` |
 
+### Automatic set-art release — implemented 2026-09-21
+
+TCGdex remains the hard provider dependency and the first artwork source. The
+publisher now admits zero-official-count subsets as browse-only descriptors,
+derives safe same-series parent artwork without persisting a parent authority,
+and publishes validated card-art fallback URLs in the signed descriptor. A
+failed optional secondary provider therefore cannot abort the daily catalog.
+
+The optional set-level secondary source is `api.pokemontcg.io/v2`, with image
+URLs probed at `images.scrydex.com`. Matching scans the complete secondary
+directory after normalizing names, codes, dates, and counts. It accepts only a
+unique candidate with at least three signals, including an independent total or
+exact-name signal; parent/subset name prefixes are corroborated by matching
+totals. Ambiguous or unprobed artwork is discarded and reported. This is the
+deliberate replacement for the former “pokemontcg.io is only Scrydex” decision:
+the source is now used for bounded set-art/card-art recovery where TCGdex has
+no usable coverage, not as a general card-art directory.
+
 ### Out of scope
 - Magic: Scryfall already covers artwork and set icons; no change.
-- pokemontcg.io: its Pitch Black URLs now redirect to `images.scrydex.com`, so it
-  is not an independent fallback — it is Scrydex by another name.
 - Runtime queries to Limitless to *discover* cards. URLs are derived, never searched.
 
 ## Licensing caveat
 "Free to access" is not "freely licensed." Pokémon card imagery remains
 copyright Pokémon/Nintendo/Game Freak/Creatures; Limitless states this, and
-ptcg-assets carries no clear commercial image licence. Revisit the image-source
-arrangement before monetization. Keep provider identity in the model so the
-chain can be re-pointed without touching call sites.
+ptcg-assets carries no clear commercial image licence. The automatic path now
+also exposes imagery from `api.pokemontcg.io` and `images.scrydex.com`, widening
+the third-party host/licensing surface. Revisit the image-source arrangement
+before monetization. Keep provider identity in the model so the chain can be
+re-pointed without touching call sites.
 
 ## Vendored asset refresh
 

@@ -5,6 +5,9 @@ public enum MagicCatalogCoreContract {
     public static let releaseSchemaVersion = 1
     public static let rulesVersion = 1
     public static let catalogKind = "magic"
+    public static let approvedIconHosts: Set<String> = [
+        "svgs.scryfall.io"
+    ]
 }
 
 public enum MagicCatalogRoutingKind: String, Codable, Equatable, Hashable, Sendable {
@@ -299,6 +302,7 @@ public enum MagicCatalogReleaseValidator {
         case invalidPrintedSize(String)
         case invalidCardCount(String)
         case invalidReleaseDate(String)
+        case invalidIconSVGURL(code: String, url: String)
         case routingChildMissingParent(String)
         case routingChildMissingParentCode(String)
         case routingChildMayNotScan(String)
@@ -323,6 +327,8 @@ public enum MagicCatalogReleaseValidator {
             case .invalidPrintedSize(let code): return "Invalid printed size for Magic set \(code)"
             case .invalidCardCount(let code): return "Invalid card count for Magic set \(code)"
             case .invalidReleaseDate(let code): return "Invalid release date for Magic set \(code)"
+            case let .invalidIconSVGURL(code, url):
+                return "Invalid iconSVGURL for Magic set \(code): \(url)"
             case .routingChildMissingParent(let code):
                 return "Routing child \(code) references a nonexistent parent set"
             case .routingChildMissingParentCode(let code):
@@ -375,6 +381,29 @@ public enum MagicCatalogReleaseValidator {
             if let releaseDate = descriptor.releaseDate,
                MagicCatalogDate.parseDay(releaseDate) == nil {
                 throw ValidationError.invalidReleaseDate(descriptor.code)
+            }
+            if let iconURL = descriptor.iconSVGURL {
+                // A query is allowed, and only a query. Scryfall stamps every
+                // set icon with a `?<timestamp>` cache-buster — all 910 URLs in
+                // the bundled seed carry one — so rejecting queries rejects the
+                // provider's real data, including releases already signed and
+                // published. The host allowlist is what makes the URL safe;
+                // once the origin is pinned, its query string cannot redirect
+                // the fetch anywhere else.
+                let host = iconURL.host?.lowercased()
+                let isValid = iconURL.scheme == "https"
+                    && host.map(MagicCatalogCoreContract.approvedIconHosts.contains) == true
+                    && iconURL.user == nil
+                    && iconURL.password == nil
+                    && iconURL.port == nil
+                    && iconURL.fragment == nil
+                    && !iconURL.path.isEmpty
+                guard isValid else {
+                    throw ValidationError.invalidIconSVGURL(
+                        code: descriptor.code,
+                        url: iconURL.absoluteString
+                    )
+                }
             }
 
             if let existing = ids[uuid], existing != descriptor.code {

@@ -49,19 +49,45 @@ enum StoreRevisionFingerprinting {
     static func priceValues(_ records: [PriceRecord]) -> Int {
         var hasher = Hasher()
         for record in records.sorted(by: { $0.key < $1.key }) {
-            hasher.combine(record.key)
-            hasher.combine(record.effectiveUnitMarketPriceUSD)
-            hasher.combine(record.currencyCode)
-            hasher.combine(record.sourceRaw)
-            hasher.combine(record.sourceUpdatedAt)
-            hasher.combine(record.fetchedAt)
-            hasher.combine(record.lastCheckedAt)
-            hasher.combine(record.lastSuccessfulCheckAt)
-            hasher.combine(record.invalidatedAt)
-            hasher.combine(record.lastFailureAt)
-            hasher.combine(record.lastFailureReasonRaw)
+            combinePriceValue(record, into: &hasher)
         }
         return hasher.finalize()
+    }
+
+    /// The caller has already sorted these records by key. Keeping this path
+    /// separate preserves the unsorted-input contract of `priceValues` while
+    /// allowing the store fingerprint to reuse its existing sort.
+    static func priceValuesInKeyOrder(_ records: [PriceRecord]) -> Int {
+        var hasher = Hasher()
+        for record in records {
+            combinePriceValue(record, into: &hasher)
+        }
+        return hasher.finalize()
+    }
+
+    /// Canonical UUID strings compare in the same order as their 16-byte
+    /// representation. Comparing the bytes avoids constructing a String for
+    /// every sort comparator invocation.
+    static func uuidPrecedes(_ lhs: UUID, _ rhs: UUID) -> Bool {
+        withUnsafeBytes(of: lhs.uuid) { lhsBytes in
+            withUnsafeBytes(of: rhs.uuid) { rhsBytes in
+                lhsBytes.lexicographicallyPrecedes(rhsBytes)
+            }
+        }
+    }
+
+    private static func combinePriceValue(_ record: PriceRecord, into hasher: inout Hasher) {
+        hasher.combine(record.key)
+        hasher.combine(record.effectiveUnitMarketPriceUSD)
+        hasher.combine(record.currencyCode)
+        hasher.combine(record.sourceRaw)
+        hasher.combine(record.sourceUpdatedAt)
+        hasher.combine(record.fetchedAt)
+        hasher.combine(record.lastCheckedAt)
+        hasher.combine(record.lastSuccessfulCheckAt)
+        hasher.combine(record.invalidatedAt)
+        hasher.combine(record.lastFailureAt)
+        hasher.combine(record.lastFailureReasonRaw)
     }
 }
 
@@ -470,12 +496,19 @@ actor StoreRevisionModelActor {
     }
 
     private func makeFingerprint() throws -> StoreRevisionFingerprint {
+        let signpostState = PerformanceSignpost.signposter
+            .beginInterval("makeStoreRevisionFingerprint")
+        defer {
+            PerformanceSignpost.signposter
+                .endInterval("makeStoreRevisionFingerprint", signpostState)
+        }
+
         let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
             .sorted { $0.collectionKey < $1.collectionKey }
         let inventoryEvents = try modelContext.fetch(FetchDescriptor<InventoryEvent>())
-            .sorted { $0.eventID.uuidString < $1.eventID.uuidString }
+            .sorted { StoreRevisionFingerprinting.uuidPrecedes($0.eventID, $1.eventID) }
         let collectionActivities = try modelContext.fetch(FetchDescriptor<CollectionActivity>())
-            .sorted { $0.id.uuidString < $1.id.uuidString }
+            .sorted { StoreRevisionFingerprinting.uuidPrecedes($0.id, $1.id) }
         let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
             .sorted { $0.key < $1.key }
         let artworkOverrides = try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())
@@ -579,7 +612,7 @@ actor StoreRevisionModelActor {
             cardCount: cards.count,
             inventoryEvents: inventoryHasher.finalize(),
             collectionActivities: activityHasher.finalize(),
-            priceValues: StoreRevisionFingerprinting.priceValues(priceRecords),
+            priceValues: StoreRevisionFingerprinting.priceValuesInKeyOrder(priceRecords),
             priceShape: priceShapeHasher.finalize(),
             artwork: artworkHasher.finalize(),
             magicCards: magicHasher.finalize(),

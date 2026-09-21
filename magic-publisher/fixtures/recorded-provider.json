@@ -8,7 +8,7 @@
       "set_type": "expansion",
       "card_count": 100,
       "printed_size": 100,
-      "icon_svg_uri": "https://example.test/abc.svg",
+      "icon_svg_uri": "https://svgs.scryfall.io/sets/abc.svg",
       "parent_set_code": null,
       "digital": false
     },
@@ -20,7 +20,7 @@
       "set_type": "expansion",
       "card_count": 50,
       "printed_size": 50,
-      "icon_svg_uri": "https://example.test/old.svg",
+      "icon_svg_uri": "https://svgs.scryfall.io/sets/old.svg",
       "parent_set_code": null,
       "digital": false
     },
@@ -32,7 +32,7 @@
       "set_type": "token",
       "card_count": 4,
       "printed_size": null,
-      "icon_svg_uri": "https://example.test/tabc.svg",
+      "icon_svg_uri": "https://svgs.scryfall.io/sets/tabc.svg",
       "parent_set_code": "ABC",
       "digital": false
     },
@@ -44,7 +44,7 @@
       "set_type": "memorabilia",
       "card_count": 5,
       "printed_size": null,
-      "icon_svg_uri": "https://example.test/aabc.svg",
+      "icon_svg_uri": "https://svgs.scryfall.io/sets/aabc.svg",
       "parent_set_code": "ABC",
       "digital": false
     },

@@ -48,6 +48,8 @@ enum CardCenteringInnerSource: String, Codable, Equatable {
     case visionPrintedInner
     case visionArtWindow
     case profile
+    case registeredBackTemplate
+    case frontBottomCandidate
     case none
 }
 
@@ -197,6 +199,42 @@ struct CardCenteringCandidateLedgerDiagnostic: Codable, Equatable {
     let selectedInnerSource: CardCenteringInnerSource
     let candidates: [CardCenteringCandidateDiagnostic]
 }
+
+/// DEBUG-only evidence for the registered-back identity gate. The analyzer
+/// never reads this record; it exists to measure both positive and negative
+/// classes before the gate is extended.
+struct CardCenteringBackIdentityDiagnostic: Codable, Equatable {
+    let winner: String
+    let pokemonScore: Double
+    let magicScore: Double
+    let winnerScore: Double
+    let runnerUpScore: Double
+    let identityMargin: Double
+    let edgeBlueDominance: Double
+    let centreBrightness: Double
+    let lowerWarmth: Double
+    let topBlueDominance: Double
+    let centralPatchBrightness: Double
+    let centralPatchWarmth: Double
+    let scoreGatePassed: Bool
+    let marginGatePassed: Bool
+    let secondaryGatePassed: Bool
+    let fullAcceptanceGatePassed: Bool
+}
+
+/// DEBUG-only evidence for the single bounded REQ-044 selector attempt. The
+/// selector is deliberately switchable so its development result cannot become
+/// an automatic-release claim without the remaining REQ-045 gates.
+struct CardCenteringJointSelectionDiagnostic: Codable, Equatable {
+    let baselineAspect: Double
+    let selectedAspect: Double?
+    let baselineScore: Double
+    let selectedScore: Double?
+    let selectedDepth: Double?
+    let candidateCount: Int
+    let accepted: Bool
+    let rejectionReason: String?
+}
 #endif
 
 /// Native port of the tuned Python centering detector. It scores long color
@@ -300,6 +338,20 @@ enum CardCenteringAnalyzer {
     /// Installed only by the REQ-042 candidate-recall harness. Candidate
     /// telemetry is observational and is never consulted by production logic.
     nonisolated(unsafe) static var candidateLedgerDiagnosticSink: ((CardCenteringCandidateLedgerDiagnostic) -> Void)?
+    /// Installed only by the REQ-043 identity-gate harness. This records the
+    /// raw family scores and gate outcomes for every eligible image without
+    /// changing branch selection.
+    nonisolated(unsafe) static var registeredBackIdentityDiagnosticSink: ((CardCenteringBackIdentityDiagnostic) -> Void)?
+    /// DEBUG-only switch used by the controlled REQ-041 A/B. Release builds
+    /// do not compile the observational front generator call at all.
+    nonisolated(unsafe) static var frontBottomCandidateGenerationEnabled = true
+    /// DEBUG-only switch for the one bounded REQ-044 joint-selection attempt.
+    /// It defaults off so ordinary DEBUG diagnostics and all Release builds
+    /// retain the pre-experiment production path.
+    nonisolated(unsafe) static var jointSelectionEnabled = false
+    /// Installed only by the REQ-044 development harness. This reports the
+    /// shape-prior decision without affecting any Release path.
+    nonisolated(unsafe) static var jointSelectionDiagnosticSink: ((CardCenteringJointSelectionDiagnostic) -> Void)?
     /// The active DEBUG-only ledger is a reference context so the production
     /// method signatures stay identical in Release builds. Tests run analyses
     /// serially while this temporary sink is installed.
@@ -338,8 +390,8 @@ enum CardCenteringAnalyzer {
         let mad: Double?
         let threshold: Double?
         let proposedSemanticRole: String
-        let selected: Bool
-        let rejectionReason: String?
+        var selected: Bool
+        var rejectionReason: String?
     }
 
     private final class CandidateLedger {
@@ -382,6 +434,22 @@ enum CardCenteringAnalyzer {
                 selected: selected,
                 rejectionReason: rejectionReason
             ))
+        }
+
+        func markSelected(
+            family: String,
+            side: String,
+            source: String,
+            workingGeometry: [CardCenteringPoint]
+        ) {
+            for index in entries.indices where entries[index].family == family
+                && entries[index].side == side
+                && entries[index].source == source {
+                entries[index].selected = entries[index].workingGeometry == workingGeometry
+                entries[index].rejectionReason = entries[index].selected
+                    ? nil
+                    : "joint_shape_prior"
+            }
         }
 
         func diagnostic(
@@ -487,6 +555,10 @@ enum CardCenteringAnalyzer {
     /// Beyond this the card is not merely skewed, and a blind rotation would be
     /// a guess. The measurement is still returned, at the given rotation.
     private static let maximumCorrectableSkew = 25.0
+    /// The automatic inner selector is not a release claim. The hybrid path
+    /// keeps its best candidate visible as a starting frame, but requires an
+    /// explicit confirmation before ratios or export become reportable.
+    private static let automaticInnerReferenceReleaseEnabled = false
 
     static func analyze(_ data: Data, rotationDegrees: Double = 0) throws -> CardCenteringAnalysis {
         // Only an automatic pass may straighten the card. Once the person has
@@ -787,6 +859,32 @@ enum CardCenteringAnalyzer {
         )
 
         let detectedOuterQuad = outline?.quad ?? .axisAligned(outer)
+#if DEBUG
+        let innerBranchStart = CFAbsoluteTimeGetCurrent()
+#endif
+        var innerRGBPixels = workingRGBPixels
+        if innerRGBPixels == nil, outline != nil || scalar != nil {
+            let rgbPixels = try pixels(from: prepared)
+            innerRGBPixels = rgbPixels
+            workingRGBPixels = rgbPixels
+        }
+        let registeredBackTemplateResult: RegisteredBackTemplateResult?
+        if (outline != nil || scalar != nil), let innerRGBPixels {
+            registeredBackTemplateResult = registeredBackTemplate(
+                pixels: innerRGBPixels,
+                width: width,
+                height: height,
+                outer: detectedOuterQuad
+            )
+        } else {
+            registeredBackTemplateResult = nil
+        }
+#if DEBUG
+        var frontBottomCandidateResult: FrontBottomCandidateResult?
+#endif
+#if DEBUG
+        stageTimings.innerCandidateGeneration += CFAbsoluteTimeGetCurrent() - innerBranchStart
+#endif
         let usesFullResolutionRefinement = detectionMaxDimension.map {
             $0 < workingMaxDimension
         } == true
@@ -808,7 +906,7 @@ enum CardCenteringAnalyzer {
 #if DEBUG
         let profileColorStart = CFAbsoluteTimeGetCurrent()
 #endif
-        if shouldUseWorkingProfile {
+        if registeredBackTemplateResult == nil, shouldUseWorkingProfile {
             let rgbPixels = try workingRGBPixels ?? pixels(from: prepared)
             profilePixels = rgbPixels.map(rgbToLab)
         } else {
@@ -864,13 +962,29 @@ enum CardCenteringAnalyzer {
             profileInnerResult = nil
         }
 #if DEBUG
+        if Self.frontBottomCandidateGenerationEnabled,
+           registeredBackTemplateResult == nil,
+           let innerRGBPixels,
+           outline != nil || scalar != nil {
+            // This pass only proposes semantic art-window candidates. Its
+            // alternatives remain observational until the role-specific
+            // joint selector is addressed after REQ-042 recall is complete.
+            frontBottomCandidateResult = frontBottomCandidateGenerator(
+                pixels: innerRGBPixels,
+                width: width,
+                height: height,
+                outer: detectedOuterQuad
+            )
+        }
+#endif
+#if DEBUG
         stageTimings.innerCandidateGeneration += CFAbsoluteTimeGetCurrent() - innerStart
         let selectionStart = CFAbsoluteTimeGetCurrent()
 #endif
-        let detectedInnerQuad: CardCenteringQuad?
-        let detectedInnerReference: CardCenteringInnerReference
-        let detectedInnerSupport: Double
-        let innerSource: CardCenteringInnerSource
+        var detectedInnerQuad: CardCenteringQuad?
+        var detectedInnerReference: CardCenteringInnerReference
+        var detectedInnerSupport: Double
+        var innerSource: CardCenteringInnerSource
         let fittedOuterEdges = detectedOuterQuad.projectedEdges
         let fittedOuterWidth = Double(max(fittedOuterEdges.right - fittedOuterEdges.left, 1))
         let fittedOuterHeight = Double(max(fittedOuterEdges.bottom - fittedOuterEdges.top, 1))
@@ -889,7 +1003,12 @@ enum CardCenteringAnalyzer {
         } else {
             scalarOuterAgreesWithVision = false
         }
-        if let scalar, !scalar.pinned, outlineHasInner, scalarOuterAgreesWithVision {
+        if let registeredBackTemplateResult {
+            detectedInnerQuad = registeredBackTemplateResult.quad
+            detectedInnerReference = .printedBorder
+            detectedInnerSupport = registeredBackTemplateResult.support
+            innerSource = .registeredBackTemplate
+        } else if let scalar, !scalar.pinned, outlineHasInner, scalarOuterAgreesWithVision {
             // A complete scalar pass has an independently fitted colour edge
             // for every side. Prefer that evidence over a Vision rectangle
             // when the latter is merely a printed box or an artwork detail.
@@ -937,6 +1056,30 @@ enum CardCenteringAnalyzer {
             detectedInnerSupport = 0
             innerSource = .none
         }
+#if DEBUG
+        if Self.jointSelectionEnabled,
+           registeredBackTemplateResult == nil,
+           let frontBottomCandidateResult,
+           let baselineInner = detectedInnerQuad,
+           let selected = jointSelectFrontBottomCandidate(
+               baseline: baselineInner,
+               outer: detectedOuterQuad,
+               candidates: frontBottomCandidateResult.alternatives
+           ) {
+            detectedInnerQuad = selected.quad
+            detectedInnerReference = .artWindow
+            detectedInnerSupport = selected.candidate.support
+            innerSource = .frontBottomCandidate
+            if let candidateLedger = Self.activeCandidateLedger {
+                candidateLedger.markSelected(
+                    family: "inner",
+                    side: "bottom",
+                    source: "front.art_window.bottom_generator",
+                    workingGeometry: selected.candidate.geometry
+                )
+            }
+        }
+#endif
         if detectedInnerQuad == nil, !notes.contains(where: { $0.contains("inner reference") }) {
             notes.append("No gradeable inner reference was found — adjust the inner guides manually before reading the result.")
         }
@@ -972,6 +1115,26 @@ enum CardCenteringAnalyzer {
         let resultStart = CFAbsoluteTimeGetCurrent()
 #endif
 
+        let automaticConfidence = confidence(
+            outline: outline,
+            outer: finalOuterQuad,
+            inner: finalInnerQuad,
+            innerSupport: finalInnerSupport,
+            notes: notes,
+            rectification: finalRectification
+        )
+        let resolvedConfidence: CardCenteringConfidence
+        if !Self.automaticInnerReferenceReleaseEnabled,
+           finalInnerQuad != nil,
+           automaticConfidence.state == .confident {
+            resolvedConfidence = .manualConfirmationRequired(
+                preserving: automaticConfidence,
+                reason: "The detector placed starting outer and inner frames. Confirm or adjust both before reading centering."
+            )
+        } else {
+            resolvedConfidence = automaticConfidence
+        }
+
         var measurement = CardCenteringMeasurement(
             imageWidth: presentationCGImage.width,
             imageHeight: presentationCGImage.height,
@@ -981,14 +1144,7 @@ enum CardCenteringAnalyzer {
             detectionNotes: notes,
             coordinateMapping: coordinateMapping,
             innerReference: detectedInnerReference,
-            confidence: confidence(
-                outline: outline,
-                outer: finalOuterQuad,
-                inner: finalInnerQuad,
-                innerSupport: finalInnerSupport,
-                notes: notes,
-                rectification: finalRectification
-            ),
+            confidence: resolvedConfidence,
             rectification: finalRectification
         )
         measurement.refreshWarnings()
@@ -2878,6 +3034,734 @@ enum CardCenteringAnalyzer {
         let quad: CardCenteringQuad
         let support: Double
     }
+
+    private enum RegisteredBackTemplateKind {
+        case pokemonClassic
+        case magicClassic
+
+        var identifier: String {
+            switch self {
+            case .pokemonClassic: "pokemon-back-classic-v1"
+            case .magicClassic: "magic-back-classic-v1"
+            }
+        }
+
+        var expectedDepths: [ProfileSide: Double] {
+            switch self {
+            case .pokemonClassic:
+                return [.left: 0.037, .top: 0.051, .right: 0.037, .bottom: 0.064]
+            case .magicClassic:
+                return [.left: 0.034, .top: 0.055, .right: 0.035, .bottom: 0.050]
+            }
+        }
+    }
+
+    private struct RegisteredBackTemplateResult {
+        let quad: CardCenteringQuad
+        let support: Double
+        let identifier: String
+        let identityScore: Double
+        let identityMargin: Double
+    }
+
+    private struct RegisteredBackSideCandidate {
+        let line: GeometryLine
+        let geometry: [CardCenteringPoint]
+        let normalizedDepth: Double
+        let support: Double
+        let transitionStrength: Double
+        let score: Double
+    }
+
+    private struct FrontBottomCandidate {
+        let line: GeometryLine
+        let geometry: [CardCenteringPoint]
+        let normalizedDepth: Double
+        let support: Double
+        let transitionStrength: Double
+    }
+
+    private struct FrontBottomCandidateResult {
+        let candidate: FrontBottomCandidate
+        let alternatives: [FrontBottomCandidate]
+    }
+
+#if DEBUG
+    private struct FrontJointSelectionResult {
+        let quad: CardCenteringQuad
+        let candidate: FrontBottomCandidate
+        let score: Double
+    }
+#endif
+
+    /// Identifies a supported card-back family from broad colour structure,
+    /// then registers the observed printed border against the fitted physical
+    /// outer quad. The family priors only bound the search; every returned
+    /// edge is fitted from image transitions so a shifted or skewed print is
+    /// measured rather than silently treated as centred.
+    private static func registeredBackTemplate(
+        pixels: [Pixel],
+        width: Int,
+        height: Int,
+        outer: CardCenteringQuad
+    ) -> RegisteredBackTemplateResult? {
+        guard width > 20, height > 20 else { return nil }
+
+        func bilinearPoint(u: Double, v: Double) -> CardCenteringPoint {
+            let top = interpolate(outer.topLeft, outer.topRight, amount: u)
+            let bottom = interpolate(outer.bottomLeft, outer.bottomRight, amount: u)
+            return interpolate(top, bottom, amount: v)
+        }
+
+        func rgb(_ pixel: Pixel) -> (r: Double, g: Double, b: Double) {
+            (Double(pixel.l), Double(pixel.a), Double(pixel.b))
+        }
+
+        func averageRGB(at locations: [(u: Double, v: Double)]) -> (r: Double, g: Double, b: Double) {
+            let values = locations.map { rgb(samplePixel(pixels, width: width, height: height, at: bilinearPoint(u: $0.u, v: $0.v))) }
+            let count = Double(max(values.count, 1))
+            return (
+                values.reduce(0) { $0 + $1.r } / count,
+                values.reduce(0) { $0 + $1.g } / count,
+                values.reduce(0) { $0 + $1.b } / count
+            )
+        }
+
+        func luminance(_ value: (r: Double, g: Double, b: Double)) -> Double {
+            (value.r + value.g + value.b) / 3
+        }
+
+        func unitInterval(_ value: Double, lower: Double, upper: Double) -> Double {
+            guard upper > lower else { return 0 }
+            return min(1, max(0, (value - lower) / (upper - lower)))
+        }
+
+        let edge = averageRGB(at: [
+            (0.10, 0.25), (0.10, 0.50), (0.10, 0.75),
+            (0.90, 0.25), (0.90, 0.50), (0.90, 0.75)
+        ])
+        let top = averageRGB(at: [(0.50, 0.10)])
+        let centre = averageRGB(at: [(0.50, 0.50)])
+        let lowerCentre = averageRGB(at: [(0.50, 0.90)])
+        let centralPatch = averageRGB(at: [
+            (0.35, 0.38), (0.50, 0.38), (0.65, 0.38),
+            (0.35, 0.50), (0.50, 0.50), (0.65, 0.50),
+            (0.35, 0.62), (0.50, 0.62), (0.65, 0.62)
+        ])
+        // The raw RGB path is normalized to 0...1. Keep chroma features in
+        // 8-bit-equivalent units so the registered family gates remain
+        // legible and independent of the image decoder's channel scale.
+        let edgeBlueDominance = 255 * (edge.b - (edge.r + edge.g) / 2)
+        let centreBrightness = luminance(centre)
+        let lowerWarmth = 255 * (lowerCentre.r - lowerCentre.g)
+        let topBlueDominance = 255 * (top.b - (top.r + top.g) / 2)
+        let centralPatchBrightness = luminance(centralPatch)
+        let centralPatchWarmth = 255 * (centralPatch.r - centralPatch.b)
+
+        let pokemonScore = 0.55 * unitInterval(edgeBlueDominance, lower: 18, upper: 40)
+            + 0.15 * unitInterval(centreBrightness, lower: 0.45, upper: 0.72)
+            + 0.10 * unitInterval(topBlueDominance, lower: 12, upper: 45)
+            + 0.20 * unitInterval(centralPatchBrightness, lower: 0.42, upper: 0.68)
+        let magicScore = 0.36 * unitInterval(-edgeBlueDominance, lower: 8, upper: 25)
+            + 0.38 * unitInterval(centralPatchWarmth, lower: 35, upper: 85)
+            + 0.26 * unitInterval(lowerWarmth, lower: 20, upper: 60)
+
+        let ranked = [
+            (kind: RegisteredBackTemplateKind.pokemonClassic, score: pokemonScore),
+            (kind: RegisteredBackTemplateKind.magicClassic, score: magicScore)
+        ].sorted { $0.score > $1.score }
+        guard let winner = ranked.first else {
+            return nil
+        }
+        let runnerUp = ranked.dropFirst().first?.score ?? 0
+        let identityMargin = winner.score - runnerUp
+        let scoreGatePassed = winner.score >= 0.72
+        let marginGatePassed = identityMargin >= 0.18
+        let secondaryGatePassed: Bool
+        if winner.kind == .pokemonClassic {
+            secondaryGatePassed = centralPatchBrightness >= 0.42
+        } else {
+            secondaryGatePassed = centralPatchWarmth >= 35 && edgeBlueDominance <= -8
+        }
+#if DEBUG
+        Self.registeredBackIdentityDiagnosticSink?(CardCenteringBackIdentityDiagnostic(
+            winner: winner.kind.identifier,
+            pokemonScore: pokemonScore,
+            magicScore: magicScore,
+            winnerScore: winner.score,
+            runnerUpScore: runnerUp,
+            identityMargin: identityMargin,
+            edgeBlueDominance: edgeBlueDominance,
+            centreBrightness: centreBrightness,
+            lowerWarmth: lowerWarmth,
+            topBlueDominance: topBlueDominance,
+            centralPatchBrightness: centralPatchBrightness,
+            centralPatchWarmth: centralPatchWarmth,
+            scoreGatePassed: scoreGatePassed,
+            marginGatePassed: marginGatePassed,
+            secondaryGatePassed: secondaryGatePassed,
+            fullAcceptanceGatePassed: scoreGatePassed
+                && marginGatePassed
+                && secondaryGatePassed
+        ))
+#endif
+        guard scoreGatePassed, marginGatePassed, secondaryGatePassed else {
+            return nil
+        }
+
+        func edgeEndpoints(_ side: ProfileSide) -> (CardCenteringPoint, CardCenteringPoint) {
+            switch side {
+            case .left: (outer.topLeft, outer.bottomLeft)
+            case .top: (outer.topLeft, outer.topRight)
+            case .right: (outer.topRight, outer.bottomRight)
+            case .bottom: (outer.bottomLeft, outer.bottomRight)
+            }
+        }
+
+        func edgePoint(_ side: ProfileSide, progress: Double) -> CardCenteringPoint {
+            let endpoints = edgeEndpoints(side)
+            return interpolate(endpoints.0, endpoints.1, amount: progress)
+        }
+
+        func inwardNormal(_ side: ProfileSide) -> (x: Double, y: Double) {
+            let endpoints = edgeEndpoints(side)
+            let tangentX = endpoints.1.x - endpoints.0.x
+            let tangentY = endpoints.1.y - endpoints.0.y
+            let length = max(hypot(tangentX, tangentY), .ulpOfOne)
+            var normalX = -tangentY / length
+            var normalY = tangentX / length
+            let centre = outer.points.reduce(into: CardCenteringPoint(x: 0, y: 0)) { result, point in
+                result.x += point.x / 4
+                result.y += point.y / 4
+            }
+            let midpoint = edgePoint(side, progress: 0.5)
+            if (centre.x - midpoint.x) * normalX + (centre.y - midpoint.y) * normalY < 0 {
+                normalX = -normalX
+                normalY = -normalY
+            }
+            return (normalX, normalY)
+        }
+
+        func point(side: ProfileSide, progress: Double, normalizedDepth: Double) -> CardCenteringPoint {
+            let origin = edgePoint(side, progress: progress)
+            let normal = inwardNormal(side)
+            let axisLength = side == .left || side == .right ? outer.rectifiedWidth : outer.rectifiedHeight
+            let distance = normalizedDepth * axisLength
+            return CardCenteringPoint(
+                x: origin.x + normal.x * distance,
+                y: origin.y + normal.y * distance
+            )
+        }
+
+        func transition(side: ProfileSide, progress: Double, depth: Double) -> Double {
+            let radius = 0.0025
+            let before = samplePixel(
+                pixels,
+                width: width,
+                height: height,
+                at: point(side: side, progress: progress, normalizedDepth: max(0.001, depth - radius))
+            )
+            let after = samplePixel(
+                pixels,
+                width: width,
+                height: height,
+                at: point(side: side, progress: progress, normalizedDepth: depth + radius)
+            )
+            return 255 * Double(distance(before, after))
+        }
+
+        let progressValues = stride(from: 0.12, through: 0.88, by: 0.04).map { Double($0) }
+        let searchHalfWidth = 0.045
+        let depthCount = 73
+        var lines: [ProfileSide: GeometryLine] = [:]
+        var sideSupports: [Double] = []
+        var sideCandidates: [ProfileSide: [RegisteredBackSideCandidate]] = [:]
+
+        for side in ProfileSide.allCases {
+            let expectedDepth = winner.kind.expectedDepths[side] ?? 0.05
+            let depths = (0..<depthCount).map { index in
+                max(0.004, expectedDepth - searchHalfWidth)
+                    + (2 * searchHalfWidth) * Double(index) / Double(max(depthCount - 1, 1))
+            }
+
+            func evidence(at depth: Double) -> (strength: Double, support: Double, coverage: Double) {
+                let values = progressValues.map { transition(side: side, progress: $0, depth: depth) }
+                let strength = median(values)
+                let supportThreshold = max(8, strength * 0.45)
+                let support = Double(values.filter { $0 >= supportThreshold }.count)
+                    / Double(max(values.count, 1))
+                let occupiedBins = (0..<5).reduce(into: 0) { count, bin in
+                    let start = bin * values.count / 5
+                    let end = max(start + 1, (bin + 1) * values.count / 5)
+                    if values[start..<min(end, values.count)].contains(where: { $0 >= supportThreshold }) {
+                        count += 1
+                    }
+                }
+                return (strength, support, Double(occupiedBins) / 5.0)
+            }
+
+            let depthEvidence = depths.map { (depth: $0, evidence: evidence(at: $0)) }
+            let acceptedIndices = depthEvidence.indices.filter { index in
+                let item = depthEvidence[index].evidence
+                return item.strength >= 8
+                    && item.support >= 0.45
+                    && item.coverage >= 0.45
+            }
+            guard !acceptedIndices.isEmpty else { return nil }
+
+            let localMaxima = acceptedIndices.filter { index in
+                let score = depthEvidence[index].evidence.strength
+                    * (0.55 + 0.45 * depthEvidence[index].evidence.support)
+                let neighbours = [index - 1, index + 1].filter { acceptedIndices.contains($0) }
+                return neighbours.allSatisfy { neighbour in
+                    let neighbourScore = depthEvidence[neighbour].evidence.strength
+                        * (0.55 + 0.45 * depthEvidence[neighbour].evidence.support)
+                    return score >= neighbourScore
+                }
+            }
+            let rankedIndices = (localMaxima.isEmpty ? acceptedIndices : localMaxima)
+                .sorted {
+                    let lhs = depthEvidence[$0].evidence
+                    let rhs = depthEvidence[$1].evidence
+                    return lhs.strength * (0.55 + 0.45 * lhs.support)
+                        > rhs.strength * (0.55 + 0.45 * rhs.support)
+                }
+            let anchorIndices = Array(rankedIndices.prefix(8))
+            let localHalfWidth = max(0.009, searchHalfWidth * 0.22)
+            let priorScale = max(searchHalfWidth * 0.75, .ulpOfOne)
+            func makeCandidate(
+                anchorDepth: Double?,
+                localized: Bool
+            ) -> RegisteredBackSideCandidate? {
+                let referenceDepth = anchorDepth ?? expectedDepth
+                let allowedHalfWidth = localized ? localHalfWidth : searchHalfWidth
+                var measured: [(point: CardCenteringPoint, gradient: Double)] = []
+                measured.reserveCapacity(progressValues.count)
+                for progress in progressValues {
+                    var bestPoint: CardCenteringPoint?
+                    var bestGradient = 0.0
+                    var bestScore = -Double.infinity
+                    for depth in depths where !localized || abs(depth - referenceDepth) <= allowedHalfWidth {
+                        let gradient = transition(side: side, progress: progress, depth: depth)
+                        let prior = exp(-pow((depth - referenceDepth)
+                            / max(allowedHalfWidth * 0.75, .ulpOfOne), 2))
+                        let score = gradient * (localized ? 0.35 + 0.65 * prior : 0.70 + 0.30 * prior)
+                        if score > bestScore {
+                            bestScore = score
+                            bestGradient = gradient
+                            bestPoint = point(side: side, progress: progress, normalizedDepth: depth)
+                        }
+                    }
+                    guard let bestPoint else { return nil }
+                    measured.append((bestPoint, bestGradient))
+                }
+                let strength = median(measured.map(\.gradient))
+                let supportThreshold = max(8, strength * 0.45)
+                let support = Double(measured.filter { $0.gradient >= supportThreshold }.count)
+                    / Double(max(measured.count, 1))
+                guard strength >= 8, support >= 0.45 else { return nil }
+                let fitted = fitGeometryLine(measured.map(\.point))
+                let lineNorm = max(fitted.a * fitted.a + fitted.b * fitted.b, .ulpOfOne)
+                let projected = measured.map { measurement in
+                    let residual = fitted.a * measurement.point.x
+                        + fitted.b * measurement.point.y
+                        - fitted.c
+                    return CardCenteringPoint(
+                        x: measurement.point.x - fitted.a * residual / lineNorm,
+                        y: measurement.point.y - fitted.b * residual / lineNorm
+                    )
+                }
+                let tangentX = -fitted.b
+                let tangentY = fitted.a
+                let ordered = projected.sorted {
+                    $0.x * tangentX + $0.y * tangentY
+                        < $1.x * tangentX + $1.y * tangentY
+                }
+                let geometry = [
+                    ordered.first ?? measured[0].point,
+                    ordered.last ?? measured[measured.count - 1].point
+                ]
+                let candidateDepth = anchorDepth ?? expectedDepth
+                let expectedPrior = exp(-pow((candidateDepth - expectedDepth) / priorScale, 2))
+                let score = strength
+                    * (0.55 + 0.45 * support)
+                    * (localized ? 0.70 + 0.30 * expectedPrior : 0.85 + 0.15 * expectedPrior)
+                return RegisteredBackSideCandidate(
+                    line: fitted,
+                    geometry: geometry,
+                    normalizedDepth: candidateDepth,
+                    support: support,
+                    transitionStrength: strength,
+                    score: score
+                )
+            }
+            var candidates = anchorIndices.compactMap { makeCandidate(
+                anchorDepth: depths[$0],
+                localized: true
+            ) }
+            if let freeCandidate = makeCandidate(anchorDepth: nil, localized: false) {
+                candidates.append(freeCandidate)
+            }
+            guard let selected = candidates.max(by: { $0.score < $1.score }) else { return nil }
+            sideCandidates[side] = candidates
+            lines[side] = selected.line
+            sideSupports.append(selected.support)
+        }
+
+        guard let top = lines[.top], let left = lines[.left],
+              let right = lines[.right], let bottom = lines[.bottom],
+              let topLeft = intersection(top, left),
+              let topRight = intersection(top, right),
+              let bottomRight = intersection(bottom, right),
+              let bottomLeft = intersection(bottom, left) else {
+            return nil
+        }
+        let inner = CardCenteringQuad(
+            topLeft: topLeft,
+            topRight: topRight,
+            bottomRight: bottomRight,
+            bottomLeft: bottomLeft
+        )
+        let border = outer.borderDistances(to: inner)
+        let aspect = inner.rectifiedAspectRatio
+        let aspectIsCardReference = (0.55...0.85).contains(aspect)
+            || (1.00...1.55).contains(aspect)
+        guard contains(outer, inner.points),
+              [border.left, border.top, border.right, border.bottom].allSatisfy({ $0 > 0 }),
+              aspectIsCardReference,
+              sideSupports.min() ?? 0 >= 0.45 else {
+            return nil
+        }
+
+#if DEBUG
+        if let candidateLedger = Self.activeCandidateLedger {
+            for side in ProfileSide.allCases {
+                guard let candidates = sideCandidates[side] else { continue }
+                let selectedDepth = candidates.max(by: { $0.score < $1.score })?.normalizedDepth
+                for candidate in candidates {
+                    candidateLedger.append(
+                        family: "inner",
+                        side: String(describing: side),
+                        source: "registered_back_template.\(winner.kind.identifier)",
+                        workingGeometry: candidate.geometry,
+                        support: candidate.support,
+                        transitionStrength: candidate.transitionStrength,
+                        proposedSemanticRole: "printed_border",
+                        selected: abs(candidate.normalizedDepth - (selectedDepth ?? 0)) < 0.000_001,
+                        rejectionReason: abs(candidate.normalizedDepth - (selectedDepth ?? 0)) < 0.000_001
+                            ? nil
+                            : "registration_alternative"
+                    )
+                }
+            }
+        }
+#endif
+
+        return RegisteredBackTemplateResult(
+            quad: inner,
+            support: sideSupports.reduce(0, +) / Double(max(sideSupports.count, 1)),
+            identifier: winner.kind.identifier,
+            identityScore: winner.score,
+            identityMargin: identityMargin
+        )
+    }
+
+    /// Finds coherent horizontal inner transitions over the full front-card
+    /// depth range. It deliberately emits a ledger of alternatives and leaves
+    /// joint semantic selection to the later REQ-044 phase; generating the
+    /// art-window candidate must not silently become a new confidence rule.
+    private static func frontBottomCandidateGenerator(
+        pixels: [Pixel],
+        width: Int,
+        height: Int,
+        outer: CardCenteringQuad
+    ) -> FrontBottomCandidateResult? {
+        guard width > 20, height > 20 else { return nil }
+
+        let bottomStart = outer.bottomLeft
+        let bottomEnd = outer.bottomRight
+        let tangentX = bottomEnd.x - bottomStart.x
+        let tangentY = bottomEnd.y - bottomStart.y
+        let tangentLength = max(hypot(tangentX, tangentY), .ulpOfOne)
+        var normalX = -tangentY / tangentLength
+        var normalY = tangentX / tangentLength
+        let centre = outer.points.reduce(into: CardCenteringPoint(x: 0, y: 0)) { result, point in
+            result.x += point.x / 4
+            result.y += point.y / 4
+        }
+        let midpoint = interpolate(bottomStart, bottomEnd, amount: 0.5)
+        if (centre.x - midpoint.x) * normalX + (centre.y - midpoint.y) * normalY < 0 {
+            normalX = -normalX
+            normalY = -normalY
+        }
+        let cardHeight = max(outer.rectifiedHeight, 20)
+
+        func point(progress: Double, depth: Double) -> CardCenteringPoint {
+            let edgePoint = interpolate(bottomStart, bottomEnd, amount: progress)
+            let distance = depth * cardHeight
+            return CardCenteringPoint(
+                x: edgePoint.x + normalX * distance,
+                y: edgePoint.y + normalY * distance
+            )
+        }
+
+        let progressValues = stride(from: 0.10, through: 0.90, by: 0.025).map { Double($0) }
+        let depthStart = 0.025
+        let depthEnd = 0.55
+        let depthStep = 0.0015
+        let depthCount = Int(((depthEnd - depthStart) / depthStep).rounded()) + 1
+        let radius = 0.0025
+        func transition(progress: Double, depth: Double) -> Double {
+            let before = samplePixel(
+                pixels,
+                width: width,
+                height: height,
+                at: point(progress: progress, depth: max(depthStart, depth - radius))
+            )
+            let after = samplePixel(
+                pixels,
+                width: width,
+                height: height,
+                at: point(progress: progress, depth: min(depthEnd, depth + radius))
+            )
+            return 255 * Double(distance(before, after))
+        }
+        var strengths: [Double] = []
+        var supports: [Double] = []
+        var coherences: [Double] = []
+
+        for index in 0..<depthCount {
+            let depth = depthStart + Double(index) * depthStep
+            let values = progressValues.map { transition(progress: $0, depth: depth) }
+            let strength = median(values)
+            let threshold = max(8, strength * 0.60)
+            let support = Double(values.filter { $0 >= threshold }.count)
+                / Double(max(values.count, 1))
+            let occupiedBins = (0..<5).reduce(into: 0) { count, bin in
+                let start = bin * values.count / 5
+                let end = max(start + 1, (bin + 1) * values.count / 5)
+                if values[start..<min(end, values.count)].contains(where: { $0 >= threshold }) {
+                    count += 1
+                }
+            }
+            strengths.append(strength)
+            supports.append(support)
+            // Foil and text can interrupt a valid border transition at
+            // individual samples. Require evidence in separate along-edge
+            // bins instead of treating one contiguous run as the definition
+            // of a coherent two-dimensional border.
+            coherences.append(Double(occupiedBins) / 5.0)
+        }
+
+        func candidate(at index: Int) -> FrontBottomCandidate {
+            let depth = depthStart + Double(index) * depthStep
+            let localHalfWidth = max(0.006, depthStep * 4)
+            var measuredPoints: [CardCenteringPoint] = []
+            var measuredStrengths: [Double] = []
+            for progress in progressValues {
+                var best: (score: Double, point: CardCenteringPoint, strength: Double)?
+                for localIndex in strengths.indices {
+                    let localDepth = depthStart + Double(localIndex) * depthStep
+                    guard abs(localDepth - depth) <= localHalfWidth else { continue }
+                    let strength = transition(progress: progress, depth: localDepth)
+                    let prior = exp(-pow((localDepth - depth) / max(localHalfWidth * 0.75, .ulpOfOne), 2))
+                    let score = strength * (0.35 + 0.65 * prior)
+                    if best == nil || score > best!.score {
+                        best = (score, point(progress: progress, depth: localDepth), strength)
+                    }
+                }
+                if let best {
+                    measuredPoints.append(best.point)
+                    measuredStrengths.append(best.strength)
+                }
+            }
+            let fitted = fitGeometryLine(measuredPoints)
+            let lineNorm = max(fitted.a * fitted.a + fitted.b * fitted.b, .ulpOfOne)
+            let projected = measuredPoints.map { measuredPoint in
+                let residual = (fitted.a * measuredPoint.x)
+                    + (fitted.b * measuredPoint.y)
+                    - fitted.c
+                return CardCenteringPoint(
+                    x: measuredPoint.x - fitted.a * residual / lineNorm,
+                    y: measuredPoint.y - fitted.b * residual / lineNorm
+                )
+            }
+            let tangentX = -fitted.b
+            let tangentY = fitted.a
+            let ordered = projected.sorted {
+                $0.x * tangentX + $0.y * tangentY
+                    < $1.x * tangentX + $1.y * tangentY
+            }
+            let geometry = [
+                ordered.first ?? point(progress: 0.12, depth: depth),
+                ordered.last ?? point(progress: 0.88, depth: depth)
+            ]
+            let measuredStrength = median(measuredStrengths)
+            let measuredThreshold = max(8, measuredStrength * 0.60)
+            let measuredSupport = Double(measuredStrengths.filter { $0 >= measuredThreshold }.count)
+                / Double(max(measuredStrengths.count, 1))
+            return FrontBottomCandidate(
+                line: fitted,
+                geometry: geometry,
+                normalizedDepth: depth,
+                support: measuredSupport,
+                transitionStrength: measuredStrength
+            )
+        }
+
+        let indices = strengths.indices.filter {
+            strengths[$0] >= 8
+                && supports[$0] >= 0.45
+                && coherences[$0] >= 0.35
+        }
+        guard !indices.isEmpty else { return nil }
+        let alternatives = indices.map(candidate)
+        guard let selected = alternatives.max(by: { lhs, rhs in
+            let lhsScore = lhs.transitionStrength
+                * (0.55 + 0.45 * lhs.support)
+            let rhsScore = rhs.transitionStrength
+                * (0.55 + 0.45 * rhs.support)
+            return lhsScore < rhsScore
+        }) else { return nil }
+
+#if DEBUG
+        if let candidateLedger = Self.activeCandidateLedger {
+            for alternative in alternatives {
+                candidateLedger.append(
+                    family: "inner",
+                    side: "bottom",
+                    source: "front.art_window.bottom_generator",
+                    workingGeometry: alternative.geometry,
+                    support: alternative.support,
+                    transitionStrength: alternative.transitionStrength,
+                    proposedSemanticRole: "art_window",
+                    selected: false,
+                    rejectionReason: alternative.normalizedDepth == selected.normalizedDepth
+                        ? "awaiting_joint_selection"
+                        : "alternative_generated_candidate"
+                )
+            }
+        }
+#endif
+
+        return FrontBottomCandidateResult(candidate: selected, alternatives: alternatives)
+    }
+
+#if DEBUG
+    /// One bounded REQ-044 experiment: retain the independently selected
+    /// profile/semantic edges, replace only the front-bottom edge with each
+    /// generated art-window candidate, and rank the resulting quads with the
+    /// existing art-window shape guards. This deliberately stays DEBUG-only;
+    /// it is evidence for the ranking hypothesis, not automatic-release logic.
+    private static func jointSelectFrontBottomCandidate(
+        baseline: CardCenteringQuad,
+        outer: CardCenteringQuad,
+        candidates: [FrontBottomCandidate]
+    ) -> FrontJointSelectionResult? {
+        func edgeLine(_ first: CardCenteringPoint, _ second: CardCenteringPoint) -> GeometryLine {
+            fitGeometryLine([first, second])
+        }
+
+        func replacingBottom(
+            of quad: CardCenteringQuad,
+            with bottomLine: GeometryLine
+        ) -> CardCenteringQuad? {
+            let topLine = edgeLine(quad.topLeft, quad.topRight)
+            let leftLine = edgeLine(quad.topLeft, quad.bottomLeft)
+            let rightLine = edgeLine(quad.topRight, quad.bottomRight)
+            guard let topLeft = intersection(topLine, leftLine),
+                  let topRight = intersection(topLine, rightLine),
+                  let bottomRight = intersection(bottomLine, rightLine),
+                  let bottomLeft = intersection(bottomLine, leftLine) else {
+                return nil
+            }
+            return CardCenteringQuad(
+                topLeft: topLeft,
+                topRight: topRight,
+                bottomRight: bottomRight,
+                bottomLeft: bottomLeft
+            )
+        }
+
+        func shapeScore(_ quad: CardCenteringQuad) -> Double? {
+            guard contains(outer, quad.points) else { return nil }
+            let border = outer.borderDistances(to: quad)
+            guard [border.left, border.top, border.right, border.bottom]
+                .allSatisfy({ $0 > 0 }) else { return nil }
+
+            let aspect = quad.rectifiedAspectRatio
+            let aspectRange: ClosedRange<Double>
+            if (0.58...0.85).contains(aspect) {
+                aspectRange = 0.58...0.85
+            } else if (0.90...1.30).contains(aspect) {
+                aspectRange = 0.90...1.30
+            } else {
+                return nil
+            }
+
+            let outerWidth = max(outer.rectifiedWidth, .ulpOfOne)
+            let outerHeight = max(outer.rectifiedHeight, .ulpOfOne)
+            guard quad.rectifiedWidth >= outerWidth * 0.55,
+                  quad.rectifiedHeight >= outerHeight * 0.25 else {
+                return nil
+            }
+
+            let horizontalBalance = min(quad.topLength, quad.bottomLength)
+                / max(quad.topLength, quad.bottomLength, .ulpOfOne)
+            let verticalBalance = min(quad.leftLength, quad.rightLength)
+                / max(quad.leftLength, quad.rightLength, .ulpOfOne)
+            guard horizontalBalance >= 0.80, verticalBalance >= 0.80 else { return nil }
+
+            let parallelism = parallelismResidual(for: quad)
+            guard parallelism <= 2.5 else { return nil }
+
+            let rangeMidpoint = (aspectRange.lowerBound + aspectRange.upperBound) / 2
+            let rangeHalfWidth = (aspectRange.upperBound - aspectRange.lowerBound) / 2
+            let aspectScore = max(
+                0,
+                1 - abs(aspect - rangeMidpoint) / max(rangeHalfWidth, .ulpOfOne)
+            )
+            let balanceScore = (horizontalBalance + verticalBalance) / 2
+            let parallelismScore = max(0, 1 - parallelism / 2.5)
+            return 0.50 * aspectScore
+                + 0.30 * balanceScore
+                + 0.20 * parallelismScore
+        }
+
+        let baselineAspect = baseline.rectifiedAspectRatio
+        let baselineScore = shapeScore(baseline) ?? 0
+        var best: (quad: CardCenteringQuad, candidate: FrontBottomCandidate, score: Double)?
+        let maximumStrength = max(candidates.map(\.transitionStrength).max() ?? 0, .ulpOfOne)
+        for candidate in candidates {
+            guard let quad = replacingBottom(of: baseline, with: candidate.line),
+                  let shape = shapeScore(quad) else { continue }
+            let evidenceScore = 0.5 * min(1, max(0, candidate.support))
+                + 0.5 * min(1, max(0, candidate.transitionStrength / maximumStrength))
+            let score = 0.90 * shape + 0.10 * evidenceScore
+            if best == nil || score > best!.score {
+                best = (quad, candidate, score)
+            }
+        }
+
+        let accepted = best.map { $0.score > baselineScore } ?? false
+        Self.jointSelectionDiagnosticSink?(CardCenteringJointSelectionDiagnostic(
+            baselineAspect: baselineAspect,
+            selectedAspect: accepted ? best?.quad.rectifiedAspectRatio : nil,
+            baselineScore: baselineScore,
+            selectedScore: best?.score,
+            selectedDepth: accepted ? best?.candidate.normalizedDepth : nil,
+            candidateCount: candidates.count,
+            accepted: accepted,
+            rejectionReason: accepted ? nil : (best == nil ? "no_shape_valid_candidate" : "baseline_shape_score_wins")
+        ))
+        guard accepted, let best else { return nil }
+        return FrontJointSelectionResult(
+            quad: best.quad,
+            candidate: best.candidate,
+            score: best.score
+        )
+    }
+#endif
 
     /// Finds a printed reference by following a coherent transition inward
     /// from each already-fitted card edge. The long-edge median rejects foil

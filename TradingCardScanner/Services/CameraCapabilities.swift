@@ -11,8 +11,11 @@ import Foundation
 /// a device without one. A model mismatch re-probes and overwrites.
 enum CameraCapabilities {
     private enum Key {
-        static let hasMacroLens = "camera.hasMacroLens"
-        static let probedModelIdentifier = "camera.probedModelIdentifier"
+        // Suffixed when the probe started testing focus distance as well as
+        // autofocus. A value cached by the older, weaker probe is not an answer
+        // to the question this one asks.
+        static let hasMacroLens = "camera.hasMacroLens.v2"
+        static let probedModelIdentifier = "camera.probedModelIdentifier.v2"
     }
 
     /// A macro-capable ultra wide must exist *and* autofocus. Several iPhones ship a
@@ -36,11 +39,25 @@ enum CameraCapabilities {
         defaults.removeObject(forKey: Key.probedModelIdentifier)
     }
 
+    /// The closest a lens may focus and still be the right lens for this app.
+    /// A macro-capable ultra wide focuses to roughly 20mm; the standard wide
+    /// bottoms out around 120mm, which is where the identifier strip stops
+    /// resolving. 80mm sits clear of both.
+    private static let macroFocusDistanceLimitMillimeters = 80
+
     private static func probeForMacroLens() -> Bool {
         guard let device = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back) else {
             return false
         }
-        return device.isFocusModeSupported(.continuousAutoFocus)
+        guard device.isFocusModeSupported(.continuousAutoFocus) else { return false }
+
+        // `minimumFocusDistance` reports -1 when the device does not publish
+        // one. Unknown is not evidence against the lens, so it keeps the old
+        // autofocus-only answer; only a positively reported long throw is
+        // treated as disqualifying.
+        let minimumFocusDistance = device.minimumFocusDistance
+        guard minimumFocusDistance >= 0 else { return true }
+        return minimumFocusDistance <= macroFocusDistanceLimitMillimeters
     }
 
     /// Hardware model identifier, e.g. `iPhone17,1`. Deliberately not the marketing

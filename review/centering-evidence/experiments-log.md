@@ -1141,3 +1141,135 @@ are the current benchmark record.
   ground truth. All camera HEICs are from one iPhone 15 Pro Max, while the PNG
   capture role is unknown; final cross-device/cross-photographer coverage and
   independent ground truth remain open.
+
+### Ordered centering remediation checkpoint — 2026-09-20
+
+- **Action:** Formalized the existing ten-image `HOLDOUT-INTERIM` split with a
+  machine-readable `holdoutFreeze` block. Redirected every centering diagnostic
+  writer in `OpusImplementationPlanTests.swift` to simulator temporary storage
+  by default, with `CENTERING_DIAGNOSTIC_OUTPUT_ROOT` as an explicit override.
+  Implemented the registered Pokémon/Magic back-template branch first, fitting
+  observed printed-border transitions against the physical outer quad. Then
+  implemented the separate front-bottom art-window generator, retaining
+  alternatives and role metadata without changing joint-selection thresholds.
+- **Verification:** The manifest/source/semantic/outer focused checks passed
+  4/4 on the pinned iPhone 17 Pro / iOS 26.5 simulator. The focused REQ-042
+  run passed 1/1; its temporary ledger measured 34/40 outer edges and 34/36
+  gradeable inner edges at the unchanged tolerances, with the remaining misses
+  at IMG_0352 left and IMG_0780 right. All five development backs selected the
+  registered branch, and IMG_0782 remained declined with `none`. The redirected
+  REQ-041 profile also passed 1/1 over 20 analyses, with named-stage attribution
+  at `0.9991` median / `0.9995` max and wall time at `2.7409/3.2918 s`
+  median/max; the original `0.80/1.50 s` budget remains unmet.
+- **Interpretation:** Candidate generation and semantic typing have advanced,
+  but the 95% recall gate is not met and the public L1 accuracy test still
+  failed with 53 assertions. Accuracy, metamorphic invariants, the original
+  latency budget, final holdout evaluation, joint selection, and physical-device
+  gates remain open. No tolerance was loosened and no holdout outcome was used
+  to choose the branch or its thresholds.
+
+### Controlled front-generator A/B and identity negative class — 2026-09-21
+
+- **Action:** Wrapped the front-bottom candidate-generator call in `#if DEBUG`
+  so Release does not execute observational work whose return value is
+  discarded. Added a DEBUG-only switch and ran the same ten development HEIC
+  fixtures with the generator disabled and enabled in one iPhone 17 Pro / iOS
+  26.5 simulator session.
+- **Result:** Without/with generator, inner-generation medians were
+  `0.7869/1.0085 s` (max `0.8243/1.2611 s`) and wall medians were
+  `2.5304/2.7284 s` (max `2.8168/3.2677 s`). The enabled branch therefore
+  added `0.2216 s` to inner-generation median and `0.1980 s` to wall median in
+  this controlled DEBUG run. The `0.80/1.50 s` contract remains failing; no
+  budget or threshold changed.
+- **Action:** Added diagnostic-only identity telemetry and scored the five
+  development fronts (`IMG_0348`, `IMG_0349`, `IMG_0351`, `IMG_0780`, and
+  `IMG_0782`) as the negative class.
+- **Result:** Winning family scores were `0.2933`, `0.5500`, `0.4465`,
+  `0.0055`, and `0.0692`; every front failed the full registered-back gate,
+  and the maximum score remained below the unchanged `0.72` score gate. The
+  results are distribution evidence only, not a threshold fit. The new
+  registered-branch identity, registration, and expected-depth constants are
+  now inventoried in the implementation plan. Holdout remains sealed and no
+  holdout result informed the branch.
+- **Interpretation:** The release-path waste finding is confirmed, while the
+  identity gate has a measured development-front negative class but still lacks
+  foil, warm-illuminant, shifted-print, and capture-diverse evidence. The
+  candidate-recall gate remains open; the one authorized selector attempt is
+  recorded below and no additional generator or selector experiment is authorized
+  in this slice.
+
+### REQ-044 bounded selector outcome and REQ-045 hybrid handoff — 2026-09-21
+
+- **Scope:** Ran the one authorized DEBUG-only joint-selection experiment over all ten
+  development fixtures on the pinned iPhone 17 Pro / iOS 26.5 simulator. The sealed
+  capture-diverse holdout was not read, no contract threshold changed, and the selector result
+  was evaluated as a diagnostic rather than as automatic-path closure.
+- **Result:** Nine fixtures had gradeable inner ground truth. `0/9` selected candidate readings
+  met both `≤ 2.0 pp` ratio tolerances, and `9/9` remained wrong under the pre-hybrid
+  automatic-confidence interpretation. The pre-registered zero-confidently-wrong /
+  `≥ 80%` confident-and-correct coverage bar failed. The selector is not promoted to
+  production.
+- **Implementation:** The analyzer now marks automatically seeded outer and inner frames
+  `manualConfirmationRequired`. The automatic outer and best inner geometry remain visible as
+  editable starting guides, but ratios and export remain unavailable until the user confirms or
+  adjusts both frames. Unsupported or ambiguous cases remain declined. Focused hybrid L1,
+  confirmation, and selector-evidence tests passed.
+- **Decision:** The hybrid path is the product boundary under REQ-045. Screenshot and human
+  interaction review, injected rendering checks, metamorphic invariants, latency, device-only
+  gates, and final REQ-040 holdout evidence remain open. No tolerance was loosened and no holdout
+  outcome informed the implementation.
+
+### Hybrid frame-confirmation verification — 2026-09-21
+
+- **Scope:** Reran the seven centering XCTest classes after extending the fail-safe boundary from
+  the automatic inner candidate to the detector-seeded outer and inner frames together. The run
+  used the pinned iPhone 17 Pro / iOS 26.5 simulator, `CODE_SIGNING_ALLOWED=NO`, and did not read
+  the sealed holdout.
+- **Result:** 92 tests executed; 72 passed and 20 failed in `1,077.241 s`. The changed-contract
+  surfaces were green: `CardCenteringAnalyzerTests` 21/21, `CenteringExportTests` 19/19,
+  `CardCenteringGroundTruthTests` 12/12, `CardCenteringSurfaceTests` 2/2, and
+  `CardCenteringCorpusManifestTests` 1/1. The remaining failures are the open INV-2/4/5/7/8
+  metamorphic assertions, REQ-022 latency assertions, and E0/E-E profile diagnostics; they are
+  not being relabeled as confirmation regressions.
+- **Contract evidence:** The automatic-measurement test now verifies that detector-seeded frames
+  remain declined with ratios/export unavailable until `confirmManualPlacement()` accepts both
+  guides. The REQ-045 test also verifies that editing either guide alone remains pending and that
+  explicit confirmation restores reportable ratios. Result bundle:
+  `/tmp/TradingCardScannerCenteringFull-20260921-v2.xcresult`.
+- **Decision:** The outer-confirmation safety hole is closed in code. Hybrid screenshot review,
+  injected rendering checks, open invariants/latency, device-only gates, and final REQ-040 holdout
+  evidence remain open. No tolerance changed.
+
+### Hybrid seed-prior diagnostic — 2026-09-21
+
+- **Scope:** Measured whether the detector's automatic inner-frame seed is closer to the
+  analyzer-free ground truth than a trivial family prior. The diagnostic used the nine
+  gradeable development fixtures and all four sides (36 edges). For each fixture, the prior was
+  the median normalized depth of the other gradeable fixtures in the same game family, so the
+  fixture under measurement was excluded. Left/right depths use the annotated outer width;
+  top/bottom depths use its height. The detector seed was mapped back to native coordinates
+  before comparison.
+- **Verification:** `testHybridSeedAgainstLeaveOneOutFamilyPrior` passed 1/1 on the pinned
+  iPhone 17 Pro / iOS 26.5 simulator with `CODE_SIGNING_ALLOWED=NO`. The test writes
+  `seed-vs-family-prior.json`, `summary.json`, and `summary.md` under simulator temporary
+  storage; it does not read the sealed holdout. Result bundle:
+  `/tmp/TradingCardScannerHybridSeed-20260921-v1.xcresult`.
+- **Result:**
+
+  | Family | Side | Samples | Detector median error pp | Prior median error pp | Detector wins | Prior wins | Ties |
+  |---|---|---:|---:|---:|---:|---:|---:|
+  | magic | bottom | 3 | 2.77 | 16.99 | 3 | 0 | 0 |
+  | magic | left | 3 | 0.87 | 0.68 | 0 | 3 | 0 |
+  | magic | right | 3 | 1.82 | 0.25 | 0 | 3 | 0 |
+  | magic | top | 3 | 1.18 | 2.54 | 3 | 0 | 0 |
+  | pokemon | bottom | 6 | 0.75 | 0.10 | 1 | 5 | 0 |
+  | pokemon | left | 6 | 0.25 | 0.24 | 5 | 1 | 0 |
+  | pokemon | right | 6 | 1.10 | 1.57 | 4 | 2 | 0 |
+  | pokemon | top | 6 | 0.07 | 1.21 | 5 | 1 | 0 |
+
+- **Interpretation:** The result is not a blanket T/B win. The family prior is clearly better
+  for Pokémon bottom, while the detector is better for Magic top/bottom and Pokémon top;
+  Magic left/right favor the prior and Pokémon left/right are mixed. This supports measuring a
+  future family/side-specific seed policy against user correction effort, but does not justify
+  replacing detector seeds in production from this nine-fixture sample. No threshold, selector,
+  or production behavior changed.

@@ -4,7 +4,9 @@
 investigation plus a measured baseline over the full HEIC corpus; amended 2026-09-12 through
 revision F with raw-fixture branch evidence, the safety-preserving E-B repair, the E-D
 outer-refinement checkpoint, the E-E classification, the REQ-027 ground-truth rederivation,
-the perception-architecture pivot, and the candidate-generation-first restart order.
+the perception-architecture pivot, and the candidate-generation-first restart order; and
+checkpointed 2026-09-20 after the ordered remediation slice; and reviewed 2026-09-21 after
+the controlled latency and identity-gate follow-ups.
 **Investigation author:** Opus; no production code was changed while establishing this plan.
 Subsequent implementation changes and experiment provenance are recorded in the status and
 evidence sections below.
@@ -31,7 +33,7 @@ gates remain open.
 
 ---
 
-## 0.0 STATUS — read this first (amended 2026-09-12, revision F review)
+## 0.0 STATUS — read this first (amended 2026-09-21, REQ-045 safety decision and selector outcome)
 
 **The plan below is unchanged in intent. Revision B added what the first implementation
 run measured and seven requirements (`REQ-027`–`REQ-033`); revision C added five measured
@@ -42,7 +44,8 @@ perception-architecture spike (`REQ-039`–`REQ-045`); revision F corrects the l
 from the candidate ledger and makes post-E-REQ044 remeasurement plus a fresh frozen holdout
 preconditions for further production changes.** No existing
 tolerance has been loosened, renumbered, or waived. `REQ-031` is the one place a target may
-move, and only on written evidence.
+move, and only on written evidence. The ordered remediation checkpoint below does not change
+any contract threshold or promote the interim holdout to final REQ-040 evidence.
 
 **Where the work stands.** The reusable geometry/product architecture landed and is sound:
 quad geometry, rectification with residuals, explicit coordinate mapping, confidence/decline
@@ -128,9 +131,9 @@ redirected to external storage. Its interrupted result bundle and the seven
 generated diagnostics are retained on the external SSD; the tracked diagnostic
 files were restored.
 
-The current post-E-REQ044 candidate ledger is also complete as an
+The pre-remediation post-E-REQ044 candidate ledger is also complete as an
 evidence-generation run. With outer edges evaluated against `τ_e` and inner
-edges against the required fixed `0.0035 * H` tolerance, it reports 34/40
+edges against the required fixed `0.0035 * H` tolerance, it reported 34/40
 outer edges (85.0%) and 28/36 gradeable inner edges (77.8%). The eight inner
 misses are left edges on IMG_0347 and IMG_0352; bottom edges on IMG_0348,
 IMG_0351, IMG_0780, IMG_0781, and IMG_0783; and the right edge on IMG_0780.
@@ -139,6 +142,110 @@ reference. `bestErrorPx` is the best available candidate, not the selected
 candidate, so these misses are generator-recall failures. The corrected
 ledger and its focused result bundle are recorded under
 [`diagnostics/REQ-042/README.md`](centering-evidence/diagnostics/REQ-042/README.md).
+
+**Ordered remediation checkpoint — 2026-09-20.** The ten-image `HOLDOUT-INTERIM` split is
+now formalized in the manifest's machine-readable `holdoutFreeze` block, while its
+`interim_only`, `sealed_not_evaluated`, and final-REQ-040-open status remain explicit. Every
+centering diagnostic writer in the test target now uses `CENTERING_DIAGNOSTIC_OUTPUT_ROOT` when
+provided and otherwise writes below the simulator's temporary directory; no rerun writes
+generated JSON or Markdown into tracked `review/centering-evidence` paths. The registered
+back-template branch now recognizes the supported Pokémon and Magic back families, registers
+observed border transitions against the physical outer quad, and is selected for all five
+development backs. The separate `front.art_window.bottom_generator` scans coherent two-
+dimensional bottom transitions and records role-tagged alternatives; joint selection remains
+deferred until role-specific recall clears. The focused REQ-042 run passed 1/1 and measured
+34/40 outer edges and 34/36 gradeable inner edges at the unchanged tolerances; the remaining
+inner misses are IMG_0352 left and IMG_0780 right. The focused manifest/source/semantic/outer
+checks passed 4/4. The public L1 accuracy test was rerun and failed with 53 assertions, so
+accuracy, metamorphic invariants, the original latency budget, final holdout generalisation,
+and all physical-device gates remain open.
+
+**Follow-up evidence checkpoint — 2026-09-21.** The observational front-bottom generator call
+is now wrapped in `#if DEBUG`; Release no longer pays for a result that production discards.
+A same-session DEBUG A/B over the ten development fixtures measured the enabled generator at
+`1.0085/1.2611 s` median/max for inner-generation time and `2.7284/3.2677 s` for wall time,
+versus `0.7869/0.8243 s` and `2.5304/2.8168 s` with the generator disabled. This is a
+controlled attribution result, not a budget revision, and the DEBUG generator remains
+observational. The new identity telemetry scored all five development fronts: the largest
+winning family score was `0.5500`, below the unchanged `0.72` score gate, and all five failed
+the full registered-back gate. The interim holdout remains sealed and unevaluated. The one
+authorized joint-selection attempt is now recorded below; it did not clear the pre-registered
+bar, and no additional generator or selector experiment is authorized in this slice.
+
+**REQ-045 safety decision checkpoint — 2026-09-21.** The current development evidence now
+requires the fail-safe product decision: inner candidate recall is `34/36` (`94.4%`) against
+the `95%` REQ-042 gate, `0/8` confident numeric fixtures meet both ratio tolerances, and the
+front T/B ratio error remains `19–22 pp` across the tested resolutions against the `≤ 2.0 pp`
+contract. This is a ranking failure over available candidates, not a sampling-resolution
+failure. The automatic path is therefore disqualified for release. The one bounded joint
+selection experiment authorized below was diagnostic-only and has now run without clearing its
+pre-registered bar. The REQ-045 hybrid path is the release path; the selector result does not
+expand the automatic subset or block shipping/decoupling the hybrid flow. This is a conservative
+development-data decision, not a final holdout measurement: the capture-diverse holdout remains
+sealed and **must not be evaluated merely to confirm a failure already visible on development
+fixtures**.
+
+The two remaining REQ-042 misses (`IMG_0352` left and `IMG_0780` right) did not block the
+diagnostic experiment, because its purpose was to measure whether a shape-aware selector could
+rank already-present candidates; they still block claiming recall closure. The experiment was
+pre-registered against L1 only: zero confidently-wrong outputs and at least `80%`
+confident-and-correct coverage on the eligible development fixtures, using the existing REQ-045
+quality gate and no threshold changes.
+
+**REQ-044 experiment and hybrid implementation checkpoint — 2026-09-21.** The one authorized
+DEBUG-only selector attempt ran over all ten development fixtures without reading the sealed
+holdout. Nine fixtures had gradeable inner ground truth; `0/9` selected candidate readings met
+both `≤ 2.0 pp` ratio tolerances, and `9/9` remained wrong under the pre-hybrid automatic-
+confidence interpretation. The result failed the pre-registered zero-wrong / `≥ 80%` coverage
+bar and is not promoted to production. The analyzer now exposes a `manualConfirmationRequired`
+state for automatically seeded frames: the red outer and cyan inner geometry remain editable
+starting guides, but ratio reporting and export stay unavailable until the user confirms or
+adjusts both frames. Unsupported or ambiguous cases remain declined. Focused hybrid L1,
+confirmation, and selector-evidence tests pass; screenshot review, rendering-pixel checks,
+manual-correction review, latency, invariants, device gates, and final REQ-040 evidence remain
+open. No tolerance changed.
+
+**Hybrid confirmation verification — 2026-09-21.** After extending the safety boundary to the
+outer frame, the complete centering test selection was rerun on the pinned iPhone 17 Pro / iOS
+26.5 simulator with `CODE_SIGNING_ALLOWED=NO`. The seven centering classes executed 92 tests:
+72 passed and 20 failed in `1,077.241 s`. The changed-contract surfaces were green:
+`CardCenteringAnalyzerTests` 21/21, `CenteringExportTests` 19/19,
+`CardCenteringGroundTruthTests` 12/12, `CardCenteringSurfaceTests` 2/2, and the corpus manifest
+1/1; `REQ-045`'s confirmation test also passed inside the invariant class. The remaining 20
+failures are the open metamorphic assertions (INV-2/4/5/7/8), REQ-022 latency assertions, and
+the historical E0/E-E profile diagnostics. This is a targeted centering result, not a full-app
+release claim. The sealed holdout was not read and no tolerance changed. Result bundle:
+`/tmp/TradingCardScannerCenteringFull-20260921-v2.xcresult`.
+
+**Hybrid seed-prior diagnostic — 2026-09-21.** The development-only diagnostic
+`testHybridSeedAgainstLeaveOneOutFamilyPrior` compared the detector's seeded inner depths with
+a leave-one-out median depth from the same game family across the nine gradeable development
+fixtures (36 edges). Left/right depths were normalized by the annotated outer width and
+top/bottom depths by its height. This is a seed-usefulness measurement for the hybrid product
+path, not an automatic accuracy gate: the detector was better on Pokémon top (`0.07` versus
+`1.21` pp median) and Magic top/bottom (`1.18/2.77` versus `2.54/16.99` pp), while the prior
+was clearly better on Pokémon bottom (`0.10` versus `0.75` pp; 5/6 per-edge wins) and Magic
+left/right. Pokémon left/right were mixed, with a near-tied Pokémon-left median (`0.25` versus
+`0.24` pp). The small family/side split does not justify a blanket T/B replacement, so no
+production seed policy, threshold, or selector behavior changed. The sealed holdout was not
+read. The focused test passed 1/1 on the pinned iPhone 17 Pro / iOS 26.5 simulator; the test
+writes its JSON/Markdown output under simulator temporary storage.
+
+**New branch threshold inventory — 2026-09-21.** The following literals were introduced by
+the registered-back branch and are now explicitly tracked. They are branch/identity priors and
+search guards, not changes to the existing centering contract tolerances. Their validation
+status remains development-only: five backs selected the branch, five fronts supplied the
+negative-class identity distribution above, and capture-diverse holdout, shifted-print, foil,
+and illuminant coverage remain open.
+
+| Branch surface | Values currently in source | Status / required evidence |
+|---|---|---|
+| Pokémon identity intervals | `edgeBlueDominance 18…40`; `centreBrightness 0.45…0.72`; `topBlueDominance 12…45`; `centralPatchBrightness 0.42…0.68` | Development prior; retain in inventory and validate on independent backs/fronts |
+| Magic identity intervals | `-edgeBlueDominance 8…25`; `centralPatchWarmth 35…85`; `lowerWarmth 20…60` | Development prior; warm-light and foil negatives remain open |
+| Identity weights | Pokémon `0.55/0.15/0.10/0.20`; Magic `0.36/0.38/0.26` | Development scoring weights; no holdout fitting permitted |
+| Identity gates | winner score `0.72`; margin `0.18`; Pokémon central patch `≥0.42`; Magic central warmth `≥35` and edge blue dominance `≤-8` | Unchanged gates; five-front negative-class score distribution recorded |
+| Registered-border expected depths | Pokémon left/top/right/bottom `0.037/0.051/0.037/0.064`; Magic `0.034/0.055/0.035/0.050` | Registration priors; must be checked with shifted-print and independent capture evidence |
+| Registration search guards | search half-width `0.045`; depth count `73`; progress `0.12…0.88` by `0.04`; transition acceptance strength/support/coverage `8/0.45/0.45` | Search/quality guards; not contract tolerance changes |
 
 **Current blocking items:**
 
@@ -154,6 +261,10 @@ ledger and its focused result bundle are recorded under
    summary is in [`baseline-post-ereq044-2026-09-12.md`](centering-evidence/baseline-post-ereq044-2026-09-12.md),
    with the signed `.xcresult` on the external SSD. The pre-E-REQ044 8/12 accuracy result
    remains historical; the current post-change accuracy result is now adjudicable and failing.
+   The pre-hybrid 2026-09-20 focused L1 rerun still failed, with 53 assertion failures after the
+   ordered branch work; no accuracy threshold was changed. The current hybrid contract test keeps
+   all gradeable automatic candidates pending manual confirmation rather than reporting those
+   failures as confident readings.
 2. **Residual metamorphic drift** (`REQ-029`): the pre-E-REQ044 post-E-D targeted run reports
    mirror `1.4 pp`, quarter-turn `0.7/1.4/1.1 pp` at 90/180/270 degrees, scale `1.4 pp`,
    and benign-crop `1.1 pp`, all above their limits. The roll-preservation repair restored
@@ -181,11 +292,13 @@ ledger and its focused result bundle are recorded under
    (`REQ-034`, `REQ-035`). The earlier E-B branch diagnostic produced 8 confident / 2 declined
    at the default 1200-pixel path, with `IMG_0781` declining for rectification and `IMG_0782` declining
    for missing inner reference. After the E-REQ044 outer-guard/per-side-fallback change, the
-   refreshed E-A probe produced 9 confident / 1 declined: `IMG_0782` still declines for missing
-   inner reference and `IMG_0781` now reaches a confident state. The complete post-E-REQ044
-   L1/E7 rerun is now recorded: the 1200-pixel curve is 9 confident / 1 declined with 3/10
-   descriptive ratio passes, while the full-suite L1 and invariant gates remain failing. This
-   is availability/branch evidence only; it is not an accuracy pass.
+   historical pre-hybrid E-A probe produced 9 confident / 1 declined: `IMG_0782` still declines
+   for missing inner reference and `IMG_0781` now reaches a confident state. The complete
+   post-E-REQ044 L1/E7 rerun is also historical pre-hybrid evidence: the 1200-pixel curve was
+   9 confident / 1 declined with 3/10 descriptive ratio passes. The current hybrid contract
+   keeps automatically seeded inner readings pending confirmation, while the full accuracy and
+   invariant gates remain failing. This is availability/branch evidence only; it is not an
+   accuracy pass.
 6. **The old E0/E1 metamorphic measurements remain diagnostic-only** (`REQ-036`). E0 and
    historical E1 start from a 900x1200 pre-downsampled bitmap and their drift numbers must not
    drive detector tuning. E-C now starts from the original HEIC bytes, retains raw/equalized
@@ -193,29 +306,33 @@ ledger and its focused result bundle are recorded under
    IMG_0347. It exposes a reproducible IMG_0347 rot90/rot270 decline at matched resolution,
    but does not close INV-5 or replace the current production-entry-point accuracy result.
 
-7. **Reference type is not being classified** (`REQ-012`, `REQ-039`, `REQ-043`). The E-A
+7. **Reference type is not fully validated** (`REQ-012`, `REQ-039`, `REQ-043`). The historical E-A
    artifact stores its requested branch fields under each record's `finalAnalysis` object:
    `outlineHasInner`, `scalarOuterAgreesWithVision`, `scalarPinned`, and `innerSource` are all
    present for 10/10 records. It also shows `innerReference = art_window` for all nine records
    that carry any inner reference, including both scalar-inner results and all five card backs whose GT requires
-   `printed_border`. The artifact is complete for its branch-diagnostic purpose, but it proves
-   that `innerReference` is currently a default/reporting value rather than a successful
-   reference-type decision.
+   `printed_border`. The artifact is complete for its branch-diagnostic purpose.
+   The registered back-template branch now provides a production candidate for supported backs,
+   but full semantic separation, independent capture validation, and safe automatic promotion
+   remain open; the hybrid path therefore requires explicit inner confirmation before reporting.
 
 8. **The original HOLDOUT is development-exposed** (`REQ-002`, `REQ-040`). All ten fixtures
    have been inspected, profiled, visually adjudicated, and used in repeated benchmark runs;
    the five-sleeved E-B work included holdouts IMG_0349 and IMG_0351. The old TUNE/HOLDOUT labels
-   remain useful chronology, but they can no longer measure generalisation. A new holdout must
-   vary photographer/background/lens/session and be frozen before the next production perception
-   change.
+   remain useful chronology, but they can no longer measure generalisation. The replacement
+   capture-diverse interim holdout is now frozen and sealed, but it still needs a second device,
+   second photographer, independent ground truth, and the final REQ-040 evaluation before it can
+   measure generalisation.
 
 **Revision-E decision.** Sampling-level work is closed as an experiment class. Mean/median,
 luminance scoring, smoothing, centroid/parabolic refinement, normalized depth/radius,
 canonical resampling/rotation, upscaling, and additional local offset/transition-width gates
 may not be reopened without new candidate-level evidence showing that the correct semantic
-edge is already selected and only its subpixel placement is wrong. The next work is a bounded
-candidate-generation, semantic-reference, joint-selection, confidence, and performance spike
-under `REQ-039`–`REQ-045`.
+edge is already selected and only its subpixel placement is wrong. The bounded candidate,
+semantic-reference, and joint-selection spike has been exercised through the authorized selector
+attempt; its pre-registered bar failed, so the hybrid confirmation path is the current product
+boundary. Remaining work is verification and the separately open device/holdout gates, not
+another unbounded generator or sampling experiment.
 
 **Revision-F restart order (binding).** Before another production change:
 
@@ -231,9 +348,12 @@ under `REQ-039`–`REQ-045`.
 4. Implement the registered back-template branch first, because it can bypass five currently
    observed missing inner-edge proposals. Then implement the separate front-bottom candidate
    generator for IMG_0348/IMG_0780-class inputs.
-5. Only after role-specific candidate recall clears REQ-042 may REQ-044 tune joint selection and
-   confidence. Performance work then targets the already measured scalar-field and inner-generator
-   stages without changing the 1200-pixel safety cap.
+5. The strict REQ-042 recall gate remains required for production promotion. One bounded,
+   development-only REQ-044 joint-selection experiment is authorized despite the current
+   `34/36` (`94.4%`) recall, because it measures ranking over candidates already present; it may
+   not use the sealed holdout, change thresholds, or be presented as recall closure. Performance
+   work then targets the already measured scalar-field and inner-generator stages without
+   changing the 1200-pixel safety cap.
 
 The latest signed focused analyzer regression class is now 21/21, including sideways/skewed
 legacy coverage, and the no-inner-reference safety assertion still passes for IMG_0782 at the
@@ -277,6 +397,12 @@ now records both the transient interruption and the recovered runs (`REQ-033`).
 | F-evidence | 2026-09-12 | Completed the signed post-E-REQ044 full-suite baseline and corrected REQ-042 ledger refresh on the pinned iOS 26.5 simulator. The current result-bundle summary is 1,095 entries: 1,085 passed, 1 skipped, 9 failed; all nine failed entries are centering failures, and the known pre-existing Magic-treatment failure from an older baseline did not recur. The current ledger is 34/40 outer and 28/36 gradeable inner (77.8%) using the fixed `0.0035 * H` inner tolerance. The complete current E7 curve still has 3/10 descriptive ratio passes at each tested resolution and misses the original latency budget. No production perception change or tolerance change followed; REQ-040's diverse frozen holdout remains the precondition for the next production change. |
 | G-forensic | 2026-09-17 | Added Group K (`REQ-046`–`REQ-052`) and `INV-11`/`INV-12` after transferring method from an external single-image PSA forensic measurement. Adopted the localization-versus-identity confidence split as the group's organising lesson. Recorded that the source analysis had no ground truth and depended on human edge-window selection, so it is a method source and not an accuracy reference. The Group J freeze is **not** lifted: `REQ-046`–`REQ-048` are gated behind it and `REQ-040`, while `REQ-049`–`REQ-051` are harness-only and may proceed. Corrected two claims that had been asserted rather than measured — that the working-resolution cap implies a proportional uncertainty floor, and that robust multi-sample fitting is too expensive for a phone; both now require measurement. No tolerance loosened, no implementation changed. |
 | F-corpus | 2026-09-12 | Classified the 34-image intake conservatively, recorded SHA-256 and provenance metadata for all 44 corpus files, and froze a reproducible 10-image `HOLDOUT-INTERIM` split before new analyzer work. The manifest contract passed on the pinned iPhone 17 Pro / iOS 26.5 simulator. This is an interim safeguard, not completion of REQ-040: final cross-device/cross-photographer coverage, new ground truth, and final holdout evaluation remain open. |
+| G-remediation | 2026-09-20 | Formalized the interim holdout freeze metadata and redirected centering diagnostic writers to simulator temporary storage. Implemented the registered Pokémon/Magic back-template branch with observed-border registration, then the separate front-bottom art-window candidate generator; the focused semantic, outer, manifest, and source-scan checks passed 4/4, and the candidate ledger improved to 34/40 outer and 34/36 gradeable inner recall at unchanged tolerances. The public L1 accuracy test still failed with 53 assertions, so accuracy, latency, final holdout, joint selection, and device gates remain open. No tolerance loosened. |
+| G-follow-up | 2026-09-21 | Gated the discarded front-bottom generator call to DEBUG, ran a same-session ten-fixture A/B showing `0.7869/1.0085 s` inner-generation medians without/with it, recorded the five-front identity negative-class distribution (maximum winning score `0.5500` versus the unchanged `0.72` gate), and added the registered-branch constants to the threshold inventory. The holdout remains sealed, and joint selection is the next permitted perception change after the recall gate. No tolerance loosened. |
+| G-REQ045 | 2026-09-21 | Recorded the development-data hard-safety decision: `34/36` inner candidate recall is below the `95%` gate, `0/8` confident numeric fixtures meet both ratio tolerances, and front T/B error remains `19–22 pp`. Stopped automatic release pending one bounded development-only joint-selection experiment measured against L1. Invoked the hybrid path as the product path now; a passing selector result may only expand a reliable automatic subset after the remaining REQ-045 gates. Kept the capture-diverse holdout sealed and added separate hybrid acceptance criteria. No tolerance loosened or holdout evaluated. |
+| G-REQ045-experiment | 2026-09-21 | Ran the one authorized DEBUG-only joint-selection attempt over the ten development fixtures without reading the sealed holdout. Nine were gradeable; `0/9` candidate readings met both `≤ 2.0 pp` ratio tolerances and `9/9` remained wrong under the pre-hybrid automatic-confidence interpretation, so the zero-wrong / `≥ 80%` pre-registered bar failed and the selector was not promoted. Implemented the hybrid `manualConfirmationRequired` state: automatic guides remain editable starting geometry, while ratio reporting/export require explicit inner confirmation; unsupported cases remain declined. Focused hybrid L1, confirmation, and selector-evidence tests passed. No tolerance loosened. |
+| G-hybrid-outer-confirmation | 2026-09-21 | Closed the remaining hybrid safety hole by requiring explicit confirmation or adjustment of both detector-seeded outer and inner guides before ratios or export become reportable. Manual guide edits remain pending until that action; declined measurements still recover through user placement. Updated the hybrid DoD and binding boundary accordingly. No automatic threshold changed and the holdout remains sealed. |
+| G-hybrid-seed-prior | 2026-09-21 | Added and ran a development-only diagnostic comparing detector-seeded inner depths with a leave-one-out same-family median over nine gradeable development fixtures and 36 edges. Results were mixed by family and side: Pokémon bottom favored the prior, while Magic top/bottom and Pokémon top favored the detector; no blanket T/B replacement was justified. The focused test passed 1/1, the holdout remained sealed, and no production seed policy, selector behavior, or threshold changed. |
 
 
 ---
@@ -873,6 +999,15 @@ without any detector in the loop. A detection tolerance may never be cited to ex
 | **Reported ratio** | absolute error in percentage points | **≤ 2.0 pp** per axis | the product's actual output; bounded by the inner+outer tolerances above |
 | **Rendered guide** | position in the presented view / export | **≤ 0.5 pt and ≤ 1 device px** | pure arithmetic; no physical ambiguity exists |
 | Determinism | byte equality of the measurement over 5 runs | **exact** | no tolerance is defensible here |
+
+**Hybrid-path binding boundary — 2026-09-21.** Under the REQ-045 hybrid decision, detection-layer
+tolerances remain binding evidence for deciding when the detector must decline, but neither the
+automatic outer quad nor the best inner candidate is a correctness claim. Both are editable
+starting positions and both require explicit user confirmation or adjustment before a ratio is
+reportable. The binding hybrid correctness claims are the user's final outer and inner placement,
+exact ratio arithmetic from that edited geometry, and the `REQ-019`/`REQ-020` rendering
+tolerances. This is a product-path boundary, not a relaxation or waiver of the automatic
+detection contract.
 
 Every fixture-edge whose measured band exceeds 1.0 % H is recorded `AMBIGUOUS` in ground truth.
 Such an edge is excluded from the strict pass/fail metric **but must still fall inside its own
@@ -1620,8 +1755,27 @@ follow.**
   records are under `diagnostics/REQ-041/`, and the signed result bundle is on the external
   SSD. The 0.80/1.50 s budget remains unmet and 1200 remains the safety cap; the next
   performance work now has a measured bottleneck rather than a resolution guess.
-- **Completion.** Either the original budget is met, or a revised one is recorded with the
-  curve and an explicit note of who agreed to it.
+- **Remediation timing checkpoint (2026-09-20).** After the registered back branch and
+  front-bottom generator were added, the redirected DEBUG profile again analyzed all ten
+  fixtures twice. Named-stage attribution remained `0.9991` median / `0.9995` max; independent
+  wall time was `2.7409/3.2918 s` median/max. Scalar fields measured `1.4068 s` median and
+  inner candidate generation `1.0140 s` median. The original `0.80/1.50 s` budget still fails;
+  this rerun validates attribution only and does not authorize a budget change.
+- **Controlled generator A/B checkpoint (2026-09-21).** In the same DEBUG harness and simulator
+  session, ten fixtures ran with the observational front-bottom generator disabled and enabled.
+  Disabled/enabled inner-generation medians were `0.7869/1.0085 s` (max `0.8243/1.2611 s`);
+  wall medians were `2.5304/2.7284 s` (max `2.8168/3.2677 s`). The call is now compiled out
+  of Release, but the overall `0.80/1.50 s` contract remains unmet and no budget revision is
+  authorized.
+- **REQ-045 product-path decision (2026-09-21).** The `0.80/1.50 s` budget remains explicitly
+  unmet and is accepted only as a limitation of the hybrid path's automatic-assist stage. This
+  is not a formal budget revision and does not close `REQ-022`/`REQ-031` for automatic release.
+  The hybrid implementation must make editable guides and guided manual correction the usable
+  path rather than treating the slow, unvalidated inner detector as a correctness dependency.
+- **Completion.** For automatic release, either the original budget is met, or a revised one is
+  recorded with the curve and an explicit note of who agreed to it. For the adopted hybrid path,
+  the budget is recorded as **unmet, accepted only for hybrid automatic assistance** under
+  REQ-045; that product decision does not mark `REQ-031` or `REQ-022` passed.
 
 #### REQ-032 — Remove temporary diagnostics and record the negative results
 - **Objective.** Leave the tree clean and the dead ends documented.
@@ -1640,6 +1794,11 @@ follow.**
 - **Constraints.** A `grep` for `TEMP_` in `TradingCardScanner/` must return nothing.
 - **Validation.** Source-scan test; the log exists and names all seven.
 - **Completion.** Scan clean, log committed.
+- **Remediation evidence (2026-09-20).** The named centering diagnostic writers are now
+  redirected to an optional `CENTERING_DIAGNOSTIC_OUTPUT_ROOT`, defaulting to the simulator's
+  temporary directory. The focused source-scan test passed, and the test rerun did not dirty
+  tracked review paths. This output-routing change does not alter production selection or any
+  acceptance threshold.
 
 #### REQ-033 — Correct the stale status record and enforce the adjudication rule
 - **Objective.** Stop a stale document from misdirecting the next run, and make §5.2.1 binding.
@@ -1855,7 +2014,10 @@ perception hypothesis.
   remaining absolute-GT assumption.
 - **Interim slice completion.** The manifest records cohort and capture provenance, validates all
   file hashes, freezes exactly ten new `HOLDOUT-INTERIM` files, and records that they have not been
-  analyzed. No spike constant or branch was chosen after inspecting holdout outcomes.
+  analyzed. Its `holdoutFreeze` block records the split, freeze ordering, selected count,
+  cohort/format coverage, sealed analysis/ground-truth status, and the explicit limitations that
+  keep the final REQ-040 gate open. No spike constant or branch was chosen after inspecting
+  holdout outcomes.
 - **Final completion.** Add the missing capture-diverse cohort, assign independent ground truth
   using REQ-027, promote a final holdout without analyzing it, and satisfy the full quality and
   generalization gates below. The interim manifest cannot be relabeled as final evidence.
@@ -1905,25 +2067,33 @@ perception hypothesis.
   an in-tolerance candidate still require separate selection/role evaluation; recall alone does
   not show that production selected the correct one. The aggregate output also shows a downstream
   semantic/selection gap, but it must not be used to explain the eight absent-candidate sides.
+- **Remediation checkpoint (2026-09-20).** The diagnostic writers now default to simulator
+  temporary storage rather than tracked review paths. The focused post-remediation run passed
+  1/1 and measured 34/40 outer edges and 34/36 gradeable inner edges at the unchanged
+  tolerances. The registered back-template alternatives and the front-bottom generator are
+  present in the same ledger with semantic roles; the remaining misses are IMG_0352 left and
+  IMG_0780 right. The 95% candidate-recall gate is still not met, so production selector
+  promotion remains blocked; the one bounded development-only selector experiment is authorized
+  by the REQ-044 decision checkpoint below.
 - **Metric correction history.** The earlier harness used the GT edge-band tolerance for both
   outer and inner recall. Preserve its 29/36 (80.6%) result as labeled preliminary historical
   evidence; the replacement ledger above uses the section 5.1 fixed `0.0035 * H` inner contract.
   Template-registered border sides count as candidates only when their geometry is produced
   without GT and the registration's own acceptance and false-positive gates pass.
 - **Sequencing consequence.** Repair deficient generators before tuning a joint selector for the
-  affected sides. After the post-E-REQ044 ledger refresh, the first high-yield implementation
-  branch is REQ-043's validated back-template path: it can
-  supply printed-border geometry directly and therefore bypass candidate generation for the three
-  Pokémon-back left misses (IMG_0347, IMG_0350, IMG_0352) and the two Magic-back bottom misses
-  (IMG_0781, IMG_0783). This is a proposed mechanism, not a claimed result, until transformed
-  template-match tests and the hard safety gate pass. It does not address the two front bottom
-  misses (IMG_0348, IMG_0780), which require an explicit front-bottom candidate-generation work
-  item. Do not count the back branch as evidence that the front problem is solved.
+  affected sides. The first high-yield implementation branch was REQ-043's back-template path,
+  followed by the separate front-bottom generator. Both are now implemented without using GT or
+  fixture identity: the back branch registers observed border geometry, and the front branch
+  records coherent art-window alternatives. The ledger still has two gradeable inner misses, so
+  this is implementation progress rather than a completed recall gate. Do not promote joint
+  selection to production until the role-specific recall gate clears; the separately authorized
+  bounded diagnostic experiment is not recall closure.
 - **Completion.** Correct candidate recall is at least 95% on the development set for each
   declared automatically supported reference class, or the deficient generator is named and
-  the selector spike does not proceed for that class. The current 85.0%/77.8% result does not
-  satisfy this gate; the eight listed inner misses must be repaired at candidate generation
-  before selector tuning can be evaluated for those sides.
+  production selector promotion remains blocked for that class. The current 85.0%/77.8% result
+  does not satisfy this gate; the two remaining gradeable misses stay excluded from selector
+  credit. One bounded diagnostic selector experiment may proceed under REQ-044, but it is not
+  recall closure and cannot convert an absent candidate into evidence against the selector.
 
 #### REQ-043 — Make reference type an explicit semantic decision
 - **Objective.** Replace the universal `art_window` default with a verifiable choice of
@@ -1962,14 +2132,43 @@ perception hypothesis.
   Template-derived ratios respond correctly to an injected translation of the printed design
   relative to the outer card, and unsupported/ambiguous backs fall through or decline rather than
   receiving a forced known-back label.
+- **Remediation checkpoint (2026-09-20; identity follow-up 2026-09-21).** The focused semantic test passed for the development
+  corpus: all five supported backs select `registeredBackTemplate`, the front fixtures remain on
+  front/profile paths, and IMG_0782 remains `none`. The registered branch uses observed border
+  transitions rather than a fixed nominal inner rectangle. The front-bottom generator emits
+  `art_window` candidates but is intentionally observational until REQ-042 recall clears. The
+  five development fronts were also scored as the identity negative class; their largest
+  winning family score was `0.5500`, below the unchanged `0.72` gate, and none passed the full
+  registered-back gate. Release no longer invokes the observational generator. REQ-043's
+  completion and the end-to-end L1 gate remain open.
 
 #### REQ-044 — Select physical geometry jointly and make stability part of confidence
 - **Objective.** Replace independent per-edge winners and hard local guards with one coherent
   interpretation of card, sleeve, and inner reference.
-- **Entry gate.** Do not tune or score joint selection for a declared reference class until
-  REQ-042 shows that class's role-correct candidate recall meets its gate. A selector result is
-  not evidence against a side whose correct candidate was absent. Back-template registration and
-  the front-bottom generator must enter their proposed geometry into the same candidate ledger.
+- **Entry gate.** REQ-042 currently reports `34/36` (`94.4%`) role-correct inner candidate
+  recall, so its strict `95%` gate is not met. This blocks claiming recall closure, production
+  promotion, or using a selector result as evidence against a side whose correct candidate was
+  absent. It does not block one bounded diagnostic experiment: the two remaining misses
+  (`IMG_0352` left and `IMG_0780` right) are excluded from any selector-credit claim, while the
+  selector may be measured on the candidates that are already present. Back-template registration
+  and the front-bottom generator must enter their proposed geometry into the same candidate
+  ledger.
+- **Experiment boundary.** The one authorized attempt is development-only, measured against L1
+  accuracy, and must not inspect the sealed holdout, change a contract threshold, or be described
+  as automatic-path closure. Pre-registered success is zero confidently-wrong outputs and at
+  least `80%` confident-and-correct coverage on the eligible development fixtures. The hybrid
+  path is already the release path; a passing result may only expand a reliable automatic subset
+  after the remaining REQ-045 gates.
+- **Measured outcome — 2026-09-21.** The authorized DEBUG-only selector attempt ran across all
+  ten development fixtures without reading the sealed holdout. Nine fixtures had gradeable inner
+  ground truth; `0/9` selected candidate readings met both `≤ 2.0 pp` ratio tolerances, and `9/9`
+  remained wrong under the pre-hybrid automatic-confidence interpretation. The zero-wrong /
+  `≥ 80%` coverage bar therefore failed, and the selector is not promoted to production. The
+  hybrid implementation records automatically seeded outer and inner geometry as
+  `manualConfirmationRequired`, keeps ratios/export unavailable until explicit confirmation or
+  adjustment of both frames, and leaves unsupported/ambiguous cases declined. Focused hybrid L1,
+  confirmation, and selector-evidence tests pass; screenshot review and the remaining stability,
+  latency, device, and holdout gates remain open.
 - **Required behaviour.** Vision, contours, templates, and profiles may propose candidates. A
   joint selector chooses four outer edges and the role-appropriate inner geometry using aspect,
   line continuity, parallelism, nesting, sleeve/card ordering, complete-edge support, and the
@@ -1998,6 +2197,18 @@ perception hypothesis.
   coverage or semantic separation fails—especially for full-art/foil inputs—ship the reliable
   automatic subset with immediate guided manual correction as a first-class path. Do not reopen
   the closed sampling experiment class as the fallback plan.
+- **Development-data decision — 2026-09-21.** The development corpus already shows the hard
+  failure signature: `0/8` confident numeric fixtures meet both ratio tolerances, with `19–22 pp`
+  front T/B errors despite candidates being available. Automatic release is stopped, and the one
+  bounded REQ-044 experiment recorded above has now failed its pre-registered bar. The sealed
+  capture-diverse holdout is not to be evaluated to confirm this development-visible failure; it
+  remains reserved for a later generalisation measurement after the product path is decided.
+- **Hybrid decision.** The hybrid path is invoked now: automatic outer placement and the
+  detector's best inner candidate seed editable guides, but both frames are
+  `manualConfirmationRequired` before a ratio is treated as correct. The product must decline to
+  state a ratio for every non-confident or unsupported case and provide guided manual correction
+  immediately. The failed selector attempt does not expand the automatic subset or displace this
+  hybrid path.
 - **UX completion for the hybrid path.** Show the image and editable guides immediately, state
   why automation declined, preserve live ratio updates, and complete the pending manual-correction
   screenshot and interaction review under REQ-017/REQ-021.
@@ -2303,6 +2514,26 @@ Success requires **all** of the following. Passing tests alone is explicitly **n
 > `REQ-037` (deterministic outer refinement), and `REQ-038` (post-refinement inner-profile
 > classification).
 
+> **Hybrid-path DoD — REQ-045 decision checkpoint (2026-09-21).** This is an additive product
+> path, not a waiver of the automatic DoD above. The hybrid path is complete only when:
+>
+> - the detector's starting outer quad is never treated as a correctness claim: an unsupported or
+>   ambiguous outer result declines or presents manual outer placement, and a supported result
+>   still requires the user to confirm or adjust the red outer guides;
+> - the inner guides are user-placed or user-confirmed, with the detector's best candidate used
+>   only as an editable starting position; the same explicit confirmation accepts both frames,
+>   and manual correction recovers a declined fixture;
+> - manual placement is functional, live ratio updates are preserved, and the interaction plus
+>   manual-correction screenshot is independently reviewed;
+> - ratio arithmetic is exact from the edited quad, and rendered guides meet `REQ-019`/`REQ-020`
+>   (`≤ 0.5 pt` and `≤ 1 device pixel`) on injected known geometry; and
+> - every non-confident or unsupported case declines to state a ratio, explains why, and prompts
+>   guided manual correction. No confident output may exceed the `≤ 2.0 pp` ratio contract.
+
+> The current `34/40` outer-edge result is evidence for the starting-geometry strategy, not
+> completion of this hybrid DoD. The hybrid path must enforce the confirmation boundary rather
+> than silently turn an out-of-tolerance automatic outer result into a correctness claim.
+
 1. All 10 HEIC fixtures have committed, independently produced ground truth (`REQ-001`) with
    overlay sheets (`REQ-003`).
 2. All 10 evaluated through the **production** entry point (`REQ-025`), every §5.1 metric recorded.
@@ -2351,6 +2582,9 @@ classifying them (§5.2.3).
 - No change to the exported PNG's panel layout, palette, or filename format.
 - No OCR-based card identification in the centering path.
 - No grading-company score prediction — the tool reports geometry, not a grade.
+- For the adopted REQ-045 hybrid path, no claim of fully automatic inner-reference detection on
+  full-art or foil fronts; those cases require user placement or confirmation before a ratio is
+  treated as correct.
 - No ML model unless it can be justified against §5.1 *and* run inside `REQ-022`'s budget; the
   default assumption is classical geometry.
 - No support for multiple cards in one frame.

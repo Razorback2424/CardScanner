@@ -91,4 +91,13 @@ enum SlabFramingRegion {
     static func titleVisionRect(for company: GradingCompany? = nil) -> CGRect {
         visionRect(for: geometry(for: company).titleBand, company: company)
     }
+
+    /// Title OCR runs across the raw-card and slab title bands while framing
+    /// transitions. The two bands are intentionally disjoint: the camera guide
+    /// moves when the slab is recognized, but the card itself does not move at
+    /// that instant. A single union ROI keeps the historical title pass alive
+    /// through that presentation change.
+    static func titleOCRVisionRect(for company: GradingCompany? = nil) -> CGRect {
+        CardFramingRegion.titleVisionRect.union(titleVisionRect(for: company))
+    }
 }

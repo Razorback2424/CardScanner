@@ -5,17 +5,22 @@ public struct MagicCatalogBuildRequest: Sendable {
     public let activeRelease: MagicCatalogRelease?
     public let revision: Int
     public let generatedAt: String
+    public let authorizedRemovalCodes: Set<String>
 
     public init(
         fixture: MagicCatalogProviderFixture,
         activeRelease: MagicCatalogRelease? = nil,
         revision: Int,
-        generatedAt: String
+        generatedAt: String,
+        authorizedRemovalCodes: Set<String> = []
     ) {
         self.fixture = fixture
         self.activeRelease = activeRelease
         self.revision = revision
         self.generatedAt = generatedAt
+        self.authorizedRemovalCodes = Set(
+            authorizedRemovalCodes.map(MagicCatalogPolicy.normalizedCode)
+        )
     }
 }
 
@@ -33,8 +38,11 @@ public struct MagicCatalogReviewReport: Codable, Equatable, Sendable {
     public let revision: Int
     public let generatedAt: String
     public let descriptorCount: Int
+    public let changeClass: MagicCatalogChangeClass
     public let addedCodes: [String]
     public let changedCodes: [String]
+    public let contentChangedCodes: [String]
+    public let authorityChangedCodes: [String]
     public let removedCodes: [String]
     public let scannerProjectionChangedCodes: [String]
     public let browseProjectionChangedCodes: [String]
@@ -45,8 +53,11 @@ public struct MagicCatalogReviewReport: Codable, Equatable, Sendable {
         revision: Int,
         generatedAt: String,
         descriptorCount: Int,
+        changeClass: MagicCatalogChangeClass,
         addedCodes: [String],
         changedCodes: [String],
+        contentChangedCodes: [String],
+        authorityChangedCodes: [String],
         removedCodes: [String],
         scannerProjectionChangedCodes: [String],
         browseProjectionChangedCodes: [String],
@@ -56,8 +67,11 @@ public struct MagicCatalogReviewReport: Codable, Equatable, Sendable {
         self.revision = revision
         self.generatedAt = generatedAt
         self.descriptorCount = descriptorCount
+        self.changeClass = changeClass
         self.addedCodes = addedCodes
         self.changedCodes = changedCodes
+        self.contentChangedCodes = contentChangedCodes
+        self.authorityChangedCodes = authorityChangedCodes
         self.removedCodes = removedCodes
         self.scannerProjectionChangedCodes = scannerProjectionChangedCodes
         self.browseProjectionChangedCodes = browseProjectionChangedCodes
@@ -66,7 +80,7 @@ public struct MagicCatalogReviewReport: Codable, Equatable, Sendable {
     }
 
     public var hasMeaningfulChanges: Bool {
-        !addedCodes.isEmpty || !changedCodes.isEmpty || !removedCodes.isEmpty
+        changeClass != .none
     }
 }
 
@@ -79,6 +93,8 @@ public enum MagicCatalogBuilderError: Error, CustomStringConvertible, Equatable,
     case providerCodeMapsToMultipleUUIDs(code: String, first: String, second: String)
     case printedSizeDrift(code: String, active: Int?, candidate: Int?)
     case routingAuthorityDrift(code: String)
+    case unauthorizedRemoval(String)
+    case authorizedRemovalNotActive(String)
 
     public var description: String {
         switch self {
@@ -96,6 +112,10 @@ public enum MagicCatalogBuilderError: Error, CustomStringConvertible, Equatable,
             return "Released Magic set \(code) printedSize drifted from \(activeDescription) to \(candidateDescription)"
         case .routingAuthorityDrift(let code):
             return "Routing authority changed for released Magic child set \(code)"
+        case .unauthorizedRemoval(let code):
+            return "Active Magic set \(code) was removed without explicit authorization"
+        case .authorizedRemovalNotActive(let code):
+            return "Magic removal authorization names non-active set \(code)"
         }
     }
 }
@@ -145,6 +165,13 @@ public struct MagicCatalogBuilder: Sendable {
 
         if let activeRelease = request.activeRelease {
             try validateIdentityContinuity(active: activeRelease, candidate: release)
+        }
+        try validateRemovalAuthorization(
+            active: request.activeRelease,
+            candidate: release,
+            authorizedCodes: request.authorizedRemovalCodes
+        )
+        if let activeRelease = request.activeRelease {
             try validateAuthorityDrift(
                 active: activeRelease,
                 candidate: release,
@@ -153,10 +180,21 @@ public struct MagicCatalogBuilder: Sendable {
         }
         try MagicCatalogReleaseValidator.validate(release)
 
+        let surfaceDiff = MagicCatalogChangeClassifier.surfaceDiff(
+            previousRelease: request.activeRelease,
+            currentRelease: release
+        )
+        let classification = MagicCatalogChangeClassifier.classify(
+            previousRelease: request.activeRelease,
+            currentRelease: release,
+            surfaceDiff: surfaceDiff
+        )
         let report = makeReport(
             active: request.activeRelease,
             candidate: release,
-            providerWarnings: providerWarnings
+            providerWarnings: providerWarnings,
+            surfaceDiff: surfaceDiff,
+            classification: classification
         )
         return MagicCatalogBuildResult(release: release, report: report)
     }
@@ -288,10 +326,32 @@ public struct MagicCatalogBuilder: Sendable {
         }
     }
 
+    private func validateRemovalAuthorization(
+        active: MagicCatalogRelease?,
+        candidate: MagicCatalogRelease,
+        authorizedCodes: Set<String>
+    ) throws {
+        let activeCodes = Set(
+            active?.sets.map { MagicCatalogPolicy.normalizedCode($0.code) } ?? []
+        )
+        let candidateCodes = Set(
+            candidate.sets.map { MagicCatalogPolicy.normalizedCode($0.code) }
+        )
+        let removedCodes = activeCodes.subtracting(candidateCodes).sorted()
+        for code in removedCodes where !authorizedCodes.contains(code) {
+            throw MagicCatalogBuilderError.unauthorizedRemoval(code)
+        }
+        for code in authorizedCodes.sorted() where !activeCodes.contains(code) {
+            throw MagicCatalogBuilderError.authorizedRemovalNotActive(code)
+        }
+    }
+
     private func makeReport(
         active: MagicCatalogRelease?,
         candidate: MagicCatalogRelease,
-        providerWarnings: [String]
+        providerWarnings: [String],
+        surfaceDiff: MagicCatalogSurfaceDiff,
+        classification: MagicCatalogChangeClassification
     ) -> MagicCatalogReviewReport {
         let oldByCode = Dictionary(
             active?.sets.map { (MagicCatalogPolicy.normalizedCode($0.code), $0) } ?? [],
@@ -301,50 +361,9 @@ public struct MagicCatalogBuilder: Sendable {
             candidate.sets.map { (MagicCatalogPolicy.normalizedCode($0.code), $0) },
             uniquingKeysWith: { first, _ in first }
         )
-        let allCodes = Set(oldByCode.keys).union(newByCode.keys)
-        var added: [String] = []
-        var changed: [String] = []
-        var removed: [String] = []
-        var scannerChanged: [String] = []
-        var browseChanged: [String] = []
-        var routingChanged: [String] = []
-
-        for code in allCodes.sorted() {
-            switch (oldByCode[code], newByCode[code]) {
-            case (nil, let next?):
-                added.append(next.code)
-                if next.scanEnabled { scannerChanged.append(next.code) }
-                if next.browseEnabled { browseChanged.append(next.code) }
-                if next.routingKind != nil { routingChanged.append(next.code) }
-            case (let previous?, nil):
-                removed.append(previous.code)
-                if previous.scanEnabled { scannerChanged.append(previous.code) }
-                if previous.browseEnabled { browseChanged.append(previous.code) }
-                if previous.routingKind != nil { routingChanged.append(previous.code) }
-            case (let previous?, let next?):
-                if previous != next { changed.append(next.code) }
-                if previous.scanEnabled != next.scanEnabled
-                    || previous.printedSize != next.printedSize {
-                    scannerChanged.append(next.code)
-                }
-                if previous.displayName != next.displayName
-                    || previous.releaseDate != next.releaseDate
-                    || previous.cardCount != next.cardCount
-                    || previous.iconSVGURL != next.iconSVGURL
-                    || previous.browseEnabled != next.browseEnabled {
-                    browseChanged.append(next.code)
-                }
-                if previous.parentSetCode != next.parentSetCode
-                    || previous.routingKind != next.routingKind {
-                    routingChanged.append(next.code)
-                }
-            default:
-                break
-            }
-        }
 
         var warnings = providerWarnings
-        for code in allCodes.sorted() {
+        for code in Set(oldByCode.keys).union(newByCode.keys).sorted() {
             guard let previous = oldByCode[code],
                   let next = newByCode[code],
                   previous.printedSize != next.printedSize,
@@ -367,12 +386,15 @@ public struct MagicCatalogBuilder: Sendable {
             revision: candidate.revision,
             generatedAt: candidate.generatedAt,
             descriptorCount: candidate.sets.count,
-            addedCodes: added.sorted(),
-            changedCodes: changed.sorted(),
-            removedCodes: removed.sorted(),
-            scannerProjectionChangedCodes: Array(Set(scannerChanged)).sorted(),
-            browseProjectionChangedCodes: Array(Set(browseChanged)).sorted(),
-            routingProjectionChangedCodes: Array(Set(routingChanged)).sorted(),
+            changeClass: classification.changeClass,
+            addedCodes: surfaceDiff.addedCodes,
+            changedCodes: surfaceDiff.changedCodes,
+            contentChangedCodes: classification.contentChangedCodes,
+            authorityChangedCodes: classification.authorityChangedCodes,
+            removedCodes: surfaceDiff.removedCodes,
+            scannerProjectionChangedCodes: surfaceDiff.scannerProjectionChangedCodes,
+            browseProjectionChangedCodes: surfaceDiff.browseProjectionChangedCodes,
+            routingProjectionChangedCodes: surfaceDiff.routingProjectionChangedCodes,
             warnings: warnings
         )
     }

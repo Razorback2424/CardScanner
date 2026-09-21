@@ -182,7 +182,23 @@ enum PortfolioEpoch {
                 )
                 switch outcome {
                 case .appended:
-                    break
+                    // The baseline is an ownership mutation even though it is
+                    // not an acquisition claim. Keep the durable activity
+                    // projection in the same transaction as its ledger leg so
+                    // restart/replay integrity cannot observe F04's half-write.
+                    context.insert(
+                        CollectionActivity(
+                            card: position.representative,
+                            source: .catalog,
+                            quantity: position.quantity,
+                            occurredAt: date,
+                            kind: .quantityAdjusted,
+                            deltaQuantity: position.quantity,
+                            ledgerOperationIDs: [
+                                baselineOperationID(collectionKey: position.collectionKey)
+                            ]
+                        )
+                    )
                 case .duplicate:
                     throw EstablishmentError.baselineWriteFailed(
                         "baseline event already exists for \(position.collectionKey)"

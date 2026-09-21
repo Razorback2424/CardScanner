@@ -1,3 +1,112 @@
+Automatic set artwork on new-set release (2026-09-21): implemented the
+zero-official-count browse-only admission path, 448 KiB publisher payload guard,
+status/MIME/body artwork probe, gated derived-parent artwork, optional
+pokemontcg.io/Scrydex set and card-art enrichment with whole-directory
+fail-closed matching, signed descriptor card-art fallbacks, and app preference
+for published fallbacks while preserving the snapshot fallback. PokemonCatalogCore
+passes 54/54 tests and the fixed-timestamp offline publisher validation is
+repeatable. A clean iOS test build is currently blocked by an unrelated existing
+centering test/source mismatch (`confirmManualPlacement` is referenced by a test
+but absent from the current `CardCenteringMeasurement` source); the app source
+build itself completed successfully. No physical-device, provider, or release
+readiness claim is made.
+
+Centering remediation checkpoint (2026-09-20, current working tree): followed the required
+order without changing contract thresholds. Formalized the ten-image `HOLDOUT-INTERIM` split
+with a machine-readable `holdoutFreeze` block, kept its final REQ-040 gate open, and redirected
+centering diagnostic writers to simulator temporary storage (or the explicit
+`CENTERING_DIAGNOSTIC_OUTPUT_ROOT`) instead of tracked review paths. Implemented the registered
+Pokémon/Magic back-template branch using observed border registration, then the separate
+front-bottom art-window candidate generator with role-tagged alternatives and deferred joint
+selection. Verification passed 4/4 focused manifest/source/semantic/outer checks and 1/1 REQ-042
+ledger diagnostic; the temporary ledger measured 34/40 outer and 34/36 gradeable inner edges,
+with remaining misses at IMG_0352 left and IMG_0780 right. All five development backs selected
+the registered branch and IMG_0782 remained `none`/declined. The public L1 accuracy test still
+failed with 53 assertions, so accuracy, metamorphic invariants, latency, final holdout
+generalisation, joint selection, and physical-device gates remain open. The redirected REQ-041
+profile passed 1/1 over 20 analyses with 2.7409/3.2918 s median/max wall time; the 0.80/1.50 s
+budget remains unmet. No tolerance was loosened.
+
+Centering remediation follow-up (2026-09-21): gated the discarded front-bottom candidate
+generator call to DEBUG, then ran a same-session ten-fixture A/B on the pinned iPhone 17 Pro /
+iOS 26.5 simulator. Without/with generator inner-generation medians were 0.7869/1.0085 s and
+wall medians were 2.5304/2.7284 s; Release no longer executes that observational work, but the
+0.80/1.50 s contract remains open. Added diagnostic-only identity telemetry and scored the five
+development fronts: the maximum winning family score was 0.5500 versus the unchanged 0.72 gate,
+and no front passed the full registered-back gate. Inventoried the new branch constants in the
+centering plan. The interim holdout remains sealed; at that checkpoint joint selection was the
+next permitted perception change, and the public L1/recall/device gates remained open. The later
+REQ-045 entry records the bounded attempt and its failed pre-registered bar. No tolerance was
+loosened.
+
+Centering REQ-045 safety decision (2026-09-21): development evidence is now treated as a
+fail-safe release decision, not a holdout result. Inner candidate recall is 34/36 (94.4%) against
+the 95% gate, 0/8 confident numeric fixtures meet both ratio tolerances, and front T/B error is
+19–22 pp across tested resolutions. The decision stopped automatic release and authorized one
+bounded, development-only joint-selection experiment measured against L1; the sealed capture-diverse
+holdout must not be evaluated to confirm this development-visible failure. The pre-registered
+bar is zero confidently-wrong outputs and at least 80% confident-and-correct coverage; if it were
+met, it could only expand a reliable automatic subset after the remaining REQ-045 gates. The
+REQ-045 hybrid path is the product path now, with automatic starting geometry, user-placed inner
+guides, exact ratio/rendering math, and guided manual correction. The selector outcome is recorded
+in the following entry; no tolerance was loosened.
+
+Centering REQ-044 experiment and hybrid implementation (2026-09-21): ran the one authorized
+DEBUG-only joint selector over all ten development fixtures without reading the sealed holdout.
+Nine fixtures had gradeable inner ground truth; 0/9 candidate readings met both ≤2.0 pp ratio
+tolerances and 9/9 remained wrong under the pre-hybrid automatic-confidence interpretation, so
+the zero-wrong / ≥80% pre-registered bar failed and the selector was not promoted. The analyzer
+and view now expose a manualConfirmationRequired state: automatic outer/best-inner geometry
+remains an editable starting guide, while ratio reporting and export require explicit confirmation
+or adjustment of both frames; unsupported cases remain declined. Focused hybrid L1, confirmation,
+and selector-evidence tests passed. The holdout remains sealed and no tolerance was loosened.
+
+Centering hybrid verification (2026-09-21): reran the complete centering test selection after
+making outer-frame confirmation explicit. On the pinned iPhone 17 Pro / iOS 26.5 simulator with
+`CODE_SIGNING_ALLOWED=NO`, the seven centering classes executed 92 tests: 72 passed and 20
+failed in 1,077.241 s. `CardCenteringAnalyzerTests` passed 21/21, `CenteringExportTests` 19/19,
+`CardCenteringGroundTruthTests` 12/12, `CardCenteringSurfaceTests` 2/2, and the corpus manifest
+1/1; the remaining failures are the already-open INV-2/4/5/7/8, REQ-022 latency, and E0/E-E
+profile diagnostics. The new confirmation contract and REQ-045 confirmation test passed. The
+holdout was not read; no tolerance was loosened. Result bundle: `/tmp/TradingCardScannerCenteringFull-20260921-v2.xcresult`.
+
+Centering hybrid seed-prior diagnostic (2026-09-21): measured the detector's seeded inner
+depths against a leave-one-out median prior from the same game family over the nine gradeable
+development fixtures (36 edges). Depths were normalized by the annotated outer width for
+left/right and height for top/bottom. The result was mixed: the family prior was clearly better
+for Pokémon bottom edges (`0.10` versus `0.75` pp median; 5/6 per-edge wins), while the
+detector was better for Pokémon top (`0.07` versus `1.21` pp) and Magic top/bottom (`1.18/2.77`
+versus `2.54/16.99` pp). Magic left/right favored the prior, and Pokémon left/right were mixed
+(the Pokémon-left median was effectively tied, `0.25` versus `0.24` pp). No blanket T/B seed
+replacement is justified by this small family/side split; no production seed, threshold, or
+selector behavior changed. The sealed holdout remains untouched. The focused
+`testHybridSeedAgainstLeaveOneOutFamilyPrior` passed 1/1 on the pinned simulator.
+
+Magic semantic publication hardening (2026-09-20, current working tree): added
+shared Magic surface-diff and fail-closed semantic classification, with only
+displayName, releaseDate, cardCount, and iconSVGURL eligible for the automatic
+content-only lane. Added origin validation for signed icon URLs, explicit
+removal authorization, publish-time candidate/report recomputation, dynamic
+protected-versus-automatic workflow routing, and Magic-specific environment
+guards. Verification passed: MagicCatalogCore 18/18, PokemonCatalogCore 39/39,
+Magic release build, recorded fixture validation, hosting configuration
+validation, and a serialized Debug iPhone 17 Pro Simulator build whose app
+bundle was produced under external-SSD DerivedData. The hosted Magic pointer
+check returned HTTP 404. The old Pokémon public pin remains temporary pending
+owner input for the Magic key ID and public key; rollout remains legacy-live.
+
+Magic catalog signing and domain-separation safeguards (2026-09-20, current
+working tree based at `080db79`): brought `MagicCatalogSigningKeyLoader` to
+parity with Pokémon's four GitHub publication-context checks, added the
+explicit `MAGIC_CATALOG_PUBLISH` workflow marker, and made the variable source
+injectable for unit coverage. Added an additive optional Pokémon schema-1
+`catalogKind` marker: publisher-generated releases emit `pokemon`, the
+verifier rejects a present wrong domain, and legacy releases that omit it stay
+readable. Updated the key runbook to document Magic's second protected
+environment and separate-key custody boundaries. Verification passed:
+MagicCatalogCore 10/10, PokemonCatalogCore 39/39, Debug iOS Simulator build,
+and `git diff --check`.
+
 Documentation freshness reconciliation (2026-09-20, current `main` at
 `31eb97e`): updated the current App Review/release ledgers, launch plan, and
 repository audit to distinguish the clean current checkout from historical
@@ -336,3 +445,23 @@ Original prompt: Implement Browse Sets and Cards across Pokémon/TCGdex and Magi
 - Browse artwork/cache hardening (2026-09-16): added TCGdex-only host gating for extensionless candidates, `/univ/`↔`/en/` symbol-prefix fallback, decode-before-persist with eviction/retry for undecodable legacy cache entries, and regression coverage for both invalid and valid cache bodies plus concurrent fetch coalescing. The focused Browse selectors pass 133/133 with 0 failures. A storage-controlled `xcodebuild` rerun routed `TMPDIR`, Clang/Swift module caches, DerivedData, and the `.xcresult` to the external SSD; the result is `.codex-cardscanner-build/browse-set-remediation-20260915/results/browse-artwork-hardening-20260916-external.xcresult`. The XcodeBuildMCP test-products bundle and logs from the initial run were also moved onto the SSD. No screenshots were taken in this follow-up. A8/B6 remain closed and C7/RF-9 remains open. Xcode emitted one non-failing warning that `CardFinishRenderPlanTests.swift` is in the Copy Bundle Resources phase.
 - Browse artwork batch / F06 project-resource correction (2026-09-16): verified the 57-file centering corpus is tracked and fixed the duplicate PBXBuildFile/PBXFileReference UUIDs plus the dangling fixture-group reference. The simulator build succeeded and fixture-reachability and corpus-manifest tests passed. The focused selection produced 38 results: 28 passed, 9 test cases failed on known centering accuracy/invariant/performance assertions, and 1 profile-dump test was canceled; this was not a full-suite rerun. Diagnostic-dump tests wrote seven tracked outputs in the repository; exact generated versions were copied to `.codex-cardscanner-build/browse-set-remediation-20260915/results/f06-generated-diagnostics-20260916/`, and tracked copies were restored. DerivedData (including Xcode's module and compilation caches), TMPDIR, result bundle (`f06-fixture-copy-20260916.xcresult`), and preserved generated diagnostics are on the external SSD; the package-source clone path was also directed there (no package fetch was needed). No screenshots were taken. F06's missing-bundle cause is corrected; centering assertions and a complete suite baseline remain open.
 - Pass-2 storage/scanner remediation (2026-09-19): implemented F01's safe local fallback and delayed `.attached` manifest claim, F02's manifest-derived headless container mode plus active-mode publication, and F03's pending-answer retention when the identification pipeline is busy. Focused iPhone 17 Pro iOS 26.5 simulator verification passes 64 storage/policy/continuity tests in Debug, the same 64 in DebugProduction with one intentional entitlement-gated skip, 20 readiness tests, and the new pending-resolution regression. Entitled-device clean-install, background-refresh, CloudKit production, archive, and full-suite gates remain open; F03 chose recoverable retry rather than a formal reachability proof.
+Exact-branch evidence pass (2026-09-20, candidate `7dbaf40`): focused iPhone
+17 Pro iOS 26.5 simulator selection covering scanner, Browse/UI,
+collection/projection, Pokémon catalog, and Magic catalog suites executed 581
+tests: 579 passed, 1 skipped, and 1 failed in
+`ScannerViewModelTests/testCatalogMissVerificationStillFilesUnresolvedCard`.
+The storage-safe full simulator suite used external-SSD DerivedData, module
+caches, package cache, and result bundle; it executed 1,278 tests with 6
+skipped and 4 failures (1 unexpected), spanning current centering,
+ownership-ledger, and the scanner catalog-miss test. Result bundles are under
+the external-SSD `exact-7dbaf40` directory. The earlier `a4375df` run remains
+historical.
+- Ownership-ledger gate close (2026-09-20, candidate `7dbaf40`): reproduced and
+  fixed F04 by writing baseline `CollectionActivity` alongside each
+  `initialBalance` event, fixed F05 by excluding negative reconstructed nets,
+  and made source-inventory verification independent of the test runner's
+  working directory. The exhaustive mutation/restart/rollback matrix passed
+  105 of 106 selected tests with one intentional opt-in skip and zero
+  failures. Evidence is in the external-SSD
+  `exact-7dbaf40/ownership-matrix.xcresult`; simulator ownership is closed,
+  while entitled CloudKit production and two-device convergence remain open.

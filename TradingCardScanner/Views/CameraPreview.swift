@@ -3,7 +3,8 @@ import SwiftUI
 import UIKit
 
 struct CameraPreview: UIViewRepresentable {
-    @ObservedObject var scanner: CardScanner
+    let scanner: CardScanner
+    @ObservedObject private var scannerState: CardScannerUIState
 #if DEBUG
     @ObservedObject private var debugVisionOverlay: ScannerDebugVisionOverlay
 #endif
@@ -22,6 +23,7 @@ struct CameraPreview: UIViewRepresentable {
         self.scanner = scanner
         self.successCount = successCount
         self.recognitionCount = recognitionCount
+        _scannerState = ObservedObject(wrappedValue: scanner.uiState)
 #if DEBUG
         _debugVisionOverlay = ObservedObject(wrappedValue: scanner.debugVisionOverlay)
 #endif
@@ -33,8 +35,9 @@ struct CameraPreview: UIViewRepresentable {
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation
-        view.slabFraming = scanner.slabFraming
-        view.slabGuideHint = scanner.slabGuideHint
+        view.slabFraming = scannerState.slabFraming
+        view.slabGuideHint = scannerState.slabGuideHint
+        view.footerVisionRect = scannerState.footerRegionOfInterest
         view.syncRecognitionCount(recognitionCount)
         view.syncSuccessCount(successCount)
 #if DEBUG
@@ -46,8 +49,9 @@ struct CameraPreview: UIViewRepresentable {
     func updateUIView(_ uiView: PreviewView, context: Context) {
         let rotationChanged = uiView.rotation !== scanner.rotation
             || uiView.rotation?.previewAngle != scanner.rotation.previewAngle
-        let slabFramingChanged = uiView.slabFraming != scanner.slabFraming
-        let slabGuideHintChanged = uiView.slabGuideHint != scanner.slabGuideHint
+        let slabFramingChanged = uiView.slabFraming != scannerState.slabFraming
+        let slabGuideHintChanged = uiView.slabGuideHint != scannerState.slabGuideHint
+        let footerROIChanged = uiView.footerVisionRect != scannerState.footerRegionOfInterest
 #if DEBUG
         let debugBoxesChanged = uiView.debugVisionBoxes != debugVisionOverlay.boxes
 #endif
@@ -55,17 +59,18 @@ struct CameraPreview: UIViewRepresentable {
             uiView.previewLayer.session = scanner.session
         }
         if rotationChanged { uiView.rotation = scanner.rotation }
-        if slabFramingChanged { uiView.slabFraming = scanner.slabFraming }
-        if slabGuideHintChanged { uiView.slabGuideHint = scanner.slabGuideHint }
+        if slabFramingChanged { uiView.slabFraming = scannerState.slabFraming }
+        if slabGuideHintChanged { uiView.slabGuideHint = scannerState.slabGuideHint }
+        if footerROIChanged { uiView.footerVisionRect = scannerState.footerRegionOfInterest }
         uiView.syncRecognitionCount(recognitionCount)
         uiView.syncSuccessCount(successCount)
 #if DEBUG
         if debugBoxesChanged { uiView.debugVisionBoxes = debugVisionOverlay.boxes }
 #endif
 #if DEBUG
-        let needsLayout = rotationChanged || slabFramingChanged || slabGuideHintChanged || debugBoxesChanged
+        let needsLayout = rotationChanged || slabFramingChanged || slabGuideHintChanged || footerROIChanged || debugBoxesChanged
 #else
-        let needsLayout = rotationChanged || slabFramingChanged || slabGuideHintChanged
+        let needsLayout = rotationChanged || slabFramingChanged || slabGuideHintChanged || footerROIChanged
 #endif
         if needsLayout {
             uiView.setNeedsLayout()
@@ -95,6 +100,11 @@ final class PreviewView: UIView {
 
     var slabFraming: GradedSlabEvidence?
     var slabGuideHint: GradingCompany?
+    /// The band the scanner told us it is reading. Mirrored rather than derived
+    /// so the green guide and the debug boxes cannot drift from the real ROI.
+    var footerVisionRect = CardFramingRegion.visionRect.union(
+        SlabFramingRegion.footerVisionRect(for: nil)
+    )
 
     override class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
@@ -139,15 +149,11 @@ final class PreviewView: UIView {
         // ScanRegion explicitly converts Vision's portrait/bottom-left ROI into
         // AVFoundation's unrotated-landscape/top-left metadata coordinates first.
         // The preview layer then applies orientation and aspect-fill geometry.
-        let scanVisionRect: CGRect
+        let scanVisionRect = footerVisionRect
         let outerVisionRect: CGRect
         let innerVisionRect: CGRect?
         let isProvisionalSlabGuide: Bool
         if let slabFraming {
-            // Success belongs to the card footer that established the catalog
-            // identity. The label outline remains part of the slab guide, but
-            // the green flash must not point at a different OCR band.
-            scanVisionRect = SlabFramingRegion.footerVisionRect(for: slabFraming.company)
             outerVisionRect = SlabFramingRegion.slabVisionRect(for: slabFraming.company)
             innerVisionRect = SlabFramingRegion.cardWindowVisionRect(for: slabFraming.company)
             isProvisionalSlabGuide = false
@@ -155,12 +161,10 @@ final class PreviewView: UIView {
             // A company token is enough to tell the user where the slab label
             // belongs, but not enough to claim that the slab identity is known.
             // Keep this envelope generic until the confirmation window closes.
-            scanVisionRect = SlabFramingRegion.footerVisionRect(for: nil)
             outerVisionRect = SlabFramingRegion.slabVisionRect(for: nil)
             innerVisionRect = SlabFramingRegion.cardWindowVisionRect(for: nil)
             isProvisionalSlabGuide = true
         } else {
-            scanVisionRect = CardFramingRegion.visionRect
             outerVisionRect = CardFramingRegion.cardVisionRect
             innerVisionRect = nil
             isProvisionalSlabGuide = false
@@ -314,11 +318,11 @@ final class PreviewView: UIView {
             }
 
             // Vision normalizes these against the request's regionOfInterest, so map
-            // back to full-frame coordinates before converting. Skipping this draws a
-            // box inside a 0.72 x 0.16 band at up to full-frame scale.
+            // back to full-frame coordinates before converting. Use the ROI published
+            // by the scanner rather than re-deriving the 0.72 x 0.16 band.
             let fullFrameRect = ScanRegion.fullFrameVisionRect(
                 fromObservationBoundingBox: debugVisionBoxes[index],
-                in: ScanRegion.activeVisionROI
+                in: footerVisionRect
             )
             let metadataRect = ScanRegion.metadataRect(
                 fromVisionRect: fullFrameRect,

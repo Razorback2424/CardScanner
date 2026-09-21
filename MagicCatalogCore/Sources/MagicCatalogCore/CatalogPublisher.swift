@@ -27,20 +27,40 @@ public enum MagicCatalogSigningKeyLoader {
         public var description: String {
             switch self {
             case .notProtectedEnvironment:
-                return "Magic catalog signing is allowed only in the protected publication environment"
+                return "Magic catalog signing is allowed only in a matching protected or automatic publication environment"
             case .missingEnvironment(let name): return "Missing required environment variable \(name)"
             case .invalidPrivateKey: return "MAGIC_CATALOG_SIGNING_KEY is not a 32-byte base64url key"
             }
         }
     }
 
-    public static func load(environment: MagicCatalogPublicationEnvironment) throws
-        -> (privateKey: Curve25519.Signing.PrivateKey, keyID: String) {
-        guard environment == .production,
-              ProcessInfo.processInfo.environment["GITHUB_ENVIRONMENT"] == "magic-catalog-production" else {
+    public static func load(
+        environment: MagicCatalogPublicationEnvironment,
+        variables: [String: String] = ProcessInfo.processInfo.environment,
+        changeClass: MagicCatalogChangeClass
+    ) throws -> (privateKey: Curve25519.Signing.PrivateKey, keyID: String) {
+        guard variables["GITHUB_ACTIONS"] == "true",
+              variables["GITHUB_EVENT_NAME"] != "pull_request",
+              variables["GITHUB_REF"] == "refs/heads/main",
+              variables["MAGIC_CATALOG_PUBLISH"] == "true" else {
             throw Error.notProtectedEnvironment
         }
-        let variables = ProcessInfo.processInfo.environment
+        switch environment {
+        case .production:
+            let githubEnvironment = variables["GITHUB_ENVIRONMENT"] ?? ""
+            guard [
+                "magic-catalog-production",
+                "magic-catalog-production-auto"
+            ].contains(githubEnvironment) else {
+                throw Error.notProtectedEnvironment
+            }
+            guard githubEnvironment != "magic-catalog-production-auto"
+                || changeClass == .contentOnly else {
+                throw Error.notProtectedEnvironment
+            }
+        case .staging:
+            throw Error.notProtectedEnvironment
+        }
         guard let rawKey = variables["MAGIC_CATALOG_SIGNING_KEY"], !rawKey.isEmpty else {
             throw Error.missingEnvironment("MAGIC_CATALOG_SIGNING_KEY")
         }

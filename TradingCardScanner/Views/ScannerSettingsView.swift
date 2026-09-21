@@ -61,7 +61,7 @@ struct SettingsView: View {
                 Section {
                     NavigationLink {
                         SettingsCategoryView("Scanning") {
-                            cameraSection
+                            ScannerCameraSettingsSection(scanner: scannerModel.scanner)
                         }
                     } label: {
                         Label("Scanning", systemImage: "viewfinder")
@@ -519,40 +519,6 @@ struct SettingsView: View {
         return message
     }
 
-    @ViewBuilder
-    private var cameraSection: some View {
-        Section {
-            if scannerModel.scanner.availableLenses.count > 1 {
-                Picker("Lens", selection: lensBinding) {
-                    ForEach(scannerModel.scanner.availableLenses) { lens in
-                        Text(lens.label).tag(lens)
-                    }
-                }
-                .pickerStyle(.segmented)
-            } else {
-                LabeledContent("Lens", value: scannerModel.scanner.lens.label)
-            }
-        } header: {
-            Text("Camera")
-        } footer: {
-            if scannerModel.scanner.availableLenses.contains(.macro) {
-                Text("Macro uses the ultra wide lens, which focuses down to a few centimetres. The standard lens cannot focus close enough to read a card's set code.")
-            } else {
-                Text("This device has no ultra wide camera that can focus close, so only the standard lens is available.")
-            }
-        }
-    }
-
-    /// `scanner.lens` is `private(set)` and only changes once the capture session has
-    /// actually swapped inputs, so the picker writes through `setLens` and reads back
-    /// the hardware's answer rather than holding its own selection state.
-    private var lensBinding: Binding<CameraLens> {
-        Binding(
-            get: { scannerModel.scanner.lens },
-            set: { scannerModel.scanner.setLens($0) }
-        )
-    }
-
     private var deletionErrorBinding: Binding<Bool> {
         Binding(
             get: { deletionError != nil },
@@ -567,6 +533,49 @@ struct SettingsView: View {
         } catch {
             deletionError = error.localizedDescription
         }
+    }
+}
+
+private struct ScannerCameraSettingsSection: View {
+    let scanner: CardScanner
+    @ObservedObject private var state: CardScannerUIState
+
+    init(scanner: CardScanner) {
+        self.scanner = scanner
+        _state = ObservedObject(wrappedValue: scanner.uiState)
+    }
+
+    var body: some View {
+        Section {
+            if state.availableLenses.count > 1 {
+                Picker("Lens", selection: lensBinding) {
+                    ForEach(state.availableLenses) { lens in
+                        Text(lens.label).tag(lens)
+                    }
+                }
+                .pickerStyle(.segmented)
+            } else {
+                LabeledContent("Lens", value: state.lens.label)
+            }
+        } header: {
+            Text("Camera")
+        } footer: {
+            if state.availableLenses.contains(.macro) {
+                Text("Macro uses the ultra wide lens, which focuses down to a few centimetres. The standard lens cannot focus close enough to read a card's set code.")
+            } else {
+                Text("This device has no ultra wide camera that can focus close, so only the standard lens is available.")
+            }
+        }
+    }
+
+    /// `state.lens` is only changed once the capture session has actually swapped
+    /// inputs, so the picker writes through `setLens` and reads back the hardware's
+    /// answer rather than holding its own selection state.
+    private var lensBinding: Binding<CameraLens> {
+        Binding(
+            get: { state.lens },
+            set: { scanner.setLens($0) }
+        )
     }
 }
 

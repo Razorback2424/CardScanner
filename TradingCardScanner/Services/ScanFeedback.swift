@@ -22,6 +22,8 @@ final class ScanFeedback {
     func prepare() {
         addedGenerator.prepare()
         attentionGenerator.prepare()
+        selectionGenerator.prepare()
+        noticeGenerator.prepare()
     }
 
     /// A card went into the collection. The crisp one.

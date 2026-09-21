@@ -14,6 +14,20 @@ struct CollectionProjectionSnapshot: Equatable, Sendable {
     let diagnosticsByCollectionKey: [String: CollectionRowDiagnostics]
     let physicalRowCountsByKey: [String: Int]
     let ownership: CatalogOwnershipIndex
+
+    /// `rowsByCollectionKey` is constructed deterministically from `rows` by
+    /// the actor. It is a lookup index for consumers, not independent state;
+    /// comparing it again makes every main-actor rebuild walk the same data a
+    /// second time.
+    static func == (
+        lhs: CollectionProjectionSnapshot,
+        rhs: CollectionProjectionSnapshot
+    ) -> Bool {
+        lhs.rows == rhs.rows
+            && lhs.diagnosticsByCollectionKey == rhs.diagnosticsByCollectionKey
+            && lhs.physicalRowCountsByKey == rhs.physicalRowCountsByKey
+            && lhs.ownership == rhs.ownership
+    }
 }
 
 @MainActor

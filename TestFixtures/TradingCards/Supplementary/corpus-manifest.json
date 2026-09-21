@@ -11,6 +11,23 @@
   "holdoutSelectionMethod": "provenance_and_visible_category_coverage_only",
   "holdoutAnalysisPolicy": "sealed_not_evaluated",
   "generalizationStatus": "interim_only",
+  "holdoutFreeze": {
+    "freezeId": "card-centering-holdout-interim-2026-09-20",
+    "frozenAt": "2026-09-20",
+    "split": "HOLDOUT-INTERIM",
+    "selectedCount": 10,
+    "selectedBeforePerceptionChanges": true,
+    "analysisStatus": "sealed_not_evaluated",
+    "groundTruthStatus": "not_assigned",
+    "captureCohortCount": 9,
+    "formatSet": ["heic", "png"],
+    "finalREQ040Gate": "open",
+    "limitations": [
+      "known_camera_captures_share_one_iPhone_15_Pro_Max",
+      "PNG_capture_role_is_unknown",
+      "no_new_ground_truth"
+    ]
+  },
   "notes": "The original ten fixtures are DEV-HISTORICAL. The interim holdout is frozen before new analyzer work, but does not satisfy the final cross-device and cross-photographer REQ-040 gate.",
   "entries": [
     {

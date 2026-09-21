@@ -69,6 +69,7 @@
 		A0020001 /* ScanParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020001 /* ScanParserTests.swift */; };
 		A00200F5 /* WholeCardHistoricalCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F5 /* WholeCardHistoricalCaptureTests.swift */; };
 		A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F4 /* HistoricalTitleCaptureTests.swift */; };
+		A0020122 /* HistoricalAttemptBoundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020122 /* HistoricalAttemptBoundTests.swift */; };
 		A00200F3 /* BoundedCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F3 /* BoundedCacheTests.swift */; };
 		A00200F2 /* PortfolioNameCleaningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F2 /* PortfolioNameCleaningTests.swift */; };
 		A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F1 /* HistoricalCatalogRequestTests.swift */; };
@@ -298,6 +299,7 @@
 		B0020001 /* ScanParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParserTests.swift; sourceTree = "<group>"; };
 		B00200F5 /* WholeCardHistoricalCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WholeCardHistoricalCaptureTests.swift; sourceTree = "<group>"; };
 		B00200F4 /* HistoricalTitleCaptureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalTitleCaptureTests.swift; sourceTree = "<group>"; };
+		B0020122 /* HistoricalAttemptBoundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalAttemptBoundTests.swift; sourceTree = "<group>"; };
 		B00200F3 /* BoundedCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundedCacheTests.swift; sourceTree = "<group>"; };
 		B00200F2 /* PortfolioNameCleaningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioNameCleaningTests.swift; sourceTree = "<group>"; };
 		B00200F1 /* HistoricalCatalogRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoricalCatalogRequestTests.swift; sourceTree = "<group>"; };
@@ -409,6 +411,7 @@
 		B0010073 /* TradingCardScanner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TradingCardScanner.entitlements; sourceTree = "<group>"; };
 		B0010120 /* PokemonCatalogProduction.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/PokemonCatalogProduction.xcconfig; sourceTree = "<group>"; };
 		B0010129 /* MagicCatalogProduction.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/MagicCatalogProduction.xcconfig; sourceTree = "<group>"; };
+		B0010130 /* PokemonCatalogDebugLocal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/PokemonCatalogDebugLocal.xcconfig; sourceTree = "<group>"; };
 		B0010106 /* CollectionStorageBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrap.swift; sourceTree = "<group>"; };
 		B0010107 /* CardScannerExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScannerExternalLinks.swift; sourceTree = "<group>"; };
 		B0010108 /* CollectionStorageBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapView.swift; sourceTree = "<group>"; };
@@ -493,6 +496,7 @@
 				004FE150303B8479000E0745 /* Recovered References */,
 				B0010120 /* PokemonCatalogProduction.xcconfig */,
 				B0010129 /* MagicCatalogProduction.xcconfig */,
+				B0010130 /* PokemonCatalogDebugLocal.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -710,6 +714,7 @@
 				B0020001 /* ScanParserTests.swift */,
 				B00200F5 /* WholeCardHistoricalCaptureTests.swift */,
 				B00200F4 /* HistoricalTitleCaptureTests.swift */,
+				B0020122 /* HistoricalAttemptBoundTests.swift */,
 				B00200F3 /* BoundedCacheTests.swift */,
 				B00200F2 /* PortfolioNameCleaningTests.swift */,
 				B00200F1 /* HistoricalCatalogRequestTests.swift */,
@@ -1066,6 +1071,7 @@
 				A0020001 /* ScanParserTests.swift in Sources */,
 				A00200F5 /* WholeCardHistoricalCaptureTests.swift in Sources */,
 				A00200F4 /* HistoricalTitleCaptureTests.swift in Sources */,
+				A0020122 /* HistoricalAttemptBoundTests.swift in Sources */,
 				A00200F3 /* BoundedCacheTests.swift in Sources */,
 				A00200F2 /* PortfolioNameCleaningTests.swift in Sources */,
 				A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */,
@@ -1164,6 +1170,22 @@
 			};
 			name = DebugProduction;
 		};
+		F0010011 /* DebugRemoteLocal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = DebugRemoteLocal;
+		};
 		F0010005 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1176,6 +1198,7 @@
 		};
 		F0010006 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0010130 /* PokemonCatalogDebugLocal.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
@@ -1195,13 +1218,6 @@
 					"@executable_path/Frameworks",
 				);
 			MARKETING_VERSION = 1.0;
-			POKEMON_CATALOG_ALLOWED_ORIGIN_HOST = "catalog.scan-stash.com";
-			POKEMON_CATALOG_BASE_URL = "https://catalog.scan-stash.com";
-			POKEMON_CATALOG_ROLLOUT_MODE = "bundled-validation-only";
-			POKEMON_CATALOG_PINNED_KEYS = "";
-			MAGIC_CATALOG_BASE_URL = "https://scanstash-catalog-prod.web.app";
-			MAGIC_CATALOG_ROLLOUT_MODE = "legacy-live";
-			MAGIC_CATALOG_PINNED_KEYS = "";
 			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1239,6 +1255,36 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = DebugProduction;
+		};
+		F0010010 /* DebugRemoteLocal */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0010120 /* PokemonCatalogProduction.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CARD_SCANNER_PRIVACY_URL = "";
+				CARD_SCANNER_SUPPORT_URL = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				DEVELOPMENT_TEAM = D4X943SP8Z;
+				ENABLE_TESTABILITY = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG LOCAL_ONLY_SIGNING";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = DebugRemoteLocal;
 		};
 		F0010007 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1315,6 +1361,31 @@
 			};
 			name = DebugProduction;
 		};
+		F0020009 /* DebugRemoteLocal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG LOCAL_ONLY_SIGNING";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TradingCardScanner.app/TradingCardScanner";
+			};
+			name = DebugRemoteLocal;
+		};
 		F0020007 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1345,6 +1416,7 @@
 			buildConfigurations = (
 				F0010004 /* Debug */,
 				F0010008 /* DebugProduction */,
+				F0010011 /* DebugRemoteLocal */,
 				F0010005 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1355,6 +1427,7 @@
 			buildConfigurations = (
 				F0010006 /* Debug */,
 				F0010009 /* DebugProduction */,
+				F0010010 /* DebugRemoteLocal */,
 				F0010007 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1365,6 +1438,7 @@
 			buildConfigurations = (
 				F0020006 /* Debug */,
 				F0020008 /* DebugProduction */,
+				F0020009 /* DebugRemoteLocal */,
 				F0020007 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

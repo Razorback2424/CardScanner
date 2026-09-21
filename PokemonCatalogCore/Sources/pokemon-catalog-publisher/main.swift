@@ -28,6 +28,7 @@ struct PokemonCatalogPublisherMain {
             )
             try writeReport(result.report, path: options.value("--report"))
             try writeCandidate(result, rootPath: options.value("--candidate-root"))
+            printDiscoveryWarnings(result.report)
             printReport(result.report)
         case "verify-release":
             guard let path = options.value("--path") else {
@@ -95,6 +96,7 @@ struct PokemonCatalogPublisherMain {
             )
             let receipt = try publisher.publish(signed)
             try writeReport(result.report, path: options.value("--report"))
+            printDiscoveryWarnings(result.report)
             printReport(result.report)
             print("published \(receipt.immutableObjectPath); pointer \(receipt.currentPointerPath)")
         case "help", "--help", "-h":
@@ -131,6 +133,17 @@ struct PokemonCatalogPublisherMain {
         if options.value("--live") == "true" {
             let client = PokemonCatalogTCGdexProviderClient()
             let directory = try await client.fetchDirectory()
+            let secondaryClient = PokemonCatalogSecondaryProviderClient()
+            let secondaryCandidates: [PokemonCatalogSecondarySet]
+            let secondaryProviderAvailable: Bool
+            do {
+                secondaryCandidates = try await secondaryClient.fetchSets()
+                secondaryProviderAvailable = true
+            } catch {
+                secondaryCandidates = []
+                secondaryProviderAvailable = false
+                print("secondary provider unavailable: \(error)")
+            }
             let activeIDs = Set(
                 (activeRelease?.sets.map(\.providerSetID) ?? [])
                     .map { $0.lowercased() }
@@ -211,10 +224,42 @@ struct PokemonCatalogPublisherMain {
             let parentArtworkSetIDs = Set(
                 humanInput.sets.compactMap(\.parentProviderSetID).map { $0.lowercased() }
             )
+            let configuredParentChildIDs = Set(
+                humanInput.sets
+                    .filter {
+                        guard let parent = $0.parentProviderSetID else { return false }
+                        return !parent.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                    }
+                    .map { $0.providerSetID.lowercased() }
+            )
+            let directoryIDs = Set(directory.map { $0.id.lowercased() })
+            let derivedParentSetIDs: Set<String> = Set(
+                authorizedSetIDs.compactMap { authorizedID in
+                    guard !configuredParentChildIDs.contains(authorizedID) else { return nil }
+                    return PokemonCatalogBuilder.derivedParentCandidateProviderSetID(
+                        childID: authorizedID,
+                        availableProviderSetIDs: directoryIDs
+                    )
+                }
+            )
+            let secondaryArtworkLoader: PokemonCatalogArtworkEnricher.SecondaryCardArtworkLoader?
+            if secondaryProviderAvailable {
+                secondaryArtworkLoader = { setID, limit in
+                    try await secondaryClient.fetchCardArtwork(
+                        setID: setID,
+                        limit: limit
+                    )
+                }
+            } else {
+                secondaryArtworkLoader = nil
+            }
             fixture = try await client.fetchFixture(
                 directory: directory,
                 authorizedSetIDs: authorizedSetIDs,
-                additionalSetIDs: parentArtworkSetIDs
+                additionalSetIDs: parentArtworkSetIDs.union(derivedParentSetIDs),
+                secondaryCandidates: secondaryCandidates,
+                secondaryProviderAvailable: secondaryProviderAvailable,
+                secondaryCardArtworkLoader: secondaryArtworkLoader
             )
             if !pendingIDs.isEmpty {
                 print(
@@ -478,6 +523,15 @@ struct PokemonCatalogPublisherMain {
            let text = String(data: data, encoding: .utf8) {
             print(text)
         }
+    }
+
+    private static func printDiscoveryWarnings(_ report: PokemonCatalogReviewReport) {
+        let admitted = report.sets
+            .filter { $0.status == "added" && $0.recognitionKind == .notScannable }
+            .map(\.providerSetID)
+            .sorted()
+        guard !admitted.isEmpty else { return }
+        print("discovery admitted as not-scannable: \(admitted.joined(separator: ", "))")
     }
 
     private static let usage = """

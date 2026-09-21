@@ -1015,7 +1015,7 @@ final class CollectionStorageBootstrap: ObservableObject {
 
         case .blockUnprovenTransition:
             state = .recoveryRequired(
-                "CardScanner found existing collection storage without trustworthy identity metadata. The original bytes were left untouched; export or contact Support before continuing."
+                "CardScanner found existing collection storage without trustworthy identity metadata. The original bytes were left untouched, and the app cannot safely open this collection on this device. Retry after confirming the storage configuration."
             )
         }
     }

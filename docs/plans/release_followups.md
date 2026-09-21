@@ -41,6 +41,12 @@ using the existing collection projection signposts.
 
 **Status:** hardware validation pending; simulator cannot retire this item.
 
+The current [scanner module review](../audits/scanner_module_review.md) adds
+three measurement concerns to this gate's scope. In particular, compare OCR
+interval durations with tracking event rate and `trackerSeeded`/`trackerLost`
+diagnostics on the slowest supported device at 4K, and record stationary-card
+false spatial-exit prompts separately from true departures.
+
 Run a physical-device scan pass with a stack of 30 cards and record duplicate
 and missed-card rates, confirmation latency, and thermal behavior over a normal
 session. Include ordinary cards, similar neighboring cards, and at least one
@@ -164,7 +170,10 @@ here so they do not get lost between plan revisions: verify the explicit camera
 pixel format against OCR hit rate and thermal behavior, evaluate tab-bar
 flicker during repeated scan receipts, measure camera restart latency on tab
 return, and capture one live-provider refresh profile to confirm the off-main
-signposts. Close each sub-item independently when its evidence is available.
+signposts. The scanner module review also calls for measuring the
+`offerHeldDuplicateRebuild` interval and its relationship to session length;
+retain that evidence with the scanner performance result. Close each sub-item
+independently when its evidence is available.
 
 The current price-refresh scale plan is
 [`price_refresh_scale_plan.md`](price_refresh_scale_plan.md); its actor boundary

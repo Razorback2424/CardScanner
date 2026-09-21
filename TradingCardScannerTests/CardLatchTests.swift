@@ -4,6 +4,7 @@ import XCTest
 
 /// The latch is the reason automatic collection entry is defensible, so these
 /// cases are written as the physical situations they stand for.
+@MainActor
 final class CardLatchTests: XCTestCase {
     func testRecognitionEligibilityRequiresActiveVisibleUnblockedScanner() {
         var eligibility = ScannerRecognitionEligibility()
@@ -572,6 +573,39 @@ final class CardLatchTests: XCTestCase {
             cleared.fulfill()
         }
         wait(for: [cleared], timeout: 1)
+    }
+
+    func testSlabSurvivesHistoricalTitleEvidenceGrowingFrameToFrame() {
+        // A historical Pokémon identifier carries every title observation, so
+        // it changes almost every frame on a card that has not moved. The slab
+        // presence rule compared raw identifiers, read that drift as "a
+        // different card arrived", and cleared the slab one frame after it was
+        // confirmed — which is why pre-set-code slabs were never offered the
+        // graded workflow.
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "9"),
+            certificationNumber: "12345678",
+            labelCardText: ["SPINARAK"]
+        )
+        let firstReading = historical("78", titles: ["SPINARAK"])
+        let widerReading = historical("78", titles: ["SPINARAK", "SPINARAK 78"])
+
+        _ = scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 0)
+        XCTAssertEqual(
+            scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 1.5),
+            evidence
+        )
+        scanner.receiveSlabFooterPresenceForTesting(identifier: firstReading, hasText: true, at: 1.5)
+        scanner.receiveSlabFooterPresenceForTesting(identifier: widerReading, hasText: true, at: 1.6)
+
+        let held = expectation(description: "slab framing survives title drift")
+        DispatchQueue.main.async {
+            XCTAssertEqual(scanner.slabFraming, evidence)
+            held.fulfill()
+        }
+        wait(for: [held], timeout: 1)
     }
 
     func testSlabGuideHintClearsWhenLabelNoLongerNamesACompany() {

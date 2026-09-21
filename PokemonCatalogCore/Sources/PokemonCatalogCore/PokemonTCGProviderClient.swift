@@ -1,0 +1,149 @@
+import Foundation
+
+public enum PokemonCatalogSecondaryProviderFetchError: Error, CustomStringConvertible, Sendable {
+    case invalidURL
+    case badResponse(path: String, statusCode: Int)
+    case network(path: String, message: String)
+
+    public var description: String {
+        switch self {
+        case .invalidURL: return "Invalid secondary provider URL"
+        case let .badResponse(path, statusCode):
+            return "Secondary provider returned HTTP \(statusCode) for \(path)"
+        case let .network(path, message):
+            return "Secondary provider request failed for \(path): \(message)"
+        }
+    }
+}
+
+/// Bounded client for the public pokemontcg.io set/card metadata surface.
+/// Artwork URLs are evidence only and are accepted by the publisher's probe
+/// before entering a descriptor.
+public struct PokemonCatalogSecondaryProviderClient: Sendable {
+    public static let defaultBaseURL = URL(string: "https://api.pokemontcg.io/v2")!
+
+    private let session: URLSession
+    private let baseURL: URL
+
+    public init(
+        session: URLSession = .shared,
+        baseURL: URL = PokemonCatalogSecondaryProviderClient.defaultBaseURL
+    ) {
+        self.session = session
+        self.baseURL = baseURL
+    }
+
+    public func fetchSets() async throws -> [PokemonCatalogSecondarySet] {
+        struct Response: Decodable {
+            let data: [Set]
+        }
+        struct Set: Decodable {
+            struct Images: Decodable {
+                let logo: String?
+                let symbol: String?
+            }
+
+            let id: String
+            let name: String
+            let ptcgoCode: String?
+            let releaseDate: String?
+            let printedTotal: Int?
+            let total: Int?
+            let images: Images?
+        }
+
+        let response: Response = try await request(path: "sets")
+        return response.data.map {
+            PokemonCatalogSecondarySet(
+                id: $0.id,
+                name: $0.name,
+                ptcgoCode: $0.ptcgoCode,
+                releaseDate: $0.releaseDate,
+                printedTotal: $0.printedTotal,
+                total: $0.total,
+                logoURL: $0.images?.logo,
+                symbolURL: $0.images?.symbol
+            )
+        }
+    }
+
+    public func fetchCardArtwork(
+        setID: String,
+        limit: Int = 3
+    ) async throws -> [String] {
+        struct Response: Decodable {
+            let data: [Card]
+        }
+        struct Card: Decodable {
+            struct Images: Decodable {
+                let small: String?
+                let large: String?
+            }
+            let images: Images?
+        }
+
+        let cappedLimit = max(0, min(limit, 3))
+        guard cappedLimit > 0 else { return [] }
+        let response: Response = try await request(
+            path: "cards",
+            queryItems: [
+                URLQueryItem(name: "q", value: "set.id:\(setID)"),
+                URLQueryItem(name: "pageSize", value: String(cappedLimit)),
+                URLQueryItem(name: "page", value: "1")
+            ]
+        )
+        return response.data.compactMap { $0.images?.large ?? $0.images?.small }
+            .prefix(cappedLimit)
+            .map { $0 }
+    }
+
+    private func request<T: Decodable>(
+        path: String,
+        queryItems: [URLQueryItem] = []
+    ) async throws -> T {
+        guard var components = URLComponents(
+            url: baseURL.appendingPathComponent(path),
+            resolvingAgainstBaseURL: false
+        ) else {
+            throw PokemonCatalogSecondaryProviderFetchError.invalidURL
+        }
+        components.queryItems = queryItems
+        guard let url = components.url else {
+            throw PokemonCatalogSecondaryProviderFetchError.invalidURL
+        }
+        var request = URLRequest(url: url)
+        request.timeoutInterval = 20
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("TradingCardScanner catalog publisher", forHTTPHeaderField: "User-Agent")
+        do {
+            let (data, response) = try await session.data(for: request)
+            guard let http = response as? HTTPURLResponse else {
+                throw PokemonCatalogSecondaryProviderFetchError.badResponse(
+                    path: url.path,
+                    statusCode: 0
+                )
+            }
+            guard (200..<300).contains(http.statusCode) else {
+                throw PokemonCatalogSecondaryProviderFetchError.badResponse(
+                    path: url.path,
+                    statusCode: http.statusCode
+                )
+            }
+            do {
+                return try JSONDecoder().decode(T.self, from: data)
+            } catch {
+                throw PokemonCatalogSecondaryProviderFetchError.network(
+                    path: url.path,
+                    message: "decode: \(error)"
+                )
+            }
+        } catch let error as PokemonCatalogSecondaryProviderFetchError {
+            throw error
+        } catch {
+            throw PokemonCatalogSecondaryProviderFetchError.network(
+                path: url.path,
+                message: String(describing: error)
+            )
+        }
+    }
+}

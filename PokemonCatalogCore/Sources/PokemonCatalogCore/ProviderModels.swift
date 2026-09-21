@@ -201,6 +201,10 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
     /// part of the Codable provider payload or provider fingerprint.
     public let resolvedLogo: String?
     public let resolvedSymbol: String?
+    public let resolvedCardArtworkURLs: [String]?
+    /// Unsigned diagnostic provenance for the resolved artwork. It is never
+    /// part of the provider payload or fingerprint.
+    public let resolvedArtworkSource: String?
     public let releaseDate: String?
     public let tcgOnline: String?
     public let cardCount: PokemonCatalogProviderCardCount?
@@ -220,7 +224,9 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         serie: PokemonCatalogProviderSeries? = nil,
         abbreviation: PokemonCatalogProviderAbbreviation? = nil,
         resolvedLogo: String? = nil,
-        resolvedSymbol: String? = nil
+        resolvedSymbol: String? = nil,
+        resolvedCardArtworkURLs: [String]? = nil,
+        resolvedArtworkSource: String? = nil
     ) {
         self.id = id
         self.name = name
@@ -229,6 +235,8 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         self.symbol = symbol
         self.resolvedLogo = resolvedLogo
         self.resolvedSymbol = resolvedSymbol
+        self.resolvedCardArtworkURLs = resolvedCardArtworkURLs
+        self.resolvedArtworkSource = resolvedArtworkSource
         self.releaseDate = releaseDate
         self.tcgOnline = tcgOnline
         self.cardCount = cardCount
@@ -250,6 +258,8 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         symbol = try container.decodeIfPresent(String.self, forKey: .symbol)
         resolvedLogo = nil
         resolvedSymbol = nil
+        resolvedCardArtworkURLs = nil
+        resolvedArtworkSource = nil
         releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         tcgOnline = try container.decodeIfPresent(String.self, forKey: .tcgOnline)
         cardCount = try container.decodeIfPresent(
@@ -361,15 +371,18 @@ public struct PokemonCatalogProviderFixture: Codable, Equatable, Sendable {
     public let directory: [PokemonCatalogProviderDirectoryRow]
     public let sets: [PokemonCatalogProviderSet]
     public let cards: [PokemonCatalogProviderCard]
+    public let secondary: PokemonCatalogSecondaryFixture?
 
     public init(
         directory: [PokemonCatalogProviderDirectoryRow],
         sets: [PokemonCatalogProviderSet],
-        cards: [PokemonCatalogProviderCard]
+        cards: [PokemonCatalogProviderCard],
+        secondary: PokemonCatalogSecondaryFixture? = nil
     ) {
         self.directory = directory
         self.sets = sets
         self.cards = cards
+        self.secondary = secondary
     }
 }
 

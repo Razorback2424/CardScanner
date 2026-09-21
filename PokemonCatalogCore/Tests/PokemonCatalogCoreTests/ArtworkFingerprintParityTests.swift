@@ -136,7 +136,7 @@ final class ArtworkFingerprintParityTests: XCTestCase {
                     httpVersion: nil,
                     headerFields: ["Content-Type": "image/png"]
                 )!
-                return (Data(), response)
+                return (hasResolvedArtwork ? Data([0]) : Data(), response)
             }
             let client = PokemonCatalogTCGdexProviderClient(
                 session: URLSession(configuration: configuration),
@@ -192,6 +192,58 @@ final class ArtworkFingerprintParityTests: XCTestCase {
                 scenario.name
             )
         }
+    }
+
+    func testSecondaryArtworkDoesNotChangeProviderFingerprint() throws {
+        let brief = PokemonCatalogProviderCardBrief(
+            id: "future-001",
+            localID: "001",
+            name: "Future Card",
+            image: "https://assets.tcgdex.net/en/sv/future/001"
+        )
+        let detail = PokemonCatalogProviderCard(
+            id: brief.id,
+            localID: brief.localID,
+            name: brief.name,
+            image: brief.image,
+            setID: "future"
+        )
+        let raw = PokemonCatalogProviderSet(
+            id: "future",
+            name: "Future Set",
+            cards: [brief],
+            releaseDate: "2026-09-16",
+            cardCount: .init(total: 1, official: 1),
+            serie: .init(id: "sv"),
+            abbreviation: .init(official: "FTR")
+        )
+        let enriched = PokemonCatalogProviderSet(
+            id: raw.id,
+            name: raw.name,
+            cards: raw.cards,
+            releaseDate: raw.releaseDate,
+            cardCount: raw.cardCount,
+            serie: raw.serie,
+            abbreviation: raw.abbreviation,
+            resolvedLogo: "https://images.scrydex.com/pokemon/future-logo/logo",
+            resolvedSymbol: "https://images.scrydex.com/pokemon/future-symbol/symbol",
+            resolvedCardArtworkURLs: ["https://images.scrydex.com/pokemon/future/card.png"],
+            resolvedArtworkSource: "secondary:future"
+        )
+
+        let rawFingerprint = try XCTUnwrap(
+            PokemonCatalogProviderFingerprint.v1(
+                providerSet: raw,
+                cardDetails: [detail.id: detail]
+            )
+        )
+        let enrichedFingerprint = try XCTUnwrap(
+            PokemonCatalogProviderFingerprint.v1(
+                providerSet: enriched,
+                cardDetails: [detail.id: detail]
+            )
+        )
+        XCTAssertEqual(enrichedFingerprint, rawFingerprint)
     }
 
     private struct Scenario {

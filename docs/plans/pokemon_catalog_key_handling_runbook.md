@@ -2,9 +2,10 @@
 
 **Status:** current Slice E/F implementation companion — 2026-09-20
 
-The catalog signing key is the only credential that can authorize a new
-scanner code. Treat the GitHub Actions secret as a use-only copy, not as the
-backup.
+The Pokémon catalog signing key is the only credential that can authorize a new
+Pokémon scanner code. Treat the GitHub Actions secrets as use-only copies, not
+as the backup. Magic uses an independent Ed25519 key; the Pokémon private key
+must not be provisioned into either Magic publication environment.
 
 ## Key custody
 
@@ -18,8 +19,8 @@ backup.
 4. Add only the private raw representation to the production publication
    environment secret `POKEMON_CATALOG_SIGNING_KEY`; add the non-secret key ID
    to `POKEMON_CATALOG_KEY_ID`. The automatic content-only environment must
-   contain the same deployment and signing secrets. Never put either value in a
-   fixture, report, site object, or pull-request log.
+   contain the same Pokémon deployment and signing secrets. Never put either
+   value in a fixture, report, site object, or pull-request log.
 
 The committed production build pins
 `pokemon-catalog-production-2026-09-18-01` to
@@ -35,6 +36,13 @@ base64, or 64 hexadecimal characters. The loader derives the Ed25519 signing
 key with `Curve25519.Signing.PrivateKey(rawRepresentation:)`; whitespace,
 passphrases, and encoded PEM blocks are invalid. Keep the public pin in
 base64url form so it matches the app's `keyID:public-key` parser.
+
+The two signed payload domains are explicit. New Pokémon releases emit the
+additive schema-1 `catalogKind == "pokemon"` marker and the Pokémon verifier
+rejects a present wrong value. Legacy Pokémon schema-1 releases that omit the
+optional marker remain readable for compatibility. Magic key custody and
+publication rules are maintained separately in
+[`magic_catalog_key_handling_runbook.md`](magic_catalog_key_handling_runbook.md).
 
 ## Publication gates
 

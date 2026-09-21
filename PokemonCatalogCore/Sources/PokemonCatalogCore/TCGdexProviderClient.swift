@@ -29,7 +29,7 @@ public enum PokemonCatalogArtworkKind: String, Sendable {
 public struct PokemonCatalogTCGdexArtworkResolver: Sendable {
     public typealias Loader = @Sendable (URLRequest) async throws -> (Data, HTTPURLResponse)
 
-    private let loader: Loader
+    private let probe: PokemonCatalogArtworkProbe
 
     public init(
         loader: @escaping Loader = { request in
@@ -43,7 +43,7 @@ public struct PokemonCatalogTCGdexArtworkResolver: Sendable {
             return (data, http)
         }
     ) {
-        self.loader = loader
+        self.probe = PokemonCatalogArtworkProbe(loader: loader)
     }
 
     public func resolve(
@@ -59,17 +59,7 @@ public struct PokemonCatalogTCGdexArtworkResolver: Sendable {
                 kind: kind
             ) else { continue }
 
-            var request = URLRequest(url: url)
-            request.timeoutInterval = 15
-            request.setValue("image/*", forHTTPHeaderField: "Accept")
-            guard let (_, response) = try? await loader(request),
-                  (200..<300).contains(response.statusCode),
-                  let contentType = response.value(forHTTPHeaderField: "Content-Type")?
-                    .split(separator: ";", maxSplits: 1, omittingEmptySubsequences: true)
-                    .first,
-                  contentType.trimmingCharacters(in: .whitespacesAndNewlines)
-                    .lowercased()
-                    .hasPrefix("image/") else {
+            guard await probe.accepts(url) else {
                 continue
             }
             return url.absoluteString
@@ -142,13 +132,19 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
 
     public func fetchFixture(
         authorizedSetIDs: Set<String>? = nil,
-        additionalSetIDs: Set<String> = []
+        additionalSetIDs: Set<String> = [],
+        secondaryCandidates: [PokemonCatalogSecondarySet] = [],
+        secondaryProviderAvailable: Bool = false,
+        secondaryCardArtworkLoader: PokemonCatalogArtworkEnricher.SecondaryCardArtworkLoader? = nil
     ) async throws -> PokemonCatalogProviderFixture {
         let rows = try await fetchDirectory()
         return try await fetchFixture(
             directory: rows,
             authorizedSetIDs: authorizedSetIDs,
-            additionalSetIDs: additionalSetIDs
+            additionalSetIDs: additionalSetIDs,
+            secondaryCandidates: secondaryCandidates,
+            secondaryProviderAvailable: secondaryProviderAvailable,
+            secondaryCardArtworkLoader: secondaryCardArtworkLoader
         )
     }
 
@@ -158,7 +154,10 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
     public func fetchFixture(
         directory: [PokemonCatalogProviderDirectoryRow],
         authorizedSetIDs: Set<String>? = nil,
-        additionalSetIDs: Set<String> = []
+        additionalSetIDs: Set<String> = [],
+        secondaryCandidates: [PokemonCatalogSecondarySet] = [],
+        secondaryProviderAvailable: Bool = false,
+        secondaryCardArtworkLoader: PokemonCatalogArtworkEnricher.SecondaryCardArtworkLoader? = nil
     ) async throws -> PokemonCatalogProviderFixture {
         let authorizedKeys = authorizedSetIDs.map { Set($0.map { $0.lowercased() }) }
         let scopedRows = directory.filter { row in
@@ -172,19 +171,24 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
                 || supportingKeys.contains(row.id.lowercased())
         }
         let supportedRows = fetchRows.filter { !$0.isUnsupportedProduct }
-        let sets = try await mapBounded(
+        let enricher = PokemonCatalogArtworkEnricher(
+            artworkResolver: artworkResolver,
+            secondaryCandidates: secondaryCandidates,
+            secondaryCardArtworkLoader: secondaryCardArtworkLoader
+        )
+        let enrichmentResults = try await mapBounded(
             supportedRows,
             limit: setConcurrency
-        ) { row in
+        ) { row -> PokemonCatalogArtworkEnricher.Result in
             let fetched: PokemonCatalogProviderSet = try await self.request(
                 pathComponents: ["sets", row.id]
             )
-            return await self.resolvedArtwork(
-                fetched,
-                directoryLogo: row.logo,
-                directorySymbol: row.symbol
-            )
+            return await enricher.enrich(fetched, directoryRow: row)
         }
+        let sets = enrichmentResults.map(\.providerSet)
+        let ambiguousSecondarySetIDs = Array(
+            Set(enrichmentResults.flatMap(\.ambiguousSecondarySetIDs))
+        ).sorted()
         let materializedKeys = Set(scopedRows.map { $0.id.lowercased() })
         let briefs = sets
             .filter { materializedKeys.contains($0.id.lowercased()) }
@@ -204,7 +208,13 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
         return PokemonCatalogProviderFixture(
             directory: scopedRows,
             sets: sets.sorted { $0.id < $1.id },
-            cards: cards.sorted { $0.id < $1.id }
+            cards: cards.sorted { $0.id < $1.id },
+            secondary: secondaryProviderAvailable
+                ? PokemonCatalogSecondaryFixture(
+                    sets: secondaryCandidates,
+                    ambiguousSetIDs: ambiguousSecondarySetIDs
+                )
+                : nil
         )
     }
 
@@ -217,63 +227,6 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
         try await mapBounded(rows.filter { !$0.isUnsupportedProduct }, limit: setConcurrency) { row in
             try await self.request(pathComponents: ["sets", row.id]) as PokemonCatalogProviderSet
         }
-    }
-
-    private func resolvedArtwork(
-        _ providerSet: PokemonCatalogProviderSet,
-        directoryLogo: String?,
-        directorySymbol: String?
-    ) async -> PokemonCatalogProviderSet {
-        // Keep raw provider fields untouched. Resolved values are descriptor
-        // enrichment only and must not enter the provider-content fingerprint.
-        let explicitLogo = providerSet.logo ?? directoryLogo
-        let explicitSymbol = providerSet.symbol ?? directorySymbol
-        let seriesID = providerSet.serie?.id.trimmingCharacters(in: .whitespacesAndNewlines)
-        let setID = providerSet.id.trimmingCharacters(in: .whitespacesAndNewlines)
-        let logo: String?
-        if let explicitLogo = nonEmpty(explicitLogo) {
-            logo = explicitLogo
-        } else if let seriesID, !seriesID.isEmpty, !setID.isEmpty {
-            logo = await artworkResolver.resolve(
-                seriesID: seriesID,
-                setID: setID,
-                kind: .logo
-            )
-        } else {
-            logo = nil
-        }
-        let symbol: String?
-        if let explicitSymbol = nonEmpty(explicitSymbol) {
-            symbol = explicitSymbol
-        } else if let seriesID, !seriesID.isEmpty, !setID.isEmpty {
-            symbol = await artworkResolver.resolve(
-                seriesID: seriesID,
-                setID: setID,
-                kind: .symbol
-            )
-        } else {
-            symbol = nil
-        }
-        return PokemonCatalogProviderSet(
-            id: providerSet.id,
-            name: providerSet.name,
-            cards: providerSet.cards,
-            logo: providerSet.logo,
-            symbol: providerSet.symbol,
-            releaseDate: providerSet.releaseDate,
-            tcgOnline: providerSet.tcgOnline,
-            cardCount: providerSet.cardCount,
-            serie: providerSet.serie,
-            abbreviation: providerSet.abbreviation,
-            resolvedLogo: logo,
-            resolvedSymbol: symbol
-        )
-    }
-
-    private func nonEmpty(_ value: String?) -> String? {
-        guard let value else { return nil }
-        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? nil : value
     }
 
     private func fetchPocketSetIDs() async throws -> Set<String> {

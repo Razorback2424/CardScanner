@@ -922,16 +922,26 @@ final class CardCenteringAnalyzerTests: XCTestCase {
 
     // MARK: - Saying when it does not know
 
-    /// The ordinary case must stay quiet. A note that appears on good scans is
-    /// worse than none, because it trains people to ignore it.
-    func testAConfidentMeasurementCarriesNoNotes() throws {
-        let m = try CardCenteringAnalyzer.analyze(syntheticCard(
+    /// An automatic candidate must remain visibly unconfirmed until the user
+    /// accepts both frame guides. Once accepted, the ordinary case is quiet.
+    func testAutomaticMeasurementRequiresFrameConfirmationBeforeBecomingQuiet() throws {
+        var m = try CardCenteringAnalyzer.analyze(syntheticCard(
             canvas: CGSize(width: 500, height: 700),
             cardRect: CGRect(x: 10, y: 10, width: 480, height: 680),
             borders: (20, 25, 60, 55)
         )).measurement
         XCTAssertTrue(m.detectionNotes.isEmpty, "unexpected notes: \(m.detectionNotes)")
-        XCTAssertTrue(m.warnings.isEmpty, "unexpected warnings: \(m.warnings)")
+        XCTAssertTrue(m.requiresManualFrameConfirmation)
+        XCTAssertTrue(m.isDeclined)
+        XCTAssertTrue(
+            m.warnings.contains { $0.contains("Confirm or adjust both") },
+            "expected the pending-frame warning: \(m.warnings)"
+        )
+
+        m.confirmManualPlacement()
+
+        XCTAssertFalse(m.isDeclined)
+        XCTAssertTrue(m.warnings.isEmpty, "unexpected warnings after confirmation: \(m.warnings)")
     }
 
     func testPerspectiveCardSaysItsEdgesAreNotParallel() throws {

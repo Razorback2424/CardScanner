@@ -2745,6 +2745,72 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
     }
 
+    func testOfflineHistoricalCardPreservesAllPublishedVariantRows() throws {
+        // EX-era cards resolve through the historical path, which keyed its
+        // summaries by provider id alone. The `normal` and `reverse` rows of
+        // one printing then overwrote each other and the survivor became the
+        // card's only published finish, so the resolver auto-recorded a
+        // reverse holo instead of asking.
+        let set = sampleSet(id: "ex7", name: "Team Rocket Returns")
+        let variants: [PhysicalVariant] = [.normal, .reverse]
+        let summaries = variants.map { variant in
+            CatalogCardSummary(
+                game: .pokemon,
+                providerID: "ex7-78",
+                setID: set.catalogID,
+                setName: set.name,
+                setCode: set.code,
+                name: "Spinarak",
+                collectorNumber: "78",
+                thumbnailURL: nil,
+                imageURL: nil,
+                masterSetVariant: variant,
+                isExpandedMasterSetVariant: false,
+                isSoleSlotForCard: false
+            )
+        }
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "fixture",
+                entries: [PokemonChecklistSnapshotEntry(
+                    set: set,
+                    providerID: "ex7",
+                    providerFingerprint: "fixture",
+                    officialCount: 109,
+                    resource: "sets/ex7.json"
+                )]
+            ),
+            checklists: [set.id: summaries]
+        )
+        let identifier = try XCTUnwrap(
+            PokemonHistoricalScanParser.parse(
+                numberLines: ["78/109"],
+                titleLines: ["Spinarak"]
+            )
+        )
+        guard case let .pokemonHistorical(evidence) = identifier else {
+            return XCTFail("Expected historical Pokémon evidence")
+        }
+
+        let identified = try XCTUnwrap(
+            PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence)
+        )
+        guard case let .pokemon(card, _) = identified else {
+            return XCTFail("Expected a Pokémon record")
+        }
+        XCTAssertEqual(Set(card.catalogVariants), Set(variants))
+        switch VariantResolver.resolve(identified.variantEvidence) {
+        case let .needsChoice(options, lockDidNotApply):
+            XCTAssertNil(lockDidNotApply)
+            XCTAssertEqual(Set(options), Set(variants))
+        case let .resolved(resolved):
+            XCTFail("Two published finishes must ask, not resolve to \(String(describing: resolved.variant))")
+        }
+    }
+
     func testOfflinePokemonCardPreservesAllPublishedVariantRows() throws {
         let set = sampleSet(id: "sv04", name: "Paradox Rift")
         let variants: [PhysicalVariant] = [.normal, .holo, .reverse, PhysicalVariant(id: "energy", label: "Energy")]
@@ -4500,6 +4566,76 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
         XCTAssertTrue(mee.small.absoluteString.hasSuffix("MEE/MEE_001_R_EN_XS.png"))
         XCTAssertTrue(mee.full.absoluteString.hasSuffix("MEE/MEE_001_R_EN.png"))
+
+        XCTAssertNil(
+            LimitlessArtwork.urls(
+                setCode: "ZZZ",
+                collectorNumber: "001",
+                authorizedBySignedRegistry: false
+            )
+        )
+        XCTAssertNotNil(
+            LimitlessArtwork.urls(
+                setCode: "ZZZ",
+                collectorNumber: "001",
+                authorizedBySignedRegistry: true
+            )
+        )
+    }
+
+    func testPokemonSetsPreferDescriptorPublishedArtworkFallbacksOverSnapshot() throws {
+        let descriptor = PokemonCatalogSetDescriptor(
+            providerSetID: "future",
+            displayName: "Future Set",
+            releaseDate: "2026-09-16",
+            releaseOrder: 1,
+            recognitionKind: .expansion,
+            printedCode: "FTR",
+            officialCount: 30,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: true,
+            logoURL: nil,
+            symbolURL: nil,
+            artworkFallbackURLs: ["https://images.scrydex.com/pokemon/future-001/large"]
+        )
+        let snapshot = [URL(string: "https://assets.tcgdex.net/en/future/001/high.png")!]
+
+        XCTAssertEqual(
+            BrowseCatalogArtworkSelection.fallbackURLs(
+                descriptor: descriptor,
+                snapshotURLs: snapshot
+            ),
+            [URL(string: "https://images.scrydex.com/pokemon/future-001/large")!]
+        )
+    }
+
+    func testPokemonSetsFallBackToSnapshotWhenDescriptorOmitsArtworkFallbacks() throws {
+        let descriptor = PokemonCatalogSetDescriptor(
+            providerSetID: "future",
+            displayName: "Future Set",
+            releaseDate: "2026-09-16",
+            releaseOrder: 1,
+            recognitionKind: .expansion,
+            printedCode: "FTR",
+            officialCount: 30,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: true,
+            logoURL: nil,
+            symbolURL: nil
+        )
+        let snapshot = [URL(string: "https://assets.tcgdex.net/en/future/001/high.png")!]
+
+        XCTAssertEqual(
+            BrowseCatalogArtworkSelection.fallbackURLs(
+                descriptor: descriptor,
+                snapshotURLs: snapshot
+            ),
+            snapshot
+        )
     }
 
     func testGalleryArtworkUsesSignedInheritedLogoAndKeepsProviderIdentity() throws {
@@ -4607,6 +4743,20 @@ final class PokemonChecklistBrowseTests: XCTestCase {
                 .remote(URL(string: "https://assets.tcgdex.net/en/sv/sv08.5/logo.webp")!),
                 .bundled("PokemonSetArtwork_sv08_5_logo")
             ]
+        )
+    }
+
+    func testSetArtworkSourceLeavesNonTCGdexHostsUntransformed() {
+        let scrydex = URL(string: "https://images.scrydex.com/pokemon/me55c-logo/logo")!
+        let set = sampleSet(
+            id: "30th-c",
+            name: "30th Celebration Classic Collection",
+            logoURL: scrydex
+        )
+
+        XCTAssertEqual(
+            PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates,
+            [.remote(scrydex)]
         )
     }
 

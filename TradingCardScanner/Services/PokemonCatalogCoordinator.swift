@@ -135,6 +135,15 @@ actor PokemonCatalogCoordinator {
         await loadPersistedOrBundled()
         await diagnostics.recordRefreshStarted(mode: rolloutMode)
 
+        guard !keys.isEmpty else {
+            let error = PokemonCatalogSignatureVerifier.VerificationError.noPinnedKeysConfigured
+            await diagnostics.recordRejection(error)
+            Self.logger.error(
+                "POKEMON_CATALOG_PINNED_KEYS is empty in mode \(self.rolloutMode.rawValue, privacy: .public); no release can be verified. Check the configuration's xcconfig."
+            )
+            return .rejected(error)
+        }
+
         let fetchResult: PokemonCatalogUpdateClient.FetchResult
         do {
             fetchResult = try await client.fetch()

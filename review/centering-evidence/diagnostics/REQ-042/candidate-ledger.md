@@ -1,5 +1,9 @@
 # REQ-042 candidate recall diagnostic
 
+This is the signed 2026-09-12 pre-remediation snapshot. The 2026-09-20
+rerun writes to simulator temporary storage and is summarized in the
+[diagnostic README](README.md), rather than overwriting this tracked artifact.
+
 Signed DEBUG analyses on the original HEIC fixtures using the iOS 26.5 iPhone 17 Pro simulator.
 The ledger is observational. `bestErrorPx` is the maximum perpendicular distance of the candidate line's reported points from the corresponding GT edge; it is not a production selection score.
 

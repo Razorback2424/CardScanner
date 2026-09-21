@@ -8,6 +8,7 @@ import XCTest
 /// plausible, the guide band simply sits on the wrong part of the card and OCR reads
 /// nothing. It used to be hardcoded to portrait; now that an iPad can hold the sensor
 /// any of four ways, each way is pinned here.
+@MainActor
 final class CameraRotationTests: XCTestCase {
     /// A deliberately asymmetric rect, so a transform that swaps or mirrors an axis
     /// cannot accidentally produce the right answer.

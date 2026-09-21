@@ -11,27 +11,36 @@ branch and `a115e4e`/`ec7dc6b` identities do not describe this checkout.
 ## Candidate identity
 
 - Repository: `TradingCardScannerMVP_fixed_v4`
-- Branch: `main`
-- HEAD at the 2026-09-20 reconciliation: `31eb97e`
+- Branch: `feature/catalog-and-scanner-hardening`
+- HEAD at the 2026-09-20 reconciliation: `7dbaf40`
 - App/test targets: `TradingCardScanner` / `TradingCardScannerTests`
 - Marketing/build version: `1.0 (1)`
 - Bundle identifier: `com.seankeller.CardScanner`
 - Minimum OS: iOS/iPadOS 17.0
 - Device families: iPhone and iPad (`1,2`)
 
-The working tree is clean at this reconciliation. The short SHA above is a
-locator, not a certification claim: the recorded test evidence below predates
-this HEAD unless explicitly stated otherwise, and must be rerun against the
-exact tree intended for release.
+The source candidate is at the short SHA above. The working tree now contains
+documentation-only reconciliation changes; the test runs below were executed
+against the source at `7dbaf40`.
 
 ## Current recorded evidence
 
 - `git diff --check`: PASS at this reconciliation.
-- Latest complete full simulator run: `a4375df`, 1,277 executed, 6 skipped,
-  40 failures (36 fixture-resource lookup failures, 1 load-sensitive flake,
-  and 3 substantive failures). This is not a clean release-suite result; see
-  the F06 follow-up below. The earlier 1,256-discovered/48-failure snapshot at
-  `0b4ac34` is historical and must not be reused as the latest run.
+- Exact-candidate focused simulator run at `7dbaf40` on iPhone 17 Pro / iOS
+  26.5: 581 discovered, 579 passed, 1 skipped, and 1 failed. The failure was
+  `ScannerViewModelTests/testCatalogMissVerificationStillFilesUnresolvedCard()`.
+  Result bundle: external-SSD `exact-7dbaf40/focused.xcresult`.
+- Exact-candidate pre-fix full simulator run at `7dbaf40` on the same
+  destination: 1,278 executed, 6 skipped, and 4 failures (1 unexpected), exit
+  65. The failures spanned the current centering analyzer/ground-truth/
+  invariant gates, the then-open ownership completeness findings, and the
+  scanner catalog-miss test. Result bundle: external-SSD
+  `exact-7dbaf40/full-shell.xcresult`. The ownership failures were isolated,
+  fixed, and covered by the later 106-test matrix below; the full suite has not
+  been rerun after those fixes.
+- The prior complete run at `a4375df` is historical only: 1,277 executed,
+  6 skipped, and 40 failures. The earlier 1,256-discovered/48-failure
+  snapshot at `0b4ac34` is also historical and must not be reused.
 - 2026-09-16 focused F06 follow-up based at historical `main` commit `c381c99`:
   the PBX
   resource-ID collision was corrected and the committed corpus reached the
@@ -39,8 +48,20 @@ exact tree intended for release.
   9 test cases failed on centering assertions, and 1 profile-dump test was
   canceled); fixture reachability and manifest tests passed. This is not a
   full-suite rerun.
-- Latest focused Browse/Catalog verification: 133 tests, 0 failures. A8/B6 are
-  backed by the settled iPhone 17 Pro light/dark capture; C7/RF-9 remains open.
+- The exact-candidate focused selection covered scanner, Browse/UI,
+  collection/projection, Pokémon catalog, and Magic catalog suites. Browse,
+  collection/projection, Pokémon, and Magic selections passed; the one focused
+  failure was in the scanner selection. The earlier focused Browse/Catalog
+  verification was 133 tests, 0 failures. A8/B6 are backed by the settled
+  iPhone 17 Pro light/dark capture; C7/RF-9 remains open.
+- Ownership-ledger gate follow-up at exact candidate `7dbaf40`: F04/F05 were
+  reproduced and fixed. The exhaustive ownership matrix covering
+  `OwnershipLedgerCompletenessTests`, `CollectionActivityHistoryTests`, and
+  `PortfolioReconciliationTests` executed 106 tests with 105 passed, 1
+  intentional opt-in skip, and 0 failures. The result bundle is
+  `exact-7dbaf40/ownership-matrix.xcresult` on the external SSD. This closes
+  the simulator ownership-ledger gate; CloudKit production, physical-device,
+  and two-device convergence evidence remain open.
 - Scanner workflow fixes have focused regression/build evidence, but physical
   camera, thermal, and live-provider validation remain open.
 - Card-centering remains blocked by the current accuracy, invariant, latency,
@@ -73,7 +94,7 @@ The following remain `NOT RUN` or open for the exact release candidate:
 
 - approved App ID, entitlements, CloudKit Development/Production schema, and
   two-device convergence;
-- production-entry storage/bootstrap and ownership-ledger evidence;
+- entitled CloudKit production and two-device ownership convergence;
 - clean-install, archive, TestFlight, and App Store metadata inspection;
 - full current-tree regression without the unrelated simulator failures;
 - physical iPhone/iPad scanner and Browse accessibility/provider passes;

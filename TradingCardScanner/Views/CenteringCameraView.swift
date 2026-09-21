@@ -22,11 +22,12 @@ enum CenteringCameraConfiguration: Equatable {
     case listingPhotos
 }
 
+@MainActor
 final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhotoCaptureDelegate {
-    let session = AVCaptureSession()
+    nonisolated let session = AVCaptureSession()
     /// Which way the sensor is held. The photo connection and the preview layer
     /// both follow it, so a capture taken on an iPad in landscape is upright.
-    let rotation = CameraRotationTracker()
+    nonisolated let rotation: CameraRotationTracker
 
     @Published private(set) var cameraIssue: CameraIssue?
     @Published private(set) var levelOffset: CGSize = .zero
@@ -37,25 +38,26 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     /// explicit for the centering evidence and device checks.
     @Published private(set) var captureLens: CenteringCameraLens?
 
-    private let sessionQueue = DispatchQueue(label: "cards.centering.camera")
-    private let photoOutput = AVCapturePhotoOutput()
-    private let motionManager = CMMotionManager()
-    private let configuration: CenteringCameraConfiguration
-    private var isConfigured = false
+    nonisolated private let sessionQueue = DispatchQueue(label: "cards.centering.camera")
+    nonisolated private let photoOutput = AVCapturePhotoOutput()
+    nonisolated private let motionManager = CMMotionManager()
+    nonisolated private let configuration: CenteringCameraConfiguration
+    nonisolated(unsafe) private var isConfigured = false
     /// Set once the session has committed, because `activeFormat` is not
     /// settled until then. Only the listing-photo configuration raises it; the
     /// centering path keeps AVFoundation's default photo dimensions.
-    private var configuredCamera: AVCaptureDevice?
+    nonisolated(unsafe) private var configuredCamera: AVCaptureDevice?
     /// A centering capture is a one-shot interaction. Keep the request marked
     /// active until the view stops so rapid taps cannot queue multiple photos
     /// before the first result dismisses the camera.
-    private var isCaptureInFlight = false
+    nonisolated(unsafe) private var isCaptureInFlight = false
     /// All start/stop decisions are serialized with capture-session work. This
     /// prevents a delayed permission callback from starting the camera after the
     /// full-screen camera has already disappeared.
-    private var requestedStartID: UUID?
+    nonisolated(unsafe) private var requestedStartID: UUID?
 
     init(configuration: CenteringCameraConfiguration = .centering) {
+        rotation = CameraRotationTracker()
         self.configuration = configuration
         super.init()
     }
@@ -115,7 +117,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         }
     }
 
-    func photoOutput(
+    nonisolated func photoOutput(
         _ output: AVCapturePhotoOutput,
         didFinishProcessingPhoto photo: AVCapturePhoto,
         error: Error?
@@ -137,7 +139,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         }
     }
 
-    private func configureAndStart(requestID: UUID) {
+    nonisolated private func configureAndStart(requestID: UUID) {
         sessionQueue.async { [weak self] in
             guard let self else { return }
             guard self.requestedStartID == requestID else { return }
@@ -157,7 +159,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         }
     }
 
-    private func configureSession() throws {
+    nonisolated private func configureSession() throws {
         let lens: CenteringCameraLens
         switch configuration {
         case .centering:
@@ -229,7 +231,7 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
     /// This must run after `configureSession` returns, because the session's
     /// `commitConfiguration` is deferred to that point and `activeFormat` is
     /// not settled before it.
-    private func applyMaximumPhotoDimensionsIfNeeded() {
+    nonisolated private func applyMaximumPhotoDimensionsIfNeeded() {
         guard configuration == .listingPhotos, let camera = configuredCamera else { return }
         guard let dimensions = camera.activeFormat.supportedMaxPhotoDimensions.max(
             by: { lhs, rhs in
@@ -255,8 +257,8 @@ final class CenteringCameraController: NSObject, ObservableObject, AVCapturePhot
         }
     }
 
-    private func setIssue(_ issue: CameraIssue?) {
-        DispatchQueue.main.async { [weak self] in
+    nonisolated private func setIssue(_ issue: CameraIssue?) {
+        Task { @MainActor [weak self] in
             self?.cameraIssue = issue
         }
     }

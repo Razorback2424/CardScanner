@@ -1,6 +1,7 @@
 // Public Magic catalog settings used by release tooling and production builds.
-// v1 deliberately reuses the existing production Ed25519 key. The signed
-// payload domain is distinct because Magic requires catalogKind == magic.
+// The hosted Magic pointer was verified absent on 2026-09-20. This temporary
+// legacy pin must be replaced with the owner-supplied Magic-specific public
+// key before the first Magic publication; do not treat it as permanent.
 MAGIC_CATALOG_BASE_URL = https:/$()/scanstash-catalog-prod.web.app
 MAGIC_CATALOG_ROLLOUT_MODE = legacy-live
 MAGIC_CATALOG_PINNED_KEYS = pokemon-catalog-production-2026-09-18-01:CEQfURmtxBTE170BLAk1hVcKgBmGAgVlR7hhSgO6CLI

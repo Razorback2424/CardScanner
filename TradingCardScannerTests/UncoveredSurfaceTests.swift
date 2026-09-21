@@ -184,6 +184,7 @@ private enum UncoveredSurfaceFixtures {
     }
 }
 
+@MainActor
 final class TradingCardScannerAppSurfaceTests: XCTestCase {
     func testStorageModesExposeTheirPersistencePromise() {
         let cloud = TradingCardScannerApp.StorageMode.cloudKit
@@ -244,21 +245,21 @@ final class CameraCapabilitiesSurfaceTests: XCTestCase {
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         defer { defaults.removePersistentDomain(forName: suiteName) }
 
-        defaults.set(true, forKey: "camera.hasMacroLens")
-        defaults.set(CameraCapabilities.modelIdentifier, forKey: "camera.probedModelIdentifier")
+        defaults.set(true, forKey: "camera.hasMacroLens.v2")
+        defaults.set(CameraCapabilities.modelIdentifier, forKey: "camera.probedModelIdentifier.v2")
         XCTAssertTrue(CameraCapabilities.hasMacroLens(defaults: defaults))
 
-        defaults.set(false, forKey: "camera.hasMacroLens")
+        defaults.set(false, forKey: "camera.hasMacroLens.v2")
         XCTAssertFalse(CameraCapabilities.hasMacroLens(defaults: defaults))
 
         CameraCapabilities.invalidateCache(defaults: defaults)
-        XCTAssertNil(defaults.object(forKey: "camera.hasMacroLens"))
-        XCTAssertNil(defaults.object(forKey: "camera.probedModelIdentifier"))
+        XCTAssertNil(defaults.object(forKey: "camera.hasMacroLens.v2"))
+        XCTAssertNil(defaults.object(forKey: "camera.probedModelIdentifier.v2"))
 
         let probed = CameraCapabilities.hasMacroLens(defaults: defaults)
-        XCTAssertEqual(defaults.bool(forKey: "camera.hasMacroLens"), probed)
+        XCTAssertEqual(defaults.bool(forKey: "camera.hasMacroLens.v2"), probed)
         XCTAssertEqual(
-            defaults.string(forKey: "camera.probedModelIdentifier"),
+            defaults.string(forKey: "camera.probedModelIdentifier.v2"),
             CameraCapabilities.modelIdentifier
         )
     }
@@ -1409,6 +1410,38 @@ final class PriceRefreshSnapshotSliceTests: XCTestCase {
         record.lastSuccessfulCheckAt = Date(timeIntervalSince1970: 400)
         after = StoreRevisionFingerprinting.priceValues([record])
         XCTAssertNotEqual(before, after)
+    }
+
+    func testPriceFingerprintSortedFastPathMatchesUnsortedInputContract() {
+        let first = PriceRecord(
+            key: "a-price",
+            game: .pokemon,
+            printingID: "a-printing",
+            variantID: nil
+        )
+        let second = PriceRecord(
+            key: "b-price",
+            game: .pokemon,
+            printingID: "b-printing",
+            variantID: nil
+        )
+
+        XCTAssertEqual(
+            StoreRevisionFingerprinting.priceValues([second, first]),
+            StoreRevisionFingerprinting.priceValuesInKeyOrder([first, second])
+        )
+    }
+
+    func testUUIDFingerprintOrderingMatchesCanonicalStringOrdering() {
+        let lower = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+        let higher = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+
+        XCTAssertEqual(
+            StoreRevisionFingerprinting.uuidPrecedes(lower, higher),
+            lower.uuidString < higher.uuidString
+        )
+        XCTAssertTrue(StoreRevisionFingerprinting.uuidPrecedes(lower, higher))
+        XCTAssertFalse(StoreRevisionFingerprinting.uuidPrecedes(higher, lower))
     }
 
     func testStoreRevisionCardFingerprintIncludesDerivedStateInputs() async throws {

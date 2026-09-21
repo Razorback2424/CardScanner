@@ -131,6 +131,7 @@ private enum SliceCFixture {
     }
 }
 
+@MainActor
 final class PokemonCatalogSliceCTests: XCTestCase {
     func test30thClassicCollectionSharesDisplayCodeWithoutClaimingScannerNamespace() {
         let expansion = SliceCFixture.descriptor(

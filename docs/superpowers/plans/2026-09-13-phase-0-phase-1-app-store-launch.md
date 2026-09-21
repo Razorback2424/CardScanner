@@ -39,7 +39,7 @@ This plan does **not** authorize broad refactors. A change belongs in this relea
 
 The plan was authored against earlier repository snapshots. Its current-source
 references must be revalidated before execution. The checkout now under review
-is clean `main` at `31eb97e`, with marketing/build
+is clean `feature/catalog-and-scanner-hardening` at `7dbaf40`, with marketing/build
 `1.0 (1)`, bundle identifier `com.seankeller.CardScanner`, and iPhone/iPad
 deployment target 17.0. The current release ledger is
 [`docs/release/phase-1-integrity-evidence.md`](../../release/phase-1-integrity-evidence.md).
@@ -88,7 +88,7 @@ status authority.
 - Repository: `/Users/seankeller/Documents/TradingCardScannerMVP_fixed_v4`
 - Historical source snapshot used for the original plan: branch `scan-hardening-and-release`, HEAD `d647a794edc349be52fb6c643649ce26de2c834a`.
 - Historical repository state at plan review: branch `main`, HEAD `a115e4e`. Neither snapshot is the current implementation base; re-run the baseline and source assertions in Task 1 against the checkout being implemented.
-- Current reconciliation: clean `main`, HEAD `31eb97e`; the current tree includes the merged Pro/eBay implementation, while its release evidence remains open.
+- Current reconciliation: clean `feature/catalog-and-scanner-hardening`, HEAD `7dbaf40`; the current tree includes the merged Pro/eBay implementation, while its release evidence remains open.
 - App target: `TradingCardScanner`
 - Test target: `TradingCardScannerTests`
 - Minimum OS: iOS/iPadOS 17.0
@@ -163,9 +163,15 @@ Storage/readiness hardening is scoped to the reviewed policy logic and does
 **not** extend to the production dependency wiring: pass-2 F01 and F02 are open
 source-level defects there, independent of enrollment. See §0.1.1.
 
-The full simulator run at `a4375df` executed 1,277 with 6 skipped and 40
-failures. Per-suite triage is 36 fixture/resource-lookup, 1 load-sensitive
-flake, and **3 substantive**. The 2026-09-16 project-file correction proved the
+The exact-candidate full simulator run at `7dbaf40` executed 1,278 tests with
+6 skipped and 4 failures (1 unexpected), using external-SSD DerivedData,
+module caches, package cache, and result bundle. Its failures include the
+current centering analyzer/ground-truth/invariant gates, ownership completeness
+findings, and the scanner catalog-miss test. The exact-candidate focused
+cross-area run executed 581 tests with 579 passed, 1 skipped, and 1 failed in
+that same scanner catalog-miss test. The prior full simulator run at `a4375df`
+executed 1,277 with 6 skipped and 40 failures and remains historical. The
+2026-09-16 project-file correction proved the
 centering files were tracked but omitted from the test bundle by duplicate
 PBX IDs. A focused rerun then reached the fixtures and produced 38 results: 28
 passed, 9 test cases failed on centering assertions, and 1 profile-dump test

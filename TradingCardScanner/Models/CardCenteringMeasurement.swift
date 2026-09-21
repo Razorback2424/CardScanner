@@ -552,6 +552,10 @@ enum CardCenteringInnerReference: String, Codable, Equatable {
 
 enum CardCenteringConfidenceState: String, Codable, Equatable {
     case confident
+    /// The detector found usable starting frames, but the product contract
+    /// requires the person to confirm or adjust the outer card and inner frame
+    /// before any ratio is treated as a reading.
+    case manualConfirmationRequired
     case declined
 }
 
@@ -591,6 +595,16 @@ struct CardCenteringConfidence: Codable, Equatable {
             innerReferencePresent: false,
             reason: reason
         )
+    }
+
+    static func manualConfirmationRequired(
+        preserving confidence: CardCenteringConfidence,
+        reason: String
+    ) -> CardCenteringConfidence {
+        var result = confidence
+        result.state = .manualConfirmationRequired
+        result.reason = reason
+        return result
     }
 }
 
@@ -686,7 +700,20 @@ struct CardCenteringMeasurement: Equatable {
         self.usesQuadGeometry = true
     }
 
-    var isDeclined: Bool { confidence.state == .declined }
+    /// Ratios are reportable only after the product has a confident or
+    /// manually-confirmed card frame. A detector candidate is intentionally not
+    /// enough: the hybrid release path must never present unconfirmed automatic
+    /// outer or inner geometry as fact.
+    var isDeclined: Bool { confidence.state != .confident }
+    var requiresManualOuterConfirmation: Bool {
+        confidence.state == .manualConfirmationRequired
+    }
+    var requiresManualInnerConfirmation: Bool {
+        confidence.state == .manualConfirmationRequired && geometryInnerQuad != nil
+    }
+    var requiresManualFrameConfirmation: Bool {
+        requiresManualOuterConfirmation && requiresManualInnerConfirmation
+    }
     var confidenceScore: Double { confidence.score }
     var declineReason: String? { confidence.reason }
 
@@ -813,7 +840,9 @@ struct CardCenteringMeasurement: Equatable {
         rectification = nil
         usesQuadGeometry = false
         innerReference = .artWindow
-        confidence = .legacyConfident
+        if geometryInnerQuad != nil {
+            confidence = .legacyConfident
+        }
     }
 
     private static func centeringString(_ first: Double, _ second: Double) -> String {

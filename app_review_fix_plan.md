@@ -10,13 +10,17 @@ This root-level file is the current App Review remediation authority. The
 branch/SHA and suite counts in the original baseline below belong to the
 earlier `fix/app-review-preflight` candidate and are historical context, not
 the current checkout. The current tree is
-clean `main` at `31eb97e`.
+clean `feature/catalog-and-scanner-hardening` at `7dbaf40`.
 
 Source-level storage hardening and focused regression coverage have progressed,
 but production CloudKit enrollment, physical-device continuity, ownership-ledger
-certification, and a clean exact-candidate suite remain open. The latest logged
-full simulator run remains the historical `a4375df` run: 1,277 executed, 6
-skipped, and 40 failures. See the current
+certification, and a clean exact-candidate suite remain open. The intended
+candidate is the clean `feature/catalog-and-scanner-hardening` branch at
+`7dbaf40`. The exact-candidate focused run executed 581 tests with 579 passed,
+1 skipped, and 1 failed in the scanner catalog-miss test. The exact-candidate
+full simulator run executed 1,278 tests with 6 skipped and 4 failures (1
+unexpected); centering, ownership, and scanner catalog-miss failures remain
+open. See the current
 [`docs/release/phase-1-integrity-evidence.md`](docs/release/phase-1-integrity-evidence.md)
 for the candidate ledger.
 
@@ -129,7 +133,7 @@ or approves a commit containing the complete working tree.
 The latest complete full-suite result is recorded in the [current release
 ledger](docs/release/phase-1-integrity-evidence.md): the historical `a4375df`
 run executed 1,277 tests with 6 skipped and 40 failures. No full suite has been
-rerun at current HEAD `31eb97e`.
+rerun at current candidate `7dbaf40`.
 
 ## Verification and rollback
 

@@ -80,5 +80,36 @@
       "image": "https://assets.tcgdex.net/en/sv99/sv99-002",
       "setID": "sv99"
     }
-  ]
+  ],
+  "secondary": {
+    "sets": [
+      {
+        "id": "me55",
+        "name": "30th Celebration",
+        "ptcgoCode": "30C",
+        "releaseDate": "2026/09/16",
+        "printedTotal": 128,
+        "total": 161,
+        "logoURL": "https://images.scrydex.com/pokemon/me55-logo/logo",
+        "symbolURL": "https://images.scrydex.com/pokemon/me55-symbol/symbol",
+        "cardArtworkURLs": []
+      },
+      {
+        "id": "me55c",
+        "name": "30th Celebration Classic Collection",
+        "ptcgoCode": "30C",
+        "releaseDate": "2026/09/16",
+        "printedTotal": 30,
+        "total": 30,
+        "logoURL": "https://images.scrydex.com/pokemon/me55c-logo/logo",
+        "symbolURL": "https://images.scrydex.com/pokemon/me55c-symbol/symbol",
+        "cardArtworkURLs": [
+          "https://images.scrydex.com/pokemon/me55c-001/large",
+          "https://images.scrydex.com/pokemon/me55c-002/large",
+          "https://images.scrydex.com/pokemon/me55c-003/large"
+        ]
+      }
+    ],
+    "ambiguousSetIDs": []
+  }
 }

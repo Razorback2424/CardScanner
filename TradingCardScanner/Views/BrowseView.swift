@@ -857,7 +857,8 @@ private struct CatalogSearchResultRow: View {
                 collectorNumber: summary.collectorNumber,
                 thumbnailURL: summary.thumbnailURL,
                 imageURL: summary.imageURL,
-                prefersFullSize: false
+                prefersFullSize: false,
+                limitlessArtworkAuthorized: summary.limitlessArtworkAuthorized
             )
         case .sealed:
             return nil
@@ -1819,7 +1820,6 @@ private struct CatalogSetCardsView: View {
 
     var body: some View {
         let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
-        let visible = visibleCards(owned: owned)
         return ScrollView {
             if cards.isEmpty && isLoading {
                 VStack(spacing: 12) {
@@ -1851,7 +1851,7 @@ private struct CatalogSetCardsView: View {
                     .foregroundStyle(.secondary)
                     .padding(.top, 12)
                 }
-                if visible.isEmpty {
+                if visibleGroups.isEmpty {
                     ContentUnavailableView(
                         "No matching cards",
                         systemImage: "magnifyingglass",
@@ -2220,7 +2220,8 @@ private struct CatalogCardDisplayGroupTile: View {
                 imageURL: preferred.imageURL,
                 game: preferred.game,
                 setCode: preferred.setCode,
-                collectorNumber: preferred.collectorNumber
+                collectorNumber: preferred.collectorNumber,
+                limitlessArtworkAuthorized: preferred.limitlessArtworkAuthorized
             )
                 .overlay(alignment: .topTrailing) {
                     if owned.owns(preferred) {
@@ -2395,6 +2396,7 @@ struct CatalogArtworkView: View {
     var game: CardGame? = nil
     var setCode: String? = nil
     var collectorNumber: String? = nil
+    var limitlessArtworkAuthorized: Bool? = nil
 
     private var artworkSource: CatalogCardArtworkSource {
         CatalogCardArtworkSource(
@@ -2403,7 +2405,8 @@ struct CatalogArtworkView: View {
             collectorNumber: collectorNumber,
             thumbnailURL: thumbnailURL,
             imageURL: imageURL,
-            prefersFullSize: prefersFullSize
+            prefersFullSize: prefersFullSize,
+            limitlessArtworkAuthorized: limitlessArtworkAuthorized
         )
     }
 

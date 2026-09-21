@@ -168,7 +168,9 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                             sortRank: entry.set.sortRank,
                             bundledArtworkSourceID: entry.set.bundledArtworkSourceID
                                 ?? existing.set.bundledArtworkSourceID,
-                            artworkFallbackURLs: artworkFallbackURLs
+                            artworkFallbackURLs: artworkFallbackURLs,
+                            limitlessArtworkAuthorized: entry.set.limitlessArtworkAuthorized
+                                ?? existing.set.limitlessArtworkAuthorized
                         )
                     } else {
                         mergedSet = entry.set
@@ -296,7 +298,12 @@ enum PokemonMasterSetChecklistBuilder {
                 },
                 releaseDate: descriptor?.releaseDate.flatMap(FlexibleDate.parse),
                 sortRank: descriptor?.releaseOrder ?? (rows.count - index),
-                bundledArtworkSourceID: descriptor?.bundledArtworkSourceID
+                bundledArtworkSourceID: descriptor?.bundledArtworkSourceID,
+                limitlessArtworkAuthorized: descriptor.map {
+                    $0.recognitionKind == .expansion
+                } ?? (PokemonCatalogRegistry.bundledSeed.expansion(
+                    forPrintedCode: displayCode
+                ) != nil)
             )
         }
         return baseSets
@@ -491,7 +498,8 @@ enum PokemonMasterSetChecklistBuilder {
                 ?? providerSet.releaseDate.flatMap(FlexibleDate.parse),
             sortRank: set.sortRank,
             bundledArtworkSourceID: set.bundledArtworkSourceID,
-            artworkFallbackURLs: set.artworkFallbackURLs
+            artworkFallbackURLs: set.artworkFallbackURLs,
+            limitlessArtworkAuthorized: set.limitlessArtworkAuthorized
         )
     }
 
@@ -512,7 +520,10 @@ enum PokemonMasterSetChecklistBuilder {
             releaseDate: set.releaseDate,
             sortRank: set.sortRank,
             bundledArtworkSourceID: set.bundledArtworkSourceID,
-            artworkFallbackURLs: limitedURLs.isEmpty ? nil : limitedURLs
+            artworkFallbackURLs: limitedURLs.isEmpty
+                ? set.artworkFallbackURLs
+                : limitedURLs,
+            limitlessArtworkAuthorized: set.limitlessArtworkAuthorized
         )
     }
 
@@ -530,7 +541,8 @@ enum PokemonMasterSetChecklistBuilder {
             name: card.name,
             collectorNumber: card.localId,
             thumbnailURL: base.flatMap { URL(string: $0.absoluteString + "/low.png") },
-            imageURL: base.flatMap { URL(string: $0.absoluteString + "/high.png") }
+            imageURL: base.flatMap { URL(string: $0.absoluteString + "/high.png") },
+            limitlessArtworkAuthorized: set.limitlessArtworkAuthorized
         )
     }
 

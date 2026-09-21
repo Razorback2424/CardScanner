@@ -3,7 +3,8 @@
 > Bootstrapped by `swift-safe-fixer` from the product-owner review supplied in
 > this task; this is not a substitute for an independent reviewer report.
 
-**Current checkout:** `main` at `31eb97e` (2026-09-20). This is the current
+**Current checkout:** `feature/catalog-and-scanner-hardening` at `7dbaf40`
+(2026-09-20). This is the intended current
 preflight summary. The focused remediation evidence below was recorded against
 the preceding remediation commits and remains evidence for those specific runs;
 no full suite was rerun at this HEAD.
@@ -29,7 +30,9 @@ that the busy interleaving is unreachable.
 
 Focused simulator evidence passes the 64 storage/policy/continuity tests in
 Debug and DebugProduction, the 20 readiness tests, and the new F03 regression.
-The candidate remains NO-GO because this does not establish entitled-device,
+The exact-candidate full simulator run at `7dbaf40` executed 1,278 tests with
+6 skipped and 4 failures (1 unexpected). The candidate remains NO-GO because
+this does not establish entitled-device,
 CloudKit production, clean-install, background-task, archive, or full-suite
 readiness.
 
@@ -66,5 +69,5 @@ two-device convergence, archive/TestFlight, public URLs, and a clean full-suite
 pass still require owner-controlled follow-up. The current host has recorded
 focused storage results; the latest complete full run is the historical
 `a4375df` run with 1,277 executed, 6 skipped, and 40 failures. No full suite was
-rerun at current HEAD `31eb97e`; the current release ledger is the evidence
+rerun at current candidate `7dbaf40`; the current release ledger is the evidence
 authority.

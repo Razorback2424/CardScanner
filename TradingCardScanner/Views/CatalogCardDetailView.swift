@@ -77,7 +77,8 @@ struct CatalogCardDetailView: View {
                 prefersFullSize: true,
                 game: summary.game,
                 setCode: summary.setCode,
-                collectorNumber: summary.collectorNumber
+                collectorNumber: summary.collectorNumber,
+                limitlessArtworkAuthorized: summary.limitlessArtworkAuthorized
             )
                 .frame(maxHeight: 470)
 
