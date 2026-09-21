@@ -1114,7 +1114,7 @@ final class ScannerViewModel: ObservableObject {
     private static let noteLifetime: Duration = .milliseconds(2600)
 
     init(
-        scanner: CardScanner = CardScanner(),
+        scanner: CardScanner? = nil,
         catalog: CardCatalog = CardCatalog(),
         feedback: ScanFeedback? = nil,
         gradedResolver: ScannedGradedResolving = ScannedGradedResolver(),
@@ -1125,6 +1125,7 @@ final class ScannerViewModel: ObservableObject {
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
         magicCatalogCoordinator: MagicCatalogCoordinator? = nil
     ) {
+        let scanner = scanner ?? CardScanner()
         self.scanner = scanner
         self.catalog = catalog
         self.feedback = feedback ?? ScanFeedback()

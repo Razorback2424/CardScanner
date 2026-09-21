@@ -3,7 +3,8 @@ import SwiftUI
 import UIKit
 
 struct CameraPreview: UIViewRepresentable {
-    @ObservedObject var scanner: CardScanner
+    let scanner: CardScanner
+    @ObservedObject private var scannerState: CardScannerUIState
 #if DEBUG
     @ObservedObject private var debugVisionOverlay: ScannerDebugVisionOverlay
 #endif
@@ -22,6 +23,7 @@ struct CameraPreview: UIViewRepresentable {
         self.scanner = scanner
         self.successCount = successCount
         self.recognitionCount = recognitionCount
+        _scannerState = ObservedObject(wrappedValue: scanner.uiState)
 #if DEBUG
         _debugVisionOverlay = ObservedObject(wrappedValue: scanner.debugVisionOverlay)
 #endif
@@ -33,9 +35,9 @@ struct CameraPreview: UIViewRepresentable {
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation
-        view.slabFraming = scanner.slabFraming
-        view.slabGuideHint = scanner.slabGuideHint
-        view.footerVisionRect = scanner.footerRegionOfInterest
+        view.slabFraming = scannerState.slabFraming
+        view.slabGuideHint = scannerState.slabGuideHint
+        view.footerVisionRect = scannerState.footerRegionOfInterest
         view.syncRecognitionCount(recognitionCount)
         view.syncSuccessCount(successCount)
 #if DEBUG
@@ -47,9 +49,9 @@ struct CameraPreview: UIViewRepresentable {
     func updateUIView(_ uiView: PreviewView, context: Context) {
         let rotationChanged = uiView.rotation !== scanner.rotation
             || uiView.rotation?.previewAngle != scanner.rotation.previewAngle
-        let slabFramingChanged = uiView.slabFraming != scanner.slabFraming
-        let slabGuideHintChanged = uiView.slabGuideHint != scanner.slabGuideHint
-        let footerROIChanged = uiView.footerVisionRect != scanner.footerRegionOfInterest
+        let slabFramingChanged = uiView.slabFraming != scannerState.slabFraming
+        let slabGuideHintChanged = uiView.slabGuideHint != scannerState.slabGuideHint
+        let footerROIChanged = uiView.footerVisionRect != scannerState.footerRegionOfInterest
 #if DEBUG
         let debugBoxesChanged = uiView.debugVisionBoxes != debugVisionOverlay.boxes
 #endif
@@ -57,9 +59,9 @@ struct CameraPreview: UIViewRepresentable {
             uiView.previewLayer.session = scanner.session
         }
         if rotationChanged { uiView.rotation = scanner.rotation }
-        if slabFramingChanged { uiView.slabFraming = scanner.slabFraming }
-        if slabGuideHintChanged { uiView.slabGuideHint = scanner.slabGuideHint }
-        if footerROIChanged { uiView.footerVisionRect = scanner.footerRegionOfInterest }
+        if slabFramingChanged { uiView.slabFraming = scannerState.slabFraming }
+        if slabGuideHintChanged { uiView.slabGuideHint = scannerState.slabGuideHint }
+        if footerROIChanged { uiView.footerVisionRect = scannerState.footerRegionOfInterest }
         uiView.syncRecognitionCount(recognitionCount)
         uiView.syncSuccessCount(successCount)
 #if DEBUG

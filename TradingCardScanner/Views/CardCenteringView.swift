@@ -222,7 +222,7 @@ final class CardCenteringViewModel: ObservableObject {
     /// "Card Centering 52.3-47.7 49.1-50.9.png" still says what it is a year
     /// later in a folder of screenshots.
     func makeExportFile() -> URL? {
-        guard let image, let measurement else { return nil }
+        guard let image, let measurement, !measurement.isDeclined else { return nil }
         let rendered = CardCenteringExport.render(
             image: image,
             measurement: measurement,
@@ -467,6 +467,12 @@ struct CardCenteringView: View {
         .onChange(of: model.selectedPhoto) {
             Task { await model.loadSelectedPhoto() }
         }
+        .onChange(of: model.measurement?.requiresManualFrameConfirmation) { _, requiresConfirmation in
+            if requiresConfirmation == true {
+                isOuterExpanded = true
+                isInnerExpanded = true
+            }
+        }
 #if DEBUG
         .task {
             let arguments = ProcessInfo.processInfo.arguments
@@ -585,7 +591,9 @@ struct CardCenteringView: View {
             .accessibilityLabel(
                 measurement.geometryInnerQuad == nil
                     ? "Card image with outer red guides; inner guide unavailable"
-                    : "Card image with outer red guides and inner cyan guides"
+                    : measurement.requiresManualFrameConfirmation
+                        ? "Card image with unconfirmed red outer and cyan inner guides"
+                        : "Card image with outer red guides and inner cyan guides"
             )
     }
 
@@ -632,6 +640,15 @@ struct CardCenteringView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .frame(maxWidth: .infinity)
+            } else {
+                // Keep the export row in the layout while a guide edit is
+                // preparing the next file. Removing it briefly changes the
+                // ScrollView's content height and makes the steppers move
+                // under a rapid series of taps.
+                Button("Export Image", systemImage: "square.and.arrow.up") {}
+                    .buttonStyle(.borderedProminent)
+                    .frame(maxWidth: .infinity)
+                    .disabled(true)
             }
         }
         .padding(14)
@@ -816,6 +833,7 @@ struct CardCenteringImage: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: proxy.size.width, height: proxy.size.height)
+                    .rotationEffect(.degrees(rotationDegrees))
 
                 guidePath(
                     measurement.geometryOuterQuad,
@@ -828,9 +846,6 @@ struct CardCenteringImage: View {
                 }
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
-            // The guide and the pixels must share one transform. Rotating only
-            // the image makes a physically sloped edge look falsely vertical.
-            .rotationEffect(.degrees(rotationDegrees))
         }
         .aspectRatio(CGFloat(measurement.imageWidth) / CGFloat(measurement.imageHeight), contentMode: .fit)
         .background(Color.black)
@@ -855,18 +870,7 @@ struct CardCenteringImage: View {
             }
             path.closeSubpath()
         }
-        .stroke(.black.opacity(0.55), style: StrokeStyle(lineWidth: 5, lineCap: .butt))
-        .overlay {
-            Path { path in
-                guard let first = points.first else { return }
-                path.move(to: first)
-                for point in points.dropFirst() {
-                    path.addLine(to: point)
-                }
-                path.closeSubpath()
-            }
-            .stroke(color, style: StrokeStyle(lineWidth: 2, lineCap: .butt))
-        }
+        .stroke(color, style: StrokeStyle(lineWidth: 1.5, lineCap: .butt))
         .allowsHitTesting(false)
     }
 }

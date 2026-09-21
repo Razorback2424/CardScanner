@@ -1,6 +1,7 @@
 import XCTest
 @testable import TradingCardScanner
 
+@MainActor
 final class HistoricalAttemptBoundTests: XCTestCase {
     private let number = PokemonPrintedNumberEvidence(
         localID: "78",

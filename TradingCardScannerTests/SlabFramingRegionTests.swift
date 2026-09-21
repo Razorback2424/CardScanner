@@ -1,6 +1,7 @@
 import XCTest
 @testable import TradingCardScanner
 
+@MainActor
 final class SlabFramingRegionTests: XCTestCase {
     func testPSAGeometryUsesSlabAspectAndKeepsBandsInsideOuterGuide() {
         let geometry = SlabFramingRegion.geometry(for: .psa)
@@ -27,6 +28,31 @@ final class SlabFramingRegionTests: XCTestCase {
         let labelRegion = SlabFramingRegion.labelVisionRect(for: nil)
 
         XCTAssertTrue(provisionalGuide.contains(labelRegion))
+    }
+
+    func testTitleOCRRegionBridgesRawAndSlabFramingBands() {
+        let rawTitleRegion = CardFramingRegion.titleVisionRect
+        let slabTitleRegion = SlabFramingRegion.titleVisionRect(for: .psa)
+        let expected = rawTitleRegion.union(slabTitleRegion)
+
+        XCTAssertEqual(SlabFramingRegion.titleOCRVisionRect(for: .psa), expected)
+        XCTAssertTrue(expected.contains(rawTitleRegion))
+        XCTAssertTrue(expected.contains(slabTitleRegion))
+
+        let scanner = CardScanner()
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10"),
+            certificationNumber: "TITLE-ROI",
+            labelCardText: ["CHARIZARD"]
+        )
+        _ = scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 0)
+        XCTAssertEqual(
+            scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 1.5),
+            evidence
+        )
+
+        XCTAssertEqual(scanner.titleRegionOfInterestForTesting, expected)
     }
 
     func testUnboundFooterROIUsesTheProductionUnion() {

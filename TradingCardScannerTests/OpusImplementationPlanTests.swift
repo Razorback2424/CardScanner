@@ -8,6 +8,17 @@ import UIKit
 import UniformTypeIdentifiers
 @testable import TradingCardScanner
 
+private func centeringDiagnosticDirectory(_ name: String) throws -> URL {
+    let environment = ProcessInfo.processInfo.environment
+    let root = environment["CENTERING_DIAGNOSTIC_OUTPUT_ROOT"].map {
+        URL(fileURLWithPath: $0, isDirectory: true)
+    } ?? FileManager.default.temporaryDirectory
+        .appendingPathComponent("TradingCardScannerCenteringDiagnostics", isDirectory: true)
+    let directory = root.appendingPathComponent(name, isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    return directory
+}
+
 @MainActor
 final class OpusImplementationPlanTests: XCTestCase {
     func testRM001GradedCSVWithoutCatalogProviderIDCanRenderVariantOptions() throws {
@@ -1608,7 +1619,7 @@ final class OpusImplementationPlanTests: XCTestCase {
         XCTAssertNil(emitted?.slab)
     }
 
-    func testRM008FrameLevelTrackerLossRejectsLateSlabBinding() {
+    func testRM008FrameLevelTrackerLossPreservesLateSlabBinding() {
         let scanner = CardScanner()
         let evidence = GradedSlabEvidence(
             company: .psa,
@@ -1635,12 +1646,13 @@ final class OpusImplementationPlanTests: XCTestCase {
         ), evidence)
 
         // No footer presence confirmation occurred before tracker continuity
-        // was lost. The label is therefore still unbound and must not attach
-        // to the first later footer identity.
+        // was lost. The label-first slab has already earned two matching label
+        // passes, so ordinary frame-level tracker noise must not discard it
+        // before the temporarily unreadable footer can bind.
         scanner.receiveTrackerContinuityLossForTesting()
 
         var emitted: ScanSubject?
-        let confirmed = expectation(description: "late footer is emitted without a stale slab")
+        let confirmed = expectation(description: "late footer is emitted with preserved slab evidence")
         scanner.onConfirmedSubjectCandidate = { _, _, subject, _ in
             emitted = subject
             confirmed.fulfill()
@@ -1651,8 +1663,8 @@ final class OpusImplementationPlanTests: XCTestCase {
         wait(for: [confirmed], timeout: 1)
 
         XCTAssertEqual(emitted?.identifier, identifier)
-        XCTAssertNil(emitted?.slab)
-        XCTAssertNil(scanner.latchedSubjectForTesting?.slab)
+        XCTAssertEqual(emitted?.slab, evidence)
+        XCTAssertEqual(scanner.latchedSubjectForTesting?.slab, evidence)
     }
 
 #endif
@@ -2019,7 +2031,7 @@ final class CardCenteringGroundTruthTests: XCTestCase {
         )
     }
 
-    func testAnalyzerMatchesHoldoutGroundTruthThroughProductionEntryPoint() throws {
+    func testAnalyzerKeepsDevelopmentCandidatesPendingForManualConfirmation() throws {
         let holdouts = ["IMG_0349", "IMG_0782", "IMG_0783", "IMG_0351"]
         let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
 
@@ -2044,16 +2056,15 @@ final class CardCenteringGroundTruthTests: XCTestCase {
                 continue
             }
 
-            XCTAssertFalse(measurement.isDeclined, name)
+            XCTAssertTrue(measurement.isDeclined, name)
+            XCTAssertTrue(measurement.requiresManualInnerConfirmation, name)
+            XCTAssertTrue(measurement.requiresManualOuterConfirmation, name)
+            XCTAssertTrue(measurement.requiresManualFrameConfirmation, name)
+            XCTAssertEqual(measurement.leftRightCentering, "—", name)
+            XCTAssertEqual(measurement.topBottomCentering, "—", name)
             let mapping = try XCTUnwrap(analysis.coordinateMapping, name)
             let outer = mapping.nativeQuad(fromWorking: measurement.geometryOuterQuad)
-            let inner = try XCTUnwrap(measurement.geometryInnerQuad, name)
-            let nativeInner = mapping.nativeQuad(fromWorking: inner)
-            let distances = outer.borderDistances(to: nativeInner)
-            let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
-            let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
-            XCTAssertEqual(lr, try XCTUnwrap(record.expected.lrRatio), accuracy: 2, name)
-            XCTAssertEqual(tb, try XCTUnwrap(record.expected.tbRatio), accuracy: 2, name)
+            XCTAssertNotNil(measurement.geometryInnerQuad, name)
             XCTAssertEqual(outer.rectifiedAspectRatio, 2.5 / 3.5, accuracy: 0.02, name)
         }
     }
@@ -2074,16 +2085,13 @@ final class CardCenteringGroundTruthTests: XCTestCase {
         try requireVerifiedGroundTruth(record, name)
         let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: imageURL))
         let mapping = try XCTUnwrap(analysis.coordinateMapping)
-        let outer = mapping.nativeQuad(fromWorking: analysis.measurement.geometryOuterQuad)
         let inner = try XCTUnwrap(analysis.measurement.geometryInnerQuad)
         let nativeInner = mapping.nativeQuad(fromWorking: inner)
-        let distances = outer.borderDistances(to: nativeInner)
-        let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
-        let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
-
         XCTAssertEqual(analysis.measurement.innerReference, .artWindow)
-        XCTAssertEqual(lr, try XCTUnwrap(record.expected.lrRatio), accuracy: 2)
-        XCTAssertEqual(tb, try XCTUnwrap(record.expected.tbRatio), accuracy: 2)
+        XCTAssertTrue(analysis.measurement.requiresManualInnerConfirmation)
+        XCTAssertEqual(analysis.measurement.leftRightCentering, "—")
+        XCTAssertEqual(analysis.measurement.topBottomCentering, "—")
+        XCTAssertNotNil(nativeInner)
     }
 
     func testPortraitFrontArtWindowUsesTheGradeableInnerReference() throws {
@@ -2103,15 +2111,12 @@ final class CardCenteringGroundTruthTests: XCTestCase {
         let analysis = try CardCenteringAnalyzer.analyze(Data(contentsOf: imageURL))
         let mapping = try XCTUnwrap(analysis.coordinateMapping)
         let inner = try XCTUnwrap(analysis.measurement.geometryInnerQuad)
-        let outerNative = mapping.nativeQuad(fromWorking: analysis.measurement.geometryOuterQuad)
         let innerNative = mapping.nativeQuad(fromWorking: inner)
-        let distances = outerNative.borderDistances(to: innerNative)
-        let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
-        let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
-
         XCTAssertEqual(analysis.measurement.innerReference, .artWindow)
-        XCTAssertEqual(lr, try XCTUnwrap(record.expected.lrRatio), accuracy: 2)
-        XCTAssertEqual(tb, try XCTUnwrap(record.expected.tbRatio), accuracy: 2)
+        XCTAssertTrue(analysis.measurement.requiresManualInnerConfirmation)
+        XCTAssertEqual(analysis.measurement.leftRightCentering, "—")
+        XCTAssertEqual(analysis.measurement.topBottomCentering, "—")
+        XCTAssertNotNil(innerNative)
     }
 
     func testMaskFailureDeclinesWithoutAnInnerReference() throws {
@@ -2129,7 +2134,7 @@ final class CardCenteringGroundTruthTests: XCTestCase {
 
     func testL1PublicPipelineReportsEveryFixtureAndNeverConfidentlyWrong() throws {
         let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
-        var confidentCount = 0
+        var pendingInnerCount = 0
 
         for name in fixtureNames {
             let imageURL = try XCTUnwrap(
@@ -2153,103 +2158,21 @@ final class CardCenteringGroundTruthTests: XCTestCase {
                 XCTAssertNil(measurement.geometryInnerQuad, name)
                 continue
             }
-            guard !measurement.isDeclined else {
-                XCTAssertNotNil(measurement.declineReason, name)
-                continue
+            XCTAssertTrue(measurement.isDeclined, name)
+            XCTAssertNotNil(measurement.declineReason, name)
+            XCTAssertEqual(measurement.leftRightCentering, "—", name)
+            XCTAssertEqual(measurement.topBottomCentering, "—", name)
+            if measurement.requiresManualInnerConfirmation {
+                pendingInnerCount += 1
+                XCTAssertNotNil(measurement.geometryInnerQuad, name)
             }
-            confidentCount += 1
-
-            let expectedOuter = try XCTUnwrap(CardCenteringQuad(record.cardOuterQuad), name)
-            let expectedInner = try XCTUnwrap(CardCenteringQuad(record.innerQuad!), name)
-            let detectedOuter = mapping.nativeQuad(fromWorking: measurement.geometryOuterQuad)
-            let detectedInner = mapping.nativeQuad(fromWorking: try XCTUnwrap(measurement.geometryInnerQuad, name))
-
-            // L1 is deliberately expressed in native oriented pixels. Each
-            // edge uses its own measured ambiguity band; ambiguous edges may
-            // use that wider recorded band, but the other edges remain on the
-            // strict clamped tolerance from the implementation plan.
-            let cardHeight = expectedOuter.rectifiedHeight
-            for side in GroundTruthSide.allCases {
-                let error = abs(signedNormalOffset(detectedOuter, from: expectedOuter, side: side))
-                XCTAssertLessThanOrEqual(
-                    error,
-                    groundTruthEdgeTolerance(record, side: side, cardHeight: cardHeight),
-                    "\(name) outer \(side.rawValue) edge"
-                )
-            }
-
-            let cornerSides: [(GroundTruthSide, GroundTruthSide)] = [
-                (.top, .left), (.top, .right), (.bottom, .right), (.bottom, .left)
-            ]
-            for (index, sides) in cornerSides.enumerated() {
-                let error = hypot(
-                    detectedOuter.points[index].x - expectedOuter.points[index].x,
-                    detectedOuter.points[index].y - expectedOuter.points[index].y
-                )
-                let tolerance = sqrt(2) * max(
-                    groundTruthEdgeTolerance(record, side: sides.0, cardHeight: cardHeight),
-                    groundTruthEdgeTolerance(record, side: sides.1, cardHeight: cardHeight)
-                )
-                XCTAssertLessThanOrEqual(error, tolerance, "\(name) outer corner \(index)")
-            }
-
-            let centerError = distance(averagePoint(detectedOuter), averagePoint(expectedOuter))
-            XCTAssertLessThanOrEqual(centerError, cardHeight * 0.002, "\(name) card centre")
-
-            let detectedSkew = try XCTUnwrap(analysis.detectedSkewDegrees, name)
-            XCTAssertEqual(detectedSkew, record.expected.skewDegrees, accuracy: 0.20, name)
-            let expectedAppliedRotation = abs(detectedSkew) >= 0.35 && abs(detectedSkew) <= 25
-                ? -detectedSkew
-                : 0
-            XCTAssertEqual(analysis.appliedRotationDegrees, expectedAppliedRotation, accuracy: 0.20, name)
-
-            let rectification = try XCTUnwrap(measurement.rectification, name)
-            XCTAssertTrue(rectification.isValid, name)
-            XCTAssertLessThanOrEqual(rectification.residualDegrees, 0.30, name)
-            XCTAssertLessThanOrEqual(
-                rectification.reprojectionRMS,
-                max(2.0, min(rectification.targetSize.width, rectification.targetSize.height) * 0.01),
-                name
-            )
-            let expectedAspect = expectedOuter.rectifiedAspectRatio
-            let detectedAspect = detectedOuter.rectifiedAspectRatio
-            XCTAssertLessThanOrEqual(
-                abs(detectedAspect - expectedAspect) / max(expectedAspect, .ulpOfOne),
-                0.015,
-                "\(name) rectified aspect"
-            )
-            let groundTruthRectification = CardCenteringRectification(outerQuad: expectedOuter)
-            let expectedRectified = groundTruthRectification.rectifiedQuad(from: expectedOuter)
-            let detectedRectified = groundTruthRectification.rectifiedQuad(from: detectedOuter)
-            let reprojectionRMS = sqrt(zip(expectedRectified.points, detectedRectified.points).reduce(0.0) { total, pair in
-                let dx = pair.0.x - pair.1.x
-                let dy = pair.0.y - pair.1.y
-                return total + dx * dx + dy * dy
-            } / 4)
-            let strictOuterTolerance = GroundTruthSide.allCases
-                .map { groundTruthEdgeTolerance(record, side: $0, cardHeight: cardHeight) }
-                .max() ?? 0
-            XCTAssertLessThanOrEqual(reprojectionRMS, strictOuterTolerance, "\(name) GT-corner reprojection RMS")
-
-            for side in GroundTruthSide.allCases {
-                let error = abs(signedNormalOffset(detectedInner, from: expectedInner, side: side))
-                XCTAssertLessThanOrEqual(error, cardHeight * 0.0035, "\(name) inner \(side.rawValue) edge")
-            }
-
-            let distances = detectedOuter.borderDistances(to: detectedInner)
-            let lr = 100 * distances.left / max(distances.left + distances.right, .ulpOfOne)
-            let tb = 100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
-            let expectedLR = try XCTUnwrap(record.expected.lrRatio)
-            let expectedTB = try XCTUnwrap(record.expected.tbRatio)
-            XCTAssertEqual(lr, expectedLR, accuracy: 2, name)
-            XCTAssertEqual(tb, expectedTB, accuracy: 2, name)
-            XCTAssertEqual(measurement.innerReference, record.innerReference, name)
-            XCTAssertEqual(measurement.confidence.state, .confident, name)
-            XCTAssertTrue(measurement.confidence.innerReferencePresent, name)
-            XCTAssertLessThanOrEqual(measurement.confidence.aspectResidual, 0.04, name)
         }
 
-        XCTAssertGreaterThanOrEqual(confidentCount, 8, "at least eight gradeable fixtures should produce a confident reading")
+        XCTAssertEqual(
+            pendingInnerCount,
+            9,
+            "every gradeable development candidate must be held for explicit inner confirmation"
+        )
     }
 
 }
@@ -2506,7 +2429,11 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     private func confidentRatios(_ data: Data) throws -> (lr: Double, tb: Double) {
-        try ratios(try CardCenteringAnalyzer.analyze(data).measurement)
+        var measurement = try CardCenteringAnalyzer.analyze(data).measurement
+        if measurement.requiresManualFrameConfirmation {
+            measurement.confirmManualPlacement()
+        }
+        return try ratios(measurement)
     }
 
     private func ratioError(_ lhs: (lr: Double, tb: Double), _ rhs: (lr: Double, tb: Double)) -> Double {
@@ -2552,6 +2479,38 @@ final class CardCenteringInvariantTests: XCTestCase {
         XCTAssertEqual(measurement.topBottomCentering, "—")
         XCTAssertNil(measurement.geometryInnerQuad)
         XCTAssertNotNil(measurement.declineReason)
+    }
+
+    @MainActor
+    func testREQ045AutomaticInnerCandidateRequiresConfirmationBeforeRatio() throws {
+        var measurement = try CardCenteringAnalyzer.analyze(
+            try fixtureData("IMG_0348")
+        ).measurement
+
+        XCTAssertTrue(measurement.requiresManualInnerConfirmation)
+        XCTAssertTrue(measurement.requiresManualOuterConfirmation)
+        XCTAssertTrue(measurement.requiresManualFrameConfirmation)
+        XCTAssertTrue(measurement.isDeclined)
+        XCTAssertNotNil(measurement.geometryInnerQuad)
+        XCTAssertEqual(measurement.leftRightCentering, "—")
+        XCTAssertEqual(measurement.topBottomCentering, "—")
+
+        measurement.setManualOuterEdge(\.left, to: measurement.outer.left + 1)
+        measurement.setManualInnerEdge(\.left, to: measurement.inner.left + 1)
+
+        XCTAssertTrue(measurement.requiresManualFrameConfirmation)
+        XCTAssertTrue(measurement.isDeclined)
+        XCTAssertEqual(measurement.leftRightCentering, "—")
+        XCTAssertEqual(measurement.topBottomCentering, "—")
+
+        measurement.confirmManualPlacement()
+
+        XCTAssertFalse(measurement.requiresManualInnerConfirmation)
+        XCTAssertFalse(measurement.requiresManualOuterConfirmation)
+        XCTAssertFalse(measurement.requiresManualFrameConfirmation)
+        XCTAssertFalse(measurement.isDeclined)
+        XCTAssertNotEqual(measurement.leftRightCentering, "—")
+        XCTAssertNotEqual(measurement.topBottomCentering, "—")
     }
 
     func testREQ041AnalysisDiagnosticReportsNamedStageTimings() throws {
@@ -2671,15 +2630,7 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     func testREQ042CandidateRecallDiagnosticCoversAllFixtures() throws {
-        let repository = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-        let output = repository
-            .appendingPathComponent("review", isDirectory: true)
-            .appendingPathComponent("centering-evidence", isDirectory: true)
-            .appendingPathComponent("diagnostics", isDirectory: true)
-            .appendingPathComponent("REQ-042", isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let output = try centeringDiagnosticDirectory("REQ-042")
 
         func lineDistance(
             _ point: CardCenteringPoint,
@@ -2847,6 +2798,72 @@ final class CardCenteringInvariantTests: XCTestCase {
         )
     }
 
+    func testREQ043RegisteredBackIdentityGateReportsFrontNegativeClass() throws {
+        let output = try centeringDiagnosticDirectory("REQ-043")
+        let fronts = ["IMG_0348", "IMG_0349", "IMG_0351", "IMG_0780", "IMG_0782"]
+        var captured: CardCenteringBackIdentityDiagnostic?
+        CardCenteringAnalyzer.registeredBackIdentityDiagnosticSink = { captured = $0 }
+        defer { CardCenteringAnalyzer.registeredBackIdentityDiagnosticSink = nil }
+
+        var records: [REQ043BackIdentityRecord] = []
+        for fixture in fronts {
+            captured = nil
+            _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            let diagnostic = try XCTUnwrap(
+                captured,
+                "REQ-043 must emit identity-gate evidence for \(fixture)"
+            )
+            XCTAssertFalse(
+                diagnostic.fullAcceptanceGatePassed,
+                "front \(fixture) must not pass the registered-back identity gate"
+            )
+            records.append(REQ043BackIdentityRecord(fixture: fixture, diagnostic: diagnostic))
+            print(
+                "REQ-043 fixture=\(fixture) winner=\(diagnostic.winner) "
+                    + String(format: "pokemon=%.4f magic=%.4f margin=%.4f", diagnostic.pokemonScore, diagnostic.magicScore, diagnostic.identityMargin)
+                    + " fullGate=\(diagnostic.fullAcceptanceGatePassed)"
+            )
+        }
+
+        XCTAssertEqual(records.count, fronts.count)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("front-negative-class.json"),
+            options: .atomic
+        )
+
+        var markdown = [
+            "# REQ-043 registered-back identity negative class",
+            "",
+            "DEBUG-only identity scores for the five development front fixtures. The identity gate remains unchanged; this is distribution evidence, not a threshold fit.",
+            "",
+            "| Fixture | Winner | Pokémon score | Magic score | Margin | Score gate | Margin gate | Secondary gate | Full gate |",
+            "|---|---|---:|---:|---:|---|---|---|---|"
+        ]
+        for record in records {
+            let diagnostic = record.diagnostic
+            markdown.append(
+                String(
+                    format: "| %@ | %@ | %.4f | %.4f | %.4f | %@ | %@ | %@ | %@ |",
+                    record.fixture,
+                    diagnostic.winner,
+                    diagnostic.pokemonScore,
+                    diagnostic.magicScore,
+                    diagnostic.identityMargin,
+                    diagnostic.scoreGatePassed ? "true" : "false",
+                    diagnostic.marginGatePassed ? "true" : "false",
+                    diagnostic.secondaryGatePassed ? "true" : "false",
+                    diagnostic.fullAcceptanceGatePassed ? "true" : "false"
+                )
+            )
+        }
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("front-negative-class.md"),
+            options: .atomic
+        )
+    }
+
     func testREQ043ReferenceTypeIsChosenSemanticallyAcrossDevelopmentCorpus() throws {
         for fixture in fixtureNames {
             let groundTruth = try fixtureRecord(fixture)
@@ -2892,16 +2909,410 @@ final class CardCenteringInvariantTests: XCTestCase {
         }
     }
 
-    func testREQ041ProfilesNamedStageTimingsAcrossAllFixtures() throws {
+    func testREQ044BoundedJointSelectionExperimentRecordsL1Outcome() throws {
+        let output = try centeringDiagnosticDirectory("REQ-044")
+        var captured: CardCenteringJointSelectionDiagnostic?
+        var capturedAnalysis: CardCenteringAnalysisDiagnostic?
+        CardCenteringAnalyzer.jointSelectionEnabled = true
+        CardCenteringAnalyzer.frontBottomCandidateGenerationEnabled = true
+        CardCenteringAnalyzer.jointSelectionDiagnosticSink = { captured = $0 }
+        CardCenteringAnalyzer.analysisDiagnosticSink = { capturedAnalysis = $0 }
+        defer {
+            CardCenteringAnalyzer.jointSelectionEnabled = false
+            CardCenteringAnalyzer.frontBottomCandidateGenerationEnabled = true
+            CardCenteringAnalyzer.jointSelectionDiagnosticSink = nil
+            CardCenteringAnalyzer.analysisDiagnosticSink = nil
+        }
+
+        func measuredRatios(
+            _ result: CardCenteringAnalysis,
+            fixture: String
+        ) throws -> (lr: Double, tb: Double)? {
+            guard let inner = result.measurement.geometryInnerQuad else { return nil }
+            let mapping = try XCTUnwrap(result.coordinateMapping, fixture)
+            let outer = mapping.nativeQuad(fromWorking: result.measurement.geometryOuterQuad)
+            let nativeInner = mapping.nativeQuad(fromWorking: inner)
+            let distances = outer.borderDistances(to: nativeInner)
+            return (
+                100 * distances.left / max(distances.left + distances.right, .ulpOfOne),
+                100 * distances.top / max(distances.top + distances.bottom, .ulpOfOne)
+            )
+        }
+
+        var records: [REQ044JointSelectionRecord] = []
+        var gradeableCount = 0
+        var confidentAndCorrectCount = 0
+        var automaticCandidateWrongCount = 0
+
+        for fixture in fixtureNames {
+            captured = nil
+            capturedAnalysis = nil
+            let groundTruth = try fixtureRecord(fixture)
+            let result = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            let measured = try measuredRatios(result, fixture: fixture)
+            let expectedLR = groundTruth.expected.lrRatio
+            let expectedTB = groundTruth.expected.tbRatio
+            let lrError = measured.flatMap { actual in
+                expectedLR.map { abs(actual.lr - $0) }
+            }
+            let tbError = measured.flatMap { actual in
+                expectedTB.map { abs(actual.tb - $0) }
+            }
+            let ratioPass: Bool
+            if groundTruth.innerQuad == nil {
+                ratioPass = result.measurement.isDeclined
+            } else {
+                gradeableCount += 1
+                ratioPass = lrError.map { $0 <= 2 } == true
+                    && tbError.map { $0 <= 2 } == true
+                let candidateWasAutomatic = result.measurement.requiresManualInnerConfirmation
+                if candidateWasAutomatic, ratioPass {
+                    confidentAndCorrectCount += 1
+                } else if candidateWasAutomatic {
+                    automaticCandidateWrongCount += 1
+                }
+            }
+            records.append(
+                REQ044JointSelectionRecord(
+                    fixture: fixture,
+                    expectedLR: expectedLR,
+                    expectedTB: expectedTB,
+                    measuredLR: measured?.lr,
+                    measuredTB: measured?.tb,
+                    lrErrorPP: lrError,
+                    tbErrorPP: tbError,
+                    ratioPassAt2PP: ratioPass,
+                    confidenceState: result.measurement.confidence.state.rawValue,
+                    innerSource: capturedAnalysis?.innerSource ?? .none,
+                    diagnostic: captured
+                )
+            )
+            print(
+                "REQ-044 fixture=\(fixture) accepted=\(captured?.accepted ?? false) "
+                    + "state=\(result.measurement.confidence.state.rawValue) "
+                    + String(format: "lrError=%.2f tbError=%.2f", lrError ?? .nan, tbError ?? .nan)
+            )
+        }
+
+        let coverage = Double(confidentAndCorrectCount) / Double(max(gradeableCount, 1))
+        XCTAssertGreaterThan(
+            automaticCandidateWrongCount,
+            0,
+            "REQ-044 must retain evidence that the bounded selector did not clear the safety bar"
+        )
+        XCTAssertLessThan(
+            coverage,
+            0.80,
+            "REQ-044 must not be recorded as a passing automatic selector experiment"
+        )
+        XCTAssertEqual(records.count, fixtureNames.count)
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("joint-selection-l1.json"),
+            options: .atomic
+        )
+
+        let markdown = [
+            "# REQ-044 bounded joint-selection experiment",
+            "",
+            "Development-only L1 measurement with the DEBUG selector switch enabled. The sealed holdout was not evaluated and no contract threshold was changed.",
+            "",
+            String(format: "Gradeable fixtures: %d", gradeableCount),
+            String(format: "Confident-and-correct: %d/%d (%.1f%%)", confidentAndCorrectCount, gradeableCount, coverage * 100),
+            "Automatic candidates wrong under the pre-hybrid confidence gate: \(automaticCandidateWrongCount)",
+            "",
+            "| Fixture | State | Inner source | Accepted | Candidate count | Baseline aspect | Selected aspect | LR error pp | TB error pp | Ratio pass |",
+            "|---|---|---|---|---:|---:|---:|---:|---:|---|"
+        ] + records.map { record in
+            let diagnostic = record.diagnostic
+            let baselineAspect = diagnostic.map { String(format: "%.4f", $0.baselineAspect) } ?? "—"
+            let selectedAspect = diagnostic?.selectedAspect.map { String(format: "%.4f", $0) } ?? "—"
+            let candidateCount = diagnostic?.candidateCount.description ?? "—"
+            let lr = record.lrErrorPP.map { String(format: "%.2f", $0) } ?? "—"
+            let tb = record.tbErrorPP.map { String(format: "%.2f", $0) } ?? "—"
+            return "| \(record.fixture) | \(record.confidenceState) | \(record.innerSource.rawValue) | \(diagnostic?.accepted.description ?? "—") | \(candidateCount) | \(baselineAspect) | \(selectedAspect) | \(lr) | \(tb) | \(record.ratioPassAt2PP) |"
+        }
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("joint-selection-l1.md"),
+            options: .atomic
+        )
+    }
+
+    func testHybridSeedAgainstLeaveOneOutFamilyPrior() throws {
+        let output = try centeringDiagnosticDirectory("hybrid-seed-prior")
         let repository = URL(fileURLWithPath: #filePath)
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let output = repository
-            .appendingPathComponent("review", isDirectory: true)
-            .appendingPathComponent("centering-evidence", isDirectory: true)
-            .appendingPathComponent("diagnostics", isDirectory: true)
-            .appendingPathComponent("REQ-041", isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let manifestURL = repository
+            .appendingPathComponent("TestFixtures/TradingCards/Supplementary/corpus-manifest.json")
+        let manifest = try JSONDecoder().decode(
+            CenteringCorpusManifest.self,
+            from: Data(contentsOf: manifestURL)
+        )
+        let familyByFixture = Dictionary(
+            uniqueKeysWithValues: manifest.entries.compactMap { entry -> (String, String)? in
+                let file = URL(fileURLWithPath: entry.file)
+                guard file.pathExtension.lowercased() == "heic" else { return nil }
+                return (file.deletingPathExtension().lastPathComponent, entry.game)
+            }
+        )
+
+        struct Sample {
+            let fixture: String
+            let family: String
+            let depths: [GroundTruthSide: Double]
+        }
+
+        func normalizedDepths(
+            outer: CardCenteringQuad,
+            inner: CardCenteringQuad
+        ) -> [GroundTruthSide: Double] {
+            let distances = outer.borderDistances(to: inner)
+            return [
+                .left: distances.left / max(outer.rectifiedWidth, .ulpOfOne),
+                .top: distances.top / max(outer.rectifiedHeight, .ulpOfOne),
+                .right: distances.right / max(outer.rectifiedWidth, .ulpOfOne),
+                .bottom: distances.bottom / max(outer.rectifiedHeight, .ulpOfOne)
+            ]
+        }
+
+        func median(_ values: [Double]) -> Double {
+            let sorted = values.sorted()
+            let middle = sorted.count / 2
+            guard !sorted.isEmpty else { return .nan }
+            return sorted.count.isMultiple(of: 2)
+                ? (sorted[middle - 1] + sorted[middle]) / 2
+                : sorted[middle]
+        }
+
+        var gradeableFixtures: [String] = []
+        for name in fixtureNames where try fixtureRecord(name).innerQuad != nil {
+            gradeableFixtures.append(name)
+        }
+        var samples: [Sample] = []
+        for fixture in gradeableFixtures {
+            let record = try fixtureRecord(fixture)
+            let family = try XCTUnwrap(familyByFixture[fixture], fixture)
+            let outer = try XCTUnwrap(CardCenteringQuad(record.cardOuterQuad), fixture)
+            let inner = try XCTUnwrap(record.innerQuad.flatMap(CardCenteringQuad.init), fixture)
+            samples.append(
+                Sample(
+                    fixture: fixture,
+                    family: family,
+                    depths: normalizedDepths(outer: outer, inner: inner)
+                )
+            )
+        }
+
+        XCTAssertEqual(samples.count, 9)
+        var records: [HybridSeedPriorRecord] = []
+
+        for sample in samples {
+            let result = try CardCenteringAnalyzer.analyze(try fixtureData(sample.fixture))
+            let mapping = try XCTUnwrap(result.coordinateMapping, sample.fixture)
+            let groundTruth = try fixtureRecord(sample.fixture)
+            let groundTruthOuter = try XCTUnwrap(CardCenteringQuad(groundTruth.cardOuterQuad), sample.fixture)
+            let seed = try XCTUnwrap(result.measurement.geometryInnerQuad, sample.fixture)
+            let seedNative = mapping.nativeQuad(fromWorking: seed)
+            let detectorDepths = normalizedDepths(outer: groundTruthOuter, inner: seedNative)
+
+            for side in GroundTruthSide.allCases {
+                let priorSamples = samples.filter {
+                    $0.family == sample.family && $0.fixture != sample.fixture
+                }
+                let priorDepth = median(priorSamples.compactMap { $0.depths[side] })
+                let expectedDepth = try XCTUnwrap(sample.depths[side], "missing GT (sample.fixture) (side.rawValue)")
+                let detectorDepth = try XCTUnwrap(detectorDepths[side], "missing seed (sample.fixture) (side.rawValue)")
+                let detectorErrorPP = abs(detectorDepth - expectedDepth) * 100
+                let priorErrorPP = priorDepth.isFinite
+                    ? abs(priorDepth - expectedDepth) * 100
+                    : nil
+                records.append(
+                    HybridSeedPriorRecord(
+                        fixture: sample.fixture,
+                        family: sample.family,
+                        side: side.rawValue,
+                        expectedDepth: expectedDepth,
+                        detectorDepth: detectorDepth,
+                        leaveOneOutPriorDepth: priorDepth.isFinite ? priorDepth : nil,
+                        detectorErrorPP: detectorErrorPP,
+                        priorErrorPP: priorErrorPP,
+                        detectorWins: priorErrorPP.map { detectorErrorPP < $0 },
+                        priorWins: priorErrorPP.map { $0 < detectorErrorPP }
+                    )
+                )
+            }
+        }
+
+        XCTAssertEqual(records.count, 36)
+        XCTAssertTrue(records.allSatisfy { $0.priorErrorPP != nil })
+
+        let grouped = Dictionary(grouping: records) { "\($0.family)/\($0.side)" }
+        let summaries = grouped.keys.sorted().map { key -> HybridSeedPriorSummary in
+            let group = grouped[key]!
+            return HybridSeedPriorSummary(
+                family: group[0].family,
+                side: group[0].side,
+                sampleCount: group.count,
+                detectorMedianErrorPP: median(group.map(\.detectorErrorPP)),
+                priorMedianErrorPP: median(group.compactMap(\.priorErrorPP)),
+                detectorWins: group.filter { $0.detectorWins == true }.count,
+                priorWins: group.filter { $0.priorWins == true }.count,
+                ties: group.filter { $0.detectorWins == false && $0.priorWins == false }.count
+            )
+        }
+
+        for summary in summaries {
+            print(
+                "HYBRID-SEED family=\(summary.family) side=\(summary.side) "
+                    + String(
+                        format: "detectorMedian=%.2f priorMedian=%.2f detectorWins=%d priorWins=%d ties=%d",
+                        summary.detectorMedianErrorPP,
+                        summary.priorMedianErrorPP,
+                        summary.detectorWins,
+                        summary.priorWins,
+                        summary.ties
+                    )
+            )
+        }
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("seed-vs-family-prior.json"),
+            options: .atomic
+        )
+        try encoder.encode(summaries).write(
+            to: output.appendingPathComponent("summary.json"),
+            options: .atomic
+        )
+
+        let markdown = [
+            "# Hybrid detector seed versus leave-one-out family prior",
+            "",
+            "Development-only diagnostic over the nine gradeable historical fixtures. Depths are normalized by the annotated card width for left/right and height for top/bottom. The family prior is a median of the other gradeable fixtures in the same corpus family; no holdout was read and no production threshold changed.",
+            "",
+            "| Family | Side | Samples | Detector median error pp | Prior median error pp | Detector wins | Prior wins | Ties |",
+            "|---|---|---:|---:|---:|---:|---:|---:|"
+        ] + summaries.map {
+            String(
+                format: "| %@ | %@ | %d | %.2f | %.2f | %d | %d | %d |",
+                $0.family,
+                $0.side,
+                $0.sampleCount,
+                $0.detectorMedianErrorPP,
+                $0.priorMedianErrorPP,
+                $0.detectorWins,
+                $0.priorWins,
+                $0.ties
+            )
+        }
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("summary.md"),
+            options: .atomic
+        )
+    }
+
+    func testREQ041ControlledFrontBottomGeneratorAB() throws {
+        let output = try centeringDiagnosticDirectory("REQ-041-AB")
+        var captured: CardCenteringAnalysisDiagnostic?
+        CardCenteringAnalyzer.analysisDiagnosticSink = { captured = $0 }
+        defer {
+            CardCenteringAnalyzer.analysisDiagnosticSink = nil
+            CardCenteringAnalyzer.frontBottomCandidateGenerationEnabled = true
+        }
+
+        func run(arm: String, enabled: Bool) throws -> [REQ041ControlledABRecord] {
+            CardCenteringAnalyzer.frontBottomCandidateGenerationEnabled = enabled
+            var records: [REQ041ControlledABRecord] = []
+            for fixture in fixtureNames {
+                captured = nil
+                let start = CFAbsoluteTimeGetCurrent()
+                _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+                let elapsed = CFAbsoluteTimeGetCurrent() - start
+                let diagnostic = try XCTUnwrap(
+                    captured,
+                    "REQ-041 A/B must capture stage timings for \(arm)/\(fixture)"
+                )
+                let attribution = diagnostic.stageTimings.total / max(elapsed, .ulpOfOne)
+                XCTAssertGreaterThanOrEqual(attribution, 0.90)
+                records.append(
+                    REQ041ControlledABRecord(
+                        arm: arm,
+                        fixture: fixture,
+                        elapsedSeconds: elapsed,
+                        stageTimings: diagnostic.stageTimings,
+                        attributedFraction: attribution
+                    )
+                )
+            }
+            return records
+        }
+
+        let withoutGenerator = try run(arm: "without-front-bottom-generator", enabled: false)
+        let withGenerator = try run(arm: "with-front-bottom-generator", enabled: true)
+        let records = withoutGenerator + withGenerator
+        XCTAssertEqual(records.count, fixtureNames.count * 2)
+
+        func median(_ values: [Double]) -> Double {
+            let sorted = values.sorted()
+            let middle = sorted.count / 2
+            return sorted.count.isMultiple(of: 2)
+                ? (sorted[middle - 1] + sorted[middle]) / 2
+                : sorted[middle]
+        }
+
+        for arm in ["without-front-bottom-generator", "with-front-bottom-generator"] {
+            let armRecords = records.filter { $0.arm == arm }
+            let inner = armRecords.map { $0.stageTimings.innerCandidateGeneration }
+            let wall = armRecords.map(\.elapsedSeconds)
+            print(
+                "REQ-041 A/B arm=\(arm) "
+                    + String(format: "innerMedian=%.4f innerMax=%.4f wallMedian=%.4f wallMax=%.4f", median(inner), inner.max() ?? 0, median(wall), wall.max() ?? 0)
+            )
+        }
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        try encoder.encode(records).write(
+            to: output.appendingPathComponent("front-generator-ab.json"),
+            options: .atomic
+        )
+
+        var markdown = [
+            "# REQ-041 front-bottom generator controlled A/B",
+            "",
+            "Both arms use the same raw-fixture harness and simulator session. The generator is observational in DEBUG and is compiled out of Release; no production selection is changed by this measurement.",
+            "",
+            "| Arm | Analyses | Inner-generation median | Inner-generation max | Wall median | Wall max |",
+            "|---|---:|---:|---:|---:|---:|"
+        ]
+        for arm in ["without-front-bottom-generator", "with-front-bottom-generator"] {
+            let armRecords = records.filter { $0.arm == arm }
+            let inner = armRecords.map { $0.stageTimings.innerCandidateGeneration }
+            let wall = armRecords.map(\.elapsedSeconds)
+            markdown.append(
+                String(
+                    format: "| %@ | %d | %.4f | %.4f | %.4f | %.4f |",
+                    arm,
+                    armRecords.count,
+                    median(inner),
+                    inner.max() ?? 0,
+                    median(wall),
+                    wall.max() ?? 0
+                )
+            )
+        }
+        try Data((markdown.joined(separator: "\n") + "\n").utf8).write(
+            to: output.appendingPathComponent("front-generator-ab.md"),
+            options: .atomic
+        )
+    }
+
+    func testREQ041ProfilesNamedStageTimingsAcrossAllFixtures() throws {
+        let output = try centeringDiagnosticDirectory("REQ-041")
 
         let stageSpecs: [(String, KeyPath<CardCenteringStageTimingDiagnostic, Double>)] = [
             ("decodeOrientationDownscale", \.decodeOrientationDownscale),
@@ -3144,15 +3555,7 @@ final class CardCenteringInvariantTests: XCTestCase {
 #if DEBUG
     func testREQ031ResolutionAccuracyAndLatencyCurve() throws {
         let dimensions = [1_200, 1_600, 2_000, 2_400]
-        let repository = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-        let output = repository
-            .appendingPathComponent("review", isDirectory: true)
-            .appendingPathComponent("centering-evidence", isDirectory: true)
-            .appendingPathComponent("diagnostics", isDirectory: true)
-            .appendingPathComponent("E7", isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let output = try centeringDiagnosticDirectory("E7")
 
         func measuredRatios(_ analysis: CardCenteringAnalysis) -> (lr: Double, tb: Double)? {
             guard let inner = analysis.measurement.geometryInnerQuad else { return nil }
@@ -3303,15 +3706,7 @@ final class CardCenteringInvariantTests: XCTestCase {
 
     func testREQ031LowResolutionDetectionFullResolutionRefinement() throws {
         let dimensions = [1_200, 1_600, 2_000, 2_400]
-        let repository = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-        let output = repository
-            .appendingPathComponent("review", isDirectory: true)
-            .appendingPathComponent("centering-evidence", isDirectory: true)
-            .appendingPathComponent("diagnostics", isDirectory: true)
-            .appendingPathComponent("E7", isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let output = try centeringDiagnosticDirectory("E7")
 
         func measuredRatios(_ analysis: CardCenteringAnalysis) -> (lr: Double, tb: Double)? {
             guard let inner = analysis.measurement.geometryInnerQuad else { return nil }
@@ -3826,6 +4221,59 @@ private struct REQ041StageTimingRecord: Codable {
     let attributedFraction: Double
 }
 
+#if DEBUG
+private struct REQ041ControlledABRecord: Codable {
+    let arm: String
+    let fixture: String
+    let elapsedSeconds: Double
+    let stageTimings: CardCenteringStageTimingDiagnostic
+    let attributedFraction: Double
+}
+
+private struct REQ043BackIdentityRecord: Codable {
+    let fixture: String
+    let diagnostic: CardCenteringBackIdentityDiagnostic
+}
+
+private struct REQ044JointSelectionRecord: Codable {
+    let fixture: String
+    let expectedLR: Double?
+    let expectedTB: Double?
+    let measuredLR: Double?
+    let measuredTB: Double?
+    let lrErrorPP: Double?
+    let tbErrorPP: Double?
+    let ratioPassAt2PP: Bool
+    let confidenceState: String
+    let innerSource: CardCenteringInnerSource
+    let diagnostic: CardCenteringJointSelectionDiagnostic?
+}
+
+private struct HybridSeedPriorRecord: Codable {
+    let fixture: String
+    let family: String
+    let side: String
+    let expectedDepth: Double
+    let detectorDepth: Double
+    let leaveOneOutPriorDepth: Double?
+    let detectorErrorPP: Double
+    let priorErrorPP: Double?
+    let detectorWins: Bool?
+    let priorWins: Bool?
+}
+
+private struct HybridSeedPriorSummary: Codable {
+    let family: String
+    let side: String
+    let sampleCount: Int
+    let detectorMedianErrorPP: Double
+    let priorMedianErrorPP: Double
+    let detectorWins: Int
+    let priorWins: Int
+    let ties: Int
+}
+#endif
+
 private struct REQ042CandidateRecallRecord: Codable {
     let family: String
     let side: String
@@ -4283,16 +4731,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     private func outputDirectory() throws -> URL {
-        let root = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-        let directory = root
-            .appendingPathComponent("review", isDirectory: true)
-            .appendingPathComponent("centering-evidence", isDirectory: true)
-            .appendingPathComponent("diagnostics", isDirectory: true)
-            .appendingPathComponent("E0", isDirectory: true)
-        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        return directory
+        try centeringDiagnosticDirectory("E0")
     }
 
     func testDumpDifferentialProfilesForCleanAndSleevedFixtures() throws {
@@ -4362,15 +4801,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testEADiagnoseInnerReferenceBranchForAllRealFixtures() throws {
-        let root = URL(fileURLWithPath: #filePath)
-            .deletingLastPathComponent()
-            .deletingLastPathComponent()
-        let output = root
-            .appendingPathComponent("review", isDirectory: true)
-            .appendingPathComponent("centering-evidence", isDirectory: true)
-            .appendingPathComponent("diagnostics", isDirectory: true)
-            .appendingPathComponent("EA", isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let output = try centeringDiagnosticDirectory("EA")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let fixtures = [
@@ -4455,9 +4886,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testEDumpOuterRefinementDecisionsForAllRealFixtures() throws {
-        let output = try outputDirectory().deletingLastPathComponent()
-            .appendingPathComponent("ED", isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let output = try centeringDiagnosticDirectory("ED")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         let fixtures = [
@@ -4530,9 +4959,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testE1MetamorphicVariantsCanBeResolutionEqualizedFromRawHEIC() throws {
-        let output = try outputDirectory().deletingLastPathComponent()
-            .appendingPathComponent("E1", isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let output = try centeringDiagnosticDirectory("E1")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         var records: [E1ResolutionRecord] = []
@@ -4660,9 +5087,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testEEDumpPostRefinementProfileNormalization() throws {
-        let output = try outputDirectory().deletingLastPathComponent()
-            .appendingPathComponent("ED", isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let output = try centeringDiagnosticDirectory("ED")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         var dumps: [EENormalizationDump] = []
@@ -4979,6 +5404,24 @@ final class CardCenteringCorpusManifestTests: XCTestCase {
         XCTAssertEqual(manifest.schemaVersion, 1)
         XCTAssertEqual(manifest.status, "interim_holdout_frozen")
         XCTAssertEqual(manifest.entries.count, historicalFiles.count + newFiles.count)
+        XCTAssertEqual(manifest.holdoutFreeze.freezeId, "card-centering-holdout-interim-2026-09-20")
+        XCTAssertEqual(manifest.holdoutFreeze.frozenAt, "2026-09-20")
+        XCTAssertEqual(manifest.holdoutFreeze.split, "HOLDOUT-INTERIM")
+        XCTAssertEqual(manifest.holdoutFreeze.selectedCount, interimHoldoutFiles.count)
+        XCTAssertTrue(manifest.holdoutFreeze.selectedBeforePerceptionChanges)
+        XCTAssertEqual(manifest.holdoutFreeze.analysisStatus, "sealed_not_evaluated")
+        XCTAssertEqual(manifest.holdoutFreeze.groundTruthStatus, "not_assigned")
+        XCTAssertEqual(manifest.holdoutFreeze.captureCohortCount, 9)
+        XCTAssertEqual(Set(manifest.holdoutFreeze.formatSet), Set(["heic", "png"]))
+        XCTAssertEqual(manifest.holdoutFreeze.finalREQ040Gate, "open")
+        XCTAssertEqual(
+            Set(manifest.holdoutFreeze.limitations),
+            Set([
+                "known_camera_captures_share_one_iPhone_15_Pro_Max",
+                "PNG_capture_role_is_unknown",
+                "no_new_ground_truth"
+            ])
+        )
 
         let entriesByFile = Dictionary(uniqueKeysWithValues: manifest.entries.map { ($0.file, $0) })
         XCTAssertEqual(Set(entriesByFile.keys), historicalFiles.union(newFiles))
@@ -5115,7 +5558,22 @@ private extension CardCenteringQuad {
 private struct CenteringCorpusManifest: Decodable {
     let schemaVersion: Int
     let status: String
+    let holdoutFreeze: CenteringHoldoutFreeze
     let entries: [CenteringCorpusEntry]
+}
+
+private struct CenteringHoldoutFreeze: Decodable {
+    let freezeId: String
+    let frozenAt: String
+    let split: String
+    let selectedCount: Int
+    let selectedBeforePerceptionChanges: Bool
+    let analysisStatus: String
+    let groundTruthStatus: String
+    let captureCohortCount: Int
+    let formatSet: [String]
+    let finalREQ040Gate: String
+    let limitations: [String]
 }
 
 private struct CenteringCorpusEntry: Decodable {
@@ -5128,6 +5586,7 @@ private struct CenteringCorpusEntry: Decodable {
     let captureCohort: String
     let provenance: String
     let face: String
+    let game: String
     let referenceClass: String
     let encasement: String
     let background: String

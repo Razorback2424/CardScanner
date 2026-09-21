@@ -158,7 +158,7 @@ private struct ScannerChrome: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
-            ScannerStatusView(scanner: scanner)
+            ScannerStatusView(state: scanner.uiState)
 
             if let offer = model.heldDuplicateOffer {
                 HeldDuplicateOfferView(
@@ -189,7 +189,7 @@ private struct ScannerChrome: View {
         // between a mode toggle and the shutter beneath it.
         .contentWidthLimit(.standard)
         .overlay {
-            ScannerCameraIssueOverlay(scanner: scanner)
+            ScannerCameraIssueOverlay(state: scanner.uiState)
         }
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.receipt)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: model.scanAcknowledgement)
@@ -313,25 +313,25 @@ private struct ScannerChrome: View {
 }
 
 private struct ScannerStatusView: View {
-    @ObservedObject var scanner: CardScanner
+    @ObservedObject var state: CardScannerUIState
 
     var body: some View {
         Group {
-            if let message = scanner.scanAssistance.message {
+            if let message = state.scanAssistance.message {
                 ScanAssistanceView(message: message)
                     .transition(.opacity)
             }
         }
-        .animation(.easeOut(duration: 0.18), value: scanner.scanAssistance)
+        .animation(.easeOut(duration: 0.18), value: state.scanAssistance)
     }
 }
 
 private struct ScannerCameraIssueOverlay: View {
-    @ObservedObject var scanner: CardScanner
+    @ObservedObject var state: CardScannerUIState
 
     var body: some View {
         Group {
-            if let issue = scanner.cameraIssue {
+            if let issue = state.cameraIssue {
                 VStack(spacing: 12) {
                     Image(systemName: "camera.fill")
                         .font(.largeTitle)

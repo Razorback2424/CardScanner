@@ -25,38 +25,41 @@ import UIKit
 /// space, as it should. This is not layout: it is which physical geometry the
 /// capture pipeline is wired for, and on a screen that cannot rotate the honest
 /// answer is a constant.
+@MainActor
 final class CameraRotationTracker: NSObject, ObservableObject {
     @Published private(set) var previewAngle: CGFloat = CameraRotationTracker.defaultAngle
 
     /// Portrait. The value every portrait-locked screen holds forever, and the
     /// value to show before a preview has reported anything.
-    static let defaultAngle: CGFloat = 90
+    nonisolated static let defaultAngle: CGFloat = 90
 
     /// Whether the capture pipeline should follow the interface at all. False on
     /// iPhone, where the interface is portrait-locked and the scanner's existing
     /// geometry is correct — the code there does what it did, including leaving
     /// connections alone that it never used to write to.
-    static var tracksInterfaceRotation: Bool {
-        UIDevice.current.userInterfaceIdiom == .pad
+    nonisolated static var tracksInterfaceRotation: Bool {
+        MainActor.assumeIsolated {
+            UIDevice.current.userInterfaceIdiom == .pad
+        }
     }
 
     /// A queue-agnostic mirror of `previewAngle`. `CardScanner` reads this from its
     /// Vision queue on every frame, which must not hop to the main thread, and
     /// `@Published` is only safe to read there.
-    private let lock = NSLock()
-    private var lockedPreviewAngle = CameraRotationTracker.defaultAngle
+    nonisolated private let lock = NSLock()
+    nonisolated(unsafe) private var lockedPreviewAngle = CameraRotationTracker.defaultAngle
 
     /// The rotation to hand the preview connection, the photo connection and
     /// Vision. One value for all three: what the user framed is what gets captured
     /// and what gets read.
-    var currentAngle: CGFloat {
+    nonisolated var currentAngle: CGFloat {
         lock.lock()
         defer { lock.unlock() }
         return lockedPreviewAngle
     }
 
     /// Called by a preview view when it lays out, which is also when it rotates.
-    func report(_ angle: CGFloat) {
+    nonisolated func report(_ angle: CGFloat) {
         lock.lock()
         let changed = lockedPreviewAngle != angle
         lockedPreviewAngle = angle
@@ -64,17 +67,21 @@ final class CameraRotationTracker: NSObject, ObservableObject {
 
         guard changed else { return }
         if Thread.isMainThread {
-            previewAngle = angle
+            MainActor.assumeIsolated { [weak self] in
+                self?.previewAngle = angle
+            }
         } else {
             DispatchQueue.main.async { [weak self] in
-                self?.previewAngle = angle
+                MainActor.assumeIsolated {
+                    self?.previewAngle = angle
+                }
             }
         }
     }
 
     /// The rotation that makes the sensor image upright for a screen turned this
     /// way. `landscapeRight` is the sensor's own native orientation, hence 0°.
-    static func angle(for orientation: UIInterfaceOrientation) -> CGFloat {
+    nonisolated static func angle(for orientation: UIInterfaceOrientation) -> CGFloat {
         switch orientation {
         case .portrait: return 90
         case .portraitUpsideDown: return 270

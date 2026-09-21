@@ -184,6 +184,7 @@ private enum UncoveredSurfaceFixtures {
     }
 }
 
+@MainActor
 final class TradingCardScannerAppSurfaceTests: XCTestCase {
     func testStorageModesExposeTheirPersistencePromise() {
         let cloud = TradingCardScannerApp.StorageMode.cloudKit

@@ -650,6 +650,7 @@ enum CameraLens: String, CaseIterable, Identifiable {
 /// Debug-only Vision geometry belongs to the preview, not to the scanner's
 /// shared publication stream. Keeping it in its own observable object prevents
 /// every OCR pass from invalidating unrelated scanner chrome.
+@MainActor
 final class ScannerDebugVisionOverlay: ObservableObject {
     @Published private(set) var boxes: [CGRect] = []
 
@@ -660,9 +661,14 @@ final class ScannerDebugVisionOverlay: ObservableObject {
 }
 #endif
 
-final class CardScanner: NSObject, ObservableObject {
-    let session = AVCaptureSession()
-
+/// Main-actor-owned values that the scanner publishes to SwiftUI.
+///
+/// The scanner itself deliberately remains queue-oriented: AVFoundation owns a
+/// session queue and Vision owns a frame queue. Keeping the publication surface
+/// in this small object makes the boundary explicit instead of relying on every
+/// producer to remember that `@Published` is main-thread-only.
+@MainActor
+final class CardScannerUIState: ObservableObject {
     @Published private(set) var cameraIssue: CameraIssue?
     @Published private(set) var lens: CameraLens = .standard
     /// Only the lenses this particular device actually has. An iPhone SE has no
@@ -682,9 +688,61 @@ final class CardScanner: NSObject, ObservableObject {
     /// pointed both at a different strip than the one being recognized.
     @Published private(set) var footerRegionOfInterest: CGRect =
         CardFramingRegion.visionRect.union(SlabFramingRegion.footerVisionRect(for: nil))
+
+    func setCameraIssue(_ issue: CameraIssue?) {
+        cameraIssue = issue
+    }
+
+    func setLens(_ lens: CameraLens) {
+        self.lens = lens
+    }
+
+    func setAvailableLenses(_ lenses: [CameraLens]) {
+        availableLenses = lenses
+    }
+
+    func setScanAssistance(_ assistance: ScanAssistance) {
+        guard scanAssistance != assistance else { return }
+        scanAssistance = assistance
+    }
+
+    func showSlab(_ evidence: GradedSlabEvidence) {
+        slabGuideHint = nil
+        guard slabFraming != evidence else { return }
+        slabFraming = evidence
+    }
+
+    func setFooterRegionOfInterest(_ rect: CGRect) {
+        guard footerRegionOfInterest != rect else { return }
+        footerRegionOfInterest = rect
+    }
+
+    func clearSlabPresentation() {
+        slabGuideHint = nil
+        slabFraming = nil
+    }
+
+    func setSlabGuideHint(_ hint: GradingCompany?) {
+        guard slabFraming == nil else { return }
+        guard slabGuideHint != hint else { return }
+        slabGuideHint = hint
+    }
+}
+
+final class CardScanner: NSObject, ObservableObject {
+    let session = AVCaptureSession()
+
 #if DEBUG
-    let debugVisionOverlay = ScannerDebugVisionOverlay()
+    let debugVisionOverlay: ScannerDebugVisionOverlay
 #endif
+
+    /// The rotation tracker publishes on the main actor while exposing a
+    /// lock-backed queue-agnostic angle to the capture and Vision queues.
+    let rotation: CameraRotationTracker
+
+    /// The UI observes this object directly. The compatibility accessors below
+    /// keep the test seams readable while asserting that reads happen on main.
+    let uiState: CardScannerUIState
 
     /// A plausible identifier or historical evidence key has been read once.
     /// Not yet trusted, and never
@@ -725,10 +783,6 @@ final class CardScanner: NSObject, ObservableObject {
     /// frame arriving late.
     var onHeldRepeatAuthorizationTerminated: ((UUID, HeldRepeatAuthorizationTerminalOutcome) -> Void)?
 
-    /// Which way the sensor is currently held. Read by the preview layer and by
-    /// every Vision pass, so overlays and recognition share one answer.
-    let rotation = CameraRotationTracker()
-
     private let sessionQueue = DispatchQueue(label: "cards.camera.session")
     private let visionQueue = DispatchQueue(label: "cards.camera.vision", qos: .userInitiated)
     private let profileQueue = DispatchQueue(
@@ -755,7 +809,8 @@ final class CardScanner: NSObject, ObservableObject {
     private var videoInput: AVCaptureDeviceInput?
     private var interruptionObserver: NSObjectProtocol?
     private var interruptionEndedObserver: NSObjectProtocol?
-    /// Written on `sessionQueue`; `lens` is the main-thread mirror for the UI.
+    /// Written on `sessionQueue`; `uiState.lens` is the main-thread mirror for
+    /// the UI.
     private var currentLens: CameraLens = .standard
     private var confirmationWindow = CandidateConfirmationWindow(matchesRequired: 2, windowSize: 4)
     /// A catalog miss verification suppresses speculative work for its exact
@@ -800,26 +855,41 @@ final class CardScanner: NSObject, ObservableObject {
     /// as raw. It is only active while the hint is visible and no slab is
     /// confirmed yet.
     private var slabGraceDeadline: CFAbsoluteTime?
-    /// Vision-queue state for the commit gate. The @Published `slabGuideHint`
-    /// mirror below is for the UI and lands a hop later, which is too late to
-    /// safely decide whether this frame may confirm.
+    /// Vision-queue state for the commit gate. The `uiState.slabGuideHint`
+    /// mirror is for the UI and lands a hop later, which is too late to safely
+    /// decide whether this frame may confirm.
     private var slabGuideHintForGate: GradingCompany?
     /// The footer identity that produced the current positive company hint.
     /// A hint may delay only that identity's raw confirmation.
-    private var slabGuideHintIdentifier: ScanIdentifier?
+    ///
+    /// Both of these keys are deliberately `ScanSuppressionKey` rather than
+    /// `ScanIdentifier`. A historical Pokémon identifier carries every title
+    /// observation and therefore changes almost every frame by design, so
+    /// comparing raw identifiers made "is this still the same piece of
+    /// cardboard" answer *no* on a card that had not moved — which tore the
+    /// slab axis down one frame after it was confirmed and left pre-set-code
+    /// slabs permanently undetectable. The suppression key is the coarsening
+    /// that already exists for exactly this question.
+    private var slabGuideHintIdentifier: ScanSuppressionKey?
     /// The label is sticky while the same footer presentation remains in the
     /// band. This prevents a momentary glare miss in the label pass from
     /// turning an already-detected slab into a raw-card commit.
-    private var activeSlabBaseIdentifier: ScanIdentifier?
+    private var activeSlabBaseIdentifier: ScanSuppressionKey?
     /// An absence-driven slab clear keeps the footer baseline long enough for
     /// the slower unbound label pass to re-establish the physical-object axis.
     /// Identity, spatial-exit, and lifecycle clears always discard this state.
     private var slabRecoveryDeadline: CFAbsoluteTime?
     private var activeSlabEmptyFrames = 0
+    /// A label-first slab gets a longer footer-absence grace period because the
+    /// footer is the slower and less reliable axis during the framing change.
+    /// The deadline is cleared as soon as footer text returns or the label is
+    /// reconfirmed.
+    private var unboundSlabAbsenceDeadline: CFAbsoluteTime?
     private var unboundFooterEmptyFrames = 0
-    /// Rotated whenever recognition loses physical continuity. A label may
-    /// bootstrap before a footer identity is known, but it can bind later only
-    /// while this stamp still names the same presentation.
+    /// Rotated whenever recognition loses physical continuity. A label-first
+    /// slab refreshes its own stamp through ordinary frame-level tracker noise;
+    /// explicit lifecycle and spatial-exit paths still clear it before a new
+    /// footer can inherit the evidence.
     private var slabContinuityToken = UUID()
     private var slabEvidenceWindow = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
     private var assistanceMonitor = CaptureAssistanceMonitor()
@@ -884,11 +954,18 @@ final class CardScanner: NSObject, ObservableObject {
     private var diagnosticEvents: [String] = []
 #endif
 
+    @MainActor
     override convenience init() {
         self.init(spatialTrackingConfiguration: .experimental)
     }
 
+    @MainActor
     init(spatialTrackingConfiguration: SpatialTrackingConfiguration) {
+#if DEBUG
+        debugVisionOverlay = ScannerDebugVisionOverlay()
+#endif
+        rotation = CameraRotationTracker()
+        uiState = CardScannerUIState()
         self.spatialTrackingConfiguration = spatialTrackingConfiguration
         spatialExitAccumulator = SpatialExitObservationAccumulator(
             configuration: spatialTrackingConfiguration
@@ -937,13 +1014,13 @@ final class CardScanner: NSObject, ObservableObject {
 
         // Resolved from the cached hardware probe rather than queried per launch.
         let lenses: [CameraLens] = CameraCapabilities.hasMacroLens() ? [.standard, .macro] : [.standard]
-        availableLenses = lenses
 
         // Macro is the default whenever the hardware has it. The standard lens
         // cannot focus close enough to resolve the identifier strip at all, so
         // starting there would mean every session opens on a blurry frame.
         let preferred = lenses.contains(.macro) ? CameraLens.macro : .standard
-        lens = preferred
+        uiState.setAvailableLenses(lenses)
+        uiState.setLens(preferred)
         currentLens = preferred
     }
 
@@ -954,6 +1031,61 @@ final class CardScanner: NSObject, ObservableObject {
         if let interruptionEndedObserver {
             NotificationCenter.default.removeObserver(interruptionEndedObserver)
         }
+    }
+
+    // MARK: - Main-actor publication boundary
+
+    /// Queue producers use one funnel for all SwiftUI-facing mutations. The
+    /// state object, rather than this queue-oriented scanner, owns `@Published`.
+    private func updateUI(_ update: @escaping @MainActor (CardScannerUIState) -> Void) {
+        let state = uiState
+        DispatchQueue.main.async {
+            MainActor.assumeIsolated {
+                update(state)
+            }
+        }
+    }
+
+#if DEBUG
+    private func updateDebugVisionOverlay(_ boxes: [CGRect]) {
+        let overlay = debugVisionOverlay
+        DispatchQueue.main.async {
+            MainActor.assumeIsolated {
+                overlay.update(boxes)
+            }
+        }
+    }
+#endif
+
+    // These synchronous accessors are retained for the existing debug seams.
+    // Production SwiftUI views observe `uiState` directly, so state changes do
+    // not depend on forwarding nested-object publications through the scanner.
+    var cameraIssue: CameraIssue? {
+        MainActor.assumeIsolated { uiState.cameraIssue }
+    }
+
+    var lens: CameraLens {
+        MainActor.assumeIsolated { uiState.lens }
+    }
+
+    var availableLenses: [CameraLens] {
+        MainActor.assumeIsolated { uiState.availableLenses }
+    }
+
+    var scanAssistance: ScanAssistance {
+        MainActor.assumeIsolated { uiState.scanAssistance }
+    }
+
+    var slabFraming: GradedSlabEvidence? {
+        MainActor.assumeIsolated { uiState.slabFraming }
+    }
+
+    var slabGuideHint: GradingCompany? {
+        MainActor.assumeIsolated { uiState.slabGuideHint }
+    }
+
+    var footerRegionOfInterest: CGRect {
+        MainActor.assumeIsolated { uiState.footerRegionOfInterest }
     }
 
     func start() {
@@ -1440,9 +1572,7 @@ final class CardScanner: NSObject, ObservableObject {
         try configureCamera(device)
 
         currentLens = lens
-        DispatchQueue.main.async { [weak self] in
-            self?.lens = lens
-        }
+        updateUI { $0.setLens(lens) }
     }
 
     /// Picks the highest preset the *current* input can satisfy.
@@ -1680,12 +1810,14 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     /// Tracker loss is never exit evidence. It only releases the Vision
-    /// request, rotates the late-binding authorization token, and records that
-    /// this presentation can no longer authorize a duplicate prompt. A slab
-    /// already bound to a footer remains active through ordinary tracker noise;
-    /// only positive spatial exit is allowed to clear that presentation state.
+    /// request and records that this presentation can no longer authorize a
+    /// duplicate prompt. A slab already bound to a footer remains active through
+    /// ordinary tracker noise. A label-first slab is also kept alive long enough
+    /// for its temporarily unreadable footer to bind; explicit lifecycle and
+    /// positive spatial-exit paths still clear that presentation state.
     private func markTrackerContinuityLost() {
         let hadTracker = trackerRequest != nil || trackerSeedSubject != nil
+        let shouldRefreshUnboundSlabStamp = activeSlab != nil && activeSlabBaseIdentifier == nil
         // Preserve an earlier lost marker when a later lifecycle invalidation
         // arrives after the request has already been released. Passing nil to
         // the gate would accidentally reopen same-identity reseeding.
@@ -1699,10 +1831,20 @@ final class CardScanner: NSObject, ObservableObject {
         trackerPresentationToken = nil
         spatialExitAccumulator.reset()
         trackerLifecycle = .continuityLost
-        // Invalidate a label-first stamp without discarding a slab that is
-        // already bound to its footer identity. `updateActiveSlabPresence`
-        // rejects late binding when this token no longer matches.
+        // Bound slabs do not need the stamp for continued presence. An
+        // unbound slab does: refresh it after tracker noise so the next footer
+        // read can bind the label evidence instead of tearing the slab down.
         slabContinuityToken = UUID()
+        if shouldRefreshUnboundSlabStamp, let activeSlab {
+            self.activeSlab = ActiveSlab(
+                evidence: activeSlab.evidence,
+                continuityStamp: SlabContinuityStamp(
+                    presentationToken: slabContinuityToken,
+                    trackerEncounterID: nil,
+                    trackerPresentationToken: nil
+                )
+            )
+        }
         if hadTracker {
             recordDiagnostic("trackerLost")
         }
@@ -1999,6 +2141,7 @@ final class CardScanner: NSObject, ObservableObject {
     private func activateSlab(
         _ evidence: GradedSlabEvidence,
         continuityStamp: SlabContinuityStamp,
+        baseIdentifier: ScanSuppressionKey? = nil,
         at now: CFAbsoluteTime
     ) {
         let isRecoveringAfterAbsence = activeSlab == nil
@@ -2020,50 +2163,38 @@ final class CardScanner: NSObject, ObservableObject {
         // when it describes the same slab, so footer glare cannot carry the
         // old empty-frame count through the next bound pass.
         activeSlabEmptyFrames = 0
-        setFooterRegionOfInterest(SlabFramingRegion.footerVisionRect(for: evidence.company))
-        titleRequest.regionOfInterest = SlabFramingRegion.titleVisionRect(for: evidence.company)
-        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: evidence.company)
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            if self.slabGuideHint != nil {
-                self.slabGuideHint = nil
-            }
-            guard self.slabFraming != evidence else { return }
-            self.slabFraming = evidence
+        unboundSlabAbsenceDeadline = nil
+        if activeSlabBaseIdentifier == nil {
+            activeSlabBaseIdentifier = baseIdentifier
         }
+        setFooterRegionOfInterest(SlabFramingRegion.footerVisionRect(for: evidence.company))
+        titleRequest.regionOfInterest = SlabFramingRegion.titleOCRVisionRect(for: evidence.company)
+        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: evidence.company)
+        updateUI { $0.showSlab(evidence) }
     }
 
     /// Installs the footer ROI and mirrors it for the preview. Callers must be
     /// on `visionQueue`.
     private func setFooterRegionOfInterest(_ rect: CGRect) {
         footerRequest.regionOfInterest = rect
-        DispatchQueue.main.async { [weak self] in
-            guard let self, self.footerRegionOfInterest != rect else { return }
-            self.footerRegionOfInterest = rect
-        }
+        updateUI { $0.setFooterRegionOfInterest(rect) }
     }
 
     private func clearActiveSlab(
         cause: SlabClearCause,
         at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
     ) {
-        let retainedBaseIdentifier = activeSlabBaseIdentifier
         activeSlab = nil
         slabGraceDeadline = nil
         slabGuideHintForGate = nil
         slabGuideHintIdentifier = nil
-        let preserveEvidenceWindow = retainedBaseIdentifier != nil
-            && (cause == .footerAbsence || cause == .latchRelease)
+        let preserveEvidenceWindow = cause == .footerAbsence || cause == .latchRelease
         switch cause {
         case .footerAbsence:
-            slabRecoveryDeadline = retainedBaseIdentifier.map { _ in
-                now + cadence.unboundLabelInterval + Self.slabRecoveryGraceMargin
-            }
+            slabRecoveryDeadline = now + cadence.unboundLabelInterval + Self.slabRecoveryGraceMargin
             recordDiagnostic("slabClearAbsence")
         case .latchRelease:
-            slabRecoveryDeadline = retainedBaseIdentifier.map { _ in
-                now + cadence.unboundLabelInterval + Self.slabRecoveryGraceMargin
-            }
+            slabRecoveryDeadline = now + cadence.unboundLabelInterval + Self.slabRecoveryGraceMargin
             recordDiagnostic("slabClearLatchRelease")
         case .identityChanged:
             slabContinuityToken = UUID()
@@ -2082,6 +2213,7 @@ final class CardScanner: NSObject, ObservableObject {
             recordDiagnostic("slabClearLifecycle")
         }
         activeSlabEmptyFrames = 0
+        unboundSlabAbsenceDeadline = nil
         unboundFooterEmptyFrames = 0
         if !preserveEvidenceWindow {
             slabEvidenceWindow.reset()
@@ -2091,14 +2223,7 @@ final class CardScanner: NSObject, ObservableObject {
         )
         titleRequest.regionOfInterest = CardFramingRegion.titleVisionRect
         labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect()
-        DispatchQueue.main.async { [weak self] in
-            guard let self else { return }
-            if self.slabGuideHint != nil {
-                self.slabGuideHint = nil
-            }
-            guard self.slabFraming != nil else { return }
-            self.slabFraming = nil
-        }
+        updateUI { $0.clearSlabPresentation() }
     }
 
     /// Label OCR is intentionally lower cadence and can miss through slab
@@ -2130,21 +2255,32 @@ final class CardScanner: NSObject, ObservableObject {
         case .nothing, .ambiguous, .spatiallyRejectedMagicCollector:
             historicalSubject?.identifier
         }
+        let footerKey = footerIdentifier?.suppressionKey
 
         guard activeSlab == nil else {
             if footerLines.isEmpty {
                 activeSlabEmptyFrames += 1
-                if activeSlabEmptyFrames >= Self.slabBandEmptyFramesBeforeClear {
+                if activeSlabBaseIdentifier == nil {
+                    if unboundSlabAbsenceDeadline == nil {
+                        unboundSlabAbsenceDeadline =
+                            now + cadence.unboundLabelInterval + Self.slabRecoveryGraceMargin
+                    }
+                } else if activeSlabEmptyFrames >= Self.slabBandEmptyFramesBeforeClear {
+                    clearActiveSlab(cause: .footerAbsence, at: now)
+                }
+                if let unboundSlabAbsenceDeadline,
+                   now >= unboundSlabAbsenceDeadline {
                     clearActiveSlab(cause: .footerAbsence, at: now)
                 }
                 return
             }
             activeSlabEmptyFrames = 0
+            unboundSlabAbsenceDeadline = nil
 
-            guard let footerIdentifier else { return }
+            guard let footerKey else { return }
 
             if let activeSlabBaseIdentifier,
-               activeSlabBaseIdentifier != footerIdentifier {
+               activeSlabBaseIdentifier != footerKey {
                 clearActiveSlab(cause: .identityChanged, at: now)
             } else if self.activeSlabBaseIdentifier == nil {
                 guard let activeSlab,
@@ -2152,7 +2288,7 @@ final class CardScanner: NSObject, ObservableObject {
                     clearActiveSlab(cause: .spatialExit, at: now)
                     return
                 }
-                self.activeSlabBaseIdentifier = footerIdentifier
+                self.activeSlabBaseIdentifier = footerKey
             }
             return
         }
@@ -2161,22 +2297,35 @@ final class CardScanner: NSObject, ObservableObject {
             updateSlabGuideHint(nil, at: now)
         }
 
-        guard let footerIdentifier else { return }
-
-        if let recoveryDeadline = slabRecoveryDeadline,
-           activeSlabBaseIdentifier != footerIdentifier || now >= recoveryDeadline {
-            let diagnostic = activeSlabBaseIdentifier == footerIdentifier
-                ? "slabRecoveryExpired"
-                : "slabRecoveryReleasedForNewIdentity"
-            activeSlabBaseIdentifier = nil
-            slabRecoveryDeadline = nil
-            slabEvidenceWindow.reset()
-            updateSlabGuideHint(nil, at: now)
-            recordDiagnostic(diagnostic)
+        if let recoveryDeadline = slabRecoveryDeadline {
+            let expired = now >= recoveryDeadline
+            let differentIdentity: Bool
+            if let footerKey, let activeSlabBaseIdentifier {
+                differentIdentity = activeSlabBaseIdentifier != footerKey
+            } else {
+                differentIdentity = false
+            }
+            if expired || differentIdentity {
+                let diagnostic = expired
+                    ? "slabRecoveryExpired"
+                    : "slabRecoveryReleasedForNewIdentity"
+                activeSlabBaseIdentifier = nil
+                slabRecoveryDeadline = nil
+                slabEvidenceWindow.reset()
+                updateSlabGuideHint(nil, at: now)
+                recordDiagnostic(diagnostic)
+            } else if activeSlabBaseIdentifier == nil, let footerKey {
+                // An unbound clear has no identity to compare yet. Retain the
+                // first footer key that returns during the bounded recovery
+                // window so a matching label re-confirmation can bind to it.
+                activeSlabBaseIdentifier = footerKey
+            }
         }
 
+        guard let footerKey else { return }
+
         if let slabGuideHintIdentifier,
-           slabGuideHintIdentifier != footerIdentifier {
+           slabGuideHintIdentifier != footerKey {
             updateSlabGuideHint(nil, at: now)
         }
     }
@@ -2229,7 +2378,11 @@ final class CardScanner: NSObject, ObservableObject {
             }
 #endif
             let evidence = GradedLabelParser.parse(lines)
-            _ = applySlabLabelEvidence(evidence, at: now)
+            _ = applySlabLabelEvidence(
+                evidence,
+                baseIdentifier: footerIdentifier?.suppressionKey,
+                at: now
+            )
         } catch {
             _ = slabEvidenceWindow.observe(nil)
         }
@@ -2256,6 +2409,7 @@ final class CardScanner: NSObject, ObservableObject {
     @discardableResult
     private func applySlabLabelEvidence(
         _ evidence: GradedSlabEvidence?,
+        baseIdentifier: ScanSuppressionKey? = nil,
         at now: CFAbsoluteTime
     ) -> GradedSlabEvidence? {
         guard let confirmed = slabEvidenceWindow.observe(evidence) else { return nil }
@@ -2266,6 +2420,7 @@ final class CardScanner: NSObject, ObservableObject {
                 trackerEncounterID: trackerEncounterID,
                 trackerPresentationToken: trackerPresentationToken
             ),
+            baseIdentifier: baseIdentifier,
             at: now
         )
         return confirmed
@@ -2301,13 +2456,9 @@ final class CardScanner: NSObject, ObservableObject {
             resetConfirmationWindow()
         }
         slabGuideHintForGate = hint
-        slabGuideHintIdentifier = hint == nil ? nil : identifier
+        slabGuideHintIdentifier = hint == nil ? nil : identifier?.suppressionKey
 
-        DispatchQueue.main.async { [weak self] in
-            guard let self, self.slabFraming == nil else { return }
-            guard self.slabGuideHint != hint else { return }
-            self.slabGuideHint = hint
-        }
+        updateUI { $0.setSlabGuideHint(hint) }
     }
 
     private func shouldHoldForSlabGrace(
@@ -2315,15 +2466,16 @@ final class CardScanner: NSObject, ObservableObject {
         at now: CFAbsoluteTime
     ) -> Bool {
         guard activeSlab == nil, let observation else { return false }
+        let observationKey = observation.identifier.suppressionKey
 
         if let slabRecoveryDeadline,
-           activeSlabBaseIdentifier == observation.identifier,
-           now < slabRecoveryDeadline {
+           now < slabRecoveryDeadline,
+           (activeSlabBaseIdentifier == nil || activeSlabBaseIdentifier == observationKey) {
             return true
         }
 
         guard slabGuideHintForGate != nil,
-              (slabGuideHintIdentifier == nil || slabGuideHintIdentifier == observation.identifier),
+              (slabGuideHintIdentifier == nil || slabGuideHintIdentifier == observationKey),
               let slabGraceDeadline,
               now < slabGraceDeadline else { return false }
         return true
@@ -2393,7 +2545,11 @@ final class CardScanner: NSObject, ObservableObject {
         if activeSlab == nil {
             updateSlabGuideHint(evidence?.company, for: identifier, at: now)
         }
-        return applySlabLabelEvidence(evidence, at: now)
+        return applySlabLabelEvidence(
+            evidence,
+            baseIdentifier: identifier?.suppressionKey,
+            at: now
+        )
     }
 
     /// Debug-only seam for the production label-parser boundary. It keeps the
@@ -2411,7 +2567,11 @@ final class CardScanner: NSObject, ObservableObject {
         if activeSlab == nil {
             updateSlabGuideHint(GradedLabelParser.company(in: lines), for: identifier, at: now)
         }
-        return applySlabLabelEvidence(GradedLabelParser.parse(lines), at: now)
+        return applySlabLabelEvidence(
+            GradedLabelParser.parse(lines),
+            baseIdentifier: identifier?.suppressionKey,
+            at: now
+        )
     }
 
     /// Debug-only seam for the sticky footer identity rule. It mirrors the
@@ -2480,6 +2640,10 @@ final class CardScanner: NSObject, ObservableObject {
 
     var footerRegionOfInterestForTesting: CGRect {
         footerRequest.regionOfInterest
+    }
+
+    var titleRegionOfInterestForTesting: CGRect {
+        titleRequest.regionOfInterest
     }
 #endif
 
@@ -2650,9 +2814,7 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     private func setCameraIssue(_ issue: CameraIssue?) {
-        DispatchQueue.main.async { [weak self] in
-            self?.cameraIssue = issue
-        }
+        updateUI { $0.setCameraIssue(issue) }
     }
 
     private func updateAssistance(from lines: [RecognizedLine]) {
@@ -2703,10 +2865,7 @@ final class CardScanner: NSObject, ObservableObject {
             assessment,
             hasFooterText: metrics.hasFooterText
         )
-        DispatchQueue.main.async { [weak self] in
-            guard self?.scanAssistance != assistance else { return }
-            self?.scanAssistance = assistance
-        }
+        updateUI { $0.setScanAssistance(assistance) }
     }
 }
 
@@ -2931,9 +3090,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 #if DEBUG
             let boxes = footerRequest.results?.map(\.boundingBox) ?? []
-            DispatchQueue.main.async { [weak self] in
-                self?.debugVisionOverlay.update(boxes)
-            }
+            updateDebugVisionOverlay(boxes)
 #endif
 
             let footerIdentifier: ScanIdentifier? = switch outcome {
@@ -2960,9 +3117,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             )
         } catch {
 #if DEBUG
-            DispatchQueue.main.async { [weak self] in
-                self?.debugVisionOverlay.update([])
-            }
+            updateDebugVisionOverlay([])
 #endif
             // A bad frame is expected occasionally. Run it through the normal
             // pipeline as a miss so it counts as absence evidence for the latch
