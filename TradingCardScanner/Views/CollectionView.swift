@@ -873,18 +873,20 @@ struct CollectionView: View {
             collectionRows: [CollectionRow],
             isNarrowed: Bool
         ) -> Self {
-            let excludedRows = collectionRows.filter { row in
-                PortfolioPriceEligibility.eligibleUnitPrice(
+            var excludedFromValueCopyCount = 0
+            var hasNonPriceExclusions = false
+            for row in collectionRows {
+                guard PortfolioPriceEligibility.eligibleUnitPrice(
                     amount: row.price.amount,
                     currencyCode: row.price.currencyCode
-                ) == nil
+                ) == nil else { continue }
+                excludedFromValueCopyCount += max(0, row.quantity)
+                hasNonPriceExclusions = hasNonPriceExclusions || row.price.amount != nil
             }
             return Self(
                 visibleLogicalItemCount: visibleRows.count,
-                excludedFromValueCopyCount: excludedRows.reduce(0) {
-                    $0 + max(0, $1.quantity)
-                },
-                hasNonPriceExclusions: excludedRows.contains { $0.price.amount != nil },
+                excludedFromValueCopyCount: excludedFromValueCopyCount,
+                hasNonPriceExclusions: hasNonPriceExclusions,
                 isNarrowed: isNarrowed
             )
         }
@@ -935,6 +937,8 @@ struct CollectionView: View {
         private var pricedRowsValue: [CollectionRow] = []
         private var visibleKey: QueryCacheKey?
         private var visibleValue: [CollectionRow] = []
+        private var snapshotKey: QueryCacheKey?
+        private var snapshotValue: Snapshot?
 
         func value(
             for revision: UInt,
@@ -948,6 +952,8 @@ struct CollectionView: View {
             pricedRowsValue = []
             visibleKey = nil
             visibleValue = []
+            snapshotKey = nil
+            snapshotValue = nil
             return value
         }
 
@@ -961,6 +967,8 @@ struct CollectionView: View {
             pricedRowsValue = value
             visibleKey = nil
             visibleValue = []
+            snapshotKey = nil
+            snapshotValue = nil
             return value
         }
 
@@ -972,6 +980,19 @@ struct CollectionView: View {
             let value = build()
             visibleKey = key
             visibleValue = value
+            snapshotKey = nil
+            snapshotValue = nil
+            return value
+        }
+
+        func snapshot(
+            for key: QueryCacheKey,
+            build: () -> Snapshot
+        ) -> Snapshot {
+            if snapshotKey == key, let snapshotValue { return snapshotValue }
+            let value = build()
+            snapshotKey = key
+            snapshotValue = value
             return value
         }
     }
@@ -1025,36 +1046,38 @@ struct CollectionView: View {
             )
         }
 
-        let entries = visible.map { row in
-            let liveDiagnostics = priceSnapshot.diagnosticsByCollectionKey[row.id]
-            let projectedDiagnostics = cached.diagnosticsByCollectionKey[row.id]
-            return Snapshot.Entry(
-                row: row,
-                // A diagnostic is about the current value, not a permanent
-                // property of the row. The delta channel clears the live
-                // reason immediately; this guard also prevents an older
-                // projection from rendering a warning beside a price.
-                unpricedReason: row.price.amount == nil
-                    ? (liveDiagnostics?.unpricedReason ?? projectedDiagnostics?.unpricedReason)
-                    : nil,
-                artworkReason: liveDiagnostics?.artworkReason
-                    ?? projectedDiagnostics?.artworkReason,
-                isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
+        return projectionCache.snapshot(for: queryKey) {
+            let entries = visible.map { row in
+                let liveDiagnostics = priceSnapshot.diagnosticsByCollectionKey[row.id]
+                let projectedDiagnostics = cached.diagnosticsByCollectionKey[row.id]
+                return Snapshot.Entry(
+                    row: row,
+                    // A diagnostic is about the current value, not a permanent
+                    // property of the row. The delta channel clears the live
+                    // reason immediately; this guard also prevents an older
+                    // projection from rendering a warning beside a price.
+                    unpricedReason: row.price.amount == nil
+                        ? (liveDiagnostics?.unpricedReason ?? projectedDiagnostics?.unpricedReason)
+                        : nil,
+                    artworkReason: liveDiagnostics?.artworkReason
+                        ?? projectedDiagnostics?.artworkReason,
+                    isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
+                )
+            }
+            let collectionValue = CollectionValuation.shownValue(for: pricedRows)
+            let footer = CollectionFooterPresentation.make(
+                visibleRows: entries.map(\.row),
+                collectionRows: pricedRows,
+                isNarrowed: !searchQuery.isEmpty || filters.isActive
+            )
+
+            return Snapshot(
+                all: pricedRows,
+                entries: entries,
+                collectionValue: collectionValue,
+                footer: footer
             )
         }
-        let collectionValue = CollectionValuation.shownValue(for: pricedRows)
-        let footer = CollectionFooterPresentation.make(
-            visibleRows: entries.map(\.row),
-            collectionRows: pricedRows,
-            isNarrowed: !searchQuery.isEmpty || filters.isActive
-        )
-
-        return Snapshot(
-            all: pricedRows,
-            entries: entries,
-            collectionValue: collectionValue,
-            footer: footer
-        )
     }
 
     /// Options come from the collection, narrowed by the game chip so a Pokémon

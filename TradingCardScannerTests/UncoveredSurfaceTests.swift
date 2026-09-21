@@ -1411,6 +1411,38 @@ final class PriceRefreshSnapshotSliceTests: XCTestCase {
         XCTAssertNotEqual(before, after)
     }
 
+    func testPriceFingerprintSortedFastPathMatchesUnsortedInputContract() {
+        let first = PriceRecord(
+            key: "a-price",
+            game: .pokemon,
+            printingID: "a-printing",
+            variantID: nil
+        )
+        let second = PriceRecord(
+            key: "b-price",
+            game: .pokemon,
+            printingID: "b-printing",
+            variantID: nil
+        )
+
+        XCTAssertEqual(
+            StoreRevisionFingerprinting.priceValues([second, first]),
+            StoreRevisionFingerprinting.priceValuesInKeyOrder([first, second])
+        )
+    }
+
+    func testUUIDFingerprintOrderingMatchesCanonicalStringOrdering() {
+        let lower = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+        let higher = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+
+        XCTAssertEqual(
+            StoreRevisionFingerprinting.uuidPrecedes(lower, higher),
+            lower.uuidString < higher.uuidString
+        )
+        XCTAssertTrue(StoreRevisionFingerprinting.uuidPrecedes(lower, higher))
+        XCTAssertFalse(StoreRevisionFingerprinting.uuidPrecedes(higher, lower))
+    }
+
     func testStoreRevisionCardFingerprintIncludesDerivedStateInputs() async throws {
         let container = try UncoveredSurfaceFixtures.inMemoryContainer(
             for: UncoveredSurfaceFixtures.fullSchema()

@@ -336,15 +336,23 @@ enum PortfolioReplaySnapshotBuilder {
     /// unchanged so the normal integrity diagnostics can report it.
     static func rebaseDelayedInitialBalances(_ events: [LedgerEntry]) -> [LedgerEntry] {
         var rebased = events
+        var eventsByCollectionKey: [String: [LedgerEntry]] = [:]
+        eventsByCollectionKey.reserveCapacity(events.count)
+        for event in events {
+            eventsByCollectionKey[event.collectionKey, default: []].append(event)
+        }
 
         for index in rebased.indices {
             let baseline = rebased[index]
             guard baseline.kind == .initialBalance,
                   baseline.reversesEventID == nil else { continue }
+            guard let collectionEvents = eventsByCollectionKey[baseline.collectionKey] else {
+                continue
+            }
 
             var delayedNet = 0
-            for event in events where event.collectionKey == baseline.collectionKey
-                && !(event.kind == .initialBalance && event.reversesEventID == nil)
+            for event in collectionEvents where
+                !(event.kind == .initialBalance && event.reversesEventID == nil)
                 && event.occurredAt <= baseline.occurredAt {
                 let (sum, overflow) = delayedNet.addingReportingOverflow(event.deltaQuantity)
                 guard !overflow else { return events }
