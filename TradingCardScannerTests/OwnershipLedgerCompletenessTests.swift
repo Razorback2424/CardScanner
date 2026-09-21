@@ -97,8 +97,12 @@ final class OwnershipLedgerCompletenessTests: XCTestCase {
             "MagicTreatmentMigration.swift",
             "PortfolioEpoch.swift"
         ]
+        let servicesURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("TradingCardScanner/Services", isDirectory: true)
         for sourceName in sources {
-            let url = URL(fileURLWithPath: "TradingCardScanner/Services/\(sourceName)")
+            let url = servicesURL.appendingPathComponent(sourceName)
             let source = try String(contentsOf: url, encoding: .utf8)
             XCTAssertFalse(source.isEmpty)
         }

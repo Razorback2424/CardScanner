@@ -271,7 +271,10 @@ struct InventoryLedger {
                 event.deltaQuantity
             )
         }
-        return quantities.filter { $0.value != 0 }
+        // A negative net is an invalid ownership projection, not an owned
+        // quantity. Keep it out of the public quantity map so a malformed or
+        // partially repaired ledger cannot manufacture negative inventory.
+        return quantities.filter { $0.value > 0 }
     }
 
     // MARK: - Valuation
