@@ -361,3 +361,23 @@ Original prompt: Implement Browse Sets and Cards across Pokémon/TCGdex and Magi
 - Browse artwork/cache hardening (2026-09-16): added TCGdex-only host gating for extensionless candidates, `/univ/`↔`/en/` symbol-prefix fallback, decode-before-persist with eviction/retry for undecodable legacy cache entries, and regression coverage for both invalid and valid cache bodies plus concurrent fetch coalescing. The focused Browse selectors pass 133/133 with 0 failures. A storage-controlled `xcodebuild` rerun routed `TMPDIR`, Clang/Swift module caches, DerivedData, and the `.xcresult` to the external SSD; the result is `.codex-cardscanner-build/browse-set-remediation-20260915/results/browse-artwork-hardening-20260916-external.xcresult`. The XcodeBuildMCP test-products bundle and logs from the initial run were also moved onto the SSD. No screenshots were taken in this follow-up. A8/B6 remain closed and C7/RF-9 remains open. Xcode emitted one non-failing warning that `CardFinishRenderPlanTests.swift` is in the Copy Bundle Resources phase.
 - Browse artwork batch / F06 project-resource correction (2026-09-16): verified the 57-file centering corpus is tracked and fixed the duplicate PBXBuildFile/PBXFileReference UUIDs plus the dangling fixture-group reference. The simulator build succeeded and fixture-reachability and corpus-manifest tests passed. The focused selection produced 38 results: 28 passed, 9 test cases failed on known centering accuracy/invariant/performance assertions, and 1 profile-dump test was canceled; this was not a full-suite rerun. Diagnostic-dump tests wrote seven tracked outputs in the repository; exact generated versions were copied to `.codex-cardscanner-build/browse-set-remediation-20260915/results/f06-generated-diagnostics-20260916/`, and tracked copies were restored. DerivedData (including Xcode's module and compilation caches), TMPDIR, result bundle (`f06-fixture-copy-20260916.xcresult`), and preserved generated diagnostics are on the external SSD; the package-source clone path was also directed there (no package fetch was needed). No screenshots were taken. F06's missing-bundle cause is corrected; centering assertions and a complete suite baseline remain open.
 - Pass-2 storage/scanner remediation (2026-09-19): implemented F01's safe local fallback and delayed `.attached` manifest claim, F02's manifest-derived headless container mode plus active-mode publication, and F03's pending-answer retention when the identification pipeline is busy. Focused iPhone 17 Pro iOS 26.5 simulator verification passes 64 storage/policy/continuity tests in Debug, the same 64 in DebugProduction with one intentional entitlement-gated skip, 20 readiness tests, and the new pending-resolution regression. Entitled-device clean-install, background-refresh, CloudKit production, archive, and full-suite gates remain open; F03 chose recoverable retry rather than a formal reachability proof.
+Exact-branch evidence pass (2026-09-20, candidate `7dbaf40`): focused iPhone
+17 Pro iOS 26.5 simulator selection covering scanner, Browse/UI,
+collection/projection, Pokémon catalog, and Magic catalog suites executed 581
+tests: 579 passed, 1 skipped, and 1 failed in
+`ScannerViewModelTests/testCatalogMissVerificationStillFilesUnresolvedCard`.
+The storage-safe full simulator suite used external-SSD DerivedData, module
+caches, package cache, and result bundle; it executed 1,278 tests with 6
+skipped and 4 failures (1 unexpected), spanning current centering,
+ownership-ledger, and the scanner catalog-miss test. Result bundles are under
+the external-SSD `exact-7dbaf40` directory. The earlier `a4375df` run remains
+historical.
+- Ownership-ledger gate close (2026-09-20, candidate `7dbaf40`): reproduced and
+  fixed F04 by writing baseline `CollectionActivity` alongside each
+  `initialBalance` event, fixed F05 by excluding negative reconstructed nets,
+  and made source-inventory verification independent of the test runner's
+  working directory. The exhaustive mutation/restart/rollback matrix passed
+  105 of 106 selected tests with one intentional opt-in skip and zero
+  failures. Evidence is in the external-SSD
+  `exact-7dbaf40/ownership-matrix.xcresult`; simulator ownership is closed,
+  while entitled CloudKit production and two-device convergence remain open.
