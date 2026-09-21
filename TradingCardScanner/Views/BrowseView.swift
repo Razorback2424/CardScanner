@@ -1819,7 +1819,6 @@ private struct CatalogSetCardsView: View {
 
     var body: some View {
         let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
-        let visible = visibleCards(owned: owned)
         return ScrollView {
             if cards.isEmpty && isLoading {
                 VStack(spacing: 12) {
@@ -1851,7 +1850,7 @@ private struct CatalogSetCardsView: View {
                     .foregroundStyle(.secondary)
                     .padding(.top, 12)
                 }
-                if visible.isEmpty {
+                if visibleGroups.isEmpty {
                     ContentUnavailableView(
                         "No matching cards",
                         systemImage: "magnifyingglass",
