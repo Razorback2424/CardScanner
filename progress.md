@@ -1,3 +1,87 @@
+Automatic set artwork on new-set release (2026-09-21): implemented the
+zero-official-count browse-only admission path, 448 KiB publisher payload guard,
+status/MIME/body artwork probe, gated derived-parent artwork, optional
+pokemontcg.io/Scrydex set and card-art enrichment with whole-directory
+fail-closed matching, signed descriptor card-art fallbacks, and app preference
+for published fallbacks while preserving the snapshot fallback. PokemonCatalogCore
+passes 54/54 tests and the fixed-timestamp offline publisher validation is
+repeatable. A clean iOS test build is currently blocked by an unrelated existing
+centering test/source mismatch (`confirmManualPlacement` is referenced by a test
+but absent from the current `CardCenteringMeasurement` source); the app source
+build itself completed successfully. No physical-device, provider, or release
+readiness claim is made.
+
+Centering remediation checkpoint (2026-09-20, current working tree): followed the required
+order without changing contract thresholds. Formalized the ten-image `HOLDOUT-INTERIM` split
+with a machine-readable `holdoutFreeze` block, kept its final REQ-040 gate open, and redirected
+centering diagnostic writers to simulator temporary storage (or the explicit
+`CENTERING_DIAGNOSTIC_OUTPUT_ROOT`) instead of tracked review paths. Implemented the registered
+Pokémon/Magic back-template branch using observed border registration, then the separate
+front-bottom art-window candidate generator with role-tagged alternatives and deferred joint
+selection. Verification passed 4/4 focused manifest/source/semantic/outer checks and 1/1 REQ-042
+ledger diagnostic; the temporary ledger measured 34/40 outer and 34/36 gradeable inner edges,
+with remaining misses at IMG_0352 left and IMG_0780 right. All five development backs selected
+the registered branch and IMG_0782 remained `none`/declined. The public L1 accuracy test still
+failed with 53 assertions, so accuracy, metamorphic invariants, latency, final holdout
+generalisation, joint selection, and physical-device gates remain open. The redirected REQ-041
+profile passed 1/1 over 20 analyses with 2.7409/3.2918 s median/max wall time; the 0.80/1.50 s
+budget remains unmet. No tolerance was loosened.
+
+Centering remediation follow-up (2026-09-21): gated the discarded front-bottom candidate
+generator call to DEBUG, then ran a same-session ten-fixture A/B on the pinned iPhone 17 Pro /
+iOS 26.5 simulator. Without/with generator inner-generation medians were 0.7869/1.0085 s and
+wall medians were 2.5304/2.7284 s; Release no longer executes that observational work, but the
+0.80/1.50 s contract remains open. Added diagnostic-only identity telemetry and scored the five
+development fronts: the maximum winning family score was 0.5500 versus the unchanged 0.72 gate,
+and no front passed the full registered-back gate. Inventoried the new branch constants in the
+centering plan. The interim holdout remains sealed; at that checkpoint joint selection was the
+next permitted perception change, and the public L1/recall/device gates remained open. The later
+REQ-045 entry records the bounded attempt and its failed pre-registered bar. No tolerance was
+loosened.
+
+Centering REQ-045 safety decision (2026-09-21): development evidence is now treated as a
+fail-safe release decision, not a holdout result. Inner candidate recall is 34/36 (94.4%) against
+the 95% gate, 0/8 confident numeric fixtures meet both ratio tolerances, and front T/B error is
+19–22 pp across tested resolutions. The decision stopped automatic release and authorized one
+bounded, development-only joint-selection experiment measured against L1; the sealed capture-diverse
+holdout must not be evaluated to confirm this development-visible failure. The pre-registered
+bar is zero confidently-wrong outputs and at least 80% confident-and-correct coverage; if it were
+met, it could only expand a reliable automatic subset after the remaining REQ-045 gates. The
+REQ-045 hybrid path is the product path now, with automatic starting geometry, user-placed inner
+guides, exact ratio/rendering math, and guided manual correction. The selector outcome is recorded
+in the following entry; no tolerance was loosened.
+
+Centering REQ-044 experiment and hybrid implementation (2026-09-21): ran the one authorized
+DEBUG-only joint selector over all ten development fixtures without reading the sealed holdout.
+Nine fixtures had gradeable inner ground truth; 0/9 candidate readings met both ≤2.0 pp ratio
+tolerances and 9/9 remained wrong under the pre-hybrid automatic-confidence interpretation, so
+the zero-wrong / ≥80% pre-registered bar failed and the selector was not promoted. The analyzer
+and view now expose a manualConfirmationRequired state: automatic outer/best-inner geometry
+remains an editable starting guide, while ratio reporting and export require explicit confirmation
+or adjustment of both frames; unsupported cases remain declined. Focused hybrid L1, confirmation,
+and selector-evidence tests passed. The holdout remains sealed and no tolerance was loosened.
+
+Centering hybrid verification (2026-09-21): reran the complete centering test selection after
+making outer-frame confirmation explicit. On the pinned iPhone 17 Pro / iOS 26.5 simulator with
+`CODE_SIGNING_ALLOWED=NO`, the seven centering classes executed 92 tests: 72 passed and 20
+failed in 1,077.241 s. `CardCenteringAnalyzerTests` passed 21/21, `CenteringExportTests` 19/19,
+`CardCenteringGroundTruthTests` 12/12, `CardCenteringSurfaceTests` 2/2, and the corpus manifest
+1/1; the remaining failures are the already-open INV-2/4/5/7/8, REQ-022 latency, and E0/E-E
+profile diagnostics. The new confirmation contract and REQ-045 confirmation test passed. The
+holdout was not read; no tolerance was loosened. Result bundle: `/tmp/TradingCardScannerCenteringFull-20260921-v2.xcresult`.
+
+Centering hybrid seed-prior diagnostic (2026-09-21): measured the detector's seeded inner
+depths against a leave-one-out median prior from the same game family over the nine gradeable
+development fixtures (36 edges). Depths were normalized by the annotated outer width for
+left/right and height for top/bottom. The result was mixed: the family prior was clearly better
+for Pokémon bottom edges (`0.10` versus `0.75` pp median; 5/6 per-edge wins), while the
+detector was better for Pokémon top (`0.07` versus `1.21` pp) and Magic top/bottom (`1.18/2.77`
+versus `2.54/16.99` pp). Magic left/right favored the prior, and Pokémon left/right were mixed
+(the Pokémon-left median was effectively tied, `0.25` versus `0.24` pp). No blanket T/B seed
+replacement is justified by this small family/side split; no production seed, threshold, or
+selector behavior changed. The sealed holdout remains untouched. The focused
+`testHybridSeedAgainstLeaveOneOutFamilyPrior` passed 1/1 on the pinned simulator.
+
 Magic semantic publication hardening (2026-09-20, current working tree): added
 shared Magic surface-diff and fail-closed semantic classification, with only
 displayName, releaseDate, cardCount, and iconSVGURL eligible for the automatic

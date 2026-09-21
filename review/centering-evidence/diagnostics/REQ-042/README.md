@@ -5,7 +5,23 @@ Device: iPhone 17 Pro, iOS 26.5
 Simulator: `EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86`
 Input: the original ten HEIC fixtures, not pre-downsampled renderer output
 
-## Current run
+## Post-remediation checkpoint — 2026-09-20
+
+The diagnostic writers were redirected to simulator temporary storage, with the
+optional `CENTERING_DIAGNOSTIC_OUTPUT_ROOT` override; reruns no longer write
+generated JSON or Markdown into this tracked review directory. The focused run
+passed 1/1 and measured 34/40 outer edges and 34/36 gradeable inner edges at the
+unchanged tolerances. The registered Pokémon/Magic back-template candidates and
+the `front.art_window.bottom_generator` alternatives are now present in the
+ledger. All five development backs select the registered branch; the remaining
+inner recall misses are IMG_0352 left and IMG_0780 right. The 95% recall gate
+and end-to-end accuracy gate remain open.
+
+The checked-in JSON and Markdown below remain the signed 2026-09-12
+pre-remediation snapshot; the post-remediation output is intentionally not a
+tracked evidence artifact.
+
+## Signed 2026-09-12 baseline run
 
 `CardCenteringInvariantTests/testREQ042CandidateRecallDiagnosticCoversAllFixtures`
 passed in the signed post-E-REQ044 run on the pinned simulator. The focused
@@ -24,12 +40,12 @@ producer has them, a proposed semantic role, selection status, and rejection
 reason. The ledger is DEBUG-only observational evidence; production selection
 never reads it.
 
-The current all-fixture run emitted a ledger for every fixture after E-REQ044.
+The signed all-fixture baseline run emitted a ledger for every fixture after E-REQ044.
 Its analyzer result is nine confident and one declined: IMG_0782 correctly
 returns `innerSource = none`; the other nine retain an inner source. The
 earlier eight-confident/two-declined run and its ledger remain historical.
 
-## Current geometric recall
+## Historical geometric recall
 
 The harness compares each candidate line's reported native points with the
 corresponding rederived ground-truth edge. `bestErrorPx` is the maximum

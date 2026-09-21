@@ -5,6 +5,35 @@ decision. The production analyzer emits the timings only in `DEBUG` through
 the existing `CardCenteringAnalysisDiagnostic` sink; the release path has no
 new timing work or API.
 
+## Controlled generator A/B — 2026-09-21
+
+The new `CardCenteringInvariantTests/testREQ041ControlledFrontBottomGeneratorAB`
+ran the same ten raw HEIC fixtures in one DEBUG simulator session with the
+observational front-bottom generator disabled and enabled. Named-stage
+attribution remained a test-harness check; this run was used to isolate the
+generator's cost, not to revise the latency contract.
+
+| Arm | Analyses | Inner-generation median | Inner-generation max | Wall median | Wall max |
+|---|---:|---:|---:|---:|---:|
+| without front-bottom generator | 10 | 0.7869 s | 0.8243 s | 2.5304 s | 2.8168 s |
+| with front-bottom generator | 10 | 1.0085 s | 1.2611 s | 2.7284 s | 3.2677 s |
+
+The enabled arm adds `0.2216 s` to the inner-generation median and `0.1980 s`
+to the wall median in this controlled DEBUG comparison. The call site is now
+inside `#if DEBUG`, so Release does not pay this discarded observational cost.
+The original `0.80/1.50 s` budget remains unmet; no budget or threshold was
+changed. Raw A/B records were written to simulator temporary storage.
+
+## Post-remediation checkpoint — 2026-09-20
+
+The redirected profile test passed 1/1 over 20 analyses after the registered
+back-template and front-bottom generator changes. Named-stage attribution was
+`0.9991` median / `0.9995` max; independent wall time was `2.7409/3.2918 s`
+median/max. Scalar fields measured `1.4068 s` median and inner candidate
+generation `1.0140 s` median. The original `0.80/1.50 s` budget remains open.
+The generated records are in simulator temporary storage; the checked-in
+records below remain the 2026-09-12 baseline snapshot.
+
 ## Completed run
 
 The signed test
