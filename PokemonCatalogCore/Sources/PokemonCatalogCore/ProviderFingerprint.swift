@@ -21,8 +21,9 @@ public enum PokemonCatalogProviderFingerprint {
             value(normalizeID(providerSet.id)),
             value(providerSet.name),
             // Only raw provider payload values belong here. Publisher-side
-            // resolvedLogo/resolvedSymbol are descriptor enrichment and are
-            // intentionally excluded so the device can reproduce this hash.
+            // artwork enrichment (resolvedLogo/resolvedSymbol and card-art
+            // fallbacks) is intentionally excluded so the device can
+            // reproduce this hash.
             value(providerSet.logo),
             value(providerSet.symbol),
             value(providerSet.releaseDate)

@@ -135,7 +135,7 @@ jobs:
           echo "Catalog publish environment: $publish_environment"
           {
             echo "## Pokémon catalog production candidate"
-            jq -r '"- Revision: \(.revision)", "- Change class: \(.changeClass)", "- Added: \(.addedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Content: \(.contentChangedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Authority: \(.authorityChangedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Baseline: \(.baselineFingerprintProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Excluded: \(.excludedProviderSetIDs | if length == 0 then "none" else join(", ") end)"' \
+            jq -r '"- Revision: \(.revision)", "- Change class: \(.changeClass)", "- Added: \(.addedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Content: \(.contentChangedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Authority: \(.authorityChangedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Baseline: \(.baselineFingerprintProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Excluded: \(.excludedProviderSetIDs | if length == 0 then "none" else join(", ") end)", "- Secondary provider available: \(.secondaryProviderAvailable)", "- Ambiguous secondary matches: \(.ambiguousSecondaryMatches | if length == 0 then "none" else join(", ") end)"' \
               publisher/reports/production.json
             echo "- Approval required: $requires_approval"
             echo "- Publish environment: $publish_environment"

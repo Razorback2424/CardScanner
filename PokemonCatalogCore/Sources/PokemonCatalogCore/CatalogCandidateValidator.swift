@@ -151,8 +151,8 @@ public enum PokemonCatalogCandidateValidator {
             }
             for member in recognition.members {
                 guard let summary = checklistByID[member.providerCardID.lowercased()],
-                      canonicalMembershipName(member.canonicalName)
-                        == canonicalMembershipName(summary.name) else {
+                      PokemonCatalogTextNormalization.canonicalMembershipName(member.canonicalName)
+                        == PokemonCatalogTextNormalization.canonicalMembershipName(summary.name) else {
                     throw PokemonCatalogCandidateValidationError.membershipRowsDoNotMatchSnapshot(id)
                 }
             }
@@ -235,16 +235,4 @@ public enum PokemonCatalogCandidateValidator {
         }
     }
 
-    private static func canonicalMembershipName(_ value: String) -> String {
-        let folded = value.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: .current
-        ).replacingOccurrences(of: "&", with: " and ")
-        return folded.unicodeScalars.map { scalar in
-            CharacterSet.alphanumerics.contains(scalar) ? String(scalar) : " "
-        }
-        .joined()
-        .split(whereSeparator: { $0 == " " })
-        .joined(separator: " ")
-    }
 }

@@ -35,6 +35,7 @@ public enum PokemonCatalogPublicationError: Error, CustomStringConvertible, Send
     case missingSigningSecret
     case invalidSigningSecret
     case missingSigningKeyID
+    case payloadTooLarge(bytes: Int)
 
     public var description: String {
         switch self {
@@ -50,6 +51,8 @@ public enum PokemonCatalogPublicationError: Error, CustomStringConvertible, Send
         case .missingSigningSecret: return "Catalog signing secret is not available"
         case .invalidSigningSecret: return "Catalog signing secret is not a 32-byte private key"
         case .missingSigningKeyID: return "Catalog signing key ID is not available"
+        case .payloadTooLarge(let bytes):
+            return "Catalog release payload is too large: \(bytes) bytes (limit \(448 * 1024))"
         }
     }
 }
@@ -179,6 +182,7 @@ public struct PokemonCatalogPublicationReceipt: Codable, Equatable, Sendable {
 /// current pointer exactly once and only after the immutable object is durable.
 public final class PokemonCatalogFilesystemPublisher: @unchecked Sendable {
     public typealias BeforePointerUpdate = @Sendable () throws -> Void
+    public static let maxPayloadBytes = 448 * 1024
 
     private let root: URL
     private let environment: PokemonCatalogPublicationEnvironment
@@ -200,6 +204,9 @@ public final class PokemonCatalogFilesystemPublisher: @unchecked Sendable {
         let revision = signedBuild.build.release.revision
         let revisionDirectory = revisions.appendingPathComponent(String(revision), isDirectory: true)
         let envelopeData = try PokemonCatalogJSON.encode(signedBuild.envelope)
+        guard envelopeData.count <= Self.maxPayloadBytes else {
+            throw PokemonCatalogPublicationError.payloadTooLarge(bytes: envelopeData.count)
+        }
 
         if FileManager.default.fileExists(atPath: revisionDirectory.path) {
             let existingURL = revisionDirectory.appendingPathComponent("catalog-release.json")

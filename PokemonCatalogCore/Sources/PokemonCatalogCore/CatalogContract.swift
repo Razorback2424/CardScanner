@@ -121,6 +121,9 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     /// catalog data for newly discovered sets while remaining optional for
     /// legacy releases.
     public let bundledArtworkSourceID: String?
+    /// Up to three publisher-validated card image URLs used after set artwork
+    /// candidates fail. This is presentation metadata, never scanner authority.
+    public let artworkFallbackURLs: [String]?
     public let rulesVersion: Int
     public let membershipRecognition: PokemonCatalogMembershipRecognition?
 
@@ -141,6 +144,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         providerFingerprint: String? = nil,
         parentProviderSetID: String? = nil,
         bundledArtworkSourceID: String? = nil,
+        artworkFallbackURLs: [String]? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
         membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
@@ -160,6 +164,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         self.logoURL = logoURL
         self.symbolURL = symbolURL
         self.bundledArtworkSourceID = bundledArtworkSourceID
+        self.artworkFallbackURLs = artworkFallbackURLs
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
     }
@@ -181,6 +186,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         case logoURL
         case symbolURL
         case bundledArtworkSourceID
+        case artworkFallbackURLs
         case rulesVersion
         case membershipRecognition
     }
@@ -216,6 +222,10 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
             String.self,
             forKey: .bundledArtworkSourceID
         )
+        artworkFallbackURLs = try container.decodeIfPresent(
+            [String].self,
+            forKey: .artworkFallbackURLs
+        )
         rulesVersion = try container.decode(Int.self, forKey: .rulesVersion)
         membershipRecognition = try container.decodeIfPresent(
             PokemonCatalogMembershipRecognition.self,
@@ -223,7 +233,19 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         )
     }
 
-    public func withProviderFingerprint(_ providerFingerprint: String?) -> PokemonCatalogSetDescriptor {
+    public func withProviderFingerprint(
+        _ providerFingerprint: String?
+    ) -> PokemonCatalogSetDescriptor {
+        withProviderFingerprint(
+            providerFingerprint,
+            artworkFallbackURLs: artworkFallbackURLs
+        )
+    }
+
+    public func withProviderFingerprint(
+        _ providerFingerprint: String?,
+        artworkFallbackURLs: [String]?
+    ) -> PokemonCatalogSetDescriptor {
         PokemonCatalogSetDescriptor(
             providerSetID: providerSetID,
             displayName: displayName,
@@ -241,6 +263,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
             providerFingerprint: providerFingerprint,
             parentProviderSetID: parentProviderSetID,
             bundledArtworkSourceID: bundledArtworkSourceID,
+            artworkFallbackURLs: artworkFallbackURLs,
             rulesVersion: rulesVersion,
             membershipRecognition: membershipRecognition
         )
@@ -578,7 +601,9 @@ public enum PokemonCatalogReleaseValidator {
                 )
             }
 
-            let canonicalName = canonicalMembershipName(member.canonicalName)
+            let canonicalName = PokemonCatalogTextNormalization.canonicalMembershipName(
+                member.canonicalName
+            )
             guard !canonicalName.isEmpty else {
                 throw ValidationError.invalidDescriptor(
                     "membership rows require a canonical name"
@@ -617,19 +642,6 @@ public enum PokemonCatalogReleaseValidator {
         }
         guard index > digitStart else { return false }
         return characters[index...].allSatisfy(\.isLetter)
-    }
-
-    private static func canonicalMembershipName(_ value: String) -> String {
-        let folded = value.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: .current
-        ).replacingOccurrences(of: "&", with: " and ")
-        return folded.unicodeScalars.map { scalar in
-            CharacterSet.alphanumerics.contains(scalar) ? String(scalar) : " "
-        }
-        .joined()
-        .split(whereSeparator: { $0 == " " })
-        .joined(separator: " ")
     }
 
     private static func canonicalLocalID(_ value: String) -> String {

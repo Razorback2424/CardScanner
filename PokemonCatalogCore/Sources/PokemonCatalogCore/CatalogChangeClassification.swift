@@ -41,7 +41,8 @@ public enum PokemonCatalogChangeClassifier {
     /// Every other field, including one added in a future release, is protected
     /// by default.
     private static let automaticFieldNames: Set<String> = [
-        "providerFingerprint", "displayName", "releaseDate", "logoURL", "symbolURL"
+        "providerFingerprint", "displayName", "releaseDate", "logoURL", "symbolURL",
+        "artworkFallbackURLs"
     ]
 
     public static func classify(
