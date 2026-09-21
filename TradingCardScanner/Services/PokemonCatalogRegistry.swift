@@ -269,8 +269,12 @@ enum PokemonCatalogDiagnostics {
     }
 
     static func recordDisplayCodeFallback(providerSetID: String) {
+        let isFirst = lock.withLock {
+            _displayCodeFallbackCounts[providerSetID, default: 0] += 1
+            return _displayCodeFallbackCounts[providerSetID] == 1
+        }
+        guard isFirst else { return }
         logger.info("Display code unavailable; using placeholder for provider set: \(providerSetID, privacy: .public)")
-        lock.withLock { _displayCodeFallbackCounts[providerSetID, default: 0] += 1 }
     }
 
     static func recordPersistedPlaceholderCode(providerSetID: String) {

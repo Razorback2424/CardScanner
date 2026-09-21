@@ -48,6 +48,16 @@ struct BrowseCatalogUpdate: Sendable, Equatable {
     let providerSetID: String?
 }
 
+enum BrowseCatalogArtworkSelection {
+    static func fallbackURLs(
+        descriptor: PokemonCatalogSetDescriptor,
+        snapshotURLs: [URL]?
+    ) -> [URL]? {
+        let published = descriptor.artworkFallbackURLs?.compactMap(URL.init(string:))
+        return published?.isEmpty == false ? published : snapshotURLs
+    }
+}
+
 actor BrowseCatalog: BrowseCatalogProviding {
     private static let legacyReleaseOrderDefaultsKey = "pokemonCatalogReleaseOrder.v1"
 
@@ -528,7 +538,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 )
             },
             releaseDate: descriptor.releaseDate.flatMap(FlexibleDate.parse),
-            sortRank: descriptor.releaseOrder ?? 0
+            sortRank: descriptor.releaseOrder ?? 0,
+            artworkFallbackURLs: descriptor.artworkFallbackURLs?.compactMap(URL.init(string:)),
+            limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion
         )
     }
 
@@ -618,7 +630,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 sortRank: descriptor.releaseOrder ?? entry.set.sortRank,
                 bundledArtworkSourceID: descriptor.bundledArtworkSourceID
                     ?? entry.set.bundledArtworkSourceID,
-                artworkFallbackURLs: entry.set.artworkFallbackURLs
+                artworkFallbackURLs: BrowseCatalogArtworkSelection.fallbackURLs(
+                    descriptor: descriptor,
+                    snapshotURLs: entry.set.artworkFallbackURLs
+                ),
+                limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion
             )
         }
     }
@@ -1777,7 +1793,8 @@ enum PokemonMasterSetDefinition {
                 releaseDate: set.releaseDate,
                 sortRank: set.sortRank,
                 bundledArtworkSourceID: set.bundledArtworkSourceID,
-                artworkFallbackURLs: set.artworkFallbackURLs
+                artworkFallbackURLs: set.artworkFallbackURLs,
+                limitlessArtworkAuthorized: set.limitlessArtworkAuthorized
             )
         }
     }

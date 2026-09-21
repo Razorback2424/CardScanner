@@ -380,6 +380,207 @@ final class PokemonCatalogSliceFTests: XCTestCase {
         )
     }
 
+    func testRefreshRejectsBeforeFetchingWhenPinnedKeysAreMissing() async throws {
+        let diagnostics = PokemonCatalogRolloutDiagnostics()
+        await diagnostics.reset()
+        let envelope = try SliceFFixture.envelope()
+        let client = try makeClient(diagnostics: diagnostics, envelope: envelope)
+        let coordinator = PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root),
+            client: client,
+            keys: [],
+            rolloutMode: .bundledValidationOnly,
+            diagnostics: diagnostics
+        )
+
+        let result = await coordinator.refresh()
+        guard case .rejected(let error) = result,
+              let verificationError = error as? PokemonCatalogSignatureVerifier.VerificationError,
+              case .noPinnedKeysConfigured = verificationError else {
+            return XCTFail("Expected a noPinnedKeysConfigured rejection, got \(result)")
+        }
+
+        let snapshot = await diagnostics.snapshot()
+        XCTAssertEqual(snapshot.rejectionCount, 1)
+        XCTAssertEqual(snapshot.networkRequestCount, 0)
+    }
+
+    func testCatalogConfigurationsProvideKeysForVerifyingModes() throws {
+        let repositoryRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let configDirectory = repositoryRoot.appendingPathComponent("Config", isDirectory: true)
+        let configURLs = try FileManager.default.contentsOfDirectory(
+            at: configDirectory,
+            includingPropertiesForKeys: nil
+        )
+        .filter { $0.pathExtension == "xcconfig" }
+        .sorted { $0.lastPathComponent < $1.lastPathComponent }
+
+        XCTAssertFalse(configURLs.isEmpty)
+
+        let verifyingModes: [String: Set<String>] = [
+            "POKEMON_CATALOG_ROLLOUT_MODE": [
+                PokemonCatalogRolloutMode.bundledValidationOnly.rawValue,
+                PokemonCatalogRolloutMode.remoteAuthority.rawValue
+            ],
+            "MAGIC_CATALOG_ROLLOUT_MODE": [
+                MagicCatalogRolloutMode.remoteValidationOnly.rawValue,
+                MagicCatalogRolloutMode.remoteAuthority.rawValue
+            ]
+        ]
+        let pinnedKeyForMode = [
+            "POKEMON_CATALOG_ROLLOUT_MODE": "POKEMON_CATALOG_PINNED_KEYS",
+            "MAGIC_CATALOG_ROLLOUT_MODE": "MAGIC_CATALOG_PINNED_KEYS"
+        ]
+
+        for configURL in configURLs {
+            var visited = Set<URL>()
+            let settings = try effectiveXCConfigSettings(at: configURL, visited: &visited)
+
+            for (modeKey, modes) in verifyingModes {
+                guard let mode = settings[modeKey], modes.contains(mode) else { continue }
+                let keyValue = settings[pinnedKeyForMode[modeKey]!]
+                    .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                XCTAssertFalse(
+                    keyValue?.isEmpty ?? true,
+                    "\(configURL.lastPathComponent) enables \(mode) with no pinned keys"
+                )
+                XCTAssertFalse(
+                    keyValue?.contains("$(") ?? true,
+                    "\(configURL.lastPathComponent) leaves pinned keys unresolved"
+                )
+            }
+        }
+
+        let debugLocalURL = configDirectory.appendingPathComponent(
+            "PokemonCatalogDebugLocal.xcconfig"
+        )
+        var debugLocalVisited = Set<URL>()
+        let debugLocalSettings = try effectiveXCConfigSettings(
+            at: debugLocalURL,
+            visited: &debugLocalVisited
+        )
+        XCTAssertEqual(
+            debugLocalSettings[PokemonCatalogRolloutMode.infoPlistKey],
+            PokemonCatalogRolloutMode.remoteAuthority.rawValue,
+            "The normal local Debug configuration must activate the signed remote catalog"
+        )
+
+        let projectFileURL = repositoryRoot
+            .appendingPathComponent("TradingCardScanner.xcodeproj", isDirectory: true)
+            .appendingPathComponent("project.pbxproj")
+        let projectContents = try String(contentsOf: projectFileURL, encoding: .utf8)
+        let xcBuildConfigurationSection = try XCTUnwrap(
+            projectSection(
+                in: projectContents,
+                begin: "/* Begin XCBuildConfiguration section */",
+                end: "/* End XCBuildConfiguration section */"
+            )
+        )
+        XCTAssertFalse(
+            xcBuildConfigurationSection.contains("POKEMON_CATALOG_"),
+            "Pokemon catalog settings must come from xcconfig files, not project.pbxproj"
+        )
+        XCTAssertFalse(
+            xcBuildConfigurationSection.contains("MAGIC_CATALOG_"),
+            "Magic catalog settings must come from xcconfig files, not project.pbxproj"
+        )
+
+        let appConfigurationList = try XCTUnwrap(
+            projectObjectBody(
+                in: projectContents,
+                marker: "/* Build configuration list for PBXNativeTarget \"TradingCardScanner\" */ = {"
+            )
+        )
+        let appConfigurationIDs = appConfigurationList
+            .components(separatedBy: .newlines)
+            .compactMap { line -> String? in
+                let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard trimmed.contains("/*"), trimmed.hasSuffix(",") else { return nil }
+                return trimmed.split(separator: " ", maxSplits: 1).first.map(String.init)
+            }
+        XCTAssertFalse(appConfigurationIDs.isEmpty)
+
+        for configurationID in appConfigurationIDs {
+            let body = try XCTUnwrap(
+                projectObjectBody(
+                    in: xcBuildConfigurationSection,
+                    marker: "\(configurationID) /*"
+                )
+            )
+            XCTAssertTrue(
+                body.contains("baseConfigurationReference ="),
+                "App configuration \(configurationID) must inherit an xcconfig"
+            )
+        }
+    }
+
+    private func projectSection(in contents: String, begin: String, end: String) -> String? {
+        guard let beginRange = contents.range(of: begin),
+              let endRange = contents.range(of: end, range: beginRange.upperBound..<contents.endIndex) else {
+            return nil
+        }
+        return String(contents[beginRange.upperBound..<endRange.lowerBound])
+    }
+
+    private func projectObjectBody(in contents: String, marker: String) -> String? {
+        guard let objectStart = contents.range(of: marker),
+              let lineEnd = contents.range(
+                  of: "\n",
+                  range: objectStart.upperBound..<contents.endIndex
+              ) else {
+            return nil
+        }
+        let declaration = contents[objectStart.lowerBound..<lineEnd.lowerBound]
+        guard declaration.contains(" = {") else { return nil }
+        let bodyStart = lineEnd.upperBound
+        guard let bodyEnd = contents.range(
+            of: "\n\t\t};",
+            range: bodyStart..<contents.endIndex
+        ) else {
+            return nil
+        }
+        return String(contents[bodyStart..<bodyEnd.lowerBound])
+    }
+
+    private func effectiveXCConfigSettings(
+        at url: URL,
+        visited: inout Set<URL>
+    ) throws -> [String: String] {
+        let normalizedURL = url.standardizedFileURL
+        guard visited.insert(normalizedURL).inserted else { return [:] }
+
+        let contents = try String(contentsOf: normalizedURL, encoding: .utf8)
+        var settings: [String: String] = [:]
+        for rawLine in contents.components(separatedBy: .newlines) {
+            let line = rawLine.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !line.isEmpty, !line.hasPrefix("//") else { continue }
+
+            if line.hasPrefix("#include") {
+                let quotedParts = line.split(separator: "\"", omittingEmptySubsequences: false)
+                guard quotedParts.count >= 3 else { continue }
+                let includeURL = normalizedURL
+                    .deletingLastPathComponent()
+                    .appendingPathComponent(String(quotedParts[1]))
+                let includedSettings = try effectiveXCConfigSettings(
+                    at: includeURL,
+                    visited: &visited
+                )
+                settings.merge(includedSettings) { _, includedValue in includedValue }
+                continue
+            }
+
+            guard let separator = line.firstIndex(of: "=") else { continue }
+            let key = line[..<separator].trimmingCharacters(in: .whitespaces)
+            guard !key.isEmpty else { continue }
+            let value = line[line.index(after: separator)...]
+                .trimmingCharacters(in: .whitespaces)
+            settings[String(key)] = String(value)
+        }
+        return settings
+    }
+
     func testCatalogOriginAllowlistSeparatesProductionAndStagingHosts() {
         XCTAssertTrue(
             PokemonCatalogUpdateClient.isAllowedCatalogOrigin(

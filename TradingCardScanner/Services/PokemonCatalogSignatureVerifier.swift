@@ -7,6 +7,7 @@ import PokemonCatalogCore
 /// timestamp, and release decoding are owned by PokemonCatalogCore.
 enum PokemonCatalogSignatureVerifier {
     enum VerificationError: Error, CustomStringConvertible {
+        case noPinnedKeysConfigured
         case unknownKeyID(String)
         case invalidPayloadEncoding
         case invalidSignatureEncoding
@@ -19,6 +20,8 @@ enum PokemonCatalogSignatureVerifier {
 
         var description: String {
             switch self {
+            case .noPinnedKeysConfigured:
+                return "No Pokémon catalog pinned keys are configured"
             case .unknownKeyID(let id): return "Unknown key ID: \(id)"
             case .invalidPayloadEncoding: return "Payload is not valid base64url"
             case .invalidSignatureEncoding: return "Signature is not valid base64url"

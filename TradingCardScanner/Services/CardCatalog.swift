@@ -170,7 +170,13 @@ enum PokemonOfflineCardFactory {
         guard !candidateSetIDs.isEmpty else { return nil }
 
         var identitiesByProviderID: [String: PokemonCatalogCardIdentity] = [:]
-        var summariesByProviderID: [String: (summary: CatalogCardSummary, set: CatalogSet)] = [:]
+        // One numbered card occupies one checklist row per physical slot, and
+        // every one of those rows is variant evidence. Keyed by provider id
+        // alone, a `normal` row and a `reverse` row of the same printing
+        // overwrite each other and the surviving row becomes the card's only
+        // published finish — which is the resolver being told a lie, not a
+        // catalog that is silent. Keep the whole group.
+        var summariesByProviderID: [String: (summaries: [CatalogCardSummary], set: CatalogSet)] = [:]
         for entry in snapshot.manifest.entries where candidateSetIDs.contains(entry.providerID.lowercased()) {
             guard let cards = snapshot.checklists[entry.set.id] else { continue }
             for summary in cards where summary.game == .pokemon {
@@ -185,7 +191,9 @@ enum PokemonOfflineCardFactory {
                         Calendar(identifier: .gregorian).component(.year, from: $0)
                     }
                 )
-                summariesByProviderID[providerID] = (summary, entry.set)
+                summariesByProviderID[providerID, default: (summaries: [], set: entry.set)]
+                    .summaries
+                    .append(summary)
             }
         }
 
@@ -205,15 +213,24 @@ enum PokemonOfflineCardFactory {
             guard let value = summariesByProviderID[identity.providerID.lowercased()] else {
                 return nil
             }
+            // Same ordering rule as the modern offline path, so the record's
+            // name and image come from a stable row rather than from whichever
+            // slot the checklist file happened to list last.
+            let summaries = value.summaries.sorted { left, right in
+                let leftVariant = left.masterSetVariant?.id ?? ""
+                let rightVariant = right.masterSetVariant?.id ?? ""
+                return (leftVariant, left.id) < (rightVariant, right.id)
+            }
+            guard let primary = summaries.first else { return nil }
             let officialCount = evidence.number.denominator
             let card = makeCard(
-                summaries: [value.summary],
+                summaries: summaries,
                 setName: identity.setName,
                 providerSetID: identity.setID,
                 officialCount: officialCount,
                 localID: identity.localID
             )
-            return .pokemon(card, setCode: value.summary.setCode)
+            return .pokemon(card, setCode: primary.setCode)
         case .ambiguous, .unsupported:
             // The offline snapshot must preserve the same conservative rule as
             // the live historical resolver. A missing or colliding title is not

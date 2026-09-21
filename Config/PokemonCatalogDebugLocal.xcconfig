@@ -1,0 +1,5 @@
+// Local developer configuration for the no-iCloud-entitlement Debug path.
+// Keep the normal Xcode Run action on the signed remote catalog so developers
+// see the current release without requiring the paid CloudKit container.
+#include "PokemonCatalogProduction.xcconfig"
+POKEMON_CATALOG_ROLLOUT_MODE = remote-authority
