@@ -4,6 +4,81 @@
       "innerSource" : "profile",
       "outerRefinementAccepted" : true,
       "outlineHasInner" : true,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 53.82670642733124,
+          "firstMinimum" : 53.82282040908552,
+          "firstSpread" : 0.003886018245715661,
+          "secondMaximum" : 46.17717959091448,
+          "secondMinimum" : 46.17329357266876,
+          "secondSpread" : 0.003886018245715661
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 53.82282040908552,
+              "secondPercentage" : 46.17717959091448
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 45.19406431843137,
+              "secondPercentage" : 54.80593568156863
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 53.823773027712946,
+              "secondPercentage" : 46.176226972287054
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 45.19502891176522,
+              "secondPercentage" : 54.804971088234794
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 53.82473807272531,
+              "secondPercentage" : 46.17526192727468
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 45.195995904696844,
+              "secondPercentage" : 54.804004095303156
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 53.825715788861814,
+              "secondPercentage" : 46.17428421113818
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 45.19696530619176,
+              "secondPercentage" : 54.80303469380824
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 53.82670642733124,
+              "secondPercentage" : 46.17329357266876
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 45.19793712525987,
+              "secondPercentage" : 54.80206287474014
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 45.19793712525987,
+          "firstMinimum" : 45.19406431843137,
+          "firstSpread" : 0.0038728068284967776,
+          "secondMaximum" : 54.80593568156863,
+          "secondMinimum" : 54.80206287474014,
+          "secondSpread" : 0.003872806828489672
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 63.569238781929016,
@@ -75,15 +150,15 @@
       "selectedOuterSource" : "vision",
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
-        "colorPreparation" : 0.12667405605316162,
-        "decodeOrientationDownscale" : 0.1890881061553955,
-        "innerCandidateGeneration" : 0.8094899654388428,
+        "colorPreparation" : 0.12925803661346436,
+        "decodeOrientationDownscale" : 0.1962059736251831,
+        "innerCandidateGeneration" : 0.8220909833908081,
         "jointSelection" : 1.0013580322265625e-05,
-        "outerCandidateRefinement" : 0.11221790313720703,
-        "rectification" : 9.202957153320312e-05,
-        "resultConstruction" : 1.3947486877441406e-05,
-        "scalarFields" : 1.3232890367507935,
-        "visionRequests" : 0.021399974822998047
+        "outerCandidateRefinement" : 0.11585700511932373,
+        "rectification" : 9.09566879272461e-05,
+        "resultConstruction" : 1.2993812561035156e-05,
+        "scalarFields" : 1.3444980382919312,
+        "visionRequests" : 0.01837003231048584
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -7368,6 +7443,45 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
+              "x" : 544.32,
+              "y" : 295.68
+            },
+            {
+              "x" : 2476.32,
+              "y" : 295.68
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.18,
+              "y" : 0.07333333333333333
+            },
+            {
+              "x" : 0.8188888888888889,
+              "y" : 0.07333333333333333
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "top",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 162,
+              "y" : 88
+            },
+            {
+              "x" : 737,
+              "y" : 88
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
               "x" : 2671.2,
               "y" : 456.96
             },
@@ -7478,45 +7592,6 @@
             {
               "x" : 43,
               "y" : 1033
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
-              "x" : 544.32,
-              "y" : 295.68
-            },
-            {
-              "x" : 2476.32,
-              "y" : 295.68
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.18,
-              "y" : 0.07333333333333333
-            },
-            {
-              "x" : 0.8188888888888889,
-              "y" : 0.07333333333333333
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "top",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 162,
-              "y" : 88
-            },
-            {
-              "x" : 737,
-              "y" : 88
             }
           ]
         },
@@ -10396,6 +10471,81 @@
       "innerSource" : "visionArtWindow",
       "outerRefinementAccepted" : false,
       "outlineHasInner" : true,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 47.443843412666155,
+          "firstMinimum" : 46.61862688748215,
+          "firstSpread" : 0.825216525184004,
+          "secondMaximum" : 53.381373112517835,
+          "secondMinimum" : 52.55615658733383,
+          "secondSpread" : 0.825216525184004
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 47.443843412666155,
+              "secondPercentage" : 52.55615658733383
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 40.90314007855194,
+              "secondPercentage" : 59.09685992144805
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 47.234047841331574,
+              "secondPercentage" : 52.76595215866843
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 39.949179937053565,
+              "secondPercentage" : 60.05082006294643
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 47.02660601082488,
+              "secondPercentage" : 52.97339398917513
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 39.06584125573957,
+              "secondPercentage" : 60.934158744260436
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 46.82147853143358,
+              "secondPercentage" : 53.17852146856643
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 38.24556181260094,
+              "secondPercentage" : 61.75443818739907
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 46.61862688748215,
+              "secondPercentage" : 53.381373112517835
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 37.48182187001423,
+              "secondPercentage" : 62.51817812998576
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 40.90314007855194,
+          "firstMinimum" : 37.48182187001423,
+          "firstSpread" : 3.4213182085377127,
+          "secondMaximum" : 62.51817812998576,
+          "secondMinimum" : 59.09685992144805,
+          "secondSpread" : 3.4213182085377127
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 73.47425445914268,
@@ -10450,14 +10600,14 @@
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
         "colorPreparation" : 0,
-        "decodeOrientationDownscale" : 0.17686700820922852,
-        "innerCandidateGeneration" : 0.806535005569458,
-        "jointSelection" : 1.1920928955078125e-05,
-        "outerCandidateRefinement" : 0.11296606063842773,
-        "rectification" : 9.40561294555664e-05,
-        "resultConstruction" : 1.3947486877441406e-05,
-        "scalarFields" : 1.3707479238510132,
-        "visionRequests" : 0.021897077560424805
+        "decodeOrientationDownscale" : 0.18215692043304443,
+        "innerCandidateGeneration" : 0.8298460245132446,
+        "jointSelection" : 7.987022399902344e-06,
+        "outerCandidateRefinement" : 0.11621403694152832,
+        "rectification" : 9.393692016601562e-05,
+        "resultConstruction" : 1.4066696166992188e-05,
+        "scalarFields" : 1.3930730819702148,
+        "visionRequests" : 0.020079970359802246
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -16374,45 +16524,6 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 544.32,
-              "y" : 3820.32
-            },
-            {
-              "x" : 2476.32,
-              "y" : 3820.32
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.18,
-              "y" : 0.9475
-            },
-            {
-              "x" : 0.8188888888888889,
-              "y" : 0.9475
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "bottom",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 162,
-              "y" : 1137
-            },
-            {
-              "x" : 737,
-              "y" : 1137
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
               "x" : 325.92,
               "y" : 413.28
             },
@@ -16523,6 +16634,45 @@
             {
               "x" : 737,
               "y" : 66
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
+              "x" : 544.32,
+              "y" : 3820.32
+            },
+            {
+              "x" : 2476.32,
+              "y" : 3820.32
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.18,
+              "y" : 0.9475
+            },
+            {
+              "x" : 0.8188888888888889,
+              "y" : 0.9475
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "bottom",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 162,
+              "y" : 1137
+            },
+            {
+              "x" : 737,
+              "y" : 1137
             }
           ]
         },
@@ -18287,6 +18437,81 @@
       "innerSource" : "profile",
       "outerRefinementAccepted" : true,
       "outlineHasInner" : false,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 57.69451929431338,
+          "firstMinimum" : 57.6900446587157,
+          "firstSpread" : 0.004474635597681242,
+          "secondMaximum" : 42.30995534128429,
+          "secondMinimum" : 42.305480705686605,
+          "secondSpread" : 0.004474635597681242
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 57.6900446587157,
+              "secondPercentage" : 42.30995534128429
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 72.73850053092806,
+              "secondPercentage" : 27.261499469071932
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 57.691145277074206,
+              "secondPercentage" : 42.3088547229258
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 72.73940465776406,
+              "secondPercentage" : 27.260595342235934
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 57.692257792454996,
+              "secondPercentage" : 42.30774220754502
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 72.74031187275244,
+              "secondPercentage" : 27.25968812724756
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 57.693382398805866,
+              "secondPercentage" : 42.306617601194134
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 72.74122219174194,
+              "secondPercentage" : 27.258777808258053
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 57.69451929431338,
+              "secondPercentage" : 42.305480705686605
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 72.74213563069034,
+              "secondPercentage" : 27.25786436930967
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 72.74213563069034,
+          "firstMinimum" : 72.73850053092806,
+          "firstSpread" : 0.003635099762277605,
+          "secondMaximum" : 27.261499469071932,
+          "secondMinimum" : 27.25786436930967,
+          "secondSpread" : 0.003635099762263394
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 44.053955376148224,
@@ -18358,15 +18583,15 @@
       "selectedOuterSource" : "vision",
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
-        "colorPreparation" : 0.12207508087158203,
-        "decodeOrientationDownscale" : 0.1930919885635376,
-        "innerCandidateGeneration" : 0.8074369430541992,
-        "jointSelection" : 1.990795135498047e-05,
-        "outerCandidateRefinement" : 0.11484599113464355,
-        "rectification" : 0.00010800361633300781,
-        "resultConstruction" : 2.300739288330078e-05,
-        "scalarFields" : 1.5299700498580933,
-        "visionRequests" : 0.02060699462890625
+        "colorPreparation" : 0.12411797046661377,
+        "decodeOrientationDownscale" : 0.20539796352386475,
+        "innerCandidateGeneration" : 0.8282619714736938,
+        "jointSelection" : 1.1086463928222656e-05,
+        "outerCandidateRefinement" : 0.11883997917175293,
+        "rectification" : 9.799003601074219e-05,
+        "resultConstruction" : 1.3947486877441406e-05,
+        "scalarFields" : 1.5741630792617798,
+        "visionRequests" : 0.02382493019104004
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -24543,38 +24768,38 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 544.32,
-              "y" : 161.28
+              "x" : 164.64,
+              "y" : 352.8
             },
             {
-              "x" : 2476.32,
-              "y" : 161.28
+              "x" : 164.64,
+              "y" : 3544.8
             }
           ],
           "normalizedGeometry" : [
             {
-              "x" : 0.18,
-              "y" : 0.04
+              "x" : 0.05444444444444444,
+              "y" : 0.0875
             },
             {
-              "x" : 0.8188888888888889,
-              "y" : 0.04
+              "x" : 0.05444444444444444,
+              "y" : 0.8791666666666667
             }
           ],
           "proposedSemanticRole" : "untyped_inner_reference",
           "selected" : true,
-          "side" : "top",
+          "side" : "left",
           "source" : "scalar.border_walk",
           "support" : 1,
           "transitionStrength" : 0,
           "workingGeometry" : [
             {
-              "x" : 162,
-              "y" : 48
+              "x" : 49,
+              "y" : 105
             },
             {
-              "x" : 737,
-              "y" : 48
+              "x" : 49,
+              "y" : 1055
             }
           ]
         },
@@ -24621,38 +24846,38 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 164.64,
-              "y" : 352.8
+              "x" : 544.32,
+              "y" : 161.28
             },
             {
-              "x" : 164.64,
-              "y" : 3544.8
+              "x" : 2476.32,
+              "y" : 161.28
             }
           ],
           "normalizedGeometry" : [
             {
-              "x" : 0.05444444444444444,
-              "y" : 0.0875
+              "x" : 0.18,
+              "y" : 0.04
             },
             {
-              "x" : 0.05444444444444444,
-              "y" : 0.8791666666666667
+              "x" : 0.8188888888888889,
+              "y" : 0.04
             }
           ],
           "proposedSemanticRole" : "untyped_inner_reference",
           "selected" : true,
-          "side" : "left",
+          "side" : "top",
           "source" : "scalar.border_walk",
           "support" : 1,
           "transitionStrength" : 0,
           "workingGeometry" : [
             {
-              "x" : 49,
-              "y" : 105
+              "x" : 162,
+              "y" : 48
             },
             {
-              "x" : 49,
-              "y" : 1055
+              "x" : 737,
+              "y" : 48
             }
           ]
         },
@@ -28520,6 +28745,81 @@
       "innerSource" : "profile",
       "outerRefinementAccepted" : true,
       "outlineHasInner" : true,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 43.773703574450956,
+          "firstMinimum" : 43.77027198706876,
+          "firstSpread" : 0.003431587382195289,
+          "secondMaximum" : 56.22972801293124,
+          "secondMinimum" : 56.22629642554905,
+          "secondSpread" : 0.0034315873821881837
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 43.77027198706876,
+              "secondPercentage" : 56.22972801293124
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 48.76695501979357,
+              "secondPercentage" : 51.23304498020642
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 43.77111592934199,
+              "secondPercentage" : 56.22888407065801
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 48.76782244363421,
+              "secondPercentage" : 51.23217755636578
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 43.77196907323105,
+              "secondPercentage" : 56.22803092676895
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 48.768692171205785,
+              "secondPercentage" : 51.231307828794215
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 43.77283157005048,
+              "secondPercentage" : 56.22716842994951
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 48.76956421169774,
+              "secondPercentage" : 51.23043578830226
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 43.773703574450956,
+              "secondPercentage" : 56.22629642554905
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 48.77043857434882,
+              "secondPercentage" : 51.229561425651184
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 48.77043857434882,
+          "firstMinimum" : 48.76695501979357,
+          "firstSpread" : 0.0034835545552525105,
+          "secondMaximum" : 51.23304498020642,
+          "secondMinimum" : 51.229561425651184,
+          "secondSpread" : 0.0034835545552382996
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 40.24806171655655,
@@ -28591,15 +28891,15 @@
       "selectedOuterSource" : "vision",
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
-        "colorPreparation" : 0.1269969940185547,
-        "decodeOrientationDownscale" : 0.17458009719848633,
-        "innerCandidateGeneration" : 0.802731990814209,
+        "colorPreparation" : 0.12983298301696777,
+        "decodeOrientationDownscale" : 0.18401598930358887,
+        "innerCandidateGeneration" : 0.8181469440460205,
         "jointSelection" : 7.033348083496094e-06,
-        "outerCandidateRefinement" : 0.11406803131103516,
-        "rectification" : 9.40561294555664e-05,
-        "resultConstruction" : 1.3947486877441406e-05,
-        "scalarFields" : 1.4006849527359009,
-        "visionRequests" : 0.020012974739074707
+        "outerCandidateRefinement" : 0.11827099323272705,
+        "rectification" : 9.202957153320312e-05,
+        "resultConstruction" : 1.2993812561035156e-05,
+        "scalarFields" : 1.4382659196853638,
+        "visionRequests" : 0.01819908618927002
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -36345,45 +36645,6 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 275.52,
-              "y" : 440.16
-            },
-            {
-              "x" : 275.52,
-              "y" : 3585.12
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.09111111111111111,
-              "y" : 0.10916666666666666
-            },
-            {
-              "x" : 0.09111111111111111,
-              "y" : 0.8891666666666667
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "left",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 82,
-              "y" : 131
-            },
-            {
-              "x" : 82,
-              "y" : 1067
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
               "x" : 2704.8,
               "y" : 440.16
             },
@@ -36416,6 +36677,45 @@
             {
               "x" : 805,
               "y" : 1067
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
+              "x" : 544.32,
+              "y" : 248.64
+            },
+            {
+              "x" : 2476.32,
+              "y" : 248.64
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.18,
+              "y" : 0.06166666666666667
+            },
+            {
+              "x" : 0.8188888888888889,
+              "y" : 0.06166666666666667
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "top",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 162,
+              "y" : 74
+            },
+            {
+              "x" : 737,
+              "y" : 74
             }
           ]
         },
@@ -36462,38 +36762,38 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 544.32,
-              "y" : 248.64
+              "x" : 275.52,
+              "y" : 440.16
             },
             {
-              "x" : 2476.32,
-              "y" : 248.64
+              "x" : 275.52,
+              "y" : 3585.12
             }
           ],
           "normalizedGeometry" : [
             {
-              "x" : 0.18,
-              "y" : 0.06166666666666667
+              "x" : 0.09111111111111111,
+              "y" : 0.10916666666666666
             },
             {
-              "x" : 0.8188888888888889,
-              "y" : 0.06166666666666667
+              "x" : 0.09111111111111111,
+              "y" : 0.8891666666666667
             }
           ],
           "proposedSemanticRole" : "untyped_inner_reference",
           "selected" : true,
-          "side" : "top",
+          "side" : "left",
           "source" : "scalar.border_walk",
           "support" : 1,
           "transitionStrength" : 0,
           "workingGeometry" : [
             {
-              "x" : 162,
-              "y" : 74
+              "x" : 82,
+              "y" : 131
             },
             {
-              "x" : 737,
-              "y" : 74
+              "x" : 82,
+              "y" : 1067
             }
           ]
         },
@@ -39459,6 +39759,81 @@
       "innerSource" : "profile",
       "outerRefinementAccepted" : true,
       "outlineHasInner" : false,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 52.923089498761435,
+          "firstMinimum" : 52.9221252870925,
+          "firstSpread" : 0.0009642116689363434,
+          "secondMaximum" : 47.0778747129075,
+          "secondMinimum" : 47.076910501238565,
+          "secondSpread" : 0.0009642116689363434
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 52.9221252870925,
+              "secondPercentage" : 47.0778747129075
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 24.07405518635142,
+              "secondPercentage" : 75.92594481364858
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 52.92236317062638,
+              "secondPercentage" : 47.07763682937362
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 24.074231791908,
+              "secondPercentage" : 75.92576820809198
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 52.92260314848041,
+              "secondPercentage" : 47.077396851519595
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 24.074408559601185,
+              "secondPercentage" : 75.9255914403988
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 52.92284524843427,
+              "secondPercentage" : 47.07715475156572
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 24.074585489654382,
+              "secondPercentage" : 75.92541451034562
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 52.923089498761435,
+              "secondPercentage" : 47.076910501238565
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 24.074762582291317,
+              "secondPercentage" : 75.92523741770869
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 24.074762582291317,
+          "firstMinimum" : 24.07405518635142,
+          "firstSpread" : 0.0007073959398979923,
+          "secondMaximum" : 75.92594481364858,
+          "secondMinimum" : 75.92523741770869,
+          "secondSpread" : 0.0007073959398979923
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 59.08878296613693,
@@ -39530,15 +39905,15 @@
       "selectedOuterSource" : "vision",
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
-        "colorPreparation" : 0.1258150339126587,
-        "decodeOrientationDownscale" : 0.19246995449066162,
-        "innerCandidateGeneration" : 0.7983829975128174,
-        "jointSelection" : 1.3947486877441406e-05,
-        "outerCandidateRefinement" : 0.11254394054412842,
-        "rectification" : 0.00010704994201660156,
-        "resultConstruction" : 2.396106719970703e-05,
-        "scalarFields" : 1.2627589702606201,
-        "visionRequests" : 0.020439982414245605
+        "colorPreparation" : 0.1279439926147461,
+        "decodeOrientationDownscale" : 0.19301295280456543,
+        "innerCandidateGeneration" : 0.8246679306030273,
+        "jointSelection" : 7.987022399902344e-06,
+        "outerCandidateRefinement" : 0.1155780553817749,
+        "rectification" : 8.90493392944336e-05,
+        "resultConstruction" : 1.2993812561035156e-05,
+        "scalarFields" : 1.2952659130096436,
+        "visionRequests" : 0.019605040550231934
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -46590,45 +46965,6 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 544.32,
-              "y" : 3847.2
-            },
-            {
-              "x" : 2476.32,
-              "y" : 3847.2
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.18,
-              "y" : 0.9541666666666667
-            },
-            {
-              "x" : 0.8188888888888889,
-              "y" : 0.9541666666666667
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "bottom",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 162,
-              "y" : 1145
-            },
-            {
-              "x" : 737,
-              "y" : 1145
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
               "x" : 2677.92,
               "y" : 470.4
             },
@@ -46660,6 +46996,45 @@
             },
             {
               "x" : 797,
+              "y" : 1055
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
+              "x" : 215.04,
+              "y" : 470.4
+            },
+            {
+              "x" : 215.04,
+              "y" : 3544.8
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.07111111111111111,
+              "y" : 0.11666666666666667
+            },
+            {
+              "x" : 0.07111111111111111,
+              "y" : 0.8791666666666667
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "left",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 64,
+              "y" : 140
+            },
+            {
+              "x" : 64,
               "y" : 1055
             }
           ]
@@ -46707,38 +47082,38 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 215.04,
-              "y" : 470.4
+              "x" : 544.32,
+              "y" : 3847.2
             },
             {
-              "x" : 215.04,
-              "y" : 3544.8
+              "x" : 2476.32,
+              "y" : 3847.2
             }
           ],
           "normalizedGeometry" : [
             {
-              "x" : 0.07111111111111111,
-              "y" : 0.11666666666666667
+              "x" : 0.18,
+              "y" : 0.9541666666666667
             },
             {
-              "x" : 0.07111111111111111,
-              "y" : 0.8791666666666667
+              "x" : 0.8188888888888889,
+              "y" : 0.9541666666666667
             }
           ],
           "proposedSemanticRole" : "untyped_inner_reference",
           "selected" : true,
-          "side" : "left",
+          "side" : "bottom",
           "source" : "scalar.border_walk",
           "support" : 1,
           "transitionStrength" : 0,
           "workingGeometry" : [
             {
-              "x" : 64,
-              "y" : 140
+              "x" : 162,
+              "y" : 1145
             },
             {
-              "x" : 64,
-              "y" : 1055
+              "x" : 737,
+              "y" : 1145
             }
           ]
         },
@@ -50607,6 +50982,81 @@
       "innerSource" : "profile",
       "outerRefinementAccepted" : true,
       "outlineHasInner" : true,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 47.989951340576674,
+          "firstMinimum" : 47.98698045097774,
+          "firstSpread" : 0.002970889598934434,
+          "secondMaximum" : 52.01301954902226,
+          "secondMinimum" : 52.010048659423326,
+          "secondSpread" : 0.002970889598934434
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 47.98698045097774,
+              "secondPercentage" : 52.01301954902226
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 45.750740685807564,
+              "secondPercentage" : 54.249259314192436
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 47.98771022793401,
+              "secondPercentage" : 52.012289772066
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 45.75147690296336,
+              "secondPercentage" : 54.24852309703664
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 47.98844853431739,
+              "secondPercentage" : 52.011551465682594
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 45.75221467684348,
+              "secondPercentage" : 54.24778532315653
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 47.98919552054135,
+              "secondPercentage" : 52.01080447945865
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 45.752954012390425,
+              "secondPercentage" : 54.247045987609575
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 47.989951340576674,
+              "secondPercentage" : 52.010048659423326
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 45.753694914568,
+              "secondPercentage" : 54.246305085432006
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 45.753694914568,
+          "firstMinimum" : 45.750740685807564,
+          "firstSpread" : 0.002954228760437161,
+          "secondMaximum" : 54.249259314192436,
+          "secondMinimum" : 54.246305085432006,
+          "secondSpread" : 0.0029542287604300554
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 53.45257669687271,
@@ -50678,15 +51128,15 @@
       "selectedOuterSource" : "vision",
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
-        "colorPreparation" : 0.12646305561065674,
-        "decodeOrientationDownscale" : 0.19131505489349365,
-        "innerCandidateGeneration" : 0.7987090349197388,
-        "jointSelection" : 1.800060272216797e-05,
-        "outerCandidateRefinement" : 0.11319506168365479,
-        "rectification" : 0.00010502338409423828,
-        "resultConstruction" : 2.002716064453125e-05,
-        "scalarFields" : 1.3748170137405396,
-        "visionRequests" : 0.02006995677947998
+        "colorPreparation" : 0.129952073097229,
+        "decodeOrientationDownscale" : 0.19244801998138428,
+        "innerCandidateGeneration" : 0.8206419944763184,
+        "jointSelection" : 1.0013580322265625e-05,
+        "outerCandidateRefinement" : 0.11820399761199951,
+        "rectification" : 8.893013000488281e-05,
+        "resultConstruction" : 1.2993812561035156e-05,
+        "scalarFields" : 1.406790018081665,
+        "visionRequests" : 0.01977694034576416
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -57188,45 +57638,6 @@
           "nativeGeometry" : [
             {
               "x" : 544.32,
-              "y" : 3850.56
-            },
-            {
-              "x" : 2476.32,
-              "y" : 3850.56
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.18,
-              "y" : 0.955
-            },
-            {
-              "x" : 0.8188888888888889,
-              "y" : 0.955
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "bottom",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 162,
-              "y" : 1146
-            },
-            {
-              "x" : 737,
-              "y" : 1146
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
-              "x" : 544.32,
               "y" : 399.84
             },
             {
@@ -57258,6 +57669,45 @@
             {
               "x" : 737,
               "y" : 119
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
+              "x" : 544.32,
+              "y" : 3850.56
+            },
+            {
+              "x" : 2476.32,
+              "y" : 3850.56
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.18,
+              "y" : 0.955
+            },
+            {
+              "x" : 0.8188888888888889,
+              "y" : 0.955
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "bottom",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 162,
+              "y" : 1146
+            },
+            {
+              "x" : 737,
+              "y" : 1146
             }
           ]
         },
@@ -61857,6 +62307,81 @@
       "innerSource" : "profile",
       "outerRefinementAccepted" : true,
       "outlineHasInner" : false,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 45.98202006963274,
+          "firstMinimum" : 45.98189982108254,
+          "firstSpread" : 0.00012024855019632241,
+          "secondMaximum" : 54.018100178917464,
+          "secondMinimum" : 54.01797993036726,
+          "secondSpread" : 0.00012024855020342784
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 45.98189982108254,
+              "secondPercentage" : 54.018100178917464
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 40.51947964402185,
+              "secondPercentage" : 59.48052035597815
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 45.98192950008873,
+              "secondPercentage" : 54.018070499911275
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 40.51950880897403,
+              "secondPercentage" : 59.48049119102596
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 45.98195943233639,
+              "secondPercentage" : 54.01804056766362
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 40.519537977109465,
+              "secondPercentage" : 59.480462022890535
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 45.98198962108071,
+              "secondPercentage" : 54.0180103789193
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 40.5195671484288,
+              "secondPercentage" : 59.4804328515712
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 45.98202006963274,
+              "secondPercentage" : 54.01797993036726
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 40.51959632293249,
+              "secondPercentage" : 59.4804036770675
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 40.51959632293249,
+          "firstMinimum" : 40.51947964402185,
+          "firstSpread" : 0.00011667891064348623,
+          "secondMaximum" : 59.48052035597815,
+          "secondMinimum" : 59.4804036770675,
+          "secondSpread" : 0.00011667891065059166
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 49.23201687633991,
@@ -61929,14 +62454,14 @@
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
         "colorPreparation" : 0,
-        "decodeOrientationDownscale" : 0.18678200244903564,
-        "innerCandidateGeneration" : 0.7911809682846069,
-        "jointSelection" : 9.059906005859375e-06,
-        "outerCandidateRefinement" : 0.11571598052978516,
-        "rectification" : 9.59634780883789e-05,
-        "resultConstruction" : 1.704692840576172e-05,
-        "scalarFields" : 1.5834330320358276,
-        "visionRequests" : 0.01956796646118164
+        "decodeOrientationDownscale" : 0.19149601459503174,
+        "innerCandidateGeneration" : 0.8078080415725708,
+        "jointSelection" : 6.9141387939453125e-06,
+        "outerCandidateRefinement" : 0.11760401725769043,
+        "rectification" : 8.90493392944336e-05,
+        "resultConstruction" : 1.3947486877441406e-05,
+        "scalarFields" : 1.608346939086914,
+        "visionRequests" : 0.020097017288208008
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -66625,45 +67150,6 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 258.72,
-              "y" : 450.24
-            },
-            {
-              "x" : 258.72,
-              "y" : 3568.32
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.08555555555555555,
-              "y" : 0.11166666666666666
-            },
-            {
-              "x" : 0.08555555555555555,
-              "y" : 0.885
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "left",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 77,
-              "y" : 134
-            },
-            {
-              "x" : 77,
-              "y" : 1062
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
               "x" : 544.32,
               "y" : 258.72
             },
@@ -66735,6 +67221,45 @@
             {
               "x" : 737,
               "y" : 1154
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
+              "x" : 258.72,
+              "y" : 450.24
+            },
+            {
+              "x" : 258.72,
+              "y" : 3568.32
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.08555555555555555,
+              "y" : 0.11166666666666666
+            },
+            {
+              "x" : 0.08555555555555555,
+              "y" : 0.885
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "left",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 77,
+              "y" : 134
+            },
+            {
+              "x" : 77,
+              "y" : 1062
             }
           ]
         },
@@ -70086,6 +70611,81 @@
       "innerSource" : "scalarInner",
       "outerRefinementAccepted" : true,
       "outlineHasInner" : true,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 50.523569003949234,
+          "firstMinimum" : 50.52187726198595,
+          "firstSpread" : 0.0016917419632846986,
+          "secondMaximum" : 49.47812273801405,
+          "secondMinimum" : 49.47643099605078,
+          "secondSpread" : 0.0016917419632704878
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 50.523569003949234,
+              "secondPercentage" : 49.47643099605078
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 37.95300774650575,
+              "secondPercentage" : 62.046992253494246
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 50.52314606856489,
+              "secondPercentage" : 49.47685393143511
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 37.95260720085013,
+              "secondPercentage" : 62.047392799149875
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 50.52272313310958,
+              "secondPercentage" : 49.477276866890435
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 37.95220665674405,
+              "secondPercentage" : 62.04779334325595
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 50.52230019758325,
+              "secondPercentage" : 49.477699802416744
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 37.9518061141876,
+              "secondPercentage" : 62.0481938858124
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 50.52187726198595,
+              "secondPercentage" : 49.47812273801405
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 37.951405573180814,
+              "secondPercentage" : 62.048594426819186
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 37.95300774650575,
+          "firstMinimum" : 37.951405573180814,
+          "firstSpread" : 0.001602173324933176,
+          "secondMaximum" : 62.048594426819186,
+          "secondMinimum" : 62.046992253494246,
+          "secondSpread" : 0.0016021733249402814
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 57.00831413269043,
@@ -70157,15 +70757,15 @@
       "selectedOuterSource" : "vision",
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
-        "colorPreparation" : 9.5367431640625e-07,
-        "decodeOrientationDownscale" : 0.1810070276260376,
-        "innerCandidateGeneration" : 0.8119699954986572,
+        "colorPreparation" : 0,
+        "decodeOrientationDownscale" : 0.19059598445892334,
+        "innerCandidateGeneration" : 0.8150429725646973,
         "jointSelection" : 7.033348083496094e-06,
-        "outerCandidateRefinement" : 0.11402106285095215,
-        "rectification" : 9.906291961669922e-05,
-        "resultConstruction" : 1.6927719116210938e-05,
-        "scalarFields" : 1.4090969562530518,
-        "visionRequests" : 0.02149200439453125
+        "outerCandidateRefinement" : 0.11727404594421387,
+        "rectification" : 9.09566879272461e-05,
+        "resultConstruction" : 1.2993812561035156e-05,
+        "scalarFields" : 1.442315936088562,
+        "visionRequests" : 0.019189000129699707
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -77014,84 +77614,6 @@
           "nativeGeometry" : [
             {
               "x" : 544.32,
-              "y" : 3655.68
-            },
-            {
-              "x" : 2476.32,
-              "y" : 3655.68
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.18,
-              "y" : 0.9066666666666666
-            },
-            {
-              "x" : 0.8188888888888889,
-              "y" : 0.9066666666666666
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "bottom",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 162,
-              "y" : 1088
-            },
-            {
-              "x" : 737,
-              "y" : 1088
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
-              "x" : 312.48,
-              "y" : 480.48
-            },
-            {
-              "x" : 312.48,
-              "y" : 3601.92
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.10333333333333333,
-              "y" : 0.11916666666666667
-            },
-            {
-              "x" : 0.10333333333333333,
-              "y" : 0.8933333333333333
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "left",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 93,
-              "y" : 143
-            },
-            {
-              "x" : 93,
-              "y" : 1072
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
-              "x" : 544.32,
               "y" : 329.28
             },
             {
@@ -77161,6 +77683,84 @@
             },
             {
               "x" : 809,
+              "y" : 1072
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
+              "x" : 544.32,
+              "y" : 3655.68
+            },
+            {
+              "x" : 2476.32,
+              "y" : 3655.68
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.18,
+              "y" : 0.9066666666666666
+            },
+            {
+              "x" : 0.8188888888888889,
+              "y" : 0.9066666666666666
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "bottom",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 162,
+              "y" : 1088
+            },
+            {
+              "x" : 737,
+              "y" : 1088
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
+              "x" : 312.48,
+              "y" : 480.48
+            },
+            {
+              "x" : 312.48,
+              "y" : 3601.92
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.10333333333333333,
+              "y" : 0.11916666666666667
+            },
+            {
+              "x" : 0.10333333333333333,
+              "y" : 0.8933333333333333
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "left",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 93,
+              "y" : 143
+            },
+            {
+              "x" : 93,
               "y" : 1072
             }
           ]
@@ -81616,15 +82216,15 @@
       "selectedOuterSource" : "vision",
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
-        "colorPreparation" : 0.12150907516479492,
-        "decodeOrientationDownscale" : 0.19204497337341309,
-        "innerCandidateGeneration" : 0.777243971824646,
-        "jointSelection" : 1.5020370483398438e-05,
-        "outerCandidateRefinement" : 0.11593401432037354,
-        "rectification" : 9.59634780883789e-05,
-        "resultConstruction" : 2.6941299438476562e-05,
-        "scalarFields" : 1.4691098928451538,
-        "visionRequests" : 0.02035808563232422
+        "colorPreparation" : 0.12289798259735107,
+        "decodeOrientationDownscale" : 0.19592499732971191,
+        "innerCandidateGeneration" : 0.7966430187225342,
+        "jointSelection" : 9.059906005859375e-06,
+        "outerCandidateRefinement" : 0.11966502666473389,
+        "rectification" : 9.09566879272461e-05,
+        "resultConstruction" : 2.002716064453125e-05,
+        "scalarFields" : 1.4942569732666016,
+        "visionRequests" : 0.01876997947692871
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -85985,45 +86585,6 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 544.32,
-              "y" : 534.24
-            },
-            {
-              "x" : 2476.32,
-              "y" : 534.24
-            }
-          ],
-          "normalizedGeometry" : [
-            {
-              "x" : 0.18,
-              "y" : 0.1325
-            },
-            {
-              "x" : 0.8188888888888889,
-              "y" : 0.1325
-            }
-          ],
-          "proposedSemanticRole" : "untyped_inner_reference",
-          "selected" : true,
-          "side" : "top",
-          "source" : "scalar.border_walk",
-          "support" : 1,
-          "transitionStrength" : 0,
-          "workingGeometry" : [
-            {
-              "x" : 162,
-              "y" : 159
-            },
-            {
-              "x" : 737,
-              "y" : 159
-            }
-          ]
-        },
-        {
-          "family" : "inner",
-          "nativeGeometry" : [
-            {
               "x" : 265.44,
               "y" : 416.64
             },
@@ -86056,6 +86617,45 @@
             {
               "x" : 79,
               "y" : 1054
+            }
+          ]
+        },
+        {
+          "family" : "inner",
+          "nativeGeometry" : [
+            {
+              "x" : 544.32,
+              "y" : 534.24
+            },
+            {
+              "x" : 2476.32,
+              "y" : 534.24
+            }
+          ],
+          "normalizedGeometry" : [
+            {
+              "x" : 0.18,
+              "y" : 0.1325
+            },
+            {
+              "x" : 0.8188888888888889,
+              "y" : 0.1325
+            }
+          ],
+          "proposedSemanticRole" : "untyped_inner_reference",
+          "selected" : true,
+          "side" : "top",
+          "source" : "scalar.border_walk",
+          "support" : 1,
+          "transitionStrength" : 0,
+          "workingGeometry" : [
+            {
+              "x" : 162,
+              "y" : 159
+            },
+            {
+              "x" : 737,
+              "y" : 159
             }
           ]
         },
@@ -89989,6 +90589,81 @@
       "innerSource" : "profile",
       "outerRefinementAccepted" : true,
       "outlineHasInner" : false,
+      "positionalConsistency" : {
+        "leftRight" : {
+          "firstMaximum" : 63.62763725403443,
+          "firstMinimum" : 63.62644455098788,
+          "firstSpread" : 0.001192703046555721,
+          "secondMaximum" : 36.37355544901213,
+          "secondMinimum" : 36.37236274596556,
+          "secondSpread" : 0.0011927030465699318
+        },
+        "samples" : [
+          {
+            "leftRight" : {
+              "firstPercentage" : 63.62763725403443,
+              "secondPercentage" : 36.37236274596556
+            },
+            "normalizedPosition" : 0,
+            "topBottom" : {
+              "firstPercentage" : 37.97991186209331,
+              "secondPercentage" : 62.0200881379067
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 63.62734238623654,
+              "secondPercentage" : 36.37265761376345
+            },
+            "normalizedPosition" : 0.25,
+            "topBottom" : {
+              "firstPercentage" : 37.97960775306742,
+              "secondPercentage" : 62.02039224693258
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 63.62704532950056,
+              "secondPercentage" : 36.37295467049944
+            },
+            "normalizedPosition" : 0.5,
+            "topBottom" : {
+              "firstPercentage" : 37.979304061381846,
+              "secondPercentage" : 62.02069593861815
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 63.62674605936132,
+              "secondPercentage" : 36.37325394063869
+            },
+            "normalizedPosition" : 0.75,
+            "topBottom" : {
+              "firstPercentage" : 37.97900078617808,
+              "secondPercentage" : 62.02099921382192
+            }
+          },
+          {
+            "leftRight" : {
+              "firstPercentage" : 63.62644455098788,
+              "secondPercentage" : 36.37355544901213
+            },
+            "normalizedPosition" : 1,
+            "topBottom" : {
+              "firstPercentage" : 37.97869792659997,
+              "secondPercentage" : 62.02130207340004
+            }
+          }
+        ],
+        "topBottom" : {
+          "firstMaximum" : 37.97991186209331,
+          "firstMinimum" : 37.97869792659997,
+          "firstSpread" : 0.0012139354933395907,
+          "secondMaximum" : 62.02130207340004,
+          "secondMinimum" : 62.0200881379067,
+          "secondSpread" : 0.0012139354933395907
+        }
+      },
       "proposedOuterQuad" : {
         "bottomLeft" : {
           "x" : 55.36835454404354,
@@ -90061,14 +90736,14 @@
       "selectedSleeveAmbiguity" : 0,
       "stageTimings" : {
         "colorPreparation" : 0,
-        "decodeOrientationDownscale" : 0.18624091148376465,
-        "innerCandidateGeneration" : 0.7858530282974243,
+        "decodeOrientationDownscale" : 0.1888200044631958,
+        "innerCandidateGeneration" : 0.81455397605896,
         "jointSelection" : 7.987022399902344e-06,
-        "outerCandidateRefinement" : 0.11185002326965332,
-        "rectification" : 9.703636169433594e-05,
-        "resultConstruction" : 2.09808349609375e-05,
-        "scalarFields" : 1.4411929845809937,
-        "visionRequests" : 0.020019054412841797
+        "outerCandidateRefinement" : 0.116860032081604,
+        "rectification" : 0.00010001659393310547,
+        "resultConstruction" : 1.6927719116210938e-05,
+        "scalarFields" : 1.4793150424957275,
+        "visionRequests" : 0.02005290985107422
       },
       "visionOuterQuad" : {
         "bottomLeft" : {
@@ -96530,38 +97205,38 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 544.32,
-              "y" : 325.92
+              "x" : 2721.6,
+              "y" : 480.48
             },
             {
-              "x" : 2476.32,
-              "y" : 325.92
+              "x" : 2721.6,
+              "y" : 3598.56
             }
           ],
           "normalizedGeometry" : [
             {
-              "x" : 0.18,
-              "y" : 0.08083333333333333
+              "x" : 0.9,
+              "y" : 0.11916666666666667
             },
             {
-              "x" : 0.8188888888888889,
-              "y" : 0.08083333333333333
+              "x" : 0.9,
+              "y" : 0.8925
             }
           ],
           "proposedSemanticRole" : "untyped_inner_reference",
           "selected" : true,
-          "side" : "top",
+          "side" : "right",
           "source" : "scalar.border_walk",
           "support" : 1,
           "transitionStrength" : 0,
           "workingGeometry" : [
             {
-              "x" : 162,
-              "y" : 97
+              "x" : 810,
+              "y" : 143
             },
             {
-              "x" : 737,
-              "y" : 97
+              "x" : 810,
+              "y" : 1071
             }
           ]
         },
@@ -96608,38 +97283,38 @@
           "family" : "inner",
           "nativeGeometry" : [
             {
-              "x" : 2721.6,
-              "y" : 480.48
+              "x" : 544.32,
+              "y" : 325.92
             },
             {
-              "x" : 2721.6,
-              "y" : 3598.56
+              "x" : 2476.32,
+              "y" : 325.92
             }
           ],
           "normalizedGeometry" : [
             {
-              "x" : 0.9,
-              "y" : 0.11916666666666667
+              "x" : 0.18,
+              "y" : 0.08083333333333333
             },
             {
-              "x" : 0.9,
-              "y" : 0.8925
+              "x" : 0.8188888888888889,
+              "y" : 0.08083333333333333
             }
           ],
           "proposedSemanticRole" : "untyped_inner_reference",
           "selected" : true,
-          "side" : "right",
+          "side" : "top",
           "source" : "scalar.border_walk",
           "support" : 1,
           "transitionStrength" : 0,
           "workingGeometry" : [
             {
-              "x" : 810,
-              "y" : 143
+              "x" : 162,
+              "y" : 97
             },
             {
-              "x" : 810,
-              "y" : 1071
+              "x" : 737,
+              "y" : 97
             }
           ]
         },
