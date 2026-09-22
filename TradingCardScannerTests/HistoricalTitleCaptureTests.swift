@@ -82,8 +82,16 @@ final class HistoricalTitleCaptureTests: XCTestCase {
             PokemonHistoricalScanEvidence(number: number, titleCandidates: ["2020 pokemon nintendo"])
         )
 
-        var scans = UnresolvedScan.merging([], with: ScanSubject(identifier: first))
-        scans = UnresolvedScan.merging(scans, with: ScanSubject(identifier: second))
+        var scans = UnresolvedScan.merging(
+            [],
+            with: ScanSubject(identifier: first),
+            reason: .noConfirmedMatch
+        )
+        scans = UnresolvedScan.merging(
+            scans,
+            with: ScanSubject(identifier: second),
+            reason: .noConfirmedMatch
+        )
 
         XCTAssertEqual(scans.count, 1, "one card, one row")
         XCTAssertEqual(
@@ -98,12 +106,20 @@ final class HistoricalTitleCaptureTests: XCTestCase {
         let other = PokemonPrintedNumberEvidence(
             localID: "91", denominator: 202, scheme: .officialSet
         )
-        var scans = UnresolvedScan.merging([], with: ScanSubject(identifier: .pokemonHistorical(
-            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["a"])
-        )))
-        scans = UnresolvedScan.merging(scans, with: ScanSubject(identifier: .pokemonHistorical(
-            PokemonHistoricalScanEvidence(number: other, titleCandidates: ["b"])
-        )))
+        var scans = UnresolvedScan.merging(
+            [],
+            with: ScanSubject(identifier: .pokemonHistorical(
+                PokemonHistoricalScanEvidence(number: number, titleCandidates: ["a"])
+            )),
+            reason: .noConfirmedMatch
+        )
+        scans = UnresolvedScan.merging(
+            scans,
+            with: ScanSubject(identifier: .pokemonHistorical(
+                PokemonHistoricalScanEvidence(number: other, titleCandidates: ["b"])
+            )),
+            reason: .noConfirmedMatch
+        )
 
         XCTAssertEqual(scans.count, 2)
     }
@@ -139,10 +155,64 @@ final class HistoricalTitleCaptureTests: XCTestCase {
             PokemonHistoricalScanEvidence(number: number, titleCandidates: ["two"])
         )
 
-        var scans = UnresolvedScan.merging([], with: ScanSubject(identifier: first))
-        scans = UnresolvedScan.merging(scans, with: ScanSubject(identifier: second))
+        var scans = UnresolvedScan.merging(
+            [],
+            with: ScanSubject(identifier: first),
+            reason: .noConfirmedMatch
+        )
+        scans = UnresolvedScan.merging(
+            scans,
+            with: ScanSubject(identifier: second),
+            reason: .noConfirmedMatch
+        )
 
         XCTAssertEqual(scans.count, 1)
         XCTAssertEqual(scans[0].titleCandidates.sorted(), ["one", "two"])
+    }
+
+    func testUnresolvedReasonRequiresExactIdentifierAndExplicitProviderNotFound() throws {
+        let promo = try XCTUnwrap(ScanParser.parsePokemon(["MEP 095"]))
+        XCTAssertEqual(
+            UnresolvedReason.reason(for: promo, error: TCGdexError.cardNotFound),
+            .noCatalogEntry
+        )
+        XCTAssertEqual(
+            UnresolvedReason.reason(for: promo, error: TCGdexError.identityMismatch),
+            .noConfirmedMatch
+        )
+
+        let magic = ScanIdentifier.magic(
+            setCode: "TST",
+            collectorNumber: "001",
+            language: "en"
+        )
+        XCTAssertEqual(
+            UnresolvedReason.reason(for: magic, error: ScryfallError.cardNotFound),
+            .noCatalogEntry
+        )
+        XCTAssertEqual(
+            UnresolvedReason.reason(for: magic, error: ScryfallError.unsupportedPrinting),
+            .noConfirmedMatch
+        )
+
+        let historical = ScanIdentifier.pokemonHistorical(
+            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["gengar"])
+        )
+        XCTAssertEqual(
+            UnresolvedReason.reason(for: historical, error: PokemonHistoricalCatalogError.unsupported),
+            .noConfirmedMatch
+        )
+    }
+
+    func testUnresolvedMergeKeepsMoreCautiousReason() throws {
+        let identifier = try XCTUnwrap(ScanParser.parsePokemon(["MEP 095"]))
+        let subject = ScanSubject(identifier: identifier)
+        var scans = UnresolvedScan.merging([], with: subject, reason: .noCatalogEntry)
+        let existingRowID = try XCTUnwrap(scans.first?.id)
+        scans = UnresolvedScan.merging(scans, with: subject, reason: .noConfirmedMatch)
+
+        XCTAssertEqual(scans.count, 1)
+        XCTAssertEqual(scans[0].id, existingRowID)
+        XCTAssertEqual(scans[0].reason, .noConfirmedMatch)
     }
 }

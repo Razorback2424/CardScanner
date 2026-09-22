@@ -2,10 +2,9 @@ import Foundation
 
 /// Why a lookup failed, in the only terms the scanner cares about.
 enum CatalogFailure: Equatable {
-    /// The identifier was read correctly but no such record exists, or the record
-    /// contradicts what was printed on the card. Re-reading the same card will
-    /// fail the same way, so the scanner keeps its latch and asks the user to set
-    /// the card aside instead of retrying in a loop.
+    /// The lookup produced a deterministic catalog-side result rather than a
+    /// transient outage. This may mean no record was found, the provider's
+    /// identity disagreed, or the requested printing is unsupported.
     case notInCatalog
     /// Network or server trouble. Nothing was written and nothing is known to be
     /// wrong with the card, so the very next reading should be allowed through.
@@ -1008,6 +1007,15 @@ actor CardCatalog {
             return .providerUnavailable
         default:
             return .transient
+        }
+    }
+
+    static func isProviderNotFound(_ error: Error) -> Bool {
+        switch error {
+        case TCGdexError.cardNotFound, ScryfallError.cardNotFound:
+            return true
+        default:
+            return false
         }
     }
 

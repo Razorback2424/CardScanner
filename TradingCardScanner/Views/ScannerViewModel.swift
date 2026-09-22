@@ -389,6 +389,7 @@ private struct DeferredHeldDuplicateOffer: Equatable {
 
 private struct CatalogMissVerification: Equatable {
     let suppressionKey: ScanSuppressionKey
+    let reason: UnresolvedReason
     var window = SuppressionKeyVerificationWindow()
 }
 
@@ -706,16 +707,34 @@ struct SuppressionKeyVerificationWindow: Equatable, Sendable {
     }
 }
 
+enum UnresolvedReason: Equatable, Sendable {
+    case noCatalogEntry
+    case noConfirmedMatch
+
+    nonisolated static func reason(for identifier: ScanIdentifier, error: Error) -> UnresolvedReason {
+        guard CardCatalog.isProviderNotFound(error) else { return .noConfirmedMatch }
+        switch identifier {
+        case .pokemon, .pokemonPromo, .magic:
+            return .noCatalogEntry
+        case .pokemonHistorical:
+            return .noConfirmedMatch
+        }
+    }
+}
+
 /// A failed scan kept for the lifetime of the scanner session. The warning chip
 /// opens these details; it never doubles as a destructive clear action.
 struct UnresolvedScan: Identifiable, Equatable {
-    let id = UUID()
+    let id: UUID
     let subject: ScanSubject
+    let reason: UnresolvedReason
 
     var identifier: ScanIdentifier { subject.identifier }
 
-    init(subject: ScanSubject) {
+    init(id: UUID = UUID(), subject: ScanSubject, reason: UnresolvedReason) {
+        self.id = id
         self.subject = subject
+        self.reason = reason
     }
 
     var titleCandidates: [String] {
@@ -736,9 +755,10 @@ struct UnresolvedScan: Identifiable, Equatable {
     /// card and keeping every distinct reading so the user can see what it read.
     static func merging(
         _ scans: [UnresolvedScan],
-        with subject: ScanSubject
+        with subject: ScanSubject,
+        reason: UnresolvedReason
     ) -> [UnresolvedScan] {
-        let incoming = UnresolvedScan(subject: subject)
+        let incoming = UnresolvedScan(subject: subject, reason: reason)
         guard let index = scans.firstIndex(where: { $0.mergeKey == incoming.mergeKey }) else {
             return scans + [incoming]
         }
@@ -748,16 +768,25 @@ struct UnresolvedScan: Identifiable, Equatable {
     }
 
     private func absorbing(_ other: UnresolvedScan) -> UnresolvedScan {
+        let mergedReason: UnresolvedReason =
+            reason == .noConfirmedMatch || other.reason == .noConfirmedMatch
+                ? .noConfirmedMatch
+                : .noCatalogEntry
+
         guard case let .pokemonHistorical(mine) = identifier,
-              case let .pokemonHistorical(theirs) = other.identifier else { return self }
+              case let .pokemonHistorical(theirs) = other.identifier else {
+            return UnresolvedScan(id: id, subject: subject, reason: mergedReason)
+        }
         let titles = Array(Set(mine.titleCandidates + theirs.titleCandidates)).sorted()
         return UnresolvedScan(
+            id: id,
             subject: ScanSubject(
                 identifier: .pokemonHistorical(
                     PokemonHistoricalScanEvidence(number: mine.number, titleCandidates: titles)
                 ),
                 slab: subject.slab
-            )
+            ),
+            reason: mergedReason
         )
     }
 
@@ -3467,10 +3496,21 @@ final class ScannerViewModel: ObservableObject {
 
         guard !verification.window.observe(subject) else {
             catalogMissVerification = nil
-            unresolvedScans = UnresolvedScan.merging(unresolvedScans, with: subject)
+            unresolvedScans = UnresolvedScan.merging(
+                unresolvedScans,
+                with: subject,
+                reason: verification.reason
+            )
+            let noteText: String
+            switch verification.reason {
+            case .noCatalogEntry:
+                noteText = "\(subject.displayIdentifier) has no catalog match — set it aside"
+            case .noConfirmedMatch:
+                noteText = "Still can't confirm \(subject.displayIdentifier) — set it aside"
+            }
             show(
                 ScanNote(
-                    text: "Still can't confirm \(subject.displayIdentifier) — set it aside",
+                    text: noteText,
                     tone: .problem
                 )
             )
@@ -3479,19 +3519,45 @@ final class ScannerViewModel: ObservableObject {
         catalogMissVerification = verification
     }
 
+    nonisolated static func failureAcknowledgementMessage(
+        for failure: CatalogFailure,
+        unresolvedReason: UnresolvedReason,
+        displayIdentifier: String
+    ) -> String {
+        switch failure {
+        case .transient:
+            return "This card was recognized but was not added. Try again."
+        case .providerUnavailable:
+            return "Not added — card lookup is unavailable right now. Try again later."
+        case .notInCatalog:
+            switch unresolvedReason {
+            case .noCatalogEntry:
+                return "Read \(displayIdentifier), but the catalog has no card with that number. Nothing was added."
+            case .noConfirmedMatch:
+                return "This card was recognized but was not added. Try again."
+            }
+        }
+    }
+
     private func handleLookupFailure(_ request: ScanRequest, _ error: Error) {
         let subject = request.subject
+        let failure = CardCatalog.classify(error)
+        let unresolvedReason = UnresolvedReason.reason(for: request.identifier, error: error)
         if request.purpose == .collection {
             failAcknowledgement(
                 for: request.encounterID,
-                message: "This card was recognized but was not added. Try again."
+                message: Self.failureAcknowledgementMessage(
+                    for: failure,
+                    unresolvedReason: unresolvedReason,
+                    displayIdentifier: subject.displayIdentifier
+                )
             )
         } else {
             endOneCardScan(encounterID: request.encounterID, outcome: "price-check-failure")
         }
         feedback.problem()
 
-        switch CardCatalog.classify(error) {
+        switch failure {
         case .transient:
             // Nothing is known to be wrong with the card, so let the very next
             // reading through instead of making the user re-present it.
@@ -3511,7 +3577,8 @@ final class ScannerViewModel: ObservableObject {
             // three-of-five suppression-key window verifies the physical card.
             if catalogMissVerification?.suppressionKey != subject.suppressionKey {
                 catalogMissVerification = CatalogMissVerification(
-                    suppressionKey: subject.suppressionKey
+                    suppressionKey: subject.suppressionKey,
+                    reason: unresolvedReason
                 )
             }
         }
@@ -3703,6 +3770,7 @@ final class ScannerViewModel: ObservableObject {
             self?.dismissChoice()
         }
     }
+
 #endif
 
     private func diagnostic(_ event: String) {

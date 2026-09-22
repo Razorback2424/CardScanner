@@ -57,6 +57,18 @@ final class ScanParserTests: XCTestCase {
         }
     }
 
+    func testMEPPromoNumbersAreNotLocallyCapped() {
+        for localID in ["095", "101"] {
+            guard case let .pokemonPromo(prefix, parsedLocalID, definition)? =
+                    ScanParser.parsePokemon(["MEP \(localID)"]) else {
+                return XCTFail("Expected MEP promo identifier for MEP \(localID)")
+            }
+            XCTAssertEqual(prefix, "MEP")
+            XCTAssertEqual(parsedLocalID, localID)
+            XCTAssertEqual(definition.tcgdexSetID, "mep")
+        }
+    }
+
     func testPromoParserDoesNotReinterpretModernExpansionIdentifier() {
         XCTAssertEqual(ScanParser.parsePokemon("OBF 223/197")?.displayIdentifier, "OBF 223/197")
         XCTAssertNil(ScanParser.parsePokemon("MEP 083/084"))

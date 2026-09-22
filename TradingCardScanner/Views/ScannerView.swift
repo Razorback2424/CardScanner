@@ -24,7 +24,12 @@ struct ScannerView: View {
         guard let index = arguments.firstIndex(of: "-ui_debug_route"),
               arguments.indices.contains(index + 1) else { return nil }
         let route = arguments[index + 1]
-        return ["WholeCardScanner", "PriceCheck", "ScanChoiceCancellation", "TrustScanReceipt"].contains(route) ? route : nil
+        return [
+            "WholeCardScanner",
+            "PriceCheck",
+            "ScanChoiceCancellation",
+            "TrustScanReceipt"
+        ].contains(route) ? route : nil
     }
 #endif
 
@@ -563,11 +568,21 @@ private struct UnresolvedScansSheet: View {
     let scans: [UnresolvedScan]
     let onClear: () -> Void
 
+    private var instructions: String {
+        if scans.contains(where: { $0.reason == .noConfirmedMatch }) {
+            return "Nothing in this list was added to your collection. Use the details below to reposition and scan again."
+        }
+        if scans.isEmpty {
+            return "Nothing in this list was added to your collection."
+        }
+        return "Nothing here was added. Check that the number shown matches the card. Newly released cards can take a while to reach the catalog."
+    }
+
     var body: some View {
         NavigationStack {
             List {
                 Section {
-                    Text("Nothing in this list was added to your collection. Use the details below to reposition and scan again.")
+                    Text(instructions)
                         .foregroundStyle(.secondary)
                 }
 
@@ -580,7 +595,9 @@ private struct UnresolvedScansSheet: View {
                                 Text("Title read: \(scan.titleCandidates.joined(separator: ", "))")
                                     .font(.subheadline)
                             }
-                            Text("No unique catalog match was confirmed")
+                            Text(scan.reason == .noCatalogEntry
+                                ? "Read consistently, but no catalog card has this number. If it matches the card, the catalog may not list it yet."
+                                : "No unique catalog match was confirmed")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }

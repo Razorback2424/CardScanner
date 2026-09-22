@@ -517,3 +517,11 @@ historical.
   selection remains blocked by the pre-existing `CardCenteringMeasurement`
   API mismatch in `CenteringExportTests`; screenshot iteration was stopped at
   the user's request after the detail route was visibly reached.
+- MEP 095 unresolved-scan messaging (2026-09-22): distinguish explicit
+  provider not-found results for exact identifiers from unconfirmed matches,
+  preserve the cautious reason when rows merge, and show provider-unavailable
+  retry copy. The focused HistoricalTitleCapture, ScannerViewModel, and
+  ScanParser selections pass 115 tests; iPhone 17 Pro iOS 26.5 simulator
+  screenshots confirmed mixed-row and catalog-only copy plus combined row
+  accessibility labels. No physical-device or later TCGdex publication check
+  was performed.

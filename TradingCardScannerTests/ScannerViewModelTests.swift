@@ -915,9 +915,10 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.sessionScans.first?.card.id, "pokemon:test-set-002")
     }
 
-    func testCatalogMissVerificationStillFilesUnresolvedCard() async throws {
+    func testCatalogMissVerificationFilesPromoWithNoCatalogEntryReason() async throws {
         let model = try makeModel(variants: [.normal], catalogMiss: true)
-        let subject = ScanSubject(identifier: scannerIdentifier())
+        let identifier = try XCTUnwrap(ScanParser.parsePokemon("MEP 095"))
+        let subject = ScanSubject(identifier: identifier)
         let start = CFAbsoluteTimeGetCurrent()
 
         model.scanner.receiveFooterOutcomeForTesting(
@@ -929,10 +930,14 @@ final class ScannerViewModelTests: XCTestCase {
             at: start + 0.5
         )
 
-        let recognized = await waitUntil {
-            model.scanAcknowledgement?.phase == .recognized
+        let failed = await waitUntil {
+            model.scanAcknowledgement?.phase == .failed
         }
-        XCTAssertTrue(recognized)
+        XCTAssertTrue(failed)
+        XCTAssertEqual(
+            model.scanAcknowledgement?.message,
+            "Read MEP 095, but the catalog has no card with that number. Nothing was added."
+        )
         await settle()
 
         // The model installs the catalog-miss key on the scanner's Vision queue.
@@ -948,6 +953,19 @@ final class ScannerViewModelTests: XCTestCase {
         let filed = await waitUntil { model.unresolvedScans.count == 1 }
         XCTAssertTrue(filed)
         XCTAssertEqual(model.unresolvedScans.first?.subject, subject)
+        XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
+    }
+
+    func testProviderUnavailableAcknowledgementSaysTryAgainLater() {
+        XCTAssertEqual(CardCatalog.classify(ScryfallError.providerUnavailable), .providerUnavailable)
+        XCTAssertEqual(
+            ScannerViewModel.failureAcknowledgementMessage(
+                for: .providerUnavailable,
+                unresolvedReason: .noConfirmedMatch,
+                displayIdentifier: "TST 1/10"
+            ),
+            "Not added — card lookup is unavailable right now. Try again later."
+        )
     }
 
     func testLeavingScanPublishesSummaryClearsSessionAndReturnsFresh() async throws {
@@ -1166,8 +1184,13 @@ final class ScannerViewModelTests: XCTestCase {
         )
 
         let merged = UnresolvedScan.merging(
-            UnresolvedScan.merging([], with: ScanSubject(identifier: first)),
-            with: ScanSubject(identifier: second)
+            UnresolvedScan.merging(
+                [],
+                with: ScanSubject(identifier: first),
+                reason: .noConfirmedMatch
+            ),
+            with: ScanSubject(identifier: second),
+            reason: .noConfirmedMatch
         )
 
         XCTAssertEqual(merged.count, 1)
@@ -1203,8 +1226,9 @@ final class ScannerViewModelTests: XCTestCase {
         )
 
         let merged = UnresolvedScan.merging(
-            UnresolvedScan.merging([], with: first),
-            with: second
+            UnresolvedScan.merging([], with: first, reason: .noConfirmedMatch),
+            with: second,
+            reason: .noConfirmedMatch
         )
 
         XCTAssertEqual(merged.count, 1)
