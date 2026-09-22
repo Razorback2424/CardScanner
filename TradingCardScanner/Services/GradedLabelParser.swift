@@ -782,10 +782,38 @@ struct SlabEvidenceConfirmationWindow: Equatable, Sendable {
         observations.removeAll(keepingCapacity: true)
     }
 
-    private func matches(_ lhs: GradedSlabEvidence, _ rhs: GradedSlabEvidence) -> Bool {
-        guard lhs.suppressionFragment == rhs.suppressionFragment else { return false }
-        guard lhs.certificationNumber == nil, rhs.certificationNumber == nil else { return true }
+    static func isCertificateRefinement(
+        from previous: GradedSlabEvidence,
+        to updated: GradedSlabEvidence
+    ) -> Bool {
+        previous.certificationNumber == nil
+            && updated.certificationNumber != nil
+            && previous.company == updated.company
+            && previous.grade == updated.grade
+            && cardNameMatches(previous, updated)
+    }
 
+    private func matches(_ lhs: GradedSlabEvidence, _ rhs: GradedSlabEvidence) -> Bool {
+        guard lhs.company == rhs.company, lhs.grade == rhs.grade else { return false }
+
+        switch (lhs.certificationNumber, rhs.certificationNumber) {
+        case let (lhs?, rhs?):
+            // A readable certificate is exact physical evidence. Never let a
+            // name match collapse two different certified slabs.
+            return lhs == rhs
+        case (.some, nil), (nil, .some), (nil, nil):
+            // If either pass missed the certificate, the printed card name is
+            // the evidence that both passes describe the same slab.
+            break
+        }
+
+        return Self.cardNameMatches(lhs, rhs)
+    }
+
+    private static func cardNameMatches(
+        _ lhs: GradedSlabEvidence,
+        _ rhs: GradedSlabEvidence
+    ) -> Bool {
         let lhsLines = lhs.labelCardText
             .map(Self.normalizedLabelTokens)
             .filter { !$0.isEmpty }
@@ -793,10 +821,6 @@ struct SlabEvidenceConfirmationWindow: Equatable, Sendable {
             .map(Self.normalizedLabelTokens)
             .filter { !$0.isEmpty }
 
-        // A glare-obscured label can legitimately leave no card text at all;
-        // the shared company/grade/certificate-less suppression fragment is the
-        // only evidence available, and it must match itself.
-        guard !lhsLines.isEmpty || !rhsLines.isEmpty else { return true }
         guard !lhsLines.isEmpty, !rhsLines.isEmpty else { return false }
 
         // Require a majority of the larger line's tokens to match. Matching is

@@ -34,6 +34,12 @@ enum SlabFramingRegion {
         titleBand: CGRect(x: 0.135, y: 0.625, width: 0.73, height: 0.115)
     )
 
+    /// The first probe runs before framing has identified the outer slab. Keep
+    /// it broad enough to find the label when the card inside the holder is
+    /// aligned with the raw-card guide. Once a grader is hinted, subsequent
+    /// reads use that grader's calibrated label band.
+    static let bootstrapLabelVisionRect = CGRect(x: 0.05, y: 0.67, width: 0.90, height: 0.32)
+
     static func geometry(for company: GradingCompany?) -> Geometry {
         // Keep the selector explicit so a future label revision can change a
         // single company's bands without changing the parser or camera loop.

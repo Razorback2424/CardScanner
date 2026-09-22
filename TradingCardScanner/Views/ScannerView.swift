@@ -163,7 +163,11 @@ private struct ScannerChrome: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
-            ScannerStatusView(state: scanner.uiState)
+            ScannerStatusView(
+                state: scanner.uiState,
+                purpose: model.purpose,
+                useRaw: model.chooseRawForPendingSlabLabel
+            )
 
             if let offer = model.heldDuplicateOffer {
                 HeldDuplicateOfferView(
@@ -319,15 +323,26 @@ private struct ScannerChrome: View {
 
 private struct ScannerStatusView: View {
     @ObservedObject var state: CardScannerUIState
+    let purpose: ScanPurpose
+    let useRaw: (UUID) -> Void
 
     var body: some View {
-        Group {
+        VStack(spacing: 8) {
             if let message = state.scanAssistance.message {
                 ScanAssistanceView(message: message)
                     .transition(.opacity)
             }
+            if let prompt = state.slabLabelReadPrompt {
+                SlabLabelReadingOfferView(
+                    prompt: prompt,
+                    purpose: purpose,
+                    onUseRaw: { useRaw(prompt.id) }
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
         }
         .animation(.easeOut(duration: 0.18), value: state.scanAssistance)
+        .animation(.easeOut(duration: 0.18), value: state.slabLabelReadPrompt)
     }
 }
 

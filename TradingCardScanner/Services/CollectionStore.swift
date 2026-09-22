@@ -141,6 +141,20 @@ actor ScannerCollectionWriter {
         }
     }
 
+    func refineGradedCertification(
+        for scan: RecentScan,
+        to evidence: GradedSlabEvidence
+    ) throws -> CollectionMutation? {
+        guard let certificationNumber = evidence.certificationNumber else { return nil }
+        return try CollectionStore(context: modelContext).recordGradedCertificationRefinement(
+            underlying: scan.card,
+            previous: scan.mutation,
+            company: evidence.company,
+            grade: evidence.grade,
+            certificationNumber: certificationNumber
+        )
+    }
+
     private func saveModelContext() throws {
         #if DEBUG
         if let saveOverrideForTesting {
@@ -2179,6 +2193,210 @@ struct CollectionStore {
                 activityID: activity.id,
                 didInsert: true,
                 ledgerOperationIDs: [operationID]
+            )
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    /// Refines the certificate on the exact scanner acquisition that produced
+    /// a certless graded row. When that row also represents other certless
+    /// copies, move only this encounter's ledger-backed unit to the certified
+    /// key. This keeps certificate discovery from creating a second collection
+    /// entry for the same continuously tracked slab.
+    @discardableResult
+    func recordGradedCertificationRefinement(
+        underlying card: IdentifiedCard,
+        previous mutation: CollectionMutation,
+        company: GradingCompany,
+        grade: CardGrade,
+        certificationNumber: String
+    ) throws -> CollectionMutation? {
+        guard !certificationNumber.isEmpty,
+              let activityID = mutation.activityID else { return nil }
+
+        do {
+            guard let previous = try self.card(forAnyKey: mutation.collectionKey) else {
+                return nil
+            }
+            let previousKey = previous.collectionKey
+            guard previous.itemKind == .gradedCard,
+                  previous.certificationNumber == nil,
+                  previous.gradingCompany == company,
+                  previous.cardGrade == grade else { return nil }
+
+            let activityToRetarget = try activity(id: activityID)
+            guard activityToRetarget.collectionKey == previousKey,
+                  activityToRetarget.kind.hasQuantityClaim,
+                  activityToRetarget.signedQuantity > 0,
+                  activityToRetarget.remainingQuantity == 1,
+                  activityToRetarget.ledgerOperationIDs == mutation.ledgerOperationIDs,
+                  previous.quantity >= 1 else {
+                throw CollectionStoreError.invalidActivity(activityID)
+            }
+            let operationIDs = activityToRetarget.ledgerOperationIDs
+            _ = try preflightLineage(
+                operationIDs,
+                expectedCollectionKey: previousKey,
+                expectedQuantity: 1
+            )
+
+            let treatments = previous.magicTreatments
+            let destinationKey: String
+            if let marketVariantID = previous.justTCGVariantID {
+                destinationKey = CollectedCard.gradedCollectionKey(
+                    game: previous.cardGame,
+                    underlyingPrintingID: card.providerID,
+                    variantUUID: marketVariantID,
+                    certificationNumber: certificationNumber,
+                    magicTreatments: treatments
+                )
+            } else {
+                destinationKey = CollectedCard.scannedGradedCollectionKey(
+                    game: previous.cardGame,
+                    underlyingPrintingID: card.providerID,
+                    company: company,
+                    grade: grade,
+                    certificationNumber: certificationNumber,
+                    magicTreatments: treatments
+                )
+            }
+
+            let existingDestination = try certifiedGradedCard(
+                underlyingProviderID: card.providerID,
+                company: company,
+                grade: grade,
+                certificationNumber: certificationNumber,
+                treatmentIDs: MagicTreatmentKeyCodec.storedIDs(from: treatments)
+            )
+            let rowsAtDestination = try cards(forKey: destinationKey)
+            if existingDestination == nil, !rowsAtDestination.isEmpty {
+                throw CollectionStoreError.ledgerConflict(
+                    "graded certification destination is occupied by a different slab"
+                )
+            }
+            guard existingDestination == nil else {
+                // The certificate already names a stored physical slab. Undo
+                // only this just-added certless acquisition instead of
+                // inflating the certified slab's quantity.
+                let lineage = try preflightLineage(
+                    operationIDs,
+                    expectedCollectionKey: previousKey,
+                    expectedQuantity: 1
+                )
+                let inverseOperationIDs = try reverseLineage(lineage)
+                activityToRetarget.resolvedQuantity += 1
+                _ = try appendActivity(
+                    previous,
+                    source: activityToRetarget.source,
+                    kind: .undone,
+                    deltaQuantity: -1,
+                    ledgerOperationIDs: inverseOperationIDs
+                )
+                if previous.quantity == 1 {
+                    context.delete(previous)
+                } else {
+                    previous.quantity -= 1
+                }
+                try commit()
+                return CollectionMutation(
+                    collectionKey: destinationKey,
+                    activityID: nil,
+                    didInsert: false,
+                    wasDuplicate: true
+                )
+            }
+
+            let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
+            if previous.quantity == 1 {
+                context.delete(previous)
+            } else {
+                previous.quantity -= 1
+            }
+
+            let certified = CollectedCard(
+                collectionKey: destinationKey,
+                game: previous.cardGame,
+                providerID: destinationKey,
+                name: previous.name,
+                setName: previous.setName,
+                setCode: previous.setCode,
+                cardNumber: previous.cardNumber,
+                rarity: previous.rarity,
+                imageURL: previous.imageURL,
+                thumbnailURL: previous.thumbnailURL,
+                variant: previous.variant,
+                variantResolution: previous.variantResolution ?? .catalogSilent,
+                identityResolution: previous.identityResolution ?? .printedIdentifier,
+                setReleaseOrder: previous.setReleaseOrder,
+                quantity: 1,
+                magicTreatments: treatments,
+                magicTreatmentQualifiers: previous.magicTreatmentQualifiers,
+                magicContentKind: previous.magicContentKind
+            )
+            certified.catalogProviderID = previous.catalogProviderID ?? card.providerID
+            certified.userArtworkFilename = previous.userArtworkFilename
+            certified.pokemonPrintRunRaw = previous.pokemonPrintRunRaw
+            certified.tcgplayerURL = previous.tcgplayerURL
+            certified.tcgplayerProductID = previous.tcgplayerProductID
+            certified.tcgplayerSKUID = previous.tcgplayerSKUID
+            certified.catalogMetadataCheckedAt = previous.catalogMetadataCheckedAt
+            certified.catalogMetadataVersion = previous.catalogMetadataVersion
+            certified.justTCGCardID = previous.justTCGCardID
+            certified.justTCGVariantID = previous.justTCGVariantID
+            certified.justTCGAPIVersion = previous.justTCGAPIVersion
+            certified.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+            certified.gradingCompanyRaw = company.rawValue
+            certified.gradeRaw = grade.value
+            certified.gradeLabel = grade.label
+            certified.gradingQualifier = grade.qualifier
+            certified.certificationNumber = certificationNumber
+            certified.marketRegionRaw = previous.marketRegionRaw
+            certified.dateAdded = previous.dateAdded
+            certified.magicTreatmentIDsRaw = previous.magicTreatmentIDsRaw
+            certified.magicTreatmentQualifiersJSON = previous.magicTreatmentQualifiersJSON
+            context.insert(certified)
+
+            let correctionOperationID = UUID()
+            let correction = ledger.recordCorrection(
+                fromCollectionKey: previousKey,
+                fromPriceStorageKey: previousPriceStorageKey,
+                toCard: certified,
+                source: .correction,
+                quantity: 1,
+                operationID: correctionOperationID
+            )
+            try requireAppended(correction.from)
+            try requireAppended(correction.to)
+
+            activityToRetarget.collectionKey = destinationKey
+            activityToRetarget.name = certified.name
+            activityToRetarget.setName = certified.setName
+            activityToRetarget.setCode = certified.setCode
+            activityToRetarget.cardNumber = certified.cardNumber
+            activityToRetarget.variantID = certified.variantID
+            activityToRetarget.variantLabel = certified.variantLabel
+            activityToRetarget.magicTreatmentIDsRaw = certified.magicTreatmentIDsRaw
+            activityToRetarget.magicTreatmentQualifiersJSON = certified.magicTreatmentQualifiersJSON
+            activityToRetarget.magicContentKindRaw = certified.magicContentKindRaw
+            activityToRetarget.pokemonPrintRunRaw = certified.pokemonPrintRunRaw
+            activityToRetarget.correctedAt = .now
+            activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
+            _ = try appendActivity(
+                certified,
+                source: .correction,
+                kind: .corrected,
+                deltaQuantity: 0,
+                ledgerOperationIDs: [correctionOperationID]
+            )
+            try commit()
+
+            return CollectionMutation(
+                collectionKey: destinationKey,
+                activityID: activityToRetarget.id,
+                didInsert: mutation.didInsert,
+                ledgerOperationIDs: operationIDs + [correctionOperationID]
             )
         } catch {
             context.rollback()

@@ -682,6 +682,10 @@ final class CardScannerUIState: ObservableObject {
     /// A company token seen during the unbound label pass. This is deliberately
     /// separate from `slabFraming`: it is a guide hint, not an identity claim.
     @Published private(set) var slabGuideHint: GradingCompany?
+    /// Becomes visible only after a provisional grader hint has failed to
+    /// produce a confirmed label for several seconds. The scanner keeps the
+    /// evidence gate active until the card leaves or the user chooses raw.
+    @Published private(set) var slabLabelReadPrompt: SlabLabelReadPrompt?
     /// The footer band Vision is currently reading. Published because the
     /// preview draws this rectangle and the debug overlay denormalizes
     /// observation boxes against it; re-deriving either from the guide geometry
@@ -727,6 +731,16 @@ final class CardScannerUIState: ObservableObject {
         guard slabGuideHint != hint else { return }
         slabGuideHint = hint
     }
+
+    func setSlabLabelReadPrompt(_ prompt: SlabLabelReadPrompt?) {
+        guard slabLabelReadPrompt != prompt else { return }
+        slabLabelReadPrompt = prompt
+    }
+}
+
+struct SlabLabelReadPrompt: Equatable, Identifiable, Sendable {
+    let id: UUID
+    let company: GradingCompany
 }
 
 final class CardScanner: NSObject, ObservableObject {
@@ -763,6 +777,9 @@ final class CardScanner: NSObject, ObservableObject {
     /// production always supplies the token captured on the Vision queue at the
     /// exact confirmation frame.
     var onConfirmedSubjectCandidate: ((ScannerConfirmationToken?, UUID, ScanSubject, UUID?) -> Void)?
+    /// A certificate first recognized after this encounter was committed is a
+    /// refinement of its physical slab, not a second scan event.
+    var onGradedSlabCertificationRefined: ((UUID, ScanSubject, ScanSubject) -> Void)?
     /// Positive spatial exit evidence. This is intentionally separate from OCR
     /// and from the latch's weak timeout/absence signals.
     var onSpatialResetProof: ((SpatialResetProof) -> Void)?
@@ -850,11 +867,18 @@ final class CardScanner: NSObject, ObservableObject {
         case lifecycle
     }
     private var activeSlab: ActiveSlab?
-    /// A provisional grader hint gets a bounded window for the slower label
-    /// evidence to arrive before identity confirmation may commit the subject
-    /// as raw. It is only active while the hint is visible and no slab is
-    /// confirmed yet.
-    private var slabGraceDeadline: CFAbsoluteTime?
+    /// A provisional grader hint holds the matching footer identity until the
+    /// label confirms, the card leaves, or the user explicitly chooses raw.
+    private var slabLabelHoldStartedAt: CFAbsoluteTime?
+    private var slabLabelHoldID: UUID?
+    /// The explicit raw choice applies to one continuous footer presentation.
+    /// It survives further label reads so the same grader token cannot reopen
+    /// the hold immediately after the user dismisses it.
+    private var rawSlabOverrideIsActive = false
+    private var rawSlabOverrideIdentifier: ScanSuppressionKey?
+    /// Every new physical presentation gets one label probe before its raw
+    /// confirmation can be admitted. This probe shares the first footer frame.
+    private var mustProbeSlabBeforeNextCommit = true
     /// Vision-queue state for the commit gate. The `uiState.slabGuideHint`
     /// mirror is for the UI and lands a hop later, which is too late to safely
     /// decide whether this frame may confirm.
@@ -905,9 +929,9 @@ final class CardScanner: NSObject, ObservableObject {
     private var cadence: ScanCadenceScheduler
     private static let historicalAttemptTTL: CFAbsoluteTime = 1.5
     private static let slabBandEmptyFramesBeforeClear = 4
-    /// Two unbound label probes are normally enough to confirm a slab. Keep
-    /// this grace bounded so a false-positive guide hint cannot stall scanning.
-    private static let slabGraceDuration: CFAbsoluteTime = 3.0
+    /// Keep the initial hold quiet. If the label still has not confirmed, show a
+    /// framing hint while the scanner continues gathering evidence.
+    private static let slabLabelHintDelay: CFAbsoluteTime = 3.0
     /// The recovery window spans one unbound label interval plus a small margin
     /// for the next OCR frame to arrive.
     private static let slabRecoveryGraceMargin: CFAbsoluteTime = 0.5
@@ -1084,6 +1108,10 @@ final class CardScanner: NSObject, ObservableObject {
         MainActor.assumeIsolated { uiState.slabGuideHint }
     }
 
+    var slabLabelReadPrompt: SlabLabelReadPrompt? {
+        MainActor.assumeIsolated { uiState.slabLabelReadPrompt }
+    }
+
     var footerRegionOfInterest: CGRect {
         MainActor.assumeIsolated { uiState.footerRegionOfInterest }
     }
@@ -1210,6 +1238,22 @@ final class CardScanner: NSObject, ObservableObject {
                 self.resetConfirmationWindow()
             }
             self.isPaused = false
+        }
+    }
+
+    /// The user can release a provisional grader hold as a raw-card scan. The
+    /// token prevents an old banner tap from authorizing a later presentation.
+    func chooseRawForPendingSlabLabel(_ promptID: UUID) {
+        visionQueue.async { [weak self] in
+            guard let self,
+                  self.slabLabelHoldID == promptID,
+                  self.activeSlab == nil else { return }
+            self.rawSlabOverrideIdentifier = self.slabGuideHintIdentifier
+            self.rawSlabOverrideIsActive = true
+            self.clearSlabGuideHint(at: CFAbsoluteTimeGetCurrent(), clearRawOverride: false)
+            self.mustProbeSlabBeforeNextCommit = false
+            self.resetConfirmationWindow()
+            self.recordDiagnostic("slabLabelRawOverride")
         }
     }
 
@@ -1944,14 +1988,17 @@ final class CardScanner: NSObject, ObservableObject {
         footerLines: [RecognizedLine],
         historicalSubject: ScanSubject?,
         at now: CFAbsoluteTime,
-        pixelBuffer: CVPixelBuffer?
+        pixelBuffer: CVPixelBuffer?,
+        didUpdateSlabPresence: Bool = false
     ) {
-        updateActiveSlabPresence(
-            outcome: outcome,
-            historicalSubject: historicalSubject,
-            footerLines: footerLines,
-            at: now
-        )
+        if !didUpdateSlabPresence {
+            updateActiveSlabPresence(
+                outcome: outcome,
+                historicalSubject: historicalSubject,
+                footerLines: footerLines,
+                at: now
+            )
+        }
 
         // Vision's line grouping is preserved into the parsers, which is what
         // keeps a set code paired with its own collector number when more than
@@ -1991,6 +2038,16 @@ final class CardScanner: NSObject, ObservableObject {
                 && observation.slab != nil
                 && latched.identifier == observation.identifier
         } ?? false
+        let isLateSlabCertificationRefinement = parsed.map { observation in
+            guard let latched = latch.latched,
+                  latched.identifier == observation.identifier,
+                  let previous = latched.slab,
+                  let updated = observation.slab else { return false }
+            return SlabEvidenceConfirmationWindow.isCertificateRefinement(
+                from: previous,
+                to: updated
+            )
+        } ?? false
         if let parsed,
            parsed.suppressionKey == catalogMissSuppressionKey {
             DispatchQueue.main.async { [weak self] in
@@ -1998,6 +2055,8 @@ final class CardScanner: NSObject, ObservableObject {
             }
         }
         if let latchedBeforeObservation, latch.latched == nil {
+            mustProbeSlabBeforeNextCommit = true
+            updateSlabGuideHint(nil, at: now)
             let encounterID = latchEncounterID
             latchEncounterID = nil
             if activeHeldRepeatAuthorization != nil {
@@ -2019,7 +2078,7 @@ final class CardScanner: NSObject, ObservableObject {
         case let .forwardSubject(observation):
             announcePlausible(observation, at: now)
 
-            if isLateSlabUpgradeOfLatchedRaw {
+            if isLateSlabUpgradeOfLatchedRaw || isLateSlabCertificationRefinement {
                 // A late label confirmation can add the slab axis after the
                 // raw subject has already been admitted. It is still the same
                 // physical presentation until the latch sees an absence
@@ -2029,7 +2088,7 @@ final class CardScanner: NSObject, ObservableObject {
                 return
             }
 
-            if shouldHoldForSlabGrace(for: observation, at: now) {
+            if shouldHoldForSlabLabel(for: observation, at: now) {
                 announceLatchHoldIfNeeded()
                 return
             }
@@ -2092,7 +2151,7 @@ final class CardScanner: NSObject, ObservableObject {
                 return
             }
 
-            if shouldHoldForSlabGrace(for: observation, at: now) {
+            if shouldHoldForSlabLabel(for: observation, at: now) {
                 announceLatchHoldIfNeeded()
                 return
             }
@@ -2144,17 +2203,34 @@ final class CardScanner: NSObject, ObservableObject {
         baseIdentifier: ScanSuppressionKey? = nil,
         at now: CFAbsoluteTime
     ) {
+        let previousEvidence = activeSlab?.evidence
+        let enrichedEvidence: GradedSlabEvidence
+        if let previousEvidence,
+           previousEvidence.certificationNumber != nil,
+           evidence.certificationNumber == nil {
+            // Certificate OCR is allowed to flicker after it has been read.
+            // Keep that physical detail once learned.
+            enrichedEvidence = GradedSlabEvidence(
+                company: evidence.company,
+                grade: evidence.grade,
+                certificationNumber: previousEvidence.certificationNumber,
+                labelCardText: evidence.labelCardText,
+                printedFinish: evidence.printedFinish,
+                printedPrintRun: evidence.printedPrintRun
+            )
+        } else {
+            enrichedEvidence = evidence
+        }
         let isRecoveringAfterAbsence = activeSlab == nil
             && slabRecoveryDeadline != nil
             && activeSlabBaseIdentifier != nil
-        let establishesNewSlab = activeSlab?.evidence.suppressionFragment != evidence.suppressionFragment
+        let establishesNewSlab = activeSlab?.evidence.suppressionFragment != enrichedEvidence.suppressionFragment
         activeSlab = ActiveSlab(
-            evidence: evidence,
+            evidence: enrichedEvidence,
             continuityStamp: continuityStamp
         )
-        slabGraceDeadline = nil
-        slabGuideHintForGate = nil
-        slabGuideHintIdentifier = nil
+        clearSlabGuideHint(at: now)
+        mustProbeSlabBeforeNextCommit = false
         slabRecoveryDeadline = nil
         if establishesNewSlab && !isRecoveringAfterAbsence {
             activeSlabBaseIdentifier = nil
@@ -2167,10 +2243,23 @@ final class CardScanner: NSObject, ObservableObject {
         if activeSlabBaseIdentifier == nil {
             activeSlabBaseIdentifier = baseIdentifier
         }
-        setFooterRegionOfInterest(SlabFramingRegion.footerVisionRect(for: evidence.company))
-        titleRequest.regionOfInterest = SlabFramingRegion.titleOCRVisionRect(for: evidence.company)
-        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: evidence.company)
-        updateUI { $0.showSlab(evidence) }
+        setFooterRegionOfInterest(SlabFramingRegion.footerVisionRect(for: enrichedEvidence.company))
+        titleRequest.regionOfInterest = SlabFramingRegion.titleOCRVisionRect(for: enrichedEvidence.company)
+        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: enrichedEvidence.company)
+        updateUI { $0.showSlab(enrichedEvidence) }
+
+        if let previousEvidence,
+           SlabEvidenceConfirmationWindow.isCertificateRefinement(
+               from: previousEvidence,
+               to: enrichedEvidence
+           ),
+           let encounterID = latchEncounterID,
+           let latched = latch.latched {
+            let updated = ScanSubject(identifier: latched.identifier, slab: enrichedEvidence)
+            DispatchQueue.main.async { [weak self] in
+                self?.onGradedSlabCertificationRefined?(encounterID, latched, updated)
+            }
+        }
     }
 
     /// Installs the footer ROI and mirrors it for the preview. Callers must be
@@ -2185,9 +2274,8 @@ final class CardScanner: NSObject, ObservableObject {
         at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
     ) {
         activeSlab = nil
-        slabGraceDeadline = nil
-        slabGuideHintForGate = nil
-        slabGuideHintIdentifier = nil
+        clearSlabGuideHint(at: now)
+        mustProbeSlabBeforeNextCommit = true
         let preserveEvidenceWindow = cause == .footerAbsence || cause == .latchRelease
         switch cause {
         case .footerAbsence:
@@ -2293,10 +2381,6 @@ final class CardScanner: NSObject, ObservableObject {
             return
         }
 
-        if let slabGraceDeadline, now >= slabGraceDeadline {
-            updateSlabGuideHint(nil, at: now)
-        }
-
         if let recoveryDeadline = slabRecoveryDeadline {
             let expired = now >= recoveryDeadline
             let differentIdentity: Bool
@@ -2324,6 +2408,15 @@ final class CardScanner: NSObject, ObservableObject {
 
         guard let footerKey else { return }
 
+        if rawSlabOverrideIsActive {
+            if let rawSlabOverrideIdentifier,
+               rawSlabOverrideIdentifier != footerKey {
+                clearRawSlabOverride()
+            } else if rawSlabOverrideIdentifier == nil {
+                rawSlabOverrideIdentifier = footerKey
+            }
+        }
+
         if let slabGuideHintIdentifier,
            slabGuideHintIdentifier != footerKey {
             updateSlabGuideHint(nil, at: now)
@@ -2337,12 +2430,28 @@ final class CardScanner: NSObject, ObservableObject {
         footerIdentifier: ScanIdentifier?,
         at now: CFAbsoluteTime
     ) {
-        guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
-              cadence.shouldRun(cadenceKind, at: now) else { return }
+        guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText) else { return }
+        let firstProbeForPresentation = activeSlab == nil
+            && footerHasText
+            && mustProbeSlabBeforeNextCommit
+        guard firstProbeForPresentation || cadence.shouldRun(cadenceKind, at: now) else {
+            updateSlabLabelPromptIfDue(at: now)
+            return
+        }
+        if firstProbeForPresentation {
+            cadence.markRan(cadenceKind, at: now)
+            mustProbeSlabBeforeNextCommit = false
+        }
 
         let wasUnbound = activeSlab == nil
         let company = activeSlab?.evidence.company
-        labelRequest.regionOfInterest = SlabFramingRegion.labelVisionRect(for: company)
+        let overriddenPresentation = rawSlabOverrideIsActive
+            && (footerIdentifier == nil
+                || rawSlabOverrideIdentifier == nil
+                || footerIdentifier?.suppressionKey == rawSlabOverrideIdentifier)
+        labelRequest.regionOfInterest = wasUnbound && slabGuideHintForGate == nil
+            ? SlabFramingRegion.bootstrapLabelVisionRect
+            : SlabFramingRegion.labelVisionRect(for: company ?? slabGuideHintForGate)
         do {
             let labelID = PerformanceSignpost.makeID()
             let labelState = PerformanceSignpost.beginInterval(
@@ -2363,12 +2472,9 @@ final class CardScanner: NSObject, ObservableObject {
                 roi: labelRequest.regionOfInterest,
                 sourceSize: sourceSize
             )
-            if wasUnbound {
-                updateSlabGuideHint(
-                    GradedLabelParser.company(in: lines),
-                    for: footerIdentifier,
-                    at: now
-                )
+            if wasUnbound, !overriddenPresentation,
+               let companyHint = GradedLabelParser.company(in: lines) {
+                updateSlabGuideHint(companyHint, for: footerIdentifier, at: now)
             }
 #if DEBUG
             if Self.isGradedLabelCaptureDebugRoute {
@@ -2378,13 +2484,17 @@ final class CardScanner: NSObject, ObservableObject {
             }
 #endif
             let evidence = GradedLabelParser.parse(lines)
-            _ = applySlabLabelEvidence(
-                evidence,
-                baseIdentifier: footerIdentifier?.suppressionKey,
-                at: now
-            )
+            if !overriddenPresentation {
+                _ = applySlabLabelEvidence(
+                    evidence,
+                    baseIdentifier: footerIdentifier?.suppressionKey,
+                    at: now
+                )
+            }
+            updateSlabLabelPromptIfDue(at: now)
         } catch {
             _ = slabEvidenceWindow.observe(nil)
+            updateSlabLabelPromptIfDue(at: now)
         }
     }
 
@@ -2403,7 +2513,7 @@ final class CardScanner: NSObject, ObservableObject {
             return nil
         }
         unboundFooterEmptyFrames = 0
-        return activeSlab == nil ? .unboundLabel : .label
+        return activeSlab == nil && slabGuideHintForGate == nil ? .unboundLabel : .label
     }
 
     @discardableResult
@@ -2441,31 +2551,77 @@ final class CardScanner: NSObject, ObservableObject {
         for identifier: ScanIdentifier? = nil,
         at now: CFAbsoluteTime = CFAbsoluteTimeGetCurrent()
     ) {
-        let startsPositiveHint = activeSlab == nil
-            && hint != nil
-            && slabGuideHintForGate == nil
-        if activeSlab != nil || hint == nil {
-            slabGraceDeadline = nil
-        } else if slabGraceDeadline == nil {
-            slabGraceDeadline = now + Self.slabGraceDuration
+        guard let hint else {
+            clearSlabGuideHint(at: now)
+            return
         }
-        if startsPositiveHint {
+        guard activeSlab == nil, !rawSlabOverrideIsActive else { return }
+
+        if slabGuideHintForGate == nil {
+            slabLabelHoldStartedAt = now
+            slabLabelHoldID = UUID()
             // The footer pass runs before the slower label pass. A raw
-            // observation from that same frame must not combine with a later
-            // post-grace observation and bypass the slab hold.
+            // observation from this frame must not be admitted before the
+            // provisional label has a chance to confirm.
             resetConfirmationWindow()
         }
-        slabGuideHintForGate = hint
-        slabGuideHintIdentifier = hint == nil ? nil : identifier?.suppressionKey
+        // Keep the first grader token sticky through glare and conflicting OCR.
+        // Complete label evidence, not the provisional guide, chooses the slab.
+        if slabGuideHintForGate == nil {
+            slabGuideHintForGate = hint
+        }
+        if slabGuideHintIdentifier == nil {
+            slabGuideHintIdentifier = identifier?.suppressionKey
+        }
 
-        updateUI { $0.setSlabGuideHint(hint) }
+        let guideHint = slabGuideHintForGate
+        updateUI { $0.setSlabGuideHint(guideHint) }
+        updateSlabLabelPromptIfDue(at: now)
     }
 
-    private func shouldHoldForSlabGrace(
+    private func updateSlabLabelPromptIfDue(at now: CFAbsoluteTime) {
+        guard activeSlab == nil,
+              !rawSlabOverrideIsActive,
+              let company = slabGuideHintForGate,
+              let startedAt = slabLabelHoldStartedAt,
+              let id = slabLabelHoldID,
+              now - startedAt >= Self.slabLabelHintDelay else { return }
+        let prompt = SlabLabelReadPrompt(id: id, company: company)
+        updateUI { $0.setSlabLabelReadPrompt(prompt) }
+    }
+
+    private func clearSlabGuideHint(
+        at _: CFAbsoluteTime,
+        clearRawOverride: Bool = true
+    ) {
+        if activeSlab == nil {
+            mustProbeSlabBeforeNextCommit = true
+        }
+        slabLabelHoldStartedAt = nil
+        slabLabelHoldID = nil
+        slabGuideHintForGate = nil
+        slabGuideHintIdentifier = nil
+        if clearRawOverride {
+            clearRawSlabOverride()
+        }
+        updateUI {
+            $0.setSlabGuideHint(nil)
+            $0.setSlabLabelReadPrompt(nil)
+        }
+    }
+
+    private func clearRawSlabOverride() {
+        rawSlabOverrideIsActive = false
+        rawSlabOverrideIdentifier = nil
+    }
+
+    private func shouldHoldForSlabLabel(
         for observation: ScanSubject?,
         at now: CFAbsoluteTime
     ) -> Bool {
-        guard activeSlab == nil, let observation else { return false }
+        guard !rawSlabOverrideIsActive,
+              activeSlab == nil,
+              let observation else { return false }
         let observationKey = observation.identifier.suppressionKey
 
         if let slabRecoveryDeadline,
@@ -2474,11 +2630,8 @@ final class CardScanner: NSObject, ObservableObject {
             return true
         }
 
-        guard slabGuideHintForGate != nil,
-              (slabGuideHintIdentifier == nil || slabGuideHintIdentifier == observationKey),
-              let slabGraceDeadline,
-              now < slabGraceDeadline else { return false }
-        return true
+        return slabGuideHintForGate != nil
+            && (slabGuideHintIdentifier == nil || slabGuideHintIdentifier == observationKey)
     }
 
 #if DEBUG
@@ -2542,14 +2695,32 @@ final class CardScanner: NSObject, ObservableObject {
     ) -> GradedSlabEvidence? {
         guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
               cadence.shouldRun(cadenceKind, at: now) else { return nil }
-        if activeSlab == nil {
-            updateSlabGuideHint(evidence?.company, for: identifier, at: now)
+        let overriddenPresentation = rawSlabOverrideIsActive
+            && (identifier == nil
+                || rawSlabOverrideIdentifier == nil
+                || identifier?.suppressionKey == rawSlabOverrideIdentifier)
+        if activeSlab == nil, !overriddenPresentation, let company = evidence?.company {
+            updateSlabGuideHint(company, for: identifier, at: now)
         }
-        return applySlabLabelEvidence(
-            evidence,
-            baseIdentifier: identifier?.suppressionKey,
-            at: now
-        )
+        let confirmed = overriddenPresentation
+            ? nil
+            : applySlabLabelEvidence(
+                evidence,
+                baseIdentifier: identifier?.suppressionKey,
+                at: now
+            )
+        updateSlabLabelPromptIfDue(at: now)
+        return confirmed
+    }
+
+    /// Test seam for the provisional state where a grader is visible but the
+    /// grade or card name is not yet readable.
+    func receiveSlabCompanyHintForTesting(
+        _ company: GradingCompany,
+        for identifier: ScanIdentifier? = nil,
+        at now: CFAbsoluteTime
+    ) {
+        updateSlabGuideHint(company, for: identifier, at: now)
     }
 
     /// Debug-only seam for the production label-parser boundary. It keeps the
@@ -2564,14 +2735,23 @@ final class CardScanner: NSObject, ObservableObject {
     ) -> GradedSlabEvidence? {
         guard let cadenceKind = slabLabelCadenceKind(footerHasText: footerHasText),
               cadence.shouldRun(cadenceKind, at: now) else { return nil }
-        if activeSlab == nil {
-            updateSlabGuideHint(GradedLabelParser.company(in: lines), for: identifier, at: now)
+        let overriddenPresentation = rawSlabOverrideIsActive
+            && (identifier == nil
+                || rawSlabOverrideIdentifier == nil
+                || identifier?.suppressionKey == rawSlabOverrideIdentifier)
+        if activeSlab == nil, !overriddenPresentation,
+           let company = GradedLabelParser.company(in: lines) {
+            updateSlabGuideHint(company, for: identifier, at: now)
         }
-        return applySlabLabelEvidence(
-            GradedLabelParser.parse(lines),
-            baseIdentifier: identifier?.suppressionKey,
-            at: now
-        )
+        let confirmed = overriddenPresentation
+            ? nil
+            : applySlabLabelEvidence(
+                GradedLabelParser.parse(lines),
+                baseIdentifier: identifier?.suppressionKey,
+                at: now
+            )
+        updateSlabLabelPromptIfDue(at: now)
+        return confirmed
     }
 
     /// Debug-only seam for the sticky footer identity rule. It mirrors the
@@ -2636,6 +2816,14 @@ final class CardScanner: NSObject, ObservableObject {
 
     var latchedSubjectForTesting: ScanSubject? {
         latch.latched
+    }
+
+    var activeSlabEvidenceForTesting: GradedSlabEvidence? {
+        activeSlab?.evidence
+    }
+
+    var lastSlabLabelReadAtForTesting: CFAbsoluteTime? {
+        cadence.lastLabelAt
     }
 
     var footerRegionOfInterestForTesting: CGRect {
@@ -3099,14 +3287,18 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 historical
             }
 
-            handleFooterOutcome(
-                outcome,
+            let historicalSubject = historical.map {
+                ScanSubject(identifier: $0, slab: activeSlab?.evidence)
+            }
+            // Give each new footer identity one broad label probe before its
+            // first raw confirmation can be admitted. Raw cards still use the
+            // same footer confirmation count; this only adds a single label
+            // read to the first recognized frame of a presentation.
+            updateActiveSlabPresence(
+                outcome: outcome,
+                historicalSubject: historicalSubject,
                 footerLines: lines,
-                historicalSubject: historical.map {
-                    ScanSubject(identifier: $0, slab: activeSlab?.evidence)
-                },
-                at: now,
-                pixelBuffer: pixelBuffer
+                at: now
             )
             detectSlabLabelIfDue(
                 handler: handler,
@@ -3114,6 +3306,16 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 footerHasText: !lines.isEmpty,
                 footerIdentifier: footerIdentifier,
                 at: now
+            )
+            handleFooterOutcome(
+                outcome,
+                footerLines: lines,
+                historicalSubject: historical.map {
+                    ScanSubject(identifier: $0, slab: activeSlab?.evidence)
+                },
+                at: now,
+                pixelBuffer: pixelBuffer,
+                didUpdateSlabPresence: true
             )
         } catch {
 #if DEBUG
@@ -3126,7 +3328,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             // The label cadence gate never ran for this frame, so the unbound
             // empty-frame count would not advance. A sustained bad-frame run
             // would otherwise keep a stale `slabGuideHint` alive and keep
-            // `shouldHoldForSlabGrace` deferring raw confirmations.
+            // the provisional slab hold deferring raw confirmations.
             unboundFooterEmptyFrames += 1
             if unboundFooterEmptyFrames >= Self.unboundFooterEmptyFramesBeforeReset {
                 unboundFooterEmptyFrames = 0

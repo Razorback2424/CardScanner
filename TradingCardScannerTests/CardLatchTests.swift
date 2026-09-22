@@ -501,19 +501,13 @@ final class CardLatchTests: XCTestCase {
                 at: 0
             )
         )
-        // The unbound probe is deliberately slower than the bound 0.5 s pass.
-        XCTAssertNil(
-            scanner.receiveSlabLabelEvidenceForTesting(
-                latestEvidence,
-                footerHasText: true,
-                at: 0.5
-            )
-        )
+        // Once a grader company is seen, the label switches to the faster
+        // bound cadence and can confirm on the next 0.5-second pass.
         XCTAssertEqual(
             scanner.receiveSlabLabelEvidenceForTesting(
                 latestEvidence,
                 footerHasText: true,
-                at: 1.5
+                at: 0.5
             ),
             latestEvidence
         )
@@ -627,7 +621,7 @@ final class CardLatchTests: XCTestCase {
         wait(for: [cleared], timeout: 1)
     }
 
-    func testSlabGuideHintGraceHoldsIdentityConfirmationUntilDeadline() {
+    func testSlabGuideHintKeepsIdentityUnconfirmedWithoutTimeout() {
         let scanner = CardScanner()
         let expected = subject(pokemon(223))
         let start = CFAbsoluteTimeGetCurrent()
@@ -646,8 +640,7 @@ final class CardLatchTests: XCTestCase {
         // window while the vision-queue slab hint is waiting for label proof.
         XCTAssertNil(scanner.latchedSubjectForTesting)
 
-        // Once the bounded grace expires, the ordinary two-frame confirmation
-        // path is allowed to commit again.
+        // A timer cannot turn this likely slab into a raw collection entry.
         scanner.receiveFooterOutcomeForTesting(
             .identified(expected),
             at: start + 3.5
@@ -655,9 +648,39 @@ final class CardLatchTests: XCTestCase {
         XCTAssertNil(scanner.latchedSubjectForTesting)
         scanner.receiveFooterOutcomeForTesting(
             .identified(expected),
-            at: start + 3.75
+            at: start + 30
         )
-        XCTAssertEqual(scanner.latchedSubjectForTesting, expected)
+        XCTAssertNil(scanner.latchedSubjectForTesting)
+    }
+
+    func testDelayedSlabHintOffersExplicitRawChoiceAndKeepsItScopedToTheCard() {
+        let scanner = CardScanner()
+        let expected = subject(pokemon(223))
+        let start = CFAbsoluteTimeGetCurrent()
+        let promptShown = expectation(description: "delayed slab hint is published")
+
+        scanner.receiveSlabCompanyHintForTesting(.psa, for: expected.identifier, at: start)
+        scanner.receiveSlabLabelEvidenceForTesting(nil, footerHasText: true, for: expected.identifier, at: start + 0.5)
+        scanner.receiveSlabLabelEvidenceForTesting(nil, footerHasText: true, for: expected.identifier, at: start + 3.0)
+        scanner.receiveFooterOutcomeForTesting(.identified(expected), at: start + 3.1)
+        scanner.receiveFooterOutcomeForTesting(.identified(expected), at: start + 3.2)
+        XCTAssertNil(scanner.latchedSubjectForTesting)
+
+        DispatchQueue.main.async {
+            guard let prompt = scanner.slabLabelReadPrompt else {
+                XCTFail("the unresolved slab should offer the explicit raw choice")
+                promptShown.fulfill()
+                return
+            }
+            scanner.chooseRawForPendingSlabLabel(prompt.id)
+            scanner.drainVisionQueueForTesting()
+            scanner.receiveFooterOutcomeForTesting(.identified(expected), at: start + 3.3)
+            scanner.receiveFooterOutcomeForTesting(.identified(expected), at: start + 3.4)
+            XCTAssertEqual(scanner.latchedSubjectForTesting, expected)
+            promptShown.fulfill()
+        }
+
+        wait(for: [promptShown], timeout: 1)
     }
 
     func testAbsenceDrivenSlabClearDoesNotDowngradeTheReturningSameIdentityToRaw() {
@@ -742,9 +765,7 @@ final class CardLatchTests: XCTestCase {
         scanner.receiveFooterOutcomeForTesting(.identified(first), at: start + 0.5)
         XCTAssertNil(scanner.latchedSubjectForTesting)
 
-        // A different footer identity is positive evidence that the first
-        // hint does not describe this raw card. It should be admitted on the
-        // normal two-frame path without waiting for the old grace deadline.
+        // A different footer identity ends the first card's hold immediately.
         scanner.receiveFooterOutcomeForTesting(.identified(second), at: start + 0.75)
         scanner.receiveFooterOutcomeForTesting(.identified(second), at: start + 1.0)
         XCTAssertEqual(scanner.latchedSubjectForTesting, second)
@@ -756,21 +777,18 @@ final class CardLatchTests: XCTestCase {
         let raw = ScanSubject(identifier: identifier)
         let start = CFAbsoluteTimeGetCurrent()
 
-        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start + 0.25)
-        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start + 0.5)
-        XCTAssertEqual(scanner.latchedSubjectForTesting, raw)
-
-        // The first unbound label request ran, but its readable text did not
-        // contain a company token. Raw confirmation remains ordinary because
-        // text without a company token is not positive slab evidence.
+        // The first label probe precedes raw confirmation. Readable text without
+        // a company token leaves the ordinary raw confirmation path intact.
         XCTAssertNil(
             scanner.receiveSlabLabelLinesForTesting(
                 [RecognizedLine(text: "CHARIZARD")],
                 footerHasText: true,
                 for: raw.identifier,
-                at: start + 1.5
+                at: start + 0.25
             )
         )
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start + 0.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start + 0.33)
         XCTAssertEqual(scanner.latchedSubjectForTesting, raw)
     }
 

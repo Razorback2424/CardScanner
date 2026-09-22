@@ -18,6 +18,30 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         XCTAssertNil(window.observe(evidence(certificationNumber: "87654321", text: ["A"])))
     }
 
+    func testCertificateMissOnOneReadCanConfirmWithMatchingCardName() {
+        var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
+
+        XCTAssertNil(window.observe(evidence(certificationNumber: nil, text: ["CHARIZARD HOLO"])))
+        XCTAssertEqual(
+            window.observe(evidence(certificationNumber: "12345678", text: ["CHARIZARD H0LO"]))?.certificationNumber,
+            "12345678"
+        )
+    }
+
+    func testCertificateMissStillRequiresMatchingCardName() {
+        var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
+
+        XCTAssertNil(window.observe(evidence(certificationNumber: nil, text: ["CHARIZARD"])))
+        XCTAssertNil(window.observe(evidence(certificationNumber: "12345678", text: ["PIKACHU"])))
+    }
+
+    func testTwoMissingCertificatesNeedMatchingCardName() {
+        var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
+
+        XCTAssertNil(window.observe(evidence(certificationNumber: nil, text: [])))
+        XCTAssertNil(window.observe(evidence(certificationNumber: nil, text: [])))
+    }
+
     func testWindowEvictionPreventsAnOldObservationFromConfirming() {
         var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 3)
         let first = evidence(certificationNumber: "11111111", text: ["A"])
@@ -57,12 +81,12 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         XCTAssertNotNil(same.observe(latest))
     }
 
-    func testCertlessEmptyLabelTextConfirmsFromTheSharedSuppressionFragment() {
+    func testCertlessEmptyLabelTextCannotConfirmWithoutCardNameEvidence() {
         var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
         let empty = evidence(certificationNumber: nil, text: [])
 
         XCTAssertNil(window.observe(empty))
-        XCTAssertEqual(window.observe(empty), empty)
+        XCTAssertNil(window.observe(empty))
     }
 
     private func evidence(certificationNumber: String?, text: [String]) -> GradedSlabEvidence {

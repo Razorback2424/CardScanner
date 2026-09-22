@@ -14,6 +14,45 @@ struct ScanAssistanceView: View {
     }
 }
 
+/// A provisional grader hint holds the raw commit gate while the camera keeps
+/// reading. The explicit raw action is the only way to release that hold before
+/// the slab label confirms or the card leaves the scan band.
+struct SlabLabelReadingOfferView: View {
+    let prompt: SlabLabelReadPrompt
+    let purpose: ScanPurpose
+    let onUseRaw: () -> Void
+
+    private var rawActionTitle: String {
+        purpose == .collection ? "Save as raw card" : "Check raw card price"
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Reading \(prompt.company.label) slab label", systemImage: "viewfinder")
+                .font(.subheadline.weight(.bold))
+
+            Text("Fit the whole slab in the guide.")
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.78))
+                .fixedSize(horizontal: false, vertical: true)
+
+            Button(action: onUseRaw) {
+                Text(rawActionTitle)
+                    .font(.caption.weight(.semibold))
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 40)
+            }
+            .buttonStyle(.bordered)
+            .tint(.white)
+            .accessibilityHint("Uses the raw card result for this presentation.")
+        }
+        .foregroundStyle(.white)
+        .padding(12)
+        .appGlass(cornerRadius: 14)
+        .accessibilityElement(children: .contain)
+    }
+}
+
 /// A compact statement of the finish and the evidence behind it. Detail keeps
 /// this visible for every card; receipts reserve the stronger treatment for
 /// resolutions that need a person's attention so routine scans stay quiet.

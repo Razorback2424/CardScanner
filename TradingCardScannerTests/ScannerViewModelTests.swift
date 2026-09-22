@@ -324,6 +324,79 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.recent.first?.subject.slab?.certificationNumber, "12345678")
     }
 
+    func testCertificateReadAfterCertlessSlabCommitRefinesTheSameCollectionEntry() async throws {
+        let model = try makeModel(
+            variants: [.normal],
+            gradedOutcome: .unavailable
+        )
+        model.scanner.drainProfileQueuesForTesting()
+        let identifier = scannerIdentifier()
+        let certless = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: nil,
+            labelCardText: ["CHARIZARD HOLO"]
+        )
+        let certified = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD HOLO"]
+        )
+
+        XCTAssertNil(model.scanner.receiveSlabLabelEvidenceForTesting(
+            certless,
+            footerHasText: true,
+            for: identifier,
+            at: 0
+        ))
+        XCTAssertEqual(model.scanner.receiveSlabLabelEvidenceForTesting(
+            certless,
+            footerHasText: true,
+            for: identifier,
+            at: 1.5
+        ), certless)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(ScanSubject(identifier: identifier)), at: 1.75)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(ScanSubject(identifier: identifier)), at: 2.0)
+
+        let initialCommit = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(initialCommit)
+        var rows = try context().fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertNil(rows.first?.certificationNumber)
+        XCTAssertEqual(model.scanner.activeSlabEvidenceForTesting, certless)
+
+        XCTAssertNil(model.scanner.receiveSlabLabelEvidenceForTesting(
+            certified,
+            footerHasText: true,
+            for: identifier,
+            at: 2.5
+        ))
+        XCTAssertEqual(model.scanner.lastSlabLabelReadAtForTesting, 2.5)
+        XCTAssertEqual(model.scanner.receiveSlabLabelEvidenceForTesting(
+            certified,
+            footerHasText: true,
+            for: identifier,
+            at: 3.0
+        ), certified)
+        XCTAssertEqual(model.scanner.activeSlabEvidenceForTesting, certified)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(ScanSubject(identifier: identifier)), at: 3.1)
+
+        let refinementSaved = await waitUntil {
+            (try? self.context().fetch(FetchDescriptor<CollectedCard>()).first?.certificationNumber)
+                == "12345678"
+                && model.recent.first?.subject.slab?.certificationNumber == "12345678"
+        }
+        XCTAssertTrue(refinementSaved)
+        rows = try context().fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.itemKind, .gradedCard)
+        XCTAssertEqual(rows.first?.certificationNumber, "12345678")
+        XCTAssertEqual(model.recent.first?.subject.slab?.certificationNumber, "12345678")
+        XCTAssertEqual(model.successCount, 1)
+        XCTAssertEqual(model.scanner.latchedSubjectForTesting?.slab?.certificationNumber, nil)
+    }
+
     func testGradedLabelPrintRunIsPassedBeforeVendorResolutionAndPrintedFinishIsPersisted() async throws {
         let recorder = ScannerPrintRunRecorder()
         let model = try makeModel(

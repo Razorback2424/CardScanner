@@ -538,6 +538,20 @@ struct RecentScan: Identifiable, Equatable {
         )
     }
 
+    func updating(subject: ScanSubject, mutation: CollectionMutation) -> RecentScan {
+        RecentScan(
+            id: id,
+            subject: subject,
+            card: card,
+            resolved: resolved,
+            pokemonPrintRun: pokemonPrintRun,
+            catalogRetrievedAt: catalogRetrievedAt,
+            options: options,
+            mutation: mutation,
+            price: price
+        )
+    }
+
     private var stampedRelease: PokemonStampedReleaseCatalog.Entry? {
         PokemonStampedReleaseCatalog.entry(
             providerID: card.providerID,
@@ -998,6 +1012,10 @@ final class ScannerViewModel: ObservableObject {
     /// Authoritative consecutive-scan history. `recent` is only the visual rail;
     /// duplicate correctness never depends on its ordering or contents.
     private(set) var committedSessionHistory: [CommittedSessionScan] = []
+    /// Certificate OCR can finish after the first graded collection write.
+    /// Keep that refinement by encounter until its acquisition is visible.
+    private var pendingGradedCertificationRefinements: [UUID: ScanSubject] = [:]
+    private var gradedCertificationRefinementsInFlight: Set<UUID> = []
     @Published private(set) var note: ScanNote?
     @Published private(set) var scanAcknowledgement: ScanAcknowledgement?
     @Published var priceCheckResult: PriceCheckResult?
@@ -1258,6 +1276,16 @@ final class ScannerViewModel: ObservableObject {
             }
         }
         scanner.onConfirmedSubjectCandidate = handleConfirmedCandidate
+
+        scanner.onGradedSlabCertificationRefined = { [weak self] encounterID, previous, updated in
+            Task { @MainActor in
+                self?.receiveGradedSlabCertificationRefinement(
+                    encounterID: encounterID,
+                    previous: previous,
+                    updated: updated
+                )
+            }
+        }
 
         scanner.onHeldRepeatAuthorizationTerminated = { [weak self] authorizationID, outcome in
             Task { @MainActor in
@@ -1605,6 +1633,8 @@ final class ScannerViewModel: ObservableObject {
         recent.removeAll()
         sessionScans.removeAll()
         committedSessionHistory.removeAll()
+        pendingGradedCertificationRefinements.removeAll()
+        gradedCertificationRefinementsInFlight.removeAll()
         unresolvedScans.removeAll()
         spatialResetProofs.removeAll()
         deferredHeldDuplicateOffer = nil
@@ -1725,6 +1755,15 @@ final class ScannerViewModel: ObservableObject {
         resumeRecognitionIfPossible()
         feedback.choiceMade()
         UIAccessibility.post(notification: .announcement, argument: "\(newPurpose.title). \(newPurpose.statusText)")
+    }
+
+    /// Releases the provisional slab hold only for the prompt still visible to
+    /// the user. The scanner scopes the resulting raw choice to this physical
+    /// presentation so the same label OCR cannot reopen the hold immediately.
+    func chooseRawForPendingSlabLabel(_ promptID: UUID) {
+        guard scanner.slabLabelReadPrompt?.id == promptID else { return }
+        scanner.chooseRawForPendingSlabLabel(promptID)
+        feedback.choiceMade()
     }
 
     private func invalidatePendingScan() {
@@ -2759,6 +2798,103 @@ final class ScannerViewModel: ObservableObject {
     /// A successful collection add is the only operation that appends session
     /// history. The display rail is updated from that same mutation, but is not
     /// consulted for duplicate correctness.
+    private func receiveGradedSlabCertificationRefinement(
+        encounterID: UUID,
+        previous: ScanSubject,
+        updated: ScanSubject
+    ) {
+        guard isScannerSessionActive,
+              previous.identifier == updated.identifier,
+              let previousSlab = previous.slab,
+              let updatedSlab = updated.slab,
+              SlabEvidenceConfirmationWindow.isCertificateRefinement(
+                from: previousSlab,
+                to: updatedSlab
+              ) else { return }
+        pendingGradedCertificationRefinements[encounterID] = updated
+        Task { @MainActor [weak self] in
+            await self?.applyPendingGradedCertificationRefinement(for: encounterID)
+        }
+    }
+
+    private func applyPendingGradedCertificationRefinement(for encounterID: UUID) async {
+        guard !gradedCertificationRefinementsInFlight.contains(encounterID),
+              let updatedSubject = pendingGradedCertificationRefinements[encounterID],
+              let committed = committedSessionHistory.last(where: {
+                  $0.encounterID == encounterID
+              }),
+              let scan = sessionScans.first(where: { $0.id == committed.id }),
+              scan.subject.slab?.certificationNumber == nil,
+              let updatedSlab = updatedSubject.slab else { return }
+
+        gradedCertificationRefinementsInFlight.insert(encounterID)
+        defer { gradedCertificationRefinementsInFlight.remove(encounterID) }
+
+        let sessionID = scannerSessionID
+        beginTrackedWrite(for: sessionID)
+        defer { endTrackedWrite(for: sessionID) }
+        guard let collectionWriter else {
+            pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
+            show(ScanNote(text: "The slab certificate could not be saved", tone: .problem))
+            feedback.problem()
+            return
+        }
+
+        let mutation: CollectionMutation
+        do {
+            guard let refinedMutation = try await collectionWriter.refineGradedCertification(
+                for: scan,
+                to: updatedSlab
+            ) else {
+                pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
+                show(ScanNote(text: "The slab certificate could not be matched to the saved scan", tone: .problem))
+                feedback.problem()
+                return
+            }
+            if refinedMutation.wasDuplicate {
+                sessionScans.removeAll { $0.id == scan.id }
+                recent.removeAll { $0.id == scan.id }
+                committedSessionHistory.removeAll { $0.id == scan.id }
+                successCount = max(0, successCount - 1)
+                if receipt?.scanID == scan.id {
+                    dismissReceipt()
+                }
+                show(ScanNote(text: "This slab is already in your collection", tone: .info))
+                pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
+                return
+            }
+            mutation = refinedMutation
+        } catch {
+            pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
+            show(ScanNote(text: "The slab certificate could not be saved", tone: .problem))
+            feedback.problem()
+            return
+        }
+
+        guard sessionID == scannerSessionID,
+              isStorageGenerationCurrent else { return }
+        let refinedScan = scan.updating(subject: updatedSubject, mutation: mutation)
+        if let index = sessionScans.firstIndex(where: { $0.id == scan.id }) {
+            sessionScans[index] = refinedScan
+        }
+        if let index = recent.firstIndex(where: { $0.id == scan.id }) {
+            recent[index] = refinedScan
+        }
+        if let index = committedSessionHistory.firstIndex(where: { $0.id == scan.id }) {
+            let previousCommit = committedSessionHistory[index]
+            committedSessionHistory[index] = CommittedSessionScan(
+                id: previousCommit.id,
+                identity: ConsecutiveScanIdentity(
+                    card: scan.card,
+                    subject: updatedSubject
+                ),
+                presentationToken: previousCommit.presentationToken,
+                encounterID: previousCommit.encounterID
+            )
+        }
+        pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
+    }
+
     private func appendCommittedScan(
         _ candidate: CollectionCommitCandidate,
         mutation: CollectionMutation
@@ -3119,6 +3255,7 @@ final class ScannerViewModel: ObservableObject {
                 pendingChoice = nil
             }
             appendCommittedScan(candidate, mutation: mutation)
+            await applyPendingGradedCertificationRefinement(for: candidate.encounterID)
             if candidate.subject.slab == nil {
                 queueFallbackPrice(
                     for: candidate.card,
