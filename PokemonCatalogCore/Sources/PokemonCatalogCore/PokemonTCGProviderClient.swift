@@ -21,6 +21,7 @@ public enum PokemonCatalogSecondaryProviderFetchError: Error, CustomStringConver
 /// before entering a descriptor.
 public struct PokemonCatalogSecondaryProviderClient: Sendable {
     public static let defaultBaseURL = URL(string: "https://api.pokemontcg.io/v2")!
+    private static let maxRequestAttempts = 3
 
     private let session: URLSession
     private let baseURL: URL
@@ -52,19 +53,46 @@ public struct PokemonCatalogSecondaryProviderClient: Sendable {
             let images: Images?
         }
 
-        let response: Response = try await request(path: "sets")
-        return response.data.map {
-            PokemonCatalogSecondarySet(
-                id: $0.id,
-                name: $0.name,
-                ptcgoCode: $0.ptcgoCode,
-                releaseDate: $0.releaseDate,
-                printedTotal: $0.printedTotal,
-                total: $0.total,
-                logoURL: $0.images?.logo,
-                symbolURL: $0.images?.symbol
-            )
+        // The API's default set query intermittently returns HTTP 500/502.
+        // Prefer the compact projection, then fall back to the same stable
+        // sort without projection when that backend path is unavailable.
+        let queryVariants: [[URLQueryItem]] = [
+            [
+                URLQueryItem(name: "orderBy", value: "id"),
+                URLQueryItem(
+                    name: "select",
+                    value: "id,name,ptcgoCode,releaseDate,printedTotal,total,images"
+                )
+            ],
+            [URLQueryItem(name: "orderBy", value: "id")]
+        ]
+        var lastError: Error?
+        for queryItems in queryVariants {
+            do {
+                let response: Response = try await request(
+                    path: "sets",
+                    queryItems: queryItems
+                )
+                return response.data.map {
+                    PokemonCatalogSecondarySet(
+                        id: $0.id,
+                        name: $0.name,
+                        ptcgoCode: $0.ptcgoCode,
+                        releaseDate: $0.releaseDate,
+                        printedTotal: $0.printedTotal,
+                        total: $0.total,
+                        logoURL: $0.images?.logo,
+                        symbolURL: $0.images?.symbol
+                    )
+                }
+            } catch {
+                lastError = error
+            }
         }
+        throw lastError ?? PokemonCatalogSecondaryProviderFetchError.network(
+            path: "/v2/sets",
+            message: "all query variants failed"
+        )
     }
 
     public func fetchCardArtwork(
@@ -84,19 +112,37 @@ public struct PokemonCatalogSecondaryProviderClient: Sendable {
 
         let cappedLimit = max(0, min(limit, 3))
         guard cappedLimit > 0 else { return [] }
-        let response: Response = try await request(
-            path: "cards",
-            queryItems: [
-                URLQueryItem(name: "q", value: "set.id:\(setID)"),
-                URLQueryItem(name: "pageSize", value: String(cappedLimit)),
-                URLQueryItem(name: "page", value: "1"),
-                URLQueryItem(name: "orderBy", value: "number,id"),
-                URLQueryItem(name: "select", value: "images")
-            ]
+        let baseQueryItems = [
+            URLQueryItem(name: "q", value: "set.id:\(setID)"),
+            URLQueryItem(name: "pageSize", value: String(cappedLimit)),
+            URLQueryItem(name: "page", value: "1"),
+            // A stable ID sort avoids the compound number,id path, which
+            // returns HTTP 500 for some newly listed subsets such as me55c.
+            URLQueryItem(name: "orderBy", value: "id")
+        ]
+        let queryVariants = [
+            baseQueryItems + [URLQueryItem(name: "select", value: "images")],
+            baseQueryItems
+        ]
+        var lastError: Error?
+        for queryItems in queryVariants {
+            do {
+                let response: Response = try await request(
+                    path: "cards",
+                    queryItems: queryItems
+                )
+                return response.data
+                    .compactMap { $0.images?.large ?? $0.images?.small }
+                    .prefix(cappedLimit)
+                    .map { $0 }
+            } catch {
+                lastError = error
+            }
+        }
+        throw lastError ?? PokemonCatalogSecondaryProviderFetchError.network(
+            path: "/v2/cards",
+            message: "all query variants failed"
         )
-        return response.data.compactMap { $0.images?.large ?? $0.images?.small }
-            .prefix(cappedLimit)
-            .map { $0 }
     }
 
     private func request<T: Decodable>(
@@ -117,35 +163,65 @@ public struct PokemonCatalogSecondaryProviderClient: Sendable {
         request.timeoutInterval = 20
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("TradingCardScanner catalog publisher", forHTTPHeaderField: "User-Agent")
-        do {
-            let (data, response) = try await session.data(for: request)
-            guard let http = response as? HTTPURLResponse else {
-                throw PokemonCatalogSecondaryProviderFetchError.badResponse(
-                    path: url.path,
-                    statusCode: 0
-                )
-            }
-            guard (200..<300).contains(http.statusCode) else {
-                throw PokemonCatalogSecondaryProviderFetchError.badResponse(
-                    path: url.path,
-                    statusCode: http.statusCode
-                )
+        var lastError: PokemonCatalogSecondaryProviderFetchError?
+        for attempt in 0..<Self.maxRequestAttempts {
+            if attempt > 0 {
+                try await Task.sleep(for: .milliseconds(250 * attempt))
             }
             do {
-                return try JSONDecoder().decode(T.self, from: data)
+                let (data, response) = try await session.data(for: request)
+                guard let http = response as? HTTPURLResponse else {
+                    throw PokemonCatalogSecondaryProviderFetchError.badResponse(
+                        path: url.path,
+                        statusCode: 0
+                    )
+                }
+                guard (200..<300).contains(http.statusCode) else {
+                    throw PokemonCatalogSecondaryProviderFetchError.badResponse(
+                        path: url.path,
+                        statusCode: http.statusCode
+                    )
+                }
+                do {
+                    return try JSONDecoder().decode(T.self, from: data)
+                } catch {
+                    throw PokemonCatalogSecondaryProviderFetchError.network(
+                        path: url.path,
+                        message: "decode: \(error)"
+                    )
+                }
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch let error as PokemonCatalogSecondaryProviderFetchError {
+                lastError = error
+                guard attempt + 1 < Self.maxRequestAttempts,
+                      Self.isTransient(error) else {
+                    throw error
+                }
             } catch {
-                throw PokemonCatalogSecondaryProviderFetchError.network(
+                let wrapped = PokemonCatalogSecondaryProviderFetchError.network(
                     path: url.path,
-                    message: "decode: \(error)"
+                    message: String(describing: error)
                 )
+                lastError = wrapped
+                guard attempt + 1 < Self.maxRequestAttempts else {
+                    throw wrapped
+                }
             }
-        } catch let error as PokemonCatalogSecondaryProviderFetchError {
-            throw error
-        } catch {
-            throw PokemonCatalogSecondaryProviderFetchError.network(
-                path: url.path,
-                message: String(describing: error)
-            )
+        }
+        throw lastError ?? .network(path: url.path, message: "request exhausted")
+    }
+
+    private static func isTransient(
+        _ error: PokemonCatalogSecondaryProviderFetchError
+    ) -> Bool {
+        switch error {
+        case .badResponse(_, let statusCode):
+            return [500, 502, 503, 504].contains(statusCode)
+        case .network:
+            return true
+        case .invalidURL:
+            return false
         }
     }
 }
