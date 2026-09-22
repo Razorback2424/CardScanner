@@ -274,9 +274,20 @@ enum LimitlessArtwork {
     /// unsupported sets are intentionally absent. A code can still have no
     /// individual image on Limitless; the image loader treats that as a normal
     /// terminal failure and preserves the placeholder.
-    static var supportedSetCodes: Set<String> {
-        Set(PokemonCatalogRegistry.bundledSeed.expansionCodes)
-    }
+    static let supportedSetCodes: Set<String> = [
+        "HS", "UL", "UD", "TM",
+        "BLW", "EPO", "NVI", "NXD", "DEX", "DRX", "BCR", "PLS", "PLF", "PLB", "LTR",
+        "CL", "DCR", "DRV",
+        "XY", "FLF", "FFI", "PHF", "PRC", "ROS", "AOR", "BKT", "BKP", "FCO", "STS", "EVO",
+        "KSS",
+        "SUM", "GRI", "BUS", "SLG", "CIN", "UPR", "FLI", "CES", "DRM", "LOT", "TEU", "CEL",
+        "UNB", "UNM", "HIF", "CEC", "GEN", "FUT2020",
+        "SSH", "RCL", "DAA", "CPA", "VIV", "SHF", "BST", "CRE", "EVS", "FST", "BRS",
+        "ASR", "LOR", "SIT", "CRZ", "PGO",
+        "SVI", "PAL", "OBF", "MEW", "PAR", "PAF", "TEF", "TWM", "SFA", "SCR", "SSP",
+        "PRE", "JTG", "DRI", "BLK", "WHT", "SVE",
+        "SMA", "MEG", "PFL", "ASC", "POR", "CRI", "PBL", "MEE"
+    ]
 
     /// Printed keys that are intentionally outside the current TPCi allow-list
     /// and therefore need an explicit future artwork decision before they can

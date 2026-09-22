@@ -301,9 +301,7 @@ enum PokemonMasterSetChecklistBuilder {
                 bundledArtworkSourceID: descriptor?.bundledArtworkSourceID,
                 limitlessArtworkAuthorized: descriptor.map {
                     $0.recognitionKind == .expansion
-                } ?? (PokemonCatalogRegistry.bundledSeed.expansion(
-                    forPrintedCode: displayCode
-                ) != nil)
+                } ?? LimitlessArtwork.supportedSetCodes.contains(displayCode.uppercased())
             )
         }
         return baseSets
@@ -520,9 +518,12 @@ enum PokemonMasterSetChecklistBuilder {
             releaseDate: set.releaseDate,
             sortRank: set.sortRank,
             bundledArtworkSourceID: set.bundledArtworkSourceID,
-            artworkFallbackURLs: limitedURLs.isEmpty
-                ? set.artworkFallbackURLs
-                : limitedURLs,
+            // A signed descriptor is publisher-approved and must remain ahead
+            // of device-derived provider hints. The latter only fills the
+            // legacy/offline gap when no signed fallback exists.
+            artworkFallbackURLs: set.artworkFallbackURLs ?? (
+                limitedURLs.isEmpty ? nil : limitedURLs
+            ),
             limitlessArtworkAuthorized: set.limitlessArtworkAuthorized
         )
     }
