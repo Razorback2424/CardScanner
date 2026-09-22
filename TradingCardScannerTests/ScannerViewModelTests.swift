@@ -788,7 +788,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
     }
 
-    func testStaleStorageGenerationAfterWriteClearsAcknowledgementWithoutWriting() async throws {
+    func testStaleStorageGenerationAfterWriteClearsAcknowledgementWithoutReceipt() async throws {
         let generation = CollectionStorageGeneration()
         generation.installReady(storeID: UUID())
         let addGate = ScannerCollectionAddGate(outcome: .success)
@@ -813,10 +813,11 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(terminal)
         XCTAssertNil(model.scanAcknowledgement)
         XCTAssertTrue(model.recent.isEmpty)
-        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let addCount = await addGate.count()
+        XCTAssertEqual(addCount, 1)
     }
 
-    func testHeldRepeatSaveFailureRepublishesOfferAndClearsAcknowledgement() async throws {
+    func testHeldRepeatSaveFailureRepublishesOfferAndKeepsFailureAcknowledgement() async throws {
         let addGate = ScannerCollectionAddGate(
             outcome: .failure,
             successfulAddsBeforeBlocking: 1
@@ -869,11 +870,15 @@ final class ScannerViewModelTests: XCTestCase {
         await addGate.release()
 
         let failed = await waitUntil {
-            model.heldDuplicateOffer != nil && model.scanAcknowledgement == nil
+            model.heldDuplicateOffer != nil && model.scanAcknowledgement?.phase == .failed
         }
         XCTAssertTrue(failed)
         XCTAssertNotNil(model.heldDuplicateOffer)
-        XCTAssertNil(model.scanAcknowledgement)
+        XCTAssertEqual(model.scanAcknowledgement?.phase, .failed)
+        XCTAssertEqual(
+            model.scanAcknowledgement?.message,
+            "This card was recognized but was not added. Try again."
+        )
         XCTAssertEqual(model.recent.count, 1)
         let addCount = await addGate.count()
         XCTAssertEqual(addCount, 2)

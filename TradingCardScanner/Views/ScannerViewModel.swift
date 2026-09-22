@@ -3149,7 +3149,7 @@ final class ScannerViewModel: ObservableObject {
         guard await commitAuthorizedCollectionCandidate(candidate, authorization: .heldRepeat) else {
             // The consumed permit is never restored. Publish a fresh offer and
             // make the next tap create a new scanner-owned authorization.
-            clearAcknowledgement(for: candidate.encounterID)
+            clearRecognizedAcknowledgement(for: candidate.encounterID)
             heldDuplicateOffer = state.offer
             scanner.restoreHeldRepeatAfterFailure()
             diagnostic("routingHeldRepeatSaveFailed")
@@ -3179,6 +3179,7 @@ final class ScannerViewModel: ObservableObject {
     ) async -> Bool {
         guard isStorageGenerationCurrent else {
             clearAcknowledgement(for: candidate.encounterID)
+            endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
             return false
         }
         guard collectionAddOverride != nil || collectionWriter != nil else {
@@ -3213,11 +3214,18 @@ final class ScannerViewModel: ObservableObject {
             } else if let collectionWriter {
                 mutation = try await collectionWriter.add(candidate)
             } else {
+                clearAcknowledgement(for: candidate.encounterID)
+                endOneCardScan(encounterID: candidate.encounterID, outcome: "writer-unavailable")
                 return false
             }
-            guard writeSessionID == scannerSessionID,
-                  isStorageGenerationCurrent else {
+            guard writeSessionID == scannerSessionID else {
                 clearAcknowledgement(for: candidate.encounterID)
+                endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
+                return false
+            }
+            guard isStorageGenerationCurrent else {
+                clearAcknowledgement(for: candidate.encounterID)
+                endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
                 return false
             }
 
@@ -3268,7 +3276,11 @@ final class ScannerViewModel: ObservableObject {
             diagnostic(candidate.subject.slab == nil ? "collectionCommit" : "gradedCollectionCommit")
             return true
         } catch {
-            guard writeSessionID == scannerSessionID else { return false }
+            guard writeSessionID == scannerSessionID else {
+                clearAcknowledgement(for: candidate.encounterID)
+                endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
+                return false
+            }
             if !failAcknowledgement(
                 for: candidate.encounterID,
                 message: "This card was recognized but was not added. Try again."
@@ -3731,6 +3743,12 @@ final class ScannerViewModel: ObservableObject {
 
     private func clearAcknowledgement(for encounterID: UUID) {
         guard scanAcknowledgement?.encounterID == encounterID else { return }
+        scanAcknowledgement = nil
+    }
+
+    private func clearRecognizedAcknowledgement(for encounterID: UUID) {
+        guard scanAcknowledgement?.encounterID == encounterID,
+              scanAcknowledgement?.phase == .recognized else { return }
         scanAcknowledgement = nil
     }
 
