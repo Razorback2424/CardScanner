@@ -78,6 +78,14 @@ final class CollectedCard {
     var variantResolutionRaw: String?
     var identityResolutionRaw: String = IdentityResolution.printedIdentifier.rawValue
 
+    /// A finish reported by the catalog for a row whose existing automatic
+    /// finish is different. Two independent refresh sightings at least a day
+    /// apart are required before the row moves. Optional fields keep this a
+    /// lightweight CloudKit-compatible model addition for existing stores.
+    var pendingCatalogFinishID: String?
+    var pendingCatalogFinishFirstSeenAt: Date?
+    var pendingCatalogFinishRefreshID: UUID?
+
     /// Position of this card's set in release order. Collectors group by set the
     /// way sets were released, not alphabetically. Compared only within a game.
     var setReleaseOrder: Int = 0

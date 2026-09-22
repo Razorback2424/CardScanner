@@ -9,6 +9,7 @@ enum CollectionActivitySource: String, CaseIterable, Sendable {
     case gradedCatalog
     case correction
     case catalogUpdate
+    case catalogBackfill
 
     var label: String {
         switch self {
@@ -19,6 +20,7 @@ enum CollectionActivitySource: String, CaseIterable, Sendable {
         case .gradedCatalog: return "Graded Browse"
         case .correction: return "Correction"
         case .catalogUpdate: return "Catalog update"
+        case .catalogBackfill: return "Catalog backfill"
         }
     }
 
@@ -31,6 +33,7 @@ enum CollectionActivitySource: String, CaseIterable, Sendable {
         case .gradedCatalog: return "checkmark.seal"
         case .correction: return "pencil"
         case .catalogUpdate: return "arrow.triangle.2.circlepath"
+        case .catalogBackfill: return "arrow.down.to.line"
         }
     }
 }

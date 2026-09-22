@@ -54,6 +54,16 @@ enum CollectionQuantityLimits {
     }
 }
 
+enum CollectionVariantCorrectionMode: Equatable, Sendable {
+    case visibleCorrection
+    case quietBackfill
+}
+
+struct CollectionVariantCorrectionClaim: Equatable, Sendable {
+    let activityID: UUID
+    let quantity: Int
+}
+
 /// Owns the scanner's durable writes on a SwiftData model actor.
 ///
 /// The scanner view model is deliberately main-actor isolated because it owns
@@ -3370,6 +3380,7 @@ struct CollectionStore {
             previous.variantID = corrected.variant?.id
             previous.variantLabel = corrected.variant?.label
             previous.variantResolutionRaw = corrected.resolution.rawValue
+            clearPendingCatalogFinish(on: previous)
             activityToRetarget.variantID = previous.variantID
             activityToRetarget.variantLabel = previous.variantLabel
             activityToRetarget.correctedAt = .now
@@ -3396,6 +3407,7 @@ struct CollectionStore {
             context.delete(previous)
         } else {
             previous.quantity -= quantity
+            clearPendingCatalogFinish(on: previous)
         }
 
         let mutation = try add(
@@ -3415,6 +3427,7 @@ struct CollectionStore {
         guard let correctedRow = try uniqueCard(forKey: mutation.collectionKey) else {
             throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
         }
+        clearPendingCatalogFinish(on: correctedRow)
         let correction = ledger.recordCorrection(
             fromCollectionKey: previousKey,
             fromPriceStorageKey: previousPriceStorageKey,
@@ -3530,6 +3543,7 @@ struct CollectionStore {
                 previous.variantID = corrected.variant?.id
                 previous.variantLabel = corrected.variant?.label
                 previous.variantResolutionRaw = corrected.resolution.rawValue
+                clearPendingCatalogFinish(on: previous)
                 activityToRetarget.variantID = previous.variantID
                 activityToRetarget.variantLabel = previous.variantLabel
                 activityToRetarget.correctedAt = .now
@@ -3580,7 +3594,10 @@ struct CollectionStore {
                 context.delete(previous)
             } else {
                 previous.quantity -= quantity
+                clearPendingCatalogFinish(on: previous)
             }
+
+            let preserveDateAdded = source == .catalogUpdate || source == .catalogBackfill
 
             let correctedRow: CollectedCard
             if let existing = try self.card(
@@ -3588,7 +3605,7 @@ struct CollectionStore {
                 magicTreatmentIDsRaw: correctedTreatmentIDs
             ) {
                 existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, quantity)
-                existing.dateAdded = .now
+                if !preserveDateAdded { existing.dateAdded = .now }
                 if existing.magicTreatmentIDsRaw.isEmpty {
                     existing.magicTreatmentIDsRaw = correctedTreatmentIDs
                 }
@@ -3597,7 +3614,20 @@ struct CollectionStore {
                 }
                 existing.variantID = corrected.variant?.id
                 existing.variantLabel = corrected.variant?.label
-                existing.variantResolutionRaw = corrected.resolution.rawValue
+                let provenanceRank: (VariantResolution) -> Int = { resolution in
+                    switch resolution {
+                    case .userConfirmed, .imported: return 3
+                    case .finishLock, .printedLabel: return 2
+                    case .uniqueInCatalog, .deterministicSetRule: return 1
+                    case .catalogSilent: return 0
+                    }
+                }
+                if source == .correction
+                    || provenanceRank(corrected.resolution)
+                        >= provenanceRank(existing.variantResolution ?? .catalogSilent) {
+                    existing.variantResolutionRaw = corrected.resolution.rawValue
+                }
+                clearPendingCatalogFinish(on: existing)
                 correctedRow = existing
             } else {
                 let inserted = CollectedCard(
@@ -3616,6 +3646,7 @@ struct CollectionStore {
                     identityResolution: previousSnapshot.identityResolution,
                     setReleaseOrder: previousSnapshot.setReleaseOrder,
                     quantity: quantity,
+                    dateAdded: preserveDateAdded ? previousSnapshot.dateAdded : .now,
                     magicTreatments: correctedTreatments,
                     magicTreatmentQualifiers: correctedTreatmentQualifiers
                 )
@@ -3647,6 +3678,7 @@ struct CollectionStore {
                 inserted.gradingQualifier = previousSnapshot.gradingQualifier
                 inserted.certificationNumber = previousSnapshot.certificationNumber
                 inserted.marketRegionRaw = previousSnapshot.marketRegionRaw
+                clearPendingCatalogFinish(on: inserted)
                 context.insert(inserted)
                 correctedRow = inserted
             }
@@ -3694,6 +3726,280 @@ struct CollectionStore {
             context.rollback()
             throw error
         }
+    }
+
+    /// Moves a set of acquisition claims as one transaction. Catalog finish
+    /// reconciliation passes every outstanding acquisition for the row so a
+    /// failure cannot leave some copies under the old finish and others under
+    /// the new one.
+    @discardableResult
+    func recordVariantCorrection(
+        for card: CollectedCard,
+        to corrected: ResolvedVariant,
+        claims: [CollectionVariantCorrectionClaim],
+        source: CollectionActivitySource,
+        mode: CollectionVariantCorrectionMode
+    ) throws -> CollectionMutation? {
+        guard !claims.isEmpty, corrected.variant != card.variant else { return nil }
+        guard claims.allSatisfy({
+            $0.quantity > 0 && $0.quantity <= CollectionQuantityLimits.maximum
+        }), Set(claims.map(\.activityID)).count == claims.count else {
+            throw CollectionStoreError.insufficientQuantity(card.collectionKey)
+        }
+
+        do {
+            guard let previous = try self.card(
+                forAnyKey: card.collectionKey,
+                magicTreatmentIDsRaw: card.magicTreatmentIDs(for: card.variant)
+            ) else {
+                throw CollectionStoreError.missingDestinationRow(card.collectionKey)
+            }
+            let previousKey = previous.collectionKey
+            guard corrected.variant != previous.variant else { return nil }
+            guard mode != .quietBackfill
+                    || (source == .catalogBackfill
+                        && previous.variantID == nil
+                        && (previous.variantResolution == nil || previous.variantResolution?.isAutomatic == true)
+                        && corrected.variant != nil) else {
+                throw CollectionStoreError.invalidActivity(claims[0].activityID)
+            }
+
+            var totalQuantity = 0
+            var selected: [(claim: CollectionVariantCorrectionClaim, activity: CollectionActivity, operationIDs: [UUID])] = []
+            for claim in claims {
+                totalQuantity = try CollectionQuantityLimits.checkedAdd(totalQuantity, claim.quantity)
+                let activity = try activity(id: claim.activityID)
+                guard activity.collectionKey == previousKey,
+                      activity.kind.hasQuantityClaim,
+                      activity.signedQuantity > 0 else {
+                    throw CollectionStoreError.invalidActivity(claim.activityID)
+                }
+                guard activity.remainingQuantity == claim.quantity else {
+                    throw CollectionStoreError.insufficientQuantity(previousKey)
+                }
+                let operationIDs = activity.ledgerOperationIDs
+                _ = try preflightLineage(
+                    operationIDs,
+                    expectedCollectionKey: previousKey,
+                    expectedQuantity: claim.quantity
+                )
+                selected.append((claim, activity, operationIDs))
+            }
+            guard previous.quantity >= totalQuantity else {
+                throw CollectionStoreError.insufficientQuantity(previousKey)
+            }
+
+            if previous.itemKind == .gradedCard {
+                guard mode == .visibleCorrection else {
+                    throw CollectionStoreError.invalidActivity(claims[0].activityID)
+                }
+                previous.variantID = corrected.variant?.id
+                previous.variantLabel = corrected.variant?.label
+                previous.variantResolutionRaw = corrected.resolution.rawValue
+                clearPendingCatalogFinish(on: previous)
+                var operationIDs: [UUID] = []
+                for entry in selected {
+                    entry.activity.variantID = previous.variantID
+                    entry.activity.variantLabel = previous.variantLabel
+                    entry.activity.correctedAt = .now
+                    operationIDs.append(contentsOf: entry.operationIDs)
+                    _ = try appendActivity(
+                        previous,
+                        source: source,
+                        kind: .corrected,
+                        deltaQuantity: 0,
+                        ledgerOperationIDs: entry.operationIDs
+                    )
+                }
+                try commit()
+                return CollectionMutation(
+                    collectionKey: previousKey,
+                    activityID: selected.first?.activity.id,
+                    didInsert: false,
+                    ledgerOperationIDs: operationIDs
+                )
+            }
+
+            let parts = previousKey.split(separator: "@", maxSplits: 1)
+            let base = parts.first.map(String.init) ?? previousKey
+            let runSuffix = parts.dropFirst().first.map { "@\($0)" } ?? ""
+            let identityBase = base.split(separator: "#", maxSplits: 1).first.map(String.init) ?? base
+            let correctedTreatmentEvidence = MagicTreatmentEvidence(
+                treatments: previous.magicTreatmentIDs(for: corrected.variant)
+                    .compactMap(MagicTreatment.init(id:)),
+                qualifiers: previous.magicTreatmentQualifiers
+            )
+            let correctedTreatments = correctedTreatmentEvidence.treatments
+            let correctedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: correctedTreatments)
+            let correctedTreatmentQualifiers = Dictionary(uniqueKeysWithValues: correctedTreatments.compactMap { treatment in
+                correctedTreatmentEvidence.qualifier(for: treatment).map { (treatment.id, $0) }
+            })
+            let destinationKey = MagicTreatmentKeyCodec.finishQualifiedCollectionKey(
+                base: identityBase,
+                game: previous.cardGame,
+                finish: corrected.variant,
+                rawTreatmentIDs: correctedTreatmentIDs
+            ) + runSuffix
+            guard destinationKey != previousKey else {
+                throw CollectionStoreError.invalidActivity(claims[0].activityID)
+            }
+
+            let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
+            let previousSnapshot = RemovedCardSnapshot(card: previous, quantity: totalQuantity)
+            if previous.quantity == totalQuantity {
+                context.delete(previous)
+            } else {
+                previous.quantity -= totalQuantity
+                clearPendingCatalogFinish(on: previous)
+            }
+
+            let preserveDateAdded = mode == .quietBackfill
+                || source == .catalogUpdate
+                || source == .catalogBackfill
+            let correctedRow: CollectedCard
+            let didInsert: Bool
+            if let existing = try self.card(
+                forAnyKey: destinationKey,
+                magicTreatmentIDsRaw: correctedTreatmentIDs
+            ) {
+                existing.quantity = try CollectionQuantityLimits.checkedAdd(
+                    existing.quantity,
+                    totalQuantity
+                )
+                if !preserveDateAdded { existing.dateAdded = .now }
+                if existing.magicTreatmentIDsRaw.isEmpty {
+                    existing.magicTreatmentIDsRaw = correctedTreatmentIDs
+                }
+                if existing.magicTreatmentQualifiersJSON == nil {
+                    existing.magicTreatmentQualifiers = correctedTreatmentQualifiers
+                }
+                existing.variantID = corrected.variant?.id
+                existing.variantLabel = corrected.variant?.label
+                let provenanceRank: (VariantResolution) -> Int = { resolution in
+                    switch resolution {
+                    case .userConfirmed, .imported: return 3
+                    case .finishLock, .printedLabel: return 2
+                    case .uniqueInCatalog, .deterministicSetRule: return 1
+                    case .catalogSilent: return 0
+                    }
+                }
+                if source == .correction
+                    || provenanceRank(corrected.resolution)
+                        >= provenanceRank(existing.variantResolution ?? .catalogSilent) {
+                    existing.variantResolutionRaw = corrected.resolution.rawValue
+                }
+                clearPendingCatalogFinish(on: existing)
+                correctedRow = existing
+                didInsert = false
+            } else {
+                let inserted = CollectedCard(
+                    collectionKey: destinationKey,
+                    game: previousSnapshot.game,
+                    providerID: previousSnapshot.providerID,
+                    name: previousSnapshot.name,
+                    setName: previousSnapshot.setName,
+                    setCode: previousSnapshot.setCode,
+                    cardNumber: previousSnapshot.cardNumber,
+                    rarity: previousSnapshot.rarity,
+                    imageURL: previousSnapshot.imageURL,
+                    thumbnailURL: previousSnapshot.thumbnailURL,
+                    variant: corrected.variant,
+                    variantResolution: corrected.resolution,
+                    identityResolution: previousSnapshot.identityResolution,
+                    setReleaseOrder: previousSnapshot.setReleaseOrder,
+                    quantity: totalQuantity,
+                    dateAdded: preserveDateAdded ? previousSnapshot.dateAdded : .now,
+                    magicTreatments: correctedTreatments,
+                    magicTreatmentQualifiers: correctedTreatmentQualifiers
+                )
+                inserted.catalogProviderID = previousSnapshot.catalogProviderID
+                inserted.tcgplayerURL = previousSnapshot.tcgplayerURL
+                inserted.tcgplayerProductID = previousSnapshot.tcgplayerProductID
+                // A finish-specific marketplace handle belongs to the outgoing
+                // row. The corrected finish must be resolved independently.
+                inserted.tcgplayerSKUID = nil
+                inserted.userArtworkFilename = previousSnapshot.userArtworkFilename
+                inserted.itemKindRaw = previousSnapshot.itemKindRaw
+                inserted.justTCGCardID = previousSnapshot.justTCGCardID
+                inserted.justTCGVariantID = nil
+                inserted.justTCGAPIVersion = previousSnapshot.justTCGAPIVersion
+                inserted.pokemonPrintRunRaw = previousSnapshot.pokemonPrintRunRaw
+                inserted.magicTreatmentIDsRaw = correctedTreatmentIDs
+                inserted.magicTreatmentQualifiersJSON = MagicTreatmentKeyCodec.encodeQualifiers(
+                    correctedTreatmentQualifiers
+                )
+                inserted.magicContentKindRaw = previousSnapshot.magicContentKindRaw ?? MagicContentKind.regular.rawValue
+                inserted.catalogMetadataCheckedAt = previousSnapshot.catalogMetadataCheckedAt
+                inserted.catalogMetadataVersion = previousSnapshot.catalogMetadataVersion
+                inserted.gradingCompanyRaw = previousSnapshot.gradingCompanyRaw
+                inserted.gradeRaw = previousSnapshot.gradeRaw
+                inserted.gradeLabel = previousSnapshot.gradeLabel
+                inserted.gradingQualifier = previousSnapshot.gradingQualifier
+                inserted.certificationNumber = previousSnapshot.certificationNumber
+                inserted.marketRegionRaw = previousSnapshot.marketRegionRaw
+                clearPendingCatalogFinish(on: inserted)
+                context.insert(inserted)
+                correctedRow = inserted
+                didInsert = true
+            }
+
+            var returnedOperationIDs: [UUID] = []
+            for entry in selected {
+                let correctionOperationID = UUID()
+                let correction = ledger.recordCorrection(
+                    fromCollectionKey: previousSnapshot.collectionKey,
+                    fromPriceStorageKey: previousPriceStorageKey,
+                    toCard: correctedRow,
+                    source: source,
+                    quantity: entry.claim.quantity,
+                    operationID: correctionOperationID
+                )
+                try requireAppended(correction.from)
+                try requireAppended(correction.to)
+
+                entry.activity.collectionKey = correctedRow.collectionKey
+                entry.activity.name = correctedRow.name
+                entry.activity.setName = correctedRow.setName
+                entry.activity.setCode = correctedRow.setCode
+                entry.activity.cardNumber = correctedRow.cardNumber
+                entry.activity.variantID = correctedRow.variantID
+                entry.activity.variantLabel = correctedRow.variantLabel
+                entry.activity.magicTreatmentIDsRaw = correctedRow.magicTreatmentIDsRaw
+                entry.activity.magicTreatmentQualifiersJSON = correctedRow.magicTreatmentQualifiersJSON
+                entry.activity.magicContentKindRaw = correctedRow.magicContentKindRaw
+                entry.activity.pokemonPrintRunRaw = correctedRow.pokemonPrintRunRaw
+                entry.activity.ledgerOperationIDs = entry.operationIDs + [correctionOperationID]
+                if mode == .visibleCorrection {
+                    entry.activity.correctedAt = .now
+                    _ = try appendActivity(
+                        correctedRow,
+                        source: source,
+                        kind: .corrected,
+                        deltaQuantity: 0,
+                        ledgerOperationIDs: [correctionOperationID]
+                    )
+                }
+                returnedOperationIDs.append(contentsOf: entry.operationIDs)
+                returnedOperationIDs.append(correctionOperationID)
+            }
+
+            try commit()
+            return CollectionMutation(
+                collectionKey: correctedRow.collectionKey,
+                activityID: selected.first?.activity.id,
+                didInsert: didInsert,
+                ledgerOperationIDs: returnedOperationIDs
+            )
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    private func clearPendingCatalogFinish(on card: CollectedCard) {
+        card.pendingCatalogFinishID = nil
+        card.pendingCatalogFinishFirstSeenAt = nil
+        card.pendingCatalogFinishRefreshID = nil
     }
 }
 

@@ -33,6 +33,10 @@ fileprivate struct PriceFetchOutcome: Sendable {
     }
 }
 
+typealias PriceRefreshPokemonFetchOverride = @Sendable (
+    PriceTarget.Printing
+) async throws -> IdentifiedCard
+
 /// Performs one refresh queue on a context owned by this actor. The facade
 /// below deliberately receives only value progress and result messages: a
 /// SwiftData model object never has to cross back to the main actor while a
@@ -59,14 +63,21 @@ actor PriceRefreshModelActor {
     private var activeFallbackStagedWrites = 0
     private var priceKeysWritten: Set<String> = []
     private var storageContinuation: StorageGenerationContinuation?
+    private var pokemonFetchOverride: PriceRefreshPokemonFetchOverride?
 
-    fileprivate func run(
+    func setPokemonFetchOverrideForTesting(_ override: PriceRefreshPokemonFetchOverride?) {
+        pokemonFetchOverride = `override`
+    }
+
+    func run(
         _ request: PriceRefreshRequest,
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void,
         shouldContinue: StorageGenerationContinuation?
     ) async -> PriceRefreshWorkOutcome {
         storageContinuation = shouldContinue
-        guard shouldContinue?() ?? true else { return .cancelled }
+        guard shouldContinue?() ?? true else {
+            return .cancelled(repairedFinishes: 0, backfilledFinishes: 0)
+        }
         let runState = PerformanceSignpost.beginInterval(
             "priceRefresh.run",
             id: PerformanceSignpost.makeID(),
@@ -107,7 +118,9 @@ actor PriceRefreshModelActor {
         } catch {
             return .targetBuildFailed
         }
-        guard shouldContinue?() ?? true else { return .cancelled }
+        guard shouldContinue?() ?? true else {
+            return .cancelled(repairedFinishes: 0, backfilledFinishes: 0)
+        }
 
         targetCount = String(targets.count)
         guard !targets.isEmpty else {
@@ -123,8 +136,8 @@ actor PriceRefreshModelActor {
         runOutcome = switch result {
         case .noTargets: "no-targets"
         case .targetBuildFailed: "target-build-failed"
-        case .cancelled: "cancelled"
-        case .completed: "completed"
+        case .cancelled(_, _): "cancelled"
+        case .completed(_): "completed"
         }
         return result
     }
@@ -190,6 +203,7 @@ actor PriceRefreshModelActor {
         var gradedTransportFailures = 0
         var reconciledDuplicateRecords = 0
         var repairedFinishes = 0
+        var backfilledFinishes = 0
         var stagedPriced = 0
         var stagedChangedPrices = false
         var stagedDuplicateRepairs = store.reconcileDuplicateRecords()
@@ -226,8 +240,9 @@ actor PriceRefreshModelActor {
         }
 
         @discardableResult
-        func commitStaged() async -> Bool {
-            guard storageContinuation?() ?? true, !Task.isCancelled else { return false }
+        func commitStaged(force: Bool = false) async -> Bool {
+            guard storageContinuation?() ?? true,
+                  force || !Task.isCancelled else { return false }
             let writeCount = stagedWriteCount
             let commitState = PerformanceSignpost.beginInterval(
                 "priceRefresh.commitStaged",
@@ -300,6 +315,7 @@ actor PriceRefreshModelActor {
         let importedCardIDsByProviderID = store.importedCardIDsByProviderID()
         var completed = 0
         var wasCancelled = false
+        let refreshID = UUID()
         var fallbackSubjects: [PriceRefreshController.FallbackCandidate] = vendorNative.map {
             PriceRefreshController.FallbackCandidate(target: $0, card: nil)
         }
@@ -415,13 +431,14 @@ actor PriceRefreshModelActor {
                 let batch = requestBatches[cursor]
                 cursor += 1
                 let batchID = UUID()
-                group.addTask { [tcgdex, scryfall, importedResolver] in
+                group.addTask { [tcgdex, scryfall, importedResolver, pokemonFetchOverride] in
                     await PriceRefreshController.fetchBatch(
                         batch,
                         batchID: batchID,
                         tcgdex: tcgdex,
                         scryfall: scryfall,
-                        importedResolver: importedResolver
+                        importedResolver: importedResolver,
+                        pokemonFetchOverride: pokemonFetchOverride
                     )
                 }
             }
@@ -452,7 +469,10 @@ actor PriceRefreshModelActor {
                         }
                         let targetsForPrinting = byPrinting[printing] ?? []
                         for target in targetsForPrinting {
-                            var candidates: [PokemonFinishReconciliation.Repair] = []
+                            var assessment = PokemonFinishReconciliation.Assessment(
+                                repairs: [],
+                                changedPendingRows: 0
+                            )
                             if card.game == .pokemon,
                                target.game == .pokemon,
                                target.itemKind == .rawCard,
@@ -465,18 +485,23 @@ actor PriceRefreshModelActor {
                                     for: reconciliationRowIDsByPriceKey?[target.id] ?? [],
                                     in: modelContext
                                 )
-                                candidates = PokemonFinishReconciliation.candidates(
+                                assessment = PokemonFinishReconciliation.assess(
                                     targets: [target],
                                     card: card,
-                                    rows: rows
+                                    rows: rows,
+                                    refreshID: refreshID,
+                                    at: now
                                 )
                             }
+                            if assessment.changedPendingRows > 0 {
+                                for _ in 0..<assessment.changedPendingRows { stage(true) }
+                            }
 
-                            if candidates.isEmpty {
+                            if assessment.repairs.isEmpty {
                                 priceTarget(target, card: card, at: now)
                             } else {
                                 deferredPriceTargets[target.id] = (target, card)
-                                deferredCatalogRepairs.append(contentsOf: candidates.map {
+                                deferredCatalogRepairs.append(contentsOf: assessment.repairs.map {
                                     ($0, card)
                                 })
                             }
@@ -541,13 +566,14 @@ actor PriceRefreshModelActor {
                     let batch = requestBatches[cursor]
                     cursor += 1
                     let batchID = UUID()
-                    group.addTask { [tcgdex, scryfall, importedResolver] in
+                    group.addTask { [tcgdex, scryfall, importedResolver, pokemonFetchOverride] in
                         await PriceRefreshController.fetchBatch(
                             batch,
                             batchID: batchID,
                             tcgdex: tcgdex,
                             scryfall: scryfall,
-                            importedResolver: importedResolver
+                            importedResolver: importedResolver,
+                            pokemonFetchOverride: pokemonFetchOverride
                         )
                     }
                 }
@@ -555,54 +581,97 @@ actor PriceRefreshModelActor {
         }
 
         await publishCatalogProgress(force: true)
-        _ = await commitStaged()
+        // A card's successful response is complete evidence on its own. Keep
+        // those staged sightings even if the enclosing refresh was cancelled;
+        // a storage-generation change still blocks writes to the stale store.
+        _ = await commitStaged(force: true)
         if wasCancelled || Task.isCancelled || !(storageContinuation?() ?? true) {
             refreshOutcome = "cancelled"
-            return .cancelled
+            return .cancelled(
+                repairedFinishes: repairedFinishes,
+                backfilledFinishes: backfilledFinishes
+            )
         }
 
-        var repairedPriceTargets: [String: (target: PriceTarget, card: IdentifiedCard)] = [:]
+        if !deferredCatalogRepairs.isEmpty {
+            await progress(.reconciling(completed: 0, total: deferredCatalogRepairs.count))
+        }
+        var completedRepairs = 0
+        var repairedDestinationCards: [String: IdentifiedCard] = [:]
         for deferred in deferredCatalogRepairs {
             guard storageContinuation?() ?? true, !Task.isCancelled else {
                 refreshOutcome = "cancelled"
-                return .cancelled
+                return .cancelled(
+                    repairedFinishes: repairedFinishes,
+                    backfilledFinishes: backfilledFinishes
+                )
             }
-            guard PokemonFinishReconciliation.apply(
+            if PokemonFinishReconciliation.apply(
                 deferred.repair,
                 card: deferred.card,
                 in: modelContext.container
-            ) else {
-                continue
+            ) {
+                var destination = deferred.repair.target
+                destination.variantID = deferred.repair.resolved.variant?.id
+                repairedDestinationCards[destination.id] = deferred.card
+                switch deferred.repair.kind {
+                case .catalogCorrection:
+                    repairedFinishes += 1
+                case .quietBackfill:
+                    backfilledFinishes += 1
+                }
             }
-            repairedFinishes += 1
-            var target = deferred.repair.target
-            target.variantID = deferred.repair.resolved.variant?.id
-            repairedPriceTargets[target.id] = (target, deferred.card)
+            completedRepairs += 1
+            await progress(.reconciling(
+                completed: completedRepairs,
+                total: deferredCatalogRepairs.count
+            ))
         }
 
-        // Sibling contexts commit the collection/ledger correction themselves.
-        // Read the live keys from a fresh context so a deleted outgoing row is
-        // not priced again under its obsolete finish.
+        // Corrections commit in sibling contexts. Rebuild from the live rows so
+        // pricing picks up destination metadata and cannot carry an outgoing
+        // finish's marketplace handle or failure state onto the new price key.
         let reconciliationContext = ModelContext(modelContext.container)
-        let liveSourcePriceKeys = Set(
-            ((try? reconciliationContext.fetch(FetchDescriptor<CollectedCard>())) ?? [])
-                .map(\.priceKey)
-        )
-        for (target, card) in deferredPriceTargets.values where liveSourcePriceKeys.contains(target.id) {
-            priceTarget(target, card: card, at: .now)
+        let currentTargets: [PriceTarget]
+        do {
+            currentTargets = try PriceRefreshTargets.make(
+                context: reconciliationContext,
+                usesPriceFallback: request.usesPriceFallback,
+                includeImported: true
+            )
+        } catch {
+            persistenceFailed = true
+            currentTargets = []
         }
-        for (target, card) in repairedPriceTargets.values {
-            priceTarget(target, card: card, at: .now)
+        let currentTargetsByID = Dictionary(
+            currentTargets.map { ($0.id, $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        for (sourceID, deferred) in deferredPriceTargets {
+            if let liveTarget = currentTargetsByID[sourceID] {
+                priceTarget(liveTarget, card: deferred.card, at: .now)
+            }
+        }
+        for (destinationID, card) in repairedDestinationCards {
+            if let liveTarget = currentTargetsByID[destinationID] {
+                priceTarget(liveTarget, card: card, at: .now)
+            }
         }
         _ = await commitStaged()
         if wasCancelled || Task.isCancelled || !(storageContinuation?() ?? true) {
             refreshOutcome = "cancelled"
-            return .cancelled
+            return .cancelled(
+                repairedFinishes: repairedFinishes,
+                backfilledFinishes: backfilledFinishes
+            )
         }
 
         guard storageContinuation?() ?? true else {
             refreshOutcome = "cancelled"
-            return .cancelled
+            return .cancelled(
+                repairedFinishes: repairedFinishes,
+                backfilledFinishes: backfilledFinishes
+            )
         }
         let fallbackResult = await runFallback(
             fallbackSubjects,
@@ -618,7 +687,10 @@ actor PriceRefreshModelActor {
 
         guard storageContinuation?() ?? true, !Task.isCancelled else {
             refreshOutcome = "cancelled"
-            return .cancelled
+            return .cancelled(
+                repairedFinishes: repairedFinishes,
+                backfilledFinishes: backfilledFinishes
+            )
         }
         let gradedResult = await refreshGraded(
             targets,
@@ -636,7 +708,10 @@ actor PriceRefreshModelActor {
 
         if Task.isCancelled || !(storageContinuation?() ?? true) {
             refreshOutcome = "cancelled"
-            return .cancelled
+            return .cancelled(
+                repairedFinishes: repairedFinishes,
+                backfilledFinishes: backfilledFinishes
+            )
         }
         let latest = latestSourceUpdate ?? previousLatest
         let finalPriceDeltas = takePriceDeltas(from: store)
@@ -656,6 +731,7 @@ actor PriceRefreshModelActor {
                 gradedTransportFailures: gradedTransportFailures,
                 reconciledDuplicateRecords: reconciledDuplicateRecords,
                 repairedFinishes: repairedFinishes,
+                backfilledFinishes: backfilledFinishes,
                 priceDeltas: finalPriceDeltas
             )
         )
@@ -1529,6 +1605,11 @@ struct ImportedPriceIdentity: Hashable, Sendable {
 }
 
 extension PokemonFinishReconciliation {
+    enum RepairKind: Equatable, Sendable {
+        case catalogCorrection
+        case quietBackfill
+    }
+
     struct Repair: Sendable {
         let rowID: PersistentIdentifier
         let collectionKey: String
@@ -1536,6 +1617,16 @@ extension PokemonFinishReconciliation {
         let storedResolutionRaw: String?
         let target: PriceTarget
         let resolved: ResolvedVariant
+        let kind: RepairKind
+        let requiresConfirmation: Bool
+        let pendingFinishID: String?
+        let pendingFirstSeenAt: Date?
+        let pendingRefreshID: UUID?
+    }
+
+    struct Assessment {
+        let repairs: [Repair]
+        let changedPendingRows: Int
     }
 
     /// Identifies only raw Pokémon rows represented by this exact price target
@@ -1579,7 +1670,12 @@ extension PokemonFinishReconciliation {
                         storedVariantID: row.variantID,
                         storedResolutionRaw: row.variantResolutionRaw,
                         target: target,
-                        resolved: resolved
+                        resolved: resolved,
+                        kind: .catalogCorrection,
+                        requiresConfirmation: false,
+                        pendingFinishID: row.pendingCatalogFinishID,
+                        pendingFirstSeenAt: row.pendingCatalogFinishFirstSeenAt,
+                        pendingRefreshID: row.pendingCatalogFinishRefreshID
                     )
                 )
             }
@@ -1587,11 +1683,133 @@ extension PokemonFinishReconciliation {
         return repairs
     }
 
-    /// Applies one row's activity-backed corrections in a sibling context.
-    /// The correction API saves internally and rolls back its context on error;
-    /// keeping that context away from the price pass protects staged price work.
-    /// A row is untouched unless its outstanding acquisition activities account
-    /// for its complete current quantity.
+    /// Applies the evidence policy to the live row snapshot. A missing finish
+    /// can be backfilled immediately; a change to an existing automatic finish
+    /// needs a second fresh result from a different refresh at least a day later.
+    /// Pending evidence is staged on the caller's context and committed with its
+    /// normal refresh checkpoint.
+    static func assess(
+        targets: [PriceTarget],
+        card: IdentifiedCard,
+        rows: [CollectedCard],
+        refreshID: UUID,
+        at now: Date,
+        confirmationInterval: TimeInterval = 24 * 60 * 60
+    ) -> Assessment {
+        guard card.game == .pokemon else {
+            return Assessment(repairs: [], changedPendingRows: 0)
+        }
+
+        var repairs: [Repair] = []
+        var changedPendingRows = 0
+        for target in targets where target.game == .pokemon
+            && target.itemKind == .rawCard
+            && target.importedIdentity == nil
+            && target.printing.printingID == card.providerID {
+            for row in rows where row.priceKey == target.id
+                && row.providerID == card.providerID
+                && row.cardGame == .pokemon
+                && row.itemKind == .rawCard
+                && row.identityResolution != .imported
+                && row.variantID == target.variantID {
+                let storedResolution = row.variantResolution
+                guard row.pokemonPrintRun == nil || row.pokemonPrintRun == .unlimited else {
+                    if clearPendingCatalogFinish(on: row) { changedPendingRows += 1 }
+                    continue
+                }
+                let canBackfill = row.variantID == nil
+                    && (storedResolution == nil || storedResolution?.isAutomatic == true)
+                let canCorrect = row.variantID != nil && storedResolution?.isAutomatic == true
+                guard canBackfill || canCorrect else {
+                    if clearPendingCatalogFinish(on: row) { changedPendingRows += 1 }
+                    continue
+                }
+
+                let evidence = row.pokemonPrintRun == nil
+                    ? card.variantEvidence
+                    : card.variantEvidence.excludingFirstEditionPseudoFinish()
+                let outcome = VariantResolver.resolve(evidence)
+                guard case let .resolved(resolved) = outcome,
+                      let variant = resolved.variant else {
+                    if clearPendingCatalogFinish(on: row) { changedPendingRows += 1 }
+                    continue
+                }
+                if variant.id == row.variantID {
+                    if clearPendingCatalogFinish(on: row) { changedPendingRows += 1 }
+                    continue
+                }
+
+                if canBackfill {
+                    repairs.append(
+                        Repair(
+                            rowID: row.persistentModelID,
+                            collectionKey: row.collectionKey,
+                            storedVariantID: row.variantID,
+                            storedResolutionRaw: row.variantResolutionRaw,
+                            target: target,
+                            resolved: resolved,
+                            kind: .quietBackfill,
+                            requiresConfirmation: false,
+                            pendingFinishID: row.pendingCatalogFinishID,
+                            pendingFirstSeenAt: row.pendingCatalogFinishFirstSeenAt,
+                            pendingRefreshID: row.pendingCatalogFinishRefreshID
+                        )
+                    )
+                    continue
+                }
+
+                let pendingMatches = row.pendingCatalogFinishID == variant.id
+                guard pendingMatches,
+                      let firstSeenAt = row.pendingCatalogFinishFirstSeenAt,
+                      let firstRefreshID = row.pendingCatalogFinishRefreshID,
+                      firstRefreshID != refreshID,
+                      now.timeIntervalSince(firstSeenAt) >= confirmationInterval else {
+                    if !pendingMatches
+                        || row.pendingCatalogFinishFirstSeenAt == nil
+                        || row.pendingCatalogFinishRefreshID == nil {
+                        row.pendingCatalogFinishID = variant.id
+                        row.pendingCatalogFinishFirstSeenAt = now
+                        row.pendingCatalogFinishRefreshID = refreshID
+                        changedPendingRows += 1
+                    }
+                    continue
+                }
+
+                repairs.append(
+                    Repair(
+                        rowID: row.persistentModelID,
+                        collectionKey: row.collectionKey,
+                        storedVariantID: row.variantID,
+                        storedResolutionRaw: row.variantResolutionRaw,
+                        target: target,
+                        resolved: resolved,
+                        kind: .catalogCorrection,
+                        requiresConfirmation: true,
+                        pendingFinishID: row.pendingCatalogFinishID,
+                        pendingFirstSeenAt: row.pendingCatalogFinishFirstSeenAt,
+                        pendingRefreshID: row.pendingCatalogFinishRefreshID
+                    )
+                )
+            }
+        }
+        return Assessment(repairs: repairs, changedPendingRows: changedPendingRows)
+    }
+
+    private static func clearPendingCatalogFinish(on row: CollectedCard) -> Bool {
+        guard row.pendingCatalogFinishID != nil
+                || row.pendingCatalogFinishFirstSeenAt != nil
+                || row.pendingCatalogFinishRefreshID != nil else {
+            return false
+        }
+        row.pendingCatalogFinishID = nil
+        row.pendingCatalogFinishFirstSeenAt = nil
+        row.pendingCatalogFinishRefreshID = nil
+        return true
+    }
+
+    /// Applies all of a row's activity-backed changes in one sibling-context
+    /// transaction. A row is untouched unless its outstanding acquisition
+    /// activities account for its complete current quantity.
     static func apply(
         _ repair: Repair,
         card: IdentifiedCard,
@@ -1602,6 +1820,10 @@ extension PokemonFinishReconciliation {
               row.collectionKey == repair.collectionKey,
               row.variantID == repair.storedVariantID,
               row.variantResolutionRaw == repair.storedResolutionRaw,
+              !repair.requiresConfirmation
+                || (row.pendingCatalogFinishID == repair.pendingFinishID
+                    && row.pendingCatalogFinishFirstSeenAt == repair.pendingFirstSeenAt
+                    && row.pendingCatalogFinishRefreshID == repair.pendingRefreshID),
               row.priceKey == repair.target.id,
               self.repair(
                 storedVariantID: row.variantID,
@@ -1614,13 +1836,12 @@ extension PokemonFinishReconciliation {
         }
 
         do {
-            let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
-                .filter {
-                    $0.collectionKey == row.collectionKey
-                        && $0.kind.hasQuantityClaim
-                        && $0.signedQuantity > 0
-                        && $0.remainingQuantity > 0
-                }
+            let key = row.collectionKey
+            let descriptor = FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { $0.collectionKey == key }
+            )
+            let activities = try context.fetch(descriptor)
+                .filter { $0.kind.hasQuantityClaim && $0.signedQuantity > 0 && $0.remainingQuantity > 0 }
                 .sorted {
                     if $0.occurredAt != $1.occurredAt {
                         return $0.occurredAt < $1.occurredAt
@@ -1644,38 +1865,32 @@ extension PokemonFinishReconciliation {
                 return false
             }
 
-            let store = CollectionStore(context: context)
-            var correctedActivityCount = 0
-            for activity in activities {
-                let quantity = activity.remainingQuantity
-                guard quantity > 0,
-                      let currentRow = store.card(forKey: repair.collectionKey) else {
-                    break
-                }
-                do {
-                    guard try store.recordVariantCorrection(
-                        for: currentRow,
-                        to: repair.resolved,
-                        activityID: activity.id,
-                        quantity: quantity,
-                        source: .catalogUpdate
-                    ) != nil else {
-                        continue
-                    }
-                    correctedActivityCount += 1
-                } catch {
-                    PerformanceSignpost.emitEvent(
-                        "pokemonFinishReconciliationSkipped",
-                        "reason=collectionCorrection"
-                    )
-                    return correctedActivityCount > 0
-                }
+            guard let currentRow = CollectionStore(context: context).card(forKey: repair.collectionKey) else {
+                return false
             }
-            return correctedActivityCount > 0
+            let claims = activities.map {
+                CollectionVariantCorrectionClaim(
+                    activityID: $0.id,
+                    quantity: $0.remainingQuantity
+                )
+            }
+            let mode: CollectionVariantCorrectionMode = repair.kind == .quietBackfill
+                ? .quietBackfill
+                : .visibleCorrection
+            let source: CollectionActivitySource = repair.kind == .quietBackfill
+                ? .catalogBackfill
+                : .catalogUpdate
+            return try CollectionStore(context: context).recordVariantCorrection(
+                for: currentRow,
+                to: repair.resolved,
+                claims: claims,
+                source: source,
+                mode: mode
+            ) != nil
         } catch {
             PerformanceSignpost.emitEvent(
                 "pokemonFinishReconciliationSkipped",
-                "reason=activityRead"
+                "reason=collectionCorrection"
             )
             return false
         }
@@ -1699,8 +1914,9 @@ struct PriceRefreshResult: Sendable, Equatable {
     let targetBuildFailed: Bool
 }
 
-fileprivate enum PriceRefreshProgress: Sendable {
+enum PriceRefreshProgress: Sendable {
     case catalog(completed: Int, total: Int)
+    case reconciling(completed: Int, total: Int)
     case prices([PriceDelta])
     case fallback(completed: Int, total: Int, remainingToday: Int)
     case fallbackIdle
@@ -1772,7 +1988,7 @@ private actor PriceRefreshProgressRelay {
     }
 }
 
-fileprivate struct PriceRefreshWorkResult: Sendable {
+struct PriceRefreshWorkResult: Sendable {
     let checkedAt: Date
     let priced: Int
     let failed: Int
@@ -1791,13 +2007,14 @@ fileprivate struct PriceRefreshWorkResult: Sendable {
     let gradedTransportFailures: Int
     let reconciledDuplicateRecords: Int
     let repairedFinishes: Int
+    let backfilledFinishes: Int
     let priceDeltas: [PriceDelta]
 }
 
-fileprivate enum PriceRefreshWorkOutcome: Sendable {
+enum PriceRefreshWorkOutcome: Sendable {
     case noTargets
     case targetBuildFailed
-    case cancelled
+    case cancelled(repairedFinishes: Int, backfilledFinishes: Int)
     case completed(PriceRefreshWorkResult)
 }
 
@@ -1853,6 +2070,10 @@ final class PriceRefreshController: ObservableObject {
         /// Collection rows whose finish identity was corrected from fresh
         /// authoritative Pokémon catalog evidence.
         var repairedFinishes = 0
+        /// Collection rows whose previously unknown finish was filled quietly.
+        var backfilledFinishes = 0
+        /// The refresh stopped after durably applying some finish work.
+        var wasCancelled = false
         /// Owned graded targets with no matching vendor graded result.
         var gradedLookupMisses = 0
         /// Owned graded targets whose product lookup could not complete.
@@ -1865,6 +2086,7 @@ final class PriceRefreshController: ObservableObject {
         case idle
         case recentlyChecked
         case refreshing(completed: Int, total: Int)
+        case reconciling(completed: Int, total: Int)
         case finished(Summary)
     }
 
@@ -1927,6 +2149,7 @@ final class PriceRefreshController: ObservableObject {
 
     private var isRefreshing: Bool {
         if case .refreshing = status { return true }
+        if case .reconciling = status { return true }
         return false
     }
 
@@ -1976,6 +2199,8 @@ final class PriceRefreshController: ObservableObject {
                 total: total,
                 force: completed == 0
             )
+        case let .reconciling(completed, total):
+            status = .reconciling(completed: completed, total: total)
         case let .prices(deltas):
             registeredPriceSnapshotStore?.apply(deltas)
             registeredPortfolio?.applyPriceDeltas(deltas)
@@ -2019,9 +2244,31 @@ final class PriceRefreshController: ObservableObject {
                 persistenceFailed: result.persistenceFailed,
                 reconciledDuplicateRecords: result.reconciledDuplicateRecords,
                 repairedFinishes: result.repairedFinishes,
+                backfilledFinishes: result.backfilledFinishes,
                 gradedLookupMisses: result.gradedLookupMisses,
                 gradedTransportFailures: result.gradedTransportFailures
             )
+        )
+    }
+
+    private func cancelledFinishSummary(from result: PriceRefreshWorkResult) -> Summary? {
+        guard result.repairedFinishes > 0 || result.backfilledFinishes > 0 else { return nil }
+        return Summary(
+            checkedAt: result.checkedAt,
+            priced: result.priced,
+            failed: result.failed,
+            latestSourceUpdate: result.latestSourceUpdate,
+            checkedUnstampedProvider: result.checkedUnstampedProvider,
+            changedPrices: result.changedPrices,
+            foundNothingNewer: result.foundNothingNewer,
+            providerUnreachable: result.providerUnreachable,
+            persistenceFailed: result.persistenceFailed,
+            reconciledDuplicateRecords: result.reconciledDuplicateRecords,
+            repairedFinishes: result.repairedFinishes,
+            backfilledFinishes: result.backfilledFinishes,
+            wasCancelled: true,
+            gradedLookupMisses: result.gradedLookupMisses,
+            gradedTransportFailures: result.gradedTransportFailures
         )
     }
 
@@ -2201,6 +2448,7 @@ final class PriceRefreshController: ObservableObject {
         var request = initialRequest
         var didRun = false
         var targetBuildFailed = false
+        var lastCompletedResult: PriceRefreshWorkResult?
         while true {
             let outcome = await worker.run(
                 request,
@@ -2227,7 +2475,7 @@ final class PriceRefreshController: ObservableObject {
                         targetBuildFailed: true
                     )
                 )
-            case .cancelled:
+            case let .cancelled(repairedFinishes, backfilledFinishes):
                 if shouldContinue?() ?? true {
                     if let fingerprint = await worker.priceValuesFingerprint() {
                         registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
@@ -2240,20 +2488,38 @@ final class PriceRefreshController: ObservableObject {
                 if shouldContinue?() ?? true {
                     await registeredPriceSnapshotStore?.rebuild(container: container)
                 }
-                status = .idle
+                if repairedFinishes > 0 || backfilledFinishes > 0 {
+                    status = .finished(
+                        Summary(
+                            checkedAt: .now,
+                            priced: 0,
+                            failed: 0,
+                            latestSourceUpdate: nil,
+                            checkedUnstampedProvider: false,
+                            changedPrices: false,
+                            foundNothingNewer: false,
+                            repairedFinishes: repairedFinishes,
+                            backfilledFinishes: backfilledFinishes,
+                            wasCancelled: true
+                        )
+                    )
+                } else {
+                    status = .idle
+                }
                 return PriceRefreshResult(
                     didRun: didRun,
                     targetBuildFailed: targetBuildFailed
                 )
             case let .completed(result):
+                didRun = true
+                lastCompletedResult = result
                 guard shouldContinue?() ?? true else {
-                    status = .idle
+                    status = cancelledFinishSummary(from: result).map(Status.finished) ?? .idle
                     return PriceRefreshResult(
                         didRun: didRun,
                         targetBuildFailed: targetBuildFailed
                     )
                 }
-                didRun = true
                 if let fingerprint = await worker.priceValuesFingerprint() {
                     registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
                 }
@@ -2271,14 +2537,23 @@ final class PriceRefreshController: ObservableObject {
                     }
                     await registeredPriceSnapshotStore?.rebuild(container: container)
                 }
-                status = .idle
+                if let result = lastCompletedResult,
+                   result.repairedFinishes == 0,
+                   result.backfilledFinishes == 0 {
+                    status = .idle
+                }
                 return PriceRefreshResult(
                     didRun: didRun,
                     targetBuildFailed: targetBuildFailed
                 )
             }
             guard shouldContinue?() ?? true else {
-                status = .idle
+                if let result = lastCompletedResult,
+                   let summary = cancelledFinishSummary(from: result) {
+                    status = .finished(summary)
+                } else {
+                    status = .idle
+                }
                 return PriceRefreshResult(
                     didRun: didRun,
                     targetBuildFailed: targetBuildFailed
@@ -2747,7 +3022,7 @@ final class PriceRefreshController: ObservableObject {
         switch status {
         case .finished, .recentlyChecked:
             status = .idle
-        case .idle, .refreshing:
+        case .idle, .refreshing, .reconciling:
             break
         }
     }
@@ -2773,7 +3048,8 @@ final class PriceRefreshController: ObservableObject {
     nonisolated static func isTransientSuccessStatus(_ status: Status) -> Bool {
         switch status {
         case let .finished(summary):
-            return !summary.targetBuildFailed
+            return !summary.wasCancelled
+                && !summary.targetBuildFailed
                 && !summary.providerUnreachable
                 && summary.failed == 0
                 && !summary.persistenceFailed
@@ -2782,7 +3058,7 @@ final class PriceRefreshController: ObservableObject {
                 && summary.reconciledDuplicateRecords == 0
         case .recentlyChecked:
             return true
-        case .idle, .refreshing:
+        case .idle, .refreshing, .reconciling:
             return false
         }
     }
@@ -2836,7 +3112,8 @@ final class PriceRefreshController: ObservableObject {
         batchID: UUID,
         tcgdex: TCGdexService,
         scryfall: ScryfallService,
-        importedResolver: ImportedCardResolver
+        importedResolver: ImportedCardResolver,
+        pokemonFetchOverride: PriceRefreshPokemonFetchOverride? = nil
     ) async -> [PriceFetchOutcome] {
         let batchState = PerformanceSignpost.beginInterval(
             "priceRefresh.fetchBatch",
@@ -2863,7 +3140,8 @@ final class PriceRefreshController: ObservableObject {
                             batchID: batchID,
                             tcgdex: tcgdex,
                             scryfall: scryfall,
-                            importedResolver: importedResolver
+                            importedResolver: importedResolver,
+                            pokemonFetchOverride: pokemonFetchOverride
                         )
                     }
                 }
@@ -2946,7 +3224,8 @@ final class PriceRefreshController: ObservableObject {
         batchID: UUID,
         tcgdex: TCGdexService,
         scryfall: ScryfallService,
-        importedResolver: ImportedCardResolver
+        importedResolver: ImportedCardResolver,
+        pokemonFetchOverride: PriceRefreshPokemonFetchOverride? = nil
     ) async -> PriceFetchOutcome {
         let fetchState = PerformanceSignpost.beginInterval(
             "priceRefresh.fetch",
@@ -2961,6 +3240,16 @@ final class PriceRefreshController: ObservableObject {
             )
         }
         do {
+            if printing.game == .pokemon,
+               printing.importedIdentity == nil,
+               let pokemonFetchOverride {
+                let card = try await pokemonFetchOverride(printing)
+                guard card.game == .pokemon,
+                      card.providerID.caseInsensitiveCompare(printing.printingID) == .orderedSame else {
+                    return PriceFetchOutcome(printing: printing, result: .failed)
+                }
+                return PriceFetchOutcome(printing: printing, result: .card(card))
+            }
             if let identity = printing.importedIdentity {
                 let card = try await importedResolver.resolve(
                     game: printing.game,

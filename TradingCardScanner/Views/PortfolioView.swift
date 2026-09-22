@@ -36,6 +36,60 @@ enum PortfolioPalette {
     }
 }
 
+private func portfolioPriceRefreshMessage(_ result: PriceRefreshController.Summary) -> String {
+    let finishText = portfolioFinishUpdateText(result)
+    let baseMessage: String
+    if result.wasCancelled {
+        baseMessage = "Refresh stopped"
+    } else if result.targetBuildFailed {
+        baseMessage = "Prices could not be read. Try again."
+    } else if result.providerUnreachable {
+        baseMessage = "The card catalog is unreachable. Check your connection and try again."
+    } else if result.persistenceFailed {
+        baseMessage = "Some price updates could not be saved. Try again."
+    } else if result.gradedTransportFailures > 0 {
+        baseMessage = "Some graded price checks could not be completed. Try again."
+    } else if result.gradedLookupMisses > 0 {
+        baseMessage = "Prices checked; no graded listing was found for \(result.gradedLookupMisses) owned \(result.gradedLookupMisses == 1 ? "slab" : "slabs")."
+    } else if result.reconciledDuplicateRecords > 0 {
+        baseMessage = "Prices checked; repaired \(result.reconciledDuplicateRecords) duplicate price rows."
+    } else if result.failed > 0 {
+        baseMessage = "Prices updated with some issues"
+    } else if finishText.isEmpty {
+        baseMessage = "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened))."
+    } else {
+        baseMessage = ""
+    }
+
+    if finishText.isEmpty { return baseMessage }
+    if baseMessage.isEmpty { return finishText }
+    return "\(baseMessage) · \(finishText)"
+}
+
+private func portfolioFinishUpdateText(_ result: PriceRefreshController.Summary) -> String {
+    var finishUpdates: [String] = []
+    if result.repairedFinishes > 0 {
+        finishUpdates.append(
+            "Catalog corrected \(result.repairedFinishes) card \(result.repairedFinishes == 1 ? "finish" : "finishes")"
+        )
+    }
+    if result.backfilledFinishes > 0 {
+        finishUpdates.append(
+            "Finish added to \(result.backfilledFinishes) \(result.backfilledFinishes == 1 ? "card" : "cards")"
+        )
+    }
+    return finishUpdates.joined(separator: " · ")
+}
+
+private func portfolioFallbackMessage(
+    _ message: String,
+    status: PriceRefreshController.Status
+) -> String {
+    guard case let .finished(result) = status else { return message }
+    let finishText = portfolioFinishUpdateText(result)
+    return finishText.isEmpty ? message : "\(message) · \(finishText)"
+}
+
 private let portfolioMoversExplanation = "Movers reflect market price changes while you owned these holdings. Added, removed, corrected, newly priced, and re-sourced values are excluded."
 
 struct PortfolioInfoButton<Content: View>: View {
@@ -1546,13 +1600,19 @@ private struct PortfolioDetailsView: View {
         switch refresh.fallbackStatus {
         case let .budgetReached(pending, resetAt):
             Text(
-                "Vendor price checks reached their limit. \(pending) \(pending == 1 ? "check remains" : "checks remain"); resumes \(fallbackResumeTime(resetAt))."
+                portfolioFallbackMessage(
+                    "Vendor price checks reached their limit. \(pending) \(pending == 1 ? "check remains" : "checks remain"); resumes \(fallbackResumeTime(resetAt)).",
+                    status: refresh.status
+                )
             )
             .font(.subheadline)
             .foregroundStyle(PortfolioPalette.attention)
         case let .rateLimited(pending, retryAt):
             Text(
-                "Vendor price checks are paused. \(pending) \(pending == 1 ? "check remains" : "checks remain"); retries \(fallbackResumeTime(retryAt))."
+                portfolioFallbackMessage(
+                    "Vendor price checks are paused. \(pending) \(pending == 1 ? "check remains" : "checks remain"); retries \(fallbackResumeTime(retryAt)).",
+                    status: refresh.status
+                )
             )
             .font(.subheadline)
             .foregroundStyle(PortfolioPalette.attention)
@@ -1560,27 +1620,14 @@ private struct PortfolioDetailsView: View {
             switch refresh.status {
             case let .refreshing(completed, total):
                 LabeledContent("Checking prices", value: "\(completed) of \(total)")
+            case let .reconciling(completed, total):
+                LabeledContent("Reconciling finishes", value: "\(completed) of \(total)")
             case let .finished(result):
-                Text(
-                    result.targetBuildFailed
-                        ? "Prices could not be read. Try again."
-                        : result.providerUnreachable
-                        ? "The card catalog is unreachable. Check your connection and try again."
-                        : result.persistenceFailed
-                            ? "Some price updates could not be saved. Try again."
-                            : result.gradedTransportFailures > 0
-                                ? "Some graded price checks could not be completed. Try again."
-                            : result.gradedLookupMisses > 0
-                                ? "Prices checked; no graded listing was found for \(result.gradedLookupMisses) owned \(result.gradedLookupMisses == 1 ? "slab" : "slabs")."
-                            : result.reconciledDuplicateRecords > 0
-                                ? "Prices checked; repaired \(result.reconciledDuplicateRecords) duplicate price rows."
-                            : result.repairedFinishes > 0
-                                ? "Catalog updates corrected \(result.repairedFinishes) card \(result.repairedFinishes == 1 ? "finish" : "finishes")."
-                            : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened))."
-                )
+                Text(portfolioPriceRefreshMessage(result))
                     .font(.subheadline)
                     .foregroundStyle(
-                        result.targetBuildFailed
+                        result.wasCancelled
+                            || result.targetBuildFailed
                             || result.providerUnreachable
                             || result.failed > 0
                             || result.persistenceFailed
@@ -1616,6 +1663,7 @@ private struct PortfolioRefreshButton: View {
 
     private var isRefreshing: Bool {
         if case .refreshing = refresh.status { return true }
+        if case .reconciling = refresh.status { return true }
         return false
     }
 
@@ -1711,6 +1759,15 @@ struct PriceRefreshActivityRow: View {
             .font(.subheadline)
             .foregroundStyle(.secondary)
             .accessibilityLabel("Checking prices \(completed) of \(total)")
+        case let .reconciling(completed, total):
+            HStack(spacing: 6) {
+                ProgressView()
+                    .controlSize(.small)
+                Text("Reconciling finishes \(completed) of \(total)")
+            }
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .accessibilityLabel("Reconciling card finishes \(completed) of \(total)")
         case .idle, .recentlyChecked, .finished:
             if isRecomputing {
                 Label("Recalculating portfolio value", systemImage: "arrow.triangle.2.circlepath")

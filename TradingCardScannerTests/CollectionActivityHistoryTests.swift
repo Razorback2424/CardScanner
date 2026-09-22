@@ -323,9 +323,13 @@ final class CollectionActivityHistoryTests: XCTestCase {
         )
         _ = try store.add(
             freshCard,
-            resolved: ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog),
+            resolved: ResolvedVariant(variant: .holo, resolution: .userConfirmed),
             source: .scan
         )
+        let destination = try XCTUnwrap(store.card(forKey: freshCard.collectionKey(variant: .holo)))
+        let destinationDateAdded = Date(timeIntervalSince1970: 1_600_000_000)
+        destination.dateAdded = destinationDateAdded
+        try context.save()
         let staleRow = try XCTUnwrap(store.card(forKey: staleCard.collectionKey(variant: .normal)))
         let repair = try catalogRepair(for: staleRow, card: freshCard, in: context)
         let modelContainer = try XCTUnwrap(container)
@@ -337,11 +341,217 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertEqual(rows.count, 1)
         XCTAssertEqual(rows.first?.collectionKey, freshCard.collectionKey(variant: .holo))
         XCTAssertEqual(rows.first?.quantity, 2)
-        XCTAssertEqual(rows.first?.variantResolution, .uniqueInCatalog)
+        XCTAssertEqual(rows.first?.variantResolution, .userConfirmed)
+        XCTAssertEqual(rows.first?.dateAdded, destinationDateAdded)
         XCTAssertEqual(
             InventoryLedger.quantities(from: try verificationContext.fetch(FetchDescriptor<InventoryEvent>())),
             [freshCard.collectionKey(variant: .holo): 2]
         )
+    }
+
+    func testCatalogFinishBackfillIsQuietAndKeepsLedgerAppendOnly() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let unknownCard = celebrationCard(variant: .normal)
+        let freshCard = celebrationCard(variant: .holo)
+        let unresolved = ResolvedVariant(variant: nil, resolution: .catalogSilent)
+        for _ in 0..<2 {
+            _ = try store.add(unknownCard, resolved: unresolved, source: .scan)
+        }
+        let row = try XCTUnwrap(store.card(forKey: unknownCard.collectionKey(variant: nil)))
+        let dateAdded = Date(timeIntervalSince1970: 1_600_000_000)
+        row.dateAdded = dateAdded
+        row.justTCGVariantID = "unknown-finish-market-id"
+        try context.save()
+
+        let originalActivities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        let originalActivityState = Dictionary(uniqueKeysWithValues: originalActivities.map {
+            ($0.id, [
+                $0.sourceRaw,
+                String($0.occurredAt.timeIntervalSince1970),
+                String(describing: $0.correctedAt)
+            ])
+        })
+        let originalEvents = try context.fetch(FetchDescriptor<InventoryEvent>())
+        let originalEventState = originalEvents.map { ($0.eventID, $0.payload) }
+        let originalEventIDs = Set(originalEvents.map(\.eventID))
+        let targets = try PriceRefreshTargets.make(
+            context: context,
+            usesPriceFallback: true,
+            includeImported: true
+        )
+        let target = try XCTUnwrap(targets.first { $0.id == row.priceKey })
+        XCTAssertEqual(target.marketVariantID, "unknown-finish-market-id")
+        let assessment = PokemonFinishReconciliation.assess(
+            targets: [target],
+            card: freshCard,
+            rows: [row],
+            refreshID: UUID(),
+            at: Date(timeIntervalSince1970: 1_700_000_000)
+        )
+        let repair = try XCTUnwrap(assessment.repairs.first)
+        let modelContainer = try XCTUnwrap(container)
+        XCTAssertEqual(repair.kind, .quietBackfill)
+        XCTAssertTrue(PokemonFinishReconciliation.apply(
+            repair,
+            card: freshCard,
+            in: modelContainer
+        ))
+
+        let verificationContext = ModelContext(modelContainer)
+        let newKey = freshCard.collectionKey(variant: .holo)
+        let backfilledRow = try XCTUnwrap(
+            try verificationContext.fetch(FetchDescriptor<CollectedCard>())
+                .first { $0.collectionKey == newKey }
+        )
+        XCTAssertEqual(backfilledRow.dateAdded, dateAdded)
+        XCTAssertEqual(backfilledRow.variantResolution, .uniqueInCatalog)
+        XCTAssertNil(backfilledRow.justTCGVariantID)
+
+        let currentTargets = try PriceRefreshTargets.make(
+            context: verificationContext,
+            usesPriceFallback: true,
+            includeImported: true
+        )
+        let backfilledTarget = try XCTUnwrap(currentTargets.first { $0.id == backfilledRow.priceKey })
+        XCTAssertNil(backfilledTarget.marketVariantID)
+
+        let activities = try verificationContext.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(activities.count, 2)
+        XCTAssertTrue(activities.allSatisfy { $0.kind == .added && $0.correctedAt == nil })
+        let activityState = Dictionary(uniqueKeysWithValues: activities.map {
+            ($0.id, [
+                $0.sourceRaw,
+                String($0.occurredAt.timeIntervalSince1970),
+                String(describing: $0.correctedAt)
+            ])
+        })
+        XCTAssertEqual(activityState, originalActivityState)
+        XCTAssertTrue(activities.allSatisfy { $0.collectionKey == newKey })
+
+        let events = try verificationContext.fetch(FetchDescriptor<InventoryEvent>())
+        let retainedOriginals = events.filter { originalEventIDs.contains($0.eventID) }
+        XCTAssertEqual(retainedOriginals.count, originalEvents.count)
+        XCTAssertEqual(
+            Dictionary(uniqueKeysWithValues: retainedOriginals.map { ($0.eventID, $0.payload) }),
+            Dictionary(uniqueKeysWithValues: originalEventState)
+        )
+        let corrections = events.filter { $0.kind == .correction }
+        XCTAssertEqual(corrections.count, 4)
+        XCTAssertTrue(corrections.allSatisfy { $0.source == .catalogBackfill })
+        XCTAssertEqual(InventoryLedger.quantities(from: events), [newKey: 2])
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+    }
+
+    func testAutomaticCatalogFinishNeedsMatchingSightingsAcrossRefreshesAndTime() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let card = celebrationCard(variant: .normal)
+        _ = try store.add(
+            card,
+            resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+            source: .scan
+        )
+        let row = try XCTUnwrap(store.card(forKey: card.collectionKey(variant: .normal)))
+        let targets = try PriceRefreshTargets.make(
+            context: context,
+            usesPriceFallback: false,
+            includeImported: true
+        )
+        let target = try XCTUnwrap(targets.first { $0.id == row.priceKey })
+        let freshCard = celebrationCard(variant: .holo)
+        let firstRefresh = UUID()
+        let firstSeenAt = Date(timeIntervalSince1970: 1_700_000_000)
+
+        let first = PokemonFinishReconciliation.assess(
+            targets: [target], card: freshCard, rows: [row],
+            refreshID: firstRefresh, at: firstSeenAt
+        )
+        XCTAssertTrue(first.repairs.isEmpty)
+        XCTAssertEqual(first.changedPendingRows, 1)
+        XCTAssertEqual(row.pendingCatalogFinishID, PhysicalVariant.holo.id)
+        XCTAssertEqual(row.pendingCatalogFinishFirstSeenAt, firstSeenAt)
+
+        let tooSoon = PokemonFinishReconciliation.assess(
+            targets: [target], card: freshCard, rows: [row],
+            refreshID: UUID(), at: firstSeenAt.addingTimeInterval(60 * 60)
+        )
+        XCTAssertTrue(tooSoon.repairs.isEmpty)
+        XCTAssertEqual(tooSoon.changedPendingRows, 0)
+        XCTAssertEqual(row.pendingCatalogFinishFirstSeenAt, firstSeenAt)
+
+        let confirmed = PokemonFinishReconciliation.assess(
+            targets: [target], card: freshCard, rows: [row],
+            refreshID: UUID(), at: firstSeenAt.addingTimeInterval(25 * 60 * 60)
+        )
+        XCTAssertEqual(confirmed.repairs.count, 1)
+        XCTAssertEqual(confirmed.repairs.first?.kind, .catalogCorrection)
+        XCTAssertTrue(confirmed.repairs.first?.requiresConfirmation == true)
+    }
+
+    func testPriceRefreshActorPricesUnderTheConfirmedCatalogFinishKey() async throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let staleCard = celebrationCard(variant: .normal)
+        let freshCard = celebrationCard(variant: .holo, withPrice: true)
+        _ = try store.add(
+            staleCard,
+            resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+            source: .scan
+        )
+        let row = try XCTUnwrap(store.card(forKey: staleCard.collectionKey(variant: .normal)))
+        let priorRefreshID = UUID()
+        row.pendingCatalogFinishID = PhysicalVariant.holo.id
+        row.pendingCatalogFinishFirstSeenAt = Date.now.addingTimeInterval(-25 * 60 * 60)
+        row.pendingCatalogFinishRefreshID = priorRefreshID
+        row.justTCGVariantID = "normal-finish-market-id"
+        try context.save()
+
+        let modelContainer = try XCTUnwrap(container)
+        let worker = PriceRefreshModelActor(modelContainer: modelContainer)
+        await worker.setPokemonFetchOverrideForTesting { _ in freshCard }
+        let outcome = await worker.run(
+            PriceRefreshRequest(
+                usesPriceFallback: false,
+                includeImported: true,
+                forceUnsupportedRetry: false,
+                sortOldestFirst: false,
+                maximumTargetCount: nil,
+                markRecentlyCheckedIfEmpty: false
+            ),
+            progress: { _ in },
+            shouldContinue: nil
+        )
+        guard case let .completed(result) = outcome else {
+            XCTFail("Expected the refresh actor to complete")
+            return
+        }
+        XCTAssertEqual(result.repairedFinishes, 1)
+        XCTAssertEqual(result.priced, 1)
+
+        let verificationContext = ModelContext(modelContainer)
+        let holoKey = freshCard.collectionKey(variant: .holo)
+        let priceStore = PriceStore(context: verificationContext)
+        let holoPriceKey = PriceRecord.key(
+            game: .pokemon,
+            printingID: staleCard.providerID,
+            variantID: PhysicalVariant.holo.id
+        )
+        XCTAssertEqual(
+            priceStore.record(forKey: holoPriceKey)?.effectiveUnitMarketPriceUSD,
+            12.34
+        )
+        XCTAssertNil(priceStore.record(forKey: PriceRecord.key(
+            game: .pokemon,
+            printingID: staleCard.providerID,
+            variantID: PhysicalVariant.normal.id
+        )))
+        let repaired = try XCTUnwrap(
+            try verificationContext.fetch(FetchDescriptor<CollectedCard>())
+                .first { $0.collectionKey == holoKey }
+        )
+        XCTAssertNil(repaired.justTCGVariantID)
+        XCTAssertEqual(repaired.variantResolution, .uniqueInCatalog)
     }
 
     func testDeleteAllRecordsOneRemovalEntryPerPosition() throws {

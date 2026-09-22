@@ -43,36 +43,52 @@ enum CollectionRefreshStatusResolver {
         let fallbackWarning = hasUnresolvedFallbackWork(outcome.fallbackStatus)
             ? warning("Some prices couldn’t be refreshed")
             : nil
+        func finishUpdates(for summary: PriceRefreshController.Summary) -> String {
+            finishUpdateText(
+                repaired: summary.repairedFinishes,
+                backfilled: summary.backfilledFinishes
+            )
+        }
+        let warningWithFinishUpdates = { (message: String, updates: String) in
+            warning(updates.isEmpty ? message : "\(message) · \(updates)")
+        }
 
         switch outcome.status {
         case .idle, .refreshing:
             break
+        case let .reconciling(completed, total):
+            return CollectionRefreshStatusPresentation(
+                message: "Reconciling card finishes \(completed) of \(total)…",
+                isWarning: false,
+                isTransient: false
+            )
         case .recentlyChecked:
             return fallbackWarning ?? transient("Prices already current")
         case let .finished(summary):
+            let updates = finishUpdates(for: summary)
+            if summary.wasCancelled {
+                return warningWithFinishUpdates("Refresh stopped", updates)
+            }
             if summary.targetBuildFailed {
-                return warning("Couldn’t refresh prices")
+                return warningWithFinishUpdates("Couldn’t refresh prices", updates)
             }
             if summary.providerUnreachable {
-                return warning("Pricing provider unavailable")
+                return warningWithFinishUpdates("Pricing provider unavailable", updates)
             }
             if summary.persistenceFailed {
-                return warning("Some updates couldn’t be saved")
+                return warningWithFinishUpdates("Some updates couldn’t be saved", updates)
             }
             if let fallbackWarning {
-                return fallbackWarning
+                return warningWithFinishUpdates(fallbackWarning.message, updates)
             }
             if summary.failed > 0
                 || summary.gradedLookupMisses > 0
                 || summary.gradedTransportFailures > 0
                 || summary.reconciledDuplicateRecords > 0 {
-                return warning("Prices updated with some issues")
+                return warningWithFinishUpdates("Prices updated with some issues", updates)
             }
-            if summary.repairedFinishes > 0 {
-                let finishLabel = summary.repairedFinishes == 1 ? "finish" : "finishes"
-                return transient(
-                    "Catalog corrected \(summary.repairedFinishes) card \(finishLabel)"
-                )
+            if !updates.isEmpty {
+                return transient(updates)
             }
             if summary.changedPrices {
                 return transient("Prices updated")
@@ -110,6 +126,18 @@ enum CollectionRefreshStatusResolver {
         case .idle, .available, .running, .finished:
             return false
         }
+    }
+
+    private static func finishUpdateText(repaired: Int, backfilled: Int) -> String {
+        var messages: [String] = []
+        if repaired > 0 {
+            let finishLabel = repaired == 1 ? "finish" : "finishes"
+            messages.append("Catalog corrected \(repaired) card \(finishLabel)")
+        }
+        if backfilled > 0 {
+            messages.append("Finish added to \(backfilled) \(backfilled == 1 ? "card" : "cards")")
+        }
+        return messages.joined(separator: " · ")
     }
 }
 

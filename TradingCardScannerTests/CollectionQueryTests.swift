@@ -158,6 +158,35 @@ final class CollectionQueryTests: XCTestCase {
             CollectionRefreshStatusResolver.presentation(for: outcome)?.message,
             "Some prices couldn’t be refreshed"
         )
+
+        let reconciledSummary = PriceRefreshController.Summary(
+            checkedAt: .now,
+            priced: 1,
+            failed: 2,
+            latestSourceUpdate: nil,
+            checkedUnstampedProvider: false,
+            changedPrices: true,
+            foundNothingNewer: false,
+            repairedFinishes: 3,
+            backfilledFinishes: 4
+        )
+        outcome = CollectionRefreshOutcome(
+            status: .finished(reconciledSummary),
+            fallbackStatus: .budgetReached(pending: 2, resetAt: .now)
+        )
+        XCTAssertEqual(
+            CollectionRefreshStatusResolver.presentation(for: outcome)?.message,
+            "Some prices couldn’t be refreshed · Catalog corrected 3 card finishes · Finish added to 4 cards"
+        )
+
+        outcome = CollectionRefreshOutcome(
+            status: .reconciling(completed: 2, total: 5),
+            fallbackStatus: .idle
+        )
+        XCTAssertEqual(
+            CollectionRefreshStatusResolver.presentation(for: outcome)?.message,
+            "Reconciling card finishes 2 of 5…"
+        )
     }
 
     // MARK: - Collector numbers are not integers
