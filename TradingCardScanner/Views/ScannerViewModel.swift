@@ -1007,6 +1007,9 @@ final class ScannerViewModel: ObservableObject {
     private let magicCatalogCoordinator: MagicCatalogCoordinator?
 
     private var collectionWriter: ScannerCollectionWriter?
+    /// Tests can hold or fail the add operation without replacing the concrete
+    /// writer used by undo and correction flows.
+    private let collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)?
     private var modelContainer: ModelContainer?
     private var priceCheckCoordinator: PriceCheckCoordinator?
     private let priceCheckRefreshProvider: (any PriceCheckRefreshProvider)?
@@ -1123,7 +1126,8 @@ final class ScannerViewModel: ObservableObject {
         // for isolated scanner tests that intentionally do not exercise live
         // catalog activation.
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
-        magicCatalogCoordinator: MagicCatalogCoordinator? = nil
+        magicCatalogCoordinator: MagicCatalogCoordinator? = nil,
+        collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)? = nil
     ) {
         let scanner = scanner ?? CardScanner()
         self.scanner = scanner
@@ -1132,6 +1136,7 @@ final class ScannerViewModel: ObservableObject {
         self.gradedResolver = gradedResolver
         self.priceCheckRefreshProvider = priceCheckRefreshProvider
         self.magicCatalogCoordinator = magicCatalogCoordinator
+        self.collectionAddOverride = collectionAddOverride
 
         let catalog = self.catalog
         scanner.onPlausibleCandidate = { subject in
@@ -2997,7 +3002,7 @@ final class ScannerViewModel: ObservableObject {
         authorization: CollectionCommitAuthorization
     ) async -> Bool {
         guard isStorageGenerationCurrent else { return false }
-        guard let collectionWriter else {
+        guard collectionAddOverride != nil || collectionWriter != nil else {
             if !failAcknowledgement(
                 for: candidate.encounterID,
                 message: "This card was recognized but could not be added. Try again."
@@ -3023,7 +3028,14 @@ final class ScannerViewModel: ObservableObject {
         defer { endTrackedWrite(for: writeSessionID) }
 
         do {
-            let mutation = try await collectionWriter.add(candidate)
+            let mutation: CollectionMutation
+            if let collectionAddOverride {
+                mutation = try await collectionAddOverride(candidate)
+            } else if let collectionWriter {
+                mutation = try await collectionWriter.add(candidate)
+            } else {
+                return false
+            }
             guard writeSessionID == scannerSessionID,
                   isStorageGenerationCurrent else { return false }
 
