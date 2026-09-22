@@ -1574,6 +1574,8 @@ private struct PortfolioDetailsView: View {
                                 ? "Prices checked; no graded listing was found for \(result.gradedLookupMisses) owned \(result.gradedLookupMisses == 1 ? "slab" : "slabs")."
                             : result.reconciledDuplicateRecords > 0
                                 ? "Prices checked; repaired \(result.reconciledDuplicateRecords) duplicate price rows."
+                            : result.repairedFinishes > 0
+                                ? "Catalog updates corrected \(result.repairedFinishes) card \(result.repairedFinishes == 1 ? "finish" : "finishes")."
                             : "Prices checked \(result.checkedAt.formatted(date: .omitted, time: .shortened))."
                 )
                     .font(.subheadline)

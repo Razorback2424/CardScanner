@@ -307,3 +307,41 @@ enum PokemonVariantRules {
         )
     }
 }
+
+/// Re-evaluates only finishes whose stored provenance says the app chose them
+/// automatically. A legacy row with no finish and no provenance is also safe to
+/// revisit: there is no user choice to preserve. A legacy row with a finish but
+/// no provenance remains protected because that finish may have been chosen by
+/// the user before provenance was recorded.
+enum PokemonFinishReconciliation {
+    static func repair(
+        storedVariantID: String?,
+        storedResolution: VariantResolution?,
+        itemKind: CollectionItemKind,
+        printRun: PokemonPrintRun?,
+        card: IdentifiedCard
+    ) -> ResolvedVariant? {
+        guard card.game == .pokemon,
+              itemKind == .rawCard,
+              printRun == nil || printRun == .unlimited else {
+            return nil
+        }
+
+        if let storedResolution {
+            guard storedResolution.isAutomatic else { return nil }
+        } else {
+            guard storedVariantID == nil else { return nil }
+        }
+
+        let evidence = card.variantEvidence
+        let currentEvidence = printRun == nil
+            ? evidence
+            : evidence.excludingFirstEditionPseudoFinish()
+        guard case let .resolved(resolved) = VariantResolver.resolve(currentEvidence),
+              let variant = resolved.variant,
+              variant.id != storedVariantID else {
+            return nil
+        }
+        return resolved
+    }
+}

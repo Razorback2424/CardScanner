@@ -220,6 +220,130 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, eventCount)
     }
 
+    func testCatalogFinishRepairRekeysActivitiesWritesNewPriceAndIsIdempotent() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let staleCard = celebrationCard(variant: .normal)
+        for _ in 0..<2 {
+            _ = try store.add(
+                staleCard,
+                resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+                source: .scan
+            )
+        }
+        let staleRow = try XCTUnwrap(store.card(forKey: staleCard.collectionKey(variant: .normal)))
+        let freshCard = celebrationCard(variant: .holo, withPrice: true)
+        let repair = try catalogRepair(for: staleRow, card: freshCard, in: context)
+        let modelContainer = try XCTUnwrap(container)
+
+        XCTAssertTrue(PokemonFinishReconciliation.apply(repair, card: freshCard, in: modelContainer))
+
+        let verificationContext = ModelContext(modelContainer)
+        let holoKey = freshCard.collectionKey(variant: .holo)
+        let repairedRow = try XCTUnwrap(
+            try verificationContext.fetch(FetchDescriptor<CollectedCard>())
+                .first { $0.collectionKey == holoKey }
+        )
+        XCTAssertNil(CollectionStore(context: verificationContext).card(
+            forKey: staleCard.collectionKey(variant: .normal)
+        ))
+        XCTAssertEqual(repairedRow.quantity, 2)
+        XCTAssertEqual(repairedRow.variantID, PhysicalVariant.holo.id)
+        XCTAssertEqual(repairedRow.variantResolution, .uniqueInCatalog)
+
+        let activities = try verificationContext.fetch(FetchDescriptor<CollectionActivity>())
+        XCTAssertEqual(activities.filter { $0.kind == .added && $0.collectionKey == holoKey }.count, 2)
+        XCTAssertEqual(
+            activities.filter { $0.kind == .corrected && $0.source == .catalogUpdate }.count,
+            2
+        )
+        XCTAssertTrue(
+            activities.filter { $0.kind == .corrected }
+                .allSatisfy { $0.collectionKey == holoKey && $0.deltaQuantity == 0 }
+        )
+
+        let events = try verificationContext.fetch(FetchDescriptor<InventoryEvent>())
+        let correctionEvents = events.filter { $0.kind == .correction }
+        XCTAssertEqual(correctionEvents.count, 4)
+        XCTAssertTrue(correctionEvents.allSatisfy { $0.source == .catalogUpdate })
+        XCTAssertEqual(
+            InventoryLedger.quantities(from: events),
+            [holoKey: 2]
+        )
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+
+        var repairedTarget = repair.target
+        repairedTarget.variantID = repair.resolved.variant?.id
+        let lookup = CardPricing.price(
+            for: freshCard,
+            variant: .holo,
+            magicTreatments: [],
+            pokemonPrintRun: nil
+        )
+        let priceStore = PriceStore(context: verificationContext)
+        XCTAssertTrue(
+            priceStore.store(
+                lookup,
+                game: repairedTarget.game,
+                printingID: repairedTarget.printingID,
+                variantID: repairedTarget.variantID
+            )
+        )
+        XCTAssertTrue(priceStore.save())
+        XCTAssertEqual(
+            priceStore.record(forKey: repairedTarget.id)?.effectiveUnitMarketPriceUSD,
+            12.34
+        )
+        XCTAssertNil(priceStore.record(forKey: repair.target.id))
+
+        let currentTargets = try PriceRefreshTargets.make(
+            context: verificationContext,
+            usesPriceFallback: false,
+            includeImported: true
+        )
+        let currentHoloTarget = try XCTUnwrap(currentTargets.first { $0.variantID == PhysicalVariant.holo.id })
+        XCTAssertTrue(
+            PokemonFinishReconciliation.candidates(
+                targets: [currentHoloTarget],
+                card: freshCard,
+                rows: [repairedRow]
+            ).isEmpty
+        )
+    }
+
+    func testCatalogFinishRepairMergesIntoExistingDestinationRow() throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let staleCard = celebrationCard(variant: .normal)
+        let freshCard = celebrationCard(variant: .holo, withPrice: true)
+        _ = try store.add(
+            staleCard,
+            resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+            source: .scan
+        )
+        _ = try store.add(
+            freshCard,
+            resolved: ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog),
+            source: .scan
+        )
+        let staleRow = try XCTUnwrap(store.card(forKey: staleCard.collectionKey(variant: .normal)))
+        let repair = try catalogRepair(for: staleRow, card: freshCard, in: context)
+        let modelContainer = try XCTUnwrap(container)
+
+        XCTAssertTrue(PokemonFinishReconciliation.apply(repair, card: freshCard, in: modelContainer))
+
+        let verificationContext = ModelContext(modelContainer)
+        let rows = try verificationContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.collectionKey, freshCard.collectionKey(variant: .holo))
+        XCTAssertEqual(rows.first?.quantity, 2)
+        XCTAssertEqual(rows.first?.variantResolution, .uniqueInCatalog)
+        XCTAssertEqual(
+            InventoryLedger.quantities(from: try verificationContext.fetch(FetchDescriptor<InventoryEvent>())),
+            [freshCard.collectionKey(variant: .holo): 2]
+        )
+    }
+
     func testDeleteAllRecordsOneRemovalEntryPerPosition() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
@@ -958,6 +1082,67 @@ final class CollectionActivityHistoryTests: XCTestCase {
         """#
         let pokemon = try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
         return .pokemon(pokemon, setCode: "PRE")
+    }
+
+    private func celebrationCard(
+        variant: PhysicalVariant,
+        withPrice: Bool = false
+    ) -> IdentifiedCard {
+        let pricing = withPrice
+            ? TCGdexPricing(
+                tcgplayer: TCGPlayerPricing(
+                    updated: "2026-09-21T12:00:00.000Z",
+                    normal: nil,
+                    holo: nil,
+                    holofoil: TCGPlayerPricePoint(marketPrice: 12.34),
+                    reverse: nil,
+                    reverseHolofoil: nil
+                ),
+                cardmarket: nil
+            )
+            : nil
+        let card = TCGdexCard(
+            id: "30th-053",
+            localId: "053",
+            name: "Pikachu ex",
+            image: "https://assets.tcgdex.net/en/30th/053",
+            rarity: "Double Rare",
+            set: TCGdexSetBrief(
+                id: "30th",
+                name: "30th Celebration",
+                cardCount: TCGdexCardCount(total: 152, official: 152)
+            ),
+            variants: TCGdexVariants(
+                firstEdition: false,
+                holo: variant == .holo,
+                normal: variant == .normal,
+                reverse: variant == .reverse,
+                wPromo: nil
+            ),
+            pricing: pricing,
+            variantsDetailed: nil
+        )
+        return .pokemon(card, setCode: "30TH")
+    }
+
+    private func catalogRepair(
+        for row: CollectedCard,
+        card: IdentifiedCard,
+        in context: ModelContext
+    ) throws -> PokemonFinishReconciliation.Repair {
+        let targets = try PriceRefreshTargets.make(
+            context: context,
+            usesPriceFallback: false,
+            includeImported: true
+        )
+        let target = try XCTUnwrap(targets.first { $0.id == row.priceKey })
+        return try XCTUnwrap(
+            PokemonFinishReconciliation.candidates(
+                targets: [target],
+                card: card,
+                rows: [row]
+            ).first
+        )
     }
 
     private func magicIdentifiedCard() throws -> IdentifiedCard {

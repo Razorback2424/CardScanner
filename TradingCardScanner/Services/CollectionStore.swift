@@ -3071,7 +3071,8 @@ struct CollectionStore {
         previousCollectionKey: String? = nil,
         previousLedgerOperationIDs: [UUID] = [],
         activityID: UUID? = nil,
-        quantity: Int = 1
+        quantity: Int = 1,
+        source: CollectionActivitySource = .correction
     ) throws -> CollectionMutation? {
         guard current != corrected.variant else { return nil }
         guard quantity > 0, quantity <= CollectionQuantityLimits.maximum else {
@@ -3156,7 +3157,7 @@ struct CollectionStore {
             activityToRetarget.correctedAt = .now
             _ = try appendActivity(
                 previous,
-                source: .correction,
+                source: source,
                 kind: .corrected,
                 deltaQuantity: 0,
                 ledgerOperationIDs: operationIDs
@@ -3182,7 +3183,7 @@ struct CollectionStore {
         let mutation = try add(
             card,
             resolved: corrected,
-            source: .correction,
+            source: source,
             pokemonPrintRun: pokemonPrintRun,
             quantity: quantity,
             writesInventoryEvent: false,
@@ -3200,6 +3201,7 @@ struct CollectionStore {
             fromCollectionKey: previousKey,
             fromPriceStorageKey: previousPriceStorageKey,
             toCard: correctedRow,
+            source: source,
             quantity: quantity,
             operationID: correctionOperationID
         )
@@ -3246,7 +3248,7 @@ struct CollectionStore {
         activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
         _ = try appendActivity(
             correctedCard,
-            source: .correction,
+            source: source,
             kind: .corrected,
             deltaQuantity: 0,
             ledgerOperationIDs: [correctionOperationID]
@@ -3265,15 +3267,17 @@ struct CollectionStore {
         }
     }
 
-    /// History-screen variant correction. The stored row already contains the
-    /// catalog metadata, so this overload shares the same preflight and
-    /// transaction rules without reconstructing a provider response in a view.
+    /// Variant correction from an existing collection row. The stored row
+    /// already contains the catalog metadata, so this overload shares the same
+    /// preflight and transaction rules without reconstructing a provider
+    /// response in a view or refresh worker.
     @discardableResult
     func recordVariantCorrection(
         for card: CollectedCard,
         to corrected: ResolvedVariant,
         activityID: UUID,
-        quantity: Int
+        quantity: Int,
+        source: CollectionActivitySource = .correction
     ) throws -> CollectionMutation? {
         guard quantity > 0, corrected.variant != card.variant else { return nil }
 
@@ -3313,7 +3317,7 @@ struct CollectionStore {
                 activityToRetarget.correctedAt = .now
                 _ = try appendActivity(
                     previous,
-                    source: .correction,
+                    source: source,
                     kind: .corrected,
                     deltaQuantity: 0,
                     ledgerOperationIDs: operationIDs
@@ -3373,6 +3377,9 @@ struct CollectionStore {
                 if existing.magicTreatmentQualifiersJSON == nil {
                     existing.magicTreatmentQualifiers = correctedTreatmentQualifiers
                 }
+                existing.variantID = corrected.variant?.id
+                existing.variantLabel = corrected.variant?.label
+                existing.variantResolutionRaw = corrected.resolution.rawValue
                 correctedRow = existing
             } else {
                 let inserted = CollectedCard(
@@ -3431,6 +3438,7 @@ struct CollectionStore {
                 fromCollectionKey: previousSnapshot.collectionKey,
                 fromPriceStorageKey: previousPriceStorageKey,
                 toCard: correctedRow,
+                source: source,
                 quantity: quantity,
                 operationID: correctionOperationID
             )
@@ -3451,7 +3459,7 @@ struct CollectionStore {
             activityToRetarget.ledgerOperationIDs = operationIDs + [correctionOperationID]
             _ = try appendActivity(
                 correctedRow,
-                source: .correction,
+                source: source,
                 kind: .corrected,
                 deltaQuantity: 0,
                 ledgerOperationIDs: [correctionOperationID]

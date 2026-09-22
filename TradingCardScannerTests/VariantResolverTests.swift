@@ -10,6 +10,31 @@ final class VariantResolverTests: XCTestCase {
         VariantEvidence(game: .pokemon, setID: setID, cardNumber: number, catalogVariants: variants)
     }
 
+    private func identifiedPokemon(_ variants: [PhysicalVariant]) -> IdentifiedCard {
+        let card = TCGdexCard(
+            id: "30th-053",
+            localId: "053",
+            name: "Pikachu ex",
+            image: nil,
+            rarity: nil,
+            set: TCGdexSetBrief(
+                id: "30th",
+                name: "30th Celebration",
+                cardCount: TCGdexCardCount(total: 152, official: 152)
+            ),
+            variants: TCGdexVariants(
+                firstEdition: variants.contains(.firstEdition),
+                holo: variants.contains(.holo),
+                normal: variants.contains(.normal),
+                reverse: variants.contains(.reverse),
+                wPromo: nil
+            ),
+            pricing: nil,
+            variantsDetailed: nil
+        )
+        return .pokemon(card, setCode: "30TH")
+    }
+
     func testResolutionCertaintyDoesNotReuseAutomaticRevisitSemantics() {
         XCTAssertTrue(VariantResolution.uniqueInCatalog.isAutomatic)
         XCTAssertEqual(VariantResolution.uniqueInCatalog.certainty, .catalogCertain)
@@ -17,6 +42,138 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertEqual(VariantResolution.catalogSilent.certainty, .unresolved)
         XCTAssertFalse(VariantResolution.userConfirmed.isAutomatic)
         XCTAssertEqual(VariantResolution.userConfirmed.certainty, .userConfirmed)
+    }
+
+    func testPokemonFinishReconciliationRepairsOnlyUnambiguousAutomaticOrUnknownRows() {
+        let holoOnly = identifiedPokemon([.holo])
+        XCTAssertEqual(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: PhysicalVariant.normal.id,
+                storedResolution: .uniqueInCatalog,
+                itemKind: .rawCard,
+                printRun: nil,
+                card: holoOnly
+            ),
+            ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)
+        )
+
+        let normalOnly = identifiedPokemon([.normal])
+        XCTAssertEqual(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: nil,
+                storedResolution: nil,
+                itemKind: .rawCard,
+                printRun: nil,
+                card: normalOnly
+            ),
+            ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog)
+        )
+        XCTAssertEqual(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: nil,
+                storedResolution: .catalogSilent,
+                itemKind: .rawCard,
+                printRun: nil,
+                card: normalOnly
+            ),
+            ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog)
+        )
+
+        XCTAssertNil(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: PhysicalVariant.normal.id,
+                storedResolution: nil,
+                itemKind: .rawCard,
+                printRun: nil,
+                card: holoOnly
+            ),
+            "A legacy finish without provenance may have been selected by the user"
+        )
+        for resolution in [
+            VariantResolution.userConfirmed,
+            .finishLock,
+            .printedLabel,
+            .imported
+        ] {
+            XCTAssertNil(
+                PokemonFinishReconciliation.repair(
+                    storedVariantID: PhysicalVariant.normal.id,
+                    storedResolution: resolution,
+                    itemKind: .rawCard,
+                    printRun: nil,
+                    card: holoOnly
+                )
+            )
+        }
+
+        XCTAssertNil(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: PhysicalVariant.normal.id,
+                storedResolution: .uniqueInCatalog,
+                itemKind: .rawCard,
+                printRun: nil,
+                card: identifiedPokemon([.normal, .reverse])
+            ),
+            "Multiple possible finishes must remain unresolved"
+        )
+        XCTAssertNil(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: PhysicalVariant.normal.id,
+                storedResolution: .uniqueInCatalog,
+                itemKind: .rawCard,
+                printRun: nil,
+                card: identifiedPokemon([.normal])
+            ),
+            "A finish that remains valid is not a repair"
+        )
+        XCTAssertNil(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: PhysicalVariant.normal.id,
+                storedResolution: .uniqueInCatalog,
+                itemKind: .gradedCard,
+                printRun: nil,
+                card: holoOnly
+            )
+        )
+    }
+
+    func testPokemonFinishReconciliationSkipsSpecialRunsAndNonPokemonCards() throws {
+        let cardWithFirstEditionPseudoFinish = identifiedPokemon([.firstEdition, .holo])
+        for printRun in [PokemonPrintRun.firstEdition, .shadowless] {
+            XCTAssertNil(
+                PokemonFinishReconciliation.repair(
+                    storedVariantID: PhysicalVariant.normal.id,
+                    storedResolution: .uniqueInCatalog,
+                    itemKind: .rawCard,
+                    printRun: printRun,
+                    card: cardWithFirstEditionPseudoFinish
+                )
+            )
+        }
+        XCTAssertEqual(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: PhysicalVariant.normal.id,
+                storedResolution: .uniqueInCatalog,
+                itemKind: .rawCard,
+                printRun: .unlimited,
+                card: cardWithFirstEditionPseudoFinish
+            ),
+            ResolvedVariant(variant: .holo, resolution: .uniqueInCatalog)
+        )
+
+        let json = #"{"id":"11111111-1111-4111-8111-111111111111","name":"Fixture","set":"abc","set_name":"Fixture Set","collector_number":"1","lang":"en","digital":false,"finishes":["nonfoil","foil"]}"#
+        let magic = IdentifiedCard.magic(
+            try JSONDecoder().decode(ScryfallCard.self, from: Data(json.utf8))
+        )
+        XCTAssertNil(
+            PokemonFinishReconciliation.repair(
+                storedVariantID: "nonfoil",
+                storedResolution: .uniqueInCatalog,
+                itemKind: .rawCard,
+                printRun: nil,
+                card: magic
+            )
+        )
     }
 
     func testReceiptProminenceKeepsRoutineCatalogAnswersQuiet() {

@@ -189,6 +189,7 @@ actor PriceRefreshModelActor {
         var gradedLookupMisses = 0
         var gradedTransportFailures = 0
         var reconciledDuplicateRecords = 0
+        var repairedFinishes = 0
         var stagedPriced = 0
         var stagedChangedPrices = false
         var stagedDuplicateRepairs = store.reconcileDuplicateRecords()
@@ -302,6 +303,10 @@ actor PriceRefreshModelActor {
         var fallbackSubjects: [PriceRefreshController.FallbackCandidate] = vendorNative.map {
             PriceRefreshController.FallbackCandidate(target: $0, card: nil)
         }
+        var reconciliationRowIDsByPriceKey: [String: [PersistentIdentifier]]?
+        var deferredCatalogRepairs: [(repair: PokemonFinishReconciliation.Repair, card: IdentifiedCard)] = []
+        var deferredPriceTargets: [String: (target: PriceTarget, card: IdentifiedCard)] = [:]
+        var pricedTargetIDs = Set<String>()
         var consecutiveUnreachable = 0
         var providerUnreachable = false
         var lastCatalogProgressAt: Date?
@@ -325,6 +330,61 @@ actor PriceRefreshModelActor {
             lastCatalogProgressAt = now
             lastCatalogProgressPercent = percent
             await progress(.catalog(completed: completed, total: order.count))
+        }
+
+        func priceTarget(_ target: PriceTarget, card: IdentifiedCard, at now: Date) {
+            guard pricedTargetIDs.insert(target.id).inserted else { return }
+            let variant = target.variantID.map(PhysicalVariant.resolving)
+            let lookup = CardPricing.price(
+                for: card,
+                variant: variant,
+                magicTreatments: card.magicTreatments(for: variant),
+                pokemonPrintRun: target.pokemonPrintRun,
+                at: now
+            )
+            if PriceRefreshController.needsFallback(lookup) {
+                fallbackSubjects.append(
+                    PriceRefreshController.FallbackCandidate(target: target, card: card)
+                )
+            }
+            if case let .price(price) = lookup {
+                if let updated = price.sourceUpdatedAt,
+                   updated > (latestSourceUpdate ?? .distantPast) {
+                    latestSourceUpdate = updated
+                } else if price.sourceUpdatedAt == nil {
+                    checkedUnstampedProvider = true
+                }
+            }
+
+            let key = PriceRecord.key(
+                game: target.game,
+                printingID: target.printingID,
+                variantID: target.variantID,
+                treatmentIDs: target.magicTreatmentIDsRaw
+            )
+            let previousAmount = store.record(forKey: key)?.effectiveUnitMarketPriceUSD
+            let newAmount: Double?
+            switch lookup {
+            case let .price(price): newAmount = price.unitMarketPriceUSD
+            case .unavailable: newAmount = previousAmount
+            }
+            let accepted = store.store(
+                lookup,
+                game: target.game,
+                printingID: target.printingID,
+                variantID: target.variantID,
+                at: now,
+                treatmentIDs: target.magicTreatmentIDsRaw
+            )
+            stage(
+                accepted,
+                key: key,
+                priced: {
+                    if case .price = lookup { return true }
+                    return false
+                }(),
+                changed: previousAmount != newAmount
+            )
         }
 
         await publishCatalogProgress(force: true)
@@ -390,59 +450,36 @@ actor PriceRefreshModelActor {
                         if card.game == .magic {
                             checkedUnstampedProvider = true
                         }
-                        for target in byPrinting[printing] ?? [] {
-                            let lookup = CardPricing.price(
-                                for: card,
-                                variant: target.variantID.map(PhysicalVariant.resolving),
-                                magicTreatments: card.magicTreatments(
-                                    for: target.variantID.map(PhysicalVariant.resolving)
-                                ),
-                                pokemonPrintRun: target.pokemonPrintRun,
-                                at: now
-                            )
-                            if PriceRefreshController.needsFallback(lookup) {
-                                fallbackSubjects.append(
-                                    PriceRefreshController.FallbackCandidate(target: target, card: card)
+                        let targetsForPrinting = byPrinting[printing] ?? []
+                        for target in targetsForPrinting {
+                            var candidates: [PokemonFinishReconciliation.Repair] = []
+                            if card.game == .pokemon,
+                               target.game == .pokemon,
+                               target.itemKind == .rawCard,
+                               target.importedIdentity == nil {
+                                if reconciliationRowIDsByPriceKey == nil {
+                                    reconciliationRowIDsByPriceKey =
+                                        PriceRefreshController.rowsByPriceKeyIDs(in: modelContext)
+                                }
+                                let rows = PriceRefreshController.rows(
+                                    for: reconciliationRowIDsByPriceKey?[target.id] ?? [],
+                                    in: modelContext
+                                )
+                                candidates = PokemonFinishReconciliation.candidates(
+                                    targets: [target],
+                                    card: card,
+                                    rows: rows
                                 )
                             }
-                            if case let .price(price) = lookup {
-                                if let updated = price.sourceUpdatedAt,
-                                   updated > (latestSourceUpdate ?? .distantPast) {
-                                    latestSourceUpdate = updated
-                                } else if price.sourceUpdatedAt == nil {
-                                    checkedUnstampedProvider = true
-                                }
-                            }
 
-                            let key = PriceRecord.key(
-                                game: target.game,
-                                printingID: target.printingID,
-                                variantID: target.variantID,
-                                treatmentIDs: target.magicTreatmentIDsRaw
-                            )
-                            let previousAmount = store.record(forKey: key)?.effectiveUnitMarketPriceUSD
-                            let newAmount: Double?
-                            switch lookup {
-                            case let .price(price): newAmount = price.unitMarketPriceUSD
-                            case .unavailable: newAmount = previousAmount
+                            if candidates.isEmpty {
+                                priceTarget(target, card: card, at: now)
+                            } else {
+                                deferredPriceTargets[target.id] = (target, card)
+                                deferredCatalogRepairs.append(contentsOf: candidates.map {
+                                    ($0, card)
+                                })
                             }
-                            let accepted = store.store(
-                                lookup,
-                                game: target.game,
-                                printingID: target.printingID,
-                                variantID: target.variantID,
-                                at: now,
-                                treatmentIDs: target.magicTreatmentIDsRaw
-                            )
-                            stage(
-                                accepted,
-                                key: key,
-                                priced: {
-                                    if case .price = lookup { return true }
-                                    return false
-                                }(),
-                                changed: previousAmount != newAmount
-                            )
                         }
 
                     case .failed:
@@ -524,6 +561,45 @@ actor PriceRefreshModelActor {
             return .cancelled
         }
 
+        var repairedPriceTargets: [String: (target: PriceTarget, card: IdentifiedCard)] = [:]
+        for deferred in deferredCatalogRepairs {
+            guard storageContinuation?() ?? true, !Task.isCancelled else {
+                refreshOutcome = "cancelled"
+                return .cancelled
+            }
+            guard PokemonFinishReconciliation.apply(
+                deferred.repair,
+                card: deferred.card,
+                in: modelContext.container
+            ) else {
+                continue
+            }
+            repairedFinishes += 1
+            var target = deferred.repair.target
+            target.variantID = deferred.repair.resolved.variant?.id
+            repairedPriceTargets[target.id] = (target, deferred.card)
+        }
+
+        // Sibling contexts commit the collection/ledger correction themselves.
+        // Read the live keys from a fresh context so a deleted outgoing row is
+        // not priced again under its obsolete finish.
+        let reconciliationContext = ModelContext(modelContext.container)
+        let liveSourcePriceKeys = Set(
+            ((try? reconciliationContext.fetch(FetchDescriptor<CollectedCard>())) ?? [])
+                .map(\.priceKey)
+        )
+        for (target, card) in deferredPriceTargets.values where liveSourcePriceKeys.contains(target.id) {
+            priceTarget(target, card: card, at: .now)
+        }
+        for (target, card) in repairedPriceTargets.values {
+            priceTarget(target, card: card, at: .now)
+        }
+        _ = await commitStaged()
+        if wasCancelled || Task.isCancelled || !(storageContinuation?() ?? true) {
+            refreshOutcome = "cancelled"
+            return .cancelled
+        }
+
         guard storageContinuation?() ?? true else {
             refreshOutcome = "cancelled"
             return .cancelled
@@ -579,6 +655,7 @@ actor PriceRefreshModelActor {
                 gradedLookupMisses: gradedLookupMisses,
                 gradedTransportFailures: gradedTransportFailures,
                 reconciledDuplicateRecords: reconciledDuplicateRecords,
+                repairedFinishes: repairedFinishes,
                 priceDeltas: finalPriceDeltas
             )
         )
@@ -1335,7 +1412,7 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     let printingID: String
     let catalogPrintingID: String?
     let setCode: String
-    let variantID: String?
+    var variantID: String?
     var pokemonPrintRun: PokemonPrintRun? = nil
     let importedIdentity: ImportedPriceIdentity?
     /// Persisted card identity used only when the catalog provider is down.
@@ -1451,6 +1528,160 @@ struct ImportedPriceIdentity: Hashable, Sendable {
     let cardNumber: String
 }
 
+extension PokemonFinishReconciliation {
+    struct Repair: Sendable {
+        let rowID: PersistentIdentifier
+        let collectionKey: String
+        let storedVariantID: String?
+        let storedResolutionRaw: String?
+        let target: PriceTarget
+        let resolved: ResolvedVariant
+    }
+
+    /// Identifies only raw Pokémon rows represented by this exact price target
+    /// and printing. Callers pass the already-materialized rows for the target's
+    /// price key, so catalog refresh does not refetch collection rows per card.
+    static func candidates(
+        targets: [PriceTarget],
+        card: IdentifiedCard,
+        rows: [CollectedCard]
+    ) -> [Repair] {
+        guard card.game == .pokemon else { return [] }
+
+        var repairs: [Repair] = []
+        for target in targets {
+            guard target.game == .pokemon,
+                  target.itemKind == .rawCard,
+                  target.importedIdentity == nil,
+                  target.printing.printingID == card.providerID else {
+                continue
+            }
+            for row in rows {
+                guard row.priceKey == target.id,
+                      row.providerID == card.providerID,
+                      row.cardGame == .pokemon,
+                      row.itemKind == .rawCard,
+                      row.identityResolution != .imported,
+                      row.variantID == target.variantID,
+                      let resolved = repair(
+                        storedVariantID: row.variantID,
+                        storedResolution: row.variantResolution,
+                        itemKind: row.itemKind,
+                        printRun: row.pokemonPrintRun,
+                        card: card
+                      ) else {
+                    continue
+                }
+                repairs.append(
+                    Repair(
+                        rowID: row.persistentModelID,
+                        collectionKey: row.collectionKey,
+                        storedVariantID: row.variantID,
+                        storedResolutionRaw: row.variantResolutionRaw,
+                        target: target,
+                        resolved: resolved
+                    )
+                )
+            }
+        }
+        return repairs
+    }
+
+    /// Applies one row's activity-backed corrections in a sibling context.
+    /// The correction API saves internally and rolls back its context on error;
+    /// keeping that context away from the price pass protects staged price work.
+    /// A row is untouched unless its outstanding acquisition activities account
+    /// for its complete current quantity.
+    static func apply(
+        _ repair: Repair,
+        card: IdentifiedCard,
+        in container: ModelContainer
+    ) -> Bool {
+        let context = ModelContext(container)
+        guard let row = context.model(for: repair.rowID) as? CollectedCard,
+              row.collectionKey == repair.collectionKey,
+              row.variantID == repair.storedVariantID,
+              row.variantResolutionRaw == repair.storedResolutionRaw,
+              row.priceKey == repair.target.id,
+              self.repair(
+                storedVariantID: row.variantID,
+                storedResolution: row.variantResolution,
+                itemKind: row.itemKind,
+                printRun: row.pokemonPrintRun,
+                card: card
+              ) == repair.resolved else {
+            return false
+        }
+
+        do {
+            let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+                .filter {
+                    $0.collectionKey == row.collectionKey
+                        && $0.kind.hasQuantityClaim
+                        && $0.signedQuantity > 0
+                        && $0.remainingQuantity > 0
+                }
+                .sorted {
+                    if $0.occurredAt != $1.occurredAt {
+                        return $0.occurredAt < $1.occurredAt
+                    }
+                    return $0.id.uuidString < $1.id.uuidString
+                }
+
+            var coveredQuantity = 0
+            for activity in activities {
+                let (sum, overflow) = coveredQuantity.addingReportingOverflow(
+                    activity.remainingQuantity
+                )
+                guard !overflow else { return false }
+                coveredQuantity = sum
+            }
+            guard coveredQuantity == row.quantity, !activities.isEmpty else {
+                PerformanceSignpost.emitEvent(
+                    "pokemonFinishReconciliationSkipped",
+                    "reason=activityCoverage"
+                )
+                return false
+            }
+
+            let store = CollectionStore(context: context)
+            var correctedActivityCount = 0
+            for activity in activities {
+                let quantity = activity.remainingQuantity
+                guard quantity > 0,
+                      let currentRow = store.card(forKey: repair.collectionKey) else {
+                    break
+                }
+                do {
+                    guard try store.recordVariantCorrection(
+                        for: currentRow,
+                        to: repair.resolved,
+                        activityID: activity.id,
+                        quantity: quantity,
+                        source: .catalogUpdate
+                    ) != nil else {
+                        continue
+                    }
+                    correctedActivityCount += 1
+                } catch {
+                    PerformanceSignpost.emitEvent(
+                        "pokemonFinishReconciliationSkipped",
+                        "reason=collectionCorrection"
+                    )
+                    return correctedActivityCount > 0
+                }
+            }
+            return correctedActivityCount > 0
+        } catch {
+            PerformanceSignpost.emitEvent(
+                "pokemonFinishReconciliationSkipped",
+                "reason=activityRead"
+            )
+            return false
+        }
+    }
+}
+
 /// The value-only request handed from the UI facade to the refresh model actor.
 /// The actor builds its target snapshot after the migration gate is held, so a
 /// row rekeyed while a caller waited cannot be written under an obsolete key.
@@ -1559,6 +1790,7 @@ fileprivate struct PriceRefreshWorkResult: Sendable {
     /// distinct from a provider response with no matching listing.
     let gradedTransportFailures: Int
     let reconciledDuplicateRecords: Int
+    let repairedFinishes: Int
     let priceDeltas: [PriceDelta]
 }
 
@@ -1618,6 +1850,9 @@ final class PriceRefreshController: ObservableObject {
         var persistenceFailed = false
         /// Number of redundant synced rows repaired and durably removed.
         var reconciledDuplicateRecords = 0
+        /// Collection rows whose finish identity was corrected from fresh
+        /// authoritative Pokémon catalog evidence.
+        var repairedFinishes = 0
         /// Owned graded targets with no matching vendor graded result.
         var gradedLookupMisses = 0
         /// Owned graded targets whose product lookup could not complete.
@@ -1783,6 +2018,7 @@ final class PriceRefreshController: ObservableObject {
                 providerUnreachable: result.providerUnreachable,
                 persistenceFailed: result.persistenceFailed,
                 reconciledDuplicateRecords: result.reconciledDuplicateRecords,
+                repairedFinishes: result.repairedFinishes,
                 gradedLookupMisses: result.gradedLookupMisses,
                 gradedTransportFailures: result.gradedTransportFailures
             )

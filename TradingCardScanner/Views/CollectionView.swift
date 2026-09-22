@@ -68,6 +68,12 @@ enum CollectionRefreshStatusResolver {
                 || summary.reconciledDuplicateRecords > 0 {
                 return warning("Prices updated with some issues")
             }
+            if summary.repairedFinishes > 0 {
+                let finishLabel = summary.repairedFinishes == 1 ? "finish" : "finishes"
+                return transient(
+                    "Catalog corrected \(summary.repairedFinishes) card \(finishLabel)"
+                )
+            }
             if summary.changedPrices {
                 return transient("Prices updated")
             }

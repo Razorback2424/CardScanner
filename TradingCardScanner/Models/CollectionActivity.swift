@@ -8,6 +8,7 @@ enum CollectionActivitySource: String, CaseIterable, Sendable {
     case sealedCatalog
     case gradedCatalog
     case correction
+    case catalogUpdate
 
     var label: String {
         switch self {
@@ -17,6 +18,7 @@ enum CollectionActivitySource: String, CaseIterable, Sendable {
         case .sealedCatalog: return "Sealed Browse"
         case .gradedCatalog: return "Graded Browse"
         case .correction: return "Correction"
+        case .catalogUpdate: return "Catalog update"
         }
     }
 
@@ -28,6 +30,7 @@ enum CollectionActivitySource: String, CaseIterable, Sendable {
         case .sealedCatalog: return "shippingbox"
         case .gradedCatalog: return "checkmark.seal"
         case .correction: return "pencil"
+        case .catalogUpdate: return "arrow.triangle.2.circlepath"
         }
     }
 }
