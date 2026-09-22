@@ -662,6 +662,255 @@ struct CatalogPage<Element: Sendable>: Sendable {
     let nextCursor: String?
 }
 
+/// Prices returned by pokemontcg.io's set query. The raw key map stays Codable
+/// so it can be kept in the local Browse cache without making provider data
+/// part of the collection model.
+///
+/// The two providers do not share set ids or padding rules. Persisting a raw
+/// secondary-provider id here therefore makes a successful bulk response look
+/// like a complete pricing miss when Browse asks with a TCGdex id. Every key
+/// is normalized to `<tcgdex-set-id>|<local-number>` at the boundary instead.
+struct PokemonBulkPriceMap: Codable, Equatable, Sendable {
+    static let currentSchemaVersion = 2
+
+    let schemaVersion: Int
+    let valuesByCardID: [String: [String: Double]]
+    let providerUpdatedAtByCardID: [String: Date]
+
+    init(
+        valuesByCardID: [String: [String: Double]],
+        tcgdexSetID: String? = nil,
+        providerUpdatedAtByCardID: [String: Date] = [:],
+        schemaVersion: Int = Self.currentSchemaVersion
+    ) {
+        self.schemaVersion = schemaVersion
+        self.valuesByCardID = Dictionary(
+            valuesByCardID.map { key, values in
+                (
+                    Self.canonicalKey(for: key, tcgdexSetID: tcgdexSetID)
+                        ?? key.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
+                    Dictionary(
+                        values.map { ($0.key.lowercased(), $0.value) },
+                        uniquingKeysWith: { _, newest in newest }
+                    )
+                )
+            },
+            uniquingKeysWith: { _, newest in newest }
+        )
+        self.providerUpdatedAtByCardID = Dictionary(
+            providerUpdatedAtByCardID.compactMap { key, date in
+                guard let canonical = Self.canonicalKey(
+                    for: key,
+                    tcgdexSetID: tcgdexSetID
+                ) else { return nil }
+                return (canonical, date)
+            },
+            uniquingKeysWith: { _, newest in newest }
+        )
+    }
+
+    init(
+        valuesByCanonicalKey: [String: [String: Double]],
+        providerUpdatedAtByCanonicalKey: [String: Date] = [:]
+    ) {
+        self.init(
+            valuesByCardID: valuesByCanonicalKey,
+            providerUpdatedAtByCardID: providerUpdatedAtByCanonicalKey
+        )
+    }
+
+    init(from decoder: Decoder) throws {
+        if let container = try? decoder.singleValueContainer(),
+           let raw = try? container.decode([String: [String: Double]].self) {
+            self.init(valuesByCardID: raw, schemaVersion: 0)
+            return
+        }
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            valuesByCardID: try container.decode(
+                [String: [String: Double]].self,
+                forKey: .valuesByCardID
+            ),
+            providerUpdatedAtByCardID: try container.decodeIfPresent(
+                [String: Date].self,
+                forKey: .providerUpdatedAtByCardID
+            ) ?? [:],
+            schemaVersion: try container.decodeIfPresent(Int.self, forKey: .schemaVersion) ?? 0
+        )
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(schemaVersion, forKey: .schemaVersion)
+        try container.encode(valuesByCardID, forKey: .valuesByCardID)
+        try container.encode(providerUpdatedAtByCardID, forKey: .providerUpdatedAtByCardID)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case schemaVersion, valuesByCardID, providerUpdatedAtByCardID
+    }
+
+    static func canonicalKey(tcgdexSetID: String, cardNumber: String) -> String {
+        let setID = tcgdexSetID
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+        let number = CatalogIdentityNormalization.localNumber(cardNumber).lowercased()
+        return "\(setID)|\(number)"
+    }
+
+    private static func canonicalKey(
+        for rawKey: String,
+        tcgdexSetID: String?
+    ) -> String? {
+        let key = rawKey.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !key.isEmpty else { return nil }
+
+        if let separator = key.firstIndex(of: "|") {
+            let setID = String(key[..<separator])
+            let number = String(key[key.index(after: separator)...])
+            guard !setID.isEmpty, !number.isEmpty else { return nil }
+            return canonicalKey(tcgdexSetID: setID, cardNumber: number)
+        }
+
+        guard let separator = key.lastIndex(of: "-") else { return nil }
+        let inferredSetID = tcgdexSetID ?? String(key[..<separator])
+        let number = String(key[key.index(after: separator)...])
+        guard !inferredSetID.isEmpty, !number.isEmpty else { return nil }
+        return canonicalKey(tcgdexSetID: inferredSetID, cardNumber: number)
+    }
+
+    private func canonicalKey(for providerID: String) -> String? {
+        Self.canonicalKey(for: providerID, tcgdexSetID: nil)
+    }
+
+    /// Distinguishes a card returned by the bulk endpoint from a card the
+    /// endpoint did not return at all. An empty value map is still meaningful:
+    /// it is a resolved USD-coverage gap and should not trigger a per-card
+    /// request on every cold launch.
+    func containsCard(_ providerID: String) -> Bool {
+        guard let key = canonicalKey(for: providerID) else { return false }
+        return valuesByCardID[key] != nil
+    }
+
+    var isStage4Compatible: Bool {
+        schemaVersion == Self.currentSchemaVersion
+    }
+
+    func providerUpdatedAt(for providerID: String) -> Date? {
+        guard let key = canonicalKey(for: providerID) else { return nil }
+        return providerUpdatedAtByCardID[key]
+    }
+
+    func values(for providerID: String) -> [String: Double]? {
+        guard let key = canonicalKey(for: providerID) else { return nil }
+        return valuesByCardID[key]
+    }
+
+    /// Whether the bulk response knows how to answer this slot without
+    /// borrowing another finish. Unknown parallel/stamped variants still go
+    /// through the exact-card fallback because the bulk provider has no stable
+    /// mapping for them.
+    func covers(providerID: String, variant: PhysicalVariant?) -> Bool {
+        guard containsCard(providerID) else { return false }
+        guard let variant else { return true }
+        return Self.listingKey(for: variant) != nil
+    }
+
+    /// Returns the price for the exact slot, or the highest published finish
+    /// for an unqualified card summary. Parallel/stamped finishes have no
+    /// matching vendor key and therefore never borrow a base finish's number.
+    func price(for providerID: String, variant: PhysicalVariant?) -> Double? {
+        guard let key = canonicalKey(for: providerID),
+              let values = valuesByCardID[key] else { return nil }
+        guard let variant else {
+            // An unqualified Browse/search summary represents the ordinary
+            // printing. A 1st-edition vendor key belongs to a separate virtual
+            // print run and must not become its price by winning this max.
+            return values.compactMap { key, value in
+                switch key {
+                case "normal", "holofoil", "reverseholofoil": return value
+                default: return nil
+                }
+            }.max()
+        }
+        guard let listing = Self.listingKey(for: variant) else { return nil }
+        return values[listing.lowercased()]
+    }
+
+    static func listingKey(for variant: PhysicalVariant) -> String? {
+        switch variant.id {
+        case PhysicalVariant.normal.id: return "normal"
+        case PhysicalVariant.holo.id: return "holofoil"
+        case PhysicalVariant.reverse.id: return "reverseHolofoil"
+        case PhysicalVariant.firstEdition.id: return "1stEditionHolofoil"
+        default: return nil
+        }
+    }
+}
+
+/// A cached result for the conservative TCGdex → pokemontcg.io set join. A
+/// stored `nil` is intentional: ambiguous and unresolved sets must decline the
+/// bulk path rather than invent a provider id.
+struct PokemonBulkSetMatch: Codable, Equatable, Sendable {
+    let secondarySetID: String?
+}
+
+/// A price result is cached separately from the summary page because a page
+/// intentionally stores only presentation data. `nil` is retained explicitly
+/// so a card whose exact Scryfall printing has no USD price is not retried on
+/// every cold launch.
+struct CatalogCachedPrice: Codable, Equatable, Sendable {
+    static let currentHistoryMetadataVersion = 1
+
+    let value: Double?
+    /// Scryfall bulk-dataset day associated with the pricing response. Older
+    /// caches decode with nil and are refreshed before Stage 4A history use.
+    let providerUpdatedAt: Date?
+    /// Distinguishes a migrated cache whose provider stamp was unavailable from
+    /// a pre-Stage-4A cache that has never attempted the metadata lookup.
+    let historyMetadataVersion: Int
+
+    init(
+        value: Double?,
+        providerUpdatedAt: Date? = nil,
+        historyMetadataVersion: Int = Self.currentHistoryMetadataVersion
+    ) {
+        self.value = value
+        self.providerUpdatedAt = providerUpdatedAt
+        self.historyMetadataVersion = historyMetadataVersion
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case value, providerUpdatedAt, historyMetadataVersion
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        value = try container.decodeIfPresent(Double.self, forKey: .value)
+        providerUpdatedAt = try container.decodeIfPresent(Date.self, forKey: .providerUpdatedAt)
+        historyMetadataVersion = try container.decodeIfPresent(
+            Int.self,
+            forKey: .historyMetadataVersion
+        ) ?? 0
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(value, forKey: .value)
+        try container.encodeIfPresent(providerUpdatedAt, forKey: .providerUpdatedAt)
+        try container.encode(historyMetadataVersion, forKey: .historyMetadataVersion)
+    }
+}
+
+/// A price stream reports coverage separately from the price dictionary. A
+/// resolved card with no USD quote is a quiet coverage gap; an unresolved card
+/// is an actionable request failure that can be retried.
+struct CatalogPriceUpdate: Sendable, Equatable {
+    let prices: [String: Double]
+    let resolvedIDs: Set<String>
+    let unresolvedIDs: Set<String>
+}
+
 extension CatalogPage: Codable where Element: Codable {}
 
 struct SetCompletion: Equatable, Sendable {
@@ -1339,6 +1588,8 @@ protocol BrowseCatalogProviding: Sendable {
     ) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]>
+    nonisolated func sortPriceUpdates(for cards: [CatalogCardSummary]) -> AsyncStream<CatalogPriceUpdate>
+    func resetPriceResolution(for ids: [String]) async
     /// Starts an opportunistic local-snapshot refresh. Existing test doubles
     /// and non-Pokémon catalog implementations do not need to participate.
     func prepareCatalog() async
@@ -1348,6 +1599,30 @@ protocol BrowseCatalogProviding: Sendable {
 }
 
 extension BrowseCatalogProviding {
+    nonisolated func sortPriceUpdates(
+        for cards: [CatalogCardSummary]
+    ) -> AsyncStream<CatalogPriceUpdate> {
+        AsyncStream { continuation in
+            let producer = Task {
+                for await prices in sortPrices(for: cards) {
+                    let pricedIDs = Set(prices.keys)
+                    let cardIDs = Set(cards.map(\.id))
+                    continuation.yield(
+                        CatalogPriceUpdate(
+                            prices: prices,
+                            resolvedIDs: pricedIDs,
+                            unresolvedIDs: cardIDs.subtracting(pricedIDs)
+                        )
+                    )
+                }
+                continuation.finish()
+            }
+            continuation.onTermination = { @Sendable _ in producer.cancel() }
+        }
+    }
+
+    func resetPriceResolution(for ids: [String]) async {}
+
     func prepareCatalog() async {}
 
     func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate> {

@@ -1,4 +1,5 @@
 import Foundation
+import PokemonCatalogCore
 
 enum TCGdexError: LocalizedError, Sendable {
     case invalidURL
@@ -19,9 +20,10 @@ enum TCGdexError: LocalizedError, Sendable {
 /// Which TCGdex language edition a request is addressed to.
 ///
 /// Japanese-exclusive sets exist only under `ja`, and are 404 on `en`. That
-/// edition carries full identity — names, numbering, artwork — and Cardmarket
-/// pricing, but no TCGplayer pricing, since these printings are not TCGplayer
-/// products. A price for them therefore arrives in euros or not at all.
+/// edition carries full identity — names, numbering, artwork — and may include
+/// a non-USD marketplace field, but no TCGplayer pricing, since these
+/// printings are not TCGplayer products. The app's USD pricing path treats
+/// that marketplace field as unavailable rather than presenting it as dollars.
 enum TCGdexLocale: String, Sendable {
     case en
     case ja
@@ -124,10 +126,123 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
     }
 }
 
+/// The Browse pricing seam is separate from the card/artwork seam so tests can
+/// keep their recorded TCGdex transport while exercising the exact bulk-price
+/// behavior without touching the network.
+protocol PokemonBulkPriceSource: Sendable {
+    func fetchBulkPrices(
+        tcgdexSetID: String,
+        secondarySetID: String
+    ) async throws -> PokemonBulkPriceMap
+}
+
+protocol PokemonSecondarySetSource: Sendable {
+    func fetchSecondarySets() async throws -> [PokemonCatalogSecondarySet]
+}
+
 /// Small secondary Pokémon catalog client. Exact set/number lookup is used only
 /// by the scanner when TCGdex is unavailable; artwork lookup remains limited to
-/// records whose identity was already established elsewhere.
-struct PokemonTCGAPIService: Sendable {
+/// records whose identity was already established elsewhere. Browse also uses
+/// its already-authorized host for one set-wide price query.
+struct PokemonTCGAPIService: PokemonBulkPriceSource, PokemonSecondarySetSource, Sendable {
+    private static let bulkPageSize = 250
+    /// Deprecation milestone: new pokemontcg.io registrations are closed and
+    /// existing API keys stop functioning on 2027-03-01. TCGdex remains the
+    /// evaluated candidate only while Phase 6.0 proves a bounded bulk path;
+    /// this comment deliberately does not declare a successor provider.
+    static let defaultBaseURL = URL(string: "https://api.pokemontcg.io/v2")!
+
+    private let session: URLSession
+    private let baseURL: URL
+
+    init(
+        session: URLSession = .shared,
+        baseURL: URL = PokemonTCGAPIService.defaultBaseURL
+    ) {
+        self.session = session
+        self.baseURL = baseURL
+    }
+
+    func fetchSecondarySets() async throws -> [PokemonCatalogSecondarySet] {
+        try await PokemonCatalogSecondaryProviderClient(
+            session: session,
+            baseURL: baseURL
+        ).fetchSets()
+    }
+
+    func fetchBulkPrices(
+        tcgdexSetID: String,
+        secondarySetID: String
+    ) async throws -> PokemonBulkPriceMap {
+        var page = 1
+        var valuesByCanonicalKey: [String: [String: Double]] = [:]
+        var providerUpdatedAtByCanonicalKey: [String: Date] = [:]
+
+        while true {
+            let cardsURL = baseURL.appendingPathComponent("cards")
+            guard var components = URLComponents(
+                url: cardsURL,
+                resolvingAgainstBaseURL: false
+            ) else {
+                throw TCGdexError.invalidURL
+            }
+            components.queryItems = [
+                URLQueryItem(name: "q", value: "set.id:\(secondarySetID)"),
+                URLQueryItem(name: "pageSize", value: String(Self.bulkPageSize)),
+                URLQueryItem(name: "page", value: String(page)),
+                URLQueryItem(name: "select", value: "id,number,tcgplayer")
+            ]
+            guard let url = components.url else { throw TCGdexError.invalidURL }
+
+            var request = URLRequest(url: url)
+            request.timeoutInterval = 12
+            request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+
+            guard let data = try await dataRetryingTransientFailures(for: request) else {
+                throw TCGdexError.cardNotFound
+            }
+            let decoded = try JSONDecoder().decode(PokemonTCGBulkPriceResponse.self, from: data)
+            for card in decoded.data {
+                let prices = Dictionary<String, Double>(
+                    (card.tcgplayer?.prices ?? [:]).compactMap { key, point in
+                        guard let market = point.market, market.isFinite, market >= 0 else { return nil }
+                        return (key.lowercased(), market)
+                    },
+                    uniquingKeysWith: { _, newest in newest }
+                )
+                guard let number = card.number, !number.isEmpty else { continue }
+                let key = PokemonBulkPriceMap.canonicalKey(
+                    tcgdexSetID: tcgdexSetID,
+                    cardNumber: number
+                )
+                valuesByCanonicalKey[key] = prices
+                if let updatedAt = card.tcgplayer?.updatedAt,
+                   let resolved = BrowsePriceObservationDayResolver
+                    .pokemonTCGIO(updatedAt: updatedAt) {
+                    providerUpdatedAtByCanonicalKey[key] = resolved.providerUpdatedAt
+                }
+            }
+
+            let receivedAllKnownCards: Bool
+            if let totalCount = decoded.totalCount {
+                receivedAllKnownCards = page * Self.bulkPageSize >= totalCount
+            } else {
+                receivedAllKnownCards = decoded.data.count < Self.bulkPageSize
+            }
+            guard !decoded.data.isEmpty, !receivedAllKnownCards else { break }
+            page += 1
+            // A provider count that keeps changing must not turn a catalog
+            // screen into an unbounded request loop.
+            guard page <= 100 else { break }
+        }
+
+        return PokemonBulkPriceMap(
+            valuesByCanonicalKey: valuesByCanonicalKey,
+            providerUpdatedAtByCanonicalKey: providerUpdatedAtByCanonicalKey
+        )
+    }
+
     /// Exact set/number lookup used when TCGdex is unavailable. The response is
     /// still validated by the scanner before it becomes an identified card; this
     /// service only narrows the secondary provider's result set.
@@ -138,16 +253,18 @@ struct PokemonTCGAPIService: Sendable {
     ) async throws -> PokemonTCGAPICard? {
         let number = CatalogIdentityNormalization.localNumber(cardNumber)
         let providerID = Self.providerID(setID: setID, cardNumber: cardNumber)
-        guard let encodedID = providerID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
-              let url = URL(string: "https://api.pokemontcg.io/v2/cards/\(encodedID)") else {
+        guard let encodedID = providerID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
             throw TCGdexError.invalidURL
         }
+        let url = baseURL
+            .appendingPathComponent("cards")
+            .appendingPathComponent(encodedID)
         var request = URLRequest(url: url)
         request.timeoutInterval = timeout
         request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        guard let data = try await Self.dataRetryingTransientFailures(for: request) else {
+        guard let data = try await dataRetryingTransientFailures(for: request) else {
             return nil
         }
         let card = try JSONDecoder().decode(PokemonTCGAPISingleResponse.self, from: data).data
@@ -182,17 +299,17 @@ struct PokemonTCGAPIService: Sendable {
     /// 404 is terminal and never retried: a definitive "this provider does not
     /// have that card" must not be churned into a looser answer. Only 5xx and
     /// transport errors are worth a second look.
-    private static func dataRetryingTransientFailures(
+    private func dataRetryingTransientFailures(
         for request: URLRequest
     ) async throws -> Data? {
         var lastError: Error = TCGdexError.badResponse
 
-        for attempt in 0...retryBackoff.count {
+        for attempt in 0...Self.retryBackoff.count {
             if attempt > 0 {
-                try await Task.sleep(for: retryBackoff[attempt - 1])
+                try await Task.sleep(for: Self.retryBackoff[attempt - 1])
             }
             do {
-                let (data, response) = try await URLSession.shared.data(for: request)
+                let (data, response) = try await session.data(for: request)
                 guard let http = response as? HTTPURLResponse else {
                     throw TCGdexError.badResponse
                 }
@@ -218,7 +335,10 @@ struct PokemonTCGAPIService: Sendable {
         setName: String,
         cardNumber: String
     ) async throws -> PokemonTCGAPICard? {
-        guard var components = URLComponents(string: "https://api.pokemontcg.io/v2/cards") else {
+        guard var components = URLComponents(
+            url: baseURL.appendingPathComponent("cards"),
+            resolvingAgainstBaseURL: false
+        ) else {
             throw TCGdexError.invalidURL
         }
         let escapedName = name.replacingOccurrences(of: "\"", with: "\\\"")
@@ -237,7 +357,7 @@ struct PokemonTCGAPIService: Sendable {
         request.timeoutInterval = 10
         request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse,
               (200..<300).contains(http.statusCode) else { throw TCGdexError.badResponse }
         let cards = try JSONDecoder().decode(PokemonTCGAPIResponse.self, from: data).data

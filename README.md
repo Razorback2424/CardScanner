@@ -334,6 +334,13 @@ follows the filter.
 - **Never fold unknowns into a total.** The header shows priced value plus a count
   of what was left out.
 
+Browse history is a separate, device-local feature. Opening a Browse set can
+retain eligible normalized USD observations under Application Support for up to
+90 provider days; it never writes to the owned portfolio ledger, CloudKit, or a
+shared pricing cache. Scryfall-derived current prices, per-finish Magic prices,
+and this local Browse history are free product surfaces. If paid entitlements
+are introduced later, they must not gate those Scryfall surfaces.
+
 Price states are distinct: current · stale · unavailable · not checked · refresh
 failed.
 

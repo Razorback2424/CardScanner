@@ -101,7 +101,11 @@ final class PricingTests: XCTestCase {
             CardPricing.price(for: card, variant: .reverse, magicTreatments: []),
             .unavailable(nil)
         )
-        XCTAssertTrue(card.marketPrices.isEmpty)
+        // Every catalog finish is still listed — as a stated gap. A card whose
+        // finishes silently vanish reads as a card that has no finishes.
+        XCTAssertFalse(card.marketPrices.isEmpty)
+        XCTAssertTrue(card.marketPrices.allSatisfy(\.isGap))
+        XCTAssertTrue(card.marketPrices.allSatisfy { $0.value == nil })
     }
 
     func testPublishedPricesOnlyCoverVariantsTheCatalogSaysExist() throws {
@@ -118,7 +122,10 @@ final class PricingTests: XCTestCase {
             """#
         )
 
-        XCTAssertEqual(card.marketPrices.map(\.value), [0.42, 3.75])
+        XCTAssertEqual(card.marketPrices.compactMap(\.value), [0.42, 3.75])
+        // The holo listing exists at the marketplace but not in this printing,
+        // so it produces no row at all — priced or otherwise.
+        XCTAssertEqual(card.marketPrices.count, 2)
     }
 
     // MARK: - Magic
@@ -632,36 +639,43 @@ final class PricingTests: XCTestCase {
         return .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "MEP")
     }
 
-    func testCardmarketFillsInWhereTCGplayerPublishesNothing() throws {
-        guard case let .price(price) = CardPricing.price(
-            for: try promoCard(),
-            variant: .holo,
-            magicTreatments: []
-        ) else {
-            return XCTFail("Expected a Cardmarket price")
-        }
-
-        XCTAssertEqual(price.unitMarketPriceUSD, 0.49)
-        XCTAssertEqual(price.source, .cardmarket)
-        XCTAssertNotNil(price.sourceUpdatedAt)
+    /// Cardmarket publishes a euro figure for the promo catalogue where
+    /// TCGplayer publishes nothing. That number is not a weaker dollar price,
+    /// it is a different marketplace in a different currency, and this app has
+    /// no exchange-rate policy that could turn one into the other. So it is not
+    /// consulted at all: the honest answer is that this finish has no USD quote.
+    func testCardmarketIsNeverUsedAsAPriceWhenTCGplayerIsSilent() throws {
+        XCTAssertEqual(
+            CardPricing.price(for: try promoCard(), variant: .holo, magicTreatments: []),
+            .unavailable(.tcgplayer)
+        )
     }
 
-    /// A euro figure is reported as euros. Labelling it USD would misstate a
-    /// number by whatever the exchange rate happens to be that day.
-    func testCardmarketPriceKeepsItsOwnCurrency() throws {
-        guard case let .price(price) = CardPricing.price(
-            for: try promoCard(),
-            variant: .holo,
-            magicTreatments: []
-        ) else {
-            return XCTFail("Expected a Cardmarket price")
-        }
-
-        XCTAssertEqual(price.currencyCode, "EUR")
-        XCTAssertNotEqual(price.currencyCode, "USD")
-
+    /// The regression this rule exists for: a euro amount rendered beside
+    /// dollar amounts in the same panel, inviting a comparison neither figure
+    /// supports.
+    func testNoPublishedPriceRowEverCarriesAForeignCurrencyAmount() throws {
         let published = try promoCard().marketPrices
-        XCTAssertEqual(published.first?.currencyCode, "EUR")
+
+        XCTAssertFalse(published.isEmpty)
+        XCTAssertTrue(published.allSatisfy(\.isGap))
+        for row in published {
+            XCTAssertEqual(row.availability, .noUSDQuote(.tcgplayer))
+        }
+    }
+
+    /// A gap is recorded where someone can act on it rather than only absent
+    /// from the screen.
+    func testAnUnpricedFinishIsRecordedAsACoverageGap() throws {
+        PriceCoverageGapLog.shared.reset()
+        defer { PriceCoverageGapLog.shared.reset() }
+
+        _ = try promoCard().marketPrices
+
+        let gaps = PriceCoverageGapLog.shared.currentGaps()
+        XCTAssertFalse(gaps.isEmpty)
+        XCTAssertTrue(gaps.allSatisfy { $0.consultedSource == .tcgplayer })
+        XCTAssertTrue(gaps.allSatisfy { $0.setCode == "MEP" })
     }
 
     func testTCGplayerStillWinsWhenItHasAPriceForTheVariant() throws {
@@ -832,5 +846,65 @@ final class PriceHistoryChartModelTests: XCTestCase {
         )
 
         XCTAssertEqual(model.samples.last?.annotationLabel, "Source restatement")
+    }
+
+    func testNearFlatExpensiveHistoryUsesMinimumVisualEnvelope() throws {
+        let model = makeModel(
+            observations: [
+                try observation(day: 0, amount: 603.51),
+                try observation(day: 1, amount: 603.00)
+            ],
+            checks: [checkDay(day: 0), checkDay(day: 1)]
+        )
+
+        let domain = model.yDomain
+        XCTAssertGreaterThanOrEqual(domain.upperBound - domain.lowerBound, 603.00 * 0.02)
+        XCTAssertLessThanOrEqual(domain.lowerBound, 603.00)
+        XCTAssertGreaterThanOrEqual(domain.upperBound, 603.51)
+    }
+
+    func testMeaningfulDeclineStillDeterminesTheChartScale() throws {
+        let model = makeModel(
+            observations: [
+                try observation(day: 0, amount: 100),
+                try observation(day: 1, amount: 20)
+            ],
+            checks: [checkDay(day: 0), checkDay(day: 1)]
+        )
+
+        let domain = model.yDomain
+        XCTAssertGreaterThan(domain.upperBound - domain.lowerBound, 80)
+        XCTAssertLessThanOrEqual(domain.lowerBound, 20)
+        XCTAssertGreaterThanOrEqual(domain.upperBound, 100)
+    }
+
+    func testFlatHistoryHasASensibleNonzeroDomain() throws {
+        let model = makeModel(
+            observations: [
+                try observation(day: 0, amount: 42),
+                try observation(day: 1, amount: 42)
+            ],
+            checks: [checkDay(day: 0), checkDay(day: 1)]
+        )
+
+        let domain = model.yDomain
+        XCTAssertGreaterThan(domain.upperBound, domain.lowerBound)
+        XCTAssertLessThanOrEqual(domain.lowerBound, 42)
+        XCTAssertGreaterThanOrEqual(domain.upperBound, 42)
+    }
+
+    func testLowPricesNeverProduceANegativeDomain() throws {
+        let model = makeModel(
+            observations: [
+                try observation(day: 0, amount: 0.01),
+                try observation(day: 1, amount: 0.02)
+            ],
+            checks: [checkDay(day: 0), checkDay(day: 1)]
+        )
+
+        let domain = model.yDomain
+        XCTAssertGreaterThanOrEqual(domain.lowerBound, 0)
+        XCTAssertGreaterThan(domain.upperBound, domain.lowerBound)
+        XCTAssertGreaterThanOrEqual(domain.upperBound, 0.02)
     }
 }

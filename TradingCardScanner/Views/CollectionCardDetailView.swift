@@ -6,6 +6,32 @@ import SwiftData
 import SwiftUI
 import UIKit
 
+private struct CardDetailFact: Identifiable {
+    let id: Int
+    let label: String
+    let value: String
+}
+
+private struct CardDetailMovementDisplay: Equatable {
+    enum Direction: Equatable {
+        case positive
+        case negative
+        case flat
+    }
+
+    enum Status: Equatable {
+        case recording
+        case none
+        case recorded
+    }
+
+    let status: Status
+    let direction: Direction
+    let amount: Money?
+    let percentage: Double?
+    let periodText: String
+}
+
 struct CollectionCardDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -34,18 +60,14 @@ struct CollectionCardDetailView: View {
     @State private var artworkGeneration = 0
     @State private var pendingArtwork: ArtworkRequest?
     @State private var artworkAccent: ArtworkAccent?
-    @State private var isShowingCardDetails = false
     @State private var projectedQuantity: Int?
+#if DEBUG
+    @State private var isShowingPrintingDetailsRoute = false
+#endif
 
     private struct ArtworkRequest: Identifiable {
         let id: Int
         let item: PhotosPickerItem
-    }
-
-    private struct CardFact: Identifiable {
-        let id: Int
-        let label: String
-        let value: String
     }
 
     init(
@@ -107,49 +129,36 @@ struct CollectionCardDetailView: View {
     }
 
     var body: some View {
-        ZStack {
-            AppCardDetailBackdrop(accent: artworkAccent)
+        let chartModel = makePriceHistoryModel()
+        let movement = movementDisplay(for: chartModel)
+
+        return ZStack {
+            AppCardDetailBackdrop()
                 .ignoresSafeArea()
 
-            ScrollViewReader { proxy in
-                ScrollView(.vertical, showsIndicators: true) {
-                    VStack(spacing: 0) {
-                        heroSection
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 0) {
+                    heroSection
+                    cardIdentitySection
+                    valuationSection(movement: movement)
+                    priceHistorySection(model: chartModel, movement: movement)
+                    marketplaceSection
+                    ownershipSection
 
-                        VStack(alignment: .leading, spacing: 24) {
-                            identityBlock
-                            priceMovementBlock
-
-                            if isLogicalConflict {
-                                conflictNotice
-                            }
-
-                            actionStrip
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 24)
-                        .contentWidthLimit(.standard)
+                    if isLogicalConflict {
+                        conflictNotice
+                            .padding(.horizontal, 16)
+                            .padding(.top, 20)
                     }
                 }
-                .coordinateSpace(name: "CardDetailScroll")
-#if DEBUG
-                .onChange(of: isShowingCardDetails) { _, isShowing in
-                    guard isShowing,
-                          CommandLine.arguments.contains("-ui_card_details_expanded") else { return }
-                    // Keep the capture-only expanded route focused on the
-                    // disclosed facts instead of requiring a gesture in the
-                    // deterministic screenshot loop.
-                    DispatchQueue.main.async {
-                        withAnimation(nil) {
-                            proxy.scrollTo("card-detail-facts", anchor: .top)
-                        }
-                    }
-                }
-#endif
+                .padding(.bottom, 24)
             }
+            .coordinateSpace(name: "CardDetailScroll")
         }
-        .navigationTitle(card.name)
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.black, for: .navigationBar)
+        .toolbarColorScheme(.dark, for: .navigationBar)
         // Artwork actions belong in the navigation chrome so they never cover
         // printed card content in the full-bleed hero.
         .toolbar {
@@ -162,13 +171,16 @@ struct CollectionCardDetailView: View {
         // height, clipping the card name before the user can scroll.
         .toolbar(.hidden, for: .tabBar)
 #if DEBUG
-        // Capture-only hook for the deterministic screenshot route. Normal
-        // launches do not pass this argument, so the disclosure always starts
-        // collapsed and never persists across cards.
+        // Capture-only hook for the deterministic details route. Normal
+        // launches do not pass this argument, so the destination remains a
+        // normal user-driven navigation row.
         .onAppear {
-            if CommandLine.arguments.contains("-ui_card_details_expanded") {
-                isShowingCardDetails = true
+            if CommandLine.arguments.contains("-ui_card_details_route") {
+                isShowingPrintingDetailsRoute = true
             }
+        }
+        .navigationDestination(isPresented: $isShowingPrintingDetailsRoute) {
+            printingDetailsDestination
         }
 #endif
         .task(id: artworkSourceKey) {
@@ -221,6 +233,17 @@ struct CollectionCardDetailView: View {
     @ViewBuilder
     private var artworkMenu: some View {
         Menu {
+            NavigationLink {
+                CollectionCardHistoryView(
+                    collectionKey: card.collectionKey,
+                    cardName: card.name
+                )
+            } label: {
+                Label("Collection History", systemImage: "clock.arrow.circlepath")
+            }
+
+            Divider()
+
             PhotosPicker(selection: $selectedArtwork, matching: .images) {
                 Label(
                     localArtworkFilename == nil ? "Choose Photo" : "Replace Photo",
@@ -236,20 +259,17 @@ struct CollectionCardDetailView: View {
 
             Divider()
 
-            // Destructive, and rare. The overflow is the right home for it now
-            // that quantity — the control people actually use — has moved up
-            // into the identity block.
             Button("Remove from Collection", role: .destructive) {
                 isConfirmingRemoval = true
             }
         } label: {
-            Image(systemName: "ellipsis.circle.fill")
-                .font(.title2)
+            Image(systemName: "ellipsis")
+                .font(.title3.weight(.semibold))
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.white)
         }
         .accessibilityLabel("Card actions")
-        .accessibilityHint("Choose a personal photo, replace it, or return to catalog artwork.")
+        .accessibilityHint("Open collection history, manage artwork, or remove this card.")
         .onChange(of: selectedArtwork) { _, item in
             guard let item else { return }
             artworkGeneration &+= 1
@@ -263,21 +283,39 @@ struct CollectionCardDetailView: View {
 
     private var heroSection: some View {
         let movementEnabled = !reduceMotion
-        return artwork
-            .aspectRatio(0.716, contentMode: .fit)
-            .clipShape(
-                RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
-            )
-            .overlay {
-                // A printed card has an edge. Bleeding the artwork to the screen
-                // edge with square corners read as wallpaper — the wrong claim
-                // for an app whose other half measures borders for a living.
-                RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
-                    .strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
+        return ZStack {
+            if let accent = artworkAccent, !reduceTransparency {
+                RadialGradient(
+                    colors: [
+                        accent.color.opacity(0.38),
+                        accent.color.opacity(0.10),
+                        .clear
+                    ],
+                    center: .center,
+                    startRadius: 12,
+                    endRadius: 220
+                )
+                .frame(width: 370, height: 470)
+                .blur(radius: 26)
+                .allowsHitTesting(false)
             }
-            .shadow(color: .black.opacity(0.55), radius: 24, x: 0, y: 14)
-            .padding(.horizontal, 18)
-            .padding(.top, 4)
+
+            artwork
+                .frame(maxWidth: 315)
+                .aspectRatio(0.716, contentMode: .fit)
+                .clipShape(
+                    RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
+                )
+                .overlay {
+                    // A printed card has an edge. Bleeding the artwork to the
+                    // screen edge with square corners would read as wallpaper.
+                    RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
+                        .strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
+                }
+                .shadow(color: .black.opacity(0.55), radius: 24, x: 0, y: 14)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 16)
             .scrollTransition(.interactive, axis: .vertical) { content, phase in
                 content
                     .scaleEffect(!movementEnabled || phase.isIdentity ? 1 : 0.96)
@@ -288,53 +326,143 @@ struct CollectionCardDetailView: View {
                 let parallax = movementEnabled ? min(18, max(-18, minY * 0.045)) : 0
                 return content.offset(y: parallax)
             }
-            .frame(maxWidth: .infinity)
             .accessibilityElement(children: .contain)
             .accessibilityLabel("Artwork for \(card.name)")
     }
 
-    private var identityBlock: some View {
-        AppCardSurface(accent: artworkAccent?.color) {
-            VStack(alignment: .leading, spacing: 12) {
-                provenanceRow
-                if card.itemKind == .rawCard {
-                    // The provenance label already includes the finish for a
-                    // raw card, so it replaces the compact condition row
-                    // rather than repeating "Reverse Holo" twice.
-                    VariantProvenanceLabel(
-                        finish: detailFinishLabel,
-                        resolution: card.variantResolution,
-                        style: .detail
-                    )
-                } else {
-                    conditionRow
-                    VariantProvenanceLabel(
-                        finish: detailFinishLabel,
-                        resolution: card.variantResolution,
-                        style: .detail
-                    )
-                }
-                if card.itemKind == .gradedCard {
-                    gradedVariantCorrectionBlock
-                }
+    private var cardIdentitySection: some View {
+        VStack(spacing: 6) {
+            Text(card.name)
+                .font(.system(size: 32, weight: .bold))
+                .tracking(-0.6)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
 
-                Divider()
-                    .overlay(Color.primary.opacity(0.08))
-
-                quantityControl
-
-                Divider()
-                    .overlay(Color.primary.opacity(0.08))
-
-                detailsToggle
-                if isShowingCardDetails {
-                    cardDetailsList
-                        .id("card-detail-facts")
-                }
+            if !provenanceLine.isEmpty {
+                Text(provenanceLine)
+                    .font(.system(size: 15))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+
+            identityStatusRow
+
+            if card.itemKind == .gradedCard {
+                gradedVariantCorrectionBlock
+            }
         }
-        .accessibilityElement(children: .contain)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 18)
+        .padding(.horizontal, 16)
+        .padding(.bottom, 22)
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    private var identityStatusRow: some View {
+        switch card.itemKind {
+        case .sealedProduct:
+            identityStatusLine(
+                label: card.itemKindLabel,
+                dotStyle: nil,
+                tint: .secondary,
+                rarity: CardRarityToken(raw: card.rarity)
+            )
+        case .gradedCard:
+            identityStatusLine(
+                label: conditionLine ?? card.itemKindLabel,
+                dotStyle: .flat(.finishGraded),
+                tint: .finishGraded,
+                rarity: CardRarityToken(raw: card.rarity)
+            )
+        case .rawCard:
+            if let label = detailFinishLabel,
+               let status = rawFinishStatus {
+                identityStatusLine(
+                    label: label,
+                    dotStyle: status.style,
+                    tint: status.tint,
+                    rarity: CardRarityToken(raw: card.rarity)
+                )
+            } else if let rarity = CardRarityToken(raw: card.rarity) {
+                identityStatusLine(
+                    label: rarity.label,
+                    dotStyle: nil,
+                    tint: rarity.tint,
+                    rarity: nil
+                )
+            }
+        }
+    }
+
+    private func identityStatusLine(
+        label: String,
+        dotStyle: CollectionFinishDot.Style?,
+        tint: Color,
+        rarity: CardRarityToken?
+    ) -> some View {
+        HStack(spacing: 8) {
+            if let dotStyle {
+                CollectionFinishDot(style: dotStyle, size: 9)
+            }
+
+            Text(label)
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(tint)
+
+            if let rarity {
+                Text("·")
+                    .foregroundStyle(.tertiary)
+                Text(rarity.label)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(rarity.tint)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var rawFinishStatus: (style: CollectionFinishDot.Style, tint: Color)? {
+        if !card.displayedMagicTreatmentEvidence.treatments.isEmpty {
+            return (.treatment, .finishTreatment)
+        }
+
+        guard let variant = card.variant else { return nil }
+        switch variant.id {
+        case PhysicalVariant.reverse.id:
+            return (.reverse, .finishReverse)
+        case PhysicalVariant.foil.id,
+             PhysicalVariant.holo.id,
+             PhysicalVariant.etched.id:
+            return (.foil, .finishFoil)
+        case PhysicalVariant.normal.id,
+             PhysicalVariant.nonfoil.id:
+            return (.plain, .secondary)
+        default:
+            return (.flat(finishTint(for: variant)), finishTint(for: variant))
+        }
+    }
+
+    private func finishTint(for variant: PhysicalVariant) -> Color {
+        switch variant.id {
+        case PhysicalVariant.reverse.id:
+            return .finishReverse
+        case PhysicalVariant.foil.id,
+             PhysicalVariant.holo.id,
+             PhysicalVariant.etched.id:
+            return .finishFoil
+        case PhysicalVariant.pokeBall.id,
+             PhysicalVariant.masterBall.id,
+             PhysicalVariant.firstEdition.id:
+            return .orange
+        case PhysicalVariant.normal.id,
+             PhysicalVariant.nonfoil.id:
+            return .secondary
+        default:
+            return .blue
+        }
     }
 
     /// The collector's canonical short form: where this printing comes from.
@@ -359,21 +487,6 @@ struct CollectionCardDetailView: View {
             parts.append(printRun.label)
         }
         return parts.joined(separator: " · ")
-    }
-
-    private var provenanceRow: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 12) {
-            Text(provenanceLine)
-                .font(.headline)
-                .fixedSize(horizontal: false, vertical: true)
-                .layoutPriority(1)
-
-            Spacer(minLength: 8)
-
-            if let rarity = CardRarityToken(raw: card.rarity) {
-                RarityChip(rarity: rarity)
-            }
-        }
     }
 
     /// The most specific true description of this copy, once.
@@ -528,7 +641,7 @@ struct CollectionCardDetailView: View {
     /// Everything the app knows about this particular copy, in the order a
     /// collector would ask for it. Facts folded into the glance rows remain
     /// available here without competing with the quick scan.
-    private var cardFacts: [CardFact] {
+    private var cardFacts: [CardDetailFact] {
         var raw: [(String, String)] = []
 
         if !card.setName.isEmpty {
@@ -584,30 +697,8 @@ struct CollectionCardDetailView: View {
         ))
 
         return raw.enumerated().map { index, element in
-            CardFact(id: index, label: element.0, value: element.1)
+            CardDetailFact(id: index, label: element.0, value: element.1)
         }
-    }
-
-    @ViewBuilder
-    private var cardDetailsList: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ForEach(cardFacts) { fact in
-                LabeledContent(fact.label) {
-                    Text(fact.value)
-                        .font(.callout.weight(.medium))
-                        .multilineTextAlignment(.trailing)
-                }
-                .font(.callout)
-            }
-
-            if let note = identityConfidenceNote {
-                Label(note, systemImage: "questionmark.circle")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 2)
-            }
-        }
-        .transition(.opacity.combined(with: .move(edge: .top)))
     }
 
     /// The catalog's uncertainty is useful context for a price, not a made-up
@@ -622,159 +713,192 @@ struct CollectionCardDetailView: View {
         return "The catalog hasn't confirmed this printing's finish, so its price may match a different one."
     }
 
-    private var detailsToggle: some View {
-        Button {
-            if reduceMotion {
-                isShowingCardDetails.toggle()
-            } else {
-                withAnimation(.snappy(duration: 0.28)) {
-                    isShowingCardDetails.toggle()
-                }
-            }
-        } label: {
-            HStack {
-                Text(isShowingCardDetails ? "Hide details" : "Card details")
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .rotationEffect(.degrees(isShowingCardDetails ? 90 : 0))
-                    .font(.footnote.weight(.semibold))
-            }
-            .font(.subheadline.weight(.medium))
-            .contentShape(.rect)
-            .frame(minHeight: 44)
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(isShowingCardDetails ? "Hide card details" : "Show card details")
-        .accessibilityIdentifier("card-details-toggle")
-    }
-
-    /// How many you own, beside what you own.
-    ///
-    /// This lived at the very bottom of the screen behind a menu, under the
-    /// chart — the one control on the page a collector reaches for repeatedly,
-    /// placed where it could not be found. Quantity is an attribute of the
-    /// holding, so it belongs in the block that describes the holding.
-    private var quantityControl: some View {
-        HStack(spacing: 12) {
-            Text("Quantity")
-                .font(.headline)
-
-            Spacer(minLength: 12)
-
-            Button {
-                updateQuantity(displayedQuantity - 1)
-            } label: {
-                Image(systemName: "minus")
-                    .frame(width: 44, height: 44)
-                    .contentShape(.rect)
-            }
-            .disabled(displayedQuantity <= 1)
-            .accessibilityLabel("Decrease quantity")
-
-            Text("\(displayedQuantity)")
-                .font(.title3.weight(.semibold).monospacedDigit())
-                .frame(minWidth: 32)
-                .contentTransition(.numericText())
-                .animation(.snappy, value: displayedQuantity)
-
-            Button {
-                updateQuantity(displayedQuantity + 1)
-            } label: {
-                Image(systemName: "plus")
-                    .frame(width: 44, height: 44)
-                    .contentShape(.rect)
-            }
-            .accessibilityLabel("Increase quantity")
-        }
-        .buttonStyle(.borderless)
-        .padding(.top, 2)
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Quantity, \(displayedQuantity)")
-    }
 
     /// What the whole position is worth, as distinct from one copy of it.
     private var holdingTotal: String? {
         guard let amount = price.amount, displayedQuantity > 0 else { return nil }
         return (amount * Double(displayedQuantity))
-            .formatted(.currency(code: price.currencyCode))
+            .formatted(.currency(code: price.currencyCode).precision(.fractionLength(2)))
     }
 
-    private var priceMovementBlock: some View {
-        AppCardSurface {
-            VStack(alignment: .leading, spacing: 14) {
-                HStack(alignment: .firstTextBaseline) {
-                    CardDetailPriceValue(price: price)
-                    Spacer(minLength: 12)
-                    Text("unit")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+    private var printingDetailsDestination: some View {
+        CardPrintingDetailsView(
+            cardName: card.name,
+            facts: cardFacts,
+            confidenceNote: identityConfidenceNote
+        )
+    }
 
-                // The `unit` qualifier only earns its keep if the total it is
-                // distinguished from is somewhere on the screen. Shown only
-                // when the two genuinely differ.
-                if displayedQuantity > 1, let holdingTotal {
-                    Text("\(holdingTotal) for \(displayedQuantity) copies")
-                        .font(.subheadline.weight(.medium))
-                        .foregroundStyle(.secondary)
-                        .accessibilityLabel(
-                            "Holding value \(holdingTotal) for \(displayedQuantity) copies"
-                        )
-                }
+    private var ownershipSection: some View {
+        CardDetailOwnershipPanel(
+            quantity: displayedQuantity,
+            holdingTotal: holdingTotal,
+            onDecrease: { updateQuantity(displayedQuantity - 1) },
+            onIncrease: { updateQuantity(displayedQuantity + 1) }
+        ) {
+            printingDetailsDestination
+        }
+        .padding(.horizontal, 16)
+        .padding(.top, 24)
+    }
 
-                if let source = price.source, price.amount != nil {
-                    Text(priceSourceDescription(source))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+    private func valuationSection(movement: CardDetailMovementDisplay) -> some View {
+        VStack(spacing: 0) {
+            CardDetailHeroPrice(price: price)
+            CardDetailMovementPill(
+                display: movement,
+                currencyCode: price.currencyCode
+            )
+            .padding(.top, 10)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 16)
+    }
 
-                if price.refreshFailed {
-                    Label("Last refresh failed", systemImage: "exclamationmark.triangle")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
-                }
+    private func makePriceHistoryModel() -> PriceHistoryChartModel {
+        PriceHistoryChartModel.make(
+            observations: priceObservations,
+            checkDays: priceCheckDays,
+            currencyCode: price.currencyCode,
+            range: history.range,
+            now: .now,
+            timeZone: PortfolioCalendar.pinnedTimeZone() ?? .current
+        )
+    }
 
-                Picker("Price history range", selection: Binding(
-                    get: { history.range },
-                    set: { history.range = $0 }
-                )) {
-                    ForEach(PortfolioHistoryRange.allCases, id: \.rawValue) { item in
-                        Text(item.rawValue)
-                            .accessibilityLabel(item.accessibilityName)
-                            .tag(item)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .accessibilityHint("Choose how much per-card price history to show.")
+    private func movementDisplay(for model: PriceHistoryChartModel) -> CardDetailMovementDisplay {
+        let periodText = history.range.pastPeriodPhrase
+        switch history.movementState(for: card.collectionKey) {
+        case .historyRecording:
+            return CardDetailMovementDisplay(
+                status: .recording,
+                direction: .flat,
+                amount: nil,
+                percentage: nil,
+                periodText: periodText
+            )
+        case .noRecordedMarketMovement:
+            return CardDetailMovementDisplay(
+                status: .none,
+                direction: .flat,
+                amount: nil,
+                percentage: nil,
+                periodText: periodText
+            )
+        case let .recorded(detail):
+            let unitMovement = detail.cumulativeUnitMovement
+            // The hero reports per-copy market movement. `totalImpact` can
+            // include quantity effects and is intentionally not a substitute
+            // when the replay cannot reconstruct a unit-price delta.
+            let amount = unitMovement
+            let direction: CardDetailMovementDisplay.Direction
+            if amount.isZero {
+                direction = .flat
+            } else if amount < .zero {
+                direction = .negative
+            } else {
+                direction = .positive
+            }
 
-                PriceHistoryChartView(
-                    observations: priceObservations,
-                    checkDays: priceCheckDays,
-                    currencyCode: price.currencyCode,
-                    range: history.range
-                )
-                .accessibilityIdentifier("price-history-\(priceHistoryInstrumentKey)")
+            return CardDetailMovementDisplay(
+                status: .recorded,
+                direction: direction,
+                amount: amount,
+                percentage: unitMovement.isZero ? nil : movementPercentage(
+                    for: detail,
+                    amount: unitMovement,
+                    model: model
+                ),
+                periodText: periodText
+            )
+        }
+    }
 
-                movementSummary
+    /// A percentage is only honest when the selected history provides a
+    /// continuous, market-only path whose starting price can be reconstructed
+    /// from the eligible movement projection. Source repairs, gaps, and
+    /// changing quantities deliberately fall back to the dollar movement.
+    private func movementPercentage(
+        for detail: PortfolioContributionDetail,
+        amount: Money,
+        model: PriceHistoryChartModel
+    ) -> Double? {
+        guard detail.hasConsistentQuantity,
+              model.observationCount >= 2,
+              !model.hasGaps,
+              model.samples.allSatisfy({ $0.kind == nil || $0.kind == .marketUpdate }),
+              let first = model.samples.first,
+              let last = model.samples.last else { return nil }
 
-                if let unpricedReason, price.amount == nil {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Label(unpricedReason.title, systemImage: "exclamationmark.circle")
-                            .font(.subheadline.weight(.semibold))
-                        Text(unpricedReason.detail)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Text("Diagnostic: \(unpricedReason.rawValue)")
-                            .font(.caption.monospaced())
-                            .foregroundStyle(.secondary)
-                            .textSelection(.enabled)
-                    }
+        let baseline = last.amount - amount
+        guard baseline > .zero, baseline == first.amount else { return nil }
+        return PortfolioHistoryDisplay.percentChange(amount: amount, anchor: baseline)
+    }
+
+    @ViewBuilder
+    private func priceHistorySection(
+        model: PriceHistoryChartModel,
+        movement: CardDetailMovementDisplay
+    ) -> some View {
+        VStack(spacing: 0) {
+            PriceHistoryChartView(
+                model: model,
+                currencyCode: price.currencyCode,
+                direction: movement.direction
+            )
+            .accessibilityIdentifier("price-history-\(priceHistoryInstrumentKey)")
+
+            CardDetailRangeSelector(
+                selection: history.range,
+                direction: movement.direction,
+                onSelect: { history.range = $0 }
+            )
+            .padding(.top, 10)
+
+            CardDetailSourceLegend(
+                sourceDescription: price.source.map(priceSourceDescription),
+                hasGaps: model.hasGaps
+            )
+            .padding(.top, 10)
+
+            if price.refreshFailed {
+                Label("Last refresh failed", systemImage: "exclamationmark.triangle")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+            }
+
+            if let unpricedReason, price.amount == nil {
+                VStack(alignment: .leading, spacing: 4) {
+                    Label(unpricedReason.title, systemImage: "exclamationmark.circle")
+                        .font(.subheadline.weight(.semibold))
+                    Text(unpricedReason.detail)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text("Diagnostic: \(unpricedReason.rawValue)")
+                        .font(.caption.monospaced())
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
             }
         }
+        .padding(.top, 28)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Price and market movement")
+    }
+
+    @ViewBuilder
+    private var marketplaceSection: some View {
+        if let url = exactTCGPlayerPrintingURL {
+            CardDetailMarketplaceButton(url: url)
+                .padding(.horizontal, 16)
+                .padding(.top, 20)
+        }
     }
 
     private var conflictNotice: some View {
@@ -793,48 +917,6 @@ struct CollectionCardDetailView: View {
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
         .accessibilityElement(children: .combine)
-    }
-
-    @ViewBuilder
-    private var actionStrip: some View {
-        HStack(spacing: 0) {
-            if let url = exactTCGPlayerPrintingURL {
-                Link(destination: url) {
-                    CardDetailActionLabel(title: "Market", systemImage: "cart")
-                }
-                .accessibilityLabel("Open this printing on TCGplayer")
-                .frame(maxWidth: .infinity)
-
-                Divider()
-            }
-
-            NavigationLink {
-                CollectionCardHistoryView(
-                    collectionKey: card.collectionKey,
-                    cardName: card.name
-                )
-            } label: {
-                CardDetailActionLabel(title: "History", systemImage: "clock.arrow.circlepath")
-            }
-            .frame(maxWidth: .infinity)
-
-            Divider()
-
-        }
-        .padding(6)
-        .frame(minHeight: 52)
-        .background(
-            reduceTransparency
-                ? AnyShapeStyle(Color(uiColor: .secondarySystemBackground))
-                : AnyShapeStyle(.thinMaterial),
-            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
-        )
-        .overlay {
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(.primary.opacity(0.08), lineWidth: 1)
-        }
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("Card actions")
     }
 
     @ViewBuilder
@@ -1052,27 +1134,6 @@ struct CollectionCardDetailView: View {
         return "\(source.label) · checked \(price.fetchedAt?.formatted(date: .abbreviated, time: .shortened) ?? "never")"
     }
 
-    /// The compact, route-independent disclosure surface. Its state comes from
-    /// the app-scoped history store rather than from the route that opened this
-    /// card, so Portfolio and Collection always make the same claim.
-    private var movementSummary: some View {
-        NavigationLink {
-            MovementDetailsView(
-                card: card,
-                price: price,
-                history: history,
-                quantity: displayedQuantity
-            )
-        } label: {
-            PortfolioMovementSummaryCard(
-                state: history.movementState(for: card.collectionKey),
-                range: history.range
-            )
-        }
-        .buttonStyle(.plain)
-        .contentShape(Rectangle())
-    }
-
     /// Scryfall's purchase URL identifies the exact Magic printing, but its URL
     /// does not promise a preselected finish. Say that plainly and never expose
     /// it for an unsupported or unknown finish.
@@ -1280,65 +1341,46 @@ struct AppCardSurface<Content: View>: View {
 }
 
 private struct AppCardDetailBackdrop: View {
-    let accent: ArtworkAccent?
-    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
-
     var body: some View {
-        if reduceTransparency {
-            Color(uiColor: .systemBackground)
-        } else {
-            // Layered over the system background rather than mixed into a list
-            // of stops, so the strength is a real blend and light and dark both
-            // stay correct without a second palette.
-            //
-            // Weighted to the top, where the card is: the point of extracting a
-            // colour is that The One Ring's page should not look like a bulk
-            // common's, and a single 20%-opacity stop in the middle of a
-            // diagonal was invisible on a device.
-            Color(uiColor: .systemBackground)
-                .overlay {
-                    LinearGradient(
-                        stops: [
-                            .init(color: (accent?.color ?? .clear).opacity(0.34), location: 0),
-                            .init(color: (accent?.color ?? .clear).opacity(0.12), location: 0.34),
-                            .init(color: .clear, location: 0.68)
-                        ],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    )
-                }
-        }
+        Color.black
     }
 }
 
-private struct CardDetailActionLabel: View {
-    let title: String
-    let systemImage: String
+private struct CardDetailFormattedPrice {
+    let leading: String
+    let fractional: String?
+    let accessibilityValue: String
 
-    var body: some View {
-        VStack(spacing: 4) {
-            Image(systemName: systemImage)
-                .imageScale(.medium)
-            Text(title)
-                .font(.caption.weight(.semibold))
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+    init?(amount: Double, currencyCode: String) {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.currencyCode = currencyCode
+        formatter.maximumFractionDigits = 2
+        guard let full = formatter.string(from: NSNumber(value: amount)) else { return nil }
+
+        accessibilityValue = full
+        guard let separator = formatter.decimalSeparator,
+              let range = full.range(of: separator, options: .backwards) else {
+            leading = full
+            fractional = nil
+            return
         }
-        .frame(maxWidth: .infinity, minHeight: 40)
-        .contentShape(Rectangle())
+
+        leading = String(full[..<range.lowerBound])
+        fractional = String(full[range.lowerBound...])
     }
 }
 
-private struct CardDetailPriceValue: View {
+private struct CardDetailHeroPrice: View {
     let price: PriceDisplay
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .center, spacing: 2) {
             switch price.state() {
             case .current:
-                amount
+                formattedAmount
             case .stale:
-                amount
+                formattedAmount
                 Text("Stale price")
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -1352,17 +1394,36 @@ private struct CardDetailPriceValue: View {
                     .foregroundStyle(.tertiary)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityText)
     }
 
-    private var amount: some View {
-        Text(price.amount ?? 0, format: .currency(code: price.currencyCode))
-            .font(.system(.largeTitle, design: .rounded).weight(.bold))
+    @ViewBuilder
+    private var formattedAmount: some View {
+        if let amount = price.amount,
+           let formatted = CardDetailFormattedPrice(
+               amount: amount,
+               currencyCode: price.currencyCode
+           ) {
+            HStack(alignment: .firstTextBaseline, spacing: 0) {
+                Text(formatted.leading)
+                    .font(.system(size: 52, weight: .bold, design: .rounded))
+                if let fractional = formatted.fractional {
+                    Text(fractional)
+                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                        .foregroundStyle(.secondary)
+                }
+            }
             .monospacedDigit()
             .foregroundStyle(.primary)
             .lineLimit(1)
-            .minimumScaleFactor(0.72)
+            .minimumScaleFactor(0.70)
+        } else {
+            Text("Price unavailable")
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.secondary)
+        }
     }
 
     private var accessibilityText: String {
@@ -1370,6 +1431,311 @@ private struct CardDetailPriceValue: View {
             return price.state() == .unavailable ? "Price unavailable" : "Price not checked yet"
         }
         return amount.formatted(.currency(code: price.currencyCode))
+    }
+}
+
+private struct CardDetailMovementPill: View {
+    let display: CardDetailMovementDisplay
+    let currencyCode: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            movementLabel
+            Text(display.periodText)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .accessibilityElement(children: .combine)
+    }
+
+    @ViewBuilder
+    private var movementLabel: some View {
+        switch display.status {
+        case .recording:
+            Text("History is being recorded")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        case .none:
+            Text("No recorded movement")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        case .recorded:
+            if let amount = display.amount, !amount.isZero {
+                HStack(spacing: 3) {
+                    Image(systemName: display.direction == .negative ? "arrow.down" : "arrow.up")
+                        .font(.system(size: 14, weight: .semibold))
+                    Text(amount.magnitude.formatted(currencyCode: currencyCode))
+                    if let percentage = display.percentage {
+                        Text("· \(abs(percentage).formatted(.percent.precision(.fractionLength(2))))")
+                    }
+                }
+                .font(.system(size: 14, weight: .semibold).monospacedDigit())
+                .foregroundStyle(PortfolioPalette.direction(amount))
+                .padding(.leading, 7)
+                .padding(.trailing, 10)
+                .padding(.vertical, 4)
+                .background(PortfolioPalette.directionFill(amount), in: Capsule())
+            } else {
+                Text("No net movement")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+private struct CardDetailRangeSelector: View {
+    let selection: PortfolioHistoryRange
+    let direction: CardDetailMovementDisplay.Direction
+    let onSelect: (PortfolioHistoryRange) -> Void
+
+    private var selectedTint: Color {
+        switch direction {
+        case .positive: return PortfolioPalette.gain
+        case .negative: return PortfolioPalette.loss
+        case .flat: return .secondary
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(PortfolioHistoryRange.allCases, id: \.self) { range in
+                Button {
+                    onSelect(range)
+                } label: {
+                    Text(range.rawValue)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(selection == range ? selectedTint : .secondary)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .background(
+                            selection == range ? selectedTint.opacity(0.16) : .clear,
+                            in: Capsule()
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(range.accessibilityName)
+                .accessibilityAddTraits(selection == range ? .isSelected : [])
+            }
+        }
+        .padding(.horizontal, 8)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Price history range")
+        .accessibilityHint("Choose how much per-card price history to show.")
+    }
+}
+
+private struct CardDetailSourceLegend: View {
+    let sourceDescription: String?
+    let hasGaps: Bool
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 8) {
+            Text(sourceDescription ?? "Price source unavailable")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .truncationMode(.tail)
+
+            Spacer(minLength: 8)
+
+            if hasGaps {
+                HStack(spacing: 6) {
+                    Canvas { context, size in
+                        var path = Path()
+                        path.move(to: CGPoint(x: 0, y: size.height / 2))
+                        path.addLine(to: CGPoint(x: size.width, y: size.height / 2))
+                        context.stroke(
+                            path,
+                            with: .color(Color.secondary.opacity(0.7)),
+                            style: StrokeStyle(lineWidth: 1.5, dash: [3, 3])
+                        )
+                    }
+                    .frame(width: 16, height: 6)
+
+                    Text("not checked")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .fixedSize(horizontal: true, vertical: false)
+            }
+        }
+        .padding(.horizontal, 16)
+    }
+}
+
+private struct CardDetailMarketplaceButton: View {
+    let url: URL
+
+    var body: some View {
+        Link(destination: url) {
+            HStack(spacing: 8) {
+                Text("Buy on TCGplayer")
+                Image(systemName: "arrow.up.right")
+                    .imageScale(.small)
+            }
+            .font(.headline)
+            .foregroundStyle(PortfolioPalette.money)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .background(
+                Color.white.opacity(0.07),
+                in: RoundedRectangle(cornerRadius: 14, style: .continuous)
+            )
+            .overlay {
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(PortfolioPalette.money.opacity(0.28), lineWidth: 1)
+            }
+        }
+        .accessibilityLabel("Buy this exact printing on TCGplayer")
+    }
+}
+
+private struct CardDetailOwnershipPanel<Details: View>: View {
+    let quantity: Int
+    let holdingTotal: String?
+    let onDecrease: () -> Void
+    let onIncrease: () -> Void
+    private let details: Details
+
+    init(
+        quantity: Int,
+        holdingTotal: String?,
+        onDecrease: @escaping () -> Void,
+        onIncrease: @escaping () -> Void,
+        @ViewBuilder details: () -> Details
+    ) {
+        self.quantity = quantity
+        self.holdingTotal = holdingTotal
+        self.onDecrease = onDecrease
+        self.onIncrease = onIncrease
+        self.details = details()
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                Text("Owned")
+                    .font(.system(size: 17))
+                Spacer(minLength: 12)
+                quantityControl
+            }
+            .padding(.horizontal, 14)
+            .frame(minHeight: 60)
+
+            divider
+
+            HStack(spacing: 12) {
+                Text("Collection value")
+                    .font(.system(size: 17))
+                Spacer(minLength: 12)
+                Text(holdingTotal ?? "Unavailable")
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(holdingTotal == nil ? .secondary : PortfolioPalette.money)
+                    .contentTransition(.numericText())
+            }
+            .padding(.horizontal, 14)
+            .frame(minHeight: 56)
+
+            divider
+
+            NavigationLink {
+                details
+            } label: {
+                HStack(spacing: 12) {
+                    Text("Printing details")
+                        .font(.system(size: 17))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Spacer(minLength: 8)
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                }
+                .padding(.horizontal, 14)
+                .frame(minHeight: 56)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Printing details")
+        }
+        .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Ownership")
+    }
+
+    private var divider: some View {
+        Rectangle()
+            .fill(Color.white.opacity(0.14))
+            .frame(height: 0.5)
+            .padding(.leading, 14)
+    }
+
+    private var quantityControl: some View {
+        HStack(spacing: 0) {
+            Button(action: onDecrease) {
+                Image(systemName: "minus")
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .disabled(quantity <= 1)
+            .accessibilityLabel("Decrease quantity")
+
+            Text("\(quantity)")
+                .font(.system(size: 17, weight: .semibold, design: .rounded))
+                .monospacedDigit()
+                .frame(minWidth: 28)
+                .contentTransition(.numericText())
+
+            Button(action: onIncrease) {
+                Image(systemName: "plus")
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityLabel("Increase quantity")
+        }
+        .buttonStyle(.borderless)
+        .background(Color.white.opacity(0.10), in: Capsule())
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Owned, \(quantity)")
+    }
+}
+
+private struct CardPrintingDetailsView: View {
+    let cardName: String
+    let facts: [CardDetailFact]
+    let confidenceNote: String?
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                Text(cardName)
+                    .font(.title2.bold())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                ForEach(facts) { fact in
+                    LabeledContent(fact.label) {
+                        Text(fact.value)
+                            .font(.callout.weight(.medium))
+                            .multilineTextAlignment(.trailing)
+                    }
+                    .font(.callout)
+                }
+
+                if let confidenceNote {
+                    Label(confidenceNote, systemImage: "questionmark.circle")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .padding(.top, 2)
+                }
+            }
+            .padding(20)
+            .contentWidthLimit(.standard)
+        }
+        .navigationTitle("Printing details")
+        .navigationBarTitleDisplayMode(.inline)
+        .accessibilityLabel("Printing details for \(cardName)")
     }
 }
 
@@ -1527,12 +1893,22 @@ struct PriceHistoryChartModel: Equatable {
     var yDomain: ClosedRange<Double> {
         let values = samples.map { $0.amount.doubleValue }
         guard let minimum = values.min(), let maximum = values.max() else { return 0...1 }
-        if minimum == maximum {
-            let padding = max(abs(minimum) * 0.12, 0.5)
-            return max(0, minimum - padding)...(maximum + padding)
+        let observedSpan = maximum - minimum
+        let referencePrice = values.last ?? maximum
+        let minimumVisualSpan = max(abs(referencePrice) * 0.02, 0.05)
+        let desiredSpan = max(observedSpan * 1.24, minimumVisualSpan)
+        let midpoint = (minimum + maximum) / 2
+        var lower = midpoint - desiredSpan / 2
+        var upper = midpoint + desiredSpan / 2
+
+        // A price chart cannot claim a negative price. When clamping the lower
+        // bound, preserve a nonzero visual envelope so low-priced cards do not
+        // collapse into a single line.
+        if lower < 0 {
+            lower = 0
+            upper = max(upper, desiredSpan)
         }
-        let padding = max((maximum - minimum) * 0.12, 0.01)
-        return max(0, minimum - padding)...(maximum + padding)
+        return lower...upper
     }
 
     var summary: String {
@@ -1787,53 +2163,20 @@ private extension PriceObservationKind {
     }
 }
 
-struct PriceHistoryChartView: View {
-    let observations: [PriceObservation]
-    let checkDays: [PriceCheckDay]
+private struct PriceHistoryChartView: View {
+    let model: PriceHistoryChartModel
     let currencyCode: String
-    let range: PortfolioHistoryRange
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
-    private func makeModel() -> PriceHistoryChartModel {
-        PriceHistoryChartModel.make(
-            observations: observations,
-            checkDays: checkDays,
-            currencyCode: currencyCode,
-            range: range,
-            now: .now,
-            timeZone: PortfolioCalendar.pinnedTimeZone() ?? .current
-        )
-    }
+    let direction: CardDetailMovementDisplay.Direction
 
     var body: some View {
-        // Build the chart model once. It sorts and merges the complete history;
-        // keeping it as a local value also makes every branch use the same
-        // captured `now` rather than rebuilding with slightly different times.
-        let model = makeModel()
-        let xAxisTickCount = PriceHistoryChartModel.recommendedXAxisTickCount(
-            for: model.plotRangeSpan,
-            isAccessibilitySize: dynamicTypeSize.isAccessibilitySize
-        )
-        let xAxisTickDates: [Date] = {
-            guard xAxisTickCount > 1 else { return [model.plotRangeStart] }
-            let span = model.plotRangeSpan
-            return (0..<xAxisTickCount).map { index in
-                model.plotRangeStart.addingTimeInterval(
-                    span * Double(index) / Double(xAxisTickCount - 1)
-                )
-            }
-        }()
-        let usesShortAxisLabels = PriceHistoryChartModel.usesShortXAxisLabels(
-            for: model.plotRangeSpan
-        )
-
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 4) {
             if model.isPlotRangeFitted {
-                Text("Fitted to available data · \(range.rawValue) selected")
+                Text("Fitted to available data")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .padding(.horizontal, 16)
                     .accessibilityLabel(
-                        "Chart fitted to available data for \(range.accessibilityName)"
+                        "Chart fitted to available data"
                     )
             }
 
@@ -1841,9 +2184,13 @@ struct PriceHistoryChartView: View {
                 Label("History is being recorded", systemImage: "chart.xyaxis.line")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, minHeight: 174)
                 Text("Price history is recorded on this device. It will appear after the first successful check here.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 32)
             } else if model.observationCount == 1,
                       let sample = model.samples.first(where: { $0.isObservation }) {
                 CardDetailSinglePricePoint(
@@ -1852,16 +2199,36 @@ struct PriceHistoryChartView: View {
                 )
             } else {
                 Chart {
+                    RuleMark(y: .value("Floor", model.yDomain.lowerBound))
+                        .foregroundStyle(.secondary.opacity(0.22))
+                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
+
                     ForEach(model.segments) { segment in
                         if segment.samples.count > 1 {
                             ForEach(segment.samples) { sample in
+                                AreaMark(
+                                    x: .value("Date", sample.date),
+                                    yStart: .value("Floor", model.yDomain.lowerBound),
+                                    yEnd: .value("Unit price", sample.amount.doubleValue),
+                                    series: .value("Known span area", segment.id)
+                                )
+                                .interpolationMethod(.stepEnd)
+                                .foregroundStyle(areaGradient)
+
                                 LineMark(
                                     x: .value("Date", sample.date),
                                     y: .value("Unit price", sample.amount.doubleValue),
                                     series: .value("Known span", segment.id)
                                 )
                                 .interpolationMethod(.stepEnd)
-                                .foregroundStyle(Color.accentColor)
+                                .foregroundStyle(lineColor)
+                                .lineStyle(
+                                    StrokeStyle(
+                                        lineWidth: 2.2,
+                                        lineCap: .round,
+                                        lineJoin: .round
+                                    )
+                                )
                             }
                         }
                     }
@@ -1871,8 +2238,8 @@ struct PriceHistoryChartView: View {
                             x: .value("Date", sample.date),
                             y: .value("Unit price", sample.amount.doubleValue)
                         )
-                        .foregroundStyle(sample.kind?.chartLabel == nil ? Color.accentColor : .orange)
-                        .symbolSize(sample.isObservation ? 42 : 18)
+                        .foregroundStyle(sample.kind?.chartLabel == nil ? lineColor : .orange)
+                        .symbolSize(sample.isObservation ? 34 : 12)
                         .annotation(position: .top, alignment: .leading) {
                             if let label = sample.annotationLabel {
                                 Text(label)
@@ -1884,58 +2251,54 @@ struct PriceHistoryChartView: View {
                 }
                 .chartXScale(domain: model.plotRange)
                 .chartYScale(domain: model.yDomain)
-                .chartYAxis {
-                    AxisMarks(position: .leading) { value in
-                        AxisGridLine()
-                        AxisTick()
-                        AxisValueLabel {
-                            if let amount = value.as(Double.self) {
-                                Text(amount.formatted(.currency(code: currencyCode).precision(.fractionLength(0...2))))
-                            }
-                        }
-                    }
-                }
-                .chartXAxis {
-                    AxisMarks(values: xAxisTickDates) { value in
-                        AxisGridLine()
-                        AxisValueLabel {
-                            if let date = value.as(Date.self) {
-                                if usesShortAxisLabels {
-                                    Text(
-                                        date,
-                                        format: .dateTime
-                                            .month(.abbreviated)
-                                            .day()
-                                            .hour(.defaultDigits(amPM: .abbreviated))
-                                    )
-                                } else {
-                                    Text(date, format: .dateTime.month(.abbreviated).day())
-                                }
-                            }
-                        }
-                    }
-                }
-                .frame(height: 210)
+                .chartYAxis(.hidden)
+                .chartXAxis(.hidden)
+                .chartLegend(.hidden)
+                .frame(height: 174)
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel("Unit price history")
                 .accessibilityValue(model.summary)
+            }
 
-                if model.observationCount < 2 {
-                    Text("One changed price is shown as a point until another value is recorded.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } else if model.hasGaps {
-                    Text("Gaps mean the app did not have a successful price check for that span.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+            if let first = model.samples.first?.date,
+               let last = model.samples.last?.date {
+                HStack {
+                    Text(contextLabel(for: first))
+                    Spacer()
+                    Text(contextLabel(for: last))
                 }
-
-                Text(model.summary)
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 16)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var lineColor: Color {
+        switch direction {
+        case .positive: return PortfolioPalette.gain
+        case .negative: return PortfolioPalette.loss
+        case .flat: return .secondary
+        }
+    }
+
+    private var areaGradient: LinearGradient {
+        LinearGradient(
+            colors: [
+                lineColor.opacity(0.20),
+                lineColor.opacity(0.07),
+                lineColor.opacity(0)
+            ],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+
+    private func contextLabel(for date: Date) -> String {
+        Calendar.current.isDateInToday(date)
+            ? "today"
+            : date.formatted(date: .abbreviated, time: .omitted)
     }
 }
 
@@ -1944,15 +2307,15 @@ private struct CardDetailSinglePricePoint: View {
     let currencyCode: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .center, spacing: 8) {
             HStack(spacing: 10) {
                 Circle()
-                    .fill(sample.kind?.chartLabel == nil ? Color.accentColor : .orange)
-                    .frame(width: 14, height: 14)
+                    .fill(sample.kind?.chartLabel == nil ? PortfolioPalette.money : .orange)
+                    .frame(width: 9, height: 9)
                 Text(sample.amount.formatted(currencyCode: currencyCode))
                     .font(.title2.weight(.semibold).monospacedDigit())
-                Spacer()
             }
+            .frame(maxWidth: .infinity)
             Text("First recorded price · \(sample.date.formatted(date: .abbreviated, time: .shortened))")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
@@ -1966,9 +2329,8 @@ private struct CardDetailSinglePricePoint: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.quaternary.opacity(0.32), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .frame(maxWidth: .infinity, minHeight: 174)
+        .multilineTextAlignment(.center)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("One recorded unit price")
         .accessibilityValue("\(sample.amount.formatted(currencyCode: currencyCode)), \(sample.date.formatted(date: .abbreviated, time: .shortened))")

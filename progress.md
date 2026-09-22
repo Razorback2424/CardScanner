@@ -1,3 +1,48 @@
+Browse pricing coverage Stage 4A (2026-09-22): implemented the revised
+`browse_pricing_coverage_plan.md` Stage 4A slice. Browse now has a separate
+device-local, per-set `BrowsePriceHistoryStore` under Application Support with
+atomic writes, corrupt-file isolation, excluded-backup storage, 90-day
+provider-day retention, versioned finish descriptors, restricted USD market
+sources, and UTC/provider timestamp normalization. Existing Pokémon bulk and
+TCGdex normalized price paths feed history without changing current-price
+behavior; Magic uses a 24-hour Scryfall bulk-dataset stamp and labels that day
+as approximate. Added the Browse detail chart with independent gap segments,
+history diagnostics, migration coverage, and 104 focused history/Browse/pricing
+tests passing on the iPhone 17 Pro iOS 26.5 simulator. The full external-SSD
+baseline after the stale test compile repair was 1,442 passed, 18 failed, and 6
+skipped; remaining failures are pre-existing centering, fixture, Keychain
+environment, and legacy pricing-expectation failures. Phase 6.0 remains
+unresolved because the current TCGdex service has no supported set-level
+pricing response; pokemontcg.io remains authoritative. Stage 4B remains
+disabled, and no provider, device, CloudKit, or release-readiness claim is
+made.
+
+Browse Pokémon pricing join/fallback hardening (2026-09-22): implemented the
+attached follow-up plan. Bulk set requests now resolve TCGdex ids through the
+existing conservative secondary-set matcher, cache the mapping, and decline
+ambiguous/unresolved joins. Bulk card keys are canonicalized as
+`<tcgdexSetID>|<localNumber>` so unpadded pokemontcg.io payloads join padded
+TCGdex summaries. Pokémon fallback work is one card per six-wide worker slot
+with incremental progress; the browse banner now separates unresolved cards
+with Retry from resolved cards with no USD quote. Bulk requests use the
+existing transient retry budget and have injectable recorded-response seams.
+The app target builds cleanly with `CODE_SIGNING_ALLOWED=NO`. The test target
+remains blocked before execution by the pre-existing missing
+`CardCenteringMeasurement.confirmManualPlacement()` references in
+`CenteringExportTests.swift:941` and `OpusImplementationPlanTests.swift:2434,
+2506`; no provider, device, CloudKit, or release-readiness claim is made.
+
+Browse pricing coverage stages 1–3 (2026-09-22): completed the USD-only
+catalog rule and Settings coverage-gap diagnostics, persisted Magic page price
+maps, added cached per-set Pokémon USD bulk pricing with exact-finish mapping
+and per-card fallback, removed the 400-key prefetch cap, and made Browse price
+loads queueable/retryable with a terminal “no USD price” state. Added focused
+regression coverage for cache persistence, finish isolation, and one bulk
+request per set. The app target builds cleanly; the test target remains blocked
+by the pre-existing `CenteringExportTests.swift:941` reference to the missing
+`CardCenteringMeasurement.confirmManualPlacement()` API. Stage 4 remains behind
+the written redistribution-licensing gate; Stage 5 history remains pending.
+
 Automatic set artwork on new-set release (2026-09-21): implemented the
 zero-official-count browse-only admission path, 448 KiB publisher payload guard,
 status/MIME/body artwork probe, gated derived-parent artwork, optional
@@ -465,3 +510,10 @@ historical.
   failures. Evidence is in the external-SSD
   `exact-7dbaf40/ownership-matrix.xcresult`; simulator ownership is closed,
   while entitled CloudKit production and two-device convergence remain open.
+- Collection card detail redesign (2026-09-22): restructured the detail page into
+  centered artwork/identity/valuation, truthful chart, marketplace, ownership,
+  and printing-details sections; added the minimum-envelope chart-domain tests;
+  the external-SSD Debug simulator build succeeded. The focused chart test
+  selection remains blocked by the pre-existing `CardCenteringMeasurement`
+  API mismatch in `CenteringExportTests`; screenshot iteration was stopped at
+  the user's request after the detail route was visibly reached.

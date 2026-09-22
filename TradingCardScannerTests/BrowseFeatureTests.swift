@@ -2,6 +2,7 @@ import Foundation
 import SwiftData
 import UIKit
 import XCTest
+import PokemonCatalogCore
 @testable import TradingCardScanner
 
 private actor FixedArtworkResponseDataLoader {
@@ -505,6 +506,277 @@ final class BrowseFeatureTests: XCTestCase {
         let stale = await CatalogCacheStore(root: root).sortPrices(for: "sv08.5")
         XCTAssertEqual(stale?.value, prices)
         XCTAssertFalse(stale?.isFresh == true)
+    }
+
+    func testMagicAndPokemonPriceCachesRetainExplicitCoverageGaps() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let map = PokemonBulkPriceMap(valuesByCardID: [
+            "sv08.5-001": ["normal": 1.25],
+            "sv08.5-002": [:]
+        ])
+
+        let writer = CatalogCacheStore(root: root)
+        await writer.storeMagicPrices([
+            "magic-1": CatalogCachedPrice(value: nil),
+            "magic-2": CatalogCachedPrice(value: 4.50)
+        ], for: "magic-page-1")
+        await writer.storePokemonBulkPrices(map, for: "sv08.5")
+
+        let reader = CatalogCacheStore(root: root)
+        let magic = await reader.magicPrices(for: "magic-page-1")
+        let pokemon = await reader.pokemonBulkPrices(for: "SV08.5")
+
+        XCTAssertNotNil(magic?.value["magic-1"])
+        XCTAssertNil(magic?.value["magic-1"]?.value)
+        XCTAssertEqual(magic?.value["magic-2"]?.value, 4.50)
+        XCTAssertEqual(pokemon?.value, map)
+        XCTAssertTrue(pokemon?.value.containsCard("SV08.5-002") == true)
+    }
+
+    func testPokemonBulkPriceMapNeverBorrowsAnotherFinish() {
+        let map = PokemonBulkPriceMap(valuesByCardID: [
+            "sv08.5-001": [
+                "normal": 1.25,
+                "holofoil": 4.50,
+                "reverseHolofoil": 7.75,
+                "1stEditionHolofoil": 99.00,
+                "pokeBall": 42.00
+            ]
+        ])
+
+        XCTAssertEqual(map.price(for: "SV08.5-001", variant: .normal), 1.25)
+        XCTAssertEqual(map.price(for: "sv08.5-001", variant: .holo), 4.50)
+        XCTAssertEqual(map.price(for: "sv08.5-001", variant: .reverse), 7.75)
+        XCTAssertEqual(map.price(for: "sv08.5-001", variant: .firstEdition), 99.00)
+        XCTAssertNil(map.price(for: "sv08.5-001", variant: .pokeBall))
+        XCTAssertEqual(map.price(for: "sv08.5-001", variant: nil), 7.75)
+    }
+
+    func testPokemonBulkAPIJoinsSecondaryUnpaddedNumberToTCGdexID() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [PokemonBulkPriceURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        var requestedURL: URL?
+        PokemonBulkPriceURLProtocol.handler = { request in
+            requestedURL = request.url
+            let response = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!
+            let body = Data("""
+            {"data":[{"id":"sv8pt5-1","number":"1","tcgplayer":{"prices":{"normal":{"market":1.25},"holofoil":{"market":4.5}}}}],"totalCount":1}
+            """.utf8)
+            return (response, body)
+        }
+        defer { PokemonBulkPriceURLProtocol.handler = nil }
+
+        let service = PokemonTCGAPIService(
+            session: session,
+            baseURL: URL(string: "https://pricing.example/v2")!
+        )
+        let map = try await service.fetchBulkPrices(
+            tcgdexSetID: "sv08.5",
+            secondarySetID: "sv8pt5"
+        )
+
+        XCTAssertEqual(map.price(for: "sv08.5-001", variant: .normal), 1.25)
+        XCTAssertEqual(map.price(for: "sv08.5-001", variant: .holo), 4.5)
+        XCTAssertTrue(map.containsCard("sv08.5-001"))
+        let query = try XCTUnwrap(URLComponents(url: try XCTUnwrap(requestedURL), resolvingAgainstBaseURL: false))
+            .queryItems
+        XCTAssertEqual(
+            query?.first(where: { $0.name == "q" })?.value,
+            "set.id:sv8pt5"
+        )
+    }
+
+    func testPokemonBulkAPIRetriesTransientServerFailure() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [PokemonBulkPriceURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        let responseBody = Data("""
+        {"data":[{"id":"sv8pt5-1","number":"1","tcgplayer":{"prices":{"normal":{"market":1.25}}}}],"totalCount":1}
+        """.utf8)
+        var attempts = 0
+        PokemonBulkPriceURLProtocol.handler = { request in
+            attempts += 1
+            let status = attempts == 1 ? 502 : 200
+            return (
+                HTTPURLResponse(
+                    url: request.url!,
+                    statusCode: status,
+                    httpVersion: nil,
+                    headerFields: nil
+                )!,
+                responseBody
+            )
+        }
+        defer { PokemonBulkPriceURLProtocol.handler = nil }
+
+        let service = PokemonTCGAPIService(
+            session: session,
+            baseURL: URL(string: "https://pricing.example/v2")!
+        )
+        let map = try await service.fetchBulkPrices(
+            tcgdexSetID: "sv08.5",
+            secondarySetID: "sv8pt5"
+        )
+
+        XCTAssertEqual(attempts, 2)
+        XCTAssertEqual(map.price(for: "sv08.5-001", variant: .normal), 1.25)
+    }
+
+    func testSecondarySetMatcherDeclinesAmbiguousParentSubset() {
+        let count = PokemonCatalogProviderCardCount(total: 25, official: 25)
+        let tcgdex = PokemonCatalogProviderSet(
+            id: "30th-c",
+            name: "Celebrations Classic Collection",
+            cards: [],
+            releaseDate: "2021-10-08",
+            tcgOnline: "CEL",
+            cardCount: count,
+            abbreviation: PokemonCatalogProviderAbbreviation(official: "CEL")
+        )
+        let row = PokemonCatalogProviderDirectoryRow(
+            id: "30th-c",
+            name: tcgdex.name,
+            cardCount: count,
+            releaseDate: tcgdex.releaseDate,
+            tcgOnline: tcgdex.tcgOnline
+        )
+        let candidates = [
+            PokemonCatalogSecondarySet(
+                id: "30th",
+                name: "Celebrations",
+                ptcgoCode: "CEL",
+                releaseDate: "2021-10-08",
+                printedTotal: 25,
+                total: 25
+            ),
+            PokemonCatalogSecondarySet(
+                id: "30th-c",
+                name: "Celebrations Classic Collection",
+                ptcgoCode: "CEL",
+                releaseDate: "2021-10-08",
+                printedTotal: 25,
+                total: 25
+            )
+        ]
+
+        XCTAssertEqual(
+            PokemonCatalogSecondarySetMatcher.match(
+                tcgdex: tcgdex,
+                directoryRow: row,
+                candidates: candidates
+            ),
+            .ambiguous(["30th", "30th-c"])
+        )
+    }
+
+    func testPokemonBulkResolutionUsesConservativeSecondarySetJoin() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let descriptor = try XCTUnwrap(
+            PokemonCatalogRegistry.bundledSeed.descriptor(forProviderSetID: "sv08.5")
+        )
+        let secondarySet = PokemonCatalogSecondarySet(
+            id: "sv8pt5",
+            name: descriptor.displayName ?? "Prismatic Evolutions",
+            ptcgoCode: descriptor.printedCode,
+            releaseDate: descriptor.releaseDate,
+            printedTotal: descriptor.officialCount,
+            total: descriptor.officialCount
+        )
+        let source = RecordingPokemonBulkPriceSource(
+            map: PokemonBulkPriceMap(valuesByCanonicalKey: [
+                PokemonBulkPriceMap.canonicalKey(
+                    tcgdexSetID: "sv08.5",
+                    cardNumber: "1"
+                ): ["normal": 1.25]
+            ])
+        )
+        let secondarySource = RecordingPokemonSecondarySetSource(sets: [secondarySet])
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root),
+            pokemonPriceSource: source,
+            pokemonSecondarySetSource: secondarySource
+        )
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "sv08.5-001",
+            setID: CatalogSetID(game: .pokemon, providerID: "sv08.5"),
+            setName: descriptor.displayName ?? "Prismatic Evolutions",
+            setCode: descriptor.printedCode ?? "PRE",
+            name: "Eevee",
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .normal,
+            isSoleSlotForCard: true
+        )
+
+        var prices: [String: Double] = [:]
+        for await update in catalog.sortPriceUpdates(for: [summary]) {
+            prices = update.prices
+        }
+
+        XCTAssertEqual(prices[summary.id], 1.25)
+        let requestedPairs = await source.requestedPairs()
+        XCTAssertEqual(requestedPairs, ["sv08.5|sv8pt5"])
+        let secondaryRequestCount = await secondarySource.requestCount()
+        XCTAssertEqual(secondaryRequestCount, 1)
+    }
+
+    func testPokemonSortUsesOneBulkRequestPerSetAndKeepsBulkGapResolved() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let source = RecordingPokemonBulkPriceSource(map: PokemonBulkPriceMap(valuesByCardID: [
+            "sv08.5-001": ["normal": 1.25],
+            "sv08.5-002": [:]
+        ]))
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root),
+            pokemonPriceSource: source
+        )
+        let setID = CatalogSetID(game: .pokemon, providerID: "sv08.5")
+        let priced = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "sv08.5-001",
+            setID: setID,
+            setName: "Prismatic Evolutions",
+            setCode: "PRE",
+            name: "Eevee",
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .normal,
+            isSoleSlotForCard: true
+        )
+        let unpriced = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "sv08.5-002",
+            setID: setID,
+            setName: "Prismatic Evolutions",
+            setCode: "PRE",
+            name: "Pikachu",
+            collectorNumber: "002",
+            thumbnailURL: nil,
+            imageURL: nil,
+            isSoleSlotForCard: true
+        )
+
+        var latest: [String: Double] = [:]
+        for await prices in catalog.sortPrices(for: [priced, unpriced]) {
+            latest = prices
+        }
+
+        XCTAssertEqual(latest[priced.id], 1.25)
+        XCTAssertNil(latest[unpriced.id])
+        let requestedSetIDs = await source.requestedSetIDs()
+        XCTAssertEqual(requestedSetIDs, ["sv08.5"])
     }
 
     func testSealedPageCacheRetainsSavedPageAndFreshness() async throws {
@@ -5195,6 +5467,73 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         return root
     }
+}
+
+private actor RecordingPokemonBulkPriceSource: PokemonBulkPriceSource {
+    private let map: PokemonBulkPriceMap
+    private var pairs: [String] = []
+
+    init(map: PokemonBulkPriceMap) {
+        self.map = map
+    }
+
+    func fetchBulkPrices(
+        tcgdexSetID: String,
+        secondarySetID: String
+    ) async throws -> PokemonBulkPriceMap {
+        pairs.append("\(tcgdexSetID)|\(secondarySetID)")
+        return map
+    }
+
+    func requestedSetIDs() -> [String] {
+        pairs.map { $0.components(separatedBy: "|").first ?? $0 }
+    }
+
+    func requestedPairs() -> [String] {
+        pairs
+    }
+}
+
+private actor RecordingPokemonSecondarySetSource: PokemonSecondarySetSource {
+    private let sets: [PokemonCatalogSecondarySet]
+    private var requests = 0
+
+    init(sets: [PokemonCatalogSecondarySet]) {
+        self.sets = sets
+    }
+
+    func fetchSecondarySets() async throws -> [PokemonCatalogSecondarySet] {
+        requests += 1
+        return sets
+    }
+
+    func requestCount() -> Int {
+        requests
+    }
+}
+
+private final class PokemonBulkPriceURLProtocol: URLProtocol, @unchecked Sendable {
+    static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
+
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+
+    override func startLoading() {
+        guard let handler = Self.handler else {
+            client?.urlProtocol(self, didFailWithError: URLError(.unknown))
+            return
+        }
+        do {
+            let (response, data) = try handler(request)
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
+        } catch {
+            client?.urlProtocol(self, didFailWithError: error)
+        }
+    }
+
+    override func stopLoading() {}
 }
 
 private enum TestError: Error { case failed }

@@ -145,14 +145,39 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     }
 }
 
+/// One row of the "what does this printing cost" panel.
+///
+/// Every row is USD or it is explicitly nothing. There is no currency field
+/// because there is no second currency: a foreign-marketplace figure is not a
+/// weaker price this app is willing to show, it is a different question, and
+/// rendering it beside dollars invites exactly the comparison it cannot
+/// support. A finish the catalog says exists but nobody publishes a dollar
+/// price for is still listed — as a stated gap, so it can be chased down
+/// rather than silently disappearing.
 struct CardMarketPrice: Identifiable, Equatable, Sendable {
-    /// Which `PhysicalVariant` this price belongs to, when the catalog says so.
+    enum Availability: Equatable, Sendable {
+        /// A USD market price, in dollars.
+        case published(Double)
+        /// The named source was consulted and publishes no USD figure for this
+        /// exact physical variant. `nil` means no source could be consulted at
+        /// all, which is a different fact from a source that answered "none".
+        case noUSDQuote(PriceSource?)
+    }
+
+    /// Which `PhysicalVariant` this row belongs to, when the catalog says so.
     let variantID: String?
     let label: String
-    let value: Double
-    let currencyCode: String
+    let availability: Availability
 
     var id: String { label }
+
+    /// The dollar amount, or `nil` for a stated gap.
+    var value: Double? {
+        guard case let .published(amount) = availability else { return nil }
+        return amount
+    }
+
+    var isGap: Bool { value == nil }
 }
 
 struct TCGdexSetBrief: Decodable, Sendable {
@@ -257,6 +282,41 @@ struct TCGdexCardBrief: Decodable, Sendable {
 /// callers still validate set and number before accepting the result.
 struct PokemonTCGAPIResponse: Decodable, Sendable {
     let data: [PokemonTCGAPICard]
+}
+
+/// The smaller response shape used by the set-wide price query. Keeping this
+/// separate from the scanner's artwork/card model means `select=id,number,
+/// tcgplayer` can remain genuinely small and does not acquire fake required
+/// fields just to satisfy the exact-card fallback model.
+struct PokemonTCGBulkPriceResponse: Decodable, Sendable {
+    let data: [PokemonTCGBulkPriceCard]
+    let totalCount: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case data
+        case totalCount = "totalCount"
+    }
+}
+
+struct PokemonTCGBulkPriceCard: Decodable, Sendable {
+    let id: String
+    let number: String?
+    let tcgplayer: PokemonTCGBulkTCGPlayer?
+}
+
+struct PokemonTCGBulkTCGPlayer: Decodable, Sendable {
+    let prices: [String: PokemonTCGBulkPricePoint]?
+    /// Provider date for the price block, not the time this device fetched it.
+    let updatedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case prices
+        case updatedAt = "updatedAt"
+    }
+}
+
+struct PokemonTCGBulkPricePoint: Decodable, Sendable {
+    let market: Double?
 }
 
 struct PokemonTCGAPISingleResponse: Decodable, Sendable {

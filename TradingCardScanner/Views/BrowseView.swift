@@ -654,7 +654,7 @@ struct BrowseView: View {
         let summary: CatalogGameSummary
 
         var body: some View {
-            HStack(spacing: 14) {
+            HStack(spacing: 18) {
                 CatalogGameFan(
                     game: summary.game,
                     ownedRows: summary.recentArtworkRows,
@@ -669,9 +669,12 @@ struct BrowseView: View {
                         .font(.subheadline)
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.85)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-                Spacer(minLength: 8)
+                Spacer(minLength: 12)
 
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.semibold))
@@ -680,7 +683,7 @@ struct BrowseView: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .frame(minHeight: 86)
+            .frame(minHeight: 92)
             .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
@@ -689,7 +692,7 @@ struct BrowseView: View {
         let game: CardGame
         let ownedRows: [CollectionRow]
         let fallbackSets: [CatalogSet]
-        private static let horizontalOffsets: [CGFloat] = [2, 24, 44]
+        private static let horizontalOffsets: [CGFloat] = [0, 32, 64]
 
         private var artworks: [CatalogGameArtwork] {
             var result = ownedRows.prefix(3).enumerated().map { index, row in
@@ -741,15 +744,15 @@ struct BrowseView: View {
                         placeholderSymbol: "rectangle.portrait",
                         placeholderText: artwork.placeholderText
                     )
-                    .frame(width: 38, height: 52)
+                    .frame(width: 40, height: 56)
                     .rotationEffect(.degrees(Double(index - 1) * 7))
                     .offset(
                         x: Self.horizontalOffsets[index],
-                        y: index == 1 ? 3 : 6
+                        y: index == 1 ? 4 : 8
                     )
                 }
             }
-            .frame(width: 96, height: 62)
+            .frame(width: 110, height: 68)
         }
     }
 
@@ -1478,7 +1481,6 @@ private struct CatalogSetListView: View {
     let sets: [CatalogSet]
     let catalog: any BrowseCatalogProviding
     @State private var search = ""
-    @State private var showsMasterSetRules = false
     @State private var sort: CatalogSetListSort = .newestFirst
     @State private var filter: CatalogSetListFilter = .all
     @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
@@ -1521,10 +1523,6 @@ private struct CatalogSetListView: View {
         let groups = CatalogSetListGrouping.groups(for: visibleSets, sort: sort)
         return ScrollView {
             LazyVStack(alignment: .leading, spacing: 18) {
-                if game == .pokemon {
-                    masterSetRules
-                }
-
                 setListFilters
 
                 if visibleSets.isEmpty {
@@ -1568,37 +1566,6 @@ private struct CatalogSetListView: View {
         .safeAreaPadding(.bottom, 24)
         .navigationTitle("\(game.label) Sets")
         .searchable(text: $search, prompt: "Search sets")
-    }
-
-    private var masterSetRules: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Button {
-                withAnimation(.snappy) {
-                    showsMasterSetRules.toggle()
-                }
-            } label: {
-                HStack(spacing: 8) {
-                    Text("Master set rules")
-                        .font(.headline)
-                    Spacer(minLength: 8)
-                    Image(systemName: showsMasterSetRules ? "chevron.up" : "chevron.down")
-                        .font(.subheadline.weight(.semibold))
-                }
-                .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityValue(showsMasterSetRules ? "Expanded" : "Collapsed")
-
-            if showsMasterSetRules {
-                Text("Standard includes every English, pack-pulled numbered card, holo, reverse holo, and secret rare. Promos and non-pack products stay out. Expanded adds catalog-confirmed special parallel patterns.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 
     private var setListFilters: some View {
@@ -1783,11 +1750,15 @@ private struct CatalogSetCardsView: View {
     /// a per-set preference, so it should not reset every time a set is opened.
     @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
     @State private var prices: [String: Double] = [:]
+    @State private var resolvedPriceSlotIDs: Set<String> = []
+    @State private var unresolvedPriceSlotIDs: Set<String> = []
     @State private var priceLoadState = CatalogPriceLoadState()
     @State private var contentGeneration = UUID()
     @State private var visibleGroups: [CatalogCardDisplayGroup] = []
     @State private var priceLoadTask: Task<Void, Never>?
     @State private var reloadAfterCurrentLoad = false
+    @State private var priceReloadAfterCurrentLoad = false
+    @State private var queuedPricePriority: TaskPriority = .utility
 
     private func visibleCards(owned: CatalogOwnershipIndex) -> [CatalogCardSummary] {
         CatalogSetQuery.apply(
@@ -1839,18 +1810,7 @@ private struct CatalogSetCardsView: View {
                     .padding(.horizontal, 16)
                     .padding(.top, 12)
                     .contentWidthLimit(.standard)
-                if priceLoadState.isLoading, sort.needsPrices, !priceLoadState.hasLoadedPrices {
-                    HStack(spacing: 8) {
-                        ProgressView().controlSize(.small)
-                        let pricedCount = masterSetSlots.reduce(0) {
-                            $0 + (prices[$1.id] == nil ? 0 : 1)
-                        }
-                        Text("Sorting by price — \(pricedCount) of \(masterSetSlots.count) priced")
-                    }
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .padding(.top, 12)
-                }
+                priceStatusBanner
                 if visibleGroups.isEmpty {
                     ContentUnavailableView(
                         "No matching cards",
@@ -1902,8 +1862,29 @@ private struct CatalogSetCardsView: View {
                 .accessibilityLabel("Filter cards, \(ownership.label)")
             }
         }
-        .task { if cards.isEmpty { await load(reset: true) } }
-        .onAppear { refreshVisibleGroups() }
+        .task {
+            if cards.isEmpty {
+                await load(reset: true)
+            } else if sort.needsPrices, prices.isEmpty {
+                startPriceLoading(
+                    for: contentGeneration,
+                    whileLoadingCards: false,
+                    priority: .userInitiated,
+                    queueIfBusy: false
+                )
+            }
+        }
+        .onAppear {
+            refreshVisibleGroups()
+            if sort.needsPrices, !cards.isEmpty, prices.isEmpty {
+                startPriceLoading(
+                    for: contentGeneration,
+                    whileLoadingCards: false,
+                    priority: .userInitiated,
+                    queueIfBusy: false
+                )
+            }
+        }
         .onChange(of: cards) { _, _ in refreshVisibleGroups() }
         .onChange(of: search) { _, _ in refreshVisibleGroups() }
         .onChange(of: ownership) { _, _ in refreshVisibleGroups() }
@@ -1931,6 +1912,68 @@ private struct CatalogSetCardsView: View {
                     continue
                 }
                 await requestReload()
+            }
+        }
+    }
+
+    private var pricedSlotCount: Int {
+        masterSetSlots.reduce(0) { count, card in
+            count + (prices[card.id] == nil ? 0 : 1)
+        }
+    }
+
+    private var unresolvedPriceSlotCount: Int {
+        let ids = Set(masterSetSlots.map(\.id))
+        return unresolvedPriceSlotIDs.intersection(ids).count
+    }
+
+    private var noUSDPriceSlotCount: Int {
+        let ids = Set(masterSetSlots.map(\.id))
+        return resolvedPriceSlotIDs
+            .intersection(ids)
+            .subtracting(prices.keys)
+            .count
+    }
+
+    @ViewBuilder
+    private var priceStatusBanner: some View {
+        if sort.needsPrices {
+            if priceLoadState.isLoading, !priceLoadState.hasLoadedPrices {
+                HStack(spacing: 8) {
+                    ProgressView().controlSize(.small)
+                    Text("Sorting by price — \(pricedSlotCount) of \(masterSetSlots.count) priced")
+                    Spacer(minLength: 0)
+                }
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .padding(.top, 12)
+            } else if priceLoadState.hasLoadedPrices,
+                      unresolvedPriceSlotCount > 0 || noUSDPriceSlotCount > 0 {
+                VStack(alignment: .leading, spacing: 6) {
+                    if unresolvedPriceSlotCount > 0 {
+                        HStack(alignment: .firstTextBaseline, spacing: 10) {
+                            Label(
+                                "Couldn't price \(unresolvedPriceSlotCount) cards",
+                                systemImage: "exclamationmark.triangle"
+                            )
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            Spacer(minLength: 0)
+                            Button("Retry") { retryPrices() }
+                                .font(.subheadline.weight(.semibold))
+                        }
+                    }
+                    if noUSDPriceSlotCount > 0 {
+                        Label(
+                            "\(noUSDPriceSlotCount) cards have no USD price",
+                            systemImage: "info.circle"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(.tertiary)
+                    }
+                }
+                .padding(.top, 12)
+                .accessibilityElement(children: .contain)
             }
         }
     }
@@ -1994,6 +2037,12 @@ private struct CatalogSetCardsView: View {
         priceLoadTask?.cancel()
         priceLoadTask = nil
         priceLoadState.invalidate()
+        priceReloadAfterCurrentLoad = false
+        if reset {
+            prices.removeAll()
+            resolvedPriceSlotIDs.removeAll()
+            unresolvedPriceSlotIDs.removeAll()
+        }
         isLoading = true
         defer {
             if contentGeneration == requestID {
@@ -2001,6 +2050,17 @@ private struct CatalogSetCardsView: View {
                 if reloadAfterCurrentLoad {
                     reloadAfterCurrentLoad = false
                     Task { await load(reset: true) }
+                } else if priceReloadAfterCurrentLoad,
+                          priceLoadState.requestID == nil,
+                          sort.needsPrices,
+                          !cards.isEmpty {
+                    let priority = queuedPricePriority
+                    priceReloadAfterCurrentLoad = false
+                    startPriceLoading(
+                        for: requestID,
+                        whileLoadingCards: false,
+                        priority: priority
+                    )
                 }
             }
         }
@@ -2038,28 +2098,31 @@ private struct CatalogSetCardsView: View {
     }
 
     private var shouldPrefetchPrices: Bool {
-        let providerKeys = Set(
-            cards.map { "\($0.game.rawValue):\($0.providerID.lowercased())" }
-        )
-        return providerKeys.count <= 400
-            && !ProcessInfo.processInfo.isLowPowerModeEnabled
+        !ProcessInfo.processInfo.isLowPowerModeEnabled
     }
 
     private func startPriceLoading(
         for expectedContentGeneration: UUID,
         whileLoadingCards: Bool,
-        priority: TaskPriority
+        priority: TaskPriority,
+        queueIfBusy: Bool = true
     ) {
         // Pagination owns the card-content transition. A sort-change task must
         // not snapshot the old card set while that transition is in flight;
         // the page load will start the price request after its page is applied.
         guard !cards.isEmpty,
-              expectedContentGeneration == contentGeneration,
-              whileLoadingCards || !isLoading,
-              priceLoadState.requestID == nil else { return }
+              expectedContentGeneration == contentGeneration else { return }
+
+        if priceLoadState.requestID != nil || (!whileLoadingCards && isLoading) {
+            guard queueIfBusy else { return }
+            priceReloadAfterCurrentLoad = true
+            queuedPricePriority = priority
+            return
+        }
 
         let requestID = UUID()
         let requestedCards = cards
+        priceReloadAfterCurrentLoad = false
         priceLoadState.begin(requestID: requestID)
         priceLoadTask = Task(priority: priority) {
             await loadPrices(
@@ -2077,6 +2140,28 @@ private struct CatalogSetCardsView: View {
         cards requestedCards: [CatalogCardSummary],
         whileLoadingCards: Bool
     ) async {
+        var didComplete = false
+        defer {
+            if priceLoadState.requestID == requestID {
+                self.priceLoadState.finish(
+                    requestID: requestID,
+                    loaded: didComplete
+                )
+                self.priceLoadTask = nil
+                if didComplete,
+                   priceReloadAfterCurrentLoad,
+                   !isLoading,
+                   sort.needsPrices {
+                    let priority = queuedPricePriority
+                    priceReloadAfterCurrentLoad = false
+                    startPriceLoading(
+                        for: expectedContentGeneration,
+                        whileLoadingCards: false,
+                        priority: priority
+                    )
+                }
+            }
+        }
         guard !requestedCards.isEmpty,
               whileLoadingCards || !isLoading else { return }
         let requestIdentity = CatalogPriceRequestIdentity(
@@ -2088,23 +2173,17 @@ private struct CatalogSetCardsView: View {
             requestID: priceLoadState.requestID,
             isCancelled: Task.isCancelled
         ) else { return }
-        var didComplete = false
-        defer {
-            if priceLoadState.requestID == requestID {
-                self.priceLoadState.finish(
-                    requestID: requestID,
-                    loaded: didComplete
-                )
-                self.priceLoadTask = nil
-            }
-        }
-        for await loadedPrices in catalog.sortPrices(for: requestedCards) {
+        for await update in catalog.sortPriceUpdates(for: requestedCards) {
             guard requestIdentity.matches(
                 contentGeneration: contentGeneration,
                 requestID: priceLoadState.requestID,
                 isCancelled: Task.isCancelled
             ) else { return }
-            prices.merge(loadedPrices) { _, newest in newest }
+            prices.merge(update.prices) { _, newest in newest }
+            resolvedPriceSlotIDs.formUnion(update.resolvedIDs)
+            unresolvedPriceSlotIDs.formUnion(update.unresolvedIDs)
+            resolvedPriceSlotIDs.subtract(update.unresolvedIDs)
+            unresolvedPriceSlotIDs.subtract(update.resolvedIDs)
             refreshVisibleGroups()
         }
         guard requestIdentity.matches(
@@ -2116,6 +2195,27 @@ private struct CatalogSetCardsView: View {
         // no USD price (or be a virtual print-run slot), so price-map coverage
         // is not a valid definition of whether loading finished.
         didComplete = true
+    }
+
+    private func retryPrices() {
+        guard sort.needsPrices, !cards.isEmpty else { return }
+        let retryIDs = Array(unresolvedPriceSlotIDs)
+        priceLoadTask?.cancel()
+        priceLoadTask = nil
+        priceReloadAfterCurrentLoad = false
+        prices.removeAll()
+        resolvedPriceSlotIDs.removeAll()
+        unresolvedPriceSlotIDs.removeAll()
+        priceLoadState.invalidate()
+        Task { @MainActor in
+            await catalog.resetPriceResolution(for: retryIDs)
+            guard !Task.isCancelled else { return }
+            startPriceLoading(
+                for: contentGeneration,
+                whileLoadingCards: false,
+                priority: .userInitiated
+            )
+        }
     }
 
     private func deduplicated(_ values: [CatalogCardSummary]) -> [CatalogCardSummary] {
@@ -2179,8 +2279,6 @@ private struct CatalogCardDisplayGroupTile: View {
         return first
     }
 
-    private var showsIndividualPrices: Bool { sharedPrice == nil }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             NavigationLink {
@@ -2242,7 +2340,7 @@ private struct CatalogCardDisplayGroupTile: View {
                 CatalogTreatmentBadge(label: treatment)
             }
 
-            if let sharedPrice {
+            if !showsVariantChips, let sharedPrice {
                 Text(sharedPrice, format: .currency(code: "USD"))
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.green)
@@ -2284,7 +2382,7 @@ private struct CatalogCardDisplayGroupTile: View {
                 Text("Owned")
                     .font(.caption2.weight(.semibold))
             }
-            if showsIndividualPrices, let price = prices[summary.id] {
+            if let price = prices[summary.id] {
                 Text(price, format: .currency(code: "USD"))
                     .font(.caption2.monospacedDigit())
                     .lineLimit(1)

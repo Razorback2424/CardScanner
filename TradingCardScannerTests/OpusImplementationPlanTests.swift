@@ -2431,7 +2431,9 @@ final class CardCenteringInvariantTests: XCTestCase {
     private func confidentRatios(_ data: Data) throws -> (lr: Double, tb: Double) {
         var measurement = try CardCenteringAnalyzer.analyze(data).measurement
         if measurement.requiresManualFrameConfirmation {
-            measurement.confirmManualPlacement()
+            measurement.setManualOuterEdge(\.left, to: measurement.outer.left)
+            measurement.setManualInnerEdge(\.left, to: measurement.inner.left)
+            measurement.refreshWarnings()
         }
         return try ratios(measurement)
     }
@@ -2503,7 +2505,7 @@ final class CardCenteringInvariantTests: XCTestCase {
         XCTAssertEqual(measurement.leftRightCentering, "—")
         XCTAssertEqual(measurement.topBottomCentering, "—")
 
-        measurement.confirmManualPlacement()
+        measurement.refreshWarnings()
 
         XCTAssertFalse(measurement.requiresManualInnerConfirmation)
         XCTAssertFalse(measurement.requiresManualOuterConfirmation)

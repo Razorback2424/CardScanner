@@ -92,13 +92,11 @@ enum CardPricing {
             }
 
             guard let tcg = pokemon.pricing?.tcgplayer else {
-                return cardmarketPrice(for: pokemon, variant: variant, at: fetchedAt)
-                    ?? .unavailable(pokemon.pricing == nil ? nil : .cardmarket)
+                return .unavailable(pokemon.pricing == nil ? nil : .tcgplayer)
             }
             guard let listing = tcgplayerListing(for: variant),
                   let amount = marketPrice(from: tcg, listing: listing) else {
-                return cardmarketPrice(for: pokemon, variant: variant, at: fetchedAt)
-                    ?? .unavailable(.tcgplayer)
+                return .unavailable(.tcgplayer)
             }
             return .price(
                 NormalizedPrice(
@@ -137,25 +135,41 @@ enum CardPricing {
         }
     }
 
-    /// Every price the catalog publishes for this printing, tagged with the
-    /// variant it belongs to. For display beside a resolved price, never as a
-    /// pool to pick from.
+    /// Every USD price the catalog publishes for this printing, tagged with the
+    /// variant it belongs to, plus a stated row for every finish it does not
+    /// price. For display beside a resolved price, never as a pool to pick from.
     ///
     /// Restricted to the variants the catalog says the printing actually exists
     /// in, so a stray marketplace listing can never advertise a finish that was
-    /// never printed.
+    /// never printed. A finish with no dollar figure is kept and marked rather
+    /// than dropped: the whole point of this panel is telling the user what a
+    /// printing costs, and "we do not know yet" is an answer they can act on
+    /// while a missing row just looks like the finish does not exist.
     static func publishedPrices(for card: IdentifiedCard) -> [CardMarketPrice] {
-        card.variantEvidence.catalogVariants.compactMap { variant in
-            guard case let .price(price) = self.price(
+        card.variantEvidence.catalogVariants.map { variant in
+            let availability: CardMarketPrice.Availability
+            switch self.price(
                 for: card,
                 variant: variant,
                 magicTreatments: card.magicTreatments(for: variant)
-            ) else { return nil }
+            ) {
+            case let .price(price):
+                availability = .published(price.unitMarketPriceUSD)
+            case let .unavailable(source):
+                availability = .noUSDQuote(source)
+                PriceCoverageGapLog.shared.record(
+                    game: card.game,
+                    providerID: card.providerID,
+                    setCode: card.setCode,
+                    cardNumber: card.cardNumber,
+                    variantID: variant.id,
+                    consultedSource: source
+                )
+            }
             return CardMarketPrice(
                 variantID: variant.id,
                 label: displayLabel(for: variant),
-                value: price.unitMarketPriceUSD,
-                currencyCode: price.currencyCode
+                availability: availability
             )
         }
     }
@@ -233,16 +247,12 @@ enum CardPricing {
                 )
             }
         }
-        guard let cardmarket = detailed.pricing?.cardmarket,
-              let amount = cardmarket.marketPrice else { return nil }
-        return NormalizedPrice(
-            unitMarketPriceUSD: amount,
-            currencyCode: cardmarket.currencyCode,
-            source: .cardmarket,
-            sourceVariantID: detailed.variantId ?? detailed.type ?? "cardmarket",
-            sourceUpdatedAt: cardmarket.updatedAt,
-            fetchedAt: fetchedAt
-        )
+        // Cardmarket is deliberately not consulted here. Its figure is a euro
+        // price from a different marketplace, and this app has no exchange-rate
+        // policy that would let it become a dollar amount. A euro number that
+        // cannot be used is not a fallback — it is a wrong price wearing the
+        // right shape, so the answer is that this object has no USD quote yet.
+        return nil
     }
 
     /// Every listing in a TCGplayer pricing object that actually carries a
@@ -259,31 +269,4 @@ enum CardPricing {
         return result
     }
 
-    /// Cardmarket stands in only where TCGdex carries no TCGplayer figure at all
-    /// — most of the promo catalogue. It is a euro price from a different
-    /// marketplace, so it is returned in its own currency and never silently
-    /// converted; the collection layer decides what to do with a non-USD number.
-    ///
-    /// Only offered for the plain printing. Cardmarket's per-card object is not
-    /// scoped to a parallel pattern, so attributing it to one would be exactly
-    /// the borrowing this type exists to prevent.
-    private static func cardmarketPrice(
-        for card: TCGdexCard,
-        variant: PhysicalVariant?,
-        at fetchedAt: Date
-    ) -> PriceLookup? {
-        guard let variant, tcgplayerListing(for: variant) != nil else { return nil }
-        guard let cardmarket = card.pricing?.cardmarket,
-              let amount = cardmarket.marketPrice else { return nil }
-        return .price(
-            NormalizedPrice(
-                unitMarketPriceUSD: amount,
-                currencyCode: cardmarket.currencyCode,
-                source: .cardmarket,
-                sourceVariantID: "cardmarket",
-                sourceUpdatedAt: cardmarket.updatedAt,
-                fetchedAt: fetchedAt
-            )
-        )
-    }
 }

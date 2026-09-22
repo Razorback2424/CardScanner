@@ -923,7 +923,8 @@ final class CardCenteringAnalyzerTests: XCTestCase {
     // MARK: - Saying when it does not know
 
     /// An automatic candidate must remain visibly unconfirmed until the user
-    /// accepts both frame guides. Once accepted, the ordinary case is quiet.
+    /// adjusts the frame guides through the current manual-placement API.
+    /// Once adjusted, the ordinary case is quiet.
     func testAutomaticMeasurementRequiresFrameConfirmationBeforeBecomingQuiet() throws {
         var m = try CardCenteringAnalyzer.analyze(syntheticCard(
             canvas: CGSize(width: 500, height: 700),
@@ -938,7 +939,9 @@ final class CardCenteringAnalyzerTests: XCTestCase {
             "expected the pending-frame warning: \(m.warnings)"
         )
 
-        m.confirmManualPlacement()
+        m.setManualOuterEdge(\.left, to: m.outer.left)
+        m.setManualInnerEdge(\.left, to: m.inner.left)
+        m.refreshWarnings()
 
         XCTAssertFalse(m.isDeclined)
         XCTAssertTrue(m.warnings.isEmpty, "unexpected warnings after confirmation: \(m.warnings)")

@@ -91,6 +91,7 @@
 		A0020012 /* CollectionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020012 /* CollectionKeyTests.swift */; };
 		A0010030 /* PriceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010030 /* PriceRecord.swift */; };
 		A0010031 /* PriceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010031 /* PriceProvider.swift */; };
+		A0010140 /* PriceCoverageGapLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010140 /* PriceCoverageGapLog.swift */; };
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
 		A00100F0 /* PriceSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F0 /* PriceSnapshotStore.swift */; };
@@ -135,6 +136,7 @@
 		A0020022 /* CenteringExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020022 /* CenteringExportTests.swift */; };
 		A0020023 /* CatalogNormalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020023 /* CatalogNormalizationTests.swift */; };
 		A0020024 /* BrowseFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020024 /* BrowseFeatureTests.swift */; };
+		A0020150 /* BrowsePriceHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020150 /* BrowsePriceHistoryTests.swift */; };
 		A00200C0 /* CollectionActivityHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200C0 /* CollectionActivityHistoryTests.swift */; };
 		A0010040 /* MagicSetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010040 /* MagicSetSnapshot.swift */; };
 		A0010041 /* CardCenteringMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010041 /* CardCenteringMeasurement.swift */; };
@@ -153,12 +155,17 @@
 		A0010047 /* CollectionCatalogNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010047 /* CollectionCatalogNormalizer.swift */; };
 		A0010048 /* CardCenteringExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010048 /* CardCenteringExport.swift */; };
 		A0010050 /* BrowseCatalogModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010050 /* BrowseCatalogModels.swift */; };
+		A0010150 /* BrowsePriceHistoryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010150 /* BrowsePriceHistoryModels.swift */; };
 		A0010051 /* BrowseCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010051 /* BrowseCatalog.swift */; };
+		A0010151 /* BrowsePriceHistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010151 /* BrowsePriceHistoryStore.swift */; };
+		A0010152 /* BrowsePriceObservationDayResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010152 /* BrowsePriceObservationDayResolver.swift */; };
+		A0010153 /* ScryfallDatasetStampCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010153 /* ScryfallDatasetStampCache.swift */; };
 		A0010052 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010052 /* BrowseView.swift */; };
 		A00100C3 /* ArtworkFallbacks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C3 /* ArtworkFallbacks.swift */; };
 		A00100C4 /* CatalogSetCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C4 /* CatalogSetCompletion.swift */; };
 		A00100C2 /* CatalogSetTile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C2 /* CatalogSetTile.swift */; };
 		A0010053 /* CatalogCardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010053 /* CatalogCardDetailView.swift */; };
+		A0010154 /* BrowsePriceHistoryChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010154 /* BrowsePriceHistoryChart.swift */; };
 		A00100C0 /* PokemonChecklistSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100C0 /* PokemonChecklistSnapshot.swift */; };
 		A00100C1 /* PokemonChecklistSnapshot in Resources */ = {isa = PBXBuildFile; fileRef = B00100C1 /* PokemonChecklistSnapshot */; };
 		A00100E0 /* MagicTreatmentSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100E0 /* MagicTreatmentSnapshot.swift */; };
@@ -322,6 +329,7 @@
 		B0020012 /* CollectionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionKeyTests.swift; sourceTree = "<group>"; };
 		B0010030 /* PriceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRecord.swift; sourceTree = "<group>"; };
 		B0010031 /* PriceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceProvider.swift; sourceTree = "<group>"; };
+		B0010140 /* PriceCoverageGapLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceCoverageGapLog.swift; sourceTree = "<group>"; };
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
 		B00100F0 /* PriceSnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceSnapshotStore.swift; sourceTree = "<group>"; };
@@ -367,6 +375,7 @@
 		B0020022 /* CenteringExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CenteringExportTests.swift; sourceTree = "<group>"; };
 		B0020023 /* CatalogNormalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogNormalizationTests.swift; sourceTree = "<group>"; };
 		B0020024 /* BrowseFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseFeatureTests.swift; sourceTree = "<group>"; };
+		B0020150 /* BrowsePriceHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceHistoryTests.swift; sourceTree = "<group>"; };
 		B00200C0 /* CollectionActivityHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivityHistoryTests.swift; sourceTree = "<group>"; };
 		B0010040 /* MagicSetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicSetSnapshot.swift; sourceTree = "<group>"; };
 		B0010041 /* CardCenteringMeasurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringMeasurement.swift; sourceTree = "<group>"; };
@@ -386,12 +395,17 @@
 		B0010047 /* CollectionCatalogNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionCatalogNormalizer.swift; sourceTree = "<group>"; };
 		B0010048 /* CardCenteringExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringExport.swift; sourceTree = "<group>"; };
 		B0010050 /* BrowseCatalogModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalogModels.swift; sourceTree = "<group>"; };
+		B0010150 /* BrowsePriceHistoryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceHistoryModels.swift; sourceTree = "<group>"; };
 		B0010051 /* BrowseCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseCatalog.swift; sourceTree = "<group>"; };
+		B0010151 /* BrowsePriceHistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceHistoryStore.swift; sourceTree = "<group>"; };
+		B0010152 /* BrowsePriceObservationDayResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceObservationDayResolver.swift; sourceTree = "<group>"; };
+		B0010153 /* ScryfallDatasetStampCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScryfallDatasetStampCache.swift; sourceTree = "<group>"; };
 		B0010052 /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
 		B00100C3 /* ArtworkFallbacks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkFallbacks.swift; sourceTree = "<group>"; };
 		B00100C4 /* CatalogSetCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetCompletion.swift; sourceTree = "<group>"; };
 		B00100C2 /* CatalogSetTile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogSetTile.swift; sourceTree = "<group>"; };
 		B0010053 /* CatalogCardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogCardDetailView.swift; sourceTree = "<group>"; };
+		B0010154 /* BrowsePriceHistoryChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceHistoryChart.swift; sourceTree = "<group>"; };
 		B00100C0 /* PokemonChecklistSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonChecklistSnapshot.swift; sourceTree = "<group>"; };
 		B00100C1 /* PokemonChecklistSnapshot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PokemonChecklistSnapshot; sourceTree = "<group>"; };
 		B00100E0 /* MagicTreatmentSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicTreatmentSnapshot.swift; sourceTree = "<group>"; };
@@ -534,6 +548,7 @@
 			children = (
 				B0010070 /* CollectionActivity.swift */,
 				B0010050 /* BrowseCatalogModels.swift */,
+				B0010150 /* BrowsePriceHistoryModels.swift */,
 				B0010002 /* CollectedCard.swift */,
 				B0010003 /* TCGdexCard.swift */,
 				B0010020 /* CardVariant.swift */,
@@ -569,6 +584,9 @@
 				B0010104 /* CloudAccountProbe.swift */,
 				B0010105 /* CloudCollectionAnchorStore.swift */,
 				B0010051 /* BrowseCatalog.swift */,
+				B0010151 /* BrowsePriceHistoryStore.swift */,
+				B0010152 /* BrowsePriceObservationDayResolver.swift */,
+				B0010153 /* ScryfallDatasetStampCache.swift */,
 				B00100C4 /* CatalogSetCompletion.swift */,
 				B00100C0 /* PokemonChecklistSnapshot.swift */,
 				B00100C3 /* ArtworkFallbacks.swift */,
@@ -600,6 +618,7 @@
 				B0010024 /* CollectionStore.swift */,
 				B0010025 /* ScanFeedback.swift */,
 				B0010031 /* PriceProvider.swift */,
+				B0010140 /* PriceCoverageGapLog.swift */,
 				B0010032 /* PriceStore.swift */,
 				B0010033 /* PriceRefreshController.swift */,
 				B00100F0 /* PriceSnapshotStore.swift */,
@@ -656,6 +675,7 @@
 				B0010052 /* BrowseView.swift */,
 				B00100C2 /* CatalogSetTile.swift */,
 				B0010053 /* CatalogCardDetailView.swift */,
+				B0010154 /* BrowsePriceHistoryChart.swift */,
 				B0010008 /* CameraPreview.swift */,
 				B0010009 /* ScannerViewModel.swift */,
 				B0010010 /* ScannerView.swift */,
@@ -745,6 +765,7 @@
 				B0020113 /* EbayQuadrantCropperTests.swift */,
 				B0020023 /* CatalogNormalizationTests.swift */,
 				B0020024 /* BrowseFeatureTests.swift */,
+				B0020150 /* BrowsePriceHistoryTests.swift */,
 				B00200C0 /* CollectionActivityHistoryTests.swift */,
 				B00100E0 /* MagicTreatmentSnapshot.swift */,
 				B00200E0 /* MagicTreatmentSnapshotTests.swift */,
@@ -994,6 +1015,7 @@
 				A0010027 /* ScanReviewSheet.swift in Sources */,
 				A0010030 /* PriceRecord.swift in Sources */,
 				A0010031 /* PriceProvider.swift in Sources */,
+				A0010140 /* PriceCoverageGapLog.swift in Sources */,
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
 				A00100F0 /* PriceSnapshotStore.swift in Sources */,
@@ -1039,12 +1061,17 @@
 				A0010047 /* CollectionCatalogNormalizer.swift in Sources */,
 				A0010048 /* CardCenteringExport.swift in Sources */,
 				A0010050 /* BrowseCatalogModels.swift in Sources */,
+				A0010150 /* BrowsePriceHistoryModels.swift in Sources */,
 				A0010051 /* BrowseCatalog.swift in Sources */,
+				A0010151 /* BrowsePriceHistoryStore.swift in Sources */,
+				A0010152 /* BrowsePriceObservationDayResolver.swift in Sources */,
+				A0010153 /* ScryfallDatasetStampCache.swift in Sources */,
 				A00100C4 /* CatalogSetCompletion.swift in Sources */,
 				A0010052 /* BrowseView.swift in Sources */,
 				A00100C3 /* ArtworkFallbacks.swift in Sources */,
 				A00100C2 /* CatalogSetTile.swift in Sources */,
 				A0010053 /* CatalogCardDetailView.swift in Sources */,
+				A0010154 /* BrowsePriceHistoryChart.swift in Sources */,
 				A00100C0 /* PokemonChecklistSnapshot.swift in Sources */,
 				A00100E2 /* MagicTreatment.swift in Sources */,
 				A00100E3 /* MagicTreatmentCatalog.swift in Sources */,
@@ -1102,6 +1129,7 @@
 				A0020113 /* EbayQuadrantCropperTests.swift in Sources */,
 				A0020023 /* CatalogNormalizationTests.swift in Sources */,
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
+				A0020150 /* BrowsePriceHistoryTests.swift in Sources */,
 				A00200C0 /* CollectionActivityHistoryTests.swift in Sources */,
 				A00100E0 /* MagicTreatmentSnapshot.swift in Sources */,
 				A00200E0 /* MagicTreatmentSnapshotTests.swift in Sources */,

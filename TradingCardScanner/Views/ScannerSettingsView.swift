@@ -28,6 +28,9 @@ struct SettingsView: View {
     @State private var collectionCardCount = 0
     @State private var priceRecordCount = 0
     @State private var missingArtworkCount = 0
+    @State private var priceCoverageGaps: [PriceCoverageGapLog.Gap] = []
+    @State private var browseHistoryDiagnostics = BrowsePriceHistoryDiagnostics.empty
+    @AppStorage("pokemonMasterSetTier") private var pokemonMasterSetTier: PokemonMasterSetTier = .standard
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
 
     private struct CSVMessage: Identifiable {
@@ -78,6 +81,7 @@ struct SettingsView: View {
                     NavigationLink {
                         SettingsCategoryView("Collection & Portfolio") {
                             collectionSection
+                            pokemonMasterSetSection
                             portfolioSection
                         }
                     } label: {
@@ -116,7 +120,11 @@ struct SettingsView: View {
                     Button("Done") { dismiss() }
                 }
             }
-            .task { loadCounts() }
+            .task {
+                loadCounts()
+                refreshPriceCoverageGaps()
+                await refreshBrowseHistoryDiagnostics()
+            }
             .confirmationDialog(
                 "Delete entire collection?",
                 isPresented: $isConfirmingCollectionDeletion,
@@ -292,6 +300,25 @@ struct SettingsView: View {
         }
     }
 
+    private var pokemonMasterSetSection: some View {
+        Section {
+            Picker("Definition", selection: $pokemonMasterSetTier) {
+                ForEach(PokemonMasterSetTier.allCases) { tier in
+                    Text(tier.label).tag(tier)
+                }
+            }
+
+            Text(pokemonMasterSetTier.explanation)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        } header: {
+            Text("Pokémon Master Set")
+        } footer: {
+            Text("This definition controls Pokémon set progress throughout the catalog.")
+        }
+    }
+
     private var portfolioTimeZoneLabel: String {
         let zone = PortfolioCalendar.pinnedTimeZone() ?? .current
         return zone.identifier.replacingOccurrences(of: "_", with: " ")
@@ -381,8 +408,89 @@ struct SettingsView: View {
                 Text("Redacted diagnostic data for support. It does not include card names, collection contents, credentials, or images.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+
+                DisclosureGroup {
+                    if priceCoverageGaps.isEmpty {
+                        Text("No unpriced Browse finishes have been recorded in this session.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        ForEach(priceCoverageGaps) { gap in
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(gap.summary)
+                                    .font(.subheadline)
+                                Text("Seen \(gap.observationCount) time\(gap.observationCount == 1 ? "" : "s")")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .accessibilityElement(children: .combine)
+                        }
+                    }
+
+                    Button("Refresh list", systemImage: "arrow.clockwise") {
+                        refreshPriceCoverageGaps()
+                    }
+                } label: {
+                    Label(
+                        "Browse price coverage (\(priceCoverageGaps.count))",
+                        systemImage: "exclamationmark.triangle"
+                    )
+                }
+
+                DisclosureGroup {
+                    LabeledContent(
+                        "Sets with history",
+                        value: browseHistoryDiagnostics.setCount.formatted()
+                    )
+                    LabeledContent(
+                        "Stored locally",
+                        value: ByteCountFormatter.string(
+                            fromByteCount: Int64(browseHistoryDiagnostics.totalBytes),
+                            countStyle: .file
+                        )
+                    )
+                    if let oldest = browseHistoryDiagnostics.oldestProviderDay {
+                        LabeledContent("Oldest provider day", value: oldest.rawValue)
+                    }
+                    if let newest = browseHistoryDiagnostics.newestProviderDay {
+                        LabeledContent("Newest provider day", value: newest.rawValue)
+                    }
+                    LabeledContent(
+                        "Corrupt files recovered",
+                        value: browseHistoryDiagnostics.corruptFileRecoveryCount.formatted()
+                    )
+                    LabeledContent(
+                        "Skipped timestamps",
+                        value: browseHistoryDiagnostics.skippedTimestampWrites.formatted()
+                    )
+                    LabeledContent(
+                        "Deduplicated observations",
+                        value: browseHistoryDiagnostics.deduplicatedObservationCount.formatted()
+                    )
+                    LabeledContent(
+                        "Unmapped variants",
+                        value: browseHistoryDiagnostics.unmappedVariantCount.formatted()
+                    )
+                    Text(browseHistoryDiagnostics.pokemonShadowCoverageSummary)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Button("Refresh history diagnostics", systemImage: "arrow.clockwise") {
+                        Task { await refreshBrowseHistoryDiagnostics() }
+                    }
+                } label: {
+                    Label("Browse history diagnostics", systemImage: "chart.xyaxis.line")
+                }
             }
         }
+    }
+
+    private func refreshPriceCoverageGaps() {
+        priceCoverageGaps = PriceCoverageGapLog.shared.currentGaps()
+    }
+
+    private func refreshBrowseHistoryDiagnostics() async {
+        browseHistoryDiagnostics = await BrowsePriceHistoryStore.shared.diagnostics()
     }
 
     private func exportSyncDiagnostics() {

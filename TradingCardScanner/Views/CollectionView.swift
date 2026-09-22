@@ -533,38 +533,44 @@ struct CollectionView: View {
 
     private func collectionHeader(_ snapshot: Snapshot) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(snapshot.collectionValue.formatted())
-                        .font(.system(size: 38, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .tracking(-0.76)
-                        .foregroundStyle(Color("RefreshAccent"))
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.72)
-                        .contentTransition(.numericText())
-                        .animation(.snappy, value: snapshot.collectionValue)
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityLabel(
-                            "Collection value, \(snapshot.collectionValue.formatted())"
-                        )
-
-                    CollectionRefreshStatusLine(
-                        refresh: refresh,
-                        isCollectionRequestInFlight: collectionRefreshRequestInFlight,
-                        feedback: collectionRefreshFeedback
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(alignment: .center, spacing: 10) {
+                    let parts = snapshot.collectionValue.heroParts()
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text(parts.whole)
+                            .font(.system(size: 42, weight: .bold, design: .rounded))
+                            .foregroundStyle(PortfolioPalette.value)
+                        if !parts.fraction.isEmpty {
+                            Text(parts.fraction)
+                                .font(.system(size: 27, weight: .bold, design: .rounded))
+                                .foregroundStyle(.secondary.opacity(0.75))
+                        }
+                    }
+                    .monospacedDigit()
+                    .tracking(-0.84)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.72)
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: snapshot.collectionValue)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(
+                        "Collection value, \(snapshot.collectionValue.formatted())"
                     )
-                    .frame(height: 18, alignment: .leading)
+
+                    CollectionRefreshButton(
+                        refresh: refresh,
+                        isRequestInFlight: collectionRefreshRequestInFlight,
+                        onRefresh: requestCollectionRefresh
+                    )
                 }
                 .layoutPriority(1)
 
-                Spacer(minLength: 0)
-
-                CollectionRefreshButton(
+                CollectionRefreshStatusLine(
                     refresh: refresh,
-                    isRequestInFlight: collectionRefreshRequestInFlight,
-                    onRefresh: requestCollectionRefresh
+                    isCollectionRequestInFlight: collectionRefreshRequestInFlight,
+                    feedback: collectionRefreshFeedback
                 )
+                .frame(height: 18, alignment: .leading)
             }
 
             collectionControls
@@ -1321,15 +1327,12 @@ private struct CollectionRefreshButton: View {
     var body: some View {
         Button(action: onRefresh) {
             Image(systemName: "arrow.triangle.2.circlepath")
-                .font(.system(size: 20, weight: .semibold))
+                .font(.system(size: 19, weight: .semibold))
                 .frame(width: 44, height: 44)
                 .contentShape(Circle())
         }
-        .foregroundStyle(Color("RefreshAccent"))
-        .background(
-            PortfolioPalette.money.opacity(0.18),
-            in: Circle()
-        )
+        .foregroundStyle(PortfolioPalette.money)
+        .offset(y: 6)
         .contentShape(Circle())
         .disabled(isRequestInFlight)
         .accessibilityLabel("Refresh prices")
@@ -1378,11 +1381,11 @@ private struct CollectionRefreshStatusLine: View {
         Group {
             if let presentation {
                 Text(presentation.message)
-                    .font(.system(size: 12, weight: .regular))
+                    .font(.caption)
                     .foregroundStyle(
                         presentation.isWarning
                             ? PortfolioPalette.attention
-                            : Color("RefreshAccent")
+                            : PortfolioPalette.money
                     )
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)

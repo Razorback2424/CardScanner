@@ -377,10 +377,6 @@ struct PortfolioView: View {
     /// display, and it is the chart a person can actually scrub.
     private var portfolioHero: some View {
         VStack(alignment: .leading, spacing: 9) {
-            Text("Current value")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-
             HStack(alignment: .center, spacing: 10) {
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
                     if let currentValue = portfolio.summary?.currentValue {
@@ -427,9 +423,6 @@ struct PortfolioView: View {
                         showsArrow: true,
                         trailingText: trailingText
                     )
-                    Text(historyRange.marketMovementPhrase)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
                 }
                 .accessibilityElement(children: .combine)
             }
@@ -538,10 +531,13 @@ struct PortfolioView: View {
     ) -> some View {
         if let active = activeHistoryResult {
             let total = active.accounting?.market ?? .zero
+            let periodDescription = active.range == .all
+                ? "all time"
+                : "the \(active.range.pastPeriodPhrase)"
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .firstTextBaseline) {
                     HStack(spacing: 6) {
-                        Text("What moved · \(active.range.rawValue)")
+                        Text("What changed over \(periodDescription)")
                             .font(.title3.weight(.bold))
                         PortfolioInfoButton(label: "About market movers") {
                             PortfolioMoversInfoPopover(
@@ -733,15 +729,18 @@ private struct PortfolioMoversInfoPopover: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(portfolioMoversExplanation)
-                .font(.body)
-            Button("Full accounting") {
+                .font(.subheadline)
+                .fixedSize(horizontal: false, vertical: true)
+            Button("View market movement details") {
                 dismiss()
                 onOpenDetails(result)
             }
             .font(.subheadline.weight(.semibold))
+            .foregroundStyle(PortfolioPalette.money)
+            .buttonStyle(.plain)
         }
-        .frame(maxWidth: 280, alignment: .leading)
-        .padding()
+        .frame(width: 280, alignment: .leading)
+        .padding(16)
     }
 }
 

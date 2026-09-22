@@ -6,11 +6,11 @@ import SwiftData
 enum PriceSource: String, Codable, Hashable, Sendable {
     case tcgplayer
     case scryfall
-    /// Used only where TCGdex carries no TCGplayer figure. Quotes euros, and is
-    /// stored and shown as euros — see `PriceRecord.currencyCode`.
+    /// Legacy decode-only provenance. New catalog lookups never produce this
+    /// source: Cardmarket's native-currency figure is not a USD quote.
     case cardmarket
     /// The product-level fallback, consulted only for cards the catalog cannot
-    /// price. Quotes USD, which is why it is tried ahead of Cardmarket.
+    /// price. Quotes USD.
     case justTCG
     case importedCSV
 

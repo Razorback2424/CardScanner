@@ -24,9 +24,11 @@ struct CatalogCardDetailView: View {
     /// its answer was thrown away. Same rule the scanner already uses.
     @State private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     @State private var showsGradedPicker = false
+    @State private var browseHistorySeries: [BrowsePricePersistedSeries] = []
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
     private let marketTransport = JustTCGTransport.shared
+    private let browsePriceHistoryStore = BrowsePriceHistoryStore.shared
 
     var body: some View {
         ScrollView {
@@ -105,6 +107,7 @@ struct CatalogCardDetailView: View {
             treatmentSection(details.card)
             ownedSection(details.card)
             priceSection(details.card)
+            browsePriceHistorySection()
 
             Button { prepareAdd(details.card) } label: {
                 Label(
@@ -191,18 +194,50 @@ struct CatalogCardDetailView: View {
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         } else if !card.marketPrices.isEmpty {
+            let rows = card.marketPrices
             VStack(alignment: .leading, spacing: 8) {
                 Text("Published market prices").font(.headline)
-                ForEach(card.marketPrices) { price in
-                    LabeledContent(
-                        price.label,
-                        value: price.value.formatted(.currency(code: price.currencyCode))
-                    )
+                ForEach(rows) { price in
+                    switch price.availability {
+                    case let .published(amount):
+                        LabeledContent(
+                            price.label,
+                            value: amount.formatted(.currency(code: "USD"))
+                        )
+                    case .noUSDQuote:
+                        LabeledContent(price.label) {
+                            Text("No USD price")
+                                .foregroundStyle(.tertiary)
+                        }
+                        .accessibilityHint("No US dollar market price is published for this finish yet.")
+                    }
+                }
+                if rows.contains(where: \.isGap) {
+                    Text("Finishes without a US dollar market price are listed rather than hidden. A foreign-marketplace figure is never shown in their place.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 }
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+        }
+    }
+
+    @ViewBuilder
+    private func browsePriceHistorySection() -> some View {
+        BrowsePriceHistoryChartView(
+            model: BrowsePriceHistoryChartModel(series: displayedBrowseHistorySeries)
+        )
+    }
+
+    private var displayedBrowseHistorySeries: [BrowsePricePersistedSeries] {
+        guard let variant = summary.masterSetVariant,
+              let descriptor = variant.browsePriceHistoryDescriptorV1 else {
+            return browseHistorySeries
+        }
+        return browseHistorySeries.filter {
+            $0.key.variantDescriptor == descriptor
         }
     }
 
@@ -388,7 +423,14 @@ struct CatalogCardDetailView: View {
         isLoading = true
         error = nil
         defer { isLoading = false }
-        do { details = try await catalog.details(for: summary) }
+        do {
+            details = try await catalog.details(for: summary)
+            browseHistorySeries = await browsePriceHistoryStore.series(
+                game: summary.game,
+                setID: summary.setID.id,
+                printingID: summary.id
+            )
+        }
         catch is CancellationError { return }
         catch { self.error = error.localizedDescription }
     }
