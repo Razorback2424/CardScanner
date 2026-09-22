@@ -153,10 +153,16 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                     // An older downloaded overlay may omit the optional slot
                     // counts. Keep its checklist/resource precedence while
                     // borrowing metadata that only the bundled entry knows.
+                    let mergedArtworkFallbackURLs = entry.set.artworkFallbackURLs
+                        ?? existing.set.artworkFallbackURLs
+                    let mergedCardArtwork = entry.set.cardArtwork
+                        ?? existing.set.cardArtwork
+                    let needsArtworkMerge = entry.set.artworkFallbackURLs == nil
+                        && existing.set.artworkFallbackURLs != nil
+                        || entry.set.cardArtwork == nil
+                        && existing.set.cardArtwork != nil
                     let mergedSet: CatalogSet
-                    if entry.set.artworkFallbackURLs != nil {
-                        mergedSet = entry.set
-                    } else if let artworkFallbackURLs = existing.set.artworkFallbackURLs {
+                    if needsArtworkMerge {
                         mergedSet = CatalogSet(
                             catalogID: entry.set.catalogID,
                             name: entry.set.name,
@@ -168,9 +174,10 @@ struct PokemonChecklistSnapshot: Sendable, Equatable, Codable {
                             sortRank: entry.set.sortRank,
                             bundledArtworkSourceID: entry.set.bundledArtworkSourceID
                                 ?? existing.set.bundledArtworkSourceID,
-                            artworkFallbackURLs: artworkFallbackURLs,
+                            artworkFallbackURLs: mergedArtworkFallbackURLs,
                             limitlessArtworkAuthorized: entry.set.limitlessArtworkAuthorized
-                                ?? existing.set.limitlessArtworkAuthorized
+                                ?? existing.set.limitlessArtworkAuthorized,
+                            cardArtwork: mergedCardArtwork
                         )
                     } else {
                         mergedSet = entry.set
@@ -301,7 +308,10 @@ enum PokemonMasterSetChecklistBuilder {
                 bundledArtworkSourceID: descriptor?.bundledArtworkSourceID,
                 limitlessArtworkAuthorized: descriptor.map {
                     $0.recognitionKind == .expansion
-                } ?? LimitlessArtwork.supportedSetCodes.contains(displayCode.uppercased())
+                } ?? LimitlessArtwork.supportedSetCodes.contains(displayCode.uppercased()),
+                cardArtwork: descriptor.flatMap {
+                    BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: $0)
+                }
             )
         }
         return baseSets
@@ -497,7 +507,8 @@ enum PokemonMasterSetChecklistBuilder {
             sortRank: set.sortRank,
             bundledArtworkSourceID: set.bundledArtworkSourceID,
             artworkFallbackURLs: set.artworkFallbackURLs,
-            limitlessArtworkAuthorized: set.limitlessArtworkAuthorized
+            limitlessArtworkAuthorized: set.limitlessArtworkAuthorized,
+            cardArtwork: set.cardArtwork
         )
     }
 
@@ -524,7 +535,8 @@ enum PokemonMasterSetChecklistBuilder {
             artworkFallbackURLs: set.artworkFallbackURLs ?? (
                 limitedURLs.isEmpty ? nil : limitedURLs
             ),
-            limitlessArtworkAuthorized: set.limitlessArtworkAuthorized
+            limitlessArtworkAuthorized: set.limitlessArtworkAuthorized,
+            cardArtwork: set.cardArtwork
         )
     }
 

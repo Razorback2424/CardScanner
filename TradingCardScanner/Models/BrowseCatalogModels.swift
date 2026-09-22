@@ -45,6 +45,9 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
     /// True only when the active signed catalog authorizes this expansion code
     /// for the bounded Limitless card-art fallback. Optional for legacy rows.
     var limitlessArtworkAuthorized: Bool? = nil
+    /// Signed per-card artwork keyed by the primary provider's local ID. It is
+    /// applied only when TCGdex supplies neither a thumbnail nor a full image.
+    var cardArtwork: [String: CatalogCardArtwork]? = nil
 
     init(
         catalogID: CatalogSetID,
@@ -57,7 +60,8 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         sortRank: Int,
         bundledArtworkSourceID: String? = nil,
         artworkFallbackURLs: [URL]? = nil,
-        limitlessArtworkAuthorized: Bool? = nil
+        limitlessArtworkAuthorized: Bool? = nil,
+        cardArtwork: [String: CatalogCardArtwork]? = nil
     ) {
         self.catalogID = catalogID
         self.name = name
@@ -70,6 +74,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         self.bundledArtworkSourceID = bundledArtworkSourceID
         self.artworkFallbackURLs = artworkFallbackURLs
         self.limitlessArtworkAuthorized = limitlessArtworkAuthorized
+        self.cardArtwork = cardArtwork
     }
 
     /// Only virtual WotC set rows carry this. The provider set ID remains the
@@ -155,6 +160,26 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         self.masterSetVariant = masterSetVariant
         self.isExpandedMasterSetVariant = isExpandedMasterSetVariant
         self.isSoleSlotForCard = isSoleSlotForCard
+    }
+
+    func withArtwork(thumbnailURL: URL?, imageURL: URL?) -> CatalogCardSummary {
+        CatalogCardSummary(
+            game: game,
+            providerID: providerID,
+            setID: setID,
+            setName: setName,
+            setCode: setCode,
+            name: name,
+            collectorNumber: collectorNumber,
+            thumbnailURL: thumbnailURL,
+            imageURL: imageURL,
+            masterSetVariant: masterSetVariant,
+            isExpandedMasterSetVariant: isExpandedMasterSetVariant,
+            isSoleSlotForCard: isSoleSlotForCard,
+            magicTreatmentIDsRaw: magicTreatmentIDsRaw,
+            magicTreatmentQualifiers: magicTreatmentQualifiers,
+            limitlessArtworkAuthorized: limitlessArtworkAuthorized
+        )
     }
 
     enum CodingKeys: String, CodingKey {

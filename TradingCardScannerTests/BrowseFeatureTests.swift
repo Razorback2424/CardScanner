@@ -4638,6 +4638,87 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         )
     }
 
+    func testSignedCardArtworkFillsSummariesWithNoProviderImage() throws {
+        let cardArtwork = CatalogCardArtwork(
+            localID: "001",
+            thumbnailURL: "https://images.scrydex.com/pokemon/me55c-001/small",
+            imageURL: "https://images.scrydex.com/pokemon/me55c-001/large"
+        )
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "30th-c"),
+            name: "30th Celebration Classic Collection",
+            code: "Not scannable",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 30,
+            releaseDate: nil,
+            sortRank: 1,
+            cardArtwork: ["001": cardArtwork]
+        )
+        let summary = sampleSummary(set: set, name: "Fixture")
+
+        let enriched = BrowseCatalog.applyingSignedCardArtwork([summary], set: set)
+
+        XCTAssertEqual(enriched.first?.thumbnailURL?.absoluteString, cardArtwork.thumbnailURL)
+        XCTAssertEqual(enriched.first?.imageURL?.absoluteString, cardArtwork.imageURL)
+    }
+
+    func testSignedCardArtworkNeverOverridesAnExistingTCGdexImage() throws {
+        let signed = CatalogCardArtwork(
+            localID: "001",
+            thumbnailURL: "https://images.scrydex.com/pokemon/me55c-001/small",
+            imageURL: "https://images.scrydex.com/pokemon/me55c-001/large"
+        )
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "30th-c"),
+            name: "30th Celebration Classic Collection",
+            code: "Not scannable",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 30,
+            releaseDate: nil,
+            sortRank: 1,
+            cardArtwork: ["001": signed]
+        )
+        let providerThumbnail = URL(string: "https://assets.tcgdex.net/en/me/me55c/001/low.png")!
+        let providerImage = URL(string: "https://assets.tcgdex.net/en/me/me55c/001/high.png")!
+        let summary = sampleSummary(set: set, name: "Fixture")
+            .withArtwork(thumbnailURL: providerThumbnail, imageURL: providerImage)
+
+        let enriched = BrowseCatalog.applyingSignedCardArtwork([summary], set: set)
+
+        XCTAssertEqual(enriched.first?.thumbnailURL, providerThumbnail)
+        XCTAssertEqual(enriched.first?.imageURL, providerImage)
+    }
+
+    func testStoredChecklistWithNilImagesPicksUpSignedCardArtworkWithoutReconciliation() throws {
+        let signed = CatalogCardArtwork(
+            localID: "001",
+            thumbnailURL: "https://images.scrydex.com/pokemon/me55c-001/small",
+            imageURL: "https://images.scrydex.com/pokemon/me55c-001/large"
+        )
+        let set = CatalogSet(
+            catalogID: CatalogSetID(game: .pokemon, providerID: "30th-c"),
+            name: "30th Celebration Classic Collection",
+            code: "Not scannable",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 30,
+            releaseDate: nil,
+            sortRank: 1,
+            cardArtwork: ["001": signed]
+        )
+        let storedSummary = sampleSummary(set: set, name: "Fixture")
+
+        // This models the persisted checklist row after its original
+        // reconciliation saw TCGdex image: nil. The signed map is read at the
+        // Browse boundary, so no provider probe or reconciliation is needed.
+        let displayed = BrowseCatalog.applyingSignedCardArtwork([storedSummary], set: set)
+
+        XCTAssertEqual(displayed.first?.thumbnailURL?.absoluteString, signed.thumbnailURL)
+        XCTAssertEqual(displayed.first?.imageURL?.absoluteString, signed.imageURL)
+    }
+
     func testGalleryArtworkUsesSignedInheritedLogoAndKeepsProviderIdentity() throws {
         let provider = try decode(TCGdexSetCatalog.self, from: """
         {"id":"swsh10tg","name":"Lost Origin Trainer Gallery","cards":[],"cardCount":{"total":0,"official":0}}

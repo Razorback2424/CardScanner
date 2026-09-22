@@ -56,10 +56,43 @@ enum BrowseCatalogArtworkSelection {
         let published = descriptor.artworkFallbackURLs?.compactMap(URL.init(string:))
         return published?.isEmpty == false ? published : snapshotURLs
     }
+
+    static func cardArtworkMap(
+        descriptor: PokemonCatalogSetDescriptor
+    ) -> [String: CatalogCardArtwork]? {
+        var result: [String: CatalogCardArtwork] = [:]
+        for artwork in descriptor.cardArtwork ?? [] {
+            let key = artwork.localID.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+            guard !key.isEmpty else { continue }
+            result[key] = artwork
+        }
+        return result.isEmpty ? nil : result
+    }
 }
 
 actor BrowseCatalog: BrowseCatalogProviding {
     private static let legacyReleaseOrderDefaultsKey = "pokemonCatalogReleaseOrder.v1"
+
+    static func applyingSignedCardArtwork(
+        _ summaries: [CatalogCardSummary],
+        set: CatalogSet
+    ) -> [CatalogCardSummary] {
+        guard let artwork = set.cardArtwork, !artwork.isEmpty else { return summaries }
+        return summaries.map { summary in
+            guard summary.thumbnailURL == nil,
+                  summary.imageURL == nil,
+                  let value = artwork[
+                    summary.collectorNumber
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+                        .uppercased()
+                  ],
+                  let thumbnailURL = URL(string: value.thumbnailURL),
+                  let imageURL = URL(string: value.imageURL) else {
+                return summary
+            }
+            return summary.withArtwork(thumbnailURL: thumbnailURL, imageURL: imageURL)
+        }
+    }
 
     private struct DetailTaskState {
         let task: Task<CatalogCardDetails, Error>
@@ -540,7 +573,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
             releaseDate: descriptor.releaseDate.flatMap(FlexibleDate.parse),
             sortRank: descriptor.releaseOrder ?? 0,
             artworkFallbackURLs: descriptor.artworkFallbackURLs?.compactMap(URL.init(string:)),
-            limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion
+            limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion,
+            cardArtwork: BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: descriptor)
         )
     }
 
@@ -634,7 +668,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     descriptor: descriptor,
                     snapshotURLs: entry.set.artworkFallbackURLs
                 ),
-                limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion
+                limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion,
+                cardArtwork: BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: descriptor)
             )
         }
     }
@@ -652,7 +687,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
             // A bundled or protected checklist is the authoritative offline
             // source and must not be displaced by an older partial page.
             if let local = await checklistStore.mergedChecklist(for: set.catalogID) {
-                return CatalogPage(items: local, nextCursor: nil)
+                return CatalogPage(
+                    items: Self.applyingSignedCardArtwork(local, set: set),
+                    nextCursor: nil
+                )
             }
             let summaries = try await livePokemonSummaries(for: set)
             page = CatalogPage(items: summaries, nextCursor: nil)
@@ -1133,7 +1171,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
             return matching
                 .filter { $0.providerID == longestID }
-                .map { PokemonMasterSetChecklistBuilder.summary(card, set: $0) }
+                .map { set in
+                    let summary = PokemonMasterSetChecklistBuilder.summary(card, set: set)
+                    return Self.applyingSignedCardArtwork([summary], set: set).first ?? summary
+                }
         }
         return CatalogPage(items: summaries, nextCursor: cards.count == 60 ? String(page + 1) : nil)
     }
@@ -1224,16 +1265,21 @@ actor BrowseCatalog: BrowseCatalogProviding {
             baseSet: set,
             cardDetails: details
         )
+        var displayedCards: [CatalogCardSummary] = []
         for value in built {
-            for summary in value.cards {
+            let summaries = Self.applyingSignedCardArtwork(value.cards, set: value.set)
+            for summary in summaries {
                 guard let card = details[summary.providerID] else { continue }
                 detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(
                     card: .pokemon(card, setCode: summary.setCode),
                     set: value.set
                 )
             }
+            if value.set.id == set.id {
+                displayedCards = summaries
+            }
         }
-        return built.first(where: { $0.set.id == set.id })?.cards ?? []
+        return displayedCards
     }
 
     private func pokemonCardDetails(
@@ -1794,7 +1840,8 @@ enum PokemonMasterSetDefinition {
                 sortRank: set.sortRank,
                 bundledArtworkSourceID: set.bundledArtworkSourceID,
                 artworkFallbackURLs: set.artworkFallbackURLs,
-                limitlessArtworkAuthorized: set.limitlessArtworkAuthorized
+                limitlessArtworkAuthorized: set.limitlessArtworkAuthorized,
+                cardArtwork: set.cardArtwork
             )
         }
     }

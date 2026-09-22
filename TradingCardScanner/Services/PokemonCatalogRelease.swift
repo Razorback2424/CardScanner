@@ -7,5 +7,6 @@ import PokemonCatalogCore
 typealias PokemonCatalogReleaseEnvelope = PokemonCatalogCore.PokemonCatalogReleaseEnvelope
 typealias PokemonCatalogRelease = PokemonCatalogCore.PokemonCatalogRelease
 typealias PokemonCatalogSetDescriptor = PokemonCatalogCore.PokemonCatalogSetDescriptor
+typealias CatalogCardArtwork = PokemonCatalogCore.PokemonCatalogCardArtwork
 typealias PokemonCatalogMembershipRecognition = PokemonCatalogCore.PokemonCatalogMembershipRecognition
 typealias Base64URL = PokemonCatalogCore.PokemonCatalogBase64URL
