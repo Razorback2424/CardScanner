@@ -16,6 +16,7 @@ Keep this file durable and repo-wide. User and developer instructions take prece
 
 - Inspect `git status --short` and relevant diffs before editing; preserve existing user changes and untracked files.
 - Make the smallest focused change. Use `apply_patch`; do not rewrite unrelated files.
+- Use an external SSD as the preferred/default location for build artifacts, derived data, dependency caches, compiler caches, and similar temporary or generated build data whenever one is available; use internal storage only as a fallback when no external SSD is available.
 - Run the narrowest relevant `xcodebuild` build/test for code changes, then expand verification when risk warrants it. Report failures accurately.
 - For documentation-only changes, validate links and run `git diff --check`.
 - Do not claim physical-device, provider, CloudKit, archive, or release readiness from source inspection or simulator-only evidence.
