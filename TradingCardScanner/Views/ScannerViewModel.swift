@@ -1876,6 +1876,7 @@ final class ScannerViewModel: ObservableObject {
         guard let pending = pendingDuplicateConfirmation else { return }
         pendingDuplicateConfirmation = nil
         endOneCardScan(encounterID: pending.encounterID, outcome: "same-card")
+        clearAcknowledgement(for: pending.encounterID)
         spatialResetProofs.removeAll { $0.encounterID == pending.encounterID }
 
         guard let previous = committedSessionHistory.first(where: { $0.id == pending.previousScanID }),
@@ -2196,6 +2197,7 @@ final class ScannerViewModel: ObservableObject {
         if let pending = pendingDuplicateConfirmation,
            pending.previousScanID == scanID {
             endOneCardScan(encounterID: pending.encounterID, outcome: "duplicate-prompt-abandoned")
+            clearAcknowledgement(for: pending.encounterID)
             pendingDuplicateConfirmation = nil
         }
         if receipt?.scanID == scanID {
@@ -2894,10 +2896,15 @@ final class ScannerViewModel: ObservableObject {
             // older or unrelated presentations.
             spatialResetProofs.removeAll { $0.encounterID != candidate.encounterID }
         case .suppress:
+            // No terminal path may leave a `.recognized` acknowledgement for
+            // its encounter. A commit ends in a receipt, a failure ends in
+            // `.failed` (which stays on screen by design), and everything else
+            // clears it.
             diagnostic("routingSuppressed")
             deferredHeldDuplicateOffer = nil
             scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
             endOneCardScan(encounterID: candidate.encounterID, outcome: "suppressed")
+            clearAcknowledgement(for: candidate.encounterID)
             spatialResetProofs.removeAll()
         case .duplicate(let proof):
             diagnostic("routingSpatialDuplicatePrompt")
@@ -2910,6 +2917,7 @@ final class ScannerViewModel: ObservableObject {
                   let proofIndex = spatialResetProofs.firstIndex(where: { $0.id == proof.id }) else {
                 scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "duplicate-proof-missing")
+                clearAcknowledgement(for: candidate.encounterID)
                 return
             }
 
@@ -2953,6 +2961,7 @@ final class ScannerViewModel: ObservableObject {
             clearHeldRepeatState()
             scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
             endOneCardScan(encounterID: candidate.encounterID, outcome: "held-repeat-rejected")
+            clearAcknowledgement(for: candidate.encounterID)
             diagnostic("routingHeldRepeatRejected")
             return
         }
@@ -2964,6 +2973,7 @@ final class ScannerViewModel: ObservableObject {
             clearHeldRepeatState()
             scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
             endOneCardScan(encounterID: candidate.encounterID, outcome: "held-repeat-mismatch")
+            clearAcknowledgement(for: candidate.encounterID)
             diagnostic("routingHeldRepeatIdentityMismatch")
             return
         }
@@ -2974,6 +2984,7 @@ final class ScannerViewModel: ObservableObject {
         guard await commitAuthorizedCollectionCandidate(candidate, authorization: .heldRepeat) else {
             // The consumed permit is never restored. Publish a fresh offer and
             // make the next tap create a new scanner-owned authorization.
+            clearAcknowledgement(for: candidate.encounterID)
             heldDuplicateOffer = state.offer
             scanner.restoreHeldRepeatAfterFailure()
             diagnostic("routingHeldRepeatSaveFailed")
@@ -3001,7 +3012,10 @@ final class ScannerViewModel: ObservableObject {
         _ candidate: CollectionCommitCandidate,
         authorization: CollectionCommitAuthorization
     ) async -> Bool {
-        guard isStorageGenerationCurrent else { return false }
+        guard isStorageGenerationCurrent else {
+            clearAcknowledgement(for: candidate.encounterID)
+            return false
+        }
         guard collectionAddOverride != nil || collectionWriter != nil else {
             if !failAcknowledgement(
                 for: candidate.encounterID,
@@ -3037,7 +3051,10 @@ final class ScannerViewModel: ObservableObject {
                 return false
             }
             guard writeSessionID == scannerSessionID,
-                  isStorageGenerationCurrent else { return false }
+                  isStorageGenerationCurrent else {
+                clearAcknowledgement(for: candidate.encounterID)
+                return false
+            }
 
             if mutation.wasDuplicate {
                 show(ScanNote(text: "This certified card is already in your collection", tone: .info))

@@ -22,6 +22,71 @@ private actor ScannerFetchGate {
     }
 }
 
+private enum ScannerCollectionAddGateError: Error {
+    case failed
+}
+
+private actor ScannerCollectionAddGate {
+    enum Outcome {
+        case success
+        case failure
+    }
+
+    private let outcome: Outcome
+    private let successfulAddsBeforeBlocking: Int
+    private var addCount = 0
+    private var hasStarted = false
+    private var startWaiter: CheckedContinuation<Void, Never>?
+    private var releaseWaiter: CheckedContinuation<Void, Never>?
+
+    init(outcome: Outcome, successfulAddsBeforeBlocking: Int = 0) {
+        self.outcome = outcome
+        self.successfulAddsBeforeBlocking = successfulAddsBeforeBlocking
+    }
+
+    func add(_ candidate: CollectionCommitCandidate) async throws -> CollectionMutation {
+        _ = candidate
+        addCount += 1
+        if addCount <= successfulAddsBeforeBlocking {
+            return CollectionMutation(
+                collectionKey: "scanner-test",
+                activityID: nil,
+                didInsert: true
+            )
+        }
+        hasStarted = true
+        startWaiter?.resume()
+        startWaiter = nil
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            releaseWaiter = continuation
+        }
+        if case .failure = outcome {
+            throw ScannerCollectionAddGateError.failed
+        }
+        return CollectionMutation(
+            collectionKey: "scanner-test",
+            activityID: nil,
+            didInsert: true
+        )
+    }
+
+    func waitUntilStarted() async {
+        if hasStarted { return }
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            startWaiter = continuation
+        }
+    }
+
+    func release() {
+        releaseWaiter?.resume()
+        releaseWaiter = nil
+    }
+
+    func count() -> Int {
+        addCount
+    }
+}
+
 private struct ScannerStubPokemonSource: PokemonCardSource {
     let cardsByLocalID: [String: TCGdexCard]
     let delayNanoseconds: UInt64
@@ -545,10 +610,200 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 1)
         XCTAssertNil(model.pendingDuplicateConfirmation)
         XCTAssertNil(model.pendingChoice)
+        XCTAssertNil(model.scanAcknowledgement)
 
         let cards = try context().fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(cards.count, 1)
         XCTAssertEqual(cards.first?.quantity, 1)
+    }
+
+    func testHeldRepeatWithStaleAuthorizationClearsAcknowledgementWithoutWriting() async throws {
+        let model = try makeModel(variants: [.normal])
+        let encounterID = UUID()
+
+        confirm(
+            model,
+            scannerIdentifier(),
+            encounterID: encounterID,
+            authorizationID: UUID()
+        )
+
+        let terminal = await waitUntil {
+            model.scanAcknowledgement == nil && model.recent.isEmpty
+        }
+        XCTAssertTrue(terminal)
+        XCTAssertNil(model.scanAcknowledgement)
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+    }
+
+    func testHeldRepeatIdentityMismatchClearsAcknowledgementWithoutWriting() async throws {
+        let fixture = try await makeHistoricalHeldRepeatFixture()
+        let model = try makeModel(
+            variants: [.normal],
+            offline: fixture.offline
+        )
+        let start = CFAbsoluteTimeGetCurrent()
+        var firstEncounterID: UUID?
+        var authorizedEncounterID: UUID?
+        let originalConfirmation = model.scanner.onConfirmedSubjectCandidate
+        model.scanner.onConfirmedSubjectCandidate = { context, encounterID, subject, authorizationID in
+            if authorizationID == nil {
+                firstEncounterID = encounterID
+            } else {
+                authorizedEncounterID = encounterID
+            }
+            originalConfirmation?(context, encounterID, subject, authorizationID)
+        }
+        model.scanner.drainProfileQueuesForTesting()
+
+        model.scanner.receiveFooterOutcomeForTesting(.identified(fixture.first), at: start + 0.25)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(fixture.first), at: start + 0.5)
+        let firstCommit = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(firstCommit)
+        await settle()
+
+        guard let firstEncounterID else {
+            XCTFail("The initial scanner confirmation did not produce an encounter ID")
+            return
+        }
+        for offset in stride(from: 0.75, through: 2.5, by: 0.25) {
+            model.scanner.receiveFooterOutcomeForTesting(.identified(fixture.first), at: start + offset)
+        }
+        model.scanner.onLatchHolding?(fixture.first, firstEncounterID)
+
+        let offerAppeared = await waitUntil { model.heldDuplicateOffer != nil }
+        XCTAssertTrue(offerAppeared)
+        guard offerAppeared else { return }
+        model.addAnotherHeldCopy()
+        await settle()
+        model.scanner.drainVisionQueueForTesting()
+        model.scanner.receiveFooterOutcomeForTesting(.identified(fixture.second), at: start + 3.0)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(fixture.second), at: start + 3.25)
+
+        let authorized = await waitUntil { authorizedEncounterID != nil }
+        XCTAssertTrue(authorized)
+        await settle()
+
+        XCTAssertEqual(model.recent.count, 1)
+        XCTAssertEqual(model.successCount, 1)
+        XCTAssertNil(model.scanAcknowledgement)
+        XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).count, 1)
+    }
+
+    func testStaleStorageGenerationBeforeWriteClearsAcknowledgementWithoutWriting() async throws {
+        let generation = CollectionStorageGeneration()
+        generation.installReady(storeID: UUID())
+        let fetchGate = ScannerFetchGate()
+        let model = try makeModel(
+            variants: [.normal],
+            delayNanoseconds: 300_000_000,
+            fetchGate: fetchGate,
+            storageGeneration: generation
+        )
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await fetchGate.waitUntilStarted()
+        generation.suspend()
+
+        let terminal = await waitUntil {
+            model.scanAcknowledgement == nil && model.recent.isEmpty
+        }
+        XCTAssertTrue(terminal)
+        XCTAssertNil(model.scanAcknowledgement)
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+    }
+
+    func testStaleStorageGenerationAfterWriteClearsAcknowledgementWithoutWriting() async throws {
+        let generation = CollectionStorageGeneration()
+        generation.installReady(storeID: UUID())
+        let addGate = ScannerCollectionAddGate(outcome: .success)
+        let model = try makeModel(
+            variants: [.normal],
+            storageGeneration: generation,
+            collectionAddOverride: { candidate in
+                try await addGate.add(candidate)
+            }
+        )
+
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await addGate.waitUntilStarted()
+        XCTAssertEqual(model.scanAcknowledgement?.message, "Saving to your collection…")
+
+        generation.suspend()
+        await addGate.release()
+
+        let terminal = await waitUntil {
+            model.scanAcknowledgement == nil && model.recent.isEmpty
+        }
+        XCTAssertTrue(terminal)
+        XCTAssertNil(model.scanAcknowledgement)
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+    }
+
+    func testHeldRepeatSaveFailureRepublishesOfferAndClearsAcknowledgement() async throws {
+        let addGate = ScannerCollectionAddGate(
+            outcome: .failure,
+            successfulAddsBeforeBlocking: 1
+        )
+        let model = try makeModel(
+            variants: [.normal],
+            collectionAddOverride: { candidate in
+                try await addGate.add(candidate)
+            }
+        )
+        let subject = ScanSubject(identifier: scannerIdentifier())
+        let start = CFAbsoluteTimeGetCurrent()
+        var firstEncounterID: UUID?
+        let originalConfirmation = model.scanner.onConfirmedSubjectCandidate
+        model.scanner.onConfirmedSubjectCandidate = { context, encounterID, confirmed, authorizationID in
+            if authorizationID == nil {
+                firstEncounterID = encounterID
+            }
+            originalConfirmation?(context, encounterID, confirmed, authorizationID)
+        }
+        model.scanner.drainProfileQueuesForTesting()
+
+        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.25)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.5)
+        let firstCommit = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(firstCommit)
+        XCTAssertEqual(model.sessionScans.first?.subject.suppressionKey, subject.suppressionKey)
+        XCTAssertEqual(model.committedSessionHistory.last?.encounterID, firstEncounterID)
+        await settle()
+
+        for offset in stride(from: 0.75, through: 2.5, by: 0.25) {
+            model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + offset)
+        }
+        guard let firstEncounterID else {
+            XCTFail("The initial scanner confirmation did not produce an encounter ID")
+            return
+        }
+        model.scanner.onLatchHolding?(subject, firstEncounterID)
+
+        let offerAppeared = await waitUntil { model.heldDuplicateOffer != nil }
+        XCTAssertTrue(offerAppeared)
+        guard offerAppeared else { return }
+        model.addAnotherHeldCopy()
+        await settle()
+        model.scanner.drainVisionQueueForTesting()
+        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 3.0)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 3.25)
+
+        await addGate.waitUntilStarted()
+        await addGate.release()
+
+        let failed = await waitUntil {
+            model.heldDuplicateOffer != nil && model.scanAcknowledgement == nil
+        }
+        XCTAssertTrue(failed)
+        XCTAssertNotNil(model.heldDuplicateOffer)
+        XCTAssertNil(model.scanAcknowledgement)
+        XCTAssertEqual(model.recent.count, 1)
+        let addCount = await addGate.count()
+        XCTAssertEqual(addCount, 2)
     }
 
     func testSpatialProofRoutesSameIdentityToDuplicateConfirmationAndSameCardDoesNotCommit() async throws {
@@ -581,6 +836,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertNil(model.pendingDuplicateConfirmation)
         XCTAssertEqual(model.recent.count, 1)
         XCTAssertEqual(model.successCount, 1)
+        XCTAssertNil(model.scanAcknowledgement)
     }
 
     func testSpatialProofAddAnotherCommitsSecondCopyToExistingPosition() async throws {
@@ -606,6 +862,7 @@ final class ScannerViewModelTests: XCTestCase {
         }
         XCTAssertTrue(secondCommit)
         XCTAssertEqual(model.successCount, 2)
+        XCTAssertNil(model.scanAcknowledgement)
 
         let cards = try context().fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(cards.count, 1)
@@ -964,7 +1221,10 @@ final class ScannerViewModelTests: XCTestCase {
         setProviderID: String = "test-set",
         gradedRunRecorder: ScannerPrintRunRecorder? = nil,
         writeCoordinator: DerivedStateWriteCoordinator? = nil,
-        priceCheckOutcome: PriceCheckRefreshOutcome? = nil
+        priceCheckOutcome: PriceCheckRefreshOutcome? = nil,
+        storageGeneration: CollectionStorageGeneration? = nil,
+        collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)? = nil,
+        offline: PokemonOfflineCatalog? = nil
     ) throws -> ScannerViewModel {
         let context = try makeContext()
         let root = FileManager.default.temporaryDirectory
@@ -992,7 +1252,7 @@ final class ScannerViewModelTests: XCTestCase {
                 fetchGate: fetchGate,
                 catalogMiss: catalogMiss
             ),
-            offline: PokemonOfflineCatalog(store: checklistStore),
+            offline: offline ?? PokemonOfflineCatalog(store: checklistStore),
             resolvedDiskCache: ResolvedPokemonCardCache(
                 root: root,
                 appVersion: "scanner-tests"
@@ -1009,16 +1269,124 @@ final class ScannerViewModelTests: XCTestCase {
                 ?? ScannedGradedResolver(),
             priceCheckRefreshProvider: priceCheckOutcome.map {
                 ScannerStubPriceCheckProvider(outcome: $0)
-            }
+            },
+            collectionAddOverride: collectionAddOverride
         )
         model.start(
             context: context,
             isSceneActive: true,
             startCamera: false,
             shouldRefreshMagicDirectory: false,
-            writeCoordinator: writeCoordinator
+            writeCoordinator: writeCoordinator,
+            storageGeneration: storageGeneration
         )
         return model
+    }
+
+    private func makeHistoricalHeldRepeatFixture() async throws -> (
+        offline: PokemonOfflineCatalog,
+        first: ScanSubject,
+        second: ScanSubject
+    ) {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("TradingCardScannerHistoricalHeldRepeat-\(UUID().uuidString)", isDirectory: true)
+        let store = PokemonChecklistStore(root: root, bundle: nil, bundledRoot: root)
+        let firstSetID = CatalogSetID(game: .pokemon, providerID: "held-repeat-a")
+        let secondSetID = CatalogSetID(game: .pokemon, providerID: "held-repeat-b")
+        let firstSet = CatalogSet(
+            catalogID: firstSetID,
+            name: "Held Repeat A",
+            code: "HRA",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 100,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let secondSet = CatalogSet(
+            catalogID: secondSetID,
+            name: "Held Repeat B",
+            code: "HRB",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 100,
+            releaseDate: nil,
+            sortRank: 2
+        )
+        let firstSummary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "held-repeat-a-001",
+            setID: firstSetID,
+            setName: firstSet.name,
+            setCode: firstSet.code,
+            name: "First Held Card",
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil
+        )
+        let secondSummary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "held-repeat-b-001",
+            setID: secondSetID,
+            setName: secondSet.name,
+            setCode: secondSet.code,
+            name: "Second Held Card",
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil
+        )
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "scanner-held-repeat",
+                entries: [
+                    PokemonChecklistSnapshotEntry(
+                        set: firstSet,
+                        providerID: firstSet.providerID,
+                        officialCount: 100,
+                        standardSlotCount: 100,
+                        expandedSlotCount: 100,
+                        resource: "held-repeat-a.json"
+                    ),
+                    PokemonChecklistSnapshotEntry(
+                        set: secondSet,
+                        providerID: secondSet.providerID,
+                        officialCount: 100,
+                        standardSlotCount: 100,
+                        expandedSlotCount: 100,
+                        resource: "held-repeat-b.json"
+                    )
+                ]
+            ),
+            checklists: [
+                firstSetID.id: [firstSummary],
+                secondSetID.id: [secondSummary]
+            ]
+        )
+        try await store.replace(snapshot)
+
+        let number = PokemonPrintedNumberEvidence(
+            localID: "001",
+            denominator: 100,
+            scheme: .officialSet
+        )
+        func subject(named name: String) -> ScanSubject {
+            ScanSubject(
+                identifier: .pokemonHistorical(
+                    PokemonHistoricalScanEvidence(
+                        number: number,
+                        titleCandidates: [CatalogIdentityNormalization.canonicalText(name)]
+                    )
+                )
+            )
+        }
+        return (
+            PokemonOfflineCatalog(store: store),
+            subject(named: firstSummary.name),
+            subject(named: secondSummary.name)
+        )
     }
 
     private func makeContext() throws -> ModelContext {
@@ -1046,17 +1414,24 @@ final class ScannerViewModelTests: XCTestCase {
     private func confirm(
         _ model: ScannerViewModel,
         _ identifier: ScanIdentifier,
-        encounterID: UUID
+        encounterID: UUID,
+        authorizationID: UUID? = nil
     ) {
-        confirm(model, ScanSubject(identifier: identifier), encounterID: encounterID)
+        confirm(
+            model,
+            ScanSubject(identifier: identifier),
+            encounterID: encounterID,
+            authorizationID: authorizationID
+        )
     }
 
     private func confirm(
         _ model: ScannerViewModel,
         _ subject: ScanSubject,
-        encounterID: UUID
+        encounterID: UUID,
+        authorizationID: UUID? = nil
     ) {
-        model.scanner.onConfirmedSubjectCandidate?(nil, encounterID, subject, nil)
+        model.scanner.onConfirmedSubjectCandidate?(nil, encounterID, subject, authorizationID)
     }
 
     private func gradedSubject(
