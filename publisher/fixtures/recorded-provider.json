@@ -3,8 +3,6 @@
     {
       "id": "sv99",
       "name": "Recorded Test Set",
-      "logo": "https://assets.tcgdex.net/en/sv99/logo",
-      "symbol": "https://assets.tcgdex.net/en/sv99/symbol",
       "cardCount": {
         "total": 2,
         "official": 2,
@@ -51,8 +49,6 @@
           "image": "https://assets.tcgdex.net/en/sv99/sv99-001"
         }
       ],
-      "logo": "https://assets.tcgdex.net/en/sv99/logo",
-      "symbol": "https://assets.tcgdex.net/en/sv99/symbol",
       "releaseDate": "2026-01-01",
       "tcgOnline": null,
       "cardCount": {
@@ -62,7 +58,9 @@
         "reverse": 0,
         "holo": 0,
         "firstEd": 0
-      }
+      },
+      "serie": {"id": "sv"},
+      "abbreviation": {"official": "TST"}
     }
   ],
   "cards": [
@@ -96,10 +94,10 @@
       },
       {
         "id": "me55c",
-        "name": "30th Celebration Classic Collection",
+        "name": "30th Celebration: Classic Collection",
         "ptcgoCode": "30C",
         "releaseDate": "2026/09/16",
-        "printedTotal": 30,
+        "printedTotal": null,
         "total": 30,
         "logoURL": "https://images.scrydex.com/pokemon/me55c-logo/logo",
         "symbolURL": "https://images.scrydex.com/pokemon/me55c-symbol/symbol",
@@ -108,6 +106,17 @@
           "https://images.scrydex.com/pokemon/me55c-002/large",
           "https://images.scrydex.com/pokemon/me55c-003/large"
         ]
+      },
+      {
+        "id": "fixture-sv99",
+        "name": "Recorded Test Set",
+        "ptcgoCode": "TST",
+        "releaseDate": "2026/01/01",
+        "printedTotal": 2,
+        "total": 2,
+        "logoURL": "https://images.scrydex.com/pokemon/fixture-sv99-logo/logo",
+        "symbolURL": "https://images.scrydex.com/pokemon/fixture-sv99-symbol/symbol",
+        "cardArtworkURLs": []
       }
     ],
     "ambiguousSetIDs": []

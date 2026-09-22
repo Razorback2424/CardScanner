@@ -12,8 +12,8 @@
       "releaseDate": "2026-01-01",
       "releaseOrder": 100,
       "scanEnabled": true,
-      "logoURL": "https://assets.tcgdex.net/en/sv99/logo",
-      "symbolURL": "https://assets.tcgdex.net/en/sv99/symbol",
+      "logoURL": null,
+      "symbolURL": null,
       "rulesVersion": 1
     }
   ]

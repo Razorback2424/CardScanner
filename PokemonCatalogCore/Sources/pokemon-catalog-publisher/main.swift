@@ -273,6 +273,12 @@ struct PokemonCatalogPublisherMain {
                 from: fixtureDirectory.appendingPathComponent("recorded-provider.json")
             )
         }
+        let fixtureForBuild: PokemonCatalogProviderFixture
+        if options.value("--live") == "true" {
+            fixtureForBuild = fixture
+        } else {
+            fixtureForBuild = await enrichRecordedFixture(fixture)
+        }
         let revision: Int
         if let rawRevision = options.value("--revision") {
             guard let parsed = Int(rawRevision) else {
@@ -284,11 +290,85 @@ struct PokemonCatalogPublisherMain {
         }
         return try PokemonCatalogBuilder().build(
             PokemonCatalogBuildRequest(
-                fixture: fixture,
+                fixture: fixtureForBuild,
                 activeRelease: activeRelease,
                 humanInputs: humanInput.sets,
                 revision: revision,
                 generatedAt: generatedAt
+            )
+        )
+    }
+
+    /// Recorded fixtures contain artwork URLs that were accepted during the
+    /// live capture. Re-run the matcher and enrichment offline so fixture
+    /// validation exercises the same secondary-provider path without probing
+    /// the network again.
+    private static func enrichRecordedFixture(
+        _ fixture: PokemonCatalogProviderFixture
+    ) async -> PokemonCatalogProviderFixture {
+        guard let secondary = fixture.secondary else { return fixture }
+        let offlineResolver = PokemonCatalogTCGdexArtworkResolver { request in
+            guard let url = request.url,
+                  let response = HTTPURLResponse(
+                      url: url,
+                      // The recorded fixture models a TCGdex logo hit and a
+                      // symbol miss, so offline validation covers precedence
+                      // as well as secondary fallback without network access.
+                      statusCode: url.path.hasSuffix("/sv99/logo.png") ? 200 : 404,
+                      httpVersion: nil,
+                      headerFields: ["Content-Type": "image/png"]
+                  ) else {
+                throw URLError(.badURL)
+            }
+            return (response.statusCode == 200 ? Data([1]) : Data(), response)
+        }
+        let recordedArtworkURLs = Set(
+            secondary.sets
+                .flatMap { candidate in
+                    candidate.cardArtworkURLs
+                        + [candidate.logoURL, candidate.symbolURL].compactMap { $0 }
+                }
+                .compactMap { URL(string: $0) }
+        )
+        let offlineSecondaryProbe = PokemonCatalogArtworkProbe { request in
+            guard let url = request.url,
+                  let response = HTTPURLResponse(
+                      url: url,
+                      statusCode: recordedArtworkURLs.contains(url) ? 200 : 404,
+                      httpVersion: nil,
+                      headerFields: ["Content-Type": "image/png"]
+                  ) else {
+                throw URLError(.badURL)
+            }
+            return (recordedArtworkURLs.contains(url) ? Data([1]) : Data(), response)
+        }
+        let enricher = PokemonCatalogArtworkEnricher(
+            artworkResolver: offlineResolver,
+            secondaryArtworkProbe: offlineSecondaryProbe,
+            secondaryCandidates: secondary.sets
+        )
+        let rowsByID = Dictionary(
+            uniqueKeysWithValues: fixture.directory.map { ($0.id.lowercased(), $0) }
+        )
+        var ambiguousIDs = Set(secondary.ambiguousSetIDs)
+        var enrichedSets: [PokemonCatalogProviderSet] = []
+        enrichedSets.reserveCapacity(fixture.sets.count)
+        for providerSet in fixture.sets {
+            guard let row = rowsByID[providerSet.id.lowercased()] else {
+                enrichedSets.append(providerSet)
+                continue
+            }
+            let result = await enricher.enrich(providerSet, directoryRow: row)
+            enrichedSets.append(result.providerSet)
+            ambiguousIDs.formUnion(result.ambiguousSecondarySetIDs)
+        }
+        return PokemonCatalogProviderFixture(
+            directory: fixture.directory,
+            sets: enrichedSets,
+            cards: fixture.cards,
+            secondary: PokemonCatalogSecondaryFixture(
+                sets: secondary.sets,
+                ambiguousSetIDs: ambiguousIDs.sorted()
             )
         )
     }

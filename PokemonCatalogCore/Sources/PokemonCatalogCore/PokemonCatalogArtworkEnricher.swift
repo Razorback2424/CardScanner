@@ -90,15 +90,15 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
         )
 
         var cardArtworkURLs: [String]?
-        if matchedSecondary != nil,
+        if let matchedSecondary,
            providerSet.cards.allSatisfy({ nonEmpty($0.image) == nil }) {
-            let candidateURLs = matchedSecondary?.cardArtworkURLs ?? []
+            let candidateURLs = matchedSecondary.cardArtworkURLs
             let probedCandidates = await acceptedArtworkURLs(candidateURLs, limit: 3)
             if !probedCandidates.isEmpty {
                 cardArtworkURLs = probedCandidates
             } else if let secondaryCardArtworkLoader {
                 do {
-                    let fetched = try await secondaryCardArtworkLoader(matchedSecondary!.id, 3)
+                    let fetched = try await secondaryCardArtworkLoader(matchedSecondary.id, 3)
                     let probedFetched = await acceptedArtworkURLs(fetched, limit: 3)
                     cardArtworkURLs = probedFetched.isEmpty
                         ? nil
@@ -109,11 +109,17 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
             }
         }
 
-        let source = logoResult.source
-            ?? symbolResult.source
-            ?? (cardArtworkURLs == nil ? nil : matchedSecondary.map {
-                "secondary:\($0.id)"
-            })
+        var sources: [String] = []
+        if let source = logoResult.source {
+            sources.append("logo:\(source)")
+        }
+        if let source = symbolResult.source {
+            sources.append("symbol:\(source)")
+        }
+        if let matchedSecondary, cardArtworkURLs != nil {
+            sources.append("card:secondary:\(matchedSecondary.id)")
+        }
+        let source = sources.isEmpty ? nil : sources.joined(separator: ";")
         let enriched = PokemonCatalogProviderSet(
             id: providerSet.id,
             name: providerSet.name,
@@ -161,8 +167,10 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
             return Resolution(value: resolved, source: "tcgdexProbe")
         }
         guard let secondaryURL = nonEmpty(secondaryURL),
-              let url = URL(string: secondaryURL),
-              await secondaryArtworkProbe.accepts(url) else {
+              let url = URL(string: secondaryURL) else {
+            return Resolution(value: nil, source: nil)
+        }
+        guard await secondaryArtworkProbe.accepts(url) else {
             return Resolution(value: nil, source: nil)
         }
         return Resolution(
@@ -177,8 +185,10 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
         for rawURL in rawURLs {
             guard accepted.count < limit,
                   let value = nonEmpty(rawURL),
-                  let url = URL(string: value),
-                  await secondaryArtworkProbe.accepts(url) else { continue }
+                  let url = URL(string: value) else { continue }
+            guard await secondaryArtworkProbe.accepts(url) else {
+                continue
+            }
             accepted.append(value)
         }
         return accepted
