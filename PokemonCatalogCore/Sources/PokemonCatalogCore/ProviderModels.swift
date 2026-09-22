@@ -189,6 +189,22 @@ public struct PokemonCatalogProviderDetailedVariant: Codable, Equatable, Hashabl
     }
 }
 
+/// Publisher-only per-card artwork evidence. It is intentionally not
+/// Codable: the provider fingerprint must remain reproducible from TCGdex
+/// data on the device, while the signed descriptor carries the approved URLs.
+public struct PokemonCatalogResolvedCardArtwork: Equatable, Sendable {
+    public let thumbnail: String
+    public let image: String
+
+    public init(thumbnail: String, image: String) {
+        self.thumbnail = thumbnail
+        self.image = image
+    }
+
+    public var thumbnailURL: String { thumbnail }
+    public var imageURL: String { image }
+}
+
 public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
     public let id: String
     public let name: String
@@ -202,6 +218,7 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
     public let resolvedLogo: String?
     public let resolvedSymbol: String?
     public let resolvedCardArtworkURLs: [String]?
+    public let resolvedCardArtworkByLocalID: [String: PokemonCatalogResolvedCardArtwork]?
     /// Unsigned diagnostic provenance for the resolved artwork. It is never
     /// part of the provider payload or fingerprint.
     public let resolvedArtworkSource: String?
@@ -226,6 +243,7 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         resolvedLogo: String? = nil,
         resolvedSymbol: String? = nil,
         resolvedCardArtworkURLs: [String]? = nil,
+        resolvedCardArtworkByLocalID: [String: PokemonCatalogResolvedCardArtwork]? = nil,
         resolvedArtworkSource: String? = nil
     ) {
         self.id = id
@@ -236,6 +254,7 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         self.resolvedLogo = resolvedLogo
         self.resolvedSymbol = resolvedSymbol
         self.resolvedCardArtworkURLs = resolvedCardArtworkURLs
+        self.resolvedCardArtworkByLocalID = resolvedCardArtworkByLocalID
         self.resolvedArtworkSource = resolvedArtworkSource
         self.releaseDate = releaseDate
         self.tcgOnline = tcgOnline
@@ -259,6 +278,7 @@ public struct PokemonCatalogProviderSet: Codable, Equatable, Sendable {
         resolvedLogo = nil
         resolvedSymbol = nil
         resolvedCardArtworkURLs = nil
+        resolvedCardArtworkByLocalID = nil
         resolvedArtworkSource = nil
         releaseDate = try container.decodeIfPresent(String.self, forKey: .releaseDate)
         tcgOnline = try container.decodeIfPresent(String.self, forKey: .tcgOnline)

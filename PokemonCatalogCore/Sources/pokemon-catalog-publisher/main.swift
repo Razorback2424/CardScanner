@@ -245,7 +245,7 @@ struct PokemonCatalogPublisherMain {
             let secondaryArtworkLoader: PokemonCatalogArtworkEnricher.SecondaryCardArtworkLoader?
             if secondaryProviderAvailable {
                 secondaryArtworkLoader = { setID, limit in
-                    try await secondaryClient.fetchCardArtwork(
+                    try await secondaryClient.fetchCards(
                         setID: setID,
                         limit: limit
                     )
@@ -329,6 +329,9 @@ struct PokemonCatalogPublisherMain {
                         + [candidate.logoURL, candidate.symbolURL].compactMap { $0 }
                 }
                 .compactMap { URL(string: $0) }
+            + (secondary.cards ?? [])
+                .flatMap { [$0.thumbnailURL, $0.imageURL].compactMap { $0 } }
+                .compactMap { URL(string: $0) }
         )
         let offlineSecondaryProbe = PokemonCatalogArtworkProbe { request in
             guard let url = request.url,
@@ -345,7 +348,8 @@ struct PokemonCatalogPublisherMain {
         let enricher = PokemonCatalogArtworkEnricher(
             artworkResolver: offlineResolver,
             secondaryArtworkProbe: offlineSecondaryProbe,
-            secondaryCandidates: secondary.sets
+            secondaryCandidates: secondary.sets,
+            secondaryCardArtworkLoader: { _, _ in secondary.cards ?? [] }
         )
         let rowsByID = Dictionary(
             uniqueKeysWithValues: fixture.directory.map { ($0.id.lowercased(), $0) }
@@ -368,6 +372,7 @@ struct PokemonCatalogPublisherMain {
             cards: fixture.cards,
             secondary: PokemonCatalogSecondaryFixture(
                 sets: secondary.sets,
+                cards: secondary.cards,
                 ambiguousSetIDs: ambiguousIDs.sorted()
             )
         )

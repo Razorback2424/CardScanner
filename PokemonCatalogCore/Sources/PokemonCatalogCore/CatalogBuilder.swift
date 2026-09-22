@@ -375,9 +375,11 @@ public struct PokemonCatalogBuilder: Sendable {
             )
             let artworkFallbackURLs = uniqueArtworkURLs(from: summaries)
                 ?? providerSet.resolvedCardArtworkURLs
+            let cardArtwork = resolvedCardArtwork(for: providerSet)
             let descriptor = descriptorWithoutFingerprint.withProviderFingerprint(
                 fingerprint,
-                artworkFallbackURLs: artworkFallbackURLs
+                artworkFallbackURLs: artworkFallbackURLs,
+                cardArtwork: cardArtwork
             )
             try validateArtwork(descriptor)
             totalCards += summaries.count
@@ -1141,10 +1143,14 @@ public struct PokemonCatalogBuilder: Sendable {
             logoSource.map { "logo:\($0)" },
             symbolSource.map { "symbol:\($0)" }
         ].compactMap { $0 }
-        if let cardSource = providerSource(for: "card") {
+        if let cardSource = providerSource(for: "cards") {
+            setSources.append("cards:\(cardSource)")
+        } else if let cardSource = providerSource(for: "card") {
             setSources.append("card:\(cardSource)")
         } else if setSources.isEmpty,
-                  descriptor.artworkFallbackURLs != nil || providerSet.resolvedCardArtworkURLs != nil {
+                  descriptor.artworkFallbackURLs != nil
+                    || providerSet.resolvedCardArtworkURLs != nil
+                    || providerSet.resolvedCardArtworkByLocalID != nil {
             setSources.append("card:tcgdexCardFallback")
         }
         return setSources.isEmpty ? nil : setSources.joined(separator: ";")
@@ -1189,6 +1195,29 @@ public struct PokemonCatalogBuilder: Sendable {
         let values = summaries.compactMap(\.imageURL).filter { seen.insert($0).inserted }
         let limited = Array(values.prefix(3))
         return limited.isEmpty ? nil : limited
+    }
+
+    private func resolvedCardArtwork(
+        for providerSet: PokemonCatalogProviderSet
+    ) -> [PokemonCatalogCardArtwork]? {
+        guard let resolved = providerSet.resolvedCardArtworkByLocalID else { return nil }
+        let values = providerSet.cards.compactMap { card -> PokemonCatalogCardArtwork? in
+            let key = card.localID.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+            guard nonEmpty(card.image) == nil,
+                  let artwork = resolved[key],
+                  let thumbnailURL = nonEmpty(artwork.thumbnail),
+                  let imageURL = nonEmpty(artwork.image) else {
+                return nil
+            }
+            return PokemonCatalogCardArtwork(
+                localID: card.localID,
+                thumbnailURL: thumbnailURL,
+                imageURL: imageURL
+            )
+        }
+        .sorted { $0.localID < $1.localID }
+        .prefix(configuration.maxCardsPerSet)
+        return values.isEmpty ? nil : Array(values)
     }
 
     private func buildChecklist(
@@ -1343,6 +1372,10 @@ public struct PokemonCatalogBuilder: Sendable {
         ].compactMap({ $0 })
         + (descriptor.artworkFallbackURLs ?? []) {
             try validateURL(value)
+        }
+        for card in descriptor.cardArtwork ?? [] {
+            try validateURL(card.thumbnailURL)
+            try validateURL(card.imageURL)
         }
     }
 

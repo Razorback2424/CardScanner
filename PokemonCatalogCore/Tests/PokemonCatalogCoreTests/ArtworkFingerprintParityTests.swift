@@ -228,6 +228,12 @@ final class ArtworkFingerprintParityTests: XCTestCase {
             resolvedLogo: "https://images.scrydex.com/pokemon/future-logo/logo",
             resolvedSymbol: "https://images.scrydex.com/pokemon/future-symbol/symbol",
             resolvedCardArtworkURLs: ["https://images.scrydex.com/pokemon/future/card.png"],
+            resolvedCardArtworkByLocalID: [
+                "001": .init(
+                    thumbnail: "https://images.scrydex.com/pokemon/future/small",
+                    image: "https://images.scrydex.com/pokemon/future/large"
+                )
+            ],
             resolvedArtworkSource: "secondary:future"
         )
 

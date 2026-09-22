@@ -42,7 +42,7 @@ public enum PokemonCatalogChangeClassifier {
     /// by default.
     private static let automaticFieldNames: Set<String> = [
         "providerFingerprint", "displayName", "releaseDate", "logoURL", "symbolURL",
-        "artworkFallbackURLs"
+        "artworkFallbackURLs", "cardArtwork"
     ]
 
     public static func classify(

@@ -119,6 +119,32 @@
         "cardArtworkURLs": []
       }
     ],
+    "cards": [
+      {
+        "number": "99",
+        "name": "Darkrai & Cresselia LEGEND",
+        "thumbnailURL": "https://images.scrydex.com/pokemon/me55c-99/small",
+        "imageURL": "https://images.scrydex.com/pokemon/me55c-99/large"
+      },
+      {
+        "number": "100",
+        "name": "Darkrai & Cresselia LEGEND",
+        "thumbnailURL": "https://images.scrydex.com/pokemon/me55c-100/small",
+        "imageURL": "https://images.scrydex.com/pokemon/me55c-100/large"
+      },
+      {
+        "number": "106m",
+        "name": "Palkia LV.X",
+        "thumbnailURL": "https://images.scrydex.com/pokemon/me55c-106m/small",
+        "imageURL": "https://images.scrydex.com/pokemon/me55c-106m/large"
+      },
+      {
+        "number": "4",
+        "name": "Pikachu",
+        "thumbnailURL": "https://images.scrydex.com/pokemon/me55c-4/small",
+        "imageURL": "https://images.scrydex.com/pokemon/me55c-4/large"
+      }
+    ],
     "ambiguousSetIDs": []
   }
 }

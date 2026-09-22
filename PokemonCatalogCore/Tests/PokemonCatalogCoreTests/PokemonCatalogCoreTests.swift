@@ -1010,6 +1010,226 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
     }
 
+    func testSecondaryCardMatcherResolvesLegendHalvesAndSuffixedReprints() {
+        let tcgdexCards = [
+            PokemonCatalogProviderCardBrief(
+                id: "me55c-019",
+                localID: "019",
+                name: "Darkrai & Cresselia LEGEND"
+            ),
+            PokemonCatalogProviderCardBrief(
+                id: "me55c-020",
+                localID: "020",
+                name: "Darkrai & Cresselia LEGEND"
+            ),
+            PokemonCatalogProviderCardBrief(
+                id: "me55c-022",
+                localID: "022",
+                name: "Palkia"
+            ),
+            PokemonCatalogProviderCardBrief(
+                id: "me55c-001",
+                localID: "001",
+                name: "Pikachu"
+            )
+        ]
+        let secondaryCards = [
+            PokemonCatalogSecondaryCard(number: "99", name: "Darkrai & Cresselia LEGEND"),
+            PokemonCatalogSecondaryCard(number: "100", name: "Darkrai & Cresselia LEGEND"),
+            PokemonCatalogSecondaryCard(number: "106m", name: "Palkia LV.X"),
+            PokemonCatalogSecondaryCard(number: "4", name: "Pikachu")
+        ]
+
+        let matches = PokemonCatalogSecondaryCardMatcher.match(
+            tcgdexCards: tcgdexCards,
+            secondaryCards: secondaryCards
+        )
+
+        XCTAssertEqual(matches.count, 4)
+        XCTAssertEqual(matches["me55c-019"]?.number, "99")
+        XCTAssertEqual(matches["me55c-020"]?.number, "100")
+        XCTAssertEqual(matches["me55c-022"]?.number, "106m")
+        XCTAssertEqual(matches["me55c-001"]?.number, "4")
+    }
+
+    func testSecondaryCardMatcherReturnsEmptyOnCountMismatch() {
+        let tcgdexCards = [
+            PokemonCatalogProviderCardBrief(id: "set-001", localID: "001", name: "Alpha")
+        ]
+        let secondaryCards = [
+            PokemonCatalogSecondaryCard(number: "1", name: "Alpha"),
+            PokemonCatalogSecondaryCard(number: "2", name: "Beta")
+        ]
+
+        XCTAssertTrue(
+            PokemonCatalogSecondaryCardMatcher.match(
+                tcgdexCards: tcgdexCards,
+                secondaryCards: secondaryCards
+            ).isEmpty
+        )
+    }
+
+    func testSecondaryCardMatcherDiscardsAmbiguousNameGroups() {
+        let tcgdexCards = [
+            PokemonCatalogProviderCardBrief(id: "set-001", localID: "001", name: "Twin"),
+            PokemonCatalogProviderCardBrief(id: "set-002", localID: "002", name: "Twin"),
+            PokemonCatalogProviderCardBrief(id: "set-003", localID: "003", name: "Unique")
+        ]
+        let secondaryCards = [
+            PokemonCatalogSecondaryCard(number: "1", name: "Twin"),
+            PokemonCatalogSecondaryCard(number: "2", name: "Unique"),
+            PokemonCatalogSecondaryCard(number: "3", name: "Other")
+        ]
+
+        let matches = PokemonCatalogSecondaryCardMatcher.match(
+            tcgdexCards: tcgdexCards,
+            secondaryCards: secondaryCards
+        )
+
+        XCTAssertEqual(matches.count, 1)
+        XCTAssertEqual(matches["set-003"]?.number, "2")
+        XCTAssertNil(matches["set-001"])
+        XCTAssertNil(matches["set-002"])
+    }
+
+    func testArtworkEnricherPublishesMatchedPerCardArtworkAfterSampleProbe() async throws {
+        let resolver = PokemonCatalogTCGdexArtworkResolver { request in
+            let url = try XCTUnwrap(request.url)
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: url,
+                    statusCode: 404,
+                    httpVersion: nil,
+                    headerFields: ["Content-Type": "image/png"]
+                )
+            )
+            return (Data(), response)
+        }
+        let probe = PokemonCatalogArtworkProbe { request in
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: try XCTUnwrap(request.url),
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: ["Content-Type": "image/png"]
+                )
+            )
+            return (Data([1]), response)
+        }
+        let providerSet = PokemonCatalogProviderSet(
+            id: "future",
+            name: "Future Set",
+            cards: [
+                .init(id: "future-001", localID: "001", name: "Pikachu"),
+                .init(id: "future-002", localID: "002", name: "Palkia")
+            ],
+            releaseDate: "2026-09-16",
+            cardCount: .init(total: 2, official: 2),
+            serie: .init(id: "sv"),
+            abbreviation: .init(official: "FTR")
+        )
+        let candidate = PokemonCatalogSecondarySet(
+            id: "secondary-future",
+            name: "Future Set",
+            ptcgoCode: "FTR",
+            releaseDate: "2026/09/16",
+            printedTotal: 2,
+            total: 2,
+            logoURL: "https://images.scrydex.com/pokemon/future-logo/logo",
+            symbolURL: "https://images.scrydex.com/pokemon/future-symbol/symbol"
+        )
+        let secondaryCards = [
+            PokemonCatalogSecondaryCard(
+                number: "4",
+                name: "Pikachu",
+                thumbnailURL: "https://images.scrydex.com/pokemon/future-4/small",
+                imageURL: "https://images.scrydex.com/pokemon/future-4/large"
+            ),
+            PokemonCatalogSecondaryCard(
+                number: "106m",
+                name: "Palkia LV.X",
+                thumbnailURL: "https://images.scrydex.com/pokemon/future-106m/small",
+                imageURL: "https://images.scrydex.com/pokemon/future-106m/large"
+            )
+        ]
+
+        let result = await PokemonCatalogArtworkEnricher(
+            artworkResolver: resolver,
+            secondaryArtworkProbe: probe,
+            secondaryCandidates: [candidate],
+            secondaryCardArtworkLoader: { _, _ in secondaryCards }
+        ).enrich(
+            providerSet,
+            directoryRow: .init(
+                id: "future",
+                name: "Future Set",
+                cardCount: .init(total: 2, official: 2),
+                releaseDate: "2026-09-16"
+            )
+        )
+
+        XCTAssertEqual(result.providerSet.resolvedCardArtworkByLocalID?.count, 2)
+        XCTAssertEqual(
+            result.providerSet.resolvedCardArtworkByLocalID?["002"]?.image,
+            "https://images.scrydex.com/pokemon/future-106m/large"
+        )
+        XCTAssertEqual(
+            result.providerSet.resolvedArtworkSource,
+            "logo:secondary:secondary-future;symbol:secondary:secondary-future;cards:secondary:secondary-future:2/2"
+        )
+    }
+
+    func testArtworkEnricherDoesNotPublishPerCardArtworkWhenSampleProbeFails() async throws {
+        let probe = PokemonCatalogArtworkProbe { request in
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: try XCTUnwrap(request.url),
+                    statusCode: 404,
+                    httpVersion: nil,
+                    headerFields: ["Content-Type": "image/png"]
+                )
+            )
+            return (Data([1]), response)
+        }
+        let providerSet = PokemonCatalogProviderSet(
+            id: "future",
+            name: "Future Set",
+            cards: [.init(id: "future-001", localID: "001", name: "Pikachu")],
+            releaseDate: "2026-09-16",
+            cardCount: .init(total: 1, official: 1),
+            abbreviation: .init(official: "FTR")
+        )
+        let candidate = PokemonCatalogSecondarySet(
+            id: "secondary-future",
+            name: "Future Set",
+            ptcgoCode: "FTR",
+            releaseDate: "2026/09/16",
+            total: 1
+        )
+        let result = await PokemonCatalogArtworkEnricher(
+            secondaryArtworkProbe: probe,
+            secondaryCandidates: [candidate],
+            secondaryCardArtworkLoader: { _, _ in [
+                PokemonCatalogSecondaryCard(
+                    number: "4",
+                    name: "Pikachu",
+                    thumbnailURL: "https://images.scrydex.com/pokemon/future-4/small",
+                    imageURL: "https://images.scrydex.com/pokemon/future-4/large"
+                )
+            ] }
+        ).enrich(
+            providerSet,
+            directoryRow: .init(
+                id: "future",
+                name: "Future Set",
+                cardCount: .init(total: 1, official: 1),
+                releaseDate: "2026-09-16"
+            )
+        )
+
+        XCTAssertNil(result.providerSet.resolvedCardArtworkByLocalID)
+    }
+
     func testArtworkEnricherRecordsIndependentSourcesForLogoSymbolAndCardArt() async throws {
         let resolver = PokemonCatalogTCGdexArtworkResolver { request in
             let url = try XCTUnwrap(request.url)
@@ -2262,7 +2482,13 @@ final class PokemonCatalogCoreTests: XCTestCase {
             cardCount: .init(total: 1, official: 1),
             serie: .init(id: "sv"),
             abbreviation: .init(official: "FTR"),
-            resolvedCardArtworkURLs: ["https://evil.example/card.png"]
+            resolvedCardArtworkURLs: ["https://evil.example/card.png"],
+            resolvedCardArtworkByLocalID: [
+                "001": .init(
+                    thumbnail: "https://evil.example/small.png",
+                    image: "https://evil.example/large.png"
+                )
+            ]
         )
         let fixture = PokemonCatalogProviderFixture(
             directory: [
@@ -2301,6 +2527,25 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
     }
 
+    func testCardArtworkChangeUsesAutomaticContentLane() {
+        let old = descriptor(providerID: "sv99", code: "TST", count: 1)
+        let current = old.withProviderFingerprint(
+            old.providerFingerprint,
+            artworkFallbackURLs: old.artworkFallbackURLs,
+            cardArtwork: [
+                .init(
+                    localID: "001",
+                    thumbnailURL: "https://images.scrydex.com/pokemon/sv99-1/small",
+                    imageURL: "https://images.scrydex.com/pokemon/sv99-1/large"
+                )
+            ]
+        )
+        XCTAssertEqual(
+            PokemonCatalogChangeClassifier.classify(previous: old, current: current),
+            .contentOnly
+        )
+    }
+
     func testDescriptorWithoutArtworkFallbackURLsStillDecodes() throws {
         let data = Data(
             """
@@ -2320,6 +2565,7 @@ final class PokemonCatalogCoreTests: XCTestCase {
             from: data
         )
         XCTAssertNil(descriptor.artworkFallbackURLs)
+        XCTAssertNil(descriptor.cardArtwork)
     }
 
     func testSchemaOneDescriptorWithFutureOptionalFieldStillDecodes() throws {

@@ -36,17 +36,42 @@ public struct PokemonCatalogSecondarySet: Codable, Equatable, Hashable, Sendable
     }
 }
 
+/// Per-card artwork evidence from the secondary catalog. The original
+/// printed number is retained for diagnostics, but matching to TCGdex is
+/// name-based because the two providers use different numbering schemes.
+public struct PokemonCatalogSecondaryCard: Codable, Equatable, Hashable, Sendable {
+    public let number: String
+    public let name: String
+    public let thumbnailURL: String?
+    public let imageURL: String?
+
+    public init(
+        number: String,
+        name: String,
+        thumbnailURL: String? = nil,
+        imageURL: String? = nil
+    ) {
+        self.number = number
+        self.name = name
+        self.thumbnailURL = thumbnailURL
+        self.imageURL = imageURL
+    }
+}
+
 /// Optional recorded secondary evidence. Keeping it optional makes older
 /// fixtures decode unchanged and keeps the offline validation lane network-free.
 public struct PokemonCatalogSecondaryFixture: Codable, Equatable, Sendable {
     public let sets: [PokemonCatalogSecondarySet]
+    public let cards: [PokemonCatalogSecondaryCard]?
     public let ambiguousSetIDs: [String]
 
     public init(
         sets: [PokemonCatalogSecondarySet],
+        cards: [PokemonCatalogSecondaryCard]? = nil,
         ambiguousSetIDs: [String] = []
     ) {
         self.sets = sets
+        self.cards = cards
         self.ambiguousSetIDs = ambiguousSetIDs
     }
 }

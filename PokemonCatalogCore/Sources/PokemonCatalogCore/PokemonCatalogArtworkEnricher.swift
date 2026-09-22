@@ -7,7 +7,7 @@ import Foundation
 /// a secondary transport failure produces no artwork rather than a guess.
 public struct PokemonCatalogArtworkEnricher: Sendable {
     public typealias SecondaryCardArtworkLoader =
-        @Sendable (String, Int) async throws -> [String]
+        @Sendable (String, Int) async throws -> [PokemonCatalogSecondaryCard]
     public typealias Logger = @Sendable (String) -> Void
 
     public struct Result: Sendable {
@@ -90,21 +90,85 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
         )
 
         var cardArtworkURLs: [String]?
+        var cardArtworkByLocalID: [String: PokemonCatalogResolvedCardArtwork]?
+        var cardArtworkMatchCount = 0
         if let matchedSecondary,
            providerSet.cards.allSatisfy({ nonEmpty($0.image) == nil }) {
-            let candidateURLs = matchedSecondary.cardArtworkURLs
-            let probedCandidates = await acceptedArtworkURLs(candidateURLs, limit: 3)
-            if !probedCandidates.isEmpty {
-                cardArtworkURLs = probedCandidates
-            } else if let secondaryCardArtworkLoader {
+            if let secondaryCardArtworkLoader {
                 do {
-                    let fetched = try await secondaryCardArtworkLoader(matchedSecondary.id, 3)
-                    let probedFetched = await acceptedArtworkURLs(fetched, limit: 3)
-                    cardArtworkURLs = probedFetched.isEmpty
-                        ? nil
-                        : probedFetched
+                    let fetched = try await secondaryCardArtworkLoader(
+                        matchedSecondary.id,
+                        min(max(providerSet.cards.count, 3), 400)
+                    )
+                    let matchedCards = PokemonCatalogSecondaryCardMatcher.match(
+                        tcgdexCards: providerSet.cards,
+                        secondaryCards: fetched
+                    )
+                    let candidatePairs = providerSet.cards
+                        .compactMap { brief -> (PokemonCatalogProviderCardBrief, PokemonCatalogSecondaryCard)? in
+                            guard let secondary = matchedCards[brief.id],
+                                  let thumbnail = nonEmpty(secondary.thumbnailURL),
+                                  let image = nonEmpty(secondary.imageURL) else {
+                                return nil
+                            }
+                            return (brief, .init(
+                                number: secondary.number,
+                                name: secondary.name,
+                                thumbnailURL: thumbnail,
+                                imageURL: image
+                            ))
+                        }
+                        .sorted { $0.0.localID < $1.0.localID }
+
+                    // A small sample validates the shared CDN template. If
+                    // the sample is not healthy, publish no per-card overlay;
+                    // a later run can safely retry without signing guesses.
+                    let sample = candidatePairs.prefix(3)
+                    var sampleAccepted = !sample.isEmpty
+                    for (_, card) in sample where sampleAccepted {
+                        guard let thumbnail = card.thumbnailURL,
+                              let image = card.imageURL,
+                              let thumbnailURL = URL(string: thumbnail),
+                              let imageURL = URL(string: image),
+                              await secondaryArtworkProbe.accepts(thumbnailURL),
+                              await secondaryArtworkProbe.accepts(imageURL) else {
+                            sampleAccepted = false
+                            break
+                        }
+                    }
+                    if sampleAccepted {
+                        var resolved: [String: PokemonCatalogResolvedCardArtwork] = [:]
+                        for (brief, card) in candidatePairs {
+                            guard let thumbnail = nonEmpty(card.thumbnailURL),
+                                  let image = nonEmpty(card.imageURL) else { continue }
+                            resolved[normalizedLocalID(brief.localID)] =
+                                PokemonCatalogResolvedCardArtwork(
+                                    thumbnail: thumbnail,
+                                    image: image
+                                )
+                        }
+                        if !resolved.isEmpty {
+                            cardArtworkByLocalID = resolved
+                            cardArtworkMatchCount = resolved.count
+                            cardArtworkURLs = candidatePairs
+                                .prefix(3)
+                                .compactMap { nonEmpty($0.1.imageURL) }
+                        }
+                    }
                 } catch {
                     logger("secondary provider unavailable: \(error)")
+                }
+            }
+
+            // Keep the original set-tile evidence path for recorded/legacy
+            // candidates that predate the per-card response shape.
+            if cardArtworkURLs == nil {
+                let probedCandidates = await acceptedArtworkURLs(
+                    matchedSecondary.cardArtworkURLs,
+                    limit: 3
+                )
+                if !probedCandidates.isEmpty {
+                    cardArtworkURLs = probedCandidates
                 }
             }
         }
@@ -116,7 +180,11 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
         if let source = symbolResult.source {
             sources.append("symbol:\(source)")
         }
-        if let matchedSecondary, cardArtworkURLs != nil {
+        if let matchedSecondary, cardArtworkMatchCount > 0 {
+            sources.append(
+                "cards:secondary:\(matchedSecondary.id):\(cardArtworkMatchCount)/\(providerSet.cards.count)"
+            )
+        } else if let matchedSecondary, cardArtworkURLs != nil {
             sources.append("card:secondary:\(matchedSecondary.id)")
         }
         let source = sources.isEmpty ? nil : sources.joined(separator: ";")
@@ -134,6 +202,7 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
             resolvedLogo: logoResult.value,
             resolvedSymbol: symbolResult.value,
             resolvedCardArtworkURLs: cardArtworkURLs,
+            resolvedCardArtworkByLocalID: cardArtworkByLocalID,
             resolvedArtworkSource: source
         )
         return Result(
@@ -198,5 +267,9 @@ public struct PokemonCatalogArtworkEnricher: Sendable {
         guard let value else { return nil }
         let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? nil : value
+    }
+
+    private func normalizedLocalID(_ value: String) -> String {
+        value.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
     }
 }

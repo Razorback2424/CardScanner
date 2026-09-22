@@ -86,6 +86,21 @@ public struct PokemonCatalogMembershipRecognition: Codable, Equatable, Hashable,
     }
 }
 
+/// Publisher-approved per-card artwork used only when the primary provider
+/// supplies no card image. The local ID is the primary-provider key; the
+/// secondary provider's number is deliberately not exposed to the device.
+public struct PokemonCatalogCardArtwork: Codable, Equatable, Hashable, Sendable {
+    public let localID: String
+    public let thumbnailURL: String
+    public let imageURL: String
+
+    public init(localID: String, thumbnailURL: String, imageURL: String) {
+        self.localID = localID
+        self.thumbnailURL = thumbnailURL
+        self.imageURL = imageURL
+    }
+}
+
 public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendable {
     public enum RecognitionKind: String, Codable, Sendable {
         case expansion
@@ -124,6 +139,9 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     /// Up to three publisher-validated card image URLs used after set artwork
     /// candidates fail. This is presentation metadata, never scanner authority.
     public let artworkFallbackURLs: [String]?
+    /// Per-card artwork used only to fill missing primary-provider images.
+    /// This remains presentation metadata and never enters recognition indexes.
+    public let cardArtwork: [PokemonCatalogCardArtwork]?
     public let rulesVersion: Int
     public let membershipRecognition: PokemonCatalogMembershipRecognition?
 
@@ -145,6 +163,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         parentProviderSetID: String? = nil,
         bundledArtworkSourceID: String? = nil,
         artworkFallbackURLs: [String]? = nil,
+        cardArtwork: [PokemonCatalogCardArtwork]? = nil,
         rulesVersion: Int = PokemonCatalogCoreContract.rulesVersion,
         membershipRecognition: PokemonCatalogMembershipRecognition? = nil
     ) {
@@ -165,6 +184,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         self.symbolURL = symbolURL
         self.bundledArtworkSourceID = bundledArtworkSourceID
         self.artworkFallbackURLs = artworkFallbackURLs
+        self.cardArtwork = cardArtwork
         self.rulesVersion = rulesVersion
         self.membershipRecognition = membershipRecognition
     }
@@ -187,6 +207,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
         case symbolURL
         case bundledArtworkSourceID
         case artworkFallbackURLs
+        case cardArtwork
         case rulesVersion
         case membershipRecognition
     }
@@ -226,6 +247,10 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
             [String].self,
             forKey: .artworkFallbackURLs
         )
+        cardArtwork = try container.decodeIfPresent(
+            [PokemonCatalogCardArtwork].self,
+            forKey: .cardArtwork
+        )
         rulesVersion = try container.decode(Int.self, forKey: .rulesVersion)
         membershipRecognition = try container.decodeIfPresent(
             PokemonCatalogMembershipRecognition.self,
@@ -238,13 +263,26 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
     ) -> PokemonCatalogSetDescriptor {
         withProviderFingerprint(
             providerFingerprint,
-            artworkFallbackURLs: artworkFallbackURLs
+            artworkFallbackURLs: artworkFallbackURLs,
+            cardArtwork: cardArtwork
         )
     }
 
     public func withProviderFingerprint(
         _ providerFingerprint: String?,
         artworkFallbackURLs: [String]?
+    ) -> PokemonCatalogSetDescriptor {
+        withProviderFingerprint(
+            providerFingerprint,
+            artworkFallbackURLs: artworkFallbackURLs,
+            cardArtwork: cardArtwork
+        )
+    }
+
+    public func withProviderFingerprint(
+        _ providerFingerprint: String?,
+        artworkFallbackURLs: [String]?,
+        cardArtwork: [PokemonCatalogCardArtwork]?
     ) -> PokemonCatalogSetDescriptor {
         PokemonCatalogSetDescriptor(
             providerSetID: providerSetID,
@@ -264,6 +302,7 @@ public struct PokemonCatalogSetDescriptor: Codable, Equatable, Hashable, Sendabl
             parentProviderSetID: parentProviderSetID,
             bundledArtworkSourceID: bundledArtworkSourceID,
             artworkFallbackURLs: artworkFallbackURLs,
+            cardArtwork: cardArtwork,
             rulesVersion: rulesVersion,
             membershipRecognition: membershipRecognition
         )

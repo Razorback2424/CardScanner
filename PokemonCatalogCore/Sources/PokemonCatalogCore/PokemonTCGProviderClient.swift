@@ -145,6 +145,86 @@ public struct PokemonCatalogSecondaryProviderClient: Sendable {
         )
     }
 
+    /// Fetches the bounded per-card artwork surface needed to fill cards for
+    /// sets whose TCGdex briefs have no image. The two providers do not share
+    /// collector numbering, so the caller retains both name and number and
+    /// performs the conservative cross-provider join separately.
+    public func fetchCards(
+        setID: String,
+        limit: Int = 400
+    ) async throws -> [PokemonCatalogSecondaryCard] {
+        struct Response: Decodable {
+            let data: [Card]
+        }
+        struct Card: Decodable {
+            let number: String
+            let name: String
+
+            struct Images: Decodable {
+                let small: String?
+                let large: String?
+            }
+
+            let images: Images?
+        }
+
+        let cappedLimit = max(0, limit)
+        guard cappedLimit > 0 else { return [] }
+        let pageSize = min(cappedLimit, 250)
+        let baseQueryItems = [
+            URLQueryItem(name: "q", value: "set.id:\(setID)"),
+            URLQueryItem(name: "pageSize", value: String(pageSize)),
+            URLQueryItem(name: "orderBy", value: "id")
+        ]
+        let queryVariants = [
+            baseQueryItems + [
+                URLQueryItem(name: "select", value: "id,number,name,images")
+            ],
+            baseQueryItems
+        ]
+
+        var cards: [PokemonCatalogSecondaryCard] = []
+        cards.reserveCapacity(min(cappedLimit, pageSize * 2))
+        for page in 1...2 {
+            let pageQueryVariants = queryVariants.map { queryItems in
+                queryItems + [URLQueryItem(name: "page", value: String(page))]
+            }
+            var pageCards: [PokemonCatalogSecondaryCard]?
+            var lastError: Error?
+            for queryItems in pageQueryVariants {
+                do {
+                    let response: Response = try await request(
+                        path: "cards",
+                        queryItems: queryItems
+                    )
+                    pageCards = response.data.map {
+                        PokemonCatalogSecondaryCard(
+                            number: $0.number,
+                            name: $0.name,
+                            thumbnailURL: $0.images?.small,
+                            imageURL: $0.images?.large
+                        )
+                    }
+                    break
+                } catch {
+                    lastError = error
+                }
+            }
+            guard let pageCards else {
+                throw lastError ?? PokemonCatalogSecondaryProviderFetchError.network(
+                    path: "/v2/cards",
+                    message: "all query variants failed"
+                )
+            }
+
+            cards.append(contentsOf: pageCards)
+            if pageCards.count < pageSize || cards.count >= cappedLimit {
+                break
+            }
+        }
+        return Array(cards.prefix(cappedLimit))
+    }
+
     private func request<T: Decodable>(
         path: String,
         queryItems: [URLQueryItem] = []
