@@ -17,6 +17,22 @@ on:
       - "firebase.json"
       - ".firebaserc.example"
       - ".github/workflows/pokemon-catalog.yml"
+  push:
+    paths:
+      - "PokemonCatalogCore/**"
+      - "MagicCatalogCore/**"
+      - "TradingCardScanner/**"
+      - "TradingCardScannerTests/PokemonCatalog*.swift"
+      - "TradingCardScanner.xcodeproj/project.pbxproj"
+      - "Config/**"
+      - "publisher/**"
+      - "publisher/discovery-policy.json"
+      - "scripts/restore_pokemon_catalog_releases.sh"
+      - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/verify_pokemon_catalog_hosting_config.sh"
+      - "firebase.json"
+      - ".firebaserc.example"
+      - ".github/workflows/pokemon-catalog.yml"
   schedule:
     - cron: "17 6 * * *"
   workflow_dispatch:
@@ -63,6 +79,9 @@ jobs:
     if: >-
       github.event_name == 'schedule' ||
       (github.event_name == 'workflow_dispatch' && inputs.publish == true)
+    concurrency:
+      group: scanstash-catalog-production-hosting
+      cancel-in-progress: false
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
@@ -114,10 +133,14 @@ jobs:
               requires_approval="false"
               publish_environment="pokemon-catalog-production-auto"
               ;;
-            baselineMigration|authority|newSet|unknown)
+            baselineMigration|authority|newSet)
               has_changes="true"
               requires_approval="true"
               publish_environment="pokemon-catalog-production"
+              ;;
+            unknown)
+              echo "Unknown catalog change class: $change_class" >&2
+              exit 1
               ;;
             *)
               echo "Unknown catalog change class: $change_class" >&2

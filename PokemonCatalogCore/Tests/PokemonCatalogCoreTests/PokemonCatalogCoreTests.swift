@@ -1010,6 +1010,80 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
     }
 
+    func testArtworkEnricherRecordsIndependentSourcesForLogoSymbolAndCardArt() async throws {
+        let resolver = PokemonCatalogTCGdexArtworkResolver { request in
+            let url = try XCTUnwrap(request.url)
+            let isLogo = url.path.hasSuffix("/logo.png")
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: url,
+                    statusCode: isLogo ? 200 : 404,
+                    httpVersion: nil,
+                    headerFields: ["Content-Type": "image/png"]
+                )
+            )
+            return (isLogo ? Data([1]) : Data(), response)
+        }
+        let probe = PokemonCatalogArtworkProbe { request in
+            let url = try XCTUnwrap(request.url)
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: url,
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: ["Content-Type": "image/png"]
+                )
+            )
+            return (Data([1]), response)
+        }
+        let providerSet = PokemonCatalogProviderSet(
+            id: "future",
+            name: "Future Set",
+            cards: [
+                .init(
+                    id: "future-001",
+                    localID: "001",
+                    name: "Future Card",
+                    image: nil
+                )
+            ],
+            releaseDate: "2026-09-16",
+            cardCount: .init(total: 1, official: 1),
+            serie: .init(id: "sv"),
+            abbreviation: .init(official: "FTR")
+        )
+        let candidate = PokemonCatalogSecondarySet(
+            id: "secondary-future",
+            name: "Future Set",
+            ptcgoCode: "FTR",
+            releaseDate: "2026/09/16",
+            printedTotal: 1,
+            total: 1,
+            logoURL: "https://images.scrydex.com/pokemon/future-logo/logo",
+            symbolURL: "https://images.scrydex.com/pokemon/future-symbol/symbol",
+            cardArtworkURLs: ["https://images.scrydex.com/pokemon/future-card/large"]
+        )
+        let result = await PokemonCatalogArtworkEnricher(
+            artworkResolver: resolver,
+            secondaryArtworkProbe: probe,
+            secondaryCandidates: [candidate]
+        ).enrich(
+            providerSet,
+            directoryRow: .init(
+                id: "future",
+                name: "Future Set",
+                cardCount: .init(total: 1, official: 1),
+                releaseDate: "2026-09-16"
+            )
+        )
+
+        XCTAssertEqual(
+            result.providerSet.resolvedArtworkSource,
+            "logo:tcgdexProbe;symbol:secondary:secondary-future;card:secondary:secondary-future"
+        )
+        XCTAssertEqual(result.providerSet.resolvedCardArtworkURLs, candidate.cardArtworkURLs)
+    }
+
     func testArtworkProbeRejectsNonSuccessStatusEvenWithImageContentType() async throws {
         let probe = PokemonCatalogArtworkProbe { request in
             let response = try XCTUnwrap(
@@ -1080,6 +1154,242 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertNil(subset.printedCode)
         XCTAssertNil(subset.officialCount)
         XCTAssertEqual(result.release.sets.count, 2)
+    }
+
+    func testGalleryAbbreviationIsAdmittedOnlyWhenSafeParentGatesPass() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "swsh12",
+                    name: "Sword & Shield",
+                    code: "SWS",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/swsh/swsh12/001"],
+                    logo: "https://assets.tcgdex.net/en/swsh/swsh12/logo.png",
+                    seriesID: "swsh"
+                ),
+                .init(
+                    id: "swsh12tg",
+                    name: "Sword & Shield Trainer Gallery",
+                    code: "SIT:TG",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/swsh/swsh12tg/001"],
+                    seriesID: "swsh",
+                    officialCount: 30,
+                    totalCount: 30
+                )
+            ]
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        let gallery = try XCTUnwrap(result.release.sets.first { $0.providerSetID == "swsh12tg" })
+        XCTAssertEqual(gallery.recognitionKind, .notScannable)
+        XCTAssertFalse(gallery.scanEnabled)
+        XCTAssertNil(gallery.printedCode)
+        XCTAssertEqual(gallery.logoURL, "https://assets.tcgdex.net/en/swsh/swsh12/logo.png")
+        XCTAssertEqual(
+            result.report.sets.first { $0.providerSetID == "swsh12tg" }?.artworkSource,
+            "logo:derivedParent:swsh12"
+        )
+    }
+
+    func testGalleryAdmissionDoesNotDependOnParentArtworkAvailability() throws {
+        let fixture = providerFixture(
+            sets: [
+                .init(
+                    id: "swsh12",
+                    name: "Sword & Shield",
+                    code: "SWS",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/swsh/swsh12/001"],
+                    seriesID: "swsh"
+                ),
+                .init(
+                    id: "swsh12tg",
+                    name: "Sword & Shield Trainer Gallery",
+                    code: "SIT:TG",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/swsh/swsh12tg/001"],
+                    seriesID: "swsh",
+                    officialCount: 30,
+                    totalCount: 30
+                )
+            ]
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        let gallery = try XCTUnwrap(result.release.sets.first { $0.providerSetID == "swsh12tg" })
+        XCTAssertEqual(gallery.recognitionKind, .notScannable)
+        XCTAssertNil(gallery.logoURL)
+    }
+
+    func testAutomaticallyDemotedSetPromotesWhenProviderCountBecomesPositive() throws {
+        let initialFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "future-c",
+                    name: "Future Gallery",
+                    code: "FTR",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/future-c/001"],
+                    officialCount: 0,
+                    totalCount: 1
+                )
+            ]
+        )
+        let initial = try PokemonCatalogBuilder().build(
+            .init(fixture: initialFixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        XCTAssertEqual(initial.release.sets.first?.recognitionKind, .notScannable)
+
+        let correctedFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "future-c",
+                    name: "Future Gallery",
+                    code: "FTR",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/sv/future-c/001"],
+                    officialCount: 1,
+                    totalCount: 1
+                )
+            ]
+        )
+        let corrected = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: correctedFixture,
+                activeRelease: initial.release,
+                humanInputs: [],
+                revision: 2,
+                generatedAt: generatedAt
+            )
+        )
+        let descriptor = try XCTUnwrap(corrected.release.sets.first)
+        XCTAssertEqual(descriptor.recognitionKind, .expansion)
+        XCTAssertTrue(descriptor.scanEnabled)
+        XCTAssertEqual(descriptor.printedCode, "FTR")
+        XCTAssertEqual(descriptor.officialCount, 1)
+    }
+
+    func testAutomaticPromotionRefusesAnOccupiedExpansionCode() throws {
+        let initialFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "30th",
+                    name: "30th Celebration",
+                    code: "30C",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/me/30th/001"],
+                    seriesID: "me",
+                    officialCount: 128,
+                    totalCount: 128
+                ),
+                .init(
+                    id: "30th-c",
+                    name: "30th Celebration Classic Collection",
+                    code: "30C",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/me/30th-c/001"],
+                    seriesID: "me",
+                    officialCount: 0,
+                    totalCount: 30
+                )
+            ]
+        )
+        let initial = try PokemonCatalogBuilder().build(
+            .init(fixture: initialFixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+
+        let correctedFixture = providerFixture(
+            sets: [
+                .init(
+                    id: "30th",
+                    name: "30th Celebration",
+                    code: "30C",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/me/30th/001"],
+                    seriesID: "me",
+                    officialCount: 128,
+                    totalCount: 128
+                ),
+                .init(
+                    id: "30th-c",
+                    name: "30th Celebration Classic Collection",
+                    code: "30C",
+                    releaseDate: "2026-09-16",
+                    imageURLs: ["https://assets.tcgdex.net/en/me/30th-c/001"],
+                    seriesID: "me",
+                    officialCount: 30,
+                    totalCount: 30
+                )
+            ]
+        )
+        let corrected = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: correctedFixture,
+                activeRelease: initial.release,
+                humanInputs: [],
+                revision: 2,
+                generatedAt: generatedAt
+            )
+        )
+        let child = try XCTUnwrap(corrected.release.sets.first { $0.providerSetID == "30th-c" })
+        XCTAssertEqual(child.recognitionKind, .notScannable)
+        XCTAssertFalse(child.scanEnabled)
+    }
+
+    func testArtworkSourceDoesNotReuseUnrelatedProviderComponentsForCardFallback() throws {
+        let brief = PokemonCatalogProviderCardBrief(
+            id: "future-001",
+            localID: "001",
+            name: "Future Card",
+            image: nil
+        )
+        let providerSet = PokemonCatalogProviderSet(
+            id: "future",
+            name: "Future Set",
+            cards: [brief],
+            releaseDate: "2026-09-16",
+            cardCount: .init(total: 1, official: 1),
+            serie: .init(id: "sv"),
+            abbreviation: .init(official: "FTR"),
+            resolvedLogo: "https://assets.tcgdex.net/en/sv/future/logo.png",
+            resolvedSymbol: "https://assets.tcgdex.net/en/sv/future/symbol.png",
+            resolvedCardArtworkURLs: ["https://assets.tcgdex.net/en/sv/future/card.png"],
+            resolvedArtworkSource: "logo:tcgdexProbe;symbol:tcgdexProbe"
+        )
+        let fixture = PokemonCatalogProviderFixture(
+            directory: [
+                .init(
+                    id: "future",
+                    name: "Future Set",
+                    cardCount: .init(total: 1, official: 1),
+                    releaseDate: "2026-09-16"
+                )
+            ],
+            sets: [providerSet],
+            cards: [
+                .init(
+                    id: brief.id,
+                    localID: brief.localID,
+                    name: brief.name,
+                    image: nil,
+                    setID: "future"
+                )
+            ]
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        XCTAssertEqual(
+            result.report.sets.first?.artworkSource,
+            "logo:tcgdexProbe;symbol:tcgdexProbe"
+        )
     }
 
     func testInvalidAbbreviationOnScannableExpansionStillFailsClosed() throws {

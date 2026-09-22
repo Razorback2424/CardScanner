@@ -89,7 +89,9 @@ public struct PokemonCatalogSecondaryProviderClient: Sendable {
             queryItems: [
                 URLQueryItem(name: "q", value: "set.id:\(setID)"),
                 URLQueryItem(name: "pageSize", value: String(cappedLimit)),
-                URLQueryItem(name: "page", value: "1")
+                URLQueryItem(name: "page", value: "1"),
+                URLQueryItem(name: "orderBy", value: "number,id"),
+                URLQueryItem(name: "select", value: "images")
             ]
         )
         return response.data.compactMap { $0.images?.large ?? $0.images?.small }
