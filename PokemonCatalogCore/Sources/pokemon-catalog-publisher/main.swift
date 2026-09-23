@@ -354,6 +354,10 @@ struct PokemonCatalogPublisherMain {
         let rowsByID = Dictionary(
             uniqueKeysWithValues: fixture.directory.map { ($0.id.lowercased(), $0) }
         )
+        let cardsByID = Dictionary(
+            fixture.cards.map { ($0.id.lowercased(), $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
         var ambiguousIDs = Set(secondary.ambiguousSetIDs)
         var enrichedSets: [PokemonCatalogProviderSet] = []
         enrichedSets.reserveCapacity(fixture.sets.count)
@@ -362,7 +366,11 @@ struct PokemonCatalogPublisherMain {
                 enrichedSets.append(providerSet)
                 continue
             }
-            let result = await enricher.enrich(providerSet, directoryRow: row)
+            let result = await enricher.enrich(
+                providerSet,
+                cardDetails: cardsByID,
+                directoryRow: row
+            )
             enrichedSets.append(result.providerSet)
             ambiguousIDs.formUnion(result.ambiguousSecondarySetIDs)
         }

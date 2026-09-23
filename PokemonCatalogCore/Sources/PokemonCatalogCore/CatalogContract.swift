@@ -86,9 +86,9 @@ public struct PokemonCatalogMembershipRecognition: Codable, Equatable, Hashable,
     }
 }
 
-/// Publisher-approved per-card artwork used only when the primary provider
-/// supplies no card image. The local ID is the primary-provider key; the
-/// secondary provider's number is deliberately not exposed to the device.
+/// Publisher-approved per-card artwork used only when the primary provider's
+/// set brief supplies no card image. The local ID is the primary-provider key;
+/// the secondary provider's number is deliberately not exposed to the device.
 public struct PokemonCatalogCardArtwork: Codable, Equatable, Hashable, Sendable {
     public let localID: String
     public let thumbnailURL: String

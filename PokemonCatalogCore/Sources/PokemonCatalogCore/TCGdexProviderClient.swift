@@ -176,21 +176,16 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
             secondaryCandidates: secondaryCandidates,
             secondaryCardArtworkLoader: secondaryCardArtworkLoader
         )
-        let enrichmentResults = try await mapBounded(
+        let providerSets = try await mapBounded(
             supportedRows,
             limit: setConcurrency
-        ) { row -> PokemonCatalogArtworkEnricher.Result in
-            let fetched: PokemonCatalogProviderSet = try await self.request(
+        ) { row -> PokemonCatalogProviderSet in
+            try await self.request(
                 pathComponents: ["sets", row.id]
             )
-            return await enricher.enrich(fetched, directoryRow: row)
         }
-        let sets = enrichmentResults.map(\.providerSet)
-        let ambiguousSecondarySetIDs = Array(
-            Set(enrichmentResults.flatMap(\.ambiguousSecondarySetIDs))
-        ).sorted()
         let materializedKeys = Set(scopedRows.map { $0.id.lowercased() })
-        let briefs = sets
+        let briefs = providerSets
             .filter { materializedKeys.contains($0.id.lowercased()) }
             .flatMap(\.cards)
         let uniqueBriefs = Dictionary(
@@ -205,6 +200,31 @@ public struct PokemonCatalogTCGdexProviderClient: Sendable {
                 pathComponents: ["cards", brief.id]
             ) as PokemonCatalogProviderCard
         }
+        let detailsByID = Dictionary(
+            cards.map { ($0.id.lowercased(), $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        let rowsByID = Dictionary(
+            directory.map { ($0.id.lowercased(), $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        let enrichmentResults = try await mapBounded(
+            providerSets,
+            limit: setConcurrency
+        ) { providerSet -> PokemonCatalogArtworkEnricher.Result in
+            guard let row = rowsByID[providerSet.id.lowercased()] else {
+                return .init(providerSet: providerSet)
+            }
+            return await enricher.enrich(
+                providerSet,
+                cardDetails: detailsByID,
+                directoryRow: row
+            )
+        }
+        let sets = enrichmentResults.map(\.providerSet)
+        let ambiguousSecondarySetIDs = Array(
+            Set(enrichmentResults.flatMap(\.ambiguousSecondarySetIDs))
+        ).sorted()
         return PokemonCatalogProviderFixture(
             directory: scopedRows,
             sets: sets.sorted { $0.id < $1.id },

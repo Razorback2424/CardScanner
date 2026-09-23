@@ -193,12 +193,23 @@ public struct PokemonCatalogProviderDetailedVariant: Codable, Equatable, Hashabl
 /// Codable: the provider fingerprint must remain reproducible from TCGdex
 /// data on the device, while the signed descriptor carries the approved URLs.
 public struct PokemonCatalogResolvedCardArtwork: Equatable, Sendable {
+    public enum Source: String, Equatable, Hashable, Sendable {
+        case tcgdexCardDetail
+        case secondaryProvider
+    }
+
     public let thumbnail: String
     public let image: String
+    public let source: Source
 
-    public init(thumbnail: String, image: String) {
+    public init(
+        thumbnail: String,
+        image: String,
+        source: Source = .secondaryProvider
+    ) {
         self.thumbnail = thumbnail
         self.image = image
+        self.source = source
     }
 
     public var thumbnailURL: String { thumbnail }

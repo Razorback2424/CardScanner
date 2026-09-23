@@ -1175,7 +1175,222 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
         XCTAssertEqual(
             result.providerSet.resolvedArtworkSource,
-            "logo:secondary:secondary-future;symbol:secondary:secondary-future;cards:secondary:secondary-future:2/2"
+            "logo:secondary:secondary-future;symbol:secondary:secondary-future;cards:secondary:secondary-future:001,002"
+        )
+    }
+
+    func testArtworkEnricherMatchesFullSetButPublishesOnlyMissingCards() async throws {
+        let probe = PokemonCatalogArtworkProbe { request in
+            let response = try XCTUnwrap(
+                HTTPURLResponse(
+                    url: try XCTUnwrap(request.url),
+                    statusCode: 200,
+                    httpVersion: nil,
+                    headerFields: ["Content-Type": "image/png"]
+                )
+            )
+            return (Data([1]), response)
+        }
+        let briefs = (1...10).map { number in
+            PokemonCatalogProviderCardBrief(
+                id: String(format: "future-%03d", number),
+                localID: String(format: "%03d", number),
+                name: "Card \(number)",
+                image: number < 10
+                    ? "https://assets.tcgdex.net/en/future/future/\(number)"
+                    : nil
+            )
+        }
+        let providerSet = PokemonCatalogProviderSet(
+            id: "future",
+            name: "Future Set",
+            cards: briefs,
+            releaseDate: "2026-09-16",
+            cardCount: .init(total: 10, official: 10),
+            abbreviation: .init(official: "FTR")
+        )
+        let candidate = PokemonCatalogSecondarySet(
+            id: "secondary-future",
+            name: "Future Set",
+            ptcgoCode: "FTR",
+            releaseDate: "2026/09/16",
+            total: 10
+        )
+        let secondaryCards = (1...10).map { number in
+            PokemonCatalogSecondaryCard(
+                number: String(number),
+                name: "Card \(number)",
+                thumbnailURL: "https://images.scrydex.com/pokemon/card-\(number)/small",
+                imageURL: "https://images.scrydex.com/pokemon/card-\(number)/large"
+            )
+        }
+
+        let result = await PokemonCatalogArtworkEnricher(
+            secondaryArtworkProbe: probe,
+            secondaryCandidates: [candidate],
+            secondaryCardArtworkLoader: { _, _ in secondaryCards }
+        ).enrich(
+            providerSet,
+            directoryRow: .init(
+                id: "future",
+                name: "Future Set",
+                cardCount: .init(total: 10, official: 10),
+                releaseDate: "2026-09-16"
+            )
+        )
+
+        XCTAssertEqual(result.providerSet.resolvedCardArtworkByLocalID?.count, 1)
+        XCTAssertEqual(
+            result.providerSet.resolvedCardArtworkByLocalID?["010"]?.image,
+            "https://images.scrydex.com/pokemon/card-10/large"
+        )
+        XCTAssertNil(result.providerSet.resolvedCardArtworkByLocalID?["001"])
+        XCTAssertEqual(result.providerSet.resolvedArtworkSource,
+                       "cards:secondary:secondary-future:010")
+    }
+
+    func testExactDetailArtworkPrecedesSecondaryArtwork() async throws {
+        let providerSet = PokemonCatalogProviderSet(
+            id: "future",
+            name: "Future Set",
+            cards: [.init(id: "future-001", localID: "001", name: "Pikachu")],
+            releaseDate: "2026-09-16",
+            cardCount: .init(total: 1, official: 1),
+            abbreviation: .init(official: "FTR")
+        )
+        let detail = PokemonCatalogProviderCard(
+            id: "future-001",
+            localID: "001",
+            name: "Pikachu",
+            image: "https://assets.tcgdex.net/en/future/future/001",
+            setID: "future"
+        )
+        let result = await PokemonCatalogArtworkEnricher(
+            secondaryCandidates: [
+                .init(
+                    id: "secondary-future",
+                    name: "Future Set",
+                    ptcgoCode: "FTR",
+                    releaseDate: "2026/09/16",
+                    total: 1
+                )
+            ],
+            secondaryCardArtworkLoader: { _, _ in
+                XCTFail("Secondary artwork should not load when exact detail has an image")
+                return []
+            }
+        ).enrich(
+            providerSet,
+            cardDetails: [detail.id: detail],
+            directoryRow: .init(
+                id: "future",
+                name: "Future Set",
+                cardCount: .init(total: 1, official: 1),
+                releaseDate: "2026-09-16"
+            )
+        )
+
+        XCTAssertEqual(
+            result.providerSet.resolvedCardArtworkByLocalID?["001"]?.image,
+            "https://assets.tcgdex.net/en/future/future/001/high.png"
+        )
+        XCTAssertEqual(
+            result.providerSet.resolvedArtworkSource,
+            "cards:tcgdexDetail:001"
+        )
+    }
+
+    func testSetBriefArtworkIsPreservedWhenExactDetailDiffers() async {
+        let briefImage = "https://assets.tcgdex.net/en/future/future/001"
+        let providerSet = PokemonCatalogProviderSet(
+            id: "future",
+            name: "Future Set",
+            cards: [.init(
+                id: "future-001",
+                localID: "001",
+                name: "Pikachu",
+                image: briefImage
+            )],
+            releaseDate: "2026-09-16",
+            cardCount: .init(total: 1, official: 1),
+            abbreviation: .init(official: "FTR")
+        )
+        let detail = PokemonCatalogProviderCard(
+            id: "future-001",
+            localID: "001",
+            name: "Pikachu",
+            image: "https://assets.tcgdex.net/en/future/future/alternate",
+            setID: "future"
+        )
+
+        let result = await PokemonCatalogArtworkEnricher().enrich(
+            providerSet,
+            cardDetails: [detail.id: detail],
+            directoryRow: .init(
+                id: "future",
+                name: "Future Set",
+                cardCount: .init(total: 1, official: 1),
+                releaseDate: "2026-09-16"
+            )
+        )
+
+        XCTAssertEqual(result.providerSet.cards.first?.image, briefImage)
+        XCTAssertNil(result.providerSet.resolvedCardArtworkByLocalID)
+        XCTAssertNil(result.providerSet.resolvedArtworkSource)
+    }
+
+    func testBuilderPublishesAlreadyFetchedDetailArtworkWithItsProvenance() throws {
+        let brief = PokemonCatalogProviderCardBrief(
+            id: "future-001",
+            localID: "001",
+            name: "Toxel",
+            image: nil
+        )
+        let detailImage = "https://assets.tcgdex.net/en/sv/future/001"
+        let fixture = PokemonCatalogProviderFixture(
+            directory: [
+                .init(
+                    id: "future",
+                    name: "Future Set",
+                    cardCount: .init(total: 1, official: 1),
+                    releaseDate: "2026-09-16"
+                )
+            ],
+            sets: [
+                .init(
+                    id: "future",
+                    name: "Future Set",
+                    cards: [brief],
+                    releaseDate: "2026-09-16",
+                    cardCount: .init(total: 1, official: 1),
+                    serie: .init(id: "sv"),
+                    abbreviation: .init(official: "FTR")
+                )
+            ],
+            cards: [
+                .init(
+                    id: brief.id,
+                    localID: brief.localID,
+                    name: brief.name,
+                    image: detailImage,
+                    setID: "future"
+                )
+            ]
+        )
+
+        let result = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        let summary = try XCTUnwrap(result.snapshot.checklists["future"]?.first)
+        let descriptor = try XCTUnwrap(result.release.sets.first { $0.providerSetID == "future" })
+        let artwork = try XCTUnwrap(descriptor.cardArtwork?.first)
+
+        XCTAssertEqual(summary.imageURL, detailImage)
+        XCTAssertEqual(artwork.thumbnailURL, detailImage + "/low.png")
+        XCTAssertEqual(artwork.imageURL, detailImage + "/high.png")
+        XCTAssertEqual(
+            result.report.sets.first?.artworkSource,
+            "cards:tcgdexDetail:001"
         )
     }
 

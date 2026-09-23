@@ -359,6 +359,7 @@ public struct PokemonCatalogBuilder: Sendable {
             let descriptorBuild = try makeDescriptor(
                 row: row,
                 providerSet: providerSet,
+                providerCards: providerCards,
                 existing: existing,
                 humanInput: inputByID[providerID],
                 assignedReleaseOrder: automaticReleaseOrders[providerID],
@@ -375,7 +376,10 @@ public struct PokemonCatalogBuilder: Sendable {
             )
             let artworkFallbackURLs = uniqueArtworkURLs(from: summaries)
                 ?? providerSet.resolvedCardArtworkURLs
-            let cardArtwork = resolvedCardArtwork(for: providerSet)
+            let cardArtwork = resolvedCardArtwork(
+                for: providerSet,
+                providerCards: providerCards
+            )
             let descriptor = descriptorWithoutFingerprint.withProviderFingerprint(
                 fingerprint,
                 artworkFallbackURLs: artworkFallbackURLs,
@@ -580,6 +584,7 @@ public struct PokemonCatalogBuilder: Sendable {
     private func makeDescriptor(
         row: PokemonCatalogProviderDirectoryRow,
         providerSet: PokemonCatalogProviderSet,
+        providerCards: [String: PokemonCatalogProviderCard],
         existing: PokemonCatalogSetDescriptor?,
         humanInput: PokemonCatalogHumanInput?,
         assignedReleaseOrder: Int?,
@@ -656,6 +661,7 @@ public struct PokemonCatalogBuilder: Sendable {
                 descriptor: descriptor,
                 artworkSource: artworkSource(
                     providerSet: providerSet,
+                    providerCards: providerCards,
                     descriptor: descriptor,
                     humanInput: humanInput,
                     existing: existing,
@@ -1068,6 +1074,7 @@ public struct PokemonCatalogBuilder: Sendable {
 
     private func artworkSource(
         providerSet: PokemonCatalogProviderSet,
+        providerCards: [String: PokemonCatalogProviderCard],
         descriptor: PokemonCatalogSetDescriptor,
         humanInput: PokemonCatalogHumanInput?,
         existing: PokemonCatalogSetDescriptor?,
@@ -1086,6 +1093,16 @@ public struct PokemonCatalogBuilder: Sendable {
                 return String(component.dropFirst(prefix.count))
             }
             return nil
+        }
+
+        func providerSources(for kind: String) -> [String] {
+            guard let source = providerSet.resolvedArtworkSource else { return [] }
+            let prefix = "\(kind):"
+            return source
+                .split(separator: ";")
+                .map(String.init)
+                .filter { $0.hasPrefix(prefix) }
+                .map { String($0.dropFirst(prefix.count)) }
         }
 
         func parentSource(_ selection: ArtworkParentSelection?) -> String? {
@@ -1143,14 +1160,36 @@ public struct PokemonCatalogBuilder: Sendable {
             logoSource.map { "logo:\($0)" },
             symbolSource.map { "symbol:\($0)" }
         ].compactMap { $0 }
-        if let cardSource = providerSource(for: "cards") {
-            setSources.append("cards:\(cardSource)")
-        } else if let cardSource = providerSource(for: "card") {
-            setSources.append("card:\(cardSource)")
-        } else if setSources.isEmpty,
-                  descriptor.artworkFallbackURLs != nil
-                    || providerSet.resolvedCardArtworkURLs != nil
-                    || providerSet.resolvedCardArtworkByLocalID != nil {
+        let cardSources = providerSources(for: "cards")
+            .map { "cards:\($0)" }
+            + providerSources(for: "card")
+                .map { "card:\($0)" }
+        if !cardSources.isEmpty {
+            setSources.append(contentsOf: cardSources)
+        } else {
+            let detailLocalIDs = providerSet.cards.compactMap { brief -> String? in
+                guard nonEmpty(brief.image) == nil,
+                      let detail = providerCards[brief.id.lowercased()],
+                      detail.id.caseInsensitiveCompare(brief.id) == .orderedSame,
+                      detail.localID.trimmingCharacters(in: .whitespacesAndNewlines)
+                        .caseInsensitiveCompare(brief.localID.trimmingCharacters(in: .whitespacesAndNewlines)) == .orderedSame,
+                      PokemonCatalogTextNormalization.canonicalMembershipName(detail.name)
+                        == PokemonCatalogTextNormalization.canonicalMembershipName(brief.name),
+                      detail.setID == nil
+                        || detail.setID?.caseInsensitiveCompare(providerSet.id) == .orderedSame,
+                      nonEmpty(detail.image) != nil else {
+                    return nil
+                }
+                return brief.localID
+            }.sorted()
+            if !detailLocalIDs.isEmpty {
+                setSources.append("cards:tcgdexDetail:\(detailLocalIDs.joined(separator: ","))")
+            }
+        }
+        if setSources.isEmpty,
+           descriptor.artworkFallbackURLs != nil
+                || providerSet.resolvedCardArtworkURLs != nil
+                || providerSet.resolvedCardArtworkByLocalID != nil {
             setSources.append("card:tcgdexCardFallback")
         }
         return setSources.isEmpty ? nil : setSources.joined(separator: ";")
@@ -1198,17 +1237,40 @@ public struct PokemonCatalogBuilder: Sendable {
     }
 
     private func resolvedCardArtwork(
-        for providerSet: PokemonCatalogProviderSet
+        for providerSet: PokemonCatalogProviderSet,
+        providerCards: [String: PokemonCatalogProviderCard]
     ) -> [PokemonCatalogCardArtwork]? {
-        guard let resolved = providerSet.resolvedCardArtworkByLocalID else { return nil }
+        let resolved = providerSet.resolvedCardArtworkByLocalID ?? [:]
         let values = providerSet.cards.compactMap { card -> PokemonCatalogCardArtwork? in
             let key = card.localID.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
-            guard nonEmpty(card.image) == nil,
-                  let artwork = resolved[key],
-                  let thumbnailURL = nonEmpty(artwork.thumbnail),
-                  let imageURL = nonEmpty(artwork.image) else {
+            guard nonEmpty(card.image) == nil else { return nil }
+            let detail = providerCards[card.id.lowercased()]
+            let detailImage: String? = {
+                guard let detail,
+                      detail.id.caseInsensitiveCompare(card.id) == .orderedSame,
+                      detail.localID.trimmingCharacters(in: .whitespacesAndNewlines)
+                        .caseInsensitiveCompare(card.localID.trimmingCharacters(in: .whitespacesAndNewlines)) == .orderedSame,
+                      PokemonCatalogTextNormalization.canonicalMembershipName(detail.name)
+                        == PokemonCatalogTextNormalization.canonicalMembershipName(card.name),
+                      detail.setID == nil
+                        || detail.setID?.caseInsensitiveCompare(providerSet.id) == .orderedSame else {
+                    return nil
+                }
+                return nonEmpty(detail.image)
+            }()
+            let thumbnailURL: String?
+            let imageURL: String?
+            if let detailImage,
+               let variants = artworkVariants(from: detailImage) {
+                thumbnailURL = variants.thumbnail
+                imageURL = variants.image
+            } else if let artwork = resolved[key] {
+                thumbnailURL = nonEmpty(artwork.thumbnail)
+                imageURL = nonEmpty(artwork.image)
+            } else {
                 return nil
             }
+            guard let thumbnailURL, let imageURL else { return nil }
             return PokemonCatalogCardArtwork(
                 localID: card.localID,
                 thumbnailURL: thumbnailURL,
@@ -1218,6 +1280,22 @@ public struct PokemonCatalogBuilder: Sendable {
         .sorted { $0.localID < $1.localID }
         .prefix(configuration.maxCardsPerSet)
         return values.isEmpty ? nil : Array(values)
+    }
+
+    private func artworkVariants(from raw: String) -> (thumbnail: String, image: String)? {
+        guard var components = URLComponents(string: raw),
+              components.scheme?.lowercased() == "https",
+              components.host != nil else { return nil }
+        if components.path.split(separator: "/").last.map({ $0.contains(".") }) == true,
+           let url = components.url?.absoluteString {
+            return (url, url)
+        }
+        let basePath = components.path
+        components.path = basePath + "/low.png"
+        guard let thumbnail = components.url?.absoluteString else { return nil }
+        components.path = basePath + "/high.png"
+        guard let image = components.url?.absoluteString else { return nil }
+        return (thumbnail, image)
     }
 
     private func buildChecklist(
@@ -1288,13 +1366,24 @@ public struct PokemonCatalogBuilder: Sendable {
                     reason: "stable local ID and name are required"
                 )
             }
-            if let image = brief.image { try validateURL(image) }
+            guard brief.localID.trimmingCharacters(in: .whitespacesAndNewlines)
+                    .caseInsensitiveCompare(card.localID.trimmingCharacters(in: .whitespacesAndNewlines)) == .orderedSame,
+                  PokemonCatalogTextNormalization.canonicalMembershipName(brief.name)
+                    == PokemonCatalogTextNormalization.canonicalMembershipName(card.name) else {
+                throw PokemonCatalogBuildError.invalidCard(
+                    setID: row.id,
+                    cardID: card.id,
+                    reason: "set brief and exact card detail identities disagree"
+                )
+            }
+            let primaryImage = nonEmpty(brief.image) ?? nonEmpty(card.image)
+            if let primaryImage { try validateURL(primaryImage) }
             summaries.append(
                 PokemonCatalogCardSummary(
                     providerCardID: brief.id,
                     localID: brief.localID,
                     name: brief.name,
-                    imageURL: brief.image
+                    imageURL: primaryImage
                 )
             )
         }
