@@ -3732,9 +3732,122 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         XCTAssertEqual(counts.primary, 1)
     }
 
-    private func makeTCGdexCard(setID: String, localID: String) throws -> TCGdexCard {
-        try decode(TCGdexCard.self, from: """
-        {"id":"\(setID)-\(localID)","localId":"\(localID)","name":"Resolved Card","image":null,
+    func testFreshScanAppliesSignedPerCardArtworkToExactPrinting() async throws {
+        let root = try temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let definition = try XCTUnwrap(SetCodeMap.definitions["DRI"])
+        let signed = CatalogCardArtwork(
+            localID: "085",
+            thumbnailURL: "https://images.scrydex.com/pokemon/future/085/low.png",
+            imageURL: "https://images.scrydex.com/pokemon/future/085/high.png"
+        )
+        let descriptor = PokemonCatalogSetDescriptor(
+            providerSetID: "sv10",
+            displayName: "Destined Rivals",
+            releaseDate: "2025-05-30",
+            releaseOrder: 1,
+            recognitionKind: .expansion,
+            printedCode: "DRI",
+            officialCount: definition.officialCount,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: true,
+            logoURL: nil,
+            symbolURL: nil,
+            cardArtwork: [signed]
+        )
+        let registry = PokemonCatalogRegistry(
+            release: PokemonCatalogRelease(
+                revision: 1,
+                generatedAt: .now,
+                sets: [descriptor]
+            )
+        )
+        let source = CountingPokemonCardSource(
+            primary: .card(try makeTCGdexCard(setID: "sv10", localID: "085")),
+            fallback: .failure(.badResponse),
+            responseDelayNanoseconds: 50_000_000
+        )
+        let catalog = CardCatalog(
+            source: source,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(root: root.appendingPathComponent("offline"), bundle: nil),
+                registry: registry
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0),
+            registry: registry
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "DRI",
+            cardNumber: "085",
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        )
+
+        async let firstCardTask = catalog.card(for: identifier)
+        async let coalescedCardTask = catalog.card(for: identifier)
+        let (card, coalescedCard) = try await (firstCardTask, coalescedCardTask)
+
+        XCTAssertEqual(
+            card.displayImageURL?.absoluteString,
+            "https://images.scrydex.com/pokemon/future/085/high.png"
+        )
+        XCTAssertEqual(
+            coalescedCard.displayImageURL?.absoluteString,
+            "https://images.scrydex.com/pokemon/future/085/high.png"
+        )
+        XCTAssertEqual(
+            card.thumbnailImageURL?.absoluteString,
+            "https://images.scrydex.com/pokemon/future/085/low.png"
+        )
+        let requestCounts = await source.requestCounts()
+        XCTAssertEqual(requestCounts.primary, 1)
+
+        let providerImage = "https://assets.tcgdex.net/en/sv/sv10/085"
+        let providerSource = CountingPokemonCardSource(
+            primary: .card(try makeTCGdexCard(
+                setID: "sv10",
+                localID: "085",
+                image: providerImage
+            )),
+            fallback: .failure(.badResponse)
+        )
+        let providerCatalog = CardCatalog(
+            source: providerSource,
+            offline: PokemonOfflineCatalog(
+                store: PokemonChecklistStore(
+                    root: root.appendingPathComponent("provider-offline"),
+                    bundle: nil
+                ),
+                registry: registry
+            ),
+            resolvedDiskCache: ResolvedPokemonCardCache(
+                root: root.appendingPathComponent("provider-resolved"),
+                appVersion: "test"
+            ),
+            tcgdexBreaker: TCGdexCircuitBreaker(cooldown: 0),
+            registry: registry
+        )
+        let providerCard = try await providerCatalog.card(for: identifier)
+        XCTAssertEqual(
+            providerCard.displayImageURL?.absoluteString,
+            providerImage + "/high.png"
+        )
+    }
+
+    private func makeTCGdexCard(
+        setID: String,
+        localID: String,
+        image: String? = nil
+    ) throws -> TCGdexCard {
+        let imageJSON = image.map { "\"\($0)\"" } ?? "null"
+        return try decode(TCGdexCard.self, from: """
+        {"id":"\(setID)-\(localID)","localId":"\(localID)","name":"Resolved Card","image":\(imageJSON),
          "set":{"id":"\(setID)","name":"Resolved Set","cardCount":{"total":1,"official":1}},
          "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":true}}
         """)
@@ -5879,16 +5992,25 @@ private actor CountingPokemonCardSource: PokemonCardSource {
 
     private let primaryResponse: PrimaryResponse
     private let fallbackResponse: FallbackResponse
+    private let responseDelayNanoseconds: UInt64
     private var primaryRequests = 0
     private var fallbackRequests = 0
 
-    init(primary: PrimaryResponse, fallback: FallbackResponse) {
+    init(
+        primary: PrimaryResponse,
+        fallback: FallbackResponse,
+        responseDelayNanoseconds: UInt64 = 0
+    ) {
         self.primaryResponse = primary
         self.fallbackResponse = fallback
+        self.responseDelayNanoseconds = responseDelayNanoseconds
     }
 
     func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
         primaryRequests += 1
+        if responseDelayNanoseconds > 0 {
+            try await Task.sleep(nanoseconds: responseDelayNanoseconds)
+        }
         switch primaryResponse {
         case let .card(card): return card
         case let .failure(error): throw error

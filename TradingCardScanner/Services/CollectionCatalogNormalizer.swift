@@ -85,7 +85,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// 7: distinguish definitive sealed misses from transient provider failures.
     /// 8: retry missing sealed artwork against TCGplayer's direct product CDN,
     /// and locally rewrite legacy gateway URLs without spending a request.
-    nonisolated static let metadataVersion = 8
+    /// 9: retry missing Pokémon artwork through exact TCGdex card details.
+    nonisolated static let metadataVersion = 9
     private var requestsAnotherPass = false
     /// Input discovery now suspends at the model actor. Keep the same
     /// single-flight guarantee that the old synchronous discovery had, so a
@@ -770,7 +771,7 @@ private struct ImportedCatalogBatchResolver: Sendable {
         }
         let releaseOrder = registry.releaseOrder(forProviderSetID: set.id) ?? 0
 
-        var result: [String: ImportedCatalogMetadata] = [:]
+        var resolvedBriefs: [(ImportedCatalogRequest, TCGdexCardBrief)] = []
         for request in requests {
             let number = CatalogIdentityNormalization.localNumber(request.cardNumber)
             guard let candidates = cardsByNumber[number] else { continue }
@@ -787,17 +788,101 @@ private struct ImportedCatalogBatchResolver: Sendable {
                 }
             }
             guard let card else { continue }
-            result[request.sourceProviderID] = ImportedCatalogMetadata(
-                providerID: card.id,
-                setCode: printedCode,
-                rarity: nil,
-                imageURL: card.image,
-                thumbnailURL: card.image.map { $0 + "/low.png" },
-                tcgplayerURL: nil,
-                setReleaseOrder: releaseOrder
-            )
+            resolvedBriefs.append((request, card))
+        }
+        var result: [String: ImportedCatalogMetadata] = [:]
+        var cursor = 0
+        await withTaskGroup(of: (String, ImportedCatalogMetadata?).self) { group in
+            let initial = min(Self.pokemonConcurrency, resolvedBriefs.count)
+            for _ in 0..<initial {
+                let (request, brief) = resolvedBriefs[cursor]
+                cursor += 1
+                group.addTask {
+                    (
+                        request.sourceProviderID,
+                        await Self.pokemonMetadata(
+                            request: request,
+                            brief: brief,
+                            setID: set.id,
+                            locale: locale,
+                            printedCode: printedCode,
+                            releaseOrder: releaseOrder,
+                            service: service
+                        )
+                    )
+                }
+            }
+            while let (sourceID, metadata) = await group.next() {
+                if let metadata { result[sourceID] = metadata }
+                guard cursor < resolvedBriefs.count, !Task.isCancelled else { continue }
+                let (request, brief) = resolvedBriefs[cursor]
+                cursor += 1
+                group.addTask {
+                    (
+                        request.sourceProviderID,
+                        await Self.pokemonMetadata(
+                            request: request,
+                            brief: brief,
+                            setID: set.id,
+                            locale: locale,
+                            printedCode: printedCode,
+                            releaseOrder: releaseOrder,
+                            service: service
+                        )
+                    )
+                }
+            }
         }
         return result
+    }
+
+    private nonisolated static func pokemonMetadata(
+        request: ImportedCatalogRequest,
+        brief: TCGdexCardBrief,
+        setID: String,
+        locale: TCGdexLocale,
+        printedCode: String,
+        releaseOrder: Int,
+        service: any TCGdexCatalogSource
+    ) async -> ImportedCatalogMetadata {
+        var imageURL = usableTCGdexImageURL(brief.image) ? brief.image : nil
+        if imageURL == nil,
+           let exact = try? await service.fetchCard(
+               setID: setID,
+               localID: brief.localId,
+               locale: locale,
+               ignoringCache: true
+           ),
+           exact.id.caseInsensitiveCompare(brief.id) == .orderedSame,
+           exact.set.id.caseInsensitiveCompare(setID) == .orderedSame,
+           CatalogIdentityNormalization.localNumber(exact.localId)
+                == CatalogIdentityNormalization.localNumber(brief.localId),
+           CatalogIdentityNormalization.namesMatch(
+                imported: brief.name,
+                catalog: exact.name
+           ),
+           usableTCGdexImageURL(exact.image) {
+            imageURL = exact.image
+        }
+
+        return ImportedCatalogMetadata(
+            providerID: brief.id,
+            setCode: printedCode,
+            rarity: nil,
+            imageURL: imageURL,
+            thumbnailURL: imageURL.map { $0 + "/low.png" },
+            tcgplayerURL: nil,
+            setReleaseOrder: releaseOrder
+        )
+    }
+
+    private nonisolated static func usableTCGdexImageURL(_ value: String?) -> Bool {
+        guard let value,
+              let url = URL(string: value),
+              url.scheme?.lowercased() == "https",
+              url.host?.lowercased() == "assets.tcgdex.net",
+              !url.path.isEmpty else { return false }
+        return true
     }
 
     private func resolveMagic(

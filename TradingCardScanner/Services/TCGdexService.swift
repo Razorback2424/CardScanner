@@ -35,6 +35,12 @@ enum TCGdexLocale: String, Sendable {
 protocol TCGdexCatalogSource: Sendable {
     func fetchSetDirectory(locale: TCGdexLocale) async throws -> [CatalogSetReference]
     func fetchSet(id: String, locale: TCGdexLocale) async throws -> TCGdexSetCatalog
+    func fetchCard(
+        setID: String,
+        localID: String,
+        locale: TCGdexLocale,
+        ignoringCache: Bool
+    ) async throws -> TCGdexCard
 }
 
 struct TCGdexService: TCGdexCatalogSource, Sendable {
@@ -55,13 +61,15 @@ struct TCGdexService: TCGdexCatalogSource, Sendable {
     func fetchCard(
         setID: String,
         localID: String,
-        ignoringCache: Bool = false,
-        timeout: TimeInterval = 8
+        locale: TCGdexLocale = .en,
+        ignoringCache: Bool = false
     ) async throws -> TCGdexCard {
-        guard let url = URL(string: "https://api.tcgdex.net/v2/en/sets/\(setID)/\(localID)") else {
+        guard let encodedSetID = setID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+              let encodedLocalID = localID.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
+              let url = URL(string: "https://api.tcgdex.net/v2/\(locale.rawValue)/sets/\(encodedSetID)/\(encodedLocalID)") else {
             throw TCGdexError.invalidURL
         }
-        return try await fetch(url, ignoringCache: ignoringCache, timeout: timeout)
+        return try await fetch(url, ignoringCache: ignoringCache)
     }
 
     func fetchSet(id: String, locale: TCGdexLocale = .en) async throws -> TCGdexSetCatalog {

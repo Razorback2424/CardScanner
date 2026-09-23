@@ -5607,6 +5607,14 @@ private struct EmptyTCGdexSource: TCGdexCatalogSource {
     func fetchSet(id: String, locale: TCGdexLocale) async throws -> TCGdexSetCatalog {
         throw TCGdexError.cardNotFound
     }
+    func fetchCard(
+        setID: String,
+        localID: String,
+        locale: TCGdexLocale,
+        ignoringCache: Bool
+    ) async throws -> TCGdexCard {
+        throw TCGdexError.cardNotFound
+    }
     func fetchCard(id: String, locale: TCGdexLocale) async throws -> TCGdexCard {
         throw TCGdexError.cardNotFound
     }

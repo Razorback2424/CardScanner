@@ -2670,6 +2670,12 @@ struct CollectionStore {
                 if existing.catalogProviderID == nil {
                     existing.catalogProviderID = card.providerID
                 }
+                if existing.imageURL == nil {
+                    existing.imageURL = imageURL(for: card)
+                }
+                if existing.thumbnailURL == nil {
+                    existing.thumbnailURL = card.thumbnailImageURL?.absoluteString
+                }
                 if existing.magicTreatmentIDsRaw.isEmpty {
                     existing.magicTreatmentIDsRaw = treatmentIDs
                 }

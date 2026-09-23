@@ -986,11 +986,12 @@ actor CardCatalog {
         for candidate: PokemonCatalogCardIdentity,
         matching evidence: PokemonHistoricalScanEvidence
     ) async throws -> IdentifiedCard {
-        try await historicalPokemon.card(
+        let card = try await historicalPokemon.card(
             for: candidate,
             matching: evidence,
             registry: catalogRegistry
         )
+        return applyingSignedArtwork(to: card)
     }
 
     static func classify(_ error: Error) -> CatalogFailure {
@@ -1366,14 +1367,30 @@ actor CardCatalog {
     ) async -> Result<CatalogResolution, Error> {
         let result = await lookup.task.result
         let ownsRegistration = inFlight[identifier]?.token == lookup.token
-        if ownsRegistration, case let .success(resolution) = result {
-            let card = resolution.card
-            resolved[identifier] = resolution
+        guard case let .success(resolution) = result else {
+            if inFlight[identifier]?.token == lookup.token {
+                inFlight[identifier] = nil
+            }
+            return result
+        }
+
+        // Enrich every waiter on the shared request. The first waiter owns
+        // cache publication, but concurrent scans must receive the same signed
+        // artwork result as the caller that completes the lookup.
+        let card = applyingSignedArtwork(to: resolution.card)
+        let enrichedResolution = CatalogResolution(
+            card,
+            isPersistable: resolution.isPersistable,
+            retrievedAt: resolution.retrievedAt,
+            path: resolution.path
+        )
+        if ownsRegistration {
+            resolved[identifier] = enrichedResolution
             // Only a live primary-provider response is written through. A
             // degraded fallback record would otherwise outlive the outage that
             // produced it, and a bundled-checklist record is already on disk
             // with the stamp and rarity detail this cache cannot represent.
-            if resolution.isPersistable,
+            if enrichedResolution.isPersistable,
                case let .pokemon(pokemonCard, setCode) = card,
                let diskKey = Self.persistentKey(for: identifier) {
                 let officialCount: Int?
@@ -1393,13 +1410,58 @@ actor CardCatalog {
                     officialCount: officialCount
                 )
             }
+            if inFlight[identifier]?.token == lookup.token {
+                inFlight[identifier] = nil
+            }
         }
         // Only successes are remembered. A failed lookup leaves no trace, so the
         // next attempt is a real attempt rather than a replayed failure.
-        if inFlight[identifier]?.token == lookup.token {
-            inFlight[identifier] = nil
+        return .success(enrichedResolution)
+    }
+
+    private func applyingSignedArtwork(to identifiedCard: IdentifiedCard) -> IdentifiedCard {
+        guard case let .pokemon(card, setCode) = identifiedCard,
+              !Self.hasUsableArtworkURL(card.image),
+              let descriptor = catalogRegistry.descriptor(forProviderSetID: card.set.id),
+              let artwork = descriptor.cardArtwork?.first(where: {
+                  CatalogIdentityNormalization.localNumber($0.localID)
+                    == CatalogIdentityNormalization.localNumber(card.localId)
+              }),
+              let image = Self.artworkBaseURL(from: artwork.imageURL) else {
+            return identifiedCard
         }
-        return result
+        let signedCard = TCGdexCard(
+            id: card.id,
+            localId: card.localId,
+            name: card.name,
+            image: image,
+            rarity: card.rarity,
+            set: card.set,
+            variants: card.variants,
+            pricing: card.pricing,
+            variantsDetailed: card.variantsDetailed
+        )
+        return .pokemon(signedCard, setCode: setCode)
+    }
+
+    private static func hasUsableArtworkURL(_ raw: String?) -> Bool {
+        guard let raw,
+              let components = URLComponents(string: raw),
+              components.scheme?.lowercased() == "https",
+              let host = components.host,
+              !host.isEmpty,
+              !components.path.isEmpty else { return false }
+        return components.url != nil
+    }
+
+    private static func artworkBaseURL(from raw: String) -> String? {
+        guard var components = URLComponents(string: raw),
+              components.scheme?.lowercased() == "https",
+              components.host != nil else { return nil }
+        if components.path.hasSuffix("/high.png") {
+            components.path.removeLast("/high.png".count)
+        }
+        return components.url?.absoluteString
     }
 }
 

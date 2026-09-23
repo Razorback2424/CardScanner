@@ -42,6 +42,23 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
     }
 
+    func testReaddingResolvedPokemonFillsMissingArtworkOnExistingCollectionRow() throws {
+        let context = try makeContext()
+        let existing = makeCollectedCard()
+        context.insert(existing)
+        try context.save()
+
+        _ = try CollectionStore(context: context).add(
+            identifiedCard(),
+            resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+            source: .scan
+        )
+
+        XCTAssertEqual(existing.quantity, 2)
+        XCTAssertEqual(existing.imageURL, "https://assets.tcgdex.net/en/sv/sv08.5/074")
+        XCTAssertEqual(existing.thumbnailURL, "https://assets.tcgdex.net/en/sv/sv08.5/074/low.png")
+    }
+
     func testLegacyAliasCacheIsSharedAndInvalidatedAfterCollectionMutation() throws {
         let context = try makeContext()
         let legacyStore = CollectionStore(context: context)

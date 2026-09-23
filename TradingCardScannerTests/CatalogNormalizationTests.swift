@@ -21,6 +21,15 @@ private struct RecordedTCGdexSource: TCGdexCatalogSource {
         return try JSONDecoder().decode(TCGdexCard.self, from: Self.cardResponse)
     }
 
+    func fetchCard(
+        setID: String,
+        localID: String,
+        locale: TCGdexLocale,
+        ignoringCache: Bool
+    ) async throws -> TCGdexCard {
+        try await fetchCard(id: "\(setID)-\(localID)", locale: locale)
+    }
+
     private static let setResponse = Data(
         """
         {
@@ -31,7 +40,7 @@ private struct RecordedTCGdexSource: TCGdexCatalogSource {
               "id": "M2-001",
               "localId": "001",
               "name": "Oddish",
-              "image": "https://assets.example.test/m2-001"
+              "image": null
             },
             {
               "id": "M2-002",
@@ -58,7 +67,7 @@ private struct RecordedTCGdexSource: TCGdexCatalogSource {
           "id": "M2-001",
           "localId": "001",
           "name": "Oddish",
-          "image": "https://assets.example.test/m2-001",
+          "image": "https://assets.tcgdex.net/en/swsh/m2/001",
           "rarity": "Common",
           "set": {
             "id": "M2",
@@ -152,6 +161,7 @@ final class CatalogNormalizationTests: XCTestCase {
 
         XCTAssertEqual(card.catalogProviderID, "M2-001")
         XCTAssertEqual(card.setCode, "M2")
+        XCTAssertEqual(card.imageURL, "https://assets.tcgdex.net/en/swsh/m2/001")
     }
 
     func testJapaneseSetNamesMapToTheirCatalogueIDs() {
@@ -188,30 +198,20 @@ final class CatalogNormalizationTests: XCTestCase {
         XCTAssertEqual(CatalogIdentityNormalization.locale(forCatalogCardID: "nodashes"), .en)
     }
 
-    /// Fetched from the right edition, a Japanese-exclusive printing is a real
-    /// card with a real Cardmarket price. Fetched from the English one it is a
-    /// 404, which is how these cards spent their whole life reported as
-    /// unreachable.
-    /// The response is recorded so this remains a deterministic provider-shape
-    /// test.
-    ///
-    /// The price arrives in euros: these are not TCGplayer products, so there is
-    /// no dollar figure to be had, and the currency travels with the number.
-    func testJapaneseCardIsPriceableFromTheJapaneseEdition() async throws {
+    /// Fetched from the right edition, a Japanese-exclusive printing resolves
+    /// identity, but its Cardmarket EUR observation is not a canonical USD quote.
+    func testJapaneseCardmarketPriceDoesNotBecomeCanonicalUSD() async throws {
         let card = try await RecordedTCGdexSource().fetchCard(id: "M2-001", locale: .ja)
         XCTAssertEqual(card.id, "M2-001")
 
-        guard case let .price(price) = CardPricing.price(
+        XCTAssertEqual(
+            CardPricing.price(
             for: .pokemon(card, setCode: "M2"),
             variant: .normal,
             magicTreatments: []
-        ) else {
-            return XCTFail("Expected a Cardmarket price")
-        }
-
-        XCTAssertEqual(price.source, .cardmarket)
-        XCTAssertEqual(price.currencyCode, "EUR")
-        XCTAssertGreaterThan(price.unitMarketPriceUSD, 0)
+            ),
+            .unavailable(.tcgplayer)
+        )
     }
 
     // MARK: - The starvation regression
@@ -260,6 +260,15 @@ final class CatalogNormalizationTests: XCTestCase {
 
         XCTAssertEqual(card.catalogProviderID, "M2-002")
         XCTAssertGreaterThan(card.catalogMetadataVersion, 3)
+    }
+
+    func testPreviouslyResolvedMissingArtworkRetriesAfterArtworkResolverVersionMoves() {
+        let card = importedCard(setName: "Inferno X", cardNumber: "001/080", name: "Oddish")
+        card.catalogProviderID = "M2-001"
+        card.catalogMetadataCheckedAt = .now
+        card.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion - 1
+
+        XCTAssertTrue(CollectionCatalogNormalizer.needsNormalization(card))
     }
 
     // MARK: - Definitive sealed misses
@@ -434,7 +443,7 @@ final class CatalogNormalizationTests: XCTestCase {
         XCTAssertEqual(card.catalogProviderID, "M2-001")
         XCTAssertEqual(card.setCode, "SPM")
         XCTAssertEqual(card.setReleaseOrder, 42)
-        XCTAssertEqual(card.imageURL, "https://assets.example.test/m2-001")
+        XCTAssertEqual(card.imageURL, "https://assets.tcgdex.net/en/swsh/m2/001")
         XCTAssertEqual(card.thumbnailURL, "https://images.example.test/exact-small.png")
         XCTAssertNil(card.rarity)
         XCTAssertFalse(
