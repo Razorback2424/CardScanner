@@ -1,3 +1,29 @@
+- Raw / Slab scanner review follow-up (2026-09-23; working tree based on
+  `main@30bd84e`): fixed held-slab duplicate saves by accepting only same-grade
+  certificate refinement or a distinct confirmed certificate for a copy swap,
+  and rekeyed the latch when cert evidence arrives. Slab label OCR now requires
+  a matching footer and runs at most every 0.5 s before confirmation and every
+  2.0 s afterward; one footer miss ages the 2-of-4 commit window, and a single
+  footer-key misread preserves label progress. Raw post-commit reads require
+  the saved footer identity. Restored the missing-row graded-price fallback,
+  FIFO evidence eviction, no-key guidance, and wider footer ROI. Simulator
+  `build-for-testing` succeeded; 11 selected non-centering regression tests
+  passed on iPhone 17 Pro / iOS 26.5. No centering tests ran, and the earlier
+  full-suite failures were not rerun.
+
+- Explicit Raw / Slab scanning mode implementation (2026-09-23; working tree
+  based on `main@30bd84e`): added the session-only mode picker, separate raw
+  and slab recognition paths, slab-gated commits, post-save raw-to-graded
+  conversion, and asynchronous graded price binding. The focused iPhone 17 Pro
+  / iOS 26.5 Simulator selection passed 166 tests with 0 failures. The broader
+  selection excluded all seven centering-specific test classes at the user's
+  request and executed 1,445 tests: 1,427 passed, 7 skipped, and 11 failed;
+  the failure names are recorded in
+  [`explicit-raw-slab-scanning-mode.md`](docs/plans/explicit-raw-slab-scanning-mode.md).
+  Generic iOS build and simulator build/run succeeded. The menu and Slabs pill
+  were visually confirmed; the simulator back camera is unavailable, so live
+  framing and recognition remain device checks.
+
 - Explicit Raw / Slab scanning mode plan (2026-09-23): added
   [`docs/plans/explicit-raw-slab-scanning-mode.md`](docs/plans/explicit-raw-slab-scanning-mode.md)
   word for word as provided. Updated the documentation map and audit to identify

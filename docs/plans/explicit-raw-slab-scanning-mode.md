@@ -1,5 +1,33 @@
 # Plan: Explicit Raw / Slab scanning mode
 
+## Status — 2026-09-23
+
+Implemented in the working tree based on `main@30bd84e`. The initial focused
+scanner, parser, resolver, slab-framing, confirmation, and quote-cache selection
+passed 166 tests with 0 failures on iPhone 17 Pro / iOS 26.5 Simulator before
+the review follow-up below. The earlier full simulator selection excluded all
+seven centering-specific test classes at the user's request and executed 1,445
+tests: 1,427 passed, 7 skipped, and 11 failed. The failures are listed under
+Verification. Generic iOS and simulator build-and-run succeeded. The simulator
+menu check passed; its back camera is unavailable, so framing-guide behavior
+still needs device verification.
+Physical-device/provider acceptance remains open. No device, provider, or
+release readiness is claimed.
+
+**Review follow-up — 2026-09-23:** slab label OCR now requires a matching
+footer and runs no more often than every 0.5 s before label confirmation. Once
+a certificate is known, it checks every 2.0 s for quick same-card copy swaps.
+Footer misses age the 2-of-4 commit window, and one footer-key misread preserves
+label progress. A held slab accepts only same-grade certificate enrichment or
+a distinct confirmed certificate at that exact grade; certificate enrichment
+also rekeys the latch's consumed identity. The post-commit Raw label watch
+checks the current footer identity before reading. The graded refresh again
+writes under the provider variant key if its collection row is missing. FIFO
+evidence eviction, the no-key price note, and wider footer side padding are
+also in place. `build-for-testing` succeeded; 11 selected non-centering
+regression tests passed on iPhone 17 Pro / iOS 26.5 Simulator. The earlier full
+suite result above predates this follow-up; it was not rerun.
+
 ## Context
 
 Graded slab scanning has never produced a successful scan. The review found the cause is structural. Auto-detection races the raw-card pipeline:
@@ -25,9 +53,9 @@ User decisions:
 |---|---|---|
 | Guide | raw card outline | slab outline + card window from the start (solid) |
 | Footer ROI | `CardFramingRegion.visionRect` only | padded slab footer band |
-| Label OCR before commit | never | every OCR pass until evidence confirms |
+| Label OCR before commit | never | every 0.5 s while the current footer matches until evidence confirms |
 | Commit requires | footer identity (2/4) | footer identity **and** confirmed label evidence |
-| After commit | ≤4 low-rate label reads while the same card stays latched → optional "convert to graded" banner | label keeps reading only for certificate refinement (existing flow) |
+| After commit | ≤4 low-rate label reads while the same card stays latched → optional "convert to graded" banner | certificate checks every 2.0 s while the same footer remains, to detect a quick copy swap |
 | Price | unchanged | Collection: save now, bind graded price in background. Price Check: present now, existing auto-refresh fetches graded quote |
 
 ## Phase 1 — Mode plumbing and menu (no recognition change yet)
@@ -73,22 +101,22 @@ Also remove:
 ## Phase 3 — Slab mode pipeline (scanner)
 
 1. **ROIs.** Add to `Services/SlabFramingRegion.swift`:
-   - `slabModeFooterVisionRect`: generic footer band, padded about ±0.02 x and ±0.015 y.
+   - `slabModeFooterVisionRect`: generic footer band, padded about ±0.08 x and ±0.015 y to include collector-number text beyond the card-window edges.
    - `slabModeLabelVisionRect`: generic label band, padded vertically, e.g. slab-relative y 0.72…1.06, clamped to the frame.
 
    These tolerate framing drift, which the current bands do not. Keep `geometry(for:)` as the single calibration surface. Keep the per-company rects as they are, but don't narrow to them in the first version.
 2. **Guide.** `CameraPreview` shows `slabVisionRect` plus `cardWindowVisionRect` solid from the moment Slab mode is selected. `slabFraming` still carries the confirmed grade and cert for display.
 3. **Label cadence.** In `captureOutput` (~3258), when `subjectMode == .slab`:
-   - Run `labelRequest` on every OCR frame until `slabEvidenceWindow` confirms.
-   - Afterward, run it at `labelInterval` (0.5 s) only while `certificationNumber == nil`, to feed the existing `onGradedSlabCertificationRefined` path.
-   - Factor the decision into one pure function, `SlabLabelSchedule.shouldReadLabel(mode:hasEvidence:certKnown:lastLabelAt:now:)`. The test seams call the same function (this fixes the review's test gap).
+   - Run `labelRequest` no more often than every 0.5 s while the frame's footer identity matches the current footer key. Continue after confirmation, checking every 2.0 s so a distinct certificate can identify a quick same-card copy swap.
+   - Process footer confirmation and latch changes before running the larger label pass.
+   - Factor the decision into one pure function, `SlabLabelSchedule.shouldReadLabel(mode:footerMatched:hasEvidence:certKnown:lastLabelAt:now:)`. The test seams call the same function.
 4. **Commit gate** in `handleFooterOutcome`, Slab mode only:
    - If a footer identity is found but there is no `activeSlab`, do not feed `confirmationWindow`. Call `announceLatchHoldIfNeeded()` and start `slabAwaitingLabelSince`.
    - If a footer identity is found and `activeSlab` exists, set `parsed = ScanSubject(identifier:, slab:)` and run the normal confirm/engage.
    - A slab subject can never commit as raw.
 5. **Presence.** Replace `updateActiveSlabPresence` with a simple rule. Evidence binds to the first footer key seen with it. It clears on any of:
    - 4 empty footer frames
-   - a different footer key
+   - a different footer key confirmed in 2 of 4 footer reads
    - spatial exit
    - latch release
    - mode change or lifecycle
@@ -119,7 +147,7 @@ In `Services/GradedLabelParser.swift`:
 
   Apply both in `company(in:)` and in `parse`.
 - **Grade word vs card-name "EX".** Prefer grade words that have an admissible grade number adjacent in the spec's `numberPosition`. Accept a lone `EX`, `NM`, or `VG` only when a grade number is adjacent.
-- **Confirmation window** (`SlabEvidenceConfirmationWindow.matches`, ~798). Treat reads as matching when company, label and qualifier agree and the value agrees or is missing from one read. Return the most complete read.
+   - **Confirmation window** (`SlabEvidenceConfirmationWindow.matches`, ~798). Treat reads as matching when company, label and qualifier agree and the value or certificate is missing from one read. Return the most complete read. Once active, accept only a certificate added to the exact same company/grade or a distinct confirmed certificate at that grade; ignore grade flicker and missing fields.
 
 In `Services/ScannedGradedResolver.swift` (`matchingVariant`, ~106):
 - Accept a single candidate only if its label is nil or matches the scanned label after synonym normalization (`GEM MT` ≡ `GEM MINT`, `NM-MT` ≡ `NM MT`, …).
@@ -128,7 +156,7 @@ In `Services/ScannedGradedResolver.swift` (`matchingVariant`, ~106):
 ## Phase 6 — Raw mode post-save "Looks graded — convert?" banner
 
 1. **Scanner.** In Raw mode + Collection purpose, arm a `PostCommitLabelWatch(encounterID:startedAt:)` at `latch.engage`.
-   - Only on OCR frames while that encounter is still latched. At most 4 label reads, starting 0.5 s after engage and spaced ≥0.75 s apart, using the wide `bootstrapLabelVisionRect`.
+   - Only on OCR frames when that encounter remains latched and the current footer identifier still matches its saved identity. At most 4 label reads, starting 0.5 s after engage and spaced ≥0.75 s apart, using the wide `bootstrapLabelVisionRect`.
    - Use its own `SlabEvidenceConfirmationWindow`.
    - It ends on latch release, spatial exit, a new encounter, or a mode or purpose change.
    - On confirmation it emits `onPostCommitSlabEvidence(encounterID, evidence)` once.
@@ -146,32 +174,17 @@ In `Services/ScannedGradedResolver.swift` (`matchingVariant`, ~106):
 
 ## Phase 7 — Tests and docs
 
-**Retire or rewrite** the auto-detection tests:
-- `CardLatchTests` slab cases (~475–840)
-- `OpusImplementationPlanTests` REQ007/008 and RM003/008 (~1377–1650)
-
-Replace them with mode-based tests:
-- Raw: no label pass before commit (counting seam); a TAG TEAM raw card confirms in 2 frames.
-- Slab: footer-only frames never confirm; footer + evidence confirms; the no-label offer appears after 3 s; a mode switch drops in-flight confirmations.
-- Post-commit watch: arms only after engage, reads at most 4 times, emits once.
-
-**View model tests** (`ScannerViewModelTests` ~297–650). Keep the slab-subject tests and adapt them to save-now/price-after. Add tests for:
-- binding after commit, including after a cert refinement changes the key
-- the undo-during-binding race
-- Price Check with a nil outcome
-
-**Parser tests:**
-- TAG TEAM labels and raw TAG TEAM text
-- `CHARIZARD EX … MINT 9`
-- a read missing the number matches a complete read
-
-Resolver tests: a single conflicting-label candidate returns nil.
-
-`SlabFramingRegionTests`: the padded slab-mode ROIs stay inside the frame and contain the generic bands.
+The previous implicit slab auto-detection cases were retired or rewritten around
+the explicit mode. Mode-focused tests cover Raw/Slab gating, mode changes,
+post-commit label reads and footer matching, slab binding and undo races,
+immediate Price Check, TAG exclusions, grade parsing and confirmation, resolver
+label conflicts, footer misses, grade flicker, certificate refinement and copy
+swaps, and padded slab ROIs.
 
 **Docs:**
-- Update `docs/audits/scanner_module_review.md`, or the current scanner plan named in `docs/plans/documentation_audit.md`, to record the move from auto-detection to an explicit mode.
-- Add a dated `progress.md` entry.
+This plan records the move from auto-detection to explicit Raw / Slab mode;
+`docs/README.md`, `docs/plans/documentation_audit.md`, and `progress.md` point
+to the implementation and its dated verification.
 
 ## Critical files
 
@@ -195,16 +208,45 @@ Reused as-is:
 
 ## Verification
 
-1. Build and test narrowly. Use an external-SSD `-derivedDataPath` if one is mounted, per `AGENTS.md`:
-   `xcodebuild test -project TradingCardScanner.xcodeproj -scheme TradingCardScanner -destination 'platform=iOS Simulator,name=iPhone 17' -only-testing:TradingCardScannerTests/{CardLatchTests,GradedLabelParserTests,SlabEvidenceConfirmationWindowTests,ScannedGradedResolverTests,SlabFramingRegionTests,ScannerViewModelTests}`
+1. The focused iPhone 17 Pro / iOS 26.5 Simulator selection passed 166 tests
+   with 0 failures. Generic iOS build and iPhone 17 Pro simulator build/run
+   succeeded. The generic build emitted two non-Sendable capture
+   warnings in `CardScanner.swift`.
+2. The full iPhone 17 Pro / iOS 26.5 Simulator selection skipped the centering
+   classes named below at the user's request. It executed 1,445 tests: 1,427
+   passed, 7 skipped, and 11 failed. The result bundle is
+   `/private/tmp/TradingCardScannerDerivedData/Logs/Test/Test-TradingCardScanner-2026.09.23_13-24-28--0600.xcresult`.
 
-   Then run the full suite, and report failures against the recorded baseline (40 known failures at `a4375df`).
-2. Simulator UI: confirm the menu shows the "Scanning" section, the pill reads "Slabs" in Slab mode, lock pickers are disabled in Slab mode, and the top bar gains no new control.
-3. Device (required; simulator evidence can't prove recognition):
+   Failures:
+
+   - `OpusImplementationPlanTests.testREQ005NonUSDTransitionDepricesCurrentAndReplaySymmetrically`
+   - `OpusImplementationPlanTests.testREQ006NonUSDLocalPriceRecordIsCheckingButStillVisible`
+   - `OpusImplementationPlanTests.testREQ013ImportedSealedRowConvergesWithBrowseAdd`
+   - `OpusImplementationPlanTests.testRM006NonUSDTransitionAcrossDayBoundaryKeepsCurrentAndReplayAligned`
+   - `PortfolioReconciliationTests.testFastAndAuthoritativeValuationAgreeAcrossCurrencyAndInvalidationTransitions`
+   - `PriceHistoryChartModelTests.testNearFlatExpensiveHistoryUsesMinimumVisualEnvelope`
+   - `PrivacyAndSupportSurfaceTests.testCollectionStorageStatusDistinguishesTransientLocalFallback`
+   - `ProductFallbackTests.testDirectMagicTreatmentHandleReachesVendorAndReturnsPrice`
+   - `ProductIdentityTests.testCredentialRoundTripAndRemoval`
+   - `ProductIdentityTests.testKeyIsNeverPersistedToUserDefaults`
+   - `ProductIdentityTests.testStoringBlankRemovesTheKey`
+
+   Five failures reported `storeFailed(-34018)` in keychain-backed product or
+   sealed-row tests. The price, portfolio, and storage-status assertions are
+   outside the Raw / Slab changes and need separate investigation.
+3. Simulator UI showed the "Scanning" menu, the "Slabs" pill, the raw-only
+   finish-lock caption, and dimmed finish-lock choices. The top bar retains its
+   existing controls. The simulator reported that its back camera is
+   unavailable, so it could not verify live framing guides.
+4. Device (required; simulator evidence can't prove recognition):
    - **Raw speed.** Compare the Instruments `oneCardScan` / `footerOCR` / `labelOCR` signposts before and after on a stack of raw cards. Expect no `labelOCR` intervals before commit.
    - **Slab recognition.** In Slab mode, run the DEBUG `[GradedLabelCapture]` route on PSA, BGS and CGC slabs, in both Collection and Price Check. Record time-to-commit, the grade/cert read, and the price binding arriving after the save.
    - **Edge cases:**
      - a raw TAG TEAM card in Raw mode (no stall)
      - a raw card in Slab mode (the "Switch to Raw" offer)
      - a slab scanned in Raw mode (convert banner → graded row with price)
-4. Do not record device, provider or release readiness from source or simulator results alone.
+5. The skipped centering-specific classes were `CardCenteringGroundTruthTests`,
+   `CardCenteringInvariantTests`, `CenteringProfileDumpTests`,
+   `CardCenteringCorpusManifestTests`, `CenteringExportTests`,
+   `CardCenteringAnalyzerTests`, and `CardCenteringSurfaceTests`.
+6. Do not record device, provider or release readiness from source or simulator results alone.

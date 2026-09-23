@@ -1,12 +1,12 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-09-22
+**Audit date:** 2026-09-23
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — 2026-09-22
+## Current authority boundary — 2026-09-23
 
 This is the repository-wide documentation index and reconciliation record.
 Source code, tests, build settings, and evidence recorded against the current
@@ -52,9 +52,9 @@ scanner catalog-miss area. The external-SSD artifacts are under
 `exact-7dbaf40/focused.xcresult` and `exact-7dbaf40/full-shell.xcresult`; the
 prior `a4375df` suite remains historical.
 
-## App Review remediation evidence — 2026-09-22
+## App Review remediation evidence — 2026-09-22 (snapshot at `main@9759050`)
 
-The active workspace is clean `main@9759050`. The scanner, price-refresh,
+At this snapshot, the workspace was clean at `main@9759050`. The scanner, price-refresh,
 storage-bootstrap, manifest-protection, and bulk-operation remediation is
 committed. The root [`app_review_fix_plan.md`](../../app_review_fix_plan.md) is
 the implementation and acceptance authority; the
@@ -73,9 +73,9 @@ destinations are still owner input.
 | Automatic Pokémon set updates | [`automatic_pokemon_catalog_updates_plan.md`](automatic_pokemon_catalog_updates_plan.md) | Slices A–E are implemented. Slice F's production-host revision-1 rehearsal and same-revision relaunch handling are complete as of 2026-09-19. The committed production app configuration is `remote-authority`; schema-1 additive fingerprinting, canonical publisher/device parity, fail-closed classification, durable targeted reconciliation, parent-artwork metadata, and set-specific Browse updates are implemented and the latest focused verification is Core 38/38 plus app 37/37. Protected baseline publication, auto-environment setup, four-hour scheduling, physical-device/offline evidence, the first real catalog update, and release gates remain open. |
 | Magic catalog signing and publication | [`magic_catalog_key_handling_runbook.md`](magic_catalog_key_handling_runbook.md) | Current authority for Magic-specific key custody, signed catalog releases, protected/automatic publication routing, Scryfall boundaries, and rollout safeguards. The Magic-specific key pin remains owner input; rollout remains `legacy-live`. |
 | Artwork fallbacks | [`artwork-fallback-plan.md`](artwork-fallback-plan.md), `TradingCardScanner/Services/ArtworkFallbacks.swift`, and Browse tests | P0–P3 are implemented in the current tree; TCGdex-only stem/WebP candidates, symbol sibling-prefix recovery, decode-before-persist, legacy-cache eviction, and coalesced requests pass in the 133/133 focused run. Broader provider behavior and licensing are still operational gates. |
-| Scanner workflow | `TradingCardScanner/Views/ScannerViewModel.swift`, the current [scanner module review](../audits/scanner_module_review.md), [explicit Raw / Slab scanning mode plan](explicit-raw-slab-scanning-mode.md), [release follow-ups](release_followups.md), [`scan_cancellation_success_checklist.md`](../../references/scan_cancellation_success_checklist.md), and `progress.md` | The scanner module review remains authoritative for tracking/OCR findings and measurements. The explicit-mode plan is the current proposed scanner architecture for graded slabs; it is not implemented. The 2026-09-22 fix plan's A→B→A′, add-another, held-repeat, and scoped-undo regressions pass on Simulator; the physical stack acceptance remains open. The slab-specific automatic-detection and blocking-price recommendations in the archived scanning workflow review are superseded by the new plan. |
+| Scanner workflow | `TradingCardScanner/Views/ScannerViewModel.swift`, the current [scanner module review](../audits/scanner_module_review.md), [explicit Raw / Slab scanning mode plan](explicit-raw-slab-scanning-mode.md), [release follow-ups](release_followups.md), [`scan_cancellation_success_checklist.md`](../../references/scan_cancellation_success_checklist.md), and `progress.md` | The scanner module review remains authoritative for tracking/OCR findings and measurements. Explicit Raw / Slab mode is implemented in the 2026-09-23 working tree; its initial focused simulator selection passes 166/166 and its review follow-up passes 11/11 targeted non-centering tests. The earlier full simulator run excluded centering-specific classes at the user's request. Physical stack, live-provider, and release acceptance remain open. The slab-specific automatic-detection and blocking-price recommendations in the archived scanning workflow review are superseded by the new plan. |
 | Pricing and portfolio performance | [`price_refresh_scale_plan.md`](price_refresh_scale_plan.md), [`release_followups.md`](release_followups.md), and the current services/tests | The 2026-09-22 fix plan tracks no-provider sentinels and bounded refresh eligibility. Large-store measurement, Magic batching, resumable sweeps, and physical-provider profiling remain open. |
-| App Review and release | [`app_review_fix_plan.md`](../../app_review_fix_plan.md), [`app_review_preflight.md`](../../app_review_preflight.md), [`card-scanner-1.0-go-no-go-framework.md`](../release/card-scanner-1.0-go-no-go-framework.md), and the [current evidence ledger](../release/phase-1-integrity-evidence.md) | The current checkout is clean `main@9759050`; recent focused evidence is from the preceding `810954e` worktree snapshot, with no exact-HEAD full-suite or device proof. CloudKit/device, archive/TestFlight, centering, actual privacy/support URLs, and other App Store gates remain open. |
+| App Review and release | [`app_review_fix_plan.md`](../../app_review_fix_plan.md), [`app_review_preflight.md`](../../app_review_preflight.md), [`card-scanner-1.0-go-no-go-framework.md`](../release/card-scanner-1.0-go-no-go-framework.md), and the [current evidence ledger](../release/phase-1-integrity-evidence.md) | The last clean app-review baseline is `main@9759050`; its recent focused evidence is from the preceding `810954e` worktree snapshot. The current working tree is based on `main@30bd84e` and includes the Raw / Slab scanner work recorded above. CloudKit/device, archive/TestFlight, centering, actual privacy/support URLs, and other App Store gates remain open. |
 | Card centering | [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) and [`review/centering-evidence/`](../../review/centering-evidence/) | Dated experiment artifacts remain inside the current evidence ledger; the active contract and its open accuracy/invariant/latency/device gates are authoritative. |
 | Legal and future website | [`legal/privacy-policy.md`](../legal/privacy-policy.md), [`legal/support.md`](../legal/support.md), and [`CardScanner-Website-Implementation-Spec.md`](../CardScanner-Website-Implementation-Spec.md) | The website specification is a future website contract; no website source is present in this iOS repository. Its canonical support route is `/support`. |
 | Known production defects | [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) | The six-finding baseline was audited against `a4375df` (five confirmed, one suspected). F01–F03 source remediation is now landed and focused-verified; the audit has not been rerun at intended candidate `7dbaf40`, and entitled-device/runtime evidence remains open. Pass 1 in `docs/legacy/` is a 2026-09-09/10 snapshot and was not re-reproduced. |
