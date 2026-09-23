@@ -139,6 +139,7 @@ enum StoreRevisionFingerprinting {
         hasher.combine(record.invalidatedAt)
         hasher.combine(record.lastFailureAt)
         hasher.combine(record.lastFailureReasonRaw)
+        hasher.combine(record.gradedMarketCoverageJSON)
     }
 }
 
@@ -601,7 +602,8 @@ struct StoreRevisionMonitor: View {
                     forceUnsupportedRetry: shouldForceUnsupportedRetry,
                     sortOldestFirst: false,
                     maximumTargetCount: nil,
-                    markRecentlyCheckedIfEmpty: false
+                    markRecentlyCheckedIfEmpty: false,
+                    gradedOnly: false
                 )
                 return await refresh.refresh(
                     request,

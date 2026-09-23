@@ -53,6 +53,9 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case gradedVariantUnavailable = "graded_variant_unavailable"
     case providerRequestFailed = "provider_request_failed"
     case gradedMarketPriceNull = "graded_market_price_null"
+    case gradedCardNotTracked = "graded_card_not_tracked"
+    case gradedCardHasNoPrices = "graded_card_no_prices"
+    case gradedGradeNotTracked = "graded_grade_not_tracked"
     case justTCGVariantUnresolved = "justtcg_variant_unresolved"
     case invalidProviderQuote = "invalid_provider_quote"
     case noSupportedProvider = "no_supported_provider"
@@ -67,6 +70,9 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .gradedVariantUnavailable: return "Graded variant not found"
         case .providerRequestFailed: return "Price provider request failed"
         case .gradedMarketPriceNull: return "Graded market price unavailable"
+        case .gradedCardNotTracked: return "No graded data for this card"
+        case .gradedCardHasNoPrices: return "No graded prices yet"
+        case .gradedGradeNotTracked: return "This grade is not listed yet"
         case .justTCGVariantUnresolved: return "Market variant not resolved"
         case .invalidProviderQuote: return "Invalid provider quote rejected"
         case .noSupportedProvider: return "No supported price provider"
@@ -91,12 +97,27 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
             return "The last provider request failed. A later refresh can try again."
         case .gradedMarketPriceNull:
             return "The exact graded listing exists, but the provider currently reports no market price."
+        case .gradedCardNotTracked:
+            return "JustTCG returned no graded card matching this name, set, and collector number. The app will check again next week."
+        case .gradedCardHasNoPrices:
+            return "JustTCG recognizes this card but has no graded listings for it yet. The app will check again next week."
+        case .gradedGradeNotTracked:
+            return "JustTCG has graded listings for this card, but not this exact grader and grade. Other grades are shown as context only; they are never used as this slab’s value. The app will check again next week."
         case .justTCGVariantUnresolved:
             return "The marketplace card was identified, but its exact physical variant was not."
         case .invalidProviderQuote:
             return "The provider returned a non-finite or unrepresentable amount. The quote was rejected and the prior value was kept."
         case .noSupportedProvider:
             return "This item has no provider that can answer its exact identity. It will be retried occasionally rather than on every refresh."
+        }
+    }
+
+    var isGradedCoverageResult: Bool {
+        switch self {
+        case .gradedCardNotTracked, .gradedCardHasNoPrices, .gradedGradeNotTracked:
+            return true
+        default:
+            return false
         }
     }
 }
@@ -106,6 +127,10 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
+        if let coverageReason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
+           coverageReason.isGradedCoverageResult {
+            return coverageReason
+        }
         if record?.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
             return .noSupportedProvider
         }
@@ -147,6 +172,7 @@ enum PricingDiagnostics {
             return .noExactVariantPrice
         }
     }
+
 }
 
 /// Why an owned item still has no artwork. Kept separate from price diagnostics
@@ -841,6 +867,7 @@ struct PriceStore {
 
         if let marketVariantID {
             record.marketVariantID = marketVariantID
+            record.gradedMarketCoverageJSON = nil
         }
         return true
     }
@@ -959,6 +986,48 @@ struct PriceStore {
         record.lastCheckedAt = date
         record.lastFailureReasonRaw = PricingDiagnosticReason.noSupportedProvider.rawValue
         record.lastFailureAt = nil
+        return true
+    }
+
+    /// Stores an authoritative card-level graded lookup result without
+    /// fabricating a price observation. This keeps data coverage distinct from
+    /// a capability gap or a failed network request.
+    @discardableResult
+    func recordGradedMarketCoverage(
+        _ coverage: GradedMarketCoverage,
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        at date: Date = .now,
+        treatmentIDs: [String] = []
+    ) -> Bool {
+        let key = PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
+        guard let record = recordForWrite(
+            key: key,
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        ) else { return false }
+        guard record.effectiveUnitMarketPriceUSD == nil else {
+            record.gradedMarketCoverageJSON = nil
+            if let reason = record.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
+               reason.isGradedCoverageResult {
+                record.lastFailureReasonRaw = nil
+            }
+            return true
+        }
+
+        record.gradedMarketCoverage = coverage
+        record.lastCheckedAt = date
+        record.lastSuccessfulCheckAt = date
+        record.lastFailureAt = nil
+        record.lastFailureReasonRaw = coverage.status.diagnosticReasonRawValue
         return true
     }
 

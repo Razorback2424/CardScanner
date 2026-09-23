@@ -126,6 +126,6 @@ actor PriceRefreshTargetModelActor {
         return PriceRefreshController.staleTargets(
             from: targets,
             usesPriceFallback: usesPriceFallback
-        ).count
+        ).filter { $0.itemKind != .gradedCard }.count
     }
 }

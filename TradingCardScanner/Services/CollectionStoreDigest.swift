@@ -254,6 +254,7 @@ private struct PriceRecordProjection: Codable {
     var coefficientOfVariation: Double?
     var lastFailureAt: Double?
     var lastFailureReasonRaw: String?
+    var gradedMarketCoverageJSON: String?
     var invalidatedAt: Double?
 
     init(_ record: PriceRecord) {
@@ -283,6 +284,7 @@ private struct PriceRecordProjection: Codable {
         coefficientOfVariation = record.coefficientOfVariation
         lastFailureAt = record.lastFailureAt?.timeIntervalSinceReferenceDate
         lastFailureReasonRaw = record.lastFailureReasonRaw
+        gradedMarketCoverageJSON = record.gradedMarketCoverageJSON
         invalidatedAt = record.invalidatedAt?.timeIntervalSinceReferenceDate
     }
 }

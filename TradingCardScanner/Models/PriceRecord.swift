@@ -144,6 +144,9 @@ final class PriceRecord {
     var lastFailureAt: Date?
     /// Stable support-facing diagnosis for rejected data or request failures.
     var lastFailureReasonRaw: String?
+    /// A successful graded lookup can confirm that the card is tracked while
+    /// its exact grade is absent. Keep a compact summary for collection detail.
+    var gradedMarketCoverageJSON: String?
 
     /// The last time this record's value was explicitly withdrawn because it
     /// was attached to the wrong market variant. The observation log is the
@@ -181,6 +184,22 @@ final class PriceRecord {
         sourceRaw.flatMap(PriceSource.init(rawValue:))
     }
 
+    var gradedMarketCoverage: GradedMarketCoverage? {
+        get {
+            guard let gradedMarketCoverageJSON,
+                  let data = gradedMarketCoverageJSON.data(using: .utf8) else { return nil }
+            return try? JSONDecoder().decode(GradedMarketCoverage.self, from: data)
+        }
+        set {
+            guard let newValue,
+                  let data = try? JSONEncoder().encode(newValue) else {
+                gradedMarketCoverageJSON = nil
+                return
+            }
+            gradedMarketCoverageJSON = String(data: data, encoding: .utf8)
+        }
+    }
+
     @discardableResult
     func apply(_ price: NormalizedPrice) -> Bool {
         guard price.unitMarketPriceUSD.isFinite, price.unitMarketPriceUSD >= 0 else {
@@ -202,6 +221,7 @@ final class PriceRecord {
         lastSuccessfulCheckAt = price.fetchedAt
         lastFailureAt = nil
         lastFailureReasonRaw = nil
+        gradedMarketCoverageJSON = nil
         self.invalidatedAt = nil
         return true
     }
@@ -227,6 +247,7 @@ final class PriceRecord {
         lastSuccessfulCheckAt = nil
         lastFailureAt = nil
         lastFailureReasonRaw = nil
+        gradedMarketCoverageJSON = nil
         invalidatedAt = nil
         return true
     }
@@ -289,7 +310,8 @@ final class PriceRecord {
             sourceUpdatedAt: sourceUpdatedAt,
             fetchedAt: fetchedAt,
             lastCheckedAt: lastCheckedAt,
-            refreshFailed: lastFailureAt != nil
+            refreshFailed: lastFailureAt != nil,
+            gradedMarketCoverage: gradedMarketCoverage
         )
     }
 }
@@ -317,6 +339,7 @@ struct PriceDisplay: Equatable, Sendable {
     var fetchedAt: Date? = nil
     var lastCheckedAt: Date? = nil
     var refreshFailed: Bool = false
+    var gradedMarketCoverage: GradedMarketCoverage? = nil
 
     static let unknown = PriceDisplay()
 

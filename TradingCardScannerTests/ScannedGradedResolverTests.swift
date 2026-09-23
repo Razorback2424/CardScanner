@@ -115,17 +115,58 @@ final class ScannedGradedResolverTests: XCTestCase {
     }
 
     func testResolverMapsVendorOutcomesAndCredentialGate() async {
-        let unpriced = await resolve(.cardFoundWithoutGradedVariants)
-        XCTAssertEqual(unpriced, .unpricedGrade)
+        let noListings = await resolve(.cardFoundWithoutGradedVariants)
+        XCTAssertEqual(
+            noListings,
+            .noGradedListings(GradedMarketCoverage(status: .noGradedListings))
+        )
 
         let unmatched = await resolve(.noProductMatch)
-        XCTAssertEqual(unmatched, .unmatchedProduct)
+        XCTAssertEqual(unmatched, .cardNotTracked(GradedMarketCoverage(status: .cardNotTracked)))
 
         let noKey = await ScannedGradedResolver(
             client: StubLookupClient(result: .matched([])),
             credentialsAvailable: false
         ).resolve(card: card, slab: slab(company: .psa, value: "10"), pokemonPrintRun: nil)
         XCTAssertEqual(noKey, .unavailable)
+    }
+
+    func testMissingGradeRetainsOtherJustTCGGradesWithoutFilteringTheRequest() async throws {
+        // Prices and grades below are from the Charizard graded response
+        // summarized for this task. A CGC 10 must remain unpriced even though
+        // nearby PSA and CGC grades are listed.
+        let variants = [
+            variant(id: "psa-8", company: .psa, grade: CardGrade(value: "8"), priceUSD: 1_479.99),
+            variant(id: "psa-7", company: .psa, grade: CardGrade(value: "7"), priceUSD: 725),
+            variant(id: "cgc-7", company: .cgc, grade: CardGrade(value: "7"), priceUSD: 650),
+            variant(id: "cgc-6", company: .cgc, grade: CardGrade(value: "6"), priceUSD: 519.99),
+            variant(id: "cgc-5", company: .cgc, grade: CardGrade(value: "5"), priceUSD: 500),
+            variant(id: "psa-3", company: .psa, grade: CardGrade(value: "3"), priceUSD: 300),
+            variant(id: "cgc-2_5", company: .cgc, grade: CardGrade(value: "2.5"), priceUSD: 270)
+        ]
+        let recorder = GradedLookupRequestRecorder()
+        let resolver = ScannedGradedResolver(
+            client: StubLookupClient(result: .matched(variants), requestRecorder: recorder),
+            timeout: .seconds(1),
+            credentialsAvailable: true
+        )
+
+        let outcome = await resolver.resolve(
+            card: card,
+            slab: slab(company: .cgc, value: "10", label: "Gem Mint"),
+            pokemonPrintRun: nil
+        )
+
+        guard case let .gradeNotTracked(coverage) = outcome else {
+            return XCTFail("Expected the missing CGC 10 to be classified as unlisted")
+        }
+        XCTAssertEqual(coverage.status, .gradeNotListed)
+        XCTAssertEqual(coverage.listedGrades.count, 7)
+        XCTAssertEqual(coverage.listedGrades.first?.displayName, "PSA 8")
+        XCTAssertEqual(coverage.listedGrades.first?.marketPriceUSD, 1_479.99)
+        let filters = await recorder.snapshot()
+        XCTAssertTrue(filters.companies.isEmpty)
+        XCTAssertTrue(filters.grades.isEmpty)
     }
 
     func testResolverTreatsTransportAndTimeoutAsUnavailable() async {
@@ -234,13 +275,18 @@ final class ScannedGradedResolverTests: XCTestCase {
         )
     }
 
-    private func variant(id: String, company: GradingCompany, grade: CardGrade) -> GradedVariant {
+    private func variant(
+        id: String,
+        company: GradingCompany,
+        grade: CardGrade,
+        priceUSD: Double? = 125
+    ) -> GradedVariant {
         GradedVariant(
             id: id,
             cardID: "vendor-card",
             company: company,
             grade: grade,
-            marketPriceUSD: 125,
+            marketPriceUSD: priceUSD,
             updatedAt: nil
         )
     }
@@ -253,17 +299,20 @@ private struct StubLookupClient: ScannedGradedLookupClient {
     let delayNanoseconds: UInt64
     let throwsError: Bool
     let identityRecorder: GradedIdentityRecorder?
+    let requestRecorder: GradedLookupRequestRecorder?
 
     init(
         result: GradedVariantLookupResult = .matched([]),
         delayNanoseconds: UInt64 = 0,
         throwsError: Bool = false,
-        identityRecorder: GradedIdentityRecorder? = nil
+        identityRecorder: GradedIdentityRecorder? = nil,
+        requestRecorder: GradedLookupRequestRecorder? = nil
     ) {
         self.result = result
         self.delayNanoseconds = delayNanoseconds
         self.throwsError = throwsError
         self.identityRecorder = identityRecorder
+        self.requestRecorder = requestRecorder
     }
 
     func lookup(
@@ -274,6 +323,7 @@ private struct StubLookupClient: ScannedGradedLookupClient {
         lane: JustTCGRequestLane
     ) async throws -> GradedVariantLookupResult {
         await identityRecorder?.record(identity)
+        await requestRecorder?.record(companies: companies, grades: grades)
         if delayNanoseconds > 0 {
             try await Task.sleep(nanoseconds: delayNanoseconds)
         }
@@ -287,5 +337,19 @@ private actor GradedIdentityRecorder {
 
     func record(_ identity: GradedCardIdentity) {
         lastIdentity = identity
+    }
+}
+
+private actor GradedLookupRequestRecorder {
+    private(set) var companies = Set<GradingCompany>()
+    private(set) var grades = Set<String>()
+
+    func record(companies: Set<GradingCompany>, grades: Set<String>) {
+        self.companies = companies
+        self.grades = grades
+    }
+
+    func snapshot() -> (companies: Set<GradingCompany>, grades: Set<String>) {
+        (companies, grades)
     }
 }

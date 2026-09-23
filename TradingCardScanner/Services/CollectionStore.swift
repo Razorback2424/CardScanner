@@ -292,7 +292,8 @@ actor ScannerCollectionWriter {
                         identityResolution: candidate.identityResolution,
                         resolved: candidate.resolved
                     )
-                case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
+                case .cardNotTracked, .noGradedListings, .gradeNotTracked,
+                     .unavailable, .none:
                     let mutation = try store.addScannedGraded(
                         underlying: candidate.card,
                         company: slab.company,
@@ -417,6 +418,38 @@ actor ScannerCollectionWriter {
             try saveModelContext()
             collectionStore.invalidateIdentityAliasCache()
             return receipt
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
+    }
+
+    /// Persists the graded catalogue coverage returned for a committed slab
+    /// when its exact market variant is absent.
+    @discardableResult
+    func recordGradedMarketCoverage(
+        collectionKey: String,
+        coverage: GradedMarketCoverage,
+        at date: Date = .now
+    ) throws -> Bool {
+        do {
+            let collectionStore = CollectionStore(context: modelContext)
+            guard let row = try collectionStore.card(forAnyKey: collectionKey),
+                  row.itemKind == .gradedCard else { return false }
+            let accepted = PriceStore(context: modelContext).recordGradedMarketCoverage(
+                coverage,
+                game: row.cardGame,
+                printingID: row.priceStorageID,
+                variantID: row.variantID,
+                at: date,
+                treatmentIDs: row.priceTreatmentIDs
+            )
+            guard accepted else {
+                modelContext.rollback()
+                return false
+            }
+            try saveModelContext()
+            return true
         } catch {
             modelContext.rollback()
             throw error

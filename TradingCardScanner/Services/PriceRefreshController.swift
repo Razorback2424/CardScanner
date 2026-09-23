@@ -227,6 +227,9 @@ actor PriceRefreshModelActor {
                 usesPriceFallback: request.usesPriceFallback,
                 forceUnsupportedRetry: request.forceUnsupportedRetry
             )
+            if request.gradedOnly {
+                staleTargets = staleTargets.filter { $0.itemKind == .gradedCard }
+            }
             if request.sortOldestFirst {
                 staleTargets.sort {
                     ($0.lastCheckedAt ?? .distantPast) < ($1.lastCheckedAt ?? .distantPast)
@@ -819,7 +822,6 @@ actor PriceRefreshModelActor {
         }
         let gradedResult = await refreshGraded(
             targets,
-            usesPriceFallback: request.usesPriceFallback,
             store: store,
             progress: progress
         )
@@ -1316,7 +1318,6 @@ actor PriceRefreshModelActor {
 
     private func refreshGraded(
         _ targets: [PriceTarget],
-        usesPriceFallback: Bool,
         store: PriceStore,
         progress: @escaping @Sendable (PriceRefreshProgress) async -> Void
     ) async -> (
@@ -1343,7 +1344,7 @@ actor PriceRefreshModelActor {
             if $0.marketVariantID != nil { return true }
             return $0.canResolveGradedVariant
         }
-        guard !slabs.isEmpty, usesPriceFallback, PriceVendorCredentials.hasKey else {
+        guard !slabs.isEmpty, PriceVendorCredentials.hasKey else {
             return (0, false, 0, 0)
         }
         gradedOutcome = "running"
@@ -1459,8 +1460,23 @@ actor PriceRefreshModelActor {
             }
         }
 
-        func stampUnsupported(_ target: PriceTarget) {
-            let accepted = store.recordUnsupportedProvider(
+        func stampCoverage(
+            _ target: PriceTarget,
+            status: GradedMarketCoverageStatus,
+            variants: [GradedVariant] = []
+        ) {
+            let coverage = GradedMarketCoverage(
+                status: status,
+                variants: variants,
+                targetCompany: target.gradingCompany,
+                targetGrade: CardGrade(
+                    value: JustTCGV2GradedClient.normalizedVendorGrade(target.grade),
+                    label: target.gradeLabel,
+                    qualifier: target.gradingQualifier
+                )
+            )
+            let accepted = store.recordGradedMarketCoverage(
+                coverage,
                 game: target.game,
                 printingID: target.printingID,
                 variantID: target.variantID,
@@ -1483,17 +1499,22 @@ actor PriceRefreshModelActor {
                 let lookup = try await client.lookup(
                     identity: identity,
                     game: game,
-                    companies: Set(group.compactMap(\.gradingCompany)),
-                    grades: Set(group.compactMap(\.grade)),
                     lane: .background
                 )
                 switch lookup {
                 case let .matched(values):
                     variants = values
-                case .cardFoundWithoutGradedVariants, .noProductMatch:
+                case .cardFoundWithoutGradedVariants:
                     lookupMisses += group.count
                     for target in group where target.marketVariantID == nil {
-                        stampUnsupported(target)
+                        stampCoverage(target, status: .noGradedListings)
+                    }
+                    await checkpoint()
+                    continue
+                case .noProductMatch:
+                    lookupMisses += group.count
+                    for target in group where target.marketVariantID == nil {
+                        stampCoverage(target, status: .cardNotTracked)
                     }
                     await checkpoint()
                     continue
@@ -1523,7 +1544,11 @@ actor PriceRefreshModelActor {
                 guard let variant else {
                     lookupMisses += 1
                     if target.marketVariantID == nil {
-                        stampUnsupported(target)
+                        stampCoverage(
+                            target,
+                            status: .gradeNotListed,
+                            variants: variants
+                        )
                     }
                     continue
                 }
@@ -2002,6 +2027,25 @@ struct PriceRefreshRequest: Sendable {
     let sortOldestFirst: Bool
     let maximumTargetCount: Int?
     let markRecentlyCheckedIfEmpty: Bool
+    let gradedOnly: Bool
+
+    init(
+        usesPriceFallback: Bool,
+        includeImported: Bool,
+        forceUnsupportedRetry: Bool,
+        sortOldestFirst: Bool,
+        maximumTargetCount: Int?,
+        markRecentlyCheckedIfEmpty: Bool,
+        gradedOnly: Bool = false
+    ) {
+        self.usesPriceFallback = usesPriceFallback
+        self.includeImported = includeImported
+        self.forceUnsupportedRetry = forceUnsupportedRetry
+        self.sortOldestFirst = sortOldestFirst
+        self.maximumTargetCount = maximumTargetCount
+        self.markRecentlyCheckedIfEmpty = markRecentlyCheckedIfEmpty
+        self.gradedOnly = gradedOnly
+    }
 }
 
 struct PriceRefreshResult: Sendable, Equatable {
@@ -2375,13 +2419,26 @@ final class PriceRefreshController: ObservableObject {
         forceUnsupportedRetry: Bool = false
     ) -> [PriceTarget] {
         targets.filter { target in
-            if target.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
-                // This capability result is stable for raw and graded rows.
-                // Manual refresh, or newly enabling the fallback provider,
-                // explicitly re-evaluates it; ordinary passes use the longer
-                // retry interval so a negative capability result cannot create
-                // a request on every launch.
+            if target.itemKind == .gradedCard,
+               target.lastFailureReasonRaw
+                .flatMap(PricingDiagnosticReason.init(rawValue:))?.isGradedCoverageResult == true {
+                guard target.canResolveGradedVariant else { return false }
                 if forceUnsupportedRetry { return true }
+                return target.lastCheckedAt.map {
+                    now.timeIntervalSince($0) >= gradedCoverageRetryInterval
+                } ?? true
+            }
+            if target.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+                // Raw capability results use the long interval. Unbound slabs
+                // use their own weekly graded-catalog retry policy regardless
+                // of the raw-price fallback preference.
+                if forceUnsupportedRetry { return true }
+                if target.itemKind == .gradedCard {
+                    guard target.canResolveGradedVariant else { return false }
+                    return target.lastCheckedAt.map {
+                        now.timeIntervalSince($0) >= gradedCoverageRetryInterval
+                    } ?? true
+                }
                 guard usesPriceFallback else { return false }
                 return target.lastCheckedAt.map {
                     now.timeIntervalSince($0) >= noSupportedProviderRetryInterval
@@ -2419,6 +2476,10 @@ final class PriceRefreshController: ObservableObject {
     /// Keeping this interval separate prevents an unpriceable identity from
     /// turning every launch into another request.
     nonisolated static let noSupportedProviderRetryInterval: TimeInterval = 30 * 24 * 60 * 60
+
+    /// Graded catalog coverage changes as sales add new rows, so a successful
+    /// miss is revisited weekly instead of treated as a stable capability gap.
+    nonisolated static let gradedCoverageRetryInterval: TimeInterval = 7 * 24 * 60 * 60
 
     /// The historical non-Pokémon rule: a provider's native-currency amount
     /// counts when fallback is off, and requires USD when fallback is enabled.
@@ -2691,7 +2752,8 @@ final class PriceRefreshController: ObservableObject {
                     request.maximumTargetCount
                 ),
                 markRecentlyCheckedIfEmpty: existing.markRecentlyCheckedIfEmpty
-                    || request.markRecentlyCheckedIfEmpty
+                    || request.markRecentlyCheckedIfEmpty,
+                gradedOnly: existing.gradedOnly && request.gradedOnly
             )
         } else {
             pendingRefreshRequests.append(PendingRefreshRequest(request: request))

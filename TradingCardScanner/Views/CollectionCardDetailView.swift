@@ -42,6 +42,7 @@ struct CollectionCardDetailView: View {
     @Query private var priceObservations: [PriceObservation]
     @Query private var priceCheckDays: [PriceCheckDay]
     @Query private var collectionActivities: [CollectionActivity]
+    @Query private var ungradedReferenceRecords: [PriceRecord]
     let price: PriceDisplay
     @ObservedObject var history: PortfolioHistoryStore
     let unpricedReason: PricingDiagnosticReason?
@@ -83,6 +84,30 @@ struct CollectionCardDetailView: View {
     ) {
         let resolvedInstrumentKey = instrumentKey ?? card.priceKey
         self._card = Bindable(card)
+        let rawPrintingID = card.catalogProviderID ?? card.providerID
+        let printRunQualifiedID = card.pokemonPrintRun.map {
+            "\(rawPrintingID)@\($0.rawValue)"
+        } ?? rawPrintingID
+        let isUsableRawPrintingID = card.itemKind == .gradedCard
+            && !rawPrintingID.hasPrefix("graded:")
+        if isUsableRawPrintingID {
+            let gameRaw = card.game
+            let rawVariantID = card.variantID
+            self._ungradedReferenceRecords = Query(
+                filter: #Predicate<PriceRecord> {
+                    $0.game == gameRaw
+                        && $0.printingID == printRunQualifiedID
+                        && $0.variantID == rawVariantID
+                },
+                sort: [SortDescriptor(\PriceRecord.key, order: .forward)]
+            )
+        } else {
+            var descriptor = FetchDescriptor<PriceRecord>(
+                predicate: #Predicate<PriceRecord> { $0.key == "__ungraded_reference_disabled__" }
+            )
+            descriptor.fetchLimit = 1
+            self._ungradedReferenceRecords = Query(descriptor)
+        }
         self._priceObservations = Query(
             filter: #Predicate<PriceObservation> { $0.instrumentKey == resolvedInstrumentKey },
             sort: [SortDescriptor(\PriceObservation.receivedAt, order: .forward)]
@@ -877,6 +902,24 @@ struct CollectionCardDetailView: View {
                     Text(unpricedReason.detail)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                    if let coverageText = gradedMarketCoverageText {
+                        Text(coverageText)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if let rawReference = ungradedReferenceRecord,
+                       let amount = rawReference.effectiveUnitMarketPriceUSD {
+                        Label("Ungraded reference", systemImage: "tag")
+                            .font(.caption.weight(.semibold))
+                            .padding(.top, 4)
+                        Text("\(amount.formatted(.currency(code: rawReference.currencyCode))) · \(rawReference.source?.label ?? "Market quote")")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text("Shown for context only; this amount is not used as the slab’s value.")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
                     Text("Diagnostic: \(unpricedReason.rawValue)")
                         .font(.caption.monospaced())
                         .foregroundStyle(.secondary)
@@ -890,6 +933,23 @@ struct CollectionCardDetailView: View {
         .padding(.top, 28)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Price and market movement")
+    }
+
+    private var gradedMarketCoverageText: String? {
+        guard unpricedReason == .gradedGradeNotTracked,
+              let coverage = price.gradedMarketCoverage,
+              !coverage.listedGrades.isEmpty else { return nil }
+        let grades = coverage.listedGrades.prefix(6).map { listedGrade in
+            guard let amount = listedGrade.marketPriceUSD else {
+                return listedGrade.displayName
+            }
+            return "\(listedGrade.displayName) \(amount.formatted(.currency(code: "USD")))"
+        }
+        return "JustTCG currently lists: \(grades.joined(separator: ", "))"
+    }
+
+    private var ungradedReferenceRecord: PriceRecord? {
+        PriceStore.authoritativeRecord(in: ungradedReferenceRecords)
     }
 
     @ViewBuilder

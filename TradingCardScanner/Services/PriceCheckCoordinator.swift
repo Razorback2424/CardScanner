@@ -20,6 +20,9 @@ enum PriceCheckRefreshIssue: Equatable, Sendable {
     case gradedGradeNotPriced
     /// The underlying card could not be matched to a graded vendor product.
     case gradedProductNotMatched
+    case gradedCardNotTracked
+    case gradedCardHasNoPrices
+    case gradedGradeNotTracked
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -39,6 +42,9 @@ enum PriceCheckQuoteState: Equatable, Sendable {
     case unsupportedTreatment
     case gradedGradeNotPriced
     case gradedProductNotMatched
+    case gradedCardNotTracked
+    case gradedCardHasNoPrices
+    case gradedGradeNotTracked
     case providerUnavailable
     case fallbackDisabled
     case fallbackUnconfigured
@@ -198,12 +204,15 @@ final class PriceCheckCoordinator {
                     quote = .unavailable(.justTCG)
                     state = .gradedGradeNotPriced
                 }
-            case .unpricedGrade:
+            case .cardNotTracked:
                 quote = .unavailable(.justTCG)
-                state = .gradedGradeNotPriced
-            case .unmatchedProduct:
+                state = .gradedCardNotTracked
+            case .noGradedListings:
                 quote = .unavailable(.justTCG)
-                state = .gradedProductNotMatched
+                state = .gradedCardHasNoPrices
+            case .gradeNotTracked:
+                quote = .unavailable(.justTCG)
+                state = .gradedGradeNotTracked
             case .none:
                 quote = .unavailable(PriceVendorCredentials.hasKey ? .justTCG : nil)
                 state = .checking
@@ -356,10 +365,12 @@ final class PriceCheckCoordinator {
                     treatmentIDs: key.treatmentIDs
                 )
                 return .quote(quote)
-            case .unpricedGrade:
-                return .failed(.gradedGradeNotPriced)
-            case .unmatchedProduct:
-                return .failed(.gradedProductNotMatched)
+            case .cardNotTracked:
+                return .failed(.gradedCardNotTracked)
+            case .noGradedListings:
+                return .failed(.gradedCardHasNoPrices)
+            case .gradeNotTracked:
+                return .failed(.gradedGradeNotTracked)
             case .unavailable:
                 return PriceVendorCredentials.hasKey
                     ? .failed(.providerUnavailable)

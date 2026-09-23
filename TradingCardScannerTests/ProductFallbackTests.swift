@@ -629,6 +629,164 @@ final class ProductFallbackTests: XCTestCase {
         )
     }
 
+    func testGradedCoverageMissesRetryWeeklyWithoutRawFallback() {
+        let checkedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let identity = GradedCardIdentity(
+            name: "Spinarak",
+            setName: "EX Team Rocket Returns",
+            collectorNumber: "78"
+        )
+        let coverageTarget = PriceTarget(
+            game: .pokemon,
+            printingID: "graded:spinarak-cgc-10",
+            catalogPrintingID: "ex-team-rocket-returns-78",
+            setCode: "",
+            variantID: nil,
+            importedIdentity: nil,
+            catalogMetadataCheckedAt: nil,
+            lastFailureAt: nil,
+            lastFailureReasonRaw: PricingDiagnosticReason.gradedGradeNotTracked.rawValue,
+            hasPrice: false,
+            lastCheckedAt: checkedAt,
+            itemKind: .gradedCard,
+            marketVariantID: nil,
+            gradedIdentity: identity,
+            gradingCompany: .cgc,
+            grade: "10"
+        )
+        let oldUnsupportedTarget = PriceTarget(
+            game: .pokemon,
+            printingID: "graded:legacy-cgc-10",
+            catalogPrintingID: "legacy-card",
+            setCode: "",
+            variantID: nil,
+            importedIdentity: nil,
+            catalogMetadataCheckedAt: nil,
+            lastFailureAt: nil,
+            lastFailureReasonRaw: PricingDiagnosticReason.noSupportedProvider.rawValue,
+            hasPrice: false,
+            lastCheckedAt: checkedAt,
+            itemKind: .gradedCard,
+            marketVariantID: nil,
+            gradedIdentity: identity,
+            gradingCompany: .cgc,
+            grade: "10"
+        )
+
+        let oneDayBeforeRetry = checkedAt.addingTimeInterval(
+            PriceRefreshController.gradedCoverageRetryInterval - 1
+        )
+        XCTAssertTrue(PriceRefreshController.staleTargets(
+            from: [coverageTarget, oldUnsupportedTarget],
+            now: oneDayBeforeRetry,
+            usesPriceFallback: false
+        ).isEmpty)
+        XCTAssertEqual(PriceRefreshController.staleTargets(
+            from: [coverageTarget, oldUnsupportedTarget],
+            now: checkedAt.addingTimeInterval(PriceRefreshController.gradedCoverageRetryInterval),
+            usesPriceFallback: false
+        ).count, 2)
+    }
+
+    func testGradedCoveragePersistsContextWithoutCreatingAPriceObservation() throws {
+        let context = try makeContext()
+        let card = CollectedCard(
+            collectionKey: "graded:spinarak:cgc:10",
+            game: .pokemon,
+            providerID: "graded:spinarak:cgc:10",
+            name: "Spinarak",
+            setName: "EX Team Rocket Returns",
+            setCode: "",
+            cardNumber: "78",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            variantResolution: .userConfirmed
+        )
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        card.gradingCompanyRaw = GradingCompany.cgc.rawValue
+        card.gradeRaw = "10"
+        card.catalogProviderID = "ex-team-rocket-returns-78"
+        context.insert(card)
+
+        let coverage = GradedMarketCoverage(
+            status: .gradeNotListed,
+            variants: [
+                GradedVariant(
+                    id: "psa-8",
+                    company: .psa,
+                    grade: CardGrade(value: "8"),
+                    marketPriceUSD: 1_479.99,
+                    updatedAt: nil
+                ),
+                GradedVariant(
+                    id: "cgc-7",
+                    company: .cgc,
+                    grade: CardGrade(value: "7"),
+                    marketPriceUSD: 650,
+                    updatedAt: nil
+                )
+            ],
+            targetCompany: .cgc,
+            targetGrade: CardGrade(value: "10", label: "Gem Mint")
+        )
+        let checkedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let store = PriceStore(context: context)
+        XCTAssertTrue(store.recordGradedMarketCoverage(
+            coverage,
+            game: card.cardGame,
+            printingID: card.priceStorageID,
+            variantID: card.variantID,
+            at: checkedAt
+        ))
+        try context.save()
+
+        let record = try XCTUnwrap(
+            try context.fetch(FetchDescriptor<PriceRecord>()).first { $0.key == card.priceKey }
+        )
+        XCTAssertEqual(record.gradedMarketCoverage, coverage)
+        XCTAssertEqual(record.lastFailureReasonRaw, PricingDiagnosticReason.gradedGradeNotTracked.rawValue)
+        XCTAssertEqual(PricingDiagnostics.unpricedReason(for: card, record: record), .gradedGradeNotTracked)
+        XCTAssertEqual(record.display.gradedMarketCoverage?.listedGrades.first?.marketPriceUSD, 1_479.99)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+    }
+
+    func testGradedCoverageMissHasItsOwnDiagnostic() throws {
+        let context = try makeContext()
+        let card = CollectedCard(
+            collectionKey: "graded:spinarak:cgc:10",
+            game: .pokemon,
+            providerID: "graded:spinarak:cgc:10",
+            name: "Spinarak",
+            setName: "EX Team Rocket Returns",
+            setCode: "",
+            cardNumber: "78",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            variantResolution: .userConfirmed
+        )
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        card.gradingCompanyRaw = GradingCompany.cgc.rawValue
+        card.gradeRaw = "10"
+        context.insert(card)
+        let coverage = GradedMarketCoverage(status: .cardNotTracked)
+        let store = PriceStore(context: context)
+
+        XCTAssertTrue(store.recordGradedMarketCoverage(
+            coverage,
+            game: card.cardGame,
+            printingID: card.priceStorageID,
+            variantID: card.variantID
+        ))
+        let record = try XCTUnwrap(store.record(forKey: card.priceKey))
+
+        XCTAssertEqual(PricingDiagnostics.unpricedReason(for: card, record: record), .gradedCardNotTracked)
+        XCTAssertEqual(record.lastFailureReasonRaw, PricingDiagnosticReason.gradedCardNotTracked.rawValue)
+    }
+
     // MARK: - WotC editions
 
     /// Pinned from live responses. `jungle-pokemon` publishes exactly

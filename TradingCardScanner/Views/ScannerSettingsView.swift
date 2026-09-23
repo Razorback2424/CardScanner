@@ -700,6 +700,7 @@ private struct SettingsCategoryView<Content: View>: View {
 /// Shared between Scan settings and Collection so the fallback can be managed
 /// where its results and remaining work are visible.
 struct PriceFallbackSettingsSection: View {
+    @Environment(\.modelContext) private var modelContext
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var vendorKeyEntry = ""
     @State private var hasVendorKey = PriceVendorCredentials.hasKey
@@ -764,6 +765,7 @@ struct PriceFallbackSettingsSection: View {
             hasVendorKey = PriceVendorCredentials.hasKey
             vendorKeyMessageIsError = false
             vendorKeyMessage = "Key saved to keychain."
+            queueGradedPriceRefresh()
         } catch {
             vendorKeyMessageIsError = true
             vendorKeyMessage = error.localizedDescription
@@ -777,6 +779,37 @@ struct PriceFallbackSettingsSection: View {
         usesPriceFallback = false
         vendorKeyMessageIsError = false
         vendorKeyMessage = "Key removed."
+    }
+
+    private func queueGradedPriceRefresh() {
+        Task { @MainActor in
+            let storageGeneration = CollectionStorageGeneration.shared
+            guard let storageToken = storageGeneration.currentToken() else { return }
+            let shouldContinue = storageGeneration.continuation(for: storageToken)
+            _ = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
+                in: modelContext,
+                runsNetworkMigration: false,
+                storageToken: storageToken,
+                shouldContinue: shouldContinue,
+                operation: {
+                    guard shouldContinue() else { return false }
+                    let request = PriceRefreshRequest(
+                        usesPriceFallback: usesPriceFallback,
+                        includeImported: true,
+                        forceUnsupportedRetry: true,
+                        sortOldestFirst: true,
+                        maximumTargetCount: nil,
+                        markRecentlyCheckedIfEmpty: false,
+                        gradedOnly: true
+                    )
+                    return (await PriceRefreshController.shared.refresh(
+                        request,
+                        container: modelContext.container,
+                        shouldContinue: shouldContinue
+                    )).didRun
+                }
+            )
+        }
     }
 
 }

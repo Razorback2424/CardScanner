@@ -178,7 +178,8 @@ struct CollectionCommitCandidate: Sendable {
                 } else {
                     price = .unavailable(.justTCG)
                 }
-            case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
+            case .cardNotTracked, .noGradedListings, .gradeNotTracked,
+                 .unavailable, .none:
                 price = .unavailable(.justTCG)
             }
         } else {
@@ -3093,11 +3094,30 @@ final class ScannerViewModel: ObservableObject {
                   !self.undoingScanIDs.contains(scanID),
                   let current = self.sessionScans.first(where: { $0.id == scanID }),
                   Self.isCompatibleGradedEvidence(current.subject.slab, with: slab) else { return }
+            guard let collectionWriter = self.collectionWriter else { return }
             guard case let .bound(variant) = outcome else {
+                if let coverage = outcome.marketCoverage {
+                    self.beginTrackedWrite(for: writeSessionID)
+                    defer { self.endTrackedWrite(for: writeSessionID) }
+                    do {
+                        guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
+                              Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab),
+                              !self.undoingScanIDs.contains(scanID) else { return }
+                        let saved = try await collectionWriter.recordGradedMarketCoverage(
+                            collectionKey: latest.mutation.collectionKey,
+                            coverage: coverage
+                        )
+                        if !saved {
+                            self.show(ScanNote(text: "Graded price status could not be saved", tone: .info))
+                        }
+                    } catch {
+                        guard writeSessionID == self.scannerSessionID else { return }
+                        self.show(ScanNote(text: "Graded price status could not be saved", tone: .info))
+                    }
+                }
                 self.noteGradedBindingOutcome(outcome, slab: slab)
                 return
             }
-            guard let collectionWriter = self.collectionWriter else { return }
             self.beginTrackedWrite(for: writeSessionID)
             defer { self.endTrackedWrite(for: writeSessionID) }
             do {
@@ -3146,10 +3166,12 @@ final class ScannerViewModel: ObservableObject {
             message = variant.marketPriceUSD == nil
                 ? "\(slab.grade.display(company: slab.company)) added — no graded price published"
                 : nil
-        case .unpricedGrade:
-            message = "\(slab.grade.display(company: slab.company)) added — no graded price published"
-        case .unmatchedProduct:
-            message = "\(slab.grade.display(company: slab.company)) added — no vendor match"
+        case .cardNotTracked:
+            message = "\(slab.grade.display(company: slab.company)) added — no matching graded card on JustTCG"
+        case .noGradedListings:
+            message = "\(slab.grade.display(company: slab.company)) added — no graded listings on JustTCG yet"
+        case .gradeNotTracked:
+            message = "\(slab.grade.display(company: slab.company)) added — this grade isn’t listed on JustTCG yet"
         case .unavailable:
             message = PriceVendorCredentials.hasKey
                 ? "\(slab.grade.display(company: slab.company)) added — price pending"
@@ -3966,6 +3988,9 @@ final class ScannerViewModel: ObservableObject {
         case .unsupportedTreatment: return .unsupportedTreatment
         case .gradedGradeNotPriced: return .gradedGradeNotPriced
         case .gradedProductNotMatched: return .gradedProductNotMatched
+        case .gradedCardNotTracked: return .gradedCardNotTracked
+        case .gradedCardHasNoPrices: return .gradedCardHasNoPrices
+        case .gradedGradeNotTracked: return .gradedGradeNotTracked
         case .providerUnavailable: return .providerUnavailable
         case .fallbackDisabled: return .fallbackDisabled
         case .fallbackUnconfigured: return .fallbackUnconfigured

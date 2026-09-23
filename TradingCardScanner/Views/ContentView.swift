@@ -406,7 +406,8 @@ struct ContentView: View {
                     forceUnsupportedRetry: true,
                     sortOldestFirst: false,
                     maximumTargetCount: nil,
-                    markRecentlyCheckedIfEmpty: true
+                    markRecentlyCheckedIfEmpty: true,
+                    gradedOnly: false
                 )
                 return (await refresh.refresh(
                     request,

@@ -209,6 +209,24 @@ struct PriceCheckResultView: View {
                 systemImage: "questionmark.folder",
                 description: Text("The graded pricing provider could not match this card to a product.")
             )
+        case .gradedCardNotTracked:
+            ContentUnavailableView(
+                "No graded data for this card",
+                systemImage: "questionmark.folder",
+                description: Text("JustTCG did not return a graded card matching this name, set, and number.")
+            )
+        case .gradedCardHasNoPrices:
+            ContentUnavailableView(
+                "No graded prices yet",
+                systemImage: "seal",
+                description: Text("JustTCG recognizes this card but has no graded listings for it yet.")
+            )
+        case .gradedGradeNotTracked:
+            ContentUnavailableView(
+                "This grade is not listed yet",
+                systemImage: "seal",
+                description: Text(gradedMarketContext ?? "JustTCG has other graded listings for this card, but no exact variant for this grader and grade.")
+            )
         case .providerUnavailable:
             ContentUnavailableView(
                 "Price provider unavailable",
@@ -295,6 +313,12 @@ struct PriceCheckResultView: View {
             return "No graded price published — showing last known"
         case .gradedProductNotMatched:
             return "Graded product not matched — showing last known"
+        case .gradedCardNotTracked:
+            return "No graded data for this card — showing last known"
+        case .gradedCardHasNoPrices:
+            return "No graded listings yet — showing last known"
+        case .gradedGradeNotTracked:
+            return "This grade is not listed — showing last known"
         case .providerUnavailable:
             return "Couldn’t update — showing last known"
         case .fallbackDisabled:
@@ -306,6 +330,17 @@ struct PriceCheckResultView: View {
         case .budgetLimited:
             return "Fallback limit reached — showing last known"
         }
+    }
+
+    private var gradedMarketContext: String? {
+        guard let coverage = result.resolvedScan.gradedOutcome?.marketCoverage,
+              coverage.status == .gradeNotListed,
+              !coverage.listedGrades.isEmpty else { return nil }
+        let entries = coverage.listedGrades.prefix(6).map { listed in
+            guard let amount = listed.marketPriceUSD else { return listed.displayName }
+            return "\(listed.displayName) \(amount.formatted(.currency(code: "USD")))"
+        }
+        return "Other grades currently listed on JustTCG: \(entries.joined(separator: ", "))."
     }
 
     private func provenance(for display: PriceDisplay) -> String {

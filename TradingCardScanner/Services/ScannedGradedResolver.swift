@@ -2,9 +2,21 @@ import Foundation
 
 enum ScannedGradedOutcome: Equatable, Sendable {
     case bound(GradedVariant)
-    case unpricedGrade
-    case unmatchedProduct
+    case cardNotTracked(GradedMarketCoverage)
+    case noGradedListings(GradedMarketCoverage)
+    case gradeNotTracked(GradedMarketCoverage)
     case unavailable
+
+    var marketCoverage: GradedMarketCoverage? {
+        switch self {
+        case let .cardNotTracked(coverage),
+             let .noGradedListings(coverage),
+             let .gradeNotTracked(coverage):
+            return coverage
+        case .bound, .unavailable:
+            return nil
+        }
+    }
 }
 
 protocol ScannedGradedResolving: Sendable {
@@ -37,15 +49,18 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
 
     private let client: any ScannedGradedLookupClient
     private let timeout: Duration
+    private let timeoutRetryCount: Int
     private let credentialsAvailable: Bool?
 
     init(
         client: any ScannedGradedLookupClient = JustTCGV2GradedClient(transport: .shared),
-        timeout: Duration = .seconds(2.5),
+        timeout: Duration = .seconds(60),
+        timeoutRetryCount: Int = 1,
         credentialsAvailable: Bool? = nil
     ) {
         self.client = client
         self.timeout = timeout
+        self.timeoutRetryCount = max(0, timeoutRetryCount)
         self.credentialsAvailable = credentialsAvailable
     }
 
@@ -57,46 +72,62 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         guard credentialsAvailable ?? PriceVendorCredentials.hasKey else { return .unavailable }
 
         // The timeout task is created here, after catalog/label resolution has
-        // completed. OCR and catalog latency therefore cannot spend the
-        // vendor lookup's 2.5-second budget.
+        // completed. This covers the cold set-directory request plus the card
+        // request at the transport's 25-second timeout and the shared pacer's
+        // spacing. The resolver runs after save, so this does not hold scanning.
         let identity = GradedCardIdentity(card, pokemonPrintRun: pokemonPrintRun)
-        let gradeFilter = slab.grade.value ?? slab.grade.label
+        for attempt in 0...timeoutRetryCount {
+            do {
+                let result = try await withThrowingTaskGroup(of: GradedVariantLookupResult.self) { group in
+                    group.addTask {
+                        try await client.lookup(
+                            identity: identity,
+                            game: card.game,
+                            companies: [],
+                            grades: [],
+                            lane: .interactive
+                        )
+                    }
+                    group.addTask {
+                        try await Task.sleep(for: timeout)
+                        throw TimeoutError()
+                    }
+                    defer { group.cancelAll() }
+                    return try await group.next()!
+                }
 
-        do {
-            let result = try await withThrowingTaskGroup(of: GradedVariantLookupResult.self) { group in
-                group.addTask {
-                    try await client.lookup(
-                        identity: identity,
-                        game: card.game,
-                        companies: [slab.company],
-                        grades: gradeFilter.map { [$0] } ?? [],
-                        lane: .interactive
-                    )
+                switch result {
+                case let .matched(variants):
+                    guard let exact = Self.matchingVariant(in: variants, for: slab) else {
+                        return .gradeNotTracked(GradedMarketCoverage(
+                            status: .gradeNotListed,
+                            variants: variants,
+                            targetCompany: slab.company,
+                            targetGrade: slab.grade
+                        ))
+                    }
+                    return .bound(exact)
+                case .cardFoundWithoutGradedVariants:
+                    return .noGradedListings(GradedMarketCoverage(status: .noGradedListings))
+                case .noProductMatch:
+                    return .cardNotTracked(GradedMarketCoverage(status: .cardNotTracked))
                 }
-                group.addTask {
-                    try await Task.sleep(for: timeout)
-                    throw TimeoutError()
-                }
-                defer { group.cancelAll() }
-                return try await group.next()!
+            } catch is CancellationError {
+                return .unavailable
+            } catch is TimeoutError {
+                guard attempt < timeoutRetryCount, !Task.isCancelled else { return .unavailable }
+                // A retry gets a fresh place in the shared pacer. The caller
+                // runs this resolver in a post-save task, so waiting here does
+                // not delay scanner recognition or collection persistence.
+                continue
+            } catch let error as URLError where error.code == .timedOut {
+                guard attempt < timeoutRetryCount, !Task.isCancelled else { return .unavailable }
+                continue
+            } catch {
+                return .unavailable
             }
-
-            switch result {
-            case let .matched(variants):
-                guard let exact = Self.matchingVariant(in: variants, for: slab) else {
-                    return .unpricedGrade
-                }
-                return .bound(exact)
-            case .cardFoundWithoutGradedVariants:
-                return .unpricedGrade
-            case .noProductMatch:
-                return .unmatchedProduct
-            }
-        } catch is CancellationError {
-            return .unavailable
-        } catch {
-            return .unavailable
         }
+        return .unavailable
     }
 
     /// Match the stable grader/grade/qualifier axis first, then require the

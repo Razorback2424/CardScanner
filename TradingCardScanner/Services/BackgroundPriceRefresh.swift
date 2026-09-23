@@ -206,7 +206,8 @@ enum BackgroundPriceRefresh {
                 forceUnsupportedRetry: false,
                 sortOldestFirst: true,
                 maximumTargetCount: kind == .appRefresh ? appRefreshTargetLimit : nil,
-                markRecentlyCheckedIfEmpty: false
+                markRecentlyCheckedIfEmpty: false,
+                gradedOnly: false
             )
             _ = await PriceRefreshController.shared.refresh(
                 request,
