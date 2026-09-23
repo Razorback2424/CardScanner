@@ -102,8 +102,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private struct SortPriceSlot: Sendable {
         let id: String
-        let price: Double?
-        let resolved: Bool
+        let resolution: CatalogSortPriceResolution
     }
 
     private struct SortPriceGroupResult: Sendable {
@@ -941,11 +940,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
         guard let cached else { return }
         for card in cards {
             guard let entry = cached[card.id] else { continue }
-            resolvedSortPrices.insert(card.id)
-            unresolvedSortPrices.remove(card.id)
-            if let value = entry.value {
+            if case let .priced(value)? = CatalogSortPriceResolution.cachedPrice(entry.value) {
+                resolvedSortPrices.insert(card.id)
+                unresolvedSortPrices.remove(card.id)
                 sortPriceCache[card.id] = value
             } else {
+                // This cache predates status-bearing results. A nil amount
+                // cannot tell a confirmed Scryfall gap from missing price data.
+                resolvedSortPrices.remove(card.id)
+                unresolvedSortPrices.remove(card.id)
                 sortPriceCache.removeValue(forKey: card.id)
             }
         }
@@ -1047,16 +1050,19 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         return
                     }
                     for slot in result.slots {
-                        if slot.resolved {
+                        switch slot.resolution {
+                        case let .priced(price):
                             resolvedSortPrices.insert(slot.id)
                             unresolvedSortPrices.remove(slot.id)
-                        } else {
+                            sortPriceCache[slot.id] = price
+                        case .noUSDQuote:
+                            resolvedSortPrices.insert(slot.id)
+                            unresolvedSortPrices.remove(slot.id)
+                            sortPriceCache.removeValue(forKey: slot.id)
+                        case .unresolved:
                             resolvedSortPrices.remove(slot.id)
                             unresolvedSortPrices.insert(slot.id)
                             sortPriceCache.removeValue(forKey: slot.id)
-                        }
-                        if let price = slot.price {
-                            sortPriceCache[slot.id] = price
                         }
                     }
                     completedSinceEmit += result.slots.count
@@ -1146,7 +1152,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         guard let representative = summaries.first(where: { $0.pokemonPrintRun == nil }) else {
             return SortPriceGroupResult(
-                slots: summaries.map { SortPriceSlot(id: $0.id, price: nil, resolved: true) }
+                slots: summaries.map {
+                    SortPriceSlot(id: $0.id, resolution: .noUSDQuote)
+                }
             )
         }
 
@@ -1158,7 +1166,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 guard summary.pokemonPrintRun == nil else {
                     // The aggregate card price is not edition-specific. Do
                     // not use it to sort virtual WotC runs as though it were.
-                    slots.append(SortPriceSlot(id: summary.id, price: nil, resolved: true))
+                    slots.append(SortPriceSlot(id: summary.id, resolution: .noUSDQuote))
                     continue
                 }
                 slots.append(await sortPrice(for: summary, details: details))
@@ -1174,8 +1182,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 slots: summaries.map {
                     SortPriceSlot(
                         id: $0.id,
-                        price: nil,
-                        resolved: $0.pokemonPrintRun != nil ? true : false
+                        resolution: $0.pokemonPrintRun != nil
+                            ? .noUSDQuote
+                            : .unresolved
                     )
                 }
             )
@@ -1198,7 +1207,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             // normal-set quote. They remain resolved-but-unpriced unless the
             // exact card path already has a run-specific answer.
             guard summary.pokemonPrintRun == nil else {
-                slots.append(SortPriceSlot(id: summary.id, price: nil, resolved: true))
+                slots.append(SortPriceSlot(id: summary.id, resolution: .noUSDQuote))
                 continue
             }
 
@@ -1206,19 +1215,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 for: summary.providerID,
                 variant: summary.masterSetVariant
             ) {
-                slots.append(SortPriceSlot(id: summary.id, price: price, resolved: true))
-            } else if bulk.covers(
-                providerID: summary.providerID,
-                variant: summary.masterSetVariant
-            ) {
-                // The provider returned this card and this finish is one of
-                // the stable keys it can answer, but it published no usable
-                // USD listing. Keep the gap resolved without paying a detail
-                // request on every cold launch.
-                slots.append(SortPriceSlot(id: summary.id, price: nil, resolved: true))
+                slots.append(SortPriceSlot(id: summary.id, resolution: .priced(price)))
             } else {
-                // The set query may omit a card, finish, or vendor listing.
-                // Ask the exact catalog path only for that uncovered slot.
+                // A missing bulk value does not confirm that the exact finish
+                // lacks a quote. Check the detailed card before resolving it.
                 slots.append(await sortPrice(for: summary))
             }
         }
@@ -1494,13 +1494,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private func sortPrice(for summary: CatalogCardSummary) async -> SortPriceSlot {
         guard summary.pokemonPrintRun == nil else {
-            return SortPriceSlot(id: summary.id, price: nil, resolved: true)
+            return SortPriceSlot(id: summary.id, resolution: .noUSDQuote)
         }
         do {
             let details = try await details(for: summary)
             return await sortPrice(for: summary, details: details)
         } catch {
-            return SortPriceSlot(id: summary.id, price: nil, resolved: false)
+            return SortPriceSlot(id: summary.id, resolution: .unresolved)
         }
     }
 
@@ -1523,21 +1523,31 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     setID: summary.setID.id,
                     variant: variant
                 )
-                return SortPriceSlot(id: summary.id, price: price.unitMarketPriceUSD, resolved: true)
+                return SortPriceSlot(
+                    id: summary.id,
+                    resolution: .priced(price.unitMarketPriceUSD)
+                )
             }
-            return SortPriceSlot(id: summary.id, price: nil, resolved: true)
+            return SortPriceSlot(
+                id: summary.id,
+                resolution: CatalogSortPriceResolution.exactLookup(lookup)
+            )
         }
 
         // An unqualified printing may expose several exact finishes. Record
         // each normalized USD observation separately; the sort key still uses
         // the highest current finish as before.
+        var lookups: [PriceLookup] = []
         for variant in details.card.variantEvidence.catalogVariants {
-            if case let .price(price) = CardPricing.price(
+            let lookup = CardPricing.price(
                 for: details.card,
                 variant: variant,
                 magicTreatments: details.card.magicTreatments(for: variant),
                 pokemonPrintRun: summary.pokemonPrintRun
-            ), price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
+            )
+            lookups.append(lookup)
+            if case let .price(price) = lookup,
+               price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
                 await recordNormalizedBrowsePrice(
                     price,
                     printingID: summary.id,
@@ -1548,8 +1558,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         return SortPriceSlot(
             id: summary.id,
-            price: CardPricing.highestPublishedUSDPrice(for: details.card),
-            resolved: true
+            resolution: CatalogSortPriceResolution.aggregate(lookups)
         )
     }
 

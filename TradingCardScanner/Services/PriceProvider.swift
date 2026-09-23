@@ -32,6 +32,46 @@ enum PriceLookup: Equatable, Sendable {
     }
 }
 
+/// The result a set sorter can safely publish for an exact printing.
+/// Missing source evidence stays unresolved so the UI can offer a retry instead
+/// of claiming that no USD quote exists.
+enum CatalogSortPriceResolution: Equatable, Sendable {
+    case priced(Double)
+    case noUSDQuote
+    case unresolved
+
+    static func cachedPrice(_ value: Double?) -> Self? {
+        value.map(Self.priced)
+    }
+
+    static func exactLookup(_ lookup: PriceLookup) -> Self {
+        switch lookup {
+        case let .price(price):
+            guard price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame else {
+                return .noUSDQuote
+            }
+            return .priced(price.unitMarketPriceUSD)
+        case let .unavailable(source):
+            return source == nil ? .unresolved : .noUSDQuote
+        }
+    }
+
+    /// A summary without a selected finish sorts by its highest available USD
+    /// finish. If no finish has a price, every finish must have been checked
+    /// before the summary can be classified as unpriced.
+    static func aggregate(_ lookups: [PriceLookup]) -> Self {
+        guard !lookups.isEmpty else { return .unresolved }
+        let results = lookups.map(exactLookup)
+        let prices = results.compactMap { result -> Double? in
+            guard case let .priced(value) = result else { return nil }
+            return value
+        }
+        if let highest = prices.max() { return .priced(highest) }
+        if results.contains(.unresolved) { return .unresolved }
+        return .noUSDQuote
+    }
+}
+
 /// The rule that keeps the collection's totals honest.
 ///
 /// A price belongs to `printing + physical variant`, never to a printing alone.

@@ -730,53 +730,173 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(secondaryRequestCount, 1)
     }
 
-    func testPokemonSortUsesOneBulkRequestPerSetAndKeepsBulkGapResolved() async throws {
+    func testPokemonSortFallsBackForBulkGapsAndCoalescesColdVariantDetails() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
+        let setID = CatalogSetID(game: .pokemon, providerID: "fixture")
         let source = RecordingPokemonBulkPriceSource(map: PokemonBulkPriceMap(valuesByCardID: [
-            "sv08.5-001": ["normal": 1.25],
-            "sv08.5-002": [:]
+            "fixture-001": ["normal": 1.25],
+            "fixture-002": [:],
+            "fixture-004": [:],
+            "fixture-005": [:],
+            "fixture-006": [:]
         ]))
-        let catalog = BrowseCatalog(
-            cache: CatalogCacheStore(root: root),
-            pokemonPriceSource: source
+        let row = try decode(
+            TCGdexBrowseSet.self,
+            from: #"{"id":"fixture","name":"Fixture Set","tcgOnline":"FIX","cardCount":{"total":6,"official":6}}"#
         )
-        let setID = CatalogSetID(game: .pokemon, providerID: "sv08.5")
-        let priced = CatalogCardSummary(
-            game: .pokemon,
-            providerID: "sv08.5-001",
-            setID: setID,
-            setName: "Prismatic Evolutions",
-            setCode: "PRE",
-            name: "Eevee",
-            collectorNumber: "001",
-            thumbnailURL: nil,
-            imageURL: nil,
-            masterSetVariant: .normal,
-            isSoleSlotForCard: true
-        )
-        let unpriced = CatalogCardSummary(
-            game: .pokemon,
-            providerID: "sv08.5-002",
-            setID: setID,
-            setName: "Prismatic Evolutions",
-            setCode: "PRE",
-            name: "Pikachu",
-            collectorNumber: "002",
-            thumbnailURL: nil,
-            imageURL: nil,
-            isSoleSlotForCard: true
+        let provider = try decode(
+            TCGdexSetCatalog.self,
+            from: #"{"id":"fixture","name":"Fixture Set","cards":[],"cardCount":{"total":6,"official":6}}"#
         )
 
-        var latest: [String: Double] = [:]
-        for await prices in catalog.sortPrices(for: [priced, unpriced]) {
-            latest = prices
+        func detail(
+            number: String,
+            name: String,
+            variantsDetailed: String? = nil,
+            pricing: String? = nil
+        ) throws -> TCGdexCard {
+            let details = variantsDetailed.map { ",\"variants_detailed\":\($0)" } ?? ""
+            let cardPricing = pricing.map { ",\"pricing\":\($0)" } ?? ""
+            return try decode(TCGdexCard.self, from: """
+            {
+              "id":"fixture-\(number)","localId":"\(number)","name":"\(name)","image":null,
+              "set":{"id":"fixture","name":"Fixture Set","cardCount":{"total":6,"official":6}},
+              "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":true,"wPromo":false}
+              \(cardPricing)\(details)
+            }
+            """)
         }
 
-        XCTAssertEqual(latest[priced.id], 1.25)
-        XCTAssertNil(latest[unpriced.id])
+        let cards = [
+            "fixture-001": try detail(
+                number: "001",
+                name: "Partial Bulk",
+                variantsDetailed: #"""
+                [
+                  {"type":"normal","pricing":{"tcgplayer":{"normal":{"marketPrice":1.25}}}},
+                  {"type":"reverse","pricing":{"tcgplayer":{"reverse-holofoil":{"marketPrice":3.75}}}}
+                ]
+                """#
+            ),
+            "fixture-002": try detail(
+                number: "002",
+                name: "Empty Bulk",
+                variantsDetailed: #"""
+                [
+                  {"type":"normal","pricing":{"tcgplayer":{"normal":{"marketPrice":0.55}}}},
+                  {"type":"reverse","pricing":{"tcgplayer":{"reverse-holofoil":{"marketPrice":0.88}}}}
+                ]
+                """#
+            ),
+            "fixture-003": try detail(
+                number: "003",
+                name: "Missing Bulk",
+                variantsDetailed: #"""
+                [{"type":"normal","pricing":{"tcgplayer":{"normal":{"marketPrice":2.0}}}}]
+                """#
+            ),
+            "fixture-004": try detail(
+                number: "004",
+                name: "Confirmed Gap",
+                pricing: #"{"tcgplayer":{}}"#
+            ),
+            "fixture-005": try detail(number: "005", name: "Unknown Price"),
+            "fixture-006": try detail(number: "006", name: "Failed Price")
+        ]
+        let transport = FakePokemonBrowseTransport(
+            rows: [row],
+            sets: ["fixture": provider],
+            cards: cards,
+            failingCardIDs: ["fixture-006"],
+            cardDelayNanoseconds: 20_000_000
+        )
+        let catalog = BrowseCatalog(
+            cache: CatalogCacheStore(root: root.appendingPathComponent("pages")),
+            pokemonTransport: transport,
+            pokemonPriceSource: source,
+            checklistStore: PokemonChecklistStore(
+                root: root.appendingPathComponent("checklists"),
+                bundle: nil
+            )
+        )
+
+        func summary(
+            _ number: String,
+            _ name: String,
+            _ variant: PhysicalVariant
+        ) -> CatalogCardSummary {
+            CatalogCardSummary(
+                game: .pokemon,
+                providerID: "fixture-\(number)",
+                setID: setID,
+                setName: "Fixture Set",
+                setCode: "FIX",
+                name: name,
+                collectorNumber: number,
+                thumbnailURL: nil,
+                imageURL: nil,
+                masterSetVariant: variant,
+                isSoleSlotForCard: false
+            )
+        }
+
+        let summaries = [
+            summary("001", "Partial Bulk", .normal),
+            summary("001", "Partial Bulk", .reverse),
+            summary("002", "Empty Bulk", .normal),
+            summary("002", "Empty Bulk", .reverse),
+            summary("003", "Missing Bulk", .normal),
+            summary("004", "Confirmed Gap", .normal),
+            summary("005", "Unknown Price", .normal),
+            summary("006", "Failed Price", .normal)
+        ]
+
+        let pagesRoot = root.appendingPathComponent("pages")
+        let priceCache = CatalogCacheStore(root: pagesRoot)
+        await priceCache.storeSortPrices([
+            summaries[5].id: 77.0,
+            summaries[7].id: 88.0
+        ], for: setID.id)
+        let sortPriceDirectory = pagesRoot.appendingPathComponent(
+            "SortPrices",
+            isDirectory: true
+        )
+        let cachedFiles = try FileManager.default.contentsOfDirectory(
+            at: sortPriceDirectory,
+            includingPropertiesForKeys: nil,
+            options: [.skipsHiddenFiles]
+        )
+        let cachedFile = try XCTUnwrap(cachedFiles.first)
+        var envelope = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: cachedFile)) as? [String: Any]
+        )
+        envelope["storedAt"] = 0.0
+        try JSONSerialization.data(withJSONObject: envelope)
+            .write(to: cachedFile, options: .atomic)
+
+        var latest = CatalogPriceUpdate(prices: [:], resolvedIDs: [], unresolvedIDs: [])
+        for await update in catalog.sortPriceUpdates(for: summaries) {
+            latest = update
+        }
+
+        XCTAssertEqual(latest.prices[summaries[0].id], 1.25)
+        XCTAssertEqual(latest.prices[summaries[1].id], 3.75)
+        XCTAssertEqual(latest.prices[summaries[2].id], 0.55)
+        XCTAssertEqual(latest.prices[summaries[3].id], 0.88)
+        XCTAssertEqual(latest.prices[summaries[4].id], 2.0)
+        XCTAssertTrue(latest.resolvedIDs.contains(summaries[5].id))
+        XCTAssertTrue(latest.unresolvedIDs.contains(summaries[6].id))
+        XCTAssertTrue(latest.unresolvedIDs.contains(summaries[7].id))
+        XCTAssertEqual(latest.resolvedIDs.count, 6)
+        XCTAssertEqual(latest.unresolvedIDs.count, 2)
+        XCTAssertNil(latest.prices[summaries[5].id])
+        XCTAssertNil(latest.prices[summaries[7].id])
+
         let requestedSetIDs = await source.requestedSetIDs()
-        XCTAssertEqual(requestedSetIDs, ["sv08.5"])
+        XCTAssertEqual(requestedSetIDs, ["fixture"])
+        let requestCounts = await transport.requestCounts()
+        XCTAssertEqual(requestCounts.card, 6)
     }
 
     func testSealedPageCacheRetainsSavedPageAndFreshness() async throws {
@@ -5678,6 +5798,7 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
     private let cardValues: [String: TCGdexCard]
     private let setError: Error?
     private let failingSetIDs: Set<String>
+    private let failingCardIDs: Set<String>
     private let cardDelayNanoseconds: UInt64
     private var directoryRequests = 0
     private var setRequests = 0
@@ -5691,6 +5812,7 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
         cards: [String: TCGdexCard] = [:],
         setError: Error? = nil,
         failingSetIDs: Set<String> = [],
+        failingCardIDs: Set<String> = [],
         cardDelayNanoseconds: UInt64 = 0
     ) {
         self.rows = rows
@@ -5698,6 +5820,7 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
         self.cardValues = cards
         self.setError = setError
         self.failingSetIDs = Set(failingSetIDs.map { $0.lowercased() })
+        self.failingCardIDs = Set(failingCardIDs.map { $0.lowercased() })
         self.cardDelayNanoseconds = cardDelayNanoseconds
     }
 
@@ -5725,6 +5848,7 @@ private actor FakePokemonBrowseTransport: PokemonBrowseTransport {
                 throw error
             }
         }
+        if failingCardIDs.contains(id.lowercased()) { throw TestError.failed }
         return try XCTUnwrap(cardValues[id])
     }
 

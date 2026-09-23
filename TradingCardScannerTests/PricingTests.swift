@@ -156,6 +156,77 @@ final class PricingTests: XCTestCase {
 
     }
 
+    func testCatalogSortResolutionRequiresPricingSourceEvidenceForNegative() throws {
+        let pokemonWithoutPricing = try pokemonCard(pricingJSON: nil)
+        let unqueried = CardPricing.price(
+            for: pokemonWithoutPricing,
+            variant: .normal,
+            magicTreatments: []
+        )
+        XCTAssertEqual(unqueried, .unavailable(nil))
+        XCTAssertEqual(
+            CatalogSortPriceResolution.exactLookup(unqueried),
+            .unresolved
+        )
+
+        let checkedGap = CardPricing.price(
+            for: try magicCard(),
+            variant: .etched,
+            magicTreatments: []
+        )
+        XCTAssertEqual(checkedGap, .unavailable(.scryfall))
+        XCTAssertEqual(
+            CatalogSortPriceResolution.exactLookup(checkedGap),
+            .noUSDQuote
+        )
+
+        let priced = CardPricing.price(
+            for: try pokemonCard(),
+            variant: .reverse,
+            magicTreatments: []
+        )
+        XCTAssertEqual(
+            CatalogSortPriceResolution.exactLookup(priced),
+            .priced(3.75)
+        )
+    }
+
+    func testCachedNilPriceDoesNotResolveSlot() {
+        XCTAssertNil(CatalogSortPriceResolution.cachedPrice(nil))
+        XCTAssertEqual(
+            CatalogSortPriceResolution.cachedPrice(2.5),
+            .priced(2.5)
+        )
+    }
+
+    func testAggregateSortResolutionUsesKnownPriceAndKeepsUnknownsRetryable() throws {
+        XCTAssertEqual(
+            CatalogSortPriceResolution.aggregate([
+                .unavailable(.tcgplayer),
+                .unavailable(nil)
+            ]),
+            .unresolved
+        )
+        XCTAssertEqual(
+            CatalogSortPriceResolution.aggregate([
+                .unavailable(.tcgplayer),
+                .unavailable(.scryfall)
+            ]),
+            .noUSDQuote
+        )
+        XCTAssertEqual(
+            CatalogSortPriceResolution.aggregate([
+                .unavailable(nil),
+                CardPricing.price(
+                    for: try pokemonCard(),
+                    variant: .normal,
+                    magicTreatments: []
+                )
+            ]),
+            .priced(0.42)
+        )
+    }
+
     func testMagicTreatmentUsesTheExactPrintingFoilPrice() throws {
         let card = try magicCard(promoType: "surgefoil")
         let foilTreatments = card.magicTreatments(for: .foil)
