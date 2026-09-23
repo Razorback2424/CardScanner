@@ -14,6 +14,7 @@ chronological notes.
 | Repository-wide status and stale-document decisions | [`plans/documentation_audit.md`](plans/documentation_audit.md) |
 | Known production defects and their evidence | [`audits/defect_review_pass_2.md`](audits/defect_review_pass_2.md) |
 | Scanner module defects and measurement review | [`audits/scanner_module_review.md`](audits/scanner_module_review.md) |
+| Raw / graded slab scanning mode | [`plans/explicit-raw-slab-scanning-mode.md`](plans/explicit-raw-slab-scanning-mode.md) — current proposed design; not implemented |
 | Release validation and measurement backlog | [`plans/release_followups.md`](plans/release_followups.md) |
 | Browse/Catalog contract | [`plans/browse_screen_spec.md`](plans/browse_screen_spec.md), [`references/browse_success_checklist.md`](../references/browse_success_checklist.md), and the current Browse source/tests |
 | Automatic Pokémon set updates | [`plans/automatic_pokemon_catalog_updates_plan.md`](plans/automatic_pokemon_catalog_updates_plan.md) — Slices A–E implemented; F04 automatic discovery and the revision-1 authority rehearsal completed 2026-09-19; schema-1 additive fingerprints, canonical publisher/device parity, fail-closed classification, durable targeted reconciliation, parent-artwork metadata, and set-specific Browse updates were implemented 2026-09-20; protected baseline publication, auto-environment setup, four-hour schedule, live-provider, physical-device/offline, first real update, and release acceptance remain open |

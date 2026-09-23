@@ -1,6 +1,9 @@
 > **Legacy archive — scanning workflow review snapshot, 2026-09-14.** This
 > review records the pre-remediation F1–F5 findings and is not a current defect
-> list. Use the current scanner source, [`release_followups.md`](../plans/release_followups.md),
+> list. Its graded-slab auto-detection and blocking vendor-resolution
+> recommendations are superseded by the current proposed
+> [explicit Raw / Slab scanning mode plan](../plans/explicit-raw-slab-scanning-mode.md).
+> Use the current scanner source, [`release_followups.md`](../plans/release_followups.md),
 > and [`progress.md`](../../progress.md) for current status.
 
 I've read through the scanning workflow end to end: `CardScanner` (Vision/cadence/latch/slab), `ScannerViewModel` (session lifecycle, identification queue, routing, commit), `CardCatalog` (prefetch, offline/disk/session caches, circuit breakers), `CollectionStore`/`ScannerCollectionWriter` (persistence), and the SwiftUI surface (`ScannerView`, `CameraPreview`, `ScanSessionOverlays`, `ScanReviewSheet`, `ContentView`/`StoreRevisionMonitor`).

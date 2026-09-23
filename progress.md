@@ -1,3 +1,11 @@
+- Explicit Raw / Slab scanning mode plan (2026-09-23): added
+  [`docs/plans/explicit-raw-slab-scanning-mode.md`](docs/plans/explicit-raw-slab-scanning-mode.md)
+  word for word as provided. Updated the documentation map and audit to identify
+  it as the current proposed scanner architecture, and marked the archived
+  scanner workflow review's conflicting slab auto-detection and blocking-price
+  recommendations as superseded. Documentation only; no implementation or
+  verification claims were added.
+
 App-review follow-up fixes (2026-09-22): Settings opened from Scan now releases
 the scanner's session-wide bulk interval and reacquires it after dismissal;
 the sheet cannot close through Done or a swipe while import/delete owns the
