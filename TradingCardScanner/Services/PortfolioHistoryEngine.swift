@@ -20,7 +20,8 @@ enum PortfolioHistoryEngine {
             calendar: calendar,
             earliest: latest.first?.date
         )
-        guard let anchor = latest.first(where: { $0.date >= requestedStart }) ?? latest.first else {
+        guard let anchor = latest.first(where: { $0.date >= requestedStart })
+            ?? latest.last(where: { $0.date < requestedStart }) else {
             return PortfolioHistoryResult(
                 range: range, points: [], accounting: nil,
                 performanceFactor: nil, performanceAvailable: true,
