@@ -24,10 +24,11 @@ open. See the current
 [`docs/release/phase-1-integrity-evidence.md`](docs/release/phase-1-integrity-evidence.md)
 for the candidate ledger.
 
-## Current worktree remediation — 2026-09-22
+## Remediation snapshot at `810954e` — 2026-09-22
 
-The active workspace is `main` at base `810954e`; this remediation is an
-uncommitted working-tree change. N1–N3, N5–N7, and F1–F4 are implemented. N4's
+This remediation was recorded in the working tree based on `main@810954e` and
+was subsequently committed in the repository history through
+`main@9759050`. N1–N3, N5–N7, and F1–F4 are implemented. N4's
 Settings copy is truthful, but its Release URLs remain open until the owner
 provides the actual deployed destinations. The affected simulator regression
 selection passed 99 tests with 1 skip; a separate delete-actor integration test
@@ -36,8 +37,8 @@ not a device result. An intermediate broader run exposed and led to correction
 of the synthetic-CSV canonicalization regression; it also reported an unrelated
 existing Cardmarket expectation in `CatalogNormalizationTests`. No full-suite,
 physical-device, CloudKit, archive, TestFlight, provider, or release
-verification is claimed. No branch or commit was created. Earlier candidate
-and test counts above remain evidence for that historical checkout only.
+verification is claimed for the current `9759050` checkout. The counts below
+remain evidence for the earlier `810954e` working-tree snapshot only.
 
 The targeted follow-up batch for scanner-to-Settings bulk-operation access,
 identity-aware fallback eligibility, retry latching, and truthful deletion

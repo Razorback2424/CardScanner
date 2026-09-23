@@ -3,20 +3,19 @@
 > Bootstrapped by `swift-safe-fixer` from the product-owner review supplied in
 > this task; this is not a substitute for an independent reviewer report.
 
-**Current worktree (2026-09-22):** `main` at base `810954e`, with uncommitted
-remediation changes described in the root [`app_review_fix_plan.md`](app_review_fix_plan.md).
-The generic iOS Simulator build-for-testing succeeds. The affected regression
-selection passes 99 tests with 1 Simulator-only file-protection skip, and the
-delete-actor integration test passes separately. An intermediate broader run
-also reported an existing Japanese Cardmarket test expectation that conflicts
-with `CardPricing`'s current no-Cardmarket behavior. The full suite and physical
-device remain unverified, and the worktree is not a release candidate. The
+**Current checkout (2026-09-22):** clean `main@9759050`. The storage, scanner,
+price-refresh, and bulk-operation remediation described in the root
+[`app_review_fix_plan.md`](app_review_fix_plan.md) is committed. The focused
+99-test selection (with 1 Simulator-only file-protection skip) and separate
+delete-actor integration test were run against the preceding `810954e`
+working-tree snapshot, not this exact HEAD. No full-suite or physical-device
+verification is recorded for `9759050`; it is not a release candidate. The
 required privacy/support URL destinations remain owner input.
 
 **Previous candidate:** `feature/catalog-and-scanner-hardening` at `7dbaf40`
 (2026-09-20). The focused remediation evidence below was recorded against that
-candidate and its preceding remediation commits; it is not evidence for the
-current dirty worktree.
+candidate and its preceding remediation commits; it is not evidence for
+`9759050`.
 
 **Historical candidate:** `fix/app-review-preflight` at baseline `a115e4e`, with
 the earlier working-tree implementation changes preserved.

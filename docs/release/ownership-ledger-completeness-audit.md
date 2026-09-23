@@ -1,7 +1,8 @@
 # Ownership-ledger completeness audit
 
-**Status:** ownership-ledger gate passed for the current checkout; CloudKit
-production/device certification remains open; reconciled 2026-09-20
+**Status:** ownership-ledger matrix passed for candidate `7dbaf40`; the current
+`main@9759050` checkout has not been rerun through this matrix. CloudKit
+production/device certification remains open; reconciled 2026-09-22
 
 This document is the current authority for proving that every production
 quantity mutation leaves a complete, durable, idempotent `InventoryEvent`
@@ -9,12 +10,15 @@ history. The detailed 2026-09-13 candidate audit is preserved in the
 [legacy audit](../legacy/ownership-ledger-completeness-audit.md) and must not be
 carried forward without rerunning it against the current tree.
 
-## Current candidate
+## Exact candidate covered by this evidence
 
 - Branch: `feature/catalog-and-scanner-hardening`
 - HEAD locator: `7dbaf40`
-- Exact ownership-ledger status: **PASSED**
+- Exact ownership-ledger matrix status: **PASSED**
 - Exact release status: **NOT CERTIFIED**
+
+This is candidate-specific simulator evidence, not a claim about the current
+checkout. The matrix has not been rerun against `main@9759050`.
 
 ## Required proof
 
