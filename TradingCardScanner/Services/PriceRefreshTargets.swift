@@ -44,11 +44,16 @@ enum PriceRefreshTargets {
                 catalogMetadataCheckedAt: card.catalogMetadataCheckedAt,
                 lastFailureAt: record?.lastFailureAt,
                 lastFailureReasonRaw: record?.lastFailureReasonRaw,
-                hasPrice: PriceRefreshController.hasFinishedPrice(
-                    amount: record?.effectiveUnitMarketPriceUSD,
-                    currencyCode: record?.currencyCode,
-                    usesFallback: usesPriceFallback
-                ),
+                hasPrice: card.cardGame == .pokemon
+                    ? PriceRefreshController.hasFinishedPokemonPrice(
+                        amount: record?.effectiveUnitMarketPriceUSD,
+                        currencyCode: record?.currencyCode
+                    )
+                    : PriceRefreshController.hasFinishedPrice(
+                        amount: record?.effectiveUnitMarketPriceUSD,
+                        currencyCode: record?.currencyCode,
+                        usesFallback: usesPriceFallback
+                    ),
                 lastCheckedAt: record?.lastCheckedAt,
                 itemKind: card.itemKind,
                 marketVariantID: card.justTCGVariantID ?? record?.marketVariantID,

@@ -2328,8 +2328,8 @@ final class PriceRefreshController: ObservableObject {
     /// turning every launch into another request.
     nonisolated static let noSupportedProviderRetryInterval: TimeInterval = 30 * 24 * 60 * 60
 
-    /// A non-USD catalog observation remains useful when fallback is off, but
-    /// becomes unfinished the moment the user opts into a USD fallback.
+    /// The historical non-Pokémon rule: a provider's native-currency amount
+    /// counts when fallback is off, and requires USD when fallback is enabled.
     nonisolated static func hasFinishedPrice(
         amount: Double?,
         currencyCode: String?,
@@ -2338,6 +2338,17 @@ final class PriceRefreshController: ObservableObject {
         guard amount != nil else { return false }
         return !usesFallback
             || currencyCode?.caseInsensitiveCompare("USD") == .orderedSame
+    }
+
+    /// Pokémon collection valuation is always denominated in USD. Provider
+    /// fallback configuration controls lookup order, never whether EUR is a
+    /// completed canonical price.
+    nonisolated static func hasFinishedPokemonPrice(
+        amount: Double?,
+        currencyCode: String?
+    ) -> Bool {
+        amount != nil
+            && currencyCode?.caseInsensitiveCompare("USD") == .orderedSame
     }
 
     /// Sealed artwork is part of the owned product, not an optional price

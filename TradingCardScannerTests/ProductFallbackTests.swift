@@ -89,35 +89,84 @@ final class ProductFallbackTests: XCTestCase {
         XCTAssertFalse(retry.take(explicitlyForced: false))
     }
 
-    /// The Cardmarket reordering. A euro price is a price, but not one the
-    /// collection can total, so the vendor is asked before it is settled for.
-    /// If the vendor has nothing, the euro value stays — it is not cleared.
+    /// Cardmarket remains stored as a labeled provider observation, while the
+    /// configured USD provider still gets the chance to supply canonical value.
     func testEuroPriceStillFallsThroughSoTheVendorIsTriedFirst() {
         XCTAssertTrue(PriceRefreshController.needsFallback(.price(eur(0.53))))
     }
 
-    func testEuroPriceBecomesUnfinishedOnlyWhenFallbackIsEnabled() {
-        XCTAssertTrue(
-            PriceRefreshController.hasFinishedPrice(
+    func testPokemonEuroPriceIsUnfinishedWithFallbackOnOrOff() {
+        XCTAssertFalse(
+            PriceRefreshController.hasFinishedPokemonPrice(
                 amount: 0.53,
-                currencyCode: "EUR",
-                usesFallback: false
+                currencyCode: "EUR"
             )
         )
         XCTAssertFalse(
-            PriceRefreshController.hasFinishedPrice(
+            PriceRefreshController.hasFinishedPokemonPrice(
                 amount: 0.53,
-                currencyCode: "EUR",
-                usesFallback: true
+                currencyCode: "EUR"
             )
         )
         XCTAssertTrue(
-            PriceRefreshController.hasFinishedPrice(
+            PriceRefreshController.hasFinishedPokemonPrice(
                 amount: 0.53,
-                currencyCode: "USD",
-                usesFallback: true
+                currencyCode: "USD"
             )
         )
+        XCTAssertFalse(
+            PriceRefreshController.hasFinishedPokemonPrice(
+                amount: nil,
+                currencyCode: "USD"
+            )
+        )
+    }
+
+    func testLegacyEuroDoesNotSuppressPokemonRefreshWithFallbackOnOrOff() throws {
+        let context = try makeContext()
+        let card = CollectedCard(
+            collectionKey: "mep-078#cosmos",
+            game: .pokemon,
+            providerID: "mep-078",
+            name: "Toxel",
+            setName: "Mega Evolution Promos",
+            setCode: "MEP",
+            cardNumber: "078",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .pokemonFoilPattern("cosmos"),
+            variantResolution: .imported
+        )
+        card.catalogProviderID = "mep-078"
+        let record = PriceRecord(
+            key: card.priceKey,
+            game: .pokemon,
+            printingID: card.priceStorageID,
+            variantID: card.variantID
+        )
+        _ = record.apply(eur(1.43))
+        record.lastCheckedAt = .now.addingTimeInterval(
+            -PriceRefreshController.automaticRefreshInterval - 1
+        )
+        context.insert(card)
+        context.insert(record)
+
+        for fallbackEnabled in [false, true] {
+            let targets = try PriceRefreshTargets.make(
+                context: context,
+                usesPriceFallback: fallbackEnabled,
+                includeImported: true
+            )
+            let target = try XCTUnwrap(targets.first)
+            XCTAssertFalse(target.hasPrice)
+            XCTAssertTrue(
+                PriceRefreshController.staleTargets(
+                    from: targets,
+                    usesPriceFallback: fallbackEnabled
+                ).contains { $0.id == target.id }
+            )
+        }
     }
 
     func testRetryAfterParsesSecondsAndHTTPDate() throws {

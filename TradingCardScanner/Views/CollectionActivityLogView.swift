@@ -593,11 +593,17 @@ struct CollectionActivityEditor: View {
         let prices = PriceStore(context: modelContext)
         let existing = prices.record(forKey: card.priceKey)
         let usesFallback = UserDefaults.standard.bool(forKey: "usesPriceFallback")
-        guard !PriceRefreshController.hasFinishedPrice(
-            amount: existing?.effectiveUnitMarketPriceUSD,
-            currencyCode: existing?.currencyCode,
-            usesFallback: usesFallback
-        ), usesFallback, PriceVendorCredentials.hasKey else { return }
+        let hasFinishedPrice = card.cardGame == .pokemon
+            ? PriceRefreshController.hasFinishedPokemonPrice(
+                amount: existing?.effectiveUnitMarketPriceUSD,
+                currencyCode: existing?.currencyCode
+            )
+            : PriceRefreshController.hasFinishedPrice(
+                amount: existing?.effectiveUnitMarketPriceUSD,
+                currencyCode: existing?.currencyCode,
+                usesFallback: usesFallback
+            )
+        guard !hasFinishedPrice, usesFallback, PriceVendorCredentials.hasKey else { return }
 
         fallbackQuoteTask?.cancel()
         let input = PriceFallbackCardInput(

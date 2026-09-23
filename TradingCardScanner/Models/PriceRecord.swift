@@ -38,8 +38,8 @@ enum PriceSource: String, Codable, Hashable, Sendable {
 }
 
 /// The single eligibility rule for a value entering a USD portfolio total.
-/// Display layers may still show a supported provider's native currency, but
-/// no caller may convert it into a USD holding without an exchange-rate policy.
+/// Historical and provider-detail surfaces may retain a source's native
+/// currency. Current collection and portfolio valuation requires a USD quote.
 enum PortfolioPriceEligibility {
     /// Returns the only value that is allowed to enter the USD portfolio
     /// total. Providers may still publish and store a native-currency amount,
@@ -82,9 +82,10 @@ final class PriceRecord {
     /// before treatment identity existed.
     var magicTreatmentIDsRaw: [String] = []
 
-    /// `nil` means the provider exposes no price we are willing to attribute to
-    /// this physical variant. It never means zero, and it must never be filled in
-    /// with a different finish's price merely to produce a number.
+    /// Legacy persisted amount slot. `currencyCode` qualifies the stored value;
+    /// despite this property's historical name, old records may contain native
+    /// currency observations. Current valuation must use
+    /// `effectiveUnitMarketPriceUSD`.
     var unitMarketPriceUSD: Double?
     var currencyCode: String = "USD"
 
@@ -242,16 +243,17 @@ final class PriceRecord {
     /// property next to the mutable record makes the invalidation rule explicit
     /// for services that do not have access to the local observation log.
     var effectiveUnitMarketPriceUSD: Double? {
-        guard !isInvalidated else { return nil }
+        guard !isInvalidated,
+              currencyCode.caseInsensitiveCompare("USD") == .orderedSame else { return nil }
         return unitMarketPriceUSD
     }
 
     /// The provider answered and had nothing for this variant. That is a real,
     /// current answer — "unavailable" — not a failure.
     func applyUnavailable(source: PriceSource?, at date: Date) {
-        // A provider lacking this exact variant does not invalidate a known,
-        // dated price imported for that same variant.
-        if effectiveUnitMarketPriceUSD == nil {
+        // A provider lacking this exact variant does not invalidate an existing
+        // provider observation, including legacy Cardmarket EUR provenance.
+        if unitMarketPriceUSD == nil {
             unitMarketPriceUSD = nil
             sourceRaw = source?.rawValue
             sourceVariantID = nil
@@ -272,12 +274,14 @@ final class PriceRecord {
     }
 
     var display: PriceDisplay {
-        PriceDisplay(
-            amount: effectiveUnitMarketPriceUSD,
-            currencyCode: currencyCode,
-            source: source,
-            sourceUpdatedAt: sourceUpdatedAt,
-            fetchedAt: fetchedAt,
+        let canonicalUSD = effectiveUnitMarketPriceUSD
+        let hasUSDObservation = currencyCode.caseInsensitiveCompare("USD") == .orderedSame
+        return PriceDisplay(
+            amount: canonicalUSD,
+            currencyCode: "USD",
+            source: hasUSDObservation ? source : nil,
+            sourceUpdatedAt: hasUSDObservation ? sourceUpdatedAt : nil,
+            fetchedAt: hasUSDObservation ? fetchedAt : nil,
             lastCheckedAt: lastCheckedAt,
             refreshFailed: lastFailureAt != nil
         )
@@ -322,7 +326,7 @@ struct PriceDisplay: Equatable, Sendable {
 
     func state(now: Date = .now) -> State {
         guard lastCheckedAt != nil || fetchedAt != nil else { return .unknown }
-        guard amount != nil else { return refreshFailed ? .unknown : .unavailable }
+        guard amount != nil else { return .unavailable }
         guard let asOf = effectiveAsOf else { return .stale }
         return now.timeIntervalSince(asOf) <= Self.staleAfter ? .current : .stale
     }

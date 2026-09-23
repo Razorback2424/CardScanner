@@ -14,6 +14,70 @@ final class PricingTests: XCTestCase {
         XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: .nan, currencyCode: "USD"))
     }
 
+    func testLegacyCardmarketObservationIsRetainedButNeverDisplayedAsCanonicalUSD() {
+        let fetchedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let record = PriceRecord(
+            key: "pokemon:promo-078:cosmos",
+            game: .pokemon,
+            printingID: "promo-078",
+            variantID: "cosmos"
+        )
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 1.43,
+                currencyCode: "EUR",
+                source: .cardmarket,
+                sourceVariantID: "cardmarket",
+                sourceUpdatedAt: fetchedAt,
+                fetchedAt: fetchedAt
+            )
+        )
+
+        record.applyUnavailable(source: .tcgplayer, at: fetchedAt.addingTimeInterval(60))
+
+        XCTAssertEqual(record.unitMarketPriceUSD, 1.43)
+        XCTAssertEqual(record.currencyCode, "EUR")
+        XCTAssertEqual(record.source, .cardmarket)
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(record.display.amount)
+        XCTAssertEqual(record.display.currencyCode, "USD")
+        XCTAssertNil(record.display.source)
+        XCTAssertEqual(record.display.state(), .unavailable)
+    }
+
+    @MainActor
+    func testSharedPriceSnapshotKeepsLegacyEUROutOfCollectionAndCardDetailValues() {
+        let record = PriceRecord(
+            key: "pokemon:promo-078:cosmos",
+            game: .pokemon,
+            printingID: "promo-078",
+            variantID: "cosmos"
+        )
+        record.apply(
+            NormalizedPrice(
+                unitMarketPriceUSD: 1.43,
+                currencyCode: "EUR",
+                source: .cardmarket,
+                sourceVariantID: "cardmarket",
+                sourceUpdatedAt: nil,
+                fetchedAt: Date(timeIntervalSince1970: 1_800_000_000)
+            )
+        )
+        record.recordFailure(at: Date(timeIntervalSince1970: 1_800_000_060))
+
+        let snapshot = PriceSnapshotStore()
+        snapshot.apply([PriceDelta(key: record.key, display: record.display)])
+        let displayed = snapshot.display(for: record.key)
+
+        XCTAssertEqual(record.unitMarketPriceUSD, 1.43)
+        XCTAssertEqual(record.currencyCode, "EUR")
+        XCTAssertEqual(record.source, .cardmarket)
+        XCTAssertNil(record.effectiveUnitMarketPriceUSD)
+        XCTAssertEqual(displayed?.currencyCode, "USD")
+        XCTAssertNil(displayed?.amount)
+        XCTAssertEqual(displayed?.state(), .unavailable)
+    }
+
     private func pokemonCard(
         variantsJSON: String = #"{ "firstEdition": false, "holo": false, "normal": true, "reverse": true }"#,
         pricingJSON: String? = #"""
@@ -691,7 +755,7 @@ final class PricingTests: XCTestCase {
         XCTAssertFalse(card.catalogVariants.contains { $0.id.hasPrefix("pokemonStamp|") })
     }
 
-    // MARK: - Cardmarket stands in only where TCGplayer is silent
+    // MARK: - Cardmarket remains separate from canonical USD pricing
 
     private func promoCard(tcgplayerJSON: String = "null") throws -> IdentifiedCard {
         let json = """
@@ -763,6 +827,41 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(price.unitMarketPriceUSD, 3.10)
         XCTAssertEqual(price.source, .tcgplayer)
         XCTAssertEqual(price.currencyCode, "USD")
+    }
+
+    func testDetailedCosmosVariantUsesItsTCGplayerUSDPrice() throws {
+        let json = #"""
+        {
+          "id": "mep-078", "localId": "078", "name": "Toxel",
+          "set": { "id": "mep", "name": "Mega Evolution Promos",
+                   "cardCount": { "total": 80, "official": 80 } },
+          "variants": { "firstEdition": false, "holo": true, "normal": false, "reverse": false },
+          "variants_detailed": [
+            { "type": "reverse", "foil": "cosmos",
+              "pricing": { "tcgplayer": {
+                "updated": "2026-09-20T12:00:00.000Z",
+                "holofoil": { "marketPrice": 2.34 }
+              } }
+            }
+          ]
+        }
+        """#
+        let card = IdentifiedCard.pokemon(
+            try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)),
+            setCode: "MEP"
+        )
+
+        guard case let .price(price) = CardPricing.price(
+            for: card,
+            variant: .pokemonFoilPattern("cosmos"),
+            magicTreatments: []
+        ) else {
+            return XCTFail("Expected the detailed Cosmos TCGplayer price")
+        }
+
+        XCTAssertEqual(price.unitMarketPriceUSD, 2.34)
+        XCTAssertEqual(price.currencyCode, "USD")
+        XCTAssertEqual(price.source, .tcgplayer)
     }
 }
 

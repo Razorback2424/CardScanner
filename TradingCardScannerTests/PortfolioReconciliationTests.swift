@@ -3227,6 +3227,10 @@ final class PortfolioReconciliationTests: XCTestCase {
 
         await engine.recomputeAndWait(context: context, now: now)
         XCTAssertEqual(engine.summary?.currentValue, money(20))
+        XCTAssertEqual(eurRecord.unitMarketPriceUSD, 20)
+        XCTAssertNil(eurRecord.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(eurRecord.display.amount)
+        XCTAssertEqual(eurRecord.display.currencyCode, "USD")
         assertAllValuationSurfaces("initial mixed USD/EUR valuation")
 
         _ = usdRecord.apply(
@@ -3251,9 +3255,9 @@ final class PortfolioReconciliationTests: XCTestCase {
         await engine.recomputeAndWait(context: context, now: now.addingTimeInterval(1))
         assertAllValuationSurfaces("plain USD replacement")
 
-        // Both transitions arrive in one checkpoint. The fast path must remove
-        // the old USD position, add the newly eligible one, and leave the EUR
-        // quote visible but outside the USD total.
+        // Both transitions arrive in one checkpoint. The fast path removes the
+        // old USD position, adds the newly eligible one, and keeps the new EUR
+        // observation out of the current USD display and portfolio total.
         _ = usdRecord.apply(
             NormalizedPrice(
                 unitMarketPriceUSD: 25,
@@ -3280,6 +3284,10 @@ final class PortfolioReconciliationTests: XCTestCase {
             PriceDelta(key: eurRecord.key, display: eurRecord.display)
         ])
         XCTAssertEqual(engine.summary?.currentValue, money(30))
+        XCTAssertEqual(usdRecord.unitMarketPriceUSD, 25)
+        XCTAssertNil(usdRecord.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(usdRecord.display.amount)
+        XCTAssertEqual(usdRecord.display.currencyCode, "USD")
         XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.unitPrice)
         XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.holdingValue)
         XCTAssertEqual(engine.holdings.first(where: { $0.priceStorageKey == eurRecord.key })?.holdingValue, money(30))
