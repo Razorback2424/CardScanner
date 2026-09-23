@@ -96,6 +96,10 @@ final class PriceRecord {
     var sourceUpdatedAt: Date?
     /// When this app last retrieved the value it is currently showing.
     var fetchedAt: Date?
+    /// Last timestamp established by an actual JustTCG refresh response. A
+    /// price imported from Browse may come from a stale catalog cache and
+    /// cannot safely authorize a later `updated_after` request.
+    var justTCGFetchedAt: Date? = nil
     /// When this app last asked, successfully or not.
     ///
     /// Deliberately not a freshness signal on its own: `recordFailure` sets it
@@ -193,6 +197,7 @@ final class PriceRecord {
         sourceVariantID = price.sourceVariantID
         sourceUpdatedAt = price.sourceUpdatedAt
         fetchedAt = price.fetchedAt
+        justTCGFetchedAt = nil
         lastCheckedAt = price.fetchedAt
         lastSuccessfulCheckAt = price.fetchedAt
         lastFailureAt = nil
@@ -214,6 +219,7 @@ final class PriceRecord {
         sourceVariantID = variantID
         self.sourceUpdatedAt = sourceUpdatedAt
         fetchedAt = importedAt
+        justTCGFetchedAt = nil
         // An import is not a provider check. Leaving both check fields empty
         // keeps the row eligible for an immediate live check and keeps the
         // imported value out of today's coverage numbers.
@@ -274,14 +280,14 @@ final class PriceRecord {
     }
 
     var display: PriceDisplay {
-        let canonicalUSD = effectiveUnitMarketPriceUSD
-        let hasUSDObservation = currencyCode.caseInsensitiveCompare("USD") == .orderedSame
         return PriceDisplay(
-            amount: canonicalUSD,
-            currencyCode: "USD",
-            source: hasUSDObservation ? source : nil,
-            sourceUpdatedAt: hasUSDObservation ? sourceUpdatedAt : nil,
-            fetchedAt: hasUSDObservation ? fetchedAt : nil,
+            // Keep native-currency evidence visible in local views. USD-only
+            // portfolio valuation uses `effectiveUnitMarketPriceUSD` above.
+            amount: isInvalidated ? nil : unitMarketPriceUSD,
+            currencyCode: currencyCode,
+            source: source,
+            sourceUpdatedAt: sourceUpdatedAt,
+            fetchedAt: fetchedAt,
             lastCheckedAt: lastCheckedAt,
             refreshFailed: lastFailureAt != nil
         )
@@ -326,7 +332,7 @@ struct PriceDisplay: Equatable, Sendable {
 
     func state(now: Date = .now) -> State {
         guard lastCheckedAt != nil || fetchedAt != nil else { return .unknown }
-        guard amount != nil else { return .unavailable }
+        guard amount != nil else { return refreshFailed ? .unknown : .unavailable }
         guard let asOf = effectiveAsOf else { return .stale }
         return now.timeIntervalSince(asOf) <= Self.staleAfter ? .current : .stale
     }

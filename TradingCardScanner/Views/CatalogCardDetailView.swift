@@ -283,7 +283,11 @@ struct CatalogCardDetailView: View {
         }
         let stored = store.card(forKey: mutation.collectionKey)
         let storageID = stored?.priceStorageID ?? details.card.providerID
-        let prices = PriceStore(context: modelContext)
+        // A rejected quote can stage a failure marker before `store` returns
+        // false. Isolate that write so its rollback cannot discard unrelated
+        // edits in the view's shared context.
+        let priceContext = ModelContext(modelContext.container)
+        let prices = PriceStore(context: priceContext)
         let catalogLookup = CardPricing.price(
             for: details.card,
             variant: resolved.variant,
@@ -293,15 +297,22 @@ struct CatalogCardDetailView: View {
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: details.card.magicTreatments(for: resolved.variant)
         )
-        let priceSaved = !catalogLookup.hasObservation || (
-            prices.store(
+        let didStagePrice = !catalogLookup.hasObservation || prices.store(
                 catalogLookup,
                 game: details.card.game,
                 printingID: storageID,
                 variantID: resolved.variant?.id,
                 treatmentIDs: treatmentIDs
-            ) && prices.save()
-        )
+            )
+        let priceSaved: Bool
+        if !didStagePrice {
+            priceContext.rollback()
+            priceSaved = false
+        } else if catalogLookup.hasObservation {
+            priceSaved = prices.save()
+        } else {
+            priceSaved = true
+        }
         if !priceSaved {
             addAlertTitle = "Added with price warning"
             addFailure = "The card was added, but its price could not be saved. It will remain available for a later refresh."

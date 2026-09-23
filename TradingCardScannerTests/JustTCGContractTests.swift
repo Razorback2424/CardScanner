@@ -1508,6 +1508,7 @@ final class JustTCGContractTests: XCTestCase {
         key: String,
         variant: String,
         requiresFullResponse: Bool,
+        justTCGFetchedAt: Date? = nil,
         itemKind: CollectionItemKind = .rawCard
     ) -> MarketPriceTarget {
         MarketPriceTarget(
@@ -1520,6 +1521,7 @@ final class JustTCGContractTests: XCTestCase {
             lookupCandidates: [],
             currentAmount: nil,
             lastCheckedAt: nil,
+            justTCGFetchedAt: justTCGFetchedAt,
             requiresFullResponse: requiresFullResponse
         )
     }
@@ -1572,10 +1574,20 @@ final class JustTCGContractTests: XCTestCase {
         RecordingURLProtocol.reset()
 
         let (coordinator, syncLedger) = makeCoordinator(defaults: defaults)
-        syncLedger.recordCompleteSync(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion)
+        let watermark = Date(timeIntervalSince1970: 1_700_000_000)
+        syncLedger.recordCompleteSync(
+            game: .pokemon,
+            apiVersion: JustTCGV1Client.apiVersion,
+            at: watermark
+        )
 
         _ = await coordinator.refresh(
-            [target(key: "priced", variant: "variant-priced", requiresFullResponse: false)],
+            [target(
+                key: "priced",
+                variant: "variant-priced",
+                requiresFullResponse: false,
+                justTCGFetchedAt: watermark.addingTimeInterval(1)
+            )],
             game: .pokemon,
             useDelta: true,
             apply: { _, _, _ in true },
@@ -1587,6 +1599,42 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertTrue(
             urls[0].query?.contains("updated_after") ?? false,
             "a row that already holds a value can be asked for changes only"
+        )
+    }
+
+    @MainActor
+    func testPricedRowOlderThanDeltaWatermarkAsksForFullResponse() async throws {
+        let suite = "JustTCGDelta.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+
+        let (coordinator, syncLedger) = makeCoordinator(defaults: defaults)
+        let watermark = Date(timeIntervalSince1970: 1_700_000_000)
+        syncLedger.recordCompleteSync(
+            game: .pokemon,
+            apiVersion: JustTCGV1Client.apiVersion,
+            at: watermark
+        )
+
+        _ = await coordinator.refresh(
+            [target(
+                key: "priced",
+                variant: "variant-priced",
+                requiresFullResponse: false,
+                justTCGFetchedAt: watermark.addingTimeInterval(-1)
+            )],
+            game: .pokemon,
+            useDelta: true,
+            apply: { _, _, _ in true },
+            checkpoint: { true }
+        )
+
+        let urls = RecordingURLProtocol.recorded()
+        XCTAssertEqual(urls.count, 1)
+        XCTAssertFalse(
+            urls[0].query?.contains("updated_after") ?? false,
+            "a price older than the vendor watermark must be refreshed in full"
         )
     }
 
@@ -1633,7 +1681,12 @@ final class JustTCGContractTests: XCTestCase {
         RecordingURLProtocol.reset()
 
         let (coordinator, syncLedger) = makeCoordinator(defaults: defaults)
-        syncLedger.recordCompleteSync(game: .pokemon, apiVersion: JustTCGV1Client.apiVersion)
+        let watermark = Date(timeIntervalSince1970: 1_700_000_000)
+        syncLedger.recordCompleteSync(
+            game: .pokemon,
+            apiVersion: JustTCGV1Client.apiVersion,
+            at: watermark
+        )
         var missed: [MarketPriceTarget] = []
 
         _ = await coordinator.refresh(
@@ -1642,6 +1695,7 @@ final class JustTCGContractTests: XCTestCase {
                     key: "sealed",
                     variant: "variant-sealed",
                     requiresFullResponse: false,
+                    justTCGFetchedAt: watermark.addingTimeInterval(1),
                     itemKind: .sealedProduct
                 )
             ],

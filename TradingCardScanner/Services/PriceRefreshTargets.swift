@@ -55,6 +55,9 @@ enum PriceRefreshTargets {
                         usesFallback: usesPriceFallback
                     ),
                 lastCheckedAt: record?.lastCheckedAt,
+                justTCGFetchedAt: record?.source == .justTCG
+                    ? record?.justTCGFetchedAt
+                    : nil,
                 itemKind: card.itemKind,
                 marketVariantID: card.justTCGVariantID ?? record?.marketVariantID,
                 needsArtwork: ArtworkDiagnostics.shouldRetrySealedArtwork(for: card),

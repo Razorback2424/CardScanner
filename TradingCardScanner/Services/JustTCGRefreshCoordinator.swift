@@ -22,6 +22,9 @@ struct MarketPriceTarget: Hashable, Sendable {
     let lookupCandidates: [JustTCGBatchLookup]
     let currentAmount: Double?
     let lastCheckedAt: Date?
+    /// When a live JustTCG refresh last verified this price. Browse data can
+    /// come from a stale local cache and must not authorize a delta response.
+    let justTCGFetchedAt: Date?
     /// The collection identity this target writes. It is deliberately separate
     /// from the vendor lookup handle because the app keeps treatment records
     /// distinct even when a provider's exact printing exposes only its finish.
@@ -47,6 +50,7 @@ struct MarketPriceTarget: Hashable, Sendable {
         lookupCandidates: [JustTCGBatchLookup],
         currentAmount: Double?,
         lastCheckedAt: Date?,
+        justTCGFetchedAt: Date? = nil,
         magicTreatmentIDsRaw: [String] = [],
         requiresFullResponse: Bool = false
     ) {
@@ -59,6 +63,7 @@ struct MarketPriceTarget: Hashable, Sendable {
         self.lookupCandidates = lookupCandidates
         self.currentAmount = currentAmount
         self.lastCheckedAt = lastCheckedAt
+        self.justTCGFetchedAt = justTCGFetchedAt
         self.magicTreatmentIDsRaw = magicTreatmentIDsRaw
         self.requiresFullResponse = requiresFullResponse
     }
@@ -218,6 +223,7 @@ struct JustTCGRefreshCoordinator {
 
         let lookups = Array(batched.keys)
         let chunks = lookups.chunked(into: JustTCGQuota.batchSize)
+        let passStartedAt = Date.now
         report.batchesPlanned = chunks.count
         await onProgress(report)
 
@@ -246,7 +252,13 @@ struct JustTCGRefreshCoordinator {
             // for a full response. A full request costs exactly the same single
             // request as a delta one — `updated_after` narrows the response, not
             // the batch — so this buys correctness for no quota at all.
-            let cutoff = chunkOwners.contains(where: \.requiresFullResponse) ? nil : clock
+            let hasOwnerOutsideWatermark = clock.map { watermark in
+                chunkOwners.contains { owner in
+                    owner.requiresFullResponse
+                        || owner.justTCGFetchedAt.map { $0 >= watermark } != true
+                }
+            } ?? false
+            let cutoff = hasOwnerOutsideWatermark ? nil : clock
 
             do {
                 let response = try await client.batchCards(
@@ -363,7 +375,13 @@ struct JustTCGRefreshCoordinator {
                 report.completedFully = false
                 return report
             }
-            syncLedger.recordCompleteSync(game: game, apiVersion: JustTCGV1Client.apiVersion)
+            // Use the pass start as the next boundary. Recording completion
+            // could skip an update made while a long, paced pass was running.
+            syncLedger.recordCompleteSync(
+                game: game,
+                apiVersion: JustTCGV1Client.apiVersion,
+                at: passStartedAt
+            )
         }
         return report
     }

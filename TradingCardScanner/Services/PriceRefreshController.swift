@@ -1039,6 +1039,7 @@ actor PriceRefreshModelActor {
                     lookupCandidates: external,
                     currentAmount: nil,
                     lastCheckedAt: candidate.target.lastCheckedAt,
+                    justTCGFetchedAt: candidate.target.justTCGFetchedAt,
                     magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
                     requiresFullResponse: !candidate.target.hasPrice
                         || candidate.target.needsArtwork
@@ -1438,6 +1439,7 @@ actor PriceRefreshModelActor {
                 }
                 let printingID = owner?.priceStorageID
                     ?? "justtcg:\(JustTCGV2GradedClient.apiVersion):\(variant.id)"
+                let fetchedAt = Date.now
                 let lookup: PriceLookup = if let amount = variant.marketPriceUSD {
                     .price(
                         NormalizedPrice(
@@ -1446,7 +1448,7 @@ actor PriceRefreshModelActor {
                             source: .justTCG,
                             sourceVariantID: variant.id,
                             sourceUpdatedAt: variant.updatedAt,
-                            fetchedAt: .now
+                            fetchedAt: fetchedAt
                         )
                     )
                 } else {
@@ -1467,6 +1469,9 @@ actor PriceRefreshModelActor {
                     treatmentIDs: target.magicTreatmentIDsRaw
                 )
                 if let record = store.record(forKey: canonicalKey) {
+                    if accepted, variant.marketPriceUSD != nil {
+                        record.justTCGFetchedAt = fetchedAt
+                    }
                     record.marketVariantID = variant.id
                     record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
                 }
@@ -1504,6 +1509,8 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     let hasPrice: Bool
     /// When this app last asked about it, successfully or not.
     let lastCheckedAt: Date?
+    /// When a live JustTCG refresh last supplied a price for this row.
+    var justTCGFetchedAt: Date? = nil
     /// Raw card, graded slab or sealed product.
     var itemKind: CollectionItemKind = .rawCard
     /// The vendor's variant handle already stored on the row, from the sealed or
@@ -2946,6 +2953,7 @@ final class PriceRefreshController: ObservableObject {
             )
             allStored = allStored && stored
             if let record = store.record(forKey: owner.priceKey) {
+                if stored { record.justTCGFetchedAt = fetchedAt }
                 record.marketVariantID = variant.variantId
                 record.canonicalMarketID = card.uuid ?? card.id
                 record.providerGameUpdatedAt = variant.updatedAt

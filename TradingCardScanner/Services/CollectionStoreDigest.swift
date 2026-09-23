@@ -239,6 +239,7 @@ private struct PriceRecordProjection: Codable {
     var sourceVariantID: String?
     var sourceUpdatedAt: Double?
     var fetchedAt: Double?
+    var justTCGFetchedAt: Double?
     var lastCheckedAt: Double?
     var lastSuccessfulCheckAt: Double?
     var itemKindRaw: String?
@@ -267,6 +268,7 @@ private struct PriceRecordProjection: Codable {
         sourceVariantID = record.sourceVariantID
         sourceUpdatedAt = record.sourceUpdatedAt?.timeIntervalSinceReferenceDate
         fetchedAt = record.fetchedAt?.timeIntervalSinceReferenceDate
+        justTCGFetchedAt = record.justTCGFetchedAt?.timeIntervalSinceReferenceDate
         lastCheckedAt = record.lastCheckedAt?.timeIntervalSinceReferenceDate
         lastSuccessfulCheckAt = record.lastSuccessfulCheckAt?.timeIntervalSinceReferenceDate
         itemKindRaw = record.itemKindRaw

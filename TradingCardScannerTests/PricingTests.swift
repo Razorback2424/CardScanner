@@ -14,7 +14,7 @@ final class PricingTests: XCTestCase {
         XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: .nan, currencyCode: "USD"))
     }
 
-    func testLegacyCardmarketObservationIsRetainedButNeverDisplayedAsCanonicalUSD() {
+    func testLegacyCardmarketObservationRemainsVisibleInItsNativeCurrency() {
         let fetchedAt = Date(timeIntervalSince1970: 1_800_000_000)
         let record = PriceRecord(
             key: "pokemon:promo-078:cosmos",
@@ -39,14 +39,14 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(record.currencyCode, "EUR")
         XCTAssertEqual(record.source, .cardmarket)
         XCTAssertNil(record.effectiveUnitMarketPriceUSD)
-        XCTAssertNil(record.display.amount)
-        XCTAssertEqual(record.display.currencyCode, "USD")
-        XCTAssertNil(record.display.source)
-        XCTAssertEqual(record.display.state(), .unavailable)
+        XCTAssertEqual(record.display.amount, 1.43)
+        XCTAssertEqual(record.display.currencyCode, "EUR")
+        XCTAssertEqual(record.display.source, .cardmarket)
+        XCTAssertEqual(record.display.state(now: fetchedAt.addingTimeInterval(60)), .current)
     }
 
     @MainActor
-    func testSharedPriceSnapshotKeepsLegacyEUROutOfCollectionAndCardDetailValues() {
+    func testSharedPriceSnapshotKeepsLegacyEURVisibleWithoutUsingItForUSDValuation() {
         let record = PriceRecord(
             key: "pokemon:promo-078:cosmos",
             game: .pokemon,
@@ -73,9 +73,10 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(record.currencyCode, "EUR")
         XCTAssertEqual(record.source, .cardmarket)
         XCTAssertNil(record.effectiveUnitMarketPriceUSD)
-        XCTAssertEqual(displayed?.currencyCode, "USD")
-        XCTAssertNil(displayed?.amount)
-        XCTAssertEqual(displayed?.state(), .unavailable)
+        XCTAssertEqual(displayed?.currencyCode, "EUR")
+        XCTAssertEqual(displayed?.amount, 1.43)
+        XCTAssertEqual(displayed?.source, .cardmarket)
+        XCTAssertEqual(displayed?.state(), .current)
     }
 
     private func pokemonCard(
@@ -444,6 +445,52 @@ final class PricingTests: XCTestCase {
 
         let asked = PriceDisplay(amount: nil, source: .tcgplayer, fetchedAt: .now, lastCheckedAt: .now)
         XCTAssertEqual(asked.state(), .unavailable)
+    }
+
+    func testFailedFirstPriceCheckRemainsUnknown() {
+        let failedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let record = PriceRecord(
+            key: "pokemon:sv08.5-074:reverse",
+            game: .pokemon,
+            printingID: "sv08.5-074",
+            variantID: "reverse"
+        )
+        record.recordFailure(at: failedAt)
+
+        XCTAssertEqual(record.display.state(now: failedAt), .unknown)
+        XCTAssertTrue(record.display.refreshFailed)
+    }
+
+    func testNonJustTCGObservationsCannotMoveJustTCGDeltaEvidence() {
+        let justTCGAt = Date(timeIntervalSince1970: 1_700_000_000)
+        let record = PriceRecord(
+            key: "pokemon:sv08.5-074:reverse",
+            game: .pokemon,
+            printingID: "sv08.5-074",
+            variantID: "reverse"
+        )
+        XCTAssertTrue(record.apply(NormalizedPrice(
+            unitMarketPriceUSD: 5,
+            currencyCode: "USD",
+            source: .justTCG,
+            sourceVariantID: "justtcg-reverse",
+            sourceUpdatedAt: justTCGAt,
+            fetchedAt: justTCGAt
+        )))
+        record.justTCGFetchedAt = justTCGAt
+
+        record.applyUnavailable(source: .tcgdex, at: justTCGAt.addingTimeInterval(3_600))
+        XCTAssertEqual(record.justTCGFetchedAt, justTCGAt)
+
+        XCTAssertTrue(record.apply(NormalizedPrice(
+            unitMarketPriceUSD: 6,
+            currencyCode: "USD",
+            source: .justTCG,
+            sourceVariantID: "browse-cached-variant",
+            sourceUpdatedAt: justTCGAt,
+            fetchedAt: justTCGAt.addingTimeInterval(7_200)
+        )))
+        XCTAssertNil(record.justTCGFetchedAt, "Browse quotes are not live refresh evidence")
     }
 
     /// Offline should not turn yesterday's price into nothing.

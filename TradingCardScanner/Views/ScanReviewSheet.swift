@@ -8,6 +8,7 @@ import SwiftUI
 /// variant right, and what is it worth.
 struct ScanReviewSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var model: ScannerViewModel
 
     let scan: RecentScan
     let onCorrect: (PhysicalVariant) async -> ScanCorrectionOutcome
@@ -96,6 +97,10 @@ struct ScanReviewSheet: View {
                 Button("Cancel", role: .cancel) {}
             }
         }
+    }
+
+    private var currentPrice: PriceLookup {
+        model.sessionScans.first(where: { $0.id == scan.id })?.price ?? scan.price
     }
 
     private var identity: some View {
@@ -197,10 +202,10 @@ struct ScanReviewSheet: View {
                 Label("Unit price", systemImage: "tag")
                     .font(.headline)
                 Spacer(minLength: 12)
-                ScanPriceValue(lookup: scan.price, style: .review)
+                ScanPriceValue(lookup: currentPrice, style: .review)
             }
 
-            switch scan.price {
+            switch currentPrice {
             case let .price(price):
                 if let sourceUpdatedAt = price.sourceUpdatedAt {
                     Text("Catalog price · current as of \(sourceUpdatedAt.formatted(date: .abbreviated, time: .shortened))")
