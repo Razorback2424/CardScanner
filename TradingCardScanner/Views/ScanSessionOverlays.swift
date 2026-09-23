@@ -19,27 +19,27 @@ struct SlabLabelReadingOfferView: View {
     let onSwitchToRaw: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("No slab label found", systemImage: "viewfinder")
-                .font(.subheadline.weight(.bold))
-
-            Text("The label could not be read. You can scan this as a raw card instead.")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.78))
-                .fixedSize(horizontal: false, vertical: true)
-
-            Button(action: onSwitchToRaw) {
-                Text("Switch to Raw")
-                    .font(.caption.weight(.semibold))
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: 40)
+        HStack(spacing: 12) {
+            Image(systemName: "viewfinder")
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("No slab label found")
+                    .font(.caption.weight(.bold))
+                Text("Try again or scan as raw")
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.78))
             }
-            .buttonStyle(.bordered)
-            .tint(.white)
-            .accessibilityHint("Changes scanning mode to raw cards.")
+            Spacer(minLength: 4)
+            Button("Use Raw", action: onSwitchToRaw)
+                .font(.caption.weight(.semibold))
+                .frame(minHeight: 44)
+                .buttonStyle(.bordered)
+                .tint(.white)
+                .accessibilityHint("Changes scanning mode to raw cards.")
         }
         .foregroundStyle(.white)
-        .padding(12)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
         .appGlass(cornerRadius: 14)
         .accessibilityElement(children: .contain)
     }

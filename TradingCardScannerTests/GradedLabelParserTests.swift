@@ -121,6 +121,53 @@ final class GradedLabelParserTests: XCTestCase {
         XCTAssertEqual(sgc.certificationNumber, "1234567890")
     }
 
+    func testModernCGCSpinarakLabelWithInterleavedColumns() throws {
+        // Printed text and a plausible interleaved OCR order from the supplied
+        // 2004 slab photo; this is not a capture of the device's Vision output.
+        // The stylized logo can be misread; the printed company name must be
+        // sufficient to identify the grader.
+        let lines = [
+            RecognizedLine(text: "ECGC"),
+            RecognizedLine(text: "CERTIFIED GUARANTY COMPANY"),
+            RecognizedLine(text: "Spinarak"),
+            RecognizedLine(text: "GEM MINT"),
+            RecognizedLine(text: "Pokémon (2004)"),
+            RecognizedLine(text: "10"),
+            RecognizedLine(text: "EX Team Rocket Returns 78/109"),
+            RecognizedLine(text: "6080494242")
+        ]
+
+        let evidence = try XCTUnwrap(GradedLabelParser.parse(lines))
+        XCTAssertEqual(evidence.company, .cgc)
+        XCTAssertEqual(evidence.grade, CardGrade(value: "10", label: "Gem Mint"))
+        XCTAssertEqual(evidence.certificationNumber, "6080494242")
+        XCTAssertTrue(evidence.labelCardText.contains("Spinarak"))
+        XCTAssertFalse(evidence.labelCardText.contains("GEM MINT"))
+    }
+
+    func testModernCGCGradeNumberUsesRightColumnGeometry() throws {
+        func line(_ text: String, _ x: CGFloat, _ y: CGFloat) -> RecognizedLine {
+            RecognizedLine(
+                text: text,
+                boundingBox: CGRect(x: x, y: y, width: 0.14, height: 0.07)
+            )
+        }
+
+        let evidence = try XCTUnwrap(GradedLabelParser.parse([
+            line("CGC", 0.10, 0.84),
+            line("CERTIFIED GUARANTY COMPANY", 0.40, 0.84),
+            line("Spinarak 9", 0.12, 0.71),
+            line("GEM MINT", 0.73, 0.70),
+            line("Pokémon (2004)", 0.12, 0.61),
+            line("10", 0.77, 0.54),
+            line("EX Team Rocket Returns 78/109", 0.12, 0.47),
+            line("6080494242", 0.50, 0.25)
+        ]))
+
+        XCTAssertEqual(evidence.grade, CardGrade(value: "10", label: "Gem Mint"))
+        XCTAssertEqual(evidence.certificationNumber, "6080494242")
+    }
+
     func testTAGSupportsNumericGradeWhileKeepingItsCertificateConservative() throws {
         let evidence = try XCTUnwrap(GradedLabelParser.parse([
             RecognizedLine(text: "TAG"),

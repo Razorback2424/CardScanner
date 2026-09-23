@@ -146,6 +146,7 @@ enum GradedLabelParser {
     private struct ParsedLine: Sendable {
         let original: String
         let tokens: [LabelToken]
+        let boundingBox: CGRect?
     }
 
     /// Longest grade phrases come first. This prevents `GEM MINT` from being
@@ -153,7 +154,7 @@ enum GradedLabelParser {
     private static let specs: [GradingLabelSpec] = [
         GradingLabelSpec(
             company: .psa,
-            companyTokens: [["PSA"]],
+            companyTokens: [["PSA"], ["PROFESSIONAL", "SPORTS", "AUTHENTICATOR"]],
             gradeWords: [
                 GradedGradeWord(["AUTHENTIC"], label: "Authentic"),
                 GradedGradeWord(["GEM", "MT"], label: "Gem Mint"),
@@ -195,7 +196,7 @@ enum GradedLabelParser {
         ),
         GradingLabelSpec(
             company: .cgc,
-            companyTokens: [["CGC"]],
+            companyTokens: [["CGC"], ["CERTIFIED", "GUARANTY", "COMPANY"]],
             gradeWords: [
                 GradedGradeWord(["PRISTINE"], label: "Pristine"),
                 GradedGradeWord(["GEM", "MINT"], label: "Gem Mint"),
@@ -205,13 +206,13 @@ enum GradedLabelParser {
                 GradedGradeWord(["NM"], label: "NM")
             ],
             requiresGradeWord: true,
-            numberPosition: .beforeWord,
+            numberPosition: .afterWord,
             certDigits: 9...10,
             qualifierTokens: []
         ),
         GradingLabelSpec(
             company: .sgc,
-            companyTokens: [["SGC"]],
+            companyTokens: [["SGC"], ["SPORTSCARD", "GUARANTY"]],
             gradeWords: [
                 GradedGradeWord(["PRISTINE"], label: "Pristine"),
                 GradedGradeWord(["GEM"], label: "Gem"),
@@ -287,7 +288,7 @@ enum GradedLabelParser {
         let parsedLines = lines.compactMap { line -> ParsedLine? in
             let original = line.text.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !original.isEmpty else { return nil }
-            return ParsedLine(original: original, tokens: tokenize(original))
+            return ParsedLine(original: original, tokens: tokenize(original), boundingBox: line.boundingBox)
         }
         let matches = specs.compactMap { spec -> GradingCompany? in
             companyMatches(spec, in: parsedLines).isEmpty ? nil : spec.company
@@ -303,7 +304,7 @@ enum GradedLabelParser {
         let parsedLines = lines.compactMap { line -> ParsedLine? in
             let original = line.text.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !original.isEmpty else { return nil }
-            return ParsedLine(original: original, tokens: tokenize(original))
+            return ParsedLine(original: original, tokens: tokenize(original), boundingBox: line.boundingBox)
         }
         guard !parsedLines.isEmpty else { return nil }
 
@@ -323,6 +324,8 @@ enum GradedLabelParser {
         }
         let nearbyWordMatches = wordMatches.filter {
             isNear($0.location, companyLocations)
+                || (spec.company == .cgc
+                    && isCGCGradeWord($0.location, companyLocations: companyLocations, in: parsedLines))
         }
 
         let numericCandidates = locatedTokens(in: parsedLines).compactMap { located -> (LocatedToken, String, Double)? in
@@ -332,26 +335,23 @@ enum GradedLabelParser {
                   value >= 1,
                   value <= 10,
                   isHalfStep(value),
-                  isNear(located.position, companyLocations)
+                  (isNear(located.position, companyLocations)
+                    || (spec.company == .cgc && nearbyWordMatches.contains {
+                        isCGCNumber(located.position, near: $0.location, in: parsedLines)
+                    }))
             else { return nil }
             return (located, normalized, value)
         }
 
         let selectedWord = nearbyWordMatches.sorted { lhs, rhs in
             let lhsHasAdjacentNumber = numericCandidates.contains {
-                isGradeNumberAdjacent(
-                    $0.0.position,
-                    to: lhs.location,
-                    position: spec.numberPosition,
-                    in: parsedLines
+                gradeNumberBelongsToWord(
+                    $0.0.position, word: lhs.location, spec: spec, in: parsedLines
                 )
             }
             let rhsHasAdjacentNumber = numericCandidates.contains {
-                isGradeNumberAdjacent(
-                    $0.0.position,
-                    to: rhs.location,
-                    position: spec.numberPosition,
-                    in: parsedLines
+                gradeNumberBelongsToWord(
+                    $0.0.position, word: rhs.location, spec: spec, in: parsedLines
                 )
             }
             if lhsHasAdjacentNumber != rhsHasAdjacentNumber {
@@ -360,37 +360,38 @@ enum GradedLabelParser {
             if lhs.word.tokens.count != rhs.word.tokens.count {
                 return lhs.word.tokens.count > rhs.word.tokens.count
             }
+            if spec.company == .cgc,
+               let lhsBox = boundingBox(for: lhs.location, in: parsedLines),
+               let rhsBox = boundingBox(for: rhs.location, in: parsedLines),
+               lhsBox.midX != rhsBox.midX {
+                return lhsBox.midX > rhsBox.midX
+            }
             return proximity(lhs.location, to: companyLocations)
                 < proximity(rhs.location, to: companyLocations)
         }.first { match in
             let isAmbiguousNameToken = ["EX", "NM", "VG"].contains(match.word.tokens.joined(separator: " "))
             return !isAmbiguousNameToken || numericCandidates.contains {
-                isGradeNumberAdjacent(
-                    $0.0.position,
-                    to: match.location,
-                    position: spec.numberPosition,
-                    in: parsedLines
+                gradeNumberBelongsToWord(
+                    $0.0.position, word: match.location, spec: spec, in: parsedLines
                 )
             }
         }
         let gradeNumberCandidates = numericCandidates.filter { candidate in
             if let selectedWord {
-                return isNear(selectedWord.location, candidate.0.position)
+                return spec.company == .cgc
+                    ? isCGCNumber(candidate.0.position, near: selectedWord.location, in: parsedLines)
+                    : isNear(selectedWord.location, candidate.0.position)
             }
             return true
         }
 
         let selectedNumber = gradeNumberCandidates.sorted { lhs, rhs in
-            numberScore(
-                lhs.0,
-                companyLocations: companyLocations,
-                wordLocation: selectedWord?.location,
-                position: spec.numberPosition
-            ) < numberScore(
-                rhs.0,
-                companyLocations: companyLocations,
-                wordLocation: selectedWord?.location,
-                position: spec.numberPosition
+            gradeNumberScore(
+                lhs.0, companyLocations: companyLocations,
+                wordLocation: selectedWord?.location, spec: spec, in: parsedLines
+            ) < gradeNumberScore(
+                rhs.0, companyLocations: companyLocations,
+                wordLocation: selectedWord?.location, spec: spec, in: parsedLines
             )
         }.first
 
@@ -427,6 +428,7 @@ enum GradedLabelParser {
             parsedLines: parsedLines,
             companyLocations: companyLocations,
             wordMatches: wordMatches,
+            selectedWordLocation: selectedWord?.location,
             selectedNumber: selectedNumber?.0,
             qualifierTokens: spec.qualifierTokens,
             certificationCandidates: certificationCandidates
@@ -480,6 +482,75 @@ enum GradedLabelParser {
             guard let nextPosition else { return true }
             return !rawTagCardWords.contains(lines[nextPosition.lineIndex].tokens[nextPosition.tokenIndex].text)
         }
+    }
+
+    private static func boundingBox(for phrase: LocatedPhrase, in lines: [ParsedLine]) -> CGRect? {
+        let boxes = (phrase.lineIndex...phrase.endLineIndex).compactMap { lines[$0].boundingBox }
+        guard let first = boxes.first else { return nil }
+        return boxes.dropFirst().reduce(first) { $0.union($1) }
+    }
+
+    /// Modern CGC labels put grade text in a separate right-hand column. OCR
+    /// interleaves it with card text from the left, so line distance from the
+    /// logo is not meaningful when Vision supplies geometry.
+    private static func isCGCGradeWord(
+        _ word: LocatedPhrase,
+        companyLocations: [LocatedPhrase],
+        in lines: [ParsedLine]
+    ) -> Bool {
+        if let box = boundingBox(for: word, in: lines) {
+            return box.midX >= 0.55
+        }
+        return companyLocations.contains { lineDistance(word, $0) <= 6 }
+    }
+
+    private static func isCGCNumber(
+        _ number: TokenPosition,
+        near word: LocatedPhrase,
+        in lines: [ParsedLine]
+    ) -> Bool {
+        if let numberBox = lines[number.lineIndex].boundingBox,
+           let wordBox = boundingBox(for: word, in: lines) {
+            return abs(numberBox.midX - wordBox.midX) <= 0.22
+                && abs(numberBox.midY - wordBox.midY) <= 0.30
+        }
+        return lineDistance(number, word) <= 3
+    }
+
+    private static func gradeNumberBelongsToWord(
+        _ number: TokenPosition,
+        word: LocatedPhrase,
+        spec: GradingLabelSpec,
+        in lines: [ParsedLine]
+    ) -> Bool {
+        if spec.company == .cgc {
+            return isCGCNumber(number, near: word, in: lines)
+        }
+        return isGradeNumberAdjacent(number, to: word, position: spec.numberPosition, in: lines)
+    }
+
+    private static func gradeNumberScore(
+        _ number: LocatedToken,
+        companyLocations: [LocatedPhrase],
+        wordLocation: LocatedPhrase?,
+        spec: GradingLabelSpec,
+        in lines: [ParsedLine]
+    ) -> Int {
+        if spec.company == .cgc, let wordLocation {
+            if let numberBox = lines[number.position.lineIndex].boundingBox,
+               let wordBox = boundingBox(for: wordLocation, in: lines) {
+                return Int((abs(numberBox.midX - wordBox.midX) * 2
+                    + abs(numberBox.midY - wordBox.midY)) * 1_000)
+            }
+            return lineDistance(number.position, wordLocation) * 20
+                + abs(number.position.tokenIndex - wordLocation.startTokenIndex)
+        }
+        return numberScore(
+            number,
+            companyLocations: companyLocations,
+            wordLocation: wordLocation,
+            position: spec.numberPosition
+        )
     }
 
     private static func isGradeNumberAdjacent(
@@ -816,6 +887,7 @@ enum GradedLabelParser {
         parsedLines: [ParsedLine],
         companyLocations: [LocatedPhrase],
         wordMatches: [(wordIndex: Int, word: GradedGradeWord, location: LocatedPhrase)],
+        selectedWordLocation: LocatedPhrase?,
         selectedNumber: LocatedToken?,
         qualifierTokens: [String],
         certificationCandidates: [String]
@@ -824,6 +896,9 @@ enum GradedLabelParser {
 
         for phrase in companyLocations {
             mark(phrase, in: &recognized)
+        }
+        if let selectedWordLocation {
+            mark(selectedWordLocation, in: &recognized)
         }
         for match in wordMatches where isNear(match.location, companyLocations) {
             mark(match.location, in: &recognized)

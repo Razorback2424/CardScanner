@@ -165,10 +165,7 @@ private struct ScannerChrome: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
-            ScannerStatusView(
-                state: scanner.uiState,
-                switchToRaw: { model.setSubjectMode(.raw) }
-            )
+            ScannerStatusView(state: scanner.uiState)
 
             if let offer = model.pendingSlabConversionOffer {
                 PendingSlabConversionOfferView(
@@ -279,6 +276,11 @@ private struct ScannerChrome: View {
                 .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             }
 
+            ScannerSlabPromptView(
+                state: scanner.uiState,
+                switchToRaw: { model.setSubjectMode(.raw) }
+            )
+
             VStack(alignment: .trailing, spacing: 8) {
                 if model.purpose == .collection, !model.recent.isEmpty {
                     RecentScanRail(
@@ -333,23 +335,29 @@ private struct ScannerChrome: View {
 
 private struct ScannerStatusView: View {
     @ObservedObject var state: CardScannerUIState
-    let switchToRaw: () -> Void
 
     var body: some View {
-        VStack(spacing: 8) {
+        Group {
             if let message = state.scanAssistance.message {
                 ScanAssistanceView(message: message)
                     .transition(.opacity)
             }
-            if let prompt = state.slabLabelReadPrompt {
-                SlabLabelReadingOfferView(
-                    prompt: prompt,
-                    onSwitchToRaw: switchToRaw
-                )
-                .transition(.move(edge: .top).combined(with: .opacity))
-            }
         }
         .animation(.easeOut(duration: 0.18), value: state.scanAssistance)
+    }
+}
+
+private struct ScannerSlabPromptView: View {
+    @ObservedObject var state: CardScannerUIState
+    let switchToRaw: () -> Void
+
+    var body: some View {
+        Group {
+            if let prompt = state.slabLabelReadPrompt {
+                SlabLabelReadingOfferView(prompt: prompt, onSwitchToRaw: switchToRaw)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
         .animation(.easeOut(duration: 0.18), value: state.slabLabelReadPrompt)
     }
 }
