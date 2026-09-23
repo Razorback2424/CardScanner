@@ -238,15 +238,35 @@ struct ConsecutiveScanIdentity: Equatable, Hashable, Sendable {
     /// the consecutive-session identity so PSA 10 and PSA 9 are not treated as
     /// the same already-committed presentation.
     let slabSuppressionFragment: String?
+    private let slabEvidence: GradedSlabEvidence?
 
     init(card: IdentifiedCard, subject: ScanSubject? = nil) {
         canonicalID = card.id
         slabSuppressionFragment = subject?.slab?.suppressionFragment
+        slabEvidence = subject?.slab
     }
 
     init(canonicalID: String, slabSuppressionFragment: String? = nil) {
         self.canonicalID = canonicalID
         self.slabSuppressionFragment = slabSuppressionFragment
+        slabEvidence = nil
+    }
+
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.canonicalID == rhs.canonicalID
+            && lhs.slabSuppressionFragment == rhs.slabSuppressionFragment
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(canonicalID)
+        hasher.combine(slabSuppressionFragment)
+    }
+
+    func matchesForDuplicateSuppression(_ other: Self) -> Bool {
+        guard canonicalID == other.canonicalID else { return false }
+        if self == other { return true }
+        guard let slabEvidence, let otherSlab = other.slabEvidence else { return false }
+        return slabEvidence.matchesKnownIdentity(of: otherSlab)
     }
 }
 
@@ -273,7 +293,9 @@ enum CollectionCandidateRoutingPolicy {
         let candidates = history.isEmpty
             ? previous.map { [$0] } ?? []
             : history
-        guard let previous = candidates.reversed().first(where: { $0.identity == identity }) else {
+        guard let previous = candidates.reversed().first(where: {
+            $0.identity.matchesForDuplicateSuppression(identity)
+        }) else {
             return .automatic
         }
 
@@ -3412,7 +3434,7 @@ final class ScannerViewModel: ObservableObject {
         case .duplicate(let proof):
             diagnostic("routingSpatialDuplicatePrompt")
             guard let previous = committedSessionHistory.reversed().first(where: { committed in
-                      committed.identity == candidate.identity
+                      committed.identity.matchesForDuplicateSuppression(candidate.identity)
                           && (proof.presentationToken == committed.presentationToken
                               || (proof.presentationToken == nil
                                   && proof.encounterID == committed.encounterID))

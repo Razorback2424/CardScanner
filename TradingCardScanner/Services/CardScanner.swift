@@ -374,11 +374,13 @@ enum SlabLabelSchedule {
         hasEvidence: Bool,
         certKnown: Bool,
         lastLabelAt: CFAbsoluteTime?,
-        now: CFAbsoluteTime
+        now: CFAbsoluteTime,
+        needsFastFollowUp: Bool = false,
+        certlessBackoff: Bool = false
     ) -> Bool {
         guard mode == .slab, footerMatched else { return false }
         guard let lastLabelAt else { return true }
-        let interval = hasEvidence && certKnown
+        let interval = hasEvidence && (certKnown || certlessBackoff) && !needsFastFollowUp
             ? certifiedCopyCheckInterval
             : labelInterval
         return now - lastLabelAt >= interval
@@ -887,6 +889,9 @@ final class CardScanner: NSObject, ObservableObject {
     private var slabAwaitingEmptyFrames = 0
     private var slabLabelPromptID: UUID?
     private var slabEvidenceWindow = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
+    private var certifiedCopyWindow = SlabEvidenceConfirmationWindow(matchesRequired: 3, windowSize: 5)
+    private var certifiedCopyCandidate: String?
+    private var certlessLabelMisses = 0
     private var postCommitLabelWatch: PostCommitLabelWatch?
     private var assistanceMonitor = CaptureAssistanceMonitor()
     private let spatialTrackingConfiguration: SpatialTrackingConfiguration
@@ -2166,6 +2171,9 @@ final class CardScanner: NSObject, ObservableObject {
         slabAwaitingEmptyFrames = 0
         slabLabelPromptID = nil
         slabEvidenceWindow.reset()
+        certifiedCopyWindow.reset()
+        certifiedCopyCandidate = nil
+        certlessLabelMisses = 0
         installModeROIs()
         updateUI { $0.setSlabLabelReadPrompt(nil) }
         updateUI { $0.showSlab(evidence) }
@@ -2178,6 +2186,7 @@ final class CardScanner: NSObject, ObservableObject {
                   to: evidence
               ) else { return }
         activeSlab = ActiveSlab(evidence: evidence)
+        certlessLabelMisses = 0
         updateUI { $0.showSlab(evidence) }
 
         if let encounterID = latchEncounterID,
@@ -2198,6 +2207,8 @@ final class CardScanner: NSObject, ObservableObject {
               ) else { return }
         activeSlab = ActiveSlab(evidence: evidence)
         slabEvidenceWindow.reset()
+        certifiedCopyWindow.reset()
+        certifiedCopyCandidate = nil
         updateUI { $0.showSlab(evidence) }
     }
 
@@ -2239,6 +2250,9 @@ final class CardScanner: NSObject, ObservableObject {
         slabAwaitingEmptyFrames = 0
         slabLabelPromptID = nil
         slabEvidenceWindow.reset()
+        certifiedCopyWindow.reset()
+        certifiedCopyCandidate = nil
+        certlessLabelMisses = 0
         switch cause {
         case .footerAbsence:
             recordDiagnostic("slabClearAbsence")
@@ -2369,6 +2383,11 @@ final class CardScanner: NSObject, ObservableObject {
             updateSlabLabelPromptIfDue(at: now)
         } catch {
             _ = slabEvidenceWindow.observe(nil)
+            certifiedCopyWindow.reset()
+            certifiedCopyCandidate = nil
+            if let activeSlab, activeSlab.evidence.certificationNumber == nil {
+                certlessLabelMisses += 1
+            }
             updateSlabLabelPromptIfDue(at: now)
         }
     }
@@ -2385,7 +2404,9 @@ final class CardScanner: NSObject, ObservableObject {
             hasEvidence: activeSlab != nil,
             certKnown: activeSlab?.evidence.certificationNumber != nil,
             lastLabelAt: cadence.lastLabelAt,
-            now: now
+            now: now,
+            needsFastFollowUp: certifiedCopyCandidate != nil,
+            certlessBackoff: certlessLabelMisses >= 3
         )
     }
 
@@ -2403,36 +2424,55 @@ final class CardScanner: NSObject, ObservableObject {
         guard (activeSlabBaseIdentifier ?? slabAwaitingFooterKey) == baseIdentifier else {
             return nil
         }
-        if let activeEvidence = activeSlab?.evidence, let evidence {
-            let isRefinement = SlabEvidenceConfirmationWindow.isCertificateRefinement(
-                from: activeEvidence,
-                to: evidence
-            )
-            let isDistinctCopy = SlabEvidenceConfirmationWindow.isDistinctCertifiedCopy(
-                from: activeEvidence,
-                to: evidence
-            )
-            guard isRefinement || isDistinctCopy else {
+        if let activeEvidence = activeSlab?.evidence {
+            guard let evidence else {
                 slabEvidenceWindow.reset()
+                certifiedCopyWindow.reset()
+                certifiedCopyCandidate = nil
+                if activeEvidence.certificationNumber == nil { certlessLabelMisses += 1 }
                 return nil
             }
-        }
-        guard let confirmed = slabEvidenceWindow.observe(evidence) else { return nil }
-        if let activeEvidence = activeSlab?.evidence {
+
+            if SlabEvidenceConfirmationWindow.isDistinctCertifiedCopy(
+                from: activeEvidence,
+                to: evidence
+            ) {
+                if certifiedCopyCandidate != evidence.certificationNumber {
+                    certifiedCopyWindow.reset()
+                    certifiedCopyCandidate = evidence.certificationNumber
+                }
+                guard let confirmed = certifiedCopyWindow.observe(evidence) else { return nil }
+                replaceActiveSlabWithCertifiedCopy(confirmed)
+                return confirmed
+            }
+            certifiedCopyWindow.reset()
+            certifiedCopyCandidate = nil
+
+            // Once admitted, two visually identical certless slabs cannot be
+            // distinguished by a later label read. Preserve the saved row and
+            // require a deliberate new-copy action instead of assigning the
+            // other copy's certificate to it.
+            guard latch.latched == nil,
+                  SlabEvidenceConfirmationWindow.isCertificateRefinement(
+                      from: activeEvidence,
+                      to: evidence
+                  ) else {
+                slabEvidenceWindow.reset()
+                if activeEvidence.certificationNumber == nil { certlessLabelMisses += 1 }
+                return nil
+            }
+            guard let confirmed = slabEvidenceWindow.observe(evidence) else { return nil }
             if SlabEvidenceConfirmationWindow.isCertificateRefinement(
                 from: activeEvidence,
                 to: confirmed
             ) {
                 refineActiveSlabCertificate(confirmed)
-            } else if SlabEvidenceConfirmationWindow.isDistinctCertifiedCopy(
-                from: activeEvidence,
-                to: confirmed
-            ) {
-                replaceActiveSlabWithCertifiedCopy(confirmed)
             }
-        } else {
-            activateSlab(confirmed, baseIdentifier: baseIdentifier)
+            return confirmed
         }
+
+        guard let confirmed = slabEvidenceWindow.observe(evidence) else { return nil }
+        activateSlab(confirmed, baseIdentifier: baseIdentifier)
         return confirmed
     }
 
@@ -2507,11 +2547,10 @@ final class CardScanner: NSObject, ObservableObject {
     private func detectPostCommitLabelIfDue(
         handler: VNImageRequestHandler,
         sourceSize: CGSize,
-        footerOutcome: RecognitionOutcome,
+        footerIdentifier: ScanIdentifier?,
         at now: CFAbsoluteTime
     ) {
-        guard case let .identified(footerSubject) = footerOutcome,
-              shouldReadPostCommitLabel(at: now, footerIdentifier: footerSubject.identifier) else {
+        guard shouldReadPostCommitLabel(at: now, footerIdentifier: footerIdentifier) else {
             return
         }
         labelRequest.regionOfInterest = SlabFramingRegion.bootstrapLabelVisionRect
@@ -2543,11 +2582,11 @@ final class CardScanner: NSObject, ObservableObject {
 #endif
             acceptPostCommitLabelEvidence(
                 GradedLabelParser.parse(lines),
-                footerIdentifier: footerSubject.identifier,
+                footerIdentifier: footerIdentifier,
                 at: now
             )
         } catch {
-            acceptPostCommitLabelEvidence(nil, footerIdentifier: footerSubject.identifier, at: now)
+            acceptPostCommitLabelEvidence(nil, footerIdentifier: footerIdentifier, at: now)
         }
     }
 
@@ -3242,7 +3281,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             detectPostCommitLabelIfDue(
                 handler: handler,
                 sourceSize: sourceSize,
-                footerOutcome: outcome,
+                footerIdentifier: footerIdentifier,
                 at: now
             )
         } catch {

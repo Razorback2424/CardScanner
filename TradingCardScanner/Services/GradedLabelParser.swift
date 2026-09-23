@@ -42,6 +42,18 @@ struct GradedSlabEvidence: Equatable, Hashable, Sendable {
             "cert=\(certificationNumber ?? "?")"
         ].joined(separator: "|")
     }
+
+    /// An unread value or certificate cannot establish a different physical
+    /// slab. Known conflicting values remain distinct, especially two known
+    /// certificates for otherwise identical copies.
+    func matchesKnownIdentity(of other: GradedSlabEvidence) -> Bool {
+        company == other.company
+            && grade.label == other.grade.label
+            && grade.qualifier == other.grade.qualifier
+            && (grade.value == nil || other.grade.value == nil || grade.value == other.grade.value)
+            && (certificationNumber == nil || other.certificationNumber == nil
+                || certificationNumber == other.certificationNumber)
+    }
 }
 
 /// Whether a printed number normally appears before or after the grade word.
@@ -384,6 +396,10 @@ enum GradedLabelParser {
 
         guard selectedWord != nil || selectedNumber != nil else { return nil }
         guard !spec.requiresGradeWord || selectedWord != nil else { return nil }
+        // "Authentic" is a complete nonnumeric grade. Other supported grade
+        // words need their printed number before they can identify or price a
+        // slab; glare over that number must not save an incomplete grade.
+        guard selectedNumber != nil || selectedWord?.word.label == "Authentic" else { return nil }
 
         let qualifiers = locatedTokens(in: parsedLines)
             .filter { located in

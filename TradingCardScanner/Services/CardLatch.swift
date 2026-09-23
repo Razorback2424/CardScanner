@@ -85,7 +85,8 @@ struct CardLatch: Equatable {
     /// One printing that has already been counted, and what is known about
     /// whether it is still in front of the camera.
     private struct ConsumedPrinting: Equatable {
-        var key: ScanSuppressionKey
+        var subject: ScanSubject
+        var key: ScanSuppressionKey { subject.suppressionKey }
         /// When this printing was last actually read. The absence is measured
         /// from here rather than from the first unreadable frame, because that is
         /// the moment the card was last known to be present — starting the clock
@@ -183,15 +184,16 @@ struct CardLatch: Equatable {
         cardPresent: Bool,
         at now: CFAbsoluteTime
     ) {
-        let observedKey = observation?.suppressionKey
-
         var index = consumed.startIndex
         while index < consumed.endIndex {
-            if let observedKey, consumed[index].key == observedKey {
+            if let observation,
+               consumed[index].key == observation.suppressionKey
+                || consumed[index].subject.matchesKnownSlabIdentity(of: observation) {
                 // This must precede the matching-read `continue`: a card held
                 // still beneath a resumed Price Check sheet otherwise refreshes
                 // `lastSeenAt` forever and never gets another confirmation.
-                if let recheckEligibleAt = consumed[index].recheckEligibleAt,
+                if consumed[index].key == observation.suppressionKey,
+                   let recheckEligibleAt = consumed[index].recheckEligibleAt,
                    now >= recheckEligibleAt {
                     let releasedKey = consumed[index].key
                     consumed.remove(at: index)
@@ -229,9 +231,10 @@ struct CardLatch: Equatable {
     /// Time does not appear here: `observe` is what decides that a consumed
     /// printing has genuinely been away, so this stays a simple fact lookup.
     func admits(_ confirmed: ScanSubject) -> Bool {
-        let key = confirmed.suppressionKey
-        guard let printing = consumed.first(where: { $0.key == key }) else { return true }
-        return printing.hasLeft
+        !consumed.contains {
+            !$0.hasLeft && ($0.key == confirmed.suppressionKey
+                || $0.subject.matchesKnownSlabIdentity(of: confirmed))
+        }
     }
 
     mutating func engage(on identifier: ScanSubject, at now: CFAbsoluteTime) {
@@ -296,7 +299,7 @@ struct CardLatch: Equatable {
     private mutating func remember(_ identifier: ScanSubject, at now: CFAbsoluteTime) {
         let key = identifier.suppressionKey
         consumed.removeAll { $0.key == key }
-        consumed.insert(ConsumedPrinting(key: key, lastSeenAt: now), at: 0)
+        consumed.insert(ConsumedPrinting(subject: identifier, lastSeenAt: now), at: 0)
         if consumed.count > Self.recentlyConsumedLimit {
             consumed.removeLast(consumed.count - Self.recentlyConsumedLimit)
         }
@@ -363,7 +366,7 @@ struct CardLatch: Equatable {
               let index = consumed.firstIndex(where: { $0.key == current.suppressionKey }) else {
             return false
         }
-        consumed[index].key = updated.suppressionKey
+        consumed[index].subject = updated
         latched = updated
         return true
     }

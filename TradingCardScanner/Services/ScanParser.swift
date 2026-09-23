@@ -157,6 +157,12 @@ struct ScanSubject: Equatable, Hashable, Sendable {
         )
     }
 
+    func matchesKnownSlabIdentity(of other: ScanSubject) -> Bool {
+        guard identifier.suppressionKey == other.identifier.suppressionKey,
+              let slab, let otherSlab = other.slab else { return false }
+        return slab.matchesKnownIdentity(of: otherSlab)
+    }
+
     var game: CardGame { identifier.game }
 
     var displayIdentifier: String {
