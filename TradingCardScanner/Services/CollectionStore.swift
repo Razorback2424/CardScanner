@@ -54,6 +54,191 @@ enum CollectionQuantityLimits {
     }
 }
 
+/// Keeps device-local artwork attached to a collection identity when that
+/// identity is normalized or a physical copy is corrected to another key.
+enum LocalArtworkOverrideRekeyer {
+    private final class CleanupQueue: @unchecked Sendable {
+        private let lock = NSLock()
+        private var filenamesByContainer: [ObjectIdentifier: Set<String>] = [:]
+
+        func add(_ filename: String, container: ModelContainer) {
+            guard !filename.isEmpty else { return }
+            lock.lock()
+            filenamesByContainer[ObjectIdentifier(container), default: []].insert(filename)
+            lock.unlock()
+        }
+
+        func take(container: ModelContainer) -> Set<String> {
+            lock.lock()
+            defer { lock.unlock() }
+            return filenamesByContainer.removeValue(forKey: ObjectIdentifier(container)) ?? []
+        }
+
+        func restore(_ filenames: Set<String>, container: ModelContainer) {
+            guard !filenames.isEmpty else { return }
+            lock.lock()
+            filenamesByContainer[ObjectIdentifier(container), default: []].formUnion(filenames)
+            lock.unlock()
+        }
+
+        func discard(container: ModelContainer) {
+            lock.lock()
+            filenamesByContainer[ObjectIdentifier(container)] = nil
+            lock.unlock()
+        }
+    }
+
+    private static let cleanupQueue = CleanupQueue()
+
+    enum DestinationPolicy {
+        /// Combine overrides for two rows that represent the same identity.
+        case newestWins
+        /// Keep the destination's own artwork when moving a different identity
+        /// onto it, using source artwork only when the destination has none.
+        case preserveExisting
+    }
+
+    struct PreparedMove {
+        fileprivate let destinationKey: String
+        fileprivate let sourceRows: [LocalArtworkOverride]
+        fileprivate let destinationRows: [LocalArtworkOverride]
+        fileprivate let preferred: LocalArtworkOverride
+        fileprivate let preservingSource: Bool
+        fileprivate let destinationPolicy: DestinationPolicy
+    }
+
+    static func rekey(
+        from sourceKey: String,
+        to destinationKey: String,
+        preservingSource: Bool = false,
+        destinationPolicy: DestinationPolicy = .newestWins,
+        in context: ModelContext
+    ) throws {
+        apply(
+            try prepareMove(
+                from: sourceKey,
+                to: destinationKey,
+                preservingSource: preservingSource,
+                destinationPolicy: destinationPolicy,
+                in: context
+            ),
+            in: context
+        )
+    }
+
+    /// Fetches and resolves both sides before a caller begins a larger write.
+    /// Applying the returned plan performs only in-memory model edits.
+    static func prepareMove(
+        from sourceKey: String,
+        to destinationKey: String,
+        preservingSource: Bool = false,
+        destinationPolicy: DestinationPolicy = .newestWins,
+        in context: ModelContext
+    ) throws -> PreparedMove? {
+        guard sourceKey != destinationKey else { return nil }
+        let sourceRows = try context.fetch(
+            FetchDescriptor<LocalArtworkOverride>(
+                predicate: #Predicate { $0.collectionKey == sourceKey }
+            )
+        )
+        guard !sourceRows.isEmpty else { return nil }
+        let destinationRows = try context.fetch(
+            FetchDescriptor<LocalArtworkOverride>(
+                predicate: #Predicate { $0.collectionKey == destinationKey }
+            )
+        )
+        let sourcePreferred = sourceRows.max(by: isOlder)
+        let destinationPreferred = destinationRows.max(by: isOlder)
+        let preferred: LocalArtworkOverride?
+        switch destinationPolicy {
+        case .newestWins:
+            preferred = (sourceRows + destinationRows).max(by: isOlder)
+        case .preserveExisting:
+            preferred = destinationPreferred ?? sourcePreferred
+        }
+        guard let preferred else { return nil }
+
+        return PreparedMove(
+            destinationKey: destinationKey,
+            sourceRows: sourceRows,
+            destinationRows: destinationRows,
+            preferred: preferred,
+            preservingSource: preservingSource,
+            destinationPolicy: destinationPolicy
+        )
+    }
+
+    static func apply(_ move: PreparedMove?, in context: ModelContext) {
+        guard let move else { return }
+
+        let destinationPreferred = move.destinationRows.max(by: isOlder)
+        if move.preservingSource {
+            if let destination = destinationPreferred {
+                if case .newestWins = move.destinationPolicy {
+                    if destination.filename != move.preferred.filename {
+                        cleanupQueue.add(destination.filename, container: context.container)
+                    }
+                    destination.filename = move.preferred.filename
+                    destination.updatedAt = move.preferred.updatedAt
+                }
+                for duplicate in move.destinationRows where duplicate !== destination {
+                    delete(duplicate, in: context)
+                }
+            } else {
+                context.insert(
+                    LocalArtworkOverride(
+                        collectionKey: move.destinationKey,
+                        filename: move.preferred.filename,
+                        updatedAt: move.preferred.updatedAt
+                    )
+                )
+            }
+            return
+        }
+
+        if case .preserveExisting = move.destinationPolicy,
+           let destination = destinationPreferred {
+            for row in move.sourceRows where row !== destination {
+                delete(row, in: context)
+            }
+            for duplicate in move.destinationRows where duplicate !== destination {
+                delete(duplicate, in: context)
+            }
+            return
+        }
+
+        move.preferred.collectionKey = move.destinationKey
+        for duplicate in move.sourceRows + move.destinationRows where duplicate !== move.preferred {
+            delete(duplicate, in: context)
+        }
+    }
+
+    /// Files are removed only after the model save that deleted their mappings.
+    /// If a failed reference lookup prevents cleanup, retain the candidates for
+    /// the next successful save on this container.
+    static func removePendingFilesAfterSave(in context: ModelContext) {
+        let candidates = cleanupQueue.take(container: context.container)
+        let failedChecks = Set(candidates.filter {
+            !CollectionArtworkStore.removeIfUnreferenced($0, in: context)
+        })
+        cleanupQueue.restore(failedChecks, container: context.container)
+    }
+
+    static func discardPendingFilesAfterRollback(in context: ModelContext) {
+        cleanupQueue.discard(container: context.container)
+    }
+
+    private static func delete(_ override: LocalArtworkOverride, in context: ModelContext) {
+        cleanupQueue.add(override.filename, container: context.container)
+        context.delete(override)
+    }
+
+    private static func isOlder(_ lhs: LocalArtworkOverride, _ rhs: LocalArtworkOverride) -> Bool {
+        if lhs.updatedAt != rhs.updatedAt { return lhs.updatedAt < rhs.updatedAt }
+        return lhs.filename < rhs.filename
+    }
+}
+
 enum CollectionVariantCorrectionMode: Equatable, Sendable {
     case visibleCorrection
     case quietBackfill
@@ -930,6 +1115,13 @@ struct CollectionStore {
                 representative.magicContentKindRaw = row.magicContentKindRaw
             }
         }
+        for sourceKey in sourceKeys {
+            try LocalArtworkOverrideRekeyer.rekey(
+                from: sourceKey,
+                to: canonicalKey,
+                in: context
+            )
+        }
         representative.collectionKey = canonicalKey
         representative.quantity = try rows.reduce(into: 0) { total, row in
             total = try CollectionQuantityLimits.checkedAdd(total, row.quantity)
@@ -1389,6 +1581,11 @@ struct CollectionStore {
             )
         }
 
+        try LocalArtworkOverrideRekeyer.rekey(
+            from: oldKey,
+            to: canonicalKey,
+            in: context
+        )
         row.collectionKey = canonicalKey
         if let inferredRawFinish {
             row.variantID = inferredRawFinish.id
@@ -1673,6 +1870,11 @@ struct CollectionStore {
     /// event in the same persistence transaction.
     func setQuantity(_ newQuantity: Int, for card: CollectedCard) throws {
         guard newQuantity >= 1 else { return }
+        guard newQuantity <= CollectionQuantityLimits.maximum else {
+            throw CollectionStoreError.quantityOutOfRange(
+                "quantity exceeds \(CollectionQuantityLimits.maximum)"
+            )
+        }
 
         do {
             guard let target = try self.card(
@@ -2300,6 +2502,13 @@ struct CollectionStore {
                     expectedQuantity: 1
                 )
                 let inverseOperationIDs = try reverseLineage(lineage)
+                try LocalArtworkOverrideRekeyer.rekey(
+                    from: previousKey,
+                    to: destinationKey,
+                    preservingSource: previous.quantity > 1,
+                    destinationPolicy: .preserveExisting,
+                    in: context
+                )
                 activityToRetarget.resolvedQuantity += 1
                 _ = try appendActivity(
                     previous,
@@ -2323,6 +2532,13 @@ struct CollectionStore {
             }
 
             let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
+            try LocalArtworkOverrideRekeyer.rekey(
+                from: previousKey,
+                to: destinationKey,
+                preservingSource: previous.quantity > 1,
+                destinationPolicy: .preserveExisting,
+                in: context
+            )
             if previous.quantity == 1 {
                 context.delete(previous)
             } else {
@@ -3297,9 +3513,11 @@ struct CollectionStore {
     private func commit() throws {
         do {
             try context.save()
+            LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
             session.invalidate()
         } catch {
             context.rollback()
+            LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: context)
             throw error
         }
     }
@@ -3426,6 +3644,7 @@ struct CollectionStore {
         // Read the outgoing side's price key before the row is decremented or
         // deleted — afterwards there is nothing left to ask.
         let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
+        let preservesSourceArtwork = previous.quantity > quantity
         if previous.quantity == quantity {
             context.delete(previous)
         } else {
@@ -3441,6 +3660,13 @@ struct CollectionStore {
             quantity: quantity,
             writesInventoryEvent: false,
             savesChanges: false
+        )
+        try LocalArtworkOverrideRekeyer.rekey(
+            from: previousKey,
+            to: mutation.collectionKey,
+            preservingSource: preservesSourceArtwork,
+            destinationPolicy: .preserveExisting,
+            in: context
         )
 
         // Two legs, one operation: −1 of the wrong identity and +1 of the right
@@ -3611,6 +3837,13 @@ struct CollectionStore {
             guard destinationKey != previous.collectionKey else {
                 throw CollectionStoreError.invalidActivity(activityID)
             }
+            try LocalArtworkOverrideRekeyer.rekey(
+                from: previousKey,
+                to: destinationKey,
+                preservingSource: previous.quantity > quantity,
+                destinationPolicy: .preserveExisting,
+                in: context
+            )
             let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
             let previousSnapshot = RemovedCardSnapshot(card: previous, quantity: quantity)
             if previous.quantity == quantity {
@@ -3867,6 +4100,13 @@ struct CollectionStore {
                 throw CollectionStoreError.invalidActivity(claims[0].activityID)
             }
 
+            try LocalArtworkOverrideRekeyer.rekey(
+                from: previousKey,
+                to: destinationKey,
+                preservingSource: previous.quantity > totalQuantity,
+                destinationPolicy: .preserveExisting,
+                in: context
+            )
             let previousPriceStorageKey = ledger.priceStorageKey(for: previous)
             let previousSnapshot = RemovedCardSnapshot(card: previous, quantity: totalQuantity)
             if previous.quantity == totalQuantity {

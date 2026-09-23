@@ -1685,7 +1685,7 @@ private struct CollectionCardTile: View {
         case PhysicalVariant.normal.id, PhysicalVariant.nonfoil.id:
             return .secondary
         default:
-            return .blue
+            return .secondary
         }
     }
 

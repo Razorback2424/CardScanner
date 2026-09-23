@@ -1191,6 +1191,87 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
             CGFloat(CollectionArtworkStore.maximumPixelDimension)
         )
     }
+
+    func testPartialArtworkCorrectionKeepsSharedFileUntilLastMappingIsRemoved() throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: Schema([LocalArtworkOverride.self])
+        )
+        let context = container.mainContext
+        let source = UIGraphicsImageRenderer(size: CGSize(width: 80, height: 100)).image { renderer in
+            UIColor.systemBlue.setFill()
+            renderer.fill(CGRect(x: 0, y: 0, width: 80, height: 100))
+        }
+        let filename = try XCTUnwrap(CollectionArtworkStore.save(try XCTUnwrap(source.pngData())))
+        defer { CollectionArtworkStore.remove(filename: filename) }
+        context.insert(LocalArtworkOverride(collectionKey: "pokemon:source", filename: filename))
+        try context.save()
+
+        try LocalArtworkOverrideRekeyer.rekey(
+            from: "pokemon:source",
+            to: "pokemon:corrected",
+            preservingSource: true,
+            destinationPolicy: .preserveExisting,
+            in: context
+        )
+        try context.save()
+
+        XCTAssertEqual(
+            try context.fetch(FetchDescriptor<LocalArtworkOverride>()).map(\.filename),
+            [filename, filename]
+        )
+        CollectionArtworkStore.set(filename: nil, for: "pokemon:corrected", in: context)
+        try context.save()
+        XCTAssertTrue(CollectionArtworkStore.removeIfUnreferenced(filename, in: context))
+        XCTAssertNotNil(CollectionArtworkStore.image(filename: filename))
+
+        CollectionArtworkStore.set(filename: nil, for: "pokemon:source", in: context)
+        try context.save()
+        XCTAssertTrue(CollectionArtworkStore.removeIfUnreferenced(filename, in: context))
+        XCTAssertNil(CollectionArtworkStore.image(filename: filename))
+    }
+
+    func testCorrectionKeepsDestinationArtworkAndDeletesDiscardedFileAfterSave() throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: Schema([LocalArtworkOverride.self])
+        )
+        let context = container.mainContext
+        let sourceImage = UIGraphicsImageRenderer(size: CGSize(width: 80, height: 100)).image { renderer in
+            UIColor.systemOrange.setFill()
+            renderer.fill(CGRect(x: 0, y: 0, width: 80, height: 100))
+        }
+        let destinationImage = UIGraphicsImageRenderer(size: CGSize(width: 80, height: 100)).image { renderer in
+            UIColor.systemGreen.setFill()
+            renderer.fill(CGRect(x: 0, y: 0, width: 80, height: 100))
+        }
+        let sourceFilename = try XCTUnwrap(
+            CollectionArtworkStore.save(try XCTUnwrap(sourceImage.pngData()))
+        )
+        let destinationFilename = try XCTUnwrap(
+            CollectionArtworkStore.save(try XCTUnwrap(destinationImage.pngData()))
+        )
+        defer {
+            CollectionArtworkStore.remove(filename: sourceFilename)
+            CollectionArtworkStore.remove(filename: destinationFilename)
+        }
+        context.insert(LocalArtworkOverride(collectionKey: "pokemon:source", filename: sourceFilename))
+        context.insert(LocalArtworkOverride(collectionKey: "pokemon:destination", filename: destinationFilename))
+        try context.save()
+
+        try LocalArtworkOverrideRekeyer.rekey(
+            from: "pokemon:source",
+            to: "pokemon:destination",
+            destinationPolicy: .preserveExisting,
+            in: context
+        )
+        try context.save()
+        LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
+
+        let remaining = try XCTUnwrap(context.fetch(FetchDescriptor<LocalArtworkOverride>()).first)
+        XCTAssertEqual(remaining.collectionKey, "pokemon:destination")
+        XCTAssertEqual(remaining.filename, destinationFilename)
+        XCTAssertNil(CollectionArtworkStore.image(filename: sourceFilename))
+        XCTAssertNotNil(CollectionArtworkStore.image(filename: destinationFilename))
+    }
 }
 #endif
 

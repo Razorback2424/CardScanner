@@ -447,7 +447,7 @@ struct CollectionActivityLogView: View {
         case .removed: return .red
         case .restored: return .mint
         case .corrected: return .orange
-        case .quantityAdjusted: return .blue
+        case .quantityAdjusted: return Color.accentColor
         case .undone: return .purple
         }
     }

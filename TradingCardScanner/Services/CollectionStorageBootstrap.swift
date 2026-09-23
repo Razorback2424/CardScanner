@@ -1351,7 +1351,7 @@ final class CollectionStorageBootstrap: ObservableObject {
         let targetAttachmentState: CloudAttachmentState
         if existingManifest == nil || existingManifest?.attachmentState == .neverAttached {
             targetAttachmentState = reason == .attachmentSuspended ? .suspended : .neverAttached
-        } else if reason == .temporarilyUnavailable {
+        } else if reason == .temporarilyUnavailable || reason == .restorationUnproven {
             targetAttachmentState = existingManifest?.attachmentState ?? .suspended
         } else {
             targetAttachmentState = .suspended

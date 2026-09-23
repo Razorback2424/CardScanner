@@ -461,7 +461,7 @@ struct CollectionCardDetailView: View {
              PhysicalVariant.nonfoil.id:
             return .secondary
         default:
-            return .blue
+            return .secondary
         }
     }
 
@@ -1008,7 +1008,7 @@ struct CollectionCardDetailView: View {
         card.userArtworkFilename = nil
         do {
             try modelContext.save()
-            CollectionArtworkStore.remove(filename: oldFilename)
+            CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: modelContext)
             if requestID == artworkGeneration {
                 selectedArtwork = nil
             }
@@ -1035,7 +1035,7 @@ struct CollectionCardDetailView: View {
         card.userArtworkFilename = nil
         do {
             try modelContext.save()
-            CollectionArtworkStore.remove(filename: oldFilename)
+            CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: modelContext)
         } catch {
             CollectionArtworkStore.set(
                 filename: oldFilename,
@@ -1092,7 +1092,7 @@ struct CollectionCardDetailView: View {
     }
 
     private func updateQuantity(_ newQuantity: Int) {
-        guard (1...999).contains(newQuantity) else { return }
+        guard (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
         do {
             try CollectionStore(context: modelContext).setQuantity(
                 newQuantity,
@@ -1693,6 +1693,7 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
+            .disabled(quantity >= CollectionQuantityLimits.maximum)
             .accessibilityLabel("Increase quantity")
         }
         .buttonStyle(.borderless)
@@ -1822,7 +1823,7 @@ private struct CollectionCardHistoryView: View {
         case .removed: return .red
         case .restored: return .mint
         case .corrected: return .orange
-        case .quantityAdjusted: return .blue
+        case .quantityAdjusted: return Color.accentColor
         case .undone: return .purple
         }
     }
@@ -2844,5 +2845,27 @@ enum CollectionArtworkStore {
         // after the backing file is deleted.
         imageCache.removeAllObjects()
         try? FileManager.default.removeItem(at: directory.appendingPathComponent(filename))
+    }
+
+    /// A partial quantity correction can legitimately map two collection keys
+    /// to the same local image. Delete the file only after the row being changed
+    /// has been saved and no remaining override points at it.
+    @discardableResult
+    static func removeIfUnreferenced(_ filename: String?, in context: ModelContext) -> Bool {
+        guard let filename, !filename.isEmpty else { return true }
+        do {
+            let references = try context.fetchCount(
+                FetchDescriptor<LocalArtworkOverride>(
+                    predicate: #Predicate { $0.filename == filename }
+                )
+            )
+            guard references == 0 else { return true }
+            remove(filename: filename)
+            return true
+        } catch {
+            // Keeping an orphan is safer than deleting a file while a reference
+            // may still exist. Rekey cleanup retries this after a later save.
+            return false
+        }
     }
 }

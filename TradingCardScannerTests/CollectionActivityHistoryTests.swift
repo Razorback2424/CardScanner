@@ -746,6 +746,21 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
     }
 
+    func testQuantityLimitIsEnforcedByCollectionStore() throws {
+        let context = try makeContext()
+        let row = makeCollectedCard()
+        context.insert(row)
+        try context.save()
+        let store = CollectionStore(context: context)
+
+        try store.setQuantity(CollectionQuantityLimits.maximum, for: row)
+        XCTAssertEqual(row.quantity, CollectionQuantityLimits.maximum)
+        XCTAssertThrowsError(
+            try store.setQuantity(CollectionQuantityLimits.maximum + 1, for: row)
+        )
+        XCTAssertEqual(row.quantity, CollectionQuantityLimits.maximum)
+    }
+
     func testExistingActivityRowsBackfillToAddedWithTheirLegacyQuantity() throws {
         let context = try makeContext()
         let card = makeCollectedCard(quantity: 4)

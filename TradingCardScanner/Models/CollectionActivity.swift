@@ -175,6 +175,40 @@ final class CollectionActivity {
         self.resolvedQuantity = resolvedQuantity
     }
 
+    /// Records a quantity reconciliation for an identity that no longer has a
+    /// collection row. This is used when opening a pre-ledger collection whose
+    /// old activity history still refers to cards that were later deleted.
+    init(
+        reconciling activity: CollectionActivity,
+        deltaQuantity: Int,
+        occurredAt: Date
+    ) {
+        id = UUID()
+        self.occurredAt = occurredAt
+        sourceRaw = CollectionActivitySource.catalogBackfill.rawValue
+        kindRaw = CollectionActivityKind.quantityAdjusted.rawValue
+        collectionKey = activity.collectionKey
+        gameRaw = activity.gameRaw
+        itemKindRaw = activity.itemKindRaw
+        name = activity.name
+        setName = activity.setName
+        setCode = activity.setCode
+        cardNumber = activity.cardNumber
+        variantID = activity.variantID
+        variantLabel = activity.variantLabel
+        magicTreatmentIDsRaw = activity.magicTreatmentIDsRaw
+        magicTreatmentQualifiersJSON = activity.magicTreatmentQualifiersJSON
+        magicContentKindRaw = activity.magicContentKindRaw
+        pokemonPrintRunRaw = activity.pokemonPrintRunRaw
+        quantity = abs(deltaQuantity)
+        self.deltaQuantity = deltaQuantity
+        ledgerOperationIDs = []
+        removalSnapshotData = nil
+        resolvedQuantity = 0
+        correctedAt = nil
+        backfillAnchorCard = nil
+    }
+
     var source: CollectionActivitySource {
         CollectionActivitySource(rawValue: sourceRaw) ?? .catalog
     }

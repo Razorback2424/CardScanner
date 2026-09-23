@@ -204,6 +204,7 @@ enum MagicTreatmentMigration {
 
         func cancelAndRollback() -> Report {
             context.rollback()
+            LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: context)
             return report
         }
 
@@ -545,10 +546,12 @@ enum MagicTreatmentMigration {
             guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
             if context.hasChanges {
                 try context.save()
+                LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
                 collectionStore.invalidateIdentityAliasCache()
             }
         } catch {
             context.rollback()
+            LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: context)
             report.fail("Magic treatment migration could not be saved: \(error)")
         }
         return report
@@ -1202,6 +1205,14 @@ enum MagicTreatmentMigration {
             correctionLegs = (from: false, to: false)
         }
 
+        // Include local artwork in preflight: the apply phase below must not
+        // perform a fetch that could fail after correction events are staged.
+        let artworkMove = try LocalArtworkOverrideRekeyer.prepareMove(
+            from: pair.oldKey,
+            to: pair.newKey,
+            in: context
+        )
+
         if correctionLegs.from {
             let sourcePriceKey = oldPriceKeys.first ?? legacyRows[0].priceKey
             let from = ledger.record(
@@ -1268,6 +1279,7 @@ enum MagicTreatmentMigration {
             canonicalRow.quantity += sourceQuantity
         }
         canonicalRow.magicTreatmentMigrationVersion = currentVersion
+        LocalArtworkOverrideRekeyer.apply(artworkMove, in: context)
         for row in legacyRows {
             context.delete(row)
         }

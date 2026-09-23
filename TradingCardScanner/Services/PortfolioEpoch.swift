@@ -154,6 +154,28 @@ enum PortfolioEpoch {
             // abort rather than being interpreted as an empty collection or
             // an absent event.
             let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+            var activityQuantities: [String: Int] = [:]
+            for activity in activities {
+                let (quantity, overflow) = activityQuantities[activity.collectionKey, default: 0]
+                    .addingReportingOverflow(activity.signedQuantity)
+                guard !overflow else {
+                    throw EstablishmentError.baselineWriteFailed(
+                        "activity quantity overflow for \(activity.collectionKey)"
+                    )
+                }
+                activityQuantities[activity.collectionKey] = quantity
+            }
+            var activityRepresentatives: [String: CollectionActivity] = [:]
+            var activitiesByKey: [String: [CollectionActivity]] = [:]
+            for activity in activities {
+                activitiesByKey[activity.collectionKey, default: []].append(activity)
+                if let existing = activityRepresentatives[activity.collectionKey],
+                   existing.occurredAt >= activity.occurredAt {
+                    continue
+                }
+                activityRepresentatives[activity.collectionKey] = activity
+            }
             // Resolve every candidate price key from one in-memory evidence
             // index. The ledger overload performs two SwiftData fetches per
             // candidate key, which is acceptable for one event but turns epoch
@@ -168,7 +190,20 @@ enum PortfolioEpoch {
             let projection = LogicalCollection.project(cards: cards) {
                 valuations.priceStorageKey(for: $0)
             }
+            let positionKeys = Set(
+                projection.positions
+                    .filter { $0.quantity != 0 }
+                    .map(\.collectionKey)
+            )
             for position in projection.positions where position.quantity != 0 {
+                let (activityDelta, activityDeltaOverflow) = position.quantity
+                    .subtractingReportingOverflow(activityQuantities[position.collectionKey, default: 0])
+                guard !activityDeltaOverflow else {
+                    throw EstablishmentError.baselineWriteFailed(
+                        "activity quantity overflow for \(position.collectionKey)"
+                    )
+                }
+                let operationID = baselineOperationID(collectionKey: position.collectionKey)
                 let outcome = ledger.record(
                     collectionKey: position.collectionKey,
                     priceStorageKey: position.priceStorageKey,
@@ -176,29 +211,35 @@ enum PortfolioEpoch {
                     kind: .initialBalance,
                     source: .catalog,
                     deltaQuantity: position.quantity,
-                    operationID: baselineOperationID(collectionKey: position.collectionKey),
+                    operationID: operationID,
                     occurredAt: date,
                     acquiredAt: position.representative.dateAdded
                 )
                 switch outcome {
                 case .appended:
-                    // The baseline is an ownership mutation even though it is
-                    // not an acquisition claim. Keep the durable activity
-                    // projection in the same transaction as its ledger leg so
-                    // restart/replay integrity cannot observe F04's half-write.
-                    context.insert(
-                        CollectionActivity(
-                            card: position.representative,
-                            source: .catalog,
-                            quantity: position.quantity,
-                            occurredAt: date,
-                            kind: .quantityAdjusted,
-                            deltaQuantity: position.quantity,
-                            ledgerOperationIDs: [
-                                baselineOperationID(collectionKey: position.collectionKey)
-                            ]
+                    // Startup backfill may already have written an `.added`
+                    // activity for this pre-ledger holding. Add only the
+                    // difference needed to make the activity projection agree
+                    // with the baseline; otherwise these writers count the
+                    // same collection twice.
+                    if activityDelta != 0 {
+                        guard activityDelta != Int.min else {
+                            throw EstablishmentError.baselineWriteFailed(
+                                "activity quantity magnitude overflow for \(position.collectionKey)"
+                            )
+                        }
+                        context.insert(
+                            CollectionActivity(
+                                card: position.representative,
+                                source: .catalog,
+                                quantity: abs(activityDelta),
+                                occurredAt: date,
+                                kind: .quantityAdjusted,
+                                deltaQuantity: activityDelta,
+                                ledgerOperationIDs: [operationID]
+                            )
                         )
-                    )
+                    }
                 case .duplicate:
                     throw EstablishmentError.baselineWriteFailed(
                         "baseline event already exists for \(position.collectionKey)"
@@ -206,6 +247,39 @@ enum PortfolioEpoch {
                 case let .conflict(defect), let .unreadableStore(defect):
                     throw EstablishmentError.baselineWriteFailed(defect.detail)
                 }
+            }
+
+            // Before the ledger existed, removing a card deleted its row but
+            // left its `.added` activity behind. Reconcile those activity-only
+            // identities to zero so they cannot keep the portfolio permanently
+            // non-authoritative. There is no inventory event to link because
+            // the card no longer exists.
+            for collectionKey in activityQuantities.keys.sorted()
+                where !positionKeys.contains(collectionKey) {
+                for activity in activitiesByKey[collectionKey, default: []]
+                    where activity.kind.hasQuantityClaim {
+                    activity.resolvedQuantity = activity.claimedQuantity
+                }
+                let activityQuantity = activityQuantities[collectionKey, default: 0]
+                guard activityQuantity != 0 else { continue }
+                let (deltaQuantity, overflow) = 0.subtractingReportingOverflow(activityQuantity)
+                guard !overflow else {
+                    throw EstablishmentError.baselineWriteFailed(
+                        "activity quantity overflow for \(collectionKey)"
+                    )
+                }
+                guard let representative = activityRepresentatives[collectionKey] else {
+                    throw EstablishmentError.baselineWriteFailed(
+                        "activity is missing for \(collectionKey)"
+                    )
+                }
+                context.insert(
+                    CollectionActivity(
+                        reconciling: representative,
+                        deltaQuantity: deltaQuantity,
+                        occurredAt: date
+                    )
+                )
             }
             try save(context)
             defaults.removeObject(forKey: deferralKey)

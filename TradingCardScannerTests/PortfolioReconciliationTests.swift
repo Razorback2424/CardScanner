@@ -3749,6 +3749,72 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertNotNil(PortfolioEpoch.startedAt(defaults: defaults))
     }
 
+    func testBackfillThenEpochDoesNotDoubleCountLegacyCollection() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        context.insert(card(key: "upgraded", quantity: 4, dateAdded: now))
+        try context.save()
+
+        try CollectionStore(context: context).backfillExistingCollectionIfNeeded(
+            defaults: defaults
+        )
+        try PortfolioEpoch.establishIfNeeded(
+            context: context,
+            defaults: defaults,
+            at: now,
+            isCloudSyncing: false
+        )
+
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertEqual(activities.reduce(0) { $0 + $1.signedQuantity }, 4)
+        XCTAssertEqual(activities.map(\.kind), [.added])
+        XCTAssertEqual(events.map(\.deltaQuantity), [4])
+        XCTAssertTrue(
+            CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty
+        )
+    }
+
+    func testEpochClosesClaimsForActivityOnlyLegacyPositions() throws {
+        let context = try makeContext()
+        let defaults = epochDefaults(#function)
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        let deletedCard = card(key: "deleted-legacy", quantity: 2, dateAdded: now)
+        context.insert(
+            CollectionActivity(
+                card: deletedCard,
+                source: .scan,
+                quantity: 2,
+                occurredAt: now,
+                kind: .added,
+                deltaQuantity: 2
+            )
+        )
+        try context.save()
+
+        try PortfolioEpoch.establishIfNeeded(
+            context: context,
+            defaults: defaults,
+            at: now,
+            isCloudSyncing: false
+        )
+
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        let claim = try XCTUnwrap(activities.first { $0.kind == .added })
+        let adjustment = try XCTUnwrap(activities.first { $0.kind == .quantityAdjusted })
+        XCTAssertEqual(claim.resolvedQuantity, claim.claimedQuantity)
+        XCTAssertEqual(adjustment.source, .catalogBackfill)
+        XCTAssertEqual(activities.reduce(0) { $0 + $1.signedQuantity }, 0)
+        XCTAssertTrue(InventoryLedger(context: context).allEvents().isEmpty)
+        XCTAssertTrue(
+            CollectionActivity.integrityDefects(
+                activities: activities,
+                events: InventoryLedger(context: context).allEvents()
+            ).isEmpty
+        )
+    }
+
     /// The race this exists to close: `CollectedCard` rows have arrived from
     /// another device but their `InventoryEvent`s have not. Baselining here
     /// would write an `initialBalance` beside an `acquire` that is still in
