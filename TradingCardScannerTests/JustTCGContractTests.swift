@@ -1151,6 +1151,9 @@ final class JustTCGContractTests: XCTestCase {
         )
         XCTAssertEqual(normalized.first { $0.0 == "grading_company" }?.1, "PSA")
         XCTAssertEqual(normalized.first { $0.0 == "grade" }?.1, "10")
+        XCTAssertEqual(normalized.first { $0.0 == "graded" }?.1, "only")
+        XCTAssertEqual(normalized.first { $0.0 == "regions" }?.1, "NA")
+        XCTAssertNil(normalized.first { $0.0 == "include_price_history" })
 
         let malformedGrade = JustTCGV2GradedClient.requestQuery(
             identity: identity,
@@ -1290,31 +1293,43 @@ final class JustTCGContractTests: XCTestCase {
         )
     }
 
-    /// Pinned from the live v2 response for Base Set Charizard, which is the
-    /// shape a graded refresh has to read: variant id under `id`, price nested
-    /// in `markets`, grade under `grading.canonical`.
+    /// Mirrors the published `/v2/cards` response shape: card `id` is the UUID,
+    /// game and set are objects, and the variant price is nested in `markets`.
     func testGradedCardResponseYieldsPricedVariants() throws {
         let json = """
-        { "data": [ { "id": "004d6ac4-92db-51b7-9cd6-8c2d46479bdc", "name": "Charizard",
-            "number": "004/102", "set_name": "Base Set", "variants": [
-              { "id": "b9174ffe-9b95-5aea-b916-2b3bcd6d5731", "type": "graded",
-                "printing": "Holofoil",
-                "grading": { "company": "PSA", "grade": 8, "canonical": "PSA 8" },
-                "markets": [ { "region": "US", "currency": "USD", "price": 1479.99,
-                               "updated_at": 1784585831 } ] } ] } ] }
+        { "data": [ { "id": "9b2e4d1a-1111-5v5v-aaaa-000000000000",
+            "slug": "pokemon-base-set-charizard-holo-rare", "name": "Charizard",
+            "game": { "id": "pokemon", "name": "Pokemon" },
+            "set": { "id": "base-set-pokemon", "name": "Base Set" },
+            "number": "4", "rarity": "Rare Holo", "variants": [
+              { "id": "d41f-psa10-uuid", "slug": "d41f-psa10-uuid",
+                "type": "graded", "condition": null, "printing": "Holofoil",
+                "language": null,
+                "grading": { "company": "PSA", "grade": 10, "grade_label": null,
+                  "qualifier": null, "canonical": "PSA 10" },
+                "markets": [ { "region": "NA", "currency": "USD", "price": 4570.00,
+                  "updated_at": 1765630000 } ] } ] } ] }
         """
-        let response = try JSONDecoder().decode(JustTCGBatchResponse.self, from: Data(json.utf8))
+        let response = try JSONDecoder().decode(JustTCGV2CardsResponse.self, from: Data(json.utf8))
         let card = try XCTUnwrap(response.data.first)
         let variant = try XCTUnwrap(card.variants?.first)
         let asked = GradedCardIdentity(
             name: "Charizard", setName: "Base Set", collectorNumber: "4/102"
         )
 
-        XCTAssertTrue(asked.matches(card, game: .pokemon))
-        XCTAssertEqual(variant.variantId, "b9174ffe-9b95-5aea-b916-2b3bcd6d5731")
-        XCTAssertEqual(variant.marketPriceUSD, 1479.99)
+        XCTAssertTrue(asked.matches(card, game: .pokemon, expectedSetSlug: "base-set-pokemon"))
+        XCTAssertTrue(asked.matches(
+            card,
+            variant: variant,
+            game: .pokemon,
+            expectedSetSlug: "base-set-pokemon"
+        ))
+        XCTAssertEqual(card.id, "9b2e4d1a-1111-5v5v-aaaa-000000000000")
+        XCTAssertEqual(card.slug, "pokemon-base-set-charizard-holo-rare")
+        XCTAssertEqual(variant.variantId, "d41f-psa10-uuid")
+        XCTAssertEqual(variant.marketPriceUSD, 4570.00)
         XCTAssertEqual(variant.grading?.gradingCompany, .psa)
-        XCTAssertEqual(variant.grading?.gradeText, "8")
+        XCTAssertEqual(variant.grading?.gradeText, "10")
     }
 
     // MARK: - Shared transport pacing

@@ -130,7 +130,17 @@ struct JustTCGBatchResponse: Decodable, Sendable {
     }
 }
 
-struct JustTCGCard: Decodable, Sendable {
+/// The small common surface needed to verify a card returned by either API
+/// version before accepting one of its variants.
+protocol JustTCGCardIdentityFields: Sendable {
+    var identityName: String? { get }
+    var identityGameID: String? { get }
+    var identitySetID: String? { get }
+    var identitySetName: String? { get }
+    var identityPrintedNumber: String? { get }
+}
+
+struct JustTCGCard: Decodable, Sendable, JustTCGCardIdentityFields {
     /// Human-readable slug, e.g. `pokemon-arceus-charizard-holo-rare`.
     let id: String?
     /// The stable UUID. This is what the vendor recommends as a primary key and
@@ -157,6 +167,12 @@ struct JustTCGCard: Decodable, Sendable {
         guard let number, number.caseInsensitiveCompare("N/A") != .orderedSame else { return nil }
         return number
     }
+
+    var identityName: String? { name }
+    var identityGameID: String? { game }
+    var identitySetID: String? { self.set }
+    var identitySetName: String? { setName }
+    var identityPrintedNumber: String? { printedNumber }
 
     /// Identifiers this card can be batched by, best-first.
     var lookupCandidates: [JustTCGBatchLookup] {
@@ -221,6 +237,46 @@ struct JustTCGCard: Decodable, Sendable {
         }
         return nil
     }
+}
+
+/// `/v2/cards` has its own card schema: `id` is the UUID and both `game` and
+/// `set` are objects. Keeping it separate from the v1 model prevents one API
+/// version's wire format from breaking the other.
+struct JustTCGV2Card: Decodable, Sendable, JustTCGCardIdentityFields {
+    let id: String?
+    let uuid: String?
+    let slug: String?
+    let name: String?
+    let game: JustTCGV2Game?
+    let set: JustTCGV2Set?
+    let number: String?
+    let rarity: String?
+    let variants: [JustTCGVariant]?
+
+    var printedNumber: String? {
+        guard let number, number.caseInsensitiveCompare("N/A") != .orderedSame else { return nil }
+        return number
+    }
+
+    var identityName: String? { name }
+    var identityGameID: String? { game?.id ?? game?.name }
+    var identitySetID: String? { self.set?.id }
+    var identitySetName: String? { self.set?.name }
+    var identityPrintedNumber: String? { printedNumber }
+}
+
+struct JustTCGV2Game: Decodable, Sendable {
+    let id: String?
+    let name: String?
+}
+
+struct JustTCGV2Set: Decodable, Sendable {
+    let id: String?
+    let name: String?
+}
+
+struct JustTCGV2CardsResponse: Decodable, Sendable {
+    let data: [JustTCGV2Card]
 }
 
 struct JustTCGVariant: Decodable, Sendable {
@@ -556,6 +612,78 @@ struct GradedVariant: Identifiable, Hashable, Sendable {
             if !trimmed.isEmpty { return trimmed }
         }
         return grade.display(company: company)
+    }
+}
+
+/// Why a successful card-level graded lookup did not produce the exact slab
+/// variant the collection owns.
+enum GradedMarketCoverageStatus: String, Codable, Equatable, Sendable {
+    case cardNotTracked
+    case noGradedListings
+    case gradeNotListed
+
+    var diagnosticReasonRawValue: String {
+        switch self {
+        case .cardNotTracked: return "graded_card_not_tracked"
+        case .noGradedListings: return "graded_card_no_prices"
+        case .gradeNotListed: return "graded_grade_not_tracked"
+        }
+    }
+}
+
+/// A compact, safe-to-sync summary of the graded rows returned for one card.
+/// It is context only: callers still bind and price the exact requested grade.
+struct GradedMarketCoverage: Codable, Equatable, Sendable {
+    struct ListedGrade: Codable, Equatable, Sendable {
+        let company: GradingCompany
+        let grade: CardGrade
+        let canonical: String?
+        let marketPriceUSD: Double?
+
+        var displayName: String {
+            if let canonical, !canonical.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return canonical
+            }
+            return grade.display(company: company)
+        }
+    }
+
+    static let maximumListedGrades = 8
+
+    let status: GradedMarketCoverageStatus
+    let listedGrades: [ListedGrade]
+
+    init(
+        status: GradedMarketCoverageStatus,
+        variants: [GradedVariant] = [],
+        targetCompany: GradingCompany? = nil,
+        targetGrade: CardGrade? = nil
+    ) {
+        self.status = status
+        let targetValue = targetGrade?.value.flatMap(Double.init)
+        let ordered = variants.map {
+            ListedGrade(
+                company: $0.company,
+                grade: $0.grade,
+                canonical: $0.canonical,
+                marketPriceUSD: $0.marketPriceUSD
+            )
+        }.sorted { lhs, rhs in
+            let lhsDistance = lhs.grade.value.flatMap(Double.init).map { abs($0 - (targetValue ?? $0)) }
+            let rhsDistance = rhs.grade.value.flatMap(Double.init).map { abs($0 - (targetValue ?? $0)) }
+            switch (lhsDistance, rhsDistance) {
+            case let (left?, right?) where left != right:
+                return left < right
+            case (_?, nil): return true
+            case (nil, _?): return false
+            default:
+                let lhsCompanyMatch = lhs.company == targetCompany
+                let rhsCompanyMatch = rhs.company == targetCompany
+                if lhsCompanyMatch != rhsCompanyMatch { return lhsCompanyMatch }
+                return lhs.displayName.localizedStandardCompare(rhs.displayName) == .orderedAscending
+            }
+        }
+        listedGrades = Array(ordered.prefix(Self.maximumListedGrades))
     }
 }
 

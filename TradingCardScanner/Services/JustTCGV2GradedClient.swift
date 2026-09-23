@@ -111,54 +111,47 @@ struct GradedCardIdentity: Hashable, Sendable {
     }
 
     func matches(
-        _ card: JustTCGCard,
+        _ card: some JustTCGCardIdentityFields,
         game: CardGame,
         expectedSetSlug: String? = nil
     ) -> Bool {
         let projection = exhaustiveProjection
 
         if let expectedSetSlug {
-            guard let candidateGame = card.game,
+            guard let candidateGame = card.identityGameID,
                   candidateGame.caseInsensitiveCompare(vendorGame(for: game).rawValue) == .orderedSame,
-                  let candidateSet = card.set,
+                  let candidateSet = card.identitySetID,
                   candidateSet.caseInsensitiveCompare(expectedSetSlug) == .orderedSame
             else { return false }
-        } else if let candidateGame = card.game,
+        } else if let candidateGame = card.identityGameID,
                   !candidateGame.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
                   candidateGame.caseInsensitiveCompare(vendorGame(for: game).rawValue) != .orderedSame {
             return false
         }
 
-        guard let candidateName = card.name else { return false }
+        guard let candidateName = card.identityName else { return false }
         guard CatalogIdentityNormalization.namesMatch(
             imported: projection.name,
             catalog: candidateName
         ) else { return false }
         guard CatalogIdentityNormalization.canonicalSetName(projection.setName, game: game)
-            == CatalogIdentityNormalization.canonicalSetName(card.setName ?? "", game: game)
+            == CatalogIdentityNormalization.canonicalSetName(card.identitySetName ?? "", game: game)
         else { return false }
 
-        let requestedNumber = Self.normalizedCollectorNumber(projection.collectorNumber)
-        let candidateNumber = card.printedNumber.flatMap(Self.normalizedCollectorNumber)
-        switch (requestedNumber, candidateNumber) {
-        case let (requested?, candidate?):
-            return requested == candidate
-        case (nil, nil):
-            return projection.collectorNumber
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-                .isEmpty
-        default:
-            // One side omitted a discriminator. It is not safe to widen a
-            // numbered graded lookup to an unnumbered product, or vice versa.
-            return false
+        let requestedNumber = projection.collectorNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        let candidateNumber = card.identityPrintedNumber?.trimmingCharacters(in: .whitespacesAndNewlines)
+        if requestedNumber.isEmpty {
+            return candidateNumber?.isEmpty ?? true
         }
+        guard let candidateNumber, !candidateNumber.isEmpty else { return false }
+        return ProductCatalogIdentity.numbersMatch(requestedNumber, candidateNumber)
     }
 
     /// The card and its variant are the external product boundary. Nothing
     /// from a graded response becomes a durable handle or price until both the
     /// card identity and the variant's declared print run have passed here.
     func matches(
-        _ card: JustTCGCard,
+        _ card: some JustTCGCardIdentityFields,
         variant: JustTCGVariant,
         game: CardGame,
         expectedSetSlug: String? = nil
@@ -172,19 +165,6 @@ struct GradedCardIdentity: Hashable, Sendable {
         return ProductEdition.from(pokemonPrintRun).admits(printing: printing)
     }
 
-    private static func normalizedCollectorNumber(_ value: String) -> [String]? {
-        let parts = value
-            .split(separator: "/", omittingEmptySubsequences: false)
-            .map {
-                let component = $0
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-                    .uppercased()
-                guard !component.isEmpty else { return "" }
-                return Int(component).map(String.init) ?? component
-            }
-        guard parts.count <= 2, parts.allSatisfy({ !$0.isEmpty }) else { return nil }
-        return parts
-    }
 }
 
 enum GradedVariantLookupResult: Equatable, Sendable {
@@ -220,7 +200,9 @@ struct JustTCGV2GradedClient: Sendable {
             ("game", identity.vendorGame(for: game).rawValue),
             ("q", identity.name),
             ("graded", "only"),
-            ("include_price_history", "false"),
+            // JustTCG v2 returns the NA market by default. Spell it out so
+            // the quote remains USD if the endpoint's default ever changes.
+            ("regions", "NA"),
             // A missing set is a deliberate browse fallback, not permission to
             // download an unbounded game-wide response. The vendor's free tier
             // accepts at most this page size; identity matching still decides
@@ -308,12 +290,13 @@ struct JustTCGV2GradedClient: Sendable {
         )
     }
 
-    /// Every graded variant of one card, narrowed to what the user actually owns.
+    /// Every graded variant of one card. Callers match the owned grader and
+    /// grade locally so a missing grade remains distinguishable from a missing
+    /// card or a card with no graded history.
     ///
     /// `graded=only` rather than `graded=include`: including raw results costs a
-    /// surcharge and returns data the raw path already has. Filtering to the
-    /// owned graders and grades keeps the response small — a card can have well
-    /// over a hundred grader/grade permutations, almost none of them owned.
+    /// surcharge and returns data the raw path already has. One card-level
+    /// response also reveals which other grades JustTCG currently lists.
     ///
     /// The variants are found by set and name, not by `cardId`. v2 **ignores**
     /// that parameter and answers with a browse:
@@ -365,7 +348,7 @@ struct JustTCGV2GradedClient: Sendable {
             grades: grades
         )
 
-        let response: GradedResponse = try await transport.get(
+        let response: JustTCGV2CardsResponse = try await transport.get(
             "v2/cards",
             query: query,
             lane: lane
@@ -393,7 +376,7 @@ struct JustTCGV2GradedClient: Sendable {
                     id: id,
                     // Kept so a later refresh can find this slab again without
                     // paying to resolve the card a second time.
-                    cardID: card.uuid ?? card.id,
+                    cardID: card.uuid ?? card.id ?? card.slug,
                     company: company,
                     grade: grading.cardGrade,
                     canonical: grading.canonical,
@@ -449,16 +432,6 @@ struct JustTCGV2GradedClient: Sendable {
             }
         }
         return (companies, grades)
-    }
-
-    private struct GradedResponse: Decodable {
-        let data: [JustTCGCard]
-        let metadata: JustTCGQuotaMetadata?
-
-        enum CodingKeys: String, CodingKey {
-            case data
-            case metadata = "_metadata"
-        }
     }
 
     private struct GradedSetsResponse: Decodable {
