@@ -17,9 +17,19 @@ struct NormalizedPrice: Equatable, Sendable {
 
 enum PriceLookup: Equatable, Sendable {
     case price(NormalizedPrice)
-    /// The provider was consulted and has nothing it can attribute to this exact
-    /// physical variant.
+    /// A non-nil source means that provider was consulted and had no quote for
+    /// this exact physical variant. `nil` means no pricing source was queried.
     case unavailable(PriceSource?)
+
+    /// Whether this lookup contains an observation worth persisting.
+    var hasObservation: Bool {
+        switch self {
+        case .price:
+            return true
+        case let .unavailable(source):
+            return source != nil
+        }
+    }
 }
 
 /// The rule that keeps the collection's totals honest.

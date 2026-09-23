@@ -6,6 +6,9 @@ import Foundation
 /// CloudKit record name or any other account identifier that could identify a
 /// person outside the device.
 enum CloudAccountAvailability: Equatable, Sendable {
+    /// The caller deliberately skipped the account probe because cloud
+    /// restoration readiness has not been proven for this build.
+    case notQueried
     case available(fingerprint: String)
     case noAccount
     case restricted
@@ -316,7 +319,7 @@ enum CollectionStoragePolicy {
         switch local.replicaState {
         case .replicaCompletelyAbsent:
             if local.manifest != nil {
-                if case .available = input.account,
+                if input.account.isAvailableOrNotQueried,
                    !input.cloudRestorationReadinessProven {
                     return .blockUnprovenTransition
                 }
@@ -341,7 +344,7 @@ enum CollectionStoragePolicy {
         }
 
         let storeID = manifest.storeID
-        if case .available = input.account,
+        if input.account.isAvailableOrNotQueried,
            !input.cloudRestorationReadinessProven {
             // A verified existing local replica is safe to use on-device. A
             // missing or damaged replica is not safe to recreate locally,
@@ -405,6 +408,8 @@ enum CollectionStoragePolicy {
             return .openProvenLocal(storeID: storeID, reason: .noAccount)
         case .restricted:
             return .openProvenLocal(storeID: storeID, reason: .restricted)
+        case .notQueried:
+            return .retryAccountCheck
         case .temporarilyUnavailable, .couldNotDetermine:
             // A previously opened local replica may remain usable, but it must
             // remain visibly unverified rather than being treated as a cloud
@@ -487,6 +492,14 @@ enum CollectionStoragePolicy {
                 storeID: freshStoreID,
                 reason: input.account == .noAccount ? .noAccount : .restricted
             )
+        case .notQueried:
+            guard !input.cloudRestorationReadinessProven else {
+                return .retryAccountCheck
+            }
+            return .openProvenLocal(
+                storeID: freshStoreID,
+                reason: .restorationUnproven
+            )
         case .temporarilyUnavailable, .couldNotDetermine:
             // Do not mint a local identity while the system account answer is
             // transient. The caller can retry with the same proposed ID.
@@ -560,8 +573,19 @@ enum CollectionStoragePolicy {
             case .missing:
                 return .blockUnprovenTransition
             }
-        case .noAccount, .restricted, .temporarilyUnavailable, .couldNotDetermine:
+        case .noAccount, .restricted, .temporarilyUnavailable, .couldNotDetermine, .notQueried:
             return .blockUnprovenTransition
+        }
+    }
+}
+
+private extension CloudAccountAvailability {
+    var isAvailableOrNotQueried: Bool {
+        switch self {
+        case .available, .notQueried:
+            return true
+        case .noAccount, .restricted, .temporarilyUnavailable, .couldNotDetermine:
+            return false
         }
     }
 }

@@ -739,6 +739,22 @@ final class CollectionStorageBootstrap: ObservableObject {
     }
 
     func start() async {
+        if let reusable = reusableUnprovenLocalSession() {
+            generation &+= 1
+            confirmationAccepted = false
+            pendingAttachment = nil
+            restorationContainer = nil
+            pendingRestoration = nil
+            lastErrorCategory = nil
+            TradingCardScannerApp.activeStorageMode = reusable.session.mode
+            TradingCardScannerApp.activeStoreID = reusable.session.storeID
+            TradingCardScannerApp.activeCloudAccountStatusRaw = LocalStorageReason.restorationUnproven.rawValue
+            TradingCardScannerApp.activeAttachmentStateRaw = reusable.attachmentState.rawValue
+            TradingCardScannerApp.storageIsReady = true
+            state = .ready(session: reusable.session)
+            return
+        }
+
         generation &+= 1
         let currentGeneration = generation
         dependencies.storageGeneration.suspend()
@@ -758,6 +774,31 @@ final class CollectionStorageBootstrap: ObservableObject {
 
         state = .loading
         await evaluate(generation: currentGeneration)
+    }
+
+    /// Reuse a headless or already-open local container when the local policy
+    /// still selects that exact store under unproven readiness. This preserves
+    /// the storage-generation token and avoids opening the same SQLite files a
+    /// second time during background-to-foreground handoff.
+    private func reusableUnprovenLocalSession() -> (
+        session: CollectionStorageSession,
+        attachmentState: CloudAttachmentState
+    )? {
+        guard !dependencies.readinessSource.isProven,
+              let session = dependencies.storageGeneration.activeSession(),
+              session.mode == .onDevice,
+              let local = try? localFacts() else { return nil }
+        let decision = CollectionStoragePolicy.decide(
+            CollectionStoragePolicyInput(
+                local: local,
+                account: .notQueried,
+                cloudRestorationReadinessProven: false
+            )
+        )
+        guard case let .openProvenLocal(storeID, reason) = decision,
+              storeID == session.storeID,
+              reason == .restorationUnproven else { return nil }
+        return (session, local.manifest?.attachmentState ?? .neverAttached)
     }
 
     func retry() async {
@@ -820,12 +861,15 @@ final class CollectionStorageBootstrap: ObservableObject {
     private func evaluate(generation currentGeneration: UInt) async {
         do {
             let local = try localFacts()
-            let account = await dependencies.accountAvailability()
+            let readinessProven = dependencies.readinessSource.isProven
+            let account = readinessProven
+                ? await dependencies.accountAvailability()
+                : CloudAccountAvailability.notQueried
             guard currentGeneration == generation else { return }
 
             let anchor: CloudCollectionAnchorState
             if case .available = account,
-               dependencies.readinessSource.isProven {
+               readinessProven {
                 anchor = await dependencies.anchorState()
             } else {
                 anchor = .unknown
@@ -838,7 +882,7 @@ final class CollectionStorageBootstrap: ObservableObject {
                     account: account,
                     anchor: anchor,
                     confirmationAccepted: confirmationAccepted,
-                    cloudRestorationReadinessProven: dependencies.readinessSource.isProven
+                    cloudRestorationReadinessProven: readinessProven
                 )
             )
             await apply(
@@ -1452,6 +1496,7 @@ final class CollectionStorageBootstrap: ObservableObject {
     }
 
     private func handleAccountChanged() async {
+        guard dependencies.readinessSource.isProven else { return }
         guard case .ready = state else {
             await retry()
             return

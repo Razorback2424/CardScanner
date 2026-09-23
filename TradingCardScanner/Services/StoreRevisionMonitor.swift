@@ -1,4 +1,5 @@
 import Combine
+import CoreData
 import OSLog
 import SwiftData
 import SwiftUI
@@ -42,6 +43,55 @@ final class StoreRevisionStore: ObservableObject {
         guard let expected = expectedPriceValuesFingerprint else { return false }
         expectedPriceValuesFingerprint = nil
         return expected == value
+    }
+}
+
+struct CSVMessage: Identifiable {
+    let id = UUID()
+    let title: String
+    let message: String
+    let skippedCSVText: String?
+    let failedCSVText: String?
+
+    init(
+        title: String,
+        message: String,
+        skippedCSVText: String?,
+        failedCSVText: String? = nil
+    ) {
+        self.title = title
+        self.message = message
+        self.skippedCSVText = skippedCSVText
+        self.failedCSVText = failedCSVText
+    }
+}
+
+struct CSVImportProgress: Equatable {
+    let completedEntries: Int
+    let totalEntries: Int
+}
+
+struct PendingForcedFallbackRetryState: Equatable {
+    private(set) var isPending = false
+
+    mutating func fallbackWasEnabled() {
+        isPending = true
+    }
+
+    mutating func cancel() {
+        isPending = false
+    }
+
+    mutating func deferRetry() {
+        isPending = true
+    }
+
+    mutating func take(explicitlyForced: Bool) -> Bool {
+        let shouldForce = explicitlyForced || isPending
+        if shouldForce {
+            isPending = false
+        }
+        return shouldForce
     }
 }
 
@@ -97,9 +147,18 @@ enum StoreRevisionFingerprinting {
 /// which gives the monitor one trailing observation to reconcile everything.
 @MainActor
 final class DerivedStateWriteCoordinator: ObservableObject {
+    enum ExclusiveOperation: Equatable {
+        case csvImport
+        case collectionDelete
+    }
+
     @Published private(set) var generation: UInt = 0
+    @Published private(set) var activeExclusiveOperation: ExclusiveOperation?
+    @Published private(set) var csvImportProgress: CSVImportProgress?
+    @Published var csvMessage: CSVMessage?
     private var depth = 0
     private var bulkIntervalState: OSSignpostIntervalState?
+    private var exclusiveOperationToken: UUID?
 
     var isBulkWriteInFlight: Bool { depth > 0 }
 
@@ -128,6 +187,59 @@ final class DerivedStateWriteCoordinator: ObservableObject {
             )
         }
         bulkIntervalState = nil
+    }
+
+    func beginCSVImport(totalEntries: Int) -> UUID? {
+        guard let token = beginExclusiveOperation(.csvImport) else { return nil }
+        csvImportProgress = CSVImportProgress(
+            completedEntries: 0,
+            totalEntries: totalEntries
+        )
+        return token
+    }
+
+    func updateCSVImportProgress(
+        _ progress: CSVImportProgress,
+        token: UUID
+    ) {
+        guard exclusiveOperationToken == token,
+              activeExclusiveOperation == .csvImport else { return }
+        csvImportProgress = progress
+    }
+
+    func endCSVImport(token: UUID) {
+        guard exclusiveOperationToken == token,
+              activeExclusiveOperation == .csvImport else { return }
+        csvImportProgress = nil
+        endExclusiveOperation(token: token)
+    }
+
+    func beginCollectionDelete() -> UUID? {
+        beginExclusiveOperation(.collectionDelete)
+    }
+
+    func endCollectionDelete(token: UUID) {
+        guard activeExclusiveOperation == .collectionDelete else { return }
+        endExclusiveOperation(token: token)
+    }
+
+    private func beginExclusiveOperation(_ operation: ExclusiveOperation) -> UUID? {
+        // The scanner also owns this write interval while its camera session is
+        // visible. Do not start a bulk import/delete until every current bulk
+        // writer has drained.
+        guard depth == 0, exclusiveOperationToken == nil else { return nil }
+        let token = UUID()
+        exclusiveOperationToken = token
+        activeExclusiveOperation = operation
+        beginBulkWrite()
+        return token
+    }
+
+    private func endExclusiveOperation(token: UUID) {
+        guard exclusiveOperationToken == token else { return }
+        exclusiveOperationToken = nil
+        activeExclusiveOperation = nil
+        endBulkWrite()
     }
 }
 
@@ -163,15 +275,23 @@ struct StoreRevisionMonitor: View {
     /// same collection. A changed collection identity still queues a trailing
     /// request so a card arriving from sync/import is not lost.
     @State private var activeStalePriceCollectionFingerprint: Int?
+    /// A fallback opt-in that arrives during an active pass must survive the
+    /// same-collection coalescing guard and run as soon as that pass finishes.
+    @State private var pendingForcedFallbackRetry = PendingForcedFallbackRetryState()
     @State private var hasEstablishedMagicTreatmentBaseline = false
+    @AppStorage("priceRefreshObservedUsesPriceFallback")
+    private var lastObservedFallbackPreference = false
 
     var body: some View {
         PerformanceSignpost.signposter.emitEvent("StoreRevisionMonitor.body")
         let storageToken = storageGeneration.currentToken()
-        let observation = "\(hasStartedPortfolio)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)"
+        let observation = "\(hasStartedPortfolio)-\(usesPriceFallback)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)"
 
         return Color.clear
-            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave)) { _ in
+            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave).receive(on: RunLoop.main)) { _ in
+                saveGeneration &+= 1
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: RunLoop.main)) { _ in
                 saveGeneration &+= 1
             }
             .task(id: observation) {
@@ -186,15 +306,33 @@ struct StoreRevisionMonitor: View {
                 guard !Task.isCancelled,
                       !writeCoordinator.isBulkWriteInFlight,
                       storageGeneration.isCurrent(storageToken) else { return }
+                let fallbackWasJustEnabled = !lastObservedFallbackPreference && usesPriceFallback
+                if lastObservedFallbackPreference != usesPriceFallback {
+                    // The fallback capability is an input even when the
+                    // collection tables did not change.
+                    lastStalePriceTargetFingerprint = nil
+                }
+                lastObservedFallbackPreference = usesPriceFallback
+                if fallbackWasJustEnabled {
+                    pendingForcedFallbackRetry.fallbackWasEnabled()
+                } else if !usesPriceFallback {
+                    pendingForcedFallbackRetry.cancel()
+                }
                 revisionStore.publish(fingerprint)
-                await apply(fingerprint, storageToken: storageToken)
+                await apply(
+                    fingerprint,
+                    storageToken: storageToken,
+                    forceUnsupportedRetry: fallbackWasJustEnabled
+                )
+                schedulePendingForcedFallbackRetryIfNeeded()
             }
     }
 
     @MainActor
     private func apply(
         _ fingerprint: StoreRevisionFingerprint,
-        storageToken: StorageGenerationToken
+        storageToken: StorageGenerationToken,
+        forceUnsupportedRetry: Bool = false
     ) async {
         guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         let generation = applyGeneration &+ 1
@@ -202,6 +340,11 @@ struct StoreRevisionMonitor: View {
 
         guard let previousFingerprint else {
             self.previousFingerprint = fingerprint
+            await refreshStalePricesIfNeeded(
+                using: fingerprint,
+                storageToken: storageToken,
+                forceUnsupportedRetry: forceUnsupportedRetry
+            )
             return
         }
         guard !writeCoordinator.isBulkWriteInFlight else { return }
@@ -215,6 +358,7 @@ struct StoreRevisionMonitor: View {
         let magicChanged = fingerprint.magicCards != previousFingerprint.magicCards
         let controllerOwnedPriceChange = pricesChanged
             && revisionStore.consumeExpectedPriceValues(fingerprint.priceValues)
+        var requestedStalePriceRefresh = false
 
         PerformanceSignpost.emitEvent(
             "storeRevisionApply",
@@ -280,7 +424,12 @@ struct StoreRevisionMonitor: View {
                 id: PerformanceSignpost.makeID(),
                 "generation=\(generation)"
             )
-            await refreshStalePricesIfNeeded(using: fingerprint, storageToken: storageToken)
+            await refreshStalePricesIfNeeded(
+                using: fingerprint,
+                storageToken: storageToken,
+                forceUnsupportedRetry: forceUnsupportedRetry
+            )
+            requestedStalePriceRefresh = true
             PerformanceSignpost.endInterval(
                 "storeRevision.refreshStalePrices",
                 refreshState,
@@ -306,7 +455,12 @@ struct StoreRevisionMonitor: View {
                 id: PerformanceSignpost.makeID(),
                 "generation=\(generation)"
             )
-            await refreshStalePricesIfNeeded(using: fingerprint, storageToken: storageToken)
+            await refreshStalePricesIfNeeded(
+                using: fingerprint,
+                storageToken: storageToken,
+                forceUnsupportedRetry: forceUnsupportedRetry
+            )
+            requestedStalePriceRefresh = true
             PerformanceSignpost.endInterval(
                 "storeRevision.refreshStalePrices",
                 refreshState,
@@ -321,6 +475,13 @@ struct StoreRevisionMonitor: View {
                 hasEstablishedMagicTreatmentBaseline = true
                 guard generation == applyGeneration else { return }
                 self.previousFingerprint = fingerprint
+                if forceUnsupportedRetry, !requestedStalePriceRefresh {
+                    await refreshStalePricesIfNeeded(
+                        using: fingerprint,
+                        storageToken: storageToken,
+                        forceUnsupportedRetry: true
+                    )
+                }
                 return
             }
             MagicTreatmentMigrationCoordinator.shared.invalidateCompletedReports()
@@ -368,6 +529,14 @@ struct StoreRevisionMonitor: View {
             }
         }
 
+        if forceUnsupportedRetry, !requestedStalePriceRefresh {
+            await refreshStalePricesIfNeeded(
+                using: fingerprint,
+                storageToken: storageToken,
+                forceUnsupportedRetry: true
+            )
+        }
+
         // Commit only after every derived consumer has settled. The generation
         // guard prevents an older apply, resumed after a newer one, from
         // overwriting the newer coalescing token.
@@ -382,22 +551,40 @@ struct StoreRevisionMonitor: View {
     @MainActor
     private func refreshStalePricesIfNeeded(
         using fingerprint: StoreRevisionFingerprint,
-        storageToken: StorageGenerationToken
+        storageToken: StorageGenerationToken,
+        forceUnsupportedRetry: Bool = false
     ) async {
         guard fingerprint.cardCount > 0,
               storageGeneration.isCurrent(storageToken),
               !Task.isCancelled else { return }
-        let targetFingerprint = fingerprint.stalePriceTargetFingerprint
-        if isRefreshInFlight,
-           let activeCollectionFingerprint = activeStalePriceCollectionFingerprint,
+        let shouldForceUnsupportedRetry = forceUnsupportedRetry
+            || pendingForcedFallbackRetry.isPending
+        var targetHasher = Hasher()
+        targetHasher.combine(fingerprint.stalePriceTargetFingerprint)
+        targetHasher.combine(usesPriceFallback)
+        let targetFingerprint = targetHasher.finalize()
+        if let activeCollectionFingerprint = activeStalePriceCollectionFingerprint,
            activeCollectionFingerprint == fingerprint.stalePriceCollectionFingerprint {
             // The active pass owns its catalog metadata, vendor binding, and
             // price writes. Do not turn those writes into a metered retry.
+            if shouldForceUnsupportedRetry {
+                pendingForcedFallbackRetry.deferRetry()
+            }
             return
         }
-        guard lastStalePriceTargetFingerprint != targetFingerprint else { return }
+        guard shouldForceUnsupportedRetry || lastStalePriceTargetFingerprint != targetFingerprint else {
+            return
+        }
         lastStalePriceTargetFingerprint = targetFingerprint
         activeStalePriceCollectionFingerprint = fingerprint.stalePriceCollectionFingerprint
+        defer {
+            if activeStalePriceCollectionFingerprint == fingerprint.stalePriceCollectionFingerprint {
+                activeStalePriceCollectionFingerprint = nil
+            }
+        }
+        if shouldForceUnsupportedRetry {
+            _ = pendingForcedFallbackRetry.take(explicitlyForced: forceUnsupportedRetry)
+        }
         guard let result = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
             in: modelContext,
             storageToken: storageToken,
@@ -410,7 +597,7 @@ struct StoreRevisionMonitor: View {
                 let request = PriceRefreshRequest(
                     usesPriceFallback: usesPriceFallback,
                     includeImported: true,
-                    forceUnsupportedRetry: false,
+                    forceUnsupportedRetry: shouldForceUnsupportedRetry,
                     sortOldestFirst: false,
                     maximumTargetCount: nil,
                     markRecentlyCheckedIfEmpty: false
@@ -422,11 +609,17 @@ struct StoreRevisionMonitor: View {
                 )
             }
         ) else {
-            activeStalePriceCollectionFingerprint = nil
+            if shouldForceUnsupportedRetry && usesPriceFallback {
+                pendingForcedFallbackRetry.deferRetry()
+            }
             return
         }
-        guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
-        activeStalePriceCollectionFingerprint = nil
+        guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else {
+            if shouldForceUnsupportedRetry && usesPriceFallback {
+                pendingForcedFallbackRetry.deferRetry()
+            }
+            return
+        }
         if result.targetBuildFailed {
             lastStalePriceTargetFingerprint = nil
         } else {
@@ -435,8 +628,45 @@ struct StoreRevisionMonitor: View {
             // whether that target-set change needs a trailing pass.
             lastStalePriceTargetFingerprint = targetFingerprint
         }
-        guard result.didRun else { return }
+        guard result.didRun else {
+            if shouldForceUnsupportedRetry && usesPriceFallback {
+                pendingForcedFallbackRetry.deferRetry()
+            }
+            return
+        }
         refresh.dismissTransientSuccessSummary()
+    }
+
+    @MainActor
+    private func schedulePendingForcedFallbackRetryIfNeeded() {
+        guard pendingForcedFallbackRetry.isPending else { return }
+        Task { @MainActor in
+            // Multiple observation tasks can reach this point while the
+            // controller is still unwinding. Wait for its terminal state,
+            // then fingerprint the current collection so the retry includes
+            // any writes that landed during that pass.
+            while self.pendingForcedFallbackRetry.isPending
+                && (self.isRefreshInFlight || self.activeStalePriceCollectionFingerprint != nil) {
+                try? await Task.sleep(for: .milliseconds(100))
+            }
+            guard self.pendingForcedFallbackRetry.isPending,
+                  self.usesPriceFallback,
+                  self.hasStartedPortfolio,
+                  !self.writeCoordinator.isBulkWriteInFlight,
+                  let storageToken = self.storageGeneration.currentToken() else { return }
+
+            let actor = StoreRevisionModelActor(modelContainer: self.modelContext.container)
+            let fingerprint = await actor.fingerprint()
+            guard await actor.readSucceeded(),
+                  self.pendingForcedFallbackRetry.isPending,
+                  self.usesPriceFallback,
+                  self.storageGeneration.isCurrent(storageToken) else { return }
+            await self.refreshStalePricesIfNeeded(
+                using: fingerprint,
+                storageToken: storageToken,
+                forceUnsupportedRetry: true
+            )
+        }
     }
 }
 

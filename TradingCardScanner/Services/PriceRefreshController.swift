@@ -358,7 +358,10 @@ actor PriceRefreshModelActor {
                 pokemonPrintRun: target.pokemonPrintRun,
                 at: now
             )
-            if PriceRefreshController.needsFallback(lookup) {
+            if PriceRefreshController.needsFallback(
+                lookup,
+                identifiedCatalogCard: true
+            ) {
                 fallbackSubjects.append(
                     PriceRefreshController.FallbackCandidate(target: target, card: card)
                 )
@@ -2281,22 +2284,26 @@ final class PriceRefreshController: ObservableObject {
     ) -> [PriceTarget] {
         targets.filter { target in
             if target.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
-                let isStillUnsupported = target.itemKind == .gradedCard
-                    && target.marketVariantID == nil
-                if !isStillUnsupported { return true }
-                // Manual refreshes are an explicit request to re-evaluate a
-                // capability stamp. Automatic/background passes keep the long
-                // retry interval so unsupported rows cannot create churn.
+                // This capability result is stable for raw and graded rows.
+                // Manual refresh, or newly enabling the fallback provider,
+                // explicitly re-evaluates it; ordinary passes use the longer
+                // retry interval so a negative capability result cannot create
+                // a request on every launch.
                 if forceUnsupportedRetry { return true }
                 guard usesPriceFallback else { return false }
                 return target.lastCheckedAt.map {
                     now.timeIntervalSince($0) >= noSupportedProviderRetryInterval
                 } ?? true
             }
-            // A previous "unavailable" result is not permanent. Manual refreshes
-            // must always be able to revisit cards that still have no price.
-            if !target.hasPrice { return true }
-            if target.needsArtwork { return true }
+            // A never-checked row needs an immediate first attempt. Later
+            // automatic passes respect the ordinary interval even if the
+            // catalog has no quote or no artwork for this printing.
+            if !target.hasPrice || target.needsArtwork {
+                if forceUnsupportedRetry { return true }
+                return target.lastCheckedAt.map {
+                    now.timeIntervalSince($0) >= automaticRefreshInterval
+                } ?? true
+            }
 
             let identityResolvedAfterFailure = target.catalogPrintingID != nil
                 && target.lastFailureAt != nil
@@ -2606,8 +2613,14 @@ final class PriceRefreshController: ObservableObject {
     /// Two cases, and the second is the one that is easy to miss: a Cardmarket
     /// euro price *is* a price, but not one the collection can total, so it is
     /// treated as unfinished rather than done.
-    nonisolated static func needsFallback(_ lookup: PriceLookup) -> Bool {
-        PriceFallbackQuoteResolver.needsFallback(lookup)
+    nonisolated static func needsFallback(
+        _ lookup: PriceLookup,
+        identifiedCatalogCard: Bool = false
+    ) -> Bool {
+        PriceFallbackQuoteResolver.needsFallback(
+            lookup,
+            identifiedCatalogCard: identifiedCatalogCard
+        )
     }
 
     /// One card the catalog could not finish, captured with whatever identity

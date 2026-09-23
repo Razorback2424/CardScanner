@@ -53,7 +53,40 @@ final class ProductFallbackTests: XCTestCase {
 
     func testUnpricedCardFallsThrough() {
         XCTAssertTrue(PriceRefreshController.needsFallback(.unavailable(.tcgplayer)))
-        XCTAssertTrue(PriceRefreshController.needsFallback(.unavailable(nil)))
+        XCTAssertFalse(
+            PriceRefreshController.needsFallback(.unavailable(nil)),
+            "a card with no attached pricing data has not consulted a provider"
+        )
+        XCTAssertTrue(
+            PriceRefreshController.needsFallback(
+                .unavailable(nil),
+                identifiedCatalogCard: true
+            )
+        )
+        XCTAssertFalse(PriceLookup.unavailable(nil).hasObservation)
+        XCTAssertFalse(PriceFallbackQuoteResolver.needsFallback(.unavailable(nil)))
+        XCTAssertTrue(
+            PriceFallbackQuoteResolver.needsFallback(
+                .unavailable(nil),
+                identifiedCatalogCard: true
+            ),
+            "an identified catalog card without a quote may use the configured fallback"
+        )
+    }
+
+    func testForcedFallbackRetrySurvivesDeferralUntilTaken() {
+        var retry = PendingForcedFallbackRetryState()
+
+        retry.fallbackWasEnabled()
+        retry.deferRetry()
+
+        XCTAssertTrue(retry.isPending)
+        XCTAssertTrue(retry.take(explicitlyForced: false))
+        XCTAssertFalse(retry.isPending)
+
+        retry.fallbackWasEnabled()
+        retry.cancel()
+        XCTAssertFalse(retry.take(explicitlyForced: false))
     }
 
     /// The Cardmarket reordering. A euro price is a price, but not one the
@@ -496,8 +529,7 @@ final class ProductFallbackTests: XCTestCase {
             magicTreatmentIDsRaw: [MagicTreatment.surgeFoil.id]
         )
 
-        // Treatment rows are back in the catalog/fallback pipeline, so an old
-        // capability stamp must not suppress the next pricing pass.
+        // A raw capability stamp is stable until the retry interval expires.
         XCTAssertEqual(
             PriceRefreshController.staleTargets(
                 from: [target],
@@ -505,7 +537,7 @@ final class ProductFallbackTests: XCTestCase {
                     PriceRefreshController.noSupportedProviderRetryInterval - 1
                 )
             ).count,
-            1
+            0
         )
         XCTAssertEqual(
             PriceRefreshController.staleTargets(
@@ -521,10 +553,20 @@ final class ProductFallbackTests: XCTestCase {
                 from: [target],
                 now: checkedAt,
                 usesPriceFallback: false,
+                forceUnsupportedRetry: false
+            ).count,
+            0,
+            "automatic passes do not retry a capability miss while fallback is off"
+        )
+        XCTAssertEqual(
+            PriceRefreshController.staleTargets(
+                from: [target],
+                now: checkedAt,
+                usesPriceFallback: false,
                 forceUnsupportedRetry: true
             ).count,
             1,
-            "an explicit refresh must revisit a capability stamp even when fallback is off"
+            "an explicit manual refresh must revisit a capability stamp"
         )
         XCTAssertEqual(
             PriceRefreshController.staleTargets(
@@ -713,10 +755,9 @@ final class ProductFallbackTests: XCTestCase {
     }
 
     /// Artwork rides along with the price, but a row can need one without the
-    /// other. A sealed product priced yesterday is not stale, so it never
-    /// entered a refresh, so the backfill never saw it — and the placeholder box
-    /// stayed no matter how many times the user pulled to refresh.
-    func testMissingArtworkIsItsOwnReasonToRefresh() {
+    /// other. It remains an independent refresh reason, with the same bounded
+    /// automatic cadence as an unpriced row.
+    func testMissingArtworkIsItsOwnEightHourRefreshReason() {
         func target(hasPrice: Bool, needsArtwork: Bool) -> PriceTarget {
             PriceTarget(
                 game: .pokemon, printingID: "p", catalogPrintingID: nil, setCode: "",
@@ -726,16 +767,62 @@ final class ProductFallbackTests: XCTestCase {
             )
         }
 
+        let missingArtwork = target(hasPrice: true, needsArtwork: true)
+        XCTAssertTrue(
+            PriceRefreshController.staleTargets(
+                from: [missingArtwork],
+                now: missingArtwork.lastCheckedAt!
+                    .addingTimeInterval(PriceRefreshController.automaticRefreshInterval - 1)
+            ).isEmpty
+        )
         XCTAssertEqual(
-            PriceRefreshController.staleTargets(from: [target(hasPrice: true, needsArtwork: true)]).count,
+            PriceRefreshController.staleTargets(
+                from: [missingArtwork],
+                now: missingArtwork.lastCheckedAt!
+                    .addingTimeInterval(PriceRefreshController.automaticRefreshInterval)
+            ).count,
+            1
+        )
+        XCTAssertEqual(
+            PriceRefreshController.staleTargets(
+                from: [missingArtwork],
+                now: .now,
+                forceUnsupportedRetry: true
+            ).count,
             1,
-            "a freshly priced row with no picture still has something to fetch"
+            "manual refresh can revisit artwork immediately"
         )
         XCTAssertTrue(
             PriceRefreshController.staleTargets(
                 from: [target(hasPrice: true, needsArtwork: false)]
             ).isEmpty,
             "a row with both is left alone"
+        )
+    }
+
+    func testNeverCheckedUnpricedCardRemainsEligibleForTheNextAutomaticPass() {
+        let target = PriceTarget(
+            game: .pokemon,
+            printingID: "checklist-card",
+            catalogPrintingID: "checklist-card",
+            setCode: "SET",
+            variantID: PhysicalVariant.normal.id,
+            importedIdentity: nil,
+            catalogMetadataCheckedAt: nil,
+            lastFailureAt: nil,
+            hasPrice: false,
+            lastCheckedAt: nil,
+            itemKind: .rawCard
+        )
+
+        XCTAssertEqual(
+            PriceRefreshController.staleTargets(
+                from: [target],
+                now: Date(timeIntervalSince1970: 1_800_000_000),
+                usesPriceFallback: false
+            ).map(\.id),
+            [target.id],
+            "a no-provider lookup must not create lastCheckedAt and hide the card from the next automatic pass"
         )
     }
 

@@ -364,13 +364,82 @@ final class CatalogNormalizationTests: XCTestCase {
         )
     }
 
-    func testMissingRarityAloneKeepsRowEligible() {
+    func testMissingRarityAloneDoesNotKeepExactCatalogRowEligible() {
         let card = importedCardWithRealProviderID()
         card.catalogProviderID = "6c45a5df-048e-4b73-89c6-5cdaa330319e"
 
-        XCTAssertTrue(
+        XCTAssertFalse(
             CollectionCatalogNormalizer.needsNormalization(card),
-            "rarity is part of a printing's catalog metadata, so a row missing it is not finished"
+            "the current Pokémon resolver cannot supply rarity, so an exact row must not retry for it"
+        )
+    }
+
+    func testNormalizerFillsMissingMetadataWithoutReplacingKnownIdentityFields() {
+        let card = importedCardWithRealProviderID()
+        card.catalogProviderID = card.providerID
+        card.setCode = "SPM"
+        card.setReleaseOrder = 42
+        card.imageURL = "https://images.example.test/exact-card.png"
+
+        card.applyCatalogMetadata(
+            ImportedCatalogMetadata(
+                providerID: card.providerID,
+                setCode: "OTHER",
+                rarity: "Rare",
+                imageURL: "https://images.example.test/other-card.png",
+                thumbnailURL: "https://images.example.test/other-card-small.png",
+                tcgplayerURL: "https://shop.example.test/card",
+                setReleaseOrder: 99
+            ),
+            fillMissingOnly: true
+        )
+
+        XCTAssertEqual(card.catalogProviderID, card.providerID)
+        XCTAssertEqual(card.setCode, "SPM")
+        XCTAssertEqual(card.setReleaseOrder, 42)
+        XCTAssertEqual(card.imageURL, "https://images.example.test/exact-card.png")
+        XCTAssertEqual(card.rarity, "Rare")
+        XCTAssertEqual(
+            card.thumbnailURL,
+            "https://cards.scryfall.io/small/front/6/c/6c45a5df.jpg",
+            "normalization must not replace artwork already attached to the exact printing"
+        )
+        XCTAssertEqual(card.tcgplayerURL, "https://shop.example.test/card")
+    }
+
+    func testExactProviderRowNormalizationFillsArtworkButKeepsKnownIdentityAndMissingRarityQuiet() async throws {
+        let context = try makeContext()
+        let card = CollectedCard(
+            collectionKey: "M2-001#normal",
+            game: .pokemon,
+            providerID: "M2-001",
+            name: "Oddish",
+            setName: "Inferno X",
+            setCode: "SPM",
+            cardNumber: "001/080",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: "https://images.example.test/exact-small.png",
+            variant: .normal,
+            variantResolution: .uniqueInCatalog,
+            setReleaseOrder: 42
+        )
+        card.catalogProviderID = card.providerID
+        context.insert(card)
+        try context.save()
+
+        await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource())
+            .normalizeImportedCards(in: context)
+
+        XCTAssertEqual(card.catalogProviderID, "M2-001")
+        XCTAssertEqual(card.setCode, "SPM")
+        XCTAssertEqual(card.setReleaseOrder, 42)
+        XCTAssertEqual(card.imageURL, "https://assets.example.test/m2-001")
+        XCTAssertEqual(card.thumbnailURL, "https://images.example.test/exact-small.png")
+        XCTAssertNil(card.rarity)
+        XCTAssertFalse(
+            CollectionCatalogNormalizer.needsNormalization(card),
+            "an exact printing without a Pokémon rarity must not cycle through normalization"
         )
     }
 

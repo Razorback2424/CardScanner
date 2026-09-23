@@ -322,6 +322,26 @@ final class PriceRefreshTargetsSurfaceTests: XCTestCase {
 
 @MainActor
 final class PriceStoreRefreshRaceTests: XCTestCase {
+    func testUnqueriedLookupCreatesNoPriceOrHistoryEvidence() throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: Schema([PriceRecord.self, PriceObservation.self, PriceCheckDay.self])
+        )
+        let context = container.mainContext
+        let store = PriceStore(context: context)
+
+        XCTAssertTrue(
+            store.store(
+                .unavailable(nil),
+                game: .pokemon,
+                printingID: "checklist-card",
+                variantID: PhysicalVariant.normal.id
+            )
+        )
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceCheckDay>()).isEmpty)
+    }
+
     func testStaleRefreshIndexRechecksReadsAndWritesBeforeCreatingARecord() throws {
         let container = try UncoveredSurfaceFixtures.inMemoryContainer(
             for: Schema([PriceRecord.self, PriceObservation.self, PriceCheckDay.self])

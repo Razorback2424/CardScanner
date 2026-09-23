@@ -46,7 +46,7 @@ struct ScannerView: View {
                 model: model,
                 scanner: model.scanner,
                 openSettings: {
-                    model.pauseForPresentation()
+                    model.pauseForSettingsPresentation()
                     isShowingSettings = true
                 },
                 openReview: { scan in
@@ -88,7 +88,7 @@ struct ScannerView: View {
         .onChange(of: scenePhase) { _, phase in
             model.scenePhaseChanged(isActive: phase == .active)
         }
-        .sheet(isPresented: $isShowingSettings, onDismiss: model.resumeAfterPresentation) {
+        .sheet(isPresented: $isShowingSettings, onDismiss: model.resumeAfterSettingsPresentation) {
             SettingsView()
         }
         .sheet(item: $reviewing, onDismiss: model.resumeAfterPresentation) { scan in

@@ -21,9 +21,6 @@ struct SettingsView: View {
     @State private var diagnosticsDocument: JSONExportDocument?
     @State private var csvExportFilename = "CardScanner Collection"
     @State private var pendingCSVImport: CollectionCSVImportPlan?
-    @State private var csvMessage: CSVMessage?
-    @State private var csvImportProgress: CSVImportProgress?
-    @State private var csvImportToken = UUID()
     @State private var portfolioCloseCount = 0
     @State private var collectionCardCount = 0
     @State private var priceRecordCount = 0
@@ -32,31 +29,6 @@ struct SettingsView: View {
     @State private var browseHistoryDiagnostics = BrowsePriceHistoryDiagnostics.empty
     @AppStorage("pokemonMasterSetTier") private var pokemonMasterSetTier: PokemonMasterSetTier = .standard
     @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
-
-    private struct CSVMessage: Identifiable {
-        let id = UUID()
-        let title: String
-        let message: String
-        let skippedCSVText: String?
-        let failedCSVText: String?
-
-        init(
-            title: String,
-            message: String,
-            skippedCSVText: String?,
-            failedCSVText: String? = nil
-        ) {
-            self.title = title
-            self.message = message
-            self.skippedCSVText = skippedCSVText
-            self.failedCSVText = failedCSVText
-        }
-    }
-
-    private struct CSVImportProgress: Equatable {
-        let completedEntries: Int
-        let totalEntries: Int
-    }
 
     var body: some View {
         NavigationStack {
@@ -118,6 +90,7 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                        .disabled(writeCoordinator.activeExclusiveOperation != nil)
                 }
             }
             .task {
@@ -145,13 +118,13 @@ struct SettingsView: View {
             .fileImporter(isPresented: $isShowingCSVImporter, allowedContentTypes: [.commaSeparatedText, .plainText]) { result in
                 switch result {
                 case let .success(url): Task { await prepareCSVImport(from: url) }
-                case let .failure(error): csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
+                case let .failure(error): writeCoordinator.csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
                 }
             }
             .fileExporter(isPresented: $isShowingCSVExporter, document: csvExportDocument, contentType: .commaSeparatedText, defaultFilename: csvExportFilename) { result in
                 csvExportDocument = nil
                 if case let .failure(error) = result {
-                    csvMessage = CSVMessage(title: "Export Failed", message: error.localizedDescription, skippedCSVText: nil)
+                    writeCoordinator.csvMessage = CSVMessage(title: "Export Failed", message: error.localizedDescription, skippedCSVText: nil)
                 }
             }
             // Two `fileExporter` modifiers on the same view silently collapse
@@ -169,7 +142,7 @@ struct SettingsView: View {
                     ) { result in
                         diagnosticsDocument = nil
                         if case let .failure(error) = result {
-                            csvMessage = CSVMessage(
+                            writeCoordinator.csvMessage = CSVMessage(
                                 title: "Export Failed",
                                 message: error.localizedDescription,
                                 skippedCSVText: nil
@@ -185,7 +158,7 @@ struct SettingsView: View {
             } message: {
                 if let plan = pendingCSVImport { Text(importConfirmationMessage(plan)) }
             }
-            .alert(item: $csvMessage) { message in
+            .alert(item: $writeCoordinator.csvMessage) { message in
                 if let failedCSVText = message.failedCSVText {
                     return Alert(title: Text(message.title), message: Text(message.message), primaryButton: .default(Text("Export Failed Rows")) {
                         csvExportDocument = CollectionCSVDocument(text: failedCSVText)
@@ -202,12 +175,13 @@ struct SettingsView: View {
                 }
                 return Alert(title: Text(message.title), message: Text(message.message), dismissButton: .default(Text("OK")))
             }
+            .interactiveDismissDisabled(writeCoordinator.activeExclusiveOperation != nil)
         }
     }
 
     private var collectionSection: some View {
         Section("Collection") {
-            if let progress = csvImportProgress {
+            if let progress = writeCoordinator.csvImportProgress {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         ProgressView()
@@ -225,11 +199,18 @@ struct SettingsView: View {
                 .accessibilityLabel("Importing collection")
                 .accessibilityValue("\(progress.completedEntries) of \(progress.totalEntries) entries saved")
             }
+            if writeCoordinator.activeExclusiveOperation == .collectionDelete {
+                HStack {
+                    ProgressView()
+                    Text("Deleting collection…")
+                }
+                .accessibilityElement(children: .combine)
+            }
 
             Button("Import CSV", systemImage: "square.and.arrow.down") {
                 isShowingCSVImporter = true
             }
-            .disabled(csvImportProgress != nil)
+            .disabled(writeCoordinator.activeExclusiveOperation != nil)
 
             Button("Export CSV", systemImage: "square.and.arrow.up") {
                 do {
@@ -238,7 +219,7 @@ struct SettingsView: View {
                     csvExportFilename = "CardScanner Collection"
                     isShowingCSVExporter = true
                 } catch {
-                    csvMessage = CSVMessage(
+                    writeCoordinator.csvMessage = CSVMessage(
                         title: "Export Failed",
                         message: error.localizedDescription,
                         skippedCSVText: nil
@@ -256,6 +237,7 @@ struct SettingsView: View {
             Button("Delete Entire Collection", role: .destructive) {
                 isConfirmingCollectionDeletion = true
             }
+            .disabled(writeCoordinator.activeExclusiveOperation != nil)
         }
     }
 
@@ -285,7 +267,7 @@ struct SettingsView: View {
                     csvExportFilename = "CardScanner Value History"
                     isShowingCSVExporter = true
                 } catch {
-                    csvMessage = CSVMessage(
+                    writeCoordinator.csvMessage = CSVMessage(
                         title: "Export Failed",
                         message: error.localizedDescription,
                         skippedCSVText: nil
@@ -359,7 +341,7 @@ struct SettingsView: View {
                         csvExportFilename = "CardScanner Unpriced Cards"
                         isShowingCSVExporter = true
                     } catch {
-                        csvMessage = CSVMessage(
+                        writeCoordinator.csvMessage = CSVMessage(
                             title: "Export Failed",
                             message: error.localizedDescription,
                             skippedCSVText: nil
@@ -383,7 +365,7 @@ struct SettingsView: View {
                         csvExportFilename = "CardScanner Missing Artwork"
                         isShowingCSVExporter = true
                     } catch {
-                        csvMessage = CSVMessage(
+                        writeCoordinator.csvMessage = CSVMessage(
                             title: "Export Failed",
                             message: error.localizedDescription,
                             skippedCSVText: nil
@@ -496,7 +478,7 @@ struct SettingsView: View {
     private func exportSyncDiagnostics() {
         guard TradingCardScannerApp.storageIsReady,
               let storeID = TradingCardScannerApp.activeStoreID else {
-            csvMessage = CSVMessage(
+            writeCoordinator.csvMessage = CSVMessage(
                 title: "Storage Is Not Ready",
                 message: "Sync diagnostics are available after collection storage finishes opening.",
                 skippedCSVText: nil
@@ -524,7 +506,7 @@ struct SettingsView: View {
             )
             isShowingDiagnosticsExporter = true
         } catch {
-            csvMessage = CSVMessage(
+            writeCoordinator.csvMessage = CSVMessage(
                 title: "Export Failed",
                 message: "CardScanner could not create a redacted diagnostics export.",
                 skippedCSVText: nil
@@ -542,47 +524,41 @@ struct SettingsView: View {
             }.value
             pendingCSVImport = plan
         } catch {
-            csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
+            writeCoordinator.csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
         }
     }
 
     @MainActor
     private func importCSV(_ plan: CollectionCSVImportPlan) {
-        guard csvImportProgress == nil,
-              let storageToken = storageGeneration.currentToken() else { return }
+        guard let storageToken = storageGeneration.currentToken() else { return }
+        guard let operationToken = writeCoordinator.beginCSVImport(
+            totalEntries: plan.entries.count
+        ) else {
+            writeCoordinator.csvMessage = CSVMessage(
+                title: "Import Unavailable",
+                message: "Another collection write is still in progress. Try importing again when it finishes.",
+                skippedCSVText: nil
+            )
+            return
+        }
         pendingCSVImport = nil
         let container = modelContext.container
-        let token = UUID()
         let shouldContinue = storageGeneration.continuation(for: storageToken)
-        csvImportToken = token
-        csvImportProgress = CSVImportProgress(
-            completedEntries: 0,
-            totalEntries: plan.entries.count
-        )
-        writeCoordinator.beginBulkWrite()
         Task { @MainActor in
-            defer {
-                writeCoordinator.endBulkWrite()
-                if csvImportToken == token {
-                    // Progress callbacks are delivered through unstructured
-                    // MainActor tasks from the isolated importer. Invalidate
-                    // the token before clearing the row so a final queued
-                    // callback cannot resurrect an "in progress" state after
-                    // completion has already been published.
-                    csvImportToken = UUID()
-                    csvImportProgress = nil
-                }
-            }
+            defer { writeCoordinator.endCSVImport(token: operationToken) }
             do {
                 let result = try await CollectionCSV.applyIsolated(
                     plan,
                     to: container,
                     progress: { completedEntries, totalEntries in
                         Task { @MainActor in
-                            guard csvImportToken == token, shouldContinue() else { return }
-                            csvImportProgress = CSVImportProgress(
-                                completedEntries: completedEntries,
-                                totalEntries: totalEntries
+                            guard shouldContinue() else { return }
+                            writeCoordinator.updateCSVImportProgress(
+                                CSVImportProgress(
+                                    completedEntries: completedEntries,
+                                    totalEntries: totalEntries
+                                ),
+                                token: operationToken
                             )
                         }
                     },
@@ -606,7 +582,7 @@ struct SettingsView: View {
                     details += " Could not import \(result.failedRows.count) entries. Export the failed rows to retry only those entries."
                 }
                 details += " Artwork loads automatically. Refresh prices when you're ready."
-                csvMessage = CSVMessage(
+                writeCoordinator.csvMessage = CSVMessage(
                     title: result.failedRows.isEmpty ? "Import Complete" : "Import Partially Complete",
                     message: details,
                     skippedCSVText: result.failedRows.isEmpty ? plan.skippedCSVText : nil,
@@ -616,7 +592,7 @@ struct SettingsView: View {
                 )
             } catch {
                 guard storageGeneration.isCurrent(storageToken) else { return }
-                csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
+                writeCoordinator.csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
             }
         }
     }
@@ -635,11 +611,27 @@ struct SettingsView: View {
     }
 
     private func deleteCollection() {
-        do {
-            try CollectionStore(context: modelContext).deleteAll()
-            loadCounts()
-        } catch {
-            deletionError = error.localizedDescription
+        guard let storageToken = storageGeneration.currentToken() else {
+            deletionError = "Collection storage is not ready. Please try again."
+            return
+        }
+        guard let operationToken = writeCoordinator.beginCollectionDelete() else {
+            deletionError = "Another collection write is in progress. Wait for it to finish, then try again."
+            return
+        }
+        let container = modelContext.container
+        let shouldContinue = storageGeneration.continuation(for: storageToken)
+        Task { @MainActor in
+            defer { writeCoordinator.endCollectionDelete(token: operationToken) }
+            do {
+                let actor = CollectionDeletionModelActor(modelContainer: container)
+                let didDelete = try await actor.deleteAll(shouldContinue: shouldContinue)
+                guard didDelete, storageGeneration.isCurrent(storageToken) else { return }
+                loadCounts()
+            } catch {
+                guard storageGeneration.isCurrent(storageToken) else { return }
+                deletionError = error.localizedDescription
+            }
         }
     }
 }
@@ -789,76 +781,17 @@ struct PriceFallbackSettingsSection: View {
 
 }
 
-/// The app has no CardScanner account. This surface reports the storage mode
-/// selected by the bootstrap and points to the system iCloud settings when a
-/// person needs to change availability or account state.
+/// CardScanner 1.0 keeps the collection on this device; iCloud sync is not
+/// offered by the production build.
 struct CollectionStorageStatusSection: View {
     var body: some View {
         Section {
-            LabeledContent(
-                "Collection storage",
-                value: TradingCardScannerApp.activeStorageMode.label
-            )
-            LabeledContent(
-                "iCloud account",
-                value: cloudAccountStatusLabel
-            )
-            LabeledContent(
-                "Attachment",
-                value: attachmentStateLabel
-            )
-            Text(TradingCardScannerApp.activeStorageMode.detail)
+            LabeledContent("Collection storage", value: "On this device")
+            Text("iCloud sync is not available in CardScanner 1.0.")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-            if TradingCardScannerApp.activeCloudAccountStatusRaw
-                == LocalStorageReason.temporarilyUnavailable.rawValue {
-                Text("iCloud is temporarily unavailable. This local collection is visibly unverified for syncing and may resume when iCloud is available.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-            if TradingCardScannerApp.activeCloudAccountStatusRaw
-                == LocalStorageReason.restorationUnproven.rawValue {
-                Text("iCloud restoration is not proven yet. This collection is staying on this device until a safe restoration check is available.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-            Text("Collection sync follows the device's iCloud account. CardScanner does not require a separate account.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            Button("Open iCloud Settings", action: openSystemSettings)
         } header: {
             Text("Storage")
-        } footer: {
-            if !TradingCardScannerApp.activeStorageMode.isCloudSyncing {
-                Text("Value History and custom artwork stay on this device. If iCloud becomes available, CardScanner asks before attaching an existing collection to a different account.")
-            }
-        }
-    }
-
-    private func openSystemSettings() {
-        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-        UIApplication.shared.open(url)
-    }
-
-    private var cloudAccountStatusLabel: String {
-        switch TradingCardScannerApp.activeCloudAccountStatusRaw {
-        case "available": return "Available"
-        case LocalStorageReason.noAccount.rawValue: return "No iCloud account"
-        case LocalStorageReason.restricted.rawValue: return "Restricted"
-        case LocalStorageReason.temporarilyUnavailable.rawValue: return "Temporarily unavailable"
-        case LocalStorageReason.attachmentSuspended.rawValue: return "Kept on this device"
-        case LocalStorageReason.restorationUnproven.rawValue: return "Restoration not proven"
-        default: return TradingCardScannerApp.activeCloudAccountStatusRaw
-        }
-    }
-
-    private var attachmentStateLabel: String {
-        switch TradingCardScannerApp.activeAttachmentStateRaw {
-        case CloudAttachmentState.neverAttached.rawValue: return "Never attached"
-        case CloudAttachmentState.attached.rawValue: return "Attached"
-        case CloudAttachmentState.suspended.rawValue: return "Suspended"
-        case CloudAttachmentState.conflict.rawValue: return "Conflict"
-        default: return TradingCardScannerApp.activeAttachmentStateRaw
         }
     }
 }

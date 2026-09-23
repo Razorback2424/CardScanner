@@ -175,6 +175,21 @@ final class CollectionCatalogNormalizer: ObservableObject {
                 .compactMap { context.model(for: $0) as? CollectedCard }
             if let metadata = matches[request.sourceProviderID] {
                 for row in rows {
+                    let exactIdentityMatches: Bool
+                    let preserveExistingMetadata: Bool
+                    if let exactCatalogID = row.catalogProviderID {
+                        exactIdentityMatches = exactCatalogID == metadata.providerID
+                        preserveExistingMetadata = exactIdentityMatches
+                    } else {
+                        exactIdentityMatches = row.providerID == metadata.providerID
+                            || row.providerID.hasPrefix("csv:")
+                        // A real provider ID already names an exact printing;
+                        // a synthetic CSV key still needs its imported set
+                        // label and other identity fields canonicalized from
+                        // the resolver's successful match.
+                        preserveExistingMetadata = row.providerID == metadata.providerID
+                    }
+                    guard exactIdentityMatches else { continue }
                     let previousVariantID = row.justTCGVariantID
                     let previousPriceKey = row.priceKey
                     if previousVariantID == nil,
@@ -199,7 +214,10 @@ final class CollectionCatalogNormalizer: ObservableObject {
                             return
                         }
                     }
-                    row.applyCatalogMetadata(metadata)
+                    row.applyCatalogMetadata(
+                        metadata,
+                        fillMissingOnly: preserveExistingMetadata
+                    )
                     let normalizedRow: CollectedCard
                     if row.itemKind == .sealedProduct,
                        let productID = metadata.justTCGCardID,
@@ -221,7 +239,10 @@ final class CollectionCatalogNormalizer: ObservableObject {
                             // existing Browse row. Re-apply metadata to the
                             // surviving representative so both creation paths
                             // retain the same vendor identity fields.
-                            normalizedRow.applyCatalogMetadata(metadata)
+                            normalizedRow.applyCatalogMetadata(
+                                metadata,
+                                fillMissingOnly: preserveExistingMetadata
+                            )
                         } catch {
                             context.rollback()
                             requestsAnotherPass = false
@@ -339,13 +360,12 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// permanently, so their rarity, artwork and catalog identity stayed
     /// empty for the life of the collection with no path back.
     ///
-    /// Rarity is part of the repair set because a printing always has one —
-    /// except sealed product, which is not a printing and carries no rarity
-    /// by construction, and would otherwise never stop being a candidate.
+    /// Missing rarity alone is not actionable once an exact provider printing
+    /// ID is attached. The Pokémon resolver cannot supply rarity, so treating
+    /// it as unresolved would refetch the row every eight hours indefinitely.
     nonisolated static func hasUnresolvedCatalogMetadata(_ card: CollectedCard) -> Bool {
         if card.catalogProviderID == nil { return true }
         if card.imageURL == nil { return true }
-        if card.itemKind != .sealedProduct, (card.rarity ?? "").isEmpty { return true }
         return false
     }
 

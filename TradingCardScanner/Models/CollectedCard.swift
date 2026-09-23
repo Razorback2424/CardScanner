@@ -347,14 +347,31 @@ final class CollectedCard {
         }
     }
 
-    func applyCatalogMetadata(_ metadata: ImportedCatalogMetadata) {
-        catalogProviderID = metadata.providerID
-        setCode = metadata.setCode
-        rarity = metadata.rarity ?? rarity
-        setReleaseOrder = metadata.setReleaseOrder
-        imageURL = metadata.imageURL
-        thumbnailURL = metadata.thumbnailURL
-        tcgplayerURL = metadata.tcgplayerURL
+    func applyCatalogMetadata(
+        _ metadata: ImportedCatalogMetadata,
+        fillMissingOnly: Bool = false
+    ) {
+        if !fillMissingOnly || catalogProviderID == nil {
+            catalogProviderID = metadata.providerID
+        }
+        if !fillMissingOnly || setCode.isEmpty {
+            setCode = metadata.setCode
+        }
+        if !fillMissingOnly || (rarity ?? "").isEmpty {
+            rarity = metadata.rarity ?? rarity
+        }
+        if !fillMissingOnly || setReleaseOrder == 0 {
+            setReleaseOrder = metadata.setReleaseOrder
+        }
+        if !fillMissingOnly || imageURL == nil {
+            imageURL = metadata.imageURL
+        }
+        if !fillMissingOnly || thumbnailURL == nil {
+            thumbnailURL = metadata.thumbnailURL
+        }
+        if !fillMissingOnly || tcgplayerURL == nil {
+            tcgplayerURL = metadata.tcgplayerURL
+        }
         justTCGCardID = metadata.justTCGCardID ?? justTCGCardID
         justTCGVariantID = metadata.justTCGVariantID ?? justTCGVariantID
         justTCGAPIVersion = metadata.justTCGAPIVersion ?? justTCGAPIVersion
@@ -388,6 +405,7 @@ final class CollectedCard {
             setReleaseOrder: setReleaseOrder ?? card.setReleaseOrder,
             quantity: 1
         )
+        catalogProviderID = card.providerID
         magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(
             from: card.magicTreatments(for: resolved.variant)
         )

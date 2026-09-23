@@ -88,6 +88,7 @@ struct CollectionStoreManifestStore: Sendable {
         } catch {
             throw CollectionStoreManifestStoreError.readFailure
         }
+        applyBackgroundRefreshProtection(to: manifestURL)
 
         let manifest: CollectionStoreManifest
         do {
@@ -119,7 +120,11 @@ struct CollectionStoreManifestStore: Sendable {
             try fileManager.createDirectory(
                 at: directoryURL,
                 withIntermediateDirectories: true,
-                attributes: [.protectionKey: FileProtectionType.completeUnlessOpen]
+                attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication]
+            )
+            try fileManager.setAttributes(
+                [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+                ofItemAtPath: directoryURL.path
             )
             do {
                 if let existing = try load(),
@@ -136,7 +141,7 @@ struct CollectionStoreManifestStore: Sendable {
             let data = try Self.encoder.encode(manifest)
             try data.write(to: temporaryManifestURL, options: .atomic)
             try fileManager.setAttributes(
-                [.protectionKey: FileProtectionType.completeUnlessOpen],
+                [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
                 ofItemAtPath: temporaryManifestURL.path
             )
 
@@ -193,12 +198,16 @@ struct CollectionStoreManifestStore: Sendable {
             try fileManager.createDirectory(
                 at: directoryURL,
                 withIntermediateDirectories: true,
-                attributes: [.protectionKey: FileProtectionType.completeUnlessOpen]
+                attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication]
+            )
+            try fileManager.setAttributes(
+                [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
+                ofItemAtPath: directoryURL.path
             )
             let temporaryURL = directoryURL.appendingPathComponent("\(Self.storeFileIdentityFilename).tmp")
             try Data(value.utf8).write(to: temporaryURL, options: .atomic)
             try fileManager.setAttributes(
-                [.protectionKey: FileProtectionType.completeUnlessOpen],
+                [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication],
                 ofItemAtPath: temporaryURL.path
             )
             if fileManager.fileExists(atPath: storeFileIdentityURL.path) {
@@ -229,12 +238,25 @@ struct CollectionStoreManifestStore: Sendable {
             guard !value.isEmpty, !value.contains("/") else {
                 throw CollectionStoreManifestStoreError.invalidStoreIdentity
             }
+            applyBackgroundRefreshProtection(to: storeFileIdentityURL)
             return value
         } catch let error as CollectionStoreManifestStoreError {
             throw error
         } catch {
             throw CollectionStoreManifestStoreError.readFailure
         }
+    }
+
+    /// Upgrades metadata written by earlier builds when a foreground launch
+    /// can still change file attributes. Best effort: a failed migration leaves
+    /// the existing identity readable and causes a locked background preflight
+    /// to skip safely until a later foreground run.
+    private func applyBackgroundRefreshProtection(to fileURL: URL) {
+        let attributes: [FileAttributeKey: Any] = [
+            .protectionKey: FileProtectionType.completeUntilFirstUserAuthentication
+        ]
+        try? FileManager.default.setAttributes(attributes, ofItemAtPath: fileURL.path)
+        try? FileManager.default.setAttributes(attributes, ofItemAtPath: directoryURL.path)
     }
 
     static func validateAttachmentTransition(

@@ -1,3 +1,4 @@
+import CloudKit
 import SwiftData
 import XCTest
 @testable import TradingCardScanner
@@ -172,6 +173,33 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         )
     }
 
+    func testStorageManifestAndIdentityMetadataAreReadableAfterFirstUnlock() throws {
+#if targetEnvironment(simulator)
+        throw XCTSkip("The iOS Simulator filesystem does not expose data-protection attributes; verify these paths on a locked physical device.")
+#else
+        let dependencies = try makeDependencies(account: { .noAccount })
+        try dependencies.manifestStore.save(CollectionStoreManifest(
+            storeID: localID,
+            attachmentState: .neverAttached,
+            storeFileIdentity: "identity-token"
+        ))
+        try dependencies.manifestStore.writeStoreFileIdentity("identity-token")
+
+        for url in [
+            dependencies.paths.collectionStorageDirectoryURL,
+            dependencies.manifestStore.manifestURL,
+            dependencies.manifestStore.storeFileIdentityURL
+        ] {
+            let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+            XCTAssertEqual(
+                attributes[.protectionKey] as? FileProtectionType,
+                .completeUntilFirstUserAuthentication,
+                "\(url.lastPathComponent) must be readable by an eligible locked background task after first unlock"
+            )
+        }
+#endif
+    }
+
 #if LOCAL_ONLY_SIGNING
     func testLocalOnlyBuildRejectsCloudKitConfigurationForEntitlementReason() throws {
         let dependencies = CollectionStorageBootstrapDependencies.production()
@@ -247,6 +275,86 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         XCTAssertNil(manifest.lastAttachedAccountFingerprint)
         XCTAssertEqual(TradingCardScannerApp.activeCloudAccountStatusRaw, "noAccount")
         XCTAssertEqual(TradingCardScannerApp.activeAttachmentStateRaw, "neverAttached")
+    }
+
+    func testUnprovenLocalBootstrapSkipsAccountProbeAndIgnoresAccountChange() async throws {
+        var accountProbeCount = 0
+        var dependencies = try makeDependencies(
+            account: {
+                accountProbeCount += 1
+                return .available(fingerprint: "account-a")
+            },
+            readiness: UnprovenCloudRestorationReadinessSource()
+        )
+        dependencies.storageGeneration = CollectionStorageGeneration()
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+
+        guard case let .ready(session) = bootstrap.state else {
+            return XCTFail("unproven readiness should still open a genuinely fresh local store")
+        }
+        XCTAssertEqual(session.mode, .onDevice)
+        XCTAssertEqual(accountProbeCount, 0)
+        let token = try XCTUnwrap(dependencies.storageGeneration.currentToken())
+
+        NotificationCenter.default.post(name: .CKAccountChanged, object: nil)
+        try await Task.sleep(for: .milliseconds(50))
+
+        XCTAssertTrue(dependencies.storageGeneration.isCurrent(token))
+        XCTAssertEqual(accountProbeCount, 0)
+        guard case .ready = bootstrap.state else {
+            return XCTFail("an account change cannot suspend local-only storage")
+        }
+    }
+
+    func testBootstrapReusesAnActiveLocalContainerWithoutInvalidatingItsToken() async throws {
+        var accountProbeCount = 0
+        var containerCreationCount = 0
+        var dependencies = try makeDependencies(
+            account: {
+                accountProbeCount += 1
+                return .available(fingerprint: "account-a")
+            },
+            readiness: UnprovenCloudRestorationReadinessSource(),
+            makeContainer: { _ in
+                containerCreationCount += 1
+                return try ModelContainer(
+                    for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                )
+            },
+            structuredStoreFilePresent: true
+        )
+        dependencies.storageGeneration = CollectionStorageGeneration()
+        dependencies.storageGeneration.suspend()
+        try dependencies.manifestStore.save(CollectionStoreManifest(
+            storeID: localID,
+            lastAttachedAccountFingerprint: nil,
+            attachmentState: .neverAttached,
+            storeFileIdentity: "test-store-file-identity"
+        ))
+        let existingContainer = try ModelContainer(
+            for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        dependencies.storageGeneration.installReady(session: CollectionStorageSession(
+            container: existingContainer,
+            storeID: localID,
+            mode: .onDevice
+        ))
+        let originalToken = try XCTUnwrap(dependencies.storageGeneration.currentToken())
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+
+        XCTAssertTrue(dependencies.storageGeneration.isCurrent(originalToken))
+        XCTAssertEqual(containerCreationCount, 0)
+        XCTAssertEqual(accountProbeCount, 0)
+        guard case let .ready(session) = bootstrap.state else {
+            return XCTFail("bootstrap should publish the active local session as ready")
+        }
+        XCTAssertTrue(session.container === existingContainer)
     }
 
     func testFreshAvailableAccountClaimsAndOpensCloudOnlyAfterReadinessProof() async throws {

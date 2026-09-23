@@ -167,10 +167,6 @@ enum BackgroundPriceRefresh {
         guard allowsForeground || UIApplication.shared.applicationState == .background else {
             return true
         }
-        guard UIApplication.shared.isProtectedDataAvailable else {
-            return true
-        }
-
         guard let storage = await CollectionStorageHeadlessPreflight.prepare(
             dependencies: .production()
         ) else {

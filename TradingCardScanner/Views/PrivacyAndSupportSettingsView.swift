@@ -8,7 +8,7 @@ struct PrivacyAndSupportSettingsView: View {
                     Link("Privacy Policy", destination: privacy)
                         .accessibilityHint("Opens the CardScanner privacy policy in your browser")
                 } else {
-                    Text("Privacy Policy link is configured for the release build.")
+                    Text("Privacy policy link is not available in this build.")
                         .foregroundStyle(.secondary)
                 }
 
@@ -16,14 +16,14 @@ struct PrivacyAndSupportSettingsView: View {
                     Link("Support Website", destination: support)
                         .accessibilityHint("Opens CardScanner support in your browser")
                 } else {
-                    Text("Support Website link is configured for the release build.")
+                    Text("Support link is not available in this build.")
                         .foregroundStyle(.secondary)
                 }
             }
 
-            Section("Collection sync") {
-                Text("CardScanner syncs structured collection records—cards, prices, product identities, activity, and inventory events—to your private iCloud database when storage is attached.")
-                Text("Value History, price observations, reference quotes, check days, and custom artwork are stored on this device and are not currently synced with iCloud.")
+            Section("Collection storage") {
+                Text("CardScanner 1.0 stores your collection on this device. iCloud sync is not available in this release.")
+                Text("Value History, price observations, reference quotes, check days, and custom artwork also stay on this device.")
             }
 
             Section("Custom artwork") {
@@ -31,7 +31,7 @@ struct PrivacyAndSupportSettingsView: View {
             }
 
             Section("Export and deletion") {
-                Text("CSV export is available from Collection & Portfolio settings. Deleting the collection removes the local records; iCloud copies follow the storage and account controls shown by the system.")
+                Text("CSV export is available from Collection & Portfolio settings. Deleting the collection removes its card records and current ownership. Removal activity, price records, and Value History remain on this device.")
             }
         }
         .navigationTitle("Privacy & Support")

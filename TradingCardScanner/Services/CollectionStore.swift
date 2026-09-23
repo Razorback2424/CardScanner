@@ -138,6 +138,8 @@ actor ScannerCollectionWriter {
             guard let stored = try store.card(forAnyKey: mutation.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
             }
+            // Both add and correction use the same staging gate: a lookup with
+            // no provider observation must leave the price ledger untouched.
             stagePrice(candidate.price, for: stored)
             try saveModelContext()
             return mutation
@@ -241,6 +243,7 @@ actor ScannerCollectionWriter {
     }
 
     private func stagePrice(_ lookup: PriceLookup, for card: CollectedCard) {
+        guard lookup.hasObservation else { return }
         PriceStore(context: modelContext).store(
             lookup,
             game: card.cardGame,
@@ -256,6 +259,7 @@ actor ScannerCollectionWriter {
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?
     ) {
+        guard lookup.hasObservation else { return }
         let printingID = pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
             ?? card.providerID
         PriceStore(context: modelContext).store(
@@ -3204,8 +3208,12 @@ struct CollectionStore {
     /// Removes every owned card while leaving catalog and price data alone.
     /// Each position gets its own snapshot and history row, while the whole
     /// destructive action still commits once.
-    func deleteAll() throws {
+    @discardableResult
+    func deleteAll(
+        shouldContinue: StorageGenerationContinuation? = nil
+    ) throws -> Bool {
         do {
+            guard shouldContinue?() ?? true else { return false }
             let physicalCards = try context.fetch(FetchDescriptor<CollectedCard>())
             let projection = LogicalCollection.project(cards: physicalCards, ledger: ledger)
             let collectionKeyAliases = LogicalCollection.readThroughAliases(
@@ -3214,6 +3222,10 @@ struct CollectionStore {
             )
             let occurredAt = Date.now
             for position in projection.positions {
+                guard shouldContinue?() ?? true else {
+                    context.rollback()
+                    return false
+                }
                 // If another device already rekeyed the ledger, address the
                 // position through that canonical key so the row is repaired as
                 // part of this deletion. This also keeps delete-all from
@@ -3260,7 +3272,12 @@ struct CollectionStore {
                 }
                 context.delete(card)
             }
+            guard shouldContinue?() ?? true else {
+                context.rollback()
+                return false
+            }
             try commit()
+            return true
         } catch {
             context.rollback()
             throw error
@@ -4000,6 +4017,18 @@ struct CollectionStore {
         card.pendingCatalogFinishID = nil
         card.pendingCatalogFinishFirstSeenAt = nil
         card.pendingCatalogFinishRefreshID = nil
+    }
+}
+
+/// Runs the whole-collection deletion on a context isolated from SwiftUI's
+/// main-actor context. The continuation is checked before each position and
+/// before commit so a storage transition rolls the operation back atomically.
+@ModelActor
+actor CollectionDeletionModelActor {
+    func deleteAll(
+        shouldContinue: @escaping StorageGenerationContinuation
+    ) throws -> Bool {
+        try CollectionStore(context: modelContext).deleteAll(shouldContinue: shouldContinue)
     }
 }
 

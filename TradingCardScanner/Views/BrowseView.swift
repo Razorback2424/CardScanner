@@ -2184,7 +2184,6 @@ private struct CatalogSetCardsView: View {
             unresolvedPriceSlotIDs.formUnion(update.unresolvedIDs)
             resolvedPriceSlotIDs.subtract(update.unresolvedIDs)
             unresolvedPriceSlotIDs.subtract(update.resolvedIDs)
-            refreshVisibleGroups()
         }
         guard requestIdentity.matches(
             contentGeneration: contentGeneration,

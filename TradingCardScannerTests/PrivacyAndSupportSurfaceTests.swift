@@ -45,7 +45,9 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
             "Custom artwork is stored on this device and is not currently synced with iCloud."
         ))
         XCTAssertTrue(source.contains("Value History"))
-        XCTAssertTrue(source.contains("structured collection records"))
+        XCTAssertTrue(source.contains("removes its card records and current ownership"))
+        XCTAssertTrue(source.contains("Removal activity, price records, and Value History remain on this device."))
+        XCTAssertFalse(source.contains("removes its local card records and history"))
     }
 
     func testPrivacyManifestCarriesBothRequiredReasonCategories() throws {

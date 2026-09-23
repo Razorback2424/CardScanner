@@ -293,14 +293,15 @@ struct CatalogCardDetailView: View {
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: details.card.magicTreatments(for: resolved.variant)
         )
-        let priceStored = prices.store(
-            catalogLookup,
-            game: details.card.game,
-            printingID: storageID,
-            variantID: resolved.variant?.id,
-            treatmentIDs: treatmentIDs
+        let priceSaved = !catalogLookup.hasObservation || (
+            prices.store(
+                catalogLookup,
+                game: details.card.game,
+                printingID: storageID,
+                variantID: resolved.variant?.id,
+                treatmentIDs: treatmentIDs
+            ) && prices.save()
         )
-        let priceSaved = priceStored && prices.save()
         if !priceSaved {
             addAlertTitle = "Added with price warning"
             addFailure = "The card was added, but its price could not be saved. It will remain available for a later refresh."
@@ -329,7 +330,10 @@ struct CatalogCardDetailView: View {
         catalogLookup: PriceLookup,
         prices: PriceStore
     ) {
-        guard PriceFallbackQuoteResolver.needsFallback(catalogLookup),
+        guard PriceFallbackQuoteResolver.needsFallback(
+                  catalogLookup,
+                  identifiedCatalogCard: true
+              ),
               PriceVendorCredentials.hasKey else { return }
 
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(

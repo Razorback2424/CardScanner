@@ -1704,9 +1704,25 @@ final class ScannerViewModel: ObservableObject {
         scanner.pauseRecognition()
     }
 
+    /// Settings can start exclusive collection operations. Release the
+    /// scanner's session-wide write interval while that sheet is presented so
+    /// those operations are not rejected merely because Scan is visible.
+    func pauseForSettingsPresentation() {
+        pauseForPresentation()
+        endScannerBulkWriteIfNeeded()
+    }
+
     func resumeAfterPresentation() {
         recognitionEligibility.isBlockedByPresentation = false
         settingsDismissed()
+    }
+
+    func resumeAfterSettingsPresentation() {
+        if recognitionEligibility.isScannerVisible,
+           writeCoordinator?.activeExclusiveOperation == nil {
+            beginScannerBulkWriteIfNeeded()
+        }
+        resumeAfterPresentation()
     }
 
     /// Settings may be opened from either the scanner chrome or a nested Price
@@ -1827,6 +1843,21 @@ final class ScannerViewModel: ObservableObject {
             )
         } else {
             spatialResetProofs.append(proof)
+        }
+    }
+
+    /// Keep only evidence that can still be tied to a committed presentation or
+    /// a pending encounter. A provisional proof (nil presentation token) is
+    /// valid only while its encounter is still awaiting a terminal outcome.
+    private func pruneSpatialResetProofsToLiveHistory() {
+        spatialResetProofs.removeAll { proof in
+            if let presentationToken = proof.presentationToken {
+                return !committedSessionHistory.contains {
+                    $0.encounterID == proof.encounterID
+                        && $0.presentationToken == presentationToken
+                }
+            }
+            return oneCardScanIntervals[proof.encounterID] == nil
         }
     }
 
@@ -1980,10 +2011,7 @@ final class ScannerViewModel: ObservableObject {
                 return
             }
 
-            // A different card commit is the boundary at which any unrelated
-            // outstanding proof is no longer useful. The candidate's own proof is
-            // carried by its tracker and may arrive after the commit.
-            self.spatialResetProofs.removeAll { $0.encounterID != pending.encounterID }
+            self.pruneSpatialResetProofsToLiveHistory()
         }
         guard accepted else {
             reportPendingResolutionRejected()
@@ -2929,6 +2957,7 @@ final class ScannerViewModel: ObservableObject {
                 committedSessionHistory.count - Self.committedHistoryLimit
             )
         }
+        pruneSpatialResetProofsToLiveHistory()
 
         if candidate.subject.slab != nil,
            candidate.resolved.resolution == .catalogSilent,
@@ -2947,14 +2976,7 @@ final class ScannerViewModel: ObservableObject {
         let candidateProofs = spatialResetProofs.filter {
             $0.encounterID == candidate.encounterID
         }
-        if candidate.heldRepeatAuthorizationID != nil {
-            // A successful held-repeat commit establishes a new encounter. Any
-            // proof belonging to an older presentation is no longer relevant
-            // to the newly committed copy.
-            spatialResetProofs.removeAll { $0.encounterID != candidate.encounterID }
-        } else {
-            spatialResetProofs.removeAll { $0.encounterID == candidate.encounterID }
-        }
+        spatialResetProofs.removeAll { $0.encounterID == candidate.encounterID }
         spatialResetProofs.append(contentsOf: candidateProofs.map { proof in
             SpatialResetProof(
                 id: proof.id,
@@ -2962,6 +2984,7 @@ final class ScannerViewModel: ObservableObject {
                 presentationToken: proof.presentationToken ?? committed.presentationToken
             )
         })
+        pruneSpatialResetProofsToLiveHistory()
         // A newer OCR confirmation may already be waiting while this write is
         // finishing. Do not erase that newer acknowledgement when the older
         // card becomes durable.
@@ -3056,10 +3079,7 @@ final class ScannerViewModel: ObservableObject {
         case .automatic:
             diagnostic("routingAutomatic")
             guard await commitAuthorizedCollectionCandidate(candidate, authorization: .automatic) else { return }
-            // A candidate may have exited before its successful commit. Keep
-            // only that candidate's proof and discard evidence belonging to
-            // older or unrelated presentations.
-            spatialResetProofs.removeAll { $0.encounterID != candidate.encounterID }
+            pruneSpatialResetProofsToLiveHistory()
         case .suppress:
             // No terminal path may leave a `.recognized` acknowledgement for
             // its encounter. A commit ends in a receipt, a failure ends in
@@ -3070,7 +3090,11 @@ final class ScannerViewModel: ObservableObject {
             scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
             endOneCardScan(encounterID: candidate.encounterID, outcome: "suppressed")
             clearAcknowledgement(for: candidate.encounterID)
-            spatialResetProofs.removeAll()
+            let printedIdentifier = candidate.identifier.scannerDisplayIdentifier(for: candidate.card)
+            let cardLabel = printedIdentifier.isEmpty ? candidate.card.name : printedIdentifier
+            show(ScanNote(text: "\(cardLabel) was already added this session", tone: .info))
+            spatialResetProofs.removeAll { $0.encounterID == candidate.encounterID }
+            pruneSpatialResetProofsToLiveHistory()
         case .duplicate(let proof):
             diagnostic("routingSpatialDuplicatePrompt")
             guard let previous = committedSessionHistory.reversed().first(where: { committed in
@@ -3307,7 +3331,10 @@ final class ScannerViewModel: ObservableObject {
         catalogLookup: PriceLookup
     ) {
         guard isStorageGenerationCurrent,
-              PriceFallbackQuoteResolver.needsFallback(catalogLookup),
+              PriceFallbackQuoteResolver.needsFallback(
+                  catalogLookup,
+                  identifiedCatalogCard: true
+              ),
               let modelContainer,
               PriceVendorCredentials.hasKey else { return }
 

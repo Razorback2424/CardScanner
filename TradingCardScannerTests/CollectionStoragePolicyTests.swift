@@ -81,6 +81,66 @@ final class CollectionStoragePolicyTests: XCTestCase {
         )
     }
 
+    func testNotQueriedAccountKeepsFreshInstallOnDeviceWithoutPretendingNoAccount() {
+        XCTAssertEqual(
+            CollectionStoragePolicy.decide(
+                CollectionStoragePolicyInput(
+                    local: fresh(),
+                    account: .notQueried,
+                    cloudRestorationReadinessProven: false
+                )
+            ),
+            .openProvenLocal(storeID: localStoreID, reason: .restorationUnproven)
+        )
+    }
+
+    func testNotQueriedAccountOpensOnlyVerifiedExistingLocalReplica() {
+        let verifiedLocal = CollectionStorageLocalFacts(
+            manifest: CollectionStoreManifest(
+                storeID: localStoreID,
+                lastAttachedAccountFingerprint: "account-a",
+                attachmentState: .attached,
+                storeFileIdentity: "file-a"
+            ),
+            structuredStoreFilePresent: true,
+            localHasUserData: true,
+            storeFileIdentityStatus: .matching
+        )
+        XCTAssertEqual(
+            CollectionStoragePolicy.decide(
+                CollectionStoragePolicyInput(
+                    local: verifiedLocal,
+                    account: .notQueried,
+                    cloudRestorationReadinessProven: false
+                )
+            ),
+            .openProvenLocal(storeID: localStoreID, reason: .restorationUnproven)
+        )
+
+        let missingReplica = CollectionStorageLocalFacts(
+            manifest: CollectionStoreManifest(
+                storeID: localStoreID,
+                lastAttachedAccountFingerprint: "account-a",
+                attachmentState: .attached,
+                storeFileIdentity: "file-a"
+            ),
+            structuredStoreFilePresent: false,
+            localHasUserData: false,
+            storeFileIdentityStatus: .matching
+        )
+        XCTAssertEqual(
+            CollectionStoragePolicy.decide(
+                CollectionStoragePolicyInput(
+                    local: missingReplica,
+                    account: .notQueried,
+                    cloudRestorationReadinessProven: false
+                )
+            ),
+            .blockUnprovenTransition,
+            "a skipped probe is never permission to recreate a missing attached replica"
+        )
+    }
+
     func testUnprovenReadinessDoesNotRecreateMissingLocalReplica() {
         let local = CollectionStorageLocalFacts(
             manifest: CollectionStoreManifest(

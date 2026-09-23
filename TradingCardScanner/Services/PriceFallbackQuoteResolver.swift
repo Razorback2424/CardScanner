@@ -105,10 +105,16 @@ final class PriceFallbackQuoteResolver {
 
     /// Whether a catalog answer leaves work for the USD fallback. A non-USD
     /// catalog result remains displayable, but cannot finish a USD quote.
-    nonisolated static func needsFallback(_ lookup: PriceLookup) -> Bool {
+    nonisolated static func needsFallback(
+        _ lookup: PriceLookup,
+        identifiedCatalogCard: Bool = false
+    ) -> Bool {
         switch lookup {
-        case .unavailable:
-            return true
+        case let .unavailable(source):
+            // `unavailable(nil)` is deliberately not a persistable provider
+            // observation, but an identified catalog card with no pricing
+            // payload may still be quoted by the configured fallback vendor.
+            return source != nil || identifiedCatalogCard
         case let .price(price):
             return price.currencyCode.caseInsensitiveCompare("USD") != .orderedSame
         }

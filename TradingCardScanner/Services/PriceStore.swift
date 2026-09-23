@@ -788,6 +788,10 @@ struct PriceStore {
         at date: Date = .now,
         treatmentIDs: [String] = []
     ) -> Bool {
+        // `.unavailable(nil)` means the catalog identity was resolved without
+        // asking any pricing provider. Treat it as a successful no-op so it
+        // cannot create a false failure record or price-history observation.
+        guard lookup.hasObservation else { return true }
         let key = PriceRecord.key(
             game: game,
             printingID: printingID,

@@ -462,6 +462,26 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.variant, .holo)
     }
 
+    func testRawFinishCorrectionDoesNotPersistNoProviderPriceFailure() async throws {
+        let model = try makeModel(variants: [.normal, .holo])
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let choiceAppeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(choiceAppeared)
+        model.choose(.holo)
+
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+        let scanID = try XCTUnwrap(model.sessionScans.first?.id)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        let outcome = await model.correct(scanID: scanID, to: .normal)
+        XCTAssertEqual(outcome, .saved)
+
+        XCTAssertTrue(
+            try context().fetch(FetchDescriptor<PriceRecord>()).isEmpty,
+            "finish correction must not record unavailable(nil) as a provider check"
+        )
+    }
+
     func testImpossibleGradedLabelPrintRunIsDroppedBeforeVendorAndPersistence() async throws {
         let recorder = ScannerPrintRunRecorder()
         let model = try makeModel(
@@ -917,6 +937,162 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertNil(model.scanAcknowledgement)
     }
 
+    func testOlderPresentationProofSurvivesAnotherCardAndSameCardChoiceNeverAdds() async throws {
+        let model = try makeModel(variants: [.normal])
+        let firstEncounter = UUID()
+        let otherEncounter = UUID()
+        let repeatedEncounter = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        let firstCommitted = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(firstCommitted)
+        model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: firstEncounter))
+        await settle()
+
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: otherEncounter)
+        let otherCommitted = await waitUntil { model.sessionScans.count == 2 }
+        XCTAssertTrue(otherCommitted)
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: repeatedEncounter)
+        let duplicatePromptAppeared = await waitUntil { model.pendingDuplicateConfirmation != nil }
+        XCTAssertTrue(duplicatePromptAppeared)
+        XCTAssertEqual(model.pendingDuplicateConfirmation?.encounterID, repeatedEncounter)
+        XCTAssertEqual(model.successCount, 2)
+
+        model.chooseSameCard()
+        await settle()
+
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+        XCTAssertEqual(model.sessionScans.count, 2)
+        XCTAssertEqual(model.successCount, 2)
+        XCTAssertNil(model.scanAcknowledgement)
+    }
+
+    func testUndoRemovesOnlyTheUndoneEncounterProofAndKeepsOlderProof() async throws {
+        let model = try makeModel(variants: [.normal])
+        let firstEncounter = UUID()
+        let secondEncounter = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        let firstCommitted = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(firstCommitted)
+        model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: firstEncounter))
+        await settle()
+
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: secondEncounter)
+        let secondCommitted = await waitUntil { model.sessionScans.count == 2 }
+        XCTAssertTrue(secondCommitted)
+        model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: secondEncounter))
+        await settle()
+
+        let secondScanID = try XCTUnwrap(
+            model.sessionScans.first(where: { $0.card.cardNumber == "002" })?.id
+        )
+        let didUndo = await model.undoScan(scanID: secondScanID)
+        XCTAssertTrue(didUndo)
+        XCTAssertEqual(model.sessionScans.count, 1)
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: UUID())
+        let duplicatePromptAppeared = await waitUntil {
+            model.pendingDuplicateConfirmation != nil
+        }
+        XCTAssertTrue(duplicatePromptAppeared)
+        XCTAssertEqual(model.sessionScans.count, 1)
+        model.chooseSameCard()
+        await settle()
+        XCTAssertEqual(model.sessionScans.count, 1)
+    }
+
+    func testAddingAnotherCopyOfNewerCardKeepsOlderPresentationProof() async throws {
+        let model = try makeModel(variants: [.normal])
+        let firstEncounter = UUID()
+        let otherEncounter = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        let firstCommitted = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(firstCommitted)
+        model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: firstEncounter))
+        await settle()
+
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: otherEncounter)
+        let otherCommitted = await waitUntil { model.sessionScans.count == 2 }
+        XCTAssertTrue(otherCommitted)
+        model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: otherEncounter))
+        await settle()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+        let newerDuplicatePrompt = await waitUntil { model.pendingDuplicateConfirmation != nil }
+        XCTAssertTrue(newerDuplicatePrompt)
+
+        model.addAnother()
+        let newerSecondCopyCommitted = await waitUntil {
+            model.sessionScans.count == 3 && model.pendingDuplicateConfirmation == nil
+        }
+        XCTAssertTrue(newerSecondCopyCommitted)
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: UUID())
+        let olderDuplicatePrompt = await waitUntil { model.pendingDuplicateConfirmation != nil }
+        XCTAssertTrue(olderDuplicatePrompt)
+        model.chooseSameCard()
+        await settle()
+
+        XCTAssertEqual(model.sessionScans.count, 3)
+        XCTAssertEqual(model.successCount, 3)
+    }
+
+    func testHeldRepeatCommitKeepsProofForOlderUnrelatedCard() async throws {
+        let model = try makeModel(variants: [.normal])
+        let firstEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        let firstCommitted = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(firstCommitted)
+        model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: firstEncounter))
+        await settle()
+
+        let otherIdentifier = scannerIdentifier(cardNumber: "002")
+        let otherSubject = ScanSubject(identifier: otherIdentifier)
+        let start = CFAbsoluteTimeGetCurrent()
+        var otherEncounter: UUID?
+        let originalConfirmation = model.scanner.onConfirmedSubjectCandidate
+        model.scanner.onConfirmedSubjectCandidate = { context, encounterID, subject, authorizationID in
+            if subject.identifier == otherIdentifier {
+                otherEncounter = encounterID
+            }
+            originalConfirmation?(context, encounterID, subject, authorizationID)
+        }
+        model.scanner.drainProfileQueuesForTesting()
+        model.scanner.receiveFooterOutcomeForTesting(.identified(otherSubject), at: start + 0.25)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(otherSubject), at: start + 0.5)
+        let otherCommitted = await waitUntil { model.sessionScans.count == 2 }
+        XCTAssertTrue(otherCommitted)
+        guard let otherEncounter else {
+            return XCTFail("the second card did not produce a scanner encounter")
+        }
+
+        for offset in stride(from: 0.75, through: 2.5, by: 0.25) {
+            model.scanner.receiveFooterOutcomeForTesting(.identified(otherSubject), at: start + offset)
+        }
+        model.scanner.onLatchHolding?(otherSubject, otherEncounter)
+        let heldOfferAppeared = await waitUntil { model.heldDuplicateOffer != nil }
+        XCTAssertTrue(heldOfferAppeared)
+        guard heldOfferAppeared else { return }
+
+        model.addAnotherHeldCopy()
+        await settle()
+        model.scanner.drainVisionQueueForTesting()
+        model.scanner.receiveFooterOutcomeForTesting(.identified(otherSubject), at: start + 3.0)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(otherSubject), at: start + 3.25)
+        let heldRepeatCommitted = await waitUntil { model.sessionScans.count == 3 }
+        XCTAssertTrue(heldRepeatCommitted)
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: UUID())
+        let olderDuplicatePrompt = await waitUntil { model.pendingDuplicateConfirmation != nil }
+        XCTAssertTrue(olderDuplicatePrompt)
+        XCTAssertEqual(model.sessionScans.count, 3)
+        model.chooseSameCard()
+        await settle()
+        XCTAssertEqual(model.sessionScans.count, 3)
+    }
+
     func testSpatialProofAddAnotherCommitsSecondCopyToExistingPosition() async throws {
         let model = try makeModel(variants: [.normal])
         let identifier = scannerIdentifier()
@@ -1127,6 +1303,57 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(coordinator.isBulkWriteInFlight)
         model.endSession()
 
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+    }
+
+    func testImportAndDeleteBulkOperationsAreMutuallyExclusive() throws {
+        let coordinator = DerivedStateWriteCoordinator()
+        let importToken = try XCTUnwrap(coordinator.beginCSVImport(totalEntries: 12))
+
+        XCTAssertEqual(coordinator.activeExclusiveOperation, .csvImport)
+        XCTAssertTrue(coordinator.isBulkWriteInFlight)
+        XCTAssertNil(coordinator.beginCollectionDelete())
+        coordinator.updateCSVImportProgress(
+            CSVImportProgress(completedEntries: 4, totalEntries: 12),
+            token: importToken
+        )
+        XCTAssertEqual(
+            coordinator.csvImportProgress,
+            CSVImportProgress(completedEntries: 4, totalEntries: 12)
+        )
+
+        coordinator.endCSVImport(token: importToken)
+        XCTAssertNil(coordinator.activeExclusiveOperation)
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+        XCTAssertNil(coordinator.csvImportProgress)
+
+        let deleteToken = try XCTUnwrap(coordinator.beginCollectionDelete())
+        XCTAssertEqual(coordinator.activeExclusiveOperation, .collectionDelete)
+        XCTAssertNil(coordinator.beginCSVImport(totalEntries: 1))
+        coordinator.endCollectionDelete(token: deleteToken)
+        XCTAssertNil(coordinator.activeExclusiveOperation)
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+    }
+
+    func testSettingsReleasesAndRestoresScannerBulkWriteInterval() throws {
+        let coordinator = DerivedStateWriteCoordinator()
+        let model = try makeModel(
+            variants: [.normal],
+            writeCoordinator: coordinator
+        )
+
+        XCTAssertTrue(coordinator.isBulkWriteInFlight)
+        model.pauseForSettingsPresentation()
+        XCTAssertFalse(coordinator.isBulkWriteInFlight)
+
+        let importToken = try XCTUnwrap(coordinator.beginCSVImport(totalEntries: 1))
+        coordinator.endCSVImport(token: importToken)
+        let deleteToken = try XCTUnwrap(coordinator.beginCollectionDelete())
+        coordinator.endCollectionDelete(token: deleteToken)
+
+        model.resumeAfterSettingsPresentation()
+        XCTAssertTrue(coordinator.isBulkWriteInFlight)
+        model.endSession()
         XCTAssertFalse(coordinator.isBulkWriteInFlight)
     }
 

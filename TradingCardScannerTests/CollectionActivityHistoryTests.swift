@@ -554,7 +554,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
         XCTAssertEqual(repaired.variantResolution, .uniqueInCatalog)
     }
 
-    func testDeleteAllRecordsOneRemovalEntryPerPosition() throws {
+    func testDeleteAllRecordsOneRemovalEntryPerPosition() async throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
         let card = try identifiedCard()
@@ -576,16 +576,19 @@ final class CollectionActivityHistoryTests: XCTestCase {
             source: .scan
         )
 
-        try store.deleteAll()
+        let deletionActor = CollectionDeletionModelActor(modelContainer: context.container)
+        let didDelete = try await deletionActor.deleteAll(shouldContinue: { true })
+        XCTAssertTrue(didDelete)
 
-        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
-        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        let verificationContext = ModelContext(context.container)
+        XCTAssertTrue(try verificationContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let activities = try verificationContext.fetch(FetchDescriptor<CollectionActivity>())
         XCTAssertEqual(activities.filter { $0.kind == .removed }.count, 2)
         XCTAssertEqual(
             activities.filter { $0.kind == .removed }.reduce(0) { $0 + $1.signedQuantity },
             -3
         )
-        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        let events = try verificationContext.fetch(FetchDescriptor<InventoryEvent>())
         XCTAssertEqual(InventoryLedger.quantities(from: events), [:])
         XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
     }
