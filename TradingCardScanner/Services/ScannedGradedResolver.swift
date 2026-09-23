@@ -99,10 +99,9 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         }
     }
 
-    /// Match company, numeric grade, and qualifier first. The app and vendor
-    /// author those labels independently (and v2 often omits the vendor label),
-    /// so label equality is only a tie-breaker for variants that share the
-    /// stable grade axis, such as BGS 10 and BGS 10 Black Label.
+    /// Match the stable grader/grade/qualifier axis first, then require the
+    /// vendor label to agree when it publishes one. A unique unlabeled vendor
+    /// variant remains usable; a conflicting Black Label never does.
     static func matchingVariant(
         in variants: [GradedVariant],
         for slab: GradedSlabEvidence
@@ -113,13 +112,42 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
                 && normalized(variant.grade.qualifier) == normalized(slab.grade.qualifier)
         }
         guard !candidates.isEmpty else { return nil }
-
-        if let exactLabel = candidates.first(where: {
-            normalized($0.grade.label) == normalized(slab.grade.label)
-        }) {
-            return exactLabel
+        if candidates.count == 1,
+           isBlackLabel(candidates[0].grade.label),
+           !isBlackLabel(slab.grade.label) {
+            return nil
         }
-        return candidates.count == 1 ? candidates[0] : nil
+
+        let scannedLabel = normalizedLabel(slab.grade.label)
+        let exactLabelMatches = candidates.filter {
+            normalizedLabel($0.grade.label) == scannedLabel
+        }
+        if exactLabelMatches.count == 1 { return exactLabelMatches[0] }
+        if exactLabelMatches.count > 1 { return nil }
+
+        let unlabeled = candidates.filter { $0.grade.label == nil }
+        guard unlabeled.count == 1 else { return nil }
+        return unlabeled[0]
+    }
+
+    private static func normalizedLabel(_ value: String?) -> String? {
+        guard let value else { return nil }
+        let tokens = value.uppercased()
+            .split { !$0.isLetter && !$0.isNumber && $0 != "+" }
+            .map(String.init)
+        guard !tokens.isEmpty else { return nil }
+        var label = tokens.joined(separator: " ")
+        label = label.replacingOccurrences(of: "GEM MT", with: "GEM MINT")
+        label = label.replacingOccurrences(of: "NM MINT", with: "NM MT")
+        label = label.replacingOccurrences(of: "EX MINT", with: "EX MT")
+        label = label.replacingOccurrences(of: "VG EXCELLENT", with: "VG EX")
+        label = label.replacingOccurrences(of: "MINT PLUS", with: "MINT+")
+        label = label.replacingOccurrences(of: "MINT +", with: "MINT+")
+        return label
+    }
+
+    private static func isBlackLabel(_ value: String?) -> Bool {
+        normalizedLabel(value) == "BLACK LABEL"
     }
 
     private static func normalized(_ value: String?) -> String? {

@@ -85,7 +85,7 @@ struct CardLatch: Equatable {
     /// One printing that has already been counted, and what is known about
     /// whether it is still in front of the camera.
     private struct ConsumedPrinting: Equatable {
-        let key: ScanSuppressionKey
+        var key: ScanSuppressionKey
         /// When this printing was last actually read. The absence is measured
         /// from here rather than from the first unreadable frame, because that is
         /// the moment the card was last known to be present — starting the clock
@@ -325,6 +325,47 @@ struct CardLatch: Equatable {
         if latched?.suppressionKey == key {
             release()
         }
+    }
+
+    /// A stable, different certificate for the same card and exact slab grade
+    /// proves that the held physical copy was replaced. Keep its old suppression
+    /// record, but allow that certified copy to be scanned again if it returns.
+    mutating func replaceHeldCertifiedSlab(with replacement: ScanSubject) -> ScanSubject? {
+        guard let current = latched,
+              current.identifier == replacement.identifier,
+              let previousSlab = current.slab,
+              let replacementSlab = replacement.slab,
+              SlabEvidenceConfirmationWindow.isDistinctCertifiedCopy(
+                  from: previousSlab,
+                  to: replacementSlab
+              ),
+              let index = consumed.firstIndex(where: { $0.key == current.suppressionKey }) else {
+            return nil
+        }
+        consumed[index].hasLeft = true
+        release()
+        return current
+    }
+
+    /// A confirmed certificate enriches the existing physical slab. Rekey the
+    /// consumed entry with it so later certified reads remain suppressed and a
+    /// second certificate can be distinguished from this held copy.
+    @discardableResult
+    mutating func refineLatchedSlab(to updated: ScanSubject) -> Bool {
+        guard let current = latched,
+              current.identifier == updated.identifier,
+              let previousSlab = current.slab,
+              let updatedSlab = updated.slab,
+              SlabEvidenceConfirmationWindow.isCertificateRefinement(
+                  from: previousSlab,
+                  to: updatedSlab
+              ),
+              let index = consumed.firstIndex(where: { $0.key == current.suppressionKey }) else {
+            return false
+        }
+        consumed[index].key = updated.suppressionKey
+        latched = updated
+        return true
     }
 
     /// Release *and* forget every consumed printing, so the very next

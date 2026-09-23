@@ -28,18 +28,21 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         )
     }
 
-    func testCertificateMissStillRequiresMatchingCardName() {
+    func testCertificateMissStillConfirmsMatchingGradeIdentityWithDifferentText() {
         var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
 
         XCTAssertNil(window.observe(evidence(certificationNumber: nil, text: ["CHARIZARD"])))
-        XCTAssertNil(window.observe(evidence(certificationNumber: "12345678", text: ["PIKACHU"])))
+        XCTAssertEqual(
+            window.observe(evidence(certificationNumber: "12345678", text: ["PIKACHU"]))?.certificationNumber,
+            "12345678"
+        )
     }
 
-    func testTwoMissingCertificatesNeedMatchingCardName() {
+    func testTwoMatchingCertlessReadsConfirmWithoutCardNameOCR() {
         var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
 
         XCTAssertNil(window.observe(evidence(certificationNumber: nil, text: [])))
-        XCTAssertNil(window.observe(evidence(certificationNumber: nil, text: [])))
+        XCTAssertNotNil(window.observe(evidence(certificationNumber: nil, text: [])))
     }
 
     func testWindowEvictionPreventsAnOldObservationFromConfirming() {
@@ -70,23 +73,127 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         XCTAssertEqual(window.observe(first), first)
     }
 
-    func testCertlessDifferentSlabsNeedOneSharedNormalizedLabelLine() {
-        var different = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
-        XCTAssertNil(different.observe(evidence(certificationNumber: nil, text: ["CHARIZARD"])))
-        XCTAssertNil(different.observe(evidence(certificationNumber: nil, text: ["PIKACHU"])))
-
-        var same = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
-        XCTAssertNil(same.observe(evidence(certificationNumber: nil, text: ["Charizard-Holo"])))
-        let latest = evidence(certificationNumber: nil, text: ["CHARIZARD HOLO", "glare"])
-        XCTAssertNotNil(same.observe(latest))
+    func testCertlessReadsWithSameGradeIdentityIgnoreChangingCardText() {
+        var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
+        XCTAssertNil(window.observe(evidence(certificationNumber: nil, text: ["CHARIZARD"])))
+        XCTAssertNotNil(window.observe(evidence(certificationNumber: nil, text: ["PIKACHU"])))
     }
 
-    func testCertlessEmptyLabelTextCannotConfirmWithoutCardNameEvidence() {
+    func testCertlessEmptyLabelTextCanConfirmOnMatchingGradeIdentity() {
         var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
         let empty = evidence(certificationNumber: nil, text: [])
 
         XCTAssertNil(window.observe(empty))
-        XCTAssertNil(window.observe(empty))
+        XCTAssertNotNil(window.observe(empty))
+    }
+
+    func testWindowReturnsTheMostCompleteMatchingRead() {
+        var window = SlabEvidenceConfirmationWindow(matchesRequired: 2, windowSize: 4)
+        let partial = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: nil, label: "Gem Mint"),
+            certificationNumber: nil,
+            labelCardText: ["CHARIZARD"]
+        )
+        let complete = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD", "HOLO"]
+        )
+
+        XCTAssertNil(window.observe(partial))
+        XCTAssertEqual(window.observe(complete), complete)
+    }
+
+    func testLabelScheduleUsesFooterGateAndCertifiedCopyCadence() {
+        XCTAssertFalse(SlabLabelSchedule.shouldReadLabel(
+            mode: .raw,
+            footerMatched: true,
+            hasEvidence: false,
+            certKnown: false,
+            lastLabelAt: nil,
+            now: 0
+        ))
+        XCTAssertTrue(SlabLabelSchedule.shouldReadLabel(
+            mode: .slab,
+            footerMatched: true,
+            hasEvidence: false,
+            certKnown: false,
+            lastLabelAt: 0,
+            now: 0.5
+        ))
+        XCTAssertFalse(SlabLabelSchedule.shouldReadLabel(
+            mode: .slab,
+            footerMatched: true,
+            hasEvidence: true,
+            certKnown: false,
+            lastLabelAt: 1,
+            now: 1.49
+        ))
+        XCTAssertTrue(SlabLabelSchedule.shouldReadLabel(
+            mode: .slab,
+            footerMatched: true,
+            hasEvidence: true,
+            certKnown: false,
+            lastLabelAt: 1,
+            now: 1.5
+        ))
+        XCTAssertFalse(SlabLabelSchedule.shouldReadLabel(
+            mode: .slab,
+            footerMatched: true,
+            hasEvidence: true,
+            certKnown: true,
+            lastLabelAt: 1,
+            now: 2.99
+        ))
+        XCTAssertTrue(SlabLabelSchedule.shouldReadLabel(
+            mode: .slab,
+            footerMatched: true,
+            hasEvidence: true,
+            certKnown: true,
+            lastLabelAt: 1,
+            now: 3
+        ))
+        XCTAssertFalse(SlabLabelSchedule.shouldReadLabel(
+            mode: .slab,
+            footerMatched: false,
+            hasEvidence: false,
+            certKnown: false,
+            lastLabelAt: nil,
+            now: 10
+        ))
+    }
+
+    func testCertificateRefinementIgnoresUnstableCardTextButRequiresExactGrade() {
+        let original = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: nil,
+            labelCardText: ["CHARIZARD"]
+        )
+        let certified = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678",
+            labelCardText: ["PIKACHU"]
+        )
+        let wrongGrade = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "9", label: "Mint"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD"]
+        )
+
+        XCTAssertTrue(SlabEvidenceConfirmationWindow.isCertificateRefinement(from: original, to: certified))
+        XCTAssertFalse(SlabEvidenceConfirmationWindow.isCertificateRefinement(from: original, to: wrongGrade))
+        XCTAssertTrue(SlabEvidenceConfirmationWindow.isDistinctCertifiedCopy(from: certified, to: GradedSlabEvidence(
+            company: .psa,
+            grade: certified.grade,
+            certificationNumber: "87654321",
+            labelCardText: []
+        )))
+        XCTAssertFalse(SlabEvidenceConfirmationWindow.isDistinctCertifiedCopy(from: certified, to: wrongGrade))
     }
 
     private func evidence(certificationNumber: String?, text: [String]) -> GradedSlabEvidence {

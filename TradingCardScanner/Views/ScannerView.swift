@@ -149,9 +149,11 @@ private struct ScannerChrome: View {
         VStack(spacing: 10) {
             ScannerTopBar(
                 purpose: model.purpose,
+                subjectMode: model.subjectMode,
                 finishLocks: model.finishLocks,
                 isSlowIdentifying: model.isSlowIdentifying,
                 setPurpose: model.setPurpose,
+                setSubjectMode: model.setSubjectMode,
                 setFinishLock: model.setFinishLock,
                 clearFinishLocks: model.clearFinishLocks,
                 openSettings: openSettings
@@ -165,9 +167,17 @@ private struct ScannerChrome: View {
 
             ScannerStatusView(
                 state: scanner.uiState,
-                purpose: model.purpose,
-                useRaw: model.chooseRawForPendingSlabLabel
+                switchToRaw: { model.setSubjectMode(.raw) }
             )
+
+            if let offer = model.pendingSlabConversionOffer {
+                PendingSlabConversionOfferView(
+                    offer: offer,
+                    onConvert: { Task { await model.convertRawScanToGraded(scanID: offer.scanID) } },
+                    onDismiss: model.dismissSlabConversionOffer
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
 
             if let offer = model.heldDuplicateOffer {
                 HeldDuplicateOfferView(
@@ -323,8 +333,7 @@ private struct ScannerChrome: View {
 
 private struct ScannerStatusView: View {
     @ObservedObject var state: CardScannerUIState
-    let purpose: ScanPurpose
-    let useRaw: (UUID) -> Void
+    let switchToRaw: () -> Void
 
     var body: some View {
         VStack(spacing: 8) {
@@ -335,8 +344,7 @@ private struct ScannerStatusView: View {
             if let prompt = state.slabLabelReadPrompt {
                 SlabLabelReadingOfferView(
                     prompt: prompt,
-                    purpose: purpose,
-                    onUseRaw: { useRaw(prompt.id) }
+                    onSwitchToRaw: switchToRaw
                 )
                 .transition(.move(edge: .top).combined(with: .opacity))
             }
@@ -368,9 +376,11 @@ private struct ScannerCameraIssueOverlay: View {
 
 private struct ScannerTopBar: View, Equatable {
     let purpose: ScanPurpose
+    let subjectMode: ScanSubjectMode
     let finishLocks: [CardGame: MagicFinishLock]
     let isSlowIdentifying: Bool
     let setPurpose: (ScanPurpose) -> Void
+    let setSubjectMode: (ScanSubjectMode) -> Void
     let setFinishLock: (MagicFinishLock?, CardGame) -> Void
     let clearFinishLocks: () -> Void
     let openSettings: () -> Void
@@ -379,6 +389,7 @@ private struct ScannerTopBar: View, Equatable {
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.purpose == rhs.purpose
+            && lhs.subjectMode == rhs.subjectMode
             && lhs.finishLocks == rhs.finishLocks
             && lhs.isSlowIdentifying == rhs.isSlowIdentifying
     }
@@ -451,7 +462,9 @@ private struct ScannerTopBar: View, Equatable {
             purposeControl
 
             FinishLockControl(
+                subjectMode: subjectMode,
                 locks: finishLocks,
+                setSubjectMode: setSubjectMode,
                 setLock: setFinishLock,
                 clearLocks: clearFinishLocks,
                 glassNamespace: glassNamespace
@@ -500,13 +513,15 @@ private struct ScannerTopBar: View, Equatable {
 }
 
 private struct FinishLockControl: View, Equatable {
+    let subjectMode: ScanSubjectMode
     let locks: [CardGame: MagicFinishLock]
+    let setSubjectMode: (ScanSubjectMode) -> Void
     let setLock: (MagicFinishLock?, CardGame) -> Void
     let clearLocks: () -> Void
     let glassNamespace: Namespace.ID
 
     static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.locks == rhs.locks
+        lhs.subjectMode == rhs.subjectMode && lhs.locks == rhs.locks
     }
 
     private var activeLocks: [(game: CardGame, lock: MagicFinishLock)] {
@@ -523,14 +538,33 @@ private struct FinishLockControl: View, Equatable {
 
     var body: some View {
         Menu {
+            Section("Scanning") {
+                Picker("Card type", selection: Binding(
+                    get: { subjectMode },
+                    set: setSubjectMode
+                )) {
+                    ForEach(ScanSubjectMode.allCases) { mode in
+                        Label(mode.title, systemImage: mode.symbolName)
+                            .tag(mode)
+                    }
+                }
+                .pickerStyle(.inline)
+            }
+
+            Divider()
+
+            if subjectMode == .slab {
+                Text("Finish locks apply to raw cards")
+                    .font(.caption)
+            }
+
             Button(action: clearLocks) {
                 Text("Auto")
                 if locks.isEmpty {
                     Image(systemName: "checkmark")
                 }
             }
-
-            Divider()
+            .disabled(subjectMode == .slab)
 
             ForEach(CardGame.allCases) { game in
                 Menu {
@@ -551,30 +585,55 @@ private struct FinishLockControl: View, Equatable {
                 } label: {
                     Text(locks[game].map { "\(game.label)  \($0.label)" } ?? game.label)
                 }
+                .disabled(subjectMode == .slab)
             }
         } label: {
-            HStack(spacing: 6) {
-                Image(systemName: locks.isEmpty ? "lock.open" : "lock.fill")
-                    .font(.system(size: 13, weight: .semibold))
-                Text(summary)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
-                Image(systemName: "chevron.down")
-                    .font(.system(size: 10, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.7))
+            Group {
+                if subjectMode == .slab {
+                    HStack(spacing: 6) {
+                        Image(systemName: "rectangle.stack")
+                            .font(.system(size: 13, weight: .semibold))
+                        Text("Slabs")
+                            .font(.subheadline.weight(.semibold))
+                            .lineLimit(1)
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.7))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 12)
+                    .frame(height: 44)
+                    .appPillGlass(tint: .cyan, interactive: true)
+                } else {
+                    HStack(spacing: 6) {
+                        Image(systemName: locks.isEmpty ? "lock.open" : "lock.fill")
+                            .font(.system(size: 13, weight: .semibold))
+                        Text(summary)
+                            .font(.subheadline.weight(.semibold))
+                            .lineLimit(1)
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundStyle(.white.opacity(0.7))
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 12)
+                    .frame(height: 44)
+                    .appPillGlass(tint: locks.isEmpty ? nil : .red, interactive: true)
+                }
             }
-            .foregroundStyle(.white)
-            .padding(.horizontal, 12)
-            .frame(height: 44)
-            .appPillGlass(tint: locks.isEmpty ? nil : .red, interactive: true)
             .appGlassEffectID("scanner-finish-lock", in: glassNamespace)
             .appGlassEffectUnion("scanner-top-controls", in: glassNamespace)
             .animation(.easeOut(duration: 0.2), value: locks)
+            .animation(.easeOut(duration: 0.2), value: subjectMode)
         }
         .menuStyle(.button)
         .buttonStyle(.plain)
-        .accessibilityLabel("Finish lock: \(summary)")
-        .accessibilityHint("A finish lock applies only where the catalog agrees the finish is physically possible, so it can never record a variant that was never printed.")
+        .accessibilityLabel(subjectMode == .slab
+            ? "Scanning mode: graded slabs"
+            : "Raw cards. Finish lock: \(summary)")
+        .accessibilityHint(subjectMode == .slab
+            ? "Finish locks apply to raw cards."
+            : "A finish lock applies only where the catalog agrees the finish is physically possible, so it can never record a variant that was never printed.")
     }
 }
 

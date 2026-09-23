@@ -122,6 +122,7 @@ private struct ScannerStubPokemonSource: PokemonCardSource {
 private struct ScannerStubGradedResolver: ScannedGradedResolving {
     let outcome: ScannedGradedOutcome
     let recorder: ScannerPrintRunRecorder?
+    let gate: ScannerGradedResolverGate?
 
     func resolve(
         card: IdentifiedCard,
@@ -129,7 +130,35 @@ private struct ScannerStubGradedResolver: ScannedGradedResolving {
         pokemonPrintRun: PokemonPrintRun?
     ) async -> ScannedGradedOutcome {
         await recorder?.record(pokemonPrintRun)
+        await gate?.pause()
         return outcome
+    }
+}
+
+private actor ScannerGradedResolverGate {
+    private var hasStarted = false
+    private var startWaiter: CheckedContinuation<Void, Never>?
+    private var releaseWaiter: CheckedContinuation<Void, Never>?
+
+    func pause() async {
+        hasStarted = true
+        startWaiter?.resume()
+        startWaiter = nil
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            releaseWaiter = continuation
+        }
+    }
+
+    func waitUntilStarted() async {
+        if hasStarted { return }
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            startWaiter = continuation
+        }
+    }
+
+    func release() {
+        releaseWaiter?.resume()
+        releaseWaiter = nil
     }
 }
 
@@ -299,6 +328,7 @@ final class ScannerViewModelTests: XCTestCase {
             variants: [.normal],
             gradedOutcome: .unavailable
         )
+        useSlabMode(model)
         let subject = ScanSubject(
             identifier: scannerIdentifier(),
             slab: GradedSlabEvidence(
@@ -324,11 +354,138 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.recent.first?.subject.slab?.certificationNumber, "12345678")
     }
 
-    func testCertificateReadAfterCertlessSlabCommitRefinesTheSameCollectionEntry() async throws {
+    func testRawScanConvertsToGradedWithTheSameRecentScanID() async throws {
+        let model = try makeModel(variants: [.normal], gradedOutcome: .unavailable)
+        let encounterID = UUID()
+        confirm(model, scannerIdentifier(), encounterID: encounterID)
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+        let original = try XCTUnwrap(model.sessionScans.first)
+        XCTAssertNil(original.subject.slab)
+        XCTAssertEqual(model.successCount, 1)
+
+        let evidence = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678",
+            labelCardText: ["CHARIZARD"]
+        )
+        model.scanner.onPostCommitSlabEvidence?(encounterID, evidence)
+        let offerShown = await waitUntil { model.pendingSlabConversionOffer?.scanID == original.id }
+        XCTAssertTrue(offerShown)
+
+        await model.convertRawScanToGraded(scanID: original.id)
+        let converted = await waitUntil {
+            model.sessionScans.first?.id == original.id
+                && model.sessionScans.first?.subject.slab == evidence
+                && (try? self.context().fetch(FetchDescriptor<CollectedCard>()).first?.itemKind) == .gradedCard
+        }
+        XCTAssertTrue(converted)
+        let rows = try context().fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.certificationNumber, "12345678")
+        XCTAssertEqual(model.recent.first?.id, original.id)
+        XCTAssertEqual(model.committedSessionHistory.first?.id, original.id)
+        XCTAssertEqual(model.successCount, 1)
+        XCTAssertNil(model.pendingSlabConversionOffer)
+    }
+
+    func testSlabPriceBindingStartsAfterUnboundCollectionCommit() async throws {
+        let variant = GradedVariant(
+            id: "graded-v2-after-save",
+            cardID: "graded-card-after-save",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            marketPriceUSD: 250,
+            updatedAt: nil
+        )
+        let gate = ScannerGradedResolverGate()
         let model = try makeModel(
             variants: [.normal],
-            gradedOutcome: .unavailable
+            gradedOutcome: .bound(variant),
+            gradedResolverGate: gate
         )
+        useSlabMode(model)
+        confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+        await gate.waitUntilStarted()
+        let scan = try XCTUnwrap(model.sessionScans.first)
+        let unboundRow = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(unboundRow.itemKind, .gradedCard)
+        XCTAssertNil(unboundRow.justTCGVariantID)
+        XCTAssertTrue(unboundRow.collectionKey.contains(":g:psa-10"))
+        if case .price = scan.price {
+            XCTFail("the initial collection commit must not wait for graded pricing")
+        }
+
+        await gate.release()
+        let bound = await waitUntil {
+            guard let scan = model.sessionScans.first,
+                  let row = try? self.context().fetch(FetchDescriptor<CollectedCard>()).first,
+                  row.justTCGVariantID == variant.id,
+                  case let .price(price) = scan.price else { return false }
+            return price.unitMarketPriceUSD == 250
+        }
+        XCTAssertTrue(bound)
+        XCTAssertEqual(model.recent.first?.id, scan.id)
+        XCTAssertEqual(model.receipt?.scanID, scan.id)
+        guard case let .price(receiptPrice)? = model.receipt?.price else {
+            return XCTFail("the receipt should receive the graded quote")
+        }
+        XCTAssertEqual(receiptPrice.unitMarketPriceUSD, 250)
+    }
+
+    func testUndoDuringGradedLookupCannotRecreateTheRemovedSlab() async throws {
+        let variant = GradedVariant(
+            id: "graded-v2-undo-race",
+            cardID: "graded-card-undo-race",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            marketPriceUSD: 250,
+            updatedAt: nil
+        )
+        let gate = ScannerGradedResolverGate()
+        let model = try makeModel(
+            variants: [.normal],
+            gradedOutcome: .bound(variant),
+            gradedResolverGate: gate
+        )
+        useSlabMode(model)
+        confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+        await gate.waitUntilStarted()
+        let scanID = try XCTUnwrap(model.sessionScans.first?.id)
+
+        let didUndo = await model.undoScan(scanID: scanID)
+        XCTAssertTrue(didUndo)
+        await gate.release()
+        await settle()
+
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(model.sessionScans.isEmpty)
+        XCTAssertTrue(model.recent.isEmpty)
+        XCTAssertEqual(model.successCount, 1)
+    }
+
+    func testCertificateReadAfterCertlessSlabCommitRefinesTheSameCollectionEntry() async throws {
+        let variant = GradedVariant(
+            id: "graded-v2-after-cert-refinement",
+            cardID: "graded-card-after-cert-refinement",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            marketPriceUSD: 310,
+            updatedAt: nil
+        )
+        let gate = ScannerGradedResolverGate()
+        let model = try makeModel(
+            variants: [.normal],
+            gradedOutcome: .bound(variant),
+            gradedResolverGate: gate
+        )
+        useSlabMode(model)
         model.scanner.drainProfileQueuesForTesting()
         let identifier = scannerIdentifier()
         let certless = GradedSlabEvidence(
@@ -361,9 +518,11 @@ final class ScannerViewModelTests: XCTestCase {
 
         let initialCommit = await waitUntil { model.recent.count == 1 }
         XCTAssertTrue(initialCommit)
+        await gate.waitUntilStarted()
         var rows = try context().fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(rows.count, 1)
         XCTAssertNil(rows.first?.certificationNumber)
+        let originalCollectionKey = try XCTUnwrap(rows.first?.collectionKey)
         XCTAssertEqual(model.scanner.activeSlabEvidenceForTesting, certless)
 
         XCTAssertNil(model.scanner.receiveSlabLabelEvidenceForTesting(
@@ -390,21 +549,36 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(refinementSaved)
         rows = try context().fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(rows.count, 1)
+        XCTAssertNotEqual(rows.first?.collectionKey, originalCollectionKey)
         XCTAssertEqual(rows.first?.itemKind, .gradedCard)
         XCTAssertEqual(rows.first?.certificationNumber, "12345678")
         XCTAssertEqual(model.recent.first?.subject.slab?.certificationNumber, "12345678")
         XCTAssertEqual(model.successCount, 1)
         XCTAssertEqual(model.scanner.latchedSubjectForTesting?.slab?.certificationNumber, nil)
+
+        await gate.release()
+        let reboundToCurrentKey = await waitUntil {
+            guard let scan = model.sessionScans.first,
+                  let row = try? self.context().fetch(FetchDescriptor<CollectedCard>()).first,
+                  row.justTCGVariantID == variant.id,
+                  case let .price(price) = scan.price else { return false }
+            return price.unitMarketPriceUSD == 310
+                && scan.mutation.collectionKey == row.collectionKey
+        }
+        XCTAssertTrue(reboundToCurrentKey)
     }
 
-    func testGradedLabelPrintRunIsPassedBeforeVendorResolutionAndPrintedFinishIsPersisted() async throws {
+    func testGradedLabelPrintRunIsPersistedWithoutBlockingOnVendorResolution() async throws {
         let recorder = ScannerPrintRunRecorder()
+        let gate = ScannerGradedResolverGate()
         let model = try makeModel(
             variants: [.normal, .holo],
             gradedOutcome: .unavailable,
             setProviderID: "base1",
-            gradedRunRecorder: recorder
+            gradedRunRecorder: recorder,
+            gradedResolverGate: gate
         )
+        useSlabMode(model)
         let subject = ScanSubject(
             identifier: scannerIdentifier(setProviderID: "base1"),
             slab: GradedSlabEvidence(
@@ -420,6 +594,7 @@ final class ScannerViewModelTests: XCTestCase {
         confirm(model, subject, encounterID: UUID())
         let committed = await waitUntil { model.recent.count == 1 }
         XCTAssertTrue(committed)
+        await gate.waitUntilStarted()
 
         let observed = await recorder.values
         XCTAssertEqual(observed, [.firstEdition])
@@ -427,8 +602,10 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(row.pokemonPrintRun, .firstEdition)
         XCTAssertEqual(row.variant, .holo)
         XCTAssertEqual(row.variantResolution, .printedLabel)
+        XCTAssertNil(row.justTCGVariantID)
         XCTAssertNil(model.pendingChoice)
         XCTAssertNil(model.pendingGradedVariantCorrection)
+        await gate.release()
     }
 
     func testAmbiguousGradedFinishCommitsWithoutPausingAndCanBeCorrectedInPlace() async throws {
@@ -436,6 +613,7 @@ final class ScannerViewModelTests: XCTestCase {
             variants: [.normal, .holo],
             gradedOutcome: .unavailable
         )
+        useSlabMode(model)
         let subject = ScanSubject(
             identifier: scannerIdentifier(),
             slab: GradedSlabEvidence(
@@ -482,14 +660,13 @@ final class ScannerViewModelTests: XCTestCase {
         )
     }
 
-    func testImpossibleGradedLabelPrintRunIsDroppedBeforeVendorAndPersistence() async throws {
-        let recorder = ScannerPrintRunRecorder()
+    func testImpossibleGradedLabelPrintRunIsDroppedBeforePersistence() async throws {
         let model = try makeModel(
             variants: [.normal],
             gradedOutcome: .unavailable,
-            setProviderID: "sv03",
-            gradedRunRecorder: recorder
+            setProviderID: "sv03"
         )
+        useSlabMode(model)
         let subject = ScanSubject(
             identifier: scannerIdentifier(setProviderID: "sv03"),
             slab: GradedSlabEvidence(
@@ -505,8 +682,6 @@ final class ScannerViewModelTests: XCTestCase {
         let committed = await waitUntil { model.recent.count == 1 }
         XCTAssertTrue(committed)
 
-        let observed = await recorder.values
-        XCTAssertEqual(observed, [nil])
         let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
         XCTAssertNil(row.pokemonPrintRun)
     }
@@ -524,6 +699,7 @@ final class ScannerViewModelTests: XCTestCase {
             variants: [.holo],
             gradedOutcome: .bound(gradedVariant)
         )
+        useSlabMode(model)
         let subject = ScanSubject(
             identifier: scannerIdentifier(),
             slab: GradedSlabEvidence(
@@ -535,8 +711,15 @@ final class ScannerViewModelTests: XCTestCase {
         )
 
         confirm(model, subject, encounterID: UUID())
-        let committed = await waitUntil { model.recent.count == 1 }
-        XCTAssertTrue(committed)
+        let committedAndBound = await waitUntil {
+            guard let scan = model.recent.first,
+                  scan.subject.slab != nil,
+                  case let .price(price) = scan.price else { return false }
+            return model.recent.count == 1
+                && price.unitMarketPriceUSD == 250
+                && price.source == .justTCG
+        }
+        XCTAssertTrue(committedAndBound)
         let scanID = try XCTUnwrap(model.recent.first?.id)
 
         let correction = await model.correct(scanID: scanID, to: .normal)
@@ -553,6 +736,7 @@ final class ScannerViewModelTests: XCTestCase {
             variants: [.normal],
             gradedOutcome: .unavailable
         )
+        useSlabMode(model)
         let psa10 = gradedSubject(value: "10", label: "Gem Mint")
         let psa9 = gradedSubject(value: "9", label: "Mint")
 
@@ -589,6 +773,7 @@ final class ScannerViewModelTests: XCTestCase {
             variants: [.normal],
             gradedOutcome: .bound(variant)
         )
+        useSlabMode(model)
         let subject = ScanSubject(
             identifier: scannerIdentifier(),
             slab: GradedSlabEvidence(
@@ -600,13 +785,19 @@ final class ScannerViewModelTests: XCTestCase {
         )
 
         confirm(model, subject, encounterID: UUID())
-        let committed = await waitUntil { model.recent.count == 1 }
-        XCTAssertTrue(committed)
+        let committedAndBound = await waitUntil {
+            guard let scan = model.recent.first,
+                  case let .price(price) = scan.price,
+                  let row = try? self.context().fetch(FetchDescriptor<CollectedCard>()).first,
+                  row.justTCGVariantID == variant.id else { return false }
+            return price.unitMarketPriceUSD == 250
+        }
+        XCTAssertTrue(committedAndBound)
 
         let row = try XCTUnwrap(try context().fetch(FetchDescriptor<CollectedCard>()).first)
         XCTAssertEqual(row.justTCGVariantID, "graded-v2-10")
         XCTAssertEqual(row.justTCGCardID, "graded-card-1")
-        XCTAssertEqual(row.collectionKey, "graded:pokemon:test-set-001:graded-v2-10")
+        XCTAssertTrue(row.collectionKey.contains(":g:psa-10"))
         guard case let .price(price) = model.recent.first?.price else {
             return XCTFail("bound graded scan should carry the graded quote")
         }
@@ -627,6 +818,7 @@ final class ScannerViewModelTests: XCTestCase {
             variants: [.normal],
             gradedOutcome: .bound(variant)
         )
+        useSlabMode(model)
         model.setPurpose(.priceCheck)
         let subject = ScanSubject(
             identifier: scannerIdentifier(),
@@ -1549,6 +1741,7 @@ final class ScannerViewModelTests: XCTestCase {
         gradedOutcome: ScannedGradedOutcome? = nil,
         setProviderID: String = "test-set",
         gradedRunRecorder: ScannerPrintRunRecorder? = nil,
+        gradedResolverGate: ScannerGradedResolverGate? = nil,
         writeCoordinator: DerivedStateWriteCoordinator? = nil,
         priceCheckOutcome: PriceCheckRefreshOutcome? = nil,
         storageGeneration: CollectionStorageGeneration? = nil,
@@ -1593,7 +1786,11 @@ final class ScannerViewModelTests: XCTestCase {
             catalog: catalog,
             feedback: ScanFeedback(),
             gradedResolver: gradedOutcome.map {
-                ScannerStubGradedResolver(outcome: $0, recorder: gradedRunRecorder)
+                ScannerStubGradedResolver(
+                    outcome: $0,
+                    recorder: gradedRunRecorder,
+                    gate: gradedResolverGate
+                )
             }
                 ?? ScannedGradedResolver(),
             priceCheckRefreshProvider: priceCheckOutcome.map {
@@ -1761,6 +1958,12 @@ final class ScannerViewModelTests: XCTestCase {
         authorizationID: UUID? = nil
     ) {
         model.scanner.onConfirmedSubjectCandidate?(nil, encounterID, subject, authorizationID)
+    }
+
+    private func useSlabMode(_ model: ScannerViewModel) {
+        model.setSubjectMode(.slab)
+        XCTAssertEqual(model.scanner.subjectModeForTesting, .slab)
+        XCTAssertFalse(model.scanner.isRecognitionPausedForTesting)
     }
 
     private func gradedSubject(

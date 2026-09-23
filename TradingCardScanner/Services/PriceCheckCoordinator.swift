@@ -204,11 +204,16 @@ final class PriceCheckCoordinator {
             case .unmatchedProduct:
                 quote = .unavailable(.justTCG)
                 state = .gradedProductNotMatched
-            case .unavailable, .none:
+            case .none:
+                quote = .unavailable(PriceVendorCredentials.hasKey ? .justTCG : nil)
+                state = .checking
+            case .unavailable:
                 quote = .unavailable(PriceVendorCredentials.hasKey ? .justTCG : nil)
                 state = PriceVendorCredentials.hasKey ? .providerUnavailable : .fallbackUnconfigured
             }
-            let shouldAutoRefresh = state == .providerUnavailable || state == .fallbackUnconfigured
+            let shouldAutoRefresh = state == .checking
+                || state == .providerUnavailable
+                || state == .fallbackUnconfigured
             if case let .bound(variant)? = resolvedScan.gradedOutcome,
                case .price = quote {
                 let key = QuoteKey(

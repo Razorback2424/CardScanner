@@ -479,7 +479,7 @@ final class PricingTests: XCTestCase {
         )))
         record.justTCGFetchedAt = justTCGAt
 
-        record.applyUnavailable(source: .tcgdex, at: justTCGAt.addingTimeInterval(3_600))
+        record.applyUnavailable(source: .tcgplayer, at: justTCGAt.addingTimeInterval(3_600))
         XCTAssertEqual(record.justTCGFetchedAt, justTCGAt)
 
         XCTAssertTrue(record.apply(NormalizedPrice(

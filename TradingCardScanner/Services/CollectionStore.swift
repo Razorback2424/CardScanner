@@ -293,7 +293,7 @@ actor ScannerCollectionWriter {
                         resolved: candidate.resolved
                     )
                 case .unpricedGrade, .unmatchedProduct, .unavailable, .none:
-                    return try store.addScannedGraded(
+                    let mutation = try store.addScannedGraded(
                         underlying: candidate.card,
                         company: slab.company,
                         grade: slab.grade,
@@ -301,8 +301,12 @@ actor ScannerCollectionWriter {
                         setReleaseOrder: candidate.card.setReleaseOrder,
                         pokemonPrintRun: candidate.pokemonPrintRun,
                         identityResolution: candidate.identityResolution,
-                        resolved: candidate.resolved
+                        resolved: candidate.resolved,
+                        savesChanges: false
                     )
+                    try saveModelContext()
+                    store.invalidateIdentityAliasCache()
+                    return mutation
                 }
             }
 
@@ -350,6 +354,73 @@ actor ScannerCollectionWriter {
             grade: evidence.grade,
             certificationNumber: certificationNumber
         )
+    }
+
+    /// Replaces one raw scanner acquisition with its graded identity in one
+    /// model-context save. Both inverses and the graded acquisition are staged
+    /// together so a failure cannot leave the card missing or double counted.
+    func convertRawScanToGraded(
+        _ scan: RecentScan,
+        evidence: GradedSlabEvidence
+    ) throws -> CollectionMutation {
+        guard scan.subject.slab == nil else {
+            throw CollectionStoreError.ledgerConflict("scan is already graded")
+        }
+        do {
+            let store = CollectionStore(context: modelContext)
+            try store.undo(scan.mutation, savesChanges: false)
+            let mutation = try store.addScannedGraded(
+                underlying: scan.card,
+                company: evidence.company,
+                grade: evidence.grade,
+                certificationNumber: evidence.certificationNumber,
+                setReleaseOrder: scan.card.setReleaseOrder,
+                pokemonPrintRun: scan.pokemonPrintRun,
+                identityResolution: .catalogSelected,
+                resolved: scan.resolved,
+                savesChanges: false
+            )
+            try saveModelContext()
+            store.invalidateIdentityAliasCache()
+            return mutation
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
+    }
+
+    /// Resolves and binds a committed unbound slab after the acquisition has
+    /// already been saved. The current collection key is supplied by the view
+    /// model after any certificate refinement has completed.
+    func bindScannedGraded(
+        collectionKey: String,
+        variant: GradedVariant
+    ) throws -> GradedVariantBindingReceipt? {
+        do {
+            let collectionStore = CollectionStore(context: modelContext)
+            guard let row = try collectionStore.card(forAnyKey: collectionKey),
+                  row.itemKind == .gradedCard else { return nil }
+            let priceStore = PriceStore(context: modelContext)
+            let receipt = try GradedVariantBinding.apply(
+                variant,
+                to: row,
+                store: priceStore,
+                context: modelContext,
+                variantID: row.variantID,
+                treatmentIDs: row.priceTreatmentIDs,
+                at: .now
+            )
+            guard receipt.wasAccepted else {
+                modelContext.rollback()
+                return nil
+            }
+            try saveModelContext()
+            collectionStore.invalidateIdentityAliasCache()
+            return receipt
+        } catch {
+            modelContext.rollback()
+            throw error
+        }
     }
 
     private func saveModelContext() throws {
@@ -2266,7 +2337,8 @@ struct CollectionStore {
         resolved: ResolvedVariant = ResolvedVariant(
             variant: nil,
             resolution: .userConfirmed
-        )
+        ),
+        savesChanges: Bool = true
     ) throws -> CollectionMutation {
         do {
             let magicTreatments = card.unambiguousMagicTreatments
@@ -2302,7 +2374,7 @@ struct CollectionStore {
                     existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
                 }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
-                try commit()
+                try commit(savesChanges: savesChanges)
                 return CollectionMutation(
                     collectionKey: existing.collectionKey,
                     activityID: nil,
@@ -2347,7 +2419,7 @@ struct CollectionStore {
                     deltaQuantity: 1,
                     ledgerOperationIDs: [operationID]
                 )
-                try commit()
+                try commit(savesChanges: savesChanges)
                 return CollectionMutation(
                     collectionKey: key,
                     activityID: activity.id,
@@ -2403,7 +2475,7 @@ struct CollectionStore {
                 deltaQuantity: 1,
                 ledgerOperationIDs: [operationID]
             )
-            try commit()
+            try commit(savesChanges: savesChanges)
             return CollectionMutation(
                 collectionKey: key,
                 activityID: activity.id,
@@ -3052,7 +3124,7 @@ struct CollectionStore {
     /// the first inverse is staged, and one save commits the ledger, collection
     /// row, and activity together. This is intentionally strict: a stale UI
     /// value must fail and remain retryable, never become a partial undo.
-    func undo(_ mutation: CollectionMutation) throws {
+    func undo(_ mutation: CollectionMutation, savesChanges: Bool = true) throws {
         do {
             guard let row = try card(forAnyKey: mutation.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
@@ -3112,7 +3184,7 @@ struct CollectionStore {
             } else {
                 row.quantity -= 1
             }
-            try commit()
+            try commit(savesChanges: savesChanges)
         } catch {
             context.rollback()
             throw error
@@ -3510,7 +3582,8 @@ struct CollectionStore {
     /// price metadata in one store transaction. On any persistence failure the
     /// in-memory context is rolled back before the error reaches the caller, so
     /// a later unrelated save cannot accidentally commit a half-failed action.
-    private func commit() throws {
+    private func commit(savesChanges: Bool = true) throws {
+        guard savesChanges else { return }
         do {
             try context.save()
             LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)

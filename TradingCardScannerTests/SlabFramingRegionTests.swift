@@ -30,48 +30,46 @@ final class SlabFramingRegionTests: XCTestCase {
         XCTAssertTrue(provisionalGuide.contains(labelRegion))
     }
 
-    func testTitleOCRRegionBridgesRawAndSlabFramingBands() {
-        let rawTitleRegion = CardFramingRegion.titleVisionRect
-        let slabTitleRegion = SlabFramingRegion.titleVisionRect(for: .psa)
-        let expected = rawTitleRegion.union(slabTitleRegion)
-
-        XCTAssertEqual(SlabFramingRegion.titleOCRVisionRect(for: .psa), expected)
-        XCTAssertTrue(expected.contains(rawTitleRegion))
-        XCTAssertTrue(expected.contains(slabTitleRegion))
-
+    func testSlabModeInstallsItsTitleROI() {
         let scanner = CardScanner()
-        let evidence = GradedSlabEvidence(
-            company: .psa,
-            grade: CardGrade(value: "10"),
-            certificationNumber: "TITLE-ROI",
-            labelCardText: ["CHARIZARD"]
-        )
-        _ = scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 0)
-        XCTAssertEqual(
-            scanner.receiveSlabLabelEvidenceForTesting(evidence, footerHasText: true, at: 1.5),
-            evidence
-        )
+        scanner.setSubjectMode(.slab)
+        XCTAssertEqual(scanner.subjectModeForTesting, .slab)
 
-        XCTAssertEqual(scanner.titleRegionOfInterestForTesting, expected)
+        XCTAssertEqual(scanner.titleRegionOfInterestForTesting, SlabFramingRegion.slabModeTitleVisionRect)
     }
 
-    func testUnboundFooterROIUsesTheProductionUnion() {
-        let rawFooterRegion = CardFramingRegion.visionRect
-        let slabFooterRegion = SlabFramingRegion.footerVisionRect(for: nil)
-        let expected = rawFooterRegion.union(slabFooterRegion)
+    func testRawFooterROIUsesOnlyCardFramingRegion() {
         let scanner = CardScanner()
 
-        XCTAssertEqual(scanner.footerRegionOfInterestForTesting, expected)
+        XCTAssertEqual(scanner.footerRegionOfInterestForTesting, CardFramingRegion.visionRect)
+        scanner.setSubjectMode(.slab)
+        XCTAssertEqual(scanner.subjectModeForTesting, .slab)
+        XCTAssertEqual(
+            scanner.footerRegionOfInterestForTesting,
+            SlabFramingRegion.slabModeFooterVisionRect
+        )
     }
 
     func testPublishedFooterROIMatchesTheInstalledRequestROI() {
         let scanner = CardScanner()
 
         XCTAssertEqual(scanner.footerRegionOfInterest, scanner.footerRegionOfInterestForTesting)
-        XCTAssertEqual(
-            scanner.footerRegionOfInterest,
-            CardFramingRegion.visionRect.union(SlabFramingRegion.footerVisionRect(for: nil))
-        )
+        XCTAssertEqual(scanner.footerRegionOfInterest, CardFramingRegion.visionRect)
+    }
+
+    func testPaddedSlabModeROIsStayInsideFrameAndCoverGenericBands() {
+        let frame = CGRect(x: 0, y: 0, width: 1, height: 1)
+        let genericFooter = SlabFramingRegion.footerVisionRect(for: nil)
+        let genericLabel = SlabFramingRegion.labelVisionRect(for: nil)
+        let cardWindow = SlabFramingRegion.cardWindowVisionRect(for: nil)
+        let slabFooter = SlabFramingRegion.slabModeFooterVisionRect
+
+        XCTAssertTrue(frame.contains(slabFooter))
+        XCTAssertTrue(frame.contains(SlabFramingRegion.slabModeLabelVisionRect))
+        XCTAssertTrue(slabFooter.contains(genericFooter))
+        XCTAssertTrue(SlabFramingRegion.slabModeLabelVisionRect.contains(genericLabel))
+        XCTAssertLessThan(slabFooter.minX, cardWindow.minX)
+        XCTAssertGreaterThan(slabFooter.maxX, cardWindow.maxX)
     }
 
     func testOuterSlabGuideHasExpectedPhysicalAspect() {

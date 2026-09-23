@@ -23,6 +23,32 @@ final class ScannedGradedResolverTests: XCTestCase {
         XCTAssertEqual(outcome, .bound(vendorVariant))
     }
 
+    func testMatchingNormalizesGraderLabelSynonyms() {
+        let aliases = [
+            (vendor: "GEM MT", scanned: "Gem Mint"),
+            (vendor: "NM-MT", scanned: "NM MT"),
+            (vendor: "EX-MT", scanned: "EX MT"),
+            (vendor: "VG-EXCELLENT", scanned: "VG EX"),
+            (vendor: "MINT PLUS", scanned: "MINT+")
+        ]
+
+        for (index, labels) in aliases.enumerated() {
+            let vendorVariant = variant(
+                id: "label-alias-\(index)",
+                company: .psa,
+                grade: CardGrade(value: "9", label: labels.vendor)
+            )
+            XCTAssertEqual(
+                ScannedGradedResolver.matchingVariant(
+                    in: [vendorVariant],
+                    for: slab(company: .psa, value: "9", label: labels.scanned)
+                ),
+                vendorVariant,
+                "\(labels.vendor) should match \(labels.scanned)"
+            )
+        }
+    }
+
     func testMatchingUsesLabelOnlyToBreakAStableGradeAxisTie() {
         let blackLabel = variant(
             id: "black-label",
@@ -56,6 +82,36 @@ final class ScannedGradedResolverTests: XCTestCase {
         )
 
         XCTAssertEqual(match, vendorVariant)
+    }
+
+    func testConflictingVendorLabelIsNotUsedAsAFallbackMatch() {
+        let vendorVariant = variant(
+            id: "psa-pristine",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Pristine")
+        )
+
+        XCTAssertNil(ScannedGradedResolver.matchingVariant(
+            in: [vendorVariant],
+            for: slab(company: .psa, value: "10", label: "Gem Mint")
+        ))
+    }
+
+    func testBlackLabelCannotMatchAnUnlabeledOrDifferentLabelRead() {
+        let blackLabel = variant(
+            id: "bgs-black-label",
+            company: .bgs,
+            grade: CardGrade(value: "10", label: "Black Label")
+        )
+
+        XCTAssertNil(ScannedGradedResolver.matchingVariant(
+            in: [blackLabel],
+            for: slab(company: .bgs, value: "10", label: "Gem Mint")
+        ))
+        XCTAssertNil(ScannedGradedResolver.matchingVariant(
+            in: [blackLabel],
+            for: slab(company: .bgs, value: "10")
+        ))
     }
 
     func testResolverMapsVendorOutcomesAndCredentialGate() async {

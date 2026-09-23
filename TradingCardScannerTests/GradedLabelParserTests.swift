@@ -133,16 +133,13 @@ final class GradedLabelParserTests: XCTestCase {
         XCTAssertEqual(evidence.certificationNumber, "123456")
     }
 
-    func testBareGradesDistinguishTenNinePointFiveAndBlackLabel() throws {
-        let ten = try XCTUnwrap(GradedLabelParser.parse([
-            RecognizedLine(text: "TAG 10")
+    func testTAGRequiresCertificateAndBGSBlackLabelNeedsItsNumericGrade() throws {
+        XCTAssertNil(GradedLabelParser.parse([RecognizedLine(text: "TAG 10")]))
+        let tag = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "TAG 9.5 123456")
         ]))
-        XCTAssertEqual(ten.grade, CardGrade(value: "10"))
-
-        let ninePointFive = try XCTUnwrap(GradedLabelParser.parse([
-            RecognizedLine(text: "TAG 9.5")
-        ]))
-        XCTAssertEqual(ninePointFive.grade, CardGrade(value: "9.5"))
+        XCTAssertEqual(tag.grade, CardGrade(value: "9.5"))
+        XCTAssertEqual(tag.certificationNumber, "123456")
 
         let blackLabel = try XCTUnwrap(GradedLabelParser.parse([
             RecognizedLine(text: "BGS"),
@@ -166,6 +163,32 @@ final class GradedLabelParserTests: XCTestCase {
     func testCompanyWithoutGradeIsRejected() {
         XCTAssertNil(GradedLabelParser.parse([RecognizedLine(text: "PSA")]))
         XCTAssertNil(GradedLabelParser.parse([RecognizedLine(text: "TAG TEAM")]))
+    }
+
+    func testTAGCardNamesAndSetWordsAreNotGradingCompanyEvidence() {
+        for rawCardText in ["TAG TEAM", "TAG BOLT", "TAG ALL", "TAG GX"] {
+            XCTAssertNil(
+                GradedLabelParser.parse([RecognizedLine(text: "\(rawCardText) 10 123456")]),
+                "\(rawCardText) should not activate TAG slab parsing"
+            )
+        }
+    }
+
+    func testShortEXNMAndVGLabelsNeedAnAdjacentNumberInGraderOrder() throws {
+        XCTAssertNil(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA EX"),
+            RecognizedLine(text: "12345678")
+        ]))
+
+        let psa = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA EX 9 12345678")
+        ]))
+        XCTAssertEqual(psa.grade, CardGrade(value: "9", label: "EX"))
+
+        let bgs = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "BGS 8 NM 1234567890")
+        ]))
+        XCTAssertEqual(bgs.grade, CardGrade(value: "8", label: "NM"))
     }
 
     func testNonTAGBareNumberNearCompanyIsNotAGrade() {

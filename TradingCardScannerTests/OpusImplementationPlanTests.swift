@@ -1373,7 +1373,9 @@ final class OpusImplementationPlanTests: XCTestCase {
         )
     }
 
-#if DEBUG
+#if DEBUG && LEGACY_SLAB_AUTODETECTION_TESTS
+    // Retired with the automatic slab path. Mode-based replacements live in
+    // CardLatchTests and SlabEvidenceConfirmationWindowTests.
     func testREQ008EveryRecognitionDiscontinuityClearsSlabState() {
         let evidence = GradedSlabEvidence(
             company: .psa,

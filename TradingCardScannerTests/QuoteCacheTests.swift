@@ -265,6 +265,24 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertTrue(result.shouldAutoRefresh)
     }
 
+    func testSlabPriceCheckStartsInCheckingStateUntilGradedLookupCompletes() throws {
+        let context = try makeContext()
+        let scan = priceCheckScan(
+            slab: GradedSlabEvidence(
+                company: .psa,
+                grade: CardGrade(value: "10", label: "Gem Mint"),
+                certificationNumber: "12345678",
+                labelCardText: []
+            )
+        )
+
+        let result = PriceCheckCoordinator(context: context).present(scan)
+
+        XCTAssertEqual(result.quoteState, .checking)
+        XCTAssertNil(result.display.amount)
+        XCTAssertTrue(result.shouldAutoRefresh)
+    }
+
     func testPriceCheckSuccessfulRefreshIsCachedAsReferenceEvidence() async throws {
         let context = try makeContext()
         let refreshedAt = Date(timeIntervalSince1970: 1_800_000_000)
@@ -325,6 +343,40 @@ final class QuoteCacheTests: XCTestCase {
             variantID: nil
         )
         XCTAssertEqual(cached?.amount, 125)
+    }
+
+    func testUnboundGradedRefreshStillStoresVendorVariantQuoteWhenRowIsMissing() throws {
+        let context = try makeContext()
+        let variant = GradedVariant(
+            id: "graded-v2-10",
+            cardID: "graded-card",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "GEM MT"),
+            marketPriceUSD: 125,
+            updatedAt: nil
+        )
+        let fetchedAt = Date(timeIntervalSince1970: 1_700_000_000)
+
+        let receipt = GradedVariantBinding.storeUnboundVariantQuote(
+            variant,
+            game: .pokemon,
+            variantID: nil,
+            treatmentIDs: [],
+            store: PriceStore(context: context),
+            at: fetchedAt
+        )
+
+        XCTAssertTrue(receipt.wasAccepted)
+        XCTAssertEqual(receipt.priceKey, PriceRecord.key(
+            game: .pokemon,
+            printingID: "justtcg:v2:graded-v2-10",
+            variantID: nil,
+            treatmentIDs: []
+        ))
+        let record = try XCTUnwrap(PriceStore(context: context).record(forKey: receipt.priceKey))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 125)
+        XCTAssertEqual(record.marketVariantID, variant.id)
+        XCTAssertEqual(record.itemKind, .gradedCard)
     }
 
     func testPriceCheckPassesTheResolvedVariantToItsRefreshProvider() async throws {

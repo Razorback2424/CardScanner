@@ -56,6 +56,7 @@ struct ScannerConfirmationToken: Equatable, Sendable {
     let sessionID: UUID
     let generation: Int
     let purpose: ScanPurpose
+    let subjectMode: ScanSubjectMode
     let visibilityEpoch: UUID
 }
 
@@ -364,6 +365,21 @@ struct PendingGradedVariantCorrection: Identifiable, Equatable, Sendable {
     }
 }
 
+/// A raw card was committed normally, then the bounded post-commit label watch
+/// found a complete slab label from that same encounter.
+struct PendingSlabConversionOffer: Identifiable, Equatable, Sendable {
+    let scanID: RecentScan.ID
+    let evidence: GradedSlabEvidence
+    let cardName: String
+
+    var id: UUID { scanID }
+    var gradeDescription: String { evidence.grade.display(company: evidence.company) }
+
+    static func == (lhs: PendingSlabConversionOffer, rhs: PendingSlabConversionOffer) -> Bool {
+        lhs.scanID == rhs.scanID && lhs.evidence == rhs.evidence && lhs.cardName == rhs.cardName
+    }
+}
+
 private struct HeldRepeatAuthorizationState: Equatable {
     let authorization: HeldRepeatAuthorization
     let offer: HeldDuplicateOffer
@@ -552,6 +568,20 @@ struct RecentScan: Identifiable, Equatable {
         )
     }
 
+    func updating(subject: ScanSubject, mutation: CollectionMutation, price: PriceLookup) -> RecentScan {
+        RecentScan(
+            id: id,
+            subject: subject,
+            card: card,
+            resolved: resolved,
+            pokemonPrintRun: pokemonPrintRun,
+            catalogRetrievedAt: catalogRetrievedAt,
+            options: options,
+            mutation: mutation,
+            price: price
+        )
+    }
+
     private var stampedRelease: PokemonStampedReleaseCatalog.Entry? {
         PokemonStampedReleaseCatalog.entry(
             providerID: card.providerID,
@@ -575,7 +605,11 @@ struct RecentScan: Identifiable, Equatable {
     }
 
     static func == (lhs: RecentScan, rhs: RecentScan) -> Bool {
-        lhs.id == rhs.id && lhs.resolved == rhs.resolved
+        lhs.id == rhs.id
+            && lhs.subject == rhs.subject
+            && lhs.resolved == rhs.resolved
+            && lhs.price == rhs.price
+            && lhs.mutation == rhs.mutation
     }
 }
 
@@ -591,6 +625,10 @@ struct InFlightIDGuard<ID: Hashable> {
 
     mutating func end(_ id: ID) {
         activeIDs.remove(id)
+    }
+
+    func contains(_ id: ID) -> Bool {
+        activeIDs.contains(id)
     }
 }
 
@@ -859,6 +897,26 @@ struct ScanReceipt: Identifiable, Equatable {
         )
     }
 
+    func updating(for scan: RecentScan) -> ScanReceipt {
+        ScanReceipt(
+            id: id,
+            scanID: scan.id,
+            name: scan.card.name,
+            identifier: scan.subject.identifier.scannerDisplayIdentifier(for: scan.card),
+            variantLabel: [
+                scan.subject.slab.map { $0.grade.display(company: $0.company) },
+                scan.pokemonPrintRun?.label,
+                scan.subject.slab == nil
+                    ? scan.card.finishAndTreatmentDisplayLabel(for: scan.resolved.variant)
+                    : nil
+            ].compactMap { $0 }.joined(separator: " · "),
+            treatmentDiagnostics: scan.card.magicTreatmentDiagnostics,
+            thumbnailURL: scan.thumbnailURL,
+            price: scan.price,
+            resolution: scan.resolved.resolution
+        )
+    }
+
     static func == (lhs: ScanReceipt, rhs: ScanReceipt) -> Bool { lhs.id == rhs.id }
 }
 
@@ -998,12 +1056,14 @@ enum ScanCorrectionOutcome: Equatable {
 @MainActor
 final class ScannerViewModel: ObservableObject {
     @Published private(set) var purpose: ScanPurpose = .collection
+    @Published private(set) var subjectMode: ScanSubjectMode = .raw
     @Published private(set) var pendingChoice: PendingVariantChoice?
     @Published private(set) var pendingPrintRunChoice: PendingPrintRunChoice?
     @Published private(set) var pendingIdentityChoice: PendingIdentityChoice?
     @Published private(set) var pendingDuplicateConfirmation: PendingDuplicateConfirmation?
     @Published private(set) var heldDuplicateOffer: HeldDuplicateOffer?
     @Published private(set) var pendingGradedVariantCorrection: PendingGradedVariantCorrection?
+    @Published private(set) var pendingSlabConversionOffer: PendingSlabConversionOffer?
     @Published private(set) var receipt: ScanReceipt?
     @Published private(set) var recent: [RecentScan] = []
     /// The complete successful session projection. `recent` is intentionally
@@ -1016,6 +1076,10 @@ final class ScannerViewModel: ObservableObject {
     /// Keep that refinement by encounter until its acquisition is visible.
     private var pendingGradedCertificationRefinements: [UUID: ScanSubject] = [:]
     private var gradedCertificationRefinementsInFlight: Set<UUID> = []
+    private var pendingPostCommitSlabEvidence: [UUID: GradedSlabEvidence] = [:]
+    private var pendingPostCommitSlabEvidenceOrder: [UUID] = []
+    private var gradedBindingScanIDs: Set<RecentScan.ID> = []
+    private var slabConversionOfferTask: Task<Void, Never>?
     @Published private(set) var note: ScanNote?
     @Published private(set) var scanAcknowledgement: ScanAcknowledgement?
     @Published var priceCheckResult: PriceCheckResult?
@@ -1287,6 +1351,12 @@ final class ScannerViewModel: ObservableObject {
             }
         }
 
+        scanner.onPostCommitSlabEvidence = { [weak self] encounterID, evidence in
+            Task { @MainActor in
+                self?.receivePostCommitSlabEvidence(encounterID: encounterID, evidence: evidence)
+            }
+        }
+
         scanner.onHeldRepeatAuthorizationTerminated = { [weak self] authorizationID, outcome in
             Task { @MainActor in
                 guard let self,
@@ -1403,6 +1473,7 @@ final class ScannerViewModel: ObservableObject {
             sessionID: scannerSessionID,
             generation: scanGeneration,
             purpose: purpose,
+            subjectMode: subjectMode,
             visibilityEpoch: visibilityEpoch
         )
     }
@@ -1458,6 +1529,8 @@ final class ScannerViewModel: ObservableObject {
         if beginsNewSession {
             scannerSessionID = UUID()
             visibilityEpoch = UUID()
+            subjectMode = .raw
+            scanner.setSubjectMode(.raw)
             successCount = 0
             recognitionCount = 0
         }
@@ -1474,7 +1547,8 @@ final class ScannerViewModel: ObservableObject {
         // roll back an in-flight collection mutation.
         priceCheckCoordinator = PriceCheckCoordinator(
             context: ModelContext(context.container),
-            refreshProvider: priceCheckRefreshProvider
+            refreshProvider: priceCheckRefreshProvider,
+            gradedResolver: gradedResolver
         )
         feedback.prepare()
         // Decode the merged Pokémon checklist and resolved-card cache before
@@ -1623,6 +1697,10 @@ final class ScannerViewModel: ObservableObject {
         pendingDuplicateConfirmation = nil
         heldDuplicateOffer = nil
         pendingGradedVariantCorrection = nil
+        dismissSlabConversionOffer()
+        pendingPostCommitSlabEvidence.removeAll()
+        pendingPostCommitSlabEvidenceOrder.removeAll()
+        gradedBindingScanIDs.removeAll()
         scanAcknowledgement = nil
         receipt = nil
         quoteRefreshTask?.cancel()
@@ -1773,13 +1851,23 @@ final class ScannerViewModel: ObservableObject {
         UIAccessibility.post(notification: .announcement, argument: "\(newPurpose.title). \(newPurpose.statusText)")
     }
 
-    /// Releases the provisional slab hold only for the prompt still visible to
-    /// the user. The scanner scopes the resulting raw choice to this physical
-    /// presentation so the same label OCR cannot reopen the hold immediately.
-    func chooseRawForPendingSlabLabel(_ promptID: UUID) {
-        guard scanner.slabLabelReadPrompt?.id == promptID else { return }
-        scanner.chooseRawForPendingSlabLabel(promptID)
+    func setSubjectMode(_ newMode: ScanSubjectMode) {
+        guard newMode != subjectMode else { return }
+
+        invalidatePendingScan()
+        subjectMode = newMode
+        visibilityEpoch = UUID()
+        updateScannerConfirmationContext()
+        scanner.setSubjectMode(newMode)
+        resumeRecognitionIfPossible()
+        dismissSlabConversionOffer()
+        pendingPostCommitSlabEvidence.removeAll()
+        pendingPostCommitSlabEvidenceOrder.removeAll()
         feedback.choiceMade()
+        UIAccessibility.post(
+            notification: .announcement,
+            argument: "Scanning mode: \(newMode.title)"
+        )
     }
 
     private func invalidatePendingScan() {
@@ -2662,11 +2750,10 @@ final class ScannerViewModel: ObservableObject {
             return
         }
 
-        // A slab label is allowed to commit without a print-run prompt. If the
-        // label supplied a run, use it now; if it did not, the graded path still
-        // proceeds with nil rather than pausing the camera behind a raw-card
-        // question.
-        if let slab = request.subject.slab {
+        // Slab mode never pauses for a print-run or finish choice. Resolve the
+        // card identity first, save it unbound, then run graded price matching
+        // against the persisted collection row.
+        if request.subject.slab != nil {
             let validatedPrintRun: PokemonPrintRun? = {
                 guard let labelPrintRun,
                       card.game == .pokemon else { return nil }
@@ -2675,16 +2762,6 @@ final class ScannerViewModel: ObservableObject {
                 )
                 return catalogRuns.contains(labelPrintRun) ? labelPrintRun : nil
             }()
-            let gradedOutcome = await gradedResolver.resolve(
-                card: card,
-                slab: slab,
-                pokemonPrintRun: validatedPrintRun
-            )
-            guard !Task.isCancelled, isCurrent(request) else {
-                endOneCardScan(encounterID: request.encounterID, outcome: "cancelled")
-                return
-            }
-            scannedGradedOutcomes[request.id] = gradedOutcome
             await resolveVariant(
                 for: request,
                 card: card,
@@ -2743,7 +2820,7 @@ final class ScannerViewModel: ObservableObject {
 
         switch VariantResolver.resolve(
             evidence,
-            finishLock: finishLocks[card.game],
+            finishLock: request.subject.slab == nil ? finishLocks[card.game] : nil,
             printedFinish: request.subject.slab?.printedFinish
         ) {
         case let .resolved(resolved):
@@ -2845,6 +2922,234 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
+    private func receivePostCommitSlabEvidence(
+        encounterID: UUID,
+        evidence: GradedSlabEvidence
+    ) {
+        guard isScannerSessionActive,
+              isStorageGenerationCurrent,
+              purpose == .collection,
+              subjectMode == .raw else { return }
+        if let committed = committedSessionHistory.first(where: {
+            $0.encounterID == encounterID
+        }), let scan = sessionScans.first(where: { $0.id == committed.id }) {
+            publishSlabConversionOffer(for: scan, evidence: evidence)
+            return
+        }
+        if pendingPostCommitSlabEvidence[encounterID] == nil {
+            pendingPostCommitSlabEvidenceOrder.append(encounterID)
+        }
+        pendingPostCommitSlabEvidence[encounterID] = evidence
+        while pendingPostCommitSlabEvidenceOrder.count > 8 {
+            let oldest = pendingPostCommitSlabEvidenceOrder.removeFirst()
+            pendingPostCommitSlabEvidence.removeValue(forKey: oldest)
+        }
+    }
+
+    private func publishSlabConversionOffer(
+        for scan: RecentScan,
+        evidence: GradedSlabEvidence
+    ) {
+        guard purpose == .collection,
+              subjectMode == .raw,
+              scan.subject.slab == nil else { return }
+        let offer = PendingSlabConversionOffer(
+            scanID: scan.id,
+            evidence: evidence,
+            cardName: scan.card.name
+        )
+        slabConversionOfferTask?.cancel()
+        pendingSlabConversionOffer = offer
+        slabConversionOfferTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(for: .seconds(8))
+            guard !Task.isCancelled,
+                  self?.pendingSlabConversionOffer?.id == offer.id else { return }
+            self?.pendingSlabConversionOffer = nil
+            self?.slabConversionOfferTask = nil
+        }
+    }
+
+    func dismissSlabConversionOffer() {
+        slabConversionOfferTask?.cancel()
+        slabConversionOfferTask = nil
+        pendingSlabConversionOffer = nil
+    }
+
+    func convertRawScanToGraded(scanID: RecentScan.ID) async {
+        guard let offer = pendingSlabConversionOffer,
+              offer.scanID == scanID,
+              purpose == .collection,
+              subjectMode == .raw,
+              isStorageGenerationCurrent,
+              let scan = sessionScans.first(where: { $0.id == scanID }),
+              scan.subject.slab == nil,
+              !undoingScanIDs.contains(scanID),
+              let collectionWriter else { return }
+        let writeSessionID = scannerSessionID
+        beginTrackedWrite(for: writeSessionID)
+        defer { endTrackedWrite(for: writeSessionID) }
+
+        do {
+            let mutation = try await collectionWriter.convertRawScanToGraded(
+                scan,
+                evidence: offer.evidence
+            )
+            guard writeSessionID == scannerSessionID,
+                  isStorageGenerationCurrent else { return }
+            dismissSlabConversionOffer()
+            if let committed = committedSessionHistory.first(where: { $0.id == scanID }) {
+                _ = takePendingPostCommitSlabEvidence(for: committed.encounterID)
+            }
+
+            if mutation.wasDuplicate {
+                removeCommittedScanProjection(scanID)
+                if receipt?.scanID == scanID { dismissReceipt() }
+                show(ScanNote(text: "This certified card is already in your collection", tone: .info))
+                return
+            }
+
+            let subject = ScanSubject(identifier: scan.subject.identifier, slab: offer.evidence)
+            let pendingPrice = PriceLookup.unavailable(.justTCG)
+            let converted = scan.updating(
+                subject: subject,
+                mutation: mutation,
+                price: pendingPrice
+            )
+            replaceCommittedScanProjection(converted)
+            if receipt?.scanID == scanID {
+                receipt = receipt?.updating(for: converted)
+            }
+            show(ScanNote(text: "Saved as \(offer.gradeDescription) — checking graded price", tone: .info))
+            queueGradedBinding(scanID: scanID)
+        } catch {
+            guard writeSessionID == scannerSessionID else { return }
+            show(ScanNote(text: "This card could not be converted to a graded scan", tone: .problem))
+            feedback.problem()
+        }
+    }
+
+    private func removeCommittedScanProjection(_ scanID: RecentScan.ID) {
+        sessionScans.removeAll { $0.id == scanID }
+        recent.removeAll { $0.id == scanID }
+        removeCommittedHistory(for: scanID)
+        successCount = max(0, successCount - 1)
+    }
+
+    private func replaceCommittedScanProjection(_ scan: RecentScan) {
+        if let index = sessionScans.firstIndex(where: { $0.id == scan.id }) {
+            sessionScans[index] = scan
+        }
+        if let index = recent.firstIndex(where: { $0.id == scan.id }) {
+            recent[index] = scan
+        }
+        if let index = committedSessionHistory.firstIndex(where: { $0.id == scan.id }) {
+            let previous = committedSessionHistory[index]
+            committedSessionHistory[index] = CommittedSessionScan(
+                id: previous.id,
+                identity: ConsecutiveScanIdentity(card: scan.card, subject: scan.subject),
+                presentationToken: previous.presentationToken,
+                encounterID: previous.encounterID
+            )
+        }
+    }
+
+    private func queueGradedBinding(scanID: RecentScan.ID) {
+        guard let scan = sessionScans.first(where: { $0.id == scanID }),
+              let slab = scan.subject.slab,
+              gradedBindingScanIDs.insert(scanID).inserted else { return }
+        let writeSessionID = scannerSessionID
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { self.gradedBindingScanIDs.remove(scanID) }
+            let outcome = await self.gradedResolver.resolve(
+                card: scan.card,
+                slab: slab,
+                pokemonPrintRun: scan.pokemonPrintRun
+            )
+            guard writeSessionID == self.scannerSessionID,
+                  self.isStorageGenerationCurrent,
+                  !self.undoingScanIDs.contains(scanID),
+                  let current = self.sessionScans.first(where: { $0.id == scanID }),
+                  Self.isCompatibleGradedEvidence(current.subject.slab, with: slab) else { return }
+            guard case let .bound(variant) = outcome else {
+                self.noteGradedBindingOutcome(outcome, slab: slab)
+                return
+            }
+            guard let collectionWriter = self.collectionWriter else { return }
+            self.beginTrackedWrite(for: writeSessionID)
+            defer { self.endTrackedWrite(for: writeSessionID) }
+            do {
+                // Certification refinement can rekey the row while the vendor
+                // lookup is in flight. Always bind to the mutation currently
+                // attached to the stable RecentScan id.
+                guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
+                      Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab),
+                      !self.undoingScanIDs.contains(scanID) else { return }
+                guard let binding = try await collectionWriter.bindScannedGraded(
+                    collectionKey: latest.mutation.collectionKey,
+                    variant: variant
+                ) else { return }
+                guard writeSessionID == self.scannerSessionID,
+                      self.isStorageGenerationCurrent,
+                      !self.undoingScanIDs.contains(scanID),
+                      let stillCurrent = self.sessionScans.first(where: { $0.id == scanID }),
+                      Self.isCompatibleGradedEvidence(stillCurrent.subject.slab, with: slab) else { return }
+                self.updateGradedScanPrice(binding.quote, scanID: scanID)
+                if case .unavailable = binding.quote {
+                    self.noteGradedBindingOutcome(.bound(variant), slab: slab)
+                }
+            } catch {
+                guard writeSessionID == self.scannerSessionID else { return }
+                self.show(ScanNote(text: "Graded price could not be saved", tone: .info))
+            }
+        }
+    }
+
+    private static func isCompatibleGradedEvidence(
+        _ current: GradedSlabEvidence?,
+        with requested: GradedSlabEvidence
+    ) -> Bool {
+        guard let current else { return false }
+        return current == requested
+            || SlabEvidenceConfirmationWindow.isCertificateRefinement(
+                from: requested,
+                to: current
+            )
+    }
+
+    private func noteGradedBindingOutcome(_ outcome: ScannedGradedOutcome, slab: GradedSlabEvidence) {
+        let message: String?
+        switch outcome {
+        case .bound(let variant):
+            message = variant.marketPriceUSD == nil
+                ? "\(slab.grade.display(company: slab.company)) added — no graded price published"
+                : nil
+        case .unpricedGrade:
+            message = "\(slab.grade.display(company: slab.company)) added — no graded price published"
+        case .unmatchedProduct:
+            message = "\(slab.grade.display(company: slab.company)) added — no vendor match"
+        case .unavailable:
+            message = PriceVendorCredentials.hasKey
+                ? "\(slab.grade.display(company: slab.company)) added — price pending"
+                : "\(slab.grade.display(company: slab.company)) added — graded price lookup isn't configured"
+        }
+        if let message { show(ScanNote(text: message, tone: .info)) }
+    }
+
+    private func updateGradedScanPrice(_ quote: PriceLookup, scanID: RecentScan.ID) {
+        guard let scan = sessionScans.first(where: { $0.id == scanID }) else { return }
+        let replacement = scan.updating(price: quote)
+        if let index = sessionScans.firstIndex(where: { $0.id == scanID }) {
+            sessionScans[index] = replacement
+        }
+        if let index = recent.firstIndex(where: { $0.id == scanID }) {
+            recent[index] = replacement
+        }
+        if receipt?.scanID == scanID {
+            receipt = receipt?.updating(price: quote)
+        }
+    }
+
     private func applyPendingGradedCertificationRefinement(for encounterID: UUID) async {
         guard !gradedCertificationRefinementsInFlight.contains(encounterID),
               let updatedSubject = pendingGradedCertificationRefinements[encounterID],
@@ -2927,6 +3232,7 @@ final class ScannerViewModel: ObservableObject {
         _ candidate: CollectionCommitCandidate,
         mutation: CollectionMutation
     ) {
+        dismissSlabConversionOffer()
         let scan = RecentScan(
             subject: candidate.subject,
             card: candidate.card,
@@ -3026,6 +3332,14 @@ final class ScannerViewModel: ObservableObject {
             )
         )
         feedback.added()
+        if let evidence = takePendingPostCommitSlabEvidence(for: candidate.encounterID) {
+            publishSlabConversionOffer(for: scan, evidence: evidence)
+        }
+    }
+
+    private func takePendingPostCommitSlabEvidence(for encounterID: UUID) -> GradedSlabEvidence? {
+        pendingPostCommitSlabEvidenceOrder.removeAll { $0 == encounterID }
+        return pendingPostCommitSlabEvidence.removeValue(forKey: encounterID)
     }
 
     private func drainDeferredHeldDuplicateOfferIfPossible() {
@@ -3265,29 +3579,17 @@ final class ScannerViewModel: ObservableObject {
                 return true
             }
 
-            if let slab = candidate.subject.slab {
-                if let outcome = candidate.gradedOutcome {
-                    let message: String?
-                    switch outcome {
-                    case .bound:
-                        message = nil
-                    case .unpricedGrade:
-                        message = "\(slab.grade.display(company: slab.company)) added — no graded price published"
-                    case .unmatchedProduct:
-                        message = "\(slab.grade.display(company: slab.company)) added — no vendor match"
-                    case .unavailable:
-                        message = "\(slab.grade.display(company: slab.company)) added — price pending"
-                    }
-                    if let message {
-                        show(ScanNote(text: message, tone: .info))
-                    }
-                }
-            }
             if pendingChoice?.request.id == candidate.requestID {
                 pendingChoice = nil
             }
             appendCommittedScan(candidate, mutation: mutation)
             await applyPendingGradedCertificationRefinement(for: candidate.encounterID)
+            if candidate.subject.slab != nil,
+               let committed = committedSessionHistory.first(where: {
+                   $0.encounterID == candidate.encounterID
+               }) {
+                queueGradedBinding(scanID: committed.id)
+            }
             if candidate.subject.slab == nil {
                 queueFallbackPrice(
                     for: candidate.card,

@@ -35,8 +35,8 @@ struct CameraPreview: UIViewRepresentable {
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation
+        view.subjectMode = scannerState.subjectMode
         view.slabFraming = scannerState.slabFraming
-        view.slabGuideHint = scannerState.slabGuideHint
         view.footerVisionRect = scannerState.footerRegionOfInterest
         view.syncRecognitionCount(recognitionCount)
         view.syncSuccessCount(successCount)
@@ -49,8 +49,8 @@ struct CameraPreview: UIViewRepresentable {
     func updateUIView(_ uiView: PreviewView, context: Context) {
         let rotationChanged = uiView.rotation !== scanner.rotation
             || uiView.rotation?.previewAngle != scanner.rotation.previewAngle
+        let subjectModeChanged = uiView.subjectMode != scannerState.subjectMode
         let slabFramingChanged = uiView.slabFraming != scannerState.slabFraming
-        let slabGuideHintChanged = uiView.slabGuideHint != scannerState.slabGuideHint
         let footerROIChanged = uiView.footerVisionRect != scannerState.footerRegionOfInterest
 #if DEBUG
         let debugBoxesChanged = uiView.debugVisionBoxes != debugVisionOverlay.boxes
@@ -59,8 +59,8 @@ struct CameraPreview: UIViewRepresentable {
             uiView.previewLayer.session = scanner.session
         }
         if rotationChanged { uiView.rotation = scanner.rotation }
+        if subjectModeChanged { uiView.subjectMode = scannerState.subjectMode }
         if slabFramingChanged { uiView.slabFraming = scannerState.slabFraming }
-        if slabGuideHintChanged { uiView.slabGuideHint = scannerState.slabGuideHint }
         if footerROIChanged { uiView.footerVisionRect = scannerState.footerRegionOfInterest }
         uiView.syncRecognitionCount(recognitionCount)
         uiView.syncSuccessCount(successCount)
@@ -68,9 +68,9 @@ struct CameraPreview: UIViewRepresentable {
         if debugBoxesChanged { uiView.debugVisionBoxes = debugVisionOverlay.boxes }
 #endif
 #if DEBUG
-        let needsLayout = rotationChanged || slabFramingChanged || slabGuideHintChanged || footerROIChanged || debugBoxesChanged
+        let needsLayout = rotationChanged || subjectModeChanged || slabFramingChanged || footerROIChanged || debugBoxesChanged
 #else
-        let needsLayout = rotationChanged || slabFramingChanged || slabGuideHintChanged || footerROIChanged
+        let needsLayout = rotationChanged || subjectModeChanged || slabFramingChanged || footerROIChanged
 #endif
         if needsLayout {
             uiView.setNeedsLayout()
@@ -83,6 +83,7 @@ final class PreviewView: UIView {
     /// shows it. Set from this view's own window during layout — a view's window is
     /// the authority on how the view is turned.
     var rotation: CameraRotationTracker?
+    var subjectMode: ScanSubjectMode = .raw
 
     private var rotationAngle = CameraRotationTracker.defaultAngle
 
@@ -99,7 +100,6 @@ final class PreviewView: UIView {
 #endif
 
     var slabFraming: GradedSlabEvidence?
-    var slabGuideHint: GradingCompany?
     /// The band the scanner told us it is reading. Mirrored rather than derived
     /// so the green guide and the debug boxes cannot drift from the real ROI.
     var footerVisionRect = CardFramingRegion.visionRect.union(
@@ -152,22 +152,13 @@ final class PreviewView: UIView {
         let scanVisionRect = footerVisionRect
         let outerVisionRect: CGRect
         let innerVisionRect: CGRect?
-        let isProvisionalSlabGuide: Bool
-        if let slabFraming {
-            outerVisionRect = SlabFramingRegion.slabVisionRect(for: slabFraming.company)
-            innerVisionRect = SlabFramingRegion.cardWindowVisionRect(for: slabFraming.company)
-            isProvisionalSlabGuide = false
-        } else if slabGuideHint != nil {
-            // A company token is enough to tell the user where the slab label
-            // belongs, but not enough to claim that the slab identity is known.
-            // Keep this envelope generic until the confirmation window closes.
-            outerVisionRect = SlabFramingRegion.slabVisionRect(for: nil)
-            innerVisionRect = SlabFramingRegion.cardWindowVisionRect(for: nil)
-            isProvisionalSlabGuide = true
+        if subjectMode == .slab {
+            let company = slabFraming?.company
+            outerVisionRect = SlabFramingRegion.slabVisionRect(for: company)
+            innerVisionRect = SlabFramingRegion.cardWindowVisionRect(for: company)
         } else {
             outerVisionRect = CardFramingRegion.cardVisionRect
             innerVisionRect = nil
-            isProvisionalSlabGuide = false
         }
 
         scanRegionLayer.frame = previewLayer.layerRectConverted(
@@ -187,19 +178,12 @@ final class PreviewView: UIView {
             roundedRect: cardRegionLayer.bounds,
             cornerRadius: innerVisionRect == nil ? 14 : 18
         ).cgPath
-        cardRegionLayer.strokeColor = UIColor.white
-            .withAlphaComponent(isProvisionalSlabGuide ? 0.42 : 0.78)
-            .cgColor
-        cardRegionLayer.lineDashPattern = isProvisionalSlabGuide ? [4, 8] : [8, 6]
-        slabCardRegionLayer.strokeColor = UIColor.white
-            .withAlphaComponent(isProvisionalSlabGuide ? 0.28 : 0.52)
-            .cgColor
-        scanRegionLayer.backgroundColor = UIColor.systemGreen
-            .withAlphaComponent(isProvisionalSlabGuide ? 0.07 : 0.14)
-            .cgColor
-        scanRegionLayer.borderColor = UIColor.systemGreen
-            .withAlphaComponent(isProvisionalSlabGuide ? 0.62 : 1)
-            .cgColor
+        cardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.78).cgColor
+        cardRegionLayer.lineDashPattern = subjectMode == .slab ? nil : [8, 6]
+        slabCardRegionLayer.strokeColor = UIColor.white.withAlphaComponent(0.52).cgColor
+        slabCardRegionLayer.lineDashPattern = nil
+        scanRegionLayer.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.14).cgColor
+        scanRegionLayer.borderColor = UIColor.systemGreen.cgColor
 
         if let innerVisionRect {
             slabCardRegionLayer.isHidden = false

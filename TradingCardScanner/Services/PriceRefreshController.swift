@@ -1,6 +1,128 @@
 import Foundation
 import SwiftData
 
+/// Applies the vendor identity and quote to a persisted graded row. Scanner
+/// acquisition and background refresh share this path so both migrate the
+/// unbound price lineage and write the exact same vendor quote key.
+struct GradedVariantBindingReceipt: Sendable {
+    let quote: PriceLookup
+    let priceKey: String
+    let wasAccepted: Bool
+}
+
+enum GradedVariantBinding {
+    static func apply(
+        _ variant: GradedVariant,
+        to row: CollectedCard,
+        store: PriceStore,
+        context: ModelContext,
+        variantID: String?,
+        treatmentIDs: [String],
+        at fetchedAt: Date
+    ) throws -> GradedVariantBindingReceipt {
+        if let currentID = row.justTCGVariantID, currentID != variant.id {
+            throw CollectionStoreError.ledgerConflict(
+                "graded row is already bound to a different market variant"
+            )
+        }
+        if row.justTCGVariantID == nil {
+            try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                for: row,
+                toMarketVariantID: variant.id,
+                apiVersion: JustTCGV2GradedClient.apiVersion,
+                in: context,
+                index: store.index
+            )
+        }
+        row.justTCGVariantID = variant.id
+        row.justTCGCardID = variant.cardID ?? row.justTCGCardID
+        row.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
+        row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+
+        return storeVariantQuote(
+            variant,
+            game: row.cardGame,
+            printingID: row.priceStorageID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs,
+            store: store,
+            at: fetchedAt
+        )
+    }
+
+    /// Preserves the provider-key quote path for refresh targets whose row has
+    /// disappeared or cannot be resolved during the pass.
+    static func storeUnboundVariantQuote(
+        _ variant: GradedVariant,
+        game: CardGame,
+        variantID: String?,
+        treatmentIDs: [String],
+        store: PriceStore,
+        at fetchedAt: Date
+    ) -> GradedVariantBindingReceipt {
+        storeVariantQuote(
+            variant,
+            game: game,
+            printingID: "justtcg:v2:\(variant.id)",
+            variantID: variantID,
+            treatmentIDs: treatmentIDs,
+            store: store,
+            at: fetchedAt
+        )
+    }
+
+    private static func storeVariantQuote(
+        _ variant: GradedVariant,
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        treatmentIDs: [String],
+        store: PriceStore,
+        at fetchedAt: Date
+    ) -> GradedVariantBindingReceipt {
+        let quote: PriceLookup = if let amount = variant.marketPriceUSD {
+            .price(
+                NormalizedPrice(
+                    unitMarketPriceUSD: amount,
+                    currencyCode: "USD",
+                    source: .justTCG,
+                    sourceVariantID: variant.id,
+                    sourceUpdatedAt: variant.updatedAt,
+                    fetchedAt: fetchedAt
+                )
+            )
+        } else {
+            .unavailable(.justTCG)
+        }
+        let priceKey = PriceRecord.key(
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs
+        )
+        let wasAccepted = store.store(
+            quote,
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            marketVariantID: variant.id,
+            treatmentIDs: treatmentIDs
+        )
+        if let record = store.record(forKey: priceKey) {
+            if wasAccepted, variant.marketPriceUSD != nil {
+                record.justTCGFetchedAt = fetchedAt
+            }
+            record.marketVariantID = variant.id
+            record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        }
+        return GradedVariantBindingReceipt(
+            quote: quote,
+            priceKey: priceKey,
+            wasAccepted: wasAccepted
+        )
+    }
+}
+
 /// The result of one catalog fetch during a refresh.
 ///
 /// The outcome distinguishes an ordinary provider failure from cancellation so
@@ -1300,27 +1422,6 @@ actor PriceRefreshModelActor {
             return rowsByCollectionKey[target.printingID]?.first
         }
 
-        func bind(
-            _ variant: GradedVariant,
-            to target: PriceTarget
-        ) throws -> CollectedCard? {
-            guard target.marketVariantID == nil else { return row(for: target) }
-            guard let card = row(for: target) else { return nil }
-            try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
-                for: card,
-                toMarketVariantID: variant.id,
-                apiVersion: JustTCGV2GradedClient.apiVersion,
-                in: modelContext,
-                index: store.index
-            )
-            card.justTCGVariantID = variant.id
-            card.justTCGCardID = variant.cardID ?? card.justTCGCardID
-            card.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
-            card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
-            rowsByVariantID[variant.id, default: []].append(card)
-            return card
-        }
-
         func checkpoint(force: Bool = false) async {
             let checkpointState = PerformanceSignpost.beginInterval(
                 "priceRefresh.gradedCheckpoint",
@@ -1427,58 +1528,42 @@ actor PriceRefreshModelActor {
                     continue
                 }
 
-                let owner: CollectedCard?
-                do {
-                    owner = try bind(variant, to: target)
-                } catch {
-                    // Do not bind a slab if its old price lineage could not be
-                    // read and retargeted. The isolated refresh remains
-                    // incomplete and the next pass can retry this target.
-                    persistenceFailed = true
-                    continue
-                }
-                let printingID = owner?.priceStorageID
-                    ?? "justtcg:\(JustTCGV2GradedClient.apiVersion):\(variant.id)"
-                let fetchedAt = Date.now
-                let lookup: PriceLookup = if let amount = variant.marketPriceUSD {
-                    .price(
-                        NormalizedPrice(
-                            unitMarketPriceUSD: amount,
-                            currencyCode: "USD",
-                            source: .justTCG,
-                            sourceVariantID: variant.id,
-                            sourceUpdatedAt: variant.updatedAt,
-                            fetchedAt: fetchedAt
+                let binding: GradedVariantBindingReceipt
+                if let owner = row(for: target) {
+                    do {
+                        binding = try GradedVariantBinding.apply(
+                            variant,
+                            to: owner,
+                            store: store,
+                            context: modelContext,
+                            variantID: target.variantID,
+                            treatmentIDs: target.magicTreatmentIDsRaw,
+                            at: .now
                         )
-                    )
-                } else {
-                    .unavailable(.justTCG)
-                }
-                let accepted = store.store(
-                    lookup,
-                    game: target.game,
-                    printingID: printingID,
-                    variantID: target.variantID,
-                    marketVariantID: variant.id,
-                    treatmentIDs: target.magicTreatmentIDsRaw
-                )
-                let canonicalKey = PriceRecord.key(
-                    game: target.game,
-                    printingID: printingID,
-                    variantID: target.variantID,
-                    treatmentIDs: target.magicTreatmentIDsRaw
-                )
-                if let record = store.record(forKey: canonicalKey) {
-                    if accepted, variant.marketPriceUSD != nil {
-                        record.justTCGFetchedAt = fetchedAt
+                    } catch {
+                        // Do not bind a slab if its old price lineage could not
+                        // be read and retargeted. The isolated refresh remains
+                        // incomplete and the next pass can retry this target.
+                        persistenceFailed = true
+                        continue
                     }
-                    record.marketVariantID = variant.id
-                    record.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+                    rowsByVariantID[variant.id, default: []].append(owner)
+                } else {
+                    // Preserve the provider-key cache write if a collection row
+                    // disappears between target selection and quote application.
+                    binding = GradedVariantBinding.storeUnboundVariantQuote(
+                        variant,
+                        game: target.game,
+                        variantID: target.variantID,
+                        treatmentIDs: target.magicTreatmentIDsRaw,
+                        store: store,
+                        at: .now
+                    )
                 }
-                if accepted {
+                if binding.wasAccepted {
                     if variant.marketPriceUSD != nil { stagedPriced += 1 }
                     stagedWriteCount += 1
-                    rememberPriceKey(canonicalKey)
+                    rememberPriceKey(binding.priceKey)
                 }
                 else { persistenceFailed = true }
             }

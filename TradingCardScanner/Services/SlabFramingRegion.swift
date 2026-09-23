@@ -98,6 +98,31 @@ enum SlabFramingRegion {
         visionRect(for: geometry(for: company).titleBand, company: company)
     }
 
+    /// Mode-level ROIs stay broad enough for ordinary framing drift. The
+    /// company-specific bands above remain available for calibration work, but
+    /// live recognition does not narrow to a grader after its first read.
+    static var slabModeFooterVisionRect: CGRect {
+        let padded = geometry(for: nil).footerBand.insetBy(dx: -0.08, dy: -0.015)
+        return clampedVisionRect(for: padded)
+    }
+
+    /// The slab-mode label window covers the generic label band with extra
+    /// vertical room for labels that sit differently in current slab moulds.
+    static var slabModeLabelVisionRect: CGRect {
+        let generic = geometry(for: nil).labelBand
+        let padded = CGRect(
+            x: generic.minX,
+            y: 0.72,
+            width: generic.width,
+            height: 1.06 - 0.72
+        )
+        return clampedVisionRect(for: padded)
+    }
+
+    static var slabModeTitleVisionRect: CGRect {
+        titleVisionRect(for: nil)
+    }
+
     /// Title OCR runs across the raw-card and slab title bands while framing
     /// transitions. The two bands are intentionally disjoint: the camera guide
     /// moves when the slab is recognized, but the card itself does not move at
@@ -105,5 +130,11 @@ enum SlabFramingRegion {
     /// through that presentation change.
     static func titleOCRVisionRect(for company: GradingCompany? = nil) -> CGRect {
         CardFramingRegion.titleVisionRect.union(titleVisionRect(for: company))
+    }
+
+    private static func clampedVisionRect(for slabRelativeRect: CGRect) -> CGRect {
+        let frame = CGRect(x: 0, y: 0, width: 1, height: 1)
+        let rect = visionRect(for: slabRelativeRect, company: nil).intersection(frame)
+        return rect.isNull ? .zero : rect
     }
 }

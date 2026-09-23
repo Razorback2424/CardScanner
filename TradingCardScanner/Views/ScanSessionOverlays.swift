@@ -14,40 +14,70 @@ struct ScanAssistanceView: View {
     }
 }
 
-/// A provisional grader hint holds the raw commit gate while the camera keeps
-/// reading. The explicit raw action is the only way to release that hold before
-/// the slab label confirms or the card leaves the scan band.
 struct SlabLabelReadingOfferView: View {
     let prompt: SlabLabelReadPrompt
-    let purpose: ScanPurpose
-    let onUseRaw: () -> Void
-
-    private var rawActionTitle: String {
-        purpose == .collection ? "Save as raw card" : "Check raw card price"
-    }
+    let onSwitchToRaw: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label("Reading \(prompt.company.label) slab label", systemImage: "viewfinder")
+            Label("No slab label found", systemImage: "viewfinder")
                 .font(.subheadline.weight(.bold))
 
-            Text("Fit the whole slab in the guide.")
+            Text("The label could not be read. You can scan this as a raw card instead.")
                 .font(.caption)
                 .foregroundStyle(.white.opacity(0.78))
                 .fixedSize(horizontal: false, vertical: true)
 
-            Button(action: onUseRaw) {
-                Text(rawActionTitle)
+            Button(action: onSwitchToRaw) {
+                Text("Switch to Raw")
                     .font(.caption.weight(.semibold))
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 40)
             }
             .buttonStyle(.bordered)
             .tint(.white)
-            .accessibilityHint("Uses the raw card result for this presentation.")
+            .accessibilityHint("Changes scanning mode to raw cards.")
         }
         .foregroundStyle(.white)
         .padding(12)
+        .appGlass(cornerRadius: 14)
+        .accessibilityElement(children: .contain)
+    }
+}
+
+struct PendingSlabConversionOfferView: View {
+    let offer: PendingSlabConversionOffer
+    let onConvert: () -> Void
+    let onDismiss: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Looks like \(offer.gradeDescription) — Save as graded")
+                    .font(.subheadline.weight(.bold))
+                    .lineLimit(2)
+                Text(offer.cardName)
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.75))
+                    .lineLimit(1)
+            }
+            Spacer(minLength: 0)
+            Button("Convert", action: onConvert)
+                .font(.caption.weight(.semibold))
+                .buttonStyle(.borderedProminent)
+                .tint(.cyan)
+                .accessibilityHint("Replaces the raw scan with the graded slab entry.")
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.caption.weight(.bold))
+                    .frame(width: 32, height: 32)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Dismiss graded conversion offer")
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .appGlass(cornerRadius: 14)
         .accessibilityElement(children: .contain)
     }

@@ -278,7 +278,7 @@ enum GradedLabelParser {
             return ParsedLine(original: original, tokens: tokenize(original))
         }
         let matches = specs.compactMap { spec -> GradingCompany? in
-            phraseMatches(spec.companyTokens, in: parsedLines).isEmpty ? nil : spec.company
+            companyMatches(spec, in: parsedLines).isEmpty ? nil : spec.company
         }
         let companies = Set(matches)
         return companies.count == 1 ? companies.first : nil
@@ -295,12 +295,12 @@ enum GradedLabelParser {
         }
         guard !parsedLines.isEmpty else { return nil }
 
-        let companyMatches = specs.compactMap { spec -> (GradingLabelSpec, [LocatedPhrase])? in
-            let matches = phraseMatches(spec.companyTokens, in: parsedLines)
+        let companySpecMatches = specs.compactMap { spec -> (GradingLabelSpec, [LocatedPhrase])? in
+            let matches = companyMatches(spec, in: parsedLines)
             return matches.isEmpty ? nil : (spec, matches)
         }
-        let companies = Set(companyMatches.map { $0.0.company })
-        guard companies.count == 1, let (spec, companyLocations) = companyMatches.first else {
+        let companies = Set(companySpecMatches.map { $0.0.company })
+        guard companies.count == 1, let (spec, companyLocations) = companySpecMatches.first else {
             return nil
         }
 
@@ -312,13 +312,6 @@ enum GradedLabelParser {
         let nearbyWordMatches = wordMatches.filter {
             isNear($0.location, companyLocations)
         }
-        let selectedWord = nearbyWordMatches.sorted { lhs, rhs in
-            if lhs.word.tokens.count != rhs.word.tokens.count {
-                return lhs.word.tokens.count > rhs.word.tokens.count
-            }
-            return proximity(lhs.location, to: companyLocations)
-                < proximity(rhs.location, to: companyLocations)
-        }.first
 
         let numericCandidates = locatedTokens(in: parsedLines).compactMap { located -> (LocatedToken, String, Double)? in
             guard !located.token.slashAdjacent,
@@ -326,18 +319,56 @@ enum GradedLabelParser {
                   let value = Double(normalized),
                   value >= 1,
                   value <= 10,
-                  isHalfStep(value)
+                  isHalfStep(value),
+                  isNear(located.position, companyLocations)
             else { return nil }
             return (located, normalized, value)
-        }.filter { candidate in
-            guard isNear(candidate.0.position, companyLocations) else { return false }
+        }
+
+        let selectedWord = nearbyWordMatches.sorted { lhs, rhs in
+            let lhsHasAdjacentNumber = numericCandidates.contains {
+                isGradeNumberAdjacent(
+                    $0.0.position,
+                    to: lhs.location,
+                    position: spec.numberPosition,
+                    in: parsedLines
+                )
+            }
+            let rhsHasAdjacentNumber = numericCandidates.contains {
+                isGradeNumberAdjacent(
+                    $0.0.position,
+                    to: rhs.location,
+                    position: spec.numberPosition,
+                    in: parsedLines
+                )
+            }
+            if lhsHasAdjacentNumber != rhsHasAdjacentNumber {
+                return lhsHasAdjacentNumber
+            }
+            if lhs.word.tokens.count != rhs.word.tokens.count {
+                return lhs.word.tokens.count > rhs.word.tokens.count
+            }
+            return proximity(lhs.location, to: companyLocations)
+                < proximity(rhs.location, to: companyLocations)
+        }.first { match in
+            let isAmbiguousNameToken = ["EX", "NM", "VG"].contains(match.word.tokens.joined(separator: " "))
+            return !isAmbiguousNameToken || numericCandidates.contains {
+                isGradeNumberAdjacent(
+                    $0.0.position,
+                    to: match.location,
+                    position: spec.numberPosition,
+                    in: parsedLines
+                )
+            }
+        }
+        let gradeNumberCandidates = numericCandidates.filter { candidate in
             if let selectedWord {
                 return isNear(selectedWord.location, candidate.0.position)
             }
             return true
         }
 
-        let selectedNumber = numericCandidates.sorted { lhs, rhs in
+        let selectedNumber = gradeNumberCandidates.sorted { lhs, rhs in
             numberScore(
                 lhs.0,
                 companyLocations: companyLocations,
@@ -374,6 +405,8 @@ enum GradedLabelParser {
         let certificationValues = certificationCandidates.uniqued()
         let certificationNumber = certificationValues.count == 1 ? certificationValues.first : nil
 
+        guard spec.company != .tag || certificationNumber != nil else { return nil }
+
         let recognizedPositions = recognizedTokenPositions(
             parsedLines: parsedLines,
             companyLocations: companyLocations,
@@ -405,6 +438,62 @@ enum GradedLabelParser {
             printedFinish: printedEvidence.finish,
             printedPrintRun: printedEvidence.printRun
         )
+    }
+
+    private static func companyMatches(
+        _ spec: GradingLabelSpec,
+        in lines: [ParsedLine]
+    ) -> [LocatedPhrase] {
+        let matches = phraseMatches(spec.companyTokens, in: lines)
+        guard spec.company == .tag else { return matches }
+
+        let rawTagCardWords: Set<String> = ["TEAM", "BOLT", "ALL", "GX"]
+        return matches.filter { match in
+            let nextPosition: TokenPosition?
+            if match.endTokenIndex + 1 < lines[match.endLineIndex].tokens.count {
+                nextPosition = TokenPosition(
+                    lineIndex: match.endLineIndex,
+                    tokenIndex: match.endTokenIndex + 1
+                )
+            } else if match.endLineIndex + 1 < lines.count,
+                      !lines[match.endLineIndex + 1].tokens.isEmpty {
+                nextPosition = TokenPosition(lineIndex: match.endLineIndex + 1, tokenIndex: 0)
+            } else {
+                nextPosition = nil
+            }
+            guard let nextPosition else { return true }
+            return !rawTagCardWords.contains(lines[nextPosition.lineIndex].tokens[nextPosition.tokenIndex].text)
+        }
+    }
+
+    private static func isGradeNumberAdjacent(
+        _ number: TokenPosition,
+        to word: LocatedPhrase,
+        position: GradingNumberPosition,
+        in lines: [ParsedLine]
+    ) -> Bool {
+        let adjacent: TokenPosition?
+        switch position {
+        case .beforeWord:
+            if word.startTokenIndex > 0 {
+                adjacent = TokenPosition(lineIndex: word.lineIndex, tokenIndex: word.startTokenIndex - 1)
+            } else if word.lineIndex > 0,
+                      let lastIndex = lines[word.lineIndex - 1].tokens.indices.last {
+                adjacent = TokenPosition(lineIndex: word.lineIndex - 1, tokenIndex: lastIndex)
+            } else {
+                adjacent = nil
+            }
+        case .afterWord:
+            if word.endTokenIndex + 1 < lines[word.endLineIndex].tokens.count {
+                adjacent = TokenPosition(lineIndex: word.endLineIndex, tokenIndex: word.endTokenIndex + 1)
+            } else if word.endLineIndex + 1 < lines.count,
+                      !lines[word.endLineIndex + 1].tokens.isEmpty {
+                adjacent = TokenPosition(lineIndex: word.endLineIndex + 1, tokenIndex: 0)
+            } else {
+                adjacent = nil
+            }
+        }
+        return adjacent == number
     }
 
     private static func printedEvidence(
@@ -774,8 +863,11 @@ struct SlabEvidenceConfirmationWindow: Equatable, Sendable {
         }
         guard matchingObservations.count >= matchesRequired else { return nil }
 
+        let mostComplete = matchingObservations.max {
+            Self.completeness(of: $0) < Self.completeness(of: $1)
+        }
         reset()
-        return evidence
+        return mostComplete
     }
 
     mutating func reset() {
@@ -790,88 +882,53 @@ struct SlabEvidenceConfirmationWindow: Equatable, Sendable {
             && updated.certificationNumber != nil
             && previous.company == updated.company
             && previous.grade == updated.grade
-            && cardNameMatches(previous, updated)
+    }
+
+    /// A different certificate on the same confirmed footer key identifies a
+    /// second physical copy. Grade OCR must remain exact so a missing or
+    /// flickering grade cannot turn one held slab into another collection row.
+    static func isDistinctCertifiedCopy(
+        from previous: GradedSlabEvidence,
+        to updated: GradedSlabEvidence
+    ) -> Bool {
+        guard let previousCertificate = previous.certificationNumber,
+              let updatedCertificate = updated.certificationNumber else { return false }
+        return previousCertificate != updatedCertificate
+            && previous.company == updated.company
+            && previous.grade == updated.grade
     }
 
     private func matches(_ lhs: GradedSlabEvidence, _ rhs: GradedSlabEvidence) -> Bool {
-        guard lhs.company == rhs.company, lhs.grade == rhs.grade else { return false }
-
-        switch (lhs.certificationNumber, rhs.certificationNumber) {
-        case let (lhs?, rhs?):
-            // A readable certificate is exact physical evidence. Never let a
-            // name match collapse two different certified slabs.
-            return lhs == rhs
-        case (.some, nil), (nil, .some), (nil, nil):
-            // If either pass missed the certificate, the printed card name is
-            // the evidence that both passes describe the same slab.
-            break
-        }
-
-        return Self.cardNameMatches(lhs, rhs)
+        guard lhs.company == rhs.company,
+              normalized(lhs.grade.label) == normalized(rhs.grade.label),
+              lhs.grade.qualifier == rhs.grade.qualifier,
+              optionalValuesAgree(lhs.grade.value, rhs.grade.value),
+              optionalValuesAgree(lhs.certificationNumber, rhs.certificationNumber)
+        else { return false }
+        return true
     }
 
-    private static func cardNameMatches(
-        _ lhs: GradedSlabEvidence,
-        _ rhs: GradedSlabEvidence
-    ) -> Bool {
-        let lhsLines = lhs.labelCardText
-            .map(Self.normalizedLabelTokens)
-            .filter { !$0.isEmpty }
-        let rhsLines = rhs.labelCardText
-            .map(Self.normalizedLabelTokens)
-            .filter { !$0.isEmpty }
-
-        guard !lhsLines.isEmpty, !rhsLines.isEmpty else { return false }
-
-        // Require a majority of the larger line's tokens to match. Matching is
-        // tolerant of one OCR character substitution, but a single shared word
-        // cannot make two different card labels the same slab.
-        return lhsLines.contains { lhsTokens in
-            rhsLines.contains { rhsTokens in
-                let matched = lhsTokens.filter { lhsToken in
-                    rhsTokens.contains { rhsToken in
-                        Self.tokensMatch(lhsToken, rhsToken)
-                    }
-                }.count
-                return matched * 2 > max(lhsTokens.count, rhsTokens.count)
-            }
-        }
+    private func optionalValuesAgree(_ lhs: String?, _ rhs: String?) -> Bool {
+        guard let lhs, let rhs else { return true }
+        return normalized(lhs) == normalized(rhs)
     }
 
-    private static func normalizedLabelLine(_ line: String) -> String {
-        let scalars = line.uppercased().unicodeScalars.map { scalar in
-            CharacterSet.alphanumerics.contains(scalar) || scalar == " " ? scalar : " "
-        }
-        return scalars
-            .map(String.init)
-            .joined()
-            .split(whereSeparator: { $0 == " " })
-            .joined(separator: " ")
+    private func normalized(_ value: String?) -> String? {
+        guard let value else { return nil }
+        let normalized = value.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        return normalized.isEmpty ? nil : normalized
     }
 
-    private static func normalizedLabelTokens(_ line: String) -> [String] {
-        normalizedLabelLine(line).split(separator: " ").map(String.init)
+    private static func completeness(of evidence: GradedSlabEvidence) -> Int {
+        (evidence.certificationNumber == nil ? 0 : 10_000)
+            + (evidence.grade.value == nil ? 0 : 1_000)
+            + (evidence.grade.label == nil ? 0 : 100)
+            + (evidence.grade.qualifier == nil ? 0 : 10)
+            + (evidence.labelCardText.filter { !$0.isEmpty }.count * 4)
+            + (evidence.printedFinish == nil ? 0 : 2)
+            + (evidence.printedPrintRun == nil ? 0 : 1)
     }
 
-    private static func tokensMatch(_ lhs: String, _ rhs: String) -> Bool {
-        guard lhs != rhs else { return true }
-        guard lhs.count >= 3, rhs.count >= 3 else { return false }
-        let left = Array(lhs)
-        let right = Array(rhs)
-        var previous = Array(0...right.count)
-        for (leftIndex, leftCharacter) in left.enumerated() {
-            var current = [leftIndex + 1]
-            current.reserveCapacity(right.count + 1)
-            for (rightIndex, rightCharacter) in right.enumerated() {
-                let substitution = previous[rightIndex] + (leftCharacter == rightCharacter ? 0 : 1)
-                let insertion = current[rightIndex] + 1
-                let deletion = previous[rightIndex + 1] + 1
-                current.append(min(substitution, insertion, deletion))
-            }
-            previous = current
-        }
-        return previous[right.count] <= 1
-    }
 }
 
 private extension Array where Element: Hashable {

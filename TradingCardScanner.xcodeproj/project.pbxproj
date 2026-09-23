@@ -204,6 +204,7 @@
 		A00100B6 /* GradedLabelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B6 /* GradedLabelParser.swift */; };
 		A00100B7 /* SlabFramingRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B7 /* SlabFramingRegion.swift */; };
 		A00100B8 /* ScannedGradedResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100B8 /* ScannedGradedResolver.swift */; };
+		A0010200 /* ScanSubjectMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010200 /* ScanSubjectMode.swift */; };
 		A00200F8 /* GradedLabelParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F8 /* GradedLabelParserTests.swift */; };
 		A00200F9 /* SlabFramingRegionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F9 /* SlabFramingRegionTests.swift */; };
 		A00200FA /* ScanSubjectSuppressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200FA /* ScanSubjectSuppressionTests.swift */; };
@@ -447,6 +448,7 @@
 		B00100B6 /* GradedLabelParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradedLabelParser.swift; sourceTree = "<group>"; };
 		B00100B7 /* SlabFramingRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlabFramingRegion.swift; sourceTree = "<group>"; };
 		B00100B8 /* ScannedGradedResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannedGradedResolver.swift; sourceTree = "<group>"; };
+		B0010200 /* ScanSubjectMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSubjectMode.swift; sourceTree = "<group>"; };
 		B00200F8 /* GradedLabelParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradedLabelParserTests.swift; sourceTree = "<group>"; };
 		B00200F9 /* SlabFramingRegionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlabFramingRegionTests.swift; sourceTree = "<group>"; };
 		B00200FA /* ScanSubjectSuppressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSubjectSuppressionTests.swift; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 				B0010085 /* InventoryEvent.swift */,
 				B001008A /* PortfolioDailyClose.swift */,
 				B001008C /* PortfolioHistoryTypes.swift */,
+				B0010200 /* ScanSubjectMode.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -952,6 +955,7 @@
 				A00100B6 /* GradedLabelParser.swift in Sources */,
 				A00100B7 /* SlabFramingRegion.swift in Sources */,
 				A00100B8 /* ScannedGradedResolver.swift in Sources */,
+				A0010200 /* ScanSubjectMode.swift in Sources */,
 				A0010070 /* CollectionActivity.swift in Sources */,
 				A0010071 /* CollectionActivityLogView.swift in Sources */,
 				A0010069 /* MagicPhysicalObjects.swift in Sources */,
