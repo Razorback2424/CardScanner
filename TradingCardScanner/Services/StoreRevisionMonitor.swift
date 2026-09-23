@@ -133,6 +133,7 @@ enum StoreRevisionFingerprinting {
         hasher.combine(record.sourceRaw)
         hasher.combine(record.sourceUpdatedAt)
         hasher.combine(record.fetchedAt)
+        hasher.combine(record.justTCGFetchedAt)
         hasher.combine(record.lastCheckedAt)
         hasher.combine(record.lastSuccessfulCheckAt)
         hasher.combine(record.invalidatedAt)
