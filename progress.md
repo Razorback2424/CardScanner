@@ -1,3 +1,37 @@
+App-review follow-up fixes (2026-09-22): Settings opened from Scan now releases
+the scanner's session-wide bulk interval and reacquires it after dismissal;
+the sheet cannot close through Done or a swipe while import/delete owns the
+exclusive token. Fallback eligibility is independent from price-observation
+storage: identity-confirmed cards with no catalog quote can reach JustTCG while
+`.unavailable(nil)` is still never persisted as an observation. A pending
+forced retry survives same-collection coalescing, re-fingerprints after the
+active pass, and clears if fallback is disabled. Deletion copy now states that
+removal activity, price records, and Value History stay on-device. The focused
+iPhone 17 Pro / iOS 26.5 Simulator selection passed 4/4 tests; same-collection
+live-toggle timing and device behavior remain unverified.
+
+App-review remediation worktree (2026-09-22): implemented session proof
+retention across automatic, Add Another, held-repeat, and undo flows; kept
+unqueried prices out of persistence while making fallback eligibility explicit
+for identified catalog cards; bounded unpriced, missing-artwork, and
+no-supported-provider automatic retries; made exact-row
+catalog enrichment fill-only while retaining canonical normalization for
+synthetic CSV rows; skipped CloudKit account probes while restoration readiness
+is unproven and reused the matching active local container; enabled locked
+background access to small metadata files with a privacy-policy disclosure;
+delivered store notifications on the main run loop; and moved collection
+deletion to a model actor with mutually exclusive import/delete coordination.
+The affected iPhone 17 Pro iOS 26.5 simulator selection passed 99 tests with 1
+data-protection-attribute test skipped because Simulator exposes no such
+metadata. The separate delete-actor integration test passed 1/1. A wider
+intermediate normalization run exposed and led to a fix for CSV set-code
+canonicalization; that broader run also reported a Cardmarket test expectation
+that conflicts with the current `CardPricing` implementation. The full suite, locked-device behavior,
+physical scanner stack, actual privacy/support URLs, archive/TestFlight,
+provider behavior, and release status remain open. See
+[`app_review_fix_plan.md`](app_review_fix_plan.md) and
+[`docs/plans/documentation_audit.md`](docs/plans/documentation_audit.md).
+
 Browse pricing coverage Stage 4A (2026-09-22): implemented the revised
 `browse_pricing_coverage_plan.md` Stage 4A slice. Browse now has a separate
 device-local, per-set `BrowsePriceHistoryStore` under Application Support with

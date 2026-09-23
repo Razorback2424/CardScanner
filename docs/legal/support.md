@@ -8,11 +8,11 @@ Describe whether the issue concerns scanning, card identity or variant selection
 
 Do not send certificate IDs, a full collection export, or card images unless Support explicitly requests them and you consent.
 
-## iCloud troubleshooting
+## Collection storage
 
-Confirm that the device is online and signed in to the intended iCloud account, then retry. CardScanner does not merge two different collection identities in version 1.0. If the app reports a different iCloud collection, keep the local collection on the device or contact Support before changing data.
+CardScanner 1.0 stores the collection on the device. iCloud sync is not available in this release. Use CSV export in Collection & Portfolio settings to keep a portable copy before changing devices or removing app data.
 
-If the issue persists, use Collection Storage and Privacy & Support in Settings to review the current storage state and support link. iCloud account and device permissions remain controlled by iOS Settings.
+If the app reports a local storage error, avoid deleting app data and contact Support with the app version, OS version, device model, and coarse error category. Do not send a full collection export unless Support explicitly requests it and you consent.
 
 ## Contact
 

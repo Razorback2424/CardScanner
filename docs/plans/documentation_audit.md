@@ -1,12 +1,12 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-09-20
+**Audit date:** 2026-09-22
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — 2026-09-20
+## Current authority boundary — 2026-09-22
 
 This is the repository-wide documentation index and reconciliation record.
 Source code, tests, build settings, and evidence recorded against the current
@@ -52,6 +52,21 @@ scanner catalog-miss area. The external-SSD artifacts are under
 `exact-7dbaf40/focused.xcresult` and `exact-7dbaf40/full-shell.xcresult`; the
 prior `a4375df` suite remains historical.
 
+## Current worktree review remediation — 2026-09-22
+
+The active workspace is `main` at base `810954e` and has uncommitted scanner,
+price-refresh, storage-bootstrap, manifest-protection, and bulk-operation
+changes. The root [`app_review_fix_plan.md`](../../app_review_fix_plan.md) is
+the implementation and acceptance authority for this remediation; the
+[`release_followups.md`](release_followups.md) document retains the residual
+runtime, device, provider, and scale evidence. The affected simulator selection
+passes 99 tests with one Simulator-only protection-attribute skip; the separate
+delete-actor integration test passes. One broader normalization run reports an
+existing Japanese Cardmarket expectation that conflicts with current
+`CardPricing` behavior. Neither these focused counts nor the earlier `7dbaf40`
+simulator counts certify the full worktree. The Release privacy/support
+destinations are still owner input.
+
 | Area | Current authority | Code/evidence boundary |
 | --- | --- | --- |
 | Product scope and roadmap | [`README.md`](../../README.md), [`CardScanner Collection Integrity Strategy`](../vision/CardScanner%20Collection%20Integrity%20Strategy%20%E2%80%94%20Start-to-Finish%20Implementation%20Plan.md), and the [active launch plan](../superpowers/plans/2026-09-13-phase-0-phase-1-app-store-launch.md) | The current Swift target and tests decide what is implemented; roadmap prose does not add product behavior. The launch plan's §0.1.1 binds open pass-2 findings to the tasks they block, and §0.1.2 lists current plans outside launch scope; both are required reading before a task is started. |
@@ -59,9 +74,9 @@ prior `a4375df` suite remains historical.
 | Automatic Pokémon set updates | [`automatic_pokemon_catalog_updates_plan.md`](automatic_pokemon_catalog_updates_plan.md) | Slices A–E are implemented. Slice F's production-host revision-1 rehearsal and same-revision relaunch handling are complete as of 2026-09-19. The committed production app configuration is `remote-authority`; schema-1 additive fingerprinting, canonical publisher/device parity, fail-closed classification, durable targeted reconciliation, parent-artwork metadata, and set-specific Browse updates are implemented and the latest focused verification is Core 38/38 plus app 37/37. Protected baseline publication, auto-environment setup, four-hour scheduling, physical-device/offline evidence, the first real catalog update, and release gates remain open. |
 | Magic catalog signing and publication | [`magic_catalog_key_handling_runbook.md`](magic_catalog_key_handling_runbook.md) | Current authority for Magic-specific key custody, signed catalog releases, protected/automatic publication routing, Scryfall boundaries, and rollout safeguards. The Magic-specific key pin remains owner input; rollout remains `legacy-live`. |
 | Artwork fallbacks | [`artwork-fallback-plan.md`](artwork-fallback-plan.md), `TradingCardScanner/Services/ArtworkFallbacks.swift`, and Browse tests | P0–P3 are implemented in the current tree; TCGdex-only stem/WebP candidates, symbol sibling-prefix recovery, decode-before-persist, legacy-cache eviction, and coalesced requests pass in the 133/133 focused run. Broader provider behavior and licensing are still operational gates. |
-| Scanner workflow | `TradingCardScanner/Views/ScannerViewModel.swift`, the current [scanner module review](../audits/scanner_module_review.md), [release follow-ups](release_followups.md), [`scan_cancellation_success_checklist.md`](../../references/scan_cancellation_success_checklist.md), and `progress.md` | The reviewed cancellation/task-lifecycle fixes are landed and focused-verified. The scanner module review is the current authority for the five confirmed module findings and three measurement concerns; camera, thermal, provider, and physical-device evidence remains open. |
-| Pricing and portfolio performance | [`price_refresh_scale_plan.md`](price_refresh_scale_plan.md), [`release_followups.md`](release_followups.md), and the current services/tests | Actor-owned refresh persistence is landed; large-store measurement, Magic batching, resumable sweeps, and physical-provider profiling remain open. |
-| App Review and release | [`app_review_fix_plan.md`](../../app_review_fix_plan.md), [`app_review_preflight.md`](../../app_review_preflight.md), [`card-scanner-1.0-go-no-go-framework.md`](../release/card-scanner-1.0-go-no-go-framework.md), and the [current evidence ledger](../release/phase-1-integrity-evidence.md) | The exact checkout is not certified: CloudKit/ownership, clean full-suite, physical-device, archive/TestFlight, centering, and App Store gates remain open. |
+| Scanner workflow | `TradingCardScanner/Views/ScannerViewModel.swift`, the current [scanner module review](../audits/scanner_module_review.md), [release follow-ups](release_followups.md), [`scan_cancellation_success_checklist.md`](../../references/scan_cancellation_success_checklist.md), and `progress.md` | The scanner module review remains authoritative for tracking/OCR findings and measurements. The 2026-09-22 fix plan's A→B→A′, add-another, held-repeat, and scoped-undo regressions pass on Simulator; the physical stack acceptance remains open. |
+| Pricing and portfolio performance | [`price_refresh_scale_plan.md`](price_refresh_scale_plan.md), [`release_followups.md`](release_followups.md), and the current services/tests | The 2026-09-22 fix plan tracks no-provider sentinels and bounded refresh eligibility. Large-store measurement, Magic batching, resumable sweeps, and physical-provider profiling remain open. |
+| App Review and release | [`app_review_fix_plan.md`](../../app_review_fix_plan.md), [`app_review_preflight.md`](../../app_review_preflight.md), [`card-scanner-1.0-go-no-go-framework.md`](../release/card-scanner-1.0-go-no-go-framework.md), and the [current evidence ledger](../release/phase-1-integrity-evidence.md) | The current `main@810954e` worktree is dirty; a generic simulator build and affected tests pass, but there is no clean full-suite or device proof. CloudKit/device, archive/TestFlight, centering, actual privacy/support URLs, and other App Store gates remain open. |
 | Card centering | [`review/opus-card-centering-implementation-plan.md`](../../review/opus-card-centering-implementation-plan.md) and [`review/centering-evidence/`](../../review/centering-evidence/) | Dated experiment artifacts remain inside the current evidence ledger; the active contract and its open accuracy/invariant/latency/device gates are authoritative. |
 | Legal and future website | [`legal/privacy-policy.md`](../legal/privacy-policy.md), [`legal/support.md`](../legal/support.md), and [`CardScanner-Website-Implementation-Spec.md`](../CardScanner-Website-Implementation-Spec.md) | The website specification is a future website contract; no website source is present in this iOS repository. Its canonical support route is `/support`. |
 | Known production defects | [`../audits/defect_review_pass_2.md`](../audits/defect_review_pass_2.md) | The six-finding baseline was audited against `a4375df` (five confirmed, one suspected). F01–F03 source remediation is now landed and focused-verified; the audit has not been rerun at intended candidate `7dbaf40`, and entitled-device/runtime evidence remains open. Pass 1 in `docs/legacy/` is a 2026-09-09/10 snapshot and was not re-reproduced. |

@@ -1,6 +1,6 @@
 # Release follow-ups
 
-**Status:** current validation, measurement, and catalog-hardening backlog — reconciled 2026-09-20.
+**Status:** current validation, measurement, and catalog-hardening backlog — reconciled 2026-09-22.
 
 This document is the aggregation point for gates that source inspection or the
 ordinary simulator suite cannot retire. Completed implementation plans are
@@ -19,7 +19,10 @@ reason to leave it unchanged.
 [pass-2 findings](../audits/defect_review_pass_2.md) to the tasks they block.
 RF-6 gates Task 1 and Task 11. F01/F02 source remediation is landed; RF-7 and
 RF-8 remain open for the entitled-device and measurement evidence described
-below.
+below. The 2026-09-22 code-review remediation, focused simulator results, and
+open acceptance items are tracked in the root
+[`app_review_fix_plan.md`](../../app_review_fix_plan.md); this document owns
+the residual runtime, device, provider, and scale evidence.
 
 ## Release validation
 
