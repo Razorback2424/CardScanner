@@ -474,12 +474,13 @@ final class PriceCheckCoordinator {
             treatmentIDs: key.treatmentIDs
         ).flatMap(Self.evidence(from:))
 
-        switch (record, reference) {
-        case (nil, nil): return nil
-        case let (evidence?, nil), let (nil, evidence?): return evidence
-        case let (record?, reference?):
-            return reference.retrievedAt >= record.retrievedAt ? reference : record
+        let evidence = [record, reference].compactMap { $0 }
+        guard !evidence.isEmpty else { return nil }
+        let usdEvidence = evidence.filter {
+            $0.price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame
         }
+        return (usdEvidence.isEmpty ? evidence : usdEvidence)
+            .max(by: { $0.retrievedAt < $1.retrievedAt })
     }
 
     private static func evidence(from record: PriceRecord) -> LocalEvidence? {
