@@ -66,6 +66,7 @@ actor JustTCGPacer {
         let id: UUID
         let lane: JustTCGRequestLane
         let minimumInterval: TimeInterval
+        let enqueuedAt: Date
         let continuation: CheckedContinuation<Void, Error>
     }
 
@@ -87,6 +88,7 @@ actor JustTCGPacer {
                         id: id,
                         lane: lane,
                         minimumInterval: minimumInterval,
+                        enqueuedAt: .now,
                         continuation: continuation
                     )
                 )
@@ -147,6 +149,10 @@ actor JustTCGPacer {
             let granted = waiters.remove(at: index)
             lastGrantedAt = now
             lastGrantedInterval = waiter.minimumInterval
+            PerformanceSignpost.emitEvent(
+                "justTCGRequestSlotGranted",
+                "lane=\(waiter.lane == .interactive ? "interactive" : "background") waitMs=\(max(0, Int(now.timeIntervalSince(waiter.enqueuedAt) * 1_000)))"
+            )
             granted.continuation.resume()
         }
     }
@@ -322,6 +328,21 @@ actor JustTCGTransport {
             throw TransportError.rateLimited(retryAt: retryAt)
         }
 
+        let requestID = PerformanceSignpost.makeID()
+        let requestPath = request.url?.path ?? "unknown"
+        let requestState = PerformanceSignpost.beginInterval(
+            "justTCGNetworkRequest",
+            id: requestID,
+            "path=\(requestPath) lane=\(lane == .interactive ? "interactive" : "background")"
+        )
+        var requestOutcome = "error"
+        defer {
+            PerformanceSignpost.endInterval(
+                "justTCGNetworkRequest",
+                requestState,
+                "path=\(requestPath) result=\(requestOutcome)"
+            )
+        }
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse else {
             throw TransportError.badResponse(status: -1)
@@ -339,8 +360,10 @@ actor JustTCGTransport {
         }
 
         guard (200..<300).contains(http.statusCode) else {
+            requestOutcome = "http-\(http.statusCode)"
             throw TransportError.badResponse(status: http.statusCode)
         }
+        requestOutcome = "http-\(http.statusCode)"
 
         serverClock.observe(
             serverDateHeader: http.value(forHTTPHeaderField: "Date")

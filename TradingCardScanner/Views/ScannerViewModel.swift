@@ -538,6 +538,7 @@ struct RecentScan: Identifiable, Equatable {
     /// silently looking up (or borrowing) another finish's value.
     let price: PriceLookup
     let mutation: CollectionMutation
+    let isGradedPricePending: Bool
 
     var identifier: ScanIdentifier { subject.identifier }
 
@@ -550,7 +551,8 @@ struct RecentScan: Identifiable, Equatable {
         catalogRetrievedAt: Date = .now,
         options: [PhysicalVariant],
         mutation: CollectionMutation,
-        price: PriceLookup = .unavailable(nil)
+        price: PriceLookup = .unavailable(nil),
+        isGradedPricePending: Bool = false
     ) {
         self.id = id
         self.subject = subject
@@ -561,6 +563,7 @@ struct RecentScan: Identifiable, Equatable {
         self.options = options
         self.price = price
         self.mutation = mutation
+        self.isGradedPricePending = isGradedPricePending
     }
 
     func updating(price: PriceLookup) -> RecentScan {
@@ -573,7 +576,23 @@ struct RecentScan: Identifiable, Equatable {
             catalogRetrievedAt: catalogRetrievedAt,
             options: options,
             mutation: mutation,
-            price: price
+            price: price,
+            isGradedPricePending: false
+        )
+    }
+
+    func updating(price: PriceLookup, isGradedPricePending: Bool) -> RecentScan {
+        RecentScan(
+            id: id,
+            subject: subject,
+            card: card,
+            resolved: resolved,
+            pokemonPrintRun: pokemonPrintRun,
+            catalogRetrievedAt: catalogRetrievedAt,
+            options: options,
+            mutation: mutation,
+            price: price,
+            isGradedPricePending: isGradedPricePending
         )
     }
 
@@ -587,7 +606,8 @@ struct RecentScan: Identifiable, Equatable {
             catalogRetrievedAt: catalogRetrievedAt,
             options: options,
             mutation: mutation,
-            price: price
+            price: price,
+            isGradedPricePending: isGradedPricePending
         )
     }
 
@@ -601,7 +621,8 @@ struct RecentScan: Identifiable, Equatable {
             catalogRetrievedAt: catalogRetrievedAt,
             options: options,
             mutation: mutation,
-            price: price
+            price: price,
+            isGradedPricePending: isGradedPricePending
         )
     }
 
@@ -632,6 +653,7 @@ struct RecentScan: Identifiable, Equatable {
             && lhs.subject == rhs.subject
             && lhs.resolved == rhs.resolved
             && lhs.price == rhs.price
+            && lhs.isGradedPricePending == rhs.isGradedPricePending
             && lhs.mutation == rhs.mutation
     }
 }
@@ -882,6 +904,7 @@ struct ScanReceipt: Identifiable, Equatable {
     let treatmentDiagnostics: [MagicTreatmentDiagnostic]
     let thumbnailURL: URL?
     let price: PriceLookup
+    let isGradedPricePending: Bool
     let resolution: VariantResolution?
 
     init(
@@ -893,6 +916,7 @@ struct ScanReceipt: Identifiable, Equatable {
         treatmentDiagnostics: [MagicTreatmentDiagnostic],
         thumbnailURL: URL?,
         price: PriceLookup = .unavailable(nil),
+        isGradedPricePending: Bool = false,
         resolution: VariantResolution? = nil
     ) {
         self.id = id
@@ -903,6 +927,7 @@ struct ScanReceipt: Identifiable, Equatable {
         self.treatmentDiagnostics = treatmentDiagnostics
         self.thumbnailURL = thumbnailURL
         self.price = price
+        self.isGradedPricePending = isGradedPricePending
         self.resolution = resolution
     }
 
@@ -916,6 +941,7 @@ struct ScanReceipt: Identifiable, Equatable {
             treatmentDiagnostics: treatmentDiagnostics,
             thumbnailURL: thumbnailURL,
             price: price,
+            isGradedPricePending: false,
             resolution: resolution
         )
     }
@@ -936,6 +962,7 @@ struct ScanReceipt: Identifiable, Equatable {
             treatmentDiagnostics: scan.card.magicTreatmentDiagnostics,
             thumbnailURL: scan.thumbnailURL,
             price: scan.price,
+            isGradedPricePending: scan.isGradedPricePending,
             resolution: scan.resolved.resolution
         )
     }
@@ -1088,6 +1115,7 @@ final class ScannerViewModel: ObservableObject {
     @Published private(set) var pendingGradedVariantCorrection: PendingGradedVariantCorrection?
     @Published private(set) var pendingSlabConversionOffer: PendingSlabConversionOffer?
     @Published private(set) var receipt: ScanReceipt?
+    @Published private(set) var gradedPriceUpdatedScanID: RecentScan.ID?
     @Published private(set) var recent: [RecentScan] = []
     /// The complete successful session projection. `recent` is intentionally
     /// capped to the five-card inline rail and is never used for accounting.
@@ -1157,6 +1185,7 @@ final class ScannerViewModel: ObservableObject {
     private var installedMagicDefinitions: [MagicSetDefinition]?
     private var noteTask: Task<Void, Never>?
     private var receiptTask: Task<Void, Never>?
+    private var gradedPricePulseTask: Task<Void, Never>?
     private var magicDirectoryTask: Task<Void, Never>?
     /// The app-scoped coordinator pushes immutable catalog snapshots into the
     /// scanner and CardCatalog. The task is intentionally owned by the model so
@@ -1243,10 +1272,12 @@ final class ScannerViewModel: ObservableObject {
     private var diagnosticEvents: [String] = []
 #endif
 
-    /// The receipt is an undo affordance, not a fleeting toast. It remains
-    /// available through the next card's recognition until a new add replaces
-    /// it, the person takes another scanner action, or five seconds pass.
+    /// The receipt is an undo affordance, not a fleeting toast. A graded receipt
+    /// stays visible through the bounded vendor lookup, then returns to the
+    /// ordinary short lifetime once the result is known.
     private static let receiptLifetime: Duration = .seconds(5)
+    private static let gradedPriceReceiptLifetime: Duration = .seconds(180)
+    private static let gradedPricePulseLifetime: Duration = .seconds(2)
     private static let slowLookupThreshold: Duration = .milliseconds(400)
     private static let noteLifetime: Duration = .milliseconds(2600)
 
@@ -1273,6 +1304,9 @@ final class ScannerViewModel: ObservableObject {
         self.collectionAddOverride = collectionAddOverride
 
         let catalog = self.catalog
+        scanner.onSlabFooterRecognized = { [weak self] in
+            self?.feedback.recognized()
+        }
         scanner.onPlausibleCandidate = { subject in
             // Speculation only. Nothing downstream may act on this. The
             // scanner already filters the active catalog-miss identity on its
@@ -1313,14 +1347,22 @@ final class ScannerViewModel: ObservableObject {
                     // Keep the recognition acknowledgement visible across the
                     // identity and persistence gap. The message is upgraded to
                     // "Saving..." only once a collection write is authorized.
-                    self.dismissReceipt()
+                    if self.receipt?.isGradedPricePending != true {
+                        self.dismissReceipt()
+                    }
                     self.scanAcknowledgement = ScanAcknowledgement(
                         encounterID: encounterID,
                         subject: subject,
                         phase: .recognized
                     )
                     self.recognitionCount += 1
-                    self.feedback.recognized()
+                    // Slab mode already gives this haptic when its footer
+                    // identity becomes stable, while the label is still being
+                    // read. Avoid a second "recognized" haptic after the
+                    // label gate completes.
+                    if subject.slab == nil {
+                        self.feedback.recognized()
+                    }
                     self.diagnostic("recognitionAcknowledgement")
                 }
                 if let state = self.heldRepeatAuthorizationState,
@@ -3038,12 +3080,13 @@ final class ScannerViewModel: ObservableObject {
             let pendingPrice = PriceLookup.unavailable(.justTCG)
             let converted = scan.updating(
                 subject: subject,
-                mutation: mutation,
-                price: pendingPrice
-            )
+                mutation: mutation
+            ).updating(price: pendingPrice, isGradedPricePending: true)
             replaceCommittedScanProjection(converted)
-            if receipt?.scanID == scanID {
-                receipt = receipt?.updating(for: converted)
+            if let currentReceipt = receipt, currentReceipt.scanID == scanID {
+                let updatedReceipt = currentReceipt.updating(for: converted)
+                receipt = updatedReceipt
+                scheduleReceiptDismissal(for: updatedReceipt)
             }
             show(ScanNote(text: "Saved as \(offer.gradeDescription) — checking graded price", tone: .info))
             queueGradedBinding(scanID: scanID)
@@ -3084,22 +3127,54 @@ final class ScannerViewModel: ObservableObject {
               let slab = scan.subject.slab,
               gradedBindingScanIDs.insert(scanID).inserted else { return }
         let writeSessionID = scannerSessionID
+        let encounterID = committedSessionHistory.first(where: { $0.id == scanID })?.encounterID.uuidString ?? "none"
         Task { @MainActor [weak self] in
             guard let self else { return }
             defer { self.gradedBindingScanIDs.remove(scanID) }
+            let lookupID = PerformanceSignpost.makeID()
+            let lookupState = PerformanceSignpost.beginInterval(
+                "gradedPriceLookup",
+                id: lookupID,
+                "scan=\(scanID.uuidString) encounter=\(encounterID)"
+            )
+            PerformanceSignpost.emitEvent(
+                "gradedPriceLookupStarted",
+                "scan=\(scanID.uuidString) encounter=\(encounterID)"
+            )
             let outcome = await self.gradedResolver.resolve(
                 card: scan.card,
                 slab: slab,
                 pokemonPrintRun: scan.pokemonPrintRun
+            )
+            let lookupResult: String
+            switch outcome {
+            case .bound: lookupResult = "bound"
+            case .cardNotTracked: lookupResult = "card-not-tracked"
+            case .noGradedListings: lookupResult = "no-listings"
+            case .gradeNotTracked: lookupResult = "grade-not-tracked"
+            case .unavailable: lookupResult = "unavailable"
+            }
+            PerformanceSignpost.endInterval(
+                "gradedPriceLookup",
+                lookupState,
+                "scan=\(scanID.uuidString) encounter=\(encounterID) result=\(lookupResult)"
+            )
+            PerformanceSignpost.emitEvent(
+                "gradedPriceLookupFinished",
+                "scan=\(scanID.uuidString) encounter=\(encounterID) result=\(lookupResult)"
             )
             guard writeSessionID == self.scannerSessionID,
                   self.isStorageGenerationCurrent,
                   !self.undoingScanIDs.contains(scanID),
                   let current = self.sessionScans.first(where: { $0.id == scanID }),
                   Self.isCompatibleGradedEvidence(current.subject.slab, with: slab) else { return }
-            guard let collectionWriter = self.collectionWriter else { return }
             guard case let .bound(variant) = outcome else {
+                self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
                 if let coverage = outcome.marketCoverage {
+                    guard let collectionWriter = self.collectionWriter else {
+                        self.noteGradedBindingOutcome(outcome, slab: slab)
+                        return
+                    }
                     self.beginTrackedWrite(for: writeSessionID)
                     defer { self.endTrackedWrite(for: writeSessionID) }
                     do {
@@ -3119,6 +3194,10 @@ final class ScannerViewModel: ObservableObject {
                     }
                 }
                 self.noteGradedBindingOutcome(outcome, slab: slab)
+                return
+            }
+            guard let collectionWriter = self.collectionWriter else {
+                self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
                 return
             }
             self.beginTrackedWrite(for: writeSessionID)
@@ -3145,7 +3224,10 @@ final class ScannerViewModel: ObservableObject {
                 } else {
                     resolvedBinding = try await bind()
                 }
-                guard let binding = resolvedBinding else { return }
+                guard let binding = resolvedBinding else {
+                    self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
+                    return
+                }
                 guard writeSessionID == self.scannerSessionID,
                       self.isStorageGenerationCurrent,
                       !self.undoingScanIDs.contains(scanID),
@@ -3157,6 +3239,7 @@ final class ScannerViewModel: ObservableObject {
                 }
             } catch {
                 guard writeSessionID == self.scannerSessionID else { return }
+                self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
                 self.show(ScanNote(text: "Graded price could not be saved", tone: .info))
             }
         }
@@ -3197,7 +3280,7 @@ final class ScannerViewModel: ObservableObject {
 
     private func updateGradedScanPrice(_ quote: PriceLookup, scanID: RecentScan.ID) {
         guard let scan = sessionScans.first(where: { $0.id == scanID }) else { return }
-        let replacement = scan.updating(price: quote)
+        let replacement = scan.updating(price: quote, isGradedPricePending: false)
         if let index = sessionScans.firstIndex(where: { $0.id == scanID }) {
             sessionScans[index] = replacement
         }
@@ -3206,6 +3289,17 @@ final class ScannerViewModel: ObservableObject {
         }
         if receipt?.scanID == scanID {
             receipt = receipt?.updating(price: quote)
+            if let receipt { scheduleReceiptDismissal(for: receipt) }
+        }
+        if case .price = quote {
+            gradedPricePulseTask?.cancel()
+            gradedPriceUpdatedScanID = scanID
+            gradedPricePulseTask = Task { @MainActor [weak self] in
+                try? await Task.sleep(for: Self.gradedPricePulseLifetime)
+                guard !Task.isCancelled, self?.gradedPriceUpdatedScanID == scanID else { return }
+                self?.gradedPriceUpdatedScanID = nil
+                self?.gradedPricePulseTask = nil
+            }
         }
     }
 
@@ -3313,7 +3407,8 @@ final class ScannerViewModel: ObservableObject {
             catalogRetrievedAt: candidate.catalogRetrievedAt,
             options: candidate.options,
             mutation: mutation,
-            price: candidate.price
+            price: candidate.price,
+            isGradedPricePending: candidate.subject.slab != nil
         )
         let committed = CommittedSessionScan(
             id: scan.id,
@@ -3400,6 +3495,7 @@ final class ScannerViewModel: ObservableObject {
                 treatmentDiagnostics: candidate.card.magicTreatmentDiagnostics,
                 thumbnailURL: scan.thumbnailURL,
                 price: candidate.price,
+                isGradedPricePending: candidate.subject.slab != nil,
                 resolution: candidate.resolved.resolution
             )
         )
@@ -4204,11 +4300,18 @@ final class ScannerViewModel: ObservableObject {
     private func showReceipt(_ newReceipt: ScanReceipt) {
         receiptTask?.cancel()
         receipt = newReceipt
+        scheduleReceiptDismissal(for: newReceipt)
+    }
 
+    private func scheduleReceiptDismissal(for scheduledReceipt: ScanReceipt) {
+        receiptTask?.cancel()
+        let lifetime = scheduledReceipt.isGradedPricePending
+            ? Self.gradedPriceReceiptLifetime
+            : Self.receiptLifetime
         receiptTask = Task { @MainActor [weak self] in
-            try? await Task.sleep(for: Self.receiptLifetime)
+            try? await Task.sleep(for: lifetime)
             guard !Task.isCancelled else { return }
-            if self?.receipt?.id == newReceipt.id {
+            if self?.receipt?.id == scheduledReceipt.id {
                 self?.receipt = nil
             }
         }

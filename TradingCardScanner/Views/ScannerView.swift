@@ -285,6 +285,7 @@ private struct ScannerChrome: View {
                 if model.purpose == .collection, !model.recent.isEmpty {
                     RecentScanRail(
                         scans: model.recent,
+                        gradedPriceUpdatedScanID: model.gradedPriceUpdatedScanID,
                         onSelect: openReview,
                         onDelete: model.deleteRecentScan
                     )

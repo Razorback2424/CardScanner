@@ -23,19 +23,21 @@ struct SlabLabelReadingOfferView: View {
             Image(systemName: "viewfinder")
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text("No slab label found")
+                Text(prompt.stage.title)
                     .font(.caption.weight(.bold))
-                Text("Try again or scan as raw")
+                Text(prompt.stage.message)
                     .font(.caption2)
                     .foregroundStyle(.white.opacity(0.78))
             }
             Spacer(minLength: 4)
-            Button("Use Raw", action: onSwitchToRaw)
-                .font(.caption.weight(.semibold))
-                .frame(minHeight: 44)
-                .buttonStyle(.bordered)
-                .tint(.white)
-                .accessibilityHint("Changes scanning mode to raw cards.")
+            if prompt.stage.offersRawSwitch {
+                Button("Use Raw", action: onSwitchToRaw)
+                    .font(.caption.weight(.semibold))
+                    .frame(minHeight: 44)
+                    .buttonStyle(.bordered)
+                    .tint(.white)
+                    .accessibilityHint("Changes scanning mode to raw cards.")
+            }
         }
         .foregroundStyle(.white)
         .padding(.horizontal, 12)
@@ -606,18 +608,11 @@ struct ScanPriceValue: View {
 
     let lookup: PriceLookup
     var style: Style = .receipt
+    var isGradedPricePending: Bool = false
 
     var body: some View {
-        switch lookup {
-        case let .price(price):
-            let formatted = price.unitMarketPriceUSD.formatted(.currency(code: price.currencyCode))
-            Text(formatted)
-                .font(style.font)
-                .monospacedDigit()
-                .foregroundStyle(style == .receipt ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
-                .accessibilityLabel("Unit price \(formatted)")
-        case .unavailable:
-            Text("Price unavailable")
+        if isGradedPricePending {
+            Text("Checking graded price…")
                 .font(style == .review ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
                 .multilineTextAlignment(.trailing)
                 .foregroundStyle(
@@ -625,7 +620,27 @@ struct ScanPriceValue: View {
                         ? AnyShapeStyle(.secondary)
                         : AnyShapeStyle(.white.opacity(0.78))
                 )
-                .accessibilityLabel("Price unavailable")
+                .accessibilityLabel("Checking graded price")
+        } else {
+            switch lookup {
+            case let .price(price):
+                let formatted = price.unitMarketPriceUSD.formatted(.currency(code: price.currencyCode))
+                Text(formatted)
+                    .font(style.font)
+                    .monospacedDigit()
+                    .foregroundStyle(style == .receipt ? AnyShapeStyle(.white) : AnyShapeStyle(.primary))
+                    .accessibilityLabel("Unit price \(formatted)")
+            case .unavailable:
+                Text("Price unavailable")
+                    .font(style == .review ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
+                    .multilineTextAlignment(.trailing)
+                    .foregroundStyle(
+                        style == .review
+                            ? AnyShapeStyle(.secondary)
+                            : AnyShapeStyle(.white.opacity(0.78))
+                    )
+                    .accessibilityLabel("Price unavailable")
+            }
         }
     }
 }
@@ -672,7 +687,10 @@ struct ScanReceiptCard: View {
                         // trailing column compresses to a few points under the
                         // name and the button, and the currency typesets one
                         // character per line.
-                        ScanPriceValue(lookup: receipt.price)
+                        ScanPriceValue(
+                            lookup: receipt.price,
+                            isGradedPricePending: receipt.isGradedPricePending
+                        )
                             .lineLimit(1)
                             .fixedSize(horizontal: true, vertical: false)
                             .layoutPriority(1)
@@ -721,6 +739,7 @@ struct ScanReceiptCard: View {
 /// and it is the way back into any single record without leaving the session.
 struct RecentScanRail: View {
     let scans: [RecentScan]
+    var gradedPriceUpdatedScanID: RecentScan.ID? = nil
     let onSelect: (RecentScan) -> Void
     let onDelete: (RecentScan) -> Void
 
@@ -737,6 +756,16 @@ struct RecentScanRail: View {
                                     .font(.system(size: 11))
                                     .foregroundStyle(.green, .black)
                                     .padding(2)
+                            }
+                            .overlay(alignment: .topTrailing) {
+                                if scan.id == gradedPriceUpdatedScanID {
+                                    Image(systemName: "sparkles")
+                                        .font(.system(size: 12, weight: .bold))
+                                        .foregroundStyle(.white, .cyan)
+                                        .symbolEffect(.pulse, options: .repeating)
+                                        .offset(x: 4, y: -4)
+                                        .accessibilityHidden(true)
+                                }
                             }
                     }
                     .buttonStyle(.plain)
