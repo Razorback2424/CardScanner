@@ -215,6 +215,7 @@ struct JustTCGRefreshCoordinator {
         apply: @Sendable (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) async -> Bool = { _, _, _ in false },
         applyDetailed: (@Sendable (JustTCGCard, JustTCGVariant, [MarketPriceTarget]) async -> MarketRefreshApplyResult)? = nil,
         unmatched: @Sendable ([MarketPriceTarget]) async -> Void = { _ in },
+        checked: @Sendable ([MarketPriceTarget], Date) async -> Bool = { _, _ in true },
         checkpoint: @Sendable () async -> Bool,
         finalCheckpoint: @Sendable () async -> Bool = { true }
     ) async -> MarketRefreshReport {
@@ -276,6 +277,7 @@ struct JustTCGRefreshCoordinator {
                     lane: lane
                 )
                 report.requestsUsed += 1
+                let checkedAt = Date.now
                 var batchAppliedCount = 0
                 var batchMetadataUpdatedCount = 0
                 var batchPricesWrittenCount = 0
@@ -346,6 +348,16 @@ struct JustTCGRefreshCoordinator {
                     // the report's existing meaning even when one response
                     // contains several owned finishes.
                     batchAppliedCount += applied ? 1 : 0
+                }
+
+                // Delta responses omit unchanged variants. The successful
+                // request still spent quota, so persist its check time for every
+                // owner in the chunk before the next ordinary refresh.
+                if !batchPersistenceFailed {
+                    let checksPersisted = await checked(chunkOwners, checkedAt)
+                    if !checksPersisted {
+                        batchPersistenceFailed = true
+                    }
                 }
 
                 // Commit per batch so an interruption keeps what it bought. A

@@ -166,6 +166,46 @@ struct ProductIdentityStore {
         return !identity.isCurrent()
     }
 
+    /// Whether another metered fallback request is due for this identity.
+    /// Missing identities are eligible immediately; a successful response
+    /// starts the caller's cooldown even when a delta response returned no row.
+    func fallbackCheckIsDue(
+        forKey key: String,
+        minimumInterval: TimeInterval,
+        now: Date = .now,
+        using index: ProductIdentityIndex? = nil
+    ) -> Bool {
+        guard let identity = identity(forKey: key, using: index) else { return true }
+        // Older stores have no dedicated fallback watermark yet. Their last
+        // successful identity answer is a safe first cooldown anchor.
+        guard let checkedAt = identity.fallbackCheckedAt
+            ?? identity.resolvedAt
+            ?? identity.unmatchedAt else { return true }
+        return now.timeIntervalSince(checkedAt) >= minimumInterval
+    }
+
+    /// Record that a complete vendor response covered this price identity.
+    /// Creating an identity row for a direct lookup miss is intentional: it
+    /// carries the quota cooldown without claiming the product was unmatched.
+    @discardableResult
+    func recordFallbackCheck(
+        forKey key: String,
+        treatmentIDs: [String] = [],
+        at date: Date = .now,
+        using index: ProductIdentityIndex? = nil
+    ) -> Bool {
+        guard let identity = identityForWrite(
+            key: key,
+            treatmentIDs: treatmentIDs,
+            using: index
+        ) else { return false }
+        if identity.magicTreatmentIDsRaw.isEmpty, !treatmentIDs.isEmpty {
+            identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
+        }
+        identity.fallbackCheckedAt = date
+        return true
+    }
+
     /// The vendor's variant handle, which is what a batch request is built
     /// from. Present means this card can be repriced twenty-to-a-request
     /// instead of one search at a time.
@@ -203,6 +243,7 @@ struct ProductIdentityStore {
         if let cardID { identity.vendorCardID = cardID }
         if let variantID { identity.vendorVariantID = variantID }
         identity.resolvedAt = date
+        identity.fallbackCheckedAt = date
         identity.unmatchedAt = nil
         return true
     }
@@ -256,6 +297,7 @@ struct ProductIdentityStore {
             identity.vendorCardID = vendorCardID
             identity.vendorVariantID = vendorVariantID
             identity.resolvedAt = date
+            identity.fallbackCheckedAt = date
             identity.unmatchedAt = vendorCardID == nil ? date : nil
 
         case let .noListingForVariant(vendorCardID):
@@ -264,12 +306,14 @@ struct ProductIdentityStore {
             // the handle is kept and the search is not repeated.
             identity.vendorCardID = vendorCardID
             identity.resolvedAt = date
+            identity.fallbackCheckedAt = date
             identity.unmatchedAt = vendorCardID == nil ? date : nil
 
         case .noProductMatch:
             identity.vendorCardID = nil
             identity.vendorVariantID = nil
             identity.resolvedAt = nil
+            identity.fallbackCheckedAt = date
             identity.unmatchedAt = date
 
         case .requestFailed, .unsupportedFinish, .unsupportedTreatment, .budgetReached, .rateLimited:

@@ -32,6 +32,10 @@ final class ProductIdentity {
     /// keyed refresh actually sends.
     var vendorVariantID: String?
     var resolvedAt: Date?
+    /// Last successful price-provider response for this owned price identity.
+    /// Kept separate from `resolvedAt`: a delta response can confirm an
+    /// unchanged listing without returning the listing itself.
+    var fallbackCheckedAt: Date?
     /// Mirrors the treatment-qualified price identity. When present, a vendor
     /// handle belongs to the exact Scryfall printing; without one, a
     /// treatment-bearing object must not fall through to name/set search.
@@ -50,6 +54,8 @@ final class ProductIdentity {
     ///
     /// `unmatchedAt` and `attemptVersion` are written by the product-identity
     /// resolver and by nothing else.
+    /// `fallbackCheckedAt` is written by ProductIdentityStore after a successful
+    /// metered-provider response and controls only the next fallback check.
     ///
     /// This is not a style preference. The price refresher used to stamp
     /// `catalogMetadataCheckedAt`, which was the catalog normalizer's retry gate:
@@ -63,6 +69,7 @@ final class ProductIdentity {
         vendorCardID: String? = nil,
         vendorVariantID: String? = nil,
         resolvedAt: Date? = nil,
+        fallbackCheckedAt: Date? = nil,
         unmatchedAt: Date? = nil,
         attemptVersion: Int = ProductIdentity.currentAttemptVersion,
         magicTreatmentIDs: [String] = []
@@ -72,6 +79,7 @@ final class ProductIdentity {
         self.vendorCardID = vendorCardID
         self.vendorVariantID = vendorVariantID
         self.resolvedAt = resolvedAt
+        self.fallbackCheckedAt = fallbackCheckedAt
         self.unmatchedAt = unmatchedAt
         self.attemptVersion = attemptVersion
         self.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDs)

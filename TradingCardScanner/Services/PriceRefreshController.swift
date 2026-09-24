@@ -1403,6 +1403,15 @@ actor PriceRefreshModelActor {
                 variantID: candidate.target.variantID,
                 treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
+            guard identities.fallbackCheckIsDue(
+                forKey: key,
+                minimumInterval: PriceRefreshController.fallbackRefreshInterval,
+                using: identityIndex
+            ) else {
+                completed += 1
+                await publishFallbackProgress()
+                continue
+            }
             let cachedVariant = candidate.target.marketVariantID
                 ?? identities.cachedVariantID(forKey: key, using: identityIndex)
             let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
@@ -1461,6 +1470,9 @@ actor PriceRefreshModelActor {
                 },
                 unmatched: { [self] owners in
                     await self.recordActiveArtworkMiss(for: owners)
+                },
+                checked: { [self] owners, checkedAt in
+                    await self.recordActiveFallbackChecks(owners, at: checkedAt)
                 },
                 checkpoint: { [self] in
                     await self.checkpointActiveContextIfDue()
@@ -1586,6 +1598,25 @@ actor PriceRefreshModelActor {
         }
         fallbackOutcome = stoppedByAllowance ? "stopped" : (Task.isCancelled ? "cancelled" : "completed")
         return (priced, persistenceFailed, changedPrices)
+    }
+
+    private func recordActiveFallbackChecks(
+        _ targets: [MarketPriceTarget],
+        at date: Date
+    ) -> Bool {
+        guard storageContinuation?() ?? true else { return false }
+        let (identities, index) = makeIdentityState()
+        var allRecorded = true
+        for target in targets {
+            let recorded = identities.recordFallbackCheck(
+                forKey: target.priceKey,
+                treatmentIDs: target.magicTreatmentIDsRaw,
+                at: date,
+                using: index
+            )
+            allRecorded = allRecorded && recorded
+        }
+        return allRecorded
     }
 
     private func refreshGraded(
@@ -2612,6 +2643,12 @@ final class PriceRefreshController: ObservableObject {
     /// republishes every few hours at best, so asking more often buys nothing and
     /// costs the user's battery and the provider's bandwidth.
     nonisolated static let automaticRefreshInterval: TimeInterval = 8 * 60 * 60
+
+    /// The fallback vendor has a monthly request ceiling. Rechecking a stable
+    /// listing on every ordinary catalog refresh spends that allowance without
+    /// improving the quote, so fallback requests run weekly per price identity.
+    /// New items and explicit Price Check actions remain available immediately.
+    nonisolated static let fallbackRefreshInterval: TimeInterval = 7 * 24 * 60 * 60
 
     /// Enough parallelism to make a few hundred cards quick, few enough to stay a
     /// polite client.
