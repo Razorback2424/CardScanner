@@ -250,11 +250,14 @@ enum PortfolioReplaySnapshotBuilder {
                 asOf: through
             )
                 .filter { record in
-                    record.effectiveUnitMarketPriceUSD != nil
-                        && PortfolioPriceEligibility.eligibleUnitPrice(
-                            amount: record.effectiveUnitMarketPriceUSD,
-                            currencyCode: record.currencyCode
-                        ) == nil
+                    guard !record.isInvalidated,
+                          let nativeAmount = record.unitMarketPriceUSD else {
+                        return false
+                    }
+                    return !PortfolioPriceEligibility.participatesInPortfolioValue(
+                        amount: nativeAmount,
+                        currencyCode: record.currencyCode
+                    )
                 }
                 .map(\.key)
         )

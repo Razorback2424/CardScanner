@@ -160,10 +160,16 @@ struct MarketRefreshReport: Equatable, Sendable {
 struct JustTCGRefreshCoordinator {
     private let client: JustTCGV1Client
     private let syncLedger: JustTCGSyncLedger
+    private let serverClock: JustTCGServerClock
 
-    init(client: JustTCGV1Client, syncLedger: JustTCGSyncLedger = JustTCGSyncLedger()) {
+    init(
+        client: JustTCGV1Client,
+        syncLedger: JustTCGSyncLedger = JustTCGSyncLedger(),
+        serverClock: JustTCGServerClock = .shared
+    ) {
         self.client = client
         self.syncLedger = syncLedger
+        self.serverClock = serverClock
     }
 
     /// Collapse targets to the unique variants that actually need asking about.
@@ -258,7 +264,9 @@ struct JustTCGRefreshCoordinator {
                         || owner.justTCGFetchedAt.map { $0 >= watermark } != true
                 }
             } ?? false
-            let cutoff = hasOwnerOutsideWatermark ? nil : clock
+            let cutoff = hasOwnerOutsideWatermark
+                ? nil
+                : clock.map { serverClock.deltaRequestCutoff(for: $0) }
 
             do {
                 let response = try await client.batchCards(

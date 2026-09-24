@@ -486,6 +486,44 @@ enum PriceIdentityLineageMigration {
         in context: ModelContext,
         index: PriceRefreshDataIndex? = nil
     ) throws -> Bool {
+        let didChange = try migratePriceSide(
+            from: oldKey,
+            to: newKey,
+            game: game,
+            printingID: printingID,
+            variantID: variantID,
+            treatmentIDs: treatmentIDs,
+            in: context,
+            index: index
+        )
+        guard didChange else { return false }
+
+        // InventoryEvent is part of the ownership ledger, so callers that
+        // change it must run inside CollectionWriteSerializer. Refresh workers
+        // use migratePriceSide and apply this retargeting as a guarded row patch.
+        let events = try context.fetch(
+            FetchDescriptor<InventoryEvent>(
+                predicate: #Predicate { $0.priceStorageKey == oldKey }
+            )
+        )
+        for event in events { event.priceStorageKey = newKey }
+        return true
+    }
+
+    /// Moves only price-side rows. This variant is safe for the refresh actor:
+    /// ownership-ledger references are patched later in a fresh serialized
+    /// collection context alongside the row's market binding.
+    @discardableResult
+    static func migratePriceSide(
+        from oldKey: String,
+        to newKey: String,
+        game: CardGame,
+        printingID: String,
+        variantID: String?,
+        treatmentIDs: [String],
+        in context: ModelContext,
+        index: PriceRefreshDataIndex? = nil
+    ) throws -> Bool {
         guard oldKey != newKey else { return false }
 
         let oldRecords = try context.fetch(
@@ -549,15 +587,6 @@ enum PriceIdentityLineageMigration {
             for duplicate in rows where duplicate !== preferred {
                 context.delete(duplicate)
             }
-        }
-
-        let events = try context.fetch(
-            FetchDescriptor<InventoryEvent>(
-                predicate: #Predicate { $0.priceStorageKey == oldKey }
-            )
-        )
-        for event in events {
-            event.priceStorageKey = newKey
         }
 
         // A refresh index may have been materialised before the binding
@@ -780,17 +809,6 @@ struct PriceStore {
         )
     }
 
-    /// Persistent identifiers are safe to retain while a paced provider request
-    /// is suspended. Model objects are not: another context operation can delete
-    /// or invalidate them before the response returns.
-    func importedCardIDsByProviderID() -> [String: [PersistentIdentifier]] {
-        let cards = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        return cards.filter { $0.providerID.hasPrefix("csv:") }
-            .reduce(into: [String: [PersistentIdentifier]]()) { result, card in
-                result[card.providerID, default: []].append(card.persistentModelID)
-            }
-    }
-
     /// Records what a provider said about one variant, creating the record if
     /// this is the first time the app has asked.
     ///
@@ -832,11 +850,25 @@ struct PriceStore {
             treatmentIDs: treatmentIDs
         ) else { return false }
 
+        let coverageDate: Date
+        let isClockRollbackRepair: Bool
+        if case let .price(price) = lookup {
+            // A delayed catalog/provider result cannot replace newer mutable
+            // state or leave a false observation/coverage stamp behind.
+            if !record.isInvalidated, record.isStale(price, now: date) { return true }
+            coverageDate = price.fetchedAt
+            isClockRollbackRepair = !record.isInvalidated
+                && record.fetchedAt.map { $0 > date.addingTimeInterval(5 * 60) } == true
+        } else {
+            coverageDate = date
+            isClockRollbackRepair = false
+        }
+
         let observationDecision = PriceObservationLog(context: context, index: index).ingest(
             lookup,
             instrumentKey: key,
             marketVariantID: marketVariantID ?? record.marketVariantID,
-            at: date
+            at: coverageDate
         )
 
         if observationDecision == .rejectedInvalidQuote {
@@ -846,6 +878,21 @@ struct PriceStore {
         }
         if observationDecision == .ignoredAfterInvalidation {
             return false
+        }
+        if observationDecision == .ignoredOutOfOrder {
+            // The local clock may have moved backwards since the last check.
+            // The record's future watermark is then untrustworthy, so accept
+            // the current quote as the mutable value without appending an
+            // observation whose timestamp would sort behind that watermark.
+            if isClockRollbackRepair, case let .price(price) = lookup {
+                guard record.apply(price) else { return false }
+                record.lastFailureReasonRaw = nil
+                if let marketVariantID {
+                    record.marketVariantID = marketVariantID
+                    record.gradedMarketCoverageJSON = nil
+                }
+            }
+            return true
         }
 
         switch lookup {

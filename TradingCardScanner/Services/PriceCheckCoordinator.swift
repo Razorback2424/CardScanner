@@ -483,7 +483,10 @@ final class PriceCheckCoordinator {
     }
 
     private static func evidence(from record: PriceRecord) -> LocalEvidence? {
-        guard let amount = record.effectiveUnitMarketPriceUSD,
+        // Price Check may show a provider's native amount as context while it
+        // reports that a USD refresh is still needed. Portfolio valuation
+        // continues to use effectiveUnitMarketPriceUSD, which is USD-only.
+        guard let amount = record.display.amount,
               Money(rounding: amount) != nil,
               let source = record.source,
               let sourceVariantID = record.sourceVariantID,

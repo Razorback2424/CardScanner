@@ -1,5 +1,58 @@
 import Foundation
 
+enum HTTPDateParser {
+    static func rfc1123Date(from value: String?) -> Date? {
+        guard let value else { return nil }
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
+        return formatter.date(from: trimmed)
+    }
+}
+
+/// Tracks the difference between the device clock and JustTCG's response clock.
+/// Delta request cutoffs are shifted into server time and widened by a safety
+/// margin; local freshness and synchronization bookkeeping stay in device time.
+final class JustTCGServerClock: @unchecked Sendable {
+    static let shared = JustTCGServerClock()
+    static let deltaSafetyMargin: TimeInterval = 15 * 60
+
+    private let lock = NSLock()
+    private var offsetFromDevice: TimeInterval?
+
+    var serverClockOffset: TimeInterval? {
+        lock.lock()
+        defer { lock.unlock() }
+        return offsetFromDevice
+    }
+
+    func observe(serverDateHeader: String?, deviceNow: Date = .now) {
+        guard let serverDate = HTTPDateParser.rfc1123Date(from: serverDateHeader) else {
+            return
+        }
+        lock.lock()
+        offsetFromDevice = serverDate.timeIntervalSince(deviceNow)
+        lock.unlock()
+    }
+
+    func deltaRequestCutoff(for localCutoff: Date) -> Date {
+        Self.deltaRequestCutoff(for: localCutoff, serverClockOffset: serverClockOffset)
+    }
+
+    static func deltaRequestCutoff(
+        for localCutoff: Date,
+        serverClockOffset: TimeInterval?
+    ) -> Date {
+        localCutoff.addingTimeInterval(
+            (serverClockOffset ?? 0) - deltaSafetyMargin
+        )
+    }
+}
+
 /// Serializes request start times across every JustTCG API client.
 ///
 /// Waiters are held until their slot is actually available instead of reserving
@@ -201,19 +254,22 @@ actor JustTCGTransport {
     private let ledger: JustTCGRequestLedger
     private let pacer: JustTCGPacer
     private let apiKeyOverride: String?
+    private let serverClock: JustTCGServerClock
 
     init(
         configuration: Configuration = Configuration(),
         session: URLSession = .shared,
         ledger: JustTCGRequestLedger = JustTCGRequestLedger(),
         pacer: JustTCGPacer = .shared,
-        apiKeyOverride: String? = nil
+        apiKeyOverride: String? = nil,
+        serverClock: JustTCGServerClock = .shared
     ) {
         self.configuration = configuration
         self.session = session
         self.ledger = ledger
         self.pacer = pacer
         self.apiKeyOverride = apiKeyOverride
+        self.serverClock = serverClock
     }
 
     func snapshot(now: Date = .now) -> JustTCGRequestLedger.Snapshot {
@@ -286,6 +342,10 @@ actor JustTCGTransport {
             throw TransportError.badResponse(status: http.statusCode)
         }
 
+        serverClock.observe(
+            serverDateHeader: http.value(forHTTPHeaderField: "Date")
+        )
+
         // Every response carries the vendor's own view of the allowance. A
         // second cheap decode over bytes already in hand — no extra request —
         // keeps the local ledger honest against an account that may have been
@@ -357,11 +417,9 @@ actor JustTCGTransport {
         guard let value = value?.trimmingCharacters(in: .whitespaces), !value.isEmpty else {
             return nil
         }
-        if let seconds = TimeInterval(value) { return now.addingTimeInterval(seconds) }
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss zzz"
-        return formatter.date(from: value)
+        if let seconds = TimeInterval(value), seconds >= 0 {
+            return now.addingTimeInterval(seconds)
+        }
+        return HTTPDateParser.rfc1123Date(from: value)
     }
 }

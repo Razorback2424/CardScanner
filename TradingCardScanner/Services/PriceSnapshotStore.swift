@@ -80,7 +80,10 @@ final class PriceSnapshotStore: ObservableObject {
             // only the stale price diagnosis here; artwork and the exact
             // failure reason remain projection facts until the authoritative
             // rebuild at pass completion.
-            guard delta.display.amount != nil else { continue }
+            guard PortfolioPriceEligibility.participatesInPortfolioValue(
+                amount: delta.display.amount,
+                currencyCode: delta.display.currencyCode
+            ) else { continue }
             for collectionKey in collectionKeysByPriceKey[delta.key] ?? [] {
                 guard var diagnostics = diagnosticsByCollectionKey[collectionKey],
                       diagnostics.unpricedReason != nil else { continue }

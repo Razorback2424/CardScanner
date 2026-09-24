@@ -200,6 +200,16 @@ final class PriceRecord {
         }
     }
 
+    /// Returns whether a quote predates the value currently stored on this
+    /// record. A timestamp more than five minutes ahead of the device clock is
+    /// treated as clock skew, so a later quote can repair the record after the
+    /// clock is corrected.
+    func isStale(_ price: NormalizedPrice, now: Date) -> Bool {
+        guard let fetchedAt else { return false }
+        return price.fetchedAt < fetchedAt
+            && fetchedAt <= now.addingTimeInterval(5 * 60)
+    }
+
     @discardableResult
     func apply(_ price: NormalizedPrice) -> Bool {
         guard price.unitMarketPriceUSD.isFinite, price.unitMarketPriceUSD >= 0 else {

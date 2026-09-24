@@ -103,7 +103,12 @@ struct CollectionRow: Identifiable, Equatable, Sendable {
     /// Current market price of *one* copy. Filtering and sorting deliberately use
     /// the unit price: ten copies of a $2 card are not a $20 card, and "worth
     /// more than $10" should not return them.
-    var unitPrice: Double? { price.amount }
+    var unitPrice: Double? {
+        PortfolioPriceEligibility.eligibleUnitPrice(
+            amount: price.amount,
+            currencyCode: price.currencyCode
+        )?.doubleValue
+    }
 
     /// Set codes are only unique within a game. Magic and Pokémon can both use
     /// the same short printed code, so filter identity must include the game's

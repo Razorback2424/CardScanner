@@ -70,6 +70,9 @@ enum PriceObservationRules {
         /// invalidation. It is not allowed to become newer evidence merely
         /// because a delayed caller wrote it after the invalidation.
         case ignoredAfterInvalidation
+        /// A delayed response older than the latest observation. It must not
+        /// append history or make the old quote look like a fresh check.
+        case ignoredOutOfOrder
     }
 
     /// Whether a provider answer is value-setting, and if so what it means.
@@ -78,6 +81,10 @@ enum PriceObservationRules {
            previous.value.amount == nil,
            previous.receivedAt >= candidate.receivedAt {
             return .ignoredAfterInvalidation
+        }
+
+        if let previous, candidate.receivedAt < previous.receivedAt {
+            return .ignoredOutOfOrder
         }
 
         // Identical value *and* identical provenance: the app has learned
@@ -249,7 +256,7 @@ struct PriceObservationLog {
             source = unavailableSource
         }
 
-        if recordsCoverage {
+        if recordsCoverage, decision != .ignoredOutOfOrder {
             recordSuccessfulCheck(instrumentKey: instrumentKey, source: source, at: date)
         }
         return decision

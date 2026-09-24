@@ -122,7 +122,7 @@ enum CardPricing {
             if pokemonPrintRun == .firstEdition {
                 guard let detailed = pokemon.detailedVariant(for: .firstEdition),
                       let resolved = price(from: detailed, at: fetchedAt) else {
-                    return .unavailable(.tcgplayer)
+                    return .unavailable(hasProviderPricingEvidence(on: pokemon) ? .tcgplayer : nil)
                 }
                 return .price(resolved)
             }
@@ -130,7 +130,7 @@ enum CardPricing {
                 // TCGdex's flat normal/holo listings represent Unlimited. It
                 // exposes no verified Shadowless listing key, so borrowing that
                 // number would erase the very split Browse now preserves.
-                return .unavailable(.tcgplayer)
+                return .unavailable(hasProviderPricingEvidence(on: pokemon) ? .tcgplayer : nil)
             }
             // Per-object pricing first. It is the only representation that can
             // tell a Poké Ball copy from a Master Ball one, so when TCGdex
@@ -247,6 +247,14 @@ enum CardPricing {
         case PhysicalVariant.reverse.id: return "Reverse Holofoil"
         default: return variant.label
         }
+    }
+
+    /// A catalog identity can come from an offline checklist or resolved-card
+    /// cache, neither of which proves that a pricing provider was consulted.
+    /// Only mark an unsupported print run as checked when the card payload
+    /// actually contains provider pricing data.
+    private static func hasProviderPricingEvidence(on card: TCGdexCard) -> Bool {
+        card.pricing != nil || card.variantsDetailed?.contains { $0.pricing != nil } == true
     }
 
     private static func marketPrice(from pricing: TCGPlayerPricing, listing: String) -> Double? {

@@ -414,11 +414,7 @@ actor ProductPriceService {
         if let seconds = TimeInterval(trimmed), seconds >= 0 {
             return now.addingTimeInterval(seconds)
         }
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "EEE',' dd MMM yyyy HH':'mm':'ss z"
-        return formatter.date(from: trimmed)
+        return HTTPDateParser.rfc1123Date(from: trimmed)
     }
 
     /// Hold each request back far enough from the last that the tier's
