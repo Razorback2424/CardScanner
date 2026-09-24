@@ -597,9 +597,10 @@ struct SettingsView: View {
                     )
                 }
                 guard storageGeneration.isCurrent(storageToken) else { return }
-                if result.failedRows.isEmpty {
-                    CollectionCSV.finishImportAgainRun(plan)
-                }
+                // A completed partial run keeps its failed-row export as the
+                // retry path. Clear the run salt so a later deliberate
+                // "Import all again" starts a fresh additional-copy run.
+                CollectionCSV.finishImportAgainRun(plan)
                 loadCounts()
                 Task { @MainActor in
                     guard storageGeneration.isCurrent(storageToken) else { return }
