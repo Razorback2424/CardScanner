@@ -1605,13 +1605,29 @@ final class CollectionStorageBootstrap: ObservableObject {
                 try? await Task.sleep(for: .seconds(5))
                 for attempt in 0..<3 {
                     do {
-                        _ = try CollectionWriteSerializer.perform(
+                        try CollectionWriteSerializer.perform(
                             container: container,
                             timeout: .mainThread
                         ) { context in
                             try CollectionArtworkStore.migrateLegacyMappings(in: context)
-                            try ArtworkOrphanSweep.run(in: context)
                         }
+                        let now = Date.now
+                        let snapshot = try ArtworkOrphanSweep.snapshot(in: container, now: now)
+                        let agedFileCandidates = CollectionArtworkStore.agedFilenames(
+                            olderThan: now.addingTimeInterval(-24 * 60 * 60)
+                        )
+                        let report = try CollectionWriteSerializer.perform(
+                            container: container,
+                            timeout: .mainThread
+                        ) { context in
+                            try ArtworkOrphanSweep.prepare(
+                                in: context,
+                                snapshot: snapshot,
+                                agedFileCandidates: agedFileCandidates,
+                                now: now
+                            )
+                        }
+                        CollectionArtworkStore.removeFiles(named: report.filesToRemove)
                         return
                     } catch CollectionStoreError.collectionBusy {
                         if attempt < 2 {

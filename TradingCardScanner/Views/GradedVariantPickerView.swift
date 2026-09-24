@@ -294,7 +294,9 @@ struct GradedSlabConfirmationView: View {
                     try persist()
                 }
             } else {
-                try persist()
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try persist()
+                }
             }
         } catch {
             addFailure = error.localizedDescription

@@ -807,7 +807,9 @@ struct SealedProductDetailView: View {
                     try persist()
                 }
             } else {
-                pendingMutation = try persist()
+                pendingMutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try persist()
+                }
             }
         } catch {
             addAlertTitle = "Couldn't add to collection"

@@ -123,20 +123,57 @@ enum CollectionWriteSerializer {
     }
 }
 
+/// Task-scoped proof that the caller is inside the refresh/migration gate.
+/// Rewrites check this again from inside their serialized transaction, closing
+/// the gap between a read-only preflight and the write that uses its result.
+enum PriceIdentityRewritePermit {
+    @TaskLocal static var isAuthorized = false
+
+    static func requireForSerializedOwnershipWrite() throws {
+        guard CollectionWriteSerializer.enforcesOwnershipRule,
+              CollectionWriteSerializer.isHeldByCurrentThread,
+              !isAuthorized else { return }
+        throw CollectionStoreError.priceIdentityExclusivityRequired
+    }
+}
+
 /// Coordinates structural price-identity rewrites with the refresh queue and
 /// the existing migration/refresh gate. Callers must hold this boundary before
 /// entering a serialized write that can rekey price records or their lineage.
 @MainActor
 enum CollectionExclusiveWrites {
     static func withPriceIdentityExclusivity<T>(
+        waitForActivePassToFinish: Bool = false,
         _ operation: @MainActor () async throws -> T
     ) async rethrows -> T {
-        let suspension = await PriceRefreshController.shared.suspendPasses()
+        let suspension = await PriceRefreshController.shared.suspendPasses(
+            cancelActivePass: !waitForActivePassToFinish
+        )
         let migrationGate = await MagicTreatmentMigrationCoordinator.shared.acquireExclusive()
         defer {
             MagicTreatmentMigrationCoordinator.shared.releaseExclusive(migrationGate)
             PriceRefreshController.shared.resume(suspension)
         }
-        return try await operation()
+        return try await PriceIdentityRewritePermit.$isAuthorized.withValue(true) {
+            try await operation()
+        }
+    }
+
+    /// Runs a write once, then retries under the identity gate if its in-write
+    /// preflight found that a price key became structural after the caller's
+    /// optimistic preflight.
+    static func retryingIfRequired<T>(
+        waitForActivePassToFinish: Bool = false,
+        _ operation: @MainActor () async throws -> T
+    ) async throws -> T {
+        do {
+            return try await operation()
+        } catch CollectionStoreError.priceIdentityExclusivityRequired {
+            return try await withPriceIdentityExclusivity(
+                waitForActivePassToFinish: waitForActivePassToFinish
+            ) {
+                try await operation()
+            }
+        }
     }
 }

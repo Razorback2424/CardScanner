@@ -2548,7 +2548,9 @@ final class ScannerViewModel: ObservableObject {
                     try await correction()
                 }
             } else {
-                mutation = try await correction()
+                mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await correction()
+                }
             }
         } catch {
             guard writeSessionID == scannerSessionID else { return .failed }
@@ -3092,7 +3094,9 @@ final class ScannerViewModel: ObservableObject {
                     try await conversion()
                 }
             } else {
-                mutation = try await conversion()
+                mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await conversion()
+                }
             }
             guard writeSessionID == scannerSessionID,
                   isStorageGenerationCurrent else { return }
@@ -3235,31 +3239,50 @@ final class ScannerViewModel: ObservableObject {
                 self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
                 return
             }
-            self.beginTrackedWrite(for: writeSessionID)
-            defer { self.endTrackedWrite(for: writeSessionID) }
             do {
-                // Certification refinement can rekey the row while the vendor
-                // lookup is in flight. Always bind to the mutation currently
-                // attached to the stable RecentScan id.
-                guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
-                      Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab),
-                      !self.undoingScanIDs.contains(scanID) else { return }
-                let collectionKey = latest.mutation.collectionKey
-                let bind = {
-                    try await collectionWriter.bindScannedGraded(
-                        collectionKey: collectionKey,
+                // The identity gate can wait for an entire refresh pass. Resolve
+                // the scan's current mutation only after that wait, then track
+                // just the actual ownership write so ending the scan session
+                // does not drain for the duration of background pricing.
+                let bindLatest: @MainActor () async throws -> GradedVariantBindingReceipt? = {
+                    guard writeSessionID == self.scannerSessionID,
+                          self.isStorageGenerationCurrent,
+                          !self.undoingScanIDs.contains(scanID),
+                          let latest = self.sessionScans.first(where: { $0.id == scanID }),
+                          Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab) else {
+                        return nil
+                    }
+                    self.beginTrackedWrite(for: writeSessionID)
+                    defer { self.endTrackedWrite(for: writeSessionID) }
+                    return try await collectionWriter.bindScannedGraded(
+                        collectionKey: latest.mutation.collectionKey,
                         variant: variant
                     )
                 }
                 let resolvedBinding: GradedVariantBindingReceipt?
-                if await collectionWriter.requiresGradedBindingPromotion(for: collectionKey) {
-                    resolvedBinding = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
-                        try await bind()
-                    }
+                // This read is only an optimization. The serialized writer
+                // rechecks the current row and throws if a promotion became
+                // necessary after this preflight.
+                let preflightKey = self.sessionScans.first(where: { $0.id == scanID })?
+                    .mutation.collectionKey
+                if let preflightKey,
+                   await collectionWriter.requiresGradedBindingPromotion(for: preflightKey) {
+                    resolvedBinding = try await CollectionExclusiveWrites.withPriceIdentityExclusivity(
+                        waitForActivePassToFinish: true
+                    ) { try await bindLatest() }
                 } else {
-                    resolvedBinding = try await bind()
+                    resolvedBinding = try await CollectionExclusiveWrites.retryingIfRequired(
+                        waitForActivePassToFinish: true
+                    ) { try await bindLatest() }
                 }
                 guard let binding = resolvedBinding else {
+                    guard writeSessionID == self.scannerSessionID,
+                          self.isStorageGenerationCurrent,
+                          !self.undoingScanIDs.contains(scanID),
+                          let stillCurrent = self.sessionScans.first(where: { $0.id == scanID }),
+                          Self.isCompatibleGradedEvidence(stillCurrent.subject.slab, with: slab) else {
+                        return
+                    }
                     self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
                     return
                 }
@@ -3395,7 +3418,9 @@ final class ScannerViewModel: ObservableObject {
                     try await refine()
                 }
             } else {
-                refinedMutation = try await refine()
+                refinedMutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await refine()
+                }
             }
             guard let refinedMutation else {
                 pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
@@ -3792,7 +3817,9 @@ final class ScannerViewModel: ObservableObject {
                     try await writeCandidate()
                 }
             } else {
-                mutation = try await writeCandidate()
+                mutation = try await CollectionExclusiveWrites.retryingIfRequired {
+                    try await writeCandidate()
+                }
             }
             guard writeSessionID == scannerSessionID else {
                 clearAcknowledgement(for: candidate.encounterID)

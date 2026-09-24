@@ -264,11 +264,17 @@ enum LocalArtworkOverrideRekeyer {
     /// this context; launch-time sweeping eventually handles a context that is
     /// no longer active.
     static func removePendingFilesAfterSave(in context: ModelContext) {
-        let candidates = cleanupQueue.take(context: context)
+        let candidates = takePendingFilesAfterSave(in: context)
         let failedChecks = Set(candidates.filter {
             !CollectionArtworkStore.removeIfUnreferenced($0, in: context)
         })
         cleanupQueue.restore(failedChecks, context: context)
+    }
+
+    /// Returns durable cleanup candidates so a caller with expensive directory
+    /// work can release the ownership serializer before touching the filesystem.
+    static func takePendingFilesAfterSave(in context: ModelContext) -> Set<String> {
+        cleanupQueue.take(context: context)
     }
 
     static func discardPendingFilesAfterRollback(in context: ModelContext) {
@@ -293,31 +299,117 @@ enum LocalArtworkOverrideRekeyer {
 /// Repairs the local half of artwork identity transitions and retires only
 /// references that are outside the collection's restore window.
 enum ArtworkOrphanSweep {
+    struct OverrideSnapshot: Equatable, Sendable {
+        let collectionKey: String
+        let filename: String
+        let updatedAt: Date
+    }
+
+    struct Snapshot: Sendable {
+        let liveCardKeys: Set<String>
+        let canonicalKeysByLegacyKey: [String: Set<String>]
+        let overrides: [OverrideSnapshot]
+        let recentActivityKeys: Set<String>
+        let referencedFilenames: Set<String>
+    }
+
     struct Report: Equatable, Sendable {
         let repairedLegacyAliases: Int
         let removedOverrides: Int
         let removedFiles: Int
     }
 
+    struct CleanupPlan: Equatable, Sendable {
+        let repairedLegacyAliases: Int
+        let removedOverrides: Int
+        let filesToRemove: Set<String>
+    }
+
+    /// Captures the full-table read-only inventory away from the ownership
+    /// lock. `prepare` re-fetches every candidate it plans to mutate.
+    static func snapshot(in container: ModelContainer, now: Date = .now) throws -> Snapshot {
+        let context = ModelContext(container)
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        let liveKeys = Set(cards.map(\.collectionKey))
+        var canonicalKeysByLegacyKey: [String: Set<String>] = [:]
+        for canonicalKey in liveKeys {
+            for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey) {
+                canonicalKeysByLegacyKey[legacyKey, default: []].insert(canonicalKey)
+            }
+        }
+        let recentActivityKeys = Set(
+            activities
+                .filter { now.timeIntervalSince($0.occurredAt) <= CollectionActivity.restoreWindow }
+                .map(\.collectionKey)
+        )
+        return Snapshot(
+            liveCardKeys: liveKeys,
+            canonicalKeysByLegacyKey: canonicalKeysByLegacyKey,
+            overrides: overrides.map {
+                OverrideSnapshot(
+                    collectionKey: $0.collectionKey,
+                    filename: $0.filename,
+                    updatedAt: $0.updatedAt
+                )
+            },
+            recentActivityKeys: recentActivityKeys,
+            referencedFilenames: Set(overrides.map(\.filename))
+                .union(cards.compactMap(\.userArtworkFilename))
+        )
+    }
+
+    /// Compatibility entry point for isolated callers. Production runs
+    /// `prepare` inside the writer and performs its returned file cleanup
+    /// after releasing the serializer.
     static func run(in context: ModelContext, now: Date = .now) throws -> Report {
+        let agedFiles = CollectionArtworkStore.agedFilenames(
+            olderThan: now.addingTimeInterval(-24 * 60 * 60)
+        )
+        let plan = try prepare(
+            in: context,
+            snapshot: snapshot(in: context.container, now: now),
+            agedFileCandidates: agedFiles,
+            now: now
+        )
+        let removedFiles = CollectionArtworkStore.removeFiles(named: plan.filesToRemove)
+        return Report(
+            repairedLegacyAliases: plan.repairedLegacyAliases,
+            removedOverrides: plan.removedOverrides,
+            removedFiles: removedFiles
+        )
+    }
+
+    static func prepare(
+        in context: ModelContext,
+        snapshot: Snapshot,
+        agedFileCandidates: Set<String>,
+        now: Date = .now
+    ) throws -> CleanupPlan {
         var repairedAliases = 0
         var removedOverrides = 0
+        let recentActivityCutoff = now.addingTimeInterval(-CollectionActivity.restoreWindow)
         do {
-            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
-            let liveKeys = Set(cards.map(\.collectionKey))
-            var canonicalKeysByLegacyKey: [String: Set<String>] = [:]
-            for canonicalKey in liveKeys {
-                for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey) {
-                    canonicalKeysByLegacyKey[legacyKey, default: []].insert(canonicalKey)
-                }
-            }
-
-            let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
-            let orphanKeys = Set(overrides.map(\.collectionKey).filter { !liveKeys.contains($0) })
+            let orphanKeys = Set(
+                snapshot.overrides
+                    .map(\.collectionKey)
+                    .filter { !snapshot.liveCardKeys.contains($0) }
+            )
             for legacyKey in orphanKeys {
-                guard let canonicalKeys = canonicalKeysByLegacyKey[legacyKey],
+                guard let canonicalKeys = snapshot.canonicalKeysByLegacyKey[legacyKey],
                       canonicalKeys.count == 1,
-                      let canonicalKey = canonicalKeys.first else { continue }
+                      let canonicalKey = canonicalKeys.first,
+                      try context.fetchCount(
+                        FetchDescriptor<CollectedCard>(
+                            predicate: #Predicate { $0.collectionKey == legacyKey }
+                        )
+                      ) == 0,
+                      try context.fetchCount(
+                        FetchDescriptor<CollectedCard>(
+                            predicate: #Predicate { $0.collectionKey == canonicalKey }
+                        )
+                      ) > 0 else { continue }
                 try LocalArtworkOverrideRekeyer.rekey(
                     from: legacyKey,
                     to: canonicalKey,
@@ -327,39 +419,69 @@ enum ArtworkOrphanSweep {
                 repairedAliases += 1
             }
 
-            let liveOverrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
-            let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
-            let recentActivityKeys = Set(
-                activities
-                    .filter { now.timeIntervalSince($0.occurredAt) <= CollectionActivity.restoreWindow }
-                    .map(\.collectionKey)
-            )
-            for override in liveOverrides
-            where !liveKeys.contains(override.collectionKey)
-                && !recentActivityKeys.contains(override.collectionKey)
-                && now.timeIntervalSince(override.updatedAt) > CollectionActivity.restoreWindow {
-                LocalArtworkOverrideRekeyer.enqueueFileRemoval(override.filename, in: context)
-                context.delete(override)
+            for candidate in snapshot.overrides
+            where !snapshot.liveCardKeys.contains(candidate.collectionKey)
+                && !snapshot.recentActivityKeys.contains(candidate.collectionKey)
+                && now.timeIntervalSince(candidate.updatedAt) > CollectionActivity.restoreWindow {
+                let key = candidate.collectionKey
+                let filename = candidate.filename
+                let updatedAt = candidate.updatedAt
+                guard try context.fetchCount(
+                    FetchDescriptor<CollectedCard>(
+                        predicate: #Predicate { $0.collectionKey == key }
+                    )
+                ) == 0,
+                      try context.fetchCount(
+                        FetchDescriptor<CollectionActivity>(
+                            predicate: #Predicate {
+                                $0.collectionKey == key
+                                    && $0.occurredAt > recentActivityCutoff
+                            }
+                        )
+                      ) == 0 else { continue }
+                let currentOverrides = try context.fetch(
+                    FetchDescriptor<LocalArtworkOverride>(
+                        predicate: #Predicate { $0.collectionKey == key }
+                    )
+                )
+                guard let current = currentOverrides.first(where: {
+                    $0.filename == filename && $0.updatedAt == updatedAt
+                }) else { continue }
+                LocalArtworkOverrideRekeyer.enqueueFileRemoval(current.filename, in: context)
+                context.delete(current)
                 removedOverrides += 1
             }
 
             if context.hasChanges {
                 try context.save()
             }
-            LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
-
-            let remainingOverrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
-            let remainingCards = try context.fetch(FetchDescriptor<CollectedCard>())
-            let referencedFilenames = Set(remainingOverrides.map(\.filename))
-                .union(remainingCards.compactMap(\.userArtworkFilename))
-            let removedFiles = CollectionArtworkStore.removeUnreferencedFiles(
-                keeping: referencedFilenames,
-                olderThan: now.addingTimeInterval(-24 * 60 * 60)
+            let pendingCleanupFiles = LocalArtworkOverrideRekeyer.takePendingFilesAfterSave(
+                in: context
             )
-            return Report(
+
+            let candidateFiles = agedFileCandidates
+                .subtracting(snapshot.referencedFilenames)
+                .union(pendingCleanupFiles)
+            var filesToRemove = Set<String>()
+            for filename in candidateFiles {
+                let overrideCount = try context.fetchCount(
+                    FetchDescriptor<LocalArtworkOverride>(
+                        predicate: #Predicate { $0.filename == filename }
+                    )
+                )
+                let legacyCount = try context.fetchCount(
+                    FetchDescriptor<CollectedCard>(
+                        predicate: #Predicate { $0.userArtworkFilename == filename }
+                    )
+                )
+                if overrideCount == 0, legacyCount == 0 {
+                    filesToRemove.insert(filename)
+                }
+            }
+            return CleanupPlan(
                 repairedLegacyAliases: repairedAliases,
                 removedOverrides: removedOverrides,
-                removedFiles: removedFiles
+                filesToRemove: filesToRemove
             )
         } catch {
             context.rollback()
@@ -939,6 +1061,7 @@ enum PriceIdentityWritePreflight {
 
 enum CollectionStoreError: Error, Equatable {
     case collectionBusy
+    case priceIdentityExclusivityRequired
     case staleQuantity
     case missingDestinationRow(String)
     case missingActivity(UUID)
@@ -959,6 +1082,8 @@ extension CollectionStoreError: LocalizedError {
         switch self {
         case .collectionBusy:
             return "Your collection is being updated. Try again in a moment."
+        case .priceIdentityExclusivityRequired:
+            return "The price identity changed while this write was starting. Try again."
         case .staleQuantity:
             return "This quantity changed while you were editing it. Review the current quantity and try again."
         case let .missingDestinationRow(key):
@@ -1307,6 +1432,16 @@ struct CollectionStore {
         return LogicalCollection.chooseRepresentative(
             from: (try? context.fetch(descriptor)) ?? []
         )
+    }
+
+    /// Returns the same merged position quantity that a mutating lookup will
+    /// compare and update. This includes duplicate physical rows and supported
+    /// legacy aliases, so detail-screen compare-and-set values match writes.
+    func logicalQuantity(
+        forAnyKey key: String,
+        magicTreatmentIDsRaw: [String] = []
+    ) throws -> Int? {
+        try card(forAnyKey: key, magicTreatmentIDsRaw: magicTreatmentIDsRaw)?.quantity
     }
 
     private func cards(forKey key: String) throws -> [CollectedCard] {
@@ -3309,6 +3444,7 @@ struct CollectionStore {
             treatmentIDs: treatmentIDs
         )
         if oldPriceKey != newPriceKey {
+            try PriceIdentityRewritePermit.requireForSerializedOwnershipWrite()
             try PriceIdentityLineageMigration.migrate(
                 from: oldPriceKey,
                 to: newPriceKey,

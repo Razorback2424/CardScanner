@@ -450,6 +450,7 @@ enum PriceIdentityLineageMigration {
         guard card.itemKind != .rawCard,
               card.justTCGVariantID == nil,
               !marketVariantID.isEmpty else { return }
+        try PriceIdentityRewritePermit.requireForSerializedOwnershipWrite()
 
         let oldKey = card.priceKey
         let printingID = "justtcg:\(apiVersion):\(marketVariantID)"

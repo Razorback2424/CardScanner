@@ -2162,33 +2162,35 @@ final class MagicTreatmentMigrationCoordinator {
             gate.release()
         }
 
-        // The refresh owns the gate, so call the cores directly. Calling the
-        // public methods here would wait on the gate it just acquired.
-        if runsNetworkMigration {
-            _ = await runNetworkCore(
-                in: context,
-                now: now,
-                shouldContinue: effectiveContinuation
-            )
-        } else {
-            // Local repairs are bounded and must still precede pricing: they
-            // are the phase that can rekey a row from an identity already
-            // proven by its own collection key.
-            _ = await runLocalCore(
-                in: context,
-                now: now,
-                shouldContinue: effectiveContinuation
-            )
+        return await PriceIdentityRewritePermit.$isAuthorized.withValue(true) {
+            // The refresh owns the gate, so call the cores directly. Calling the
+            // public methods here would wait on the gate it just acquired.
+            if runsNetworkMigration {
+                _ = await runNetworkCore(
+                    in: context,
+                    now: now,
+                    shouldContinue: effectiveContinuation
+                )
+            } else {
+                // Local repairs are bounded and must still precede pricing: they
+                // are the phase that can rekey a row from an identity already
+                // proven by its own collection key.
+                _ = await runLocalCore(
+                    in: context,
+                    now: now,
+                    shouldContinue: effectiveContinuation
+                )
+            }
+            // A foreground launch may cancel the background task while this call
+            // is awaiting an already-running local/network migration. That shared
+            // migration is allowed to finish, but the cancelled background caller
+            // must not start a fresh, unstructured price-refresh queue afterward.
+            if !isCurrent(effectiveContinuation) || Task.isCancelled {
+                context.rollback()
+                return nil
+            }
+            return await operation()
         }
-        // A foreground launch may cancel the background task while this call
-        // is awaiting an already-running local/network migration. That shared
-        // migration is allowed to finish, but the cancelled background caller
-        // must not start a fresh, unstructured price-refresh queue afterward.
-        if !isCurrent(effectiveContinuation) || Task.isCancelled {
-            context.rollback()
-            return nil
-        }
-        return await operation()
     }
 
     /// Acquires the same gate used by price refreshes for a caller that is

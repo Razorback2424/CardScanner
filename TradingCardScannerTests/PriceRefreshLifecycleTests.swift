@@ -35,6 +35,17 @@ private actor PriceRefreshTestGate {
     }
 }
 
+private actor PriceRefreshAttemptCounter {
+    private var attempts = 0
+
+    func next() -> Int {
+        attempts += 1
+        return attempts
+    }
+
+    func value() -> Int { attempts }
+}
+
 @MainActor
 final class PriceRefreshLifecycleTests: XCTestCase {
     func testForegroundJoinPromotesQueueAndBackgroundCancelIsScoped() async throws {
@@ -177,6 +188,154 @@ final class PriceRefreshLifecycleTests: XCTestCase {
 
         XCTAssertFalse(queuedResult.didRun)
         XCTAssertEqual(controller.status, .idle)
+    }
+
+    func testNewSuspensionKeepsResumedRequestWhenGateWaitIsCancelled() async throws {
+        let container = try makeContainer(withCard: true)
+        let controller = PriceRefreshController()
+        let counter = PriceRefreshAttemptCounter()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            _ = await counter.next()
+            return .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
+        }
+
+        // Hold the migration gate while a queued request is resumed. Its
+        // withPriceRefresh call will wait on this gate before it can start.
+        let migration = MagicTreatmentMigrationCoordinator.shared
+        let migrationToken = await migration.acquireExclusive()
+        let initialSuspension = await controller.suspendPasses()
+        let queued = await controller.refresh(Self.request, container: container)
+        XCTAssertFalse(queued.didRun)
+        controller.resume(initialSuspension)
+        for _ in 0..<100 where !controller.isPassInFlight {
+            await Task.yield()
+        }
+        XCTAssertTrue(controller.isPassInFlight)
+
+        // A second writer cancels the resumed task while it is waiting for the
+        // gate. Releasing the first writer must not clear this newer request.
+        let nextSuspension = Task { await controller.suspendPasses() }
+        for _ in 0..<100 where !controller.isSuspendedForWrite {
+            await Task.yield()
+        }
+        XCTAssertTrue(controller.isSuspendedForWrite)
+        migration.releaseExclusive(migrationToken)
+        let nextToken = await nextSuspension.value
+        controller.resume(nextToken)
+
+        for _ in 0..<300 where controller.isPassInFlight {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertFalse(controller.isPassInFlight)
+        let attempts = await counter.value()
+        XCTAssertEqual(attempts, 1, "The retained request must run after the later suspension resumes.")
+    }
+
+    func testCancellingSuspensionUpgradesAnExistingNonCancellingWait() async throws {
+        let container = try makeContainer(withCard: true)
+        let controller = PriceRefreshController()
+        let gate = PriceRefreshTestGate()
+        let counter = PriceRefreshAttemptCounter()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            if await counter.next() == 1 {
+                try await gate.pauseUntilCancelled()
+            }
+            return .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
+        }
+
+        let active = Task {
+            await controller.refresh(Self.request, container: container)
+        }
+        await gate.waitUntilStarted()
+
+        // A binding starts a non-cancelling suspension and waits for the
+        // provider. A structural writer arriving afterward must be able to
+        // upgrade that wait and cancel the request.
+        let nonCancellingSuspension = Task {
+            await controller.suspendPasses(cancelActivePass: false)
+        }
+        for _ in 0..<100 where !controller.isSuspendedForWrite {
+            await Task.yield()
+        }
+        XCTAssertTrue(controller.isSuspendedForWrite)
+
+        let cancellingToken = await controller.suspendPasses()
+        controller.resume(cancellingToken)
+        let nonCancellingToken = await nonCancellingSuspension.value
+        controller.resume(nonCancellingToken)
+        _ = await active.value
+
+        for _ in 0..<300 where controller.isPassInFlight {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertFalse(controller.isPassInFlight)
+        let attempts = await counter.value()
+        XCTAssertEqual(attempts, 2, "The cancelled request should be retained and replayed once.")
+    }
+
+    func testStaleIdentityPreflightRetriesOnceInsideAuthorizedGate() async throws {
+        let wasEnforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = wasEnforced }
+
+        let container = try ModelContainer(
+            for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        let seedContext = ModelContext(container)
+        let row = CollectedCard(
+            collectionKey: "graded:permit-card#psa-10",
+            game: .pokemon,
+            providerID: "permit-card",
+            name: "Permit Card",
+            setName: "Permit Set",
+            setCode: "PRM",
+            cardNumber: "1",
+            rarity: "Rare",
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            variantResolution: .userConfirmed
+        )
+        row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        row.gradingCompanyRaw = GradingCompany.psa.rawValue
+        row.gradeRaw = "10"
+        seedContext.insert(row)
+        try seedContext.save()
+
+        var attempts = 0
+        var successfulSaves = 0
+        try await CollectionExclusiveWrites.retryingIfRequired {
+            attempts += 1
+            try CollectionWriteSerializer.perform(
+                container: container,
+                timeout: .mainThread
+            ) { context in
+                let key = "graded:permit-card#psa-10"
+                var descriptor = FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.collectionKey == key }
+                )
+                descriptor.fetchLimit = 1
+                let current = try XCTUnwrap(context.fetch(descriptor).first)
+                try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                    for: current,
+                    toMarketVariantID: "permit-market-variant",
+                    apiVersion: "v2",
+                    in: context
+                )
+                current.justTCGCardID = "permit-market-card"
+                current.justTCGVariantID = "permit-market-variant"
+                current.justTCGAPIVersion = "v2"
+                try context.save()
+                successfulSaves += 1
+            }
+        }
+
+        XCTAssertEqual(attempts, 2, "The first unguarded attempt must be retried once under the gate.")
+        XCTAssertEqual(successfulSaves, 1, "The ownership write must commit exactly once.")
+        let verify = ModelContext(container)
+        let saved = try XCTUnwrap(verify.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(saved.justTCGVariantID, "permit-market-variant")
     }
 
     func testResumeAfterQueueIsCancelledDuringSuspensionReturnsToIdle() async throws {

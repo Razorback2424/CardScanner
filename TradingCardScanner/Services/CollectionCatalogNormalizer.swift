@@ -301,7 +301,9 @@ final class CollectionCatalogNormalizer: ObservableObject {
                     try applyResolvedMetadata()
                 }
             } else {
-                try applyResolvedMetadata()
+                try await CollectionExclusiveWrites.retryingIfRequired {
+                    try applyResolvedMetadata()
+                }
             }
             guard shouldContinue?() ?? true else {
                 requestsAnotherPass = false

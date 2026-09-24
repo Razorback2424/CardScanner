@@ -2677,7 +2677,9 @@ final class PriceRefreshController: ObservableObject {
     private var activeRefreshContinuation: StorageGenerationContinuation?
     private var activeQueueRequest: PriceRefreshRequest?
     private var suspensionTokens: Set<UUID> = []
-    private var isSuspendedForWrite = false
+    private(set) var isSuspendedForWrite = false
+    private var retainedQueueIDForSuspension: UUID?
+    private var suspensionNeedsReplay = false
     private var statusBeforeWriteSuspension: Status?
     private var suspendedContainer: ModelContainer?
     private var suspendedContinuation: StorageGenerationContinuation?
@@ -3004,34 +3006,59 @@ final class PriceRefreshController: ObservableObject {
         return result
     }
 
-    /// Stops provider work at its next cancellation point and retains the
-    /// active request so an identity rewrite can run between refresh passes.
-    /// The request is replayed from live storage after the last suspension ends.
-    func suspendPasses() async -> SuspensionToken {
+    /// Pauses refresh queues for an identity rewrite. A normal suspension
+    /// cancels and retains the active request; a scanner binding can instead
+    /// let the active request reach its checkpoint and pause before trailing
+    /// work, avoiding a full pass restart.
+    func suspendPasses(cancelActivePass: Bool = true) async -> SuspensionToken {
         let token = UUID()
         suspensionTokens.insert(token)
         guard suspensionTokens.count == 1 else {
+            // A scanner binding may already be waiting for the current pass
+            // without cancelling it. If a real structural writer arrives
+            // during that wait, upgrade the shared suspension and cancel the
+            // active request instead of making that writer wait for the whole
+            // provider pass as well.
+            if cancelActivePass {
+                retainActiveRequestForSuspension()
+                activeRefresh?.cancel()
+            }
             return SuspensionToken(id: token)
         }
         let passWasInFlight = activeRefresh != nil || isRefreshing
         statusBeforeWriteSuspension = status
         isSuspendedForWrite = true
+        retainedQueueIDForSuspension = nil
+        suspensionNeedsReplay = false
         suspendedContainer = activeRefreshContainer
         suspendedContinuation = activeRefreshContinuation
+        if cancelActivePass { retainActiveRequestForSuspension() }
+        if let activeRefresh {
+            if cancelActivePass { activeRefresh.cancel() }
+            _ = await activeRefresh.value
+        }
+        if passWasInFlight, suspensionNeedsReplay {
+            status = .refreshing(completed: 0, total: 0)
+        } else {
+            // A non-cancelling scanner bind lets this request finish. Preserve
+            // its terminal summary instead of replacing it with a fake 0/0
+            // refresh state after the pass has already completed.
+            statusBeforeWriteSuspension = status
+        }
+        return SuspensionToken(id: token)
+    }
+
+    private func retainActiveRequestForSuspension() {
+        guard let queueID = activeRefreshQueueID,
+              retainedQueueIDForSuspension != queueID else { return }
         if let activeQueueRequest {
             enqueuePending(
                 activeQueueRequest,
                 owner: activeRefreshOwner ?? .foreground
             )
+            suspensionNeedsReplay = true
         }
-        if let activeRefresh {
-            activeRefresh.cancel()
-            _ = await activeRefresh.value
-        }
-        if passWasInFlight {
-            status = .refreshing(completed: 0, total: 0)
-        }
-        return SuspensionToken(id: token)
+        retainedQueueIDForSuspension = queueID
     }
 
     func resume(_ token: SuspensionToken) {
@@ -3041,9 +3068,33 @@ final class PriceRefreshController: ObservableObject {
         }
         guard suspensionTokens.isEmpty else { return }
         isSuspendedForWrite = false
+        retainedQueueIDForSuspension = nil
+        suspensionNeedsReplay = false
 
-        guard let pending = takePendingRefresh(),
-              let container = suspendedContainer else {
+        guard let container = suspendedContainer else {
+            // Storage transitions explicitly abandon queued work when its
+            // container is no longer available.
+            pendingRefreshRequests.removeAll()
+            suspendedContainer = nil
+            suspendedContinuation = nil
+            activeRefresh = nil
+            activeRefreshOwner = nil
+            activeRefreshQueueID = nil
+            activeRefreshContainer = nil
+            activeRefreshContinuation = nil
+            activeQueueRequest = nil
+            if case .refreshing(completed: 0, total: 0) = status {
+                switch statusBeforeWriteSuspension {
+                case .some(.finished), .some(.recentlyChecked), .some(.idle):
+                    status = statusBeforeWriteSuspension ?? .idle
+                case .some(.refreshing), .some(.reconciling), .none:
+                    status = .idle
+                }
+            }
+            statusBeforeWriteSuspension = nil
+            return
+        }
+        guard let pending = takePendingRefresh() else {
             suspendedContainer = nil
             suspendedContinuation = nil
             activeRefresh = nil
@@ -3073,12 +3124,23 @@ final class PriceRefreshController: ObservableObject {
             guard let self else {
                 return PriceRefreshResult(didRun: false, targetBuildFailed: false)
             }
-            return await self.runRefreshQueue(
-                queueID: queueID,
-                startingWith: pending.request,
-                container: container,
-                shouldContinue: continuation
-            )
+            guard let result = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
+                in: ModelContext(container),
+                runsNetworkMigration: false,
+                shouldContinue: continuation,
+                operation: {
+                    await self.runRefreshQueue(
+                        queueID: queueID,
+                        startingWith: pending.request,
+                        container: container,
+                        shouldContinue: continuation
+                    )
+                }
+            ) else {
+                self.clearUnstartedResumedQueue(queueID)
+                return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+            }
+            return result
         }
         activeRefresh = task
         activeRefreshContainer = container
@@ -3114,6 +3176,7 @@ final class PriceRefreshController: ObservableObject {
               let activeRefresh else { return false }
         if owner == .background, let activeRefreshQueueID {
             preemptedRefreshQueueIDs.insert(activeRefreshQueueID)
+            pendingRefreshRequests.removeAll()
         }
         activeRefresh.cancel()
         return true
@@ -3126,9 +3189,31 @@ final class PriceRefreshController: ObservableObject {
               let activeRefresh,
               let activeRefreshQueueID else { return false }
         preemptedRefreshQueueIDs.insert(activeRefreshQueueID)
+        pendingRefreshRequests.removeAll()
         activeRefresh.cancel()
         _ = await activeRefresh.value
         return true
+    }
+
+    private func clearUnstartedResumedQueue(_ queueID: UUID) {
+        guard activeRefreshQueueID == queueID else { return }
+        activeRefresh = nil
+        activeRefreshOwner = nil
+        activeRefreshQueueID = nil
+        activeRefreshContainer = nil
+        activeRefreshContinuation = nil
+        activeQueueRequest = nil
+        // A newer exclusive writer owns the suspended snapshot and pending
+        // request now. This resumed task only owns the active markers it set;
+        // clearing the shared suspension here drops the request permanently.
+        if isSuspendedForWrite { return }
+        if !(suspendedContinuation?() ?? true) {
+            pendingRefreshRequests.removeAll()
+        }
+        suspendedContainer = nil
+        suspendedContinuation = nil
+        if case .refreshing(completed: 0, total: 0) = status { status = .idle }
+        registeredCompletionSignal?.advance()
     }
 
     private func runRefreshQueue(
@@ -3295,6 +3380,10 @@ final class PriceRefreshController: ObservableObject {
                 }
                 return makeResult(didRun: didRun, targetBuildFailed: targetBuildFailed)
             }
+            // A non-cancelling suspension lets the current request reach its
+            // checkpoint, then leaves queued requests for resume under the
+            // migration gate. It does not replay completed work.
+            if isSuspendedForWrite { break }
             guard let pending = takePendingRefresh() else { break }
             request = pending.request
             if activeRefreshOwner != .foreground {

@@ -62,7 +62,7 @@ struct CollectionCardDetailView: View {
     @State private var pendingArtwork: ArtworkRequest?
     @State private var artworkAccent: ArtworkAccent?
     @State private var projectedQuantity: Int?
-    @State private var lastSavedRowQuantity: Int?
+    @State private var lastSavedLogicalQuantity: Int?
 #if DEBUG
     @State private var isShowingPrintingDetailsRoute = false
 #endif
@@ -228,7 +228,7 @@ struct CollectionCardDetailView: View {
                 refreshDisplayedQuantity()
             } else {
                 projectedQuantity = nil
-                lastSavedRowQuantity = card.quantity
+                lastSavedLogicalQuantity = card.quantity
             }
         }
         .task(id: pendingArtwork?.id) {
@@ -694,7 +694,9 @@ struct CollectionCardDetailView: View {
                         try persist()
                     }
                 } else {
-                    try persist()
+                    try await CollectionExclusiveWrites.retryingIfRequired {
+                        try persist()
+                    }
                 }
             } catch {
                 errorMessage = error.localizedDescription
@@ -1194,21 +1196,14 @@ struct CollectionCardDetailView: View {
     private func refreshDisplayedQuantity() {
         let readContext = ModelContext(modelContext.container)
         let collectionKey = card.collectionKey
+        let treatments = card.magicTreatmentIDsRaw
         do {
-            if isLogicalConflict {
-                let cards = try readContext.fetch(FetchDescriptor<CollectedCard>())
-                let projection = LogicalCollection.project(cards: cards) { $0.priceKey }
-                projectedQuantity = projection.byKey[collectionKey]?.quantity ?? logicalQuantity
-                lastSavedRowQuantity = cards.first { $0.collectionKey == collectionKey }?.quantity
-            } else {
-                var descriptor = FetchDescriptor<CollectedCard>(
-                    predicate: #Predicate { $0.collectionKey == collectionKey }
-                )
-                descriptor.fetchLimit = 1
-                let liveQuantity = try readContext.fetch(descriptor).first?.quantity
-                projectedQuantity = liveQuantity
-                lastSavedRowQuantity = liveQuantity
-            }
+            let liveQuantity = try CollectionStore(context: readContext).logicalQuantity(
+                forAnyKey: collectionKey,
+                magicTreatmentIDsRaw: treatments
+            )
+            projectedQuantity = liveQuantity
+            lastSavedLogicalQuantity = liveQuantity
         } catch {
             // Keep the last displayed value; the next explicit refresh can
             // retry the read without blocking a detail-screen render.
@@ -1217,18 +1212,18 @@ struct CollectionCardDetailView: View {
 
     private func updateQuantity(_ newQuantity: Int) {
         guard (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
-        if lastSavedRowQuantity == nil {
+        if lastSavedLogicalQuantity == nil {
             refreshDisplayedQuantity()
         }
-        guard let expectedCurrent = lastSavedRowQuantity else {
+        guard let expectedCurrent = lastSavedLogicalQuantity else {
             errorMessage = "The current quantity could not be verified. Try again."
             return
         }
         let collectionKey = card.collectionKey
         let treatments = card.magicTreatmentIDsRaw
         let oldDisplayed = displayedQuantity
-        do {
-            let savedQuantity = try CollectionWriteSerializer.perform(
+        let persist = {
+            try CollectionWriteSerializer.perform(
                 container: modelContext.container,
                 timeout: .mainThread
             ) { context in
@@ -1239,10 +1234,32 @@ struct CollectionCardDetailView: View {
                     expectedCurrent: expectedCurrent
                 )
             }
-            lastSavedRowQuantity = savedQuantity
+        }
+        do {
+            let savedQuantity = try persist()
+            lastSavedLogicalQuantity = savedQuantity
             projectedQuantity = isLogicalConflict
                 ? oldDisplayed + savedQuantity - expectedCurrent
                 : savedQuantity
+        } catch CollectionStoreError.priceIdentityExclusivityRequired {
+            // The serialized write found an identity rewrite that appeared
+            // after the optimistic preflight. Retry under the refresh gate.
+            Task { @MainActor in
+                do {
+                    let savedQuantity = try await CollectionExclusiveWrites.retryingIfRequired {
+                        try persist()
+                    }
+                    lastSavedLogicalQuantity = savedQuantity
+                    projectedQuantity = isLogicalConflict
+                        ? oldDisplayed + savedQuantity - expectedCurrent
+                        : savedQuantity
+                } catch {
+                    if case CollectionStoreError.staleQuantity = error {
+                        refreshDisplayedQuantity()
+                    }
+                    errorMessage = error.localizedDescription
+                }
+            }
         } catch {
             if case CollectionStoreError.staleQuantity = error {
                 refreshDisplayedQuantity()
@@ -3060,25 +3077,43 @@ enum CollectionArtworkStore {
         keeping referencedFilenames: Set<String>,
         olderThan cutoff: Date
     ) -> Int {
+        let candidates = agedFilenames(olderThan: cutoff)
+            .subtracting(referencedFilenames)
+        return removeFiles(named: candidates)
+    }
+
+    /// Enumerates the artwork directory without holding the collection writer.
+    static func agedFilenames(olderThan cutoff: Date) -> Set<String> {
         guard let directory,
               let urls = try? FileManager.default.contentsOfDirectory(
                 at: directory,
                 includingPropertiesForKeys: [.isRegularFileKey, .contentModificationDateKey],
                 options: [.skipsHiddenFiles]
-              ) else { return 0 }
-        let orphans = urls.filter { url in
-            guard let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .contentModificationDateKey]),
+              ) else { return [] }
+        return Set(urls.compactMap { url in
+            guard let values = try? url.resourceValues(
+                forKeys: [.isRegularFileKey, .contentModificationDateKey]
+            ),
                   values.isRegularFile == true,
                   let modifiedAt = values.contentModificationDate,
-                  modifiedAt < cutoff,
-                  !referencedFilenames.contains(url.lastPathComponent) else { return false }
-            return true
-        }
-        guard !orphans.isEmpty else { return 0 }
+                  modifiedAt < cutoff else { return nil }
+            return url.lastPathComponent
+        })
+    }
+
+    /// Removes a previously validated set of candidates after the model write
+    /// has released `CollectionWriteSerializer`.
+    @discardableResult
+    static func removeFiles(named filenames: Set<String>) -> Int {
+        guard let directory, !filenames.isEmpty else { return 0 }
         imageCache.removeAllObjects()
-        return orphans.reduce(into: 0) { removed, url in
+        return filenames.reduce(into: 0) { removed, filename in
+            guard !filename.isEmpty,
+                  filename != ".",
+                  filename != "..",
+                  URL(fileURLWithPath: filename).lastPathComponent == filename else { return }
             do {
-                try FileManager.default.removeItem(at: url)
+                try FileManager.default.removeItem(at: directory.appendingPathComponent(filename))
                 removed += 1
             } catch {
                 // A failed deletion is safe and will be retried by the next
