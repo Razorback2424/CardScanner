@@ -313,7 +313,20 @@ enum GradedLabelParser {
             return matches.isEmpty ? nil : (spec, matches)
         }
         let companies = Set(companySpecMatches.map { $0.0.company })
-        guard companies.count == 1, let (spec, companyLocations) = companySpecMatches.first else {
+        let spec: GradingLabelSpec
+        let companyLocations: [LocatedPhrase]
+        if companies.count == 1, let match = companySpecMatches.first {
+            spec = match.0
+            companyLocations = match.1
+        } else if companies.isEmpty,
+                  let psaSpec = specs.first(where: { $0.company == .psa }),
+                  let inferredPSAAnchor = inferredModernPSAAnchor(in: parsedLines) {
+            // Modern PSA logos are often read as "PA" or skipped entirely.
+            // Only infer PSA from the structured Pokémon label layout when
+            // geometry ties a right-column grade to its number and cert.
+            spec = psaSpec
+            companyLocations = [inferredPSAAnchor]
+        } else {
             return nil
         }
 
@@ -323,7 +336,9 @@ enum GradedLabelParser {
             }
         }
         let nearbyWordMatches = wordMatches.filter {
-            isNear($0.location, companyLocations)
+            (spec.company == .psa
+                ? isPSAGradeWord($0.location, companyLocations: companyLocations, in: parsedLines)
+                : isNear($0.location, companyLocations))
                 || (spec.company == .cgc
                     && isCGCGradeWord($0.location, companyLocations: companyLocations, in: parsedLines))
         }
@@ -336,6 +351,9 @@ enum GradedLabelParser {
                   value <= 10,
                   isHalfStep(value),
                   (isNear(located.position, companyLocations)
+                    || (spec.company == .psa && nearbyWordMatches.contains {
+                        isPSANumber(located.position, near: $0.location, in: parsedLines)
+                    })
                     || (spec.company == .cgc && nearbyWordMatches.contains {
                         isCGCNumber(located.position, near: $0.location, in: parsedLines)
                     }))
@@ -378,9 +396,14 @@ enum GradedLabelParser {
         }
         let gradeNumberCandidates = numericCandidates.filter { candidate in
             if let selectedWord {
-                return spec.company == .cgc
-                    ? isCGCNumber(candidate.0.position, near: selectedWord.location, in: parsedLines)
-                    : isNear(selectedWord.location, candidate.0.position)
+                switch spec.company {
+                case .cgc:
+                    return isCGCNumber(candidate.0.position, near: selectedWord.location, in: parsedLines)
+                case .psa:
+                    return isPSANumber(candidate.0.position, near: selectedWord.location, in: parsedLines)
+                default:
+                    return isNear(selectedWord.location, candidate.0.position)
+                }
             }
             return true
         }
@@ -484,6 +507,64 @@ enum GradedLabelParser {
         }
     }
 
+    /// The current Pokémon PSA label places card metadata and its collector
+    /// number on the left, with the grade, grade number, and nine-digit cert
+    /// in the right column. This exact fallback handles logo OCR failures
+    /// without treating any generic grade word or bare number as PSA evidence.
+    private static func inferredModernPSAAnchor(in lines: [ParsedLine]) -> LocatedPhrase? {
+        guard let psaSpec = specs.first(where: { $0.company == .psa }) else { return nil }
+
+        let hasLeftPokemonMetadata = lines.contains { line in
+            guard let box = line.boundingBox, box.midX < 0.55 else { return false }
+            return line.tokens.contains { $0.text == "POKEMON" }
+        }
+        let hasLeftCollectorNumber = lines.contains { line in
+            guard let box = line.boundingBox, box.midX < 0.55 else { return false }
+            return line.original.range(
+                of: #"#\s*\d{1,4}\b"#,
+                options: .regularExpression
+            ) != nil
+        }
+        guard hasLeftPokemonMetadata, hasLeftCollectorNumber else { return nil }
+
+        let tokens = locatedTokens(in: lines)
+        let certs = tokens.filter { located in
+            guard !located.token.slashAdjacent,
+                  let digits = normalizedDigitString(located.token.text),
+                  digits.count == 9,
+                  let box = lines[located.position.lineIndex].boundingBox
+            else { return false }
+            return box.midX >= 0.45
+        }
+        guard certs.count == 1 else { return nil }
+
+        let gradeWords = psaSpec.gradeWords.flatMap { word in
+            phraseMatches([word.tokens], in: lines)
+        }.filter { word in
+            guard let wordBox = boundingBox(for: word, in: lines),
+                  wordBox.midX >= 0.55,
+                  let certBox = lines[certs[0].position.lineIndex].boundingBox
+            else { return false }
+            return abs(certBox.midX - wordBox.midX) <= 0.45
+        }
+
+        let gradeWordsWithNumbers = gradeWords.filter { word in
+            tokens.contains { number in
+                guard !number.token.slashAdjacent,
+                      let text = normalizedNumericText(number.token.text),
+                      let value = Double(text),
+                      (1...10).contains(value),
+                      isHalfStep(value),
+                      let numberBox = lines[number.position.lineIndex].boundingBox,
+                      let wordBox = boundingBox(for: word, in: lines)
+                else { return false }
+                return abs(numberBox.midX - wordBox.midX) <= 0.22
+                    && abs(numberBox.midY - wordBox.midY) <= 0.30
+            }
+        }
+        return gradeWordsWithNumbers.count == 1 ? gradeWordsWithNumbers.first : nil
+    }
+
     private static func boundingBox(for phrase: LocatedPhrase, in lines: [ParsedLine]) -> CGRect? {
         let boxes = (phrase.lineIndex...phrase.endLineIndex).compactMap { lines[$0].boundingBox }
         guard let first = boxes.first else { return nil }
@@ -502,6 +583,32 @@ enum GradedLabelParser {
             return box.midX >= 0.55
         }
         return companyLocations.contains { lineDistance(word, $0) <= 6 }
+    }
+
+    /// Modern PSA grades occupy a separate right-hand column, so OCR line
+    /// ordering cannot measure their distance from the logo reliably.
+    private static func isPSAGradeWord(
+        _ word: LocatedPhrase,
+        companyLocations: [LocatedPhrase],
+        in lines: [ParsedLine]
+    ) -> Bool {
+        if let box = boundingBox(for: word, in: lines) {
+            return box.midX >= 0.55
+        }
+        return companyLocations.contains { lineDistance(word, $0) <= 6 }
+    }
+
+    private static func isPSANumber(
+        _ number: TokenPosition,
+        near word: LocatedPhrase,
+        in lines: [ParsedLine]
+    ) -> Bool {
+        if let numberBox = lines[number.lineIndex].boundingBox,
+           let wordBox = boundingBox(for: word, in: lines) {
+            return abs(numberBox.midX - wordBox.midX) <= 0.22
+                && abs(numberBox.midY - wordBox.midY) <= 0.30
+        }
+        return lineDistance(number, word) <= 3
     }
 
     private static func isCGCNumber(
@@ -523,8 +630,13 @@ enum GradedLabelParser {
         spec: GradingLabelSpec,
         in lines: [ParsedLine]
     ) -> Bool {
-        if spec.company == .cgc {
+        switch spec.company {
+        case .cgc:
             return isCGCNumber(number, near: word, in: lines)
+        case .psa:
+            return isPSANumber(number, near: word, in: lines)
+        default:
+            break
         }
         return isGradeNumberAdjacent(number, to: word, position: spec.numberPosition, in: lines)
     }
@@ -536,7 +648,7 @@ enum GradedLabelParser {
         spec: GradingLabelSpec,
         in lines: [ParsedLine]
     ) -> Int {
-        if spec.company == .cgc, let wordLocation {
+        if (spec.company == .cgc || spec.company == .psa), let wordLocation {
             if let numberBox = lines[number.position.lineIndex].boundingBox,
                let wordBox = boundingBox(for: wordLocation, in: lines) {
                 return Int((abs(numberBox.midX - wordBox.midX) * 2

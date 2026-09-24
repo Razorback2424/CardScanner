@@ -55,6 +55,97 @@ final class GradedLabelParserTests: XCTestCase {
         XCTAssertEqual(evidence.grade.value, "10")
     }
 
+    func testModernPSALabelsParseWhenLogoIsMisreadOrMissing() throws {
+        func line(_ text: String, _ x: CGFloat, _ y: CGFloat, width: CGFloat = 0.20) -> RecognizedLine {
+            RecognizedLine(
+                text: text,
+                boundingBox: CGRect(x: x, y: y, width: width, height: 0.06)
+            )
+        }
+
+        // Representative Vision order from a modern PSA slab: the left card
+        // text is emitted before the right grade column. "PA" is the logo OCR.
+        let zapdos = try XCTUnwrap(GradedLabelParser.parse([
+            line("023 POKEMON MEW EN", 0.04, 0.80, width: 0.44),
+            line("APDOS ex", 0.04, 0.68, width: 0.24),
+            line("PECIAL ILLUSTRATION RARE", 0.04, 0.56, width: 0.48),
+            line("PA", 0.04, 0.90, width: 0.06),
+            line("#202", 0.04, 0.40, width: 0.12),
+            line("GEM MT", 0.71, 0.62, width: 0.18),
+            line("10", 0.75, 0.48, width: 0.08),
+            line("157154355", 0.61, 0.12, width: 0.24)
+        ]))
+
+        XCTAssertEqual(zapdos.company, .psa)
+        XCTAssertEqual(zapdos.grade, CardGrade(value: "10", label: "Gem Mint"))
+        XCTAssertEqual(zapdos.certificationNumber, "157154355")
+
+        // Sylveon's logo was not recognized at all; the structured label
+        // layout and aligned grade/cert are enough to infer the grader.
+        let sylveon = try XCTUnwrap(GradedLabelParser.parse([
+            line("2025 POKEMON PRE EN", 0.04, 0.80, width: 0.44),
+            line("SYLVEON ex", 0.04, 0.68, width: 0.24),
+            line("SPECIAL ILLUSTRATION RARE", 0.04, 0.56, width: 0.48),
+            line("#156", 0.04, 0.40, width: 0.12),
+            line("MINT", 0.71, 0.62, width: 0.18),
+            line("9", 0.75, 0.48, width: 0.08),
+            line("157154347", 0.61, 0.12, width: 0.24)
+        ]))
+
+        XCTAssertEqual(sylveon.company, .psa)
+        XCTAssertEqual(sylveon.grade, CardGrade(value: "9", label: "Mint"))
+        XCTAssertEqual(sylveon.certificationNumber, "157154347")
+    }
+
+    func testPSAGradeMatchesByColumnWhenLogoIsFarAwayInVisionOrder() throws {
+        func line(_ text: String, _ x: CGFloat, _ y: CGFloat, width: CGFloat = 0.20) -> RecognizedLine {
+            RecognizedLine(
+                text: text,
+                boundingBox: CGRect(x: x, y: y, width: width, height: 0.06)
+            )
+        }
+
+        let evidence = try XCTUnwrap(GradedLabelParser.parse([
+            line("PSA", 0.04, 0.90, width: 0.08),
+            line("2025 POKEMON PRE EN", 0.04, 0.80, width: 0.44),
+            line("SYLVEON ex", 0.04, 0.68, width: 0.24),
+            line("SPECIAL ILLUSTRATION RARE", 0.04, 0.56, width: 0.48),
+            line("#156", 0.04, 0.40, width: 0.12),
+            line("LABEL", 0.04, 0.30, width: 0.18),
+            line("MINT", 0.71, 0.62, width: 0.18),
+            line("9", 0.75, 0.48, width: 0.08),
+            line("157154347", 0.61, 0.12, width: 0.24)
+        ]))
+
+        XCTAssertEqual(evidence.company, .psa)
+        XCTAssertEqual(evidence.grade, CardGrade(value: "9", label: "Mint"))
+        XCTAssertEqual(evidence.certificationNumber, "157154347")
+    }
+
+    func testPSAInferenceNeedsModernPokemonLayoutAndGeometry() {
+        XCTAssertNil(GradedLabelParser.parse([
+            RecognizedLine(text: "2025 POKEMON PRE EN"),
+            RecognizedLine(text: "#156"),
+            RecognizedLine(text: "MINT"),
+            RecognizedLine(text: "9"),
+            RecognizedLine(text: "157154347")
+        ]))
+
+        func line(_ text: String, _ x: CGFloat, _ y: CGFloat) -> RecognizedLine {
+            RecognizedLine(
+                text: text,
+                boundingBox: CGRect(x: x, y: y, width: 0.18, height: 0.06)
+            )
+        }
+        XCTAssertNil(GradedLabelParser.parse([
+            line("2025 POKEMON PRE EN", 0.04, 0.80),
+            line("#156", 0.04, 0.40),
+            line("MINT", 0.12, 0.62),
+            line("9", 0.12, 0.48),
+            line("157154347", 0.61, 0.12)
+        ]))
+    }
+
     func testPrintedFinishAndPrintRunComeFromLeftoverLabelText() throws {
         let evidence = try XCTUnwrap(GradedLabelParser.parse([
             RecognizedLine(text: "PSA GEM MT 10"),
