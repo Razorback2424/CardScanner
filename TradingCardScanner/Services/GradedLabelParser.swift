@@ -508,8 +508,8 @@ enum GradedLabelParser {
     }
 
     /// The current Pokémon PSA label places card metadata and its collector
-    /// number on the left, with the grade, grade number, and nine-digit cert
-    /// in the right column. This exact fallback handles logo OCR failures
+    /// number on the right above the grade, with the grade number and PSA cert
+    /// below it. This exact fallback handles logo OCR failures
     /// without treating any generic grade word or bare number as PSA evidence.
     private static func inferredModernPSAAnchor(in lines: [ParsedLine]) -> LocatedPhrase? {
         guard let psaSpec = specs.first(where: { $0.company == .psa }) else { return nil }
@@ -518,20 +518,22 @@ enum GradedLabelParser {
             guard let box = line.boundingBox, box.midX < 0.55 else { return false }
             return line.tokens.contains { $0.text == "POKEMON" }
         }
-        let hasLeftCollectorNumber = lines.contains { line in
-            guard let box = line.boundingBox, box.midX < 0.55 else { return false }
-            return line.original.range(
-                of: #"#\s*\d{1,4}\b"#,
-                options: .regularExpression
-            ) != nil
+        let collectorNumberBoxes = lines.compactMap { line -> CGRect? in
+            guard let box = line.boundingBox,
+                  line.original.range(
+                    of: #"#\s*\d{1,4}\b"#,
+                    options: .regularExpression
+                  ) != nil
+            else { return nil }
+            return box
         }
-        guard hasLeftPokemonMetadata, hasLeftCollectorNumber else { return nil }
+        guard hasLeftPokemonMetadata, !collectorNumberBoxes.isEmpty else { return nil }
 
         let tokens = locatedTokens(in: lines)
         let certs = tokens.filter { located in
             guard !located.token.slashAdjacent,
                   let digits = normalizedDigitString(located.token.text),
-                  digits.count == 9,
+                  psaSpec.certDigits.contains(digits.count),
                   let box = lines[located.position.lineIndex].boundingBox
             else { return false }
             return box.midX >= 0.45
@@ -542,10 +544,17 @@ enum GradedLabelParser {
             phraseMatches([word.tokens], in: lines)
         }.filter { word in
             guard let wordBox = boundingBox(for: word, in: lines),
-                  wordBox.midX >= 0.55,
+                  isPSARightColumn(wordBox),
                   let certBox = lines[certs[0].position.lineIndex].boundingBox
             else { return false }
-            return abs(certBox.midX - wordBox.midX) <= 0.45
+            let collectorNumberIsAboveGrade = collectorNumberBoxes.contains { box in
+                box.midX >= 0.55
+                    && box.midY > wordBox.midY
+                    && box.midY - wordBox.midY <= 0.30
+                    && isPSARightColumnAligned(box.midX, with: wordBox)
+            }
+            return collectorNumberIsAboveGrade
+                && isPSARightColumnAligned(certBox.midX, with: wordBox)
         }
 
         let gradeWordsWithNumbers = gradeWords.filter { word in
@@ -558,7 +567,7 @@ enum GradedLabelParser {
                       let numberBox = lines[number.position.lineIndex].boundingBox,
                       let wordBox = boundingBox(for: word, in: lines)
                 else { return false }
-                return abs(numberBox.midX - wordBox.midX) <= 0.22
+                return isPSARightColumnAligned(numberBox.midX, with: wordBox)
                     && abs(numberBox.midY - wordBox.midY) <= 0.30
             }
         }
@@ -593,9 +602,25 @@ enum GradedLabelParser {
         in lines: [ParsedLine]
     ) -> Bool {
         if let box = boundingBox(for: word, in: lines) {
-            return box.midX >= 0.55
+            return isPSARightColumn(box)
         }
         return companyLocations.contains { lineDistance(word, $0) <= 6 }
+    }
+
+    /// A merged left/right OCR row can center near the middle of the label
+    /// even when its grade phrase extends into PSA's right-hand column.
+    private static func isPSARightColumn(_ box: CGRect) -> Bool {
+        box.midX >= 0.55 || (box.minX < 0.45 && box.maxX >= 0.75)
+    }
+
+    private static func isPSARightColumnAligned(_ x: CGFloat, with box: CGRect) -> Bool {
+        if box.midX >= 0.55 {
+            return abs(x - box.midX) <= 0.22
+        }
+        return box.minX < 0.45
+            && box.maxX >= 0.75
+            && x >= box.midX
+            && x <= box.maxX + 0.05
     }
 
     private static func isPSANumber(
@@ -605,7 +630,7 @@ enum GradedLabelParser {
     ) -> Bool {
         if let numberBox = lines[number.lineIndex].boundingBox,
            let wordBox = boundingBox(for: word, in: lines) {
-            return abs(numberBox.midX - wordBox.midX) <= 0.22
+            return isPSARightColumnAligned(numberBox.midX, with: wordBox)
                 && abs(numberBox.midY - wordBox.midY) <= 0.30
         }
         return lineDistance(number, word) <= 3
