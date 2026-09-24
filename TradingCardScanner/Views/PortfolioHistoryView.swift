@@ -59,6 +59,7 @@ struct PortfolioHistoryView: View {
     @ObservedObject var history: PortfolioHistoryStore
     @Binding var selection: PortfolioHistoryScrubSelection
 
+    @GestureState private var isScrubbing = false
     @State private var lastHapticPointID: String?
     /// Held and re-armed rather than built per tick, for the reason
     /// `ScanFeedback` documents: a cold generator answers late enough to break
@@ -93,6 +94,13 @@ struct PortfolioHistoryView: View {
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: history.range)
         .onChange(of: history.range) { _, _ in
             resetSelection(forRangeChange: true)
+        }
+        .onChange(of: isScrubbing) { wasScrubbing, isScrubbing in
+            if wasScrubbing && !isScrubbing {
+                // GestureState resets even when SwiftUI cancels a drag before
+                // `onEnded` (for example, when a parent scroll view takes over).
+                resetSelection()
+            }
         }
         .onDisappear {
             resetSelection()
@@ -169,13 +177,16 @@ struct PortfolioHistoryView: View {
                     Rectangle()
                         .fill(.clear)
                         .contentShape(Rectangle())
-                        .simultaneousGesture(DragGesture(minimumDistance: 8).onChanged { gesture in
-                            guard abs(gesture.translation.width) > abs(gesture.translation.height) else { return }
-                            selectionFeedback.prepare()
-                            selectPoint(gesture.location)
-                        }.onEnded { _ in
-                            resetSelection()
-                        })
+                        .simultaneousGesture(
+                            DragGesture(minimumDistance: 8)
+                                .updating($isScrubbing) { _, state, _ in state = true }
+                                .onChanged { gesture in
+                                    guard abs(gesture.translation.width) > abs(gesture.translation.height) else { return }
+                                    selectionFeedback.prepare()
+                                    selectPoint(gesture.location)
+                                }
+                                .onEnded { _ in resetSelection() }
+                        )
                 }
             }
         }
