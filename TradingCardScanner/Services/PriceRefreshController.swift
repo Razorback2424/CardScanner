@@ -995,7 +995,9 @@ actor PriceRefreshModelActor {
         return (identities, index)
     }
 
-    private func applyPendingRowPatches() -> (saved: Bool, applied: Int, skipped: Int) {
+    private func applyPendingRowPatches(
+        retryAfterFailure: Bool = true
+    ) -> (saved: Bool, applied: Int, skipped: Int) {
         guard !pendingRowPatches.isEmpty else { return (true, 0, 0) }
         let patches = pendingRowPatches
         do {
@@ -1105,9 +1107,16 @@ actor PriceRefreshModelActor {
             identityIndex?.reload()
             return (true, result.applied, result.skipped)
         } catch {
-            pendingRowPatches.removeAll()
+            pendingRowPatches = patches
             refreshStore?.index?.reload()
             identityIndex?.reload()
+            if retryAfterFailure {
+                // The price-side checkpoint is already durable. Retry the
+                // guarded ownership patch once in a fresh context so a
+                // transient row-store save failure does not strand the row on
+                // its pre-promotion price key.
+                return applyPendingRowPatches(retryAfterFailure: false)
+            }
             return (false, 0, patches.count)
         }
     }
@@ -2632,6 +2641,7 @@ final class PriceRefreshController: ObservableObject {
     private var activeQueueRequest: PriceRefreshRequest?
     private var suspensionTokens: Set<UUID> = []
     private var isSuspendedForWrite = false
+    private var statusBeforeWriteSuspension: Status?
     private var suspendedContainer: ModelContainer?
     private var suspendedContinuation: StorageGenerationContinuation?
     private var lastProgressPublicationAt: Date?
@@ -2967,6 +2977,7 @@ final class PriceRefreshController: ObservableObject {
             return SuspensionToken(id: token)
         }
         let passWasInFlight = activeRefresh != nil || isRefreshing
+        statusBeforeWriteSuspension = status
         isSuspendedForWrite = true
         suspendedContainer = activeRefreshContainer
         suspendedContinuation = activeRefreshContinuation
@@ -3004,9 +3015,18 @@ final class PriceRefreshController: ObservableObject {
             activeRefreshContainer = nil
             activeRefreshContinuation = nil
             activeQueueRequest = nil
-            status = .idle
+            if case .refreshing(completed: 0, total: 0) = status {
+                switch statusBeforeWriteSuspension {
+                case .some(.finished), .some(.recentlyChecked), .some(.idle):
+                    status = statusBeforeWriteSuspension ?? .idle
+                case .some(.refreshing), .some(.reconciling), .none:
+                    status = .idle
+                }
+            }
+            statusBeforeWriteSuspension = nil
             return
         }
+        statusBeforeWriteSuspension = nil
         let continuation = suspendedContinuation
         let queueID = UUID()
         activeRefreshOwner = pending.owner
@@ -3040,6 +3060,12 @@ final class PriceRefreshController: ObservableObject {
     func cancelRefresh() {
         activeRefresh?.cancel()
         pendingRefreshRequests.removeAll()
+        if isSuspendedForWrite {
+            statusBeforeWriteSuspension = nil
+            suspendedContainer = nil
+            suspendedContinuation = nil
+            status = .idle
+        }
     }
 
     /// Cancels the active queue only when it is still owned by the requested
@@ -3102,6 +3128,10 @@ final class PriceRefreshController: ObservableObject {
             activeQueueRequest = nil
             registeredCompletionSignal?.advance()
             preemptedRefreshQueueIDs.remove(queueID)
+            if !isSuspendedForWrite,
+               case .refreshing(completed: 0, total: 0) = status {
+                status = .idle
+            }
         }
         // The active marker is cleared in the same actor turn as the final
         // empty-queue check. A late caller can therefore either join a live

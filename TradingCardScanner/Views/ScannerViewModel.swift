@@ -201,6 +201,12 @@ struct CollectionCommitCandidate: Sendable {
         ConsecutiveScanIdentity(card: card, subject: subject)
     }
 
+    var isGradedPricePending: Bool {
+        guard subject.slab != nil else { return false }
+        if case .bound = gradedOutcome { return false }
+        return true
+    }
+
     private init(
         requestID: UUID,
         subject: ScanSubject,
@@ -1347,9 +1353,7 @@ final class ScannerViewModel: ObservableObject {
                     // Keep the recognition acknowledgement visible across the
                     // identity and persistence gap. The message is upgraded to
                     // "Saving..." only once a collection write is authorized.
-                    if self.receipt?.isGradedPricePending != true {
-                        self.dismissReceipt()
-                    }
+                    self.dismissReceipt()
                     self.scanAcknowledgement = ScanAcknowledgement(
                         encounterID: encounterID,
                         subject: subject,
@@ -2530,7 +2534,22 @@ final class ScannerViewModel: ObservableObject {
                     isGraded: scan.subject.slab != nil
                 )
             }
-            mutation = try await correction()
+            let requiresIdentityGate: Bool
+            if scan.subject.slab != nil {
+                requiresIdentityGate = await collectionWriter.requiresGradedVariantIdentityRewrite(
+                    forCollectionKey: scan.mutation.collectionKey,
+                    toVariantID: variant.id
+                )
+            } else {
+                requiresIdentityGate = false
+            }
+            if requiresIdentityGate {
+                mutation = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    try await correction()
+                }
+            } else {
+                mutation = try await correction()
+            }
         } catch {
             guard writeSessionID == scannerSessionID else { return .failed }
             show(ScanNote(text: "Correction could not be saved", tone: .problem))
@@ -3058,10 +3077,23 @@ final class ScannerViewModel: ObservableObject {
         defer { endTrackedWrite(for: writeSessionID) }
 
         do {
-            let mutation = try await collectionWriter.convertRawScanToGraded(
-                scan,
+            let conversion = {
+                try await collectionWriter.convertRawScanToGraded(
+                    scan,
+                    evidence: offer.evidence
+                )
+            }
+            let mutation: CollectionMutation
+            if await collectionWriter.requiresPriceIdentityExclusivity(
+                forRawConversion: scan,
                 evidence: offer.evidence
-            )
+            ) {
+                mutation = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    try await conversion()
+                }
+            } else {
+                mutation = try await conversion()
+            }
             guard writeSessionID == scannerSessionID,
                   isStorageGenerationCurrent else { return }
             dismissSlabConversionOffer()
@@ -3130,7 +3162,10 @@ final class ScannerViewModel: ObservableObject {
         let encounterID = committedSessionHistory.first(where: { $0.id == scanID })?.encounterID.uuidString ?? "none"
         Task { @MainActor [weak self] in
             guard let self else { return }
-            defer { self.gradedBindingScanIDs.remove(scanID) }
+            defer {
+                self.gradedBindingScanIDs.remove(scanID)
+                self.clearGradedPricePending(scanID: scanID)
+            }
             let lookupID = PerformanceSignpost.makeID()
             let lookupState = PerformanceSignpost.beginInterval(
                 "gradedPriceLookup",
@@ -3280,7 +3315,13 @@ final class ScannerViewModel: ObservableObject {
 
     private func updateGradedScanPrice(_ quote: PriceLookup, scanID: RecentScan.ID) {
         guard let scan = sessionScans.first(where: { $0.id == scanID }) else { return }
-        let replacement = scan.updating(price: quote, isGradedPricePending: false)
+        let finalQuote: PriceLookup
+        if case .price = scan.price, case .unavailable = quote {
+            finalQuote = scan.price
+        } else {
+            finalQuote = quote
+        }
+        let replacement = scan.updating(price: finalQuote, isGradedPricePending: false)
         if let index = sessionScans.firstIndex(where: { $0.id == scanID }) {
             sessionScans[index] = replacement
         }
@@ -3288,10 +3329,10 @@ final class ScannerViewModel: ObservableObject {
             recent[index] = replacement
         }
         if receipt?.scanID == scanID {
-            receipt = receipt?.updating(price: quote)
+            receipt = receipt?.updating(price: finalQuote)
             if let receipt { scheduleReceiptDismissal(for: receipt) }
         }
-        if case .price = quote {
+        if case .price = finalQuote {
             gradedPricePulseTask?.cancel()
             gradedPriceUpdatedScanID = scanID
             gradedPricePulseTask = Task { @MainActor [weak self] in
@@ -3300,6 +3341,18 @@ final class ScannerViewModel: ObservableObject {
                 self?.gradedPriceUpdatedScanID = nil
                 self?.gradedPricePulseTask = nil
             }
+        }
+    }
+
+    private func clearGradedPricePending(scanID: RecentScan.ID) {
+        guard let scan = sessionScans.first(where: { $0.id == scanID }),
+              scan.isGradedPricePending else { return }
+        let replacement = scan.updating(price: scan.price, isGradedPricePending: false)
+        replaceCommittedScanProjection(replacement)
+        if let currentReceipt = receipt, currentReceipt.scanID == scanID {
+            let updatedReceipt = currentReceipt.updating(for: replacement)
+            receipt = updatedReceipt
+            scheduleReceiptDismissal(for: updatedReceipt)
         }
     }
 
@@ -3408,7 +3461,7 @@ final class ScannerViewModel: ObservableObject {
             options: candidate.options,
             mutation: mutation,
             price: candidate.price,
-            isGradedPricePending: candidate.subject.slab != nil
+            isGradedPricePending: candidate.isGradedPricePending
         )
         let committed = CommittedSessionScan(
             id: scan.id,
@@ -3495,7 +3548,7 @@ final class ScannerViewModel: ObservableObject {
                 treatmentDiagnostics: candidate.card.magicTreatmentDiagnostics,
                 thumbnailURL: scan.thumbnailURL,
                 price: candidate.price,
-                isGradedPricePending: candidate.subject.slab != nil,
+                isGradedPricePending: candidate.isGradedPricePending,
                 resolution: candidate.resolved.resolution
             )
         )
@@ -3769,11 +3822,15 @@ final class ScannerViewModel: ObservableObject {
             }
             appendCommittedScan(candidate, mutation: mutation)
             await applyPendingGradedCertificationRefinement(for: candidate.encounterID)
-            if candidate.subject.slab != nil,
-               let committed = committedSessionHistory.first(where: {
-                   $0.encounterID == candidate.encounterID
-               }) {
-                queueGradedBinding(scanID: committed.id)
+            if candidate.isGradedPricePending {
+                if let committed = committedSessionHistory.first(where: {
+                    $0.encounterID == candidate.encounterID
+                }) {
+                    queueGradedBinding(scanID: committed.id)
+                }
+            } else if let slab = candidate.subject.slab,
+                      case let .bound(variant) = candidate.gradedOutcome {
+                noteGradedBindingOutcome(.bound(variant), slab: slab)
             }
             if candidate.subject.slab == nil {
                 queueFallbackPrice(

@@ -671,17 +671,30 @@ struct CollectionCardDetailView: View {
         let container = modelContext.container
         Task { @MainActor in
             do {
-                try CollectionWriteSerializer.perform(
+                let persist = {
+                    try CollectionWriteSerializer.perform(
+                        container: container,
+                        timeout: .mainThread
+                    ) { context in
+                        _ = try CollectionStore(context: context).recordVariantCorrection(
+                            forCollectionKey: collectionKey,
+                            magicTreatmentIDsRaw: treatments,
+                            to: corrected,
+                            activityID: activityID,
+                            quantity: quantity
+                        )
+                    }
+                }
+                if PriceIdentityWritePreflight.requiresGradedVariantIdentityRewrite(
                     container: container,
-                    timeout: .mainThread
-                ) { context in
-                    _ = try CollectionStore(context: context).recordVariantCorrection(
-                        forCollectionKey: collectionKey,
-                        magicTreatmentIDsRaw: treatments,
-                        to: corrected,
-                        activityID: activityID,
-                        quantity: quantity
-                    )
+                    collectionKey: collectionKey,
+                    toVariantID: variant.id
+                ) {
+                    try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                        try persist()
+                    }
+                } else {
+                    try persist()
                 }
             } catch {
                 errorMessage = error.localizedDescription

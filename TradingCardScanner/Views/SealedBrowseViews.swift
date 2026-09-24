@@ -787,24 +787,13 @@ struct SealedProductDetailView: View {
             // it is gated on a non-nil mutation — so swallowing the error made a
             // failed add indistinguishable from never having tapped the button.
             // A sealed box is not something to lose silently.
-            let needsIdentityGate: Bool = {
-                let key = CollectedCard.sealedCollectionKey(
-                    game: game,
-                    productUUID: product.id,
-                    variantUUID: product.variantID ?? product.id
-                )
-                var descriptor = FetchDescriptor<CollectedCard>(
-                    predicate: #Predicate { $0.collectionKey == key }
-                )
-                descriptor.fetchLimit = 1
-                guard let rows = try? ModelContext(container).fetch(descriptor) else {
-                    return product.variantID != nil
-                }
-                guard let row = rows.first else { return false }
-                return product.variantID != nil
-                    && row.itemKind == .sealedProduct
-                    && row.justTCGVariantID == nil
-            }()
+            let needsIdentityGate = PriceIdentityWritePreflight.requiresSealedPromotion(
+                container: container,
+                game: game,
+                productUUID: product.id,
+                variantUUID: product.variantID ?? product.id,
+                marketVariantID: product.variantID
+            )
             let persist: () throws -> CollectionMutation = {
                 try CollectionWriteSerializer.perform(
                     container: container,

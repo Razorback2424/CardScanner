@@ -491,8 +491,21 @@ actor ScannerCollectionWriter {
     func requiresPriceIdentityExclusivity(
         for candidate: CollectionCommitCandidate
     ) -> Bool {
-        guard let slab = candidate.subject.slab,
-              let outcome = candidate.gradedOutcome,
+        guard let slab = candidate.subject.slab else { return false }
+        let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
+            from: candidate.card.unambiguousMagicTreatments
+        )
+        if PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
+            container: modelContainer,
+            game: candidate.card.game,
+            providerID: candidate.card.providerID,
+            grade: slab.grade,
+            company: slab.company,
+            certificationNumber: slab.certificationNumber,
+            treatmentIDs: treatmentIDs,
+            toVariantID: candidate.resolved.variant?.id
+        ) { return true }
+        guard let outcome = candidate.gradedOutcome,
               case .bound = outcome else { return false }
         return PriceIdentityWritePreflight.requiresGradedPromotion(
             container: modelContainer,
@@ -501,9 +514,36 @@ actor ScannerCollectionWriter {
             grade: slab.grade,
             company: slab.company,
             certificationNumber: slab.certificationNumber,
+            treatmentIDs: treatmentIDs
+        )
+    }
+
+    func requiresPriceIdentityExclusivity(
+        forRawConversion scan: RecentScan,
+        evidence: GradedSlabEvidence
+    ) -> Bool {
+        PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
+            container: modelContainer,
+            game: scan.card.game,
+            providerID: scan.card.providerID,
+            grade: evidence.grade,
+            company: evidence.company,
+            certificationNumber: evidence.certificationNumber,
             treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
-                from: candidate.card.unambiguousMagicTreatments
-            )
+                from: scan.card.unambiguousMagicTreatments
+            ),
+            toVariantID: scan.resolved.variant?.id
+        )
+    }
+
+    func requiresGradedVariantIdentityRewrite(
+        forCollectionKey collectionKey: String,
+        toVariantID: String?
+    ) -> Bool {
+        PriceIdentityWritePreflight.requiresGradedVariantIdentityRewrite(
+            container: modelContainer,
+            collectionKey: collectionKey,
+            toVariantID: toVariantID
         )
     }
 
@@ -772,28 +812,127 @@ enum PriceIdentityWritePreflight {
     ) -> Bool {
         guard let certificationNumber, !certificationNumber.isEmpty else { return false }
         let context = ModelContext(container)
-        let gradedRawValue = CollectionItemKind.gradedCard.rawValue
-        let companyRawValue = company.rawValue
-        let gradeValue = grade.value
         let certification = certificationNumber
-        let rows = (try? context.fetch(
+        guard let rows = try? context.fetch(
             FetchDescriptor<CollectedCard>(
-                predicate: #Predicate {
-                    $0.itemKindRaw == gradedRawValue
-                        && $0.gradingCompanyRaw == companyRawValue
-                        && $0.gradeRaw == gradeValue
-                        && $0.certificationNumber == certification
-                }
+                predicate: #Predicate { $0.certificationNumber == certification }
             )
-        )) ?? []
+        ) else { return true }
         let expectedTreatments = Set(MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs))
         return rows.contains { row in
-            row.cardGame == game
+            row.itemKind == .gradedCard
+                && row.cardGame == game
                 && (row.catalogProviderID == providerID || row.providerID == providerID)
-                && row.cardGrade == grade
+                && row.gradingCompany == company
+                && row.gradeRaw == grade.value
+                && row.gradeLabel == grade.label
+                && row.gradingQualifier == grade.qualifier
                 && Set(MagicTreatmentKeyCodec.storedIDs(from: row.magicTreatmentIDsRaw))
                     == expectedTreatments
                 && row.justTCGVariantID == nil
+        }
+    }
+
+    static func requiresScannedGradedVariantRepair(
+        container: ModelContainer,
+        game: CardGame,
+        providerID: String,
+        grade: CardGrade,
+        company: GradingCompany,
+        certificationNumber: String?,
+        treatmentIDs: [String],
+        toVariantID: String?
+    ) -> Bool {
+        let context = ModelContext(container)
+        let expectedTreatments = Set(MagicTreatmentKeyCodec.canonicalIDs(from: treatmentIDs))
+        let matchesIdentity: (CollectedCard) -> Bool = { row in
+            row.itemKind == .gradedCard
+                && row.cardGame == game
+                && (row.catalogProviderID == providerID || row.providerID == providerID)
+                && row.gradingCompany == company
+                && row.gradeRaw == grade.value
+                && row.gradeLabel == grade.label
+                && row.gradingQualifier == grade.qualifier
+                && Set(MagicTreatmentKeyCodec.canonicalIDs(from: row.magicTreatmentIDsRaw))
+                    == expectedTreatments
+        }
+        if let certificationNumber, !certificationNumber.isEmpty {
+            let certification = certificationNumber
+            guard let rows = try? context.fetch(
+                FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.certificationNumber == certification }
+                )
+            ) else { return true }
+            return rows.contains { matchesIdentity($0) && $0.variantID != toVariantID }
+        }
+
+        let gradedKind = CollectionItemKind.gradedCard.rawValue
+        let companyRaw = company.rawValue
+        let gradeValue = grade.value
+        guard let rows = try? context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    $0.itemKindRaw == gradedKind
+                        && $0.certificationNumber == nil
+                        && $0.gradingCompanyRaw == companyRaw
+                        && $0.gradeRaw == gradeValue
+                }
+            )
+        ) else { return true }
+        return rows.contains { matchesIdentity($0) && $0.variantID != toVariantID }
+    }
+
+    static func requiresGradedVariantIdentityRewrite(
+        container: ModelContainer,
+        collectionKey: String,
+        toVariantID: String?
+    ) -> Bool {
+        let context = ModelContext(container)
+        let directKeys = Array(
+            Set([collectionKey] + MagicTreatmentKeyCodec.legacyCollectionKeys(for: collectionKey))
+        )
+        let canonicalPrefix = collectionKey + "#treatment="
+        guard let rows = try? context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    directKeys.contains($0.collectionKey)
+                        || $0.collectionKey.starts(with: canonicalPrefix)
+                }
+            )
+        ) else { return true }
+        return rows.contains {
+            $0.itemKind == .gradedCard && $0.variantID != toVariantID
+        }
+    }
+
+    static func requiresSealedPromotion(
+        container: ModelContainer,
+        game: CardGame,
+        productUUID: String,
+        variantUUID: String,
+        marketVariantID: String?
+    ) -> Bool {
+        guard marketVariantID != nil else { return false }
+        let context = ModelContext(container)
+        let key = CollectedCard.sealedCollectionKey(
+            game: game,
+            productUUID: productUUID,
+            variantUUID: variantUUID
+        )
+        let directKeys = Array(
+            Set([key] + MagicTreatmentKeyCodec.legacyCollectionKeys(for: key))
+        )
+        let canonicalPrefix = key + "#treatment="
+        guard let rows = try? context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    directKeys.contains($0.collectionKey)
+                        || $0.collectionKey.starts(with: canonicalPrefix)
+                }
+            )
+        ) else { return true }
+        return rows.contains {
+            $0.itemKind == .sealedProduct && $0.justTCGVariantID == nil
         }
     }
 }
@@ -2473,10 +2612,12 @@ struct CollectionStore {
                     owner.justTCGCardID = variant.cardID
                     owner.justTCGAPIVersion = JustTCGV2GradedClient.apiVersion
                 }
-                if owner.variantID == nil, let printedVariant = resolved.variant {
-                    owner.variantID = printedVariant.id
-                    owner.variantLabel = printedVariant.label
-                    owner.variantResolutionRaw = resolved.resolution.rawValue
+                if owner.variantID == nil, resolved.variant != nil {
+                    try updateGradedVariantIdentity(
+                        on: owner,
+                        to: resolved.variant,
+                        resolution: resolved.resolution
+                    )
                 }
                 if owner.pokemonPrintRunRaw == nil {
                     owner.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
@@ -2510,10 +2651,12 @@ struct CollectionStore {
             if existing.magicContentKind == .regular {
                 existing.magicContentKindRaw = card.magicContentKind.rawValue
             }
-            if existing.variantID == nil, let printedVariant = resolved.variant {
-                existing.variantID = printedVariant.id
-                existing.variantLabel = printedVariant.label
-                existing.variantResolutionRaw = resolved.resolution.rawValue
+            if existing.variantID == nil, resolved.variant != nil {
+                try updateGradedVariantIdentity(
+                    on: existing,
+                    to: resolved.variant,
+                    resolution: resolved.resolution
+                )
             }
             if existing.pokemonPrintRunRaw == nil {
                 existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
@@ -2667,10 +2810,12 @@ struct CollectionStore {
                ) {
                 // A bound row is kept bound; an unbound row is already the same
                 // physical slab and is deliberately not incremented.
-                if existing.variantID == nil, let printedVariant = resolved.variant {
-                    existing.variantID = printedVariant.id
-                    existing.variantLabel = printedVariant.label
-                    existing.variantResolutionRaw = resolved.resolution.rawValue
+                if existing.variantID == nil, resolved.variant != nil {
+                    try updateGradedVariantIdentity(
+                        on: existing,
+                        to: resolved.variant,
+                        resolution: resolved.resolution
+                    )
                 }
                 if existing.pokemonPrintRunRaw == nil {
                     existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
@@ -2695,10 +2840,12 @@ struct CollectionStore {
                 if existing.magicTreatmentQualifiersJSON == nil {
                     existing.magicTreatmentQualifiers = magicTreatmentQualifiers
                 }
-                if existing.variantID == nil, let printedVariant = resolved.variant {
-                    existing.variantID = printedVariant.id
-                    existing.variantLabel = printedVariant.label
-                    existing.variantResolutionRaw = resolved.resolution.rawValue
+                if existing.variantID == nil, resolved.variant != nil {
+                    try updateGradedVariantIdentity(
+                        on: existing,
+                        to: resolved.variant,
+                        resolution: resolved.resolution
+                    )
                 }
                 if existing.pokemonPrintRunRaw == nil {
                     existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
@@ -3145,6 +3292,36 @@ struct CollectionStore {
         case let .pokemon(pokemon, _): return pokemon.image
         case .magic: return card.displayImageURL?.absoluteString
         }
+    }
+
+    private func updateGradedVariantIdentity(
+        on row: CollectedCard,
+        to variant: PhysicalVariant?,
+        resolution: VariantResolution
+    ) throws {
+        let oldPriceKey = row.priceKey
+        let printingID = row.priceStorageID
+        let treatmentIDs = row.priceTreatmentIDs
+        let newPriceKey = PriceRecord.key(
+            game: row.cardGame,
+            printingID: printingID,
+            variantID: variant?.id,
+            treatmentIDs: treatmentIDs
+        )
+        if oldPriceKey != newPriceKey {
+            try PriceIdentityLineageMigration.migrate(
+                from: oldPriceKey,
+                to: newPriceKey,
+                game: row.cardGame,
+                printingID: printingID,
+                variantID: variant?.id,
+                treatmentIDs: treatmentIDs,
+                in: context
+            )
+        }
+        row.variantID = variant?.id
+        row.variantLabel = variant?.label
+        row.variantResolutionRaw = resolution.rawValue
     }
 
     /// Scanner and catalog paths already carry the exact live provider evidence
@@ -4017,12 +4194,14 @@ struct CollectionStore {
 
         // A graded row's collection identity is the slab/grade/certificate,
         // not its raw-card finish. The printed finish can therefore be corrected
-        // in place without manufacturing a second slab row or rewriting the
-        // certificate ledger lineage.
+        // in place without manufacturing a second slab row. Move its price
+        // lineage before changing the finish part of the price key.
         if previous.itemKind == .gradedCard {
-            previous.variantID = corrected.variant?.id
-            previous.variantLabel = corrected.variant?.label
-            previous.variantResolutionRaw = corrected.resolution.rawValue
+            try updateGradedVariantIdentity(
+                on: previous,
+                to: corrected.variant,
+                resolution: corrected.resolution
+            )
             clearPendingCatalogFinish(on: previous)
             activityToRetarget.variantID = previous.variantID
             activityToRetarget.variantLabel = previous.variantLabel
@@ -4191,9 +4370,11 @@ struct CollectionStore {
             }
 
             if previous.itemKind == .gradedCard {
-                previous.variantID = corrected.variant?.id
-                previous.variantLabel = corrected.variant?.label
-                previous.variantResolutionRaw = corrected.resolution.rawValue
+                try updateGradedVariantIdentity(
+                    on: previous,
+                    to: corrected.variant,
+                    resolution: corrected.resolution
+                )
                 clearPendingCatalogFinish(on: previous)
                 activityToRetarget.variantID = previous.variantID
                 activityToRetarget.variantLabel = previous.variantLabel
@@ -4478,9 +4659,11 @@ struct CollectionStore {
                 guard mode == .visibleCorrection else {
                     throw CollectionStoreError.invalidActivity(claims[0].activityID)
                 }
-                previous.variantID = corrected.variant?.id
-                previous.variantLabel = corrected.variant?.label
-                previous.variantResolutionRaw = corrected.resolution.rawValue
+                try updateGradedVariantIdentity(
+                    on: previous,
+                    to: corrected.variant,
+                    resolution: corrected.resolution
+                )
                 clearPendingCatalogFinish(on: previous)
                 var operationIDs: [UUID] = []
                 for entry in selected {
