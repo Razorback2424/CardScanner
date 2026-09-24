@@ -460,6 +460,10 @@ final class ScannerViewModelTests: XCTestCase {
     }
 
     func testSlabPriceBindingStartsAfterUnboundCollectionCommit() async throws {
+        let wasEnforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = wasEnforced }
+
         let variant = GradedVariant(
             id: "graded-v2-after-save",
             cardID: "graded-card-after-save",
@@ -504,6 +508,47 @@ final class ScannerViewModelTests: XCTestCase {
             return XCTFail("the receipt should receive the graded quote")
         }
         XCTAssertEqual(receiptPrice.unitMarketPriceUSD, 250)
+    }
+
+    func testSlabBindingCompletesAfterScannerSessionEndsDuringGateWait() async throws {
+        let variant = GradedVariant(
+            id: "graded-v2-after-session-end",
+            cardID: "graded-card-after-session-end",
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            marketPriceUSD: 250,
+            updatedAt: nil
+        )
+        let resolverGate = ScannerGradedResolverGate()
+        let model = try makeModel(
+            variants: [.normal],
+            gradedOutcome: .bound(variant),
+            gradedResolverGate: resolverGate
+        )
+        useSlabMode(model)
+
+        let migration = MagicTreatmentMigrationCoordinator.shared
+        let migrationToken = await migration.acquireExclusive()
+        confirm(model, gradedSubject(value: "10", label: "Gem Mint"), encounterID: UUID())
+        let committed = await waitUntil { model.sessionScans.count == 1 }
+        XCTAssertTrue(committed)
+        await resolverGate.waitUntilStarted()
+        await resolverGate.release()
+
+        let bindingIsWaitingForGate = await waitUntil {
+            PriceRefreshController.shared.isSuspendedForWrite
+        }
+        XCTAssertTrue(bindingIsWaitingForGate)
+
+        model.endSession()
+        migration.releaseExclusive(migrationToken)
+
+        let durableBindingFinished = await waitUntil {
+            (try? self.context().fetch(FetchDescriptor<CollectedCard>()).first?.justTCGVariantID)
+                == variant.id
+        }
+        XCTAssertTrue(durableBindingFinished)
+        XCTAssertTrue(model.sessionScans.isEmpty)
     }
 
     func testUndoDuringGradedLookupCannotRecreateTheRemovedSlab() async throws {
