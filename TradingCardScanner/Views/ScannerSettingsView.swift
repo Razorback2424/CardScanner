@@ -181,7 +181,7 @@ struct SettingsView: View {
                         csvExportFilename = "CardScanner Skipped Rows"
                         isShowingCSVExporter = true
                     }, secondaryButton: .cancel(Text("Done")))
-                }
+                    }
                 return Alert(title: Text(message.title), message: Text(message.message), dismissButton: .default(Text("OK")))
             }
             .interactiveDismissDisabled(writeCoordinator.activeExclusiveOperation != nil)
@@ -856,7 +856,7 @@ struct PriceFallbackSettingsSection: View {
                 runsNetworkMigration: false,
                 storageToken: storageToken,
                 shouldContinue: shouldContinue,
-                operation: {
+                operation: { permit in
                     guard shouldContinue() else { return false }
                     let request = PriceRefreshRequest(
                         usesPriceFallback: usesPriceFallback,
@@ -870,7 +870,8 @@ struct PriceFallbackSettingsSection: View {
                     return (await PriceRefreshController.shared.refresh(
                         request,
                         container: modelContext.container,
-                        shouldContinue: shouldContinue
+                        shouldContinue: shouldContinue,
+                        identityRewritePermit: permit
                     )).didRun
                 }
             )

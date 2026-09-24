@@ -2434,6 +2434,7 @@ struct PriceRefreshResult: Sendable, Equatable {
     let didRun: Bool
     let targetBuildFailed: Bool
     var wasPreempted: Bool = false
+    var wasQueuedDuringSuspension: Bool = false
 }
 
 enum PriceRefreshProgress: Sendable {
@@ -2677,6 +2678,7 @@ final class PriceRefreshController: ObservableObject {
     private var activeRefreshContinuation: StorageGenerationContinuation?
     private var activeQueueRequest: PriceRefreshRequest?
     private var suspensionTokens: Set<UUID> = []
+    private var writeSuspensionRevision: UInt64 = 0
     private(set) var isSuspendedForWrite = false
     private var retainedQueueIDForSuspension: UUID?
     private var suspensionNeedsReplay = false
@@ -2694,6 +2696,9 @@ final class PriceRefreshController: ObservableObject {
     /// Keep a trailing request; the actor rebuilds its targets from the live
     /// context when it reaches that request rather than retaining model rows.
     private var pendingRefreshRequests: [PendingRefreshRequest] = []
+    private var queueDrainWaiters: [CheckedContinuation<PriceRefreshResult, Never>] = []
+    private var hasQueuedRefreshOutcomeToReport = false
+    private var completedQueuedRefreshResult: PriceRefreshResult?
 
     private struct PendingRefreshRequest {
         var request: PriceRefreshRequest
@@ -2941,7 +2946,8 @@ final class PriceRefreshController: ObservableObject {
         _ request: PriceRefreshRequest,
         container: ModelContainer,
         shouldContinue: StorageGenerationContinuation? = nil,
-        owner: Owner = .foreground
+        owner: Owner = .foreground,
+        identityRewritePermit: PriceIdentityRewritePermit? = nil
     ) async -> PriceRefreshResult {
         let controllerState = PerformanceSignpost.beginInterval(
             "priceRefresh.controller",
@@ -2964,17 +2970,28 @@ final class PriceRefreshController: ObservableObject {
             suspendedContainer = container
             suspendedContinuation = shouldContinue
             enqueuePending(request, owner: owner)
+            hasQueuedRefreshOutcomeToReport = true
+            completedQueuedRefreshResult = nil
             // Do not wait here: an enclosing migration operation may own the
             // migration gate that the exclusive writer is waiting to acquire.
             // Returning releases that gate; the queued request runs after the
             // writer resumes the controller.
             controllerOutcome = "queued-during-suspension"
-            return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+            return PriceRefreshResult(
+                didRun: false,
+                targetBuildFailed: false,
+                wasQueuedDuringSuspension: true
+            )
         }
         if let activeRefresh {
             if owner == .foreground { activeRefreshOwner = .foreground }
+            let suspensionRevision = writeSuspensionRevision
             enqueuePending(request, owner: owner)
-            return await activeRefresh.value
+            var result = await activeRefresh.value
+            if writeSuspensionRevision != suspensionRevision {
+                result.wasQueuedDuringSuspension = true
+            }
+            return result
         }
 
         // The active task represents the whole queue, not just the first pass.
@@ -2988,17 +3005,27 @@ final class PriceRefreshController: ObservableObject {
             guard let self else {
                 return PriceRefreshResult(didRun: false, targetBuildFailed: false)
             }
-            return await self.runRefreshQueue(
-                queueID: queueID,
-                startingWith: request,
-                container: container,
-                shouldContinue: shouldContinue
-            )
+            let runQueue = {
+                await self.runRefreshQueue(
+                    queueID: queueID,
+                    startingWith: request,
+                    container: container,
+                    shouldContinue: shouldContinue
+                )
+            }
+            if let identityRewritePermit {
+                return await PriceIdentityRewriteAuthorization.withAuthorizedTask(
+                    identityRewritePermit,
+                    operation: runQueue
+                )
+            }
+            return await runQueue()
         }
         activeRefresh = task
         activeRefreshContainer = container
         activeRefreshContinuation = shouldContinue
         let result = await task.value
+        resumeQueueDrainWaitersIfReady(with: result)
         if let pending = pendingFallbackWork {
             await updateFallbackAvailability(pending: pending)
         }
@@ -3026,6 +3053,7 @@ final class PriceRefreshController: ObservableObject {
             return SuspensionToken(id: token)
         }
         let passWasInFlight = activeRefresh != nil || isRefreshing
+        writeSuspensionRevision &+= 1
         statusBeforeWriteSuspension = status
         isSuspendedForWrite = true
         retainedQueueIDForSuspension = nil
@@ -3033,6 +3061,10 @@ final class PriceRefreshController: ObservableObject {
         suspendedContainer = activeRefreshContainer
         suspendedContinuation = activeRefreshContinuation
         if cancelActivePass { retainActiveRequestForSuspension() }
+        if !pendingRefreshRequests.isEmpty {
+            hasQueuedRefreshOutcomeToReport = true
+            completedQueuedRefreshResult = nil
+        }
         if let activeRefresh {
             if cancelActivePass { activeRefresh.cancel() }
             _ = await activeRefresh.value
@@ -3092,6 +3124,9 @@ final class PriceRefreshController: ObservableObject {
                 }
             }
             statusBeforeWriteSuspension = nil
+            resumeQueueDrainWaitersIfReady(
+                with: PriceRefreshResult(didRun: false, targetBuildFailed: false)
+            )
             return
         }
         guard let pending = takePendingRefresh() else {
@@ -3112,6 +3147,9 @@ final class PriceRefreshController: ObservableObject {
                 }
             }
             statusBeforeWriteSuspension = nil
+            resumeQueueDrainWaitersIfReady(
+                with: PriceRefreshResult(didRun: false, targetBuildFailed: false)
+            )
             return
         }
         statusBeforeWriteSuspension = nil
@@ -3124,11 +3162,11 @@ final class PriceRefreshController: ObservableObject {
             guard let self else {
                 return PriceRefreshResult(didRun: false, targetBuildFailed: false)
             }
-            guard let result = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
+            let result = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
                 in: ModelContext(container),
                 runsNetworkMigration: false,
                 shouldContinue: continuation,
-                operation: {
+                operation: { _ in
                     await self.runRefreshQueue(
                         queueID: queueID,
                         startingWith: pending.request,
@@ -3136,10 +3174,14 @@ final class PriceRefreshController: ObservableObject {
                         shouldContinue: continuation
                     )
                 }
-            ) else {
+            )
+            guard let result else {
                 self.clearUnstartedResumedQueue(queueID)
-                return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+                let abandoned = PriceRefreshResult(didRun: false, targetBuildFailed: false)
+                self.resumeQueueDrainWaitersIfReady(with: abandoned)
+                return abandoned
             }
+            self.resumeQueueDrainWaitersIfReady(with: result)
             return result
         }
         activeRefresh = task
@@ -3151,6 +3193,35 @@ final class PriceRefreshController: ObservableObject {
                 await self?.updateFallbackAvailability(pending: pending)
             }
         }
+    }
+
+    /// Waits for work queued while an exclusive writer held the migration gate.
+    /// Callers must invoke this after releasing that gate, otherwise the queued
+    /// pass could never reacquire it.
+    func waitForQueuedRefreshesToFinish() async -> PriceRefreshResult? {
+        if let completedQueuedRefreshResult {
+            return completedQueuedRefreshResult
+        }
+        guard activeRefresh != nil || !pendingRefreshRequests.isEmpty || isSuspendedForWrite else {
+            return nil
+        }
+        return await withCheckedContinuation { continuation in
+            queueDrainWaiters.append(continuation)
+        }
+    }
+
+    private func resumeQueueDrainWaitersIfReady(with result: PriceRefreshResult) {
+        guard activeRefresh == nil,
+              pendingRefreshRequests.isEmpty,
+              !isSuspendedForWrite else { return }
+        if hasQueuedRefreshOutcomeToReport {
+            completedQueuedRefreshResult = result
+            hasQueuedRefreshOutcomeToReport = false
+        }
+        guard !queueDrainWaiters.isEmpty else { return }
+        let waiters = queueDrainWaiters
+        queueDrainWaiters.removeAll()
+        waiters.forEach { $0.resume(returning: result) }
     }
 
     /// Stops the pass in progress. The only legitimate reason is that the work
@@ -3165,6 +3236,9 @@ final class PriceRefreshController: ObservableObject {
             suspendedContinuation = nil
             status = .idle
         }
+        resumeQueueDrainWaitersIfReady(
+            with: PriceRefreshResult(didRun: false, targetBuildFailed: false)
+        )
     }
 
     /// Cancels the active queue only when it is still owned by the requested

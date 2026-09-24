@@ -230,7 +230,7 @@ enum BackgroundPriceRefresh {
             runsNetworkMigration: false,
             storageToken: storage.token,
             shouldContinue: shouldContinue,
-            operation: {
+            operation: { permit in
                 guard shouldContinue() else {
                     return PriceRefreshResult(
                         didRun: false,
@@ -252,7 +252,8 @@ enum BackgroundPriceRefresh {
                     request,
                     container: context.container,
                     shouldContinue: shouldContinue,
-                    owner: .background
+                    owner: .background,
+                    identityRewritePermit: permit
                 )
             }
         )

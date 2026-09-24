@@ -16,11 +16,11 @@ private actor PriceRefreshTestGate {
         await withCheckedContinuation { releaseWaiter = $0 }
     }
 
-    func pauseUntilCancelled() async throws {
+    func pauseUntilCancelled(for duration: Duration = .seconds(30)) async throws {
         didStart = true
         startWaiter?.resume()
         startWaiter = nil
-        try await Task.sleep(for: .seconds(30))
+        try await Task.sleep(for: duration)
     }
 
     func waitUntilStarted() async {
@@ -238,7 +238,7 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         let counter = PriceRefreshAttemptCounter()
         controller.setPokemonFetchOverrideForTesting { printing in
             if await counter.next() == 1 {
-                try await gate.pauseUntilCancelled()
+                try await gate.pauseUntilCancelled(for: .seconds(2))
             }
             return .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
         }
@@ -271,6 +271,32 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         XCTAssertFalse(controller.isPassInFlight)
         let attempts = await counter.value()
         XCTAssertEqual(attempts, 2, "The cancelled request should be retained and replayed once.")
+    }
+
+    func testQueuedRefreshCanBeAwaitedAfterTheWriterReleasesTheGate() async throws {
+        let container = try makeContainer(withCard: true)
+        let controller = PriceRefreshController()
+        let counter = PriceRefreshAttemptCounter()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            _ = await counter.next()
+            return .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
+        }
+
+        let suspension = await controller.suspendPasses(cancelActivePass: false)
+        let queued = await controller.refresh(Self.request, container: container)
+        XCTAssertFalse(queued.didRun)
+        XCTAssertTrue(queued.wasQueuedDuringSuspension)
+
+        let waiter = Task {
+            await controller.waitForQueuedRefreshesToFinish()
+        }
+        await Task.yield()
+        controller.resume(suspension)
+
+        let completed = await waiter.value
+        let attempts = await counter.value()
+        XCTAssertEqual(completed?.didRun, true)
+        XCTAssertEqual(attempts, 1)
     }
 
     func testStaleIdentityPreflightRetriesOnceInsideAuthorizedGate() async throws {
@@ -307,6 +333,39 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         var successfulSaves = 0
         try await CollectionExclusiveWrites.retryingIfRequired {
             attempts += 1
+            if attempts == 2 {
+                let childWasRejected = await Task { @MainActor in
+                    do {
+                        try CollectionWriteSerializer.perform(
+                            container: container,
+                            timeout: .mainThread
+                        ) { context in
+                            let key = "graded:permit-card#psa-10"
+                            var descriptor = FetchDescriptor<CollectedCard>(
+                                predicate: #Predicate { $0.collectionKey == key }
+                            )
+                            descriptor.fetchLimit = 1
+                            let current = try XCTUnwrap(context.fetch(descriptor).first)
+                            try PriceIdentityLineageMigration.promoteUnboundPriceIdentity(
+                                for: current,
+                                toMarketVariantID: "child-task-variant",
+                                apiVersion: "v2",
+                                in: context
+                            )
+                            throw CancellationError()
+                        }
+                        return false
+                    } catch CollectionStoreError.priceIdentityExclusivityRequired {
+                        return true
+                    } catch {
+                        return false
+                    }
+                }.value
+                XCTAssertTrue(
+                    childWasRejected,
+                    "An unstructured child task must not inherit the parent's rewrite permit."
+                )
+            }
             try CollectionWriteSerializer.perform(
                 container: container,
                 timeout: .mainThread
@@ -336,6 +395,134 @@ final class PriceRefreshLifecycleTests: XCTestCase {
         let verify = ModelContext(container)
         let saved = try XCTUnwrap(verify.fetch(FetchDescriptor<CollectedCard>()).first)
         XCTAssertEqual(saved.justTCGVariantID, "permit-market-variant")
+    }
+
+    func testAddGradedUsesPermitForUnboundSlabIdentityRewrite() async throws {
+        let container = try makeContainer(withCard: false)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let grade = CardGrade(value: "10", label: "Gem Mint")
+        let certificationNumber = "permit-add-graded"
+        _ = try CollectionWriteSerializer.perform(
+            container: container,
+            timeout: .wait
+        ) { context in
+            try CollectionStore(context: context).addScannedGraded(
+                underlying: card,
+                company: .psa,
+                grade: grade,
+                certificationNumber: certificationNumber
+            )
+        }
+        let variant = GradedVariant(
+            id: "permit-add-graded-variant",
+            cardID: "permit-add-graded-card",
+            company: .psa,
+            grade: grade,
+            marketPriceUSD: nil,
+            updatedAt: nil
+        )
+
+        try await assertIdentityRewriteRequiresPermit(container: container) { context in
+            _ = try CollectionStore(context: context).addGraded(
+                underlying: card,
+                variant: variant,
+                certificationNumber: certificationNumber,
+                resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed)
+            )
+        }
+    }
+
+    func testAddScannedGradedUsesPermitForVariantIdentityRewrite() async throws {
+        let container = try makeContainer(withCard: false)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let grade = CardGrade(value: "9", label: "Mint")
+        let certificationNumber = "permit-add-scanned-graded"
+        _ = try CollectionWriteSerializer.perform(
+            container: container,
+            timeout: .wait
+        ) { context in
+            try CollectionStore(context: context).addScannedGraded(
+                underlying: card,
+                company: .psa,
+                grade: grade,
+                certificationNumber: certificationNumber
+            )
+        }
+
+        try await assertIdentityRewriteRequiresPermit(container: container) { context in
+            _ = try CollectionStore(context: context).addScannedGraded(
+                underlying: card,
+                company: .psa,
+                grade: grade,
+                certificationNumber: certificationNumber,
+                resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed)
+            )
+        }
+    }
+
+    func testAddSealedUsesPermitForUnboundIdentityPromotion() async throws {
+        let container = try makeContainer(withCard: false)
+        let product = SealedProductSummary(
+            id: "permit-sealed-product",
+            name: "Permit Test Box",
+            setName: "Permit Set",
+            variantID: "permit-sealed-variant",
+            marketPriceUSD: nil,
+            updatedAt: nil,
+            imageURL: nil
+        )
+        let seed = try CollectionWriteSerializer.perform(
+            container: container,
+            timeout: .wait
+        ) { context in
+            try CollectionStore(context: context).addSealed(product, game: .pokemon)
+        }
+        try CollectionWriteSerializer.perform(
+            container: container,
+            timeout: .wait
+        ) { context in
+            let key = seed.collectionKey
+            let row = try XCTUnwrap(
+                context.fetch(
+                    FetchDescriptor<CollectedCard>(
+                        predicate: #Predicate { $0.collectionKey == key }
+                    )
+                ).first
+            )
+            row.justTCGVariantID = nil
+            try context.save()
+        }
+
+        try await assertIdentityRewriteRequiresPermit(container: container) { context in
+            _ = try CollectionStore(context: context).addSealed(product, game: .pokemon)
+        }
+    }
+
+    func testRecordVariantCorrectionUsesPermitForGradedIdentityRewrite() async throws {
+        let container = try makeContainer(withCard: false)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let grade = CardGrade(value: "10", label: "Gem Mint")
+        let seed = try CollectionWriteSerializer.perform(
+            container: container,
+            timeout: .wait
+        ) { context in
+            try CollectionStore(context: context).addScannedGraded(
+                underlying: card,
+                company: .psa,
+                grade: grade,
+                certificationNumber: "permit-record-correction"
+            )
+        }
+        let activityID = try XCTUnwrap(seed.activityID)
+
+        try await assertIdentityRewriteRequiresPermit(container: container) { context in
+            _ = try CollectionStore(context: context).recordVariantCorrection(
+                forCollectionKey: seed.collectionKey,
+                to: ResolvedVariant(variant: .normal, resolution: .userConfirmed),
+                activityID: activityID,
+                quantity: 1
+            )
+        }
     }
 
     func testResumeAfterQueueIsCancelledDuringSuspensionReturnsToIdle() async throws {
@@ -395,6 +582,34 @@ final class PriceRefreshLifecycleTests: XCTestCase {
             try context.save()
         }
         return container
+    }
+
+    private func assertIdentityRewriteRequiresPermit(
+        container: ModelContainer,
+        operation: (ModelContext) throws -> Void
+    ) async throws {
+        let wasEnforced = CollectionWriteSerializer.enforcesOwnershipRule
+        CollectionWriteSerializer.enforcesOwnershipRule = true
+        defer { CollectionWriteSerializer.enforcesOwnershipRule = wasEnforced }
+
+        do {
+            try CollectionWriteSerializer.perform(
+                container: container,
+                timeout: .wait,
+                operation
+            )
+            XCTFail("The ownership write should require the identity gate.")
+        } catch CollectionStoreError.priceIdentityExclusivityRequired {
+            // Expected: the first transaction has no gate permit.
+        }
+
+        try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+            try CollectionWriteSerializer.perform(
+                container: container,
+                timeout: .wait,
+                operation
+            )
+        }
     }
 
     nonisolated private static func card(id: String) -> TCGdexCard {

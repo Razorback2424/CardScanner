@@ -123,17 +123,105 @@ enum CollectionWriteSerializer {
     }
 }
 
-/// Task-scoped proof that the caller is inside the refresh/migration gate.
-/// Rewrites check this again from inside their serialized transaction, closing
-/// the gap between a read-only preflight and the write that uses its result.
-enum PriceIdentityRewritePermit {
-    @TaskLocal static var isAuthorized = false
+/// Unforgeable authorization passed only by the migration and identity gates.
+/// It is deliberately not a task-local value: Swift copies task-local values
+/// into unstructured child tasks, which could otherwise outlive the gate.
+struct PriceIdentityRewritePermit: Sendable {
+    fileprivate let id: UUID
+}
+
+private final class PriceIdentityRewritePermitRegistry: @unchecked Sendable {
+    private let lock = NSLock()
+    private var activePermitIDs: Set<UUID> = []
+    private var permitsByTask: [UnsafeCurrentTask: Set<UUID>] = [:]
+
+    func activate(_ permit: PriceIdentityRewritePermit) {
+        lock.lock()
+        activePermitIDs.insert(permit.id)
+        lock.unlock()
+    }
+
+    func deactivate(_ permit: PriceIdentityRewritePermit) {
+        lock.lock()
+        activePermitIDs.remove(permit.id)
+        for task in Array(permitsByTask.keys) {
+            permitsByTask[task]?.remove(permit.id)
+            if permitsByTask[task]?.isEmpty == true {
+                permitsByTask.removeValue(forKey: task)
+            }
+        }
+        lock.unlock()
+    }
+
+    func add(_ permit: PriceIdentityRewritePermit, to task: UnsafeCurrentTask) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard activePermitIDs.contains(permit.id) else { return false }
+        permitsByTask[task, default: []].insert(permit.id)
+        return true
+    }
+
+    func remove(_ permit: PriceIdentityRewritePermit, from task: UnsafeCurrentTask) {
+        lock.lock()
+        defer { lock.unlock() }
+        permitsByTask[task]?.remove(permit.id)
+        if permitsByTask[task]?.isEmpty == true {
+            permitsByTask.removeValue(forKey: task)
+        }
+    }
+
+    func authorizesCurrentTask() -> Bool {
+        guard let task = withUnsafeCurrentTask(body: { $0 }) else { return false }
+        lock.lock()
+        defer { lock.unlock() }
+        return permitsByTask[task]?.contains(where: activePermitIDs.contains) == true
+    }
+}
+
+enum PriceIdentityRewriteAuthorization {
+    private static let registry = PriceIdentityRewritePermitRegistry()
+
+    /// Starts an authorized gate scope and makes its capability available to
+    /// the operation. Child tasks must explicitly bind that capability with
+    /// `withAuthorizedTask`; inheriting the parent task context is not enough.
+    @MainActor
+    static func withAuthorization<T>(
+        _ operation: @MainActor (PriceIdentityRewritePermit) async throws -> T
+    ) async rethrows -> T {
+        let permit = PriceIdentityRewritePermit(id: UUID())
+        registry.activate(permit)
+        defer { registry.deactivate(permit) }
+        return try await withAuthorizedTask(permit, operation: {
+            try await operation(permit)
+        })
+    }
+
+    /// Explicitly authorizes one child task while its parent gate remains
+    /// active. A copied permit becomes invalid as soon as that gate exits.
+    @MainActor
+    static func withAuthorizedTask<T>(
+        _ permit: PriceIdentityRewritePermit,
+        operation: @MainActor () async throws -> T
+    ) async rethrows -> T {
+        guard let task = withUnsafeCurrentTask(body: { $0 }), registry.add(permit, to: task) else {
+            return try await operation()
+        }
+        defer { registry.remove(permit, from: task) }
+        return try await operation()
+    }
 
     static func requireForSerializedOwnershipWrite() throws {
         guard CollectionWriteSerializer.enforcesOwnershipRule,
-              CollectionWriteSerializer.isHeldByCurrentThread,
-              !isAuthorized else { return }
-        throw CollectionStoreError.priceIdentityExclusivityRequired
+              CollectionWriteSerializer.isHeldByCurrentThread else { return }
+        guard registry.authorizesCurrentTask() else {
+            throw CollectionStoreError.priceIdentityExclusivityRequired
+        }
+    }
+}
+
+extension PriceIdentityRewritePermit {
+    static func requireForSerializedOwnershipWrite() throws {
+        try PriceIdentityRewriteAuthorization.requireForSerializedOwnershipWrite()
     }
 }
 
@@ -154,7 +242,7 @@ enum CollectionExclusiveWrites {
             MagicTreatmentMigrationCoordinator.shared.releaseExclusive(migrationGate)
             PriceRefreshController.shared.resume(suspension)
         }
-        return try await PriceIdentityRewritePermit.$isAuthorized.withValue(true) {
+        return try await PriceIdentityRewriteAuthorization.withAuthorization { _ in
             try await operation()
         }
     }

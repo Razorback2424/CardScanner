@@ -221,11 +221,21 @@ struct CollectionCardDetailView: View {
             await loadMarketplaceLinkIfNeeded()
         }
         .task(id: card.collectionKey) {
-            refreshDisplayedQuantity()
+            projectedQuantity = nil
+            lastSavedLogicalQuantity = nil
+            await refreshDisplayedQuantity(
+                collectionKey: card.collectionKey,
+                treatments: card.magicTreatmentIDsRaw
+            )
         }
         .onChange(of: card.quantity) { _, _ in
             if isLogicalConflict {
-                refreshDisplayedQuantity()
+                Task { @MainActor in
+                    await refreshDisplayedQuantity(
+                        collectionKey: card.collectionKey,
+                        treatments: card.magicTreatmentIDsRaw
+                    )
+                }
             } else {
                 projectedQuantity = nil
                 lastSavedLogicalQuantity = card.quantity
@@ -1193,32 +1203,51 @@ struct CollectionCardDetailView: View {
     /// The projected quantity is authoritative while duplicate rows are being
     /// healed. Read it on appearance and after a quantity mutation rather than
     /// rebuilding a full projection for every unrelated detail-view render.
-    private func refreshDisplayedQuantity() {
-        let readContext = ModelContext(modelContext.container)
-        let collectionKey = card.collectionKey
-        let treatments = card.magicTreatmentIDsRaw
+    private func refreshDisplayedQuantity(
+        collectionKey: String,
+        treatments: [String]
+    ) async {
+        let reader = CollectionDetailQuantityReader(modelContainer: modelContext.container)
         do {
-            let liveQuantity = try CollectionStore(context: readContext).logicalQuantity(
+            let liveQuantity = try await reader.logicalQuantity(
                 forAnyKey: collectionKey,
                 magicTreatmentIDsRaw: treatments
             )
+            guard !Task.isCancelled, card.collectionKey == collectionKey else { return }
             projectedQuantity = liveQuantity
             lastSavedLogicalQuantity = liveQuantity
         } catch {
-            // Keep the last displayed value; the next explicit refresh can
-            // retry the read without blocking a detail-screen render.
+            // Keep the last displayed value; a later explicit refresh can retry.
         }
     }
 
     private func updateQuantity(_ newQuantity: Int) {
         guard (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
-        if lastSavedLogicalQuantity == nil {
-            refreshDisplayedQuantity()
-        }
         guard let expectedCurrent = lastSavedLogicalQuantity else {
-            errorMessage = "The current quantity could not be verified. Try again."
+            if isLogicalConflict {
+                errorMessage = "These synced copies could not be reconciled, so their quantity cannot be changed yet."
+                return
+            }
+            let collectionKey = card.collectionKey
+            let treatments = card.magicTreatmentIDsRaw
+            Task { @MainActor in
+                await refreshDisplayedQuantity(
+                    collectionKey: collectionKey,
+                    treatments: treatments
+                )
+                guard card.collectionKey == collectionKey else { return }
+                guard let refreshedQuantity = lastSavedLogicalQuantity else {
+                    errorMessage = "The current quantity could not be loaded. Try again in a moment."
+                    return
+                }
+                persistQuantity(newQuantity, expectedCurrent: refreshedQuantity)
+            }
             return
         }
+        persistQuantity(newQuantity, expectedCurrent: expectedCurrent)
+    }
+
+    private func persistQuantity(_ newQuantity: Int, expectedCurrent: Int) {
         let collectionKey = card.collectionKey
         let treatments = card.magicTreatmentIDsRaw
         let oldDisplayed = displayedQuantity
@@ -1255,14 +1284,22 @@ struct CollectionCardDetailView: View {
                         : savedQuantity
                 } catch {
                     if case CollectionStoreError.staleQuantity = error {
-                        refreshDisplayedQuantity()
+                        await refreshDisplayedQuantity(
+                            collectionKey: collectionKey,
+                            treatments: treatments
+                        )
                     }
                     errorMessage = error.localizedDescription
                 }
             }
         } catch {
             if case CollectionStoreError.staleQuantity = error {
-                refreshDisplayedQuantity()
+                Task { @MainActor in
+                    await refreshDisplayedQuantity(
+                        collectionKey: collectionKey,
+                        treatments: treatments
+                    )
+                }
             }
             errorMessage = error.localizedDescription
         }

@@ -463,20 +463,29 @@ enum ArtworkOrphanSweep {
                 .subtracting(snapshot.referencedFilenames)
                 .union(pendingCleanupFiles)
             var filesToRemove = Set<String>()
-            for filename in candidateFiles {
-                let overrideCount = try context.fetchCount(
-                    FetchDescriptor<LocalArtworkOverride>(
-                        predicate: #Predicate { $0.filename == filename }
-                    )
+            let candidateFilenameList = Array(candidateFiles)
+            if !candidateFilenameList.isEmpty {
+                let currentOverrideFilenames = Set(
+                    try context.fetch(
+                        FetchDescriptor<LocalArtworkOverride>(
+                            predicate: #Predicate {
+                                candidateFilenameList.contains($0.filename)
+                            }
+                        )
+                    ).map(\.filename)
                 )
-                let legacyCount = try context.fetchCount(
-                    FetchDescriptor<CollectedCard>(
-                        predicate: #Predicate { $0.userArtworkFilename == filename }
-                    )
+                let currentLegacyFilenames = Set(
+                    try context.fetch(
+                        FetchDescriptor<CollectedCard>(
+                            predicate: #Predicate {
+                                $0.userArtworkFilename != nil
+                            }
+                        )
+                    ).compactMap(\.userArtworkFilename)
+                    .filter(candidateFiles.contains)
                 )
-                if overrideCount == 0, legacyCount == 0 {
-                    filesToRemove.insert(filename)
-                }
+                filesToRemove = candidateFiles.subtracting(currentOverrideFilenames)
+                    .subtracting(currentLegacyFilenames)
             }
             return CleanupPlan(
                 repairedLegacyAliases: repairedAliases,
@@ -1197,6 +1206,21 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
         let session = CollectionStoreSession()
         entries[identifier] = Entry(container: container, session: session)
         return session
+    }
+}
+
+/// Reads the detail screen's logical quantity without doing SwiftData fetches
+/// on the main actor. Only the value crosses back to the view.
+@ModelActor
+actor CollectionDetailQuantityReader {
+    func logicalQuantity(
+        forAnyKey key: String,
+        magicTreatmentIDsRaw: [String]
+    ) throws -> Int? {
+        try CollectionStore(context: modelContext).logicalQuantity(
+            forAnyKey: key,
+            magicTreatmentIDsRaw: magicTreatmentIDsRaw
+        )
     }
 }
 

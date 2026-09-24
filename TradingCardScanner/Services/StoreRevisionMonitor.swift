@@ -735,7 +735,7 @@ struct StoreRevisionMonitor: View {
             in: modelContext,
             storageToken: storageToken,
             shouldContinue: storageGeneration.continuation(for: storageToken),
-            operation: {
+            operation: { permit in
                 guard self.storageGeneration.isCurrent(storageToken), !Task.isCancelled else {
                     return PriceRefreshResult(didRun: false, targetBuildFailed: false)
                 }
@@ -752,7 +752,8 @@ struct StoreRevisionMonitor: View {
                 return await refresh.refresh(
                     request,
                     container: modelContext.container,
-                    shouldContinue: shouldContinue
+                    shouldContinue: shouldContinue,
+                    identityRewritePermit: permit
                 )
             }
         ) else {

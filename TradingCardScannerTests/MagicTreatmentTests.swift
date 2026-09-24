@@ -1358,7 +1358,7 @@ final class MagicTreatmentMigrationTests: XCTestCase {
 
         var refreshEntered = false
         let refresh = Task { @MainActor in
-            await coordinator.withPriceRefresh(in: context) {
+            await coordinator.withPriceRefresh(in: context) { _ in
                 refreshEntered = true
             }
         }
@@ -1387,7 +1387,7 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         _ = await coordinator.withPriceRefresh(
             in: context,
             runsNetworkMigration: false
-        ) {
+        ) { _ in
             operationEntered = true
         }
 
@@ -1429,7 +1429,7 @@ final class MagicTreatmentMigrationTests: XCTestCase {
             await coordinator.withPriceRefresh(
                 in: context,
                 runsNetworkMigration: false
-            ) {
+            ) { _ in
                 operationEntered = true
             }
         }
@@ -1470,7 +1470,7 @@ final class MagicTreatmentMigrationTests: XCTestCase {
             await coordinator.withPriceRefresh(
                 in: context,
                 runsNetworkMigration: false
-            ) {
+            ) { _ in
                 operationEntered = true
             }
         }
@@ -1502,7 +1502,7 @@ final class MagicTreatmentMigrationTests: XCTestCase {
             await coordinator.withPriceRefresh(
                 in: context,
                 runsNetworkMigration: false
-            ) {
+            ) { _ in
                 await refreshGate.markStarted()
                 await refreshGate.waitUntilOpen()
             }

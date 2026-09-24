@@ -2147,7 +2147,7 @@ final class MagicTreatmentMigrationCoordinator {
         runsNetworkMigration: Bool = true,
         storageToken: StorageGenerationToken? = nil,
         shouldContinue: StorageGenerationContinuation? = nil,
-        operation: @escaping @MainActor () async -> Result
+        operation: @escaping @MainActor (PriceIdentityRewritePermit) async -> Result
     ) async -> Result? {
         activateStorageSession(token: storageToken, continuation: shouldContinue)
         let effectiveContinuation = shouldContinue ?? activeContinuation
@@ -2162,7 +2162,7 @@ final class MagicTreatmentMigrationCoordinator {
             gate.release()
         }
 
-        return await PriceIdentityRewritePermit.$isAuthorized.withValue(true) {
+        return await PriceIdentityRewriteAuthorization.withAuthorization { permit in
             // The refresh owns the gate, so call the cores directly. Calling the
             // public methods here would wait on the gate it just acquired.
             if runsNetworkMigration {
@@ -2189,7 +2189,7 @@ final class MagicTreatmentMigrationCoordinator {
                 context.rollback()
                 return nil
             }
-            return await operation()
+            return await operation(permit)
         }
     }
 

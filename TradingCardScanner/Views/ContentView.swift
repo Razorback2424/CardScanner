@@ -407,11 +407,12 @@ struct ContentView: View {
         let storageGeneration = CollectionStorageGeneration.shared
         guard let storageToken = storageGeneration.currentToken() else { return .idle }
         let shouldContinue = storageGeneration.continuation(for: storageToken)
-        guard let didRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
+        var wasQueuedDuringSuspension = false
+        guard let initialDidRefresh = await MagicTreatmentMigrationCoordinator.shared.withPriceRefresh(
             in: modelContext,
             storageToken: storageToken,
             shouldContinue: shouldContinue,
-            operation: {
+            operation: { permit in
                 guard shouldContinue() else { return false }
                 let request = PriceRefreshRequest(
                     usesPriceFallback: usesPriceFallback,
@@ -422,14 +423,24 @@ struct ContentView: View {
                     markRecentlyCheckedIfEmpty: true,
                     gradedOnly: false
                 )
-                return (await refresh.refresh(
+                let result = await refresh.refresh(
                     request,
                     container: modelContext.container,
-                    shouldContinue: shouldContinue
-                )).didRun
+                    shouldContinue: shouldContinue,
+                    identityRewritePermit: permit
+                )
+                wasQueuedDuringSuspension = result.wasQueuedDuringSuspension
+                return result.didRun
             }
         ) else {
             return .idle
+        }
+        guard shouldContinue() else { return .idle }
+
+        var didRefresh = initialDidRefresh
+        if !didRefresh, wasQueuedDuringSuspension,
+           let queuedResult = await refresh.waitForQueuedRefreshesToFinish() {
+            didRefresh = queuedResult.didRun
         }
         guard shouldContinue() else { return .idle }
 

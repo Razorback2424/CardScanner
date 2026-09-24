@@ -3239,23 +3239,40 @@ final class ScannerViewModel: ObservableObject {
                 self.updateGradedScanPrice(.unavailable(.justTCG), scanID: scanID)
                 return
             }
+            let collectionKeyBeforeGateWait = current.mutation.collectionKey
             do {
                 // The identity gate can wait for an entire refresh pass. Resolve
                 // the scan's current mutation only after that wait, then track
                 // just the actual ownership write so ending the scan session
                 // does not drain for the duration of background pricing.
                 let bindLatest: @MainActor () async throws -> GradedVariantBindingReceipt? = {
-                    guard writeSessionID == self.scannerSessionID,
-                          self.isStorageGenerationCurrent,
-                          !self.undoingScanIDs.contains(scanID),
-                          let latest = self.sessionScans.first(where: { $0.id == scanID }),
-                          Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab) else {
+                    guard self.isStorageGenerationCurrent,
+                          !self.undoingScanIDs.contains(scanID) else {
                         return nil
                     }
-                    self.beginTrackedWrite(for: writeSessionID)
-                    defer { self.endTrackedWrite(for: writeSessionID) }
+
+                    let collectionKey: String
+                    if writeSessionID == self.scannerSessionID {
+                        guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
+                              Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab) else {
+                            return nil
+                        }
+                        collectionKey = latest.mutation.collectionKey
+                    } else {
+                        // The scan session can end while this lookup waits for
+                        // the price gate. Its committed row remains durable;
+                        // bind it using the key captured before the wait, but
+                        // do not publish any result into the next session.
+                        collectionKey = collectionKeyBeforeGateWait
+                    }
+
+                    let shouldTrackWrite = writeSessionID == self.scannerSessionID
+                    if shouldTrackWrite { self.beginTrackedWrite(for: writeSessionID) }
+                    defer {
+                        if shouldTrackWrite { self.endTrackedWrite(for: writeSessionID) }
+                    }
                     return try await collectionWriter.bindScannedGraded(
-                        collectionKey: latest.mutation.collectionKey,
+                        collectionKey: collectionKey,
                         variant: variant
                     )
                 }
