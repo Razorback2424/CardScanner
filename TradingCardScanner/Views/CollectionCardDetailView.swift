@@ -228,6 +228,7 @@ struct CollectionCardDetailView: View {
                 refreshDisplayedQuantity()
             } else {
                 projectedQuantity = nil
+                lastSavedRowQuantity = card.quantity
             }
         }
         .task(id: pendingArtwork?.id) {
