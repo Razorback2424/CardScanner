@@ -95,6 +95,7 @@ enum GradedLabelParser {
     private struct LabelToken: Hashable, Sendable {
         let text: String
         let slashAdjacent: Bool
+        let hashPrefixed: Bool
     }
 
     private struct TokenPosition: Hashable, Sendable {
@@ -322,7 +323,7 @@ enum GradedLabelParser {
                   let psaSpec = specs.first(where: { $0.company == .psa }),
                   let inferredPSAAnchor = inferredModernPSAAnchor(in: parsedLines) {
             // Modern PSA logos are often read as "PA" or skipped entirely.
-            // Only infer PSA from the structured Pokémon label layout when
+            // Only infer PSA from the structured modern label layout when
             // geometry ties a right-column grade to its number and cert.
             spec = psaSpec
             companyLocations = [inferredPSAAnchor]
@@ -344,12 +345,8 @@ enum GradedLabelParser {
         }
 
         let numericCandidates = locatedTokens(in: parsedLines).compactMap { located -> (LocatedToken, String, Double)? in
-            guard !located.token.slashAdjacent,
-                  let normalized = normalizedNumericText(located.token.text),
-                  let value = Double(normalized),
-                  value >= 1,
-                  value <= 10,
-                  isHalfStep(value),
+            guard let number = gradeNumber(located.token),
+                  !isSubgradeValue(located.position, in: parsedLines),
                   (isNear(located.position, companyLocations)
                     || (spec.company == .psa && nearbyWordMatches.contains {
                         isPSANumber(located.position, near: $0.location, in: parsedLines)
@@ -358,7 +355,7 @@ enum GradedLabelParser {
                         isCGCNumber(located.position, near: $0.location, in: parsedLines)
                     }))
             else { return nil }
-            return (located, normalized, value)
+            return (located, number.text, number.value)
         }
 
         let selectedWord = nearbyWordMatches.sorted { lhs, rhs in
@@ -436,6 +433,7 @@ enum GradedLabelParser {
 
         let certificationCandidates = locatedTokens(in: parsedLines).compactMap { located -> String? in
             guard !located.token.slashAdjacent,
+                  !located.token.hashPrefixed,
                   let digits = normalizedDigitString(located.token.text),
                   spec.certDigits.contains(digits.count),
                   !isGradeToken(located.token.text)
@@ -486,6 +484,22 @@ enum GradedLabelParser {
         in lines: [ParsedLine]
     ) -> [LocatedPhrase] {
         let matches = phraseMatches(spec.companyTokens, in: lines)
+        if spec.company == .cgc {
+            // The CGC wordmark can fuse with its left-side logo mark in OCR.
+            let fusedLogoMatches = lines.enumerated().flatMap { lineIndex, line in
+                line.tokens.enumerated().compactMap { tokenIndex, token -> LocatedPhrase? in
+                    guard (4...5).contains(token.text.count), token.text.hasSuffix("CGC") else {
+                        return nil
+                    }
+                    return LocatedPhrase(
+                        lineIndex: lineIndex,
+                        startTokenIndex: tokenIndex,
+                        endTokenIndex: tokenIndex
+                    )
+                }
+            }
+            return (matches + fusedLogoMatches).uniqued()
+        }
         guard spec.company == .tag else { return matches }
 
         let rawTagCardWords: Set<String> = ["TEAM", "BOLT", "ALL", "GX"]
@@ -507,27 +521,27 @@ enum GradedLabelParser {
         }
     }
 
-    /// The current Pokémon PSA label places card metadata and its collector
+    /// Modern PSA labels place card metadata in a left column and the collector
     /// number on the right above the grade, with the grade number and PSA cert
-    /// below it. This exact fallback handles logo OCR failures
+    /// below it. This layout-based fallback handles logo OCR failures
     /// without treating any generic grade word or bare number as PSA evidence.
     private static func inferredModernPSAAnchor(in lines: [ParsedLine]) -> LocatedPhrase? {
         guard let psaSpec = specs.first(where: { $0.company == .psa }) else { return nil }
 
-        let hasLeftPokemonMetadata = lines.contains { line in
+        let hasLeftColumnMetadata = lines.contains { line in
             guard let box = line.boundingBox, box.midX < 0.55 else { return false }
-            return line.tokens.contains { $0.text == "POKEMON" }
+            return line.tokens.count >= 2
         }
         let collectorNumberBoxes = lines.compactMap { line -> CGRect? in
             guard let box = line.boundingBox,
                   line.original.range(
-                    of: #"#\s*\d{1,4}\b"#,
-                    options: .regularExpression
+                    of: #"#\s*[A-Z]{0,5}\d{1,4}[A-Z]?\b"#,
+                    options: [.regularExpression, .caseInsensitive]
                   ) != nil
             else { return nil }
             return box
         }
-        guard hasLeftPokemonMetadata, !collectorNumberBoxes.isEmpty else { return nil }
+        guard hasLeftColumnMetadata, !collectorNumberBoxes.isEmpty else { return nil }
 
         let tokens = locatedTokens(in: lines)
         let certs = tokens.filter { located in
@@ -540,9 +554,9 @@ enum GradedLabelParser {
         }
         guard certs.count == 1 else { return nil }
 
-        let gradeWords = psaSpec.gradeWords.flatMap { word in
+        let gradeWords = removingContainedMatches(psaSpec.gradeWords.flatMap { word in
             phraseMatches([word.tokens], in: lines)
-        }.filter { word in
+        }).filter { word in
             guard let wordBox = boundingBox(for: word, in: lines),
                   isPSARightColumn(wordBox),
                   let certBox = lines[certs[0].position.lineIndex].boundingBox
@@ -559,19 +573,21 @@ enum GradedLabelParser {
 
         let gradeWordsWithNumbers = gradeWords.filter { word in
             tokens.contains { number in
-                guard !number.token.slashAdjacent,
-                      let text = normalizedNumericText(number.token.text),
-                      let value = Double(text),
-                      (1...10).contains(value),
-                      isHalfStep(value),
-                      let numberBox = lines[number.position.lineIndex].boundingBox,
-                      let wordBox = boundingBox(for: word, in: lines)
-                else { return false }
-                return isPSARightColumnAligned(numberBox.midX, with: wordBox)
-                    && abs(numberBox.midY - wordBox.midY) <= 0.30
+                gradeNumber(number.token) != nil
+                    && isPSANumber(number.position, near: word, in: lines)
             }
         }
         return gradeWordsWithNumbers.count == 1 ? gradeWordsWithNumbers.first : nil
+    }
+
+    private static func removingContainedMatches(_ matches: [LocatedPhrase]) -> [LocatedPhrase] {
+        matches.filter { candidate in
+            let candidatePositions = Set(candidate.tokenPositions)
+            return !matches.contains { other in
+                candidatePositions.count < other.tokenPositions.count
+                    && candidatePositions.isSubset(of: Set(other.tokenPositions))
+            }
+        }
     }
 
     private static func boundingBox(for phrase: LocatedPhrase, in lines: [ParsedLine]) -> CGRect? {
@@ -631,6 +647,7 @@ enum GradedLabelParser {
         if let numberBox = lines[number.lineIndex].boundingBox,
            let wordBox = boundingBox(for: word, in: lines) {
             return isPSARightColumnAligned(numberBox.midX, with: wordBox)
+                && numberBox.midY <= wordBox.midY + 0.02
                 && abs(numberBox.midY - wordBox.midY) <= 0.30
         }
         return lineDistance(number, word) <= 3
@@ -764,16 +781,44 @@ enum GradedLabelParser {
         return (finish, printRun)
     }
 
-    private static let labelOnlyTokens: Set<String> = [
-        "CENTERING", "CORNERS", "EDGES", "SURFACE", "SUBGRADES",
-        "FINAL", "GRADE", "REPORT", "QR"
+    private static let subgradeHeadings: Set<String> = [
+        "CENTERING", "CORNERS", "EDGES", "SURFACE"
     ]
+
+    private static let labelOnlyTokens: Set<String> = subgradeHeadings.union([
+        "SUBGRADES",
+        "FINAL", "GRADE", "REPORT", "QR"
+    ])
+
+    private static func isSubgradeValue(_ position: TokenPosition, in lines: [ParsedLine]) -> Bool {
+        guard lines.indices.contains(position.lineIndex),
+              lines[position.lineIndex].tokens.indices.contains(position.tokenIndex)
+        else { return false }
+
+        let numberLine = lines[position.lineIndex]
+        if numberLine.tokens[..<position.tokenIndex].contains(where: { subgradeHeadings.contains($0.text) }) {
+            return true
+        }
+
+        guard let numberBox = numberLine.boundingBox else { return false }
+        return lines.contains { headingLine in
+            guard headingLine.tokens.contains(where: { subgradeHeadings.contains($0.text) }),
+                  let headingBox = headingLine.boundingBox else { return false }
+            let verticalDistance = headingBox.midY - numberBox.midY
+            return numberBox.midX >= headingBox.minX - 0.03
+                && numberBox.midX <= headingBox.maxX + 0.03
+                && verticalDistance > 0
+                && verticalDistance <= 0.12
+        }
+    }
 
     private static func tokenize(_ text: String) -> [LabelToken] {
         var tokens: [LabelToken] = []
         var current = ""
         var slashBeforeCurrent = false
         var pendingSlash = false
+        var hashBeforeCurrent = false
+        var pendingHash = false
 
         for scalar in text.uppercased().unicodeScalars {
             let isASCIIAlphaNumeric = (48...57).contains(scalar.value)
@@ -785,7 +830,9 @@ enum GradedLabelParser {
             if isASCIIAlphaNumeric || isDecimalPoint || isGradePunctuation {
                 if current.isEmpty {
                     slashBeforeCurrent = pendingSlash
+                    hashBeforeCurrent = pendingHash
                     pendingSlash = false
+                    pendingHash = false
                 }
                 current.unicodeScalars.append(scalar)
             } else {
@@ -793,18 +840,30 @@ enum GradedLabelParser {
                     tokens.append(
                         LabelToken(
                             text: current,
-                            slashAdjacent: slashBeforeCurrent || scalar == "/"
+                            slashAdjacent: slashBeforeCurrent || scalar == "/",
+                            hashPrefixed: hashBeforeCurrent
                         )
                     )
                     current.removeAll(keepingCapacity: true)
                     slashBeforeCurrent = false
                 }
                 pendingSlash = scalar == "/"
+                if scalar == "#" {
+                    pendingHash = true
+                } else if !CharacterSet.whitespacesAndNewlines.contains(scalar) {
+                    pendingHash = false
+                }
             }
         }
 
         if !current.isEmpty {
-            tokens.append(LabelToken(text: current, slashAdjacent: slashBeforeCurrent))
+            tokens.append(
+                LabelToken(
+                    text: current,
+                    slashAdjacent: slashBeforeCurrent,
+                    hashPrefixed: hashBeforeCurrent
+                )
+            )
         }
         return tokens
     }
@@ -1005,11 +1064,21 @@ enum GradedLabelParser {
         return result
     }
 
+    private static func gradeNumber(_ token: LabelToken) -> (text: String, value: Double)? {
+        guard !token.slashAdjacent,
+              !token.hashPrefixed,
+              let text = normalizedNumericText(token.text),
+              let value = Double(text),
+              (1...10).contains(value),
+              isHalfStep(value)
+        else { return nil }
+        return (text, value)
+    }
+
     private static func isGradeToken(_ text: String) -> Bool {
-        guard let numeric = normalizedNumericText(text), let value = Double(numeric) else {
-            return false
-        }
-        return value >= 1 && value <= 10 && isHalfStep(value)
+        let tokens = tokenize(text)
+        guard tokens.count == 1, let token = tokens.first else { return false }
+        return gradeNumber(token) != nil
     }
 
     private static func isHalfStep(_ value: Double) -> Bool {

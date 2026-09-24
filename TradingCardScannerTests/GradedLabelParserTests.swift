@@ -2,6 +2,23 @@ import XCTest
 @testable import TradingCardScanner
 
 final class GradedLabelParserTests: XCTestCase {
+    private func visionLine(
+        _ text: String,
+        _ centerX: CGFloat,
+        _ centerY: CGFloat,
+        width: CGFloat = 0.20
+    ) -> RecognizedLine {
+        RecognizedLine(
+            text: text,
+            boundingBox: CGRect(
+                x: centerX - width / 2,
+                y: centerY - 0.03,
+                width: width,
+                height: 0.06
+            )
+        )
+    }
+
     func testPSAReadsGradeQualifierCertificateAndCardText() throws {
         let evidence = try XCTUnwrap(GradedLabelParser.parse([
             RecognizedLine(text: "PSA"),
@@ -29,6 +46,7 @@ final class GradedLabelParserTests: XCTestCase {
             RecognizedLine(text: "1234567890")
         ]))
         XCTAssertNil(tenDigit.certificationNumber)
+
     }
 
     func testGradeWordMayBeWrappedAcrossAdjacentLines() throws {
@@ -142,7 +160,7 @@ final class GradedLabelParserTests: XCTestCase {
         XCTAssertEqual(evidence.certificationNumber, "157154347")
     }
 
-    func testPSAInferenceNeedsModernPokemonLayoutAndGeometry() {
+    func testPSAInferenceNeedsModernLayoutAndGeometry() {
         XCTAssertNil(GradedLabelParser.parse([
             RecognizedLine(text: "2025 POKEMON PRE EN"),
             RecognizedLine(text: "#156"),
@@ -164,6 +182,216 @@ final class GradedLabelParserTests: XCTestCase {
             line("9", 0.78, 0.38),
             line("157154347", 0.68, 0.30)
         ]))
+    }
+
+    func testCollectorNumberIsNeverTheGrade() throws {
+        // Captured Vision positions from the real Machamp slab read. The probe
+        // text isolates a 1–10 collector number beside a printed grade number.
+        let collectorProbe = [
+            visionLine("1999 POKEMON GAME", 0.32, 0.76, width: 0.45),
+            visionLine("MACHAMP-HOLO", 0.27, 0.62, width: 0.36),
+            visionLine("1ST EDITION", 0.22, 0.47, width: 0.25),
+            visionLine("PSA", 0.52, 0.30, width: 0.04),
+            visionLine("#4", 0.87, 0.74, width: 0.06),
+            visionLine("GEM MT", 0.82, 0.60, width: 0.15),
+            visionLine("10", 0.88, 0.45, width: 0.03),
+            visionLine("158106351", 0.79, 0.32, width: 0.22)
+        ]
+
+        let evidence = try XCTUnwrap(GradedLabelParser.parse(collectorProbe))
+        XCTAssertEqual(evidence.company, .psa)
+        XCTAssertEqual(evidence.grade, CardGrade(value: "10", label: "Gem Mint"))
+
+        XCTAssertNil(GradedLabelParser.parse(collectorProbe.filter { $0.text != "10" }))
+
+        let smallCollectorProbe = collectorProbe.map { line in
+            let replacement: String
+            switch line.text {
+            case "#4": replacement = "#8"
+            case "GEM MT": replacement = "MINT"
+            case "10": replacement = "9"
+            default: replacement = line.text
+            }
+            return RecognizedLine(text: replacement, boundingBox: line.boundingBox)
+        }
+        let smallCollector = try XCTUnwrap(GradedLabelParser.parse(smallCollectorProbe))
+        XCTAssertEqual(smallCollector.grade, CardGrade(value: "9", label: "Mint"))
+
+        let hashPrefixed = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "PSA GEM MT 10"),
+            RecognizedLine(text: "#12345678")
+        ]))
+        XCTAssertNil(hashPrefixed.certificationNumber)
+
+        // Captured band read from the same slab: `# 8` keeps its hash identity
+        // across the OCR whitespace, so it cannot fill in a missing grade.
+        XCTAssertNil(GradedLabelParser.parse([
+            visionLine("1999 POKEMON GAME", 0.32, 0.69, width: 0.46),
+            visionLine("MACHAMP-HOLO", 0.27, 0.61, width: 0.37),
+            visionLine("1ST EDITION", 0.22, 0.52, width: 0.25),
+            visionLine("P", 0.47, 0.41, width: 0.05),
+            visionLine("# 8", 0.87, 0.68, width: 0.06),
+            visionLine("NM-MT", 0.82, 0.60, width: 0.15),
+            visionLine("158106351", 0.79, 0.42, width: 0.22)
+        ]))
+    }
+
+    func testSubgradeValuesAreNeverTheGrade() throws {
+        // Captured band read from a real CGC Cubone slab, with the large Mint 9
+        // grade value omitted so only the four subgrade values remain.
+        XCTAssertNil(GradedLabelParser.parse([
+            visionLine("CGC UNIVERSAL GRADE", 0.52, 0.83, width: 0.80),
+            visionLine("Cubone", 0.63, 0.73, width: 0.18),
+            visionLine("Mint", 0.21, 0.69, width: 0.07),
+            visionLine("Pokémon (1998) Japanese", 0.62, 0.65, width: 0.51),
+            visionLine("Vending Series 3", 0.62, 0.59, width: 0.26),
+            visionLine("Centering", 0.41, 0.47, width: 0.14),
+            visionLine("8.5", 0.41, 0.42, width: 0.04),
+            visionLine("Surface", 0.57, 0.47, width: 0.11),
+            visionLine("9.5", 0.56, 0.42, width: 0.04),
+            visionLine("Corners", 0.71, 0.47, width: 0.11),
+            visionLine("10", 0.72, 0.42, width: 0.04),
+            visionLine("Edges", 0.85, 0.47, width: 0.09),
+            visionLine("10", 0.85, 0.42, width: 0.04),
+            visionLine("LV.14 HP40", 0.69, 0.06, width: 0.20)
+        ]))
+
+        // Captured full CGC Cubone label read.
+        let cubone = try XCTUnwrap(GradedLabelParser.parse([
+            visionLine("CGC UNIVERSAL GRADE", 0.52, 0.95, width: 0.80),
+            visionLine("Cubone", 0.63, 0.81, width: 0.18),
+            visionLine("Mint", 0.21, 0.76, width: 0.07),
+            visionLine("9", 0.21, 0.57, width: 0.07),
+            visionLine("Pokémon (1998) Japanese", 0.62, 0.69, width: 0.51),
+            visionLine("Vending Series 3", 0.62, 0.59, width: 0.26),
+            visionLine("Centering", 0.41, 0.40, width: 0.14),
+            visionLine("8.5", 0.41, 0.33, width: 0.04),
+            visionLine("Surface", 0.57, 0.41, width: 0.11),
+            visionLine("9.5", 0.57, 0.33, width: 0.05),
+            visionLine("Corners", 0.71, 0.41, width: 0.11),
+            visionLine("10", 0.72, 0.33, width: 0.04),
+            visionLine("Edges", 0.85, 0.40, width: 0.09),
+            visionLine("10", 0.85, 0.33, width: 0.04)
+        ]))
+        XCTAssertEqual(cubone.company, .cgc)
+        XCTAssertEqual(cubone.grade, CardGrade(value: "9", label: "Mint"))
+
+        let bgs = try XCTUnwrap(GradedLabelParser.parse([
+            RecognizedLine(text: "BGS 9.5 GEM MINT"),
+            RecognizedLine(text: "CENTERING 10")
+        ]))
+        XCTAssertEqual(bgs.grade, CardGrade(value: "9.5", label: "Gem Mint"))
+    }
+
+    func testModernPSAFallbackReadsTwoTokenGrades() throws {
+        // Captured real Machamp PSA label read; its logo was recognized as A.
+        let machamp = try XCTUnwrap(GradedLabelParser.parse([
+            visionLine("1999 POKEMON GAME", 0.32, 0.76, width: 0.45),
+            visionLine("MACHAMP-HOLO", 0.27, 0.62, width: 0.36),
+            visionLine("1ST EDITION", 0.22, 0.47, width: 0.25),
+            visionLine("A", 0.52, 0.30, width: 0.04),
+            visionLine("#8", 0.87, 0.74, width: 0.06),
+            visionLine("NM-MT", 0.82, 0.60, width: 0.15),
+            visionLine("8", 0.88, 0.45, width: 0.03),
+            visionLine("158106351", 0.79, 0.32, width: 0.22)
+        ]))
+        XCTAssertEqual(machamp.company, .psa)
+        XCTAssertEqual(machamp.grade, CardGrade(value: "8", label: "NM-MT"))
+        XCTAssertEqual(machamp.certificationNumber, "158106351")
+
+        // Captured real Venusaur PSA label read; its logo was recognized as PEA.
+        let venusaur = try XCTUnwrap(GradedLabelParser.parse([
+            visionLine("1999 POKEMON GAME", 0.31, 0.72, width: 0.43),
+            visionLine("VENUSAUR-HOLO", 0.27, 0.57, width: 0.35),
+            visionLine("SHADOWLESS", 0.23, 0.42, width: 0.29),
+            visionLine("PEA", 0.47, 0.22, width: 0.10),
+            visionLine("#15", 0.81, 0.73, width: 0.07),
+            visionLine("NM-MT", 0.78, 0.58, width: 0.14),
+            visionLine("8", 0.84, 0.43, width: 0.02),
+            visionLine("165284199", 0.75, 0.28, width: 0.21)
+        ]))
+        XCTAssertEqual(venusaur.company, .psa)
+        XCTAssertEqual(venusaur.grade.value, "8")
+        XCTAssertEqual(venusaur.certificationNumber, "165284199")
+    }
+
+    func testModernPSAFallbackAcceptsLetterPrefixedCardNumbers() throws {
+        // Captured real Mimikyu PSA label read, with no PSA logo recognized.
+        let mimikyu = try XCTUnwrap(GradedLabelParser.parse([
+            visionLine("2022 POKEMON SWSH", 0.31, 0.69, width: 0.51),
+            visionLine("FA/MIMIKYU VMAX", 0.28, 0.53, width: 0.44),
+            visionLine("BRILLIANT STARS", 0.26, 0.36, width: 0.40),
+            visionLine("#TG17", 0.85, 0.69, width: 0.15),
+            visionLine("GEM MT", 0.83, 0.53, width: 0.19),
+            visionLine("10", 0.90, 0.37, width: 0.05),
+            visionLine("137672473", 0.80, 0.20, width: 0.24)
+        ]))
+        XCTAssertEqual(mimikyu.company, .psa)
+        XCTAssertEqual(mimikyu.grade, CardGrade(value: "10", label: "Gem Mint"))
+        XCTAssertEqual(mimikyu.certificationNumber, "137672473")
+    }
+
+    func testModernPSAFallbackIsGameAgnostic() throws {
+        // Captured real Zuko Magic label read; its PSA logo was recognized PEA.
+        let zuko = try XCTUnwrap(GradedLabelParser.parse([
+            visionLine("2025 MTG TLA EN", 0.29, 0.67, width: 0.37),
+            visionLine("FIRE LORD ZUKO", 0.27, 0.54, width: 0.33),
+            visionLine("BOOK 3 SCENE BORDERLESS-FOIL", 0.47, 0.44, width: 0.72),
+            visionLine("PEA", 0.49, 0.27, width: 0.09),
+            visionLine("#0315", 0.85, 0.76, width: 0.14),
+            visionLine("GEM MT", 0.83, 0.63, width: 0.19),
+            visionLine("10", 0.89, 0.49, width: 0.05),
+            visionLine("171286143", 0.80, 0.35, width: 0.23)
+        ]))
+        XCTAssertEqual(zuko.company, .psa)
+        XCTAssertEqual(zuko.grade, CardGrade(value: "10", label: "Gem Mint"))
+        XCTAssertEqual(zuko.certificationNumber, "171286143")
+
+        // Captured real Atog label read: no card number and no readable logo.
+        XCTAssertNil(GradedLabelParser.parse([
+            visionLine("1994 MAGIC - GATHERING", 0.38, 0.73, width: 0.60),
+            visionLine("ATOG", 0.14, 0.58, width: 0.13),
+            visionLine("REVISED", 0.17, 0.46, width: 0.20),
+            visionLine("MINT", 0.86, 0.62, width: 0.12),
+            visionLine("9", 0.91, 0.49, width: 0.03),
+            visionLine("53902302", 0.81, 0.36, width: 0.23)
+        ]))
+    }
+
+    func testCGCLogoFusedWithIconIsCompanyEvidence() throws {
+        // Captured real Katara Signature Series CGC label read. Its logo mark
+        // was fused into the single OCR token SACGC and lacks the usual company line.
+        let katara = try XCTUnwrap(GradedLabelParser.parse([
+            visionLine("SACGC", 0.13, 0.89, width: 0.14),
+            visionLine("Katara, the Fearless", 0.23, 0.73, width: 0.32),
+            visionLine("Magic: The Gathering (2025)", 0.30, 0.65, width: 0.45),
+            visionLine("Avatar: the Last Airbender - 0305", 0.34, 0.57, width: 0.53),
+            visionLine("Rare - Foil - Borderless Scene", 0.31, 0.49, width: 0.48),
+            visionLine("MAE WHITMAN, 3/26/26", 0.27, 0.41, width: 0.38),
+            visionLine("6166347198", 0.55, 0.31, width: 0.14),
+            visionLine("Signature SERIES", 0.77, 0.88, width: 0.32),
+            visionLine("PRISTINE", 0.82, 0.71, width: 0.18),
+            visionLine("10", 0.82, 0.45, width: 0.20)
+        ]))
+        XCTAssertEqual(katara.company, .cgc)
+        XCTAssertEqual(katara.grade, CardGrade(value: "10", label: "Pristine"))
+        XCTAssertEqual(katara.certificationNumber, "6166347198")
+
+        // Captured real Yveltal CGC band read, with ACGC as its logo mark.
+        let yveltal = try XCTUnwrap(GradedLabelParser.parse([
+            visionLine("ACGC", 0.17, 0.76, width: 0.17),
+            visionLine("Yveltal", 0.14, 0.66, width: 0.13),
+            visionLine("Pokémon (2016)", 0.22, 0.60, width: 0.28),
+            visionLine("Generations - RC16/RC32", 0.30, 0.54, width: 0.42),
+            visionLine("Radiant Collection - Holo", 0.29, 0.48, width: 0.43),
+            visionLine("6146900028", 0.53, 0.39, width: 0.15),
+            visionLine("BASIC", 0.14, 0.07, width: 0.12),
+            visionLine("veltal", 0.36, 0.04, width: 0.15),
+            visionLine("PRISTINE", 0.78, 0.64, width: 0.17),
+            visionLine("\"10", 0.79, 0.48, width: 0.19)
+        ]))
+        XCTAssertEqual(yveltal.company, .cgc)
+        XCTAssertEqual(yveltal.grade.value, "10")
     }
 
     func testModernPSAFallbackAcceptsAnEightDigitCertificate() throws {
