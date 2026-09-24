@@ -189,6 +189,48 @@ enum MagicTreatmentMigration {
         return report
     }
 
+    /// Computes only the provider request identities. The short-lived read
+    /// context and its model objects are released before the async network
+    /// phase; the apply phase always fetches rows again under the writer lock.
+    private static func networkLookupIDs(
+        in container: ModelContainer,
+        shouldFetch: Bool
+    ) throws -> [String] {
+        guard shouldFetch else { return [] }
+        let context = ModelContext(container)
+        let gameRaw = CardGame.magic.rawValue
+        let version = currentVersion
+        let pending = try context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    $0.game == gameRaw
+                        && $0.magicTreatmentMigrationVersion < version
+                }
+            )
+        )
+        var exactIDs: [String: String] = [:]
+        var requiresProviderFinish: Set<String> = []
+        for card in pending {
+            guard card.magicTreatments.isEmpty,
+                  let parts = MagicTreatmentKeyCodec.collectionKeyParts(from: card.collectionKey),
+                  let exactID = parts.exactPrintingID,
+                  !parts.isTreatmentQualified else { continue }
+            let key = exactID.lowercased()
+            exactIDs[key] = exactID
+            if card.itemKind == .gradedCard
+                || (card.itemKind == .rawCard && card.variant == nil && parts.finishID == nil) {
+                requiresProviderFinish.insert(key)
+            }
+        }
+        let catalog = MagicTreatmentCatalogStore.bundledDefault
+        return exactIDs
+            .filter { key, exactID in
+                requiresProviderFinish.contains(key) || catalog.entry(forCardID: exactID) == nil
+            }
+            .map(\.value)
+            .sorted()
+    }
+
     private static func runPhase(
         in context: ModelContext,
         now: Date,
@@ -196,139 +238,35 @@ enum MagicTreatmentMigration {
         shouldContinue: StorageGenerationContinuation?
     ) async -> Report {
         var report = Report()
-        let collectionStore = CollectionStore(context: context)
+        let container = context.container
 
         func isCurrent() -> Bool {
             shouldContinue?() ?? true
         }
 
-        func cancelAndRollback() -> Report {
-            context.rollback()
-            LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: context)
-            return report
-        }
+        guard isCurrent(), !Task.isCancelled else { return report }
 
-        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
-
-        // The row watermark is the migration's source of truth. A bounded count
-        // keeps steady-state launches from materialising the entire collection
-        // merely to discover that there is no work left; a newly inserted or
-        // synced row starts at the default zero and remains eligible.
-        let migrationVersion = currentVersion
-        let magicGameRawValue = CardGame.magic.rawValue
-        let pendingCount: Int
+        let remoteExactIDs: [String]
         do {
-            pendingCount = try context.fetchCount(
-                FetchDescriptor<CollectedCard>(
-                    predicate: #Predicate {
-                        $0.game == magicGameRawValue
-                            && $0.magicTreatmentMigrationVersion < migrationVersion
-                    }
-                )
+            remoteExactIDs = try networkLookupIDs(
+                in: container,
+                shouldFetch: fetchBatch != nil
             )
         } catch {
-            report.fail("Could not count Magic collection rows: \(error)")
+            report.fail("Could not read Magic migration candidates: \(error)")
             return report
         }
-        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
-        // Once every row has passed this migration version, this phase must no
-        // longer mutate the identity store. In particular, do not clear a
-        // treatment-qualified vendor negative on every launch: that negative
-        // is the fallback's retry gate, and erasing it would spend quota again
-        // for a capability the current provider cannot answer. A future policy
-        // change should bump `currentVersion` or add its own migration gate.
-        guard pendingCount > 0 else { return report }
-
-        let cards: [CollectedCard]
-        do {
-            cards = try context.fetch(FetchDescriptor<CollectedCard>())
-        } catch {
-            report.fail("Could not read Magic collection rows: \(error)")
-            return report
-        }
-
-        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
-        clearTreatmentVendorNegatives(in: context, report: &report)
-        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
-
-        let candidates = cards.filter {
-            $0.cardGame == .magic
-                && $0.magicTreatmentMigrationVersion < currentVersion
-        }
-        report.examinedRows = candidates.count
-
-        var descriptors: [ObjectIdentifier: MagicCollectionKeyParts] = [:]
-        for card in cards where card.cardGame == .magic {
-            if let parts = MagicTreatmentKeyCodec.collectionKeyParts(from: card.collectionKey) {
-                descriptors[ObjectIdentifier(card)] = parts
-            }
-        }
-
-        // The migration runs on the main actor before portfolio startup. Keep
-        // its planning phase linear in the collection size: the exact-id and
-        // legacy-key indexes replace repeated scans of `candidates` below.
-        let candidateObjectIDs = Set(candidates.map(ObjectIdentifier.init))
-        var candidatesByExactID: [String: [CollectedCard]] = [:]
-        var pendingLegacyCounts: [String: Int] = [:]
-        for card in candidates {
-            guard let parts = descriptors[ObjectIdentifier(card)] else { continue }
-            if let exactID = parts.exactPrintingID {
-                candidatesByExactID[exactID.lowercased(), default: []].append(card)
-            }
-            if !parts.isTreatmentQualified {
-                pendingLegacyCounts[card.collectionKey, default: 0] += 1
-            }
-        }
-
         let catalog = MagicTreatmentCatalogStore.bundledDefault
-        var exactIDs: Set<String> = []
-        for card in candidates {
-            guard let parts = descriptors[ObjectIdentifier(card)],
-                  let exactID = parts.exactPrintingID,
-                  !parts.isTreatmentQualified,
-                  card.magicTreatments.isEmpty else {
-                continue
-            }
-            exactIDs.insert(exactID)
-        }
-
         var evidenceByExactID: [String: ExactEvidence] = [:]
         var failedExactIDs: Set<String> = []
-        var remoteExactIDs: [String] = []
-        for exactID in exactIDs.sorted() {
-            let rows = candidatesByExactID[exactID.lowercased()] ?? []
-            let requiresProviderFinish = rows.contains { row in
-                let rowParts = descriptors[ObjectIdentifier(row)]
-                return row.itemKind == .gradedCard
-                    || (row.itemKind == .rawCard
-                        && row.variant == nil
-                        && rowParts?.finishID == nil)
-            }
-
-            if let entry = catalog.entry(forCardID: exactID),
-               !requiresProviderFinish {
-                evidenceByExactID[exactID.lowercased()] = ExactEvidence(
-                    evidence: MagicTreatmentEvidence(
-                        treatments: entry.decodedTreatments,
-                        qualifiers: entry.qualifiers
-                    ),
-                    catalogVariants: nil
-                )
-                continue
-            }
-
-            if fetchBatch != nil {
-                remoteExactIDs.append(exactID)
-            }
-        }
 
         if let fetchBatch {
             let maximumBatchSize = 75
             for batchStart in stride(from: 0, to: remoteExactIDs.count, by: maximumBatchSize) {
-                guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
+                guard isCurrent(), !Task.isCancelled else { return report }
                 if batchStart > 0 {
                     try? await Task.sleep(for: .milliseconds(100))
-                    guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
+                    guard isCurrent(), !Task.isCancelled else { return report }
                 }
                 let batchEnd = min(batchStart + maximumBatchSize, remoteExactIDs.count)
                 let batch = Array(remoteExactIDs[batchStart..<batchEnd])
@@ -336,7 +274,7 @@ enum MagicTreatmentMigration {
 
                 do {
                     let responses = try await fetchBatch(batch)
-                    guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
+                    guard isCurrent(), !Task.isCancelled else { return report }
                     var responseByID: [String: ScryfallCard] = [:]
                     var duplicateResponseIDs: Set<String> = []
 
@@ -393,7 +331,110 @@ enum MagicTreatmentMigration {
             }
         }
 
+        guard isCurrent(), !Task.isCancelled else { return report }
+        let networkEvidence = evidenceByExactID
+        let failedNetworkExactIDs = failedExactIDs
+        do {
+            return try CollectionWriteSerializer.perform(
+                container: container,
+                timeout: .mainThread
+            ) { writeContext in
+        let collectionStore = CollectionStore(context: writeContext)
+
+        func cancelAndRollback() -> Report {
+            writeContext.rollback()
+            LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: writeContext)
+            return report
+        }
+
         guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
+        let migrationVersion = currentVersion
+        let magicGameRawValue = CardGame.magic.rawValue
+        let pendingCount: Int
+        do {
+            pendingCount = try writeContext.fetchCount(
+                FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate {
+                        $0.game == magicGameRawValue
+                            && $0.magicTreatmentMigrationVersion < migrationVersion
+                    }
+                )
+            )
+        } catch {
+            report.fail("Could not count Magic collection rows: \(error)")
+            return report
+        }
+        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
+        guard pendingCount > 0 else { return report }
+
+        let cards: [CollectedCard]
+        do {
+            cards = try writeContext.fetch(FetchDescriptor<CollectedCard>())
+        } catch {
+            report.fail("Could not read Magic collection rows: \(error)")
+            return report
+        }
+
+        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
+        clearTreatmentVendorNegatives(in: writeContext, report: &report)
+        guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
+
+        let candidates = cards.filter {
+            $0.cardGame == .magic
+                && $0.magicTreatmentMigrationVersion < currentVersion
+        }
+        report.examinedRows = candidates.count
+
+        var descriptors: [ObjectIdentifier: MagicCollectionKeyParts] = [:]
+        for card in cards where card.cardGame == .magic {
+            if let parts = MagicTreatmentKeyCodec.collectionKeyParts(from: card.collectionKey) {
+                descriptors[ObjectIdentifier(card)] = parts
+            }
+        }
+        let candidateObjectIDs = Set(candidates.map(ObjectIdentifier.init))
+        var candidatesByExactID: [String: [CollectedCard]] = [:]
+        var pendingLegacyCounts: [String: Int] = [:]
+        for card in candidates {
+            guard let parts = descriptors[ObjectIdentifier(card)] else { continue }
+            if let exactID = parts.exactPrintingID {
+                candidatesByExactID[exactID.lowercased(), default: []].append(card)
+            }
+            if !parts.isTreatmentQualified {
+                pendingLegacyCounts[card.collectionKey, default: 0] += 1
+            }
+        }
+
+        let catalog = MagicTreatmentCatalogStore.bundledDefault
+        var exactIDs: Set<String> = []
+        for card in candidates {
+            guard let parts = descriptors[ObjectIdentifier(card)],
+                  let exactID = parts.exactPrintingID,
+                  !parts.isTreatmentQualified,
+                  card.magicTreatments.isEmpty else { continue }
+            exactIDs.insert(exactID)
+        }
+        var evidenceByExactID = networkEvidence
+        for exactID in exactIDs {
+            let rows = candidatesByExactID[exactID.lowercased()] ?? []
+            let requiresProviderFinish = rows.contains { row in
+                let rowParts = descriptors[ObjectIdentifier(row)]
+                return row.itemKind == .gradedCard
+                    || (row.itemKind == .rawCard
+                        && row.variant == nil
+                        && rowParts?.finishID == nil)
+            }
+            if let entry = catalog.entry(forCardID: exactID), !requiresProviderFinish {
+                evidenceByExactID[exactID.lowercased()] = ExactEvidence(
+                    evidence: MagicTreatmentEvidence(
+                        treatments: entry.decodedTreatments,
+                        qualifiers: entry.qualifiers
+                    ),
+                    catalogVariants: nil
+                )
+            }
+        }
+        let failedExactIDs = failedNetworkExactIDs
+
         var plans: [MigrationPair: PairPlan] = [:]
         for card in cards where card.cardGame == .magic {
             guard let parts = descriptors[ObjectIdentifier(card)] else {
@@ -533,7 +574,7 @@ enum MagicTreatmentMigration {
                     pair,
                     plan: plan,
                     hasAmbiguousLegacyPair: pairCountsByLegacyKey[pair.oldKey, default: 0] > 1,
-                    context: context,
+                    context: writeContext,
                     now: now,
                     report: &report
                 )
@@ -544,17 +585,22 @@ enum MagicTreatmentMigration {
 
         do {
             guard isCurrent(), !Task.isCancelled else { return cancelAndRollback() }
-            if context.hasChanges {
-                try context.save()
-                LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
+            if writeContext.hasChanges {
+                try writeContext.save()
+                LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: writeContext)
                 collectionStore.invalidateIdentityAliasCache()
             }
         } catch {
-            context.rollback()
-            LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: context)
+            writeContext.rollback()
+            LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: writeContext)
             report.fail("Magic treatment migration could not be saved: \(error)")
         }
         return report
+            }
+        } catch {
+            report.fail("Magic treatment migration could not be saved: \(error)")
+            return report
+        }
     }
 
     // MARK: - Planning
@@ -1732,15 +1778,7 @@ enum MagicTreatmentMigration {
     }
 
     nonisolated private static func deterministicUUID(material: String) -> UUID {
-        var bytes = Array(Insecure.MD5.hash(data: Data(material.utf8)))
-        bytes[6] = (bytes[6] & 0x0F) | 0x30
-        bytes[8] = (bytes[8] & 0x3F) | 0x80
-        return UUID(uuid: (
-            bytes[0], bytes[1], bytes[2], bytes[3],
-            bytes[4], bytes[5], bytes[6], bytes[7],
-            bytes[8], bytes[9], bytes[10], bytes[11],
-            bytes[12], bytes[13], bytes[14], bytes[15]
-        ))
+        DeterministicUUID.make(namespace: "", material: material)
     }
 }
 
@@ -1807,6 +1845,7 @@ final class MagicTreatmentMigrationCoordinator {
     private var networkReport: MagicTreatmentMigration.Report?
     private var collectionRevision = 0
     private var activePriceRefresh: MagicTreatmentPriceRefreshGate?
+    private var exclusivePriceRefreshGates: [UUID: MagicTreatmentPriceRefreshGate] = [:]
     private var activeStorageToken: StorageGenerationToken?
     private var activeContinuation: StorageGenerationContinuation?
     private static let maximumRevisionRetries = 1
@@ -2141,10 +2180,38 @@ final class MagicTreatmentMigrationCoordinator {
                 shouldContinue: effectiveContinuation
             )
         }
-        if !isCurrent(effectiveContinuation) {
+        // A foreground launch may cancel the background task while this call
+        // is awaiting an already-running local/network migration. That shared
+        // migration is allowed to finish, but the cancelled background caller
+        // must not start a fresh, unstructured price-refresh queue afterward.
+        if !isCurrent(effectiveContinuation) || Task.isCancelled {
             context.rollback()
             return nil
         }
         return await operation()
+    }
+
+    /// Acquires the same gate used by price refreshes for a caller that is
+    /// about to rewrite price identity outside a refresh pass. The caller must
+    /// first suspend PriceRefreshController so no request can mutate these
+    /// rows while the gate is held.
+    func acquireExclusive() async -> UUID {
+        await waitForPriceRefresh()
+        let token = UUID()
+        let gate = MagicTreatmentPriceRefreshGate()
+        activePriceRefresh = gate
+        exclusivePriceRefreshGates[token] = gate
+        return token
+    }
+
+    func releaseExclusive(_ token: UUID) {
+        guard let gate = exclusivePriceRefreshGates.removeValue(forKey: token) else {
+            assertionFailure("Unknown price-identity exclusivity token")
+            return
+        }
+        if activePriceRefresh === gate {
+            activePriceRefresh = nil
+        }
+        gate.release()
     }
 }

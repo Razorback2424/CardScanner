@@ -62,6 +62,7 @@ struct CollectionCardDetailView: View {
     @State private var pendingArtwork: ArtworkRequest?
     @State private var artworkAccent: ArtworkAccent?
     @State private var projectedQuantity: Int?
+    @State private var lastSavedRowQuantity: Int?
 #if DEBUG
     @State private var isShowingPrintingDetailsRoute = false
 #endif
@@ -222,9 +223,20 @@ struct CollectionCardDetailView: View {
         .task(id: card.collectionKey) {
             refreshDisplayedQuantity()
         }
+        .onChange(of: card.quantity) { _, _ in
+            if isLogicalConflict {
+                refreshDisplayedQuantity()
+            } else {
+                projectedQuantity = nil
+            }
+        }
         .task(id: pendingArtwork?.id) {
             guard let request = pendingArtwork else { return }
-            await saveSelectedArtwork(request.item, requestID: request.id)
+            await saveSelectedArtwork(
+                request.item,
+                requestID: request.id,
+                collectionKey: card.collectionKey
+            )
             if pendingArtwork?.id == request.id {
                 pendingArtwork = nil
             }
@@ -650,16 +662,29 @@ struct CollectionCardDetailView: View {
         activity: CollectionActivity
     ) {
         guard variant != card.variant else { return }
-        do {
-            let corrected = ResolvedVariant(variant: variant, resolution: .userConfirmed)
-            _ = try CollectionStore(context: modelContext).recordVariantCorrection(
-                for: card,
-                to: corrected,
-                activityID: activity.id,
-                quantity: min(activity.remainingQuantity, card.quantity)
-            )
-        } catch {
-            errorMessage = error.localizedDescription
+        let corrected = ResolvedVariant(variant: variant, resolution: .userConfirmed)
+        let collectionKey = card.collectionKey
+        let treatments = card.magicTreatmentIDsRaw
+        let activityID = activity.id
+        let quantity = min(activity.remainingQuantity, card.quantity)
+        let container = modelContext.container
+        Task { @MainActor in
+            do {
+                try CollectionWriteSerializer.perform(
+                    container: container,
+                    timeout: .mainThread
+                ) { context in
+                    _ = try CollectionStore(context: context).recordVariantCorrection(
+                        forCollectionKey: collectionKey,
+                        magicTreatmentIDsRaw: treatments,
+                        to: corrected,
+                        activityID: activityID,
+                        quantity: quantity
+                    )
+                }
+            } catch {
+                errorMessage = error.localizedDescription
+            }
         }
     }
 
@@ -1039,7 +1064,13 @@ struct CollectionCardDetailView: View {
     }
 
     @MainActor
-    private func saveSelectedArtwork(_ item: PhotosPickerItem, requestID: Int) async {
+    private func saveSelectedArtwork(
+        _ item: PhotosPickerItem,
+        requestID: Int,
+        collectionKey: String
+    ) async {
+        let container = modelContext.container
+        let oldFilename = localArtworkFilename
         guard let data = try? await item.loadTransferable(type: Data.self),
               requestID == artworkGeneration,
               !Task.isCancelled else {
@@ -1056,28 +1087,30 @@ struct CollectionCardDetailView: View {
             CollectionArtworkStore.remove(filename: filename)
             return
         }
-        let oldFilename = localArtworkFilename
-        CollectionArtworkStore.set(
-            filename: filename,
-            for: card.collectionKey,
-            in: modelContext
-        )
-        // Kept only as a migration bridge for stores written before local
-        // artwork ownership existed. New writes never publish a device-local
-        // file reference through the synced card row.
-        card.userArtworkFilename = nil
         do {
-            try modelContext.save()
-            CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: modelContext)
+            try CollectionWriteSerializer.perform(
+                container: container,
+                timeout: .mainThread
+            ) { context in
+                let key = collectionKey
+                var descriptor = FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.collectionKey == key }
+                )
+                descriptor.fetchLimit = 1
+                guard let liveCard = try context.fetch(descriptor).first else {
+                    throw CollectionStoreError.missingDestinationRow(collectionKey)
+                }
+                CollectionArtworkStore.set(filename: filename, for: collectionKey, in: context)
+                // Kept as a migration bridge for stores written before local
+                // artwork ownership existed. New writes keep this nil.
+                liveCard.userArtworkFilename = nil
+                try context.save()
+                CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: context)
+            }
             if requestID == artworkGeneration {
                 selectedArtwork = nil
             }
         } catch {
-            CollectionArtworkStore.set(
-                filename: oldFilename,
-                for: card.collectionKey,
-                in: modelContext
-            )
             CollectionArtworkStore.remove(filename: filename)
             errorMessage = error.localizedDescription
             if requestID == artworkGeneration { selectedArtwork = nil }
@@ -1086,22 +1119,28 @@ struct CollectionCardDetailView: View {
 
     private func removeUserArtwork() {
         artworkGeneration &+= 1
+        let container = modelContext.container
+        let collectionKey = card.collectionKey
         let oldFilename = localArtworkFilename
-        CollectionArtworkStore.set(
-            filename: nil,
-            for: card.collectionKey,
-            in: modelContext
-        )
-        card.userArtworkFilename = nil
         do {
-            try modelContext.save()
-            CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: modelContext)
+            try CollectionWriteSerializer.perform(
+                container: container,
+                timeout: .mainThread
+            ) { context in
+                let key = collectionKey
+                var descriptor = FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.collectionKey == key }
+                )
+                descriptor.fetchLimit = 1
+                guard let liveCard = try context.fetch(descriptor).first else {
+                    throw CollectionStoreError.missingDestinationRow(collectionKey)
+                }
+                CollectionArtworkStore.set(filename: nil, for: collectionKey, in: context)
+                liveCard.userArtworkFilename = nil
+                try context.save()
+                CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: context)
+            }
         } catch {
-            CollectionArtworkStore.set(
-                filename: oldFilename,
-                for: card.collectionKey,
-                in: modelContext
-            )
             errorMessage = error.localizedDescription
         }
     }
@@ -1132,34 +1171,68 @@ struct CollectionCardDetailView: View {
     }
 
     private var displayedQuantity: Int {
-        guard isLogicalConflict else { return card.quantity }
-        return projectedQuantity ?? logicalQuantity ?? card.quantity
+        projectedQuantity ?? (isLogicalConflict ? logicalQuantity ?? card.quantity : card.quantity)
     }
 
     /// The projected quantity is authoritative while duplicate rows are being
     /// healed. Read it on appearance and after a quantity mutation rather than
     /// rebuilding a full projection for every unrelated detail-view render.
     private func refreshDisplayedQuantity() {
-        guard isLogicalConflict else {
-            projectedQuantity = nil
-            return
+        let readContext = ModelContext(modelContext.container)
+        let collectionKey = card.collectionKey
+        do {
+            if isLogicalConflict {
+                let cards = try readContext.fetch(FetchDescriptor<CollectedCard>())
+                let projection = LogicalCollection.project(cards: cards) { $0.priceKey }
+                projectedQuantity = projection.byKey[collectionKey]?.quantity ?? logicalQuantity
+                lastSavedRowQuantity = cards.first { $0.collectionKey == collectionKey }?.quantity
+            } else {
+                var descriptor = FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.collectionKey == collectionKey }
+                )
+                descriptor.fetchLimit = 1
+                let liveQuantity = try readContext.fetch(descriptor).first?.quantity
+                projectedQuantity = liveQuantity
+                lastSavedRowQuantity = liveQuantity
+            }
+        } catch {
+            // Keep the last displayed value; the next explicit refresh can
+            // retry the read without blocking a detail-screen render.
         }
-        let cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        let projection = LogicalCollection.project(cards: cards) { $0.priceKey }
-        projectedQuantity = projection.byKey[card.collectionKey]?.quantity
-            ?? logicalQuantity
-            ?? card.quantity
     }
 
     private func updateQuantity(_ newQuantity: Int) {
         guard (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
-        do {
-            try CollectionStore(context: modelContext).setQuantity(
-                newQuantity,
-                for: card
-            )
+        if lastSavedRowQuantity == nil {
             refreshDisplayedQuantity()
+        }
+        guard let expectedCurrent = lastSavedRowQuantity else {
+            errorMessage = "The current quantity could not be verified. Try again."
+            return
+        }
+        let collectionKey = card.collectionKey
+        let treatments = card.magicTreatmentIDsRaw
+        let oldDisplayed = displayedQuantity
+        do {
+            let savedQuantity = try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                try CollectionStore(context: context).setQuantity(
+                    newQuantity,
+                    forCollectionKey: collectionKey,
+                    magicTreatmentIDsRaw: treatments,
+                    expectedCurrent: expectedCurrent
+                )
+            }
+            lastSavedRowQuantity = savedQuantity
+            projectedQuantity = isLogicalConflict
+                ? oldDisplayed + savedQuantity - expectedCurrent
+                : savedQuantity
         } catch {
+            if case CollectionStoreError.staleQuantity = error {
+                refreshDisplayedQuantity()
+            }
             errorMessage = error.localizedDescription
         }
     }
@@ -1168,8 +1241,18 @@ struct CollectionCardDetailView: View {
         // Deleting the row from here is what made removals invisible to
         // history. Ownership changes go through the store, which is the only
         // thing that knows the ledger has to hear about them.
+        let collectionKey = card.collectionKey
+        let treatments = card.magicTreatmentIDsRaw
         do {
-            let snapshot = try CollectionStore(context: modelContext).remove(card)
+            let snapshot = try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                try CollectionStore(context: context).remove(
+                    collectionKey: collectionKey,
+                    magicTreatmentIDsRaw: treatments
+                )
+            }
             onRemoved(snapshot)
             dismiss()
         } catch {
@@ -1208,11 +1291,16 @@ struct CollectionCardDetailView: View {
 
     @MainActor
     private func loadMarketplaceLinkIfNeeded() async {
-        guard card.cardGame == .magic,
-              card.magicTreatmentIDsRaw.isEmpty,
-              MagicTreatmentKeyCodec.collectionTreatmentIDs(from: card.collectionKey).isEmpty,
-              card.tcgplayerURL == nil else { return }
+        let container = modelContext.container
+        let collectionKey = card.collectionKey
+        let game = card.cardGame
+        let treatments = card.magicTreatmentIDsRaw
+        let hasMarketplaceURL = card.tcgplayerURL != nil
         let providerID = card.catalogProviderID ?? card.providerID
+        guard game == .magic,
+              treatments.isEmpty,
+              MagicTreatmentKeyCodec.collectionTreatmentIDs(from: collectionKey).isEmpty,
+              !hasMarketplaceURL else { return }
         guard !providerID.hasPrefix("csv:") else { return }
 
         guard let resolved = try? await ScryfallService().fetchCard(id: providerID),
@@ -1220,8 +1308,25 @@ struct CollectionCardDetailView: View {
               let url = resolved.purchaseURIs?.tcgplayer else {
             return
         }
-        card.tcgplayerURL = url.absoluteString
-        try? modelContext.save()
+        try? CollectionWriteSerializer.perform(
+            container: container,
+            timeout: .mainThread
+        ) { context in
+            let key = collectionKey
+            var descriptor = FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { $0.collectionKey == key }
+            )
+            descriptor.fetchLimit = 1
+            guard let liveCard = try context.fetch(descriptor).first,
+                  liveCard.tcgplayerURL == nil,
+                  liveCard.cardGame == game,
+                  (liveCard.catalogProviderID ?? liveCard.providerID) == providerID,
+                  liveCard.magicTreatmentIDsRaw == treatments else {
+                return
+            }
+            liveCard.tcgplayerURL = url.absoluteString
+            try context.save()
+        }
     }
 }
 
@@ -1957,7 +2062,10 @@ struct PriceHistoryChartModel: Equatable {
         let observedSpan = maximum - minimum
         let referencePrice = values.last ?? maximum
         let minimumVisualSpan = max(abs(referencePrice) * 0.02, 0.05)
-        let desiredSpan = max(observedSpan * 1.24, minimumVisualSpan)
+        // Keep the two-percent floor despite subtraction rounding when the
+        // chart is centered around a relatively expensive, nearly flat price.
+        let floatingPointGuard = max(minimumVisualSpan * 1e-6, abs(referencePrice).ulp * 8)
+        let desiredSpan = max(observedSpan * 1.24, minimumVisualSpan + floatingPointGuard)
         let midpoint = (minimum + maximum) / 2
         var lower = midpoint - desiredSpan / 2
         var upper = midpoint + desiredSpan / 2
@@ -2796,43 +2904,39 @@ enum CollectionArtworkStore {
     /// Move legacy synced filenames into the local mapping before any screen
     /// reads them. The old model field remains in the schema only so existing
     /// stores can migrate safely; it is cleared after the local copy exists.
-    static func migrateLegacyMappings(in context: ModelContext) {
-        do {
-            var legacyDescriptor = FetchDescriptor<CollectedCard>(
-                predicate: #Predicate { $0.userArtworkFilename != nil }
-            )
-            legacyDescriptor.sortBy = [
-                SortDescriptor(\CollectedCard.collectionKey, order: .forward),
-                SortDescriptor(\CollectedCard.dateAdded, order: .forward)
-            ]
-            let legacyCards = try context.fetch(legacyDescriptor)
-                .filter { $0.userArtworkFilename?.isEmpty == false }
-                .sorted {
-                    if $0.collectionKey != $1.collectionKey { return $0.collectionKey < $1.collectionKey }
-                    if $0.dateAdded != $1.dateAdded { return $0.dateAdded < $1.dateAdded }
-                    return ($0.userArtworkFilename ?? "") < ($1.userArtworkFilename ?? "")
-                }
-            guard !legacyCards.isEmpty else { return }
-
-            let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
-            var keysWithOverrides = Set(overrides.map(\.collectionKey))
-
-            var changed = false
-            for card in legacyCards {
-                if !keysWithOverrides.contains(card.collectionKey),
-                   let filename = card.userArtworkFilename,
-                   !filename.isEmpty {
-                    context.insert(LocalArtworkOverride(collectionKey: card.collectionKey, filename: filename))
-                    keysWithOverrides.insert(card.collectionKey)
-                }
-                card.userArtworkFilename = nil
-                changed = true
+    static func migrateLegacyMappings(in context: ModelContext) throws {
+        var legacyDescriptor = FetchDescriptor<CollectedCard>(
+            predicate: #Predicate { $0.userArtworkFilename != nil }
+        )
+        legacyDescriptor.sortBy = [
+            SortDescriptor(\CollectedCard.collectionKey, order: .forward),
+            SortDescriptor(\CollectedCard.dateAdded, order: .forward)
+        ]
+        let legacyCards = try context.fetch(legacyDescriptor)
+            .filter { $0.userArtworkFilename?.isEmpty == false }
+            .sorted {
+                if $0.collectionKey != $1.collectionKey { return $0.collectionKey < $1.collectionKey }
+                if $0.dateAdded != $1.dateAdded { return $0.dateAdded < $1.dateAdded }
+                return ($0.userArtworkFilename ?? "") < ($1.userArtworkFilename ?? "")
             }
-            guard changed else { return }
-            try context.save()
-        } catch {
-            context.rollback()
+        guard !legacyCards.isEmpty else { return }
+
+        let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+        var keysWithOverrides = Set(overrides.map(\.collectionKey))
+
+        var changed = false
+        for card in legacyCards {
+            if !keysWithOverrides.contains(card.collectionKey),
+               let filename = card.userArtworkFilename,
+               !filename.isEmpty {
+                context.insert(LocalArtworkOverride(collectionKey: card.collectionKey, filename: filename))
+                keysWithOverrides.insert(card.collectionKey)
+            }
+            card.userArtworkFilename = nil
+            changed = true
         }
+        guard changed else { return }
+        try context.save()
     }
 
     static func save(_ data: Data, filename requestedFilename: String? = nil) -> String? {
@@ -2919,13 +3023,53 @@ enum CollectionArtworkStore {
                     predicate: #Predicate { $0.filename == filename }
                 )
             )
-            guard references == 0 else { return true }
+            let legacyReferences = try context.fetchCount(
+                FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.userArtworkFilename == filename }
+                )
+            )
+            guard references == 0, legacyReferences == 0 else { return true }
             remove(filename: filename)
             return true
         } catch {
             // Keeping an orphan is safer than deleting a file while a reference
             // may still exist. Rekey cleanup retries this after a later save.
             return false
+        }
+    }
+
+    /// Removes old device-local files after the owning override was committed
+    /// away. A one-day age floor protects an image written just before its model
+    /// transaction finishes or rolls back.
+    @discardableResult
+    static func removeUnreferencedFiles(
+        keeping referencedFilenames: Set<String>,
+        olderThan cutoff: Date
+    ) -> Int {
+        guard let directory,
+              let urls = try? FileManager.default.contentsOfDirectory(
+                at: directory,
+                includingPropertiesForKeys: [.isRegularFileKey, .contentModificationDateKey],
+                options: [.skipsHiddenFiles]
+              ) else { return 0 }
+        let orphans = urls.filter { url in
+            guard let values = try? url.resourceValues(forKeys: [.isRegularFileKey, .contentModificationDateKey]),
+                  values.isRegularFile == true,
+                  let modifiedAt = values.contentModificationDate,
+                  modifiedAt < cutoff,
+                  !referencedFilenames.contains(url.lastPathComponent) else { return false }
+            return true
+        }
+        guard !orphans.isEmpty else { return 0 }
+        imageCache.removeAllObjects()
+        return orphans.reduce(into: 0) { removed, url in
+            do {
+                try FileManager.default.removeItem(at: url)
+                removed += 1
+            } catch {
+                // A failed deletion is safe and will be retried by the next
+                // store-ready sweep.
+            }
         }
     }
 }

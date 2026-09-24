@@ -1,7 +1,13 @@
 import SwiftUI
 import SwiftData
+import OSLog
 
 struct ContentView: View {
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "com.seankeller.CardScanner",
+        category: "CollectionBackfill"
+    )
+
     @Environment(\.modelContext) private var modelContext
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var scanSummaryStore: ScanSessionSummaryStore
@@ -29,6 +35,7 @@ struct ContentView: View {
     private let refresh = PriceRefreshController.shared
     @State private var history = PortfolioHistoryStore()
     @State private var writeCoordinator = DerivedStateWriteCoordinator()
+    @State private var refreshCompletionSignal = PriceRefreshCompletionSignal()
     /// One catalog actor is shared by every Collection/Browse route in this
     /// app session. Its protected checklist and in-memory caches therefore do
     /// not reset when the user pushes into a set and returns.
@@ -166,7 +173,7 @@ struct ContentView: View {
             case "CollectionTilesLongContent":
                 PortfolioDebugFixtures.seedCollectionFooter4aIfNeeded(in: modelContext)
             case "SealedArtwork":
-                seedSealedArtworkQA()
+                await seedSealedArtworkQA()
             case "CardMovement":
                 PortfolioDebugFixtures.seedMovementIfNeeded(in: modelContext)
                 history.range = .oneMonth
@@ -193,9 +200,11 @@ struct ContentView: View {
             default:
                 break
             }
-            try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+            await backfillExistingCollectionAtLaunch()
             let storageGeneration = CollectionStorageGeneration.shared
             guard let storageToken = storageGeneration.currentToken() else { return }
+            _ = await BackgroundPriceRefresh.preemptActiveRunForForeground()
+            await refresh.preemptBackgroundPass()
             _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
                 in: modelContext,
                 storageToken: storageToken,
@@ -206,9 +215,11 @@ struct ContentView: View {
         }
 #else
         .task {
-            try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+            await backfillExistingCollectionAtLaunch()
             let storageGeneration = CollectionStorageGeneration.shared
             guard let storageToken = storageGeneration.currentToken() else { return }
+            _ = await BackgroundPriceRefresh.preemptActiveRunForForeground()
+            await refresh.preemptBackgroundPass()
             _ = await MagicTreatmentMigrationCoordinator.shared.runLocal(
                 in: modelContext,
                 storageToken: storageToken,
@@ -222,6 +233,7 @@ struct ContentView: View {
             refresh.registerPortfolio(portfolio)
             refresh.registerPriceSnapshotStore(priceSnapshot)
             refresh.registerRevisionStore(revisionStore)
+            refresh.registerCompletionSignal(refreshCompletionSignal)
             await priceSnapshot.bootstrap(container: modelContext.container)
         }
         .task(id: hasStartedPortfolio) {
@@ -256,7 +268,8 @@ struct ContentView: View {
                 revisionStore: revisionStore,
                 refresh: refresh,
                 storageGeneration: CollectionStorageGeneration.shared,
-                hasStartedPortfolio: hasStartedPortfolio
+                hasStartedPortfolio: hasStartedPortfolio,
+                completionSignal: refreshCompletionSignal
             )
         )
         .background(
@@ -297,7 +310,7 @@ struct ContentView: View {
             // Real abandonment, which is the only thing that should stop a
             // pass. The `task(id:)` above deliberately does not: its identity
             // is derived from the price records the refresh itself writes.
-            refresh.cancelRefresh()
+            refresh.cancelRefresh(onlyIfOwnedBy: .foreground)
         }
         // Keep the coordinator in the outer environment so the background
         // monitor receives it as well as the tab content above it.
@@ -448,6 +461,29 @@ struct ContentView: View {
         }
     }
 
+    /// The launch history backfill must finish before portfolio replay begins.
+    /// Wait on a utility task so a long ownership write cannot block the main
+    /// thread, and report persistent store failures instead of silently
+    /// skipping this one-time migration.
+    @MainActor
+    private func backfillExistingCollectionAtLaunch() async {
+        let container = modelContext.container
+        do {
+            try await Task.detached(priority: .utility) {
+                try CollectionWriteSerializer.perform(
+                    container: container,
+                    timeout: .wait
+                ) { context in
+                    try CollectionStore(context: context).backfillExistingCollectionIfNeeded()
+                }
+            }.value
+        } catch {
+            Self.logger.error(
+                "Launch collection-history backfill failed: \(error.localizedDescription, privacy: .private)"
+            )
+        }
+    }
+
     @MainActor
     private func recomputeAtDayRollover() async {
         while !Task.isCancelled {
@@ -462,40 +498,47 @@ struct ContentView: View {
 
 #if DEBUG || CARD_FINISH_PERF_HARNESS
     @MainActor
-    private func seedSealedArtworkQA() {
-        let store = CollectionStore(context: modelContext)
+    private func seedSealedArtworkQA() async {
+        let container = modelContext.container
         let artworkURL = URL(
             string: "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         )
-        _ = try? store.addSealed(
-            SealedProductSummary(
-                id: "ui-artwork-product",
-                name: "Legendary Treasures Booster Box",
-                setName: "Legendary Treasures",
-                variantID: "ui-artwork-variant",
-                marketPriceUSD: 18_750,
-                updatedAt: .now,
-                imageURL: artworkURL
-            ),
-            game: .pokemon
-        )
+        try? await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+            try CollectionWriteSerializer.perform(
+                container: container,
+                timeout: .mainThread
+            ) { context in
+                let store = CollectionStore(context: context)
+                _ = try store.addSealed(
+                    SealedProductSummary(
+                        id: "ui-artwork-product",
+                        name: "Legendary Treasures Booster Box",
+                        setName: "Legendary Treasures",
+                        variantID: "ui-artwork-variant",
+                        marketPriceUSD: 18_750,
+                        updatedAt: .now,
+                        imageURL: artworkURL
+                    ),
+                    game: .pokemon
+                )
 
-        guard let unavailable = try? store.addSealed(
-            SealedProductSummary(
-                id: "ui-no-artwork-product",
-                name: "Provider Artwork Missing",
-                setName: "Artwork Diagnostics",
-                variantID: "ui-no-artwork-variant",
-                marketPriceUSD: 25,
-                updatedAt: .now,
-                imageURL: nil
-            ),
-            game: .pokemon
-        ) else { return }
-        if let row = store.card(forKey: unavailable.collectionKey) {
-            CollectionCatalogNormalizer.recordCatalogMetadataCheck(on: row, at: .now)
+                let unavailable = try store.addSealed(
+                    SealedProductSummary(
+                        id: "ui-no-artwork-product",
+                        name: "Provider Artwork Missing",
+                        setName: "Artwork Diagnostics",
+                        variantID: "ui-no-artwork-variant",
+                        marketPriceUSD: 25,
+                        updatedAt: .now,
+                        imageURL: nil
+                    ),
+                    game: .pokemon
+                )
+                guard let row = store.card(forKey: unavailable.collectionKey) else { return }
+                CollectionCatalogNormalizer.recordCatalogMetadataCheck(on: row, at: .now)
+                try context.save()
+            }
         }
-        try? modelContext.save()
     }
 #endif
 }

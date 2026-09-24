@@ -563,8 +563,16 @@ struct PortfolioView: View {
         let defects = portfolio.summary?.defects ?? portfolio.integrityDefects
         guard !defects.isEmpty else { return }
         do {
-            try CollectionStore.repairQuantityMismatches(defects, in: modelContext)
-            portfolio.recompute(context: modelContext)
+            try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                try CollectionStore.repairQuantityMismatches(defects, in: context)
+            }
+            Task { @MainActor in
+                await Task.yield()
+                portfolio.recompute(context: modelContext)
+            }
         } catch {
             quantityRepairError = "No changes were saved. The repair can be retried after the records are available."
         }
@@ -690,7 +698,12 @@ struct PortfolioView: View {
 
     private func undoRemoval(_ removed: RemovedCardSnapshot) {
         do {
-            try CollectionStore(context: modelContext).restore(removed)
+            try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                try CollectionStore(context: context).restore(removed)
+            }
             pendingRemoval = nil
         } catch {
             removalErrorMessage = error.localizedDescription

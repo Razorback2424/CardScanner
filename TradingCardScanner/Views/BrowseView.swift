@@ -404,7 +404,7 @@ struct BrowseView: View {
         }
         .task {
             await model.loadSets()
-            backfillPokemonReleaseOrder()
+            await backfillPokemonReleaseOrder()
             requestSetCompletionRebuild()
         }
         .task {
@@ -428,7 +428,8 @@ struct BrowseView: View {
         }
     }
 
-    private func backfillPokemonReleaseOrder() {
+    @MainActor
+    private func backfillPokemonReleaseOrder() async {
         guard UserDefaults.standard.integer(
             forKey: Self.pokemonReleaseOrderBackfillVersionKey
         ) < Self.pokemonReleaseOrderBackfillVersion else { return }
@@ -454,36 +455,43 @@ struct BrowseView: View {
         }
 
         do {
-            let pokemonRawValue = CardGame.pokemon.rawValue
-            let ownedCards = try modelContext.fetch(
-                FetchDescriptor<CollectedCard>(
-                    predicate: #Predicate { $0.game == pokemonRawValue }
-                )
-            )
-            var changed = false
-            for card in ownedCards {
-                let providerID = card.catalogProviderID ?? card.providerID
-                guard let set = set(for: providerID) else { continue }
-
-                // Repair rows tagged with a print run their set never had. The
-                // e-card sets were split into 1st Edition and Unlimited runs that
-                // were never printed, and a row still carrying one would stop
-                // counting toward its set and keep pricing under a storage id that
-                // names an edition the vendor has no listing for.
-                if card.pokemonPrintRunRaw != nil,
-                   !PokemonMasterSetDefinition.hasSeparatePrintRuns(
-                        setProviderID: set.providerID
-                   ) {
-                    card.pokemonPrintRunRaw = nil
-                    changed = true
-                }
-
-                if card.setReleaseOrder != set.sortRank {
-                    card.setReleaseOrder = set.sortRank
-                    changed = true
+            try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                try CollectionWriteSerializer.perform(
+                    container: modelContext.container,
+                    timeout: .mainThread
+                ) { context in
+                    let pokemonRawValue = CardGame.pokemon.rawValue
+                    let ownedCards = try context.fetch(
+                        FetchDescriptor<CollectedCard>(
+                            predicate: #Predicate { $0.game == pokemonRawValue }
+                        )
+                    )
+                    for card in ownedCards {
+                        let providerID = card.catalogProviderID ?? card.providerID
+                        guard let set = set(for: providerID) else { continue }
+                        if card.pokemonPrintRunRaw != nil,
+                           !PokemonMasterSetDefinition.hasSeparatePrintRuns(
+                                setProviderID: set.providerID
+                           ) {
+                            let oldPriceKey = card.priceKey
+                            card.pokemonPrintRunRaw = nil
+                            try PriceIdentityLineageMigration.migrate(
+                                from: oldPriceKey,
+                                to: card.priceKey,
+                                game: card.cardGame,
+                                printingID: card.priceStorageID,
+                                variantID: card.variantID,
+                                treatmentIDs: card.priceTreatmentIDs,
+                                in: context
+                            )
+                        }
+                        if card.setReleaseOrder != set.sortRank {
+                            card.setReleaseOrder = set.sortRank
+                        }
+                    }
+                    if context.hasChanges { try context.save() }
                 }
             }
-            if changed { try modelContext.save() }
             UserDefaults.standard.set(
                 Self.pokemonReleaseOrderBackfillVersion,
                 forKey: Self.pokemonReleaseOrderBackfillVersionKey

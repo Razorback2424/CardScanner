@@ -641,7 +641,12 @@ struct CollectionView: View {
 
     private func undoRemoval(_ removed: RemovedCardSnapshot) {
         do {
-            try CollectionStore(context: modelContext).restore(removed)
+            try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                try CollectionStore(context: context).restore(removed)
+            }
             pendingRemoval = nil
         } catch {
             removalErrorMessage = error.localizedDescription
@@ -1254,7 +1259,7 @@ struct CollectionView: View {
 
 }
 
-private struct CollectionCardDestination: View {
+struct CollectionCardDestination: View {
     @Query private var cards: [CollectedCard]
 
     let row: CollectionRow
@@ -1263,6 +1268,7 @@ private struct CollectionCardDestination: View {
     let isLogicalConflict: Bool
     @ObservedObject var history: PortfolioHistoryStore
     let onRemoved: (RemovedCardSnapshot) -> Void
+    let onMissingPlaceholderAppeared: (@MainActor () -> Void)?
 
     init(
         row: CollectionRow,
@@ -1270,7 +1276,8 @@ private struct CollectionCardDestination: View {
         artworkReason: ArtworkDiagnosticReason?,
         isLogicalConflict: Bool,
         history: PortfolioHistoryStore,
-        onRemoved: @escaping (RemovedCardSnapshot) -> Void
+        onRemoved: @escaping (RemovedCardSnapshot) -> Void,
+        onMissingPlaceholderAppeared: (@MainActor () -> Void)? = nil
     ) {
         self.row = row
         self.unpricedReason = unpricedReason
@@ -1278,6 +1285,7 @@ private struct CollectionCardDestination: View {
         self.isLogicalConflict = isLogicalConflict
         self.history = history
         self.onRemoved = onRemoved
+        self.onMissingPlaceholderAppeared = onMissingPlaceholderAppeared
         let collectionKey = row.id
         self._cards = Query(
             filter: #Predicate<CollectedCard> { $0.collectionKey == collectionKey },
@@ -1304,6 +1312,8 @@ private struct CollectionCardDestination: View {
                 systemImage: "rectangle.stack",
                 description: Text("It was removed, or the current filters exclude it.")
             )
+            .accessibilityIdentifier("collection-card-not-shown")
+            .onAppear { onMissingPlaceholderAppeared?() }
         }
     }
 }

@@ -262,17 +262,31 @@ struct CatalogCardDetailView: View {
 
     private func commit(_ resolved: ResolvedVariant) {
         guard let details else { return }
-        let store = CollectionStore(context: modelContext)
         let mutation: CollectionMutation
+        let storageID: String
         do {
-            mutation = try store.add(
-                details.card,
-                resolved: resolved,
-                pokemonPrintRun: summary.pokemonPrintRun,
-                identityResolution: .catalogSelected,
-                setReleaseOrder: details.set.releaseOrder,
-                matchCatalogAliases: true
-            )
+            (mutation, storageID) = try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                let mutation = try CollectionStore(context: context).add(
+                    details.card,
+                    resolved: resolved,
+                    pokemonPrintRun: summary.pokemonPrintRun,
+                    identityResolution: .catalogSelected,
+                    setReleaseOrder: details.set.releaseOrder,
+                    matchCatalogAliases: true
+                )
+                let collectionKey = mutation.collectionKey
+                var descriptor = FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.collectionKey == collectionKey }
+                )
+                descriptor.fetchLimit = 1
+                guard let savedRow = try context.fetch(descriptor).first else {
+                    throw CollectionStoreError.missingDestinationRow(collectionKey)
+                }
+                return (mutation, savedRow.priceStorageID)
+            }
         } catch {
             // Everything below stages price and artwork metadata for a row that
             // does not exist. Returning silently made the button a no-op the
@@ -281,8 +295,6 @@ struct CatalogCardDetailView: View {
             addFailure = error.localizedDescription
             return
         }
-        let stored = store.card(forKey: mutation.collectionKey)
-        let storageID = stored?.priceStorageID ?? details.card.providerID
         // A rejected quote can stage a failure marker before `store` returns
         // false. Isolate that write so its rollback cannot discard unrelated
         // edits in the view's shared context.
@@ -416,7 +428,12 @@ struct CatalogCardDetailView: View {
             Button("Undo") {
                 undoTask?.cancel()
                 do {
-                    try CollectionStore(context: modelContext).undo(mutation)
+                    try CollectionWriteSerializer.perform(
+                        container: modelContext.container,
+                        timeout: .mainThread
+                    ) { context in
+                        try CollectionStore(context: context).undo(mutation)
+                    }
                     pendingMutation = nil
                 } catch {
                     addAlertTitle = "Couldn't undo card"

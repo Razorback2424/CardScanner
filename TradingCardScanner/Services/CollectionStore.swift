@@ -58,32 +58,66 @@ enum CollectionQuantityLimits {
 /// identity is normalized or a physical copy is corrected to another key.
 enum LocalArtworkOverrideRekeyer {
     private final class CleanupQueue: @unchecked Sendable {
-        private let lock = NSLock()
-        private var filenamesByContainer: [ObjectIdentifier: Set<String>] = [:]
+        private final class ContextEntry {
+            weak var context: ModelContext?
+            var filenames = Set<String>()
 
-        func add(_ filename: String, container: ModelContainer) {
+            init(context: ModelContext) {
+                self.context = context
+            }
+        }
+
+        private let lock = NSLock()
+        private var entriesByContext: [ObjectIdentifier: ContextEntry] = [:]
+
+        func add(_ filename: String, context: ModelContext) {
             guard !filename.isEmpty else { return }
             lock.lock()
-            filenamesByContainer[ObjectIdentifier(container), default: []].insert(filename)
+            let identifier = ObjectIdentifier(context)
+            let entry: ContextEntry
+            if let existing = entriesByContext[identifier], existing.context === context {
+                entry = existing
+            } else {
+                entry = ContextEntry(context: context)
+                entriesByContext[identifier] = entry
+            }
+            entry.filenames.insert(filename)
             lock.unlock()
         }
 
-        func take(container: ModelContainer) -> Set<String> {
+        func take(context: ModelContext) -> Set<String> {
             lock.lock()
             defer { lock.unlock() }
-            return filenamesByContainer.removeValue(forKey: ObjectIdentifier(container)) ?? []
+            let identifier = ObjectIdentifier(context)
+            guard let entry = entriesByContext[identifier], entry.context === context else {
+                entriesByContext[identifier] = nil
+                return []
+            }
+            entriesByContext[identifier] = nil
+            return entry.filenames
         }
 
-        func restore(_ filenames: Set<String>, container: ModelContainer) {
+        func restore(_ filenames: Set<String>, context: ModelContext) {
             guard !filenames.isEmpty else { return }
             lock.lock()
-            filenamesByContainer[ObjectIdentifier(container), default: []].formUnion(filenames)
+            let identifier = ObjectIdentifier(context)
+            let entry: ContextEntry
+            if let existing = entriesByContext[identifier], existing.context === context {
+                entry = existing
+            } else {
+                entry = ContextEntry(context: context)
+                entriesByContext[identifier] = entry
+            }
+            entry.filenames.formUnion(filenames)
             lock.unlock()
         }
 
-        func discard(container: ModelContainer) {
+        func discard(context: ModelContext) {
             lock.lock()
-            filenamesByContainer[ObjectIdentifier(container)] = nil
+            let identifier = ObjectIdentifier(context)
+            if entriesByContext[identifier]?.context === context {
+                entriesByContext[identifier] = nil
+            }
             lock.unlock()
         }
     }
@@ -172,15 +206,38 @@ enum LocalArtworkOverrideRekeyer {
         guard let move else { return }
 
         let destinationPreferred = move.destinationRows.max(by: isOlder)
+        if case .preserveExisting = move.destinationPolicy {
+            let sourcePreferred = move.sourceRows.max(by: isOlder)
+            if destinationPreferred == nil, let sourcePreferred {
+                context.insert(
+                    LocalArtworkOverride(
+                        collectionKey: move.destinationKey,
+                        filename: sourcePreferred.filename,
+                        updatedAt: sourcePreferred.updatedAt
+                    )
+                )
+            }
+            for duplicate in move.sourceRows where duplicate !== sourcePreferred {
+                delete(duplicate, in: context)
+            }
+            if let destinationPreferred {
+                for duplicate in move.destinationRows where duplicate !== destinationPreferred {
+                    delete(duplicate, in: context)
+                }
+            }
+            // Keep one mapping on the source key even when the source row is
+            // about to disappear. Undo and recent-removal restore can then
+            // recover that card's own image.
+            return
+        }
+
         if move.preservingSource {
             if let destination = destinationPreferred {
-                if case .newestWins = move.destinationPolicy {
-                    if destination.filename != move.preferred.filename {
-                        cleanupQueue.add(destination.filename, container: context.container)
-                    }
-                    destination.filename = move.preferred.filename
-                    destination.updatedAt = move.preferred.updatedAt
+                if destination.filename != move.preferred.filename {
+                    cleanupQueue.add(destination.filename, context: context)
                 }
+                destination.filename = move.preferred.filename
+                destination.updatedAt = move.preferred.updatedAt
                 for duplicate in move.destinationRows where duplicate !== destination {
                     delete(duplicate, in: context)
                 }
@@ -196,17 +253,6 @@ enum LocalArtworkOverrideRekeyer {
             return
         }
 
-        if case .preserveExisting = move.destinationPolicy,
-           let destination = destinationPreferred {
-            for row in move.sourceRows where row !== destination {
-                delete(row, in: context)
-            }
-            for duplicate in move.destinationRows where duplicate !== destination {
-                delete(duplicate, in: context)
-            }
-            return
-        }
-
         move.preferred.collectionKey = move.destinationKey
         for duplicate in move.sourceRows + move.destinationRows where duplicate !== move.preferred {
             delete(duplicate, in: context)
@@ -214,28 +260,112 @@ enum LocalArtworkOverrideRekeyer {
     }
 
     /// Files are removed only after the model save that deleted their mappings.
-    /// If a failed reference lookup prevents cleanup, retain the candidates for
-    /// the next successful save on this container.
+    /// If a reference lookup fails, retain the candidate for another save on
+    /// this context; launch-time sweeping eventually handles a context that is
+    /// no longer active.
     static func removePendingFilesAfterSave(in context: ModelContext) {
-        let candidates = cleanupQueue.take(container: context.container)
+        let candidates = cleanupQueue.take(context: context)
         let failedChecks = Set(candidates.filter {
             !CollectionArtworkStore.removeIfUnreferenced($0, in: context)
         })
-        cleanupQueue.restore(failedChecks, container: context.container)
+        cleanupQueue.restore(failedChecks, context: context)
     }
 
     static func discardPendingFilesAfterRollback(in context: ModelContext) {
-        cleanupQueue.discard(container: context.container)
+        cleanupQueue.discard(context: context)
     }
 
     private static func delete(_ override: LocalArtworkOverride, in context: ModelContext) {
-        cleanupQueue.add(override.filename, container: context.container)
+        cleanupQueue.add(override.filename, context: context)
         context.delete(override)
+    }
+
+    static func enqueueFileRemoval(_ filename: String, in context: ModelContext) {
+        cleanupQueue.add(filename, context: context)
     }
 
     private static func isOlder(_ lhs: LocalArtworkOverride, _ rhs: LocalArtworkOverride) -> Bool {
         if lhs.updatedAt != rhs.updatedAt { return lhs.updatedAt < rhs.updatedAt }
         return lhs.filename < rhs.filename
+    }
+}
+
+/// Repairs the local half of artwork identity transitions and retires only
+/// references that are outside the collection's restore window.
+enum ArtworkOrphanSweep {
+    struct Report: Equatable, Sendable {
+        let repairedLegacyAliases: Int
+        let removedOverrides: Int
+        let removedFiles: Int
+    }
+
+    static func run(in context: ModelContext, now: Date = .now) throws -> Report {
+        var repairedAliases = 0
+        var removedOverrides = 0
+        do {
+            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let liveKeys = Set(cards.map(\.collectionKey))
+            var canonicalKeysByLegacyKey: [String: Set<String>] = [:]
+            for canonicalKey in liveKeys {
+                for legacyKey in MagicTreatmentKeyCodec.legacyCollectionKeys(for: canonicalKey) {
+                    canonicalKeysByLegacyKey[legacyKey, default: []].insert(canonicalKey)
+                }
+            }
+
+            let overrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+            let orphanKeys = Set(overrides.map(\.collectionKey).filter { !liveKeys.contains($0) })
+            for legacyKey in orphanKeys {
+                guard let canonicalKeys = canonicalKeysByLegacyKey[legacyKey],
+                      canonicalKeys.count == 1,
+                      let canonicalKey = canonicalKeys.first else { continue }
+                try LocalArtworkOverrideRekeyer.rekey(
+                    from: legacyKey,
+                    to: canonicalKey,
+                    destinationPolicy: .newestWins,
+                    in: context
+                )
+                repairedAliases += 1
+            }
+
+            let liveOverrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+            let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+            let recentActivityKeys = Set(
+                activities
+                    .filter { now.timeIntervalSince($0.occurredAt) <= CollectionActivity.restoreWindow }
+                    .map(\.collectionKey)
+            )
+            for override in liveOverrides
+            where !liveKeys.contains(override.collectionKey)
+                && !recentActivityKeys.contains(override.collectionKey)
+                && now.timeIntervalSince(override.updatedAt) > CollectionActivity.restoreWindow {
+                LocalArtworkOverrideRekeyer.enqueueFileRemoval(override.filename, in: context)
+                context.delete(override)
+                removedOverrides += 1
+            }
+
+            if context.hasChanges {
+                try context.save()
+            }
+            LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
+
+            let remainingOverrides = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+            let remainingCards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let referencedFilenames = Set(remainingOverrides.map(\.filename))
+                .union(remainingCards.compactMap(\.userArtworkFilename))
+            let removedFiles = CollectionArtworkStore.removeUnreferencedFiles(
+                keeping: referencedFilenames,
+                olderThan: now.addingTimeInterval(-24 * 60 * 60)
+            )
+            return Report(
+                repairedLegacyAliases: repairedAliases,
+                removedOverrides: removedOverrides,
+                removedFiles: removedFiles
+            )
+        } catch {
+            context.rollback()
+            LocalArtworkOverrideRekeyer.discardPendingFilesAfterRollback(in: context)
+            throw error
+        }
     }
 }
 
@@ -266,6 +396,16 @@ actor ScannerCollectionWriter {
     }
     #endif
 
+    private func performOwnershipWrite<T>(
+        _ body: (ModelContext) throws -> T
+    ) throws -> T {
+        try CollectionWriteSerializer.perform(
+            container: modelContext.container,
+            timeout: .wait,
+            body
+        )
+    }
+
     func add(_ candidate: CollectionCommitCandidate) throws -> CollectionMutation {
         let persistenceID = PerformanceSignpost.makeID()
         let signpostState = PerformanceSignpost.beginInterval(
@@ -277,8 +417,9 @@ actor ScannerCollectionWriter {
             PerformanceSignpost.endInterval("scannerPersistence", signpostState, "operation=add")
         }
 
-        do {
-            let store = CollectionStore(context: modelContext)
+        return try performOwnershipWrite { context in
+          do {
+            let store = CollectionStore(context: context)
 
             if let slab = candidate.subject.slab {
                 switch candidate.gradedOutcome {
@@ -305,7 +446,7 @@ actor ScannerCollectionWriter {
                         resolved: candidate.resolved,
                         savesChanges: false
                     )
-                    try saveModelContext()
+                    try saveModelContext(context)
                     store.invalidateIdentityAliasCache()
                     return mutation
                 }
@@ -330,31 +471,68 @@ actor ScannerCollectionWriter {
             }
             // Both add and correction use the same staging gate: a lookup with
             // no provider observation must leave the price ledger untouched.
-            stagePrice(candidate.price, for: stored)
-            try saveModelContext()
+            stagePrice(candidate.price, for: stored, in: context)
+            try saveModelContext(context)
             return mutation
-        } catch {
+          } catch {
             // The staged add, ledger event, activity and price write are one
             // transaction from the writer's perspective. In particular, a
             // failed final save must not leave the context carrying the add
             // into the next successful scan.
-            modelContext.rollback()
+            context.rollback()
             throw error
+          }
         }
     }
+
+    /// A newly scanned slab is a plain ownership insert. Only the uncommon
+    /// case that merges into an existing unbound slab needs the price-identity
+    /// migration gate before `addGraded` promotes its vendor identity.
+    func requiresPriceIdentityExclusivity(
+        for candidate: CollectionCommitCandidate
+    ) -> Bool {
+        guard let slab = candidate.subject.slab,
+              let outcome = candidate.gradedOutcome,
+              case .bound = outcome else { return false }
+        return PriceIdentityWritePreflight.requiresGradedPromotion(
+            container: modelContainer,
+            game: candidate.card.game,
+            providerID: candidate.card.providerID,
+            grade: slab.grade,
+            company: slab.company,
+            certificationNumber: slab.certificationNumber,
+            treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
+                from: candidate.card.unambiguousMagicTreatments
+            )
+        )
+    }
+
+    func requiresGradedBindingPromotion(for collectionKey: String) -> Bool {
+        let context = ModelContext(modelContainer)
+        var descriptor = FetchDescriptor<CollectedCard>(
+            predicate: #Predicate { $0.collectionKey == collectionKey }
+        )
+        descriptor.fetchLimit = 1
+        guard let rows = try? context.fetch(descriptor),
+              let row = rows.first else { return false }
+        return row.itemKind == .gradedCard && row.justTCGVariantID == nil
+    }
+
 
     func refineGradedCertification(
         for scan: RecentScan,
         to evidence: GradedSlabEvidence
     ) throws -> CollectionMutation? {
         guard let certificationNumber = evidence.certificationNumber else { return nil }
-        return try CollectionStore(context: modelContext).recordGradedCertificationRefinement(
-            underlying: scan.card,
-            previous: scan.mutation,
-            company: evidence.company,
-            grade: evidence.grade,
-            certificationNumber: certificationNumber
-        )
+        return try performOwnershipWrite { context in
+            try CollectionStore(context: context).recordGradedCertificationRefinement(
+                underlying: scan.card,
+                previous: scan.mutation,
+                company: evidence.company,
+                grade: evidence.grade,
+                certificationNumber: certificationNumber
+            )
+        }
     }
 
     /// Replaces one raw scanner acquisition with its graded identity in one
@@ -367,8 +545,9 @@ actor ScannerCollectionWriter {
         guard scan.subject.slab == nil else {
             throw CollectionStoreError.ledgerConflict("scan is already graded")
         }
-        do {
-            let store = CollectionStore(context: modelContext)
+        return try performOwnershipWrite { context in
+          do {
+            let store = CollectionStore(context: context)
             try store.undo(scan.mutation, savesChanges: false)
             let mutation = try store.addScannedGraded(
                 underlying: scan.card,
@@ -381,12 +560,13 @@ actor ScannerCollectionWriter {
                 resolved: scan.resolved,
                 savesChanges: false
             )
-            try saveModelContext()
+            try saveModelContext(context)
             store.invalidateIdentityAliasCache()
             return mutation
         } catch {
-            modelContext.rollback()
+            context.rollback()
             throw error
+          }
         }
     }
 
@@ -397,30 +577,32 @@ actor ScannerCollectionWriter {
         collectionKey: String,
         variant: GradedVariant
     ) throws -> GradedVariantBindingReceipt? {
-        do {
-            let collectionStore = CollectionStore(context: modelContext)
+        return try performOwnershipWrite { context in
+          do {
+            let collectionStore = CollectionStore(context: context)
             guard let row = try collectionStore.card(forAnyKey: collectionKey),
                   row.itemKind == .gradedCard else { return nil }
-            let priceStore = PriceStore(context: modelContext)
+            let priceStore = PriceStore(context: context)
             let receipt = try GradedVariantBinding.apply(
                 variant,
                 to: row,
                 store: priceStore,
-                context: modelContext,
+                context: context,
                 variantID: row.variantID,
                 treatmentIDs: row.priceTreatmentIDs,
                 at: .now
             )
             guard receipt.wasAccepted else {
-                modelContext.rollback()
+                context.rollback()
                 return nil
             }
-            try saveModelContext()
+            try saveModelContext(context)
             collectionStore.invalidateIdentityAliasCache()
             return receipt
-        } catch {
-            modelContext.rollback()
+          } catch {
+            context.rollback()
             throw error
+          }
         }
     }
 
@@ -432,11 +614,12 @@ actor ScannerCollectionWriter {
         coverage: GradedMarketCoverage,
         at date: Date = .now
     ) throws -> Bool {
-        do {
-            let collectionStore = CollectionStore(context: modelContext)
+        return try performOwnershipWrite { context in
+          do {
+            let collectionStore = CollectionStore(context: context)
             guard let row = try collectionStore.card(forAnyKey: collectionKey),
                   row.itemKind == .gradedCard else { return false }
-            let accepted = PriceStore(context: modelContext).recordGradedMarketCoverage(
+            let accepted = PriceStore(context: context).recordGradedMarketCoverage(
                 coverage,
                 game: row.cardGame,
                 printingID: row.priceStorageID,
@@ -445,18 +628,19 @@ actor ScannerCollectionWriter {
                 treatmentIDs: row.priceTreatmentIDs
             )
             guard accepted else {
-                modelContext.rollback()
+                context.rollback()
                 return false
             }
-            try saveModelContext()
+            try saveModelContext(context)
             return true
-        } catch {
-            modelContext.rollback()
+          } catch {
+            context.rollback()
             throw error
+          }
         }
     }
 
-    private func saveModelContext() throws {
+    private func saveModelContext(_ context: ModelContext) throws {
         #if DEBUG
         if let saveOverrideForTesting {
             self.saveOverrideForTesting = nil
@@ -464,7 +648,7 @@ actor ScannerCollectionWriter {
             return
         }
         #endif
-        try modelContext.save()
+        try context.save()
     }
 
     func undo(_ mutation: CollectionMutation) throws {
@@ -477,7 +661,9 @@ actor ScannerCollectionWriter {
         defer {
             PerformanceSignpost.endInterval("scannerPersistence", signpostState, "operation=undo")
         }
-        try CollectionStore(context: modelContext).undo(mutation)
+        try performOwnershipWrite { context in
+            try CollectionStore(context: context).undo(mutation)
+        }
     }
 
     func correct(
@@ -502,38 +688,45 @@ actor ScannerCollectionWriter {
             PerformanceSignpost.endInterval("scannerPersistence", signpostState, "operation=correct")
         }
 
-        if !isGraded {
-            stagePrice(
-                price,
-                for: card,
-                variant: corrected.variant,
-                pokemonPrintRun: pokemonPrintRun
-            )
-        }
+        return try performOwnershipWrite { context in
+            if !isGraded {
+                stagePrice(
+                    price,
+                    for: card,
+                    variant: corrected.variant,
+                    pokemonPrintRun: pokemonPrintRun,
+                    in: context
+                )
+            }
 
-        let mutation = try CollectionStore(context: modelContext).recordVariantCorrection(
-            for: card,
-            from: current,
-            to: corrected,
-            pokemonPrintRun: pokemonPrintRun,
-            previousCollectionKey: previousCollectionKey,
-            previousLedgerOperationIDs: previousLedgerOperationIDs,
-            activityID: activityID,
-            quantity: quantity
-        )
-        guard mutation != nil else {
-            // Price staging happens before correction so a successful correction
-            // saves both facts atomically. A missing/stale source must not leave
-            // an unsaved price mutation in this actor's context for a later call.
-            modelContext.rollback()
-            return nil
+            let mutation = try CollectionStore(context: context).recordVariantCorrection(
+                for: card,
+                from: current,
+                to: corrected,
+                pokemonPrintRun: pokemonPrintRun,
+                previousCollectionKey: previousCollectionKey,
+                previousLedgerOperationIDs: previousLedgerOperationIDs,
+                activityID: activityID,
+                quantity: quantity
+            )
+            guard mutation != nil else {
+                // Price staging happens before correction so a successful correction
+                // saves both facts atomically. A missing/stale source must not leave
+                // an unsaved price mutation in this call's context for a later scan.
+                context.rollback()
+                return nil
+            }
+            return mutation
         }
-        return mutation
     }
 
-    private func stagePrice(_ lookup: PriceLookup, for card: CollectedCard) {
+    private func stagePrice(
+        _ lookup: PriceLookup,
+        for card: CollectedCard,
+        in context: ModelContext
+    ) {
         guard lookup.hasObservation else { return }
-        PriceStore(context: modelContext).store(
+        PriceStore(context: context).store(
             lookup,
             game: card.cardGame,
             printingID: card.priceStorageID,
@@ -546,12 +739,13 @@ actor ScannerCollectionWriter {
         _ lookup: PriceLookup,
         for card: IdentifiedCard,
         variant: PhysicalVariant?,
-        pokemonPrintRun: PokemonPrintRun?
+        pokemonPrintRun: PokemonPrintRun?,
+        in context: ModelContext
     ) {
         guard lookup.hasObservation else { return }
         let printingID = pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
             ?? card.providerID
-        PriceStore(context: modelContext).store(
+        PriceStore(context: context).store(
             lookup,
             game: card.game,
             printingID: printingID,
@@ -563,7 +757,50 @@ actor ScannerCollectionWriter {
     }
 }
 
+/// Read-only checks used to avoid pausing a refresh for ordinary ownership
+/// writes. A pause is needed only when an existing unbound market identity is
+/// about to move to a vendor-native price key.
+enum PriceIdentityWritePreflight {
+    static func requiresGradedPromotion(
+        container: ModelContainer,
+        game: CardGame,
+        providerID: String,
+        grade: CardGrade,
+        company: GradingCompany,
+        certificationNumber: String?,
+        treatmentIDs: [String]
+    ) -> Bool {
+        guard let certificationNumber, !certificationNumber.isEmpty else { return false }
+        let context = ModelContext(container)
+        let gradedRawValue = CollectionItemKind.gradedCard.rawValue
+        let companyRawValue = company.rawValue
+        let gradeValue = grade.value
+        let certification = certificationNumber
+        let rows = (try? context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    $0.itemKindRaw == gradedRawValue
+                        && $0.gradingCompanyRaw == companyRawValue
+                        && $0.gradeRaw == gradeValue
+                        && $0.certificationNumber == certification
+                }
+            )
+        )) ?? []
+        let expectedTreatments = Set(MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs))
+        return rows.contains { row in
+            row.cardGame == game
+                && (row.catalogProviderID == providerID || row.providerID == providerID)
+                && row.cardGrade == grade
+                && Set(MagicTreatmentKeyCodec.storedIDs(from: row.magicTreatmentIDsRaw))
+                    == expectedTreatments
+                && row.justTCGVariantID == nil
+        }
+    }
+}
+
 enum CollectionStoreError: Error, Equatable {
+    case collectionBusy
+    case staleQuantity
     case missingDestinationRow(String)
     case missingActivity(UUID)
     case invalidActivity(UUID)
@@ -581,6 +818,10 @@ enum CollectionStoreError: Error, Equatable {
 extension CollectionStoreError: LocalizedError {
     var errorDescription: String? {
         switch self {
+        case .collectionBusy:
+            return "Your collection is being updated. Try again in a moment."
+        case .staleQuantity:
+            return "This quantity changed while you were editing it. Review the current quantity and try again."
         case let .missingDestinationRow(key):
             return "The collection position \(key) is no longer available."
         case let .missingActivity(id):
@@ -1972,8 +2213,32 @@ struct CollectionStore {
 
     /// Changes a position's quantity while recording the matching ownership
     /// event in the same persistence transaction.
-    func setQuantity(_ newQuantity: Int, for card: CollectedCard) throws {
-        guard newQuantity >= 1 else { return }
+    @discardableResult
+    func setQuantity(_ newQuantity: Int, for card: CollectedCard) throws -> Int {
+        guard let current = try self.card(
+            forAnyKey: card.collectionKey,
+            magicTreatmentIDsRaw: card.magicTreatmentIDsRaw
+        ) else {
+            throw CollectionStoreError.missingDestinationRow(card.collectionKey)
+        }
+        return try setQuantity(
+            newQuantity,
+            forCollectionKey: card.collectionKey,
+            magicTreatmentIDsRaw: card.magicTreatmentIDsRaw,
+            expectedCurrent: current.quantity
+        )
+    }
+
+    /// Compare-and-set quantity update. The expected value is the quantity the
+    /// user actually saw; a newer row is left untouched until they review it.
+    @discardableResult
+    func setQuantity(
+        _ newQuantity: Int,
+        forCollectionKey collectionKey: String,
+        magicTreatmentIDsRaw: [String] = [],
+        expectedCurrent: Int
+    ) throws -> Int {
+        guard newQuantity >= 1 else { return expectedCurrent }
         guard newQuantity <= CollectionQuantityLimits.maximum else {
             throw CollectionStoreError.quantityOutOfRange(
                 "quantity exceeds \(CollectionQuantityLimits.maximum)"
@@ -1982,13 +2247,16 @@ struct CollectionStore {
 
         do {
             guard let target = try self.card(
-                forAnyKey: card.collectionKey,
-                magicTreatmentIDsRaw: card.magicTreatmentIDsRaw
+                forAnyKey: collectionKey,
+                magicTreatmentIDsRaw: magicTreatmentIDsRaw
             ) else {
-                throw CollectionStoreError.missingDestinationRow(card.collectionKey)
+                throw CollectionStoreError.missingDestinationRow(collectionKey)
+            }
+            guard target.quantity == expectedCurrent else {
+                throw CollectionStoreError.staleQuantity
             }
             let delta = newQuantity - target.quantity
-            guard delta != 0 else { return }
+            guard delta != 0 else { return target.quantity }
             let operationID = UUID()
             try requireAppended(
                 ledger.record(
@@ -2008,6 +2276,7 @@ struct CollectionStore {
             )
             target.quantity = newQuantity
             try commit()
+            return target.quantity
         } catch {
             context.rollback()
             throw error
@@ -3232,8 +3501,15 @@ struct CollectionStore {
         _ activity: CollectionActivity,
         quantity requestedQuantity: Int? = nil
     ) throws -> RemovedCardSnapshot {
+        try remove(activityID: activity.id, quantity: requestedQuantity)
+    }
+
+    func remove(
+        activityID: UUID,
+        quantity requestedQuantity: Int? = nil
+    ) throws -> RemovedCardSnapshot {
         do {
-            let selectedActivity = try self.activity(id: activity.id)
+            let selectedActivity = try self.activity(id: activityID)
             guard selectedActivity.kind.hasQuantityClaim,
                   selectedActivity.signedQuantity > 0,
                   selectedActivity.claimedQuantity > 0 else {
@@ -3294,12 +3570,22 @@ struct CollectionStore {
     /// Removes an entire position, preserving the previous snapshot and the
     /// activity rows that explain how each copy entered it.
     func remove(_ card: CollectedCard) throws -> RemovedCardSnapshot {
+        try remove(
+            collectionKey: card.collectionKey,
+            magicTreatmentIDsRaw: card.magicTreatmentIDsRaw
+        )
+    }
+
+    func remove(
+        collectionKey: String,
+        magicTreatmentIDsRaw: [String] = []
+    ) throws -> RemovedCardSnapshot {
         do {
             guard let row = try self.card(
-                forAnyKey: card.collectionKey,
-                magicTreatmentIDsRaw: card.magicTreatmentIDsRaw
+                forAnyKey: collectionKey,
+                magicTreatmentIDsRaw: magicTreatmentIDsRaw
             ) else {
-                throw CollectionStoreError.missingDestinationRow(card.collectionKey)
+                throw CollectionStoreError.missingDestinationRow(collectionKey)
             }
             let quantity = row.quantity
             var snapshot = RemovedCardSnapshot(card: row)
@@ -3341,7 +3627,11 @@ struct CollectionStore {
     /// proves that case safe. A later positive event for the same key is a
     /// re-acquisition and is rejected so restore cannot double the collection.
     func restore(_ activity: CollectionActivity) throws {
-        let selectedActivity = try self.activity(id: activity.id)
+        try restore(activityID: activity.id)
+    }
+
+    func restore(activityID: UUID) throws {
+        let selectedActivity = try self.activity(id: activityID)
         guard selectedActivity.kind == .removed else {
             throw CollectionStoreError.invalidActivity(selectedActivity.id)
         }
@@ -3617,6 +3907,12 @@ struct CollectionStore {
     /// a later unrelated save cannot accidentally commit a half-failed action.
     private func commit(savesChanges: Bool = true) throws {
         guard savesChanges else { return }
+        if CollectionWriteSerializer.enforcesOwnershipRule {
+            assert(
+                CollectionWriteSerializer.isHeldByCurrentThread,
+                "Collection ownership changes must use CollectionWriteSerializer"
+            )
+        }
         do {
             try context.save()
             LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
@@ -4090,6 +4386,33 @@ struct CollectionStore {
         }
     }
 
+    /// Value-only entry point for async/UI callers. The row is resolved in the
+    /// current write context so a model object captured before a suspension
+    /// point is never used as the basis for a correction.
+    @discardableResult
+    func recordVariantCorrection(
+        forCollectionKey collectionKey: String,
+        magicTreatmentIDsRaw: [String] = [],
+        to corrected: ResolvedVariant,
+        activityID: UUID,
+        quantity: Int,
+        source: CollectionActivitySource = .correction
+    ) throws -> CollectionMutation? {
+        guard let card = try self.card(
+            forAnyKey: collectionKey,
+            magicTreatmentIDsRaw: magicTreatmentIDsRaw
+        ) else {
+            throw CollectionStoreError.missingDestinationRow(collectionKey)
+        }
+        return try recordVariantCorrection(
+            for: card,
+            to: corrected,
+            activityID: activityID,
+            quantity: quantity,
+            source: source
+        )
+    }
+
     /// Moves a set of acquisition claims as one transaction. Catalog finish
     /// reconciliation passes every outstanding acquisition for the row so a
     /// failure cannot leave some copies under the old finish and others under
@@ -4378,9 +4701,16 @@ struct CollectionStore {
 @ModelActor
 actor CollectionDeletionModelActor {
     func deleteAll(
-        shouldContinue: @escaping StorageGenerationContinuation
+        shouldContinue: @escaping StorageGenerationContinuation,
+        exclusiveToken: UUID? = nil
     ) throws -> Bool {
-        try CollectionStore(context: modelContext).deleteAll(shouldContinue: shouldContinue)
+        try CollectionWriteSerializer.perform(
+            container: modelContext.container,
+            timeout: .wait,
+            exclusiveToken: exclusiveToken
+        ) { context in
+            try CollectionStore(context: context).deleteAll(shouldContinue: shouldContinue)
+        }
     }
 }
 

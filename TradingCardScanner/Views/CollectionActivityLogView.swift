@@ -141,7 +141,26 @@ struct CollectionActivityLogView: View {
     }
 
     private func reload() {
-        try? CollectionStore(context: modelContext).backfillExistingCollectionIfNeeded()
+        try? CollectionWriteSerializer.perform(
+            container: modelContext.container,
+            timeout: .mainThread
+        ) { context in
+            try CollectionStore(context: context).backfillExistingCollectionIfNeeded()
+        }
+        scheduleReloadAfterWrite()
+    }
+
+    private func scheduleReloadAfterWrite() {
+        Task { @MainActor in
+            // Sibling-context saves merge asynchronously. Read the SwiftUI
+            // context after that merge turn instead of immediately observing
+            // its pre-write snapshot.
+            await Task.yield()
+            reloadSnapshot()
+        }
+    }
+
+    private func reloadSnapshot() {
         var descriptor = FetchDescriptor<CollectionActivity>(
             sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
         )
@@ -418,8 +437,14 @@ struct CollectionActivityLogView: View {
 
     private func remove(_ activity: CollectionActivity) {
         pendingRemovalID = nil
+        let activityID = activity.id
         do {
-            _ = try CollectionStore(context: modelContext).remove(activity)
+            _ = try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                try CollectionStore(context: context).remove(activityID: activityID)
+            }
             reload()
         } catch {
             errorMessage = error.localizedDescription
@@ -427,8 +452,14 @@ struct CollectionActivityLogView: View {
     }
 
     private func restore(_ activity: CollectionActivity) {
+        let activityID = activity.id
         do {
-            try CollectionStore(context: modelContext).restore(activity)
+            try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                try CollectionStore(context: context).restore(activityID: activityID)
+            }
             reload()
         } catch {
             errorMessage = error.localizedDescription
@@ -558,42 +589,64 @@ struct CollectionActivityEditor: View {
     }
 
     private func save() {
-        guard let card = collectionCard,
-              let variantID else {
+        guard let variantID else {
             errorMessage = "The collection entry is no longer available."
             return
         }
         let variant = PhysicalVariant.resolving(variantID)
+        let collectionKey = activity.collectionKey
+        let treatmentIDs = activity.magicTreatmentIDsRaw
+        let activityID = activity.id
+        let quantity = activity.remainingQuantity
 
         do {
-            let store = CollectionStore(context: modelContext)
-            guard let mutation = try store.recordVariantCorrection(
-                for: card,
-                to: ResolvedVariant(variant: variant, resolution: .userConfirmed),
-                activityID: activity.id,
-                quantity: activity.remainingQuantity
-            )
-            else {
+            let result = try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context -> (PriceFallbackCardInput, String, CardGame)? in
+                let store = CollectionStore(context: context)
+                guard let mutation = try store.recordVariantCorrection(
+                    forCollectionKey: collectionKey,
+                    magicTreatmentIDsRaw: treatmentIDs,
+                    to: ResolvedVariant(variant: variant, resolution: .userConfirmed),
+                    activityID: activityID,
+                    quantity: quantity
+                ), let correctedCard = store.card(forKey: mutation.collectionKey) else {
+                    return nil
+                }
+                return (
+                    PriceFallbackCardInput(
+                        card: correctedCard,
+                        variant: correctedCard.variant,
+                        pokemonPrintRun: correctedCard.pokemonPrintRun
+                    ),
+                    correctedCard.priceKey,
+                    correctedCard.cardGame
+                )
+            }
+            guard let (input, priceKey, game) = result else {
                 errorMessage = "This entry could not be corrected."
                 return
             }
-            if let correctedCard = store.card(forKey: mutation.collectionKey) {
-                queueFallbackPrice(for: correctedCard)
-            }
+            queueFallbackPrice(input: input, priceKey: priceKey, game: game)
             dismiss()
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
-    private func queueFallbackPrice(for card: CollectedCard) {
+    private func queueFallbackPrice(
+        input: PriceFallbackCardInput,
+        priceKey: String,
+        game: CardGame
+    ) {
         // A correction can land on a destination row that already has a valid
         // observation. Leave it alone; the normal stale-target gate owns later
         // refreshes for that exact printing and finish.
         let prices = PriceStore(context: modelContext)
-        let existing = prices.record(forKey: card.priceKey)
+        let existing = prices.record(forKey: priceKey)
         let usesFallback = UserDefaults.standard.bool(forKey: "usesPriceFallback")
-        let hasFinishedPrice = card.cardGame == .pokemon
+        let hasFinishedPrice = game == .pokemon
             ? PriceRefreshController.hasFinishedPokemonPrice(
                 amount: existing?.effectiveUnitMarketPriceUSD,
                 currencyCode: existing?.currencyCode
@@ -606,11 +659,6 @@ struct CollectionActivityEditor: View {
         guard !hasFinishedPrice, usesFallback, PriceVendorCredentials.hasKey else { return }
 
         fallbackQuoteTask?.cancel()
-        let input = PriceFallbackCardInput(
-            card: card,
-            variant: card.variant,
-            pokemonPrintRun: card.pokemonPrintRun
-        )
         let fallbackContext = ModelContext(modelContext.container)
         let fallbackPrices = PriceStore(context: fallbackContext)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)

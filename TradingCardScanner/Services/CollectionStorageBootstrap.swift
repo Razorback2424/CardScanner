@@ -1,5 +1,6 @@
 import CloudKit
 import Foundation
+import OSLog
 import SwiftData
 
 enum CollectionStorageMode: String, Equatable, Sendable {
@@ -283,6 +284,10 @@ enum CollectionStorageModelSchema {
         LocalArtworkOverride.self
     ])
 
+    /// Production stores collection ownership and local pricing/artwork in two
+    /// SQLite files. SwiftData cannot commit mutations across those files as one
+    /// transaction, so cross-store projections and local artwork references
+    /// must be recoverable after a process stops between their writes.
     static let full = Schema([
         CollectedCard.self,
         PriceRecord.self,
@@ -303,6 +308,12 @@ enum CollectionStorageModelSchema {
 /// real CloudKit account.
 @MainActor
 struct CollectionStorageBootstrapDependencies {
+#if DEBUG
+    /// One-shot launch-argument seam for exercising manifest recovery in the
+    /// simulator without altering the production container factory.
+    private static var didInjectFirstContainerFailure = false
+#endif
+
     var paths: CollectionStoragePaths
     var manifestStore: CollectionStoreManifestStore
     var accountAvailability: @MainActor () async -> CloudAccountAvailability
@@ -415,6 +426,24 @@ struct CollectionStorageBootstrapDependencies {
             anchorState: anchorState,
             claimAnchor: claimAnchor,
             makeContainer: { mode in
+#if DEBUG
+                let shouldInjectFirstOpenFailure = mode == .onDevice
+                    && ProcessInfo.processInfo.arguments.contains(
+                        "-debug_fail_first_collection_container_creation"
+                    )
+                    && !Self.didInjectFirstContainerFailure
+                if shouldInjectFirstOpenFailure {
+                    Self.didInjectFirstContainerFailure = true
+                    throw NSError(
+                        domain: "TradingCardScanner.DebugContainerInjection",
+                        code: 1,
+                        userInfo: [
+                            NSLocalizedDescriptionKey:
+                                "Injected one-time collection container creation failure."
+                        ]
+                    )
+                }
+#endif
                 return try Self.makeContainer(paths: paths, mode: mode)
             },
             readinessSource: readinessSource,
@@ -500,9 +529,9 @@ struct HeadlessCollectionStorageSession {
     let continuation: StorageGenerationContinuation
 }
 
-/// A background process may use a previously proven replica, but it may not
-/// make first-launch ownership or restoration decisions. This preflight only
-/// accepts durable metadata written after affirmative foreground readiness.
+/// A background process may use an identity-verified local replica, but it may
+/// not make first-launch ownership or restoration decisions. Cloud-backed use
+/// remains gated on affirmative foreground readiness.
 @MainActor
 struct CollectionStorageHeadlessPreflightDependencies {
     var paths: CollectionStoragePaths
@@ -510,6 +539,9 @@ struct CollectionStorageHeadlessPreflightDependencies {
     var accountAvailability: @MainActor () async -> CloudAccountAvailability
     var anchorState: @MainActor () async -> CloudCollectionAnchorState = { .unknown }
     var makeContainer: @MainActor (CollectionStorageMode) throws -> ModelContainer
+    /// Production has not proven the CloudKit restoration readiness mechanism.
+    /// While false, an identity-verified attached replica remains usable locally.
+    var readinessProven: Bool = false
     /// Production and tests share the manifest-to-container-mode decision so a
     /// local-only manifest cannot accidentally inherit the entitled build's
     /// CloudKit configuration.
@@ -562,6 +594,7 @@ struct CollectionStorageHeadlessPreflightDependencies {
                     mode: mode
                 )
             },
+            readinessProven: false,
             containerModeForManifest: { attachmentState in
                 switch attachmentState {
                 case .neverAttached, .suspended:
@@ -631,7 +664,7 @@ enum CollectionStorageHeadlessPreflight {
             return nil
         }
 
-        if manifest.attachmentState == .attached {
+        if manifest.attachmentState == .attached, dependencies.readinessProven {
             guard manifest.attachmentState == .attached,
                   let accountFingerprint = manifest.lastAttachedAccountFingerprint,
                   let checkpoint = manifest.cloudRestoreCheckpoint,
@@ -657,7 +690,16 @@ enum CollectionStorageHeadlessPreflight {
             return nil
         }
 
-        guard let mode = dependencies.containerModeForManifest(manifest.attachmentState),
+        let mode: CollectionStorageMode?
+        if manifest.attachmentState == .attached, !dependencies.readinessProven {
+            // Match foreground fallback: the existing, identity-verified
+            // replica is safe for local use while CloudKit readiness remains
+            // unproven. Do not query CloudKit or create a CloudKit container.
+            mode = .onDevice
+        } else {
+            mode = dependencies.containerModeForManifest(manifest.attachmentState)
+        }
+        guard let mode,
               let container = try? dependencies.makeContainer(mode) else {
             return nil
         }
@@ -688,6 +730,11 @@ enum CollectionStorageHeadlessPreflight {
 
 @MainActor
 final class CollectionStorageBootstrap: ObservableObject {
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "TradingCardScanner",
+        category: "CollectionStorageBootstrap"
+    )
+
     enum State {
         case loading
         case restoringFromCloud(CloudRestorationReadiness)
@@ -715,6 +762,7 @@ final class CollectionStorageBootstrap: ObservableObject {
     private var restorationContainer: ModelContainer?
     private var pendingRestoration: (storeID: UUID, accountFingerprint: String)?
     private var accountChangedObserver: NSObjectProtocol?
+    private var artworkSweepScheduledStoreIDs: Set<UUID> = []
     private(set) var lastErrorCategory: String?
 
     init(dependencies: CollectionStorageBootstrapDependencies? = nil) {
@@ -1025,6 +1073,18 @@ final class CollectionStorageBootstrap: ObservableObject {
                 anchorGeneration: existingAnchorGeneration,
                 forceRestoration: true
             )
+
+        case let .recreatePendingLocalReplica(storeID):
+            do {
+                try quarantinePendingLocalReplicaArtifacts()
+                try await openLocal(
+                    storeID: storeID,
+                    reason: .restorationUnproven,
+                    generation: currentGeneration
+                )
+            } catch {
+                showRecovery(error, category: "pending-local-replica")
+            }
 
         case let .openProvenLocal(storeID, reason):
             do {
@@ -1356,15 +1416,29 @@ final class CollectionStorageBootstrap: ObservableObject {
         } else {
             targetAttachmentState = .suspended
         }
+        let creationPending = existingManifest?.replicaCreationPending ?? true
         try persistManifest(
             storeID: storeID,
             accountFingerprint: nil,
-            attachmentState: targetAttachmentState
+            attachmentState: targetAttachmentState,
+            replicaCreationPending: creationPending
         )
         TradingCardScannerApp.activeCloudAccountStatusRaw = reason.rawValue
         TradingCardScannerApp.activeAttachmentStateRaw = targetAttachmentState.rawValue
         let container = try dependencies.makeContainer(.onDevice)
         guard currentGeneration == generation else { return }
+        do {
+            try persistManifest(
+                storeID: storeID,
+                accountFingerprint: nil,
+                attachmentState: targetAttachmentState,
+                replicaCreationPending: false
+            )
+        } catch {
+            Self.logger.error(
+                "Opened local collection, but could not clear replica-creation intent: \(error.localizedDescription, privacy: .private)"
+            )
+        }
         installReady(
             session: CollectionStorageSession(
                 container: container,
@@ -1380,7 +1454,8 @@ final class CollectionStorageBootstrap: ObservableObject {
         accountFingerprint: String?,
         attachmentState: CloudAttachmentState,
         invalidateRestoreCheckpoint: Bool = false,
-        replacementStoreFileIdentity: String? = nil
+        replacementStoreFileIdentity: String? = nil,
+        replicaCreationPending: Bool? = nil
     ) throws {
         var manifest = try dependencies.manifestStore.load()
             ?? CollectionStoreManifest(storeID: storeID)
@@ -1411,10 +1486,66 @@ final class CollectionStorageBootstrap: ObservableObject {
             )
         }
         manifest.attachmentState = attachmentState
+        if let replicaCreationPending {
+            manifest.replicaCreationPending = replicaCreationPending
+        }
         if accountChanged || attachmentState != .attached || invalidateRestoreCheckpoint {
             manifest.cloudRestoreCheckpoint = nil
         }
         try dependencies.manifestStore.save(manifest)
+    }
+
+    private func quarantinePendingLocalReplicaArtifacts() throws {
+        let fileManager = FileManager.default
+        let directories = Set([
+            dependencies.paths.applicationSupportURL,
+            dependencies.paths.structuredStoreURL.deletingLastPathComponent(),
+            dependencies.paths.portfolioStoreURL.deletingLastPathComponent()
+        ])
+        let structuredName = dependencies.paths.structuredStoreURL.lastPathComponent
+        let portfolioName = dependencies.paths.portfolioStoreURL.lastPathComponent
+        var artifacts: [URL] = []
+        for directory in directories {
+            guard fileManager.fileExists(atPath: directory.path) else { continue }
+            for url in try fileManager.contentsOfDirectory(
+                at: directory,
+                includingPropertiesForKeys: nil,
+                options: [.skipsHiddenFiles]
+            ) {
+                let name = url.lastPathComponent
+                let isStructuredJournal = name == "default.store-wal"
+                    || name == "default.store-shm"
+                    || name == "\(structuredName)-wal"
+                    || name == "\(structuredName)-shm"
+                let isPortfolioStoreArtifact = name.hasPrefix("PortfolioLocal.store")
+                    || name == portfolioName
+                    || name.hasPrefix("\(portfolioName)-")
+                if isStructuredJournal || isPortfolioStoreArtifact {
+                    artifacts.append(url)
+                }
+            }
+        }
+        guard !artifacts.isEmpty else { return }
+
+        let quarantineRoot = dependencies.paths.collectionStorageDirectoryURL
+            .appendingPathComponent("Quarantine", isDirectory: true)
+        try fileManager.createDirectory(
+            at: quarantineRoot,
+            withIntermediateDirectories: true
+        )
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        var folder = quarantineRoot.appendingPathComponent(formatter.string(from: .now), isDirectory: true)
+        if fileManager.fileExists(atPath: folder.path) {
+            folder.appendPathComponent(UUID().uuidString, isDirectory: true)
+        }
+        try fileManager.createDirectory(at: folder, withIntermediateDirectories: true)
+        for artifact in artifacts.sorted(by: { $0.path < $1.path }) {
+            try fileManager.moveItem(
+                at: artifact,
+                to: folder.appendingPathComponent(artifact.lastPathComponent)
+            )
+        }
     }
 
     private func persistRestoreCheckpoint(
@@ -1466,7 +1597,36 @@ final class CollectionStorageBootstrap: ObservableObject {
         TradingCardScannerApp.storageIsReady = true
         TradingCardScannerApp.activeStoreID = session.storeID
         TradingCardScannerApp.lastBootstrapErrorCategory = nil
-        CollectionArtworkStore.migrateLegacyMappings(in: ModelContext(session.container))
+        if artworkSweepScheduledStoreIDs.insert(session.storeID).inserted {
+            let container = session.container
+            Task.detached(priority: .utility) {
+                // Let the launch path finish its short ownership backfills
+                // before the full-file cleanup pass takes the serializer.
+                try? await Task.sleep(for: .seconds(5))
+                for attempt in 0..<3 {
+                    do {
+                        _ = try CollectionWriteSerializer.perform(
+                            container: container,
+                            timeout: .mainThread
+                        ) { context in
+                            try CollectionArtworkStore.migrateLegacyMappings(in: context)
+                            try ArtworkOrphanSweep.run(in: context)
+                        }
+                        return
+                    } catch CollectionStoreError.collectionBusy {
+                        if attempt < 2 {
+                            try? await Task.sleep(for: .seconds(3))
+                        }
+                    } catch {
+                        Self.logger.error(
+                            "Artwork orphan sweep failed: \(error.localizedDescription, privacy: .private)"
+                        )
+                        return
+                    }
+                }
+                Self.logger.error("Artwork orphan sweep could not acquire the collection writer")
+            }
+        }
         state = .ready(session: session)
     }
 

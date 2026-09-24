@@ -196,11 +196,16 @@ final class PortfolioEngine: ObservableObject {
     /// whatever prices already exist, and computes today.
     func start(context: ModelContext, now: Date = .now) {
         do {
-            try PortfolioEpoch.establishIfNeeded(
-                context: context,
-                at: now,
-                isCloudSyncing: TradingCardScannerApp.activeStorageMode.isCloudSyncing
-            )
+            _ = try CollectionWriteSerializer.perform(
+                container: context.container,
+                timeout: .mainThread
+            ) { writeContext in
+                try PortfolioEpoch.establishIfNeeded(
+                    context: writeContext,
+                    at: now,
+                    isCloudSyncing: TradingCardScannerApp.activeStorageMode.isCloudSyncing
+                )
+            }
             needsEpochRetry = false
         } catch {
             // A failed baseline save must not transition the UI into the
@@ -434,11 +439,16 @@ final class PortfolioEngine: ObservableObject {
     private func retryEpochIfNeeded(context: ModelContext, now: Date) {
         guard needsEpochRetry else { return }
         do {
-            try PortfolioEpoch.establishIfNeeded(
-                context: context,
-                at: now,
-                isCloudSyncing: TradingCardScannerApp.activeStorageMode.isCloudSyncing
-            )
+            _ = try CollectionWriteSerializer.perform(
+                container: context.container,
+                timeout: .mainThread
+            ) { writeContext in
+                try PortfolioEpoch.establishIfNeeded(
+                    context: writeContext,
+                    at: now,
+                    isCloudSyncing: TradingCardScannerApp.activeStorageMode.isCloudSyncing
+                )
+            }
             needsEpochRetry = false
         } catch {
             // Still waiting, or still failing. Either way the recomputation

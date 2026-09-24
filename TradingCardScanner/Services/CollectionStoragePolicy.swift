@@ -126,6 +126,10 @@ struct CollectionStoreManifest: Codable, Equatable, Sendable {
     var attachmentState: CloudAttachmentState
     var migrationState: StoreMigrationState
     var cloudRestoreCheckpoint: CloudRestoreCheckpoint?
+    /// A first local replica may be opened only after this intent has been
+    /// persisted. If container creation fails before a store exists, the next
+    /// launch can safely retry the same identity instead of blocking forever.
+    var replicaCreationPending: Bool
 
     init(
         formatVersion: Int = CollectionStoreManifest.currentFormatVersion,
@@ -134,7 +138,8 @@ struct CollectionStoreManifest: Codable, Equatable, Sendable {
         attachmentState: CloudAttachmentState = .neverAttached,
         migrationState: StoreMigrationState = .notStarted,
         cloudRestoreCheckpoint: CloudRestoreCheckpoint? = nil,
-        storeFileIdentity: String = ""
+        storeFileIdentity: String = "",
+        replicaCreationPending: Bool = false
     ) {
         self.formatVersion = formatVersion
         self.storeID = storeID
@@ -143,6 +148,7 @@ struct CollectionStoreManifest: Codable, Equatable, Sendable {
         self.attachmentState = attachmentState
         self.migrationState = migrationState
         self.cloudRestoreCheckpoint = cloudRestoreCheckpoint
+        self.replicaCreationPending = replicaCreationPending
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -153,6 +159,7 @@ struct CollectionStoreManifest: Codable, Equatable, Sendable {
         case attachmentState
         case migrationState
         case cloudRestoreCheckpoint
+        case replicaCreationPending
     }
 
     init(from decoder: Decoder) throws {
@@ -167,6 +174,7 @@ struct CollectionStoreManifest: Codable, Equatable, Sendable {
         attachmentState = try values.decodeIfPresent(CloudAttachmentState.self, forKey: .attachmentState) ?? .neverAttached
         migrationState = try values.decodeIfPresent(StoreMigrationState.self, forKey: .migrationState) ?? .notStarted
         cloudRestoreCheckpoint = try values.decodeIfPresent(CloudRestoreCheckpoint.self, forKey: .cloudRestoreCheckpoint)
+        replicaCreationPending = try values.decodeIfPresent(Bool.self, forKey: .replicaCreationPending) ?? false
     }
 }
 
@@ -203,6 +211,7 @@ enum CollectionStorageDecision: Equatable, Sendable {
     case requireAttachmentConfirmation(storeID: UUID, newAccountFingerprint: String)
     case adoptRemoteCollection(storeID: UUID, accountFingerprint: String)
     case restoreMissingLocalReplica(storeID: UUID, accountFingerprint: String)
+    case recreatePendingLocalReplica(storeID: UUID)
     case claimCloudAnchor(storeID: UUID, accountFingerprint: String)
     case blockDifferentRemoteCollection(localStoreID: UUID, remoteStoreID: UUID)
     case retryAccountCheck
@@ -315,6 +324,17 @@ enum CollectionStoragePolicy {
         guard !local.manifestIsCorrupt else { return .blockUnprovenTransition }
         if local.manifest == nil && local.hasDurableLocalPresence {
             return .blockUnprovenTransition
+        }
+        if let manifest = local.manifest, manifest.replicaCreationPending {
+            guard local.storeFileIdentityStatus == .matching else {
+                return .blockUnprovenTransition
+            }
+            switch local.replicaState {
+            case .replicaCompletelyAbsent, .orphanedJournalArtifacts:
+                return .recreatePendingLocalReplica(storeID: manifest.storeID)
+            case .baseStoreIdentityMissing, .baseStoreIdentityMismatch, .verifiedExistingStore:
+                break
+            }
         }
         switch local.replicaState {
         case .replicaCompletelyAbsent:

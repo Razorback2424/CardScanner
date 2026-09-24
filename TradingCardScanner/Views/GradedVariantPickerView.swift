@@ -175,6 +175,7 @@ struct GradedSlabConfirmationView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var certificationNumber = ""
     @State private var addFailure: String?
+    @State private var isAdding = false
 
     init(
         card: IdentifiedCard,
@@ -225,12 +226,15 @@ struct GradedSlabConfirmationView: View {
 
             Section {
                 Button {
-                    add()
+                    guard !isAdding else { return }
+                    isAdding = true
+                    Task { await add() }
                 } label: {
-                    Label("Add Slab", systemImage: "plus.circle.fill")
+                    Label(isAdding ? "Adding…" : "Add Slab", systemImage: "plus.circle.fill")
                         .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(isAdding)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }
@@ -251,19 +255,47 @@ struct GradedSlabConfirmationView: View {
         }
     }
 
-    private func add() {
+    @MainActor
+    private func add() async {
+        defer { isAdding = false }
         let trimmed = certificationNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        let container = modelContext.container
         do {
             // `onAdded` dismisses the picker and is the only confirmation there
             // is. Returning silently on a throw left the sheet sitting there
             // looking untouched, with the slab not in the collection.
-            _ = try CollectionStore(context: modelContext).addGraded(
-                underlying: card,
-                variant: variant,
+            let persist = {
+                try CollectionWriteSerializer.perform(
+                    container: container,
+                    timeout: .mainThread
+                ) { context in
+                    _ = try CollectionStore(context: context).addGraded(
+                        underlying: card,
+                        variant: variant,
+                        certificationNumber: trimmed.isEmpty ? nil : trimmed,
+                        setReleaseOrder: setReleaseOrder,
+                        pokemonPrintRun: pokemonPrintRun
+                    )
+                }
+            }
+            let needsIdentityGate = PriceIdentityWritePreflight.requiresGradedPromotion(
+                container: container,
+                game: card.game,
+                providerID: card.providerID,
+                grade: variant.grade,
+                company: variant.company,
                 certificationNumber: trimmed.isEmpty ? nil : trimmed,
-                setReleaseOrder: setReleaseOrder,
-                pokemonPrintRun: pokemonPrintRun
+                treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
+                    from: card.unambiguousMagicTreatments
+                )
             )
+            if needsIdentityGate {
+                try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    try persist()
+                }
+            } else {
+                try persist()
+            }
         } catch {
             addFailure = error.localizedDescription
             return

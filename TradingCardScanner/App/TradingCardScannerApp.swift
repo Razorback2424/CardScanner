@@ -12,6 +12,8 @@ struct TradingCardScannerApp: App {
     @StateObject private var storageBootstrap = CollectionStorageBootstrap()
 
     init() {
+        CollectionWriteSerializer.enforcesOwnershipRule =
+            ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil
         let catalogCoordinator = PokemonCatalogCoordinator()
         let magicCatalogCoordinator = MagicCatalogCoordinator()
         self.catalogCoordinator = catalogCoordinator

@@ -58,6 +58,35 @@ enum BackgroundPriceRefresh {
     /// app-refresh window even when each needs one paced identity request.
     private static let appRefreshTargetLimit = 3
     private static var hasRegistered = false
+    @MainActor private static var activeRun: (id: UUID, task: Task<Bool, Never>)?
+
+    /// Stops the headless phase as well as the price queue when foreground
+    /// startup takes ownership. The local migration phase can otherwise hold
+    /// the shared migration gate before the refresh controller knows about it.
+    @MainActor
+    static func preemptActiveRunForForeground() async -> Bool {
+        guard let activeRun else { return false }
+        await preemptBackgroundRunForForeground(
+            task: activeRun.task,
+            refreshController: PriceRefreshController.shared
+        )
+        if self.activeRun?.id == activeRun.id { self.activeRun = nil }
+        return true
+    }
+
+    @MainActor
+    static func preemptBackgroundRunForForeground(
+        task: Task<Bool, Never>,
+        refreshController: PriceRefreshController
+    ) async {
+        task.cancel()
+        // The controller queue is an unstructured child. Cancelling only the
+        // BG task does not cancel that queue, so stop it before awaiting the
+        // enclosing run or foreground startup can still wait for the whole
+        // provider pass.
+        _ = await refreshController.preemptBackgroundPass()
+        _ = await task.value
+    }
 
     @MainActor
     static var availability: Availability {
@@ -142,8 +171,12 @@ enum BackgroundPriceRefresh {
         schedule()
 
         let completion = TaskCompletion()
-        let work = Task { @MainActor in
-            let success = await run(kind)
+        let runID = UUID()
+        let work = Task { @MainActor in await run(kind) }
+        Task { @MainActor in
+            activeRun = (runID, work)
+            let success = await work.value
+            if activeRun?.id == runID { activeRun = nil }
             completion.finish(task, success: success)
         }
         task.expirationHandler = {
@@ -155,7 +188,7 @@ enum BackgroundPriceRefresh {
             Task { @MainActor in
                 // The controller owns an unstructured refresh task, so
                 // cancelling only the enclosing background task is insufficient.
-                PriceRefreshController.shared.cancelRefresh()
+                PriceRefreshController.shared.cancelRefresh(onlyIfOwnedBy: .background)
             }
         }
     }
@@ -192,30 +225,41 @@ enum BackgroundPriceRefresh {
         // refresh: holding the gate is what makes the pass safe, and a row that
         // has not been enriched yet is priced under its current key, exactly as
         // it would be if no migration were pending at all.
-        await migration.withPriceRefresh(
+        let refreshResult = await migration.withPriceRefresh(
             in: context,
             runsNetworkMigration: false,
             storageToken: storage.token,
-            shouldContinue: shouldContinue
-        ) {
-            guard shouldContinue() else { return }
-            let usesPriceFallback = UserDefaults.standard.bool(forKey: "usesPriceFallback")
-            let request = PriceRefreshRequest(
-                usesPriceFallback: usesPriceFallback,
-                includeImported: true,
-                forceUnsupportedRetry: false,
-                sortOldestFirst: true,
-                maximumTargetCount: kind == .appRefresh ? appRefreshTargetLimit : nil,
-                markRecentlyCheckedIfEmpty: false,
-                gradedOnly: false
-            )
-            _ = await PriceRefreshController.shared.refresh(
-                request,
-                container: context.container,
-                shouldContinue: shouldContinue
-            )
-        }
-        guard !Task.isCancelled, shouldContinue() else { return false }
+            shouldContinue: shouldContinue,
+            operation: {
+                guard shouldContinue() else {
+                    return PriceRefreshResult(
+                        didRun: false,
+                        targetBuildFailed: false,
+                        wasPreempted: true
+                    )
+                }
+                let usesPriceFallback = UserDefaults.standard.bool(forKey: "usesPriceFallback")
+                let request = PriceRefreshRequest(
+                    usesPriceFallback: usesPriceFallback,
+                    includeImported: true,
+                    forceUnsupportedRetry: false,
+                    sortOldestFirst: true,
+                    maximumTargetCount: kind == .appRefresh ? appRefreshTargetLimit : nil,
+                    markRecentlyCheckedIfEmpty: false,
+                    gradedOnly: false
+                )
+                return await PriceRefreshController.shared.refresh(
+                    request,
+                    container: context.container,
+                    shouldContinue: shouldContinue,
+                    owner: .background
+                )
+            }
+        )
+        guard let refreshResult else { return false }
+        guard !refreshResult.wasPreempted,
+              !Task.isCancelled,
+              shouldContinue() else { return false }
 
         // Do not call `start`: a background launch must never establish a new
         // portfolio epoch. It may only publish a close from an epoch the person

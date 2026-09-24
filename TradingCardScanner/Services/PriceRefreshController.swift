@@ -159,6 +159,97 @@ typealias PriceRefreshPokemonFetchOverride = @Sendable (
     PriceTarget.Printing
 ) async throws -> IdentifiedCard
 
+/// A value-only description of a collection row observed before provider work.
+/// Refresh passes retain these snapshots across awaits, then verify them again
+/// in a fresh serialized context before applying any collection changes.
+private struct RefreshRowIdentity: Sendable {
+    let collectionKey: String
+    let priceKey: String
+    let providerID: String
+    let variantID: String?
+    let marketVariantID: String?
+    let itemKind: CollectionItemKind
+    let imageURLIsMissing: Bool
+}
+
+/// The pending-finish fields are treated as one compare-and-set value so a
+/// stale refresh cannot clear or replace evidence recorded by a newer pass.
+struct PendingCatalogFinishState: Equatable, Sendable {
+    let id: String?
+    let firstSeenAt: Date?
+    let refreshID: UUID?
+
+    static func read(from row: CollectedCard) -> Self {
+        Self(
+            id: row.pendingCatalogFinishID,
+            firstSeenAt: row.pendingCatalogFinishFirstSeenAt,
+            refreshID: row.pendingCatalogFinishRefreshID
+        )
+    }
+}
+
+/// A guarded, value-only collection-row update produced by asynchronous price
+/// refresh work. These patches are applied only after the price-side checkpoint
+/// has saved, using a fresh context under CollectionWriteSerializer.
+struct RefreshRowPatch: Sendable {
+    enum Change: Sendable {
+        case catalogMetadata(ImportedCatalogMetadata, checkedAt: Date)
+        case sealedArtwork(url: String?, checkedAt: Date)
+        case vendorBinding(productID: String?, sku: String?)
+        case gradedBinding(
+            marketVariantID: String,
+            marketCardID: String?,
+            apiVersion: String
+        )
+        case pendingCatalogFinish(
+            expected: PendingCatalogFinishState,
+            replacement: PendingCatalogFinishState
+        )
+    }
+
+    let collectionKey: String
+    let expectedPriceKey: String
+    let expectedVariantID: String?
+    let expectedMarketVariantID: String?
+    let change: Change
+
+    fileprivate static func catalogMetadata(
+        from card: IdentifiedCard,
+        row: RefreshRowIdentity,
+        checkedAt: Date
+    ) -> Self {
+        let imageURL: String?
+        let thumbnailURL: String?
+        let tcgplayerURL: String?
+        switch card {
+        case let .pokemon(pokemon, _):
+            imageURL = pokemon.image
+            thumbnailURL = pokemon.image.map { $0 + "/low.png" }
+            tcgplayerURL = nil
+        case let .magic(magic):
+            imageURL = card.displayImageURL?.absoluteString
+            thumbnailURL = card.thumbnailImageURL?.absoluteString
+            tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
+        }
+        let metadata = ImportedCatalogMetadata(
+            providerID: card.providerID,
+            setCode: card.setCode,
+            rarity: card.rarity,
+            imageURL: imageURL,
+            thumbnailURL: thumbnailURL,
+            tcgplayerURL: tcgplayerURL,
+            setReleaseOrder: card.setReleaseOrder
+        )
+        return Self(
+            collectionKey: row.collectionKey,
+            expectedPriceKey: row.priceKey,
+            expectedVariantID: row.variantID,
+            expectedMarketVariantID: row.marketVariantID,
+            change: .catalogMetadata(metadata, checkedAt: checkedAt)
+        )
+    }
+}
+
 /// Performs one refresh queue on a context owned by this actor. The facade
 /// below deliberately receives only value progress and result messages: a
 /// SwiftData model object never has to cross back to the main actor while a
@@ -174,13 +265,10 @@ actor PriceRefreshModelActor {
     private var refreshStore: PriceStore?
     private var identityStore: ProductIdentityStore?
     private var identityIndex: ProductIdentityIndex?
-    private var artworkRowIDsByPriceKey: [String: [PersistentIdentifier]] = [:]
-    private var identityRowIDsByPriceKey: [String: [PersistentIdentifier]] = [:]
-    /// Materialised once when the fallback lane starts. The network callbacks
-    /// may be per variant, but resolving the same persistent identifiers must
-    /// not be per variant as well.
-    private var artworkRowsByPriceKey: [String: [CollectedCard]] = [:]
-    private var identityRowsByPriceKey: [String: [CollectedCard]] = [:]
+    private var artworkRowIdentitiesByPriceKey: [String: [RefreshRowIdentity]] = [:]
+    private var identityRowIdentitiesByPriceKey: [String: [RefreshRowIdentity]] = [:]
+    private var pendingRowPatches: [RefreshRowPatch] = []
+    private var skippedRowPatchCount = 0
     private var activeFallbackLastCommitAt = Date.distantPast
     private var activeFallbackStagedWrites = 0
     private var priceKeysWritten: Set<String> = []
@@ -335,6 +423,8 @@ actor PriceRefreshModelActor {
         var stagedWriteCount = 0
         var lastCommitAt = Date.now
         priceKeysWritten.removeAll()
+        pendingRowPatches.removeAll()
+        skippedRowPatchCount = 0
 
         func stage(
             _ accepted: Bool,
@@ -375,7 +465,15 @@ actor PriceRefreshModelActor {
                 "writes=\(writeCount)"
             )
             let saved = store.save()
+            var appliedRows = 0
+            var skippedRows = 0
+            var rowPatchSaveFailed = false
             if saved {
+                let patchResult = applyPendingRowPatches()
+                appliedRows = patchResult.applied
+                skippedRows = patchResult.skipped
+                rowPatchSaveFailed = !patchResult.saved
+                persistenceFailed = persistenceFailed || rowPatchSaveFailed
                 priced += stagedPriced
                 changedPrices = changedPrices || stagedChangedPrices
                 reconciledDuplicateRecords += stagedDuplicateRepairs
@@ -383,6 +481,8 @@ actor PriceRefreshModelActor {
                 if !deltas.isEmpty { await progress(.prices(deltas)) }
             } else {
                 persistenceFailed = true
+                pendingRowPatches.removeAll()
+                identityIndex?.reload()
             }
             stagedPriced = 0
             stagedChangedPrices = false
@@ -392,7 +492,7 @@ actor PriceRefreshModelActor {
             PerformanceSignpost.endInterval(
                 "priceRefresh.commitStaged",
                 commitState,
-                "writes=\(writeCount),saved=\(saved ? 1 : 0)"
+                "writes=\(writeCount),saved=\(saved ? 1 : 0),rowPatches=\(appliedRows),rowSkipped=\(skippedRows),rowSaveFailed=\(rowPatchSaveFailed ? 1 : 0)"
             )
             return saved
         }
@@ -437,14 +537,20 @@ actor PriceRefreshModelActor {
         }
 
         let previousLatest = latestKnownSourceUpdate(in: store)
-        let importedCardIDsByProviderID = store.importedCardIDsByProviderID()
+        let rowIdentitiesByPriceKey = PriceRefreshController.rowIdentitiesByPriceKey(
+            in: modelContext
+        )
+        let importedRowIdentitiesByProviderID = Dictionary(
+            grouping: rowIdentitiesByPriceKey.values.flatMap { $0 }
+                .filter { $0.providerID.hasPrefix("csv:") },
+            by: \.providerID
+        )
         var completed = 0
         var wasCancelled = false
         let refreshID = UUID()
         var fallbackSubjects: [PriceRefreshController.FallbackCandidate] = vendorNative.map {
             PriceRefreshController.FallbackCandidate(target: $0, card: nil)
         }
-        var reconciliationRowIDsByPriceKey: [String: [PersistentIdentifier]]?
         var deferredCatalogRepairs: [(repair: PokemonFinishReconciliation.Repair, card: IdentifiedCard)] = []
         var deferredPriceTargets: [String: (target: PriceTarget, card: IdentifiedCard)] = [:]
         var pricedTargetIDs = Set<String>()
@@ -582,14 +688,15 @@ actor PriceRefreshModelActor {
                     switch outcome.result {
                     case let .card(card):
                         if printing.importedIdentity != nil {
-                            for importedCardID in importedCardIDsByProviderID[printing.printingID] ?? [] {
-                                guard let importedCard = modelContext.model(for: importedCardID) as? CollectedCard
-                                else { continue }
-                                importedCard.applyCatalogMetadata(from: card)
-                                CollectionCatalogNormalizer.recordCatalogMetadataCheck(
-                                    on: importedCard,
-                                    at: now
+                            for importedRow in importedRowIdentitiesByProviderID[printing.printingID] ?? [] {
+                                pendingRowPatches.append(
+                                    RefreshRowPatch.catalogMetadata(
+                                        from: card,
+                                        row: importedRow,
+                                        checkedAt: now
+                                    )
                                 )
+                                stage(true, key: importedRow.priceKey)
                             }
                         }
                         if card.game == .magic {
@@ -605,14 +712,11 @@ actor PriceRefreshModelActor {
                                target.game == .pokemon,
                                target.itemKind == .rawCard,
                                target.importedIdentity == nil {
-                                if reconciliationRowIDsByPriceKey == nil {
-                                    reconciliationRowIDsByPriceKey =
-                                        PriceRefreshController.rowsByPriceKeyIDs(in: modelContext)
-                                }
-                                let rows = PriceRefreshController.rows(
-                                    for: reconciliationRowIDsByPriceKey?[target.id] ?? [],
+                                let rows = (try? PriceRefreshController.liveRows(
+                                    collectionKeys: (rowIdentitiesByPriceKey[target.id] ?? [])
+                                        .map(\.collectionKey),
                                     in: modelContext
-                                )
+                                )) ?? []
                                 assessment = PokemonFinishReconciliation.assess(
                                     targets: [target],
                                     card: card,
@@ -622,7 +726,10 @@ actor PriceRefreshModelActor {
                                 )
                             }
                             if assessment.changedPendingRows > 0 {
-                                for _ in 0..<assessment.changedPendingRows { stage(true) }
+                                pendingRowPatches.append(contentsOf: assessment.pendingPatches)
+                                for patch in assessment.pendingPatches {
+                                    stage(true, key: patch.expectedPriceKey)
+                                }
                             }
 
                             if assessment.repairs.isEmpty {
@@ -888,6 +995,123 @@ actor PriceRefreshModelActor {
         return (identities, index)
     }
 
+    private func applyPendingRowPatches() -> (saved: Bool, applied: Int, skipped: Int) {
+        guard !pendingRowPatches.isEmpty else { return (true, 0, 0) }
+        let patches = pendingRowPatches
+        do {
+            let result = try CollectionWriteSerializer.perform(
+                container: modelContainer,
+                timeout: .wait
+            ) { context -> (applied: Int, skipped: Int) in
+                var applied = 0
+                var skipped = 0
+                for patch in patches {
+                    let key = patch.collectionKey
+                    let descriptor = FetchDescriptor<CollectedCard>(
+                        predicate: #Predicate { $0.collectionKey == key }
+                    )
+                    let rows = try context.fetch(descriptor)
+                    guard !rows.isEmpty else {
+                        skipped += 1
+                        continue
+                    }
+                    for row in rows {
+                        guard row.priceKey == patch.expectedPriceKey,
+                              row.variantID == patch.expectedVariantID,
+                              row.justTCGVariantID == patch.expectedMarketVariantID else {
+                            skipped += 1
+                            continue
+                        }
+                        switch patch.change {
+                        case let .catalogMetadata(metadata, checkedAt):
+                            row.applyCatalogMetadata(metadata)
+                            CollectionCatalogNormalizer.recordCatalogMetadataCheck(
+                                on: row,
+                                at: checkedAt
+                            )
+                        case let .sealedArtwork(url, checkedAt):
+                            guard row.itemKind == .sealedProduct, row.imageURL == nil else {
+                                skipped += 1
+                                continue
+                            }
+                            CollectionCatalogNormalizer.recordSealedArtworkCheck(
+                                on: row,
+                                at: checkedAt
+                            )
+                            if let url { row.imageURL = url }
+                        case let .vendorBinding(productID, sku):
+                            if row.tcgplayerProductID == nil, let productID {
+                                row.tcgplayerProductID = productID
+                            }
+                            if row.tcgplayerSKUID == nil, let sku {
+                                row.tcgplayerSKUID = sku
+                            }
+                        case let .gradedBinding(
+                            marketVariantID,
+                            marketCardID,
+                            apiVersion
+                        ):
+                            guard row.itemKind == .gradedCard,
+                                  row.justTCGVariantID == nil
+                                    || row.justTCGVariantID == marketVariantID else {
+                                skipped += 1
+                                continue
+                            }
+                            let oldPriceKey = row.priceKey
+                            let marketPrintingID = "justtcg:\(apiVersion):\(marketVariantID)"
+                            let newPriceKey = PriceRecord.key(
+                                game: row.cardGame,
+                                printingID: marketPrintingID,
+                                variantID: row.variantID,
+                                treatmentIDs: row.priceTreatmentIDs
+                            )
+                            if oldPriceKey != newPriceKey {
+                                let events = try context.fetch(
+                                    FetchDescriptor<InventoryEvent>(
+                                        predicate: #Predicate {
+                                            $0.priceStorageKey == oldPriceKey
+                                        }
+                                    )
+                                )
+                                for event in events {
+                                    event.priceStorageKey = newPriceKey
+                                }
+                            }
+                            row.justTCGVariantID = marketVariantID
+                            row.justTCGCardID = marketCardID ?? row.justTCGCardID
+                            row.justTCGAPIVersion = apiVersion
+                            row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+                        case let .pendingCatalogFinish(expected, replacement):
+                            guard PendingCatalogFinishState.read(from: row) == expected else {
+                                skipped += 1
+                                continue
+                            }
+                            row.pendingCatalogFinishID = replacement.id
+                            row.pendingCatalogFinishFirstSeenAt = replacement.firstSeenAt
+                            row.pendingCatalogFinishRefreshID = replacement.refreshID
+                        }
+                        applied += 1
+                    }
+                }
+                if context.hasChanges { try context.save() }
+                return (applied, skipped)
+            }
+            pendingRowPatches.removeAll()
+            skippedRowPatchCount += result.skipped
+            // A graded binding may have moved price records and lineage in the
+            // patch context. Refresh the actor's value indexes before its next
+            // lookup can consult them.
+            refreshStore?.index?.reload()
+            identityIndex?.reload()
+            return (true, result.applied, result.skipped)
+        } catch {
+            pendingRowPatches.removeAll()
+            refreshStore?.index?.reload()
+            identityIndex?.reload()
+            return (false, 0, patches.count)
+        }
+    }
+
     private func applyActiveBatch(
         card: JustTCGCard,
         variant: JustTCGVariant,
@@ -903,23 +1127,64 @@ actor PriceRefreshModelActor {
             owners: owners,
             store: store,
             identities: identities,
-            artworkRowsByPriceKey: artworkRowsByPriceKey,
-            identityRowsByPriceKey: identityRowsByPriceKey,
+            artworkRowsByPriceKey: [:],
+            identityRowsByPriceKey: [:],
             identityIndex: identityIndex
         )
         if applied.accepted {
             activeFallbackStagedWrites += owners.count
-            owners.forEach { rememberPriceKey($0.priceKey) }
+            let artworkURL = JustTCGV1Client.productImageURL(tcgplayerID: card.tcgplayerId)?.absoluteString
+            for owner in owners {
+                rememberPriceKey(owner.priceKey)
+                for row in identityRowIdentitiesByPriceKey[owner.priceKey] ?? [] {
+                    pendingRowPatches.append(
+                        RefreshRowPatch(
+                            collectionKey: row.collectionKey,
+                            expectedPriceKey: row.priceKey,
+                            expectedVariantID: row.variantID,
+                            expectedMarketVariantID: row.marketVariantID,
+                            change: .vendorBinding(
+                                productID: card.tcgplayerId,
+                                sku: variant.tcgplayerSkuId
+                            )
+                        )
+                    )
+                }
+                if owner.itemKind == .sealedProduct {
+                    for row in artworkRowIdentitiesByPriceKey[owner.priceKey] ?? []
+                    where row.itemKind == .sealedProduct && row.imageURLIsMissing {
+                        pendingRowPatches.append(
+                            RefreshRowPatch(
+                                collectionKey: row.collectionKey,
+                                expectedPriceKey: row.priceKey,
+                                expectedVariantID: row.variantID,
+                                expectedMarketVariantID: row.marketVariantID,
+                                change: .sealedArtwork(url: artworkURL, checkedAt: .now)
+                            )
+                        )
+                    }
+                }
+            }
         }
         return applied
     }
 
     private func recordActiveArtworkMiss(for owners: [MarketPriceTarget]) {
         guard storageContinuation?() ?? true else { return }
-        PriceRefreshController.recordSealedArtworkMiss(
-            for: owners,
-            rowsByPriceKey: artworkRowsByPriceKey
-        )
+        for owner in owners where owner.itemKind == .sealedProduct {
+            for row in artworkRowIdentitiesByPriceKey[owner.priceKey] ?? []
+            where row.itemKind == .sealedProduct && row.imageURLIsMissing {
+                pendingRowPatches.append(
+                    RefreshRowPatch(
+                        collectionKey: row.collectionKey,
+                        expectedPriceKey: row.priceKey,
+                        expectedVariantID: row.variantID,
+                        expectedMarketVariantID: row.marketVariantID,
+                        change: .sealedArtwork(url: nil, checkedAt: .now)
+                    )
+                )
+            }
+        }
         activeFallbackStagedWrites += owners.count
     }
 
@@ -932,9 +1197,16 @@ actor PriceRefreshModelActor {
         // already-known non-atomic window between synced and local stores.
         guard identities.save(index: identityIndex) else {
             refreshStore?.index?.reload()
+            identityIndex?.reload()
+            pendingRowPatches.removeAll()
             return false
         }
-        return store.save()
+        guard store.save() else {
+            identityIndex?.reload()
+            pendingRowPatches.removeAll()
+            return false
+        }
+        return applyPendingRowPatches().saved
     }
 
     /// The coordinator calls its checkpoint callback after a successful vendor
@@ -1020,25 +1292,16 @@ actor PriceRefreshModelActor {
         fallbackOutcome = "running"
 
         let (identities, identityIndex) = makeIdentityState()
-        let artworkPending = PriceRefreshController.rowsMissingArtworkIDs(in: modelContext)
-        let identityRows = PriceRefreshController.rowsByPriceKeyIDs(in: modelContext)
-        artworkRowIDsByPriceKey = artworkPending
-        identityRowIDsByPriceKey = identityRows
-        artworkRowsByPriceKey = PriceRefreshController.materializedRows(
-            from: artworkPending,
-            in: modelContext
-        )
-        identityRowsByPriceKey = PriceRefreshController.materializedRows(
-            from: identityRows,
-            in: modelContext
-        )
+        let rowIdentities = PriceRefreshController.rowIdentitiesByPriceKey(in: modelContext)
+        artworkRowIdentitiesByPriceKey = rowIdentities.mapValues {
+            $0.filter(\.imageURLIsMissing)
+        }
+        identityRowIdentitiesByPriceKey = rowIdentities
         activeFallbackLastCommitAt = .now
         activeFallbackStagedWrites = 0
         defer {
-            artworkRowIDsByPriceKey = [:]
-            identityRowIDsByPriceKey = [:]
-            artworkRowsByPriceKey = [:]
-            identityRowsByPriceKey = [:]
+            artworkRowIdentitiesByPriceKey = [:]
+            identityRowIdentitiesByPriceKey = [:]
             activeFallbackLastCommitAt = .distantPast
             activeFallbackStagedWrites = 0
         }
@@ -1364,31 +1627,17 @@ actor PriceRefreshModelActor {
         var stagedWriteCount = 0
         var lastCommitAt = Date.now
 
-        // Binding is a collection-row mutation, but it happens in the same
-        // model context as the price write. Keeping these maps local avoids a
-        // fetch per slab while a response is being matched, and lets a newly
-        // bound row use its canonical vendor price key immediately.
-        let gradedRows: [CollectedCard]
-        do {
-            gradedRows = try modelContext.fetch(FetchDescriptor<CollectedCard>())
-        } catch {
-            // A graded response must never be written against a fabricated
-            // empty ownership table. Keep the prior state and report the pass
-            // as incomplete so a later refresh can retry.
-            return (0, true, 0, 0)
-        }
-        let rowsByCollectionKey = Dictionary(
-            grouping: gradedRows.filter { $0.itemKind == .gradedCard },
-            by: \.collectionKey
+        // Collection state is represented by keys and identity values only.
+        // A vendor response can arrive after any one of these rows was removed
+        // or rekeyed, so the checkpoint will re-fetch and validate it.
+        let gradedRowsByPriceKey = PriceRefreshController.rowIdentitiesByPriceKey(
+            in: modelContext
+        ).mapValues { $0.filter { $0.itemKind == .gradedCard } }
+        let gradedRowsByMarketVariant = Dictionary(
+            grouping: gradedRowsByPriceKey.values.flatMap { $0 }
+                .filter { $0.marketVariantID != nil },
+            by: { $0.marketVariantID! }
         )
-        var rowsByVariantID = Dictionary(
-            grouping: gradedRows.compactMap { row -> (String, CollectedCard)? in
-                guard row.itemKind == .gradedCard,
-                      let variantID = row.justTCGVariantID else { return nil }
-                return (variantID, row)
-            },
-            by: \.0
-        ).mapValues { $0.map(\.1) }
 
         func selectGradedVariant(
             from variants: [GradedVariant],
@@ -1415,12 +1664,12 @@ actor PriceRefreshModelActor {
             )
         }
 
-        func row(for target: PriceTarget) -> CollectedCard? {
+        func rowIdentity(for target: PriceTarget) -> RefreshRowIdentity? {
             if let handle = target.marketVariantID,
-               let existing = rowsByVariantID[handle]?.first {
+               let existing = gradedRowsByMarketVariant[handle]?.first {
                 return existing
             }
-            return rowsByCollectionKey[target.printingID]?.first
+            return gradedRowsByPriceKey[target.id]?.first
         }
 
         func checkpoint(force: Bool = false) async {
@@ -1447,6 +1696,8 @@ actor PriceRefreshModelActor {
                     >= PriceRefreshController.checkpointBudget
             guard due, stagedWriteCount > 0 else { return }
             if (storageContinuation?() ?? true), !Task.isCancelled, store.save() {
+                let patchResult = applyPendingRowPatches()
+                persistenceFailed = persistenceFailed || !patchResult.saved
                 priced += stagedPriced
                 stagedPriced = 0
                 stagedWriteCount = 0
@@ -1456,6 +1707,8 @@ actor PriceRefreshModelActor {
                 checkpointOutcome = "saved"
             } else {
                 persistenceFailed = true
+                pendingRowPatches.removeAll()
+                identityIndex?.reload()
                 checkpointOutcome = "failed"
             }
         }
@@ -1490,7 +1743,7 @@ actor PriceRefreshModelActor {
             }
         }
 
-        for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
+        groupLoop: for (_, group) in byCard.sorted(by: { $0.key < $1.key }) {
             if Task.isCancelled || !(storageContinuation?() ?? true) { break }
             guard let identity = group.first?.gradedIdentity,
                   let game = group.first?.game else { continue }
@@ -1553,36 +1806,61 @@ actor PriceRefreshModelActor {
                     continue
                 }
 
-                let binding: GradedVariantBindingReceipt
-                if let owner = row(for: target) {
+                let owner = rowIdentity(for: target)
+                if owner != nil, target.marketVariantID == nil {
+                    // Move price-side lineage in the refresh actor's own
+                    // context before staging the vendor quote. The collection
+                    // row remains a guarded patch applied after this save.
+                    let apiVersion = JustTCGV2GradedClient.apiVersion
+                    let printingID = "justtcg:\(apiVersion):\(variant.id)"
                     do {
-                        binding = try GradedVariantBinding.apply(
-                            variant,
-                            to: owner,
-                            store: store,
-                            context: modelContext,
+                        try PriceIdentityLineageMigration.migratePriceSide(
+                            from: target.id,
+                            to: PriceRecord.key(
+                                game: target.game,
+                                printingID: printingID,
+                                variantID: target.variantID,
+                                treatmentIDs: target.magicTreatmentIDsRaw
+                            ),
+                            game: target.game,
+                            printingID: printingID,
                             variantID: target.variantID,
                             treatmentIDs: target.magicTreatmentIDsRaw,
-                            at: .now
+                            in: modelContext,
+                            index: store.index
                         )
                     } catch {
-                        // Do not bind a slab if its old price lineage could not
-                        // be read and retargeted. The isolated refresh remains
-                        // incomplete and the next pass can retry this target.
+                        modelContext.rollback()
+                        store.index?.reload()
+                        identityIndex?.reload()
+                        pendingRowPatches.removeAll()
+                        stagedWriteCount = 0
+                        stagedPriced = 0
                         persistenceFailed = true
-                        continue
+                        break groupLoop
                     }
-                    rowsByVariantID[variant.id, default: []].append(owner)
-                } else {
-                    // Preserve the provider-key cache write if a collection row
-                    // disappears between target selection and quote application.
-                    binding = GradedVariantBinding.storeUnboundVariantQuote(
-                        variant,
-                        game: target.game,
-                        variantID: target.variantID,
-                        treatmentIDs: target.magicTreatmentIDsRaw,
-                        store: store,
-                        at: .now
+                }
+                let binding = GradedVariantBinding.storeUnboundVariantQuote(
+                    variant,
+                    game: target.game,
+                    variantID: target.variantID,
+                    treatmentIDs: target.magicTreatmentIDsRaw,
+                    store: store,
+                    at: .now
+                )
+                if let owner {
+                    pendingRowPatches.append(
+                        RefreshRowPatch(
+                            collectionKey: owner.collectionKey,
+                            expectedPriceKey: owner.priceKey,
+                            expectedVariantID: owner.variantID,
+                            expectedMarketVariantID: owner.marketVariantID,
+                            change: .gradedBinding(
+                                marketVariantID: variant.id,
+                                marketCardID: variant.cardID,
+                                apiVersion: JustTCGV2GradedClient.apiVersion
+                            )
+                        )
                     )
                 }
                 if binding.wasAccepted {
@@ -1731,7 +2009,6 @@ extension PokemonFinishReconciliation {
     }
 
     struct Repair: Sendable {
-        let rowID: PersistentIdentifier
         let collectionKey: String
         let storedVariantID: String?
         let storedResolutionRaw: String?
@@ -1747,6 +2024,17 @@ extension PokemonFinishReconciliation {
     struct Assessment {
         let repairs: [Repair]
         let changedPendingRows: Int
+        let pendingPatches: [RefreshRowPatch]
+
+        init(
+            repairs: [Repair],
+            changedPendingRows: Int,
+            pendingPatches: [RefreshRowPatch] = []
+        ) {
+            self.repairs = repairs
+            self.changedPendingRows = changedPendingRows
+            self.pendingPatches = pendingPatches
+        }
     }
 
     /// Identifies only raw Pokémon rows represented by this exact price target
@@ -1785,7 +2073,6 @@ extension PokemonFinishReconciliation {
                 }
                 repairs.append(
                     Repair(
-                        rowID: row.persistentModelID,
                         collectionKey: row.collectionKey,
                         storedVariantID: row.variantID,
                         storedResolutionRaw: row.variantResolutionRaw,
@@ -1806,8 +2093,8 @@ extension PokemonFinishReconciliation {
     /// Applies the evidence policy to the live row snapshot. A missing finish
     /// can be backfilled immediately; a change to an existing automatic finish
     /// needs a second fresh result from a different refresh at least a day later.
-    /// Pending evidence is staged on the caller's context and committed with its
-    /// normal refresh checkpoint.
+    /// Pending evidence is returned as a guarded value patch. The caller saves
+    /// it with the normal price-refresh checkpoint in a fresh serialized context.
     static func assess(
         targets: [PriceTarget],
         card: IdentifiedCard,
@@ -1821,7 +2108,28 @@ extension PokemonFinishReconciliation {
         }
 
         var repairs: [Repair] = []
-        var changedPendingRows = 0
+        var pendingPatches: [RefreshRowPatch] = []
+
+        func stagePendingFinish(
+            for row: CollectedCard,
+            replacement: PendingCatalogFinishState
+        ) {
+            let expected = PendingCatalogFinishState.read(from: row)
+            guard expected != replacement else { return }
+            pendingPatches.append(
+                RefreshRowPatch(
+                    collectionKey: row.collectionKey,
+                    expectedPriceKey: row.priceKey,
+                    expectedVariantID: row.variantID,
+                    expectedMarketVariantID: row.justTCGVariantID,
+                    change: .pendingCatalogFinish(
+                        expected: expected,
+                        replacement: replacement
+                    )
+                )
+            )
+        }
+
         for target in targets where target.game == .pokemon
             && target.itemKind == .rawCard
             && target.importedIdentity == nil
@@ -1834,14 +2142,28 @@ extension PokemonFinishReconciliation {
                 && row.variantID == target.variantID {
                 let storedResolution = row.variantResolution
                 guard row.pokemonPrintRun == nil || row.pokemonPrintRun == .unlimited else {
-                    if clearPendingCatalogFinish(on: row) { changedPendingRows += 1 }
+                    stagePendingFinish(
+                        for: row,
+                        replacement: PendingCatalogFinishState(
+                            id: nil,
+                            firstSeenAt: nil,
+                            refreshID: nil
+                        )
+                    )
                     continue
                 }
                 let canBackfill = row.variantID == nil
                     && (storedResolution == nil || storedResolution?.isAutomatic == true)
                 let canCorrect = row.variantID != nil && storedResolution?.isAutomatic == true
                 guard canBackfill || canCorrect else {
-                    if clearPendingCatalogFinish(on: row) { changedPendingRows += 1 }
+                    stagePendingFinish(
+                        for: row,
+                        replacement: PendingCatalogFinishState(
+                            id: nil,
+                            firstSeenAt: nil,
+                            refreshID: nil
+                        )
+                    )
                     continue
                 }
 
@@ -1851,18 +2173,31 @@ extension PokemonFinishReconciliation {
                 let outcome = VariantResolver.resolve(evidence)
                 guard case let .resolved(resolved) = outcome,
                       let variant = resolved.variant else {
-                    if clearPendingCatalogFinish(on: row) { changedPendingRows += 1 }
+                    stagePendingFinish(
+                        for: row,
+                        replacement: PendingCatalogFinishState(
+                            id: nil,
+                            firstSeenAt: nil,
+                            refreshID: nil
+                        )
+                    )
                     continue
                 }
                 if variant.id == row.variantID {
-                    if clearPendingCatalogFinish(on: row) { changedPendingRows += 1 }
+                    stagePendingFinish(
+                        for: row,
+                        replacement: PendingCatalogFinishState(
+                            id: nil,
+                            firstSeenAt: nil,
+                            refreshID: nil
+                        )
+                    )
                     continue
                 }
 
                 if canBackfill {
                     repairs.append(
                         Repair(
-                            rowID: row.persistentModelID,
                             collectionKey: row.collectionKey,
                             storedVariantID: row.variantID,
                             storedResolutionRaw: row.variantResolutionRaw,
@@ -1887,17 +2222,20 @@ extension PokemonFinishReconciliation {
                     if !pendingMatches
                         || row.pendingCatalogFinishFirstSeenAt == nil
                         || row.pendingCatalogFinishRefreshID == nil {
-                        row.pendingCatalogFinishID = variant.id
-                        row.pendingCatalogFinishFirstSeenAt = now
-                        row.pendingCatalogFinishRefreshID = refreshID
-                        changedPendingRows += 1
+                        stagePendingFinish(
+                            for: row,
+                            replacement: PendingCatalogFinishState(
+                                id: variant.id,
+                                firstSeenAt: now,
+                                refreshID: refreshID
+                            )
+                        )
                     }
                     continue
                 }
 
                 repairs.append(
                     Repair(
-                        rowID: row.persistentModelID,
                         collectionKey: row.collectionKey,
                         storedVariantID: row.variantID,
                         storedResolutionRaw: row.variantResolutionRaw,
@@ -1912,19 +2250,11 @@ extension PokemonFinishReconciliation {
                 )
             }
         }
-        return Assessment(repairs: repairs, changedPendingRows: changedPendingRows)
-    }
-
-    private static func clearPendingCatalogFinish(on row: CollectedCard) -> Bool {
-        guard row.pendingCatalogFinishID != nil
-                || row.pendingCatalogFinishFirstSeenAt != nil
-                || row.pendingCatalogFinishRefreshID != nil else {
-            return false
-        }
-        row.pendingCatalogFinishID = nil
-        row.pendingCatalogFinishFirstSeenAt = nil
-        row.pendingCatalogFinishRefreshID = nil
-        return true
+        return Assessment(
+            repairs: repairs,
+            changedPendingRows: pendingPatches.count,
+            pendingPatches: pendingPatches
+        )
     }
 
     /// Applies all of a row's activity-backed changes in one sibling-context
@@ -1935,8 +2265,12 @@ extension PokemonFinishReconciliation {
         card: IdentifiedCard,
         in container: ModelContainer
     ) -> Bool {
-        let context = ModelContext(container)
-        guard let row = context.model(for: repair.rowID) as? CollectedCard,
+        do {
+            return try CollectionWriteSerializer.perform(
+                container: container,
+                timeout: .wait
+            ) { context in
+        guard let row = CollectionStore(context: context).card(forKey: repair.collectionKey),
               row.collectionKey == repair.collectionKey,
               row.variantID == repair.storedVariantID,
               row.variantResolutionRaw == repair.storedResolutionRaw,
@@ -2014,6 +2348,14 @@ extension PokemonFinishReconciliation {
             )
             return false
         }
+            }
+        } catch {
+            PerformanceSignpost.emitEvent(
+                "pokemonFinishReconciliationSkipped",
+                "reason=collectionCorrection"
+            )
+            return false
+        }
     }
 }
 
@@ -2051,6 +2393,7 @@ struct PriceRefreshRequest: Sendable {
 struct PriceRefreshResult: Sendable, Equatable {
     let didRun: Bool
     let targetBuildFailed: Bool
+    var wasPreempted: Bool = false
 }
 
 enum PriceRefreshProgress: Sendable {
@@ -2170,6 +2513,15 @@ enum PriceRefreshWorkOutcome: Sendable {
 final class PriceRefreshController: ObservableObject {
     static let shared = PriceRefreshController()
 
+    enum Owner: Equatable, Sendable {
+        case foreground
+        case background
+    }
+
+    struct SuspensionToken: Hashable, Sendable {
+        fileprivate let id: UUID
+    }
+
     enum FallbackStatus: Equatable {
         case idle
         case disabled(pending: Int)
@@ -2272,11 +2624,23 @@ final class PriceRefreshController: ObservableObject {
     /// — `cancelRefresh()` — but it now means "the user left", which is the only
     /// thing it was ever supposed to mean.
     private var activeRefresh: Task<PriceRefreshResult, Never>?
+    private(set) var activeRefreshOwner: Owner?
+    private var activeRefreshQueueID: UUID?
+    private var preemptedRefreshQueueIDs: Set<UUID> = []
+    private var activeRefreshContainer: ModelContainer?
+    private var activeRefreshContinuation: StorageGenerationContinuation?
+    private var activeQueueRequest: PriceRefreshRequest?
+    private var suspensionTokens: Set<UUID> = []
+    private var isSuspendedForWrite = false
+    private var suspendedContainer: ModelContainer?
+    private var suspendedContinuation: StorageGenerationContinuation?
     private var lastProgressPublicationAt: Date?
     private var lastPublishedProgressPercent: Int?
     private weak var registeredPortfolio: PortfolioEngine?
     private weak var registeredPriceSnapshotStore: PriceSnapshotStore?
     private weak var registeredRevisionStore: StoreRevisionStore?
+    private weak var registeredCompletionSignal: PriceRefreshCompletionSignal?
+    private var pokemonFetchOverrideForTesting: PriceRefreshPokemonFetchOverride?
     /// A caller that arrives during a pass must not lose its newer targets.
     /// Keep a trailing request; the actor rebuilds its targets from the live
     /// context when it reaches that request rather than retaining model rows.
@@ -2284,6 +2648,7 @@ final class PriceRefreshController: ObservableObject {
 
     private struct PendingRefreshRequest {
         var request: PriceRefreshRequest
+        var owner: Owner
     }
 
     private var isRefreshing: Bool {
@@ -2526,7 +2891,8 @@ final class PriceRefreshController: ObservableObject {
     func refresh(
         _ request: PriceRefreshRequest,
         container: ModelContainer,
-        shouldContinue: StorageGenerationContinuation? = nil
+        shouldContinue: StorageGenerationContinuation? = nil,
+        owner: Owner = .foreground
     ) async -> PriceRefreshResult {
         let controllerState = PerformanceSignpost.beginInterval(
             "priceRefresh.controller",
@@ -2545,31 +2911,127 @@ final class PriceRefreshController: ObservableObject {
             controllerOutcome = "cancelled"
             return PriceRefreshResult(didRun: false, targetBuildFailed: false)
         }
+        if isSuspendedForWrite {
+            suspendedContainer = container
+            suspendedContinuation = shouldContinue
+            enqueuePending(request, owner: owner)
+            // Do not wait here: an enclosing migration operation may own the
+            // migration gate that the exclusive writer is waiting to acquire.
+            // Returning releases that gate; the queued request runs after the
+            // writer resumes the controller.
+            controllerOutcome = "queued-during-suspension"
+            return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+        }
         if let activeRefresh {
-            enqueuePending(request)
+            if owner == .foreground { activeRefreshOwner = .foreground }
+            enqueuePending(request, owner: owner)
             return await activeRefresh.value
         }
 
         // The active task represents the whole queue, not just the first pass.
         // A caller that joins after the first pass has completed must remain
         // suspended until its trailing targets have been processed too.
+        let queueID = UUID()
+        activeRefreshOwner = owner
+        activeRefreshQueueID = queueID
+        activeQueueRequest = request
         let task = Task { @MainActor [weak self] in
             guard let self else {
                 return PriceRefreshResult(didRun: false, targetBuildFailed: false)
             }
             return await self.runRefreshQueue(
+                queueID: queueID,
                 startingWith: request,
                 container: container,
                 shouldContinue: shouldContinue
             )
         }
         activeRefresh = task
+        activeRefreshContainer = container
+        activeRefreshContinuation = shouldContinue
         let result = await task.value
         if let pending = pendingFallbackWork {
             await updateFallbackAvailability(pending: pending)
         }
         controllerOutcome = result.targetBuildFailed ? "target-build-failed" : (result.didRun ? "completed" : "empty-or-cancelled")
         return result
+    }
+
+    /// Stops provider work at its next cancellation point and retains the
+    /// active request so an identity rewrite can run between refresh passes.
+    /// The request is replayed from live storage after the last suspension ends.
+    func suspendPasses() async -> SuspensionToken {
+        let token = UUID()
+        suspensionTokens.insert(token)
+        guard suspensionTokens.count == 1 else {
+            return SuspensionToken(id: token)
+        }
+        let passWasInFlight = activeRefresh != nil || isRefreshing
+        isSuspendedForWrite = true
+        suspendedContainer = activeRefreshContainer
+        suspendedContinuation = activeRefreshContinuation
+        if let activeQueueRequest {
+            enqueuePending(
+                activeQueueRequest,
+                owner: activeRefreshOwner ?? .foreground
+            )
+        }
+        if let activeRefresh {
+            activeRefresh.cancel()
+            _ = await activeRefresh.value
+        }
+        if passWasInFlight {
+            status = .refreshing(completed: 0, total: 0)
+        }
+        return SuspensionToken(id: token)
+    }
+
+    func resume(_ token: SuspensionToken) {
+        guard suspensionTokens.remove(token.id) != nil else {
+            assertionFailure("Unknown price-refresh suspension token")
+            return
+        }
+        guard suspensionTokens.isEmpty else { return }
+        isSuspendedForWrite = false
+
+        guard let pending = takePendingRefresh(),
+              let container = suspendedContainer else {
+            suspendedContainer = nil
+            suspendedContinuation = nil
+            activeRefresh = nil
+            activeRefreshOwner = nil
+            activeRefreshQueueID = nil
+            activeRefreshContainer = nil
+            activeRefreshContinuation = nil
+            activeQueueRequest = nil
+            status = .idle
+            return
+        }
+        let continuation = suspendedContinuation
+        let queueID = UUID()
+        activeRefreshOwner = pending.owner
+        activeRefreshQueueID = queueID
+        activeQueueRequest = pending.request
+        let task = Task { @MainActor [weak self] in
+            guard let self else {
+                return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+            }
+            return await self.runRefreshQueue(
+                queueID: queueID,
+                startingWith: pending.request,
+                container: container,
+                shouldContinue: continuation
+            )
+        }
+        activeRefresh = task
+        activeRefreshContainer = container
+        activeRefreshContinuation = continuation
+        Task { @MainActor [weak self] in
+            _ = await task.value
+            if let pending = self?.pendingFallbackWork {
+                await self?.updateFallbackAvailability(pending: pending)
+            }
+        }
     }
 
     /// Stops the pass in progress. The only legitimate reason is that the work
@@ -2580,36 +3042,84 @@ final class PriceRefreshController: ObservableObject {
         pendingRefreshRequests.removeAll()
     }
 
+    /// Cancels the active queue only when it is still owned by the requested
+    /// lifecycle. A foreground join promotes a background queue, so background
+    /// task expiration can no longer cancel work the app now owns.
+    @discardableResult
+    func cancelRefresh(onlyIfOwnedBy owner: Owner) -> Bool {
+        guard activeRefreshOwner == owner,
+              let activeRefresh else { return false }
+        if owner == .background, let activeRefreshQueueID {
+            preemptedRefreshQueueIDs.insert(activeRefreshQueueID)
+        }
+        activeRefresh.cancel()
+        return true
+    }
+
+    /// Foreground startup waits only for a background-owned pass to unwind.
+    @discardableResult
+    func preemptBackgroundPass() async -> Bool {
+        guard activeRefreshOwner == .background,
+              let activeRefresh,
+              let activeRefreshQueueID else { return false }
+        preemptedRefreshQueueIDs.insert(activeRefreshQueueID)
+        activeRefresh.cancel()
+        _ = await activeRefresh.value
+        return true
+    }
+
     private func runRefreshQueue(
+        queueID: UUID,
         startingWith initialRequest: PriceRefreshRequest,
         container: ModelContainer,
         shouldContinue: StorageGenerationContinuation?
     ) async -> PriceRefreshResult {
+        func makeResult(didRun: Bool, targetBuildFailed: Bool) -> PriceRefreshResult {
+            PriceRefreshResult(
+                didRun: didRun,
+                targetBuildFailed: targetBuildFailed,
+                wasPreempted: preemptedRefreshQueueIDs.contains(queueID)
+            )
+        }
+        var didBeginPortfolioRefresh = false
+        defer {
+            if didBeginPortfolioRefresh {
+                // The replay gate is settled for every terminal outcome,
+                // including cancellation and target-build failure. It is tied
+                // to the controller's queue, not the happy path.
+                if shouldContinue?() ?? true {
+                    registeredPortfolio?.endPriceRefresh(context: container.mainContext)
+                } else {
+                    pendingRefreshRequests.removeAll()
+                    registeredPortfolio?.cancelPriceRefresh()
+                }
+            }
+            activeRefresh = nil
+            activeRefreshOwner = nil
+            activeRefreshQueueID = nil
+            activeRefreshContainer = nil
+            activeRefreshContinuation = nil
+            activeQueueRequest = nil
+            registeredCompletionSignal?.advance()
+            preemptedRefreshQueueIDs.remove(queueID)
+        }
         // The active marker is cleared in the same actor turn as the final
         // empty-queue check. A late caller can therefore either join a live
         // queue or start a new one; it cannot enqueue work after this queue has
         // already decided there is nothing left to process.
         guard shouldContinue?() ?? true else {
             pendingRefreshRequests.removeAll()
-            activeRefresh = nil
-            return PriceRefreshResult(didRun: false, targetBuildFailed: false)
+            return makeResult(didRun: false, targetBuildFailed: false)
         }
         registeredPortfolio?.beginPriceRefresh()
+        didBeginPortfolioRefresh = true
+        activeQueueRequest = initialRequest
         lastProgressPublicationAt = nil
         lastPublishedProgressPercent = nil
-        defer {
-            // The replay gate is settled for every terminal outcome, including
-            // cancellation and target-build failure. It is intentionally tied
-            // to the controller's queue, not to the happy-path summary.
-            if shouldContinue?() ?? true {
-                registeredPortfolio?.endPriceRefresh(context: container.mainContext)
-            } else {
-                pendingRefreshRequests.removeAll()
-                registeredPortfolio?.cancelPriceRefresh()
-            }
-            activeRefresh = nil
-        }
         let worker = PriceRefreshModelActor(modelContainer: container)
+        if let pokemonFetchOverrideForTesting {
+            await worker.setPokemonFetchOverrideForTesting(pokemonFetchOverrideForTesting)
+        }
         let relay = PriceRefreshProgressRelay { [weak self] value in
             self?.consume(value)
         }
@@ -2675,21 +3185,15 @@ final class PriceRefreshController: ObservableObject {
                         )
                     )
                 } else {
-                    status = .idle
+                    if !isSuspendedForWrite { status = .idle }
                 }
-                return PriceRefreshResult(
-                    didRun: didRun,
-                    targetBuildFailed: targetBuildFailed
-                )
+                return makeResult(didRun: didRun, targetBuildFailed: targetBuildFailed)
             case let .completed(result):
                 didRun = true
                 lastCompletedResult = result
                 guard shouldContinue?() ?? true else {
                     status = cancelledFinishSummary(from: result).map(Status.finished) ?? .idle
-                    return PriceRefreshResult(
-                        didRun: didRun,
-                        targetBuildFailed: targetBuildFailed
-                    )
+                    return makeResult(didRun: didRun, targetBuildFailed: targetBuildFailed)
                 }
                 if let fingerprint = await worker.priceValuesFingerprint() {
                     registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
@@ -2711,35 +3215,30 @@ final class PriceRefreshController: ObservableObject {
                 if let result = lastCompletedResult,
                    result.repairedFinishes == 0,
                    result.backfilledFinishes == 0 {
-                    status = .idle
+                    if !isSuspendedForWrite { status = .idle }
                 }
-                return PriceRefreshResult(
-                    didRun: didRun,
-                    targetBuildFailed: targetBuildFailed
-                )
+                return makeResult(didRun: didRun, targetBuildFailed: targetBuildFailed)
             }
             guard shouldContinue?() ?? true else {
                 if let result = lastCompletedResult,
                    let summary = cancelledFinishSummary(from: result) {
                     status = .finished(summary)
                 } else {
-                    status = .idle
+                    if !isSuspendedForWrite { status = .idle }
                 }
-                return PriceRefreshResult(
-                    didRun: didRun,
-                    targetBuildFailed: targetBuildFailed
-                )
+                return makeResult(didRun: didRun, targetBuildFailed: targetBuildFailed)
             }
             guard let pending = takePendingRefresh() else { break }
             request = pending.request
+            if activeRefreshOwner != .foreground {
+                activeRefreshOwner = pending.owner
+            }
+            activeQueueRequest = request
         }
-        return PriceRefreshResult(
-            didRun: didRun,
-            targetBuildFailed: targetBuildFailed
-        )
+        return makeResult(didRun: didRun, targetBuildFailed: targetBuildFailed)
     }
 
-    private func enqueuePending(_ request: PriceRefreshRequest) {
+    private func enqueuePending(_ request: PriceRefreshRequest, owner: Owner) {
         if let index = pendingRefreshRequests.indices.last {
             let existing = pendingRefreshRequests[index].request
             pendingRefreshRequests[index].request = PriceRefreshRequest(
@@ -2755,8 +3254,11 @@ final class PriceRefreshController: ObservableObject {
                     || request.markRecentlyCheckedIfEmpty,
                 gradedOnly: existing.gradedOnly && request.gradedOnly
             )
+            if owner == .foreground {
+                pendingRefreshRequests[index].owner = .foreground
+            }
         } else {
-            pendingRefreshRequests.append(PendingRefreshRequest(request: request))
+            pendingRefreshRequests.append(PendingRefreshRequest(request: request, owner: owner))
         }
     }
 
@@ -2892,40 +3394,54 @@ final class PriceRefreshController: ObservableObject {
     /// Returns how many cards it durably priced. Anything it cannot answer is
     /// left exactly as the catalog left it — including a Cardmarket euro price,
     /// which stays as the last resort rather than being cleared.
-    /// Collection rows with no picture yet, keyed by the price key a batched
-    /// response writes back to.
-    nonisolated fileprivate static func rowsMissingArtworkIDs(
+    nonisolated fileprivate static func rowIdentities(
         in context: ModelContext
-    ) -> [String: [PersistentIdentifier]] {
-        let rows = (try? context.fetch(
-            FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.imageURL == nil })
-        )) ?? []
-        return rows.reduce(into: [String: [PersistentIdentifier]]()) { result, row in
-            result[row.priceKey, default: []].append(row.persistentModelID)
-        }
-    }
-
-    nonisolated fileprivate static func rowsByPriceKeyIDs(
-        in context: ModelContext
-    ) -> [String: [PersistentIdentifier]] {
+    ) -> [RefreshRowIdentity] {
         let rows = (try? context.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        return rows.reduce(into: [String: [PersistentIdentifier]]()) { result, row in
-            result[row.priceKey, default: []].append(row.persistentModelID)
+        return rows.map {
+            RefreshRowIdentity(
+                collectionKey: $0.collectionKey,
+                priceKey: $0.priceKey,
+                providerID: $0.providerID,
+                variantID: $0.variantID,
+                marketVariantID: $0.justTCGVariantID,
+                itemKind: $0.itemKind,
+                imageURLIsMissing: $0.imageURL == nil
+            )
         }
     }
 
-    nonisolated fileprivate static func rows(
-        for ids: [PersistentIdentifier],
+    nonisolated fileprivate static func rowIdentitiesByPriceKey(
         in context: ModelContext
-    ) -> [CollectedCard] {
-        ids.compactMap { context.model(for: $0) as? CollectedCard }
+    ) -> [String: [RefreshRowIdentity]] {
+        rowIdentities(in: context).reduce(into: [:]) { result, row in
+            result[row.priceKey, default: []].append(row)
+        }
     }
 
-    nonisolated fileprivate static func materializedRows(
-        from index: [String: [PersistentIdentifier]],
+    nonisolated fileprivate static func rowIdentitiesByProviderID(
         in context: ModelContext
-    ) -> [String: [CollectedCard]] {
-        index.mapValues { rows(for: $0, in: context) }
+    ) -> [String: [RefreshRowIdentity]] {
+        rowIdentities(in: context).filter { $0.providerID.hasPrefix("csv:") }
+            .reduce(into: [:]) { result, row in
+                result[row.providerID, default: []].append(row)
+            }
+    }
+
+    /// Re-fetches only the live rows named by value keys. Callers use this
+    /// immediately before a read-only reconciliation decision; they never
+    /// retain the returned SwiftData models across an await.
+    nonisolated fileprivate static func liveRows(
+        collectionKeys: [String],
+        in context: ModelContext
+    ) throws -> [CollectedCard] {
+        guard !collectionKeys.isEmpty else { return [] }
+        let keys = Array(Set(collectionKeys))
+        return try context.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate { keys.contains($0.collectionKey) }
+            )
+        )
     }
 
     /// Applies product artwork independently of whether the returned variant
@@ -2977,19 +3493,6 @@ final class PriceRefreshController: ObservableObject {
                 )
             }
         }
-    }
-
-    nonisolated fileprivate static func recordSealedArtworkMiss(
-        for owners: [MarketPriceTarget],
-        rowIDsByPriceKey: [String: [PersistentIdentifier]],
-        context: ModelContext,
-        checkedAt: Date = .now
-    ) {
-        recordSealedArtworkMiss(
-            for: owners,
-            rowsByPriceKey: materializedRows(from: rowIDsByPriceKey, in: context),
-            checkedAt: checkedAt
-        )
     }
 
     /// One matched vendor response, applied in dependency order. Identity and
@@ -3116,40 +3619,6 @@ final class PriceRefreshController: ObservableObject {
             : .rejected
     }
 
-    @discardableResult
-    nonisolated fileprivate static func applyVendorBatchHit(
-        card: JustTCGCard,
-        variant: JustTCGVariant,
-        owners: [MarketPriceTarget],
-        store: PriceStore,
-        identities: ProductIdentityStore,
-        artworkRowIDsByPriceKey: [String: [PersistentIdentifier]],
-        identityRowIDsByPriceKey: [String: [PersistentIdentifier]],
-        context: ModelContext,
-        identityIndex: ProductIdentityIndex? = nil,
-        fetchedAt: Date = .now
-    ) -> Bool {
-        // The IDs were captured before the network await. Re-fetching here
-        // makes deletion, rollback, or a sync merge during that await harmless.
-        return applyVendorBatchHit(
-            card: card,
-            variant: variant,
-            owners: owners,
-            store: store,
-            identities: identities,
-            artworkRowsByPriceKey: materializedRows(
-                from: artworkRowIDsByPriceKey,
-                in: context
-            ),
-            identityRowsByPriceKey: materializedRows(
-                from: identityRowIDsByPriceKey,
-                in: context
-            ),
-            identityIndex: identityIndex,
-            fetchedAt: fetchedAt
-        )
-    }
-
     /// Compatibility overload for callers that already have one row index.
     /// Identity persistence is now intentionally broader than artwork
     /// backfill, but existing support/test callers should keep compiling while
@@ -3195,6 +3664,14 @@ final class PriceRefreshController: ObservableObject {
 
     func registerRevisionStore(_ store: StoreRevisionStore) {
         registeredRevisionStore = store
+    }
+
+    func registerCompletionSignal(_ signal: PriceRefreshCompletionSignal) {
+        registeredCompletionSignal = signal
+    }
+
+    func setPokemonFetchOverrideForTesting(_ override: PriceRefreshPokemonFetchOverride?) {
+        pokemonFetchOverrideForTesting = `override`
     }
 
     func dismissSummary() {

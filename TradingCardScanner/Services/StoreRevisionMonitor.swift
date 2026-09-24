@@ -1,8 +1,56 @@
 import Combine
 import CoreData
+import CryptoKit
 import OSLog
 import SwiftData
 import SwiftUI
+
+@MainActor
+final class PriceRefreshCompletionSignal: ObservableObject {
+    @Published private(set) var generation: UInt = 0
+
+    func advance() {
+        generation &+= 1
+    }
+}
+
+enum StoreRevisionSaveFilter {
+    private static let derivedOnlyEntityNames: Set<String> = [
+        "PriceObservation",
+        "PriceCheckDay",
+        "PortfolioDailyClose",
+        "ReferenceQuote",
+        "ProductIdentity"
+    ]
+
+    static func isRelevantSave(
+        userInfo: [AnyHashable: Any]?,
+        passInFlight: Bool
+    ) -> Bool {
+        guard let userInfo else { return true }
+        let keys: [(ModelContext.NotificationKey, String)] = [
+            (.insertedIdentifiers, "inserted"),
+            (.updatedIdentifiers, "updated"),
+            (.deletedIdentifiers, "deleted")
+        ]
+        var allIdentifiers: [PersistentIdentifier] = []
+        for (notificationKey, stringKey) in keys {
+            let value = userInfo.first { key, _ in
+                if let typed = key.base as? ModelContext.NotificationKey {
+                    return typed.rawValue == notificationKey.rawValue
+                }
+                return (key.base as? String) == stringKey
+            }?.value
+            guard let values = value as? [PersistentIdentifier] else { return true }
+            allIdentifiers.append(contentsOf: values)
+        }
+        guard !allIdentifiers.isEmpty else { return true }
+        let ignoredEntities = passInFlight
+            ? derivedOnlyEntityNames.union(["PriceRecord"])
+            : derivedOnlyEntityNames
+        return allIdentifiers.contains { !ignoredEntities.contains($0.entityName) }
+    }
+}
 
 /// One off-main read of the durable inputs that can drive a derived snapshot.
 /// The hashes are session-local change tokens, not persisted identifiers.
@@ -17,6 +65,52 @@ struct StoreRevisionFingerprint: Equatable, Sendable {
     let magicCards: Int
     let stalePriceCollectionFingerprint: Int
     let stalePriceTargetFingerprint: Int
+    var pendingMagicMigrationKeys: Set<String> = []
+}
+
+enum StoreRevisionDecisions {
+    static func shouldRunMagicMigration(
+        previousPendingFingerprint: String?,
+        currentPendingKeys: Set<String>
+    ) -> Bool {
+        guard !currentPendingKeys.isEmpty else { return false }
+        guard let previousPendingFingerprint else { return true }
+        return previousPendingFingerprint
+            != StoreRevisionFingerprinting.pendingMagicMigrationFingerprint(currentPendingKeys)
+    }
+
+    static func shouldRunMagicMigration(
+        previous: StoreRevisionFingerprint,
+        current: StoreRevisionFingerprint
+    ) -> Bool {
+        shouldRunMagicMigration(
+            previousPendingKeys: previous.pendingMagicMigrationKeys,
+            currentPendingKeys: current.pendingMagicMigrationKeys
+        )
+    }
+
+    static func shouldRunMagicMigration(
+        previousPendingKeys: Set<String>,
+        currentPendingKeys: Set<String>
+    ) -> Bool {
+        !currentPendingKeys.subtracting(previousPendingKeys).isEmpty
+    }
+
+    @MainActor
+    @discardableResult
+    static func runMagicMigrationIfNeeded(
+        previousPendingKeys: Set<String>,
+        currentPendingKeys: Set<String>,
+        migration: () async -> Void
+    ) async -> Bool {
+        guard shouldRunMagicMigration(
+            previousPendingKeys: previousPendingKeys,
+            currentPendingKeys: currentPendingKeys
+        ) else { return false }
+        await migration()
+        return true
+    }
+
 }
 
 @MainActor
@@ -96,6 +190,11 @@ struct PendingForcedFallbackRetryState: Equatable {
 }
 
 enum StoreRevisionFingerprinting {
+    static func pendingMagicMigrationFingerprint(_ keys: Set<String>) -> String {
+        let digest = SHA256.hash(data: Data(keys.sorted().joined(separator: "\n").utf8))
+        return digest.map { String(format: "%02x", $0) }.joined()
+    }
+
     static func priceValues(_ records: [PriceRecord]) -> Int {
         var hasher = Hasher()
         for record in records.sorted(by: { $0.key < $1.key }) {
@@ -259,10 +358,13 @@ struct StoreRevisionMonitor: View {
     let refresh: PriceRefreshController
     let storageGeneration: CollectionStorageGeneration
     let hasStartedPortfolio: Bool
+    @ObservedObject var completionSignal: PriceRefreshCompletionSignal
 
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var saveGeneration: UInt = 0
     @State private var previousFingerprint: StoreRevisionFingerprint?
+    private static let pendingMagicMigrationFingerprintKey =
+        "storeRevision.pendingMagicMigrationFingerprint"
     /// Multiple debounced observations can overlap while a derived store is
     /// suspended. Only the newest apply may commit its fingerprint; otherwise
     /// an older continuation can move the token backwards after a newer one
@@ -280,17 +382,20 @@ struct StoreRevisionMonitor: View {
     /// A fallback opt-in that arrives during an active pass must survive the
     /// same-collection coalescing guard and run as soon as that pass finishes.
     @State private var pendingForcedFallbackRetry = PendingForcedFallbackRetryState()
-    @State private var hasEstablishedMagicTreatmentBaseline = false
     @AppStorage("priceRefreshObservedUsesPriceFallback")
     private var lastObservedFallbackPreference = false
 
     var body: some View {
         PerformanceSignpost.signposter.emitEvent("StoreRevisionMonitor.body")
         let storageToken = storageGeneration.currentToken()
-        let observation = "\(hasStartedPortfolio)-\(usesPriceFallback)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)"
+        let observation = "\(hasStartedPortfolio)-\(usesPriceFallback)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)-\(completionSignal.generation)"
 
         return Color.clear
-            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave).receive(on: RunLoop.main)) { _ in
+            .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave).receive(on: RunLoop.main)) { notification in
+                guard StoreRevisionSaveFilter.isRelevantSave(
+                    userInfo: notification.userInfo,
+                    passInFlight: refresh.isPassInFlight
+                ) else { return }
                 saveGeneration &+= 1
             }
             .onReceive(NotificationCenter.default.publisher(for: .NSPersistentStoreRemoteChange).receive(on: RunLoop.main)) { _ in
@@ -342,6 +447,39 @@ struct StoreRevisionMonitor: View {
 
         guard let previousFingerprint else {
             self.previousFingerprint = fingerprint
+            let currentPendingFingerprint = StoreRevisionFingerprinting
+                .pendingMagicMigrationFingerprint(fingerprint.pendingMagicMigrationKeys)
+            let priorPendingFingerprint = UserDefaults.standard.string(
+                forKey: Self.pendingMagicMigrationFingerprintKey
+            )
+            let shouldRunMigration = StoreRevisionDecisions.shouldRunMagicMigration(
+                previousPendingFingerprint: priorPendingFingerprint,
+                currentPendingKeys: fingerprint.pendingMagicMigrationKeys
+            )
+            if shouldRunMigration {
+                await runMagicTreatmentMigration(
+                    storageToken: storageToken,
+                    generation: generation
+                )
+            } else {
+                UserDefaults.standard.set(
+                    currentPendingFingerprint,
+                    forKey: Self.pendingMagicMigrationFingerprintKey
+                )
+            }
+            let didRunMigration = shouldRunMigration
+            if didRunMigration {
+                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
+                let refreshedKeys = await StoreRevisionModelActor(
+                    modelContainer: modelContext.container
+                ).pendingMagicMigrationKeys()
+                UserDefaults.standard.set(
+                    StoreRevisionFingerprinting.pendingMagicMigrationFingerprint(refreshedKeys),
+                    forKey: Self.pendingMagicMigrationFingerprintKey
+                )
+                await portfolio.recomputeAndWait(context: modelContext)
+                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
+            }
             await refreshStalePricesIfNeeded(
                 using: fingerprint,
                 storageToken: storageToken,
@@ -401,6 +539,18 @@ struct StoreRevisionMonitor: View {
             )
             guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         }
+
+        _ = await StoreRevisionDecisions.runMagicMigrationIfNeeded(
+            previousPendingKeys: previousFingerprint.pendingMagicMigrationKeys,
+            currentPendingKeys: fingerprint.pendingMagicMigrationKeys,
+            migration: {
+                await self.runMagicTreatmentMigration(
+                    storageToken: storageToken,
+                    generation: generation
+                )
+            }
+        )
+        guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
 
         if cardsChanged || inventoryChanged || activitiesChanged {
             CollectionStore(context: modelContext).invalidateIdentityAliasCache()
@@ -473,36 +623,6 @@ struct StoreRevisionMonitor: View {
 
         if magicChanged {
             guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
-            guard hasEstablishedMagicTreatmentBaseline else {
-                hasEstablishedMagicTreatmentBaseline = true
-                guard generation == applyGeneration else { return }
-                self.previousFingerprint = fingerprint
-                if forceUnsupportedRetry, !requestedStalePriceRefresh {
-                    await refreshStalePricesIfNeeded(
-                        using: fingerprint,
-                        storageToken: storageToken,
-                        forceUnsupportedRetry: true
-                    )
-                }
-                return
-            }
-            MagicTreatmentMigrationCoordinator.shared.invalidateCompletedReports()
-            let migrationState = PerformanceSignpost.beginInterval(
-                "storeRevision.magicMigration",
-                id: PerformanceSignpost.makeID(),
-                "generation=\(generation)"
-            )
-            _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(
-                in: modelContext,
-                storageToken: storageToken,
-                shouldContinue: storageGeneration.continuation(for: storageToken)
-            )
-            PerformanceSignpost.endInterval(
-                "storeRevision.magicMigration",
-                migrationState,
-                "generation=\(generation)"
-            )
-            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             if isRefreshInFlight {
                 let portfolioState = PerformanceSignpost.beginInterval(
                     "storeRevision.portfolioRecompute",
@@ -544,6 +664,30 @@ struct StoreRevisionMonitor: View {
         // overwriting the newer coalescing token.
         guard generation == applyGeneration else { return }
         self.previousFingerprint = fingerprint
+    }
+
+    @MainActor
+    private func runMagicTreatmentMigration(
+        storageToken: StorageGenerationToken,
+        generation: UInt
+    ) async {
+        guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
+        MagicTreatmentMigrationCoordinator.shared.invalidateCompletedReports()
+        let migrationState = PerformanceSignpost.beginInterval(
+            "storeRevision.magicMigration",
+            id: PerformanceSignpost.makeID(),
+            "generation=\(generation)"
+        )
+        _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(
+            in: modelContext,
+            storageToken: storageToken,
+            shouldContinue: storageGeneration.continuation(for: storageToken)
+        )
+        PerformanceSignpost.endInterval(
+            "storeRevision.magicMigration",
+            migrationState,
+            "generation=\(generation)"
+        )
     }
 
     private var isRefreshInFlight: Bool {
@@ -706,6 +850,20 @@ actor StoreRevisionModelActor {
 
     func readSucceeded() -> Bool { lastReadSucceeded }
 
+    func pendingMagicMigrationKeys() -> Set<String> {
+        let magicRawValue = CardGame.magic.rawValue
+        let migrationVersion = MagicTreatmentMigration.currentVersion
+        guard let rows = try? modelContext.fetch(
+            FetchDescriptor<CollectedCard>(
+                predicate: #Predicate {
+                    $0.game == magicRawValue
+                        && $0.magicTreatmentMigrationVersion < migrationVersion
+                }
+            )
+        ) else { return [] }
+        return Set(rows.map(\.collectionKey))
+    }
+
     func fingerprint() -> StoreRevisionFingerprint {
         do {
             let fingerprint = try makeFingerprint()
@@ -756,6 +914,7 @@ actor StoreRevisionModelActor {
         var magicHasher = Hasher()
         var stalePriceCollectionHasher = Hasher()
         var stalePriceTargetHasher = Hasher()
+        var pendingMagicMigrationKeys = Set<String>()
         for card in cards {
             cardHasher.combine(card.collectionKey)
             cardHasher.combine(card.quantity)
@@ -799,6 +958,9 @@ actor StoreRevisionModelActor {
                 magicHasher.combine(card.variantID)
                 magicHasher.combine(card.magicTreatmentMigrationVersion)
                 magicHasher.combine(card.magicTreatmentIDsRaw)
+                if card.magicTreatmentMigrationVersion < MagicTreatmentMigration.currentVersion {
+                    pendingMagicMigrationKeys.insert(card.collectionKey)
+                }
             }
         }
 
@@ -850,7 +1012,8 @@ actor StoreRevisionModelActor {
             artwork: artworkHasher.finalize(),
             magicCards: magicHasher.finalize(),
             stalePriceCollectionFingerprint: stalePriceCollectionHasher.finalize(),
-            stalePriceTargetFingerprint: stalePriceTargetHasher.finalize()
+            stalePriceTargetFingerprint: stalePriceTargetHasher.finalize(),
+            pendingMagicMigrationKeys: pendingMagicMigrationKeys
         )
     }
 }

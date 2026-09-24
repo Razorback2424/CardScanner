@@ -2474,18 +2474,21 @@ final class ScannerViewModel: ObservableObject {
 
         let mutation: CollectionMutation?
         do {
-            mutation = try await collectionWriter.correct(
-                card: scan.card,
-                from: scan.resolved.variant,
-                to: corrected,
-                pokemonPrintRun: scan.pokemonPrintRun,
-                previousCollectionKey: scan.mutation.collectionKey,
-                previousLedgerOperationIDs: scan.mutation.ledgerOperationIDs,
-                activityID: scan.mutation.activityID,
-                quantity: 1,
-                price: correctedLookup,
-                isGraded: scan.subject.slab != nil
-            )
+            let correction = {
+                try await collectionWriter.correct(
+                    card: scan.card,
+                    from: scan.resolved.variant,
+                    to: corrected,
+                    pokemonPrintRun: scan.pokemonPrintRun,
+                    previousCollectionKey: scan.mutation.collectionKey,
+                    previousLedgerOperationIDs: scan.mutation.ledgerOperationIDs,
+                    activityID: scan.mutation.activityID,
+                    quantity: 1,
+                    price: correctedLookup,
+                    isGraded: scan.subject.slab != nil
+                )
+            }
+            mutation = try await correction()
         } catch {
             guard writeSessionID == scannerSessionID else { return .failed }
             show(ScanNote(text: "Correction could not be saved", tone: .problem))
@@ -3127,10 +3130,22 @@ final class ScannerViewModel: ObservableObject {
                 guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
                       Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab),
                       !self.undoingScanIDs.contains(scanID) else { return }
-                guard let binding = try await collectionWriter.bindScannedGraded(
-                    collectionKey: latest.mutation.collectionKey,
-                    variant: variant
-                ) else { return }
+                let collectionKey = latest.mutation.collectionKey
+                let bind = {
+                    try await collectionWriter.bindScannedGraded(
+                        collectionKey: collectionKey,
+                        variant: variant
+                    )
+                }
+                let resolvedBinding: GradedVariantBindingReceipt?
+                if await collectionWriter.requiresGradedBindingPromotion(for: collectionKey) {
+                    resolvedBinding = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                        try await bind()
+                    }
+                } else {
+                    resolvedBinding = try await bind()
+                }
+                guard let binding = resolvedBinding else { return }
                 guard writeSessionID == self.scannerSessionID,
                       self.isStorageGenerationCurrent,
                       !self.undoingScanIDs.contains(scanID),
@@ -3219,10 +3234,23 @@ final class ScannerViewModel: ObservableObject {
 
         let mutation: CollectionMutation
         do {
-            guard let refinedMutation = try await collectionWriter.refineGradedCertification(
-                for: scan,
-                to: updatedSlab
-            ) else {
+            let refine = {
+                try await collectionWriter.refineGradedCertification(
+                    for: scan,
+                    to: updatedSlab
+                )
+            }
+            let refinedMutation: CollectionMutation?
+            if await collectionWriter.requiresGradedBindingPromotion(
+                for: scan.mutation.collectionKey
+            ) {
+                refinedMutation = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    try await refine()
+                }
+            } else {
+                refinedMutation = try await refine()
+            }
+            guard let refinedMutation else {
                 pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
                 show(ScanNote(text: "The slab certificate could not be matched to the saved scan", tone: .problem))
                 feedback.problem()
@@ -3591,14 +3619,31 @@ final class ScannerViewModel: ObservableObject {
 
         do {
             let mutation: CollectionMutation
-            if let collectionAddOverride {
-                mutation = try await collectionAddOverride(candidate)
-            } else if let collectionWriter {
-                mutation = try await collectionWriter.add(candidate)
+            let addOverride = collectionAddOverride
+            let writer = collectionWriter
+            let writeCandidate = {
+                if let addOverride {
+                    return try await addOverride(candidate)
+                }
+                if let writer {
+                    return try await writer.add(candidate)
+                }
+                throw CollectionStoreError.collectionBusy
+            }
+            let requiresIdentityGate: Bool
+            if let writer {
+                requiresIdentityGate = await writer.requiresPriceIdentityExclusivity(
+                    for: candidate
+                )
             } else {
-                clearAcknowledgement(for: candidate.encounterID)
-                endOneCardScan(encounterID: candidate.encounterID, outcome: "writer-unavailable")
-                return false
+                requiresIdentityGate = false
+            }
+            if requiresIdentityGate {
+                mutation = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    try await writeCandidate()
+                }
+            } else {
+                mutation = try await writeCandidate()
             }
             guard writeSessionID == scannerSessionID else {
                 clearAcknowledgement(for: candidate.encounterID)

@@ -685,6 +685,7 @@ struct SealedProductDetailView: View {
     @State private var undoTask: Task<Void, Never>?
     @State private var addFailure: String?
     @State private var addAlertTitle = "Couldn't add to collection"
+    @State private var isAdding = false
 
     private var ownedQuantity: Int {
         (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: []))
@@ -724,13 +725,15 @@ struct SealedProductDetailView: View {
 
             Section {
                 Button {
-                    add()
+                    guard !isAdding else { return }
+                    isAdding = true
+                    Task { await add() }
                 } label: {
-                    Label("Add to Collection", systemImage: "plus.circle.fill")
+                    Label(isAdding ? "Adding…" : "Add to Collection", systemImage: "plus.circle.fill")
                         .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(pendingMutation != nil)
+                .disabled(pendingMutation != nil || isAdding)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }
@@ -775,14 +778,48 @@ struct SealedProductDetailView: View {
 
     /// Adding never waits on the network. The price already shown came with the
     /// listing, and routine repricing happens later through a batch.
-    private func add() {
-        let store = CollectionStore(context: modelContext)
+    @MainActor
+    private func add() async {
+        defer { isAdding = false }
+        let container = modelContext.container
         do {
             // The undo affordance is the only thing that says this worked, and
             // it is gated on a non-nil mutation — so swallowing the error made a
             // failed add indistinguishable from never having tapped the button.
             // A sealed box is not something to lose silently.
-            pendingMutation = try store.addSealed(product, game: game)
+            let needsIdentityGate: Bool = {
+                let key = CollectedCard.sealedCollectionKey(
+                    game: game,
+                    productUUID: product.id,
+                    variantUUID: product.variantID ?? product.id
+                )
+                var descriptor = FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.collectionKey == key }
+                )
+                descriptor.fetchLimit = 1
+                guard let rows = try? ModelContext(container).fetch(descriptor) else {
+                    return product.variantID != nil
+                }
+                guard let row = rows.first else { return false }
+                return product.variantID != nil
+                    && row.itemKind == .sealedProduct
+                    && row.justTCGVariantID == nil
+            }()
+            let persist: () throws -> CollectionMutation = {
+                try CollectionWriteSerializer.perform(
+                    container: container,
+                    timeout: .mainThread
+                ) { context in
+                    try CollectionStore(context: context).addSealed(product, game: game)
+                }
+            }
+            if needsIdentityGate {
+                pendingMutation = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    try persist()
+                }
+            } else {
+                pendingMutation = try persist()
+            }
         } catch {
             addAlertTitle = "Couldn't add to collection"
             addFailure = error.localizedDescription
@@ -799,7 +836,12 @@ struct SealedProductDetailView: View {
         undoTask?.cancel()
         guard let pendingMutation else { return }
         do {
-            try CollectionStore(context: modelContext).undo(pendingMutation)
+            try CollectionWriteSerializer.perform(
+                container: modelContext.container,
+                timeout: .mainThread
+            ) { context in
+                try CollectionStore(context: context).undo(pendingMutation)
+            }
             self.pendingMutation = nil
         } catch {
             addAlertTitle = "Couldn't undo addition"

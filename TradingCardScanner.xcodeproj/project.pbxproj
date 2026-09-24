@@ -184,6 +184,8 @@
 		A00200E3 /* MagicTreatmentCatalog in Resources */ = {isa = PBXBuildFile; fileRef = B00100E4 /* MagicTreatmentCatalog */; };
 		A0010072 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = B0010072 /* PrivacyInfo.xcprivacy */; };
 		A0010106 /* CollectionStorageBootstrap.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010106 /* CollectionStorageBootstrap.swift */; };
+		A0010155 /* CollectionWriteSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010155 /* CollectionWriteSerializer.swift */; };
+		A0010156 /* DeterministicUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010156 /* DeterministicUUID.swift */; };
 		A0010107 /* CardScannerExternalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010107 /* CardScannerExternalLinks.swift */; };
 		A0010108 /* CollectionStorageBootstrapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010108 /* CollectionStorageBootstrapView.swift */; };
 		A0010109 /* PrivacyAndSupportSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010109 /* PrivacyAndSupportSettingsView.swift */; };
@@ -428,6 +430,8 @@
 		B0010129 /* MagicCatalogProduction.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/MagicCatalogProduction.xcconfig; sourceTree = "<group>"; };
 		B0010130 /* PokemonCatalogDebugLocal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/PokemonCatalogDebugLocal.xcconfig; sourceTree = "<group>"; };
 		B0010106 /* CollectionStorageBootstrap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrap.swift; sourceTree = "<group>"; };
+		B0010155 /* CollectionWriteSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionWriteSerializer.swift; sourceTree = "<group>"; };
+		B0010156 /* DeterministicUUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeterministicUUID.swift; sourceTree = "<group>"; };
 		B0010107 /* CardScannerExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScannerExternalLinks.swift; sourceTree = "<group>"; };
 		B0010108 /* CollectionStorageBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapView.swift; sourceTree = "<group>"; };
 		B0010109 /* PrivacyAndSupportSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyAndSupportSettingsView.swift; sourceTree = "<group>"; };
@@ -578,6 +582,8 @@
 			isa = PBXGroup;
 			children = (
 				B0010106 /* CollectionStorageBootstrap.swift */,
+				B0010155 /* CollectionWriteSerializer.swift */,
+				B0010156 /* DeterministicUUID.swift */,
 				B0010107 /* CardScannerExternalLinks.swift */,
 				B0010100 /* CollectionStoragePolicy.swift */,
 				B0010101 /* CloudRestorationReadiness.swift */,
@@ -936,6 +942,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				A0010106 /* CollectionStorageBootstrap.swift in Sources */,
+				A0010155 /* CollectionWriteSerializer.swift in Sources */,
+				A0010156 /* DeterministicUUID.swift in Sources */,
 				A0010107 /* CardScannerExternalLinks.swift in Sources */,
 				A0010108 /* CollectionStorageBootstrapView.swift in Sources */,
 				A0010109 /* PrivacyAndSupportSettingsView.swift in Sources */,

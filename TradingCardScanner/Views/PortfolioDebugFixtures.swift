@@ -13,7 +13,26 @@ enum PortfolioDebugFixtures {
     static let cardFinishPerformanceArtworkFilename = "card-finish-performance.image"
 
     @MainActor
+    private static func performFixtureWrite<T>(
+        in modelContext: ModelContext,
+        _ body: (ModelContext) throws -> T
+    ) throws -> T {
+        try CollectionWriteSerializer.perform(
+            container: modelContext.container,
+            timeout: .mainThread,
+            body
+        )
+    }
+
+    @MainActor
     static func seedMovementIfNeeded(in modelContext: ModelContext) {
+        try? performFixtureWrite(in: modelContext) { context in
+            seedMovementContents(in: context)
+        }
+    }
+
+    @MainActor
+    private static func seedMovementContents(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
@@ -91,6 +110,13 @@ enum PortfolioDebugFixtures {
 
     @MainActor
     static func seedHistoryIfNeeded(in modelContext: ModelContext) {
+        try? performFixtureWrite(in: modelContext) { context in
+            seedHistoryContents(in: context)
+        }
+    }
+
+    @MainActor
+    private static func seedHistoryContents(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
@@ -163,6 +189,13 @@ enum PortfolioDebugFixtures {
 
     @MainActor
     static func seedTodayIfNeeded(in modelContext: ModelContext) {
+        try? performFixtureWrite(in: modelContext) { context in
+            seedTodayContents(in: context)
+        }
+    }
+
+    @MainActor
+    private static func seedTodayContents(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
         let cardDetailArtworkURL = URL(string: "https://images.pokemontcg.io/base1/4_hires.png")
@@ -413,6 +446,17 @@ enum PortfolioDebugFixtures {
     /// here resets a scenario without ever touching a user's saved collection.
     @MainActor
     static func seedCardFinishPerformance(in modelContext: ModelContext) -> String? {
+        do {
+            return try performFixtureWrite(in: modelContext) { context in
+                seedCardFinishPerformanceContents(in: context)
+            }
+        } catch {
+            return nil
+        }
+    }
+
+    @MainActor
+    private static func seedCardFinishPerformanceContents(in modelContext: ModelContext) -> String? {
         let previousArtworkFilenames = Set(
             ((try? modelContext.fetch(FetchDescriptor<LocalArtworkOverride>())) ?? [])
                 .map(\.filename)
@@ -585,6 +629,20 @@ enum PortfolioDebugFixtures {
         in modelContext: ModelContext,
         resolution: VariantResolution
     ) -> String? {
+        do {
+            return try performFixtureWrite(in: modelContext) { context in
+                seedTrustProvenanceContents(in: context, resolution: resolution)
+            }
+        } catch {
+            return nil
+        }
+    }
+
+    @MainActor
+    private static func seedTrustProvenanceContents(
+        in modelContext: ModelContext,
+        resolution: VariantResolution
+    ) -> String? {
         let providerID = "ui-trust-provenance-\(resolution.rawValue)"
         let existing = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
         if let existingCard = existing.first(where: { $0.providerID == providerID }) {
@@ -689,6 +747,13 @@ enum PortfolioDebugFixtures {
 
     @MainActor
     static func seedCollectionFooter4aIfNeeded(in modelContext: ModelContext) {
+        try? performFixtureWrite(in: modelContext) { context in
+            seedCollectionFooter4aContents(in: context)
+        }
+    }
+
+    @MainActor
+    private static func seedCollectionFooter4aContents(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }
 
         let card = TCGdexCard(
