@@ -658,7 +658,7 @@ final class CardLatchTests: XCTestCase {
         XCTAssertEqual(scanner.latchedSubjectForTesting, ScanSubject(identifier: identifier, slab: evidence))
     }
 
-    func testHeldSlabIgnoresGradeFlickerAndEnrichesCertificateWithChangedCardText() {
+    func testHeldCertlessSlabDoesNotTakeCertificateFromMismatchedCardText() {
         let scanner = CardScanner()
         let identifier = pokemon(223)
         let gradeTen = slabEvidence()
@@ -693,7 +693,8 @@ final class CardLatchTests: XCTestCase {
             for: identifier,
             at: 3.0
         )
-        XCTAssertEqual(scanner.latchedSubjectForTesting?.slab, certifiedWithWrongName)
+        XCTAssertEqual(scanner.activeSlabEvidenceForTesting, gradeTen)
+        XCTAssertEqual(scanner.latchedSubjectForTesting?.slab, gradeTen)
     }
 
     func testDifferentConfirmedCertificateOnSameFooterCanRelatchQuickCopySwap() {
@@ -713,11 +714,16 @@ final class CardLatchTests: XCTestCase {
 
         _ = scanner.receiveSlabLabelEvidenceForTesting(secondCopy, footerHasText: true, for: identifier, at: 2.5)
         XCTAssertEqual(
-            scanner.receiveSlabLabelEvidenceForTesting(secondCopy, footerHasText: true, for: identifier, at: 4.5),
+            scanner.receiveSlabLabelEvidenceForTesting(secondCopy, footerHasText: true, for: identifier, at: 3.0),
+            nil,
+            "two matching cert reads are not enough to switch a held slab"
+        )
+        XCTAssertEqual(
+            scanner.receiveSlabLabelEvidenceForTesting(secondCopy, footerHasText: true, for: identifier, at: 3.5),
             secondCopy
         )
-        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 4.75)
-        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 5.0)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 3.75)
+        scanner.receiveFooterOutcomeForTesting(.identified(raw), at: 4.0)
 
         XCTAssertEqual(scanner.latchedSubjectForTesting?.slab, secondCopy)
     }

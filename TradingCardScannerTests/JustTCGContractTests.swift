@@ -684,6 +684,26 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertNil(JustTCGTransport.retryDate(from: nil, now: now))
     }
 
+    func testDeltaCutoffConvertsDeviceClockAheadOrBehindToServerTime() {
+        let cutoff = Date(timeIntervalSince1970: 1_700_000_000)
+
+        XCTAssertEqual(
+            JustTCGServerClock.deltaRequestCutoff(for: cutoff, serverClockOffset: 10 * 60),
+            cutoff.addingTimeInterval(-5 * 60),
+            "when the server is 10 minutes ahead, send the cutoff in server time"
+        )
+        XCTAssertEqual(
+            JustTCGServerClock.deltaRequestCutoff(for: cutoff, serverClockOffset: -10 * 60),
+            cutoff.addingTimeInterval(-25 * 60),
+            "when the device is 10 minutes ahead, move the cutoff earlier"
+        )
+        XCTAssertEqual(
+            JustTCGServerClock.deltaRequestCutoff(for: cutoff, serverClockOffset: nil),
+            cutoff.addingTimeInterval(-15 * 60),
+            "without a known offset, keep the safety margin"
+        )
+    }
+
     // MARK: - Namespaced identity
 
     /// A slab never shares a row, a quantity or a price with the raw copy of the
@@ -1446,23 +1466,86 @@ final class JustTCGContractTests: XCTestCase {
 
     private struct EmptyJustTCGResponse: Decodable {}
 
+    private func rfc1123Header(for date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'"
+        return formatter.string(from: date)
+    }
+
+    func testSuccessfulTransportResponseUpdatesServerClockAndMissingHeaderKeepsIt() async throws {
+        let suite = "JustTCGServerClock.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        let deviceNow = Date.now
+        let serverClock = JustTCGServerClock()
+        RecordingURLProtocol.reset(
+            headers: [
+                "Content-Type": "application/json",
+                "Date": rfc1123Header(for: deviceNow.addingTimeInterval(10 * 60))
+            ]
+        )
+
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [RecordingURLProtocol.self]
+        var transportConfiguration = JustTCGTransport.Configuration()
+        transportConfiguration.baseURL = URL(string: "https://justtcg.test")!
+        transportConfiguration.minimumRequestInterval = 0
+        let transport = JustTCGTransport(
+            configuration: transportConfiguration,
+            session: URLSession(configuration: configuration),
+            ledger: JustTCGRequestLedger(defaults: defaults),
+            pacer: JustTCGPacer(),
+            apiKeyOverride: "justtcg-test-key",
+            serverClock: serverClock
+        )
+
+        _ = try await transport.get(
+            "/clock",
+            lane: .interactive,
+            as: EmptyJustTCGResponse.self
+        )
+
+        let observedOffset = try XCTUnwrap(serverClock.serverClockOffset)
+        XCTAssertEqual(observedOffset, 10 * 60, accuracy: 2)
+
+        serverClock.observe(serverDateHeader: nil)
+        XCTAssertEqual(serverClock.serverClockOffset, observedOffset)
+        serverClock.observe(serverDateHeader: "not a date")
+        XCTAssertEqual(serverClock.serverClockOffset, observedOffset)
+    }
+
     // MARK: - Delta safety
 
     /// Records every outbound request so a test can assert on `updated_after`.
     private final class RecordingURLProtocol: URLProtocol, @unchecked Sendable {
         nonisolated(unsafe) static var requestedURLs: [URL] = []
         nonisolated(unsafe) static var body = Data(#"{"data":[]}"#.utf8)
+        nonisolated(unsafe) static var responseHeaders: [String: String] = [
+            "Content-Type": "application/json"
+        ]
         private static let lock = NSLock()
 
-        static func reset(body newBody: String = #"{"data":[]}"#) {
+        static func reset(
+            body newBody: String = #"{"data":[]}"#,
+            headers newHeaders: [String: String] = ["Content-Type": "application/json"]
+        ) {
             lock.lock(); defer { lock.unlock() }
             requestedURLs = []
             body = Data(newBody.utf8)
+            responseHeaders = newHeaders
         }
 
         static func recorded() -> [URL] {
             lock.lock(); defer { lock.unlock() }
             return requestedURLs
+        }
+
+        private static func responseHeadersSnapshot() -> [String: String] {
+            lock.lock(); defer { lock.unlock() }
+            return responseHeaders
         }
 
         override class func canInit(with request: URLRequest) -> Bool { true }
@@ -1478,7 +1561,7 @@ final class JustTCGContractTests: XCTestCase {
                 url: request.url ?? URL(string: "https://example.invalid")!,
                 statusCode: 200,
                 httpVersion: nil,
-                headerFields: ["Content-Type": "application/json"]
+                headerFields: Self.responseHeadersSnapshot()
             )!
             client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
             Self.lock.lock()
@@ -1493,7 +1576,8 @@ final class JustTCGContractTests: XCTestCase {
 
     @MainActor
     private func makeCoordinator(
-        defaults: UserDefaults
+        defaults: UserDefaults,
+        serverClock: JustTCGServerClock = .shared
     ) -> (JustTCGRefreshCoordinator, JustTCGSyncLedger) {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [RecordingURLProtocol.self]
@@ -1507,13 +1591,15 @@ final class JustTCGContractTests: XCTestCase {
             session: URLSession(configuration: configuration),
             ledger: JustTCGRequestLedger(defaults: defaults),
             pacer: JustTCGPacer(),
-            apiKeyOverride: "justtcg-test-key"
+            apiKeyOverride: "justtcg-test-key",
+            serverClock: serverClock
         )
         let syncLedger = JustTCGSyncLedger(defaults: defaults)
         return (
             JustTCGRefreshCoordinator(
                 client: JustTCGV1Client(transport: transport),
-                syncLedger: syncLedger
+                syncLedger: syncLedger,
+                serverClock: serverClock
             ),
             syncLedger
         )
@@ -1614,6 +1700,54 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertTrue(
             urls[0].query?.contains("updated_after") ?? false,
             "a row that already holds a value can be asked for changes only"
+        )
+    }
+
+    @MainActor
+    func testDeltaRequestUsesTheServerAdjustedCutoff() async throws {
+        let suite = "JustTCGDelta.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        RecordingURLProtocol.reset()
+
+        let watermark = Date(timeIntervalSince1970: 1_700_000_040)
+        let serverClock = JustTCGServerClock()
+        serverClock.observe(
+            serverDateHeader: rfc1123Header(for: watermark.addingTimeInterval(10 * 60)),
+            deviceNow: watermark
+        )
+        let (coordinator, syncLedger) = makeCoordinator(
+            defaults: defaults,
+            serverClock: serverClock
+        )
+        syncLedger.recordCompleteSync(
+            game: .pokemon,
+            apiVersion: JustTCGV1Client.apiVersion,
+            at: watermark
+        )
+
+        _ = await coordinator.refresh(
+            [target(
+                key: "priced",
+                variant: "variant-priced",
+                requiresFullResponse: false,
+                justTCGFetchedAt: watermark.addingTimeInterval(1)
+            )],
+            game: .pokemon,
+            useDelta: true,
+            apply: { _, _, _ in true },
+            checkpoint: { true }
+        )
+
+        let url = try XCTUnwrap(RecordingURLProtocol.recorded().first)
+        let components = try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false))
+        let sentCutoff = try XCTUnwrap(
+            components.queryItems?.first(where: { $0.name == "updated_after" })?.value
+        )
+        XCTAssertEqual(
+            sentCutoff,
+            String(Int(watermark.addingTimeInterval(-5 * 60).timeIntervalSince1970)),
+            "the server offset is applied only to the outbound delta cutoff"
         )
     }
 

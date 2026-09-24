@@ -206,6 +206,7 @@ final class PortfolioLedgerTests: XCTestCase {
                 previous: previous(
                     value: value(source: .scryfall),
                     effectiveAt: date(4),
+                    receivedAt: date(0),
                     isSourceStamped: false
                 )
             ),

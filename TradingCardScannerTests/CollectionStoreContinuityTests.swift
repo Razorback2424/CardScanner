@@ -377,6 +377,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
                     mode: .onDevice
                 )
             },
+            readinessProven: true,
             storageGeneration: CollectionStorageGeneration()
         )
 
@@ -388,7 +389,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
         XCTAssertEqual(makeCount, 0)
     }
 
-    func testTemporaryUnavailableKeepsAttachedReplicaBehindHeadlessCloudProofGate() async throws {
+    func testUnprovenReadinessOpensAttachedReplicaLocallyInHeadlessProcess() async throws {
         let directory = try makeDirectory()
         defer { try? FileManager.default.removeItem(at: directory) }
         let paths = makePaths(in: directory)
@@ -450,9 +451,12 @@ final class CollectionStoreContinuityTests: XCTestCase {
             dependencies: headlessDependencies
         )
 
-        XCTAssertNil(headlessSession)
-        XCTAssertEqual(makeCount, 0)
-        XCTAssertNil(headlessGeneration.currentToken())
+        XCTAssertEqual(headlessSession?.storeID, localStoreID)
+        XCTAssertEqual(headlessSession?.mode, .onDevice)
+        XCTAssertTrue(headlessSession?.isAuthoritative == true)
+        XCTAssertEqual(makeCount, 1)
+        XCTAssertNotNil(headlessGeneration.currentToken())
+        headlessGeneration.suspend()
     }
 
     func testOnDeviceRelaunchWithNoAccountPreservesIdenticalDigest() async throws {
@@ -575,6 +579,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
                     configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
                 )
             },
+            readinessProven: true,
             storageGeneration: generation
         )
 
@@ -637,6 +642,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
                     configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
                 )
             },
+            readinessProven: true,
             storageGeneration: generation
         )
 
@@ -786,6 +792,7 @@ final class CollectionStoreContinuityTests: XCTestCase {
                         configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
                     )
                 },
+                readinessProven: true,
                 storageGeneration: CollectionStorageGeneration()
             )
 

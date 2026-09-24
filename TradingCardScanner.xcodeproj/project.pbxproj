@@ -137,6 +137,14 @@
 		A0020023 /* CatalogNormalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020023 /* CatalogNormalizationTests.swift */; };
 		A0020024 /* BrowseFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020024 /* BrowseFeatureTests.swift */; };
 		A0020150 /* BrowsePriceHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020150 /* BrowsePriceHistoryTests.swift */; };
+		A0020151 /* SwiftDataConcurrencyCharacterizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020151 /* SwiftDataConcurrencyCharacterizationTests.swift */; };
+		A0020152 /* DetailDeletionRenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020152 /* DetailDeletionRenderTests.swift */; };
+		A0020153 /* OwnershipConcurrencyStressTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020153 /* OwnershipConcurrencyStressTests.swift */; };
+		A0020154 /* RefreshStructuralWriteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020154 /* RefreshStructuralWriteTests.swift */; };
+		A0020155 /* CSVImportResumeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020155 /* CSVImportResumeTests.swift */; };
+		A0020156 /* StoreRevisionMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020156 /* StoreRevisionMonitorTests.swift */; };
+		A0020157 /* PriceRefreshLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020157 /* PriceRefreshLifecycleTests.swift */; };
+		A0020158 /* ArtworkOrphanSweepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020158 /* ArtworkOrphanSweepTests.swift */; };
 		A00200C0 /* CollectionActivityHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200C0 /* CollectionActivityHistoryTests.swift */; };
 		A0010040 /* MagicSetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010040 /* MagicSetSnapshot.swift */; };
 		A0010041 /* CardCenteringMeasurement.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010041 /* CardCenteringMeasurement.swift */; };
@@ -379,6 +387,14 @@
 		B0020023 /* CatalogNormalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogNormalizationTests.swift; sourceTree = "<group>"; };
 		B0020024 /* BrowseFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseFeatureTests.swift; sourceTree = "<group>"; };
 		B0020150 /* BrowsePriceHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsePriceHistoryTests.swift; sourceTree = "<group>"; };
+		B0020151 /* SwiftDataConcurrencyCharacterizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataConcurrencyCharacterizationTests.swift; sourceTree = "<group>"; };
+		B0020152 /* DetailDeletionRenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailDeletionRenderTests.swift; sourceTree = "<group>"; };
+		B0020153 /* OwnershipConcurrencyStressTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnershipConcurrencyStressTests.swift; sourceTree = "<group>"; };
+		B0020154 /* RefreshStructuralWriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshStructuralWriteTests.swift; sourceTree = "<group>"; };
+		B0020155 /* CSVImportResumeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVImportResumeTests.swift; sourceTree = "<group>"; };
+		B0020156 /* StoreRevisionMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreRevisionMonitorTests.swift; sourceTree = "<group>"; };
+		B0020157 /* PriceRefreshLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshLifecycleTests.swift; sourceTree = "<group>"; };
+		B0020158 /* ArtworkOrphanSweepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkOrphanSweepTests.swift; sourceTree = "<group>"; };
 		B00200C0 /* CollectionActivityHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivityHistoryTests.swift; sourceTree = "<group>"; };
 		B0010040 /* MagicSetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicSetSnapshot.swift; sourceTree = "<group>"; };
 		B0010041 /* CardCenteringMeasurement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCenteringMeasurement.swift; sourceTree = "<group>"; };
@@ -775,6 +791,14 @@
 				B0020023 /* CatalogNormalizationTests.swift */,
 				B0020024 /* BrowseFeatureTests.swift */,
 				B0020150 /* BrowsePriceHistoryTests.swift */,
+				B0020151 /* SwiftDataConcurrencyCharacterizationTests.swift */,
+				B0020152 /* DetailDeletionRenderTests.swift */,
+				B0020153 /* OwnershipConcurrencyStressTests.swift */,
+				B0020154 /* RefreshStructuralWriteTests.swift */,
+				B0020155 /* CSVImportResumeTests.swift */,
+				B0020156 /* StoreRevisionMonitorTests.swift */,
+				B0020157 /* PriceRefreshLifecycleTests.swift */,
+				B0020158 /* ArtworkOrphanSweepTests.swift */,
 				B00200C0 /* CollectionActivityHistoryTests.swift */,
 				B00100E0 /* MagicTreatmentSnapshot.swift */,
 				B00200E0 /* MagicTreatmentSnapshotTests.swift */,
@@ -1142,6 +1166,14 @@
 				A0020023 /* CatalogNormalizationTests.swift in Sources */,
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
 				A0020150 /* BrowsePriceHistoryTests.swift in Sources */,
+				A0020151 /* SwiftDataConcurrencyCharacterizationTests.swift in Sources */,
+				A0020152 /* DetailDeletionRenderTests.swift in Sources */,
+				A0020153 /* OwnershipConcurrencyStressTests.swift in Sources */,
+				A0020154 /* RefreshStructuralWriteTests.swift in Sources */,
+				A0020155 /* CSVImportResumeTests.swift in Sources */,
+				A0020156 /* StoreRevisionMonitorTests.swift in Sources */,
+				A0020157 /* PriceRefreshLifecycleTests.swift in Sources */,
+				A0020158 /* ArtworkOrphanSweepTests.swift in Sources */,
 				A00200C0 /* CollectionActivityHistoryTests.swift in Sources */,
 				A00100E0 /* MagicTreatmentSnapshot.swift in Sources */,
 				A00200E0 /* MagicTreatmentSnapshotTests.swift in Sources */,

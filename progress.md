@@ -1,3 +1,52 @@
+- Systems-review pass-2 follow-up (2026-09-23; working tree based on
+  `main@c1837b2`): fixed the refresh/migration-gate deadlock, made refresh
+  suspension clear to idle when no work remains, prevented a cancelled
+  background caller from starting a refresh after shared migration completes,
+  resumed CSV imports by deterministic ledger operation ID after rows are
+  rekeyed, preserved all-again CSV salts across interruption, and kept graded
+  price identity promotion canonical across repeated passes. Added tap guards
+  for graded/sealed adds, limited identity pauses to actual promotions,
+  required a saved quantity before detail edits, and moved launch history
+  backfill waits off the main thread. Native-currency evidence remains visible
+  while being excluded from USD valuation and sorting. Updated the stale slab,
+  currency, chart-envelope, and storage-copy assertions. Final non-centering
+  iPhone 17 Pro / iOS 26.5 simulator run: 1,510 tests executed, 7 skipped, 0
+  failures. The separate Debug simulator build succeeded. Centering tests were
+  excluded. Physical-device/background expiration, large-fixture signposts,
+  and the manual flows in [`RF-12`](docs/plans/release_followups.md#rf-12--collection-write-refresh-and-lifecycle-acceptance)
+  remain open.
+
+- Historical first-pass checkpoint (2026-09-23; superseded by the follow-up
+  evidence above): Systems-review pass-2 remediation (working tree based on
+  `main@c1837b2`): implemented the storage retry marker, monotonic price
+  freshness, Magic migration trigger, USD-only portfolio valuation, server
+  clock cutoff, and unproven-readiness local preflight; added the fresh-context
+  `CollectionWriteSerializer`, guarded refresh-row patches and resumable pass
+  suspension, resumable/idempotent CSV import, foreground/background refresh
+  ownership, relevant-save filtering, and per-context artwork cleanup with a
+  launch orphan sweep. Added concurrency, lifecycle, structural-refresh, CSV,
+  detail-deletion, and artwork sweep coverage, plus the one-shot Debug
+  first-container-failure launch argument. The non-centering iPhone 17 Pro /
+  iOS 26.5 simulator run executed 1,520 tests: 1,504 passed, 9 failed, and 7
+  skipped. Those same nine failures occurred in the Phase 0 baseline (1,444
+  passed, 9 failed, 7 skipped); no new failure remained after updating the
+  Magic migration test to re-fetch through a fresh context. The unchanged
+  failures are `ScannerViewModelTests.testCertificateReadAfterCertlessSlabCommitRefinesTheSameCollectionEntry`,
+  `PrivacyAndSupportSurfaceTests.testCollectionStorageStatusDistinguishesTransientLocalFallback`,
+  `CardLatchTests.testDifferentConfirmedCertificateOnSameFooterCanRelatchQuickCopySwap`,
+  `PortfolioReconciliationTests.testFastAndAuthoritativeValuationAgreeAcrossCurrencyAndInvalidationTransitions`,
+  `CardLatchTests.testHeldSlabIgnoresGradeFlickerAndEnrichesCertificateWithChangedCardText`,
+  `PriceHistoryChartModelTests.testNearFlatExpensiveHistoryUsesMinimumVisualEnvelope`,
+  `OpusImplementationPlanTests.testREQ005NonUSDTransitionDepricesCurrentAndReplaySymmetrically`,
+  `OpusImplementationPlanTests.testREQ006NonUSDLocalPriceRecordIsCheckingButStillVisible`,
+  and `OpusImplementationPlanTests.testRM006NonUSDTransitionAcrossDayBoundaryKeepsCurrentAndReplayAligned`.
+  The targeted
+  storage suites passed 56 tests with 1 skipped. The Debug simulator build
+  succeeded, and the first-open injection reached Retry then opened the
+  existing collection. No centering tests ran. OS background expiration,
+  device timing, large-fixture signpost comparison, and the remaining manual
+  flows remain open in [`RF-12`](docs/plans/release_followups.md#rf-12--collection-write-refresh-and-lifecycle-acceptance).
+
 - Raw / Slab scanner review follow-up (2026-09-23; working tree based on
   `main@30bd84e`): fixed held-slab duplicate saves by accepting only same-grade
   certificate refinement or a distinct confirmed certificate for a copy swap,

@@ -166,6 +166,58 @@ final class CollectionStoragePolicyTests: XCTestCase {
         )
     }
 
+    func testPendingReplicaWithoutStoreReusesItsManifestIdentity() {
+        let pendingLocal = CollectionStorageLocalFacts(
+            manifest: CollectionStoreManifest(
+                storeID: localStoreID,
+                storeFileIdentity: "file-a",
+                replicaCreationPending: true
+            ),
+            structuredStoreFilePresent: false,
+            localHasUserData: false
+        )
+
+        XCTAssertEqual(
+            CollectionStoragePolicy.decide(
+                CollectionStoragePolicyInput(local: pendingLocal, account: .noAccount)
+            ),
+            .recreatePendingLocalReplica(storeID: localStoreID)
+        )
+    }
+
+    func testPendingReplicaWithIdentityMismatchRemainsBlocked() {
+        let mismatchedLocal = CollectionStorageLocalFacts(
+            manifest: CollectionStoreManifest(
+                storeID: localStoreID,
+                storeFileIdentity: "expected-file",
+                replicaCreationPending: true
+            ),
+            structuredStoreFilePresent: true,
+            localHasUserData: false,
+            storeFileIdentityStatus: .mismatched
+        )
+
+        XCTAssertEqual(
+            CollectionStoragePolicy.decide(
+                CollectionStoragePolicyInput(local: mismatchedLocal, account: .noAccount)
+            ),
+            .blockUnprovenTransition
+        )
+    }
+
+    func testOlderManifestDefaultsReplicaCreationIntentToFalse() throws {
+        let json = """
+        {"formatVersion":1,"storeID":"AAAAAAAA-BBBB-CCCC-DDDD-EEEEEEEEEEEE",
+         "storeFileIdentity":"file-a","attachmentState":"neverAttached",
+         "migrationState":"notStarted"}
+        """
+
+        let manifest = try JSONDecoder().decode(CollectionStoreManifest.self, from: Data(json.utf8))
+
+        XCTAssertFalse(manifest.replicaCreationPending)
+        XCTAssertEqual(manifest.formatVersion, 1)
+    }
+
     func testFreshEmptyInstallWithRemoteAnchorAdoptsRemoteIdentity() {
         let decision = CollectionStoragePolicy.decide(
             CollectionStoragePolicyInput(

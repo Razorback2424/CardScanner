@@ -1,7 +1,17 @@
 import XCTest
+import SwiftData
 @testable import TradingCardScanner
 
 final class PricingTests: XCTestCase {
+    @MainActor
+    private func makePriceContext() throws -> (ModelContainer, ModelContext) {
+        let container = try ModelContainer(
+            for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        return (container, container.mainContext)
+    }
+
     func testEligibleUnitPriceIsTheSingleUSDGate() {
         XCTAssertEqual(
             PortfolioPriceEligibility.eligibleUnitPrice(amount: 12.3456, currencyCode: "USD"),
@@ -515,6 +525,143 @@ final class PricingTests: XCTestCase {
         XCTAssertTrue(record.display.refreshFailed)
     }
 
+    @MainActor
+    func testPriceStoreTreatsAnOlderQuoteAsAnAcceptedNoOp() throws {
+            let (container, context) = try makePriceContext()
+            let key = PriceRecord.key(
+                game: .pokemon,
+                printingID: "sv08.5-074",
+                variantID: "reverse"
+            )
+            let latest = Date(timeIntervalSince1970: 1_800_000_000)
+            let latestQuote = NormalizedPrice(
+                unitMarketPriceUSD: 25,
+                currencyCode: "USD",
+                source: .tcgplayer,
+                sourceVariantID: "reverse-holofoil",
+                sourceUpdatedAt: latest,
+                fetchedAt: latest
+            )
+            let store = PriceStore(context: context)
+            XCTAssertTrue(store.store(
+                .price(latestQuote),
+                game: .pokemon,
+                printingID: "sv08.5-074",
+                variantID: "reverse",
+                at: latest.addingTimeInterval(2 * 24 * 60 * 60)
+            ))
+            try context.save()
+
+            let record = try XCTUnwrap(store.record(forKey: key))
+            let observationsBefore = try context.fetch(FetchDescriptor<PriceObservation>())
+            let checksBefore = try context.fetch(FetchDescriptor<PriceCheckDay>())
+            XCTAssertEqual(observationsBefore.count, 1)
+            XCTAssertEqual(checksBefore.count, 1)
+            let log = PriceObservationLog(context: context)
+            XCTAssertEqual(
+                checksBefore[0].portfolioDay,
+                PortfolioCalendar.day(containing: latest, in: log.timeZone),
+                "priced coverage belongs to the quote's fetch day"
+            )
+
+            let delayedQuote = NormalizedPrice(
+                unitMarketPriceUSD: 19,
+                currencyCode: "USD",
+                source: .tcgplayer,
+                sourceVariantID: "reverse-holofoil",
+                sourceUpdatedAt: latest.addingTimeInterval(-60),
+                fetchedAt: latest.addingTimeInterval(-60)
+            )
+            XCTAssertTrue(store.store(
+                .price(delayedQuote),
+                game: .pokemon,
+                printingID: "sv08.5-074",
+                variantID: "reverse",
+                at: latest.addingTimeInterval(3 * 24 * 60 * 60)
+            ), "a stale quote is accepted as an intentional no-op")
+
+            XCTAssertEqual(record.unitMarketPriceUSD, 25)
+            XCTAssertEqual(record.fetchedAt, latest)
+            XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+            XCTAssertEqual(try context.fetch(FetchDescriptor<PriceCheckDay>()).count, 1)
+            XCTAssertEqual(checksBefore[0].lastSuccessfulCheckAt, latest)
+            withExtendedLifetime(container) {}
+    }
+
+    @MainActor
+    func testClockRollbackAllowsPriceStoreToAcceptTheCurrentQuote() throws {
+        let (container, context) = try makePriceContext()
+        let store = PriceStore(context: context)
+        let key = PriceRecord.key(game: .pokemon, printingID: "p", variantID: nil)
+        let clockBeforeRollback = Date(timeIntervalSince1970: 1_800_000_000)
+        let now = clockBeforeRollback.addingTimeInterval(-15 * 60)
+        XCTAssertTrue(store.store(.price(NormalizedPrice(
+            unitMarketPriceUSD: 30,
+            currencyCode: "USD",
+            source: .tcgplayer,
+            sourceVariantID: "normal",
+            sourceUpdatedAt: clockBeforeRollback,
+            fetchedAt: clockBeforeRollback
+        )), game: .pokemon, printingID: "p", variantID: nil, at: clockBeforeRollback))
+
+        let quoteAfterRollback = NormalizedPrice(
+            unitMarketPriceUSD: 31,
+            currencyCode: "USD",
+            source: .tcgplayer,
+            sourceVariantID: "normal",
+            sourceUpdatedAt: now,
+            fetchedAt: now
+        )
+        let record = try XCTUnwrap(store.record(forKey: key))
+        XCTAssertFalse(record.isStale(quoteAfterRollback, now: now))
+        XCTAssertTrue(store.store(
+            .price(quoteAfterRollback),
+            game: .pokemon,
+            printingID: "p",
+            variantID: nil,
+            at: now
+        ))
+        XCTAssertEqual(record.unitMarketPriceUSD, 31)
+        XCTAssertEqual(record.fetchedAt, now)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<PriceCheckDay>()).count, 1)
+        withExtendedLifetime(container) {}
+    }
+
+    func testObservationRulesRejectAnOlderReceiptAsASecondGuard() {
+        let latest = Date(timeIntervalSince1970: 1_800_000_000)
+        let value = PriceObservationValue(
+            amount: Money(rounding: 25),
+            currencyCode: "USD",
+            sourceRaw: PriceSource.tcgplayer.rawValue,
+            sourceVariantID: "reverse-holofoil",
+            marketVariantID: nil
+        )
+        let previous = PriceObservationRules.Previous(
+            value: value,
+            effectiveAt: latest,
+            receivedAt: latest,
+            isSourceStamped: true
+        )
+        let candidate = PriceObservationRules.Candidate(
+            value: PriceObservationValue(
+                amount: Money(rounding: 19),
+                currencyCode: "USD",
+                sourceRaw: PriceSource.tcgplayer.rawValue,
+                sourceVariantID: "reverse-holofoil",
+                marketVariantID: nil
+            ),
+            source: .tcgplayer,
+            sourceUpdatedAt: latest.addingTimeInterval(-60),
+            receivedAt: latest.addingTimeInterval(-60)
+        )
+
+        XCTAssertEqual(
+            PriceObservationRules.decide(candidate: candidate, previous: previous),
+            .ignoredOutOfOrder
+        )
+    }
+
     func testSuccessfulRefreshClearsAPreviousFailure() {
         let record = PriceRecord(key: "k", game: .pokemon, printingID: "sv08.5-074", variantID: "reverse")
         record.recordFailure(at: .now)
@@ -800,6 +947,46 @@ final class PricingTests: XCTestCase {
         let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
         XCTAssertEqual(card.catalogVariants, [.holo, .firstEdition])
         XCTAssertFalse(card.catalogVariants.contains { $0.id.hasPrefix("pokemonStamp|") })
+    }
+
+    func testOfflineFirstEditionAndShadowlessCardsDoNotClaimAProviderCheck() throws {
+        let card = try pokemonCard(
+            variantsJSON: #"{ "firstEdition": true, "holo": true, "normal": false, "reverse": false }"#,
+            pricingJSON: nil
+        )
+
+        XCTAssertEqual(
+            CardPricing.price(
+                for: card,
+                variant: .holo,
+                magicTreatments: [],
+                pokemonPrintRun: .firstEdition
+            ),
+            .unavailable(nil),
+            "offline checklist and disk-cache identities carry no provider evidence"
+        )
+        XCTAssertEqual(
+            CardPricing.price(
+                for: card,
+                variant: .holo,
+                magicTreatments: [],
+                pokemonPrintRun: .shadowless
+            ),
+            .unavailable(nil)
+        )
+    }
+
+    func testFirstEditionWithProviderPricingEvidenceRecordsAnUnsupportedListing() throws {
+        XCTAssertEqual(
+            CardPricing.price(
+                for: try pokemonCard(),
+                variant: .holo,
+                magicTreatments: [],
+                pokemonPrintRun: .firstEdition
+            ),
+            .unavailable(.tcgplayer),
+            "provider data exists, but it has no first-edition listing"
+        )
     }
 
     // MARK: - Cardmarket remains separate from canonical USD pricing

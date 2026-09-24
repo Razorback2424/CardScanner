@@ -210,6 +210,75 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(guardState.begin(id))
     }
 
+    func testPriceIdentityPreflightOnlyGatesUnboundCertifiedSlabPromotion() throws {
+        let context = try makeContext()
+        let container = context.container
+        let grade = CardGrade(value: "10", label: "Gem Mint")
+        let arguments = (
+            game: CardGame.pokemon,
+            providerID: "preflight-card",
+            grade: grade,
+            company: GradingCompany.psa,
+            certificationNumber: Optional("12345678"),
+            treatmentIDs: [String]()
+        )
+
+        XCTAssertFalse(PriceIdentityWritePreflight.requiresGradedPromotion(
+            container: container,
+            game: arguments.game,
+            providerID: arguments.providerID,
+            grade: arguments.grade,
+            company: arguments.company,
+            certificationNumber: arguments.certificationNumber,
+            treatmentIDs: arguments.treatmentIDs
+        ))
+
+        let row = CollectedCard(
+            collectionKey: "graded:pokemon:preflight-card:graded-variant:cert:12345678",
+            game: .pokemon,
+            providerID: "graded:pokemon:preflight-card:graded-variant:cert:12345678",
+            name: "Preflight Card",
+            setName: "Preflight Set",
+            setCode: "PFT",
+            cardNumber: "1",
+            rarity: nil,
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: nil,
+            variantResolution: .imported
+        )
+        row.catalogProviderID = arguments.providerID
+        row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        row.gradingCompanyRaw = arguments.company.rawValue
+        row.gradeRaw = grade.value
+        row.gradeLabel = grade.label
+        row.certificationNumber = arguments.certificationNumber
+        context.insert(row)
+        try context.save()
+
+        XCTAssertTrue(PriceIdentityWritePreflight.requiresGradedPromotion(
+            container: container,
+            game: arguments.game,
+            providerID: arguments.providerID,
+            grade: arguments.grade,
+            company: arguments.company,
+            certificationNumber: arguments.certificationNumber,
+            treatmentIDs: arguments.treatmentIDs
+        ))
+
+        row.justTCGVariantID = "already-bound-variant"
+        try context.save()
+        XCTAssertFalse(PriceIdentityWritePreflight.requiresGradedPromotion(
+            container: container,
+            game: arguments.game,
+            providerID: arguments.providerID,
+            grade: arguments.grade,
+            company: arguments.company,
+            certificationNumber: arguments.certificationNumber,
+            treatmentIDs: arguments.treatmentIDs
+        ))
+    }
+
     func testPendingChoiceBlocksLaterConfirmedEncounterUntilAnswer() async throws {
         let model = try makeModel(
             variants: [.normal, .holo],
@@ -470,7 +539,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 1)
     }
 
-    func testCertificateReadAfterCertlessSlabCommitRefinesTheSameCollectionEntry() async throws {
+    func testCertificateReadAfterCertlessSlabCommitDoesNotReassignCertificateWhileHeld() async throws {
         let variant = GradedVariant(
             id: "graded-v2-after-cert-refinement",
             cardID: "graded-card-after-cert-refinement",
@@ -532,27 +601,24 @@ final class ScannerViewModelTests: XCTestCase {
             at: 2.5
         ))
         XCTAssertEqual(model.scanner.lastSlabLabelReadAtForTesting, 2.5)
-        XCTAssertEqual(model.scanner.receiveSlabLabelEvidenceForTesting(
+        XCTAssertNil(model.scanner.receiveSlabLabelEvidenceForTesting(
             certified,
             footerHasText: true,
             for: identifier,
             at: 3.0
-        ), certified)
-        XCTAssertEqual(model.scanner.activeSlabEvidenceForTesting, certified)
+        ))
+        // A second copy can have the same footer, grader, and grade. Until the
+        // held presentation ends, assigning its newly read certificate to the
+        // certless row could silently overwrite the wrong physical copy.
+        XCTAssertEqual(model.scanner.activeSlabEvidenceForTesting, certless)
         model.scanner.receiveFooterOutcomeForTesting(.identified(ScanSubject(identifier: identifier)), at: 3.1)
 
-        let refinementSaved = await waitUntil {
-            (try? self.context().fetch(FetchDescriptor<CollectedCard>()).first?.certificationNumber)
-                == "12345678"
-                && model.recent.first?.subject.slab?.certificationNumber == "12345678"
-        }
-        XCTAssertTrue(refinementSaved)
         rows = try context().fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(rows.count, 1)
-        XCTAssertNotEqual(rows.first?.collectionKey, originalCollectionKey)
+        XCTAssertEqual(rows.first?.collectionKey, originalCollectionKey)
         XCTAssertEqual(rows.first?.itemKind, .gradedCard)
-        XCTAssertEqual(rows.first?.certificationNumber, "12345678")
-        XCTAssertEqual(model.recent.first?.subject.slab?.certificationNumber, "12345678")
+        XCTAssertNil(rows.first?.certificationNumber)
+        XCTAssertNil(model.recent.first?.subject.slab?.certificationNumber)
         XCTAssertEqual(model.successCount, 1)
         XCTAssertEqual(model.scanner.latchedSubjectForTesting?.slab?.certificationNumber, nil)
 
@@ -603,6 +669,10 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(row.variant, .holo)
         XCTAssertEqual(row.variantResolution, .printedLabel)
         XCTAssertNil(row.justTCGVariantID)
+        XCTAssertTrue(
+            try context().fetch(FetchDescriptor<PriceCheckDay>()).isEmpty,
+            "an offline/cache card identity without pricing data is not a provider check"
+        )
         XCTAssertNil(model.pendingChoice)
         XCTAssertNil(model.pendingGradedVariantCorrection)
         await gate.release()

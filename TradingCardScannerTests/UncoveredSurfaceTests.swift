@@ -1064,6 +1064,75 @@ final class ScannerOverlaySmokeTests: XCTestCase {
         XCTAssertEqual(cards.first?.quantity, 1)
         XCTAssertEqual(events.count, 1)
     }
+
+    func testScannerWriterDoesNotReplaceANewerPriceWithItsCachedCatalogQuote() async throws {
+        let container = try ModelContainer(
+            for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        let retrievedAt = Date.now.addingTimeInterval(-10 * 60)
+        let latestAt = Date.now.addingTimeInterval(-60)
+        let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
+        {
+          "id": "test-set-001",
+          "localId": "001",
+          "name": "Test Card",
+          "set": { "id": "test-set", "name": "Test Set",
+                   "cardCount": { "total": 10, "official": 10 } },
+          "variants": { "firstEdition": false, "holo": false,
+                         "normal": true, "reverse": false },
+          "pricing": { "tcgplayer": {
+            "updated": "2026-09-23T00:00:00Z",
+            "normal": { "marketPrice": 12.5 }
+          } }
+        }
+        """#.utf8))
+        let key = PriceRecord.key(
+            game: .pokemon,
+            printingID: card.id,
+            variantID: PhysicalVariant.normal.id
+        )
+        let context = container.mainContext
+        XCTAssertTrue(PriceStore(context: context).store(
+            .price(NormalizedPrice(
+                unitMarketPriceUSD: 25,
+                currencyCode: "USD",
+                source: .tcgplayer,
+                sourceVariantID: "normal",
+                sourceUpdatedAt: latestAt,
+                fetchedAt: latestAt
+            )),
+            game: .pokemon,
+            printingID: card.id,
+            variantID: PhysicalVariant.normal.id,
+            at: latestAt
+        ))
+        try context.save()
+
+        let request = UncoveredSurfaceFixtures.scanRequest()
+        let scan = ResolvedScan(
+            request: request,
+            card: .pokemon(card, setCode: "TST"),
+            resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
+            pokemonPrintRun: nil,
+            options: [.normal],
+            catalogRetrievedAt: retrievedAt
+        )
+        guard case let .price(scanPrice) = CollectionCommitCandidate(resolvedScan: scan).price else {
+            return XCTFail("the cached catalog fixture should contain a quote")
+        }
+        XCTAssertEqual(scanPrice.fetchedAt, retrievedAt)
+
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        _ = try await writer.add(CollectionCommitCandidate(resolvedScan: scan))
+
+        let refreshedContext = ModelContext(container)
+        let record = try XCTUnwrap(PriceStore(context: refreshedContext).record(forKey: key))
+        XCTAssertEqual(record.unitMarketPriceUSD, 25)
+        XCTAssertEqual(record.fetchedAt, latestAt)
+        XCTAssertEqual(try refreshedContext.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+        XCTAssertEqual(try refreshedContext.fetch(FetchDescriptor<PriceCheckDay>()).count, 1)
+    }
 }
 
 #if DEBUG
@@ -1230,7 +1299,7 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         XCTAssertNil(CollectionArtworkStore.image(filename: filename))
     }
 
-    func testCorrectionKeepsDestinationArtworkAndDeletesDiscardedFileAfterSave() throws {
+    func testCorrectionKeepsDestinationArtworkAndPreservesSourceForUndo() throws {
         let container = try UncoveredSurfaceFixtures.inMemoryContainer(
             for: Schema([LocalArtworkOverride.self])
         )
@@ -1266,10 +1335,12 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
         try context.save()
         LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
 
-        let remaining = try XCTUnwrap(context.fetch(FetchDescriptor<LocalArtworkOverride>()).first)
-        XCTAssertEqual(remaining.collectionKey, "pokemon:destination")
-        XCTAssertEqual(remaining.filename, destinationFilename)
-        XCTAssertNil(CollectionArtworkStore.image(filename: sourceFilename))
+        let remaining = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+        XCTAssertEqual(
+            Dictionary(uniqueKeysWithValues: remaining.map { ($0.collectionKey, $0.filename) }),
+            ["pokemon:source": sourceFilename, "pokemon:destination": destinationFilename]
+        )
+        XCTAssertNotNil(CollectionArtworkStore.image(filename: sourceFilename))
         XCTAssertNotNil(CollectionArtworkStore.image(filename: destinationFilename))
     }
 }
@@ -1408,6 +1479,38 @@ final class PriceRefreshSnapshotSliceTests: XCTestCase {
         XCTAssertEqual(store.display(for: priceKey)?.amount, 12.34)
     }
 
+    func testNativeCurrencyPriceDoesNotClearTheUSDUnpricedDiagnosis() {
+        let store = PriceSnapshotStore()
+        let collectionKey = "collection-card"
+        let priceKey = "pokemon:test-set-001:normal"
+        store.replace(
+            with: PriceSnapshot(
+                prices: [priceKey: .unknown],
+                diagnosticsByCollectionKey: [
+                    collectionKey: PriceSnapshotDiagnostics(
+                        unpricedReason: .noExactVariantPrice,
+                        artworkReason: nil
+                    )
+                ],
+                priceStorageKeyByCollectionKey: [collectionKey: priceKey]
+            )
+        )
+
+        store.apply([
+            PriceDelta(
+                key: priceKey,
+                display: PriceDisplay(amount: 12.34, currencyCode: "EUR")
+            )
+        ])
+
+        XCTAssertEqual(
+            store.diagnosticsByCollectionKey[collectionKey]?.unpricedReason,
+            .noExactVariantPrice
+        )
+        XCTAssertEqual(store.display(for: priceKey)?.amount, 12.34)
+        XCTAssertEqual(store.display(for: priceKey)?.currencyCode, "EUR")
+    }
+
     func testCollectionProjectionDistinguishesLoadedEmptyCollection() async throws {
         let container = try UncoveredSurfaceFixtures.inMemoryContainer(
             for: UncoveredSurfaceFixtures.fullSchema()
@@ -1477,6 +1580,68 @@ final class PriceRefreshSnapshotSliceTests: XCTestCase {
         revisions.publish(after)
         XCTAssertEqual(revisions.revision, baselineRevision + 1)
         _ = storeA
+    }
+
+    func testImportedLegacyMagicRowRunsMigrationOnceBeforePricing() async throws {
+        let container = try UncoveredSurfaceFixtures.inMemoryContainer(
+            for: UncoveredSurfaceFixtures.fullSchema()
+        )
+        let context = ModelContext(container)
+        let actor = StoreRevisionModelActor(modelContainer: container)
+        let beforeImport = await actor.fingerprint()
+        XCTAssertTrue(beforeImport.pendingMagicMigrationKeys.isEmpty)
+
+        let key = "magic:imported-legacy"
+        let legacy = CollectedCard(
+            collectionKey: key,
+            game: .magic,
+            providerID: "scryfall-printing",
+            name: "Legacy Magic",
+            setName: "Legacy Set",
+            setCode: "LEG",
+            cardNumber: "001",
+            rarity: "Common",
+            imageURL: nil,
+            thumbnailURL: nil,
+            variant: .normal,
+            variantResolution: .userConfirmed
+        )
+        legacy.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion - 1
+        context.insert(legacy)
+        try context.save()
+
+        let afterImport = await actor.fingerprint()
+        XCTAssertEqual(afterImport.pendingMagicMigrationKeys, [key])
+        XCTAssertTrue(StoreRevisionDecisions.shouldRunMagicMigration(
+            previous: beforeImport,
+            current: afterImport
+        ))
+
+        var order: [String] = []
+        let didRun = await StoreRevisionDecisions.runMagicMigrationIfNeeded(
+            previousPendingKeys: beforeImport.pendingMagicMigrationKeys,
+            currentPendingKeys: afterImport.pendingMagicMigrationKeys
+        ) {
+            order.append("migration")
+        }
+        XCTAssertTrue(didRun)
+        order.append("price refresh")
+        XCTAssertEqual(order, ["migration", "price refresh"])
+
+        let stable = await actor.fingerprint()
+        XCTAssertFalse(StoreRevisionDecisions.shouldRunMagicMigration(
+            previous: afterImport,
+            current: stable
+        ), "a pending row that keeps failing must not retrigger the network migration")
+
+        legacy.magicTreatmentMigrationVersion = MagicTreatmentMigration.currentVersion
+        try context.save()
+        let completed = await actor.fingerprint()
+        XCTAssertTrue(completed.pendingMagicMigrationKeys.isEmpty)
+        XCTAssertFalse(StoreRevisionDecisions.shouldRunMagicMigration(
+            previous: afterImport,
+            current: completed
+        ), "removing a key from the pending set does not start another pass")
     }
 
     func testPriceFingerprintIncludesAllFreshnessWatermarks() {

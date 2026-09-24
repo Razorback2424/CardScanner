@@ -147,7 +147,11 @@ final class CollectionStorageBootstrapTests: XCTestCase {
                     ?? (structuredStoreBaseFilePresent ?? structuredStoreFilePresent)
             },
             localHasUserData: { false },
-            storeFileIdentity: { "test-store-file-identity" },
+            storeFileIdentity: {
+                let identity = "test-store-file-identity"
+                try manifestStore.writeStoreFileIdentity(identity)
+                return identity
+            },
             readStoreFileIdentity: {
                 if let sidecarPresent {
                     guard sidecarPresent else { return nil }
@@ -275,6 +279,81 @@ final class CollectionStorageBootstrapTests: XCTestCase {
         XCTAssertNil(manifest.lastAttachedAccountFingerprint)
         XCTAssertEqual(TradingCardScannerApp.activeCloudAccountStatusRaw, "noAccount")
         XCTAssertEqual(TradingCardScannerApp.activeAttachmentStateRaw, "neverAttached")
+    }
+
+    func testFirstContainerFailureRetriesSamePendingStoreIdentity() async throws {
+        var makeCount = 0
+        let dependencies = try makeDependencies(
+            account: { .noAccount },
+            makeContainer: { _ in
+                makeCount += 1
+                if makeCount == 1 { throw BootstrapTestError.containerConstruction }
+                return try ModelContainer(
+                    for: CollectionStorageModelSchema.full,
+                    configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+                )
+            }
+        )
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+
+        await bootstrap.start()
+        let failedManifest = try XCTUnwrap(try dependencies.manifestStore.load())
+        XCTAssertTrue(failedManifest.replicaCreationPending)
+        XCTAssertEqual(makeCount, 1)
+
+        await bootstrap.retry()
+
+        guard case let .ready(session) = bootstrap.state else {
+            return XCTFail("a failed first open should be retryable with the saved identity")
+        }
+        let completedManifest = try XCTUnwrap(try dependencies.manifestStore.load())
+        XCTAssertEqual(session.storeID, failedManifest.storeID)
+        XCTAssertFalse(completedManifest.replicaCreationPending)
+        XCTAssertEqual(makeCount, 2)
+    }
+
+    func testPendingManifestWithoutReplicaOpensWithSameIdentityAndQuarantinesArtifacts() async throws {
+        let directorySuffix = UUID().uuidString
+        var dependencies = try makeDependencies(
+            account: { .noAccount },
+            structuredStoreFilePresent: true,
+            structuredStoreBaseFilePresent: false,
+            directorySuffix: directorySuffix
+        )
+        dependencies.storageGeneration = CollectionStorageGeneration()
+        let storeID = localID
+        try dependencies.manifestStore.save(CollectionStoreManifest(
+            storeID: storeID,
+            attachmentState: .neverAttached,
+            storeFileIdentity: "test-store-file-identity",
+            replicaCreationPending: true
+        ))
+        try dependencies.manifestStore.writeStoreFileIdentity("test-store-file-identity")
+
+        let legacyJournal = dependencies.paths.applicationSupportURL.appendingPathComponent("default.store-wal")
+        let portfolioJournal = dependencies.paths.applicationSupportURL.appendingPathComponent("PortfolioLocal.store-wal")
+        try FileManager.default.createDirectory(
+            at: dependencies.paths.applicationSupportURL,
+            withIntermediateDirectories: true
+        )
+        try Data("journal".utf8).write(to: legacyJournal)
+        try Data("journal".utf8).write(to: portfolioJournal)
+
+        let bootstrap = CollectionStorageBootstrap(dependencies: dependencies)
+        await bootstrap.start()
+
+        guard case let .ready(session) = bootstrap.state else {
+            return XCTFail("a pending manifest with only orphaned journal files should reopen locally")
+        }
+        XCTAssertEqual(session.storeID, storeID)
+        XCTAssertFalse(try XCTUnwrap(try dependencies.manifestStore.load()).replicaCreationPending)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: legacyJournal.path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: portfolioJournal.path))
+        let quarantine = dependencies.paths.collectionStorageDirectoryURL
+            .appendingPathComponent("Quarantine", isDirectory: true)
+        let quarantinedFiles = try FileManager.default.subpathsOfDirectory(atPath: quarantine.path)
+        XCTAssertTrue(quarantinedFiles.contains { $0.hasSuffix("/default.store-wal") || $0 == "default.store-wal" })
+        XCTAssertTrue(quarantinedFiles.contains { $0.hasSuffix("/PortfolioLocal.store-wal") || $0 == "PortfolioLocal.store-wal" })
     }
 
     func testUnprovenLocalBootstrapSkipsAccountProbeAndIgnoresAccountChange() async throws {

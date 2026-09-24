@@ -236,6 +236,38 @@ resolution, but it uses a hand-built Core value rather than the app-target
 mapping. Close when the focused iOS test passes and its test evidence is
 recorded; this does not by itself retire physical-device acceptance.
 
+### RF-12 — Collection write, refresh, and lifecycle acceptance
+
+**Status:** implementation and simulator verification are present; scale,
+OS-lifecycle, and device-timing evidence remains open.
+
+**Latest simulator evidence (2026-09-23):** the iPhone 17 Pro / iOS 26.5
+non-centering suite executed 1,510 tests with 7 skipped and no failures. A
+separate Debug simulator build succeeded. Centering tests were excluded. This
+does not close the physical-device or operating-system lifecycle checks below.
+
+The current pass-2 remediation serializes ownership writes, applies refresh
+metadata as guarded patches, suspends refresh around price-identity rewrites,
+and makes CSV imports resumable. Focused tests cover the deterministic
+concurrency, patching, retry, and resume rules. Before treating the paths as
+operationally accepted, collect the remaining evidence:
+
+- On a physical device, overlap a background-owned price pass with a foreground
+  launch and confirm the foreground collection becomes usable promptly.
+- Exercise real iOS background-task expiration during a long CSV import and a
+  background refresh. Confirm the next launch resumes the import without
+  double-counting and the refresh does not publish a partial completion.
+- On the 300-card fixture, record the `scannerPersistence`,
+  `priceRefresh.commitStaged`, and `portfolio.recompute` signpost counts and
+  durations before and after the fresh-context writer and row-patch changes.
+- Complete the planned simulator flows for removing a row and running
+  delete-all during refresh, interrupting and resuming CSV import, retrying a
+  first-open container failure, and sorting/filtering a native-currency row.
+
+Simulator tests cannot establish actual background scheduling/expiration or
+real-device timing. Do not use simulator-only results to claim those gates are
+closed.
+
 ## Closed cleanup
 
 `PortfolioHistoryMode` was removed because the product exposes one history

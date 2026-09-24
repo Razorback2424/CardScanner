@@ -925,7 +925,8 @@ final class PortfolioReconciliationTests: XCTestCase {
         let second = try CollectionCSV.apply(plan, to: context)
 
         XCTAssertEqual(first.insertedEntries, 1)
-        XCTAssertEqual(second.mergedEntries, 1)
+        XCTAssertEqual(second.alreadyImportedEntries, 1)
+        XCTAssertEqual(second.mergedEntries, 0)
         XCTAssertEqual(
             try context.fetch(FetchDescriptor<CollectedCard>()).first?.quantity,
             1
@@ -3229,8 +3230,8 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(engine.summary?.currentValue, money(20))
         XCTAssertEqual(eurRecord.unitMarketPriceUSD, 20)
         XCTAssertNil(eurRecord.effectiveUnitMarketPriceUSD)
-        XCTAssertNil(eurRecord.display.amount)
-        XCTAssertEqual(eurRecord.display.currencyCode, "USD")
+        XCTAssertEqual(eurRecord.display.amount, 20)
+        XCTAssertEqual(eurRecord.display.currencyCode, "EUR")
         assertAllValuationSurfaces("initial mixed USD/EUR valuation")
 
         _ = usdRecord.apply(
@@ -3286,8 +3287,8 @@ final class PortfolioReconciliationTests: XCTestCase {
         XCTAssertEqual(engine.summary?.currentValue, money(30))
         XCTAssertEqual(usdRecord.unitMarketPriceUSD, 25)
         XCTAssertNil(usdRecord.effectiveUnitMarketPriceUSD)
-        XCTAssertNil(usdRecord.display.amount)
-        XCTAssertEqual(usdRecord.display.currencyCode, "USD")
+        XCTAssertEqual(usdRecord.display.amount, 25)
+        XCTAssertEqual(usdRecord.display.currencyCode, "EUR")
         XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.unitPrice)
         XCTAssertNil(engine.holdings.first(where: { $0.priceStorageKey == usdRecord.key })?.holdingValue)
         XCTAssertEqual(engine.holdings.first(where: { $0.priceStorageKey == eurRecord.key })?.holdingValue, money(30))

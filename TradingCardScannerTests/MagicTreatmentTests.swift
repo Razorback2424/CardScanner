@@ -1444,6 +1444,49 @@ final class MagicTreatmentMigrationTests: XCTestCase {
         XCTAssertTrue(operationEntered)
     }
 
+    func testCancelledBackgroundPriceRefreshDoesNotStartAfterMigrationUnwinds() async throws {
+        let context = try makeContext()
+        let gate = MagicTreatmentMigrationGate()
+        let coordinator = MagicTreatmentMigrationCoordinator(
+            networkRunner: { _, _ in
+                await gate.markStarted()
+                await gate.waitUntilOpen()
+                return MagicTreatmentMigration.Report()
+            }
+        )
+
+        let migration = Task { @MainActor in
+            await coordinator.runNetwork(in: context)
+        }
+        for _ in 0..<10_000 {
+            if await gate.started() { break }
+            await Task.yield()
+        }
+        let migrationStarted = await gate.started()
+        XCTAssertTrue(migrationStarted)
+
+        var operationEntered = false
+        let backgroundRefresh = Task { @MainActor in
+            await coordinator.withPriceRefresh(
+                in: context,
+                runsNetworkMigration: false
+            ) {
+                operationEntered = true
+            }
+        }
+        for _ in 0..<100 { await Task.yield() }
+        backgroundRefresh.cancel()
+
+        await gate.open()
+        _ = await migration.value
+        _ = await backgroundRefresh.value
+
+        XCTAssertFalse(
+            operationEntered,
+            "a cancelled background pass must not launch its price queue after shared migration completes"
+        )
+    }
+
     func testTreatmentMigrationWaitsForAnActivePriceRefresh() async throws {
         let context = try makeContext()
         let refreshGate = MagicTreatmentMigrationGate()
@@ -2354,24 +2397,31 @@ final class MagicTreatmentMigrationTests: XCTestCase {
                 treatments: []
             )
         )
-        let treated = ProductIdentity(
-            key: "magic:printing:foil:treatment=surgefoil",
+        let treatedKey = "magic:printing:foil:treatment=surgefoil"
+        let genericKey = "magic:printing:foil"
+        context.insert(ProductIdentity(
+            key: treatedKey,
             vendor: .justTCG,
             unmatchedAt: date,
             attemptVersion: 1,
             magicTreatmentIDs: ["surgefoil"]
-        )
-        let generic = ProductIdentity(
-            key: "magic:printing:foil",
+        ))
+        context.insert(ProductIdentity(
+            key: genericKey,
             vendor: .justTCG,
             unmatchedAt: date,
             attemptVersion: 1
-        )
-        context.insert(treated)
-        context.insert(generic)
+        ))
         try context.save()
 
         let report = await MagicTreatmentMigration.run(in: context, now: date)
+        // Migration writes through a fresh serialized context. Re-fetch values
+        // after the suspension instead of reading the injected context's stale
+        // model instances.
+        let resultContext = ModelContext(context.container)
+        let resultIdentities = try resultContext.fetch(FetchDescriptor<ProductIdentity>())
+        let treated = try XCTUnwrap(resultIdentities.first { $0.key == treatedKey })
+        let generic = try XCTUnwrap(resultIdentities.first { $0.key == genericKey })
 
         XCTAssertEqual(report.clearedVendorNegatives, 1)
         XCTAssertNil(treated.unmatchedAt)

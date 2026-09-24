@@ -77,7 +77,7 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
         XCTAssertFalse(source.contains("AuthenticationServices"))
     }
 
-    func testCollectionStorageStatusDistinguishesTransientLocalFallback() throws {
+    func testCollectionStorageStatusDescribesDeviceLocalRelease() throws {
         let source = try String(
             contentsOf: sourceURL(
                 "TradingCardScanner/Views/ScannerSettingsView.swift",
@@ -85,10 +85,8 @@ final class PrivacyAndSupportSurfaceTests: XCTestCase {
             ),
             encoding: .utf8
         )
-        XCTAssertTrue(source.contains("iCloud account"))
-        XCTAssertTrue(source.contains("Attachment"))
-        XCTAssertTrue(source.contains("Temporarily unavailable"))
-        XCTAssertTrue(source.contains("visibly unverified for syncing"))
+        XCTAssertTrue(source.contains("LabeledContent(\"Collection storage\", value: \"On this device\")"))
+        XCTAssertTrue(source.contains("iCloud sync is not available in CardScanner 1.0."))
     }
 
     private func sourceURL(_ relativePath: String, relativeTo testFilePath: String) -> URL {

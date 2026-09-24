@@ -119,6 +119,20 @@ final class CatalogNormalizationTests: XCTestCase {
         return container.mainContext
     }
 
+    private func persistedCard(
+        withKey collectionKey: String,
+        from context: ModelContext
+    ) throws -> CollectedCard {
+        let verificationContext = ModelContext(context.container)
+        return try XCTUnwrap(
+            try verificationContext.fetch(
+                FetchDescriptor<CollectedCard>(
+                    predicate: #Predicate { $0.collectionKey == collectionKey }
+                )
+            ).first
+        )
+    }
+
     override func tearDown() {
         container = nil
         super.tearDown()
@@ -159,9 +173,10 @@ final class CatalogNormalizationTests: XCTestCase {
         await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource())
             .normalizeImportedCards(in: context)
 
-        XCTAssertEqual(card.catalogProviderID, "M2-001")
-        XCTAssertEqual(card.setCode, "M2")
-        XCTAssertEqual(card.imageURL, "https://assets.tcgdex.net/en/swsh/m2/001")
+        let savedCard = try persistedCard(withKey: card.collectionKey, from: context)
+        XCTAssertEqual(savedCard.catalogProviderID, "M2-001")
+        XCTAssertEqual(savedCard.setCode, "M2")
+        XCTAssertEqual(savedCard.imageURL, "https://assets.tcgdex.net/en/swsh/m2/001")
     }
 
     func testJapaneseSetNamesMapToTheirCatalogueIDs() {
@@ -258,8 +273,9 @@ final class CatalogNormalizationTests: XCTestCase {
         await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource())
             .normalizeImportedCards(in: context)
 
-        XCTAssertEqual(card.catalogProviderID, "M2-002")
-        XCTAssertGreaterThan(card.catalogMetadataVersion, 3)
+        let savedCard = try persistedCard(withKey: card.collectionKey, from: context)
+        XCTAssertEqual(savedCard.catalogProviderID, "M2-002")
+        XCTAssertGreaterThan(savedCard.catalogMetadataVersion, 3)
     }
 
     func testPreviouslyResolvedMissingArtworkRetriesAfterArtworkResolverVersionMoves() {
@@ -440,14 +456,15 @@ final class CatalogNormalizationTests: XCTestCase {
         await CollectionCatalogNormalizer(tcgdex: RecordedTCGdexSource())
             .normalizeImportedCards(in: context)
 
-        XCTAssertEqual(card.catalogProviderID, "M2-001")
-        XCTAssertEqual(card.setCode, "SPM")
-        XCTAssertEqual(card.setReleaseOrder, 42)
-        XCTAssertEqual(card.imageURL, "https://assets.tcgdex.net/en/swsh/m2/001")
-        XCTAssertEqual(card.thumbnailURL, "https://images.example.test/exact-small.png")
-        XCTAssertNil(card.rarity)
+        let savedCard = try persistedCard(withKey: card.collectionKey, from: context)
+        XCTAssertEqual(savedCard.catalogProviderID, "M2-001")
+        XCTAssertEqual(savedCard.setCode, "SPM")
+        XCTAssertEqual(savedCard.setReleaseOrder, 42)
+        XCTAssertEqual(savedCard.imageURL, "https://assets.tcgdex.net/en/swsh/m2/001")
+        XCTAssertEqual(savedCard.thumbnailURL, "https://images.example.test/exact-small.png")
+        XCTAssertNil(savedCard.rarity)
         XCTAssertFalse(
-            CollectionCatalogNormalizer.needsNormalization(card),
+            CollectionCatalogNormalizer.needsNormalization(savedCard),
             "an exact printing without a Pokémon rarity must not cycle through normalization"
         )
     }

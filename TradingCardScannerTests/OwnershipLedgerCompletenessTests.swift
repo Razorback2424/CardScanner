@@ -219,7 +219,7 @@ final class OwnershipLedgerCompletenessTests: XCTestCase {
                     shouldContinue: { false }
                 )
                 XCTFail("a stopped generation must not commit the import")
-            } catch CollectionCSVError.storageGenerationChanged {
+            } catch CollectionCSVError.importInterrupted(completedEntries: 0, totalEntries: 1) {
                 // Expected. The context rollback is part of the production
                 // import boundary, not a test-only cleanup.
             }

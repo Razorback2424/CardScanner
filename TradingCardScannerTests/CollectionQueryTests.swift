@@ -274,6 +274,23 @@ final class CollectionQueryTests: XCTestCase {
         )
     }
 
+    func testNativeCurrencyPricesSortFilterAndValueLikeUnpricedRows() {
+        let usd = row(id: "usd", quantity: 2, price: 30)
+        let eur = row(id: "eur", quantity: 3, price: 99, currencyCode: "EUR")
+        let rows = [eur, usd]
+
+        XCTAssertEqual(
+            CollectionQuery.sort(rows, by: .priceHighToLow).map(\.id),
+            ["usd", "eur"]
+        )
+        var filters = CollectionFilters.none
+        filters.price = .band(.twentyFiveToFifty)
+        XCTAssertEqual(CollectionQuery.filter(rows, with: filters).map(\.id), ["usd"])
+        XCTAssertEqual(CollectionValuation.shownValue(for: rows), Money(rounding: 60))
+        XCTAssertEqual(eur.price.amount, 99, "the row keeps its native amount for display")
+        XCTAssertEqual(eur.price.currencyCode, "EUR")
+    }
+
     // MARK: - Price filtering
 
     /// Ten copies of a $2 card is still a $2 card.

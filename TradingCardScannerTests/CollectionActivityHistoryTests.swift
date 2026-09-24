@@ -486,6 +486,15 @@ final class CollectionActivityHistoryTests: XCTestCase {
         )
         XCTAssertTrue(first.repairs.isEmpty)
         XCTAssertEqual(first.changedPendingRows, 1)
+        XCTAssertEqual(first.pendingPatches.count, 1)
+        guard case let .pendingCatalogFinish(_, replacement) = try XCTUnwrap(
+            first.pendingPatches.first
+        ).change else {
+            return XCTFail("expected a pending-finish patch")
+        }
+        row.pendingCatalogFinishID = replacement.id
+        row.pendingCatalogFinishFirstSeenAt = replacement.firstSeenAt
+        row.pendingCatalogFinishRefreshID = replacement.refreshID
         XCTAssertEqual(row.pendingCatalogFinishID, PhysicalVariant.holo.id)
         XCTAssertEqual(row.pendingCatalogFinishFirstSeenAt, firstSeenAt)
 

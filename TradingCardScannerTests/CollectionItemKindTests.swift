@@ -520,9 +520,8 @@ final class CollectionItemKindTests: XCTestCase {
         )
         let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
 
-        XCTAssertTrue(CollectionCatalogNormalizer.repairLegacySealedArtworkURLs(in: [row]))
         XCTAssertEqual(
-            row.imageURL,
+            CollectionCatalogNormalizer.migratedLegacySealedArtworkURL(from: row.imageURL),
             "https://tcgplayer-cdn.tcgplayer.com/product/98580_400w.jpg"
         )
     }
