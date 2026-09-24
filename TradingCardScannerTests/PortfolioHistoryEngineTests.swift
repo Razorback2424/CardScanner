@@ -141,6 +141,104 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertEqual(result.accountingInterval?.includedClosedDays, [dayTwo])
     }
 
+    func testScrubHeadlineUsesActualSelectedValueWhenItDiffersFromPlottedMovement() throws {
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [
+                    close(1, value: 100),
+                    close(2, value: 130, market: 25),
+                    close(3, value: 170, market: 30)
+                ],
+                currentValue: 170,
+                now: date(3, hour: 23)
+            ),
+            range: .all
+        )
+        let point = try XCTUnwrap(result.points.last)
+        let plottedMarketValue = try XCTUnwrap(result.accounting).anchorValue
+            + point.cumulativeMarketMovement
+        XCTAssertNotEqual(point.value, plottedMarketValue)
+
+        var selection = PortfolioHistoryScrubSelection()
+        selection.select(pointID: point.id)
+
+        XCTAssertEqual(
+            selection.headlineValue(in: result, currentValue: money(999)),
+            point.value
+        )
+    }
+
+    func testScrubSelectionClearsWhenGestureEndsOrHistoryRangeChanges() throws {
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(
+                closes: [close(1, value: 100), close(2, value: 120)],
+                currentValue: 120,
+                now: date(2, hour: 23)
+            ),
+            range: .all
+        )
+        let pointID = try XCTUnwrap(result.points.last?.id)
+        var selection = PortfolioHistoryScrubSelection()
+
+        selection.select(pointID: pointID)
+        selection.endScrub()
+        XCTAssertNil(selection.selectedPoint(in: result))
+
+        selection.select(pointID: pointID)
+        selection.rangeChanged()
+        XCTAssertNil(selection.selectedPoint(in: result))
+    }
+
+    func testScrubSelectionResolvesPointAgainAfterHistoryRefresh() throws {
+        func result(dayTwoValue: Int64) -> PortfolioHistoryResult {
+            PortfolioHistoryEngine.calculate(
+                input: input(
+                    closes: [
+                        close(1, value: 100),
+                        close(2, value: dayTwoValue),
+                        close(3, value: 170)
+                    ],
+                    currentValue: 170,
+                    now: date(3, hour: 23)
+                ),
+                range: .all
+            )
+        }
+
+        let firstResult = result(dayTwoValue: 120)
+        let selectedID = try XCTUnwrap(firstResult.points[1].id)
+        var selection = PortfolioHistoryScrubSelection()
+        selection.select(pointID: selectedID)
+
+        let refreshedResult = result(dayTwoValue: 145)
+        XCTAssertEqual(refreshedResult.points[1].id, selectedID)
+        XCTAssertEqual(
+            selection.headlineValue(in: refreshedResult, currentValue: money(170)),
+            money(145)
+        )
+    }
+
+    func testScrubbedHeadlineAccessibilityAnnouncesDateAndActualValue() {
+        let point = PortfolioHistoryPoint(
+            displayDay: date(2),
+            instant: date(3),
+            value: money(145),
+            cumulativeMarketMovement: money(25),
+            performanceFactor: 1,
+            isLive: false
+        )
+        let dateLabel = point.displayDay.formatted(date: .complete, time: .omitted)
+
+        XCTAssertEqual(
+            PortfolioHeadlineAccessibility.label(
+                selectedPoint: point,
+                currentValue: money(170),
+                isRecomputing: false
+            ),
+            "Collection value on \(dateLabel), \(money(145).formatted())"
+        )
+    }
+
     func testPerformanceFactorExcludesLargeInventoryFlow() {
         let initial = event(quantity: 1, at: date(1, hour: 1))
         let inflow = event(quantity: 500, at: date(2, hour: 1))

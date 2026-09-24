@@ -154,6 +154,7 @@ struct PortfolioView: View {
     @State private var isShowingQuantityRepairConfirmation = false
     @State private var quantityRepairError: String?
     @State private var isRebuildingPortfolioEvidence = false
+    @State private var historyScrubSelection = PortfolioHistoryScrubSelection()
 
     private var historyRange: PortfolioHistoryRange {
         get { history.range }
@@ -170,6 +171,20 @@ struct PortfolioView: View {
     /// matching result exists.
     private var activeHistoryResult: PortfolioHistoryResult? {
         history.activeResult
+    }
+
+    /// Scrub values are resolved from the result for the active range. This
+    /// keeps an in-flight range change or history refresh from showing an old
+    /// point that only existed in a previous result.
+    private var selectedHistoryPoint: PortfolioHistoryPoint? {
+        historyScrubSelection.selectedPoint(in: activeHistoryResult)
+    }
+
+    private var portfolioHeadlineValue: Money? {
+        historyScrubSelection.headlineValue(
+            in: activeHistoryResult,
+            currentValue: portfolio.summary?.currentValue
+        )
     }
 
     private var startsAtPhase3DebugSection: Bool {
@@ -221,7 +236,10 @@ struct PortfolioView: View {
 
                             if summary.isAuthoritative {
                                 VStack(alignment: .leading, spacing: 14) {
-                                    PortfolioHistoryView(history: history)
+                                    PortfolioHistoryView(
+                                        history: history,
+                                        selection: $historyScrubSelection
+                                    )
                                     periodControl
                                         .padding(.horizontal, 16)
                                 }
@@ -336,13 +354,11 @@ struct PortfolioView: View {
     }
 
     private var portfolioValueAccessibilityLabel: String {
-        guard let summary = portfolio.summary else {
-            return portfolio.isRecomputing
-                ? "Collection value unavailable. Calculating portfolio."
-                : "Collection value unavailable"
-        }
-        let value = "Collection value, \(summary.currentValue.formatted())"
-        return portfolio.isRecomputing ? "\(value). Recalculating portfolio value." : value
+        PortfolioHeadlineAccessibility.label(
+            selectedPoint: selectedHistoryPoint,
+            currentValue: portfolio.summary?.currentValue,
+            isRecomputing: portfolio.isRecomputing
+        )
     }
 
     /// The half of "needs attention" that does not read the refresh
@@ -433,7 +449,7 @@ struct PortfolioView: View {
         VStack(alignment: .leading, spacing: 9) {
             HStack(alignment: .center, spacing: 10) {
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
-                    if let currentValue = portfolio.summary?.currentValue {
+                    if let currentValue = portfolioHeadlineValue {
                         let parts = currentValue.heroParts()
                         Text(parts.whole)
                             .font(.system(size: 54, weight: .bold, design: .rounded))
@@ -458,24 +474,34 @@ struct PortfolioView: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.65)
                 .contentTransition(.numericText())
-                .animation(.snappy, value: portfolio.summary?.currentValue)
+                .animation(.snappy, value: portfolioHeadlineValue)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(portfolioValueAccessibilityLabel)
 
                 PortfolioRefreshButton(refresh: refresh, onRefresh: onRefresh)
             }
 
-            if portfolio.summary?.isAuthoritative == true,
-               let accounting = activeHistoryResult?.accounting {
-                let trailingText = PortfolioHistoryDisplay.percentChange(
-                    amount: accounting.market,
-                    anchor: accounting.anchorValue
-                ).map { "· \(abs($0).formatted(.percent.precision(.fractionLength(2))))" }
+            if let selectedHistoryPoint {
+                Text(
+                    selectedHistoryPoint.isLive
+                        ? "Today"
+                        : selectedHistoryPoint.displayDay.formatted(
+                            date: .abbreviated,
+                            time: .omitted
+                        )
+                )
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 4)
+                .background(Color.secondary.opacity(0.12), in: Capsule())
+                .accessibilityHidden(true)
+            } else if portfolio.summary?.isAuthoritative == true,
+                      let accounting = activeHistoryResult?.accounting {
                 HStack(spacing: 8) {
                     PortfolioAmountPill(
                         amount: accounting.market,
-                        showsArrow: true,
-                        trailingText: trailingText
+                        showsArrow: true
                     )
                 }
                 .accessibilityElement(children: .combine)
@@ -1330,7 +1356,6 @@ private struct PortfolioBestCardTile: View {
 private struct PortfolioAmountPill: View {
     let amount: Money
     var showsArrow: Bool = false
-    var trailingText: String? = nil
 
     private var arrowReplacesSign: Bool {
         showsArrow && !amount.isZero
@@ -1344,21 +1369,9 @@ private struct PortfolioAmountPill: View {
 
     private var spokenLabel: String {
         let amountLabel = visibleAmountText
-        let trailingLabel = trailingText?
-            .replacingOccurrences(of: "·", with: "")
-            .replacingOccurrences(of: "%", with: " percent")
-            .trimmingCharacters(in: .whitespaces)
-
         if arrowReplacesSign {
             let direction = amount < .zero ? "down" : "up"
-            if let trailingLabel, !trailingLabel.isEmpty {
-                return "\(direction) \(amountLabel), \(trailingLabel)"
-            }
             return "\(direction) \(amountLabel)"
-        }
-
-        if let trailingLabel, !trailingLabel.isEmpty {
-            return "\(amountLabel), \(trailingLabel)"
         }
         return amountLabel
     }
@@ -1370,9 +1383,6 @@ private struct PortfolioAmountPill: View {
                     .font(.system(size: 15, weight: .semibold))
             }
             Text(visibleAmountText)
-            if let trailingText {
-                Text(trailingText)
-            }
         }
         .font(.system(size: 14, weight: .semibold).monospacedDigit())
         .foregroundStyle(PortfolioPalette.direction(amount))

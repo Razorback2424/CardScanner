@@ -3,11 +3,62 @@ import Charts
 import SwiftUI
 import UIKit
 
+struct PortfolioHistoryScrubSelection: Equatable {
+    private(set) var selectedPointID: String?
+
+    mutating func select(pointID: String?) {
+        selectedPointID = pointID
+    }
+
+    mutating func endScrub() {
+        selectedPointID = nil
+    }
+
+    mutating func rangeChanged() {
+        selectedPointID = nil
+    }
+
+    func selectedPoint(in result: PortfolioHistoryResult?) -> PortfolioHistoryPoint? {
+        guard let selectedPointID else { return nil }
+        return result?.points.first { $0.id == selectedPointID }
+    }
+
+    func headlineValue(
+        in result: PortfolioHistoryResult?,
+        currentValue: Money?
+    ) -> Money? {
+        selectedPoint(in: result)?.value ?? currentValue
+    }
+}
+
+enum PortfolioHeadlineAccessibility {
+    static func label(
+        selectedPoint: PortfolioHistoryPoint?,
+        currentValue: Money?,
+        isRecomputing: Bool
+    ) -> String {
+        if let selectedPoint {
+            let date = selectedPoint.displayDay.formatted(
+                date: .complete,
+                time: .omitted
+            )
+            return "Collection value on \(date), \(selectedPoint.value.formatted())"
+        }
+        guard let currentValue else {
+            return isRecomputing
+                ? "Collection value unavailable. Calculating portfolio."
+                : "Collection value unavailable"
+        }
+        let value = "Collection value, \(currentValue.formatted())"
+        return isRecomputing ? "\(value). Recalculating portfolio value." : value
+    }
+}
+
 struct PortfolioHistoryView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ObservedObject var history: PortfolioHistoryStore
+    @Binding var selection: PortfolioHistoryScrubSelection
 
-    @State private var selectedPointID: String?
     @State private var lastHapticPointID: String?
     /// Held and re-armed rather than built per tick, for the reason
     /// `ScanFeedback` documents: a cold generator answers late enough to break
@@ -41,7 +92,7 @@ struct PortfolioHistoryView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: history.range)
         .onChange(of: history.range) { _, _ in
-            resetSelection()
+            resetSelection(forRangeChange: true)
         }
         .onDisappear {
             resetSelection()
@@ -106,8 +157,8 @@ struct PortfolioHistoryView: View {
                         let nearestID = result.points.min {
                             abs($0.instant.timeIntervalSince(date)) < abs($1.instant.timeIntervalSince(date))
                         }?.id
-                        guard nearestID != selectedPointID else { return }
-                        selectedPointID = nearestID
+                        guard nearestID != selection.selectedPointID else { return }
+                        selection.select(pointID: nearestID)
                         if nearestID != lastHapticPointID {
                             selectionFeedback.selectionChanged()
                             // Re-arm for the next point the scrub crosses.
@@ -207,13 +258,15 @@ struct PortfolioHistoryView: View {
     }
 
     private func selectedID(in result: PortfolioHistoryResult) -> String? {
-        guard let selectedPointID,
-              result.points.contains(where: { $0.id == selectedPointID }) else { return nil }
-        return selectedPointID
+        selection.selectedPoint(in: result)?.id
     }
 
-    private func resetSelection() {
-        selectedPointID = nil
+    private func resetSelection(forRangeChange: Bool = false) {
+        if forRangeChange {
+            selection.rangeChanged()
+        } else {
+            selection.endScrub()
+        }
         lastHapticPointID = nil
     }
 
