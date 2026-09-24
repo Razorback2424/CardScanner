@@ -926,9 +926,10 @@ final class ScannerOverlaySmokeTests: XCTestCase {
         let proof = SpatialResetProof(encounterID: resolvedScan.request.encounterID)
         let duplicate = PendingDuplicateConfirmation(
             candidate: candidate,
-            matchingSpatialResetProof: proof,
+            evidence: .spatialExit(proof),
             previousScanID: recent.id,
-            previousPresentationToken: UUID()
+            previousPresentationToken: UUID(),
+            previousFinishLabel: nil
         )
         let choice = PendingVariantChoice(
             request: resolvedScan.request,

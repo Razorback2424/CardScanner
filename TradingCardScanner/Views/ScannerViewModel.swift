@@ -201,6 +201,13 @@ struct CollectionCommitCandidate: Sendable {
         ConsecutiveScanIdentity(card: card, subject: subject)
     }
 
+    var duplicateDisplayLabel: String {
+        if let slab = subject.slab {
+            return slab.grade.display(company: slab.company)
+        }
+        return card.finishAndTreatmentDisplayLabel(for: resolved.variant)
+    }
+
     var isGradedPricePending: Bool {
         guard subject.slab != nil else { return false }
         if case .bound = gradedOutcome { return false }
@@ -277,9 +284,17 @@ struct ConsecutiveScanIdentity: Equatable, Hashable, Sendable {
     }
 }
 
+enum DuplicateEvidence: Equatable, Sendable {
+    case spatialExit(SpatialResetProof)
+    case superseded(SpatialSupersessionEvidence)
+    /// A committed card after the earlier copy is durable replacement context,
+    /// even when the camera lost its tracker before it could emit a link.
+    case committedReplacement(CommittedSessionScan)
+}
+
 enum CollectionCandidateRoutingDecision: Equatable {
     case automatic
-    case duplicate(SpatialResetProof)
+    case duplicate(DuplicateEvidence)
     case suppress
 }
 
@@ -291,7 +306,8 @@ enum CollectionCandidateRoutingPolicy {
         for identity: ConsecutiveScanIdentity,
         previous: CommittedSessionScan?,
         history: [CommittedSessionScan] = [],
-        proofs: [SpatialResetProof]
+        proofs: [SpatialResetProof],
+        supersessions: [SpatialSupersessionEvidence] = []
     ) -> CollectionCandidateRoutingDecision {
         // `previous` remains as a compatibility/default input for callers that
         // only have one committed item. The scanner supplies the bounded full
@@ -305,16 +321,50 @@ enum CollectionCandidateRoutingPolicy {
         }) else {
             return .automatic
         }
+        guard let previousIndex = candidates.firstIndex(where: { $0.id == previous.id }) else {
+            return .suppress
+        }
 
-        guard let proof = proofs.first(where: { proof in
+        if let proof = proofs.first(where: { proof in
             if let presentationToken = proof.presentationToken {
                 return presentationToken == previous.presentationToken
             }
             return proof.encounterID == previous.encounterID
-        }) else {
-            return .suppress
+        }) {
+            return .duplicate(.spatialExit(proof))
         }
-        return .duplicate(proof)
+
+        if let evidence = supersessions.first(where: { evidence in
+            let matchesReplacedPresentation: Bool
+            if let presentationToken = evidence.presentationToken {
+                matchesReplacedPresentation = presentationToken == previous.presentationToken
+            } else {
+                matchesReplacedPresentation = evidence.encounterID == previous.encounterID
+            }
+            guard matchesReplacedPresentation,
+                  let replacingScan = candidates.first(where: {
+                      $0.encounterID == evidence.supersedingEncounterID
+                  }),
+                  let replacingIndex = candidates.firstIndex(where: { $0.id == replacingScan.id }) else {
+                return false
+            }
+            return replacingIndex > previousIndex
+                && replacingScan.encounterID != previous.encounterID
+                && replacingScan.identity.canonicalID != previous.identity.canonicalID
+        }) {
+            return .duplicate(.superseded(evidence))
+        }
+
+        // Committed history is itself enough to show that the earlier card was
+        // replaced in the scan session. Use only the canonical card identity:
+        // grade, finish, and print-run differences do not make a new card.
+        if let replacingScan = candidates.dropFirst(previousIndex + 1).first(where: {
+            $0.encounterID != previous.encounterID
+                && $0.identity.canonicalID != previous.identity.canonicalID
+        }) {
+            return .duplicate(.committedReplacement(replacingScan))
+        }
+        return .suppress
     }
 }
 
@@ -442,30 +492,48 @@ struct PendingDuplicateConfirmation: Identifiable, Equatable {
     let promptID: UUID
     let candidate: CollectionCommitCandidate
     let encounterID: UUID
-    let matchingSpatialResetProof: SpatialResetProof
+    let evidence: DuplicateEvidence
     let previousScanID: RecentScan.ID
     let previousPresentationToken: UUID
+    let previousFinishLabel: String?
 
     var id: UUID { promptID }
 
     init(
         promptID: UUID = UUID(),
         candidate: CollectionCommitCandidate,
-        matchingSpatialResetProof: SpatialResetProof,
+        evidence: DuplicateEvidence,
         previousScanID: RecentScan.ID,
-        previousPresentationToken: UUID
+        previousPresentationToken: UUID,
+        previousFinishLabel: String?
     ) {
         self.promptID = promptID
         self.candidate = candidate
         encounterID = candidate.encounterID
-        self.matchingSpatialResetProof = matchingSpatialResetProof
+        self.evidence = evidence
         self.previousScanID = previousScanID
         self.previousPresentationToken = previousPresentationToken
+        self.previousFinishLabel = previousFinishLabel
     }
 
     static func == (lhs: PendingDuplicateConfirmation, rhs: PendingDuplicateConfirmation) -> Bool {
         lhs.promptID == rhs.promptID
     }
+}
+
+/// Evidence already consumed to open a finish picker for a possible repeat.
+/// Choosing a finish is the one tap that confirms and adds the new copy.
+struct PendingDuplicateChoiceContext: Equatable, Sendable {
+    let evidence: DuplicateEvidence
+    let previousScanID: RecentScan.ID
+    let previousPresentationToken: UUID
+    let previousFinishLabel: String?
+}
+
+private enum FinishChoiceDuplicatePreflight {
+    case ordinary
+    case suppress
+    case duplicate(PendingDuplicateChoiceContext)
 }
 
 struct PriceCheckResult: Identifiable {
@@ -547,6 +615,13 @@ struct RecentScan: Identifiable, Equatable {
     let isGradedPricePending: Bool
 
     var identifier: ScanIdentifier { subject.identifier }
+
+    var duplicateDisplayLabel: String {
+        if let slab = subject.slab {
+            return slab.grade.display(company: slab.company)
+        }
+        return card.finishAndTreatmentDisplayLabel(for: resolved.variant)
+    }
 
     init(
         id: UUID = UUID(),
@@ -694,6 +769,7 @@ struct PendingVariantChoice: Identifiable, Equatable {
     let pokemonPrintRun: PokemonPrintRun?
     let catalogRetrievedAt: Date
     let identityResolution: IdentityResolution
+    let duplicateChoiceContext: PendingDuplicateChoiceContext?
     /// Set when Finish Lock named a variant this printing does not exist in. The
     /// lock is evidence, not an override, so the user is told rather than obeyed.
     let lockDidNotApply: MagicFinishLock?
@@ -705,7 +781,8 @@ struct PendingVariantChoice: Identifiable, Equatable {
         pokemonPrintRun: PokemonPrintRun?,
         catalogRetrievedAt: Date,
         identityResolution: IdentityResolution = .printedIdentifier,
-        lockDidNotApply: MagicFinishLock?
+        lockDidNotApply: MagicFinishLock?,
+        duplicateChoiceContext: PendingDuplicateChoiceContext? = nil
     ) {
         self.request = request
         self.card = card
@@ -713,6 +790,7 @@ struct PendingVariantChoice: Identifiable, Equatable {
         self.pokemonPrintRun = pokemonPrintRun
         self.catalogRetrievedAt = catalogRetrievedAt
         self.identityResolution = identityResolution
+        self.duplicateChoiceContext = duplicateChoiceContext
         self.lockDidNotApply = lockDidNotApply
     }
 
@@ -1232,6 +1310,7 @@ final class ScannerViewModel: ObservableObject {
     /// is held by encounter id until its successful commit can associate it with
     /// a committed presentation.
     private var spatialResetProofs: [SpatialResetProof] = []
+    private var spatialSupersessionEvidence: [SpatialSupersessionEvidence] = []
     private var undoingScanIDs = InFlightIDGuard<RecentScan.ID>()
     private var heldRepeatAuthorizationState: HeldRepeatAuthorizationState?
     private var deferredHeldDuplicateOffer: DeferredHeldDuplicateOffer?
@@ -1349,6 +1428,7 @@ final class ScannerViewModel: ObservableObject {
                         "encounter=\(encounterID.uuidString)"
                     )
                 }
+                self.pruneSpatialSupersessionEvidenceToLiveHistory()
                 if self.purpose == .collection {
                     // Keep the recognition acknowledgement visible across the
                     // identity and persistence gap. The message is upgraded to
@@ -1448,6 +1528,12 @@ final class ScannerViewModel: ObservableObject {
         scanner.onSpatialResetProof = { [weak self] proof in
             Task { @MainActor in
                 self?.receiveSpatialResetProof(proof)
+            }
+        }
+
+        scanner.onSpatialSupersessionEvidence = { [weak self] evidence in
+            Task { @MainActor in
+                self?.receiveSpatialSupersessionEvidence(evidence)
             }
         }
 
@@ -1784,6 +1870,7 @@ final class ScannerViewModel: ObservableObject {
         gradedCertificationRefinementsInFlight.removeAll()
         unresolvedScans.removeAll()
         spatialResetProofs.removeAll()
+        spatialSupersessionEvidence.removeAll()
         deferredHeldDuplicateOffer = nil
         catalogMissVerification = nil
         heldRepeatAuthorizationState = nil
@@ -2003,6 +2090,39 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
+    private func receiveSpatialSupersessionEvidence(_ evidence: SpatialSupersessionEvidence) {
+        guard isScannerSessionActive,
+              !spatialSupersessionEvidence.contains(where: { $0.id == evidence.id }) else { return }
+        heldDuplicateOffer = nil
+        spatialSupersessionEvidence.append(evidence)
+        if let replaced = committedSessionHistory.first(where: {
+            $0.encounterID == evidence.encounterID
+        }) {
+            bindSupersessionEvidenceToCommittedPresentation(replaced)
+        }
+        if spatialSupersessionEvidence.count > Self.committedHistoryLimit * 2 {
+            spatialSupersessionEvidence.removeFirst(
+                spatialSupersessionEvidence.count - Self.committedHistoryLimit * 2
+            )
+        }
+    }
+
+    private func bindSupersessionEvidenceToCommittedPresentation(
+        _ committed: CommittedSessionScan
+    ) {
+        for index in spatialSupersessionEvidence.indices where
+            spatialSupersessionEvidence[index].encounterID == committed.encounterID
+                && spatialSupersessionEvidence[index].presentationToken == nil {
+            let evidence = spatialSupersessionEvidence[index]
+            spatialSupersessionEvidence[index] = SpatialSupersessionEvidence(
+                id: evidence.id,
+                encounterID: evidence.encounterID,
+                presentationToken: committed.presentationToken,
+                supersedingEncounterID: evidence.supersedingEncounterID
+            )
+        }
+    }
+
     /// Keep only evidence that can still be tied to a committed presentation or
     /// a pending encounter. A provisional proof (nil presentation token) is
     /// valid only while its encounter is still awaiting a terminal outcome.
@@ -2015,6 +2135,143 @@ final class ScannerViewModel: ObservableObject {
                 }
             }
             return oneCardScanIntervals[proof.encounterID] == nil
+        }
+    }
+
+    /// Keep supersession links only while both encounters can still commit or
+    /// remain in the bounded session history. Once both are committed, the
+    /// replacing card must still have a different canonical card identity.
+    private func pruneSpatialSupersessionEvidenceToLiveHistory() {
+        spatialSupersessionEvidence.removeAll { evidence in
+            let replaced = committedSessionHistory.first(where: {
+                if let token = evidence.presentationToken {
+                    return $0.presentationToken == token
+                }
+                return $0.encounterID == evidence.encounterID
+            })
+            let replacing = committedSessionHistory.first(where: {
+                $0.encounterID == evidence.supersedingEncounterID
+            })
+            let replacedIsLive = replaced != nil || oneCardScanIntervals[evidence.encounterID] != nil
+            let replacingIsLive = replacing != nil || oneCardScanIntervals[evidence.supersedingEncounterID] != nil
+            guard replacedIsLive, replacingIsLive else { return true }
+            guard let replaced, let replacing else { return false }
+            return replaced.identity.canonicalID == replacing.identity.canonicalID
+        }
+    }
+
+    private func takeDuplicateEvidence(_ evidence: DuplicateEvidence) -> DuplicateEvidence? {
+        switch evidence {
+        case let .spatialExit(proof):
+            guard let index = spatialResetProofs.firstIndex(where: { $0.id == proof.id }) else {
+                return nil
+            }
+            return .spatialExit(spatialResetProofs.remove(at: index))
+        case let .superseded(supersession):
+            guard let index = spatialSupersessionEvidence.firstIndex(where: {
+                $0.id == supersession.id
+            }) else { return nil }
+            return .superseded(spatialSupersessionEvidence.remove(at: index))
+        case let .committedReplacement(replacing):
+            guard committedSessionHistory.contains(where: {
+                $0.id == replacing.id && $0.encounterID == replacing.encounterID
+            }) else { return nil }
+            return .committedReplacement(replacing)
+        }
+    }
+
+    private func prepareFinishChoiceDuplicate(
+        for identity: ConsecutiveScanIdentity
+    ) -> FinishChoiceDuplicatePreflight {
+        let decision = CollectionCandidateRoutingPolicy.decision(
+            for: identity,
+            previous: committedSessionHistory.last,
+            history: committedSessionHistory,
+            proofs: spatialResetProofs,
+            supersessions: spatialSupersessionEvidence
+        )
+        switch decision {
+        case .automatic:
+            return .ordinary
+        case .suppress:
+            return .suppress
+        case let .duplicate(evidence):
+            guard let previous = committedSessionHistory.reversed().first(where: {
+                $0.identity.matchesForDuplicateSuppression(identity)
+            }),
+            let consumedEvidence = takeDuplicateEvidence(evidence) else {
+                return .suppress
+            }
+            let previousFinishLabel = sessionScans.first(where: {
+                $0.id == previous.id
+            }).map(\.duplicateDisplayLabel)
+            return .duplicate(
+                PendingDuplicateChoiceContext(
+                    evidence: consumedEvidence,
+                    previousScanID: previous.id,
+                    previousPresentationToken: previous.presentationToken,
+                    previousFinishLabel: previousFinishLabel
+                )
+            )
+        }
+    }
+
+    private func isValidDuplicateChoiceContext(
+        _ context: PendingDuplicateChoiceContext,
+        for candidate: CollectionCommitCandidate
+    ) -> Bool {
+        isValidDuplicateEvidence(
+            context.evidence,
+            previousScanID: context.previousScanID,
+            previousPresentationToken: context.previousPresentationToken,
+            candidateIdentity: candidate.identity
+        )
+    }
+
+    private func isValidDuplicateEvidence(
+        _ evidence: DuplicateEvidence,
+        previousScanID: RecentScan.ID,
+        previousPresentationToken: UUID,
+        candidateIdentity: ConsecutiveScanIdentity
+    ) -> Bool {
+        guard let previousIndex = committedSessionHistory.firstIndex(where: {
+            $0.id == previousScanID && $0.presentationToken == previousPresentationToken
+        }),
+        committedSessionHistory[previousIndex].identity.matchesForDuplicateSuppression(candidateIdentity) else {
+            return false
+        }
+        let previous = committedSessionHistory[previousIndex]
+        switch evidence {
+        case let .spatialExit(proof):
+            if let token = proof.presentationToken {
+                return token == previous.presentationToken
+            }
+            return proof.encounterID == previous.encounterID
+        case let .superseded(evidence):
+            let targetsPrevious: Bool
+            if let token = evidence.presentationToken {
+                targetsPrevious = token == previous.presentationToken
+            } else {
+                targetsPrevious = evidence.encounterID == previous.encounterID
+            }
+            guard targetsPrevious,
+                  let replacing = committedSessionHistory.first(where: {
+                      $0.encounterID == evidence.supersedingEncounterID
+                  }),
+                  let replacingIndex = committedSessionHistory.firstIndex(where: { $0.id == replacing.id }) else {
+                return false
+            }
+            return replacingIndex > previousIndex
+                && replacing.encounterID != previous.encounterID
+                && replacing.identity.canonicalID != previous.identity.canonicalID
+        case let .committedReplacement(replacing):
+            guard let replacingIndex = committedSessionHistory.firstIndex(where: {
+                      $0.id == replacing.id && $0.encounterID == replacing.encounterID
+                  }),
+                  replacingIndex > previousIndex else { return false }
+            let committedReplacement = committedSessionHistory[replacingIndex]
+            return committedReplacement.encounterID != previous.encounterID
+                && committedReplacement.identity.canonicalID != previous.identity.canonicalID
         }
     }
 
@@ -2157,6 +2414,21 @@ final class ScannerViewModel: ObservableObject {
     /// be intercepted by duplicate routing a second time.
     func addAnother() {
         guard let pending = pendingDuplicateConfirmation else { return }
+        guard isValidDuplicateEvidence(
+            pending.evidence,
+            previousScanID: pending.previousScanID,
+            previousPresentationToken: pending.previousPresentationToken,
+            candidateIdentity: pending.candidate.identity
+        ) else {
+            pendingDuplicateConfirmation = nil
+            scanner.keepPresentationSuppressed(encounterID: pending.encounterID)
+            endOneCardScan(encounterID: pending.encounterID, outcome: "duplicate-evidence-stale")
+            clearAcknowledgement(for: pending.encounterID)
+            show(ScanNote(text: "This repeat can no longer be confirmed", tone: .info))
+            resumeRecognitionIfPossible()
+            processNextIdentificationIfPossible()
+            return
+        }
         let accepted = beginPendingResolution(requestID: pending.candidate.requestID) { [weak self] in
             guard let self else { return }
             guard await self.commitAuthorizedCollectionCandidate(
@@ -2275,7 +2547,11 @@ final class ScannerViewModel: ObservableObject {
         )
         let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
             guard let self else { return }
-            await self.route(resolved)
+            await self.route(
+                resolved,
+                duplicateChoiceContext: pending.duplicateChoiceContext,
+                retryVariantChoice: pending
+            )
         }
         guard accepted else {
             reportPendingResolutionRejected()
@@ -2476,6 +2752,7 @@ final class ScannerViewModel: ObservableObject {
 
     private func removeCommittedHistory(for scanID: RecentScan.ID) {
         committedSessionHistory.removeAll { $0.id == scanID }
+        pruneSpatialSupersessionEvidenceToLiveHistory()
     }
 
     func clearUnresolvedScans() {
@@ -2946,6 +3223,24 @@ final class ScannerViewModel: ObservableObject {
                 )
                 return
             }
+            var duplicateChoiceContext: PendingDuplicateChoiceContext?
+            if request.purpose == .collection {
+                switch prepareFinishChoiceDuplicate(
+                    for: ConsecutiveScanIdentity(card: card, subject: request.subject)
+                ) {
+                case .ordinary:
+                    break
+                case .suppress:
+                    suppressCollectionCandidate(
+                        encounterID: request.encounterID,
+                        identifier: request.identifier,
+                        card: card
+                    )
+                    return
+                case let .duplicate(context):
+                    duplicateChoiceContext = context
+                }
+            }
             receipt = nil
             receiptTask?.cancel()
             pendingChoice = PendingVariantChoice(
@@ -2955,7 +3250,8 @@ final class ScannerViewModel: ObservableObject {
                 pokemonPrintRun: pokemonPrintRun,
                 catalogRetrievedAt: catalogRetrievedAt,
                 identityResolution: identityResolution,
-                lockDidNotApply: lockDidNotApply
+                lockDidNotApply: lockDidNotApply,
+                duplicateChoiceContext: duplicateChoiceContext
             )
             scanner.pauseRecognition()
             if let lockDidNotApply {
@@ -2967,7 +3263,11 @@ final class ScannerViewModel: ObservableObject {
 
     // MARK: - Resolved destinations
 
-    private func route(_ resolvedScan: ResolvedScan) async {
+    private func route(
+        _ resolvedScan: ResolvedScan,
+        duplicateChoiceContext: PendingDuplicateChoiceContext? = nil,
+        retryVariantChoice: PendingVariantChoice? = nil
+    ) async {
         guard isCurrent(resolvedScan.request) else {
             endOneCardScan(
                 encounterID: resolvedScan.request.encounterID,
@@ -2983,7 +3283,24 @@ final class ScannerViewModel: ObservableObject {
         }
         switch resolvedScan.request.purpose {
         case .collection:
-            await routeCollectionCandidate(CollectionCommitCandidate(resolvedScan: resolvedScan))
+            let candidate = CollectionCommitCandidate(resolvedScan: resolvedScan)
+            if let duplicateChoiceContext,
+               isValidDuplicateChoiceContext(duplicateChoiceContext, for: candidate) {
+                guard await commitAuthorizedCollectionCandidate(
+                    candidate,
+                    authorization: .addAnother
+                ) else {
+                    if isCurrent(resolvedScan.request), let retryVariantChoice {
+                        pendingChoice = retryVariantChoice
+                        scanner.pauseRecognition()
+                    }
+                    return
+                }
+                pruneSpatialResetProofsToLiveHistory()
+                pruneSpatialSupersessionEvidenceToLiveHistory()
+            } else {
+                await routeCollectionCandidate(candidate)
+            }
         case .priceCheck:
             presentPriceCheck(resolvedScan)
         }
@@ -3156,6 +3473,7 @@ final class ScannerViewModel: ObservableObject {
                 encounterID: previous.encounterID
             )
         }
+        pruneSpatialSupersessionEvidenceToLiveHistory()
     }
 
     private func queueGradedBinding(scanID: RecentScan.ID) {
@@ -3449,6 +3767,7 @@ final class ScannerViewModel: ObservableObject {
                 sessionScans.removeAll { $0.id == scan.id }
                 recent.removeAll { $0.id == scan.id }
                 committedSessionHistory.removeAll { $0.id == scan.id }
+                pruneSpatialSupersessionEvidenceToLiveHistory()
                 successCount = max(0, successCount - 1)
                 if receipt?.scanID == scan.id {
                     dismissReceipt()
@@ -3486,6 +3805,7 @@ final class ScannerViewModel: ObservableObject {
                 encounterID: previousCommit.encounterID
             )
         }
+        pruneSpatialSupersessionEvidenceToLiveHistory()
         pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
     }
 
@@ -3525,7 +3845,9 @@ final class ScannerViewModel: ObservableObject {
                 committedSessionHistory.count - Self.committedHistoryLimit
             )
         }
+        bindSupersessionEvidenceToCommittedPresentation(committed)
         pruneSpatialResetProofsToLiveHistory()
+        pruneSpatialSupersessionEvidenceToLiveHistory()
 
         if candidate.subject.slab != nil,
            candidate.resolved.resolution == .catalogSilent,
@@ -3637,8 +3959,9 @@ final class ScannerViewModel: ObservableObject {
     }
 
     /// Collection routing is identity-first. A matching identity can reach a
-    /// prompt only with a one-shot proof tied to the previous presentation.
-    /// No proof means suppression, never a reseed or collection mutation.
+    /// prompt only with spatial evidence or a later committed card with a
+    /// different canonical identity. No evidence means suppression, never a
+    /// reseed or collection mutation.
     private func routeCollectionCandidate(_ candidate: CollectionCommitCandidate) async {
         if let authorizationID = candidate.heldRepeatAuthorizationID {
             await routeHeldRepeatCandidate(candidate, authorizationID: authorizationID)
@@ -3649,7 +3972,8 @@ final class ScannerViewModel: ObservableObject {
             for: candidate.identity,
             previous: committedSessionHistory.last,
             history: committedSessionHistory,
-            proofs: spatialResetProofs
+            proofs: spatialResetProofs,
+            supersessions: spatialSupersessionEvidence
         )
 
         switch decision {
@@ -3657,52 +3981,66 @@ final class ScannerViewModel: ObservableObject {
             diagnostic("routingAutomatic")
             guard await commitAuthorizedCollectionCandidate(candidate, authorization: .automatic) else { return }
             pruneSpatialResetProofsToLiveHistory()
+            pruneSpatialSupersessionEvidenceToLiveHistory()
         case .suppress:
-            // No terminal path may leave a `.recognized` acknowledgement for
-            // its encounter. A commit ends in a receipt, a failure ends in
-            // `.failed` (which stays on screen by design), and everything else
-            // clears it.
-            diagnostic("routingSuppressed")
-            deferredHeldDuplicateOffer = nil
-            scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
-            endOneCardScan(encounterID: candidate.encounterID, outcome: "suppressed")
-            clearAcknowledgement(for: candidate.encounterID)
-            let printedIdentifier = candidate.identifier.scannerDisplayIdentifier(for: candidate.card)
-            let cardLabel = printedIdentifier.isEmpty ? candidate.card.name : printedIdentifier
-            show(ScanNote(text: "\(cardLabel) was already added this session", tone: .info))
-            spatialResetProofs.removeAll { $0.encounterID == candidate.encounterID }
-            pruneSpatialResetProofsToLiveHistory()
-        case .duplicate(let proof):
-            diagnostic("routingSpatialDuplicatePrompt")
+            suppressCollectionCandidate(
+                encounterID: candidate.encounterID,
+                identifier: candidate.identifier,
+                card: candidate.card
+            )
+        case let .duplicate(evidence):
+            diagnostic("routingDuplicatePrompt")
             guard let previous = committedSessionHistory.reversed().first(where: { committed in
                       committed.identity.matchesForDuplicateSuppression(candidate.identity)
-                          && (proof.presentationToken == committed.presentationToken
-                              || (proof.presentationToken == nil
-                                  && proof.encounterID == committed.encounterID))
                   }),
-                  let proofIndex = spatialResetProofs.firstIndex(where: { $0.id == proof.id }) else {
+                  let consumedEvidence = takeDuplicateEvidence(evidence) else {
                 scanner.keepPresentationSuppressed(encounterID: candidate.encounterID)
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "duplicate-proof-missing")
                 clearAcknowledgement(for: candidate.encounterID)
                 return
             }
 
-            // Proofs are one-shot. The detached candidate owns the proof while
-            // the user decides, independent of any generation-owned task.
-            let proof = spatialResetProofs.remove(at: proofIndex)
+            // Spatial evidence is consumed here. History replacement evidence
+            // stays valid only while its committed entry remains after the
+            // earlier scan; both are revalidated before an Add another write.
+            // The detached candidate owns this snapshot while the user decides.
             pendingChoice = nil
             pendingPrintRunChoice = nil
             pendingIdentityChoice = nil
             pendingDuplicateConfirmation = PendingDuplicateConfirmation(
                 candidate: candidate,
-                matchingSpatialResetProof: proof,
+                evidence: consumedEvidence,
                 previousScanID: previous.id,
-                previousPresentationToken: previous.presentationToken
+                previousPresentationToken: previous.presentationToken,
+                previousFinishLabel: sessionScans.first(where: {
+                    $0.id == previous.id
+                }).map(\.duplicateDisplayLabel)
             )
             invalidateResolutionForDuplicatePrompt()
             scanner.pauseRecognition()
             feedback.needsChoice()
         }
+    }
+
+    private func suppressCollectionCandidate(
+        encounterID: UUID,
+        identifier: ScanIdentifier,
+        card: IdentifiedCard
+    ) {
+        diagnostic("routingSuppressed")
+        deferredHeldDuplicateOffer = nil
+        scanner.keepPresentationSuppressed(encounterID: encounterID)
+        endOneCardScan(encounterID: encounterID, outcome: "suppressed")
+        clearAcknowledgement(for: encounterID)
+        let printedIdentifier = identifier.scannerDisplayIdentifier(for: card)
+        let cardLabel = printedIdentifier.isEmpty ? card.name : printedIdentifier
+        show(ScanNote(text: "\(cardLabel) was already added this session", tone: .info))
+        spatialResetProofs.removeAll { $0.encounterID == encounterID }
+        spatialSupersessionEvidence.removeAll {
+            $0.encounterID == encounterID || $0.supersedingEncounterID == encounterID
+        }
+        pruneSpatialResetProofsToLiveHistory()
+        pruneSpatialSupersessionEvidenceToLiveHistory()
     }
 
     /// Held-repeat candidates bypass duplicate interception only after the
@@ -4381,6 +4719,7 @@ final class ScannerViewModel: ObservableObject {
             state,
             "encounter=\(encounterID.uuidString) outcome=\(outcome) sessionScans=\(sessionScans.count)"
         )
+        pruneSpatialSupersessionEvidenceToLiveHistory()
     }
 
     @discardableResult

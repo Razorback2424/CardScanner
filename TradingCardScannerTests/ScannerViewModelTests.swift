@@ -1244,6 +1244,312 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertNil(model.scanAcknowledgement)
     }
 
+    func testCommittedHistoryReplacementPromptsAfterTrackerLossWithFinishPicker() async throws {
+        let model = try makeModel(
+            variants: [.normal, .reverse],
+            secondaryVariants: [.normal]
+        )
+        let firstEncounter = UUID()
+        let replacingEncounter = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        await assertEventually { model.pendingChoice?.request.encounterID == firstEncounter }
+        model.choose(.reverse)
+        await assertEventually { model.sessionScans.count == 1 }
+
+        // Model tracker loss before the next card is recognized. No spatial
+        // supersession event is published; committed history must still permit
+        // the repeated printing to reach its confirmation prompt.
+        model.scanner.invalidateSpatialContinuity()
+        await settle()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: replacingEncounter)
+        await assertEventually { model.sessionScans.count == 2 }
+
+        let repeatedEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: repeatedEncounter)
+        await assertEventually { model.pendingChoice?.request.encounterID == repeatedEncounter }
+        XCTAssertEqual(model.pendingChoice?.duplicateChoiceContext?.previousFinishLabel, "Reverse")
+        guard let choiceEvidence = model.pendingChoice?.duplicateChoiceContext?.evidence,
+              case .committedReplacement(_) = choiceEvidence else {
+            return XCTFail("the finish picker should include committed-history replacement evidence")
+        }
+
+        model.choose(.normal)
+        await assertEventually {
+            model.sessionScans.count == 3
+                && model.pendingChoice == nil
+                && model.pendingDuplicateConfirmation == nil
+        }
+        XCTAssertEqual(
+            model.sessionScans.filter { $0.card.id == "pokemon:test-set-001" }.count,
+            2
+        )
+        XCTAssertEqual(model.successCount, 3)
+    }
+
+    func testCommittedHistoryReplacementPromptsAfterTrackerLossWithFinishLock() async throws {
+        let model = try makeModel(
+            variants: [.normal, .reverse],
+            secondaryVariants: [.normal]
+        )
+        let firstEncounter = UUID()
+        let replacingEncounter = UUID()
+        model.setFinishLock(MagicFinishLock(finish: .reverse), for: .pokemon)
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        await assertEventually { model.sessionScans.count == 1 }
+        XCTAssertEqual(model.sessionScans.first?.resolved.variant, .reverse)
+
+        model.scanner.invalidateSpatialContinuity()
+        await settle()
+        model.setFinishLock(MagicFinishLock(finish: .normal), for: .pokemon)
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: replacingEncounter)
+        await assertEventually { model.sessionScans.count == 2 }
+
+        let repeatedEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: repeatedEncounter)
+        await assertEventually {
+            model.pendingDuplicateConfirmation?.encounterID == repeatedEncounter
+        }
+        guard let confirmation = model.pendingDuplicateConfirmation else {
+            return XCTFail("a finish-locked repeat should still ask before adding")
+        }
+        guard case .committedReplacement = confirmation.evidence else {
+            return XCTFail("the prompt should use committed history after tracker loss")
+        }
+        XCTAssertEqual(confirmation.candidate.resolved.variant, .normal)
+        XCTAssertEqual(confirmation.previousFinishLabel, "Reverse")
+
+        model.addAnother()
+        await assertEventually { model.sessionScans.count == 3 }
+        XCTAssertEqual(model.successCount, 3)
+    }
+
+    func testCommittedSupersessionCombinesRepeatAndFinishChoiceIntoOneAddAction() async throws {
+        let model = try makeModel(
+            variants: [.normal, .reverse],
+            secondaryVariants: [.normal],
+            tertiaryVariants: [.normal]
+        )
+        let firstEncounter = UUID()
+        let secondEncounter = UUID()
+        let thirdEncounter = UUID()
+        let repeatedEncounter = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        await assertEventually { model.pendingChoice?.request.encounterID == firstEncounter }
+        model.choose(.reverse)
+        await assertEventually { model.sessionScans.count == 1 }
+        let firstPresentation = try XCTUnwrap(
+            model.committedSessionHistory.first(where: { $0.encounterID == firstEncounter })
+        )
+
+        publishSupersession(
+            model,
+            replacedEncounterID: firstEncounter,
+            replacedPresentationToken: firstPresentation.presentationToken,
+            supersedingEncounterID: secondEncounter
+        )
+        await settle()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: secondEncounter)
+        await assertEventually { model.sessionScans.count == 2 }
+        let secondPresentation = try XCTUnwrap(
+            model.committedSessionHistory.first(where: { $0.encounterID == secondEncounter })
+        )
+
+        publishSupersession(
+            model,
+            replacedEncounterID: secondEncounter,
+            replacedPresentationToken: secondPresentation.presentationToken,
+            supersedingEncounterID: thirdEncounter
+        )
+        await settle()
+        confirm(model, scannerIdentifier(cardNumber: "003"), encounterID: thirdEncounter)
+        await assertEventually { model.sessionScans.count == 3 }
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: repeatedEncounter)
+        await assertEventually {
+            model.pendingChoice?.request.encounterID == repeatedEncounter
+        }
+        XCTAssertEqual(model.pendingChoice?.duplicateChoiceContext?.previousFinishLabel, "Reverse")
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+
+        // The finish option explicitly says this is adding another copy, so
+        // this single tap answers both the finish question and the repeat prompt.
+        model.choose(.normal)
+        await assertEventually {
+            model.sessionScans.count == 4
+                && model.pendingChoice == nil
+                && model.pendingDuplicateConfirmation == nil
+        }
+        await settle()
+        XCTAssertEqual(model.successCount, 4)
+        XCTAssertEqual(
+            model.sessionScans.filter { $0.card.id == "pokemon:test-set-001" }.count,
+            2
+        )
+        XCTAssertEqual(
+            model.sessionScans.filter {
+                $0.card.id == "pokemon:test-set-001" && $0.resolved.variant == .normal
+            }.count,
+            1
+        )
+    }
+
+    func testCommittedSupersessionShowsAddAnotherPromptForResolvedFinish() async throws {
+        let model = try makeModel(
+            variants: [.normal],
+            secondaryVariants: [.normal]
+        )
+        let firstEncounter = UUID()
+        let replacingEncounter = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        await assertEventually { model.sessionScans.count == 1 }
+        let firstPresentation = try XCTUnwrap(
+            model.committedSessionHistory.first(where: { $0.encounterID == firstEncounter })
+        )
+        publishSupersession(
+            model,
+            replacedEncounterID: firstEncounter,
+            replacedPresentationToken: firstPresentation.presentationToken,
+            supersedingEncounterID: replacingEncounter
+        )
+        await settle()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: replacingEncounter)
+        await assertEventually { model.sessionScans.count == 2 }
+
+        let repeatedEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: repeatedEncounter)
+        await assertEventually {
+            model.pendingDuplicateConfirmation?.encounterID == repeatedEncounter
+        }
+        guard let confirmation = model.pendingDuplicateConfirmation else {
+            return XCTFail("the superseded repeat should ask before adding")
+        }
+        guard case .superseded(_) = confirmation.evidence else {
+            return XCTFail("the prompt should own the one-shot supersession evidence")
+        }
+        XCTAssertEqual(confirmation.previousFinishLabel, "Normal")
+
+        model.addAnother()
+        await assertEventually {
+            model.sessionScans.count == 3 && model.pendingDuplicateConfirmation == nil
+        }
+        await settle()
+        XCTAssertEqual(model.successCount, 3)
+    }
+
+    func testDeclinedSupersessionRepeatDoesNotAddAndHistoryPromptsAgain() async throws {
+        let model = try makeModel(
+            variants: [.normal, .reverse],
+            secondaryVariants: [.normal]
+        )
+        let firstEncounter = UUID()
+        let replacingEncounter = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        await assertEventually { model.pendingChoice?.request.encounterID == firstEncounter }
+        model.choose(.reverse)
+        await assertEventually { model.sessionScans.count == 1 }
+        let firstPresentation = try XCTUnwrap(
+            model.committedSessionHistory.first(where: { $0.encounterID == firstEncounter })
+        )
+        publishSupersession(
+            model,
+            replacedEncounterID: firstEncounter,
+            replacedPresentationToken: firstPresentation.presentationToken,
+            supersedingEncounterID: replacingEncounter
+        )
+        await settle()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: replacingEncounter)
+        await assertEventually { model.sessionScans.count == 2 }
+
+        let declinedEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: declinedEncounter)
+        await assertEventually {
+            model.pendingChoice?.request.encounterID == declinedEncounter
+        }
+        XCTAssertNotNil(model.pendingChoice?.duplicateChoiceContext)
+        model.dismissChoice()
+        await settle()
+        XCTAssertEqual(model.sessionScans.count, 2)
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+
+        let retryEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: retryEncounter)
+        await assertEventually { model.pendingChoice?.request.encounterID == retryEncounter }
+        XCTAssertNotNil(model.pendingChoice?.duplicateChoiceContext)
+        model.dismissChoice()
+        await settle()
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertEqual(model.sessionScans.count, 2)
+    }
+
+    func testUncommittedReplacementDoesNotUnlockRepeatFinishChoice() async throws {
+        let model = try makeModel(variants: [.normal, .reverse])
+        let firstEncounter = UUID()
+        let uncommittedReplacement = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        await assertEventually { model.pendingChoice?.request.encounterID == firstEncounter }
+        model.choose(.reverse)
+        await assertEventually { model.sessionScans.count == 1 }
+        let firstPresentation = try XCTUnwrap(
+            model.committedSessionHistory.first(where: { $0.encounterID == firstEncounter })
+        )
+
+        publishSupersession(
+            model,
+            replacedEncounterID: firstEncounter,
+            replacedPresentationToken: firstPresentation.presentationToken,
+            supersedingEncounterID: uncommittedReplacement
+        )
+        await settle()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: uncommittedReplacement)
+        await assertEventually {
+            model.pendingChoice?.request.encounterID == uncommittedReplacement
+        }
+        model.dismissChoice()
+        await settle()
+
+        let repeatedEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: repeatedEncounter)
+        await assertEventually { model.note?.text.contains("already added this session") == true }
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertEqual(model.sessionScans.count, 1)
+    }
+
+    func testUndoingReplacingCardRemovesCommittedHistoryReplacementEvidence() async throws {
+        let model = try makeModel(
+            variants: [.normal, .reverse],
+            secondaryVariants: [.normal]
+        )
+        let firstEncounter = UUID()
+        let replacingEncounter = UUID()
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
+        await assertEventually { model.pendingChoice?.request.encounterID == firstEncounter }
+        model.choose(.reverse)
+        await assertEventually { model.sessionScans.count == 1 }
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: replacingEncounter)
+        await assertEventually { model.sessionScans.count == 2 }
+
+        let replacingScanID = try XCTUnwrap(
+            model.sessionScans.first(where: { $0.card.id == "pokemon:test-set-002" })?.id
+        )
+        let didUndo = await model.undoScan(scanID: replacingScanID)
+        XCTAssertTrue(didUndo)
+        XCTAssertEqual(model.sessionScans.count, 1)
+
+        let repeatedEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: repeatedEncounter)
+        await assertEventually { model.note?.text.contains("already added this session") == true }
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertEqual(model.sessionScans.count, 1)
+    }
+
     func testOlderPresentationProofSurvivesAnotherCardAndSameCardChoiceNeverAdds() async throws {
         let model = try makeModel(variants: [.normal])
         let firstEncounter = UUID()
@@ -1711,7 +2017,7 @@ final class ScannerViewModelTests: XCTestCase {
             encounterID: UUID(),
             presentationToken: presentation
         )
-        guard case .duplicate = CollectionCandidateRoutingPolicy.decision(
+        guard case .duplicate(.spatialExit(_)) = CollectionCandidateRoutingPolicy.decision(
             for: identity,
             previous: previous,
             proofs: [proof]
@@ -1850,6 +2156,7 @@ final class ScannerViewModelTests: XCTestCase {
     private func makeModel(
         variants: [PhysicalVariant],
         secondaryVariants: [PhysicalVariant]? = nil,
+        tertiaryVariants: [PhysicalVariant]? = nil,
         delayNanoseconds: UInt64 = 0,
         fetchGate: ScannerFetchGate? = nil,
         catalogMiss: Bool = false,
@@ -1882,6 +2189,11 @@ final class ScannerViewModelTests: XCTestCase {
                     "002": catalogCard(
                         variants: secondaryVariants ?? variants,
                         localID: "002",
+                        setID: setProviderID
+                    ),
+                    "003": catalogCard(
+                        variants: tertiaryVariants ?? variants,
+                        localID: "003",
                         setID: setProviderID
                     )
                 ],
@@ -2075,6 +2387,21 @@ final class ScannerViewModelTests: XCTestCase {
         model.scanner.onConfirmedSubjectCandidate?(nil, encounterID, subject, authorizationID)
     }
 
+    private func publishSupersession(
+        _ model: ScannerViewModel,
+        replacedEncounterID: UUID,
+        replacedPresentationToken: UUID,
+        supersedingEncounterID: UUID
+    ) {
+        model.scanner.onSpatialSupersessionEvidence?(
+            SpatialSupersessionEvidence(
+                encounterID: replacedEncounterID,
+                presentationToken: replacedPresentationToken,
+                supersedingEncounterID: supersedingEncounterID
+            )
+        )
+    }
+
     private func useSlabMode(_ model: ScannerViewModel) {
         model.setSubjectMode(.slab)
         XCTAssertEqual(model.scanner.subjectModeForTesting, .slab)
@@ -2106,6 +2433,13 @@ final class ScannerViewModelTests: XCTestCase {
             try? await Task.sleep(for: .milliseconds(5))
         }
         return condition()
+    }
+
+    private func assertEventually(
+        _ condition: @escaping @MainActor () -> Bool
+    ) async {
+        let didSucceed = await waitUntil(condition)
+        XCTAssertTrue(didSucceed)
     }
 
     private func settle() async {

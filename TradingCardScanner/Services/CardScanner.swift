@@ -407,6 +407,53 @@ struct SpatialResetProof: Identifiable, Equatable, Sendable {
     }
 }
 
+/// OCR confirmed a different card while this presentation still had a live
+/// tracker. This is weaker than a spatial exit: it records that another card
+/// replaced the tracked one in the recognition stream, but it never releases
+/// the latch or claims the first card physically left the frame.
+struct SpatialSupersessionEvidence: Identifiable, Equatable, Sendable {
+    let id: UUID
+    /// The tracked presentation that was replaced.
+    let encounterID: UUID
+    /// Nil while that encounter is still awaiting its collection commit.
+    let presentationToken: UUID?
+    /// The newly confirmed encounter that caused the tracker to be dropped.
+    let supersedingEncounterID: UUID
+
+    init(
+        id: UUID = UUID(),
+        encounterID: UUID,
+        presentationToken: UUID? = nil,
+        supersedingEncounterID: UUID
+    ) {
+        self.id = id
+        self.encounterID = encounterID
+        self.presentationToken = presentationToken
+        self.supersedingEncounterID = supersedingEncounterID
+    }
+
+    static func betweenTrackedPresentation(
+        hasLiveTracker: Bool,
+        encounterID: UUID?,
+        presentationToken: UUID?,
+        replacedSubject: ScanSubject?,
+        supersedingSubject: ScanSubject,
+        supersedingEncounterID: UUID
+    ) -> SpatialSupersessionEvidence? {
+        guard hasLiveTracker,
+              let encounterID,
+              let replacedSubject,
+              replacedSubject.suppressionKey != supersedingSubject.suppressionKey else {
+            return nil
+        }
+        return SpatialSupersessionEvidence(
+            encounterID: encounterID,
+            presentationToken: presentationToken,
+            supersedingEncounterID: supersedingEncounterID
+        )
+    }
+}
+
 struct HeldRepeatAuthorization: Equatable, Sendable {
     let id: UUID
     let expectedSuppressionKey: ScanSuppressionKey
@@ -821,6 +868,10 @@ final class CardScanner: NSObject, ObservableObject {
     /// Positive spatial exit evidence. This is intentionally separate from OCR
     /// and from the latch's weak timeout/absence signals.
     var onSpatialResetProof: ((SpatialResetProof) -> Void)?
+    /// A different confirmed card replaced the currently tracked presentation.
+    /// This cannot release the latch and only supports a duplicate prompt after
+    /// the replacing encounter has actually been added to the collection.
+    var onSpatialSupersessionEvidence: ((SpatialSupersessionEvidence) -> Void)?
     /// Camera lifecycle is a scanner-session boundary. The view model dismisses
     /// pending candidates/proofs, but keeps committed session history.
     var onCameraInterruption: (() -> Void)?
@@ -1716,6 +1767,18 @@ final class CardScanner: NSObject, ObservableObject {
             // new lineage, but it is never proof that the old presentation
             // physically exited. Drop the old tracker without publishing an
             // exit event, then seed this confirmed encounter.
+            if let evidence = SpatialSupersessionEvidence.betweenTrackedPresentation(
+                hasLiveTracker: trackerRequest != nil,
+                encounterID: trackerEncounterID,
+                presentationToken: trackerPresentationToken,
+                replacedSubject: trackerSeedSubject,
+                supersedingSubject: subject,
+                supersedingEncounterID: encounterID
+            ) {
+                DispatchQueue.main.async { [weak self] in
+                    self?.onSpatialSupersessionEvidence?(evidence)
+                }
+            }
             terminateTrackerWithoutSpatialProof()
         }
         guard trackerSeedGate.canSeed(subject) else {

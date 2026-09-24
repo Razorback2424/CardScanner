@@ -311,7 +311,7 @@ struct DuplicateConfirmationBar: View {
                 .font(.title3.bold())
                 .accessibilitySortPriority(3)
 
-            Text("\(confirmation.candidate.card.name) — \(confirmation.candidate.identifier.scannerDisplayIdentifier(for: confirmation.candidate.card)) was just scanned.")
+            Text(duplicateDescription)
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.78))
                 .fixedSize(horizontal: false, vertical: true)
@@ -347,6 +347,16 @@ struct DuplicateConfirmationBar: View {
         .padding(14)
         .appGlass()
         .accessibilityElement(children: .contain)
+    }
+
+    private var duplicateDescription: String {
+        let candidate = confirmation.candidate
+        let label = "\(candidate.card.name) — \(candidate.identifier.scannerDisplayIdentifier(for: candidate.card))"
+        guard let previousFinish = confirmation.previousFinishLabel else {
+            return "\(label) was already added this session. Add this copy?"
+        }
+        let currentFinish = candidate.duplicateDisplayLabel
+        return "\(label) was added this session as \(previousFinish). Add this \(currentFinish) copy?"
     }
 }
 
@@ -390,13 +400,25 @@ struct VariantChoiceBar: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Skip this card")
+                .accessibilityLabel(
+                    choice.duplicateChoiceContext == nil
+                        ? "Skip this card"
+                        : "Do not add another copy"
+                )
             }
 
             if let missed = choice.lockDidNotApply {
                 Label("No \(missed.label) printing exists — pick one that does", systemImage: "info.circle")
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.75))
+            }
+
+            if let duplicate = choice.duplicateChoiceContext {
+                let previousFinish = duplicate.previousFinishLabel ?? "an unconfirmed finish"
+                Text("Added this session as \(previousFinish). Choose this copy’s finish to add another.")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.82))
+                    .fixedSize(horizontal: false, vertical: true)
             }
 
             options
@@ -446,7 +468,11 @@ struct VariantChoiceBar: View {
         }
         .appGlassOptionButton()
         .foregroundStyle(.white)
-        .accessibilityLabel("Select \(label) for \(choice.card.name)")
+        .accessibilityLabel(
+            choice.duplicateChoiceContext == nil
+                ? "Select \(label) for \(choice.card.name)"
+                : "Add another \(label) copy of \(choice.card.name)"
+        )
     }
 }
 

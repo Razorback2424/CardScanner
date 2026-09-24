@@ -982,6 +982,49 @@ final class CardLatchTests: XCTestCase {
         )
     }
 
+    func testSupersessionEvidenceRequiresLiveTrackerAndDifferentSubject() {
+        let priorSubject = subject(pokemon(223))
+        let replacingSubject = subject(pokemon(204, code: "PAL"))
+        let priorEncounter = UUID()
+        let priorPresentation = UUID()
+        let replacementEncounter = UUID()
+
+        let evidence = SpatialSupersessionEvidence.betweenTrackedPresentation(
+            hasLiveTracker: true,
+            encounterID: priorEncounter,
+            presentationToken: priorPresentation,
+            replacedSubject: priorSubject,
+            supersedingSubject: replacingSubject,
+            supersedingEncounterID: replacementEncounter
+        )
+        XCTAssertEqual(evidence?.encounterID, priorEncounter)
+        XCTAssertEqual(evidence?.presentationToken, priorPresentation)
+        XCTAssertEqual(evidence?.supersedingEncounterID, replacementEncounter)
+
+        XCTAssertNil(
+            SpatialSupersessionEvidence.betweenTrackedPresentation(
+                hasLiveTracker: true,
+                encounterID: priorEncounter,
+                presentationToken: priorPresentation,
+                replacedSubject: priorSubject,
+                supersedingSubject: priorSubject,
+                supersedingEncounterID: replacementEncounter
+            ),
+            "same-card recognition does not replace the tracked identity"
+        )
+        XCTAssertNil(
+            SpatialSupersessionEvidence.betweenTrackedPresentation(
+                hasLiveTracker: false,
+                encounterID: priorEncounter,
+                presentationToken: priorPresentation,
+                replacedSubject: priorSubject,
+                supersedingSubject: replacingSubject,
+                supersedingEncounterID: replacementEncounter
+            ),
+            "tracker loss, lifecycle invalidation, and authorized repeat clear the old tracker first"
+        )
+    }
+
     func testHeldRepeatAuthorizationIsOneShotAndDoesNotMarkSpatialExit() {
         var latch = CardLatch()
         let card = pokemon(223)
@@ -1118,7 +1161,7 @@ final class CardLatchTests: XCTestCase {
                 previous: prior,
                 proofs: [proof]
             ),
-            .duplicate(proof)
+            .duplicate(.spatialExit(proof))
         )
         XCTAssertEqual(
             CollectionCandidateRoutingPolicy.decision(
@@ -1145,7 +1188,8 @@ final class CardLatchTests: XCTestCase {
                 history: [older, latest],
                 proofs: []
             ),
-            .suppress
+            .duplicate(.committedReplacement(latest)),
+            "a later committed, different card is replacement evidence even if tracking was lost"
         )
 
         let proof = SpatialResetProof(
@@ -1159,7 +1203,106 @@ final class CardLatchTests: XCTestCase {
                 history: [older, latest],
                 proofs: [proof]
             ),
-            .duplicate(proof)
+            .duplicate(.spatialExit(proof))
+        )
+
+        let supersession = SpatialSupersessionEvidence(
+            encounterID: older.encounterID,
+            presentationToken: older.presentationToken,
+            supersedingEncounterID: latest.encounterID
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: sameAsOlder,
+                previous: latest,
+                history: [older, latest],
+                proofs: [],
+                supersessions: [supersession]
+            ),
+            .duplicate(.superseded(supersession))
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: sameAsOlder,
+                previous: latest,
+                history: [older],
+                proofs: [],
+                supersessions: [supersession]
+            ),
+            .suppress,
+            "a replacing encounter must be committed before its evidence can prompt"
+        )
+
+        let unrelated = committedSessionScan(identity: "pokemon:neo-111")
+        let unrelatedEvidence = SpatialSupersessionEvidence(
+            encounterID: unrelated.encounterID,
+            presentationToken: unrelated.presentationToken,
+            supersedingEncounterID: latest.encounterID
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: sameAsOlder,
+                previous: latest,
+                history: [older],
+                proofs: [],
+                supersessions: [unrelatedEvidence]
+            ),
+            .suppress,
+            "evidence attached to a different replaced card must be ignored"
+        )
+    }
+
+    func testCommittedReplacementUsesMagicCanonicalIdentityAndIgnoresSlabGrade() {
+        let magicVariantEvidence = VariantEvidence(
+            game: .magic,
+            setID: "neo",
+            cardNumber: "042",
+            catalogVariants: [.nonfoil, .foil]
+        )
+        guard case .needsChoice = VariantResolver.resolve(magicVariantEvidence) else {
+            return XCTFail("Magic without a finish lock should keep the finish picker")
+        }
+        guard case let .resolved(lockedMagicFinish) = VariantResolver.resolve(
+            magicVariantEvidence,
+            finishLock: MagicFinishLock(finish: .foil)
+        ) else {
+            return XCTFail("a matching Magic finish lock should resolve without a picker")
+        }
+        XCTAssertEqual(lockedMagicFinish.variant, .foil)
+
+        // Finish resolution does not change the Magic card's canonicalID, so
+        // picker and finish-lock scans use the same replacement routing rule.
+        let magicA = committedSessionScan(identity: "magic:neo-042")
+        let magicB = committedSessionScan(identity: "magic:neo-043")
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: ConsecutiveScanIdentity(canonicalID: "magic:neo-042"),
+                previous: magicB,
+                history: [magicA, magicB],
+                proofs: []
+            ),
+            .duplicate(.committedReplacement(magicB))
+        )
+
+        let rawA = committedSessionScan(identity: "pokemon:obf-223")
+        let gradedA = CommittedSessionScan(
+            id: UUID(),
+            identity: ConsecutiveScanIdentity(
+                canonicalID: rawA.identity.canonicalID,
+                slabSuppressionFragment: "psa:10"
+            ),
+            presentationToken: UUID(),
+            encounterID: UUID()
+        )
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: ConsecutiveScanIdentity(canonicalID: rawA.identity.canonicalID),
+                previous: gradedA,
+                history: [rawA, gradedA],
+                proofs: []
+            ),
+            .suppress,
+            "a grade-only difference has the same canonical card ID and cannot replace the raw card"
         )
     }
 
@@ -1237,7 +1380,7 @@ final class CardLatchTests: XCTestCase {
                 previous: prior,
                 proofs: [proof]
             ),
-            .duplicate(proof)
+            .duplicate(.spatialExit(proof))
         )
     }
 
@@ -1249,7 +1392,7 @@ final class CardLatchTests: XCTestCase {
             presentationToken: first.presentationToken
         )
 
-        // A stray B that never commits leaves A as the previous committed
+        // A stray B that never commits leaves A as the only committed
         // identity. A is consequently still protected by its proof.
         XCTAssertEqual(
             CollectionCandidateRoutingPolicy.decision(
@@ -1265,10 +1408,20 @@ final class CardLatchTests: XCTestCase {
                 previous: first,
                 proofs: [proof]
             ),
-            .duplicate(proof)
+            .duplicate(.spatialExit(proof))
         )
 
         let committedB = committedSessionScan(identity: "pokemon:pal-204")
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: ConsecutiveScanIdentity(canonicalID: "pokemon:obf-223"),
+                previous: first,
+                history: [first],
+                proofs: []
+            ),
+            .suppress
+        )
+
         XCTAssertEqual(
             CollectionCandidateRoutingPolicy.decision(
                 for: ConsecutiveScanIdentity(canonicalID: "pokemon:obf-223"),
@@ -1276,7 +1429,7 @@ final class CardLatchTests: XCTestCase {
                 history: [first, committedB],
                 proofs: []
             ),
-            .suppress
+            .duplicate(.committedReplacement(committedB))
         )
     }
 
