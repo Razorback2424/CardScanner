@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import SwiftData
 import SwiftUI
@@ -29,11 +30,30 @@ struct CollectionCSVImportPlan: Sendable {
     var entries: [CollectionCSVEntry]
     let skippedRows: Int
     let skippedCSVText: String?
+    var fingerprint = ""
+    var operationSalt = ""
 
     var totalQuantity: Int {
         entries.reduce(0) {
             CollectionQuantityLimits.saturatingAdd($0, $1.quantity)
         }
+    }
+
+    var effectiveFingerprint: String {
+        fingerprint.isEmpty ? CollectionCSV.fingerprint(for: entries) : fingerprint
+    }
+
+    func operationID(for entry: CollectionCSVEntry) -> UUID {
+        DeterministicUUID.make(
+            namespace: "csv-import:",
+            material: "\(effectiveFingerprint)|\(entry.collectionKey)|\(operationSalt)"
+        )
+    }
+
+    func importingAgainAsAdditionalCopies() -> Self {
+        var copy = self
+        copy.operationSalt = CollectionCSV.importAgainSalt(for: effectiveFingerprint)
+        return copy
     }
 }
 
@@ -45,6 +65,7 @@ struct CollectionCSVImportResult: Sendable {
     let importedQuantity: Int
     let totalQuantity: Int
     let skippedRows: Int
+    let alreadyImportedEntries: Int
     let failedRows: [CollectionCSVImportFailure]
 
     /// Normalized entries whose row transaction rolled back. These are kept
@@ -59,6 +80,23 @@ struct CollectionCSVImportFailure: Sendable, Equatable {
     let collectionKey: String
     let detail: String
     let entry: CollectionCSVEntry
+}
+
+final class CollectionCSVImportStopFlag: @unchecked Sendable {
+    private let lock = NSLock()
+    private var stopRequested = false
+
+    var shouldContinue: Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        return !stopRequested
+    }
+
+    func requestStop() {
+        lock.lock()
+        stopRequested = true
+        lock.unlock()
+    }
 }
 
 struct CollectionCSVEntry: Sendable, Equatable {
@@ -111,6 +149,7 @@ enum CollectionCSVError: LocalizedError, Sendable {
     case invalidTreatmentID(String)
     case quantityOutOfRange(String)
     case storageGenerationChanged
+    case importInterrupted(completedEntries: Int, totalEntries: Int)
 
     var errorDescription: String? {
         switch self {
@@ -126,11 +165,36 @@ enum CollectionCSVError: LocalizedError, Sendable {
             return "The CSV contains an unsupported quantity: \(detail)."
         case .storageGenerationChanged:
             return "The collection changed while this import was running."
+        case let .importInterrupted(completedEntries, totalEntries):
+            return "Added \(completedEntries) of \(totalEntries) entries before stopping. Import the same file again to add only the remaining entries."
         }
     }
 }
 
 enum CollectionCSV {
+    private static let importAgainSaltLock = NSLock()
+    private static let importAgainSaltDefaultsKey = "collectionCSV.importAgainSalts"
+
+    fileprivate static func importAgainSalt(for fingerprint: String) -> String {
+        importAgainSaltLock.lock()
+        defer { importAgainSaltLock.unlock() }
+        var salts = UserDefaults.standard.dictionary(forKey: importAgainSaltDefaultsKey) as? [String: String] ?? [:]
+        if let existing = salts[fingerprint] { return existing }
+        let salt = UUID().uuidString.lowercased()
+        salts[fingerprint] = salt
+        UserDefaults.standard.set(salts, forKey: importAgainSaltDefaultsKey)
+        return salt
+    }
+
+    static func finishImportAgainRun(_ plan: CollectionCSVImportPlan) {
+        guard !plan.operationSalt.isEmpty else { return }
+        importAgainSaltLock.lock()
+        defer { importAgainSaltLock.unlock() }
+        var salts = UserDefaults.standard.dictionary(forKey: importAgainSaltDefaultsKey) as? [String: String] ?? [:]
+        salts.removeValue(forKey: plan.effectiveFingerprint)
+        UserDefaults.standard.set(salts, forKey: importAgainSaltDefaultsKey)
+    }
+
     /// Appended, never reordered. A file exported by an older build still
     /// imports, and a file exported by this one opens in anything that reads the
     /// original columns.
@@ -144,6 +208,29 @@ enum CollectionCSV {
         "pokemon_print_run", "magic_treatment_ids", "magic_treatment_qualifiers",
         "magic_content_kind", "collection_key", "catalog_provider_id"
     ]
+
+    static func fingerprint(for entries: [CollectionCSVEntry]) -> String {
+        let rows = entries.sorted { $0.collectionKey < $1.collectionKey }.map { entry in
+            "\(entry.collectionKey.utf8.count):\(entry.collectionKey)|\(entry.quantity)"
+        }
+        let digest = SHA256.hash(data: Data(rows.joined(separator: "\n").utf8))
+        return digest.map { String(format: "%02x", $0) }.joined()
+    }
+
+    static func alreadyImportedEntryCount(
+        for plan: CollectionCSVImportPlan,
+        in context: ModelContext
+    ) throws -> Int {
+        let descriptor = FetchDescriptor<InventoryEvent>(
+            predicate: #Predicate {
+                $0.sourceRaw == "csvImport" && $0.kindRaw == "recordExisting"
+            }
+        )
+        let importedIDs = Set(try context.fetch(descriptor).map(\.operationID))
+        return plan.entries.reduce(into: 0) { count, entry in
+            if importedIDs.contains(plan.operationID(for: entry)) { count += 1 }
+        }
+    }
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
         let formatter = ISO8601DateFormatter()
@@ -447,6 +534,9 @@ enum CollectionCSV {
             throw CollectionCSVError.unreadableFile
         }
         if text.first == "\u{feff}" { text.removeFirst() }
+        text = text
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
 
         let delimiter = delimiter(in: text)
         let table = parseRows(text, delimiter: delimiter)
@@ -518,13 +608,15 @@ enum CollectionCSV {
         }
 
         guard !entriesByKey.isEmpty else { throw CollectionCSVError.noCards }
-        return CollectionCSVImportPlan(
+        var plan = CollectionCSVImportPlan(
             entries: entriesByKey.values.sorted(by: entrySort),
             skippedRows: skippedRows,
             skippedCSVText: skippedValues.isEmpty
                 ? nil
                 : csvText(headers: rawHeaders, rows: skippedValues)
         )
+        plan.fingerprint = fingerprint(for: plan.entries)
+        return plan
     }
 
     static func apply(
@@ -536,7 +628,10 @@ enum CollectionCSV {
     ) throws -> CollectionCSVImportResult {
         do {
             guard shouldContinue?() ?? true else {
-                throw CollectionCSVError.storageGenerationChanged
+                throw CollectionCSVError.importInterrupted(
+                    completedEntries: 0,
+                    totalEntries: plan.entries.count
+                )
             }
             let priceStore = PriceStore(context: context)
             let ledger = InventoryLedger(context: context)
@@ -644,6 +739,8 @@ enum CollectionCSV {
             var inserted = 0
             var merged = 0
             var importedQuantity = 0
+            var alreadyImportedEntries = 0
+            var completedEntries = 0
             var failedRows: [CollectionCSVImportFailure] = []
 
             let safeBatchSize = max(1, batchSize)
@@ -651,7 +748,10 @@ enum CollectionCSV {
             progress?(0, plan.entries.count)
             while batchStart < plan.entries.count {
                 guard shouldContinue?() ?? true else {
-                    throw CollectionCSVError.storageGenerationChanged
+                    throw CollectionCSVError.importInterrupted(
+                        completedEntries: completedEntries,
+                        totalEntries: plan.entries.count
+                    )
                 }
                 let batchEnd = min(batchStart + safeBatchSize, plan.entries.count)
                 for index in batchStart..<batchEnd {
@@ -668,6 +768,21 @@ enum CollectionCSV {
 
                     do {
                         let entry = plan.entries[index]
+                        let operationID = plan.operationID(for: entry)
+                        let existingOperationEvents = try ledger.events(forOperationID: operationID)
+                        if !existingOperationEvents.isEmpty {
+                            guard existingOperationEvents.allSatisfy({
+                                $0.sourceRaw == CollectionActivitySource.csvImport.rawValue
+                                    && $0.kindRaw == InventoryEventKind.recordExisting.rawValue
+                            }) else {
+                                throw CollectionStoreError.ledgerConflict(
+                                    "CSV import operation already exists with different ownership data"
+                                )
+                            }
+                            alreadyImportedEntries += 1
+                            completedEntries += 1
+                            continue
+                        }
                         guard entry.quantity > 0,
                               entry.quantity <= CollectionQuantityLimits.maximum else {
                             throw CollectionCSVError.quantityOutOfRange(
@@ -855,7 +970,6 @@ enum CollectionCSV {
                             // is kept as `acquiredAt`; recorded and acquired are not the same
                             // fact.
                             if deltaQuantity > 0 {
-                                let operationID = UUID()
                                 let outcome = ledger.record(
                                     storedCard,
                                     kind: .recordExisting,
@@ -890,16 +1004,20 @@ enum CollectionCSV {
                         // its valid siblings. `batchSize` remains the progress and
                         // scheduling granularity, not the durability boundary.
                         guard shouldContinue?() ?? true else {
-                            throw CollectionCSVError.storageGenerationChanged
+                            throw CollectionCSVError.importInterrupted(
+                                completedEntries: completedEntries,
+                                totalEntries: plan.entries.count
+                            )
                         }
                         try context.save()
                         collectionStore.invalidateIdentityAliasCache()
                         inserted += rowInserted
                         merged += rowMerged
                         importedQuantity += rowImportedQuantity
+                        completedEntries += 1
                     } catch {
                         if let csvError = error as? CollectionCSVError,
-                           case .storageGenerationChanged = csvError {
+                           case .importInterrupted = csvError {
                             throw csvError
                         }
                         failedRows.append(
@@ -925,6 +1043,7 @@ enum CollectionCSV {
                 importedQuantity: importedQuantity,
                 totalQuantity: plan.totalQuantity,
                 skippedRows: plan.skippedRows,
+                alreadyImportedEntries: alreadyImportedEntries,
                 failedRows: failedRows
             )
         } catch {
@@ -941,12 +1060,14 @@ enum CollectionCSV {
         _ plan: CollectionCSVImportPlan,
         to container: ModelContainer,
         batchSize: Int = 100,
+        exclusiveToken: UUID,
         progress: (@Sendable (Int, Int) -> Void)? = nil,
         shouldContinue: (@Sendable () -> Bool)? = nil
     ) async throws -> CollectionCSVImportResult {
         let importer = CollectionCSVImportActor(modelContainer: container)
         return try await importer.apply(
             plan,
+            exclusiveToken: exclusiveToken,
             batchSize: batchSize,
             progress: progress,
             shouldContinue: shouldContinue
@@ -1693,23 +1814,30 @@ enum CollectionCSV {
     }
 }
 
-/// Keeps large imports off the main actor. SwiftData contexts are isolated to
-/// the actor that owns them, so the import can yield between durable batches
-/// without sharing the scanner's pending transaction or UI context.
+/// Keeps imports off the main actor. The serializer supplies one fresh context
+/// for the complete synchronous import operation, so no model reference or
+/// ownership lock crosses an actor suspension point.
 @ModelActor
 actor CollectionCSVImportActor {
     func apply(
         _ plan: CollectionCSVImportPlan,
+        exclusiveToken: UUID,
         batchSize: Int,
         progress: (@Sendable (Int, Int) -> Void)?,
         shouldContinue: (@Sendable () -> Bool)?
     ) throws -> CollectionCSVImportResult {
-        try CollectionCSV.apply(
-            plan,
-            to: modelContext,
-            batchSize: batchSize,
-            progress: progress,
-            shouldContinue: shouldContinue
-        )
+        try CollectionWriteSerializer.perform(
+            container: modelContainer,
+            timeout: .wait,
+            exclusiveToken: exclusiveToken
+        ) { freshContext in
+            try CollectionCSV.apply(
+                plan,
+                to: freshContext,
+                batchSize: batchSize,
+                progress: progress,
+                shouldContinue: shouldContinue
+            )
+        }
     }
 }

@@ -21,6 +21,7 @@ struct SettingsView: View {
     @State private var diagnosticsDocument: JSONExportDocument?
     @State private var csvExportFilename = "CardScanner Collection"
     @State private var pendingCSVImport: CollectionCSVImportPlan?
+    @State private var pendingCSVAlreadyImportedEntryCount = 0
     @State private var portfolioCloseCount = 0
     @State private var collectionCardCount = 0
     @State private var priceRecordCount = 0
@@ -152,7 +153,15 @@ struct SettingsView: View {
             }
             .confirmationDialog("Import CSV?", isPresented: Binding(get: { pendingCSVImport != nil }, set: { if !$0 { pendingCSVImport = nil } }), titleVisibility: .visible) {
                 if let plan = pendingCSVImport {
-                    Button("Import \(plan.totalQuantity) Cards") { importCSV(plan) }
+                    if pendingCSVAlreadyImportedEntryCount > 0 {
+                        let remainingCount = max(0, plan.entries.count - pendingCSVAlreadyImportedEntryCount)
+                        Button("Import remaining \(remainingCount) entries") { importCSV(plan) }
+                        Button("Import all again as additional copies") {
+                            importCSV(plan.importingAgainAsAdditionalCopies())
+                        }
+                    } else {
+                        Button("Import \(plan.totalQuantity) Cards") { importCSV(plan) }
+                    }
                 }
                 Button("Cancel", role: .cancel) { pendingCSVImport = nil }
             } message: {
@@ -517,12 +526,17 @@ struct SettingsView: View {
     @MainActor
     private func prepareCSVImport(from url: URL) async {
         do {
-            let plan = try await Task.detached(priority: .userInitiated) {
+            let container = modelContext.container
+            let prepared = try await Task.detached(priority: .userInitiated) {
                 let hasAccess = url.startAccessingSecurityScopedResource()
                 defer { if hasAccess { url.stopAccessingSecurityScopedResource() } }
-                return try CollectionCSV.parse(Data(contentsOf: url, options: .mappedIfSafe))
+                let plan = try CollectionCSV.parse(Data(contentsOf: url, options: .mappedIfSafe))
+                let context = ModelContext(container)
+                let count = try CollectionCSV.alreadyImportedEntryCount(for: plan, in: context)
+                return (plan, count)
             }.value
-            pendingCSVImport = plan
+            pendingCSVImport = prepared.0
+            pendingCSVAlreadyImportedEntryCount = prepared.1
         } catch {
             writeCoordinator.csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
         }
@@ -543,28 +557,49 @@ struct SettingsView: View {
         }
         pendingCSVImport = nil
         let container = modelContext.container
-        let shouldContinue = storageGeneration.continuation(for: storageToken)
+        let storageShouldContinue = storageGeneration.continuation(for: storageToken)
+        let stopFlag = CollectionCSVImportStopFlag()
         Task { @MainActor in
             defer { writeCoordinator.endCSVImport(token: operationToken) }
+            let backgroundTask = UIApplication.shared.beginBackgroundTask(
+                withName: "Collection CSV Import"
+            ) {
+                stopFlag.requestStop()
+            }
+            defer {
+                if backgroundTask != .invalid {
+                    UIApplication.shared.endBackgroundTask(backgroundTask)
+                }
+            }
             do {
-                let result = try await CollectionCSV.applyIsolated(
-                    plan,
-                    to: container,
-                    progress: { completedEntries, totalEntries in
-                        Task { @MainActor in
-                            guard shouldContinue() else { return }
-                            writeCoordinator.updateCSVImportProgress(
-                                CSVImportProgress(
-                                    completedEntries: completedEntries,
-                                    totalEntries: totalEntries
-                                ),
-                                token: operationToken
-                            )
+                let result = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    let exclusiveToken = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+                    defer { CollectionWriteSerializer.endExclusive(exclusiveToken) }
+                    return try await CollectionCSV.applyIsolated(
+                        plan,
+                        to: container,
+                        batchSize: 100,
+                        exclusiveToken: exclusiveToken,
+                        progress: { completedEntries, totalEntries in
+                            Task { @MainActor in
+                                writeCoordinator.updateCSVImportProgress(
+                                    CSVImportProgress(
+                                        completedEntries: completedEntries,
+                                        totalEntries: totalEntries
+                                    ),
+                                    token: operationToken
+                                )
+                            }
+                        },
+                        shouldContinue: {
+                            storageShouldContinue() && stopFlag.shouldContinue
                         }
-                    },
-                    shouldContinue: shouldContinue
-                )
+                    )
+                }
                 guard storageGeneration.isCurrent(storageToken) else { return }
+                if result.failedRows.isEmpty {
+                    CollectionCSV.finishImportAgainRun(plan)
+                }
                 loadCounts()
                 Task { @MainActor in
                     guard storageGeneration.isCurrent(storageToken) else { return }
@@ -577,6 +612,9 @@ struct SettingsView: View {
                 }
                 var details = "Added \(result.importedQuantity) cards across \(result.insertedEntries + result.mergedEntries) entries."
                 if result.mergedEntries > 0 { details += " \(result.mergedEntries) matched existing entries." }
+                if result.alreadyImportedEntries > 0 {
+                    details += " Skipped \(result.alreadyImportedEntries) entries already imported from this file."
+                }
                 if result.skippedRows > 0 { details += " Ignored \(result.skippedRows) unsupported, non-English, or non-card rows." }
                 if !result.failedRows.isEmpty {
                     details += " Could not import \(result.failedRows.count) entries. Export the failed rows to retry only those entries."
@@ -591,14 +629,33 @@ struct SettingsView: View {
                         : CollectionCSV.exportFailedEntries(result.failedEntries).text
                 )
             } catch {
-                guard storageGeneration.isCurrent(storageToken) else { return }
-                writeCoordinator.csvMessage = CSVMessage(title: "Import Failed", message: error.localizedDescription, skippedCSVText: nil)
+                let message: String
+                if let csvError = error as? CollectionCSVError,
+                   case let .importInterrupted(completedEntries, totalEntries) = csvError {
+                    message = "Added \(completedEntries) of \(totalEntries) entries before stopping. Import the same file again to add only the remaining entries."
+                } else {
+                    message = error.localizedDescription
+                }
+                writeCoordinator.csvMessage = CSVMessage(
+                    title: "Import Stopped",
+                    message: message,
+                    skippedCSVText: nil
+                )
             }
         }
     }
 
     private func importConfirmationMessage(_ plan: CollectionCSVImportPlan) -> String {
-        var message = "Adds \(plan.totalQuantity) cards in \(plan.entries.count) entries. Matching entries will be combined."
+        let pendingCount = max(0, plan.entries.count - pendingCSVAlreadyImportedEntryCount)
+        var message: String
+        if pendingCSVAlreadyImportedEntryCount > 0 {
+            message = "This file has already added \(pendingCSVAlreadyImportedEntryCount) of \(plan.entries.count) entries. Importing the remaining entries adds only those not already in the ledger."
+        } else {
+            message = "Adds \(plan.totalQuantity) cards in \(plan.entries.count) entries. Matching entries will be combined."
+        }
+        if pendingCount == 0 && pendingCSVAlreadyImportedEntryCount > 0 {
+            message = "Every entry in this file has already been imported. You can import all again as additional copies."
+        }
         if plan.skippedRows > 0 { message += " \(plan.skippedRows) unsupported, non-English, or non-card rows will be ignored." }
         return message
     }
@@ -625,7 +682,14 @@ struct SettingsView: View {
             defer { writeCoordinator.endCollectionDelete(token: operationToken) }
             do {
                 let actor = CollectionDeletionModelActor(modelContainer: container)
-                let didDelete = try await actor.deleteAll(shouldContinue: shouldContinue)
+                let didDelete = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
+                    let exclusiveToken = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+                    defer { CollectionWriteSerializer.endExclusive(exclusiveToken) }
+                    return try await actor.deleteAll(
+                        shouldContinue: shouldContinue,
+                        exclusiveToken: exclusiveToken
+                    )
+                }
                 guard didDelete, storageGeneration.isCurrent(storageToken) else { return }
                 loadCounts()
             } catch {
