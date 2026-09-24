@@ -106,10 +106,11 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         XCTAssertEqual(window.observe(complete), complete)
     }
 
-    func testLabelScheduleUsesFooterGateAndCertifiedCopyCadence() {
+    func testLabelScheduleUsesVisibleFooterAndCertifiedCopyCadence() {
         XCTAssertFalse(SlabLabelSchedule.shouldReadLabel(
             mode: .raw,
-            footerMatched: true,
+            footerHasText: true,
+            hasStableFooterIdentity: true,
             hasEvidence: false,
             certKnown: false,
             lastLabelAt: nil,
@@ -117,7 +118,8 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         ))
         XCTAssertTrue(SlabLabelSchedule.shouldReadLabel(
             mode: .slab,
-            footerMatched: true,
+            footerHasText: true,
+            hasStableFooterIdentity: true,
             hasEvidence: false,
             certKnown: false,
             lastLabelAt: 0,
@@ -125,7 +127,8 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         ))
         XCTAssertFalse(SlabLabelSchedule.shouldReadLabel(
             mode: .slab,
-            footerMatched: true,
+            footerHasText: true,
+            hasStableFooterIdentity: true,
             hasEvidence: true,
             certKnown: false,
             lastLabelAt: 1,
@@ -133,7 +136,8 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         ))
         XCTAssertTrue(SlabLabelSchedule.shouldReadLabel(
             mode: .slab,
-            footerMatched: true,
+            footerHasText: true,
+            hasStableFooterIdentity: true,
             hasEvidence: true,
             certKnown: false,
             lastLabelAt: 1,
@@ -141,7 +145,8 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         ))
         XCTAssertFalse(SlabLabelSchedule.shouldReadLabel(
             mode: .slab,
-            footerMatched: true,
+            footerHasText: true,
+            hasStableFooterIdentity: true,
             hasEvidence: true,
             certKnown: true,
             lastLabelAt: 1,
@@ -149,7 +154,8 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         ))
         XCTAssertTrue(SlabLabelSchedule.shouldReadLabel(
             mode: .slab,
-            footerMatched: true,
+            footerHasText: true,
+            hasStableFooterIdentity: true,
             hasEvidence: true,
             certKnown: true,
             lastLabelAt: 1,
@@ -157,7 +163,8 @@ final class SlabEvidenceConfirmationWindowTests: XCTestCase {
         ))
         XCTAssertFalse(SlabLabelSchedule.shouldReadLabel(
             mode: .slab,
-            footerMatched: false,
+            footerHasText: true,
+            hasStableFooterIdentity: false,
             hasEvidence: false,
             certKnown: false,
             lastLabelAt: nil,
