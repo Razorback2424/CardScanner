@@ -2446,9 +2446,14 @@ final class CardScanner: NSObject, ObservableObject {
         handler: VNImageRequestHandler,
         sourceSize: CGSize,
         footerHasText: Bool,
+        currentFooterKey: ScanSuppressionKey?,
         at now: CFAbsoluteTime
     ) {
-        guard shouldReadSlabLabel(at: now, footerHasText: footerHasText) else {
+        guard shouldReadSlabLabel(
+            at: now,
+            footerHasText: footerHasText,
+            currentFooterKey: currentFooterKey
+        ) else {
             updateSlabLabelPromptIfDue(at: now)
             return
         }
@@ -2513,13 +2518,22 @@ final class CardScanner: NSObject, ObservableObject {
 
     private func shouldReadSlabLabel(
         at now: CFAbsoluteTime,
-        footerHasText: Bool
+        footerHasText: Bool,
+        currentFooterKey: ScanSuppressionKey? = nil
     ) -> Bool {
-        let currentFooterKey = activeSlabBaseIdentifier ?? slabAwaitingFooterKey
+        let stableFooterKey = activeSlabBaseIdentifier ?? slabAwaitingFooterKey
+        // Label evidence is only safe to attach when this same frame identifies
+        // the footer currently owning the encounter. Text alone is not enough:
+        // during a quick slab swap it can belong to the next slab before the
+        // footer-change confirmation window has switched the active identity.
+        guard let currentFooterKey,
+              currentFooterKey == stableFooterKey else {
+            return false
+        }
         return SlabLabelSchedule.shouldReadLabel(
             mode: subjectMode,
             footerHasText: footerHasText,
-            hasStableFooterIdentity: currentFooterKey != nil,
+            hasStableFooterIdentity: stableFooterKey != nil,
             hasEvidence: activeSlab != nil,
             certKnown: activeSlab?.evidence.certificationNumber != nil,
             lastLabelAt: cadence.lastLabelAt,
@@ -2818,7 +2832,11 @@ final class CardScanner: NSObject, ObservableObject {
             footerLines: footerHasText ? [RecognizedLine(text: "footer")] : [],
             at: now
         )
-        guard shouldReadSlabLabel(at: now, footerHasText: footerHasText) else {
+        guard shouldReadSlabLabel(
+            at: now,
+            footerHasText: footerHasText,
+            currentFooterKey: identifier?.suppressionKey
+        ) else {
             updateSlabLabelPromptIfDue(at: now)
             return nil
         }
@@ -2853,7 +2871,11 @@ final class CardScanner: NSObject, ObservableObject {
             footerLines: footerHasText ? [RecognizedLine(text: "footer")] : [],
             at: now
         )
-        guard shouldReadSlabLabel(at: now, footerHasText: footerHasText) else {
+        guard shouldReadSlabLabel(
+            at: now,
+            footerHasText: footerHasText,
+            currentFooterKey: identifier?.suppressionKey
+        ) else {
             updateSlabLabelPromptIfDue(at: now)
             return nil
         }
@@ -3461,6 +3483,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 handler: handler,
                 sourceSize: sourceSize,
                 footerHasText: !lines.isEmpty,
+                currentFooterKey: footerIdentifier?.suppressionKey,
                 at: now
             )
             detectPostCommitLabelIfDue(
