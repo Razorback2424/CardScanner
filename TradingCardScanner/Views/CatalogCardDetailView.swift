@@ -108,6 +108,13 @@ struct CatalogCardDetailView: View {
             ownedSection(details.card)
             priceSection(details.card)
             browsePriceHistorySection()
+            if let url = TCGplayerLinkBuilder.url(
+                for: details.card,
+                variant: summary.masterSetVariant,
+                pokemonPrintRun: summary.pokemonPrintRun
+            ) {
+                CardDetailMarketplaceButton(url: url)
+            }
 
             Button { prepareAdd(details.card) } label: {
                 Label(

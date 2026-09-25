@@ -173,4 +173,75 @@ final class TCGplayerLinkTests: XCTestCase {
         XCTAssertEqual(owned.tcgplayerSKUID, "8675309")
         XCTAssertFalse(url?.absoluteString.contains("8675309") ?? true)
     }
+
+    func testBrowseMagicUsesExactScryfallProductOrPurchaseURL() throws {
+        let withID = try browseMagic(tcgplayerID: "12345")
+        XCTAssertEqual(
+            TCGplayerLinkBuilder.url(for: withID, variant: nil)?.absoluteString,
+            "https://www.tcgplayer.com/product/12345"
+        )
+
+        let withURL = try browseMagic(tcgplayerID: "null")
+        XCTAssertEqual(
+            TCGplayerLinkBuilder.url(for: withURL, variant: nil)?.absoluteString,
+            "https://www.tcgplayer.com/product/67890"
+        )
+    }
+
+    func testBrowsePokemonRequiresAnUnambiguousProductWithoutASelectedFinish() throws {
+        let pokemon = try browsePokemon()
+        let card = IdentifiedCard.pokemon(pokemon, setCode: "SVP")
+
+        XCTAssertNil(TCGplayerLinkBuilder.url(for: card, variant: nil))
+        XCTAssertEqual(
+            TCGplayerLinkBuilder.url(for: card, variant: .holo)?.absoluteString,
+            "https://www.tcgplayer.com/product/100?Printing=Holofoil"
+        )
+        XCTAssertEqual(
+            TCGplayerLinkBuilder.url(for: card, variant: .reverse)?.absoluteString,
+            "https://www.tcgplayer.com/product/101?Printing=Reverse%20Holofoil"
+        )
+        XCTAssertNil(
+            TCGplayerLinkBuilder.url(
+                for: card, variant: .holo, pokemonPrintRun: .shadowless
+            )
+        )
+        XCTAssertEqual(
+            TCGplayerLinkBuilder.url(
+                for: card, variant: .normal, pokemonPrintRun: .firstEdition
+            )?.absoluteString,
+            "https://www.tcgplayer.com/product/102"
+        )
+    }
+
+    private func browseMagic(tcgplayerID: String) throws -> IdentifiedCard {
+        let json = """
+        {
+          "id": "printing", "name": "Test Card", "set": "tst",
+          "set_name": "Test Set", "collector_number": "1", "lang": "en",
+          "digital": false, "tcgplayer_id": \(tcgplayerID),
+          "purchase_uris": { "tcgplayer": "https://www.tcgplayer.com/product/67890" }
+        }
+        """
+        return .magic(try JSONDecoder().decode(ScryfallCard.self, from: Data(json.utf8)))
+    }
+
+    private func browsePokemon() throws -> TCGdexCard {
+        let json = """
+        {
+          "id": "svp-1", "localId": "1", "name": "Test Card",
+          "set": { "id": "svp", "name": "Test Set",
+                   "cardCount": { "total": 2, "official": 2 } },
+          "variants_detailed": [
+            { "type": "holo", "languages": ["en"],
+              "thirdParty": { "tcgplayer": 100 } },
+            { "type": "reverse", "languages": ["en"],
+              "thirdParty": { "tcgplayer": 101 } },
+            { "type": "firstEdition", "languages": ["en"],
+              "thirdParty": { "tcgplayer": 102 } }
+          ]
+        }
+        """
+        return try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8))
+    }
 }

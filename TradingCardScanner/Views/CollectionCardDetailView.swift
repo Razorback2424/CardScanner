@@ -1797,7 +1797,7 @@ private struct CardDetailSourceLegend: View {
     }
 }
 
-private struct CardDetailMarketplaceButton: View {
+struct CardDetailMarketplaceButton: View {
     let url: URL
 
     var body: some View {

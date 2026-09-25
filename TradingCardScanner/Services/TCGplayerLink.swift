@@ -1,6 +1,6 @@
 import Foundation
 
-/// Builds the marketplace destination for an owned card.
+/// Builds the marketplace destination for a card with a known product identity.
 ///
 /// One place on purpose. TCGplayer's URL and query conventions are theirs to
 /// change, and when they do this is the only function that needs to move.
@@ -37,6 +37,41 @@ enum TCGplayerLinkBuilder {
             return product
         }
         return providerURL(card.tcgplayerURL)
+    }
+
+    /// Browse may have an exact catalog printing without an owned row. A
+    /// Pokémon card with several marketplace products needs a selected finish
+    /// before one of those products can be chosen safely.
+    static func url(
+        for card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun? = nil
+    ) -> URL? {
+        switch card {
+        case let .magic(magic):
+            return productURL(
+                productID: magic.tcgplayerID.map(String.init),
+                variantID: variant?.id,
+                game: .magic
+            ) ?? providerURL(magic.purchaseURIs?.tcgplayer?.absoluteString)
+        case let .pokemon(pokemon, _):
+            // TCGdex's ordinary product identity must not be used for a
+            // Shadowless virtual set, whose marketplace identity is distinct.
+            guard pokemonPrintRun != .shadowless else { return nil }
+            let selected = pokemonPrintRun == .firstEdition ? PhysicalVariant.firstEdition : variant
+            let productID: String?
+            if let selected {
+                let detailed = pokemon.detailedVariant(for: selected)
+                productID = detailed?.isStandardEnglish == true
+                    ? detailed?.thirdParty?.tcgplayer.map(String.init) : nil
+            } else {
+                let ids = Set((pokemon.variantsDetailed ?? []).compactMap { detailed in
+                    detailed.isStandardEnglish ? detailed.thirdParty?.tcgplayer : nil
+                })
+                productID = ids.count == 1 ? ids.first.map(String.init) : nil
+            }
+            return productURL(productID: productID, variantID: selected?.id, game: .pokemon)
+        }
     }
 
     /// A product page, with the printing preselected where the owned variant
