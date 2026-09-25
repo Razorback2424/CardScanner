@@ -22,6 +22,13 @@ private actor ScannerFetchGate {
     }
 }
 
+private actor ScannerCatalogFailureSwitch {
+    private var shouldFail = true
+
+    func isFailureEnabled() -> Bool { shouldFail }
+    func allowSuccess() { shouldFail = false }
+}
+
 private enum ScannerCollectionAddGateError: Error {
     case failed
 }
@@ -32,7 +39,8 @@ private actor ScannerCollectionAddGate {
         case failure
     }
 
-    private let outcome: Outcome
+    private var outcome: Outcome
+    private var bypassGateAfterSwitch = false
     private let successfulAddsBeforeBlocking: Int
     private var addCount = 0
     private var hasStarted = false
@@ -48,6 +56,13 @@ private actor ScannerCollectionAddGate {
         _ = candidate
         addCount += 1
         if addCount <= successfulAddsBeforeBlocking {
+            return CollectionMutation(
+                collectionKey: "scanner-test",
+                activityID: nil,
+                didInsert: true
+            )
+        }
+        if bypassGateAfterSwitch {
             return CollectionMutation(
                 collectionKey: "scanner-test",
                 activityID: nil,
@@ -82,19 +97,37 @@ private actor ScannerCollectionAddGate {
         releaseWaiter = nil
     }
 
+    func allowSuccess() {
+        outcome = .success
+        bypassGateAfterSwitch = true
+    }
+
     func count() -> Int {
         addCount
     }
 }
 
 private struct ScannerStubPokemonSource: PokemonCardSource {
+    enum Failure: Sendable {
+        case transient
+        case providerUnavailable
+    }
+
     let cardsByLocalID: [String: TCGdexCard]
     let delayNanoseconds: UInt64
     let fetchGate: ScannerFetchGate?
     let catalogMiss: Bool
+    let failure: Failure?
+    let failureSwitch: ScannerCatalogFailureSwitch?
 
     func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
         await fetchGate?.markStarted()
+        if let failure, await failureSwitch?.isFailureEnabled() ?? true {
+            switch failure {
+            case .transient: throw TCGdexError.badResponse
+            case .providerUnavailable: throw ScryfallError.providerUnavailable
+            }
+        }
         if catalogMiss {
             throw TCGdexError.cardNotFound
         }
@@ -115,7 +148,15 @@ private struct ScannerStubPokemonSource: PokemonCardSource {
         setID: String,
         cardNumber: String
     ) async throws -> PokemonTCGAPICard? {
-        nil
+        if let failure, await failureSwitch?.isFailureEnabled() ?? true {
+            switch failure {
+            case .transient:
+                throw TCGdexError.badResponse
+            case .providerUnavailable:
+                throw ScryfallError.providerUnavailable
+            }
+        }
+        return nil
     }
 }
 
@@ -1204,7 +1245,12 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.scanAcknowledgement?.phase, .failed)
         XCTAssertEqual(
             model.scanAcknowledgement?.message,
-            "This card was recognized but was not added. Try again."
+            "Recognized, but saving failed. Saved to Needs attention to retry."
+        )
+        XCTAssertEqual(model.unresolvedScans.count, 1)
+        XCTAssertEqual(
+            model.unresolvedScans.first?.reason,
+            .saveFailed(inMemoryCandidateID: model.unresolvedScans.first?.pendingCommit?.requestID)
         )
         XCTAssertEqual(model.recent.count, 1)
         let addCount = await addGate.count()
@@ -1787,19 +1833,17 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.sessionScans.first?.card.id, "pokemon:test-set-002")
     }
 
-    func testCatalogMissVerificationFilesPromoWithNoCatalogEntryReason() async throws {
+    func testCatalogMissFilesPromoWithNoCatalogEntryReasonImmediately() async throws {
         let model = try makeModel(variants: [.normal], catalogMiss: true)
         let identifier = try XCTUnwrap(ScanParser.parsePokemon("MEP 095"))
         let subject = ScanSubject(identifier: identifier)
-        let start = CFAbsoluteTimeGetCurrent()
-
         model.scanner.receiveFooterOutcomeForTesting(
             .identified(subject),
-            at: start + 0.25
+            at: CFAbsoluteTimeGetCurrent() + 0.25
         )
         model.scanner.receiveFooterOutcomeForTesting(
             .identified(subject),
-            at: start + 0.5
+            at: CFAbsoluteTimeGetCurrent() + 0.5
         )
 
         let failed = await waitUntil {
@@ -1810,22 +1854,311 @@ final class ScannerViewModelTests: XCTestCase {
             model.scanAcknowledgement?.message,
             "Read MEP 095, but the catalog has no card with that number. Nothing was added."
         )
-        await settle()
-
-        // The model installs the catalog-miss key on the scanner's Vision queue.
-        // Force that mirror to settle before driving the three-of-five window.
-        model.scanner.drainVisionQueueForTesting()
-        for offset in [0.75, 1.0, 1.25] {
-            model.scanner.receiveFooterOutcomeForTesting(
-                .identified(subject),
-                at: start + offset
-            )
-        }
-
         let filed = await waitUntil { model.unresolvedScans.count == 1 }
-        XCTAssertTrue(filed)
+        XCTAssertTrue(filed, "a deterministic catalog miss is filed on the first failure")
         XCTAssertEqual(model.unresolvedScans.first?.subject, subject)
         XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
+    }
+
+    func testTransientAndProviderFailuresFileImmediatelyWithSpecificMessages() async throws {
+        let transient = try makeModel(variants: [.normal], sourceFailure: .transient)
+        confirm(transient, scannerIdentifier(), encounterID: UUID())
+        let transientFiled = await waitUntil {
+            transient.unresolvedScans.count == 1
+                && transient.scanAcknowledgement?.phase == .failed
+        }
+        XCTAssertTrue(transientFiled)
+        XCTAssertEqual(transient.unresolvedScans.first?.reason, .lookupFailed)
+        XCTAssertEqual(
+            transient.scanAcknowledgement?.message,
+            "Couldn't reach the catalog — retrying. Keep the card in view."
+        )
+
+        let unavailable = try makeModel(variants: [.normal], sourceFailure: .providerUnavailable)
+        confirm(unavailable, scannerIdentifier(), encounterID: UUID())
+        let unavailableFiled = await waitUntil {
+            unavailable.unresolvedScans.count == 1
+                && unavailable.scanAcknowledgement?.phase == .failed
+        }
+        XCTAssertTrue(unavailableFiled)
+        XCTAssertEqual(unavailable.unresolvedScans.first?.reason, .providerUnavailable)
+        XCTAssertEqual(
+            unavailable.scanAcknowledgement?.message,
+            "Not added — card lookup is unavailable right now. Try again later."
+        )
+    }
+
+    func testInferredNameMismatchFilesCandidateAndDoesNotCommit() async throws {
+        let model = try makeModel(variants: [.normal])
+        let subject = ScanSubject(
+            identifier: scannerIdentifier(),
+            inferredNameReadings: ["pikachu"]
+        )
+        confirm(model, subject, encounterID: UUID())
+
+        let filed = await waitUntil {
+            model.unresolvedScans.count == 1 && model.scanAcknowledgement?.phase == .failed
+        }
+
+        XCTAssertTrue(filed)
+        XCTAssertEqual(model.unresolvedScans.first?.reason, .noConfirmedMatch)
+        XCTAssertEqual(model.unresolvedScans.first?.candidates.first?.name, "Test Card")
+        XCTAssertEqual(
+            model.scanAcknowledgement?.message,
+            "Couldn't confirm which card this is. Saved to Needs attention."
+        )
+        XCTAssertEqual(model.successCount, 0)
+        XCTAssertTrue(model.recent.isEmpty)
+    }
+
+    func testSuccessfulRetryLookupCommitsAndClearsItsUnresolvedRow() async throws {
+        let failureSwitch = ScannerCatalogFailureSwitch()
+        let model = try makeModel(
+            variants: [.normal],
+            sourceFailure: .transient,
+            failureSwitch: failureSwitch
+        )
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let filed = await waitUntil { model.unresolvedScans.count == 1 }
+        XCTAssertTrue(filed)
+        let rowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+
+        await failureSwitch.allowSuccess()
+        model.resolveUnresolved(id: rowID, choice: .retryLookup)
+        let committed = await waitUntil {
+            model.successCount == 1 && model.unresolvedScans.isEmpty
+        }
+
+        XCTAssertTrue(committed)
+        XCTAssertEqual(model.recent.count, 1)
+    }
+
+    func testChooseFromNeedsAttentionReachesFinishPickerAndKeepsDuplicateProtection() async throws {
+        let fixture = try await makeHistoricalHeldRepeatFixture(includeFinishChoice: true)
+        let model = try makeModel(
+            variants: [.normal],
+            setProviderID: "held-repeat-a",
+            offline: fixture.offline
+        )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "HRA",
+            cardNumber: "001",
+            printedTotal: 100,
+            setDefinition: PokemonSetDefinition(
+                printedCode: "HRA",
+                tcgdexSetID: "held-repeat-a",
+                officialCount: 100,
+                releaseIndex: 1
+            )
+        )
+        let mismatchedSubject = ScanSubject(
+            identifier: identifier,
+            inferredNameReadings: ["pikachu"]
+        )
+
+        confirm(model, mismatchedSubject, encounterID: UUID())
+        let firstFailure = await waitUntil {
+            model.unresolvedScans.count == 1 && model.scanAcknowledgement?.phase == .failed
+        }
+        XCTAssertTrue(firstFailure)
+        let firstFailureSettled = await waitUntil {
+            !model.isIdentificationProcessingForTesting
+        }
+        XCTAssertTrue(firstFailureSettled)
+        let firstRowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+        let candidates = await model.unresolvedCandidates(for: firstRowID)
+        XCTAssertEqual(candidates.count, 2)
+        let selected = try XCTUnwrap(
+            candidates.first { $0.providerID == "held-repeat-a-001" }
+        )
+
+        model.resolveUnresolved(id: firstRowID, choice: .choose(selected))
+        let finishPicker = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(
+            finishPicker,
+            "picker did not appear; acknowledgement=\(model.scanAcknowledgement?.message ?? "none"), unresolved=\(model.unresolvedScans.map { $0.reason.detail }), pending print run=\(model.pendingPrintRunChoice != nil)"
+        )
+        XCTAssertEqual(
+            Set(model.pendingChoice?.options ?? []),
+            Set([.normal, .holo])
+        )
+
+        model.choose(.normal)
+        let committed = await waitUntil {
+            model.successCount == 1 && model.unresolvedScans.isEmpty
+        }
+        XCTAssertTrue(committed)
+        XCTAssertEqual(model.recent.count, 1)
+        XCTAssertEqual(model.recent.first?.card.providerID, "held-repeat-a-001")
+        await settle()
+
+        let secondEncounterID = UUID()
+        confirm(model, mismatchedSubject, encounterID: secondEncounterID)
+        let secondFailure = await waitUntil {
+            model.unresolvedScans.count == 1
+                && model.scanAcknowledgement?.encounterID == secondEncounterID
+                && model.scanAcknowledgement?.phase == .failed
+        }
+        XCTAssertTrue(secondFailure)
+        let secondFailureSettled = await waitUntil {
+            !model.isIdentificationProcessingForTesting
+        }
+        XCTAssertTrue(secondFailureSettled)
+        let secondRowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+        model.resolveUnresolved(id: secondRowID, choice: .choose(selected))
+        let duplicateHandled = await waitUntil {
+            model.pendingChoice != nil
+                || model.pendingDuplicateConfirmation != nil
+                || (!model.unresolvedScans.contains { $0.id == secondRowID }
+                    && !model.isIdentificationProcessingForTesting)
+        }
+        XCTAssertTrue(
+            duplicateHandled,
+            "duplicate recovery did not route; acknowledgement=\(model.scanAcknowledgement?.message ?? "none"), row remains=\(model.unresolvedScans.contains { $0.id == secondRowID }), read-only=\(model.unresolvedScans.first?.isReadOnly ?? false), reason=\(model.unresolvedScans.first?.reason.detail ?? "none"), pending choice=\(model.pendingChoice != nil), duplicate prompt=\(model.pendingDuplicateConfirmation != nil), processing=\(model.isIdentificationProcessingForTesting)"
+        )
+        if model.pendingChoice != nil {
+            XCTAssertNotNil(model.pendingChoice?.duplicateChoiceContext)
+            model.choose(.normal)
+            await settle()
+        }
+        XCTAssertEqual(model.successCount, 1)
+        XCTAssertEqual(model.recent.count, 1)
+        XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+    }
+
+    func testRetrySaveUsesTheInMemoryCandidateAndClearsTheRow() async throws {
+        let addGate = ScannerCollectionAddGate(outcome: .failure)
+        let model = try makeModel(
+            variants: [.normal],
+            collectionAddOverride: { candidate in
+                try await addGate.add(candidate)
+            }
+        )
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await addGate.waitUntilStarted()
+        await addGate.release()
+        let failed = await waitUntil {
+            model.unresolvedScans.count == 1
+                && model.unresolvedScans.first?.reason != nil
+                && model.scanAcknowledgement?.phase == .failed
+        }
+        XCTAssertTrue(failed)
+        let row = try XCTUnwrap(model.unresolvedScans.first)
+        guard case .saveFailed = row.reason else {
+            return XCTFail("collection write failure should retain a retry-save candidate")
+        }
+        XCTAssertNotNil(row.pendingCommit)
+
+        await addGate.allowSuccess()
+        model.resolveUnresolved(id: row.id, choice: .retrySave)
+        let saved = await waitUntil {
+            model.successCount == 1 && model.unresolvedScans.isEmpty
+        }
+        XCTAssertTrue(
+            saved,
+            "retry save did not finish; acknowledgement=\(model.scanAcknowledgement?.message ?? "none"), unresolved=\(model.unresolvedScans.map { $0.reason.detail })"
+        )
+        let addCount = await addGate.count()
+        XCTAssertEqual(addCount, 2)
+    }
+
+    func testUnresolvedRowsSurviveViewDepartureAndStart() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ScannerUnresolvedPersistence-\(UUID().uuidString)", isDirectory: true)
+        let store = UnresolvedScanStore(
+            fileURL: directory.appendingPathComponent("unresolved-scans.json")
+        )
+        let model = try makeModel(
+            variants: [.normal],
+            catalogMiss: true,
+            unresolvedScanStore: store
+        )
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        let filed = await waitUntil { model.unresolvedScans.count == 1 }
+        XCTAssertTrue(filed)
+        await store.save(model.unresolvedScans)
+
+        model.viewDisappeared()
+        model.start(
+            context: context(),
+            startCamera: false,
+            shouldRefreshMagicDirectory: false
+        )
+        let survived = await waitUntil { model.unresolvedScans.count == 1 }
+
+        XCTAssertTrue(survived)
+        XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
+        try? FileManager.default.removeItem(at: directory)
+    }
+
+    func testUpdatingAPersistedUnresolvedRowDoesNotCountItAsNewThisSession() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ScannerExistingUnresolved-\(UUID().uuidString)", isDirectory: true)
+        let store = UnresolvedScanStore(
+            fileURL: directory.appendingPathComponent("unresolved-scans.json")
+        )
+        let subject = ScanSubject(
+            identifier: .pokemonHistorical(
+                PokemonHistoricalScanEvidence(
+                    number: PokemonPrintedNumberEvidence(
+                        localID: "001",
+                        denominator: 102,
+                        scheme: .officialSet
+                    ),
+                    titleCandidates: ["Test Card"]
+                )
+            )
+        )
+        let existingRowID = UUID()
+        await store.save([
+            UnresolvedScan(
+                id: existingRowID,
+                subject: subject,
+                reason: .noCatalogEntry
+            )
+        ])
+        let summaryStore = ScanSessionSummaryStore()
+        let model = try makeModel(
+            variants: [.normal],
+            catalogMiss: true,
+            unresolvedScanStore: store
+        )
+        model.start(
+            context: context(),
+            startCamera: false,
+            shouldRefreshMagicDirectory: false,
+            summaryStore: summaryStore
+        )
+        let loaded = await waitUntil { model.unresolvedScans.count == 1 }
+        XCTAssertTrue(loaded)
+        XCTAssertEqual(model.unresolvedScans.first?.id, existingRowID)
+
+        model.fileUnresolvedForTesting(subject, reason: .lookupFailed)
+        XCTAssertEqual(model.unresolvedScans.count, 1)
+        XCTAssertEqual(model.unresolvedScans.first?.id, existingRowID)
+        XCTAssertEqual(model.unresolvedScans.first?.reason, .lookupFailed)
+
+        model.viewDisappeared()
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertNil(summaryStore.summary)
+        try? FileManager.default.removeItem(at: directory)
+    }
+
+    func testTransientAutomaticRetriesStopAtTwoPerKeyPerSession() async throws {
+        let model = try makeModel(variants: [.normal], sourceFailure: .transient)
+        let identifier = scannerIdentifier()
+        for _ in 0..<3 {
+            let encounterID = UUID()
+            confirm(model, identifier, encounterID: encounterID)
+            let failed = await waitUntil {
+                model.scanAcknowledgement?.encounterID == encounterID
+                    && model.scanAcknowledgement?.phase == .failed
+                    && model.unresolvedScans.count == 1
+            }
+            XCTAssertTrue(failed)
+            await settle()
+        }
+        XCTAssertEqual(model.transientRetryCountForTesting(for: identifier.suppressionKey), 2)
     }
 
     func testProviderUnavailableAcknowledgementSaysTryAgainLater() {
@@ -2073,23 +2406,6 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(selected, entry)
     }
 
-    func testSuppressionVerificationWindowRequiresThreeRecentMatches() {
-        var window = SuppressionKeyVerificationWindow(matchesRequired: 3, windowSize: 5)
-        let identifier = scannerIdentifier()
-        let other = ScanIdentifier.pokemon(
-            setCode: "TST",
-            cardNumber: "002",
-            printedTotal: 10,
-            setDefinition: fixtureSetDefinition()
-        )
-
-        XCTAssertFalse(window.observe(ScanSubject(identifier: identifier)))
-        XCTAssertFalse(window.observe(ScanSubject(identifier: other)))
-        XCTAssertFalse(window.observe(ScanSubject(identifier: identifier)))
-        XCTAssertTrue(window.observe(ScanSubject(identifier: identifier)))
-        XCTAssertFalse(window.observe(ScanSubject(identifier: identifier)))
-    }
-
     func testUnresolvedHistoricalReadingsMergeTitlesForOnePrintedNumber() {
         let number = PokemonPrintedNumberEvidence(
             localID: "004",
@@ -2173,6 +2489,9 @@ final class ScannerViewModelTests: XCTestCase {
         priceCheckOutcome: PriceCheckRefreshOutcome? = nil,
         storageGeneration: CollectionStorageGeneration? = nil,
         collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)? = nil,
+        sourceFailure: ScannerStubPokemonSource.Failure? = nil,
+        failureSwitch: ScannerCatalogFailureSwitch? = nil,
+        unresolvedScanStore: UnresolvedScanStore? = nil,
         offline: PokemonOfflineCatalog? = nil
     ) throws -> ScannerViewModel {
         let context = try makeContext()
@@ -2204,7 +2523,9 @@ final class ScannerViewModelTests: XCTestCase {
                 ],
                 delayNanoseconds: delayNanoseconds,
                 fetchGate: fetchGate,
-                catalogMiss: catalogMiss
+                catalogMiss: catalogMiss,
+                failure: sourceFailure,
+                failureSwitch: failureSwitch
             ),
             offline: offline ?? PokemonOfflineCatalog(store: checklistStore),
             resolvedDiskCache: ResolvedPokemonCardCache(
@@ -2228,6 +2549,9 @@ final class ScannerViewModelTests: XCTestCase {
             priceCheckRefreshProvider: priceCheckOutcome.map {
                 ScannerStubPriceCheckProvider(outcome: $0)
             },
+            unresolvedScanStore: unresolvedScanStore ?? UnresolvedScanStore(
+                fileURL: root.appendingPathComponent("Scanner/unresolved-scans.json")
+            ),
             collectionAddOverride: collectionAddOverride
         )
         model.start(
@@ -2241,7 +2565,9 @@ final class ScannerViewModelTests: XCTestCase {
         return model
     }
 
-    private func makeHistoricalHeldRepeatFixture() async throws -> (
+    private func makeHistoricalHeldRepeatFixture(
+        includeFinishChoice: Bool = false
+    ) async throws -> (
         offline: PokemonOfflineCatalog,
         first: ScanSubject,
         second: ScanSubject
@@ -2280,7 +2606,20 @@ final class ScannerViewModelTests: XCTestCase {
             name: "First Held Card",
             collectorNumber: "001",
             thumbnailURL: nil,
-            imageURL: nil
+            imageURL: nil,
+            masterSetVariant: includeFinishChoice ? .normal : nil
+        )
+        let firstHoloSummary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "held-repeat-a-001",
+            setID: firstSetID,
+            setName: firstSet.name,
+            setCode: firstSet.code,
+            name: "First Held Card",
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .holo
         )
         let secondSummary = CatalogCardSummary(
             game: .pokemon,
@@ -2319,7 +2658,7 @@ final class ScannerViewModelTests: XCTestCase {
                 ]
             ),
             checklists: [
-                firstSetID.id: [firstSummary],
+                firstSetID.id: includeFinishChoice ? [firstSummary, firstHoloSummary] : [firstSummary],
                 secondSetID.id: [secondSummary]
             ]
         )

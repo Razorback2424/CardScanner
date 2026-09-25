@@ -54,6 +54,15 @@ final class CardLatchTests: XCTestCase {
         ScanSubject(identifier: identifier)
     }
 
+    private func armPostCommitLabelWatch(_ scanner: CardScanner) {
+        guard let encounterID = scanner.latchEncounterIDForTesting else {
+            XCTFail("the confirmed raw encounter should have a latch encounter id")
+            return
+        }
+        scanner.armPostCommitLabelWatch(encounterID: encounterID)
+        scanner.drainVisionQueueForTesting()
+    }
+
     private func slabEvidence(
         grade: CardGrade = CardGrade(value: "10", label: "Gem Mint"),
         certificate: String? = nil,
@@ -77,6 +86,24 @@ final class CardLatchTests: XCTestCase {
             XCTAssertEqual(latch.observeSubject(subject(card), at: Double(pass) * 0.25), .holdingLatch)
         }
         XCTAssertEqual(latch.latched, subject(card))
+    }
+
+    func testForgetReleasesOnlyItsKeyAndRetainsOtherDuplicateProtection() {
+        var latch = CardLatch()
+        let first = subject(pokemon(223))
+        let second = subject(pokemon(204, code: "PAL"))
+        latch.engage(on: first, at: 0)
+        latch.engage(on: second, at: 1)
+
+        latch.forget(first.suppressionKey)
+
+        XCTAssertEqual(latch.latched, second)
+        XCTAssertTrue(latch.admits(first))
+        XCTAssertFalse(latch.admits(second))
+
+        latch.forget(second.suppressionKey)
+        XCTAssertNil(latch.latched)
+        XCTAssertTrue(latch.admits(second))
     }
 
     func testCertificateRefinementRekeysTheHeldSlabBeforeASecondCopyArrives() {
@@ -830,6 +857,8 @@ final class CardLatchTests: XCTestCase {
         scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start)
         scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start + 0.25)
         XCTAssertEqual(scanner.latchedSubjectForTesting, raw)
+        XCTAssertFalse(scanner.isPostCommitLabelWatchArmedForTesting)
+        armPostCommitLabelWatch(scanner)
         XCTAssertTrue(scanner.isPostCommitLabelWatchArmedForTesting)
 
         XCTAssertTrue(scanner.receivePostCommitSlabEvidenceForTesting(
@@ -846,7 +875,7 @@ final class CardLatchTests: XCTestCase {
         XCTAssertFalse(scanner.isPostCommitLabelWatchArmedForTesting)
     }
 
-    func testPostCommitLabelWatchStopsAfterFourMissedReads() {
+    func testPostCommitLabelWatchStopsAfterTwoMissedReads() {
         let scanner = CardScanner()
         let start = CFAbsoluteTimeGetCurrent()
         scanner.updateConfirmationContext(
@@ -863,9 +892,10 @@ final class CardLatchTests: XCTestCase {
         let raw = subject(pokemon(223))
         scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start)
         scanner.receiveFooterOutcomeForTesting(.identified(raw), at: start + 0.25)
+        armPostCommitLabelWatch(scanner)
         XCTAssertTrue(scanner.isPostCommitLabelWatchArmedForTesting)
 
-        for read in 0..<4 {
+        for read in 0..<2 {
             XCTAssertTrue(scanner.receivePostCommitSlabEvidenceForTesting(
                 nil,
                 footerIdentifier: raw.identifier,
@@ -875,9 +905,9 @@ final class CardLatchTests: XCTestCase {
         XCTAssertFalse(scanner.receivePostCommitSlabEvidenceForTesting(
             nil,
             footerIdentifier: raw.identifier,
-            at: start + 3.75
+            at: start + 2.25
         ))
-        XCTAssertEqual(scanner.labelOCRReadCountForTesting, 4)
+        XCTAssertEqual(scanner.labelOCRReadCountForTesting, 2)
         XCTAssertFalse(scanner.isPostCommitLabelWatchArmedForTesting)
     }
 
@@ -898,6 +928,7 @@ final class CardLatchTests: XCTestCase {
         let next = subject(pokemon(222))
         scanner.receiveFooterOutcomeForTesting(.identified(saved), at: start)
         scanner.receiveFooterOutcomeForTesting(.identified(saved), at: start + 0.25)
+        armPostCommitLabelWatch(scanner)
 
         XCTAssertFalse(scanner.receivePostCommitSlabEvidenceForTesting(
             slabEvidence(certificate: "12345678"),

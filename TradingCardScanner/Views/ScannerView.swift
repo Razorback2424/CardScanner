@@ -17,6 +17,12 @@ struct ScannerView: View {
     @State private var reviewing: RecentScan?
     @State private var isShowingSessionReview = false
     @State private var isShowingUnresolved = false
+    @State private var pendingUnresolvedResolution: PendingUnresolvedResolution?
+
+    private struct PendingUnresolvedResolution {
+        let id: UUID
+        let choice: UnresolvedResolutionChoice
+    }
 
 #if DEBUG
     private var scannerScreenshotRoute: String? {
@@ -106,10 +112,28 @@ struct ScannerView: View {
                         }
                     )
         }
-        .sheet(isPresented: $isShowingUnresolved, onDismiss: model.resumeAfterPresentation) {
+        .sheet(isPresented: $isShowingUnresolved, onDismiss: {
+            if let pendingUnresolvedResolution {
+                model.resolveUnresolved(
+                    id: pendingUnresolvedResolution.id,
+                    choice: pendingUnresolvedResolution.choice
+                )
+                self.pendingUnresolvedResolution = nil
+            }
+            model.resumeAfterPresentation()
+        }) {
             UnresolvedScansSheet(
+                model: model,
                 scans: model.unresolvedScans,
-                onClear: model.clearUnresolvedScans
+                onClear: model.clearUnresolvedScans,
+                onDismiss: model.dismissUnresolved,
+                onResolve: { id, choice in
+                    pendingUnresolvedResolution = PendingUnresolvedResolution(
+                        id: id,
+                        choice: choice
+                    )
+                    isShowingUnresolved = false
+                }
             )
         }
         .sheet(item: $model.priceCheckResult, onDismiss: model.dismissPriceCheckResult) { result in
@@ -648,8 +672,11 @@ private struct FinishLockControl: View, Equatable {
 
 private struct UnresolvedScansSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @ObservedObject var model: ScannerViewModel
     let scans: [UnresolvedScan]
     let onClear: () -> Void
+    let onDismiss: (UUID) -> Void
+    let onResolve: (UUID, UnresolvedResolutionChoice) -> Void
 
     private var instructions: String {
         if scans.contains(where: { $0.reason == .noConfirmedMatch }) {
@@ -671,20 +698,33 @@ private struct UnresolvedScansSheet: View {
 
                 Section("Needs attention") {
                     ForEach(scans) { scan in
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(scan.identifier.displayIdentifier)
-                                .font(.headline.monospacedDigit())
-                            if !scan.titleCandidates.isEmpty {
-                                Text("Title read: \(scan.titleCandidates.joined(separator: ", "))")
-                                    .font(.subheadline)
+                        NavigationLink {
+                            UnresolvedScanDetailView(
+                                model: model,
+                                scan: scan,
+                                onDismissRow: { onDismiss(scan.id) },
+                                onResolve: { onResolve(scan.id, $0) }
+                            )
+                        } label: {
+                            VStack(alignment: .leading, spacing: 5) {
+                                Text(scan.displayIdentifier)
+                                    .font(.headline.monospacedDigit())
+                                if !scan.requestEvidence.titleReadings.isEmpty {
+                                    Text("Title readings: \(scan.requestEvidence.titleReadings.joined(separator: ", "))")
+                                        .font(.subheadline)
+                                        .lineLimit(2)
+                                }
+                                Text(scan.reason.detail)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                             }
-                            Text(scan.reason == .noCatalogEntry
-                                ? "Read consistently, but no catalog card has this number. If it matches the card, the catalog may not list it yet."
-                                : "No unique catalog match was confirmed")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
                         }
                         .accessibilityElement(children: .combine)
+                        .swipeActions(edge: .trailing) {
+                            Button("Dismiss", systemImage: "xmark", role: .destructive) {
+                                onDismiss(scan.id)
+                            }
+                        }
                     }
                 }
             }

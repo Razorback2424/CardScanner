@@ -802,7 +802,6 @@ final class CardScanner: NSObject, ObservableObject {
     /// verification, including frames suppressed by the latch. The gate is
     /// checked against the vision-queue mirror so local evidence policies can
     /// count fresh observations without starting another catalog request.
-    var onObservedCandidate: ((ScanSubject) -> Void)?
     /// Identity is established: confirmed across OCR passes and admitted by the
     /// latch as a new physical presentation.
     /// The encounter id is created at the exact frame that confirms the OCR
@@ -955,7 +954,7 @@ final class CardScanner: NSObject, ObservableObject {
     private static let slabLabelOfferDelay: CFAbsoluteTime = 3.0
     private static let postCommitFirstLabelDelay: CFAbsoluteTime = 0.5
     private static let postCommitLabelInterval: CFAbsoluteTime = 0.75
-    private static let postCommitMaximumLabelReads = 4
+    private static let postCommitMaximumLabelReads = 2
     private static let historicalAttemptLimit = 6
 
 #if DEBUG
@@ -1438,6 +1437,29 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    /// Forget only the failed printing so its next confirmation can retry while
+    /// every other consumed card remains protected by the duplicate latch.
+    func allowRetry(of key: ScanSuppressionKey) {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            let released = self.latch.latched
+            let encounterID = released?.suppressionKey == key
+                ? self.latchEncounterID
+                : nil
+            self.latch.forget(key)
+            if encounterID != nil {
+                self.latchEncounterID = nil
+                self.postCommitLabelWatch = nil
+                if released?.slab != nil || self.activeSlab != nil {
+                    self.clearActiveSlab(cause: .latchRelease, at: CFAbsoluteTimeGetCurrent())
+                }
+                self.emitLatchRelease(encounterID: encounterID, suppressionKey: key)
+            }
+            self.resetConfirmationWindow()
+            self.didAnnounceLatchHold = false
+        }
+    }
+
     /// Lets a dismissed Price Check result be read again after its brief
     /// confirmation-safe delay. This is intentionally narrower than
     /// `allowImmediateRetry()`: the latter forgets every consumed printing and
@@ -1492,9 +1514,15 @@ final class CardScanner: NSObject, ObservableObject {
     /// window is cleared only when the vocabulary itself changes. Metadata-only
     /// release updates still replace the profile for future identifiers without
     /// throwing away a half-confirmed card.
-    func usePokemonRegistry(_ registry: PokemonCatalogRegistry) {
+    func usePokemonRegistry(
+        _ registry: PokemonCatalogRegistry,
+        knownOfficialCounts: [String: Int] = [:]
+    ) {
         profileQueue.async { [weak self] in
-            let pokemon = PokemonScanProfile(registry: registry)
+            let pokemon = PokemonScanProfile(
+                registry: registry,
+                knownOfficialCounts: knownOfficialCounts
+            )
             self?.usePokemonProfile(pokemon)
         }
     }
@@ -2040,12 +2068,6 @@ final class CardScanner: NSObject, ObservableObject {
                 to: updated
             )
         } ?? false
-        if let parsed,
-           parsed.suppressionKey == catalogMissSuppressionKey {
-            DispatchQueue.main.async { [weak self] in
-                self?.onObservedCandidate?(parsed)
-            }
-        }
         if let latchedBeforeObservation, latch.latched == nil {
             postCommitLabelWatch = nil
             let encounterID = latchEncounterID
@@ -2138,7 +2160,6 @@ final class CardScanner: NSObject, ObservableObject {
                     "observation=\(slabRecognitionID?.uuidString ?? "none") encounter=\(encounterID.uuidString)"
                 )
             }
-            armPostCommitLabelWatchIfNeeded(encounterID: encounterID, at: now)
             if let pixelBuffer {
                 seedTracker(
                     encounterID: encounterID,
@@ -2187,7 +2208,6 @@ final class CardScanner: NSObject, ObservableObject {
             historicalAttempt = nil
             let encounterID = UUID()
             latchEncounterID = encounterID
-            armPostCommitLabelWatchIfNeeded(encounterID: encounterID, at: now)
             if let pixelBuffer {
                 seedTracker(
                     encounterID: encounterID,
@@ -2651,6 +2671,21 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    func armPostCommitLabelWatch(encounterID: UUID) {
+        visionQueue.async { [weak self] in
+            guard let self,
+                  self.latchEncounterID == encounterID,
+                  self.latch.latched != nil,
+                  self.subjectMode == .raw,
+                  self.confirmationContext?.purpose == .collection,
+                  self.confirmationContext?.subjectMode == .raw else { return }
+            self.armPostCommitLabelWatchIfNeeded(
+                encounterID: encounterID,
+                at: CFAbsoluteTimeGetCurrent()
+            )
+        }
+    }
+
     private func armPostCommitLabelWatchIfNeeded(encounterID: UUID, at now: CFAbsoluteTime) {
         guard subjectMode == .raw,
               confirmationContext?.purpose == .collection,
@@ -2958,8 +2993,30 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.sync { advanceHistoricalAttempt(for: number, at: now) }
     }
 
+    func setHistoricalTitleCandidatesForTesting(_ titles: Set<String>) {
+        visionQueue.sync {
+            guard var attempt = historicalAttempt else { return }
+            attempt.titleCandidates = titles
+            historicalAttempt = attempt
+        }
+    }
+
+    var historicalTitleCandidatesForTesting: Set<String> {
+        visionQueue.sync { historicalAttempt?.titleCandidates ?? [] }
+    }
+
+    func exhaustedHistoricalIdentifierForTesting(
+        _ number: PokemonPrintedNumberEvidence
+    ) -> ScanIdentifier? {
+        visionQueue.sync { exhaustedHistoricalIdentifier(for: number) }
+    }
+
     var latchedSubjectForTesting: ScanSubject? {
         latch.latched
+    }
+
+    var latchEncounterIDForTesting: UUID? {
+        visionQueue.sync { latchEncounterID }
     }
 
     var activeSlabEvidenceForTesting: GradedSlabEvidence? {
@@ -3003,16 +3060,15 @@ final class CardScanner: NSObject, ObservableObject {
         var retainedTitleCandidates: Set<String> = []
         if let attempt = historicalAttempt,
            attempt.number != number || now - attempt.startedAt > Self.historicalAttemptTTL {
-            let sameNumberInSlabMode = subjectMode == .slab && attempt.number == number
-            if sameNumberInSlabMode {
-                // A slab takes longer to resolve than a raw card. Renew the
-                // bounded title-read budget for the same printed number, but
-                // preserve any useful title evidence and the confirmation
-                // progress already earned by the slab footer.
+            let sameNumber = attempt.number == number
+            if sameNumber {
+                // Renew the bounded title-read budget for the same printed
+                // number without discarding useful title evidence or footer
+                // confirmation already earned in either scanning mode.
                 retainedTitleCandidates = attempt.titleCandidates
             }
             historicalAttempt = nil
-            if !sameNumberInSlabMode {
+            if !sameNumber {
                 resetConfirmationWindow()
             }
         }
@@ -3051,6 +3107,9 @@ final class CardScanner: NSObject, ObservableObject {
             historicalAttempt = nil
             return nil
         }
+        if let exhausted = exhaustedHistoricalIdentifier(for: number) {
+            return exhausted
+        }
         if subjectMode == .slab,
            let attempt = historicalAttempt,
            attempt.number == number,
@@ -3058,12 +3117,7 @@ final class CardScanner: NSObject, ObservableObject {
             // One successful title read is enough to begin catalog prefetch.
             // Re-running title OCR on every footer frame added cost without
             // changing the historical identity for a held slab.
-            return .pokemonHistorical(
-                PokemonHistoricalScanEvidence(
-                    number: number,
-                    titleCandidates: attempt.titleCandidates.sorted()
-                )
-            )
+            return historicalIdentifier(from: attempt)
         }
         guard advanceHistoricalAttempt(for: number, at: now) else { return nil }
 
@@ -3100,12 +3154,26 @@ final class CardScanner: NSObject, ObservableObject {
         }
         guard let attempt = historicalAttempt,
               !attempt.titleCandidates.isEmpty else { return nil }
-        return .pokemonHistorical(
+        return historicalIdentifier(from: attempt)
+    }
+
+    private func historicalIdentifier(from attempt: HistoricalEvidenceRequest) -> ScanIdentifier {
+        .pokemonHistorical(
             PokemonHistoricalScanEvidence(
-                number: number,
+                number: attempt.number,
                 titleCandidates: attempt.titleCandidates.sorted()
             )
         )
+    }
+
+    private func exhaustedHistoricalIdentifier(
+        for number: PokemonPrintedNumberEvidence
+    ) -> ScanIdentifier? {
+        guard let attempt = historicalAttempt,
+              attempt.number == number,
+              attempt.retryCount >= Self.historicalAttemptLimit,
+              !attempt.titleCandidates.isEmpty else { return nil }
+        return historicalIdentifier(from: attempt)
     }
 
     /// Speculation, and only speculation. The catalog de-duplicates, so an
@@ -3450,14 +3518,24 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             updateDebugVisionOverlay(boxes)
 #endif
 
+            let historicalSubject = historical.map { identifier -> ScanSubject in
+                if case let .pokemonHistorical(evidence) = identifier,
+                   let inferred = profile.pokemon.inferredIdentifier(from: evidence.number) {
+                    return ScanSubject(
+                        identifier: inferred,
+                        slab: activeSlabEvidence(matching: inferred),
+                        inferredNameReadings: evidence.titleCandidates
+                    )
+                }
+                return ScanSubject(
+                    identifier: identifier,
+                    slab: activeSlabEvidence(matching: identifier)
+                )
+            }
             let footerIdentifier: ScanIdentifier? = switch outcome {
             case let .identified(subject): subject.identifier
             case .nothing, .ambiguous, .spatiallyRejectedMagicCollector:
-                historical
-            }
-
-            let historicalSubject = historical.map {
-                ScanSubject(identifier: $0, slab: activeSlabEvidence(matching: $0))
+                historicalSubject?.identifier
             }
             // Slab mode establishes footer-key ownership before parsing label
             // evidence. In Raw mode this remains a no-op and no label OCR runs
@@ -3471,9 +3549,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             handleFooterOutcome(
                 outcome,
                 footerLines: lines,
-                historicalSubject: historical.map {
-                    ScanSubject(identifier: $0, slab: activeSlabEvidence(matching: $0))
-                },
+                historicalSubject: historicalSubject,
                 at: now,
                 pixelBuffer: pixelBuffer,
                 didUpdateSlabPresence: true

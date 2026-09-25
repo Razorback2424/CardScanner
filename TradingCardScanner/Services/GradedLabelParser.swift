@@ -6,7 +6,7 @@ import Foundation
 /// footer still has to resolve through the normal catalog path before a scan
 /// can be committed. Keeping the two pieces separate also lets an unreadable
 /// label degrade to the existing raw-card scanner behavior.
-struct GradedSlabEvidence: Equatable, Hashable, Sendable {
+struct GradedSlabEvidence: Equatable, Hashable, Sendable, Codable {
     let company: GradingCompany
     let grade: CardGrade
     let certificationNumber: String?

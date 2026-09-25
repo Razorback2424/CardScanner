@@ -124,29 +124,6 @@ final class HistoricalTitleCaptureTests: XCTestCase {
         XCTAssertEqual(scans.count, 2)
     }
 
-    func testCatalogMissNeedsThreeFreshSuppressionKeyMatchesInFiveFrames() {
-        let first = ScanIdentifier.pokemonHistorical(
-            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["first title"])
-        )
-        let titleVariant = ScanIdentifier.pokemonHistorical(
-            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["second title"])
-        )
-        let different = ScanIdentifier.pokemonHistorical(
-            PokemonHistoricalScanEvidence(
-                number: PokemonPrintedNumberEvidence(
-                    localID: "91", denominator: 202, scheme: .officialSet
-                ),
-                titleCandidates: ["other"]
-            )
-        )
-        var window = SuppressionKeyVerificationWindow()
-
-        XCTAssertFalse(window.observe(ScanSubject(identifier: first)))
-        XCTAssertFalse(window.observe(ScanSubject(identifier: different)))
-        XCTAssertFalse(window.observe(ScanSubject(identifier: titleVariant)))
-        XCTAssertTrue(window.observe(ScanSubject(identifier: first)))
-    }
-
     func testUnresolvedMergeUsesSuppressionKeyAcrossHistoricalTitleVariants() {
         let first = ScanIdentifier.pokemonHistorical(
             PokemonHistoricalScanEvidence(number: number, titleCandidates: ["one"])
@@ -204,7 +181,7 @@ final class HistoricalTitleCaptureTests: XCTestCase {
         )
     }
 
-    func testUnresolvedMergeKeepsMoreCautiousReason() throws {
+    func testUnresolvedMergeKeepsLatestFailureReasonAndEvidence() throws {
         let identifier = try XCTUnwrap(ScanParser.parsePokemon(["MEP 095"]))
         let subject = ScanSubject(identifier: identifier)
         var scans = UnresolvedScan.merging([], with: subject, reason: .noCatalogEntry)
@@ -214,5 +191,34 @@ final class HistoricalTitleCaptureTests: XCTestCase {
         XCTAssertEqual(scans.count, 1)
         XCTAssertEqual(scans[0].id, existingRowID)
         XCTAssertEqual(scans[0].reason, .noConfirmedMatch)
+
+        var reversed = UnresolvedScan.merging(
+            [],
+            with: subject,
+            reason: .noConfirmedMatch
+        )
+        reversed = UnresolvedScan.merging(
+            reversed,
+            with: subject,
+            reason: .saveFailed(inMemoryCandidateID: nil)
+        )
+        XCTAssertEqual(reversed.first?.reason, .saveFailed(inMemoryCandidateID: nil))
+    }
+
+    func testMergedDirectCodeReadKeepsInferenceGateDisabledAndRetainsTitleEvidence() throws {
+        let identifier = try XCTUnwrap(ScanParser.parsePokemon("ASC 015/217"))
+        var scans = UnresolvedScan.merging(
+            [],
+            with: ScanSubject(identifier: identifier),
+            reason: .lookupFailed
+        )
+        scans = UnresolvedScan.merging(
+            scans,
+            with: ScanSubject(identifier: identifier, inferredNameReadings: ["dustox"]),
+            reason: .lookupFailed
+        )
+
+        XCTAssertNil(scans[0].subject.inferredNameReadings)
+        XCTAssertEqual(scans[0].requestEvidence.titleReadings, ["dustox"])
     }
 }

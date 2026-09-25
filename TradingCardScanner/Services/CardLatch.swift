@@ -294,6 +294,18 @@ struct CardLatch: Equatable {
         heldMatchCount = 0
     }
 
+    /// Releases and forgets exactly one failed printing. Duplicate protection
+    /// for every other consumed printing remains intact.
+    mutating func forget(_ key: ScanSuppressionKey) {
+        consumed.removeAll { $0.key == key }
+        if heldRepeatAuthorizationKey == key {
+            heldRepeatAuthorizationKey = nil
+        }
+        if latched?.suppressionKey == key {
+            release()
+        }
+    }
+
     /// Moves a printing to the front of the memory, forgetting what was known
     /// about it before: it has just been counted, so it is present by definition.
     private mutating func remember(_ identifier: ScanSubject, at now: CFAbsoluteTime) {

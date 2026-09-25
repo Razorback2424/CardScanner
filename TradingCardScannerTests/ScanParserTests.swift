@@ -83,6 +83,97 @@ final class ScanParserTests: XCTestCase {
         XCTAssertEqual(ascSet.tcgdexSetID, "me02.5")
     }
 
+    func testPokemonSetCodeFooterSpacingAndLanguageSuffixes() {
+        for footer in [
+            "I ASC EN 015/217",
+            "IASC EN 015/217",
+            "I ASCEN 015/217",
+            "ASCEN015/217",
+            "G PAL EN 015/193"
+        ] {
+            XCTAssertNotNil(ScanParser.parsePokemon(footer), footer)
+        }
+        XCTAssertEqual(
+            ScanParser.parsePokemon("I ASC EN 015/217")?.displayIdentifier,
+            "ASC 15/217"
+        )
+        XCTAssertEqual(
+            ScanParser.parsePokemon("G PAL EN 015/193")?.displayIdentifier,
+            "PAL 15/193"
+        )
+    }
+
+    func testPokemonCodeRegexVocabularyHasNoRegulationOrLanguageCollisions() {
+        let codes = PokemonScanProfile.bundledSeed.vocabulary.expansionCodes
+        for code in codes {
+            for otherCode in codes where code != otherCode {
+                for mark in ["D", "E", "F", "G", "H", "I", "J"] {
+                    XCTAssertNotEqual(code, mark + otherCode)
+                }
+                XCTAssertNotEqual(code, otherCode + "EN")
+            }
+        }
+        XCTAssertEqual(ScanParser.parsePokemon("DRI 010/182")?.displayIdentifier, "DRI 10/182")
+    }
+
+    func testDenominatorInferenceRequiresOneKnownOwnerAndAnEnabledExpansion() throws {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        var knownCounts = Dictionary(
+            registry.descriptors.compactMap { descriptor in
+                descriptor.officialCount.map { (descriptor.providerSetID, $0) }
+            },
+            uniquingKeysWith: { _, latest in latest }
+        )
+        knownCounts["legacy-svi-count"] = 198
+        knownCounts["legacy-gym-count"] = 132
+        knownCounts["legacy-black-white-count"] = 86
+        let profile = PokemonScanProfile(
+            registry: registry,
+            knownOfficialCounts: knownCounts
+        )
+
+        let asc = try XCTUnwrap(profile.inferredIdentifier(from: officialNumber("15/217")))
+        XCTAssertEqual(asc.displayIdentifier, "ASC 15/217")
+        XCTAssertNil(profile.inferredIdentifier(from: officialNumber("198/198")))
+        XCTAssertNil(profile.inferredIdentifier(from: officialNumber("132/132")))
+        XCTAssertNil(profile.inferredIdentifier(from: officialNumber("86/86")))
+        XCTAssertNil(PokemonScanProfile(registry: registry).inferredIdentifier(
+            from: officialNumber("15/217")
+        ))
+    }
+
+    func testPokemonNameMatcherUsesBoundedFuzzyAndSpacingAgreement() {
+        XCTAssertTrue(PokemonNameMatcher.agrees(cardName: "Raboot", readings: ["reboot"]))
+        XCTAssertTrue(PokemonNameMatcher.agrees(cardName: "Dustox", readings: ["dust ox"]))
+        XCTAssertFalse(PokemonNameMatcher.agrees(cardName: "Mew", readings: ["New"]))
+    }
+
+    func testConfirmationWindowPrefersCodeReadAndMergesHistoricalReadings() throws {
+        let code = try XCTUnwrap(ScanParser.parsePokemon("ASC 015/217"))
+        let inferred = ScanSubject(
+            identifier: code,
+            inferredNameReadings: ["dustox"]
+        )
+        var codeWindow = CandidateConfirmationWindow()
+        XCTAssertNil(codeWindow.observeSubject(inferred))
+        XCTAssertEqual(
+            codeWindow.observeSubject(ScanSubject(identifier: code)),
+            ScanSubject(identifier: code)
+        )
+
+        let first = historicalIdentifier("15/217", titles: ["dustox"])
+        let second = historicalIdentifier("15/217", titles: ["dust ox"])
+        var historicalWindow = CandidateConfirmationWindow()
+        XCTAssertNil(historicalWindow.observeSubject(ScanSubject(identifier: first)))
+        let confirmed = try XCTUnwrap(
+            historicalWindow.observeSubject(ScanSubject(identifier: second))
+        )
+        guard case let .pokemonHistorical(evidence) = confirmed.identifier else {
+            return XCTFail("Expected merged historical evidence")
+        }
+        XCTAssertEqual(evidence.titleCandidates, ["dust ox", "dustox"])
+    }
+
     func testSetCodeEmbeddedInIllustratorNameIsIgnored() {
         XCTAssertEqual(
             ScanParser.parsePokemon("ILLUS. MASCAGNI OBF 223/197")?.displayIdentifier,
@@ -307,6 +398,29 @@ final class ScanParserTests: XCTestCase {
         )
     }
 
+    func testFuzzyHistoricalNameResolvesOnlyWhenProviderIdentityIsUnique() throws {
+        let evidence = try historicalEvidence(number: "37/217", title: "Reboot")
+        let raboot = historicalCard("asc-37", set: "asc", number: "37", name: "Raboot")
+        XCTAssertEqual(
+            PokemonHistoricalIdentityResolver.resolve(
+                evidence,
+                candidateSetIDs: ["asc"],
+                in: [raboot]
+            ),
+            .unique(raboot)
+        )
+
+        let second = historicalCard("other-37", set: "other", number: "37", name: "Raboot")
+        guard case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(
+            evidence,
+            candidateSetIDs: ["asc", "other"],
+            in: [raboot, second]
+        ) else {
+            return XCTFail("Fuzzy spelling must not select among multiple provider IDs")
+        }
+        XCTAssertEqual(Set(matches.map(\.providerID)), ["asc-37", "other-37"])
+    }
+
     func testHistoricalScannerDoesNotUseRelaxedCSVNameMatching() throws {
         let evidence = try historicalEvidence(number: "1/102", title: "Mew")
         let misleading = historicalCard(
@@ -502,6 +616,24 @@ final class ScanParserTests: XCTestCase {
             throw NSError(domain: "ScanParserTests", code: 1)
         }
         return evidence
+    }
+
+    private func officialNumber(_ raw: String) -> PokemonPrintedNumberEvidence {
+        let components = raw.split(separator: "/")
+        return PokemonPrintedNumberEvidence(
+            localID: String(components[0]),
+            denominator: Int(components[1])!,
+            scheme: .officialSet
+        )
+    }
+
+    private func historicalIdentifier(_ raw: String, titles: [String]) -> ScanIdentifier {
+        .pokemonHistorical(
+            PokemonHistoricalScanEvidence(
+                number: officialNumber(raw),
+                titleCandidates: titles
+            )
+        )
     }
 
     private func historicalCard(

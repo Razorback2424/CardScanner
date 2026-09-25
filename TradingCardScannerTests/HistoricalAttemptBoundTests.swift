@@ -45,4 +45,46 @@ final class HistoricalAttemptBoundTests: XCTestCase {
         )
         XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(other, at: start + 1.46))
     }
+
+    func testRawTitleEvidenceSurvivesTTLAttemptRenewal() {
+        let scanner = CardScanner()
+        let start: CFAbsoluteTime = 3_000
+        XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(number, at: start))
+        scanner.setHistoricalTitleCandidatesForTesting(["dustox"])
+
+        for index in 1..<6 {
+            XCTAssertTrue(
+                scanner.advanceHistoricalAttemptForTesting(
+                    number,
+                    at: start + Double(index) * 0.2
+                )
+            )
+        }
+        XCTAssertFalse(scanner.advanceHistoricalAttemptForTesting(number, at: start + 1.3))
+
+        XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(number, at: start + 1.6))
+        XCTAssertEqual(scanner.historicalTitleCandidatesForTesting, ["dustox"])
+    }
+
+    func testExhaustedRawAttemptReturnsAccumulatedEvidenceWithoutAnotherTitlePass() {
+        let scanner = CardScanner()
+        let start: CFAbsoluteTime = 4_000
+        for index in 0..<6 {
+            XCTAssertTrue(
+                scanner.advanceHistoricalAttemptForTesting(
+                    number,
+                    at: start + Double(index) * 0.2
+                )
+            )
+            if index == 0 {
+                scanner.setHistoricalTitleCandidatesForTesting(["dustox"])
+            }
+        }
+
+        let identifier = scanner.exhaustedHistoricalIdentifierForTesting(number)
+        guard case let .pokemonHistorical(evidence)? = identifier else {
+            return XCTFail("Expected the capped attempt to return its title evidence")
+        }
+        XCTAssertEqual(evidence.titleCandidates, ["dustox"])
+    }
 }

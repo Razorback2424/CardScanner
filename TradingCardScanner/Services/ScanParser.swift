@@ -143,10 +143,19 @@ extension ScanIdentifier {
 struct ScanSubject: Equatable, Hashable, Sendable {
     let identifier: ScanIdentifier
     let slab: GradedSlabEvidence?
+    /// Title OCR carried by a Pokémon number whose set was inferred from its
+    /// denominator. A printed-code read has already supplied stronger set
+    /// evidence and leaves this nil.
+    let inferredNameReadings: [String]?
 
-    init(identifier: ScanIdentifier, slab: GradedSlabEvidence? = nil) {
+    init(
+        identifier: ScanIdentifier,
+        slab: GradedSlabEvidence? = nil,
+        inferredNameReadings: [String]? = nil
+    ) {
         self.identifier = identifier
         self.slab = slab
+        self.inferredNameReadings = inferredNameReadings
     }
 
     var suppressionKey: ScanSuppressionKey {
@@ -190,11 +199,63 @@ struct CandidateConfirmationWindow {
 
         guard let candidate else { return nil }
 
-        let matchingCount = observations.compactMap { $0 }.filter { $0 == candidate }.count
-        guard matchingCount >= matchesRequired else { return nil }
+        let matching = observations.compactMap { $0 }.filter {
+            Self.matches($0, candidate)
+        }
+        guard matching.count >= matchesRequired else { return nil }
 
         reset()
-        return candidate
+        return Self.mergedSubject(candidate, observations: matching)
+    }
+
+    private static func matches(_ lhs: ScanSubject, _ rhs: ScanSubject) -> Bool {
+        if lhs.slab != nil || rhs.slab != nil { return lhs == rhs }
+        return lhs.suppressionKey == rhs.suppressionKey
+    }
+
+    private static func mergedSubject(
+        _ candidate: ScanSubject,
+        observations: [ScanSubject]
+    ) -> ScanSubject {
+        if let codeRead = observations.first(where: { subject in
+            guard subject.inferredNameReadings == nil else { return false }
+            if case .pokemon = subject.identifier { return true }
+            return false
+        }) {
+            return codeRead
+        }
+
+        var readings: [String] = []
+        for subject in observations {
+            if let inferred = subject.inferredNameReadings {
+                readings.append(contentsOf: inferred)
+            }
+            if case let .pokemonHistorical(evidence) = subject.identifier {
+                readings.append(contentsOf: evidence.titleCandidates)
+            }
+        }
+        readings = Array(Set(readings)).sorted()
+
+        switch candidate.identifier {
+        case let .pokemonHistorical(evidence):
+            return ScanSubject(
+                identifier: .pokemonHistorical(
+                    PokemonHistoricalScanEvidence(
+                        number: evidence.number,
+                        titleCandidates: readings
+                    )
+                ),
+                slab: candidate.slab
+            )
+        case .pokemon where candidate.inferredNameReadings != nil:
+            return ScanSubject(
+                identifier: candidate.identifier,
+                slab: candidate.slab,
+                inferredNameReadings: readings
+            )
+        default:
+            return candidate
+        }
     }
 
     mutating func reset() {
@@ -280,10 +341,40 @@ enum ScanText {
         )
     }
 
+    /// Pokémon regulation marks (D–J) and the English language mark can be
+    /// glued directly to the printed expansion code. Keep the actual code in
+    /// capture group 1 so a mark is never mistaken for part of the set code.
+    static func pokemonSetCodeRegex(codes: some Collection<String>) -> NSRegularExpression {
+        let alternatives = codes
+            .sorted { $0.count == $1.count ? $0 < $1 : $0.count > $1.count }
+            .map(NSRegularExpression.escapedPattern(for:))
+            .joined(separator: "|")
+        guard !alternatives.isEmpty else {
+            return try! NSRegularExpression(pattern: "(?!)", options: [])
+        }
+        return try! NSRegularExpression(
+            pattern: "(?<![A-Z])[D-J]?(\(alternatives))(?:EN)?(?![A-Z])",
+            options: []
+        )
+    }
+
     static func matchedSubstrings(_ regex: NSRegularExpression, in text: String) -> [String] {
         let range = NSRange(text.startIndex..<text.endIndex, in: text)
         return regex.matches(in: text, options: [], range: range).compactMap { match in
             Range(match.range, in: text).map { String(text[$0]) }
+        }
+    }
+
+    static func matchedCaptureSubstrings(
+        _ regex: NSRegularExpression,
+        in text: String,
+        group: Int
+    ) -> [String] {
+        let range = NSRange(text.startIndex..<text.endIndex, in: text)
+        return regex.matches(in: text, options: [], range: range).compactMap { match in
+            guard match.numberOfRanges > group,
+                  let captureRange = Range(match.range(at: group), in: text) else { return nil }
+            return String(text[captureRange])
         }
     }
 
@@ -503,8 +594,13 @@ struct PokemonScanProfile: Sendable {
     )
     private let setCodeRegex: NSRegularExpression
     private let promoRegex: NSRegularExpression
+    let inferableDefinitions: [Int: PokemonSetDefinition]
 
     init(registry: PokemonCatalogRegistry) {
+        self.init(registry: registry, knownOfficialCounts: [:])
+    }
+
+    init(registry: PokemonCatalogRegistry, knownOfficialCounts: [String: Int]) {
         let expansionCodes = registry.descriptors
             .filter { $0.recognitionKind == .expansion && $0.scanEnabled }
             .compactMap { $0.printedCode?.uppercased() }
@@ -519,10 +615,29 @@ struct PokemonScanProfile: Sendable {
             expansionCodes: ScanText.unique(expansionCodes),
             promoPrefixes: ScanText.unique(promoPrefixes)
         )
-        self.setCodeRegex = ScanText.setCodeRegex(
-            codes: expansionCodes,
-            boundary: "A-Z"
+        self.setCodeRegex = ScanText.pokemonSetCodeRegex(codes: expansionCodes)
+
+        let countsByProviderID = Dictionary(
+            knownOfficialCounts.map { ($0.key.lowercased(), $0.value) },
+            uniquingKeysWith: { _, latest in latest }
         )
+        let ownersByDenominator = Dictionary(
+            grouping: countsByProviderID.keys.compactMap { providerID in
+                countsByProviderID[providerID].map { (providerID, $0) }
+            },
+            by: { $0.1 }
+        )
+        var inferable: [Int: PokemonSetDefinition] = [:]
+        for (denominator, owners) in ownersByDenominator where owners.count == 1 {
+            guard let descriptor = registry.descriptor(forProviderSetID: owners[0].0),
+                  descriptor.recognitionKind == .expansion,
+                  descriptor.scanEnabled,
+                  let printedCode = descriptor.printedCode,
+                  let definition = registry.pokemonSetDefinition(forPrintedCode: printedCode),
+                  definition.officialCount == denominator else { continue }
+            inferable[denominator] = definition
+        }
+        self.inferableDefinitions = inferable
 
         let promoAlternation = promoPrefixes
             .sorted { $0.count > $1.count }
@@ -536,7 +651,28 @@ struct PokemonScanProfile: Sendable {
         )
     }
 
-    static let bundledSeed = PokemonScanProfile(registry: .bundledSeed)
+    static let bundledSeed = PokemonScanProfile(
+        registry: .bundledSeed,
+        knownOfficialCounts: [:]
+    )
+
+    func inferredIdentifier(from number: PokemonPrintedNumberEvidence) -> ScanIdentifier? {
+        guard case .officialSet = number.scheme,
+              let definition = inferableDefinitions[number.denominator] else { return nil }
+        let digits = String(number.localID.prefix { $0.isNumber })
+        let suffix = String(number.localID.dropFirst(digits.count))
+        guard let localID = ScanText.pokemonLocalID(
+            digits: digits,
+            suffix: suffix,
+            minimumDigits: 3
+        ) else { return nil }
+        return .pokemon(
+            setCode: definition.printedCode,
+            cardNumber: localID,
+            printedTotal: definition.officialCount,
+            setDefinition: definition
+        )
+    }
 
     var customWords: [String] {
         ScanText.unique(vocabulary.expansionCodes + vocabulary.promoPrefixes)
@@ -571,7 +707,7 @@ struct PokemonScanProfile: Sendable {
             .replacingOccurrences(of: "\n", with: " ")
 
         let promoCandidates = promoMatches(in: normalized)
-        let codes = ScanText.matchedSubstrings(setCodeRegex, in: normalized)
+        let codes = ScanText.matchedCaptureSubstrings(setCodeRegex, in: normalized, group: 1)
         let numbers = numberMatches(in: normalized)
 
         var candidates: [ScanIdentifier] = promoCandidates
