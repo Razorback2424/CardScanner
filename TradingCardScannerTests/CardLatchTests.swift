@@ -982,49 +982,6 @@ final class CardLatchTests: XCTestCase {
         )
     }
 
-    func testSupersessionEvidenceRequiresLiveTrackerAndDifferentSubject() {
-        let priorSubject = subject(pokemon(223))
-        let replacingSubject = subject(pokemon(204, code: "PAL"))
-        let priorEncounter = UUID()
-        let priorPresentation = UUID()
-        let replacementEncounter = UUID()
-
-        let evidence = SpatialSupersessionEvidence.betweenTrackedPresentation(
-            hasLiveTracker: true,
-            encounterID: priorEncounter,
-            presentationToken: priorPresentation,
-            replacedSubject: priorSubject,
-            supersedingSubject: replacingSubject,
-            supersedingEncounterID: replacementEncounter
-        )
-        XCTAssertEqual(evidence?.encounterID, priorEncounter)
-        XCTAssertEqual(evidence?.presentationToken, priorPresentation)
-        XCTAssertEqual(evidence?.supersedingEncounterID, replacementEncounter)
-
-        XCTAssertNil(
-            SpatialSupersessionEvidence.betweenTrackedPresentation(
-                hasLiveTracker: true,
-                encounterID: priorEncounter,
-                presentationToken: priorPresentation,
-                replacedSubject: priorSubject,
-                supersedingSubject: priorSubject,
-                supersedingEncounterID: replacementEncounter
-            ),
-            "same-card recognition does not replace the tracked identity"
-        )
-        XCTAssertNil(
-            SpatialSupersessionEvidence.betweenTrackedPresentation(
-                hasLiveTracker: false,
-                encounterID: priorEncounter,
-                presentationToken: priorPresentation,
-                replacedSubject: priorSubject,
-                supersedingSubject: replacingSubject,
-                supersedingEncounterID: replacementEncounter
-            ),
-            "tracker loss, lifecycle invalidation, and authorized repeat clear the old tracker first"
-        )
-    }
-
     func testHeldRepeatAuthorizationIsOneShotAndDoesNotMarkSpatialExit() {
         var latch = CardLatch()
         let card = pokemon(223)
@@ -1192,6 +1149,17 @@ final class CardLatchTests: XCTestCase {
             "a later committed, different card is replacement evidence even if tracking was lost"
         )
 
+        XCTAssertEqual(
+            CollectionCandidateRoutingPolicy.decision(
+                for: sameAsOlder,
+                previous: latest,
+                history: [older],
+                proofs: []
+            ),
+            .suppress,
+            "an uncommitted replacing card is not evidence"
+        )
+
         let proof = SpatialResetProof(
             encounterID: older.encounterID,
             presentationToken: older.presentationToken
@@ -1206,50 +1174,6 @@ final class CardLatchTests: XCTestCase {
             .duplicate(.spatialExit(proof))
         )
 
-        let supersession = SpatialSupersessionEvidence(
-            encounterID: older.encounterID,
-            presentationToken: older.presentationToken,
-            supersedingEncounterID: latest.encounterID
-        )
-        XCTAssertEqual(
-            CollectionCandidateRoutingPolicy.decision(
-                for: sameAsOlder,
-                previous: latest,
-                history: [older, latest],
-                proofs: [],
-                supersessions: [supersession]
-            ),
-            .duplicate(.superseded(supersession))
-        )
-        XCTAssertEqual(
-            CollectionCandidateRoutingPolicy.decision(
-                for: sameAsOlder,
-                previous: latest,
-                history: [older],
-                proofs: [],
-                supersessions: [supersession]
-            ),
-            .suppress,
-            "a replacing encounter must be committed before its evidence can prompt"
-        )
-
-        let unrelated = committedSessionScan(identity: "pokemon:neo-111")
-        let unrelatedEvidence = SpatialSupersessionEvidence(
-            encounterID: unrelated.encounterID,
-            presentationToken: unrelated.presentationToken,
-            supersedingEncounterID: latest.encounterID
-        )
-        XCTAssertEqual(
-            CollectionCandidateRoutingPolicy.decision(
-                for: sameAsOlder,
-                previous: latest,
-                history: [older],
-                proofs: [],
-                supersessions: [unrelatedEvidence]
-            ),
-            .suppress,
-            "evidence attached to a different replaced card must be ignored"
-        )
     }
 
     func testCommittedReplacementUsesMagicCanonicalIdentityAndIgnoresSlabGrade() {

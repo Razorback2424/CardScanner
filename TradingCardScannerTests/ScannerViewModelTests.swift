@@ -1244,6 +1244,64 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertNil(model.scanAcknowledgement)
     }
 
+    func testUnprovenRepeatInPrintRunSetIsRejectedBeforePrintRunChoice() async throws {
+        let model = try makeModel(
+            variants: [.normal],
+            setProviderID: "base1"
+        )
+        let firstEncounter = UUID()
+
+        confirm(
+            model,
+            scannerIdentifier(setProviderID: "base1"),
+            encounterID: firstEncounter
+        )
+        await assertEventually { model.pendingPrintRunChoice?.request.encounterID == firstEncounter }
+        XCTAssertEqual(model.pendingPrintRunChoice?.options, [.firstEdition, .shadowless, .unlimited])
+
+        model.choose(.unlimited)
+        await assertEventually { model.sessionScans.count == 1 }
+
+        let repeatEncounter = UUID()
+        confirm(
+            model,
+            scannerIdentifier(setProviderID: "base1"),
+            encounterID: repeatEncounter
+        )
+        await assertEventually { model.note?.text.contains("already added this session") == true }
+        XCTAssertNil(model.pendingPrintRunChoice)
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+        XCTAssertEqual(model.sessionScans.count, 1)
+    }
+
+    func testRepeatAfterAddingAnotherCopyIsRejectedWithoutFreshReplacement() async throws {
+        let model = try makeModel(
+            variants: [.normal],
+            secondaryVariants: [.normal]
+        )
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: UUID())
+        await assertEventually { model.sessionScans.count == 1 }
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+        await assertEventually { model.sessionScans.count == 2 }
+
+        let confirmedRepeat = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: confirmedRepeat)
+        await assertEventually {
+            model.pendingDuplicateConfirmation?.encounterID == confirmedRepeat
+        }
+        model.addAnother()
+        await assertEventually {
+            model.sessionScans.count == 3 && model.pendingDuplicateConfirmation == nil
+        }
+
+        confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: UUID())
+        await assertEventually { model.note?.text.contains("already added this session") == true }
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+        XCTAssertEqual(model.sessionScans.count, 3)
+    }
+
     func testCommittedHistoryReplacementPromptsAfterTrackerLossWithFinishPicker() async throws {
         let model = try makeModel(
             variants: [.normal, .reverse],
@@ -1257,9 +1315,8 @@ final class ScannerViewModelTests: XCTestCase {
         model.choose(.reverse)
         await assertEventually { model.sessionScans.count == 1 }
 
-        // Model tracker loss before the next card is recognized. No spatial
-        // supersession event is published; committed history must still permit
-        // the repeated printing to reach its confirmation prompt.
+        // Model tracker loss before the next card is recognized. Committed
+        // history must still permit the repeat to reach its confirmation prompt.
         model.scanner.invalidateSpatialContinuity()
         await settle()
         confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: replacingEncounter)
@@ -1325,7 +1382,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 3)
     }
 
-    func testCommittedSupersessionCombinesRepeatAndFinishChoiceIntoOneAddAction() async throws {
+    func testCommittedHistoryReplacementCombinesRepeatAndFinishChoiceIntoOneAddAction() async throws {
         let model = try makeModel(
             variants: [.normal, .reverse],
             secondaryVariants: [.normal],
@@ -1340,30 +1397,9 @@ final class ScannerViewModelTests: XCTestCase {
         await assertEventually { model.pendingChoice?.request.encounterID == firstEncounter }
         model.choose(.reverse)
         await assertEventually { model.sessionScans.count == 1 }
-        let firstPresentation = try XCTUnwrap(
-            model.committedSessionHistory.first(where: { $0.encounterID == firstEncounter })
-        )
-
-        publishSupersession(
-            model,
-            replacedEncounterID: firstEncounter,
-            replacedPresentationToken: firstPresentation.presentationToken,
-            supersedingEncounterID: secondEncounter
-        )
-        await settle()
         confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: secondEncounter)
         await assertEventually { model.sessionScans.count == 2 }
-        let secondPresentation = try XCTUnwrap(
-            model.committedSessionHistory.first(where: { $0.encounterID == secondEncounter })
-        )
 
-        publishSupersession(
-            model,
-            replacedEncounterID: secondEncounter,
-            replacedPresentationToken: secondPresentation.presentationToken,
-            supersedingEncounterID: thirdEncounter
-        )
-        await settle()
         confirm(model, scannerIdentifier(cardNumber: "003"), encounterID: thirdEncounter)
         await assertEventually { model.sessionScans.count == 3 }
 
@@ -1396,7 +1432,7 @@ final class ScannerViewModelTests: XCTestCase {
         )
     }
 
-    func testCommittedSupersessionShowsAddAnotherPromptForResolvedFinish() async throws {
+    func testCommittedHistoryReplacementShowsAddAnotherPromptForResolvedFinish() async throws {
         let model = try makeModel(
             variants: [.normal],
             secondaryVariants: [.normal]
@@ -1406,16 +1442,6 @@ final class ScannerViewModelTests: XCTestCase {
 
         confirm(model, scannerIdentifier(cardNumber: "001"), encounterID: firstEncounter)
         await assertEventually { model.sessionScans.count == 1 }
-        let firstPresentation = try XCTUnwrap(
-            model.committedSessionHistory.first(where: { $0.encounterID == firstEncounter })
-        )
-        publishSupersession(
-            model,
-            replacedEncounterID: firstEncounter,
-            replacedPresentationToken: firstPresentation.presentationToken,
-            supersedingEncounterID: replacingEncounter
-        )
-        await settle()
         confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: replacingEncounter)
         await assertEventually { model.sessionScans.count == 2 }
 
@@ -1425,10 +1451,10 @@ final class ScannerViewModelTests: XCTestCase {
             model.pendingDuplicateConfirmation?.encounterID == repeatedEncounter
         }
         guard let confirmation = model.pendingDuplicateConfirmation else {
-            return XCTFail("the superseded repeat should ask before adding")
+            return XCTFail("the committed-history repeat should ask before adding")
         }
-        guard case .superseded(_) = confirmation.evidence else {
-            return XCTFail("the prompt should own the one-shot supersession evidence")
+        guard case .committedReplacement(_) = confirmation.evidence else {
+            return XCTFail("the prompt should use committed-history replacement evidence")
         }
         XCTAssertEqual(confirmation.previousFinishLabel, "Normal")
 
@@ -1440,7 +1466,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 3)
     }
 
-    func testDeclinedSupersessionRepeatDoesNotAddAndHistoryPromptsAgain() async throws {
+    func testDeclinedHistoryReplacementDoesNotAddAndPromptsAgain() async throws {
         let model = try makeModel(
             variants: [.normal, .reverse],
             secondaryVariants: [.normal]
@@ -1452,16 +1478,6 @@ final class ScannerViewModelTests: XCTestCase {
         await assertEventually { model.pendingChoice?.request.encounterID == firstEncounter }
         model.choose(.reverse)
         await assertEventually { model.sessionScans.count == 1 }
-        let firstPresentation = try XCTUnwrap(
-            model.committedSessionHistory.first(where: { $0.encounterID == firstEncounter })
-        )
-        publishSupersession(
-            model,
-            replacedEncounterID: firstEncounter,
-            replacedPresentationToken: firstPresentation.presentationToken,
-            supersedingEncounterID: replacingEncounter
-        )
-        await settle()
         confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: replacingEncounter)
         await assertEventually { model.sessionScans.count == 2 }
 
@@ -1496,17 +1512,6 @@ final class ScannerViewModelTests: XCTestCase {
         await assertEventually { model.pendingChoice?.request.encounterID == firstEncounter }
         model.choose(.reverse)
         await assertEventually { model.sessionScans.count == 1 }
-        let firstPresentation = try XCTUnwrap(
-            model.committedSessionHistory.first(where: { $0.encounterID == firstEncounter })
-        )
-
-        publishSupersession(
-            model,
-            replacedEncounterID: firstEncounter,
-            replacedPresentationToken: firstPresentation.presentationToken,
-            supersedingEncounterID: uncommittedReplacement
-        )
-        await settle()
         confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: uncommittedReplacement)
         await assertEventually {
             model.pendingChoice?.request.encounterID == uncommittedReplacement
@@ -2385,21 +2390,6 @@ final class ScannerViewModelTests: XCTestCase {
         authorizationID: UUID? = nil
     ) {
         model.scanner.onConfirmedSubjectCandidate?(nil, encounterID, subject, authorizationID)
-    }
-
-    private func publishSupersession(
-        _ model: ScannerViewModel,
-        replacedEncounterID: UUID,
-        replacedPresentationToken: UUID,
-        supersedingEncounterID: UUID
-    ) {
-        model.scanner.onSpatialSupersessionEvidence?(
-            SpatialSupersessionEvidence(
-                encounterID: replacedEncounterID,
-                presentationToken: replacedPresentationToken,
-                supersedingEncounterID: supersedingEncounterID
-            )
-        )
     }
 
     private func useSlabMode(_ model: ScannerViewModel) {
