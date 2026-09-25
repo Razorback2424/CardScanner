@@ -1,3 +1,45 @@
+- Scanner recognition remediation review follow-up (2026-09-25; working tree
+  based on `main@a55f4df83e5cab`): completed a source-to-plan audit and fixed
+  several correctness gaps. Denominator ownership now includes active registry
+  official counts as well as checklist overrides. Same-key unresolved rows keep
+  unioned evidence and candidates while updating to the latest failure reason;
+  merging a direct set-code read keeps inferred-name validation disabled, and
+  only rows first created in the current session count in its summary. The
+  focused iPhone 17 Pro / iOS 26.5 simulator selection passed 227/227 tests;
+  the full non-centering suite passed 1,561 tests with 7 skipped and 0 failures.
+  Result bundles are `Focused-final-2026-09-25.xcresult` and
+  `Full-noncentering-2026-09-25.xcresult` under the external SSD's
+  `CardScannerBuild/ScannerRecognitionReview-2026-09-25/Results/` folder.
+  Physical ASC-stack recognition, forced-failure/relaunch actions, and the
+  Instruments comparison remain open; these simulator results do not establish
+  device readiness. The current merge and inference behavior is described in
+  [`scanner recognition remediation`](docs/plans/scanner-recognition-remediation.md).
+
+- Scanner recognition and Needs attention remediation (2026-09-24; working tree
+  based on `main@a55f4df83e5c`): implemented denominator-owned modern Pokémon
+  set inference with a unique fuzzy title agreement gate, Pokémon footer-code
+  spacing support, historical OCR matching and evidence merging, scoped latch
+  retries, and post-commit label OCR. Collection failures now file immediately
+  to the capped local unresolved-scan store, survive Scan-tab departures and
+  relaunch, expose candidate/retry/save/search/dismiss actions, and clear when a
+  matching card is resolved or committed. The record also preserves graded
+  label identity evidence so a relaunch cannot downgrade a slab retry into a
+  raw-card add. Collection lock-wait signposts and 25-patch writer batches are
+  included. Focused iPhone 17 Pro / iOS 26.5 simulator suites pass 225/225; the
+  full non-centering suite passes 1,559 tests with 7 skipped and 0 failures.
+  The injected unresolved-store suite passes 5/5, including corrupt-file,
+  50-row-cap, unknown-set read-only, and slab-evidence round trips. Result
+  bundles are `Test-TradingCardScanner-2026.09.24_22-27-41--0600.xcresult`
+  (focused) and `Test-TradingCardScanner-2026.09.24_22-28-18--0600.xcresult`
+  (full non-centering), under the external SSD result folder.
+  The plan's “9 known pre-existing failures” referred to the superseded first
+  2026-09-23 snapshot; the later same-day baseline at the top of this file had
+  0 failures, and the current rerun also has 0. Result bundles are under the
+  external SSD's `CardScannerBuild/ScannerRecognitionDerivedData/Logs/Test/`
+  folder. The physical ASC stack, forced-failure/relaunch flows, and Instruments
+  comparisons remain open; simulator evidence is not device readiness. Details
+  are in [`scanner recognition remediation`](docs/plans/scanner-recognition-remediation.md).
+
 - Systems-review pass-2 follow-up (2026-09-23; working tree based on
   `main@c1837b2`): fixed the refresh/migration-gate deadlock, made refresh
   suspension clear to idle when no work remains, prevented a cancelled
