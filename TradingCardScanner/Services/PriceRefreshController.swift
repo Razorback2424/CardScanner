@@ -999,126 +999,137 @@ actor PriceRefreshModelActor {
         retryAfterFailure: Bool = true
     ) -> (saved: Bool, applied: Int, skipped: Int) {
         guard !pendingRowPatches.isEmpty else { return (true, 0, 0) }
-        let patches = pendingRowPatches
-        do {
-            let result = try CollectionWriteSerializer.perform(
-                container: modelContainer,
-                timeout: .wait
-            ) { context -> (applied: Int, skipped: Int) in
-                var applied = 0
-                var skipped = 0
-                for patch in patches {
-                    let key = patch.collectionKey
-                    let descriptor = FetchDescriptor<CollectedCard>(
-                        predicate: #Predicate { $0.collectionKey == key }
-                    )
-                    let rows = try context.fetch(descriptor)
-                    guard !rows.isEmpty else {
-                        skipped += 1
-                        continue
-                    }
-                    for row in rows {
-                        guard row.priceKey == patch.expectedPriceKey,
-                              row.variantID == patch.expectedVariantID,
-                              row.justTCGVariantID == patch.expectedMarketVariantID else {
+        var applied = 0
+        var skipped = 0
+        while !pendingRowPatches.isEmpty {
+            let batch = Array(pendingRowPatches.prefix(25))
+            do {
+                let result = try CollectionWriteSerializer.perform(
+                    container: modelContainer,
+                    timeout: .wait,
+                    callerLabel: "PriceRefreshController.applyPendingRowPatches"
+                ) { context -> (applied: Int, skipped: Int) in
+                    var applied = 0
+                    var skipped = 0
+                    for patch in batch {
+                        let key = patch.collectionKey
+                        let descriptor = FetchDescriptor<CollectedCard>(
+                            predicate: #Predicate { $0.collectionKey == key }
+                        )
+                        let rows = try context.fetch(descriptor)
+                        guard !rows.isEmpty else {
                             skipped += 1
                             continue
                         }
-                        switch patch.change {
-                        case let .catalogMetadata(metadata, checkedAt):
-                            row.applyCatalogMetadata(metadata)
-                            CollectionCatalogNormalizer.recordCatalogMetadataCheck(
-                                on: row,
-                                at: checkedAt
-                            )
-                        case let .sealedArtwork(url, checkedAt):
-                            guard row.itemKind == .sealedProduct, row.imageURL == nil else {
+                        for row in rows {
+                            guard row.priceKey == patch.expectedPriceKey,
+                                  row.variantID == patch.expectedVariantID,
+                                  row.justTCGVariantID == patch.expectedMarketVariantID else {
                                 skipped += 1
                                 continue
                             }
-                            CollectionCatalogNormalizer.recordSealedArtworkCheck(
-                                on: row,
-                                at: checkedAt
-                            )
-                            if let url { row.imageURL = url }
-                        case let .vendorBinding(productID, sku):
-                            if row.tcgplayerProductID == nil, let productID {
-                                row.tcgplayerProductID = productID
-                            }
-                            if row.tcgplayerSKUID == nil, let sku {
-                                row.tcgplayerSKUID = sku
-                            }
-                        case let .gradedBinding(
-                            marketVariantID,
-                            marketCardID,
-                            apiVersion
-                        ):
-                            guard row.itemKind == .gradedCard,
-                                  row.justTCGVariantID == nil
-                                    || row.justTCGVariantID == marketVariantID else {
-                                skipped += 1
-                                continue
-                            }
-                            let oldPriceKey = row.priceKey
-                            let marketPrintingID = "justtcg:\(apiVersion):\(marketVariantID)"
-                            let newPriceKey = PriceRecord.key(
-                                game: row.cardGame,
-                                printingID: marketPrintingID,
-                                variantID: row.variantID,
-                                treatmentIDs: row.priceTreatmentIDs
-                            )
-                            if oldPriceKey != newPriceKey {
-                                let events = try context.fetch(
-                                    FetchDescriptor<InventoryEvent>(
-                                        predicate: #Predicate {
-                                            $0.priceStorageKey == oldPriceKey
-                                        }
-                                    )
+                            switch patch.change {
+                            case let .catalogMetadata(metadata, checkedAt):
+                                row.applyCatalogMetadata(metadata)
+                                CollectionCatalogNormalizer.recordCatalogMetadataCheck(
+                                    on: row,
+                                    at: checkedAt
                                 )
-                                for event in events {
-                                    event.priceStorageKey = newPriceKey
+                            case let .sealedArtwork(url, checkedAt):
+                                guard row.itemKind == .sealedProduct, row.imageURL == nil else {
+                                    skipped += 1
+                                    continue
                                 }
+                                CollectionCatalogNormalizer.recordSealedArtworkCheck(
+                                    on: row,
+                                    at: checkedAt
+                                )
+                                if let url { row.imageURL = url }
+                            case let .vendorBinding(productID, sku):
+                                if row.tcgplayerProductID == nil, let productID {
+                                    row.tcgplayerProductID = productID
+                                }
+                                if row.tcgplayerSKUID == nil, let sku {
+                                    row.tcgplayerSKUID = sku
+                                }
+                            case let .gradedBinding(
+                                marketVariantID,
+                                marketCardID,
+                                apiVersion
+                            ):
+                                guard row.itemKind == .gradedCard,
+                                      row.justTCGVariantID == nil
+                                        || row.justTCGVariantID == marketVariantID else {
+                                    skipped += 1
+                                    continue
+                                }
+                                let oldPriceKey = row.priceKey
+                                let marketPrintingID = "justtcg:\(apiVersion):\(marketVariantID)"
+                                let newPriceKey = PriceRecord.key(
+                                    game: row.cardGame,
+                                    printingID: marketPrintingID,
+                                    variantID: row.variantID,
+                                    treatmentIDs: row.priceTreatmentIDs
+                                )
+                                if oldPriceKey != newPriceKey {
+                                    let events = try context.fetch(
+                                        FetchDescriptor<InventoryEvent>(
+                                            predicate: #Predicate {
+                                                $0.priceStorageKey == oldPriceKey
+                                            }
+                                        )
+                                    )
+                                    for event in events {
+                                        event.priceStorageKey = newPriceKey
+                                    }
+                                }
+                                row.justTCGVariantID = marketVariantID
+                                row.justTCGCardID = marketCardID ?? row.justTCGCardID
+                                row.justTCGAPIVersion = apiVersion
+                                row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+                            case let .pendingCatalogFinish(expected, replacement):
+                                guard PendingCatalogFinishState.read(from: row) == expected else {
+                                    skipped += 1
+                                    continue
+                                }
+                                row.pendingCatalogFinishID = replacement.id
+                                row.pendingCatalogFinishFirstSeenAt = replacement.firstSeenAt
+                                row.pendingCatalogFinishRefreshID = replacement.refreshID
                             }
-                            row.justTCGVariantID = marketVariantID
-                            row.justTCGCardID = marketCardID ?? row.justTCGCardID
-                            row.justTCGAPIVersion = apiVersion
-                            row.itemKindRaw = CollectionItemKind.gradedCard.rawValue
-                        case let .pendingCatalogFinish(expected, replacement):
-                            guard PendingCatalogFinishState.read(from: row) == expected else {
-                                skipped += 1
-                                continue
-                            }
-                            row.pendingCatalogFinishID = replacement.id
-                            row.pendingCatalogFinishFirstSeenAt = replacement.firstSeenAt
-                            row.pendingCatalogFinishRefreshID = replacement.refreshID
+                            applied += 1
                         }
-                        applied += 1
                     }
+                    if context.hasChanges { try context.save() }
+                    return (applied, skipped)
                 }
-                if context.hasChanges { try context.save() }
-                return (applied, skipped)
+                applied += result.applied
+                skipped += result.skipped
+                pendingRowPatches.removeFirst(batch.count)
+            } catch {
+                refreshStore?.index?.reload()
+                identityIndex?.reload()
+                if retryAfterFailure {
+                    // Earlier chunks are already durable. Retry only the
+                    // unapplied tail once in a fresh context.
+                    skippedRowPatchCount += skipped
+                    let retried = applyPendingRowPatches(retryAfterFailure: false)
+                    return (
+                        retried.saved,
+                        applied + retried.applied,
+                        skipped + retried.skipped
+                    )
+                }
+                skippedRowPatchCount += skipped
+                return (false, applied, skipped + pendingRowPatches.count)
             }
-            pendingRowPatches.removeAll()
-            skippedRowPatchCount += result.skipped
-            // A graded binding may have moved price records and lineage in the
-            // patch context. Refresh the actor's value indexes before its next
-            // lookup can consult them.
-            refreshStore?.index?.reload()
-            identityIndex?.reload()
-            return (true, result.applied, result.skipped)
-        } catch {
-            pendingRowPatches = patches
-            refreshStore?.index?.reload()
-            identityIndex?.reload()
-            if retryAfterFailure {
-                // The price-side checkpoint is already durable. Retry the
-                // guarded ownership patch once in a fresh context so a
-                // transient row-store save failure does not strand the row on
-                // its pre-promotion price key.
-                return applyPendingRowPatches(retryAfterFailure: false)
-            }
-            return (false, 0, patches.count)
         }
+        skippedRowPatchCount += skipped
+        // A graded binding may have moved price records and lineage in the
+        // patch contexts. Refresh the actor's value indexes before its next
+        // lookup can consult them.
+        refreshStore?.index?.reload()
+        identityIndex?.reload()
+        return (true, applied, skipped)
     }
 
     private func applyActiveBatch(

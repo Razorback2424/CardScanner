@@ -45,6 +45,7 @@ enum CollectionWriteSerializer {
         container: ModelContainer,
         timeout: Timeout,
         exclusiveToken: UUID? = nil,
+        callerLabel: String = #function,
         _ body: (ModelContext) throws -> T
     ) throws -> T {
         guard !isHeldByCurrentThread else {
@@ -52,13 +53,27 @@ enum CollectionWriteSerializer {
             throw CollectionStoreError.collectionBusy
         }
 
+        let waitID = PerformanceSignpost.makeID()
+        let waitState = PerformanceSignpost.beginInterval(
+            "collectionWriteLockWait",
+            id: waitID,
+            "caller=\(callerLabel) timeout=\(timeout)"
+        )
+        let acquired: Bool
         switch timeout {
         case .mainThread:
-            guard ownershipLock.lock(before: Date.now.addingTimeInterval(1.5)) else {
-                throw CollectionStoreError.collectionBusy
-            }
+            acquired = ownershipLock.lock(before: Date.now.addingTimeInterval(1.5))
         case .wait:
             ownershipLock.lock()
+            acquired = true
+        }
+        PerformanceSignpost.endInterval(
+            "collectionWriteLockWait",
+            waitState,
+            "caller=\(callerLabel) outcome=\(acquired ? "acquired" : "timeout")"
+        )
+        guard acquired else {
+            throw CollectionStoreError.collectionBusy
         }
 
         defer {
