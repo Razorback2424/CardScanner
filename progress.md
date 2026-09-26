@@ -1,3 +1,31 @@
+- Scanner recognition remediation review corrections (2026-09-25; working tree
+  based on `main@6747859f5e8c`): fixed the async candidate-list writeback by
+  looking rows up again by ID, kept Needs attention rows until a successful
+  commit or a verified existing collection entry, and carried slab identity
+  through candidate choice. Exact chosen Pokémon printings now resolve from the
+  offline checklist before broad historical matching. Cleanup is conservative
+  for shared denominators and ignores candidate suggestions; historical rows
+  are scoped across sessions, while a list-originated retry updates its source
+  row by ID across that boundary. Persistence preserves records that an early
+  registry cannot yet rehydrate, deduplicates row IDs, waits for ordered saves
+  before catalog reloads, and retains Magic language. Retry-save checks the
+  exact collection entry before routing, and Price Check/retry messages now
+  reflect what actually happened. Same-number historical title evidence starts
+  fresh after its TTL to prevent OCR from carrying over to a second card. The
+  app-scoped Browse catalog is passed into Needs attention search, and Magic
+  no-confirmed-match rows can retry lookup. The focused iPhone 17 Pro / iOS 26.5
+  Simulator selection passed 229/229 tests with 0 skipped, including scanner,
+  parser/latch, historical catalog, Pokémon catalog, retry-bound, and unresolved
+  store coverage. Result bundle: `ReviewFixes-final-r3-2026-09-25.xcresult`
+  under the external SSD's
+  `CardScannerBuild/ScannerRecognitionReview-2026-09-25/Results/` folder. The
+  full non-centering suite was not rerun for this follow-up; its 1,561 pass / 7
+  skipped result is from the preceding source-review snapshot. Physical
+  Ascended Heroes recognition, failure/relaunch actions, and the Instruments
+  comparison remain open; simulator evidence does not establish device
+  readiness. The plan records the review decisions in
+  [`scanner recognition remediation`](docs/plans/scanner-recognition-remediation.md).
+
 - Scanner recognition remediation review follow-up (2026-09-25; working tree
   based on `main@a55f4df83e5cab`): completed a source-to-plan audit and fixed
   several correctness gaps. Denominator ownership now includes active registry
