@@ -1,3 +1,13 @@
+- Pokémon USD price gap validation (2026-09-26; `claude/pokemon-price-feed-gaps-kpxv5w`
+  after `23566a0`): source-data audit only, no pricing code changed. TCGdex
+  `cards-database@a9bf1ef` omits the set-level TCGplayer group for `30th` and
+  `30th-c`, so its server never prices either set. Its list and GraphQL
+  endpoints expose no bulk pricing (Phase 6.0 outcome B). Five bundled
+  checklist slots are phantom: Perfect Order 019/024/028/050 Normal and Chaos
+  Rising 122 Holo. Live price hosts were unreachable from the audit
+  environment, so live counts remain open. Proposal:
+  [`Pokémon USD price gap plan`](docs/plans/pokemon_usd_price_gap_plan.md).
+
 - Scanner recognition remediation review corrections (2026-09-25; working tree
   based on `main@6747859f5e8c`): fixed the async candidate-list writeback by
   looking rows up again by ID, kept Needs attention rows until a successful

@@ -13,6 +13,11 @@ remains unresolved: the current TCGdex service has no supported set-level
 pricing response, so pokemontcg.io remains authoritative and no TCGdex cutover
 is claimed. Stage 4B remains disabled.
 
+**Phase 6.0 update — 2026-09-26:** TCGdex source inspection shows no bulk
+pricing path (outcome B). The Mega Evolution-era gap analysis and the proposed
+free set-level successor are in the
+[Pokémon USD price gap plan](pokemon_usd_price_gap_plan.md).
+
 ## Final architectural decision
 
 Split the current Stage 4 into two separate capabilities:

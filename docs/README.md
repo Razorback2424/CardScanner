@@ -22,6 +22,7 @@ chronological notes.
 | Magic catalog signing and publication | [`plans/magic_catalog_key_handling_runbook.md`](plans/magic_catalog_key_handling_runbook.md) — current authority for Magic-specific key custody, signed catalog releases, protected/automatic publication routing, Scryfall boundaries, and rollout safeguards; owner key-pin input remains open and rollout remains `legacy-live` |
 | Browse set directory defects (artwork kind, set counts, price sort) | [`plans/browse_set_directory_remediation_plan.md`](plans/browse_set_directory_remediation_plan.md) |
 | Artwork fallback contract | [`plans/artwork-fallback-plan.md`](plans/artwork-fallback-plan.md) and `TradingCardScanner/Services/ArtworkFallbacks.swift` |
+| Pokémon USD price gaps and legacy-feed successor | [`plans/pokemon_usd_price_gap_plan.md`](plans/pokemon_usd_price_gap_plan.md) — 2026-09-26 source-data validation and proposal; no pricing code implemented, live provider counts still open |
 | Per-card price history chart | [`plans/price_history_chart_plan.md`](plans/price_history_chart_plan.md) and `PriceHistoryChartModel` in `TradingCardScanner/Views/CollectionCardDetailView.swift` |
 | Price-refresh scale backlog | [`plans/price_refresh_scale_plan.md`](plans/price_refresh_scale_plan.md) |
 | Finish-effect rendering performance | [`superpowers/plans/2026-09-12-foil-effect-performance.md`](superpowers/plans/2026-09-12-foil-effect-performance.md) |
