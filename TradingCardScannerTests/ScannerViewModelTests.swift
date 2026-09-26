@@ -1252,6 +1252,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(failed)
         XCTAssertNotNil(model.heldDuplicateOffer)
         XCTAssertEqual(model.scanAcknowledgement?.phase, .failed)
+        XCTAssertFalse(model.scanAcknowledgement?.canRetryScan ?? true)
         XCTAssertEqual(
             model.scanAcknowledgement?.message,
             "Recognized, but saving failed. Saved to Needs attention to retry."
@@ -1867,6 +1868,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(filed, "a deterministic catalog miss is filed on the first failure")
         XCTAssertEqual(model.unresolvedScans.first?.subject, subject)
         XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
+        XCTAssertTrue(model.scanAcknowledgement?.canRetryScan == true)
     }
 
     func testTransientAndProviderFailuresFileImmediatelyWithSpecificMessages() async throws {
@@ -1882,6 +1884,7 @@ final class ScannerViewModelTests: XCTestCase {
             transient.scanAcknowledgement?.message,
             "Couldn't reach the catalog — retrying. Keep the card in view."
         )
+        XCTAssertFalse(transient.scanAcknowledgement?.canRetryScan ?? true)
 
         let unavailable = try makeModel(variants: [.normal], sourceFailure: .providerUnavailable)
         confirm(unavailable, scannerIdentifier(), encounterID: UUID())
@@ -1895,6 +1898,7 @@ final class ScannerViewModelTests: XCTestCase {
             unavailable.scanAcknowledgement?.message,
             "Not added — card lookup is unavailable right now. Try again later."
         )
+        XCTAssertFalse(unavailable.scanAcknowledgement?.canRetryScan ?? true)
     }
 
     func testInferredNameMismatchFilesCandidateAndDoesNotCommit() async throws {
@@ -1916,8 +1920,68 @@ final class ScannerViewModelTests: XCTestCase {
             model.scanAcknowledgement?.message,
             "Couldn't confirm which card this is. Saved to Needs attention."
         )
+        XCTAssertTrue(model.scanAcknowledgement?.canRetryScan == true)
         XCTAssertEqual(model.successCount, 0)
         XCTAssertTrue(model.recent.isEmpty)
+    }
+
+    func testRetryFailedIdentityReadsSameCardAgainAndCommitsOnlyAfterNameAgrees() async throws {
+        let model = try makeModel(variants: [.normal])
+        let identifier = scannerIdentifier()
+        let mismatched = ScanSubject(
+            identifier: identifier,
+            inferredNameReadings: ["pikachu"]
+        )
+        model.scanner.drainProfileQueuesForTesting()
+        let start = CFAbsoluteTimeGetCurrent()
+        model.scanner.receiveFooterOutcomeForTesting(.identified(mismatched), at: start + 0.25)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(mismatched), at: start + 0.5)
+
+        let failed = await waitUntil {
+            model.scanAcknowledgement?.phase == .failed
+                && model.scanAcknowledgement?.canRetryScan == true
+                && model.unresolvedScans.count == 1
+        }
+        XCTAssertTrue(failed)
+        let failedAcknowledgement = try XCTUnwrap(model.scanAcknowledgement)
+        let unresolvedID = try XCTUnwrap(model.unresolvedScans.first?.id)
+        model.scanner.drainVisionQueueForTesting()
+        XCTAssertEqual(model.scanner.latchedSubjectForTesting, mismatched)
+
+        model.retryFailedScan(encounterID: failedAcknowledgement.encounterID)
+        model.scanner.drainVisionQueueForTesting()
+        XCTAssertNil(model.scanAcknowledgement)
+        XCTAssertNil(model.scanner.latchedSubjectForTesting)
+        XCTAssertEqual(model.unresolvedScans.count, 1, "the failure record stays until a verified commit")
+
+        model.scanner.receiveFooterOutcomeForTesting(.identified(mismatched), at: start + 0.75)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(mismatched), at: start + 1.0)
+
+        let failedAgain = await waitUntil {
+            model.scanAcknowledgement?.phase == .failed
+                && model.scanAcknowledgement?.canRetryScan == true
+                && model.unresolvedScans.count == 1
+        }
+        XCTAssertTrue(failedAgain)
+        XCTAssertEqual(model.successCount, 0)
+        XCTAssertEqual(model.unresolvedScans.first?.id, unresolvedID)
+        let secondFailure = try XCTUnwrap(model.scanAcknowledgement)
+
+        let corrected = ScanSubject(
+            identifier: identifier,
+            inferredNameReadings: ["Test Card"]
+        )
+        model.retryFailedScan(encounterID: secondFailure.encounterID)
+        model.scanner.drainVisionQueueForTesting()
+        model.scanner.receiveFooterOutcomeForTesting(.identified(corrected), at: start + 1.25)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(corrected), at: start + 1.5)
+
+        let committed = await waitUntil {
+            model.successCount == 1 && model.unresolvedScans.isEmpty
+        }
+        XCTAssertTrue(committed)
+        XCTAssertEqual(model.recent.count, 1)
+        XCTAssertEqual(model.successCount, 1)
     }
 
     func testPriceCheckNameMismatchDoesNotClaimToSaveNeedsAttention() async throws {

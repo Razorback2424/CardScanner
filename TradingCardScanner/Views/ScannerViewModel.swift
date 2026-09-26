@@ -1269,19 +1269,22 @@ struct ScanAcknowledgement: Identifiable, Equatable, Sendable {
     let subject: ScanSubject
     let phase: ScanAcknowledgementPhase
     let message: String?
+    let canRetryScan: Bool
 
     init(
         id: UUID = UUID(),
         encounterID: UUID,
         subject: ScanSubject,
         phase: ScanAcknowledgementPhase,
-        message: String? = nil
+        message: String? = nil,
+        canRetryScan: Bool = false
     ) {
         self.id = id
         self.encounterID = encounterID
         self.subject = subject
         self.phase = phase
         self.message = message
+        self.canRetryScan = canRetryScan
     }
 }
 
@@ -2980,6 +2983,26 @@ final class ScannerViewModel: ObservableObject {
         sessionUnresolvedIDs.remove(id)
     }
 
+    /// Rearms the camera for a deliberate fresh read after an identity failure.
+    /// The unresolved record remains until a later verified collection commit.
+    func retryFailedScan(encounterID: UUID) {
+        guard let acknowledgement = scanAcknowledgement,
+              acknowledgement.encounterID == encounterID,
+              acknowledgement.phase == .failed,
+              acknowledgement.canRetryScan else { return }
+
+        clearAcknowledgement(for: encounterID)
+        if catalogMissSuppressionKey == acknowledgement.subject.suppressionKey {
+            catalogMissSuppressionKey = nil
+        }
+        scanner.retryFailedScan(of: acknowledgement.subject.suppressionKey)
+        show(ScanNote(
+            text: "Ready for another read — adjust the card and hold steady.",
+            tone: .info
+        ))
+        diagnostic("failedScanRetryRequested")
+    }
+
     func unresolvedCandidates(for id: UUID) async -> [PokemonCatalogCardIdentity] {
         guard let row = unresolvedScans.first(where: { $0.id == id }),
               let number = row.pokemonNumber else { return [] }
@@ -3525,7 +3548,11 @@ final class ScannerViewModel: ObservableObject {
             let message = isCollectionScan
                 ? "Couldn't confirm which card this is. Saved to Needs attention."
                 : "Couldn't confirm which card this is. Nothing was added."
-            if !failAcknowledgement(for: request.encounterID, message: message) {
+            if !failAcknowledgement(
+                for: request.encounterID,
+                message: message,
+                canRetryScan: isCollectionScan
+            ) {
                 show(ScanNote(text: message, tone: .problem))
             }
             feedback.problem()
@@ -5236,7 +5263,8 @@ final class ScannerViewModel: ObservableObject {
             )
             failAcknowledgement(
                 for: request.encounterID,
-                message: message
+                message: message,
+                canRetryScan: request.purpose == .collection && failure == .notInCatalog
             )
         } else {
             endOneCardScan(encounterID: request.encounterID, outcome: "price-check-failure")
@@ -5353,7 +5381,11 @@ final class ScannerViewModel: ObservableObject {
     }
 
     @discardableResult
-    private func failAcknowledgement(for encounterID: UUID, message: String) -> Bool {
+    private func failAcknowledgement(
+        for encounterID: UUID,
+        message: String,
+        canRetryScan: Bool = false
+    ) -> Bool {
         endOneCardScan(encounterID: encounterID, outcome: "failure")
         guard let acknowledgement = scanAcknowledgement,
               acknowledgement.encounterID == encounterID else { return false }
@@ -5361,7 +5393,8 @@ final class ScannerViewModel: ObservableObject {
             encounterID: encounterID,
             subject: acknowledgement.subject,
             phase: .failed,
-            message: message
+            message: message,
+            canRetryScan: canRetryScan
         )
         diagnostic("recognitionAcknowledgementFailed")
         return true

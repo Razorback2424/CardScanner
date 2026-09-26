@@ -162,6 +162,7 @@ struct VariantProvenanceLabel: View {
 /// completed.
 struct ScanAcknowledgementCard: View {
     let acknowledgement: ScanAcknowledgement
+    let onRetryScan: () -> Void
 
     private var isFailure: Bool {
         acknowledgement.phase == .failed
@@ -172,10 +173,12 @@ struct ScanAcknowledgementCard: View {
             Image(systemName: isFailure ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
                 .font(.title3)
                 .foregroundStyle(isFailure ? .orange : .cyan)
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(isFailure ? "Not added" : "Recognized")
                     .font(.subheadline.weight(.bold))
+                    .accessibilityAddTraits(.isHeader)
                 Text(acknowledgement.subject.displayIdentifier)
                     .font(.caption.monospacedDigit())
                     .foregroundStyle(.white.opacity(0.76))
@@ -185,6 +188,17 @@ struct ScanAcknowledgementCard: View {
                         .font(.caption)
                         .foregroundStyle(.white.opacity(0.86))
                         .fixedSize(horizontal: false, vertical: true)
+                }
+
+                if isFailure, acknowledgement.canRetryScan {
+                    Button(action: onRetryScan) {
+                        Label("Retry scan", systemImage: "arrow.clockwise")
+                            .font(.caption.weight(.semibold))
+                            .frame(minHeight: 44)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.cyan)
+                    .accessibilityHint("Adjust the card, then hold it steady for a clearer read.")
                 }
             }
 
@@ -198,12 +212,7 @@ struct ScanAcknowledgementCard: View {
         .foregroundStyle(.white)
         .padding(12)
         .appGlass(cornerRadius: 16)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(
-            isFailure
-                ? "Not added. \(acknowledgement.message ?? "Try again")"
-                : "Recognized. \(acknowledgement.message ?? "Saving")"
-        )
+        .accessibilityElement(children: .contain)
     }
 }
 

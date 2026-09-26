@@ -286,7 +286,12 @@ private struct ScannerChrome: View {
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let acknowledgement = model.scanAcknowledgement {
-                ScanAcknowledgementCard(acknowledgement: acknowledgement)
+                ScanAcknowledgementCard(
+                    acknowledgement: acknowledgement,
+                    onRetryScan: {
+                        model.retryFailedScan(encounterID: acknowledgement.encounterID)
+                    }
+                )
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                     .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if model.purpose == .collection, let receipt = model.receipt {

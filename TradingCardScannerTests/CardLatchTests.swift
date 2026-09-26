@@ -526,6 +526,35 @@ final class CardLatchTests: XCTestCase {
     }
 
 #if DEBUG
+    func testExplicitRetryForgetsOnlyFailedPrintingAndHistoricalTitleEvidence() {
+        let scanner = CardScanner()
+        let targetIdentifier = historical("001", titles: ["CHARIZARD"])
+        let target = subject(targetIdentifier)
+        let other = subject(pokemon(204, code: "PAL"))
+
+        scanner.receiveFooterOutcomeForTesting(.identified(target), at: 0.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(target), at: 0.5)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, target)
+
+        scanner.receiveFooterOutcomeForTesting(.identified(other), at: 0.75)
+        scanner.receiveFooterOutcomeForTesting(.identified(other), at: 1.0)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, other)
+
+        let number = PokemonPrintedNumberEvidence(
+            localID: "001",
+            denominator: 102,
+            scheme: .officialSet
+        )
+        XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(number, at: 1.25))
+        scanner.setHistoricalTitleCandidatesForTesting(["STALE TITLE"])
+
+        scanner.retryFailedScan(of: target.suppressionKey)
+        scanner.drainVisionQueueForTesting()
+
+        XCTAssertEqual(scanner.latchedSubjectForTesting, other)
+        XCTAssertTrue(scanner.historicalTitleCandidatesForTesting.isEmpty)
+    }
+
     func testRawModeDoesNotReadSlabLabelsBeforeACommit() {
         let scanner = CardScanner()
         let identifier = pokemon(223)

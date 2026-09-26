@@ -1440,6 +1440,20 @@ final class CardScanner: NSObject, ObservableObject {
     /// Forget only the failed printing so its next confirmation can retry while
     /// every other consumed card remains protected by the duplicate latch.
     func allowRetry(of key: ScanSuppressionKey) {
+        rearmFailedScan(of: key, resetHistoricalEvidence: false)
+    }
+
+    /// Explicit retry for a failed recognition. Forget only that failed
+    /// presentation, and discard historical title readings so the next OCR
+    /// attempt is based on fresh evidence from the camera.
+    func retryFailedScan(of key: ScanSuppressionKey) {
+        rearmFailedScan(of: key, resetHistoricalEvidence: true)
+    }
+
+    private func rearmFailedScan(
+        of key: ScanSuppressionKey,
+        resetHistoricalEvidence: Bool
+    ) {
         visionQueue.async { [weak self] in
             guard let self else { return }
             let released = self.latch.latched
@@ -1456,6 +1470,9 @@ final class CardScanner: NSObject, ObservableObject {
                 self.emitLatchRelease(encounterID: encounterID, suppressionKey: key)
             }
             self.resetConfirmationWindow()
+            if resetHistoricalEvidence {
+                self.historicalAttempt = nil
+            }
             self.didAnnounceLatchHold = false
         }
     }
