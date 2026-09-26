@@ -616,6 +616,16 @@ actor ScannerCollectionWriter {
         }
     }
 
+    func containsCollectionEntry(for candidate: CollectionCommitCandidate) throws -> Bool {
+        try performOwnershipWrite { context in
+            let baseKey = candidate.card.collectionKey(variant: candidate.resolved.variant)
+            let key = candidate.pokemonPrintRun.map {
+                "\(baseKey)@\($0.rawValue)"
+            } ?? baseKey
+            return CollectionStore(context: context).card(forKey: key) != nil
+        }
+    }
+
     /// A newly scanned slab is a plain ownership insert. Only the uncommon
     /// case that merges into an existing unbound slab needs the price-identity
     /// migration gate before `addGraded` promotes its vendor identity.

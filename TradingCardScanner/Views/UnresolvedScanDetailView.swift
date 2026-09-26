@@ -2,6 +2,7 @@ import SwiftUI
 
 struct UnresolvedScanDetailView: View {
     @ObservedObject var model: ScannerViewModel
+    let browseCatalog: BrowseCatalog
     let scan: UnresolvedScan
     let onDismissRow: () -> Void
     let onResolve: (UnresolvedResolutionChoice) -> Void
@@ -78,7 +79,11 @@ struct UnresolvedScanDetailView: View {
                             }
                         }
                     case .noConfirmedMatch:
-                        EmptyView()
+                        if scan.game == .magic {
+                            Button("Retry lookup", systemImage: "arrow.clockwise") {
+                                onResolve(.retryLookup)
+                            }
+                        }
                     }
 
                     Button("Search catalog", systemImage: "magnifyingglass") {
@@ -105,7 +110,7 @@ struct UnresolvedScanDetailView: View {
         }
         .sheet(isPresented: $isShowingCatalogSearch) {
             NavigationStack {
-                BrowseView(catalog: BrowseCatalog())
+                BrowseView(catalog: browseCatalog)
             }
         }
     }

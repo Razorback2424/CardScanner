@@ -7,6 +7,7 @@ actor UnresolvedScanStore {
     static let rowLimit = 50
 
     let fileURL: URL
+    private var preservedReadOnlyRecords: [UUID: UnresolvedScanRecord] = [:]
 
     init(fileURL: URL? = nil) {
         if let fileURL {
@@ -30,20 +31,41 @@ actor UnresolvedScanStore {
               let records = try? JSONDecoder().decode([UnresolvedScanRecord].self, from: data)
         else { return [] }
 
+        var lastIndexByID: [UUID: Int] = [:]
+        for (index, record) in records.enumerated() {
+            lastIndexByID[record.id] = index
+        }
+        let uniqueRecords = records.enumerated().compactMap { index, record in
+            lastIndexByID[record.id] == index ? record : nil
+        }
         let magicByCode = Dictionary(
             magicDefinitions.map { ($0.code.uppercased(), $0) },
             uniquingKeysWith: { first, _ in first }
         )
-        return records.suffix(Self.rowLimit).map {
-            $0.rehydrate(registry: registry, magicByCode: magicByCode)
+        preservedReadOnlyRecords.removeAll(keepingCapacity: true)
+        return uniqueRecords.suffix(Self.rowLimit).map { record in
+            let scan = record.rehydrate(registry: registry, magicByCode: magicByCode)
+            if scan.isReadOnly {
+                preservedReadOnlyRecords[scan.id] = record
+            }
+            return scan
         }
     }
 
     func save(_ scans: [UnresolvedScan]) {
-        let records = scans
+        let retainedScans = scans
             .sorted { $0.createdAt < $1.createdAt }
             .suffix(Self.rowLimit)
-            .map(UnresolvedScanRecord.init(scan:))
+        let records = retainedScans.map { scan in
+            if scan.isReadOnly, let original = preservedReadOnlyRecords[scan.id] {
+                return original
+            }
+            return UnresolvedScanRecord(scan: scan)
+        }
+        let retainedReadOnlyIDs = Set(retainedScans.filter(\.isReadOnly).map(\.id))
+        preservedReadOnlyRecords = preservedReadOnlyRecords.filter {
+            retainedReadOnlyIDs.contains($0.key)
+        }
         do {
             try FileManager.default.createDirectory(
                 at: fileURL.deletingLastPathComponent(),
@@ -98,6 +120,9 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
     let inferredNameReadings: [String]?
     let candidateProviderIDsAndNames: [UnresolvedCandidateHint]
     let slabEvidence: GradedSlabEvidence?
+    let mergeSessionID: UUID?
+    let resolvedProviderID: String?
+    let magicLanguage: String?
 
     init(scan: UnresolvedScan) {
         id = scan.id
@@ -115,6 +140,8 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
         titleReadings = scan.requestEvidence.titleReadings
         inferredNameReadings = scan.subject.inferredNameReadings
         slabEvidence = scan.subject.slab
+        mergeSessionID = scan.mergeSessionID
+        resolvedProviderID = scan.resolvedProviderID
         candidateProviderIDsAndNames = UnresolvedScan.mergedHints(
             scan.candidateHints,
             candidates: scan.candidates
@@ -130,6 +157,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             magicSetCode = nil
             magicCollectorNumber = nil
             magicContentKind = nil
+            magicLanguage = nil
         case let .pokemonPromo(prefix, localID, definition):
             pokemonLocalID = localID
             pokemonDenominator = nil
@@ -139,6 +167,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             magicSetCode = nil
             magicCollectorNumber = nil
             magicContentKind = nil
+            magicLanguage = nil
         case let .pokemonHistorical(evidence):
             pokemonLocalID = evidence.number.localID
             pokemonDenominator = evidence.number.denominator
@@ -152,7 +181,8 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             magicSetCode = nil
             magicCollectorNumber = nil
             magicContentKind = nil
-        case let .magic(code, collectorNumber, _, contentKind):
+            magicLanguage = nil
+        case let .magic(code, collectorNumber, language, contentKind):
             pokemonLocalID = nil
             pokemonDenominator = nil
             pokemonSubsetPrefix = nil
@@ -161,6 +191,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             magicSetCode = code
             magicCollectorNumber = collectorNumber
             magicContentKind = contentKind
+            magicLanguage = language
         }
     }
 
@@ -219,7 +250,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
                 identifier = .magic(
                     setCode: magicSetCode ?? "???",
                     collectorNumber: magicCollectorNumber ?? "?",
-                    language: "en",
+                    language: magicLanguage ?? "en",
                     contentKind: magicContentKind ?? .regular
                 )
                 readOnly = true
@@ -228,7 +259,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             identifier = .magic(
                 setCode: code,
                 collectorNumber: collectorNumber,
-                language: "en",
+                language: magicLanguage ?? "en",
                 contentKind: magicContentKind ?? .regular
             )
         }
@@ -257,7 +288,14 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
             ),
             isReadOnly: readOnly,
             storedDisplayIdentifier: readOnly ? displayIdentifier : nil,
-            candidateHints: candidateProviderIDsAndNames
+            candidateHints: candidateProviderIDsAndNames,
+            mergeSessionID: {
+                if case .pokemonHistorical = identifier {
+                    return mergeSessionID ?? id
+                }
+                return nil
+            }(),
+            resolvedProviderID: resolvedProviderID
         )
     }
 

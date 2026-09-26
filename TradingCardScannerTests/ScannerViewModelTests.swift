@@ -43,6 +43,7 @@ private actor ScannerCollectionAddGate {
     private var bypassGateAfterSwitch = false
     private let successfulAddsBeforeBlocking: Int
     private var addCount = 0
+    private var capturedCandidates: [CollectionCommitCandidate] = []
     private var hasStarted = false
     private var startWaiter: CheckedContinuation<Void, Never>?
     private var releaseWaiter: CheckedContinuation<Void, Never>?
@@ -53,7 +54,7 @@ private actor ScannerCollectionAddGate {
     }
 
     func add(_ candidate: CollectionCommitCandidate) async throws -> CollectionMutation {
-        _ = candidate
+        capturedCandidates.append(candidate)
         addCount += 1
         if addCount <= successfulAddsBeforeBlocking {
             return CollectionMutation(
@@ -104,6 +105,10 @@ private actor ScannerCollectionAddGate {
 
     func count() -> Int {
         addCount
+    }
+
+    func captured() -> [CollectionCommitCandidate] {
+        capturedCandidates
     }
 }
 
@@ -225,6 +230,10 @@ private actor ScannerPrintRunRecorder {
 
     func record(_ value: PokemonPrintRun?) {
         values.append(value)
+    }
+
+    func snapshot() -> [PokemonPrintRun?] {
+        values
     }
 }
 
@@ -1911,6 +1920,39 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(model.recent.isEmpty)
     }
 
+    func testPriceCheckNameMismatchDoesNotClaimToSaveNeedsAttention() async throws {
+        let model = try makeModel(variants: [.normal])
+        model.setPurpose(.priceCheck)
+        let subject = ScanSubject(
+            identifier: scannerIdentifier(),
+            inferredNameReadings: ["pikachu"]
+        )
+        confirm(model, subject, encounterID: UUID())
+
+        let failed = await waitUntil {
+            model.note?.text == "Couldn't confirm which card this is. Nothing was added."
+        }
+        XCTAssertTrue(failed)
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+        XCTAssertEqual(
+            model.note?.text,
+            "Couldn't confirm which card this is. Nothing was added."
+        )
+    }
+
+    func testPriceCheckCatalogMissDoesNotClaimToSaveNeedsAttention() async throws {
+        let model = try makeModel(variants: [.normal], catalogMiss: true)
+        model.setPurpose(.priceCheck)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+
+        let noteShown = await waitUntil {
+            model.note?.text.contains("catalog has no card") == true
+        }
+        XCTAssertTrue(noteShown)
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+        XCTAssertFalse(model.note?.text.contains("Needs attention") == true)
+    }
+
     func testSuccessfulRetryLookupCommitsAndClearsItsUnresolvedRow() async throws {
         let failureSwitch = ScannerCatalogFailureSwitch()
         let model = try makeModel(
@@ -1968,6 +2010,10 @@ final class ScannerViewModelTests: XCTestCase {
         let firstRowID = try XCTUnwrap(model.unresolvedScans.first?.id)
         let candidates = await model.unresolvedCandidates(for: firstRowID)
         XCTAssertEqual(candidates.count, 2)
+        XCTAssertTrue(
+            model.unresolvedScans.contains { $0.id == firstRowID },
+            "the row must remain until the chosen printing is committed"
+        )
         let selected = try XCTUnwrap(
             candidates.first { $0.providerID == "held-repeat-a-001" }
         )
@@ -2006,24 +2052,74 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(secondFailureSettled)
         let secondRowID = try XCTUnwrap(model.unresolvedScans.first?.id)
         model.resolveUnresolved(id: secondRowID, choice: .choose(selected))
-        let duplicateHandled = await waitUntil {
-            model.pendingChoice != nil
-                || model.pendingDuplicateConfirmation != nil
-                || (!model.unresolvedScans.contains { $0.id == secondRowID }
-                    && !model.isIdentificationProcessingForTesting)
+        let duplicateSuppressed = await waitUntil {
+            model.diagnosticEventsForTesting.contains("routingSuppressed")
+                && !model.isIdentificationProcessingForTesting
         }
         XCTAssertTrue(
-            duplicateHandled,
-            "duplicate recovery did not route; acknowledgement=\(model.scanAcknowledgement?.message ?? "none"), row remains=\(model.unresolvedScans.contains { $0.id == secondRowID }), read-only=\(model.unresolvedScans.first?.isReadOnly ?? false), reason=\(model.unresolvedScans.first?.reason.detail ?? "none"), pending choice=\(model.pendingChoice != nil), duplicate prompt=\(model.pendingDuplicateConfirmation != nil), processing=\(model.isIdentificationProcessingForTesting)"
+            duplicateSuppressed,
+            "duplicate recovery did not suppress the already-added card; events=\(model.diagnosticEventsForTesting)"
         )
-        if model.pendingChoice != nil {
-            XCTAssertNotNil(model.pendingChoice?.duplicateChoiceContext)
-            model.choose(.normal)
-            await settle()
-        }
+        XCTAssertTrue(model.unresolvedScans.contains { $0.id == secondRowID })
         XCTAssertEqual(model.successCount, 1)
         XCTAssertEqual(model.recent.count, 1)
         XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+    }
+
+    func testChooseCardFromGradedRowPreservesSlabAndPrintedPrintRun() async throws {
+        let fixture = try await makeHistoricalHeldRepeatFixture(
+            firstSetProviderID: "base1",
+            firstSetCode: "BAS"
+        )
+        let recorder = ScannerPrintRunRecorder()
+        let addGate = ScannerCollectionAddGate(
+            outcome: .success,
+            successfulAddsBeforeBlocking: 1
+        )
+        let model = try makeModel(
+            variants: [.normal],
+            gradedOutcome: .unavailable,
+            setProviderID: "base1",
+            gradedRunRecorder: recorder,
+            collectionAddOverride: { candidate in
+                try await addGate.add(candidate)
+            },
+            offline: fixture.offline
+        )
+        let slab = GradedSlabEvidence(
+            company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            certificationNumber: "12345678",
+            labelCardText: ["FIRST HELD CARD"],
+            printedPrintRun: .firstEdition
+        )
+        let subject = ScanSubject(
+            identifier: .pokemonHistorical(
+                PokemonHistoricalScanEvidence(
+                    number: PokemonPrintedNumberEvidence(
+                        localID: "001",
+                        denominator: 100,
+                        scheme: .officialSet
+                    ),
+                    titleCandidates: ["First Held Card"]
+                )
+            ),
+            slab: slab
+        )
+        model.fileUnresolvedForTesting(subject, reason: .noConfirmedMatch)
+        let row = try XCTUnwrap(model.unresolvedScans.first)
+        let choices = await model.unresolvedCandidates(for: row.id)
+        let choice = try XCTUnwrap(choices.first { $0.providerID == "base1-001" })
+
+        model.resolveUnresolved(id: row.id, choice: .choose(choice))
+        let committed = await waitUntil { model.successCount == 1 }
+
+        XCTAssertTrue(committed)
+        let candidates = await addGate.captured()
+        XCTAssertEqual(candidates.first?.subject.slab, slab)
+        XCTAssertEqual(candidates.first?.pokemonPrintRun, .firstEdition)
+        let recordedRuns = await recorder.snapshot()
+        XCTAssertEqual(recordedRuns, [.firstEdition])
     }
 
     func testRetrySaveUsesTheInMemoryCandidateAndClearsTheRow() async throws {
@@ -2062,6 +2158,37 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(addCount, 2)
     }
 
+    func testRetrySaveSuppressesACardAddedFromAnotherSurface() async throws {
+        let addGate = ScannerCollectionAddGate(outcome: .failure)
+        let model = try makeModel(
+            variants: [.normal],
+            collectionAddOverride: { candidate in
+                try await addGate.add(candidate)
+            }
+        )
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await addGate.waitUntilStarted()
+        await addGate.release()
+        let failed = await waitUntil { model.unresolvedScans.count == 1 }
+        XCTAssertTrue(failed)
+        let row = try XCTUnwrap(model.unresolvedScans.first)
+        let pending = try XCTUnwrap(row.pendingCommit)
+
+        let writer = ScannerCollectionWriter(modelContainer: context().container)
+        _ = try await writer.add(pending)
+        model.resolveUnresolved(id: row.id, choice: .retrySave)
+        let suppressed = await waitUntil {
+            model.note?.text.contains("already in your collection") == true
+                && !model.isIdentificationProcessingForTesting
+        }
+
+        XCTAssertTrue(suppressed)
+        let addCount = await addGate.count()
+        XCTAssertEqual(addCount, 1)
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+        XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+    }
+
     func testUnresolvedRowsSurviveViewDepartureAndStart() async throws {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("ScannerUnresolvedPersistence-\(UUID().uuidString)", isDirectory: true)
@@ -2091,24 +2218,83 @@ final class ScannerViewModelTests: XCTestCase {
         try? FileManager.default.removeItem(at: directory)
     }
 
-    func testUpdatingAPersistedUnresolvedRowDoesNotCountItAsNewThisSession() async throws {
+    func testDismissedRowDoesNotReturnFromAnOverlappingCatalogReload() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ScannerDismissReload-\(UUID().uuidString)", isDirectory: true)
+        let store = UnresolvedScanStore(
+            fileURL: directory.appendingPathComponent("unresolved-scans.json")
+        )
+        let first = UnresolvedScan(
+            subject: ScanSubject(identifier: scannerIdentifier(cardNumber: "001")),
+            reason: .noCatalogEntry
+        )
+        let second = UnresolvedScan(
+            subject: ScanSubject(identifier: scannerIdentifier(cardNumber: "002")),
+            reason: .noCatalogEntry
+        )
+        await store.save([first, second])
+
+        let model = try makeModel(variants: [.normal], unresolvedScanStore: store)
+        let loaded = await waitUntil { model.unresolvedScans.count == 2 }
+        XCTAssertTrue(loaded)
+        model.dismissUnresolved(id: first.id)
+        await model.reloadUnresolvedScansForTesting()
+
+        XCTAssertEqual(model.unresolvedScans.map(\.id), [second.id])
+        try? FileManager.default.removeItem(at: directory)
+    }
+
+    func testCandidateLoadDoesNotWriteIntoTheSlotOfADismissedRow() async throws {
+        let model = try makeModel(variants: [.normal])
+        let target = ScanSubject(identifier: .pokemonHistorical(
+            PokemonHistoricalScanEvidence(
+                number: PokemonPrintedNumberEvidence(
+                    localID: "001",
+                    denominator: 109,
+                    scheme: .officialSet
+                ),
+                titleCandidates: ["First Card"]
+            )
+        ))
+        let survivor = ScanSubject(identifier: .pokemonHistorical(
+            PokemonHistoricalScanEvidence(
+                number: PokemonPrintedNumberEvidence(
+                    localID: "002",
+                    denominator: 109,
+                    scheme: .officialSet
+                ),
+                titleCandidates: ["Second Card"]
+            )
+        ))
+        model.fileUnresolvedForTesting(target, reason: .noConfirmedMatch)
+        model.fileUnresolvedForTesting(survivor, reason: .noConfirmedMatch)
+        let targetID = try XCTUnwrap(model.unresolvedScans.first?.id)
+        let survivorRow = try XCTUnwrap(model.unresolvedScans.last)
+        model.unresolvedCandidatesWritebackHookForTesting = {
+            model.dismissUnresolved(id: targetID)
+        }
+
+        let candidates = await model.unresolvedCandidates(for: targetID)
+
+        XCTAssertTrue(candidates.isEmpty)
+        XCTAssertEqual(model.unresolvedScans.count, 1)
+        XCTAssertEqual(model.unresolvedScans.first?.id, survivorRow.id)
+        XCTAssertEqual(model.unresolvedScans.first?.subject, survivorRow.subject)
+    }
+
+    func testUpdatingAPersistedUnresolvedRowCountsAsUnresolvedThisSession() async throws {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("ScannerExistingUnresolved-\(UUID().uuidString)", isDirectory: true)
         let store = UnresolvedScanStore(
             fileURL: directory.appendingPathComponent("unresolved-scans.json")
         )
-        let subject = ScanSubject(
-            identifier: .pokemonHistorical(
-                PokemonHistoricalScanEvidence(
-                    number: PokemonPrintedNumberEvidence(
-                        localID: "001",
-                        denominator: 102,
-                        scheme: .officialSet
-                    ),
-                    titleCandidates: ["Test Card"]
-                )
-            )
+        let identifier = ScanIdentifier.pokemon(
+            setCode: "ASC",
+            cardNumber: "001",
+            printedTotal: 217,
+            setDefinition: SetCodeMap.definitions["ASC"]!
         )
+        let subject = ScanSubject(identifier: identifier)
         let existingRowID = UUID()
         await store.save([
             UnresolvedScan(
@@ -2140,7 +2326,7 @@ final class ScannerViewModelTests: XCTestCase {
 
         model.viewDisappeared()
         try await Task.sleep(for: .milliseconds(150))
-        XCTAssertNil(summaryStore.summary)
+        XCTAssertEqual(summaryStore.summary?.unresolvedCount, 1)
         try? FileManager.default.removeItem(at: directory)
     }
 
@@ -2159,6 +2345,10 @@ final class ScannerViewModelTests: XCTestCase {
             await settle()
         }
         XCTAssertEqual(model.transientRetryCountForTesting(for: identifier.suppressionKey), 2)
+        XCTAssertEqual(
+            model.scanAcknowledgement?.message,
+            "Couldn't reach the catalog. Saved to Needs attention; automatic retries stopped."
+        )
     }
 
     func testProviderUnavailableAcknowledgementSaysTryAgainLater() {
@@ -2436,6 +2626,94 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(merged.first?.titleCandidates, ["CHARIZARD", "STAGE 2"])
     }
 
+    func testHistoricalUnresolvedRowsMergeWithinButNotAcrossSessions() {
+        let number = PokemonPrintedNumberEvidence(
+            localID: "015",
+            denominator: 198,
+            scheme: .officialSet
+        )
+        let first = ScanSubject(identifier: .pokemonHistorical(
+            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["FIRST CARD"])
+        ))
+        let second = ScanSubject(identifier: .pokemonHistorical(
+            PokemonHistoricalScanEvidence(number: number, titleCandidates: ["SECOND CARD"])
+        ))
+        let firstSession = UUID()
+        var rows = UnresolvedScan.merging(
+            [],
+            with: first,
+            reason: .lookupFailed,
+            sessionID: firstSession
+        )
+        rows = UnresolvedScan.merging(
+            rows,
+            with: second,
+            reason: .lookupFailed,
+            sessionID: firstSession
+        )
+        XCTAssertEqual(rows.count, 1)
+        XCTAssertEqual(rows.first?.titleCandidates, ["FIRST CARD", "SECOND CARD"])
+
+        rows = UnresolvedScan.merging(
+            rows,
+            with: second,
+            reason: .lookupFailed,
+            sessionID: UUID()
+        )
+        XCTAssertEqual(rows.count, 2)
+
+        let existingRowID = rows[0].id
+        rows = UnresolvedScan.merging(
+            rows,
+            with: first,
+            reason: .providerUnavailable,
+            sessionID: UUID(),
+            matchingID: existingRowID
+        )
+        XCTAssertEqual(rows.count, 2)
+        let updatedRow = rows.first(where: { $0.id == existingRowID })
+        XCTAssertEqual(updatedRow?.reason, .providerUnavailable)
+        XCTAssertEqual(updatedRow?.mergeSessionID, firstSession)
+    }
+
+    func testCommitDoesNotClearAnAmbiguousHistoricalRowBySuggestionOrSharedDenominator() throws {
+        let model = try makeModel(variants: [.normal])
+        let subject = ScanSubject(identifier: .pokemonHistorical(
+            PokemonHistoricalScanEvidence(
+                number: PokemonPrintedNumberEvidence(
+                    localID: "015",
+                    denominator: 198,
+                    scheme: .officialSet
+                ),
+                titleCandidates: ["Example Card"]
+            )
+        ))
+        let suggestion = PokemonCatalogCardIdentity(
+            providerID: "test-set-015",
+            setID: "sv01",
+            setName: "Scarlet & Violet",
+            localID: "015",
+            name: "Example Card"
+        )
+        model.fileUnresolvedForTesting(
+            subject,
+            reason: .noConfirmedMatch,
+            candidates: [suggestion]
+        )
+        let rowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+        let card = IdentifiedCard.pokemon(
+            catalogCard(variants: [.normal], localID: "015", setID: "sv01", officialCount: 198),
+            setCode: "SVI"
+        )
+
+        model.clearResolvedUnresolvedRowsForTesting(
+            for: card,
+            officialCounts: ["sv01": 198, "swsh9": 198]
+        )
+
+        XCTAssertEqual(model.unresolvedScans.map(\.id), [rowID])
+    }
+
     func testUnresolvedHistoricalMergeKeepsSlabEvidence() {
         let number = PokemonPrintedNumberEvidence(
             localID: "004",
@@ -2566,7 +2844,9 @@ final class ScannerViewModelTests: XCTestCase {
     }
 
     private func makeHistoricalHeldRepeatFixture(
-        includeFinishChoice: Bool = false
+        includeFinishChoice: Bool = false,
+        firstSetProviderID: String = "held-repeat-a",
+        firstSetCode: String = "HRA"
     ) async throws -> (
         offline: PokemonOfflineCatalog,
         first: ScanSubject,
@@ -2575,12 +2855,12 @@ final class ScannerViewModelTests: XCTestCase {
         let root = FileManager.default.temporaryDirectory
             .appendingPathComponent("TradingCardScannerHistoricalHeldRepeat-\(UUID().uuidString)", isDirectory: true)
         let store = PokemonChecklistStore(root: root, bundle: nil, bundledRoot: root)
-        let firstSetID = CatalogSetID(game: .pokemon, providerID: "held-repeat-a")
+        let firstSetID = CatalogSetID(game: .pokemon, providerID: firstSetProviderID)
         let secondSetID = CatalogSetID(game: .pokemon, providerID: "held-repeat-b")
         let firstSet = CatalogSet(
             catalogID: firstSetID,
             name: "Held Repeat A",
-            code: "HRA",
+            code: firstSetCode,
             logoURL: nil,
             symbolURL: nil,
             cardCount: 100,
@@ -2599,7 +2879,7 @@ final class ScannerViewModelTests: XCTestCase {
         )
         let firstSummary = CatalogCardSummary(
             game: .pokemon,
-            providerID: "held-repeat-a-001",
+            providerID: "\(firstSetProviderID)-001",
             setID: firstSetID,
             setName: firstSet.name,
             setCode: firstSet.code,
@@ -2611,7 +2891,7 @@ final class ScannerViewModelTests: XCTestCase {
         )
         let firstHoloSummary = CatalogCardSummary(
             game: .pokemon,
-            providerID: "held-repeat-a-001",
+            providerID: "\(firstSetProviderID)-001",
             setID: firstSetID,
             setName: firstSet.name,
             setCode: firstSet.code,
@@ -2799,7 +3079,8 @@ final class ScannerViewModelTests: XCTestCase {
     private func catalogCard(
         variants: [PhysicalVariant],
         localID: String,
-        setID: String = "test-set"
+        setID: String = "test-set",
+        officialCount: Int = 10
     ) -> TCGdexCard {
         TCGdexCard(
             id: "test-set-\(localID)",
@@ -2810,7 +3091,7 @@ final class ScannerViewModelTests: XCTestCase {
             set: TCGdexSetBrief(
                 id: setID,
                 name: "Test Set",
-                cardCount: TCGdexCardCount(total: 10, official: 10)
+                cardCount: TCGdexCardCount(total: officialCount, official: officialCount)
             ),
             variants: TCGdexVariants(
                 firstEdition: variants.contains(.firstEdition),

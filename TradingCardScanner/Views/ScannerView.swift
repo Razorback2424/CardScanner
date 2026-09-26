@@ -6,6 +6,7 @@ import SwiftUI
 /// between cards. Success is a receipt that appears underneath while the next
 /// card is already being read.
 struct ScannerView: View {
+    let browseCatalog: BrowseCatalog
     @EnvironmentObject private var model: ScannerViewModel
     @EnvironmentObject private var summaryStore: ScanSessionSummaryStore
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
@@ -22,6 +23,10 @@ struct ScannerView: View {
     private struct PendingUnresolvedResolution {
         let id: UUID
         let choice: UnresolvedResolutionChoice
+    }
+
+    init(browseCatalog: BrowseCatalog = BrowseCatalog()) {
+        self.browseCatalog = browseCatalog
     }
 
 #if DEBUG
@@ -124,6 +129,7 @@ struct ScannerView: View {
         }) {
             UnresolvedScansSheet(
                 model: model,
+                browseCatalog: browseCatalog,
                 scans: model.unresolvedScans,
                 onClear: model.clearUnresolvedScans,
                 onDismiss: model.dismissUnresolved,
@@ -673,6 +679,7 @@ private struct FinishLockControl: View, Equatable {
 private struct UnresolvedScansSheet: View {
     @Environment(\.dismiss) private var dismiss
     @ObservedObject var model: ScannerViewModel
+    let browseCatalog: BrowseCatalog
     let scans: [UnresolvedScan]
     let onClear: () -> Void
     let onDismiss: (UUID) -> Void
@@ -701,6 +708,7 @@ private struct UnresolvedScansSheet: View {
                         NavigationLink {
                             UnresolvedScanDetailView(
                                 model: model,
+                                browseCatalog: browseCatalog,
                                 scan: scan,
                                 onDismissRow: { onDismiss(scan.id) },
                                 onResolve: { onResolve(scan.id, $0) }

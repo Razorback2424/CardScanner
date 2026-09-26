@@ -3048,25 +3048,17 @@ final class CardScanner: NSObject, ObservableObject {
     /// Whether this frame may run the title pass, and the attempt bookkeeping
     /// that decides it. Callers must be on `visionQueue`.
     ///
-    /// An exhausted attempt is deliberately kept rather than cleared. Clearing
-    /// it let the very next frame build a fresh attempt with `retryCount` 0 and
-    /// `startedAt` set to that frame, which put both the retry cap and the TTL
-    /// permanently out of reach: the cap skipped one frame in seven and the TTL
-    /// never elapsed. The TTL is now the only thing that starts a new attempt.
+    /// An exhausted attempt is kept until its TTL expires, so it cannot restart
+    /// the title budget on every frame. A renewed attempt keeps footer
+    /// confirmation but starts with fresh title evidence, preventing a second
+    /// physical card with the same number from inheriting stale OCR.
     private func advanceHistoricalAttempt(
         for number: PokemonPrintedNumberEvidence,
         at now: CFAbsoluteTime
     ) -> Bool {
-        var retainedTitleCandidates: Set<String> = []
         if let attempt = historicalAttempt,
            attempt.number != number || now - attempt.startedAt > Self.historicalAttemptTTL {
             let sameNumber = attempt.number == number
-            if sameNumber {
-                // Renew the bounded title-read budget for the same printed
-                // number without discarding useful title evidence or footer
-                // confirmation already earned in either scanning mode.
-                retainedTitleCandidates = attempt.titleCandidates
-            }
             historicalAttempt = nil
             if !sameNumber {
                 resetConfirmationWindow()
@@ -3080,7 +3072,7 @@ final class CardScanner: NSObject, ObservableObject {
                 startedAt: now,
                 lastObservedAt: now,
                 retryCount: 0,
-                titleCandidates: retainedTitleCandidates
+                titleCandidates: []
             )
         }
 
@@ -3107,8 +3099,8 @@ final class CardScanner: NSObject, ObservableObject {
             historicalAttempt = nil
             return nil
         }
-        if let exhausted = exhaustedHistoricalIdentifier(for: number) {
-            return exhausted
+        guard advanceHistoricalAttempt(for: number, at: now) else {
+            return exhaustedHistoricalIdentifier(for: number)
         }
         if subjectMode == .slab,
            let attempt = historicalAttempt,
@@ -3119,7 +3111,6 @@ final class CardScanner: NSObject, ObservableObject {
             // changing the historical identity for a held slab.
             return historicalIdentifier(from: attempt)
         }
-        guard advanceHistoricalAttempt(for: number, at: now) else { return nil }
 
         do {
             let titleID = PerformanceSignpost.makeID()
@@ -3146,6 +3137,10 @@ final class CardScanner: NSObject, ObservableObject {
                 titleLines: titleLines.map(\.text),
                 excludingFooter: PokemonHistoricalScanParser.footerSignature(from: footerLines.map(\.text))
             ) {
+                // `advanceHistoricalAttempt` starts a clean title window when
+                // the same number survives beyond the TTL. That prevents a
+                // second physical card with the same printed number from
+                // inheriting the prior card's title.
                 historicalAttempt?.titleCandidates.formUnion(evidence.titleCandidates)
             }
         } catch {

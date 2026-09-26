@@ -128,6 +128,49 @@ enum PokemonOfflineCardFactory {
         return nil
     }
 
+    static func card(
+        in snapshot: PokemonChecklistSnapshot,
+        candidate: PokemonCatalogCardIdentity,
+        number: PokemonPrintedNumberEvidence,
+        registry: PokemonCatalogRegistry
+    ) -> IdentifiedCard? {
+        let candidateSets = candidateSetIDs(
+            in: snapshot.manifest.entries,
+            number: number,
+            registry: registry
+        )
+        let providerSetID = candidate.setID.lowercased()
+        guard candidateSets.contains(providerSetID),
+              let entry = snapshot.manifest.entries.first(where: {
+                  $0.providerID.caseInsensitiveCompare(candidate.setID) == .orderedSame
+              }),
+              let cards = snapshot.checklists[entry.set.id] else { return nil }
+
+        let localID = PokemonHistoricalIdentityResolver.canonicalLocalID(candidate.localID)
+        let summaries = cards.filter {
+            $0.game == .pokemon
+                && $0.providerID.caseInsensitiveCompare(candidate.providerID) == .orderedSame
+                && PokemonHistoricalIdentityResolver.canonicalLocalID($0.collectorNumber) == localID
+                && PokemonHistoricalIdentityResolver.canonicalLocalID($0.collectorNumber)
+                    == PokemonHistoricalIdentityResolver.canonicalLocalID(number.localID)
+                && CatalogIdentityNormalization.canonicalText($0.name)
+                    == CatalogIdentityNormalization.canonicalText(candidate.name)
+        }.sorted { left, right in
+            let leftVariant = left.masterSetVariant?.id ?? ""
+            let rightVariant = right.masterSetVariant?.id ?? ""
+            return (leftVariant, left.id) < (rightVariant, right.id)
+        }
+        guard let primary = summaries.first else { return nil }
+        let card = makeCard(
+            summaries: summaries,
+            setName: entry.set.name,
+            providerSetID: entry.providerID,
+            officialCount: number.denominator,
+            localID: candidate.localID
+        )
+        return .pokemon(card, setCode: primary.setCode)
+    }
+
     static func candidates(
         in snapshot: PokemonChecklistSnapshot,
         number: PokemonPrintedNumberEvidence,
@@ -349,6 +392,31 @@ actor PokemonOfflineCatalog {
             }
         }
         return nil
+    }
+
+    func card(
+        for candidate: PokemonCatalogCardIdentity,
+        number: PokemonPrintedNumberEvidence
+    ) async -> IdentifiedCard? {
+        await loadIfNeeded()
+        let registry = self.registry
+        guard let entry = entries.first(where: {
+            $0.providerID.caseInsensitiveCompare(candidate.setID) == .orderedSame
+        }),
+              let cards = await store.mergedChecklist(for: entry.set.catalogID) else { return nil }
+        let manifest = PokemonChecklistSnapshotManifest(
+            schemaVersion: PokemonChecklistSnapshotVersion.schema,
+            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+            generatedAt: .now,
+            directoryFingerprint: "candidate",
+            entries: [entry]
+        )
+        return PokemonOfflineCardFactory.card(
+            in: PokemonChecklistSnapshot(manifest: manifest, checklists: [entry.set.id: cards]),
+            candidate: candidate,
+            number: number,
+            registry: registry
+        )
     }
 
     func contains(
@@ -1095,6 +1163,12 @@ actor CardCatalog {
             readings: evidence.titleCandidates
         ) else {
             throw TCGdexError.identityMismatch
+        }
+        if let selectedOfflineCard = await offline.card(
+            for: candidate,
+            number: evidence.number
+        ) {
+            return applyingSignedArtwork(to: selectedOfflineCard)
         }
         if let offlineCard = await offline.historicalCard(for: evidence),
            case let .pokemon(card, _) = offlineCard,

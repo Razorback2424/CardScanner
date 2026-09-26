@@ -142,6 +142,7 @@ struct ResolvedScan {
 /// depend on an identification task or its generation.
 struct CollectionCommitCandidate: Sendable {
     let requestID: UUID
+    let unresolvedScanID: UUID?
     let subject: ScanSubject
     let card: IdentifiedCard
     let resolved: ResolvedVariant
@@ -158,6 +159,7 @@ struct CollectionCommitCandidate: Sendable {
 
     init(resolvedScan: ResolvedScan) {
         requestID = resolvedScan.request.id
+        unresolvedScanID = resolvedScan.request.unresolvedScanID
         subject = resolvedScan.request.subject
         card = resolvedScan.card
         resolved = resolvedScan.resolved
@@ -219,6 +221,7 @@ struct CollectionCommitCandidate: Sendable {
 
     private init(
         requestID: UUID,
+        unresolvedScanID: UUID? = nil,
         subject: ScanSubject,
         card: IdentifiedCard,
         resolved: ResolvedVariant,
@@ -232,6 +235,7 @@ struct CollectionCommitCandidate: Sendable {
         gradedOutcome: ScannedGradedOutcome?
     ) {
         self.requestID = requestID
+        self.unresolvedScanID = unresolvedScanID
         self.subject = subject
         self.card = card
         self.resolved = resolved
@@ -895,6 +899,11 @@ struct UnresolvedCandidateHint: Codable, Equatable, Sendable {
     let name: String
 }
 
+struct UnresolvedScanMergeKey: Equatable {
+    let suppressionKey: ScanSuppressionKey
+    let sessionID: UUID?
+}
+
 /// A failed scan stored independently from the current scanner session. The
 /// pending commit is intentionally memory-only; after relaunch a save failure
 /// can use the retry-lookup action instead.
@@ -909,6 +918,8 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
     var pendingCommit: CollectionCommitCandidate?
     var isReadOnly: Bool
     var storedDisplayIdentifier: String?
+    var mergeSessionID: UUID?
+    var resolvedProviderID: String?
 
     var identifier: ScanIdentifier { subject.identifier }
     var game: CardGame { subject.game }
@@ -924,7 +935,9 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         pendingCommit: CollectionCommitCandidate? = nil,
         isReadOnly: Bool = false,
         storedDisplayIdentifier: String? = nil,
-        candidateHints: [UnresolvedCandidateHint] = []
+        candidateHints: [UnresolvedCandidateHint] = [],
+        mergeSessionID: UUID? = nil,
+        resolvedProviderID: String? = nil
     ) {
         self.id = id
         self.subject = subject
@@ -939,6 +952,8 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         self.pendingCommit = pendingCommit
         self.isReadOnly = isReadOnly
         self.storedDisplayIdentifier = storedDisplayIdentifier
+        self.mergeSessionID = mergeSessionID
+        self.resolvedProviderID = resolvedProviderID?.lowercased()
     }
 
     var titleCandidates: [String] {
@@ -975,7 +990,30 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
     /// unreadable card produced two evidence values and two rows in the list.
     /// The printed number is the stable part, and within a scanning session it
     /// is what identifies the card in the user's hand.
-    var mergeKey: ScanSuppressionKey { subject.suppressionKey }
+    var mergeKey: UnresolvedScanMergeKey {
+        UnresolvedScanMergeKey(
+            suppressionKey: subject.suppressionKey,
+            sessionID: needsSessionScopedMerge ? mergeSessionID : nil
+        )
+    }
+
+    var needsSessionScopedMerge: Bool {
+        if case .pokemonHistorical = identifier { return true }
+        return false
+    }
+
+    static func mergeKey(
+        for subject: ScanSubject,
+        sessionID: UUID?
+    ) -> UnresolvedScanMergeKey {
+        let isHistorical: Bool
+        if case .pokemonHistorical = subject.identifier { isHistorical = true }
+        else { isHistorical = false }
+        return UnresolvedScanMergeKey(
+            suppressionKey: subject.suppressionKey,
+            sessionID: isHistorical ? sessionID : nil
+        )
+    }
 
     /// Adds a failure to the list, folding it into an existing row for the same
     /// card and keeping every distinct reading so the user can see what it read.
@@ -985,16 +1023,24 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         reason: UnresolvedReason,
         candidates: [PokemonCatalogCardIdentity] = [],
         requestEvidence: UnresolvedScanRequestEvidence? = nil,
-        pendingCommit: CollectionCommitCandidate? = nil
+        pendingCommit: CollectionCommitCandidate? = nil,
+        sessionID: UUID? = nil,
+        resolvedProviderID: String? = nil,
+        matchingID: UUID? = nil
     ) -> [UnresolvedScan] {
         let incoming = UnresolvedScan(
             subject: subject,
             reason: reason,
             candidates: candidates,
             requestEvidence: requestEvidence,
-            pendingCommit: pendingCommit
+            pendingCommit: pendingCommit,
+            mergeSessionID: sessionID,
+            resolvedProviderID: resolvedProviderID ?? pendingCommit?.card.providerID
         )
-        guard let index = scans.firstIndex(where: { $0.mergeKey == incoming.mergeKey }) else {
+        let matchingIndex = matchingID.flatMap { id in
+            scans.firstIndex(where: { $0.id == id })
+        } ?? scans.firstIndex(where: { $0.mergeKey == incoming.mergeKey })
+        guard let index = matchingIndex else {
             var updated = scans + [incoming]
             if updated.count > 50 { updated.removeFirst(updated.count - 50) }
             return updated
@@ -1022,11 +1068,15 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
             ),
             pendingCommit: other.pendingCommit ?? pendingCommit,
             isReadOnly: isReadOnly && other.isReadOnly,
-            storedDisplayIdentifier: storedDisplayIdentifier ?? other.storedDisplayIdentifier,
+            storedDisplayIdentifier: (isReadOnly && other.isReadOnly)
+                ? storedDisplayIdentifier ?? other.storedDisplayIdentifier
+                : nil,
             candidateHints: Self.mergedHints(
                 candidateHints + other.candidateHints,
                 candidates: mergedCandidates
-            )
+            ),
+            mergeSessionID: mergeSessionID ?? other.mergeSessionID,
+            resolvedProviderID: other.resolvedProviderID ?? resolvedProviderID
         )
     }
 
@@ -1041,7 +1091,9 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
             pendingCommit: pendingCommit,
             isReadOnly: isReadOnly,
             storedDisplayIdentifier: storedDisplayIdentifier,
-            candidateHints: candidateHints
+            candidateHints: candidateHints,
+            mergeSessionID: mergeSessionID,
+            resolvedProviderID: resolvedProviderID
         )
     }
 
@@ -1357,7 +1409,10 @@ final class ScannerViewModel: ObservableObject {
     /// Cards whose identity was read but which could not be resolved. Counted so
     /// the session can end with an honest total instead of a stream of alerts.
     @Published private(set) var unresolvedScans: [UnresolvedScan] = [] {
-        didSet { persistUnresolvedScans() }
+        didSet {
+            unresolvedPersistenceRevision &+= 1
+            persistUnresolvedScans()
+        }
     }
     var unresolvedCount: Int { unresolvedScans.count }
     /// True only once a lookup has been outstanding long enough to be worth
@@ -1391,7 +1446,9 @@ final class ScannerViewModel: ObservableObject {
     private let scryfall = ScryfallService()
     private let magicCatalogCoordinator: MagicCatalogCoordinator?
     private var currentPokemonRegistry = PokemonCatalogRegistry.bundledSeed
+    private var currentPokemonOfficialCounts: [String: Int] = [:]
     private var unresolvedPersistenceTask: Task<Void, Never>?
+    private var unresolvedPersistenceRevision: UInt64 = 0
     private var sessionUnresolvedIDs: Set<UUID> = []
     private var transientRetryCounts: [ScanSuppressionKey: Int] = [:]
 
@@ -1730,9 +1787,11 @@ final class ScannerViewModel: ObservableObject {
                     }
                     return counts
                 }
+                let initialOfficialCounts = knownOfficialCounts(initialRegistry)
+                self.currentPokemonOfficialCounts = initialOfficialCounts
                 scanner.usePokemonRegistry(
                     initialRegistry,
-                    knownOfficialCounts: knownOfficialCounts(initialRegistry)
+                    knownOfficialCounts: initialOfficialCounts
                 )
                 await catalog.updateRegistry(initialRegistry)
                 await self.reloadUnresolvedScans(registry: initialRegistry)
@@ -1740,9 +1799,11 @@ final class ScannerViewModel: ObservableObject {
                 for await event in events {
                     guard !Task.isCancelled else { return }
                     self.currentPokemonRegistry = event.registry
+                    let officialCounts = knownOfficialCounts(event.registry)
+                    self.currentPokemonOfficialCounts = officialCounts
                     scanner.usePokemonRegistry(
                         event.registry,
-                        knownOfficialCounts: knownOfficialCounts(event.registry)
+                        knownOfficialCounts: officialCounts
                     )
                     await catalog.updateRegistry(event.registry)
                     await self.reloadUnresolvedScans(registry: event.registry)
@@ -1760,12 +1821,14 @@ final class ScannerViewModel: ObservableObject {
                     self.magicSetDefinitions = initialRegistry.scannerDefinitions
                     self.installMagicDefinitions(initialRegistry.scannerDefinitions)
                 }
+                await self.reloadUnresolvedScans(registry: self.currentPokemonRegistry)
 
                 for await event in events {
                     guard !Task.isCancelled else { return }
                     guard event.scannerProjectionChanged else { continue }
                     self.magicSetDefinitions = event.registry.scannerDefinitions
                     self.installMagicDefinitions(event.registry.scannerDefinitions)
+                    await self.reloadUnresolvedScans(registry: self.currentPokemonRegistry)
                 }
             }
         }
@@ -1863,7 +1926,9 @@ final class ScannerViewModel: ObservableObject {
             gradedResolver: gradedResolver
         )
         feedback.prepare()
-        scheduleUnresolvedReload(registry: currentPokemonRegistry)
+        if pokemonCatalogTask == nil {
+            scheduleUnresolvedReload(registry: currentPokemonRegistry)
+        }
         // Decode the merged Pokémon checklist and resolved-card cache before
         // the first confirmed frame needs either one.
         Task { await catalog.prewarm() }
@@ -2011,39 +2076,61 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func reloadUnresolvedScans(registry: PokemonCatalogRegistry) async {
-        let stored = await unresolvedScanStore.load(
-            registry: registry,
-            magicDefinitions: magicSetDefinitions
-        )
-        var combined = stored
-        for runtime in unresolvedScans {
-            guard let index = combined.firstIndex(where: { $0.mergeKey == runtime.mergeKey }) else {
-                combined.append(runtime)
-                continue
-            }
-            let restored = combined[index]
-            let hints = UnresolvedScan.mergedHints(
-                restored.candidateHints + runtime.candidateHints,
-                candidates: restored.candidates + runtime.candidates
+        while true {
+            let revision = unresolvedPersistenceRevision
+            let pendingSave = unresolvedPersistenceTask
+            await pendingSave?.value
+            guard revision == unresolvedPersistenceRevision else { continue }
+
+            let stored = await unresolvedScanStore.load(
+                registry: registry,
+                magicDefinitions: magicSetDefinitions
             )
-            var candidatesByID: [String: PokemonCatalogCardIdentity] = [:]
-            for candidate in restored.candidates + runtime.candidates {
-                candidatesByID[candidate.providerID.lowercased()] = candidate
+            guard revision == unresolvedPersistenceRevision else { continue }
+
+            var combined = stored
+            for runtime in unresolvedScans {
+                guard let index = combined.firstIndex(where: { $0.id == runtime.id }) else {
+                    combined.append(runtime)
+                    continue
+                }
+                let restored = combined[index]
+                let hints = UnresolvedScan.mergedHints(
+                    restored.candidateHints + runtime.candidateHints,
+                    candidates: restored.candidates + runtime.candidates
+                )
+                var candidatesByID: [String: PokemonCatalogCardIdentity] = [:]
+                for candidate in restored.candidates + runtime.candidates {
+                    candidatesByID[candidate.providerID.lowercased()] = candidate
+                }
+                combined[index] = UnresolvedScan(
+                    id: restored.id,
+                    subject: runtime.subject,
+                    reason: runtime.reason,
+                    createdAt: min(restored.createdAt, runtime.createdAt),
+                    candidates: Array(candidatesByID.values),
+                    requestEvidence: UnresolvedScanRequestEvidence(
+                        catalogIdentifier: runtime.requestEvidence.catalogIdentifier,
+                        titleReadings: Array(Set(
+                            restored.requestEvidence.titleReadings
+                                + runtime.requestEvidence.titleReadings
+                        )).sorted()
+                    ),
+                    pendingCommit: runtime.pendingCommit ?? restored.pendingCommit,
+                    isReadOnly: restored.isReadOnly,
+                    storedDisplayIdentifier: restored.isReadOnly
+                        ? restored.displayIdentifier
+                        : nil,
+                    candidateHints: hints,
+                    mergeSessionID: restored.mergeSessionID ?? runtime.mergeSessionID,
+                    resolvedProviderID: runtime.resolvedProviderID ?? restored.resolvedProviderID
+                )
             }
-            combined[index] = UnresolvedScan(
-                id: restored.id,
-                subject: restored.subject,
-                reason: runtime.reason,
-                createdAt: min(restored.createdAt, runtime.createdAt),
-                candidates: Array(candidatesByID.values),
-                requestEvidence: runtime.requestEvidence,
-                pendingCommit: runtime.pendingCommit,
-                isReadOnly: restored.isReadOnly,
-                storedDisplayIdentifier: restored.isReadOnly ? restored.displayIdentifier : nil,
-                candidateHints: hints
-            )
+            var seenIDs: Set<UUID> = []
+            let deduplicated = combined.filter { seenIDs.insert($0.id).inserted }
+            unresolvedScans = Array(deduplicated.sorted { $0.createdAt < $1.createdAt }.suffix(50))
+            return
         }
-        unresolvedScans = Array(combined.sorted { $0.createdAt < $1.createdAt }.suffix(50))
     }
 
     private func scheduleUnresolvedReload(registry: PokemonCatalogRegistry) {
@@ -2894,17 +2981,25 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func unresolvedCandidates(for id: UUID) async -> [PokemonCatalogCardIdentity] {
-        guard let index = unresolvedScans.firstIndex(where: { $0.id == id }),
-              let number = unresolvedScans[index].pokemonNumber else { return [] }
-        let row = unresolvedScans[index]
+        guard let row = unresolvedScans.first(where: { $0.id == id }),
+              let number = row.pokemonNumber else { return [] }
         let discovered = await catalog.candidates(for: number)
+#if DEBUG
+        unresolvedCandidatesWritebackHookForTesting?()
+        unresolvedCandidatesWritebackHookForTesting = nil
+#endif
+        guard let currentIndex = unresolvedScans.firstIndex(where: { $0.id == id }) else {
+            return []
+        }
+        let currentRow = unresolvedScans[currentIndex]
+        guard !currentRow.isReadOnly else { return [] }
         var byID: [String: PokemonCatalogCardIdentity] = [:]
-        for candidate in row.candidates + discovered {
+        for candidate in currentRow.candidates + discovered {
             byID[candidate.providerID.lowercased()] = candidate
         }
         var candidates = Array(byID.values)
         let hintsByID = Dictionary(
-            row.candidateHints.map { ($0.providerID.lowercased(), $0) },
+            currentRow.candidateHints.map { ($0.providerID.lowercased(), $0) },
             uniquingKeysWith: { first, _ in first }
         )
         for index in candidates.indices {
@@ -2923,9 +3018,9 @@ final class ScannerViewModel: ObservableObject {
         }
         candidates = orderedUnresolvedCandidates(
             candidates,
-            readings: row.requestEvidence.titleReadings
+            readings: currentRow.requestEvidence.titleReadings
         )
-        unresolvedScans[index] = row.replacingCandidates(candidates)
+        unresolvedScans[currentIndex] = currentRow.replacingCandidates(candidates)
         return candidates
     }
 
@@ -2978,7 +3073,8 @@ final class ScannerViewModel: ObservableObject {
                     retryRequest.subject,
                     encounterID: retryRequest.encounterID,
                     purpose: .collection,
-                    generation: scanGeneration
+                    generation: scanGeneration,
+                    unresolvedScanID: row.id
                 )
                 return
             }
@@ -2995,10 +3091,40 @@ final class ScannerViewModel: ObservableObject {
             let retryCandidate = CollectionCommitCandidate(resolvedScan: resolved)
             let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
                 guard let self else { return }
-                _ = await self.commitAuthorizedCollectionCandidate(
-                    retryCandidate,
-                    authorization: .automatic
-                )
+                if retryCandidate.subject.slab == nil,
+                   let writer = self.collectionWriter {
+                    do {
+                        if try await writer.containsCollectionEntry(for: retryCandidate) {
+                            self.clearResolvedUnresolvedRows(
+                                for: retryCandidate.card,
+                                sourceRowID: row.id,
+                                suppressionKey: retryCandidate.subject.suppressionKey
+                            )
+                            self.suppressCollectionCandidate(
+                                encounterID: retryCandidate.encounterID,
+                                identifier: retryCandidate.identifier,
+                                card: retryCandidate.card,
+                                alreadyInCollection: true
+                            )
+                            return
+                        }
+                    } catch {
+                        self.fileUnresolved(
+                            request: retryRequest,
+                            reason: .saveFailed(inMemoryCandidateID: retryCandidate.requestID),
+                            candidates: self.pokemonIdentity(for: retryCandidate.card)
+                                .map { [$0] } ?? [],
+                            pendingCommit: retryCandidate
+                        )
+                        self.show(ScanNote(
+                            text: "Couldn't check whether this card is already in your collection. Saved to Needs attention to retry.",
+                            tone: .problem
+                        ))
+                        self.feedback.problem()
+                        return
+                    }
+                }
+                await self.routeCollectionCandidate(retryCandidate)
             }
             if !accepted { reportPendingResolutionRejected() }
         case let .choose(candidate):
@@ -3009,12 +3135,14 @@ final class ScannerViewModel: ObservableObject {
                 titleCandidates: canonicalName.isEmpty ? [] : [canonicalName]
             )
             let subject = ScanSubject(
-                identifier: .pokemonHistorical(evidence)
+                identifier: .pokemonHistorical(evidence),
+                slab: row.subject.slab
             )
             let request = ScanRequest(
                 subject: subject,
                 purpose: .collection,
-                generation: scanGeneration
+                generation: scanGeneration,
+                unresolvedScanID: row.id
             )
             let accepted = beginPendingResolution(requestID: request.id) { [weak self] in
                 guard let self else { return }
@@ -3026,11 +3154,11 @@ final class ScannerViewModel: ObservableObject {
                         self.endOneCardScan(encounterID: request.encounterID, outcome: "cancelled")
                         return
                     }
-                    self.clearResolvedUnresolvedRows(for: card)
                     await self.resolvePrintRun(
                         for: request,
                         card: card,
                         catalogRetrievedAt: .now,
+                        labelPrintRun: row.subject.slab?.printedPrintRun,
                         identityResolution: .userSelectedPrinting
                     )
                 } catch {
@@ -3038,6 +3166,7 @@ final class ScannerViewModel: ObservableObject {
                         self.endOneCardScan(encounterID: request.encounterID, outcome: "cancelled")
                         return
                     }
+                    self.diagnostic("unresolvedChoiceLookupFailed:\(String(describing: error))")
                     self.handleLookupFailure(request, error, candidates: [candidate])
                 }
             }
@@ -3268,13 +3397,47 @@ final class ScannerViewModel: ObservableObject {
         transientRetryCounts[key, default: 0]
     }
 
-    func fileUnresolvedForTesting(_ subject: ScanSubject, reason: UnresolvedReason) {
+    var unresolvedCandidatesWritebackHookForTesting: (() -> Void)?
+
+    var diagnosticEventsForTesting: [String] {
+        diagnosticEvents
+    }
+
+    func fileUnresolvedForTesting(
+        _ subject: ScanSubject,
+        reason: UnresolvedReason,
+        candidates: [PokemonCatalogCardIdentity] = [],
+        resolvedProviderID: String? = nil
+    ) {
         let request = ScanRequest(
             subject: subject,
             purpose: .collection,
             generation: scanGeneration
         )
-        fileUnresolved(request: request, reason: reason)
+        fileUnresolved(
+            request: request,
+            reason: reason,
+            candidates: candidates,
+            resolvedProviderID: resolvedProviderID
+        )
+    }
+
+    func reloadUnresolvedScansForTesting(registry: PokemonCatalogRegistry? = nil) async {
+        await reloadUnresolvedScans(registry: registry ?? currentPokemonRegistry)
+    }
+
+    func clearResolvedUnresolvedRowsForTesting(
+        for card: IdentifiedCard,
+        sourceRowID: UUID? = nil,
+        suppressionKey: ScanSuppressionKey? = nil,
+        officialCounts: [String: Int] = [:]
+    ) {
+        currentPokemonOfficialCounts = officialCounts
+        clearResolvedUnresolvedRows(
+            for: card,
+            sourceRowID: sourceRowID,
+            suppressionKey: suppressionKey
+        )
     }
 
     var isIdentificationProcessingForTesting: Bool {
@@ -3350,20 +3513,26 @@ final class ScannerViewModel: ObservableObject {
            card.game == .pokemon,
            !PokemonNameMatcher.agrees(cardName: card.name, readings: readings) {
             let candidates = pokemonIdentity(for: card).map { [$0] } ?? []
-            fileUnresolved(
-                request: request,
-                reason: .noConfirmedMatch,
-                candidates: candidates
-            )
-            let message = "Couldn't confirm which card this is. Saved to Needs attention."
+            let isCollectionScan = request.purpose == .collection
+            if isCollectionScan {
+                fileUnresolved(
+                    request: request,
+                    reason: .noConfirmedMatch,
+                    candidates: candidates,
+                    resolvedProviderID: card.providerID
+                )
+            }
+            let message = isCollectionScan
+                ? "Couldn't confirm which card this is. Saved to Needs attention."
+                : "Couldn't confirm which card this is. Nothing was added."
             if !failAcknowledgement(for: request.encounterID, message: message) {
                 show(ScanNote(text: message, tone: .problem))
             }
             feedback.problem()
+            if request.purpose == .priceCheck {
+                resumeRecognitionIfPossible()
+            }
             return
-        }
-        if request.unresolvedScanID != nil {
-            clearResolvedUnresolvedRows(for: card)
         }
         if catalogMissSuppressionKey == request.subject.suppressionKey {
             catalogMissSuppressionKey = nil
@@ -4228,7 +4397,11 @@ final class ScannerViewModel: ObservableObject {
             encounterID: candidate.encounterID,
             presentationToken: committed.presentationToken
         )
-        clearResolvedUnresolvedRows(for: candidate.card)
+        clearResolvedUnresolvedRows(
+            for: candidate.card,
+            sourceRowID: candidate.unresolvedScanID,
+            suppressionKey: candidate.subject.suppressionKey
+        )
         if candidate.subject.slab == nil {
             scanner.armPostCommitLabelWatch(encounterID: candidate.encounterID)
         }
@@ -4271,7 +4444,11 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
-    private func clearResolvedUnresolvedRows(for card: IdentifiedCard) {
+    private func clearResolvedUnresolvedRows(
+        for card: IdentifiedCard,
+        sourceRowID: UUID? = nil,
+        suppressionKey: ScanSuppressionKey? = nil
+    ) {
         let providerID = card.providerID.lowercased()
         let committedPokemon: (localID: String, denominator: Int, setID: String)? = {
             guard case let .pokemon(pokemon, _) = card else { return nil }
@@ -4283,24 +4460,37 @@ final class ScannerViewModel: ObservableObject {
         }()
         let removed = unresolvedScans.filter { row in
             guard row.game == card.game else { return false }
-            let hasProviderMatch = row.candidates.contains {
-                $0.providerID.lowercased() == providerID
-            } || row.candidateHints.contains {
-                $0.providerID.lowercased() == providerID
+            if row.id == sourceRowID { return true }
+            if let suppressionKey,
+               row.subject.suppressionKey == suppressionKey,
+               (!row.needsSessionScopedMerge || row.mergeSessionID == scannerSessionID) {
+                return true
             }
-            if hasProviderMatch { return true }
+            if row.resolvedProviderID == providerID { return true }
             guard let committedPokemon,
                   let number = row.pokemonNumber,
                   PokemonHistoricalIdentityResolver.canonicalLocalID(number.localID)
                     == committedPokemon.localID,
                   number.denominator == committedPokemon.denominator else { return false }
-            return row.pokemonSetProviderID == nil
-                || row.pokemonSetProviderID?.lowercased() == committedPokemon.setID
+            if let rowSetID = row.pokemonSetProviderID?.lowercased() {
+                return rowSetID == committedPokemon.setID
+            }
+            return uniquePokemonSetOwner(for: committedPokemon.denominator)
+                == committedPokemon.setID
         }
         guard !removed.isEmpty else { return }
         let removedIDs = Set(removed.map(\.id))
         unresolvedScans.removeAll { removedIDs.contains($0.id) }
         sessionUnresolvedIDs.subtract(removedIDs)
+    }
+
+    private func uniquePokemonSetOwner(for denominator: Int) -> String? {
+        let owners = currentPokemonOfficialCounts.compactMap { providerID, count in
+            count == denominator ? providerID.lowercased() : nil
+        }
+        let uniqueOwners = Set(owners)
+        guard uniqueOwners.count == 1 else { return nil }
+        return uniqueOwners.first
     }
 
     private func takePendingPostCommitSlabEvidence(for encounterID: UUID) -> GradedSlabEvidence? {
@@ -4404,7 +4594,8 @@ final class ScannerViewModel: ObservableObject {
     private func suppressCollectionCandidate(
         encounterID: UUID,
         identifier: ScanIdentifier,
-        card: IdentifiedCard
+        card: IdentifiedCard,
+        alreadyInCollection: Bool = false
     ) {
         diagnostic("routingSuppressed")
         deferredHeldDuplicateOffer = nil
@@ -4413,7 +4604,10 @@ final class ScannerViewModel: ObservableObject {
         clearAcknowledgement(for: encounterID)
         let printedIdentifier = identifier.scannerDisplayIdentifier(for: card)
         let cardLabel = printedIdentifier.isEmpty ? card.name : printedIdentifier
-        show(ScanNote(text: "\(cardLabel) was already added this session", tone: .info))
+        let message = alreadyInCollection
+            ? "\(cardLabel) is already in your collection"
+            : "\(cardLabel) was already added this session"
+        show(ScanNote(text: message, tone: .info))
         spatialResetProofs.removeAll { $0.encounterID == encounterID }
         pruneSpatialResetProofsToLiveHistory()
     }
@@ -4565,6 +4759,11 @@ final class ScannerViewModel: ObservableObject {
             }
 
             if mutation.wasDuplicate {
+                clearResolvedUnresolvedRows(
+                    for: candidate.card,
+                    sourceRowID: candidate.unresolvedScanID,
+                    suppressionKey: candidate.subject.suppressionKey
+                )
                 show(ScanNote(text: "This certified card is already in your collection", tone: .info))
                 clearAcknowledgement(for: candidate.encounterID)
                 if pendingChoice?.request.id == candidate.requestID {
@@ -4977,19 +5176,30 @@ final class ScannerViewModel: ObservableObject {
     nonisolated static func failureAcknowledgementMessage(
         for failure: CatalogFailure,
         unresolvedReason: UnresolvedReason,
-        displayIdentifier: String
+        displayIdentifier: String,
+        purpose: ScanPurpose = .collection,
+        willRetry: Bool = true
     ) -> String {
         switch failure {
         case .transient:
-            return "Couldn't reach the catalog — retrying. Keep the card in view."
+            if willRetry {
+                return "Couldn't reach the catalog — retrying. Keep the card in view."
+            }
+            return purpose == .collection
+                ? "Couldn't reach the catalog. Saved to Needs attention; automatic retries stopped."
+                : "Couldn't reach the catalog. Move the card out of view, then scan again."
         case .providerUnavailable:
-            return "Not added — card lookup is unavailable right now. Try again later."
+            return purpose == .collection
+                ? "Not added — card lookup is unavailable right now. Try again later."
+                : "Card lookup is temporarily unavailable. Price Check couldn't continue."
         case .notInCatalog:
             switch unresolvedReason {
             case .noCatalogEntry:
                 return "Read \(displayIdentifier), but the catalog has no card with that number. Nothing was added."
             case .noConfirmedMatch, .lookupFailed, .providerUnavailable:
-                return "Couldn't confirm which card this is. Saved to Needs attention."
+                return purpose == .collection
+                    ? "Couldn't confirm which card this is. Saved to Needs attention."
+                    : "Couldn't confirm which card this is. Price Check couldn't continue."
             case .saveFailed:
                 return "Recognized, but saving failed. Saved to Needs attention to retry."
             }
@@ -5004,6 +5214,20 @@ final class ScannerViewModel: ObservableObject {
         let subject = request.subject
         let failure = CardCatalog.classify(error)
         let unresolvedReason = UnresolvedReason.reason(for: request.identifier, error: error)
+        let retryCount = transientRetryCounts[subject.suppressionKey, default: 0]
+        let willRetry: Bool
+        if case .transient = failure {
+            willRetry = retryCount < 2
+        } else {
+            willRetry = false
+        }
+        let message = Self.failureAcknowledgementMessage(
+            for: failure,
+            unresolvedReason: unresolvedReason,
+            displayIdentifier: subject.displayIdentifier,
+            purpose: request.purpose,
+            willRetry: willRetry
+        )
         if request.purpose == .collection {
             fileUnresolved(
                 request: request,
@@ -5012,11 +5236,7 @@ final class ScannerViewModel: ObservableObject {
             )
             failAcknowledgement(
                 for: request.encounterID,
-                message: Self.failureAcknowledgementMessage(
-                    for: failure,
-                    unresolvedReason: unresolvedReason,
-                    displayIdentifier: subject.displayIdentifier
-                )
+                message: message
             )
         } else {
             endOneCardScan(encounterID: request.encounterID, outcome: "price-check-failure")
@@ -5025,34 +5245,20 @@ final class ScannerViewModel: ObservableObject {
 
         switch failure {
         case .transient:
-            let retryCount = transientRetryCounts[subject.suppressionKey, default: 0]
-            if retryCount < 2 {
+            if willRetry {
                 transientRetryCounts[subject.suppressionKey] = retryCount + 1
                 scanner.allowRetry(of: subject.suppressionKey)
             }
-            show(ScanNote(
-                text: "Couldn't reach the catalog — retrying. Keep the card in view.",
-                tone: .problem
-            ))
+            show(ScanNote(text: message, tone: .problem))
 
         case .providerUnavailable:
-            show(ScanNote(
-                text: "Not added — card lookup is unavailable right now. Try again later.",
-                tone: .problem
-            ))
+            show(ScanNote(text: message, tone: .problem))
 
         case .notInCatalog:
             if unresolvedReason == .noCatalogEntry {
                 catalogMissSuppressionKey = subject.suppressionKey
             }
-            show(ScanNote(
-                text: Self.failureAcknowledgementMessage(
-                    for: failure,
-                    unresolvedReason: unresolvedReason,
-                    displayIdentifier: subject.displayIdentifier
-                ),
-                tone: .problem
-            ))
+            show(ScanNote(text: message, tone: .problem))
         }
 
         // Price Check paused at confirmation to enforce its one-card contract;
@@ -5066,12 +5272,14 @@ final class ScannerViewModel: ObservableObject {
         request: ScanRequest,
         reason: UnresolvedReason,
         candidates: [PokemonCatalogCardIdentity] = [],
-        pendingCommit: CollectionCommitCandidate? = nil
+        pendingCommit: CollectionCommitCandidate? = nil,
+        resolvedProviderID: String? = nil
     ) {
         guard request.purpose == .collection else { return }
-        let existingRowID = unresolvedScans.first {
-            $0.mergeKey == request.subject.suppressionKey
-        }?.id
+        let mergeKey = UnresolvedScan.mergeKey(
+            for: request.subject,
+            sessionID: scannerSessionID
+        )
         unresolvedScans = UnresolvedScan.merging(
             unresolvedScans,
             with: request.subject,
@@ -5081,10 +5289,15 @@ final class ScannerViewModel: ObservableObject {
                 catalogIdentifier: request.identifier.displayIdentifier,
                 titleReadings: UnresolvedScan.readings(in: request.subject)
             ),
-            pendingCommit: pendingCommit
+            pendingCommit: pendingCommit,
+            sessionID: scannerSessionID,
+            resolvedProviderID: resolvedProviderID,
+            matchingID: request.unresolvedScanID
         )
-        if existingRowID == nil,
-           let row = unresolvedScans.first(where: { $0.mergeKey == request.subject.suppressionKey }) {
+        let row = request.unresolvedScanID.flatMap { id in
+            unresolvedScans.first(where: { $0.id == id })
+        } ?? unresolvedScans.first(where: { $0.mergeKey == mergeKey })
+        if let row {
             sessionUnresolvedIDs.insert(row.id)
         }
     }
@@ -5108,7 +5321,8 @@ final class ScannerViewModel: ObservableObject {
             purpose: .collection,
             generation: scanGeneration,
             encounterID: candidate.encounterID,
-            heldRepeatAuthorizationID: candidate.heldRepeatAuthorizationID
+            heldRepeatAuthorizationID: candidate.heldRepeatAuthorizationID,
+            unresolvedScanID: candidate.unresolvedScanID
         )
     }
 

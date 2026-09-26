@@ -46,7 +46,7 @@ final class HistoricalAttemptBoundTests: XCTestCase {
         XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(other, at: start + 1.46))
     }
 
-    func testRawTitleEvidenceSurvivesTTLAttemptRenewal() {
+    func testRawTitleEvidenceExpiresAtTTLAttemptRenewal() {
         let scanner = CardScanner()
         let start: CFAbsoluteTime = 3_000
         XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(number, at: start))
@@ -63,7 +63,7 @@ final class HistoricalAttemptBoundTests: XCTestCase {
         XCTAssertFalse(scanner.advanceHistoricalAttemptForTesting(number, at: start + 1.3))
 
         XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(number, at: start + 1.6))
-        XCTAssertEqual(scanner.historicalTitleCandidatesForTesting, ["dustox"])
+        XCTAssertEqual(scanner.historicalTitleCandidatesForTesting, [])
     }
 
     func testExhaustedRawAttemptReturnsAccumulatedEvidenceWithoutAnotherTitlePass() {

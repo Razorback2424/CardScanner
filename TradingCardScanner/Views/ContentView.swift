@@ -126,7 +126,7 @@ struct ContentView: View {
                 }
                 .tag(Tab.collection)
 
-            ScannerView()
+            ScannerView(browseCatalog: browseCatalog)
                 .tabItem {
                     Label("Scan", systemImage: "viewfinder")
                 }
