@@ -109,6 +109,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let slots: [SortPriceSlot]
     }
 
+    private struct PokemonBulkSnapshot {
+        let value: PokemonBulkPriceMap
+        let storedAt: Date
+
+        var isFresh: Bool {
+            let age = Date.now.timeIntervalSince(storedAt)
+            return age >= 0 && age < 24 * 60 * 60
+        }
+    }
+
     private struct MagicCardsPageResult: Sendable {
         let page: CatalogPage<CatalogCardSummary>
         let prices: [String: CatalogCachedPrice]
@@ -156,9 +166,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var resolvedSortPrices: Set<String> = []
     private var unresolvedSortPrices: Set<String> = []
     private var sortPriceResolutionGeneration = UUID()
-    private var pokemonBulkPriceCache: [String: PokemonBulkPriceMap] = [:]
-    private var pokemonSecondarySetsCache: [PokemonCatalogSecondarySet]?
-    private var pokemonBulkSetMatchCache: [String: PokemonBulkSetMatch] = [:]
+    private var sortPriceCheckedAt: [String: Date] = [:]
+    private var pokemonBulkPriceCache: [String: PokemonBulkSnapshot] = [:]
     private var refreshingSetDirectories: Set<CardGame> = []
     private var memoryWarningObserver: NSObjectProtocol?
 
@@ -956,11 +965,23 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     func resetPriceResolution(for ids: [String]) async {
         sortPriceResolutionGeneration = UUID()
+        var pokemonSetIDs: Set<String> = []
         for id in ids {
             resolvedSortPrices.remove(id)
             unresolvedSortPrices.remove(id)
             sortPriceCache.removeValue(forKey: id)
+            sortPriceCheckedAt.removeValue(forKey: id)
+            let components = id.split(separator: ":", maxSplits: 3)
+            if components.count >= 3,
+               components[0] == CardGame.pokemon.rawValue {
+                pokemonSetIDs.insert(String(components[1]))
+                detailCache.removeValue(forKey: "pokemon:\(components[2].lowercased())")
+            }
         }
+        for setID in pokemonSetIDs {
+            pokemonBulkPriceCache.removeValue(forKey: setID.lowercased())
+        }
+        await cache.invalidatePokemonPricing(for: pokemonSetIDs)
     }
 
     nonisolated func sortPriceUpdates(
@@ -1008,6 +1029,20 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
         let resolutionGeneration = sortPriceResolutionGeneration
 
+        // A long-lived Browse actor must recheck prices that arrived after a
+        // set opened. In particular, a negative result is never permanent.
+        let now = Date.now
+        for card in cards {
+            guard let checkedAt = sortPriceCheckedAt[card.id] else { continue }
+            let maxAge: TimeInterval = sortPriceCache[card.id] == nil
+                ? 6 * 60 * 60 : 24 * 60 * 60
+            guard now.timeIntervalSince(checkedAt) >= maxAge else { continue }
+            resolvedSortPrices.remove(card.id)
+            sortPriceCache.removeValue(forKey: card.id)
+            sortPriceCheckedAt.removeValue(forKey: card.id)
+            detailCache.removeValue(forKey: detailCacheKey(for: card))
+        }
+
         let cardsBySet = Dictionary(grouping: cards, by: \.setID.id)
         var freshPersistedPrices: [String: [String: Double]] = [:]
         for (setID, setCards) in cardsBySet {
@@ -1018,8 +1053,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
             if cached.isFresh { freshPersistedPrices[setID] = cached.value }
             let currentIDs = Set(setCards.map(\.id))
             for (id, price) in cached.value where currentIDs.contains(id) {
+                // A newer provider check may have disproved a persisted price.
+                // Do not resurrect that old ordering hint on this screen.
+                if resolvedSortPrices.contains(id),
+                   sortPriceCheckedAt[id] != nil,
+                   sortPriceCache[id] == nil { continue }
                 sortPriceCache[id] = price
-                if cached.isFresh { resolvedSortPrices.insert(id) }
+                if cached.isFresh {
+                    resolvedSortPrices.insert(id)
+                    sortPriceCheckedAt[id] = cached.storedAt
+                }
             }
         }
 
@@ -1030,6 +1073,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         await preparePokemonBulkPrices(for: pending.flatMap { $0 })
         var iterator = pending.makeIterator()
+        var refreshedIDs: Set<String> = []
         var completedSinceEmit = 0
         var lastEmit = Date.now
 
@@ -1050,19 +1094,23 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         return
                     }
                     for slot in result.slots {
+                        refreshedIDs.insert(slot.id)
                         switch slot.resolution {
                         case let .priced(price):
                             resolvedSortPrices.insert(slot.id)
                             unresolvedSortPrices.remove(slot.id)
                             sortPriceCache[slot.id] = price
+                            sortPriceCheckedAt[slot.id] = .now
                         case .noUSDQuote:
                             resolvedSortPrices.insert(slot.id)
                             unresolvedSortPrices.remove(slot.id)
                             sortPriceCache.removeValue(forKey: slot.id)
+                            sortPriceCheckedAt[slot.id] = .now
                         case .unresolved:
                             resolvedSortPrices.remove(slot.id)
                             unresolvedSortPrices.insert(slot.id)
                             sortPriceCache.removeValue(forKey: slot.id)
+                            sortPriceCheckedAt.removeValue(forKey: slot.id)
                         }
                     }
                     completedSinceEmit += result.slots.count
@@ -1092,6 +1140,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
               resolutionGeneration == sortPriceResolutionGeneration else { return }
 
         for (setID, setCards) in cardsBySet {
+            guard setCards.contains(where: { refreshedIDs.contains($0.id) }) else { continue }
             // A request covers only the slots that were loaded, and the price
             // prefetch runs on the first page. Replacing the stored map would
             // shrink a fully priced set to one page on every cold open, which
@@ -1099,10 +1148,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
             // this run's prices win, previously priced slots survive.
             var prices = freshPersistedPrices[setID] ?? [:]
             for card in setCards {
-                guard let price = sortPriceCache[card.id] else { continue }
-                prices[card.id] = price
+                if let price = sortPriceCache[card.id] {
+                    prices[card.id] = price
+                } else if resolvedSortPrices.contains(card.id) {
+                    prices.removeValue(forKey: card.id)
+                }
             }
-            guard !prices.isEmpty else { continue }
+            // An empty map is meaningful when a prior price was disproved.
+            // Write only after provider work so reopening a set does not renew
+            // the age of the same cached prices indefinitely.
             await cache.storeSortPrices(prices, for: setID)
         }
 
@@ -1196,12 +1250,22 @@ actor BrowseCatalog: BrowseCatalogProviding {
     ) async -> SortPriceGroupResult {
         guard pokemonPriceSource != nil,
               let setID = summaries.first?.setID.providerID,
-              let bulk = pokemonBulkPriceCache[setID.lowercased()] else {
-            return await fallbackSortPriceGroup(for: summaries)
+              let cachedBulk = pokemonBulkPriceCache[setID.lowercased()] else {
+            let fallback = await fallbackSortPriceGroup(for: summaries)
+            // A TCGdex-only miss is not proof that the set-wide USD source
+            // lacks a quote, especially for a release absent from its catalog.
+            guard pokemonPriceSource != nil else { return fallback }
+            return SortPriceGroupResult(slots: fallback.slots.map { slot in
+                SortPriceSlot(
+                    id: slot.id,
+                    resolution: slot.resolution == .noUSDQuote ? .unresolved : slot.resolution
+                )
+            })
         }
 
         var slots: [SortPriceSlot] = []
         slots.reserveCapacity(summaries.count)
+        let bulk = cachedBulk.value
         for summary in summaries {
             // Virtual print runs are deliberately not allowed to inherit a
             // normal-set quote. They remain resolved-but-unpriced unless the
@@ -1219,7 +1283,16 @@ actor BrowseCatalog: BrowseCatalogProviding {
             } else {
                 // A missing bulk value does not confirm that the exact finish
                 // lacks a quote. Check the detailed card before resolving it.
-                slots.append(await sortPrice(for: summary))
+                let fallback = await sortPrice(for: summary)
+                slots.append(SortPriceSlot(
+                    id: summary.id,
+                    resolution: fallback.resolution == .noUSDQuote
+                        && (!cachedBulk.isFresh || !bulk.covers(
+                            providerID: summary.providerID,
+                            variant: summary.masterSetVariant
+                        ))
+                        ? .unresolved : fallback.resolution
+                ))
             }
         }
         return SortPriceGroupResult(slots: slots)
@@ -1327,13 +1400,17 @@ actor BrowseCatalog: BrowseCatalogProviding {
         source: any PokemonBulkPriceSource
     ) async throws -> PokemonBulkPriceMap {
         let key = setID.lowercased()
-        if let cached = pokemonBulkPriceCache[key] { return cached }
-
+        if let cached = pokemonBulkPriceCache[key], cached.isFresh {
+            return cached.value
+        }
         let persisted = await cache.pokemonBulkPrices(for: setID)
         if let persisted,
            persisted.isFresh,
            persisted.value.isStage4Compatible {
-            pokemonBulkPriceCache[key] = persisted.value
+            pokemonBulkPriceCache[key] = PokemonBulkSnapshot(
+                value: persisted.value,
+                storedAt: persisted.storedAt
+            )
             return persisted.value
         }
 
@@ -1342,7 +1419,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 tcgdexSetID: setID,
                 secondarySetID: secondarySetID
             )
-            pokemonBulkPriceCache[key] = loaded
+            pokemonBulkPriceCache[key] = PokemonBulkSnapshot(value: loaded, storedAt: .now)
             await cache.storePokemonBulkPrices(loaded, for: setID)
             return loaded
         } catch {
@@ -1350,7 +1427,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
             // while offline. The next successful fetch replaces it and resets
             // its age; this branch never turns stale data into a fresh claim.
             if let persisted {
-                pokemonBulkPriceCache[key] = persisted.value
+                pokemonBulkPriceCache[key] = PokemonBulkSnapshot(
+                    value: persisted.value,
+                    storedAt: persisted.storedAt
+                )
                 return persisted.value
             }
             throw error
@@ -1361,14 +1441,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         for summary: CatalogCardSummary
     ) async throws -> String? {
         let tcgdexSetID = summary.setID.providerID
-        let key = tcgdexSetID.lowercased()
-        if let cached = pokemonBulkSetMatchCache[key] {
-            return cached.secondarySetID
-        }
-
         let persistedMatch = await cache.pokemonBulkSetMatch(for: tcgdexSetID)
         if let persistedMatch, persistedMatch.isFresh {
-            pokemonBulkSetMatchCache[key] = persistedMatch.value
             return persistedMatch.value.secondarySetID
         }
 
@@ -1377,7 +1451,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
         // test's canonical set id, so retain that deterministic seam.
         guard let source = pokemonSecondarySetSource else {
             let match = PokemonBulkSetMatch(secondarySetID: tcgdexSetID)
-            pokemonBulkSetMatchCache[key] = match
             await cache.storePokemonBulkSetMatch(match, for: tcgdexSetID)
             return tcgdexSetID
         }
@@ -1387,7 +1460,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
             candidates = try await pokemonSecondarySets(from: source)
         } catch {
             if let persistedMatch {
-                pokemonBulkSetMatchCache[key] = persistedMatch.value
                 return persistedMatch.value.secondarySetID
             }
             throw error
@@ -1408,7 +1480,6 @@ actor BrowseCatalog: BrowseCatalogProviding {
         } else {
             match = PokemonBulkSetMatch(secondarySetID: nil)
         }
-        pokemonBulkSetMatchCache[key] = match
         await cache.storePokemonBulkSetMatch(match, for: tcgdexSetID)
         return match.secondarySetID
     }
@@ -1416,24 +1487,17 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private func pokemonSecondarySets(
         from source: any PokemonSecondarySetSource
     ) async throws -> [PokemonCatalogSecondarySet] {
-        if let pokemonSecondarySetsCache {
-            return pokemonSecondarySetsCache
-        }
-
         let persisted = await cache.pokemonSecondarySets()
         if let persisted, persisted.isFresh {
-            pokemonSecondarySetsCache = persisted.value
             return persisted.value
         }
 
         do {
             let loaded = try await source.fetchSecondarySets()
-            pokemonSecondarySetsCache = loaded
             await cache.storePokemonSecondarySets(loaded)
             return loaded
         } catch {
             if let persisted {
-                pokemonSecondarySetsCache = persisted.value
                 return persisted.value
             }
             throw error
@@ -1644,9 +1708,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         sortPriceCache.removeAll()
         resolvedSortPrices.removeAll()
         unresolvedSortPrices.removeAll()
+        sortPriceCheckedAt.removeAll()
         pokemonBulkPriceCache.removeAll()
-        pokemonSecondarySetsCache = nil
-        pokemonBulkSetMatchCache.removeAll()
     }
 
     private func installMemoryWarningObserverIfNeeded() {
@@ -2191,8 +2254,9 @@ actor CatalogCacheStore {
     private static let magicCardPageMaxAge: TimeInterval = 24 * 60 * 60
     private static let sortPriceMaxAge: TimeInterval = 24 * 60 * 60
     private static let bulkPriceMaxAge: TimeInterval = 24 * 60 * 60
-    private static let pokemonSecondarySetsMaxAge: TimeInterval = 30 * 24 * 60 * 60
+    private static let pokemonSecondarySetsMaxAge: TimeInterval = 24 * 60 * 60
     private static let pokemonBulkSetMatchMaxAge: TimeInterval = 30 * 24 * 60 * 60
+    private static let pokemonMissingBulkSetMatchMaxAge: TimeInterval = 6 * 60 * 60
     private static let cardPageLimit = 25 * 1_024 * 1_024
     private static let sealedPageLimit = 10 * 1_024 * 1_024
 
@@ -2292,6 +2356,22 @@ actor CatalogCacheStore {
         trim(pokemonBulkPricesDirectory, maximumBytes: 10 * 1_024 * 1_024)
     }
 
+    func invalidatePokemonPricing(for setIDs: Set<String>) {
+        guard !setIDs.isEmpty else { return }
+        for setID in setIDs {
+            let normalized = setID.lowercased()
+            let bulkURL = pokemonBulkPricesDirectory.appendingPathComponent(
+                filename(for: "pokemon-bulk-prices|\(normalized)")
+            )
+            let matchURL = pokemonBulkSetMatchesDirectory.appendingPathComponent(
+                filename(for: "pokemon-bulk-set-match|\(normalized)")
+            )
+            try? FileManager.default.removeItem(at: bulkURL)
+            try? FileManager.default.removeItem(at: matchURL)
+        }
+        try? FileManager.default.removeItem(at: pokemonSecondarySetsURL)
+    }
+
     func pokemonSecondarySets() -> Cached<[PokemonCatalogSecondarySet]>? {
         load(
             [PokemonCatalogSecondarySet].self,
@@ -2311,12 +2391,20 @@ actor CatalogCacheStore {
         guard let cached = load(
             PokemonBulkSetMatch.self,
             from: url,
-            maxAge: Self.pokemonBulkSetMatchMaxAge
+            maxAge: nil
         ) else {
             return nil
         }
         touch(url)
-        return cached
+        let maxAge = cached.value.secondarySetID == nil
+            ? Self.pokemonMissingBulkSetMatchMaxAge
+            : Self.pokemonBulkSetMatchMaxAge
+        let age = Date.now.timeIntervalSince(cached.storedAt)
+        return Cached(
+            value: cached.value,
+            storedAt: cached.storedAt,
+            isFresh: age >= 0 && age < maxAge
+        )
     }
 
     func storePokemonBulkSetMatch(_ match: PokemonBulkSetMatch, for setID: String) {

@@ -1972,12 +1972,19 @@ private struct CatalogSetCardsView: View {
                         }
                     }
                     if noUSDPriceSlotCount > 0 {
-                        Label(
-                            "\(noUSDPriceSlotCount) cards have no USD price",
-                            systemImage: "info.circle"
-                        )
-                        .font(.footnote)
-                        .foregroundStyle(.tertiary)
+                        HStack(alignment: .firstTextBaseline, spacing: 10) {
+                            Label(
+                                "No USD quote from checked sources for \(noUSDPriceSlotCount) cards",
+                                systemImage: "info.circle"
+                            )
+                            .font(.footnote)
+                            .foregroundStyle(.tertiary)
+                            Spacer(minLength: 0)
+                            if unresolvedPriceSlotCount == 0 {
+                                Button("Retry") { retryPrices() }
+                                    .font(.subheadline.weight(.semibold))
+                            }
+                        }
                     }
                 }
                 .padding(.top, 12)
@@ -2187,6 +2194,9 @@ private struct CatalogSetCardsView: View {
                 requestID: priceLoadState.requestID,
                 isCancelled: Task.isCancelled
             ) else { return }
+            for id in update.resolvedIDs where update.prices[id] == nil {
+                prices.removeValue(forKey: id)
+            }
             prices.merge(update.prices) { _, newest in newest }
             resolvedPriceSlotIDs.formUnion(update.resolvedIDs)
             unresolvedPriceSlotIDs.formUnion(update.unresolvedIDs)
@@ -2206,7 +2216,12 @@ private struct CatalogSetCardsView: View {
 
     private func retryPrices() {
         guard sort.needsPrices, !cards.isEmpty else { return }
-        let retryIDs = Array(unresolvedPriceSlotIDs)
+        let displayedIDs = Set(cards.map(\.id))
+        let retryIDs = Array(
+            unresolvedPriceSlotIDs.union(
+                resolvedPriceSlotIDs.subtracting(prices.keys)
+            ).intersection(displayedIDs)
+        )
         priceLoadTask?.cancel()
         priceLoadTask = nil
         priceReloadAfterCurrentLoad = false

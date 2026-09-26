@@ -534,6 +534,129 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertTrue(pokemon?.value.containsCard("SV08.5-002") == true)
     }
 
+    func testMissingSecondarySetMatchExpiresSoonerThanMatchedSet() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = CatalogCacheStore(root: root)
+        await cache.storePokemonBulkSetMatch(
+            PokemonBulkSetMatch(secondarySetID: nil), for: "30th"
+        )
+        await cache.storePokemonBulkSetMatch(
+            PokemonBulkSetMatch(secondarySetID: "me05"), for: "me05"
+        )
+        let directory = root.appendingPathComponent("PokemonBulkSetMatches", isDirectory: true)
+        let files = try FileManager.default.contentsOfDirectory(
+            at: directory, includingPropertiesForKeys: nil
+        )
+        for file in files {
+            var envelope = try XCTUnwrap(
+                JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any]
+            )
+            envelope["storedAt"] = Date.now.addingTimeInterval(-7 * 60 * 60)
+                .timeIntervalSinceReferenceDate
+            try JSONSerialization.data(withJSONObject: envelope).write(to: file, options: .atomic)
+        }
+
+        let reader = CatalogCacheStore(root: root)
+        let missing = await reader.pokemonBulkSetMatch(for: "30th")
+        let matched = await reader.pokemonBulkSetMatch(for: "me05")
+        XCTAssertFalse(missing?.isFresh == true)
+        XCTAssertTrue(matched?.isFresh == true)
+    }
+
+    func testRetryInvalidatesPokemonBulkAndSetDirectoryCaches() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = CatalogCacheStore(root: root)
+        await cache.storePokemonBulkPrices(
+            PokemonBulkPriceMap(valuesByCardID: ["30th-001": [:]]), for: "30th"
+        )
+        await cache.storePokemonBulkSetMatch(
+            PokemonBulkSetMatch(secondarySetID: nil), for: "30th"
+        )
+        await cache.storePokemonSecondarySets([])
+        let catalog = BrowseCatalog(cache: cache)
+
+        await catalog.resetPriceResolution(for: ["pokemon:30th:30th-001:holo"])
+
+        let bulk = await cache.pokemonBulkPrices(for: "30th")
+        let match = await cache.pokemonBulkSetMatch(for: "30th")
+        let directory = await cache.pokemonSecondarySets()
+        XCTAssertNil(bulk)
+        XCTAssertNil(match)
+        XCTAssertNil(directory)
+    }
+
+    func testUnmatchedNewSetDoesNotClaimItsCardsHaveNoUSDPrice() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let row = try decode(TCGdexBrowseSet.self, from: """
+        {"id":"30th","name":"30th Celebration","tcgOnline":"30C",\
+        "releaseDate":"2026-09-16","cardCount":{"total":128,"official":128}}
+        """)
+        let set = try decode(TCGdexSetCatalog.self, from: """
+        {"id":"30th","name":"30th Celebration","cards":[],\
+        "cardCount":{"total":128,"official":128}}
+        """)
+        let card = try decode(TCGdexCard.self, from: """
+        {"id":"30th-001","localId":"001","name":"New Card",\
+        "set":{"id":"30th","name":"30th Celebration",\
+        "cardCount":{"total":128,"official":128}},\
+        "variants":{"firstEdition":false,"holo":true,"normal":false,"reverse":false},\
+        "pricing":{"tcgplayer":{}}}
+        """)
+        let transport = FakePokemonBrowseTransport(
+            rows: [row], sets: ["30th": set], cards: ["30th-001": card]
+        )
+        let source = RecordingPokemonBulkPriceSource(
+            map: PokemonBulkPriceMap(valuesByCardID: [:])
+        )
+        let secondary = RecordingPokemonSecondarySetSource(sets: [])
+        let cache = CatalogCacheStore(root: root)
+        let catalog = BrowseCatalog(
+            cache: cache,
+            pokemonTransport: transport,
+            pokemonPriceSource: source,
+            pokemonSecondarySetSource: secondary
+        )
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "30th-001",
+            setID: CatalogSetID(game: .pokemon, providerID: "30th"),
+            setName: "30th Celebration",
+            setCode: "30C",
+            name: "New Card",
+            collectorNumber: "001",
+            thumbnailURL: nil,
+            imageURL: nil,
+            masterSetVariant: .holo,
+            isSoleSlotForCard: true
+        )
+        await cache.storeSortPrices([summary.id: 42], for: summary.setID.id)
+        let sortPriceDirectory = root.appendingPathComponent("SortPrices", isDirectory: true)
+        let sortPriceFile = try XCTUnwrap(FileManager.default.contentsOfDirectory(
+            at: sortPriceDirectory, includingPropertiesForKeys: nil
+        ).first)
+        var envelope = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: Data(contentsOf: sortPriceFile)) as? [String: Any]
+        )
+        envelope["storedAt"] = 0.0
+        try JSONSerialization.data(withJSONObject: envelope)
+            .write(to: sortPriceFile, options: .atomic)
+
+        var finalUpdate: CatalogPriceUpdate?
+        for await update in catalog.sortPriceUpdates(for: [summary]) {
+            finalUpdate = update
+        }
+
+        XCTAssertEqual(finalUpdate?.unresolvedIDs, Set([summary.id]))
+        XCTAssertFalse(finalUpdate?.resolvedIDs.contains(summary.id) == true)
+        let requestedPairs = await source.requestedPairs()
+        XCTAssertTrue(requestedPairs.isEmpty)
+        let persistedPrices = await cache.sortPrices(for: summary.setID.id)
+        XCTAssertEqual(persistedPrices?.value, [:])
+    }
+
     func testPokemonBulkPriceMapNeverBorrowsAnotherFinish() {
         let map = PokemonBulkPriceMap(valuesByCardID: [
             "sv08.5-001": [
