@@ -261,6 +261,13 @@ struct CandidateConfirmationWindow {
     mutating func reset() {
         observations.removeAll(keepingCapacity: true)
     }
+
+    /// Removes only progress for a presentation being deliberately retried.
+    /// A retry for an older card must not throw away a different card's partial
+    /// confirmation window.
+    mutating func discardObservations(matching key: ScanSuppressionKey) {
+        observations.removeAll { $0?.suppressionKey == key }
+    }
 }
 
 /// Historical footer evidence is confirmed before the scanner asks the user to

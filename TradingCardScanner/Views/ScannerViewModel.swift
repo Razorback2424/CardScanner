@@ -2995,7 +2995,7 @@ final class ScannerViewModel: ObservableObject {
         if catalogMissSuppressionKey == acknowledgement.subject.suppressionKey {
             catalogMissSuppressionKey = nil
         }
-        scanner.retryFailedScan(of: acknowledgement.subject.suppressionKey)
+        scanner.retryFailedScan(for: acknowledgement.subject)
         show(ScanNote(
             text: "Ready for another read — adjust the card and hold steady.",
             tone: .info
@@ -5233,6 +5233,20 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
+    /// A fresh camera read can change catalog matches and OCR disagreements,
+    /// but it cannot repair request construction or an unsupported layout.
+    nonisolated static func canRetryIdentityScan(failure: CatalogFailure, error: Error) -> Bool {
+        guard failure == .notInCatalog else { return false }
+        switch error {
+        case TCGdexError.invalidURL,
+             ScryfallError.invalidURL,
+             ScryfallError.unsupportedPrinting:
+            return false
+        default:
+            return true
+        }
+    }
+
     private func handleLookupFailure(
         _ request: ScanRequest,
         _ error: Error,
@@ -5264,7 +5278,7 @@ final class ScannerViewModel: ObservableObject {
             failAcknowledgement(
                 for: request.encounterID,
                 message: message,
-                canRetryScan: request.purpose == .collection && failure == .notInCatalog
+                canRetryScan: Self.canRetryIdentityScan(failure: failure, error: error)
             )
         } else {
             endOneCardScan(encounterID: request.encounterID, outcome: "price-check-failure")

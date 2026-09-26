@@ -168,6 +168,10 @@ struct ScanAcknowledgementCard: View {
         acknowledgement.phase == .failed
     }
 
+    private var showsRetryAction: Bool {
+        isFailure && acknowledgement.canRetryScan
+    }
+
     var body: some View {
         HStack(spacing: 11) {
             Image(systemName: isFailure ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
@@ -190,13 +194,13 @@ struct ScanAcknowledgementCard: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
-                if isFailure, acknowledgement.canRetryScan {
+                if showsRetryAction {
                     Button(action: onRetryScan) {
                         Label("Retry scan", systemImage: "arrow.clockwise")
                             .font(.caption.weight(.semibold))
-                            .frame(minHeight: 44)
                     }
                     .buttonStyle(.bordered)
+                    .controlSize(.large)
                     .tint(.cyan)
                     .accessibilityHint("Adjust the card, then hold it steady for a clearer read.")
                 }
@@ -212,7 +216,12 @@ struct ScanAcknowledgementCard: View {
         .foregroundStyle(.white)
         .padding(12)
         .appGlass(cornerRadius: 16)
-        .accessibilityElement(children: .contain)
+        .accessibilityElement(children: showsRetryAction ? .contain : .combine)
+        .accessibilityLabel(
+            isFailure
+                ? "Not added. \(acknowledgement.message ?? "Try again")"
+                : "Recognized. \(acknowledgement.message ?? "Saving")"
+        )
     }
 }
 

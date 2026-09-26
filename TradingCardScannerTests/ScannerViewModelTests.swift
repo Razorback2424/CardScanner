@@ -1847,13 +1847,16 @@ final class ScannerViewModelTests: XCTestCase {
         let model = try makeModel(variants: [.normal], catalogMiss: true)
         let identifier = try XCTUnwrap(ScanParser.parsePokemon("MEP 095"))
         let subject = ScanSubject(identifier: identifier)
+        var plausibleReadCount = 0
+        model.scanner.onPlausibleCandidate = { _ in plausibleReadCount += 1 }
+        let start = CFAbsoluteTimeGetCurrent()
         model.scanner.receiveFooterOutcomeForTesting(
             .identified(subject),
-            at: CFAbsoluteTimeGetCurrent() + 0.25
+            at: start + 0.25
         )
         model.scanner.receiveFooterOutcomeForTesting(
             .identified(subject),
-            at: CFAbsoluteTimeGetCurrent() + 0.5
+            at: start + 0.5
         )
 
         let failed = await waitUntil {
@@ -1869,6 +1872,62 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.unresolvedScans.first?.subject, subject)
         XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
         XCTAssertTrue(model.scanAcknowledgement?.canRetryScan == true)
+
+        let firstPlausibleRead = await waitUntil { plausibleReadCount == 1 }
+        XCTAssertTrue(firstPlausibleRead)
+        let failedAcknowledgement = try XCTUnwrap(model.scanAcknowledgement)
+        model.retryFailedScan(encounterID: failedAcknowledgement.encounterID)
+        model.scanner.drainVisionQueueForTesting()
+        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 0.75)
+        model.scanner.receiveFooterOutcomeForTesting(.identified(subject), at: start + 1.0)
+
+        let sameCardAnnouncedAgain = await waitUntil { plausibleReadCount == 2 }
+        XCTAssertTrue(
+            sameCardAnnouncedAgain,
+            "retry should clear the catalog-miss suppression and announce a fresh read of the same card"
+        )
+        let sameCardFailedAgain = await waitUntil {
+            model.scanAcknowledgement?.phase == .failed
+                && model.unresolvedScans.count == 1
+        }
+        XCTAssertTrue(sameCardFailedAgain)
+        XCTAssertEqual(model.unresolvedScans.first?.reason, .noCatalogEntry)
+    }
+
+    func testFreshReadRetryEligibilityExcludesNonCameraFixableFailures() {
+        let retryableErrors: [Error] = [
+            TCGdexError.cardNotFound,
+            TCGdexError.identityMismatch,
+            ScryfallError.cardNotFound,
+            ScryfallError.identityMismatch,
+            PokemonHistoricalCatalogError.unsupported
+        ]
+        for error in retryableErrors {
+            XCTAssertTrue(
+                ScannerViewModel.canRetryIdentityScan(
+                    failure: CardCatalog.classify(error),
+                    error: error
+                ),
+                "a fresh read may change the outcome for \(error)"
+            )
+        }
+
+        let nonRetryableErrors: [Error] = [
+            TCGdexError.invalidURL,
+            ScryfallError.invalidURL,
+            ScryfallError.unsupportedPrinting,
+            ScryfallError.badResponse,
+            ScryfallError.providerUnavailable
+        ]
+        for error in nonRetryableErrors {
+            XCTAssertFalse(
+                ScannerViewModel.canRetryIdentityScan(
+                    failure: CardCatalog.classify(error),
+                    error: error
+                ),
+                "a camera retry cannot fix \(error)"
+            )
+        }
     }
 
     func testTransientAndProviderFailuresFileImmediatelyWithSpecificMessages() async throws {
@@ -1948,6 +2007,11 @@ final class ScannerViewModelTests: XCTestCase {
         model.scanner.drainVisionQueueForTesting()
         XCTAssertEqual(model.scanner.latchedSubjectForTesting, mismatched)
 
+        model.retryFailedScan(encounterID: UUID())
+        model.scanner.drainVisionQueueForTesting()
+        XCTAssertEqual(model.scanAcknowledgement?.encounterID, failedAcknowledgement.encounterID)
+        XCTAssertEqual(model.scanner.latchedSubjectForTesting, mismatched)
+
         model.retryFailedScan(encounterID: failedAcknowledgement.encounterID)
         model.scanner.drainVisionQueueForTesting()
         XCTAssertNil(model.scanAcknowledgement)
@@ -1971,6 +2035,11 @@ final class ScannerViewModelTests: XCTestCase {
             identifier: identifier,
             inferredNameReadings: ["Test Card"]
         )
+        model.retryFailedScan(encounterID: failedAcknowledgement.encounterID)
+        model.scanner.drainVisionQueueForTesting()
+        XCTAssertEqual(model.scanAcknowledgement?.encounterID, secondFailure.encounterID)
+        XCTAssertEqual(model.scanner.latchedSubjectForTesting, mismatched)
+
         model.retryFailedScan(encounterID: secondFailure.encounterID)
         model.scanner.drainVisionQueueForTesting()
         model.scanner.receiveFooterOutcomeForTesting(.identified(corrected), at: start + 1.25)

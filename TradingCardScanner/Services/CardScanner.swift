@@ -1440,41 +1440,53 @@ final class CardScanner: NSObject, ObservableObject {
     /// Forget only the failed printing so its next confirmation can retry while
     /// every other consumed card remains protected by the duplicate latch.
     func allowRetry(of key: ScanSuppressionKey) {
-        rearmFailedScan(of: key, resetHistoricalEvidence: false)
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            self.forgetFailedPresentation(of: key)
+            self.resetConfirmationWindow()
+            self.didAnnounceLatchHold = false
+        }
     }
 
     /// Explicit retry for a failed recognition. Forget only that failed
-    /// presentation, and discard historical title readings so the next OCR
-    /// attempt is based on fresh evidence from the camera.
-    func retryFailedScan(of key: ScanSuppressionKey) {
-        rearmFailedScan(of: key, resetHistoricalEvidence: true)
-    }
-
-    private func rearmFailedScan(
-        of key: ScanSuppressionKey,
-        resetHistoricalEvidence: Bool
-    ) {
+    /// presentation and its OCR progress. Progress belonging to another card
+    /// remains available if the user has already moved on in the camera band.
+    func retryFailedScan(for subject: ScanSubject) {
         visionQueue.async { [weak self] in
             guard let self else { return }
-            let released = self.latch.latched
-            let encounterID = released?.suppressionKey == key
-                ? self.latchEncounterID
-                : nil
-            self.latch.forget(key)
-            if encounterID != nil {
-                self.latchEncounterID = nil
-                self.postCommitLabelWatch = nil
-                if released?.slab != nil || self.activeSlab != nil {
-                    self.clearActiveSlab(cause: .latchRelease, at: CFAbsoluteTimeGetCurrent())
-                }
-                self.emitLatchRelease(encounterID: encounterID, suppressionKey: key)
-            }
-            self.resetConfirmationWindow()
-            if resetHistoricalEvidence {
+            let key = subject.suppressionKey
+            let releasedCurrentLatch = self.forgetFailedPresentation(of: key)
+            self.confirmationWindow.discardObservations(matching: key)
+            if case let .pokemonHistorical(evidence) = subject.identifier,
+               self.historicalAttempt?.number == evidence.number {
                 self.historicalAttempt = nil
             }
-            self.didAnnounceLatchHold = false
+            if self.lastAnnouncedPlausible?.suppressionKey == key {
+                self.lastAnnouncedPlausible = nil
+            }
+            if releasedCurrentLatch || self.latch.latched == nil {
+                self.didAnnounceLatchHold = false
+            }
         }
+    }
+
+    /// Removes a failed key from duplicate suppression and reports a release
+    /// only when it was the currently latched presentation.
+    @discardableResult
+    private func forgetFailedPresentation(of key: ScanSuppressionKey) -> Bool {
+        let released = latch.latched
+        let releasedCurrentLatch = released?.suppressionKey == key
+        let encounterID = releasedCurrentLatch ? latchEncounterID : nil
+        latch.forget(key)
+        if encounterID != nil {
+            latchEncounterID = nil
+            postCommitLabelWatch = nil
+            if released?.slab != nil || activeSlab != nil {
+                clearActiveSlab(cause: .latchRelease, at: CFAbsoluteTimeGetCurrent())
+            }
+            emitLatchRelease(encounterID: encounterID, suppressionKey: key)
+        }
+        return releasedCurrentLatch
     }
 
     /// Lets a dismissed Price Check result be read again after its brief
@@ -2845,6 +2857,13 @@ final class CardScanner: NSObject, ObservableObject {
             }
             return confirmationWindow.observeSubject(subject)
         }
+    }
+
+    /// Feeds a known subject through the real confirmation window without
+    /// advancing the latch, so tests can inspect preservation of partial reads.
+    @discardableResult
+    func observeConfirmationSubjectForTesting(_ subject: ScanSubject?) -> ScanSubject? {
+        visionQueue.sync { confirmationWindow.observeSubject(subject) }
     }
 
     /// Test-only visibility for the non-blocking graded correction contract.

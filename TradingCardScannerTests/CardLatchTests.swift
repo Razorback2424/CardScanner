@@ -548,11 +548,44 @@ final class CardLatchTests: XCTestCase {
         XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(number, at: 1.25))
         scanner.setHistoricalTitleCandidatesForTesting(["STALE TITLE"])
 
-        scanner.retryFailedScan(of: target.suppressionKey)
+        scanner.retryFailedScan(for: target)
         scanner.drainVisionQueueForTesting()
 
         XCTAssertEqual(scanner.latchedSubjectForTesting, other)
         XCTAssertTrue(scanner.historicalTitleCandidatesForTesting.isEmpty)
+    }
+
+    func testExplicitRetryPreservesAnotherCardsConfirmationAndHistoricalEvidence() {
+        let scanner = CardScanner()
+        let target = subject(historical("001", titles: ["CHARIZARD"]))
+        let other = subject(pokemon(204, code: "PAL"))
+        let partial = subject(pokemon(223, code: "OBF"))
+
+        scanner.receiveFooterOutcomeForTesting(.identified(target), at: 0.25)
+        scanner.receiveFooterOutcomeForTesting(.identified(target), at: 0.5)
+        scanner.receiveFooterOutcomeForTesting(.identified(other), at: 0.75)
+        scanner.receiveFooterOutcomeForTesting(.identified(other), at: 1.0)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, other)
+
+        XCTAssertNil(scanner.observeConfirmationSubjectForTesting(partial))
+        let unrelatedNumber = PokemonPrintedNumberEvidence(
+            localID: "002",
+            denominator: 102,
+            scheme: .officialSet
+        )
+        XCTAssertTrue(scanner.advanceHistoricalAttemptForTesting(unrelatedNumber, at: 1.25))
+        scanner.setHistoricalTitleCandidatesForTesting(["OTHER CARD TITLE"])
+
+        scanner.retryFailedScan(for: target)
+        scanner.drainVisionQueueForTesting()
+
+        XCTAssertEqual(scanner.latchedSubjectForTesting, other)
+        XCTAssertEqual(scanner.historicalTitleCandidatesForTesting, ["OTHER CARD TITLE"])
+        XCTAssertEqual(
+            scanner.observeConfirmationSubjectForTesting(partial),
+            partial,
+            "the second frame should complete progress started by the other card"
+        )
     }
 
     func testRawModeDoesNotReadSlabLabelsBeforeACommit() {
