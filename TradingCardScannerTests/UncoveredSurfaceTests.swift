@@ -1292,12 +1292,12 @@ final class PortfolioDebugFixtureSurfaceTests: XCTestCase {
             try context.fetch(FetchDescriptor<LocalArtworkOverride>()).map(\.filename),
             [filename, filename]
         )
-        CollectionArtworkStore.set(filename: nil, for: "pokemon:corrected", in: context)
+        try CollectionArtworkStore.set(filename: nil, for: "pokemon:corrected", in: context)
         try context.save()
         XCTAssertTrue(CollectionArtworkStore.removeIfUnreferenced(filename, in: context))
         XCTAssertNotNil(CollectionArtworkStore.image(filename: filename))
 
-        CollectionArtworkStore.set(filename: nil, for: "pokemon:source", in: context)
+        try CollectionArtworkStore.set(filename: nil, for: "pokemon:source", in: context)
         try context.save()
         XCTAssertTrue(CollectionArtworkStore.removeIfUnreferenced(filename, in: context))
         XCTAssertNil(CollectionArtworkStore.image(filename: filename))

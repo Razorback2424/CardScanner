@@ -1126,7 +1126,7 @@ struct CollectionCardDetailView: View {
                 guard let liveCard = try context.fetch(descriptor).first else {
                     throw CollectionStoreError.missingDestinationRow(collectionKey)
                 }
-                CollectionArtworkStore.set(filename: filename, for: collectionKey, in: context)
+                try CollectionArtworkStore.set(filename: filename, for: collectionKey, in: context)
                 // Kept as a migration bridge for stores written before local
                 // artwork ownership existed. New writes keep this nil.
                 liveCard.userArtworkFilename = nil
@@ -1161,7 +1161,7 @@ struct CollectionCardDetailView: View {
                 guard let liveCard = try context.fetch(descriptor).first else {
                     throw CollectionStoreError.missingDestinationRow(collectionKey)
                 }
-                CollectionArtworkStore.set(filename: nil, for: collectionKey, in: context)
+                try CollectionArtworkStore.set(filename: nil, for: collectionKey, in: context)
                 liveCard.userArtworkFilename = nil
                 try context.save()
                 CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: context)
@@ -2948,24 +2948,19 @@ enum CollectionArtworkStore {
         }
     }
 
-    static func set(filename: String?, for collectionKey: String, in context: ModelContext) {
-        do {
-            let rows = try context.fetch(
-                FetchDescriptor<LocalArtworkOverride>(
-                    predicate: #Predicate { $0.collectionKey == collectionKey }
-                )
+    static func set(filename: String?, for collectionKey: String, in context: ModelContext) throws {
+        let rows = try context.fetch(
+            FetchDescriptor<LocalArtworkOverride>(
+                predicate: #Predicate { $0.collectionKey == collectionKey }
             )
-            if let filename, !filename.isEmpty {
-                let override = rows.first ?? LocalArtworkOverride(collectionKey: collectionKey, filename: filename)
-                override.filename = filename
-                override.updatedAt = .now
-                if rows.isEmpty { context.insert(override) }
-            } else {
-                for row in rows { context.delete(row) }
-            }
-        } catch {
-            // The caller's model save reports the durable failure. Keeping the
-            // image file intact until that save succeeds makes this reversible.
+        )
+        if let filename, !filename.isEmpty {
+            let override = rows.first ?? LocalArtworkOverride(collectionKey: collectionKey, filename: filename)
+            override.filename = filename
+            override.updatedAt = .now
+            if rows.isEmpty { context.insert(override) }
+        } else {
+            for row in rows { context.delete(row) }
         }
     }
 

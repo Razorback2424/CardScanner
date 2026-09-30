@@ -531,7 +531,7 @@ enum PortfolioDebugFixtures {
                     setReleaseOrder: index,
                     quantity: 1
                 )
-                CollectionArtworkStore.set(
+                try CollectionArtworkStore.set(
                     filename: artworkFilename,
                     for: mutation.collectionKey,
                     in: modelContext
@@ -564,7 +564,7 @@ enum PortfolioDebugFixtures {
                     setReleaseOrder: index,
                     quantity: 1
                 )
-                CollectionArtworkStore.set(
+                try CollectionArtworkStore.set(
                     filename: artworkFilename,
                     for: mutation.collectionKey,
                     in: modelContext
@@ -587,7 +587,7 @@ enum PortfolioDebugFixtures {
             )
             do {
                 let mutation = try store.addSealed(product, game: .pokemon)
-                CollectionArtworkStore.set(
+                try CollectionArtworkStore.set(
                     filename: artworkFilename,
                     for: mutation.collectionKey,
                     in: modelContext
