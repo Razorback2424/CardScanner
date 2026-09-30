@@ -239,11 +239,75 @@ struct PokemonCatalogRegistry: Sendable {
                 )
             }
 
+        // The bundled registry is the scanner's first-launch and offline
+        // authority. Classic Collection cards reuse older printed numbers, so
+        // omitting their membership here silently turns them into old printings
+        // until a signed release has downloaded. Keep this fallback in sync
+        // with the approved membership in publisher/catalog-input.json.
+        let classicMembers: [(id: String, name: String, number: String, denominator: Int)] = [
+            ("001", "charizard", "4", 102),
+            ("002", "delcatty", "5", 109),
+            ("003", "metagross", "11", 113),
+            ("004", "genesect ex", "11", 101),
+            ("005", "misty", "18", 132),
+            ("006", "dark tyranitar", "19", 109),
+            ("007", "sneasel", "25", 111),
+            ("008", "pikachu and zekrom gx", "33", 181),
+            ("009", "greninja break", "41", 122),
+            ("010", "uxie", "43", 146),
+            ("011", "crobat g", "47", 127),
+            ("012", "raikou", "50", 185),
+            ("013", "buzzwole gx", "57", 111),
+            ("014", "pikachu", "58", 102),
+            ("015", "erika s jigglypuff", "69", 132),
+            ("016", "rayquaza ex", "85", 124),
+            ("017", "solgaleo gx", "89", 149),
+            ("018", "gengar", "94", 102),
+            ("019", "darkrai and cresselia legend", "99", 102),
+            ("020", "darkrai and cresselia legend", "100", 102),
+            ("021", "n", "101", 101),
+            ("022", "palkia", "106", 106),
+            ("023", "m gardevoir ex", "106", 160),
+            ("024", "shining celebi", "106", 105),
+            ("025", "scizor ex", "108", 115),
+            ("026", "mew vmax", "114", 264),
+            ("027", "arceus vstar", "123", 172),
+            ("028", "zacian v", "138", 202),
+            ("029", "lugia", "149", 147),
+            ("030", "magikarp", "203", 193)
+        ]
+        let classic = PokemonCatalogSetDescriptor(
+            providerSetID: "30th-c",
+            displayName: "30th Celebration Classic Collection",
+            releaseDate: "2026-09-16",
+            releaseOrder: 23,
+            recognitionKind: .notScannable,
+            printedCode: nil,
+            officialCount: nil,
+            printedPrefix: nil,
+            catalogLocalIDPrefix: nil,
+            localIDPadWidth: nil,
+            scanEnabled: false,
+            logoURL: nil,
+            symbolURL: nil,
+            parentProviderSetID: "30th",
+            membershipRecognition: PokemonCatalogMembershipRecognition(
+                members: classicMembers.map { member in
+                    .init(
+                        providerCardID: "30th-c-\(member.id)",
+                        canonicalName: member.name,
+                        printedLocalID: member.number,
+                        printedDenominator: member.denominator
+                    )
+                }
+            )
+        )
+
         let release = PokemonCatalogRelease(
             schemaVersion: PokemonCatalogRelease.currentSchemaVersion,
             revision: 0,
             generatedAt: Date(timeIntervalSince1970: 0),
-            sets: expansions + promos
+            sets: expansions + promos + [classic]
         )
         return PokemonCatalogRegistry(release: release)
     }()

@@ -133,6 +133,165 @@ private enum SliceCFixture {
 
 @MainActor
 final class PokemonCatalogSliceCTests: XCTestCase {
+    func testBundledClassicPikachuKeepsBaseSetScanAmbiguousAndAvailableAsChoice() {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let number = PokemonPrintedNumberEvidence(
+            localID: "58",
+            denominator: 102,
+            scheme: .officialSet
+        )
+        let evidence = PokemonHistoricalScanEvidence(
+            number: number,
+            titleCandidates: ["pikachu"]
+        )
+        let classic = PokemonHistoricalIdentityResolver.membershipIdentities(
+            for: evidence,
+            in: registry
+        )
+        XCTAssertEqual(
+            registry.membershipRecognition(forProviderSetID: "30th-c")?.members.count,
+            30
+        )
+        XCTAssertEqual(classic.map(\.providerID), ["30th-c-014"])
+        XCTAssertEqual(classic.first?.choiceLabel, "30th Classic · 2026")
+
+        let setID = CatalogSetID(game: .pokemon, providerID: "base1")
+        let set = CatalogSet(
+            catalogID: setID,
+            name: "Base Set — Unlimited",
+            code: "BS",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 102,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "base1-58",
+            setID: setID,
+            setName: set.name,
+            setCode: set.code,
+            name: "Pikachu",
+            collectorNumber: "58",
+            thumbnailURL: nil,
+            imageURL: nil
+        )
+        let entry = PokemonChecklistSnapshotEntry(
+            set: set,
+            providerID: "base1",
+            providerFingerprint: "base-fixture",
+            officialCount: 102,
+            standardSlotCount: 102,
+            expandedSlotCount: 102,
+            resource: "base1.json"
+        )
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "base-fixture",
+                entries: [entry]
+            ),
+            checklists: [set.id: [summary]]
+        )
+
+        XCTAssertNil(PokemonOfflineCardFactory.historicalCard(
+            in: snapshot,
+            evidence: evidence,
+            registry: registry
+        ))
+        XCTAssertEqual(
+            PokemonOfflineCardFactory.candidates(
+                in: snapshot,
+                number: number,
+                registry: registry
+            ).map(\.providerID),
+            ["30th-c-014", "base1-58"]
+        )
+    }
+
+    func testSelectedClassicPikachuResolvesFromOfflineChecklistUsingMembershipNumber() throws {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let number = PokemonPrintedNumberEvidence(
+            localID: "58",
+            denominator: 102,
+            scheme: .officialSet
+        )
+        let candidate = try XCTUnwrap(PokemonHistoricalIdentityResolver.membershipIdentities(
+            for: number,
+            in: registry
+        ).first { $0.providerID == "30th-c-014" })
+        let setID = CatalogSetID(game: .pokemon, providerID: "30th-c")
+        let set = CatalogSet(
+            catalogID: setID,
+            name: candidate.setName,
+            code: "30C",
+            logoURL: nil,
+            symbolURL: nil,
+            cardCount: 30,
+            releaseDate: nil,
+            sortRank: 1
+        )
+        let summary = CatalogCardSummary(
+            game: .pokemon,
+            providerID: "30th-c-014",
+            setID: setID,
+            setName: set.name,
+            setCode: set.code,
+            name: "Pikachu",
+            collectorNumber: "014",
+            thumbnailURL: nil,
+            imageURL: nil
+        )
+        let entry = PokemonChecklistSnapshotEntry(
+            set: set,
+            providerID: "30th-c",
+            providerFingerprint: "classic-fixture",
+            officialCount: 30,
+            standardSlotCount: 30,
+            expandedSlotCount: 30,
+            resource: "30th-c.json"
+        )
+        let snapshot = PokemonChecklistSnapshot(
+            manifest: PokemonChecklistSnapshotManifest(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now,
+                directoryFingerprint: "classic-fixture",
+                entries: [entry]
+            ),
+            checklists: [set.id: [summary]]
+        )
+
+        guard case let .pokemon(card, setCode) = PokemonOfflineCardFactory.card(
+            in: snapshot,
+            candidate: candidate,
+            number: number,
+            registry: registry
+        ) else {
+            return XCTFail("Selected Classic Pikachu should resolve from its checklist row")
+        }
+        XCTAssertEqual(card.id, "30th-c-014")
+        XCTAssertEqual(card.set.id, "30th-c")
+        XCTAssertEqual(card.localId, "58")
+        XCTAssertEqual(card.set.cardCount.official, 102)
+        XCTAssertEqual(setCode, "30TH-C")
+
+        let wrongNumber = PokemonPrintedNumberEvidence(
+            localID: "59",
+            denominator: 102,
+            scheme: .officialSet
+        )
+        XCTAssertNil(PokemonOfflineCardFactory.card(
+            in: snapshot,
+            candidate: candidate,
+            number: wrongNumber,
+            registry: registry
+        ))
+    }
+
     func test30thClassicCollectionSharesDisplayCodeWithoutClaimingScannerNamespace() {
         let expansion = SliceCFixture.descriptor(
             providerSetID: "30th",

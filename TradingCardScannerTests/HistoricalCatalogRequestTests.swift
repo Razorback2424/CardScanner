@@ -94,13 +94,15 @@ final class HistoricalCatalogRequestTests: XCTestCase {
 
         func historicalCard(id: String) async throws -> TCGdexCard {
             let isClassic = id.caseInsensitiveCompare("30th-c-011") == .orderedSame
-            let setID = isClassic ? "30th-c" : "pl1"
-            let setName = isClassic ? "30th Celebration Classic Collection" : "Platinum"
-            let localID = isClassic ? "011" : "47"
+            let isClassicPikachu = id.caseInsensitiveCompare("30th-c-014") == .orderedSame
+            let setID = isClassic || isClassicPikachu ? "30th-c" : "pl1"
+            let setName = isClassic || isClassicPikachu
+                ? "30th Celebration Classic Collection" : "Platinum"
+            let localID = isClassicPikachu ? "014" : (isClassic ? "011" : "47")
             return TCGdexCard(
                 id: id,
                 localId: localID,
-                name: "Crobat G",
+                name: isClassicPikachu ? "Pikachu" : "Crobat G",
                 image: nil,
                 rarity: nil,
                 set: TCGdexSetBrief(
@@ -229,6 +231,34 @@ final class HistoricalCatalogRequestTests: XCTestCase {
         XCTAssertEqual(platinumCard.id, "pl1-47")
         XCTAssertEqual(platinumCard.localId, "47")
         XCTAssertEqual(platinumCard.set.id, "pl1")
+    }
+
+    func testSelectedClassicPikachuFetchesProviderCardAndKeepsPrintedNumber() async throws {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let number = PokemonPrintedNumberEvidence(
+            localID: "58",
+            denominator: 102,
+            scheme: .officialSet
+        )
+        let identity = try XCTUnwrap(PokemonHistoricalIdentityResolver.membershipIdentities(
+            for: number,
+            in: registry
+        ).first { $0.providerID == "30th-c-014" })
+        let evidence = PokemonHistoricalScanEvidence(number: number, titleCandidates: ["Pikachu"])
+        let catalog = PokemonHistoricalCatalog(service: MembershipSource())
+
+        guard case let .pokemon(card, setCode) = try await catalog.card(
+            for: identity,
+            matching: evidence,
+            registry: registry
+        ) else {
+            return XCTFail("Selected Classic Pikachu should resolve online")
+        }
+        XCTAssertEqual(card.id, "30th-c-014")
+        XCTAssertEqual(card.set.id, "30th-c")
+        XCTAssertEqual(card.localId, "58")
+        XCTAssertEqual(card.set.cardCount.official, 102)
+        XCTAssertEqual(setCode, "30TH-C")
     }
 
     /// A stalled directory must not be re-requested by every following frame.

@@ -134,13 +134,18 @@ enum PokemonOfflineCardFactory {
         number: PokemonPrintedNumberEvidence,
         registry: PokemonCatalogRegistry
     ) -> IdentifiedCard? {
+        let isMembership = PokemonHistoricalIdentityResolver.isMembershipIdentity(
+            candidate,
+            for: number,
+            in: registry
+        )
         let candidateSets = candidateSetIDs(
             in: snapshot.manifest.entries,
             number: number,
             registry: registry
         )
         let providerSetID = candidate.setID.lowercased()
-        guard candidateSets.contains(providerSetID),
+        guard candidateSets.contains(providerSetID) || isMembership,
               let entry = snapshot.manifest.entries.first(where: {
                   $0.providerID.caseInsensitiveCompare(candidate.setID) == .orderedSame
               }),
@@ -150,9 +155,11 @@ enum PokemonOfflineCardFactory {
         let summaries = cards.filter {
             $0.game == .pokemon
                 && $0.providerID.caseInsensitiveCompare(candidate.providerID) == .orderedSame
-                && PokemonHistoricalIdentityResolver.canonicalLocalID($0.collectorNumber) == localID
-                && PokemonHistoricalIdentityResolver.canonicalLocalID($0.collectorNumber)
-                    == PokemonHistoricalIdentityResolver.canonicalLocalID(number.localID)
+                && $0.setID.providerID.caseInsensitiveCompare(candidate.setID) == .orderedSame
+                && (isMembership || (
+                    PokemonHistoricalIdentityResolver.canonicalLocalID($0.collectorNumber) == localID
+                        && localID == PokemonHistoricalIdentityResolver.canonicalLocalID(number.localID)
+                ))
                 && CatalogIdentityNormalization.canonicalText($0.name)
                     == CatalogIdentityNormalization.canonicalText(candidate.name)
         }.sorted { left, right in
@@ -168,7 +175,10 @@ enum PokemonOfflineCardFactory {
             officialCount: number.denominator,
             localID: candidate.localID
         )
-        return .pokemon(card, setCode: primary.setCode)
+        return .pokemon(
+            card,
+            setCode: isMembership ? entry.providerID.uppercased() : primary.setCode
+        )
     }
 
     static func candidates(
@@ -203,6 +213,12 @@ enum PokemonOfflineCardFactory {
                 )
                 identitiesByProviderID[identity.providerID.lowercased()] = identity
             }
+        }
+        for identity in PokemonHistoricalIdentityResolver.membershipIdentities(
+            for: number,
+            in: registry
+        ) {
+            identitiesByProviderID[identity.providerID.lowercased()] = identity
         }
         return Array(identitiesByProviderID.values).sorted { left, right in
             if left.setID != right.setID { return left.setID < right.setID }
@@ -261,7 +277,7 @@ enum PokemonOfflineCardFactory {
         for identity in PokemonHistoricalIdentityResolver.membershipIdentities(
             for: evidence,
             in: registry
-        ) where summariesByProviderID[identity.providerID.lowercased()] != nil {
+        ) {
             identitiesByProviderID[identity.providerID.lowercased()] = identity
         }
 
@@ -456,7 +472,11 @@ actor PokemonOfflineCatalog {
             matchingEntries.append(entry)
             checklists[entry.set.id] = cards
         }
-        guard !matchingEntries.isEmpty else { return [] }
+        let membershipIdentities = PokemonHistoricalIdentityResolver.membershipIdentities(
+            for: number,
+            in: registry
+        )
+        guard !matchingEntries.isEmpty else { return membershipIdentities }
         let manifest = PokemonChecklistSnapshotManifest(
             schemaVersion: PokemonChecklistSnapshotVersion.schema,
             rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
@@ -1224,11 +1244,25 @@ actor CardCatalog {
         let task = Task<CatalogResolution, Error> {
             if let diskKey,
                let cached = await resolvedDiskCache.card(for: diskKey) {
-                if case .pokemonHistorical = identifier,
-                   registry.isScanDisabled(forProviderSetID: cached.card.set.id) {
+                let historicalCacheIsStale: Bool
+                if case let .pokemonHistorical(evidence) = identifier {
+                    let membership = PokemonHistoricalIdentityResolver.membershipIdentities(
+                        for: evidence,
+                        in: registry
+                    )
+                    historicalCacheIsStale = registry.isScanDisabled(
+                        forProviderSetID: cached.card.set.id
+                    ) || membership.contains {
+                        $0.providerID.caseInsensitiveCompare(cached.card.id) != .orderedSame
+                    }
+                } else {
+                    historicalCacheIsStale = false
+                }
+                if historicalCacheIsStale {
                     // A historical card can be served by an older persistent
-                    // cache entry even after its set is withdrawn. Remove that
-                    // entry and continue through the registry-gated paths below;
+                    // cache entry even after its set is withdrawn or a newer
+                    // membership reveals an ambiguous reprint. Remove it and
+                    // continue through the registry-gated paths below;
                     // already-dispatched modern identifiers remain valid because
                     // their captured definition is part of the identifier.
                     await resolvedDiskCache.invalidateEntries(forSetIDs: [cached.card.set.id])
@@ -1824,9 +1858,11 @@ actor PokemonHistoricalCatalog {
         let card = try await fetchCard(providerID: identity.providerID)
         let isMembership = PokemonHistoricalIdentityResolver.isMembershipIdentity(
             identity,
+            for: evidence.number,
             in: registrySnapshot
         )
         guard card.id.caseInsensitiveCompare(identity.providerID) == .orderedSame,
+              card.set.id.caseInsensitiveCompare(identity.setID) == .orderedSame,
               CatalogIdentityNormalization.canonicalText(card.name)
                 == CatalogIdentityNormalization.canonicalText(identity.name) else {
             throw TCGdexError.identityMismatch

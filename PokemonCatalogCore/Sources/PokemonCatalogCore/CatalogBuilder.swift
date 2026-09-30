@@ -682,6 +682,7 @@ public struct PokemonCatalogBuilder: Sendable {
             if existing.recognitionKind == .notScannable,
                existing.parentProviderSetID == nil,
                existing.membershipRecognition == nil,
+               humanInput?.membershipRecognition == nil,
                humanInput?.recognitionKind != .notScannable,
                let providerCode,
                PokemonCatalogReleaseValidator.isValidExpansionCode(providerCode),
@@ -736,9 +737,12 @@ public struct PokemonCatalogBuilder: Sendable {
                 }
             }
 
-            // Authority fields deliberately come only from the active signed
-            // descriptor. Provider metadata may improve the Browse experience,
-            // but cannot silently change scanner semantics.
+            // Provider metadata may improve Browse, but cannot silently change
+            // scanner semantics. An explicit operator membership override is
+            // verified against every provider card below and classified as a
+            // protected authority change before publication. Omitting the
+            // membership field preserves existing signed authority; removal
+            // needs a separate, explicit withdrawal path.
             return result(PokemonCatalogSetDescriptor(
                 providerSetID: existing.providerSetID,
                 displayName: humanInput?.displayName ?? providerSet.name,
@@ -763,7 +767,8 @@ public struct PokemonCatalogBuilder: Sendable {
                 parentProviderSetID: parentProviderSetID,
                 bundledArtworkSourceID: bundledArtworkSourceID,
                 rulesVersion: existing.rulesVersion,
-                membershipRecognition: existing.membershipRecognition
+                membershipRecognition: humanInput?.membershipRecognition
+                    ?? existing.membershipRecognition
             ))
         }
 

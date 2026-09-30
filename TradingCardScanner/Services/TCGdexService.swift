@@ -961,52 +961,59 @@ enum PokemonHistoricalIdentityResolver {
         for evidence: PokemonHistoricalScanEvidence,
         in registry: PokemonCatalogRegistry
     ) -> [PokemonCatalogCardIdentity] {
-        guard case .officialSet = evidence.number.scheme else { return [] }
-        let localID = canonicalLocalID(evidence.number.localID)
-        var numberedMembers: [PokemonCatalogCardIdentity] = []
-        for descriptor in registry.descriptors {
-            guard let recognition = descriptor.membershipRecognition else { continue }
-            for member in recognition.members {
-                guard member.printedDenominator == evidence.number.denominator,
-                      canonicalLocalID(member.printedLocalID) == localID else {
-                    continue
-                }
-                numberedMembers.append(
-                PokemonCatalogCardIdentity(
-                    providerID: member.providerCardID,
-                    setID: descriptor.providerSetID,
-                    setName: descriptor.displayName ?? descriptor.providerSetID,
-                    localID: member.printedLocalID,
-                    name: member.canonicalName,
-                    releaseYear: descriptor.releaseDate.flatMap(FlexibleDate.parse).map {
-                        Calendar(identifier: .gregorian).component(.year, from: $0)
-                    }
-                )
-                )
-            }
-        }
+        let numberedMembers = membershipIdentities(for: evidence.number, in: registry)
         let matchingIndices = PokemonNameMatcher.matches(
             numberedMembers.map(\.name),
             readings: evidence.titleCandidates
         )
+        return matchingIndices.map { numberedMembers[$0] }
+    }
+
+    static func membershipIdentities(
+        for number: PokemonPrintedNumberEvidence,
+        in registry: PokemonCatalogRegistry
+    ) -> [PokemonCatalogCardIdentity] {
+        guard case .officialSet = number.scheme else { return [] }
+        let localID = canonicalLocalID(number.localID)
+        var numberedMembers: [PokemonCatalogCardIdentity] = []
+        for descriptor in registry.descriptors {
+            guard let recognition = descriptor.membershipRecognition else { continue }
+            for member in recognition.members {
+                guard member.printedDenominator == number.denominator,
+                      canonicalLocalID(member.printedLocalID) == localID else {
+                    continue
+                }
+                numberedMembers.append(
+                    PokemonCatalogCardIdentity(
+                        providerID: member.providerCardID,
+                        setID: descriptor.providerSetID,
+                        setName: descriptor.displayName ?? descriptor.providerSetID,
+                        localID: member.printedLocalID,
+                        name: member.canonicalName,
+                        releaseYear: descriptor.releaseDate.flatMap(FlexibleDate.parse).map {
+                            Calendar(identifier: .gregorian).component(.year, from: $0)
+                        }
+                    )
+                )
+            }
+        }
         var seenProviderIDs: Set<String> = []
-        return matchingIndices.compactMap { index in
-            let identity = numberedMembers[index]
-            return seenProviderIDs.insert(identity.providerID.lowercased()).inserted
-                ? identity
-                : nil
+        return numberedMembers.filter { identity in
+            seenProviderIDs.insert(identity.providerID.lowercased()).inserted
         }
     }
 
     static func isMembershipIdentity(
         _ identity: PokemonCatalogCardIdentity,
+        for number: PokemonPrintedNumberEvidence,
         in registry: PokemonCatalogRegistry
     ) -> Bool {
-        guard let recognition = registry.membershipRecognition(
-            forProviderSetID: identity.setID
-        ) else { return false }
-        return recognition.members.contains {
-            $0.providerCardID.caseInsensitiveCompare(identity.providerID) == .orderedSame
+        membershipIdentities(for: number, in: registry).contains { member in
+            member.providerID.caseInsensitiveCompare(identity.providerID) == .orderedSame
+                && member.setID.caseInsensitiveCompare(identity.setID) == .orderedSame
+                && canonicalLocalID(member.localID) == canonicalLocalID(identity.localID)
+                && CatalogIdentityNormalization.canonicalText(member.name)
+                    == CatalogIdentityNormalization.canonicalText(identity.name)
         }
     }
 

@@ -1591,6 +1591,60 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertEqual(result.release.sets.count, 2)
     }
 
+    func testOperatorCanAddVerifiedMembershipToExistingClassicCollection() throws {
+        let fixture = providerFixture(sets: [
+            .init(
+                id: "30th-c",
+                name: "30th Celebration Classic Collection",
+                code: "30C",
+                releaseDate: "2026-09-16",
+                imageURLs: ["https://assets.tcgdex.net/en/me/30th-c/001"],
+                seriesID: "me",
+                officialCount: 0,
+                totalCount: 1
+            )
+        ])
+        let initial = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        XCTAssertNil(initial.release.sets.first?.membershipRecognition)
+
+        let membership = PokemonCatalogMembershipRecognition(members: [
+            .init(
+                providerCardID: "30th-c-001",
+                canonicalName: "card 001",
+                printedLocalID: "58",
+                printedDenominator: 102
+            )
+        ])
+        let input = PokemonCatalogHumanInput(
+            providerSetID: "30th-c",
+            recognitionKind: .notScannable,
+            displayName: "30th Celebration Classic Collection",
+            releaseDate: "2026-09-16",
+            scanEnabled: false,
+            membershipRecognition: membership
+        )
+        let updated = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: fixture,
+                activeRelease: initial.release,
+                humanInputs: [input],
+                revision: 2,
+                generatedAt: generatedAt
+            )
+        )
+
+        XCTAssertEqual(updated.release.sets.first?.membershipRecognition, membership)
+        XCTAssertEqual(
+            PokemonCatalogChangeClassifier.classify(
+                previousRelease: initial.release,
+                currentRelease: updated.release
+            ).changeClass,
+            .authority
+        )
+    }
+
     func testGalleryAbbreviationIsAdmittedOnlyWhenSafeParentGatesPass() throws {
         let fixture = providerFixture(
             sets: [
@@ -1708,6 +1762,59 @@ final class PokemonCatalogCoreTests: XCTestCase {
         XCTAssertTrue(descriptor.scanEnabled)
         XCTAssertEqual(descriptor.printedCode, "FTR")
         XCTAssertEqual(descriptor.officialCount, 1)
+    }
+
+    func testAutomaticPromotionPreservesNewOperatorMembership() throws {
+        let initialFixture = providerFixture(sets: [
+            .init(
+                id: "future-c",
+                name: "Future Gallery",
+                code: "FTR",
+                releaseDate: "2026-09-16",
+                imageURLs: ["https://assets.tcgdex.net/en/sv/future-c/001"],
+                officialCount: 0,
+                totalCount: 1
+            )
+        ])
+        let initial = try PokemonCatalogBuilder().build(
+            .init(fixture: initialFixture, humanInputs: [], revision: 1, generatedAt: generatedAt)
+        )
+        let correctedFixture = providerFixture(sets: [
+            .init(
+                id: "future-c",
+                name: "Future Gallery",
+                code: "FTR",
+                releaseDate: "2026-09-16",
+                imageURLs: ["https://assets.tcgdex.net/en/sv/future-c/001"],
+                officialCount: 1,
+                totalCount: 1
+            )
+        ])
+        let membership = PokemonCatalogMembershipRecognition(members: [
+            .init(
+                providerCardID: "future-c-001",
+                canonicalName: "card 001",
+                printedLocalID: "58",
+                printedDenominator: 102
+            )
+        ])
+        let input = PokemonCatalogHumanInput(
+            providerSetID: "future-c",
+            recognitionKind: .expansion,
+            membershipRecognition: membership
+        )
+        let updated = try PokemonCatalogBuilder().build(
+            .init(
+                fixture: correctedFixture,
+                activeRelease: initial.release,
+                humanInputs: [input],
+                revision: 2,
+                generatedAt: generatedAt
+            )
+        )
+        let descriptor = try XCTUnwrap(updated.release.sets.first)
+        XCTAssertEqual(descriptor.recognitionKind, .notScannable)
+        XCTAssertEqual(descriptor.membershipRecognition, membership)
     }
 
     func testAutomaticPromotionRefusesAnOccupiedExpansionCode() throws {
