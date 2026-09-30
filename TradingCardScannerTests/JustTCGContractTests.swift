@@ -289,10 +289,11 @@ final class JustTCGContractTests: XCTestCase {
             )
         }
 
-        let (batched, unresolved) = JustTCGRefreshCoordinator.deduplicate(targets)
+        let (batched, lookupOrder, unresolved) = JustTCGRefreshCoordinator.deduplicate(targets)
 
         XCTAssertEqual(batched.count, 1, "one variant, one lookup")
         XCTAssertEqual(batched[.variantID("shared-variant")]?.count, 8)
+        XCTAssertEqual(lookupOrder, [.variantID("shared-variant")])
         XCTAssertTrue(unresolved.isEmpty)
     }
 
@@ -312,10 +313,37 @@ final class JustTCGContractTests: XCTestCase {
             currentAmount: nil, lastCheckedAt: nil
         )
 
-        let (batched, unresolved) = JustTCGRefreshCoordinator.deduplicate([resolvable, unresolvable])
+        let (batched, lookupOrder, unresolved) = JustTCGRefreshCoordinator.deduplicate([resolvable, unresolvable])
 
         XCTAssertEqual(batched.count, 1)
+        XCTAssertEqual(lookupOrder, [.scryfallID("s-1")])
         XCTAssertEqual(unresolved.map(\.priceKey), ["b"])
+    }
+
+    func testDeduplicatePreservesFirstSeenLookupOrder() {
+        func target(_ key: String, lookup: JustTCGBatchLookup) -> MarketPriceTarget {
+            MarketPriceTarget(
+                priceKey: key,
+                game: .pokemon,
+                printingID: key,
+                variantID: nil,
+                itemKind: .rawCard,
+                marketVariantID: nil,
+                lookupCandidates: [lookup],
+                currentAmount: nil,
+                lastCheckedAt: nil
+            )
+        }
+
+        let first = JustTCGBatchLookup.scryfallID("first")
+        let second = JustTCGBatchLookup.cardID("second")
+        let (_, lookupOrder, _) = JustTCGRefreshCoordinator.deduplicate([
+            target("first-row", lookup: first),
+            target("second-row", lookup: second),
+            target("first-duplicate", lookup: first)
+        ])
+
+        XCTAssertEqual(lookupOrder, [first, second])
     }
 
     func testUnmappedExplicitFinishDoesNotBorrowAnUnqualifiedListing() throws {

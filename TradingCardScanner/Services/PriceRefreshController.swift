@@ -1406,6 +1406,9 @@ actor PriceRefreshModelActor {
         }
 
         var batchable: [CardGame: [MarketPriceTarget]] = [:]
+        // The dictionary groups targets, while this list keeps foreground
+        // refresh order stable when only some games have batchable work.
+        var batchOrder: [CardGame] = []
         var needsIdentity: [PriceRefreshController.FallbackCandidate] = []
         for candidate in eligibleCandidates {
             let key = ProductIdentity.key(
@@ -1444,7 +1447,11 @@ actor PriceRefreshModelActor {
                 continue
             }
 
-            batchable[candidate.target.game, default: []].append(
+            let game = candidate.target.game
+            if batchable[game] == nil {
+                batchOrder.append(game)
+            }
+            batchable[game, default: []].append(
                 MarketPriceTarget(
                     priceKey: key,
                     game: candidate.target.game,
@@ -1466,7 +1473,8 @@ actor PriceRefreshModelActor {
         let coordinator = JustTCGRefreshCoordinator(
             client: JustTCGV1Client(transport: sharedTransport)
         )
-        for (game, targets) in batchable {
+        for game in batchOrder {
+            guard let targets = batchable[game] else { continue }
             if Task.isCancelled || !(storageContinuation?() ?? true) { break }
             let useDelta = JustTCGSyncLedger()
                 .checkpoint(game: game, apiVersion: JustTCGV1Client.apiVersion)

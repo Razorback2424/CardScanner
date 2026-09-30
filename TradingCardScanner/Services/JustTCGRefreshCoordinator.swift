@@ -182,17 +182,26 @@ struct JustTCGRefreshCoordinator {
     ///   asked" and "the vendor has nothing" are different diagnoses.
     nonisolated static func deduplicate(
         _ targets: [MarketPriceTarget]
-    ) -> (batched: [JustTCGBatchLookup: [MarketPriceTarget]], unresolved: [MarketPriceTarget]) {
+    ) -> (
+        batched: [JustTCGBatchLookup: [MarketPriceTarget]],
+        lookupOrder: [JustTCGBatchLookup],
+        unresolved: [MarketPriceTarget]
+    ) {
         var batched: [JustTCGBatchLookup: [MarketPriceTarget]] = [:]
+        var lookupOrder: [JustTCGBatchLookup] = []
+        var seenLookups: Set<JustTCGBatchLookup> = []
         var unresolved: [MarketPriceTarget] = []
         for target in targets {
             guard let lookup = target.lookup else {
                 unresolved.append(target)
                 continue
             }
+            if seenLookups.insert(lookup).inserted {
+                lookupOrder.append(lookup)
+            }
             batched[lookup, default: []].append(target)
         }
-        return (batched, unresolved)
+        return (batched, lookupOrder, unresolved)
     }
 
     /// One batched pass.
@@ -219,7 +228,7 @@ struct JustTCGRefreshCoordinator {
         checkpoint: @Sendable () async -> Bool,
         finalCheckpoint: @Sendable () async -> Bool = { true }
     ) async -> MarketRefreshReport {
-        let (batched, unresolved) = Self.deduplicate(targets)
+        let (batched, lookupOrder, unresolved) = Self.deduplicate(targets)
         var report = MarketRefreshReport()
         report.variantsRequested = batched.count + unresolved.count
 
@@ -228,8 +237,7 @@ struct JustTCGRefreshCoordinator {
             return report
         }
 
-        let lookups = Array(batched.keys)
-        let chunks = lookups.chunked(into: JustTCGQuota.batchSize)
+        let chunks = lookupOrder.chunked(into: JustTCGQuota.batchSize)
         let passStartedAt = Date.now
         report.batchesPlanned = chunks.count
         await onProgress(report)
