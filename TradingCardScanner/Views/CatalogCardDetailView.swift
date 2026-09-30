@@ -364,7 +364,8 @@ struct CatalogCardDetailView: View {
                   catalogLookup,
                   identifiedCatalogCard: true
               ),
-              PriceVendorCredentials.hasKey else { return }
+              (PokemonTCGCSVMapping.byCardID[card.providerID] != nil
+                  || PriceVendorCredentials.hasKey) else { return }
 
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: card.magicTreatments(for: variant)

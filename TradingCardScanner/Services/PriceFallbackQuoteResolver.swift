@@ -92,15 +92,18 @@ final class PriceFallbackQuoteResolver {
     private let context: ModelContext
     private let productService: ProductPriceService
     private let transport: JustTCGTransport
+    private let marketPrices: PokemonMarketPriceResolver
 
     init(
         context: ModelContext,
         productService: ProductPriceService = ProductPriceService.shared,
-        transport: JustTCGTransport = JustTCGTransport.shared
+        transport: JustTCGTransport = JustTCGTransport.shared,
+        tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared
     ) {
         self.context = context
         self.productService = productService
         self.transport = transport
+        self.marketPrices = PokemonMarketPriceResolver(source: tcgCSVSource)
     }
 
     /// Whether a catalog answer leaves work for the USD fallback. A non-USD
@@ -187,7 +190,24 @@ final class PriceFallbackQuoteResolver {
         marketVariantID: String? = nil,
         lookupCandidates: [JustTCGBatchLookup] = []
     ) async -> PriceFallbackQuoteResolution {
+        // This free exact-product path is independent of the paid vendor setting/key.
+        let bulkQuote: PriceLookup?
+        var bulkFailed = false
+        do {
+            bulkQuote = try await marketPrices.fallback(
+                cardID: catalogID ?? printingID, game: game, variant: variant,
+                printRun: pokemonPrintRun
+            )
+        } catch {
+            if error is CancellationError || Task.isCancelled { return .failed(.cancelled) }
+            bulkQuote = nil
+            bulkFailed = true
+        }
+        guard !Task.isCancelled else { return .failed(.cancelled) }
+        if let bulkQuote, case .price = bulkQuote { return .lookup(bulkQuote) }
         guard UserDefaults.standard.bool(forKey: "usesPriceFallback") else {
+            if let bulkQuote { return .lookup(bulkQuote) }
+            if bulkFailed { return .failed(.requestFailed) }
             return .failed(.disabled)
         }
         guard !Task.isCancelled else { return .failed(.cancelled) }
@@ -218,6 +238,8 @@ final class PriceFallbackQuoteResolver {
             return .failed(.unsupportedTreatment)
         }
         guard PriceVendorCredentials.hasKey else {
+            if let bulkQuote { return .lookup(bulkQuote) }
+            if bulkFailed { return .failed(.requestFailed) }
             return .failed(.missingCredentials)
         }
         let target = MarketPriceTarget(

@@ -78,6 +78,20 @@ actor BrowseCatalog: BrowseCatalogProviding {
         _ summaries: [CatalogCardSummary],
         set: CatalogSet
     ) -> [CatalogCardSummary] {
+        // Older signed checklists contain generated Normal slots for these
+        // reviewed Holofoil products. Correct presentation locally without
+        // modifying the signed payload or its provider fingerprint.
+        var seenReviewedIDs: Set<String> = []
+        let summaries = summaries.compactMap { summary -> CatalogCardSummary? in
+            guard summary.game == .pokemon, summary.pokemonPrintRun == nil,
+                  PokemonTCGCSVMapping.byCardID[summary.providerID]?.setID == set.providerID else { return summary }
+            guard seenReviewedIDs.insert(summary.providerID).inserted else { return nil }
+            var corrected = summary
+            corrected.masterSetVariant = .holo
+            corrected.isExpandedMasterSetVariant = false
+            corrected.isSoleSlotForCard = true
+            return corrected
+        }
         guard let artwork = set.cardArtwork, !artwork.isEmpty else { return summaries }
         return summaries.map { summary in
             guard summary.thumbnailURL == nil,
@@ -131,6 +145,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private let scryfallDatasetStamp: any ScryfallDatasetStampProviding
     private let pokemonTransport: any PokemonBrowseTransport
     private let pokemonPriceSource: (any PokemonBulkPriceSource)?
+    private let tcgCSVSource: (any PokemonTCGCSVPriceSource)?
+    private var tcgCSVRetrySetIDs: Set<String> = []
     private let pokemonSecondarySetSource: (any PokemonSecondarySetSource)?
     private let checklistStore: PokemonChecklistStore
     private var setCache: [CardGame: [CatalogSet]] = [:]
@@ -178,6 +194,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         cache: CatalogCacheStore = .shared,
         pokemonTransport: any PokemonBrowseTransport = TCGdexBrowseTransport(),
         pokemonPriceSource: (any PokemonBulkPriceSource)? = nil,
+        tcgCSVSource: (any PokemonTCGCSVPriceSource)? = nil,
         pokemonSecondarySetSource: (any PokemonSecondarySetSource)? = nil,
         checklistStore: PokemonChecklistStore = .shared,
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
@@ -197,6 +214,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let effectivePriceSource = pokemonPriceSource
             ?? (pokemonTransport is TCGdexBrowseTransport ? PokemonTCGAPIService() : nil)
         self.pokemonPriceSource = effectivePriceSource
+        self.tcgCSVSource = tcgCSVSource
+            ?? (pokemonTransport is TCGdexBrowseTransport ? PokemonTCGCSVPriceService.shared : nil)
         self.pokemonSecondarySetSource = pokemonSecondarySetSource
             ?? (effectivePriceSource as? any PokemonSecondarySetSource)
         self.checklistStore = checklistStore
@@ -830,7 +849,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         installMemoryWarningObserverIfNeeded()
         let key = detailCacheKey(for: summary)
-        if let cached = detailCache[key] { return cached }
+        if let cached = detailCache[key] {
+            return await addingTCGCSVPrices(to: cached)
+        }
 
         let waiterID = UUID()
         let task: Task<CatalogCardDetails, Error>
@@ -918,7 +939,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard let set = directorySet else { throw BrowseCatalogError.unknownSet }
             details = CatalogCardDetails(card: .magic(card), set: set)
         }
-        return details
+        return await addingTCGCSVPrices(to: details)
+    }
+
+    private func addingTCGCSVPrices(to details: CatalogCardDetails) async -> CatalogCardDetails {
+        guard let source = tcgCSVSource,
+              case var .pokemon(card, code) = details.card,
+              PokemonTCGCSVMapping.byCardID[card.id]?.setID == card.set.id else { return details }
+        card.supplementalTCGCSV = try? await source.snapshot(setID: card.set.id, retry: false)
+        return CatalogCardDetails(card: .pokemon(card, setCode: code), set: details.set)
     }
 
     private func detailCacheKey(for summary: CatalogCardSummary) -> String {
@@ -980,6 +1009,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
         for setID in pokemonSetIDs {
             pokemonBulkPriceCache.removeValue(forKey: setID.lowercased())
+            tcgCSVRetrySetIDs.insert(setID.lowercased())
         }
         await cache.invalidatePokemonPricing(for: pokemonSetIDs)
     }
@@ -1109,7 +1139,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
                         case .unresolved:
                             resolvedSortPrices.remove(slot.id)
                             unresolvedSortPrices.insert(slot.id)
-                            sortPriceCache.removeValue(forKey: slot.id)
+                            // Preserve a previous ordering hint during a bulk
+                            // outage, while keeping its resolution open.
+                            let components = slot.id.split(separator: ":", maxSplits: 3)
+                            let setID = components.count > 1 ? String(components[1]) : ""
+                            if tcgCSVSource == nil || PokemonTCGCSVMapping.groupID(for: setID) == nil {
+                                sortPriceCache.removeValue(forKey: slot.id)
+                            }
                             sortPriceCheckedAt.removeValue(forKey: slot.id)
                         }
                     }
@@ -1248,6 +1284,37 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private func sortPokemonPriceGroup(
         for summaries: [CatalogCardSummary]
     ) async -> SortPriceGroupResult {
+        if let source = tcgCSVSource,
+           let setID = summaries.first?.setID.providerID.lowercased(),
+           PokemonTCGCSVMapping.groupID(for: setID) != nil {
+            do {
+                let retry = tcgCSVRetrySetIDs.remove(setID) != nil
+                let snapshot = try await source.snapshot(setID: setID, retry: retry)
+                try Task.checkCancellation()
+                return SortPriceGroupResult(slots: summaries.map { summary in
+                    if let detailed = detailCache[detailCacheKey(for: summary)]?.card {
+                        let existing = CardPricing.price(
+                            for: detailed, variant: summary.masterSetVariant ?? .holo,
+                            magicTreatments: detailed.magicTreatments(for: summary.masterSetVariant),
+                            pokemonPrintRun: summary.pokemonPrintRun
+                        )
+                        if case let .price(price) = existing, price.source != .tcgCSV,
+                           price.currencyCode == "USD" {
+                            return SortPriceSlot(id: summary.id, resolution: .priced(price.unitMarketPriceUSD))
+                        }
+                    }
+                    guard let lookup = snapshot.quote(
+                        cardID: summary.providerID, variant: summary.masterSetVariant ?? .holo,
+                        printRun: summary.pokemonPrintRun
+                    ) else { return SortPriceSlot(id: summary.id, resolution: .unresolved) }
+                    return SortPriceSlot(id: summary.id, resolution: CatalogSortPriceResolution.exactLookup(lookup))
+                })
+            } catch {
+                return SortPriceGroupResult(slots: summaries.map {
+                    SortPriceSlot(id: $0.id, resolution: .unresolved)
+                })
+            }
+        }
         guard pokemonPriceSource != nil,
               let setID = summaries.first?.setID.providerID,
               let cachedBulk = pokemonBulkPriceCache[setID.lowercased()] else {
@@ -1310,6 +1377,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
         for summaries in cardsBySet.values {
             guard let summary = summaries.first else { continue }
+            if tcgCSVSource != nil,
+               PokemonTCGCSVMapping.groupID(for: summary.setID.providerID) != nil { continue }
             do {
                 guard let secondarySetID = try await resolvedPokemonSecondarySetID(
                     for: summary
@@ -1638,6 +1707,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
         case .tcgplayer:
             transport = .tcgdex
             providerUpdatedAt = price.sourceUpdatedAt
+        case .tcgCSV:
+            transport = .tcgCSV
+            providerUpdatedAt = nil
         case .scryfall:
             transport = .scryfall
             providerUpdatedAt = await scryfallDatasetStamp.datasetUpdatedAt()

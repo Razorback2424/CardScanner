@@ -12,14 +12,14 @@ final class VariantResolverTests: XCTestCase {
 
     private func identifiedPokemon(_ variants: [PhysicalVariant]) -> IdentifiedCard {
         let card = TCGdexCard(
-            id: "30th-053",
+            id: "sv03-053",
             localId: "053",
             name: "Pikachu ex",
             image: nil,
             rarity: nil,
             set: TCGdexSetBrief(
-                id: "30th",
-                name: "30th Celebration",
+                id: "sv03",
+                name: "Obsidian Flames",
                 cardCount: TCGdexCardCount(total: 152, official: 152)
             ),
             variants: TCGdexVariants(
@@ -32,7 +32,7 @@ final class VariantResolverTests: XCTestCase {
             pricing: nil,
             variantsDetailed: nil
         )
-        return .pokemon(card, setCode: "30TH")
+        return .pokemon(card, setCode: "OBF")
     }
 
     func testResolutionCertaintyDoesNotReuseAutomaticRevisitSemantics() {

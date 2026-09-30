@@ -5,6 +5,7 @@ import SwiftData
 /// wrong can be found and re-evaluated rather than silently living on.
 enum PriceSource: String, Codable, Hashable, Sendable {
     case tcgplayer
+    case tcgCSV
     case scryfall
     /// Legacy decode-only provenance. New catalog lookups never produce this
     /// source: Cardmarket's native-currency figure is not a USD quote.
@@ -17,6 +18,7 @@ enum PriceSource: String, Codable, Hashable, Sendable {
     var label: String {
         switch self {
         case .tcgplayer: return "TCGplayer"
+        case .tcgCSV: return "TCGplayer via TCGCSV"
         case .scryfall: return "Scryfall"
         case .cardmarket: return "Cardmarket"
         case .justTCG: return "JustTCG"
@@ -29,6 +31,7 @@ enum PriceSource: String, Codable, Hashable, Sendable {
     var publishesSourceTimestamp: Bool {
         switch self {
         case .tcgplayer: return true
+        case .tcgCSV: return false
         case .scryfall: return false
         case .cardmarket: return true
         case .justTCG: return true

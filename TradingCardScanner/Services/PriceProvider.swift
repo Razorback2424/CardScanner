@@ -117,6 +117,25 @@ enum CardPricing {
         pokemonPrintRun: PokemonPrintRun? = nil,
         at fetchedAt: Date = .now
     ) -> PriceLookup {
+        let catalog = catalogPrice(
+            for: card, variant: variant, magicTreatments: magicTreatments,
+            pokemonPrintRun: pokemonPrintRun, at: fetchedAt
+        )
+        if case let .price(price) = catalog, price.currencyCode == "USD" { return catalog }
+        if case let .pokemon(pokemon, _) = card,
+           let supplemental = pokemon.supplementalTCGCSV?.quote(
+               cardID: pokemon.id, variant: variant, printRun: pokemonPrintRun
+           ) { return supplemental }
+        return catalog
+    }
+
+    private static func catalogPrice(
+        for card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        magicTreatments: [MagicTreatment],
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        at fetchedAt: Date = .now
+    ) -> PriceLookup {
         switch card {
         case let .pokemon(pokemon, _):
             if pokemonPrintRun == .firstEdition {

@@ -58,6 +58,10 @@
 		A0010191 /* UnresolvedScanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010191 /* UnresolvedScanStore.swift */; };
 		A0010192 /* UnresolvedScanDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010192 /* UnresolvedScanDetailView.swift */; };
 		A0010006 /* TCGdexService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010006 /* TCGdexService.swift */; };
+		A0090301 /* PokemonTCGCSVMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090301 /* PokemonTCGCSVMapping.swift */; };
+		A0090302 /* PokemonTCGCSVPriceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090302 /* PokemonTCGCSVPriceService.swift */; };
+		A0090303 /* PokemonTCGCSVPriceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090303 /* PokemonTCGCSVPriceTests.swift */; };
+		A0090304 /* TCGCSV30th.json in Resources */ = {isa = PBXBuildFile; fileRef = B0090304 /* TCGCSV30th.json */; };
 		A0010007 /* CardScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010007 /* CardScanner.swift */; };
 		A0010008 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010008 /* CameraPreview.swift */; };
 		A0010009 /* ScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010009 /* ScannerViewModel.swift */; };
@@ -308,6 +312,10 @@
 		B0010191 /* UnresolvedScanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnresolvedScanStore.swift; sourceTree = "<group>"; };
 		B0010192 /* UnresolvedScanDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnresolvedScanDetailView.swift; sourceTree = "<group>"; };
 		B0010006 /* TCGdexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexService.swift; sourceTree = "<group>"; };
+		B0090301 /* PokemonTCGCSVMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonTCGCSVMapping.swift; sourceTree = "<group>"; };
+		B0090302 /* PokemonTCGCSVPriceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonTCGCSVPriceService.swift; sourceTree = "<group>"; };
+		B0090303 /* PokemonTCGCSVPriceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonTCGCSVPriceTests.swift; sourceTree = "<group>"; };
+		B0090304 /* TCGCSV30th.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Fixtures/TCGCSV30th.json; sourceTree = "<group>"; };
 		B0010007 /* CardScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScanner.swift; sourceTree = "<group>"; };
 		B0010008 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		B0010009 /* ScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModel.swift; sourceTree = "<group>"; };
@@ -644,6 +652,8 @@
 				B0010190 /* PokemonNameMatcher.swift */,
 				B0010191 /* UnresolvedScanStore.swift */,
 				B0010006 /* TCGdexService.swift */,
+				B0090301 /* PokemonTCGCSVMapping.swift */,
+				B0090302 /* PokemonTCGCSVPriceService.swift */,
 				B0010007 /* CardScanner.swift */,
 				B0010016 /* CameraCapabilities.swift */,
 				B00300A1 /* CameraRotationTracker.swift */,
@@ -802,6 +812,8 @@
 				B0020113 /* EbayQuadrantCropperTests.swift */,
 				B0020023 /* CatalogNormalizationTests.swift */,
 				B0020024 /* BrowseFeatureTests.swift */,
+				B0090303 /* PokemonTCGCSVPriceTests.swift */,
+				B0090304 /* TCGCSV30th.json */,
 				B0020150 /* BrowsePriceHistoryTests.swift */,
 				B0020151 /* SwiftDataConcurrencyCharacterizationTests.swift */,
 				B0020152 /* DetailDeletionRenderTests.swift */,
@@ -963,6 +975,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A00200E1 /* MagicTreatmentSnapshot in Resources */,
+				A0090304 /* TCGCSV30th.json in Resources */,
 				A00200E3 /* MagicTreatmentCatalog in Resources */,
 				A6F06E16B0A2C00200000001 /* TradingCards fixtures in Resources */,
 			);
@@ -1041,6 +1054,8 @@
 				A0010190 /* PokemonNameMatcher.swift in Sources */,
 				A0010191 /* UnresolvedScanStore.swift in Sources */,
 				A0010006 /* TCGdexService.swift in Sources */,
+				A0090301 /* PokemonTCGCSVMapping.swift in Sources */,
+				A0090302 /* PokemonTCGCSVPriceService.swift in Sources */,
 				A0010007 /* CardScanner.swift in Sources */,
 				A0010008 /* CameraPreview.swift in Sources */,
 				A0010009 /* ScannerViewModel.swift in Sources */,
@@ -1181,6 +1196,7 @@
 				A0020113 /* EbayQuadrantCropperTests.swift in Sources */,
 				A0020023 /* CatalogNormalizationTests.swift in Sources */,
 				A0020024 /* BrowseFeatureTests.swift in Sources */,
+				A0090303 /* PokemonTCGCSVPriceTests.swift in Sources */,
 				A0020150 /* BrowsePriceHistoryTests.swift in Sources */,
 				A0020151 /* SwiftDataConcurrencyCharacterizationTests.swift in Sources */,
 				A0020152 /* DetailDeletionRenderTests.swift in Sources */,

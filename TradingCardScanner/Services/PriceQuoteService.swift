@@ -13,8 +13,46 @@ struct PriceQuoteService {
     /// one host; discovering it twice costs a second connect timeout per scan.
     private let tcgdexCircuit = TCGdexCircuitBreaker.shared
     private let scryfall = ScryfallService()
+    private let marketPrices: PokemonMarketPriceResolver
+    private let catalogRefreshOverride: (@Sendable (IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async throws -> PriceLookup)?
+
+    init(
+        tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared,
+        catalogRefreshOverride: (@Sendable (IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async throws -> PriceLookup)? = nil
+    ) {
+        marketPrices = PokemonMarketPriceResolver(source: tcgCSVSource)
+        self.catalogRefreshOverride = catalogRefreshOverride
+    }
 
     func refresh(
+        card: IdentifiedCard,
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun?
+    ) async throws -> PriceLookup {
+        let catalog: PriceLookup
+        do {
+            if let catalogRefreshOverride {
+                catalog = try await catalogRefreshOverride(card, variant, pokemonPrintRun)
+            } else {
+                catalog = try await refreshCatalog(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun)
+            }
+        } catch {
+            if error is CancellationError || Task.isCancelled { throw CancellationError() }
+            if case PriceQuoteError.identityMismatch = error { throw error }
+            if let fallback = try await marketPrices.fallback(
+                cardID: card.providerID, game: card.game, variant: variant,
+                printRun: pokemonPrintRun, retry: true
+            ) { return fallback }
+            throw error
+        }
+        if case let .price(price) = catalog, price.currencyCode == "USD" { return catalog }
+        return try await marketPrices.fallback(
+            cardID: card.providerID, game: card.game, variant: variant,
+            printRun: pokemonPrintRun, retry: true
+        ) ?? catalog
+    }
+
+    private func refreshCatalog(
         card: IdentifiedCard,
         variant: PhysicalVariant?,
         pokemonPrintRun: PokemonPrintRun?

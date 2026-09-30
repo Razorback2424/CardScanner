@@ -30,7 +30,7 @@ private actor FixedArtworkResponseDataLoader {
 
 final class BrowseFeatureTests: XCTestCase {
 #if DEBUG
-    func testBundledModernPokemonChecklistCoversEveryScannerSet() async throws {
+    func testBundledModernPokemonChecklistCoversBundledScannerSetsAndKeeps30thDownloadOnly() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
         let store = PokemonChecklistStore(
@@ -43,6 +43,10 @@ final class BrowseFeatureTests: XCTestCase {
         for definition in SetCodeMap.definitions.values {
             let entries = snapshot.manifest.entries.filter {
                 $0.providerID.caseInsensitiveCompare(definition.tcgdexSetID) == .orderedSame
+            }
+            if definition.tcgdexSetID == "30th" {
+                XCTAssertTrue(entries.isEmpty, "30th remains a downloaded checklist, independently of scanner authority")
+                continue
             }
             XCTAssertFalse(entries.isEmpty, "Missing bundled set \(definition.tcgdexSetID)")
             XCTAssertTrue(

@@ -4875,7 +4875,8 @@ final class ScannerViewModel: ObservableObject {
                   identifiedCatalogCard: true
               ),
               let modelContainer,
-              PriceVendorCredentials.hasKey else { return }
+              (PokemonTCGCSVMapping.byCardID[card.providerID] != nil
+                  || PriceVendorCredentials.hasKey) else { return }
 
         let printingID = pokemonPrintRun.map { "\(card.providerID)@\($0.rawValue)" }
             ?? card.providerID

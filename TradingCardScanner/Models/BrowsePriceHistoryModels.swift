@@ -15,6 +15,7 @@ enum BrowsePriceTransport: String, Codable, Hashable, Sendable {
     case scryfall
     case pokemonTCGIO
     case tcgdex
+    case tcgCSV
 }
 
 /// A provider-day represented in UTC. Keeping the raw value date-only makes
@@ -207,7 +208,7 @@ struct BrowsePriceQuote: Sendable, Hashable {
     ) -> BrowsePriceQuote? {
         let source: BrowsePriceMarketSource
         switch normalizedPrice.source {
-        case .tcgplayer: source = .tcgplayer
+        case .tcgplayer, .tcgCSV: source = .tcgplayer
         case .scryfall: source = .scryfall
         case .cardmarket, .justTCG, .importedCSV:
             return nil

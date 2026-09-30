@@ -83,6 +83,7 @@ enum PriceRefreshTargets {
                 cardNumber: card.cardNumber
             )
             target.justTCGCardID = card.justTCGCardID
+            target.lastPriceSource = record?.source
             target.tcgplayerProductID = card.tcgplayerProductID
             result.append(target)
         }

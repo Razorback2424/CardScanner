@@ -16,6 +16,8 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// is the only representation that can tell two parallels of one printing
     /// apart. Optional because older responses and many sets omit it.
     let variantsDetailed: [TCGdexDetailedVariant]?
+    /// Device-local supplemental pricing; never decoded as TCGdex evidence.
+    var supplementalTCGCSV: PokemonTCGCSVSnapshot? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, localId, name, image, rarity, set, variants, pricing
@@ -83,6 +85,9 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// The supplemental rules layer may still widen this for sets whose parallel
     /// patterns TCGdex does not model at all; no *rule* is applied here.
     var catalogVariants: [PhysicalVariant] {
+        // Reviewed exact products in both 30th sets are Holofoil. The upstream
+        // generated Normal flag is incorrect; unrelated/unknown cards keep it.
+        if PokemonTCGCSVMapping.byCardID[id]?.setID == set.id { return [.holo] }
         var result: [PhysicalVariant] = []
         if let variants {
             if variants.normal { result.append(.normal) }

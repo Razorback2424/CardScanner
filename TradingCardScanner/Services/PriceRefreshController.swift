@@ -261,6 +261,7 @@ actor PriceRefreshModelActor {
     private let importedResolver = ImportedCardResolver()
     private let fallbackService = ProductPriceService.shared
     private let sharedTransport = JustTCGTransport.shared
+    private var marketPrices: PokemonMarketPriceResolver? = PokemonMarketPriceResolver()
 
     private var refreshStore: PriceStore?
     private var identityStore: ProductIdentityStore?
@@ -277,6 +278,12 @@ actor PriceRefreshModelActor {
 
     func setPokemonFetchOverrideForTesting(_ override: PriceRefreshPokemonFetchOverride?) {
         pokemonFetchOverride = `override`
+        // Recorded provider fixtures must not accidentally reach a live price feed.
+        marketPrices = `override` == nil ? PokemonMarketPriceResolver() : nil
+    }
+
+    func setTCGCSVSourceForTesting(_ source: any PokemonTCGCSVPriceSource) {
+        marketPrices = PokemonMarketPriceResolver(source: source)
     }
 
     func run(
@@ -579,16 +586,23 @@ actor PriceRefreshModelActor {
             await progress(.catalog(completed: completed, total: order.count))
         }
 
-        func priceTarget(_ target: PriceTarget, card: IdentifiedCard, at now: Date) {
+        func priceTarget(_ target: PriceTarget, card: IdentifiedCard, at now: Date) async {
             guard pricedTargetIDs.insert(target.id).inserted else { return }
             let variant = target.variantID.map(PhysicalVariant.resolving)
-            let lookup = CardPricing.price(
+            var lookup = CardPricing.price(
                 for: card,
                 variant: variant,
                 magicTreatments: card.magicTreatments(for: variant),
                 pokemonPrintRun: target.pokemonPrintRun,
                 at: now
             )
+            if PriceRefreshController.needsFallback(lookup, identifiedCatalogCard: true),
+               let marketPrices,
+               let bulkQuote = try? await marketPrices.fallback(
+                   cardID: card.providerID, game: target.game, variant: variant,
+                   printRun: target.pokemonPrintRun
+               ), case .price = bulkQuote { lookup = bulkQuote }
+            guard storageContinuation?() ?? true, !Task.isCancelled else { return }
             if PriceRefreshController.needsFallback(
                 lookup,
                 identifiedCatalogCard: true
@@ -639,9 +653,30 @@ actor PriceRefreshModelActor {
 
         await publishCatalogProgress(force: true)
 
+        // A stored exact identity with no USD quote can use the reviewed local
+        // product/finish evidence immediately. No per-card catalog request is
+        // needed to rediscover the generated Normal flags known to be wrong.
+        let reviewedOutcomes: [PriceFetchOutcome] = order.compactMap { printing in
+            guard marketPrices != nil, printing.game == .pokemon,
+                  printing.importedIdentity == nil,
+                  let mapping = PokemonTCGCSVMapping.byCardID[printing.printingID],
+                  let targets = byPrinting[printing], !targets.isEmpty,
+                  targets.allSatisfy({ $0.itemKind == .rawCard && !$0.hasPrice }),
+                  let identity = targets.first?.fallbackIdentity else { return nil }
+            let card = TCGdexCard(
+                id: mapping.cardID, localId: String(mapping.cardID.suffix(3)),
+                name: identity.name, image: nil, rarity: nil,
+                set: TCGdexSetBrief(id: mapping.setID, name: identity.setName,
+                                    cardCount: TCGdexCardCount(total: mapping.setID == "30th" ? 158 : 30,
+                                                             official: mapping.setID == "30th" ? 128 : 0)),
+                variants: nil, pricing: nil, variantsDetailed: nil
+            )
+            return PriceFetchOutcome(printing: printing, result: .card(.pokemon(card, setCode: printing.setCode)))
+        }
+        let reviewedPrintings = Set(reviewedOutcomes.map(\.printing))
         var requestBatches: [[PriceTarget.Printing]] = []
         var magicBatch: [PriceTarget.Printing] = []
-        for printing in order {
+        for printing in order where !reviewedPrintings.contains(printing) {
             if printing.game == .magic, printing.importedIdentity == nil {
                 magicBatch.append(printing)
                 if magicBatch.count == 75 {
@@ -660,6 +695,7 @@ actor PriceRefreshModelActor {
 
         var cursor = 0
         await withTaskGroup(of: [PriceFetchOutcome].self) { group in
+            if !reviewedOutcomes.isEmpty { group.addTask { reviewedOutcomes } }
             let initial = min(PriceRefreshController.maxConcurrentRequests, requestBatches.count)
             for _ in 0..<initial {
                 let batch = requestBatches[cursor]
@@ -733,7 +769,7 @@ actor PriceRefreshModelActor {
                             }
 
                             if assessment.repairs.isEmpty {
-                                priceTarget(target, card: card, at: now)
+                                await priceTarget(target, card: card, at: now)
                             } else {
                                 deferredPriceTargets[target.id] = (target, card)
                                 deferredCatalogRepairs.append(contentsOf: assessment.repairs.map {
@@ -884,12 +920,12 @@ actor PriceRefreshModelActor {
         )
         for (sourceID, deferred) in deferredPriceTargets {
             if let liveTarget = currentTargetsByID[sourceID] {
-                priceTarget(liveTarget, card: deferred.card, at: .now)
+                await priceTarget(liveTarget, card: deferred.card, at: .now)
             }
         }
         for (destinationID, card) in repairedDestinationCards {
             if let liveTarget = currentTargetsByID[destinationID] {
-                priceTarget(liveTarget, card: card, at: .now)
+                await priceTarget(liveTarget, card: card, at: .now)
             }
         }
         _ = await commitStaged()
@@ -1294,7 +1330,40 @@ actor PriceRefreshModelActor {
             return (0, false, false)
         }
 
-        let deduplicatedCandidates = PriceRefreshController.collapsingDuplicates(candidates)
+        // An already established mapped identity remains priceable during a
+        // catalog outage, even with the paid vendor disabled or unconfigured.
+        var csvPriced = 0
+        var csvChanged = false
+        var csvPersistenceFailed = false
+        var deduplicatedCandidates: [PriceRefreshController.FallbackCandidate] = []
+        for candidate in PriceRefreshController.collapsingDuplicates(candidates) {
+            guard storageContinuation?() ?? true, !Task.isCancelled else { break }
+            let target = candidate.target
+            if target.itemKind == .rawCard, target.importedIdentity == nil,
+               let marketPrices,
+               let quote = try? await marketPrices.fallback(
+                   cardID: candidate.card?.providerID ?? target.catalogPrintingID ?? target.printingID,
+                   game: target.game, variant: target.variantID.map(PhysicalVariant.resolving),
+                   printRun: target.pokemonPrintRun
+               ), case let .price(price) = quote {
+                guard storageContinuation?() ?? true, !Task.isCancelled else { break }
+                let previous = store.record(forKey: target.id)?.effectiveUnitMarketPriceUSD
+                if store.store(
+                    quote, game: target.game, printingID: target.printingID,
+                    variantID: target.variantID, treatmentIDs: target.magicTreatmentIDsRaw
+                ) {
+                    rememberPriceKey(target.id)
+                    csvPriced += 1
+                    csvChanged = csvChanged || previous != price.unitMarketPriceUSD
+                } else { csvPersistenceFailed = true }
+            } else { deduplicatedCandidates.append(candidate) }
+        }
+        if csvPriced > 0 {
+            // The free lane has no paid-vendor identity store to checkpoint.
+            let saved = store.save()
+            csvPersistenceFailed = csvPersistenceFailed || !saved
+            if !saved { csvPriced = 0; csvChanged = false }
+        }
         let eligibleCandidates = deduplicatedCandidates.filter {
             PriceRefreshController.permitsVendorWork(
                 for: $0.target,
@@ -1303,11 +1372,11 @@ actor PriceRefreshModelActor {
         }
         guard !eligibleCandidates.isEmpty else {
             await progress(.fallbackDisabled(pending: deduplicatedCandidates.count))
-            return (0, false, false)
+            return (csvPriced, csvPersistenceFailed, csvChanged)
         }
         guard PriceVendorCredentials.hasKey else {
             await progress(.fallbackUnconfigured(pending: eligibleCandidates.count))
-            return (0, false, false)
+            return (csvPriced, csvPersistenceFailed, csvChanged)
         }
         fallbackOutcome = "running"
 
@@ -1616,7 +1685,7 @@ actor PriceRefreshModelActor {
             ))
         }
         fallbackOutcome = stoppedByAllowance ? "stopped" : (Task.isCancelled ? "cancelled" : "completed")
-        return (priced, persistenceFailed, changedPrices)
+        return (priced + csvPriced, persistenceFailed || csvPersistenceFailed, changedPrices || csvChanged)
     }
 
     private func recordActiveFallbackChecks(
@@ -1953,6 +2022,7 @@ struct PriceTarget: Hashable, Identifiable, Sendable {
     let catalogMetadataCheckedAt: Date?
     let lastFailureAt: Date?
     var lastFailureReasonRaw: String? = nil
+    var lastPriceSource: PriceSource? = nil
     let hasPrice: Bool
     /// When this app last asked about it, successfully or not.
     let lastCheckedAt: Date?
@@ -2269,6 +2339,20 @@ extension PokemonFinishReconciliation {
                             pendingRefreshID: row.pendingCatalogFinishRefreshID
                         )
                     )
+                    continue
+                }
+
+                // This reviewed app mapping is stable evidence, rather than a
+                // mutable provider finish change requiring two observations.
+                if PokemonTCGCSVMapping.byCardID[card.providerID] != nil, variant == .holo {
+                    repairs.append(Repair(
+                        collectionKey: row.collectionKey, storedVariantID: row.variantID,
+                        storedResolutionRaw: row.variantResolutionRaw, target: target,
+                        resolved: resolved, kind: .catalogCorrection, requiresConfirmation: false,
+                        pendingFinishID: row.pendingCatalogFinishID,
+                        pendingFirstSeenAt: row.pendingCatalogFinishFirstSeenAt,
+                        pendingRefreshID: row.pendingCatalogFinishRefreshID
+                    ))
                     continue
                 }
 
@@ -2857,6 +2941,13 @@ final class PriceRefreshController: ObservableObject {
         forceUnsupportedRetry: Bool = false
     ) -> [PriceTarget] {
         targets.filter { target in
+            // A recent legacy miss must not delay trying the newly available
+            // source. Its shared cache/backoff bounds downloads independently.
+            if target.game == .pokemon, target.itemKind == .rawCard, !target.hasPrice,
+               target.lastPriceSource != .tcgCSV,
+               PokemonTCGCSVMapping.byCardID[target.catalogPrintingID ?? target.printingID] != nil {
+                return true
+            }
             if target.itemKind == .gradedCard,
                target.lastFailureReasonRaw
                 .flatMap(PricingDiagnosticReason.init(rawValue:))?.isGradedCoverageResult == true {
