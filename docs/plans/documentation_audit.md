@@ -1,12 +1,12 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-09-23
+**Audit date:** 2026-09-30
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — 2026-09-23
+## Current authority boundary — 2026-09-30
 
 This is the repository-wide documentation index and reconciliation record.
 Source code, tests, build settings, and evidence recorded against the current
@@ -14,6 +14,17 @@ checkout outrank dated plans. A document is current only when it is listed
 below or linked from the current [documentation map](../README.md). Everything
 under `docs/legacy/` or `review/legacy/` is retained for provenance and is not
 release evidence.
+
+## Latest two-set pricing evidence — 2026-09-30
+
+The [pricing coverage plan](browse_pricing_coverage_plan.md) now records a
+device-local TCGCSV exception for 30th Celebration and Classic Collection.
+Statements below and in the older Phase 6 discussion that retain pokemontcg.io
+as the bulk provider apply to the general Pokémon path; these two sets use
+reviewed exact product/finish mappings. A general successor remains unresolved,
+and published Stage 4B prices remain disabled. The focused simulator selection
+passed 322/322 and the live production client validated all 188 mapped Holofoil
+quotes. This evidence does not certify physical-device or release readiness.
 
 ## Latest catalog rollout evidence — 2026-09-20
 

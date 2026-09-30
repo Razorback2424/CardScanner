@@ -1,6 +1,46 @@
 # Browse Pricing Coverage — Revised Stage 4 Implementation Plan
 
-**Implementation status — 2026-09-22:** Stage 4A is implemented in the current
+**Pricing update — 2026-09-30:** the device-local TCGCSV fallback is implemented
+for `30th` and `30th-c` across Browse, card details, scanning, Price Check, and
+collection refresh. This is a two-set exception to the legacy bulk path below;
+it does not establish a general pokemontcg.io replacement or enable Stage 4B.
+The focused simulator selection passed 322/322, including 21 TCGCSV tests.
+The production feed client also validated 158 main-set and 30 Classic Holofoil
+prices from feed build `2026-09-30T20:05:12+0000`. See the dated
+[implementation record](../../progress.md).
+
+## Two-set TCGCSV contract
+
+- One reviewed [mapping table](../../TradingCardScanner/Services/PokemonTCGCSVMapping.swift)
+  supplies exact provider-card/product identities, printed numbers, accepted
+  product names, and Holofoil evidence. Category 3 groups are 24722 and 24837.
+  Classic uses explicit product IDs because its provider sequence differs from
+  printed numbers. Sealed products and extra RGB Mew products are excluded.
+- The shared [device client](../../TradingCardScanner/Services/PokemonTCGCSVPriceService.swift)
+  validates product identity before joining `productId` plus `Holofoil` to a
+  finite, nonnegative `marketPrice`. Downloads are coalesced, paced, cached
+  atomically, and limited to successful daily pulls after checking the export
+  build timestamp. Failures retain the previous snapshot and back off for
+  15 minutes; explicit Retry can retry a failed pull.
+- Usable catalog USD evidence retains priority when present. Missing quotes
+  use TCGCSV before the configured paid vendor, independently of its setting
+  or credentials. Known unpriced collection identities can use reviewed local
+  card metadata without per-card catalog requests. Legacy recent misses do not
+  postpone the new source; TCGCSV misses retain ordinary refresh scheduling.
+- Reviewed cards expose Holo rather than TCGdex's generated Normal finish.
+  Old checklist slots receive a local presentation correction without changing
+  signed payloads or provider fingerprints. Automatically assigned collection
+  finishes can be corrected in one ledger-bearing refresh using stable reviewed
+  evidence; user-confirmed finishes and special print runs remain protected.
+- Provenance is `TCGplayer via TCGCSV`. The export-build timestamp is not a
+  market-price timestamp: `sourceUpdatedAt` remains nil, and Browse history
+  requiring a genuine provider observation date is skipped. A revalidated
+  unchanged export retains the original quote retrieval time.
+- Prices remain device-local. No price publisher, hosting deployment, catalog
+  signing, full-suite claim, or physical-device acceptance accompanies this fix.
+  First-launch offline card recognition still depends on available checklists.
+
+**Historical implementation status — 2026-09-22:** Stage 4A is implemented in the current
 working tree: Browse-only quote normalization, UTC/provider-day handling,
 versioned finish descriptors, device-local per-set history, 90-day retention,
 Scryfall dataset-stamp provenance, chart rendering, settings diagnostics, and

@@ -1,3 +1,28 @@
+- Two-set TCGCSV pricing fallback (2026-09-30; working tree based on `a707356`):
+  added reviewed exact TCGplayer product mappings for all 158 `30th` and 30
+  `30th-c` cards and one shared device-local daily feed client. Browse sorting
+  and card details, scanner background quotes, Price Check, and collection
+  refresh now use the exact Holofoil quote when existing USD evidence is absent,
+  independently of JustTCG credentials/settings or legacy secondary-set matching.
+  Product ID, group, name, printed number, and finish are validated; unrelated
+  products and other finishes cannot supply a price. Daily downloads coalesce,
+  persist atomically, preserve original retrieval time for unchanged exports,
+  and back off after failures. Export timestamps are not market-price timestamps.
+  Reviewed finish metadata corrects upstream generated Normal flags, including
+  old Browse slots. Automatically assigned collection finishes can be corrected
+  and priced in one refresh with existing ledger/ownership safeguards; explicit
+  user choices remain protected. Recent legacy misses cannot suppress trying
+  the new source after upgrade. Registered the new service/mapping/test files
+  and recorded JSON fixture in their Xcode targets. The final normally signed
+  iPhone 17 Pro / iOS 26.5 focused selection passed 322/322 (21 new TCGCSV tests);
+  result bundle: `/private/tmp/cardscanner-tcgcsv-verified.xcresult`. The unchanged
+  production feed client, exercised on macOS with minimal value-type adapters,
+  validated all 188 quotes against live build `2026-09-30T20:05:12+0000`.
+  No external SSD was available, so generated build data used `/private/tmp`.
+  No full suite, physical-device run, catalog signing, deployment, commit, or
+  push was performed. See the
+  [current pricing contract](docs/plans/browse_pricing_coverage_plan.md).
+
 - Classic Collection authority review corrections (2026-09-30; working tree
   based on `7db2e18`, reviewing `82d0611`): added the missing bundled main-set
   `30th` / `30C` / 128 scanner definition, tested all 30 bundled membership
