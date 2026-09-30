@@ -25,6 +25,12 @@ Ordinary new expansions can enter through the live discovery path when
 card details validate. Exceptional rows such as promos and non-scannable sets
 remain explicit here.
 
+The proposed revision 10 Classic Collection membership was checked against
+public provider names and marketplace printed numbers on 2026-09-30. See the
+[row evidence and revision 11 correction boundary](classic-collection-evidence.md).
+Bundled membership parity is tested; first-launch offline selection still
+requires a downloaded Classic checklist to resolve a card.
+
 `--live` replaces the recorded fixture with a bounded TCGdex fetch. The live
 adapter fetches active sets, explicit override IDs, and due unknown sets after
 applying `publisher/discovery-policy.json`; future sets remain pending and

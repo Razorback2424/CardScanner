@@ -1,3 +1,24 @@
+- Classic Collection authority review corrections (2026-09-30; working tree
+  based on `7db2e18`, reviewing `82d0611`): added the missing bundled main-set
+  `30th` / `30C` / 128 scanner definition, tested all 30 bundled membership
+  rows against production publisher input, used parent `30C` display metadata
+  for offline and live membership results, and narrowed stale-cache eviction
+  to one key with a same-set persistence regression. Historical identifiers
+  already have no persistent key in this checkout, so the stale-cache branch
+  is defensive. All 30 numbers agree with rendered TCGplayer listings and all
+  provider IDs/canonical names agree with TCGdex; the evidence explains LEGEND
+  and the provider's `Palkia` name versus marketplace `Palkia LV.X`. A publisher
+  test confirms explicit revision 11 replacement corrects revision 10 while
+  omitted membership preserves authority. The focused iPhone 17 Pro / iOS 26.5
+  simulator run passed 50/50; focused publisher tests passed 3/3. With no
+  external SSD mounted, generated build data used `/private/tmp`; result bundle:
+  `/private/tmp/cardscanner-review-20260930/catalog-verified.xcresult`.
+  First-launch Classic resolution remains unavailable offline until its
+  checklist downloads; the new bundled-snapshot test verifies fail-closed
+  behavior. No physical-card inspection, signing, deployment, archive, or full
+  suite was performed. See the
+  [membership evidence and correction boundary](publisher/classic-collection-evidence.md).
+
 - Scanner recognition remediation review corrections (2026-09-25; working tree
   based on `main@6747859f5e8c`): fixed the async candidate-list writeback by
   looking rows up again by ID, kept Needs attention rows until a successful

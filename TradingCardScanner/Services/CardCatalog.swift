@@ -177,7 +177,9 @@ enum PokemonOfflineCardFactory {
         )
         return .pokemon(
             card,
-            setCode: isMembership ? entry.providerID.uppercased() : primary.setCode
+            setCode: isMembership
+                ? registry.printedCode(forProviderSetID: entry.providerID) ?? primary.setCode
+                : primary.setCode
         )
     }
 
@@ -928,6 +930,12 @@ actor ResolvedPokemonCardCache {
         persist()
     }
 
+    func invalidateEntry(for key: String) async {
+        await loadIfNeeded()
+        guard entries.removeValue(forKey: key) != nil else { return }
+        persist()
+    }
+
     func invalidateEntries(forSetIDs setIDs: Set<String>) {
         guard !setIDs.isEmpty else { return }
         var changed = false
@@ -1265,7 +1273,7 @@ actor CardCatalog {
                     // continue through the registry-gated paths below;
                     // already-dispatched modern identifiers remain valid because
                     // their captured definition is part of the identifier.
-                    await resolvedDiskCache.invalidateEntries(forSetIDs: [cached.card.set.id])
+                    await resolvedDiskCache.invalidateEntry(for: diskKey)
                 } else {
                     return CatalogResolution(
                         .pokemon(cached.card, setCode: cached.setCode),
@@ -1893,7 +1901,11 @@ actor PokemonHistoricalCatalog {
             pricing: card.pricing,
             variantsDetailed: card.variantsDetailed
         )
-        return .pokemon(materializedCard, setCode: card.set.id.uppercased())
+        return .pokemon(
+            materializedCard,
+            setCode: registrySnapshot.printedCode(forProviderSetID: card.set.id)
+                ?? card.set.id.uppercased()
+        )
     }
 
     private func candidateSetIDs(

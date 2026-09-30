@@ -258,7 +258,7 @@ final class HistoricalCatalogRequestTests: XCTestCase {
         XCTAssertEqual(card.set.id, "30th-c")
         XCTAssertEqual(card.localId, "58")
         XCTAssertEqual(card.set.cardCount.official, 102)
-        XCTAssertEqual(setCode, "30TH-C")
+        XCTAssertEqual(setCode, "30C")
     }
 
     /// A stalled directory must not be re-requested by every following frame.

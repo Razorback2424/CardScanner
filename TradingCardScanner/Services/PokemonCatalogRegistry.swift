@@ -104,7 +104,9 @@ struct PokemonCatalogRegistry: Sendable {
         switch d.recognitionKind {
         case .expansion: return d.printedCode
         case .promo: return d.printedPrefix
-        case .notScannable: return d.printedCode ?? d.printedPrefix
+        case .notScannable:
+            let parent = d.parentProviderSetID.flatMap { descriptor(forProviderSetID: $0) }
+            return d.printedCode ?? d.printedPrefix ?? parent?.printedCode ?? parent?.printedPrefix
         }
     }
 
@@ -242,8 +244,9 @@ struct PokemonCatalogRegistry: Sendable {
         // The bundled registry is the scanner's first-launch and offline
         // authority. Classic Collection cards reuse older printed numbers, so
         // omitting their membership here silently turns them into old printings
-        // until a signed release has downloaded. Keep this fallback in sync
-        // with the approved membership in publisher/catalog-input.json.
+        // until a signed release has downloaded. A parity test checks these
+        // rows against publisher/catalog-input.json. Resolving a chosen card
+        // still requires its downloaded checklist or a live provider response.
         let classicMembers: [(id: String, name: String, number: String, denominator: Int)] = [
             ("001", "charizard", "4", 102),
             ("002", "delcatty", "5", 109),

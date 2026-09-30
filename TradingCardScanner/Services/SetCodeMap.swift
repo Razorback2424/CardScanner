@@ -90,7 +90,8 @@ enum SetCodeMap {
         "ASC": .init(printedCode: "ASC", tcgdexSetID: "me02.5", officialCount: 217, releaseIndex: 18),
         "POR": .init(printedCode: "POR", tcgdexSetID: "me03", officialCount: 88, releaseIndex: 19),
         "CRI": .init(printedCode: "CRI", tcgdexSetID: "me04", officialCount: 86, releaseIndex: 20),
-        "PBL": .init(printedCode: "PBL", tcgdexSetID: "me05", officialCount: 84, releaseIndex: 21)
+        "PBL": .init(printedCode: "PBL", tcgdexSetID: "me05", officialCount: 84, releaseIndex: 21),
+        "30C": .init(printedCode: "30C", tcgdexSetID: "30th", officialCount: 128, releaseIndex: 22)
     ]
 
     static var codes: [String] {

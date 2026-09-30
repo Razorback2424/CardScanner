@@ -1645,6 +1645,52 @@ final class PokemonCatalogCoreTests: XCTestCase {
         )
     }
 
+    func testRevision11ExplicitMembershipCorrectionReplacesRevision10AndOmissionPreservesIt() throws {
+        let fixture = providerFixture(sets: [
+            .init(
+                id: "30th-c", name: "30th Celebration Classic Collection", code: "30C",
+                releaseDate: "2026-09-16",
+                imageURLs: ["https://assets.tcgdex.net/en/me/30th-c/001"],
+                seriesID: "me", officialCount: 0, totalCount: 1
+            )
+        ])
+        func input(number: String) -> PokemonCatalogHumanInput {
+            .init(
+                providerSetID: "30th-c", recognitionKind: .notScannable, scanEnabled: false,
+                membershipRecognition: .init(members: [
+                    .init(
+                        providerCardID: "30th-c-001", canonicalName: "card 001",
+                        printedLocalID: number, printedDenominator: 102
+                    )
+                ])
+            )
+        }
+        let builder = PokemonCatalogBuilder()
+        let revision10 = try builder.build(.init(
+            fixture: fixture, humanInputs: [input(number: "59")], revision: 10, generatedAt: generatedAt
+        ))
+        let omitted = try builder.build(.init(
+            fixture: fixture, activeRelease: revision10.release, humanInputs: [],
+            revision: 11, generatedAt: generatedAt
+        ))
+        XCTAssertEqual(
+            omitted.release.sets.first?.membershipRecognition,
+            revision10.release.sets.first?.membershipRecognition
+        )
+        let corrected = try builder.build(.init(
+            fixture: fixture, activeRelease: revision10.release, humanInputs: [input(number: "58")],
+            revision: 11, generatedAt: generatedAt
+        ))
+        XCTAssertEqual(corrected.release.sets.first?.membershipRecognition, input(number: "58").membershipRecognition)
+        XCTAssertEqual(
+            PokemonCatalogChangeClassifier.classify(
+                previousRelease: revision10.release, currentRelease: corrected.release
+            ).changeClass,
+            .authority
+        )
+        try PokemonCatalogCandidateValidator.validate(corrected, activeRevision: 10)
+    }
+
     func testGalleryAbbreviationIsAdmittedOnlyWhenSafeParentGatesPass() throws {
         let fixture = providerFixture(
             sets: [

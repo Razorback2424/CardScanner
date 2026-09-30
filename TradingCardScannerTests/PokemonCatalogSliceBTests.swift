@@ -636,6 +636,36 @@ final class PokemonCatalogCoordinatorTests: XCTestCase {
 // MARK: - Consumer invalidation tests
 
 final class PokemonCatalogInvalidationTests: XCTestCase {
+    func testResolvedCacheEntryInvalidationPreservesOtherEntriesInSameSetAfterRestart() async throws {
+        let root = SliceBFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = ResolvedPokemonCardCache(root: root, appVersion: "test")
+        for (number, name) in [("58", "Pikachu"), ("4", "Charizard")] {
+            let card = TCGdexCard(
+                id: "base1-\(number)",
+                localId: number,
+                name: name,
+                image: nil,
+                rarity: nil,
+                set: TCGdexSetBrief(
+                    id: "base1", name: "Base Set", cardCount: .init(total: 102, official: 102)
+                ),
+                variants: .init(firstEdition: false, holo: false, normal: true, reverse: false, wPromo: nil),
+                pricing: nil,
+                variantsDetailed: nil
+            )
+            await cache.store(card: card, setCode: "BS", key: "historical-\(number)")
+        }
+        // Exercise cold-load invalidation and its persisted result.
+        let coldCache = ResolvedPokemonCardCache(root: root, appVersion: "test")
+        await coldCache.invalidateEntry(for: "historical-58")
+        let restarted = ResolvedPokemonCardCache(root: root, appVersion: "test")
+        let removed = await restarted.card(for: "historical-58")
+        let preserved = await restarted.card(for: "historical-4")
+        XCTAssertNil(removed)
+        XCTAssertEqual(preserved?.card.id, "base1-4")
+    }
+
     func testOfflineCatalogInvalidationClearsEntries() async {
         let storeRoot = SliceBFixture.tempRoot()
         defer { try? FileManager.default.removeItem(at: storeRoot) }

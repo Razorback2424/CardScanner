@@ -1,4 +1,5 @@
 import CryptoKit
+import struct PokemonCatalogCore.PokemonCatalogHumanInput
 import XCTest
 @testable import TradingCardScanner
 
@@ -133,6 +134,62 @@ private enum SliceCFixture {
 
 @MainActor
 final class PokemonCatalogSliceCTests: XCTestCase {
+    func testBundled30thAuthorityMatchesPublisherInput() throws {
+        struct Input: Decodable {
+            let sets: [PokemonCatalogHumanInput]
+        }
+        let repositoryRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let input = try JSONDecoder().decode(
+            Input.self,
+            from: Data(contentsOf: repositoryRoot.appendingPathComponent("publisher/catalog-input.json"))
+        )
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let parentInput = try XCTUnwrap(input.sets.first { $0.providerSetID == "30th" })
+        let parent = try XCTUnwrap(registry.descriptor(forProviderSetID: "30th"))
+        XCTAssertEqual(parent.printedCode, parentInput.printedCode)
+        XCTAssertEqual(parent.officialCount, parentInput.claimedOfficialCount)
+        XCTAssertEqual(parent.releaseOrder, parentInput.releaseOrder)
+        XCTAssertEqual(parent.recognitionKind, .expansion)
+        XCTAssertTrue(parent.scanEnabled)
+        XCTAssertEqual(registry.expansion(forPrintedCode: "30C")?.providerSetID, "30th")
+
+        let classicInput = try XCTUnwrap(input.sets.first { $0.providerSetID == "30th-c" })
+        let classic = try XCTUnwrap(registry.descriptor(forProviderSetID: "30th-c"))
+        XCTAssertEqual(classic.parentProviderSetID, classicInput.parentProviderSetID)
+        let bundledMembers = try XCTUnwrap(classic.membershipRecognition?.members)
+        let publisherMembers = try XCTUnwrap(classicInput.membershipRecognition?.members)
+        XCTAssertEqual(bundledMembers.count, 30)
+        XCTAssertEqual(
+            bundledMembers.sorted { $0.providerCardID < $1.providerCardID },
+            publisherMembers.sorted { $0.providerCardID < $1.providerCardID }
+        )
+        XCTAssertEqual(registry.printedCode(forProviderSetID: "30th-c"), "30C")
+        XCTAssertFalse(classic.scanEnabled)
+    }
+
+    func testFirstLaunchClassicChoiceRequiresChecklistBeforeOfflineResolution() async throws {
+        let root = SliceCFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root)
+        let bundled = await store.bundledSnapshot()
+        let snapshot = try XCTUnwrap(bundled)
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let number = PokemonPrintedNumberEvidence(localID: "58", denominator: 102, scheme: .officialSet)
+        let candidate = try XCTUnwrap(PokemonHistoricalIdentityResolver.membershipIdentities(
+            for: number,
+            in: registry
+        ).first { $0.providerID == "30th-c-014" })
+        XCTAssertFalse(snapshot.manifest.entries.contains { $0.providerID == "30th-c" })
+        XCTAssertNil(PokemonOfflineCardFactory.card(
+            in: snapshot,
+            candidate: candidate,
+            number: number,
+            registry: registry
+        ))
+    }
+
     func testBundledClassicPikachuKeepsBaseSetScanAmbiguousAndAvailableAsChoice() {
         let registry = PokemonCatalogRegistry.bundledSeed
         let number = PokemonPrintedNumberEvidence(
@@ -277,7 +334,7 @@ final class PokemonCatalogSliceCTests: XCTestCase {
         XCTAssertEqual(card.set.id, "30th-c")
         XCTAssertEqual(card.localId, "58")
         XCTAssertEqual(card.set.cardCount.official, 102)
-        XCTAssertEqual(setCode, "30TH-C")
+        XCTAssertEqual(setCode, "30C")
 
         let wrongNumber = PokemonPrintedNumberEvidence(
             localID: "59",
