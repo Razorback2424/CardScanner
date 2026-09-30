@@ -2071,10 +2071,18 @@ final class ScannerViewModel: ObservableObject {
     private func persistUnresolvedScans() {
         let store = unresolvedScanStore
         let scans = unresolvedScans
+        let revision = unresolvedPersistenceRevision
         let previous = unresolvedPersistenceTask
-        unresolvedPersistenceTask = Task {
+        unresolvedPersistenceTask = Task { @MainActor [weak self] in
             await previous?.value
-            await store.save(scans)
+            let didPersist = await store.save(scans)
+            guard !didPersist,
+                  let self,
+                  revision == self.unresolvedPersistenceRevision else { return }
+            self.show(ScanNote(
+                text: "Needs attention could not be saved on this device.",
+                tone: .problem
+            ))
         }
     }
 

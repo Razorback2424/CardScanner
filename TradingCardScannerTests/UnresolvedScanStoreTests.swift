@@ -100,6 +100,22 @@ final class UnresolvedScanStoreTests: XCTestCase {
         XCTAssertEqual(restored.last?.createdAt, Date(timeIntervalSince1970: 54))
     }
 
+    func testSaveReportsStorageFailure() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("UnresolvedScanStoreFailure-\(UUID().uuidString)", isDirectory: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let blockingFile = directory.appendingPathComponent("not-a-directory")
+        try Data("file".utf8).write(to: blockingFile)
+        let store = UnresolvedScanStore(
+            fileURL: blockingFile.appendingPathComponent("unresolved-scans.json")
+        )
+
+        let didSave = await store.save([])
+
+        XCTAssertFalse(didSave)
+    }
+
     func testCorruptFileLoadsAsEmpty() async throws {
         let (directory, store) = makeStore()
         defer { try? FileManager.default.removeItem(at: directory) }

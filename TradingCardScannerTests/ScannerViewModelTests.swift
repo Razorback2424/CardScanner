@@ -2351,6 +2351,29 @@ final class ScannerViewModelTests: XCTestCase {
         try? FileManager.default.removeItem(at: directory)
     }
 
+    func testUnresolvedPersistenceFailureShowsScannerNote() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ScannerUnresolvedWriteFailure-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let blockingFile = directory.appendingPathComponent("not-a-directory")
+        try Data("file".utf8).write(to: blockingFile)
+        let store = UnresolvedScanStore(
+            fileURL: blockingFile.appendingPathComponent("unresolved-scans.json")
+        )
+        let model = try makeModel(variants: [.normal], unresolvedScanStore: store)
+
+        model.fileUnresolvedForTesting(
+            ScanSubject(identifier: scannerIdentifier()),
+            reason: .noCatalogEntry
+        )
+
+        let warned = await waitUntil {
+            model.note?.text == "Needs attention could not be saved on this device."
+        }
+        XCTAssertTrue(warned)
+    }
+
     func testDismissedRowDoesNotReturnFromAnOverlappingCatalogReload() async throws {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("ScannerDismissReload-\(UUID().uuidString)", isDirectory: true)

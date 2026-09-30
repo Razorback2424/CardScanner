@@ -52,7 +52,8 @@ actor UnresolvedScanStore {
         }
     }
 
-    func save(_ scans: [UnresolvedScan]) {
+    @discardableResult
+    func save(_ scans: [UnresolvedScan]) -> Bool {
         let retainedScans = scans
             .sorted { $0.createdAt < $1.createdAt }
             .suffix(Self.rowLimit)
@@ -75,10 +76,12 @@ actor UnresolvedScanStore {
             let data = try JSONEncoder().encode(Array(records))
             try data.write(to: fileURL, options: .atomic)
             Self.excludeFromBackup(fileURL)
+            return true
         } catch {
             // Persistence is best effort at this boundary. The in-memory list
             // stays actionable for the current session if storage is full or
             // temporarily unavailable.
+            return false
         }
     }
 
