@@ -2832,12 +2832,7 @@ enum ArtworkAccentStore {
         if let cached = cache.object(forKey: key)?.value {
             return cached
         }
-        guard let image = CollectionArtworkStore.image(filename: localFilename),
-              let accent = ArtworkAccentExtractor.make(from: image) else {
-            return nil
-        }
-        cache.setObject(Box(accent), forKey: key)
-        return accent
+        return nil
     }
 
     /// The image view keeps its existing `AsyncImage` behavior. This companion
@@ -2873,9 +2868,12 @@ enum ArtworkAccentStore {
 
         var selectedImage: UIImage?
         var selectedKey: String?
-        if let effectiveLocalFilename,
-           let localKey,
-           let localImage = CollectionArtworkStore.image(filename: effectiveLocalFilename) {
+        let localImage: UIImage? = if let effectiveLocalFilename {
+            await Task.detached(priority: .utility) {
+                CollectionArtworkStore.image(filename: effectiveLocalFilename)
+            }.value
+        } else { nil }
+        if let localImage, let localKey {
             selectedImage = localImage
             selectedKey = localKey
         } else {
@@ -2889,7 +2887,9 @@ enum ArtworkAccentStore {
         }
 
         guard let selectedImage, let selectedKey else { return nil }
-        let accent = ArtworkAccentExtractor.make(from: selectedImage)
+        let accent = await Task.detached(priority: .utility) {
+            ArtworkAccentExtractor.make(from: selectedImage)
+        }.value
         if let accent {
             cache.setObject(Box(accent), forKey: selectedKey as NSString)
         }
