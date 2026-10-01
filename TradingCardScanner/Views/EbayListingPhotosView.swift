@@ -62,6 +62,8 @@ struct EbayListingPhotosView: View {
     @State private var backData: Data?
     @State private var cameraSide: Side?
     @State private var singleGeneration = 0
+    @State private var frontLoadGeneration = 0
+    @State private var backLoadGeneration = 0
     @State private var isPreparingSingle = false
     @State private var singleOutput: EbayListingPhotoExport.Output?
     @State private var singleOutputDirectory: URL?
@@ -80,6 +82,7 @@ struct EbayListingPhotosView: View {
     @State private var hasSweptTemporaryDirectories = false
     @State private var singleArchiveURL: URL?
     @State private var isSavingToPhotos = false
+    @State private var savingPhotoDirectory: URL?
     @State private var saveConfirmation: String?
     @State private var inspectedPhoto: InspectedPhoto?
 
@@ -140,13 +143,13 @@ struct EbayListingPhotosView: View {
         .onChange(of: frontPickerItem) { _, item in
             guard let item else { return }
             beginLoading(side: .front)
-            let requestID = singleGeneration
+            let requestID = frontLoadGeneration
             Task { await loadSinglePhoto(item, side: .front, requestID: requestID) }
         }
         .onChange(of: backPickerItem) { _, item in
             guard let item else { return }
             beginLoading(side: .back)
-            let requestID = singleGeneration
+            let requestID = backLoadGeneration
             Task { await loadSinglePhoto(item, side: .back, requestID: requestID) }
         }
         .onChange(of: batchPickerItems) { _, _ in
@@ -181,6 +184,8 @@ struct EbayListingPhotosView: View {
             EbayListingPhotoExport.removeOrphanedTemporaryDirectories()
         }
         .onDisappear {
+            frontLoadGeneration &+= 1
+            backLoadGeneration &+= 1
             singleGeneration &+= 1
             batchSelectionGeneration &+= 1
             batchProcessingTask?.cancel()
@@ -420,9 +425,13 @@ struct EbayListingPhotosView: View {
         errorMessage = nil
         saveConfirmation = nil
         switch side {
-        case .front: frontData = nil
-        case .back: backData = nil
+        case .front: frontLoadGeneration &+= 1; frontData = nil
+        case .back: backLoadGeneration &+= 1; backData = nil
         }
+    }
+
+    private func loadGeneration(for side: Side) -> Int {
+        side == .front ? frontLoadGeneration : backLoadGeneration
     }
 
     private func loadSinglePhoto(
@@ -434,7 +443,7 @@ struct EbayListingPhotosView: View {
             guard let data = try await item.loadTransferable(type: Data.self) else {
                 throw EbayListingPhotoExport.Error.decodeFailed(side: side.title.lowercased())
             }
-            guard !Task.isCancelled, requestID == singleGeneration else { return }
+            guard !Task.isCancelled, requestID == loadGeneration(for: side) else { return }
             switch side {
             case .front: frontData = data; frontPickerItem = nil
             case .back: backData = data; backPickerItem = nil
@@ -443,7 +452,7 @@ struct EbayListingPhotosView: View {
         } catch is CancellationError {
             return
         } catch {
-            guard !Task.isCancelled, requestID == singleGeneration else { return }
+            guard !Task.isCancelled, requestID == loadGeneration(for: side) else { return }
             errorMessage = error.localizedDescription
         }
     }
@@ -455,8 +464,8 @@ struct EbayListingPhotosView: View {
         errorMessage = nil
         saveConfirmation = nil
         switch side {
-        case .front: frontData = data
-        case .back: backData = data
+        case .front: frontLoadGeneration &+= 1; frontData = data
+        case .back: backLoadGeneration &+= 1; backData = data
         }
         singleGeneration &+= 1
     }
@@ -517,22 +526,31 @@ struct EbayListingPhotosView: View {
         saveConfirmation = nil
         errorMessage = nil
         let urls = singleOutput.urls
+        let directory = singleOutput.contentDirectory
+        savingPhotoDirectory = directory
         let generation = singleGeneration
         Task {
+            defer {
+                isSavingToPhotos = false
+                savingPhotoDirectory = nil
+                if singleOutputDirectory != directory {
+                    EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
+                }
+            }
             do {
                 try await ListingPhotoLibrarySaver.save(urls)
                 guard generation == singleGeneration else { return }
-                isSavingToPhotos = false
                 saveConfirmation = "Saved 10 photos to Photos in listing order."
             } catch {
                 guard generation == singleGeneration else { return }
-                isSavingToPhotos = false
                 errorMessage = error.localizedDescription
             }
         }
     }
 
     private func startOverSingle() {
+        frontLoadGeneration &+= 1
+        backLoadGeneration &+= 1
         singleGeneration &+= 1
         frontPickerItem = nil
         backPickerItem = nil
@@ -547,7 +565,9 @@ struct EbayListingPhotosView: View {
     private func removeSingleArtifacts() {
         // The inspector reads a file inside the container about to be deleted.
         inspectedPhoto = nil
-        EbayListingPhotoExport.removeRunContainer(forContentDirectory: singleOutputDirectory)
+        if singleOutputDirectory != savingPhotoDirectory {
+            EbayListingPhotoExport.removeRunContainer(forContentDirectory: singleOutputDirectory)
+        }
         singleOutputDirectory = nil
         singleOutput = nil
         // The archive lives inside the container that was just removed.
