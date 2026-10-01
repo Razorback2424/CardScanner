@@ -136,10 +136,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private struct MagicCardsPageResult: Sendable {
         let page: CatalogPage<CatalogCardSummary>
         let prices: [String: CatalogCachedPrice]
-        let historyQuotes: [BrowsePriceQuote]
     }
 
     private let scryfall = ScryfallService()
+    private let magicSession: URLSession
     private let cache: CatalogCacheStore
     private let browsePriceHistoryStore: BrowsePriceHistoryStore
     private let scryfallDatasetStamp: any ScryfallDatasetStampProviding
@@ -152,8 +152,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private var setCache: [CardGame: [CatalogSet]] = [:]
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var detailTasks: [String: DetailTaskState] = [:]
+    private var magicPageRefreshTasks: [String: Task<Void, Never>] = [:]
+    private var pendingBrowseHistory: [(
+        price: NormalizedPrice, printingID: String, setID: String, variant: PhysicalVariant
+    )] = []
+    private var browseHistoryTask: Task<Void, Never>?
     private var pokemonSetDetails: [String: TCGdexSetCatalog] = [:]
-    private var pokemonSetCardDetails: [String: [String: TCGdexCard]] = [:]
+    private var pokemonSetCardDetails: [String: (cards: [String: TCGdexCard], retrievedAt: [String: Date])] = [:]
     private var pokemonSnapshotEntries: [PokemonChecklistSnapshotEntry] = []
     private var pokemonSnapshotLoaded = false
     /// The read is shared across re-entrant actor calls. It is intentionally
@@ -200,7 +205,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
         magicCatalogCoordinator: MagicCatalogCoordinator? = nil,
         browsePriceHistoryStore: BrowsePriceHistoryStore = .shared,
-        scryfallDatasetStamp: any ScryfallDatasetStampProviding = ScryfallDatasetStampCache.shared
+        scryfallDatasetStamp: any ScryfallDatasetStampProviding = ScryfallDatasetStampCache.shared,
+        magicSession: URLSession = .shared
     ) {
         // The old crawl-installed ordering map was unsigned and had no rollback
         // semantics. Remove it once on construction so upgrades cannot leave a
@@ -223,9 +229,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
         self.magicCatalogCoordinator = magicCatalogCoordinator
         self.browsePriceHistoryStore = browsePriceHistoryStore
         self.scryfallDatasetStamp = scryfallDatasetStamp
+        self.magicSession = magicSession
     }
 
     deinit {
+        browseHistoryTask?.cancel()
+        for task in magicPageRefreshTasks.values { task.cancel() }
         catalogEventTask?.cancel()
         catalogAuthorityRefreshTask?.cancel()
         reconciliationTask?.cancel()
@@ -562,7 +571,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             let built = try PokemonMasterSetChecklistBuilder.build(
                 providerSet: provider,
                 baseSet: baseSet,
-                cardDetails: details
+                cardDetails: details.cards
             )
             guard !built.isEmpty,
                   built.allSatisfy({ $0.providerFingerprint == target.desiredFingerprint }) else {
@@ -770,24 +779,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
                    hasHistoryMetadata {
                     return saved.value
                 }
-                do {
-                    let refreshed = try await magicCards(
-                        query: "e:\(set.providerID) lang:en game:paper",
-                        cursor: cursor,
-                        collectHistory: true
-                    )
-                    await cache.storeCardPage(refreshed.page, for: cacheKey)
-                    await cache.storeMagicPrices(refreshed.prices, for: cacheKey)
-                    installMagicPrices(refreshed.prices, for: refreshed.page.items)
-                    await recordBrowseHistory(refreshed.historyQuotes, game: .magic)
-                    return refreshed.page
-                } catch {
-                    // A stale page is still useful offline. Keep it visible
-                    // when revalidation cannot reach Scryfall, while the next
-                    // visit will try again because the stored timestamp stays
-                    // old until a successful refresh replaces it.
-                    return saved.value
-                }
+                refreshMagicPage(set: set, cursor: cursor, cacheKey: cacheKey)
+                return saved.value
             }
             let loaded = try await magicCards(
                 query: "e:\(set.providerID) lang:en game:paper",
@@ -798,12 +791,36 @@ actor BrowseCatalog: BrowseCatalogProviding {
             await cache.storeCardPage(loaded.page, for: cacheKey)
             await cache.storeMagicPrices(loaded.prices, for: cacheKey)
             installMagicPrices(loaded.prices, for: loaded.page.items)
-            await recordBrowseHistory(loaded.historyQuotes, game: .magic)
             return page
         }
         let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
         await cache.storeCardPage(page, for: cacheKey)
         return page
+    }
+
+    private func refreshMagicPage(set: CatalogSet, cursor: String?, cacheKey: String) {
+        guard magicPageRefreshTasks[cacheKey] == nil else { return }
+        magicPageRefreshTasks[cacheKey] = Task { [weak self] in
+            await self?.revalidateMagicPage(set: set, cursor: cursor, cacheKey: cacheKey)
+        }
+    }
+
+    private func revalidateMagicPage(set: CatalogSet, cursor: String?, cacheKey: String) async {
+        defer { magicPageRefreshTasks[cacheKey] = nil }
+        do {
+            let refreshed = try await magicCards(
+                query: "e:\(set.providerID) lang:en game:paper", cursor: cursor,
+                collectHistory: true
+            )
+            guard !Task.isCancelled else { return }
+            await cache.storeCardPage(refreshed.page, for: cacheKey)
+            await cache.storeMagicPrices(refreshed.prices, for: cacheKey)
+            installMagicPrices(refreshed.prices, for: refreshed.page.items)
+            yieldUpdate(providerSetID: set.providerID)
+        } catch {
+            // Leave the original cache timestamp intact so a later visit
+            // can retry, while the current page stays useful offline.
+        }
     }
 
     func searchCards(
@@ -934,10 +951,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
             details = CatalogCardDetails(card: .pokemon(card, setCode: set.code), set: set)
         case .magic:
             let card = try await scryfall.fetchCard(id: summary.providerID)
+            let retrievedAt = Date.now
             let directory = try await sets(for: .magic)
             let directorySet = directory.first { $0.catalogID == summary.setID }
             guard let set = directorySet else { throw BrowseCatalogError.unknownSet }
-            details = CatalogCardDetails(card: .magic(card), set: set)
+            details = CatalogCardDetails(card: .magic(card), set: set, retrievedAt: retrievedAt)
         }
         return await addingTCGCSVPrices(to: details)
     }
@@ -947,7 +965,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
               case var .pokemon(card, code) = details.card,
               PokemonTCGCSVMapping.byCardID[card.id]?.setID == card.set.id else { return details }
         card.supplementalTCGCSV = try? await source.snapshot(setID: card.set.id, retry: false)
-        return CatalogCardDetails(card: .pokemon(card, setCode: code), set: details.set)
+        return CatalogCardDetails(
+            card: .pokemon(card, setCode: code), set: details.set,
+            retrievedAt: details.retrievedAt
+        )
     }
 
     private func detailCacheKey(for summary: CatalogCardSummary) -> String {
@@ -1646,11 +1667,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 for: details.card,
                 variant: variant,
                 magicTreatments: details.card.magicTreatments(for: variant),
-                pokemonPrintRun: summary.pokemonPrintRun
+                pokemonPrintRun: summary.pokemonPrintRun,
+                at: details.retrievedAt
             )
             if case let .price(price) = lookup,
                price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
-                await recordNormalizedBrowsePrice(
+                recordNormalizedBrowsePrice(
                     price,
                     printingID: summary.id,
                     setID: summary.setID.id,
@@ -1676,12 +1698,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 for: details.card,
                 variant: variant,
                 magicTreatments: details.card.magicTreatments(for: variant),
-                pokemonPrintRun: summary.pokemonPrintRun
+                pokemonPrintRun: summary.pokemonPrintRun,
+                at: details.retrievedAt
             )
             lookups.append(lookup)
             if case let .price(price) = lookup,
                price.currencyCode.caseInsensitiveCompare("USD") == .orderedSame {
-                await recordNormalizedBrowsePrice(
+                recordNormalizedBrowsePrice(
                     price,
                     printingID: summary.id,
                     setID: summary.setID.id,
@@ -1700,38 +1723,59 @@ actor BrowseCatalog: BrowseCatalogProviding {
         printingID: String,
         setID: String,
         variant: PhysicalVariant
-    ) async {
-        let transport: BrowsePriceTransport
-        let providerUpdatedAt: Date?
-        switch price.source {
-        case .tcgplayer:
-            transport = .tcgdex
-            providerUpdatedAt = price.sourceUpdatedAt
-        case .tcgCSV:
-            transport = .tcgCSV
-            providerUpdatedAt = nil
-        case .scryfall:
-            transport = .scryfall
-            providerUpdatedAt = await scryfallDatasetStamp.datasetUpdatedAt()
-        case .cardmarket, .justTCG, .importedCSV:
-            return
+    ) {
+        pendingBrowseHistory.append((price, printingID, setID, variant))
+        guard browseHistoryTask == nil else { return }
+        browseHistoryTask = Task { [weak self] in await self?.drainBrowseHistory() }
+    }
+
+    /// One worker batches optional history writes; current results never wait
+    /// for its dataset request or disk work.
+    private func drainBrowseHistory() async {
+        defer { browseHistoryTask = nil }
+        while !pendingBrowseHistory.isEmpty, !Task.isCancelled {
+            let batch = pendingBrowseHistory
+            pendingBrowseHistory.removeAll(keepingCapacity: true)
+            let datasetStamp = batch.contains { $0.price.source == .scryfall }
+                ? await scryfallDatasetStamp.datasetUpdatedAt() : nil
+            var pokemonQuotes: [BrowsePriceQuote] = []
+            var magicQuotes: [BrowsePriceQuote] = []
+            for entry in batch {
+                let transport: BrowsePriceTransport
+                let providerUpdatedAt: Date?
+                switch entry.price.source {
+                case .tcgplayer:
+                    transport = .tcgdex
+                    providerUpdatedAt = entry.price.sourceUpdatedAt
+                case .tcgCSV:
+                    transport = .tcgCSV
+                    providerUpdatedAt = nil
+                case .scryfall:
+                    transport = .scryfall
+                    providerUpdatedAt = datasetStamp
+                case .cardmarket, .justTCG, .importedCSV:
+                    continue
+                }
+                // A later bulk release cannot date an older cached payload.
+                guard let providerUpdatedAt,
+                      entry.price.source != .scryfall || providerUpdatedAt <= entry.price.fetchedAt else {
+                    await browsePriceHistoryStore.recordSkippedTimestamp()
+                    continue
+                }
+                guard let quote = BrowsePriceQuote.from(
+                    normalizedPrice: entry.price, printingID: entry.printingID,
+                    setID: entry.setID, variant: entry.variant,
+                    transportProvider: transport, providerUpdatedAt: providerUpdatedAt
+                ) else {
+                    await browsePriceHistoryStore.recordUnmappedVariant()
+                    continue
+                }
+                if entry.price.source == .scryfall { magicQuotes.append(quote) }
+                else { pokemonQuotes.append(quote) }
+            }
+            await recordBrowseHistory(pokemonQuotes, game: .pokemon)
+            await recordBrowseHistory(magicQuotes, game: .magic)
         }
-        guard let providerUpdatedAt else {
-            await browsePriceHistoryStore.recordSkippedTimestamp()
-            return
-        }
-        guard let quote = BrowsePriceQuote.from(
-            normalizedPrice: price,
-            printingID: printingID,
-            setID: setID,
-            variant: variant,
-            transportProvider: transport,
-            providerUpdatedAt: providerUpdatedAt
-        ) else {
-            await browsePriceHistoryStore.recordUnmappedVariant()
-            return
-        }
-        await recordBrowseHistory([quote], game: price.source == .scryfall ? .magic : .pokemon)
     }
 
     private func pokemonSets() async throws -> [CatalogSet] {
@@ -1800,7 +1844,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             return magicCatalogRegistry.browseSets
         }
         guard let url = URL(string: "https://api.scryfall.com/sets") else { throw BrowseCatalogError.invalidURL }
-        let (data, response) = try await URLSession.shared.data(for: request(url, scryfall: true))
+        let (data, response) = try await magicSession.data(for: request(url, scryfall: true))
         try validate(response)
         let excluded: Set<String> = ["token", "memorabilia", "minigame", "art_series"]
         let rows = try JSONDecoder().decode(ScryfallBrowseSetList.self, from: data).data.filter {
@@ -1873,22 +1917,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
             url = built
         }
-        let (data, response) = try await URLSession.shared.data(for: request(url, scryfall: true))
+        let (data, response) = try await magicSession.data(for: request(url, scryfall: true))
+        let retrievedAt = Date.now
         if let http = response as? HTTPURLResponse, http.statusCode == 404 {
             return MagicCardsPageResult(
                 page: CatalogPage(items: [], nextCursor: nil),
-                prices: [:],
-                historyQuotes: []
+                prices: [:]
             )
         }
         try validate(response)
         let page = try JSONDecoder().decode(ScryfallBrowseCardPage.self, from: data)
         let directory = try await sets(for: .magic)
         var prices: [String: CatalogCachedPrice] = [:]
-        let datasetStamp = collectHistory
-            ? await scryfallDatasetStamp.datasetUpdatedAt()
-            : nil
-        var historyQuotes: [BrowsePriceQuote] = []
         let items = page.data.compactMap { card -> CatalogCardSummary? in
             let id = CatalogSetID(game: .magic, providerID: card.setCode.lowercased())
             guard let set = directory.first(where: { $0.catalogID == id }) else { return nil }
@@ -1908,32 +1948,24 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 ),
                 magicTreatmentQualifiers: evidence.qualifiers
             )
-            detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(card: .magic(card), set: set)
+            detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(
+                card: .magic(card), set: set, retrievedAt: retrievedAt
+            )
             prices[summary.id] = CatalogCachedPrice(
                 value: CardPricing.highestPublishedUSDPrice(for: .magic(card)),
-                providerUpdatedAt: datasetStamp
+                providerUpdatedAt: nil
             )
             if collectHistory {
                 for variant in card.catalogVariants {
                     guard let listing = CardPricing.scryfallListing(for: variant),
                           let amount = card.prices?.value(forKey: listing) else { continue }
-                    guard let datasetStamp else {
-                        Task { await browsePriceHistoryStore.recordSkippedTimestamp() }
-                        continue
-                    }
-                    if let quote = BrowsePriceQuote(
-                        printingID: summary.id,
-                        setID: summary.setID.id,
-                        variant: variant,
-                        amountUSD: amount,
-                        marketSource: .scryfall,
-                        transportProvider: .scryfall,
-                        providerUpdatedAt: datasetStamp
-                    ) {
-                        historyQuotes.append(quote)
-                    } else {
-                        Task { await browsePriceHistoryStore.recordUnmappedVariant() }
-                    }
+                    recordNormalizedBrowsePrice(
+                        NormalizedPrice(
+                            unitMarketPriceUSD: amount, currencyCode: "USD", source: .scryfall,
+                            sourceVariantID: listing, sourceUpdatedAt: nil, fetchedAt: retrievedAt
+                        ),
+                        printingID: summary.id, setID: summary.setID.id, variant: variant
+                    )
                 }
             }
             return summary
@@ -1943,8 +1975,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 items: items,
                 nextCursor: page.hasMore ? page.nextPage?.absoluteString : nil
             ),
-            prices: prices,
-            historyQuotes: historyQuotes
+            prices: prices
         )
     }
 
@@ -1987,16 +2018,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let built = try PokemonMasterSetChecklistBuilder.build(
             providerSet: provider,
             baseSet: set,
-            cardDetails: details
+            cardDetails: details.cards
         )
         var displayedCards: [CatalogCardSummary] = []
         for value in built {
             let summaries = Self.applyingSignedCardArtwork(value.cards, set: value.set)
             for summary in summaries {
-                guard let card = details[summary.providerID] else { continue }
+                guard let card = details.cards[summary.providerID],
+                      let retrievedAt = details.retrievedAt[summary.providerID] else { continue }
                 detailCache[detailCacheKey(for: summary)] = CatalogCardDetails(
                     card: .pokemon(card, setCode: summary.setCode),
-                    set: value.set
+                    set: value.set,
+                    retrievedAt: retrievedAt
                 )
             }
             if value.set.id == set.id {
@@ -2008,7 +2041,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
     private func pokemonCardDetails(
         for provider: TCGdexSetCatalog
-    ) async throws -> [String: TCGdexCard] {
+    ) async throws -> (cards: [String: TCGdexCard], retrievedAt: [String: Date]) {
         // A changed provider card list must never reuse details fetched for the
         // previous list. This also lets an active refresh replace a stale card
         // without requiring a new catalog instance.
@@ -2019,6 +2052,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
         var iterator = provider.cards.makeIterator()
         var details: [String: TCGdexCard] = [:]
+        var retrievedAt: [String: Date] = [:]
         try await withThrowingTaskGroup(of: (String, TCGdexCard).self) { group in
             for _ in 0..<min(8, provider.cards.count) {
                 guard let brief = iterator.next() else { break }
@@ -2026,6 +2060,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             }
             while let value = try await group.next() {
                 details[value.0] = value.1
+                retrievedAt[value.0] = .now
                 if let brief = iterator.next() {
                     group.addTask { (brief.id, try await self.pokemonTransport.fetchCard(id: brief.id)) }
                 }
@@ -2034,8 +2069,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         guard details.count == provider.cards.count else {
             throw PokemonChecklistError.incompleteProviderSet(provider.id)
         }
-        pokemonSetCardDetails[key] = details
-        return details
+        pokemonSetCardDetails[key] = (details, retrievedAt)
+        return (details, retrievedAt)
     }
 
     private func loadPokemonSnapshotIfNeeded() async {
@@ -2205,7 +2240,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     let providerSets = try PokemonMasterSetChecklistBuilder.build(
                         providerSet: provider,
                         baseSet: baseSet,
-                        cardDetails: details
+                        cardDetails: details.cards
                     )
                     guard !providerSets.isEmpty else {
                         unresolvedFailureIDs.remove(baseSet.providerID.lowercased())

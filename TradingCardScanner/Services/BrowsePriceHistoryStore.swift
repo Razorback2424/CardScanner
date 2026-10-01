@@ -18,6 +18,7 @@ enum BrowsePriceHistoryStoreError: Error, LocalizedError, Sendable {
 /// CloudKit, portfolio, or owned-card pricing dependencies.
 actor BrowsePriceHistoryStore {
     static let shared = BrowsePriceHistoryStore()
+    nonisolated static let didChange = Notification.Name("BrowsePriceHistoryStore.didChange")
 
     private static let retentionDays = 90
     private let root: URL
@@ -171,6 +172,9 @@ actor BrowsePriceHistoryStore {
         }
         file.lastAccessedAt = now()
         try write(file, to: fileURL(game: game, setID: cleanSetID))
+        NotificationCenter.default.post(
+            name: Self.didChange, object: self, userInfo: ["setID": cleanSetID]
+        )
     }
 
     private func loadFile(game: CardGame, setID: String) -> BrowsePriceHistorySetFile? {

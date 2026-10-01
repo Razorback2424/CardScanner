@@ -11,11 +11,14 @@ actor ScryfallDatasetStampCache: ScryfallDatasetStampProviding {
 
     private static let maxAge: TimeInterval = 24 * 60 * 60
     private let url: URL
+    private let session: URLSession
     private var loaded = false
     private var fetchedAt: Date?
     private var updatedAt: Date?
+    private var inFlight: Task<Date?, Never>?
 
-    init(root: URL? = nil) {
+    init(root: URL? = nil, session: URLSession = .shared) {
+        self.session = session
         let directory = root ?? FileManager.default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first!
@@ -31,6 +34,15 @@ actor ScryfallDatasetStampCache: ScryfallDatasetStampProviding {
             return updatedAt
         }
 
+        if let inFlight { return await inFlight.value }
+        let task = Task { await fetchDatasetUpdatedAt() }
+        inFlight = task
+        let result = await task.value
+        inFlight = nil
+        return result
+    }
+
+    private func fetchDatasetUpdatedAt() async -> Date? {
         guard let requestURL = URL(string: "https://api.scryfall.com/bulk-data") else {
             return updatedAt
         }
@@ -39,7 +51,7 @@ actor ScryfallDatasetStampCache: ScryfallDatasetStampProviding {
         request.setValue("TradingCardScanner/0.1 (iOS)", forHTTPHeaderField: "User-Agent")
 
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse,
                   (200..<300).contains(http.statusCode) else {
                 return updatedAt

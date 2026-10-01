@@ -1765,6 +1765,7 @@ private struct CatalogSetCardsView: View {
     @State private var visibleGroups: [CatalogCardDisplayGroup] = []
     @State private var priceLoadTask: Task<Void, Never>?
     @State private var reloadAfterCurrentLoad = false
+    @State private var loadedPageCount = 0
     @State private var priceReloadAfterCurrentLoad = false
     @State private var queuedPricePriority: TaskPriority = .utility
 
@@ -2042,8 +2043,9 @@ private struct CatalogSetCardsView: View {
         .accessibilityElement(children: .contain)
     }
 
-    private func load(reset: Bool) async {
+    private func load(reset: Bool, preservingLoadedPages: Bool = false) async {
         guard !isLoading else { return }
+        let pagesToLoad = reset && preservingLoadedPages ? max(1, loadedPageCount) : 1
         let requestID = UUID()
         contentGeneration = requestID
         // A page load changes the card set even before its response arrives.
@@ -2064,7 +2066,7 @@ private struct CatalogSetCardsView: View {
                 isLoading = false
                 if reloadAfterCurrentLoad {
                     reloadAfterCurrentLoad = false
-                    Task { await load(reset: true) }
+                    Task { await requestReload() }
                 } else if priceReloadAfterCurrentLoad,
                           priceLoadState.requestID == nil,
                           sort.needsPrices,
@@ -2079,11 +2081,20 @@ private struct CatalogSetCardsView: View {
                 }
             }
         }
-        if reset { error = nil; cursor = nil }
+        if reset { error = nil }
         do {
-            let page = try await catalog.cards(in: set, cursor: reset ? nil : cursor)
+            var page = try await catalog.cards(in: set, cursor: reset ? nil : cursor)
+            var refreshedCards = page.items
+            var pagesLoaded = 1
+            while reset, pagesLoaded < pagesToLoad, let nextCursor = page.nextCursor {
+                guard contentGeneration == requestID, !Task.isCancelled else { return }
+                page = try await catalog.cards(in: set, cursor: nextCursor)
+                refreshedCards.append(contentsOf: page.items)
+                pagesLoaded += 1
+            }
             guard contentGeneration == requestID, !Task.isCancelled else { return }
-            cards = reset ? page.items : deduplicated(cards + page.items)
+            cards = deduplicated(reset ? refreshedCards : cards + refreshedCards)
+            loadedPageCount = reset ? pagesLoaded : loadedPageCount + pagesLoaded
             cursor = page.nextCursor
             if sort.needsPrices {
                 startPriceLoading(
@@ -2109,7 +2120,7 @@ private struct CatalogSetCardsView: View {
             reloadAfterCurrentLoad = true
             return
         }
-        await load(reset: true)
+        await load(reset: true, preservingLoadedPages: true)
     }
 
     private var shouldPrefetchPrices: Bool {
@@ -2651,6 +2662,10 @@ struct CatalogCachedImage: View {
                 Image(uiImage: localAssetImage)
                     .resizable()
                     .scaledToFit()
+            } else if let bundledLoadingImage {
+                Image(uiImage: bundledLoadingImage)
+                    .resizable()
+                    .scaledToFit()
             } else {
                 placeholder
             }
@@ -2729,6 +2744,15 @@ struct CatalogCachedImage: View {
     private var localAssetImage: UIImage? {
         guard case let .bundled(name) = activeCandidate else { return nil }
         return UIImage(named: name)
+    }
+
+    private var bundledLoadingImage: UIImage? {
+        guard remoteURL != nil, !loader.failed else { return nil }
+        for candidate in resolvedCandidates {
+            if case let .bundled(name) = candidate,
+               let image = UIImage(named: name) { return image }
+        }
+        return nil
     }
 
     private static func legacyCandidates(

@@ -655,6 +655,13 @@ enum CatalogSearchResultRanking {
 struct CatalogCardDetails: Sendable {
     let card: IdentifiedCard
     let set: CatalogSet
+    let retrievedAt: Date
+
+    init(card: IdentifiedCard, set: CatalogSet, retrievedAt: Date = .now) {
+        self.card = card
+        self.set = set
+        self.retrievedAt = retrievedAt
+    }
 }
 
 struct CatalogPage<Element: Sendable>: Sendable {

@@ -5,6 +5,277 @@ import XCTest
 import PokemonCatalogCore
 @testable import TradingCardScanner
 
+final class BrowseLoadingRefinementTests: XCTestCase {
+    private func session() -> URLSession {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [BrowseRefinementURLProtocol.self]
+        return URLSession(configuration: configuration)
+    }
+
+    private func set() -> CatalogSet {
+        CatalogSet(
+            catalogID: CatalogSetID(game: .magic, providerID: "ecl"),
+            name: "Eclipse", code: "ECL", logoURL: nil, symbolURL: nil,
+            cardCount: 1, releaseDate: nil, sortRank: 0
+        )
+    }
+
+    private var pageJSON: Data {
+        Data(#"""
+        {"has_more":false,"data":[{
+          "id":"3f0a1f52-0000-4000-8000-000000000001","name":"Llanowar Elves",
+          "set":"ecl","set_name":"Eclipse","collector_number":"218",
+          "lang":"en","digital":false,"frame":"2015","released_at":"2026-02-06",
+          "finishes":["nonfoil","foil"],"prices":{"usd":"1.25","usd_foil":"6.40"}
+        }]}
+        """#.utf8)
+    }
+
+    func testMagicCardsAndSortDoNotWaitForHistoryMetadata() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let response = pageJSON
+        BrowseRefinementURLProtocol.setHandler { $0.respond(response) }
+        let cache = CatalogCacheStore(root: root.appendingPathComponent("cache"))
+        let history = BrowsePriceHistoryStore(root: root.appendingPathComponent("history"))
+        let set = set()
+        await cache.storeSets([set], for: .magic)
+        let metadataStarted = expectation(description: "Metadata starts")
+        let stamp = BlockingBrowseDatasetStamp(started: metadataStarted)
+        defer { Task { await stamp.release() } }
+        let catalog = BrowseCatalog(
+            cache: cache, browsePriceHistoryStore: history,
+            scryfallDatasetStamp: stamp, magicSession: session
+        )
+        let historySaved = expectation(
+            forNotification: BrowsePriceHistoryStore.didChange, object: history
+        )
+        let cardsFinished = expectation(description: "Cards delivered while metadata waits")
+        let deliveryCount = BrowseRefinementRequestCount()
+        let pageTask = Task {
+            let page = try await catalog.cards(in: set, cursor: nil)
+            deliveryCount.increment()
+            cardsFinished.fulfill()
+            return page
+        }
+        await fulfillment(of: [cardsFinished, metadataStarted], timeout: 2)
+        // If delivery regresses, release the gate before awaiting the task so
+        // this test reports a timeout rather than leaving a hung test process.
+        if deliveryCount.value == 0 { await stamp.release() }
+        let page = try await pageTask.value
+        XCTAssertEqual(page.items.count, 1)
+        let summary = try XCTUnwrap(page.items.first)
+        let firstDetails = try await catalog.details(for: summary)
+        await catalog.resetPriceResolution(for: [summary.id])
+        let sortFinished = expectation(description: "Sort delivered while metadata waits")
+        let sortTask = Task {
+            var prices: [String: Double] = [:]
+            for await update in catalog.sortPriceUpdates(for: page.items) { prices.merge(update.prices) { _, new in new } }
+            sortFinished.fulfill()
+            return prices
+        }
+        await fulfillment(of: [sortFinished], timeout: 2)
+        await stamp.release()
+        let sortedPrices = await sortTask.value
+        XCTAssertEqual(sortedPrices[summary.id], 6.40)
+        await fulfillment(of: [historySaved], timeout: 2)
+        let secondDetails = try await catalog.details(for: summary)
+        XCTAssertEqual(firstDetails.retrievedAt, secondDetails.retrievedAt)
+        let series = await history.series(game: .magic, setID: set.id, printingID: summary.id)
+        XCTAssertFalse(series.isEmpty)
+    }
+
+    func testExpiredMagicPageReturnsImmediatelyAndCoalescesRevalidation() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = CatalogCacheStore(root: root)
+        let set = set()
+        await cache.storeSets([set], for: .magic)
+        let cached = CatalogCardSummary(
+            game: .magic, providerID: "cached-card", setID: set.catalogID,
+            setName: set.name, setCode: set.code, name: "Cached Card",
+            collectorNumber: "1", thumbnailURL: nil, imageURL: nil
+        )
+        let key = CatalogCacheStore.cardPageKey(for: set, cursor: nil)
+        await cache.storeCardPage(CatalogPage(items: [cached], nextCursor: nil), for: key)
+        for url in try FileManager.default.contentsOfDirectory(
+            at: root.appendingPathComponent("CardPages"), includingPropertiesForKeys: nil
+        ) {
+            var envelope = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any])
+            envelope["storedAt"] = Date.now.addingTimeInterval(-90_000).timeIntervalSinceReferenceDate
+            try JSONSerialization.data(withJSONObject: envelope).write(to: url)
+        }
+        let session = session()
+        let gate = DispatchSemaphore(value: 0)
+        defer { gate.signal(); session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let requested = expectation(description: "One revalidation starts")
+        let count = BrowseRefinementRequestCount()
+        let response = pageJSON
+        BrowseRefinementURLProtocol.setHandler { loader in
+            count.increment()
+            requested.fulfill()
+            DispatchQueue.global().async {
+                gate.wait()
+                loader.respond(response)
+            }
+        }
+        let catalog = BrowseCatalog(
+            cache: cache,
+            browsePriceHistoryStore: BrowsePriceHistoryStore(root: root.appendingPathComponent("history")),
+            scryfallDatasetStamp: FixedBrowseDatasetStamp(), magicSession: session
+        )
+        let updates = await catalog.catalogUpdates()
+        let refreshed = expectation(description: "Refreshed page published")
+        let updateTask = Task {
+            for await update in updates where update.providerSetID == set.providerID {
+                refreshed.fulfill()
+                return
+            }
+        }
+        defer { updateTask.cancel() }
+        let delivered = expectation(description: "Cached page delivered while request waits")
+        let deliveryCount = BrowseRefinementRequestCount()
+        let cachedTask = Task {
+            let page = try await catalog.cards(in: set, cursor: nil)
+            deliveryCount.increment()
+            delivered.fulfill()
+            return page
+        }
+        await fulfillment(of: [delivered, requested], timeout: 2)
+        if deliveryCount.value == 0 { gate.signal() }
+        let page = try await cachedTask.value
+        XCTAssertEqual(page.items.first?.name, "Cached Card")
+        let second = try await catalog.cards(in: set, cursor: nil)
+        XCTAssertEqual(second.items.first?.name, "Cached Card")
+        XCTAssertEqual(count.value, 1)
+        gate.signal()
+        await fulfillment(of: [refreshed], timeout: 2)
+        let finalPage = try await catalog.cards(in: set, cursor: nil)
+        XCTAssertEqual(finalPage.items.first?.name, "Llanowar Elves")
+        XCTAssertEqual(count.value, 1)
+    }
+
+    func testDatasetStampCoalescesConcurrentRequests() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        let gate = DispatchSemaphore(value: 0)
+        defer { gate.signal(); session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let requested = expectation(description: "One stamp request starts")
+        let count = BrowseRefinementRequestCount()
+        BrowseRefinementURLProtocol.setHandler { loader in
+            count.increment()
+            requested.fulfill()
+            DispatchQueue.global().async {
+                gate.wait()
+                loader.respond(Data(#"{"data":[{"type":"default_cards","updated_at":"2026-09-01T00:00:00Z"}]}"#.utf8))
+            }
+        }
+        let cache = ScryfallDatasetStampCache(root: root, session: session)
+        let first = Task { await cache.datasetUpdatedAt() }
+        let second = Task { await cache.datasetUpdatedAt() }
+        await fulfillment(of: [requested], timeout: 2)
+        gate.signal()
+        let firstDate = await first.value
+        let secondDate = await second.value
+        XCTAssertNotNil(firstDate)
+        XCTAssertEqual(firstDate, secondDate)
+        XCTAssertEqual(count.value, 1)
+    }
+
+    func testNewerDatasetMetadataCannotDateAnOlderPricePayload() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let response = pageJSON
+        BrowseRefinementURLProtocol.setHandler { $0.respond(response) }
+        let cache = CatalogCacheStore(root: root.appendingPathComponent("cache"))
+        let history = BrowsePriceHistoryStore(root: root.appendingPathComponent("history"))
+        let set = set()
+        await cache.storeSets([set], for: .magic)
+        let catalog = BrowseCatalog(
+            cache: cache, browsePriceHistoryStore: history,
+            scryfallDatasetStamp: FixedBrowseDatasetStamp(date: .now.addingTimeInterval(60)),
+            magicSession: session
+        )
+        let page = try await catalog.cards(in: set, cursor: nil)
+        XCTAssertEqual(page.items.count, 1)
+        var skippedWrites = 0
+        for _ in 0..<200 {
+            skippedWrites = await history.diagnostics().skippedTimestampWrites
+            if skippedWrites == 2 { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        XCTAssertEqual(skippedWrites, 2)
+        let series = await history.series(game: .magic, setID: set.id)
+        XCTAssertTrue(series.isEmpty)
+    }
+}
+
+private actor BlockingBrowseDatasetStamp: ScryfallDatasetStampProviding {
+    private let started: XCTestExpectation
+    private var continuation: CheckedContinuation<Date?, Never>?
+    private var released = false
+
+    init(started: XCTestExpectation) { self.started = started }
+
+    func datasetUpdatedAt() async -> Date? {
+        if released { return Date(timeIntervalSince1970: 1_780_000_000) }
+        started.fulfill()
+        return await withCheckedContinuation { continuation = $0 }
+    }
+
+    func release() {
+        released = true
+        continuation?.resume(returning: Date(timeIntervalSince1970: 1_780_000_000))
+        continuation = nil
+    }
+}
+
+private struct FixedBrowseDatasetStamp: ScryfallDatasetStampProviding {
+    var date = Date(timeIntervalSince1970: 1_780_000_000)
+    func datasetUpdatedAt() async -> Date? { date }
+}
+
+private final class BrowseRefinementRequestCount: @unchecked Sendable {
+    private let lock = NSLock()
+    private var count = 0
+    func increment() { lock.lock(); defer { lock.unlock() }; count += 1 }
+    var value: Int { lock.lock(); defer { lock.unlock() }; return count }
+}
+
+private final class BrowseRefinementURLProtocol: URLProtocol, @unchecked Sendable {
+    private static let lock = NSLock()
+    private static var handler: ((BrowseRefinementURLProtocol) -> Void)?
+
+    static func setHandler(_ value: ((BrowseRefinementURLProtocol) -> Void)?) {
+        lock.lock(); defer { lock.unlock() }; handler = value
+    }
+
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+        Self.lock.lock()
+        let handler = Self.handler
+        Self.lock.unlock()
+        if let handler { handler(self) }
+        else { client?.urlProtocol(self, didFailWithError: URLError(.badServerResponse)) }
+    }
+    override func stopLoading() {}
+
+    func respond(_ data: Data) {
+        guard let url = request.url,
+              let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil,
+                                             headerFields: ["Content-Type": "application/json"]) else { return }
+        client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+        client?.urlProtocol(self, didLoad: data)
+        client?.urlProtocolDidFinishLoading(self)
+    }
+}
+
 private actor FixedArtworkResponseDataLoader {
     private let data: Data
     private let delayNanoseconds: UInt64
