@@ -300,7 +300,9 @@ final class PriceRefreshDataIndex {
         let portfolioDay: Date
     }
 
-    private let context: ModelContext
+    private var context: ModelContext
+    private let instrumentKeys: [String]?
+    private let refreshContextOnReload: Bool
     private(set) var recordsByKey: [String: [PriceRecord]]
     /// Refresh decisions only need the newest observation for each instrument.
     /// Keeping the full append-only history here made a multi-minute refresh
@@ -310,8 +312,13 @@ final class PriceRefreshDataIndex {
     private(set) var indexedPortfolioDays: Set<Date>
     private(set) var loadedSuccessfully: Bool
 
-    init(context: ModelContext) {
+    init(
+        context: ModelContext, instrumentKeys: [String]? = nil,
+        refreshContextOnReload: Bool = false
+    ) {
         self.context = context
+        self.instrumentKeys = instrumentKeys
+        self.refreshContextOnReload = refreshContextOnReload
         let signpostState = PerformanceSignpost.signposter.beginInterval("PriceRefreshDataIndex.init")
         defer { PerformanceSignpost.signposter.endInterval("PriceRefreshDataIndex.init", signpostState) }
         self.recordsByKey = [:]
@@ -326,16 +333,27 @@ final class PriceRefreshDataIndex {
     /// inserted or deleted before a failed save are not safe cache entries for
     /// the next provider response.
     func reload() {
+        if refreshContextOnReload {
+            context = ModelContext(context.container)
+            context.autosaveEnabled = false
+        }
         do {
-            let records = try context.fetch(FetchDescriptor<PriceRecord>())
-            let observations = try context.fetch(FetchDescriptor<PriceObservation>())
+            let keys = instrumentKeys ?? []
+            let records = try context.fetch(FetchDescriptor<PriceRecord>(
+                predicate: instrumentKeys == nil ? nil : #Predicate { keys.contains($0.key) }
+            ))
+            let observations = try context.fetch(FetchDescriptor<PriceObservation>(
+                predicate: instrumentKeys == nil ? nil : #Predicate { keys.contains($0.instrumentKey) }
+            ))
             let indexedDay = PortfolioCalendar.day(
                 containing: .now,
                 in: PortfolioCalendar.pinnedTimeZone() ?? .current
             )
             let checkDays = try context.fetch(
                 FetchDescriptor<PriceCheckDay>(
-                    predicate: #Predicate { $0.portfolioDay == indexedDay }
+                    predicate: instrumentKeys == nil
+                        ? #Predicate { $0.portfolioDay == indexedDay }
+                        : #Predicate { $0.portfolioDay == indexedDay && keys.contains($0.instrumentKey) }
                 )
             )
             self.recordsByKey = Dictionary(grouping: records, by: \.key)
@@ -606,10 +624,62 @@ enum PriceIdentityLineageMigration {
 struct PriceStore {
     let context: ModelContext
     let index: PriceRefreshDataIndex?
+    private let checkpoint: Checkpoint?
 
-    init(context: ModelContext, index: PriceRefreshDataIndex? = nil) {
+    /// Refresh stages value-only operations, then reevaluates them against
+    /// current rows in one fresh serialized transaction. Its read context is
+    /// never saved, including when a sibling changes a price during an await.
+    private final class Checkpoint {
+        var keys: Set<String> = []
+        var writes: [(PriceStore) throws -> Void] = []
+    }
+
+    private enum CheckpointError: Error { case writeFailed }
+
+    init(
+        context: ModelContext,
+        index: PriceRefreshDataIndex? = nil,
+        checkpointsInFreshContext: Bool = false
+    ) {
         self.context = context
         self.index = index
+        self.checkpoint = checkpointsInFreshContext ? Checkpoint() : nil
+    }
+
+    private func enqueue(
+        keys: [String],
+        _ write: @escaping (PriceStore) throws -> Void
+    ) -> Bool {
+        guard let checkpoint else { return false }
+        checkpoint.keys.formUnion(keys)
+        checkpoint.writes.append(write)
+        return true
+    }
+
+    func updateRecordMetadata(forKey key: String, _ update: @escaping (PriceRecord) -> Void) {
+        if enqueue(keys: [key], { $0.updateRecordMetadata(forKey: key, update) }) { return }
+        if let record = record(forKey: key) { update(record) }
+    }
+
+    func migratePriceSide(
+        from oldKey: String, to newKey: String, game: CardGame,
+        printingID: String, variantID: String?, treatmentIDs: [String]
+    ) throws {
+        if enqueue(keys: [oldKey, newKey], {
+            try $0.migratePriceSide(
+                from: oldKey, to: newKey, game: game, printingID: printingID,
+                variantID: variantID, treatmentIDs: treatmentIDs
+            )
+        }) { return }
+        try PriceIdentityLineageMigration.migratePriceSide(
+            from: oldKey, to: newKey, game: game, printingID: printingID,
+            variantID: variantID, treatmentIDs: treatmentIDs, in: context, index: index
+        )
+    }
+
+    func discardPendingWrites() {
+        checkpoint?.writes.removeAll()
+        checkpoint?.keys.removeAll()
     }
 
     func record(forKey key: String) -> PriceRecord? {
@@ -668,6 +738,11 @@ struct PriceStore {
     @discardableResult
     func reconcileDuplicateRecords() -> Int {
         let recordsByKey = Dictionary(grouping: allRecords(), by: \.key)
+        let duplicateKeys = recordsByKey.filter { $0.value.count > 1 }.map(\.key)
+        if !duplicateKeys.isEmpty,
+           enqueue(keys: duplicateKeys, { _ = $0.reconcileDuplicateRecords() }) {
+            return duplicateKeys.reduce(0) { $0 + (recordsByKey[$1]?.count ?? 1) - 1 }
+        }
         var removed = 0
         for records in recordsByKey.values where records.count > 1 {
             guard let authoritative = Self.authoritativeRecord(in: records) else { continue }
@@ -843,6 +918,34 @@ struct PriceStore {
             variantID: variantID,
             treatmentIDs: treatmentIDs
         )
+        if enqueue(keys: [key], { fresh in
+            // Quote provenance stays in fetchedAt. At a delayed checkpoint,
+            // compare clock skew against the actual write time, not an older
+            // retrieval time that would make a valid newer row look future-dated.
+            let writeDate: Date
+            if case .price = lookup { writeDate = .now }
+            else { writeDate = date }
+            let accepted = fresh.store(
+                lookup, game: game, printingID: printingID, variantID: variantID,
+                marketVariantID: marketVariantID, at: writeDate, treatmentIDs: treatmentIDs
+            )
+            guard !accepted else { return }
+            if case let .price(price) = lookup {
+                // Rejected provider amounts retain their failure diagnosis;
+                // an intervening invalidation intentionally rejects old data.
+                if price.unitMarketPriceUSD < 0 || Money(rounding: price.unitMarketPriceUSD) == nil { return }
+                if let invalidatedAt = fresh.record(forKey: key)?.invalidatedAt,
+                   invalidatedAt >= price.fetchedAt { return }
+                if let latest = fresh.index?.newestObservation(forInstrumentKey: key),
+                   latest.amount == nil, latest.receivedAt >= price.fetchedAt { return }
+            }
+            throw CheckpointError.writeFailed
+        }) {
+            if case let .price(price) = lookup {
+                return price.unitMarketPriceUSD >= 0 && Money(rounding: price.unitMarketPriceUSD) != nil
+            }
+            return true
+        }
         guard let record = recordForWrite(
             key: key,
             game: game,
@@ -856,11 +959,19 @@ struct PriceStore {
         if case let .price(price) = lookup {
             // A delayed catalog/provider result cannot replace newer mutable
             // state or leave a false observation/coverage stamp behind.
-            if !record.isInvalidated, record.isStale(price, now: date) { return true }
+            // A shared daily TCGCSV quote may predate a later catalog miss.
+            // That miss supplies no value to supersede: allow the cached quote
+            // to fill the gap, retaining its original retrieval/coverage date.
+            // Existing amounts and explicit invalidations keep their guards.
+            let fillsCachedTCGCSVGap = price.source == .tcgCSV
+                && record.unitMarketPriceUSD == nil
+            if !record.isInvalidated, !fillsCachedTCGCSVGap,
+               record.isStale(price, now: date) { return true }
             coverageDate = price.fetchedAt
             isClockRollbackRepair = !record.isInvalidated
                 && record.fetchedAt.map { $0 > date.addingTimeInterval(5 * 60) } == true
         } else {
+            if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
             coverageDate = date
             isClockRollbackRepair = false
         }
@@ -987,6 +1098,12 @@ struct PriceStore {
             variantID: variantID,
             treatmentIDs: treatmentIDs
         )
+        if enqueue(keys: [key], {
+            guard $0.recordFailure(
+                game: game, printingID: printingID, variantID: variantID,
+                at: date, treatmentIDs: treatmentIDs
+            ) else { throw CheckpointError.writeFailed }
+        }) { return true }
         guard let record = recordForWrite(
             key: key,
             game: game,
@@ -994,6 +1111,7 @@ struct PriceStore {
             variantID: variantID,
             treatmentIDs: treatmentIDs
         ) else { return false }
+        if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
         record.recordFailure(at: date)
         // A target can become supported after a catalog/schema/provider update.
         // Once that target is actually attempted, the old capability stamp must
@@ -1024,6 +1142,12 @@ struct PriceStore {
             variantID: variantID,
             treatmentIDs: treatmentIDs
         )
+        if enqueue(keys: [key], {
+            guard $0.recordUnsupportedProvider(
+                game: game, printingID: printingID, variantID: variantID,
+                at: date, treatmentIDs: treatmentIDs
+            ) else { throw CheckpointError.writeFailed }
+        }) { return true }
         guard let record = recordForWrite(
             key: key,
             game: game,
@@ -1031,6 +1155,7 @@ struct PriceStore {
             variantID: variantID,
             treatmentIDs: treatmentIDs
         ) else { return false }
+        if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
         record.lastCheckedAt = date
         record.lastFailureReasonRaw = PricingDiagnosticReason.noSupportedProvider.rawValue
         record.lastFailureAt = nil
@@ -1055,6 +1180,12 @@ struct PriceStore {
             variantID: variantID,
             treatmentIDs: treatmentIDs
         )
+        if enqueue(keys: [key], {
+            guard $0.recordGradedMarketCoverage(
+                coverage, game: game, printingID: printingID, variantID: variantID,
+                at: date, treatmentIDs: treatmentIDs
+            ) else { throw CheckpointError.writeFailed }
+        }) { return true }
         guard let record = recordForWrite(
             key: key,
             game: game,
@@ -1062,6 +1193,7 @@ struct PriceStore {
             variantID: variantID,
             treatmentIDs: treatmentIDs
         ) else { return false }
+        if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
         guard record.effectiveUnitMarketPriceUSD == nil else {
             record.gradedMarketCoverageJSON = nil
             if let reason = record.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
@@ -1085,6 +1217,42 @@ struct PriceStore {
     /// context as an additional isolation boundary.
     @discardableResult
     func save() -> Bool {
+        if let checkpoint {
+            guard !checkpoint.writes.isEmpty else { return true }
+            defer { discardPendingWrites() }
+            do {
+                try CollectionWriteSerializer.perform(
+                    container: context.container,
+                    timeout: Thread.isMainThread ? .mainThread : .wait
+                ) { freshContext in
+                    let freshIndex = PriceRefreshDataIndex(
+                        context: freshContext, instrumentKeys: Array(checkpoint.keys)
+                    )
+                    guard freshIndex.isUsable else { throw CheckpointError.writeFailed }
+                    let fresh = PriceStore(context: freshContext, index: freshIndex)
+                    for write in checkpoint.writes { try write(fresh) }
+                    try freshContext.save()
+                    // Keep the planning/display cache current without retaining
+                    // checkpoint contexts or saving these read-side copies.
+                    for key in checkpoint.keys {
+                        guard let index else { continue }
+                        guard let source = fresh.record(forKey: key) else {
+                            index.setRecords([], forKey: key)
+                            continue
+                        }
+                        let copy = PriceRecord(
+                            key: key, game: CardGame(rawValue: source.game) ?? .pokemon,
+                            printingID: source.printingID, variantID: source.variantID
+                        )
+                        Self.copyReadState(from: source, to: copy)
+                        index.setRecords([copy], forKey: key)
+                    }
+                }
+                return true
+            } catch {
+                return false
+            }
+        }
         guard context.hasChanges else { return true }
         let saveState = PerformanceSignpost.beginInterval(
             "PriceStore.save",
@@ -1108,5 +1276,35 @@ struct PriceStore {
             index?.reload()
             return false
         }
+    }
+
+    private static func copyReadState(from source: PriceRecord, to copy: PriceRecord) {
+        copy.game = source.game
+        copy.printingID = source.printingID
+        copy.variantID = source.variantID
+        copy.magicTreatmentIDsRaw = source.magicTreatmentIDsRaw
+        copy.unitMarketPriceUSD = source.unitMarketPriceUSD
+        copy.currencyCode = source.currencyCode
+        copy.sourceRaw = source.sourceRaw
+        copy.sourceVariantID = source.sourceVariantID
+        copy.sourceUpdatedAt = source.sourceUpdatedAt
+        copy.fetchedAt = source.fetchedAt
+        copy.justTCGFetchedAt = source.justTCGFetchedAt
+        copy.lastCheckedAt = source.lastCheckedAt
+        copy.lastSuccessfulCheckAt = source.lastSuccessfulCheckAt
+        copy.lastFailureAt = source.lastFailureAt
+        copy.lastFailureReasonRaw = source.lastFailureReasonRaw
+        copy.invalidatedAt = source.invalidatedAt
+        copy.gradedMarketCoverageJSON = source.gradedMarketCoverageJSON
+        copy.itemKindRaw = source.itemKindRaw
+        copy.canonicalMarketID = source.canonicalMarketID
+        copy.marketVariantID = source.marketVariantID
+        copy.marketRegionRaw = source.marketRegionRaw
+        copy.providerGameUpdatedAt = source.providerGameUpdatedAt
+        copy.historyObservationCount = source.historyObservationCount
+        copy.periodChangeCount = source.periodChangeCount
+        copy.periodLow = source.periodLow
+        copy.periodHigh = source.periodHigh
+        copy.coefficientOfVariation = source.coefficientOfVariation
     }
 }

@@ -54,12 +54,22 @@ struct CatalogCardDetailView: View {
             Text(detail)
         }
         .task { if details == nil { await load() } }
+        .onReceive(NotificationCenter.default.publisher(
+            for: BrowsePriceHistoryStore.didChange, object: browsePriceHistoryStore
+        ).receive(on: RunLoop.main)) { notification in
+            guard notification.userInfo?["setID"] as? String == summary.setID.id else { return }
+            Task { @MainActor in
+                browseHistorySeries = await browsePriceHistoryStore.series(
+                    game: summary.game, setID: summary.setID.id, printingID: summary.id
+                )
+            }
+        }
         .sheet(isPresented: $showsGradedPicker) {
             if let details {
                 GradedVariantPickerView(
                     card: details.card,
                     setReleaseOrder: details.set.releaseOrder,
-                    pokemonPrintRun: details.set.pokemonPrintRun,
+                    pokemonPrintRun: summary.pokemonPrintRun,
                     transport: marketTransport
                 )
             }
@@ -306,12 +316,14 @@ struct CatalogCardDetailView: View {
         // false. Isolate that write so its rollback cannot discard unrelated
         // edits in the view's shared context.
         let priceContext = ModelContext(modelContext.container)
-        let prices = PriceStore(context: priceContext)
+        priceContext.autosaveEnabled = false
+        let prices = PriceStore(context: priceContext, checkpointsInFreshContext: true)
         let catalogLookup = CardPricing.price(
             for: details.card,
             variant: resolved.variant,
             magicTreatments: details.card.magicTreatments(for: resolved.variant),
-            pokemonPrintRun: summary.pokemonPrintRun
+            pokemonPrintRun: summary.pokemonPrintRun,
+            at: details.retrievedAt
         )
         let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(
             from: details.card.magicTreatments(for: resolved.variant)
@@ -321,6 +333,7 @@ struct CatalogCardDetailView: View {
                 game: details.card.game,
                 printingID: storageID,
                 variantID: resolved.variant?.id,
+                at: details.retrievedAt,
                 treatmentIDs: treatmentIDs
             )
         let priceSaved: Bool
@@ -379,7 +392,9 @@ struct CatalogCardDetailView: View {
         guard fallbackQuoteTasks[key] == nil else { return }
 
         let fallbackContext = ModelContext(prices.context.container)
-        let fallbackPrices = PriceStore(context: fallbackContext)
+        let priceReadContext = ModelContext(prices.context.container)
+        priceReadContext.autosaveEnabled = false
+        let fallbackPrices = PriceStore(context: priceReadContext, checkpointsInFreshContext: true)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         fallbackQuoteTasks[key] = Task { @MainActor in
             defer { fallbackQuoteTasks[key] = nil }

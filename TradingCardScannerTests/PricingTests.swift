@@ -4,6 +4,130 @@ import SwiftData
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testCachedBrowseDetailsCannotRestampAnOldPriceOverANewerQuote() throws {
+        let (container, context) = try makePriceContext()
+        defer { withExtendedLifetime(container) {} }
+        let retrievedAt = Date.now.addingTimeInterval(-7_200)
+        let card = try magicCard()
+        let details = CatalogCardDetails(
+            card: card,
+            set: CatalogSet(
+                catalogID: CatalogSetID(game: .magic, providerID: "ecl"),
+                name: "Eclipse", code: "ECL", logoURL: nil, symbolURL: nil,
+                cardCount: 1, releaseDate: nil, sortRank: 0
+            ),
+            retrievedAt: retrievedAt
+        )
+        let printingID = "cached-browse"
+        let newerAt = Date.now.addingTimeInterval(-60)
+        let initial = PriceStore(context: context)
+        XCTAssertTrue(initial.store(.price(NormalizedPrice(
+            unitMarketPriceUSD: 20, currencyCode: "USD", source: .scryfall,
+            sourceVariantID: "usd_foil", sourceUpdatedAt: nil, fetchedAt: newerAt
+        )), game: .magic, printingID: printingID, variantID: "foil", at: newerAt))
+        XCTAssertTrue(initial.save())
+
+        let readContext = ModelContext(container)
+        readContext.autosaveEnabled = false
+        let addPriceStore = PriceStore(context: readContext, checkpointsInFreshContext: true)
+        let cachedLookup = CardPricing.price(
+            for: details.card, variant: .foil, magicTreatments: [], at: details.retrievedAt
+        )
+        XCTAssertTrue(addPriceStore.store(cachedLookup, game: .magic, printingID: printingID,
+                                          variantID: "foil", at: details.retrievedAt))
+        XCTAssertTrue(addPriceStore.save())
+        let verification = ModelContext(container)
+        let record = try XCTUnwrap(PriceStore(context: verification).record(
+            forKey: "magic:cached-browse:foil"
+        ))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 20)
+        XCTAssertEqual(record.fetchedAt, newerAt)
+        XCTAssertEqual(try verification.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+    }
+
+    @MainActor
+    func testRefreshCheckpointRechecksSiblingWritesBeforeSaving() throws {
+        for outcome in 0..<3 {
+            let (container, seedContext) = try makePriceContext()
+            let key = "magic:checkpoint:normal"
+            let initialAt = Date.now.addingTimeInterval(-120)
+            func quote(_ amount: Double, at date: Date) -> PriceLookup {
+                .price(NormalizedPrice(
+                    unitMarketPriceUSD: amount, currencyCode: "USD", source: .scryfall,
+                    sourceVariantID: "usd", sourceUpdatedAt: nil, fetchedAt: date
+                ))
+            }
+            let seed = PriceStore(context: seedContext)
+            XCTAssertTrue(seed.store(quote(100, at: initialAt), game: .magic,
+                                     printingID: "checkpoint", variantID: "normal", at: initialAt))
+            XCTAssertTrue(seed.save())
+
+            let readContext = ModelContext(container)
+            readContext.autosaveEnabled = false
+            let refresh = PriceStore(
+                context: readContext, index: PriceRefreshDataIndex(context: readContext),
+                checkpointsInFreshContext: true
+            )
+            XCTAssertEqual(refresh.record(forKey: key)?.effectiveUnitMarketPriceUSD, 100)
+            let oldResponseAt = initialAt.addingTimeInterval(30)
+            switch outcome {
+            case 0:
+                XCTAssertTrue(refresh.store(quote(150, at: oldResponseAt), game: .magic,
+                                            printingID: "checkpoint", variantID: "normal", at: oldResponseAt))
+            case 1:
+                XCTAssertTrue(refresh.store(.unavailable(.scryfall), game: .magic,
+                                            printingID: "checkpoint", variantID: "normal", at: oldResponseAt))
+            default:
+                XCTAssertTrue(refresh.recordFailure(game: .magic, printingID: "checkpoint",
+                                                    variantID: "normal", at: oldResponseAt))
+            }
+            let sibling = PriceStore(context: ModelContext(container))
+            let newerAt = initialAt.addingTimeInterval(60)
+            XCTAssertTrue(sibling.store(quote(200, at: newerAt), game: .magic,
+                                       printingID: "checkpoint", variantID: "normal", at: newerAt))
+            XCTAssertTrue(sibling.save())
+            XCTAssertTrue(refresh.save())
+            let verification = ModelContext(container)
+            let persisted = try XCTUnwrap(PriceStore(context: verification).record(forKey: key))
+            XCTAssertEqual(persisted.effectiveUnitMarketPriceUSD, 200)
+            XCTAssertEqual(persisted.fetchedAt, newerAt)
+            XCTAssertEqual(refresh.record(forKey: key)?.effectiveUnitMarketPriceUSD, 200)
+            XCTAssertEqual(try verification.fetch(FetchDescriptor<PriceObservation>()).count, 2)
+        }
+    }
+
+    @MainActor
+    func testRefreshCheckpointCannotReviveSiblingInvalidation() throws {
+        let (container, context) = try makePriceContext()
+        let key = "magic:invalidated-checkpoint:normal"
+        let quoteAt = Date.now.addingTimeInterval(-60)
+        let initial = PriceStore(context: context)
+        XCTAssertTrue(initial.store(.price(NormalizedPrice(
+            unitMarketPriceUSD: 50, currencyCode: "USD", source: .scryfall,
+            sourceVariantID: "usd", sourceUpdatedAt: nil, fetchedAt: quoteAt.addingTimeInterval(-30)
+        )), game: .magic, printingID: "invalidated-checkpoint", variantID: "normal"))
+        XCTAssertTrue(initial.save())
+        let readContext = ModelContext(container)
+        readContext.autosaveEnabled = false
+        let refresh = PriceStore(
+            context: readContext, index: PriceRefreshDataIndex(context: readContext),
+            checkpointsInFreshContext: true
+        )
+        XCTAssertTrue(refresh.store(.price(NormalizedPrice(
+            unitMarketPriceUSD: 100, currencyCode: "USD", source: .scryfall,
+            sourceVariantID: "usd", sourceUpdatedAt: nil, fetchedAt: quoteAt
+        )), game: .magic, printingID: "invalidated-checkpoint", variantID: "normal", at: quoteAt))
+        XCTAssertNotNil(PriceObservationLog(context: context).recordInvalidation(
+            instrumentKey: key, source: .scryfall, at: quoteAt.addingTimeInterval(30)
+        ))
+        try context.save()
+        XCTAssertTrue(refresh.save())
+        let verification = ModelContext(container)
+        XCTAssertNil(PriceStore(context: verification).record(forKey: key)?.effectiveUnitMarketPriceUSD)
+        XCTAssertEqual(try verification.fetch(FetchDescriptor<PriceObservation>()).count, 2)
+    }
+
+    @MainActor
     private func makePriceContext() throws -> (ModelContainer, ModelContext) {
         let container = try ModelContainer(
             for: CollectionStorageModelSchema.full,
@@ -22,6 +146,29 @@ final class PricingTests: XCTestCase {
         )
         XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: nil, currencyCode: "USD"))
         XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: .nan, currencyCode: "USD"))
+    }
+
+    @MainActor
+    func testRejectedPreInvalidationQuoteDoesNotCreateCoverage() throws {
+        let (container, context) = try makePriceContext()
+        defer { withExtendedLifetime(container) {} }
+        let key = "magic:coverage-invalidated:normal"
+        let olderAt = Date.now.addingTimeInterval(-120)
+        let price = NormalizedPrice(
+            unitMarketPriceUSD: 100, currencyCode: "USD", source: .scryfall,
+            sourceVariantID: "usd", sourceUpdatedAt: nil, fetchedAt: olderAt
+        )
+        let log = PriceObservationLog(context: context)
+        XCTAssertEqual(log.ingest(.price(price), instrumentKey: key, marketVariantID: nil,
+                                  recordsCoverage: false, at: olderAt), .append(.marketUpdate))
+        XCTAssertNotNil(log.recordInvalidation(instrumentKey: key, source: .scryfall,
+                                               at: olderAt.addingTimeInterval(60)))
+        try context.save()
+        XCTAssertEqual(log.ingest(.price(price), instrumentKey: key, marketVariantID: nil,
+                                  at: olderAt), .ignoredAfterInvalidation)
+        try context.save()
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceCheckDay>()).isEmpty)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).count, 2)
     }
 
     func testLegacyCardmarketObservationRemainsVisibleInItsNativeCurrency() {

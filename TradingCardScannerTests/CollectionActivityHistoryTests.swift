@@ -11,6 +11,37 @@ final class CollectionActivityHistoryTests: XCTestCase {
         super.tearDown()
     }
 
+    func testFilteredHistoryFindsEntriesBeyondTheUnfilteredPage() throws {
+        let context = try makeContext()
+        let card = makeCollectedCard()
+        let start = Date(timeIntervalSince1970: 1_800_000_000)
+        for index in 0..<305 {
+            context.insert(CollectionActivity(
+                card: card, source: .scan,
+                occurredAt: start.addingTimeInterval(Double(index + 1)), kind: .added
+            ))
+        }
+        for index in 0..<3 {
+            context.insert(CollectionActivity(
+                card: card, source: .scan,
+                occurredAt: start.addingTimeInterval(Double(-index)), kind: .removed
+            ))
+        }
+        try context.save()
+        let filtered = try context.fetch(
+            CollectionActivityLogView.activityDescriptor(kind: .removed, limit: 2)
+        )
+        XCTAssertEqual(filtered.count, 2)
+        XCTAssertTrue(filtered.allSatisfy { $0.kind == .removed })
+        XCTAssertEqual(filtered.first?.occurredAt, start)
+        XCTAssertEqual(try context.fetch(
+            CollectionActivityLogView.activityDescriptor(kind: .removed, limit: 4)
+        ).count, 3)
+        XCTAssertEqual(try context.fetch(
+            CollectionActivityLogView.activityDescriptor(kind: nil, limit: 300)
+        ).count, 300)
+    }
+
     func testAddRemoveRestoreKeepsCollectionLedgerAndHistoryInAgreement() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
@@ -463,7 +494,8 @@ final class CollectionActivityHistoryTests: XCTestCase {
     func testAutomaticCatalogFinishNeedsMatchingSightingsAcrossRefreshesAndTime() throws {
         let context = try makeContext()
         let store = CollectionStore(context: context)
-        let card = celebrationCard(variant: .normal)
+        // Use an ordinary provider change, not a reviewed immediate-repair ID.
+        let card = celebrationCard(variant: .normal, id: "finish-confirmation-001")
         _ = try store.add(
             card,
             resolved: ResolvedVariant(variant: .normal, resolution: .uniqueInCatalog),
@@ -476,7 +508,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
             includeImported: true
         )
         let target = try XCTUnwrap(targets.first { $0.id == row.priceKey })
-        let freshCard = celebrationCard(variant: .holo)
+        let freshCard = celebrationCard(variant: .holo, id: "finish-confirmation-001")
         let firstRefresh = UUID()
         let firstSeenAt = Date(timeIntervalSince1970: 1_700_000_000)
 
@@ -1340,7 +1372,8 @@ final class CollectionActivityHistoryTests: XCTestCase {
 
     private func celebrationCard(
         variant: PhysicalVariant,
-        withPrice: Bool = false
+        withPrice: Bool = false,
+        id: String = "30th-053"
     ) -> IdentifiedCard {
         let pricing = withPrice
             ? TCGdexPricing(
@@ -1356,7 +1389,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
             )
             : nil
         let card = TCGdexCard(
-            id: "30th-053",
+            id: id,
             localId: "053",
             name: "Pikachu ex",
             image: "https://assets.tcgdex.net/en/30th/053",

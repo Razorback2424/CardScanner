@@ -256,7 +256,8 @@ struct PriceObservationLog {
             source = unavailableSource
         }
 
-        if recordsCoverage, decision != .ignoredOutOfOrder {
+        if recordsCoverage, decision != .ignoredOutOfOrder,
+           decision != .ignoredAfterInvalidation {
             recordSuccessfulCheck(instrumentKey: instrumentKey, source: source, at: date)
         }
         return decision

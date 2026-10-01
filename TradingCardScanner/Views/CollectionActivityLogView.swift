@@ -104,8 +104,7 @@ struct CollectionActivityLogView: View {
     }
 
     private var visibleActivities: [CollectionActivity] {
-        guard let selectedKind else { return activities }
-        return activities.filter { $0.kind == selectedKind }
+        activities
     }
 
     private var pendingRemoval: CollectionActivity? {
@@ -161,10 +160,7 @@ struct CollectionActivityLogView: View {
     }
 
     private func reloadSnapshot() {
-        var descriptor = FetchDescriptor<CollectionActivity>(
-            sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
-        )
-        descriptor.fetchLimit = activityLimit + 1
+        let descriptor = Self.activityDescriptor(kind: selectedKind, limit: activityLimit + 1)
         let fetchedActivities = (try? modelContext.fetch(descriptor)) ?? []
         hasMoreActivities = fetchedActivities.count > activityLimit
         activities = Array(fetchedActivities.prefix(activityLimit))
@@ -173,16 +169,34 @@ struct CollectionActivityLogView: View {
         index = makeIndex(cards: cards, inventoryEvents: inventoryEvents)
     }
 
+    static func activityDescriptor(
+        kind: CollectionActivityKind?, limit: Int
+    ) -> FetchDescriptor<CollectionActivity> {
+        let rawKind = kind?.rawValue
+        var descriptor = FetchDescriptor<CollectionActivity>(
+            predicate: rawKind.map { value in #Predicate { $0.kindRaw == value } },
+            sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = limit
+        return descriptor
+    }
+
+    private func selectKind(_ kind: CollectionActivityKind?) {
+        selectedKind = kind
+        activityLimit = Self.activityPageSize
+        reloadSnapshot()
+    }
+
     private var kindFilter: some View {
         Menu {
             Button {
-                selectedKind = nil
+                selectKind(nil)
             } label: {
                 filterLabel("All", selected: selectedKind == nil)
             }
             ForEach(CollectionActivityKind.allCases) { kind in
                 Button {
-                    selectedKind = kind
+                    selectKind(kind)
                 } label: {
                     filterLabel(kind.label, selected: selectedKind == kind)
                 }
@@ -660,7 +674,9 @@ struct CollectionActivityEditor: View {
 
         fallbackQuoteTask?.cancel()
         let fallbackContext = ModelContext(modelContext.container)
-        let fallbackPrices = PriceStore(context: fallbackContext)
+        let priceReadContext = ModelContext(modelContext.container)
+        priceReadContext.autosaveEnabled = false
+        let fallbackPrices = PriceStore(context: priceReadContext, checkpointsInFreshContext: true)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         fallbackQuoteTask = Task { @MainActor in
             switch await resolver.resolve(input) {

@@ -137,6 +137,64 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         XCTAssertEqual(price.source, .tcgplayer)
     }
 
+    @MainActor
+    func testCachedQuoteFillsLaterCatalogMissWithoutRestampingRetrievalOrHistory() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                                          configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let store = PriceStore(context: context)
+        let cached = try snapshot("30th-c")
+        let quote = try XCTUnwrap(cached.quote(cardID: "30th-c-014", variant: .holo, printRun: nil))
+        let missAt = cached.fetchedAt.addingTimeInterval(60)
+        XCTAssertTrue(store.store(.unavailable(.tcgplayer), game: .pokemon,
+                                  printingID: "30th-c-014", variantID: "holo", at: missAt))
+        XCTAssertTrue(store.save())
+        XCTAssertTrue(store.store(quote, game: .pokemon, printingID: "30th-c-014",
+                                  variantID: "holo", at: missAt.addingTimeInterval(1)))
+        XCTAssertTrue(store.save())
+        let record = try XCTUnwrap(store.record(forKey: "pokemon:30th-c-014:holo"))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, cached.valuesByCardID["30th-c-014"])
+        XCTAssertEqual(record.source, .tcgCSV)
+        XCTAssertEqual(record.fetchedAt, cached.fetchedAt)
+        XCTAssertNil(record.sourceUpdatedAt)
+        let observations = try context.fetch(FetchDescriptor<PriceObservation>())
+        XCTAssertEqual(observations.count, 1)
+        XCTAssertEqual(observations.first?.receivedAt, cached.fetchedAt)
+    }
+
+    @MainActor
+    func testCachedQuoteCannotReplaceNewerAmountOrReviveInvalidatedValue() throws {
+        for invalidate in [false, true] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                                              configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            let store = PriceStore(context: context)
+            let cached = try snapshot("30th-c")
+            let quote = try XCTUnwrap(cached.quote(cardID: "30th-c-014", variant: .holo, printRun: nil))
+            let newerAt = cached.fetchedAt.addingTimeInterval(60)
+            let key = PriceRecord.key(game: .pokemon, printingID: "30th-c-014", variantID: "holo")
+            XCTAssertTrue(store.store(.price(NormalizedPrice(
+                unitMarketPriceUSD: 123, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "holofoil", sourceUpdatedAt: nil, fetchedAt: newerAt
+            )), game: .pokemon, printingID: "30th-c-014", variantID: "holo", at: newerAt))
+            if invalidate {
+                XCTAssertNotNil(PriceObservationLog(context: context).recordInvalidation(
+                    instrumentKey: key, source: .tcgplayer, at: newerAt.addingTimeInterval(1)
+                ))
+            }
+            XCTAssertTrue(store.save())
+            let observationCount = try context.fetch(FetchDescriptor<PriceObservation>()).count
+            let accepted = store.store(quote, game: .pokemon, printingID: "30th-c-014",
+                                       variantID: "holo", at: newerAt.addingTimeInterval(2))
+            XCTAssertEqual(accepted, !invalidate)
+            let record = try XCTUnwrap(store.record(forKey: key))
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, invalidate ? nil : 123)
+            XCTAssertEqual(record.isInvalidated, invalidate)
+            XCTAssertEqual(record.fetchedAt, newerAt)
+            XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).count, observationCount)
+        }
+    }
+
     func testDailyCacheCoalescesCallersAndSurvivesServiceRecreation() async throws {
         let server = try server()
         TCGCSVTestURLProtocol.server = server
@@ -306,9 +364,15 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
                                 variant: .holo, variantResolution: .userConfirmed)
         context.insert(row)
         try context.save()
+        let cached = try snapshot("30th-c")
+        let prices = PriceStore(context: context)
+        XCTAssertTrue(prices.store(.unavailable(.tcgplayer), game: .pokemon,
+                                   printingID: row.priceStorageID, variantID: "holo",
+                                   at: cached.fetchedAt.addingTimeInterval(60)))
+        XCTAssertTrue(prices.save())
         let actor = PriceRefreshModelActor(modelContainer: container)
         await actor.setPokemonFetchOverrideForTesting { _ in throw URLError(.notConnectedToInternet) }
-        await actor.setTCGCSVSourceForTesting(RecordedTCGCSV(snapshot: try snapshot("30th-c")))
+        await actor.setTCGCSVSourceForTesting(RecordedTCGCSV(snapshot: cached))
         let result = await actor.run(PriceRefreshRequest(
             usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: false,
             sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false
@@ -318,6 +382,56 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         let record = PriceStore(context: ModelContext(container)).record(forKey: row.priceKey)
         XCTAssertEqual(record?.sourceRaw, PriceSource.tcgCSV.rawValue)
         XCTAssertNotNil(record?.effectiveUnitMarketPriceUSD)
+        XCTAssertEqual(record?.fetchedAt, cached.fetchedAt)
+    }
+
+    @MainActor
+    func testCollectionMissingPriceRecordsCooldownInSyntheticAndCatalogOutageLanes() async throws {
+        for hasPriorPrice in [false, true] {
+            let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                                              configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+            let context = container.mainContext
+            let row = CollectedCard(collectionKey: "30th-c-014#holo", game: .pokemon, providerID: "30th-c-014",
+                                    name: "Pikachu", setName: "30th Celebration Classic Collection", setCode: "30C",
+                                    cardNumber: "014", rarity: nil, imageURL: nil, thumbnailURL: nil,
+                                    variant: .holo, variantResolution: .userConfirmed)
+            context.insert(row)
+            let prices = PriceStore(context: context)
+            let previousAt = Date.now.addingTimeInterval(-PriceRefreshController.automaticRefreshInterval - 60)
+            if hasPriorPrice {
+                XCTAssertTrue(prices.store(.price(NormalizedPrice(
+                    unitMarketPriceUSD: 123, currencyCode: "USD", source: .tcgCSV,
+                    sourceVariantID: "holofoil", sourceUpdatedAt: nil, fetchedAt: previousAt
+                )), game: .pokemon, printingID: row.priceStorageID, variantID: "holo", at: previousAt))
+            }
+            try context.save()
+            let startedAt = Date.now
+            let missing = PokemonTCGCSVSnapshot(schemaVersion: 1, setID: "30th-c", feedBuild: "test",
+                                                fetchedAt: startedAt, validatedAt: startedAt, valuesByCardID: [:])
+            let actor = PriceRefreshModelActor(modelContainer: container)
+            await actor.setPokemonFetchOverrideForTesting { _ in throw URLError(.notConnectedToInternet) }
+            await actor.setTCGCSVSourceForTesting(RecordedTCGCSV(snapshot: missing))
+            let result = await actor.run(PriceRefreshRequest(
+                usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: false,
+                sortOldestFirst: true, maximumTargetCount: 3, markRecentlyCheckedIfEmpty: false
+            ), progress: { _ in }, shouldContinue: nil)
+            guard case let .completed(report) = result else { return XCTFail("Expected completed refresh") }
+            XCTAssertEqual(report.priced, 0)
+            XCTAssertFalse(report.persistenceFailed)
+            let readContext = ModelContext(container)
+            let record = try XCTUnwrap(PriceStore(context: readContext).record(forKey: row.priceKey))
+            XCTAssertEqual(record.source, .tcgCSV)
+            XCTAssertGreaterThanOrEqual(try XCTUnwrap(record.lastCheckedAt), startedAt)
+            XCTAssertEqual(record.effectiveUnitMarketPriceUSD, hasPriorPrice ? 123 : nil)
+            if hasPriorPrice { XCTAssertEqual(record.fetchedAt, previousAt) }
+            XCTAssertEqual(try readContext.fetch(FetchDescriptor<PriceObservation>()).count, hasPriorPrice ? 1 : 0)
+            let targets = try PriceRefreshTargets.make(context: readContext, usesPriceFallback: false, includeImported: true)
+            XCTAssertTrue(PriceRefreshController.staleTargets(from: targets, usesPriceFallback: false).isEmpty)
+            XCTAssertEqual(PriceRefreshController.staleTargets(
+                from: targets, now: startedAt.addingTimeInterval(PriceRefreshController.automaticRefreshInterval + 60),
+                usesPriceFallback: false
+            ).count, 1)
+        }
     }
 
     @MainActor

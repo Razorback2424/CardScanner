@@ -4918,7 +4918,9 @@ final class ScannerViewModel: ObservableObject {
         // context. The identity is a value snapshot, so no SwiftData model is
         // retained while the paced vendor request is in flight.
         let fallbackContext = ModelContext(modelContainer)
-        let fallbackPrices = PriceStore(context: fallbackContext)
+        let priceReadContext = ModelContext(modelContainer)
+        priceReadContext.autosaveEnabled = false
+        let fallbackPrices = PriceStore(context: priceReadContext, checkpointsInFreshContext: true)
         let resolver = PriceFallbackQuoteResolver(context: fallbackContext)
         let task = Task { @MainActor [weak self] in
             defer {

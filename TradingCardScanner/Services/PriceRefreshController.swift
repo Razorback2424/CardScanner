@@ -106,10 +106,12 @@ enum GradedVariantBinding {
             printingID: printingID,
             variantID: variantID,
             marketVariantID: variant.id,
+            at: fetchedAt,
             treatmentIDs: treatmentIDs
         )
-        if let record = store.record(forKey: priceKey) {
-            if wasAccepted, variant.marketPriceUSD != nil {
+        store.updateRecordMetadata(forKey: priceKey) { record in
+            guard record.fetchedAt.map({ $0 <= fetchedAt }) ?? true else { return }
+            if wasAccepted, variant.marketPriceUSD != nil, record.fetchedAt == fetchedAt {
                 record.justTCGFetchedAt = fetchedAt
             }
             record.marketVariantID = variant.id
@@ -364,12 +366,14 @@ actor PriceRefreshModelActor {
 
     private func makeStore() -> PriceStore {
         if let refreshStore { return refreshStore }
-        // Both whole-table indexes are deliberately born on this executor. The
-        // signposts exist to prove that the old main-actor materialisation has
-        // actually moved, not merely that the network awaits moved.
+        // This context only holds read-side copies. Price writes are replayed
+        // in fresh serialized checkpoints after the network returns.
+        let readContext = ModelContext(modelContext.container)
+        readContext.autosaveEnabled = false
         let store = PriceStore(
-            context: modelContext,
-            index: PriceRefreshDataIndex(context: modelContext)
+            context: readContext,
+            index: PriceRefreshDataIndex(context: readContext, refreshContextOnReload: true),
+            checkpointsInFreshContext: true
         )
         refreshStore = store
         return store
@@ -601,7 +605,7 @@ actor PriceRefreshModelActor {
                let bulkQuote = try? await marketPrices.fallback(
                    cardID: card.providerID, game: target.game, variant: variant,
                    printRun: target.pokemonPrintRun
-               ), case .price = bulkQuote { lookup = bulkQuote }
+               ) { lookup = bulkQuote }
             guard storageContinuation?() ?? true, !Task.isCancelled else { return }
             if PriceRefreshController.needsFallback(
                 lookup,
@@ -1248,9 +1252,8 @@ actor PriceRefreshModelActor {
     private func saveActiveContext() -> Bool {
         guard storageContinuation?() ?? true, !Task.isCancelled else { return false }
         guard let identities = identityStore, let store = refreshStore else { return false }
-        // Both wrappers point at this actor's one context. Keep the existing
-        // identity-then-price checkpoint order; changing it would widen the
-        // already-known non-atomic window between synced and local stores.
+        // Preserve identity-then-price checkpoint order. The price store
+        // reevaluates its pending writes in a separate fresh context.
         guard identities.save(index: identityIndex) else {
             refreshStore?.index?.reload()
             identityIndex?.reload()
@@ -1333,6 +1336,7 @@ actor PriceRefreshModelActor {
         // An already established mapped identity remains priceable during a
         // catalog outage, even with the paid vendor disabled or unconfigured.
         var csvPriced = 0
+        var csvWriteCount = 0
         var csvChanged = false
         var csvPersistenceFailed = false
         var deduplicatedCandidates: [PriceRefreshController.FallbackCandidate] = []
@@ -1345,7 +1349,7 @@ actor PriceRefreshModelActor {
                    cardID: candidate.card?.providerID ?? target.catalogPrintingID ?? target.printingID,
                    game: target.game, variant: target.variantID.map(PhysicalVariant.resolving),
                    printRun: target.pokemonPrintRun
-               ), case let .price(price) = quote {
+               ) {
                 guard storageContinuation?() ?? true, !Task.isCancelled else { break }
                 let previous = store.record(forKey: target.id)?.effectiveUnitMarketPriceUSD
                 if store.store(
@@ -1353,12 +1357,18 @@ actor PriceRefreshModelActor {
                     variantID: target.variantID, treatmentIDs: target.magicTreatmentIDsRaw
                 ) {
                     rememberPriceKey(target.id)
-                    csvPriced += 1
-                    csvChanged = csvChanged || previous != price.unitMarketPriceUSD
+                    csvWriteCount += 1
+                    if case let .price(price) = quote {
+                        csvPriced += 1
+                        csvChanged = csvChanged || previous != price.unitMarketPriceUSD
+                    }
                 } else { csvPersistenceFailed = true }
+                // A successful exact-source miss records the cooldown, but
+                // still permits the configured vendor to supply a USD quote.
+                if case .unavailable = quote { deduplicatedCandidates.append(candidate) }
             } else { deduplicatedCandidates.append(candidate) }
         }
-        if csvPriced > 0 {
+        if csvWriteCount > 0 {
             // The free lane has no paid-vendor identity store to checkpoint.
             let saved = store.save()
             csvPersistenceFailed = csvPersistenceFailed || !saved
@@ -1936,13 +1946,13 @@ actor PriceRefreshModelActor {
 
                 let owner = rowIdentity(for: target)
                 if owner != nil, target.marketVariantID == nil {
-                    // Move price-side lineage in the refresh actor's own
-                    // context before staging the vendor quote. The collection
-                    // row remains a guarded patch applied after this save.
+                    // Queue the lineage move before the vendor quote so both
+                    // use current rows in the fresh price checkpoint. The
+                    // collection row remains a guarded patch after that save.
                     let apiVersion = JustTCGV2GradedClient.apiVersion
                     let printingID = "justtcg:\(apiVersion):\(variant.id)"
                     do {
-                        try PriceIdentityLineageMigration.migratePriceSide(
+                        try store.migratePriceSide(
                             from: target.id,
                             to: PriceRecord.key(
                                 game: target.game,
@@ -1953,12 +1963,11 @@ actor PriceRefreshModelActor {
                             game: target.game,
                             printingID: printingID,
                             variantID: target.variantID,
-                            treatmentIDs: target.magicTreatmentIDsRaw,
-                            in: modelContext,
-                            index: store.index
+                            treatmentIDs: target.magicTreatmentIDsRaw
                         )
                     } catch {
                         modelContext.rollback()
+                        store.discardPendingWrites()
                         store.index?.reload()
                         identityIndex?.reload()
                         pendingRowPatches.removeAll()
@@ -3942,7 +3951,8 @@ final class PriceRefreshController: ObservableObject {
                 treatmentIDs: owner.magicTreatmentIDsRaw
             )
             allStored = allStored && stored
-            if let record = store.record(forKey: owner.priceKey) {
+            store.updateRecordMetadata(forKey: owner.priceKey) { record in
+                guard record.fetchedAt == fetchedAt else { return }
                 if stored { record.justTCGFetchedAt = fetchedAt }
                 record.marketVariantID = variant.variantId
                 record.canonicalMarketID = card.uuid ?? card.id
