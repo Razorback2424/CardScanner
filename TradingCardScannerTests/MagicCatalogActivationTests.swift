@@ -111,4 +111,57 @@ final class MagicCatalogActivationTests: XCTestCase {
         XCTAssertEqual(recoveredRevision, 3)
         XCTAssertEqual(recoveredRegistry.descriptor(forCode: "ABC")?.displayName, "Metadata Update")
     }
+
+    func testConcurrentActivationsKeepMemoryAndDiskOnTheNewestRevision() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let pinnedKey = MagicCatalogSignatureVerifier.PinnedKey(id: keyID, publicKey: key.publicKey)
+        let store = MagicCatalogReleaseStore(root: root)
+        let coordinator = MagicCatalogCoordinator(store: store, keys: [pinnedKey], rolloutMode: .remoteAuthority)
+        let releases = try (1...12).map { try envelope(revision: $0, name: "Revision \($0)") }
+        await withTaskGroup(of: Void.self) { group in
+            for release in releases.reversed() {
+                group.addTask { _ = await coordinator.activateEnvelope(release) }
+            }
+        }
+        let revision = await coordinator.revision
+        let registry = await coordinator.registry
+        XCTAssertEqual(revision, 12)
+        XCTAssertEqual(registry.descriptor(forCode: "ABC")?.displayName, "Revision 12")
+        let recovered = MagicCatalogCoordinator(
+            store: MagicCatalogReleaseStore(root: root), keys: [pinnedKey], rolloutMode: .remoteAuthority
+        )
+        await recovered.loadPersistedOrBundled()
+        let recoveredRevision = await recovered.revision
+        XCTAssertEqual(recoveredRevision, revision)
+    }
+
+    func testConcurrentActivationEventsCompareAgainstTheirPublishedPredecessor() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let pinnedKey = MagicCatalogSignatureVerifier.PinnedKey(id: keyID, publicKey: key.publicKey)
+        let coordinator = MagicCatalogCoordinator(
+            store: MagicCatalogReleaseStore(root: root), keys: [pinnedKey], rolloutMode: .remoteAuthority
+        )
+        await coordinator.loadPersistedOrBundled()
+        _ = await coordinator.activateEnvelope(try envelope(revision: 1, scanEnabled: false))
+        let releases = try (2...12).map { try envelope(revision: $0, scanEnabled: $0.isMultiple(of: 2)) }
+        let events = await withTaskGroup(of: MagicCatalogCoordinator.RefreshResult.self) { group in
+            for release in releases { group.addTask { await coordinator.activateEnvelope(release) } }
+            var events: [MagicCatalogCoordinator.ActivationEvent] = []
+            for await result in group {
+                if case let .activated(event) = result { events.append(event) }
+            }
+            return events.sorted { $0.revision < $1.revision }
+        }
+        XCTAssertFalse(events.isEmpty)
+        var previousRevision = 1
+        for event in events {
+            XCTAssertEqual(event.previousRevision, previousRevision)
+            XCTAssertEqual(event.scannerProjectionChanged,
+                           event.revision.isMultiple(of: 2) != previousRevision.isMultiple(of: 2))
+            previousRevision = event.revision
+        }
+        XCTAssertEqual(previousRevision, 12)
+    }
 }

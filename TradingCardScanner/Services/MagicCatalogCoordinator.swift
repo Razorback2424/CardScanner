@@ -71,11 +71,12 @@ actor MagicCatalogCoordinator {
             return
         }
         await store.load(keys: keys)
-        if let stored = await store.activeRegistry {
-            activeRegistry = stored
-            activeRevision = await store.activeRevision
+        if let stored = await store.activeRelease {
+            guard activeRevision.map({ stored.release.revision > $0 }) ?? true else { return }
+            activeRegistry = stored.registry
+            activeRevision = stored.release.revision
             Self.logger.info("Loaded persisted Magic catalog revision \(self.activeRevision ?? 0)")
-        } else {
+        } else if activeRevision == nil {
             activeRegistry = store.recoverFromBundledSeed()
             activeRevision = nil
             Self.logger.info("Using bundled Magic catalog seed")
@@ -141,6 +142,23 @@ actor MagicCatalogCoordinator {
         }
 
         let nextRegistry = MagicCatalogRegistry(release: verified)
+
+        let activation: MagicCatalogReleaseStore.ActivationResult
+        do {
+            activation = try await store.activate(
+                envelope: envelope,
+                release: verified,
+                registry: nextRegistry
+            )
+        } catch {
+            return .rejected(error)
+        }
+
+        guard case .activated = activation else { return .notModified }
+        guard activeRevision.map({ verified.revision > $0 }) ?? true else { return .notModified }
+
+        // Another activation may have completed while the store was awaited.
+        // Compare the projections that are actually being replaced now.
         let oldScanner = Dictionary(
             activeRegistry.scannerDefinitions.map { ($0.code.lowercased(), $0.printedSize) },
             uniquingKeysWith: { first, _ in first }
@@ -153,17 +171,6 @@ actor MagicCatalogCoordinator {
         let newBrowse = Set(nextRegistry.browseSets)
         let oldRouting = routingProjection(activeRegistry)
         let newRouting = routingProjection(nextRegistry)
-
-        do {
-            _ = try await store.activate(
-                envelope: envelope,
-                release: verified,
-                registry: nextRegistry
-            )
-        } catch {
-            return .rejected(error)
-        }
-
         let previousRevision = activeRevision
         activeRegistry = nextRegistry
         activeRevision = verified.revision
