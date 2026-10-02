@@ -1,3 +1,21 @@
+- Browse supplemental quote retention (2026-10-02; uncommitted working tree on
+  `fix/october-review-boundaries` at `55b2d40`): failed supplemental refresh now
+  preserves cached Pokémon prices and their provenance. The regression covers
+  fresh and expired details plus replacement by a successful missing quote.
+  Focused simulator pricing/Browse tests pass 30 cases, and the existing shared
+  detail waiter cancellation case passes separately. Build caches, results, and
+  command logs are on the external SSD; full-suite and device/provider gates
+  remain unchanged. See the [refinement implementation plan](docs/plans/october-refinement-implementation-plan.md).
+
+- October refinement review and plan (2026-10-02; `fix/october-review-boundaries`
+  at `55b2d40`): validated the ten supplied follow-up findings against current
+  source, tests, and configuration; documented minimal slices, regression cases,
+  centering test/confirmation-contract reconciliation, owner-controlled URL
+  dependency, and measurement-only targets. No application code changed and no
+  new build, test suite, simulator/device capture, provider, or Photos check ran.
+  Prior centering failures remain historical evidence, not a current rerun.
+  See the [refinement implementation plan](docs/plans/october-refinement-implementation-plan.md).
+
 - October review boundary fixes (2026-10-01–02; `fix/october-review-boundaries`,
   `cdd60e1` → `248a61d`): committed slices 1–10 separately. Checked grade
   conversion, export-container ownership, unrestricted Needs attention

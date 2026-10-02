@@ -23,6 +23,19 @@ Older “latest full run” statements below describe their dated snapshots and 
 not supersede the October execution record. Physical-device and release gates
 remain open.
 
+The [October refinement plan](october-refinement-implementation-plan.md) validates
+the supplied follow-up review against `55b2d40` and now records the authorized
+local implementation of slices A–I and C1, with final verification in progress.
+Subsystem acceptance contracts remain binding. Slice C resolves the source/test
+disagreement with the hybrid requirement: edits and warning refresh remain
+pending until explicit approval of valid outer and inner frames. Manual-recovery
+and invariant helpers invoke that action too; numerical tolerances and automatic
+detector gates stay unchanged. Slice K fixes the reproduced preview rotation
+mismatch and retains individual diagnostic/accuracy triage. The older passing
+confirmation selectors are historical. The owner supplied intended future
+`scan-stash.com/privacy` and `/support` pages, but confirmed they are placeholders;
+Release URL configuration remains open until approved live pages exist.
+
 ## Latest two-set pricing evidence — 2026-09-30
 
 The [pricing coverage plan](browse_pricing_coverage_plan.md) now records a
