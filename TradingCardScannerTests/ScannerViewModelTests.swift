@@ -2351,6 +2351,32 @@ final class ScannerViewModelTests: XCTestCase {
         try? FileManager.default.removeItem(at: directory)
     }
 
+    func testUnresolvedMergeAndReloadPreserveBacklogBeyondFifty() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let store = UnresolvedScanStore(fileURL: directory.appendingPathComponent("unresolved.json"))
+        let model = try makeModel(variants: [.normal], unresolvedScanStore: store)
+        await model.reloadUnresolvedScansForTesting()
+        for number in 1...55 {
+            model.fileUnresolvedForTesting(
+                ScanSubject(identifier: scannerIdentifier(cardNumber: String(number))),
+                reason: .lookupFailed
+            )
+        }
+        let ids = model.unresolvedScans.map(\.id)
+        XCTAssertEqual(ids.count, 55)
+        await store.save(model.unresolvedScans)
+        await model.reloadUnresolvedScansForTesting()
+        XCTAssertEqual(model.unresolvedScans.map(\.id), ids)
+        model.fileUnresolvedForTesting(
+            ScanSubject(identifier: scannerIdentifier(cardNumber: "1")), reason: .noCatalogEntry
+        )
+        XCTAssertEqual(model.unresolvedScans.count, 55)
+        model.dismissUnresolved(id: ids[0])
+        XCTAssertEqual(model.unresolvedScans.count, 54)
+        XCTAssertEqual(model.unresolvedScans.last?.id, ids.last)
+    }
+
     func testUnresolvedPersistenceFailureShowsScannerNote() async throws {
         let directory = FileManager.default.temporaryDirectory
             .appendingPathComponent("ScannerUnresolvedWriteFailure-\(UUID().uuidString)", isDirectory: true)

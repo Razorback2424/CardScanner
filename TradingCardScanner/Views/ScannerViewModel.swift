@@ -1041,9 +1041,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
             scans.firstIndex(where: { $0.id == id })
         } ?? scans.firstIndex(where: { $0.mergeKey == incoming.mergeKey })
         guard let index = matchingIndex else {
-            var updated = scans + [incoming]
-            if updated.count > 50 { updated.removeFirst(updated.count - 50) }
-            return updated
+            return scans + [incoming]
         }
         var merged = scans
         merged[index] = merged[index].absorbing(incoming)
@@ -2139,7 +2137,7 @@ final class ScannerViewModel: ObservableObject {
             }
             var seenIDs: Set<UUID> = []
             let deduplicated = combined.filter { seenIDs.insert($0.id).inserted }
-            unresolvedScans = Array(deduplicated.sorted { $0.createdAt < $1.createdAt }.suffix(50))
+            unresolvedScans = deduplicated.sorted { $0.createdAt < $1.createdAt }
             return
         }
     }

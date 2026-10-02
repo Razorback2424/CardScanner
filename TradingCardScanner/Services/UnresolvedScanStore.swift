@@ -4,7 +4,6 @@ import Foundation
 /// app does not discard work the collector still needs to resolve.
 actor UnresolvedScanStore {
     static let shared = UnresolvedScanStore()
-    static let rowLimit = 50
 
     let fileURL: URL
     private var preservedReadOnlyRecords: [UUID: UnresolvedScanRecord] = [:]
@@ -43,7 +42,7 @@ actor UnresolvedScanStore {
             uniquingKeysWith: { first, _ in first }
         )
         preservedReadOnlyRecords.removeAll(keepingCapacity: true)
-        return uniqueRecords.suffix(Self.rowLimit).map { record in
+        return uniqueRecords.map { record in
             let scan = record.rehydrate(registry: registry, magicByCode: magicByCode)
             if scan.isReadOnly {
                 preservedReadOnlyRecords[scan.id] = record
@@ -56,7 +55,6 @@ actor UnresolvedScanStore {
     func save(_ scans: [UnresolvedScan]) -> Bool {
         let retainedScans = scans
             .sorted { $0.createdAt < $1.createdAt }
-            .suffix(Self.rowLimit)
         let records = retainedScans.map { scan in
             if scan.isReadOnly, let original = preservedReadOnlyRecords[scan.id] {
                 return original

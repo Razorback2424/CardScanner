@@ -80,7 +80,7 @@ final class UnresolvedScanStoreTests: XCTestCase {
         XCTAssertEqual(restored.first?.subject.slab, slab)
     }
 
-    func testStoreKeepsOnlyNewestFiftyRows() async {
+    func testStorePreservesEveryRowBeyondFifty() async {
         let (directory, store) = makeStore()
         defer { try? FileManager.default.removeItem(at: directory) }
         let rows = (0..<55).map { index in
@@ -95,8 +95,10 @@ final class UnresolvedScanStoreTests: XCTestCase {
         await store.save(rows)
         let restored = await store.load(registry: .bundledSeed)
 
-        XCTAssertEqual(restored.count, 50)
-        XCTAssertEqual(restored.first?.createdAt, Date(timeIntervalSince1970: 5))
+        XCTAssertEqual(restored.count, 55)
+        XCTAssertEqual(restored.first?.id, rows.first?.id)
+        XCTAssertEqual(restored.last?.id, rows.last?.id)
+        XCTAssertEqual(restored.first?.createdAt, Date(timeIntervalSince1970: 0))
         XCTAssertEqual(restored.last?.createdAt, Date(timeIntervalSince1970: 54))
     }
 
