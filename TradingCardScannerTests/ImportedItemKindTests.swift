@@ -77,6 +77,36 @@ final class ImportedItemKindTests: XCTestCase {
 
     // MARK: - Import
 
+    func testCheckedGradeParsing() {
+        for (raw, value, label) in [
+            ("PSA 10", Optional("10"), Optional<String>.none),
+            ("PSA 10.0", "10", nil),
+            ("BGS 9.5", "9.5", nil),
+            ("PSA Authentic", nil, "Authentic"),
+            ("BGS 10 Black Label", "10", "Black Label")
+        ] {
+            let parsed = ImportedGradeParser.parse(raw)
+            XCTAssertNotNil(parsed, raw)
+            XCTAssertEqual(parsed?.grade.value, value, raw)
+            XCTAssertEqual(parsed?.grade.label, label, raw)
+        }
+        for raw in ["PSA inf", "PSA nan", "PSA 1e300"] {
+            XCTAssertNil(ImportedGradeParser.parse(raw), raw)
+        }
+    }
+
+    func testMalformedGradeIsSkippedWithoutDroppingSiblingRows() throws {
+        let plan = try CollectionCSV.parse(portfolioCSV([
+            "Pokemon,SV: 151,Charizard ex,199/165,Rare,,PSA 10,1,900.00,false",
+            "Pokemon,SV: 151,Blastoise ex,200/165,Rare,,PSA 1e300,1,400.00,false",
+            "Pokemon,SV: 151,Venusaur ex,198/165,Rare,,BGS 9.5,1,300.00,false"
+        ]))
+        XCTAssertEqual(plan.entries.count, 2)
+        XCTAssertEqual(plan.skippedRows, 1)
+        XCTAssertTrue(plan.skippedCSVText?.contains("PSA 1e300") == true)
+        XCTAssertEqual(Set(plan.entries.map(\.name)), ["Charizard ex", "Venusaur ex"])
+    }
+
     private func portfolioCSV(_ rows: [String]) -> Data {
         let header = "Category,Set,Product Name,Card Number,Rarity,Variance,Grade,Quantity,Market Price,Watchlist"
         return Data((([header] + rows).joined(separator: "\n") + "\n").utf8)

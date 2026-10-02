@@ -163,9 +163,15 @@ enum ImportedGradeParser {
         // is a real state rather than a parse failure.
         var value: String?
         if let first = parts.first, let number = Double(first) {
+            guard number.isFinite else { return nil }
             parts.removeFirst()
             // `10.0` is a 10. `9.5` stays 9.5.
-            value = number == number.rounded() ? String(Int(number)) : String(number)
+            if number == number.rounded() {
+                guard let integer = Int(exactly: number) else { return nil }
+                value = String(integer)
+            } else {
+                value = String(number)
+            }
         }
 
         let label = parts.joined(separator: " ").nilIfEmpty
