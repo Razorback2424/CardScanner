@@ -31,7 +31,8 @@ unique provider identity.
 
 Every collection scan failure is filed immediately. Rows live in the local-only
 `Application Support/Scanner/unresolved-scans.json` file, which is excluded
-from iCloud backup and capped at the newest 50 rows. The saved record contains
+from iCloud backup. The October review removed the newest-50 ceiling; every
+unresolved row is retained until resolved or dismissed. The saved record contains
 identity and OCR evidence plus candidate provider IDs and names; it does not
 contain collection or pricing data. Graded-scan records also preserve the slab
 label identity evidence needed to retry without downgrading a graded card into a
@@ -39,6 +40,15 @@ raw card. A row remains available across Scan-tab departures and app relaunches
 until it is resolved or dismissed. If its saved identifier cannot be
 reconstructed from the active catalog definitions, it is read-only and can be
 dismissed.
+
+Collection recognition interrupted by leaving Scan, backgrounding, camera
+interruption, or a purpose/subject-mode change is filed before cancellation.
+Requests already authorized for an ownership write finish or file a save
+failure themselves. Explicit choice dismissals and Price Check retain their
+cancellation semantics. Interrupted duplicate prompts persist an additional-copy
+marker; retry presents the existing ownership confirmation again, including
+after a relaunch has discarded the in-memory candidate. See the
+[October review ledger](../audits/october-review-remediation.md) for verification.
 
 Rows with the same suppression key merge their title evidence and candidate
 identities, while the latest failure reason controls which recovery action is

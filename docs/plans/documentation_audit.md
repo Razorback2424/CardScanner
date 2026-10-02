@@ -1,12 +1,12 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-09-30
+**Audit date:** 2026-10-02
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — 2026-09-30
+## Current authority boundary — 2026-10-02
 
 This is the repository-wide documentation index and reconciliation record.
 Source code, tests, build settings, and evidence recorded against the current
@@ -14,6 +14,14 @@ checkout outrank dated plans. A document is current only when it is listed
 below or linked from the current [documentation map](../README.md). Everything
 under `docs/legacy/` or `review/legacy/` is retained for provenance and is not
 release evidence.
+
+The newest boundary-failure implementation and simulator evidence is in the
+[October review ledger](../audits/october-review-remediation.md), against
+`fix/october-review-boundaries` through `248a61d`. Slices 1–10 are committed;
+focused checks pass, while the complete suite still reports centering failures.
+Older “latest full run” statements below describe their dated snapshots and do
+not supersede the October execution record. Physical-device and release gates
+remain open.
 
 ## Latest two-set pricing evidence — 2026-09-30
 
@@ -250,6 +258,17 @@ These are intentionally not “90% implemented” items to be silently marked do
 - `artifacts/` is ignored local evidence. Root plans and this audit are the
   durable status record; captures are supporting proof and may need to be
   regenerated on another machine.
+
+## October review reconciliation — 2026-10-02
+
+The [October review ledger](../audits/october-review-remediation.md) owns the
+new boundary-failure implementation and test evidence. The scanner recognition
+plan's previous newest-50 backlog claim is superseded by unrestricted durable
+retention. Interrupted collection recognition and pending duplicate prompts
+are recovery work; explicit dismissals and Price Check still cancel.
+[RF-13](release_followups.md#rf-13--october-review-performance-measurements)
+keeps physical-device performance acceptance open. No executor hypothesis is
+promoted to a measured defect or a release-readiness claim.
 
 ## Re-run rule
 

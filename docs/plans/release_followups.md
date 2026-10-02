@@ -1,6 +1,6 @@
 # Release follow-ups
 
-**Status:** current validation, measurement, and catalog-hardening backlog — reconciled 2026-09-22.
+**Status:** current validation, measurement, and catalog-hardening backlog — reconciled 2026-10-02.
 
 This document is the aggregation point for gates that source inspection or the
 ordinary simulator suite cannot retire. Completed implementation plans are
@@ -267,6 +267,19 @@ operationally accepted, collect the remaining evidence:
 Simulator tests cannot establish actual background scheduling/expiration or
 real-device timing. Do not use simulator-only results to claim those gates are
 closed.
+
+### RF-13 — October review performance measurements
+
+**Status:** physical-device capture pending — 2026-10-02.
+
+The [October review ledger](../audits/october-review-remediation.md#measurement-gate)
+records the approved workload and acceptance boundary: actor and CSV thread
+placement, centering export, artwork normalization, revision-monitor fetch cost,
+and first paint with roughly 1,500 synthetic cards. Use
+`TradingCardScanner-ProfileLocal` on the oldest supported device. The local
+device listing showed only offline iPhone/iPad devices, so no trace or measured
+duration is available. Keep F9, artwork worker changes, and actor placement
+changes gated on those results; simulator test timings cannot retire this item.
 
 ## Closed cleanup
 

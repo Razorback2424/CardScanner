@@ -1,3 +1,27 @@
+- October review boundary fixes (2026-10-01–02; `fix/october-review-boundaries`,
+  `cdd60e1` → `248a61d`): committed slices 1–10 separately. Checked grade
+  conversion, export-container ownership, unrestricted Needs attention
+  retention, certless Pokémon graded print-run identity including CSV and
+  price preflight, interrupted recognition and duplicate-prompt recovery,
+  Browse filter retention, stable collection destinations, catalog activation
+  retries, artwork failure/cache behavior, and essential Dynamic Type text.
+  Inventory ledger, serialized fresh-context writes, conservative matching,
+  and explicit ownership confirmation remain in place. Focused simulator
+  selections passed 14, 17, 40, and 124 tests; the final build-for-testing passed.
+  The full suite after slice 4 executed 1,732 tests with 7 skipped and 25
+  assertion failures across 10 centering cases. The required full follow-up
+  after slice 5 executed 1,743 tests with 7 skipped and 25 failures across the
+  same 10 centering cases; no other test cases failed. Scoped default and
+  largest-text screenshots were inspected; existing wider contrast/toolbar
+  risks and remaining manual share/save acceptance are recorded. The export
+  interaction check reached the photo picker with synthetic fixtures, then
+  native UI control was blocked by the locked Mac. Build and
+  result artifacts use the external drive; an isolated task simulator preserves
+  existing simulator data. No physical device was connected, so slice 11 and
+  its conditional slice 12 remain pending, without performance or release claims.
+  No push or PR. See the
+  [October review ledger](docs/audits/october-review-remediation.md).
+
 - Two-set TCGCSV pricing fallback (2026-09-30; working tree based on `a707356`):
   added reviewed exact TCGplayer product mappings for all 158 `30th` and 30
   `30th-c` cards and one shared device-local daily feed client. Browse sorting
