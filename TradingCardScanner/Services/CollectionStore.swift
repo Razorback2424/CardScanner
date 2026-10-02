@@ -643,6 +643,7 @@ actor ScannerCollectionWriter {
             grade: slab.grade,
             company: slab.company,
             certificationNumber: slab.certificationNumber,
+            pokemonPrintRun: candidate.pokemonPrintRun,
             treatmentIDs: treatmentIDs,
             toVariantID: candidate.resolved.variant?.id
         ) { return true }
@@ -655,6 +656,7 @@ actor ScannerCollectionWriter {
             grade: slab.grade,
             company: slab.company,
             certificationNumber: slab.certificationNumber,
+            pokemonPrintRun: candidate.pokemonPrintRun,
             treatmentIDs: treatmentIDs
         )
     }
@@ -670,6 +672,7 @@ actor ScannerCollectionWriter {
             grade: evidence.grade,
             company: evidence.company,
             certificationNumber: evidence.certificationNumber,
+            pokemonPrintRun: scan.pokemonPrintRun,
             treatmentIDs: MagicTreatmentKeyCodec.storedIDs(
                 from: scan.card.unambiguousMagicTreatments
             ),
@@ -949,6 +952,7 @@ enum PriceIdentityWritePreflight {
         grade: CardGrade,
         company: GradingCompany,
         certificationNumber: String?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
         treatmentIDs: [String]
     ) -> Bool {
         guard let certificationNumber, !certificationNumber.isEmpty else { return false }
@@ -968,6 +972,7 @@ enum PriceIdentityWritePreflight {
                 && row.gradeRaw == grade.value
                 && row.gradeLabel == grade.label
                 && row.gradingQualifier == grade.qualifier
+                && row.pokemonPrintRun == pokemonPrintRun
                 && Set(MagicTreatmentKeyCodec.storedIDs(from: row.magicTreatmentIDsRaw))
                     == expectedTreatments
                 && row.justTCGVariantID == nil
@@ -981,6 +986,7 @@ enum PriceIdentityWritePreflight {
         grade: CardGrade,
         company: GradingCompany,
         certificationNumber: String?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
         treatmentIDs: [String],
         toVariantID: String?
     ) -> Bool {
@@ -994,6 +1000,7 @@ enum PriceIdentityWritePreflight {
                 && row.gradeRaw == grade.value
                 && row.gradeLabel == grade.label
                 && row.gradingQualifier == grade.qualifier
+                && row.pokemonPrintRun == pokemonPrintRun
                 && Set(MagicTreatmentKeyCodec.canonicalIDs(from: row.magicTreatmentIDsRaw))
                     == expectedTreatments
         }
@@ -2745,6 +2752,7 @@ struct CollectionStore {
                 underlyingPrintingID: card.providerID,
                 variantUUID: variant.id,
                 certificationNumber: certificationNumber,
+                pokemonPrintRun: pokemonPrintRun,
                 magicTreatments: magicTreatments
             )
             let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
@@ -2808,9 +2816,16 @@ struct CollectionStore {
             }
 
             if certificationNumber == nil,
-               let existing = try uniqueCard(
-                   forAnyKey: key,
-                   magicTreatmentIDsRaw: treatmentIDs
+               let existing = try certlessGradedCard(
+                   forKey: key,
+                   legacyKey: CollectedCard.gradedCollectionKey(
+                       game: card.game,
+                       underlyingPrintingID: card.providerID,
+                       variantUUID: variant.id,
+                       magicTreatments: magicTreatments
+                   ),
+                   pokemonPrintRun: pokemonPrintRun,
+                   treatmentIDs: treatmentIDs
                ) {
             existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, 1)
             existing.dateAdded = .now
@@ -2826,9 +2841,6 @@ struct CollectionStore {
                     to: resolved.variant,
                     resolution: resolved.resolution
                 )
-            }
-            if existing.pokemonPrintRunRaw == nil {
-                existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
             }
             markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
             storeMarketPrice(
@@ -2856,7 +2868,7 @@ struct CollectionStore {
             )
             try commit()
             return CollectionMutation(
-                collectionKey: key,
+                collectionKey: existing.collectionKey,
                 activityID: activity.id,
                 didInsert: false,
                 ledgerOperationIDs: [operationID]
@@ -2965,6 +2977,7 @@ struct CollectionStore {
                 company: company,
                 grade: grade,
                 certificationNumber: certificationNumber,
+                pokemonPrintRun: pokemonPrintRun,
                 magicTreatments: magicTreatments
             )
             let treatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatments)
@@ -3000,9 +3013,18 @@ struct CollectionStore {
             }
 
             if certificationNumber == nil,
-               let existing = try uniqueCard(
-                   forAnyKey: key,
-                   magicTreatmentIDsRaw: treatmentIDs
+               let existing = try certlessGradedCard(
+                   forKey: key,
+                   legacyKey: CollectedCard.scannedGradedCollectionKey(
+                       game: card.game,
+                       underlyingPrintingID: card.providerID,
+                       company: company,
+                       grade: grade,
+                       certificationNumber: nil,
+                       magicTreatments: magicTreatments
+                   ),
+                   pokemonPrintRun: pokemonPrintRun,
+                   treatmentIDs: treatmentIDs
                ) {
                 existing.quantity = try CollectionQuantityLimits.checkedAdd(existing.quantity, 1)
                 existing.dateAdded = .now
@@ -3015,9 +3037,6 @@ struct CollectionStore {
                         to: resolved.variant,
                         resolution: resolved.resolution
                     )
-                }
-                if existing.pokemonPrintRunRaw == nil {
-                    existing.pokemonPrintRunRaw = pokemonPrintRun?.rawValue
                 }
                 markLiveMagicTreatmentMigrationComplete(for: card, on: existing)
                 let operationID = UUID()
@@ -3039,7 +3058,7 @@ struct CollectionStore {
                 )
                 try commit(savesChanges: savesChanges)
                 return CollectionMutation(
-                    collectionKey: key,
+                    collectionKey: existing.collectionKey,
                     activityID: activity.id,
                     didInsert: false,
                     ledgerOperationIDs: [operationID]
@@ -3156,6 +3175,7 @@ struct CollectionStore {
                     underlyingPrintingID: card.providerID,
                     variantUUID: marketVariantID,
                     certificationNumber: certificationNumber,
+                    pokemonPrintRun: previous.pokemonPrintRun,
                     magicTreatments: treatments
                 )
             } else {
@@ -3165,6 +3185,7 @@ struct CollectionStore {
                     company: company,
                     grade: grade,
                     certificationNumber: certificationNumber,
+                    pokemonPrintRun: previous.pokemonPrintRun,
                     magicTreatments: treatments
                 )
             }
@@ -4157,6 +4178,23 @@ struct CollectionStore {
         let rows = try cards(forKey: key)
         guard rows.count > 1 else { return rows.first }
         return try mergeCollectionRows(rows, canonicalKey: key)
+    }
+
+    /// Old certless keys did not encode the run. Only an explicit matching
+    /// stored run proves that such a row represents this incoming printing.
+    private func certlessGradedCard(
+        forKey key: String,
+        legacyKey: String,
+        pokemonPrintRun: PokemonPrintRun?,
+        treatmentIDs: [String]
+    ) throws -> CollectedCard? {
+        if let row = try uniqueCard(forAnyKey: key, magicTreatmentIDsRaw: treatmentIDs) {
+            return row
+        }
+        guard let pokemonPrintRun, legacyKey != key,
+              let legacy = try uniqueCard(forAnyKey: legacyKey, magicTreatmentIDsRaw: treatmentIDs),
+              legacy.pokemonPrintRunRaw == pokemonPrintRun.rawValue else { return nil }
+        return legacy
     }
 
     private func uniqueCard(

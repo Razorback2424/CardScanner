@@ -431,9 +431,13 @@ final class CollectedCard {
         game: CardGame,
         underlyingPrintingID: String,
         variantUUID: String,
+        pokemonPrintRun: PokemonPrintRun? = nil,
         magicTreatments: [MagicTreatment] = []
     ) -> String {
-        let base = "graded:\(game.rawValue):\(underlyingPrintingID):\(variantUUID)"
+        var base = "graded:\(game.rawValue):\(underlyingPrintingID):\(variantUUID)"
+        if game == .pokemon, let pokemonPrintRun {
+            base += ":run:\(pokemonPrintRun.rawValue)"
+        }
         guard game == .magic else { return base }
         return MagicTreatmentKeyCodec.appendCollectionSuffix(
             to: base,
@@ -451,9 +455,13 @@ final class CollectedCard {
         company: GradingCompany,
         grade: CardGrade,
         certificationNumber: String?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
         magicTreatments: [MagicTreatment] = []
     ) -> String {
         var base = "graded:\(game.rawValue):\(underlyingPrintingID):g:\(company.rawValue)-\(grade.identityFragment)"
+        if game == .pokemon, let pokemonPrintRun {
+            base += ":run:\(pokemonPrintRun.rawValue)"
+        }
         if let certificationNumber, !certificationNumber.isEmpty {
             base += ":cert:\(certificationNumber)"
         }
@@ -485,9 +493,13 @@ final class CollectedCard {
         underlyingPrintingID: String,
         variantUUID: String,
         certificationNumber: String?,
+        pokemonPrintRun: PokemonPrintRun? = nil,
         magicTreatments: [MagicTreatment] = []
     ) -> String {
         var base = "graded:\(game.rawValue):\(underlyingPrintingID):\(variantUUID)"
+        if game == .pokemon, let pokemonPrintRun {
+            base += ":run:\(pokemonPrintRun.rawValue)"
+        }
         if let certificationNumber, !certificationNumber.isEmpty {
             base += ":cert:\(certificationNumber)"
         }

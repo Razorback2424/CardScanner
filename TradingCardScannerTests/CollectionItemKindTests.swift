@@ -6,6 +6,112 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+    func testCertlessPrintRunsStayDistinctThroughBindingRefinementCorrectionAndRestore() async throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let grade = CardGrade(value: "10")
+        let first = try store.addScannedGraded(
+            underlying: card, company: .psa, grade: grade, certificationNumber: nil,
+            pokemonPrintRun: .firstEdition
+        )
+        let unlimited = try store.addScannedGraded(
+            underlying: card, company: .psa, grade: grade, certificationNumber: nil,
+            pokemonPrintRun: .unlimited
+        )
+        XCTAssertNotEqual(first.collectionKey, unlimited.collectionKey)
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).count, 2)
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        for (mutation, variantID) in [(first, "first-market"), (unlimited, "unlimited-market")] {
+            let receipt = try await writer.bindScannedGraded(
+                collectionKey: mutation.collectionKey,
+                variant: GradedVariant(id: variantID, cardID: "card", company: .psa,
+                                       grade: grade, marketPriceUSD: nil, updatedAt: nil)
+            )
+            XCTAssertNotNil(receipt)
+        }
+        let fresh = ModelContext(container)
+        let freshStore = CollectionStore(context: fresh)
+        let refined = try XCTUnwrap(freshStore.recordGradedCertificationRefinement(
+            underlying: card, previous: first, company: .psa, grade: grade,
+            certificationNumber: "FIRST-CERT"
+        ))
+        XCTAssertTrue(refined.collectionKey.contains(":run:firstEdition:cert:"))
+        let firstRow = try XCTUnwrap(freshStore.card(forKey: refined.collectionKey))
+        _ = try freshStore.recordVariantCorrection(
+            for: firstRow, to: ResolvedVariant(variant: .holo, resolution: .userConfirmed),
+            activityID: try XCTUnwrap(refined.activityID), quantity: 1
+        )
+        let removed = try freshStore.remove(firstRow)
+        try freshStore.restore(removed)
+        let verify = ModelContext(container)
+        let rows = try verify.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(Set(rows.compactMap(\.pokemonPrintRun)), [.firstEdition, .unlimited])
+        XCTAssertEqual(Set(rows.compactMap(\.justTCGVariantID)), ["first-market", "unlimited-market"])
+        try freshStore.undo(unlimited)
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).count, 1)
+    }
+
+    func testSameRunScansMergeAndAmbiguousLegacyRowsDoNotAbsorbKnownRuns() throws {
+        let card = try ProductionRowFixtures.pokemonCard()
+        for storedRun: PokemonPrintRun? in [nil, .firstEdition, .unlimited] {
+            let container = try ProductionRowFixtures.makeContainer()
+            let context = container.mainContext
+            let store = CollectionStore(context: context)
+            let legacy = try store.addScannedGraded(
+                underlying: card, company: .psa, grade: CardGrade(value: "10"), certificationNumber: nil
+            )
+            let row = try XCTUnwrap(store.card(forKey: legacy.collectionKey))
+            row.pokemonPrintRunRaw = storedRun?.rawValue
+            try context.save()
+            let first = try store.addScannedGraded(
+                underlying: card, company: .psa, grade: CardGrade(value: "10"), certificationNumber: nil,
+                pokemonPrintRun: .firstEdition
+            )
+            let second = try store.addScannedGraded(
+                underlying: card, company: .psa, grade: CardGrade(value: "10"), certificationNumber: nil,
+                pokemonPrintRun: .firstEdition
+            )
+            XCTAssertEqual(first.collectionKey, second.collectionKey)
+            XCTAssertEqual(first.collectionKey == legacy.collectionKey, storedRun == .firstEdition)
+            XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).count, storedRun == .firstEdition ? 1 : 2)
+            XCTAssertEqual(store.card(forKey: first.collectionKey)?.quantity, storedRun == .firstEdition ? 3 : 2)
+            XCTAssertEqual(row.pokemonPrintRun, storedRun)
+        }
+    }
+
+    func testBoundCertlessSlabsKeepRunsDistinct() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let store = CollectionStore(context: container.mainContext)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let variant = GradedVariant(id: "variant", cardID: "card", company: .psa,
+                                    grade: CardGrade(value: "10"), marketPriceUSD: nil, updatedAt: nil)
+        let first = try store.addGraded(underlying: card, variant: variant, certificationNumber: nil, pokemonPrintRun: .firstEdition)
+        let unlimited = try store.addGraded(underlying: card, variant: variant, certificationNumber: nil, pokemonPrintRun: .unlimited)
+        XCTAssertNotEqual(first.collectionKey, unlimited.collectionKey)
+        _ = try store.addGraded(underlying: card, variant: variant, certificationNumber: nil, pokemonPrintRun: .firstEdition)
+        XCTAssertEqual(store.card(forKey: first.collectionKey)?.quantity, 2)
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).count, 2)
+    }
+
+    func testGradedPreflightDoesNotMatchDifferentPrintRun() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let card = try ProductionRowFixtures.pokemonCard()
+        _ = try CollectionStore(context: container.mainContext).addScannedGraded(
+            underlying: card, company: .psa, grade: CardGrade(value: "10"), certificationNumber: nil,
+            pokemonPrintRun: .firstEdition
+        )
+        for (run, expected) in [(PokemonPrintRun.unlimited, false), (.firstEdition, true)] {
+            XCTAssertEqual(PriceIdentityWritePreflight.requiresScannedGradedVariantRepair(
+                container: container, game: .pokemon, providerID: card.providerID,
+                grade: CardGrade(value: "10"), company: .psa, certificationNumber: nil,
+                pokemonPrintRun: run, treatmentIDs: [], toVariantID: "holo"
+            ), expected)
+        }
+    }
+
     private var container: ModelContainer?
 
     override func tearDown() {

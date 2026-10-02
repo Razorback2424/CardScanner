@@ -1,4 +1,5 @@
 import XCTest
+import SwiftData
 @testable import TradingCardScanner
 
 /// Importing graded slabs and sealed products.
@@ -76,6 +77,20 @@ final class ImportedItemKindTests: XCTestCase {
     }
 
     // MARK: - Import
+
+    @MainActor
+    func testCSVGradedPrintRunsImportAsSeparateHoldings() throws {
+        let csv = """
+        game,provider_id,card_name,set_name,set_code,card_number,quantity,item_kind,grading_company,grade,pokemon_print_run
+        pokemon,base1-4,Charizard,Base Set,BS,4,1,gradedCard,psa,10,firstEdition
+        pokemon,base1-4,Charizard,Base Set,BS,4,1,gradedCard,psa,10,unlimited
+        """
+        let plan = try CollectionCSV.parse(Data(csv.utf8))
+        XCTAssertEqual(Set(plan.entries.map(\.collectionKey)).count, 2)
+        let container = try ProductionRowFixtures.makeContainer()
+        _ = try CollectionCSV.apply(plan, to: container.mainContext)
+        XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).count, 2)
+    }
 
     func testCheckedGradeParsing() {
         for (raw, value, label) in [

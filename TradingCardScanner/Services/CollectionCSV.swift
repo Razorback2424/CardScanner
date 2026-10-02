@@ -1361,6 +1361,7 @@ enum CollectionCSV {
                     underlyingPrintingID: catalogProviderID ?? providerID,
                     variantUUID: justTCGVariantID,
                     certificationNumber: resolvedCertificationNumber,
+                    pokemonPrintRun: resolvedPrintRun,
                     magicTreatments: treatmentModels
                 )
             } else {
@@ -1368,6 +1369,9 @@ enum CollectionCSV {
                     "\(company.rawValue)|\(grade?.identityFragment ?? "")"
                 } ?? "unknown"
                 var base = "graded:\(baseKey)#\(fragment)"
+                if game == .pokemon, let resolvedPrintRun {
+                    base += ":run:\(resolvedPrintRun.rawValue)"
+                }
                 if let resolvedCertificationNumber {
                     base += ":cert:\(resolvedCertificationNumber)"
                 }
