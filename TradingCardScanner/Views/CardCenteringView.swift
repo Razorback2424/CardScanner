@@ -175,6 +175,11 @@ final class CardCenteringViewModel: ObservableObject {
         self.measurement = measurement
     }
 
+    func confirmFrames() {
+        guard var measurement, measurement.confirmFrames() else { return }
+        self.measurement = measurement
+    }
+
 #if DEBUG
     /// Gives the screenshot route a stable, local image so the centering controls
     /// can be checked without a Photos permission prompt or a camera session.
@@ -227,8 +232,8 @@ final class CardCenteringViewModel: ObservableObject {
             image: image,
             measurement: measurement,
             // Rotation is a display adjustment. It does not rerun detection and
-            // it does not move either guide, so the export uses the same visual
-            // treatment as the preview.
+            // the photo and its guides rotate together without changing the
+            // measured coordinates.
             rotationDegrees: rotationDegrees
         )
         guard let data = rendered.pngData() else {
@@ -255,6 +260,7 @@ final class CardCenteringViewModel: ObservableObject {
     private func analyze(_ data: Data, rotationDegrees: Double) {
         analysisGeneration &+= 1
         let requestID = analysisGeneration
+        measurement = nil
         isAnalyzing = true
         errorMessage = nil
 #if DEBUG
@@ -350,6 +356,15 @@ struct CardCenteringView: View {
                                 guideControls(measurement)
                                     .id("guide-controls")
 
+                                if measurement.isDeclined {
+                                    Button("Confirm frames", systemImage: "checkmark.rectangle") {
+                                        model.confirmFrames()
+                                    }
+                                    .buttonStyle(.borderedProminent)
+                                    .disabled(!measurement.hasValidFrameGeometry)
+                                    .accessibilityHint("Accepts the reviewed outer card edges and inner reference together.")
+                                }
+
                                 if let errorMessage = model.errorMessage {
                                     Text(errorMessage)
                                         .font(.footnote)
@@ -433,7 +448,7 @@ struct CardCenteringView: View {
 
             if model.image != nil {
                 ToolbarItemGroup(placement: .topBarTrailing) {
-                    if let exportURL {
+                    if let exportURL, model.measurement?.isDeclined == false, !model.isAnalyzing {
                         ShareLink(item: exportURL) {
                             Label("Export Image", systemImage: "square.and.arrow.up")
                         }
@@ -619,7 +634,7 @@ struct CardCenteringView: View {
                     Text(measurement.declineReason ?? "Adjust the guides manually before reading centering.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
-                    Text("Adjust the guides manually to produce a reportable ratio.")
+                    Text("Review or adjust both frames, then choose Confirm frames.")
                         .font(.footnote.weight(.medium))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -634,7 +649,7 @@ struct CardCenteringView: View {
 
             Divider()
 
-            if let exportURL {
+            if let exportURL, !measurement.isDeclined {
                 ShareLink(item: exportURL) {
                     Label("Export Image", systemImage: "square.and.arrow.up")
                 }
@@ -833,7 +848,6 @@ struct CardCenteringImage: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: proxy.size.width, height: proxy.size.height)
-                    .rotationEffect(.degrees(rotationDegrees))
 
                 guidePath(
                     measurement.geometryOuterQuad,
@@ -846,6 +860,7 @@ struct CardCenteringImage: View {
                 }
             }
             .frame(width: proxy.size.width, height: proxy.size.height)
+            .rotationEffect(.degrees(rotationDegrees))
         }
         .aspectRatio(CGFloat(measurement.imageWidth) / CGFloat(measurement.imageHeight), contentMode: .fit)
         .background(Color.black)

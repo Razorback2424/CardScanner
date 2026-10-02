@@ -4,6 +4,42 @@ import UIKit
 @testable import TradingCardScanner
 
 final class CenteringExportTests: XCTestCase {
+    func testFrameApprovalRequiresExplicitActionAndValidNestedGeometry() {
+        var value = measurement()
+        value.confidence = .manualConfirmationRequired(preserving: value.confidence, reason: "Review both frames")
+        value.setManualOuterEdge(\.left, to: value.outer.left)
+        value.refreshWarnings()
+        XCTAssertTrue(value.isDeclined)
+        value.setManualInnerEdge(\.left, to: value.inner.left)
+        value.refreshWarnings()
+        XCTAssertTrue(value.isDeclined)
+        XCTAssertTrue(value.confirmFrames())
+        XCTAssertFalse(value.isDeclined)
+        value.setManualInnerEdge(\.left, to: value.inner.left + 1)
+        XCTAssertFalse(value.isDeclined, "valid edits remain live after approval")
+        value.setManualInnerEdge(\.left, to: value.outer.left - 1)
+        XCTAssertTrue(value.isDeclined)
+        XCTAssertEqual(value.leftRightCentering, "—")
+        XCTAssertFalse(value.confirmFrames())
+    }
+
+    func testFrameApprovalRejectsCrossedQuadAndRecoversMissingInnerReference() {
+        var value = measurement()
+        value.innerReference = .none
+        value.confidence = .declined(reason: "No inner reference")
+        XCTAssertFalse(value.confirmFrames())
+        value.setManualInnerEdge(\.left, to: value.inner.left)
+        XCTAssertTrue(value.isDeclined)
+        XCTAssertTrue(value.confirmFrames())
+        let inner = value.innerQuad!
+        value.innerQuad = CardCenteringQuad(topLeft: inner.topLeft, topRight: inner.bottomRight,
+                                          bottomRight: inner.topRight, bottomLeft: inner.bottomLeft)
+        // A quad's bounding box alone cannot establish a usable frame.
+        value = CardCenteringMeasurement(imageWidth: value.imageWidth, imageHeight: value.imageHeight,
+                                        outerQuad: value.outerQuad, innerQuad: value.innerQuad, warnings: [])
+        XCTAssertFalse(value.hasValidFrameGeometry)
+        XCTAssertFalse(value.confirmFrames())
+    }
     private func measurement(
         width: Int = 672,
         height: Int = 936,
@@ -923,8 +959,8 @@ final class CardCenteringAnalyzerTests: XCTestCase {
     // MARK: - Saying when it does not know
 
     /// An automatic candidate must remain visibly unconfirmed until the user
-    /// adjusts the frame guides through the current manual-placement API.
-    /// Once adjusted, the ordinary case is quiet.
+    /// explicitly confirms the reviewed frames. Edits alone keep the gate closed.
+    /// Once confirmed, the ordinary case is quiet.
     func testAutomaticMeasurementRequiresFrameConfirmationBeforeBecomingQuiet() throws {
         var m = try CardCenteringAnalyzer.analyze(syntheticCard(
             canvas: CGSize(width: 500, height: 700),
@@ -943,6 +979,8 @@ final class CardCenteringAnalyzerTests: XCTestCase {
         m.setManualInnerEdge(\.left, to: m.inner.left)
         m.refreshWarnings()
 
+        XCTAssertTrue(m.isDeclined)
+        XCTAssertTrue(m.confirmFrames())
         XCTAssertFalse(m.isDeclined)
         XCTAssertTrue(m.warnings.isEmpty, "unexpected warnings after confirmation: \(m.warnings)")
     }

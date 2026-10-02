@@ -2433,9 +2433,7 @@ final class CardCenteringInvariantTests: XCTestCase {
     private func confidentRatios(_ data: Data) throws -> (lr: Double, tb: Double) {
         var measurement = try CardCenteringAnalyzer.analyze(data).measurement
         if measurement.requiresManualFrameConfirmation {
-            measurement.setManualOuterEdge(\.left, to: measurement.outer.left)
-            measurement.setManualInnerEdge(\.left, to: measurement.inner.left)
-            measurement.refreshWarnings()
+            XCTAssertTrue(measurement.confirmFrames(), "detected candidate must have valid nested geometry")
         }
         return try ratios(measurement)
     }
@@ -2508,6 +2506,10 @@ final class CardCenteringInvariantTests: XCTestCase {
         XCTAssertEqual(measurement.topBottomCentering, "—")
 
         measurement.refreshWarnings()
+
+        XCTAssertTrue(measurement.requiresManualFrameConfirmation)
+        XCTAssertTrue(measurement.isDeclined)
+        XCTAssertTrue(measurement.confirmFrames())
 
         XCTAssertFalse(measurement.requiresManualInnerConfirmation)
         XCTAssertFalse(measurement.requiresManualOuterConfirmation)
@@ -3888,6 +3890,8 @@ final class CardCenteringInvariantTests: XCTestCase {
         model.updateInner(\.top, to: 98, within: yRange)
         model.updateInner(\.bottom, to: 882, within: yRange)
 
+        XCTAssertTrue(model.measurement?.isDeclined ?? false)
+        model.confirmFrames()
         let recovered = model.measurement
         XCTAssertNotNil(recovered)
         XCTAssertFalse(recovered?.isDeclined ?? true)

@@ -1089,17 +1089,11 @@ enum CardCenteringAnalyzer {
         // automatic presentation correction, transform that same pair instead
         // of re-running the profile search on resampled pixels; a second search
         // can select a nearby artwork transition and change the ratio.
-        let presentationProfileResult: InnerProfileResult? = nil
         let finalInnerSupport: Double
         if let rotationMapping {
             finalOuterQuad = rotationMapping.workingQuad(fromNative: detectedOuterQuad)
-            if let presentationProfileResult {
-                finalInnerQuad = presentationProfileResult.quad
-                finalInnerSupport = presentationProfileResult.support
-            } else {
-                finalInnerQuad = detectedInnerQuad.map(rotationMapping.workingQuad(fromNative:))
-                finalInnerSupport = detectedInnerSupport
-            }
+            finalInnerQuad = detectedInnerQuad.map(rotationMapping.workingQuad(fromNative:))
+            finalInnerSupport = detectedInnerSupport
         } else {
             finalOuterQuad = detectedOuterQuad
             finalInnerQuad = detectedInnerQuad

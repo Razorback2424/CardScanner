@@ -704,7 +704,7 @@ struct CardCenteringMeasurement: Equatable {
     /// manually-confirmed card frame. A detector candidate is intentionally not
     /// enough: the hybrid release path must never present unconfirmed automatic
     /// outer or inner geometry as fact.
-    var isDeclined: Bool { confidence.state != .confident }
+    var isDeclined: Bool { confidence.state != .confident || !hasValidFrameGeometry }
     var requiresManualOuterConfirmation: Bool {
         confidence.state == .manualConfirmationRequired
     }
@@ -715,7 +715,48 @@ struct CardCenteringMeasurement: Equatable {
         requiresManualOuterConfirmation && requiresManualInnerConfirmation
     }
     var confidenceScore: Double { confidence.score }
-    var declineReason: String? { confidence.reason }
+    var declineReason: String? {
+        hasValidFrameGeometry ? confidence.reason : "Place valid inner guides inside the card edges before confirming both frames."
+    }
+
+    var hasValidFrameGeometry: Bool {
+        guard imageWidth > 0, imageHeight > 0, let inner = geometryInnerQuad else { return false }
+        let outer = geometryOuterQuad
+        func cross(_ a: CardCenteringPoint, _ b: CardCenteringPoint, _ p: CardCenteringPoint) -> Double {
+            (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x)
+        }
+        func isConvex(_ quad: CardCenteringQuad) -> Bool {
+            let points = quad.points
+            guard points.allSatisfy({
+                $0.x.isFinite && $0.y.isFinite && $0.x >= 0 && $0.y >= 0
+                    && $0.x <= Double(imageWidth) && $0.y <= Double(imageHeight)
+            }) else { return false }
+            let turns = (0..<4).map { cross(points[$0], points[($0 + 1) % 4], points[($0 + 2) % 4]) }
+            return turns.allSatisfy { $0 > .ulpOfOne } || turns.allSatisfy { $0 < -.ulpOfOne }
+        }
+        guard isConvex(outer), isConvex(inner) else { return false }
+        let points = outer.points
+        let clockwise = cross(points[0], points[1], points[2]) > 0
+        guard inner.points.allSatisfy({ point in
+            (0..<4).allSatisfy { index in
+                let side = cross(points[index], points[(index + 1) % 4], point)
+                return clockwise ? side > .ulpOfOne : side < -.ulpOfOne
+            }
+        }) else { return false }
+        let distances = measurementBorderDistances(to: inner)
+        return [distances.left, distances.top, distances.right, distances.bottom]
+            .allSatisfy { $0.isFinite && $0 > 0 }
+    }
+
+    @discardableResult
+    mutating func confirmFrames() -> Bool {
+        guard hasValidFrameGeometry else { return false }
+        confidence.state = .confident
+        confidence.innerReferencePresent = true
+        confidence.reason = nil
+        refreshWarnings()
+        return true
+    }
 
     var geometryOuterQuad: CardCenteringQuad {
         usesQuadGeometry ? outerQuad : .axisAligned(outer)
@@ -769,10 +810,10 @@ struct CardCenteringMeasurement: Equatable {
             .borderDistances(to: rectification.rectifiedQuad(from: inner))
     }
 
-    var leftBorder: Int { Int(leftBorderDistance.rounded()) }
-    var rightBorder: Int { Int(rightBorderDistance.rounded()) }
-    var topBorder: Int { Int(topBorderDistance.rounded()) }
-    var bottomBorder: Int { Int(bottomBorderDistance.rounded()) }
+    var leftBorder: Int { Int(exactly: leftBorderDistance.rounded()) ?? 0 }
+    var rightBorder: Int { Int(exactly: rightBorderDistance.rounded()) ?? 0 }
+    var topBorder: Int { Int(exactly: topBorderDistance.rounded()) ?? 0 }
+    var bottomBorder: Int { Int(exactly: bottomBorderDistance.rounded()) ?? 0 }
 
     var leftRightCentering: String {
         guard !isDeclined else { return "—" }
@@ -826,9 +867,7 @@ struct CardCenteringMeasurement: Equatable {
         outerQuad = .axisAligned(outer)
         rectification = nil
         usesQuadGeometry = false
-        if geometryInnerQuad != nil {
-            confidence = .legacyConfident
-        }
+        requireConfirmationAfterManualEditIfNeeded()
     }
 
     mutating func setManualInnerEdge(
@@ -840,9 +879,15 @@ struct CardCenteringMeasurement: Equatable {
         rectification = nil
         usesQuadGeometry = false
         innerReference = .artWindow
-        if geometryInnerQuad != nil {
-            confidence = .legacyConfident
-        }
+        requireConfirmationAfterManualEditIfNeeded()
+    }
+
+    private mutating func requireConfirmationAfterManualEditIfNeeded() {
+        guard confidence.state != .confident else { return }
+        confidence = .manualConfirmationRequired(
+            preserving: confidence,
+            reason: "Confirm both outer and inner frames before reading centering."
+        )
     }
 
     private static func centeringString(_ first: Double, _ second: Double) -> String {

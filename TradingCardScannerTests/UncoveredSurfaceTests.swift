@@ -648,6 +648,29 @@ final class ScanFeedbackSurfaceTests: XCTestCase {
 
 @MainActor
 final class CardCenteringSurfaceTests: XCTestCase {
+    func testNewPhotoClosesApprovalAndLateAnalysisCannotRestorePreviousMeasurement() async throws {
+        let model = CardCenteringViewModel()
+        model.image = UncoveredSurfaceFixtures.image()
+        model.measurement = CardCenteringMeasurement(
+            imageWidth: 240, imageHeight: 336,
+            outer: CardCenteringEdges(left: 20, top: 20, right: 220, bottom: 316),
+            inner: CardCenteringEdges(left: 30, top: 30, right: 210, bottom: 306), warnings: []
+        )
+        XCTAssertFalse(try XCTUnwrap(model.measurement).isDeclined)
+        model.loadCapturedPhoto(try XCTUnwrap(UncoveredSurfaceFixtures.image().pngData()))
+        XCTAssertNil(model.measurement)
+        XCTAssertNil(model.makeExportFile())
+        model.loadCapturedPhoto(Data("invalid newer photo".utf8))
+        for _ in 0..<250 where model.isAnalyzing {
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        XCTAssertFalse(model.isAnalyzing)
+        XCTAssertNotNil(model.errorMessage)
+        try await Task.sleep(for: .seconds(2))
+        XCTAssertNil(model.measurement, "an older analysis must not restore an approved measurement")
+        XCTAssertNil(model.makeExportFile())
+    }
+
     func testRotationIsClampedAndGuideEditsRefreshWarnings() {
         let model = CardCenteringViewModel()
         model.adjustRotation(by: 60)
