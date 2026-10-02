@@ -233,6 +233,20 @@ final class EbayQuadrantCropperTests: XCTestCase {
 }
 
 final class EbayListingPhotoExportTests: XCTestCase {
+    func testNewExportPreservesPreviousFilesAndArchive() async throws {
+        let data = try jpegData(for: XCTUnwrap(sourceFixture().cgImage))
+        let first = try await EbayListingPhotoExport.makeListingPhotos(frontData: data, backData: data)
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: first.contentDirectory) }
+        let archive = try await EbayListingPhotoExport.makeArchive(at: XCTUnwrap(first.contentDirectory))
+        let previousFiles = try first.urls.map { try Data(contentsOf: $0) }
+        let previousArchive = try Data(contentsOf: archive)
+        let second = try await EbayListingPhotoExport.makeListingPhotos(frontData: data, backData: data)
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: second.contentDirectory) }
+        XCTAssertNotEqual(first.contentDirectory, second.contentDirectory)
+        XCTAssertEqual(try first.urls.map { try Data(contentsOf: $0) }, previousFiles)
+        XCTAssertEqual(try Data(contentsOf: archive), previousArchive)
+    }
+
     /// A small JPEG with identity orientation passes its full images through
     /// byte-for-byte while the four crops retain their native pixel sizes.
     func testExportPreservesAnUpOrientedJPEGFullImageAndCreatesListingOrder() async throws {

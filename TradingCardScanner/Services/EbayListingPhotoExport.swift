@@ -602,7 +602,6 @@ enum EbayListingPhotoExport {
 
     private actor RunDirectoryStore {
         static let shared = RunDirectoryStore()
-        private var previousContainer: URL?
 
         func beginRun() throws -> URL {
             let root = FileManager.default.temporaryDirectory
@@ -612,20 +611,12 @@ enum EbayListingPhotoExport {
                     at: root,
                     withIntermediateDirectories: true
                 )
-                if let previousContainer {
-                    do {
-                        try FileManager.default.removeItem(at: previousContainer)
-                    } catch {
-                        // A prior run may already have been cleaned by the view.
-                    }
-                }
                 let container = root.appendingPathComponent(UUID().uuidString, isDirectory: true)
                 let directory = container.appendingPathComponent(archiveRootName, isDirectory: true)
                 try FileManager.default.createDirectory(
                     at: directory,
                     withIntermediateDirectories: true
                 )
-                previousContainer = container
                 return directory
             } catch {
                 throw EbayListingPhotoExport.Error.writeFailed(name: "the temporary listing-photo directory")
