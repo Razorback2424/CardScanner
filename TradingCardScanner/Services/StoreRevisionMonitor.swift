@@ -349,6 +349,7 @@ final class DerivedStateWriteCoordinator: ObservableObject {
 /// model actor decide which table revisions actually changed.
 struct StoreRevisionMonitor: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
 
     let portfolio: PortfolioEngine
@@ -362,6 +363,8 @@ struct StoreRevisionMonitor: View {
 
     @AppStorage("usesPriceFallback") private var usesPriceFallback = false
     @State private var saveGeneration: UInt = 0
+    @State private var foregroundGeneration: UInt = 0
+    @State private var pendingForegroundEligibility = false
     @State private var previousFingerprint: StoreRevisionFingerprint?
     private static let pendingMagicMigrationFingerprintKey =
         "storeRevision.pendingMagicMigrationFingerprint"
@@ -388,9 +391,14 @@ struct StoreRevisionMonitor: View {
     var body: some View {
         PerformanceSignpost.signposter.emitEvent("StoreRevisionMonitor.body")
         let storageToken = storageGeneration.currentToken()
-        let observation = "\(hasStartedPortfolio)-\(usesPriceFallback)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)-\(completionSignal.generation)"
+        let observation = "\(hasStartedPortfolio)-\(usesPriceFallback)-\(saveGeneration)-\(writeCoordinator.generation)-\(storageToken?.generation ?? 0)-\(completionSignal.generation)-\(foregroundGeneration)"
 
         return Color.clear
+            .onChange(of: scenePhase) { _, phase in
+                guard phase == .active else { return }
+                pendingForegroundEligibility = true
+                foregroundGeneration &+= 1
+            }
             .onReceive(NotificationCenter.default.publisher(for: ModelContext.didSave).receive(on: RunLoop.main)) { notification in
                 guard StoreRevisionSaveFilter.isRelevantSave(
                     userInfo: notification.userInfo,
@@ -426,10 +434,12 @@ struct StoreRevisionMonitor: View {
                     pendingForcedFallbackRetry.cancel()
                 }
                 revisionStore.publish(fingerprint)
+                let reconsiderAge = pendingForegroundEligibility && !isRefreshInFlight
                 await apply(
                     fingerprint,
                     storageToken: storageToken,
-                    forceUnsupportedRetry: fallbackWasJustEnabled
+                    forceUnsupportedRetry: fallbackWasJustEnabled,
+                    reconsiderAge: reconsiderAge
                 )
                 schedulePendingForcedFallbackRetryIfNeeded()
             }
@@ -439,7 +449,8 @@ struct StoreRevisionMonitor: View {
     private func apply(
         _ fingerprint: StoreRevisionFingerprint,
         storageToken: StorageGenerationToken,
-        forceUnsupportedRetry: Bool = false
+        forceUnsupportedRetry: Bool = false,
+        reconsiderAge: Bool = false
     ) async {
         guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         let generation = applyGeneration &+ 1
@@ -483,7 +494,8 @@ struct StoreRevisionMonitor: View {
             await refreshStalePricesIfNeeded(
                 using: fingerprint,
                 storageToken: storageToken,
-                forceUnsupportedRetry: forceUnsupportedRetry
+                forceUnsupportedRetry: forceUnsupportedRetry,
+                reconsiderAge: reconsiderAge
             )
             return
         }
@@ -499,6 +511,7 @@ struct StoreRevisionMonitor: View {
         let controllerOwnedPriceChange = pricesChanged
             && revisionStore.consumeExpectedPriceValues(fingerprint.priceValues)
         var requestedStalePriceRefresh = false
+        var recomputedBaseline = false
 
         PerformanceSignpost.emitEvent(
             "storeRevisionApply",
@@ -564,6 +577,7 @@ struct StoreRevisionMonitor: View {
                     "generation=\(generation)"
                 )
                 await portfolio.recomputeAndWait(context: modelContext)
+                recomputedBaseline = true
                 PerformanceSignpost.endInterval(
                     "storeRevision.portfolioRecompute",
                     portfolioState,
@@ -579,7 +593,8 @@ struct StoreRevisionMonitor: View {
             await refreshStalePricesIfNeeded(
                 using: fingerprint,
                 storageToken: storageToken,
-                forceUnsupportedRetry: forceUnsupportedRetry
+                forceUnsupportedRetry: forceUnsupportedRetry,
+                reconsiderAge: reconsiderAge
             )
             requestedStalePriceRefresh = true
             PerformanceSignpost.endInterval(
@@ -596,6 +611,7 @@ struct StoreRevisionMonitor: View {
                 "generation=\(generation)"
             )
             await portfolio.recomputeAndWait(context: modelContext)
+            recomputedBaseline = true
             PerformanceSignpost.endInterval(
                 "storeRevision.portfolioRecompute",
                 portfolioState,
@@ -610,7 +626,8 @@ struct StoreRevisionMonitor: View {
             await refreshStalePricesIfNeeded(
                 using: fingerprint,
                 storageToken: storageToken,
-                forceUnsupportedRetry: forceUnsupportedRetry
+                forceUnsupportedRetry: forceUnsupportedRetry,
+                reconsiderAge: reconsiderAge
             )
             requestedStalePriceRefresh = true
             PerformanceSignpost.endInterval(
@@ -621,7 +638,7 @@ struct StoreRevisionMonitor: View {
             guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         }
 
-        if magicChanged {
+        if magicChanged && !recomputedBaseline {
             guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             if isRefreshInFlight {
                 let portfolioState = PerformanceSignpost.beginInterval(
@@ -651,11 +668,12 @@ struct StoreRevisionMonitor: View {
             }
         }
 
-        if forceUnsupportedRetry, !requestedStalePriceRefresh {
+        if (forceUnsupportedRetry || reconsiderAge), !requestedStalePriceRefresh {
             await refreshStalePricesIfNeeded(
                 using: fingerprint,
                 storageToken: storageToken,
-                forceUnsupportedRetry: true
+                forceUnsupportedRetry: forceUnsupportedRetry,
+                reconsiderAge: reconsiderAge
             )
         }
 
@@ -698,7 +716,8 @@ struct StoreRevisionMonitor: View {
     private func refreshStalePricesIfNeeded(
         using fingerprint: StoreRevisionFingerprint,
         storageToken: StorageGenerationToken,
-        forceUnsupportedRetry: Bool = false
+        forceUnsupportedRetry: Bool = false,
+        reconsiderAge: Bool = false
     ) async {
         guard fingerprint.cardCount > 0,
               storageGeneration.isCurrent(storageToken),
@@ -718,8 +737,17 @@ struct StoreRevisionMonitor: View {
             }
             return
         }
-        guard shouldForceUnsupportedRetry || lastStalePriceTargetFingerprint != targetFingerprint else {
+        guard reconsiderAge || shouldForceUnsupportedRetry || lastStalePriceTargetFingerprint != targetFingerprint else {
             return
+        }
+        if reconsiderAge && !shouldForceUnsupportedRetry {
+            let actor = PriceRefreshTargetModelActor(modelContainer: modelContext.container)
+            guard let hasStaleTargets = await actor.hasStaleTargets(usesPriceFallback: usesPriceFallback),
+                  storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
+            if !hasStaleTargets {
+                pendingForegroundEligibility = false
+                return
+            }
         }
         lastStalePriceTargetFingerprint = targetFingerprint
         activeStalePriceCollectionFingerprint = fingerprint.stalePriceCollectionFingerprint
@@ -739,6 +767,7 @@ struct StoreRevisionMonitor: View {
                 guard self.storageGeneration.isCurrent(storageToken), !Task.isCancelled else {
                     return PriceRefreshResult(didRun: false, targetBuildFailed: false)
                 }
+                if reconsiderAge { self.pendingForegroundEligibility = false }
                 let shouldContinue = self.storageGeneration.continuation(for: storageToken)
                 let request = PriceRefreshRequest(
                     usesPriceFallback: usesPriceFallback,

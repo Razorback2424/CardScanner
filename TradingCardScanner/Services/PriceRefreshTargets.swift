@@ -115,6 +115,14 @@ enum PriceRefreshTargets {
 /// conservative empty-count behavior used by the foreground path.
 @ModelActor
 actor PriceRefreshTargetModelActor {
+    func hasStaleTargets(usesPriceFallback: Bool, now: Date = .now) -> Bool? {
+        guard let targets = try? PriceRefreshTargets.make(
+            context: modelContext, usesPriceFallback: usesPriceFallback, includeImported: true
+        ) else { return nil }
+        return !PriceRefreshController.staleTargets(from: targets, now: now,
+                                                  usesPriceFallback: usesPriceFallback).isEmpty
+    }
+
     func pendingCount(
         usesPriceFallback: Bool,
         includeImported: Bool
