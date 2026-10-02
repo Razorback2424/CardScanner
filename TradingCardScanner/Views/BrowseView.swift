@@ -155,9 +155,20 @@ final class BrowseViewModel: ObservableObject {
         let updates = await catalog.catalogUpdates()
         for await _ in updates {
             guard !Task.isCancelled else { return }
-            sets.removeAll()
-            selectedSets.removeAll()
-            await loadSets()
+            var refreshed = sets
+            for game in CardGame.allCases {
+                do {
+                    refreshed[game] = try await catalog.sets(for: game)
+                    setErrors[game] = nil
+                } catch {
+                    setErrors[game] = error.localizedDescription
+                }
+            }
+            guard !Task.isCancelled else { return }
+            sets = refreshed
+            let available = Set(refreshed.values.flatMap { $0.map(\.catalogID) })
+            let retainedSelection = selectedSets.intersection(available)
+            if retainedSelection != selectedSets { selectedSets = retainedSelection }
             recomputeSearchResults()
         }
     }

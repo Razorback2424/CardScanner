@@ -300,6 +300,34 @@ private actor FixedArtworkResponseDataLoader {
 }
 
 final class BrowseFeatureTests: XCTestCase {
+    @MainActor
+    func testCatalogUpdateRetainsSelectionsAndRemovesOnlyWithdrawnSets() async throws {
+        let catalog = EmptyBrowseCatalog()
+        let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "fixture"),
+                             name: "Fixture", code: "FIC", logoURL: nil, symbolURL: nil,
+                             cardCount: 1, releaseDate: nil, sortRank: 0)
+        await catalog.setDirectory([set], for: .pokemon)
+        let model = BrowseViewModel(catalog: catalog)
+        await model.loadSets()
+        model.selectedSets = [set.catalogID]
+        let task = Task { await model.observeCatalogUpdates() }
+        defer { task.cancel() }
+        await catalog.publishUpdate()
+        let updated = await waitUntil { await catalog.directoryFetchCount() >= 4 }
+        XCTAssertTrue(updated)
+        XCTAssertEqual(model.selectedSets, [set.catalogID])
+        await catalog.failDirectory(for: .pokemon)
+        await catalog.publishUpdate()
+        let failed = await waitUntil { await MainActor.run { model.setErrors[.pokemon] != nil } }
+        XCTAssertTrue(failed)
+        XCTAssertEqual(model.sets[.pokemon]?.map(\.catalogID), [set.catalogID])
+        XCTAssertEqual(model.selectedSets, [set.catalogID])
+        await catalog.setDirectory([], for: .pokemon)
+        await catalog.publishUpdate()
+        let withdrawn = await waitUntil { await MainActor.run { model.selectedSets.isEmpty } }
+        XCTAssertTrue(withdrawn)
+    }
+
 #if DEBUG
     func testBundledModernPokemonChecklistCoversBundledScannerSetsAndKeeps30thDownloadOnly() async throws {
         let root = try makeTemporaryCacheDirectory()
@@ -6233,8 +6261,25 @@ private actor RecordingJustTCGProviding: SealedBrowseProviding {
 
 private actor EmptyBrowseCatalog: BrowseCatalogProviding {
     private var searches = 0
+    private var directory: [CardGame: [CatalogSet]] = [:]
+    private var failedGames: Set<CardGame> = []
+    private var fetchCount = 0
+    private let updates = AsyncStream<BrowseCatalogUpdate>.makeStream()
 
-    func sets(for game: CardGame) async throws -> [CatalogSet] { [] }
+    func sets(for game: CardGame) async throws -> [CatalogSet] {
+        fetchCount += 1
+        if failedGames.contains(game) { throw TestError.failed }
+        return directory[game] ?? []
+    }
+
+    func setDirectory(_ sets: [CatalogSet], for game: CardGame) {
+        directory[game] = sets
+        failedGames.remove(game)
+    }
+    func failDirectory(for game: CardGame) { failedGames.insert(game) }
+    func directoryFetchCount() -> Int { fetchCount }
+    func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate> { updates.stream }
+    func publishUpdate() { updates.continuation.yield(BrowseCatalogUpdate(revision: nil, providerSetID: nil)) }
 
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         CatalogPage(items: [], nextCursor: nil)
