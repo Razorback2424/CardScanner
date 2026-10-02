@@ -191,5 +191,17 @@ final class CardFinishRenderPlanTests: XCTestCase {
         XCTAssertEqual(CollectionArtworkStore.save(data, filename: filename), filename)
         XCTAssertNotNil(CollectionArtworkStore.image(filename: filename))
     }
+
+    func testFreshArtworkSavePreservesCachedDerivativesAndOverwriteInvalidatesThem() throws {
+        let data = try XCTUnwrap(UIImage(systemName: "circle.fill")?.pngData())
+        let first = try XCTUnwrap(CollectionArtworkStore.save(data))
+        defer { CollectionArtworkStore.remove(filename: first) }
+        let cached = try XCTUnwrap(CollectionArtworkStore.image(filename: first, maximumPixelDimension: 100))
+        let second = try XCTUnwrap(CollectionArtworkStore.save(data))
+        defer { CollectionArtworkStore.remove(filename: second) }
+        XCTAssertTrue(CollectionArtworkStore.image(filename: first, maximumPixelDimension: 100) === cached)
+        XCTAssertEqual(CollectionArtworkStore.save(data, filename: first), first)
+        XCTAssertFalse(CollectionArtworkStore.image(filename: first, maximumPixelDimension: 100) === cached)
+    }
 #endif
 }

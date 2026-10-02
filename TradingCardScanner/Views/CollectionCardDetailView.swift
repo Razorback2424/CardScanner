@@ -1097,16 +1097,29 @@ struct CollectionCardDetailView: View {
     ) async {
         let container = modelContext.container
         let oldFilename = localArtworkFilename
-        guard let data = try? await item.loadTransferable(type: Data.self),
-              requestID == artworkGeneration,
-              !Task.isCancelled else {
+        let loadedData: Data?
+        do {
+            loadedData = try await item.loadTransferable(type: Data.self)
+        } catch is CancellationError {
             if requestID == artworkGeneration { selectedArtwork = nil }
+            return
+        } catch {
+            guard requestID == artworkGeneration, !Task.isCancelled else { return }
+            selectedArtwork = nil
+            errorMessage = "The photo couldn't be loaded."
+            return
+        }
+        guard requestID == artworkGeneration, !Task.isCancelled else { return }
+        guard let data = loadedData else {
+            selectedArtwork = nil
+            errorMessage = "The photo couldn't be loaded."
             return
         }
         guard let filename = CollectionArtworkStore.save(data) else {
             // Clear the picker binding on a rejected/undecodable asset so the
             // user can choose the same photo again after correcting the issue.
             selectedArtwork = nil
+            errorMessage = "The photo couldn't be prepared."
             return
         }
         guard requestID == artworkGeneration, !Task.isCancelled else {
@@ -1138,8 +1151,10 @@ struct CollectionCardDetailView: View {
             }
         } catch {
             CollectionArtworkStore.remove(filename: filename)
-            errorMessage = error.localizedDescription
-            if requestID == artworkGeneration { selectedArtwork = nil }
+            if requestID == artworkGeneration, !Task.isCancelled {
+                errorMessage = error.localizedDescription
+                selectedArtwork = nil
+            }
         }
     }
 
@@ -3016,7 +3031,7 @@ enum CollectionArtworkStore {
                 withIntermediateDirectories: true
             )
             try normalized.write(to: directory.appendingPathComponent(filename), options: .atomic)
-            imageCache.removeAllObjects()
+            if requestedFilename != nil { imageCache.removeAllObjects() }
             return filename
         } catch {
             return nil
