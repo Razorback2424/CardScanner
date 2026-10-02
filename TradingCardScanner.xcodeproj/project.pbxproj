@@ -1300,6 +1300,16 @@
 			};
 			name = Release;
 		};
+		F0010012 /* ReleaseLocal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = ReleaseLocal;
+		};
 		F0010006 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B0010130 /* PokemonCatalogDebugLocal.xcconfig */;
@@ -1421,6 +1431,35 @@
 			};
 			name = Release;
 		};
+		F0010013 /* ReleaseLocal */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0010120 /* PokemonCatalogProduction.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "TradingCardScanner/TradingCardScanner-Local.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CARD_SCANNER_PRIVACY_URL = "";
+				CARD_SCANNER_SUPPORT_URL = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = D4X943SP8Z;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScanner/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) LOCAL_ONLY_SIGNING";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = ReleaseLocal;
+		};
 		F0020006 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1516,6 +1555,29 @@
 			};
 			name = Release;
 		};
+		F0020010 /* ReleaseLocal */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = TradingCardScannerTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScannerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) LOCAL_ONLY_SIGNING";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TradingCardScanner.app/TradingCardScanner";
+			};
+			name = ReleaseLocal;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1526,6 +1588,7 @@
 				F0010008 /* DebugProduction */,
 				F0010011 /* DebugRemoteLocal */,
 				F0010005 /* Release */,
+				F0010012 /* ReleaseLocal */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1537,6 +1600,7 @@
 				F0010009 /* DebugProduction */,
 				F0010010 /* DebugRemoteLocal */,
 				F0010007 /* Release */,
+				F0010013 /* ReleaseLocal */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1548,6 +1612,7 @@
 				F0020008 /* DebugProduction */,
 				F0020009 /* DebugRemoteLocal */,
 				F0020007 /* Release */,
+				F0020010 /* ReleaseLocal */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
