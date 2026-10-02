@@ -400,15 +400,36 @@ struct CollectionView: View {
     }
 
     private var collectionNavigationHeader: some View {
-        HStack(spacing: 0) {
-            Text("Collection")
-                .font(.headline)
-                .lineLimit(1)
-                .accessibilityAddTraits(.isHeader)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                collectionHeaderTitle.fixedSize()
+                Spacer(minLength: 8)
+                collectionHeaderActions
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                collectionHeaderTitle
+                HStack {
+                    Spacer(minLength: 0)
+                    collectionHeaderActions
+                }
+            }
+            .padding(.vertical, 8)
+        }
+        .padding(.horizontal, 16)
+        .frame(minHeight: 44)
+        .background(Color(uiColor: .systemBackground))
+        .overlay(alignment: .bottom) { Divider() }
+    }
 
-            Spacer(minLength: 0)
+    private var collectionHeaderTitle: some View {
+        Text("Collection")
+            .font(.headline)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityAddTraits(.isHeader)
+    }
 
-            HStack(spacing: 18) {
+    private var collectionHeaderActions: some View {
+        HStack(spacing: 18) {
                 Button {
                     select(.browse)
                 } label: {
@@ -424,16 +445,9 @@ struct CollectionView: View {
                         .frame(width: 44, height: 44)
                 }
                 .accessibilityLabel("Settings")
-            }
-            .foregroundStyle(.primary)
-            .tint(.primary)
         }
-        .padding(.horizontal, 16)
-        .frame(height: 44)
-        .background(Color(uiColor: .systemBackground))
-        .overlay(alignment: .bottom) {
-            Divider()
-        }
+        .foregroundStyle(.primary)
+        .tint(.primary)
     }
 
     private var loadingCollection: some View {
@@ -1637,42 +1651,62 @@ private struct CollectionCardTile: View {
 
     @ViewBuilder
     private var quietLine: some View {
-        HStack(alignment: .center, spacing: 8) {
-            if let caveat = priceReplacementCaveat {
-                Text(caveat)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.orange)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-            } else {
-                PriceLabel(price: row.price, style: .tile)
-                    .fixedSize(horizontal: true, vertical: false)
-            }
-
-            if row.quantity > 1 {
-                Text("×\(row.quantity)")
-                    .font(.footnote)
-                    .monospacedDigit()
-                    .foregroundStyle(.secondary)
-                    .fixedSize(horizontal: true, vertical: false)
-            }
-
-            Spacer(minLength: 4)
-
-            if let status = CollectionFinishStatus.resolve(
-                row: row,
-                showDefaultFinish: showDefaultFinish
-            ) {
-                HStack(spacing: 5) {
-                    CollectionFinishDot(style: statusDotStyle(for: status))
-                    Text(status.label)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(statusTint(for: status))
-                        .lineLimit(1)
-                        .truncationMode(.tail)
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    tilePriceAndQuantity
+                    Spacer(minLength: 0)
                 }
-                .layoutPriority(1)
+                tileFinishStatus
             }
+        } else {
+            HStack(alignment: .center, spacing: 8) {
+                tilePriceAndQuantity
+                Spacer(minLength: 4)
+                tileFinishStatus
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var tilePriceAndQuantity: some View {
+        if let caveat = priceReplacementCaveat {
+            Text(caveat)
+                .font(dynamicTypeSize.isAccessibilitySize ? .subheadline.weight(.semibold) : .system(size: 15, weight: .semibold))
+                .foregroundStyle(.orange)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                .fixedSize(horizontal: false, vertical: true)
+                .truncationMode(.tail)
+        } else {
+            PriceLabel(price: row.price, style: .tile)
+                .fixedSize(horizontal: true, vertical: false)
+        }
+
+        if row.quantity > 1 {
+            Text("×\(row.quantity)")
+                .font(.footnote)
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: true, vertical: false)
+        }
+    }
+
+    @ViewBuilder
+    private var tileFinishStatus: some View {
+        if let status = CollectionFinishStatus.resolve(
+            row: row,
+            showDefaultFinish: showDefaultFinish
+        ) {
+            HStack(spacing: 5) {
+                CollectionFinishDot(style: statusDotStyle(for: status))
+                Text(status.label)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(statusTint(for: status))
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .truncationMode(.tail)
+            }
+            .layoutPriority(1)
         }
     }
 
