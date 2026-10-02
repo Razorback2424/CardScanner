@@ -162,10 +162,14 @@ actor PokemonCatalogCoordinator {
             return .notModified
 
         case .fetched(let envelope):
-            guard rolloutMode == .remoteAuthority else {
-                return await validateAndDiscard(envelope)
+            let result: RefreshResult
+            if rolloutMode == .remoteAuthority {
+                result = await activateEnvelope(envelope)
+            } else {
+                result = await validateAndDiscard(envelope)
             }
-            return await activateEnvelope(envelope)
+            if case .rejected = result { await client.resetConditionalState() }
+            return result
         }
     }
 

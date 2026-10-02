@@ -165,11 +165,10 @@ actor PokemonCatalogUpdateClient {
                     throw UpdateError.payloadTooLarge(bytes: data.count)
                 }
 
-                lastETag = http.value(forHTTPHeaderField: "ETag")
-                lastModified = http.value(forHTTPHeaderField: "Last-Modified")
-
                 let decoder = JSONDecoder()
                 let envelope = try decoder.decode(PokemonCatalogReleaseEnvelope.self, from: data)
+                lastETag = http.value(forHTTPHeaderField: "ETag")
+                lastModified = http.value(forHTTPHeaderField: "Last-Modified")
                 Self.logger.info("Fetched catalog release envelope")
                 return .fetched(envelope)
             } catch is CancellationError {
@@ -189,10 +188,8 @@ actor PokemonCatalogUpdateClient {
         )
     }
 
-    #if DEBUG
     func resetConditionalState() {
         lastETag = nil
         lastModified = nil
     }
-    #endif
 }

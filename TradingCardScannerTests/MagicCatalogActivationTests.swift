@@ -3,6 +3,34 @@ import XCTest
 @testable import TradingCardScanner
 
 final class MagicCatalogActivationTests: XCTestCase {
+    func testFailedActivationRefetchesWithoutValidators() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [MagicActivationURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel(); MagicActivationURLProtocol.handler = nil }
+        let data = try MagicCatalogJSON.encode(envelope(revision: 5))
+        var conditionalHeaders: [String?] = []
+        MagicActivationURLProtocol.handler = { request in
+            conditionalHeaders.append(request.value(forHTTPHeaderField: "If-None-Match"))
+            return (HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil,
+                                    headerFields: ["ETag": "catalog-v5", "Last-Modified": "today"])!, data)
+        }
+        try Data("blocking file".utf8).write(to: root)
+        let coordinator = MagicCatalogCoordinator(
+            store: MagicCatalogReleaseStore(root: root),
+            client: MagicCatalogUpdateClient(session: session),
+            keys: [MagicCatalogSignatureVerifier.PinnedKey(id: keyID, publicKey: key.publicKey)],
+            rolloutMode: .remoteAuthority
+        )
+        guard case .rejected = await coordinator.refresh() else { return XCTFail("blocked storage must reject activation") }
+        try FileManager.default.removeItem(at: root)
+        guard case .activated = await coordinator.refresh() else { return XCTFail("second refresh must activate") }
+        XCTAssertEqual(conditionalHeaders.count, 2)
+        XCTAssertTrue(conditionalHeaders.allSatisfy { $0 == nil })
+    }
+
     private let key = Curve25519.Signing.PrivateKey()
     private let keyID = "activation-test"
 
@@ -164,4 +192,19 @@ final class MagicCatalogActivationTests: XCTestCase {
         }
         XCTAssertEqual(previousRevision, 12)
     }
+}
+
+private final class MagicActivationURLProtocol: URLProtocol {
+    static var handler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+        do {
+            let (response, data) = try Self.handler!(request)
+            client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
+        } catch { client?.urlProtocol(self, didFailWithError: error) }
+    }
+    override func stopLoading() {}
 }

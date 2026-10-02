@@ -437,6 +437,33 @@ final class PokemonCatalogUpdateClientTests: XCTestCase {
 // MARK: - PokemonCatalogCoordinator tests
 
 final class PokemonCatalogCoordinatorTests: XCTestCase {
+    func testFailedActivationRefetchesWithoutValidators() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [MockURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel(); MockURLProtocol.handler = nil }
+        let envelope = try SliceBFixture.signedEnvelope(release: SliceBFixture.release(revision: 5))
+        let data = try JSONEncoder().encode(envelope)
+        var conditionalHeaders: [String?] = []
+        MockURLProtocol.handler = { request in
+            conditionalHeaders.append(request.value(forHTTPHeaderField: "If-None-Match"))
+            return (HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil,
+                                    headerFields: ["ETag": "catalog-v5", "Last-Modified": "today"])!, data)
+        }
+        // Inject a persistence failure without adding a production test hook.
+        try Data("blocking file".utf8).write(to: root)
+        let coordinator = PokemonCatalogCoordinator(
+            store: PokemonCatalogReleaseStore(root: root),
+            client: PokemonCatalogUpdateClient(session: session, baseURL: URL(string: "https://test.example.com")!),
+            keys: [SliceBFixture.pinnedKey], rolloutMode: .remoteAuthority
+        )
+        guard case .rejected = await coordinator.refresh() else { return XCTFail("blocked storage must reject activation") }
+        try FileManager.default.removeItem(at: root)
+        guard case .activated = await coordinator.refresh() else { return XCTFail("second refresh must activate") }
+        XCTAssertEqual(conditionalHeaders.count, 2)
+        XCTAssertTrue(conditionalHeaders.allSatisfy { $0 == nil })
+    }
+
     private var root: URL!
 
     override func setUp() {

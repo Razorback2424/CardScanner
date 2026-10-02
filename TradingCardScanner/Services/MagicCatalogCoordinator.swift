@@ -97,10 +97,14 @@ actor MagicCatalogCoordinator {
         case .notModified:
             return .notModified
         case .fetched(let envelope):
+            let result: RefreshResult
             if rolloutMode == .remoteValidationOnly {
-                return await validateAndDiscard(envelope)
+                result = await validateAndDiscard(envelope)
+            } else {
+                result = await activateEnvelope(envelope)
             }
-            return await activateEnvelope(envelope)
+            if case .rejected = result { await client.resetConditionalState() }
+            return result
         }
     }
 

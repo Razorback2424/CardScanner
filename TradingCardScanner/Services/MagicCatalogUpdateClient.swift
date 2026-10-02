@@ -82,12 +82,13 @@ actor MagicCatalogUpdateClient {
                 guard data.count <= Self.maxPayloadBytes else {
                     throw UpdateError.payloadTooLarge(bytes: data.count)
                 }
-                lastETag = http.value(forHTTPHeaderField: "ETag")
-                lastModified = http.value(forHTTPHeaderField: "Last-Modified")
-                return .fetched(try MagicCatalogJSON.decode(
+                let envelope = try MagicCatalogJSON.decode(
                     MagicCatalogReleaseEnvelope.self,
                     from: data
-                ))
+                )
+                lastETag = http.value(forHTTPHeaderField: "ETag")
+                lastModified = http.value(forHTTPHeaderField: "Last-Modified")
+                return .fetched(envelope)
             } catch is CancellationError {
                 throw CancellationError()
             } catch let error as UpdateError {
@@ -102,10 +103,8 @@ actor MagicCatalogUpdateClient {
         )
     }
 
-    #if DEBUG
     func resetConditionalState() {
         lastETag = nil
         lastModified = nil
     }
-    #endif
 }
