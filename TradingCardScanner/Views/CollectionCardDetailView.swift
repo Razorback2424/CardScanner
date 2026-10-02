@@ -34,6 +34,8 @@ private struct CardDetailMovementDisplay: Equatable {
 
 struct CollectionCardDetailView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @ScaledMetric(relativeTo: .largeTitle) private var titleFontSize: CGFloat = 32
     @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
@@ -381,14 +383,14 @@ struct CollectionCardDetailView: View {
     private var cardIdentitySection: some View {
         VStack(spacing: 6) {
             Text(card.name)
-                .font(.system(size: 32, weight: .bold))
-                .tracking(-0.6)
+                .font(.system(size: titleFontSize, weight: .bold))
+                .tracking(dynamicTypeSize <= .large ? -0.6 : 0)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
 
             if !provenanceLine.isEmpty {
                 Text(provenanceLine)
-                    .font(.system(size: 15))
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)

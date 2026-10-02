@@ -1484,6 +1484,9 @@ private struct CollectionCardTile: View {
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.cardFinishMotionSource) private var cardFinishMotion
     @State private var loadedArtworkAccent: ArtworkAccent?
+    @ScaledMetric(relativeTo: .headline) private var nameFontSize: CGFloat = 18
+    @ScaledMetric(relativeTo: .footnote) private var identityFontSize: CGFloat = 13
+    @ScaledMetric(relativeTo: .headline) private var scaledNameMinHeight: CGFloat = 46
 
     private struct ArtworkSource: Equatable {
         let localFilename: String?
@@ -1517,7 +1520,7 @@ private struct CollectionCardTile: View {
     }
 
     private var nameMinHeight: CGFloat? {
-        dynamicTypeSize > .xxxLarge ? nil : 46
+        dynamicTypeSize > .xxxLarge ? nil : scaledNameMinHeight
     }
 
     var body: some View {
@@ -1559,15 +1562,15 @@ private struct CollectionCardTile: View {
             VStack(alignment: .leading, spacing: 4) {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(row.name)
-                        .font(.system(size: 18, weight: .semibold))
-                        .tracking(-0.18)
-                        .lineLimit(2)
+                        .font(.system(size: nameFontSize, weight: .semibold))
+                        .tracking(dynamicTypeSize <= .large ? -0.18 : 0)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                         .frame(maxWidth: .infinity, minHeight: nameMinHeight, alignment: .topLeading)
 
                     Text(identityLine)
-                        .font(.system(size: 13, weight: .medium))
+                        .font(.system(size: identityFontSize, weight: .medium))
                         .foregroundStyle(Color("TileIdentity"))
-                        .lineLimit(1)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
                         .truncationMode(.tail)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }

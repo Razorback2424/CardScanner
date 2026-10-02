@@ -15,10 +15,16 @@ META_PATH="$ARTIFACTS_DIR/ui-latest.json"
 mkdir -p "$ARTIFACTS_DIR"
 xcrun simctl boot "$UI_DEVICE_ID" >/dev/null 2>&1 || true
 xcrun simctl bootstatus "$UI_DEVICE_ID" -b
-xcodebuild -project TradingCardScanner.xcodeproj -scheme "$SCHEME" -configuration Debug \
-  -derivedDataPath "$DERIVED_DATA" -destination "platform=iOS Simulator,id=$UI_DEVICE_ID" build
-
-APP_PATH="$(find "$DERIVED_DATA/Build/Products" -maxdepth 2 -type d -name "*.app" | head -n 1)"
+if [[ -n "${UI_PREBUILT_APP_PATH:-}" ]]; then
+  # A caller may reuse binaries it has already built and tested. This also
+  # permits visual QA when macOS file coordination blocks reopening a project.
+  APP_PATH="$UI_PREBUILT_APP_PATH"
+  [[ -d "$APP_PATH" ]] || { echo "Prebuilt app does not exist: $APP_PATH"; exit 1; }
+else
+  xcodebuild -project TradingCardScanner.xcodeproj -scheme "$SCHEME" -configuration Debug \
+    -derivedDataPath "$DERIVED_DATA" -destination "platform=iOS Simulator,id=$UI_DEVICE_ID" build
+  APP_PATH="$(find "$DERIVED_DATA/Build/Products" -maxdepth 2 -type d -name "*.app" | head -n 1)"
+fi
 if [[ -z "${APP_PATH:-}" ]]; then
   echo "Could not find built .app under $DERIVED_DATA"
   exit 1
