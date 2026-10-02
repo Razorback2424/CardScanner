@@ -470,7 +470,7 @@ struct CollectionView: View {
         case .browse:
             BrowseView(catalog: catalog)
         case let .card(id):
-            if let entry = snapshot.entries.first(where: { $0.id == id }) {
+            if let entry = entry(for: id, in: snapshot) {
                 CollectionCardDestination(
                     row: entry.row,
                     unpricedReason: entry.unpricedReason,
@@ -480,26 +480,60 @@ struct CollectionView: View {
                     onRemoved: presentUndo(for:)
                 )
             } else {
-                // The card was removed, or a filter now excludes it. Either way the
-                // id no longer names anything, so say so rather than showing a stale
-                // copy of a card that is not in the collection any more.
                 ContentUnavailableView(
                     "Card not shown",
                     systemImage: "rectangle.stack",
-                    description: Text("It was removed, or the current filters exclude it.")
+                    description: Text("This card was removed from your collection.")
                 )
             }
         case let .movement(id):
-            if let entry = snapshot.entries.first(where: { $0.id == id }) {
+            if let entry = entry(for: id, in: snapshot) {
                 CollectionMovementDestination(row: entry.row, history: history)
             } else {
                 ContentUnavailableView(
                     "Card not shown",
                     systemImage: "rectangle.stack",
-                    description: Text("It was removed, or the current filters exclude it.")
+                    description: Text("This card was removed from your collection.")
                 )
             }
         }
+    }
+
+    private func entry(for id: String, in snapshot: Snapshot) -> Snapshot.Entry? {
+        Self.entry(
+            for: id, in: snapshot,
+            liveDiagnostics: priceSnapshot.diagnosticsByCollectionKey,
+            projectedDiagnostics: projectionStore.snapshot?.diagnosticsByCollectionKey ?? [:],
+            physicalRowCounts: projectionStore.snapshot?.physicalRowCountsByKey ?? [:]
+        )
+    }
+
+    static func entry(
+        for id: String, in snapshot: Snapshot,
+        liveDiagnostics: [String: PriceSnapshotDiagnostics] = [:],
+        projectedDiagnostics: [String: CollectionRowDiagnostics] = [:],
+        physicalRowCounts: [String: Int] = [:]
+    ) -> Snapshot.Entry? {
+        if let entry = snapshot.entries.first(where: { $0.id == id }) { return entry }
+        guard let row = snapshot.all.first(where: { $0.id == id }) else { return nil }
+        return makeEntry(row, liveDiagnostics: liveDiagnostics[id],
+                         projectedDiagnostics: projectedDiagnostics[id],
+                         physicalRowCount: physicalRowCounts[id] ?? 1)
+    }
+
+    private static func makeEntry(
+        _ row: CollectionRow,
+        liveDiagnostics: PriceSnapshotDiagnostics?,
+        projectedDiagnostics: CollectionRowDiagnostics?,
+        physicalRowCount: Int
+    ) -> Snapshot.Entry {
+        Snapshot.Entry(
+            row: row,
+            unpricedReason: row.price.amount == nil
+                ? (liveDiagnostics?.unpricedReason ?? projectedDiagnostics?.unpricedReason) : nil,
+            artworkReason: liveDiagnostics?.artworkReason ?? projectedDiagnostics?.artworkReason,
+            isLogicalConflict: physicalRowCount > 1
+        )
     }
 
     private var noSelection: some View {
@@ -1093,20 +1127,11 @@ struct CollectionView: View {
 
         return projectionCache.snapshot(for: queryKey) {
             let entries = visible.map { row in
-                let liveDiagnostics = priceSnapshot.diagnosticsByCollectionKey[row.id]
-                let projectedDiagnostics = cached.diagnosticsByCollectionKey[row.id]
-                return Snapshot.Entry(
-                    row: row,
-                    // A diagnostic is about the current value, not a permanent
-                    // property of the row. The delta channel clears the live
-                    // reason immediately; this guard also prevents an older
-                    // projection from rendering a warning beside a price.
-                    unpricedReason: row.price.amount == nil
-                        ? (liveDiagnostics?.unpricedReason ?? projectedDiagnostics?.unpricedReason)
-                        : nil,
-                    artworkReason: liveDiagnostics?.artworkReason
-                        ?? projectedDiagnostics?.artworkReason,
-                    isLogicalConflict: (cached.physicalRowCountsByKey[row.id] ?? 1) > 1
+                Self.makeEntry(
+                    row,
+                    liveDiagnostics: priceSnapshot.diagnosticsByCollectionKey[row.id],
+                    projectedDiagnostics: cached.diagnosticsByCollectionKey[row.id],
+                    physicalRowCount: cached.physicalRowCountsByKey[row.id] ?? 1
                 )
             }
             let collectionValue = CollectionValuation.shownValue(for: pricedRows)

@@ -6,6 +6,31 @@ import XCTest
 
 @MainActor
 final class DetailDeletionRenderTests: XCTestCase {
+    func testDestinationSurvivesPriceFilterChangeAndDisappearsOnlyAfterRemoval() throws {
+        var row = CollectionRow(id: "stable", game: .pokemon, name: "Test Card", setCode: "TST",
+                                setName: "Test Set", setReleaseOrder: 0, cardNumber: "1",
+                                variantID: nil, variantLabel: nil, quantity: 1, dateAdded: .now,
+                                price: .unknown)
+        let diagnostics = CollectionRowDiagnostics(unpricedReason: .notChecked, artworkReason: .lookupPending)
+        func snapshot(all: [CollectionRow], entries: [CollectionView.Snapshot.Entry]) -> CollectionView.Snapshot {
+            CollectionView.Snapshot(all: all, entries: entries, collectionValue: .zero,
+                                    footer: .make(visibleRows: entries.map(\.row), collectionRows: all, isNarrowed: true))
+        }
+        let visible = CollectionView.Snapshot.Entry(row: row, unpricedReason: .notChecked,
+                                                    artworkReason: .lookupPending, isLogicalConflict: true)
+        XCTAssertNotNil(CollectionView.entry(for: row.id, in: snapshot(all: [row], entries: [visible])))
+        row.price = PriceDisplay(amount: 10, currencyCode: "USD")
+        let hiddenByUnpricedFilter = snapshot(all: [row], entries: [])
+        let entry = try XCTUnwrap(CollectionView.entry(for: row.id, in: hiddenByUnpricedFilter,
+                                                      projectedDiagnostics: [row.id: diagnostics],
+                                                      physicalRowCounts: [row.id: 2]))
+        XCTAssertEqual(entry.row.price.amount, 10)
+        XCTAssertNil(entry.unpricedReason)
+        XCTAssertEqual(entry.artworkReason, .lookupPending)
+        XCTAssertTrue(entry.isLogicalConflict)
+        XCTAssertNil(CollectionView.entry(for: row.id, in: snapshot(all: [], entries: [])))
+    }
+
     func testHostedCollectionDetailShowsRemovedPlaceholderAfterSiblingDelete() async throws {
         let container = try ModelContainer(
             for: CollectionStorageModelSchema.full,
