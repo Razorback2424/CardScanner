@@ -415,9 +415,11 @@ enum ScryfallError: LocalizedError {
 struct ScryfallService: Sendable {
     private static let childSetCache = ScryfallChildSetCache()
     private let breaker: TCGdexCircuitBreaker
+    private let session: URLSession
 
-    init(breaker: TCGdexCircuitBreaker = .scryfallShared) {
+    init(breaker: TCGdexCircuitBreaker = .scryfallShared, session: URLSession = .shared) {
         self.breaker = breaker
+        self.session = session
     }
     /// Magic 2015 introduced the printed collector-number footer this scanner
     /// reads. Before it there is no printed identifier to have read, so an older
@@ -628,7 +630,7 @@ struct ScryfallService: Sendable {
         }
 
         do {
-            let (data, response) = try await URLSession.shared.data(for: request)
+            let (data, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse else {
                 await breaker.recordFailure(.unreachable)
                 throw ScryfallError.providerUnavailable

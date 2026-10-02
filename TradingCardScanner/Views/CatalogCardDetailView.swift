@@ -214,6 +214,11 @@ struct CatalogCardDetailView: View {
             let rows = card.marketPrices
             VStack(alignment: .leading, spacing: 8) {
                 Text("Published market prices").font(.headline)
+                if let details {
+                    Text("Retrieved \(details.retrievedAt.formatted(date: .abbreviated, time: .shortened))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
                 ForEach(rows) { price in
                     switch price.availability {
                     case let .published(amount):

@@ -6,6 +6,60 @@ import PokemonCatalogCore
 @testable import TradingCardScanner
 
 final class BrowseLoadingRefinementTests: XCTestCase {
+    func testDirectMagicDetailsExpirePositiveAndMissingQuotesWithoutSortAndKeepFailedRefreshTimestamp() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let cache = CatalogCacheStore(root: root)
+        await cache.storeSets([set()], for: .magic)
+        let clock = BrowseRefinementClock()
+        let count = BrowseRefinementRequestCount()
+        let page = pageJSON
+        let object = try XCTUnwrap(JSONSerialization.jsonObject(with: page) as? [String: Any])
+        var card = try XCTUnwrap((object["data"] as? [[String: Any]])?.first)
+        let original = try JSONSerialization.data(withJSONObject: card)
+        BrowseRefinementURLProtocol.setHandler { loader in
+            if loader.request.url?.path == "/cards/search" { loader.respond(page) }
+            else { count.increment(); loader.respond(original) }
+        }
+        let catalog = BrowseCatalog(cache: cache, magicSession: session, now: { clock.date })
+        let summaries = try await catalog.searchCards(named: "Llanowar", game: .magic, setIDs: [], cursor: nil)
+        let summary = try XCTUnwrap(summaries.items.first)
+        let first = try await catalog.details(for: summary)
+        clock.advance(23 * 60 * 60)
+        let fresh = try await catalog.details(for: summary)
+        XCTAssertEqual(fresh.retrievedAt, first.retrievedAt)
+        XCTAssertEqual(count.value, 1)
+        card["prices"] = [String: String]()
+        let missing = try JSONSerialization.data(withJSONObject: card)
+        BrowseRefinementURLProtocol.setHandler { loader in count.increment(); loader.respond(missing) }
+        clock.advance(2 * 60 * 60)
+        let negative = try await catalog.details(for: summary)
+        XCTAssertTrue(negative.card.marketPrices.allSatisfy(\.isGap))
+        XCTAssertEqual(count.value, 2)
+        clock.advance(5 * 60 * 60)
+        _ = try await catalog.details(for: summary)
+        XCTAssertEqual(count.value, 2)
+        card["prices"] = ["usd": "2.50", "usd_foil": "7.00"]
+        let updated = try JSONSerialization.data(withJSONObject: card)
+        BrowseRefinementURLProtocol.setHandler { loader in count.increment(); loader.respond(updated) }
+        clock.advance(60 * 60)
+        async let left = catalog.details(for: summary)
+        async let right = catalog.details(for: summary)
+        let (newLeft, newRight) = try await (left, right)
+        XCTAssertEqual(newLeft.retrievedAt, newRight.retrievedAt)
+        XCTAssertTrue(newLeft.card.marketPrices.contains { $0.value == 2.50 })
+        XCTAssertEqual(count.value, 3)
+        clock.advance(25 * 60 * 60)
+        BrowseRefinementURLProtocol.setHandler { loader in
+            count.increment(); loader.respond(Data("invalid provider response".utf8))
+        }
+        let retained = try await catalog.details(for: summary)
+        XCTAssertEqual(retained.retrievedAt, newLeft.retrievedAt)
+        XCTAssertEqual(retained.card.marketPrices, newLeft.card.marketPrices)
+        XCTAssertEqual(count.value, 4)
+    }
     private func session() -> URLSession {
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [BrowseRefinementURLProtocol.self]
@@ -245,6 +299,13 @@ private final class BrowseRefinementRequestCount: @unchecked Sendable {
     private var count = 0
     func increment() { lock.lock(); defer { lock.unlock() }; count += 1 }
     var value: Int { lock.lock(); defer { lock.unlock() }; return count }
+}
+
+private final class BrowseRefinementClock: @unchecked Sendable {
+    private let lock = NSLock()
+    private var instant = Date.now
+    var date: Date { lock.lock(); defer { lock.unlock() }; return instant }
+    func advance(_ seconds: TimeInterval) { lock.lock(); defer { lock.unlock() }; instant.addTimeInterval(seconds) }
 }
 
 private final class BrowseRefinementURLProtocol: URLProtocol, @unchecked Sendable {

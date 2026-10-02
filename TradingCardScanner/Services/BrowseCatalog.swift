@@ -110,6 +110,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private struct DetailTaskState {
+        let id: UUID
         let task: Task<CatalogCardDetails, Error>
         var waiterIDs: Set<UUID>
     }
@@ -138,7 +139,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         let prices: [String: CatalogCachedPrice]
     }
 
-    private let scryfall = ScryfallService()
+    private let scryfall: ScryfallService
+    private let now: @Sendable () -> Date
     private let magicSession: URLSession
     private let cache: CatalogCacheStore
     private let browsePriceHistoryStore: BrowsePriceHistoryStore
@@ -206,7 +208,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         magicCatalogCoordinator: MagicCatalogCoordinator? = nil,
         browsePriceHistoryStore: BrowsePriceHistoryStore = .shared,
         scryfallDatasetStamp: any ScryfallDatasetStampProviding = ScryfallDatasetStampCache.shared,
-        magicSession: URLSession = .shared
+        magicSession: URLSession = .shared,
+        now: @escaping @Sendable () -> Date = { .now }
     ) {
         // The old crawl-installed ordering map was unsigned and had no rollback
         // semantics. Remove it once on construction so upgrades cannot leave a
@@ -230,6 +233,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
         self.browsePriceHistoryStore = browsePriceHistoryStore
         self.scryfallDatasetStamp = scryfallDatasetStamp
         self.magicSession = magicSession
+        self.scryfall = ScryfallService(session: magicSession)
+        self.now = now
     }
 
     deinit {
@@ -866,21 +871,27 @@ actor BrowseCatalog: BrowseCatalogProviding {
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
         installMemoryWarningObserverIfNeeded()
         let key = detailCacheKey(for: summary)
-        if let cached = detailCache[key] {
+        let stale = detailCache[key]
+        if let cached = stale, Self.detailsAreFresh(cached, now: now()) {
+            try Task.checkCancellation()
             return await addingTCGCSVPrices(to: cached)
         }
 
         let waiterID = UUID()
+        let requestID: UUID
         let task: Task<CatalogCardDetails, Error>
         if var state = detailTasks[key] {
             state.waiterIDs.insert(waiterID)
             task = state.task
+            requestID = state.id
             detailTasks[key] = state
         } else {
+            requestID = UUID()
             let newTask = Task { [self] in
-                try await loadDetails(for: summary)
+                try await loadDetails(for: summary, ignoringCache: stale != nil)
             }
             detailTasks[key] = DetailTaskState(
+                id: requestID,
                 task: newTask,
                 waiterIDs: [waiterID]
             )
@@ -889,13 +900,26 @@ actor BrowseCatalog: BrowseCatalogProviding {
 
         do {
             let details = try await awaitDetailTask(task)
-            detailCache[key] = details
+            try Task.checkCancellation()
+            if detailTasks[key]?.id == requestID { detailCache[key] = details }
             releaseDetailWaiter(for: key, waiterID: waiterID)
             return details
         } catch {
             releaseDetailWaiter(for: key, waiterID: waiterID)
+            if error is CancellationError || Task.isCancelled { throw CancellationError() }
+            if let stale, detailCache[key]?.retrievedAt == stale.retrievedAt {
+                return await addingTCGCSVPrices(to: stale)
+            }
             throw error
         }
+    }
+
+    nonisolated static func detailsAreFresh(_ details: CatalogCardDetails, now: Date) -> Bool {
+        let prices = details.card.marketPrices
+        let maxAge: TimeInterval = prices.isEmpty || prices.contains(where: \.isGap)
+            ? 6 * 60 * 60 : 24 * 60 * 60
+        let age = now.timeIntervalSince(details.retrievedAt)
+        return age >= 0 && age < maxAge
     }
 
     /// Awaiting a shared task must still respond to cancellation for this
@@ -938,7 +962,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         }
     }
 
-    private func loadDetails(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+    private func loadDetails(for summary: CatalogCardSummary, ignoringCache: Bool = false) async throws -> CatalogCardDetails {
         let details: CatalogCardDetails
         switch summary.game {
         case .pokemon:
@@ -948,10 +972,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
             guard let directorySet else { throw BrowseCatalogError.unknownSet }
             let set = PokemonMasterSetChecklistBuilder.enrichedSet(directorySet, providerSet: catalog)
             let card = try await pokemonTransport.fetchCard(id: summary.providerID)
-            details = CatalogCardDetails(card: .pokemon(card, setCode: set.code), set: set)
+            details = CatalogCardDetails(card: .pokemon(card, setCode: set.code), set: set, retrievedAt: now())
         case .magic:
-            let card = try await scryfall.fetchCard(id: summary.providerID)
-            let retrievedAt = Date.now
+            let card = try await scryfall.fetchCard(id: summary.providerID, ignoringCache: ignoringCache)
+            let retrievedAt = now()
             let directory = try await sets(for: .magic)
             let directorySet = directory.first { $0.catalogID == summary.setID }
             guard let set = directorySet else { throw BrowseCatalogError.unknownSet }
@@ -964,7 +988,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
         guard let source = tcgCSVSource,
               case var .pokemon(card, code) = details.card,
               PokemonTCGCSVMapping.byCardID[card.id]?.setID == card.set.id else { return details }
-        card.supplementalTCGCSV = try? await source.snapshot(setID: card.set.id, retry: false)
+        // A failed refresh must not erase a previously retrieved quote or its
+        // provenance. A successful snapshot still replaces it, including gaps.
+        guard let snapshot = try? await source.snapshot(setID: card.set.id, retry: false) else {
+            return details
+        }
+        card.supplementalTCGCSV = snapshot
         return CatalogCardDetails(
             card: .pokemon(card, setCode: code), set: details.set,
             retrievedAt: details.retrievedAt

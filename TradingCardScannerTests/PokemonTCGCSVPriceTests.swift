@@ -20,6 +20,39 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         )
     }
 
+    func testBrowseDetailsRetainSupplementalQuoteAndProvenanceWhenOffline() async throws {
+        // Exercise both the fresh cache path and the expired-detail fallback.
+        for elapsed in [60 * 60, 25 * 60 * 60] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let cache = CatalogCacheStore(root: root)
+            let summary = Self.summary("30th-c-014")
+            await cache.storeSets([CatalogSet(catalogID: summary.setID,
+                name: "Test Set", code: "30C", logoURL: nil, symbolURL: nil,
+                cardCount: 30, releaseDate: nil, sortRank: 1)], for: .pokemon)
+            let state = BrowseSupplementState(snapshot: try snapshot("30th-c"))
+            let catalog = BrowseCatalog(cache: cache,
+                pokemonTransport: BrowseSupplementTransport(card: try Self.card(summary.providerID), state: state),
+                tcgCSVSource: BrowseSupplementSource(state: state), now: { state.now })
+            let first = try await catalog.details(for: summary)
+            let originalQuote = CardPricing.price(for: first.card, variant: .holo, magicTreatments: [])
+            guard case .price = originalQuote else { return XCTFail("Expected a supplemental quote") }
+
+            state.goOffline(after: TimeInterval(elapsed))
+            let retained = try await catalog.details(for: summary)
+            XCTAssertEqual(retained.retrievedAt, first.retrievedAt)
+            XCTAssertEqual(retained.card.marketPrices, first.card.marketPrices)
+            XCTAssertEqual(CardPricing.price(for: retained.card, variant: .holo, magicTreatments: []), originalQuote)
+
+            // A successful missing quote must replace the old positive result.
+            let empty = PokemonTCGCSVSnapshot(schemaVersion: 1, setID: "30th-c", feedBuild: "empty",
+                fetchedAt: state.now, validatedAt: state.now, valuesByCardID: [:])
+            state.recover(with: empty)
+            let updated = try await catalog.details(for: summary)
+            XCTAssertTrue(updated.card.marketPrices.allSatisfy(\.isGap))
+        }
+    }
+
     func testAll188MappingsJoinExactProductsAndHolofoilPrices() throws {
         XCTAssertEqual(PokemonTCGCSVMapping.entries.count, 188)
         XCTAssertEqual(Set(PokemonTCGCSVMapping.entries.map(\.cardID)).count, 188)
@@ -498,6 +531,51 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
 private struct RecordedTCGCSV: PokemonTCGCSVPriceSource {
     let snapshot: PokemonTCGCSVSnapshot
     func snapshot(setID: String, retry: Bool) async throws -> PokemonTCGCSVSnapshot { snapshot }
+}
+
+private final class BrowseSupplementState: @unchecked Sendable {
+    private let lock = NSLock()
+    private var instant = Date.now
+    private var offline = false
+    private var value: PokemonTCGCSVSnapshot
+
+    init(snapshot: PokemonTCGCSVSnapshot) { value = snapshot }
+    var now: Date { lock.withLock { instant } }
+    var isOffline: Bool { lock.withLock { offline } }
+    func goOffline(after elapsed: TimeInterval) {
+        lock.withLock { instant.addTimeInterval(elapsed); offline = true }
+    }
+    func recover(with snapshot: PokemonTCGCSVSnapshot) {
+        lock.withLock { value = snapshot; offline = false }
+    }
+    func snapshot() throws -> PokemonTCGCSVSnapshot {
+        try lock.withLock {
+            if offline { throw URLError(.notConnectedToInternet) }
+            return value
+        }
+    }
+}
+
+private struct BrowseSupplementTransport: PokemonBrowseTransport {
+    let card: TCGdexCard
+    let state: BrowseSupplementState
+
+    func fetchSetDirectory() async throws -> [TCGdexBrowseSet] { [] }
+    func fetchSet(id: String) async throws -> TCGdexSetCatalog {
+        try JSONDecoder().decode(TCGdexSetCatalog.self,
+            from: Data(#"{"id":"30th-c","name":"Test Set","cards":[]}"#.utf8))
+    }
+    func fetchCard(id: String) async throws -> TCGdexCard {
+        if state.isOffline { throw URLError(.notConnectedToInternet) }
+        return card
+    }
+}
+
+private struct BrowseSupplementSource: PokemonTCGCSVPriceSource {
+    let state: BrowseSupplementState
+    func snapshot(setID: String, retry: Bool) async throws -> PokemonTCGCSVSnapshot {
+        try state.snapshot()
+    }
 }
 
 private struct UnavailablePokemonTransport: PokemonBrowseTransport {
