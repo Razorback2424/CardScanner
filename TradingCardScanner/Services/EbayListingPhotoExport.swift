@@ -126,6 +126,7 @@ enum EbayListingPhotoExport {
     /// directory the card folders go into. Its parent is the run container, so
     /// the archive can sit beside it and one delete cleans up the whole run.
     static func makeBatchDirectory() throws -> URL {
+        prepareTemporaryDirectories()
         let root = FileManager.default.temporaryDirectory
             .appendingPathComponent("EbayListingPhotoBatches", isDirectory: true)
         do {
@@ -244,15 +245,19 @@ enum EbayListingPhotoExport {
         }
     }
 
-    /// Deletes everything both temporary roots hold. Call once per app launch:
-    /// a run that ended in a crash or jetsam leaves native-resolution JPEGs
-    /// behind that no in-process bookkeeping can reclaim.
-    static func removeOrphanedTemporaryDirectories() {
+    // Swift initializes a static let exactly once, including simultaneous
+    // single and batch callers. Sweep before either can own files, never when
+    // another screen instance appears during an outstanding Photos save.
+    private static let temporaryDirectoriesPrepared: Void = {
         for name in ["EbayListingPhotos", "EbayListingPhotoBatches"] {
             let root = FileManager.default.temporaryDirectory
                 .appendingPathComponent(name, isDirectory: true)
             removeRun(at: root)
         }
+    }()
+
+    static func prepareTemporaryDirectories() {
+        _ = temporaryDirectoriesPrepared
     }
 
     static func removeRun(at directory: URL?) {
@@ -604,6 +609,7 @@ enum EbayListingPhotoExport {
         static let shared = RunDirectoryStore()
 
         func beginRun() throws -> URL {
+            EbayListingPhotoExport.prepareTemporaryDirectories()
             let root = FileManager.default.temporaryDirectory
                 .appendingPathComponent("EbayListingPhotos", isDirectory: true)
             do {

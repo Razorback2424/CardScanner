@@ -79,7 +79,6 @@ struct EbayListingPhotosView: View {
     @State private var batchArchiveURL: URL?
     @State private var batchFailures: [String] = []
     @State private var batchErrorMessage: String?
-    @State private var hasSweptTemporaryDirectories = false
     @State private var singleArchiveURL: URL?
     @State private var isSavingToPhotos = false
     @State private var savingPhotoDirectory: URL?
@@ -175,13 +174,6 @@ struct EbayListingPhotosView: View {
                 url: photo.url,
                 nativeDimensions: photo.dimensions
             )
-        }
-        .onAppear {
-            guard !hasSweptTemporaryDirectories else { return }
-            hasSweptTemporaryDirectories = true
-            // Safe here: nothing in this screen has produced output yet, and
-            // both roots are owned exclusively by this feature.
-            EbayListingPhotoExport.removeOrphanedTemporaryDirectories()
         }
         .onDisappear {
             frontLoadGeneration &+= 1

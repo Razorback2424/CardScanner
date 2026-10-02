@@ -233,6 +233,19 @@ final class EbayQuadrantCropperTests: XCTestCase {
 }
 
 final class EbayListingPhotoExportTests: XCTestCase {
+    func testRepeatedPreparationPreservesFilesOwnedByAnEarlierBatchRun() async throws {
+        let batch = try EbayListingPhotoExport.makeBatchDirectory()
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: batch) }
+        let file = batch.appendingPathComponent("pending-photos-save.jpg")
+        let data = Data("still owned by a save".utf8)
+        try data.write(to: file)
+        // A reopened screen, or another batch, shares the process lifetime.
+        EbayListingPhotoExport.prepareTemporaryDirectories()
+        let other = try EbayListingPhotoExport.makeBatchDirectory()
+        defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: other) }
+        EbayListingPhotoExport.prepareTemporaryDirectories()
+        XCTAssertEqual(try Data(contentsOf: file), data)
+    }
     func testNewExportPreservesPreviousFilesAndArchive() async throws {
         let data = try jpegData(for: XCTUnwrap(sourceFixture().cgImage))
         let first = try await EbayListingPhotoExport.makeListingPhotos(frontData: data, backData: data)
