@@ -2479,7 +2479,8 @@ final class ScannerViewModelTests: XCTestCase {
         let blockingFile = directory.appendingPathComponent("not-a-directory")
         try Data("file".utf8).write(to: blockingFile)
         let store = UnresolvedScanStore(
-            fileURL: blockingFile.appendingPathComponent("unresolved-scans.json")
+            fileURL: blockingFile.appendingPathComponent("unresolved-scans.json"),
+            readData: { _ in throw CocoaError(.fileReadNoSuchFile) }
         )
         let model = try makeModel(variants: [.normal], unresolvedScanStore: store)
 
@@ -2492,6 +2493,40 @@ final class ScannerViewModelTests: XCTestCase {
             model.note?.text == "Needs attention could not be saved on this device."
         }
         XCTAssertTrue(warned)
+    }
+
+    func testFailedUnresolvedReloadPreservesBytesAndRuntimeWorkUntilRecovery() async throws {
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("ScannerUnresolvedReadFailure-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("unresolved-scans.json")
+        let original = Data("[{truncated recovery evidence".utf8)
+        try original.write(to: url)
+        let store = UnresolvedScanStore(fileURL: url)
+        let model = try makeModel(variants: [.normal], unresolvedScanStore: store)
+        await model.reloadUnresolvedScansForTesting()
+        XCTAssertTrue(model.note?.text.contains("could not be loaded") == true)
+
+        model.fileUnresolvedForTesting(
+            ScanSubject(identifier: scannerIdentifier(cardNumber: "001")), reason: .noCatalogEntry
+        )
+        model.fileUnresolvedForTesting(
+            ScanSubject(identifier: scannerIdentifier(cardNumber: "002")), reason: .lookupFailed
+        )
+        let survivorID = try XCTUnwrap(model.unresolvedScans.last?.id)
+        model.dismissUnresolved(id: try XCTUnwrap(model.unresolvedScans.first?.id))
+        await model.reloadUnresolvedScansForTesting()
+        XCTAssertEqual(model.unresolvedScans.map(\.id), [survivorID])
+        XCTAssertEqual(try Data(contentsOf: url), original)
+
+        // Simulate repaired storage; retry must merge the actionable runtime row.
+        try Data("[]".utf8).write(to: url)
+        await model.reloadUnresolvedScansForTesting()
+        let saved = await waitUntil { (try? Data(contentsOf: url)) != Data("[]".utf8) }
+        XCTAssertTrue(saved)
+        let restored = await store.load()
+        XCTAssertEqual(restored.map(\.id), [survivorID])
     }
 
     func testDismissedRowDoesNotReturnFromAnOverlappingCatalogReload() async throws {

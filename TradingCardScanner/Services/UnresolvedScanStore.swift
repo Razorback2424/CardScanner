@@ -7,8 +7,18 @@ actor UnresolvedScanStore {
 
     let fileURL: URL
     private var preservedReadOnlyRecords: [UUID: UnresolvedScanRecord] = [:]
+    private enum WriteState { case unloaded, awaitingMerge(UUID), writable, blocked }
+    private var writeState: WriteState = .unloaded
+    private let readData: @Sendable (URL) throws -> Data
 
-    init(fileURL: URL? = nil) {
+    enum LoadResult {
+        case missing
+        case loaded([UnresolvedScan], loadID: UUID)
+        case failed
+    }
+
+    init(fileURL: URL? = nil, readData: @escaping @Sendable (URL) throws -> Data = { try Data(contentsOf: $0) }) {
+        self.readData = readData
         if let fileURL {
             self.fileURL = fileURL
         } else {
@@ -26,9 +36,31 @@ actor UnresolvedScanStore {
         registry: PokemonCatalogRegistry = .bundledSeed,
         magicDefinitions: [MagicSetDefinition] = MagicSetSnapshot.definitions
     ) -> [UnresolvedScan] {
-        guard let data = try? Data(contentsOf: fileURL),
-              let records = try? JSONDecoder().decode([UnresolvedScanRecord].self, from: data)
-        else { return [] }
+        if case let .loaded(scans, _) = loadResult(registry: registry, magicDefinitions: magicDefinitions) {
+            // Compatibility for callers that directly own the returned list.
+            // The view model uses loadResult and saves its merged snapshot.
+            writeState = .writable
+            return scans
+        }
+        return []
+    }
+
+    func loadResult(
+        registry: PokemonCatalogRegistry = .bundledSeed,
+        magicDefinitions: [MagicSetDefinition] = MagicSetSnapshot.definitions
+    ) -> LoadResult {
+        let records: [UnresolvedScanRecord]
+        do {
+            records = try JSONDecoder().decode([UnresolvedScanRecord].self, from: readData(fileURL))
+        } catch {
+            if Self.isMissingFile(error) {
+                writeState = .writable
+                preservedReadOnlyRecords.removeAll()
+                return .missing
+            }
+            writeState = .blocked
+            return .failed
+        }
 
         var lastIndexByID: [UUID: Int] = [:]
         for (index, record) in records.enumerated() {
@@ -42,17 +74,41 @@ actor UnresolvedScanStore {
             uniquingKeysWith: { first, _ in first }
         )
         preservedReadOnlyRecords.removeAll(keepingCapacity: true)
-        return uniqueRecords.map { record in
+        let scans = uniqueRecords.map { record in
             let scan = record.rehydrate(registry: registry, magicByCode: magicByCode)
             if scan.isReadOnly {
                 preservedReadOnlyRecords[scan.id] = record
             }
             return scan
         }
+        let loadID = UUID()
+        writeState = .awaitingMerge(loadID)
+        return .loaded(scans, loadID: loadID)
     }
 
     @discardableResult
-    func save(_ scans: [UnresolvedScan]) -> Bool {
+    func save(_ scans: [UnresolvedScan], completingLoadID: UUID? = nil) -> Bool {
+        switch writeState {
+        case .blocked:
+            return false
+        case let .awaitingMerge(loadID):
+            guard completingLoadID == loadID else { return false }
+        case .unloaded:
+            // Early runtime changes must not overwrite recovery work before
+            // the view model has loaded and merged it. A new file is safe.
+            do {
+                _ = try readData(fileURL)
+                return false
+            } catch {
+                guard Self.isMissingFile(error) else {
+                    writeState = .blocked
+                    return false
+                }
+                writeState = .writable
+            }
+        case .writable:
+            break
+        }
         let retainedScans = scans
             .sorted { $0.createdAt < $1.createdAt }
         let records = retainedScans.map { scan in
@@ -73,6 +129,7 @@ actor UnresolvedScanStore {
             Self.excludeFromBackup(fileURL.deletingLastPathComponent())
             let data = try JSONEncoder().encode(Array(records))
             try data.write(to: fileURL, options: .atomic)
+            writeState = .writable
             Self.excludeFromBackup(fileURL)
             return true
         } catch {
@@ -88,6 +145,12 @@ actor UnresolvedScanStore {
         var values = URLResourceValues()
         values.isExcludedFromBackup = true
         try? mutableURL.setResourceValues(values)
+    }
+
+    private static func isMissingFile(_ error: Swift.Error) -> Bool {
+        let error = error as NSError
+        return error.domain == NSCocoaErrorDomain
+            && (error.code == NSFileReadNoSuchFileError || error.code == NSFileNoSuchFileError)
     }
 }
 

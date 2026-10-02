@@ -1454,6 +1454,7 @@ final class ScannerViewModel: ObservableObject {
 
     private let catalog: CardCatalog
     private let unresolvedScanStore: UnresolvedScanStore
+    private var unresolvedLoadID: UUID?
     private let feedback: ScanFeedback
     private let gradedResolver: ScannedGradedResolving
     private let scryfall = ScryfallService()
@@ -2085,12 +2086,16 @@ final class ScannerViewModel: ObservableObject {
         let store = unresolvedScanStore
         let scans = unresolvedScans
         let revision = unresolvedPersistenceRevision
+        let completingLoadID = unresolvedLoadID
         let previous = unresolvedPersistenceTask
         unresolvedPersistenceTask = Task { @MainActor [weak self] in
             await previous?.value
-            let didPersist = await store.save(scans)
+            guard let self, revision == self.unresolvedPersistenceRevision else { return }
+            let didPersist = await store.save(scans, completingLoadID: completingLoadID)
+            if didPersist, self.unresolvedLoadID == completingLoadID {
+                self.unresolvedLoadID = nil
+            }
             guard !didPersist,
-                  let self,
                   revision == self.unresolvedPersistenceRevision else { return }
             self.show(ScanNote(
                 text: "Needs attention could not be saved on this device.",
@@ -2106,11 +2111,24 @@ final class ScannerViewModel: ObservableObject {
             await pendingSave?.value
             guard revision == unresolvedPersistenceRevision else { continue }
 
-            let stored = await unresolvedScanStore.load(
+            let loaded = await unresolvedScanStore.loadResult(
                 registry: registry,
                 magicDefinitions: magicSetDefinitions
             )
             guard revision == unresolvedPersistenceRevision else { continue }
+
+            let stored: [UnresolvedScan]
+            let loadID: UUID?
+            switch loaded {
+            case .missing: stored = []; loadID = nil
+            case let .loaded(scans, token): stored = scans; loadID = token
+            case .failed:
+                show(ScanNote(
+                    text: "Earlier Needs attention work could not be loaded. New changes remain in memory until storage can be read.",
+                    tone: .problem
+                ))
+                return
+            }
 
             var combined = stored
             for runtime in unresolvedScans {
@@ -2153,6 +2171,7 @@ final class ScannerViewModel: ObservableObject {
             }
             var seenIDs: Set<UUID> = []
             let deduplicated = combined.filter { seenIDs.insert($0.id).inserted }
+            unresolvedLoadID = loadID
             unresolvedScans = deduplicated.sorted { $0.createdAt < $1.createdAt }
             return
         }

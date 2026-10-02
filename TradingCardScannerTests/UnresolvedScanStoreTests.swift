@@ -130,14 +130,70 @@ final class UnresolvedScanStoreTests: XCTestCase {
         XCTAssertFalse(didSave)
     }
 
-    func testCorruptFileLoadsAsEmpty() async throws {
+    func testCorruptFileIsPreservedAcrossLoadAndRuntimeSavesUntilRecovery() async throws {
         let (directory, store) = makeStore()
         defer { try? FileManager.default.removeItem(at: directory) }
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        try Data("not-json".utf8).write(to: directory.appendingPathComponent("unresolved-scans.json"))
+        let url = directory.appendingPathComponent("unresolved-scans.json")
+        let original = Data("not-json".utf8)
+        try original.write(to: url)
+        guard case .failed = await store.loadResult() else { return XCTFail("expected decoding failure") }
+        let emptySave = await store.save([])
+        let runtimeSave = await store.save([UnresolvedScan(subject: historicalSubject(localID: "1"), reason: .interrupted)])
+        XCTAssertFalse(emptySave)
+        XCTAssertFalse(runtimeSave)
+        XCTAssertEqual(try Data(contentsOf: url), original)
+        try Data("[]".utf8).write(to: url)
+        guard case let .loaded(_, loadID) = await store.loadResult() else { return XCTFail("expected recovery") }
+        let recoveredSave = await store.save([], completingLoadID: loadID)
+        XCTAssertTrue(recoveredSave)
+    }
 
-        let restored = await store.load(registry: .bundledSeed)
-        XCTAssertTrue(restored.isEmpty)
+    func testEarlySaveCannotReplaceAnUnexaminedExistingFile() async throws {
+        let (directory, store) = makeStore()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let url = directory.appendingPathComponent("unresolved-scans.json")
+        let original = Data("[]".utf8)
+        try original.write(to: url)
+        let didSave = await store.save([UnresolvedScan(subject: historicalSubject(localID: "1"), reason: .interrupted)])
+        XCTAssertFalse(didSave)
+        XCTAssertEqual(try Data(contentsOf: url), original)
+    }
+
+    func testSuccessfulReadKeepsWritesBlockedUntilTheMergedSnapshotIsSaved() async throws {
+        let (directory, store) = makeStore()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let original = UnresolvedScan(subject: historicalSubject(localID: "1"), reason: .interrupted)
+        let runtime = UnresolvedScan(subject: historicalSubject(localID: "2"), reason: .lookupFailed)
+        let seeded = await store.save([original])
+        XCTAssertTrue(seeded)
+        let url = await store.fileURL
+        let originalBytes = try Data(contentsOf: url)
+        guard case let .loaded(scans, token) = await store.loadResult() else { return XCTFail("expected loaded") }
+        let incompleteSave = await store.save([runtime])
+        XCTAssertFalse(incompleteSave)
+        XCTAssertEqual(try Data(contentsOf: url), originalBytes)
+        let mergedSave = await store.save(scans + [runtime], completingLoadID: token)
+        XCTAssertTrue(mergedSave)
+        let restored = await store.load()
+        XCTAssertEqual(Set(restored.map(\.id)), Set([original.id, runtime.id]))
+    }
+
+    func testReadFailureDoesNotAuthorizeReplacingOriginalBytes() async throws {
+        let (directory, store) = makeStore()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let url = await store.fileURL
+        let original = Data("[]".utf8)
+        try original.write(to: url)
+        let failing = UnresolvedScanStore(fileURL: url, readData: { _ in
+            throw NSError(domain: NSCocoaErrorDomain, code: NSFileReadNoPermissionError)
+        })
+        guard case .failed = await failing.loadResult() else { return XCTFail("expected read failure") }
+        let didSave = await failing.save([])
+        XCTAssertFalse(didSave)
+        XCTAssertEqual(try Data(contentsOf: url), original)
     }
 
     func testUnsupportedSavedSetIsReadOnlyAndCanBeDismissed() async {
