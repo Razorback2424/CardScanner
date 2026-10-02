@@ -1814,7 +1814,101 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(model.recent.isEmpty)
         XCTAssertNil(model.pendingChoice)
         XCTAssertNil(model.pendingDuplicateConfirmation)
+        XCTAssertEqual(model.unresolvedScans.count, 1)
+        XCTAssertEqual(model.unresolvedScans.first?.reason, .interrupted)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+    }
+
+    func testInterruptionFilesActiveAndQueuedCardsExactlyOnce() async throws {
+        let gate = ScannerFetchGate()
+        let model = try makeModel(variants: [.normal], delayNanoseconds: 500_000_000, fetchGate: gate)
+        for number in ["001", "002", "003"] {
+            confirm(model, scannerIdentifier(cardNumber: number), encounterID: UUID())
+        }
+        await gate.waitUntilStarted()
+        await settle()
+        model.viewDisappeared()
+        XCTAssertEqual(model.unresolvedScans.count, 3)
+        XCTAssertTrue(model.unresolvedScans.allSatisfy { $0.reason == .interrupted })
+        let ids = Set(model.unresolvedScans.map(\.id))
+        model.endSession()
+        try await Task.sleep(for: .milliseconds(650))
+        XCTAssertEqual(Set(model.unresolvedScans.map(\.id)), ids)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+    }
+
+    func testInterruptionDoesNotFileAnAuthorizedWrite() async throws {
+        let gate = ScannerCollectionAddGate(outcome: .success)
+        let model = try makeModel(variants: [.normal], collectionAddOverride: { try await gate.add($0) })
+        let summaryStore = ScanSessionSummaryStore()
+        model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false,
+                    summaryStore: summaryStore)
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await gate.waitUntilStarted()
+        model.viewDisappeared()
         XCTAssertTrue(model.unresolvedScans.isEmpty)
+        await gate.release()
+        await assertEventually { summaryStore.summary?.addedCount == 1 }
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+        let count = await gate.count()
+        XCTAssertEqual(count, 1)
+    }
+
+    func testDismissedChoiceAndPriceCheckDoNotBecomeInterruptedRows() async throws {
+        let model = try makeModel(variants: [.normal, .holo])
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.pendingChoice != nil }
+        model.dismissChoice()
+        model.viewDisappeared()
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+
+        let gate = ScannerFetchGate()
+        let priceModel = try makeModel(variants: [.normal], delayNanoseconds: 500_000_000, fetchGate: gate)
+        priceModel.setPurpose(.priceCheck)
+        confirm(priceModel, scannerIdentifier(), encounterID: UUID())
+        await gate.waitUntilStarted()
+        priceModel.viewDisappeared()
+        XCTAssertTrue(priceModel.unresolvedScans.isEmpty)
+    }
+
+    func testPurposeAndSubjectChangesFilePendingChoices() async throws {
+        for switchPurpose in [true, false] {
+            let model = try makeModel(variants: [.normal, .holo])
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await assertEventually { model.pendingChoice != nil }
+            if switchPurpose { model.setPurpose(.priceCheck) }
+            else { model.setSubjectMode(.slab) }
+            XCTAssertEqual(model.unresolvedScans.count, 1)
+            XCTAssertEqual(model.unresolvedScans.first?.reason, .interrupted)
+            XCTAssertFalse(model.unresolvedScans.first?.candidates.isEmpty ?? true)
+        }
+    }
+
+    func testInterruptedDuplicateRetryAsksAgainBeforeAdding() async throws {
+        let model = try makeModel(variants: [.normal])
+        let summaryStore = ScanSessionSummaryStore()
+        model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false,
+                    summaryStore: summaryStore)
+        let encounter = UUID()
+        confirm(model, scannerIdentifier(), encounterID: encounter)
+        await assertEventually { model.recent.count == 1 }
+        model.scanner.onSpatialResetProof?(SpatialResetProof(encounterID: encounter))
+        await settle()
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await assertEventually { model.pendingDuplicateConfirmation != nil }
+        model.viewDisappeared()
+        let row = try XCTUnwrap(model.unresolvedScans.first)
+        XCTAssertTrue(row.isAdditionalCopy)
+        XCTAssertNotNil(row.pendingCommit)
+        await assertEventually { summaryStore.summary != nil }
+        model.start(context: context(), startCamera: false, shouldRefreshMagicDirectory: false)
+        model.resolveUnresolved(id: row.id, choice: .retrySave)
+        await assertEventually { model.pendingDuplicateConfirmation != nil }
+        XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+        await assertEventually { !model.isIdentificationProcessingForTesting }
+        model.addAnother()
+        await assertEventually { model.unresolvedScans.isEmpty }
+        XCTAssertEqual(try context().fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 2)
     }
 
     func testReturningToScanDoesNotWaitForCancelledIdentification() async throws {

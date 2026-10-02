@@ -2,6 +2,18 @@ import XCTest
 @testable import TradingCardScanner
 
 final class UnresolvedScanStoreTests: XCTestCase {
+    func testInterruptedAdditionalCopyMarkerSurvivesRelaunch() async throws {
+        let (directory, store) = makeStore()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let row = UnresolvedScan(subject: historicalSubject(localID: "1"), reason: .interrupted,
+                                 isAdditionalCopy: true)
+        await store.save([row])
+        let restored = await UnresolvedScanStore(fileURL: store.fileURL).load()
+        XCTAssertEqual(restored.first?.reason, .interrupted)
+        XCTAssertTrue(restored.first?.isAdditionalCopy == true)
+        XCTAssertNil(restored.first?.pendingCommit)
+    }
+
     func testRoundTripRehydratesIdentifierAndNameEvidence() async throws {
         let (directory, store) = makeStore()
         defer { try? FileManager.default.removeItem(at: directory) }

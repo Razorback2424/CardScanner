@@ -64,6 +64,16 @@ struct UnresolvedScanDetailView: View {
 
                 Section("Actions") {
                     switch scan.reason {
+                    case .interrupted:
+                        if scan.isAdditionalCopy, scan.pendingCommit != nil {
+                            Button("Review additional copy", systemImage: "rectangle.stack.badge.plus") {
+                                onResolve(.retrySave)
+                            }
+                        } else {
+                            Button("Retry lookup", systemImage: "arrow.clockwise") {
+                                onResolve(.retryLookup)
+                            }
+                        }
                     case .lookupFailed, .providerUnavailable, .noCatalogEntry:
                         Button("Retry lookup", systemImage: "arrow.clockwise") {
                             onResolve(.retryLookup)

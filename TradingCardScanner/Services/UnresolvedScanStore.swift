@@ -95,6 +95,7 @@ actor UnresolvedScanStore {
 /// treatments, prices, and market data are never written to this file.
 struct UnresolvedScanRecord: Codable, Equatable, Sendable {
     enum Reason: String, Codable, Sendable {
+        case interrupted
         case noCatalogEntry
         case noConfirmedMatch
         case lookupFailed
@@ -124,12 +125,16 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
     let mergeSessionID: UUID?
     let resolvedProviderID: String?
     let magicLanguage: String?
+    /// Optional so records written before interrupted-copy recovery still decode.
+    let isAdditionalCopy: Bool?
 
     init(scan: UnresolvedScan) {
         id = scan.id
         createdAt = scan.createdAt
         game = scan.game
+        isAdditionalCopy = scan.isAdditionalCopy
         switch scan.reason {
+        case .interrupted: reason = .interrupted; saveCandidateID = nil
         case .noCatalogEntry: reason = .noCatalogEntry; saveCandidateID = nil
         case .noConfirmedMatch: reason = .noConfirmedMatch; saveCandidateID = nil
         case .lookupFailed: reason = .lookupFailed; saveCandidateID = nil
@@ -272,6 +277,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
         )
         let reasonValue: UnresolvedReason
         switch reason {
+        case .interrupted: reasonValue = .interrupted
         case .noCatalogEntry: reasonValue = .noCatalogEntry
         case .noConfirmedMatch: reasonValue = .noConfirmedMatch
         case .lookupFailed: reasonValue = .lookupFailed
@@ -287,6 +293,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
                 catalogIdentifier: catalogIdentifier,
                 titleReadings: titleReadings
             ),
+            isAdditionalCopy: isAdditionalCopy ?? false,
             isReadOnly: readOnly,
             storedDisplayIdentifier: readOnly ? displayIdentifier : nil,
             candidateHints: candidateProviderIDsAndNames,

@@ -292,6 +292,8 @@ struct ConsecutiveScanIdentity: Equatable, Hashable, Sendable {
 }
 
 enum DuplicateEvidence: Equatable, Sendable {
+    /// A filed prompt remains a request for a fresh explicit ownership tap.
+    case needsAttention(rowID: UUID)
     case spatialExit(SpatialResetProof)
     /// A committed card after the earlier copy is durable replacement context,
     /// even when the camera lost its tracker before it could emit a link.
@@ -843,6 +845,7 @@ struct PendingIdentityChoice: Identifiable, Equatable {
 }
 
 enum UnresolvedReason: Equatable, Sendable {
+    case interrupted
     case noCatalogEntry
     case noConfirmedMatch
     case lookupFailed
@@ -851,6 +854,8 @@ enum UnresolvedReason: Equatable, Sendable {
 
     var detail: String {
         switch self {
+        case .interrupted:
+            return "Scanning stopped before this card was identified."
         case .noCatalogEntry:
             return "The catalog has no card with this identifier yet."
         case .noConfirmedMatch:
@@ -916,6 +921,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
     var candidateHints: [UnresolvedCandidateHint]
     var requestEvidence: UnresolvedScanRequestEvidence
     var pendingCommit: CollectionCommitCandidate?
+    var isAdditionalCopy: Bool
     var isReadOnly: Bool
     var storedDisplayIdentifier: String?
     var mergeSessionID: UUID?
@@ -933,6 +939,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         candidates: [PokemonCatalogCardIdentity] = [],
         requestEvidence: UnresolvedScanRequestEvidence? = nil,
         pendingCommit: CollectionCommitCandidate? = nil,
+        isAdditionalCopy: Bool = false,
         isReadOnly: Bool = false,
         storedDisplayIdentifier: String? = nil,
         candidateHints: [UnresolvedCandidateHint] = [],
@@ -950,6 +957,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
             titleReadings: Self.readings(in: subject)
         )
         self.pendingCommit = pendingCommit
+        self.isAdditionalCopy = isAdditionalCopy
         self.isReadOnly = isReadOnly
         self.storedDisplayIdentifier = storedDisplayIdentifier
         self.mergeSessionID = mergeSessionID
@@ -1024,6 +1032,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
         candidates: [PokemonCatalogCardIdentity] = [],
         requestEvidence: UnresolvedScanRequestEvidence? = nil,
         pendingCommit: CollectionCommitCandidate? = nil,
+        isAdditionalCopy: Bool = false,
         sessionID: UUID? = nil,
         resolvedProviderID: String? = nil,
         matchingID: UUID? = nil
@@ -1034,6 +1043,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
             candidates: candidates,
             requestEvidence: requestEvidence,
             pendingCommit: pendingCommit,
+            isAdditionalCopy: isAdditionalCopy,
             mergeSessionID: sessionID,
             resolvedProviderID: resolvedProviderID ?? pendingCommit?.card.providerID
         )
@@ -1065,6 +1075,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
                 titleReadings: mergedTitles
             ),
             pendingCommit: other.pendingCommit ?? pendingCommit,
+            isAdditionalCopy: other.isAdditionalCopy,
             isReadOnly: isReadOnly && other.isReadOnly,
             storedDisplayIdentifier: (isReadOnly && other.isReadOnly)
                 ? storedDisplayIdentifier ?? other.storedDisplayIdentifier
@@ -1087,6 +1098,7 @@ struct UnresolvedScan: Identifiable, Equatable, Sendable {
             candidates: candidates,
             requestEvidence: requestEvidence,
             pendingCommit: pendingCommit,
+            isAdditionalCopy: isAdditionalCopy,
             isReadOnly: isReadOnly,
             storedDisplayIdentifier: storedDisplayIdentifier,
             candidateHints: candidateHints,
@@ -1493,6 +1505,9 @@ final class ScannerViewModel: ObservableObject {
     private var isProcessingIdentification = false
     private var identificationTask: Task<Void, Never>?
     private var activeIdentificationRequestID: UUID?
+    private var activeIdentificationRequest: ScanRequest?
+    private var pendingResolutionRequestIDs: Set<UUID> = []
+    private var authorizedWriteRequestIDs: Set<UUID> = []
     private var scannedGradedOutcomes: [UUID: ScannedGradedOutcome] = [:]
     private var oneCardScanIntervals: [UUID: OSSignpostIntervalState] = [:]
     private var quoteRefreshTask: Task<Void, Never>?
@@ -2126,6 +2141,7 @@ final class ScannerViewModel: ObservableObject {
                         )).sorted()
                     ),
                     pendingCommit: runtime.pendingCommit ?? restored.pendingCommit,
+                    isAdditionalCopy: runtime.isAdditionalCopy,
                     isReadOnly: restored.isReadOnly,
                     storedDisplayIdentifier: restored.isReadOnly
                         ? restored.displayIdentifier
@@ -2331,6 +2347,7 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func invalidatePendingScan() {
+        fileInterruptedWork()
         // Cancellation is an invalidation boundary, not a reinterpretation.
         // Existing completions are allowed to finish their network work but can
         // no longer affect any UI or destination.
@@ -2343,6 +2360,7 @@ final class ScannerViewModel: ObservableObject {
         identificationTask?.cancel()
         identificationTask = nil
         activeIdentificationRequestID = nil
+        activeIdentificationRequest = nil
         isProcessingIdentification = false
         identificationQueue.removeAll()
         scannedGradedOutcomes.removeAll()
@@ -2362,6 +2380,36 @@ final class ScannerViewModel: ObservableObject {
         scanAcknowledgement = nil
         scanner.invalidateSpatialContinuity()
         scanner.pauseRecognition()
+    }
+
+    private func fileInterruptedWork() {
+        guard purpose == .collection else { return }
+        var filed: Set<UUID> = []
+        func file(_ request: ScanRequest, candidates: [PokemonCatalogCardIdentity] = [],
+                  pendingCommit: CollectionCommitCandidate? = nil, isAdditionalCopy: Bool = false) {
+            guard !authorizedWriteRequestIDs.contains(request.id),
+                  !pendingResolutionRequestIDs.contains(request.id),
+                  filed.insert(request.id).inserted else { return }
+            fileUnresolved(request: request, reason: .interrupted, candidates: candidates,
+                           pendingCommit: pendingCommit, isAdditionalCopy: isAdditionalCopy)
+        }
+        // Choices hold richer identity evidence than the original request.
+        if let pending = pendingChoice {
+            file(pending.request, candidates: pokemonIdentity(for: pending.card).map { [$0] } ?? [])
+        }
+        if let pending = pendingPrintRunChoice {
+            file(pending.request, candidates: pokemonIdentity(for: pending.card).map { [$0] } ?? [])
+        }
+        if let pending = pendingIdentityChoice {
+            file(pending.request, candidates: pending.candidates)
+        }
+        if let pending = pendingDuplicateConfirmation {
+            file(scanRequest(for: pending.candidate),
+                 candidates: pokemonIdentity(for: pending.candidate.card).map { [$0] } ?? [],
+                 pendingCommit: pending.candidate, isAdditionalCopy: true)
+        }
+        if let request = activeIdentificationRequest { file(request) }
+        for request in identificationQueue { file(request) }
     }
 
     private func receiveSpatialResetProof(_ proof: SpatialResetProof) {
@@ -2411,6 +2459,8 @@ final class ScannerViewModel: ObservableObject {
 
     private func takeDuplicateEvidence(_ evidence: DuplicateEvidence) -> DuplicateEvidence? {
         switch evidence {
+        case .needsAttention:
+            return nil // Recovery prompts never originate in camera routing.
         case let .spatialExit(proof):
             guard let index = spatialResetProofs.firstIndex(where: { $0.id == proof.id }) else {
                 return nil
@@ -2477,6 +2527,11 @@ final class ScannerViewModel: ObservableObject {
         previousPresentationToken: UUID,
         candidateIdentity: ConsecutiveScanIdentity
     ) -> Bool {
+        if case let .needsAttention(rowID) = evidence {
+            guard let row = unresolvedScans.first(where: { $0.id == rowID }),
+                  row.isAdditionalCopy else { return false }
+            return row.pendingCommit.map { $0.identity == candidateIdentity } ?? false
+        }
         guard let previousIndex = committedSessionHistory.firstIndex(where: {
             $0.id == previousScanID && $0.presentationToken == previousPresentationToken
         }),
@@ -2485,6 +2540,8 @@ final class ScannerViewModel: ObservableObject {
         }
         let previous = committedSessionHistory[previousIndex]
         switch evidence {
+        case .needsAttention:
+            return false
         case let .spatialExit(proof):
             if let token = proof.presentationToken {
                 return token == previous.presentationToken
@@ -2617,6 +2674,12 @@ final class ScannerViewModel: ObservableObject {
         endOneCardScan(encounterID: pending.encounterID, outcome: "same-card")
         clearAcknowledgement(for: pending.encounterID)
         spatialResetProofs.removeAll { $0.encounterID == pending.encounterID }
+        if case let .needsAttention(rowID) = pending.evidence {
+            dismissUnresolved(id: rowID)
+            resumeRecognitionIfPossible()
+            processNextIdentificationIfPossible()
+            return
+        }
 
         guard let previous = committedSessionHistory.first(where: { $0.id == pending.previousScanID }),
               previous.id == pending.previousScanID,
@@ -3120,6 +3183,10 @@ final class ScannerViewModel: ObservableObject {
             let retryCandidate = CollectionCommitCandidate(resolvedScan: resolved)
             let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
                 guard let self else { return }
+                if row.isAdditionalCopy {
+                    self.presentRecoveredDuplicate(retryCandidate, rowID: row.id)
+                    return
+                }
                 if retryCandidate.subject.slab == nil,
                    let writer = self.collectionWriter {
                     do {
@@ -3385,6 +3452,7 @@ final class ScannerViewModel: ObservableObject {
         let request = identificationQueue.removeFirst()
         isProcessingIdentification = true
         activeIdentificationRequestID = request.id
+        activeIdentificationRequest = request
 
         identificationTask = Task { @MainActor [weak self] in
             guard let self else { return }
@@ -3405,7 +3473,9 @@ final class ScannerViewModel: ObservableObject {
         guard !isProcessingIdentification else { return false }
         isProcessingIdentification = true
         activeIdentificationRequestID = requestID
+        pendingResolutionRequestIDs.insert(requestID)
         identificationTask = Task { @MainActor [weak self] in
+            defer { self?.pendingResolutionRequestIDs.remove(requestID) }
             await operation()
             self?.finishIdentificationRequest(requestID)
         }
@@ -3489,6 +3559,7 @@ final class ScannerViewModel: ObservableObject {
         isProcessingIdentification = false
         identificationTask = nil
         activeIdentificationRequestID = nil
+        activeIdentificationRequest = nil
         // A choice is cleared before its operation begins. If that operation
         // fails, there is no prompt left to keep the camera paused; resume at
         // the single pipeline boundary unless another terminal presentation
@@ -4567,6 +4638,11 @@ final class ScannerViewModel: ObservableObject {
     /// different canonical identity. No evidence means suppression, never a
     /// reseed or collection mutation.
     private func routeCollectionCandidate(_ candidate: CollectionCommitCandidate) async {
+        if let rowID = candidate.unresolvedScanID,
+           unresolvedScans.contains(where: { $0.id == rowID && $0.isAdditionalCopy }) {
+            presentRecoveredDuplicate(candidate, rowID: rowID)
+            return
+        }
         if let authorizationID = candidate.heldRepeatAuthorizationID {
             await routeHeldRepeatCandidate(candidate, authorizationID: authorizationID)
             return
@@ -4622,6 +4698,20 @@ final class ScannerViewModel: ObservableObject {
             scanner.pauseRecognition()
             feedback.needsChoice()
         }
+    }
+
+    private func presentRecoveredDuplicate(_ candidate: CollectionCommitCandidate, rowID: UUID) {
+        guard let index = unresolvedScans.firstIndex(where: { $0.id == rowID && $0.isAdditionalCopy }) else { return }
+        unresolvedScans[index].pendingCommit = candidate
+        pendingDuplicateConfirmation = PendingDuplicateConfirmation(
+            candidate: candidate,
+            evidence: .needsAttention(rowID: rowID),
+            previousScanID: rowID,
+            previousPresentationToken: rowID,
+            previousFinishLabel: nil
+        )
+        scanner.pauseRecognition()
+        feedback.needsChoice()
     }
 
     private func suppressCollectionCandidate(
@@ -4718,6 +4808,11 @@ final class ScannerViewModel: ObservableObject {
         _ candidate: CollectionCommitCandidate,
         authorization: CollectionCommitAuthorization
     ) async -> Bool {
+        let isAdditionalCopy: Bool
+        switch authorization {
+        case .automatic: isAdditionalCopy = false
+        case .addAnother, .heldRepeat: isAdditionalCopy = true
+        }
         guard isStorageGenerationCurrent else {
             clearAcknowledgement(for: candidate.encounterID)
             endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
@@ -4728,7 +4823,8 @@ final class ScannerViewModel: ObservableObject {
                 request: scanRequest(for: candidate),
                 reason: .saveFailed(inMemoryCandidateID: candidate.requestID),
                 candidates: pokemonIdentity(for: candidate.card).map { [$0] } ?? [],
-                pendingCommit: candidate
+                pendingCommit: candidate,
+                isAdditionalCopy: isAdditionalCopy
             )
             let message = "Recognized, but saving failed. Saved to Needs attention to retry."
             if !failAcknowledgement(
@@ -4741,6 +4837,8 @@ final class ScannerViewModel: ObservableObject {
         }
 
         let writeSessionID = scannerSessionID
+        authorizedWriteRequestIDs.insert(candidate.requestID)
+        defer { authorizedWriteRequestIDs.remove(candidate.requestID) }
         scanAcknowledgement = ScanAcknowledgement(
             encounterID: candidate.encounterID,
             subject: candidate.subject,
@@ -4844,7 +4942,8 @@ final class ScannerViewModel: ObservableObject {
                 request: scanRequest(for: candidate),
                 reason: .saveFailed(inMemoryCandidateID: candidate.requestID),
                 candidates: pokemonIdentity(for: candidate.card).map { [$0] } ?? [],
-                pendingCommit: candidate
+                pendingCommit: candidate,
+                isAdditionalCopy: isAdditionalCopy
             )
             let message = "Recognized, but saving failed. Saved to Needs attention to retry."
             if !failAcknowledgement(
@@ -5042,10 +5141,15 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func invalidateResolutionForDuplicatePrompt() {
+        // These accepted requests have not reached an ownership decision yet.
+        for request in identificationQueue {
+            fileUnresolved(request: request, reason: .interrupted)
+        }
         scanGeneration += 1
         identificationTask?.cancel()
         identificationTask = nil
         activeIdentificationRequestID = nil
+        activeIdentificationRequest = nil
         isProcessingIdentification = false
         identificationQueue.removeAll()
     }
@@ -5232,7 +5336,7 @@ final class ScannerViewModel: ObservableObject {
             switch unresolvedReason {
             case .noCatalogEntry:
                 return "Read \(displayIdentifier), but the catalog has no card with that number. Nothing was added."
-            case .noConfirmedMatch, .lookupFailed, .providerUnavailable:
+            case .interrupted, .noConfirmedMatch, .lookupFailed, .providerUnavailable:
                 return purpose == .collection
                     ? "Couldn't confirm which card this is. Saved to Needs attention."
                     : "Couldn't confirm which card this is. Price Check couldn't continue."
@@ -5324,6 +5428,7 @@ final class ScannerViewModel: ObservableObject {
         reason: UnresolvedReason,
         candidates: [PokemonCatalogCardIdentity] = [],
         pendingCommit: CollectionCommitCandidate? = nil,
+        isAdditionalCopy: Bool = false,
         resolvedProviderID: String? = nil
     ) {
         guard request.purpose == .collection else { return }
@@ -5331,6 +5436,9 @@ final class ScannerViewModel: ObservableObject {
             for: request.subject,
             sessionID: scannerSessionID
         )
+        let requiresCopyConfirmation = isAdditionalCopy || request.unresolvedScanID.map { id in
+            unresolvedScans.contains { $0.id == id && $0.isAdditionalCopy }
+        } == true
         unresolvedScans = UnresolvedScan.merging(
             unresolvedScans,
             with: request.subject,
@@ -5341,6 +5449,7 @@ final class ScannerViewModel: ObservableObject {
                 titleReadings: UnresolvedScan.readings(in: request.subject)
             ),
             pendingCommit: pendingCommit,
+            isAdditionalCopy: requiresCopyConfirmation,
             sessionID: scannerSessionID,
             resolvedProviderID: resolvedProviderID,
             matchingID: request.unresolvedScanID
