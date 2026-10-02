@@ -6,6 +6,41 @@ import XCTest
 final class CollectionActivityHistoryTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testGradedDetailSkipsResolvedNewestAcquisitionAndPreservesLegacyClaims() throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer {
+            container = nil
+            try? FileManager.default.removeItem(at: directory)
+        }
+        let context = try makeContext(storeURL: directory.appendingPathComponent("collection.sqlite"))
+        let card = makeCollectedCard(quantity: 3)
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        let start = Date(timeIntervalSince1970: 1_800_000_000)
+        let legacy = CollectionActivity(card: card, source: .scan, quantity: 3, occurredAt: start)
+        legacy.deltaQuantity = 0
+        legacy.resolvedQuantity = 2
+        let newest = CollectionActivity(card: card, source: .scan, occurredAt: start.addingTimeInterval(2))
+        newest.resolvedQuantity = newest.claimedQuantity
+        let restored = CollectionActivity(card: card, source: .scan, quantity: 2,
+                                          occurredAt: start.addingTimeInterval(1), kind: .restored)
+        restored.resolvedQuantity = 1
+        for activity in [legacy, newest, restored] { context.insert(activity) }
+        try context.save()
+        let descriptor = CollectionCardDetailView.gradedAcquisitionDescriptor(for: card.collectionKey)
+        XCTAssertEqual(try context.fetch(descriptor).first?.id, restored.id)
+        restored.resolvedQuantity = 2
+        try context.save()
+        XCTAssertEqual(try context.fetch(descriptor).first?.id, legacy.id)
+        legacy.resolvedQuantity = 3
+        try context.save()
+        XCTAssertTrue(try context.fetch(descriptor).isEmpty)
+        restored.deltaQuantity = 0
+        restored.resolvedQuantity = 0
+        try context.save()
+        XCTAssertTrue(try context.fetch(descriptor).isEmpty, "zero-delta restored rows have no legacy claim")
+    }
+
     override func tearDown() {
         container = nil
         super.tearDown()
@@ -1322,7 +1357,7 @@ final class CollectionActivityHistoryTests: XCTestCase {
         }
     }
 
-    private func makeContext() throws -> ModelContext {
+    private func makeContext(storeURL: URL? = nil) throws -> ModelContext {
         let schema = Schema([
             CollectedCard.self,
             PriceRecord.self,
@@ -1333,7 +1368,8 @@ final class CollectionActivityHistoryTests: XCTestCase {
         ])
         let container = try ModelContainer(
             for: schema,
-            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+            configurations: storeURL.map { ModelConfiguration(url: $0) }
+                ?? ModelConfiguration(isStoredInMemoryOnly: true)
         )
         self.container = container
         return container.mainContext

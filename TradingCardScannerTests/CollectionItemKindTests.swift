@@ -6,6 +6,39 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+    func testGradedFinishCorrectionFindsSurvivingAcquisitionAfterNewestUndo() throws {
+        let container = try ProductionRowFixtures.makeContainer()
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let card = try ProductionRowFixtures.pokemonCard()
+        let first = try store.addScannedGraded(underlying: card, company: .psa,
+                                               grade: CardGrade(value: "10"), certificationNumber: nil)
+        let second = try store.addScannedGraded(underlying: card, company: .psa,
+                                                grade: CardGrade(value: "10"), certificationNumber: nil)
+        XCTAssertEqual(first.collectionKey, second.collectionKey)
+        let firstID = try XCTUnwrap(first.activityID)
+        let secondID = try XCTUnwrap(second.activityID)
+        for activity in try context.fetch(FetchDescriptor<CollectionActivity>()) {
+            if activity.id == firstID { activity.occurredAt = .now.addingTimeInterval(-1) }
+            if activity.id == secondID { activity.occurredAt = .now }
+        }
+        try context.save()
+        try store.undo(second)
+        let selected = try XCTUnwrap(context.fetch(
+            CollectionCardDetailView.gradedAcquisitionDescriptor(for: first.collectionKey)
+        ).first)
+        XCTAssertEqual(selected.id, firstID)
+        let row = try XCTUnwrap(store.card(forKey: first.collectionKey))
+        _ = try store.recordVariantCorrection(for: row,
+            to: ResolvedVariant(variant: .holo, resolution: .userConfirmed),
+            activityID: selected.id, quantity: 1)
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(row.variant, .holo)
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+        XCTAssertTrue(CollectionActivity.integrityDefects(activities: activities, events: events).isEmpty)
+        XCTAssertEqual(InventoryLedger.quantities(from: events)[row.collectionKey], 1)
+    }
     func testCertlessPrintRunsStayDistinctThroughBindingRefinementCorrectionAndRestore() async throws {
         let container = try ProductionRowFixtures.makeContainer()
         let context = container.mainContext

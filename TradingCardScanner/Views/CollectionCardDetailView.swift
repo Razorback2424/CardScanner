@@ -121,19 +121,7 @@ struct CollectionCardDetailView: View {
         )
         let resolvedCollectionKey = card.collectionKey
         if card.itemKind == .gradedCard {
-            let gradedKindRaw = CollectionItemKind.gradedCard.rawValue
-            let addedKindRaw = CollectionActivityKind.added.rawValue
-            let restoredKindRaw = CollectionActivityKind.restored.rawValue
-            var descriptor = FetchDescriptor<CollectionActivity>(
-                predicate: #Predicate<CollectionActivity> {
-                    $0.collectionKey == resolvedCollectionKey
-                        && $0.itemKindRaw == gradedKindRaw
-                        && ($0.kindRaw == addedKindRaw || $0.kindRaw == restoredKindRaw)
-                },
-                sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
-            )
-            descriptor.fetchLimit = 1
-            self._collectionActivities = Query(descriptor)
+            self._collectionActivities = Query(Self.gradedAcquisitionDescriptor(for: resolvedCollectionKey))
         } else {
             // Raw and sealed rows never read acquisition history. Keep their
             // query empty so unrelated activity writes cannot re-fetch a full
@@ -183,6 +171,7 @@ struct CollectionCardDetailView: View {
             }
             .coordinateSpace(name: "CardDetailScroll")
         }
+        .environment(\.colorScheme, .dark)
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.black, for: .navigationBar)
@@ -630,6 +619,26 @@ struct CollectionCardDetailView: View {
             }
             .padding(.vertical, 2)
         }
+    }
+
+    static func gradedAcquisitionDescriptor(for collectionKey: String) -> FetchDescriptor<CollectionActivity> {
+        let gradedKind = CollectionItemKind.gradedCard.rawValue
+        let addedKind = CollectionActivityKind.added.rawValue
+        let restoredKind = CollectionActivityKind.restored.rawValue
+        var descriptor = FetchDescriptor<CollectionActivity>(
+            predicate: #Predicate<CollectionActivity> {
+                $0.collectionKey == collectionKey
+                    && $0.itemKindRaw == gradedKind
+                    && ($0.kindRaw == addedKind || $0.kindRaw == restoredKind)
+                    && ($0.deltaQuantity > $0.resolvedQuantity
+                        || -$0.deltaQuantity > $0.resolvedQuantity
+                        || ($0.deltaQuantity == 0 && $0.kindRaw == addedKind
+                            && $0.quantity > $0.resolvedQuantity))
+            },
+            sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+        )
+        descriptor.fetchLimit = 1
+        return descriptor
     }
 
     private var latestGradedAcquisition: CollectionActivity? {
