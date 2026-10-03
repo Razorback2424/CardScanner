@@ -117,16 +117,16 @@ public enum PokemonCatalogCandidateValidator {
                 ($0.providerSetID.lowercased(), $0)
             }
         )
+        let snapshotIDs = Set(build.snapshot.entries.map { $0.providerSetID.lowercased() })
+        guard snapshotIDs.count == build.snapshot.entries.count,
+              snapshotIDs.isSubset(of: Set(releaseByID.keys)) else {
+            throw PokemonCatalogCandidateValidationError.snapshotEntriesDoNotMatchRelease
+        }
         let snapshotByID = Dictionary(
             uniqueKeysWithValues: build.snapshot.entries.map {
                 ($0.providerSetID.lowercased(), $0)
             }
         )
-        let snapshotIDs = Set(snapshotByID.keys)
-        guard snapshotIDs.count == build.snapshot.entries.count,
-              snapshotIDs.isSubset(of: Set(releaseByID.keys)) else {
-            throw PokemonCatalogCandidateValidationError.snapshotEntriesDoNotMatchRelease
-        }
         guard Set(build.snapshot.checklists.keys) == snapshotIDs,
               build.snapshot.entries.allSatisfy({
                   build.snapshot.checklists[$0.providerSetID]?.count == $0.cardCount

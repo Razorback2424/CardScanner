@@ -2064,6 +2064,28 @@ final class PokemonCatalogCoreTests: XCTestCase {
         }
     }
 
+    func testCandidateValidatorRejectsDuplicateSnapshotEntriesWithoutTrapping() throws {
+        let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
+        let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
+        let build = try PokemonCatalogBuilder().build(
+            .init(fixture: fixture, humanInputs: input.sets, revision: 1, generatedAt: generatedAt)
+        )
+        let entry = try XCTUnwrap(build.snapshot.entries.first)
+        let snapshot = PokemonCatalogSnapshot(
+            schemaVersion: build.snapshot.schemaVersion, rulesVersion: build.snapshot.rulesVersion,
+            generatedAt: build.snapshot.generatedAt,
+            directoryFingerprint: build.snapshot.directoryFingerprint,
+            entries: build.snapshot.entries + [entry], checklists: build.snapshot.checklists
+        )
+        let duplicate = PokemonCatalogBuildResult(release: build.release, snapshot: snapshot, report: build.report)
+        XCTAssertThrowsError(try PokemonCatalogCandidateValidator.validate(duplicate)) { error in
+            guard case PokemonCatalogCandidateValidationError.snapshotEntriesDoNotMatchRelease = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
+        XCTAssertNoThrow(try PokemonCatalogCandidateValidator.validate(build))
+    }
+
     func testCandidateValidatorBindsReleaseSnapshotAndReportAndEnforcesActiveRevision() throws {
         let fixture = try load(PokemonCatalogProviderFixture.self, named: "recorded-provider")
         let input = try load(PokemonCatalogHumanInputFile.self, named: "catalog-input")
