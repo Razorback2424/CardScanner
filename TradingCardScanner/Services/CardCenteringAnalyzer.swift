@@ -125,6 +125,7 @@ struct CardCenteringAnalysisDiagnostic: Codable, Equatable {
     let scalarPinned: Bool?
     let outlineHasInner: Bool
     let innerSource: CardCenteringInnerSource
+    let profileDisposition: String
     let visionOuterQuad: CardCenteringQuad?
     let scalarOuter: CardCenteringEdges?
     let scalarInner: CardCenteringEdges?
@@ -322,47 +323,54 @@ enum CardCenteringAnalyzer {
     }
 
 #if DEBUG
-    /// Installed only by temporary diagnostic tests. The hook is observational
-    /// and is never consulted by production decisions.
-    nonisolated(unsafe) static var profileDiagnosticSink: ((CardCenteringProfileDiagnostic) -> Void)?
-    /// Installed only by temporary diagnostic tests. This reports which branch
-    /// supplied the final inner reference and the evidence-arbitration inputs.
-    nonisolated(unsafe) static var analysisDiagnosticSink: ((CardCenteringAnalysisDiagnostic) -> Void)?
-    /// Installed only by temporary diagnostic tests. This reports why a
-    /// profile-based inner reference could not be assembled.
-    nonisolated(unsafe) static var profileFailureDiagnosticSink: ((CardCenteringProfileFailureDiagnostic) -> Void)?
-    /// Installed only by temporary diagnostic tests. This reports whether the
-    /// deterministic outer-edge pass found a coherent transition but rejected
-    /// it as too far from the Vision proposal.
-    nonisolated(unsafe) static var outerRefinementDiagnosticSink: ((CardCenteringOuterRefinementDiagnostic) -> Void)?
-    /// Installed only by the REQ-042 candidate-recall harness. Candidate
-    /// telemetry is observational and is never consulted by production logic.
-    nonisolated(unsafe) static var candidateLedgerDiagnosticSink: ((CardCenteringCandidateLedgerDiagnostic) -> Void)?
-    /// Installed only by the REQ-043 identity-gate harness. This records the
-    /// raw family scores and gate outcomes for every eligible image without
-    /// changing branch selection.
-    nonisolated(unsafe) static var registeredBackIdentityDiagnosticSink: ((CardCenteringBackIdentityDiagnostic) -> Void)?
-    /// DEBUG-only switch used by the controlled REQ-041 A/B. Release builds
-    /// do not compile the observational front generator call at all.
-    nonisolated(unsafe) static var frontBottomCandidateGenerationEnabled = true
-    /// DEBUG-only switch for the one bounded REQ-044 joint-selection attempt.
-    /// It defaults off so ordinary DEBUG diagnostics and all Release builds
-    /// retain the pre-experiment production path.
-    nonisolated(unsafe) static var jointSelectionEnabled = false
-    /// Installed only by the REQ-044 development harness. This reports the
-    /// shape-prior decision without affecting any Release path.
-    nonisolated(unsafe) static var jointSelectionDiagnosticSink: ((CardCenteringJointSelectionDiagnostic) -> Void)?
-    /// The active DEBUG-only ledger is a reference context so the production
-    /// method signatures stay identical in Release builds. Tests run analyses
-    /// serially while this temporary sink is installed.
-    nonisolated(unsafe) private static var activeCandidateLedger: CandidateLedger?
+    /// A value snapshot of one diagnostic request. Callbacks run synchronously
+    /// on the caller's executor; each invocation owns a separate ledger.
+    struct Diagnostics: @unchecked Sendable {
+        var profileDiagnosticSink: ((CardCenteringProfileDiagnostic) -> Void)?
+        var analysisDiagnosticSink: ((CardCenteringAnalysisDiagnostic) -> Void)?
+        var profileFailureDiagnosticSink: ((CardCenteringProfileFailureDiagnostic) -> Void)?
+        var outerRefinementDiagnosticSink: ((CardCenteringOuterRefinementDiagnostic) -> Void)?
+        var candidateLedgerDiagnosticSink: ((CardCenteringCandidateLedgerDiagnostic) -> Void)?
+        var registeredBackIdentityDiagnosticSink: ((CardCenteringBackIdentityDiagnostic) -> Void)?
+        var jointSelectionDiagnosticSink: ((CardCenteringJointSelectionDiagnostic) -> Void)?
+        var frontBottomCandidateGenerationEnabled = true
+        var jointSelectionEnabled = false
+        var useReferenceCalculations = false
+
+        func analyze(_ data: Data, rotationDegrees: Double = 0) throws -> CardCenteringAnalysis {
+            try CardCenteringAnalyzer.$activeDiagnostics.withValue(DiagnosticContext(options: self)) {
+                try CardCenteringAnalyzer.analyze(data, rotationDegrees: rotationDegrees)
+            }
+        }
+
+        func analyzeForBenchmark(_ data: Data, workingMaxDimension: CGFloat, detectionMaxDimension: CGFloat? = nil) throws -> CardCenteringAnalysis {
+            try CardCenteringAnalyzer.$activeDiagnostics.withValue(DiagnosticContext(options: self)) {
+                try CardCenteringAnalyzer.analyzeForBenchmark(data, workingMaxDimension: workingMaxDimension, detectionMaxDimension: detectionMaxDimension)
+            }
+        }
+    }
+
+    private final class DiagnosticContext: @unchecked Sendable {
+        let options: Diagnostics
+        var ledger: CandidateLedger?
+        init(options: Diagnostics) { self.options = options }
+    }
+
+    @TaskLocal private static var activeDiagnostics: DiagnosticContext?
+    private static var activeCandidateLedger: CandidateLedger? { activeDiagnostics?.ledger }
+    private static var profileDiagnosticSink: ((CardCenteringProfileDiagnostic) -> Void)? { activeDiagnostics?.options.profileDiagnosticSink }
+    private static var analysisDiagnosticSink: ((CardCenteringAnalysisDiagnostic) -> Void)? { activeDiagnostics?.options.analysisDiagnosticSink }
+    private static var profileFailureDiagnosticSink: ((CardCenteringProfileFailureDiagnostic) -> Void)? { activeDiagnostics?.options.profileFailureDiagnosticSink }
+    private static var outerRefinementDiagnosticSink: ((CardCenteringOuterRefinementDiagnostic) -> Void)? { activeDiagnostics?.options.outerRefinementDiagnosticSink }
+    private static var candidateLedgerDiagnosticSink: ((CardCenteringCandidateLedgerDiagnostic) -> Void)? { activeDiagnostics?.options.candidateLedgerDiagnosticSink }
+    private static var registeredBackIdentityDiagnosticSink: ((CardCenteringBackIdentityDiagnostic) -> Void)? { activeDiagnostics?.options.registeredBackIdentityDiagnosticSink }
+    private static var jointSelectionDiagnosticSink: ((CardCenteringJointSelectionDiagnostic) -> Void)? { activeDiagnostics?.options.jointSelectionDiagnosticSink }
+    private static var frontBottomCandidateGenerationEnabled: Bool { activeDiagnostics?.options.frontBottomCandidateGenerationEnabled ?? false }
+    private static var jointSelectionEnabled: Bool { activeDiagnostics?.options.jointSelectionEnabled ?? false }
+    private static var useReferenceCalculations: Bool { activeDiagnostics?.options.useReferenceCalculations ?? false }
 #endif
 
-    private struct Pixel {
-        let l: Float
-        let a: Float
-        let b: Float
-    }
+    private typealias Pixel = TCSCenteringPixel
 
     private struct Candidate {
         let position: Int
@@ -537,6 +545,7 @@ enum CardCenteringAnalyzer {
     }
 
     private struct ScalarDetection {
+        let rgb: [Pixel]
         let lab: [Pixel]
         let evidenceWidth: Int
         let evidenceHeight: Int
@@ -561,9 +570,10 @@ enum CardCenteringAnalyzer {
     private static let automaticInnerReferenceReleaseEnabled = false
 
     static func analyze(_ data: Data, rotationDegrees: Double = 0) throws -> CardCenteringAnalysis {
+        guard rotationDegrees.isFinite else { throw CardCenteringAnalyzerError.renderFailed }
         // Only an automatic pass may straighten the card. Once the person has
         // touched the rotation control, that value is the answer.
-        try analyze(data, rotationDegrees: rotationDegrees, correctingSkew: rotationDegrees == 0)
+        return try analyze(data, rotationDegrees: rotationDegrees, correctingSkew: rotationDegrees == 0)
     }
 
 #if DEBUG
@@ -575,11 +585,11 @@ enum CardCenteringAnalyzer {
         workingMaxDimension: CGFloat,
         detectionMaxDimension: CGFloat? = nil
     ) throws -> CardCenteringAnalysis {
-        guard workingMaxDimension > 20 else {
+        guard workingMaxDimension.isFinite, workingMaxDimension > 20 else {
             throw CardCenteringAnalyzerError.renderFailed
         }
         if let detectionMaxDimension,
-           detectionMaxDimension <= 20 || detectionMaxDimension > workingMaxDimension {
+           !detectionMaxDimension.isFinite || detectionMaxDimension <= 20 || detectionMaxDimension > workingMaxDimension {
             throw CardCenteringAnalyzerError.renderFailed
         }
         return try analyze(
@@ -645,8 +655,8 @@ enum CardCenteringAnalyzer {
         guard width > 20, height > 20 else { throw CardCenteringAnalyzerError.renderFailed }
 #if DEBUG
         let candidateLedger = CandidateLedger(workingWidth: width, workingHeight: height)
-        Self.activeCandidateLedger = candidateLedger
-        defer { Self.activeCandidateLedger = nil }
+        Self.activeDiagnostics?.ledger = candidateLedger
+        defer { Self.activeDiagnostics?.ledger = nil }
         let detectorSourceScale = min(1, workingMaxDimension / max(source.size.width, source.size.height))
         let detectorMapping = CardCenteringCoordinateMapping(
             orientedSourceSize: CardCenteringSize(
@@ -739,9 +749,11 @@ enum CardCenteringAnalyzer {
             bottom: height - 1
         ))
         var refinedOuterQuad: CardCenteringQuad? = nil
-        var workingRGBPixels: [Pixel]? = nil
+        var workingRGBPixels: [Pixel]? = scalar.flatMap {
+            $0.evidenceWidth == width && $0.evidenceHeight == height ? $0.rgb : nil
+        }
         if let proposedOutline = outline, proposedOutline.usesVision {
-            let rgbPixels = try pixels(from: prepared)
+            let rgbPixels = try workingRGBPixels ?? pixels(from: prepared)
             workingRGBPixels = rgbPixels
             let refined = refineOuterQuad(
                 pixels: rgbPixels,
@@ -907,8 +919,12 @@ enum CardCenteringAnalyzer {
         let profileColorStart = CFAbsoluteTimeGetCurrent()
 #endif
         if registeredBackTemplateResult == nil, shouldUseWorkingProfile {
-            let rgbPixels = try workingRGBPixels ?? pixels(from: prepared)
-            profilePixels = rgbPixels.map(rgbToLab)
+            if let scalar, scalar.evidenceWidth == width, scalar.evidenceHeight == height {
+                profilePixels = scalar.lab
+            } else {
+                let rgbPixels = try workingRGBPixels ?? pixels(from: prepared)
+                profilePixels = labPixels(from: rgbPixels)
+            }
         } else {
             profilePixels = nil
         }
@@ -935,7 +951,7 @@ enum CardCenteringAnalyzer {
                 ledgerScaleX: 1,
                 ledgerScaleY: 1
             )
-        } else if let scalar, !scalar.pinned {
+        } else if registeredBackTemplateResult == nil, let scalar, !scalar.pinned {
             let evidenceOuter = scaled(
                 detectedOuterQuad,
                 x: 1 / scalar.outputScaleX,
@@ -1153,6 +1169,8 @@ enum CardCenteringAnalyzer {
             scalarPinned: scalar?.pinned,
             outlineHasInner: outlineHasInner,
             innerSource: innerSource,
+            profileDisposition: registeredBackTemplateResult != nil ? "bypassed_registered_back"
+                : (profilePixels != nil || scalar?.pinned == false) ? "evaluated" : "unavailable",
             visionOuterQuad: visionOutline?.quad,
             scalarOuter: scalar?.outer,
             scalarInner: scalar?.inner,
@@ -1933,6 +1951,14 @@ enum CardCenteringAnalyzer {
         // pixels and the orientation describe the same rectangle.
         let originalWidth = image.size.width
         let originalHeight = image.size.height
+        guard originalWidth.isFinite, originalHeight.isFinite,
+              originalWidth > 0, originalHeight > 0,
+              maxDimension.isFinite, maxDimension > 0, rotationDegrees.isFinite else { return nil }
+        if image.imageOrientation == .up, image.scale == 1,
+           rotationDegrees == 0, max(originalWidth, originalHeight) <= maxDimension,
+           image.cgImage?.alphaInfo == .noneSkipLast {
+            return image
+        }
         let scale = min(1, maxDimension / max(originalWidth, originalHeight))
         let size = CGSize(width: originalWidth * scale, height: originalHeight * scale)
         let radians = CGFloat(rotationDegrees * .pi / 180)
@@ -2006,10 +2032,12 @@ enum CardCenteringAnalyzer {
         let width = evidenceCGImage.width
         let height = evidenceCGImage.height
         let pixels = try pixels(from: evidenceImage)
-        let lab = pixels.map(rgbToLab)
+        let lab = labPixels(from: pixels)
         var gx = [Float](repeating: 0, count: height * (width - 1))
         var gy = [Float](repeating: 0, count: (height - 1) * width)
 
+#if DEBUG
+        if useReferenceCalculations {
         for y in 0..<height {
             for x in 0..<(width - 1) {
                 gx[y * (width - 1) + x] = distance(lab[y * width + x], lab[y * width + x + 1])
@@ -2020,6 +2048,13 @@ enum CardCenteringAnalyzer {
                 gy[y * width + x] = distance(lab[y * width + x], lab[(y + 1) * width + x])
             }
         }
+
+        } else {
+            TCSCenteringGradients(lab, Int32(width), Int32(height), &gx, &gy)
+        }
+#else
+        TCSCenteringGradients(lab, Int32(width), Int32(height), &gx, &gy)
+#endif
 
         let xRange = roundedRange(0.18, 0.82, length: width)
         let smoothingRadius = numericalParameters.scalarSmoothingRadius
@@ -2317,6 +2352,7 @@ enum CardCenteringAnalyzer {
         }
 #endif
         return ScalarDetection(
+            rgb: pixels,
             lab: lab,
             evidenceWidth: width,
             evidenceHeight: height,
@@ -2330,9 +2366,26 @@ enum CardCenteringAnalyzer {
         )
     }
 
-    private static func rgbToLab(_ rgb: Pixel) -> Pixel {
+    private static let linearizedBytes: [Float] = (0...255).map { byte in
+        let value = Float(byte) / 255
+        return value <= 0.04045 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4)
+    }
+
+    private static func labPixels(from pixels: [Pixel]) -> [Pixel] {
+#if DEBUG
+        if useReferenceCalculations { return pixels.map { rgbToLab($0, useByteLookup: false) } }
+#endif
+        var result = [Pixel](repeating: Pixel(l: 0, a: 0, b: 0), count: pixels.count)
+        TCSCenteringConvertLab(pixels, &result, pixels.count, linearizedBytes)
+        return result
+    }
+
+    private static func rgbToLab(_ rgb: Pixel, useByteLookup: Bool) -> Pixel {
         func linear(_ value: Float) -> Float {
-            value <= 0.04045 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4)
+            // Only decoded byte channels enter this path. The table computes
+            // the same Float expression once for each of the 256 values.
+            if useByteLookup { return linearizedBytes[Int((value * 255).rounded())] }
+            return value <= 0.04045 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4)
         }
         let r = linear(rgb.l), g = linear(rgb.a), b = linear(rgb.b)
         let x = (0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / 0.95047
@@ -2344,6 +2397,57 @@ enum CardCenteringAnalyzer {
         let fx = f(x), fy = f(y), fz = f(z)
         return Pixel(l: 116 * fy - 16, a: 500 * (fx - fy), b: 200 * (fy - fz))
     }
+
+#if DEBUG
+    /// Compare the optimized kernels with the original Float arithmetic on all
+    /// channel values and 65,536 color combinations, including field boundaries.
+    static func pixelKernelsMatchReferenceForDiagnostics() -> Bool {
+        let rgb = (0..<65_536).map { value -> Pixel in
+            let r = value / 256, g = value % 256, b = (r + g) % 256
+            return Pixel(l: Float(r) / 255, a: Float(g) / 255, b: Float(b) / 255)
+        }
+        var lab = [Pixel](repeating: Pixel(l: 0, a: 0, b: 0), count: rgb.count)
+        TCSCenteringConvertLab(rgb, &lab, rgb.count, linearizedBytes)
+        for index in rgb.indices {
+            let expected = rgbToLab(rgb[index], useByteLookup: false)
+            guard lab[index].l.bitPattern == expected.l.bitPattern,
+                  lab[index].a.bitPattern == expected.a.bitPattern,
+                  lab[index].b.bitPattern == expected.b.bitPattern else { return false }
+        }
+        let width = 256, height = 256
+        var gx = [Float](repeating: 0, count: height * (width - 1))
+        var gy = [Float](repeating: 0, count: (height - 1) * width)
+        TCSCenteringGradients(lab, Int32(width), Int32(height), &gx, &gy)
+        for y in 0..<height {
+            for x in 0..<(width - 1) {
+                guard gx[y * (width - 1) + x].bitPattern == distance(lab[y * width + x], lab[y * width + x + 1]).bitPattern else { return false }
+            }
+        }
+        for y in 0..<(height - 1) {
+            for x in 0..<width {
+                guard gy[y * width + x].bitPattern == distance(lab[y * width + x], lab[(y + 1) * width + x]).bitPattern else { return false }
+            }
+        }
+        for threshold in [Float(0), 5, 10, 80] {
+            let background = lab[32_768]
+            var columns = [Int](repeating: 0, count: width), rows = [Int](repeating: 0, count: height)
+            var first = [Int](repeating: -1, count: height), last = first
+            TCSCenteringForeground(lab, Int32(width), Int32(height), background, threshold, &columns, &rows, &first, &last)
+            var expectedColumns = [Int](repeating: 0, count: width), expectedRows = [Int](repeating: 0, count: height)
+            var expectedFirst = [Int](repeating: -1, count: height), expectedLast = expectedFirst
+            for y in 0..<height {
+                for x in 0..<width where distance(lab[y * width + x], background) >= threshold {
+                    expectedColumns[x] += 1; expectedRows[y] += 1
+                    if expectedFirst[y] < 0 { expectedFirst[y] = x }
+                    expectedLast[y] = x
+                }
+            }
+            guard columns == expectedColumns, rows == expectedRows,
+                  first == expectedFirst, last == expectedLast else { return false }
+        }
+        return true
+    }
+#endif
 
     private static func distance(_ lhs: Pixel, _ rhs: Pixel) -> Float {
         let l = lhs.l - rhs.l, a = lhs.a - rhs.a, b = lhs.b - rhs.b
@@ -3014,8 +3118,54 @@ enum CardCenteringAnalyzer {
         return average
     }
 
-    private enum ProfileSide: CaseIterable {
+    private enum ProfileSide: Int, CaseIterable {
         case left, top, right, bottom
+    }
+
+    private struct ProfileFrame {
+        let start: CardCenteringPoint
+        let end: CardCenteringPoint
+        let normalX: Double
+        let normalY: Double
+        let axisLength: Double
+
+        func point(progress: Double, depth: Double) -> CardCenteringPoint {
+            let origin = CardCenteringPoint(
+                x: start.x + (end.x - start.x) * progress,
+                y: start.y + (end.y - start.y) * progress
+            )
+            return point(origin: origin, distance: depth * axisLength)
+        }
+
+        func point(origin: CardCenteringPoint, distance: Double) -> CardCenteringPoint {
+            CardCenteringPoint(x: origin.x + normalX * distance, y: origin.y + normalY * distance)
+        }
+    }
+
+    private static func profileFrames(for outer: CardCenteringQuad) -> [ProfileFrame]? {
+#if DEBUG
+        if useReferenceCalculations { return nil }
+#endif
+        let centre = outer.points.reduce(into: CardCenteringPoint(x: 0, y: 0)) { result, point in
+            result.x += point.x / 4
+            result.y += point.y / 4
+        }
+        return ProfileSide.allCases.map { side in
+            let start: CardCenteringPoint, end: CardCenteringPoint
+            switch side {
+            case .left: (start, end) = (outer.topLeft, outer.bottomLeft)
+            case .top: (start, end) = (outer.topLeft, outer.topRight)
+            case .right: (start, end) = (outer.topRight, outer.bottomRight)
+            case .bottom: (start, end) = (outer.bottomLeft, outer.bottomRight)
+            }
+            let dx = end.x - start.x, dy = end.y - start.y
+            let length = max(hypot(dx, dy), .ulpOfOne)
+            var nx = -dy / length, ny = dx / length
+            let midpoint = interpolate(start, end, amount: 0.5)
+            if (centre.x - midpoint.x) * nx + (centre.y - midpoint.y) * ny < 0 { nx = -nx; ny = -ny }
+            return ProfileFrame(start: start, end: end, normalX: nx, normalY: ny,
+                axisLength: side == .left || side == .right ? max(outer.topLength + outer.bottomLength, 2) / 2 : max(outer.leftLength + outer.rightLength, 2) / 2)
+        }
     }
 
     private struct GeometryLine {
@@ -3236,7 +3386,10 @@ enum CardCenteringAnalyzer {
             return (normalX, normalY)
         }
 
+        let frames = profileFrames(for: outer)
+
         func point(side: ProfileSide, progress: Double, normalizedDepth: Double) -> CardCenteringPoint {
+            if let frames { return frames[side.rawValue].point(progress: progress, depth: normalizedDepth) }
             let origin = edgePoint(side, progress: progress)
             let normal = inwardNormal(side)
             let axisLength = side == .left || side == .right ? outer.rectifiedWidth : outer.rectifiedHeight
@@ -3278,8 +3431,14 @@ enum CardCenteringAnalyzer {
                     + (2 * searchHalfWidth) * Double(index) / Double(max(depthCount - 1, 1))
             }
 
-            func evidence(at depth: Double) -> (strength: Double, support: Double, coverage: Double) {
-                let values = progressValues.map { transition(side: side, progress: $0, depth: depth) }
+            // These exact transitions are reused by every candidate fit.
+            // Reference diagnostics retain the original repeated calculation.
+            let transitions = frames == nil ? nil : depths.map { depth in
+                progressValues.map { transition(side: side, progress: $0, depth: depth) }
+            }
+
+            func evidence(at index: Int) -> (strength: Double, support: Double, coverage: Double) {
+                let values = transitions?[index] ?? progressValues.map { transition(side: side, progress: $0, depth: depths[index]) }
                 let strength = median(values)
                 let supportThreshold = max(8, strength * 0.45)
                 let support = Double(values.filter { $0 >= supportThreshold }.count)
@@ -3294,7 +3453,7 @@ enum CardCenteringAnalyzer {
                 return (strength, support, Double(occupiedBins) / 5.0)
             }
 
-            let depthEvidence = depths.map { (depth: $0, evidence: evidence(at: $0)) }
+            let depthEvidence = depths.indices.map { (depth: depths[$0], evidence: evidence(at: $0)) }
             let acceptedIndices = depthEvidence.indices.filter { index in
                 let item = depthEvidence[index].evidence
                 return item.strength >= 8
@@ -3331,12 +3490,14 @@ enum CardCenteringAnalyzer {
                 let allowedHalfWidth = localized ? localHalfWidth : searchHalfWidth
                 var measured: [(point: CardCenteringPoint, gradient: Double)] = []
                 measured.reserveCapacity(progressValues.count)
-                for progress in progressValues {
+                for progressIndex in progressValues.indices {
+                    let progress = progressValues[progressIndex]
                     var bestPoint: CardCenteringPoint?
                     var bestGradient = 0.0
                     var bestScore = -Double.infinity
-                    for depth in depths where !localized || abs(depth - referenceDepth) <= allowedHalfWidth {
-                        let gradient = transition(side: side, progress: progress, depth: depth)
+                    for depthIndex in depths.indices where !localized || abs(depths[depthIndex] - referenceDepth) <= allowedHalfWidth {
+                        let depth = depths[depthIndex]
+                        let gradient = transitions?[depthIndex][progressIndex] ?? transition(side: side, progress: progress, depth: depth)
                         let prior = exp(-pow((depth - referenceDepth)
                             / max(allowedHalfWidth * 0.75, .ulpOfOne), 2))
                         let score = gradient * (localized ? 0.35 + 0.65 * prior : 0.70 + 0.30 * prior)
@@ -3849,7 +4010,10 @@ enum CardCenteringAnalyzer {
             return (normalX, normalY)
         }
 
+        let frames = profileFrames(for: outer)
+
         func point(side: ProfileSide, progress: Double, normalizedDepth: Double) -> CardCenteringPoint {
+            if let frames { return frames[side.rawValue].point(progress: progress, depth: normalizedDepth) }
             let origin = edgePoint(side, progress: progress)
             let normal = inwardNormal(side)
             let axisLength = side == .left || side == .right ? cardWidth : cardHeight
@@ -3871,6 +4035,16 @@ enum CardCenteringAnalyzer {
             // there is no absolute-pixel radius switch at a scale boundary.
             let radiusPixels = radiusNormalized
                 * (side == .left || side == .right ? cardWidth : cardHeight)
+            let frame = frames?[side.rawValue]
+            let origins = frame.map { frame in
+                progressValues.map { frame.point(progress: $0, depth: 0) }
+            }
+            let previousDistances = frame.map { frame in
+                normalizedDepths.map { max(normalizedDepthStart, $0 - radiusNormalized) * frame.axisLength }
+            }
+            let currentDistances = frame.map { frame in
+                normalizedDepths.map { min(normalizedDepthEnd, $0 + radiusNormalized) * frame.axisLength }
+            }
             var scores = [Double](repeating: 0, count: depthSampleCount)
             var supports = [Double](repeating: 0, count: depthSampleCount)
             for index in normalizedDepths.indices {
@@ -3885,13 +4059,15 @@ enum CardCenteringAnalyzer {
                         pixels,
                         width: width,
                         height: height,
-                        at: point(side: side, progress: progress, normalizedDepth: previousDepth)
+                        at: frame.map { $0.point(origin: origins![sampleIndex], distance: previousDistances![index]) }
+                            ?? point(side: side, progress: progress, normalizedDepth: previousDepth)
                     )
                     let current = samplePixel(
                         pixels,
                         width: width,
                         height: height,
-                        at: point(side: side, progress: progress, normalizedDepth: currentDepth)
+                        at: frame.map { $0.point(origin: origins![sampleIndex], distance: currentDistances![index]) }
+                            ?? point(side: side, progress: progress, normalizedDepth: currentDepth)
                     )
                     values.append(Double(distance(previous, current)) * distanceScale)
                 }
@@ -4202,6 +4378,8 @@ enum CardCenteringAnalyzer {
         // pass that finds the outline can also measure how far it leans.
         var firstForeground = [Int](repeating: -1, count: height)
         var lastForeground = [Int](repeating: -1, count: height)
+#if DEBUG
+        if useReferenceCalculations {
         for y in 0..<height {
             let row = y * width
             for x in 0..<width where distance(lab[row + x], background) >= threshold {
@@ -4211,6 +4389,15 @@ enum CardCenteringAnalyzer {
                 lastForeground[y] = x
             }
         }
+
+        } else {
+            TCSCenteringForeground(lab, Int32(width), Int32(height), background, threshold,
+                                   &columnCounts, &rowCounts, &firstForeground, &lastForeground)
+        }
+#else
+        TCSCenteringForeground(lab, Int32(width), Int32(height), background, threshold,
+                               &columnCounts, &rowCounts, &firstForeground, &lastForeground)
+#endif
 
         guard let columns = longestRun(columnCounts),
               let rows = longestRun(rowCounts) else { return nil }

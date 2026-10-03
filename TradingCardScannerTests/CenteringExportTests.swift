@@ -40,6 +40,133 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertFalse(value.hasValidFrameGeometry)
         XCTAssertFalse(value.confirmFrames())
     }
+
+    func testPerspectiveEditsPreserveUneditedLinesAndTheReferenceRole() throws {
+        let outer = CardCenteringQuad(
+            topLeft: .init(x: 110, y: 80), topRight: .init(x: 890, y: 125),
+            bottomRight: .init(x: 840, y: 1125), bottomLeft: .init(x: 140, y: 1080)
+        )
+        let inner = CardCenteringQuad(
+            topLeft: .init(x: 190, y: 170), topRight: .init(x: 805, y: 205),
+            bottomRight: .init(x: 765, y: 985), bottomLeft: .init(x: 215, y: 950)
+        )
+        var value = CardCenteringMeasurement(imageWidth: 1000, imageHeight: 1400,
+            outerQuad: outer, innerQuad: inner, warnings: [], innerReference: .printedBorder,
+            confidence: .manualConfirmationRequired(preserving: .legacyConfident, reason: "Review"))
+        value.setManualOuterEdge(\.left, to: value.outer.left + 5)
+        XCTAssertEqual(value.outerQuad.topRight, outer.topRight)
+        XCTAssertEqual(value.outerQuad.bottomRight, outer.bottomRight)
+        XCTAssertEqual(value.innerQuad, inner)
+        XCTAssertTrue(value.usesQuadGeometry)
+        XCTAssertTrue(try XCTUnwrap(value.rectification).isNumericallyValid)
+        XCTAssertFalse(value.canReportRatios)
+        XCTAssertTrue(value.confirmFrames())
+        value.setManualInnerEdge(\.top, to: value.inner.top + 5)
+        XCTAssertEqual(value.innerReference, .printedBorder)
+        XCTAssertEqual(value.innerQuad?.bottomLeft, inner.bottomLeft)
+        XCTAssertEqual(value.innerQuad?.bottomRight, inner.bottomRight)
+        XCTAssertTrue(value.canReportRatios)
+        let distances = try XCTUnwrap(value.rectification).rectifiedQuad(from: value.outerQuad)
+            .borderDistances(to: try XCTUnwrap(value.rectification).rectifiedQuad(from: try XCTUnwrap(value.innerQuad)))
+        let ratio = try XCTUnwrap(CardCenteringRatioPair(firstDistance: distances.top, secondDistance: distances.bottom))
+        XCTAssertEqual(value.topBottomCentering, String(format: "%.1f / %.1f", ratio.firstPercentage, ratio.secondPercentage))
+    }
+
+    func testMalformedGeometryNeverCrashesOrBecomesReportable() {
+        let goodOuter = CardCenteringQuad.axisAligned(.init(left: 20, top: 20, right: 220, bottom: 316))
+        let goodInner = CardCenteringQuad.axisAligned(.init(left: 30, top: 30, right: 210, bottom: 306))
+        for coordinate in [Double.nan, .infinity, -.infinity, Double.greatestFiniteMagnitude, -1] {
+            var outer = goodOuter
+            outer.topLeft.x = coordinate
+            var value = CardCenteringMeasurement(imageWidth: 240, imageHeight: 336,
+                outerQuad: outer, innerQuad: goodInner, warnings: [], confidence: .legacyConfident)
+            XCTAssertFalse(value.hasValidFrameGeometry)
+            XCTAssertFalse(value.confirmFrames())
+            XCTAssertFalse(value.canReportRatios)
+            XCTAssertEqual(value.leftRightCentering, "—")
+        }
+        let singular = CardCenteringRectification(targetSize: .init(width: 200, height: 296),
+            coefficients: [1, 0, 0, 0, 1, 0, -1.0 / 20, 0], residualDegrees: 0)
+        var value = CardCenteringMeasurement(imageWidth: 240, imageHeight: 336,
+            outerQuad: goodOuter, innerQuad: goodInner, warnings: [], confidence: .legacyConfident, rectification: singular)
+        XCTAssertFalse(value.confirmFrames())
+        XCTAssertFalse(value.canReportRatios)
+        let internalPole = CardCenteringRectification(targetSize: .init(width: 200, height: 296),
+            coefficients: [1, 0, 0, 0, 1, 0, -1.0 / 100, 0], residualDegrees: 0)
+        value.rectification = internalPole
+        XCTAssertFalse(value.canReportRatios, "a projective pole inside the card must be rejected")
+        let collapsed = CardCenteringRectification(targetSize: .init(width: 200, height: 296),
+            coefficients: [1, 1, 0, 1, 1, 0, 0, 0], residualDegrees: 0)
+        value.rectification = collapsed
+        XCTAssertFalse(value.canReportRatios, "a singular matrix must be rejected even with finite mapped corners")
+        XCTAssertNil(CardCenteringRatioPair(firstDistance: -1, secondDistance: 2))
+        XCTAssertNil(CardCenteringRatioPair(firstDistance: 0, secondDistance: 2))
+    }
+
+    func testInvertedManualSidesHideRatiosAndRecoverWithoutChangingTheOppositeSide() {
+        for usesQuads in [false, true] {
+            let outer = CardCenteringEdges(left: 20, top: 20, right: 220, bottom: 316)
+            let inner = CardCenteringEdges(left: 30, top: 30, right: 210, bottom: 306)
+            var value = usesQuads
+                ? CardCenteringMeasurement(imageWidth: 240, imageHeight: 336, outerQuad: .axisAligned(outer),
+                    innerQuad: .axisAligned(inner), warnings: [], confidence: .legacyConfident)
+                : CardCenteringMeasurement(imageWidth: 240, imageHeight: 336, outer: outer, inner: inner, warnings: [])
+            XCTAssertTrue(value.canReportRatios)
+            value.setManualInnerEdge(\.left, to: 211)
+            XCTAssertFalse(value.canReportRatios)
+            XCTAssertEqual(value.inner.left, 211, "the control must keep the edited side's position")
+            XCTAssertEqual(value.inner.right, 210, "crossing a guide must not relabel the opposite side")
+            value.setManualInnerEdge(\.left, to: 30)
+            XCTAssertTrue(value.canReportRatios)
+            XCTAssertEqual(value.geometryInnerQuad?.topRight.x, 210)
+            value.setManualOuterEdge(\.top, to: 317)
+            XCTAssertFalse(value.canReportRatios)
+            XCTAssertEqual(value.outer.top, 317)
+            XCTAssertEqual(value.outer.bottom, 316)
+            value.setManualOuterEdge(\.top, to: 20)
+            XCTAssertTrue(value.canReportRatios)
+            XCTAssertEqual(value.geometryOuterQuad.bottomRight.y, 316)
+        }
+    }
+
+    func testInvertingBothAxesNeverMakesMislabeledFramesReportable() {
+        let outer = CardCenteringEdges(left: 20, top: 20, right: 220, bottom: 316)
+        let inner = CardCenteringEdges(left: 30, top: 30, right: 210, bottom: 306)
+        for usesQuads in [false, true] {
+            var value = usesQuads
+                ? CardCenteringMeasurement(imageWidth: 240, imageHeight: 336, outerQuad: .axisAligned(outer),
+                    innerQuad: .axisAligned(inner), warnings: [], confidence: .legacyConfident)
+                : CardCenteringMeasurement(imageWidth: 240, imageHeight: 336, outer: outer, inner: inner, warnings: [])
+            value.setManualInnerEdge(\.left, to: 211)
+            value.setManualInnerEdge(\.top, to: 307)
+            XCTAssertFalse(value.canReportRatios)
+            XCTAssertFalse(value.confirmFrames())
+            XCTAssertEqual(value.leftRightCentering, "—")
+            value.setManualInnerEdge(\.left, to: 30)
+            value.setManualInnerEdge(\.top, to: 30)
+            XCTAssertTrue(value.canReportRatios)
+        }
+    }
+
+    func testCoincidentPerspectiveGuidesCannotTrapSubsequentEdits() {
+        let outer = CardCenteringEdges(left: 20, top: 20, right: 220, bottom: 316)
+        let inner = CardCenteringEdges(left: 30, top: 30, right: 210, bottom: 306)
+        let pairs: [(WritableKeyPath<CardCenteringEdges, Int>, WritableKeyPath<CardCenteringEdges, Int>)] = [
+            (\.left, \.right), (\.right, \.left), (\.top, \.bottom), (\.bottom, \.top)
+        ]
+        for (side, opposite) in pairs {
+            var value = CardCenteringMeasurement(imageWidth: 240, imageHeight: 336,
+                outerQuad: .axisAligned(outer), innerQuad: .axisAligned(inner), warnings: [], confidence: .legacyConfident)
+            value.setManualOuterEdge(side, to: outer[keyPath: opposite])
+            value.setManualOuterEdge(side, to: outer[keyPath: side])
+            XCTAssertEqual(value.outerQuad, .axisAligned(outer))
+            XCTAssertTrue(value.canReportRatios)
+            value.setManualInnerEdge(side, to: inner[keyPath: opposite])
+            value.setManualInnerEdge(side, to: inner[keyPath: side])
+            XCTAssertEqual(value.innerQuad, .axisAligned(inner))
+            XCTAssertTrue(value.canReportRatios)
+        }
+    }
     private func measurement(
         width: Int = 672,
         height: Int = 936,
@@ -525,9 +652,116 @@ final class CenteringExportTests: XCTestCase {
         XCTAssertLessThan(abs(unrotatedSlope), 0.03)
         XCTAssertGreaterThan(abs(rotatedSlope), 0.05)
     }
+
+    @MainActor
+    func testRenderedGuideCentersStayWithinOneDevicePixelAfterRotationZoomAndPan() throws {
+        let outer = CardCenteringQuad(topLeft: .init(x: 110, y: 100), topRight: .init(x: 880, y: 145),
+            bottomRight: .init(x: 840, y: 1280), bottomLeft: .init(x: 150, y: 1230))
+        let inner = CardCenteringQuad(topLeft: .init(x: 190, y: 210), topRight: .init(x: 800, y: 240),
+            bottomRight: .init(x: 765, y: 1150), bottomLeft: .init(x: 215, y: 1110))
+        let value = CardCenteringMeasurement(imageWidth: 1000, imageHeight: 1400,
+            outerQuad: outer, innerQuad: inner, warnings: [])
+        let size = CGSize(width: 320, height: 450)
+        for screenScale in [CGFloat(2), 3] {
+            for (rotation, zoom, pan) in [(0.0, 1.0, CGSize.zero), (7.0, 1.0, CGSize(width: 8, height: -4)),
+                                          (-3.0, 2.0, CGSize(width: 120, height: 9))] {
+                var reportedFrame = CGRect.zero
+                let renderer = ImageRenderer(content: CardCenteringImage(
+                    image: photo(width: 1000, height: 1400), measurement: value,
+                    rotationDegrees: rotation, onFrameChange: { reportedFrame = $0 })
+                    .frame(width: size.width, height: size.height)
+                    .scaleEffect(zoom).offset(pan)
+                    .frame(width: size.width, height: size.height).clipped())
+                renderer.scale = screenScale
+                let cg = try XCTUnwrap(renderer.uiImage?.cgImage)
+                let fit = min(size.width / 1000, size.height / 1400)
+                let origin = CGPoint(x: (size.width - 1000 * fit) / 2, y: (size.height - 1400 * fit) / 2)
+                XCTAssertEqual(reportedFrame.minX, origin.x, accuracy: 0.5)
+                XCTAssertEqual(reportedFrame.minY + (size.height - reportedFrame.height) / 2, origin.y, accuracy: 0.5)
+                var bytes = [UInt8](repeating: 0, count: cg.width * cg.height * 4)
+                let context = try XCTUnwrap(CGContext(data: &bytes, width: cg.width, height: cg.height,
+                    bitsPerComponent: 8, bytesPerRow: cg.width * 4, space: CGColorSpaceCreateDeviceRGB(),
+                    bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+                context.draw(cg, in: CGRect(x: 0, y: 0, width: cg.width, height: cg.height))
+                var checked = 0
+                for (quad, cyan) in [(outer, false), (inner, true)] {
+                    for edge in 0..<4 {
+                        let start = quad.points[edge], end = quad.points[(edge + 1) % 4]
+                        for fraction in [0.25, 0.5, 0.75] {
+                            let x = origin.x + (start.x + (end.x - start.x) * fraction) * fit - size.width / 2
+                            let y = origin.y + (start.y + (end.y - start.y) * fraction) * fit - size.height / 2
+                            let radians = rotation * .pi / 180
+                            let target = CGPoint(x: (size.width / 2 + zoom * (cos(radians) * x - sin(radians) * y) + pan.width) * screenScale,
+                                                 y: (size.height / 2 + zoom * (sin(radians) * x + cos(radians) * y) + pan.height) * screenScale)
+                            guard target.x > 4, target.y > 4, target.x < CGFloat(cg.width - 4), target.y < CGFloat(cg.height - 4) else { continue }
+                            var nearest = Double.infinity
+                            for py in (Int(target.y) - 3)...(Int(target.y) + 3) {
+                                for px in (Int(target.x) - 3)...(Int(target.x) + 3) {
+                                    let i = (py * cg.width + px) * 4
+                                    let matches = cyan ? bytes[i] < 100 && bytes[i + 1] > 140 && bytes[i + 2] > 140
+                                        : bytes[i] > 150 && bytes[i + 1] < 130 && bytes[i + 2] < 130
+                                    if matches { nearest = min(nearest, hypot(Double(px) + 0.5 - target.x, Double(py) + 0.5 - target.y)) }
+                                }
+                            }
+                            XCTAssertLessThanOrEqual(nearest, 1, "scale=\(screenScale) rotation=\(rotation) zoom=\(zoom) edge=\(edge) cyan=\(cyan)")
+                            checked += 1
+                        }
+                    }
+                }
+                XCTAssertGreaterThanOrEqual(checked, 4, "each transform must check visible guide centers")
+            }
+        }
+    }
 }
 
 final class CardCenteringAnalyzerTests: XCTestCase {
+    func testOptimizedPixelKernelsAreBitExactWithTheScalarReference() {
+        XCTAssertTrue(CardCenteringAnalyzer.pixelKernelsMatchReferenceForDiagnostics())
+    }
+    func testProfileDiagnosticsCoverAllFourSidesWhenProfilesAreEvaluated() throws {
+        let data = syntheticCard(canvas: CGSize(width: 420, height: 600),
+            cardRect: CGRect(x: 35, y: 45, width: 350, height: 490),
+            borders: (left: 20, top: 24, right: 20, bottom: 24))
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
+        var profiles: [CardCenteringProfileDiagnostic] = []
+        var branch: CardCenteringAnalysisDiagnostic?
+        diagnostics.frontBottomCandidateGenerationEnabled = false
+        diagnostics.profileDiagnosticSink = { profiles.append($0) }
+        diagnostics.analysisDiagnosticSink = { branch = $0 }
+        _ = try diagnostics.analyze(data)
+        XCTAssertEqual(try XCTUnwrap(branch).profileDisposition, "evaluated")
+        XCTAssertEqual(Set(profiles.map(\.side)), Set(["left", "top", "right", "bottom"]))
+    }
+
+    func testOverlappingDiagnosticRequestsKeepTheirCallbacksAndOptionsSeparate() async throws {
+        let firstData = syntheticCard(canvas: CGSize(width: 420, height: 600),
+            cardRect: CGRect(x: 35, y: 45, width: 350, height: 490),
+            borders: (left: 20, top: 24, right: 20, bottom: 24))
+        let secondData = syntheticCard(canvas: CGSize(width: 280, height: 400),
+            cardRect: CGRect(x: 35, y: 53, width: 210, height: 294),
+            borders: (left: 12, top: 15, right: 12, bottom: 15))
+        @Sendable func capture(_ data: Data, reference: Bool) throws -> ([Int], [Int], CardCenteringMeasurement) {
+            var options = CardCenteringAnalyzer.Diagnostics()
+            options.useReferenceCalculations = reference
+            options.frontBottomCandidateGenerationEnabled = false
+            var widths: [Int] = []
+            var ledgerWidths: [Int] = []
+            options.profileDiagnosticSink = { widths.append($0.workingWidth) }
+            options.candidateLedgerDiagnosticSink = { ledgerWidths.append($0.workingWidth) }
+            let result = try options.analyze(data)
+            return (widths, ledgerWidths, result.measurement)
+        }
+        async let first = Task.detached { try capture(firstData, reference: false) }.value
+        async let second = Task.detached { try capture(secondData, reference: true) }.value
+        let (a, b) = try await (first, second)
+        XCTAssertEqual(a.0, [420, 420, 420, 420])
+        XCTAssertEqual(b.0, [280, 280, 280, 280])
+        XCTAssertEqual(a.1, [420])
+        XCTAssertEqual(b.1, [280])
+        XCTAssertEqual(a.2, try CardCenteringAnalyzer.analyze(firstData).measurement)
+        XCTAssertEqual(b.2, try CardCenteringAnalyzer.analyze(secondData).measurement)
+    }
+
     /// Reproduces the scanner-bed failure mode: the physical side edges are
     /// soft, the printed frame is strong, and an unrelated line sits near the
     /// right edge of the scan. The detector must choose one coherent card box.
@@ -699,6 +933,7 @@ final class CardCenteringAnalyzerTests: XCTestCase {
     /// future selective guard grounded in evidence from both photos and the
     /// known artwork-decoy cases.
     func testEDumpOuterRefinementDecisionsForSyntheticRegressionCorpus() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let cases: [(String, Data)] = [
             (
                 "fills-frame",
@@ -775,9 +1010,9 @@ final class CardCenteringAnalyzerTests: XCTestCase {
 
         for (name, data) in cases {
             var reports: [CardCenteringOuterRefinementDiagnostic] = []
-            CardCenteringAnalyzer.outerRefinementDiagnosticSink = { reports.append($0) }
-            defer { CardCenteringAnalyzer.outerRefinementDiagnosticSink = nil }
-            _ = try CardCenteringAnalyzer.analyze(data)
+            diagnostics.outerRefinementDiagnosticSink = { reports.append($0) }
+            defer { diagnostics.outerRefinementDiagnosticSink = nil }
+            _ = try diagnostics.analyze(data)
             func median(_ values: [Double]) -> String {
                 guard !values.isEmpty else { return "nil" }
                 let sorted = values.sorted()

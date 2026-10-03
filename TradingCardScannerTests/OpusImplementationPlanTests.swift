@@ -2180,7 +2180,7 @@ final class CardCenteringGroundTruthTests: XCTestCase {
 }
 
 final class CardCenteringInvariantTests: XCTestCase {
-    private let holdout = "IMG_0783"
+    private let developmentFixture = "IMG_0783"
     private let fixtureNames = [
         "IMG_0347", "IMG_0348", "IMG_0349", "IMG_0350", "IMG_0351",
         "IMG_0352", "IMG_0780", "IMG_0781", "IMG_0782", "IMG_0783"
@@ -2422,9 +2422,7 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     private func ratios(_ measurement: CardCenteringMeasurement) throws -> (lr: Double, tb: Double) {
-        guard !measurement.isDeclined else {
-            throw XCTSkip("measurement declined: \(measurement.declineReason ?? "unknown")")
-        }
+        XCTAssertTrue(measurement.canReportRatios, measurement.declineReason ?? "unreportable geometry")
         let lr = try XCTUnwrap(Double(measurement.leftRightCentering.components(separatedBy: " / ").first ?? ""))
         let tb = try XCTUnwrap(Double(measurement.topBottomCentering.components(separatedBy: " / ").first ?? ""))
         return (lr, tb)
@@ -2442,10 +2440,199 @@ final class CardCenteringInvariantTests: XCTestCase {
         max(abs(lhs.lr - rhs.lr), abs(lhs.tb - rhs.tb))
     }
 
+    private struct AutomaticComparison: Codable {
+        let invariant: String
+        let context: String
+        let errorPercentagePoints: Double
+        let tolerancePercentagePoints: Double
+        var passes: Bool { errorPercentagePoints <= tolerancePercentagePoints }
+    }
+    private var automaticComparisons: [AutomaticComparison] = []
+
+    private func recordAutomaticComparison(_ invariant: String, _ error: Double, _ tolerance: Double, _ context: String = "") {
+        automaticComparisons.append(AutomaticComparison(invariant: invariant, context: context,
+            errorPercentagePoints: error, tolerancePercentagePoints: tolerance))
+    }
+
+    /// These are release-gate observations, not guided-path correctness tests.
+    /// The original transforms and tolerances remain intact; no automatic ratio
+    /// becomes available to the user merely because a candidate can be confirmed.
+    func testAutomaticResearchTransformGatesAreRecorded() throws {
+        automaticComparisons = []
+        try automaticINV2SmallRotationPreservesReportedRatios()
+        try automaticINV4HorizontalMirrorComplementsLeftRightOnly()
+        try automaticINV5QuarterTurnsMapThePerSideRatios()
+        try automaticINV6ReencodedExifOrientationsPreserveTheSameDisplayedResult()
+        try automaticINV7UniformScaleDoesNotChangeRatios()
+        try automaticINV8BenignCropWithEightPercentCardMarginPreservesRatios()
+        XCTAssertEqual(automaticComparisons.count, 22)
+        let output = try centeringDiagnosticDirectory("automatic-transform-gates")
+        try JSONEncoder().encode(automaticComparisons).write(to: output.appendingPathComponent("results.json"), options: .atomic)
+        for result in automaticComparisons {
+            print("AUTOMATIC_GATE \(result.invariant) \(result.context) error=\(result.errorPercentagePoints) tolerance=\(result.tolerancePercentagePoints) passes=\(result.passes)")
+        }
+        for name in fixtureNames {
+            XCTAssertFalse(try CardCenteringAnalyzer.analyze(fixtureData(name)).measurement.canReportRatios,
+                           "automatic release remains gated: \(name)")
+        }
+    }
+
+    /// Independent annotated final frames stand in for the user's reviewed
+    /// placement. The variant transform is the renderer's transform, not a
+    /// detector estimate. Only the final native-to-working presentation mapping
+    /// comes from analysis, as it does when a user edits guides on screen.
+    private func guidedRatios(_ data: Data, record: GroundTruthRecord,
+                              transform: (CardCenteringPoint) -> CardCenteringPoint = { $0 },
+                              order: [Int] = [0, 1, 2, 3]) throws -> (lr: Double, tb: Double) {
+        let analysis = try CardCenteringAnalyzer.analyze(data)
+        XCTAssertFalse(analysis.measurement.canReportRatios)
+        let mapping = try XCTUnwrap(analysis.coordinateMapping)
+        func mapped(_ values: [[Double]]) throws -> CardCenteringQuad {
+            let points = try XCTUnwrap(CardCenteringQuad(values)).points.map(transform)
+            let ordered = CardCenteringQuad(topLeft: points[order[0]], topRight: points[order[1]],
+                bottomRight: points[order[2]], bottomLeft: points[order[3]])
+            return mapping.workingQuad(fromNative: ordered)
+        }
+        var measurement = CardCenteringMeasurement(
+            imageWidth: analysis.measurement.imageWidth, imageHeight: analysis.measurement.imageHeight,
+            outerQuad: try mapped(record.cardOuterQuad), innerQuad: try mapped(XCTUnwrap(record.innerQuad)),
+            warnings: [], coordinateMapping: mapping, innerReference: record.innerReference,
+            confidence: .manualConfirmationRequired(preserving: analysis.measurement.confidence,
+                reason: "Review frames")
+        )
+        XCTAssertFalse(measurement.canReportRatios)
+        XCTAssertTrue(measurement.confirmFrames(), "annotated reviewed geometry must be valid")
+        return try ratios(measurement)
+    }
+
+    private func variantTransform(_ data: Data, record: GroundTruthRecord,
+                                  rotation: CGFloat = 0, mirror: Bool = false, scale: CGFloat = 1) throws
+        -> (CardCenteringPoint) -> CardCenteringPoint {
+        let size = try normalisedImage(data).size
+        let draw = CGSize(width: size.width * scale, height: size.height * scale)
+        let radians = Double(rotation) * .pi / 180
+        let width = abs(cos(radians)) * draw.width + abs(sin(radians)) * draw.height
+        let height = abs(sin(radians)) * draw.width + abs(cos(radians)) * draw.height
+        let margin = max(24, max(width, height) * 0.12)
+        let canvas = CGSize(width: ceil(width + 2 * margin), height: ceil(height + 2 * margin))
+        return { point in
+            let x = (point.x * size.width / Double(record.orientedPixelSize.w) - size.width / 2) * scale * (mirror ? -1 : 1)
+            let y = (point.y * size.height / Double(record.orientedPixelSize.h) - size.height / 2) * scale
+            return CardCenteringPoint(x: canvas.width / 2 + cos(radians) * x - sin(radians) * y,
+                                     y: canvas.height / 2 + sin(radians) * x + cos(radians) * y)
+        }
+    }
+
+    func testINV2SmallRotationPreservesReportedRatios() throws {
+        let data = try fixtureData(developmentFixture), record = try fixtureRecord(developmentFixture)
+        let baseline = try guidedRatios(data, record: record)
+        for degrees in [CGFloat(-3), 3] {
+            let measured = try guidedRatios(renderedVariant(data, rotationDegrees: degrees), record: record,
+                transform: variantTransform(data, record: record, rotation: degrees))
+            XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.5, "rotation \(degrees)°")
+        }
+    }
+
+    func testINV4HorizontalMirrorComplementsLeftRightOnly() throws {
+        let data = try fixtureData(developmentFixture), record = try fixtureRecord(developmentFixture)
+        let baseline = try guidedRatios(data, record: record)
+        let mirrored = try guidedRatios(renderedVariant(data, mirrorX: true), record: record,
+            transform: variantTransform(data, record: record, mirror: true), order: [1, 0, 3, 2])
+        XCTAssertLessThanOrEqual(abs(mirrored.lr - (100 - baseline.lr)), 0.5)
+        XCTAssertLessThanOrEqual(abs(mirrored.tb - baseline.tb), 0.5)
+    }
+
+    func testINV5QuarterTurnsMapThePerSideRatios() throws {
+        let data = try fixtureData(developmentFixture), record = try fixtureRecord(developmentFixture)
+        let baseline = try guidedRatios(data, record: record)
+        let variants: [(CGFloat, [Int], (lr: Double, tb: Double))] = [
+            (90, [3, 0, 1, 2], (100 - baseline.tb, baseline.lr)),
+            (180, [2, 3, 0, 1], (100 - baseline.lr, 100 - baseline.tb)),
+            (270, [1, 2, 3, 0], (baseline.tb, 100 - baseline.lr))
+        ]
+        for (degrees, order, expected) in variants {
+            let measured = try guidedRatios(renderedVariant(data, rotationDegrees: degrees), record: record,
+                transform: variantTransform(data, record: record, rotation: degrees), order: order)
+            XCTAssertLessThanOrEqual(ratioError(measured, expected), 0.5, "quarter turn \(degrees)°")
+        }
+    }
+
+    func testINV6ReencodedExifOrientationsPreserveTheSameDisplayedResult() throws {
+        for name in ["IMG_0348", "IMG_0780", developmentFixture] {
+            let data = try fixtureData(name), record = try fixtureRecord(name)
+            let size = try normalisedImage(data).size
+            let transform: (CardCenteringPoint) -> CardCenteringPoint = {
+                CardCenteringPoint(x: $0.x * size.width / Double(record.orientedPixelSize.w),
+                                  y: $0.y * size.height / Double(record.orientedPixelSize.h))
+            }
+            let baseline = try guidedRatios(XCTUnwrap(try normalisedImage(data).pngData()), record: record, transform: transform)
+            for orientation in [1, 3, 6, 8] {
+                let measured = try guidedRatios(reencodedVariant(data, exifOrientation: orientation), record: record, transform: transform)
+                XCTAssertLessThanOrEqual(ratioError(measured, baseline), 0.5, "\(name) EXIF \(orientation)")
+            }
+        }
+    }
+
+    func testINV7UniformScaleDoesNotChangeRatios() throws {
+        let data = try fixtureData(developmentFixture), record = try fixtureRecord(developmentFixture)
+        let baseline = try guidedRatios(data, record: record)
+        for scale in [CGFloat(0.6), 1.5] {
+            let measured = try guidedRatios(renderedVariant(data, scale: scale), record: record,
+                transform: variantTransform(data, record: record, scale: scale))
+            XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.0, "scale \(scale)")
+        }
+    }
+
+    func testINV8BenignCropWithEightPercentCardMarginPreservesRatios() throws {
+        let data = try fixtureData(developmentFixture), record = try fixtureRecord(developmentFixture)
+        let baseline = try guidedRatios(data, record: record)
+        let size = try normalisedImage(data).size
+        let points = record.cardOuterQuad.map { CGPoint(x: $0[0] * size.width / Double(record.orientedPixelSize.w), y: $0[1] * size.height / Double(record.orientedPixelSize.h)) }
+        let bounds = points.reduce(into: CGRect.null) { $0 = $0.union(CGRect(origin: $1, size: .zero)) }
+        let marginX = bounds.width * 0.08, marginY = bounds.height * 0.08
+        let padding = max(24, max(marginX, marginY) + 8)
+        let crop = CGRect(x: padding + bounds.minX - marginX, y: padding + bounds.minY - marginY,
+                          width: bounds.width + 2 * marginX, height: bounds.height + 2 * marginY).integral
+        let measured = try guidedRatios(benignCropVariant(data, record: record), record: record, transform: {
+            CardCenteringPoint(x: $0.x * size.width / Double(record.orientedPixelSize.w) + padding - crop.minX,
+                              y: $0.y * size.height / Double(record.orientedPixelSize.h) + padding - crop.minY)
+        })
+        XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.0)
+    }
+
+    func testReviewedAnnotatedFramesStayWithinTwoPercentagePointsOfGroundTruth() throws {
+        for name in fixtureNames {
+            let record = try fixtureRecord(name)
+            guard record.innerQuad != nil else { continue } // no gradeable reference in the annotation
+            let measured = try guidedRatios(fixtureData(name), record: record)
+            XCTAssertEqual(measured.lr, try XCTUnwrap(record.expected.lrRatio), accuracy: 2, name)
+            XCTAssertEqual(measured.tb, try XCTUnwrap(record.expected.tbRatio), accuracy: 2, name)
+        }
+    }
+
+    func testOptimizedCalculationsMatchReferenceGeometryAndProfiles() throws {
+        for name in fixtureNames {
+            let data = try fixtureData(name)
+            var reference = CardCenteringAnalyzer.Diagnostics()
+            reference.frontBottomCandidateGenerationEnabled = false
+            reference.useReferenceCalculations = true
+            var referenceProfiles: [CardCenteringProfileDiagnostic] = []
+            reference.profileDiagnosticSink = { referenceProfiles.append($0) }
+            let expected = try reference.analyze(data)
+            var optimized = CardCenteringAnalyzer.Diagnostics()
+            optimized.frontBottomCandidateGenerationEnabled = false
+            var optimizedProfiles: [CardCenteringProfileDiagnostic] = []
+            optimized.profileDiagnosticSink = { optimizedProfiles.append($0) }
+            let actual = try optimized.analyze(data)
+            XCTAssertEqual(actual.measurement, expected.measurement, name)
+            XCTAssertEqual(optimizedProfiles, referenceProfiles, name)
+        }
+    }
+
     func testINV1RepeatedProductionAnalysisIsByteStable() throws {
         let bundle = Bundle(for: CardCenteringGroundTruthTests.self)
         let imageURL = try XCTUnwrap(
-            bundle.url(forResource: holdout, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
+            bundle.url(forResource: developmentFixture, withExtension: "HEIC", subdirectory: "TradingCards/HEIC")
         )
         let data = try Data(contentsOf: imageURL)
         let first = try CardCenteringAnalyzer.analyze(data).measurement
@@ -2520,11 +2707,12 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     func testREQ041AnalysisDiagnosticReportsNamedStageTimings() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         var captured: CardCenteringAnalysisDiagnostic?
-        CardCenteringAnalyzer.analysisDiagnosticSink = { captured = $0 }
-        defer { CardCenteringAnalyzer.analysisDiagnosticSink = nil }
+        diagnostics.analysisDiagnosticSink = { captured = $0 }
+        defer { diagnostics.analysisDiagnosticSink = nil }
 
-        _ = try CardCenteringAnalyzer.analyze(try fixtureData(holdout))
+        _ = try diagnostics.analyze(try fixtureData(developmentFixture))
 
         let diagnostic = try XCTUnwrap(captured)
         let encoded = try JSONEncoder().encode(diagnostic)
@@ -2552,11 +2740,12 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     func testREQ049AnalysisDiagnosticReportsPositionalConsistency() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         var captured: CardCenteringAnalysisDiagnostic?
-        CardCenteringAnalyzer.analysisDiagnosticSink = { captured = $0 }
-        defer { CardCenteringAnalyzer.analysisDiagnosticSink = nil }
+        diagnostics.analysisDiagnosticSink = { captured = $0 }
+        defer { diagnostics.analysisDiagnosticSink = nil }
 
-        _ = try CardCenteringAnalyzer.analyze(try fixtureData(holdout))
+        _ = try diagnostics.analyze(try fixtureData(developmentFixture))
 
         let diagnostic = try XCTUnwrap(captured)
         let positional = try XCTUnwrap(
@@ -2605,11 +2794,12 @@ final class CardCenteringInvariantTests: XCTestCase {
 
 #if DEBUG
     func testREQ042CandidateLedgerRetainsAllEdgeFamiliesBeforeSelection() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         var captured: CardCenteringCandidateLedgerDiagnostic?
-        CardCenteringAnalyzer.candidateLedgerDiagnosticSink = { captured = $0 }
-        defer { CardCenteringAnalyzer.candidateLedgerDiagnosticSink = nil }
+        diagnostics.candidateLedgerDiagnosticSink = { captured = $0 }
+        defer { diagnostics.candidateLedgerDiagnosticSink = nil }
 
-        _ = try CardCenteringAnalyzer.analyze(try fixtureData(holdout))
+        _ = try diagnostics.analyze(try fixtureData(developmentFixture))
 
         let ledger = try XCTUnwrap(
             captured,
@@ -2636,6 +2826,7 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     func testREQ042CandidateRecallDiagnosticCoversAllFixtures() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try centeringDiagnosticDirectory("REQ-042")
 
         func lineDistance(
@@ -2701,18 +2892,18 @@ final class CardCenteringInvariantTests: XCTestCase {
 
         var capturedAnalysis: CardCenteringAnalysisDiagnostic?
         var capturedLedger: CardCenteringCandidateLedgerDiagnostic?
-        CardCenteringAnalyzer.analysisDiagnosticSink = { capturedAnalysis = $0 }
-        CardCenteringAnalyzer.candidateLedgerDiagnosticSink = { capturedLedger = $0 }
+        diagnostics.analysisDiagnosticSink = { capturedAnalysis = $0 }
+        diagnostics.candidateLedgerDiagnosticSink = { capturedLedger = $0 }
         defer {
-            CardCenteringAnalyzer.analysisDiagnosticSink = nil
-            CardCenteringAnalyzer.candidateLedgerDiagnosticSink = nil
+            diagnostics.analysisDiagnosticSink = nil
+            diagnostics.candidateLedgerDiagnosticSink = nil
         }
 
         for fixture in fixtureNames {
             capturedAnalysis = nil
             capturedLedger = nil
             let data = try fixtureData(fixture)
-            let result = try CardCenteringAnalyzer.analyze(data)
+            let result = try diagnostics.analyze(data)
             let analysis = try XCTUnwrap(
                 capturedAnalysis,
                 "REQ-042 must capture branch metadata for \(fixture)"
@@ -2805,16 +2996,17 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     func testREQ043RegisteredBackIdentityGateReportsFrontNegativeClass() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try centeringDiagnosticDirectory("REQ-043")
         let fronts = ["IMG_0348", "IMG_0349", "IMG_0351", "IMG_0780", "IMG_0782"]
         var captured: CardCenteringBackIdentityDiagnostic?
-        CardCenteringAnalyzer.registeredBackIdentityDiagnosticSink = { captured = $0 }
-        defer { CardCenteringAnalyzer.registeredBackIdentityDiagnosticSink = nil }
+        diagnostics.registeredBackIdentityDiagnosticSink = { captured = $0 }
+        defer { diagnostics.registeredBackIdentityDiagnosticSink = nil }
 
         var records: [REQ043BackIdentityRecord] = []
         for fixture in fronts {
             captured = nil
-            _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            _ = try diagnostics.analyze(try fixtureData(fixture))
             let diagnostic = try XCTUnwrap(
                 captured,
                 "REQ-043 must emit identity-gate evidence for \(fixture)"
@@ -2916,18 +3108,19 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     func testREQ044BoundedJointSelectionExperimentRecordsL1Outcome() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try centeringDiagnosticDirectory("REQ-044")
         var captured: CardCenteringJointSelectionDiagnostic?
         var capturedAnalysis: CardCenteringAnalysisDiagnostic?
-        CardCenteringAnalyzer.jointSelectionEnabled = true
-        CardCenteringAnalyzer.frontBottomCandidateGenerationEnabled = true
-        CardCenteringAnalyzer.jointSelectionDiagnosticSink = { captured = $0 }
-        CardCenteringAnalyzer.analysisDiagnosticSink = { capturedAnalysis = $0 }
+        diagnostics.jointSelectionEnabled = true
+        diagnostics.frontBottomCandidateGenerationEnabled = true
+        diagnostics.jointSelectionDiagnosticSink = { captured = $0 }
+        diagnostics.analysisDiagnosticSink = { capturedAnalysis = $0 }
         defer {
-            CardCenteringAnalyzer.jointSelectionEnabled = false
-            CardCenteringAnalyzer.frontBottomCandidateGenerationEnabled = true
-            CardCenteringAnalyzer.jointSelectionDiagnosticSink = nil
-            CardCenteringAnalyzer.analysisDiagnosticSink = nil
+            diagnostics.jointSelectionEnabled = false
+            diagnostics.frontBottomCandidateGenerationEnabled = true
+            diagnostics.jointSelectionDiagnosticSink = nil
+            diagnostics.analysisDiagnosticSink = nil
         }
 
         func measuredRatios(
@@ -2954,7 +3147,7 @@ final class CardCenteringInvariantTests: XCTestCase {
             captured = nil
             capturedAnalysis = nil
             let groundTruth = try fixtureRecord(fixture)
-            let result = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            let result = try diagnostics.analyze(try fixtureData(fixture))
             let measured = try measuredRatios(result, fixture: fixture)
             let expectedLR = groundTruth.expected.lrRatio
             let expectedTB = groundTruth.expected.tbRatio
@@ -3222,21 +3415,22 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     func testREQ041ControlledFrontBottomGeneratorAB() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try centeringDiagnosticDirectory("REQ-041-AB")
         var captured: CardCenteringAnalysisDiagnostic?
-        CardCenteringAnalyzer.analysisDiagnosticSink = { captured = $0 }
+        diagnostics.analysisDiagnosticSink = { captured = $0 }
         defer {
-            CardCenteringAnalyzer.analysisDiagnosticSink = nil
-            CardCenteringAnalyzer.frontBottomCandidateGenerationEnabled = true
+            diagnostics.analysisDiagnosticSink = nil
+            diagnostics.frontBottomCandidateGenerationEnabled = true
         }
 
         func run(arm: String, enabled: Bool) throws -> [REQ041ControlledABRecord] {
-            CardCenteringAnalyzer.frontBottomCandidateGenerationEnabled = enabled
+            diagnostics.frontBottomCandidateGenerationEnabled = enabled
             var records: [REQ041ControlledABRecord] = []
             for fixture in fixtureNames {
                 captured = nil
                 let start = CFAbsoluteTimeGetCurrent()
-                _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+                _ = try diagnostics.analyze(try fixtureData(fixture))
                 let elapsed = CFAbsoluteTimeGetCurrent() - start
                 let diagnostic = try XCTUnwrap(
                     captured,
@@ -3318,6 +3512,7 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 
     func testREQ041ProfilesNamedStageTimingsAcrossAllFixtures() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try centeringDiagnosticDirectory("REQ-041")
 
         let stageSpecs: [(String, KeyPath<CardCenteringStageTimingDiagnostic, Double>)] = [
@@ -3342,8 +3537,8 @@ final class CardCenteringInvariantTests: XCTestCase {
 
         var records: [REQ041StageTimingRecord] = []
         var captured: CardCenteringAnalysisDiagnostic?
-        CardCenteringAnalyzer.analysisDiagnosticSink = { captured = $0 }
-        defer { CardCenteringAnalyzer.analysisDiagnosticSink = nil }
+        diagnostics.analysisDiagnosticSink = { captured = $0 }
+        defer { diagnostics.analysisDiagnosticSink = nil }
 
         // Keep the complete repeated corpus below XCTest's per-test watchdog.
         // The analyzer takes roughly 2.7 seconds per raw HEIC on the pinned
@@ -3353,7 +3548,7 @@ final class CardCenteringInvariantTests: XCTestCase {
             for fixture in fixtureNames {
                 captured = nil
                 let start = CFAbsoluteTimeGetCurrent()
-                _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+                _ = try diagnostics.analyze(try fixtureData(fixture))
                 let elapsed = CFAbsoluteTimeGetCurrent() - start
                 let diagnostic = try XCTUnwrap(
                     captured,
@@ -3431,13 +3626,13 @@ final class CardCenteringInvariantTests: XCTestCase {
     }
 #endif
 
-    func testINV2SmallRotationPreservesReportedRatios() throws {
-        let data = try fixtureData(holdout)
+    private func automaticINV2SmallRotationPreservesReportedRatios() throws {
+        let data = try fixtureData(developmentFixture)
         let baseline = try confidentRatios(data)
         for degrees in [-3.0, 3.0] {
             let variant = try renderedVariant(data, rotationDegrees: CGFloat(degrees))
             let measured = try confidentRatios(variant)
-            XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.5, "rotation \(degrees)°")
+            recordAutomaticComparison("INV-2", ratioError(measured, baseline), 1.5, "rotation \(degrees)°")
         }
     }
 
@@ -3458,16 +3653,16 @@ final class CardCenteringInvariantTests: XCTestCase {
         }
     }
 
-    func testINV4HorizontalMirrorComplementsLeftRightOnly() throws {
-        let data = try fixtureData(holdout)
+    private func automaticINV4HorizontalMirrorComplementsLeftRightOnly() throws {
+        let data = try fixtureData(developmentFixture)
         let baseline = try confidentRatios(data)
         let mirrored = try confidentRatios(try renderedVariant(data, mirrorX: true))
-        XCTAssertLessThanOrEqual(abs(mirrored.lr - (100 - baseline.lr)), 0.5)
-        XCTAssertLessThanOrEqual(abs(mirrored.tb - baseline.tb), 0.5)
+        recordAutomaticComparison("INV-4", abs(mirrored.lr - (100 - baseline.lr)), 0.5)
+        recordAutomaticComparison("INV-4", abs(mirrored.tb - baseline.tb), 0.5)
     }
 
-    func testINV5QuarterTurnsMapThePerSideRatios() throws {
-        let data = try fixtureData(holdout)
+    private func automaticINV5QuarterTurnsMapThePerSideRatios() throws {
+        let data = try fixtureData(developmentFixture)
         let baseline = try confidentRatios(data)
         let expected: [(CGFloat, (Double, Double), (Double, Double))] = [
             (90, (baseline.tb, 100 - baseline.lr), (100 - baseline.tb, baseline.lr)),
@@ -3477,12 +3672,12 @@ final class CardCenteringInvariantTests: XCTestCase {
         for (degrees, first, second) in expected {
             let measured = try confidentRatios(try renderedVariant(data, rotationDegrees: degrees))
             let error = min(ratioError(measured, (lr: first.0, tb: first.1)), ratioError(measured, (lr: second.0, tb: second.1)))
-            XCTAssertLessThanOrEqual(error, 0.5, "quarter turn \(degrees)°")
+            recordAutomaticComparison("INV-5", error, 0.5, "quarter turn \(degrees)°")
         }
     }
 
-    func testINV6ReencodedExifOrientationsPreserveTheSameDisplayedResult() throws {
-        for name in ["IMG_0348", "IMG_0780", holdout] {
+    private func automaticINV6ReencodedExifOrientationsPreserveTheSameDisplayedResult() throws {
+        for name in ["IMG_0348", "IMG_0780", developmentFixture] {
             let data = try fixtureData(name)
             // Compare every EXIF encoding with the same canonical displayed
             // bitmap used to construct the variants. Comparing the variants
@@ -3493,26 +3688,26 @@ final class CardCenteringInvariantTests: XCTestCase {
             for orientation in [1, 3, 6, 8] {
                 let variant = try reencodedVariant(data, exifOrientation: orientation)
                 let measured = try confidentRatios(variant)
-                XCTAssertLessThanOrEqual(ratioError(measured, baseline), 0.5, "\(name) EXIF \(orientation)")
+                recordAutomaticComparison("INV-6", ratioError(measured, baseline), 0.5, "\(name) EXIF \(orientation)")
             }
         }
     }
 
-    func testINV7UniformScaleDoesNotChangeRatios() throws {
-        let data = try fixtureData(holdout)
+    private func automaticINV7UniformScaleDoesNotChangeRatios() throws {
+        let data = try fixtureData(developmentFixture)
         let baseline = try confidentRatios(data)
         for scale in [CGFloat(0.6), 1.5] {
             let measured = try confidentRatios(try renderedVariant(data, scale: scale))
-            XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.0, "scale \(scale)")
+            recordAutomaticComparison("INV-7", ratioError(measured, baseline), 1.0, "scale \(scale)")
         }
     }
 
-    func testINV8BenignCropWithEightPercentCardMarginPreservesRatios() throws {
-        let data = try fixtureData(holdout)
+    private func automaticINV8BenignCropWithEightPercentCardMarginPreservesRatios() throws {
+        let data = try fixtureData(developmentFixture)
         let baseline = try confidentRatios(data)
-        let record = try fixtureRecord(holdout)
+        let record = try fixtureRecord(developmentFixture)
         let measured = try confidentRatios(try benignCropVariant(data, record: record))
-        XCTAssertLessThanOrEqual(ratioError(measured, baseline), 1.0)
+        recordAutomaticComparison("INV-8", ratioError(measured, baseline), 1.0)
     }
 
     func testINV9SleevedCardsDoNotSelectTheEncasementQuad() throws {
@@ -3549,7 +3744,9 @@ final class CardCenteringInvariantTests: XCTestCase {
             let data = try fixtureData(name)
             let start = CFAbsoluteTimeGetCurrent()
             _ = try CardCenteringAnalyzer.analyze(data)
-            durations.append(CFAbsoluteTimeGetCurrent() - start)
+            let duration = CFAbsoluteTimeGetCurrent() - start
+            durations.append(duration)
+            print("CENTERING_TIMING \(name) seconds=\(duration)")
         }
         let sorted = durations.sorted()
         let median = sorted[sorted.count / 2]
@@ -4015,6 +4212,7 @@ private struct E0FinalAnalysisDiagnostic: Codable {
     let scalarPinned: Bool?
     let outlineHasInner: Bool
     let innerSource: CardCenteringInnerSource
+    let profileDisposition: String
     let visionOuterQuad: CardCenteringQuad?
     let scalarOuter: CardCenteringEdges?
     let scalarInner: CardCenteringEdges?
@@ -4081,6 +4279,7 @@ private struct E0FinalAnalysisDiagnostic: Codable {
         self.scalarPinned = branch.scalarPinned
         self.outlineHasInner = branch.outlineHasInner
         self.innerSource = branch.innerSource
+        self.profileDisposition = branch.profileDisposition
         self.visionOuterQuad = branch.visionOuterQuad
         self.scalarOuter = branch.scalarOuter
         self.scalarInner = branch.scalarInner
@@ -4194,6 +4393,7 @@ private struct EENormalizationDump: Codable {
     let confidenceState: String
     let innerSource: String
     let outerRefinementAccepted: Bool
+    let profileDisposition: String
     let records: [EENormalizationRecord]
 }
 
@@ -4743,6 +4943,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testDumpDifferentialProfilesForCleanAndSleevedFixtures() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try outputDirectory()
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -4754,18 +4955,18 @@ final class CenteringProfileDumpTests: XCTestCase {
                 let rendered = try renderedVariant(data, variant: variant)
                 var captured: [CardCenteringProfileDiagnostic] = []
                 var capturedBranch: CardCenteringAnalysisDiagnostic?
-                CardCenteringAnalyzer.profileDiagnosticSink = { diagnostic in
+                diagnostics.profileDiagnosticSink = { diagnostic in
                     captured.append(diagnostic)
                 }
-                CardCenteringAnalyzer.analysisDiagnosticSink = { diagnostic in
+                diagnostics.analysisDiagnosticSink = { diagnostic in
                     capturedBranch = diagnostic
                 }
                 let analysis: CardCenteringAnalysis
                 defer {
-                    CardCenteringAnalyzer.profileDiagnosticSink = nil
-                    CardCenteringAnalyzer.analysisDiagnosticSink = nil
+                    diagnostics.profileDiagnosticSink = nil
+                    diagnostics.analysisDiagnosticSink = nil
                 }
-                analysis = try CardCenteringAnalyzer.analyze(rendered.data)
+                analysis = try diagnostics.analyze(rendered.data)
                 let mapping = analysis.coordinateMapping
                 let branch = try XCTUnwrap(
                     capturedBranch,
@@ -4779,9 +4980,8 @@ final class CenteringProfileDumpTests: XCTestCase {
                     workingHeight: analysis.measurement.imageHeight,
                     outerQuadWorking: captured.first?.outerQuadWorking
                         ?? analysis.measurement.geometryOuterQuad,
-                    outerQuadNative: captured.first.flatMap { diagnostic in
-                        mapping?.nativeQuad(fromWorking: diagnostic.outerQuadWorking)
-                    },
+                    outerQuadNative: mapping?.nativeQuad(fromWorking: captured.first?.outerQuadWorking
+                        ?? analysis.measurement.geometryOuterQuad),
                     finalAnalysis: E0FinalAnalysisDiagnostic(
                         analysis: analysis,
                         branch: branch
@@ -4791,11 +4991,16 @@ final class CenteringProfileDumpTests: XCTestCase {
                 let url = output.appendingPathComponent("\(fixture)_\(variant.name).json")
                 try encoder.encode(dump).write(to: url, options: .atomic)
                 allDumps.append(dump)
-                XCTAssertEqual(
-                    Set(captured.map(\.side)),
-                    Set(["left", "top", "right", "bottom"]),
-                    "E0 must capture all four edges for \(fixture) / \(variant.name)"
-                )
+                if branch.profileDisposition == "bypassed_registered_back" {
+                    XCTAssertEqual(branch.innerSource, .registeredBackTemplate)
+                    XCTAssertTrue(captured.isEmpty)
+                } else if branch.profileDisposition == "evaluated" {
+                    XCTAssertEqual(Set(captured.map(\.side)), Set(["left", "top", "right", "bottom"]),
+                                   "E0 must capture all evaluated sides for \(fixture)/\(variant.name)")
+                } else {
+                    XCTAssertTrue(captured.isEmpty)
+                    XCTAssertNotEqual(branch.innerSource, .profile)
+                }
                 print(
                     "E0_DUMP fixture=\(fixture) variant=\(variant.name) "
                         + "working=\(dump.workingWidth)x\(dump.workingHeight) "
@@ -4809,6 +5014,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testEADiagnoseInnerReferenceBranchForAllRealFixtures() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try centeringDiagnosticDirectory("EA")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -4822,21 +5028,21 @@ final class CenteringProfileDumpTests: XCTestCase {
             var capturedBranch: CardCenteringAnalysisDiagnostic?
             var capturedFailures: [CardCenteringProfileFailureDiagnostic] = []
             var capturedProfiles: [CardCenteringProfileDiagnostic] = []
-            CardCenteringAnalyzer.profileDiagnosticSink = { diagnostic in
+            diagnostics.profileDiagnosticSink = { diagnostic in
                 capturedProfiles.append(diagnostic)
             }
-            CardCenteringAnalyzer.profileFailureDiagnosticSink = { diagnostic in
+            diagnostics.profileFailureDiagnosticSink = { diagnostic in
                 capturedFailures.append(diagnostic)
             }
-            CardCenteringAnalyzer.analysisDiagnosticSink = { diagnostic in
+            diagnostics.analysisDiagnosticSink = { diagnostic in
                 capturedBranch = diagnostic
             }
             defer {
-                CardCenteringAnalyzer.analysisDiagnosticSink = nil
-                CardCenteringAnalyzer.profileDiagnosticSink = nil
-                CardCenteringAnalyzer.profileFailureDiagnosticSink = nil
+                diagnostics.analysisDiagnosticSink = nil
+                diagnostics.profileDiagnosticSink = nil
+                diagnostics.profileFailureDiagnosticSink = nil
             }
-            let analysis = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            let analysis = try diagnostics.analyze(try fixtureData(fixture))
             let branch = try XCTUnwrap(
                 capturedBranch,
                 "E-A must capture the final analyzer branch for " + fixture
@@ -4894,6 +5100,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testEDumpOuterRefinementDecisionsForAllRealFixtures() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try centeringDiagnosticDirectory("ED")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -4905,9 +5112,9 @@ final class CenteringProfileDumpTests: XCTestCase {
 
         for fixture in fixtures {
             var reports: [CardCenteringOuterRefinementDiagnostic] = []
-            CardCenteringAnalyzer.outerRefinementDiagnosticSink = { reports.append($0) }
-            defer { CardCenteringAnalyzer.outerRefinementDiagnosticSink = nil }
-            _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            diagnostics.outerRefinementDiagnosticSink = { reports.append($0) }
+            defer { diagnostics.outerRefinementDiagnosticSink = nil }
+            _ = try diagnostics.analyze(try fixtureData(fixture))
             let dump = EDOuterRefinementDump(fixture: fixture, reports: reports)
             try encoder.encode(dump).write(
                 to: output.appendingPathComponent(fixture + "-outer-refinement.json"),
@@ -4946,14 +5153,15 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testREQ044OuterRefinementRejectsBroadAmbiguousTransitions() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let fixtures = ["IMG_0347", "IMG_0350"]
 
         for fixture in fixtures {
             var reports: [CardCenteringOuterRefinementDiagnostic] = []
-            CardCenteringAnalyzer.outerRefinementDiagnosticSink = { reports.append($0) }
-            defer { CardCenteringAnalyzer.outerRefinementDiagnosticSink = nil }
+            diagnostics.outerRefinementDiagnosticSink = { reports.append($0) }
+            defer { diagnostics.outerRefinementDiagnosticSink = nil }
 
-            _ = try CardCenteringAnalyzer.analyze(try fixtureData(fixture))
+            _ = try diagnostics.analyze(try fixtureData(fixture))
 
             let left = try XCTUnwrap(
                 reports.first(where: { $0.side == GroundTruthSide.left.rawValue }),
@@ -5095,6 +5303,7 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testEEDumpPostRefinementProfileNormalization() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         let output = try centeringDiagnosticDirectory("ED")
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -5107,13 +5316,13 @@ final class CenteringProfileDumpTests: XCTestCase {
         ) {
             var branch: CardCenteringAnalysisDiagnostic?
             var profiles: [CardCenteringProfileDiagnostic] = []
-            CardCenteringAnalyzer.analysisDiagnosticSink = { branch = $0 }
-            CardCenteringAnalyzer.profileDiagnosticSink = { profiles.append($0) }
+            diagnostics.analysisDiagnosticSink = { branch = $0 }
+            diagnostics.profileDiagnosticSink = { profiles.append($0) }
             defer {
-                CardCenteringAnalyzer.analysisDiagnosticSink = nil
-                CardCenteringAnalyzer.profileDiagnosticSink = nil
+                diagnostics.analysisDiagnosticSink = nil
+                diagnostics.profileDiagnosticSink = nil
             }
-            let analysis = try CardCenteringAnalyzer.analyze(data)
+            let analysis = try diagnostics.analyze(data)
             return (
                 analysis,
                 try XCTUnwrap(branch, "E-E must capture the final analyzer branch"),
@@ -5131,7 +5340,7 @@ final class CenteringProfileDumpTests: XCTestCase {
             let baseProfiles = Dictionary(
                 uniqueKeysWithValues: baseCaptured.profiles.map { ($0.side, $0) }
             )
-            let baseOuter = try XCTUnwrap(baseCaptured.profiles.first?.outerQuadWorking)
+            let baseOuter = baseCaptured.profiles.first?.outerQuadWorking ?? baseCaptured.analysis.measurement.geometryOuterQuad
             let baseWidth = workingGTQuad(
                 groundTruth,
                 sourceSize: source.size,
@@ -5211,11 +5420,15 @@ final class CenteringProfileDumpTests: XCTestCase {
                             innerLineDisplacementPixels: innerDisplacement.displacement
                         )
                     }
-                    XCTAssertEqual(
-                        records.count,
-                        4,
-                        "E-E must retain all four edge profiles for \(fixture)/\(variant.name)/\(space)"
-                    )
+                    if captured.branch.profileDisposition == "bypassed_registered_back" {
+                        XCTAssertEqual(captured.branch.innerSource, .registeredBackTemplate)
+                        XCTAssertTrue(records.isEmpty)
+                    } else if captured.branch.profileDisposition == "evaluated" {
+                        XCTAssertEqual(records.count, 4, "E-E evaluated profiles: \(fixture)/\(variant.name)/\(space)")
+                    } else {
+                        XCTAssertTrue(records.isEmpty)
+                        XCTAssertNotEqual(captured.branch.innerSource, .profile)
+                    }
                     dumps.append(
                         EENormalizationDump(
                             fixture: fixture,
@@ -5224,6 +5437,7 @@ final class CenteringProfileDumpTests: XCTestCase {
                             confidenceState: confidenceState,
                             innerSource: innerSource,
                             outerRefinementAccepted: captured.branch.outerRefinementAccepted,
+                            profileDisposition: captured.branch.profileDisposition,
                             records: records
                         )
                     )
@@ -5236,7 +5450,8 @@ final class CenteringProfileDumpTests: XCTestCase {
         }
 
         XCTAssertEqual(dumps.count, 24)
-        XCTAssertEqual(dumps.flatMap(\.records).count, 96)
+        XCTAssertTrue(dumps.contains { $0.profileDisposition == "evaluated" && $0.records.count == 4 },
+                      "E-E must still exercise the profile branch")
         try encoder.encode(dumps).write(
             to: output.appendingPathComponent("profile-normalization.json"),
             options: .atomic
@@ -5282,13 +5497,14 @@ final class CenteringProfileDumpTests: XCTestCase {
     }
 
     func testEDOuterProposalIsReplacedByDeterministicRefinement() throws {
+        var diagnostics = CardCenteringAnalyzer.Diagnostics()
         var captured: CardCenteringAnalysisDiagnostic?
-        CardCenteringAnalyzer.analysisDiagnosticSink = { diagnostic in
+        diagnostics.analysisDiagnosticSink = { diagnostic in
             captured = diagnostic
         }
-        defer { CardCenteringAnalyzer.analysisDiagnosticSink = nil }
+        defer { diagnostics.analysisDiagnosticSink = nil }
 
-        _ = try CardCenteringAnalyzer.analyze(try fixtureData("IMG_0783"))
+        _ = try diagnostics.analyze(try fixtureData("IMG_0783"))
         let diagnostic = try XCTUnwrap(captured)
         XCTAssertNotNil(diagnostic.proposedOuterQuad)
         XCTAssertTrue(

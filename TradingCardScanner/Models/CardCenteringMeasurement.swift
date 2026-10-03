@@ -26,7 +26,8 @@ struct CardCenteringRatioPair: Codable, Equatable {
     init?(firstDistance: Double, secondDistance: Double) {
         let total = firstDistance + secondDistance
         guard total.isFinite, total > .ulpOfOne,
-              firstDistance.isFinite, secondDistance.isFinite else {
+              firstDistance.isFinite, secondDistance.isFinite,
+              firstDistance > 0, secondDistance > 0 else {
             return nil
         }
         firstPercentage = 100 * firstDistance / total
@@ -153,15 +154,73 @@ struct CardCenteringQuad: Codable, Equatable {
         [topLeft, topRight, bottomRight, bottomLeft]
     }
 
-    /// A scalar projection retained for the existing stepper UI and filename
-    /// surface. It is never used as the source of the centering calculation.
+    /// Each named side's extreme coordinate for the existing stepper UI.
+    /// Keep side identities even when an edit crosses the opposite guide.
+    /// This is never the source of the centering calculation.
     var projectedEdges: CardCenteringEdges {
         CardCenteringEdges(
-            left: Int(points.map(\.x).min()!.rounded()),
-            top: Int(points.map(\.y).min()!.rounded()),
-            right: Int(points.map(\.x).max()!.rounded()),
-            bottom: Int(points.map(\.y).max()!.rounded())
+            left: Int(exactly: min(topLeft.x, bottomLeft.x).rounded()) ?? 0,
+            top: Int(exactly: min(topLeft.y, topRight.y).rounded()) ?? 0,
+            right: Int(exactly: max(topRight.x, bottomRight.x).rounded()) ?? 0,
+            bottom: Int(exactly: max(bottomLeft.y, bottomRight.y).rounded()) ?? 0
         )
+    }
+
+    /// Move one supporting line, preserving its slope and the other three
+    /// lines. The numeric control addresses the extreme corner of that side.
+    func movingEdge(_ keyPath: WritableKeyPath<CardCenteringEdges, Int>, to value: Int) -> CardCenteringQuad? {
+        guard points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return nil }
+        let side: Int
+        let horizontalCoordinate: Bool
+        let minimum: Bool
+        switch keyPath {
+        case \.left: (side, horizontalCoordinate, minimum) = (3, true, true)
+        case \.right: (side, horizontalCoordinate, minimum) = (1, true, false)
+        case \.top: (side, horizontalCoordinate, minimum) = (0, false, true)
+        case \.bottom: (side, horizontalCoordinate, minimum) = (2, false, false)
+        default: return nil
+        }
+        if projectedEdges[keyPath: keyPath] == value { return self }
+        var corners = points
+        var lines = (0..<4).map { index -> (a: Double, b: Double, c: Double) in
+            let start = corners[index], end = corners[(index + 1) % 4]
+            let a = end.y - start.y, b = start.x - end.x
+            return (a, b, a * start.x + b * start.y)
+        }
+        let next = (side + 1) % 4
+        func coordinate(_ index: Int) -> Double { horizontalCoordinate ? corners[index].x : corners[index].y }
+        let anchor = (minimum ? coordinate(side) <= coordinate(next) : coordinate(side) >= coordinate(next)) ? side : next
+        let neighbour = lines[anchor == side ? (side + 3) % 4 : next]
+        let target = Double(value)
+        let point: CardCenteringPoint
+        if horizontalCoordinate {
+            guard abs(neighbour.b) > 1e-12 else { return nil }
+            point = CardCenteringPoint(x: target, y: (neighbour.c - neighbour.a * target) / neighbour.b)
+        } else {
+            guard abs(neighbour.a) > 1e-12 else { return nil }
+            point = CardCenteringPoint(x: (neighbour.c - neighbour.b * target) / neighbour.a, y: target)
+        }
+        lines[side].c = lines[side].a * point.x + lines[side].b * point.y
+        func intersection(_ first: Int, _ second: Int) -> CardCenteringPoint? {
+            let lhs = lines[first], rhs = lines[second]
+            let determinant = lhs.a * rhs.b - rhs.a * lhs.b
+            guard determinant.isFinite, abs(determinant) > 1e-12 else { return nil }
+            let result = CardCenteringPoint(
+                x: (lhs.c * rhs.b - rhs.c * lhs.b) / determinant,
+                y: (lhs.a * rhs.c - rhs.a * lhs.c) / determinant
+            )
+            return result.x.isFinite && result.y.isFinite ? result : nil
+        }
+        guard let start = intersection((side + 3) % 4, side),
+              let end = intersection(side, next) else { return nil }
+        corners[side] = start
+        corners[next] = end
+        let result = CardCenteringQuad(topLeft: corners[0], topRight: corners[1], bottomRight: corners[2], bottomLeft: corners[3])
+        // A collapsed adjacent edge loses its supporting line, making the next
+        // edit impossible. Leave the existing editable frame intact instead.
+        guard [result.topLength, result.rightLength, result.bottomLength, result.leftLength]
+            .allSatisfy({ $0 > .ulpOfOne }) else { return nil }
+        return result
     }
 
     static func axisAligned(_ edges: CardCenteringEdges) -> CardCenteringQuad {
@@ -284,6 +343,21 @@ struct CardCenteringRectification: Codable, Equatable {
     /// plausible-looking ratio.
     let isValid: Bool
 
+    /// Manual placement still requires a sound transform, independently of
+    /// the detector's standard-card aspect eligibility guard.
+    var isNumericallyValid: Bool {
+        guard coefficients.count == 8, coefficients.allSatisfy(\.isFinite) else { return false }
+        let c = coefficients
+        let determinant = c[0] * (c[4] - c[5] * c[7]) - c[1] * (c[3] - c[5] * c[6])
+            + c[2] * (c[3] * c[7] - c[4] * c[6])
+        return determinant.isFinite && abs(determinant) > 1e-12
+            && targetSize.width.isFinite && targetSize.height.isFinite
+            && targetSize.width > .ulpOfOne && targetSize.height > .ulpOfOne
+            && residualDegrees.isFinite && residualDegrees <= 0.30
+            && reprojectionRMS.isFinite
+            && reprojectionRMS <= max(2, min(targetSize.width, targetSize.height) * 0.01)
+    }
+
     init(outerQuad: CardCenteringQuad, expectedAspectRatio: Double = 5.0 / 7.0) {
         let targetWidth = (outerQuad.topLength + outerQuad.bottomLength) / 2
         let targetHeight = (outerQuad.leftLength + outerQuad.rightLength) / 2
@@ -363,9 +437,13 @@ struct CardCenteringRectification: Codable, Equatable {
     ]
 
     private static func map(_ point: CardCenteringPoint, coefficients: [Double]) -> CardCenteringPoint {
-        guard coefficients.count == 8 else { return point }
+        guard coefficients.count == 8, coefficients.allSatisfy(\.isFinite) else {
+            return CardCenteringPoint(x: .nan, y: .nan)
+        }
         let denominator = coefficients[6] * point.x + coefficients[7] * point.y + 1
-        guard abs(denominator) > 1e-12 else { return point }
+        guard denominator.isFinite, abs(denominator) > 1e-12 else {
+            return CardCenteringPoint(x: .nan, y: .nan)
+        }
         return CardCenteringPoint(
             x: (coefficients[0] * point.x + coefficients[1] * point.y + coefficients[2]) / denominator,
             y: (coefficients[3] * point.x + coefficients[4] * point.y + coefficients[5]) / denominator
@@ -394,7 +472,8 @@ struct CardCenteringRectification: Codable, Equatable {
         source: [CardCenteringPoint],
         destination: [CardCenteringPoint]
     ) -> [Double]? {
-        guard source.count == 4, destination.count == 4 else { return nil }
+        guard source.count == 4, destination.count == 4,
+              (source + destination).allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return nil }
         var matrix = Array(repeating: Array(repeating: 0.0, count: 9), count: 8)
         for index in 0..<4 {
             let x = source[index].x
@@ -423,7 +502,8 @@ struct CardCenteringRectification: Codable, Equatable {
                 }
             }
         }
-        return (0..<8).map { matrix[$0][8] }
+        let result = (0..<8).map { matrix[$0][8] }
+        return result.allSatisfy(\.isFinite) ? result : nil
     }
 
     private static func parallelismResidual(for quad: CardCenteringQuad) -> Double {
@@ -704,7 +784,8 @@ struct CardCenteringMeasurement: Equatable {
     /// manually-confirmed card frame. A detector candidate is intentionally not
     /// enough: the hybrid release path must never present unconfirmed automatic
     /// outer or inner geometry as fact.
-    var isDeclined: Bool { confidence.state != .confident || !hasValidFrameGeometry }
+    var canReportRatios: Bool { confidence.state == .confident && hasValidFrameGeometry }
+    var isDeclined: Bool { !canReportRatios }
     var requiresManualOuterConfirmation: Bool {
         confidence.state == .manualConfirmationRequired
     }
@@ -732,9 +813,23 @@ struct CardCenteringMeasurement: Equatable {
                     && $0.x <= Double(imageWidth) && $0.y <= Double(imageHeight)
             }) else { return false }
             let turns = (0..<4).map { cross(points[$0], points[($0 + 1) % 4], points[($0 + 2) % 4]) }
-            return turns.allSatisfy { $0 > .ulpOfOne } || turns.allSatisfy { $0 < -.ulpOfOne }
+            // Clockwise winding alone also accepts two inverted axes. Named
+            // side midpoints must still run left-to-right and top-to-bottom.
+            return turns.allSatisfy { $0 > .ulpOfOne }
+                && quad.topLeft.x + quad.bottomLeft.x < quad.topRight.x + quad.bottomRight.x
+                && quad.topLeft.y + quad.topRight.y < quad.bottomLeft.y + quad.bottomRight.y
         }
         guard isConvex(outer), isConvex(inner) else { return false }
+        if let rectification {
+            let coefficients = rectification.coefficients
+            guard rectification.isNumericallyValid,
+                  rectification.rectifiedQuad(from: outer).points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }),
+                  rectification.rectifiedQuad(from: inner).points.allSatisfy({ $0.x.isFinite && $0.y.isFinite }) else { return false }
+            let denominators = outer.points.map { coefficients[6] * $0.x + coefficients[7] * $0.y + 1 }
+            guard denominators.allSatisfy({ $0 > 1e-12 }) || denominators.allSatisfy({ $0 < -1e-12 }) else { return false }
+        } else if usesQuadGeometry {
+            return false
+        }
         let points = outer.points
         let clockwise = cross(points[0], points[1], points[2]) > 0
         guard inner.points.allSatisfy({ point in
@@ -863,10 +958,17 @@ struct CardCenteringMeasurement: Equatable {
         _ keyPath: WritableKeyPath<CardCenteringEdges, Int>,
         to value: Int
     ) {
-        outer[keyPath: keyPath] = value
-        outerQuad = .axisAligned(outer)
-        rectification = nil
-        usesQuadGeometry = false
+        if !usesQuadGeometry {
+            outer[keyPath: keyPath] = value
+            outerQuad = .axisAligned(outer)
+            requireConfirmationAfterManualEditIfNeeded()
+            return
+        }
+        guard let edited = geometryOuterQuad.movingEdge(keyPath, to: value) else { return }
+        // Quad measurements retain both frames and their perspective correction.
+        outerQuad = edited
+        outer = edited.projectedEdges
+        rectification = CardCenteringRectification(outerQuad: edited)
         requireConfirmationAfterManualEditIfNeeded()
     }
 
@@ -874,11 +976,18 @@ struct CardCenteringMeasurement: Equatable {
         _ keyPath: WritableKeyPath<CardCenteringEdges, Int>,
         to value: Int
     ) {
-        inner[keyPath: keyPath] = value
-        innerQuad = .axisAligned(inner)
-        rectification = nil
-        usesQuadGeometry = false
-        innerReference = .artWindow
+        if !usesQuadGeometry {
+            inner[keyPath: keyPath] = value
+            innerQuad = .axisAligned(inner)
+            if innerReference == .none { innerReference = .artWindow }
+            requireConfirmationAfterManualEditIfNeeded()
+            return
+        }
+        let startingQuad = geometryInnerQuad ?? .axisAligned(inner)
+        guard let edited = startingQuad.movingEdge(keyPath, to: value) else { return }
+        innerQuad = edited
+        inner = edited.projectedEdges
+        if innerReference == .none { innerReference = .artWindow }
         requireConfirmationAfterManualEditIfNeeded()
     }
 

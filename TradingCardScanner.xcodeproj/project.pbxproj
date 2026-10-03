@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */ = {isa = PBXBuildFile; fileRef = E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */; settings = {COMPILER_FLAGS = "-O2 -ffp-contract=off"; }; };
 		A0010070 /* CollectionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010070 /* CollectionActivity.swift */; };
 		A0010071 /* CollectionActivityLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010071 /* CollectionActivityLogView.swift */; };
 		A0020032 /* ImportedItemKindTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020032 /* ImportedItemKindTests.swift */; };
@@ -261,6 +262,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CardCenteringPixelKernels.c; sourceTree = "<group>"; };
+		86E86CDA24A14713B91EEEB7 /* CardCenteringPixelKernels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardCenteringPixelKernels.h; sourceTree = "<group>"; };
 		B0010070 /* CollectionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivity.swift; sourceTree = "<group>"; };
 		B0010071 /* CollectionActivityLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivityLogView.swift; sourceTree = "<group>"; };
 		B0020032 /* ImportedItemKindTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedItemKindTests.swift; sourceTree = "<group>"; };
@@ -674,6 +677,8 @@
 				B0010034 /* CollectionQuery.swift */,
 				B0010040 /* MagicSetSnapshot.swift */,
 				B0010042 /* CardCenteringAnalyzer.swift */,
+				E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */,
+				86E86CDA24A14713B91EEEB7 /* CardCenteringPixelKernels.h */,
 				B0010046 /* CollectionCSV.swift */,
 				B0010047 /* CollectionCatalogNormalizer.swift */,
 				B0010048 /* CardCenteringExport.swift */,
@@ -1115,6 +1120,7 @@
 				A0010035 /* CollectionFilters.swift in Sources */,
 				A0010041 /* CardCenteringMeasurement.swift in Sources */,
 				A0010042 /* CardCenteringAnalyzer.swift in Sources */,
+				C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */,
 				A0010043 /* CardCenteringView.swift in Sources */,
 				A0010044 /* CenteringCameraView.swift in Sources */,
 				A0010113 /* EbayQuadrantCropper.swift in Sources */,
@@ -1336,6 +1342,7 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = TradingCardScanner/Services/CardCenteringPixelKernels.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1367,6 +1374,7 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = TradingCardScanner/Services/CardCenteringPixelKernels.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1398,6 +1406,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = TradingCardScanner/Services/CardCenteringPixelKernels.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1426,6 +1435,7 @@
 			PRODUCT_BUNDLE_IDENTIFIER = com.seankeller.CardScanner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = TradingCardScanner/Services/CardCenteringPixelKernels.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1456,6 +1466,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) LOCAL_ONLY_SIGNING";
 				SWIFT_VERSION = 5.0;
+				SWIFT_OBJC_BRIDGING_HEADER = TradingCardScanner/Services/CardCenteringPixelKernels.h;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = ReleaseLocal;

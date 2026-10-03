@@ -648,6 +648,74 @@ final class ScanFeedbackSurfaceTests: XCTestCase {
 
 @MainActor
 final class CardCenteringSurfaceTests: XCTestCase {
+    func testPendingTransferInvalidatesOlderAnalysisAndOnlyNewestInputWins() async throws {
+        let model = CardCenteringViewModel()
+        let data = try XCTUnwrap(UncoveredSurfaceFixtures.image().pngData())
+        model.loadCapturedPhoto(data)
+        var transfer: CheckedContinuation<Data, Error>?
+        let pending = Task {
+            await model.loadImageData {
+                try await withCheckedThrowingContinuation { transfer = $0 }
+            }
+        }
+        for _ in 0..<100 where transfer == nil { await Task.yield() }
+        XCTAssertNotNil(transfer)
+        XCTAssertNil(model.measurement)
+        XCTAssertNil(model.exportSnapshot())
+        try await Task.sleep(for: .seconds(1))
+        XCTAssertNil(model.measurement, "older analysis cannot settle during a newer transfer")
+        model.loadCapturedPhoto(Data("newest invalid input".utf8))
+        transfer?.resume(returning: data)
+        await pending.value
+        for _ in 0..<100 where model.isAnalyzing { try await Task.sleep(for: .milliseconds(20)) }
+        XCTAssertFalse(model.isAnalyzing)
+        XCTAssertNotNil(model.errorMessage)
+        XCTAssertNil(model.measurement)
+    }
+
+    func testCancelledTransferReleasesLoadingStateWithoutRestoringApproval() async throws {
+        let model = CardCenteringViewModel()
+        var transfer: CheckedContinuation<Data, Error>?
+        let pending = Task {
+            await model.loadImageData {
+                try await withCheckedThrowingContinuation { transfer = $0 }
+            }
+        }
+        for _ in 0..<100 where transfer == nil { await Task.yield() }
+        pending.cancel()
+        transfer?.resume(returning: Data())
+        await pending.value
+        XCTAssertFalse(model.isAnalyzing)
+        XCTAssertNil(model.measurement)
+        XCTAssertNil(model.errorMessage)
+    }
+
+    func testExportSnapshotsAreImmutableAndNeverOverwriteAnInFlightShare() throws {
+        let model = CardCenteringViewModel()
+        model.image = UncoveredSurfaceFixtures.image()
+        model.measurement = CardCenteringMeasurement(imageWidth: 240, imageHeight: 336,
+            outer: CardCenteringEdges(left: 20, top: 20, right: 220, bottom: 316),
+            inner: CardCenteringEdges(left: 30, top: 30, right: 210, bottom: 306), warnings: [])
+        let snapshot = try XCTUnwrap(model.exportSnapshot())
+        let first = try snapshot.write()
+        let original = try Data(contentsOf: first)
+        let second = try snapshot.write()
+        defer {
+            try? FileManager.default.removeItem(at: first.deletingLastPathComponent())
+            try? FileManager.default.removeItem(at: second.deletingLastPathComponent())
+        }
+        XCTAssertNotEqual(first, second)
+        XCTAssertEqual(first.lastPathComponent, second.lastPathComponent)
+        XCTAssertEqual(try Data(contentsOf: first), original)
+        model.updateInner(\.left, to: 32, within: 0...240)
+        XCTAssertFalse(model.matches(snapshot))
+        XCTAssertNotEqual(model.exportSnapshot()?.measurement, snapshot.measurement)
+        model.loadCapturedPhoto(Data())
+        XCTAssertFalse(model.matches(snapshot))
+        XCTAssertNil(model.exportSnapshot())
+        XCTAssertEqual(try Data(contentsOf: first), original)
+    }
+
     func testNewPhotoClosesApprovalAndLateAnalysisCannotRestorePreviousMeasurement() async throws {
         let model = CardCenteringViewModel()
         model.image = UncoveredSurfaceFixtures.image()
