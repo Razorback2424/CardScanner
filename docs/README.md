@@ -1,6 +1,6 @@
 # Documentation map
 
-**Status:** current navigation map — 2026-09-30
+**Status:** current navigation map — 2026-10-02
 
 This map defines which repository documents are current authorities. Source code,
 tests, build settings, and the latest recorded evidence outrank older plans and
@@ -15,6 +15,7 @@ chronological notes.
 | Known production defects and their evidence | [`audits/defect_review_pass_2.md`](audits/defect_review_pass_2.md) |
 | October boundary-failure remediation | [`audits/october-review-remediation.md`](audits/october-review-remediation.md) — per-slice implementation and simulator evidence; physical-device performance measurements remain pending. |
 | October refinement follow-up | [`plans/october-refinement-implementation-plan.md`](plans/october-refinement-implementation-plan.md) — source-validated findings with implementation slices A–I and C1 committed on `fix/october-review-boundaries`; final verification and device/release acceptance remain open. |
+| Additional production refinement review | [`plans/october-production-refinement-review-plan.md`](plans/october-production-refinement-review-plan.md) — source-validated findings and small remediation slices from the repository-wide review at `73898e8`; revalidate overlapping centering changes before further implementation. Prior release/measurement authorities remain binding. |
 | Scanner module defects and measurement review | [`audits/scanner_module_review.md`](audits/scanner_module_review.md) |
 | Raw / graded slab scanning mode | [`plans/explicit-raw-slab-scanning-mode.md`](plans/explicit-raw-slab-scanning-mode.md) — implemented in the 2026-09-23 working tree; initial focused simulator tests pass 166/166 and the review follow-up passes 11/11 targeted non-centering tests. The earlier full simulator run excluded centering-specific classes at the user's request; device/provider acceptance remains open. |
 | Scanner recognition and Needs attention recovery | [`plans/scanner-recognition-remediation.md`](plans/scanner-recognition-remediation.md) — denominator-owned Pokémon inference, conservative fuzzy title agreement, and local-only persistent failure recovery; see the dated evidence in [`progress.md`](../progress.md). Physical-device and Instruments acceptance remain open. |
@@ -32,7 +33,7 @@ chronological notes.
 | App Review remediation | [`app_review_fix_plan.md`](../app_review_fix_plan.md) and [`app_review_preflight.md`](../app_review_preflight.md) |
 | Phase 0/1 release evidence | [`release/phase-1-integrity-evidence.md`](release/phase-1-integrity-evidence.md), [`release/cloudkit-compatibility-audit.md`](release/cloudkit-compatibility-audit.md), and [`release/cloudkit-release-matrix.md`](release/cloudkit-release-matrix.md) |
 | Pro tab and eBay listing photos | [`plans/pro_tab_ebay_listing_photos_plan.md`](plans/pro_tab_ebay_listing_photos_plan.md) |
-| Active card-centering work | [`../review/opus-card-centering-implementation-plan.md`](../review/opus-card-centering-implementation-plan.md) and [`../review/centering-evidence/`](../review/centering-evidence/) |
+| Active card-centering work | [`audits/centering-guided-repair.md`](audits/centering-guided-repair.md) — current guided repair and verification; [`../review/opus-card-centering-implementation-plan.md`](../review/opus-card-centering-implementation-plan.md) retains automatic/held-out acceptance, with dated [`../review/centering-evidence/`](../review/centering-evidence/). |
 | Chronological implementation record | [`../progress.md`](../progress.md) |
 | Legal/support copy | [`legal/privacy-policy.md`](legal/privacy-policy.md) and [`legal/support.md`](legal/support.md) |
 

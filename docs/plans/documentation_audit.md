@@ -18,14 +18,15 @@ release evidence.
 The newest boundary-failure implementation and simulator evidence is in the
 [October review ledger](../audits/october-review-remediation.md), against
 `fix/october-review-boundaries` through `248a61d`. Slices 1–10 are committed;
-focused checks pass, while the complete suite still reports centering failures.
+focused checks pass, while its historical complete runs report centering failures.
 Older “latest full run” statements below describe their dated snapshots and do
 not supersede the October execution record. Physical-device and release gates
 remain open.
 
 The [October refinement plan](october-refinement-implementation-plan.md) validates
 the supplied follow-up review against `55b2d40` and now records the authorized
-local implementation of slices A–I and C1, with final verification in progress.
+implementation of slices A–I and C1, followed by the verified guided centering
+repair recorded below.
 Subsystem acceptance contracts remain binding. Slice C resolves the source/test
 disagreement with the hybrid requirement: edits and warning refresh remain
 pending until explicit approval of valid outer and inner frames. Manual-recovery
@@ -35,6 +36,41 @@ mismatch and retains individual diagnostic/accuracy triage. The older passing
 confirmation selectors are historical. The owner supplied intended future
 `scan-stash.com/privacy` and `/support` pages, but confirmed they are placeholders;
 Release URL configuration remains open until approved live pages exist.
+
+The [guided centering repair ledger](../audits/centering-guided-repair.md) records
+the approved October-2 working-tree implementation at `73898e8`. It supersedes
+older centering failure counts as current guided-workflow evidence: 109 centering
+cases have one failing latency case (two assertions), and the remaining 1,661
+cases have zero failures with seven existing skips. The final regression reruns
+1,692 cases (including 31 centering UI/export cases), with seven existing skips
+and zero failures; ReleaseLocal and final phone/tablet visual checks also pass.
+Guided transform tests now
+use independently annotated reviewed frames; original automatic comparisons and
+their unchanged tolerances remain explicit open research gates. Automatic
+reporting stays disabled. The owner accepted deferring latency, without weakening
+the speed assertions. The approved immutable revision export work also supersedes
+the earlier measure-only thread-placement restriction for that specific change;
+device performance and manual/release acceptance are still separate gates.
+Native phone share-sheet and iPad popover presentation were observed in the
+simulator; physical-device share/save completion and VoiceOver remain open.
+
+The later October-2 uncommitted-change review in that ledger adds two geometry
+regressions and five focused fixes. Its seven-class run has 111 cases with only
+the existing latency case failing; the final UI/export/input rerun passes 33
+correctness cases. Earlier counts above remain dated snapshots. A locked Mac
+blocks the final numeric-field accessibility-tree and incomplete inner-capture
+rechecks, so earlier visual evidence does not certify those latest view edits.
+
+The [additional production refinement review plan](october-production-refinement-review-plan.md)
+records the source review at `73898e8`: transient cooldown/monthly-period
+accounting, manual catalog recovery, batch/scanner stale-result publication,
+Magic live directories, ownership/price display, activity read errors, and
+publisher validation. These are proposed additional slices, not implementation
+evidence or a replacement for the earlier October plan. At documentation time,
+pre-existing uncommitted centering changes already move export preparation off
+the main actor; the review's centering-export hypothesis must be revalidated
+against that work. The existing centering contract/triage, URL dependency, and
+release-follow-up measurements remain their single respective authorities.
 
 ## Latest two-set pricing evidence — 2026-09-30
 

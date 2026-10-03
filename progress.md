@@ -1,3 +1,13 @@
+- Production refinement review documented (2026-10-02;
+  `fix/october-review-boundaries` at `73898e8`): recorded the repository-wide
+  source review's ten additional findings, minimum remedies, confidence/risk/
+  complexity, acceptance cases, and independent implementation slices in the
+  [production refinement review plan](docs/plans/october-production-refinement-review-plan.md).
+  Linked the plan from the documentation map and reconciled prior authority
+  boundaries in the documentation audit. Existing uncommitted centering/code/
+  test/script changes were preserved; overlapping export work needs revalidation.
+  This is documentation only, not implementation or fresh app/runtime evidence.
+
 - Browse supplemental quote retention (2026-10-02; uncommitted working tree on
   `fix/october-review-boundaries` at `55b2d40`): failed supplemental refresh now
   preserves cached Pokémon prices and their provenance. The regression covers
@@ -800,3 +810,40 @@ historical.
   screenshots confirmed mixed-row and catalog-only copy plus combined row
   accessibility labels. No physical-device or later TCGdex publication check
   was performed.
+- Guided centering repair verification (2026-10-02; uncommitted working tree
+  based on `73898e8`): implemented perspective-preserving guide edits, shared
+  finite/nested geometry eligibility, request-scoped diagnostics, newest-input
+  fencing, and immutable export snapshots. Seven centering classes executed
+  109 cases with only the latency case failing (two unchanged assertions);
+  the remaining target executed 1,661 cases with seven existing skips and zero
+  failures. Original automatic transform research gates remain open; independent
+  reviewed annotations validate the guided path. The owner accepted latency
+  deferral. Initial phone/default and maximum accessibility captures were
+  inspected; toolbar crowding and preview height prompted focused UI refinements.
+  Final visual/build verification continues in the
+  [repair ledger](docs/audits/centering-guided-repair.md).
+- Guided centering final verification (2026-10-02; same repair working tree):
+  final regression selection passes 1,692 cases with seven existing skips and
+  zero failures; the preceding 109-case centering selection retains only its
+  unchanged latency failure. ReleaseLocal builds for both simulator architectures.
+  Final phone/tablet light/dark, rotation, zoom/pan, numeric-control, and maximum
+  accessibility-text captures were inspected. Native simulator confirmation,
+  live edge updates, phone share-sheet presentation, and anchored iPad export
+  popover were verified. Temporary appearance/text-size settings were restored.
+  Physical-device test launch was blocked by a locked-device/runner connection;
+  no device pass is claimed. The owner accepted latency deferral; automatic
+  accuracy, actual VoiceOver/share/save, and release gates remain open in the
+  [repair ledger](docs/audits/centering-guided-repair.md).
+- Uncommitted-change review (2026-10-02; `73898e8` plus the repair working tree):
+  fixed crossed-guide coordinate relabeling, unrecoverable coincident guides,
+  double-inversion eligibility, confirmed control-route expansion, and numeric
+  fields embedded in Stepper labels. Three geometry regressions were reproduced
+  before fixing them. Seven centering classes execute 111 cases with only the
+  existing latency case failing; the final UI/export/input rerun passes all 33
+  correctness cases, with the isolated latency recheck still failing at
+  1.5814/1.8764 seconds median/maximum. Final ReleaseLocal simulator build passes
+  for arm64 and x86_64; project parsing, shell syntax, 202 local Markdown links,
+  and diff whitespace checks pass. Final outer controls were visually checked;
+  the locked Mac blocks the final accessibility-tree and incomplete inner-capture
+  rechecks. Current evidence and limits are in the
+  [repair ledger](docs/audits/centering-guided-repair.md).

@@ -1,6 +1,6 @@
 # October review remediation
 
-**Status:** slices 1–10 committed and focused simulator checks passed; full suite retains centering failures; manual export acceptance and physical-device measurements pending — 2026-10-02.
+**Status:** slices 1–10 committed and focused simulator checks passed; historical full-suite centering failures are superseded by the guided repair's correctness evidence, with only its latency XCTest case failing; automatic accuracy, manual export completion, and physical-device acceptance remain open — 2026-10-02.
 
 Branch: `fix/october-review-boundaries`, based on `cdd60e1`. The approved review
 contains eleven findings. The implementation preserves the inventory ledger,
@@ -116,4 +116,8 @@ thread-placement result is claimed.
 Only measured hitches justify detached immutable centering/artwork work or
 creating a specific expensive actor away from main. Generation checks,
 `CollectionWriteSerializer`, and ownership confirmation remain mandatory.
+The later approved [guided centering repair](centering-guided-repair.md)
+supersedes this measure-only restriction specifically for immutable revision
+exports and records current guided test evidence. Its latency gate is deferred
+by the owner; hardware responsiveness remains unverified.
 The current device agenda remains in [release follow-ups](../plans/release_followups.md).

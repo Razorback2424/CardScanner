@@ -1,6 +1,6 @@
 # October refinement implementation plan
 
-**Status:** slices A–I and C1 implemented and committed on `fix/october-review-boundaries`; final verification and centering triage in progress; live Release URLs remain an owner dependency — 2026-10-02.
+**Status:** slices A–I, C1, and the guided centering repair are implemented on `fix/october-review-boundaries`; latency remains deferred; automatic accuracy, device/release acceptance, and live Release URLs remain open — 2026-10-02.
 
 Reviewed checkout: `fix/october-review-boundaries` at `55b2d40`, initially clean.
 Scope: the ten findings, small centering cleanup, and measurement targets in
@@ -60,7 +60,7 @@ that the implemented defects remain present.
 | H | An awaited baseline replay covers the same Magic change; the redundant later replay is skipped. | Hosted Magic quantity-change regression passed with exactly one recomputation; final portfolio suite pending. No speed claim. |
 | I | Header actions wrap onto a second row when needed; accessibility tile footers wrap essential price/finish text. | Build; rendered checks pending. |
 | J | No placeholder destination was enabled in Release. | Owner confirmed that `https://scan-stash.com/privacy` and `https://scan-stash.com/support` are intended future pages, not live approved destinations. Hosting, contact/content verification, Release configuration, and link acceptance remain open. |
-| K / C1 | Removed the permanently nil inner-presentation branch. Fixed the reproduced preview transform so photo and guides rotate together, matching export. | Final invariant/export/profile triage pending. Automatic detector gates and numerical tolerances remain unchanged; the sealed holdout is not used for debugging. |
+| K / C1 | Removed the permanently nil inner-presentation branch. Fixed the reproduced preview transform so photo and guides rotate together, matching export; the guided follow-up repairs geometry, input ownership, diagnostics, and immutable exports. | The [guided repair ledger](../audits/centering-guided-repair.md) records passing correctness, final regression, rendered phone/tablet, and ReleaseLocal build checks. Only the unchanged latency XCTest case fails and is deferred by the owner. Automatic accuracy gates remain open; the sealed holdout was not used. |
 
 The 2026-10-02 follow-up review reproduced an expired Pokémon detail losing its
 cached $28.98 Holofoil quote when both providers failed. The fix retains the
@@ -449,6 +449,15 @@ Profile-dump failures require checking their assertions; their names alone do
 not make them disposable diagnostics. Simulator latency assertions are recorded
 as such and do not establish physical-device responsiveness.
 
+**October-2 implementation follow-up:** the approved
+[guided repair ledger](../audits/centering-guided-repair.md) now records the
+geometry, request-scoped diagnostics, rendering/export, and asynchronous input
+repairs. The seven centering classes have only the unchanged latency case failing;
+automatic transform comparisons remain recorded and open. Guided invariant tests
+use independent reviewed annotations. The owner accepted finishing the remaining
+work with latency deferred. Consult that ledger for current verification and
+limits instead of the earlier centering failure counts.
+
 **Optional cleanup C1:** `presentationProfileResult` in
 [CardCenteringAnalyzer.swift](../../TradingCardScanner/Services/CardCenteringAnalyzer.swift)
 around line 1092 is always `nil`. Remove that local and unreachable branch,
@@ -465,7 +474,7 @@ Keep them under the existing [release follow-ups](release_followups.md) and
 
 | Target | Establish before changing implementation |
 | --- | --- |
-| Centering export preparation | Measure large-photo guide-step latency and main-thread render/PNG/write cost with and without Share. Only a material hitch justifies on-demand preparation; preserve native share behavior and stale-export fencing. |
+| Centering export preparation | The approved [guided repair](../audits/centering-guided-repair.md) implements immutable revision snapshots and background preparation with stale-result fencing. Measure large-photo guide-step and share latency on hardware before claiming responsiveness or making further performance changes. |
 | Model-actor executor placement | Capture real stacks for actors created from main-actor workflows. Serialization does not prove executor placement; do not scatter detached tasks or replace write ownership speculatively. |
 | Revision/projection work and portfolio | Synthetic approximately 1,500-holding collection plus realistic ledger/history. Measure cold launch, scan-session exit, import settle, computation/read counts, main-thread stalls, and memory. Count reduction in slice H is established separately from speed. |
 | CSV export and historical-price reads | Measure tap-to-exporter latency, fetch duration, history growth, and peak memory. Only then consider immutable preparation or bounded reads; avoid a new schema/cache first. |
@@ -528,7 +537,9 @@ privacy-manifest, payments, account, or CloudKit re-audit.
    dispositions only when backed by current evidence. Validate changed Markdown
    links and run `git diff --check` for documentation changes.
 
-Open evidence/input dependencies: fresh centering failure reproduction; native
-Photos consumption timing; current light/largest-text captures and VoiceOver;
+Open evidence/input dependencies: automatic centering accuracy and held-out
+acceptance; native Photos consumption timing; actual VoiceOver traversal;
 approved live privacy/support URLs and contact details; representative physical
 hardware/performance traces. None is silently considered complete by this plan.
+Current centering correctness and phone/tablet light/largest-text capture evidence
+are recorded in the [guided repair ledger](../audits/centering-guided-repair.md).
