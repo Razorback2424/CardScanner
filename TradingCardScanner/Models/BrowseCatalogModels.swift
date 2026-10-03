@@ -1175,6 +1175,7 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
     let itemKind: CollectionItemKind
     let variantID: String?
     let variantLabel: String?
+    let gradedLabel: String?
     let pokemonPrintRunRaw: String?
     let magicTreatmentIDsRaw: [String]
 
@@ -1194,6 +1195,7 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
         itemKind = card.itemKind
         variantID = card.variantID
         variantLabel = card.variantLabel
+        gradedLabel = card.itemKind == .gradedCard ? card.itemKindLabel : nil
         pokemonPrintRunRaw = card.pokemonPrintRunRaw
         magicTreatmentIDsRaw = card.magicTreatmentIDsRaw
         sealedProductID = card.justTCGCardID
@@ -1207,6 +1209,15 @@ struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
     var variant: PhysicalVariant? {
         guard let variantID else { return nil }
         return PhysicalVariant(id: variantID, label: variantLabel ?? variantID.capitalized)
+    }
+
+    var ownedDisplayLabel: String {
+        let treatments = MagicTreatmentEvidence(
+            treatments: magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:)),
+            qualifiers: [:]
+        )
+        return [gradedLabel ?? variant?.label ?? "Unknown finish", treatments.displayLabel]
+            .compactMap { $0 }.joined(separator: " · ")
     }
 }
 

@@ -11,6 +11,7 @@ struct UnresolvedScanDetailView: View {
     @State private var candidates: [PokemonCatalogCardIdentity] = []
     @State private var isLoadingCandidates = false
     @State private var isShowingCatalogSearch = false
+    @State private var pendingCatalogChoice: UnresolvedResolutionChoice?
 
     private var canChooseCard: Bool {
         scan.game == .pokemon && scan.pokemonNumber != nil
@@ -118,9 +119,24 @@ struct UnresolvedScanDetailView: View {
             candidates = await model.unresolvedCandidates(for: scan.id)
             isLoadingCandidates = false
         }
-        .sheet(isPresented: $isShowingCatalogSearch) {
+        .sheet(isPresented: $isShowingCatalogSearch, onDismiss: {
+            if let choice = pendingCatalogChoice {
+                pendingCatalogChoice = nil
+                onResolve(choice)
+            }
+        }) {
             NavigationStack {
-                BrowseView(catalog: browseCatalog)
+                BrowseView(catalog: browseCatalog, recoveryGame: scan.game)
+                    .environment(\.catalogCardSelection, { details, summary in
+                        pendingCatalogChoice = .catalog(details, printRun: summary.pokemonPrintRun,
+                                                        variant: summary.masterSetVariant)
+                        isShowingCatalogSearch = false
+                    })
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel", role: .cancel) { isShowingCatalogSearch = false }
+                        }
+                    }
             }
         }
     }

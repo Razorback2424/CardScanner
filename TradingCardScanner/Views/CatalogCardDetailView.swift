@@ -1,9 +1,23 @@
 import SwiftData
 import SwiftUI
 
+typealias CatalogCardSelection = @MainActor (CatalogCardDetails, CatalogCardSummary) -> Void
+
+private struct CatalogCardSelectionKey: EnvironmentKey {
+    static var defaultValue: CatalogCardSelection? { nil }
+}
+
+extension EnvironmentValues {
+    var catalogCardSelection: CatalogCardSelection? {
+        get { self[CatalogCardSelectionKey.self] }
+        set { self[CatalogCardSelectionKey.self] = newValue }
+    }
+}
+
 struct CatalogCardDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
+    @Environment(\.catalogCardSelection) private var catalogCardSelection
     let summary: CatalogCardSummary
     let catalog: any BrowseCatalogProviding
 
@@ -126,35 +140,44 @@ struct CatalogCardDetailView: View {
                 CardDetailMarketplaceButton(url: url)
             }
 
-            Button { prepareAdd(details.card) } label: {
-                Label(
-                    summary.masterSetVariant.map { "Add \($0.label) Copy" } ?? "Add Raw Copy",
-                    systemImage: "plus.circle.fill"
-                )
-                    .frame(maxWidth: .infinity, minHeight: 50)
-            }
-            .buttonStyle(.borderedProminent)
-            .confirmationDialog(
-                "Choose a finish",
-                isPresented: $showsFinishChoice,
-                titleVisibility: .visible
-            ) {
-                ForEach(finishOptions) { variant in
-                    Button(variant.label) { commit(ResolvedVariant(variant: variant, resolution: .userConfirmed)) }
+            if let catalogCardSelection {
+                Button {
+                    catalogCardSelection(details, summary)
+                } label: {
+                    Label("Use This Card", systemImage: "checkmark.circle.fill")
+                        .frame(maxWidth: .infinity, minHeight: 50)
                 }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("Add the physical version you own.")
-            }
+                .buttonStyle(.borderedProminent)
+                .accessibilityHint("Resolve the saved scan using this catalog printing")
+            } else {
+                Button { prepareAdd(details.card) } label: {
+                    Label(
+                        summary.masterSetVariant.map { "Add \($0.label) Copy" } ?? "Add Raw Copy",
+                        systemImage: "plus.circle.fill"
+                    )
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                }
+                .buttonStyle(.borderedProminent)
+                .confirmationDialog(
+                    "Choose a finish",
+                    isPresented: $showsFinishChoice,
+                    titleVisibility: .visible
+                ) {
+                    ForEach(finishOptions) { variant in
+                        Button(variant.label) { commit(ResolvedVariant(variant: variant, resolution: .userConfirmed)) }
+                    }
+                    Button("Cancel", role: .cancel) {}
+                } message: {
+                    Text("Add the physical version you own.")
+                }
 
-            // Separate from the raw path on purpose: a slab is a different
-            // object with its own price, and choosing a grade is a decision the
-            // user makes rather than something inferred from the card.
-            Button { showsGradedPicker = true } label: {
-                Label("Add Graded Copy", systemImage: "seal")
-                    .frame(maxWidth: .infinity, minHeight: 50)
+                // A slab is a distinct object with a grade the user chooses.
+                Button { showsGradedPicker = true } label: {
+                    Label("Add Graded Copy", systemImage: "seal")
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                }
+                .buttonStyle(.bordered)
             }
-            .buttonStyle(.bordered)
         }
         .padding(20)
         .contentWidthLimit(.standard)
@@ -195,7 +218,8 @@ struct CatalogCardDetailView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Owned").font(.headline)
                 ForEach(rows) { row in
-                    LabeledContent(ownedLabel(for: row), value: "\(row.quantity)")
+                    LabeledContent(row.ownedDisplayLabel, value: "\(row.quantity)")
+                        .accessibilityLabel("\(row.ownedDisplayLabel), \(row.quantity) owned")
                 }
             }
             .padding(14)
@@ -205,13 +229,10 @@ struct CatalogCardDetailView: View {
     }
 
     @ViewBuilder private func priceSection(_ card: IdentifiedCard) -> some View {
-        if let printRun = summary.pokemonPrintRun {
-            Text("Only a provider price explicitly tied to \(printRun.label) will be used after this card is added.")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-        } else if !card.marketPrices.isEmpty {
-            let rows = card.marketPrices
+        let rows = CardPricing.publishedPrices(for: card,
+                                              pokemonPrintRun: summary.pokemonPrintRun,
+                                              at: details?.retrievedAt ?? .now)
+        if !rows.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Published market prices").font(.headline)
                 if let details {
@@ -235,7 +256,9 @@ struct CatalogCardDetailView: View {
                     }
                 }
                 if rows.contains(where: \.isGap) {
-                    Text("Finishes without a US dollar market price are listed rather than hidden. A foreign-marketplace figure is never shown in their place.")
+                    Text(summary.pokemonPrintRun.map {
+                        "Prices apply only to \($0.label). An unavailable quote is never filled from another edition."
+                    } ?? "Finishes without a US dollar market price are listed rather than hidden. A foreign-marketplace figure is never shown in their place.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
@@ -243,6 +266,10 @@ struct CatalogCardDetailView: View {
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+        } else if let printRun = summary.pokemonPrintRun {
+            Text("No published USD price for \(printRun.label).")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -437,16 +464,6 @@ struct CatalogCardDetailView: View {
         let ownership = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
         return ownership.matchingRows(for: summary)
             .sorted { ($0.variantLabel ?? "") < ($1.variantLabel ?? "") }
-    }
-
-    private func ownedLabel(for row: CatalogOwnershipCardSnapshot) -> String {
-        let treatments = MagicTreatmentEvidence(
-            treatments: row.magicTreatmentIDsRaw.compactMap(MagicTreatment.init(id:)),
-            qualifiers: [:]
-        )
-        return [row.variant?.label ?? "Unknown finish", treatments.displayLabel]
-            .compactMap { $0 }
-            .joined(separator: " · ")
     }
 
     private func addedBanner(_ mutation: CollectionMutation) -> some View {

@@ -24,6 +24,7 @@ final class BrowseViewModel: ObservableObject {
 
     let catalog: any BrowseCatalogProviding
     let sealedModel: SealedBrowseModel
+    private let includesSealedProducts: Bool
     private var searchTask: Task<Void, Never>?
     private var searchResultsRefreshTask: Task<Void, Never>?
     private var generation = UUID()
@@ -31,11 +32,15 @@ final class BrowseViewModel: ObservableObject {
 
     init(
         catalog: any BrowseCatalogProviding = BrowseCatalog(),
-        sealedModel: SealedBrowseModel? = nil
+        sealedModel: SealedBrowseModel? = nil,
+        initialGame: CardGame? = nil,
+        includesSealedProducts: Bool = true
     ) {
         self.catalog = catalog
+        self.includesSealedProducts = includesSealedProducts
         let sealedModel = sealedModel ?? SealedBrowseModel(transport: JustTCGTransport.shared)
         self.sealedModel = sealedModel
+        self.selectedGame = initialGame
         self.sealedModelCancellable = sealedModel.objectWillChange.sink { [weak self] _ in
             guard let self else { return }
             self.objectWillChange.send()
@@ -58,7 +63,7 @@ final class BrowseViewModel: ObservableObject {
         let cardResults = searchGames.flatMap { game in
             (lanes[game]?.cards ?? []).map(CatalogSearchResult.card)
         }
-        let sealedResults = searchGames.flatMap { game in
+        let sealedResults = (includesSealedProducts ? searchGames : []).flatMap { game in
             (sealedModel.searchLanes[game]?.products ?? []).map {
                 CatalogSearchResult.sealed(game: game, product: $0)
             }
@@ -94,7 +99,7 @@ final class BrowseViewModel: ObservableObject {
             )
         }
 
-        let sealedWasSkipped = !sealedModel.isConfigured
+        let sealedWasSkipped = includesSealedProducts && !sealedModel.isConfigured
             && games.contains { !sealedLaneIsRequested(for: $0) }
         for game in games where sealedLaneIsRequested(for: game) {
             if let lane = sealedModel.searchLanes[game] {
@@ -303,12 +308,14 @@ final class BrowseViewModel: ObservableObject {
         recomputeSearchResults()
 
         async let cardSearch: Void = searchCardLanes(games: games, query: query, token: token)
-        async let sealedSearch: Void = sealedModel.search(query: query, games: games)
-        _ = await (cardSearch, sealedSearch)
+        if includesSealedProducts {
+            await sealedModel.search(query: query, games: games)
+        }
+        await cardSearch
     }
 
     private func sealedLaneIsRequested(for game: CardGame) -> Bool {
-        sealedModel.isConfigured || !(sealedModel.searchLanes[game]?.products.isEmpty ?? true)
+        includesSealedProducts && (sealedModel.isConfigured || !(sealedModel.searchLanes[game]?.products.isEmpty ?? true))
     }
 
     private func searchCardLanes(games: [CardGame], query: String, token: UUID) async {
@@ -366,15 +373,19 @@ struct BrowseView: View {
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     @EnvironmentObject private var setCompletionStore: CatalogSetCompletionStore
     let catalog: any BrowseCatalogProviding
+    private let recoveryGame: CardGame?
     @StateObject private var model: BrowseViewModel
     @State private var showsSetFilter = false
     @State private var isShowingSettings = false
     @FocusState private var searchFocused: Bool
     @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
 
-    init(catalog: any BrowseCatalogProviding = BrowseCatalog()) {
+    init(catalog: any BrowseCatalogProviding = BrowseCatalog(), recoveryGame: CardGame? = nil) {
         self.catalog = catalog
-        _model = StateObject(wrappedValue: BrowseViewModel(catalog: catalog))
+        self.recoveryGame = recoveryGame
+        _model = StateObject(wrappedValue: BrowseViewModel(catalog: catalog,
+                                                         initialGame: recoveryGame,
+                                                         includesSealedProducts: recoveryGame == nil))
     }
 
     var body: some View {
@@ -534,15 +545,17 @@ struct BrowseView: View {
 
             if model.isSearching {
                 HStack {
-                    Menu {
-                        Button("All Games") { model.selectedGame = nil }
-                        ForEach(CardGame.allCases) { game in
-                            Button(game.label) { model.selectedGame = game }
+                    if recoveryGame == nil {
+                        Menu {
+                            Button("All Games") { model.selectedGame = nil }
+                            ForEach(CardGame.allCases) { game in
+                                Button(game.label) { model.selectedGame = game }
+                            }
+                        } label: {
+                            Label(model.selectedGame?.label ?? "All Games", systemImage: "gamecontroller")
                         }
-                    } label: {
-                        Label(model.selectedGame?.label ?? "All Games", systemImage: "gamecontroller")
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.bordered)
 
                     Button {
                         showsSetFilter = true
@@ -571,7 +584,7 @@ struct BrowseView: View {
     }
 
     private var releaseRail: CatalogReleaseRail {
-        CatalogSetOrdering.releaseRail(from: model.sets)
+        CatalogSetOrdering.releaseRail(from: model.sets.filter { recoveryGame == nil || $0.key == recoveryGame })
     }
 
     private var ownership: CatalogOwnershipIndex {
@@ -632,7 +645,7 @@ struct BrowseView: View {
         let rows = projectionStore.snapshot?.rows ?? []
         Text("Browse by game")
             .font(.headline)
-        ForEach(CardGame.allCases) { game in
+        ForEach(recoveryGame.map { [$0] } ?? CardGame.allCases) { game in
             if let sets = model.sets[game] {
                 let summary = CatalogGameSummary(game: game, sets: sets, rows: rows)
                 NavigationLink {
@@ -1145,6 +1158,7 @@ struct CatalogPriceLoadState: Equatable, Sendable {
 }
 
 private struct CatalogGameBrowseView: View {
+    @Environment(\.catalogCardSelection) private var catalogCardSelection
     let game: CardGame
     let sets: [CatalogSet]
     let catalog: any BrowseCatalogProviding
@@ -1156,14 +1170,16 @@ private struct CatalogGameBrowseView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("Catalog content", selection: $contentKind) {
-                ForEach(CatalogGameContentKind.allCases) { kind in
-                    Text(kind.rawValue).tag(kind)
+            if catalogCardSelection == nil {
+                Picker("Catalog content", selection: $contentKind) {
+                    ForEach(CatalogGameContentKind.allCases) { kind in
+                        Text(kind.rawValue).tag(kind)
+                    }
                 }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
             }
-            .pickerStyle(.segmented)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
 
             ZStack {
                 // Keep this subtree alive while Sealed is visible. Its loaded

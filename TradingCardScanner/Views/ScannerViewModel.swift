@@ -891,6 +891,7 @@ enum UnresolvedResolutionChoice {
     case retryLookup
     case retrySave
     case choose(PokemonCatalogCardIdentity)
+    case catalog(CatalogCardDetails, printRun: PokemonPrintRun?, variant: PhysicalVariant?)
 }
 
 struct UnresolvedScanRequestEvidence: Equatable, Sendable {
@@ -1470,6 +1471,7 @@ final class ScannerViewModel: ObservableObject {
     /// Tests can hold or fail the add operation without replacing the concrete
     /// writer used by undo and correction flows.
     private let collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)?
+    private let certificationRefinementOverride: (@MainActor (RecentScan, GradedSlabEvidence) async throws -> CollectionMutation?)?
     private var modelContainer: ModelContainer?
     private var priceCheckCoordinator: PriceCheckCoordinator?
     private let priceCheckRefreshProvider: (any PriceCheckRefreshProvider)?
@@ -1592,7 +1594,8 @@ final class ScannerViewModel: ObservableObject {
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
         magicCatalogCoordinator: MagicCatalogCoordinator? = nil,
         unresolvedScanStore: UnresolvedScanStore = .shared,
-        collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)? = nil
+        collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)? = nil,
+        certificationRefinementOverride: (@MainActor (RecentScan, GradedSlabEvidence) async throws -> CollectionMutation?)? = nil
     ) {
         let scanner = scanner ?? CardScanner()
         self.scanner = scanner
@@ -1603,6 +1606,7 @@ final class ScannerViewModel: ObservableObject {
         self.priceCheckRefreshProvider = priceCheckRefreshProvider
         self.magicCatalogCoordinator = magicCatalogCoordinator
         self.collectionAddOverride = collectionAddOverride
+        self.certificationRefinementOverride = certificationRefinementOverride
 
         let catalog = self.catalog
         scanner.onSlabFooterRecognized = { [weak self] in
@@ -3242,6 +3246,43 @@ final class ScannerViewModel: ObservableObject {
                 await self.routeCollectionCandidate(retryCandidate)
             }
             if !accepted { reportPendingResolutionRejected() }
+        case let .catalog(details, selectedRun, selectedVariant):
+            guard details.card.game == row.game else { return }
+            let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
+                guard let self, self.isCurrent(retryRequest) else { return }
+                let card = details.card
+                let printRuns = card.game == .pokemon
+                    ? PokemonMasterSetDefinition.printRuns(forSetProviderID: card.variantEvidence.setID) : []
+                let printRun = (selectedRun ?? row.subject.slab?.printedPrintRun)
+                    .flatMap { printRuns.contains($0) ? $0 : nil }
+                var evidence = card.variantEvidence
+                if printRun != nil { evidence = evidence.excludingFirstEditionPseudoFinish() }
+                let options = VariantResolver.options(for: evidence)
+                // A cached Browse slot cannot bypass the current catalog or
+                // the vintage edition question for a raw copy.
+                if let selectedVariant, options.contains(selectedVariant),
+                   printRuns.isEmpty || printRun != nil || row.subject.slab != nil {
+                    await self.route(ResolvedScan(
+                        request: retryRequest, card: card,
+                        resolved: ResolvedVariant(variant: selectedVariant, resolution: .userConfirmed),
+                        identityResolution: .userSelectedPrinting,
+                        pokemonPrintRun: printRun,
+                        options: options,
+                        catalogRetrievedAt: details.retrievedAt
+                    ))
+                } else if let printRun {
+                    await self.resolveVariant(for: retryRequest, card: card,
+                                              pokemonPrintRun: printRun,
+                                              catalogRetrievedAt: details.retrievedAt,
+                                              identityResolution: .userSelectedPrinting)
+                } else {
+                    await self.resolvePrintRun(for: retryRequest, card: card,
+                                               catalogRetrievedAt: details.retrievedAt,
+                                               labelPrintRun: row.subject.slab?.printedPrintRun,
+                                               identityResolution: .userSelectedPrinting)
+                }
+            }
+            if !accepted { reportPendingResolutionRejected() }
         case let .choose(candidate):
             guard let number = row.pokemonNumber else { return }
             let canonicalName = CatalogIdentityNormalization.canonicalText(candidate.name)
@@ -3525,7 +3566,8 @@ final class ScannerViewModel: ObservableObject {
         _ subject: ScanSubject,
         reason: UnresolvedReason,
         candidates: [PokemonCatalogCardIdentity] = [],
-        resolvedProviderID: String? = nil
+        resolvedProviderID: String? = nil,
+        isAdditionalCopy: Bool = false
     ) {
         let request = ScanRequest(
             subject: subject,
@@ -3536,6 +3578,7 @@ final class ScannerViewModel: ObservableObject {
             request: request,
             reason: reason,
             candidates: candidates,
+            isAdditionalCopy: isAdditionalCopy,
             resolvedProviderID: resolvedProviderID
         )
     }
@@ -3561,6 +3604,8 @@ final class ScannerViewModel: ObservableObject {
     var isIdentificationProcessingForTesting: Bool {
         isProcessingIdentification
     }
+
+    var isScannerSessionActiveForTesting: Bool { isScannerSessionActive }
 
     /// Test hook for the suspected interleaving in F03. Production callers
     /// never set identification state directly; the normal queue owns it.
@@ -4365,10 +4410,14 @@ final class ScannerViewModel: ObservableObject {
               scan.subject.slab?.certificationNumber == nil,
               let updatedSlab = updatedSubject.slab else { return }
 
-        gradedCertificationRefinementsInFlight.insert(encounterID)
-        defer { gradedCertificationRefinementsInFlight.remove(encounterID) }
-
         let sessionID = scannerSessionID
+        gradedCertificationRefinementsInFlight.insert(encounterID)
+        defer {
+            if sessionID == scannerSessionID {
+                gradedCertificationRefinementsInFlight.remove(encounterID)
+            }
+        }
+
         beginTrackedWrite(for: sessionID)
         defer { endTrackedWrite(for: sessionID) }
         guard let collectionWriter else {
@@ -4380,8 +4429,10 @@ final class ScannerViewModel: ObservableObject {
 
         let mutation: CollectionMutation
         do {
+            let refinementOverride = certificationRefinementOverride
             let refine = {
-                try await collectionWriter.refineGradedCertification(
+                if let refinementOverride { return try await refinementOverride(scan, updatedSlab) }
+                return try await collectionWriter.refineGradedCertification(
                     for: scan,
                     to: updatedSlab
                 )
@@ -4398,6 +4449,8 @@ final class ScannerViewModel: ObservableObject {
                     try await refine()
                 }
             }
+            guard sessionID == scannerSessionID,
+                  isStorageGenerationCurrent else { return }
             guard let refinedMutation else {
                 pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
                 show(ScanNote(text: "The slab certificate could not be matched to the saved scan", tone: .problem))
@@ -4418,6 +4471,8 @@ final class ScannerViewModel: ObservableObject {
             }
             mutation = refinedMutation
         } catch {
+            guard sessionID == scannerSessionID,
+                  isStorageGenerationCurrent else { return }
             pendingGradedCertificationRefinements.removeValue(forKey: encounterID)
             show(ScanNote(text: "The slab certificate could not be saved", tone: .problem))
             feedback.problem()
