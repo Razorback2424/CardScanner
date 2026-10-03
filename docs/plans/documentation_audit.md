@@ -103,6 +103,17 @@ explicitly unverified. Pricing-provider selection and shared-cache publication
 remain governed by their current plans. A weekly thread monitor is scheduled;
 neither that schedule nor this documentation is ingestion or release evidence.
 
+## Lorcana research import — 2026-10-03
+
+The [Lorcana data, variant, and scanner-architecture audit](../audits/lorcana-data-variant-scanner-architecture-audit.md)
+preserves an owner-supplied deep-research report as design input. Its proposed
+footer-OCR and print/variant identity model is not implementation evidence:
+current source and tests still determine supported games and behavior. The
+report's inline citation identifiers belong to its originating research session
+and cannot be resolved from this repository. Recheck time-sensitive release,
+API, completeness, and licensing claims against their linked primary sources
+before using them for implementation or release decisions.
+
 ## Latest two-set pricing evidence — 2026-09-30
 
 The [pricing coverage plan](browse_pricing_coverage_plan.md) now records a
