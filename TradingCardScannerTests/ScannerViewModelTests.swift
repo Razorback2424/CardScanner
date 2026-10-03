@@ -2902,6 +2902,30 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 0)
     }
 
+    func testInactiveOverlayPreservesPendingChoiceButBackgroundInvalidatesIt() async throws {
+        let model = try makeModel(variants: [.normal, .holo])
+        let encounterID = UUID()
+        confirm(model, scannerIdentifier(), encounterID: encounterID)
+        let appeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(appeared)
+
+        model.scenePhaseChanged(isActive: false, isBackgrounded: false)
+        XCTAssertEqual(model.pendingChoice?.request.encounterID, encounterID)
+        model.scenePhaseChanged(isActive: true, isBackgrounded: false)
+        XCTAssertEqual(model.pendingChoice?.request.encounterID, encounterID)
+        model.choose(.normal)
+        let committed = await waitUntil { model.recent.count == 1 }
+        XCTAssertTrue(committed, "A preserved choice must still be actionable after returning.")
+
+        let secondEncounter = UUID()
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: secondEncounter)
+        let secondAppeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(secondAppeared)
+        model.scenePhaseChanged(isActive: false, isBackgrounded: false)
+        model.scenePhaseChanged(isActive: false, isBackgrounded: true)
+        XCTAssertNil(model.pendingChoice)
+    }
+
     func testBackgroundingDoesNotFinalizeTheVisibleScanSession() async throws {
         let model = try makeModel(variants: [.normal])
         let summaryStore = ScanSessionSummaryStore()

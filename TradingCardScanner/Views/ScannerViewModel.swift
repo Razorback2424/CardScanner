@@ -2233,7 +2233,7 @@ final class ScannerViewModel: ObservableObject {
         activeScannerBulkWriteCoordinator = nil
     }
 
-    func scenePhaseChanged(isActive: Bool) {
+    func scenePhaseChanged(isActive: Bool, isBackgrounded: Bool = true) {
         recognitionEligibility.isSceneActive = isActive
         visibilityEpoch = UUID()
         updateScannerConfirmationContext()
@@ -2259,13 +2259,26 @@ final class ScannerViewModel: ObservableObject {
             }
             return
         }
-        invalidatePendingScan()
+        if isBackgrounded {
+            invalidatePendingScan()
+        } else {
+            // System overlays pause recognition without discarding an already
+            // identified card's pending decision or undo receipt.
+            scanner.pauseRecognition()
+        }
     }
 
     private func cameraInterruptionStarted() {
         recognitionEligibility.isCameraInterrupted = true
         visibilityEpoch = UUID()
         updateScannerConfirmationContext()
+        // Capture may also report an interruption while a system overlay has
+        // made the scene inactive. The scene's background transition owns the
+        // invalidation in that case.
+        guard recognitionEligibility.isSceneActive else {
+            scanner.pauseRecognition()
+            return
+        }
         invalidatePendingScan()
         show(ScanNote(text: "Camera interrupted — scan again when it returns", tone: .info))
     }

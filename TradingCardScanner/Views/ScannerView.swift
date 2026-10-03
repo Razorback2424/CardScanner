@@ -97,7 +97,10 @@ struct ScannerView: View {
         }
         .onDisappear { model.viewDisappeared() }
         .onChange(of: scenePhase) { _, phase in
-            model.scenePhaseChanged(isActive: phase == .active)
+            model.scenePhaseChanged(
+                isActive: phase == .active,
+                isBackgrounded: phase == .background
+            )
         }
         .sheet(isPresented: $isShowingSettings, onDismiss: model.resumeAfterSettingsPresentation) {
             SettingsView()
