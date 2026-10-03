@@ -11,10 +11,14 @@ UI_DEVICE_ID="${UI_DEVICE_ID:-EB1F0EB1-9B40-4FDA-B8D3-AEEF76909C86}"
 ARTIFACTS_DIR="${ARTIFACTS_DIR:-./artifacts}"
 SCREENSHOT_PATH="$ARTIFACTS_DIR/ui-latest.png"
 META_PATH="$ARTIFACTS_DIR/ui-latest.json"
+SIMCTL=(xcrun simctl)
+if [[ -n "${UI_DEVICE_SET:-}" ]]; then
+  SIMCTL+=(--set "$UI_DEVICE_SET")
+fi
 
 mkdir -p "$ARTIFACTS_DIR"
-xcrun simctl boot "$UI_DEVICE_ID" >/dev/null 2>&1 || true
-xcrun simctl bootstatus "$UI_DEVICE_ID" -b
+"${SIMCTL[@]}" boot "$UI_DEVICE_ID" >/dev/null 2>&1 || true
+"${SIMCTL[@]}" bootstatus "$UI_DEVICE_ID" -b
 if [[ -n "${UI_PREBUILT_APP_PATH:-}" ]]; then
   # A caller may reuse binaries it has already built and tested. This also
   # permits visual QA when macOS file coordination blocks reopening a project.
@@ -30,20 +34,45 @@ if [[ -z "${APP_PATH:-}" ]]; then
   exit 1
 fi
 
-xcrun simctl uninstall "$UI_DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
-xcrun simctl install "$UI_DEVICE_ID" "$APP_PATH"
+if [[ "${UI_USE_INSTALLED_APP:-0}" != "1" ]]; then
+  if [[ "${UI_PRESERVE_APP_DATA:-0}" != "1" ]]; then
+    "${SIMCTL[@]}" uninstall "$UI_DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
+  fi
+  "${SIMCTL[@]}" install "$UI_DEVICE_ID" "$APP_PATH"
+fi
 LAUNCH_ARGS=("-ui_debug_route" "$ROUTE")
 if [[ -n "$STATE" ]]; then
   LAUNCH_ARGS+=("-ui_debug_state" "$STATE")
 fi
-xcrun simctl launch "$UI_DEVICE_ID" "$BUNDLE_ID" "${LAUNCH_ARGS[@]}"
-sleep 2.5
+if [[ "$ROUTE" == Centering* ]]; then
+  CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
+  MARKER_PATH="$CONTAINER_PATH/Documents/centering-ui-ready.json"
+  rm -f "$MARKER_PATH"
+  LAUNCH_ARGS+=("-ui_debug_ready_path" "$MARKER_PATH")
+fi
+"${SIMCTL[@]}" terminate "$UI_DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
+"${SIMCTL[@]}" launch "$UI_DEVICE_ID" "$BUNDLE_ID" "${LAUNCH_ARGS[@]}"
+if [[ -n "${MARKER_PATH:-}" ]]; then
+  settled=0
+  for _ in $(seq 1 300); do
+    if [[ -f "$MARKER_PATH" ]] && rg -q 'presentedImageFrame' "$MARKER_PATH"; then
+      settled=1
+      break
+    fi
+    sleep 0.10
+  done
+  [[ "$settled" == "1" ]] || { echo "Centering did not settle" >&2; exit 1; }
+  cp "$MARKER_PATH" "$ARTIFACTS_DIR/centering-geometry.json"
+  sleep 1
+else
+  sleep 2.5
+fi
 "$(dirname "$0")/ui_screenshot_simctl.sh" "$SCREENSHOT_PATH" "$UI_DEVICE_ID"
 
-python3 - "$META_PATH" "$SCHEME" "$BUNDLE_ID" "$ROUTE" "$STATE" <<'PY'
+python3 - "$META_PATH" "$SCHEME" "$BUNDLE_ID" "$ROUTE" "$STATE" "$UI_DEVICE_ID" <<'PY'
 import json, sys, time
-path, scheme, bundle_id, route, state = sys.argv[1:]
-meta = {"scheme": scheme, "bundle_id": bundle_id, "route": route, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S")}
+path, scheme, bundle_id, route, state, device = sys.argv[1:]
+meta = {"scheme": scheme, "bundle_id": bundle_id, "route": route, "device": device, "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S")}
 if state:
     meta["state"] = state
 with open(path, "w", encoding="utf-8") as handle:
