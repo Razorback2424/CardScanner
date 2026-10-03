@@ -2834,6 +2834,7 @@ enum ArtworkAccentExtractor {
 }
 
 enum ArtworkAccentStore {
+    private static let samplingPixelDimension = 128
     private final class Box: NSObject {
         let value: ArtworkAccent
 
@@ -2844,7 +2845,7 @@ enum ArtworkAccentStore {
 
     private static let cache: NSCache<NSString, Box> = {
         let cache = NSCache<NSString, Box>()
-        cache.countLimit = 120
+        cache.countLimit = 2_000
         return cache
     }()
 
@@ -2896,7 +2897,10 @@ enum ArtworkAccentStore {
         var selectedKey: String?
         let localImage: UIImage? = if let effectiveLocalFilename {
             await Task.detached(priority: .utility) {
-                CollectionArtworkStore.image(filename: effectiveLocalFilename)
+                CollectionArtworkStore.image(
+                    filename: effectiveLocalFilename,
+                    maximumPixelDimension: samplingPixelDimension
+                )
             }.value
         } else { nil }
         if let localImage, let localKey {
@@ -2904,7 +2908,10 @@ enum ArtworkAccentStore {
             selectedKey = localKey
         } else {
             for (url, key) in zip(remoteURLs, remoteKeys) {
-                if let remoteImage = try? await CatalogImageCache.shared.image(for: url) {
+                if let remoteImage = try? await CatalogImageCache.shared.image(
+                    for: url,
+                    targetPixelSize: samplingPixelDimension
+                ) {
                     selectedImage = remoteImage
                     selectedKey = key
                     break
