@@ -232,20 +232,18 @@ final class PortfolioEngine: ObservableObject {
     }
 
     /// Called by the app-scoped refresh controller before its model actor starts
-    /// a queue. A replay is owed even if the pass later fails or is cancelled:
-    /// partial writes and rollback decisions still have to settle on one final
-    /// portfolio read.
+    /// a queue. Deferred recomputations accrue a replay while the gate is held;
+    /// the controller also requests one when a worker may have written changes.
     func beginPriceRefresh() {
         priceRefreshInFlight = true
-        priceRefreshReplayOwed = true
     }
 
     /// Ends the refresh gate for every terminal outcome. The controller owns
     /// the call so failure and cancellation cannot strand a deferred replay.
-    func endPriceRefresh(context: ModelContext) {
+    func endPriceRefresh(context: ModelContext, requiresReplay: Bool = true) {
         guard priceRefreshInFlight else { return }
         priceRefreshInFlight = false
-        guard priceRefreshReplayOwed else { return }
+        guard priceRefreshReplayOwed || requiresReplay else { return }
         priceRefreshReplayOwed = false
         recompute(context: context)
     }

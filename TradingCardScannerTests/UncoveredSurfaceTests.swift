@@ -1880,7 +1880,18 @@ final class PriceRefreshSnapshotSliceTests: XCTestCase {
         try await assertTerminalPriceRefreshReplay()
     }
 
-    private func assertTerminalPriceRefreshReplay() async throws {
+    func testNoOpPassDoesNotReplayWithoutDeferredChanges() async throws {
+        try await assertTerminalPriceRefreshReplay(deferRecompute: false, requiresReplay: false)
+    }
+
+    func testNoOpPassStillSettlesDeferredCollectionChanges() async throws {
+        try await assertTerminalPriceRefreshReplay(requiresReplay: false)
+    }
+
+    private func assertTerminalPriceRefreshReplay(
+        deferRecompute: Bool = true,
+        requiresReplay: Bool = true
+    ) async throws {
         let container = try UncoveredSurfaceFixtures.inMemoryContainer(
             for: UncoveredSurfaceFixtures.fullSchema()
         )
@@ -1910,17 +1921,19 @@ final class PriceRefreshSnapshotSliceTests: XCTestCase {
         let portfolio = PortfolioEngine(computationProvider: provider)
 
         portfolio.beginPriceRefresh()
-        portfolio.recompute(context: context, now: now)
+        if deferRecompute {
+            portfolio.recompute(context: context, now: now)
+        }
         let countBeforeTerminal = await counter.value
         XCTAssertEqual(countBeforeTerminal, 0)
 
-        portfolio.endPriceRefresh(context: context)
+        portfolio.endPriceRefresh(context: context, requiresReplay: requiresReplay)
         for _ in 0..<100 {
             if await counter.value != 0 { break }
             try await Task.sleep(for: .milliseconds(10))
         }
         let countAfterTerminal = await counter.value
-        XCTAssertEqual(countAfterTerminal, 1)
+        XCTAssertEqual(countAfterTerminal, deferRecompute || requiresReplay ? 1 : 0)
     }
 }
 

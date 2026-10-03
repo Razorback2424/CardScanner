@@ -242,7 +242,7 @@ struct ContentView: View {
             guard let storageToken = storageGeneration.currentToken() else { return }
             let shouldContinue = storageGeneration.continuation(for: storageToken)
             await projectionStore.rebuild(container: modelContext.container)
-            _ = await MagicTreatmentMigrationCoordinator.shared.runNetwork(
+            let report = await MagicTreatmentMigrationCoordinator.shared.runNetwork(
                 in: modelContext,
                 storageToken: storageToken,
                 shouldContinue: shouldContinue
@@ -251,7 +251,9 @@ struct ContentView: View {
             // Network enrichment can add treatments or rekey rows after the
             // initial portfolio snapshot. Recompute only after the migration
             // has finished so the user never sees a half-applied result.
-            portfolio.recompute(context: modelContext)
+            if report.didChange {
+                portfolio.recompute(context: modelContext)
+            }
         }
         // Portfolio truth is app-scoped: scanning or importing must recompute it
         // even if Collection has never been selected in this app session. This

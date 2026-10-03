@@ -518,6 +518,23 @@ struct StoreRevisionMonitor: View {
             "cards=\(cardsChanged ? 1 : 0),inventory=\(inventoryChanged ? 1 : 0),activities=\(activitiesChanged ? 1 : 0),prices=\(pricesChanged ? 1 : 0),shape=\(priceShapeChanged ? 1 : 0),artwork=\(artworkChanged ? 1 : 0),magic=\(magicChanged ? 1 : 0)"
         )
 
+        // Publish new cards and ownership before rebuilding the price overlay.
+        // Tiles can use the projection's prices until the overlay catches up.
+        if cardsChanged || priceShapeChanged || artworkChanged {
+            let state = PerformanceSignpost.beginInterval(
+                "storeRevision.projectionRebuild",
+                id: PerformanceSignpost.makeID(),
+                "generation=\(generation)"
+            )
+            await projectionStore.rebuild(container: modelContext.container)
+            PerformanceSignpost.endInterval(
+                "storeRevision.projectionRebuild",
+                state,
+                "generation=\(generation)"
+            )
+            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
+        }
+
         if pricesChanged || cardsChanged || artworkChanged {
             // During a refresh, deltas already update this store in O(changed).
             // The terminal controller rebuild remains authoritative, so avoid
@@ -536,21 +553,6 @@ struct StoreRevisionMonitor: View {
                 )
                 guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             }
-        }
-
-        if cardsChanged || priceShapeChanged || artworkChanged {
-            let state = PerformanceSignpost.beginInterval(
-                "storeRevision.projectionRebuild",
-                id: PerformanceSignpost.makeID(),
-                "generation=\(generation)"
-            )
-            await projectionStore.rebuild(container: modelContext.container)
-            PerformanceSignpost.endInterval(
-                "storeRevision.projectionRebuild",
-                state,
-                "generation=\(generation)"
-            )
-            guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
         }
 
         _ = await StoreRevisionDecisions.runMagicMigrationIfNeeded(

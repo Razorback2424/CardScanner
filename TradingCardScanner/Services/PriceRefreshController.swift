@@ -3423,13 +3423,17 @@ final class PriceRefreshController: ObservableObject {
             )
         }
         var didBeginPortfolioRefresh = false
+        var requiresPortfolioReplay = false
         defer {
             if didBeginPortfolioRefresh {
                 // The replay gate is settled for every terminal outcome,
                 // including cancellation and target-build failure. It is tied
                 // to the controller's queue, not the happy path.
                 if shouldContinue?() ?? true {
-                    registeredPortfolio?.endPriceRefresh(context: container.mainContext)
+                    registeredPortfolio?.endPriceRefresh(
+                        context: container.mainContext,
+                        requiresReplay: requiresPortfolioReplay
+                    )
                 } else {
                     pendingRefreshRequests.removeAll()
                     registeredPortfolio?.cancelPriceRefresh()
@@ -3502,6 +3506,7 @@ final class PriceRefreshController: ObservableObject {
                     )
                 )
             case let .cancelled(repairedFinishes, backfilledFinishes):
+                requiresPortfolioReplay = true
                 if shouldContinue?() ?? true {
                     if let fingerprint = await worker.priceValuesFingerprint() {
                         registeredRevisionStore?.expectPriceValuesFingerprint(fingerprint)
@@ -3534,6 +3539,7 @@ final class PriceRefreshController: ObservableObject {
                 }
                 return makeResult(didRun: didRun, targetBuildFailed: targetBuildFailed)
             case let .completed(result):
+                requiresPortfolioReplay = true
                 didRun = true
                 lastCompletedResult = result
                 guard shouldContinue?() ?? true else {
