@@ -2558,6 +2558,29 @@ final class BrowseCollectionTests: XCTestCase {
         super.tearDown()
     }
 
+    func testIsolatedCSVExportMatchesSavedCollection() async throws {
+        let context = try makeContext()
+        let empty = try await CollectionCSV.exportIsolated(from: context.container)
+        XCTAssertEqual(empty.text, CollectionCSV.export([]).text)
+
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        _ = try CollectionStore(context: context).add(
+            card,
+            resolved: ResolvedVariant(variant: .reverse, resolution: .userConfirmed)
+        )
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 1)
+        rows[0].name = "Eevee, \"CSV\"\nfixture"
+        rows[0].quantity = 3
+        try context.save()
+
+        let exported = try await CollectionCSV.exportIsolated(from: context.container)
+        XCTAssertEqual(exported.text, CollectionCSV.export(rows).text)
+        let plan = try CollectionCSV.parse(Data(exported.text.utf8))
+        XCTAssertEqual(plan.entries.first?.quantity, 3)
+        XCTAssertEqual(plan.entries.first?.name, rows[0].name)
+    }
+
     func testCatalogSelectionIncrementsNormalizedImportAlias() throws {
         let context = try makeContext()
         let imported = CollectedCard(

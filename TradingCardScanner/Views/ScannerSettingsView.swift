@@ -16,6 +16,7 @@ struct SettingsView: View {
     @State private var deletionError: String?
     @State private var isShowingCSVImporter = false
     @State private var isShowingCSVExporter = false
+    @State private var isPreparingCSVExport = false
     @State private var isShowingDiagnosticsExporter = false
     @State private var csvExportDocument: CollectionCSVDocument?
     @State private var diagnosticsDocument: JSONExportDocument?
@@ -222,20 +223,27 @@ struct SettingsView: View {
             .disabled(writeCoordinator.activeExclusiveOperation != nil)
 
             Button("Export CSV", systemImage: "square.and.arrow.up") {
-                do {
-                    let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
-                    csvExportDocument = CollectionCSV.export(cards)
-                    csvExportFilename = "CardScanner Collection"
-                    isShowingCSVExporter = true
-                } catch {
-                    writeCoordinator.csvMessage = CSVMessage(
-                        title: "Export Failed",
-                        message: error.localizedDescription,
-                        skippedCSVText: nil
-                    )
+                guard let token = storageGeneration.currentToken() else { return }
+                isPreparingCSVExport = true
+                Task { @MainActor in
+                    defer { isPreparingCSVExport = false }
+                    do {
+                        let document = try await CollectionCSV.exportIsolated(from: modelContext.container)
+                        guard storageGeneration.isCurrent(token) else { return }
+                        csvExportDocument = document
+                        csvExportFilename = "CardScanner Collection"
+                        isShowingCSVExporter = true
+                    } catch {
+                        guard storageGeneration.isCurrent(token) else { return }
+                        writeCoordinator.csvMessage = CSVMessage(
+                            title: "Export Failed",
+                            message: error.localizedDescription,
+                            skippedCSVText: nil
+                        )
+                    }
                 }
             }
-            .disabled(collectionCardCount == 0)
+            .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
             NavigationLink {
                 CollectionActivityLogView()

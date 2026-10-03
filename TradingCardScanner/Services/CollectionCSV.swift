@@ -232,6 +232,15 @@ enum CollectionCSV {
         }
     }
 
+    /// Fetch and format on an actor created off main; model instances stay in
+    /// that actor's context and only the CSV text crosses the isolation boundary.
+    static func exportIsolated(from container: ModelContainer) async throws -> CollectionCSVDocument {
+        let exporter = await Task.detached(priority: .userInitiated) {
+            CollectionCSVExportActor(modelContainer: container)
+        }.value
+        return CollectionCSVDocument(text: try await exporter.text())
+    }
+
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
         let formatter = ISO8601DateFormatter()
         let rows = cards.sorted { left, right in
@@ -1815,6 +1824,14 @@ enum CollectionCSV {
         ([headers] + rows)
             .map { $0.map(escape).joined(separator: ",") }
             .joined(separator: "\n") + "\n"
+    }
+}
+
+/// Keeps export models in the context that fetched them.
+@ModelActor
+actor CollectionCSVExportActor {
+    func text() throws -> String {
+        CollectionCSV.export(try modelContext.fetch(FetchDescriptor<CollectedCard>())).text
     }
 }
 
