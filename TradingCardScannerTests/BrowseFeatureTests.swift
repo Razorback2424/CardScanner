@@ -6,6 +6,51 @@ import PokemonCatalogCore
 @testable import TradingCardScanner
 
 final class BrowseLoadingRefinementTests: XCTestCase {
+    func testLiveMagicDirectoryRefreshesExpiredMemoryAndDiskOnceAndPublishesChanges() async throws {
+        for warmsMemory in [false, true] {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let session = session()
+            defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+            let clock = BrowseRefinementClock()
+            let cache = CatalogCacheStore(root: root)
+            await cache.storeSets([set()], for: .magic, at: clock.date)
+            let catalog = BrowseCatalog(cache: cache, magicSession: session, now: { clock.date })
+            if warmsMemory { _ = try await catalog.sets(for: .magic) }
+            clock.advance(25 * 60 * 60)
+            let started = expectation(description: "Directory refresh started")
+            let changed = expectation(description: "Refreshed directory published")
+            let gate = BrowseDirectoryResponseGate(started: started)
+            let count = BrowseRefinementRequestCount()
+            BrowseRefinementURLProtocol.setHandler { loader in
+                count.increment()
+                Task { await gate.capture(loader) }
+            }
+            let updates = await catalog.catalogUpdates()
+            let observer = Task {
+                for await _ in updates {
+                    changed.fulfill()
+                    return
+                }
+            }
+            defer { observer.cancel() }
+            for _ in 0..<5 {
+                let stale = try await catalog.sets(for: .magic)
+                XCTAssertEqual(stale.map(\.providerID), ["ecl"])
+            }
+            await fulfillment(of: [started], timeout: 2)
+            XCTAssertEqual(count.value, 1)
+            await gate.release(Data(#"{"data":[{"code":"new","name":"New Set","card_count":1,"digital":false,"set_type":"expansion","released_at":"2026-10-01"}]}"#.utf8))
+            await fulfillment(of: [changed], timeout: 2)
+            let fresh = try await catalog.sets(for: .magic)
+            XCTAssertEqual(fresh.map(\.providerID), ["new"])
+            XCTAssertEqual(count.value, 1)
+            let saved = await cache.sets(for: .magic, now: clock.date)
+            XCTAssertEqual(saved?.value.map(\.providerID), ["new"])
+            XCTAssertEqual(saved?.isFresh, true)
+        }
+    }
+
     func testDirectMagicDetailsExpirePositiveAndMissingQuotesWithoutSortAndKeepFailedRefreshTimestamp() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }
@@ -19,7 +64,9 @@ final class BrowseLoadingRefinementTests: XCTestCase {
         let object = try XCTUnwrap(JSONSerialization.jsonObject(with: page) as? [String: Any])
         var card = try XCTUnwrap((object["data"] as? [[String: Any]])?.first)
         let original = try JSONSerialization.data(withJSONObject: card)
+        let directory = Data(#"{"data":[{"code":"ecl","name":"Eclipse","card_count":1,"digital":false,"set_type":"expansion"}]}"#.utf8)
         BrowseRefinementURLProtocol.setHandler { loader in
+            if loader.request.url?.path == "/sets" { loader.respond(directory); return }
             if loader.request.url?.path == "/cards/search" { loader.respond(page) }
             else { count.increment(); loader.respond(original) }
         }
@@ -33,7 +80,10 @@ final class BrowseLoadingRefinementTests: XCTestCase {
         XCTAssertEqual(count.value, 1)
         card["prices"] = [String: String]()
         let missing = try JSONSerialization.data(withJSONObject: card)
-        BrowseRefinementURLProtocol.setHandler { loader in count.increment(); loader.respond(missing) }
+        BrowseRefinementURLProtocol.setHandler { loader in
+            if loader.request.url?.path == "/sets" { loader.respond(directory); return }
+            count.increment(); loader.respond(missing)
+        }
         clock.advance(2 * 60 * 60)
         let negative = try await catalog.details(for: summary)
         XCTAssertTrue(negative.card.marketPrices.allSatisfy(\.isGap))
@@ -43,7 +93,10 @@ final class BrowseLoadingRefinementTests: XCTestCase {
         XCTAssertEqual(count.value, 2)
         card["prices"] = ["usd": "2.50", "usd_foil": "7.00"]
         let updated = try JSONSerialization.data(withJSONObject: card)
-        BrowseRefinementURLProtocol.setHandler { loader in count.increment(); loader.respond(updated) }
+        BrowseRefinementURLProtocol.setHandler { loader in
+            if loader.request.url?.path == "/sets" { loader.respond(directory); return }
+            count.increment(); loader.respond(updated)
+        }
         clock.advance(60 * 60)
         async let left = catalog.details(for: summary)
         async let right = catalog.details(for: summary)
@@ -53,6 +106,7 @@ final class BrowseLoadingRefinementTests: XCTestCase {
         XCTAssertEqual(count.value, 3)
         clock.advance(25 * 60 * 60)
         BrowseRefinementURLProtocol.setHandler { loader in
+            if loader.request.url?.path == "/sets" { loader.respond(directory); return }
             count.increment(); loader.respond(Data("invalid provider response".utf8))
         }
         let retained = try await catalog.details(for: summary)
@@ -292,6 +346,20 @@ private actor BlockingBrowseDatasetStamp: ScryfallDatasetStampProviding {
 private struct FixedBrowseDatasetStamp: ScryfallDatasetStampProviding {
     var date = Date(timeIntervalSince1970: 1_780_000_000)
     func datasetUpdatedAt() async -> Date? { date }
+}
+
+private actor BrowseDirectoryResponseGate {
+    private let started: XCTestExpectation
+    private var loader: BrowseRefinementURLProtocol?
+    init(started: XCTestExpectation) { self.started = started }
+    func capture(_ loader: BrowseRefinementURLProtocol) {
+        self.loader = loader
+        started.fulfill()
+    }
+    func release(_ data: Data) {
+        loader?.respond(data)
+        loader = nil
+    }
 }
 
 private final class BrowseRefinementRequestCount: @unchecked Sendable {
@@ -2197,6 +2265,23 @@ final class BrowseFeatureTests: XCTestCase {
     }
 
     @MainActor
+    func testRecoverySearchDoesNotRequestSealedProducts() async throws {
+        let root = try makeTemporaryCacheDirectory()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let client = RecordingJustTCGProviding()
+        let sealed = SealedBrowseModel(client: client, cache: CatalogCacheStore(root: root), isConfigured: { true })
+        let catalog = EmptyBrowseCatalog()
+        let model = BrowseViewModel(catalog: catalog, sealedModel: sealed,
+                                    initialGame: .pokemon, includesSealedProducts: false)
+        model.searchText = "Fixture"
+        let searched = await waitUntil { await catalog.searchCount() == 1 }
+        XCTAssertTrue(searched)
+        let sealedCount = await client.sealedSearchCount()
+        XCTAssertEqual(sealedCount, 0)
+        XCTAssertEqual(Set(model.lanes.keys), [.pokemon])
+    }
+
+    @MainActor
     func testBrowseSearchUsesSelectedGameForBothResultKinds() async throws {
         let root = try makeTemporaryCacheDirectory()
         defer { try? FileManager.default.removeItem(at: root) }
@@ -2799,6 +2884,30 @@ final class BrowseCollectionTests: XCTestCase {
         XCTAssertNotNil(retargeted.correctedAt)
         XCTAssertEqual(correction.deltaQuantity, 0)
         XCTAssertEqual(correction.collectionKey, mutation.collectionKey)
+    }
+
+    func testOwnedLabelsDistinguishGradesWithoutChangingQuantityOrCompletion() throws {
+        let context = try makeContext()
+        let card = IdentifiedCard.pokemon(try decodePokemon(), setCode: "PRE")
+        let store = CollectionStore(context: context)
+        _ = try store.add(card, resolved: ResolvedVariant(variant: .normal, resolution: .userConfirmed))
+        for (grade, certificate) in [("10", "11111111"), ("10", "22222222"), ("9", "33333333")] {
+            _ = try store.addScannedGraded(underlying: card, company: .psa,
+                                         grade: CardGrade(value: grade), certificationNumber: certificate)
+        }
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+        let index = CatalogOwnershipIndex(rows)
+        let set = CatalogSet(catalogID: CatalogSetID(game: .pokemon, providerID: "sv08.5"),
+                             name: "Prismatic Evolutions", code: "PRE", logoURL: nil, symbolURL: nil,
+                             cardCount: 131, releaseDate: nil, sortRank: 0)
+        let summary = CatalogCardSummary(game: .pokemon, providerID: card.providerID,
+                                         setID: set.catalogID, setName: set.name, setCode: set.code,
+                                         name: card.name, collectorNumber: "074", thumbnailURL: nil, imageURL: nil)
+        let matching = index.matchingRows(for: summary)
+        XCTAssertEqual(matching.count, 4)
+        XCTAssertEqual(matching.map(\.ownedDisplayLabel).sorted(), ["Normal", "PSA 10", "PSA 10", "PSA 9"])
+        XCTAssertEqual(index.quantity(of: summary), 4)
+        XCTAssertEqual(index.progress(for: set).owned, 1)
     }
 
     func testGradedVariantCorrectionStaysOnTheCertificateRow() throws {

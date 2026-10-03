@@ -387,6 +387,12 @@ struct TCGdexDetailedVariant: Decodable, Sendable {
     let languages: [String]?
     let thirdParty: TCGdexVariantThirdParty?
 
+    var isFirstEdition: Bool {
+        type == "firstEdition" || (stamp ?? []).contains {
+            $0.caseInsensitiveCompare("1st-edition") == .orderedSame
+        }
+    }
+
     /// The physical object this entry describes.
     ///
     /// A named pattern always wins over `type`, because that is precisely the

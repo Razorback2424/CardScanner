@@ -330,6 +330,79 @@ final class PricingTests: XCTestCase {
         XCTAssertTrue(card.marketPrices.allSatisfy { $0.value == nil })
     }
 
+    func testVintagePublishedPricesUseOnlyTheRequestedEdition() throws {
+        let json = #"{"id":"base1-004","localId":"004","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants":{"firstEdition":true,"holo":true,"normal":false,"reverse":false},"pricing":{"tcgplayer":{"holofoil":{"marketPrice":100}}},"variants_detailed":[{"type":"holo","stamp":["1st-edition"],"pricing":{"tcgplayer":{"holofoil":{"marketPrice":500}}}}]}"#
+        let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "BAS")
+        let unlimited = CardPricing.publishedPrices(for: card, pokemonPrintRun: .unlimited)
+        XCTAssertEqual(unlimited.map(\.variantID), [PhysicalVariant.holo.id])
+        XCTAssertEqual(unlimited.compactMap(\.value), [100])
+        let firstEdition = CardPricing.publishedPrices(for: card, pokemonPrintRun: .firstEdition)
+        XCTAssertEqual(firstEdition.map(\.variantID), [PhysicalVariant.firstEdition.id])
+        XCTAssertEqual(firstEdition.compactMap(\.value), [500])
+        let shadowless = CardPricing.publishedPrices(for: card, pokemonPrintRun: .shadowless)
+        XCTAssertTrue(shadowless.allSatisfy(\.isGap))
+        XCTAssertTrue(shadowless.compactMap(\.value).isEmpty)
+        let noEditionQuote = try pokemonCard()
+        XCTAssertTrue(CardPricing.publishedPrices(for: noEditionQuote, pokemonPrintRun: .firstEdition).allSatisfy(\.isGap))
+        XCTAssertEqual(CardPricing.price(for: card, variant: .normal, magicTreatments: [],
+                                        pokemonPrintRun: .firstEdition), .unavailable(.tcgplayer))
+    }
+
+    func testUnlimitedDetailedPriceIgnoresOtherEditionsBeforeIt() throws {
+        let json = #"{"id":"base1-004","localId":"004","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants":{"firstEdition":true,"holo":true,"normal":false,"reverse":false},"variants_detailed":[{"type":"holo","subtype":"shadowless","stamp":["1st-edition"],"pricing":{"tcgplayer":{"holofoil":{"marketPrice":500}}}},{"type":"holo","subtype":"shadowless","pricing":{"tcgplayer":{"holofoil":{"marketPrice":300}}}},{"type":"holo","subtype":"unlimited","pricing":{"tcgplayer":{"holofoil":{"marketPrice":100}}}}]}"#
+        let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "BAS")
+        XCTAssertEqual(CardPricing.publishedPrices(for: card, pokemonPrintRun: .unlimited).compactMap(\.value), [100])
+        XCTAssertEqual(CardPricing.publishedPrices(for: card, pokemonPrintRun: .firstEdition).compactMap(\.value), [500])
+        XCTAssertTrue(CardPricing.publishedPrices(for: card, pokemonPrintRun: .shadowless).allSatisfy(\.isGap))
+    }
+
+    func testEditionPricesIgnoreOtherSizesLanguagesAndStamps() throws {
+        for run in [PokemonPrintRun.firstEdition, .unlimited] {
+            let editionStamp = run == .firstEdition ? ["1st-edition"] : []
+            func detail(_ extra: [String: Any], amount: Double) -> [String: Any] {
+                var row: [String: Any] = [
+                    "type": "holo", "stamp": editionStamp,
+                    "pricing": ["tcgplayer": ["holofoil": ["marketPrice": amount]]]
+                ]
+                row.merge(extra) { _, replacement in replacement }
+                return row
+            }
+            let otherObjects = [
+                detail(["size": "jumbo"], amount: 900),
+                detail(["languages": ["ja"]], amount: 800),
+                detail(["stamp": editionStamp + ["staff"]], amount: 700)
+            ]
+            for includesExactQuote in [false, true] {
+                let object: [String: Any] = [
+                    "id": "base1-004", "localId": "004", "name": "Charizard",
+                    "set": ["id": "base1", "name": "Base Set", "cardCount": ["total": 102, "official": 102]],
+                    "pricing": ["tcgplayer": [String: Any]()],
+                    "variants_detailed": otherObjects + (includesExactQuote ? [detail([:], amount: 100)] : [])
+                ]
+                let card = IdentifiedCard.pokemon(try JSONDecoder().decode(
+                    TCGdexCard.self, from: JSONSerialization.data(withJSONObject: object)
+                ), setCode: "BAS")
+                let lookup = CardPricing.price(for: card, variant: .holo, magicTreatments: [], pokemonPrintRun: run)
+                if includesExactQuote {
+                    guard case let .price(price) = lookup else { return XCTFail("Expected the exact quote for \(run)") }
+                    XCTAssertEqual(price.unitMarketPriceUSD, 100)
+                } else {
+                    XCTAssertEqual(lookup, .unavailable(.tcgplayer))
+                }
+            }
+        }
+    }
+
+    func testEditionOnlyQuoteCannotPriceAnUnknownOrSpecificFinish() throws {
+        let json = #"{"id":"base1-004","localId":"004","name":"Charizard","set":{"id":"base1","name":"Base Set","cardCount":{"total":102,"official":102}},"variants_detailed":[{"type":"firstEdition","pricing":{"tcgplayer":{"holofoil":{"marketPrice":500}}}}]}"#
+        let card = IdentifiedCard.pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "BAS")
+        for variant: PhysicalVariant? in [nil, .normal, .holo] {
+            XCTAssertEqual(CardPricing.price(for: card, variant: variant, magicTreatments: [],
+                                            pokemonPrintRun: .firstEdition), .unavailable(.tcgplayer))
+        }
+        XCTAssertEqual(CardPricing.publishedPrices(for: card, pokemonPrintRun: .firstEdition).compactMap(\.value), [500])
+    }
+
     func testPublishedPricesOnlyCoverVariantsTheCatalogSaysExist() throws {
         // The catalog publishes a holofoil price but says this printing has no
         // holo version, so the holo price is not advertised.

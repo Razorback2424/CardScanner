@@ -390,31 +390,20 @@ actor ProductPriceService {
         }
         guard (200..<300).contains(http.statusCode) else {
             if http.statusCode == 429 {
-                let headerRetryAt = Self.retryDate(
+                let now = Date.now
+                let quotaRecheckAt = await budget.snapshot(now: now).resetAt
+                let retryAt = JustTCGTransport.rateLimitRetryDate(
                     from: http.value(forHTTPHeaderField: "Retry-After"),
-                    now: .now
+                    responseData: data,
+                    now: now,
+                    quotaRecheckAt: quotaRecheckAt
                 )
-                let retryAt: Date
-                if let headerRetryAt {
-                    retryAt = headerRetryAt
-                } else {
-                    retryAt = await budget.nextResetDate()
-                }
                 await budget.recordRateLimit(until: retryAt)
                 throw ProductPriceError.rateLimited(retryAt)
             }
             throw ProductPriceError.badResponse
         }
         return try JSONDecoder().decode(T.self, from: data)
-    }
-
-    nonisolated static func retryDate(from value: String?, now: Date) -> Date? {
-        guard let value else { return nil }
-        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let seconds = TimeInterval(trimmed), seconds >= 0 {
-            return now.addingTimeInterval(seconds)
-        }
-        return HTTPDateParser.rfc1123Date(from: trimmed)
     }
 
     /// Hold each request back far enough from the last that the tier's
@@ -507,10 +496,6 @@ actor ProductFallbackBudget {
             resetAt: snapshot.dailyResetAt,
             retryAt: snapshot.retryAt
         )
-    }
-
-    func nextResetDate() -> Date {
-        ledger.snapshot(now: .now).dailyResetAt
     }
 }
 

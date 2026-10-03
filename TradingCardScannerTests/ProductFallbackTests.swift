@@ -169,19 +169,137 @@ final class ProductFallbackTests: XCTestCase {
         }
     }
 
-    func testRetryAfterParsesSecondsAndHTTPDate() throws {
-        let now = Date(timeIntervalSince1970: 1_000_000)
-        XCTAssertEqual(
-            ProductPriceService.retryDate(from: "120", now: now),
-            now.addingTimeInterval(120)
-        )
-        XCTAssertNotNil(
-            ProductPriceService.retryDate(
-                from: "Wed, 21 Oct 2015 07:28:00 GMT",
-                now: now
-            )
+    func testHeaderlessMinuteRateLimitUsesBoundedCooldownAcrossRequestPaths() async throws {
+        try await assertRateLimitResponse(
+            body: #"{"code":"RATE_LIMIT_EXCEEDED"}"#,
+            expectedDelay: 15 * 60
         )
     }
+
+    func testUndecodableRateLimitUsesBoundedCooldownAcrossRequestPaths() async throws {
+        try await assertRateLimitResponse(body: "not JSON", expectedDelay: 15 * 60)
+    }
+
+    func testExplicitQuotaErrorsRetainNextDayRecheckAcrossRequestPaths() async throws {
+        for code in ["DAILY_LIMIT_EXCEEDED", "REQUEST_LIMIT_EXCEEDED"] {
+            try await assertRateLimitResponse(body: "{\"code\":\"\(code)\"}")
+        }
+    }
+
+    func testRetryAfterSecondsAreHonoredAcrossRequestPaths() async throws {
+        try await assertRateLimitResponse(
+            body: #"{"code":"DAILY_LIMIT_EXCEEDED"}"#,
+            retryAfter: "120",
+            expectedDelay: 120
+        )
+    }
+
+    func testRetryAfterHTTPDateIsHonoredAcrossRequestPaths() async throws {
+        let retryAt = Date(timeIntervalSince1970: floor(Date.now.timeIntervalSince1970 + 3600))
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss 'GMT'"
+        try await assertRateLimitResponse(
+            body: #"{"code":"RATE_LIMIT_EXCEEDED"}"#,
+            retryAfter: formatter.string(from: retryAt),
+            expectedRetryAt: retryAt
+        )
+    }
+
+    func testMalformedRetryAfterUsesBoundedCooldownAcrossRequestPaths() async throws {
+        try await assertRateLimitResponse(
+            body: #"{"code":"RATE_LIMIT_EXCEEDED"}"#,
+            retryAfter: "not a date",
+            expectedDelay: 15 * 60
+        )
+    }
+
+    private func assertRateLimitResponse(
+        body: String,
+        retryAfter: String? = nil,
+        expectedDelay: TimeInterval? = nil,
+        expectedRetryAt: Date? = nil
+    ) async throws {
+        try PriceVendorCredentials.store("product-fallback-test-key")
+        defer { PriceVendorCredentials.remove() }
+
+        for usesFallback in [true, false] {
+            let suite = "ProductFallbackTests.rateLimit.\(UUID().uuidString)"
+            let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+            defer { defaults.removePersistentDomain(forName: suite) }
+            let ledger = JustTCGRequestLedger(defaults: defaults)
+            var headers = ["Content-Type": "application/json"]
+            if let retryAfter { headers["Retry-After"] = retryAfter }
+            ProductPriceTestURLProtocol.reset(statusCode: 429, headers: headers, body: body)
+            let sessionConfiguration = URLSessionConfiguration.ephemeral
+            sessionConfiguration.protocolClasses = [ProductPriceTestURLProtocol.self]
+            let session = URLSession(configuration: sessionConfiguration)
+            defer { session.invalidateAndCancel() }
+            var transportConfiguration = JustTCGTransport.Configuration()
+            transportConfiguration.baseURL = URL(string: "https://justtcg.test/v1")!
+            transportConfiguration.minimumRequestInterval = 0
+            let transport = JustTCGTransport(
+                configuration: transportConfiguration,
+                session: session,
+                ledger: ledger,
+                pacer: JustTCGPacer(),
+                apiKeyOverride: "product-fallback-test-key"
+            )
+            let before = Date.now
+            let retryAt: Date
+            if usesFallback {
+                var configuration = ProductPriceService.Configuration()
+                configuration.baseURL = transportConfiguration.baseURL
+                configuration.minimumRequestInterval = 0
+                let service = ProductPriceService(
+                    configuration: configuration,
+                    session: session,
+                    pacer: JustTCGPacer(),
+                    budget: ProductFallbackBudget(defaults: defaults)
+                )
+                let subject = ProductPriceSubject(
+                    game: .magic, catalogID: "fixture-printing", name: "Fixture",
+                    setName: "Fixture Set", cardNumber: "10", japaneseSetID: nil,
+                    pokemonPrintRun: nil, vendorCardID: "direct-card", magicTreatmentIDsRaw: []
+                )
+                let outcome = await service.quote(for: subject, variant: .foil, lane: .interactive)
+                guard case let .rateLimited(date) = outcome else {
+                    return XCTFail("Expected a rate-limit outcome from the fallback, got \(outcome)")
+                }
+                retryAt = date
+            } else {
+                do {
+                    _ = try await transport.get("cards", lane: .interactive, as: EmptyRateLimitResponse.self)
+                    return XCTFail("Expected a rate-limit error from the transport")
+                } catch let JustTCGTransport.TransportError.rateLimited(date) {
+                    retryAt = date
+                }
+            }
+            let after = Date.now
+            if let expectedDelay {
+                XCTAssertGreaterThanOrEqual(retryAt, before.addingTimeInterval(expectedDelay))
+                XCTAssertLessThanOrEqual(retryAt, after.addingTimeInterval(expectedDelay))
+            } else {
+                XCTAssertEqual(retryAt, expectedRetryAt ?? ledger.snapshot(now: before).dailyResetAt)
+            }
+
+            // A fresh ledger sees the persisted block, and a different request
+            // lane/path is rejected without reserving another HTTP request.
+            let reloaded = JustTCGRequestLedger(defaults: defaults)
+            XCTAssertEqual(reloaded.snapshot().retryAt, retryAt)
+            do {
+                _ = try await transport.get("cards", lane: .background, as: EmptyRateLimitResponse.self)
+                XCTFail("The persisted block must apply to every lane")
+            } catch let JustTCGTransport.TransportError.rateLimited(date) {
+                XCTAssertEqual(date, retryAt)
+            }
+            XCTAssertEqual(reloaded.snapshot().usedToday, 1)
+            XCTAssertEqual(reloaded.reserve(lane: .interactive, now: retryAt.addingTimeInterval(1)), .allowed)
+        }
+    }
+
+    private struct EmptyRateLimitResponse: Decodable {}
 
     func testDailyBudgetStopsAtNinetyFiveAndResetsTheNextUTCDay() async throws {
         let suite = "ProductFallbackTests.\(UUID().uuidString)"
@@ -1071,10 +1189,21 @@ final class ProductFallbackTests: XCTestCase {
 private final class ProductPriceTestURLProtocol: URLProtocol, @unchecked Sendable {
     private static let lock = NSLock()
     nonisolated(unsafe) private static var lastRequest: URL?
+    nonisolated(unsafe) private static var statusCode = 200
+    nonisolated(unsafe) private static var responseHeaders = ["Content-Type": "application/json"]
+    private static let defaultBody = #"{"data":[{"id":"direct-card","uuid":"direct-uuid","name":"Fixture","set":"fixture-set","number":"10","variants":[{"condition":"Near Mint","printing":"Foil","price":12.34,"currency":"USD","uuid":"direct-variant"}]}]}"#
+    nonisolated(unsafe) private static var responseBody = Data(defaultBody.utf8)
 
-    static func reset() {
+    static func reset(
+        statusCode: Int = 200,
+        headers: [String: String] = ["Content-Type": "application/json"],
+        body: String = defaultBody
+    ) {
         lock.lock()
         lastRequest = nil
+        Self.statusCode = statusCode
+        responseHeaders = headers
+        responseBody = Data(body.utf8)
         lock.unlock()
     }
 
@@ -1088,18 +1217,18 @@ private final class ProductPriceTestURLProtocol: URLProtocol, @unchecked Sendabl
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
     override func startLoading() {
-        if let url = request.url {
-            Self.lock.lock()
-            Self.lastRequest = url
-            Self.lock.unlock()
-        }
+        Self.lock.lock()
+        Self.lastRequest = request.url
+        let statusCode = Self.statusCode
+        let headers = Self.responseHeaders
+        let body = Self.responseBody
+        Self.lock.unlock()
         let response = HTTPURLResponse(
             url: request.url ?? URL(string: "https://justtcg.test")!,
-            statusCode: 200,
+            statusCode: statusCode,
             httpVersion: nil,
-            headerFields: ["Content-Type": "application/json"]
+            headerFields: headers
         )!
-        let body = Data(#"{"data":[{"id":"direct-card","uuid":"direct-uuid","name":"Fixture","set":"fixture-set","number":"10","variants":[{"condition":"Near Mint","printing":"Foil","price":12.34,"currency":"USD","uuid":"direct-variant"}]}]}"#.utf8)
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: body)
         client?.urlProtocolDidFinishLoading(self)

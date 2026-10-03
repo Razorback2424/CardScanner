@@ -1,6 +1,6 @@
 import Foundation
 
-/// The persisted record of how much of the vendor's allowance has been spent.
+/// The persisted daily allowance and the app's UTC calendar-month spending budget.
 ///
 /// Not an actor: its small UserDefaults transactions are protected by a lock
 /// because both the shared transport and the direct product fallback use it.
@@ -27,7 +27,7 @@ struct JustTCGRequestLedger: @unchecked Sendable {
         }
 
         var monthlyDescription: String {
-            "\(remainingThisMonth)/\(JustTCGQuota.monthlyHardLimit) requests available this month"
+            "\(remainingThisMonth)/\(JustTCGQuota.monthlyHardLimit) requests left in this app's monthly budget"
         }
     }
 
@@ -88,28 +88,16 @@ struct JustTCGRequestLedger: @unchecked Sendable {
         }
     }
 
-    /// Correct the local count against the vendor's own, which every response
-    /// carries.
-    ///
-    /// A local counter can only ever be a guess. It starts at zero on a fresh
-    /// install while the account may already have spent most of the day's
-    /// allowance; it knows nothing about requests made from another device or
-    /// from a script; and it cannot see the vendor's own accounting. The server
-    /// reports the truth on every reply, so the local number exists only to
-    /// avoid making a request that is already known to fail — and it defers to
-    /// this the moment real numbers arrive.
-    ///
-    /// Takes the higher of the two counts, never the lower: if the app believes
-    /// it has spent more than the server has recorded yet, spending down to the
-    /// server's number would overshoot the limit.
+    /// Daily counts share the provider's UTC reset and can be reconciled upward.
+    /// Monthly metadata describes a billing period with no documented period ID
+    /// or reset timestamp. It cannot be merged into our calendar-month budget.
+    /// The provider enforces its own monthly allowance; explicit exhaustion is
+    /// handled by the persisted 429 cooldown, independently of this local cap.
     func syncFromServer(_ metadata: JustTCGQuotaMetadata, now: Date = .now) {
         Self.withLock {
             rolloverIfNeeded(now: now)
             if let used = metadata.apiDailyRequestsUsed {
                 defaults.set(max(used, defaults.integer(forKey: usedTodayKey)), forKey: usedTodayKey)
-            }
-            if let used = metadata.apiRequestsUsed {
-                defaults.set(max(used, defaults.integer(forKey: usedMonthKey)), forKey: usedMonthKey)
             }
         }
     }

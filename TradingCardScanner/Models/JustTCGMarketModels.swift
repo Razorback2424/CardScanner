@@ -498,8 +498,9 @@ struct JustTCGListMeta: Decodable, Sendable {
 /// The vendor reports the live state of the plan's allowance with each reply.
 /// That is authoritative in a way a local counter never is — it survives
 /// reinstalls, it accounts for requests made from anywhere else, and it cannot
-/// drift. The local ledger becomes a pre-flight guard that stops a request we
-/// already know would fail; this is the truth it corrects itself against.
+/// drift. Daily usage can correct the ledger's matching UTC daily allowance.
+/// Monthly usage belongs to the provider's billing period, not the app's local
+/// calendar-month spending budget; metadata supplies no reset-period identity.
 struct JustTCGQuotaMetadata: Decodable, Sendable, Equatable {
     let apiPlan: String?
     let apiDailyLimit: Int?

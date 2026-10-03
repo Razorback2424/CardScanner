@@ -682,6 +682,70 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(ledger.snapshot().usedToday, 50, "must not revise downward")
     }
 
+    func testProviderRenewalDoesNotInflateOrResetCalendarSpendingBudget() throws {
+        let suite = "JustTCGContractTests.monthly.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        let start = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-10-14T12:00:00Z"))
+        for _ in 0..<10 { XCTAssertEqual(ledger.reserve(lane: .interactive, now: start), .allowed) }
+        func metadata(_ used: Int) -> JustTCGQuotaMetadata {
+            JustTCGQuotaMetadata(
+                apiPlan: "Free", apiDailyLimit: 100,
+                apiDailyRequestsUsed: nil, apiDailyRequestsRemaining: nil,
+                apiRequestLimit: 1_000, apiRequestsUsed: used,
+                apiRequestsRemaining: 1_000 - used
+            )
+        }
+        ledger.syncFromServer(metadata(950), now: start)
+        XCTAssertEqual(ledger.snapshot(now: start).usedThisMonth, 10)
+        let renewal = start.addingTimeInterval(24 * 60 * 60)
+        ledger.syncFromServer(metadata(1), now: renewal)
+        XCTAssertEqual(ledger.reserve(lane: .interactive, now: renewal), .allowed)
+        // A late pre-renewal response cannot import the old billing period.
+        ledger.syncFromServer(metadata(950), now: renewal)
+        let restarted = JustTCGRequestLedger(defaults: defaults)
+        XCTAssertEqual(restarted.snapshot(now: renewal).usedThisMonth, 11)
+        let november = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-11-01T00:00:00Z"))
+        XCTAssertEqual(restarted.snapshot(now: november).usedThisMonth, 0)
+        restarted.syncFromServer(metadata(500), now: november)
+        XCTAssertEqual(restarted.reserve(lane: .interactive, now: november), .allowed)
+        XCTAssertEqual(restarted.snapshot(now: november).usedThisMonth, 1)
+    }
+
+    func testLegacyMonthlySpendingIsPreservedUntilCalendarRollover() throws {
+        let suite = "JustTCGContractTests.legacyMonthly.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let october = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-10-01T00:00:00Z"))
+        defaults.set(october, forKey: "justTCGBudgetMonth")
+        defaults.set(900, forKey: "justTCGRequestsUsedThisMonth")
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        guard case .monthlyReached = ledger.reserve(lane: .interactive, now: october) else {
+            return XCTFail("Legacy spending must not be silently cleared")
+        }
+        XCTAssertEqual(ledger.reserve(lane: .interactive, now: october.addingTimeInterval(31 * 86400)), .allowed)
+    }
+
+    func testConcurrentMonthlyReservationsRetainTheSpendingCeiling() throws {
+        let suite = "JustTCGContractTests.concurrentMonthly.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let now = try XCTUnwrap(ISO8601DateFormatter().date(from: "2026-10-01T00:00:00Z"))
+        defaults.set(now, forKey: "justTCGBudgetMonth")
+        defaults.set(850, forKey: "justTCGRequestsUsedThisMonth")
+        let ledger = JustTCGRequestLedger(defaults: defaults)
+        DispatchQueue.concurrentPerform(iterations: 100) { _ in
+            _ = ledger.reserve(lane: .interactive, now: now)
+        }
+        let snapshot = ledger.snapshot(now: now)
+        XCTAssertEqual(snapshot.usedThisMonth, 900)
+        XCTAssertEqual(snapshot.usedToday, 50)
+        guard case .monthlyReached = ledger.reserve(lane: .background, now: now) else {
+            return XCTFail("The monthly cap covers both lanes")
+        }
+    }
+
     /// When the allowance is gone the user is told when it comes back, and that
     /// moment must be in the future rather than a stale timestamp.
     func testBudgetExhaustionReportsAFutureResetTime() throws {

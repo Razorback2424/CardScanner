@@ -139,7 +139,11 @@ enum CardPricing {
         switch card {
         case let .pokemon(pokemon, _):
             if pokemonPrintRun == .firstEdition {
-                guard let detailed = pokemon.detailedVariant(for: .firstEdition),
+                guard let variant,
+                      let detailed = pokemon.variantsDetailed?.first(where: {
+                    $0.isStandardEnglish && $0.isFirstEdition && $0.genericStamps.isEmpty
+                        && (variant == .firstEdition || $0.physicalVariant == variant)
+                }),
                       let resolved = price(from: detailed, at: fetchedAt) else {
                     return .unavailable(hasProviderPricingEvidence(on: pokemon) ? .tcgplayer : nil)
                 }
@@ -154,8 +158,19 @@ enum CardPricing {
             // Per-object pricing first. It is the only representation that can
             // tell a Poké Ball copy from a Master Ball one, so when TCGdex
             // publishes it, it is strictly better evidence than the flat object.
-            if let variant,
-               let detailed = pokemon.detailedVariant(for: variant),
+            let detailed: TCGdexDetailedVariant?
+            if pokemonPrintRun == .unlimited {
+                // A stamped First Edition or Shadowless record must never
+                // answer an Unlimited lookup, regardless of provider order.
+                detailed = pokemon.variantsDetailed?.first {
+                    variant != nil && $0.isStandardEnglish && $0.physicalVariant == variant
+                        && !$0.isFirstEdition && $0.genericStamps.isEmpty
+                        && ($0.subtype == nil || $0.subtype?.lowercased() == "unlimited")
+                }
+            } else {
+                detailed = variant.flatMap { pokemon.detailedVariant(for: $0) }
+            }
+            if let detailed,
                let resolved = price(from: detailed, at: fetchedAt) {
                 return .price(resolved)
             }
@@ -214,13 +229,29 @@ enum CardPricing {
     /// than dropped: the whole point of this panel is telling the user what a
     /// printing costs, and "we do not know yet" is an answer they can act on
     /// while a missing row just looks like the finish does not exist.
-    static func publishedPrices(for card: IdentifiedCard) -> [CardMarketPrice] {
-        card.variantEvidence.catalogVariants.map { variant in
+    static func publishedPrices(
+        for card: IdentifiedCard,
+        pokemonPrintRun: PokemonPrintRun? = nil,
+        at fetchedAt: Date = .now
+    ) -> [CardMarketPrice] {
+        let variants: [PhysicalVariant]
+        if pokemonPrintRun == .firstEdition {
+            // The provider's explicit edition listing is one quote, not a
+            // verified price for every Normal/Holo finish in that edition.
+            variants = [.firstEdition]
+        } else if pokemonPrintRun != nil {
+            variants = card.variantEvidence.excludingFirstEditionPseudoFinish().catalogVariants
+        } else {
+            variants = card.variantEvidence.catalogVariants
+        }
+        return variants.map { variant in
             let availability: CardMarketPrice.Availability
             switch self.price(
                 for: card,
                 variant: variant,
-                magicTreatments: card.magicTreatments(for: variant)
+                magicTreatments: card.magicTreatments(for: variant),
+                pokemonPrintRun: pokemonPrintRun,
+                at: fetchedAt
             ) {
             case let .price(price):
                 availability = .published(price.unitMarketPriceUSD)

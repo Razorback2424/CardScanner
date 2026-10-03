@@ -349,10 +349,13 @@ actor JustTCGTransport {
         }
 
         if http.statusCode == 429 {
-            let retryAt = Self.retryDate(
+            let now = Date.now
+            let retryAt = Self.rateLimitRetryDate(
                 from: http.value(forHTTPHeaderField: "Retry-After"),
-                now: .now
-            ) ?? Date.now.addingTimeInterval(60 * 15)
+                responseData: data,
+                now: now,
+                quotaRecheckAt: ledger.snapshot(now: now).dailyResetAt
+            )
             // Persisted, so a 429 near the end of a session still holds after a
             // relaunch rather than being retried immediately.
             ledger.recordRateLimit(until: retryAt)
@@ -433,11 +436,32 @@ actor JustTCGTransport {
         }
     }
 
+    private struct RateLimitError: Decodable {
+        let code: String?
+    }
+
+    /// Missing retry headers do not prove the daily allowance is exhausted.
+    /// Explicit quota errors retain a next-day recheck; for monthly exhaustion
+    /// this is a bounded recheck, not a claim about the account's billing date.
+    nonisolated static func rateLimitRetryDate(
+        from retryAfter: String?,
+        responseData: Data,
+        now: Date,
+        quotaRecheckAt: Date
+    ) -> Date {
+        if let retryAt = retryDate(from: retryAfter, now: now) { return retryAt }
+        let code = (try? JSONDecoder().decode(RateLimitError.self, from: responseData))?.code
+        if code == "DAILY_LIMIT_EXCEEDED" || code == "REQUEST_LIMIT_EXCEEDED" {
+            return quotaRecheckAt
+        }
+        return now.addingTimeInterval(60 * 15)
+    }
+
     /// `Retry-After` is either delta-seconds or an HTTP date. Both are accepted
     /// because servers use both, and guessing wrong means either hammering a
     /// rate-limited endpoint or sleeping for hours.
     nonisolated static func retryDate(from value: String?, now: Date) -> Date? {
-        guard let value = value?.trimmingCharacters(in: .whitespaces), !value.isEmpty else {
+        guard let value = value?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else {
             return nil
         }
         if let seconds = TimeInterval(value), seconds >= 0 {

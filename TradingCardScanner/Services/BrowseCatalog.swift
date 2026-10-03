@@ -152,6 +152,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private let pokemonSecondarySetSource: (any PokemonSecondarySetSource)?
     private let checklistStore: PokemonChecklistStore
     private var setCache: [CardGame: [CatalogSet]] = [:]
+    private var liveMagicDirectoryStoredAt: Date?
     private var detailCache: [String: CatalogCardDetails] = [:]
     private var detailTasks: [String: DetailTaskState] = [:]
     private var magicPageRefreshTasks: [String: Task<Void, Never>] = [:]
@@ -263,7 +264,15 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 return sets
             }
         }
-        if let cached = setCache[game] { return cached }
+        if let cached = setCache[game] {
+            if game == .magic {
+                let age = now().timeIntervalSince(liveMagicDirectoryStoredAt ?? .distantPast)
+                if age < 0 || age >= CatalogCacheStore.setDirectoryMaxAge {
+                    scheduleSetDirectoryRefresh(for: game)
+                }
+            }
+            return cached
+        }
 
         if game == .pokemon {
             await loadPokemonSnapshotIfNeeded()
@@ -280,8 +289,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
             if catalogCoordinator != nil { return [] }
         }
 
-        if let saved = await cache.sets(for: game) {
+        if let saved = await cache.sets(for: game, now: now()) {
             setCache[game] = saved.value
+            if game == .magic { liveMagicDirectoryStoredAt = saved.storedAt }
             if !saved.isFresh { scheduleSetDirectoryRefresh(for: game) }
             return saved.value
         }
@@ -291,6 +301,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     func invalidateSetCache(for game: CardGame) {
         guard game == .pokemon else {
             setCache[game] = nil
+            if game == .magic { liveMagicDirectoryStoredAt = nil }
             if game == .magic, magicCatalogCoordinator != nil {
                 Task { [cache] in await cache.removeSets(for: .magic) }
             }
@@ -393,8 +404,18 @@ actor BrowseCatalog: BrowseCatalogProviding {
         case .pokemon: loaded = try await pokemonSets()
         case .magic: loaded = try await magicSets()
         }
+        if game == .magic, await usesRemoteMagicAuthority() {
+            return magicCatalogRegistry.browseSets
+        }
+        let previous = setCache[game]
+        let storedAt = now()
         setCache[game] = loaded
-        await cache.storeSets(loaded, for: game)
+        if game == .magic { liveMagicDirectoryStoredAt = storedAt }
+        await cache.storeSets(loaded, for: game, at: storedAt)
+        if game == .magic, await usesRemoteMagicAuthority() {
+            return magicCatalogRegistry.browseSets
+        }
+        if let previous, previous != loaded { yieldUpdate(providerSetID: nil) }
         return loaded
     }
 
@@ -658,6 +679,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         magicCatalogRegistry = registry
         magicCatalogRevision = revision
         setCache[.magic] = nil
+        liveMagicDirectoryStoredAt = nil
         if magicCatalogCoordinator != nil {
             Task { [weak self, cache] in
                 guard let self else { return }
@@ -2384,7 +2406,7 @@ actor CatalogCacheStore {
 
     static let shared = CatalogCacheStore()
 
-    private static let setDirectoryMaxAge: TimeInterval = 24 * 60 * 60
+    static let setDirectoryMaxAge: TimeInterval = 24 * 60 * 60
     private static let sealedSetDirectoryMaxAge: TimeInterval = 7 * 24 * 60 * 60
     private static let sealedProductMaxAge: TimeInterval = 6 * 60 * 60
     private static let magicCardPageMaxAge: TimeInterval = 24 * 60 * 60
@@ -2409,12 +2431,12 @@ actor CatalogCacheStore {
         }
     }
 
-    func sets(for game: CardGame) -> Cached<[CatalogSet]>? {
-        load([CatalogSet].self, from: setDirectoryURL(for: game), maxAge: Self.setDirectoryMaxAge)
+    func sets(for game: CardGame, now: Date = .now) -> Cached<[CatalogSet]>? {
+        load([CatalogSet].self, from: setDirectoryURL(for: game), maxAge: Self.setDirectoryMaxAge, now: now)
     }
 
-    func storeSets(_ sets: [CatalogSet], for game: CardGame) {
-        store(sets, at: setDirectoryURL(for: game))
+    func storeSets(_ sets: [CatalogSet], for game: CardGame, at date: Date = .now) {
+        store(sets, at: setDirectoryURL(for: game), storedAt: date)
     }
 
     func removeSets(for game: CardGame) {
@@ -2631,23 +2653,24 @@ actor CatalogCacheStore {
     private func load<Value: Codable & Sendable>(
         _ type: Value.Type,
         from url: URL,
-        maxAge: TimeInterval?
+        maxAge: TimeInterval?,
+        now: Date = .now
     ) -> Cached<Value>? {
         guard let data = try? Data(contentsOf: url),
               let envelope = try? JSONDecoder().decode(CacheEnvelope<Value>.self, from: data) else {
             return nil
         }
         let isFresh = maxAge.map {
-            let age = Date.now.timeIntervalSince(envelope.storedAt)
+            let age = now.timeIntervalSince(envelope.storedAt)
             return age >= 0 && age < $0
         } ?? true
         return Cached(value: envelope.value, storedAt: envelope.storedAt, isFresh: isFresh)
     }
 
-    private func store<Value: Codable & Sendable>(_ value: Value, at url: URL) {
+    private func store<Value: Codable & Sendable>(_ value: Value, at url: URL, storedAt: Date = .now) {
         let directory = url.deletingLastPathComponent()
         guard (try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)) != nil,
-              let data = try? JSONEncoder().encode(CacheEnvelope(storedAt: .now, value: value)) else {
+              let data = try? JSONEncoder().encode(CacheEnvelope(storedAt: storedAt, value: value)) else {
             return
         }
         try? data.write(to: url, options: .atomic)
