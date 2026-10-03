@@ -1,26 +1,69 @@
 import SwiftData
 import SwiftUI
 
-struct CollectionActivityLogView: View {
-    private static let activityPageSize = 300
-    @Environment(\.modelContext) private var modelContext
-    @EnvironmentObject private var revisionStore: StoreRevisionStore
-    @State private var activities: [CollectionActivity] = []
-    @State private var cards: [CollectedCard] = []
-    @State private var inventoryEvents: [InventoryEvent] = []
-    @State private var index: ActivityIndex?
-    @State private var activityLimit = Self.activityPageSize
-    @State private var hasMoreActivities = false
-    @State private var selectedKind: CollectionActivityKind?
-    @State private var pendingRemovalID: UUID?
-    @State private var errorMessage: String?
-
-    private struct ActivityIndex {
+@MainActor
+struct CollectionActivityLogReadState {
+    struct Index {
         let cardsByCollectionKey: [String: CollectedCard]
         let quantitiesByCollectionKey: [String: Int]
         let lineage: CollectionStore.LineageIndex
         let eventsByCollectionKey: [String: [InventoryEvent]]
     }
+
+    struct Snapshot {
+        let activities: [CollectionActivity]
+        let index: Index
+        let hasMoreActivities: Bool
+        let kind: CollectionActivityKind?
+    }
+
+    private(set) var snapshot: Snapshot?
+    private(set) var errorMessage: String?
+    var permitsActions: Bool { snapshot != nil && errorMessage == nil }
+
+    mutating func reload(
+        activities: () throws -> [CollectionActivity],
+        cards: () throws -> [CollectedCard],
+        inventoryEvents: () throws -> [InventoryEvent],
+        kind: CollectionActivityKind?,
+        limit: Int
+    ) {
+        do {
+            let fetchedActivities = try activities()
+            let fetchedCards = try cards()
+            let fetchedEvents = try inventoryEvents()
+            let projection = LogicalCollection.project(cards: fetchedCards) { $0.priceKey }
+            let replacement = Snapshot(
+                activities: Array(fetchedActivities.prefix(limit)),
+                index: Index(cardsByCollectionKey: projection.byKey.mapValues(\.representative),
+                             quantitiesByCollectionKey: projection.quantities,
+                             lineage: CollectionStore.LineageIndex(events: fetchedEvents),
+                             eventsByCollectionKey: Dictionary(grouping: fetchedEvents, by: \.collectionKey)),
+                hasMoreActivities: fetchedActivities.count > limit,
+                kind: kind
+            )
+            snapshot = replacement
+            errorMessage = nil
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+}
+
+struct CollectionActivityLogView: View {
+    private static let activityPageSize = 300
+    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var revisionStore: StoreRevisionStore
+    @State private var readState = CollectionActivityLogReadState()
+    @State private var activityLimit = Self.activityPageSize
+    @State private var selectedKind: CollectionActivityKind?
+    @State private var pendingRemovalID: UUID?
+    @State private var errorMessage: String?
+
+    private typealias ActivityIndex = CollectionActivityLogReadState.Index
+    private var index: ActivityIndex? { readState.snapshot?.index }
+    private var activities: [CollectionActivity] { readState.snapshot?.activities ?? [] }
+    private var hasMoreActivities: Bool { readState.snapshot?.hasMoreActivities ?? false }
 
     var body: some View {
         Group {
@@ -30,9 +73,9 @@ struct CollectionActivityLogView: View {
                         "No Activity Yet",
                         systemImage: "clock.arrow.circlepath",
                         description: Text(
-                            selectedKind == nil
+                            readState.snapshot?.kind == nil
                                 ? "New scans, imports, and collection changes will appear here."
-                                : "No \(selectedKind?.label.lowercased() ?? "matching") history yet."
+                                : "No \(readState.snapshot?.kind?.label.lowercased() ?? "matching") history yet."
                         )
                     )
                 } else {
@@ -44,7 +87,9 @@ struct CollectionActivityLogView: View {
                                 } label: {
                                     activityRow(activity)
                                 }
+                                .disabled(!readState.permitsActions)
                                 activityActions(for: activity, using: index)
+                                    .disabled(!readState.permitsActions)
                             }
                             .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                                 if canRemove(activity, using: index) {
@@ -70,12 +115,35 @@ struct CollectionActivityLogView: View {
                         }
                     }
                 }
+            } else if let error = readState.errorMessage {
+                VStack {
+                    ContentUnavailableView("Couldn't Load History", systemImage: "exclamationmark.triangle",
+                                           description: Text(error))
+                    Button("Retry") { reloadSnapshot() }
+                        .buttonStyle(.borderedProminent)
+                        .padding(.bottom)
+                }
             } else {
                 ProgressView("Loading history…")
             }
         }
         .navigationTitle("Collection Activity")
         .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .top) {
+            if let error = readState.errorMessage, let snapshot = readState.snapshot {
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("Couldn't Refresh History", systemImage: "exclamationmark.triangle")
+                        .font(.headline)
+                    Text("Showing previously loaded \(snapshot.kind?.label.lowercased() ?? "all") history. Actions are paused until a successful retry.")
+                        .font(.footnote)
+                    Text(error).font(.caption).foregroundStyle(.secondary)
+                    Button("Retry") { reloadSnapshot() }.buttonStyle(.bordered)
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(.regularMaterial)
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 kindFilter
@@ -126,19 +194,6 @@ struct CollectionActivityLogView: View {
         )
     }
 
-    private func makeIndex(
-        cards: [CollectedCard],
-        inventoryEvents: [InventoryEvent]
-    ) -> ActivityIndex {
-        let projection = LogicalCollection.project(cards: cards) { $0.priceKey }
-        return ActivityIndex(
-            cardsByCollectionKey: projection.byKey.mapValues(\.representative),
-            quantitiesByCollectionKey: projection.quantities,
-            lineage: CollectionStore.LineageIndex(events: inventoryEvents),
-            eventsByCollectionKey: Dictionary(grouping: inventoryEvents, by: \.collectionKey)
-        )
-    }
-
     private func reload() {
         try? CollectionWriteSerializer.perform(
             container: modelContext.container,
@@ -161,12 +216,13 @@ struct CollectionActivityLogView: View {
 
     private func reloadSnapshot() {
         let descriptor = Self.activityDescriptor(kind: selectedKind, limit: activityLimit + 1)
-        let fetchedActivities = (try? modelContext.fetch(descriptor)) ?? []
-        hasMoreActivities = fetchedActivities.count > activityLimit
-        activities = Array(fetchedActivities.prefix(activityLimit))
-        cards = (try? modelContext.fetch(FetchDescriptor<CollectedCard>())) ?? []
-        inventoryEvents = (try? modelContext.fetch(FetchDescriptor<InventoryEvent>())) ?? []
-        index = makeIndex(cards: cards, inventoryEvents: inventoryEvents)
+        readState.reload(
+            activities: { try modelContext.fetch(descriptor) },
+            cards: { try modelContext.fetch(FetchDescriptor<CollectedCard>()) },
+            inventoryEvents: { try modelContext.fetch(FetchDescriptor<InventoryEvent>()) },
+            kind: selectedKind, limit: activityLimit
+        )
+        if !readState.permitsActions { pendingRemovalID = nil }
     }
 
     static func activityDescriptor(
@@ -325,7 +381,7 @@ struct CollectionActivityLogView: View {
     }
 
     private func canCorrect(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
-        activity.kind.hasQuantityClaim
+        readState.permitsActions && activity.kind.hasQuantityClaim
             && activity.signedQuantity > 0
             && activity.itemKind == .rawCard
             && activity.remainingQuantity > 0
@@ -340,7 +396,7 @@ struct CollectionActivityLogView: View {
     }
 
     private func canRemove(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
-        activity.kind.hasQuantityClaim
+        readState.permitsActions && activity.kind.hasQuantityClaim
             && activity.signedQuantity > 0
             && activity.remainingQuantity > 0
             && CollectionStore.hasValidLineage(
@@ -353,7 +409,7 @@ struct CollectionActivityLogView: View {
     }
 
     private func canRestore(_ activity: CollectionActivity, using index: ActivityIndex) -> Bool {
-        guard activity.kind == .removed,
+        guard readState.permitsActions, activity.kind == .removed,
               activity.remainingQuantity > 0,
               activity.removalSnapshotData != nil,
               Date.now.timeIntervalSince(activity.occurredAt) <= CollectionActivity.restoreWindow,

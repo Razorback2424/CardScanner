@@ -6,6 +6,42 @@ import XCTest
 final class CollectionActivityHistoryTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testHistoryReadFailuresRetainOnlyCompleteSnapshotsAndDisableActionsUntilRetry() throws {
+        enum ReadError: Error { case failed }
+        let context = try makeContext()
+        let card = makeCollectedCard(quantity: 3)
+        let activity = CollectionActivity(card: card, source: .scan, quantity: 3)
+        let later = CollectionActivity(card: card, source: .scan, quantity: 1)
+        context.insert(activity)
+        context.insert(later)
+        try context.save()
+        for failingRead in 0..<3 {
+            for hasPrevious in [false, true] {
+                var state = CollectionActivityLogReadState()
+                if hasPrevious {
+                    state.reload(activities: { [activity] }, cards: { [card] }, inventoryEvents: { [] }, kind: .added, limit: 1)
+                    XCTAssertTrue(state.permitsActions)
+                }
+                state.reload(
+                    activities: { if failingRead == 0 { throw ReadError.failed }; return [later, activity] },
+                    cards: { if failingRead == 1 { throw ReadError.failed }; return [card] },
+                    inventoryEvents: { if failingRead == 2 { throw ReadError.failed }; return [] },
+                    kind: .removed, limit: 1
+                )
+                XCTAssertNotNil(state.errorMessage)
+                XCTAssertFalse(state.permitsActions)
+                XCTAssertEqual(state.snapshot?.activities.map(\.id), hasPrevious ? [activity.id] : nil)
+                XCTAssertEqual(state.snapshot?.kind, hasPrevious ? .added : nil)
+                state.reload(activities: { [later, activity] }, cards: { [card] }, inventoryEvents: { [] }, kind: nil, limit: 1)
+                XCTAssertNil(state.errorMessage)
+                XCTAssertTrue(state.permitsActions)
+                XCTAssertEqual(state.snapshot?.activities.map(\.id), [later.id])
+                XCTAssertEqual(state.snapshot?.hasMoreActivities, true)
+                XCTAssertEqual(state.snapshot?.index.quantitiesByCollectionKey[card.collectionKey], 3)
+            }
+        }
+    }
+
     func testGradedDetailSkipsResolvedNewestAcquisitionAndPreservesLegacyClaims() throws {
         let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
