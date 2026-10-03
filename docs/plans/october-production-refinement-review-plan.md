@@ -1,6 +1,8 @@
 # Production refinement review and remediation plan
 
-**Status:** proposed review backlog; implementation decisions and acceptance pending — 2026-10-02.
+**Status:** A–J implemented and regression-verified; K triaged with the existing
+latency gate open. L profiling and M screenshot/device/native acceptance deferred
+at the owner's request; legal/support pages remain placeholders — 2026-10-03.
 
 **Review baseline:** `fix/october-review-boundaries` at `73898e8`, clean during
 the source review. The user requested documentation of the review for evaluation
@@ -50,16 +52,16 @@ and pricing availability policies. No architecture replacement is justified.
 
 | ID | Opportunity | Priority / confidence | Disposition |
 | --- | --- | --- | --- |
-| F1 | Headerless 429 can block all vendor lanes until midnight | High / high source confidence | Proposed localized policy fix |
-| F2 | Provider billing-period usage merged into calendar-month counter | High / high for mismatch; prevalence unknown | Proposed accounting correction; reset authority must be established |
-| F3 | Search catalog does not complete saved-scan recovery | High / high | Proposed explicit selection handoff |
-| F4 | Old batch ZIP failure overwrites a newer batch's state | High / high | Proposed generation/ownership checks |
-| F5 | Late certificate refinement alters a newer scanner session | High / high | Proposed session publication checks |
-| F6 | Magic live directory freshness and update publication gaps | Medium / high | Proposed existing-cache/event correction |
-| F7 | Owned labels omit grader/grade | Medium / high | Proposed value-snapshot/display correction |
-| F8 | Vintage detail suppresses available exact prices | Medium / high | Proposed print-run-aware presentation |
-| F9 | Activity read failures masquerade as empty history | Medium / high for failure path; not reproduced | Proposed snapshot/error correction |
-| F10 | Duplicate publisher snapshot keys trap before rejection | Low; tooling only / high | Proposed validation-order correction |
+| F1 | Headerless 429 can block all vendor lanes until midnight | High / high source confidence | Slice A implemented; 121 focused simulator tests passed on 2026-10-03 |
+| F2 | Provider billing-period usage merged into calendar-month counter | High / high for mismatch; prevalence unknown | Local budget separated from provider billing counts; regression verified |
+| F3 | Search catalog does not complete saved-scan recovery | High / high | Selection handoff implemented; workflow regression verified; rendered acceptance deferred |
+| F4 | Old batch ZIP failure overwrites a newer batch's state | High / high | Ownership checks implemented; delayed success/failure regression verified |
+| F5 | Late certificate refinement alters a newer scanner session | High / high | Session publication checks implemented; delayed outcomes regression verified |
+| F6 | Magic live directory freshness and update publication gaps | Medium / high | Existing cache/event correction implemented; regression verified |
+| F7 | Owned labels omit grader/grade | Medium / high | Value/display correction implemented; quantity/completion regression verified |
+| F8 | Vintage detail suppresses available exact prices | Medium / high | Edition-aware presentation and quote selection implemented; regression verified |
+| F9 | Activity read failures masquerade as empty history | Medium / high; injected failure paths verified | Complete snapshot/error/retry behavior implemented; rendered acceptance deferred |
+| F10 | Duplicate publisher snapshot keys trap before rejection | Low; tooling only / high | Validation order corrected; 74 package tests passed |
 | M1 | Eager centering export repeats unused work | Measurement-gated; high for repeated work, unmeasured hitch | Revalidate against concurrent centering changes before profiling or changing |
 | G1 | Live privacy/support destinations absent | Existing submission dependency / high | Owned by prior plan slice J; no duplicate implementation queue |
 | G2 | Current centering acceptance baseline unresolved | Existing evidence dependency | Owned by centering contract and prior plan slice K |
@@ -455,7 +457,7 @@ Do not add implementation-mirroring or layout source-text tests.
 
 | Slice | Scope | Independent acceptance / dependencies |
 | --- | --- | --- |
-| A | F1 transient cooldown | Both request paths recover consistently; explicit quota exhaustion remains distinct |
+| A | F1 transient cooldown — implemented 2026-10-03 | Both request paths recover consistently; explicit quota exhaustion remains distinct; 121 focused tests passed |
 | B | F2 monthly-period accounting | Establish reset authority, then test renewal/rollover/restart/concurrency; keep separate from A |
 | C | F4 batch publication ownership | Delayed old success/failure cannot alter replacement batch; old cleanup still occurs |
 | D | F5 certificate result publication | Late nil/duplicate/error cannot affect fresh session; authorized write remains durable |
@@ -469,8 +471,11 @@ Do not add implementation-mirroring or layout source-text tests.
 | L | M1 and other measured work | Profile current implementation; modify only a demonstrated bottleneck; compare equivalent outputs |
 | M | G1 and native release acceptance | Continue existing URL/acceptance owners; live pages, Photos/share, accessibility evidence |
 
-Start A/C/D as small boundary fixes after revalidation. Review B's reset inputs
-before implementation; undertake E without weakening recovery safeguards. F–I
+The user authorized B–M in roadmap order and requested builds/tests at the end,
+unless a critical issue requires an earlier check. B–J are implemented with
+passing regression cases. K's current centering failure is triaged below. The
+owner then requested wrapping up without further screenshots or device-specific
+testing; L profiling and M native/device acceptance remain deferred. F–I
 are focused polish/reliability work; J can follow separately. K/M remain existing
 release dependencies rather than optional performance cleanup. Do not delay
 owner-controlled URL preparation behind unrelated code work.
@@ -501,9 +506,185 @@ native Photos/share consumption, live provider responses, numerical detector
 accuracy across the corpus, entitled CloudKit, and live publishing infrastructure.
 Those require targeted execution evidence; source inspection cannot retire them.
 
+## Implementation record — 2026-10-03
+
+The user authorized implementation after the review was documented. The checkout
+was clean on `fix/october-review-boundaries` at `dd2a1e3`; changes below are an
+uncommitted working-tree slice against that baseline. The review and its original
+documentation-only scope above remain dated history.
+
+### B–M implementation pass and final verification
+
+- **B coded:** the documented response metadata has no billing-period ID or reset
+  timestamp. Keep the explicit local UTC calendar-month spending budget;
+  reconcile only matching UTC daily provider counts. Monthly provider usage no
+  longer inflates local spending. Preserve existing persisted counts until the
+  next calendar rollover because their local/provider portions cannot be
+  reconstructed safely. Added renewal, restart, rollover, late-response, legacy,
+  and concurrent-reservation cases. The provider continues to enforce its own
+  billing quota; explicit quota 429 handling remains independent.
+- **C coded:** stale task entry leaves replacement loading state alone. Archive
+  completion cleans the captured run and publishes only to its current owner;
+  delayed failure/success cases cover cancellation and generation replacement.
+- **D coded:** session/storage fences precede nil/duplicate/error publication and
+  protect in-flight refinement bookkeeping. Delayed cases exercise actual bounded
+  finalization/reentry; the successful old write remains durable.
+- **E coded:** card-only, original-game Browse selection replaces standalone add
+  actions with a saved-scan handoff. Original subject/slab evidence, edition and
+  finish selection, duplicate authorization, and the existing writer remain in
+  control. Cases cover raw/slab Pokémon/Magic, failed save, finish cancellation,
+  additional-copy confirmation, and absence of sealed vendor search requests.
+- **M URL decision:** the owner confirmed on 2026-10-03 that privacy/support pages
+  are still not live and requested keeping placeholders. Leave Release URL
+  settings unconfigured and the existing unavailable-link UI intact. Live URL
+  and App Store metadata acceptance remains explicitly deferred; do not enable
+  the future domains or publish a website in this pass.
+
+- **F coded:** legacy live Magic set directories use the existing 24-hour cache
+  lifetime in memory and on disk. Stale data remains usable while one coalesced
+  refresh publishes a changed directory; signed registry authority still wins.
+- **G coded:** owned rows display grading company/grade for slabs; raw finish and
+  treatment labels remain unchanged. Quantities and completion are not altered.
+- **H coded:** published price rows use the selected vintage print run and retain
+  honest gaps. First-edition quotes are not borrowed for Unlimited/Shadowless.
+  The initial full run reproduced an additional underlying price boundary:
+  `1st-edition` stamps were accepted as generic holo details. A read of the public
+  [Base Set provider response](https://api.tcgdex.net/v2/en/cards/base1-4)
+  confirmed the stamp/subtype representation on 2026-10-03. Edition lookup now
+  recognizes that stamp, respects the selected finish, and restricts Unlimited
+  detail lookup to unstamped Unlimited records before using its flat quote.
+  Shadowless remains an honest gap under the existing price-authority contract.
+- **I coded:** activity refresh publishes only a complete three-read snapshot.
+  Failure retains prior data, shows retry, and pauses actions until a fresh read.
+- **J coded:** snapshot ID uniqueness is checked before dictionary construction;
+  malformed publisher input throws the existing validation error.
+
+The requested end-of-pass verification began after B–J coding and K–M source
+revalidation. The Pokémon publisher package passed 74 tests. The initial signed
+app run completed 1,791 cases: 1,781 passed, seven skipped, three failed cases
+(six assertions): one quote-cache mock counted directory requests as card
+requests; the new vintage case exposed the edition boundary above; and the
+unchanged centering latency gate failed at its upper-middle/median statistic
+1.6244 / maximum 1.9206 seconds. The first two were corrected. A post-fix rerun
+exposed a retry-save test issuing its answer before the identification task was
+idle; its predicate now waits for that actual terminal state, with the save and
+request-count assertions unchanged.
+
+**Final result:** `Final-regression-v2` rebuilt the final source and executed
+1,714 cases: **1,707 passed, seven existing skips, zero failures**. This includes
+the entire remaining target and centering UI/export/input coverage. It excludes
+the five expensive detector/corpus/diagnostic classes already completed in the
+initial full run; those source files were not modified by B–J. The original full
+run is not described as passing. REQ-022 retains both unchanged latency limits;
+automatic reference accuracy, held-out acceptance, and hardware responsiveness
+remain separate open gates. No detector, ground truth, or tolerance was changed.
+
+Evidence is on the external SSD under
+`CodexBuilds/TradingCardScannerRefinement-20261003/`: `Integrated-B-M.log` and
+`.xcresult`, `Final-regression.log` and `.xcresult` (the failed intermediate
+retry-save run), `Final-regression-v2.log` and `.xcresult`, and
+`PokemonPackage.log`. Candidate: uncommitted working tree on
+`fix/october-review-boundaries` against `dd2a1e3`.
+
+**K:** existing guided correctness and presentation/export assertions passed;
+REQ-022 is the single observed centering failing case. Its failure is the
+existing latency disposition in the [guided repair ledger](../audits/centering-guided-repair.md),
+not a B–J correctness regression. The original automatic comparisons remain
+research evidence; passing guided checks does not establish automatic accuracy.
+
+**L/M disposition:** the owner requested no more screenshots or device-specific
+testing on 2026-10-03. No further profiling, rendered-workflow acceptance,
+Photos/share completion, VoiceOver traversal, or device run was performed.
+The existing detached centering export implementation was retained; no
+unmeasured performance rewrite was introduced. Live privacy/support Release
+configuration remains unconfigured by the owner's explicit placeholder decision.
+These gates are deferred, not passed. No speed or release-readiness claim is implied.
+
+### Uncommitted review follow-up — 2026-10-03
+
+Review of the complete working-tree diff against `dd2a1e3` found additional
+boundaries in the new edition pricing and catalog recovery paths. Edition quote
+selection now excludes Jumbo/non-English objects and unrelated stamps. An
+edition-only quote cannot price an unknown or specific physical finish. Catalog
+recovery validates a selected finish against the existing resolver options,
+retains the required vintage edition question for raw copies, and carries a
+saved slab's validated printed edition unless the user selects another edition.
+These are local checks using existing models/resolvers, with five new regression
+cases; no new subsystem or future feature was added.
+
+The support draft now distinguishes network updates from available offline
+data. Slice A's earlier F2-open wording is explicitly historical rather than
+contradicting the subsequent B implementation.
+
+**Verification:** ten affected simulator suites covered 418 distinct test cases
+across the review runs. The first run executed 417 cases with two failures in
+the new pricing fixtures, which lacked a required set card count. After fixing
+the fixtures, all 54 PricingTests passed. The later slab-edition fix and its new
+case passed the complete 90-case ScannerViewModelTests suite. The other eight
+suites passed all 274 cases. The Pokémon package passed 74/74. Relative Markdown
+links and `git diff --check` passed. Artifacts use the same external SSD directory:
+`Uncommitted-review`, `Uncommitted-review-pricing-v2`, and
+`Uncommitted-review-recovery-v2` logs/result bundles, plus
+`Uncommitted-review-package.log`.
+
+The earlier broad regression above remains evidence for its dated source;
+this follow-up is focused verification, not a new full-suite or physical-device
+run. No centering gate or release acceptance changed.
+
+### Slice A — F1 shared rate-limit policy
+
+Both `ProductPriceService.get` and `JustTCGTransport.perform` now use the existing
+transport's fifteen-minute cooldown for headerless transient or unrecognized
+HTTP 429 responses. Valid numeric or HTTP-date `Retry-After` headers take
+precedence. Explicit `DAILY_LIMIT_EXCEEDED` and `REQUEST_LIMIT_EXCEEDED` responses
+retain a next-UTC-day recheck when no usable header exists. For monthly exhaustion
+that is a bounded recheck, **not** the provider's billing reset date. The official
+[error codes](https://justtcg.com/docs/errors) and
+[rate-limit policy](https://justtcg.com/docs/rate-limits) were rechecked 2026-10-03.
+
+The persisted shared block still covers every lane. No automatic retries were
+added. Daily/monthly spending ceilings, background ceilings, and interactive
+reserves are unchanged. The duplicate fallback retry parser and unused reset
+helper were removed. F2's monthly-period accounting was still open at this
+earlier checkpoint; its subsequent slice B implementation is recorded above.
+
+Six new response-level regression cases exercise both request paths using a
+mocked URL protocol: headerless minute limits, undecodable bodies, explicit quota
+codes, numeric/date headers, and malformed headers. Each checks persisted retry
+time, cross-lane blocking without another reservation, and expiry. Existing
+ledger tests cover request ceilings and interactive reserves.
+
+**Verification:** `TradingCardScanner-ProfileLocal`, `DebugRemoteLocal`, iPhone
+17 Pro / iOS 26.5, normal simulator signing, parallel testing disabled. The
+complete `JustTCGContractTests` (73) and `ProductFallbackTests` (48) classes passed:
+**121 tests, zero failures, zero skips**. Existing simulator app data was preserved
+by creating a disposable simulator for this selection. No live provider requests
+were used. This is focused deterministic evidence, not a full-suite run or
+device/provider/release acceptance.
+
+Command (substitute a fresh disposable simulator ID):
+
+```sh
+xcodebuild -project TradingCardScanner.xcodeproj \
+  -scheme TradingCardScanner-ProfileLocal -configuration DebugRemoteLocal \
+  -destination 'platform=iOS Simulator,id=<disposable-simulator-id>' \
+  -derivedDataPath '<external-ssd>/CodexBuilds/TradingCardScannerCenteringRepair' \
+  -clonedSourcePackagesDirPath '<external-ssd>/CodexBuilds/TradingCardScannerRefinement-20261003/Packages' \
+  -resultBundlePath '<external-ssd>/CodexBuilds/TradingCardScannerRefinement-20261003/Pricing-A.xcresult' \
+  -parallel-testing-enabled NO \
+  -only-testing:TradingCardScannerTests/ProductFallbackTests \
+  -only-testing:TradingCardScannerTests/JustTCGContractTests test
+```
+
+The build cache, command log (`Pricing-A.log`), and result bundle
+(`Pricing-A.xcresult`) are on the external SSD in the paths above. Use a new
+result-bundle path when rerunning; Xcode does not overwrite an existing bundle.
+No elapsed-performance improvement is claimed: the verified benefit is a
+shorter availability block under a reproduced response condition. This focused
+run does not establish acceptance for the later B–J changes.
+
 ## Documentation handoff
 
-This plan records the supplied review without application-code changes. Validate
-relative links and `git diff --check` before handoff. Record later disposition,
-implementation, and evidence against their actual candidate; do not silently
-turn a proposal or a concurrent unverified change into a completed finding.
+Validate relative links and `git diff --check` before handoff. Record later
+disposition, implementation, and evidence against their actual candidate; do not
+silently turn a proposal into a completed finding.

@@ -1,12 +1,12 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-03
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — 2026-10-02
+## Current authority boundary — updated 2026-10-03
 
 This is the repository-wide documentation index and reconciliation record.
 Source code, tests, build settings, and evidence recorded against the current
@@ -35,7 +35,11 @@ detector gates stay unchanged. Slice K fixes the reproduced preview rotation
 mismatch and retains individual diagnostic/accuracy triage. The older passing
 confirmation selectors are historical. The owner supplied intended future
 `scan-stash.com/privacy` and `/support` pages, but confirmed they are placeholders;
-Release URL configuration remains open until approved live pages exist.
+Release URL configuration remains open until approved live pages exist. On
+2026-10-03 the owner confirmed Scanstash as the app name and Info@scan-stash.com
+as the live contact. The existing legal drafts were revised against current
+source and Apple guidance; [publication checks](../legal/README.md) track the
+remaining contact/operator, retention, provider, hosting, and Release URL gates.
 
 The [guided centering repair ledger](../audits/centering-guided-repair.md) records
 the approved October-2 working-tree implementation at `73898e8`. It supersedes
@@ -65,12 +69,39 @@ The [additional production refinement review plan](october-production-refinement
 records the source review at `73898e8`: transient cooldown/monthly-period
 accounting, manual catalog recovery, batch/scanner stale-result publication,
 Magic live directories, ownership/price display, activity read errors, and
-publisher validation. These are proposed additional slices, not implementation
-evidence or a replacement for the earlier October plan. At documentation time,
-pre-existing uncommitted centering changes already move export preparation off
+publisher validation. On 2026-10-03 the user authorized implementation: slice A
+unifies rate-limit cooldowns in the uncommitted working tree against `dd2a1e3`,
+with 121 focused simulator tests passed. B–J are implemented: final regression
+executes 1,714 cases (1,707 passed, seven existing skips, zero failures), and the
+publisher package passes 74 tests. The initial full run was not clean; the plan
+records its corrected mock/pricing failures and unchanged centering latency
+failure. K preserves that latency disposition and the automatic accuracy gates.
+The owner requested wrapping up without further screenshots or device-specific
+testing; L/M measurement, rendered/native/device acceptance remain deferred.
+Live legal/support pages remain placeholders.
+The plan records this evidence separately
+from its source-review baseline and does not replace the earlier October plan.
+At the original review's documentation time, pre-existing uncommitted centering
+changes already move export preparation off
 the main actor; the review's centering-export hypothesis must be revalidated
 against that work. The existing centering contract/triage, URL dependency, and
 release-follow-up measurements remain their single respective authorities.
+
+## One Piece draft reconciliation — 2026-10-03
+
+The [One Piece integration plan](one_piece_catalog_integration_plan.md) records
+the owner's older multi-source audit against `dd2a1e3` plus the existing working
+tree. One Piece remains proposed: current game/parser/card adapters only support
+Pokémon and Magic. The plan retains Bandai discovery, Limitless reconciliation,
+Scrydex enrichment, and permanent local printing IDs, but replaces the draft's
+confidence-based automatic physical selection with the current deterministic
+resolution and user-choice contract. Signed delivery requires its own One Piece
+schema and key/rollout boundary; existing game releases are patterns, not a
+ready-made One Piece physical-printing catalog. Historical vendor counts,
+coverage percentages, image/licensing statements, and ship-readiness language are
+explicitly unverified. Pricing-provider selection and shared-cache publication
+remain governed by their current plans. A weekly thread monitor is scheduled;
+neither that schedule nor this documentation is ingestion or release evidence.
 
 ## Latest two-set pricing evidence — 2026-09-30
 

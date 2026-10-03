@@ -1,14 +1,31 @@
 # CardScanner 1.0 Phase 0/1 release evidence
 
 **Status:** current candidate ledger, not release certification — reconciled
-2026-09-20; F06 follow-up recorded 2026-09-16
+2026-10-03; earlier candidate snapshots retained below
 
 This path is the current evidence authority for the active Phase 0/1 launch
 plan. The previous candidate ledger is retained as the
 [legacy evidence record](../legacy/phase-1-integrity-evidence.md); its `main`
 branch and `a115e4e`/`ec7dc6b` identities do not describe this checkout.
 
-## Candidate identity
+## Current refinement checkpoint — 2026-10-03
+
+Candidate: `fix/october-review-boundaries` at `dd2a1e3` plus the uncommitted
+A–J refinement implementation. The initial signed simulator full run executed
+1,791 cases: 1,781 passed, seven skipped, three failed cases/six assertions.
+The quote-cache mock and vintage edition boundary were corrected. A subsequent
+retry-save test race was corrected by waiting for the existing task to be idle.
+Final regression rebuilt the final source and executed 1,714 cases: **1,707
+passed, seven existing skips, zero failures**; it excludes the five expensive
+centering detector/corpus/diagnostic classes completed in the initial full run.
+The unchanged REQ-022 latency failure and automatic accuracy gates remain open.
+The Pokémon publisher package also passed 74/74 tests. Exact artifacts and
+dispositions are in the [refinement plan](../plans/october-production-refinement-review-plan.md).
+Further screenshots, profiling/device/native acceptance, and live legal/support
+configuration are owner-deferred. No archive, CloudKit/provider, physical-device,
+App Store, or release certification is inferred from these results.
+
+## Historical 2026-09-20 candidate identity
 
 - Repository: `TradingCardScannerMVP_fixed_v4`
 - Branch: `feature/catalog-and-scanner-hardening`
@@ -23,7 +40,7 @@ The source candidate is at the short SHA above. The working tree now contains
 documentation-only reconciliation changes; the test runs below were executed
 against the source at `7dbaf40`.
 
-## Current recorded evidence
+## Dated prior evidence
 
 - `git diff --check`: PASS at this reconciliation.
 - Exact-candidate focused simulator run at `7dbaf40` on iPhone 17 Pro / iOS

@@ -9,6 +9,17 @@ on `73898e8`. This records the approved centering repair, not release certificat
 The [centering contract](../../review/opus-card-centering-implementation-plan.md)
 continues to govern automatic accuracy and held-out acceptance.
 
+**2026-10-03 refinement checkpoint:** the full signed simulator run against
+`dd2a1e3` plus B–J working-tree changes retains REQ-022 as the single observed
+centering failing case (upper-middle/median statistic 1.6244 s; maximum 1.9206 s).
+Other centering correctness/diagnostic assertions passed. Final post-fix
+regression includes the UI/export/input cases and passes 1,707 cases with seven
+existing skips across the remaining target. No centering source or tolerance
+was changed by this pass. The owner requested wrapping up without further
+screenshots or device-specific testing; latest rendered/accessibility/native
+acceptance is deferred, not blocked on an inferred locked-Mac state. See the
+[refinement evidence](../plans/october-production-refinement-review-plan.md).
+
 ## Implemented behavior
 
 - Moving a perspective guide changes its supporting line and adjacent corners,

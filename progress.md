@@ -1,3 +1,39 @@
+- Uncommitted-change review follow-up (2026-10-03; working tree against
+  `dd2a1e3`): tightened edition quote matching by size/language/stamp and physical
+  finish; validated catalog recovery finishes, retained raw vintage edition
+  choice, and preserved validated slab edition evidence. Added five regression
+  cases using existing pricing/resolution paths. Corrected offline support copy
+  and historical F2 status wording. All 418 affected simulator cases passed
+  across the final per-suite runs, and the Pokémon package passed 74/74. Two
+  initial new-fixture decoding failures were corrected before the pricing rerun.
+  Relative links and `git diff --check` passed. Artifacts are on the external
+  SSD; no new full-suite, device, provider, or release acceptance is claimed.
+  See the [review evidence](docs/plans/october-production-refinement-review-plan.md).
+
+- Privacy/support page review (2026-10-03; working tree at `dd2a1e3`): found
+  existing Markdown drafts and in-app link surfaces. Updated the drafts to
+  Scanstash and the owner-confirmed Info@scan-stash.com contact, corrected partial
+  collection deletion, and added photo/permission, provider/authentication,
+  support-data, export, and privacy-request disclosures. Added
+  [publication checks](docs/legal/README.md) against Apple's current 5.1.1 and
+  Support URL requirements. Documentation only; operator details, routine support
+  retention, provider safeguards, live hosting, and empty Release URL settings
+  remain open. No deployment or App Review approval is claimed.
+
+- Production refinement slice A / F1 (2026-10-03; uncommitted working tree on
+  `fix/october-review-boundaries` at `dd2a1e3`): both pricing paths now apply the
+  same persisted fifteen-minute cooldown to headerless transient/unrecognized
+  429s, honor numeric/date retry headers, and preserve next-day rechecks for
+  explicit quota errors. Request ceilings and interactive reserves remain;
+  duplicate parser/reset helpers were removed. Six new mocked-response cases
+  cover both paths, persistence, cross-lane blocking, and expiry. The complete
+  JustTCG contract and product fallback classes passed 121/121 on a disposable
+  iPhone 17 Pro / iOS 26.5 simulator with normal signing; existing simulator data
+  was preserved. Build artifacts, log, and result bundle use the external SSD.
+  Monthly-period accounting and other slices remain open; no full-suite,
+  physical-device, live-provider, or release acceptance is claimed. See the
+  [production refinement review plan](docs/plans/october-production-refinement-review-plan.md).
+
 - Production refinement review documented (2026-10-02;
   `fix/october-review-boundaries` at `73898e8`): recorded the repository-wide
   source review's ten additional findings, minimum remedies, confidence/risk/
@@ -847,3 +883,17 @@ historical.
   the locked Mac blocks the final accessibility-tree and incomplete inner-capture
   rechecks. Current evidence and limits are in the
   [repair ledger](docs/audits/centering-guided-repair.md).
+- Production refinement B–J implementation (2026-10-03; uncommitted tree on
+  `fix/october-review-boundaries` against `dd2a1e3`): separate local monthly
+  spending from provider billing counts; fence batch/certificate publication;
+  route catalog recovery through the original scan; refresh live Magic
+  directories; display slab grades and exact vintage quotes; preserve complete
+  activity snapshots on read failure; reject duplicate publisher IDs safely.
+  Final signed simulator regression: 1,714 cases, 1,707 passed, seven existing
+  skips, zero failures; Pokémon package: 74/74 passed. The initial full run's
+  mock and edition-price defects were corrected; its centering latency case
+  remains open with unchanged limits. The retry-save harness now waits for the
+  task to become idle before answering. The owner deferred further screenshots,
+  profiling/device/native acceptance and confirmed legal/support placeholders.
+  No commit, deployment, speed improvement, or release certification is claimed.
+  See the [implementation and evidence record](docs/plans/october-production-refinement-review-plan.md).

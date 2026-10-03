@@ -1,6 +1,6 @@
 # Documentation map
 
-**Status:** current navigation map — 2026-10-02
+**Status:** current navigation map — 2026-10-03
 
 This map defines which repository documents are current authorities. Source code,
 tests, build settings, and the latest recorded evidence outrank older plans and
@@ -15,7 +15,7 @@ chronological notes.
 | Known production defects and their evidence | [`audits/defect_review_pass_2.md`](audits/defect_review_pass_2.md) |
 | October boundary-failure remediation | [`audits/october-review-remediation.md`](audits/october-review-remediation.md) — per-slice implementation and simulator evidence; physical-device performance measurements remain pending. |
 | October refinement follow-up | [`plans/october-refinement-implementation-plan.md`](plans/october-refinement-implementation-plan.md) — source-validated findings with implementation slices A–I and C1 committed on `fix/october-review-boundaries`; final verification and device/release acceptance remain open. |
-| Additional production refinement review | [`plans/october-production-refinement-review-plan.md`](plans/october-production-refinement-review-plan.md) — source-validated findings and small remediation slices from the repository-wide review at `73898e8`; revalidate overlapping centering changes before further implementation. Prior release/measurement authorities remain binding. |
+| Additional production refinement review | [`plans/october-production-refinement-review-plan.md`](plans/october-production-refinement-review-plan.md) — A–J implemented against `dd2a1e3`; final regression has 1,707 passed, seven existing skips, zero failures; publisher package 74/74. Centering latency remains open. Further profiling/screenshots/device/native acceptance and live legal/support pages are owner-deferred. |
 | Scanner module defects and measurement review | [`audits/scanner_module_review.md`](audits/scanner_module_review.md) |
 | Raw / graded slab scanning mode | [`plans/explicit-raw-slab-scanning-mode.md`](plans/explicit-raw-slab-scanning-mode.md) — implemented in the 2026-09-23 working tree; initial focused simulator tests pass 166/166 and the review follow-up passes 11/11 targeted non-centering tests. The earlier full simulator run excluded centering-specific classes at the user's request; device/provider acceptance remains open. |
 | Scanner recognition and Needs attention recovery | [`plans/scanner-recognition-remediation.md`](plans/scanner-recognition-remediation.md) — denominator-owned Pokémon inference, conservative fuzzy title agreement, and local-only persistent failure recovery; see the dated evidence in [`progress.md`](../progress.md). Physical-device and Instruments acceptance remain open. |
@@ -23,6 +23,7 @@ chronological notes.
 | Browse/Catalog contract | [`plans/browse_screen_spec.md`](plans/browse_screen_spec.md), [`references/browse_success_checklist.md`](../references/browse_success_checklist.md), and the current Browse source/tests |
 | Automatic Pokémon set updates | [`plans/automatic_pokemon_catalog_updates_plan.md`](plans/automatic_pokemon_catalog_updates_plan.md) — Slices A–E implemented; F04 automatic discovery and the revision-1 authority rehearsal completed 2026-09-19; schema-1 additive fingerprints, canonical publisher/device parity, fail-closed classification, durable targeted reconciliation, parent-artwork metadata, and set-specific Browse updates were implemented 2026-09-20; protected baseline publication, auto-environment setup, four-hour schedule, live-provider, physical-device/offline, first real update, and release acceptance remain open |
 | Magic catalog signing and publication | [`plans/magic_catalog_key_handling_runbook.md`](plans/magic_catalog_key_handling_runbook.md) — current authority for Magic-specific key custody, signed catalog releases, protected/automatic publication routing, Scryfall boundaries, and rollout safeguards; owner key-pin input remains open and rollout remains `legacy-live` |
+| Proposed One Piece expansion | [`plans/one_piece_catalog_integration_plan.md`](plans/one_piece_catalog_integration_plan.md) — older owner audit reconciled with the 2026-10-03 source; app-owned printing IDs, signed delivery, deterministic recognition, exact pricing, and separate DON!! scope. Documentation only; weekly source monitoring is scheduled. |
 | Browse set directory defects (artwork kind, set counts, price sort) | [`plans/browse_set_directory_remediation_plan.md`](plans/browse_set_directory_remediation_plan.md) |
 | Artwork fallback contract | [`plans/artwork-fallback-plan.md`](plans/artwork-fallback-plan.md) and `TradingCardScanner/Services/ArtworkFallbacks.swift` |
 | Per-card price history chart | [`plans/price_history_chart_plan.md`](plans/price_history_chart_plan.md) and `PriceHistoryChartModel` in `TradingCardScanner/Views/CollectionCardDetailView.swift` |
@@ -35,7 +36,7 @@ chronological notes.
 | Pro tab and eBay listing photos | [`plans/pro_tab_ebay_listing_photos_plan.md`](plans/pro_tab_ebay_listing_photos_plan.md) |
 | Active card-centering work | [`audits/centering-guided-repair.md`](audits/centering-guided-repair.md) — current guided repair and verification; [`../review/opus-card-centering-implementation-plan.md`](../review/opus-card-centering-implementation-plan.md) retains automatic/held-out acceptance, with dated [`../review/centering-evidence/`](../review/centering-evidence/). |
 | Chronological implementation record | [`../progress.md`](../progress.md) |
-| Legal/support copy | [`legal/privacy-policy.md`](legal/privacy-policy.md) and [`legal/support.md`](legal/support.md) |
+| Legal/support copy | [`legal/privacy-policy.md`](legal/privacy-policy.md), [`legal/support.md`](legal/support.md), and [publication checks](legal/README.md) — Scanstash drafts with owner-confirmed contact; live publication and provider/retention verification remain open. |
 
 ## Legacy boundary
 
