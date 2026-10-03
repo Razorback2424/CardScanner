@@ -1797,6 +1797,7 @@ final class CardScanner: NSObject, ObservableObject {
         spatialExitAccumulator.reset()
         cadence.markRan(.tracking, at: now)
         recordDiagnostic("trackerSeeded")
+        PerformanceSignpost.emitEvent("trackerSeeded", "encounter=\(encounterID.uuidString)")
 
         // Establish the sequence on the same pixel buffer that confirmed the
         // encounter. If Vision does not return a result for this seed, retain
@@ -1884,6 +1885,7 @@ final class CardScanner: NSObject, ObservableObject {
                 // lets the next raw card start with a clean subject.
                 clearActiveSlab(cause: .spatialExit)
                 recordDiagnostic("spatialProof")
+                PerformanceSignpost.emitEvent("spatialProof", "encounter=\(encounterID.uuidString)")
                 DispatchQueue.main.async { [weak self] in
                     self?.onSpatialResetProof?(proof)
                 }
@@ -1931,6 +1933,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// latch, or lifecycle presence rules.
     private func markTrackerContinuityLost() {
         let hadTracker = trackerRequest != nil || trackerSeedSubject != nil
+        let lostEncounterID = trackerEncounterID
         // Preserve an earlier lost marker when a later lifecycle invalidation
         // arrives after the request has already been released. Passing nil to
         // the gate would accidentally reopen same-identity reseeding.
@@ -1946,6 +1949,10 @@ final class CardScanner: NSObject, ObservableObject {
         trackerLifecycle = .continuityLost
         if hadTracker {
             recordDiagnostic("trackerLost")
+            PerformanceSignpost.emitEvent(
+                "trackerLost",
+                "encounter=\(lostEncounterID?.uuidString ?? "none")"
+            )
         }
     }
 
