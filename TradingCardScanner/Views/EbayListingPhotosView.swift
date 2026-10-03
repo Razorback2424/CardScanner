@@ -639,7 +639,8 @@ struct EbayListingPhotosView: View {
     }
 
     private func processBatch(generation: Int) async {
-        guard generation == batchSelectionGeneration, !batchPairs.isEmpty else {
+        guard generation == batchSelectionGeneration, !Task.isCancelled else { return }
+        guard !batchPairs.isEmpty else {
             // startBatch raised this flag; it must not survive an early return.
             isPreparingBatch = false
             return
@@ -669,6 +670,7 @@ struct EbayListingPhotosView: View {
                 if generation == batchSelectionGeneration {
                     isPreparingBatch = false
                     batchProgress = nil
+                    if batchDirectory == directory { batchDirectory = nil }
                 }
                 return
             }
@@ -720,23 +722,19 @@ struct EbayListingPhotosView: View {
             return
         }
 
-        do {
-            let archive = try await EbayListingPhotoExport.makeArchive(at: directory)
-            // The archive worker is not cancellation-aware, so it finishes even
-            // when the batch was cancelled mid-zip. Re-check before publishing.
-            guard generation == batchSelectionGeneration, !Task.isCancelled else {
-                EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
-                return
+        await EbayListingPhotoExport.finishBatchArchive(
+            at: directory,
+            isCurrent: { generation == batchSelectionGeneration }
+        ) { result in
+            isPreparingBatch = false
+            batchProgress = nil
+            switch result {
+            case let .success(archive):
+                batchArchiveURL = archive
+            case let .failure(error):
+                batchErrorMessage = error.localizedDescription
+                if batchDirectory == directory { batchDirectory = nil }
             }
-            batchArchiveURL = archive
-            isPreparingBatch = false
-            batchProgress = nil
-        } catch {
-            isPreparingBatch = false
-            batchProgress = nil
-            batchErrorMessage = error.localizedDescription
-            EbayListingPhotoExport.removeRunContainer(forContentDirectory: directory)
-            batchDirectory = nil
         }
     }
 

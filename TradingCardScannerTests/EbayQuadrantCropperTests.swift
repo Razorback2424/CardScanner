@@ -232,7 +232,88 @@ final class EbayQuadrantCropperTests: XCTestCase {
     }
 }
 
+private actor ListingArchiveGate {
+    private var started = false
+    private var startWaiter: CheckedContinuation<Void, Never>?
+    private var releaseWaiter: CheckedContinuation<Void, Never>?
+
+    func waitForRelease() async {
+        started = true
+        startWaiter?.resume()
+        startWaiter = nil
+        await withCheckedContinuation { releaseWaiter = $0 }
+    }
+
+    func waitUntilStarted() async {
+        if started { return }
+        await withCheckedContinuation { startWaiter = $0 }
+    }
+
+    func release() {
+        releaseWaiter?.resume()
+        releaseWaiter = nil
+    }
+}
+
 final class EbayListingPhotoExportTests: XCTestCase {
+    @MainActor
+    func testSupersededArchiveSuccessAndFailureCleanOnlyTheirOwnRun() async throws {
+        for (fails, cancels) in [(false, false), (true, false), (false, true), (true, true)] {
+            let oldDirectory = try EbayListingPhotoExport.makeBatchDirectory()
+            let newDirectory = try EbayListingPhotoExport.makeBatchDirectory()
+            defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: newDirectory) }
+            let gate = ListingArchiveGate()
+            var generation = 1
+            var loading = true
+            var publishedDirectory = newDirectory
+            var publishedError: String?
+            let task = Task { @MainActor in
+                await EbayListingPhotoExport.finishBatchArchive(
+                    at: oldDirectory,
+                    archive: { directory in
+                        await gate.waitForRelease()
+                        if fails { throw EbayListingPhotoExport.Error.emptyBatch }
+                        let archive = EbayListingPhotoExport.container(of: directory).appendingPathComponent("old.zip")
+                        try Data("old archive".utf8).write(to: archive)
+                        return archive
+                    },
+                    isCurrent: { generation == 1 }
+                ) { result in
+                    loading = false
+                    publishedDirectory = oldDirectory
+                    if case let .failure(error) = result { publishedError = error.localizedDescription }
+                }
+            }
+            await gate.waitUntilStarted()
+            generation = 2
+            // The native worker is allowed to finish even after cancellation.
+            if cancels { task.cancel() }
+            await gate.release()
+            await task.value
+            XCTAssertTrue(loading)
+            XCTAssertEqual(publishedDirectory, newDirectory)
+            XCTAssertNil(publishedError)
+            XCTAssertFalse(FileManager.default.fileExists(atPath: oldDirectory.path))
+            XCTAssertTrue(FileManager.default.fileExists(atPath: newDirectory.path))
+        }
+    }
+
+    @MainActor
+    func testCurrentArchiveFailureIsPublishedAfterCleaningItsRun() async throws {
+        let directory = try EbayListingPhotoExport.makeBatchDirectory()
+        var didPublish = false
+        await EbayListingPhotoExport.finishBatchArchive(
+            at: directory,
+            archive: { _ in throw EbayListingPhotoExport.Error.emptyBatch },
+            isCurrent: { true }
+        ) { result in
+            guard case .failure = result else { return XCTFail("Expected an archive failure") }
+            XCTAssertFalse(FileManager.default.fileExists(atPath: directory.path))
+            didPublish = true
+        }
+        XCTAssertTrue(didPublish)
+    }
+
     func testRepeatedPreparationPreservesFilesOwnedByAnEarlierBatchRun() async throws {
         let batch = try EbayListingPhotoExport.makeBatchDirectory()
         defer { EbayListingPhotoExport.removeRunContainer(forContentDirectory: batch) }

@@ -217,6 +217,29 @@ enum EbayListingPhotoExport {
         return archiveURL
     }
 
+    /// The archive worker may outlive cancellation. Clean its captured run, but
+    /// publish only while the caller still owns that run. The injected worker
+    /// lets delayed success/failure exercise this boundary without native ZIP timing.
+    @MainActor
+    static func finishBatchArchive(
+        at directory: URL,
+        archive: @Sendable (URL) async throws -> URL = { try await EbayListingPhotoExport.makeArchive(at: $0) },
+        isCurrent: () -> Bool,
+        publish: (Result<URL, Swift.Error>) -> Void
+    ) async {
+        let result: Result<URL, Swift.Error>
+        do { result = .success(try await archive(directory)) }
+        catch { result = .failure(error) }
+        guard !Task.isCancelled, isCurrent() else {
+            removeRunContainer(forContentDirectory: directory)
+            return
+        }
+        if case .failure = result {
+            removeRunContainer(forContentDirectory: directory)
+        }
+        publish(result)
+    }
+
     /// Moves one completed pair into its batch folder off the main actor.
     /// A rename is usually cheap, but a cross-volume fallback copy is not, and
     /// this runs once per card while the progress view must stay responsive.
