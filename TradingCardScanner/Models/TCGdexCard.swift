@@ -17,7 +17,7 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// apart. Optional because older responses and many sets omit it.
     let variantsDetailed: [TCGdexDetailedVariant]?
     /// Device-local supplemental pricing; never decoded as TCGdex evidence.
-    var supplementalTCGCSV:     PokemonTCGCSVSnapshot? = nil
+    var supplementalTCGCSV: PokemonTCGCSVSnapshot? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, localId, name, image, rarity, set, variants, pricing
