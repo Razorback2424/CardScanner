@@ -21,7 +21,7 @@ struct OnePieceGameRuntime: Sendable {
               catalog: OnePieceCatalogAdapter(registry: registry), browse: OnePieceBrowseAdapter(registry: registry),
               importer: OnePieceImportAdapter(registry: registry),
               priceAuthority: OnePiecePriceAdapter.priceAuthority(registry),
-              activationSource: coordinator)
+              activationSource: coordinator, requiresLaunchActivation: false)
     }
 }
 
@@ -30,7 +30,7 @@ extension OnePieceCatalogCoordinator: GameCatalogActivationSource {
 
     func currentSnapshot() async -> GameCatalogSnapshot? {
         await loadPersistedOrBundled()
-        return registry.map(Self.snapshot)
+        return registry.map(snapshot)
     }
 
     func activationSnapshots() -> AsyncStream<GameCatalogSnapshot> {
@@ -39,20 +39,11 @@ extension OnePieceCatalogCoordinator: GameCatalogActivationSource {
             let task = Task {
                 for await event in events {
                     guard !Task.isCancelled else { break }
-                    continuation.yield(Self.snapshot(event.registry))
+                    continuation.yield(self.snapshot(event.registry))
                 }
                 continuation.finish()
             }
             continuation.onTermination = { _ in task.cancel() }
         }
-    }
-
-    private nonisolated static func snapshot(_ registry: OnePieceCatalogRegistry) -> GameCatalogSnapshot {
-        .init(revision: registry.verifiedRelease.release.revision,
-              catalog: OnePieceCatalogAdapter(registry: registry),
-              recognizer: OnePieceRecognitionAdapter(profile: .init(registry: registry)),
-              variantPolicy: OnePieceVariantPolicy(registry: registry), browse: OnePieceBrowseAdapter(registry: registry),
-              importer: OnePieceImportAdapter(registry: registry),
-              priceAuthority: OnePiecePriceAdapter.priceAuthority(registry))
     }
 }

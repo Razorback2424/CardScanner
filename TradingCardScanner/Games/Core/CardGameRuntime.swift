@@ -36,6 +36,8 @@ struct CardGameRuntime: Sendable {
     let importer: (any GameImportAdapter)?
     let priceAuthority: GameCatalogPriceAuthority?
     let activationSource: (any GameCatalogActivationSource)?
+    /// Optional rollout modules may be omitted if their collection authority cannot be prepared.
+    let requiresLaunchActivation: Bool
     let legacyCatalogBindings: LegacyCatalogBindings
 
     init(descriptor: CardGameDescriptor, variantPolicy: any GameVariantPolicy,
@@ -46,6 +48,7 @@ struct CardGameRuntime: Sendable {
          importer: (any GameImportAdapter)? = nil,
          priceAuthority: GameCatalogPriceAuthority? = nil,
          activationSource: (any GameCatalogActivationSource)? = nil,
+         requiresLaunchActivation: Bool = true,
          legacyCatalogBindings: LegacyCatalogBindings = .init()) {
         self.descriptor = descriptor
         self.variantPolicy = variantPolicy
@@ -56,6 +59,7 @@ struct CardGameRuntime: Sendable {
         self.importer = importer
         self.priceAuthority = priceAuthority
         self.activationSource = activationSource
+        self.requiresLaunchActivation = requiresLaunchActivation
         self.legacyCatalogBindings = legacyCatalogBindings
     }
 }
@@ -131,16 +135,24 @@ struct CardGameRuntimeContainer: Sendable {
         var modules: [CardGameRuntime] = []
         for runtime in runtimes.values {
             let source = runtime.activationSource.map { CollectionAuthorizedActivationSource(source: $0, container: container, isCurrent: isCurrent) }
-            if let source {
-                guard await source.currentSnapshot() != nil else { throw PriceQuoteError.providerUnavailable }
-            } else { try runtime.priceAuthority?.install(in: container) }
+            do {
+                if let source {
+                    guard await source.currentSnapshot() != nil else { throw PriceQuoteError.providerUnavailable }
+                } else { try runtime.priceAuthority?.install(in: container) }
+            } catch {
+                guard isCurrent(), !runtime.requiresLaunchActivation else { throw error }
+                Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+                    .error("Optional catalog activation failed; existing games remain available")
+                continue
+            }
             let pricing: (any GamePriceAdapter)?
-            if let adapter = runtime.pricing, let source {
-                pricing = ActivatedGamePriceAdapter(adapter: adapter, source: source)
+            if let adapter = runtime.pricing, source != nil || runtime.priceAuthority != nil {
+                pricing = ActivatedGamePriceAdapter(adapter: adapter, source: source, container: container)
             } else { pricing = runtime.pricing }
             modules.append(.init(descriptor: runtime.descriptor, variantPolicy: runtime.variantPolicy,
                 pricing: pricing, recognizer: runtime.recognizer, catalog: runtime.catalog, browse: runtime.browse,
                 importer: runtime.importer, priceAuthority: runtime.priceAuthority, activationSource: source,
+                requiresLaunchActivation: runtime.requiresLaunchActivation,
                 legacyCatalogBindings: runtime.legacyCatalogBindings))
         }
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }

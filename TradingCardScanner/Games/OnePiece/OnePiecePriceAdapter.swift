@@ -2,12 +2,7 @@ import Foundation
 import OnePieceCatalogCore
 
 protocol OnePieceMarketPriceSource: Sendable {
-    func prepareCatalog(generation: String) async
-    func quote(mapping: OnePieceMarketMapping, number: String) async throws -> PriceLookup
-}
-
-extension OnePieceMarketPriceSource {
-    func prepareCatalog(generation: String) async {}
+    func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup
 }
 
 /// Product-level USD market observations. No condition-specific SKU is claimed.
@@ -33,20 +28,19 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
     }
     private let session: URLSession
     private let cacheDirectory: URL
+    private struct CacheKey: Hashable { let group: Int; let generation: String? }
     private var snapshots: [Int: Snapshot] = [:]
-    private var pending: [Int: Task<Snapshot, Error>] = [:]
-    private var failures: [Int: Date] = [:]
+    private var pending: [CacheKey: Task<Snapshot, Error>] = [:]
+    private var failures: [CacheKey: Date] = [:]
     private var nextRequestAt = Date.distantPast
-    private var catalogGeneration: String?
     init(session: URLSession = .shared,
          cacheDirectory: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("OnePieceTCGCSV-v1")) {
         self.session = session; self.cacheDirectory = cacheDirectory
     }
 
-    func prepareCatalog(generation: String) async { catalogGeneration = generation }
-
-    func quote(mapping: OnePieceMarketMapping, number: String) async throws -> PriceLookup {
+    func quote(mapping: OnePieceMarketMapping, number: String, generation: String? = nil,
+               minimumFetchedAt: Date? = nil) async throws -> PriceLookup {
         guard mapping.provider == "tcgplayer", mapping.market == "us", mapping.currency == "USD",
               mapping.condition == "aggregate", mapping.status == .exact,
               let group = mapping.qualifiers["groupID"].flatMap(Int.init), group > 0,
@@ -55,7 +49,7 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
               let lane = mapping.providerVariantID, ["Normal", "Foil"].contains(lane),
               ["normal": "Normal", "foil": "Foil"][mapping.variantID] == lane,
               mapping.qualifiers["finish"] == lane else { throw PriceQuoteError.identityMismatch }
-        let snapshot = try await snapshot(group: group)
+        let snapshot = try await snapshot(group: group, generation: generation, minimumFetchedAt: minimumFetchedAt)
         try Task.checkCancellation()
         let products = snapshot.products.filter { $0.productId == productID }
         guard products.count == 1, let product = products.first,
@@ -71,18 +65,26 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
             sourceVariantID: "tcgplayer:\(productID):\(lane)", sourceUpdatedAt: nil, fetchedAt: snapshot.fetchedAt))
     }
 
-    private func snapshot(group: Int) async throws -> Snapshot {
+    private func snapshot(group: Int, generation: String?, minimumFetchedAt: Date?) async throws -> Snapshot {
+        let key = CacheKey(group: group, generation: generation)
         let file = cacheDirectory.appendingPathComponent("\(group).json")
-        if snapshots[group] == nil, let bytes = try? Data(contentsOf: file), bytes.count <= 16 * 1_024 * 1_024,
-           let value = try? JSONDecoder().decode(Snapshot.self, from: bytes) { snapshots[group] = value }
-        if let cached = snapshots[group], cached.catalogGeneration == catalogGeneration,
+        if snapshots[group]?.catalogGeneration != generation || snapshots[group] == nil,
+           let bytes = try? Data(contentsOf: file), bytes.count <= 16 * 1_024 * 1_024,
+           let value = try? JSONDecoder().decode(Snapshot.self, from: bytes), value.catalogGeneration == generation {
+            snapshots[group] = value
+        }
+        if let cached = snapshots[group], cached.catalogGeneration == generation,
+           minimumFetchedAt.map({ cached.fetchedAt > $0 }) ?? true,
            Date.now.timeIntervalSince(cached.fetchedAt) >= 0,
            Date.now.timeIntervalSince(cached.fetchedAt) < 86_400 { return cached }
-        if let task = pending[group] { return try await task.value }
-        if let failure = failures[group], Date.now.timeIntervalSince(failure) < 900 {
+        if let task = pending[key] {
+            let result = try await task.value
+            if minimumFetchedAt.map({ result.fetchedAt > $0 }) ?? true { return result }
             throw PriceQuoteError.providerUnavailable
         }
-        let generation = catalogGeneration
+        if let failure = failures[key], Date.now.timeIntervalSince(failure) < 900 {
+            throw PriceQuoteError.providerUnavailable
+        }
         let task = Task {
             let products = try JSONDecoder().decode(Response<Product>.self,
                 from: await self.fetch(group: group, resource: "products"))
@@ -96,11 +98,14 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
             return Snapshot(products: products.results, prices: prices.results, fetchedAt: .now,
                 catalogGeneration: generation)
         }
-        pending[group] = task
-        defer { pending[group] = nil }
+        pending[key] = task
+        defer { pending[key] = nil }
         let value: Snapshot
-        do { value = try await task.value; failures[group] = nil }
-        catch { if !(error is CancellationError) { failures[group] = .now }; throw error }
+        do { value = try await task.value; failures[key] = nil }
+        catch { if !(error is CancellationError) { failures[key] = .now }; throw error }
+        guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
+            throw PriceQuoteError.providerUnavailable
+        }
         snapshots[group] = value
         if let bytes = try? JSONEncoder().encode(value) {
             try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
@@ -158,13 +163,17 @@ struct OnePiecePriceAdapter: GamePriceAdapter {
     }
 
     func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?) async throws -> PriceLookup {
+        try await refreshStoredPrinting(printingID, variant: variant, minimumFetchedAt: nil)
+    }
+
+    func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?, minimumFetchedAt: Date?) async throws -> PriceLookup {
         let current = await currentRegistry()
         guard let id = UUID(uuidString: printingID), printingID == id.uuidString.lowercased() else {
             throw PriceQuoteError.identityMismatch
         }
         let card = try OnePieceCatalogAdapter(registry: current).resolution(forPrintingID: id).card
         return try await refresh(.init(identity: .legacy(card), variant: variant,
-            pokemonPrintRun: nil, catalogRefreshOverride: nil))
+            pokemonPrintRun: nil, catalogRefreshOverride: nil, minimumFetchedAt: minimumFetchedAt))
     }
 
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {
@@ -185,8 +194,8 @@ struct OnePiecePriceAdapter: GamePriceAdapter {
         }
         guard mappings.count <= 1 else { throw PriceQuoteError.identityMismatch }
         guard let mapping = mappings.first else { return .unavailable(nil) }
-        await source.prepareCatalog(generation: current.generation)
-        let quote = try await source.quote(mapping: mapping, number: canonical.printedNumber)
+        let quote = try await source.quote(mapping: mapping, number: canonical.printedNumber,
+            generation: current.generation, minimumFetchedAt: request.minimumFetchedAt)
         // A mapping withdrawn while HTTP was in flight must not publish an old quote.
         let latest = await currentRegistry()
         guard latest.printingByID[id]?.status == .verified,

@@ -94,11 +94,14 @@ enum OnePieceCatalogBootstrap {
             throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
         }
         let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: seed)
-        let verified = try OnePieceCatalogSignature.verify(envelope, trustedKeys: configuration.keys, now: now)
         let store = try OnePieceCatalogReleaseStore(root: root, keys: configuration.keys, bundledEnvelope: envelope, now: now)
+        guard let registry = store.bundledRegistry else {
+            throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
+        }
         let client = try configuration.endpoint.map { try OnePieceCatalogUpdateClient(endpoint: $0) }
         let coordinator = OnePieceCatalogCoordinator(store: store, client: client, rolloutMode: configuration.mode)
-        var module = OnePieceGameRuntime(registry: .init(verifiedRelease: verified), coordinator: coordinator)
+        // The store has already verified and indexed this bundled envelope.
+        var module = OnePieceGameRuntime(registry: registry, coordinator: coordinator)
         if configuration.mode == .remoteValidationOnly { module.capabilities = [] }
         return module.runtime
     }

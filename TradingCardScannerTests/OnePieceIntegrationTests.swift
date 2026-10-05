@@ -8,8 +8,10 @@ import XCTest
 
 private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
     var calls = 0
-    func quote(mapping: OnePieceMarketMapping, number: String) async throws -> PriceLookup {
+    var lastMinimumFetchedAt: Date?
+    func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup {
         calls += 1
+        lastMinimumFetchedAt = minimumFetchedAt
         return .price(.init(unitMarketPriceUSD: 8.16, currencyCode: "USD", source: .tcgCSV,
             sourceVariantID: "tcgplayer:\(mapping.productID):\(mapping.providerVariantID!)",
             sourceUpdatedAt: nil, fetchedAt: .now))
@@ -18,8 +20,8 @@ private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
 
 private actor OnePieceSnapshotTestSource: GameCatalogActivationSource {
     nonisolated let game = CardGame.onePiece
-    private var snapshot: GameCatalogSnapshot
-    init(_ snapshot: GameCatalogSnapshot) { self.snapshot = snapshot }
+    private var snapshot: GameCatalogSnapshot?
+    init(_ snapshot: GameCatalogSnapshot?) { self.snapshot = snapshot }
     func update(_ snapshot: GameCatalogSnapshot) { self.snapshot = snapshot }
     func currentSnapshot() async -> GameCatalogSnapshot? { snapshot }
     func activationSnapshots() async -> AsyncStream<GameCatalogSnapshot> {
@@ -103,6 +105,85 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertNotNil(runtime.activationSource)
     }
     private var now: Date { ISO8601DateFormatter().date(from: date)! }
+
+    func testOptionalCatalogFailureLeavesExistingGamesAvailable() async throws {
+        let registry = try registry()
+        let (_, storage) = try model(registry: registry)
+        let optional = CardGameRuntime(descriptor: OnePieceGameRuntime(registry: registry).runtime.descriptor,
+            variantPolicy: OnePieceVariantPolicy(registry: registry),
+            activationSource: OnePieceSnapshotTestSource(nil), requiresLaunchActivation: false)
+        let raw = try CardGameRuntimeContainer(runtimes: [PokemonGameRuntime().runtime,
+            MagicGameRuntime().runtime, optional])
+        let bound = try await raw.bound(to: storage)
+        XCTAssertNil(bound.runtime(for: .onePiece))
+        XCTAssertEqual(bound.registry.enabledGames, [.pokemon, .magic])
+        XCTAssertNotNil(bound.runtime(for: .pokemon)?.catalog)
+        XCTAssertNotNil(bound.runtime(for: .magic)?.catalog)
+        XCTAssertNotNil(bound.runtime(for: .pokemon)?.pricing)
+        XCTAssertNotNil(bound.runtime(for: .magic)?.pricing)
+
+        let required = CardGameRuntime(descriptor: optional.descriptor, variantPolicy: optional.variantPolicy,
+            activationSource: OnePieceSnapshotTestSource(nil))
+        do {
+            _ = try await CardGameRuntimeContainer(runtimes: [required]).bound(to: storage)
+            XCTFail("Required catalog failure must still reject launch preparation")
+        } catch { XCTAssertEqual(error as? PriceQuoteError, .providerUnavailable) }
+    }
+
+    func testOnePieceCleanupFailureLeavesExistingGamesAvailable() async throws {
+        let registry = try registry()
+        let (_, storage) = try model(registry: registry)
+        let raw = try CardGameRuntimeContainer(runtimes: [PokemonGameRuntime().runtime,
+            MagicGameRuntime().runtime, OnePieceGameRuntime(registry: registry).runtime])
+        let token = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
+        defer { CollectionWriteSerializer.endExclusive(token) }
+        let bound = try await raw.bound(to: storage)
+        XCTAssertNil(bound.runtime(for: .onePiece))
+        XCTAssertEqual(bound.registry.enabledGames, [.pokemon, .magic])
+        let snapshot = GameCatalogSnapshot(revision: 1, catalog: OnePieceCatalogAdapter(registry: registry),
+            recognizer: OnePieceRecognitionAdapter(profile: .init(registry: registry)),
+            variantPolicy: OnePieceVariantPolicy(registry: registry),
+            priceAuthority: OnePiecePriceAdapter.priceAuthority(registry))
+        let sourced = CardGameRuntime(descriptor: OnePieceGameRuntime(registry: registry).runtime.descriptor,
+            variantPolicy: snapshot.variantPolicy, activationSource: OnePieceSnapshotTestSource(snapshot),
+            requiresLaunchActivation: false)
+        let withSource = try CardGameRuntimeContainer(runtimes: [PokemonGameRuntime().runtime,
+            MagicGameRuntime().runtime, sourced])
+        let sourceBound = try await withSource.bound(to: storage)
+        XCTAssertNil(sourceBound.runtime(for: .onePiece))
+        XCTAssertEqual(sourceBound.registry.enabledGames, [.pokemon, .magic])
+        do {
+            _ = try await raw.bound(to: storage, isCurrent: { false })
+            XCTFail("An expired storage session must not produce a runtime")
+        } catch { XCTAssertEqual(error as? PriceQuoteError, .providerUnavailable) }
+    }
+
+    func testCoordinatorSnapshotsFollowVerifiedGeneration() async throws {
+        let first = try registry(complete: false)
+        let second = try registry(complete: false, revision: 2, firstStatus: .quarantined)
+        let key = Curve25519.Signing.PrivateKey(), keyID = "one-piece-snapshot-fixture"
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceSnapshot-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        func envelope(_ registry: OnePieceCatalogRegistry) throws -> OnePieceCatalogReleaseEnvelope {
+            try OnePieceCatalogSignature.sign(registry.verifiedRelease.release, keyID: keyID, privateKey: key)
+        }
+        let store = try OnePieceCatalogReleaseStore(root: root, keys: [keyID: key.publicKey],
+            bundledEnvelope: envelope(first), now: now)
+        let coordinator = OnePieceCatalogCoordinator(store: store)
+        let initial = await coordinator.currentSnapshot()
+        for _ in 0..<10 {
+            let repeated = await coordinator.currentSnapshot()
+            XCTAssertEqual(repeated?.catalog.generation, first.generation)
+            XCTAssertEqual(repeated?.priceAuthority?.identityByPriceKey, initial?.priceAuthority?.identityByPriceKey)
+        }
+        guard case .activated = await coordinator.activateEnvelope(try envelope(second), now: now) else {
+            return XCTFail("New verified revision must activate")
+        }
+        let updated = await coordinator.currentSnapshot()
+        XCTAssertEqual(updated?.revision, 2)
+        XCTAssertEqual(updated?.browse?.generation, second.generation)
+        XCTAssertEqual(initial?.catalog.generation, first.generation)
+    }
 
     private func reviewedAwardRegistry() throws -> OnePieceCatalogRegistry {
         // Review data stays outside the app bundle and is never a production seed.
@@ -524,12 +605,57 @@ final class OnePieceIntegrationTests: XCTestCase {
         do { _ = try await source.quote(mapping: mapping, number: "OP01-001"); XCTFail() }
         catch PriceQuoteError.identityMismatch {}
         OnePiecePriceTestProtocol.handler = validResponse
-        await relaunched.prepareCatalog(generation: "corrected-catalog")
-        guard case let .price(refreshed) = try await relaunched.quote(mapping: mapping, number: "OP01-120") else { return XCTFail() }
+        guard case let .price(refreshed) = try await relaunched.quote(mapping: mapping, number: "OP01-120", generation: "corrected-catalog") else { return XCTFail() }
         XCTAssertGreaterThan(refreshed.fetchedAt, cached.fetchedAt)
         OnePiecePriceTestProtocol.handler = { _ in Data("invalid network response".utf8) }
-        guard case let .price(sameGeneration) = try await relaunched.quote(mapping: mapping, number: "OP01-120") else { return XCTFail() }
+        guard case let .price(sameGeneration) = try await relaunched.quote(mapping: mapping, number: "OP01-120", generation: "corrected-catalog") else { return XCTFail() }
         XCTAssertEqual(sameGeneration, refreshed)
+        OnePiecePriceTestProtocol.handler = validResponse
+        guard case let .price(afterWithdrawal) = try await relaunched.quote(mapping: mapping, number: "OP01-120",
+            generation: "corrected-catalog", minimumFetchedAt: sameGeneration.fetchedAt) else { return XCTFail() }
+        XCTAssertGreaterThan(afterWithdrawal.fetchedAt, sameGeneration.fetchedAt)
+        async let oldGeneration = source.quote(mapping: mapping, number: "OP01-120", generation: "old-generation")
+        async let newGeneration = source.quote(mapping: mapping, number: "OP01-120", generation: "new-generation")
+        guard case let .price(oldPrice) = try await oldGeneration,
+              case let .price(newPrice) = try await newGeneration else { return XCTFail() }
+        XCTAssertNotEqual(oldPrice.fetchedAt, newPrice.fetchedAt,
+            "Requests from different catalog generations must not share an in-flight snapshot")
+    }
+
+    func testBoundOnePiecePricingPassesWithdrawalWatermarkToSource() async throws {
+        let registry = try registry(withMarketMapping: true)
+        let (_, container) = try model(registry: registry)
+        let watermark = Date.now
+        let card = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(1)).card
+        let record = PriceRecord(key: PriceRecord.key(game: .onePiece, printingID: card.providerID, variantID: "foil"),
+            game: .onePiece, printingID: card.providerID, variantID: "foil")
+        record.invalidatedAt = watermark
+        container.mainContext.insert(record)
+        try container.mainContext.save()
+        let source = OnePieceTestPriceSource()
+        let base = OnePieceGameRuntime(registry: registry).runtime
+        let runtime = CardGameRuntime(descriptor: base.descriptor, variantPolicy: base.variantPolicy,
+            pricing: OnePiecePriceAdapter(registry: registry, source: source), priceAuthority: base.priceAuthority)
+        let raw = try CardGameRuntimeContainer(runtimes: [runtime])
+        let bound = try await raw.bound(to: container)
+        _ = try await bound.makePriceQuoteService().refreshStoredPrinting(game: .onePiece,
+            printingID: card.providerID, variant: .foil)
+        let minimum = await source.lastMinimumFetchedAt
+        XCTAssertEqual(minimum, watermark)
+    }
+
+    func testOnePieceMetadataRefreshPreservesPurchaseLink() async throws {
+        let registry = try registry()
+        let card = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(1)).card
+        let row = CollectedCard(card: card, resolved: .init(variant: .foil, resolution: .userConfirmed))
+        row.tcgplayerURL = "https://www.tcgplayer.com/product/454664"
+        row.applyCatalogMetadata(from: card)
+        XCTAssertEqual(row.tcgplayerURL, "https://www.tcgplayer.com/product/454664")
+        let request = GameImportRequest(sourceProviderID: card.providerID, catalogProviderID: card.providerID,
+            game: .onePiece, name: card.name, setName: card.setName, cardNumber: card.cardNumber, itemKind: .rawCard)
+        let matches = await OnePieceImportAdapter(registry: registry).metadata(for: [request])
+        row.applyCatalogMetadata(try XCTUnwrap(matches[request.identityKey]))
+        XCTAssertEqual(row.tcgplayerURL, "https://www.tcgplayer.com/product/454664")
     }
 
     func testOnePieceScannerSaveQueuesExactBasePricingWithoutPaidCredentials() async throws {

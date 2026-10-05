@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 
 /// Exact catalog identity supplied after physical-printing resolution.
 struct GamePriceIdentity: Equatable, Sendable {
@@ -29,6 +30,7 @@ struct GamePriceRequest: Sendable {
     let variant: PhysicalVariant?
     let pokemonPrintRun: PokemonPrintRun?
     let catalogRefreshOverride: (@Sendable () async throws -> PriceLookup)?
+    var minimumFetchedAt: Date? = nil
 }
 
 protocol GamePriceAdapter: Sendable {
@@ -37,6 +39,7 @@ protocol GamePriceAdapter: Sendable {
     var supportsStoredPrintingRefresh: Bool { get }
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup
     func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?) async throws -> PriceLookup
+    func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?, minimumFetchedAt: Date?) async throws -> PriceLookup
 }
 
 extension GamePriceAdapter {
@@ -44,6 +47,9 @@ extension GamePriceAdapter {
     var supportsStoredPrintingRefresh: Bool { false }
     func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?) async throws -> PriceLookup {
         throw PriceQuoteError.pricingUnsupported
+    }
+    func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?, minimumFetchedAt: Date?) async throws -> PriceLookup {
+        try await refreshStoredPrinting(printingID, variant: variant)
     }
 }
 
@@ -68,11 +74,13 @@ struct GamePriceAdapterRegistry: Sendable {
 /// Pricing also crosses the shared publication boundary before and after I/O.
 struct ActivatedGamePriceAdapter: GamePriceAdapter {
     let adapter: any GamePriceAdapter
-    let source: any GameCatalogActivationSource
+    let source: (any GameCatalogActivationSource)?
+    let container: ModelContainer
     var game: CardGame { adapter.game }
     var allowsProviderFallback: Bool { adapter.allowsProviderFallback }
     var supportsStoredPrintingRefresh: Bool { adapter.supportsStoredPrintingRefresh }
     private func validate(_ quote: PriceLookup, printingID: String, variant: PhysicalVariant?) async throws {
+        guard let source else { return }
         guard let snapshot = await source.currentSnapshot() else { throw PriceQuoteError.providerUnavailable }
         if case let .price(price) = quote, let authority = snapshot.priceAuthority,
            authority.managedSources.contains(price.source) {
@@ -83,15 +91,27 @@ struct ActivatedGamePriceAdapter: GamePriceAdapter {
         }
     }
     func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {
-        guard await source.currentSnapshot() != nil else { throw PriceQuoteError.providerUnavailable }
+        if let source, await source.currentSnapshot() == nil { throw PriceQuoteError.providerUnavailable }
+        var request = request
+        let minimum = try await minimumFetchedAt(printingID: request.identity.printingID, variant: request.variant)
+        request.minimumFetchedAt = [minimum, request.minimumFetchedAt].compactMap { $0 }.max()
         let quote = try await adapter.refresh(request)
         try await validate(quote, printingID: request.identity.printingID, variant: request.variant)
         return quote
     }
     func refreshStoredPrinting(_ printingID: String, variant: PhysicalVariant?) async throws -> PriceLookup {
-        guard await source.currentSnapshot() != nil else { throw PriceQuoteError.providerUnavailable }
-        let quote = try await adapter.refreshStoredPrinting(printingID, variant: variant)
+        if let source, await source.currentSnapshot() == nil { throw PriceQuoteError.providerUnavailable }
+        let minimum = try await minimumFetchedAt(printingID: printingID, variant: variant)
+        let quote = try await adapter.refreshStoredPrinting(printingID, variant: variant, minimumFetchedAt: minimum)
         try await validate(quote, printingID: printingID, variant: variant)
         return quote
+    }
+
+    @MainActor
+    private func minimumFetchedAt(printingID: String, variant: PhysicalVariant?) throws -> Date? {
+        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variant?.id)
+        let context = ModelContext(container)
+        let records = try context.fetch(FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key }))
+        return records.compactMap(\.invalidatedAt).max()
     }
 }

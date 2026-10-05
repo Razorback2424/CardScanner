@@ -12,12 +12,14 @@ actor OnePieceCatalogReleaseStore {
     typealias ActivationResult = SignedCatalogActivationResult
     private let core: Core
     private let keys: [String: Curve25519.Signing.PublicKey]
+    nonisolated let bundledRegistry: OnePieceCatalogRegistry?
 
     init(root: URL? = nil, keys: [String: Curve25519.Signing.PublicKey],
          bundledEnvelope: OnePieceCatalogReleaseEnvelope? = nil, now: Date = .now,
          writeData: @escaping @Sendable (Data, URL) throws -> Void = { try $0.write(to: $1, options: .atomic) }) throws {
         self.keys = keys
         let fallback = try bundledEnvelope.map { try Self.stored(envelope: $0, keys: keys, now: now) }
+        bundledRegistry = fallback?.registry
         let root = root ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
             .first!.appendingPathComponent("BrowseCatalogCache/OnePieceCatalogReleases", isDirectory: true)
         core = Core(root: root, currentName: Slot.current.rawValue, previousName: Slot.previous.rawValue,

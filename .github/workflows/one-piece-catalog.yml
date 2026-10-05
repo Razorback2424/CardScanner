@@ -7,6 +7,8 @@ on:
       - "Config/OnePieceCatalogProduction.xcconfig"
       - "scripts/normalize_one_piece_sources.py"
       - "scripts/build_one_piece_catalog.py"
+      - "scripts/one_piece_pinned_keys.py"
+      - "scripts/tests/test_one_piece_pinned_keys.py"
       - "scripts/one_piece_tcgcsv_capture.py"
       - "scripts/reconcile_one_piece_tcgcsv_sources.py"
       - "scripts/reconcile_one_piece_launch_products.py"
@@ -30,9 +32,6 @@ on:
         type: string
       reviewed_sha256:
         description: "SHA-256 of the exact reviewed payload bytes"
-        type: string
-      trusted_keys:
-        description: "Repository JSON map of dedicated key IDs to base64 public keys"
         type: string
       previous:
         description: "Previous verified envelope path; required after bootstrap"
@@ -62,6 +61,8 @@ jobs:
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_base_market_mappings.py -v
       - name: Test catalog core and publisher CLI
         run: swift test --package-path OnePieceCatalogCore
+      - name: Test app trust anchor export
+        run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_pinned_keys.py -v
 
   sign-reviewed-artifact:
     needs: validate
@@ -72,7 +73,6 @@ jobs:
       KEY_ID: ${{ vars.ONE_PIECE_CATALOG_KEY_ID }}
       CANDIDATE: ${{ inputs.candidate }}
       REVIEWED_SHA256: ${{ inputs.reviewed_sha256 }}
-      TRUSTED_KEYS: ${{ inputs.trusted_keys }}
       PREVIOUS: ${{ inputs.previous }}
       BOOTSTRAP: ${{ inputs.bootstrap }}
     steps:
@@ -87,7 +87,7 @@ jobs:
           python3 - <<'PY'
           import os, pathlib
           root = pathlib.Path.cwd().resolve()
-          for name in ("CANDIDATE", "TRUSTED_KEYS", "PREVIOUS"):
+          for name in ("CANDIDATE", "PREVIOUS"):
               value = os.environ.get(name, "")
               if value:
                   path = pathlib.Path(value).resolve(strict=True)
@@ -97,6 +97,8 @@ jobs:
           PY
           artifact_root="$RUNNER_TEMP/one-piece-signed-artifact"
           mkdir -p "$artifact_root"
+          trusted_keys="$RUNNER_TEMP/one-piece-app-pinned-keys.json"
+          python3 scripts/one_piece_pinned_keys.py Config/OnePieceCatalogProduction.xcconfig "$trusted_keys"
           baseline=()
           if [ "$BOOTSTRAP" = true ]; then
             test -z "$PREVIOUS"
@@ -106,11 +108,11 @@ jobs:
             baseline+=(--previous "$PREVIOUS")
           fi
           swift run --package-path OnePieceCatalogCore one-piece-catalog-publisher sign \
-            --input "$CANDIDATE" --trusted-keys "$TRUSTED_KEYS" --key-id "$KEY_ID" \
+            --input "$CANDIDATE" --trusted-keys "$trusted_keys" --key-id "$KEY_ID" \
             --reviewed-payload-sha256 "$REVIEWED_SHA256" "${baseline[@]}" \
             --output "$artifact_root/release-envelope.json" --manifest "$artifact_root/manifest.json"
           swift run --skip-build --package-path OnePieceCatalogCore one-piece-catalog-publisher verify \
-            --input "$artifact_root/release-envelope.json" --trusted-keys "$TRUSTED_KEYS" \
+            --input "$artifact_root/release-envelope.json" --trusted-keys "$trusted_keys" \
             --reviewed-payload-sha256 "$REVIEWED_SHA256" "${baseline[@]}" \
             --manifest "$artifact_root/verified-manifest.json"
           cmp "$artifact_root/manifest.json" "$artifact_root/verified-manifest.json"

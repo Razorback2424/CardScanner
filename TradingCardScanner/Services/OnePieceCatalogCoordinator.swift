@@ -26,6 +26,8 @@ actor OnePieceCatalogCoordinator {
     private var refreshTask: Task<RefreshResult, Never>?
     private var didAttemptLaunchRefresh = false
     private var activeRegistry: OnePieceCatalogRegistry?
+    // Shared by current-snapshot requests and activation-stream publication.
+    private var cachedSnapshot: GameCatalogSnapshot?
     private var didLoad = false
     private var loadingTask: Task<OnePieceCatalogReleaseStore.StoredRelease?, Never>?
     private var continuations: [UUID: AsyncStream<ActivationEvent>.Continuation] = [:]
@@ -36,6 +38,23 @@ actor OnePieceCatalogCoordinator {
     }
     var registry: OnePieceCatalogRegistry? { activeRegistry }
     var revision: Int? { activeRegistry?.verifiedRelease.release.revision }
+
+    func snapshot(_ registry: OnePieceCatalogRegistry) -> GameCatalogSnapshot {
+        if let cachedSnapshot, cachedSnapshot.catalog.generation == registry.generation {
+            return cachedSnapshot
+        }
+        let snapshot = GameCatalogSnapshot(revision: registry.verifiedRelease.release.revision,
+            catalog: OnePieceCatalogAdapter(registry: registry),
+            recognizer: OnePieceRecognitionAdapter(profile: .init(registry: registry)),
+            variantPolicy: OnePieceVariantPolicy(registry: registry), browse: OnePieceBrowseAdapter(registry: registry),
+            importer: OnePieceImportAdapter(registry: registry),
+            priceAuthority: OnePiecePriceAdapter.priceAuthority(registry))
+        // A buffered older event must not evict the current generation's cache.
+        if cachedSnapshot.map({ snapshot.revision >= $0.revision }) ?? true {
+            cachedSnapshot = snapshot
+        }
+        return snapshot
+    }
 
     func refreshAtLaunch() async {
         guard !didAttemptLaunchRefresh else { return }
