@@ -3090,8 +3090,10 @@ final class ScannerViewModel: ObservableObject {
 
     func dismissIdentityChoice() {
         if let pending = pendingIdentityChoice {
-            fileUnresolved(request: pending.request, reason: .noConfirmedMatch,
-                           candidates: pending.candidates, printingCandidates: pending.displayCandidates)
+            if case .opaque = pending.request.identifier.legacyIdentity {
+                fileUnresolved(request: pending.request, reason: .noConfirmedMatch,
+                               candidates: pending.candidates, printingCandidates: pending.displayCandidates)
+            }
             let requestID = pending.request.id
             scannedGradedOutcomes.removeValue(forKey: requestID)
             endOneCardScan(encounterID: pending.request.encounterID, outcome: "identity-dismissed")
@@ -3712,20 +3714,29 @@ final class ScannerViewModel: ObservableObject {
         reason: UnresolvedReason,
         candidates: [PokemonCatalogCardIdentity] = [],
         resolvedProviderID: String? = nil,
-        isAdditionalCopy: Bool = false
+        isAdditionalCopy: Bool = false,
+        matchingID: UUID? = nil,
+        pendingCommit: CollectionCommitCandidate? = nil
     ) {
         let request = ScanRequest(
             subject: subject,
             purpose: .collection,
-            generation: scanGeneration
+            generation: scanGeneration,
+            unresolvedScanID: matchingID
         )
         fileUnresolved(
             request: request,
             reason: reason,
             candidates: candidates,
+            pendingCommit: pendingCommit,
             isAdditionalCopy: isAdditionalCopy,
             resolvedProviderID: resolvedProviderID
         )
+    }
+
+    func handleHistoricalResolutionForTesting(_ error: PokemonHistoricalCatalogError, subject: ScanSubject) {
+        handleHistoricalResolution(error, request: .init(subject: subject, purpose: .collection,
+            generation: scanGeneration))
     }
 
     func reloadUnresolvedScansForTesting(registry: PokemonCatalogRegistry? = nil) async {
@@ -5693,8 +5704,10 @@ final class ScannerViewModel: ObservableObject {
                 id: rowID, subject: request.subject, reason: reason,
                 createdAt: previous?.createdAt ?? .now,
                 printingCandidates: printingCandidates.isEmpty ? previous?.printingCandidates ?? [] : printingCandidates,
-                pendingCommit: pendingCommit, isAdditionalCopy: isAdditionalCopy,
-                mergeSessionID: scannerSessionID, resolvedProviderID: resolvedProviderID
+                pendingCommit: pendingCommit ?? previous?.pendingCommit,
+                isAdditionalCopy: isAdditionalCopy || previous?.isAdditionalCopy == true,
+                mergeSessionID: previous?.mergeSessionID ?? scannerSessionID,
+                resolvedProviderID: resolvedProviderID ?? previous?.resolvedProviderID
             )
             if let index = unresolvedScans.firstIndex(where: { $0.id == rowID }) {
                 unresolvedScans[index] = row

@@ -6,6 +6,30 @@ import XCTest
 final class CollectionActivityHistoryTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testBlankLegacyActivityGameFallsBackWithoutChangingUnknownGames() {
+        let activity = CollectionActivity(card: makeCollectedCard(quantity: 1), source: .scan)
+        activity.gameRaw = ""
+        XCTAssertEqual(activity.game, .pokemon)
+        activity.gameRaw = "future-game"
+        XCTAssertEqual(activity.game.rawValue, "future-game")
+    }
+
+    func testRemovedPokemonHistoryWithColonProviderIDRemainsWritable() throws {
+        let context = try makeContext()
+        let card = makeCollectedCard(quantity: 1)
+        card.collectionKey = "csv:legacy-printing#normal"
+        let activity = CollectionActivity(card: card, source: .csvImport)
+        context.insert(activity)
+        let event = InventoryEvent(operationID: UUID(), leg: nil, kind: .recordExisting,
+            source: .csvImport, collectionKey: card.collectionKey, priceStorageKey: card.collectionKey,
+            deltaQuantity: 1, occurredAt: .now, valuation: .unpriced)
+        context.insert(event)
+        XCTAssertNoThrow(try CollectionStore(context: context).validatePendingGameWrites())
+        try context.save()
+        activity.quantity = 2
+        XCTAssertNoThrow(try CollectionStore(context: context).validatePendingGameWrites())
+    }
+
     func testHistoryReadFailuresRetainOnlyCompleteSnapshotsAndDisableActionsUntilRetry() throws {
         enum ReadError: Error { case failed }
         let context = try makeContext()

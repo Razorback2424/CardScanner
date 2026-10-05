@@ -104,7 +104,7 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
 
     var marketPrices: [CardMarketPrice] { CardPricing.publishedPrices(for: self) }
     var providerPurchaseURL: String? { legacyIdentity?.providerPurchaseURL }
-    var updatesProviderPurchaseURL: Bool { legacyIdentity?.updatesProviderPurchaseURL ?? true }
+    var updatesProviderPurchaseURL: Bool { legacyIdentity?.updatesProviderPurchaseURL ?? false }
     var catalogMetadataThumbnailURL: String? {
         legacyIdentity?.catalogMetadataThumbnailURL ?? thumbnailImageURL?.absoluteString
     }

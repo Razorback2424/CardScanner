@@ -9,6 +9,19 @@ import SwiftData
 /// marketplace export.
 final class ImportedItemKindTests: XCTestCase {
 
+    func testBlankGameCellsRetainFormatDefaultsAndPortfolioAliases() throws {
+        let pokemon = "game,provider_id,card_name,quantity\n ,base1-4,Charizard,1\n"
+        let magic = "game,scryfall_uuid,name,quantity\n ,fixture-uuid,Lightning Bolt,1\n"
+        XCTAssertEqual(try CollectionCSV.parse(Data(pokemon.utf8)).entries.first?.game, .pokemon)
+        XCTAssertEqual(try CollectionCSV.parse(Data(magic.utf8)).entries.first?.game, .magic)
+        for game in ["", "Magic: The Gathering", "magic"] {
+            let csv = "category,game,set,product_name,card_number,rarity,grade,quantity,market_price,watchlist\nMagic: The Gathering,\(game),Alpha,Lightning Bolt,1,Common,Ungraded,1,0,false\n"
+            XCTAssertEqual(try CollectionCSV.parse(Data(csv.utf8)).entries.first?.game, .magic, game)
+        }
+        let unknown = "game,provider_id,card_name,quantity\nfuture-game,fixture,Future Card,1\n"
+        XCTAssertEqual(try CollectionCSV.parse(Data(unknown.utf8)).entries.first?.game.rawValue, "future-game")
+    }
+
     // MARK: - Grade parsing
 
     /// The fourteen graded rows from a live export, in the exporter's own

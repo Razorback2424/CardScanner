@@ -2,6 +2,32 @@ import XCTest
 @testable import TradingCardScanner
 
 final class UnresolvedScanStoreTests: XCTestCase {
+    func testSavedPokemonIdentifiersUseCurrentSetAndPromoDefinitions() async throws {
+        let (directory, store) = makeStore()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let staleSet = PokemonSetDefinition(printedCode: "ASC", tcgdexSetID: "obsolete", officialCount: 1, releaseIndex: 0)
+        let stalePromo = PokemonPromoSetDefinition(printedPrefix: "SVP", tcgdexSetID: "obsolete",
+            catalogLocalIDPrefix: "OLD", localIDPadWidth: 1)
+        let rows = [
+            UnresolvedScan(subject: .init(identifier: .pokemon(setCode: "ASC", cardNumber: "015",
+                printedTotal: 217, setDefinition: staleSet)), reason: .noCatalogEntry),
+            UnresolvedScan(subject: .init(identifier: .pokemonPromo(prefix: "SVP", localID: "001",
+                setDefinition: stalePromo)), reason: .noCatalogEntry)
+        ]
+        let saved = await store.save(rows)
+        XCTAssertTrue(saved)
+        let restored = await store.load()
+        XCTAssertEqual(restored.count, 2)
+        guard case let .pokemon(_, number, total, definition) = restored[0].identifier.legacyIdentity,
+              case let .pokemonPromo(_, promoNumber, promoDefinition) = restored[1].identifier.legacyIdentity else {
+            return XCTFail("Legacy identities must survive rehydration")
+        }
+        XCTAssertEqual(number, "015")
+        XCTAssertEqual(total, 217)
+        XCTAssertEqual(definition, PokemonCatalogRegistry.bundledSeed.pokemonSetDefinition(forPrintedCode: "ASC"))
+        XCTAssertEqual(promoNumber, "001")
+        XCTAssertEqual(promoDefinition, PokemonCatalogRegistry.bundledSeed.pokemonPromoSetDefinition(forPrefix: "SVP"))
+    }
     func testUnknownGameSnapshotRemainsVisibleReadOnlyAcrossRelaunch() async throws {
         let (directory, store) = makeStore()
         defer { try? FileManager.default.removeItem(at: directory) }

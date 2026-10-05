@@ -556,6 +556,7 @@ struct CollectionActivityLogView: View {
 
 struct CollectionActivityEditor: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.cardGameRuntimes) private var gameRuntimes
     @Environment(\.dismiss) private var dismiss
     @Bindable var activity: CollectionActivity
 
@@ -577,7 +578,7 @@ struct CollectionActivityEditor: View {
                     "When",
                     value: activity.occurredAt.formatted(date: .abbreviated, time: .shortened)
                 )
-                LabeledContent("Game", value: activity.game.label)
+                LabeledContent("Game", value: gameRegistry.descriptor(for: activity.game)?.displayName ?? activity.game.label)
                 LabeledContent("Item Type", value: activity.itemKind.label)
                 LabeledContent("Quantity", value: signedQuantity(activity.signedQuantity))
                 LabeledContent("Entry status", value: activity.isResolved ? "Resolved" : "Open")
@@ -592,7 +593,7 @@ struct CollectionActivityEditor: View {
             if activity.kind.hasQuantityClaim, activity.itemKind == .rawCard {
                 Section {
                     Picker("Finish", selection: $variantID) {
-                        ForEach(PhysicalVariant.selectable(for: activity.game)) { variant in
+                        ForEach(gameRegistry.variantPolicy(for: activity.game)?.selectableVariants ?? []) { variant in
                             Text(
                                 activity.magicTreatmentEvidence.displayLabel(with: variant)
                                     ?? variant.label
@@ -605,7 +606,7 @@ struct CollectionActivityEditor: View {
                 } footer: {
                     Text("The correction applies to the copies claimed by this entry and is recorded in the ledger.")
                 }
-                .disabled(!canSave)
+                .disabled(!canCorrect)
             } else {
                 Section {
                     Text("This history entry records a completed collection action. It cannot be corrected again.")
@@ -629,11 +630,16 @@ struct CollectionActivityEditor: View {
     }
 
     private var canSave: Bool {
-        activity.kind.hasQuantityClaim
+        canCorrect
+            && variantID != activity.variantID
+            && gameRegistry.variantPolicy(for: activity.game)?.selectableVariants.contains(where: { $0.id == variantID }) == true
+    }
+
+    private var canCorrect: Bool {
+        gameRegistry.supports(activity.game, .collectionWrite)
+            && activity.kind.hasQuantityClaim
             && activity.itemKind == .rawCard
             && activity.remainingQuantity > 0
-            && variantID != nil
-            && variantID != activity.variantID
             && collectionCard.map { $0.quantity >= activity.remainingQuantity } == true
             && CollectionStore(context: modelContext).hasValidLineage(
                 activity.ledgerOperationIDs,
@@ -641,6 +647,8 @@ struct CollectionActivityEditor: View {
                 quantity: activity.claimedQuantity
             )
     }
+
+    private var gameRegistry: CardGameRegistry { gameRuntimes?.registry ?? .standard }
 
     private var errorBinding: Binding<Bool> {
         Binding(

@@ -1107,9 +1107,8 @@ enum CollectionCSV {
 
         let isScryfallExport = !(row["scryfall_uuid"] ?? "").isEmpty
         let game: CardGame
-        if let explicitGame = row["game"] {
-            guard !explicitGame.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return [] }
-            game = CardGame(rawValue: explicitGame)
+        if let explicitGame = nonempty(row["game"]) {
+            game = importedGame(explicitGame)
         } else {
             game = isScryfallExport ? .magic : .pokemon
         }
@@ -1213,12 +1212,16 @@ enum CollectionCSV {
         )]
     }
 
+    private static func importedGame(_ value: String) -> CardGame {
+        let game = CardGame(rawValue: value)
+        return game.rawValue == "magic: the gathering" ? .magic : game
+    }
+
     private static func portfolioEntries(from row: [String: String]) -> [CollectionCSVEntry] {
         let category = value(["category"], in: row)?.lowercased()
         let game: CardGame
-        if let explicitGame = row["game"] {
-            guard !explicitGame.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return [] }
-            game = CardGame(rawValue: explicitGame)
+        if let explicitGame = nonempty(row["game"]) {
+            game = importedGame(explicitGame)
         } else {
             switch category {
             case "pokemon": game = .pokemon

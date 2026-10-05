@@ -331,14 +331,18 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
         if let snapshot = identifierSnapshot,
            snapshot.game == game,
            let restored = try? snapshot.identifier() {
-            identifier = restored
+            var current = restored
             readOnly = snapshot.schemaVersion != 1 || snapshot.game != game
                 || !CardGameRegistry.standard.supports(restored.game, .scan)
             switch restored.legacyIdentity {
-            case let .pokemon(code, _, _, _):
-                if registry.pokemonSetDefinition(forPrintedCode: code) == nil { readOnly = true }
-            case let .pokemonPromo(prefix, _, _):
-                if registry.pokemonPromoSetDefinition(forPrefix: prefix) == nil { readOnly = true }
+            case let .pokemon(code, number, total, _):
+                if let definition = registry.pokemonSetDefinition(forPrintedCode: code) {
+                    current = .pokemon(setCode: code, cardNumber: number, printedTotal: total, setDefinition: definition)
+                } else { readOnly = true }
+            case let .pokemonPromo(prefix, number, _):
+                if let definition = registry.pokemonPromoSetDefinition(forPrefix: prefix) {
+                    current = .pokemonPromo(prefix: prefix, localID: number, setDefinition: definition)
+                } else { readOnly = true }
             case let .magic(code, _, _, _):
                 if magicByCode[code.uppercased()] == nil { readOnly = true }
             case .pokemonHistorical: break
@@ -346,6 +350,7 @@ struct UnresolvedScanRecord: Codable, Equatable, Sendable {
                 readOnly = snapshot.schemaVersion != 1
                     || gameCatalogAdapters.adapter(for: game).flatMap { try? $0.identifierForRetry(restored) } == nil
             }
+            identifier = current
         } else {
         switch game {
         case .pokemon:

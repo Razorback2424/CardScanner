@@ -327,6 +327,43 @@ final class ScannerViewModelTests: XCTestCase {
         model.viewDisappeared()
     }
 
+    func testGenericRecoveryFailureKeepsPendingCommitAndAdditionalCopyConfirmation() throws {
+        let model = try makeModel(variants: [.normal], printingCatalog: ScannerPrintingCatalogFixture())
+        defer { model.viewDisappeared() }
+        let subject = ScanSubject(identifier: try printingIdentifier())
+        let card = try ResolvedCatalogCard(game: .onePiece, physicalPrintingID: "first-uuid",
+            canonicalCardID: "one-piece:en:OP01-120", language: "en", name: "Shanks", setName: "Release",
+            setCode: "OP01", cardNumber: "OP01-120", printedIdentifier: "OP01-120",
+            variantEvidence: .init(game: .onePiece, setID: "fixture", cardNumber: "OP01-120", catalogVariants: [.normal]))
+        let pending = CollectionCommitCandidate(resolvedScan: .init(request: .init(subject: subject,
+            purpose: .collection, generation: 0), card: card, resolved: .init(variant: .normal, resolution: .userConfirmed),
+            pokemonPrintRun: nil, options: [.normal]))
+        model.fileUnresolvedForTesting(subject, reason: .saveFailed(inMemoryCandidateID: pending.requestID),
+            isAdditionalCopy: true, pendingCommit: pending)
+        let row = try XCTUnwrap(model.unresolvedScans.first)
+        model.fileUnresolvedForTesting(subject, reason: .lookupFailed, matchingID: row.id)
+        let retried = try XCTUnwrap(model.unresolvedScans.first)
+        XCTAssertEqual(retried.id, row.id)
+        XCTAssertTrue(retried.isAdditionalCopy)
+        XCTAssertEqual(retried.pendingCommit?.requestID, pending.requestID)
+        XCTAssertEqual(retried.createdAt, row.createdAt)
+    }
+
+    func testDismissingPokemonHistoricalChoiceDoesNotFileNewRecoveryRow() throws {
+        let model = try makeModel(variants: [.normal])
+        defer { model.viewDisappeared() }
+        let identifier = ScanIdentifier.pokemonHistorical(.init(number: .init(localID: "001", denominator: 100,
+            scheme: .officialSet), titleCandidates: []))
+        model.handleHistoricalResolutionForTesting(.ambiguous([
+            .init(providerID: "first-001", setID: "first", setName: "First", localID: "001", name: "Fixture Card"),
+            .init(providerID: "second-001", setID: "second", setName: "Second", localID: "001", name: "Fixture Card")
+        ]), subject: .init(identifier: identifier))
+        XCTAssertNotNil(model.pendingIdentityChoice)
+        model.dismissIdentityChoice()
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+        XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+    }
+
     func testGenericPrintingChoiceSurvivesStoreReloadAndRecoverySelection() async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: root) }

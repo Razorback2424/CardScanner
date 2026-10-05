@@ -9,6 +9,7 @@ struct ImportedCatalogMetadata: Sendable {
     let imageURL: String?
     let thumbnailURL: String?
     let tcgplayerURL: String?
+    let updatesProviderPurchaseURL: Bool
     let setReleaseOrder: Int
     let justTCGCardID: String?
     let justTCGVariantID: String?
@@ -24,7 +25,8 @@ struct ImportedCatalogMetadata: Sendable {
         setReleaseOrder: Int,
         justTCGCardID: String? = nil,
         justTCGVariantID: String? = nil,
-        justTCGAPIVersion: String? = nil
+        justTCGAPIVersion: String? = nil,
+        updatesProviderPurchaseURL: Bool = true
     ) {
         self.providerID = providerID
         self.setCode = setCode
@@ -32,6 +34,7 @@ struct ImportedCatalogMetadata: Sendable {
         self.imageURL = imageURL
         self.thumbnailURL = thumbnailURL
         self.tcgplayerURL = tcgplayerURL
+        self.updatesProviderPurchaseURL = updatesProviderPurchaseURL
         self.setReleaseOrder = setReleaseOrder
         self.justTCGCardID = justTCGCardID
         self.justTCGVariantID = justTCGVariantID

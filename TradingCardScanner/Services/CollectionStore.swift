@@ -1408,7 +1408,8 @@ struct CollectionStore {
 
     /// Namespaced keys retain unknown games. Only the historic unnamespaced
     /// Pokémon key format may infer a game without a corresponding live row.
-    private func historyGame(for key: String, gamesByKey: [String: Set<CardGame>]? = nil) throws -> CardGame {
+    private func historyGame(for key: String, gamesByKey: [String: Set<CardGame>]? = nil,
+                             recordedGame: CardGame? = nil) throws -> CardGame {
         let games: Set<CardGame>
         if let gamesByKey { games = gamesByKey[key] ?? [] }
         else {
@@ -1418,6 +1419,7 @@ struct CollectionStore {
             for candidate in games { try requireWritableGame(candidate) }
             return game
         }
+        if let recordedGame { return recordedGame }
         let parts = key.split(separator: ":", omittingEmptySubsequences: false)
         if parts.first == "graded" || parts.first == "sealed" {
             return CardGame(rawValue: parts.count > 1 ? String(parts[1]) : "")
@@ -1429,17 +1431,45 @@ struct CollectionStore {
     private func requireWritableActivity(_ activity: CollectionActivity, gamesByKey: [String: Set<CardGame>]? = nil) throws {
         if !activity.gameRaw.isEmpty { try requireWritableGame(activity.game) }
         if let anchor = activity.backfillAnchorCard { try requireWritableGame(anchor.cardGame) }
-        try requireWritableGame(historyGame(for: activity.collectionKey, gamesByKey: gamesByKey))
+        try requireWritableGame(historyGame(for: activity.collectionKey, gamesByKey: gamesByKey,
+                                           recordedGame: activity.gameRaw.isEmpty ? nil : activity.game))
     }
 
     /// Also runs for staged transactions. A caller saving later must never
     /// receive staged changes to an unsupported synced ownership identity.
     func validatePendingGameWrites() throws {
         let models = context.insertedModelsArray + context.changedModelsArray + context.deletedModelsArray
+        let historyKeys = Set(models.compactMap { model -> String? in
+            if let activity = model as? CollectionActivity { return activity.collectionKey }
+            return (model as? InventoryEvent)?.collectionKey
+        })
+        var gamesByKey: [String: Set<CardGame>] = [:]
+        if !historyKeys.isEmpty {
+            let keys = Array(historyKeys)
+            let rows = try context.fetch(FetchDescriptor<CollectedCard>(predicate: #Predicate { keys.contains($0.collectionKey) }))
+            for row in rows + models.compactMap({ $0 as? CollectedCard }) {
+                gamesByKey[row.collectionKey, default: []].insert(row.cardGame)
+            }
+            // Removed rows may have provider IDs containing colons. Their
+            // recorded activity game is more reliable than parsing the key.
+            let missing = keys.filter { gamesByKey[$0] == nil }
+            if !missing.isEmpty {
+                let missingKeys = Set(missing)
+                let activities = try context.fetch(FetchDescriptor<CollectionActivity>(predicate: #Predicate {
+                    missing.contains($0.collectionKey)
+                }))
+                for activity in activities + models.compactMap({ $0 as? CollectionActivity })
+                    where missingKeys.contains(activity.collectionKey) && !activity.gameRaw.isEmpty {
+                    gamesByKey[activity.collectionKey, default: []].insert(activity.game)
+                }
+            }
+        }
         for model in models {
             if let row = model as? CollectedCard { try requireWritableGame(row.cardGame) }
-            if let activity = model as? CollectionActivity { try requireWritableActivity(activity) }
-            if let event = model as? InventoryEvent { try requireWritableGame(historyGame(for: event.collectionKey)) }
+            if let activity = model as? CollectionActivity { try requireWritableActivity(activity, gamesByKey: gamesByKey) }
+            if let event = model as? InventoryEvent {
+                try requireWritableGame(historyGame(for: event.collectionKey, gamesByKey: gamesByKey))
+            }
         }
     }
 

@@ -233,7 +233,7 @@ final class CollectionActivity {
         remainingQuantity == 0
     }
 
-    var game: CardGame { CardGame(rawValue: gameRaw) }
+    var game: CardGame { gameRaw.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .pokemon : CardGame(rawValue: gameRaw) }
     var itemKind: CollectionItemKind {
         CollectionItemKind(rawValue: itemKindRaw) ?? .rawCard
     }

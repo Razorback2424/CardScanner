@@ -368,14 +368,12 @@ final class CardGameForwardCompatibilityTests: XCTestCase {
         XCTAssertEqual(entry.collectionKey, "future-game:printing-1")
     }
 
-    func testAbsentGameCanInferButExplicitBlankCannot() throws {
+    func testAbsentAndBlankCSVGamesRetainLegacyFormatInference() throws {
         let inferred = try CollectionCSV.parse(Data("provider_id,card_name,quantity\nid,Card,1\n".utf8))
         XCTAssertEqual(inferred.entries.first?.game, .pokemon)
-        XCTAssertThrowsError(try CollectionCSV.parse(Data("game,provider_id,card_name,quantity\n,id,Card,1\n".utf8))) { error in
-            guard case CollectionCSVError.noCards = error else {
-                return XCTFail("Expected the explicit blank-game row to be refused")
-            }
-        }
+        let blank = try CollectionCSV.parse(Data("game,provider_id,card_name,quantity\n,id,Card,1\n".utf8))
+        XCTAssertEqual(blank.entries.first?.game, .pokemon)
+        XCTAssertEqual(blank.entries.first?.collectionKey, inferred.entries.first?.collectionKey)
     }
 
     func testUnsupportedGameCannotBecomeJustTCGIdentity() {

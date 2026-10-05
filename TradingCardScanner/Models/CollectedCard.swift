@@ -363,7 +363,7 @@ final class CollectedCard {
         if !fillMissingOnly || thumbnailURL == nil {
             thumbnailURL = metadata.thumbnailURL
         }
-        if !fillMissingOnly || tcgplayerURL == nil {
+        if metadata.updatesProviderPurchaseURL && (!fillMissingOnly || tcgplayerURL == nil) {
             tcgplayerURL = metadata.tcgplayerURL
         }
         justTCGCardID = metadata.justTCGCardID ?? justTCGCardID
