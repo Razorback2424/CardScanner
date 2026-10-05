@@ -1214,6 +1214,11 @@ enum CollectionCSV {
 
     private static func importedGame(_ value: String) -> CardGame {
         let game = CardGame(rawValue: value)
+        if let descriptor = CardGameRegistry.standard.games(supporting: [])
+            .compactMap({ CardGameRegistry.standard.descriptor(for: $0) })
+            .first(where: { $0.displayName.caseInsensitiveCompare(game.rawValue) == .orderedSame }) {
+            return descriptor.game
+        }
         return game.rawValue == "magic: the gathering" ? .magic : game
     }
 
@@ -1223,9 +1228,10 @@ enum CollectionCSV {
         if let explicitGame = nonempty(row["game"]) {
             game = importedGame(explicitGame)
         } else {
-            switch category {
-            case "pokemon": game = .pokemon
-            case "magic: the gathering", "magic": game = .magic
+            guard let category else { return [] }
+            switch importedGame(category) {
+            case .pokemon: game = .pokemon
+            case .magic: game = .magic
             default: return []
             }
         }

@@ -376,6 +376,17 @@ final class CardGameForwardCompatibilityTests: XCTestCase {
         XCTAssertEqual(blank.entries.first?.collectionKey, inferred.entries.first?.collectionKey)
     }
 
+    func testCSVDisplayNamesMapToStableIDsWithoutCoercingUnknownGames() throws {
+        for (name, expected) in [("Pokémon", CardGame.pokemon), ("POKÉMON", .pokemon),
+            ("Magic: The Gathering", .magic), ("One Piece", .onePiece), ("Disney Lorcana", .lorcana),
+            ("Future Pokémon Game", CardGame(rawValue: "future pokémon game"))] {
+            let plan = try CollectionCSV.parse(Data("game,provider_id,card_name,quantity\n\(name),id,Card,1\n".utf8))
+            XCTAssertEqual(plan.entries.first?.game, expected, name)
+        }
+        let portfolio = try CollectionCSV.parse(Data("category,product_name,set,card_number,quantity\nPokémon,Pikachu,Base Set,25,1\n".utf8))
+        XCTAssertEqual(portfolio.entries.first?.game, .pokemon)
+    }
+
     func testUnsupportedGameCannotBecomeJustTCGIdentity() {
         let game = CardGame(rawValue: "future-game")
         XCTAssertNil(ProductCatalogIdentity.game(for: game, catalogID: "printing-1"))
