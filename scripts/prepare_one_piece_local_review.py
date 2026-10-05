@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import os
+import plistlib
 from pathlib import Path
 import subprocess
 
@@ -20,6 +21,8 @@ def main():
     parser.add_argument("--publisher", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True,
                         help="New external review artifact directory; never overwritten")
+    parser.add_argument("--reuse-existing-app", action="store_true",
+                        help="Opt in to Home Screen review mode when updating the owner's existing debug app identity")
     args = parser.parse_args()
     publisher = args.publisher.resolve(strict=True)
     corpus = Path(__file__).resolve().parents[1] / "OnePieceCatalogCore/ReviewCorpus/english-stress"
@@ -58,6 +61,14 @@ def main():
     arguments = ["-one_piece_local_review", "-one_piece_review_seed", str(seed),
                  "-one_piece_review_public_key", public_key]
     (output / "launch-arguments.json").write_text(json.dumps(arguments, indent=2) + "\n")
+    # Separate device installs can reopen from the Home Screen without flags.
+    # The payload is copied into their own Documents container after installation.
+    info = plistlib.loads((corpus.parents[2] / "TradingCardScanner/Info.plist").read_bytes())
+    info["CFBundleDisplayName"] = "One Piece Review"
+    info["ONE_PIECE_LOCAL_REVIEW_PUBLIC_KEY"] = public_key
+    if args.reuse_existing_app:
+        info["ONE_PIECE_LOCAL_REVIEW_ENABLED"] = True
+    (output / "Review-Info.plist").write_bytes(plistlib.dumps(info))
     print(f"Local review kit: {output}")
     print("DebugRemoteLocal only; reviewed printings and exact base market mappings; no production sync.")
 

@@ -65,7 +65,7 @@ if [[ -n "${MARKER_PATH:-}" ]]; then
   cp "$MARKER_PATH" "$ARTIFACTS_DIR/centering-geometry.json"
   sleep 1
 else
-  sleep 2.5
+  sleep "${UI_CAPTURE_DELAY_SECONDS:-2.5}"
 fi
 "$(dirname "$0")/ui_screenshot_simctl.sh" "$SCREENSHOT_PATH" "$UI_DEVICE_ID"
 

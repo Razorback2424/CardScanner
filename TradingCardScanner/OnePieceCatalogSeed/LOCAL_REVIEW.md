@@ -1,13 +1,20 @@
 # Local One Piece base-case review
 
-Status: implemented and simulator-tested against reviewed award and FILM RED
-retail data — 2026-10-04. This is an opt-in `DebugRemoteLocal` launch, not a
+**Owner flow correction — 2026-10-05:** the owner uses the original
+TradingCardScanner app and existing collection with a verified owner-local
+catalog. The isolated tooling below is optional developer infrastructure,
+superseded for daily use by the
+[installed app record](../../docs/plans/one_piece_device_review.md).
+
+Status: implemented and simulator-tested; pricing/device-launch documentation
+reconciled 2026-10-05. This is an opt-in `DebugRemoteLocal` launch, not a
 production seed.
 
 The debug binary must have `DEBUG LOCAL_ONLY_SIGNING`; release and entitled
 builds ignore these launch flags. The review launch registers scan, Browse and
 collection writes from an independently verified signed catalog. It performs no
-remote One Piece update and has no price adapter. Collection databases, manifest
+remote One Piece update. Its price adapter uses only reviewed exact TCGCSV/TCGplayer
+printing/finish mappings; unmapped printings show Price unavailable. Collection databases, manifest
 and unresolved scans use `Application Support/OnePieceLocalReview`, separate from
 the ordinary collection. Keep the review flags on subsequent launches to reopen
 that collection; ordinary launches retain the production disabled configuration.
@@ -27,11 +34,13 @@ python3 scripts/prepare_one_piece_local_review.py \
 The tool uses the reviewed registry and combined retained observations/inventories,
 validates a fresh candidate, and signs it with an ephemeral `one-piece-local-review`
 key. Only the public key, signed envelope and manifest are retained. It retrieves
-no provider data or image assets. The kit contains the verified P-001 winner,
+no provider data or image assets. Historical subset: the earlier kit contained the verified P-001 winner,
 twelve verified FILM RED retail printings, 34 standard cards across ST-01–ST-04
 and 59 standard OP-01 printings, plus retained provisional/conflicted publisher
 review records;
-it is not the full English catalog.
+that subset was not the full English catalog. The current tool reads the full
+ordinary retained registry (2,490 verified, 224 provisional, 31 conflicted) and
+1,961 exact base mappings. Physical coverage remains incomplete.
 
 ## Launch
 
@@ -69,6 +78,41 @@ Other P-001 releases are still outside the reviewed coverage. A missing image
 does not grant permission to substitute another artwork.
 
 ## Evidence and limits
+
+For a physical iPhone, use the `TradingCardScanner-DebugRemoteLocal` scheme and
+set the three launch arguments in Xcode. Copy the envelope into the app's
+Documents directory using Xcode's device app-container controls. Set the seed
+argument to `Documents/one-piece-local-review.json`; the app resolves its own
+container path. Use the kit's public key as the third flag's value. Preserve
+existing device app/data; review storage is separate, but the scheme uses the
+ordinary bundle identifier.
+
+**Separate physical review install — 2026-10-05:** the preparation tool also
+creates `Review-Info.plist` containing only the ephemeral public review key and
+display name. Build `DebugRemoteLocal` with
+`PRODUCT_BUNDLE_IDENTIFIER=com.seankeller.CardScanner.OnePieceReview` and
+`INFOPLIST_FILE` pointing to that generated file. This installs “One Piece Review”
+alongside the ordinary app. Copy the signed envelope to
+`Documents/one-piece-local-review.json` in the review app's container using
+`devicectl device copy to --domain-type appDataContainer --domain-identifier
+com.seankeller.CardScanner.OnePieceReview`. The separate debug app automatically
+uses that file and its public pin on every Home Screen launch. Normal builds
+without a review opt-in and release/entitled binaries ignore this configuration.
+
+If the owner chooses to reuse the already-working app identity (for example,
+when all free developer-app slots are occupied), prepare with
+`--reuse-existing-app` and build with `PRODUCT_BUNDLE_IDENTIFIER=com.seankeller.CardScanner`.
+The generated review Info.plist explicitly enables debug review mode for that
+identity. Install as an update without uninstalling. Copy the envelope to that
+app's Documents directory. The original collection files remain in its container;
+review launches use `Application Support/OnePieceLocalReview` instead. A subsequent
+normal build without the review opt-in returns to ordinary storage. This mode
+does not enable production One Piece or CloudKit writes.
+
+App-format collection CSV preserves One Piece UUIDs/finishes. Portfolio-format
+CSV accepts registered display names but supports only Pokémon and Magic rows;
+it skips One Piece because that format cannot prove the physical printing.
+See the [release acceptance checklist](../../docs/plans/one_piece_release_acceptance.md).
 
 `testRealLocalReviewScanChoiceCollectionRelaunchAndCSVBaseCase` uses the real
 review data, signed-seed bootstrap, scanner confirmation callback, explicit
@@ -111,8 +155,9 @@ cases with the expanded data and base cases. Its kit contains 106 verified
 printings, 89 provisional records and eight conflicted records. The latter two
 groups remain review-only and cannot be selected for acquisition.
 
-The current ST-01–ST-09 / OP-01–OP-02 kit contains 306 verified printings,
+Historical: the ST-01–ST-09 / OP-01–OP-02 kit contains 306 verified printings,
 91 provisional records and eight conflicted records. It passes 40 core and 40
 integration tests, including one injected-recognition acquisition per new product.
 Its private artifact directory is `nine-starters-two-boosters-kit`; it expands
-local review coverage without enabling production publication, pricing or sync.
+local review coverage without enabling production publication or sync. That
+historical kit predates current exact-mapping pricing support.
