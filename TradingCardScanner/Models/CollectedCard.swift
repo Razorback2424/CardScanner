@@ -336,15 +336,9 @@ final class CollectedCard {
         setCode = card.setCode
         rarity = card.rarity
         setReleaseOrder = card.setReleaseOrder
-        switch card {
-        case let .pokemon(pokemon, _):
-            imageURL = pokemon.image
-            thumbnailURL = pokemon.image.map { $0 + "/low.png" }
-        case let .magic(magic):
-            imageURL = card.displayImageURL?.absoluteString
-            thumbnailURL = card.thumbnailImageURL?.absoluteString
-            tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
-        }
+        imageURL = card.storedImageURL
+        thumbnailURL = card.catalogMetadataThumbnailURL
+        if card.updatesProviderPurchaseURL { tcgplayerURL = card.providerPurchaseURL }
     }
 
     func applyCatalogMetadata(
@@ -392,12 +386,7 @@ final class CollectedCard {
             setCode: card.setCode,
             cardNumber: card.cardNumber,
             rarity: card.rarity,
-            imageURL: {
-                switch card {
-                case let .pokemon(pokemon, _): return pokemon.image
-                case .magic: return card.displayImageURL?.absoluteString
-                }
-            }(),
+            imageURL: card.storedImageURL,
             thumbnailURL: card.thumbnailImageURL?.absoluteString,
             variant: resolved.variant,
             variantResolution: resolved.resolution,
@@ -411,13 +400,11 @@ final class CollectedCard {
         )
         magicTreatmentQualifiers = card.magicTreatmentQualifiers(for: resolved.variant)
         magicContentKindRaw = card.magicContentKind.rawValue
-        if case let .magic(magic) = card {
-            tcgplayerURL = magic.purchaseURIs?.tcgplayer?.absoluteString
-        }
+        tcgplayerURL = card.providerPurchaseURL
     }
 
     var cardGame: CardGame {
-        CardGame(rawValue: game) ?? .pokemon
+        CardGame(rawValue: game)
     }
 
     // MARK: - Namespaced identities

@@ -121,7 +121,7 @@ final class HistoricalCatalogRequestTests: XCTestCase {
         let identifier = try XCTUnwrap(
             PokemonHistoricalScanParser.parse(numberLines: ["19/102"], titleLines: [title])
         )
-        guard case let .pokemonHistorical(value) = identifier else {
+        guard case let .pokemonHistorical(value) = identifier.legacyIdentity else {
             throw NSError(domain: "HistoricalCatalogRequestTests", code: 1)
         }
         return value
@@ -185,7 +185,7 @@ final class HistoricalCatalogRequestTests: XCTestCase {
         let identifier = try XCTUnwrap(
             PokemonHistoricalScanParser.parse(numberLines: ["47/127"], titleLines: ["Crobat G"])
         )
-        guard case let .pokemonHistorical(evidence) = identifier else {
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
             return XCTFail("Expected historical evidence")
         }
         let identity = PokemonCatalogCardIdentity(
@@ -203,7 +203,7 @@ final class HistoricalCatalogRequestTests: XCTestCase {
             matching: evidence,
             registry: registry
         )
-        guard case let .pokemon(card, setCode) = identified else {
+        guard case let .pokemon(card, setCode) = identified.legacyIdentity else {
             return XCTFail("Expected a Pokémon card")
         }
         XCTAssertEqual(card.id, "30th-c-011")
@@ -225,7 +225,7 @@ final class HistoricalCatalogRequestTests: XCTestCase {
             matching: evidence,
             registry: registry
         )
-        guard case let .pokemon(platinumCard, _) = platinum else {
+        guard case let .pokemon(platinumCard, _) = platinum.legacyIdentity else {
             return XCTFail("Expected the historical Platinum card")
         }
         XCTAssertEqual(platinumCard.id, "pl1-47")
@@ -251,7 +251,7 @@ final class HistoricalCatalogRequestTests: XCTestCase {
             for: identity,
             matching: evidence,
             registry: registry
-        ) else {
+        ).legacyIdentity else {
             return XCTFail("Selected Classic Pikachu should resolve online")
         }
         XCTAssertEqual(card.id, "30th-c-014")

@@ -7,6 +7,13 @@ import UniformTypeIdentifiers
 /// category leads to a focused form instead of asking someone to scan every
 /// low-frequency control before finding the one they need.
 struct SettingsView: View {
+    @Environment(\.cardGameRuntimes) private var runtimes
+
+    var body: some View { SettingsContentView(runtimes: runtimes) }
+}
+
+private struct SettingsContentView: View {
+    private let runtimes: CardGameRuntimeContainer?
     @EnvironmentObject private var scannerModel: ScannerViewModel
     @EnvironmentObject private var writeCoordinator: DerivedStateWriteCoordinator
     @Environment(\.dismiss) private var dismiss
@@ -30,7 +37,12 @@ struct SettingsView: View {
     @State private var priceCoverageGaps: [PriceCoverageGapLog.Gap] = []
     @State private var browseHistoryDiagnostics = BrowsePriceHistoryDiagnostics.empty
     @AppStorage("pokemonMasterSetTier") private var pokemonMasterSetTier: PokemonMasterSetTier = .standard
-    @StateObject private var catalogNormalizer = CollectionCatalogNormalizer()
+    @StateObject private var catalogNormalizer: CollectionCatalogNormalizer
+
+    init(runtimes: CardGameRuntimeContainer?) {
+        self.runtimes = runtimes
+        _catalogNormalizer = StateObject(wrappedValue: runtimes?.makeCollectionNormalizer() ?? CollectionCatalogNormalizer())
+    }
 
     var body: some View {
         NavigationStack {
@@ -580,6 +592,11 @@ struct SettingsView: View {
                 }
             }
             do {
+                // Catalog activation may suspend. Resolve the immutable import
+                // snapshot before taking the collection's exclusive write lock.
+                let importAdapters = await runtimes?.currentImportAdapters() ?? (try! GameImportAdapterRegistry(adapters: []))
+                let gameRegistry = runtimes?.registry ?? .standard
+                guard storageShouldContinue(), stopFlag.shouldContinue else { return }
                 let result = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
                     let exclusiveToken = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
                     defer { CollectionWriteSerializer.endExclusive(exclusiveToken) }
@@ -588,6 +605,8 @@ struct SettingsView: View {
                         to: container,
                         batchSize: 100,
                         exclusiveToken: exclusiveToken,
+                        gameRegistry: gameRegistry,
+                        gameImportAdapters: importAdapters,
                         progress: { completedEntries, totalEntries in
                             Task { @MainActor in
                                 writeCoordinator.updateCSVImportProgress(

@@ -6,110 +6,46 @@ actor MagicCatalogReleaseStore {
         subsystem: "com.scan-stash.TradingCardScanner",
         category: "magicCatalogStore"
     )
-
     enum Slot: String, CaseIterable {
         case current = "magic-catalog-release-current.json"
         case previous = "magic-catalog-release-previous.json"
     }
-
-    struct StoredRelease: Sendable {
-        let envelope: MagicCatalogReleaseEnvelope
-        let release: MagicCatalogRelease
-        let registry: MagicCatalogRegistry
-    }
-
-    enum ActivationResult: Equatable {
-        case activated(revision: Int, previousRevision: Int?)
-        case alreadyCurrent
-    }
-
-    private let root: URL
-    private var current: StoredRelease?
-    private var previous: StoredRelease?
-    private var didLoad = false
+    typealias Core = SignedCatalogReleaseStore<MagicCatalogReleaseEnvelope, MagicCatalogRelease, MagicCatalogRegistry>
+    typealias StoredRelease = Core.StoredRelease
+    typealias ActivationResult = SignedCatalogActivationResult
+    private let core: Core
 
     init(root: URL? = nil) {
-        self.root = root ?? FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first!
-            .appendingPathComponent("BrowseCatalogCache/MagicCatalogReleases", isDirectory: true)
+        let root = root ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first!.appendingPathComponent("BrowseCatalogCache/MagicCatalogReleases", isDirectory: true)
+        core = Core(root: root, currentName: Slot.current.rawValue, previousName: Slot.previous.rawValue,
+                    revisionPolicy: .activeRelease, revision: { $0.revision },
+                    encode: { try MagicCatalogJSON.encode($0) })
     }
 
-    var activeRelease: StoredRelease? { current ?? previous }
-    var activeRevision: Int? { activeRelease?.release.revision }
-    var activeRegistry: MagicCatalogRegistry? { activeRelease?.registry }
+    var activeRelease: StoredRelease? { get async { await core.activeRelease } }
+    var activeRevision: Int? { get async { await core.activeRevision } }
+    var activeRegistry: MagicCatalogRegistry? { get async { await core.activeRegistry } }
 
-    func load(keys: [MagicCatalogSignatureVerifier.PinnedKey]) {
-        guard !didLoad else { return }
-        didLoad = true
-        current = loadSlot(.current, keys: keys)
-        if current == nil { previous = loadSlot(.previous, keys: keys) }
+    func load(keys: [MagicCatalogSignatureVerifier.PinnedKey]) async {
+        await core.load(decodeAndVerify: { bytes in
+            let envelope = try MagicCatalogJSON.decode(MagicCatalogReleaseEnvelope.self, from: bytes)
+            let release = try MagicCatalogSignatureVerifier.verify(envelope: envelope, currentRevision: nil, keys: keys)
+            return .init(envelope: envelope, release: release, registry: MagicCatalogRegistry(release: release))
+        }, rejectedSlot: { slot in
+            Self.logger.warning("Failed to load or verify \(slot)")
+        })
     }
 
-    func activate(
-        envelope: MagicCatalogReleaseEnvelope,
-        release: MagicCatalogRelease,
-        registry: MagicCatalogRegistry
-    ) throws -> ActivationResult {
-        let previousRevision = activeRelease?.release.revision
-        if let previousRevision, release.revision <= previousRevision {
-            return .alreadyCurrent
-        }
-        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
-        let currentURL = root.appendingPathComponent(Slot.current.rawValue)
-        let previousURL = root.appendingPathComponent(Slot.previous.rawValue)
-        if current != nil, FileManager.default.fileExists(atPath: currentURL.path) {
-            try? FileManager.default.removeItem(at: previousURL)
-            try FileManager.default.moveItem(at: currentURL, to: previousURL)
-            previous = current
-        }
-        let data = try MagicCatalogJSON.encode(envelope)
-        try data.write(to: currentURL, options: .atomic)
-        current = StoredRelease(envelope: envelope, release: release, registry: registry)
-        return .activated(revision: release.revision, previousRevision: previousRevision)
+    func activate(envelope: MagicCatalogReleaseEnvelope, release: MagicCatalogRelease,
+                  registry: MagicCatalogRegistry) async throws -> ActivationResult {
+        try await core.activate(.init(envelope: envelope, release: release, registry: registry))
     }
 
-    nonisolated func recoverFromBundledSeed() -> MagicCatalogRegistry {
-        MagicCatalogRegistry.bundledSeed
-    }
+    nonisolated func recoverFromBundledSeed() -> MagicCatalogRegistry { .bundledSeed }
 
     #if DEBUG
-    var currentSlotRelease: StoredRelease? { current }
-
-    func reset() {
-        current = nil
-        previous = nil
-        didLoad = false
-        for slot in Slot.allCases {
-            try? FileManager.default.removeItem(at: root.appendingPathComponent(slot.rawValue))
-        }
-    }
+    var currentSlotRelease: StoredRelease? { get async { await core.currentSlotRelease } }
+    func reset() async { await core.reset() }
     #endif
-
-    private func loadSlot(
-        _ slot: Slot,
-        keys: [MagicCatalogSignatureVerifier.PinnedKey]
-    ) -> StoredRelease? {
-        let url = root.appendingPathComponent(slot.rawValue)
-        guard let data = try? Data(contentsOf: url),
-              let envelope = try? MagicCatalogJSON.decode(
-                MagicCatalogReleaseEnvelope.self,
-                from: data
-              ),
-              let release = try? MagicCatalogSignatureVerifier.verify(
-                envelope: envelope,
-                currentRevision: nil,
-                keys: keys
-              ) else {
-            if FileManager.default.fileExists(atPath: url.path) {
-                Self.logger.warning("Failed to load or verify \(slot.rawValue)")
-            }
-            return nil
-        }
-        return StoredRelease(
-            envelope: envelope,
-            release: release,
-            registry: MagicCatalogRegistry(release: release)
-        )
-    }
 }

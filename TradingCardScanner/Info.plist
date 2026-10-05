@@ -36,6 +36,12 @@
 	<string>$(MAGIC_CATALOG_ROLLOUT_MODE)</string>
 	<key>MAGIC_CATALOG_PINNED_KEYS</key>
 	<string>$(MAGIC_CATALOG_PINNED_KEYS)</string>
+	<key>ONE_PIECE_CATALOG_BASE_URL</key>
+	<string>$(ONE_PIECE_CATALOG_BASE_URL)</string>
+	<key>ONE_PIECE_CATALOG_ROLLOUT_MODE</key>
+	<string>$(ONE_PIECE_CATALOG_ROLLOUT_MODE)</string>
+	<key>ONE_PIECE_CATALOG_PINNED_KEYS</key>
+	<string>$(ONE_PIECE_CATALOG_PINNED_KEYS)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

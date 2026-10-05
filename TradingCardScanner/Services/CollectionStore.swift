@@ -825,6 +825,7 @@ actor ScannerCollectionWriter {
     }
 
     private func saveModelContext(_ context: ModelContext) throws {
+        try CollectionStore(context: context).validatePendingGameWrites()
         #if DEBUG
         if let saveOverrideForTesting {
             self.saveOverrideForTesting = nil
@@ -1200,6 +1201,11 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
     private final class Entry {
         weak var container: ModelContainer?
         let session: CollectionStoreSession
+        var gameRegistry: CardGameRegistry?
+        var catalogAdapters: GameCatalogAdapterRegistry?
+        var legacyCorrectionGames = Set<CardGame>()
+        var catalogRevisions: [CardGame: Int] = [:]
+        var hasCatalogAuthority = false
 
         init(container: ModelContainer, session: CollectionStoreSession) {
             self.container = container
@@ -1209,6 +1215,88 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
 
     private let lock = NSLock()
     private var entries: [ObjectIdentifier: Entry] = [:]
+
+    func configure(_ registry: CardGameRegistry, for container: ModelContainer) {
+        _ = session(for: container)
+        lock.lock()
+        defer { lock.unlock() }
+        entries[ObjectIdentifier(container)]?.gameRegistry = registry
+    }
+
+    func configureCatalogAdapters(
+        _ adapters: GameCatalogAdapterRegistry,
+        legacyCorrectionGames: Set<CardGame>,
+        for container: ModelContainer
+    ) {
+        _ = session(for: container)
+        lock.lock()
+        defer { lock.unlock() }
+        guard let entry = entries[ObjectIdentifier(container)] else { return }
+        var active = adapters
+        if let installed = entry.catalogAdapters {
+            for (game, revision) in entry.catalogRevisions where revision >= 0 {
+                if let adapter = installed.adapter(for: game) { active = active.replacing(adapter) }
+            }
+        }
+        entry.catalogAdapters = active
+        entry.legacyCorrectionGames = legacyCorrectionGames
+        entry.hasCatalogAuthority = true
+    }
+
+    @discardableResult
+    func installCatalogAdapter(
+        _ adapter: any GameCatalogAdapter,
+        revision: Int,
+        for container: ModelContainer
+    ) -> Bool {
+        _ = session(for: container)
+        lock.lock()
+        defer { lock.unlock() }
+        guard let entry = entries[ObjectIdentifier(container)], revision >= 0 else { return false }
+        let installedRevision = entry.catalogRevisions[adapter.game, default: -1]
+        if revision == installedRevision {
+            return entry.catalogAdapters?.adapter(for: adapter.game)?.generation == adapter.generation
+        }
+        guard revision > installedRevision else { return false }
+        let current = entry.catalogAdapters ?? (try! GameCatalogAdapterRegistry(adapters: []))
+        entry.catalogAdapters = current.replacing(adapter)
+        entry.catalogRevisions[adapter.game] = revision
+        return true
+    }
+
+    func canInstallCatalogAdapter(_ adapter: any GameCatalogAdapter, revision: Int,
+                                 for container: ModelContainer) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard revision >= 0 else { return false }
+        guard let entry = entries[ObjectIdentifier(container)] else { return true }
+        let installedRevision = entry.catalogRevisions[adapter.game, default: -1]
+        return revision > installedRevision || (revision == installedRevision
+            && entry.catalogAdapters?.adapter(for: adapter.game)?.generation == adapter.generation)
+    }
+
+    func variantCorrectionAuthority(
+        for game: CardGame,
+        container: ModelContainer
+    ) -> (adapter: (any GameCatalogAdapter)?, allowsLegacyCorrection: Bool) {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let entry = entries[ObjectIdentifier(container)] else {
+            return (nil, CardGameRegistry.standard.supports(game, .collectionWrite))
+        }
+        if entry.hasCatalogAuthority {
+            return (entry.catalogAdapters?.adapter(for: game), entry.legacyCorrectionGames.contains(game))
+        }
+        // Stores constructed by older call sites and tests retain the existing
+        // Pokémon/Magic correction path until the app runtime configures authority.
+        return (nil, CardGameRegistry.standard.supports(game, .collectionWrite))
+    }
+
+    func gameRegistry(for container: ModelContainer, fallback: CardGameRegistry = .standard) -> CardGameRegistry {
+        lock.lock()
+        defer { lock.unlock() }
+        return entries[ObjectIdentifier(container)]?.gameRegistry ?? fallback
+    }
 
     func session(for container: ModelContainer) -> CollectionStoreSession {
         lock.lock()
@@ -1259,10 +1347,100 @@ actor CollectionDetailQuantityReader {
 struct CollectionStore {
     let context: ModelContext
     private let session: CollectionStoreSession
+    private let initialGameRegistry: CardGameRegistry?
+    private var gameRegistry: CardGameRegistry {
+        CollectionStoreSessionRegistry.shared.gameRegistry(for: context.container,
+                                                         fallback: initialGameRegistry ?? .standard)
+    }
 
-    init(context: ModelContext) {
+    init(context: ModelContext, gameRegistry: CardGameRegistry? = nil) {
         self.context = context
+        self.initialGameRegistry = gameRegistry
         self.session = CollectionStoreSessionRegistry.shared.session(for: context.container)
+    }
+
+    static func configureGames(_ registry: CardGameRegistry, for container: ModelContainer) {
+        CollectionStoreSessionRegistry.shared.configure(registry, for: container)
+    }
+
+    static func configureCatalogAdapters(
+        _ adapters: GameCatalogAdapterRegistry,
+        legacyCorrectionGames: Set<CardGame>,
+        for container: ModelContainer
+    ) {
+        CollectionStoreSessionRegistry.shared.configureCatalogAdapters(
+            adapters, legacyCorrectionGames: legacyCorrectionGames, for: container
+        )
+    }
+
+    @discardableResult
+    static func installCatalogAdapter(
+        _ adapter: any GameCatalogAdapter,
+        revision: Int,
+        for container: ModelContainer
+    ) -> Bool {
+        CollectionStoreSessionRegistry.shared.installCatalogAdapter(adapter, revision: revision, for: container)
+    }
+
+    static func canInstallCatalogAdapter(_ adapter: any GameCatalogAdapter, revision: Int,
+                                        for container: ModelContainer) -> Bool {
+        CollectionStoreSessionRegistry.shared.canInstallCatalogAdapter(adapter, revision: revision, for: container)
+    }
+
+    private func requireWritableGame(_ game: CardGame) throws {
+        guard gameRegistry.supports(game, .collectionWrite) else {
+            throw CardGameSupportError.unsupportedGame(game)
+        }
+    }
+
+    private func requireSupportedVariantCorrection(for card: CollectedCard, to variant: PhysicalVariant?) throws {
+        let authority = CollectionStoreSessionRegistry.shared.variantCorrectionAuthority(
+            for: card.cardGame, container: context.container
+        )
+        if authority.allowsLegacyCorrection { return }
+        guard let adapter = authority.adapter else { throw CatalogLookupError.invalidPrintingChoice }
+        try adapter.validateVariantCorrection(printingID: card.providerID, variantID: variant?.id)
+    }
+
+    func permitsSyncedMetadataWrite(for card: CollectedCard) -> Bool {
+        gameRegistry.supports(card.cardGame, .collectionWrite)
+    }
+
+    /// Namespaced keys retain unknown games. Only the historic unnamespaced
+    /// Pokémon key format may infer a game without a corresponding live row.
+    private func historyGame(for key: String, gamesByKey: [String: Set<CardGame>]? = nil) throws -> CardGame {
+        let games: Set<CardGame>
+        if let gamesByKey { games = gamesByKey[key] ?? [] }
+        else {
+            games = Set(try context.fetch(FetchDescriptor<CollectedCard>(predicate: #Predicate { $0.collectionKey == key })).map(\.cardGame))
+        }
+        if let game = games.first {
+            for candidate in games { try requireWritableGame(candidate) }
+            return game
+        }
+        let parts = key.split(separator: ":", omittingEmptySubsequences: false)
+        if parts.first == "graded" || parts.first == "sealed" {
+            return CardGame(rawValue: parts.count > 1 ? String(parts[1]) : "")
+        }
+        if parts.count > 1 { return CardGame(rawValue: String(parts[0])) }
+        return key.isEmpty ? CardGame(rawValue: "") : .pokemon
+    }
+
+    private func requireWritableActivity(_ activity: CollectionActivity, gamesByKey: [String: Set<CardGame>]? = nil) throws {
+        if !activity.gameRaw.isEmpty { try requireWritableGame(activity.game) }
+        if let anchor = activity.backfillAnchorCard { try requireWritableGame(anchor.cardGame) }
+        try requireWritableGame(historyGame(for: activity.collectionKey, gamesByKey: gamesByKey))
+    }
+
+    /// Also runs for staged transactions. A caller saving later must never
+    /// receive staged changes to an unsupported synced ownership identity.
+    func validatePendingGameWrites() throws {
+        let models = context.insertedModelsArray + context.changedModelsArray + context.deletedModelsArray
+        for model in models {
+            if let row = model as? CollectedCard { try requireWritableGame(row.cardGame) }
+            if let activity = model as? CollectionActivity { try requireWritableActivity(activity) }
+            if let event = model as? InventoryEvent { try requireWritableGame(historyGame(for: event.collectionKey)) }
+        }
     }
 
     private static let existingCollectionBackfillVersionKey =
@@ -1334,6 +1512,7 @@ struct CollectionStore {
         removalSnapshot: RemovedCardSnapshot? = nil,
         resolvedQuantity: Int = 0
     ) throws -> CollectionActivity {
+        try requireWritableGame(card.cardGame)
         let snapshotData = try removalSnapshot.map { try JSONEncoder().encode($0) }
         let activity = CollectionActivity(
             card: card,
@@ -1360,39 +1539,37 @@ struct CollectionStore {
         defaults: UserDefaults = .standard
     ) throws {
         do {
-            let hasLegacyActivities = try context.fetchCount(
-                FetchDescriptor<CollectionActivity>(
-                    predicate: #Predicate { $0.kindRaw == "" }
-                )
-            ) > 0
-            let watermarkKey = Self.existingCollectionBackfillVersionKey(
-                for: context.container
-            )
+            let watermarkKey = Self.existingCollectionBackfillVersionKey(for: context.container)
+            let backfillVersion = Self.existingCollectionBackfillVersion
+            let writableGames = gameRegistry.games(supporting: .collectionWrite).map(\.rawValue)
+            if defaults.integer(forKey: watermarkKey) >= backfillVersion {
+                let uncovered = try context.fetchCount(FetchDescriptor<CollectedCard>(predicate: #Predicate {
+                    writableGames.contains($0.game) && ($0.activityBackfillVersion < backfillVersion || $0.activityBackfillAnchor == nil)
+                }))
+                let legacy = try context.fetch(FetchDescriptor<CollectionActivity>(predicate: #Predicate {
+                    $0.kindRaw == "" && ($0.gameRaw == "" || writableGames.contains($0.gameRaw))
+                }))
+                if uncovered == 0 && !legacy.contains(where: { (try? requireWritableActivity($0)) != nil }) { return }
+            }
+            let allCards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let gamesByKey = Dictionary(grouping: allCards, by: \.collectionKey).mapValues { Set($0.map(\.cardGame)) }
+            let cards = allCards
+                .filter { gameRegistry.supports($0.cardGame, .collectionWrite) }
+            let existingActivities = try context.fetch(FetchDescriptor<CollectionActivity>())
+            let writableActivities = existingActivities.filter { (try? requireWritableActivity($0, gamesByKey: gamesByKey)) != nil }
+            let hasLegacyActivities = writableActivities.contains { $0.kindRaw.isEmpty }
             let hasCompletedWatermark = defaults.integer(
                 forKey: watermarkKey
             ) >= Self.existingCollectionBackfillVersion
-            let backfillVersion = Self.existingCollectionBackfillVersion
-            let cardCount = try context.fetchCount(
-                FetchDescriptor<CollectedCard>()
-            )
-            let activityCount = try context.fetchCount(
-                FetchDescriptor<CollectionActivity>()
-            )
-            let anchoredActivityCount = try context.fetchCount(
-                FetchDescriptor<CollectionActivity>(
-                    predicate: #Predicate { $0.backfillAnchorCard != nil }
-                )
-            )
-            let hasUncoveredCards = try context.fetchCount(
-                FetchDescriptor<CollectedCard>(
-                    predicate: #Predicate {
-                        $0.activityBackfillVersion < backfillVersion
-                            || $0.activityBackfillAnchor == nil
-                    }
-                )
-            ) > 0
-            let hasMissingAnchor = anchoredActivityCount < cardCount
-            let hasMissingActivity = activityCount < cardCount
+            let existingActivityIDs = Set(writableActivities.map(\.id))
+            let hasUncoveredCards = cards.contains {
+                $0.activityBackfillVersion < backfillVersion || $0.activityBackfillAnchor == nil
+            }
+            let hasMissingAnchor = cards.contains {
+                !($0.activityBackfillAnchor.map { existingActivityIDs.contains($0.id) } ?? false)
+            }
+            let keysWithActivities = Set(writableActivities.map(\.collectionKey))
+            let hasMissingActivity = cards.contains { !keysWithActivities.contains($0.collectionKey) }
             if !hasLegacyActivities,
                hasCompletedWatermark,
                !hasUncoveredCards,
@@ -1401,11 +1578,9 @@ struct CollectionStore {
                 return
             }
 
-            let existingActivities = try context.fetch(FetchDescriptor<CollectionActivity>())
-            let existingActivityIDs = Set(existingActivities.map(\.id))
             var didChange = false
 
-            for activity in existingActivities {
+            for activity in writableActivities {
                 if activity.kindRaw.isEmpty {
                     activity.kindRaw = CollectionActivityKind.added.rawValue
                     didChange = true
@@ -1416,9 +1591,9 @@ struct CollectionStore {
                 }
             }
 
-            let activitiesByKey = Dictionary(grouping: existingActivities, by: \.collectionKey)
-            let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+            let activitiesByKey = Dictionary(grouping: writableActivities, by: \.collectionKey)
             for card in cards {
+                guard gameRegistry.supports(card.cardGame, .collectionWrite) else { continue }
                 let anchorIsPresent = card.activityBackfillAnchor.map {
                     existingActivityIDs.contains($0.id)
                 } ?? false
@@ -2570,6 +2745,7 @@ struct CollectionStore {
             guard target.quantity == expectedCurrent else {
                 throw CollectionStoreError.staleQuantity
             }
+            try requireWritableGame(target.cardGame)
             let delta = newQuantity - target.quantity
             guard delta != 0 else { return target.quantity }
             let operationID = UUID()
@@ -2680,6 +2856,7 @@ struct CollectionStore {
                 guard let card = projection.byKey[key]?.representative else {
                     throw CollectionStoreError.missingDestinationRow(key)
                 }
+                try collectionStore.requireWritableGame(card.cardGame)
                 let operationID = UUID()
                 let outcome = ledger.record(
                     collectionKey: key,
@@ -2709,7 +2886,7 @@ struct CollectionStore {
                     throw CollectionStoreError.ledgerConflict(defect.detail)
                 }
             }
-            try context.save()
+            try collectionStore.commit()
             collectionStore.invalidateIdentityAliasCache()
         } catch {
             context.rollback()
@@ -2743,6 +2920,7 @@ struct CollectionStore {
         )
     ) throws -> CollectionMutation {
         do {
+            try requireWritableGame(card.game)
             let magicTreatments = card.unambiguousMagicTreatments
             let magicTreatmentQualifiers = card.variantEvidence.catalogVariants.count == 1
                 ? card.magicTreatmentQualifiers(for: card.variantEvidence.catalogVariants[0])
@@ -2967,6 +3145,7 @@ struct CollectionStore {
         savesChanges: Bool = true
     ) throws -> CollectionMutation {
         do {
+            try requireWritableGame(card.game)
             let magicTreatments = card.unambiguousMagicTreatments
             let magicTreatmentQualifiers = card.variantEvidence.catalogVariants.count == 1
                 ? card.magicTreatmentQualifiers(for: card.variantEvidence.catalogVariants[0])
@@ -3353,6 +3532,7 @@ struct CollectionStore {
         game: CardGame
     ) throws -> CollectionMutation {
         do {
+            try requireWritableGame(game)
             let variantUUID = product.variantID ?? product.id
             let key = CollectedCard.sealedCollectionKey(
                 game: game,
@@ -3478,10 +3658,7 @@ struct CollectionStore {
     }
 
     private func imageURL(for card: IdentifiedCard) -> String? {
-        switch card {
-        case let .pokemon(pokemon, _): return pokemon.image
-        case .magic: return card.displayImageURL?.absoluteString
-        }
+        card.storedImageURL
     }
 
     private func updateGradedVariantIdentity(
@@ -3597,6 +3774,7 @@ struct CollectionStore {
             throw CollectionStoreError.insufficientQuantity(card.providerID)
         }
         do {
+            try requireWritableGame(card.game)
             let baseKey = card.collectionKey(variant: resolved.variant)
             let key = pokemonPrintRun.map { "\(baseKey)@\($0.rawValue)" } ?? baseKey
             let mutation: CollectionMutation
@@ -3799,6 +3977,7 @@ struct CollectionStore {
             guard let row = try card(forAnyKey: mutation.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(mutation.collectionKey)
             }
+            try requireWritableGame(row.cardGame)
             // `card(forAnyKey:)` may have repaired a legacy row to the
             // treatment-qualified key inferred from synced ledger events. All
             // lineage checks and the appended inverse must use that repaired
@@ -3890,6 +4069,7 @@ struct CollectionStore {
             guard let row = try card(forAnyKey: selectedActivity.collectionKey) else {
                 throw CollectionStoreError.missingDestinationRow(selectedActivity.collectionKey)
             }
+            try requireWritableGame(row.cardGame)
             guard row.quantity >= quantity else {
                 throw CollectionStoreError.insufficientQuantity(selectedActivity.collectionKey)
             }
@@ -3957,6 +4137,7 @@ struct CollectionStore {
             }
             let quantity = row.quantity
             var snapshot = RemovedCardSnapshot(card: row)
+            try requireWritableGame(row.cardGame)
             let operationID = UUID()
             try requireAppended(
                 ledger.record(
@@ -4049,6 +4230,7 @@ struct CollectionStore {
         removalActivity: CollectionActivity?
     ) throws {
         do {
+            try requireWritableGame(snapshot.game)
             var snapshot = snapshot
             if let canonicalKey = try canonicalKeyForLegacyRow(snapshot.collectionKey) {
                 snapshot.collectionKey = canonicalKey
@@ -4217,6 +4399,7 @@ struct CollectionStore {
         do {
             guard shouldContinue?() ?? true else { return false }
             let physicalCards = try context.fetch(FetchDescriptor<CollectedCard>())
+            for row in physicalCards { try requireWritableGame(row.cardGame) }
             let projection = LogicalCollection.project(cards: physicalCards, ledger: ledger)
             let collectionKeyAliases = LogicalCollection.readThroughAliases(
                 projection: projection,
@@ -4291,6 +4474,7 @@ struct CollectionStore {
     /// in-memory context is rolled back before the error reaches the caller, so
     /// a later unrelated save cannot accidentally commit a half-failed action.
     private func commit(savesChanges: Bool = true) throws {
+        try validatePendingGameWrites()
         guard savesChanges else { return }
         if CollectionWriteSerializer.enforcesOwnershipRule {
             assert(
@@ -4337,6 +4521,7 @@ struct CollectionStore {
 
         do {
         let previousBaseKey = card.collectionKey(variant: current)
+        try requireWritableGame(card.game)
         let requestedPreviousKey = previousCollectionKey
             ?? pokemonPrintRun.map { "\(previousBaseKey)@\($0.rawValue)" }
             ?? previousBaseKey
@@ -4351,6 +4536,8 @@ struct CollectionStore {
             forAnyKey: requestedPreviousKey,
             magicTreatmentIDsRaw: previousTreatmentIDs.map(\.id)
         ) else { return nil }
+        try requireWritableGame(previous.cardGame)
+        try requireSupportedVariantCorrection(for: previous, to: corrected.variant)
         let previousKey = previous.collectionKey
 
         let candidates = try activities(forKey: previousKey)
@@ -4551,12 +4738,15 @@ struct CollectionStore {
         guard quantity > 0, corrected.variant != card.variant else { return nil }
 
         do {
+            try requireWritableGame(card.cardGame)
             guard let previous = try self.card(
                 forAnyKey: card.collectionKey,
                 magicTreatmentIDsRaw: card.magicTreatmentIDs(for: card.variant)
             ) else {
                 throw CollectionStoreError.missingDestinationRow(card.collectionKey)
             }
+            try requireWritableGame(previous.cardGame)
+            try requireSupportedVariantCorrection(for: previous, to: corrected.variant)
             let previousKey = previous.collectionKey
             let activityToRetarget = try activity(id: activityID)
             guard activityToRetarget.collectionKey == previousKey,
@@ -4815,6 +5005,7 @@ struct CollectionStore {
         mode: CollectionVariantCorrectionMode
     ) throws -> CollectionMutation? {
         guard !claims.isEmpty, corrected.variant != card.variant else { return nil }
+        try requireWritableGame(card.cardGame)
         guard claims.allSatisfy({
             $0.quantity > 0 && $0.quantity <= CollectionQuantityLimits.maximum
         }), Set(claims.map(\.activityID)).count == claims.count else {
@@ -4830,6 +5021,8 @@ struct CollectionStore {
             }
             let previousKey = previous.collectionKey
             guard corrected.variant != previous.variant else { return nil }
+            try requireWritableGame(previous.cardGame)
+            try requireSupportedVariantCorrection(for: previous, to: corrected.variant)
             guard mode != .quietBackfill
                     || (source == .catalogBackfill
                         && previous.variantID == nil

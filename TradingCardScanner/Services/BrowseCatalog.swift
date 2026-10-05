@@ -45,8 +45,20 @@ enum BrowseRequestBuilder {
 }
 
 struct BrowseCatalogUpdate: Sendable, Equatable {
+    /// Nil retains the global-update contract used by older catalog providers.
+    let game: CardGame?
     let revision: Int?
     let providerSetID: String?
+
+    init(game: CardGame? = nil, revision: Int?, providerSetID: String?) {
+        self.game = game; self.revision = revision; self.providerSetID = providerSetID
+    }
+
+    func affects(game: CardGame, providerSetID: String? = nil) -> Bool {
+        guard self.game == nil || self.game == game else { return false }
+        guard let changed = self.providerSetID, let providerSetID else { return true }
+        return changed.caseInsensitiveCompare(providerSetID) == .orderedSame
+    }
 }
 
 enum BrowseCatalogArtworkSelection {
@@ -72,6 +84,11 @@ enum BrowseCatalogArtworkSelection {
 }
 
 actor BrowseCatalog: BrowseCatalogProviding {
+    nonisolated let gameRegistry: CardGameRegistry
+    private var gameBrowseAdapters: GameBrowseAdapterRegistry
+    private let gameActivationSources: [CardGame: any GameCatalogActivationSource]
+    private var gameBrowseTasks: [CardGame: Task<Void, Never>] = [:]
+    private var gameBrowseRevisions: [CardGame: Int] = [:]
     private static let legacyReleaseOrderDefaultsKey = "pokemonCatalogReleaseOrder.v1"
 
     static func applyingSignedCardArtwork(
@@ -207,6 +224,9 @@ actor BrowseCatalog: BrowseCatalogProviding {
         checklistStore: PokemonChecklistStore = .shared,
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
         magicCatalogCoordinator: MagicCatalogCoordinator? = nil,
+        gameRegistry: CardGameRegistry = .standard,
+        gameBrowseAdapters: GameBrowseAdapterRegistry = try! .init(adapters: []),
+        gameActivationSources: [any GameCatalogActivationSource] = [],
         browsePriceHistoryStore: BrowsePriceHistoryStore = .shared,
         scryfallDatasetStamp: any ScryfallDatasetStampProviding = ScryfallDatasetStampCache.shared,
         magicSession: URLSession = .shared,
@@ -217,6 +237,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
         // second ordering authority behind in UserDefaults.
         UserDefaults.standard.removeObject(forKey: Self.legacyReleaseOrderDefaultsKey)
         self.cache = cache
+        self.gameRegistry = gameRegistry
+        self.gameBrowseAdapters = gameBrowseAdapters
+        self.gameActivationSources = Dictionary(gameActivationSources.map { ($0.game, $0) },
+                                               uniquingKeysWith: { first, _ in first })
         self.pokemonTransport = pokemonTransport
         // Recorded Browse transports should remain completely offline in tests
         // and previews. The production transport opts into the live bulk
@@ -239,6 +263,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     deinit {
+        for task in gameBrowseTasks.values { task.cancel() }
         browseHistoryTask?.cancel()
         for task in magicPageRefreshTasks.values { task.cancel() }
         catalogEventTask?.cancel()
@@ -252,6 +277,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func sets(for game: CardGame) async throws -> [CatalogSet] {
+        await synchronizeGameBrowseAuthority(for: game)
+        if let adapter = gameBrowseAdapters.adapter(for: game) {
+            let sets = try await adapter.sets()
+            try validateBrowseGeneration(adapter)
+            return sets
+        }
         installMemoryWarningObserverIfNeeded()
         if game == .pokemon {
             await synchronizeCatalogAuthority()
@@ -305,10 +336,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
             if game == .magic, magicCatalogCoordinator != nil {
                 Task { [cache] in await cache.removeSets(for: .magic) }
             }
+            yieldUpdate(game: game, revision: nil, providerSetID: nil)
             return
         }
         resetPokemonSnapshotCache()
-        yieldUpdate(providerSetID: nil)
+        yieldUpdate(game: .pokemon, revision: catalogRevision, providerSetID: nil)
     }
 
     func activeCatalogRevision() -> Int? {
@@ -403,6 +435,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         switch game {
         case .pokemon: loaded = try await pokemonSets()
         case .magic: loaded = try await magicSets()
+        default: throw CardGameSupportError.unsupportedGame(game)
         }
         if game == .magic, await usesRemoteMagicAuthority() {
             return magicCatalogRegistry.browseSets
@@ -415,7 +448,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         if game == .magic, await usesRemoteMagicAuthority() {
             return magicCatalogRegistry.browseSets
         }
-        if let previous, previous != loaded { yieldUpdate(providerSetID: nil) }
+        if let previous, previous != loaded { yieldUpdate(game: game, revision: nil, providerSetID: nil) }
         return loaded
     }
 
@@ -524,7 +557,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
         catalogRegistry = registry
         catalogRevision = revision
         resetPokemonSnapshotCache()
-        yieldUpdate(providerSetID: nil)
+        yieldUpdate(game: .pokemon, revision: revision, providerSetID: nil)
     }
 
     private func startTargetedReconciliationIfNeeded() async {
@@ -620,7 +653,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 providerSetID: target.providerSetID,
                 desiredFingerprint: target.desiredFingerprint
             )
-            yieldUpdate(providerSetID: target.providerSetID)
+            yieldUpdate(game: .pokemon, revision: catalogRevision, providerSetID: target.providerSetID)
         } catch is CancellationError {
             return
         } catch {
@@ -688,7 +721,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 }
             }
         }
-        yieldUpdate(providerSetID: nil)
+        yieldUpdate(game: .magic, revision: revision, providerSetID: nil)
     }
 
     private func resetPokemonSnapshotCache() {
@@ -706,9 +739,10 @@ actor BrowseCatalog: BrowseCatalogProviding {
         updateContinuations.removeValue(forKey: id)
     }
 
-    private func yieldUpdate(providerSetID: String?) {
+    private func yieldUpdate(game: CardGame, revision: Int?, providerSetID: String?) {
         let update = BrowseCatalogUpdate(
-            revision: catalogRevision,
+            game: game,
+            revision: revision,
             providerSetID: providerSetID
         )
         for continuation in updateContinuations.values {
@@ -768,6 +802,12 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        await synchronizeGameBrowseAuthority(for: set.game)
+        if let adapter = gameBrowseAdapters.adapter(for: set.game) {
+            let page = try await adapter.cards(in: set, cursor: cursor)
+            try validateBrowseGeneration(adapter)
+            return page
+        }
         installMemoryWarningObserverIfNeeded()
         if set.game == .pokemon {
             await synchronizeCatalogAuthority()
@@ -819,6 +859,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             await cache.storeMagicPrices(loaded.prices, for: cacheKey)
             installMagicPrices(loaded.prices, for: loaded.page.items)
             return page
+        default: throw CardGameSupportError.unsupportedGame(set.game)
         }
         let cacheKey = CatalogCacheStore.cardPageKey(for: set, cursor: cursor)
         await cache.storeCardPage(page, for: cacheKey)
@@ -843,7 +884,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
             await cache.storeCardPage(refreshed.page, for: cacheKey)
             await cache.storeMagicPrices(refreshed.prices, for: cacheKey)
             installMagicPrices(refreshed.prices, for: refreshed.page.items)
-            yieldUpdate(providerSetID: set.providerID)
+            yieldUpdate(game: .magic, revision: magicCatalogRevision, providerSetID: set.providerID)
         } catch {
             // Leave the original cache timestamp intact so a later visit
             // can retry, while the current page stays useful offline.
@@ -859,6 +900,13 @@ actor BrowseCatalog: BrowseCatalogProviding {
         installMemoryWarningObserverIfNeeded()
         let normalized = CardNameSearch.normalize(query)
         guard normalized.count >= 2 else { return CatalogPage(items: [], nextCursor: nil) }
+
+        await synchronizeGameBrowseAuthority(for: game)
+        if let adapter = gameBrowseAdapters.adapter(for: game) {
+            let page = try await adapter.search(query: normalized, setIDs: setIDs, cursor: cursor)
+            try validateBrowseGeneration(adapter)
+            return page
+        }
 
         switch game {
         case .pokemon:
@@ -887,10 +935,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 cursor: cursor,
                 collectHistory: false
             ).page
+        default: throw CardGameSupportError.unsupportedGame(game)
         }
     }
 
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        await synchronizeGameBrowseAuthority(for: summary.game)
+        if let adapter = gameBrowseAdapters.adapter(for: summary.game),
+           summary.catalogGeneration != adapter.generation { throw CatalogLookupError.staleCatalog }
         installMemoryWarningObserverIfNeeded()
         let key = detailCacheKey(for: summary)
         let stale = detailCache[key]
@@ -985,6 +1037,11 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func loadDetails(for summary: CatalogCardSummary, ignoringCache: Bool = false) async throws -> CatalogCardDetails {
+        if let adapter = gameBrowseAdapters.adapter(for: summary.game) {
+            let details = try await adapter.details(for: summary)
+            try validateBrowseGeneration(adapter)
+            return details
+        }
         let details: CatalogCardDetails
         switch summary.game {
         case .pokemon:
@@ -1002,13 +1059,14 @@ actor BrowseCatalog: BrowseCatalogProviding {
             let directorySet = directory.first { $0.catalogID == summary.setID }
             guard let set = directorySet else { throw BrowseCatalogError.unknownSet }
             details = CatalogCardDetails(card: .magic(card), set: set, retrievedAt: retrievedAt)
+        default: throw CardGameSupportError.unsupportedGame(summary.game)
         }
         return await addingTCGCSVPrices(to: details)
     }
 
     private func addingTCGCSVPrices(to details: CatalogCardDetails) async -> CatalogCardDetails {
         guard let source = tcgCSVSource,
-              case var .pokemon(card, code) = details.card,
+              case var .pokemon(card, code) = details.card.legacyIdentity,
               PokemonTCGCSVMapping.byCardID[card.id]?.setID == card.set.id else { return details }
         // A failed refresh must not erase a previously retrieved quote or its
         // provenance. A successful snapshot still replaces it, including gaps.
@@ -1023,7 +1081,41 @@ actor BrowseCatalog: BrowseCatalogProviding {
     }
 
     private func detailCacheKey(for summary: CatalogCardSummary) -> String {
-        "\(summary.game.rawValue):\(summary.providerID.lowercased())"
+        [summary.game.rawValue, summary.providerID.lowercased(), summary.catalogGeneration,
+         summary.catalogGeneration == nil ? nil : summary.setID.id].compactMap { $0 }.joined(separator: ":")
+    }
+
+    private func validateBrowseGeneration(_ adapter: any GameBrowseAdapter) throws {
+        guard gameBrowseAdapters.adapter(for: adapter.game)?.generation == adapter.generation else {
+            throw CatalogLookupError.staleCatalog
+        }
+    }
+
+    private func synchronizeGameBrowseAuthority(for game: CardGame) async {
+        guard let source = gameActivationSources[game] else { return }
+        if gameBrowseTasks[game] == nil {
+            gameBrowseTasks[game] = Task { [weak self] in
+                let events = await source.activationSnapshots()
+                if let initial = await source.currentSnapshot(), !Task.isCancelled {
+                    await self?.installBrowseSnapshot(initial, for: game)
+                }
+                for await snapshot in events {
+                    guard !Task.isCancelled else { return }
+                    await self?.installBrowseSnapshot(snapshot, for: game)
+                }
+            }
+        }
+        if let snapshot = await source.currentSnapshot() { installBrowseSnapshot(snapshot, for: game) }
+    }
+
+    private func installBrowseSnapshot(_ snapshot: GameCatalogSnapshot, for game: CardGame) {
+        guard let adapter = snapshot.browse, adapter.game == game,
+              snapshot.revision > (gameBrowseRevisions[game] ?? -1) else { return }
+        gameBrowseRevisions[game] = snapshot.revision
+        gameBrowseAdapters = gameBrowseAdapters.replacing(adapter)
+        setCache[game] = nil
+        detailCache = detailCache.filter { !$0.key.hasPrefix(game.rawValue + ":") }
+        yieldUpdate(game: game, revision: snapshot.revision, providerSetID: nil)
     }
 
     /// History is an observational side effect of successful Browse pricing,
@@ -2314,7 +2406,7 @@ actor BrowseCatalog: BrowseCatalogProviding {
                     pokemonSnapshotLoaded = !visibleEntries.isEmpty
                     let sets = pokemonSets(from: visibleEntries)
                     setCache[.pokemon] = sets
-                    yieldUpdate(providerSetID: baseSet.providerID)
+                    yieldUpdate(game: .pokemon, revision: catalogRevision, providerSetID: baseSet.providerID)
                     unresolvedFailureIDs.remove(baseSet.providerID.lowercased())
                     await checklistStore.recordRefreshProgress(
                         after: baseSet.providerID,

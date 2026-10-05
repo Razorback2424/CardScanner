@@ -78,7 +78,7 @@ final class SealedBrowseModel: ObservableObject {
     /// credentials; only a stale or missing page with a configured account
     /// proceeds to the network. A scope change supplies a narrower game list,
     /// so invisible lanes never spend the shared vendor allowance.
-    func search(query: String, games: [CardGame] = CardGame.allCases) async {
+    func search(query: String, games: [CardGame] = CardGameRegistry.standard.games(supporting: .sealed)) async {
         let normalizedQuery = CardNameSearch.normalize(query)
         guard normalizedQuery.count >= 2 else {
             clearSearch()

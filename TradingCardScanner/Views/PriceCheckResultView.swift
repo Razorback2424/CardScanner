@@ -191,6 +191,12 @@ struct PriceCheckResultView: View {
                 systemImage: "tag.slash",
                 description: Text("The optional fallback provider does not have a safe mapping for this finish, so it was not asked for a price.")
             )
+        case .unsupportedGame:
+            ContentUnavailableView(
+                "Pricing not available",
+                systemImage: "tag.slash",
+                description: Text("Price checks are not available for this game.")
+            )
         case .unsupportedTreatment:
             ContentUnavailableView(
                 "Treatment price unavailable",
@@ -307,6 +313,8 @@ struct PriceCheckResultView: View {
             return "Card not matched to a vendor product — showing last known"
         case .unsupportedFinish:
             return "Finish not supported by the fallback provider — showing last known"
+        case .unsupportedGame:
+            return "Pricing not available for this game — showing last known"
         case .unsupportedTreatment:
             return "Treatment not supported by the fallback provider — showing last known"
         case .gradedGradeNotPriced:

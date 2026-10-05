@@ -21,7 +21,7 @@ enum ProductCatalogIdentity {
 
     /// Japanese printings are a separate product line, not a locale of the
     /// English one, so the game is part of identity rather than a setting.
-    static func game(for game: CardGame, catalogID: String?) -> Game {
+    static func game(for game: CardGame, catalogID: String?) -> Game? {
         switch game {
         case .magic:
             return .magic
@@ -30,6 +30,7 @@ enum ProductCatalogIdentity {
                 CatalogIdentityNormalization.locale(forCatalogCardID: $0) == .ja
             } ?? false
             return isJapanese ? .pokemonJapan : .pokemon
+        default: return nil
         }
     }
 

@@ -18,6 +18,7 @@ struct CatalogCardDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     @Environment(\.catalogCardSelection) private var catalogCardSelection
+    @Environment(\.cardGameRuntimes) private var runtimes
     let summary: CatalogCardSummary
     let catalog: any BrowseCatalogProviding
 
@@ -39,6 +40,8 @@ struct CatalogCardDetailView: View {
     @State private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     @State private var showsGradedPicker = false
     @State private var browseHistorySeries: [BrowsePricePersistedSeries] = []
+    @State private var mappedPrices: [String: PriceLookup] = [:]
+    @State private var mappedPriceCheckFinished = false
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
     private let marketTransport = JustTCGTransport.shared
@@ -68,6 +71,7 @@ struct CatalogCardDetailView: View {
             Text(detail)
         }
         .task { if details == nil { await load() } }
+        .task(id: details?.card.id) { await loadMappedPrices() }
         .onReceive(NotificationCenter.default.publisher(
             for: BrowsePriceHistoryStore.didChange, object: browsePriceHistoryStore
         ).receive(on: RunLoop.main)) { notification in
@@ -130,8 +134,14 @@ struct CatalogCardDetailView: View {
 
             treatmentSection(details.card)
             ownedSection(details.card)
-            priceSection(details.card)
-            browsePriceHistorySection()
+            if catalog.gameRegistry.supports(summary.game, .pricing) {
+                priceSection(details.card)
+                browsePriceHistorySection()
+            } else {
+                Text("Pricing unavailable")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
             if let url = TCGplayerLinkBuilder.url(
                 for: details.card,
                 variant: summary.masterSetVariant,
@@ -170,6 +180,7 @@ struct CatalogCardDetailView: View {
                 } message: {
                     Text("Add the physical version you own.")
                 }
+                .disabled(!catalog.gameRegistry.supports(summary.game, .collectionWrite))
 
                 // A slab is a distinct object with a grade the user chooses.
                 Button { showsGradedPicker = true } label: {
@@ -177,6 +188,7 @@ struct CatalogCardDetailView: View {
                         .frame(maxWidth: .infinity, minHeight: 50)
                 }
                 .buttonStyle(.bordered)
+                .disabled(!catalog.gameRegistry.supports(summary.game, [.collectionWrite, .gradedPricing]))
             }
         }
         .padding(20)
@@ -229,6 +241,24 @@ struct CatalogCardDetailView: View {
     }
 
     @ViewBuilder private func priceSection(_ card: IdentifiedCard) -> some View {
+        if let service = runtimes?.makePriceQuoteService(), service.supportsStoredPrintingRefresh(for: card.game) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Published market prices").font(.headline)
+                ForEach(card.variantEvidence.catalogVariants) { variant in
+                    LabeledContent(variant.label) {
+                        if case let .price(price) = mappedPrices[variant.id] {
+                            Text(price.unitMarketPriceUSD.formatted(.currency(code: "USD")))
+                        } else if !mappedPriceCheckFinished { ProgressView() }
+                        else { Text("Price unavailable").foregroundStyle(.secondary) }
+                    }
+                }
+                Text("TCGplayer via TCGCSV · aggregate market price")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            .padding(14)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(.quaternary.opacity(0.4), in: RoundedRectangle(cornerRadius: 14))
+        } else {
         let rows = CardPricing.publishedPrices(for: card,
                                               pokemonPrintRun: summary.pokemonPrintRun,
                                               at: details?.retrievedAt ?? .now)
@@ -271,6 +301,20 @@ struct CatalogCardDetailView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+        }
+    }
+
+    private func loadMappedPrices() async {
+        guard let card = details?.card, let service = runtimes?.makePriceQuoteService(),
+              service.supportsStoredPrintingRefresh(for: card.game) else { return }
+        mappedPriceCheckFinished = false
+        mappedPrices = [:]
+        for variant in card.variantEvidence.catalogVariants {
+            let quote = try? await service.refresh(card: card, variant: variant, pokemonPrintRun: nil)
+            guard !Task.isCancelled, details?.card.id == card.id else { return }
+            mappedPrices[variant.id] = quote
+        }
+        mappedPriceCheckFinished = true
     }
 
     @ViewBuilder
@@ -291,6 +335,10 @@ struct CatalogCardDetailView: View {
     }
 
     private func prepareAdd(_ card: IdentifiedCard) {
+        guard catalog.gameRegistry.supports(card.game, .collectionWrite) else {
+            addFailure = "Collection saving is not available for this game yet."
+            return
+        }
         if let required = summary.masterSetVariant {
             commit(ResolvedVariant(variant: required, resolution: .userConfirmed))
             return
@@ -310,6 +358,10 @@ struct CatalogCardDetailView: View {
     }
 
     private func commit(_ resolved: ResolvedVariant) {
+        guard catalog.gameRegistry.supports(summary.game, .collectionWrite) else {
+            addFailure = "Collection saving is not available for this game yet."
+            return
+        }
         guard let details else { return }
         let mutation: CollectionMutation
         let storageID: String
@@ -405,6 +457,20 @@ struct CatalogCardDetailView: View {
         catalogLookup: PriceLookup,
         prices: PriceStore
     ) {
+        if let service = runtimes?.makePriceQuoteService(), service.supportsStoredPrintingRefresh(for: card.game) {
+            let key = PriceRecord.key(game: card.game, printingID: printingID, variantID: variant?.id)
+            guard fallbackQuoteTasks[key] == nil else { return }
+            fallbackQuoteTasks[key] = Task { @MainActor in
+                defer { fallbackQuoteTasks[key] = nil }
+                guard let quote = try? await service.refresh(card: card, variant: variant, pokemonPrintRun: nil),
+                      !Task.isCancelled else { return }
+                let context = ModelContext(modelContext.container)
+                context.autosaveEnabled = false
+                let store = PriceStore(context: context, checkpointsInFreshContext: true)
+                if store.store(quote, game: card.game, printingID: printingID, variantID: variant?.id) { _ = store.save() }
+            }
+            return
+        }
         guard PriceFallbackQuoteResolver.needsFallback(
                   catalogLookup,
                   identifiedCatalogCard: true

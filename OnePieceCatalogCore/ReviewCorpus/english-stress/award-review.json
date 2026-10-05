@@ -1,0 +1,36 @@
+{
+  "schemaVersion":1,
+  "reviewDate":"2026-10-04",
+  "purpose":"internal-publisher-review-not-production-assets",
+  "reference":"2022-super-pre-release-winner",
+  "winnerPrintingID":"348ad90a-43d8-49b5-a384-4d9cc2a1fe27",
+  "participantPrintingID":"603d83b0-146a-4229-8eaf-b2f884087312",
+  "decision":"Winner award identity verified by official event specification and independent grading-company physical photograph; participant remains provisional with unresolved finish.",
+  "identityScope":"English 2022 Super Pre-Release event prize distribution. UUIDs were allocated once during review, independently of source ordering and marketplace IDs.",
+  "finishDecision":"Winner uses the foil variant because the manufacturer explicitly specifies silver foil. Participant has no supported finish assigned. Silver appearance in a photograph did not determine either finish.",
+  "artworkScope":"Full card artwork presentation: framed participation and full-art winner have separate presentations of reused underlying illustration. Render hashes identify exact source bytes, not physical finish or original footer.",
+  "captureDirectory":"OnePieceSourceReview/2026-10-04/event-review",
+  "publisherCandidates":[
+    {"rawFile":"review-candidate-revision-2.json","revision":2,"sha256":"e3f455553eda7d6c09940b9c7353d74dfb9f23e1abc1f024a1a8686837f27233","changeClass":"protectedReview"},
+    {"rawFile":"review-candidate-revision-3.json","revision":3,"sha256":"6b2c263883ba60b72ed51f7c4464f3c1a91f5d27a3001fbd4009d52397515282","changeClass":"none"},
+    {"rawFile":"review-candidate-revision-4.json","revision":4,"rulesVersion":2,"sha256":"4ba06e00c4d96525ff37b1c5c445a0de93bd716d3e2f95dacd04e7ca24de1f04","changeClass":"protectedReview"},
+    {"rawFile":"review-candidate-revision-5.json","revision":5,"rulesVersion":2,"sha256":"8a789396edce37df028c2efd78e5a7d69fe357569620a6a8148114918e99c664","changeClass":"none"}
+  ],
+  "captures":[
+    {"rawFile":"super-pre-release.html","byteCount":53411,"payloadSHA256":"d111ead69a68a88522d13ee2b5efebc6543ced160929320db4f9d28d020cd33f"},
+    {"rawFile":"card_06.png","byteCount":1087705,"payloadSHA256":"c9f9644f1600dfbdd1266d9fb412a119ab518243787c05d55a486129d598a681"},
+    {"rawFile":"card_07.png","byteCount":836848,"payloadSHA256":"b12635b8836803a16152e1cd2ae364cfad0df94cc941e1afa97aad5ebe435173"},
+    {"rawFile":"cgc-winner-article.html","byteCount":94342,"payloadSHA256":"2d2066f78eb3a097a34ad73fe71d511388255b4b85da23b8aca27f54bb29ca98"},
+    {"rawFile":"cgc-winner-front.png","byteCount":83782,"payloadSHA256":"414d7e44a21a2e6e73aef973ad2f8a27f2208d2bf67a6e067c453c0b93a34863"}
+  ],
+  "unresolved":[
+    "Participation finish and physical-card corroboration remain missing.",
+    "No original footer/copyright or geographic sub-printing claim was added; evidence of additional physical distinctions must produce explicit review and retained corrections.",
+    "Market products 450300 and 450301 remain unjoined; illustration correspondence is not exact market/condition/finish authority.",
+    "P-001 candidate coverage remains incomplete, including regional, championship, premium and other appearances.",
+    "Images are private review artifacts. Reference image URLs are omitted from the app registry until production asset rights are established."
+  ],
+  "physicalCoverageComplete":false,
+  "exactMarketMappingsApproved":false,
+  "productionAssetRightsEstablished":false
+}

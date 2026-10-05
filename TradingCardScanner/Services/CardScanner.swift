@@ -1457,7 +1457,7 @@ final class CardScanner: NSObject, ObservableObject {
             let key = subject.suppressionKey
             let releasedCurrentLatch = self.forgetFailedPresentation(of: key)
             self.confirmationWindow.discardObservations(matching: key)
-            if case let .pokemonHistorical(evidence) = subject.identifier,
+            if case let .pokemonHistorical(evidence) = subject.identifier.legacyIdentity,
                self.historicalAttempt?.number == evidence.number {
                 self.historicalAttempt = nil
             }
@@ -1527,7 +1527,7 @@ final class CardScanner: NSObject, ObservableObject {
     private func useMagicDefinitions(_ magic: MagicScanProfile) {
         visionQueue.async { [weak self] in
             guard let self, self.profile.magic?.definitions != magic.definitions else { return }
-            self.profile = RecognitionProfile(pokemon: self.profile.pokemon, magic: magic)
+            self.profile = RecognitionProfile(pokemon: self.profile.pokemon, magic: magic, additionalRecognizers: self.profile.additionalRecognizers)
             self.footerRequest.customWords = self.profile.customWords
             self.resetObservationState()
         }
@@ -1560,11 +1560,37 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.async { [weak self] in
             guard let self else { return }
             let vocabularyChanged = self.profile.pokemon.vocabulary != pokemon.vocabulary
-            self.profile = RecognitionProfile(pokemon: pokemon, magic: self.profile.magic)
+            self.profile = RecognitionProfile(pokemon: pokemon, magic: self.profile.magic, additionalRecognizers: self.profile.additionalRecognizers)
             self.footerRequest.customWords = self.profile.customWords
             if vocabularyChanged {
                 self.resetObservationState()
             }
+        }
+    }
+
+    /// Installs game-owned immutable adapters between frames. Parser generation
+    /// changes take effect even when Vision vocabulary is unchanged; only a
+    /// vocabulary change resets observation state.
+    func useAdditionalRecognitionAdapters(_ registry: GameRecognitionRegistry) {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            let oldWords = self.profile.customWords
+            self.profile = RecognitionProfile(pokemon: self.profile.pokemon, magic: self.profile.magic,
+                                              additionalRecognizers: registry.recognizers)
+            self.footerRequest.customWords = self.profile.customWords
+            if oldWords != self.profile.customWords { self.resetObservationState() }
+        }
+    }
+
+    func useRecognitionAdapter(_ adapter: any GameRecognitionAdapter) {
+        visionQueue.async { [weak self] in
+            guard let self else { return }
+            let oldWords = self.profile.customWords
+            let adapters = self.profile.additionalRecognizers.filter { $0.game != adapter.game } + [adapter]
+            self.profile = RecognitionProfile(pokemon: self.profile.pokemon, magic: self.profile.magic,
+                                              additionalRecognizers: adapters)
+            self.footerRequest.customWords = self.profile.customWords
+            if oldWords != self.profile.customWords { self.resetObservationState() }
         }
     }
 
@@ -2083,7 +2109,7 @@ final class CardScanner: NSObject, ObservableObject {
             } ?? subject
         case .nothing:
             parsed = historicalSubject
-        case .ambiguous, .spatiallyRejectedMagicCollector:
+        case .ambiguous, .fallbackBlocked:
             historicalAttempt = nil
             parsed = nil
         }
@@ -2407,7 +2433,7 @@ final class CardScanner: NSObject, ObservableObject {
         guard subjectMode == .slab else { return }
         let footerIdentifier: ScanIdentifier? = switch outcome {
         case let .identified(subject): subject.identifier
-        case .nothing, .ambiguous, .spatiallyRejectedMagicCollector:
+        case .nothing, .ambiguous, .fallbackBlocked:
             historicalSubject?.identifier
         }
         let footerKey = footerIdentifier?.suppressionKey
@@ -3179,7 +3205,7 @@ final class CardScanner: NSObject, ObservableObject {
                 number: number,
                 titleLines: titleLines.map(\.text),
                 excludingFooter: PokemonHistoricalScanParser.footerSignature(from: footerLines.map(\.text))
-            ) {
+            )?.legacyIdentity {
                 // `advanceHistoricalAttempt` starts a clean title window when
                 // the same number survives beyond the TTL. That prevents a
                 // second physical card with the same printed number from
@@ -3339,6 +3365,10 @@ final class CardScanner: NSObject, ObservableObject {
 /// EN` cannot be a Pokémon one — so asking the user to pick first was asking for
 /// information the card already carries.
 struct RecognitionProfile: Sendable {
+    let recognizers: GameRecognitionRegistry
+    /// Migration context for secondary historical Pokémon requests. Primary
+    /// recognition always dispatches through the registered adapters.
+    let additionalRecognizers: [any GameRecognitionAdapter]
     /// The active Pokémon vocabulary and its immutable catalog snapshot.
     let pokemon: PokemonScanProfile
     /// `nil` only before the Magic set directory is installed. Pokémon needs no
@@ -3347,10 +3377,18 @@ struct RecognitionProfile: Sendable {
 
     init(
         pokemon: PokemonScanProfile = .bundledSeed,
-        magic: MagicScanProfile? = nil
+        magic: MagicScanProfile? = nil,
+        additionalRecognizers: [any GameRecognitionAdapter] = []
     ) {
         self.pokemon = pokemon
         self.magic = magic
+        self.additionalRecognizers = additionalRecognizers
+        let suppliedGames = Set(additionalRecognizers.map(\.game))
+        var adapters: [any GameRecognitionAdapter] = []
+        if !suppliedGames.contains(.pokemon) { adapters.append(PokemonRecognitionAdapter(profile: pokemon)) }
+        if let magic, !suppliedGames.contains(.magic) { adapters.append(MagicRecognitionAdapter(profile: magic)) }
+        adapters.append(contentsOf: additionalRecognizers)
+        self.recognizers = try! GameRecognitionRegistry(recognizers: adapters)
     }
 
     static let pokemonOnly = RecognitionProfile(pokemon: .bundledSeed, magic: nil)
@@ -3359,7 +3397,7 @@ struct RecognitionProfile: Sendable {
     /// vocabularies at once. Deduplicated because a three-character code can
     /// legitimately belong to both directories.
     var customWords: [String] {
-        ScanText.unique(pokemon.customWords + (magic?.customWords ?? []))
+        recognizers.customWords
     }
 
     /// Both parsers, every frame.
@@ -3373,34 +3411,15 @@ struct RecognitionProfile: Sendable {
     }
 
     func identify(_ lines: [RecognizedLine]) -> RecognitionOutcome {
-        let text = lines.map(\.text)
-        let pokemonResult = self.pokemon.parse(text)
-        let magicOutcome = magic?.parseOutcome(lines) ?? .nothing
-
-        switch (pokemonResult, magicOutcome) {
-        case (nil, .nothing):
-            return .nothing
-        case let (identifier?, .nothing):
-            return .identified(ScanSubject(identifier: identifier))
-        case let (nil, .identified(identifier)):
-            return .identified(ScanSubject(identifier: identifier))
-        case (_?, .identified(_)):
-            return .ambiguous
-        case (nil, .spatiallyRejectedCollector):
-            return .spatiallyRejectedMagicCollector
-        case let (identifier?, .spatiallyRejectedCollector):
-            // Preserve modern Pokemon recognition if it independently earned an
-            // identity; the rejected Magic-shaped reading is then irrelevant.
-            return .identified(ScanSubject(identifier: identifier))
-        }
+        recognizers.identify(lines)
     }
 }
 
 enum RecognitionOutcome: Equatable {
     case nothing
     case identified(ScanSubject)
-    case spatiallyRejectedMagicCollector
-    /// Both games produced a valid identifier from one frame.
+    case fallbackBlocked
+    /// Multiple valid identities within one game or across games.
     case ambiguous
 }
 
@@ -3557,7 +3576,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
 #endif
 
             let historicalSubject = historical.map { identifier -> ScanSubject in
-                if case let .pokemonHistorical(evidence) = identifier,
+                if case let .pokemonHistorical(evidence) = identifier.legacyIdentity,
                    let inferred = profile.pokemon.inferredIdentifier(from: evidence.number) {
                     return ScanSubject(
                         identifier: inferred,
@@ -3572,7 +3591,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             }
             let footerIdentifier: ScanIdentifier? = switch outcome {
             case let .identified(subject): subject.identifier
-            case .nothing, .ambiguous, .spatiallyRejectedMagicCollector:
+            case .nothing, .ambiguous, .fallbackBlocked:
                 historicalSubject?.identifier
             }
             // Slab mode establishes footer-key ownership before parsing label

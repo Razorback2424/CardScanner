@@ -8,6 +8,37 @@ history.
 
 ## Current authority boundary — updated 2026-10-03
 
+One Piece base pricing update — 2026-10-04, existing `one-piece-integration`
+worktree at `69c714f`: exact TCGCSV pricing is now implemented for 1,961 reviewed
+original base printings. This supersedes older “no pricing adapter / optional
+pricing” notes for the local base-case milestone. TCGCSV exposes aggregate market
+prices, not condition SKUs. Price Check, Browse detail/add and collection refresh
+use permanent printing UUIDs and exact finish lanes; no name/number fallback is
+allowed. The [implementation ledger](one_piece_code_implementation.md#base-case-pricing-priority--2026-10-04)
+records source scope, implemented cached-quote withdrawal and remaining physical mapping,
+device and production gates. The full 2,745-printing debug kit verifies;
+production scanning/sync remain disabled.
+
+2026-10-05: container-bound catalog publication now persists exact managed-price
+withdrawals before consumers see the new generation. The selected One Piece and
+pricing checkpoint passed 103/103; same-container startup/quote-cache checks passed
+18/18. A relaunch-found stale feed cache now refreshes per catalog generation;
+its affected recheck passes, and final full-kit relaunch/Refresh Prices restored
+the saved Shanks quote to $8.16. A subsequent three-test checkpoint proves actual
+single/multi-claim rejection without ownership/history mutation after signed
+catalog quarantine, conflict/stale revision handling and storage-session retirement.
+The subsequent Magic catalog extraction owns Scryfall and signed child routing
+under `Games/Magic`; 55 focused catalog/compatibility tests pass. Prepared-identity
+coalescing retains fetch timestamps and does not cache a user's printing answer.
+Signed Magic activation and the remaining legacy modules are still pending.
+The subsequent Pokémon catalog extraction moves provider/offline/disk-cache and
+historical behavior under `Games/Pokemon`, preserving keys and captured modern
+definitions. One consolidated checkpoint passed 192 selected catalog, One Piece,
+pricing and quote-cache tests. The boundary audit remains red on eight matching
+labels, all in Browse; full-plan completion is not implied. Base-case acceptance
+is the next milestone; further framework
+or special-printing expansion waits for findings from that local test.
+
 This is the repository-wide documentation index and reconciliation record.
 Source code, tests, build settings, and evidence recorded against the current
 checkout outrank dated plans. A document is current only when it is listed
@@ -87,13 +118,72 @@ the main actor; the review's centering-export hypothesis must be revalidated
 against that work. The existing centering contract/triage, URL dependency, and
 release-follow-up measurements remain their single respective authorities.
 
-## One Piece draft reconciliation — 2026-10-03
+## One Piece design and implementation reconciliation — 2026-10-04
+
+Latest coverage checkpoint: the full ordinary batch covers 58 product groups and
+2,731 selected release/artwork identities. The adopted corpus has 2,692 canonical
+cards and 2,745 printings (2,490 verified, 224 provisional, 31 conflicted),
+8,237 combined observations, 2,940 captures and 257 open discrepancies. All 817
+earlier printing/artwork records and 794 canonical records remain unchanged;
+all five outputs replay exactly. Unsigned revision 13 validates against revision
+12 as protected review. All 42 selected Python tests pass. The core run reports
+39 passes and one new assertion failure: the test incorrectly assigned base
+EB04-061 to OP17 rather than OP15; the corrected affected test now passes.
+No full-suite repeat was needed. App coverage is 41 initial passes plus two
+corrected affected tests: Browse contains 52 verified-target groups rather than
+all 60 retained products; wholly provisional ST30/ST31 products remain unowned.
+The expanded scan/save cases pass. A full-corpus isolated local kit is signed and
+independently verified; its 16,119,026-byte envelope remains below the 48 MiB
+transport limit. Cold activation/memory and rendered/device acceptance remain open.
+No signed/public production release or complete physical universe is claimed.
+The efficiency-audit figures below are historical snapshots.
+
+Latest efficiency audit: the current worktree has 534 canonical cards, 547 physical
+printing records (446 verified, 93 provisional, eight conflicted) and 1,727
+observations. Reviewed standard coverage reaches ST-10 and OP-03, including two
+ST-10 reprints of OP-01 numbers. Earlier milestone logs confirm 40 core and 40
+One Piece integration tests passed. The subsequent correction checkpoint reports
+41 of 42 selected tests passing, then a passing focused rerun after fixing the
+remaining test fixture; no clean full 42-case rerun is recorded. This documentation
+audit reran no tests. Earlier
+canonical-only, synthetic-only and small-demo-next claims below are historical.
+The [implementation ledger](one_piece_code_implementation.md) now prioritizes
+remaining correctness gaps, reproducible larger catalog batches, necessary
+legacy routing and integrated acceptance. It limits repeated builds/signing and
+retains full coverage, physical identity, rights and sync gates. No implementation
+or production change is authorized by this documentation-only pass.
+
+The subsequent code/file-level handoff names the exact correction authority,
+product manifest/capture pipeline, legacy extraction destinations, signed seed
+filename, three-namespace hosting preservation and focused regression targets.
+Proposed API/file names are explicitly distinguished from existing source.
+External rights/key/sync inputs remain owner decisions, not choices delegated to
+the implementing developer. This follow-up changes plans only.
+
+The latest handoff review separates already-implemented correction work from the
+remaining publication-order/withdrawal checks. It prescribes a container-bound
+activation source boundary, product/discrepancy fields, retained-byte migration
+before capture expansion and explicit capture-orphan recovery. It also corrects
+verification to the recorded `TradingCardScanner`/`Debug` checkpoint and existing
+test files. This adds implementation instructions, not new passing evidence.
+
+The owner subsequently authorized the full code-level implementation after its
+source review. The [implementation ledger](one_piece_code_implementation.md)
+records the revised correctness contracts and A–N delivery gates in the
+`one-piece-integration` worktree, based on `69c714f`. The integration design now
+explicitly distinguishes its original documentation change from that later
+authorization. One Piece production support and external acceptance remain
+disabled/unverified until the ledger records direct evidence.
 
 The [One Piece integration plan](one_piece_catalog_integration_plan.md) records
 the owner's older multi-source audit against `dd2a1e3` plus the existing working
-tree. One Piece remains proposed: current game/parser/card adapters only support
-Pokémon and Magic. The plan retains Bandai discovery, Limitless reconciliation,
-Scrydex enrichment, and permanent local printing IDs, but replaces the draft's
+tree. The Pokémon/Magic-only architecture claim belongs to that historical
+baseline. The 2026-10-04 worktree audit includes new/untracked files as well as
+tracked diffs: open game identity, runtime/recognition adapters, One Piece core,
+local scanner/Browse/import/recovery fixtures and signed preparation/bootstrap
+now exist. They do not establish production support. The plan retains Bandai
+discovery, Limitless reconciliation, Scrydex enrichment, and permanent local
+printing IDs, but replaces the draft's
 confidence-based automatic physical selection with the current deterministic
 resolution and user-choice contract. Signed delivery requires its own One Piece
 schema and key/rollout boundary; existing game releases are patterns, not a
@@ -103,7 +193,63 @@ explicitly unverified. Pricing-provider selection and shared-cache publication
 remain governed by their current plans. A weekly thread monitor is scheduled;
 neither that schedule nor this documentation is ingestion or release evidence.
 
+The code-level ledger's earlier “next: generic picker/recovery, then core/runtime”
+sequence was stale after those implementations. Its current priority is a usable
+local slice with a small real reviewed English corpus, collector-distinguishable
+printing choices and complete unsupported-row/recovery guards. Keep shared seams
+needed for the owner's planned Lorcana integration; defer optional abstraction
+and provider work. Remaining legacy catalog/Browse dispatch still fails the final
+architecture audit; the script alone does not cover every explicit game branch.
+
+The audit also records a shared-host delivery gap: existing Pokémon/Magic
+deployments restore only their two namespaces. One Piece publication there must
+first make every deployment preserve all namespaces. Synthetic fixtures, signing
+artifact uploads and disabled bootstrap configuration are not corpus, protected
+hosting, CloudKit or launch-performance acceptance. This pass changed plans only
+and ran no builds/tests; prior checkpoint counts remain dated, overlapping evidence.
+
+The subsequent 2026-10-04 plan-only follow-up inspected the current picker source
+and existing 52-case passing log. Bounded scrolling, optional artwork/footer
+metadata and old-choice compatibility are now implemented, so the unbounded-grid
+finding is historical. The owner rejected the verbose presentation and requires
+the same compact option-button format as Pokémon/Magic. The
+[visual checklist](one_piece_printing_choice_visual_checklist.md) remains
+unaccepted; detailed provenance belongs on demand, while essential distinctions
+must stay visible. Finish resolution already uses the shared `VariantChoiceBar`.
+This changes the next UI task, not physical identity, catalog completeness or
+production gates. No source changes, build/test reruns or new simulator evidence
+were produced by this follow-up.
+
+The resumed implementation then replaced the verbose picker with that compact
+format. The visual checklist now records scoped final fixture captures and
+native Details/skip/final-candidate checks; it retains real-corpus, loaded-artwork,
+VoiceOver/device and owner acceptance gaps. The current ledger separates this
+implementation evidence from the earlier plan-only audit and rejected rendering.
+
+The later source-ingestion checkpoint retained six exact Bandai/Limitless HTML
+captures externally and 30 normalized observations in the
+[English stress-source review inputs](../../OnePieceCatalogCore/ReviewCorpus/english-stress/README.md).
+The earlier blanket description of all corpus inputs as synthetic is superseded:
+real discovery metadata now exists, while physical-printing fixtures remain
+synthetic and the real review registry has no physical UUIDs or automatic authority.
+Eight bounded-parser/CLI tests and 31 core tests pass locally; no app build,
+live workflow, physical corpus certification, asset redistribution or production
+activation is claimed.
+
 ## Lorcana research import — 2026-10-03
+
+**2026-10-04 recalibration:** the [Lorcana implementation plan](lorcana_code_implementation.md)
+is now the execution authority for the existing uncommitted `one-piece-integration`
+worktree at base `69c714f`. Shared runtime/recognition/catalog/recovery boundaries
+replace the older proposal to start by importing the entire game. Slice 1 adds
+local provisional print-family mappings, conservative complete-footer recognition
+and generic incomplete lookup/recovery. Forty-four focused simulator tests pass,
+including 13 new Lorcana cases. Provider codes are not assumed to be printed
+markers; print-family keys are not physical ownership IDs. The imported research's
+finish-classifier-first and variant/stamp hierarchy are superseded by the current
+physical-printing-before-finish design. Real corpus, source rights, production
+activation and collection sync remain open; the research release timeline is not
+revalidated or adopted as completeness evidence.
 
 The [Lorcana data, variant, and scanner-architecture audit](../audits/lorcana-data-variant-scanner-architecture-audit.md)
 preserves an owner-supplied deep-research report as design input. Its proposed

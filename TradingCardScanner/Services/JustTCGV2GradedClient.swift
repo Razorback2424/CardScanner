@@ -84,7 +84,7 @@ struct GradedCardIdentity: Hashable, Sendable {
         )
     }
 
-    func vendorGame(for game: CardGame) -> ProductCatalogIdentity.Game {
+    func vendorGame(for game: CardGame) -> ProductCatalogIdentity.Game? {
         ProductCatalogIdentity.game(for: game, catalogID: catalogID)
     }
 
@@ -105,7 +105,7 @@ struct GradedCardIdentity: Hashable, Sendable {
     /// Identifies the underlying card, so every owned grade of it shares one
     /// request.
     func groupingKey(game: CardGame) -> String {
-        ([vendorGame(for: game).rawValue] + exhaustiveProjection.groupingValues)
+        ([vendorGame(for: game)?.rawValue ?? "unsupported:\(game.rawValue)"] + exhaustiveProjection.groupingValues)
             .map { $0.lowercased() }
             .joined(separator: "|")
     }
@@ -116,16 +116,17 @@ struct GradedCardIdentity: Hashable, Sendable {
         expectedSetSlug: String? = nil
     ) -> Bool {
         let projection = exhaustiveProjection
+        guard let vendorGame = vendorGame(for: game) else { return false }
 
         if let expectedSetSlug {
             guard let candidateGame = card.identityGameID,
-                  candidateGame.caseInsensitiveCompare(vendorGame(for: game).rawValue) == .orderedSame,
+                  candidateGame.caseInsensitiveCompare(vendorGame.rawValue) == .orderedSame,
                   let candidateSet = card.identitySetID,
                   candidateSet.caseInsensitiveCompare(expectedSetSlug) == .orderedSame
             else { return false }
         } else if let candidateGame = card.identityGameID,
                   !candidateGame.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                  candidateGame.caseInsensitiveCompare(vendorGame(for: game).rawValue) != .orderedSame {
+                  candidateGame.caseInsensitiveCompare(vendorGame.rawValue) != .orderedSame {
             return false
         }
 
@@ -196,8 +197,9 @@ struct JustTCGV2GradedClient: Sendable {
         companies: Set<GradingCompany> = [],
         grades: Set<String> = []
     ) -> [(String, String)] {
+        guard let vendorGame = identity.vendorGame(for: game) else { return [] }
         var query: [(String, String)] = [
-            ("game", identity.vendorGame(for: game).rawValue),
+            ("game", vendorGame.rawValue),
             ("q", identity.name),
             ("graded", "only"),
             // JustTCG v2 returns the NA market by default. Spell it out so
@@ -275,7 +277,7 @@ struct JustTCGV2GradedClient: Sendable {
         directory: ProductSetDirectory
     ) -> String? {
         guard !directory.slugs.isEmpty else { return nil }
-        let vendorGame = identity.vendorGame(for: game)
+        guard let vendorGame = identity.vendorGame(for: game) else { return nil }
         guard let plain = ProductCatalogIdentity.setSlug(
             setName: identity.setName,
             japaneseSetID: identity.japaneseSetID,
@@ -316,7 +318,9 @@ struct JustTCGV2GradedClient: Sendable {
         grades: Set<String> = [],
         lane: JustTCGRequestLane = .interactive
     ) async throws -> GradedVariantLookupResult {
-        let vendorGame = identity.vendorGame(for: game)
+        guard let vendorGame = identity.vendorGame(for: game) else {
+            throw CardGameSupportError.unsupportedGame(game)
+        }
         let directory = try await setDirectoryProvider.directory(for: vendorGame) { [transport] in
             let response: GradedSetsResponse = try await transport.get(
                 "v1/sets",

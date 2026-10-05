@@ -25,6 +25,8 @@ final class ReferenceQuote {
     var retrievedAt: Date?
     var lastCheckedAt: Date?
     var lastFailureAt: Date?
+    var catalogPriceIdentity: String?
+    var invalidatedAt: Date?
 
     init(
         key: String,
@@ -57,7 +59,7 @@ final class ReferenceQuote {
     var source: PriceSource? { sourceRaw.flatMap(PriceSource.init(rawValue:)) }
 
     var effectiveAmount: Double? {
-        return amount
+        invalidatedAt == nil ? amount : nil
     }
 
     var display: PriceDisplay {
@@ -73,6 +75,7 @@ final class ReferenceQuote {
     }
 
     func apply(_ lookup: PriceLookup, at date: Date) {
+        if case let .price(price) = lookup, let invalidatedAt, price.fetchedAt <= invalidatedAt { return }
         lastCheckedAt = date
         lastFailureAt = nil
 
@@ -88,6 +91,8 @@ final class ReferenceQuote {
             sourceVariantID = price.sourceVariantID
             sourceUpdatedAt = price.sourceUpdatedAt
             retrievedAt = price.fetchedAt
+            catalogPriceIdentity = price.catalogIdentity
+            invalidatedAt = nil
 
         case .unavailable:
             // An exact variant miss is a real answer, but it never erases a

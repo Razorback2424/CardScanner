@@ -184,6 +184,7 @@ private struct ScannerChrome: View {
                 purpose: model.purpose,
                 subjectMode: model.subjectMode,
                 finishLocks: model.finishLocks,
+                variantLockMenu: model.gameRegistry.variantLockMenu,
                 isSlowIdentifying: model.isSlowIdentifying,
                 setPurpose: model.setPurpose,
                 setSubjectMode: model.setSubjectMode,
@@ -265,7 +266,7 @@ private struct ScannerChrome: View {
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let choice = model.pendingIdentityChoice {
-                IdentityChoiceBar(
+                PrintingChoiceBar(
                     choice: choice,
                     onChoose: model.choose,
                     onDismiss: model.dismissIdentityChoice
@@ -424,11 +425,12 @@ private struct ScannerCameraIssueOverlay: View {
 private struct ScannerTopBar: View, Equatable {
     let purpose: ScanPurpose
     let subjectMode: ScanSubjectMode
-    let finishLocks: [CardGame: MagicFinishLock]
+    let finishLocks: [CardGame: VariantLock]
+    let variantLockMenu: [GameVariantLockOptions]
     let isSlowIdentifying: Bool
     let setPurpose: (ScanPurpose) -> Void
     let setSubjectMode: (ScanSubjectMode) -> Void
-    let setFinishLock: (MagicFinishLock?, CardGame) -> Void
+    let setFinishLock: (VariantLock?, CardGame) -> Void
     let clearFinishLocks: () -> Void
     let openSettings: () -> Void
 
@@ -438,6 +440,7 @@ private struct ScannerTopBar: View, Equatable {
         lhs.purpose == rhs.purpose
             && lhs.subjectMode == rhs.subjectMode
             && lhs.finishLocks == rhs.finishLocks
+            && lhs.variantLockMenu == rhs.variantLockMenu
             && lhs.isSlowIdentifying == rhs.isSlowIdentifying
     }
 
@@ -511,6 +514,7 @@ private struct ScannerTopBar: View, Equatable {
             FinishLockControl(
                 subjectMode: subjectMode,
                 locks: finishLocks,
+                variantLockMenu: variantLockMenu,
                 setSubjectMode: setSubjectMode,
                 setLock: setFinishLock,
                 clearLocks: clearFinishLocks,
@@ -561,26 +565,28 @@ private struct ScannerTopBar: View, Equatable {
 
 private struct FinishLockControl: View, Equatable {
     let subjectMode: ScanSubjectMode
-    let locks: [CardGame: MagicFinishLock]
+    let locks: [CardGame: VariantLock]
+    let variantLockMenu: [GameVariantLockOptions]
     let setSubjectMode: (ScanSubjectMode) -> Void
-    let setLock: (MagicFinishLock?, CardGame) -> Void
+    let setLock: (VariantLock?, CardGame) -> Void
     let clearLocks: () -> Void
     let glassNamespace: Namespace.ID
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.subjectMode == rhs.subjectMode && lhs.locks == rhs.locks
+            && lhs.variantLockMenu == rhs.variantLockMenu
     }
 
-    private var activeLocks: [(game: CardGame, lock: MagicFinishLock)] {
-        CardGame.allCases.compactMap { game in
-            locks[game].map { (game: game, lock: $0) }
+    private var activeLocks: [(game: CardGame, displayName: String, lock: VariantLock)] {
+        variantLockMenu.compactMap { entry in
+            locks[entry.game].map { (game: entry.game, displayName: entry.displayName, lock: $0) }
         }
     }
 
     private var summary: String {
         return activeLocks.isEmpty
             ? "Auto"
-            : activeLocks.map { "\($0.game.label) \($0.lock.label)" }.joined(separator: " · ")
+            : activeLocks.map { "\($0.displayName) \($0.lock.label)" }.joined(separator: " · ")
     }
 
     var body: some View {
@@ -613,24 +619,25 @@ private struct FinishLockControl: View, Equatable {
             }
             .disabled(subjectMode == .slab)
 
-            ForEach(CardGame.allCases) { game in
+            ForEach(variantLockMenu) { entry in
+                let game = entry.game
                 Menu {
                     Picker(
-                        game.label,
-                        selection: Binding<MagicFinishLock?>(
+                        entry.displayName,
+                        selection: Binding<VariantLock?>(
                             get: { locks[game] },
                             set: { setLock($0, game) }
                         )
                     ) {
                         Text("Auto")
-                            .tag(MagicFinishLock?.none)
-                        ForEach(MagicFinishLock.selectable(for: game)) { lock in
+                            .tag(VariantLock?.none)
+                        ForEach(entry.options) { lock in
                             Text(lock.label)
-                                .tag(MagicFinishLock?.some(lock))
+                                .tag(VariantLock?.some(lock))
                         }
                     }
                 } label: {
-                    Text(locks[game].map { "\(game.label)  \($0.label)" } ?? game.label)
+                    Text(locks[game].map { "\(entry.displayName)  \($0.label)" } ?? entry.displayName)
                 }
                 .disabled(subjectMode == .slab)
             }

@@ -447,7 +447,7 @@ struct VariantChoiceBar: View {
     }
 
     private var variantChoiceIdentifier: String {
-        if case .pokemonHistorical = choice.identifier {
+        if case .pokemonHistorical = choice.identifier.legacyIdentity {
             return choice.identifier.displayIdentifier
         }
         return "Card \(choice.card.displayCardNumber)"
@@ -562,77 +562,276 @@ struct PrintRunChoiceBar: View {
 /// The resolver proved that more than one catalog printing carries the same
 /// visible title and number. This tap supplies the one fact the card evidence
 /// could not; ordering is never used as identity.
-struct IdentityChoiceBar: View {
-    let choice: PendingIdentityChoice
-    let onChoose: (PokemonCatalogCardIdentity) -> Void
+struct PrintingChoiceBar: View {
+    let choice: PendingPrintingChoice
+    let onChoose: (PhysicalPrintingCandidate) -> Void
     let onDismiss: () -> Void
+    @State private var showingDetails = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private var sharedRelease: String? {
+        let candidates = choice.displayCandidates
+        guard let release = candidates.first?.releaseLabel,
+              candidates.allSatisfy({ $0.releaseLabel == release }) else { return nil }
+        let label = release.components(separatedBy: " · ").filter { $0 != "English" }.joined(separator: " · ")
+        return label.isEmpty ? nil : label
+    }
 
     var body: some View {
+        let candidates = choice.displayCandidates
         VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(choice.candidates.first?.name ?? "Pokémon card")
+                    Text(candidates.first?.name ?? "Card")
                         .font(.title3.bold())
-                        .lineLimit(2)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                        .fixedSize(horizontal: false, vertical: true)
                     Text(choice.identifier.displayIdentifier)
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.white.opacity(0.7))
+                    if dynamicTypeSize.isAccessibilitySize, let sharedRelease {
+                        Text(sharedRelease).font(.subheadline.weight(.semibold))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
-                Spacer(minLength: 0)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if !dynamicTypeSize.isAccessibilitySize, let sharedRelease {
+                    Text(sharedRelease)
+                        .font(.title3.weight(.semibold))
+                        .multilineTextAlignment(.trailing)
+                        .lineLimit(2)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
                 Button(action: onDismiss) {
                     Image(systemName: "xmark")
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.white.opacity(0.75))
-                        .frame(width: 30, height: 30)
+                        .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Skip this card")
             }
 
-            Text("Which printing is this?")
-                .font(.caption)
-                .foregroundStyle(.white.opacity(0.75))
+            HStack {
+                Text("Which printing? · \(candidates.count) choices")
+                Spacer()
+                Button("Details") { showingDetails = true }
+                    .buttonStyle(.plain)
+                    .frame(minWidth: 44, minHeight: 44)
+                    .accessibilityLabel("Compare printing details")
+            }
+            .font(.caption)
+            .foregroundStyle(.white.opacity(0.75))
 
-            if choice.displayCandidates.count <= 3 {
+            if candidates.count <= 3 && !dynamicTypeSize.isAccessibilitySize {
                 HStack(spacing: 10) {
-                    ForEach(choice.displayCandidates, id: \.providerID) { candidate in
-                        button(for: candidate)
-                    }
+                    ForEach(candidates) { compactButton($0, among: candidates) }
                 }
             } else {
-                LazyVGrid(
-                    columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)],
-                    spacing: 10
-                ) {
-                    ForEach(choice.displayCandidates, id: \.providerID) { candidate in
-                        button(for: candidate)
+                ScrollView {
+                    LazyVGrid(columns: dynamicTypeSize.isAccessibilitySize
+                        ? [GridItem(.flexible())]
+                        : [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                        ForEach(candidates) { compactButton($0, among: candidates) }
                     }
+                    .padding(.vertical, 4)
                 }
+                .frame(minHeight: 80, maxHeight: 220)
+                .scrollBounceBehavior(.basedOnSize)
+                .accessibilityIdentifier("printing-choice-list")
+            }
+            if candidates.contains(where: { $0.selectionEvidence(among: candidates) != .labels }) {
+                Text("Compare artwork and markings in Details.")
+                    .font(.caption).foregroundStyle(.white.opacity(0.75))
             }
         }
         .foregroundStyle(.white)
         .padding(14)
         .appGlass()
+        .sheet(isPresented: $showingDetails) {
+            PrintingChoiceDetails(candidates: candidates) { selected in
+                showingDetails = false
+                onChoose(selected)
+            }
+        }
+        // This panel sits on the camera and uses white labels in either app
+        // appearance. Keep the material dark without changing the app theme.
+        .environment(\.colorScheme, .dark)
     }
 
-    private func button(for candidate: PokemonCatalogCardIdentity) -> some View {
-        let label = candidate.choiceLabel
-        return Button {
-            onChoose(candidate)
-        } label: {
-            Text(label)
+    private func compactButton(_ candidate: PhysicalPrintingCandidate, among candidates: [PhysicalPrintingCandidate]) -> some View {
+        Button { onChoose(candidate) } label: {
+            Text(candidate.compactChoiceLabel(among: candidates))
                 .font(.subheadline.weight(.semibold))
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
-                .frame(height: 50)
+                .frame(minHeight: 50)
+                .padding(.horizontal, 6)
         }
         .appGlassOptionButton()
         .foregroundStyle(.white)
-        .accessibilityLabel("Select \(label) for \(candidate.name)")
+        .disabled(candidate.selectionEvidence(among: candidates) != .labels)
+        .accessibilityLabel("Select \(candidate.compactChoiceLabel(among: candidates)) for \(candidate.name)")
+        .accessibilityIdentifier("printing-choice-\(candidate.id)")
     }
 }
+
+struct PrintingChoiceDetails: View {
+    let candidates: [PhysicalPrintingCandidate]
+    let onChoose: (PhysicalPrintingCandidate) -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            List(candidates) { candidate in
+                PrintingCandidateButton(candidate: candidate,
+                    evidence: candidate.selectionEvidence(among: candidates), onChoose: onChoose)
+            }
+            .navigationTitle("Printing details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+/// Shared live/recovery presentation. The complete footer and distribution
+/// evidence stays readable, and image-only distinctions cannot be guessed while
+/// artwork is missing or still loading.
+struct PrintingCandidateButton: View {
+    let candidate: PhysicalPrintingCandidate
+    let evidence: PhysicalPrintingCandidate.SelectionEvidence
+    var isOnCamera = false
+    let onChoose: (PhysicalPrintingCandidate) -> Void
+    @State private var imagePhase: CatalogImageLoadPhase = .idle
+
+    init(candidate: PhysicalPrintingCandidate, evidence: PhysicalPrintingCandidate.SelectionEvidence,
+         isOnCamera: Bool = false, onChoose: @escaping (PhysicalPrintingCandidate) -> Void) {
+        self.candidate = candidate; self.evidence = evidence
+        self.isOnCamera = isOnCamera; self.onChoose = onChoose
+    }
+
+    private var isSelectable: Bool {
+        evidence == .labels || (evidence == .artwork && imagePhase == .loaded)
+    }
+
+    private var unavailableExplanation: String? {
+        switch evidence {
+        case .labels: return nil
+        case .insufficient: return "More catalog detail is needed to distinguish this printing."
+        case .artwork:
+            if imagePhase == .loaded { return nil }
+            return imagePhase == .failed
+                ? "Artwork is unavailable. It is needed to distinguish this printing."
+                : "Loading artwork needed to distinguish this printing…"
+        }
+    }
+
+    var body: some View {
+        return Button {
+            onChoose(candidate)
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                if candidate.thumbnailURL != nil {
+                    CatalogCachedImage(url: candidate.thumbnailURL, targetPixelSize: 240,
+                        onPhaseChange: { imagePhase = $0 })
+                        .frame(width: 60, height: 84)
+                        .accessibilityHidden(true)
+                }
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(candidate.choiceTitle)
+                        .font(.subheadline.weight(.semibold))
+                    ForEach(Array(candidate.identificationDetails.enumerated()), id: \.offset) { _, detail in
+                        Text(detail).font(.caption)
+                    }
+                    if let date = candidate.releaseDateLabel {
+                        Text(date).font(.caption)
+                    }
+                    if let unavailableExplanation {
+                        Text(unavailableExplanation).font(.caption)
+                            .foregroundStyle(isOnCamera ? Color.white.opacity(0.85) : Color.secondary)
+                    }
+                    if isSelectable {
+                        Text("Select this printing")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Color.accentColor)
+                    }
+                }
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .multilineTextAlignment(.leading)
+            .padding(12)
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+        }
+        .disabled(!isSelectable)
+        .accessibilityLabel("Select \(candidate.choiceLabel)\(candidate.releaseDateLabel.map { " · " + $0 } ?? "") for \(candidate.name)")
+        .accessibilityHint(unavailableExplanation ?? "Compare this printing's details with the card in front of you.")
+        .accessibilityIdentifier("printing-choice-\(candidate.id)")
+    }
+}
+
+typealias IdentityChoiceBar = PrintingChoiceBar
+
+#if DEBUG
+/// Deterministic rendering/interaction fixture; it never creates owned cards or
+/// registers synthetic data as production catalog authority.
+struct PrintingChoiceDebugView: View {
+    private let state: String
+    private let choice: PendingPrintingChoice
+    @State private var selected: String?
+    @State private var dismissed = false
+
+    init() {
+        let args = ProcessInfo.processInfo.arguments
+        let index = args.firstIndex(of: "-ui_debug_state")
+        let state = index.flatMap { args.indices.contains($0 + 1) ? args[$0 + 1] : nil } ?? "many"
+        self.state = state
+        let count = ["few", "accessibility", "footer", "missing-artwork"].contains(state) ? 2 : 61
+        let identifier = try! ScanIdentifier(game: .onePiece, namespace: "numbered-card",
+            fields: [.init(key: "number", value: "P-001")], displayIdentifier: "P-001",
+            suppressionIdentity: "number:P-001", catalogGeneration: "ui-fixture")
+        let candidates = (1...count).map { number in
+            PhysicalPrintingCandidate(id: "fixture-\(number)", game: .onePiece,
+                canonicalCardID: "one-piece:en:P-001", language: "en", catalogGeneration: "ui-fixture",
+                name: "Monkey.D.Luffy", printedIdentifier: "P-001",
+                releaseLabel: count == 2 ? "English · Romance Dawn" : "English · Event \(number)",
+                treatmentLabel: state == "footer" || state == "missing-artwork" ? "Standard"
+                    : (number.isMultiple(of: 2) ? "Alternate art" : "Original art"),
+                distributionLabel: count == 2 ? nil : (number.isMultiple(of: 3) ? "Winner" : "Participation"),
+                thumbnailURL: state == "missing-artwork" ? URL(string: "https://fixture.invalid/\(number).png") : nil,
+                artworkID: state == "missing-artwork" ? "artwork-\(number)" : nil,
+                distinctionLabels: ["Region: North America / Europe", "Block: \(state == "missing-artwork" ? 1 : number)",
+                    "Copyright: Printed footer evidence for this physical release"])
+        }
+        choice = PendingPrintingChoice(request: .init(subject: .init(identifier: identifier),
+            purpose: .collection, generation: 0), candidates: candidates)
+    }
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Printing choice fixture").font(.headline)
+            Text(selected ?? (dismissed ? "Skipped to Needs attention" : "No printing selected"))
+                .accessibilityIdentifier("printing-fixture-result")
+            Spacer(minLength: 0)
+            if !dismissed {
+                PrintingChoiceBar(choice: choice, onChoose: { selected = $0.id }, onDismiss: { dismissed = true })
+            }
+        }
+        .padding(16)
+        .contentWidthLimit(.standard)
+        .foregroundStyle(.white)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.black)
+        .dynamicTypeSize(state == "accessibility" ? .accessibility3 : .large)
+    }
+}
+#endif
 
 /// The unit price captured during identification. It is deliberately a small
 /// value view shared by the receipt and review sheet so both surfaces make the

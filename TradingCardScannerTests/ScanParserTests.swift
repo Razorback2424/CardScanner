@@ -2,6 +2,88 @@ import XCTest
 @testable import TradingCardScanner
 
 final class ScanParserTests: XCTestCase {
+    private struct FixedRecognizer: GameRecognitionAdapter {
+        let game: CardGame
+        let outcome: GameRecognitionOutcome
+        var customWords: [String] { ["SHARED", game.rawValue] }
+        func identify(_ lines: [RecognizedLine]) -> GameRecognitionOutcome { outcome }
+    }
+
+    func testConfirmationDoesNotMixCatalogGenerationsButSuppressionRemainsStable() throws {
+        func subject(_ generation: String) throws -> ScanSubject {
+            ScanSubject(identifier: try ScanIdentifier(game: .onePiece, namespace: "numbered-card",
+                fields: [.init(key: "number", value: "OP01-120"), .init(key: "language", value: "en")],
+                displayIdentifier: "OP01-120", suppressionIdentity: "OP01-120",
+                catalogGeneration: generation))
+        }
+        let old = try subject("release-1")
+        let current = try subject("release-2")
+        XCTAssertNotEqual(old.identifier, current.identifier)
+        XCTAssertEqual(old.suppressionKey, current.suppressionKey)
+        var window = CandidateConfirmationWindow()
+        XCTAssertNil(window.observeSubject(old))
+        XCTAssertNil(window.observeSubject(current))
+        XCTAssertEqual(window.observeSubject(current), current)
+        let bytes = try JSONEncoder().encode(ScanIdentifierSnapshot(identifier: current.identifier))
+        let restored = try JSONDecoder().decode(ScanIdentifierSnapshot.self, from: bytes).identifier()
+        XCTAssertEqual(restored.catalogGeneration, "release-2")
+        XCTAssertEqual(restored, current.identifier)
+    }
+
+    func testRegistryAggregatesZeroOneAndCompetingGameIdentities() throws {
+        let pokemon = ScanSubject(identifier: ScanParser.parsePokemon("OBF 223/197")!)
+        let magic = ScanSubject(identifier: .magic(setCode: "ECL", collectorNumber: "0218", language: "en"))
+        let onePiece = ScanSubject(identifier: try ScanIdentifier(game: .onePiece, namespace: "numbered-card",
+            fields: [.init(key: "number", value: "OP01-120"), .init(key: "language", value: "en")],
+            displayIdentifier: "OP01-120", suppressionIdentity: "OP01-120"))
+        XCTAssertEqual(try GameRecognitionRegistry(recognizers: []).identify([]), .nothing)
+        for subject in [pokemon, magic, onePiece] {
+            let registry = try GameRecognitionRegistry(recognizers: [
+                FixedRecognizer(game: subject.game, outcome: .identified(subject))
+            ])
+            XCTAssertEqual(registry.identify([]), .identified(subject))
+        }
+        let competing: [any GameRecognitionAdapter] = [
+            FixedRecognizer(game: .pokemon, outcome: .identified(pokemon)),
+            FixedRecognizer(game: .onePiece, outcome: .identified(onePiece))
+        ]
+        XCTAssertEqual(try GameRecognitionRegistry(recognizers: competing).identify([]), .ambiguous)
+        XCTAssertEqual(try GameRecognitionRegistry(recognizers: competing.reversed()).identify([]), .ambiguous)
+    }
+
+    func testHardAmbiguityBlocksValidPrimaryAndSoftRejectionDoesNot() throws {
+        let subject = ScanSubject(identifier: ScanParser.parsePokemon("OBF 223/197")!)
+        let primary = FixedRecognizer(game: .pokemon, outcome: .identified(subject))
+        let ambiguous = FixedRecognizer(game: .onePiece, outcome: .ambiguous)
+        let rejected = FixedRecognizer(game: .magic,
+            outcome: .rejected(.init(reason: "Spatial evidence", blocksFallbackRecognition: true)))
+        XCTAssertEqual(try GameRecognitionRegistry(recognizers: [primary, ambiguous]).identify([]), .ambiguous)
+        XCTAssertEqual(try GameRecognitionRegistry(recognizers: [primary, rejected]).identify([]), .identified(subject))
+        XCTAssertEqual(try GameRecognitionRegistry(recognizers: [rejected]).identify([]), .fallbackBlocked)
+        let softMiss = FixedRecognizer(game: .magic,
+            outcome: .rejected(.init(reason: "Unsupported marker", blocksFallbackRecognition: false)))
+        XCTAssertEqual(try GameRecognitionRegistry(recognizers: [softMiss]).identify([]), .nothing)
+    }
+
+    func testDuplicateRecognizerRegistrationIsRejectedAndVocabularyIsDeterministic() throws {
+        let pokemon = FixedRecognizer(game: .pokemon, outcome: .nothing)
+        let magic = FixedRecognizer(game: .magic, outcome: .nothing)
+        XCTAssertThrowsError(try GameRecognitionRegistry(recognizers: [pokemon, pokemon]))
+        let registry = try GameRecognitionRegistry(recognizers: [pokemon, magic])
+        XCTAssertEqual(registry.customWords, ["SHARED", "magic", "pokemon"])
+    }
+
+    func testPokemonInternalAmbiguityCannotBecomeAMagicIdentification() {
+        let profile = RecognitionProfile(magic: MagicScanProfile(definitions: [.init(code: "ECL", printedSize: nil)]))
+        XCTAssertEqual(profile.identify(["OBF 223/197", "OBF 224/197", "ECL 0218 EN"]), .ambiguous)
+        XCTAssertEqual(profile.identify(["OBF 223/197 OBF 224/197"]), .ambiguous)
+    }
+
+    func testMagicInternalAmbiguityCannotBecomeAPokemonIdentification() {
+        let profile = RecognitionProfile(magic: MagicScanProfile(definitions: [.init(code: "ECL", printedSize: nil)]))
+        XCTAssertEqual(profile.identify(["OBF 223/197", "ECL 0218 EN", "ECL 0219 EN"]), .ambiguous)
+    }
+
     func testStandardIdentifier() {
         XCTAssertEqual(ScanParser.parsePokemon("OBF 223/197")?.displayIdentifier, "OBF 223/197")
     }
@@ -19,14 +101,14 @@ final class ScanParserTests: XCTestCase {
     }
 
     func testLeadingZeroLocalID() {
-        guard case let .pokemon(_, cardNumber, _, _)? = ScanParser.parsePokemon("MEW 006/165") else {
+        guard case let .pokemon(_, cardNumber, _, _)? = ScanParser.parsePokemon("MEW 006/165")?.legacyIdentity else {
             return XCTFail("Expected a Pokémon identifier")
         }
         XCTAssertEqual(cardNumber, "006")
     }
 
     func testModernPokemonCollectorSuffixIsPreserved() {
-        guard case let .pokemon(_, cardNumber, _, _)? = ScanParser.parsePokemon("PBL 040a/084") else {
+        guard case let .pokemon(_, cardNumber, _, _)? = ScanParser.parsePokemon("PBL 040a/084")?.legacyIdentity else {
             return XCTFail("Expected a suffix-bearing Pokémon identifier")
         }
         XCTAssertEqual(cardNumber, "040a")
@@ -48,7 +130,7 @@ final class ScanParserTests: XCTestCase {
         ]
 
         for fixture in fixtures {
-            guard case let .pokemonPromo(_, localID, definition)? = ScanParser.parsePokemon(fixture.text) else {
+            guard case let .pokemonPromo(_, localID, definition)? = ScanParser.parsePokemon(fixture.text)?.legacyIdentity else {
                 return XCTFail("Expected promo identifier for \(fixture.text)")
             }
             XCTAssertEqual(definition.tcgdexSetID, fixture.setID)
@@ -60,7 +142,7 @@ final class ScanParserTests: XCTestCase {
     func testMEPPromoNumbersAreNotLocallyCapped() {
         for localID in ["095", "101"] {
             guard case let .pokemonPromo(prefix, parsedLocalID, definition)? =
-                    ScanParser.parsePokemon(["MEP \(localID)"]) else {
+                    ScanParser.parsePokemon(["MEP \(localID)"])?.legacyIdentity else {
                 return XCTFail("Expected MEP promo identifier for MEP \(localID)")
             }
             XCTAssertEqual(prefix, "MEP")
@@ -75,8 +157,8 @@ final class ScanParserTests: XCTestCase {
     }
 
     func testCurrentMegaEvolutionSets() {
-        guard case let .pokemon(_, _, _, megSet)? = ScanParser.parsePokemon("MEG001/132"),
-              case let .pokemon(_, _, _, ascSet)? = ScanParser.parsePokemon("ASC217/217") else {
+        guard case let .pokemon(_, _, _, megSet)? = ScanParser.parsePokemon("MEG001/132")?.legacyIdentity,
+              case let .pokemon(_, _, _, ascSet)? = ScanParser.parsePokemon("ASC217/217")?.legacyIdentity else {
             return XCTFail("Expected current Pokémon set identifiers")
         }
         XCTAssertEqual(megSet.tcgdexSetID, "me01")
@@ -168,7 +250,7 @@ final class ScanParserTests: XCTestCase {
         let confirmed = try XCTUnwrap(
             historicalWindow.observeSubject(ScanSubject(identifier: second))
         )
-        guard case let .pokemonHistorical(evidence) = confirmed.identifier else {
+        guard case let .pokemonHistorical(evidence) = confirmed.identifier.legacyIdentity else {
             return XCTFail("Expected merged historical evidence")
         }
         XCTAssertEqual(evidence.titleCandidates, ["dust ox", "dustox"])
@@ -223,7 +305,7 @@ final class ScanParserTests: XCTestCase {
             PokemonHistoricalScanParser.parse(number: number, titleLines: ["Gengar"])
         )
 
-        guard case let .pokemonHistorical(evidence) = identifier else {
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
             return XCTFail("Expected historical evidence")
         }
         XCTAssertEqual(evidence.number.displayIdentifier, "66/196")
@@ -247,7 +329,7 @@ final class ScanParserTests: XCTestCase {
                 titleLines: ["Houndoom"]
             )
         )
-        guard case let .pokemonHistorical(evidence) = identifier else {
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
             return XCTFail("Expected historical Pokémon evidence")
         }
         XCTAssertEqual(evidence.number.localID, "H11")
@@ -267,7 +349,7 @@ final class ScanParserTests: XCTestCase {
                 titleLines: ["Blaine's Growlithe"]
             )
         )
-        guard case let .pokemonHistorical(evidence) = identifier else {
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
             return XCTFail("Expected historical Pokémon evidence")
         }
         XCTAssertEqual(evidence.number.scheme, .officialSet)
@@ -291,7 +373,7 @@ final class ScanParserTests: XCTestCase {
                 titleLines: ["Example"]
             )
         )
-        guard case let .pokemonHistorical(evidence) = identifier else {
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
             return XCTFail("Expected historical evidence")
         }
         XCTAssertEqual(evidence.number.localID, "40a")
@@ -612,7 +694,7 @@ final class ScanParserTests: XCTestCase {
         let identifier = try XCTUnwrap(
             PokemonHistoricalScanParser.parse(numberLines: [number], titleLines: [title])
         )
-        guard case let .pokemonHistorical(evidence) = identifier else {
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
             throw NSError(domain: "ScanParserTests", code: 1)
         }
         return evidence
@@ -937,7 +1019,7 @@ final class ScanParserTests: XCTestCase {
             recognized("3/3", x: 0.82, width: 0.08)
         ]
 
-        XCTAssertEqual(profile.identify(lines), .spatiallyRejectedMagicCollector)
+        XCTAssertEqual(profile.identify(lines), .fallbackBlocked)
     }
 
     private func recognized(

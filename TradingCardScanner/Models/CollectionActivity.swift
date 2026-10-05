@@ -233,7 +233,7 @@ final class CollectionActivity {
         remainingQuantity == 0
     }
 
-    var game: CardGame { CardGame(rawValue: gameRaw) ?? .pokemon }
+    var game: CardGame { CardGame(rawValue: gameRaw) }
     var itemKind: CollectionItemKind {
         CollectionItemKind(rawValue: itemKindRaw) ?? .rawCard
     }

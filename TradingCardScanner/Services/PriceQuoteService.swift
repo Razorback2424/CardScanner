@@ -3,156 +3,82 @@ import Foundation
 enum PriceQuoteError: Error {
     case identityMismatch
     case providerUnavailable
+    /// Capability absence is terminal: callers must not try another provider.
+    case pricingUnsupported
 }
 
-/// Refreshes only a card that has already been resolved. It never receives OCR
-/// evidence, so a refresh cannot silently re-identify the card in someone's hand.
-struct PriceQuoteService {
-    private let tcgdex = TCGdexService()
-    /// The same breaker the catalog uses. TCGdex being down is one fact about
-    /// one host; discovering it twice costs a second connect timeout per scan.
-    private let tcgdexCircuit = TCGdexCircuitBreaker.shared
-    private let scryfall = ScryfallService()
-    private let marketPrices: PokemonMarketPriceResolver
+/// Dispatches exact physical identity to a registered game pricing adapter.
+struct PriceQuoteService: Sendable {
+    private let registry: CardGameRegistry
+    private let adapters: GamePriceAdapterRegistry
     private let catalogRefreshOverride: (@Sendable (IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async throws -> PriceLookup)?
 
     init(
         tcgCSVSource: any PokemonTCGCSVPriceSource = PokemonTCGCSVPriceService.shared,
         catalogRefreshOverride: (@Sendable (IdentifiedCard, PhysicalVariant?, PokemonPrintRun?) async throws -> PriceLookup)? = nil
     ) {
-        marketPrices = PokemonMarketPriceResolver(source: tcgCSVSource)
+        registry = .standard
+        adapters = try! GamePriceAdapterRegistry(adapters: [PokemonPriceAdapter(tcgCSVSource: tcgCSVSource), MagicPriceAdapter()])
         self.catalogRefreshOverride = catalogRefreshOverride
     }
 
-    func refresh(
-        card: IdentifiedCard,
-        variant: PhysicalVariant?,
-        pokemonPrintRun: PokemonPrintRun?
-    ) async throws -> PriceLookup {
-        let catalog: PriceLookup
-        do {
-            if let catalogRefreshOverride {
-                catalog = try await catalogRefreshOverride(card, variant, pokemonPrintRun)
-            } else {
-                catalog = try await refreshCatalog(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun)
-            }
-        } catch {
-            if error is CancellationError || Task.isCancelled { throw CancellationError() }
-            if case PriceQuoteError.identityMismatch = error { throw error }
-            if let fallback = try await marketPrices.fallback(
-                cardID: card.providerID, game: card.game, variant: variant,
-                printRun: pokemonPrintRun, retry: true
-            ) { return fallback }
-            throw error
-        }
-        if case let .price(price) = catalog, price.currencyCode == "USD" { return catalog }
-        return try await marketPrices.fallback(
-            cardID: card.providerID, game: card.game, variant: variant,
-            printRun: pokemonPrintRun, retry: true
-        ) ?? catalog
+    init(registry: CardGameRegistry, adapters: GamePriceAdapterRegistry) {
+        self.registry = registry
+        self.adapters = adapters
+        catalogRefreshOverride = nil
     }
 
-    private func refreshCatalog(
-        card: IdentifiedCard,
-        variant: PhysicalVariant?,
-        pokemonPrintRun: PokemonPrintRun?
-    ) async throws -> PriceLookup {
-        let refreshed: IdentifiedCard
-        switch card {
-        case .pokemon:
-            guard await tcgdexCircuit.permitsRequest() else {
-                throw PriceQuoteError.providerUnavailable
-            }
-            let returned: TCGdexCard
-            do {
-                returned = try await tcgdex.fetchCard(
-                    id: card.providerID,
-                    locale: CatalogIdentityNormalization.locale(forCatalogCardID: card.providerID),
-                    ignoringCache: true
-                )
-                // A successfully decoded full-card response proves that the
-                // host answered, even if its identity does not match the card
-                // being refreshed. Record transport health before validating
-                // identity so a bad redirect cannot leave the circuit open.
-                await tcgdexCircuit.recordSuccess()
-            } catch is CancellationError {
-                throw CancellationError()
-            } catch let error as TCGdexError {
-                // A missing card, malformed identifier, or identity mismatch is
-                // definitive card evidence, not a host outage. Do not open the
-                // shared provider circuit for those results.
-                switch error {
-                case .cardNotFound, .identityMismatch, .invalidURL:
-                    throw error
-                case .badResponse:
-                    await tcgdexCircuit.recordFailure(.serverError)
-                    throw error
-                }
-            } catch {
-                guard Self.shouldRecordCircuitFailure(for: error) else { throw error }
-                await tcgdexCircuit.recordFailure(
-                    Self.failureKind(for: error)
-                )
-                throw error
-            }
-            refreshed = .pokemon(returned, setCode: card.setCode)
-        case .magic:
-            let returned = try await scryfall.fetchCard(id: card.providerID, ignoringCache: true)
-            refreshed = .magic(returned)
-        }
-
-        guard Self.matchesResolvedIdentity(returned: refreshed, resolved: card) else {
-            throw PriceQuoteError.identityMismatch
-        }
-        return CardPricing.price(
-            for: refreshed,
-            variant: variant,
-            magicTreatments: refreshed.magicTreatments(for: variant),
-            pokemonPrintRun: pokemonPrintRun,
-            at: .now
-        )
+    func supportsPricing(for game: CardGame) -> Bool {
+        registry.supports(game, .pricing) && adapters.adapter(for: game) != nil
     }
 
-    /// A `badResponse` means TCGdex answered; anything else means it did not.
-    /// The distinction decides how long the breaker stays open.
+    func supportsGradedPricing(for game: CardGame) -> Bool {
+        supportsPricing(for: game) && registry.supports(game, .gradedPricing)
+    }
+
+    func allowsProviderFallback(for game: CardGame) -> Bool {
+        adapters.adapter(for: game)?.allowsProviderFallback == true
+    }
+
+    func supportsStoredPrintingRefresh(for game: CardGame) -> Bool {
+        supportsPricing(for: game) && adapters.adapter(for: game)?.supportsStoredPrintingRefresh == true
+    }
+
+    func refreshStoredPrinting(game: CardGame, printingID: String, variant: PhysicalVariant?) async throws -> PriceLookup {
+        guard supportsStoredPrintingRefresh(for: game), let adapter = adapters.adapter(for: game) else {
+            throw PriceQuoteError.pricingUnsupported
+        }
+        return try await adapter.refreshStoredPrinting(printingID, variant: variant)
+    }
+
+    func refresh(card: IdentifiedCard, variant: PhysicalVariant?,
+                 pokemonPrintRun: PokemonPrintRun?) async throws -> PriceLookup {
+        let override: (@Sendable () async throws -> PriceLookup)?
+        if let catalogRefreshOverride {
+            override = { try await catalogRefreshOverride(card, variant, pokemonPrintRun) }
+        } else { override = nil }
+        return try await refresh(.init(identity: .legacy(card), variant: variant,
+                                       pokemonPrintRun: pokemonPrintRun,
+                                       catalogRefreshOverride: override))
+    }
+
+    func refresh(_ request: GamePriceRequest) async throws -> PriceLookup {
+        guard supportsPricing(for: request.identity.game),
+              let adapter = adapters.adapter(for: request.identity.game) else {
+            throw PriceQuoteError.pricingUnsupported
+        }
+        return try await adapter.refresh(request)
+    }
+
     static func failureKind(for error: Error) -> TCGdexCircuitBreaker.Failure {
-        if case TCGdexError.badResponse = error { return .serverError }
-        return .unreachable
+        PokemonPriceAdapter.failureKind(for: error)
     }
 
     static func shouldRecordCircuitFailure(for error: Error) -> Bool {
-        if error is CancellationError { return false }
-        if let urlError = error as? URLError, urlError.code == .cancelled {
-            return false
-        }
-        if let tcgdexError = error as? TCGdexError {
-            switch tcgdexError {
-            case .cardNotFound, .identityMismatch, .invalidURL:
-                return false
-            case .badResponse:
-                return true
-            }
-        }
-        return true
+        PokemonPriceAdapter.shouldRecordCircuitFailure(for: error)
     }
 
-    /// A direct provider id is authoritative, but the redundant stable card
-    /// fields make the contract explicit and protect against a malformed response.
     static func matchesResolvedIdentity(returned: IdentifiedCard, resolved: IdentifiedCard) -> Bool {
-        guard returned.game == resolved.game,
-              returned.providerID == resolved.providerID,
-              returned.cardNumber.caseInsensitiveCompare(resolved.cardNumber) == .orderedSame else {
-            return false
-        }
-
-        switch (returned, resolved) {
-        case let (.pokemon(returned, _), .pokemon(resolved, _)):
-            return returned.set.id.caseInsensitiveCompare(resolved.set.id) == .orderedSame
-        case let (.magic(returned), .magic(resolved)):
-            return returned.setCode.caseInsensitiveCompare(resolved.setCode) == .orderedSame
-                && returned.language.caseInsensitiveCompare(resolved.language) == .orderedSame
-        default:
-            return false
-        }
+        GamePriceIdentity.legacy(resolved).matches(.legacy(returned))
     }
 }

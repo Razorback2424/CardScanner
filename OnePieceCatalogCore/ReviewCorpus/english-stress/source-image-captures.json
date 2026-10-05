@@ -1,0 +1,169 @@
+{
+  "bandai": [
+    {
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "OP01-120"
+      },
+      "byteCount": 215268,
+      "catalogObservationID": "bandai:OP01-120:ad50e6fdafc855030448b2a56e76c892aaffbd34aeb66142f7e7dce620287254",
+      "observedAt": "2026-10-04T13:29:59+00:00",
+      "payloadSHA256": "3ea59a6d6145e74514107ec242b081b9143f47481f8cee792574fab26034e815",
+      "rawFile": "OP01-120.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120.png?260929"
+    },
+    {
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "OP01-120_p1"
+      },
+      "byteCount": 170530,
+      "catalogObservationID": "bandai:OP01-120_p1:ad50e6fdafc855030448b2a56e76c892aaffbd34aeb66142f7e7dce620287254",
+      "observedAt": "2026-10-04T13:29:59+00:00",
+      "payloadSHA256": "d8c3d5c8ebf5509e55eb117dc7825e7a317d25949cd29e9bb262d8b602b2d99a",
+      "rawFile": "OP01-120_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p1.png?260929"
+    },
+    {
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "OP01-120_p2"
+      },
+      "byteCount": 194681,
+      "catalogObservationID": "bandai:OP01-120_p2:ad50e6fdafc855030448b2a56e76c892aaffbd34aeb66142f7e7dce620287254",
+      "observedAt": "2026-10-04T13:29:59+00:00",
+      "payloadSHA256": "3abfff97814fcc051db65f88b2fcbe4da83661a234ab7fa6a46d01c18a81d46a",
+      "rawFile": "OP01-120_p2.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p2.png?260929"
+    },
+    {
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "P-001"
+      },
+      "byteCount": 213418,
+      "catalogObservationID": "bandai:P-001:b3422d9fb59bf5facc69e79c063775a12e19d7ec5a59bf075d93fdd36ad86d37",
+      "observedAt": "2026-10-04T13:29:59+00:00",
+      "payloadSHA256": "fec813f8ccdad4c9fccdac310f2a0c2e4e2cc490c3811226fb7007f21a2162e2",
+      "rawFile": "P-001.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/P-001.png?260929"
+    },
+    {
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "P-001_p1"
+      },
+      "byteCount": 166233,
+      "catalogObservationID": "bandai:P-001_p1:b3422d9fb59bf5facc69e79c063775a12e19d7ec5a59bf075d93fdd36ad86d37",
+      "observedAt": "2026-10-04T13:29:59+00:00",
+      "payloadSHA256": "1913cd562b673a7e19af76a9e3d488ab5084964caa03349d7095612f03f68f06",
+      "rawFile": "P-001_p1.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/P-001_p1.png?260929"
+    },
+    {
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "P-001_p2"
+      },
+      "byteCount": 191565,
+      "catalogObservationID": "bandai:P-001_p2:b3422d9fb59bf5facc69e79c063775a12e19d7ec5a59bf075d93fdd36ad86d37",
+      "observedAt": "2026-10-04T13:29:59+00:00",
+      "payloadSHA256": "2ef35358054ecb521903d8581857f1a2ac145c956a0350e776df1660d232b173",
+      "rawFile": "P-001_p2.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/P-001_p2.png?260929"
+    },
+    {
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "P-001_p5"
+      },
+      "byteCount": 158104,
+      "catalogObservationID": "bandai:P-001_p5:b3422d9fb59bf5facc69e79c063775a12e19d7ec5a59bf075d93fdd36ad86d37",
+      "observedAt": "2026-10-04T13:29:59+00:00",
+      "payloadSHA256": "34e5398ac46cc6a99396bc88448b00d9d5ffe055cb21317d58e3eb8cbb828a36",
+      "rawFile": "P-001_p5.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/P-001_p5.png?260929"
+    },
+    {
+      "alias": {
+        "provider": "bandai",
+        "sourceID": "ST01-007"
+      },
+      "byteCount": 184939,
+      "catalogObservationID": "bandai:ST01-007:c6d6d527c9f34dde7527433232517c709e4f83b08f6bf11e92ed96ba1625f0e5",
+      "observedAt": "2026-10-04T13:29:59+00:00",
+      "payloadSHA256": "b24dd930f7e1db46850b874c75f48718d554db16afcfdf2b598e44070d860dce",
+      "rawFile": "ST01-007.png",
+      "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/ST01-007.png?260929"
+    }
+  ],
+  "physicalCoverageComplete": false,
+  "purpose": "private-source-artwork-review",
+  "schemaVersion": 1,
+  "tcgplayer": [
+    {
+      "byteCount": 27297,
+      "observedAt": "2026-10-04T16:08:31+00:00",
+      "payloadSHA256": "4eb10f60efc36d9c89ea71f5d80b41f35a3b5154e6e56c7ead24f619733b0032",
+      "productID": 454664,
+      "rawFile": "454664.jpg",
+      "sourceURL": "https://tcgplayer-cdn.tcgplayer.com/product/454664_200w.jpg"
+    },
+    {
+      "byteCount": 26847,
+      "observedAt": "2026-10-04T16:08:31+00:00",
+      "payloadSHA256": "23f7bd58f62f9ecdb71439ac6938c2b9f5b7972721628320d979a519d61ca42c",
+      "productID": 454665,
+      "rawFile": "454665.jpg",
+      "sourceURL": "https://tcgplayer-cdn.tcgplayer.com/product/454665_200w.jpg"
+    },
+    {
+      "byteCount": 27581,
+      "observedAt": "2026-10-04T16:08:32+00:00",
+      "payloadSHA256": "22256362e8f7c882244cd169eb6134dd979c292a79002f79b3432b9a6c1d86b7",
+      "productID": 454666,
+      "rawFile": "454666.jpg",
+      "sourceURL": "https://tcgplayer-cdn.tcgplayer.com/product/454666_200w.jpg"
+    },
+    {
+      "byteCount": 4014,
+      "observedAt": "2026-10-04T16:08:32+00:00",
+      "payloadSHA256": "fee9cc2cc07df4f3088b3509728a0a84de98e319bd0315e98e3d08ac54f2c960",
+      "productID": 288236,
+      "rawFile": "288236.jpg",
+      "sourceURL": "https://tcgplayer-cdn.tcgplayer.com/product/288236_200w.jpg"
+    },
+    {
+      "byteCount": 27611,
+      "observedAt": "2026-10-04T16:08:33+00:00",
+      "payloadSHA256": "6323a21effc2a3ea6d0157395cc3de12be34c3d1c3895189b83335d6af442bd3",
+      "productID": 450299,
+      "rawFile": "450299.jpg",
+      "sourceURL": "https://tcgplayer-cdn.tcgplayer.com/product/450299_200w.jpg"
+    },
+    {
+      "byteCount": 29272,
+      "observedAt": "2026-10-04T16:08:33+00:00",
+      "payloadSHA256": "ee7f86125f83d467940db98b04f7361cb7292308db074f3fc95a4cec10bc9248",
+      "productID": 450300,
+      "rawFile": "450300.jpg",
+      "sourceURL": "https://tcgplayer-cdn.tcgplayer.com/product/450300_200w.jpg"
+    },
+    {
+      "byteCount": 32304,
+      "observedAt": "2026-10-04T16:08:34+00:00",
+      "payloadSHA256": "b01c85f39fa474cec90fd63b520913ad8e5d86fccf277895f7731bddf2b4acd6",
+      "productID": 450301,
+      "rawFile": "450301.jpg",
+      "sourceURL": "https://tcgplayer-cdn.tcgplayer.com/product/450301_200w.jpg"
+    },
+    {
+      "byteCount": 24921,
+      "observedAt": "2026-10-04T16:08:34+00:00",
+      "payloadSHA256": "029ebe330769bd178e8f263a17c382a52f8d44de97ef6e09f76d0c5d55b60e13",
+      "productID": 544770,
+      "rawFile": "544770.jpg",
+      "sourceURL": "https://tcgplayer-cdn.tcgplayer.com/product/544770_200w.jpg"
+    }
+  ]
+}

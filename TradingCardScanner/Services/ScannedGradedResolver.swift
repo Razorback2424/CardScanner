@@ -51,17 +51,20 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
     private let timeout: Duration
     private let timeoutRetryCount: Int
     private let credentialsAvailable: Bool?
+    private let gameRegistry: CardGameRegistry
 
     init(
         client: any ScannedGradedLookupClient = JustTCGV2GradedClient(transport: .shared),
         timeout: Duration = .seconds(60),
         timeoutRetryCount: Int = 1,
-        credentialsAvailable: Bool? = nil
+        credentialsAvailable: Bool? = nil,
+        gameRegistry: CardGameRegistry = .standard
     ) {
         self.client = client
         self.timeout = timeout
         self.timeoutRetryCount = max(0, timeoutRetryCount)
         self.credentialsAvailable = credentialsAvailable
+        self.gameRegistry = gameRegistry
     }
 
     func resolve(
@@ -69,6 +72,7 @@ struct ScannedGradedResolver: ScannedGradedResolving, Sendable {
         slab: GradedSlabEvidence,
         pokemonPrintRun: PokemonPrintRun?
     ) async -> ScannedGradedOutcome {
+        guard gameRegistry.supports(card.game, .gradedPricing) else { return .unavailable }
         guard credentialsAvailable ?? PriceVendorCredentials.hasKey else { return .unavailable }
 
         // The timeout task is created here, after catalog/label resolution has

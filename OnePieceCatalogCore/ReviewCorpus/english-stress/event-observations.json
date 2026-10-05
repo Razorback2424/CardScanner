@@ -1,0 +1,59 @@
+[
+  {
+    "id":"bandai:2022-super-pre-release:winner","kind":"catalog",
+    "alias":{"provider":"bandai","sourceID":"event:2022-super-pre-release:winner:P-001"},
+    "sourceURL":"https://en.onepiece-cardgame.com/events/2022/officialevents/super_pre-release.php",
+    "observedAt":"2026-10-04T16:42:31Z","language":"en",
+    "payloadSHA256":"d111ead69a68a88522d13ee2b5efebc6543ced160929320db4f9d28d020cd33f",
+    "productEvidence":["event:2022-super-pre-release"],
+    "printedEvidence":{"number":"P-001","distribution":"Winner prize","sourceFinishLabel":"Silver Foil Ver.","finishVariantID":"foil","sourceRole":"official-event-prize-specification"}
+  },
+  {
+    "id":"bandai:2022-super-pre-release:participant","kind":"catalog",
+    "alias":{"provider":"bandai","sourceID":"event:2022-super-pre-release:participant:P-001"},
+    "sourceURL":"https://en.onepiece-cardgame.com/events/2022/officialevents/super_pre-release.php",
+    "observedAt":"2026-10-04T16:42:31Z","language":"en",
+    "payloadSHA256":"d111ead69a68a88522d13ee2b5efebc6543ced160929320db4f9d28d020cd33f",
+    "productEvidence":["event:2022-super-pre-release"],
+    "printedEvidence":{"number":"P-001","distribution":"Participation prize","sourceRole":"official-event-prize-specification"}
+  },
+  {
+    "id":"bandai:2022-super-pre-release:winner-render","kind":"catalog",
+    "alias":{"provider":"bandai","sourceID":"event:2022-super-pre-release:winner:P-001"},
+    "sourceURL":"https://en.onepiece-cardgame.com/images/events/2022/officialevents/super_pre-release/card_06.png",
+    "observedAt":"2026-10-04T16:42:54Z","language":"en",
+    "payloadSHA256":"c9f9644f1600dfbdd1266d9fb412a119ab518243787c05d55a486129d598a681",
+    "imageSHA256":"c9f9644f1600dfbdd1266d9fb412a119ab518243787c05d55a486129d598a681",
+    "productEvidence":["event:2022-super-pre-release"],
+    "printedEvidence":{"number":"P-001","stamp":"Super Pre-Release WINNER","sourceRole":"watermarked-digital-render"}
+  },
+  {
+    "id":"bandai:2022-super-pre-release:participant-render","kind":"catalog",
+    "alias":{"provider":"bandai","sourceID":"event:2022-super-pre-release:participant:P-001"},
+    "sourceURL":"https://en.onepiece-cardgame.com/images/events/2022/officialevents/super_pre-release/card_07.png",
+    "observedAt":"2026-10-04T16:42:55Z","language":"en",
+    "payloadSHA256":"b12635b8836803a16152e1cd2ae364cfad0df94cc941e1afa97aad5ebe435173",
+    "imageSHA256":"b12635b8836803a16152e1cd2ae364cfad0df94cc941e1afa97aad5ebe435173",
+    "productEvidence":["event:2022-super-pre-release"],
+    "printedEvidence":{"number":"P-001","sourceRole":"watermarked-digital-render"}
+  },
+  {
+    "id":"cgc:2026-winner:article","kind":"catalog",
+    "alias":{"provider":"cgc","sourceID":"article:2026-04-09:super-pre-release-winner"},
+    "sourceURL":"https://www.cgcgrading.com/news/articles/unserialized-ace-one-piece-4PA9RXwgxW2kLLfiUwuqIQ/",
+    "observedAt":"2026-10-04T16:45:52Z","language":"en",
+    "payloadSHA256":"2d2066f78eb3a097a34ad73fe71d511388255b4b85da23b8aca27f54bb29ca98",
+    "productEvidence":["event:2022-super-pre-release"],
+    "printedEvidence":{"number":"P-001","distribution":"Winner prize","sourceRole":"grading-company-release-corroboration"}
+  },
+  {
+    "id":"cgc:2026-winner:physical-front","kind":"catalog",
+    "alias":{"provider":"cgc","sourceID":"article:2026-04-09:super-pre-release-winner"},
+    "sourceURL":"https://images.ctfassets.net/t8bripszr2o9/newsimg-c49b623440be1139f2e4f9739063ca53/8ae2b91896aab5a2cb9292797d49661e/Monkey_D._Luffy_FR_tb20260409080045609.png",
+    "observedAt":"2026-10-04T16:45:53Z","language":"en",
+    "payloadSHA256":"414d7e44a21a2e6e73aef973ad2f8a27f2208d2bf67a6e067c453c0b93a34863",
+    "imageSHA256":"414d7e44a21a2e6e73aef973ad2f8a27f2208d2bf67a6e067c453c0b93a34863",
+    "productEvidence":["event:2022-super-pre-release"],
+    "printedEvidence":{"number":"P-001","stamp":"Super Pre-Release WINNER","sourceRole":"photograph-of-physical-card"}
+  }
+]

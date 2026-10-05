@@ -1,3 +1,711 @@
+- One Piece merge-branch review handoff (2026-10-05): transferred 183 integration
+  files onto `merge/one-piece-integration` in the main checkout, preserving its
+  existing whitespace edit and `undefined/` files. `main` and the source worktree
+  remain unchanged; no commit was created. Added a factual
+  [change report](docs/audits/one-piece-integration-review-handoff.md) identifying
+  code boundaries, catalog/pricing scope, existing verification and remaining
+  acceptance work. Documentation-only follow-up; no new build/test run.
+
+- Base-case handoff / Pokémon catalog extraction (2026-10-05; One Piece worktree
+  at `69c714f`): moved Pokémon provider/offline/disk-cache/historical behavior
+  into game-owned catalog files, retaining persisted keys and captured modern
+  definitions. Central catalog dispatch/coalescing is generic; eight remaining
+  audited branches are all in Browse. All 192 selected tests passed in one
+  checkpoint, including One Piece scan/save pricing, exact lanes and quote
+  withdrawal, pricing/cache suites and legacy game compatibility. Result:
+  `test_sim_2026-10-05T13-01-49-160Z_pid18958_cc372487.xcresult`.
+  Installed and relaunched the simulator build with the unchanged full ordinary/
+  base-pricing kit. Plan priority is local base-case acceptance before further
+  framework or special-printing work; device/camera/production gates stay open.
+  See [Package 3](docs/plans/one_piece_code_implementation.md#package-3-move-existing-behavior-behind-existing-adapters).
+
+- Magic catalog adapter extraction (2026-10-05; One Piece worktree at `69c714f`):
+  moved ordinary-card and signed/live token/art routing into `MagicCatalogAdapter`,
+  registered by the runtime and legacy-compatible default factory. Central catalog
+  now prepares/coalesces adapter identifiers, caches bounded lookup outcomes and
+  preserves retrieval timestamps without storing the user's printing selection.
+  All 55 focused Magic/forward-compatibility/historical-Pokémon/One-Piece cases pass
+  in `test_sim_2026-10-05T12-37-17-792Z_pid18958_d68ce592.xcresult`. The strict
+  boundary audit remains red at 11 matching labels. Signed Magic activation,
+  Pokémon catalog, Browse/import extraction and release gates remain open.
+  Updated app/full-kit relaunch retained the existing Shanks/portfolio $8.16
+  display; no new provider request or camera acceptance was claimed.
+  See [Package 3](docs/plans/one_piece_code_implementation.md#package-3-move-existing-behavior-behind-existing-adapters).
+
+- One Piece withdrawal/retired-session acceptance (2026-10-05; existing worktree
+  at `69c714f`): expanded the signed activation fixture to attempt actual
+  single/multi-claim finish corrections after quarantine. Rows, acquisition
+  claims, ledger operations, inventory events and price history remain unchanged.
+  Added conflict/stale revision and retired/replacement storage-session coverage.
+  All three focused tests pass in `test_sim_2026-10-05T12-24-13-145Z_pid18958_115e2d5a.xcresult`;
+  no app behavior change or full regression run. The architecture audit still
+  identifies 13 legacy Pokémon/Magic case labels. Full-plan/device/production
+  gates stay open; local base-case testing remains the immediate handoff.
+  See [Package 1 evidence](docs/plans/one_piece_code_implementation.md#package-1-implementation-checkpoint-2026-10-04).
+
+- One Piece cached-price withdrawal (2026-10-05; existing worktree at `69c714f`):
+  exact mapping fingerprints persist with owned/reference quotes. Catalog
+  publication withdraws managed-provider values before exposing a changed
+  generation; manual prices and permanent printing IDs stay intact. Older quote
+  receipts cannot restore a withdrawn value. The app binds consumers to its
+  authoritative storage container, using the coordinator's current snapshot.
+  The consolidated One Piece/pricing selection passed 103/103; the focused
+  same-container rebinding/quote-cache recheck passed 18/18. Relaunch found that
+  older feed-cache receipts could delay restoration; feed caches are now bound
+  to catalog generation. Its test caught default-protocol dispatch; explicitly
+  async actor implementation fixed it and the affected test passed. Internal
+  disk exhaustion during test packaging was resolved by retaining two generated
+  bundles on the SSD. Final full-kit relaunch/Refresh Prices restored the saved
+  Shanks copy and portfolio value to $8.16. Base-case local
+  acceptance is next; production/device and special-printing gates remain open.
+  See the [current handoff](docs/plans/one_piece_code_implementation.md#base-case-pricing-priority--2026-10-04).
+
+- One Piece exact base pricing (2026-10-04; existing worktree at `69c714f`):
+  reviewed 1,961 original base mappings across 48 retained price groups; 412
+  ambiguous/qualified-title or missing-lane decisions remain held. Permanent
+  physical IDs/counts preserved. Exact TCGCSV product/Normal-Foil quotes are wired
+  through runtime, Price Check, Browse details/add and collection refresh; no
+  condition SKU, base-card fallback or zero-dollar placeholder is invented.
+  Four Python review tests and two affected core tests pass. The app checkpoint
+  passed 56/59 initially; corrected three synthetic completeness claims, then
+  all three pricing tests plus affected Browse registration passed. Full debug
+  kit verifies (20,873,783-byte envelope); unsigned revision 14 validates against
+  revision 13. Live simulator: Shanks Romance Dawn Foil showed $8.16, adding one
+  copy persisted/displayed $8.16 in collection; unmapped FILM RED Nami stayed
+  unpriced. Camera save now also routes to the exact adapter; its focused
+  save/choice/quote/persistence test passes without paid credentials. There are
+  61 distinct passing app cases across the checkpoint and affected rechecks.
+  No production sync/rights/device gate closed.
+  See the [base pricing ledger](docs/plans/one_piece_code_implementation.md#base-case-pricing-priority--2026-10-04).
+
+- One Piece full ordinary app checkpoint/local kit (2026-10-04; existing worktree
+  at `69c714f`): expanded scan/printing-choice/finish/save coverage through ST13,
+  OP17, EB03/EB04 and PRB01/PRB02; held ST30/ST31 rows remain unowned. The 43-case
+  app selection passed 41 initially, with two new assertions incorrectly assuming
+  Browse exposed all retained products. Corrected to 52 verified-target groups;
+  both affected rechecks pass. No full suite repeated. Generated and verified one
+  full-corpus debug kit on the SSD; 2,745 printing records, 16,119,026-byte signed
+  envelope, independent ephemeral key/revision-one local bootstrap. Unsigned
+  publisher successor remains revision 13. Production, pricing, image rights,
+  sync, rendered/device and activation/memory gates remain open. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md#latest-full-ordinary-batch--2026-10-04).
+
+- One Piece full ordinary corpus adoption (2026-10-04; existing worktree at
+  `69c714f`): adopted all 58 ordinary product groups and 2,731 selected rows,
+  including the retained legacy PRB01 release page. Current corpus: 2,692
+  canonical cards, 2,745 printings (2,490 verified, 224 provisional, 31 conflicted),
+  8,237 observations, 2,940 captures and 257 open discrepancies. All 817 earlier
+  printing/artwork records, 794 canonical records and 19 product records remain
+  unchanged. Exact replay matches all five artifacts; unsigned revision 13
+  validates against revision 12 as protected review and is retained on the SSD.
+  All 42 selected Python tests pass. Core: 39 passes and one assertion failure
+  from the new test assigning base EB04-061 to OP17 instead of OP15; corrected
+  and the affected recheck passes. App checkpoint/local kit remain pending; no
+  production, rights, pricing or completeness gate closed. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md#latest-full-ordinary-batch--2026-10-04).
+
+- One Piece full ordinary capture/source review (2026-10-04; existing worktree at
+  `69c714f`): completed the 57-product capture with no availability/empty-page
+  gaps and 2,935 retained source records. Extracted shared retained-source
+  validation and added `--audit-only`: full-batch issue reporting without identity
+  allocation or corpus adoption. Initial audit: 22 of 57 products source-ready;
+  remaining issues include provider title annotations, special physical listings
+  and missing starter finish evidence. Corrected exact printed-number title
+  annotations while preserving treatment labels. New authored fixtures remain
+  deferred to the consolidated checkpoint. No builds/suites, revised registry
+  or successor candidate. Audit artifact:
+  `/private/tmp/one-piece-bulk-source-audit-20261004/product-source-audit.json`.
+  See the [execution plan](docs/plans/one_piece_code_implementation.md#ordered-work-packages-and-exit-evidence).
+
+- One Piece full ordinary draft/capture (2026-10-04; existing worktree at
+  `69c714f`): prepared a private unadopted 57-product, 2,730-row batch, preserving
+  all 17 earlier product specifications. Combined-release base rows, selected
+  starter reprints and held parallel artwork stay explicit; PRB-01 release-page
+  evidence remains a scoped gap. Added whole-batch capture continuation for HTTP
+  availability/empty retailer results while retaining fatal integrity checks.
+  Corrected reuse of the already-retained OP17 series-index capture ID/filename
+  without changing its bytes. Full-batch capture is running; no revised physical
+  registry or catalog candidate yet. Authored fixtures are deferred to the final
+  consolidated checkpoint; no builds or suites run. See the
+  [execution plan](docs/plans/one_piece_code_implementation.md#ordered-work-packages-and-exit-evidence).
+
+- One Piece bulk inventory implementation (2026-10-04; existing worktree at
+  `69c714f`): added `scripts/discover_one_piece_products.py` using the retained,
+  paced capture transport. Captured all 18 observed official product-index pages,
+  58 ordinary series lists and 3,881 numbered artwork rows; 52 linked product
+  pages include older PHP and directory-style release pages. Combined OP14/OP15
+  and EB04 prefixes, shared deck pages, reprint aliases, future products and
+  independent market-group candidates remain explicit discovery evidence.
+  Private `bulk-product-discovery-v3.json` is retained on the external SSD.
+  No physical UUIDs allocated, catalog coverage promoted, builds or suites run.
+  Authored pagination/combined-release/reprint/offline fixtures and added the CI
+  entry; execute them at the consolidated checkpoint. Next: review the complete
+  product manifest and capture/reconcile ordinary printing evidence as one batch.
+  See the [execution plan](docs/plans/one_piece_code_implementation.md#ordered-work-packages-and-exit-evidence).
+
+- One Piece bulk execution change (2026-10-04; owner instruction): plan now
+  batches all remaining ordinary OP/ST/EB/PRB products into one implementation
+  deliverable with one consolidated replay/core/app checkpoint and one successor
+  candidate/local kit. Bounded capture chunks remain resumable internal work;
+  missing physical evidence stays held. The remaining physical distinctions form
+  a second bulk pass. No implementation or tests in this planning update. See the
+  [ordered execution plan](docs/plans/one_piece_code_implementation.md#ordered-work-packages-and-exit-evidence).
+
+- One Piece OP-04/OP-05/ST-11/ST-12 batch (2026-10-04; existing worktree at
+  `69c714f`): retained 270 new standard identities, 246 verified and 24 provisional.
+  Missing retailer finishes remain held; OP-05 PSA Magazine/SP rows are explicitly
+  excluded from base-art evidence. Preserved all 547 earlier printing records.
+  Current corpus: 794 canonical cards, 817 printings (692 verified, 117 provisional,
+  eight conflicted), 2,515 observations, 856 captures and 127 open discrepancies.
+  Allocation-free replay matches all five artifacts. Unsigned revision 12 validates
+  against revision 11 as protected review; no signed kit/publication. All 40 core
+  and 35 Python tests pass. All 43 selected One Piece integration tests pass,
+  including the four new product choice/finish/save flows and held-finish ownership
+  exclusions. The unsigned revision-12 candidate is retained on the external SSD;
+  see the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece capture/discrepancy pipeline (2026-10-04; existing worktree at
+  `69c714f`): added bounded retained-byte product capture with observed pagination,
+  exact source/group checks, four globally paced image workers, explicit orphan
+  recovery and offline mode. Replayed all 13 real products/533 selected artworks
+  without network or source-manifest changes. Added 103 durable held-record/scope
+  discrepancies with retained resolution history; all five reconciler artifacts
+  match replay. All 32 selected Python tests pass. No iOS/core build or new live
+  coverage. Next: ordinary-product expansion and the remaining activation checks;
+  see the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece reviewed-product manifest migration (2026-10-04; existing worktree
+  at `69c714f`): replaced reconciler product/reprint constants with the durable
+  13-product, 533-identity manifest. Preserved all 547 printing records, artwork,
+  aliases, finish evidence and existing observation keys. Two retained-byte runs
+  reproduce identical outputs; registry/observations/inventories also match the
+  prior corpus. Updated only review scope and the inaccurate retailer-only finish
+  limitation. Added seven authored pipeline tests and workflow coverage; all
+  24 selected Python tests pass. No iOS/core build. Capture automation, further
+  coverage and activation ordering remain open in the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece developer-handoff recalibration (2026-10-04; existing worktree at
+  `69c714f`): reviewed uncommitted runtime, correction, capture/reconciliation and
+  workflow source. Updated documentation only: distinguish implemented work from
+  remaining activation ordering, specify the reviewed product/discrepancy schemas,
+  split retained-byte manifest migration from capture expansion, and define replay
+  and crash-recovery acceptance. Corrected the focused verification scheme and
+  removed a nonexistent test-file requirement. No implementation, build or test
+  run. See the [code/file-level handoff](docs/plans/one_piece_code_implementation.md#codefile-level-implementation-handoff).
+
+- One Piece exact correction and evidence checkpoint (2026-10-04; worktree
+  `one-piece-integration`, base `69c714f`): corrected the two ST-10 OP-01 review
+  descriptions and reconciler output; replay retained all 533 standard identities
+  and reproduced registry, observation, inventory and review JSON exactly. Added
+  synchronous printing/finish validation to the One Piece adapter and all three
+  collection correction mutations, with per-container adapters and monotonic
+  activation revisions configured from the app root. The selected 42-case suite
+  compiled with 41 passes and one test-fixture failure; after fixing its
+  uppercase-UUID input and adding no-adapter/price-key assertions, the affected
+  test passed in isolation. The full selected suite was not rerun after that
+  test edit. A source audit also traced CSV, normalizer, detail-edit, quantity
+  and removal writes to their capability/store gates. See the
+  [Package 1 checkpoint](docs/plans/one_piece_code_implementation.md#package-1-implementation-checkpoint-2026-10-04).
+
+- One Piece implementation handoff detail (2026-10-04; existing worktree at
+  `69c714f`): expanded the current execution plan with prescribed files/APIs,
+  collection authority and mutation ordering, product capture/manifest schema,
+  Pokémon/Magic extraction targets, signed seed/hosting contract and focused
+  verification inputs. External release decisions are explicit owner inputs.
+  Documentation-only; no implementation, build or test rerun. See the
+  [code/file-level handoff](docs/plans/one_piece_code_implementation.md#codefile-level-implementation-handoff).
+
+- One Piece efficiency/plan audit (2026-10-04; existing worktree at `69c714f`):
+  inspected current code, registry, publisher artifacts and existing test logs.
+  Current state reaches ST-10/OP-03: 534 canonical cards, 547 printing records
+  (446 verified, 93 provisional, eight conflicted) and 1,727 observations. Latest
+  logs record 40 core and 40 One Piece integration passes. Updated only plans:
+  retire small-demo-next priorities, batch catalog work, close exact correction
+  and remaining routing gaps, and consolidate verification at milestones.
+  Retained full physical coverage, rights, delivery, device and sync requirements.
+  The two ST-10 reprint evidence descriptions still need manufacturer-only wording;
+  no code/data fix, build or test was performed in this audit. See the current
+  [execution plan](docs/plans/one_piece_code_implementation.md).
+
+- One Piece next starter/booster coverage (2026-10-04; existing isolated worktree
+  at `69c714f`): retained all 202 standard OP-02/ST-05–ST-09 rows, with 200 new
+  verified printings and two provisional revision records. Current corpus: 394
+  canonical cards, 405 printings (306 verified, 91 provisional, eight conflicted),
+  1,284 observations. All earlier 203 printing records are unchanged; offline
+  replay is exact and protected publisher revision 10 validates against revision 9.
+  Prepared the expanded signed local kit externally. Fixed source timestamp
+  validation to accept fractional ISO-8601 seconds; invalid values still fail.
+  All 40 core and 40 One Piece integration tests pass, exercising one card per
+  new product through recognition/choice/finish/save. Later products, revision
+  reconciliation and production gates remain open in the
+  [review corpus](OnePieceCatalogCore/ReviewCorpus/english-stress/README.md).
+
+- One Piece remaining launch starters (2026-10-04; existing isolated worktree
+  at `69c714f`): added all 51 standard numbered ST-02/ST-03/ST-04 records, with
+  24 more verified acquisition printings. The corpus now retains 192 canonical
+  cards, 203 printing records (106 verified, 89 provisional, eight conflicted)
+  and 678 observations. Retained every duplicate retailer finish assertion;
+  unresolved original/revision and normal/foil disagreements remain review-only.
+  Publisher revision 9 preserves revision 8 identities, offline replay is exact,
+  and the expanded signed debug kit is prepared externally. All 39 core and 40
+  One Piece integration cases pass, now exercising all four launch starters.
+  Later products, original/revision reconciliation and production gates stay open
+  in the [review corpus](OnePieceCatalogCore/ReviewCorpus/english-stress/README.md).
+
+- One Piece standard starter/booster expansion (2026-10-04; existing isolated
+  worktree at `69c714f`): retained all 17 ST-01 and 121 OP-01 standard-art rows with
+  permanent UUIDs and independent retailer finish evidence. Enabled 69 additional
+  verified printings (ten starter, 59 booster); 68 errata records remain provisional
+  and one conflicting starter leader remains excluded. The corpus now has 141
+  canonical cards, 152 printing records and 518 observations. Offline replay
+  reproduces all artifacts without UUID allocation; publisher revision 8 retains
+  the earlier identities and an expanded signed debug kit is prepared externally.
+  All 39 core and 40 One Piece integration tests pass, including ordinary Karoo,
+  starter Luffy and booster Shanks choice/finish/collection paths. No app images,
+  market joins, prices or production enablement were added. Remaining original/
+  revision distinctions and further starter/booster products are still open in
+  the [review corpus](OnePieceCatalogCore/ReviewCorpus/english-stress/README.md).
+
+- One Piece rendered Browse base case (2026-10-04; existing isolated worktree at
+  `69c714f`): launched the expanded signed review kit, searched for FILM RED Nami,
+  added one raw foil copy and verified release/finish/quantity after stopping and
+  relaunching the app. Reinstallation also retained the review collection. Fixed
+  internal product IDs in Browse projections and replaced unsupported-pricing
+  retrieval/history claims with “Pricing unavailable”; the updated detail
+  accessibility tree confirms that state. All 102 selected One Piece/Browse tests
+  pass with no skips or failures. Camera OCR, rendered scanner choice, broader
+  English corpus and production gates stay open. See the
+  [local review instructions](TradingCardScanner/OnePieceCatalogSeed/LOCAL_REVIEW.md).
+
+- One Piece retail base-catalog expansion (2026-10-04; existing isolated worktree
+  at `69c714f`): reviewed twelve FILM RED retail alternate-art printings against
+  the manufacturer's product/card list and explicit foil specification. The
+  durable corpus now holds 13 verified printings and one provisional record,
+  14 canonical cards and 103 observations. Retained sixteen raw source responses
+  privately on the external review drive; app artwork URLs and market joins stay
+  absent. All 38 core tests and 39 selected app cases pass, including real retail
+  Nami scanning, explicit choice, foil and collection identity. Publisher revisions
+  6/7 retain UUIDs across protected expansion and unchanged replay; prepared an
+  expanded signed local kit. Original starter Nami finish, ordinary booster/starter
+  coverage, rendered/device and production gates remain open. See the
+  [review corpus](OnePieceCatalogCore/ReviewCorpus/english-stress/README.md).
+
+- One Piece real local base case (2026-10-04; existing isolated worktree at
+  `69c714f`): debug/local-only launches can load a signed review catalog, scan and
+  Browse One Piece and write an isolated persistent collection. Databases and
+  recovery use a separate review directory; no remote One Piece updater or price
+  adapter is created. Prepared a real small signed catalog on the external SSD
+  with an ephemeral key. The real P-001 winner test covers recognition, explicit
+  choice, sole foil resolution, disk save/reopen, CSV export and offline Browse.
+  The checkpoint executes 68 cases: 67 passed, one existing storage skip, zero
+  failures. The test runner shut down the simulator before separate installation,
+  so rendered launch and physical-camera/process-relaunch acceptance stay open.
+  See the [local review instructions](TradingCardScanner/OnePieceCatalogSeed/LOCAL_REVIEW.md)
+  and [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece required import validator (2026-10-04; existing isolated worktree
+  at `69c714f`): new-game CSV rows now require their installed printing adapter
+  before any ownership operation. Writable capability alone cannot bypass exact
+  identity validation; existing Pokémon/Magic legacy import behavior is retained.
+  The simulator checkpoint passes all 72 selected One Piece integration, CSV
+  resume and forward-compatibility cases, including refusal of numbered/UUID
+  One Piece and future-game rows without an adapter. The plan records the remaining
+  exact-printing finish-correction gap before write enablement. Links and diff
+  whitespace pass; production remains gated in the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece normalization live-policy guard (2026-10-04; existing isolated
+  worktree at `69c714f`): request discovery, legacy sealed-artwork repair and
+  metadata application now honor current container write permissions. Both save
+  paths validate pending game writes; sealed rekeying shares the configured store.
+  A suspended One Piece lookup discards its result after permission withdrawal,
+  preserving identity, metadata, artwork, history and price observations.
+  The focused simulator checkpoint passes 84 cases across One Piece integration,
+  normalization and forward compatibility. Plan links and whitespace checks pass;
+  wider direct-save, physical reconciliation and production sync gates remain
+  open in the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece Browse activation refresh (2026-10-04; existing isolated worktree at
+  `69c714f`): updates now carry their own game and catalog revision, preserving
+  older global provider events. Refresh only affected game directories; restart
+  unchanged active searches through the existing debounce so old-generation rows
+  and cursors are discarded. Open sets filter updates by game/set and rebase their
+  descriptor on deliberate reset; pagination remains pinned. Withdrawn sets clear
+  old selectable rows. The Browse checkpoint passes 104 selected tests, four
+  focused rebase/scoping follow-ups pass, and the final withdrawal guard compiles
+  in a build-only checkpoint. Whitespace and plan links pass. Rendered navigation,
+  device, production and wider corpus gates remain open in the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece required finish evidence (2026-10-04; existing isolated worktree at
+  `69c714f`): rules version 2 requires an explicit catalog-supported finish review
+  for every verified physical variant, agreeing with canonical number, language
+  and release. Missing/contradictory claims, market observations and image-only
+  roles are rejected. Migrated the real winner review to its manufacturer finish
+  specification; participant stays provisional with no finish. Unsigned publisher
+  revisions 4/5 preserve both UUIDs across protected migration and replay.
+  All 38 core/publisher tests and 43 selected app tests pass, with successful
+  terminal processes. Plans, JSON/candidate hashes and whitespace checks pass.
+  Production, corpus coverage, rights and device/sync acceptance remain open in
+  the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece first real award reconciliation (2026-10-04; existing isolated
+  worktree at `69c714f`): allocated durable P-001 winner and participation UUIDs
+  from reviewed official event evidence. The manufacturer specifies the winner's
+  silver foil; a grading-company physical photograph independently corroborates
+  the award identity and WINNER lettering. Participation remains provisional
+  with unknown finish. Five retained responses match recorded hashes; six new
+  observations bring the combined review candidate to 67. Publisher revisions
+  2/3 retain both UUIDs and evidence, with no automatic candidates or market joins.
+  The package checkpoint passed 32/34 initially; both affected corpus tests pass
+  after timestamp/canonical-order corrections. Three selected app tests pass for
+  the real OCR/choice/finish/Browse boundary and existing scanner regressions.
+  Image URLs, production sync and pricing remain disabled; coverage, rights,
+  further physical reconciliation and device acceptance remain open. See the
+  [reviewed award evidence](OnePieceCatalogCore/ReviewCorpus/english-stress/README.md).
+
+- One Piece unresolved-finish contract (2026-10-04; existing isolated worktree
+  at `69c714f`): unverified publisher review printings can retain an empty finish
+  list without inventing a normal/foil variant. Verified printings still require
+  registered variants. Two new core tests cover stable regeneration, exclusion
+  from automatic authority, invalid variant rejection and protected promotion.
+  All 34 core/publisher tests pass; no app build was run for this package-only
+  change. Real physical evidence and reviewed UUID allocation remain unfinished
+  in the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece collection-policy follow-up (2026-10-04; existing isolated worktree
+  at `69c714f`): guarded commits now inspect blank-game history and inventory-only
+  ownership, existing stores honor configured policy withdrawal, and backfill
+  excludes unsupported rows/history. Local artwork overrides and removal survive
+  relaunch without clearing unsupported synced legacy metadata. Simulator checks
+  cover 66 distinct passing cases across one checkpoint and targeted follow-ups;
+  initial failures were a retained-object rollback assertion and an import fixture
+  that needed to enable its isolated container explicitly. Two artwork tests were
+  rerun with their correct class selector. Plan links and diff whitespace pass.
+  Remaining direct-save audit, physical reconciliation and mixed-client CloudKit
+  enforcement stay open in the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece broad market discovery (2026-10-04; existing isolated worktree at
+  `69c714f`): inspected and adapted the owner's English catalog kit, retained 90
+  paced TCGCSV responses from the Oct. 3 daily build, and generated 7,408 review
+  rows across 87 groups. One empty presale inventory remains explicitly incomplete;
+  DON!!, unnumbered and metadata-conflict candidates are retained outside exact
+  numbered-card authority. Added 31 hashed stress market observations and a
+  no-ownership candidate crosswalk (Shanks 7, Nami 10, P-001 Luffy 14 products).
+  Private source thumbnails support seven illustration correspondences; Nami's
+  market image is a placeholder. Recorded digital/footer discrepancies without
+  asserting original physical footer, finish, exact UUIDs or market joins.
+  Nine Python tests and 32 core/publisher tests pass; offline replay produces all
+  four CSV/JSON outputs byte-identically, with a focused unchanged-mtime follow-up.
+  No app rebuild or production enablement. See the [review evidence](OnePieceCatalogCore/ReviewCorpus/english-stress/README.md).
+
+- Lorcana first slice (2026-10-04; existing `one-piece-integration` worktree at
+  base `69c714f`, including uncommitted shared infrastructure): recalibrated the
+  [implementation plan](docs/plans/lorcana_code_implementation.md) and implemented
+  validated local print-family mappings, content-derived generations, conservative
+  complete-footer recognition and generic incomplete lookup/recovery. Provider
+  set codes remain independent from printed markers, premium numerators and promo
+  tokens remain literal evidence, and unknown/cross-game ambiguity cannot borrow
+  an exact physical identity. The focused simulator checkpoint passes 44 cases,
+  including 13 new Lorcana tests. An initial project-ID collision was corrected
+  before the successful checkpoint. Production registration, physical UUID/finish
+  evidence, real corpus normalization, pricing and collection writes remain open.
+  No full suite or physical-device/provider/CloudKit certification was performed.
+
+- One Piece real source-review checkpoint (2026-10-04; existing isolated worktree
+  at `69c714f`): retained exact response bytes for six official/Limitless pages
+  externally, with SHA-256/timestamp manifests and 30 normalized observations in
+  the [stress-source review inputs](OnePieceCatalogCore/ReviewCorpus/english-stress/README.md).
+  Added bounded fail-closed normalization, preserving separate reprint appearances,
+  provider aliases and incomplete discovery inventories. Eight parser/CLI tests
+  and all 31 core tests pass. Publisher accepts the canonical-only unsigned review
+  candidate with zero physical printings/automatic candidates; identical reruns
+  preserve normalized outputs. No app build or wider scanner suite repeated.
+  Real physical UUID allocation/reconciliation, permitted image evidence, rights,
+  signing/delivery and collection sync acceptance remain open.
+
+- One Piece compact picker (2026-10-04; existing isolated worktree at `69c714f`):
+  replaced the verbose default with Pokémon/Magic-style header and short option
+  buttons, bounded grid for long histories and Details on demand. Recovery uses
+  the same concise labels; exact-printing/artwork safeguards remain. One batched
+  checkpoint passed 37 cases; the affected label test passed a focused follow-up.
+  Rendered header/contrast fixes received build-only verification. Final phone,
+  tablet, large-text, footer and missing-artwork captures were inspected; native
+  checks reached/selected fixture 61, skipped, and opened Details without choosing.
+  These are component-fixture checks, not real catalog or ownership/sync readiness.
+  See the [visual checklist](docs/plans/one_piece_printing_choice_visual_checklist.md)
+  for evidence and open loaded-artwork/device/VoiceOver/owner acceptance.
+
+- One Piece plan reconciliation and picker direction (2026-10-04; existing
+  isolated worktree at `69c714f`, tracked and untracked changes reviewed): plans
+  now reflect bounded picker mechanics and recovery validation already present.
+  Existing picker checkpoint log records 52 passing selected tests; no tests or
+  builds were run in this documentation-only pass. The owner rejected the verbose
+  picker and requires the existing Pokémon/Magic header/short option-button
+  format, with bounded scrolling for long printing histories. UX acceptance stays
+  open. Retain Lorcana-relevant seams and prioritize compact picker plus a small
+  real reviewed corpus and remaining write guards over optional extraction.
+  Production data/rights, delivery, device/performance and CloudKit gates remain
+  open. See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece recovery/identity follow-up (2026-10-04; existing isolated worktree
+  at `69c714f`): retry-save after relaunch now revalidates evidence against the
+  active catalog and asks for a printing again. One Piece live lookup, choice and
+  retry share strict payload validation; incomplete local catalogs retain a
+  retryable explanation. A single batched simulator checkpoint passed 138 of
+  139 cases; a missing inventory entry in the new later-release fixture was
+  corrected and its one-case follow-up passed. Passing evidence now covers all
+  139 selected cases (29 One Piece, 94 scanner model, 16 recovery store), not a
+  full-suite/device/provider/sync gate. Production support remains disabled.
+  See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece plan/code audit (2026-10-04; existing isolated worktree at detached
+  `69c714f`, including tracked/untracked implementation): documentation-only
+  review confirms the shared identity/runtime/local fixture architecture is on
+  track, with production support disabled. Updated the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md) with a
+  slice status matrix, prioritized picker/write/backfill/recovery/Browse gaps,
+  missing real corpus and shared-host publication hazards, and a KISS sequence
+  retaining the seams needed for later Lorcana. Reconciled stale no-implementation
+  wording in the design/audit. No implementation changes or builds/tests in this
+  pass; historical checkpoint counts remain dated evidence.
+
+- One Piece uncataloged-number recognition checkpoint (2026-10-04; isolated
+  worktree based on `69c714f`): registry-supported series recognize valid printed
+  numbers independently of catalog membership. Missing numbers participate in
+  frame ambiguity and remain incomplete/recoverable instead of creating owned
+  printings. Unknown series remain excluded. One app build passed all 25 One
+  Piece integration tests, including live unresolved retention without ownership.
+  Clearer incomplete-catalog messaging, later-catalog recovery and picker/device/
+  performance evidence remain open. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece configured bootstrap checkpoint (2026-10-04; isolated worktree
+  based on `69c714f`): app registration can use a verified signed seed and
+  dedicated configured keys/origin. Disabled mode omits the module;
+  validation-only mode hides scan/Browse/write capabilities. Startup refreshes
+  registered sources once per coordinator. One app build passed 61 selected
+  tests; built plist/resource inspection confirms One Piece remains disabled
+  with no endpoint, keys or production seed. Real reviewed data/signing/hosting,
+  cold-start performance and independent sync policy remain open. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece publication preparation checkpoint (2026-10-04; isolated worktree
+  based on `69c714f`): signing binds reviewed canonical payload hashes to pinned
+  public keys and verified revision baselines, with explicit initial bootstrap.
+  Publisher sign/verify produces identity/change manifests and protects inputs
+  and existing artifacts. Optional workflow signing prepares artifacts without
+  deploying; production configuration remains disabled and unprovisioned.
+  The package checkpoint passed 29 cases; the initially failing CLI case passed
+  after focused discovery/write/idempotency corrections, giving passing evidence
+  for all 30 cases. Workflow YAML/shell, ledger links and whitespace checks pass.
+  Real reviewed data/keys/rights, hosting publication, bootstrap and sync gates
+  remain open. See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece signed update transport checkpoint (2026-10-04; isolated worktree
+  based on `69c714f`): generic bounded HTTP envelope transport supports conditional
+  fetch, cancellation, redirect refusal and transient retries. One Piece refresh
+  coalesces callers, validates or durably activates signed candidates, retains
+  last-known-good data on rejection and clears rejected conditional validators.
+  Disabled rollout makes no request. One app build passed 43 selected tests.
+  Production URL/keys/seed/publication, bootstrap scheduling, legacy transport
+  extraction and provider/device/sync gates remain open. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece shared-screen runtime checkpoint (2026-10-04; isolated worktree
+  based on `69c714f`): Collection and Settings now receive the app runtime and
+  construct their normalizers from its adapters/capabilities/activation sources.
+  Settings resolves current import adapters before acquiring the exclusive
+  ownership lock and passes them into the isolated CSV actor. One app build
+  passed 70 selected tests, including a signed revision activation followed by
+  importing and enriching a newly introduced exact printing UUID. No rendered
+  UI/device/provider evidence is claimed. Legacy adapter extraction, remaining
+  mutation/import policies, production data/update publication and sync gates
+  remain open. See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece collection transaction guard checkpoint (2026-10-04; isolated
+  worktree based on `69c714f`): container-scoped game write policy now reaches
+  scanner writers and explicitly configured CSV transactions. Common commit
+  guards cover saved/staged ownership and history changes; unsupported rows
+  reject acquisition, quantity/removal/undo/restore/correction/bulk deletion.
+  Quantity repair uses the guarded commit and history backfill skips unsupported
+  rows. One build passed 63 selected tests, including four new guard cases;
+  56 existing ownership/history and graded/sealed tests passed without rebuilding.
+  Shared-screen runtime propagation, remaining metadata/ledger-only policies,
+  production data and mixed-client sync gates remain open. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece exact import/normalization milestone (2026-10-03; isolated worktree
+  based on `69c714f`): registered game import adapters and runtime factories;
+  CSV row validation/headless import preserve exact UUID/finish/ownership keys.
+  One Piece accepts verified raw printing identities, with specific failures
+  for unsupported finishes and conflicting evidence; no number/name inference
+  allocates a printing. Normalization keys include game, item kind and exact
+  attached ID; unsupported/gated rows receive no metadata/watermark writes.
+  Unknown non-Pokémon first-edition CSV finishes retain their own identity.
+  The batched app checkpoint passed 75 tests; the focused identity follow-up
+  passed 21. Project parsing, ledger links and whitespace checks pass. Runtime
+  propagation into shared screens, complete mutation guards, legacy adapter
+  extraction, alias/ambiguous/manual and graded/sealed import policies remain
+  open. App defaults still omit One Piece; production data/publication, rights,
+  mixed-client sync, rendered/device/performance and release gates remain open.
+  See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece local Browse milestone (2026-10-03; isolated worktree based on
+  `69c714f`): added game-owned Browse adapters/runtime dispatch, verified English
+  product/card projections, local search/details and generation-bound pagination.
+  Product appearances share one physical UUID; exact ownership and physical
+  completion cannot borrow another printing's matching number/set label.
+  Runtime catalog updates invalidate old details/summaries. Browse enumeration
+  uses injected game capabilities; One Piece requests no sealed provider setup
+  and its raw/graded additions remain gated. The batched app checkpoint passed
+  75 tests; 38 affected legacy ownership/completion tests passed without rebuilding;
+  one focused capability-state follow-up passed. Project parsing, ledger links
+  and whitespace checks pass. Import/export/normalization, complete mutation
+  guards, production data/publication, rendered UI/performance and sync/device
+  gates remain open. App defaults still omit One Piece. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece signed storage/live activation milestone (2026-10-03; isolated
+  worktree based on `69c714f`): extracted shared verified current/previous
+  storage while retaining Pokémon/Magic contracts and revision policies; added
+  bounded One Piece signed slots, durable transition validation and activation.
+  Generic runtime activation now updates scanner/catalog/variant snapshots and
+  recovery. Explicit retry revalidates printed evidence against the new generation;
+  saved choices and old lookup completions cannot silently cross generations.
+  Initial loads share one task and slow subscribers retain only the newest event.
+  The batched app checkpoint passed 57 selected cases; the follow-up passed nine
+  targeted concurrency, stale-choice and legacy recovery cases. Remote updates,
+  production seed/data/publication, Browse/import, complete mutation guards and
+  mixed-client sync/device gates remain open. One Piece remains disabled in app
+  bootstrap with pricing and shared-collection writes off. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece local scanner milestone (2026-10-03; isolated worktree based on
+  `69c714f`): added pinned-key signed-release verification, an immutable indexed
+  One Piece registry, registry-derived numbered recognition, game-owned catalog
+  and variant adapters, and runtime recognizer installation between frames.
+  Number recognition leaves language unconfirmed; English physical choices are
+  explicit, and incomplete/conflicted scope cannot manufacture automatic
+  uniqueness. The scanner commit boundary now checks collection-write capability;
+  One Piece remains scan-only with pricing and shared-collection writes off.
+  Focused app build/tests passed all 222 cases. Synthetic signed fixtures
+  exercised recognition, printing/finish ordering, separate physical copies in
+  an in-memory collection, stale choices and write-gate refusal. Package tests
+  passed all 27 cases including signature failure checks. Project parsing,
+  ledger links and whitespace checks pass. Production seed/data, current/previous
+  storage, activation/recovery, full mutation guards and sync/device gates remain
+  open. See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece catalog-core milestone (2026-10-03; isolated worktree based on
+  `69c714f`): added OnePieceCatalogCore contracts, durable-registry builder,
+  reconciliation/index validator, protected change classification, market quote
+  invalidations, normalized provider captures and a local unsigned publisher.
+  Synthetic stress cases preserve every printing, identical-art reprints,
+  product appearances, reviewed alias/supersession/split/merge history and exact
+  SKU qualifiers; they do not claim vendor counts or production completeness.
+  The final batched package checkpoint passed all 25 tests, including publisher
+  baseline/input/symlink protection. Project parsing, ledger links and whitespace
+  checks pass. No app build was run for this package-only checkpoint. Real
+  ingestion/data review, signed activation, One Piece runtime/OCR and sync gates
+  remain open. See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece printing-picker/recovery milestone (2026-10-03; isolated worktree
+  based on `69c714f`): generic catalog choices now open a game-neutral picker;
+  selected printings proceed to finish resolution with the original catalog
+  timestamp. Dismissed generic encounters retain separate recovery rows and
+  generation-bound candidate lists. Reload keeps absent game modules read-only;
+  supported recovery selections revalidate catalog membership and identity.
+  Scanner/compatibility checkpoint passed 116 tests; the batched recovery
+  checkpoint passed 19 tests. Full D/E migration, bounded live picker layout,
+  production One Piece catalog/OCR, and sync gates remain open. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece execution-priority clarification (2026-10-03): the owner plans
+  Lorcana next, so retain shared identity, recognition, printing-choice/recovery
+  and pricing-capability boundaries. Prioritize a complete One Piece local
+  scan-to-collection/relaunch flow over finishing all legacy adapter migration
+  or shared transport extraction first. Lorcana implementation is not added to
+  this goal; the full One Piece checklist and production gates remain intact.
+  This is a sequencing decision, not additional implementation or test evidence.
+  See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece generic resolved-card/catalog foundation (2026-10-03; isolated
+  worktree based on `69c714f`): ResolvedCatalogCard replaces the closed downstream
+  card enum, with a source alias and legacy provider projection preserving
+  existing keys, metadata, treatment and pricing behavior. Generic printing
+  keys remain stable across variant-count changes. Runtime catalog adapters
+  expose resolved/printing-choice/incomplete outcomes, retain provenance and
+  payload timestamps, validate generation and candidate membership, and keep
+  different copies' printing selections independent. Expanded simulator
+  regression passed 333 cases; final scanner/variant/pricing/fallback regression
+  passed all 248 cases. Project parsing, ledger links and diff whitespace checks
+  pass. Scanner choice/recovery UI and existing catalog providers still need
+  migration; no One Piece production or sync/provider gate enabled. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece pricing adapter extraction (2026-10-03; isolated worktree based on
+  `69c714f`): Pokémon/Magic module adapters now own exact-provider refresh and
+  Pokémon bulk fallback. Runtime injection routes scanner Price Check through
+  the generic pricing service; absent capability/adapter stops foreground
+  fallback with a distinct unsupported-game state. Stored-card fallback and
+  background/camera graded paths check capabilities before provider work.
+  Expanded simulator regression passed 286 cases; the final slab capability
+  change passed a focused 45-case rerun. Tests cover exact printing/variant
+  forwarding, missing adapters, zero bulk/vendor requests and no synthetic
+  price/product observations for unsupported games. Project parsing, ledger
+  links and diff whitespace checks pass. The architecture gate still rejects
+  catalog/Browse switches; background provider dispatch, generic resolved cards,
+  and the remaining full-plan slices are unfinished. No One Piece production,
+  provider, device or CloudKit gate enabled. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece runtime/variant foundation (2026-10-03; isolated worktree based on
+  `69c714f`): app bootstrap and ContentView now use the registered runtime
+  container, retaining existing coordinator behavior through an explicit legacy
+  bridge. Game-owned policies supply variants and generic VariantLock options;
+  scanner menus and lock validation use the injected registry. Final simulator
+  runs passed 136 runtime/scanner/variant cases, all 166 Browse cases across four
+  classes, and two screen-construction cases. Added the strict game-boundary
+  audit: shell syntax passes, but existing catalog/Browse/pricing switches still
+  fail its architecture gate pending adapter extraction. Full scope remains
+  active; no One Piece production support, device/provider or sync gate enabled.
+  See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece recognition adapter foundation (2026-10-03; isolated worktree
+  based on `69c714f`): primary recognition dispatches through registered adapters
+  with explicit same-game/cross-game ambiguity and soft fallback rejection.
+  Magic spatial rejection moved behind its adapter. Added semantic catalog
+  generation to identifiers/snapshots; confirmation cannot merge generations,
+  while suppression remains stable across activation. Focused simulator runs
+  passed 99 recognition/historical cases and 107 parser/game/recovery cases.
+  App bootstrap/runtime extraction and historical fallback context migration
+  remain unfinished; One Piece catalog/support remains disabled.
+  See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece generic identifier/recovery foundation (2026-10-03; isolated
+  worktree based on `69c714f`): replaced the closed scanner identity with generic
+  canonical fields and separate suppression identity, retaining a typed
+  Pokémon/Magic migration bridge. Added versioned recovery snapshots, legacy
+  decoding, read-only future-game/version handling, original unknown-field
+  retention, and malformed-neighbor isolation. App build passed; 120 unique
+  focused simulator cases passed across final per-suite runs. One new test
+  initially expected an empty plan instead of the existing `noCards` rejection;
+  corrected it and reran all 25 game/recovery cases successfully. Full runtime,
+  recognition, printing, catalog, provider, and rollout work remains incomplete.
+  See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- One Piece implementation foundation (2026-10-03; isolated worktree based on
+  `69c714f`): started open game identities, capability enumeration, explicit-game
+  CSV preservation/write refusal, and unsupported JustTCG mapping guards. Eight
+  isolated Swift identity/capability checks passed. Registered app regressions
+  have not run; simulator compilation still fails at unknown-game unresolved
+  rehydration pending the generic identifier/recovery slice. Full implementation
+  remains in progress. No CloudKit, provider, device, or release readiness claim.
+  See the [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
 - Uncommitted-change review follow-up (2026-10-03; working tree against
   `dd2a1e3`): tightened edition quote matching by size/language/stamp and physical
   finish; validated catalog recovery finishes, retained raw vintage edition

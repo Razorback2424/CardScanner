@@ -1153,7 +1153,10 @@ struct CollectionCardDetailView: View {
                 try CollectionArtworkStore.set(filename: filename, for: collectionKey, in: context)
                 // Kept as a migration bridge for stores written before local
                 // artwork ownership existed. New writes keep this nil.
-                liveCard.userArtworkFilename = nil
+                if CollectionStore(context: context).permitsSyncedMetadataWrite(for: liveCard) {
+                    liveCard.userArtworkFilename = nil
+                }
+                try CollectionStore(context: context).validatePendingGameWrites()
                 try context.save()
                 CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: context)
             }
@@ -1187,8 +1190,12 @@ struct CollectionCardDetailView: View {
                 guard let liveCard = try context.fetch(descriptor).first else {
                     throw CollectionStoreError.missingDestinationRow(collectionKey)
                 }
-                try CollectionArtworkStore.set(filename: nil, for: collectionKey, in: context)
-                liveCard.userArtworkFilename = nil
+                try CollectionArtworkStore.set(filename: nil, for: collectionKey, in: context,
+                    suppressLegacyFallback: !CollectionStore(context: context).permitsSyncedMetadataWrite(for: liveCard))
+                if CollectionStore(context: context).permitsSyncedMetadataWrite(for: liveCard) {
+                    liveCard.userArtworkFilename = nil
+                }
+                try CollectionStore(context: context).validatePendingGameWrites()
                 try context.save()
                 CollectionArtworkStore.removeIfUnreferenced(oldFilename, in: context)
             }
@@ -1419,6 +1426,7 @@ struct CollectionCardDetailView: View {
                 return
             }
             liveCard.tcgplayerURL = url.absoluteString
+            try CollectionStore(context: context).validatePendingGameWrites()
             try context.save()
         }
     }
@@ -2968,8 +2976,8 @@ enum CollectionArtworkStore {
                     sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
                 )
             )
-            if let filename = rows.first?.filename, !filename.isEmpty {
-                return filename
+            if let row = rows.first {
+                return row.filename.isEmpty ? nil : row.filename
             }
             // Legacy values remain readable until launch migration has moved
             // them. Do not cache that fallback because the synced bridge field
@@ -2981,7 +2989,8 @@ enum CollectionArtworkStore {
         }
     }
 
-    static func set(filename: String?, for collectionKey: String, in context: ModelContext) throws {
+    static func set(filename: String?, for collectionKey: String, in context: ModelContext,
+                    suppressLegacyFallback: Bool = false) throws {
         let rows = try context.fetch(
             FetchDescriptor<LocalArtworkOverride>(
                 predicate: #Predicate { $0.collectionKey == collectionKey }
@@ -2990,6 +2999,11 @@ enum CollectionArtworkStore {
         if let filename, !filename.isEmpty {
             let override = rows.first ?? LocalArtworkOverride(collectionKey: collectionKey, filename: filename)
             override.filename = filename
+            override.updatedAt = .now
+            if rows.isEmpty { context.insert(override) }
+        } else if suppressLegacyFallback {
+            let override = rows.first ?? LocalArtworkOverride(collectionKey: collectionKey, filename: "")
+            override.filename = ""
             override.updatedAt = .now
             if rows.isEmpty { context.insert(override) }
         } else {
@@ -3022,6 +3036,7 @@ enum CollectionArtworkStore {
 
         var changed = false
         for card in legacyCards {
+            guard CollectionStore(context: context).permitsSyncedMetadataWrite(for: card) else { continue }
             if !keysWithOverrides.contains(card.collectionKey),
                let filename = card.userArtworkFilename,
                !filename.isEmpty {
@@ -3032,6 +3047,7 @@ enum CollectionArtworkStore {
             changed = true
         }
         guard changed else { return }
+        try CollectionStore(context: context).validatePendingGameWrites()
         try context.save()
     }
 

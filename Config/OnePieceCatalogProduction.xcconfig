@@ -1,0 +1,5 @@
+// Disabled until reviewed catalog data, a dedicated public key and a hosted
+// signed release are approved. No Pokémon/Magic key is inherited here.
+ONE_PIECE_CATALOG_ROLLOUT_MODE = disabled
+ONE_PIECE_CATALOG_BASE_URL =
+ONE_PIECE_CATALOG_PINNED_KEYS =

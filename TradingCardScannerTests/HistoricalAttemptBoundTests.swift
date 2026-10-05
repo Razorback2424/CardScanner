@@ -82,7 +82,7 @@ final class HistoricalAttemptBoundTests: XCTestCase {
         }
 
         let identifier = scanner.exhaustedHistoricalIdentifierForTesting(number)
-        guard case let .pokemonHistorical(evidence)? = identifier else {
+        guard case let .pokemonHistorical(evidence)? = identifier?.legacyIdentity else {
             return XCTFail("Expected the capped attempt to return its title evidence")
         }
         XCTAssertEqual(evidence.titleCandidates, ["dustox"])

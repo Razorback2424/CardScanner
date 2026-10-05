@@ -85,7 +85,7 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
     func sealedSets(game: CardGame) async throws -> [SealedSetSummary] {
         let response: SetsResponse = try await transport.get(
             "v1/sets",
-            query: [("game", Self.gameSlug(for: game))],
+            query: [("game", try Self.gameSlug(for: game))],
             lane: .interactive
         )
         return response.data.compactMap { set in
@@ -113,7 +113,7 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
         limit: Int = JustTCGQuota.maximumPageSize
     ) async throws -> MarketCatalogPage<SealedProductSummary> {
         var parameters: [(String, String)] = [
-            ("game", Self.gameSlug(for: game)),
+            ("game", try Self.gameSlug(for: game)),
             // Verified against the live API: this genuinely filters, and the
             // returned variants carry condition "Sealed" and nothing else.
             ("condition", "Sealed"),
@@ -188,17 +188,18 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
     // MARK: - Games
 
     /// The vendor's game slugs, verified against their live `/games` listing.
-    static func gameSlug(for game: CardGame) -> String {
+    static func gameSlug(for game: CardGame) throws -> String {
         switch game {
         case .pokemon: return "pokemon"
         case .magic: return "magic-the-gathering"
+        default: throw CardGameSupportError.unsupportedGame(game)
         }
     }
 
     /// Japanese printings are a separate product line rather than a locale.
-    static func gameSlug(for game: CardGame, isJapanese: Bool) -> String {
+    static func gameSlug(for game: CardGame, isJapanese: Bool) throws -> String {
         if game == .pokemon, isJapanese { return "pokemon-japan" }
-        return gameSlug(for: game)
+        return try gameSlug(for: game)
     }
 
     // MARK: - Wire format

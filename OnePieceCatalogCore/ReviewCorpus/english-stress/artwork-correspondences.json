@@ -1,0 +1,78 @@
+{
+  "correspondences": [
+    {
+      "bandaiArtworkAlias": "OP01-120",
+      "decision": "illustration-correspondence",
+      "footerAndFinishVerified": false,
+      "notes": "Source renders correspond in visible illustration/composition. SAMPLE watermarks and low-resolution market thumbnails prevent byte equality or exact physical footer/texture proof.",
+      "physicalJoinApproved": false,
+      "tcgplayerProductID": 454664
+    },
+    {
+      "bandaiArtworkAlias": "OP01-120_p1",
+      "decision": "illustration-correspondence",
+      "footerAndFinishVerified": false,
+      "notes": "Source renders correspond in visible illustration/composition. SAMPLE watermarks and low-resolution market thumbnails prevent byte equality or exact physical footer/texture proof.",
+      "physicalJoinApproved": false,
+      "tcgplayerProductID": 454665
+    },
+    {
+      "bandaiArtworkAlias": "OP01-120_p2",
+      "decision": "illustration-correspondence",
+      "footerAndFinishVerified": false,
+      "notes": "Source renders correspond in visible illustration/composition. SAMPLE watermarks and low-resolution market thumbnails prevent byte equality or exact physical footer/texture proof.",
+      "physicalJoinApproved": false,
+      "tcgplayerProductID": 454666
+    },
+    {
+      "bandaiArtworkAlias": "P-001",
+      "decision": "illustration-correspondence",
+      "footerAndFinishVerified": false,
+      "notes": "Source renders correspond in visible illustration/composition. SAMPLE watermarks and low-resolution market thumbnails prevent byte equality or exact physical footer/texture proof.",
+      "physicalJoinApproved": false,
+      "tcgplayerProductID": 450299
+    },
+    {
+      "bandaiArtworkAlias": "P-001_p1",
+      "decision": "illustration-correspondence",
+      "footerAndFinishVerified": false,
+      "notes": "Source renders correspond in visible illustration/composition. SAMPLE watermarks and low-resolution market thumbnails prevent byte equality or exact physical footer/texture proof.",
+      "physicalJoinApproved": false,
+      "tcgplayerProductID": 450300
+    },
+    {
+      "bandaiArtworkAlias": "P-001_p2",
+      "decision": "illustration-correspondence",
+      "footerAndFinishVerified": false,
+      "notes": "Source renders correspond in visible illustration/composition. SAMPLE watermarks and low-resolution market thumbnails prevent byte equality or exact physical footer/texture proof.",
+      "physicalJoinApproved": false,
+      "tcgplayerProductID": 450301
+    },
+    {
+      "bandaiArtworkAlias": "P-001_p5",
+      "decision": "illustration-correspondence",
+      "footerAndFinishVerified": false,
+      "notes": "Source renders correspond in visible illustration/composition. SAMPLE watermarks and low-resolution market thumbnails prevent byte equality or exact physical footer/texture proof.",
+      "physicalJoinApproved": false,
+      "tcgplayerProductID": 544770
+    }
+  ],
+  "physicalCoverageComplete": false,
+  "reviewDate": "2026-10-04",
+  "reviewMethod": "visual comparison of exact retained source renders; illustration correspondence only",
+  "schemaVersion": 1,
+  "sharedDiscrepancies": [
+    "All eight current Bandai renders display block 1; current digital footer text is not independent evidence of original 2022 physical footer text.",
+    "P-001_p1 is labeled Super Pre-Release in source metadata but the retained image does not visibly carry a Super Pre-Release event stamp; do not infer a stamp from the release label.",
+    "P-001_p2 visibly carries Super Pre-Release WINNER lettering; P-001_p5 carries a Regional 2024 emblem, but finish and exact release completeness remain unverified.",
+    "Other TCGplayer rows sharing each printed number remain unjoined, including Shanks PRB01/reprint/serialized products and additional Nami/Luffy event editions."
+  ],
+  "unresolved": [
+    {
+      "bandaiArtworkAlias": "ST01-007",
+      "decision": "missing-market-image",
+      "notes": "The retained TCGplayer image is an Image Coming Soon placeholder; no artwork/physical join is approved.",
+      "tcgplayerProductID": 288236
+    }
+  ]
+}

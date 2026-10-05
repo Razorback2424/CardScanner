@@ -429,6 +429,33 @@ private actor FixedArtworkResponseDataLoader {
 }
 
 final class BrowseFeatureTests: XCTestCase {
+    func testCatalogUpdatesKeepProviderSetIDsScopedToTheirGame() {
+        let update = BrowseCatalogUpdate(game: .onePiece, revision: 7, providerSetID: "shared")
+        XCTAssertTrue(update.affects(game: .onePiece, providerSetID: "SHARED"))
+        XCTAssertFalse(update.affects(game: .pokemon, providerSetID: "shared"))
+        XCTAssertFalse(update.affects(game: .magic, providerSetID: "shared"))
+        XCTAssertFalse(update.affects(game: .onePiece, providerSetID: "other"))
+        XCTAssertTrue(BrowseCatalogUpdate(revision: nil, providerSetID: nil).affects(game: .onePiece))
+        XCTAssertTrue(BrowseCatalogUpdate(revision: nil, providerSetID: nil).affects(game: .pokemon))
+    }
+
+    @MainActor
+    func testScopedCatalogUpdateRefreshesOnlyAffectedGameDirectory() async throws {
+        let catalog = EmptyBrowseCatalog(gameRegistry: .init(descriptors: [
+            .init(game: .pokemon, displayName: "Pokemon", sortOrder: 0, capabilities: [.browse]),
+            .init(game: .onePiece, displayName: "One Piece", sortOrder: 1, capabilities: [.browse])
+        ]))
+        let model = BrowseViewModel(catalog: catalog, includesSealedProducts: false)
+        await model.loadSets()
+        let task = Task { await model.observeCatalogUpdates() }
+        defer { task.cancel() }
+        await catalog.publishUpdate(game: .onePiece, revision: 2)
+        let updated = await waitUntil { await catalog.directoryFetchCount(for: .onePiece) == 2 }
+        XCTAssertTrue(updated)
+        let unaffectedCount = await catalog.directoryFetchCount(for: .pokemon)
+        XCTAssertEqual(unaffectedCount, 1)
+    }
+
     @MainActor
     func testCatalogUpdateRetainsSelectionsAndRemovesOnlyWithdrawnSets() async throws {
         let catalog = EmptyBrowseCatalog()
@@ -541,7 +568,7 @@ final class BrowseFeatureTests: XCTestCase {
     func testBrowseSearchDefaultsToAllResultKinds() {
         let model = BrowseViewModel(catalog: EmptyBrowseCatalog())
 
-        XCTAssertEqual(model.searchGames, CardGame.allCases)
+        XCTAssertEqual(model.searchGames, CardGameRegistry.standard.games(supporting: .browse))
         XCTAssertTrue(model.searchResults.isEmpty)
     }
 
@@ -2209,7 +2236,7 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertEqual(model.searchLanes[.pokemon]?.products, [pokemonProduct])
         XCTAssertEqual(model.searchLanes[.magic]?.products, [magicProduct])
         let searchedGames = await client.sealedSearchGames()
-        XCTAssertEqual(Set(searchedGames), Set(CardGame.allCases))
+        XCTAssertEqual(Set(searchedGames), Set(CardGameRegistry.standard.games(supporting: .browse)))
     }
 
     @MainActor
@@ -2253,15 +2280,15 @@ final class BrowseFeatureTests: XCTestCase {
         let bothSearchesStarted = await waitUntil {
             let cardCount = await catalog.searchCount()
             let sealedCount = await sealedClient.sealedSearchCount()
-            return cardCount == CardGame.allCases.count
-                && sealedCount == CardGame.allCases.count
+            return cardCount == CardGameRegistry.standard.games(supporting: .browse).count
+                && sealedCount == CardGameRegistry.standard.games(supporting: .browse).count
         }
         XCTAssertTrue(bothSearchesStarted)
 
         let cardSearchCount = await catalog.searchCount()
         let sealedSearchCount = await sealedClient.sealedSearchCount()
-        XCTAssertEqual(cardSearchCount, CardGame.allCases.count)
-        XCTAssertEqual(sealedSearchCount, CardGame.allCases.count)
+        XCTAssertEqual(cardSearchCount, CardGameRegistry.standard.games(supporting: .browse).count)
+        XCTAssertEqual(sealedSearchCount, CardGameRegistry.standard.games(supporting: .browse).count)
     }
 
     @MainActor
@@ -3746,7 +3773,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
                 titleLines: ["Example Pokémon"]
             )
         )
-        guard case let .pokemonHistorical(evidence) = identifier else {
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
             return XCTFail("Expected historical Pokémon evidence")
         }
 
@@ -3802,14 +3829,14 @@ final class PokemonChecklistBrowseTests: XCTestCase {
                 titleLines: ["Spinarak"]
             )
         )
-        guard case let .pokemonHistorical(evidence) = identifier else {
+        guard case let .pokemonHistorical(evidence) = identifier.legacyIdentity else {
             return XCTFail("Expected historical Pokémon evidence")
         }
 
         let identified = try XCTUnwrap(
             PokemonOfflineCardFactory.historicalCard(in: snapshot, evidence: evidence)
         )
-        guard case let .pokemon(card, _) = identified else {
+        guard case let .pokemon(card, _) = identified.legacyIdentity else {
             return XCTFail("Expected a Pokémon record")
         }
         XCTAssertEqual(Set(card.catalogVariants), Set(variants))
@@ -6453,14 +6480,19 @@ private actor RecordingJustTCGProviding: SealedBrowseProviding {
 }
 
 private actor EmptyBrowseCatalog: BrowseCatalogProviding {
+    nonisolated let gameRegistry: CardGameRegistry
     private var searches = 0
     private var directory: [CardGame: [CatalogSet]] = [:]
     private var failedGames: Set<CardGame> = []
     private var fetchCount = 0
+    private var fetchCounts: [CardGame: Int] = [:]
     private let updates = AsyncStream<BrowseCatalogUpdate>.makeStream()
+
+    init(gameRegistry: CardGameRegistry = .standard) { self.gameRegistry = gameRegistry }
 
     func sets(for game: CardGame) async throws -> [CatalogSet] {
         fetchCount += 1
+        fetchCounts[game, default: 0] += 1
         if failedGames.contains(game) { throw TestError.failed }
         return directory[game] ?? []
     }
@@ -6471,8 +6503,11 @@ private actor EmptyBrowseCatalog: BrowseCatalogProviding {
     }
     func failDirectory(for game: CardGame) { failedGames.insert(game) }
     func directoryFetchCount() -> Int { fetchCount }
+    func directoryFetchCount(for game: CardGame) -> Int { fetchCounts[game, default: 0] }
     func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate> { updates.stream }
-    func publishUpdate() { updates.continuation.yield(BrowseCatalogUpdate(revision: nil, providerSetID: nil)) }
+    func publishUpdate(game: CardGame? = nil, revision: Int? = nil) {
+        updates.continuation.yield(BrowseCatalogUpdate(game: game, revision: revision, providerSetID: nil))
+    }
 
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
         CatalogPage(items: [], nextCursor: nil)

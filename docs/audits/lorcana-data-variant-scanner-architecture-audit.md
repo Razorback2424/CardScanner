@@ -7,6 +7,12 @@
 > source list at the end as starting points for verification. This is design
 > research, not evidence of implemented Lorcana support or release readiness.
 
+**Implementation recalibration — 2026-10-04:** the current shared game-adapter
+structure and first-slice scope are documented in the [Lorcana implementation
+plan](../plans/lorcana_code_implementation.md). Its execution sequence supersedes
+the broad six-stage implementation proposal below; this imported research remains
+background and does not establish current catalog or release coverage.
+
 ## Executive summary
 
 **Verdict: Lorcana is an excellent candidate for CardScanner's identifier-first architecture, but the identity model should be slightly different from One Piece.**

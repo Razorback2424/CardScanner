@@ -1,19 +1,5 @@
 import Foundation
 
-enum CardGame: String, CaseIterable, Identifiable, Hashable, Sendable, Codable {
-    case pokemon
-    case magic
-
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .pokemon: return "Pokémon"
-        case .magic: return "Magic"
-        }
-    }
-}
-
 struct PokemonSetDefinition: Equatable, Hashable, Sendable {
     let printedCode: String
     let tcgdexSetID: String

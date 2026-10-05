@@ -1,4 +1,5 @@
 import XCTest
+import Foundation
 @testable import TradingCardScanner
 
 /// The token/art identity fix.
@@ -6,6 +7,62 @@ import XCTest
 /// The bug these protect against is silent: scanning a Clue token added
 /// Invisible Woman, with no error and a plausible-looking result.
 final class MagicContentKindTests: XCTestCase {
+    func testAdapterPinsLegacyIdentityAndRejectsStaleOrForeignPayloads() throws {
+        let adapter = MagicCatalogAdapter()
+        let original = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "0017", language: "en", contentKind: .token)
+        let prepared = try adapter.prepareLookupIdentifier(original)
+        XCTAssertEqual(prepared.fields, original.fields)
+        XCTAssertEqual(prepared.displayIdentifier, original.displayIdentifier)
+        XCTAssertEqual(prepared.suppressionIdentity, original.suppressionIdentity)
+        XCTAssertEqual(prepared.catalogGeneration, adapter.generation)
+        let stale = try ScanIdentifier(game: .magic, namespace: original.namespace, fields: original.fields,
+            displayIdentifier: original.displayIdentifier, suppressionIdentity: original.suppressionIdentity,
+            catalogGeneration: "other-generation")
+        XCTAssertThrowsError(try adapter.prepareLookupIdentifier(stale))
+        let malformed = try ScanIdentifier(game: .magic, namespace: "card", fields: [],
+            displayIdentifier: "TRK 17", suppressionIdentity: "invalid")
+        XCTAssertThrowsError(try adapter.prepareLookupIdentifier(malformed))
+        XCTAssertThrowsError(try adapter.prepareLookupIdentifier(.pokemonHistorical(.init(
+            number: .init(localID: "17", denominator: 100, scheme: .officialSet), titleCandidates: []))))
+    }
+
+    func testAdapterSignedChildRoutingCoalescesAndRejectsWrongLayoutWithoutFallback() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("MagicAdapter-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root); MagicAdapterTestProtocol.recorder = nil }
+        let recorder = MagicAdapterTestRecorder()
+        MagicAdapterTestProtocol.recorder = recorder
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [MagicAdapterTestProtocol.self]
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel() }
+        let coordinator = MagicCatalogCoordinator(store: MagicCatalogReleaseStore(root: root), rolloutMode: .remoteAuthority)
+        let adapter = MagicCatalogAdapter(source: ScryfallService(breaker: TCGdexCircuitBreaker(), session: session), coordinator: coordinator)
+        let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [adapter]))
+        let token = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "17", language: "en", contentKind: .token)
+        async let first = catalog.resolution(for: token)
+        async let second = catalog.resolution(for: token)
+        let results = try await [first, second]
+        XCTAssertEqual(results[0].card.providerID, results[1].card.providerID)
+        XCTAssertEqual(results[0].retrievedAt, results[1].retrievedAt)
+        let cached = try await catalog.resolution(for: token)
+        XCTAssertEqual(cached.retrievedAt, results[0].retrievedAt)
+        XCTAssertEqual(recorder.paths, ["/cards/ttrk/17/en"])
+        let art = try await catalog.resolution(for: .magic(setCode: "MSH", collectorNumber: "18", language: "en", contentKind: .artCard))
+        XCTAssertEqual(art.card.setCode.lowercased(), "amsh")
+        recorder.setWrongLayout(true)
+        let rejected = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "19", language: "en", contentKind: .token)
+        do { _ = try await catalog.resolution(for: rejected); XCTFail("Token must reject an ordinary layout") }
+        catch ScryfallError.identityMismatch {}
+        recorder.setWrongLayout(false)
+        _ = try await catalog.resolution(for: rejected)
+        let regular = try await catalog.resolution(for: .magic(setCode: "TRK", collectorNumber: "20", language: "en"))
+        XCTAssertEqual(regular.card.setCode.lowercased(), "trk")
+        do {
+            _ = try await catalog.resolution(for: .magic(setCode: "ZZZ", collectorNumber: "1", language: "en", contentKind: .token))
+            XCTFail("Missing signed child must not use a live directory or ordinary card")
+        } catch ScryfallError.identityMismatch {}
+        XCTAssertEqual(recorder.paths, ["/cards/ttrk/17/en", "/cards/amsh/18/en", "/cards/ttrk/19/en", "/cards/ttrk/19/en", "/cards/trk/20/en"])
+    }
 
     // MARK: - The marker is identity
 
@@ -239,4 +296,41 @@ final class MagicContentKindTests: XCTestCase {
         XCTAssertEqual(MagicContentKind.token.label, "Token")
         XCTAssertEqual(CollectionItemKind.gradedCard.label, "Graded Cards")
     }
+}
+
+private final class MagicAdapterTestRecorder: @unchecked Sendable {
+    private let lock = NSLock()
+    private var captured: [String] = []
+    private var wrongLayout = false
+    var paths: [String] { lock.lock(); defer { lock.unlock() }; return captured }
+    func setWrongLayout(_ value: Bool) { lock.lock(); defer { lock.unlock() }; wrongLayout = value }
+    func data(for request: URLRequest) throws -> Data {
+        lock.lock(); defer { lock.unlock() }
+        let path = request.url!.path
+        captured.append(path)
+        let parts = path.split(separator: "/")
+        guard parts.count == 4, parts[0] == "cards" else { throw ScryfallError.identityMismatch }
+        let code = String(parts[1]), number = String(parts[2])
+        let layout = wrongLayout ? "normal" : (code == "ttrk" ? "token" : (code == "amsh" ? "art_series" : "normal"))
+        return try JSONSerialization.data(withJSONObject: ["id": "fixture-\(code)-\(number)", "name": "Fixture card",
+            "set": code, "set_name": "Fixture set", "collector_number": number, "lang": "en",
+            "digital": false, "layout": layout, "released_at": "2025-01-01", "finishes": ["nonfoil"]])
+    }
+}
+
+private final class MagicAdapterTestProtocol: URLProtocol {
+    nonisolated(unsafe) static var recorder: MagicAdapterTestRecorder?
+    override class func canInit(with request: URLRequest) -> Bool { true }
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
+    override func startLoading() {
+        do {
+            guard let recorder = Self.recorder else { throw ScryfallError.providerUnavailable }
+            let data = try recorder.data(for: request)
+            client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200,
+                httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
+            client?.urlProtocol(self, didLoad: data)
+            client?.urlProtocolDidFinishLoading(self)
+        } catch { client?.urlProtocol(self, didFailWithError: error) }
+    }
+    override func stopLoading() {}
 }

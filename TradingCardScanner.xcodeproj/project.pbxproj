@@ -83,6 +83,21 @@
 		A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200F1 /* HistoricalCatalogRequestTests.swift */; };
 		A0020004 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0020002 /* XCTest.framework */; };
 		A0010020 /* CardVariant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010020 /* CardVariant.swift */; };
+		F10A00000000000000000001 /* CardGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00000000000000000001 /* CardGame.swift */; };
+		F10A00000000000000000002 /* CardGameRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00000000000000000002 /* CardGameRegistry.swift */; };
+		F11A00000000000000000001 /* GameRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11B00000000000000000001; };
+		F30A00000000000000000001 /* LorcanaCatalogRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000001; };
+		F30A00000000000000000002 /* LorcanaRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000002; };
+		F30A00000000000000000003 /* LorcanaGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000003; };
+		F30A00000000000000000004 /* LorcanaIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000004; };
+		F11A00000000000000000002 /* PokemonRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11B00000000000000000002; };
+		F11A00000000000000000003 /* MagicRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11B00000000000000000003; };
+		F12A00000000000000000001 /* GameVariantPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12B00000000000000000001; };
+		F12A00000000000000000002 /* PokemonVariantPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12B00000000000000000002; };
+		F12A00000000000000000003 /* MagicVariantPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12B00000000000000000003; };
+		F13A00000000000000000001 /* CardGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13B00000000000000000001; };
+		F13A00000000000000000002 /* PokemonGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13B00000000000000000002; };
+		F13A00000000000000000003 /* MagicGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13B00000000000000000003; };
 		A0010021 /* VariantResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010021 /* VariantResolver.swift */; };
 		A0010022 /* CardCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010022 /* CardCatalog.swift */; };
 		A0010023 /* CardLatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010023 /* CardLatch.swift */; };
@@ -98,6 +113,7 @@
 		A00300B1 /* CameraRotationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300B1 /* CameraRotationTests.swift */; };
 		A0020011 /* VariantResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020011 /* VariantResolverTests.swift */; };
 		A0020012 /* CollectionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020012 /* CollectionKeyTests.swift */; };
+		F10A00000000000000000003 /* CardGameForwardCompatibilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10B00000000000000000003 /* CardGameForwardCompatibilityTests.swift */; };
 		A0010030 /* PriceRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010030 /* PriceRecord.swift */; };
 		A0010031 /* PriceProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010031 /* PriceProvider.swift */; };
 		A0010140 /* PriceCoverageGapLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010140 /* PriceCoverageGapLog.swift */; };
@@ -249,7 +265,39 @@
 		A0020119 /* PokemonCatalogSliceFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020119 /* PokemonCatalogSliceFTests.swift */; };
 		A0020120 /* MagicCatalogBootstrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020120 /* MagicCatalogBootstrapTests.swift */; };
 		A0020121 /* MagicCatalogActivationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020121 /* MagicCatalogActivationTests.swift */; };
+		F14A00000000000000000001 /* GamePriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B00000000000000000001; };
+		F14A00000000000000000002 /* PokemonPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B00000000000000000002; };
+		F14A00000000000000000003 /* MagicPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B00000000000000000003; };
+		F15A00000000000000000001 /* LegacyResolvedCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15B00000000000000000001; };
+		F15A00000000000000000002 /* ResolvedCatalogCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F15B00000000000000000002; };
+		F16A00000000000000000001 /* GameCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F16B00000000000000000001; };
+		F35A00000000000000000001 /* PokemonCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000001; };
+		F35A00000000000000000002 /* PokemonCatalogSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000002; };
+		F35A00000000000000000003 /* PokemonHistoricalCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000003; };
+		F35A00000000000000000004 /* TCGdexCircuitBreaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000004; };
+		F35A00000000000000000005 /* BoundedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000005; };
 /* End PBXBuildFile section */
+        F22A00000000000000000001 = {isa = PBXBuildFile; fileRef = F22B00000000000000000001; };
+        F21A00000000000000000001 = {isa = PBXBuildFile; fileRef = F21B00000000000000000001; };
+        F21A00000000000000000002 = {isa = PBXBuildFile; fileRef = F21B00000000000000000002; };
+        F21A00000000000000000003 = {isa = PBXBuildFile; fileRef = F21B00000000000000000003; };
+        F20A00000000000000000001 /* GameImportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20B00000000000000000001; };
+        F20A00000000000000000002 /* OnePieceImportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20B00000000000000000002; };
+        F19A00000000000000000001 /* GameBrowseAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19B00000000000000000001; };
+        F19A00000000000000000002 /* OnePieceBrowseAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19B00000000000000000002; };
+		F18A00000000000000000001 /* SignedCatalogReleaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18B00000000000000000001; };
+		F18A00000000000000000002 /* OnePieceCatalogReleaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18B00000000000000000002; };
+		F18A00000000000000000003 /* OnePieceCatalogCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18B00000000000000000003; };
+		F18A00000000000000000004 /* SignedCatalogReleaseStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18B00000000000000000004; };
+		F17A00000000000000000001 /* OnePieceCatalogRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17B00000000000000000001; };
+		F17A00000000000000000002 /* OnePieceScanProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17B00000000000000000002; };
+		F17A00000000000000000003 /* OnePieceRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17B00000000000000000003; };
+		F17A00000000000000000004 /* OnePieceCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17B00000000000000000004; };
+		F17A00000000000000000005 /* OnePieceGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17B00000000000000000005; };
+		F32A00000000000000000001 /* OnePiecePriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F32B00000000000000000001; };
+		F33A00000000000000000001 /* CollectionAuthorizedActivationSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33B00000000000000000001; };
+		F34A00000000000000000001 /* MagicCatalogAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F34B00000000000000000001; };
+		F17A00000000000000000006 /* OnePieceIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17B00000000000000000006; };
 
 /* Begin PBXContainerItemProxy section */
 		G0020001 /* PBXContainerItemProxy */ = {
@@ -342,6 +390,21 @@
 		B0020002 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 		B0020099 /* TradingCardScannerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TradingCardScannerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0010020 /* CardVariant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardVariant.swift; sourceTree = "<group>"; };
+		F10B00000000000000000001 /* CardGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGame.swift; sourceTree = "<group>"; };
+		F10B00000000000000000002 /* CardGameRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGameRegistry.swift; sourceTree = "<group>"; };
+		F11B00000000000000000001 /* GameRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GameRecognitionAdapter.swift; sourceTree = "<group>"; };
+		F30B00000000000000000001 /* LorcanaCatalogRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaCatalogRegistry.swift; sourceTree = "<group>"; };
+		F30B00000000000000000002 /* LorcanaRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaRecognitionAdapter.swift; sourceTree = "<group>"; };
+		F30B00000000000000000003 /* LorcanaGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaGameRuntime.swift; sourceTree = "<group>"; };
+		F30B00000000000000000004 /* LorcanaIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaIntegrationTests.swift; sourceTree = "<group>"; };
+		F11B00000000000000000002 /* PokemonRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonRecognitionAdapter.swift; sourceTree = "<group>"; };
+		F11B00000000000000000003 /* MagicRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicRecognitionAdapter.swift; sourceTree = "<group>"; };
+		F12B00000000000000000001 /* GameVariantPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GameVariantPolicy.swift; sourceTree = "<group>"; };
+		F12B00000000000000000002 /* PokemonVariantPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonVariantPolicy.swift; sourceTree = "<group>"; };
+		F12B00000000000000000003 /* MagicVariantPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicVariantPolicy.swift; sourceTree = "<group>"; };
+		F13B00000000000000000001 /* CardGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CardGameRuntime.swift; sourceTree = "<group>"; };
+		F13B00000000000000000002 /* PokemonGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonGameRuntime.swift; sourceTree = "<group>"; };
+		F13B00000000000000000003 /* MagicGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicGameRuntime.swift; sourceTree = "<group>"; };
 		B0010021 /* VariantResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantResolver.swift; sourceTree = "<group>"; };
 		B0010022 /* CardCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardCatalog.swift; sourceTree = "<group>"; };
 		B0010023 /* CardLatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardLatch.swift; sourceTree = "<group>"; };
@@ -357,6 +420,7 @@
 		B00300B1 /* CameraRotationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationTests.swift; sourceTree = "<group>"; };
 		B0020011 /* VariantResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantResolverTests.swift; sourceTree = "<group>"; };
 		B0020012 /* CollectionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionKeyTests.swift; sourceTree = "<group>"; };
+		F10B00000000000000000003 /* CardGameForwardCompatibilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGameForwardCompatibilityTests.swift; sourceTree = "<group>"; };
 		B0010030 /* PriceRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRecord.swift; sourceTree = "<group>"; };
 		B0010031 /* PriceProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceProvider.swift; sourceTree = "<group>"; };
 		B0010140 /* PriceCoverageGapLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceCoverageGapLog.swift; sourceTree = "<group>"; };
@@ -513,7 +577,40 @@
 		B0020119 /* PokemonCatalogSliceFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogSliceFTests.swift; sourceTree = "<group>"; };
 		B0020120 /* MagicCatalogBootstrapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogBootstrapTests.swift; sourceTree = "<group>"; };
 		B0020121 /* MagicCatalogActivationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogActivationTests.swift; sourceTree = "<group>"; };
+		F14B00000000000000000001 /* GamePriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GamePriceAdapter.swift; sourceTree = "<group>"; };
+		F14B00000000000000000002 /* PokemonPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonPriceAdapter.swift; sourceTree = "<group>"; };
+		F14B00000000000000000003 /* MagicPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicPriceAdapter.swift; sourceTree = "<group>"; };
+		F15B00000000000000000001 /* LegacyResolvedCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/LegacyResolvedCard.swift; sourceTree = "<group>"; };
+		F15B00000000000000000002 /* ResolvedCatalogCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResolvedCatalogCard.swift; sourceTree = "<group>"; };
+		F16B00000000000000000001 /* GameCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GameCatalogAdapter.swift; sourceTree = "<group>"; };
+		F35B00000000000000000001 /* PokemonCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonCatalogAdapter.swift; sourceTree = "<group>"; };
+		F35B00000000000000000002 /* PokemonCatalogSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonCatalogSupport.swift; sourceTree = "<group>"; };
+		F35B00000000000000000003 /* PokemonHistoricalCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonHistoricalCatalog.swift; sourceTree = "<group>"; };
+		F35B00000000000000000004 /* TCGdexCircuitBreaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/TCGdexCircuitBreaker.swift; sourceTree = "<group>"; };
+		F35B00000000000000000005 /* BoundedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/BoundedCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+        F22B00000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogBootstrap.swift; sourceTree = "<group>"; };
+        F22B00000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/OnePieceCatalogProduction.xcconfig; sourceTree = "<group>"; };
+        F21B00000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedCatalogUpdateClient.swift; sourceTree = "<group>"; };
+        F21B00000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogUpdateClient.swift; sourceTree = "<group>"; };
+        F21B00000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogRollout.swift; sourceTree = "<group>"; };
+        F20B00000000000000000001 /* GameImportAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GameImportAdapter.swift; sourceTree = "<group>"; };
+        F20B00000000000000000002 /* OnePieceImportAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePieceImportAdapter.swift; sourceTree = "<group>"; };
+        F19B00000000000000000001 /* GameBrowseAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GameBrowseAdapter.swift; sourceTree = "<group>"; };
+        F19B00000000000000000002 /* OnePieceBrowseAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePieceBrowseAdapter.swift; sourceTree = "<group>"; };
+		F18B00000000000000000001 /* SignedCatalogReleaseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedCatalogReleaseStore.swift; sourceTree = "<group>"; };
+		F18B00000000000000000002 /* OnePieceCatalogReleaseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogReleaseStore.swift; sourceTree = "<group>"; };
+		F18B00000000000000000003 /* OnePieceCatalogCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogCoordinator.swift; sourceTree = "<group>"; };
+		F18B00000000000000000004 /* SignedCatalogReleaseStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedCatalogReleaseStoreTests.swift; sourceTree = "<group>"; };
+		F17B00000000000000000001 /* OnePieceCatalogRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogRegistry.swift; sourceTree = "<group>"; };
+		F17B00000000000000000002 /* OnePieceScanProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePieceScanProfile.swift; sourceTree = "<group>"; };
+		F17B00000000000000000003 /* OnePieceRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePieceRecognitionAdapter.swift; sourceTree = "<group>"; };
+		F17B00000000000000000004 /* OnePieceCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePieceCatalogAdapter.swift; sourceTree = "<group>"; };
+		F17B00000000000000000005 /* OnePieceGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePieceGameRuntime.swift; sourceTree = "<group>"; };
+		F32B00000000000000000001 /* OnePiecePriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePiece/OnePiecePriceAdapter.swift; sourceTree = "<group>"; };
+		F33B00000000000000000001 /* CollectionAuthorizedActivationSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/CollectionAuthorizedActivationSource.swift; sourceTree = "<group>"; };
+		F34B00000000000000000001 /* MagicCatalogAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicCatalogAdapter.swift; sourceTree = "<group>"; };
+		F17B00000000000000000006 /* OnePieceIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceIntegrationTests.swift; sourceTree = "<group>"; };
 
 /* Begin PBXFrameworksBuildPhase section */
 		C0010002 /* Frameworks */ = {
@@ -551,6 +648,7 @@
 				004FE150303B8479000E0745 /* Recovered References */,
 				B0010120 /* PokemonCatalogProduction.xcconfig */,
 				B0010129 /* MagicCatalogProduction.xcconfig */,
+                F22B00000000000000000002,
 				B0010130 /* PokemonCatalogDebugLocal.xcconfig */,
 			);
 			sourceTree = "<group>";
@@ -561,6 +659,7 @@
 				D0010002 /* App */,
 				D0010003 /* Models */,
 				D0010004 /* Services */,
+				F11D00000000000000000001 /* Games */,
 				D0010005 /* Views */,
 				B0010045 /* Assets.xcassets */,
 				B0010072 /* PrivacyInfo.xcprivacy */,
@@ -584,6 +683,40 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		F11D00000000000000000001 /* Games */ = {
+			isa = PBXGroup;
+			children = (
+				F30B00000000000000000001,
+				F30B00000000000000000002,
+				F30B00000000000000000003,
+				F11B00000000000000000001, F11B00000000000000000002, F11B00000000000000000003,
+				F12B00000000000000000001, F12B00000000000000000002, F12B00000000000000000003,
+                F16B00000000000000000001,
+                F19B00000000000000000001,
+                F20B00000000000000000001,
+                F20B00000000000000000002,
+                F19B00000000000000000002,
+				F17B00000000000000000002,
+				F17B00000000000000000003,
+				F17B00000000000000000004,
+				F17B00000000000000000005,
+				F32B00000000000000000001,
+				F33B00000000000000000001,
+				F34B00000000000000000001,
+				F35B00000000000000000001,
+				F35B00000000000000000002,
+				F35B00000000000000000003,
+				F35B00000000000000000004,
+				F35B00000000000000000005,
+				F15B00000000000000000001,
+				F14B00000000000000000001,
+				F14B00000000000000000002,
+				F14B00000000000000000003,
+				F13B00000000000000000001, F13B00000000000000000002, F13B00000000000000000003,
+			);
+			path = Games;
+			sourceTree = "<group>";
+		};
 		D0010003 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -593,6 +726,9 @@
 				B0010002 /* CollectedCard.swift */,
 				B0010003 /* TCGdexCard.swift */,
 				B0010020 /* CardVariant.swift */,
+				F15B00000000000000000002,
+				F10B00000000000000000001 /* CardGame.swift */,
+				F10B00000000000000000002 /* CardGameRegistry.swift */,
 				B0010030 /* PriceRecord.swift */,
 				B00100B0 /* ReferenceQuote.swift */,
 				B0010041 /* CardCenteringMeasurement.swift */,
@@ -646,6 +782,14 @@
 				B001011F /* PokemonCatalogRollout.swift */,
 				B0010121 /* MagicCatalogRelease.swift */,
 				B0010122 /* MagicCatalogRegistry.swift */,
+				F18B00000000000000000001,
+				F18B00000000000000000002,
+				F18B00000000000000000003,
+                F22B00000000000000000001,
+                F21B00000000000000000001,
+                F21B00000000000000000002,
+                F21B00000000000000000003,
+				F17B00000000000000000001,
 				B0010123 /* MagicCatalogSignatureVerifier.swift */,
 				B0010124 /* MagicCatalogReleaseStore.swift */,
 				B0010125 /* MagicCatalogUpdateClient.swift */,
@@ -794,6 +938,10 @@
 				B00300B1 /* CameraRotationTests.swift */,
 				B0020011 /* VariantResolverTests.swift */,
 				B0020012 /* CollectionKeyTests.swift */,
+				F10B00000000000000000003 /* CardGameForwardCompatibilityTests.swift */,
+				F18B00000000000000000004,
+				F17B00000000000000000006,
+				F30B00000000000000000004,
 				B0020020 /* CollectionQueryTests.swift */,
 				B0020060 /* PortfolioTrustPassTests.swift */,
 				B0020051 /* TCGplayerLinkTests.swift */,
@@ -873,6 +1021,7 @@
 			packageProductDependencies = (
 				P0010002 /* XCSwiftPackageProductDependency "PokemonCatalogCore" */,
 				P0010004 /* XCSwiftPackageProductDependency "MagicCatalogCore" */,
+				P0010006 /* XCSwiftPackageProductDependency "OnePieceCatalogCore" */,
 			);
 			name = TradingCardScanner;
 			productName = TradingCardScanner;
@@ -908,6 +1057,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = MagicCatalogCore;
 		};
+		P0010005 /* XCLocalSwiftPackageReference "OnePieceCatalogCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = OnePieceCatalogCore;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -920,6 +1073,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = P0010003 /* XCLocalSwiftPackageReference "MagicCatalogCore" */;
 			productName = MagicCatalogCore;
+		};
+		P0010006 /* XCSwiftPackageProductDependency "OnePieceCatalogCore" */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = P0010005 /* XCLocalSwiftPackageReference "OnePieceCatalogCore" */;
+			productName = OnePieceCatalogCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 
@@ -951,6 +1109,7 @@
 			packageReferences = (
 				P0010001 /* XCLocalSwiftPackageReference "PokemonCatalogCore" */,
 				P0010003 /* XCLocalSwiftPackageReference "MagicCatalogCore" */,
+				P0010005 /* XCLocalSwiftPackageReference "OnePieceCatalogCore" */,
 			);
 			productRefGroup = D0010009 /* Products */;
 			projectDirPath = "";
@@ -1077,6 +1236,50 @@
 				A00300A1 /* CameraRotationTracker.swift in Sources */,
 				A0010016 /* ScannerSettingsView.swift in Sources */,
 				A0010020 /* CardVariant.swift in Sources */,
+				F10A00000000000000000001 /* CardGame.swift in Sources */,
+				F10A00000000000000000002 /* CardGameRegistry.swift in Sources */,
+				F11A00000000000000000001 /* GameRecognitionAdapter.swift in Sources */,
+				F30A00000000000000000001,
+				F30A00000000000000000002,
+				F30A00000000000000000003,
+				F11A00000000000000000002 /* PokemonRecognitionAdapter.swift in Sources */,
+				F11A00000000000000000003 /* MagicRecognitionAdapter.swift in Sources */,
+				F12A00000000000000000001 /* GameVariantPolicy.swift in Sources */,
+				F12A00000000000000000002 /* PokemonVariantPolicy.swift in Sources */,
+				F12A00000000000000000003 /* MagicVariantPolicy.swift in Sources */,
+                F16A00000000000000000001 /* GameCatalogAdapter.swift in Sources */,
+                F19A00000000000000000001 /* GameBrowseAdapter.swift in Sources */,
+                F20A00000000000000000001 /* GameImportAdapter.swift in Sources */,
+                F20A00000000000000000002 /* OnePieceImportAdapter.swift in Sources */,
+                F19A00000000000000000002 /* OnePieceBrowseAdapter.swift in Sources */,
+				F18A00000000000000000001,
+				F18A00000000000000000002,
+				F18A00000000000000000003,
+                F22A00000000000000000001,
+                F21A00000000000000000001,
+                F21A00000000000000000002,
+                F21A00000000000000000003,
+				F17A00000000000000000001,
+				F17A00000000000000000002,
+				F17A00000000000000000003,
+				F17A00000000000000000004,
+				F17A00000000000000000005,
+				F15A00000000000000000001 /* LegacyResolvedCard.swift in Sources */,
+				F15A00000000000000000002 /* ResolvedCatalogCard.swift in Sources */,
+				F14A00000000000000000001 /* GamePriceAdapter.swift in Sources */,
+				F32A00000000000000000001 /* OnePiecePriceAdapter.swift in Sources */,
+				F33A00000000000000000001 /* CollectionAuthorizedActivationSource.swift in Sources */,
+				F34A00000000000000000001 /* MagicCatalogAdapter.swift in Sources */,
+				F35A00000000000000000001 /* PokemonCatalogAdapter.swift in Sources */,
+				F35A00000000000000000002 /* PokemonCatalogSupport.swift in Sources */,
+				F35A00000000000000000003 /* PokemonHistoricalCatalog.swift in Sources */,
+				F35A00000000000000000004 /* TCGdexCircuitBreaker.swift in Sources */,
+				F35A00000000000000000005 /* BoundedCache.swift in Sources */,
+				F14A00000000000000000002 /* PokemonPriceAdapter.swift in Sources */,
+				F14A00000000000000000003 /* MagicPriceAdapter.swift in Sources */,
+				F13A00000000000000000001 /* CardGameRuntime.swift in Sources */,
+				F13A00000000000000000002 /* PokemonGameRuntime.swift in Sources */,
+				F13A00000000000000000003 /* MagicGameRuntime.swift in Sources */,
 				A0010021 /* VariantResolver.swift in Sources */,
 				A0010022 /* CardCatalog.swift in Sources */,
 				A0010023 /* CardLatch.swift in Sources */,
@@ -1179,6 +1382,10 @@
 				A00300B1 /* CameraRotationTests.swift in Sources */,
 				A0020011 /* VariantResolverTests.swift in Sources */,
 				A0020012 /* CollectionKeyTests.swift in Sources */,
+				F10A00000000000000000003 /* CardGameForwardCompatibilityTests.swift in Sources */,
+				F18A00000000000000000004,
+				F17A00000000000000000006,
+				F30A00000000000000000004,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
 				A0020060 /* PortfolioTrustPassTests.swift in Sources */,
 				A0020051 /* TCGplayerLinkTests.swift in Sources */,

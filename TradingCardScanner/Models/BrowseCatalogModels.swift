@@ -48,6 +48,8 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
     /// Signed per-card artwork keyed by the primary provider's local ID. It is
     /// applied only when TCGdex supplies neither a thumbnail nor a full image.
     var cardArtwork: [String: CatalogCardArtwork]? = nil
+    /// Exact physical membership for catalogs with many-to-many product appearances.
+    var physicalPrintingIDs: Set<String>? = nil
 
     init(
         catalogID: CatalogSetID,
@@ -61,7 +63,8 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         bundledArtworkSourceID: String? = nil,
         artworkFallbackURLs: [URL]? = nil,
         limitlessArtworkAuthorized: Bool? = nil,
-        cardArtwork: [String: CatalogCardArtwork]? = nil
+        cardArtwork: [String: CatalogCardArtwork]? = nil,
+        physicalPrintingIDs: Set<String>? = nil
     ) {
         self.catalogID = catalogID
         self.name = name
@@ -75,6 +78,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         self.artworkFallbackURLs = artworkFallbackURLs
         self.limitlessArtworkAuthorized = limitlessArtworkAuthorized
         self.cardArtwork = cardArtwork
+        self.physicalPrintingIDs = physicalPrintingIDs
     }
 
     /// Only virtual WotC set rows carry this. The provider set ID remains the
@@ -92,6 +96,7 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
 }
 
 struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
+    var catalogGeneration: String? = nil
     let game: CardGame
     let providerID: String
     let setID: CatalogSetID
@@ -139,7 +144,8 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         isSoleSlotForCard: Bool = false,
         magicTreatmentIDsRaw: [String] = [],
         magicTreatmentQualifiers: [String: String] = [:],
-        limitlessArtworkAuthorized: Bool? = nil
+        limitlessArtworkAuthorized: Bool? = nil,
+        catalogGeneration: String? = nil
     ) {
         self.game = game
         self.providerID = providerID
@@ -151,6 +157,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
         self.thumbnailURL = thumbnailURL
         self.imageURL = imageURL
         self.limitlessArtworkAuthorized = limitlessArtworkAuthorized
+        self.catalogGeneration = catalogGeneration
         let storedTreatmentIDs = MagicTreatmentKeyCodec.storedIDs(from: magicTreatmentIDsRaw)
         self.magicTreatmentIDsRaw = storedTreatmentIDs
         let treatmentIDSet = Set(MagicTreatmentKeyCodec.canonicalIDs(from: storedTreatmentIDs))
@@ -178,13 +185,15 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
             isSoleSlotForCard: isSoleSlotForCard,
             magicTreatmentIDsRaw: magicTreatmentIDsRaw,
             magicTreatmentQualifiers: magicTreatmentQualifiers,
-            limitlessArtworkAuthorized: limitlessArtworkAuthorized
+            limitlessArtworkAuthorized: limitlessArtworkAuthorized,
+            catalogGeneration: catalogGeneration
         )
     }
 
     enum CodingKeys: String, CodingKey {
         case game, providerID, setID, setName, setCode, name, collectorNumber
         case thumbnailURL, imageURL
+        case catalogGeneration
         case limitlessArtworkAuthorized
         case magicTreatmentIDsRaw, magicTreatmentQualifiers
         case masterSetVariant, isExpandedMasterSetVariant, isSoleSlotForCard
@@ -192,6 +201,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        catalogGeneration = try container.decodeIfPresent(String.self, forKey: .catalogGeneration)
         game = try container.decode(CardGame.self, forKey: .game)
         providerID = try container.decode(String.self, forKey: .providerID)
         setID = try container.decode(CatalogSetID.self, forKey: .setID)
@@ -233,6 +243,7 @@ struct CatalogCardSummary: Identifiable, Hashable, Sendable, Codable {
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(catalogGeneration, forKey: .catalogGeneration)
         try container.encode(game, forKey: .game)
         try container.encode(providerID, forKey: .providerID)
         try container.encode(setID, forKey: .setID)
@@ -1001,6 +1012,12 @@ enum CatalogSetListFilter: String, CaseIterable, Identifiable, Sendable {
 /// overload below, where both numerator and denominator are variations.
 enum SetCompletionCalculator {
     static func progress(for set: CatalogSet, cards: [CollectedCard]) -> SetCompletion {
+        if let ids = set.physicalPrintingIDs {
+            let owned = Set(cards.filter {
+                $0.cardGame == set.game && $0.quantity > 0 && $0.itemKind.countsTowardSetCompletion
+            }.flatMap { [$0.providerID.lowercased(), $0.catalogProviderID?.lowercased()].compactMap { $0 } })
+            return .init(owned: ids.intersection(owned).count, total: ids.count, unit: "printings")
+        }
         let numbers = Set(cards.compactMap { card -> String? in
             guard belongs(card, to: set) else { return nil }
             return canonicalNumber(card.cardNumber)
@@ -1032,6 +1049,7 @@ enum SetCompletionCalculator {
                 || card.catalogProviderID?.lowercased() == targetProviderID {
                 identityMatches = true
             } else {
+                guard summary.catalogGeneration == nil else { return false }
                 guard canonicalNumber(card.cardNumber) == targetNumber else { return false }
                 let cardCode = normalized(card.setCode)
                 identityMatches = cardCode == normalized(summary.setCode)
@@ -1305,6 +1323,14 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
     }
 
     func progress(for set: CatalogSet) -> SetCompletion {
+        if let ids = set.physicalPrintingIDs {
+            let owned = ids.filter { id in
+                (byProviderID[id.lowercased()] ?? []).contains {
+                    $0.game == set.game && $0.quantity > 0 && $0.itemKind.countsTowardSetCompletion
+                }
+            }
+            return .init(owned: owned.count, total: ids.count, unit: "printings")
+        }
         let ownedNumbers = Set(byNumber.values.flatMap { $0 }.compactMap { card -> String? in
             guard card.game == set.game,
                   card.itemKind.countsTowardSetCompletion,
@@ -1405,6 +1431,7 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
     /// outside those two buckets can qualify.
     private func candidates(for summary: CatalogCardSummary) -> [CatalogOwnershipCardSnapshot] {
         var results = byProviderID[summary.providerID.lowercased()] ?? []
+        if summary.catalogGeneration != nil { return results }
         guard let number = SetCompletionCalculator.canonicalNumber(summary.collectorNumber) else {
             return results
         }
@@ -1425,7 +1452,7 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
         let targetNumber = SetCompletionCalculator.canonicalNumber(summary.collectorNumber)
         let identityMatches = card.providerID.caseInsensitiveCompare(summary.providerID) == .orderedSame
             || card.catalogProviderID?.caseInsensitiveCompare(summary.providerID) == .orderedSame
-            || (SetCompletionCalculator.canonicalNumber(card.cardNumber) == targetNumber
+            || (summary.catalogGeneration == nil && SetCompletionCalculator.canonicalNumber(card.cardNumber) == targetNumber
                 && (normalized(card.setCode) == normalized(summary.setCode)
                     || normalized(card.setName) == normalized(summary.setName)))
         guard identityMatches else { return false }
@@ -1596,6 +1623,7 @@ enum CatalogSetQuery {
 }
 
 protocol BrowseCatalogProviding: Sendable {
+    var gameRegistry: CardGameRegistry { get }
     func sets(for game: CardGame) async throws -> [CatalogSet]
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary>
     func searchCards(
@@ -1617,6 +1645,18 @@ protocol BrowseCatalogProviding: Sendable {
 }
 
 extension BrowseCatalogProviding {
+    var gameRegistry: CardGameRegistry { .standard }
+
+    /// A deliberate reload rebases the set definition. Pagination must continue
+    /// using its pinned definition/cursor and fail if that catalog has changed.
+    func currentSet(for set: CatalogSet) async throws -> CatalogSet {
+        let available = try await sets(for: set.game)
+        guard let current = available.first(where: { $0.catalogID == set.catalogID }) else {
+            throw BrowseCatalogError.unknownSet
+        }
+        return current
+    }
+
     nonisolated func sortPriceUpdates(
         for cards: [CatalogCardSummary]
     ) -> AsyncStream<CatalogPriceUpdate> {

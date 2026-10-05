@@ -1,0 +1,89 @@
+[
+  {
+    "observationIDs": [
+      "tcgplayer:416939:6f5262d6ec37252107eccc785d089aec25c2b09a18dedc2e018d208d41179ffe"
+    ],
+    "paginationComplete": false,
+    "provider": "tcgplayer",
+    "snapshotID": "tcgcsv:6f5262d6ec37252107eccc785d089aec25c2b09a18dedc2e018d208d41179ffe:stress-subset"
+  },
+  {
+    "observationIDs": [
+      "tcgplayer:450299:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:450300:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:450301:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:496999:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:497000:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:503023:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:504477:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:509752:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:514047:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:523785:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:525324:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:544770:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:544771:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:544772:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:544773:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:544774:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:544775:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:564250:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:610801:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213",
+      "tcgplayer:610802:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213"
+    ],
+    "paginationComplete": false,
+    "provider": "tcgplayer",
+    "snapshotID": "tcgcsv:7d74c49801341b109d77d85542cd33f329a49eb1a2dca0b7d7ae8f1187a61213:stress-subset"
+  },
+  {
+    "observationIDs": [
+      "tcgplayer:541664:d42c17d47dba15521f681bc1880401dd2207c56b2e4dc63fdd235f1df2a3bab4"
+    ],
+    "paginationComplete": false,
+    "provider": "tcgplayer",
+    "snapshotID": "tcgcsv:d42c17d47dba15521f681bc1880401dd2207c56b2e4dc63fdd235f1df2a3bab4:stress-subset"
+  },
+  {
+    "observationIDs": [
+      "tcgplayer:586194:f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e",
+      "tcgplayer:587708:f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e",
+      "tcgplayer:594316:f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e"
+    ],
+    "paginationComplete": false,
+    "provider": "tcgplayer",
+    "snapshotID": "tcgcsv:f7bc9a4bbd6459a3b033f07e1a397c39c93f96f9d531a0863933d838debb9c3e:stress-subset"
+  },
+  {
+    "observationIDs": [
+      "tcgplayer:599781:3175ead63e809eed211dc05a2ccde6ac3af149cf7d121b8f78399c336aaf003a"
+    ],
+    "paginationComplete": false,
+    "provider": "tcgplayer",
+    "snapshotID": "tcgcsv:3175ead63e809eed211dc05a2ccde6ac3af149cf7d121b8f78399c336aaf003a:stress-subset"
+  },
+  {
+    "observationIDs": [
+      "tcgplayer:602790:5b48beb8107daf772a8db52f4a1f1446d86b500e3d28d8c39c7c1a3e9b7234a6"
+    ],
+    "paginationComplete": false,
+    "provider": "tcgplayer",
+    "snapshotID": "tcgcsv:5b48beb8107daf772a8db52f4a1f1446d86b500e3d28d8c39c7c1a3e9b7234a6:stress-subset"
+  },
+  {
+    "observationIDs": [
+      "tcgplayer:454664:04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec",
+      "tcgplayer:454665:04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec",
+      "tcgplayer:454666:04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec"
+    ],
+    "paginationComplete": false,
+    "provider": "tcgplayer",
+    "snapshotID": "tcgcsv:04f2349ac85385b89fe3a32772a3b750f25f11f5cf85dc0717cbe2b90b34c8ec:stress-subset"
+  },
+  {
+    "observationIDs": [
+      "tcgplayer:288236:f90b7de8c5fe8a3dbecd9c4bbfa6494e486c9f96e90313d6808782f50d52279d"
+    ],
+    "paginationComplete": false,
+    "provider": "tcgplayer",
+    "snapshotID": "tcgcsv:f90b7de8c5fe8a3dbecd9c4bbfa6494e486c9f96e90313d6808782f50d52279d:stress-subset"
+  }
+]
