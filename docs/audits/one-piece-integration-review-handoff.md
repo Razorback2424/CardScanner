@@ -1,23 +1,44 @@
 # One Piece integration review handoff
 
-**Snapshot:** 2026-10-05; `merge/one-piece-integration`, based on
-`69c714f9f6e7064231e45c34d6a3fed1f1ea7555`. Implementation is uncommitted.
+**Snapshot:** 2026-10-05; `merge/one-piece-integration`. The integration is
+committed as `6b64abe` on `69c714f`; the review fixes described below are uncommitted.
 
 ## Checkout and review scope
 
-The One Piece worktree was transferred to the main checkout without conflicts:
-67 modified tracked files and 116 new files. `main` remains at
-`cdd60e1f86531820141c3363243e9c46402a83f2`; no merge commit was created.
-The source worktree remains intact. The destination preserves its pre-existing
-`TCGdexCard.swift` whitespace edit and untracked `undefined/` folder; these are
-not integration changes. Transfer comparison found only that whitespace
-difference across the 183 implementation files.
+Review the committed integration with `git diff 69c714f 6b64abe` (184 files),
+then review `git diff HEAD` and untracked files for the subsequent fixes.
+The earlier transfer report described an uncommitted source snapshot; that
+branch-state description is historical. Existing documentation changes,
+the `TCGdexCard.swift` whitespace edit, and the untracked `undefined/` folder
+are preserved. The committed `TCGdexCard.swift` change extracted the resolved
+model; it was not solely whitespace. The dangling extraction comment is removed
+by the review fix.
 
-Review both `git diff HEAD` and files listed by
-`git ls-files --others --exclude-standard`; the diff alone omits new packages,
-adapters, tests and catalog data. The branch also includes the earlier
-`fix/october-review-boundaries` commits; this report describes the uncommitted
-integration delta, not all differences from `main`.
+## Review fixes
+
+Optional One Piece launch preparation now omits the module on activation or
+cleanup failure, keeping existing games available. Snapshot adapters are cached
+by verified generation, and bootstrap reuses the store's verified seed registry.
+Legacy blank activity games retain their Pokémon fallback, while the activity
+editor uses the bound registry for labels and finish choices. The finish picker
+can be changed before Save becomes enabled.
+
+CSV imports retain format defaults for blank game cells and recognize the
+portfolio spelling “Magic: The Gathering”. Generic recovery retries retain
+pending commits and additional-copy confirmation; dismissing a Pokémon
+historical choice retains its previous cancellation behavior. Rehydrated
+Pokémon recovery identifiers use current catalog definitions while preserving
+the original printed number and denominator. Pending history-write validation
+uses batched ownership/activity reads and recorded game identities for removed
+rows whose provider IDs contain colons. Generic metadata refresh preserves
+purchase links it does not supply.
+
+Price feed requests carry their catalog generation atomically and coalesce only
+within that generation. Bound pricing supplies withdrawal watermarks so stale
+daily feed data is refetched when necessary. Signing uses public keys exported
+from the app's checked-in configuration; workflow inputs cannot replace its
+trust anchors. Production signing therefore remains blocked until app pins are
+configured. Rollout and collection-write policy are unchanged.
 
 ## Changed code
 
@@ -67,20 +88,30 @@ pricing files are pre-existing destination files, not runtime registration.
 
 ## Verification and remaining work
 
-The latest source-worktree simulator checkpoint passed **192 tests, zero
+The historical source-worktree simulator checkpoint passed **192 tests, zero
 failures/skips**: full One Piece integration, pricing/quote-cache suites,
 forward compatibility, Pokémon activation/historical cases, Magic routing and
 11 selected offline/fallback/cache/artwork regressions. Result bundle:
 `test_sim_2026-10-05T13-01-49-160Z_pid18958_cc372487.xcresult`.
 The installed full-kit build relaunched with the saved Shanks quote/portfolio
 displaying $8.16; this was cached display continuity, not a new provider check.
-No builds/tests were repeated after the content-equivalent transfer.
-`git diff --check` passed on the destination.
+The first review-fix checkpoint passed 91 simulator tests with zero failures
+(One Piece integration, runtime compatibility, and signed-release store).
+The final review-fix checkpoint passed **300 simulator tests, zero failures or
+skips** across scanner, recovery, import, activity, pricing/cache, runtime and
+signed-store suites. One Piece core/publisher passed 40 tests; Python One Piece
+pipelines, source normalization, and trust-anchor export passed 48 tests. Workflow YAML and shell
+syntax, local documentation links, and `git diff --check` pass. Hosted signing
+and physical-device/provider/release acceptance were not exercised.
+See [the progress log](../../progress.md) for the current evidence summary.
 
 Known incomplete work: Browse/import legacy extraction, signed legacy runtime
 activation migration, broader special-printing reconciliation, production
 keys/seed/hosting/rights and mixed-client sync policy. The architecture audit
-still fails on eight game-case labels, all in `Services/BrowseCatalog.swift`.
+now checks game comparisons and explicit unsupported-game defaults in addition
+to case labels. It reports 37 existing branches across Browse and collection
+normalization; arbitrary default blocks still require manual review. Legacy
+extraction remains unfinished, so the gate still fails.
 `Config/OnePieceCatalogProduction.xcconfig` keeps rollout disabled with no
 production key/endpoint; the private signed local review kit is not a bundled
 production release. Camera/device, full regression and release acceptance remain

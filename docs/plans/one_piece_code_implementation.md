@@ -3,14 +3,51 @@
 **Status:** implementation in progress; no One Piece production support enabled.
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
-**Latest plan audit:** 2026-10-04, including tracked and untracked implementation
-changes at detached HEAD `69c714f9f6e7064231e45c34d6a3fed1f1ea7555`.
+**Latest plan audit:** 2026-10-05, main checkout on
+`merge/one-piece-integration`, HEAD `6b64abe`. The integration is committed at
+this HEAD; earlier isolated-worktree/uncommitted descriptions below are dated
+history. The pre-existing `TCGdexCard.swift` whitespace edit and untracked
+`undefined/` directory are outside this review. This update changes documentation
+only; no implementation, build or app/package test was performed.
 
 The [catalog integration design](one_piece_catalog_integration_plan.md) remains
 the authority for source roles, rights, physical distinctions, and production
 acceptance. This ledger records code slices and evidence, not replacement
 completeness or licensing claims. The baseline differs from the reviewed
 `031e5fb` only by seven scanner tracing lines.
+
+## Current source snapshot and immediate priority — 2026-10-05
+
+This section, the current execution plan and delivery-status matrix supersede
+older checkpoint wording about missing components. Historical test counts are
+retained against their original runs; this source review does not rerun them.
+
+| Area | Current position |
+| --- | --- |
+| Ordinary corpus | The checked-in registry has 2,692 canonical cards, 2,745 artwork/printing records, 2,490 verified, 224 provisional and 31 conflicted printings. The reviewed product manifest covers 58 groups; 60 product records are retained in the registry and recorded Browse evidence exposes 52 verified-target groups. All 2,692 canonical physical-coverage flags remain false. |
+| Retained review | Combined observation files contain 10,198 records, including 1,961 base-market observations; 257 discrepancies remain retained. The ordinary capture/reconciliation pipeline and full ordinary adoption are implemented. Remaining work is physical special/reprint/revision evidence and scope/rights gaps, not rebuilding ordinary discovery. |
+| Exact base pricing | 1,961 reviewed TCGCSV aggregate USD product/finish mappings and 412 held market decisions. Scanner save, Price Check, Browse detail/add and stored-printing collection refresh use exact UUID/finish joins with no borrowed-printing fallback. Unmapped physical records remain unpriced. |
+| Activation and corrections | `CollectionAuthorizedActivationSource` and `CardGameRuntimeContainer.bound(to:isCurrent:)` install collection authority and save managed-price withdrawal before exposing a generation. Exact One Piece finish correction, single/multi-claim rejection, same-container rebinding and retired-session guards are implemented with recorded focused evidence. Explicit supersession migration, failed-save injection and full storage/device acceptance remain open. |
+| Catalog adapters | Pokémon modern/promo/offline/cache/historical behavior and Magic Scryfall/child routing now live in game-owned catalog modules; central `CardCatalog` prepares/coalesces/validates generic outcomes and never caches a user's printing answer. Legacy Browse/import extraction, signed legacy runtime activation and temporary correction allowances remain open. |
+| Shared signed mechanics | All three games use `SignedCatalogReleaseStore`; One Piece uses `SignedCatalogUpdateClient`. Pokémon/Magic transport and domain wire/trust contracts remain separate. A shared store does not imply completed signed runtime activation for legacy games. |
+| Local kit and rollout | The recorded full ordinary/base-pricing debug kit contains all 2,745 records with an independent ephemeral review key. Its local bootstrap enables scan/Browse/write/pricing in isolated persistent storage; production configuration remains disabled with no endpoint/key pins or bundled production seed. |
+| Latest recorded app checkpoint | 192 selected tests passed with zero failures/skips in `test_sim_2026-10-05T13-01-49-160Z_pid18958_cc372487.xcresult`. The installed simulator kit relaunched showing the saved Shanks quote/portfolio at $8.16. This is selected regression and cached-display evidence, not a fresh provider/camera/device/full-suite run. |
+
+**Next:** exercise the existing full kit's representative starter and booster
+scan → printing choice → finish → save → exact price, plus Browse/add, skip/retry,
+relaunch/refresh and CSV round-trip. Verify two copies of one number retain
+different physical UUIDs and an unmapped printing cannot borrow a mapped quote.
+Fix demonstrated base-case defects together. Broader special-printing review,
+Browse/import migration and production delivery remain full-plan work after this
+local acceptance; no small demo or foundation rewrite is needed.
+
+The read-only boundary script rerun for this documentation audit fails on eight
+Pokémon/Magic labels, all in `BrowseCatalog.swift`. Its pattern checks selected
+case labels, not every explicit game dependency or Lorcana case; do not weaken
+the gate or claim complete architecture from its count. The
+[Lorcana plan](lorcana_code_implementation.md) uses these shared seams under its
+own data, identity and rollout gates. Production rights, physical-device/camera,
+mixed-client CloudKit, keys/hosting and archive/release acceptance remain open.
 
 ## Latest full ordinary batch — 2026-10-04
 
@@ -201,8 +238,9 @@ follow that acceptance; they are not prerequisites for this local test milestone
   CSV, manual entry, or recovery. Existing unknown synced rows remain readable.
 - Pricing capability applies to every quote, refresh, fallback, Browse,
   correction, background, and graded path. Missing capability means no provider
-  requests and no fabricated provider observations. One Piece pricing remains
-  absent until provider access/rights and exact mappings are verified.
+  requests and no fabricated provider observations. One Piece exact base pricing
+  is implemented for the explicit local review; unmapped printings remain
+  unavailable and production provider/access/rights acceptance remains open.
 - Product appearances are a separate many-to-many relation. Permanent UUIDs,
   retained aliases, reviewed merges/splits, historical references, and mapping
   corrections have explicit validation and quote invalidation behavior.
@@ -212,7 +250,7 @@ follow that acceptance; they are not prerequisites for this local test milestone
 - Optical comparison initially ranks choices only. DON!! remains a separately
   gated visual-recognition project, with no synthetic printed identifiers.
 
-## Current execution plan — efficiency review, 2026-10-04
+## Current execution plan — reconciled 2026-10-05
 
 This section supersedes earlier execution priorities and dated “next” statements.
 The full A–N/design acceptance scope remains intact. Code completion, reviewed
@@ -222,19 +260,21 @@ builds or tests.
 
 ### Verified position
 
-The current registry contains 2,692 canonical cards and 2,745 printing records:
-2,490 verified, 224 provisional and 31 conflicted. Ordinary review covers 2,731
-records across 58 OP/ST/EB/PRB groups, including combined-release numbers and
-selected product-scoped reprints. The corpus has 8,237 observations and 2,940
-private captures. All earlier 817 printing/artwork records remain unchanged;
-allocation-free replay matches all five artifacts. Unsigned revision 13 validates
-against revision 12 as protected review; the isolated signed local kit contains
-the full corpus. All 42 selected Python tests pass. Core coverage is 39 initial
-passes plus the corrected affected test; app coverage is 41 initial passes plus
-two corrected affected tests. No full-suite repeat was performed. Earlier logs
-below remain historical verification snapshots.
-These results prove scoped catalog/app
-behavior, not physical-camera, whole-app, rights, CloudKit or production readiness.
+The source counts are recorded in the current snapshot above. Ordinary review
+covers 2,731 selected rows across 58 OP/ST/EB/PRB groups, including combined
+releases and selected product-scoped reprints. The earlier ordinary-only total
+was 8,237 observations; the base-market review brings the combined total to
+10,198 without changing physical UUIDs or statuses. Unsigned publisher revision
+14 validates against revision 13 as protected review; the signed local debug kit
+is a separate revision-one bootstrap, not the production baseline.
+
+Recorded pipeline verification includes 42 selected Python passes, 39 initial
+core passes plus the corrected affected test, and ordinary app coverage of 41
+initial passes plus two corrected affected tests. Later pricing/publication and
+catalog-extraction work culminated in the 192-test selected checkpoint above.
+Do not sum overlapping selections or relabel these results as a new complete
+suite. They establish scoped catalog/app behavior, not physical-camera, rights,
+CloudKit or release readiness.
 
 The small real-corpus milestone is implemented: local recognition injection,
 explicit printing choice, finish, ownership, Browse and recovery/export have
@@ -259,6 +299,12 @@ Do not rebuild a small demo or repeat existing foundation work as the next slice
   decisions alongside implementation instead of discovering them at the end.
 
 ### Ordered work packages and exit evidence
+
+The bulk discovery/draft notes immediately below are historical implementation
+checkpoints. Their temporary PRB-01 gap, deferred tests and no-successor wording
+were superseded by the full ordinary adoption and base-pricing checkpoints at
+the top of this ledger. The batching contract still applies to future coverage;
+do not repeat the completed ordinary pass or regenerate its UUIDs.
 
 **Bulk discovery implementation — 2026-10-04:**
 `scripts/discover_one_piece_products.py` now retains all observed index pages and
@@ -312,7 +358,8 @@ app suites, prepare a signed kit or create another publisher revision. Network
 captures may use bounded resumable chunks; these are internal progress, not
 separate implementation milestones. Inline byte/hash/schema checks remain active.
 
-Bulk execution is now:
+For the next declared coverage batch, retain this execution contract; the
+ordinary-product pass and revision-13/14 local-kit milestones are already done:
 
 1. Run `scripts/discover_one_piece_products.py` with the private capture root,
    existing reviewed `products.json`, retained TCGCSV `68-groups.json`, initial
@@ -334,7 +381,8 @@ Bulk execution is now:
    the easiest subset redefine the batch's declared inventory. Retain discovery
    of parallels/premiums/events even where physical reconciliation remains open.
 4. At the end of the ordinary-product implementation, run Python/core suites,
-   allocation-free replay, whole-batch retention validation against revision 12,
+   allocation-free replay, whole-batch retention validation against the latest
+   independently verified predecessor candidate (currently revision 14),
    and one representative app regression selection. Fix demonstrated failures
    and rerun only affected checks. Build one successor candidate and prepare one
    local review kit after this consolidated checkpoint.
@@ -343,13 +391,13 @@ Bulk execution is now:
    rule. Full-plan acceptance, activation routing and production gates remain
    required; this changes batch size and checkpoint frequency, not scope.
 
-| Order | Work package | Concrete exit evidence |
+| Priority | Existing work package | Remaining concrete exit evidence |
 | --- | --- | --- |
-| 1 | Close the latest batch and the remaining collection correctness gaps | Correct and replay the two ST-10 reprint review records; preserve printing/artwork UUIDs, source aliases, status, finish assertions and capture hashes. Validate finish corrections against the activated exact printing, including single/multi-claim paths, missing authority and withdrawn/provisional printings. Prove activation while scanner UI is closed and reject stale revisions. Audit remaining direct saves and unknown-game mutation paths once. Reject before mutation and preserve lineage. |
-| 2 | Finish catalog coverage through reproducible batches | Replace the temporary capture/manual patch loop with a minimal durable capture/reconciliation driver and explicit product/reprint manifest. Reuse retained hashes and the broad inventory; derive review scopes from sources rather than add permanent set horizons. Batch remaining ordinary OP/ST/EB/PRB products, then parallel/premium/event/promo distinctions and all named stress cases. Produce one durable registry, discrepancy ledger and reproducible candidate per coherent batch. |
-| 3 | Complete necessary legacy adapter routing | Move remaining Pokémon/Magic catalog, Browse and normalization dispatch behind existing adapters while preserving behavior, keys, caches and concurrency. Audit CSV/recovery/scanner seams as well as the 13 remaining switch labels. Run the boundary script and inspect real dependencies; a cosmetic regex pass is insufficient. Add no speculative module, crypto package or provider abstraction. |
-| 4 | Verify the integrated product and delivery | Use the representative reviewed catalog for rendered scanner choice, two different physical copies, finish, skip/recovery, offline Browse, import/export and relaunch. Measure intended signed payload size, cold/warm startup, memory and candidate-list costs; optimize only measured problems. Complete bundled seed and protected hosting/rollback rehearsal with independent keys and all-game namespace preservation. |
-| 5 | Close release gates and the full requirement audit | Record rights for each intended use, device/accuracy/accessibility evidence and enforceable mixed-client creation/sync policy. Keep shared synced creation disabled until that policy is proved. Map every full-plan requirement to current direct evidence; run the warranted shared regression/release checkpoint once the candidate is stable. Unverified external gates remain open, even when code tests pass. |
+| 1 | Package 4: integrated local base-case acceptance | Use the existing full ordinary/base-pricing kit for rendered scan/printing/finish/save, two distinct copies, mapped/unmapped prices, skip/retry, offline Browse, CSV and relaunch/refresh. Fix observed base defects as one batch; do not start another architecture/coverage pass first. |
+| 2 | Package 1: remaining collection correctness evidence | Exact correction and container-bound publication are implemented. Close explicit supersession migration and failed-save injection; review remaining direct saves when affected ownership paths change. Preserve UUIDs, claims, history and manual prices on denied/withdrawn authority. Full storage/account/device acceptance stays separate. |
+| 3 | Package 2: remaining physical coverage | Reuse the implemented manifest, capture/reconciliation/discrepancy pipeline and adopted ordinary corpus. Review held original/revision records, parallels/premiums/events/promos and named stress distinctions in declared batches. Fresh discovery may add ordinary releases; none may silently redefine the coverage denominator. |
+| 4 | Package 3: remaining legacy adapter routing | Catalog extraction is implemented. Move Pokémon/Magic Browse and import/normalization behavior, complete signed legacy runtime snapshots and remove temporary bindings/correction allowances only after validated replacements exist. Preserve keys/caches/behavior; eight audited labels remain in Browse. Inspect dependencies beyond the regex. |
+| 5 | Packages 4–5: measured delivery and release acceptance | Measure full-kit cold/warm activation, memory and candidate-list costs; provision the reviewed production seed/keys and rehearse all-game hosting/rollback. Record rights, device/accuracy/accessibility and enforceable mixed-client policy. Keep shared production writes disabled; map each full requirement to direct evidence and run warranted regression/archive checks on the stable candidate. |
 
 Owner-controlled rights/key/hosting/sync decisions should be prepared during
 packages 1–2; source reconciliation can continue while those decisions are pending.
@@ -359,18 +407,21 @@ specified production persistence and delivery requirements.
 
 ### Code/file-level implementation handoff
 
-Implement the packages below in order. Names marked **new** are prescribed file
-or API additions; other names refer to current source. Preserve current public
+Follow the priority table above. The original file tables below specify package
+contracts and include completed work; **new** in those dated tables does not
+mean the named file is still missing. Read each later checkpoint before editing.
+Preserve current public
 callers while moving implementation, then remove obsolete bridges after the
 affected regression checkpoint. Do not change persisted game/collection keys,
 game-specific SwiftData columns, existing signed wire formats or Pokémon print-run keys.
 
 Read the checkpoint before each package's file table: those tables describe the
 intended final change, including work already implemented. Do not recreate the
-Package 1 correction API, runtime registry, picker or recovery model. The next
-deliverable is the remaining Package 1 activation/withdrawal checks together with
-the Package 2 manifest and exact replay. Finish that coherent checkpoint before
-expanding source coverage or extracting the large legacy services.
+Package 1 correction API, container-bound activation, Package 2 manifest/capture
+pipeline, runtime registry, picker or recovery model. These are implemented;
+the next deliverable is integrated local base-case acceptance with the existing
+full kit. Remaining acceptance gaps are listed in the current priority/status
+tables, not inferred from an older instruction to add a file.
 
 #### Package 1: accurate evidence and exact collection correction
 
@@ -405,7 +456,9 @@ with unchanged rows, activities, inventory events and price keys. The 42-test
 One Piece selection compiled and reported 41 passes plus one failure caused by
 a test UUID that contained no letters to uppercase; after correcting that input
 and adding the missing-adapter assertion, the affected test passed in isolation.
-A clean full 42-test run has not yet been recorded.
+That initial run was not a clean combined 42-test result; later checkpoints,
+including the full One Piece integration selection within the 192-test run,
+supersede its regression gap without rewriting its original outcome.
 
 At that 2026-10-04 checkpoint, activation ordering and withdrawal fixtures were
 still open. The 2026-10-05 container-bound publication checkpoint supersedes that
@@ -425,8 +478,8 @@ This adds direct mutation and storage-retirement evidence to the prior 103-case
 One Piece/pricing checkpoint; it is not a full-suite or device/account-switch
 claim. Explicit supersession migration and failed-save injection remain separate
 acceptance cases; quarantining a printing does not migrate owned copies.
-The architecture audit still reports 13 legacy Pokémon/Magic case labels in
-`CardCatalog.swift` and `BrowseCatalog.swift`, tracked under Package 3.
+The audit at that checkpoint reported 13 legacy case labels; subsequent catalog
+extraction reduced the current count to eight, all in Browse, under Package 3.
 
 The one-time `rg` audit found CSV writes guarded by game and import
 adapters, normalizer writes guarded by `permitsSyncedMetadataWrite` and
@@ -442,7 +495,8 @@ approval is not sufficient authority at commit time. The locked session registry
 returns immutable adapter snapshots; do not hold its lock during validation or
 SwiftData work. The container's installed generation defines application
 activation; do not treat a queued coordinator event as already installed.
-Close the ordering gap at the runtime source boundary. Add **new**
+The following publication contract is now implemented at the runtime source
+boundary in
 `Games/Core/CollectionAuthorizedActivationSource.swift`, a container-bound wrapper
 of `GameCatalogActivationSource`. Both `currentSnapshot()` and streamed snapshots
 must install collection authority before returning/yielding that snapshot. Use
@@ -476,9 +530,12 @@ outside synced-ownership gates.
 
 #### Package 2: one reproducible product/corpus pipeline
 
-Deliver this in two changes: migrate constants and prove retained-byte replay
-first, then add capture automation and expand products. Neither requires an iOS
-build unless app semantics change. The manifest configures ingestion; it does
+The manifest migration, capture driver, discrepancy ledger and full ordinary
+adoption are implemented. The table and migration requirements below retain the
+original contract; the dated 13-product/547-record checkpoints are historical.
+Continue with remaining physical distinctions after local base acceptance.
+Source-only batches require no iOS build unless app semantics change. The manifest
+configures ingestion; it does
 not replace the core release schema or become another app catalog.
 
 | File | Required change |
@@ -597,7 +654,7 @@ targets. All 43 One Piece integration tests passed, with no skips or failures,
 using `TradingCardScanner`/`Debug` on iPhone 17 Pro Simulator. The result bundle is
 `~/Library/Developer/XcodeBuildMCP/workspaces/TradingCardScannerMVP_fixed_v4-c63baff95376/result-bundles/test_sim_2026-10-05T02-02-30-807Z_pid84710_45412889.xcresult`.
 The durable unsigned candidate is
-`/Volumes/Keller Family Photos 1/CodexBuilds/OnePieceSourceReview/2026-10-04/starter-booster-review/review-candidate-revision-12.json`.
+`<external-ssd>/CodexBuilds/OnePieceSourceReview/2026-10-04/starter-booster-review/review-candidate-revision-12.json`.
 No new signed local kit or rendered/device
 acceptance is claimed. Next coverage remains later OP/ST/EB/PRB ordinary products,
 then the remaining physical stress distinctions and delivery/activation gates.
@@ -622,9 +679,10 @@ physical universe has documented evidence; held records cannot create uniqueness
 
 #### Package 3: move existing behavior behind existing adapters
 
-**Base-case handoff priority — 2026-10-05:** finish verification of the catalog
-extraction already in progress, then install the existing full ordinary/pricing
-kit for local acceptance. Do not start Browse/import extraction or another
+**Base-case handoff priority — 2026-10-05:** catalog extraction verification is
+complete in the recorded 192-test selected checkpoint, and the
+existing full ordinary/pricing kit is installed for local acceptance. Do not
+start Browse/import extraction or another
 physical-coverage batch before the owner tests representative scan, printing
 choice, finish, save, relaunch and exact-price cases. Those packages remain part
 of the full plan; they are not prerequisites for this local milestone.
@@ -663,7 +721,8 @@ and returned child-set/layout checks. Its injected `ScryfallService` and optiona
 coordinator never call back into `CardCatalog`. `MagicGameRuntime` registers it;
 the module-owned default factory preserves older `CardCatalog` initializers.
 The central service no longer owns a Scryfall instance or switches on a Magic
-lookup case. Its Pokémon cache/provider helpers still require extraction.
+lookup case. Pokémon helpers were still pending at this Magic-only checkpoint;
+the subsequent Pokémon extraction above closes that catalog-routing work.
 
 `GameCatalogAdapter.prepareLookupIdentifier` is implemented with a strict default.
 Magic validates its legacy payload and pins an absent generation without changing
@@ -679,8 +738,9 @@ The Magic adapter currently retains the legacy provider-generation/coordinator
 behavior (`magic-provider-v1`); it does **not** claim signed revision activation
 has been migrated. Complete Magic activation snapshots with the remaining legacy
 runtime extraction, and remove the temporary collection-correction allowance only
-after its adapter supplies validated authority. Pokémon identifier preparation,
-provider/cache extraction, Browse and import modules remain open.
+after its adapter supplies validated authority. Pokémon identifier preparation
+and provider/cache extraction are now implemented; Browse and import modules
+remain open.
 
 All 55 selected tests passed in one checkpoint: Magic content-kind/routing,
 forward compatibility, historical Pokémon request bounds, One Piece stale lookup
@@ -698,7 +758,7 @@ This confirms startup/cache display continuity, not camera or all-game acceptanc
 
 | Current implementation | Destination and boundary |
 | --- | --- |
-| `CardCatalog.swift`: legacy branch in `start`, `persistentKey`, `complete` artwork/count logic, modern/promo helpers, offline/historical provider state | **new** `Games/Pokemon/PokemonCatalogAdapter.swift` and **new** `Games/Magic/MagicCatalogAdapter.swift`. Move the Pokémon lookup/cache engine and Magic child-set/token/art routing with their injected dependencies. Pokémon owns historical-number candidates and print-run extensions. `CardCatalog` keeps generic outcome validation, generation checks, bounded coalescing and cancellation; `start` dispatches an installed adapter instead of switching `legacyIdentity`. |
+| Catalog extraction — implemented | `Games/Pokemon/PokemonCatalogAdapter.swift`, `PokemonCatalogSupport.swift`, `PokemonHistoricalCatalog.swift` and `Games/Magic/MagicCatalogAdapter.swift` own provider/cache/offline/historical and child routing. `CardCatalog` retains generic preparation, bounded outcome caching/coalescing, validation and typed legacy forwards. Preserve this behavior; do not recreate the removed central lookup branch. |
 | `BrowseCatalog.swift`: game branches in `loadSetDirectory`, `cards`, `search`, `details`; Pokémon checklist/secondary/artwork/bulk-price projection and Magic live/signed set/card handling | **new** `Games/Pokemon/PokemonBrowseAdapter.swift` and **new** `Games/Magic/MagicBrowseAdapter.swift`. Move provider-specific state/helpers into game-owned actors. Keep `CatalogCacheStore` and on-disk keys compatible. `BrowseCatalog` keeps game-neutral history, coalescing, cache coordination and activation rejection. Preserve signed/offline authority before live fallback and existing price freshness behavior. |
 | `CollectionCatalogNormalizer.swift`: `ImportedCatalogResolver.resolvePokemon`, `resolveMagic`, Pokémon missing-artwork enrichment | **new** `Games/Pokemon/PokemonImportAdapter.swift` and **new** `Games/Magic/MagicImportAdapter.swift`. Move identity normalization and enrichment into `metadata(for:)`; keep request/result `identityKey` unchanged. Register adapters and remove the parallel legacy raw-card tasks. Unknown games return no enrichment. Preserve generation revalidation before writing patches. |
 | `CollectionCatalogNormalizer.swift`: `resolveSealed`/JustTCG game mappings | Move this existing provider implementation to **new** `Games/Core/LegacySealedImportResolver.swift`. It retains only verified Pokémon/Magic provider mappings and metered-request sequencing. The normalizer invokes that resolver before raw-card adapter tasks; new numbered games do not gain sealed support implicitly. |
@@ -713,8 +773,8 @@ central game dependency. Keep `PendingPrintRunChoice`/`PokemonPrintRun` keys and
 UI semantics intact. Remove obsolete game-specific central helper methods after
 their callers use module-owned operations.
 
-Handle the current legacy nil-generation identifiers explicitly during catalog
-extraction. Add module-owned `prepareLookupIdentifier(_:)` to `GameCatalogAdapter`:
+The implemented catalog extraction handles legacy nil-generation identifiers
+with module-owned `prepareLookupIdentifier(_:)` on `GameCatalogAdapter`:
 the default requires matching game/generation; Pokémon/Magic implementations
 validate their existing legacy payloads and pin a nil-generation request to the
 captured adapter generation without replacing its captured set definition.
@@ -749,8 +809,9 @@ hosting approval; supported-client/sync enforcement; physical-device observation
 Record each as approved, blocked or unverified in the acceptance artifact with its
 evidence. Developers must not choose a provider/license, invent a minimum-build
 enforcement mechanism or enable shared writes to close the checklist. Finish
-authorized code/staging work while those inputs are pending. Optional pricing
-stays unavailable until a separate exact-mapping/provider acceptance is complete.
+authorized code/staging work while those inputs are pending. Exact base pricing
+already works in the isolated local kit; expanded mappings and production
+provider/access/rights approval remain independent gates.
 
 For One Piece restore verification, pass publisher `verify --input` the envelope,
 `--trusted-keys` the dedicated JSON key map and `--reviewed-payload-sha256` the
@@ -845,8 +906,9 @@ inline because they define valid captured input.
 Keep the implemented shared game identity/runtime, recognition aggregation,
 printing choice, versioned recovery and signed storage needed for Lorcana.
 Lorcana expansion remains separately scoped while One Piece is the priority.
-One Piece pricing may remain absent as already allowed; activation still requires
-provider rights and reviewed exact mappings. Optical ranking and DON!! retain
+Preserve the implemented exact base-pricing flow and unavailable behavior for
+unmapped printings; expanded/provider production activation still requires rights
+and reviewed exact mappings. Optical ranking and DON!! retain
 separate decisions and gates. Record deferred/conditional work explicitly; do
 not mark it implemented or silently delete it from the full audit.
 
@@ -944,34 +1006,38 @@ vertical milestone is not counted as completed or silently removed from scope.
 
 ## Current status by delivery slice
 
-This is a source audit of the existing uncommitted work, not a new build or
-release certification. Full checkboxes remain open where acceptance is incomplete.
+This is the 2026-10-05 source audit at `6b64abe`, not a new build or release
+certification. Full checkboxes remain open where acceptance is incomplete.
 
 | Slice | Present in the worktree | Remaining completion evidence/work |
 | --- | --- | --- |
 | A | Open string-backed game identity, single-string Codable, explicit CSV game preservation; live container policy, scoped history/backfill and inventory guards | Audit remaining direct saves; verify mixed-client policy |
-| B | App-scoped runtime, adapter registries, capability enumeration and activation snapshots | Legacy catalog/Browse/import routing still remains; final architecture audit fails |
-| C | Generic identifiers, generation pinning, recognizer aggregation and suppression | Current shared-tree legacy regressions and real-card geometry/language evidence |
+| B | App-scoped runtime, registries, capability enumeration, container-bound activation and Pokémon/Magic catalog extraction | Legacy Browse/import routing, signed legacy runtime activation and temporary bindings/allowances remain; architecture audit fails on eight Browse labels |
+| C | Generic identifiers, generation pinning, recognizer aggregation and suppression; selected cross-game/catalog regressions recorded | Real-card geometry/language and full warranted shared regression acceptance |
 | D | Generic resolved card, compact Pokémon/Magic-style buttons, bounded grid, Details sheet; phone/tablet/large-text, footer, skip, missing-artwork and final-choice fixture evidence | Owner review, loaded artwork/real-corpus distinguishability and device/accessibility acceptance remain open |
 | E | Versioned/opaque recovery, legacy decoding, persisted choices and current-catalog retry after relaunch | Real-corpus/device recovery and remaining encounter/physical-choice acceptance |
-| F | Shared verified two-slot storage; bounded conditional transport used by One Piece | Pokémon/Magic transport remains separate; retain contract parity and recovery evidence when migrating |
+| F | Shared verified two-slot storage used by Pokémon/Magic/One Piece; bounded conditional transport used by One Piece | Pokémon/Magic transport remains separate; full contract parity, failure/recovery and concurrent-update acceptance remain required |
 | G | Core/builder/validator/publisher; 58 ordinary groups, 2,745 permanent printings (2,490 verified), 10,198 combined observations and 1,961 exact base market mappings | 224 provisional/31 conflicted records, expanded parallel/premium/event/promo physical distinctions, rights and full stress-case acceptance |
 | H | Signed store/coordinator/runtime, disabled configuration, bootstrap and optional signing workflow | Actual bundled seed/resource, dedicated provisioned keys, protected hosting delivery and operational rehearsal |
 | I | Registry-derived English numbered parsing, ambiguity, local lookup, consistent payload validation and retryable incomplete-catalog recovery | Real-card geometry/language and real-corpus/device recovery evidence |
-| J | Exact UUID/finish keys and fixture collection flow with write capabilities | Complete write protection, production creation policy and CloudKit compatibility |
+| J | Exact UUID/finish keys, local fixture/real-corpus collection flow, exact correction and container-bound withdrawal/revision/session guards | Supersession migration, failed-save injection, full storage/device evidence, production creation policy and mixed-client CloudKit compatibility |
 | K | Local Browse/search/details, product memberships, exact ownership/completion, raw UUID import and game-scoped activation refresh | Manual/alias import policy and real-corpus rendered UI/export acceptance |
-| L | Exact TCGCSV base pricing, 1,961 reviewed mappings, runtime/Price Check/scanner-save/Browse/collection-refresh wiring | Cached-quote invalidation on catalog mapping changes, expanded physical mappings, provider/device and production acceptance |
+| L | Exact TCGCSV base pricing, 1,961 reviewed mappings, Price Check/scanner-save/Browse/collection refresh, mapping fingerprints, persisted managed-quote withdrawal and generation-bound feed caches | Integrated mapped/unmapped base-case acceptance, expanded physical mappings, provider/device and production acceptance |
 | M / N | Scope and gates documented | Optical ranking needs a measured benefit; DON!! is a separate visual project, not a numbered-launch prerequisite |
 
-## Audit findings and required follow-up — 2026-10-04
+<a id="audit-findings-and-required-follow-up--2026-10-04"></a>
+
+## Audit findings and required follow-up — reconciled 2026-10-05
 
 1. **High — real physical corpus remains incomplete.**
    [`OnePieceProviderNormalizer`](../../OnePieceCatalogCore/Sources/OnePieceCatalogCore/ProviderModels.swift)
    normalizes supplied captures; it is not a complete Bandai/Limitless/Scrydex
    ingestion pipeline. Passing synthetic stress fixtures proves mechanics, not
    actual Shanks/Nami/Luffy releases, source pagination, completeness or rights.
-   The first P-001 winner review and provisional participation identity now have
-   dated captures and regeneration evidence; the remaining stress corpus does not.
+   The award, retail and ordinary corpus now has dated capture/replay evidence;
+   named premium/event/stamp/revision distinctions and complete physical universes
+   remain incompletely reconciled. Counts in the current source snapshot supersede
+   earlier canonical-only or two-UUID descriptions.
    Complete the remaining reviewed registry and discrepancy records before marking
    G or the corpus gate complete. Base-case exact TCGCSV pricing is now required
    by the owner's latest request; expanded physical mappings remain a later pass.
@@ -981,20 +1047,21 @@ release certification. Full checkboxes remain open where acceptance is incomplet
    separate reprint appearances and source aliases without assigning printing IDs
    or finishes. The real discovery manifest, normalized observations and incomplete
    inventories were initially retained beside a canonical-only registry. The
-   subsequent award review adds two retained UUIDs and private image evidence,
-   while verified market joins and completeness remain absent. Scrydex
+   subsequent award, retail and ordinary reviews add durable physical UUIDs;
+   base pricing adds 1,961 reviewed market joins. Physical completeness remains
+   false for every canonical card. Scrydex
    ingestion/access and broader physical reconciliation remain open.
 
 2. **Printing-choice mechanics corrected; real-corpus UX acceptance remains open.**
-   Compact replacement is now implemented in the uncommitted source; verification
+   Compact replacement is implemented in the current source; verification
    is recorded in the visual checklist. The original rejected presentation described here is retained
    as the reason for the change, not a claim that the new default still dumps metadata.
    [`PrintingChoiceBar`](../../TradingCardScanner/Views/ScanSessionOverlays.swift)
-   now uses a bounded lazy vertical list, a 44-point dismiss target and shared
-   live/recovery buttons. The previous unbounded-grid finding is superseded.
-   However, each row currently displays the full concatenated release/treatment/
-   distribution label plus region, block, copyright and release date. The owner
-   rejected this presentation on 2026-10-04 and requires a concise picker.
+   uses compact short-label buttons, a bounded grid/large-text column, a 44-point
+   dismiss target and shared live/recovery presentation. Both the unbounded grid
+   and verbose metadata-list findings are superseded. The owner rejected the
+   former concatenated release/treatment/distribution/footer/date presentation on
+   2026-10-04; the full evidence now belongs in Details.
    The
    [`One Piece projection`](../../TradingCardScanner/Games/OnePiece/OnePieceCatalogAdapter.swift)
    now carries optional artwork identity and region/footer detail, preserving old
@@ -1127,7 +1194,8 @@ release certification. Full checkboxes remain open where acceptance is incomplet
    optionally signs/verifies and retains artifacts; it does not deploy a catalog.
    The [seed directory](../../TradingCardScanner/OnePieceCatalogSeed/README.md)
    contains no production JSON; configuration has no enabled endpoint/key pins.
-   Before activation, provision/review dedicated keys and a bundled signed seed,
+   Before production activation, provision/review dedicated keys and a bundled
+   signed seed,
    wire the actual resource, verify protected publication and bind publication
    to the verified live baseline with stale/concurrent-update refusal.
 
@@ -1151,8 +1219,9 @@ release certification. Full checkboxes remain open where acceptance is incomplet
    lookup and measure candidate/choice costs separately from OCR.
 
 8. **Full architecture acceptance remains open.**
-   The read-only boundary audit still fails on 13 legacy case labels: five in
-   CardCatalog and eight in BrowseCatalog. Its regex checks selected switch
+   The read-only boundary audit now fails on eight legacy case labels, all in
+   BrowseCatalog. Pokémon/Magic catalog extraction is implemented. Its regex
+   checks selected switch
    labels, not all explicit game dispatch. CollectionCatalogNormalizer still
    launches legacy Pokémon/Magic resolvers, and legacy provider/coordinator
    bindings remain. Passing the script alone cannot establish “next game requires
@@ -1160,18 +1229,19 @@ release certification. Full checkboxes remain open where acceptance is incomplet
    recovery and scanner control flow against the actual adapter contracts and
    finish the required legacy routing. Avoid cosmetic regex workarounds.
 
-9. **Collection finish correction needs exact printing authority.**
+9. **Exact collection finish correction implemented; remaining acceptance is explicit.**
    The existing collection-row overloads of
    [`CollectionStore.recordVariantCorrection`](../../TradingCardScanner/Services/CollectionStore.swift)
-   validate write permission and acquisition claims, but do not consult the
-   activated catalog for the exact printing's supported finishes. A game-wide
-   finish list is insufficient: two physical UUIDs may support different finishes.
-   Before enabling One Piece writes, revalidate the selected printing and finish
-   at correction time, reject withdrawn/provisional identities and preserve
-   acquisition/history/price lineage on rejection. Apply the same rule to single
-   and multi-claim correction, while retaining legacy Pokémon/Magic behavior.
-   The current production write gate prevents this path from creating One Piece
-   corrections; it does not fulfill the eventual enabled correction requirement.
+   consult the installed exact-printing adapter before any row/ledger mutation.
+   One Piece rejects unsupported/nil finish, malformed UUID and
+   withdrawn/provisional/conflicted printings. Recorded tests attempt actual
+   single/multi-claim corrections after signed quarantine and preserve ownership,
+   claims, inventory and price lineage. Container-bound activation orders that
+   authority before consumers receive the new generation. Do not reimplement
+   this fix; explicit supersession migration and failed-save injection remain
+   acceptance work, as do physical-device/storage transitions and production sync.
+   Pokémon/Magic retain their temporary legacy correction allowance until their
+   runtime/authority migration is complete.
 
 ## Historical sequence and verification checkpoints
 
@@ -1283,7 +1353,10 @@ provider, CloudKit or release evidence.
 
 ## Full delivery checklist
 
-2026-10-04 follow-up audit: current uncommitted source includes optional printing
+The unchecked A–N items represent full delivery/acceptance, not an assertion that
+each component is absent. The current status matrix identifies implemented work.
+
+**Historical presentation checkpoint — 2026-10-04:** source included optional printing
 artwork/footer metadata, bounded live/recovery presentation and collision safety.
 The existing `/private/tmp/one-piece-printing-presentation-followup.log` records
 52 passing selected cases: 33 One Piece integration, three scanner printing-choice
@@ -1292,7 +1365,8 @@ the corrected follow-up passed. This audit read the existing log; it did not run
 builds/tests or create new rendered evidence. These tests establish old-choice
 compatibility, footer projection and deterministic fixture behavior, not accepted
 picker design. The owner's subsequent direction supersedes the verbose list:
-match Pokémon/Magic's compact option-button format. D remains open.
+match Pokémon/Magic's compact option-button format, which is now implemented with
+recorded fixture rendering. D remains open for real-corpus/owner/device acceptance.
 
 - [ ] A: open CardGame, registry descriptors/capabilities, unknown-game safety,
   lossless CSV/collection/activity/price identity and creation gates.

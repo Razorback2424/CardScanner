@@ -1,8 +1,11 @@
 # One Piece catalog and scanner integration
 
-**Status:** current catalog design; implementation authorized and in progress in
-the isolated `one-piece-integration` worktree; production support disabled.
-**Reconciled:** 2026-10-04 against uncommitted implementation at base `69c714f`.
+**Status:** current catalog design; implementation integrated on
+`merge/one-piece-integration`; remaining acceptance and production gates open.
+**Reconciled:** 2026-10-05 against HEAD `6b64abe` in the main checkout. Integration
+is committed; earlier isolated-worktree/uncommitted descriptions are historical.
+This update is documentation-only; no implementation, build or app/package test
+was performed. Production support remains disabled.
 The original source/design review used `dd2a1e3` and its working tree; subsequent
 code status and delivery priorities live in the
 [implementation ledger](one_piece_code_implementation.md).
@@ -34,17 +37,25 @@ provider, device, and rollout evidence exists.
 
 ## Architecture contracts and current adaptation
 
-The 2026-10-04 code audit includes tracked and untracked work. Shared identities,
-runtime adapters, One Piece core/local projections and fixture flows now exist.
-The real review registry now contains 2,745 printing records (2,490 verified), with
-dated source observations and retained hashes; synthetic fixtures still cover
-some stress distinctions. This does not establish full physical completeness.
-Recovery revalidation and compact Pokémon/Magic-style printing choice now exist.
+The 2026-10-05 source audit confirms shared identities/runtime adapters, One Piece
+core/local projections and reviewed ordinary flows. The registry contains 2,692
+canonical cards and 2,745 printing records (2,490 verified, 224 provisional,
+31 conflicted). The reviewed ordinary manifest covers 58 groups; 60 registry
+products are retained and recorded Browse evidence exposes 52 verified-target
+groups. Combined observations total 10,198, including 1,961 exact base-market
+joins, with 412 held market decisions and 257 retained discrepancies. All
+canonical physical-coverage flags remain false; synthetic fixtures still cover
+some stress distinctions. These are distinct measures, not completion percentages.
+
+Recovery revalidation, compact printing choice, exact finish correction,
+container-bound catalog publication and managed-price withdrawal are implemented.
 The owner-rejected verbose picker is historical. Real scanner/device and
 collector-distinguishability acceptance remain open; retain separate printing
 and finish stages.
-Remaining write boundaries and actual seed/publication/device/sync acceptance
-remain open.
+Explicit supersession migration, failed-save injection, full ownership/storage
+acceptance and production seed/publication/device/sync gates remain open.
+The latest recorded selected simulator checkpoint passes 192 cases; it was not
+rerun for this audit and is not full-suite or camera/provider/release evidence.
 The implementation ledger is the current execution/status authority; this table
 retains the design contract without treating earlier source locations as current.
 
@@ -52,12 +63,21 @@ retains the design contract without treating earlier source locations as current
 | --- | --- |
 | [`CardGame`](../../TradingCardScanner/Models/CardGame.swift), [`ScanIdentifier`](../../TradingCardScanner/Services/ScanParser.swift), and [`ResolvedCatalogCard`](../../TradingCardScanner/Models/ResolvedCatalogCard.swift) are generic values with legacy bridges | Retain single-string game encoding and existing Pokémon/Magic keys; One Piece uses its registered adapters. Audit remaining central legacy routing before claiming the next game requires no central edits. |
 | [`RecognitionProfile`](../../TradingCardScanner/Services/CardScanner.swift) aggregates registered recognizers | Retain cross-game/internal ambiguity rejection and language evidence; no game toggle or confidence contest. Real-card validation remains open. |
-| [`CardCatalog`](../../TradingCardScanner/Services/CardCatalog.swift) dispatches registered catalog adapters alongside legacy paths | One Piece candidates come from its validated local release, not per-scan upstream requests. Canonical-number validation precedes physical-printing choice; incomplete coverage must not manufacture uniqueness. |
+| [`CardCatalog`](../../TradingCardScanner/Services/CardCatalog.swift) prepares/coalesces/validates registered adapter outcomes; Pokémon/Magic lookup is game-owned | One Piece candidates come from its validated local release, not per-scan upstream requests. Canonical-number validation precedes physical-printing choice; incomplete coverage must not manufacture uniqueness. Preserve typed legacy print-run forwards and never cache a user's printing selection as a number default. |
 | [`VariantResolver`](../../TradingCardScanner/Services/VariantResolver.swift) uses deterministic catalog evidence, applicable user locks, and validated printed-label evidence | Optical similarity may rank candidate artwork/printing choices. It cannot silently decide an ambiguous finish, stamp, or identical-art reprint. The draft's “high confidence → auto-select” is not the current acceptance contract. |
 | [`CollectedCard`](../../TradingCardScanner/Models/CollectedCard.swift) preserves legacy keys, physical variants and provenance, and now retains unknown game strings | Keep stable One Piece UUID identity without rekeying existing games or renaming the SwiftData entity. Old installed clients still have unsafe fallback behavior; preserve the creation/sync gate and close remaining unsupported-row mutation paths. |
-| [`PriceRecord`](../../TradingCardScanner/Models/PriceRecord.swift) keys by game, printing, variant, and applicable Magic treatment | Map One Piece prices to exact local printing/physical-variant identities. Market IDs stay provider mappings, separate from ownership. Preserve existing freshness and unavailable-price semantics. |
+| [`PriceRecord`](../../TradingCardScanner/Models/PriceRecord.swift) keys by game, printing, variant, and applicable Magic treatment; quotes retain mapping fingerprints | Exact base pricing uses reviewed TCGCSV aggregate USD Normal/Foil lanes. Market IDs remain separate from ownership. Changed mappings withdraw managed quotes before publication; manual prices survive and older receipts cannot restore withdrawn quotes. |
+| [`CardGameRuntimeContainer`](../../TradingCardScanner/Games/Core/CardGameRuntime.swift) binds all consumers to the actual storage session | Use `bound(to:isCurrent:)` and `CollectionAuthorizedActivationSource` for coherent catalog/recognizer/variant/Browse/import/price authority. Same-revision conflicts, stale revisions and retired sessions cannot install new authority. Finish corrections validate the exact installed printing before mutation. |
 | Pokémon/Magic stores share signed storage mechanics; One Piece has its own core, registry, coordinator and bounded update client | Preserve separate schemas, trust keys and physical identities. Signing/preparation and fixture activation do not establish a reviewed real catalog or production delivery. All shared-site deployments must preserve the new namespace. |
-| [`shared_pricing_cache_plan.md`](shared_pricing_cache_plan.md) is a future backend with independent gates | This plan does not install a Scrydex backend or authorize price redistribution. Reconcile provider access and retention with [`browse_pricing_coverage_plan.md`](browse_pricing_coverage_plan.md) before selecting the price path. |
+| [`shared_pricing_cache_plan.md`](shared_pricing_cache_plan.md) is a future backend with independent gates | Device-local exact TCGCSV base pricing is already implemented for review. No shared backend, Scrydex entitlement or production price redistribution is implied; expanded/provider production access and retention remain separate decisions. |
+
+Shared recognition, catalog, printing-choice/recovery, variants, Browse/import,
+pricing and signed storage/transport seams support the separate
+[Lorcana plan](lorcana_code_implementation.md). Legacy Pokémon/Magic Browse/import
+and signed runtime activation remain incomplete; the read-only boundary audit
+on 2026-10-05 reports eight case labels, all in Browse. Its pattern is not a full
+dependency audit. Existing adapter paths permit another game without making
+unrelated legacy extraction a prerequisite for its bounded research slice.
 
 The signed-catalog precedents are
 [`automatic_pokemon_catalog_updates_plan.md`](automatic_pokemon_catalog_updates_plan.md),
@@ -73,7 +93,7 @@ not mark their open operational gates complete.
 | --- | --- | --- |
 | Official English Bandai catalog and announcements | Canonical numbers, official metadata, artwork discovery, release/event evidence | A source artwork occurrence is not a permanent physical-printing identity; official availability does not grant hosting or commercial rights. |
 | Limitless | Expected physical prints, product appearances, release reconciliation, discrepancy checks | Use during ingestion/review through permitted access. Product rows may group distinctions more coarsely than collector treatments. |
-| TCGCSV / TCGplayer category 68 | Broad market-product discovery, exact source names, product/group aliases and optional source price lanes | Retain paced daily source captures and explicit inventory gaps. A product is not an app-owned physical UUID, and this export lacks SKU-level language/printing/condition identity. |
+| TCGCSV / TCGplayer category 68 | Broad market-product discovery plus implemented reviewed original-base aggregate USD Normal/Foil price joins | Retain paced captures and explicit inventory gaps. A product is not an app-owned physical UUID; condition-specific SKU identity is unavailable. Exact title/group/number/finish and reviewed release joins are required. |
 | Scrydex | Candidate variant vocabulary, variant imagery, cross-expansion associations, exact raw quotes | Enumerate paginated card/search results and reconcile them independently. Expansion totals and variant names are not completeness proofs or IDs. |
 | App-owned registry | Permanent printing IDs, source aliases, reviewed joins, unresolved distinctions, release history | Identity persists across URL, vendor-name, and source-index changes. |
 
@@ -199,10 +219,13 @@ watermarked, cropped, or recompressed images require other evidence. Similarity
 generates join candidates, not proof of physical equivalence. Compare stamp,
 footer, copyright, and block regions separately; preserve identical-art reprints.
 
-Define a One Piece release contract with monotonic revisions, pinned game-specific
-public keys, asset integrity checks, schema compatibility, referential integrity,
-and deterministic candidate indexes. Bundle an offline seed; persist validated
-current/previous releases with atomic activation. Failed refreshes retain the
+The One Piece release contract, core validation, signing, registry, coordinator
+and shared current/previous persistence are implemented. Preserve monotonic
+revisions, game-specific trust, integrity, schema/referential checks and
+deterministic indexes. The private full debug kit is a separate ephemeral-key
+revision-one bootstrap; the reviewed unsigned publisher successor is revision 14.
+Provision a production offline seed and dedicated pins separately. Failed
+refreshes retain the
 last-known-good catalog and cannot alter an in-flight scan's immutable snapshot.
 Size the compact index and reference assets from the corpus; “2–10 candidates”
 from the draft is an expectation, never a hard truncation that drops rare promos.
@@ -249,11 +272,28 @@ recognition separately from numbered-card support.
 
 ## Pricing contract
 
-Scrydex is a candidate, not a selected production entitlement or installed app
-provider. Compare its current exact raw coverage, terms, costs, quota behavior,
-credentials, and permitted device/server retention with the current pricing
-architecture before choosing a path. Do not assume the existing JustTCG key
-model, shared cache, or Pokémon bulk-provider arrangements cover One Piece.
+**Current local path:** TCGCSV is implemented for 1,961 reviewed original-base
+aggregate USD mappings, with 412 decisions held. It has no condition-specific
+SKUs; preserve `aggregate` qualifiers rather than labelling a quote NM. The exact
+adapter validates physical UUID, release/language/number and supported finish,
+coalesces product-group requests, preserves feed receipt time, binds caches to
+catalog generation and refuses changed mappings after HTTP. Price Check,
+scanner post-save, Browse detail/add and collection refresh use this same path.
+No provider fallback or guessed base-printing quote is permitted.
+
+`GameCatalogPriceAuthority` persists managed owned/reference quote withdrawal
+before consumers see a new generation. Mapping fingerprints and receipt
+watermarks reject stale restoration; manual/imported values remain intact.
+These mechanics have focused simulator evidence. Wider physical mappings,
+permitted production retention/access and device/live-provider acceptance are
+still open. The earlier recorded Shanks $8.16 simulator provider/add case and
+later cached relaunch do not prove every mapping.
+
+Scrydex remains a candidate enrichment/market provider, with no selected
+production entitlement or installed app adapter. It is not a prerequisite for
+the local base-case milestone. Compare current terms, coverage, costs, quotas and
+retention before adopting it. Existing JustTCG keys, shared-cache plans and
+Pokémon provider arrangements do not authorize One Piece provider use.
 
 Serve a quote only for an exact printing/variant/condition/market mapping. An
 unresolved manga, serialized, stamped, or premium reprint cannot borrow the base
@@ -269,7 +309,16 @@ The owner subsequently authorized code implementation; the
 state, audit findings and execution order. Production publication, provider
 entitlements and sync activation still require their stated acceptance gates.
 The original documentation-only provenance is historical, not a prohibition on
-the authorized work. The 2026-10-04 audit was restricted to plan updates.
+the authorized work. The 2026-10-05 reconciliation is restricted to plan updates.
+
+**Current execution priority:** use the existing full ordinary/base-pricing local
+kit for representative starter/booster scan → printing choice → finish → save →
+exact quote, Browse/add, skip/recovery, relaunch/refresh and CSV round-trip.
+An unmapped/special printing must persist independently without borrowing a
+price. Fix observed base defects before further legacy Browse/import extraction
+or a new special-printing batch. Do not recreate the completed ordinary pipeline,
+catalog adapters, compact picker or container-bound authority. The code ledger
+retains remaining acceptance work and original A–N scope.
 
 These design gates use A–H, whereas the code-level ledger uses A–N. They are
 different checklists: design A maps mainly to code G; design B to code G;

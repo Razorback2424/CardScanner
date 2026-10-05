@@ -8,6 +8,17 @@ history.
 
 ## Current authority boundary — updated 2026-10-03
 
+**One Piece plan reconciliation — 2026-10-05, `6b64abe`:** the integrated code is
+now committed on `merge/one-piece-integration`. The implementation ledger and
+catalog design supersede older active wording that cached-price withdrawal,
+exact finish correction, Pokémon/Magic catalog extraction or the ordinary
+capture pipeline are missing. Current source retains 2,745 printings and 1,961
+exact base mappings; all canonical physical-coverage flags remain false. Local
+full-kit base-case acceptance is next. The read-only boundary audit still reports
+eight Browse labels; legacy Browse/import/runtime work and production/device/
+rights/sync gates remain open. This reconciliation reran no app/package tests;
+the recorded 192-test checkpoint retains its original scope and provenance.
+
 One Piece base pricing update — 2026-10-04, existing `one-piece-integration`
 worktree at `69c714f`: exact TCGCSV pricing is now implemented for 1,961 reviewed
 original base printings. This supersedes older “no pricing adapter / optional
@@ -508,6 +519,16 @@ keeps physical-device performance acceptance open. No executor hypothesis is
 promoted to a measured defect or a release-readiness claim.
 
 ## Re-run rule
+
+Review-fix reconciliation (2026-10-05; uncommitted changes on `6b64abe`): the
+[One Piece handoff](../audits/one-piece-integration-review-handoff.md) now
+distinguishes the committed integration from subsequent fixes and historical
+transfer evidence. Its old eight-label audit count describes the former regex;
+the expanded boundary gate reports 37 existing game branches across Browse and
+collection normalization. The broader detection does not complete the deferred
+legacy extraction. Review-fix test evidence is recorded in
+[the progress log](../../progress.md); production rollout, trust anchors,
+mixed-client collection-write policy, and device/release acceptance remain open.
 
 When a slice changes, update the smallest relevant checklist and add one line
 to `progress.md`. When evidence is hardware- or provider-dependent, update

@@ -1,3 +1,29 @@
+- One Piece integration review fixes (2026-10-05; uncommitted on `6b64abe`):
+  isolate optional launch failures, reuse verified catalog snapshots/seeds,
+  restore activity/CSV compatibility, preserve recovery copy state and purchase
+  links, rehydrate current Pokémon definitions, batch history-write validation,
+  make price-cache generation/freshness explicit, and verify signing against
+  app-pinned keys. The activity finish picker now uses the bound registry and
+  enables selection before Save. Final simulator regression: 300 passed, zero
+  failures/skips across scanner, recovery, import, activity, pricing/cache,
+  runtime, and signed-store suites. One Piece core/publisher: 40 passed; Python
+  One Piece pipelines/trust anchors: 48 passed. Workflow YAML/shell syntax,
+  165 local documentation links, and `git diff --check` pass. The expanded
+  boundary audit reports 37 existing branches; legacy extraction and production
+  rollout/collection-write/device/release gates remain open. Existing user
+  edits are preserved; no commit, deployment, or release certification.
+  See the [corrected handoff](docs/audits/one-piece-integration-review-handoff.md).
+
+- One Piece plan/source reconciliation (2026-10-05; main checkout at `6b64abe`):
+  updated the [implementation ledger](docs/plans/one_piece_code_implementation.md)
+  and [catalog design](docs/plans/one_piece_catalog_integration_plan.md) for the
+  committed integration, current corpus/base mappings, exact finish correction,
+  container-bound withdrawal and catalog adapter extraction. Existing full-kit
+  local base-case acceptance is next; legacy Browse/import and external gates
+  remain open. Read-only boundary audit confirms eight Browse labels. Plan-only
+  update; no implementation, build or app/package test rerun, and the recorded
+  192-test selected checkpoint remains historical evidence.
+
 - One Piece merge-branch review handoff (2026-10-05): transferred 183 integration
   files onto `merge/one-piece-integration` in the main checkout, preserving its
   existing whitespace edit and `undefined/` files. `main` and the source worktree
