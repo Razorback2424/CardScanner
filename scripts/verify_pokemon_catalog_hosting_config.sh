@@ -20,7 +20,13 @@ jq -e '
   .hosting
   | map(select(.target == "production" and .public == "publisher/site"))
   | .[0].headers
-  | (map(select(.source == "/v1/current.json" and
+  | (map(select(.source == "/one-piece/v1/current.json" and
+               ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/one-piece/v1/releases/**" and
+               ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=31536000,immutable")] | length) == 1)) | length == 1)
+    and
+    (map(select(.source == "/v1/current.json" and
                ([.headers[]? | select(.key == "Cache-Control" and .value == "no-cache")] | length) == 1)) | length == 1)
     and
     (map(select(.source == "/v1/releases/**" and
@@ -33,4 +39,4 @@ jq -e '
                ([.headers[]? | select(.key == "Cache-Control" and .value == "public,max-age=31536000,immutable")] | length) == 1)) | length == 1)
 ' firebase.json >/dev/null
 
-echo "Firebase Hosting production target, dot-file ignore, and four catalog cache classes are valid"
+echo "Firebase Hosting production target, dot-file ignore, and six catalog cache classes are valid"

@@ -1,5 +1,11 @@
 # One Piece signed seed
 
+The normal local Xcode app includes the owner's verified catalog and public pin
+under `OnePieceOwnerCatalog/`. Debug local builds register it on their first
+launch without custom Info.plist settings, Documents copies or saved preferences.
+It uses the normal collection storage. This is separate from the production
+publication seed described below.
+
 No production seed is supplied yet. Synthetic test fixtures must not be bundled
 as a production catalog or used to claim printing-universe completeness.
 

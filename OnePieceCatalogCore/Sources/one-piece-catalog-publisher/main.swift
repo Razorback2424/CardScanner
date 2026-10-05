@@ -15,6 +15,7 @@ struct OnePieceCatalogPublisher {
     }
 
     private static func run(_ arguments: [String]) throws {
+        if arguments.first == "verify-hosted-release" { try verifyHostedRelease(arguments); return }
         if arguments.first == "sign" || arguments.first == "verify" { try publication(arguments); return }
         guard arguments.first == "build" else { throw CLIError.usage }
         var options: [String: String] = [:]
@@ -57,7 +58,39 @@ struct OnePieceCatalogPublisher {
     }
 
     enum CLIError: Error {
-        case usage, overwritesInput, baselineRequired, invalidSigningKey, outputExists
+        case usage, overwritesInput, baselineRequired, invalidSigningKey, outputExists, unexpectedRevision
+    }
+
+    /// Restoration verifies existing signed bytes against app-pinned keys;
+    /// it does not approve a new candidate or create a publication artifact.
+    private static func verifyHostedRelease(_ arguments: [String]) throws {
+        var options: [String: String] = [:]
+        var index = 1
+        let allowed: Set<String> = ["--input", "--trusted-keys", "--expected-revision"]
+        while index < arguments.count {
+            let key = arguments[index]
+            guard allowed.contains(key), index + 1 < arguments.count, options[key] == nil else { throw CLIError.usage }
+            options[key] = arguments[index + 1]; index += 2
+        }
+        func read(_ option: String, limit: Int) throws -> Data {
+            guard let path = options[option], !path.isEmpty else { throw CLIError.usage }
+            let handle = try FileHandle(forReadingFrom: URL(fileURLWithPath: path))
+            defer { try? handle.close() }
+            let data = try handle.read(upToCount: limit + 1) ?? Data()
+            guard data.count <= limit else { throw OnePieceCatalogSignatureError.oversizedPayload }
+            return data
+        }
+        let encoded = try JSONDecoder().decode([String: String].self, from: read("--trusted-keys", limit: 64 * 1_024))
+        let keys = try encoded.mapValues { value in
+            guard let bytes = Data(base64Encoded: value), bytes.count == 32 else { throw CLIError.invalidSigningKey }
+            return try Curve25519.Signing.PublicKey(rawRepresentation: bytes)
+        }
+        let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: read("--input", limit: 48 * 1_024 * 1_024))
+        let verified = try OnePieceCatalogSignature.verify(envelope, trustedKeys: keys)
+        if let expected = options["--expected-revision"] {
+            guard Int(expected) == verified.release.revision else { throw CLIError.unexpectedRevision }
+        }
+        print(verified.release.revision)
     }
 
     private static func publication(_ arguments: [String]) throws {

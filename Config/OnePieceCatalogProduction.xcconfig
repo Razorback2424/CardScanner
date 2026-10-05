@@ -3,3 +3,5 @@
 ONE_PIECE_CATALOG_ROLLOUT_MODE = disabled
 ONE_PIECE_CATALOG_BASE_URL =
 ONE_PIECE_CATALOG_PINNED_KEYS =
+// Enable only after retiring all older private installs and recording sync acceptance.
+ONE_PIECE_COLLECTION_WRITES = NO

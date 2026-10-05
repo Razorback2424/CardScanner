@@ -21,6 +21,12 @@ on:
       - "scripts/tests/test_one_piece_tcgcsv_catalog.py"
       - "scripts/tests/test_normalize_one_piece_sources.py"
       - ".github/workflows/one-piece-catalog.yml"
+      - "firebase.json"
+      - "scripts/restore_catalog_hosting_site.sh"
+      - "scripts/verify_pokemon_catalog_hosting_config.sh"
+      - "scripts/tests/test_catalog_hosting_restore.py"
+      - "scripts/prepare_one_piece_acceptance_samples.py"
+      - "scripts/tests/test_one_piece_acceptance_samples.py"
   workflow_dispatch:
     inputs:
       sign:
@@ -49,6 +55,11 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
+      - name: Validate hosting cache rules and namespace restoration
+        run: |
+          bash scripts/verify_pokemon_catalog_hosting_config.sh
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_catalog_hosting_restore.py -v
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_one_piece_acceptance_samples.py -v
       - name: Test bounded source normalization
         run: PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p test_normalize_one_piece_sources.py -v
       - name: Test retained TCGCSV capture and catalog builder

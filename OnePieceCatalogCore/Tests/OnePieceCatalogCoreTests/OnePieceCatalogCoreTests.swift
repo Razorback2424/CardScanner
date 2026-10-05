@@ -289,11 +289,18 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             "--reviewed-payload-sha256", hash, "--bootstrap-registry", "yes", "--output", "signed.json", "--manifest", "manifest.json"]
         XCTAssertEqual(try run(signing), 0)
         XCTAssertEqual(try run(signing), 0, "Identical artifacts are idempotent")
+        let hosted = ["verify-hosted-release", "--input", "signed.json", "--trusted-keys", "keys.json"]
+        XCTAssertEqual(try run(hosted + ["--expected-revision", "1"]), 0)
+        XCTAssertNotEqual(try run(hosted + ["--expected-revision", "2"]), 0)
+        try JSONEncoder().encode([keyID: Curve25519.Signing.PrivateKey().publicKey.rawRepresentation.base64EncodedString()])
+            .write(to: root.appendingPathComponent("wrong-keys.json"))
+        XCTAssertNotEqual(try run(["verify-hosted-release", "--input", "signed.json", "--trusted-keys", "wrong-keys.json"]), 0)
         XCTAssertEqual(try run(["verify", "--input", "signed.json", "--trusted-keys", "keys.json",
             "--reviewed-payload-sha256", hash, "--bootstrap-registry", "yes", "--manifest", "verified.json"]), 0)
         XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("manifest.json")),
                        try Data(contentsOf: root.appendingPathComponent("verified.json")))
         try Data("retain this artifact".utf8).write(to: root.appendingPathComponent("signed.json"))
+        XCTAssertNotEqual(try run(hosted), 0)
         XCTAssertNotEqual(try run(signing), 0)
         XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("signed.json")), Data("retain this artifact".utf8))
         var overwriting = signing
