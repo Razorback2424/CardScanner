@@ -8,6 +8,36 @@ history.
 
 ## Current authority boundary — updated 2026-10-03
 
+**Scanner choice policy — 2026-10-05:** the owner's explicit request supersedes
+the earlier One Piece English-confirmation/complete-universe requirement for
+a sole verified printing. The [implementation ledger](one_piece_code_implementation.md)
+now records automatic resolution within the available English catalog, shared
+finish choice only for multiple finishes, and the compact picker update. Earlier
+single-candidate-choice evidence remains historical; held records are still
+unavailable, and this policy does not establish worldwide coverage or OCR language.
+
+**Owner app correction — 2026-10-05:** the owner rejected the renamed, isolated
+review app. The [installed app record](one_piece_device_review.md) supersedes
+that flow: original TradingCardScanner name, existing identity and normal
+collection storage, with verified local One Piece acquisition enabled. The
+isolated tooling remains optional developer infrastructure. Production
+publication and shared-collection acceptance remain separate pending gates.
+
+The later ordinary-Xcode rebuild exposed that retained preferences were not a
+reliable first-launch dependency. The normal local app now bundles the verified
+catalog and public pin; custom installation settings are no longer required.
+
+**One Piece release-plan reconciliation — 2026-10-05, `534127f` plus local
+preparation:** [v1 acceptance](one_piece_release_acceptance.md) is the authority
+for approved scope/source choices, private-install retirement and pending
+hardware/rights/signing/sync gates. It supersedes automatic screen replacement
+on recovery, the stale local-review “no price adapter” statement and assumptions
+that all captured groups have selectable printings. The publisher retains
+provisional/conflicted UUIDs as review history; verified-only means acquisition
+eligibility, not deleting those records. Local review pricing is exact-mapping
+only. Portfolio-format CSV still omits One Piece; app-format CSV preserves it.
+Production remains disabled and writes default off.
+
 **One Piece plan reconciliation — 2026-10-05, `6b64abe`:** the integrated code is
 now committed on `merge/one-piece-integration`. The implementation ledger and
 catalog design supersede older active wording that cached-price withdrawal,

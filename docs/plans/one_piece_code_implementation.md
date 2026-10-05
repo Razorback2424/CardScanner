@@ -3,6 +3,73 @@
 **Status:** implementation in progress; no One Piece production support enabled.
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
+
+**Scanner product correction — 2026-10-05:** the owner requires the same choice
+rule as Pokémon/Magic: one available verified printing resolves immediately;
+multiple verified printings require a picker. The shared finish resolver still
+asks only when multiple supported finishes remain. This supersedes the earlier
+requirement for English confirmation and complete candidate-universe coverage
+before resolving a sole verified printing. Provisional/conflicted rows remain
+unavailable, and unknown numbers remain retryable. The tradeoff is that resolution
+uses the available English catalog, without claiming complete worldwide printing
+coverage or independently detected card language. The printing picker now uses
+a headline, a full-width set subtitle, compact rounded buttons, and two columns
+from three choices onward; Details retains artwork/footer evidence.
+
+Verification at `534127f` plus local changes: the 97-case One Piece/variant run
+and 56-case final recovery/scanner run both passed, covering 118 distinct cases.
+Shiki OP17-047 from the bundled verified catalog saves without either picker;
+one printing with multiple finishes still asks. Persisted sole-option choices
+revalidate against the current exact printing and reject tampered evidence.
+The [visual checklist](one_piece_printing_choice_visual_checklist.md) records
+settled phone captures for long set names, accessibility3, 61 choices and
+unavailable artwork, plus Details, skip and final-candidate interaction checks.
+
+**Ordinary Xcode installation — 2026-10-05:** the owner rebuilt before the
+custom-configured app's first launch, exposing the saved-preference dependency.
+The normal project now copies the existing signed corpus and public pin into
+the app. Local Debug registration prefers those verified bundled resources,
+without custom Info.plist settings or a Documents copy. The ordinary device
+build, in-place install and argument-free launch passed. App name, identity and
+normal collection storage remain unchanged.
+
+**Owner app correction — 2026-10-05:** restored the original app name and normal
+collection paths after the owner rejected isolated review storage. One Piece
+uses a verified owner-local signed catalog with collection writes enabled in
+the existing app. Only a successfully verified public pin is retained for later
+ordinary local builds. Device build and in-place installation passed; 32 focused
+owner-catalog/storage tests executed with zero failures and one expected simulator
+skip. See the [installed app record](one_piece_device_review.md). No collection
+export or uninstall was performed; collection contents await phone confirmation.
+
+**Release preparation — 2026-10-05, based on `534127f`:** the owner approved
+English/verified/text-only/exact-price v1, the TCGCSV/TCGplayer and official-site
+source roles, and confirmed there are no other users with older builds. The
+[release acceptance checklist](one_piece_release_acceptance.md) records the
+controlled-distribution policy and remaining rights/device/sync/signing gates.
+Seed preparation now runs off the main actor. Recovery updates offer explicit
+reload after scanning rather than resetting screens automatically; no-change
+retries retain existing bindings. Production collection writes have an explicit
+default-off flag, honored only in remote-authority builds. One Piece hosting
+cache rules, signed immutable restoration and reproducible review sampling are
+prepared. No production keys, seed, publication or device acceptance is claimed.
+
+**Preparation verification:** app build passed; all 59 One Piece integration
+tests passed. The subsequent final recovery/scanner/forward-compatibility/storage
+selection executed 159 tests with zero failures and one expected simulator
+data-protection skip. The core suite passed 40; the enhanced hosted-release CLI
+test then passed with matching revision, wrong revision, wrong key and corrupt
+envelope cases. Seven focused Python tests passed (restoration, sampling, pins),
+six hosting cache rules validated, and relative documentation links/diff checks
+passed. Final regression results are on the external SSD under
+`CardScannerBuild/OnePieceReleasePrep-2026-10-05/ReleasePreparationRegression.xcresult`.
+An intervening MCP export failed for internal disk space; only this task's two
+generated bundles were moved to the SSD, and the final run used SSD results
+directly. These are selected simulator/local checks, not full-suite/release gates.
+Rendered `CatalogUnavailable` inspection confirmed the banner and all tabs;
+Retry kept the Collection tab selected, was disabled while Scan was active, and
+became available after returning to Collection. The simulator has no rear camera;
+this verifies control state/navigation, not OCR or physical-camera behavior.
 **Latest plan audit:** 2026-10-05, main checkout on
 `merge/one-piece-integration`, initially based on `55dc1e4`, verified equal to
 freshly fetched `origin/main` before edits. The integration, eleven finding fixes,
@@ -11,7 +78,8 @@ uncommitted descriptions below are dated history. The cleanup removed the
 accidentally committed `undefined/` source copies, corrected model spacing,
 accepted CSV display names, moved withdrawal reads off the main thread,
 separated requests across withdrawals, and added visible optional-catalog
-recovery without relaunch.
+recovery without relaunch. The release-preparation follow-up requires an explicit
+reload so remote arrival cannot interrupt navigation or a scan.
 See the [current review handoff](../audits/one-piece-integration-review-handoff.md).
 
 **Remaining-audit verification:** initial focused iPhone 17 Pro / iOS 26.5 run
@@ -227,10 +295,10 @@ borrowing a quote. Keep all ordinary sets in this one kit and fix observed base
 defects as a batch. Production enablement and the remaining physical edge cases
 follow that acceptance; they are not prerequisites for this local test milestone.
 
-- A canonical number is evidence, not an exact physical printing or language.
-  Automatic resolution requires reviewed candidate-universe completeness and
-  deterministic evidence; excluded/provisional candidates cannot manufacture
-  uniqueness. English identity needs independent evidence or confirmation.
+- A canonical number is evidence within the supported English catalog. Per the
+  2026-10-05 owner correction above, a sole verified printing resolves without
+  language confirmation or complete candidate-universe coverage. Multiple
+  verified printings still require a choice; held rows remain unavailable.
 - Recognizers distinguish hard ambiguity from soft rejection. Ambiguity blocks
   other identities and fallback; Magic spatial rejection blocks historical
   fallback but does not override an independently valid primary identity.
@@ -1621,9 +1689,10 @@ OnePieceScanProfile and OnePieceRecognitionAdapter derive series vocabulary and
 known numbered identifiers from the registry, apply character repair only in
 numeric collector positions after an exact known prefix, deduplicate readings,
 and report hard ambiguity for different numbers. The default recognizer marks
-language unconfirmed. OnePieceCatalogAdapter therefore requires an explicitly
-labeled English physical-printing choice even when one verified printing exists.
-Automatic resolution additionally requires confirmed English and complete,
+language unconfirmed. **Historical 2026-10-03 behavior, superseded by the
+2026-10-05 scanner product correction above:** OnePieceCatalogAdapter required an explicitly
+labeled English physical-printing choice even when one verified printing existed.
+Automatic resolution additionally required confirmed English and complete,
 entirely verified candidate scope. Selection retains the signed generation,
 exact UUID, supported variants and original catalog retrieval time.
 

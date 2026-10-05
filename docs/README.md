@@ -40,6 +40,9 @@ chronological notes.
 | Legal/support copy | [`legal/privacy-policy.md`](legal/privacy-policy.md), [`legal/support.md`](legal/support.md), and [publication checks](legal/README.md) — Scanstash drafts with owner-confirmed contact; live publication and provider/retention verification remain open. |
 
 Integration review handoff: [One Piece merge-branch change report](audits/one-piece-integration-review-handoff.md)
+
+One Piece owner approvals, local preparation and remaining device/release gates:
+[v1 release acceptance](plans/one_piece_release_acceptance.md).
 records the committed integration/finding fixes, subsequent local cleanup,
 verification, historical transfer evidence, and open work.
 

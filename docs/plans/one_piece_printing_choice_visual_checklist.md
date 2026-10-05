@@ -1,5 +1,52 @@
 # One Piece printing-choice visual evidence
 
+## Current owner correction — 2026-10-05
+
+Target: One Piece scanner printing picker; deterministic route `PrintingChoice`.
+Phone states: `long-title`, `few`, `many`, `accessibility`, `missing-artwork`.
+The owner now requires no picker for one available verified printing. This
+supersedes the older single-candidate confirmation policy. The remaining picker
+uses a smaller headline, stacked identifier/set subtitle, compact rounded options,
+and two columns for three or more choices. The full set title can wrap.
+
+Current verification checklist:
+
+- [x] Long set title is readable; title, identifier and set have clear hierarchy.
+- [x] Choice buttons and skip/details actions remain reachable without oversized pills.
+- [x] Many-candidate list remains bounded and scrollable; candidate 61 selected successfully.
+- [x] Accessibility text wraps; no overlap or clipping at accessibility3 on the phone fixture.
+- [x] Artwork-only options stay visibly disabled; runtime snapshot offers only Details and skip.
+- [x] Shiki OP17-047 saves directly; multiple printings/finishes still ask in regression tests.
+
+Verification: 97 One Piece/shared variant cases passed; the final recovery/scanner
+follow-up passed 56 cases (118 distinct passing cases across both runs). This
+includes the bundled Shiki card, supported finish choice, persisted singleton
+revalidation, tampered-evidence rejection, and unresolved-store compatibility.
+Native fixture checks opened/closed Details without selecting, selected candidate
+2 and candidate 61, and skipped without selecting. Captures and logs are retained
+under the external drive's `CardScannerBuild/one-piece-scan-ui/` directory.
+The first capture caught catalog preparation; settled captures use the helper's
+new optional `UI_CAPTURE_DELAY_SECONDS=12` and preserve existing simulator data.
+
+HIG gate **Verdict: PASS for the scoped phone fixture changes**.
+
+| Category | Result | Evidence |
+| --- | --- | --- |
+| Platform patterns | PASS | Existing scanner overlay and native Details sheet retained |
+| Clarity | PASS | Single primary choice, subordinate set subtitle, readable options |
+| Typography | PASS | Semantic fonts, full set wrapping, accessibility3 capture |
+| Accessibility baseline | PASS | 44-point skip/Details targets, minimum 48-point choices, spoken action labels |
+| Interaction cost | PASS | No sole-option prompt; one tap selects when a distinction remains |
+| App Review design | PASS | Unavailable artwork choices remain disabled with a visible explanation |
+
+Top issues addressed: sole-option confirmation, competing title/set hierarchy,
+oversized pill actions. Minimal fixes are confined to the One Piece lookup,
+persisted-choice compatibility and printing-picker presentation. Actual phone
+camera, loaded real artwork, VoiceOver and tablet acceptance remain separate
+from these simulator fixture checks.
+
+The dated 2026-10-04 evidence below describes the prior layout.
+
 **Status:** compact fixture layout/interaction verified; real-corpus/device acceptance open — 2026-10-04, uncommitted
 `one-piece-integration` worktree at base `69c714f`.
 This is a fixture rendering/interaction checklist, not real-corpus, device or

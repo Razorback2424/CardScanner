@@ -1,3 +1,53 @@
+- One Piece normal-app correction (2026-10-05): owner rejected the renamed app
+  and isolated review collection. Built and installed the original
+  TradingCardScanner identity/name with normal collection paths and a verified
+  owner-local signed catalog enabling One Piece alongside Pokémon and Magic.
+  Only the verified public pin is retained for subsequent ordinary local builds.
+  The catalog copy and in-place installation succeeded without uninstall/export.
+  Focused owner-catalog/storage selection executed 32 tests with zero failures
+  and one expected simulator data-protection skip. Collection contents and camera
+  behavior await phone confirmation. This supersedes the review-storage flow below.
+
+- One Piece existing-app review update (2026-10-05; superseded): owner declined backup/app
+  removal and explicitly requested reuse of the working scanner app. Added a
+  signed debug-only opt-in for Home Screen review under the existing app identity,
+  still using the separate OnePieceLocalReview storage root. The kit tool supports
+  `--reuse-existing-app`; ordinary builds without the opt-in remain unchanged.
+  Device build passed and two focused simulator tests passed. In-place install
+  and signed catalog copy succeeded without uninstall/export. Remote launch was
+  denied because the phone is locked; owner unlock/open and first physical scan
+  remain pending. No production or shared-collection acceptance is claimed.
+
+- One Piece physical-review preparation (2026-10-05; local changes): prepared a
+  fresh full-corpus ephemeral signed kit and a separately identified “One Piece
+  Review” DebugRemoteLocal app. Home Screen activation is restricted to the
+  separate debug/local-only bundle and explicit public review pin; the kit tool
+  now emits its review Info.plist. Device build passed with separate identity and
+  no iCloud entitlements; two focused simulator tests passed. iPhone installation
+  failed because its free developer-profile app slots are occupied. No existing
+  app was replaced/deleted. Backup of the older scanner container was blocked by
+  automatic approval review pending explicit export authorization; no backup
+  ran. `docs/plans/one_piece_device_review.md` records the first-card checklist.
+
+- One Piece v1 preparation (2026-10-05; uncommitted changes based on `534127f`,
+  matching cached and live remote `main`): recorded owner approvals for private
+  installs, English/verified/text-only scope and source roles in
+  `docs/plans/one_piece_release_acceptance.md`. Moved seed preparation off the
+  main actor, made recovery reload explicit and blocked during scanner work,
+  retained authorities on no-change retries, and added the default-off production
+  collection-write flag (remote-authority only). Added One Piece hosting cache
+  rules and signed immutable namespace restoration, preserving existing publisher
+  callers. Prepared deterministic printing/price/device samples and corrected
+  local review pricing and CSV documentation. App build and 59 One Piece tests
+  passed; final broader selection executed 159, zero failures and one expected
+  simulator data-protection skip. Core suite 40 passed plus enhanced CLI case;
+  seven focused Python tests and cache/link/diff checks passed.
+  Rendered recovery QA preserved the Collection tab on no-op Retry and disabled
+  Retry during Scan, restoring it after leaving Scan. This is simulator UI evidence.
+  MCP's later export hit internal disk space; preserved this task's two bundles on the external SSD
+  and reran directly there. No commits/push, production keys/publication, physical
+  acceptance, CloudKit or archive evidence. Signing-key storage choice is pending.
+
 - One Piece remaining-audit cleanup (2026-10-05; local changes on
   `merge/one-piece-integration@55dc1e4`, verified equal to freshly fetched
   `origin/main` before editing): removed three accidentally committed
@@ -1658,3 +1708,16 @@ historical.
   profiling/device/native acceptance and confirmed legal/support placeholders.
   No commit, deployment, speed improvement, or release certification is claimed.
   See the [implementation and evidence record](docs/plans/october-production-refinement-review-plan.md).
+
+- One Piece scanner choice/UI correction (2026-10-05; `534127f` plus local
+  changes): one available verified printing now resolves automatically, matching
+  Pokémon/Magic's choice rule; multiple printings and supported finishes still
+  ask. The bundled Shiki OP17-047 saves without either picker. Persisted singleton
+  choices remain valid only after exact adapter revalidation. The remaining
+  picker uses a smaller headline, stacked set subtitle, compact rounded actions,
+  and two columns from three choices. Two passing simulator runs cover 118
+  distinct cases (97 plus 56 overlapping); phone captures verify long titles,
+  accessibility3, 61 choices and unavailable artwork. Native fixture checks
+  verify Details without selection, choice 2/61 and skip. The screenshot helper
+  accepts an optional capture delay for catalog preparation. Logs/captures remain
+  on the external drive; no physical-device or release acceptance is claimed.
