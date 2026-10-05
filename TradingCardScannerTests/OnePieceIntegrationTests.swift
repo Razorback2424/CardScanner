@@ -22,12 +22,13 @@ private actor OnePieceSnapshotTestSource: GameCatalogActivationSource {
     nonisolated let game = CardGame.onePiece
     private var snapshot: GameCatalogSnapshot?
     private var continuations: [AsyncStream<GameCatalogSnapshot>.Continuation] = []
+    private(set) var snapshotReads = 0
     init(_ snapshot: GameCatalogSnapshot?) { self.snapshot = snapshot }
     func update(_ snapshot: GameCatalogSnapshot) {
         self.snapshot = snapshot
         for continuation in continuations { continuation.yield(snapshot) }
     }
-    func currentSnapshot() async -> GameCatalogSnapshot? { snapshot }
+    func currentSnapshot() async -> GameCatalogSnapshot? { snapshotReads += 1; return snapshot }
     func activationSnapshots() async -> AsyncStream<GameCatalogSnapshot> {
         let (stream, continuation) = AsyncStream.makeStream(of: GameCatalogSnapshot.self)
         continuations.append(continuation)
@@ -84,13 +85,107 @@ private actor OnePiecePriceRequestGate {
 final class OnePieceIntegrationTests: XCTestCase {
     private let date = "2026-10-03T00:00:00Z"
 
+#if DEBUG && LOCAL_ONLY_SIGNING
+    func testShikiScanSavesWithoutPrintingOrFinishPicker() async throws {
+        let suite = "OnePieceShikiTests-\(UUID())"
+        let preferences = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { preferences.removePersistentDomain(forName: suite) }
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime(preferences: preferences))
+        let registry = try XCTUnwrap((runtime.catalog as? OnePieceCatalogAdapter)?.registry)
+        let (model, container) = try model(registry: registry, fixtureWritesEnabled: true)
+        defer { model.viewDisappeared() }
+        guard case let .identified(subject) = OnePieceScanProfile(registry: registry).identify([.init(text: "OP17-047")]) else {
+            return XCTFail("Shiki's printed number should be recognized")
+        }
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+        let saved = await waitUntil { model.successCount == 1 }
+        XCTAssertTrue(saved)
+        XCTAssertNil(model.pendingIdentityChoice)
+        XCTAssertNil(model.pendingChoice)
+        let owned = try XCTUnwrap(container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(owned.name, "Shiki")
+        XCTAssertEqual(owned.cardNumber, "OP17-047")
+        XCTAssertEqual(owned.quantity, 1)
+        XCTAssertEqual(owned.variantResolution, .uniqueInCatalog)
+    }
+
+    func testOrdinaryAppBundleEnablesOnePieceWithoutSavedOwnerSettings() throws {
+        let suite = "OnePieceFreshInstallTests-\(UUID())"
+        let preferences = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { preferences.removePersistentDomain(forName: suite) }
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime(preferences: preferences))
+        XCTAssertTrue(runtime.descriptor.capabilities.contains(.scan))
+        XCTAssertTrue(runtime.descriptor.capabilities.contains(.collectionWrite))
+        XCTAssertNotNil(runtime.recognizer)
+        XCTAssertFalse(runtime.variantPolicy.lockOptions.isEmpty)
+        XCTAssertFalse(preferences.bool(forKey: "onePieceOwnerCatalogEnabled"))
+        XCTAssertFalse(OnePieceCatalogBootstrap.isLocalReviewLaunch)
+        let defaults = CardGameRuntimeContainer.appDefaults()
+        XCTAssertTrue(defaults.registry.supports(.onePiece, .scan))
+        XCTAssertTrue(defaults.registry.supports(.onePiece, .collectionWrite))
+        XCTAssertTrue(defaults.registry.variantLockMenu.contains { $0.game == .onePiece && !$0.options.isEmpty })
+    }
+
+    func testOwnerCatalogUsesNormalStorageAndRetainsVerifiedAuthorityForOrdinaryBuilds() throws {
+        let registry = try registry(), key = Curve25519.Signing.PrivateKey()
+        let envelope = try OnePieceCatalogSignature.sign(registry.verifiedRelease.release,
+            keyID: "one-piece-local-review", privateKey: key)
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceOwner-\(UUID())")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        func bundle(_ name: String, owner: Bool) throws -> Bundle {
+            let path = root.appendingPathComponent(name + ".bundle")
+            try FileManager.default.createDirectory(at: path, withIntermediateDirectories: true)
+            var info: [String: Any] = ["CFBundleIdentifier": "com.seankeller.CardScanner", "CFBundleName": name]
+            if owner {
+                info["ONE_PIECE_OWNER_CATALOG_ENABLED"] = true
+                info["ONE_PIECE_OWNER_CATALOG_PUBLIC_KEY"] = key.publicKey.rawRepresentation.base64EncodedString()
+            }
+            try PropertyListSerialization.data(fromPropertyList: info, format: .xml, options: 0)
+                .write(to: path.appendingPathComponent("Info.plist"))
+            return try XCTUnwrap(Bundle(url: path))
+        }
+        let suite = "OnePieceOwnerTests-\(UUID())"
+        let preferences = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { preferences.removePersistentDomain(forName: suite) }
+        let seed = root.appendingPathComponent("seed.json")
+        let owner = try bundle("Owner", owner: true), ordinary = try bundle("Ordinary", owner: false)
+        XCTAssertNil(try OnePieceCatalogBootstrap.ownerRuntime(bundle: ordinary, seedURL: seed, preferences: preferences, now: now))
+        try Data("invalid".utf8).write(to: seed)
+        XCTAssertThrowsError(try OnePieceCatalogBootstrap.ownerRuntime(bundle: owner, seedURL: seed, preferences: preferences, now: now))
+        XCTAssertFalse(preferences.bool(forKey: "onePieceOwnerCatalogEnabled"))
+        try JSONEncoder().encode(envelope).write(to: seed)
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime(bundle: owner, seedURL: seed, preferences: preferences, now: now))
+        XCTAssertTrue(runtime.descriptor.capabilities.contains(.collectionWrite))
+        let retained = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime(bundle: ordinary, seedURL: seed, preferences: preferences, now: now))
+        XCTAssertEqual(retained.catalog?.generation, runtime.catalog?.generation)
+        XCTAssertFalse(OnePieceCatalogBootstrap.isLocalReviewLaunch)
+    }
+
+    func testHomeScreenReviewLaunchRequiresSeparateBundleAndExplicitPublicKey() {
+        let original = ["app"]
+        XCTAssertEqual(OnePieceCatalogBootstrap.localReviewLaunchArguments(arguments: original,
+            bundleIdentifier: "com.seankeller.CardScanner", publicKey: "key"), original)
+        XCTAssertEqual(OnePieceCatalogBootstrap.localReviewLaunchArguments(arguments: original,
+            bundleIdentifier: "com.seankeller.CardScanner.OnePieceReview", publicKey: nil), original)
+        let automatic = OnePieceCatalogBootstrap.localReviewLaunchArguments(arguments: original,
+            bundleIdentifier: "com.seankeller.CardScanner.OnePieceReview", publicKey: "key")
+        XCTAssertTrue(automatic.contains("Documents/one-piece-local-review.json"))
+        XCTAssertEqual(automatic.last, "key")
+        XCTAssertEqual(OnePieceCatalogBootstrap.localReviewLaunchArguments(arguments: automatic,
+            bundleIdentifier: "com.seankeller.CardScanner.OnePieceReview", publicKey: "other"), automatic)
+        XCTAssertEqual(OnePieceCatalogBootstrap.localReviewLaunchArguments(arguments: original,
+            bundleIdentifier: "com.seankeller.CardScanner", publicKey: "key", reviewEnabled: true), automatic)
+        XCTAssertEqual(OnePieceCatalogBootstrap.localReviewLaunchArguments(arguments: original,
+            bundleIdentifier: "com.seankeller.CardScanner", publicKey: nil, reviewEnabled: true), original)
+        XCTAssertEqual(OnePieceCatalogBootstrap.localReviewLaunchArguments(arguments: original,
+            bundleIdentifier: "unrelated.app", publicKey: "key", reviewEnabled: true), original)
+    }
+#endif
+
     func testDisabledBootstrapDoesNotRequireSeedOrRegisterOnePiece() throws {
         let config = try OnePieceCatalogBootstrapConfiguration(mode: .disabled, pinnedKeys: nil, baseURL: nil)
         XCTAssertNil(try OnePieceCatalogBootstrap.runtime(configuration: config, seed: Data("invalid".utf8)))
-        let defaults = CardGameRuntimeContainer.appDefaults()
-        XCTAssertNil(defaults.runtime(for: .onePiece))
-        XCTAssertEqual(defaults.registry.enabledGames, [.pokemon, .magic])
-        XCTAssertTrue(defaults.unavailableGames.isEmpty, "Disabled rollout is not a catalog failure")
     }
 
     func testBootstrapRequiresDedicatedKeysSafeOriginAndVerifiedSeed() throws {
@@ -121,13 +216,18 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertTrue(runtime.descriptor.capabilities.contains(.browse))
         XCTAssertFalse(runtime.descriptor.capabilities.contains(.collectionWrite))
         XCTAssertNotNil(runtime.pricing)
+        let writable = try OnePieceCatalogBootstrapConfiguration(mode: .remoteAuthority, pinnedKeys: pin,
+            baseURL: origin, collectionWrites: true)
+        let writableRuntime = try XCTUnwrap(OnePieceCatalogBootstrap.runtime(configuration: writable,
+            seed: JSONEncoder().encode(envelope), root: root, now: now))
+        XCTAssertTrue(writableRuntime.descriptor.capabilities.contains(.collectionWrite))
     }
 
     func testValidationOnlyBootstrapKeepsGameHiddenAndWritesDisabled() throws {
         let registry = try registry(), key = Curve25519.Signing.PrivateKey(), keyID = "one-piece-bootstrap-fixture"
         let config = try OnePieceCatalogBootstrapConfiguration(mode: .remoteValidationOnly,
             pinnedKeys: "\(keyID):\(key.publicKey.rawRepresentation.base64EncodedString())",
-            baseURL: "https://catalog.scan-stash.com")
+            baseURL: "https://catalog.scan-stash.com", collectionWrites: true)
         let envelope = try OnePieceCatalogSignature.sign(registry.verifiedRelease.release, keyID: keyID, privateKey: key)
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceValidationBootstrap-\(UUID())")
         defer { try? FileManager.default.removeItem(at: root) }
@@ -140,6 +240,30 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertNotNil(runtime.activationSource)
     }
     private var now: Date { ISO8601DateFormatter().date(from: date)! }
+
+    func testNoChangeRecoveryRetainsExistingActivationSource() async throws {
+        let registry = try registry()
+        let (_, storage) = try model(registry: registry)
+        let base = OnePieceGameRuntime(registry: registry).runtime
+        let source = OnePieceSnapshotTestSource(.init(revision: 1, catalog: base.catalog!,
+            recognizer: base.recognizer!, variantPolicy: base.variantPolicy, priceAuthority: base.priceAuthority))
+        let runtime = CardGameRuntime(descriptor: base.descriptor, variantPolicy: base.variantPolicy,
+            catalog: base.catalog, activationSource: source, requiresLaunchActivation: false)
+        let raw = try CardGameRuntimeContainer(runtimes: [runtime])
+        let bound = try await raw.bound(to: storage)
+        let initialReads = await source.snapshotReads
+        let rebound = try await raw.bound(to: storage, recovering: bound)
+        let finalReads = await source.snapshotReads
+        XCTAssertEqual(initialReads, finalReads, "No-op retry must not rebind existing authorities")
+        XCTAssertEqual(bound.runtime(for: .onePiece)?.catalog?.generation, rebound.runtime(for: .onePiece)?.catalog?.generation)
+        XCTAssertEqual(bound.registry.games(supporting: .collectionWrite), rebound.registry.games(supporting: .collectionWrite))
+        let scanner = rebound.makeScannerModel()
+        XCTAssertTrue(scanner.canReloadCatalogs)
+        scanner.setIdentificationInFlightForTesting(true)
+        XCTAssertFalse(scanner.canReloadCatalogs)
+        scanner.setIdentificationInFlightForTesting(false)
+        XCTAssertTrue(scanner.canReloadCatalogs)
+    }
 
     func testOptionalCatalogFailureLeavesExistingGamesAvailable() async throws {
         let registry = try registry()
@@ -183,7 +307,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let listener = Task {
             for await _ in recovery {
                 do {
-                    let rebound = try await raw.bound(to: storage)
+                    let rebound = try await raw.bound(to: storage, recovering: omitted)
                     XCTAssertTrue(rebound.unavailableGames.isEmpty)
                     XCTAssertNotNil(rebound.runtime(for: .onePiece)?.pricing)
                     XCTAssertTrue(rebound.registry.supports(.onePiece, .scan))
@@ -285,16 +409,15 @@ final class OnePieceIntegrationTests: XCTestCase {
             trustedKeys: [keyID: key.publicKey], now: ISO8601DateFormatter().date(from: timestamp)!))
     }
 
-    func testReviewedAwardCorpusRequiresChoiceAndKeepsUnverifiedParticipationUnowned() async throws {
+    func testReviewedAwardCorpusResolvesSoleVerifiedPrintingAndKeepsUnverifiedParticipationUnowned() async throws {
         let registry = try reviewedAwardRegistry()
         let adapter = OnePieceCatalogAdapter(registry: registry)
         let profile = OnePieceScanProfile(registry: registry, languageConfirmation: .userConfirmedEnglish)
         guard case let .identified(subject) = profile.identify([.init(text: "P-001")]),
-              case let .needsPrintingChoice(_, candidates) = try await adapter.lookup(subject.identifier) else {
-            return XCTFail("Incomplete award scope still requires explicit physical choice")
+              case let .resolved(selected) = try await adapter.lookup(subject.identifier) else {
+            return XCTFail("A sole verified printing should not require a picker")
         }
-        XCTAssertEqual(candidates.map(\.id), ["348ad90a-43d8-49b5-a384-4d9cc2a1fe27"])
-        let selected = try await adapter.resolve(candidates[0], for: subject.identifier)
+        XCTAssertEqual(selected.card.providerID, "348ad90a-43d8-49b5-a384-4d9cc2a1fe27")
         XCTAssertEqual(selected.card.variantEvidence.catalogVariants.map(\.id), ["foil"])
         XCTAssertThrowsError(try adapter.resolution(forPrintingID:
             UUID(uuidString: "603d83b0-146a-4229-8eaf-b2f884087312")!))
@@ -305,7 +428,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             $0.catalogID.providerID == "event:2022-super-pre-release"
         }), cursor: nil)
         XCTAssertEqual(page.items.count, 1, "Unverified participation cannot become a Browse ownership target")
-        XCTAssertNil(candidates[0].thumbnailURL, "Review asset rights do not authorize app image distribution")
+        XCTAssertNil(selected.card.thumbnailImageURL, "Review asset rights do not authorize app image distribution")
         XCTAssertTrue(registry.verifiedRelease.release.indexes.automaticCandidateIDsByCanonicalID.isEmpty)
         XCTAssertFalse(OnePieceGameRuntime(registry: registry).runtime.descriptor.capabilities.contains(.collectionWrite))
     }
@@ -441,13 +564,9 @@ final class OnePieceIntegrationTests: XCTestCase {
             return XCTFail("Real reviewed printed number should be recognized")
         }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
-        let appeared = await waitUntil { model.pendingIdentityChoice != nil }
-        XCTAssertTrue(appeared)
-        let choice = try XCTUnwrap(model.pendingIdentityChoice)
-        XCTAssertEqual(choice.displayCandidates.map(\.id), ["348ad90a-43d8-49b5-a384-4d9cc2a1fe27"])
-        model.choose(try XCTUnwrap(choice.displayCandidates.first))
         let saved = await waitUntil { model.successCount == 1 }
-        XCTAssertTrue(saved, "The reviewed printing's sole foil finish should save after explicit selection")
+        XCTAssertTrue(saved, "The sole verified printing and sole finish should save automatically")
+        XCTAssertNil(model.pendingIdentityChoice)
         XCTAssertNil(model.pendingChoice)
         model.viewDisappeared()
 
@@ -498,14 +617,10 @@ final class OnePieceIntegrationTests: XCTestCase {
             return XCTFail("Retail Nami number must be recognized")
         }
         model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
-        let presented = await waitUntil { model.pendingIdentityChoice != nil }
-        XCTAssertTrue(presented)
-        let candidate = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first)
-        XCTAssertEqual(candidate.id, nami.id.uuidString.lowercased())
-        XCTAssertEqual(candidate.treatmentLabel, "FILM RED alternate artwork")
-        model.choose(candidate)
         let saved = await waitUntil { model.successCount == 1 }
         XCTAssertTrue(saved)
+        XCTAssertNil(model.pendingIdentityChoice)
+        XCTAssertNil(model.pendingChoice)
         let owned = try XCTUnwrap(container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
         XCTAssertEqual(owned.providerID, nami.id.uuidString.lowercased())
         XCTAssertEqual(owned.variant?.id, "foil")
@@ -552,13 +667,18 @@ final class OnePieceIntegrationTests: XCTestCase {
                 return XCTFail("Standard card number must be recognized")
             }
             model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
-            let presented = await waitUntil { model.pendingIdentityChoice != nil }
-            XCTAssertTrue(presented)
-            let candidate = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first {
-                $0.id == printing.id.uuidString.lowercased()
-            })
-            XCTAssertEqual(candidate.treatmentLabel, "Standard artwork")
-            model.choose(candidate)
+            let resolvedOrChoice = await waitUntil { model.successCount == 1 || model.pendingIdentityChoice != nil }
+            XCTAssertTrue(resolvedOrChoice)
+            let verified = reviewed.printingsByCanonicalID[printing.canonicalCardID]?.filter { $0.status == .verified } ?? []
+            if verified.count > 1 {
+                let candidate = try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first {
+                    $0.id == printing.id.uuidString.lowercased()
+                })
+                XCTAssertEqual(candidate.treatmentLabel, "Standard artwork")
+                model.choose(candidate)
+            } else {
+                XCTAssertNil(model.pendingIdentityChoice)
+            }
             let saved = await waitUntil { model.successCount == 1 }
             XCTAssertTrue(saved)
             let owned = try XCTUnwrap(container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
@@ -1085,15 +1205,12 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(sameGame.identify([.init(text: "OP01-120 P-001")]), .ambiguous)
     }
 
-    func testNumberAloneRequiresExplicitEnglishPrintingChoiceEvenForOnePrinting() async throws {
+    func testSoleVerifiedPrintingResolvesWithoutLanguageConfirmationPicker() async throws {
         let registry = try registry(count: 1)
         let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [OnePieceCatalogAdapter(registry: registry)]))
-        guard case let .needsPrintingChoice(_, candidates) = try await catalog.lookupOutcome(for: identifier(registry)) else {
-            return XCTFail("A number must not prove English language")
+        guard case let .resolved(selected) = try await catalog.lookupOutcome(for: identifier(registry)) else {
+            return XCTFail("A sole verified printing should resolve without an extra tap")
         }
-        XCTAssertEqual(candidates.count, 1)
-        XCTAssertTrue(candidates[0].choiceLabel.hasPrefix("English"))
-        let selected = try await catalog.resolvePrintingChoice(candidates[0], for: identifier(registry))
         XCTAssertEqual(selected.card.language, "en")
         XCTAssertEqual(selected.card.providerID, uuid(1).uuidString.lowercased())
         XCTAssertEqual(selected.retrievedAt, now)
@@ -1102,13 +1219,13 @@ final class OnePieceIntegrationTests: XCTestCase {
         }
     }
 
-    func testIncompleteAndConflictedScopeCannotManufactureUniqueResolution() async throws {
+    func testSoleVerifiedPrintingResolvesInIncompleteScopeWithoutSelectingConflictedRecords() async throws {
         for registry in [try registry(count: 1, complete: false), try registry(secondStatus: .conflicted)] {
             let adapter = OnePieceCatalogAdapter(registry: registry)
-            guard case let .needsPrintingChoice(_, candidates) = try await adapter.lookup(identifier(registry, confirmedEnglish: true)) else {
-                return XCTFail("Uncertain scope must not auto-select")
+            guard case let .resolved(selected) = try await adapter.lookup(identifier(registry, confirmedEnglish: true)) else {
+                return XCTFail("Only available verified printings participate in the choice")
             }
-            XCTAssertEqual(candidates.count, 1)
+            XCTAssertEqual(selected.card.providerID, uuid(1).uuidString.lowercased())
         }
         let registry = try registry()
         let unknownPrintingNumber = try ScanIdentifier(game: .onePiece, namespace: "numbered-card",
@@ -1118,6 +1235,27 @@ final class OnePieceIntegrationTests: XCTestCase {
             return XCTFail("Known canonical without physical records remains incomplete")
         }
         XCTAssertEqual(canonical?.printedIdentifier, "P-001")
+    }
+
+    func testPersistedSingletonChoiceStillRevalidatesAgainstCurrentResolvedPrinting() async throws {
+        let registry = try registry(count: 1)
+        let adapter = OnePieceCatalogAdapter(registry: registry)
+        let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [adapter]))
+        let scan = try identifier(registry)
+        let candidate = PhysicalPrintingCandidate(id: uuid(1).uuidString.lowercased(), game: .onePiece,
+            canonicalCardID: "one-piece:en:OP01-120", language: "en", catalogGeneration: registry.generation,
+            name: "Fixture Shanks", printedIdentifier: "OP01-120",
+            releaseLabel: "English · Fixture release 0", distributionLabel: "",
+            thumbnailURL: URL(string: "https://fixture.invalid/art.png"),
+            artworkID: uuid(900).uuidString.lowercased(), distinctionLabels: [])
+        let selected = try await catalog.resolvePrintingChoice(candidate, for: scan)
+        XCTAssertEqual(selected.card.providerID, candidate.id)
+        var payload = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(candidate)) as? [String: Any])
+        payload["artworkID"] = uuid(901).uuidString.lowercased()
+        let tampered = try JSONDecoder().decode(PhysicalPrintingCandidate.self,
+            from: JSONSerialization.data(withJSONObject: payload))
+        do { _ = try await catalog.resolvePrintingChoice(tampered, for: scan); XCTFail("Stored choices must retain validated evidence") }
+        catch CatalogLookupError.invalidPrintingChoice {}
     }
 
     func testPrintingChoiceExposesReviewedFooterAndRegionWithoutOpaqueLabels() async throws {
@@ -1829,14 +1967,12 @@ final class OnePieceIntegrationTests: XCTestCase {
         let loaded = await waitUntil { model.unresolvedScans.contains { $0.id == row.id && !$0.isReadOnly } }
         XCTAssertTrue(loaded)
         model.resolveUnresolved(id: row.id, choice: .retryLookup)
-        let presented = await waitUntil { model.pendingIdentityChoice != nil }
-        XCTAssertTrue(presented)
-        let choice = try XCTUnwrap(model.pendingIdentityChoice)
-        XCTAssertEqual(choice.identifier.catalogGeneration, second.generation)
-        XCTAssertEqual(choice.displayCandidates.map(\.id), [uuid(99).uuidString.lowercased()])
-        model.choose(try XCTUnwrap(choice.displayCandidates.first))
         let committed = await waitUntil { model.successCount == 1 && model.unresolvedScans.isEmpty }
         XCTAssertTrue(committed)
+        XCTAssertNil(model.pendingIdentityChoice)
+        XCTAssertNil(model.pendingChoice)
+        XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first?.providerID,
+                       uuid(99).uuidString.lowercased())
         XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first?.cardNumber, number)
     }
 
@@ -1870,6 +2006,25 @@ final class OnePieceIntegrationTests: XCTestCase {
             try? await Task.sleep(for: .milliseconds(10))
         }
         return predicate()
+    }
+
+    func testSolePrintingStillAsksForMultipleFinishes() async throws {
+        let registry = try registry(count: 1)
+        let (model, container) = try model(registry: registry, fixtureWritesEnabled: true)
+        defer { model.viewDisappeared() }
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), .init(identifier: try identifier(registry)), nil)
+        let appeared = await waitUntil { model.pendingChoice != nil }
+        XCTAssertTrue(appeared)
+        XCTAssertNil(model.pendingIdentityChoice)
+        XCTAssertEqual(model.pendingChoice?.options.map(\.id), ["normal", "foil"])
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        model.choose(.foil)
+        let saved = await waitUntil { model.successCount == 1 }
+        XCTAssertTrue(saved)
+        let owned = try XCTUnwrap(container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(owned.providerID, uuid(1).uuidString.lowercased())
+        XCTAssertEqual(owned.variantID, "foil")
+        XCTAssertEqual(owned.variantResolution, .userConfirmed)
     }
 
     func testOnePieceScanningChoiceFinishAndDifferentPhysicalCopiesStayIndependent() async throws {

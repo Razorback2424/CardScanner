@@ -133,12 +133,19 @@ struct CardGameRuntimeContainer: Sendable {
     /// Bind once per authoritative storage session, before constructing consumers.
     @MainActor
     func bound(to container: ModelContainer,
+               recovering previous: Self? = nil,
                isCurrent: @escaping @MainActor @Sendable () -> Bool = { true }) async throws -> Self {
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
-        configureCollectionAuthority(for: container, configurePricing: false)
+        if previous == nil { configureCollectionAuthority(for: container, configurePricing: false) }
         var modules: [CardGameRuntime] = []
         var unavailable = unavailableGames
         for runtime in runtimes.values {
+            // Existing consumers retain their authorities on a retry. Only an
+            // omitted module needs activation and storage binding again.
+            if let existing = previous?.runtime(for: runtime.descriptor.game) {
+                modules.append(existing)
+                continue
+            }
             let source = runtime.activationSource.map { CollectionAuthorizedActivationSource(source: $0, container: container, isCurrent: isCurrent) }
             do {
                 if let source {
@@ -163,6 +170,9 @@ struct CardGameRuntimeContainer: Sendable {
         }
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
         let bound = try Self(runtimes: modules, unavailableGames: unavailable)
+        if let previous, previous.registry.games(supporting: []) == bound.registry.games(supporting: []) {
+            return previous
+        }
         bound.configureCollectionAuthority(for: container)
         return bound
     }
@@ -263,6 +273,10 @@ struct CardGameRuntimeContainer: Sendable {
     }
 
     /// Compile-time registration occurs once for the app session.
+    static func preparedAppDefaults() async -> Self {
+        await Task.detached(priority: .userInitiated) { appDefaults() }.value
+    }
+
     static func appDefaults() -> Self {
         var modules = [PokemonGameRuntime().runtime, MagicGameRuntime().runtime]
         var unavailable: [CardGameDescriptor] = []
@@ -276,6 +290,10 @@ struct CardGameRuntimeContainer: Sendable {
 #endif
         do {
 #if DEBUG && LOCAL_ONLY_SIGNING
+            if let module = try OnePieceCatalogBootstrap.ownerRuntime() {
+                modules.append(module)
+                return try! Self(runtimes: modules)
+            }
             if OnePieceCatalogBootstrap.isLocalReviewLaunch {
                 if let module = try OnePieceCatalogBootstrap.localReviewRuntime() { modules.append(module) }
                 return try! Self(runtimes: modules)

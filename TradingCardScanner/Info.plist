@@ -42,6 +42,8 @@
 	<string>$(ONE_PIECE_CATALOG_ROLLOUT_MODE)</string>
 	<key>ONE_PIECE_CATALOG_PINNED_KEYS</key>
 	<string>$(ONE_PIECE_CATALOG_PINNED_KEYS)</string>
+	<key>ONE_PIECE_COLLECTION_WRITES</key>
+	<string>$(ONE_PIECE_COLLECTION_WRITES)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

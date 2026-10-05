@@ -1,16 +1,19 @@
 import CryptoKit
 import Foundation
 import OnePieceCatalogCore
+import OSLog
 
 struct OnePieceCatalogBootstrapConfiguration: Sendable {
     enum ConfigurationError: Error { case missingKeys, invalidKeys, reusedKey, invalidOrigin, missingSeed }
     let mode: OnePieceCatalogRolloutMode
     let keys: [String: Curve25519.Signing.PublicKey]
     let endpoint: URL?
+    let collectionWrites: Bool
 
     init(mode: OnePieceCatalogRolloutMode, pinnedKeys: String?, baseURL: String?,
-         forbiddenPublicKeys: Set<Data> = []) throws {
+         forbiddenPublicKeys: Set<Data> = [], collectionWrites: Bool = false) throws {
         self.mode = mode
+        self.collectionWrites = mode == .remoteAuthority && collectionWrites
         guard mode != .disabled else { keys = [:]; endpoint = nil; return }
         guard let pinnedKeys, !pinnedKeys.isEmpty else { throw ConfigurationError.missingKeys }
         var keys: [String: Curve25519.Signing.PublicKey] = [:]
@@ -41,7 +44,8 @@ struct OnePieceCatalogBootstrapConfiguration: Sendable {
         }
         return try .init(mode: mode, pinnedKeys: bundle.object(forInfoDictionaryKey: "ONE_PIECE_CATALOG_PINNED_KEYS") as? String,
             baseURL: bundle.object(forInfoDictionaryKey: "ONE_PIECE_CATALOG_BASE_URL") as? String,
-            forbiddenPublicKeys: Set(legacyKeys))
+            forbiddenPublicKeys: Set(legacyKeys),
+            collectionWrites: (bundle.object(forInfoDictionaryKey: "ONE_PIECE_COLLECTION_WRITES") as? String)?.lowercased() == "yes")
     }
 
     private static func keyBytes(_ value: String) -> Data? {
@@ -56,15 +60,70 @@ enum OnePieceCatalogBootstrap {
     /// entitlement. They use a separate persistent store and never fetch updates.
     static var isLocalReviewLaunch: Bool {
 #if DEBUG && LOCAL_ONLY_SIGNING
-        ProcessInfo.processInfo.arguments.contains("-one_piece_local_review")
+        localReviewLaunchArguments(arguments: ProcessInfo.processInfo.arguments,
+            bundleIdentifier: Bundle.main.bundleIdentifier,
+            publicKey: Bundle.main.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_PUBLIC_KEY") as? String,
+            reviewEnabled: Bundle.main.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_ENABLED") as? Bool == true)
+            .contains("-one_piece_local_review")
 #else
         false
 #endif
     }
 
 #if DEBUG && LOCAL_ONLY_SIGNING
+    /// The owner's installed app can use a signed local catalog with its normal
+    /// collection. This does not select the isolated review storage paths.
+    static func ownerRuntime(bundle: Bundle = .main, seedURL: URL? = nil, preferences: UserDefaults = .standard,
+                             now: Date = .now) throws -> CardGameRuntime? {
+        guard bundle.bundleIdentifier == "com.seankeller.CardScanner" else { return nil }
+        // Ordinary Xcode installs must work on their first launch, without a
+        // previous custom install, Documents copy, or saved bootstrap preference.
+        if seedURL == nil,
+           let bundledSeed = bundle.url(forResource: "one-piece-owner-catalog", withExtension: "json", subdirectory: "OnePieceOwnerCatalog"),
+           let pinsURL = bundle.url(forResource: "public-keys", withExtension: "json", subdirectory: "OnePieceOwnerCatalog") {
+            let pins = try JSONDecoder().decode([String: String].self, from: Data(contentsOf: pinsURL))
+            guard let pin = pins["one-piece-local-review"] else {
+                throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingKeys
+            }
+            return try localReviewRuntime(arguments: ["-one_piece_local_review", "-one_piece_review_seed", bundledSeed.path,
+                                                      "-one_piece_review_public_key", pin], bundle: bundle, now: now)
+        }
+        let configured = bundle.object(forInfoDictionaryKey: "ONE_PIECE_OWNER_CATALOG_ENABLED") as? Bool == true
+        guard configured || preferences.bool(forKey: "onePieceOwnerCatalogEnabled") else { return nil }
+        let publicKey = configured
+            ? bundle.object(forInfoDictionaryKey: "ONE_PIECE_OWNER_CATALOG_PUBLIC_KEY") as? String
+            : preferences.string(forKey: "onePieceOwnerCatalogPublicKey")
+        guard let publicKey,
+              !publicKey.isEmpty else { throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingKeys }
+        let url = seedURL ?? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("one-piece-owner-catalog.json")
+        let runtime = try localReviewRuntime(arguments: ["-one_piece_local_review", "-one_piece_review_seed", url.path,
+                                                  "-one_piece_review_public_key", publicKey], bundle: bundle, now: now)
+        // Retain only the successfully verified public authority so the owner's
+        // subsequent ordinary app builds keep One Piece without custom flags.
+        preferences.set(publicKey, forKey: "onePieceOwnerCatalogPublicKey")
+        preferences.set(true, forKey: "onePieceOwnerCatalogEnabled")
+        return runtime
+    }
+
+    /// A signed debug review configuration can reopen from the Home Screen.
+    /// Reusing the ordinary app identity requires an explicit review opt-in.
+    static func localReviewLaunchArguments(arguments: [String], bundleIdentifier: String?, publicKey: String?,
+                                          reviewEnabled: Bool = false) -> [String] {
+        guard !arguments.contains("-one_piece_local_review"),
+              bundleIdentifier == "com.seankeller.CardScanner.OnePieceReview"
+                || (bundleIdentifier == "com.seankeller.CardScanner" && reviewEnabled),
+              let publicKey, !publicKey.isEmpty else { return arguments }
+        return arguments + ["-one_piece_local_review", "-one_piece_review_seed", "Documents/one-piece-local-review.json",
+                            "-one_piece_review_public_key", publicKey]
+    }
+
     static func localReviewRuntime(arguments: [String] = ProcessInfo.processInfo.arguments,
+                                   bundle: Bundle = .main,
                                    now: Date = .now) throws -> CardGameRuntime? {
+        let arguments = localReviewLaunchArguments(arguments: arguments, bundleIdentifier: bundle.bundleIdentifier,
+            publicKey: bundle.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_PUBLIC_KEY") as? String,
+            reviewEnabled: bundle.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_ENABLED") as? Bool == true)
         guard arguments.contains("-one_piece_local_review") else { return nil }
         func value(_ flag: String) throws -> String {
             guard let index = arguments.firstIndex(of: flag), arguments.indices.contains(index + 1) else {
@@ -72,7 +131,12 @@ enum OnePieceCatalogBootstrap {
             }
             return arguments[index + 1]
         }
-        let seedURL = URL(fileURLWithPath: try value("-one_piece_review_seed"))
+        let seedPath = try value("-one_piece_review_seed")
+        let seedURL: URL
+        if seedPath == "Documents/one-piece-local-review.json" {
+            seedURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                .appendingPathComponent("one-piece-local-review.json")
+        } else { seedURL = URL(fileURLWithPath: seedPath) }
         let configuration = try OnePieceCatalogBootstrapConfiguration(mode: .remoteAuthority,
             pinnedKeys: "one-piece-local-review:\(try value("-one_piece_review_public_key"))",
             baseURL: "https://scanstash-catalog-prod.web.app")
@@ -93,8 +157,13 @@ enum OnePieceCatalogBootstrap {
         guard let seed, seed.count <= 48 * 1_024 * 1_024 else {
             throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
         }
+        let started = Date()
         let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: seed)
+        let decoded = Date()
         let store = try OnePieceCatalogReleaseStore(root: root, keys: configuration.keys, bundledEnvelope: envelope, now: now)
+        let indexed = Date()
+        Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+            .info("One Piece seed bytes=\(seed.count, privacy: .public) envelope_decode_ms=\(decoded.timeIntervalSince(started) * 1_000, privacy: .public) verify_index_ms=\(indexed.timeIntervalSince(decoded) * 1_000, privacy: .public)")
         guard let registry = store.bundledRegistry else {
             throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingSeed
         }
@@ -103,6 +172,7 @@ enum OnePieceCatalogBootstrap {
         // The store has already verified and indexed this bundled envelope.
         var module = OnePieceGameRuntime(registry: registry, coordinator: coordinator)
         if configuration.mode == .remoteValidationOnly { module.capabilities = [] }
+        if configuration.collectionWrites { module.capabilities.insert(.collectionWrite) }
         return module.runtime
     }
 

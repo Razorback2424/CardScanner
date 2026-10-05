@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */ = {isa = PBXBuildFile; fileRef = F11D00000000000000000091 /* OnePieceOwnerCatalog */; };
 		C3E5AA85BC8B473097553E69 /* CardCenteringPixelKernels.c in Sources */ = {isa = PBXBuildFile; fileRef = E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */; settings = {COMPILER_FLAGS = "-O2 -ffp-contract=off"; }; };
 		A0010070 /* CollectionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010070 /* CollectionActivity.swift */; };
 		A0010071 /* CollectionActivityLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010071 /* CollectionActivityLogView.swift */; };
@@ -310,6 +311,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F11D00000000000000000091 /* OnePieceOwnerCatalog */ = {isa = PBXFileReference; lastKnownFileType = folder; path = OnePieceOwnerCatalog; sourceTree = "<group>"; };
 		E5288EF6040F4AFFB5EC0161 /* CardCenteringPixelKernels.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = CardCenteringPixelKernels.c; sourceTree = "<group>"; };
 		86E86CDA24A14713B91EEEB7 /* CardCenteringPixelKernels.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CardCenteringPixelKernels.h; sourceTree = "<group>"; };
 		B0010070 /* CollectionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivity.swift; sourceTree = "<group>"; };
@@ -670,6 +672,7 @@
 				B00100E1 /* MagicTreatmentSnapshot */,
 				B00100E4 /* MagicTreatmentCatalog */,
 				B0010128 /* MagicCatalogSeed */,
+				F11D00000000000000000091 /* OnePieceOwnerCatalog */,
 			);
 			path = TradingCardScanner;
 			sourceTree = "<group>";
@@ -1131,6 +1134,7 @@
 				A00100C1 /* PokemonChecklistSnapshot in Resources */,
 				A00100E4 /* MagicTreatmentCatalog in Resources */,
 				A0010128 /* MagicCatalogSeed in Resources */,
+				F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

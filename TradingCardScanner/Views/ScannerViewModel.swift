@@ -1549,7 +1549,7 @@ final class ScannerViewModel: ObservableObject {
     /// session UI at a time so an unanswered finish choice cannot be overwritten
     /// by a later card whose request happened to finish first.
     private var identificationQueue: [ScanRequest] = []
-    private var isProcessingIdentification = false
+    @Published private var isProcessingIdentification = false
     private var identificationTask: Task<Void, Never>?
     private var activeIdentificationRequestID: UUID?
     private var activeIdentificationRequest: ScanRequest?
@@ -1587,16 +1587,24 @@ final class ScannerViewModel: ObservableObject {
     /// one at depth one.
     private var activeScannerBulkWriteCoordinator: DerivedStateWriteCoordinator?
     private var scannerBulkWriteActive = false
-    private var isScannerSessionActive = false
+    @Published private var isScannerSessionActive = false
     /// A completion from an ended session must never publish into the next one.
     /// This token remains stable while finalization drains, then changes before
     /// the old projections are cleared.
     private var scannerSessionID = UUID()
-    private var sessionFinalizationTask: Task<Void, Never>?
+    @Published private var sessionFinalizationTask: Task<Void, Never>?
     /// Counts are keyed by session because a timed-out old writer may finish
     /// after a new session has started; one session's defer must not decrement
     /// another session's in-flight count.
-    private var pendingWriteCounts: [UUID: Int] = [:]
+    @Published private var pendingWriteCounts: [UUID: Int] = [:]
+
+    /// A catalog reload replaces consumers; never interrupt recognition,
+    /// printing confirmation or an outstanding collection commit.
+    var canReloadCatalogs: Bool {
+        !isScannerSessionActive && !isProcessingIdentification && sessionFinalizationTask == nil
+            && pendingChoice == nil && pendingPrintRunChoice == nil && pendingIdentityChoice == nil
+            && pendingWriteCounts.values.allSatisfy { $0 == 0 }
+    }
     private static let sessionFinalizationDrainTimeout: TimeInterval = 2
     /// A tab can be revisited while the previous session is waiting for its
     /// last writer operation. Hold the new appearance until that old session

@@ -583,25 +583,20 @@ struct PrintingChoiceBar: View {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(candidates.first?.name ?? "Card")
-                        .font(.title3.bold())
+                        .font(.headline)
                         .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
                         .fixedSize(horizontal: false, vertical: true)
                     Text(choice.identifier.displayIdentifier)
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.white.opacity(0.7))
-                    if dynamicTypeSize.isAccessibilitySize, let sharedRelease {
-                        Text(sharedRelease).font(.subheadline.weight(.semibold))
+                    if let sharedRelease {
+                        Text(sharedRelease)
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.7))
                             .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                if !dynamicTypeSize.isAccessibilitySize, let sharedRelease {
-                    Text(sharedRelease)
-                        .font(.title3.weight(.semibold))
-                        .multilineTextAlignment(.trailing)
-                        .lineLimit(2)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                }
                 Button(action: onDismiss) {
                     Image(systemName: "xmark")
                         .font(.system(size: 13, weight: .bold))
@@ -614,7 +609,7 @@ struct PrintingChoiceBar: View {
             }
 
             HStack {
-                Text("Which printing? · \(candidates.count) choices")
+                Text(candidates.count > 2 ? "Choose a printing · \(candidates.count) options" : "Choose a printing")
                 Spacer()
                 Button("Details") { showingDetails = true }
                     .buttonStyle(.plain)
@@ -624,7 +619,7 @@ struct PrintingChoiceBar: View {
             .font(.caption)
             .foregroundStyle(.white.opacity(0.75))
 
-            if candidates.count <= 3 && !dynamicTypeSize.isAccessibilitySize {
+            if candidates.count <= 2 && !dynamicTypeSize.isAccessibilitySize {
                 HStack(spacing: 10) {
                     ForEach(candidates) { compactButton($0, among: candidates) }
                 }
@@ -666,10 +661,13 @@ struct PrintingChoiceBar: View {
                 .font(.subheadline.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity)
-                .frame(minHeight: 50)
-                .padding(.horizontal, 6)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 12)
+                .frame(minHeight: 48)
+                .background(.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+                .contentShape(RoundedRectangle(cornerRadius: 12))
         }
-        .appGlassOptionButton()
+        .buttonStyle(.plain)
         .foregroundStyle(.white)
         .disabled(candidate.selectionEvidence(among: candidates) != .labels)
         .accessibilityLabel("Select \(candidate.compactChoiceLabel(among: candidates)) for \(candidate.name)")
@@ -792,15 +790,17 @@ struct PrintingChoiceDebugView: View {
         let index = args.firstIndex(of: "-ui_debug_state")
         let state = index.flatMap { args.indices.contains($0 + 1) ? args[$0 + 1] : nil } ?? "many"
         self.state = state
-        let count = ["few", "accessibility", "footer", "missing-artwork"].contains(state) ? 2 : 61
+        let count = ["few", "accessibility", "footer", "missing-artwork", "long-title"].contains(state) ? 2 : 61
+        let printedNumber = state == "long-title" ? "OP17-047" : "P-001"
         let identifier = try! ScanIdentifier(game: .onePiece, namespace: "numbered-card",
-            fields: [.init(key: "number", value: "P-001")], displayIdentifier: "P-001",
-            suppressionIdentity: "number:P-001", catalogGeneration: "ui-fixture")
+            fields: [.init(key: "number", value: printedNumber)], displayIdentifier: printedNumber,
+            suppressionIdentity: "number:\(printedNumber)", catalogGeneration: "ui-fixture")
         let candidates = (1...count).map { number in
             PhysicalPrintingCandidate(id: "fixture-\(number)", game: .onePiece,
-                canonicalCardID: "one-piece:en:P-001", language: "en", catalogGeneration: "ui-fixture",
-                name: "Monkey.D.Luffy", printedIdentifier: "P-001",
-                releaseLabel: count == 2 ? "English · Romance Dawn" : "English · Event \(number)",
+                canonicalCardID: "one-piece:en:\(printedNumber)", language: "en", catalogGeneration: "ui-fixture",
+                name: state == "long-title" ? "Shiki" : "Monkey.D.Luffy", printedIdentifier: printedNumber,
+                releaseLabel: state == "long-title" ? "English · The World's Strongest Warriors"
+                    : (count == 2 ? "English · Romance Dawn" : "English · Event \(number)"),
                 treatmentLabel: state == "footer" || state == "missing-artwork" ? "Standard"
                     : (number.isMultiple(of: 2) ? "Alternate art" : "Original art"),
                 distributionLabel: count == 2 ? nil : (number.isMultiple(of: 3) ? "Winner" : "Participation"),

@@ -188,8 +188,20 @@ actor CardCatalog {
               candidate.game == identifier.game,
               candidate.catalogGeneration == adapter.generation,
               identifier.catalogGeneration == adapter.generation else { throw CatalogLookupError.staleCatalog }
-        guard case let .needsPrintingChoice(canonical, candidates) = try await lookupOutcome(for: identifier),
-              candidates.contains(candidate), canonical.id == candidate.canonicalCardID else {
+        switch try await lookupOutcome(for: identifier) {
+        case let .needsPrintingChoice(canonical, candidates):
+            guard candidates.contains(candidate), canonical.id == candidate.canonicalCardID else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+        case let .resolved(resolution):
+            // A persisted choice from before singleton auto-resolution may
+            // still be answered in recovery. Revalidate it through the adapter
+            // below, and accept only the exact printing now resolved.
+            guard resolution.card.physicalPrintingID == candidate.id,
+                  resolution.card.canonicalCardID == candidate.canonicalCardID else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+        case .catalogIncomplete:
             throw CatalogLookupError.invalidPrintingChoice
         }
         let resolution = try await adapter.resolve(candidate, for: identifier)
