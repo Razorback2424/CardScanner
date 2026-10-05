@@ -4,11 +4,26 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 **Latest plan audit:** 2026-10-05, main checkout on
-`merge/one-piece-integration`, HEAD `6b64abe`. The integration is committed at
-this HEAD; earlier isolated-worktree/uncommitted descriptions below are dated
-history. The pre-existing `TCGdexCard.swift` whitespace edit and untracked
-`undefined/` directory are outside this review. This update changes documentation
-only; no implementation, build or app/package test was performed.
+`merge/one-piece-integration`, initially based on `55dc1e4`, verified equal to
+freshly fetched `origin/main` before edits. The integration, eleven finding fixes,
+and subsequent remaining-audit cleanup are committed; earlier isolated-worktree/
+uncommitted descriptions below are dated history. The cleanup removed the
+accidentally committed `undefined/` source copies, corrected model spacing,
+accepted CSV display names, moved withdrawal reads off the main thread,
+separated requests across withdrawals, and added visible optional-catalog
+recovery without relaunch.
+See the [current review handoff](../audits/one-piece-integration-review-handoff.md).
+
+**Remaining-audit verification:** initial focused iPhone 17 Pro / iOS 26.5 run
+passed 94 tests; the final pricing/cache, runtime, scanner/recovery, activity
+and CSV selection passed 257, zero failures/skips, with `TEST SUCCEEDED`.
+Derived data and the final result/logs are under the external drive's
+`CardScannerBuild/OnePieceAudit-2026-10-05/` directory (`FinalRegression.xcresult`).
+A subsequent layout-only correction passed its final Xcode build and inspected
+`CatalogUnavailable` captures, including Retry and Collection navigation.
+The warning has its own layout space, preserving screen headers and all tabs.
+This is simulator/source evidence; production, device/provider and sync gates
+remain open. The same 37 legacy branches still fail the architecture gate.
 
 The [catalog integration design](one_piece_catalog_integration_plan.md) remains
 the authority for source roles, rights, physical distinctions, and production
@@ -1012,7 +1027,7 @@ certification. Full checkboxes remain open where acceptance is incomplete.
 | Slice | Present in the worktree | Remaining completion evidence/work |
 | --- | --- | --- |
 | A | Open string-backed game identity, single-string Codable, explicit CSV game preservation; live container policy, scoped history/backfill and inventory guards | Audit remaining direct saves; verify mixed-client policy |
-| B | App-scoped runtime, registries, capability enumeration, container-bound activation and Pokémon/Magic catalog extraction | Legacy Browse/import routing, signed legacy runtime activation and temporary bindings/allowances remain; architecture audit fails on eight Browse labels |
+| B | App-scoped runtime, registries, capability enumeration, container-bound activation and Pokémon/Magic catalog extraction | Legacy Browse/import routing, signed legacy runtime activation and temporary bindings/allowances remain; expanded lexical audit reports 37 existing branches across Browse and collection normalization |
 | C | Generic identifiers, generation pinning, recognizer aggregation and suppression; selected cross-game/catalog regressions recorded | Real-card geometry/language and full warranted shared regression acceptance |
 | D | Generic resolved card, compact Pokémon/Magic-style buttons, bounded grid, Details sheet; phone/tablet/large-text, footer, skip, missing-artwork and final-choice fixture evidence | Owner review, loaded artwork/real-corpus distinguishability and device/accessibility acceptance remain open |
 | E | Versioned/opaque recovery, legacy decoding, persisted choices and current-catalog retry after relaunch | Real-corpus/device recovery and remaining encounter/physical-choice acceptance |

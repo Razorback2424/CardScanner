@@ -2,10 +2,11 @@
 
 **Status:** current catalog design; implementation integrated on
 `merge/one-piece-integration`; remaining acceptance and production gates open.
-**Reconciled:** 2026-10-05 against HEAD `6b64abe` in the main checkout. Integration
-is committed; earlier isolated-worktree/uncommitted descriptions are historical.
-This update is documentation-only; no implementation, build or app/package test
-was performed. Production support remains disabled.
+**Reconciled:** 2026-10-05 against the working tree on `55dc1e4`, matching freshly
+fetched `origin/main` before edits. Integration and eleven finding fixes are
+committed; earlier isolated-worktree/uncommitted descriptions are historical.
+The [review handoff](../audits/one-piece-integration-review-handoff.md) records
+the remaining-audit cleanup and verification. Production support remains disabled.
 The original source/design review used `dd2a1e3` and its working tree; subsequent
 code status and delivery priorities live in the
 [implementation ledger](one_piece_code_implementation.md).

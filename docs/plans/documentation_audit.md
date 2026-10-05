@@ -520,10 +520,13 @@ promoted to a measured defect or a release-readiness claim.
 
 ## Re-run rule
 
-Review-fix reconciliation (2026-10-05; uncommitted changes on `6b64abe`): the
+Review-fix reconciliation (2026-10-05; eleven finding fixes committed through
+`55dc1e4`, remaining-audit cleanup local on that HEAD): the
 [One Piece handoff](../audits/one-piece-integration-review-handoff.md) now
-distinguishes the committed integration from subsequent fixes and historical
-transfer evidence. Its old eight-label audit count describes the former regex;
+distinguishes the committed integration, committed fixes, local cleanup, and
+historical transfer evidence. The old statements excluding `undefined/` from
+review were incorrect after `55dc1e4` committed those copies; the cleanup removes
+them and corrects both implementation-plan headers. Its old eight-label audit count describes the former regex;
 the expanded boundary gate reports 37 existing game branches across Browse and
 collection normalization. The broader detection does not complete the deferred
 legacy extraction. Review-fix test evidence is recorded in

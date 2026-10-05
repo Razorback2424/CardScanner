@@ -40,7 +40,8 @@ chronological notes.
 | Legal/support copy | [`legal/privacy-policy.md`](legal/privacy-policy.md), [`legal/support.md`](legal/support.md), and [publication checks](legal/README.md) — Scanstash drafts with owner-confirmed contact; live publication and provider/retention verification remain open. |
 
 Integration review handoff: [One Piece merge-branch change report](audits/one-piece-integration-review-handoff.md)
-records the uncommitted 2026-10-05 transfer, code areas, verification and open work.
+records the committed integration/finding fixes, subsequent local cleanup,
+verification, historical transfer evidence, and open work.
 
 ## Legacy boundary
 

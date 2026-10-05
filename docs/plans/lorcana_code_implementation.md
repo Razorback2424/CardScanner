@@ -2,10 +2,13 @@
 
 **Status:** first research slice implemented; remaining plan reconciled with the
 current shared game adapters — 2026-10-05. Production Lorcana support is disabled.
-**Source review:** `merge/one-piece-integration`, HEAD `6b64abe`, in the main
-checkout. The pre-existing `TCGdexCard.swift` whitespace edit and untracked
-`undefined/` directory are outside this review. This update changes the plan
-only; no implementation, build or simulator test was performed.
+**Source review:** integration at `6b64abe` and subsequent review work through
+`55dc1e4` on `merge/one-piece-integration`. The remaining-audit cleanup removes
+the accidentally tracked `undefined/` adapter copies and corrects the extracted
+model's spacing. These One Piece/runtime follow-ups do not enable Lorcana Browse,
+ownership or pricing; this plan's Lorcana acceptance gates remain unchanged.
+See the [One Piece review handoff](../audits/one-piece-integration-review-handoff.md)
+for cleanup evidence and scope.
 
 The 2026-10-04 first-slice checkpoint recorded 44 focused passing tests, including
 13 Lorcana cases. It belongs to the earlier `one-piece-integration` worktree at
@@ -292,11 +295,12 @@ SSD for future build artifacts when available; this plan update runs no build.
 
 Reviewed the Lorcana module and its 13 test cases, shared runtime/adapter contracts,
 catalog/printing/recovery surfaces, collection-bound activation and the current
-signed store/client. The architecture script was executed and reports the eight
-existing Browse game cases described above. No app tests were rerun and no
-Lorcana feature gate was closed. The One Piece ledger's later selected checkpoints
-cover its own integration; they do not supersede the Lorcana-specific checkpoint
-or establish Lorcana camera/ownership/pricing acceptance.
+signed store/client. The expanded architecture script reports 37 existing game
+branches across Browse and collection normalization; legacy extraction and full
+manual switch review remain open. No Lorcana feature gate was closed. The One
+Piece ledger's later selected checkpoints cover its own integration; they do not
+supersede the Lorcana-specific checkpoint or establish Lorcana
+camera/ownership/pricing acceptance.
 
 ### Historical first-slice simulator checkpoint — 2026-10-04
 

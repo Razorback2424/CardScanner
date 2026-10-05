@@ -1,4 +1,31 @@
-- One Piece integration review fixes (2026-10-05; uncommitted on `6b64abe`):
+- One Piece remaining-audit cleanup (2026-10-05; local changes on
+  `merge/one-piece-integration@55dc1e4`, verified equal to freshly fetched
+  `origin/main` before editing): removed three accidentally committed
+  `undefined/` adapter copies, corrected model spacing and stale scope wording,
+  accepted registered CSV display names while preserving unknown identities,
+  moved fresh withdrawal-watermark reads off the main thread, and separated
+  in-flight requests across withdrawals. Fetch-start timestamps and newer-cache
+  retention prevent an older completion from replacing fresh data; the default
+  cache moves to v2. Optional catalog failures now have a visible Retry action
+  and retain update observers so later verified activation can restore the
+  module without relaunch or weakening collection-write policy. The initial
+  focused simulator selection passed 94/94; final pricing/cache, runtime,
+  scanner/recovery, activity and CSV selection passed 257/257, zero failures or
+  skips, with terminal `TEST SUCCEEDED`. Result:
+  `<external-ssd>/CardScannerBuild/OnePieceAudit-2026-10-05/FinalRegression.xcresult`.
+  The initial MCP test export uses its fixed app-support directory; derived
+  data and the final run's result/logs use the external drive. A subsequent
+  layout-only fix and final build passed; inspected the deterministic
+  `CatalogUnavailable` screenshots on iPhone 17 Pro / iOS 26.5, checked Retry
+  and Collection navigation, and verified headers/tabs remain visible. Local
+  screenshots/checklist are ignored artifacts; prior `ui-latest` captures were
+  preserved. The architecture audit still reports the same 37 existing legacy
+  branches. No commit, push, device/provider/CloudKit or release certification.
+  See the [current handoff](docs/audits/one-piece-integration-review-handoff.md).
+
+- One Piece integration review fixes (historical checkpoint, 2026-10-05;
+  uncommitted on `6b64abe` at verification time, subsequently committed through
+  `55dc1e4`):
   isolate optional launch failures, reuse verified catalog snapshots/seeds,
   restore activity/CSV compatibility, preserve recovery copy state and purchase
   links, rehydrate current Pokémon definitions, batch history-write validation,

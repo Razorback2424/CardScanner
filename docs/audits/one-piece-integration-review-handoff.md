@@ -1,18 +1,48 @@
 # One Piece integration review handoff
 
-**Snapshot:** 2026-10-05; `merge/one-piece-integration`. The integration is
-committed as `6b64abe` on `69c714f`; the review fixes described below are uncommitted.
+**Snapshot:** remaining-audit review began 2026-10-05 on
+`merge/one-piece-integration` at `55dc1e4`, verified equal to freshly fetched
+`origin/main` before edits. The integration is committed as `6b64abe` on
+`69c714f`; the eleven finding fixes are committed in `60b093f`…`55dc1e4`.
+The cleanup recorded below has since been committed separately.
 
 ## Checkout and review scope
 
-Review the committed integration with `git diff 69c714f 6b64abe` (184 files),
-then review `git diff HEAD` and untracked files for the subsequent fixes.
+The reviewed history is `git diff 69c714f 6b64abe` (184 integration files),
+then `git diff 6b64abe 55dc1e4` for the eleven finding fixes. The subsequent
+cleanup is recorded in its own commits after `55dc1e4`.
 The earlier transfer report described an uncommitted source snapshot; that
-branch-state description is historical. Existing documentation changes,
-the `TCGdexCard.swift` whitespace edit, and the untracked `undefined/` folder
-are preserved. The committed `TCGdexCard.swift` change extracted the resolved
-model; it was not solely whitespace. The dangling extraction comment is removed
-by the review fix.
+branch-state description is historical. Commit `55dc1e4` accidentally included
+three inactive price-adapter copies under `undefined/`; this cleanup removes
+those duplicate source files and corrects the stray `TCGdexCard.swift` spacing.
+The earlier committed model extraction and eleven finding fixes remain intact.
+
+## Remaining-audit cleanup — 2026-10-05
+
+Withdrawal-watermark reads use fresh SwiftData contexts on a background task,
+returning only dates to pricing consumers. They continue to observe withdrawals
+made after runtime binding. In-flight price requests include their withdrawal
+watermark in the coalescing key; a post-withdrawal request can fetch while an
+older request is still pending. Fetch timestamps record request start, and an
+older completion cannot overwrite a newer cache observation. The default disk
+cache is versioned to avoid reusing the former completion-time timestamps.
+
+CSV game names accept the registered display names, including “Pokémon”,
+“One Piece”, and “Disney Lorcana”, alongside stable IDs and the existing Magic
+portfolio spelling. Unknown identities remain unchanged and capability-gated.
+
+Configured optional catalogs that fail are recorded separately from disabled
+games. A visible message offers Retry while existing games remain usable.
+Omitted activation sources remain observed; a verified update triggers a fresh
+storage binding and rebuilds consumers when the module returns. Failed retries
+retain the existing services. Configuration failures can also retry bootstrap.
+Recovery keeps the rollout and collection-write restrictions intact.
+
+HIG gate: **PASS** for platform patterns, clarity, typography, accessibility,
+interaction cost, and design risk. The message uses standard text, a labelled
+system symbol, a native button, semantic fonts, and its own vertical layout space. It needs
+no dismissal to continue, adds no modal prompt, and disables Retry during work.
+Rendered simulator evidence is recorded in the implementation ledger.
 
 ## Review fixes
 
@@ -83,10 +113,18 @@ are preserved. Unmapped printings return unavailable.
 `Games/Lorcana/` and `LorcanaIntegrationTests.swift` contain the first research
 slice: footer/print-family recognition and incomplete catalog recovery. It is
 explicitly injected, absent from app defaults, and supplies no owned physical
-resolution, pricing or collection-write capability. The `undefined/` copies of
-pricing files are pre-existing destination files, not runtime registration.
+resolution, pricing or collection-write capability. The accidentally committed
+`undefined/` duplicates are removed by the remaining-audit cleanup.
 
 ## Verification and remaining work
+
+The remaining-audit cleanup passed **94 focused simulator tests**, followed by
+**257 pricing/cache, runtime, scanner/recovery, activity and CSV tests**, zero
+failures/skips. The final result is `FinalRegression.xcresult` under the external
+drive's `CardScannerBuild/OnePieceAudit-2026-10-05/` directory. A subsequent
+layout-only correction passed its Xcode build; final `CatalogUnavailable`
+screenshots and Retry/Collection navigation were inspected. Screenshots remain
+local ignored artifacts. This evidence does not close the external gates below.
 
 The historical source-worktree simulator checkpoint passed **192 tests, zero
 failures/skips**: full One Piece integration, pricing/quote-cache suites,
