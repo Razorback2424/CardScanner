@@ -77,12 +77,14 @@ struct CardGameRuntimeContainer: Sendable {
     }
     private let runtimes: [CardGame: CardGameRuntime]
     let registry: CardGameRegistry
+    /// Configured modules that failed preparation, distinct from disabled games.
+    let unavailableGames: [CardGameDescriptor]
     private let legacyBindings: LegacyCatalogBindings
     private let pricingAdapters: GamePriceAdapterRegistry
     private let catalogAdapters: GameCatalogAdapterRegistry
     private let recognitionAdapters: GameRecognitionRegistry
 
-    init(runtimes: [CardGameRuntime]) throws {
+    init(runtimes: [CardGameRuntime], unavailableGames: [CardGameDescriptor] = []) throws {
         var values: [CardGame: CardGameRuntime] = [:]
         for runtime in runtimes {
             let game = runtime.descriptor.game
@@ -113,6 +115,8 @@ struct CardGameRuntimeContainer: Sendable {
             throw RegistrationError.duplicateLegacyBinding
         }
         self.runtimes = values
+        self.unavailableGames = unavailableGames.filter { values[$0.game] == nil }
+            .sorted { $0.sortOrder < $1.sortOrder }
         self.pricingAdapters = try GamePriceAdapterRegistry(adapters: runtimes.compactMap(\.pricing))
         self.catalogAdapters = try GameCatalogAdapterRegistry(adapters: runtimes.compactMap(\.catalog))
         self.recognitionAdapters = try GameRecognitionRegistry(recognizers: runtimes
@@ -133,6 +137,7 @@ struct CardGameRuntimeContainer: Sendable {
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
         configureCollectionAuthority(for: container, configurePricing: false)
         var modules: [CardGameRuntime] = []
+        var unavailable = unavailableGames
         for runtime in runtimes.values {
             let source = runtime.activationSource.map { CollectionAuthorizedActivationSource(source: $0, container: container, isCurrent: isCurrent) }
             do {
@@ -143,6 +148,7 @@ struct CardGameRuntimeContainer: Sendable {
                 guard isCurrent(), !runtime.requiresLaunchActivation else { throw error }
                 Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
                     .error("Optional catalog activation failed; existing games remain available")
+                unavailable.append(runtime.descriptor)
                 continue
             }
             let pricing: (any GamePriceAdapter)?
@@ -156,9 +162,37 @@ struct CardGameRuntimeContainer: Sendable {
                 legacyCatalogBindings: runtime.legacyCatalogBindings))
         }
         guard isCurrent() else { throw PriceQuoteError.providerUnavailable }
-        let bound = try Self(runtimes: modules)
+        let bound = try Self(runtimes: modules, unavailableGames: unavailable)
         bound.configureCollectionAuthority(for: container)
         return bound
+    }
+
+    /// Keep listening to omitted modules so a later verified release can
+    /// trigger storage binding again without requiring an app relaunch.
+    func optionalCatalogRecoveryEvents(for games: Set<CardGame>) -> AsyncStream<Void> {
+        let sources = runtimes.values.filter {
+            games.contains($0.descriptor.game) && !$0.requiresLaunchActivation
+        }.compactMap(\.activationSource)
+        return AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
+            let task = Task {
+                await withTaskGroup(of: Void.self) { group in
+                    for source in sources {
+                        group.addTask {
+                            let events = await source.activationSnapshots()
+                            // Subscribe before reading to close the launch/update race.
+                            if await source.currentSnapshot() != nil { continuation.yield(()) }
+                            for await _ in events {
+                                guard !Task.isCancelled else { break }
+                                continuation.yield(())
+                            }
+                        }
+                    }
+                    await group.waitForAll()
+                }
+                continuation.finish()
+            }
+            continuation.onTermination = { _ in task.cancel() }
+        }
     }
 
     private var legacyCollectionCorrectionGames: Set<CardGame> {
@@ -231,6 +265,15 @@ struct CardGameRuntimeContainer: Sendable {
     /// Compile-time registration occurs once for the app session.
     static func appDefaults() -> Self {
         var modules = [PokemonGameRuntime().runtime, MagicGameRuntime().runtime]
+        var unavailable: [CardGameDescriptor] = []
+#if DEBUG && LOCAL_ONLY_SIGNING
+        let arguments = ProcessInfo.processInfo.arguments
+        if let route = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(route + 1),
+           arguments[route + 1] == "CatalogUnavailable",
+           let descriptor = CardGameRegistry.standard.descriptor(for: .onePiece) {
+            return try! Self(runtimes: modules, unavailableGames: [descriptor])
+        }
+#endif
         do {
 #if DEBUG && LOCAL_ONLY_SIGNING
             if OnePieceCatalogBootstrap.isLocalReviewLaunch {
@@ -242,8 +285,11 @@ struct CardGameRuntimeContainer: Sendable {
         } catch {
             Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
                 .error("One Piece catalog configuration or seed rejected; existing games remain available")
+            if let descriptor = CardGameRegistry.standard.descriptor(for: .onePiece) {
+                unavailable.append(descriptor)
+            }
         }
-        return try! Self(runtimes: modules)
+        return try! Self(runtimes: modules, unavailableGames: unavailable)
     }
 
     func refreshCatalogsAtLaunch() async {

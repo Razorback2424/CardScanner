@@ -107,11 +107,17 @@ struct ActivatedGamePriceAdapter: GamePriceAdapter {
         return quote
     }
 
-    @MainActor
-    private func minimumFetchedAt(printingID: String, variant: PhysicalVariant?) throws -> Date? {
+    private func minimumFetchedAt(printingID: String, variant: PhysicalVariant?) async throws -> Date? {
         let key = PriceRecord.key(game: game, printingID: printingID, variantID: variant?.id)
-        let context = ModelContext(container)
-        let records = try context.fetch(FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key }))
-        return records.compactMap(\.invalidatedAt).max()
+        // A fresh context observes withdrawals made after binding. Only the
+        // scalar watermark crosses executors; collection refresh never fetches
+        // SwiftData models on the UI thread for each quote.
+        let value = try await Task.detached(priority: .utility) { [container] in
+            let context = ModelContext(container)
+            let records = try context.fetch(FetchDescriptor<PriceRecord>(predicate: #Predicate { $0.key == key }))
+            return records.compactMap(\.invalidatedAt).max()
+        }.value
+        try Task.checkCancellation()
+        return value
     }
 }

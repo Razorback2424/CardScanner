@@ -28,14 +28,18 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
     }
     private let session: URLSession
     private let cacheDirectory: URL
-    private struct CacheKey: Hashable { let group: Int; let generation: String? }
+    private struct CacheKey: Hashable {
+        let group: Int
+        let generation: String?
+        let minimumFetchedAt: Date?
+    }
     private var snapshots: [Int: Snapshot] = [:]
     private var pending: [CacheKey: Task<Snapshot, Error>] = [:]
     private var failures: [CacheKey: Date] = [:]
     private var nextRequestAt = Date.distantPast
     init(session: URLSession = .shared,
          cacheDirectory: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("OnePieceTCGCSV-v1")) {
+            .appendingPathComponent("OnePieceTCGCSV-v2")) {
         self.session = session; self.cacheDirectory = cacheDirectory
     }
 
@@ -66,7 +70,9 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
     }
 
     private func snapshot(group: Int, generation: String?, minimumFetchedAt: Date?) async throws -> Snapshot {
-        let key = CacheKey(group: group, generation: generation)
+        // A withdrawal starts a new request cohort. It must not join a fetch
+        // that began before its watermark, even within the same generation.
+        let key = CacheKey(group: group, generation: generation, minimumFetchedAt: minimumFetchedAt)
         let file = cacheDirectory.appendingPathComponent("\(group).json")
         if snapshots[group]?.catalogGeneration != generation || snapshots[group] == nil,
            let bytes = try? Data(contentsOf: file), bytes.count <= 16 * 1_024 * 1_024,
@@ -86,6 +92,7 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
             throw PriceQuoteError.providerUnavailable
         }
         let task = Task {
+            let fetchedAt = Date.now
             let products = try JSONDecoder().decode(Response<Product>.self,
                 from: await self.fetch(group: group, resource: "products"))
             let prices = try JSONDecoder().decode(Response<Price>.self,
@@ -95,7 +102,7 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
                   prices.totalItems.map({ $0 == prices.results.count }) ?? true else {
                 throw PriceQuoteError.providerUnavailable
             }
-            return Snapshot(products: products.results, prices: prices.results, fetchedAt: .now,
+            return Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
                 catalogGeneration: generation)
         }
         pending[key] = task
@@ -106,8 +113,11 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
         guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
             throw PriceQuoteError.providerUnavailable
         }
-        snapshots[group] = value
-        if let bytes = try? JSONEncoder().encode(value) {
+        // A slower, older request must not replace a newer cached observation.
+        if snapshots[group].map({ value.fetchedAt >= $0.fetchedAt }) ?? true {
+            snapshots[group] = value
+        }
+        if snapshots[group]?.fetchedAt == value.fetchedAt, let bytes = try? JSONEncoder().encode(value) {
             try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
             try? bytes.write(to: file, options: .atomic)
         }

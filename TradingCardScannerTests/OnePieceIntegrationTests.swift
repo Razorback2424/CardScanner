@@ -21,11 +21,17 @@ private actor OnePieceTestPriceSource: OnePieceMarketPriceSource {
 private actor OnePieceSnapshotTestSource: GameCatalogActivationSource {
     nonisolated let game = CardGame.onePiece
     private var snapshot: GameCatalogSnapshot?
+    private var continuations: [AsyncStream<GameCatalogSnapshot>.Continuation] = []
     init(_ snapshot: GameCatalogSnapshot?) { self.snapshot = snapshot }
-    func update(_ snapshot: GameCatalogSnapshot) { self.snapshot = snapshot }
+    func update(_ snapshot: GameCatalogSnapshot) {
+        self.snapshot = snapshot
+        for continuation in continuations { continuation.yield(snapshot) }
+    }
     func currentSnapshot() async -> GameCatalogSnapshot? { snapshot }
     func activationSnapshots() async -> AsyncStream<GameCatalogSnapshot> {
-        AsyncStream { $0.finish() }
+        let (stream, continuation) = AsyncStream.makeStream(of: GameCatalogSnapshot.self)
+        continuations.append(continuation)
+        return stream
     }
 }
 
@@ -34,16 +40,44 @@ private final class OnePieceTestSessionState { var isCurrent = true }
 
 private final class OnePiecePriceTestProtocol: URLProtocol {
     nonisolated(unsafe) static var handler: (@Sendable (URLRequest) -> Data)?
+    nonisolated(unsafe) static var asyncHandler: (@Sendable (URLRequest) async -> Data)?
+    private var responseTask: Task<Void, Never>?
     override class func canInit(with request: URLRequest) -> Bool { true }
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
     override func startLoading() {
+        if let handler = Self.asyncHandler {
+            responseTask = Task {
+                let data = await handler(request)
+                guard !Task.isCancelled else { return }
+                send(data)
+            }
+            return
+        }
         guard let data = Self.handler?(request) else { return }
+        send(data)
+    }
+    private func send(_ data: Data) {
         client?.urlProtocol(self, didReceive: HTTPURLResponse(url: request.url!, statusCode: 200,
             httpVersion: nil, headerFields: nil)!, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: data)
         client?.urlProtocolDidFinishLoading(self)
     }
-    override func stopLoading() {}
+    override func stopLoading() { responseTask?.cancel() }
+}
+
+private actor OnePiecePriceRequestGate {
+    let firstRequest = OnePieceLookupGate()
+    private(set) var productCalls = 0
+    private(set) var priceCalls = 0
+    func response(_ request: URLRequest) async -> Data {
+        if request.url!.lastPathComponent == "products" {
+            productCalls += 1
+            if productCalls == 1 { await firstRequest.pause() }
+            return Data(#"{"success":true,"errors":[],"results":[{"productId":454664,"categoryId":68,"groupId":3188,"name":"Shanks","extendedData":[{"name":"Number","value":"OP01-120"}]}]}"#.utf8)
+        }
+        priceCalls += 1
+        return Data(#"{"success":true,"errors":[],"results":[{"productId":454664,"subTypeName":"Foil","marketPrice":8.16}]}"#.utf8)
+    }
 }
 
 @MainActor
@@ -56,6 +90,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         let defaults = CardGameRuntimeContainer.appDefaults()
         XCTAssertNil(defaults.runtime(for: .onePiece))
         XCTAssertEqual(defaults.registry.enabledGames, [.pokemon, .magic])
+        XCTAssertTrue(defaults.unavailableGames.isEmpty, "Disabled rollout is not a catalog failure")
     }
 
     func testBootstrapRequiresDedicatedKeysSafeOriginAndVerifiedSeed() throws {
@@ -116,6 +151,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             MagicGameRuntime().runtime, optional])
         let bound = try await raw.bound(to: storage)
         XCTAssertNil(bound.runtime(for: .onePiece))
+        XCTAssertEqual(bound.unavailableGames.map(\.game), [.onePiece])
         XCTAssertEqual(bound.registry.enabledGames, [.pokemon, .magic])
         XCTAssertNotNil(bound.runtime(for: .pokemon)?.catalog)
         XCTAssertNotNil(bound.runtime(for: .magic)?.catalog)
@@ -128,6 +164,48 @@ final class OnePieceIntegrationTests: XCTestCase {
             _ = try await CardGameRuntimeContainer(runtimes: [required]).bound(to: storage)
             XCTFail("Required catalog failure must still reject launch preparation")
         } catch { XCTAssertEqual(error as? PriceQuoteError, .providerUnavailable) }
+    }
+
+    func testOmittedCatalogCanRecoverAfterVerifiedActivationWithoutRelaunch() async throws {
+        let registry = try registry()
+        let (_, storage) = try model(registry: registry)
+        let source = OnePieceSnapshotTestSource(nil)
+        let base = OnePieceGameRuntime(registry: registry).runtime
+        let optional = CardGameRuntime(descriptor: base.descriptor, variantPolicy: base.variantPolicy,
+            pricing: base.pricing, recognizer: base.recognizer, catalog: base.catalog,
+            browse: base.browse, importer: base.importer, activationSource: source,
+            requiresLaunchActivation: false)
+        let raw = try CardGameRuntimeContainer(runtimes: [PokemonGameRuntime().runtime, optional])
+        let omitted = try await raw.bound(to: storage)
+        XCTAssertEqual(omitted.unavailableGames.map(\.game), [.onePiece])
+        let recovery = raw.optionalCatalogRecoveryEvents(for: [.onePiece])
+        let recovered = expectation(description: "Verified activation recovers omitted runtime")
+        let listener = Task {
+            for await _ in recovery {
+                do {
+                    let rebound = try await raw.bound(to: storage)
+                    XCTAssertTrue(rebound.unavailableGames.isEmpty)
+                    XCTAssertNotNil(rebound.runtime(for: .onePiece)?.pricing)
+                    XCTAssertTrue(rebound.registry.supports(.onePiece, .scan))
+                    XCTAssertFalse(rebound.registry.supports(.onePiece, .collectionWrite))
+                } catch { XCTFail("Recovery binding failed: \(error)") }
+                recovered.fulfill()
+                break
+            }
+        }
+        defer { listener.cancel() }
+        await source.update(.init(revision: 1, catalog: OnePieceCatalogAdapter(registry: registry),
+            recognizer: OnePieceRecognitionAdapter(profile: .init(registry: registry)),
+            variantPolicy: base.variantPolicy, priceAuthority: base.priceAuthority))
+        await fulfillment(of: [recovered], timeout: 5)
+    }
+
+    func testConfigurationFailureIsVisibleWithoutEnablingUnsupportedGame() throws {
+        let descriptor = try XCTUnwrap(CardGameRegistry.standard.descriptor(for: .onePiece))
+        let raw = try CardGameRuntimeContainer(runtimes: [PokemonGameRuntime().runtime], unavailableGames: [descriptor])
+        XCTAssertEqual(raw.unavailableGames.map(\.displayName), ["One Piece"])
+        XCTAssertNil(raw.runtime(for: .onePiece))
+        XCTAssertFalse(raw.registry.supports(.onePiece, .scan))
     }
 
     func testOnePieceCleanupFailureLeavesExistingGamesAvailable() async throws {
@@ -642,6 +720,53 @@ final class OnePieceIntegrationTests: XCTestCase {
             printingID: card.providerID, variant: .foil)
         let minimum = await source.lastMinimumFetchedAt
         XCTAssertEqual(minimum, watermark)
+        let nextWatermark = watermark.addingTimeInterval(10)
+        record.invalidatedAt = nextWatermark
+        try container.mainContext.save()
+        _ = try await bound.makePriceQuoteService().refreshStoredPrinting(game: .onePiece,
+            printingID: card.providerID, variant: .foil)
+        let laterMinimum = await source.lastMinimumFetchedAt
+        XCTAssertEqual(laterMinimum, nextWatermark, "Background reads must observe withdrawals after runtime binding")
+    }
+
+    func testWithdrawalStartsFreshFetchWhileOlderRequestIsPending() async throws {
+        let registry = try registry(withMarketMapping: true)
+        let mapping = try XCTUnwrap(registry.printingByID[uuid(1)]?.marketMappings.first)
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [OnePiecePriceTestProtocol.self]
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceConcurrentPrice-\(UUID())")
+        let gate = OnePiecePriceRequestGate()
+        OnePiecePriceTestProtocol.asyncHandler = { await gate.response($0) }
+        defer {
+            OnePiecePriceTestProtocol.asyncHandler = nil
+            try? FileManager.default.removeItem(at: directory)
+        }
+        let source = OnePieceTCGCSVPriceSource(session: URLSession(configuration: config), cacheDirectory: directory)
+        let old = Task { try await source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation") }
+        defer { old.cancel(); Task { await gate.firstRequest.resume() } }
+        await gate.firstRequest.waitForStart()
+        let watermark = Date.now
+        let completed = expectation(description: "Fresh cohort finishes before the old request")
+        let freshRequests = Task {
+            async let first = source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation", minimumFetchedAt: watermark)
+            async let second = source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation", minimumFetchedAt: watermark)
+            let quotes = try await (first, second)
+            completed.fulfill()
+            return quotes
+        }
+        await fulfillment(of: [completed], timeout: 5)
+        await gate.firstRequest.resume()
+        let quotes = try await freshRequests.value
+        guard case let .price(fresh) = quotes.0, case let .price(coalesced) = quotes.1 else { return XCTFail() }
+        XCTAssertGreaterThan(fresh.fetchedAt, watermark)
+        XCTAssertEqual(fresh, coalesced)
+        guard case let .price(older) = try await old.value else { return XCTFail() }
+        XCTAssertLessThan(older.fetchedAt, watermark)
+        guard case let .price(cached) = try await source.quote(mapping: mapping, number: "OP01-120", generation: "same-generation") else { return XCTFail() }
+        XCTAssertEqual(cached, fresh, "The older completion must not overwrite the newer cache")
+        let products = await gate.productCalls, prices = await gate.priceCalls
+        XCTAssertEqual(products, 2)
+        XCTAssertEqual(prices, 2)
     }
 
     func testOnePieceMetadataRefreshPreservesPurchaseLink() async throws {

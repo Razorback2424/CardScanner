@@ -66,17 +66,26 @@ private struct CollectionSessionContent: View {
     let runtimes: CardGameRuntimeContainer
     let container: ModelContainer
     private struct Services {
+        let id = UUID()
         let runtimes: CardGameRuntimeContainer
         let scanner: ScannerViewModel
     }
     @State private var services: Services?
     @State private var failed = false
     @State private var attempt = 0
+    @State private var preparing = false
 
     var body: some View {
         Group {
             if let services {
-                ContentView(runtimes: services.runtimes).environmentObject(services.scanner)
+                VStack(spacing: 0) {
+                    if !services.runtimes.unavailableGames.isEmpty {
+                        catalogUnavailableBanner(services.runtimes)
+                    }
+                    ContentView(runtimes: services.runtimes)
+                        .environmentObject(services.scanner)
+                        .id(services.id)
+                }
             } else if failed {
                 ContentUnavailableView {
                     Label("Couldn't prepare catalog", systemImage: "exclamationmark.triangle")
@@ -88,14 +97,52 @@ private struct CollectionSessionContent: View {
             } else { ProgressView("Preparing catalog") }
         }
         .task(id: attempt) {
-            guard services == nil else { return }
+            preparing = true
+            defer { preparing = false }
             do {
-                let bound = try await runtimes.bound(to: container, isCurrent: {
+                // A packaged configuration failure has no source to observe;
+                // an explicit retry re-reads configuration and the bundled seed.
+                let candidate = runtimes.unavailableGames.isEmpty ? runtimes : CardGameRuntimeContainer.appDefaults()
+                let bound = try await candidate.bound(to: container, isCurrent: {
                     CollectionStorageGeneration.shared.activeSession()?.container === container
                 })
-                services = .init(runtimes: bound, scanner: bound.makeScannerModel())
-            } catch { failed = true }
+                try Task.checkCancellation()
+                if services == nil || services?.runtimes.registry.games(supporting: []) != bound.registry.games(supporting: [])
+                    || services?.runtimes.unavailableGames.map(\.game) != bound.unavailableGames.map(\.game) {
+                    services?.scanner.viewDisappeared()
+                    services = .init(runtimes: bound, scanner: bound.makeScannerModel())
+                }
+            } catch is CancellationError {
+                return
+            } catch { if services == nil { failed = true } }
+        }
+        .task(id: services?.runtimes.unavailableGames.map(\.game)) {
+            guard let services, !services.runtimes.unavailableGames.isEmpty else { return }
+            let games = Set(services.runtimes.unavailableGames.map(\.game))
+            for await _ in runtimes.optionalCatalogRecoveryEvents(for: games) {
+                guard !Task.isCancelled else { break }
+                attempt += 1
+            }
         }
         .onDisappear { services?.scanner.viewDisappeared() }
+    }
+
+    private func unavailableNames(_ bound: CardGameRuntimeContainer) -> String {
+        bound.unavailableGames.map(\.displayName).joined(separator: ", ")
+    }
+
+    private func catalogUnavailableBanner(_ bound: CardGameRuntimeContainer) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("\(unavailableNames(bound)) catalog unavailable", systemImage: "exclamationmark.triangle")
+                .font(.headline)
+            Text("Your collection is safe. Other games are available while we try to restore this catalog.")
+                .font(.subheadline)
+            Button(preparing ? "Retrying…" : "Retry catalog") { attempt += 1 }
+                .disabled(preparing)
+                .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(.regularMaterial)
     }
 }
