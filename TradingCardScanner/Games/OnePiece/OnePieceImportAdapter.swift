@@ -40,7 +40,7 @@ struct OnePieceImportAdapter: GameImportAdapter {
             matches[request.identityKey] = .init(providerID: card.physicalPrintingID,
                 setCode: card.setCode, rarity: card.rarity, imageURL: card.storedImageURL,
                 thumbnailURL: card.thumbnailImageURL?.absoluteString,
-                tcgplayerURL: nil, setReleaseOrder: card.setReleaseOrder)
+                tcgplayerURL: nil, setReleaseOrder: card.setReleaseOrder, updatesProviderPurchaseURL: false)
         }
         return matches
     }
