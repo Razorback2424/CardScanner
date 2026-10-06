@@ -2,7 +2,8 @@
 
 **Status:** owner app supports One Piece in its existing local collection;
 production publication disabled, production writes off.
-**Date:** 2026-10-05. Checkout: `merge/one-piece-integration`, based on `534127f`.
+**Date:** 2026-10-05. Latest local acceptance: `merge/one-piece-integration`,
+`f40e704` plus local changes; earlier preparation used `534127f`.
 The [implementation ledger](one_piece_code_implementation.md) records code/tests;
 the [catalog design](one_piece_catalog_integration_plan.md) governs identity.
 
@@ -73,6 +74,48 @@ selectable cards. Record physical/official release, language, treatment and fini
 matches, provider product/finish, observed quote and timestamp. Keep private
 exports and raw account/device identifiers outside the repository.
 
+## Reproducible simulator acceptance route
+
+The `OnePieceAcceptance` route is compiled only with `DEBUG LOCAL_ONLY_SIGNING`.
+It uses the verified bundled full corpus, the real scanner confirmation callback,
+printing/finish controls and collection writer. Its test collection and unresolved
+scans persist under `Application Support/OnePieceAcceptance`; ordinary launches
+continue to use the owner's existing collection. It never starts the camera.
+This is number injection and simulator UX evidence, not OCR/device evidence.
+
+Launch with `-ui_debug_route OnePieceAcceptance`. Optional `-ui_debug_state`:
+
+| State | Sample | Acceptance purpose |
+| --- | --- | --- |
+| `same-number` (default) | ST11-003 | Choose original ST11 and later ST16 separately; both support normal, only ST11 has an exact mapping. |
+| `starter` | ST01-003 | Sole verified starter printing/normal finish saves directly. |
+| `booster` | OP01-120 | Sole available verified Shanks/foil printing saves directly. |
+| `unmapped` | P-001 | Verified winner/foil saves without manufacturing a quote. |
+| `unknown` | OP01-999 | Missing number in a recognized series goes to Needs attention without ownership. |
+
+The route's number menu and **Inject number** action allow repeated encounters.
+Skip a printing, open Needs attention and retry it; the current full catalog must
+ask again. Switch to Collection for Browse/add and price refresh. Relaunch with
+the same route to reopen test storage. Real provider answers remain subject to
+availability and are distinct from deterministic test-source prices.
+
+For a capture using an already-built Debug binary, retain app data:
+
+```sh
+UI_PREBUILT_APP_PATH="$task_build_root/DerivedData/Build/Products/Debug-iphonesimulator/TradingCardScanner.app" \
+UI_PRESERVE_APP_DATA=1 \
+ARTIFACTS_DIR="$task_build_root/OnePieceAcceptance/same-number" \
+bash scripts/ui_build_and_shoot.sh TradingCardScanner com.seankeller.CardScanner \
+  OnePieceAcceptance same-number
+```
+
+Set `task_build_root` to the available external artifact drive and run from the
+repository root. The helper waits for the route's resolved-state readiness
+marker before capturing; it fails after 30 seconds if the state never settles.
+The [acceptance checklist](../../references/one_piece_acceptance_success_checklist.md)
+records the rendered checks. This developer route is optional test infrastructure;
+it does not replace the owner's ordinary app launch.
+
 ## Signing, hosting and rollback
 
 1. Choose protected storage outside the repository for production and standby
@@ -114,8 +157,8 @@ exports and raw account/device identifiers outside the repository.
 | Gate | Procedure | Status |
 | --- | --- | --- |
 | Camera/device | Oldest/current iPhone, 50 ST/OP/EB/P cards, lighting/glare, OCR rate, confirm time, offline/cold activation. | Pending hardware runs |
-| Local durability | Scan, choose printing/finish, save, process relaunch, refresh; same number/different UUID; unmapped quote unavailable. | Simulator pipeline exists; hardware pending |
-| Coverage recovery | Unknown number retained in Needs attention; dismiss/re-file/retry preserve evidence, session and commit provenance. | Focused regression exists; rendered/device acceptance pending |
+| Local durability | Scan, choose printing/finish, save, process relaunch, refresh; same number/different UUID; unmapped quote unavailable. | Integrated simulator disk-store/Browse/CSV and rendered checks recorded; hardware pending |
+| Coverage recovery | Unknown number retained in Needs attention; dismiss/re-file/retry preserve evidence, session and commit provenance. | Full-corpus skip/reload/retry and gated startup/dismissal races pass; rendered controls inspected; hardware pending |
 | Accessibility | VoiceOver on choices, Needs attention and recovery banner; Dynamic Type and disabled controls. | Pending device review |
 | Performance | Device/OS, signed bytes, decode, verify/index, first-frame timing and peak resident memory. | Logging prepared; hardware measurements pending |
 | Provider | 50 exact mappings, aggregate USD quotes/timestamps, rate limits, stale/offline cache and withdrawals. | Code verified; live-provider sampling pending |

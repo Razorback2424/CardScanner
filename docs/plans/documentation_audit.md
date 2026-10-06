@@ -1,12 +1,32 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-03
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-05
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-03
+## Current authority boundary — updated 2026-10-05
+
+**One Piece variants/catalog audit — 2026-10-05, `f40e704` plus local changes:**
+the [edge-case audit](../audits/one-piece-variants-catalog-edge-cases.md)
+records admission, product-membership, exact finish/key, English price authority,
+primary-release metadata and older recovery-choice fixes. The full retained
+English corpus is exercised across recognition, Browse and CSV. This strengthens
+admission and acquisition consistency without promoting held records, claiming
+complete physical coverage, or completing supersession/ownership migration.
+The implementation ledger retains the next-slice and operational gate authority.
+
+**One Piece integrated acceptance — 2026-10-05, `f40e704` plus local changes:**
+the [implementation ledger](one_piece_code_implementation.md) and
+[release checklist](one_piece_release_acceptance.md) record the next local
+acceptance slice, real-catalog simulator routing and a startup recovery race fix.
+This supersedes the documentation map's stale “next: real reviewed local corpus
+and usable printing choice” wording. The ordinary corpus and picker already
+exist; remaining collection corrections, physical coverage, legacy adapter work
+and device/provider/sync/release gates retain their stated scope. The isolated
+acceptance route is optional developer infrastructure and does not change the
+owner's ordinary daily-use collection.
 
 **Scanner choice policy — 2026-10-05:** the owner's explicit request supersedes
 the earlier One Piece English-confirmation/complete-universe requirement for

@@ -55,8 +55,14 @@ collector-distinguishability acceptance remain open; retain separate printing
 and finish stages.
 Explicit supersession migration, failed-save injection, full ownership/storage
 acceptance and production seed/publication/device/sync gates remain open.
-The latest recorded selected simulator checkpoint passes 192 cases; it was not
-rerun for this audit and is not full-suite or camera/provider/release evidence.
+The 2026-10-05 integrated local acceptance checkpoint at `f40e704` plus local
+changes covers the retained full catalog, distinct same-number ownership,
+exact mapped/unmapped pricing, Browse/add, CSV and durable recovery. Its broader
+regression passed 315/316 cases; the corrected monitor fixture then passed all
+five cases. All 70 One Piece and 96 scanner tests passed in the broader run.
+The earlier 192-case checkpoint is historical. These are selected simulator
+checks, not full-suite or camera/provider/release evidence. The next code slice
+is explicit supersession migration and failed-save collection evidence.
 The implementation ledger is the current execution/status authority; this table
 retains the design contract without treating earlier source locations as current.
 

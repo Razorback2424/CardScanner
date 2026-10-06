@@ -1721,3 +1721,46 @@ historical.
   verify Details without selection, choice 2/61 and skip. The screenshot helper
   accepts an optional capture delay for catalog preparation. Logs/captures remain
   on the external drive; no physical-device or release acceptance is claimed.
+
+- One Piece integrated local acceptance (2026-10-05; `f40e704` plus local
+  changes on `merge/one-piece-integration`): implemented the plan's next major
+  slice using the full signed owner catalog and actual scanner callbacks,
+  printing/finish selection and collection writer. The optional Debug route
+  isolates test collection/recovery storage and starts after initial projection;
+  ordinary owner launches retain their storage. Initial captures exposed startup
+  projection and recovery-load races. The route now waits for readiness; shared
+  recovery serializes disk reloads, defers saves and retains removals while loading.
+  Full-corpus regressions verify distinct same-number UUIDs, exact mapped/unmapped
+  pricing and overdue refresh, Browse/details/add, disk reopen, CSV and skip/retry.
+  Nine-class regression: 315/316 passed; its monitor fixture enabled observation
+  before starting Portfolio. After correcting the fixture, all five monitor cases
+  passed. All 70 One Piece and 96 scanner cases passed in the broader run. Final
+  Debug simulator build and helper syntax check pass. Inspected settled picker,
+  Normal starter and Foil booster receipts; native recovery/details/retry and
+  relaunch checks are recorded in the
+  [acceptance checklist](references/one_piece_acceptance_success_checklist.md).
+  Evidence remains on the external SSD. The next code slice is explicit
+  supersession migration and failed-save collection evidence; hardware/provider,
+  CloudKit, rights and release gates remain open. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md).
+  The ready-marker loop caught an unsupported unknown-sample series; replaced
+  it with OP01-999. The affected real-catalog sample regression passes for every
+  route state in `Acceptance-Samples.xcresult`.
+
+- **2026-10-05 — One Piece variants/catalog edge-case audit:** reviewed the
+  retained 2,692 canonical cards and 2,745 printings across admission, scan,
+  printing/finish choice, Browse, CSV, recovery and exact pricing. Fixed external
+  SKU qualifier/numeric alias collisions, duplicate mappings, unanchored product
+  appearances, invalid product/finish metadata, missing CSV finish, foreign
+  price authority, primary-release order, older persisted printing choices and
+  exact One Piece finish-lock identity. Negative cases reproduce the defects;
+  full core 44/44 and offline Python 49/49 pass. The broader selected app run
+  passed 389/389, including all 2,490 eligible English printings across Browse,
+  recognition/choices and CSV finishes. After the final finish-lock fix, the
+  affected recheck passed 204/204 (74 One Piece, 96 scanner, 34 variant), including
+  the full-corpus walk again. These are separate passing selections. Evidence
+  is retained on the external SSD under
+  `CardScannerBuild/OnePieceVariantAudit-2026-10-05/`. Catalog statuses, permanent
+  UUIDs and ownership/payload formats are unchanged; no retained rows were
+  migrated. See the [edge-case audit](docs/audits/one-piece-variants-catalog-edge-cases.md)
+  and [implementation ledger](docs/plans/one_piece_code_implementation.md).

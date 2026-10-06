@@ -4,6 +4,62 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
+**Variants/catalog edge-case pass — 2026-10-05, `f40e704` plus local changes:**
+the [audit and evidence](../audits/one-piece-variants-catalog-edge-cases.md)
+record fixes for external-SKU qualifier/numeric alias collisions, duplicate
+market mappings, unanchored product membership, invalid product/finish metadata,
+missing CSV finish, foreign-language price authority, lost primary-release order,
+older multi-printing recovery choices and case-sensitive finish-lock identity.
+All 44 core and 49 offline Python tests pass; the five affected app regressions
+and broader 389-case app/corpus selection pass. After the final finish-lock
+adjustment, all 204 affected cases pass (74 One Piece, 96 scanner, 34 variant).
+These are separate passing selections. Permanent UUIDs, payload/key formats and the retained catalog's
+eligibility statuses are unchanged. Held/special-printing review and operational
+gates remain open; supersession migration and failed-save collection evidence
+remain the next planned code slice.
+
+**Integrated local acceptance slice — 2026-10-05, `f40e704` plus local changes:**
+the new `OnePieceAcceptance` developer route exercises the verified full catalog
+through the actual scanner, printing/finish controls and collection writer. It
+waits for the initial collection projection, uses separate persistent test and
+recovery storage, and never starts the camera. Ordinary owner launches retain
+their existing storage and identity. The
+[release checklist](one_piece_release_acceptance.md#reproducible-simulator-acceptance-route)
+documents launch/sample commands and the
+[rendered checklist](../../references/one_piece_acceptance_success_checklist.md).
+
+New integrated regressions cover ST11-003's original and later printing with the
+same normal finish, permanent UUID/key separation, on-device disk-store reopening,
+exact overdue-price refresh, offline Browse/details/add and full CSV import. The
+mapped printing can quote; the later unmapped printing remains unpriced. Printing
+skip/reload/retry is exercised against the retained full corpus.
+
+Rendered relaunch exposed early recovery saves racing the initial backlog load.
+Shared scanner recovery now serializes reloads, defers saves until the latest
+merge completes and retains removals during loading. A gated regression injects
+a new encounter during disk loading; another dismisses a row during reload.
+Earlier records must survive and dismissed records must stay dismissed. Genuine
+read/write failures remain visible and preserve existing bytes.
+
+The nine-class simulator regression executed 316 cases: 315 passed and one
+StoreRevisionMonitor fixture failed because it enabled monitoring before starting
+Portfolio. The corrected fixture starts Portfolio and verifies its settled
+baseline; all five monitor cases then passed in `Monitor-Final.xcresult`.
+All 70 One Piece and 96 scanner cases passed in the broader run. This is a
+selected regression plus an affected recheck, not a single clean 316-case run.
+The final Debug simulator build and screenshot-helper syntax check passed.
+The final acceptance-sample recheck passed after replacing the unsupported
+OP99 series with uncataloged OP01-999; every route sample must enter the actual
+full-catalog recognizer before lookup. `Acceptance-Samples.xcresult` records it.
+Results remain on the external SSD under
+`CardScannerBuild/OnePieceAcceptance-2026-10-05/FinalRegression.xcresult`.
+Final rendered captures show the distinct ST11/ST16 choices, Karoo Normal and
+Shanks Foil receipts without extra choice stages, OP01-999 recovery, and all four
+owned rows after process relaunch. ST16 remains unpriced. Displayed app quotes
+are not fresh-provider sampling evidence. Details/skip/retry controls and the
+separate persistent test collection are recorded in the rendered checklist.
+Hardware/provider/CloudKit/release gates stay open.
+
 **Scanner product correction — 2026-10-05:** the owner requires the same choice
 rule as Pokémon/Magic: one available verified printing resolves immediately;
 multiple verified printings require a picker. The shared finish resolver still
@@ -114,15 +170,14 @@ retained against their original runs; this source review does not rerun them.
 | Catalog adapters | Pokémon modern/promo/offline/cache/historical behavior and Magic Scryfall/child routing now live in game-owned catalog modules; central `CardCatalog` prepares/coalesces/validates generic outcomes and never caches a user's printing answer. Legacy Browse/import extraction, signed legacy runtime activation and temporary correction allowances remain open. |
 | Shared signed mechanics | All three games use `SignedCatalogReleaseStore`; One Piece uses `SignedCatalogUpdateClient`. Pokémon/Magic transport and domain wire/trust contracts remain separate. A shared store does not imply completed signed runtime activation for legacy games. |
 | Local kit and rollout | The recorded full ordinary/base-pricing debug kit contains all 2,745 records with an independent ephemeral review key. Its local bootstrap enables scan/Browse/write/pricing in isolated persistent storage; production configuration remains disabled with no endpoint/key pins or bundled production seed. |
-| Latest recorded app checkpoint | 192 selected tests passed with zero failures/skips in `test_sim_2026-10-05T13-01-49-160Z_pid18958_cc372487.xcresult`. The installed simulator kit relaunched showing the saved Shanks quote/portfolio at $8.16. This is selected regression and cached-display evidence, not a fresh provider/camera/device/full-suite run. |
+| Latest recorded app checkpoint | Variants/catalog audit above: 389/389 selected app cases, followed by 204/204 affected cases after the final finish-lock fix (74 One Piece, 96 scanner, 34 variant). The retained eligible corpus passes scan/Browse/CSV consistency. All 44 core and 49 offline Python tests pass. Persistent ownership, exact pricing and recovery are covered by selected simulator evidence. Earlier acceptance and 192-case checkpoints remain historical. |
 
-**Next:** exercise the existing full kit's representative starter and booster
-scan → printing choice → finish → save → exact price, plus Browse/add, skip/retry,
-relaunch/refresh and CSV round-trip. Verify two copies of one number retain
-different physical UUIDs and an unmapped printing cannot borrow a mapped quote.
-Fix demonstrated base-case defects together. Broader special-printing review,
-Browse/import migration and production delivery remain full-plan work after this
-local acceptance; no small demo or foundation rewrite is needed.
+**Next code slice:** Package 1's explicit supersession migration and failed-save
+collection evidence. Preserve permanent UUIDs, claims, history and manual prices
+when authority is denied or withdrawn. Integrated local base-case acceptance is
+implemented and verified at this checkpoint; physical-camera/device/provider
+acceptance remains separate. Broader special-printing review, Browse/import
+migration and production delivery remain full-plan work.
 
 The read-only boundary script rerun for this documentation audit fails on eight
 Pokémon/Magic labels, all in `BrowseCatalog.swift`. Its pattern checks selected
@@ -476,7 +531,7 @@ ordinary-product pass and revision-13/14 local-kit milestones are already done:
 
 | Priority | Existing work package | Remaining concrete exit evidence |
 | --- | --- | --- |
-| 1 | Package 4: integrated local base-case acceptance | Use the existing full ordinary/base-pricing kit for rendered scan/printing/finish/save, two distinct copies, mapped/unmapped prices, skip/retry, offline Browse, CSV and relaunch/refresh. Fix observed base defects as one batch; do not start another architecture/coverage pass first. |
+| Complete locally | Package 4: integrated local base-case acceptance | Reproducible real-catalog scanner route and integrated durability/pricing/Browse/CSV/recovery tests are verified at the checkpoint above and rendered checklist. Physical-camera/device/provider acceptance remains open. |
 | 2 | Package 1: remaining collection correctness evidence | Exact correction and container-bound publication are implemented. Close explicit supersession migration and failed-save injection; review remaining direct saves when affected ownership paths change. Preserve UUIDs, claims, history and manual prices on denied/withdrawn authority. Full storage/account/device acceptance stays separate. |
 | 3 | Package 2: remaining physical coverage | Reuse the implemented manifest, capture/reconciliation/discrepancy pipeline and adopted ordinary corpus. Review held original/revision records, parallels/premiums/events/promos and named stress distinctions in declared batches. Fresh discovery may add ordinary releases; none may silently redefine the coverage denominator. |
 | 4 | Package 3: remaining legacy adapter routing | Catalog extraction is implemented. Move Pokémon/Magic Browse and import/normalization behavior, complete signed legacy runtime snapshots and remove temporary bindings/correction allowances only after validated replacements exist. Preserve keys/caches/behavior; eight audited labels remain in Browse. Inspect dependencies beyond the regex. |
