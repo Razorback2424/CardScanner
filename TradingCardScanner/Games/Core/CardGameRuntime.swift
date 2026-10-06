@@ -324,10 +324,10 @@ struct CardGameRuntimeContainer: Sendable {
         scanner.useAdditionalRecognitionAdapters(recognitionAdapters)
         var reviewRecovery: UnresolvedScanStore?
 #if DEBUG && LOCAL_ONLY_SIGNING
-        if OnePieceCatalogBootstrap.isLocalReviewLaunch,
+        if let directory = OnePieceCatalogBootstrap.developerStorageDirectory(),
            let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             reviewRecovery = UnresolvedScanStore(fileURL: support
-                .appendingPathComponent("OnePieceLocalReview/Scanner/unresolved-scans.json"))
+                .appendingPathComponent(directory).appendingPathComponent("Scanner/unresolved-scans.json"))
         }
 #endif
         let model = ScannerViewModel(

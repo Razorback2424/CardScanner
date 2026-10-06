@@ -1464,6 +1464,9 @@ final class ScannerViewModel: ObservableObject {
     /// the session can end with an honest total instead of a stream of alerts.
     @Published private(set) var unresolvedScans: [UnresolvedScan] = [] {
         didSet {
+            if unresolvedReloadTask != nil {
+                unresolvedRemovedDuringReload.formUnion(Set(oldValue.map(\.id)).subtracting(unresolvedScans.map(\.id)))
+            }
             unresolvedPersistenceRevision &+= 1
             persistUnresolvedScans()
         }
@@ -1504,6 +1507,9 @@ final class ScannerViewModel: ObservableObject {
     private var currentPokemonRegistry = PokemonCatalogRegistry.bundledSeed
     private var currentPokemonOfficialCounts: [String: Int] = [:]
     private var unresolvedPersistenceTask: Task<Void, Never>?
+    private var unresolvedReloadTask: Task<Void, Never>?
+    private var unresolvedReloadID: UUID?
+    private var unresolvedRemovedDuringReload: Set<UUID> = []
     private var unresolvedPersistenceRevision: UInt64 = 0
     private var sessionUnresolvedIDs: Set<UUID> = []
     private var transientRetryCounts: [ScanSuppressionKey: Int] = [:]
@@ -2177,6 +2183,10 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func persistUnresolvedScans() {
+        // A load must merge earlier disk records before acknowledging its
+        // token. Keep new encounters in memory until the serialized reloads
+        // settle; their final merge schedules the complete durable snapshot.
+        guard unresolvedReloadTask == nil else { return }
         let store = unresolvedScanStore
         let scans = unresolvedScans
         let revision = unresolvedPersistenceRevision
@@ -2199,6 +2209,28 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func reloadUnresolvedScans(registry: PokemonCatalogRegistry) async {
+        await enqueueUnresolvedReload(registry: registry).value
+    }
+
+    private func enqueueUnresolvedReload(registry: PokemonCatalogRegistry) -> Task<Void, Never> {
+        let previous = unresolvedReloadTask
+        let id = UUID()
+        let task = Task { @MainActor [weak self] in
+            await previous?.value
+            guard let self else { return }
+            let merged = await self.mergeUnresolvedScans(registry: registry)
+            guard self.unresolvedReloadID == id else { return }
+            self.unresolvedReloadTask = nil
+            self.unresolvedReloadID = nil
+            if merged { self.persistUnresolvedScans() }
+            self.unresolvedRemovedDuringReload.removeAll()
+        }
+        unresolvedReloadID = id
+        unresolvedReloadTask = task
+        return task
+    }
+
+    private func mergeUnresolvedScans(registry: PokemonCatalogRegistry) async -> Bool {
         while true {
             let revision = unresolvedPersistenceRevision
             let pendingSave = unresolvedPersistenceTask
@@ -2222,10 +2254,10 @@ final class ScannerViewModel: ObservableObject {
                     text: "Earlier Needs attention work could not be loaded. New changes remain in memory until storage can be read.",
                     tone: .problem
                 ))
-                return
+                return false
             }
 
-            var combined = stored
+            var combined = stored.filter { !unresolvedRemovedDuringReload.contains($0.id) }
             for runtime in unresolvedScans {
                 guard let index = combined.firstIndex(where: { $0.id == runtime.id }) else {
                     combined.append(runtime)
@@ -2270,14 +2302,12 @@ final class ScannerViewModel: ObservableObject {
             let deduplicated = combined.filter { seenIDs.insert($0.id).inserted }
             unresolvedLoadID = loadID
             unresolvedScans = deduplicated.sorted { $0.createdAt < $1.createdAt }
-            return
+            return true
         }
     }
 
     private func scheduleUnresolvedReload(registry: PokemonCatalogRegistry) {
-        Task { @MainActor [weak self] in
-            await self?.reloadUnresolvedScans(registry: registry)
-        }
+        _ = enqueueUnresolvedReload(registry: registry)
     }
 
     private func clearSessionState() {
@@ -2941,11 +2971,12 @@ final class ScannerViewModel: ObservableObject {
         if let pending = pendingChoice,
            pending.identifier.game == game,
            let lock,
-           pending.options.contains(where: {
-               $0.id.caseInsensitiveCompare(lock.finish.id) == .orderedSame
-           }),
-           lock.treatment.map({ pending.card.magicTreatments(for: lock.finish).contains($0) }) ?? true {
-            choose(lock.finish)
+           let catalogFinish = pending.options.first(where: { $0.id == lock.finish.id })
+                ?? (game == .onePiece ? nil : pending.options.first(where: {
+                    $0.id.caseInsensitiveCompare(lock.finish.id) == .orderedSame
+                })),
+           lock.treatment.map({ pending.card.magicTreatments(for: catalogFinish).contains($0) }) ?? true {
+            choose(catalogFinish)
         }
     }
 
@@ -3749,6 +3780,11 @@ final class ScannerViewModel: ObservableObject {
 
     func reloadUnresolvedScansForTesting(registry: PokemonCatalogRegistry? = nil) async {
         await reloadUnresolvedScans(registry: registry ?? currentPokemonRegistry)
+    }
+
+    func waitForUnresolvedPersistenceForTesting() async {
+        await unresolvedReloadTask?.value
+        await unresolvedPersistenceTask?.value
     }
 
     func clearResolvedUnresolvedRowsForTesting(

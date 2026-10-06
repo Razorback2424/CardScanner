@@ -1133,6 +1133,9 @@ final class CardScanner: NSObject, ObservableObject {
     }
 
     func start() {
+#if DEBUG && LOCAL_ONLY_SIGNING
+        if OnePieceCatalogBootstrap.isAcceptanceLaunch() { return }
+#endif
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         if let index = arguments.firstIndex(of: "-ui_debug_route"),

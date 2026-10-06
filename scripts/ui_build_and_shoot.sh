@@ -47,6 +47,15 @@ fi
 if [[ "$ROUTE" == Centering* ]]; then
   CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
   MARKER_PATH="$CONTAINER_PATH/Documents/centering-ui-ready.json"
+  MARKER_PATTERN='presentedImageFrame'
+  MARKER_ARTIFACT='centering-geometry.json'
+elif [[ "$ROUTE" == "OnePieceAcceptance" ]]; then
+  CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
+  MARKER_PATH="$CONTAINER_PATH/Documents/one-piece-ui-ready.json"
+  MARKER_PATTERN='onePieceAcceptanceReady'
+  MARKER_ARTIFACT='one-piece-ready.json'
+fi
+if [[ -n "${MARKER_PATH:-}" ]]; then
   rm -f "$MARKER_PATH"
   LAUNCH_ARGS+=("-ui_debug_ready_path" "$MARKER_PATH")
 fi
@@ -55,14 +64,14 @@ fi
 if [[ -n "${MARKER_PATH:-}" ]]; then
   settled=0
   for _ in $(seq 1 300); do
-    if [[ -f "$MARKER_PATH" ]] && rg -q 'presentedImageFrame' "$MARKER_PATH"; then
+    if [[ -f "$MARKER_PATH" ]] && rg -q "$MARKER_PATTERN" "$MARKER_PATH"; then
       settled=1
       break
     fi
     sleep 0.10
   done
-  [[ "$settled" == "1" ]] || { echo "Centering did not settle" >&2; exit 1; }
-  cp "$MARKER_PATH" "$ARTIFACTS_DIR/centering-geometry.json"
+  [[ "$settled" == "1" ]] || { echo "$ROUTE did not settle" >&2; exit 1; }
+  cp "$MARKER_PATH" "$ARTIFACTS_DIR/$MARKER_ARTIFACT"
   sleep 1
 else
   sleep "${UI_CAPTURE_DELAY_SECONDS:-2.5}"

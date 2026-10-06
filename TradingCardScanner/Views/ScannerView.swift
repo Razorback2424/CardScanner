@@ -19,6 +19,34 @@ struct ScannerView: View {
     @State private var isShowingSessionReview = false
     @State private var isShowingUnresolved = false
     @State private var pendingUnresolvedResolution: PendingUnresolvedResolution?
+#if DEBUG && LOCAL_ONLY_SIGNING
+    @Environment(\.cardGameRuntimes) private var runtimes
+    @State private var acceptanceNumber = OnePieceCatalogBootstrap.acceptanceNumber()
+    @State private var injectedAcceptanceSample = false
+
+    private var acceptanceReady: Bool {
+        OnePieceCatalogBootstrap.isAcceptanceLaunch() && injectedAcceptanceSample
+            && model.recognitionCount > 0 && !model.isIdentificationProcessingForTesting
+            && (model.pendingIdentityChoice != nil || model.pendingChoice != nil
+                || model.successCount > 0 || model.unresolvedCount > 0)
+    }
+
+    private func writeAcceptanceReadyMarker() {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard acceptanceReady,
+              let index = arguments.firstIndex(of: "-ui_debug_ready_path"),
+              arguments.indices.contains(index + 1) else { return }
+        try? Data(#"{"onePieceAcceptanceReady":true}"#.utf8)
+            .write(to: URL(fileURLWithPath: arguments[index + 1]), options: .atomic)
+    }
+
+    private func injectAcceptanceSample() {
+        guard let adapter = runtimes?.runtime(for: .onePiece)?.catalog as? OnePieceCatalogAdapter,
+              case let .identified(subject) = OnePieceScanProfile(registry: adapter.registry)
+                .identify([.init(text: acceptanceNumber)]) else { return }
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+    }
+#endif
 
     private struct PendingUnresolvedResolution {
         let id: UUID
@@ -74,6 +102,32 @@ struct ScannerView: View {
                 }
             )
         }
+#if DEBUG && LOCAL_ONLY_SIGNING
+        .safeAreaInset(edge: .top) {
+            if OnePieceCatalogBootstrap.isAcceptanceLaunch() {
+                VStack(spacing: 4) {
+                    Text("One Piece acceptance · Separate test collection")
+                        .font(.caption).foregroundStyle(.secondary)
+                    HStack {
+                        Menu(acceptanceNumber) {
+                            ForEach(["ST11-003", "ST01-003", "OP01-120", "P-001", "OP01-999"], id: \.self) { number in
+                                Button(number) { acceptanceNumber = number }
+                            }
+                        }
+                        Button("Inject number", action: injectAcceptanceSample)
+                            .accessibilityIdentifier("one-piece-acceptance-inject")
+                            .disabled(model.pendingIdentityChoice != nil || model.pendingChoice != nil
+                                || model.isIdentificationProcessingForTesting
+                                || runtimes?.runtime(for: .onePiece) == nil)
+                    }
+                }
+                .padding(8).frame(maxWidth: .infinity).background(.regularMaterial)
+            }
+        }
+        .onChange(of: acceptanceReady, initial: true) { _, ready in
+            if ready { writeAcceptanceReadyMarker() }
+        }
+#endif
         .onAppear {
 #if DEBUG
             if scannerScreenshotRoute == "PriceCheck" {
@@ -87,13 +141,28 @@ struct ScannerView: View {
             }
             guard scannerScreenshotRoute == nil else { return }
 #endif
+#if DEBUG && LOCAL_ONLY_SIGNING
+            let usesCamera = !OnePieceCatalogBootstrap.isAcceptanceLaunch()
+#else
+            let usesCamera = true
+#endif
             model.start(
                 context: modelContext,
                 isSceneActive: scenePhase == .active,
+                startCamera: usesCamera,
+                shouldRefreshMagicDirectory: usesCamera,
                 summaryStore: summaryStore,
                 writeCoordinator: writeCoordinator,
                 storageGeneration: storageGeneration
             )
+#if DEBUG && LOCAL_ONLY_SIGNING
+            if OnePieceCatalogBootstrap.isAcceptanceLaunch(), !injectedAcceptanceSample {
+                injectedAcceptanceSample = true
+                model.setPurpose(.collection)
+                model.clearFinishLocks()
+                injectAcceptanceSample()
+            }
+#endif
         }
         .onDisappear { model.viewDisappeared() }
         .onChange(of: scenePhase) { _, phase in

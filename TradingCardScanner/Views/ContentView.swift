@@ -257,6 +257,11 @@ struct ContentView: View {
             guard let storageToken = storageGeneration.currentToken() else { return }
             let shouldContinue = storageGeneration.continuation(for: storageToken)
             await projectionStore.rebuild(container: modelContext.container)
+#if DEBUG && LOCAL_ONLY_SIGNING
+            // Let launch migrations and the initial projection settle before
+            // the acceptance route starts a scanner bulk-write interval.
+            if OnePieceCatalogBootstrap.isAcceptanceLaunch() { selectedTab = .scan }
+#endif
             let report = await MagicTreatmentMigrationCoordinator.shared.runNetwork(
                 in: modelContext,
                 storageToken: storageToken,

@@ -338,9 +338,9 @@ struct CollectionStorageBootstrapDependencies {
     ) -> Self {
         var paths = CollectionStoragePaths.production(fileManager: fileManager)
 #if DEBUG && LOCAL_ONLY_SIGNING
-        if OnePieceCatalogBootstrap.isLocalReviewLaunch {
+        if let directory = OnePieceCatalogBootstrap.developerStorageDirectory() {
             paths = .production(resolvedApplicationSupportURL: paths.applicationSupportURL
-                .appendingPathComponent("OnePieceLocalReview", isDirectory: true))
+                .appendingPathComponent(directory, isDirectory: true))
         }
 #endif
         let manifestStore = CollectionStoreManifestStore(

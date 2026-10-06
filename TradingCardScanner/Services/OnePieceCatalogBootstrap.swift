@@ -71,6 +71,34 @@ enum OnePieceCatalogBootstrap {
     }
 
 #if DEBUG && LOCAL_ONLY_SIGNING
+    /// Deterministic UI acceptance uses the verified bundled corpus, real
+    /// scanner callbacks and its own persistent collection/recovery stores.
+    static func isAcceptanceLaunch(arguments: [String] = ProcessInfo.processInfo.arguments) -> Bool {
+        guard let index = arguments.firstIndex(of: "-ui_debug_route"),
+              arguments.indices.contains(index + 1) else { return false }
+        return arguments[index + 1] == "OnePieceAcceptance"
+    }
+
+    static func acceptanceNumber(arguments: [String] = ProcessInfo.processInfo.arguments) -> String {
+        let index = arguments.firstIndex(of: "-ui_debug_state")
+        let state = index.flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+        switch state {
+        case "starter": return "ST01-003"
+        case "booster": return "OP01-120"
+        case "unmapped": return "P-001"
+        case "unknown": return "OP01-999"
+        default: return "ST11-003"
+        }
+    }
+
+    static func developerStorageDirectory(arguments: [String] = ProcessInfo.processInfo.arguments) -> String? {
+        if isAcceptanceLaunch(arguments: arguments) { return "OnePieceAcceptance" }
+        let review = localReviewLaunchArguments(arguments: arguments, bundleIdentifier: Bundle.main.bundleIdentifier,
+            publicKey: Bundle.main.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_PUBLIC_KEY") as? String,
+            reviewEnabled: Bundle.main.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_ENABLED") as? Bool == true)
+        return review.contains("-one_piece_local_review") ? "OnePieceLocalReview" : nil
+    }
+
     /// The owner's installed app can use a signed local catalog with its normal
     /// collection. This does not select the isolated review storage paths.
     static func ownerRuntime(bundle: Bundle = .main, seedURL: URL? = nil, preferences: UserDefaults = .standard,

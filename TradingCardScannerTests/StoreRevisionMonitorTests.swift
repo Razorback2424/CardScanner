@@ -92,6 +92,10 @@ final class StoreRevisionMonitorTests: XCTestCase {
         let refresh = PriceRefreshController()
         let signal = PriceRefreshCompletionSignal()
         refresh.registerCompletionSignal(signal)
+        // The app starts Portfolio before enabling StoreRevisionMonitor.
+        // Otherwise its first replay opens the epoch after the quantity edit,
+        // and that baseline save legitimately requests another replay.
+        portfolio.start(context: context)
         let window = host(container: container, refresh: refresh, signal: signal,
                           writes: DerivedStateWriteCoordinator(), scene: MonitorScene(), portfolio: portfolio)
         defer { window.isHidden = true; window.rootViewController = nil }
@@ -100,6 +104,7 @@ final class StoreRevisionMonitorTests: XCTestCase {
         }
         try await Task.sleep(for: .milliseconds(500))
         let before = await computations.value
+        XCTAssertGreaterThan(before, 0, "The initial Portfolio replay must settle before testing a quantity change")
         card.quantity += 1
         try context.save()
         for _ in 0..<100 {
