@@ -96,7 +96,7 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
             printedIdentifier: canonical.printedNumber,
             releaseLabel: ["English", product?.label].compactMap { $0 }.joined(separator: " · "),
             treatmentLabel: printing.treatment, distributionLabel: [printing.distributionLabel, printing.stamp].compactMap { $0 }.joined(separator: " · "),
-            releaseDate: product?.releaseDate.flatMap(Self.releaseDate),
+            releaseDate: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate),
             thumbnailURL: registry.artworkByID[printing.artworkID]?.referenceImageURL,
             artworkID: includeAdditionalDetails ? printing.artworkID.uuidString.lowercased() : nil,
             distinctionLabels: includeAdditionalDetails ? [
@@ -114,6 +114,8 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
             setName: product?.label ?? printing.distributionLabel ?? "One Piece", setCode: OnePieceTextNormalization.prefix(of: canonical.printedNumber) ?? "",
             cardNumber: canonical.printedNumber, printedIdentifier: canonical.printedNumber,
             displayImageURL: image, thumbnailImageURL: image,
+            setReleaseOrder: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate)
+                .map { Int($0.timeIntervalSince1970 / 86_400) } ?? 0,
             variantEvidence: .init(game: game, setID: printing.releaseID ?? "one-piece-distribution",
                 cardNumber: canonical.printedNumber, catalogVariants: printing.supportedVariantIDs.compactMap { id in
                     registry.variantsByID[id].map { PhysicalVariant(id: $0.id, label: $0.label) }
@@ -121,9 +123,4 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
         return .init(card, retrievedAt: registry.retrievedAt, path: .cacheHit)
     }
 
-    private static func releaseDate(_ value: String) -> Date? {
-        let formatter = DateFormatter(); formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0); formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.date(from: value)
-    }
 }

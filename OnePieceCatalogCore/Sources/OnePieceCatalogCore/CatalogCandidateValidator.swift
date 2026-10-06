@@ -91,7 +91,16 @@ public enum OnePieceCatalogCandidateValidator {
         }
         for variant in state.variants {
             if !OnePieceTextNormalization.nonempty(variant.id) || variant.id.contains("#") ||
+                variant.id != variant.id.trimmingCharacters(in: .whitespacesAndNewlines) ||
                 !OnePieceTextNormalization.nonempty(variant.label) { fail("invalidVariant", variant.id) }
+        }
+        for product in state.products {
+            if !OnePieceTextNormalization.nonempty(product.id) ||
+                product.id != product.id.trimmingCharacters(in: .whitespacesAndNewlines) ||
+                !OnePieceTextNormalization.nonempty(product.label) ||
+                product.releaseDate.map({ OnePieceTextNormalization.releaseDate($0) == nil }) == true {
+                fail("invalidProduct", product.id)
+            }
         }
         for observation in release.observations {
             if !validAlias(observation.alias) || !OnePieceTextNormalization.nonempty(observation.id) ||
@@ -210,6 +219,7 @@ public enum OnePieceCatalogCandidateValidator {
                     }
                 }
             }
+            unique(printing.marketMappings, "duplicateMarketMapping")
             unique(printing.supersedes, "duplicateSupersession")
             if printing.status == .superseded && !state.printings.contains(where: { $0.supersedes.contains(printing.id) }) {
                 fail("orphanSupersededPrinting", context)
@@ -263,8 +273,18 @@ public enum OnePieceCatalogCandidateValidator {
                 appearance.observationIDs.isEmpty || appearance.observationIDs.contains(where: { observations[$0] == nil }) {
                 fail("invalidProductAppearance", appearance.productID)
             }
-            if !appearance.observationIDs.contains(where: {
-                observations[$0]?.productEvidence.contains(appearance.productID) == true
+            if !appearance.observationIDs.contains(where: { id in
+                guard let printing = printings[appearance.printingID],
+                      let observation = observations[id] else { return false }
+                return observation.kind == .catalog && observation.productEvidence.contains(appearance.productID)
+                    && observation.language == printing.language
+                    && observation.printedEvidence["number"] == cards[printing.canonicalCardID]?.printedNumber
+                    // Explicit retained identity review also anchors historical
+                    // appearances after a reviewed source-alias reassignment.
+                    && (printing.sourceAliases.contains(observation.alias)
+                        || printing.review?.evidence.contains(where: {
+                            $0.kind == .printedIdentity && $0.observationID == id
+                        }) == true)
             }) { fail("missingProductAppearanceEvidence", appearance.productID) }
         }
         for inventory in release.inventories {

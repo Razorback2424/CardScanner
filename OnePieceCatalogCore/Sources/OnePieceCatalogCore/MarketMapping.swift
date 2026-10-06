@@ -34,7 +34,12 @@ public struct OnePieceMarketMapping: Codable, Hashable, Sendable {
         let qualifiers: [String: String]
     }
     public var quoteIdentity: QuoteIdentity {
-        .init(provider: provider, productID: productID, providerVariantID: providerVariantID,
-              market: market, currency: currency, condition: condition, qualifiers: qualifiers)
+        // TCGplayer's numeric product and lane identify one external SKU.
+        // Titles/groups are reviewed metadata, not permission to assign that
+        // same SKU to another physical printing. Numeric aliases share it too.
+        let product = provider == "tcgplayer" ? UInt64(productID).map(String.init) ?? productID : productID
+        return .init(provider: provider, productID: product, providerVariantID: providerVariantID,
+              market: market, currency: currency, condition: condition,
+              qualifiers: provider == "tcgplayer" && providerVariantID != nil ? [:] : qualifiers)
     }
 }

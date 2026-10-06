@@ -190,7 +190,8 @@ actor CardCatalog {
               identifier.catalogGeneration == adapter.generation else { throw CatalogLookupError.staleCatalog }
         switch try await lookupOutcome(for: identifier) {
         case let .needsPrintingChoice(canonical, candidates):
-            guard candidates.contains(candidate), canonical.id == candidate.canonicalCardID else {
+            guard candidates.contains(where: { $0.matchesPersistedChoice(candidate) }),
+                  canonical.id == candidate.canonicalCardID else {
                 throw CatalogLookupError.invalidPrintingChoice
             }
         case let .resolved(resolution):

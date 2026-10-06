@@ -150,16 +150,19 @@ enum VariantResolver {
         // stamp is present. It must not silently answer the stamped question.
         let includesCatalogStampChoice = possible.contains(where: PokemonCatalogStampVariant.isStamped)
         if let finishLock, stamped.isEmpty, !includesCatalogStampChoice {
-            let physicalFinishMatches = possible.contains(where: {
-                $0.id.caseInsensitiveCompare(finishLock.finish.id) == .orderedSame
-            })
-            guard physicalFinishMatches else {
+            // One Piece finish IDs are exact ownership/price keys. Preserve
+            // legacy games' fallback, but always return the catalog's finish.
+            let catalogFinish = possible.first(where: { $0.id == finishLock.finish.id })
+                ?? (evidence.game == .onePiece ? nil : possible.first(where: {
+                    $0.id.caseInsensitiveCompare(finishLock.finish.id) == .orderedSame
+                }))
+            guard let catalogFinish else {
                 return .needsChoice(options: ordered(possible), lockDidNotApply: finishLock)
             }
 
             if let treatment = finishLock.treatment {
                 let treatmentAppliesToFinish = treatment.requiredFinishes.isEmpty
-                    || treatment.requiredFinishes.contains(finishLock.finish)
+                    || treatment.requiredFinishes.contains(catalogFinish)
                 guard evidence.game == .magic,
                       evidence.magicTreatments.contains(treatment),
                       treatmentAppliesToFinish else {
@@ -168,7 +171,7 @@ enum VariantResolver {
             }
 
             return .resolved(
-                ResolvedVariant(variant: finishLock.finish, resolution: .finishLock)
+                ResolvedVariant(variant: catalogFinish, resolution: .finishLock)
             )
         }
 

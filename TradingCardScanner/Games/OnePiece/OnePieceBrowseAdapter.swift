@@ -35,7 +35,7 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
             let setID = CatalogSetID(game: .onePiece, providerID: productID)
             let set = CatalogSet(catalogID: setID, name: product?.label ?? "Other releases",
                 code: product?.label ?? "Other releases", logoURL: nil, symbolURL: nil, cardCount: printings.count,
-                releaseDate: product?.releaseDate.flatMap(Self.date), sortRank: 0,
+                releaseDate: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate), sortRank: 0,
                 physicalPrintingIDs: Set(printings.map { $0.id.uuidString.lowercased() }))
             sets[setID] = set
             cards[setID] = printings.compactMap { printing in
@@ -110,9 +110,4 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                      nextCursor: end < rows.count ? "\(generation):\(fingerprint):\(end)" : nil)
     }
 
-    private static func date(_ value: String) -> Date? {
-        let formatter = DateFormatter(); formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0); formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.date(from: value)
-    }
 }

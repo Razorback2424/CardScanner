@@ -21,7 +21,8 @@ struct OnePieceImportAdapter: GameImportAdapter {
               entry.justTCGCardID == nil, entry.justTCGVariantID == nil else {
             throw GameImportValidationError.contradictoryIdentity
         }
-        guard entry.variant == nil || card.variantEvidence.catalogVariants.contains(where: { $0.id == entry.variant?.id }) else {
+        guard let variant = entry.variant else { throw GameImportValidationError.missingFinish }
+        guard card.variantEvidence.catalogVariants.contains(where: { $0.id == variant.id }) else {
             throw GameImportValidationError.unsupportedFinish
         }
         guard entry.collectionKey == card.collectionKey(variant: entry.variant) else {

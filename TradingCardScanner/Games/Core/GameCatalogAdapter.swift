@@ -56,6 +56,17 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
 
     var choiceLabel: String { ([choiceTitle] + identificationDetails).joined(separator: " · ") }
 
+    /// Older persisted choices predate the optional artwork/footer fields.
+    /// All original identity and presentation fields must still agree; supplied
+    /// newer evidence must match in full rather than being silently discarded.
+    func matchesPersistedChoice(_ candidate: Self) -> Bool {
+        guard candidate.artworkID == nil, candidate.distinctionLabels == nil else { return self == candidate }
+        return candidate == Self(id: id, game: game, canonicalCardID: canonicalCardID,
+            language: language, catalogGeneration: catalogGeneration, name: name,
+            printedIdentifier: printedIdentifier, releaseLabel: releaseLabel, treatmentLabel: treatmentLabel,
+            distributionLabel: distributionLabel, releaseDate: releaseDate, thumbnailURL: thumbnailURL)
+    }
+
     /// Prefer the shortest published distinction, retaining longer evidence
     /// when otherwise identical labels would collapse two physical choices.
     func compactChoiceLabel(among candidates: [Self]) -> String {

@@ -81,11 +81,58 @@ private actor OnePiecePriceRequestGate {
     }
 }
 
+private final class OnePieceRecoveryReadGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private let release = DispatchSemaphore(value: 0)
+    private let blockedRead: Int
+    private var readCount = 0
+    private var started = false
+    init(blockedRead: Int = 1) { self.blockedRead = blockedRead }
+    var hasStarted: Bool { lock.withLock { started } }
+    func read(_ url: URL) throws -> Data {
+        let blocked = lock.withLock {
+            readCount += 1
+            guard readCount == blockedRead else { return false }
+            started = true
+            return true
+        }
+        if blocked { _ = release.wait(timeout: .now() + 10) }
+        return try Data(contentsOf: url)
+    }
+    func resume() { release.signal() }
+}
+
 @MainActor
 final class OnePieceIntegrationTests: XCTestCase {
     private let date = "2026-10-03T00:00:00Z"
 
 #if DEBUG && LOCAL_ONLY_SIGNING
+    func testAcceptanceLaunchSeparatesCollectionAndRecoveryFromOwnerAndReviewStorage() throws {
+        XCTAssertNil(OnePieceCatalogBootstrap.developerStorageDirectory(arguments: ["app"]))
+        XCTAssertNil(OnePieceCatalogBootstrap.developerStorageDirectory(arguments: ["app", "-ui_debug_route"]))
+        XCTAssertNil(OnePieceCatalogBootstrap.developerStorageDirectory(arguments: ["app", "-ui_debug_route", "PrintingChoice"]))
+        XCTAssertEqual(OnePieceCatalogBootstrap.developerStorageDirectory(arguments: ["app", "-one_piece_local_review"]),
+                       "OnePieceLocalReview")
+        let args = ["app", "-ui_debug_route", "OnePieceAcceptance"]
+        XCTAssertEqual(OnePieceCatalogBootstrap.developerStorageDirectory(arguments: args), "OnePieceAcceptance")
+        XCTAssertEqual(OnePieceCatalogBootstrap.acceptanceNumber(arguments: args), "ST11-003")
+        XCTAssertEqual(OnePieceCatalogBootstrap.acceptanceNumber(arguments: args + ["-ui_debug_state", "unknown"]), "OP01-999")
+        let registry = try reviewedAwardRegistry()
+        let profile = OnePieceScanProfile(registry: registry)
+        for state in ["same-number", "starter", "booster", "unmapped", "unknown"] {
+            let number = OnePieceCatalogBootstrap.acceptanceNumber(arguments: args + ["-ui_debug_state", state])
+            guard case .identified = profile.identify([.init(text: number)]) else {
+                return XCTFail("Acceptance sample \(state) must enter the real catalog lookup")
+            }
+        }
+        XCTAssertNil(registry.printingsByCanonicalID["one-piece:en:OP01-999"])
+        let ordinary = CollectionStoragePaths.production()
+        let acceptance = CollectionStoragePaths.production(resolvedApplicationSupportURL:
+            ordinary.applicationSupportURL.appendingPathComponent("OnePieceAcceptance"))
+        XCTAssertNotEqual(acceptance.structuredStoreURL, ordinary.structuredStoreURL)
+        XCTAssertNotEqual(acceptance.collectionStorageDirectoryURL, ordinary.collectionStorageDirectoryURL)
+    }
+
     func testShikiScanSavesWithoutPrintingOrFinishPicker() async throws {
         let suite = "OnePieceShikiTests-\(UUID())"
         let preferences = try XCTUnwrap(UserDefaults(suiteName: suite))
@@ -594,6 +641,304 @@ final class OnePieceIntegrationTests: XCTestCase {
     }
 #endif
 
+    func testFullCatalogSameNumberSameFinishPersistsSeparateOwnershipPricesAndCSV() async throws {
+        let registry = try reviewedAwardRegistry()
+        let number = "ST11-003"
+        let originals = try XCTUnwrap(registry.printingsByCanonicalID["one-piece:en:" + number])
+            .filter { $0.status == .verified }
+        let mapped = try XCTUnwrap(originals.first { !$0.marketMappings.isEmpty })
+        let unmapped = try XCTUnwrap(originals.first { $0.marketMappings.isEmpty })
+        XCTAssertEqual(mapped.supportedVariantIDs, ["normal"])
+        XCTAssertEqual(unmapped.supportedVariantIDs, ["normal"], "The finish must not hide a borrowed-printing quote")
+        let source = OnePieceTestPriceSource()
+        let runtimes = try acceptanceRuntimes(registry: registry, source: source)
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceRoundTrip-\(UUID())")
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let paths = CollectionStoragePaths.production(resolvedApplicationSupportURL: root)
+        let container = try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: .onDevice)
+        runtimes.configureCollectionAuthority(for: container)
+        let model = ScannerViewModel(gameRegistry: runtimes.registry, priceQuoteService: runtimes.makePriceQuoteService(),
+            catalog: runtimes.makeCardCatalog(), unresolvedScanStore: UnresolvedScanStore(fileURL: root.appendingPathComponent("recovery.json")))
+        model.start(context: container.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { model.viewDisappeared() }
+        guard case let .identified(subject) = OnePieceScanProfile(registry: registry).identify([.init(text: number)]) else {
+            return XCTFail("Retained Uta number must be recognized")
+        }
+        for (index, printing) in [mapped, unmapped].enumerated() {
+            model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+            let presented = await waitUntil { model.pendingIdentityChoice != nil }
+            XCTAssertTrue(presented)
+            let choices = try XCTUnwrap(model.pendingIdentityChoice).displayCandidates
+            XCTAssertEqual(Set(choices.map(\.id)), Set(originals.map { $0.id.uuidString.lowercased() }))
+            model.choose(try XCTUnwrap(choices.first { $0.id == printing.id.uuidString.lowercased() }))
+            let saved = await waitUntil { model.successCount == index + 1 && !model.isIdentificationProcessingForTesting }
+            XCTAssertTrue(saved)
+            XCTAssertNil(model.pendingChoice, "Both exact printings have one supported finish")
+        }
+        let mappedKey = PriceRecord.key(game: .onePiece, printingID: mapped.id.uuidString.lowercased(), variantID: "normal")
+        let unmappedKey = PriceRecord.key(game: .onePiece, printingID: unmapped.id.uuidString.lowercased(), variantID: "normal")
+        let priced = await waitUntil {
+            PriceStore(context: ModelContext(container)).record(forKey: mappedKey)?.effectiveUnitMarketPriceUSD == 8.16
+        }
+        XCTAssertTrue(priced)
+        model.viewDisappeared()
+
+        // Reopen the production on-device factory's disk stores, then run the
+        // same stored-printing refresh lane used by Collection.
+        let reopened = try CollectionStorageBootstrapDependencies.makeContainer(paths: paths, mode: .onDevice)
+        runtimes.configureCollectionAuthority(for: reopened)
+        let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(Set(rows.map(\.providerID)), Set([mapped, unmapped].map { $0.id.uuidString.lowercased() }))
+        XCTAssertEqual(Set(rows.map(\.collectionKey)).count, 2)
+        XCTAssertTrue(rows.allSatisfy { $0.quantity == 1 && $0.variantID == "normal" && $0.cardNumber == number })
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>()).map(\.deltaQuantity).sorted(), [1, 1])
+        let retainedQuote = try XCTUnwrap(PriceStore(context: reopened.mainContext).record(forKey: mappedKey))
+        XCTAssertEqual(retainedQuote.effectiveUnitMarketPriceUSD, 8.16)
+        // A freshly checked mapped quote is deliberately skipped by refresh.
+        // Age only its check timestamp to exercise the actual overdue lane.
+        retainedQuote.lastCheckedAt = Date.now.addingTimeInterval(-PriceRefreshController.automaticRefreshInterval - 1)
+        try reopened.mainContext.save()
+        let refresh = PriceRefreshModelActor(modelContainer: reopened)
+        await refresh.configureGamePricing(.init(registry: runtimes.registry,
+            adapters: try .init(adapters: [OnePiecePriceAdapter(registry: registry, source: source)])))
+        _ = await refresh.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false),
+            progress: { _ in }, shouldContinue: nil)
+        let prices = PriceStore(context: ModelContext(reopened))
+        XCTAssertEqual(prices.record(forKey: mappedKey)?.effectiveUnitMarketPriceUSD, 8.16)
+        XCTAssertNil(prices.record(forKey: unmappedKey)?.effectiveUnitMarketPriceUSD)
+        let calls = await source.calls
+        XCTAssertEqual(calls, 2, "Only the mapped printing may fetch, once on scan and once on refresh")
+
+        let browse = runtimes.makeBrowseCatalog()
+        let sets = try await browse.sets(for: .onePiece)
+        var browseAddCard: IdentifiedCard?
+        for printing in [mapped, unmapped] {
+            let set = try XCTUnwrap(sets.first { $0.catalogID.providerID == printing.releaseID })
+            let page = try await browse.cards(in: set, cursor: nil)
+            let summary = try XCTUnwrap(page.items.first { $0.providerID == printing.id.uuidString.lowercased() })
+            let details = try await browse.details(for: summary)
+            XCTAssertEqual(details.card.providerID, printing.id.uuidString.lowercased())
+            XCTAssertEqual(details.card.cardNumber, number)
+            if printing.id == unmapped.id { browseAddCard = details.card }
+        }
+        let plan = try CollectionCSV.parse(Data(CollectionCSV.export(rows).text.utf8))
+        XCTAssertEqual(plan.entries.count, 2)
+        let importRoot = root.appendingPathComponent("CSV", isDirectory: true)
+        try FileManager.default.createDirectory(at: importRoot, withIntermediateDirectories: true)
+        let imported = try CollectionStorageBootstrapDependencies.makeContainer(
+            paths: .production(resolvedApplicationSupportURL: importRoot), mode: .onDevice)
+        runtimes.configureCollectionAuthority(for: imported)
+        let result = try CollectionCSV.apply(plan, to: imported.mainContext, gameRegistry: runtimes.registry,
+                                            gameImportAdapters: runtimes.makeImportAdapters())
+        XCTAssertEqual(result.importedQuantity, 2)
+        XCTAssertTrue(result.failedRows.isEmpty)
+        let restored = try imported.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Set(restored.map(\.collectionKey)), Set(rows.map(\.collectionKey)))
+        XCTAssertEqual(Set(restored.map(\.priceKey)), Set(rows.map(\.priceKey)))
+        XCTAssertTrue(restored.allSatisfy { $0.quantity == 1 && $0.variantID == "normal" })
+        XCTAssertNil(PriceStore(context: imported.mainContext).record(forKey: unmappedKey)?.effectiveUnitMarketPriceUSD)
+        // Add the later printing through the same exact detail card and store
+        // API used by Browse. It must merge only that UUID's owned position.
+        _ = try CollectionStore(context: imported.mainContext).add(try XCTUnwrap(browseAddCard),
+            resolved: .init(variant: .normal, resolution: .uniqueInCatalog))
+        let afterBrowse = try imported.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(afterBrowse.count, 2)
+        XCTAssertEqual(afterBrowse.first { $0.providerID == unmapped.id.uuidString.lowercased() }?.quantity, 2)
+        XCTAssertEqual(afterBrowse.first { $0.providerID == mapped.id.uuidString.lowercased() }?.quantity, 1)
+        XCTAssertNil(PriceStore(context: imported.mainContext).record(forKey: unmappedKey)?.effectiveUnitMarketPriceUSD)
+    }
+
+    func testFullCatalogEligibilityAndFinishesAgreeAcrossScanBrowseAndCSV() async throws {
+        let registry = try reviewedAwardRegistry()
+        let adapter = OnePieceCatalogAdapter(registry: registry)
+        let browse = OnePieceBrowseAdapter(registry: registry)
+        let profile = OnePieceScanProfile(registry: registry)
+        let eligible = registry.printingByID.values.filter { $0.status == .verified && $0.language == "en" }
+        let expectedIDs = Set(eligible.map { $0.id.uuidString.lowercased() })
+        var cardsByID: [String: ResolvedCatalogCard] = [:]
+        for set in try await browse.sets() {
+            var cursor: String?
+            repeat {
+                let page = try await browse.cards(in: set, cursor: cursor)
+                for summary in page.items {
+                    XCTAssertTrue(expectedIDs.contains(summary.providerID), "Browse must not admit held printings")
+                    let details = try await browse.details(for: summary)
+                    XCTAssertEqual(details.card.physicalPrintingID, summary.providerID)
+                    let printing = try XCTUnwrap(UUID(uuidString: summary.providerID).flatMap { registry.printingByID[$0] })
+                    XCTAssertEqual(Set(details.card.variantEvidence.catalogVariants.map(\.id)), Set(printing.supportedVariantIDs))
+                    cardsByID[summary.providerID] = details.card
+                }
+                cursor = page.nextCursor
+            } while cursor != nil
+        }
+        XCTAssertEqual(Set(cardsByID.keys), expectedIDs, "Every eligible printing must remain reachable in Browse")
+        for canonical in registry.canonicalByPrintedNumber.values {
+            let printings = (registry.printingsByCanonicalID[canonical.id] ?? []).filter { $0.status == .verified }
+            guard case let .identified(subject) = profile.identify([.init(text: canonical.printedNumber)]) else {
+                return XCTFail("Catalog number \(canonical.printedNumber) must remain recognizable")
+            }
+            switch try await adapter.lookup(subject.identifier) {
+            case let .resolved(resolution):
+                XCTAssertEqual(printings.count, 1)
+                XCTAssertEqual(resolution.card.physicalPrintingID, printings.first?.id.uuidString.lowercased())
+                XCTAssertFalse(resolution.card.variantEvidence.catalogVariants.isEmpty)
+            case let .needsPrintingChoice(_, candidates):
+                XCTAssertGreaterThan(printings.count, 1)
+                XCTAssertEqual(Set(candidates.map(\.id)), Set(printings.map { $0.id.uuidString.lowercased() }))
+                XCTAssertTrue(candidates.allSatisfy { $0.selectionEvidence(among: candidates) != .insufficient },
+                              "Verified choices must carry a usable collector distinction")
+            case .catalogIncomplete:
+                XCTAssertTrue(printings.isEmpty, "Held-only numbers must remain retryable and unowned")
+            }
+        }
+        for printing in registry.printingByID.values where printing.status != .verified || printing.language != "en" {
+            XCTAssertThrowsError(try adapter.resolution(forPrintingID: printing.id))
+        }
+        let rows = cardsByID.values.flatMap { card in
+            card.variantEvidence.catalogVariants.map { finish in
+                CollectedCard(card: card, resolved: .init(variant: finish, resolution: .userConfirmed))
+            }
+        }
+        let plan = try CollectionCSV.parse(Data(CollectionCSV.export(rows).text.utf8))
+        XCTAssertEqual(plan.entries.count, rows.count)
+        XCTAssertEqual(plan.skippedRows, 0)
+        let importer = OnePieceImportAdapter(registry: registry)
+        for entry in plan.entries { XCTAssertNoThrow(try importer.validate(entry)) }
+    }
+
+    func testFullCatalogPrintingSkipSurvivesRecoveryRelaunchAndRetriesExactChoice() async throws {
+        let registry = try reviewedAwardRegistry()
+        let runtimes = try acceptanceRuntimes(registry: registry, source: OnePieceTestPriceSource())
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceSkippedChoice-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let file = root.appendingPathComponent("recovery.json")
+        let recovery = UnresolvedScanStore(fileURL: file)
+        let (first, container) = try model(registry: registry, fixtureWritesEnabled: true, unresolvedScanStore: recovery)
+        defer { first.viewDisappeared() }
+        guard case let .identified(subject) = OnePieceScanProfile(registry: registry).identify([.init(text: "ST11-003")]) else {
+            return XCTFail()
+        }
+        first.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+        let presented = await waitUntil { first.pendingIdentityChoice != nil }
+        XCTAssertTrue(presented)
+        first.dismissIdentityChoice()
+        let skipped = try XCTUnwrap(first.unresolvedScans.first)
+        XCTAssertEqual(first.successCount, 0)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+        // Explicitly flush the same store used by scanner persistence before
+        // constructing a new model, without relying on a filesystem delay.
+        let flushed = await recovery.save(first.unresolvedScans)
+        XCTAssertTrue(flushed)
+        first.viewDisappeared()
+        let (second, secondContainer) = try model(registry: registry, fixtureWritesEnabled: true,
+            unresolvedScanStore: UnresolvedScanStore(fileURL: file))
+        defer { second.viewDisappeared() }
+        let loaded = await waitUntil { second.unresolvedScans.contains { $0.id == skipped.id && !$0.isReadOnly } }
+        XCTAssertTrue(loaded)
+        second.resolveUnresolved(id: skipped.id, choice: .retryLookup)
+        let retryPresented = await waitUntil { second.pendingIdentityChoice != nil }
+        XCTAssertTrue(retryPresented)
+        let printing = try XCTUnwrap(registry.printingsByCanonicalID["one-piece:en:ST11-003"]?.first {
+            $0.status == .verified && $0.marketMappings.isEmpty
+        })
+        second.choose(try XCTUnwrap(second.pendingIdentityChoice?.displayCandidates.first {
+            $0.id == printing.id.uuidString.lowercased()
+        }))
+        let saved = await waitUntil { second.successCount == 1 && second.unresolvedScans.isEmpty }
+        XCTAssertTrue(saved)
+        let owned = try XCTUnwrap(secondContainer.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(owned.providerID, printing.id.uuidString.lowercased())
+        XCTAssertEqual(owned.quantity, 1)
+        XCTAssertNil(PriceStore(context: secondContainer.mainContext).record(forKey: owned.priceKey)?.effectiveUnitMarketPriceUSD)
+        try runtimes.makeImportAdapters().validate(try XCTUnwrap(
+            CollectionCSV.parse(Data(CollectionCSV.export([owned]).text.utf8)).entries.first))
+    }
+
+    func testEncounterDuringRecoveryLoadingMergesEarlierWorkWithoutFalseSaveFailure() async throws {
+        let registry = try registry()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceRecoveryStartup-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let file = root.appendingPathComponent("recovery.json")
+        let profile = OnePieceScanProfile(registry: registry)
+        guard case let .identified(earlierSubject) = profile.identify([.init(text: "OP99-998")]),
+              case let .identified(newSubject) = profile.identify([.init(text: "OP99-999")]) else { return XCTFail() }
+        let earlier = UnresolvedScan(subject: earlierSubject, reason: .noCatalogEntry)
+        let seed = UnresolvedScanStore(fileURL: file)
+        let seeded = await seed.save([earlier])
+        XCTAssertTrue(seeded)
+        let gate = OnePieceRecoveryReadGate()
+        defer { gate.resume() }
+        let store = UnresolvedScanStore(fileURL: file, readData: { try gate.read($0) })
+        let (model, container) = try model(registry: registry, fixtureWritesEnabled: true, unresolvedScanStore: store)
+        defer { model.viewDisappeared() }
+        let loading = await waitUntil { gate.hasStarted }
+        XCTAssertTrue(loading)
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), newSubject, nil)
+        let encountered = await waitUntil { model.unresolvedScans.contains { $0.displayIdentifier == "OP99-999" } }
+        XCTAssertTrue(encountered)
+        // A second catalog-driven reload must not invalidate the first load's
+        // merge token or let an early save overwrite the retained backlog.
+        let secondReload = Task { await model.reloadUnresolvedScansForTesting() }
+        await Task.yield()
+        gate.resume()
+        await secondReload.value
+        await model.waitForUnresolvedPersistenceForTesting()
+        XCTAssertEqual(Set(model.unresolvedScans.map(\.displayIdentifier)), ["OP99-998", "OP99-999"])
+        XCTAssertFalse(model.note?.text.contains("could not be saved") ?? false)
+        let reopened = await UnresolvedScanStore(fileURL: file).load(
+            gameCatalogAdapters: try .init(adapters: [OnePieceCatalogAdapter(registry: registry)]))
+        XCTAssertEqual(Set(reopened.map(\.displayIdentifier)), ["OP99-998", "OP99-999"])
+        XCTAssertTrue(reopened.contains { $0.id == earlier.id })
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+    }
+
+    func testDismissalDuringRecoveryReloadCannotResurrectPersistedEncounter() async throws {
+        let registry = try registry()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent("OnePieceRecoveryDismissal-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: root) }
+        let file = root.appendingPathComponent("recovery.json")
+        let profile = OnePieceScanProfile(registry: registry)
+        guard case let .identified(subject) = profile.identify([.init(text: "OP99-999")]) else { return XCTFail() }
+        let earlier = UnresolvedScan(subject: subject, reason: .noCatalogEntry)
+        let seeded = await UnresolvedScanStore(fileURL: file).save([earlier])
+        XCTAssertTrue(seeded)
+        let gate = OnePieceRecoveryReadGate(blockedRead: 2)
+        defer { gate.resume() }
+        let store = UnresolvedScanStore(fileURL: file, readData: { try gate.read($0) })
+        let (model, _) = try model(registry: registry, fixtureWritesEnabled: true, unresolvedScanStore: store)
+        defer { model.viewDisappeared() }
+        let loaded = await waitUntil { model.unresolvedScans.contains { $0.id == earlier.id } }
+        XCTAssertTrue(loaded)
+        await model.waitForUnresolvedPersistenceForTesting()
+        let reload = Task { await model.reloadUnresolvedScansForTesting() }
+        let blocked = await waitUntil { gate.hasStarted }
+        XCTAssertTrue(blocked)
+        model.dismissUnresolved(id: earlier.id)
+        gate.resume()
+        await reload.value
+        await model.waitForUnresolvedPersistenceForTesting()
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+        let reopened = await UnresolvedScanStore(fileURL: file).load()
+        XCTAssertTrue(reopened.isEmpty)
+        XCTAssertFalse(model.note?.text.contains("could not be saved") ?? false)
+    }
+
+    private func acceptanceRuntimes(registry: OnePieceCatalogRegistry, source: any OnePieceMarketPriceSource) throws -> CardGameRuntimeContainer {
+        try CardGameRuntimeContainer(runtimes: [.init(
+            descriptor: .init(game: .onePiece, displayName: "One Piece", sortOrder: 0,
+                              capabilities: [.scan, .browse, .pricing, .collectionWrite]),
+            variantPolicy: OnePieceVariantPolicy(registry: registry),
+            pricing: OnePiecePriceAdapter(registry: registry, source: source),
+            recognizer: OnePieceRecognitionAdapter(profile: .init(registry: registry)),
+            catalog: OnePieceCatalogAdapter(registry: registry), browse: OnePieceBrowseAdapter(registry: registry),
+            importer: OnePieceImportAdapter(registry: registry), priceAuthority: OnePiecePriceAdapter.priceAuthority(registry))])
+    }
+
     func testRealRetailNamiBaseCaseUsesProductPrintingAndManufacturerFoil() async throws {
         let reviewed = try reviewedAwardRegistry()
         let product = "product:premium-card-collection-film-red-2023"
@@ -1085,9 +1430,10 @@ final class OnePieceIntegrationTests: XCTestCase {
                           revision: Int = 1, multiProduct: Bool = false,
                           includeFooterEvidence: Bool = false, sharedReleaseLabels: Bool = false,
                           withMarketMapping: Bool = false,
-                          firstStatus: OnePieceReconciliationStatus = .verified) throws -> OnePieceCatalogRegistry {
+                          firstStatus: OnePieceReconciliationStatus = .verified,
+                          language: String = "en", releaseDate: String? = nil) throws -> OnePieceCatalogRegistry {
         let number = "OP01-120"
-        let card = OnePieceCanonicalCard(printedNumber: number, language: "en", name: "Fixture Shanks",
+        let card = OnePieceCanonicalCard(printedNumber: number, language: language, name: "Fixture Shanks",
             printingCoverageComplete: complete && !withMarketMapping,
             coverageReviewReference: complete && !withMarketMapping ? "fixture-coverage" : nil)
         let artworkID = uuid(900)
@@ -1097,11 +1443,11 @@ final class OnePieceIntegrationTests: XCTestCase {
         var products: [OnePieceProduct] = []
         for index in 0..<count {
             let product = OnePieceProduct(id: "fixture-release-\(index)",
-                label: sharedReleaseLabels ? "Fixture release" : "Fixture release \(index)")
+                label: sharedReleaseLabels ? "Fixture release" : "Fixture release \(index)", releaseDate: releaseDate)
             products.append(product)
             let observation = OnePieceProviderNormalizer.observation(provider: .bandai, capture: .init(
                 observationID: "fixture-observation-\(index)", sourceID: "fixture-row-\(index)",
-                sourceURL: URL(string: "https://fixture.invalid/\(index)")!, observedAt: date, language: "en",
+                sourceURL: URL(string: "https://fixture.invalid/\(index)")!, observedAt: date, language: language,
                 payloadBytes: Data("fixture source \(index)".utf8), imageBytes: Data("fixture art".utf8),
                 productEvidence: [product.id] + (multiProduct && index == 0 ? ["fixture-bundle"] : []),
                 printedEvidence: includeFooterEvidence
@@ -1113,7 +1459,7 @@ final class OnePieceIntegrationTests: XCTestCase {
                 let market = OnePieceSourceObservation(id: "fixture-market", kind: .market,
                     alias: .init(provider: "tcgplayer", sourceID: "454664"),
                     sourceURL: URL(string: "https://tcgcsv.com/tcgplayer/68/3188/products")!,
-                    observedAt: date, language: "en", payloadSHA256: imageHash,
+                    observedAt: date, language: language, payloadSHA256: imageHash,
                     productEvidence: [product.id], printedEvidence: ["number": number,
                         "marketProductID": "454664", "marketVariantID": "Foil", "finishVariantID": "foil",
                         "market": "us", "currency": "USD", "condition": "aggregate",
@@ -1133,7 +1479,7 @@ final class OnePieceIntegrationTests: XCTestCase {
                     .init(kind: $0, observationID: observation.id, detail: "Synthetic fixture evidence")
                 })
             printings.append(.init(id: uuid(index + 1), canonicalCardID: card.id, artworkID: artworkID,
-                language: "en", region: includeFooterEvidence ? "North America" : nil,
+                language: language, region: includeFooterEvidence ? "North America" : nil,
                 releaseID: product.id, blockText: includeFooterEvidence ? "\(index)" : nil,
                 copyrightText: includeFooterEvidence ? "Fixture footer \(index)" : nil,
                 supportedVariantIDs: ["normal", "foil"],
@@ -1295,9 +1641,20 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertTrue(legacy.identificationDetails.isEmpty)
         let selected = try await adapter.resolve(legacy, for: scan)
         XCTAssertEqual(selected.card.physicalPrintingID, legacy.id)
+        let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [adapter]))
+        let recovered = try await catalog.resolvePrintingChoice(legacy, for: scan)
+        XCTAssertEqual(recovered.card.physicalPrintingID, legacy.id,
+                       "A valid older multi-printing recovery choice must pass the shared catalog boundary")
         json["artworkID"] = "another-artwork"
         let tampered = try JSONDecoder().decode(PhysicalPrintingCandidate.self, from: JSONSerialization.data(withJSONObject: json))
         do { _ = try await adapter.resolve(tampered, for: scan); XCTFail("Published artwork evidence must agree") }
+        catch CatalogLookupError.invalidPrintingChoice {}
+        do { _ = try await catalog.resolvePrintingChoice(tampered, for: scan); XCTFail("New presentation evidence cannot be ignored") }
+        catch CatalogLookupError.invalidPrintingChoice {}
+        json.removeValue(forKey: "artworkID")
+        json["releaseLabel"] = "A different release"
+        let wrongRelease = try JSONDecoder().decode(PhysicalPrintingCandidate.self, from: JSONSerialization.data(withJSONObject: json))
+        do { _ = try await catalog.resolvePrintingChoice(wrongRelease, for: scan); XCTFail("Legacy release evidence must still agree") }
         catch CatalogLookupError.invalidPrintingChoice {}
     }
 
@@ -1508,14 +1865,63 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(restored.priceKey, row.priceKey)
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
         let headers = "game,provider_id,card_name,card_number,finish,quantity"
+        let eventsBefore = try container.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count
+        let activitiesBefore = try container.mainContext.fetch(FetchDescriptor<CollectionActivity>()).count
         for values in [
             "one-piece,OP01-120,Shanks,OP01-120,normal,1",
+            "one-piece,\(uuid(1).uuidString.lowercased()),Shanks,OP01-120,,1",
             "one-piece,\(uuid(1).uuidString.lowercased()),Shanks,OP01-121,normal,1",
             "one-piece,\(uuid(1).uuidString.lowercased()),Shanks,OP01-120,manga,1"
         ] {
             let invalid = try CollectionCSV.parse(Data((headers + "\n" + values + "\n").utf8))
             XCTAssertThrowsError(try adapter.validate(try XCTUnwrap(invalid.entries.first)))
+            let denied = try CollectionCSV.apply(invalid, to: container.mainContext, gameRegistry: policy,
+                                                gameImportAdapters: try .init(adapters: [adapter]))
+            XCTAssertEqual(denied.importedQuantity, 0)
+            XCTAssertEqual(denied.failedRows.count, 1)
+            let rows = try container.mainContext.fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.quantity, 1)
+            XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, eventsBefore)
+            XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<CollectionActivity>()).count, activitiesBefore)
         }
+    }
+
+    func testEnglishScopeExcludesForeignPrintingsFromAllAcquisitionAndPricingSurfaces() async throws {
+        let registry = try registry(withMarketMapping: true, language: "ja")
+        let adapter = OnePieceCatalogAdapter(registry: registry)
+        XCTAssertThrowsError(try adapter.resolution(forPrintingID: uuid(1)))
+        guard case .nothing = OnePieceScanProfile(registry: registry).identify([.init(text: "OP01-120")]) else {
+            return XCTFail("An English scanner must not recognize a foreign-only series")
+        }
+        let plan = try CollectionCSV.parse(Data(("game,provider_id,card_name,card_number,finish,quantity\n"
+            + "one-piece,\(uuid(1).uuidString.lowercased()),Shanks,OP01-120,foil,1\n").utf8))
+        XCTAssertThrowsError(try OnePieceImportAdapter(registry: registry).validate(XCTUnwrap(plan.entries.first)))
+        let browse = OnePieceBrowseAdapter(registry: registry)
+        let sets = try await browse.sets()
+        XCTAssertTrue(sets.isEmpty)
+        let results = try await browse.search(query: "Shanks", setIDs: [], cursor: nil)
+        XCTAssertTrue(results.items.isEmpty)
+        XCTAssertTrue(OnePiecePriceAdapter.priceAuthority(registry).identityByPriceKey.isEmpty)
+    }
+
+    func testPrintingReleaseOrderUsesPrimaryReleaseRatherThanProductAppearance() async throws {
+        let registry = try registry(multiProduct: true, releaseDate: "2024-02-02")
+        let adapter = OnePieceCatalogAdapter(registry: registry)
+        let card = try adapter.resolution(forPrintingID: uuid(1)).card
+        let browse = OnePieceBrowseAdapter(registry: registry)
+        let sets = try await browse.sets()
+        let primary = try XCTUnwrap(sets.first { $0.providerID == "fixture-release-0" })
+        XCTAssertGreaterThan(card.setReleaseOrder, 0)
+        XCTAssertEqual(card.setReleaseOrder, primary.releaseOrder)
+        let bundle = try XCTUnwrap(sets.first { $0.providerID == "fixture-bundle" })
+        let page = try await browse.cards(in: bundle, cursor: nil)
+        let details = try await browse.details(for: XCTUnwrap(page.items.first))
+        XCTAssertEqual(details.card.setReleaseOrder, primary.releaseOrder)
+        let metadata = await OnePieceImportAdapter(registry: registry).metadata(for: [.init(
+            sourceProviderID: card.providerID, catalogProviderID: nil, game: .onePiece,
+            name: card.name, setName: bundle.name, cardNumber: card.cardNumber, itemKind: .rawCard)])
+        XCTAssertEqual(metadata.values.first?.setReleaseOrder, primary.releaseOrder)
     }
 
     func testNormalizationUsesExactAdapterAndPreservesUnknownAndProductionGatedRows() async throws {
@@ -2025,6 +2431,33 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(owned.providerID, uuid(1).uuidString.lowercased())
         XCTAssertEqual(owned.variantID, "foil")
         XCTAssertEqual(owned.variantResolution, .userConfirmed)
+    }
+
+    func testFinishLockCannotSelectPrintingOrOverrideItsSoleSupportedFinish() async throws {
+        let registry = try reviewedAwardRegistry()
+        let original = try XCTUnwrap(registry.printingsByCanonicalID["one-piece:en:ST11-003"]?
+            .first { $0.status == .verified && !$0.marketMappings.isEmpty })
+        let (model, container) = try model(registry: registry, fixtureWritesEnabled: true)
+        defer { model.viewDisappeared() }
+        model.setFinishLock(VariantLock(finish: .foil), for: .onePiece)
+        XCTAssertEqual(model.finishLocks[.onePiece]?.finish.id, "foil")
+        guard case let .identified(subject) = OnePieceScanProfile(registry: registry)
+            .identify([.init(text: "ST11-003")]) else { return XCTFail() }
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+        let appeared = await waitUntil { model.pendingIdentityChoice != nil }
+        XCTAssertTrue(appeared, "A finish lock cannot choose between physical releases")
+        XCTAssertEqual(model.successCount, 0)
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        let pending = try XCTUnwrap(model.pendingIdentityChoice)
+        XCTAssertEqual(pending.displayCandidates.count, 2)
+        model.choose(try XCTUnwrap(pending.displayCandidates.first { $0.id == original.id.uuidString.lowercased() }))
+        let saved = await waitUntil { model.successCount == 1 }
+        XCTAssertTrue(saved)
+        XCTAssertNil(model.pendingChoice)
+        let owned = try XCTUnwrap(container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(owned.providerID, original.id.uuidString.lowercased())
+        XCTAssertEqual(owned.variantID, "normal", "The selected printing's sole finish wins over an inapplicable lock")
+        XCTAssertEqual(owned.variantResolution, .uniqueInCatalog)
     }
 
     func testOnePieceScanningChoiceFinishAndDifferentPhysicalCopiesStayIndependent() async throws {

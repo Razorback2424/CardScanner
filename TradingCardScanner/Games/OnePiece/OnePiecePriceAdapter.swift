@@ -153,7 +153,7 @@ struct OnePiecePriceAdapter: GamePriceAdapter {
 
     static func priceAuthority(_ registry: OnePieceCatalogRegistry) -> GameCatalogPriceAuthority {
         var identities: [String: String] = [:]
-        for printing in registry.printingByID.values where printing.status == .verified {
+        for printing in registry.printingByID.values where printing.status == .verified && printing.language == "en" {
             let mappings = printing.marketMappings.filter {
                 $0.status == .exact && $0.provider == "tcgplayer" && $0.market == "us"
                     && $0.currency == "USD" && $0.condition == "aggregate"

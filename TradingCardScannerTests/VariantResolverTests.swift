@@ -321,6 +321,23 @@ final class VariantResolverTests: XCTestCase {
 
     // MARK: - Finish Lock is evidence, not an override
 
+    func testOnePieceFinishLockRequiresExactIDAndReturnsCatalogFinish() {
+        let reviewedFoil = PhysicalVariant(id: "foil", label: "Reviewed Foil")
+        let evidence = VariantEvidence(
+            game: .onePiece, setID: "reviewed-release", cardNumber: "OP01-120",
+            catalogVariants: [.normal, reviewedFoil]
+        )
+        let otherFinish = VariantLock(finish: PhysicalVariant(id: "Foil", label: "Other finish"))
+        guard case .needsChoice(_, let rejectedLock) = VariantResolver.resolve(evidence, finishLock: otherFinish) else {
+            return XCTFail("A different case-sensitive finish ID must not select this printing's foil")
+        }
+        XCTAssertEqual(rejectedLock, otherFinish)
+        XCTAssertEqual(
+            VariantResolver.resolve(evidence, finishLock: VariantLock(finish: .foil)),
+            .resolved(ResolvedVariant(variant: reviewedFoil, resolution: .finishLock))
+        )
+    }
+
     func testFinishLockResolvesWhenTheCatalogAgreesItIsPossible() {
         let outcome = VariantResolver.resolve(
             pokemon(setID: "sv03", variants: [.normal, .reverse]),

@@ -761,6 +761,86 @@ final class OnePieceCatalogCoreTests: XCTestCase {
         XCTAssertTrue(codes(release).contains("conflictingMarketMapping"))
     }
 
+    func testDuplicateMarketMappingsCannotSilentlyDisableExactPricing() throws {
+        let base = try withMappings(fixture(), assignments: [(0, "454664")])
+        let release = try alter(base) { object in
+            editPrintings(&object) { rows in
+                let mappings = rows[0]["marketMappings"] as! [Any]
+                rows[0]["marketMappings"] = mappings + mappings
+            }
+        }
+        XCTAssertTrue(codes(release).contains("duplicateMarketMapping"))
+    }
+
+    func testTCGplayerSKUCollisionCannotBeHiddenByDescriptiveQualifiers() throws {
+        let base = try withMappings(fixture(), assignments: [(0, "454664"), (1, "454664")])
+        let release = try alter(base) { object in
+            editPrintings(&object) { rows in
+                for index in rows.indices {
+                    var mappings = rows[index]["marketMappings"] as! [[String: Any]]
+                    mappings[0]["provider"] = "tcgplayer"
+                    mappings[0]["providerVariantID"] = "Normal"
+                    mappings[0]["condition"] = "aggregate"
+                    mappings[0]["qualifiers"] = ["productName": "Reviewed release \(index)"]
+                    rows[index]["marketMappings"] = mappings
+                }
+            }
+            var observations = object["observations"] as! [[String: Any]]
+            for index in observations.indices where (observations[index]["kind"] as? String) == "market" {
+                var alias = observations[index]["alias"] as! [String: Any]
+                alias["provider"] = "tcgplayer"; observations[index]["alias"] = alias
+                var fields = observations[index]["printedEvidence"] as! [String: String]
+                fields["marketVariantID"] = "Normal"; fields["condition"] = "aggregate"
+                let releaseIndex = (observations[index]["productEvidence"] as! [String])[0].suffix(1)
+                fields["qualifier:productName"] = "Reviewed release \(releaseIndex)"
+                observations[index]["printedEvidence"] = fields
+            }
+            object["observations"] = observations
+            var inventories = object["inventories"] as! [[String: Any]]
+            for index in inventories.indices where inventories[index]["provider"] as? String == "fixture-market" {
+                inventories[index]["provider"] = "tcgplayer"
+            }
+            object["inventories"] = inventories
+        }
+        XCTAssertEqual(codes(release), ["conflictingMarketMapping"])
+        let numericAlias = try alter(release) { object in
+            editPrintings(&object) { rows in
+                var mappings = rows[1]["marketMappings"] as! [[String: Any]]
+                mappings[0]["productID"] = "0454664"; rows[1]["marketMappings"] = mappings
+            }
+            var observations = object["observations"] as! [[String: Any]]
+            for index in observations.indices where (observations[index]["id"] as? String)?.hasPrefix("fixture-market:1:") == true {
+                var fields = observations[index]["printedEvidence"] as! [String: String]
+                fields["marketProductID"] = "0454664"; observations[index]["printedEvidence"] = fields
+            }
+            object["observations"] = observations
+        }
+        XCTAssertEqual(codes(numericAlias), ["conflictingMarketMapping"])
+    }
+
+    func testProductMetadataRejectsBlankLabelsAndInvalidCalendarDates() throws {
+        let base = try fixture()
+        for (key, value) in [("id", " "), ("id", " product "), ("label", "   "),
+                             ("releaseDate", "2026-02-30"), ("releaseDate", "2026-2-03")] {
+            let release = try alter(base) { object in
+                var registry = object["registry"] as! [String: Any]
+                var products = registry["products"] as! [[String: Any]]
+                products[0][key] = value
+                registry["products"] = products; object["registry"] = registry
+            }
+            XCTAssertTrue(codes(release).contains("invalidProduct"), "Invalid product \(key): \(value)")
+        }
+        let whitespaceVariant = try alter(base) { object in
+            var registry = object["registry"] as! [String: Any]
+            var variants = registry["variants"] as! [[String: Any]]
+            variants.append(["id": " normal ", "label": "Normal"])
+            registry["variants"] = variants; object["registry"] = registry
+        }
+        XCTAssertTrue(codes(whitespaceVariant).contains("invalidVariant"))
+        XCTAssertNotNil(OnePieceTextNormalization.releaseDate("2024-02-29"))
+        XCTAssertNil(OnePieceTextNormalization.releaseDate("2025-02-29"))
+    }
+
     func testMappingCorrectionInvalidatesOnlyChangedPrintingAndRequiresProtectedReview() throws {
         let base = try fixture()
         let printing = base.registry.printings[0]
@@ -850,6 +930,20 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             registry["appearances"] = appearances; object["registry"] = registry
         }
         XCTAssertTrue(codes(release).contains("missingProductAppearanceEvidence"))
+    }
+
+    func testProductAppearanceRequiresEvidenceFromItsExactPrinting() throws {
+        let base = try fixture(numbers: ["OP01-120", "ST01-001"])
+        for wrongPrinting in [base.registry.printings[1], base.registry.printings[2]] {
+            let release = try alter(base) { object in
+                var registry = object["registry"] as! [String: Any]
+                var appearances = registry["appearances"] as! [[String: Any]]
+                appearances[0]["printingID"] = wrongPrinting.id.uuidString
+                registry["appearances"] = appearances; object["registry"] = registry
+            }
+            XCTAssertTrue(codes(release).contains("missingProductAppearanceEvidence"),
+                          "A product observation for another printing/card must not authorize membership")
+        }
     }
 
     func testProviderByteHashesAndAliasesStaySeparate() throws {

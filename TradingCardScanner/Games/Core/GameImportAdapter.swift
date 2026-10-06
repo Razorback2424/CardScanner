@@ -19,7 +19,7 @@ struct GameImportRequest: Hashable, Sendable {
 }
 
 enum GameImportValidationError: LocalizedError {
-    case unsupportedItemKind, invalidPrinting, contradictoryIdentity, unsupportedFinish, invalidOwnershipKey
+    case unsupportedItemKind, invalidPrinting, contradictoryIdentity, missingFinish, unsupportedFinish, invalidOwnershipKey
     case missingAdapter
     var errorDescription: String? {
         switch self {
@@ -27,6 +27,7 @@ enum GameImportValidationError: LocalizedError {
         case .unsupportedItemKind: return "This game currently supports importing raw cards only."
         case .invalidPrinting: return "This row does not identify an exact verified catalog printing."
         case .contradictoryIdentity: return "This row contains conflicting printing or card-number evidence."
+        case .missingFinish: return "This row needs an explicit finish supported by its exact catalog printing."
         case .unsupportedFinish: return "This finish is not supported by the exact catalog printing."
         case .invalidOwnershipKey: return "This row's collection identity does not match its printing and finish."
         }
