@@ -228,6 +228,8 @@
 		A0010156 /* DeterministicUUID.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010156 /* DeterministicUUID.swift */; };
 		A0010107 /* CardScannerExternalLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010107 /* CardScannerExternalLinks.swift */; };
 		A0010108 /* CollectionStorageBootstrapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010108 /* CollectionStorageBootstrapView.swift */; };
+		AF0A0001 /* AppOpeningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A0001 /* AppOpeningView.swift */; };
+		AF0A0002 /* AppOpeningTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0A0002 /* AppOpeningTests.swift */; };
 		A0010109 /* PrivacyAndSupportSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010109 /* PrivacyAndSupportSettingsView.swift */; };
 		A0010111 /* CloudKitEventReadinessSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010111 /* CloudKitEventReadinessSource.swift */; };
 		A002010B /* CollectionStorageBootstrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002010B /* CollectionStorageBootstrapTests.swift */; };
@@ -549,6 +551,8 @@
 		B0010156 /* DeterministicUUID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeterministicUUID.swift; sourceTree = "<group>"; };
 		B0010107 /* CardScannerExternalLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScannerExternalLinks.swift; sourceTree = "<group>"; };
 		B0010108 /* CollectionStorageBootstrapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapView.swift; sourceTree = "<group>"; };
+		BF0A0001 /* AppOpeningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOpeningView.swift; sourceTree = "<group>"; };
+		BF0A0002 /* AppOpeningTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppOpeningTests.swift; sourceTree = "<group>"; };
 		B0010109 /* PrivacyAndSupportSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyAndSupportSettingsView.swift; sourceTree = "<group>"; };
 		B0010111 /* CloudKitEventReadinessSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitEventReadinessSource.swift; sourceTree = "<group>"; };
 		B002010B /* CollectionStorageBootstrapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionStorageBootstrapTests.swift; sourceTree = "<group>"; };
@@ -888,6 +892,7 @@
 			isa = PBXGroup;
 			children = (
 				B0010108 /* CollectionStorageBootstrapView.swift */,
+				BF0A0001 /* AppOpeningView.swift */,
 				B0010109 /* PrivacyAndSupportSettingsView.swift */,
 				B0010071 /* CollectionActivityLogView.swift */,
 				B0010052 /* BrowseView.swift */,
@@ -969,6 +974,7 @@
 				F30B00000000000000000004,
 				B0020020 /* CollectionQueryTests.swift */,
 				B0020060 /* PortfolioTrustPassTests.swift */,
+				BF0A0002 /* AppOpeningTests.swift */,
 				B0020051 /* TCGplayerLinkTests.swift */,
 				B0020050 /* PortfolioReplayEngineTests.swift */,
 				B0020041 /* PortfolioCloseTests.swift */,
@@ -1188,6 +1194,7 @@
 				A0010156 /* DeterministicUUID.swift in Sources */,
 				A0010107 /* CardScannerExternalLinks.swift in Sources */,
 				A0010108 /* CollectionStorageBootstrapView.swift in Sources */,
+				AF0A0001 /* AppOpeningView.swift in Sources */,
 				A0010109 /* PrivacyAndSupportSettingsView.swift in Sources */,
 				A0010100 /* CollectionStoragePolicy.swift in Sources */,
 				A0010101 /* CloudRestorationReadiness.swift in Sources */,
@@ -1422,6 +1429,7 @@
 				F30A00000000000000000004,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
 				A0020060 /* PortfolioTrustPassTests.swift in Sources */,
+				AF0A0002 /* AppOpeningTests.swift in Sources */,
 				A0020051 /* TCGplayerLinkTests.swift in Sources */,
 				A0020050 /* PortfolioReplayEngineTests.swift in Sources */,
 				A0020041 /* PortfolioCloseTests.swift in Sources */,

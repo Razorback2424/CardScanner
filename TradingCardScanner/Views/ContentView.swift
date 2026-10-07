@@ -151,6 +151,11 @@ struct ContentView: View {
         .environmentObject(setCompletionStore)
         .environmentObject(revisionStore)
         .environment(\.cardFinishPerformancePolicy, cardFinishPerformancePolicy)
+        .background(AppOpeningReadinessReporter(
+            portfolio: portfolio,
+            skipsPortfolio: selectedTab != .portfolio,
+            holdsOpening: holdsOpeningDebugRoute
+        ))
         .overlay(alignment: .top) {
             ScanSessionSummaryBanner()
                 .environmentObject(scanSummaryStore)
@@ -358,6 +363,14 @@ struct ContentView: View {
         return debugRoute == "Browse"
 #else
         return false
+#endif
+    }
+
+    private var holdsOpeningDebugRoute: Bool {
+#if DEBUG
+        debugRoute == "Startup"
+#else
+        false
 #endif
     }
 

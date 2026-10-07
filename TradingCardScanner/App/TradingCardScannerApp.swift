@@ -8,6 +8,7 @@ struct TradingCardScannerApp: App {
     @StateObject private var scanSummaryStore = ScanSessionSummaryStore()
     @StateObject private var cardFinishMotion = CardFinishMotionSource()
     @StateObject private var storageBootstrap = CollectionStorageBootstrap()
+    @StateObject private var opening = AppOpeningModel()
 
     init() {
         CollectionWriteSerializer.enforcesOwnershipRule =
@@ -25,21 +26,27 @@ struct TradingCardScannerApp: App {
     @MainActor static var lastBootstrapErrorCategory: String?
 
     var body: some Scene {
-        WindowGroup {
-            Group {
-                switch storageBootstrap.state {
+        // Register these scene dependencies before building the overlay host.
+        // Storage can finish before catalog preparation; that later runtime
+        // publication must rebuild the session branch as well.
+        let storageState = storageBootstrap.state
+        let preparedRuntimes = runtimes
+        return WindowGroup {
+            AppOpeningContainer(bootstrap: storageBootstrap, opening: opening) {
+                switch storageState {
                 case .ready(let session):
-                    if let runtimes {
+                    if let runtimes = preparedRuntimes {
                         CollectionSessionContent(runtimes: runtimes, container: session.container)
                             .id(ObjectIdentifier(session.container))
                             .modelContainer(session.container)
                             .environmentObject(scanSummaryStore)
                             .environment(\.cardFinishMotionSource, cardFinishMotion)
-                    } else { ProgressView("Preparing catalog") }
+                    }
                 default:
                     CollectionStorageBootstrapView(bootstrap: storageBootstrap)
                 }
             }
+            .environmentObject(opening)
             .task {
                 guard runtimes == nil else { return }
                 async let prepared = CardGameRuntimeContainer.preparedAppDefaults()
@@ -68,6 +75,7 @@ struct TradingCardScannerApp: App {
 /// Runtime consumers are created only after their actual storage session exists.
 @MainActor
 private struct CollectionSessionContent: View {
+    @EnvironmentObject private var opening: AppOpeningModel
     let runtimes: CardGameRuntimeContainer
     let container: ModelContainer
     private struct Services {
@@ -100,9 +108,13 @@ private struct CollectionSessionContent: View {
                 } description: {
                     Text("Your collection is safe. Try preparing the catalog again.")
                 } actions: {
-                    Button("Retry") { failed = false; attempt += 1 }
+                    Button("Retry") { opening.reset(); failed = false; attempt += 1 }
                 }
-            } else { ProgressView("Preparing catalog") }
+            } else {
+                // The overlay covers this wait, but the Group needs a child
+                // or its preparation task below never runs.
+                Color.clear
+            }
         }
         .task(id: attempt) {
             preparing = true
@@ -125,7 +137,12 @@ private struct CollectionSessionContent: View {
                 }
             } catch is CancellationError {
                 return
-            } catch { if services == nil { failed = true } }
+            } catch {
+                if services == nil {
+                    failed = true
+                    opening.blocked = true
+                }
+            }
         }
         .task(id: services?.runtimes.unavailableGames.map(\.game)) {
             guard let services, !services.runtimes.unavailableGames.isEmpty else { return }

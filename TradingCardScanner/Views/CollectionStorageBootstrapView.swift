@@ -8,10 +8,7 @@ struct CollectionStorageBootstrapView: View {
         Group {
             switch bootstrap.state {
             case .loading:
-                progressView(
-                    title: "Checking collection storage…",
-                    systemImage: "externaldrive"
-                )
+                EmptyView()
             case let .restoringFromCloud(readiness):
                 restorationView(readiness)
             case let .confirmationRequired(request):
@@ -40,29 +37,17 @@ struct CollectionStorageBootstrapView: View {
                 EmptyView()
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(uiColor: .systemBackground))
         .padding(24)
     }
 
-    private func progressView(title: String, systemImage: String) -> some View {
-        VStack(spacing: 16) {
-            ProgressView()
-                .controlSize(.large)
-            Label(title, systemImage: systemImage)
-                .font(.headline)
-                .multilineTextAlignment(.center)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .accessibilityElement(children: .combine)
-    }
 
     @ViewBuilder
     private func restorationView(_ readiness: CloudRestorationReadiness) -> some View {
         switch readiness {
         case .checkingRemoteCollection, .importingRemoteCollection:
-            progressView(
-                title: "Restoring collection from iCloud…",
-                systemImage: "icloud.and.arrow.down"
-            )
+            EmptyView()
         case .failed:
             actionView(
                 title: "iCloud restoration needs attention",
@@ -82,10 +67,7 @@ struct CollectionStorageBootstrapView: View {
                 secondaryAction: nil
             )
         case .readyEmpty, .readyPopulated:
-            progressView(
-                title: "Opening collection…",
-                systemImage: "checkmark.icloud"
-            )
+            EmptyView()
         }
     }
 
