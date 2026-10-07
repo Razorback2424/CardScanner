@@ -1922,3 +1922,30 @@ historical.
   UUIDs and ownership/payload formats are unchanged; no retained rows were
   migrated. See the [edge-case audit](docs/audits/one-piece-variants-catalog-edge-cases.md)
   and [implementation ledger](docs/plans/one_piece_code_implementation.md).
+
+- **2026-10-06 — One Piece existing-save reliability** (`230a55f` plus local
+  changes on `merge/one-piece-integration`): added disk-backed real-writer
+  failure/retry coverage for scanner insert/increment, same-session and relaunch
+  recovery, an unrelated subsequent save, six finish-correction combinations,
+  and signed catalog price-withdrawal publication. Failed writes preserve
+  ownership, claims, ledger lineage, price/history and artwork; retry commits
+  once. Withdrawal failure retains installed authority and manual/imported
+  values. Source artwork remains available for undo. Scoped Debug hooks throw
+  immediately before the normal save; no production save defect was reproduced.
+  The initial compile and fixture-expectation errors were corrected. Final
+  focused tests pass 5/5; the affected twelve-class Debug simulator selection
+  passes 380/380 with no skips/failures, including all 80 One Piece and 96 scanner
+  cases. These are separate runs with overlapping tests, not 385 distinct cases.
+  Debug and generic `ReleaseLocal` simulator builds pass; the release executable
+  contains arm64/x86_64, and its arm64 symbols omit the Debug failure hooks.
+  All 149 checked local links and diff whitespace checks pass; no screenshots
+  were required for this unchanged interface.
+  Results and synthetic fixtures are on the external drive under
+  `CodexBuilds/OnePieceSaveReliability-20261006/`. The owner deferred speculative
+  supersession under KISS/YAGNI; the retained registry has no correction records
+  or superseding printings. Next recommended acceptance slice: existing One Piece
+  physical-camera scan/choice/save/relaunch. Mid-save crash recovery across two
+  SQLite configurations, full storage/account, device/provider/CloudKit and
+  release gates remain open. See the
+  [implementation ledger](docs/plans/one_piece_code_implementation.md) and
+  [priority reconciliation](docs/plans/documentation_audit.md).

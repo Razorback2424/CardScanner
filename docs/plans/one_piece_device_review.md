@@ -1,5 +1,10 @@
 # One Piece in the owner's existing app
 
+**Next-slice plan — 2026-10-06:** [camera acquisition and relaunch](one_piece_camera_acceptance_slice.md)
+defines the bounded physical samples, exact identities, ordinary-app procedure,
+failure handling and evidence criteria. This is planned hardware work; the
+2026-10-05 installation record below is not camera acceptance.
+
 **Status — 2026-10-05:** corrected update installed under the original
 **TradingCardScanner** name and existing app identity. It selects the original
 collection storage, with One Piece available alongside Pokémon and Magic. The
@@ -45,10 +50,13 @@ outside the repository. No backup was authorized or performed.
    checked. Examples include ST01-003 or OP01-120; use a card you actually own.
 3. Put the card on a plain surface in even light. Hold the camera steady with
    the full card visible. Avoid glare across the printed number.
-4. Verify the recognized name/number. Confirm the release and physical printing
-   matching your card, then its finish. Do not choose a different printing merely
-   because it is the only available option; use Needs attention instead.
-5. Save one copy. Check Collection for the same card, printing, finish and
+4. Verify the recognized name/number. A sole verified printing and sole supported
+   finish save automatically under the owner's current policy. When multiple
+   printings are offered, choose the release matching your card; a finish choice
+   is needed only if that exact printing has multiple finishes. Do not choose a
+   different printing merely because it is the only available option; use Needs
+   attention instead.
+5. Check the successful receipt and Collection for the same card, printing, finish and
    quantity. Record whether the choice was clear and roughly how long it took.
 6. Close the app and reopen it from the Home Screen. Check the saved row again.
    Refresh prices. Exact mapped finishes can price; held/unmapped printings must

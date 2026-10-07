@@ -8,6 +8,35 @@ history.
 
 ## Current authority boundary — updated 2026-10-06
 
+**Next-slice planning — 2026-10-06, `230a55f` plus existing local changes:** the
+[camera acquisition/relaunch plan](one_piece_camera_acceptance_slice.md) details
+the One Piece ledger's next acceptance slice using the ordinary owner app,
+exact physical samples and bounded hardware evidence. All currently verified
+printings have one supported finish; multi-finish controls retain fixture-test
+evidence rather than a manufactured physical sample. The installed-app first-check
+instructions now reflect the approved sole-candidate automatic-save policy.
+This documentation pass runs no build, test, camera, provider or sync acceptance
+and does not reopen owner-deferred supersession or production publication.
+
+**One Piece existing-save priority — 2026-10-06, `230a55f` plus local changes:**
+the owner selected reliability of existing saves and deferred speculative
+supersession under KISS/YAGNI. The retained registry has no correction records
+or superseding printings; older “supersession migration next” notes are historical
+priority statements, not instructions to build that feature now. The
+[implementation ledger](one_piece_code_implementation.md) records five passing
+disk-backed fault-injection tests, including six correction combinations,
+real-writer recovery/retry and withheld catalog authority on failed withdrawal.
+Existing production behavior passed; only scoped Debug test hooks were needed.
+The affected twelve-class simulator selection passes 380/380, with no skips or
+failures, including 80 One Piece and 96 scanner cases; it includes the five new
+tests and is separate from the initial focused run.
+Debug and arm64/x86_64 `ReleaseLocal` simulator builds pass; the release arm64
+binary omits the Debug fault-hook symbols. All 149 checked local links and
+whitespace checks pass. Results remain on the external drive in
+`CodexBuilds/OnePieceSaveReliability-20261006/`.
+Injected pre-save faults do not certify mid-save crash recovery across two SQLite
+configurations, physical-device, provider, CloudKit or release acceptance.
+
 **Cross-game scanner edge cases — 2026-10-06:** the
 [Pokémon, modern Magic and One Piece review](../audits/scanner-cross-game-edge-cases-2026-10-06.md)
 records four fixes: explicit foreign Pokémon footers block English fallback;

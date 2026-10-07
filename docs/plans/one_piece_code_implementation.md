@@ -4,6 +4,47 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
+**Existing-save reliability — 2026-10-06, `230a55f` plus local changes on
+`merge/one-piece-integration`:** the owner prioritized existing saves and
+explicitly deferred speculative supersession under KISS/YAGNI. The retained
+registry has zero correction records and zero superseding printings. Migration
+remains unimplemented; revisit it when a reviewed correction affects owned copies.
+
+Five new disk-backed tests pass in `Focused-r3.xcresult`. They exercise the real
+scanner writer's failed insert and increment, same-session/relaunch recovery,
+an unrelated successful save, all three finish-correction entry points with
+new/existing destinations (six combinations), and signed catalog withdrawal
+failure through both streamed and requested activation. Retry conserves ownership
+and acquisition lineage; manual/imported prices survive; failed withdrawal
+publishes no new authority. Source artwork deliberately remains available for
+undo. Debug-only instance hooks inject faults immediately before the final save;
+normal persistence still calls `ModelContext.save()`. No production save defect
+was reproduced and no production behavior fix was needed.
+
+The affected twelve-class Debug simulator regression passes 380/380 cases with
+no skips or failures, including all 80 One Piece and 96 scanner cases.
+`Regression.xcresult` retains that separate run; its selection includes the
+five new tests, so the two runs are not 385 distinct cases.
+Debug builds through the passing test run. The generic `ReleaseLocal` simulator
+build passes for arm64 and x86_64 in `ReleaseLocal.xcresult`; the arm64 executable
+has no `beforeSaveForTesting`/`setBeforeSaveForTesting` symbols. All 149 checked
+local links and `git diff --check` pass. No screenshots were needed.
+
+The initial compile attempt referenced a private test-fixture property; the next
+run had recovery-store initialization and artwork-retention expectation errors.
+Those fixtures were corrected before the clean five-test run. Build products,
+caches, logs, results and synthetic fixture directories are retained on the
+external drive under `CodexBuilds/OnePieceSaveReliability-20261006/`. The tests
+accept `ONE_PIECE_SAVE_FAILURE_ROOT` for externally hosted synthetic stores and
+retain them until the runner exits instead of unlinking open SQLite files.
+
+These injected pre-save failures do not establish crash recovery halfway through
+a save across the production collection/local SQLite configurations. Full
+storage/account, physical-device, provider, CloudKit and release gates remain
+open. The next recommended acceptance slice is representative One Piece
+physical-camera scan → printing/finish choice → save → relaunch, using the
+existing local owner catalog and ordinary app identity.
+
 **Variants/catalog edge-case pass — 2026-10-05, `f40e704` plus local changes:**
 the [audit and evidence](../audits/one-piece-variants-catalog-edge-cases.md)
 record fixes for external-SKU qualifier/numeric alias collisions, duplicate
@@ -15,8 +56,8 @@ and broader 389-case app/corpus selection pass. After the final finish-lock
 adjustment, all 204 affected cases pass (74 One Piece, 96 scanner, 34 variant).
 These are separate passing selections. Permanent UUIDs, payload/key formats and the retained catalog's
 eligibility statuses are unchanged. Held/special-printing review and operational
-gates remain open; supersession migration and failed-save collection evidence
-remain the next planned code slice.
+gates remain open. At that checkpoint supersession and failed-save evidence were
+next; the 2026-10-06 reliability checkpoint above supersedes that priority.
 
 **Integrated local acceptance slice — 2026-10-05, `f40e704` plus local changes:**
 the new `OnePieceAcceptance` developer route exercises the verified full catalog
@@ -166,18 +207,19 @@ retained against their original runs; this source review does not rerun them.
 | Ordinary corpus | The checked-in registry has 2,692 canonical cards, 2,745 artwork/printing records, 2,490 verified, 224 provisional and 31 conflicted printings. The reviewed product manifest covers 58 groups; 60 product records are retained in the registry and recorded Browse evidence exposes 52 verified-target groups. All 2,692 canonical physical-coverage flags remain false. |
 | Retained review | Combined observation files contain 10,198 records, including 1,961 base-market observations; 257 discrepancies remain retained. The ordinary capture/reconciliation pipeline and full ordinary adoption are implemented. Remaining work is physical special/reprint/revision evidence and scope/rights gaps, not rebuilding ordinary discovery. |
 | Exact base pricing | 1,961 reviewed TCGCSV aggregate USD product/finish mappings and 412 held market decisions. Scanner save, Price Check, Browse detail/add and stored-printing collection refresh use exact UUID/finish joins with no borrowed-printing fallback. Unmapped physical records remain unpriced. |
-| Activation and corrections | `CollectionAuthorizedActivationSource` and `CardGameRuntimeContainer.bound(to:isCurrent:)` install collection authority and save managed-price withdrawal before exposing a generation. Exact One Piece finish correction, single/multi-claim rejection, same-container rebinding and retired-session guards are implemented with recorded focused evidence. Explicit supersession migration, failed-save injection and full storage/device acceptance remain open. |
+| Activation and corrections | `CollectionAuthorizedActivationSource` and `CardGameRuntimeContainer.bound(to:isCurrent:)` install collection authority and save managed-price withdrawal before exposing a generation. Exact finish correction, rejection, rebinding and retired-session guards have focused evidence. The 2026-10-06 checkpoint adds failed-save/retry evidence. Supersession is owner-deferred until a real correction requires it; full storage/device acceptance stays open. |
 | Catalog adapters | Pokémon modern/promo/offline/cache/historical behavior and Magic Scryfall/child routing now live in game-owned catalog modules; central `CardCatalog` prepares/coalesces/validates generic outcomes and never caches a user's printing answer. Legacy Browse/import extraction, signed legacy runtime activation and temporary correction allowances remain open. |
 | Shared signed mechanics | All three games use `SignedCatalogReleaseStore`; One Piece uses `SignedCatalogUpdateClient`. Pokémon/Magic transport and domain wire/trust contracts remain separate. A shared store does not imply completed signed runtime activation for legacy games. |
 | Local kit and rollout | The recorded full ordinary/base-pricing debug kit contains all 2,745 records with an independent ephemeral review key. Its local bootstrap enables scan/Browse/write/pricing in isolated persistent storage; production configuration remains disabled with no endpoint/key pins or bundled production seed. |
 | Latest recorded app checkpoint | Variants/catalog audit above: 389/389 selected app cases, followed by 204/204 affected cases after the final finish-lock fix (74 One Piece, 96 scanner, 34 variant). The retained eligible corpus passes scan/Browse/CSV consistency. All 44 core and 49 offline Python tests pass. Persistent ownership, exact pricing and recovery are covered by selected simulator evidence. Earlier acceptance and 192-case checkpoints remain historical. |
 
-**Next code slice:** Package 1's explicit supersession migration and failed-save
-collection evidence. Preserve permanent UUIDs, claims, history and manual prices
-when authority is denied or withdrawn. Integrated local base-case acceptance is
-implemented and verified at this checkpoint; physical-camera/device/provider
-acceptance remains separate. Broader special-printing review, Browse/import
-migration and production delivery remain full-plan work.
+**Current priority — reconciled 2026-10-06:** Package 1's focused failed-save and
+retry evidence is implemented in the checkpoint above. Explicit supersession
+migration is deferred until reviewed data supplies a concrete owned correction.
+The next recommended acceptance slice is physical-camera scan/save/relaunch for
+the existing One Piece flow. Preserve permanent UUIDs, claims, history and manual
+prices when authority is denied or withdrawn. Broader special-printing review,
+Browse/import migration and production delivery remain full-plan work.
 
 The read-only boundary script rerun for this documentation audit fails on eight
 Pokémon/Magic labels, all in `BrowseCatalog.swift`. Its pattern checks selected
@@ -532,7 +574,7 @@ ordinary-product pass and revision-13/14 local-kit milestones are already done:
 | Priority | Existing work package | Remaining concrete exit evidence |
 | --- | --- | --- |
 | Complete locally | Package 4: integrated local base-case acceptance | Reproducible real-catalog scanner route and integrated durability/pricing/Browse/CSV/recovery tests are verified at the checkpoint above and rendered checklist. Physical-camera/device/provider acceptance remains open. |
-| 2 | Package 1: remaining collection correctness evidence | Exact correction and container-bound publication are implemented. Close explicit supersession migration and failed-save injection; review remaining direct saves when affected ownership paths change. Preserve UUIDs, claims, history and manual prices on denied/withdrawn authority. Full storage/account/device acceptance stays separate. |
+| Focused evidence complete | Package 1: existing-save reliability | Failed insert/increment/correction/withdrawal and successful retry have disk-backed evidence in the 2026-10-06 checkpoint. Supersession remains deferred until a real reviewed correction affects owned copies. Review direct saves when affected ownership paths change; preserve UUIDs, claims, history and manual prices. Full storage/account/device acceptance stays separate. |
 | 3 | Package 2: remaining physical coverage | Reuse the implemented manifest, capture/reconciliation/discrepancy pipeline and adopted ordinary corpus. Review held original/revision records, parallels/premiums/events/promos and named stress distinctions in declared batches. Fresh discovery may add ordinary releases; none may silently redefine the coverage denominator. |
 | 4 | Package 3: remaining legacy adapter routing | Catalog extraction is implemented. Move Pokémon/Magic Browse and import/normalization behavior, complete signed legacy runtime snapshots and remove temporary bindings/correction allowances only after validated replacements exist. Preserve keys/caches/behavior; eight audited labels remain in Browse. Inspect dependencies beyond the regex. |
 | 5 | Packages 4–5: measured delivery and release acceptance | Measure full-kit cold/warm activation, memory and candidate-list costs; provision the reviewed production seed/keys and rehearse all-game hosting/rollback. Record rights, device/accuracy/accessibility and enforceable mixed-client policy. Keep shared production writes disabled; map each full requirement to direct evidence and run warranted regression/archive checks on the stable candidate. |
@@ -1158,7 +1200,7 @@ certification. Full checkboxes remain open where acceptance is incomplete.
 | G | Core/builder/validator/publisher; 58 ordinary groups, 2,745 permanent printings (2,490 verified), 10,198 combined observations and 1,961 exact base market mappings | 224 provisional/31 conflicted records, expanded parallel/premium/event/promo physical distinctions, rights and full stress-case acceptance |
 | H | Signed store/coordinator/runtime, disabled configuration, bootstrap and optional signing workflow | Actual bundled seed/resource, dedicated provisioned keys, protected hosting delivery and operational rehearsal |
 | I | Registry-derived English numbered parsing, ambiguity, local lookup, consistent payload validation and retryable incomplete-catalog recovery | Real-card geometry/language and real-corpus/device recovery evidence |
-| J | Exact UUID/finish keys, local fixture/real-corpus collection flow, exact correction and container-bound withdrawal/revision/session guards | Supersession migration, failed-save injection, full storage/device evidence, production creation policy and mixed-client CloudKit compatibility |
+| J | Exact UUID/finish keys, local fixture/real-corpus collection flow, exact correction, container-bound withdrawal/revision/session guards and focused disk-backed failed-save/retry evidence | Supersession migration deferred until concrete reviewed corrections; full storage/device evidence, production creation policy and mixed-client CloudKit compatibility |
 | K | Local Browse/search/details, product memberships, exact ownership/completion, raw UUID import and game-scoped activation refresh | Manual/alias import policy and real-corpus rendered UI/export acceptance |
 | L | Exact TCGCSV base pricing, 1,961 reviewed mappings, Price Check/scanner-save/Browse/collection refresh, mapping fingerprints, persisted managed-quote withdrawal and generation-bound feed caches | Integrated mapped/unmapped base-case acceptance, expanded physical mappings, provider/device and production acceptance |
 | M / N | Scope and gates documented | Optical ranking needs a measured benefit; DON!! is a separate visual project, not a numbered-launch prerequisite |
