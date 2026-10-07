@@ -2,12 +2,13 @@
 """Attach reviewed original-release base market lanes; never allocate printings.
 
 Scope is deliberately narrower than the catalog: original numbered OP/ST/EB
-cards, exact ordinary release group, exact unsuffixed product title, and one
+cards, exact ordinary release group, exact base product title, and one
 supported physical finish. Reprints, alternate art, stamps and missing lanes
 are held. TCGCSV prices are product-level aggregate USD, not condition SKUs.
 All network bytes must already be retained with hash/size provenance.
 """
 import argparse
+from collections import Counter
 import copy
 import hashlib
 import json
@@ -18,6 +19,27 @@ import unicodedata
 
 def title(value):
     return ''.join(c for c in unicodedata.normalize('NFKD', value).casefold() if c.isalnum())
+
+
+def base_title_matches(product_name, card_name, number):
+    """Only the exact printed identifier may qualify an ordinary base title.
+
+    Vendors disambiguate repeated character names with either (120) or
+    (OP01-120). Never remove arbitrary parentheses: those distinguish artwork,
+    distribution and other physical products, or belong to the character name.
+    The caller independently validates the product's Number, category and group.
+    """
+    if not re.fullmatch(r'(OP|ST|EB)\d{2}-\d{3}', number):
+        return False
+    if title(product_name) == title(card_name):
+        return True
+    suffix = re.fullmatch(r'(.+?)\s+\(([^()]*)\)\s*', product_name)
+    if suffix and suffix[2].upper() in {number, number.split('-')[1]}:
+        return title(suffix[1]) == title(card_name)
+    # Some vendor titles use " - OP14-34" instead of parentheses/padded digits.
+    suffix = re.fullmatch(r'(.+?)\s+-\s+((?:OP|ST|EB)\d{2})-(\d{1,3})\s*', product_name, re.IGNORECASE)
+    return bool(suffix and f'{suffix[2].upper()}-{int(suffix[3]):03d}' == number
+                and title(suffix[1]) == title(card_name))
 
 
 def reconcile(registry, products, source_root, price_root):
@@ -64,16 +86,18 @@ def reconcile(registry, products, source_root, price_root):
         source, source_capture, prices, price_capture = groups[group]
         matches = [p for p in source if p['categoryId'] == 68 and p['groupId'] == group
                    and [f['value'] for f in p.get('extendedData', []) if f['name'] == 'Number'] == [number]
-                   and title(p['name']) == title(card['name'])]
+                   and base_title_matches(p['name'], card['name'], number)]
         if len(matches) != 1:
-            decisions.append({'printingID': printing['id'], 'number': number, 'status': 'held', 'reason': 'nonunique-or-qualified-title'})
+            decisions.append({'printingID': printing['id'], 'number': number, 'status': 'held',
+                              'reason': 'ambiguous-base-title' if matches else 'no-exact-base-title'})
             continue
         product = matches[0]
         variant = printing['supportedVariantIDs'][0]
         lane = {'normal': 'Normal', 'foil': 'Foil'}.get(variant)
         lanes = [p for p in prices if p['productId'] == product['productId'] and p['subTypeName'] == lane]
         if lane is None or len(lanes) != 1:
-            decisions.append({'printingID': printing['id'], 'number': number, 'status': 'held', 'reason': 'missing-or-duplicate-exact-finish-lane'})
+            decisions.append({'printingID': printing['id'], 'number': number, 'status': 'held',
+                              'reason': 'duplicate-exact-finish-lane' if len(lanes) > 1 else 'missing-exact-finish-lane'})
             continue
         pid = str(product['productId'])
         oid = f'base-market:{printing["id"]}:{pid}:{variant}'
@@ -100,9 +124,19 @@ def reconcile(registry, products, source_root, price_root):
                           'groupID': group, 'lane': lane, 'status': 'exact'})
     inventories = [{'provider': 'tcgplayer', 'snapshotID': 'base-market-review-2026-10-04',
                     'paginationComplete': False, 'observationIDs': sorted(o['id'] for o in observations)}]
+    printing_by_id = {p['id']: p for p in result['printings']}
+    summaries = {}
+    for decision in decisions:
+        release = printing_by_id[decision['printingID']]['releaseID']
+        summary = summaries.setdefault(release, {'exact': 0, 'held': 0, 'reasons': Counter()})
+        summary[decision['status']] += 1
+        if decision['status'] == 'held':
+            summary['reasons'][decision['reason']] += 1
     return result, observations, inventories, {'schemaVersion': 1,
         'scope': 'original numbered ordinary base only; no reprints/promos/parallels/condition SKUs',
-        'physicalCoverageComplete': False, 'decisions': decisions}
+        'physicalCoverageComplete': False, 'decisions': decisions,
+        'sets': dict(sorted(summaries.items())),
+        'heldReasons': dict(sorted(Counter(d['reason'] for d in decisions if d['status'] == 'held').items()))}
 
 
 def main():

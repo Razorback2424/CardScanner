@@ -7,7 +7,7 @@ import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from review_one_piece_base_market_mappings import reconcile
+from review_one_piece_base_market_mappings import base_title_matches, reconcile
 
 
 class BaseMarketMappingTests(unittest.TestCase):
@@ -49,6 +49,54 @@ class BaseMarketMappingTests(unittest.TestCase):
         for products in [[dict(original[0], name='Shanks (Manga)')], original * 2]:
             self.products = products
             self.assertEqual(self.run_review()[1], [])
+
+    def test_identifier_suffixes_map_systematically_without_treatment_fallback(self):
+        for name in ['Shanks (120)', 'Shanks (OP01-120)', 'Shanks - OP01-120']:
+            with self.subTest(name=name):
+                self.products[0]['name'] = name
+                result, _, _, review = self.run_review()
+                self.assertEqual(review['decisions'][0]['status'], 'exact')
+                self.assertEqual(result['printings'][0]['marketMappings'][0]['qualifiers']['productName'], name)
+                self.assertEqual(result['printings'][0]['id'], 'permanent-uuid')
+
+    def test_wrong_numbers_and_qualified_printings_stay_held(self):
+        for name in ['Shanks (119)', 'Shanks (OP02-120)', 'Shanks (120) (Manga)',
+                     'Shanks (OP01-120) (Alternate Art)', 'Shanks (120) (Winner)',
+                     'Shanks (120) (120)', 'Shanks120', 'Shanks (1 20)',
+                     'Shanks - OP02-120', 'Shanks - OP01-120 (Manga)']:
+            with self.subTest(name=name):
+                self.products[0]['name'] = name
+                self.assertEqual(self.run_review()[1], [])
+
+    def test_suffix_does_not_bypass_number_group_category_or_finish(self):
+        self.products[0]['name'] = 'Shanks (120)'
+        original = copy.deepcopy(self.products[0])
+        for changes in [{'groupId': 999}, {'categoryId': 1},
+                        {'extendedData': [{'name': 'Number', 'value': 'OP01-119'}]}]:
+            self.products[0] = dict(original, **changes)
+            self.assertEqual(self.run_review()[1], [])
+        self.products[0] = original
+        self.lanes[0]['subTypeName'] = 'Normal'
+        self.assertEqual(self.run_review()[3]['decisions'][0]['reason'], 'missing-exact-finish-lane')
+
+    def test_unsuffixed_and_suffixed_duplicates_are_ambiguous(self):
+        self.products.append(dict(self.products[0], productId=999, name='Shanks (120)'))
+        self.assertEqual(self.run_review()[3]['decisions'][0]['reason'], 'ambiguous-base-title')
+
+    def test_character_parentheses_are_preserved_and_all_prefixes_are_supported(self):
+        for number in ['OP16-056', 'ST13-007', 'EB03-010']:
+            self.assertTrue(base_title_matches(f'Mr.3(Galdino) ({number})', 'Mr.3(Galdino)', number))
+            self.assertFalse(base_title_matches(f'Mr.3 ({number})', 'Mr.3(Galdino)', number))
+        self.assertFalse(base_title_matches('Shanks (120)', 'Shanks', 'OP01-120 (Manga)'))
+        self.assertTrue(base_title_matches('Monkey.D.Luffy - OP14-34', 'Monkey.D.Luffy', 'OP14-034'))
+
+    def test_suffix_review_is_idempotent_and_duplicate_finish_is_held(self):
+        self.products[0]['name'] = 'Shanks (OP01-120)'
+        result = self.run_review()[0]
+        self.registry = result
+        self.assertEqual(self.run_review()[0], result)
+        self.lanes *= 2
+        self.assertEqual(self.run_review()[3]['decisions'][0]['reason'], 'duplicate-exact-finish-lane')
 
     def test_wrong_finish_and_reprint_release_stay_unmapped(self):
         self.lanes[0]['subTypeName'] = 'Normal'
