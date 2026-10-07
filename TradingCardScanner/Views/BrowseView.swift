@@ -393,12 +393,25 @@ struct BrowseView: View {
     @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
 
     init(catalog: any BrowseCatalogProviding = BrowseCatalog(), recoveryGame: CardGame? = nil) {
-        self.catalog = catalog
+        var selectedCatalog = catalog
+#if DEBUG
+        if Self.isMissingArtworkReview { selectedCatalog = BrowseMissingArtworkCatalog() }
+#endif
+        self.catalog = selectedCatalog
         self.recoveryGame = recoveryGame
-        _model = StateObject(wrappedValue: BrowseViewModel(catalog: catalog,
+        _model = StateObject(wrappedValue: BrowseViewModel(catalog: selectedCatalog,
                                                          initialGame: recoveryGame,
                                                          includesSealedProducts: recoveryGame == nil))
     }
+
+#if DEBUG
+    private static var isMissingArtworkReview: Bool {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(index + 1)
+        else { return false }
+        return arguments[index + 1] == "ArtworkUnavailable"
+    }
+#endif
 
     var body: some View {
         ScrollView {
@@ -637,7 +650,8 @@ struct BrowseView: View {
                                         tier: masterSetTier
                                     ) ?? ownership.progress(for: set),
                                     layout: .rail,
-                                    showsNewBadge: releaseRail.showsNewBadges
+                                    showsNewBadge: releaseRail.showsNewBadges,
+                                    catalog: model.catalog
                                 )
                             }
                             .buttonStyle(.plain)
@@ -654,7 +668,11 @@ struct BrowseView: View {
     }
 
     @ViewBuilder private var gameChooser: some View {
+#if DEBUG
+        let rows = Self.isMissingArtworkReview ? [] : projectionStore.snapshot?.rows ?? []
+#else
         let rows = projectionStore.snapshot?.rows ?? []
+#endif
         Text("Browse by game")
             .font(.headline)
         ForEach(recoveryGame.map { [$0] } ?? model.gameRegistry.games(supporting: .browse)) { game in
@@ -669,7 +687,7 @@ struct BrowseView: View {
                         onOpenSettings: { isShowingSettings = true }
                     )
                 } label: {
-                    CatalogGameRow(summary: summary)
+                    CatalogGameRow(summary: summary, catalog: model.catalog)
                 }
                 .buttonStyle(.plain)
             } else if let error = model.setErrors[game] {
@@ -696,15 +714,25 @@ struct BrowseView: View {
 
     private struct CatalogGameRow: View {
         let summary: CatalogGameSummary
+        let catalog: any BrowseCatalogProviding
+        @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+        private var hasArtworkSources: Bool {
+            summary.recentArtworkRows.contains { $0.lowImageURL != nil || $0.highImageURL != nil }
+                || summary.recentSetArtwork.contains { !($0.artworkFallbackURLs ?? []).isEmpty }
+        }
 
         var body: some View {
             HStack(spacing: 18) {
-                CatalogGameFan(
-                    game: summary.game,
-                    ownedRows: summary.recentArtworkRows,
-                    fallbackSets: summary.recentSetArtwork
-                )
+                if !dynamicTypeSize.isAccessibilitySize && (summary.game != .onePiece || hasArtworkSources) {
+                    CatalogGameFan(
+                        game: summary.game,
+                        ownedRows: summary.recentArtworkRows,
+                        fallbackSets: summary.recentSetArtwork,
+                        catalog: catalog
+                    )
                     .accessibilityHidden(true)
+                }
 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(summary.game.label)
@@ -713,7 +741,7 @@ struct BrowseView: View {
                         .font(.subheadline)
                         .monospacedDigit()
                         .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                        .lineLimit(dynamicTypeSize.isAccessibilitySize ? 3 : 1)
                         .minimumScaleFactor(0.85)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -736,7 +764,14 @@ struct BrowseView: View {
         let game: CardGame
         let ownedRows: [CollectionRow]
         let fallbackSets: [CatalogSet]
-        private static let horizontalOffsets: [CGFloat] = [0, 32, 64]
+        let catalog: any BrowseCatalogProviding
+        @State private var magicArtwork: [CatalogSetID: [URL]] = [:]
+        @State private var loadedSources: [Int: [PokemonArtworkFallbacks.Candidate]] = [:]
+        private static let horizontalOffsets: [CGFloat] = [4, 28, 52]
+
+        private var hasLoadedArtwork: Bool {
+            artworks.contains { !$0.candidates.isEmpty && loadedSources[$0.slot] == $0.candidates }
+        }
 
         private var artworks: [CatalogGameArtwork] {
             var result = ownedRows.prefix(3).enumerated().map { index, row in
@@ -756,11 +791,15 @@ struct BrowseView: View {
             }
 
             for set in fallbackSets where result.count < 3 {
-                let artwork = PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
+                let candidates: [PokemonArtworkFallbacks.Candidate] = game == .magic
+                    ? (magicArtwork[set.catalogID] ?? []).map { .remote($0) }
+                    : (set.artworkFallbackURLs?.isEmpty == false
+                        ? (set.artworkFallbackURLs ?? []).map { .remote($0) }
+                        : PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates)
                 result.append(
                     CatalogGameArtwork(
                         slot: result.count,
-                        candidates: artwork.candidates,
+                        candidates: candidates,
                         placeholderText: set.code
                     )
                 )
@@ -780,23 +819,43 @@ struct BrowseView: View {
 
         var body: some View {
             ZStack(alignment: .topLeading) {
+                if game != .onePiece {
+                    CatalogGameEmblem(game: game)
+                        .frame(width: 100, height: 68)
+                        .opacity(hasLoadedArtwork ? 0 : 1)
+                }
                 ForEach(artworks) { artwork in
                     let index = artwork.slot
                     CatalogCachedImage(
                         candidates: artwork.candidates,
                         targetPixelSize: 160,
-                        placeholderSymbol: "rectangle.portrait",
-                        placeholderText: artwork.placeholderText
+                        showsPlaceholder: false,
+                        onPhaseChange: { phase in
+                            if phase == .loaded { loadedSources[index] = artwork.candidates }
+                            if phase == .failed, loadedSources[index] == artwork.candidates {
+                                loadedSources[index] = nil
+                            }
+                        }
                     )
                     .frame(width: 40, height: 56)
+                    .clipShape(RoundedRectangle(cornerRadius: 5))
                     .rotationEffect(.degrees(Double(index - 1) * 7))
                     .offset(
                         x: Self.horizontalOffsets[index],
                         y: index == 1 ? 4 : 8
                     )
+                    .opacity(!artwork.candidates.isEmpty && loadedSources[index] == artwork.candidates ? 1 : 0)
                 }
             }
-            .frame(width: 110, height: 68)
+            .frame(width: 100, height: 68, alignment: .topLeading)
+            .task(id: fallbackSets.map(\.id) + ownedRows.map(\.id)) {
+                guard game == .magic, ownedRows.count < 3 else { return }
+                for set in fallbackSets.prefix(3 - ownedRows.count) {
+                    let urls = (try? await catalog.artwork(for: set))?.cardURLs ?? []
+                    guard !Task.isCancelled else { return }
+                    magicArtwork[set.catalogID] = urls
+                }
+            }
         }
     }
 
@@ -1772,7 +1831,8 @@ private struct CatalogSetGrid: View {
                     CatalogSetTile(
                         set: set,
                         completion: completions?.completion(for: set, tier: tier)
-                            ?? owned.progress(for: set)
+                            ?? owned.progress(for: set),
+                        catalog: catalog
                     )
                 }
                 .buttonStyle(.plain)
@@ -2605,6 +2665,37 @@ struct CatalogArtworkView: View {
     }
 }
 
+#if DEBUG
+/// Repeatable visual QA for missing provider artwork, without touching collection data.
+private struct BrowseMissingArtworkCatalog: BrowseCatalogProviding {
+    let gameRegistry = CardGameRegistry(descriptors: [
+        .init(game: .pokemon, displayName: "Pokémon", sortOrder: 0, capabilities: [.browse]),
+        .init(game: .magic, displayName: "Magic", sortOrder: 1, capabilities: [.browse]),
+        .init(game: .onePiece, displayName: "One Piece", sortOrder: 2, capabilities: [.browse])
+    ])
+
+    func sets(for game: CardGame) async throws -> [CatalogSet] {
+        [.init(catalogID: .init(game: game, providerID: "artwork-qa"),
+               name: game == .magic ? "Reality Fracture" : game == .pokemon ? "Prismatic Evolutions" : "Emperors in the New World",
+               code: game == .magic ? "FRA" : game == .pokemon ? "PRE" : "OP09",
+               logoURL: nil, symbolURL: nil, cardCount: 103, releaseDate: .now, sortRank: 1)]
+    }
+
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        .init(items: [], nextCursor: nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails {
+        throw BrowseCatalogError.unknownSet
+    }
+    func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        AsyncStream { $0.finish() }
+    }
+}
+#endif
+
 /// Small, app-owned remote artwork view. The corresponding disk cache lives in
 /// Caches (not Application Support), so iOS may reclaim it under pressure and
 /// it never becomes synced collection data.
@@ -2618,6 +2709,8 @@ struct CatalogCachedImage: View {
     var reloadToken: Int = 0
     var placeholderSymbol = "photo"
     var placeholderText: String? = nil
+    var showsPlaceholder = true
+    var contentMode: ContentMode = .fit
     var onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
     private var recursionTier: Int = 0
     @StateObject private var loader = CatalogImageLoader()
@@ -2637,6 +2730,8 @@ struct CatalogCachedImage: View {
         reloadToken: Int = 0,
         placeholderSymbol: String = "photo",
         placeholderText: String? = nil,
+        showsPlaceholder: Bool = true,
+        contentMode: ContentMode = .fit,
         onPhaseChange: ((CatalogImageLoadPhase) -> Void)? = nil
     ) {
         self.candidates = candidates
@@ -2644,6 +2739,8 @@ struct CatalogCachedImage: View {
         self.reloadToken = reloadToken
         self.placeholderSymbol = placeholderSymbol
         self.placeholderText = placeholderText
+        self.showsPlaceholder = showsPlaceholder
+        self.contentMode = contentMode
         self.onPhaseChange = onPhaseChange
     }
 
@@ -2682,6 +2779,8 @@ struct CatalogCachedImage: View {
         reloadToken: Int,
         placeholderSymbol: String,
         placeholderText: String?,
+        showsPlaceholder: Bool,
+        contentMode: ContentMode,
         onPhaseChange: ((CatalogImageLoadPhase) -> Void)?,
         recursionTier: Int
     ) {
@@ -2691,6 +2790,8 @@ struct CatalogCachedImage: View {
             reloadToken: reloadToken,
             placeholderSymbol: placeholderSymbol,
             placeholderText: placeholderText,
+            showsPlaceholder: showsPlaceholder,
+            contentMode: contentMode,
             onPhaseChange: onPhaseChange
         )
         self.recursionTier = recursionTier
@@ -2701,7 +2802,7 @@ struct CatalogCachedImage: View {
             if let image = loader.image {
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFit()
+                    .aspectRatio(contentMode: contentMode)
             } else if loader.failed, hasRemainingCandidate {
                 CatalogCachedImage(
                     candidates: Array(resolvedCandidates.dropFirst()),
@@ -2709,19 +2810,21 @@ struct CatalogCachedImage: View {
                     reloadToken: reloadToken,
                     placeholderSymbol: placeholderSymbol,
                     placeholderText: placeholderText,
+                    showsPlaceholder: showsPlaceholder,
+                    contentMode: contentMode,
                     onPhaseChange: onPhaseChange,
                     recursionTier: recursionTier + 1
                 )
             } else if let localAssetImage {
                 Image(uiImage: localAssetImage)
                     .resizable()
-                    .scaledToFit()
+                    .aspectRatio(contentMode: contentMode)
             } else if let bundledLoadingImage {
                 Image(uiImage: bundledLoadingImage)
                     .resizable()
-                    .scaledToFit()
+                    .aspectRatio(contentMode: contentMode)
             } else {
-                placeholder
+                if showsPlaceholder { placeholder } else { Color.clear }
             }
         }
         .background {
@@ -2743,7 +2846,7 @@ struct CatalogCachedImage: View {
             loader.load(remoteURL, targetPixelSize: resolvedTargetPixelSize)
         }
         .onAppear {
-            guard localAssetImage != nil, !didReportBundledLoaded else { return }
+            guard localAssetImage != nil || bundledLoadingImage != nil, !didReportBundledLoaded else { return }
             didReportBundledLoaded = true
             onPhaseChange?(.loaded)
         }

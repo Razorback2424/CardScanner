@@ -26,8 +26,12 @@ public enum OnePieceCatalogCandidateValidator {
         let timestamp = ISO8601DateFormatter()
         let fractionalTimestamp = ISO8601DateFormatter()
         fractionalTimestamp.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        var timestampValidity: [String: Bool] = [:]
         func validTimestamp(_ value: String) -> Bool {
-            timestamp.date(from: value) != nil || fractionalTimestamp.date(from: value) != nil
+            if let valid = timestampValidity[value] { return valid }
+            let valid = timestamp.date(from: value) != nil || fractionalTimestamp.date(from: value) != nil
+            timestampValidity[value] = valid
+            return valid
         }
         let state = release.registry
         if release.schemaVersion != OnePieceCatalogContract.schemaVersion ||
@@ -46,11 +50,18 @@ public enum OnePieceCatalogCandidateValidator {
         unique(state.appearances.map { "\($0.printingID)|\($0.productID)" }, "duplicateProductAppearance")
         // Do not use trapping Dictionary(uniqueKeysWithValues:) on candidate input.
         let cards = Dictionary(state.canonicalCards.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
-        let artworkIDs = Set(state.artworks.map(\.id))
+        let artworks = Dictionary(state.artworks.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let printings = Dictionary(state.printings.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let variants = Set(state.variants.map(\.id))
         let products = Set(state.products.map(\.id))
         let observations = Dictionary(release.observations.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
+        // Index the full candidate once. Repeated linear scans here made every
+        // app launch quadratic in the number of physical printings/evidence.
+        // Retain all languages for an alias, including duplicate observations.
+        var observationLanguagesByAlias: [OnePieceSourceAlias: Set<String>] = [:]
+        for observation in release.observations {
+            observationLanguagesByAlias[observation.alias, default: []].insert(observation.language)
+        }
         func finishIDs(_ observation: OnePieceSourceObservation) -> Set<String>? {
             let single = observation.printedEvidence["finishVariantID"]
             let multiple = observation.printedEvidence["finishVariantIDs"]
@@ -126,7 +137,7 @@ public enum OnePieceCatalogCandidateValidator {
         for printing in state.printings {
             let context = printing.id.uuidString
             if cards[printing.canonicalCardID] == nil { fail("missingCanonicalReference", context) }
-            if !artworkIDs.contains(printing.artworkID) { fail("missingArtworkReference", context) }
+            if artworks[printing.artworkID] == nil { fail("missingArtworkReference", context) }
             if cards[printing.canonicalCardID]?.language != printing.language { fail("printingLanguageMismatch", context) }
             if let product = printing.releaseID, !products.contains(product) { fail("missingReleaseReference", context) }
             unique(printing.supportedVariantIDs, "duplicatePrintingVariant")
@@ -138,7 +149,7 @@ public enum OnePieceCatalogCandidateValidator {
             }
             if printing.status == .verified {
                 validReview(printing.review, required: printing.requiredEvidenceKinds, context: context)
-                let artwork = state.artworks.first { $0.id == printing.artworkID }
+                let artwork = artworks[printing.artworkID]
                 var reviewedFinishes: Set<String> = []
                 for evidence in printing.review?.evidence ?? [] {
                     guard let observation = observations[evidence.observationID] else { continue }
@@ -175,7 +186,7 @@ public enum OnePieceCatalogCandidateValidator {
             for alias in printing.sourceAliases {
                 if !validAlias(alias) { fail("invalidAlias", context) }
                 if aliases.updateValue(printing.id, forKey: alias) != nil { fail("duplicateSourceAlias", context) }
-                if !release.observations.contains(where: { $0.alias == alias && $0.language == printing.language }) {
+                if observationLanguagesByAlias[alias]?.contains(printing.language) != true {
                     fail("missingAliasObservation", context)
                 }
             }

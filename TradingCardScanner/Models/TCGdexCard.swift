@@ -725,4 +725,10 @@ struct ScryfallCardFace: Decodable, Sendable {
 struct ScryfallImageURIs: Decodable, Sendable {
     let small: URL?
     let normal: URL?
+    let artCrop: URL?
+
+    enum CodingKeys: String, CodingKey {
+        case small, normal
+        case artCrop = "art_crop"
+    }
 }

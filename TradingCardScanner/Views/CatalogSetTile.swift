@@ -35,16 +35,23 @@ struct CatalogSetTile: View {
     let completion: SetCompletion
     var layout: CatalogSetTileLayout = .grid
     var showsNewBadge = false
+    var catalog: (any BrowseCatalogProviding)? = nil
+    @State private var cardArtworkURLs: [URL] = []
     @State private var artworkPhase: CatalogImageLoadPhase = .idle
     @State private var artworkRetryCount = 0
     @State private var retriedArtworkOnCurrentAppearance = false
 
     private var artworkSource: PokemonArtworkFallbacks.SetSource {
-        PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
+        if set.game == .magic {
+            // Scryfall set symbols are SVG; use renderable artwork from actual
+            // member cards instead of feeding SVG into the raster image loader.
+            return .init(candidates: (cardArtworkURLs.isEmpty
+                ? set.artworkFallbackURLs ?? [] : cardArtworkURLs).map { .remote($0) })
+        }
+        return PokemonArtworkFallbacks.setSource(for: set, kind: .logo)
     }
 
     private var isMissingArtwork: Bool {
-        guard set.game == .pokemon else { return false }
         guard !artworkSource.candidates.isEmpty else {
             return true
         }
@@ -57,19 +64,17 @@ struct CatalogSetTile: View {
             if case .remote = candidate { return true }
             return false
         }
-        return hasRemoteArtwork ? artworkPhase == .failed : true
+        return hasRemoteArtwork ? artworkPhase != .loaded : true
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
             artworkBox
 
-            if !isMissingArtwork {
-                Text(set.name)
-                    .font(.subheadline.weight(.semibold))
-                    .lineLimit(layout.nameLineLimit)
-                    .multilineTextAlignment(.leading)
-            }
+            Text(set.name)
+                .font(.subheadline.weight(.semibold))
+                .lineLimit(layout.nameLineLimit)
+                .multilineTextAlignment(.leading)
 
             if isMissingArtwork, layout == .grid, let cardCount = set.cardCount {
                 Text(countLabel(cardCount, singular: "card", plural: "cards"))
@@ -77,7 +82,7 @@ struct CatalogSetTile: View {
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
-            } else if !isMissingArtwork {
+            } else {
                 Text(metadata)
                     .font(.caption)
                     .monospacedDigit()
@@ -92,6 +97,12 @@ struct CatalogSetTile: View {
         .accessibilityLabel(
             accessibilityLabel
         )
+        .task(id: set.catalogID) {
+            guard set.game == .magic, let catalog else { return }
+            let urls = (try? await catalog.artwork(for: set))?.illustrationURLs ?? []
+            guard !Task.isCancelled else { return }
+            cardArtworkURLs = urls
+        }
     }
 
     private var metadata: String {
@@ -109,7 +120,7 @@ struct CatalogSetTile: View {
         let owned = countLabel(completion.owned, singular: unitSingular, plural: unitPlural)
         let progress = completion.total.map { "\(owned) of \($0) \(unitPlural) collected" }
             ?? "\(owned) collected"
-        let art = isMissingArtwork ? ", artwork unavailable" : ""
+        let art = (artworkPhase == .failed || artworkSource.candidates.isEmpty) ? ", artwork unavailable" : ""
         return "\(set.name), \(progress), set code \(set.code)\(art)"
     }
 
@@ -124,8 +135,10 @@ struct CatalogSetTile: View {
                     .accessibilityHidden(isMissingArtwork)
                 if isMissingArtwork { missingArtwork }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(layout.artworkPadding)
+            .frame(maxWidth: .infinity)
+            .frame(height: layout.artworkHeight - (set.game == .magic ? 0 : 2 * layout.artworkPadding))
+            .clipped()
+            .padding(set.game == .magic ? 0 : layout.artworkPadding)
 
             if showsNewBadge {
                 Text("NEW")
@@ -159,6 +172,7 @@ struct CatalogSetTile: View {
         }
         .onAppear {
             guard isMissingArtwork,
+                  artworkPhase == .failed,
                   artworkSource.candidates.contains(where: { candidate in
                       if case .remote = candidate { return true }
                       return false
@@ -172,48 +186,27 @@ struct CatalogSetTile: View {
         }
     }
 
-    @ViewBuilder
     private var artwork: some View {
-        if set.game == .magic {
-            // Scryfall's set symbols are SVG. ImageIO does not decode SVG on
-            // iOS, so the first shippable fallback is deliberately textual and
-            // never leaves a Magic tile looking like a failed image request.
-            Text(set.code)
-                .font(.system(.title3, design: .monospaced, weight: .bold))
-                .foregroundStyle(.primary)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(.background.opacity(0.78), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-        } else {
-            CatalogCachedImage(
-                candidates: artworkSource.candidates,
-                targetPixelSize: 416,
-                reloadToken: artworkRetryCount,
-                placeholderSymbol: "square.stack.3d.up",
-                placeholderText: set.code,
-                onPhaseChange: { phase in
-                    artworkPhase = phase
-                }
-            )
-        }
+        CatalogCachedImage(
+            candidates: artworkSource.candidates,
+            targetPixelSize: 416,
+            reloadToken: artworkRetryCount,
+            showsPlaceholder: false,
+            contentMode: set.game == .magic ? .fill : .fit,
+            onPhaseChange: { phase in artworkPhase = phase }
+        )
     }
 
     private var missingArtwork: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(set.name)
-                .font(.subheadline.weight(.semibold))
-                .lineLimit(3)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(set.code)
-                .font(.caption)
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+        Group {
+            if set.game == .onePiece { Color.clear }
+            else { CatalogGameEmblem(game: set.game) }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .padding(4)
+        .frame(width: 96, height: 64)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 8)
+        .padding(.top, showsNewBadge ? 24 : 0)
+        .padding(.bottom, layout == .rail ? 22 : 0)
     }
 
     @ViewBuilder
@@ -272,5 +265,35 @@ struct CatalogSetTile: View {
             hash &*= 1_099_511_628_211
         }
         return names[Int(hash % UInt64(names.count))]
+    }
+}
+
+/// App-owned decorative artwork for catalogs without display-image sources.
+/// It stays useful offline and never looks like a failed card download.
+struct CatalogGameEmblem: View {
+    let game: CardGame
+
+    private var colors: [Color] {
+        switch game {
+        case .pokemon: return [Color(red: 0.72, green: 0.39, blue: 0.06), Color(red: 0.45, green: 0.19, blue: 0.06)]
+        default: return [Color(red: 0.44, green: 0.28, blue: 0.62), Color(red: 0.22, green: 0.15, blue: 0.35)]
+        }
+    }
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: 12, style: .continuous)
+            .fill(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing))
+            .overlay {
+                Circle().stroke(.white.opacity(0.12), lineWidth: 12)
+                    .frame(width: 70, height: 70)
+                    .offset(x: 32, y: 20)
+            }
+            .overlay {
+                Image(systemName: game == .pokemon ? "bolt.fill" : "sparkles")
+                    .font(.system(size: 28, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.92))
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .accessibilityHidden(true)
     }
 }

@@ -395,9 +395,9 @@ private final class BrowseRefinementURLProtocol: URLProtocol, @unchecked Sendabl
     }
     override func stopLoading() {}
 
-    func respond(_ data: Data) {
+    func respond(_ data: Data, statusCode: Int = 200) {
         guard let url = request.url,
-              let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil,
+              let response = HTTPURLResponse(url: url, statusCode: statusCode, httpVersion: nil,
                                              headerFields: ["Content-Type": "application/json"]) else { return }
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         client?.urlProtocol(self, didLoad: data)
@@ -425,6 +425,126 @@ private actor FixedArtworkResponseDataLoader {
 
     func count() -> Int {
         requestCount
+    }
+}
+
+final class CatalogSetArtworkTests: XCTestCase {
+    private func set() -> CatalogSet {
+        CatalogSet(catalogID: .init(game: .magic, providerID: "fixture"), name: "Fixture",
+                   code: "FIXTURE", logoURL: nil, symbolURL: nil, cardCount: 3,
+                   releaseDate: nil, sortRank: 0)
+    }
+
+    private func session() -> URLSession {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [BrowseRefinementURLProtocol.self]
+        return URLSession(configuration: configuration)
+    }
+
+    func testArtworkRequestsCoalesceAndReuseDiskWithoutFetchingPricesOrDirectory() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let started = expectation(description: "Single artwork search")
+        let gate = BrowseDirectoryResponseGate(started: started)
+        let count = BrowseRefinementRequestCount()
+        BrowseRefinementURLProtocol.setHandler { loader in
+            count.increment()
+            XCTAssertEqual(loader.request.url?.path, "/cards/search")
+            XCTAssertEqual(URLComponents(url: loader.request.url!, resolvingAgainstBaseURL: false)?
+                .queryItems?.first(where: { $0.name == "q" })?.value, "e:fixture lang:en game:paper")
+            Task { await gate.capture(loader) }
+        }
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root), magicSession: session)
+        let set = set()
+        let first = Task { try await catalog.artwork(for: set) }
+        let second = Task { try await catalog.artwork(for: set) }
+        await fulfillment(of: [started], timeout: 2)
+        await gate.release(Data(#"{"data":[{"id":"card","name":"Card","set":"fixture","set_name":"Fixture","collector_number":"1","lang":"en","digital":false,"card_faces":[{"image_uris":{"normal":"https://example.com/front.png","art_crop":"https://example.com/illustration.png"}}]}],"has_more":false}"#.utf8))
+        let expected = [URL(string: "https://example.com/front.png")!]
+        let firstURLs = try await first.value
+        let secondURLs = try await second.value
+        XCTAssertEqual(firstURLs.cardURLs, expected)
+        XCTAssertEqual(secondURLs.cardURLs, expected)
+        XCTAssertEqual(firstURLs.illustrationURLs, [URL(string: "https://example.com/illustration.png")!])
+        let relaunched = BrowseCatalog(cache: CatalogCacheStore(root: root), magicSession: session)
+        let reloaded = try await relaunched.artwork(for: set)
+        XCTAssertEqual(reloaded.cardURLs, expected)
+        XCTAssertEqual(reloaded.illustrationURLs, firstURLs.illustrationURLs)
+        XCTAssertEqual(count.value, 1)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("MagicPrices").path))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("CardPages").path))
+    }
+
+    func testArtworkReusesExistingCardPageAndCapsDistinctImages() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        BrowseRefinementURLProtocol.setHandler { _ in XCTFail("Cached artwork must not make a request") }
+        let set = set()
+        let cards = (0..<6).map { index in
+            CatalogCardSummary(game: .magic, providerID: "card-\(index)", setID: set.catalogID,
+                setName: set.name, setCode: set.code, name: "Card", collectorNumber: "\(index)",
+                thumbnailURL: nil, imageURL: URL(string: "https://example.com/\(index / 2).png"))
+        }
+        let cache = CatalogCacheStore(root: root)
+        await cache.storeCardPage(.init(items: cards, nextCursor: nil),
+                                  for: CatalogCacheStore.cardPageKey(for: set, cursor: nil))
+        let catalog = BrowseCatalog(cache: cache, magicSession: session)
+        let urls = try await catalog.artwork(for: set)
+        XCTAssertEqual(urls.cardURLs, (0..<3).map { URL(string: "https://example.com/\($0).png")! })
+    }
+
+    func testPublishedMemberArtworkNeedsNoNetworkOrOwnership() async throws {
+        var set = set()
+        set.artworkFallbackURLs = [URL(string: "https://example.com/member.png")!]
+        let catalog = BrowseCatalog()
+        let urls = try await catalog.artwork(for: set)
+        XCTAssertEqual(urls.cardURLs, set.artworkFallbackURLs)
+    }
+
+    func testUnavailableSetArtworkIsCachedWithoutRepeatedRequests() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let count = BrowseRefinementRequestCount()
+        BrowseRefinementURLProtocol.setHandler { loader in
+            count.increment()
+            loader.respond(Data("{}".utf8), statusCode: 404)
+        }
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root), magicSession: session)
+        for _ in 0..<3 {
+            let artwork = try await catalog.artwork(for: set())
+            XCTAssertTrue(artwork.cardURLs.isEmpty)
+        }
+        XCTAssertEqual(count.value, 1)
+    }
+
+    func testExpiredArtworkRemainsAvailableWhenProviderIsOffline() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let session = session()
+        defer { session.invalidateAndCancel(); BrowseRefinementURLProtocol.setHandler(nil) }
+        let urls = [URL(string: "https://example.com/retained.png")!]
+        let cache = CatalogCacheStore(root: root)
+        let set = set()
+        await cache.storeSetArtwork(.init(cardURLs: urls, illustrationURLs: urls), for: set.catalogID)
+        let file = try XCTUnwrap(FileManager.default.contentsOfDirectory(
+            at: root.appendingPathComponent("SetArtwork"), includingPropertiesForKeys: nil).first)
+        var envelope = try XCTUnwrap(JSONSerialization.jsonObject(with: Data(contentsOf: file)) as? [String: Any])
+        envelope["storedAt"] = Date.now.addingTimeInterval(-90_000).timeIntervalSinceReferenceDate
+        try JSONSerialization.data(withJSONObject: envelope).write(to: file)
+        BrowseRefinementURLProtocol.setHandler { loader in
+            loader.client?.urlProtocol(loader, didFailWithError: URLError(.notConnectedToInternet))
+        }
+        let catalog = BrowseCatalog(cache: cache, magicSession: session)
+        let artwork = try await catalog.artwork(for: set)
+        XCTAssertEqual(artwork.cardURLs, urls)
+        let retained = await cache.setArtwork(for: set.catalogID)
+        XCTAssertEqual(retained?.isFresh, false, "Failure must not renew the cache timestamp")
     }
 }
 

@@ -137,13 +137,10 @@ enum PokemonArtworkFallbacks {
         }
 
         // Card artwork is intentionally a sequential last resort. The
-        // publisher stores at most three already-known card image URLs in the
-        // snapshot so a missing set logo never turns into a collage or another
-        // network discovery policy on the device.
-        if set.game == .pokemon {
-            for url in set.artworkFallbackURLs ?? [] {
-                append(.remote(url))
-            }
+        // set summary carries at most three already-known card image URLs so
+        // a missing set logo never starts another network discovery policy.
+        for url in set.artworkFallbackURLs ?? [] {
+            append(.remote(url))
         }
 
         return SetSource(candidates: candidates)
@@ -206,6 +203,20 @@ enum PokemonArtworkFallbacks {
         components.path = siblingPrefix + String(components.path.dropFirst(prefix.count))
         return components.url
     }
+}
+
+/// Stable, bounded artwork hints from actual cards in a set, never guessed URLs.
+enum CatalogSetArtworkSelection {
+    static func urls(from cards: [CatalogCardSummary]) -> [URL] {
+        var seen: Set<URL> = []
+        return Array(cards.compactMap { $0.imageURL ?? $0.thumbnailURL }
+            .filter { seen.insert($0).inserted }.prefix(3))
+    }
+}
+
+struct CatalogSetArtwork: Codable, Sendable {
+    let cardURLs: [URL]
+    let illustrationURLs: [URL]
 }
 
 /// The provider order for a card artwork request. TCGdex remains authoritative

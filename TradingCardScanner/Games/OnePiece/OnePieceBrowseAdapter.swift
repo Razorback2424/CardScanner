@@ -33,14 +33,13 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
         for (productID, printings) in grouped {
             let product = registry.productsByID[productID]
             let setID = CatalogSetID(game: .onePiece, providerID: productID)
-            let set = CatalogSet(catalogID: setID, name: product?.label ?? "Other releases",
+            var set = CatalogSet(catalogID: setID, name: product?.label ?? "Other releases",
                 code: product?.label ?? "Other releases", logoURL: nil, symbolURL: nil, cardCount: printings.count,
                 releaseDate: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate), sortRank: 0,
                 physicalPrintingIDs: Set(printings.map { $0.id.uuidString.lowercased() }))
-            sets[setID] = set
             cards[setID] = printings.compactMap { printing in
                 guard let canonical = registry.canonicalByID[printing.canonicalCardID] else { return nil }
-                let image = registry.artworkByID[printing.artworkID]?.referenceImageURL
+                let image = registry.artworkURLByID[printing.artworkID]
                 let qualifiers = [printing.treatment, printing.distributionLabel, printing.stamp]
                     .compactMap { $0 }.filter { !$0.isEmpty }
                 return CatalogCardSummary(game: .onePiece, providerID: printing.id.uuidString.lowercased(),
@@ -53,6 +52,12 @@ struct OnePieceBrowseAdapter: GameBrowseAdapter {
                 $0.collectorNumber == $1.collectorNumber ? $0.providerID < $1.providerID
                     : $0.collectorNumber < $1.collectorNumber
             }
+            // Reuse verified member artwork; product releases do not publish logos.
+            // Sorting above makes the selection stable across registry rebuilds.
+            var seenImages: Set<URL> = []
+            set.artworkFallbackURLs = Array((cards[setID] ?? []).compactMap(\.thumbnailURL)
+                .filter { seenImages.insert($0).inserted }.prefix(3))
+            sets[setID] = set
         }
         setsByID = sets
         cardsBySetID = cards

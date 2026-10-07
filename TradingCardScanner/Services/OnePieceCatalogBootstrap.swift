@@ -114,7 +114,8 @@ enum OnePieceCatalogBootstrap {
                 throw OnePieceCatalogBootstrapConfiguration.ConfigurationError.missingKeys
             }
             return try localReviewRuntime(arguments: ["-one_piece_local_review", "-one_piece_review_seed", bundledSeed.path,
-                                                      "-one_piece_review_public_key", pin], bundle: bundle, now: now)
+                                                      "-one_piece_review_public_key", pin], bundle: bundle, now: now,
+                                              includeRecordedArtwork: true)
         }
         let configured = bundle.object(forInfoDictionaryKey: "ONE_PIECE_OWNER_CATALOG_ENABLED") as? Bool == true
         guard configured || preferences.bool(forKey: "onePieceOwnerCatalogEnabled") else { return nil }
@@ -126,7 +127,8 @@ enum OnePieceCatalogBootstrap {
         let url = seedURL ?? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("one-piece-owner-catalog.json")
         let runtime = try localReviewRuntime(arguments: ["-one_piece_local_review", "-one_piece_review_seed", url.path,
-                                                  "-one_piece_review_public_key", publicKey], bundle: bundle, now: now)
+                                                  "-one_piece_review_public_key", publicKey], bundle: bundle, now: now,
+                                             includeRecordedArtwork: true)
         // Retain only the successfully verified public authority so the owner's
         // subsequent ordinary app builds keep One Piece without custom flags.
         preferences.set(publicKey, forKey: "onePieceOwnerCatalogPublicKey")
@@ -148,7 +150,8 @@ enum OnePieceCatalogBootstrap {
 
     static func localReviewRuntime(arguments: [String] = ProcessInfo.processInfo.arguments,
                                    bundle: Bundle = .main,
-                                   now: Date = .now) throws -> CardGameRuntime? {
+                                   now: Date = .now,
+                                   includeRecordedArtwork: Bool = false) throws -> CardGameRuntime? {
         let arguments = localReviewLaunchArguments(arguments: arguments, bundleIdentifier: bundle.bundleIdentifier,
             publicKey: bundle.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_PUBLIC_KEY") as? String,
             reviewEnabled: bundle.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_ENABLED") as? Bool == true)
@@ -174,7 +177,7 @@ enum OnePieceCatalogBootstrap {
         guard seed.count <= 48 * 1_024 * 1_024 else { throw OnePieceCatalogSignatureError.oversizedPayload }
         let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: seed)
         let verified = try OnePieceCatalogSignature.verify(envelope, trustedKeys: configuration.keys, now: now)
-        return OnePieceGameRuntime(registry: .init(verifiedRelease: verified),
+        return OnePieceGameRuntime(registry: .init(verifiedRelease: verified, includeRecordedArtwork: includeRecordedArtwork),
             capabilities: [.scan, .browse, .collectionWrite, .pricing]).runtime
     }
 #endif

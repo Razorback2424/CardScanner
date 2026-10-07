@@ -89,6 +89,8 @@ actor BrowseCatalog: BrowseCatalogProviding {
     private let gameActivationSources: [CardGame: any GameCatalogActivationSource]
     private var gameBrowseTasks: [CardGame: Task<Void, Never>] = [:]
     private var gameBrowseRevisions: [CardGame: Int] = [:]
+    private var setArtworkTasks: [CatalogSetID: Task<CatalogSetArtwork, Error>] = [:]
+    private var nextSetArtworkRequestAt = Date.distantPast
     private static let legacyReleaseOrderDefaultsKey = "pokemonCatalogReleaseOrder.v1"
 
     static func applyingSignedCardArtwork(
@@ -798,6 +800,69 @@ actor BrowseCatalog: BrowseCatalogProviding {
                 limitlessArtworkAuthorized: descriptor.recognitionKind == .expansion,
                 cardArtwork: BrowseCatalogArtworkSelection.cardArtworkMap(descriptor: descriptor)
             )
+        }
+    }
+
+    func artwork(for set: CatalogSet) async throws -> CatalogSetArtwork {
+        if let hints = set.artworkFallbackURLs, !hints.isEmpty {
+            return .init(cardURLs: hints, illustrationURLs: hints)
+        }
+        guard set.game == .magic else { return .init(cardURLs: [], illustrationURLs: []) }
+        if let task = setArtworkTasks[set.catalogID] { return try await task.value }
+        // One shared request per visible set. Cache the small URL list separately
+        // from card pages so artwork never starts pricing/history work.
+        let task = Task { try await self.loadMagicSetArtwork(for: set) }
+        setArtworkTasks[set.catalogID] = task
+        defer { setArtworkTasks[set.catalogID] = nil }
+        return try await task.value
+    }
+
+    private func loadMagicSetArtwork(for set: CatalogSet) async throws -> CatalogSetArtwork {
+        if let saved = await cache.setArtwork(for: set.catalogID), saved.isFresh {
+            return saved.value
+        }
+        let key = CatalogCacheStore.cardPageKey(for: set, cursor: nil)
+        if let page = await cache.cardPage(for: key) {
+            let urls = CatalogSetArtworkSelection.urls(from: page.value.items)
+            if !urls.isEmpty {
+                let artwork = CatalogSetArtwork(cardURLs: urls, illustrationURLs: urls)
+                await cache.storeSetArtwork(artwork, for: set.catalogID)
+                return artwork
+            }
+        }
+        do {
+            guard let url = BrowseRequestBuilder.scryfallSearchURL(
+                query: "e:\(set.providerID) lang:en game:paper"
+            ) else { throw BrowseCatalogError.invalidURL }
+            // Scrolling a lazy grid can expose several sets together. Space
+            // artwork searches instead of sending a burst to the provider.
+            let delay = max(nextSetArtworkRequestAt.timeIntervalSinceNow, 0)
+            nextSetArtworkRequestAt = Date.now.addingTimeInterval(delay + 0.1)
+            if delay > 0 { try await Task.sleep(for: .seconds(delay)) }
+            let (data, response) = try await magicSession.data(for: request(url, scryfall: true))
+            if let http = response as? HTTPURLResponse, http.statusCode == 404 {
+                let artwork = CatalogSetArtwork(cardURLs: [], illustrationURLs: [])
+                await cache.storeSetArtwork(artwork, for: set.catalogID)
+                return artwork
+            }
+            try validate(response)
+            let page = try JSONDecoder().decode(ScryfallBrowseCardPage.self, from: data)
+            let members = page.data.filter { $0.setCode.caseInsensitiveCompare(set.providerID) == .orderedSame }
+            var seen: Set<URL> = []
+            let illustrations = Array(members
+                .compactMap { $0.imageURIs?.artCrop ?? $0.cardFaces?.first?.imageURIs?.artCrop
+                    ?? $0.displayImageURL ?? $0.thumbnailImageURL }
+                .filter { seen.insert($0).inserted }.prefix(3))
+            seen.removeAll()
+            let cards = Array(members.compactMap { $0.displayImageURL ?? $0.thumbnailImageURL }
+                .filter { seen.insert($0).inserted }.prefix(3))
+            let artwork = CatalogSetArtwork(cardURLs: cards, illustrationURLs: illustrations)
+            await cache.storeSetArtwork(artwork, for: set.catalogID)
+            return artwork
+        } catch {
+            // Previously resolved art remains useful offline, even when stale.
+            if let saved = await cache.setArtwork(for: set.catalogID) { return saved.value }
+            throw error
         }
     }
 
@@ -2529,6 +2594,19 @@ actor CatalogCacheStore {
 
     func storeSets(_ sets: [CatalogSet], for game: CardGame, at date: Date = .now) {
         store(sets, at: setDirectoryURL(for: game), storedAt: date)
+    }
+
+    func setArtwork(for id: CatalogSetID) -> Cached<CatalogSetArtwork>? {
+        load(CatalogSetArtwork.self, from: root.appendingPathComponent("SetArtwork")
+            .appendingPathComponent(filename(for: "artwork-v2|" + id.id)), maxAge: 24 * 60 * 60)
+    }
+
+    func storeSetArtwork(_ artwork: CatalogSetArtwork, for id: CatalogSetID) {
+        let directory = root.appendingPathComponent("SetArtwork", isDirectory: true)
+        let bounded = CatalogSetArtwork(cardURLs: Array(artwork.cardURLs.prefix(3)),
+                                        illustrationURLs: Array(artwork.illustrationURLs.prefix(3)))
+        store(bounded, at: directory.appendingPathComponent(filename(for: "artwork-v2|" + id.id)))
+        trim(directory, maximumBytes: 1 * 1_024 * 1_024)
     }
 
     func removeSets(for game: CardGame) {

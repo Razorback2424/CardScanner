@@ -6,6 +6,25 @@ import XCTest
 final class OnePieceCatalogCoreTests: XCTestCase {
     private let date = "2026-10-03T00:00:00Z"
 
+    func testBundledOwnerCatalogVerification() throws {
+        let directory = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
+            .deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+            .appendingPathComponent("TradingCardScanner/OnePieceOwnerCatalog")
+        let decoder = JSONDecoder()
+        let pins = try decoder.decode([String: String].self,
+            from: Data(contentsOf: directory.appendingPathComponent("public-keys.json")))
+        let keys = try pins.mapValues { encoded in
+            try Curve25519.Signing.PublicKey(rawRepresentation: XCTUnwrap(Data(base64Encoded: encoded)))
+        }
+        let start = Date()
+        let envelope = try decoder.decode(OnePieceCatalogReleaseEnvelope.self,
+            from: Data(contentsOf: directory.appendingPathComponent("one-piece-owner-catalog.json")))
+        let verified = try OnePieceCatalogSignature.verify(envelope, trustedKeys: keys)
+        print("Bundled catalog decode + verification: \(Date().timeIntervalSince(start)) seconds")
+        XCTAssertGreaterThan(verified.release.registry.printings.count, 2_000)
+        XCTAssertEqual(verified.release.indexes, OnePieceCatalogIndexes(registry: verified.release.registry))
+    }
+
     func testRetainedTCGCSVStressProductsRemainMarketEvidenceWithoutPhysicalAuthority() throws {
         let directory = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
             .deletingLastPathComponent().deletingLastPathComponent()
@@ -513,6 +532,44 @@ final class OnePieceCatalogCoreTests: XCTestCase {
         XCTAssertTrue(codes(missingArt).contains("missingArtworkReference"))
         let missingCard = try alter(base) { object in editPrintings(&object) { $0[0]["canonicalCardID"] = "one-piece:en:OP99-099" } }
         XCTAssertTrue(codes(missingCard).contains("missingCanonicalReference"))
+    }
+
+    func testAliasEvidenceRequiresMatchingLanguageAndRetainsAllObservations() throws {
+        let base = try fixture(count: 1)
+        let wrongLanguage = try alter(base) { object in
+            var observations = object["observations"] as! [[String: Any]]
+            for index in observations.indices { observations[index]["language"] = "ja" }
+            object["observations"] = observations
+        }
+        XCTAssertTrue(codes(wrongLanguage).contains("missingAliasObservation"))
+        let missingAlias = try alter(base) { object in
+            editPrintings(&object) {
+                $0[0]["sourceAliases"] = [["provider": "bandai", "sourceID": "missing"]]
+            }
+        }
+        XCTAssertTrue(codes(missingAlias).contains("missingAliasObservation"))
+        let multipleLanguages = try alter(base) { object in
+            var observations = object["observations"] as! [[String: Any]]
+            var otherLanguage = observations[0]
+            otherLanguage["id"] = "other-language-observation"
+            otherLanguage["language"] = "ja"
+            observations.insert(otherLanguage, at: 0)
+            object["observations"] = observations
+        }
+        XCTAssertFalse(codes(multipleLanguages).contains("missingAliasObservation"),
+                       "An earlier observation in another language must not hide matching evidence")
+        let duplicateArtwork = try alter(base) { object in
+            var registry = object["registry"] as! [String: Any]
+            var artworks = registry["artworks"] as! [[String: Any]]
+            var conflicting = artworks[0]
+            conflicting["imageSHA256"] = String(repeating: "0", count: 64)
+            artworks.append(conflicting)
+            registry["artworks"] = artworks
+            object["registry"] = registry
+        }
+        XCTAssertTrue(codes(duplicateArtwork).contains("duplicateArtworkID"))
+        XCTAssertFalse(codes(duplicateArtwork).contains("contradictoryReviewedEvidence"),
+                       "Duplicate input must reject safely while retaining first-row lookup semantics")
     }
 
     func testVerifiedStampRequiresSupportingObservation() throws {

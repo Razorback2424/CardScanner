@@ -2105,6 +2105,70 @@ final class OnePieceIntegrationTests: XCTestCase {
         catch CatalogLookupError.staleCatalog {}
     }
 
+    func testBrowseSetsExposeOnlyVerifiedMemberArtworkForEmptyCollection() async throws {
+        let adapter = OnePieceBrowseAdapter(registry: try registry(multiProduct: true))
+        let sets = try await adapter.sets()
+        XCTAssertFalse(sets.isEmpty)
+        for set in sets {
+            let page = try await adapter.cards(in: set, cursor: nil)
+            let members = Set(page.items.compactMap(\.thumbnailURL))
+            let hints = try XCTUnwrap(set.artworkFallbackURLs)
+            XCTAssertFalse(hints.isEmpty)
+            XCTAssertLessThanOrEqual(hints.count, 3)
+            XCTAssertEqual(Set(hints).count, hints.count)
+            XCTAssertTrue(Set(hints).isSubset(of: members))
+            XCTAssertEqual(PokemonArtworkFallbacks.setSource(for: set, kind: .logo).candidates,
+                           hints.map { .remote($0) })
+        }
+        let rebuilt = try await OnePieceBrowseAdapter(registry: registry(multiProduct: true)).sets()
+        XCTAssertEqual(sets, rebuilt)
+    }
+
+    func testReviewEvidenceDoesNotBecomeDisplayArtworkHints() async throws {
+        let registry = try reviewedAwardRegistry()
+        let sets = try await OnePieceBrowseAdapter(registry: registry).sets()
+        XCTAssertFalse(sets.isEmpty)
+        XCTAssertTrue(sets.allSatisfy { $0.artworkFallbackURLs?.isEmpty == true })
+    }
+
+    func testOwnerArtworkOptInUsesExactRecordedImagesAcrossRetainedCorpus() async throws {
+        let reviewed = try reviewedAwardRegistry()
+        let owner = OnePieceCatalogRegistry(verifiedRelease: reviewed.verifiedRelease, includeRecordedArtwork: true)
+        XCTAssertEqual(owner.artworkURLByID.count, reviewed.verifiedRelease.release.registry.artworks.count)
+        XCTAssertEqual(owner.generation, reviewed.generation)
+        let adapter = OnePieceBrowseAdapter(registry: owner)
+        for set in try await adapter.sets() {
+            XCTAssertFalse(set.artworkFallbackURLs?.isEmpty ?? true, set.name)
+            let page = try await adapter.cards(in: set, cursor: nil)
+            for card in page.items {
+                let printing = try XCTUnwrap(owner.printingByID[UUID(uuidString: card.providerID)!])
+                XCTAssertEqual(card.imageURL, owner.artworkURLByID[printing.artworkID])
+            }
+        }
+        XCTAssertTrue(reviewed.verifiedRelease.release.registry.artworks.allSatisfy { $0.referenceImageURL == nil })
+    }
+
+    func testRecordedArtworkRequiresExactReferenceHashAndManufacturerImage() {
+        let hash = String(repeating: "a", count: 64)
+        let art = OnePieceArtwork(id: uuid(900), imageSHA256: hash, observationIDs: ["render"])
+        let url = URL(string: "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p1.png?review")!
+        func observation(imageHash: String, source: URL) -> OnePieceSourceObservation {
+            .init(id: "render", alias: .init(provider: "bandai", sourceID: "exact-art"),
+                  sourceURL: source, observedAt: "2026-10-07T00:00:00Z", language: "en",
+                  payloadSHA256: hash, imageSHA256: imageHash)
+        }
+        XCTAssertEqual(OnePieceCatalogRegistry.recordedArtworkURL(for: art,
+            observations: ["render": observation(imageHash: hash, source: url)]), url)
+        XCTAssertNil(OnePieceCatalogRegistry.recordedArtworkURL(for: art,
+            observations: ["render": observation(imageHash: String(repeating: "b", count: 64), source: url)]))
+        XCTAssertNil(OnePieceCatalogRegistry.recordedArtworkURL(for: art,
+            observations: ["unrelated": observation(imageHash: hash, source: url)]))
+        XCTAssertNil(OnePieceCatalogRegistry.recordedArtworkURL(for: art,
+            observations: ["render": observation(imageHash: hash, source: URL(string: "https://example.com/art.png")!)]))
+        XCTAssertNil(OnePieceCatalogRegistry.recordedArtworkURL(for: art,
+            observations: ["render": observation(imageHash: hash, source: URL(string: "https://en.onepiece-cardgame.com/cardlist/")!)]))
+    }
+
     func testBrowseOwnershipAndCompletionRequireExactPrintingRatherThanSharedNumber() async throws {
         let adapter = OnePieceBrowseAdapter(registry: try registry(multiProduct: true))
         let sets = try await adapter.sets()

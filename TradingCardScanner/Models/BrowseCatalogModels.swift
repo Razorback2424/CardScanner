@@ -1626,6 +1626,8 @@ protocol BrowseCatalogProviding: Sendable {
     var gameRegistry: CardGameRegistry { get }
     func sets(for game: CardGame) async throws -> [CatalogSet]
     func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary>
+    /// Decorative artwork only; does not fetch prices or alter set membership.
+    func artwork(for set: CatalogSet) async throws -> CatalogSetArtwork
     func searchCards(
         named query: String,
         game: CardGame,
@@ -1646,6 +1648,11 @@ protocol BrowseCatalogProviding: Sendable {
 
 extension BrowseCatalogProviding {
     var gameRegistry: CardGameRegistry { .standard }
+
+    func artwork(for set: CatalogSet) async throws -> CatalogSetArtwork {
+        let urls = set.artworkFallbackURLs ?? []
+        return .init(cardURLs: urls, illustrationURLs: urls)
+    }
 
     /// A deliberate reload rebases the set definition. Pagination must continue
     /// using its pinned definition/cursor and fail if that catalog has changed.

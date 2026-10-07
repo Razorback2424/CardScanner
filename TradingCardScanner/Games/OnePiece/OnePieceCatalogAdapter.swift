@@ -97,7 +97,7 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
             releaseLabel: ["English", product?.label].compactMap { $0 }.joined(separator: " · "),
             treatmentLabel: printing.treatment, distributionLabel: [printing.distributionLabel, printing.stamp].compactMap { $0 }.joined(separator: " · "),
             releaseDate: product?.releaseDate.flatMap(OnePieceTextNormalization.releaseDate),
-            thumbnailURL: registry.artworkByID[printing.artworkID]?.referenceImageURL,
+            thumbnailURL: registry.artworkURLByID[printing.artworkID],
             artworkID: includeAdditionalDetails ? printing.artworkID.uuidString.lowercased() : nil,
             distinctionLabels: includeAdditionalDetails ? [
                 printing.region.map { "Region: \($0)" },
@@ -108,7 +108,7 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
 
     private func resolution(for printing: OnePiecePhysicalPrinting, canonical: OnePieceCanonicalCard) throws -> CardCatalog.CatalogResolution {
         let product = printing.releaseID.flatMap { registry.productsByID[$0] }
-        let image = registry.artworkByID[printing.artworkID]?.referenceImageURL
+        let image = registry.artworkURLByID[printing.artworkID]
         let card = try ResolvedCatalogCard(game: game, physicalPrintingID: printing.id.uuidString.lowercased(),
             canonicalCardID: canonical.id, language: printing.language, name: canonical.name,
             setName: product?.label ?? printing.distributionLabel ?? "One Piece", setCode: OnePieceTextNormalization.prefix(of: canonical.printedNumber) ?? "",
