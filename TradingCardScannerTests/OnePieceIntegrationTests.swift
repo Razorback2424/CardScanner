@@ -39,6 +39,8 @@ private actor OnePieceSnapshotTestSource: GameCatalogActivationSource {
 @MainActor
 private final class OnePieceTestSessionState { var isCurrent = true }
 
+private struct OnePieceInjectedSaveFailure: Error {}
+
 private final class OnePiecePriceTestProtocol: URLProtocol {
     nonisolated(unsafe) static var handler: (@Sendable (URLRequest) -> Data)?
     nonisolated(unsafe) static var asyncHandler: (@Sendable (URLRequest) async -> Data)?
@@ -2395,6 +2397,409 @@ final class OnePieceIntegrationTests: XCTestCase {
                        uuid(99).uuidString.lowercased())
         XCTAssertEqual(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).first?.cardNumber, number)
     }
+
+    #if DEBUG
+    func testDiskBackedOnePieceScannerSaveFailureRetriesOnceInSameSession() async throws {
+        try await assertScannerFailureRecovery(relaunch: false)
+    }
+
+    func testDiskBackedOnePieceScannerSaveFailureRevalidatesAfterRelaunch() async throws {
+        try await assertScannerFailureRecovery(relaunch: true)
+    }
+
+    private func assertScannerFailureRecovery(relaunch: Bool) async throws {
+        let registry = try registry()
+        let root = failureRoot("Scanner")
+        let container = try failureContainer(at: root)
+        let runtimes = try failureRuntimes(registry)
+        runtimes.configureCollectionAuthority(for: container, configurePricing: false)
+        let adapter = OnePieceCatalogAdapter(registry: registry)
+        let recoveryAdapters = try GameCatalogAdapterRegistry(adapters: [adapter])
+        let unrelated = try adapter.resolution(forPrintingID: uuid(2)).card
+        try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            _ = try CollectionStore(context: context).add(unrelated,
+                resolved: .init(variant: .normal, resolution: .userConfirmed))
+        }
+        let before = try failureSnapshot(container)
+        let recoveryURL = root.appendingPathComponent("recovery.json")
+        let recovery = UnresolvedScanStore(fileURL: recoveryURL)
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        await writer.setSaveOverrideForTesting { throw OnePieceInjectedSaveFailure() }
+        let first = ScannerViewModel(gameRegistry: runtimes.registry, catalog: runtimes.makeCardCatalog(),
+            unresolvedScanStore: recovery, collectionAddOverride: { try await writer.add($0) })
+        first.start(context: container.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        defer { first.viewDisappeared() }
+        first.scanner.onConfirmedSubjectCandidate?(nil, UUID(), .init(identifier: try identifier(registry)), nil)
+        let choosingPrinting = await waitUntil { first.pendingIdentityChoice != nil }
+        XCTAssertTrue(choosingPrinting)
+        first.choose(try XCTUnwrap(first.pendingIdentityChoice?.displayCandidates.first { $0.id == uuid(1).uuidString.lowercased() }))
+        let choosingFinish = await waitUntil { first.pendingChoice != nil }
+        XCTAssertTrue(choosingFinish)
+        first.choose(.foil)
+        let failed = await waitUntil {
+            first.scanAcknowledgement?.phase == .failed && !first.isIdentificationProcessingForTesting
+                && first.unresolvedScans.count == 1
+        }
+        XCTAssertTrue(failed)
+        XCTAssertEqual(first.successCount, 0)
+        let unresolved = try XCTUnwrap(first.unresolvedScans.first)
+        guard case .saveFailed = unresolved.reason else { return XCTFail("Actual save failure must retain recovery") }
+        XCTAssertNotNil(unresolved.pendingCommit)
+        XCTAssertEqual(try failureSnapshot(container), before)
+        XCTAssertEqual(try failureSnapshot(failureContainer(at: root)), before)
+        let flushed = await recovery.save(first.unresolvedScans)
+        XCTAssertTrue(flushed)
+        let diskRecovery = await UnresolvedScanStore(fileURL: recoveryURL).load(gameCatalogAdapters: recoveryAdapters)
+        XCTAssertEqual(diskRecovery.map(\.id), [unresolved.id])
+        XCTAssertNil(diskRecovery.first?.pendingCommit, "A disk record cannot retain the memory-only commit")
+
+        // Use the same writer after the failure. Its next successful save must
+        // not carry the failed transaction into another printing's acquisition.
+        let unrelatedScan = ResolvedScan(request: .init(subject: .init(identifier: try identifier(registry)),
+            purpose: .collection, generation: 1, encounterID: UUID()), card: unrelated,
+            resolved: .init(variant: .normal, resolution: .userConfirmed), pokemonPrintRun: nil, options: [.normal])
+        _ = try await writer.add(.init(resolvedScan: unrelatedScan))
+        let afterOtherSave = ModelContext(container)
+        let unrelatedRows = try afterOtherSave.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(unrelatedRows.count, 1)
+        XCTAssertEqual(unrelatedRows.first?.providerID, unrelated.providerID)
+        XCTAssertEqual(unrelatedRows.first?.quantity, 2)
+        XCTAssertEqual(try afterOtherSave.fetch(FetchDescriptor<InventoryEvent>()).count, 2)
+
+        let active: ScannerViewModel
+        let activeContainer: ModelContainer
+        let activeRecovery: UnresolvedScanStore
+        if relaunch {
+            first.viewDisappeared()
+            activeContainer = try failureContainer(at: root)
+            runtimes.configureCollectionAuthority(for: activeContainer, configurePricing: false)
+            activeRecovery = UnresolvedScanStore(fileURL: recoveryURL)
+            active = ScannerViewModel(gameRegistry: runtimes.registry, catalog: runtimes.makeCardCatalog(),
+                unresolvedScanStore: activeRecovery)
+            active.start(context: activeContainer.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+            let loaded = await waitUntil { active.unresolvedScans.contains { $0.id == unresolved.id && !$0.isReadOnly } }
+            XCTAssertTrue(loaded)
+            active.resolveUnresolved(id: unresolved.id, choice: .retrySave)
+            let printings = await waitUntil { active.pendingIdentityChoice != nil }
+            XCTAssertTrue(printings, "Relaunch must revalidate and ask for the printing")
+            XCTAssertEqual(active.successCount, 0)
+            active.choose(try XCTUnwrap(active.pendingIdentityChoice?.displayCandidates.first {
+                $0.id == uuid(1).uuidString.lowercased()
+            }))
+            let finishes = await waitUntil { active.pendingChoice != nil }
+            XCTAssertTrue(finishes)
+            active.choose(.foil)
+        } else {
+            active = first
+            activeContainer = container
+            activeRecovery = recovery
+            active.resolveUnresolved(id: unresolved.id, choice: .retrySave)
+        }
+        defer { active.viewDisappeared() }
+        let saved = await waitUntil { active.successCount == 1 && active.unresolvedScans.isEmpty
+            && !active.isIdentificationProcessingForTesting }
+        XCTAssertTrue(saved)
+        let reopened = try failureContainer(at: root)
+        let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        let target = try XCTUnwrap(rows.first { $0.providerID == uuid(1).uuidString.lowercased() })
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(target.quantity, 1)
+        XCTAssertEqual(target.variantID, "foil")
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, 3)
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>()).filter {
+            $0.kind.hasQuantityClaim
+        }.count, 3)
+        active.resolveUnresolved(id: unresolved.id, choice: .retrySave)
+        XCTAssertEqual(try failureSnapshot(activeContainer), try failureSnapshot(reopened))
+        let finalFlush = await activeRecovery.save(active.unresolvedScans)
+        XCTAssertTrue(finalFlush)
+        let finalRecovery = await UnresolvedScanStore(fileURL: recoveryURL).load(gameCatalogAdapters: recoveryAdapters)
+        XCTAssertTrue(finalRecovery.isEmpty)
+    }
+
+    func testDiskBackedOnePieceIncrementFailurePreservesQuantityAndClaims() async throws {
+        let registry = try registry()
+        let root = failureRoot("Increment")
+        let container = try failureContainer(at: root)
+        try failureRuntimes(registry).configureCollectionAuthority(for: container, configurePricing: false)
+        let card = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(1)).card
+        let scan = ResolvedScan(request: .init(subject: .init(identifier: try identifier(registry)),
+            purpose: .collection, generation: 1, encounterID: UUID()), card: card,
+            resolved: .init(variant: .foil, resolution: .userConfirmed), pokemonPrintRun: nil, options: [.foil])
+        let candidate = CollectionCommitCandidate(resolvedScan: scan)
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        _ = try await writer.add(candidate)
+        let before = try failureSnapshot(container)
+        await writer.setSaveOverrideForTesting { throw OnePieceInjectedSaveFailure() }
+        do {
+            _ = try await writer.add(candidate)
+            XCTFail("Injected final save must fail")
+        } catch is OnePieceInjectedSaveFailure {}
+        XCTAssertEqual(try failureSnapshot(container), before)
+        XCTAssertEqual(try failureSnapshot(failureContainer(at: root)), before)
+        _ = try await writer.add(candidate)
+        let reopened = try failureContainer(at: root)
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 2)
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<InventoryEvent>()).count, 2)
+        XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectionActivity>()).count, 2)
+    }
+
+    func testDiskBackedOnePieceFinishCorrectionFailuresRollbackEveryEntryPoint() throws {
+        let registry = try registry()
+        let runtimes = try failureRuntimes(registry)
+        let card = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(1)).card
+        let unrelated = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(2)).card
+        // Three entry points, each with an absent and an already-owned destination.
+        for entryPoint in 0..<3 {
+            for existingDestination in [false, true] {
+                let root = failureRoot("Correction")
+                let sourceFilename = root.lastPathComponent + "-source.jpg"
+                let destinationFilename = root.lastPathComponent + "-destination.jpg"
+                let container = try failureContainer(at: root)
+                runtimes.configureCollectionAuthority(for: container, configurePricing: false)
+                let acquisitions = try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+                    let store = CollectionStore(context: context)
+                    let first = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+                    var claims = [first]
+                    if entryPoint == 2 {
+                        claims.append(try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed)))
+                    }
+                    if existingDestination {
+                        _ = try store.add(card, resolved: .init(variant: .foil, resolution: .userConfirmed), quantity: 2)
+                    }
+                    _ = try store.add(unrelated, resolved: .init(variant: .normal, resolution: .userConfirmed))
+                    context.insert(LocalArtworkOverride(collectionKey: first.collectionKey, filename: sourceFilename))
+                    if existingDestination {
+                        context.insert(LocalArtworkOverride(collectionKey: card.collectionKey(variant: .foil),
+                            filename: destinationFilename))
+                    }
+                    try context.save()
+                    return claims
+                }
+                let before = try failureSnapshot(container)
+                let quantityBefore = try ModelContext(container).fetch(FetchDescriptor<CollectedCard>())
+                    .reduce(0) { $0 + $1.quantity }
+                func correct(_ context: ModelContext, fail: Bool) throws -> CollectionMutation? {
+                    let store = fail ? CollectionStore(context: context, beforeSaveForTesting: { staged in
+                        XCTAssertTrue(staged.hasChanges)
+                        throw OnePieceInjectedSaveFailure()
+                    }) : CollectionStore(context: context)
+                    let first = acquisitions[0]
+                    let resolved = ResolvedVariant(variant: .foil, resolution: .userConfirmed)
+                    // This is the writer's existing price-staging order: an
+                    // actual observation and the correction share one save.
+                    _ = PriceStore(context: context).store(.price(.init(unitMarketPriceUSD: 8.16,
+                        currencyCode: "USD", source: .tcgCSV, sourceVariantID: "fixture-foil",
+                        sourceUpdatedAt: nil, fetchedAt: .now)), game: .onePiece,
+                        printingID: card.providerID, variantID: "foil")
+                    switch entryPoint {
+                    case 0:
+                        return try store.recordVariantCorrection(for: card, from: .normal, to: resolved,
+                            previousCollectionKey: first.collectionKey, previousLedgerOperationIDs: first.ledgerOperationIDs,
+                            activityID: first.activityID, quantity: 1)
+                    case 1:
+                        return try store.recordVariantCorrection(forCollectionKey: first.collectionKey,
+                            to: resolved, activityID: try XCTUnwrap(first.activityID), quantity: 1)
+                    default:
+                        let row = try XCTUnwrap(store.card(forKey: first.collectionKey))
+                        return try store.recordVariantCorrection(for: row, to: resolved,
+                            claims: try acquisitions.map { .init(activityID: try XCTUnwrap($0.activityID), quantity: 1) },
+                            source: .correction, mode: .visibleCorrection)
+                    }
+                }
+                var failedContext: ModelContext?
+                XCTAssertThrowsError(try CollectionWriteSerializer.perform(container: container, timeout: .wait) {
+                    failedContext = $0
+                    return try correct($0, fail: true)
+                }) { XCTAssertTrue($0 is OnePieceInjectedSaveFailure) }
+                XCTAssertFalse(try XCTUnwrap(failedContext).hasChanges)
+                XCTAssertEqual(try failureSnapshot(container), before)
+                XCTAssertEqual(try failureSnapshot(failureContainer(at: root)), before)
+                // A subsequent successful transaction must not leak the failed move.
+                try CollectionWriteSerializer.perform(container: container, timeout: .wait) { try $0.save() }
+                XCTAssertEqual(try failureSnapshot(container), before)
+                let mutation = try CollectionWriteSerializer.perform(container: container, timeout: .wait) {
+                    try correct($0, fail: false)
+                }
+                XCTAssertNotNil(mutation)
+                let reopened = try failureContainer(at: root), context = reopened.mainContext
+                let rows = try context.fetch(FetchDescriptor<CollectedCard>())
+                XCTAssertEqual(rows.reduce(0) { $0 + $1.quantity }, quantityBefore)
+                XCTAssertFalse(rows.contains { $0.collectionKey == acquisitions[0].collectionKey })
+                let destination = try XCTUnwrap(rows.first { $0.collectionKey == card.collectionKey(variant: .foil) })
+                XCTAssertEqual(destination.quantity, acquisitions.count + (existingDestination ? 2 : 0))
+                let events = try context.fetch(FetchDescriptor<InventoryEvent>())
+                let legs = events.filter { $0.kindRaw == InventoryEventKind.correction.rawValue }
+                XCTAssertEqual(legs.count, acquisitions.count * 2)
+                XCTAssertEqual(legs.reduce(0) { $0 + $1.deltaQuantity }, 0)
+                for pair in Dictionary(grouping: legs, by: \.operationID).values {
+                    XCTAssertEqual(pair.count, 2)
+                    XCTAssertEqual(Set(pair.compactMap(\.legRaw)), Set(["from", "to"]))
+                }
+                let activities = try context.fetch(FetchDescriptor<CollectionActivity>())
+                for acquisition in acquisitions {
+                    let claim = try XCTUnwrap(activities.first { $0.id == acquisition.activityID })
+                    XCTAssertEqual(claim.collectionKey, destination.collectionKey)
+                    XCTAssertEqual(claim.remainingQuantity, 1)
+                    XCTAssertEqual(claim.ledgerOperationIDs.count, acquisition.ledgerOperationIDs.count + 1)
+                }
+                let artwork = try context.fetch(FetchDescriptor<LocalArtworkOverride>())
+                // Source artwork remains deliberately recoverable for undo.
+                XCTAssertEqual(artwork.count, 2)
+                XCTAssertEqual(artwork.first { $0.collectionKey == acquisitions[0].collectionKey }?.filename, sourceFilename)
+                XCTAssertEqual(artwork.first { $0.collectionKey == destination.collectionKey }?.filename,
+                    existingDestination ? destinationFilename : sourceFilename)
+                XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).count, 1)
+            }
+        }
+    }
+
+    func testDiskBackedOnePieceWithdrawalFailureRetainsAuthorityUntilRetry() async throws {
+        let first = try registry(complete: false, withMarketMapping: true)
+        let second = try registry(complete: false, revision: 2, firstStatus: .quarantined)
+        let root = failureRoot("Withdrawal")
+        let container = try failureContainer(at: root)
+        let key = Curve25519.Signing.PrivateKey(), keyID = "one-piece-save-failure-fixture"
+        let seed = try OnePieceCatalogSignature.sign(first.verifiedRelease.release, keyID: keyID, privateKey: key)
+        let releaseStore = try OnePieceCatalogReleaseStore(root: root.appendingPathComponent("catalog"),
+            keys: [keyID: key.publicKey], bundledEnvelope: seed, now: now)
+        let coordinator = OnePieceCatalogCoordinator(store: releaseStore)
+        let raw = try CardGameRuntimeContainer(runtimes: [OnePieceGameRuntime(registry: first, coordinator: coordinator,
+            capabilities: [.scan, .browse, .pricing, .collectionWrite]).runtime])
+        let bound = try await raw.bound(to: container)
+        let publication = try XCTUnwrap(bound.runtime(for: .onePiece)?.activationSource as? CollectionAuthorizedActivationSource)
+        let initial = await publication.currentSnapshot()
+        XCTAssertEqual(initial?.revision, 1)
+        let card = try OnePieceCatalogAdapter(registry: first).resolution(forPrintingID: uuid(1)).card
+        try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            _ = try CollectionStore(context: context).add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+        }
+        let quote = try await OnePiecePriceAdapter(registry: first, source: OnePieceTestPriceSource())
+            .refreshStoredPrinting(card.providerID, variant: .foil)
+        let prices = PriceStore(context: container.mainContext)
+        XCTAssertTrue(prices.store(quote, game: .onePiece, printingID: card.providerID, variantID: "foil"))
+        XCTAssertTrue(prices.save())
+        _ = QuoteCache(context: container.mainContext).store(quote, game: .onePiece,
+            printingID: card.providerID, variantID: "foil")
+        let manual = PriceLookup.price(.init(unitMarketPriceUSD: 22, currencyCode: "USD", source: .importedCSV,
+            sourceVariantID: "owner-fixture", sourceUpdatedAt: nil, fetchedAt: .now))
+        XCTAssertTrue(prices.store(manual, game: .onePiece, printingID: card.providerID, variantID: "normal"))
+        XCTAssertTrue(prices.save())
+        _ = QuoteCache(context: container.mainContext).store(manual, game: .onePiece,
+            printingID: card.providerID, variantID: "normal")
+        let before = try failureSnapshot(container)
+        let failedSave = expectation(description: "Streamed activation attempts the withdrawal save")
+        let rejectedPublication = expectation(description: "Failed revision must not be yielded")
+        rejectedPublication.isInverted = true
+        publication.setBeforeSaveForTesting { context in
+            XCTAssertTrue(context.hasChanges)
+            failedSave.fulfill()
+            throw OnePieceInjectedSaveFailure()
+        }
+        let stream = await publication.activationSnapshots()
+        var observed: [Int] = []
+        let observation = Task { @MainActor in
+            for await snapshot in stream {
+                observed.append(snapshot.revision)
+                if snapshot.revision == 2 { rejectedPublication.fulfill() }
+            }
+        }
+        defer { observation.cancel() }
+        let envelope = try OnePieceCatalogSignature.sign(second.verifiedRelease.release, keyID: keyID, privateKey: key)
+        guard case .activated = await coordinator.activateEnvelope(envelope, now: now) else { return XCTFail() }
+        await fulfillment(of: [failedSave], timeout: 5)
+        await fulfillment(of: [rejectedPublication], timeout: 0.1)
+        XCTAssertFalse(observed.contains(2))
+        publication.setBeforeSaveForTesting { _ in throw OnePieceInjectedSaveFailure() }
+        let rejected = await publication.currentSnapshot()
+        XCTAssertNil(rejected)
+        XCTAssertEqual(try failureSnapshot(container), before)
+        XCTAssertEqual(try failureSnapshot(failureContainer(at: root)), before)
+        XCTAssertFalse(CollectionStore.canInstallCatalogAdapter(OnePieceCatalogAdapter(registry: second), revision: 1, for: container))
+        XCTAssertTrue(CollectionStore.canInstallCatalogAdapter(OnePieceCatalogAdapter(registry: first), revision: 1, for: container))
+        // A supported correction still reaches the old authority's commit
+        // boundary; roll it back deliberately so ownership stays unchanged.
+        let claimID = try XCTUnwrap(ModelContext(container).fetch(FetchDescriptor<CollectionActivity>()).first?.id)
+        XCTAssertThrowsError(try CollectionWriteSerializer.perform(container: container, timeout: .wait) { context in
+            try CollectionStore(context: context, beforeSaveForTesting: { _ in throw OnePieceInjectedSaveFailure() })
+                .recordVariantCorrection(forCollectionKey: card.collectionKey(variant: .normal),
+                    to: .init(variant: .foil, resolution: .userConfirmed), activityID: claimID, quantity: 1)
+        }) { XCTAssertTrue($0 is OnePieceInjectedSaveFailure) }
+        XCTAssertEqual(try failureSnapshot(container), before)
+        publication.setBeforeSaveForTesting(nil)
+        let retry = await publication.currentSnapshot()
+        XCTAssertEqual(retry?.revision, 2)
+        let context = ModelContext(container)
+        XCTAssertNil(PriceStore(context: context).record(forKey: PriceRecord.key(game: .onePiece,
+            printingID: card.providerID, variantID: "foil"))?.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(QuoteCache(context: context).quote(game: .onePiece, printingID: card.providerID, variantID: "foil")?.effectiveAmount)
+        XCTAssertEqual(PriceStore(context: context).record(forKey: PriceRecord.key(game: .onePiece,
+            printingID: card.providerID, variantID: "normal"))?.effectiveUnitMarketPriceUSD, 22)
+        XCTAssertEqual(QuoteCache(context: context).quote(game: .onePiece, printingID: card.providerID, variantID: "normal")?.effectiveAmount, 22)
+        XCTAssertThrowsError(try retry?.catalog.validateVariantCorrection(printingID: card.providerID, variantID: "foil"))
+        let after = try failureSnapshot(container)
+        let ownershipPrefixes = ["row:", "activity:", "event:", "artwork:"]
+        XCTAssertEqual(after.filter { value in ownershipPrefixes.contains { value.hasPrefix($0) } },
+                       before.filter { value in ownershipPrefixes.contains { value.hasPrefix($0) } })
+        let repeated = await publication.currentSnapshot()
+        XCTAssertEqual(repeated?.revision, 2)
+        XCTAssertEqual(try failureSnapshot(container), after)
+        XCTAssertEqual(try failureSnapshot(failureContainer(at: root)), after)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).filter { $0.kind == .explicitInvalidation }.count, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+        XCTAssertEqual(try context.fetch(FetchDescriptor<InventoryEvent>()).count, 1)
+    }
+
+    private func failureRuntimes(_ registry: OnePieceCatalogRegistry) throws -> CardGameRuntimeContainer {
+        try CardGameRuntimeContainer(runtimes: [OnePieceGameRuntime(registry: registry,
+            capabilities: [.scan, .browse, .collectionWrite]).runtime])
+    }
+
+    private func failureRoot(_ label: String) -> URL {
+        let configured = ProcessInfo.processInfo.environment["ONE_PIECE_SAVE_FAILURE_ROOT"]
+        let base = configured.map { URL(fileURLWithPath: $0, isDirectory: true) }
+            ?? FileManager.default.temporaryDirectory
+        // Keep these small synthetic stores as evidence until the runner exits;
+        // unlinking SQLite files while a container is alive invalidates its FDs.
+        return base.appendingPathComponent("OnePieceSaveFailure-\(label)-\(UUID())", isDirectory: true)
+    }
+
+    private func failureContainer(at root: URL) throws -> ModelContainer {
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        return try CollectionStorageBootstrapDependencies.makeContainer(
+            paths: .production(resolvedApplicationSupportURL: root), mode: .onDevice)
+    }
+
+    /// Values read from a fresh context survive deletion/rollback of model objects.
+    private func failureSnapshot(_ container: ModelContainer) throws -> [String] {
+        let context = ModelContext(container)
+        let rows = try context.fetch(FetchDescriptor<CollectedCard>()).map {
+            "row:\($0.collectionKey):\($0.providerID):\($0.quantity):\($0.variantID ?? "-"):\($0.variantResolutionRaw ?? "-"):\($0.dateAdded):\($0.userArtworkFilename ?? "-")"
+        }
+        let activities = try context.fetch(FetchDescriptor<CollectionActivity>()).map {
+            "activity:\($0.id):\($0.collectionKey):\($0.variantID ?? "-"):\($0.deltaQuantity):\($0.resolvedQuantity):\($0.ledgerOperationIDs):\(String(describing: $0.correctedAt))"
+        }
+        let events = try context.fetch(FetchDescriptor<InventoryEvent>()).map {
+            "event:\($0.eventID):\($0.operationID):\($0.collectionKey):\($0.priceStorageKey):\($0.deltaQuantity):\($0.idempotencyKey):\(String(describing: $0.unitPriceUSDTenThousandths))"
+        }
+        let prices = try context.fetch(FetchDescriptor<PriceRecord>()).map {
+            "price:\($0.key):\(String(describing: $0.unitMarketPriceUSD)):\($0.sourceRaw ?? "-"):\(String(describing: $0.fetchedAt)):\(String(describing: $0.lastCheckedAt)):\(String(describing: $0.invalidatedAt)):\($0.catalogPriceIdentity ?? "-")"
+        }
+        let quotes = try context.fetch(FetchDescriptor<ReferenceQuote>()).map {
+            "quote:\($0.key):\(String(describing: $0.amount)):\($0.sourceRaw ?? "-"):\(String(describing: $0.retrievedAt)):\(String(describing: $0.invalidatedAt)):\($0.catalogPriceIdentity ?? "-")"
+        }
+        let observations = try context.fetch(FetchDescriptor<PriceObservation>()).map {
+            "observation:\($0.id):\($0.instrumentKey):\($0.kindRaw):\(String(describing: $0.amountUSDTenThousandths)):\($0.sourceRaw):\($0.receivedAt)"
+        }
+        let artwork = try context.fetch(FetchDescriptor<LocalArtworkOverride>()).map {
+            "artwork:\($0.collectionKey):\($0.filename):\($0.updatedAt)"
+        }
+        let checks = try context.fetch(FetchDescriptor<PriceCheckDay>()).map {
+            "check:\($0.instrumentKey):\($0.portfolioDay):\($0.lastSuccessfulCheckAt):\($0.sourceRaw)"
+        }
+        return (rows + activities + events + prices + quotes + observations + artwork + checks).sorted()
+    }
+    #endif
 
     private func model(registry: OnePieceCatalogRegistry, fixtureWritesEnabled: Bool = false,
                        unresolvedScanStore: UnresolvedScanStore? = nil,

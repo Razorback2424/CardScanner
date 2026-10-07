@@ -9,6 +9,18 @@ struct GameCatalogPriceAuthority: Sendable {
     let identityByPriceKey: [String: String]
 
     func install(in container: ModelContainer, at date: Date = .now) throws {
+        try install(in: container, at: date, beforeSave: nil)
+    }
+
+    #if DEBUG
+    func install(in container: ModelContainer, at date: Date = .now,
+                 beforeSaveForTesting: ((ModelContext) throws -> Void)?) throws {
+        try install(in: container, at: date, beforeSave: beforeSaveForTesting)
+    }
+    #endif
+
+    private func install(in container: ModelContainer, at date: Date,
+                         beforeSave: ((ModelContext) throws -> Void)?) throws {
         try CollectionWriteSerializer.perform(container: container,
             timeout: Thread.isMainThread ? .mainThread : .wait) { context in
             let gameID = game.rawValue
@@ -28,7 +40,10 @@ struct GameCatalogPriceAuthority: Sendable {
                       identityByPriceKey[quote.key] == nil || quote.catalogPriceIdentity != identityByPriceKey[quote.key] else { continue }
                 quote.invalidatedAt = max(date, quote.retrievedAt ?? .distantPast)
             }
-            if context.hasChanges { try context.save() }
+            if context.hasChanges {
+                try beforeSave?(context)
+                try context.save()
+            }
         }
     }
 }
@@ -42,6 +57,13 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
     private let container: ModelContainer
     private let isCurrent: @MainActor @Sendable () -> Bool
     private var accepted: GameCatalogSnapshot?
+    #if DEBUG
+    private var beforeSaveForTesting: ((ModelContext) throws -> Void)?
+
+    func setBeforeSaveForTesting(_ hook: ((ModelContext) throws -> Void)?) {
+        beforeSaveForTesting = hook
+    }
+    #endif
 
     init(source: any GameCatalogActivationSource, container: ModelContainer,
          isCurrent: @escaping @MainActor @Sendable () -> Bool = { true }) {
@@ -59,7 +81,13 @@ final class CollectionAuthorizedActivationSource: GameCatalogActivationSource {
             }
         }
         guard CollectionStore.canInstallCatalogAdapter(snapshot.catalog, revision: snapshot.revision, for: container) else { return nil }
-        do { try snapshot.priceAuthority?.install(in: container) }
+        do {
+            #if DEBUG
+            try snapshot.priceAuthority?.install(in: container, beforeSaveForTesting: beforeSaveForTesting)
+            #else
+            try snapshot.priceAuthority?.install(in: container)
+            #endif
+        }
         catch { return nil } // No new authority or UI generation on a failed save.
         guard CollectionStore.installCatalogAdapter(snapshot.catalog, revision: snapshot.revision, for: container) else { return nil }
         accepted = snapshot

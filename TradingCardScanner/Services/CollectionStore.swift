@@ -1348,6 +1348,15 @@ struct CollectionStore {
     let context: ModelContext
     private let session: CollectionStoreSession
     private let initialGameRegistry: CardGameRegistry?
+    #if DEBUG
+    private var beforeSaveForTesting: ((ModelContext) throws -> Void)?
+
+    /// Injects a failure after staging, inside the normal rollback boundary.
+    init(context: ModelContext, beforeSaveForTesting: @escaping (ModelContext) throws -> Void) {
+        self.init(context: context)
+        self.beforeSaveForTesting = beforeSaveForTesting
+    }
+    #endif
     private var gameRegistry: CardGameRegistry {
         CollectionStoreSessionRegistry.shared.gameRegistry(for: context.container,
                                                          fallback: initialGameRegistry ?? .standard)
@@ -4513,6 +4522,9 @@ struct CollectionStore {
             )
         }
         do {
+            #if DEBUG
+            try beforeSaveForTesting?(context)
+            #endif
             try context.save()
             LocalArtworkOverrideRekeyer.removePendingFilesAfterSave(in: context)
             session.invalidate()
