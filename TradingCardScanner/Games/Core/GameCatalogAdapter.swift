@@ -25,13 +25,14 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
     /// Artwork identity is used for comparison, never shown as a collector label.
     let artworkID: String?
     let distinctionLabels: [String]?
+    let recognitionGeneration: String?
 
     init(id: String, game: CardGame, canonicalCardID: String, language: String,
          catalogGeneration: String, name: String, printedIdentifier: String,
          releaseLabel: String? = nil, treatmentLabel: String? = nil,
          distributionLabel: String? = nil, releaseDate: Date? = nil,
          thumbnailURL: URL? = nil, artworkID: String? = nil,
-         distinctionLabels: [String]? = nil) {
+         distinctionLabels: [String]? = nil, recognitionGeneration: String? = nil) {
         self.id = id; self.game = game; self.canonicalCardID = canonicalCardID
         self.language = language; self.catalogGeneration = catalogGeneration
         self.name = name; self.printedIdentifier = printedIdentifier
@@ -39,6 +40,7 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
         self.distributionLabel = distributionLabel; self.releaseDate = releaseDate
         self.thumbnailURL = thumbnailURL; self.artworkID = artworkID
         self.distinctionLabels = distinctionLabels
+        self.recognitionGeneration = recognitionGeneration
     }
 
     var choiceTitle: String {
@@ -60,11 +62,13 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
     /// All original identity and presentation fields must still agree; supplied
     /// newer evidence must match in full rather than being silently discarded.
     func matchesPersistedChoice(_ candidate: Self) -> Bool {
+        guard recognitionGeneration == candidate.recognitionGeneration else { return false }
         guard candidate.artworkID == nil, candidate.distinctionLabels == nil else { return self == candidate }
         return candidate == Self(id: id, game: game, canonicalCardID: canonicalCardID,
             language: language, catalogGeneration: catalogGeneration, name: name,
             printedIdentifier: printedIdentifier, releaseLabel: releaseLabel, treatmentLabel: treatmentLabel,
-            distributionLabel: distributionLabel, releaseDate: releaseDate, thumbnailURL: thumbnailURL)
+            distributionLabel: distributionLabel, releaseDate: releaseDate, thumbnailURL: thumbnailURL,
+            recognitionGeneration: recognitionGeneration)
     }
 
     /// Prefer the shortest published distinction, retaining longer evidence
@@ -157,13 +161,24 @@ protocol GameCatalogAdapter: Sendable {
     /// Explicit retry may rebase printed evidence, never a saved printing choice.
     func identifierForRetry(_ identifier: ScanIdentifier) throws -> ScanIdentifier
     func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome
+    /// Optional fresh membership lookup for explicit choices. It must not
+    /// turn a user's answer into automatic resolution after language confirmation.
+    func lookupPrintingChoices(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome?
     func resolve(_ candidate: PhysicalPrintingCandidate, for identifier: ScanIdentifier) async throws -> CardCatalog.CatalogResolution
+    /// Recheck semantic context even when a session outcome was cached.
+    func validateLookupContext(_ identifier: ScanIdentifier) async throws
+    /// Runs immediately before persistence; automatic resolution requires a
+    /// current complete universe while an explicit reviewed choice is distinct.
+    func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws
     /// Revalidates a user-requested finish change against the currently
     /// installed physical printing before collection rows or ledger history move.
     func validateVariantCorrection(printingID: String, variantID: String?) throws
 }
 
 extension GameCatalogAdapter {
+    func lookupPrintingChoices(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome? { nil }
+    func validateLookupContext(_ identifier: ScanIdentifier) async throws {}
+    func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {}
     func acceptsCompletion(for identifier: ScanIdentifier, fromGeneration: String) -> Bool {
         identifier.game == game && generation == fromGeneration
     }

@@ -13,6 +13,8 @@ struct UnresolvedScanDetailView: View {
     @State private var isShowingCatalogSearch = false
     @State private var isShowingPrintingDetails = false
     @State private var pendingCatalogChoice: UnresolvedResolutionChoice?
+    @State private var englishConfirmed = false
+    private var requiresEnglish: Bool { scan.identifier.needsMagicEnglishConfirmation }
 
     private var canChooseCard: Bool {
         scan.game == .pokemon && scan.pokemonNumber != nil
@@ -45,11 +47,16 @@ struct UnresolvedScanDetailView: View {
             } else {
                 if !scan.printingCandidates.isEmpty {
                     Section("Choose printing") {
+                        if requiresEnglish {
+                            Toggle("This card is in English", isOn: $englishConfirmed)
+                                .accessibilityIdentifier("magic-english-confirmation")
+                        }
                         ForEach(scan.printingCandidates) { candidate in
                             Button(candidate.compactChoiceLabel(among: scan.printingCandidates)) {
-                                onResolve(.printing(candidate))
+                                onResolve(requiresEnglish ? .englishPrinting(candidate) : .printing(candidate))
                             }
-                            .disabled(candidate.selectionEvidence(among: scan.printingCandidates) != .labels)
+                            .disabled(candidate.selectionEvidence(among: scan.printingCandidates) != .labels
+                                || (requiresEnglish && !englishConfirmed))
                         }
                         Button("Compare printing details") { isShowingPrintingDetails = true }
                     }
@@ -126,12 +133,17 @@ struct UnresolvedScanDetailView: View {
         .navigationTitle("Needs attention")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isShowingPrintingDetails) {
-            PrintingChoiceDetails(candidates: scan.printingCandidates) { selected in
+            PrintingChoiceDetails(candidates: scan.printingCandidates, onChoose: { selected in
                 isShowingPrintingDetails = false
                 onResolve(.printing(selected))
-            }
+            }, requiresEnglishConfirmation: requiresEnglish,
+            onChooseEnglish: { selected in
+                isShowingPrintingDetails = false
+                onResolve(.englishPrinting(selected))
+            }, englishConfirmation: $englishConfirmed)
         }
         .task(id: scan.id) {
+            englishConfirmed = false
             guard canChooseCard, !scan.isReadOnly else { return }
             isLoadingCandidates = true
             candidates = await model.unresolvedCandidates(for: scan.id)

@@ -338,8 +338,10 @@ private struct ScannerChrome: View {
                 PrintingChoiceBar(
                     choice: choice,
                     onChoose: model.choose,
-                    onDismiss: model.dismissIdentityChoice
+                    onDismiss: model.dismissIdentityChoice,
+                    onChooseEnglish: model.chooseWithEnglishConfirmation
                 )
+                .id(choice.id)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
             } else if let choice = model.pendingPrintRunChoice {

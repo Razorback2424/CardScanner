@@ -85,6 +85,11 @@ struct ScanRequest: Identifiable, Equatable {
     let unresolvedScanID: UUID?
 
     var identifier: ScanIdentifier { subject.identifier }
+    func confirmingMagicEnglish() throws -> Self {
+        .init(id: id, subject: .init(identifier: try identifier.confirmingMagicEnglish(), slab: subject.slab,
+              inferredNameReadings: subject.inferredNameReadings), purpose: purpose, generation: generation,
+              encounterID: encounterID, heldRepeatAuthorizationID: heldRepeatAuthorizationID, unresolvedScanID: unresolvedScanID)
+    }
 
     init(
         id: UUID = UUID(),
@@ -923,6 +928,7 @@ enum UnresolvedReason: Equatable, Sendable {
 
 enum UnresolvedResolutionChoice {
     case printing(PhysicalPrintingCandidate)
+    case englishPrinting(PhysicalPrintingCandidate)
     case retryLookup
     case retrySave
     case choose(PokemonCatalogCardIdentity)
@@ -3073,8 +3079,19 @@ final class ScannerViewModel: ObservableObject {
     }
 
     func choose(_ candidate: PhysicalPrintingCandidate) {
+        choose(candidate, confirmEnglish: false)
+    }
+
+    func chooseWithEnglishConfirmation(_ candidate: PhysicalPrintingCandidate) {
+        choose(candidate, confirmEnglish: true)
+    }
+
+    private func choose(_ candidate: PhysicalPrintingCandidate, confirmEnglish: Bool) {
         guard let pending = pendingIdentityChoice,
               pending.displayCandidates.contains(candidate) else { return }
+        let request: ScanRequest
+        do { request = confirmEnglish ? try pending.request.confirmingMagicEnglish() : pending.request }
+        catch { return }
         feedback.choiceMade()
 
         let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
@@ -3088,7 +3105,7 @@ final class ScannerViewModel: ObservableObject {
                     let card = try await self.catalog.card(for: legacy, matching: evidence)
                     resolution = .init(card)
                 } else {
-                    resolution = try await self.catalog.resolvePrintingChoice(candidate, for: pending.identifier)
+                    resolution = try await self.catalog.resolvePrintingChoice(candidate, for: request.identifier)
                 }
                 guard !Task.isCancelled,
                       self.isCurrent(pending.request) else {
@@ -3099,7 +3116,7 @@ final class ScannerViewModel: ObservableObject {
                     return
                 }
                 await self.resolvePrintRun(
-                    for: pending.request,
+                    for: request,
                     card: resolution.card,
                     catalogRetrievedAt: resolution.retrievedAt,
                     labelPrintRun: pending.request.subject.slab?.printedPrintRun,
@@ -3114,7 +3131,7 @@ final class ScannerViewModel: ObservableObject {
                     return
                 }
                 self.handleLookupFailure(
-                    pending.request,
+                    request,
                     error,
                     candidates: pending.candidates.filter { $0.providerID == candidate.id }
                 )
@@ -3324,24 +3341,31 @@ final class ScannerViewModel: ObservableObject {
     func resolveUnresolved(id: UUID, choice: UnresolvedResolutionChoice) {
         guard let row = unresolvedScans.first(where: { $0.id == id }),
               !row.isReadOnly else { return }
-        let retryRequest = ScanRequest(
+        var pendingRetryRequest = ScanRequest(
             subject: row.subject,
             purpose: .collection,
             generation: scanGeneration,
             unresolvedScanID: row.id
         )
 
+        if case .englishPrinting = choice {
+            guard let confirmed = try? pendingRetryRequest.confirmingMagicEnglish() else { return }
+            pendingRetryRequest = confirmed
+        }
+        // Capture a stable value before starting asynchronous recovery work.
+        let retryRequest = pendingRetryRequest
+        let printingRequest = retryRequest
         switch choice {
-        case let .printing(candidate):
+        case let .printing(candidate), let .englishPrinting(candidate):
             guard row.printingCandidates.contains(candidate) else { return }
             let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
                 guard let self else { return }
                 self.beginIdentification()
                 defer { self.endIdentification() }
                 do {
-                    let resolution = try await self.catalog.resolvePrintingChoice(candidate, for: retryRequest.identifier)
+                    let resolution = try await self.catalog.resolvePrintingChoice(candidate, for: printingRequest.identifier)
                     guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
-                    await self.resolvePrintRun(for: retryRequest, card: resolution.card,
+                    await self.resolvePrintRun(for: printingRequest, card: resolution.card,
                                                catalogRetrievedAt: resolution.retrievedAt,
                                                labelPrintRun: row.subject.slab?.printedPrintRun,
                                                identityResolution: .userSelectedPrinting)
@@ -5154,6 +5178,11 @@ final class ScannerViewModel: ObservableObject {
             let addOverride = collectionAddOverride
             let writer = collectionWriter
             let writeCandidate = {
+                if candidate.identifier.game == .magic, candidate.identifier.namespace.hasPrefix("historical") {
+                    try await self.catalog.validateAcquisition(candidate.identifier,
+                        printingID: candidate.card.physicalPrintingID,
+                        automatic: candidate.identityResolution != .userSelectedPrinting)
+                }
                 if let addOverride {
                     return try await addOverride(candidate)
                 }

@@ -1551,6 +1551,20 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(sameGame.identify([.init(text: "OP01-120 P-001")]), .ambiguous)
     }
 
+    func testOnePieceFooterMustBeContainedInItsOCRRegion() throws {
+        let profile = OnePieceScanProfile(registry: try registry())
+        for rect in [CGRect(x: -0.05, y: 0.1, width: 0.2, height: 0.05),
+                     CGRect(x: 0.9, y: 0.1, width: 0.2, height: 0.05),
+                     CGRect(x: 0.1, y: 0.9, width: 0.2, height: 0.2),
+                     CGRect(x: 0.1, y: 0.1, width: 2, height: 0.05)] {
+            XCTAssertEqual(profile.identify([.init(text: "OP01-120", boundingBox: rect)]), .nothing)
+        }
+        guard case .identified = profile.identify([.init(text: "OP01-120",
+            boundingBox: CGRect(x: 0.1, y: 0.1, width: 0.7, height: 0.1))]) else {
+            return XCTFail("Valid in-region footer")
+        }
+    }
+
     func testSoleVerifiedPrintingResolvesWithoutLanguageConfirmationPicker() async throws {
         let registry = try registry(count: 1)
         let catalog = CardCatalog(gameCatalogAdapters: try .init(adapters: [OnePieceCatalogAdapter(registry: registry)]))

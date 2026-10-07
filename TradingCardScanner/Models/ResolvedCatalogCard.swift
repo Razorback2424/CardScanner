@@ -72,10 +72,10 @@ struct ResolvedCatalogCard: Identifiable, Sendable {
     }
 
     /// Retains the exact historical key/display/variant semantics during extraction.
-    init(legacy: LegacyResolvedCard) {
+    init(legacy: LegacyResolvedCard, canonicalCardID: String? = nil) {
         game = legacy.game
         providerID = legacy.providerID
-        canonicalCardID = nil
+        self.canonicalCardID = canonicalCardID
         language = legacy.language
         name = legacy.name
         setName = legacy.setName

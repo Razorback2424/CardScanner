@@ -412,6 +412,21 @@ enum ScryfallError: LocalizedError {
     }
 }
 
+private struct ScryfallHistoricalSearchPage: Decodable {
+    let object: String
+    let hasMore: Bool
+    let totalCards: Int
+    let nextPage: URL?
+    let warnings: [String]?
+    let data: [ScryfallCard]
+    enum CodingKeys: String, CodingKey {
+        case object, data, warnings
+        case hasMore = "has_more"
+        case totalCards = "total_cards"
+        case nextPage = "next_page"
+    }
+}
+
 struct ScryfallService: Sendable {
     private static let childSetCache = ScryfallChildSetCache()
     private let breaker: TCGdexCircuitBreaker
@@ -566,6 +581,81 @@ struct ScryfallService: Sendable {
         return try JSONDecoder().decode(ScryfallCollectionResponse.self, from: data).data
     }
 
+    /// One bounded, complete all-era English/paper name search. It runs only
+    /// during catalog lookup/save, never while processing camera frames.
+    func hasCurrentHistoricalUniverse(title: String, collectorNumber: String, expectedIDs: Set<String>) async throws -> Bool {
+        guard !title.contains("\""), !title.contains("\\"), !title.contains("\n") else { return false }
+        var components = URLComponents(string: "https://api.scryfall.com/cards/search")!
+        components.queryItems = [.init(name: "q", value: "!\"\(title)\" lang:en game:paper"),
+                                .init(name: "unique", value: "prints"), .init(name: "include_extras", value: "true")]
+        guard let url = components.url else { return false }
+        var bounded = request(for: url, ignoringCache: true)
+        bounded.timeoutInterval = 8
+        let (data, _) = try await requestData(for: bounded)
+        let page = try JSONDecoder().decode(ScryfallHistoricalSearchPage.self, from: data)
+        guard page.object == "list", !page.hasMore, page.nextPage == nil,
+              page.warnings?.isEmpty != false, page.totalCards == page.data.count,
+              Set(page.data.map(\.id)).count == page.data.count,
+              page.data.allSatisfy({ $0.object == "card" && UUID(uuidString: $0.id) != nil && $0.language == "en"
+                  && !$0.digital && $0.games?.contains("paper") == true
+                  && MagicHistoricalEvidenceKey.canonicalTitle($0.name) == MagicHistoricalEvidenceKey.canonicalTitle(title) }) else { return false }
+        let matches = page.data.filter {
+            $0.collectorNumber == collectorNumber
+                && MagicHistoricalEvidenceKey.canonicalTitle($0.name) == MagicHistoricalEvidenceKey.canonicalTitle(title)
+        }
+        return Set(matches.map(\.id)) == expectedIDs
+    }
+
+    /// Complete historical printing family, independent of a corpus or local index.
+    /// Bounded pages and an overall deadline prevent partial search authority.
+    func historicalPrintings(title: String) async throws -> [ScryfallCard] {
+        guard title.count >= 3, title.count <= 100, !title.contains("\\"),
+              !title.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) else {
+            throw ScryfallError.identityMismatch
+        }
+        var components = URLComponents(string: "https://api.scryfall.com/cards/search")!
+        // Scryfall exact-name search ignores quote punctuation. Backslash-escaped
+        // embedded quotes produce warnings, so omit them only from the query;
+        // every returned root/face name must still match the complete title below.
+        let searchTitle = title.replacingOccurrences(of: "\"", with: "")
+        components.queryItems = [.init(name: "q", value: "!\"\(searchTitle)\" lang:en game:paper date<2014-07-18"),
+            .init(name: "unique", value: "prints"), .init(name: "include_extras", value: "true")]
+        var next = components.url
+        let deadline = Date.now.addingTimeInterval(8)
+        var visited = Set<URL>(), ids = Set<String>(), result: [ScryfallCard] = []
+        var expectedTotal: Int?
+        while let url = next {
+            guard visited.count < 10, visited.insert(url).inserted, url.scheme == "https",
+                  url.host == "api.scryfall.com", url.path == "/cards/search", url.user == nil, url.password == nil,
+                  deadline.timeIntervalSinceNow > 0 else { throw CatalogLookupError.catalogIncomplete(nil) }
+            var bounded = request(for: url, ignoringCache: true)
+            bounded.timeoutInterval = deadline.timeIntervalSinceNow
+            let data: Data
+            do { (data, _) = try await requestData(for: bounded) }
+            catch ScryfallError.endpointNotFound { throw ScryfallError.cardNotFound }
+            let page = try JSONDecoder().decode(ScryfallHistoricalSearchPage.self, from: data)
+            guard page.object == "list", page.warnings?.isEmpty != false, !page.data.isEmpty,
+                  page.totalCards <= 1750, page.totalCards > 0,
+                  expectedTotal == nil || expectedTotal == page.totalCards else { throw CatalogLookupError.catalogIncomplete(nil) }
+            expectedTotal = page.totalCards
+            for card in page.data {
+                let names = [card.name] + (card.cardFaces ?? []).compactMap(\.name)
+                guard card.object == "card", UUID(uuidString: card.id) != nil, ids.insert(card.id).inserted,
+                      card.language == "en", !card.digital, card.games?.contains("paper") == true,
+                      names.contains(where: { MagicHistoricalTitleVocabulary.normalizedTitle($0) == MagicHistoricalTitleVocabulary.normalizedTitle(title) }) else {
+                    throw CatalogLookupError.catalogIncomplete(nil)
+                }
+                result.append(card)
+            }
+            guard page.hasMore == (page.nextPage != nil) else { throw CatalogLookupError.catalogIncomplete(nil) }
+            next = page.nextPage
+        }
+        guard result.count == expectedTotal, deadline.timeIntervalSinceNow >= 0 else {
+            throw CatalogLookupError.catalogIncomplete(nil)
+        }
+        return result
+    }
+
     /// Direct lookup by Scryfall id, for refreshing an owned printing.
     func fetchCard(id: String, ignoringCache: Bool = false) async throws -> ScryfallCard {
         guard let encoded = Self.encodedPathSegment(id),
@@ -701,10 +791,10 @@ struct ScryfallService: Sendable {
     /// field, is not accuracy. What actually matters is that the printing has the
     /// modern collector-number footer and is a real single card.
     private func validateSupported(_ card: ScryfallCard) throws {
-        if let released = card.releasedAt, released < Self.modernFooterStart {
-            throw ScryfallError.unsupportedPrinting
-        }
-        if let layout = card.layout, Self.unsupportedLayouts.contains(layout) {
+        guard let released = card.releasedAt, released >= Self.modernFooterStart,
+              let date = FlexibleDate.parse(released), date <= .now,
+              let layout = card.layout, !Self.unsupportedLayouts.contains(layout),
+              card.oversized != true else {
             throw ScryfallError.unsupportedPrinting
         }
     }

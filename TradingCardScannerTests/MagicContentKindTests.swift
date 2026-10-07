@@ -7,6 +7,27 @@ import Foundation
 /// The bug these protect against is silent: scanning a Clue token added
 /// Invisible Woman, with no error and a plausible-looking result.
 final class MagicContentKindTests: XCTestCase {
+    func testModernMagicRejectsFutureOversizedAndIncompletePrintingMetadata() async throws {
+        let recorder = MagicAdapterTestRecorder()
+        MagicAdapterTestProtocol.recorder = recorder
+        defer { MagicAdapterTestProtocol.recorder = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MagicAdapterTestProtocol.self]
+        let adapter = MagicCatalogAdapter(source: ScryfallService(breaker: TCGdexCircuitBreaker(), session: URLSession(configuration: config)))
+        let identity = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "20", language: "en")
+        let changes: [[String: Any]] = [["released_at": "2999-01-01"], ["released_at": "2014-07-17"],
+            ["released_at": "invalid"], ["released_at": NSNull()], ["oversized": true], ["layout": NSNull()], ["layout": "token"]]
+        for change in changes {
+            recorder.setCardChanges(change)
+            do { _ = try await adapter.lookup(identity); XCTFail("unsupported printing: \(change)") }
+            catch ScryfallError.unsupportedPrinting {}
+        }
+        for layout in ["normal", "split", "transform", "modal_dfc", "adventure", "saga", "meld", "leveler"] {
+            recorder.setCardChanges(["layout": layout, "frame": "1993", "oversized": false])
+            guard case .resolved = try await adapter.lookup(identity) else { return XCTFail("Modern footer layout \(layout)") }
+        }
+    }
+
     func testAdapterPinsLegacyIdentityAndRejectsStaleOrForeignPayloads() throws {
         let adapter = MagicCatalogAdapter()
         let original = ScanIdentifier.magic(setCode: "TRK", collectorNumber: "0017", language: "en", contentKind: .token)
@@ -302,8 +323,10 @@ private final class MagicAdapterTestRecorder: @unchecked Sendable {
     private let lock = NSLock()
     private var captured: [String] = []
     private var wrongLayout = false
+    private var cardChanges: [String: Any] = [:]
     var paths: [String] { lock.lock(); defer { lock.unlock() }; return captured }
     func setWrongLayout(_ value: Bool) { lock.lock(); defer { lock.unlock() }; wrongLayout = value }
+    func setCardChanges(_ value: [String: Any]) { lock.lock(); defer { lock.unlock() }; cardChanges = value }
     func data(for request: URLRequest) throws -> Data {
         lock.lock(); defer { lock.unlock() }
         let path = request.url!.path
@@ -312,9 +335,10 @@ private final class MagicAdapterTestRecorder: @unchecked Sendable {
         guard parts.count == 4, parts[0] == "cards" else { throw ScryfallError.identityMismatch }
         let code = String(parts[1]), number = String(parts[2])
         let layout = wrongLayout ? "normal" : (code == "ttrk" ? "token" : (code == "amsh" ? "art_series" : "normal"))
-        return try JSONSerialization.data(withJSONObject: ["id": "fixture-\(code)-\(number)", "name": "Fixture card",
+        let card: [String: Any] = ["id": "fixture-\(code)-\(number)", "name": "Fixture card",
             "set": code, "set_name": "Fixture set", "collector_number": number, "lang": "en",
-            "digital": false, "layout": layout, "released_at": "2025-01-01", "finishes": ["nonfoil"]])
+            "digital": false, "layout": layout, "released_at": "2025-01-01", "finishes": ["nonfoil"]]
+        return try JSONSerialization.data(withJSONObject: card.merging(cardChanges) { _, new in new })
     }
 }
 

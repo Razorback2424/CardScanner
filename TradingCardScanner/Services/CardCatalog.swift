@@ -149,7 +149,15 @@ actor CardCatalog {
         guard prepared.game == identifier.game, prepared.catalogGeneration == adapter.generation else {
             throw CatalogLookupError.invalidAdapterOutcome
         }
-        if let cached = adapterOutcomes[prepared] { return cached }
+        try await adapter.validateLookupContext(prepared)
+        if let cached = adapterOutcomes[prepared] {
+            // Historical automatic outcomes must earn freshness again. Choices
+            // remain encounter-scoped and validate membership on resolution.
+            if identifier.game == .magic, identifier.namespace == "historical-live" {
+                // Live printing choices must refresh on an encounter's retry.
+            } else if identifier.game == .magic, identifier.namespace.hasPrefix("historical"),
+               case .resolved = cached {} else { return cached }
+        }
         let lookup: AdapterLookup
         if let existing = adapterLookups[prepared] { lookup = existing }
         else {
@@ -160,6 +168,7 @@ actor CardCatalog {
             if adapterLookups[prepared]?.token == lookup.token { adapterLookups[prepared] = nil }
         }
         let outcome = try await lookup.task.value
+        try await adapter.validateLookupContext(prepared)
         guard gameCatalogAdapters.adapter(for: identifier.game)?.acceptsCompletion(for: prepared, fromGeneration: adapter.generation) == true else {
             throw CatalogLookupError.staleCatalog
         }
@@ -170,7 +179,7 @@ actor CardCatalog {
             guard canonical.game == identifier.game, !candidates.isEmpty,
                   Set(candidates.map(\.id)).count == candidates.count,
                   candidates.allSatisfy({
-                      $0.game == identifier.game && $0.canonicalCardID == canonical.id
+                      $0.game == identifier.game && Self.choiceBelongsToSummary($0, canonical: canonical, identifier: prepared)
                           && $0.catalogGeneration == adapter.generation && !$0.id.isEmpty
                   }) else { throw CatalogLookupError.invalidAdapterOutcome }
         case let .catalogIncomplete(canonical):
@@ -188,10 +197,16 @@ actor CardCatalog {
               candidate.game == identifier.game,
               candidate.catalogGeneration == adapter.generation,
               identifier.catalogGeneration == adapter.generation else { throw CatalogLookupError.staleCatalog }
-        switch try await lookupOutcome(for: identifier) {
+        let outcome: CatalogLookupOutcome
+        if let choices = try await adapter.lookupPrintingChoices(identifier) {
+            outcome = choices
+        } else {
+            outcome = try await lookupOutcome(for: identifier)
+        }
+        switch outcome {
         case let .needsPrintingChoice(canonical, candidates):
             guard candidates.contains(where: { $0.matchesPersistedChoice(candidate) }),
-                  canonical.id == candidate.canonicalCardID else {
+                  Self.choiceBelongsToSummary(candidate, canonical: canonical, identifier: identifier) else {
                 throw CatalogLookupError.invalidPrintingChoice
             }
         case let .resolved(resolution):
@@ -206,6 +221,7 @@ actor CardCatalog {
             throw CatalogLookupError.invalidPrintingChoice
         }
         let resolution = try await adapter.resolve(candidate, for: identifier)
+        try await adapter.validateLookupContext(identifier)
         guard gameCatalogAdapters.adapter(for: identifier.game)?.generation == adapter.generation else {
             throw CatalogLookupError.staleCatalog
         }
@@ -216,7 +232,27 @@ actor CardCatalog {
         return resolution
     }
 
+    private static func choiceBelongsToSummary(_ candidate: PhysicalPrintingCandidate,
+                                              canonical: CanonicalCardSummary, identifier: ScanIdentifier) -> Bool {
+        if candidate.canonicalCardID == canonical.id { return true }
+        // Only the explicit historical title-choice route may span oracle IDs.
+        // Group IDs never replace the exact printing's ownership identity.
+        guard identifier.game == .magic, identifier.namespace == "historical-live",
+              canonical.game == .magic, candidate.game == .magic,
+              let evidence = try? MagicHistoricalLiveEvidence.decode(identifier),
+              canonical.id == evidence.choiceGroupID,
+              UUID(uuidString: candidate.canonicalCardID) != nil else { return false }
+        return true
+    }
+
+    func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {
+        guard let adapter = gameCatalogAdapters.adapter(for: identifier.game) else { throw CatalogLookupError.staleCatalog }
+        let prepared = try adapter.prepareLookupIdentifier(identifier)
+        try await adapter.validateAcquisition(prepared, printingID: printingID, automatic: automatic)
+    }
+
     func cachedCard(for identifier: ScanIdentifier) -> IdentifiedCard? {
+        if identifier.game == .magic, identifier.namespace.hasPrefix("historical") { return nil }
         guard let adapter = gameCatalogAdapters.adapter(for: identifier.game),
               let prepared = try? adapter.prepareLookupIdentifier(identifier),
               case let .resolved(resolution)? = adapterOutcomes[prepared] else { return nil }

@@ -49,6 +49,10 @@
 		A001011F /* PokemonCatalogRollout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001011F /* PokemonCatalogRollout.swift */; };
 		A0010121 /* MagicCatalogRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010121 /* MagicCatalogRelease.swift */; };
 		A0010122 /* MagicCatalogRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010122 /* MagicCatalogRegistry.swift */; };
+		A0010199 /* MagicRecognitionProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010199 /* MagicRecognitionProfile.swift */; };
+		A001019A /* MagicHistoricalIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001019A /* MagicHistoricalIndex.swift */; };
+		A001019C /* MagicHistoricalRecognition.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001019C /* MagicHistoricalRecognition.swift */; };
+		A001019B /* MagicHistoricalPilot in Resources */ = {isa = PBXBuildFile; fileRef = B001019B /* MagicHistoricalPilot */; };
 		A0010123 /* MagicCatalogSignatureVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010123 /* MagicCatalogSignatureVerifier.swift */; };
 		A0010124 /* MagicCatalogReleaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010124 /* MagicCatalogReleaseStore.swift */; };
 		A0010125 /* MagicCatalogUpdateClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010125 /* MagicCatalogUpdateClient.swift */; };
@@ -266,6 +270,8 @@
 		A0020119 /* PokemonCatalogSliceFTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020119 /* PokemonCatalogSliceFTests.swift */; };
 		A0020120 /* MagicCatalogBootstrapTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020120 /* MagicCatalogBootstrapTests.swift */; };
 		A0020121 /* MagicCatalogActivationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020121 /* MagicCatalogActivationTests.swift */; };
+		A0020199 /* MagicRecognitionProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020199 /* MagicRecognitionProfileTests.swift */; };
+		A002019A /* MagicHistoricalIndexTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002019A /* MagicHistoricalIndexTests.swift */; };
 		F14A00000000000000000001 /* GamePriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B00000000000000000001; };
 		F14A00000000000000000002 /* PokemonPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B00000000000000000002; };
 		F14A00000000000000000003 /* MagicPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14B00000000000000000003; };
@@ -354,6 +360,10 @@
 		B001011F /* PokemonCatalogRollout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogRollout.swift; sourceTree = "<group>"; };
 		B0010121 /* MagicCatalogRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogRelease.swift; sourceTree = "<group>"; };
 		B0010122 /* MagicCatalogRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogRegistry.swift; sourceTree = "<group>"; };
+		B0010199 /* MagicRecognitionProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicRecognitionProfile.swift; sourceTree = "<group>"; };
+		B001019A /* MagicHistoricalIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicHistoricalIndex.swift; sourceTree = "<group>"; };
+		B001019C /* MagicHistoricalRecognition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../Games/Magic/MagicHistoricalRecognition.swift"; sourceTree = "<group>"; };
+		B001019B /* MagicHistoricalPilot */ = {isa = PBXFileReference; lastKnownFileType = folder; path = MagicHistoricalPilot; sourceTree = "<group>"; };
 		B0010123 /* MagicCatalogSignatureVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogSignatureVerifier.swift; sourceTree = "<group>"; };
 		B0010124 /* MagicCatalogReleaseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogReleaseStore.swift; sourceTree = "<group>"; };
 		B0010125 /* MagicCatalogUpdateClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogUpdateClient.swift; sourceTree = "<group>"; };
@@ -579,6 +589,8 @@
 		B0020119 /* PokemonCatalogSliceFTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonCatalogSliceFTests.swift; sourceTree = "<group>"; };
 		B0020120 /* MagicCatalogBootstrapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogBootstrapTests.swift; sourceTree = "<group>"; };
 		B0020121 /* MagicCatalogActivationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicCatalogActivationTests.swift; sourceTree = "<group>"; };
+		B0020199 /* MagicRecognitionProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicRecognitionProfileTests.swift; sourceTree = "<group>"; };
+		B002019A /* MagicHistoricalIndexTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicHistoricalIndexTests.swift; sourceTree = "<group>"; };
 		F14B00000000000000000001 /* GamePriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GamePriceAdapter.swift; sourceTree = "<group>"; };
 		F14B00000000000000000002 /* PokemonPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonPriceAdapter.swift; sourceTree = "<group>"; };
 		F14B00000000000000000003 /* MagicPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicPriceAdapter.swift; sourceTree = "<group>"; };
@@ -672,6 +684,7 @@
 				B00100E1 /* MagicTreatmentSnapshot */,
 				B00100E4 /* MagicTreatmentCatalog */,
 				B0010128 /* MagicCatalogSeed */,
+				B001019B /* MagicHistoricalPilot */,
 				F11D00000000000000000091 /* OnePieceOwnerCatalog */,
 			);
 			path = TradingCardScanner;
@@ -785,6 +798,9 @@
 				B001011F /* PokemonCatalogRollout.swift */,
 				B0010121 /* MagicCatalogRelease.swift */,
 				B0010122 /* MagicCatalogRegistry.swift */,
+				B0010199 /* MagicRecognitionProfile.swift */,
+				B001019A /* MagicHistoricalIndex.swift */,
+				B001019C /* MagicHistoricalRecognition.swift */,
 				F18B00000000000000000001,
 				F18B00000000000000000002,
 				F18B00000000000000000003,
@@ -1001,6 +1017,8 @@
 				B0020119 /* PokemonCatalogSliceFTests.swift */,
 				B0020120 /* MagicCatalogBootstrapTests.swift */,
 				B0020121 /* MagicCatalogActivationTests.swift */,
+				B0020199 /* MagicRecognitionProfileTests.swift */,
+				B002019A /* MagicHistoricalIndexTests.swift */,
 				B6F06E16B0A2C00200000002 /* TradingCardScannerFixtures */,
 			);
 			path = TradingCardScannerTests;
@@ -1134,6 +1152,7 @@
 				A00100C1 /* PokemonChecklistSnapshot in Resources */,
 				A00100E4 /* MagicTreatmentCatalog in Resources */,
 				A0010128 /* MagicCatalogSeed in Resources */,
+				A001019B /* MagicHistoricalPilot in Resources */,
 				F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1213,6 +1232,9 @@
 				A001011F /* PokemonCatalogRollout.swift in Sources */,
 				A0010121 /* MagicCatalogRelease.swift in Sources */,
 				A0010122 /* MagicCatalogRegistry.swift in Sources */,
+				A0010199 /* MagicRecognitionProfile.swift in Sources */,
+				A001019A /* MagicHistoricalIndex.swift in Sources */,
+				A001019C /* MagicHistoricalRecognition.swift in Sources */,
 				A0010123 /* MagicCatalogSignatureVerifier.swift in Sources */,
 				A0010124 /* MagicCatalogReleaseStore.swift in Sources */,
 				A0010125 /* MagicCatalogUpdateClient.swift in Sources */,
@@ -1445,6 +1467,8 @@
 				A0020119 /* PokemonCatalogSliceFTests.swift in Sources */,
 				A0020120 /* MagicCatalogBootstrapTests.swift in Sources */,
 				A0020121 /* MagicCatalogActivationTests.swift in Sources */,
+				A0020199 /* MagicRecognitionProfileTests.swift in Sources */,
+				A002019A /* MagicHistoricalIndexTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

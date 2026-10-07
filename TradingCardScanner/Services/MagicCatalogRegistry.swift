@@ -13,12 +13,21 @@ struct MagicCatalogRegistry: Sendable {
     let scannerDefinitions: [MagicSetDefinition]
     let browseSets: [CatalogSet]
     let childSetsByParentCode: [String: [MagicCatalogSetDescriptor]]
+    /// Separate local classification; schema-1 scanEnabled remains modern-only authority.
+    let recognitionProfiles: MagicRecognitionProfileSnapshot
 
     private let byCode: [String: MagicCatalogSetDescriptor]
 
     init(release: MagicCatalogRelease) {
         self.revision = release.revision
         self.descriptors = release.sets
+        do {
+            self.recognitionProfiles = try MagicRecognitionProfileSnapshot(
+                descriptors: release.sets, catalogRevision: release.revision
+            )
+        } catch {
+            preconditionFailure("Verified Magic descriptors must form a valid local profile snapshot: \(error)")
+        }
 
         var codeMap: [String: MagicCatalogSetDescriptor] = [:]
         var scanner: [MagicSetDefinition] = []

@@ -569,7 +569,12 @@ struct TCGPlayerPricePoint: Decodable, Sendable {
 
 /// The exact Scryfall printing returned by the direct set/number/language lookup.
 struct ScryfallCard: Decodable, Identifiable, Sendable {
+    let object: String?
     let id: String
+    let oracleID: String?
+    let setID: String?
+    let games: [String]?
+    let oversized: Bool?
     let name: String
     let setCode: String
     let setName: String
@@ -617,7 +622,10 @@ struct ScryfallCard: Decodable, Identifiable, Sendable {
     let tcgplayerID: Int?
 
     enum CodingKeys: String, CodingKey {
-        case id, name, digital, frame, layout, rarity, finishes, prices
+        case object, id, name, digital, frame, layout, rarity, finishes, prices
+        case games, oversized
+        case oracleID = "oracle_id"
+        case setID = "set_id"
         case promoTypes = "promo_types"
         case frameEffects = "frame_effects"
         case variation
@@ -709,8 +717,9 @@ struct ScryfallPrices: Decodable, Sendable {
 }
 
 struct ScryfallCardFace: Decodable, Sendable {
+    let name: String?
     let imageURIs: ScryfallImageURIs?
-    enum CodingKeys: String, CodingKey { case imageURIs = "image_uris" }
+    enum CodingKeys: String, CodingKey { case name; case imageURIs = "image_uris" }
 }
 
 struct ScryfallImageURIs: Decodable, Sendable {

@@ -891,6 +891,9 @@ final class CardScanner: NSObject, ObservableObject {
     private var profile: RecognitionProfile = .pokemonOnly
     private var subjectMode: ScanSubjectMode = .raw
     private var historicalAttempt: HistoricalEvidenceRequest?
+    private var magicHistoricalSnapshot: MagicHistoricalLocalSnapshot?
+    private var magicHistoricalWindow = MagicHistoricalCaptureWindow()
+    private var magicHistoricalLiveWindow = MagicHistoricalLiveWindow()
     private struct ActiveSlab: Equatable {
         let evidence: GradedSlabEvidence
     }
@@ -1319,6 +1322,8 @@ final class CardScanner: NSObject, ObservableObject {
                 self.latch.authorizeHeldRepeat(for: authorization.expectedSuppressionKey)
                 self.resetConfirmationWindow()
                 self.historicalAttempt = nil
+                self.magicHistoricalWindow.reset()
+                self.magicHistoricalLiveWindow.reset()
                 self.didAnnounceLatchHold = false
                 self.activeHeldRepeatAuthorization = authorization
                 self.recordDiagnostic("heldRepeatAuthorizationAccepted")
@@ -1365,6 +1370,8 @@ final class CardScanner: NSObject, ObservableObject {
             self.clearActiveSlab(cause: .spatialExit)
             self.resetConfirmationWindow()
             self.historicalAttempt = nil
+            self.magicHistoricalWindow.reset()
+            self.magicHistoricalLiveWindow.reset()
         }
     }
 
@@ -3160,6 +3167,31 @@ final class CardScanner: NSObject, ObservableObject {
     /// Creates or advances a short-lived historical attempt and reads the title
     /// from the same pixel buffer. A number must be visible again on every retry,
     /// which prevents a stale footer from being joined to the next physical card.
+    /// Explicit local pilot injection. Production never enables this until the
+    /// physical/device gates pass; it does not add set codes to modern customWords.
+    func installMagicHistoricalPilot(_ snapshot: MagicHistoricalLocalSnapshot?, enabled: Bool = false) {
+        visionQueue.async {
+            self.magicHistoricalSnapshot = enabled ? snapshot : nil
+            self.magicHistoricalWindow.reset()
+        }
+    }
+
+    private func magicHistoricalIdentifier(footerLines: [RecognizedLine], handler: VNImageRequestHandler,
+                                           sourceSize: CGSize, at now: TimeInterval) -> ScanIdentifier? {
+        guard subjectMode == .raw, let snapshot = magicHistoricalSnapshot,
+              MagicHistoricalScanParser.plausibleNumber(footerLines) else {
+            magicHistoricalWindow.reset()
+            return nil
+        }
+        guard magicHistoricalWindow.begin(at: now) else { return nil }
+        do {
+            let evidence = try MagicHistoricalOCR.read(handler: handler,
+                sourceSize: sourceSize, cardRect: CardFramingRegion.cardVisionRect,
+                encounterID: magicHistoricalWindow.encounterID, snapshot: snapshot)
+            return magicHistoricalWindow.observe(evidence)
+        } catch { return magicHistoricalWindow.observe(nil) }
+    }
+
     private func historicalIdentifier(
         for number: PokemonPrintedNumberEvidence,
         footerLines: [RecognizedLine],
@@ -3294,6 +3326,8 @@ final class CardScanner: NSObject, ObservableObject {
         latchEncounterID = nil
         didAnnounceLatchHold = false
         historicalAttempt = nil
+        magicHistoricalWindow.reset()
+        magicHistoricalLiveWindow.reset()
     }
 
     private func recordDiagnostic(_ event: String) {
@@ -3561,7 +3595,24 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 outcome = profile.identify(lines)
             }
             var historical: ScanIdentifier?
-            if let number = HistoricalTitleRequestPolicy.number(for: outcome, footerLines: lines) {
+            if case .nothing = outcome {
+                historical = magicHistoricalIdentifier(footerLines: lines, handler: handler, sourceSize: sourceSize, at: now)
+                if historical == nil, magicHistoricalSnapshot == nil,
+                   profile.magic?.definitions.isEmpty == false, !lines.isEmpty,
+                   magicHistoricalLiveWindow.begin(at: now) {
+                    let evidence = try MagicHistoricalLiveOCR.read(handler: handler,
+                        cardRect: subjectMode == .raw ? CardFramingRegion.cardVisionRect : SlabFramingRegion.cardWindowVisionRect(),
+                        encounterID: magicHistoricalLiveWindow.encounterID)
+                    historical = magicHistoricalLiveWindow.observe(evidence)
+                } else if lines.isEmpty {
+                    magicHistoricalLiveWindow.reset()
+                }
+            } else {
+                magicHistoricalWindow.reset()
+                magicHistoricalLiveWindow.reset()
+            }
+            if historical == nil, !magicHistoricalWindow.hasPlausibleEvidence, !magicHistoricalLiveWindow.hasPlausibleEvidence,
+               let number = HistoricalTitleRequestPolicy.number(for: outcome, footerLines: lines) {
                 historical = historicalIdentifier(
                     for: number,
                     footerLines: lines,
@@ -3569,7 +3620,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                     sourceSize: sourceSize,
                     at: now
                 )
-            } else if case .nothing = outcome {
+            } else if case .nothing = outcome, historical?.game != .magic {
                 historicalAttempt = nil
             }
 
@@ -3638,6 +3689,8 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             // pipeline as a miss so it counts as absence evidence for the latch
             // as well as the confirmation window, then let the next frame try.
             historicalAttempt = nil
+        magicHistoricalWindow.reset()
+        magicHistoricalLiveWindow.reset()
             handleFooterOutcome(
                 .nothing,
                 footerLines: [],

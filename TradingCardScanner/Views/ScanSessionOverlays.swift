@@ -566,7 +566,10 @@ struct PrintingChoiceBar: View {
     let choice: PendingPrintingChoice
     let onChoose: (PhysicalPrintingCandidate) -> Void
     let onDismiss: () -> Void
+    var onChooseEnglish: ((PhysicalPrintingCandidate) -> Void)? = nil
     @State private var showingDetails = false
+    @State private var englishConfirmed = false
+    private var requiresEnglish: Bool { choice.identifier.needsMagicEnglishConfirmation }
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var sharedRelease: String? {
@@ -619,6 +622,11 @@ struct PrintingChoiceBar: View {
             .font(.caption)
             .foregroundStyle(.white.opacity(0.75))
 
+            if requiresEnglish {
+                Toggle("This card is in English", isOn: $englishConfirmed)
+                    .font(.subheadline)
+                    .accessibilityIdentifier("magic-english-confirmation")
+            }
             if candidates.count <= 2 && !dynamicTypeSize.isAccessibilitySize {
                 HStack(spacing: 10) {
                     ForEach(candidates) { compactButton($0, among: candidates) }
@@ -640,15 +648,22 @@ struct PrintingChoiceBar: View {
                 Text("Compare artwork and markings in Details.")
                     .font(.caption).foregroundStyle(.white.opacity(0.75))
             }
+            if candidates.count > 8 {
+                Text("Filter by set or collector number in Details.")
+                    .font(.caption).foregroundStyle(.white.opacity(0.75))
+            }
         }
         .foregroundStyle(.white)
         .padding(14)
         .appGlass()
         .sheet(isPresented: $showingDetails) {
-            PrintingChoiceDetails(candidates: candidates) { selected in
+            PrintingChoiceDetails(candidates: candidates, onChoose: { selected in
                 showingDetails = false
                 onChoose(selected)
-            }
+            }, requiresEnglishConfirmation: requiresEnglish, onChooseEnglish: { selected in
+                showingDetails = false
+                onChooseEnglish?(selected)
+            }, englishConfirmation: $englishConfirmed)
         }
         // This panel sits on the camera and uses white labels in either app
         // appearance. Keep the material dark without changing the app theme.
@@ -656,7 +671,9 @@ struct PrintingChoiceBar: View {
     }
 
     private func compactButton(_ candidate: PhysicalPrintingCandidate, among candidates: [PhysicalPrintingCandidate]) -> some View {
-        Button { onChoose(candidate) } label: {
+        Button {
+            if requiresEnglish { onChooseEnglish?(candidate) } else { onChoose(candidate) }
+        } label: {
             Text(candidate.compactChoiceLabel(among: candidates))
                 .font(.subheadline.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
@@ -669,7 +686,7 @@ struct PrintingChoiceBar: View {
         }
         .buttonStyle(.plain)
         .foregroundStyle(.white)
-        .disabled(candidate.selectionEvidence(among: candidates) != .labels)
+        .disabled(candidate.selectionEvidence(among: candidates) != .labels || (requiresEnglish && !englishConfirmed))
         .accessibilityLabel("Select \(candidate.compactChoiceLabel(among: candidates)) for \(candidate.name)")
         .accessibilityIdentifier("printing-choice-\(candidate.id)")
     }
@@ -678,13 +695,23 @@ struct PrintingChoiceBar: View {
 struct PrintingChoiceDetails: View {
     let candidates: [PhysicalPrintingCandidate]
     let onChoose: (PhysicalPrintingCandidate) -> Void
+    var requiresEnglishConfirmation = false
+    var onChooseEnglish: ((PhysicalPrintingCandidate) -> Void)? = nil
+    var englishConfirmation: Binding<Bool>? = nil
+    @State private var englishConfirmed = false
+    @State private var searchText = ""
+    private var englishBinding: Binding<Bool> { englishConfirmation ?? $englishConfirmed }
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            List(candidates) { candidate in
-                PrintingCandidateButton(candidate: candidate,
-                    evidence: candidate.selectionEvidence(among: candidates), onChoose: onChoose)
+            Group {
+                if candidates.count > 8 {
+                    printingList.searchable(text: $searchText,
+                        placement: .navigationBarDrawer(displayMode: .always), prompt: "Set or collector number")
+                } else {
+                    printingList
+                }
             }
             .navigationTitle("Printing details")
             .navigationBarTitleDisplayMode(.inline)
@@ -694,6 +721,42 @@ struct PrintingChoiceDetails: View {
                 }
             }
         }
+    }
+
+    private var filteredCandidates: [PhysicalPrintingCandidate] {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return candidates }
+        return candidates.filter { candidate in
+            ([candidate.name, candidate.releaseLabel, candidate.printedIdentifier].compactMap { $0 }
+                + (candidate.distinctionLabels ?? [])).contains { $0.localizedStandardContains(query) }
+        }
+    }
+
+    private var printingList: some View {
+            List {
+                if requiresEnglishConfirmation {
+                    Toggle("This card is in English", isOn: englishBinding)
+                        .accessibilityIdentifier("magic-english-confirmation")
+                }
+                if filteredCandidates.isEmpty {
+                    Text("No printings match this search.").foregroundStyle(.secondary)
+                }
+                ForEach(filteredCandidates) { candidate in
+                    PrintingCandidateButton(candidate: candidate,
+                        evidence: candidate.selectionEvidence(among: candidates), onChoose: { selected in
+                            if requiresEnglishConfirmation { onChooseEnglish?(selected) } else { onChoose(selected) }
+                        })
+                        .disabled(requiresEnglishConfirmation && !englishBinding.wrappedValue)
+                }
+            }
+            .onAppear {
+                #if DEBUG
+                let args = ProcessInfo.processInfo.arguments
+                if args.contains("PrintingChoice"), args.contains(where: { $0.hasPrefix("many") && $0.contains("filtered-details") }) {
+                    searchText = "Block: 10"
+                }
+                #endif
+            }
     }
 }
 
@@ -790,6 +853,24 @@ struct PrintingChoiceDebugView: View {
         let index = args.firstIndex(of: "-ui_debug_state")
         let state = index.flatMap { args.indices.contains($0 + 1) ? args[$0 + 1] : nil } ?? "many"
         self.state = state
+        if state.hasPrefix("magic-historical"),
+           let index = try? MagicHistoricalIndexSnapshot.loadBundled(),
+           let profiles = try? MagicRecognitionProfileSnapshot(descriptors: index.artifact.catalog.sets,
+                indexGeneration: index.generation, catalogRevision: index.catalogRevision),
+           let snapshot = try? MagicHistoricalLocalSnapshot(profiles: profiles, index: index),
+           let record = index.artifact.records.first(where: { $0.name == "Allay" }) {
+            let evidence = MagicHistoricalScanEvidence(title: record.name, collectorNumber: record.collectorNumber,
+                denominator: 143, encounterID: UUID(), profileGeneration: snapshot.generation,
+                indexGeneration: index.generation, titleBounds: CGRect(x: 0.1, y: 0.9, width: 0.5, height: 0.04),
+                numberBounds: CGRect(x: 0.1, y: 0.03, width: 0.3, height: 0.03))
+            let candidate = PhysicalPrintingCandidate(id: record.printingID, game: .magic,
+                canonicalCardID: record.oracleID!, language: "en", catalogGeneration: "magic-provider-v1",
+                name: record.name, printedIdentifier: record.collectorNumber, releaseLabel: record.setName,
+                distinctionLabels: ["EXO", record.collectorNumber], recognitionGeneration: snapshot.generation)
+            choice = PendingPrintingChoice(request: .init(subject: .init(identifier: try! evidence.identifier()),
+                purpose: .collection, generation: 0), candidates: [candidate])
+            return
+        }
         let count = ["few", "accessibility", "footer", "missing-artwork", "long-title"].contains(state) ? 2 : 61
         let printedNumber = state == "long-title" ? "OP17-047" : "P-001"
         let identifier = try! ScanIdentifier(game: .onePiece, namespace: "numbered-card",
@@ -814,13 +895,18 @@ struct PrintingChoiceDebugView: View {
     }
 
     var body: some View {
+        if state.hasSuffix("-details") {
+            PrintingChoiceDetails(candidates: choice.displayCandidates, onChoose: { selected = $0.id })
+                .dynamicTypeSize(state.contains("accessibility") ? .accessibility3 : .large)
+        } else {
         VStack(spacing: 16) {
             Text("Printing choice fixture").font(.headline)
             Text(selected ?? (dismissed ? "Skipped to Needs attention" : "No printing selected"))
                 .accessibilityIdentifier("printing-fixture-result")
             Spacer(minLength: 0)
             if !dismissed {
-                PrintingChoiceBar(choice: choice, onChoose: { selected = $0.id }, onDismiss: { dismissed = true })
+                PrintingChoiceBar(choice: choice, onChoose: { selected = $0.id }, onDismiss: { dismissed = true },
+                    onChooseEnglish: { selected = $0.id })
             }
         }
         .padding(16)
@@ -828,7 +914,8 @@ struct PrintingChoiceDebugView: View {
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.black)
-        .dynamicTypeSize(state == "accessibility" ? .accessibility3 : .large)
+        .dynamicTypeSize(state.contains("accessibility") ? .accessibility3 : .large)
+        }
     }
 }
 #endif
