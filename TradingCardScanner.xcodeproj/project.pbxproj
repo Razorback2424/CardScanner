@@ -62,6 +62,7 @@
 		A0010005 /* ScanParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010005 /* ScanParser.swift */; };
 		A0010190 /* PokemonNameMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010190 /* PokemonNameMatcher.swift */; };
 		A0010191 /* UnresolvedScanStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010191 /* UnresolvedScanStore.swift */; };
+		A0090901 /* ScanSessionMetricsLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090901 /* ScanSessionMetricsLog.swift */; };
 		A0010192 /* UnresolvedScanDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010192 /* UnresolvedScanDetailView.swift */; };
 		A0010006 /* TCGdexService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010006 /* TCGdexService.swift */; };
 		A0090301 /* PokemonTCGCSVMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090301 /* PokemonTCGCSVMapping.swift */; };
@@ -115,6 +116,7 @@
 		A0010027 /* ScanReviewSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010027 /* ScanReviewSheet.swift */; };
 		A0020010 /* CardLatchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020010 /* CardLatchTests.swift */; };
 		A0020190 /* UnresolvedScanStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020190 /* UnresolvedScanStoreTests.swift */; };
+		A0090902 /* ScanSessionMetricsLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090902 /* ScanSessionMetricsLogTests.swift */; };
 		A00300B1 /* CameraRotationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00300B1 /* CameraRotationTests.swift */; };
 		A0020011 /* VariantResolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020011 /* VariantResolverTests.swift */; };
 		A0020012 /* CollectionKeyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020012 /* CollectionKeyTests.swift */; };
@@ -373,6 +375,7 @@
 		B0010005 /* ScanParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanParser.swift; sourceTree = "<group>"; };
 		B0010190 /* PokemonNameMatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonNameMatcher.swift; sourceTree = "<group>"; };
 		B0010191 /* UnresolvedScanStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnresolvedScanStore.swift; sourceTree = "<group>"; };
+		B0090901 /* ScanSessionMetricsLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSessionMetricsLog.swift; sourceTree = "<group>"; };
 		B0010192 /* UnresolvedScanDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnresolvedScanDetailView.swift; sourceTree = "<group>"; };
 		B0010006 /* TCGdexService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGdexService.swift; sourceTree = "<group>"; };
 		B0090301 /* PokemonTCGCSVMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PokemonTCGCSVMapping.swift; sourceTree = "<group>"; };
@@ -429,6 +432,7 @@
 		B0010027 /* ScanReviewSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanReviewSheet.swift; sourceTree = "<group>"; };
 		B0020010 /* CardLatchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardLatchTests.swift; sourceTree = "<group>"; };
 		B0020190 /* UnresolvedScanStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnresolvedScanStoreTests.swift; sourceTree = "<group>"; };
+		B0090902 /* ScanSessionMetricsLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanSessionMetricsLogTests.swift; sourceTree = "<group>"; };
 		B00300B1 /* CameraRotationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRotationTests.swift; sourceTree = "<group>"; };
 		B0020011 /* VariantResolverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariantResolverTests.swift; sourceTree = "<group>"; };
 		B0020012 /* CollectionKeyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionKeyTests.swift; sourceTree = "<group>"; };
@@ -817,6 +821,7 @@
 				B0010005 /* ScanParser.swift */,
 				B0010190 /* PokemonNameMatcher.swift */,
 				B0010191 /* UnresolvedScanStore.swift */,
+				B0090901 /* ScanSessionMetricsLog.swift */,
 				B0010006 /* TCGdexService.swift */,
 				B0090301 /* PokemonTCGCSVMapping.swift */,
 				B0090302 /* PokemonTCGCSVPriceService.swift */,
@@ -954,6 +959,7 @@
 				B00200F1 /* HistoricalCatalogRequestTests.swift */,
 				B0020010 /* CardLatchTests.swift */,
 				B0020190 /* UnresolvedScanStoreTests.swift */,
+				B0090902 /* ScanSessionMetricsLogTests.swift */,
 				B00300B1 /* CameraRotationTests.swift */,
 				B0020011 /* VariantResolverTests.swift */,
 				B0020012 /* CollectionKeyTests.swift */,
@@ -1243,6 +1249,7 @@
 				A0010005 /* ScanParser.swift in Sources */,
 				A0010190 /* PokemonNameMatcher.swift in Sources */,
 				A0010191 /* UnresolvedScanStore.swift in Sources */,
+				A0090901 /* ScanSessionMetricsLog.swift in Sources */,
 				A0010006 /* TCGdexService.swift in Sources */,
 				A0090301 /* PokemonTCGCSVMapping.swift in Sources */,
 				A0090302 /* PokemonTCGCSVPriceService.swift in Sources */,
@@ -1405,6 +1412,7 @@
 				A00200F1 /* HistoricalCatalogRequestTests.swift in Sources */,
 				A0020010 /* CardLatchTests.swift in Sources */,
 				A0020190 /* UnresolvedScanStoreTests.swift in Sources */,
+				A0090902 /* ScanSessionMetricsLogTests.swift in Sources */,
 				A00300B1 /* CameraRotationTests.swift in Sources */,
 				A0020011 /* VariantResolverTests.swift in Sources */,
 				A0020012 /* CollectionKeyTests.swift in Sources */,

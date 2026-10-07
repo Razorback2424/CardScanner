@@ -1569,6 +1569,41 @@ final class ScannerViewModel: ObservableObject {
     private var authorizedWriteRequestIDs: Set<UUID> = []
     private var scannedGradedOutcomes: [UUID: ScannedGradedOutcome] = [:]
     private var oneCardScanIntervals: [UUID: OSSignpostIntervalState] = [:]
+    private let sessionMetricsLog: ScanSessionMetricsLog
+    private let metricsDefaults: UserDefaults
+    private var metricsSessionEnabled = false
+    private var metricsTask: Task<Void, Never>?
+
+    var sessionMetricsExport: ScanSessionMetricsExport {
+        ScanSessionMetricsExport(log: sessionMetricsLog, pendingWrites: metricsTask)
+    }
+
+    /// Chain actor calls explicitly: separate unstructured tasks are not FIFO.
+    /// Disk I/O stays off the recognition path and export waits for the chain.
+    private func enqueueMetrics(
+        _ operation: @escaping @Sendable (ScanSessionMetricsLog, UUID) async -> Void
+    ) {
+        guard metricsSessionEnabled else { return }
+        let previous = metricsTask
+        let log = sessionMetricsLog
+        let sessionID = scannerSessionID
+        metricsTask = Task {
+            await previous?.value
+            await operation(log, sessionID)
+        }
+    }
+
+    private func recordInterruption(_ interruption: ScanSessionMetricsLog.Interruption, encounterID: UUID) {
+        enqueueMetrics { log, sessionID in
+            await log.interrupt(sessionID: sessionID, encounterID: encounterID, with: interruption)
+        }
+    }
+
+    private func countMetric(_ counter: ScanSessionMetricsLog.Counter, by count: Int = 1) {
+        enqueueMetrics { log, sessionID in
+            await log.increment(sessionID: sessionID, counter: counter, by: count)
+        }
+    }
     private var quoteRefreshTask: Task<Void, Never>?
     private var activeQuoteRefreshID: UUID?
     /// SwiftUI clears a `.sheet(item:)` binding before invoking its dismissal
@@ -1660,6 +1695,8 @@ final class ScannerViewModel: ObservableObject {
         catalogCoordinator: PokemonCatalogCoordinator? = nil,
         magicCatalogCoordinator: MagicCatalogCoordinator? = nil,
         unresolvedScanStore: UnresolvedScanStore = .shared,
+        sessionMetricsLog: ScanSessionMetricsLog = .shared,
+        metricsDefaults: UserDefaults = .standard,
         collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)? = nil,
         certificationRefinementOverride: (@MainActor (RecentScan, GradedSlabEvidence) async throws -> CollectionMutation?)? = nil
     ) {
@@ -1669,6 +1706,8 @@ final class ScannerViewModel: ObservableObject {
         self.priceQuoteService = priceQuoteService
         self.catalog = catalog
         self.unresolvedScanStore = unresolvedScanStore
+        self.sessionMetricsLog = sessionMetricsLog
+        self.metricsDefaults = metricsDefaults
         self.feedback = feedback ?? ScanFeedback()
         self.gradedResolver = gradedResolver
         self.priceCheckRefreshProvider = priceCheckRefreshProvider
@@ -1704,6 +1743,12 @@ final class ScannerViewModel: ObservableObject {
                     return
                 }
                 if self.oneCardScanIntervals[encounterID] == nil {
+                    let confirmedAt = Date.now
+                    let uptime = ProcessInfo.processInfo.systemUptime
+                    self.enqueueMetrics { log, sessionID in
+                        await log.beginEncounter(sessionID: sessionID, encounterID: encounterID,
+                                                 at: confirmedAt, uptime: uptime)
+                    }
                     self.oneCardScanIntervals[encounterID] = PerformanceSignpost.beginInterval(
                         "oneCardScan",
                         id: PerformanceSignpost.makeID(),
@@ -2023,6 +2068,11 @@ final class ScannerViewModel: ObservableObject {
         }
         if beginsNewSession {
             scannerSessionID = UUID()
+            metricsSessionEnabled = metricsDefaults.bool(forKey: ScanSessionMetricsLog.enabledDefaultsKey)
+            let startedAt = Date.now
+            enqueueMetrics { log, sessionID in
+                await log.beginSession(id: sessionID, enabled: true, at: startedAt)
+            }
             visibilityEpoch = UUID()
             sessionUnresolvedIDs.removeAll()
             transientRetryCounts.removeAll()
@@ -2134,6 +2184,10 @@ final class ScannerViewModel: ObservableObject {
 
             if let summary = self.makeSessionSummary() {
                 self.summaryStore?.publish(summary)
+            }
+            let endedAt = Date.now
+            self.enqueueMetrics { log, sessionID in
+                await log.endSession(id: sessionID, at: endedAt)
             }
             self.scannerSessionID = UUID()
             if self.pendingWriteCounts[finalizingSessionID] == 0 {
@@ -2823,6 +2877,7 @@ final class ScannerViewModel: ObservableObject {
             cardName: previousScan.card.name,
             printedIdentifier: previousScan.identifier.scannerDisplayIdentifier(for: previousScan.card)
         )
+        recordInterruption(.heldDuplicate, encounterID: encounterID)
         diagnostic("heldDuplicateOfferPublished")
     }
 
@@ -3226,6 +3281,7 @@ final class ScannerViewModel: ObservableObject {
             scanner.restoreAcceptedPresentation(presentationToken: removedHistoryEntry.presentationToken)
         }
         feedback.undone()
+        countMetric(.undo)
         resumeRecognitionIfPossible()
         return true
     }
@@ -3656,6 +3712,7 @@ final class ScannerViewModel: ObservableObject {
             pendingGradedVariantCorrection = nil
         }
         feedback.choiceMade()
+        countMetric(.finishCorrection)
         return .saved
     }
 
@@ -3888,6 +3945,7 @@ final class ScannerViewModel: ObservableObject {
             receipt = nil
             receiptTask?.cancel()
             pendingIdentityChoice = PendingPrintingChoice(request: request, candidates: candidates)
+            recordInterruption(.printing, encounterID: request.encounterID)
             scanner.pauseRecognition()
             feedback.needsChoice()
             return
@@ -3978,6 +4036,7 @@ final class ScannerViewModel: ObservableObject {
                 evidence: evidence,
                 candidates: candidates
             )
+            recordInterruption(.printing, encounterID: request.encounterID)
             scanner.pauseRecognition()
             feedback.needsChoice()
         case .unsupported:
@@ -4065,6 +4124,7 @@ final class ScannerViewModel: ObservableObject {
             catalogRetrievedAt: catalogRetrievedAt,
             identityResolution: identityResolution
         )
+        recordInterruption(.printRun, encounterID: request.encounterID)
         scanner.pauseRecognition()
         feedback.needsChoice()
     }
@@ -4180,6 +4240,7 @@ final class ScannerViewModel: ObservableObject {
                 lockDidNotApply: lockDidNotApply,
                 duplicateChoiceContext: duplicateChoiceContext
             )
+            recordInterruption(.variant, encounterID: request.encounterID)
             scanner.pauseRecognition()
             if let lockDidNotApply {
                 show(ScanNote(text: "No \(lockDidNotApply.label) printing of this card", tone: .info))
@@ -4900,6 +4961,7 @@ final class ScannerViewModel: ObservableObject {
         }
         guard !removed.isEmpty else { return }
         let removedIDs = Set(removed.map(\.id))
+        countMetric(.needsAttentionResolved, by: removedIDs.count)
         unresolvedScans.removeAll { removedIDs.contains($0.id) }
         sessionUnresolvedIDs.subtract(removedIDs)
     }
@@ -5010,6 +5072,7 @@ final class ScannerViewModel: ObservableObject {
                     $0.id == previous.id
                 }).map(\.duplicateDisplayLabel)
             )
+            recordInterruption(.duplicate, encounterID: candidate.encounterID)
             invalidateResolutionForDuplicatePrompt()
             scanner.pauseRecognition()
             feedback.needsChoice()
@@ -5026,6 +5089,7 @@ final class ScannerViewModel: ObservableObject {
             previousPresentationToken: rowID,
             previousFinishLabel: nil
         )
+        recordInterruption(.duplicate, encounterID: candidate.encounterID)
         scanner.pauseRecognition()
         feedback.needsChoice()
     }
@@ -5770,6 +5834,10 @@ final class ScannerViewModel: ObservableObject {
         resolvedProviderID: String? = nil
     ) {
         guard request.purpose == .collection else { return }
+        let previousRowCount = unresolvedScans.count
+        defer {
+            countMetric(.needsAttentionFiled, by: max(0, unresolvedScans.count - previousRowCount))
+        }
         if case .opaque = request.identifier.legacyIdentity {
             let rowID = request.unresolvedScanID ?? request.encounterID
             let previous = unresolvedScans.first { $0.id == rowID }
@@ -5859,6 +5927,12 @@ final class ScannerViewModel: ObservableObject {
 
     private func endOneCardScan(encounterID: UUID, outcome: String) {
         guard let state = oneCardScanIntervals.removeValue(forKey: encounterID) else { return }
+        let uptime = ProcessInfo.processInfo.systemUptime
+        let metricOutcome = ScanSessionMetricsLog.Outcome(rawValue: outcome) ?? .other
+        enqueueMetrics { log, sessionID in
+            await log.endEncounter(sessionID: sessionID, encounterID: encounterID,
+                                   outcome: metricOutcome, uptime: uptime)
+        }
         // `sessionScans.count` here is this card's position in the current
         // session. Plotting this interval's duration against that count across
         // one long session is the decisive test for whether per-card scan cost

@@ -51,6 +51,7 @@ private struct SettingsContentView: View {
                     NavigationLink {
                         SettingsCategoryView("Scanning") {
                             ScannerCameraSettingsSection(scanner: scannerModel.scanner)
+                            ScannerStudyMetricsSection()
                         }
                     } label: {
                         Label("Scanning", systemImage: "viewfinder")
@@ -724,6 +725,25 @@ private struct SettingsContentView: View {
                 guard storageGeneration.isCurrent(storageToken) else { return }
                 deletionError = error.localizedDescription
             }
+        }
+    }
+}
+
+private struct ScannerStudyMetricsSection: View {
+    @EnvironmentObject private var scannerModel: ScannerViewModel
+    @AppStorage(ScanSessionMetricsLog.enabledDefaultsKey) private var isEnabled = false
+
+    var body: some View {
+        Section {
+            Toggle("Record session metrics", isOn: $isEnabled)
+            ShareLink(item: scannerModel.sessionMetricsExport,
+                      preview: SharePreview("CardScanner Session Log")) {
+                Label("Export session log", systemImage: "square.and.arrow.up")
+            }
+        } header: {
+            Text("Study metrics")
+        } footer: {
+            Text("Applies to your next scan session. Logs stay on this device and include times, outcomes, interruptions and correction counts. No card details are recorded. Export shares a JSON file.")
         }
     }
 }

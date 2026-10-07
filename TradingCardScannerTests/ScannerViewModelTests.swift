@@ -2083,6 +2083,36 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(priceModel.unresolvedScans.isEmpty)
     }
 
+    func testDismissedChoiceRecordsVariantInterruptionInStudyLog() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let suite = "ScanMetricsTests-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(true, forKey: ScanSessionMetricsLog.enabledDefaultsKey)
+        let log = ScanSessionMetricsLog(fileURL: directory.appendingPathComponent("metrics.json"))
+        let model = try makeModel(variants: [.normal, .holo], sessionMetricsLog: log, metricsDefaults: defaults)
+        let encounterID = UUID()
+        confirm(model, scannerIdentifier(), encounterID: encounterID)
+        await assertEventually { model.pendingChoice != nil }
+        let cardName = try XCTUnwrap(model.pendingChoice?.card.name)
+        model.dismissChoice()
+        model.viewDisappeared()
+        await assertEventually { model.canReloadCatalogs }
+        let export = model.sessionMetricsExport
+        await export.pendingWrites?.value
+        let bytes = try await log.exportData()
+        let payload = try ScanSessionMetricsLogTests.decode(bytes)
+        let session = try XCTUnwrap(payload.sessions.first)
+        XCTAssertNotNil(session.endedAt)
+        XCTAssertEqual(session.encounters.count, 1)
+        XCTAssertEqual(session.encounters.first?.outcome, .choiceDismissed)
+        XCTAssertEqual(session.encounters.first?.interruptions, [.variant])
+        XCTAssertFalse(String(decoding: bytes, as: UTF8.self).contains(cardName))
+        XCTAssertFalse(String(decoding: bytes, as: UTF8.self).contains(encounterID.uuidString))
+        XCTAssertTrue(model.unresolvedScans.isEmpty, "Stage 0 preserves baseline behavior")
+    }
+
     func testPurposeAndSubjectChangesFilePendingChoices() async throws {
         for switchPurpose in [true, false] {
             let model = try makeModel(variants: [.normal, .holo])
@@ -3442,6 +3472,8 @@ final class ScannerViewModelTests: XCTestCase {
         sourceFailure: ScannerStubPokemonSource.Failure? = nil,
         failureSwitch: ScannerCatalogFailureSwitch? = nil,
         unresolvedScanStore: UnresolvedScanStore? = nil,
+        sessionMetricsLog: ScanSessionMetricsLog? = nil,
+        metricsDefaults: UserDefaults = .standard,
         offline: PokemonOfflineCatalog? = nil,
         printingCatalog: (any GameCatalogAdapter)? = nil
     ) throws -> ScannerViewModel {
@@ -3504,6 +3536,10 @@ final class ScannerViewModelTests: XCTestCase {
             unresolvedScanStore: unresolvedScanStore ?? UnresolvedScanStore(
                 fileURL: root.appendingPathComponent("Scanner/unresolved-scans.json")
             ),
+            sessionMetricsLog: sessionMetricsLog ?? ScanSessionMetricsLog(
+                fileURL: root.appendingPathComponent("Scanner/scan-session-metrics.json")
+            ),
+            metricsDefaults: metricsDefaults,
             collectionAddOverride: collectionAddOverride,
             certificationRefinementOverride: certificationRefinementOverride
         )
