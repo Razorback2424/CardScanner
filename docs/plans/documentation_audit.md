@@ -1,12 +1,104 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-05
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-06
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-05
+## Current authority boundary — updated 2026-10-06
+
+**Cross-game scanner edge cases — 2026-10-06:** the
+[Pokémon, modern Magic and One Piece review](../audits/scanner-cross-game-edge-cases-2026-10-06.md)
+records four fixes: explicit foreign Pokémon footers block English fallback;
+unknown Pokémon identifier fields reject live and recovery requests; modern Magic
+requires released, valid printing metadata and rejects provider-flagged oversized
+objects; One Piece footer bounds must be fully contained. Four new focused tests,
+619/619 affected simulator tests (no skips/failures), and Debug build-for-testing
+pass. The older scanner remediation/full-suite counts remain dated snapshots.
+One Piece's local owner catalog remains governed by its release acceptance ledger;
+this follow-up does not open publication gates or certify physical-device accuracy.
+
+**Historical Magic edge cases — 2026-10-06:** the
+[follow-up review](../research/magic-historical-corpus/edge-cases.md) expands
+ordinary historical layouts to leveler, fixes literal quoted/ligature names and
+same-title oracle choices, rejects unrelated OCR titles, and fails incomplete
+ordinary metadata without hiding printings. Nine new focused tests, 432/432
+affected simulator tests (no skips/failures), 22/22 Python checks and Debug
+build-for-testing pass. The original corpus remains 27/27 title/choice outcomes;
+11 provider searches replay 29 exact printings. Provider metadata evidence does
+not certify optical recognition of new photographs or physical-device accuracy.
+
+**General historical Magic implementation — 2026-10-06:** the user's scope
+correction supersedes the per-card pilot delivery restriction. The
+[general scanner report](../research/magic-historical-corpus/general-scanning.md)
+is current implementation evidence: normal raw/slab dispatch recognizes historical
+titles across frame/layout generations, refreshes complete current printing
+families, and requires explicit English and printing choice before acquisition.
+All 27 references reach printing choices; final affected simulator regression
+passes 388/388 with no skips/failures, Python checks pass 22/22, and the Debug
+build-for-testing succeeds. The index pilot and its one-positive,
+26-abstention results below remain dated evidence for optional automatic selection,
+not the current general scanner behavior. Physical-device/release acceptance and
+remote publication remain open.
+
+**Historical Magic corpus-backed OCR/save — 2026-10-06, `412a09d` plus local changes:**
+the [corpus evaluation](../research/magic-historical-corpus/README.md) and
+[new projection report](../research/magic-historical-pilot/2026-10-06/corpus-reconciliation-report.json)
+supersede the intake-only status below. The live pilot and evaluator share
+card-relative Vision OCR. Survival of the Fittest `129/143` is reconciled to
+its exact Exodus identity and current collision family, adding a fourth dated
+key to the 150-record index. Actual OCR on 27 staged originals yields one
+calibrated positive and 26 current-scope abstentions; explicit English choice
+saves its exact row through the normal scanner writer. Focused 27/27, affected
+regression 316/316, Python 20/20 and Debug build-for-testing pass. The initial
+refresh failed closed on duplicate source provenance; replacement and rerun
+tests correct that defect. Manually annotated framing and repeated still evidence
+do not certify held-out positives, independent camera frames, live-provider
+acquisition or device accuracy. Broader templates and production activation remain
+open.
+
+**Historical Magic photographic intake — 2026-10-06:** the
+[corpus review](../research/magic-historical-corpus/README.md) supersedes the D
+pilot's earlier “no known local photo folder” limitation. All 27 source images
+decode; visual inspection classifies 20 photographic examples and seven clean
+controls. The Unhinged Forest sample has a black border, correcting the attached
+manifest's silver-border assumption. Exact printing IDs, held-out optical results
+and device acceptance remain pending. No runtime activation or index change follows
+from this intake.
+
+**Historical Magic D pilot — 2026-10-06, `412a09d` plus local changes:**
+the [recognition plan](magic_historical_recognition_plan.md) and
+[reviewed pilot report](../research/magic-historical-pilot/README.md) supersede the
+initial C artifact claims below: 150 exact IDs now reconcile, three provider fronts
+have visible-number review and three dated complete-key receipts. The local pilot
+implements bounded same-frame OCR, a separate evidence namespace, English
+confirmation, exact hydration and pre-save/activation checks. Allay is a reviewed
+singleton; outside-era/promotional matches remain blockers. Provider images and
+mocked transport tests do not establish camera accuracy or device acceptance.
+Production scanning remains off; A/C/D acceptance and broader E/F/B2 work remain
+open. Final deterministic evidence is 314 passing selected simulator cases and
+13 Python cases; the report holds the artifact hash and rendered evidence.
+
+**Historical initial C evidence — 2026-10-06, `412a09d` plus local changes:**
+the [recognition plan](magic_historical_recognition_plan.md) now records the next
+inert C slice: dated complete AllPrintings capture/inventory, 143 exact-ID
+reconciled Exodus printings, seven held cross-era matching identities and a
+383 KB bundled projection. Profile/index compatibility, atomic paired activation
+and explicit per-key receipt/expiry/source-context gates have deterministic tests.
+All 145 focused simulator tests and eight importer tests pass. Physical-number
+review, current-provider collision reconciliation, D integration and device gates
+remain open; every bundled historical query remains incomplete. No acquisition,
+signed schema or rollout authority change follows from this provider inventory.
+
+**Historical B1 evidence — 2026-10-06, `412a09d` plus local changes:**
+the [recognition plan](magic_historical_recognition_plan.md) now records an inert
+app-local profile implementation and an initial dated set inventory. This
+supersedes its proposal-only status. A's physical-printing/corpus gate and C–F
+remain open; B1 supplies local generation/activation contracts without a
+historical adapter or compatible index activation. Focused simulator evidence
+is 136 passing tests plus 18 MagicCatalogCore tests. Historical acquisition,
+signed schema and rollout authority are unchanged.
 
 **One Piece variants/catalog audit — 2026-10-05, `f40e704` plus local changes:**
 the [edge-case audit](../audits/one-piece-variants-catalog-edge-cases.md)
@@ -417,6 +509,23 @@ paths were kept where a caller or release workflow depends on them.
 | Trust-hardening and whole-repository review snapshots | `docs/legacy/2026-09-10-*`, `review/legacy/` | Current centering contract/evidence and current release ledgers; archived review findings are historical inputs only. |
 
 ## Plan contradictions requiring reconciliation
+
+**2026-10-06 historical Magic proposal:** the
+[historical recognition plan](magic_historical_recognition_plan.md) corrects the
+assumption that scanner support is only a publisher date/code Boolean, or that
+the supplied inventory helper is an exact production-filter diff. Current source
+also has ordinary-card/layout validation, modern-footer parsing, set-only signed
+descriptors and a modern-only runtime projection. Browse already admits historical
+sets. The plan adds a separate evidence/index/candidate path and preserves the
+[Magic publication runbook](magic_catalog_key_handling_runbook.md). This is future
+implementation scope, not a new supported-card or remote-authority claim.
+
+The accepted planning follow-up makes Magic's adapter namespace-aware, requires
+fresh complete candidate coverage before automatic uniqueness, separates printing
+identity from finish, gates saving on independent/confirmed language evidence, and
+uses a reviewed legacy layout allowlist. App-local profiles (B1) precede the bundled
+pilot; signed schema-2 semantics (B2) follow successful pilot evidence when remote
+publication is needed. Schema 1 and the publication runbook remain unchanged now.
 
 The table distinguishes contradictions that are already resolved in the current
 tree from release decisions that still require evidence. An archived document

@@ -8,6 +8,13 @@ snapshot and was not rerun after these corrections. Exact evidence is recorded
 in [`progress.md`](../../progress.md). Physical-device and Instruments
 acceptance remain open.
 
+**2026-10-06 cross-game follow-up:** the
+[Pokémon, modern Magic and One Piece edge-case review](../audits/scanner-cross-game-edge-cases-2026-10-06.md)
+records explicit foreign Pokémon footer rejection, strict Pokémon recovery
+identifier fields, modern Magic printing metadata checks, and fully contained
+One Piece OCR bounds. Its dated verification supersedes neither the older full
+suite snapshot nor physical-device acceptance.
+
 ## Recognition rules
 
 When the scanner reads a Pokémon collector number but misses its set code, it

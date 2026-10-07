@@ -1,3 +1,161 @@
+- Cross-game scanner edge cases (2026-10-06; `412a09d` plus local changes):
+  fixed explicit foreign Pokémon footer leakage into English recognition and
+  secondary fallback, unknown Pokémon identity fields in live/recovery lookups,
+  modern Magic future/missing/invalid printing metadata and provider-flagged
+  oversized objects, and partially overlapping One Piece OCR bounds. Existing
+  retro/multiface Magic, Pokémon subset/promo/collision rules, and One Piece
+  alternate printing/finish/price/recovery behavior remain covered. Four focused
+  tests, final Debug build-for-testing, and 619/619 affected simulator tests pass
+  with no skips/failures, including all 27 historical Magic corpus references.
+  A public French SVI footer was visually reviewed; this adds no physical-device
+  or release acceptance claim. See the [dated edge-case report](docs/audits/scanner-cross-game-edge-cases-2026-10-06.md).
+
+- Historical Magic edge-case review (2026-10-06; `412a09d` plus local changes):
+  fixed excluded level-up cards (24 additional general titles), quoted names and
+  old ligatures/typographic quotes. Same-title logical identities now remain
+  separate exact choices, including B.F.M. halves. Unrelated recognized titles
+  abstain; malformed ordinary provider rows fail incomplete rather than silently
+  disappearing. Back-face/split aliases, suffixes/stars/leading zeroes, duplicate
+  or truncated pages, changing totals and hydration drift have added regression
+  coverage. The first provider replay caught Scryfall warnings from escaped
+  embedded quotes; a warning-free query was verified for all three historical
+  quoted names, with strict complete-name agreement retained. Final build,
+  nine focused tests, 432/432 broader affected simulator tests (no skips/failures)
+  and 22/22 Python checks pass. All 27 corpus titles/choices still pass; eleven
+  captured provider searches resolve 29 exact printings through the shared catalog.
+  New provider cases are metadata evidence, not new optical/device acceptance.
+  See [edge cases and retained evidence](docs/research/magic-historical-corpus/edge-cases.md).
+
+- General historical Magic scanning (2026-10-06; `412a09d` plus local changes):
+  implemented the user's corrected scope, using the corpus as frame/layout
+  references rather than adding individually activated cards. Normal raw/slab
+  dispatch uses general OCR with 14,360 historical root/face titles, including
+  title-only pre-Exodus, full-art, split/flip/transform, foil and planeswalker
+  references. Complete current English paper printing searches drive explicit
+  printing choice; collector OCR ranks without hiding alternatives. Encounter
+  English confirmation, exact-ID hydration, refreshed choice membership and
+  immediate pre-write checks preserve exact ownership/finish identity. Large
+  printing families have native Details search. All 27 originals reach matching
+  titles and printing choices without manual card framing or a per-card allowlist.
+  An unlisted Counterspell fixture verifies the ordinary collection writer.
+  Debug build-for-testing, 388/388 affected simulator tests (no skips/failures)
+  and 22/22 Python checks pass. Three native search captures pass source/render
+  HIG review, including accessibility3 wrapping. Static references do not certify live-camera or
+  physical-device accuracy. Optional automatic index selection stays disabled.
+  See [general implementation evidence](docs/research/magic-historical-corpus/general-scanning.md).
+
+- Historical Magic corpus-backed OCR/save (2026-10-06; `412a09d` plus local
+  changes): shared actual card-relative Vision requests between the local scanner
+  pilot and private-corpus evaluator. Reconciled Survival of the Fittest `129/143`
+  to its exact Exodus printing/current collision family, adding photographic
+  visible-number evidence and a fourth dated complete key; retained 150 printing
+  IDs and collision blockers. Hash-pinned staging keeps all original images on
+  the external SSD and rejects changed/escaping/duplicate sources. Actual OCR on
+  27 originals produces one calibrated positive and 26 scope abstentions. The
+  normal scanner choice/writer saves its exact printing after English confirmation
+  and writes nothing beforehand. Fixed the first run's duplicate source-receipt
+  refresh defect with replacement/rerun coverage. Focused simulator 27/27,
+  affected regression 316/316, Python 20/20 and Debug build-for-testing pass.
+  Annotated framing/repeated stills do not certify held-out positive, independent
+  camera-frame, live-provider acquisition or physical-device acceptance. Production
+  remains disabled; broader frame templates are next. See the
+  [corpus evidence and reproduction](docs/research/magic-historical-corpus/README.md).
+
+- Historical Magic photographic corpus intake (2026-10-06; `412a09d` plus local
+  changes): inspected the supplied sources-only archive without executing its
+  embedded downloader; separately downloaded and decode-verified all 27 images
+  on the external SSD. Visual review supports 20 photographic examples and seven
+  clean-front controls. Recorded per-image hashes, preserved manifest labels and
+  corrected the Unhinged Forest test-case assumption to black-border full-art.
+  Survival of the Fittest has visible `129/143`, supplying an Exodus photographic
+  review lead. Exact printing/face labels, held-out OCR evaluation and device
+  acceptance remain open; no runtime/index changes or optical pass claims.
+  See the [corpus review](docs/research/magic-historical-corpus/README.md).
+
+- Historical Magic D integration (2026-10-06; `412a09d` plus local changes):
+  reviewed three provider fronts for printed `number/143`; retained five complete
+  all-era English/paper searches and seven exact-ID collision captures. Reconciled
+  all 150 index identities, normalized Spanish/`es` and corrected PEXO's per-printing
+  date before Exodus. Three dated key receipts expire 2026-10-07 UTC; outside-era
+  and promo matches remain blockers. Added bounded same-frame OCR, historical
+  namespace/profile pins, encounter-scoped English confirmation, exact hydration,
+  printing choice, pre-save collision/activation checks and persisted recovery.
+  Historical scanner/adapter production defaults remain off. Final selected
+  regression passed 314/314 and Python importer/reconciliation passed 13/13.
+  The real-store recovery recheck passed 10/10 after fixing identifier generation
+  and correcting a fixture that bypassed held-card protection; exact row/finish
+  keys remain unchanged. Evidence is retained on the external SSD under
+  `CodexBuilds/MagicHistorical`. Final Debug build and standard/accessibility
+  picker/Details captures pass the inspected UI checklist; English confirmation
+  carries within an encounter and direct recovery applies the same gate. No known camera-photo folder is available;
+  physical/device acceptance and broader plan gates remain open. See the
+  [plan](docs/plans/magic_historical_recognition_plan.md) and
+  [pilot report](docs/research/magic-historical-pilot/README.md).
+
+- Historical Magic initial C index slice (2026-10-06; `412a09d` plus local
+  changes): captured/hash-pinned dated MTGJSON AllPrintings/EXO and complete
+  Scryfall EXO inputs on the external drive. Streamed 123,822 source rows into
+  a full disposition ledger; source rows/faces are not a physical denominator.
+  Bundled 143 exact-ID reconciled Exodus printings plus seven held cross-era
+  collision records. Added dictionary lookup, explicit per-key all-era receipt
+  membership/expiry/source-context checks and atomic compatible profile/index
+  activation. Physical number visibility is unknown and actual completeness
+  receipts are empty, so historical acquisition stays disabled. All 145 focused
+  simulator tests and eight importer tests pass. Artifact size is 383,009 bytes;
+  simulator load p95 68.3 ms and warm-query p95 0.036 ms. Memory/device/optical,
+  current-source reconciliation and D adapter/save gates remain open. See
+  `docs/research/magic-historical-pilot/README.md` and the current recognition plan.
+
+- Historical Magic first implementation slice (2026-10-06; `412a09d` plus local
+  changes): added versioned inert local recognition profiles, exact printing-ID
+  overrides, deterministic catalog/profile/index generations and atomic
+  compare-and-publish activation. Registry projection preserves schema-1 modern
+  vocabulary and authority. Added six profile tests; 136 focused simulator tests
+  and 18 MagicCatalogCore tests pass after a 130-test pre-change baseline.
+  External drive holds DerivedData, package caches and result bundles. Retained
+  a reproducible 910-set inventory (262 Phase-1 review leads), source/output
+  hashes and explicit language/layout policy. Set counts do not establish a
+  physical denominator. Historical acquisition remains disabled; physical corpus,
+  reconciliation/index/freshness, historical adapter/OCR/picker/save and device
+  gates remain pending in `docs/plans/magic_historical_recognition_plan.md`.
+
+- Historical Magic plan review follow-up (2026-10-06): incorporated namespace-aware
+  adapter preparation/lookup/choice/retry, candidate-universe completeness/freshness
+  checks at lookup and save, printing-versus-finish/SKU identity rules, explicit
+  encounter-scoped language evidence/confirmation and a reviewed legacy layout
+  allowlist. Split B into app-local B1 and deferred signed schema-2 B2 after the
+  bundled pilot; added failure/acceptance cases for each invariant. Documentation
+  only; no app, catalog, schema, signing or rollout changes.
+
+- Historical Magic implementation planning (2026-10-06; `412a09d` plus local
+  documentation changes): source-checked the collector-number-era proposal and
+  wrote `docs/plans/magic_historical_recognition_plan.md`. Corrected the scanner
+  gate, set-versus-printing/profile assumptions, inventory-helper completeness,
+  candidate uniqueness and exact scope claims. The plan covers inert profile
+  contracts, a reconciled index, a bounded legacy OCR pilot, printing/finish
+  choice, round-trips and device/rollout acceptance, with pre-Exodus deferred.
+  No implementation, catalog adoption, build or rollout was performed.
+
+- Card coverage data intake (2026-10-06; `412a09d` plus local changes):
+  retained only 471 exact Pokémon parallel eligibility rows, two Magic PLG20
+  filter regressions and 21 One Piece printing review leads. Retained hashes,
+  sizes/counts, unique eligibility keys and negative cases pass. Compared
+  existing NEO mappings and One Piece families; excluded duplicate data, stale
+  aggregate counts, competing contracts and flawed helpers. Internal One Piece
+  rows are available here despite the package's missing-input claim. No runtime
+  adoption or release acceptance change. See the
+  [intake note](docs/research/card-coverage-gap-data/README.md).
+
+- Card coverage research report (2026-10-05; `f40e704` plus local changes):
+  added `docs/audits/card-coverage-gaps-and-research.md` with known boundaries,
+  unverified coverage, research priorities and closure criteria for Magic,
+  Pokémon and One Piece. Direct Pokémon payload inspection corrected the
+  earlier inference that low manifest cardCount values demonstrated missing
+  cards; payload row counts meet the recorded standard slot counts for those
+  eight entries. Magic token/art routes are distinguished from ordinary-path
+  exclusions. Relative report links and diff whitespace checks pass. No source,
+  catalog, device or release acceptance change is claimed.
+
 - One Piece normal-app correction (2026-10-05): owner rejected the renamed app
   and isolated review collection. Built and installed the original
   TradingCardScanner identity/name with normal collection paths and a verified

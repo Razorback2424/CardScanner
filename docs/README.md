@@ -1,6 +1,6 @@
 # Documentation map
 
-**Status:** current navigation map — 2026-10-03
+**Status:** current navigation map — 2026-10-06
 
 This map defines which repository documents are current authorities. Source code,
 tests, build settings, and the latest recorded evidence outrank older plans and
@@ -11,6 +11,9 @@ chronological notes.
 | Concern | Current authority |
 | --- | --- |
 | Product behavior and supported scope | [`README.md`](../README.md), `TradingCardScanner/`, and `TradingCardScannerTests/` |
+| Card coverage gaps and research priorities | [`audits/card-coverage-gaps-and-research.md`](audits/card-coverage-gaps-and-research.md) — dated source/data review separating explicit exclusions, unresolved printings and unverified completeness; game-specific plans retain implementation authority. |
+| Useful card coverage data | [`research/card-coverage-gap-data/README.md`](research/card-coverage-gap-data/README.md) — three retained missing-data/regression tables, with duplicate and unsupported inputs excluded; no runtime adoption or completeness certification. |
+| Historical Magic recognition | [`plans/magic_historical_recognition_plan.md`](plans/magic_historical_recognition_plan.md) and [general scanner evidence](research/magic-historical-corpus/general-scanning.md) — normal raw/slab scanning uses general historical OCR and current complete printing families, with explicit English/printing choice. All 27 reference images reach choices; no per-card activation list. Optional automatic index selection stays disabled. Held-out/device acceptance remains open. |
 | Repository-wide status and stale-document decisions | [`plans/documentation_audit.md`](plans/documentation_audit.md) |
 | Known production defects and their evidence | [`audits/defect_review_pass_2.md`](audits/defect_review_pass_2.md) |
 | October boundary-failure remediation | [`audits/october-review-remediation.md`](audits/october-review-remediation.md) — per-slice implementation and simulator evidence; physical-device performance measurements remain pending. |
@@ -18,7 +21,7 @@ chronological notes.
 | Additional production refinement review | [`plans/october-production-refinement-review-plan.md`](plans/october-production-refinement-review-plan.md) — A–J implemented against `dd2a1e3`; final regression has 1,707 passed, seven existing skips, zero failures; publisher package 74/74. Centering latency remains open. Further profiling/screenshots/device/native acceptance and live legal/support pages are owner-deferred. |
 | Scanner module defects and measurement review | [`audits/scanner_module_review.md`](audits/scanner_module_review.md) |
 | Raw / graded slab scanning mode | [`plans/explicit-raw-slab-scanning-mode.md`](plans/explicit-raw-slab-scanning-mode.md) — implemented in the 2026-09-23 working tree; initial focused simulator tests pass 166/166 and the review follow-up passes 11/11 targeted non-centering tests. The earlier full simulator run excluded centering-specific classes at the user's request; device/provider acceptance remains open. |
-| Scanner recognition and Needs attention recovery | [`plans/scanner-recognition-remediation.md`](plans/scanner-recognition-remediation.md) — denominator-owned Pokémon inference, conservative fuzzy title agreement, and local-only persistent failure recovery; see the dated evidence in [`progress.md`](../progress.md). Physical-device and Instruments acceptance remain open. |
+| Scanner recognition and Needs attention recovery | [`plans/scanner-recognition-remediation.md`](plans/scanner-recognition-remediation.md) — denominator-owned Pokémon inference, conservative fuzzy title agreement, and local-only persistent failure recovery; see the [2026-10-06 cross-game edge-case review](audits/scanner-cross-game-edge-cases-2026-10-06.md) and dated evidence in [`progress.md`](../progress.md). Physical-device and Instruments acceptance remain open. |
 | Release validation and measurement backlog | [`plans/release_followups.md`](plans/release_followups.md) |
 | Browse/Catalog contract | [`plans/browse_screen_spec.md`](plans/browse_screen_spec.md), [`references/browse_success_checklist.md`](../references/browse_success_checklist.md), and the current Browse source/tests |
 | Automatic Pokémon set updates | [`plans/automatic_pokemon_catalog_updates_plan.md`](plans/automatic_pokemon_catalog_updates_plan.md) — Slices A–E implemented; F04 automatic discovery and the revision-1 authority rehearsal completed 2026-09-19; schema-1 additive fingerprints, canonical publisher/device parity, fail-closed classification, durable targeted reconciliation, parent-artwork metadata, and set-specific Browse updates were implemented 2026-09-20; protected baseline publication, auto-environment setup, four-hour schedule, live-provider, physical-device/offline, first real update, and release acceptance remain open |
