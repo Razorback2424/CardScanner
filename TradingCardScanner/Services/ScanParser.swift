@@ -783,6 +783,7 @@ struct PokemonScanProfile: Sendable {
     )
     private let setCodeRegex: NSRegularExpression
     private let promoRegex: NSRegularExpression
+    private let foreignLanguageRegex: NSRegularExpression
     let inferableDefinitions: [Int: PokemonSetDefinition]
 
     init(registry: PokemonCatalogRegistry) {
@@ -838,6 +839,10 @@ struct PokemonScanProfile: Sendable {
                 : #"(?<![A-Z0-9])("# + promoAlternation + #")\s*(?:EN\s*)?([0-9OIL]{2,3})(?![A-Z0-9/])"#,
             options: []
         )
+        let languagePrefixes = ScanText.unique(expansionCodes + promoPrefixes)
+            .sorted { $0.count > $1.count }.map(NSRegularExpression.escapedPattern).joined(separator: "|")
+        self.foreignLanguageRegex = try! NSRegularExpression(pattern: languagePrefixes.isEmpty ? "(?!)" :
+            "(?<![A-Z0-9])[D-J]?(?:" + languagePrefixes + ")[\\t ]*[•·]?[\\t ]*(?:FR|DE|ES|IT|PT|JA|JP|KO|KR|ZH|ZHS|ZHT)(?![A-Z])")
     }
 
     static let bundledSeed = PokemonScanProfile(
@@ -877,6 +882,9 @@ struct PokemonScanProfile: Sendable {
     }
 
     func parseOutcome(_ recognizedLines: [String]) -> GameRecognitionOutcome {
+        if hasForeignLanguageFooter(recognizedLines.joined(separator: " ")) {
+            return .rejected(.init(reason: "pokemon-non-english-footer", blocksFallbackRecognition: true))
+        }
         let lineCandidates = recognizedLines.flatMap { candidates(in: $0) }
         if !lineCandidates.isEmpty { return .identities(lineCandidates) }
         return .identities(candidates(in: recognizedLines.joined(separator: " ")))
@@ -892,6 +900,7 @@ struct PokemonScanProfile: Sendable {
     }
 
     private func candidates(in recognizedText: String) -> [ScanIdentifier] {
+        guard !hasForeignLanguageFooter(recognizedText) else { return [] }
         let normalized = recognizedText
             .uppercased()
             .replacingOccurrences(of: "\n", with: " ")
@@ -922,6 +931,11 @@ struct PokemonScanProfile: Sendable {
         }
 
         return ScanText.unique(candidates)
+    }
+
+    private func hasForeignLanguageFooter(_ text: String) -> Bool {
+        let normalized = text.uppercased().replacingOccurrences(of: "\n", with: " ")
+        return foreignLanguageRegex.firstMatch(in: normalized, range: NSRange(normalized.startIndex..., in: normalized)) != nil
     }
 
     private func numberMatches(in text: String) -> [(localID: String, total: Int)] {

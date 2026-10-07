@@ -2,6 +2,24 @@ import XCTest
 @testable import TradingCardScanner
 
 final class ScanParserTests: XCTestCase {
+    func testPokemonForeignFooterBlocksEnglishResolutionAndSecondaryFallback() throws {
+        let profile = PokemonScanProfile.bundledSeed
+        for text in ["SVI FR 001/198", "GSVIFR 001/198", "GSVIFR001/198", "SVI • DE 001/198",
+                     "SVI ES 001/198", "SVP FR 001", "SVI PT 001/198"] {
+            XCTAssertNil(profile.parse(text), text)
+            XCTAssertEqual(profile.parseOutcome([text]), .rejected(.init(
+                reason: "pokemon-non-english-footer", blocksFallbackRecognition: true)), text)
+        }
+        let split = ["G", "SVI", "FR", "001/198"]
+        XCTAssertNil(profile.parse(split))
+        let registry = try GameRecognitionRegistry(recognizers: [PokemonRecognitionAdapter(profile: profile)])
+        XCTAssertEqual(registry.identify(split.map { .init(text: $0) }), .fallbackBlocked)
+        XCTAssertNotNil(profile.parse("GSVIEN 001/198"))
+        XCTAssertNotNil(profile.parse(["SVI", "EN", "001/198"]))
+        XCTAssertNotNil(profile.parse("SVI 001/198"), "Earlier/missing language marks remain supported")
+        XCTAssertNotNil(profile.parse(["SVI 001/198", "Illus. FR Artist"]), "Unrelated artist initials are not language evidence")
+    }
+
     private struct FixedRecognizer: GameRecognitionAdapter {
         let game: CardGame
         let outcome: GameRecognitionOutcome

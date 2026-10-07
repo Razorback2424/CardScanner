@@ -134,6 +134,25 @@ private enum SliceCFixture {
 
 @MainActor
 final class PokemonCatalogSliceCTests: XCTestCase {
+    func testPokemonAdapterRejectsUnknownLiveAndRecoveryIdentityFields() throws {
+        let adapter = PokemonCatalogAdapter()
+        let definition = try XCTUnwrap(SetCodeMap.definitions["SVI"])
+        let promo = try XCTUnwrap(PokemonPromoCodeMap.definitions["SVP"])
+        let identities: [ScanIdentifier] = [
+            .pokemon(setCode: "SVI", cardNumber: "001", printedTotal: definition.officialCount, setDefinition: definition),
+            .pokemonPromo(prefix: "SVP", localID: promo.catalogLocalID(number: 1), setDefinition: promo),
+            .pokemonHistorical(.init(number: .init(localID: "4", denominator: 102, scheme: .officialSet), titleCandidates: ["Charizard"]))
+        ]
+        for identity in identities {
+            XCTAssertNoThrow(try adapter.prepareLookupIdentifier(identity))
+            let unknown = try ScanIdentifier(game: identity.game, namespace: identity.namespace,
+                fields: identity.fields + [.init(key: "futureIdentityRule", value: "new")],
+                displayIdentifier: identity.displayIdentifier, suppressionIdentity: identity.suppressionIdentity)
+            XCTAssertThrowsError(try adapter.prepareLookupIdentifier(unknown))
+            XCTAssertThrowsError(try adapter.identifierForRetry(unknown))
+        }
+    }
+
     func testBundled30thAuthorityMatchesPublisherInput() throws {
         struct Input: Decodable {
             let sets: [PokemonCatalogHumanInput]

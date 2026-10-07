@@ -26,7 +26,7 @@ struct OnePieceScanProfile: Sendable {
             if let bounds = line.boundingBox {
                 guard bounds.minX.isFinite, bounds.minY.isFinite, bounds.width.isFinite, bounds.height.isFinite,
                       bounds.width > 0, bounds.height > 0,
-                      CGRect(x: 0, y: 0, width: 1, height: 1).intersects(bounds) else { continue }
+                      CGRect(x: 0, y: 0, width: 1, height: 1).contains(bounds) else { continue }
             }
             let text = line.text.uppercased()
             let nsText = text as NSString

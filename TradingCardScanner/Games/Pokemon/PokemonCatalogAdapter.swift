@@ -31,6 +31,14 @@ struct PokemonCatalogAdapter: GameCatalogAdapter {
 
     func prepareLookupIdentifier(_ identifier: ScanIdentifier) throws -> ScanIdentifier {
         guard identifier.game == game else { throw CatalogLookupError.staleCatalog }
+        let expectedFields: Set<String>
+        switch identifier.namespace {
+        case "modern": expectedFields = ["printedCode", "localID", "denominator", "providerSetID", "officialCount", "releaseIndex"]
+        case "promo": expectedFields = ["prefix", "localID", "providerSetID", "catalogLocalIDPrefix", "localIDPadWidth"]
+        case "historical": expectedFields = ["localID", "denominator", "subsetPrefix", "titleReadings"]
+        default: throw CatalogLookupError.invalidAdapterOutcome
+        }
+        guard Set(identifier.fields.map(\.key)) == expectedFields else { throw CatalogLookupError.invalidAdapterOutcome }
         switch identifier.legacyIdentity {
         case .pokemon, .pokemonPromo: break // Keep the scan's captured definition.
         case .pokemonHistorical:
