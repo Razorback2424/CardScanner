@@ -194,6 +194,59 @@ enum PortfolioDebugFixtures {
         }
     }
 
+    /// A month of synthetic prices with explicit unchecked spans for chart QA.
+    @MainActor
+    static func seedCardPriceChartIfRequested(in modelContext: ModelContext) {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "-ui_debug_state"),
+              arguments.indices.contains(index + 1),
+              arguments[index + 1] == "price-chart" else { return }
+        try? performFixtureWrite(in: modelContext) { context in
+            guard let card = (try? context.fetch(FetchDescriptor<CollectedCard>()))?
+                .first(where: { $0.providerID == "ui-portfolio-charizard" }) else { return }
+            let instrument = InventoryLedger(context: context).priceStorageKey(for: card)
+            let observations = (try? context.fetch(FetchDescriptor<PriceObservation>())) ?? []
+            guard observations.filter({ $0.instrumentKey == instrument }).count <= 3 else { return }
+            let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
+            let calendar = PortfolioCalendar.calendar(in: timeZone)
+            let today = calendar.startOfDay(for: .now)
+            let firstDay = calendar.date(byAdding: .day, value: -29, to: today)!
+            UserDefaults.standard.set(firstDay.timeIntervalSince1970, forKey: PortfolioEpoch.defaultsKey)
+            for event in (try? InventoryLedger(context: context).events(collectionKey: card.collectionKey)) ?? [] {
+                event.occurredAt = firstDay.addingTimeInterval(60)
+            }
+            for observation in observations
+                where observation.instrumentKey == instrument && observation.receivedAt < today {
+                observation.amountUSDTenThousandths = Money(rounding: 410)?.tenThousandths
+                observation.receivedAt = firstDay.addingTimeInterval(3_600)
+                observation.effectiveAt = observation.receivedAt
+            }
+            for offset in 0..<30 where ![8, 9, 18, 19, 20].contains(offset) {
+                let day = calendar.date(byAdding: .day, value: offset - 29, to: today)!
+                let date = day.addingTimeInterval(3_600)
+                let amount = 410 - Double(offset) * 2.3
+                context.insert(PriceObservation(
+                    instrumentKey: instrument,
+                    kind: .marketUpdate,
+                    amount: Money(rounding: amount),
+                    source: .justTCG,
+                    sourceVariantID: card.variantID,
+                    marketVariantID: card.variantID,
+                    effectiveAt: date,
+                    receivedAt: date,
+                    isSourceStamped: true
+                ))
+                context.insert(PriceCheckDay(
+                    instrumentKey: instrument,
+                    portfolioDay: day,
+                    lastSuccessfulCheckAt: date,
+                    source: .justTCG
+                ))
+            }
+            try context.save()
+        }
+    }
+
     @MainActor
     private static func seedTodayContents(in modelContext: ModelContext) {
         guard (try? modelContext.fetch(FetchDescriptor<CollectedCard>()))?.isEmpty != false else { return }

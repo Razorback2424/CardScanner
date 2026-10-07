@@ -12,7 +12,7 @@ struct OnePieceVariantPolicy: GameVariantPolicy {
 struct OnePieceGameRuntime: Sendable {
     let registry: OnePieceCatalogRegistry
     var coordinator: OnePieceCatalogCoordinator? = nil
-    var capabilities: CardGameCapabilities = [.scan, .browse, .pricing]
+    var capabilities: CardGameCapabilities = [.scan, .browse, .pricing, .sealed]
     var runtime: CardGameRuntime {
         .init(descriptor: .init(game: .onePiece, displayName: "One Piece", sortOrder: 2, capabilities: capabilities),
               variantPolicy: OnePieceVariantPolicy(registry: registry),

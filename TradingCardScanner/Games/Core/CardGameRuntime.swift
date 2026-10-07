@@ -349,6 +349,7 @@ struct CardGameRuntimeContainer: Sendable {
         BrowseCatalog(catalogCoordinator: legacyBindings.pokemon,
                       magicCatalogCoordinator: legacyBindings.magic, gameRegistry: registry,
                       gameBrowseAdapters: try! .init(adapters: runtimes.values.compactMap(\.browse)),
+                      priceQuoteService: makePriceQuoteService(),
                       gameActivationSources: runtimes.values.filter {
                           $0.descriptor.capabilities.contains(.browse)
                       }.compactMap(\.activationSource))

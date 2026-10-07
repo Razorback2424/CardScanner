@@ -264,6 +264,9 @@ enum PokemonMasterSetChecklistBuilder {
         from rows: [TCGdexBrowseSet],
         registry: PokemonCatalogRegistry? = nil
     ) -> [CatalogSet] {
+        let hasCompleteSignedOrder = rows.allSatisfy {
+            registry?.releaseOrder(forProviderSetID: $0.id) != nil
+        }
         let baseSets = rows.enumerated().compactMap { pair -> CatalogSet? in
             let index = pair.offset
             let row = pair.element
@@ -304,7 +307,7 @@ enum PokemonMasterSetChecklistBuilder {
                     )
                 },
                 releaseDate: descriptor?.releaseDate.flatMap(FlexibleDate.parse),
-                sortRank: descriptor?.releaseOrder ?? (rows.count - index),
+                sortRank: hasCompleteSignedOrder ? descriptor?.releaseOrder ?? (rows.count - index) : (rows.count - index),
                 bundledArtworkSourceID: descriptor?.bundledArtworkSourceID,
                 limitlessArtworkAuthorized: descriptor.map {
                     $0.recognitionKind == .expansion
@@ -813,6 +816,11 @@ actor PokemonChecklistStore {
             bundled: bundledValidEntries(),
             downloaded: downloadedValidEntries()
         )
+    }
+
+    /// The full checklist's ranks remain independent of a scanner-only registry.
+    func bundledSetRanks() -> [String: Int] {
+        Dictionary(uniqueKeysWithValues: bundledValidEntries().map { ($0.set.id, $0.set.sortRank) })
     }
 
     /// Provider ids present in the shipped snapshot. A downloaded overlay may

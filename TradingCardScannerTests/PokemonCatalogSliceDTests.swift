@@ -221,6 +221,113 @@ private actor SliceDTransport: PokemonBrowseTransport {
 }
 
 final class PokemonCatalogSliceDTests: XCTestCase {
+    func testBundledOnlyBrowseDetailsValidateMembershipAndProviderIdentity() async throws {
+        let root = SliceDFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bundled = root.appendingPathComponent("bundled")
+        let snapshot = SliceDFixture.snapshot()
+        try await PokemonChecklistStore(root: bundled, bundle: nil).publish(snapshot)
+        let coordinator = try await SliceDFixture.coordinator(root: root.appendingPathComponent("authority"), descriptors: [])
+        let summary = try XCTUnwrap(snapshot.checklists.values.first?.first)
+        for mismatch in 0...2 {
+            let provider = mismatch == 2 ? try SliceDFixture.decode(TCGdexSetCatalog.self,
+                #"{"id":"other","name":"Wrong provider set","cards":[{"id":"sv99-001","localId":"001","name":"Card"}],"cardCount":{"total":1,"official":1}}"#)
+                : try SliceDFixture.provider()
+            let card = mismatch == 1 ? try SliceDFixture.decode(TCGdexCard.self,
+                #"{"id":"sv99-001","localId":"001","name":"Wrong set","set":{"id":"other","name":"Other","cardCount":{"total":1,"official":1}}}"#)
+                : try SliceDFixture.card()
+            let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent(UUID().uuidString)),
+                pokemonTransport: SliceDTransport(rows: [], sets: ["sv99": provider], cards: ["sv99-001": card]),
+                checklistStore: PokemonChecklistStore(root: root.appendingPathComponent(UUID().uuidString), bundle: nil, bundledRoot: bundled),
+                catalogCoordinator: coordinator)
+            let sets = try await catalog.sets(for: .pokemon)
+            XCTAssertEqual(sets.map(\.providerID), ["sv99"])
+            let page = try await catalog.cards(in: try XCTUnwrap(sets.first), cursor: nil)
+            XCTAssertEqual(page.items.first?.providerID, summary.providerID)
+            do {
+                let detail = try await catalog.details(for: summary)
+                XCTAssertEqual(mismatch, 0)
+                XCTAssertEqual(detail.set.catalogID, summary.setID)
+                await catalog.refreshCatalogNow()
+                let afterRefresh = try await catalog.details(for: summary)
+                XCTAssertEqual(afterRefresh.set.catalogID, summary.setID)
+            } catch BrowseCatalogError.unknownSet { XCTAssertNotEqual(mismatch, 0) }
+            let outsider = CatalogCardSummary(game: .pokemon, providerID: "sv99-999", setID: summary.setID,
+                setName: summary.setName, setCode: summary.setCode, name: "Unlisted", collectorNumber: "999", thumbnailURL: nil, imageURL: nil)
+            do { _ = try await catalog.details(for: outsider); XCTFail("Unlisted card must fail") }
+            catch BrowseCatalogError.unknownSet { }
+        }
+        let registry = await coordinator.registry
+        XCTAssertNil(registry.descriptor(forProviderSetID: "sv99"), "Browse access must not grant scanner authority")
+    }
+
+    func testSignedCountCheckStillAppliesToBundledDetails() async throws {
+        let root = SliceDFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let snapshot = SliceDFixture.snapshot()
+        let bundled = root.appendingPathComponent("bundled")
+        try await PokemonChecklistStore(root: bundled, bundle: nil).publish(snapshot)
+        let coordinator = try await SliceDFixture.coordinator(root: root.appendingPathComponent("authority"),
+            descriptors: [SliceDFixture.descriptor(officialCount: 2)])
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: SliceDTransport(rows: [], sets: ["sv99": try SliceDFixture.provider()], cards: ["sv99-001": try SliceDFixture.card()]),
+            checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("downloaded"), bundle: nil, bundledRoot: bundled),
+            catalogCoordinator: coordinator)
+        let summary = try XCTUnwrap(snapshot.checklists.values.first?.first)
+        do { _ = try await catalog.details(for: summary); XCTFail("Bundled browse authority must not bypass signed count validation") }
+        catch BrowseCatalogError.providerCountMismatch(let id, let expected, let received) {
+            XCTAssertEqual(id, "sv99")
+            XCTAssertEqual(expected, 2)
+            XCTAssertEqual(received, 1)
+        }
+    }
+
+    func testRegistryChangeInvalidatesFreshDetailAuthorization() async throws {
+        let root = SliceDFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root.appendingPathComponent("checklists"), bundle: nil)
+        let snapshot = SliceDFixture.snapshot()
+        try await store.publish(snapshot)
+        let coordinator = try await SliceDFixture.coordinator(root: root.appendingPathComponent("authority"), descriptors: [SliceDFixture.descriptor()])
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            pokemonTransport: SliceDTransport(rows: [], sets: ["sv99": try SliceDFixture.provider()], cards: ["sv99-001": try SliceDFixture.card()]),
+            checklistStore: store, catalogCoordinator: coordinator)
+        let summary = try XCTUnwrap(snapshot.checklists.values.first?.first)
+        _ = try await catalog.details(for: summary)
+        _ = await coordinator.activateEnvelope(try SliceDFixture.signedEnvelope(revision: 2, descriptors: []))
+        do { _ = try await catalog.details(for: summary); XCTFail("Removed downloaded set must not use fresh cached detail") }
+        catch BrowseCatalogError.unknownSet { }
+    }
+
+    func testMixedDirectoryUsesBundledRanksUntilSignedOrderIsComplete() async throws {
+        let root = SliceDFixture.tempRoot()
+        defer { try? FileManager.default.removeItem(at: root) }
+        let bundled = root.appendingPathComponent("bundled")
+        let snapshot = SliceDFixture.snapshot()
+        let original = try XCTUnwrap(snapshot.manifest.entries.first)
+        let second = CatalogSet(catalogID: .init(game: .pokemon, providerID: "other"), name: "Other", code: "OTH",
+            logoURL: nil, symbolURL: nil, cardCount: 1, releaseDate: nil, sortRank: 10)
+        let other = CatalogCardSummary(game: .pokemon, providerID: "other-001", setID: second.catalogID,
+            setName: second.name, setCode: second.code, name: "Other", collectorNumber: "001", thumbnailURL: nil, imageURL: nil)
+        let combined = PokemonChecklistSnapshot(manifest: .init(schemaVersion: PokemonChecklistSnapshotVersion.schema,
+            rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules, generatedAt: .now, directoryFingerprint: "mixed",
+            entries: [original, .init(set: second, providerID: "other", providerFingerprint: "other", resource: "sets/other.json")]),
+            checklists: snapshot.checklists.merging([second.id: [other]]) { $1 })
+        try await PokemonChecklistStore(root: bundled, bundle: nil).publish(combined)
+        let coordinator = try await SliceDFixture.coordinator(root: root.appendingPathComponent("authority"),
+            descriptors: [SliceDFixture.descriptor(releaseOrder: 100)])
+        let catalog = BrowseCatalog(cache: CatalogCacheStore(root: root.appendingPathComponent("cache")),
+            checklistStore: PokemonChecklistStore(root: root.appendingPathComponent("downloaded"), bundle: nil, bundledRoot: bundled), catalogCoordinator: coordinator)
+        let sets = try await catalog.sets(for: .pokemon)
+        XCTAssertEqual(sets.first(where: { $0.providerID == "sv99" })?.sortRank, 7)
+        XCTAssertEqual(sets.first(where: { $0.providerID == "other" })?.sortRank, 10)
+        _ = await coordinator.activateEnvelope(try SliceDFixture.signedEnvelope(revision: 2, descriptors: [
+            SliceDFixture.descriptor(releaseOrder: 100), SliceDFixture.descriptor(providerSetID: "other", printedCode: "OTH", releaseOrder: 101)]))
+        let signedSets = try await catalog.sets(for: .pokemon)
+        XCTAssertEqual(signedSets.first(where: { $0.providerID == "sv99" })?.sortRank, 100)
+        XCTAssertEqual(signedSets.first(where: { $0.providerID == "other" })?.sortRank, 101)
+    }
+
     func testProductionBrowseUsesRegistryAndPublishesAuthorizedContent() async throws {
         let root = SliceDFixture.tempRoot()
         defer { try? FileManager.default.removeItem(at: root) }

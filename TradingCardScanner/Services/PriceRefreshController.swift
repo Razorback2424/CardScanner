@@ -555,7 +555,8 @@ actor PriceRefreshModelActor {
             if checkpointIsDue() { _ = await commitStaged() }
         }
         let supportedTargets = targets.filter {
-            CardGameRegistry.standard.supports($0.game, .pricing)
+            ($0.itemKind == .sealedProduct ? gamePricing.supportsSealedPricing(for: $0.game)
+                : CardGameRegistry.standard.supports($0.game, .pricing))
                 && !unsupportedIDs.contains($0.id)
         }
         let vendorNative = supportedTargets.filter(\.isVendorNative)

@@ -506,6 +506,72 @@ final class JustTCGV2GradedSurfaceTests: XCTestCase {
 
 @MainActor
 final class SealedBrowseSurfaceTests: XCTestCase {
+    func testOnePiecePaginationCacheIsolationAndOfflineDirectoryRetry() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let set = SealedSetSummary(id: "same-vendor-id", name: "One Piece", sealedCount: 2, game: .onePiece, releaseDate: nil)
+        let a = SealedProductSummary(id: "box-a", name: "Box A", setName: set.name, variantID: "sealed-a", marketPriceUSD: 80, updatedAt: nil, imageURL: nil)
+        let b = SealedProductSummary(id: "box-b", name: "Box B", setName: set.name, variantID: "sealed-b", marketPriceUSD: 90, updatedAt: nil, imageURL: nil)
+        let provider = UncoveredSealedBrowseProvider(sets: [set], products: [a, b])
+        let registry = CardGameRegistry(descriptors: [.init(game: .onePiece, displayName: "One Piece", sortOrder: 0, capabilities: [.browse, .sealed])])
+        let cache = CatalogCacheStore(root: root)
+        let model = SealedBrowseModel(client: provider, gameRegistry: registry, cache: cache, isConfigured: { true })
+        await model.loadSetsIfNeeded(game: .onePiece)
+        await model.loadProducts(game: .onePiece, setID: set.id)
+        XCTAssertTrue(model.hasMore)
+        await model.loadMore(game: .onePiece, setID: set.id)
+        XCTAssertEqual(model.products, [a, b])
+        let offsets = await provider.productOffsets()
+        XCTAssertEqual(offsets, [0, 1])
+        let wrongGame = await cache.sealedProductPage(for: CatalogCacheStore.sealedPageKey(game: .pokemon, setID: set.id, query: nil, offset: 0))
+        XCTAssertNil(wrongGame)
+        await provider.fail(with: URLError(.notConnectedToInternet))
+        await model.retrySets(game: .onePiece)
+        XCTAssertEqual(model.sets, [set], "Usable content survives offline refresh")
+        XCTAssertEqual(model.failurePresentation, .connectivity)
+        XCTAssertEqual(model.failurePresentation?.action, "Retry")
+        await provider.fail(with: nil)
+        await model.retrySets(game: .onePiece)
+        XCTAssertNil(model.errorMessage)
+        let count = await provider.setRequestCount()
+        XCTAssertEqual(count, 3, "Explicit Retry bypasses a fresh cache")
+    }
+
+    func testOnePieceCapabilityRejectsCachedContentBeforeProviderAccess() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = CatalogCacheStore(root: root)
+        let set = SealedSetSummary(id: "vendor-set", name: "Vendor", sealedCount: 1, game: .onePiece, releaseDate: nil)
+        await cache.storeSealedSets([set], for: .onePiece)
+        let provider = UncoveredSealedBrowseProvider(sets: [set])
+        let blocked = SealedBrowseModel(client: provider, cache: cache, isConfigured: { true })
+        await blocked.loadSetsIfNeeded(game: .onePiece)
+        await blocked.loadProducts(game: .onePiece, setID: set.id)
+        await blocked.search(query: "box", games: [.onePiece])
+        XCTAssertTrue(blocked.sets.isEmpty)
+        XCTAssertTrue(blocked.products.isEmpty)
+        XCTAssertEqual(blocked.errorMessage, CatalogFailurePresentation.unavailable.message)
+        let registry = CardGameRegistry(descriptors: [.init(game: .onePiece, displayName: "One Piece", sortOrder: 0, capabilities: [.browse, .sealed])])
+        let enabled = SealedBrowseModel(client: provider, gameRegistry: registry, cache: cache, isConfigured: { false })
+        await enabled.loadSetsIfNeeded(game: .onePiece)
+        XCTAssertEqual(enabled.sets, [set])
+        await enabled.loadSetsIfNeeded(game: .pokemon)
+        XCTAssertTrue(enabled.sets.isEmpty)
+        let requests = await provider.setRequestCount()
+        let offsets = await provider.productOffsets()
+        XCTAssertEqual(requests, 0)
+        XCTAssertTrue(offsets.isEmpty)
+    }
+
+    func testCatalogFailurePresentationSeparatesRecoveryActions() {
+        XCTAssertEqual(CatalogFailurePresentation(error: URLError(.notConnectedToInternet)).action, "Retry")
+        XCTAssertEqual(CatalogFailurePresentation(error: BrowseCatalogError.unknownSet).action, "Refresh Catalog")
+        XCTAssertEqual(CatalogFailurePresentation(error: CatalogLookupError.staleCatalog).icon, "rectangle.stack.badge.exclamationmark")
+        XCTAssertNil(CatalogFailurePresentation(error: CardGameSupportError.unsupportedGame(.onePiece)).action)
+        XCTAssertEqual(CatalogFailurePresentation(error: JustTCGTransport.TransportError.badResponse(status: 401)), .accessUnavailable)
+        XCTAssertEqual(CatalogFailurePresentation(error: JustTCGTransport.TransportError.badResponse(status: 403)).icon, "key")
+    }
+
     func testSealedBrowseLoadsSetsProductsAndTheNextPage() async throws {
         let root = FileManager.default.temporaryDirectory
             .appendingPathComponent("SealedBrowseSurfaceTests-\(UUID().uuidString)", isDirectory: true)
@@ -1472,13 +1538,16 @@ private actor UncoveredSealedBrowseProvider: SealedBrowseProviding {
     private let productsByGame: [CardGame: [SealedProductSummary]]
     private var setRequests = 0
     private var offsets: [Int] = []
+    private var error: Error?
+
+    func fail(with error: Error?) { self.error = error }
 
     init(
         sets: [SealedSetSummary] = [],
         products: [SealedProductSummary] = []
     ) {
-        self.setsByGame = [.pokemon: sets, .magic: sets]
-        self.productsByGame = [.pokemon: products, .magic: products]
+        self.setsByGame = [.pokemon: sets, .magic: sets, .onePiece: sets]
+        self.productsByGame = [.pokemon: products, .magic: products, .onePiece: products]
     }
 
     func searchSealedProducts(
@@ -1488,6 +1557,7 @@ private actor UncoveredSealedBrowseProvider: SealedBrowseProviding {
         offset: Int
     ) async throws -> MarketCatalogPage<SealedProductSummary> {
         offsets.append(offset)
+        if let error { throw error }
         let all = productsByGame[game] ?? []
         let items = Array(all.dropFirst(offset).prefix(1))
         return MarketCatalogPage(
@@ -1501,6 +1571,7 @@ private actor UncoveredSealedBrowseProvider: SealedBrowseProviding {
 
     func sealedSets(game: CardGame) async throws -> [SealedSetSummary] {
         setRequests += 1
+        if let error { throw error }
         return setsByGame[game] ?? []
     }
 

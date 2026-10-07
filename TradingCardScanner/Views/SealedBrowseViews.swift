@@ -1,6 +1,51 @@
 import SwiftData
 import SwiftUI
 
+#if DEBUG && LOCAL_ONLY_SIGNING
+/// Opt-in UI acceptance uses public fixture identities and isolated local storage.
+private actor SealedAcceptanceProvider: SealedBrowseProviding {
+    let failsFirstDirectory: Bool
+    private var directoryRequests = 0
+    init(failsFirstDirectory: Bool) { self.failsFirstDirectory = failsFirstDirectory }
+    func sealedSets(game: CardGame) async throws -> [SealedSetSummary] {
+        directoryRequests += 1
+        if failsFirstDirectory, directoryRequests == 1 { throw URLError(.notConnectedToInternet) }
+        return [.init(id: "recorded-one-piece-set", name: "One Piece — Recorded Booster Set", sealedCount: 2,
+                      game: game, releaseDate: nil)]
+    }
+    func searchSealedProducts(game: CardGame, setID: String?, query: String?, offset: Int) async throws -> MarketCatalogPage<SealedProductSummary> {
+        let product = SealedProductSummary(id: "recorded-one-piece-box-\(offset)", name: offset == 0 ? "One Piece Booster Box" : "One Piece Double Pack",
+            setName: "Recorded Booster Set", variantID: "recorded-sealed-\(offset)", marketPriceUSD: offset == 0 ? 99.25 : 12.50,
+            updatedAt: nil, imageURL: nil)
+        return .init(items: [product], total: 2, offset: offset, limit: 1, hasMore: offset == 0)
+    }
+}
+
+struct SealedBrowseAcceptanceView: View {
+    let runtimes: CardGameRuntimeContainer?
+    private let state: String
+    @StateObject private var model: SealedBrowseModel
+    init(runtimes: CardGameRuntimeContainer?) {
+        self.runtimes = runtimes
+        let args = ProcessInfo.processInfo.arguments
+        let index = args.firstIndex(of: "-ui_debug_state")
+        let state = index.flatMap { args.indices.contains($0 + 1) ? args[$0 + 1] : nil } ?? "ready"
+        self.state = state
+        _model = StateObject(wrappedValue: SealedBrowseModel(client: SealedAcceptanceProvider(failsFirstDirectory: state == "offline"),
+            gameRegistry: runtimes?.registry ?? .standard,
+            cache: CatalogCacheStore(root: FileManager.default.temporaryDirectory.appendingPathComponent("SealedAcceptance-\(UUID())")),
+            isConfigured: { true }))
+    }
+    var body: some View {
+        NavigationStack {
+            SealedSetDirectoryContent(game: .onePiece, model: model, searchText: "")
+                .navigationTitle("One Piece Sealed")
+        }
+        .environment(\.cardGameRuntimes, state == "blocked" ? nil : runtimes)
+    }
+}
+#endif
+
 /// Loads sealed directories and product pages one game at a time, while the
 /// top-level search keeps an independent lane for each game.
 ///
@@ -23,11 +68,13 @@ final class SealedBrowseModel: ObservableObject {
     @Published private(set) var searchLanes: [CardGame: Lane] = [:]
     @Published private(set) var isLoading = false
     @Published var errorMessage: String?
+    @Published private(set) var failurePresentation: CatalogFailurePresentation?
     @Published private(set) var hasMore = false
 
     private let client: any SealedBrowseProviding
     private let cache: CatalogCacheStore
     private let credentialsAvailable: @Sendable () -> Bool
+    private let gameRegistry: CardGameRegistry
     private var offset = 0
     private var loadedGame: CardGame?
     private var loadedProductKey: String?
@@ -47,20 +94,24 @@ final class SealedBrowseModel: ObservableObject {
 
     init(
         transport: JustTCGTransport,
+        gameRegistry: CardGameRegistry = .standard,
         cache: CatalogCacheStore = .shared,
         isConfigured: @escaping @Sendable () -> Bool = { PriceVendorCredentials.hasKey }
     ) {
         self.client = JustTCGV1Client(transport: transport)
+        self.gameRegistry = gameRegistry
         self.cache = cache
         self.credentialsAvailable = isConfigured
     }
 
     init(
         client: any SealedBrowseProviding,
+        gameRegistry: CardGameRegistry = .standard,
         cache: CatalogCacheStore = .shared,
         isConfigured: @escaping @Sendable () -> Bool = { PriceVendorCredentials.hasKey }
     ) {
         self.client = client
+        self.gameRegistry = gameRegistry
         self.cache = cache
         self.credentialsAvailable = isConfigured
     }
@@ -78,7 +129,14 @@ final class SealedBrowseModel: ObservableObject {
     /// credentials; only a stale or missing page with a configured account
     /// proceeds to the network. A scope change supplies a narrower game list,
     /// so invisible lanes never spend the shared vendor allowance.
-    func search(query: String, games: [CardGame] = CardGameRegistry.standard.games(supporting: .sealed)) async {
+    func search(query: String, games requestedGames: [CardGame]? = nil) async {
+        let games = requestedGames ?? gameRegistry.games(supporting: .sealed)
+        guard games.allSatisfy({ gameRegistry.supports($0, .sealed) }) else {
+            clearSearch()
+            errorMessage = CatalogFailurePresentation.unavailable.message
+            failurePresentation = .unavailable
+            return
+        }
         let normalizedQuery = CardNameSearch.normalize(query)
         guard normalizedQuery.count >= 2 else {
             clearSearch()
@@ -169,6 +227,7 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadMoreSearch(game: CardGame, query: String) async {
+        guard gameRegistry.supports(game, .sealed) else { return }
         let normalizedQuery = CardNameSearch.normalize(query)
         guard normalizedQuery.count >= 2,
               searchQuery == normalizedQuery,
@@ -243,8 +302,18 @@ final class SealedBrowseModel: ObservableObject {
 
     /// One request, and only when the directory is not already loaded for this
     /// game. Sealed browse is interactive, but it is still the user's quota.
-    func loadSetsIfNeeded(game: CardGame) async {
-        guard (loadedGame != game || sets.isEmpty), activeSetsGame != game else { return }
+    func loadSetsIfNeeded(game: CardGame, forceRefresh: Bool = false) async {
+        guard gameRegistry.supports(game, .sealed) else {
+            setsRequestID = UUID()
+            activeSetsGame = nil
+            isLoadingSets = false
+            updateLoadingState()
+            sets = []
+            errorMessage = CatalogFailurePresentation.unavailable.message
+            failurePresentation = .unavailable
+            return
+        }
+        guard (forceRefresh || loadedGame != game || sets.isEmpty), activeSetsGame != game else { return }
         let requestID = UUID()
         setsRequestID = requestID
         activeSetsGame = game
@@ -260,12 +329,13 @@ final class SealedBrowseModel: ObservableObject {
         if loadedGame != game {
             sets = []
             errorMessage = nil
+            failurePresentation = nil
         }
         if let saved = await cache.sealedSets(for: game) {
             guard requestID == setsRequestID, !Task.isCancelled else { return }
             sets = SealedSetOrdering.newestFirst(saved.value)
             loadedGame = game
-            if saved.isFresh {
+            if saved.isFresh, !forceRefresh {
                 errorMessage = nil
                 return
             }
@@ -282,8 +352,10 @@ final class SealedBrowseModel: ObservableObject {
             await cache.storeSealedSets(sets, for: game)
             guard requestID == setsRequestID, !Task.isCancelled else { return }
             errorMessage = nil
+            failurePresentation = nil
         } catch {
             guard requestID == setsRequestID, !Task.isCancelled else { return }
+            failurePresentation = CatalogFailurePresentation(error: error)
             errorMessage = sets.isEmpty
                 ? Self.message(for: error)
                 : "Showing saved sealed sets · \(Self.message(for: error))"
@@ -291,6 +363,17 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadProducts(game: CardGame, setID: String?, query: String? = nil) async {
+        guard gameRegistry.supports(game, .sealed) else {
+            productsRequestID = UUID()
+            activeProductRoute = nil
+            isLoadingProducts = false
+            updateLoadingState()
+            products = []
+            hasMore = false
+            errorMessage = CatalogFailurePresentation.unavailable.message
+            failurePresentation = .unavailable
+            return
+        }
         let route = ProductRoute(game: game, setID: setID, query: query)
         guard activeProductRoute != route else { return }
         let requestID = UUID()
@@ -344,6 +427,7 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadMore(game: CardGame, setID: String?, query: String? = nil) async {
+        guard gameRegistry.supports(game, .sealed) else { return }
         let route = ProductRoute(game: game, setID: setID, query: query)
         guard hasMore, activeProductRoute != route else { return }
         let requestID = UUID()
@@ -422,7 +506,7 @@ final class SealedBrowseModel: ObservableObject {
     /// lift — "try again later" with no time attached is not actionable.
     static func message(for error: Error) -> String {
         guard let transportError = error as? JustTCGTransport.TransportError else {
-            return error.localizedDescription
+            return CatalogFailurePresentation(error: error).message
         }
         switch transportError {
         case let .budgetReached(resetAt):
@@ -433,9 +517,15 @@ final class SealedBrowseModel: ObservableObject {
             return "Paused by the provider · retry after \(retryAt.formatted(date: .abbreviated, time: .shortened))"
         case .missingCredentials:
             return "Add a pricing API key in Settings to browse sealed products."
+        case .badResponse(status: 401), .badResponse(status: 403):
+            return CatalogFailurePresentation.accessUnavailable.message
         case .invalidURL, .badResponse:
-            return transportError.errorDescription ?? "Sealed products could not be loaded."
+            return "The pricing catalog couldn’t be loaded. Try again in a moment."
         }
+    }
+
+    func retrySets(game: CardGame) async {
+        await loadSetsIfNeeded(game: game, forceRefresh: true)
     }
 }
 
@@ -471,12 +561,21 @@ struct SealedSetDirectoryContent: View {
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } else if let errorMessage = model.errorMessage {
-                Text(errorMessage)
+                Label(errorMessage, systemImage: model.failurePresentation?.icon ?? "shippingbox")
                     .font(.footnote)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                if let action = model.failurePresentation?.action {
+                    Button(action, systemImage: "arrow.clockwise") {
+                        Task { await model.retrySets(game: game) }
+                    }
+                    .disabled(model.isLoading)
+                } else if model.failurePresentation == .accessUnavailable, let onOpenSettings {
+                    Button("Open Settings", systemImage: "key", action: onOpenSettings)
+                }
             }
 
-            if model.isConfigured || hasUsableCachedDirectory {
+            if hasUsableCachedDirectory {
                 Section {
                     ForEach(visibleSets) { set in
                         NavigationLink {
@@ -676,6 +775,7 @@ struct SealedProductTile: View {
 // MARK: - Product detail
 
 struct SealedProductDetailView: View {
+    @Environment(\.cardGameRuntimes) private var runtimes
     @EnvironmentObject private var projectionStore: CollectionProjectionStore
     let game: CardGame
     let product: SealedProductSummary
@@ -690,6 +790,10 @@ struct SealedProductDetailView: View {
     private var ownedQuantity: Int {
         (projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: []))
             .sealedQuantity(productID: product.id, variantID: product.variantID)
+    }
+
+    private var canSave: Bool {
+        (runtimes?.registry ?? .standard).supports(game, .collectionWrite)
     }
 
     var body: some View {
@@ -724,8 +828,13 @@ struct SealedProductDetailView: View {
             }
 
             Section {
+                if !canSave {
+                    Label("Saving unavailable", systemImage: "lock")
+                    Text("Collection saving isn’t enabled for this game in this catalog.")
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
                 Button {
-                    guard !isAdding else { return }
+                    guard canSave, !isAdding else { return }
                     isAdding = true
                     Task { await add() }
                 } label: {
@@ -733,7 +842,7 @@ struct SealedProductDetailView: View {
                         .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.borderedProminent)
-                .disabled(pendingMutation != nil || isAdding)
+                .disabled(!canSave || pendingMutation != nil || isAdding)
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
             }
@@ -781,6 +890,7 @@ struct SealedProductDetailView: View {
     @MainActor
     private func add() async {
         defer { isAdding = false }
+        guard canSave else { return }
         let container = modelContext.container
         do {
             // The undo affordance is the only thing that says this worked, and

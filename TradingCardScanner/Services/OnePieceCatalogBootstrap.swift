@@ -92,6 +92,8 @@ enum OnePieceCatalogBootstrap {
     }
 
     static func developerStorageDirectory(arguments: [String] = ProcessInfo.processInfo.arguments) -> String? {
+        if let index = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(index + 1),
+           arguments[index + 1] == "SealedAcceptance" { return "SealedBrowseAcceptance" }
         if isAcceptanceLaunch(arguments: arguments) { return "OnePieceAcceptance" }
         let review = localReviewLaunchArguments(arguments: arguments, bundleIdentifier: Bundle.main.bundleIdentifier,
             publicKey: Bundle.main.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_PUBLIC_KEY") as? String,
@@ -178,7 +180,7 @@ enum OnePieceCatalogBootstrap {
         let envelope = try JSONDecoder().decode(OnePieceCatalogReleaseEnvelope.self, from: seed)
         let verified = try OnePieceCatalogSignature.verify(envelope, trustedKeys: configuration.keys, now: now)
         return OnePieceGameRuntime(registry: .init(verifiedRelease: verified, includeRecordedArtwork: includeRecordedArtwork),
-            capabilities: [.scan, .browse, .collectionWrite, .pricing]).runtime
+            capabilities: [.scan, .browse, .collectionWrite, .pricing, .sealed]).runtime
     }
 #endif
 

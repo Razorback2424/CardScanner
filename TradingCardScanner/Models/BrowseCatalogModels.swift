@@ -1,5 +1,52 @@
 import Foundation
 
+enum CatalogFailurePresentation: Equatable {
+    case connectivity
+    case catalog
+    case unavailable
+    case accessUnavailable
+
+    init(error: Error) {
+        if let error = error as? JustTCGTransport.TransportError {
+            switch error {
+            case .missingCredentials, .badResponse(status: 401), .badResponse(status: 403):
+                self = .accessUnavailable
+                return
+            default: break
+            }
+        }
+        if error is CardGameSupportError { self = .unavailable }
+        else if error is BrowseCatalogError || error is CatalogLookupError { self = .catalog }
+        else { self = .connectivity }
+    }
+
+    var icon: String {
+        switch self {
+        case .connectivity: "wifi.exclamationmark"
+        case .catalog: "rectangle.stack.badge.exclamationmark"
+        case .unavailable: "shippingbox"
+        case .accessUnavailable: "key"
+        }
+    }
+
+    var message: String {
+        switch self {
+        case .connectivity: "We couldn’t reach the catalog. Check your connection and try again."
+        case .catalog: "This listing needs updated catalog information. Refresh the catalog and try again."
+        case .unavailable: "This feature isn’t available for this game in the current catalog."
+        case .accessUnavailable: "Pricing access is unavailable. Check your API key and account access in Settings."
+        }
+    }
+
+    var action: String? {
+        switch self {
+        case .connectivity: "Retry"
+        case .catalog: "Refresh Catalog"
+        case .unavailable, .accessUnavailable: nil
+        }
+    }
+}
+
 enum PokemonPrintRun: String, Hashable, Sendable, Codable {
     case firstEdition
     case shadowless
@@ -92,6 +139,14 @@ struct CatalogSet: Identifiable, Hashable, Sendable, Codable {
         game == .pokemon
             ? sortRank
             : releaseDate.map { Int($0.timeIntervalSince1970 / 86_400) } ?? sortRank
+    }
+
+    func withSortRank(_ rank: Int) -> CatalogSet {
+        CatalogSet(catalogID: catalogID, name: name, code: code, logoURL: logoURL, symbolURL: symbolURL,
+            cardCount: cardCount, releaseDate: releaseDate, sortRank: rank,
+            bundledArtworkSourceID: bundledArtworkSourceID, artworkFallbackURLs: artworkFallbackURLs,
+            limitlessArtworkAuthorized: limitlessArtworkAuthorized, cardArtwork: cardArtwork,
+            physicalPrintingIDs: physicalPrintingIDs)
     }
 }
 
@@ -1635,12 +1690,14 @@ protocol BrowseCatalogProviding: Sendable {
         cursor: String?
     ) async throws -> CatalogPage<CatalogCardSummary>
     func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup
     nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]>
     nonisolated func sortPriceUpdates(for cards: [CatalogCardSummary]) -> AsyncStream<CatalogPriceUpdate>
     func resetPriceResolution(for ids: [String]) async
     /// Starts an opportunistic local-snapshot refresh. Existing test doubles
     /// and non-Pokémon catalog implementations do not need to participate.
     func prepareCatalog() async
+    func refreshCatalogNow() async
     /// Emits when a signed catalog revision or a per-set checklist becomes
     /// visible. Existing test doubles may use the empty default stream.
     func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate>
@@ -1648,6 +1705,14 @@ protocol BrowseCatalogProviding: Sendable {
 
 extension BrowseCatalogProviding {
     var gameRegistry: CardGameRegistry { .standard }
+    func refreshCatalogNow() async { await prepareCatalog() }
+
+    func price(for summary: CatalogCardSummary, variant: PhysicalVariant) async throws -> PriceLookup {
+        let details = try await details(for: summary)
+        return CardPricing.price(for: details.card, variant: variant,
+                                 magicTreatments: details.card.magicTreatments(for: variant),
+                                 pokemonPrintRun: summary.pokemonPrintRun, at: details.retrievedAt)
+    }
 
     func artwork(for set: CatalogSet) async throws -> CatalogSetArtwork {
         let urls = set.artworkFallbackURLs ?? []

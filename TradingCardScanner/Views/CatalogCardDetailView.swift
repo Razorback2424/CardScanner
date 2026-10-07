@@ -23,7 +23,7 @@ struct CatalogCardDetailView: View {
     let catalog: any BrowseCatalogProviding
 
     @State private var details: CatalogCardDetails?
-    @State private var error: String?
+    @State private var error: CatalogFailurePresentation?
     @State private var isLoading = false
     @State private var finishOptions: [PhysicalVariant] = []
     @State private var showsFinishChoice = false
@@ -42,6 +42,8 @@ struct CatalogCardDetailView: View {
     @State private var browseHistorySeries: [BrowsePricePersistedSeries] = []
     @State private var mappedPrices: [String: PriceLookup] = [:]
     @State private var mappedPriceCheckFinished = false
+    @State private var failedPriceVariantIDs: Set<String> = []
+    @State private var priceRetryID = 0
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
     private let marketTransport = JustTCGTransport.shared
@@ -52,8 +54,15 @@ struct CatalogCardDetailView: View {
             if let details { content(details) }
             else if isLoading { ProgressView().padding(.top, 100) }
             else if let error {
-                ContentUnavailableView("Couldn't load this card", systemImage: "wifi.exclamationmark", description: Text(error))
-                Button("Retry") { Task { await load() } }.buttonStyle(.borderedProminent)
+                ContentUnavailableView("Couldn't load this card", systemImage: error.icon, description: Text(error.message))
+                if let action = error.action {
+                    Button(action) {
+                        Task {
+                            if error == .catalog { await catalog.refreshCatalogNow() }
+                            await load()
+                        }
+                    }.buttonStyle(.borderedProminent)
+                }
             }
         }
         .navigationTitle("Card")
@@ -71,7 +80,7 @@ struct CatalogCardDetailView: View {
             Text(detail)
         }
         .task { if details == nil { await load() } }
-        .task(id: details?.card.id) { await loadMappedPrices() }
+        .task(id: "\(details?.card.id ?? ""):\(priceRetryID)") { await loadMappedPrices() }
         .onReceive(NotificationCenter.default.publisher(
             for: BrowsePriceHistoryStore.didChange, object: browsePriceHistoryStore
         ).receive(on: RunLoop.main)) { notification in
@@ -249,11 +258,16 @@ struct CatalogCardDetailView: View {
                         if case let .price(price) = mappedPrices[variant.id] {
                             Text(price.unitMarketPriceUSD.formatted(.currency(code: "USD")))
                         } else if !mappedPriceCheckFinished { ProgressView() }
-                        else { Text("Price unavailable").foregroundStyle(.secondary) }
+                        else if failedPriceVariantIDs.contains(variant.id) {
+                            Text("Couldn't check price").foregroundStyle(.secondary)
+                        } else if mappedPrices[variant.id] == .unavailable(nil) {
+                            Text("Price not mapped yet").foregroundStyle(.secondary)
+                        } else { Text("No published USD price").foregroundStyle(.secondary) }
                     }
                 }
                 Text("TCGplayer via TCGCSV · aggregate market price")
                     .font(.caption).foregroundStyle(.secondary)
+                priceRetryButton
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -271,20 +285,32 @@ struct CatalogCardDetailView: View {
                         .foregroundStyle(.secondary)
                 }
                 ForEach(rows) { price in
-                    switch price.availability {
-                    case let .published(amount):
-                        LabeledContent(
-                            price.label,
-                            value: amount.formatted(.currency(code: "USD"))
-                        )
-                    case .noUSDQuote:
-                        LabeledContent(price.label) {
-                            Text("No USD price")
-                                .foregroundStyle(.tertiary)
+                    if let variantID = price.variantID, case let .price(quote) = mappedPrices[variantID], quote.currencyCode == "USD" {
+                        VStack(alignment: .leading, spacing: 3) {
+                            LabeledContent(price.label, value: quote.unitMarketPriceUSD.formatted(.currency(code: "USD")))
+                            Text("\(quote.source.label) · retrieved \(quote.fetchedAt.formatted(date: .abbreviated, time: .shortened))")
+                                .font(.caption).foregroundStyle(.secondary)
                         }
-                        .accessibilityHint("No US dollar market price is published for this finish yet.")
+                    } else if let variantID = price.variantID, mappedPrices[variantID] != nil {
+                        LabeledContent(price.label) {
+                            Text("No USD price").foregroundStyle(.secondary)
+                        }
+                    } else {
+                        switch price.availability {
+                        case let .published(amount):
+                            LabeledContent(price.label, value: amount.formatted(.currency(code: "USD")))
+                        case .noUSDQuote:
+                            LabeledContent(price.label) {
+                                if !mappedPriceCheckFinished { ProgressView() }
+                                else {
+                                    Text(failedPriceVariantIDs.contains(price.variantID ?? "") ? "Couldn't check price" : "No USD price")
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
                     }
                 }
+                priceRetryButton
                 if rows.contains(where: \.isGap) {
                     Text(summary.pokemonPrintRun.map {
                         "Prices apply only to \($0.label). An unavailable quote is never filled from another edition."
@@ -305,16 +331,35 @@ struct CatalogCardDetailView: View {
     }
 
     private func loadMappedPrices() async {
-        guard let card = details?.card, let service = runtimes?.makePriceQuoteService(),
-              service.supportsStoredPrintingRefresh(for: card.game) else { return }
+        guard let card = details?.card, catalog.gameRegistry.supports(card.game, .pricing) else { return }
         mappedPriceCheckFinished = false
-        mappedPrices = [:]
+        failedPriceVariantIDs = []
+        let retryID = priceRetryID
         for variant in card.variantEvidence.catalogVariants {
-            let quote = try? await service.refresh(card: card, variant: variant, pokemonPrintRun: nil)
-            guard !Task.isCancelled, details?.card.id == card.id else { return }
-            mappedPrices[variant.id] = quote
+            do {
+                let quote = try await catalog.price(for: summary, variant: variant)
+                guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
+                mappedPrices[variant.id] = quote
+            } catch {
+                guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
+                failedPriceVariantIDs.insert(variant.id)
+            }
         }
         mappedPriceCheckFinished = true
+    }
+
+    @ViewBuilder private var priceRetryButton: some View {
+        if mappedPriceCheckFinished && (!failedPriceVariantIDs.isEmpty
+            || mappedPrices.values.contains(where: { if case .unavailable = $0 { return true }; return false })) {
+            Button("Retry prices") {
+                mappedPriceCheckFinished = false
+                Task {
+                    await catalog.resetPriceResolution(for: [summary.id])
+                    priceRetryID += 1
+                }
+            }
+            .buttonStyle(.bordered)
+        }
     }
 
     @ViewBuilder
@@ -575,7 +620,7 @@ struct CatalogCardDetailView: View {
             )
         }
         catch is CancellationError { return }
-        catch { self.error = error.localizedDescription }
+        catch { self.error = CatalogFailurePresentation(error: error) }
     }
 }
 

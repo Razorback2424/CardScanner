@@ -36,6 +36,10 @@ struct PriceQuoteService: Sendable {
         supportsPricing(for: game) && registry.supports(game, .gradedPricing)
     }
 
+    func supportsSealedPricing(for game: CardGame) -> Bool {
+        registry.supports(game, [.sealed, .pricing])
+    }
+
     func allowsProviderFallback(for game: CardGame) -> Bool {
         adapters.adapter(for: game)?.allowsProviderFallback == true
     }

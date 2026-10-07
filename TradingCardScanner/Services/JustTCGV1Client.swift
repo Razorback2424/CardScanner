@@ -192,6 +192,7 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
         switch game {
         case .pokemon: return "pokemon"
         case .magic: return "magic-the-gathering"
+        case .onePiece: return "one-piece-card-game"
         default: throw CardGameSupportError.unsupportedGame(game)
         }
     }

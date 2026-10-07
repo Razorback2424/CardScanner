@@ -80,8 +80,8 @@ extension JustTCGBatchLookup: Encodable {
 struct JustTCGBatchRequest: Encodable, Sendable {
     let items: [JustTCGBatchLookup]
     /// Routine collection pricing never asks for history. History is an order of
-    /// magnitude more data for a number the collection does not display, and it
-    /// is fetched lazily from an item's detail screen instead.
+    /// magnitude more data. The request flag is available for a future detail
+    /// history path; no current caller requests or decodes a historical series.
     let includePriceHistory: Bool
     /// Only variants the vendor has repriced since this moment. A delta.
     let updatedAfter: Date?

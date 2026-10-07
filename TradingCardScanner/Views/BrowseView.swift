@@ -39,7 +39,7 @@ final class BrowseViewModel: ObservableObject {
     ) {
         self.catalog = catalog
         self.includesSealedProducts = includesSealedProducts
-        let sealedModel = sealedModel ?? SealedBrowseModel(transport: JustTCGTransport.shared)
+        let sealedModel = sealedModel ?? SealedBrowseModel(transport: JustTCGTransport.shared, gameRegistry: catalog.gameRegistry)
         self.sealedModel = sealedModel
         self.selectedGame = initialGame
         self.sealedModelCancellable = sealedModel.objectWillChange.sink { [weak self] _ in
@@ -1058,6 +1058,11 @@ enum CatalogSetOrdering {
 
     static func newestFirst(_ sets: [CatalogSet]) -> [CatalogSet] {
         sets.sorted {
+            let leftDate = $0.releaseDate ?? .distantPast
+            let rightDate = $1.releaseDate ?? .distantPast
+            if leftDate != rightDate {
+                return leftDate > rightDate
+            }
             if $0.releaseOrder != $1.releaseOrder {
                 return $0.releaseOrder > $1.releaseOrder
             }
@@ -1067,6 +1072,11 @@ enum CatalogSetOrdering {
 
     static func oldestFirst(_ sets: [CatalogSet]) -> [CatalogSet] {
         sets.sorted {
+            let leftDate = $0.releaseDate ?? .distantPast
+            let rightDate = $1.releaseDate ?? .distantPast
+            if leftDate != rightDate {
+                return leftDate < rightDate
+            }
             if $0.releaseOrder != $1.releaseOrder {
                 return $0.releaseOrder < $1.releaseOrder
             }
@@ -1241,7 +1251,7 @@ private struct CatalogGameBrowseView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if catalogCardSelection == nil {
+            if catalogCardSelection == nil, catalog.gameRegistry.supports(game, .sealed) {
                 Picker("Catalog content", selection: $contentKind) {
                     ForEach(CatalogGameContentKind.allCases) { kind in
                         Text(kind.rawValue).tag(kind)

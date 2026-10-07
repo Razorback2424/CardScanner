@@ -8,6 +8,42 @@ import XCTest
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    func testOnePieceSealedWireParametersAndPaginationUseVendorIdentities() async throws {
+        let suite = "OnePieceSealedWire-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        let client = JustTCGV1Client(transport: .init(configuration: settings, session: URLSession(configuration: config),
+            ledger: .init(defaults: defaults), pacer: .init(), apiKeyOverride: "fixture-key"))
+        RecordingURLProtocol.reset(body: #"{"data":[{"uuid":"vendor-box","name":"Booster box","tcgplayerId":"12345","variants":[{"uuid":"vendor-sealed","condition":"Sealed","price":99.25},{"uuid":"raw","condition":"Near Mint","price":1}]}],"meta":{"total":101,"offset":100,"limit":100,"hasMore":false}}"#)
+        let page = try await client.searchSealedProducts(game: .onePiece, setID: "vendor-op-set", query: "box", offset: 100)
+        let url = try XCTUnwrap(RecordingURLProtocol.recorded().first)
+        let query = Dictionary(uniqueKeysWithValues: try XCTUnwrap(URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems).map { ($0.name, $0.value ?? "") })
+        XCTAssertEqual(query["game"], "one-piece-card-game")
+        XCTAssertEqual(query["condition"], "Sealed")
+        XCTAssertEqual(query["set"], "vendor-op-set")
+        XCTAssertEqual(query["offset"], "100")
+        XCTAssertEqual(query["q"], "box")
+        XCTAssertEqual(page.items.first?.id, "vendor-box")
+        XCTAssertEqual(page.items.first?.variantID, "vendor-sealed")
+        XCTAssertEqual(page.items.first?.marketPriceUSD, 99.25)
+        XCTAssertFalse(page.hasMore)
+        do { _ = try await client.sealedSets(game: .lorcana); XCTFail("Unsupported game must fail before transport") }
+        catch is CardGameSupportError { }
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+        let stoppedLedger = JustTCGRequestLedger(defaults: defaults)
+        stoppedLedger.recordRateLimit(until: .now.addingTimeInterval(60))
+        let stopped = JustTCGV1Client(transport: .init(configuration: settings, session: URLSession(configuration: config),
+            ledger: stoppedLedger, pacer: .init(), apiKeyOverride: "fixture-key"))
+        do { _ = try await stopped.searchSealedProducts(game: .onePiece, offset: 0); XCTFail("Rate limit must stop discovery") }
+        catch JustTCGTransport.TransportError.rateLimited { }
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1, "Paused requests must not reach the provider")
+    }
+
     func testMarketplaceArtworkUsesTheCanonicalProductCDN() {
         XCTAssertEqual(
             JustTCGV1Client.productImageURL(tcgplayerID: "515661")?.absoluteString,

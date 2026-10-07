@@ -1384,6 +1384,26 @@ final class PriceHistoryChartModelTests: XCTestCase {
         XCTAssertEqual(model.segments.count, 0)
     }
 
+    func testScrubbingUncheckedDayDoesNotBorrowNearestPrice() throws {
+        let model = makeModel(
+            observations: [try observation(day: 0, amount: 10), try observation(day: 3, amount: 12)],
+            checks: [checkDay(day: 0), checkDay(day: 3)]
+        )
+        XCTAssertNil(model.sample(at: date(day: 1, hour: 12)))
+        XCTAssertNil(model.sample(at: date(day: 2, hour: 12)))
+        XCTAssertEqual(model.sample(at: date(day: 3, hour: 1))?.amount, Money(rounding: 12))
+        XCTAssertNil(model.sample(at: model.plotRangeStart.addingTimeInterval(-1)))
+    }
+
+    func testScrubbingCheckedSpanUsesRecordedStepRatherThanFuturePrice() throws {
+        let model = makeModel(
+            observations: [try observation(day: 0, amount: 10), try observation(day: 2, amount: 12)],
+            checks: [checkDay(day: 0), checkDay(day: 1), checkDay(day: 2)]
+        )
+        XCTAssertEqual(model.sample(at: date(day: 1, hour: 12))?.amount, Money(rounding: 10))
+        XCTAssertEqual(model.sample(at: date(day: 2, hour: 1))?.amount, Money(rounding: 12))
+    }
+
     func testOneObservationRemainsAPointWithoutALine() throws {
         let model = makeModel(
             observations: [try observation(day: 0, amount: 10)],

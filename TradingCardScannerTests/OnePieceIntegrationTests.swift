@@ -106,6 +106,74 @@ private final class OnePieceRecoveryReadGate: @unchecked Sendable {
 
 @MainActor
 final class OnePieceIntegrationTests: XCTestCase {
+    func testOnePieceSealedAddUndoAndExactVendorRepricingRespectRuntimeGates() async throws {
+        let registry = try registry()
+        let (_, container) = try model(registry: registry)
+        let browseOnly = try CardGameRuntimeContainer(runtimes: [OnePieceGameRuntime(registry: registry).runtime])
+        browseOnly.configureCollectionAuthority(for: container)
+        let product = SealedProductSummary(id: "vendor-box", name: "One Piece Booster Box", setName: "Vendor OP Set",
+            variantID: "vendor-exact", marketPriceUSD: 80, updatedAt: nil, imageURL: nil)
+        XCTAssertThrowsError(try CollectionStore(context: container.mainContext).addSealed(product, game: .onePiece))
+        XCTAssertTrue(browseOnly.registry.supports(.onePiece, .sealed))
+        let writable = try CardGameRuntimeContainer(runtimes: [OnePieceGameRuntime(registry: registry,
+            capabilities: [.browse, .sealed, .pricing, .collectionWrite]).runtime])
+        writable.configureCollectionAuthority(for: container)
+        XCTAssertTrue(writable.makePriceQuoteService().supportsSealedPricing(for: .onePiece))
+        let store = CollectionStore(context: container.mainContext)
+        let mutation = try store.addSealed(product, game: .onePiece)
+        let row = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        XCTAssertEqual(row.itemKind, .sealedProduct)
+        XCTAssertEqual(row.justTCGVariantID, "vendor-exact")
+        XCTAssertEqual(row.cardNumber, "")
+        let suite = "OnePieceSealedRefresh-\(UUID())"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite); OnePiecePriceTestProtocol.handler = nil }
+        let session = URLSessionConfiguration.ephemeral
+        session.protocolClasses = [OnePiecePriceTestProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://sealed.test")!
+        settings.minimumRequestInterval = 0
+        OnePiecePriceTestProtocol.handler = { request in
+            var body = request.httpBody ?? Data()
+            if body.isEmpty, let stream = request.httpBodyStream {
+                stream.open()
+                defer { stream.close() }
+                var buffer = [UInt8](repeating: 0, count: 1024)
+                while stream.hasBytesAvailable {
+                    let count = stream.read(&buffer, maxLength: buffer.count)
+                    if count <= 0 { break }
+                    body.append(contentsOf: buffer.prefix(count))
+                }
+            }
+            let items = (try? JSONSerialization.jsonObject(with: body)) as? [[String: String]]
+            XCTAssertEqual(items, [["variantId": "vendor-exact"]])
+            return Data(#"{"data":[{"uuid":"vendor-box","variants":[{"uuid":"wrong","condition":"Sealed","price":9000},{"uuid":"vendor-exact","condition":"Sealed","price":99.25}]}]}"#.utf8)
+        }
+        let transport = JustTCGTransport(configuration: settings, session: URLSession(configuration: session),
+            ledger: .init(defaults: defaults), pacer: .init(), apiKeyOverride: "fixture-key")
+        let coordinator = JustTCGRefreshCoordinator(client: JustTCGV1Client(transport: transport), syncLedger: .init(defaults: defaults))
+        let target = MarketPriceTarget(priceKey: row.priceKey, game: .onePiece, printingID: row.priceStorageID,
+            variantID: nil, itemKind: .sealedProduct, marketVariantID: row.justTCGVariantID,
+            lookupCandidates: [.variantID("vendor-exact")], currentAmount: 80, lastCheckedAt: nil)
+        let prices = PriceStore(context: container.mainContext)
+        let storageID = row.priceStorageID
+        let report = await coordinator.refresh([target], game: .onePiece, lane: .interactive,
+            apply: { _, variant, _ in
+                await MainActor.run {
+                prices.store(.price(.init(unitMarketPriceUSD: variant.marketPriceUSD!, currencyCode: "USD", source: .justTCG,
+                    sourceVariantID: variant.variantId!, sourceUpdatedAt: variant.updatedAt, fetchedAt: .now)),
+                    game: .onePiece, printingID: storageID, variantID: nil)
+                return true
+                }
+            }, checkpoint: { await MainActor.run { prices.save() } })
+        XCTAssertEqual(report.pricesWritten, 1)
+        XCTAssertEqual(prices.record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD, 99.25)
+        try store.undo(mutation)
+        XCTAssertEqual(store.card(forKey: mutation.collectionKey)?.quantity ?? 0, 0)
+        browseOnly.configureCollectionAuthority(for: container)
+        XCTAssertFalse(browseOnly.registry.supports(.onePiece, .collectionWrite))
+    }
+
     private let date = "2026-10-03T00:00:00Z"
 
 #if DEBUG && LOCAL_ONLY_SIGNING
@@ -1103,6 +1171,33 @@ final class OnePieceIntegrationTests: XCTestCase {
         } catch PriceQuoteError.identityMismatch {}
     }
 
+    func testBrowseGridUsesExactOnePiecePriceAdapter() async throws {
+        let registry = try registry(withMarketMapping: true)
+        let gameRegistry = try CardGameRuntimeContainer(runtimes: [OnePieceGameRuntime(registry: registry).runtime]).registry
+        let source = OnePieceTestPriceSource()
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let cache = CatalogCacheStore(root: root)
+        let catalog = BrowseCatalog(cache: cache,
+            gameRegistry: gameRegistry,
+            gameBrowseAdapters: try .init(adapters: [OnePieceBrowseAdapter(registry: registry)]),
+            priceQuoteService: PriceQuoteService(registry: gameRegistry,
+                adapters: try .init(adapters: [OnePiecePriceAdapter(registry: registry, source: source)])))
+        let sets = try await catalog.sets(for: .onePiece)
+        let set = try XCTUnwrap(sets.first { $0.catalogID.providerID == "fixture-release-0" })
+        let page = try await catalog.cards(in: set, cursor: nil)
+        let summary = try XCTUnwrap(page.items.first)
+        await cache.storeSortPrices([summary.id: 999], for: set.id)
+        var prices: [String: Double] = [:]
+        for await update in catalog.sortPriceUpdates(for: [summary]) { prices = update.prices }
+        XCTAssertEqual(prices[summary.id], 8.16)
+        let normal = try await catalog.price(for: summary, variant: .normal)
+        XCTAssertEqual(normal, .unavailable(nil))
+        let quote = try await catalog.price(for: summary, variant: .foil)
+        guard case let .price(price) = quote else { return XCTFail("Details must use the same mapped foil") }
+        XCTAssertEqual(price.unitMarketPriceUSD, prices[summary.id])
+    }
+
     func testOnePieceCollectionRefreshPersistsExactMappedQuoteWithoutVendorFallback() async throws {
         let registry = try registry(withMarketMapping: true)
         let source = OnePieceTestPriceSource()
@@ -1801,13 +1896,14 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertTrue(browse.gameRegistry.supports(.onePiece, .browse))
         XCTAssertFalse(browse.gameRegistry.supports(.onePiece, .collectionWrite))
         XCTAssertTrue(browse.gameRegistry.supports(.onePiece, .pricing))
-        let model = BrowseViewModel(catalog: browse)
+        let model = BrowseViewModel(catalog: browse, sealedModel: SealedBrowseModel(transport: .shared,
+            gameRegistry: browse.gameRegistry, isConfigured: { false }))
         XCTAssertEqual(model.searchGames, [.onePiece])
         await model.loadSets()
         XCTAssertEqual(model.sets[.onePiece]?.count, 3)
         model.searchText = "not-a-real-fixture"
-        let empty = await waitUntil { model.searchState == .empty(needsSealedSetup: false) }
-        XCTAssertTrue(empty, "A game without sealed support must not ask for sealed-provider setup")
+        let empty = await waitUntil { model.searchState == .empty(needsSealedSetup: true) }
+        XCTAssertTrue(empty, "Enabled sealed browsing should offer setup when credentials are absent")
     }
 
     func testCSVExportRoundTripKeepsExactPrintingFinishAndRefusesProductionWrites() throws {

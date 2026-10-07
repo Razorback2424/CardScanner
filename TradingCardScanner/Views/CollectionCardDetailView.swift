@@ -65,6 +65,7 @@ struct CollectionCardDetailView: View {
     @State private var artworkAccent: ArtworkAccent?
     @State private var projectedQuantity: Int?
     @State private var lastSavedLogicalQuantity: Int?
+    @State private var selectedPriceDate: Date?
 #if DEBUG
     @State private var isShowingPrintingDetailsRoute = false
 #endif
@@ -152,26 +153,41 @@ struct CollectionCardDetailView: View {
             AppCardDetailBackdrop()
                 .ignoresSafeArea()
 
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 0) {
-                    heroSection
-                    cardIdentitySection
-                    valuationSection(movement: movement)
-                    priceHistorySection(model: chartModel, movement: movement)
-                    marketplaceSection
-                    ownershipSection
+            ScrollViewReader { scrollProxy in
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        heroSection
+                        cardIdentitySection
+                        valuationSection(model: chartModel, movement: movement)
+                            .id("card-price-valuation")
+                        priceHistorySection(model: chartModel, movement: movement)
+                        marketplaceSection
+                        ownershipSection
 
-                    if isLogicalConflict {
-                        conflictNotice
-                            .padding(.horizontal, 16)
-                            .padding(.top, 20)
+                        if isLogicalConflict {
+                            conflictNotice
+                                .padding(.horizontal, 16)
+                                .padding(.top, 20)
+                        }
+                    }
+                    .padding(.bottom, 24)
+                }
+                .coordinateSpace(name: "CardDetailScroll")
+#if DEBUG
+                .task {
+                    let arguments = ProcessInfo.processInfo.arguments
+                    if let index = arguments.firstIndex(of: "-ui_debug_state"),
+                       arguments.indices.contains(index + 1),
+                       arguments[index + 1] == "price-chart" {
+                        try? await Task.sleep(for: .milliseconds(300))
+                        scrollProxy.scrollTo("card-price-valuation", anchor: .top)
                     }
                 }
-                .padding(.bottom, 24)
+#endif
             }
-            .coordinateSpace(name: "CardDetailScroll")
         }
         .environment(\.colorScheme, .dark)
+        .onChange(of: history.range) { _, _ in selectedPriceDate = nil }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.black, for: .navigationBar)
@@ -829,16 +845,30 @@ struct CollectionCardDetailView: View {
         .padding(.top, 24)
     }
 
-    private func valuationSection(movement: CardDetailMovementDisplay) -> some View {
+    private func valuationSection(model: PriceHistoryChartModel, movement: CardDetailMovementDisplay) -> some View {
         VStack(spacing: 0) {
-            CardDetailHeroPrice(price: price)
-            CardDetailMovementPill(
-                display: movement,
-                currencyCode: price.currencyCode
-            )
-            .padding(.top, 10)
+            if let selectedPriceDate {
+                let sample = model.sample(at: selectedPriceDate)
+                Text(sample?.amount.formatted(currencyCode: price.currencyCode) ?? "—")
+                    .font(.system(size: 52, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                Text(sample.map { "Recorded price · \($0.date.formatted(date: .abbreviated, time: .shortened))" }
+                     ?? "Not checked · \(selectedPriceDate.formatted(date: .abbreviated, time: .omitted))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .padding(.top, 10)
+            } else {
+                CardDetailHeroPrice(price: price)
+                CardDetailMovementPill(
+                    display: movement,
+                    currencyCode: price.currencyCode
+                )
+                .padding(.top, 10)
+            }
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, minHeight: 104)
         .padding(.horizontal, 16)
     }
 
@@ -931,7 +961,8 @@ struct CollectionCardDetailView: View {
             PriceHistoryChartView(
                 model: model,
                 currencyCode: price.currencyCode,
-                direction: movement.direction
+                direction: movement.direction,
+                selectedDate: $selectedPriceDate
             )
             .accessibilityIdentifier("price-history-\(priceHistoryInstrumentKey)")
 
@@ -941,6 +972,13 @@ struct CollectionCardDetailView: View {
                 onSelect: { history.range = $0 }
             )
             .padding(.top, 10)
+
+            Text(model.samples.count > 1 ? "Recorded on this device · Drag to explore" : "Recorded on this device")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
 
             CardDetailSourceLegend(
                 sourceDescription: price.source.map(priceSourceDescription),
@@ -1801,8 +1839,7 @@ private struct CardDetailSourceLegend: View {
             Text(sourceDescription ?? "Price source unavailable")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .lineLimit(1)
-                .truncationMode(.tail)
+                .fixedSize(horizontal: false, vertical: true)
 
             Spacer(minLength: 8)
 
@@ -2119,6 +2156,7 @@ struct PriceHistorySegment: Identifiable, Equatable {
 /// points, but they cannot manufacture knowledge across an unchecked span.
 struct PriceHistoryChartModel: Equatable {
     let currencyCode: String
+    let timeZone: TimeZone
     let rangeStart: Date
     let rangeEnd: Date
     let plotRangeStart: Date
@@ -2186,6 +2224,22 @@ struct PriceHistoryChartModel: Equatable {
         let observationLabel = observationCount == 1 ? "1 changed price" : "\(observationCount) changed prices"
         let checkLabel = checkedDayCount == 1 ? "1 checked day" : "\(checkedDayCount) checked days"
         return "\(observationLabel) across \(checkLabel)."
+    }
+
+    /// Scrubbing follows the known step within a checked span. A gap never
+    /// borrows a distant price, even when that observation is the nearest one.
+    func sample(at date: Date) -> PriceHistorySample? {
+        guard plotRange.contains(date) else { return nil }
+        for segment in segments {
+            guard let first = segment.samples.first, let last = segment.samples.last else { continue }
+            if date >= first.date && date <= last.date {
+                return segment.samples.last(where: { $0.date <= date })
+            }
+        }
+        let calendar = PortfolioCalendar.calendar(in: timeZone)
+        return samples.filter { calendar.isDate($0.date, inSameDayAs: date) }.min {
+            abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date))
+        }
     }
 
     static func make(
@@ -2332,6 +2386,7 @@ struct PriceHistoryChartModel: Equatable {
 
         return PriceHistoryChartModel(
             currencyCode: currencyCode,
+            timeZone: timeZone,
             rangeStart: start,
             rangeEnd: end,
             plotRangeStart: plotRange.lowerBound,
@@ -2438,6 +2493,9 @@ private struct PriceHistoryChartView: View {
     let model: PriceHistoryChartModel
     let currencyCode: String
     let direction: CardDetailMovementDisplay.Direction
+    @Binding var selectedDate: Date?
+    @GestureState private var isScrubbing = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -2510,7 +2568,7 @@ private struct PriceHistoryChartView: View {
                             y: .value("Unit price", sample.amount.doubleValue)
                         )
                         .foregroundStyle(sample.kind?.chartLabel == nil ? lineColor : .orange)
-                        .symbolSize(sample.isObservation ? 34 : 12)
+                        .symbolSize(sample.isObservation ? 18 : 0)
                         .annotation(position: .top, alignment: .leading) {
                             if let label = sample.annotationLabel {
                                 Text(label)
@@ -2519,16 +2577,76 @@ private struct PriceHistoryChartView: View {
                             }
                         }
                     }
+
+                    if let selectedDate {
+                        RuleMark(x: .value("Selected date", selectedDate))
+                            .foregroundStyle(.secondary)
+                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
+                        if let sample = model.sample(at: selectedDate) {
+                            PointMark(
+                                x: .value("Selected date", selectedDate),
+                                y: .value("Recorded unit price", sample.amount.doubleValue)
+                            )
+                            .foregroundStyle(.primary)
+                            .symbolSize(64)
+                        }
+                    }
                 }
                 .chartXScale(domain: model.plotRange)
                 .chartYScale(domain: model.yDomain)
-                .chartYAxis(.hidden)
+                .chartYAxis {
+                    AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { value in
+                        AxisGridLine()
+                            .foregroundStyle(.secondary.opacity(0.15))
+                        AxisValueLabel {
+                            if let amount = value.as(Double.self) {
+                                Text(amount.formatted(.currency(code: currencyCode).precision(.fractionLength(2))))
+                                    .font(.caption2.monospacedDigit())
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
                 .chartXAxis(.hidden)
                 .chartLegend(.hidden)
-                .frame(height: 174)
+                .chartOverlay { proxy in
+                    GeometryReader { geometry in
+                        if let anchor = proxy.plotFrame {
+                            let frame = geometry[anchor]
+                            Rectangle()
+                                .fill(.clear)
+                                .contentShape(Rectangle())
+                                .simultaneousGesture(
+                                    DragGesture(minimumDistance: 8)
+                                        .updating($isScrubbing) { _, state, _ in state = true }
+                                        .onChanged { gesture in
+                                            guard abs(gesture.translation.width) > abs(gesture.translation.height),
+                                                  frame.height > 0 else { return }
+                                            let x = min(max(gesture.location.x - frame.minX, 0), frame.width)
+                                            selectedDate = proxy.value(atX: x, as: Date.self)
+                                        }
+                                        .onEnded { _ in selectedDate = nil }
+                                )
+                        }
+                    }
+                }
+                .padding(.horizontal, 16)
+                .frame(height: dynamicTypeSize.isAccessibilitySize ? 240 : 196)
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel("Unit price history")
-                .accessibilityValue(model.summary)
+                .accessibilityValue(selectedDate.map { date in
+                    model.sample(at: date).map {
+                        "\($0.amount.formatted(currencyCode: currencyCode)), \($0.date.formatted(date: .abbreviated, time: .shortened))"
+                    } ?? "Not checked, \(date.formatted(date: .abbreviated, time: .omitted))"
+                } ?? model.summary)
+                .accessibilityHint("Drag horizontally to explore recorded prices. Unchecked days have no price.")
+                .accessibilityAdjustableAction { direction in
+                    let index = selectedDate.flatMap { date in model.samples.lastIndex(where: { $0.date <= date }) }
+                    let next = direction == .increment
+                        ? min((index ?? -1) + 1, model.samples.count - 1)
+                        : max((index ?? model.samples.count) - 1, 0)
+                    selectedDate = model.samples[next].date
+                }
             }
 
             if let first = model.samples.first?.date,
@@ -2544,6 +2662,12 @@ private struct PriceHistoryChartView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .onChange(of: isScrubbing) { _, active in
+            if !active { selectedDate = nil }
+        }
+        .onChange(of: model.samples) { _, _ in selectedDate = nil }
+        .onDisappear { selectedDate = nil }
+        .accessibilityAction(named: Text("Show current price")) { selectedDate = nil }
     }
 
     private var lineColor: Color {

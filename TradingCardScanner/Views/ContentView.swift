@@ -169,6 +169,14 @@ struct ContentView: View {
 #endif
 #if DEBUG
         .overlay {
+#if LOCAL_ONLY_SIGNING
+            if debugRoute == "SealedAcceptance" {
+                SealedBrowseAcceptanceView(runtimes: runtimes)
+                    .environmentObject(projectionStore)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(.systemBackground))
+            }
+#endif
             if debugRoute == "MagicTreatmentSlice4" {
                 MagicTreatmentSlice4DebugView()
                     .environmentObject(projectionStore)
@@ -195,6 +203,7 @@ struct ContentView: View {
                 history.range = .oneMonth
             case "CardDetail":
                 PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+                PortfolioDebugFixtures.seedCardPriceChartIfRequested(in: modelContext)
                 history.range = .oneMonth
             case "CollectionFinishPerformance":
                 debugCardDetailCollectionKey = PortfolioDebugFixtures.seedCardFinishPerformance(

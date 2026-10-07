@@ -18,6 +18,7 @@ struct PortfolioCoverage: Equatable, Sendable {
 /// Everything the Today card needs, derived once.
 struct PortfolioSummary: Equatable, Sendable {
     var currentValue: Money = .zero
+    var copyCount: Int?
     /// Absent on the first day of tracking, which genuinely has no yesterday.
     var attribution: PortfolioClose.Attribution?
     /// The day whose close `attribution` is measured from.
@@ -521,6 +522,7 @@ final class PortfolioEngine: ObservableObject {
 
         var summary = PortfolioSummary(
             currentValue: valuation.value,
+            copyCount: valuation.copiesHeld,
             unpricedCount: valuation.unpricedCount,
             otherCurrencyCount: valuation.otherCurrencyCount
         )
@@ -662,6 +664,8 @@ final class PortfolioEngine: ObservableObject {
 
     struct CurrentValuation: Sendable {
         var value: Money = .zero
+        /// Nil when the count overflows; a display count never affects value.
+        var copiesHeld: Int? = 0
         var unpricedCount: Int = 0
         var otherCurrencyCount: Int = 0
         var instrumentsHeld: [String] = []
@@ -685,16 +689,25 @@ final class PortfolioEngine: ObservableObject {
         for position in projection.positions {
             let quantity = position.quantity
             guard quantity != 0 else { continue }
+            if quantity > 0, let held = valuation.copiesHeld {
+                let (copies, overflow) = held.addingReportingOverflow(quantity)
+                valuation.copiesHeld = overflow ? nil : copies
+            }
             let instrumentKey = position.priceStorageKey
             instruments.insert(instrumentKey)
 
             guard let price = valuations.valuation(for: instrumentKey).unitPrice else {
                 // Two different absences, kept apart because they mean
                 // different things to the person reading the total.
-                if otherCurrencyInstruments.contains(instrumentKey) {
-                    valuation.otherCurrencyCount += quantity
+                let isOtherCurrency = otherCurrencyInstruments.contains(instrumentKey)
+                let count = isOtherCurrency ? valuation.otherCurrencyCount : valuation.unpricedCount
+                let (sum, overflow) = count.addingReportingOverflow(quantity)
+                if overflow {
+                    valuation.hasArithmeticOverflow = true
+                } else if isOtherCurrency {
+                    valuation.otherCurrencyCount = sum
                 } else {
-                    valuation.unpricedCount += quantity
+                    valuation.unpricedCount = sum
                 }
                 continue
             }

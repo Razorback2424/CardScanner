@@ -131,8 +131,8 @@ final class PriceRecord {
     /// avoid spending a request on a game that has not been repriced.
     var providerGameUpdatedAt: Date?
 
-    // Summary statistics, populated only when history is explicitly requested
-    // from an item's detail screen. Routine refreshes never ask for history.
+    // Reserved summary statistics for a future explicit detail-history request.
+    // Current detail screens do not fetch provider history; refreshes omit it.
     var historyObservationCount: Int?
     var periodChangeCount: Int?
     var periodLow: Double?
