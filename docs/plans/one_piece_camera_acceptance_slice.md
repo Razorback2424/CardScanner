@@ -1,6 +1,9 @@
 # Next slice: One Piece camera acquisition and relaunch
 
-**Status:** detailed execution plan; hardware acceptance has not run.
+**Status:** signed ordinary device build/install completed; physical-camera
+acceptance pending an unlocked phone and owner physical sample.
+**Execution checkpoint:** 2026-10-06, clean `3fe972a` before evidence-document
+updates; [device record](one_piece_device_review.md) holds the results and blocker.
 **Reviewed:** 2026-10-06, `merge/one-piece-integration` at `230a55f` plus the
 existing seven modified files. This planning pass preserves those changes.
 **Execution authority:** [One Piece implementation ledger](one_piece_code_implementation.md).

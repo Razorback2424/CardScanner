@@ -1,5 +1,34 @@
 # One Piece in the owner's existing app
 
+## Execution checkpoint — 2026-10-06
+
+The acceptance pass starts from clean `merge/one-piece-integration` at `3fe972a`.
+The normal `TradingCardScanner` scheme / `Debug` generic iOS build passes.
+Signature verification passes; the app retains the original name and bundle
+identity, version 1.0/build 1, and the planned owner-catalog envelope hash.
+The in-place installation succeeds on the connected iPhone 15 Pro Max / iOS
+26.6.1. No uninstall, collection reset/export or review-storage launch was used.
+Existing collection contents have not been observed after this installation.
+
+Ordinary launch with no review arguments was denied because the phone is locked.
+Unlock and open the usual app before the first camera checkpoint. No physical
+card, receipt, baseline/reopened quantity, offline state, recovery, VoiceOver,
+provider response or sync behavior was observed; these cases remain pending.
+
+The build has five warnings: two main-actor logger accesses in storage bootstrap,
+two non-Sendable `CardScanner` closure captures and one never-mutated `code`
+variable. It has no compiler errors. No application code was changed and no tests
+were rerun in this pass. The parent release gates remain open.
+
+The external `CodexBuilds/OnePieceCameraAcceptance-20261006-3fe972a/` directory
+retains `DeviceBuild.xcresult`, build log, executable/seed hashes, installation
+and launch results, and sample manifests prepared with the existing selector.
+All six bounded printing records retain pending physical observations; generating
+a sample manifest does not establish ownership or physical eligibility evidence.
+Raw device identifiers/logs stay outside the repository.
+
+## Earlier preparation and procedure
+
 **Next-slice plan — 2026-10-06:** [camera acquisition and relaunch](one_piece_camera_acceptance_slice.md)
 defines the bounded physical samples, exact identities, ordinary-app procedure,
 failure handling and evidence criteria. This is planned hardware work; the

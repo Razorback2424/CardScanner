@@ -157,6 +157,11 @@ it does not replace the owner's ordinary app launch.
 The next bounded execution pass is the [camera acquisition/relaunch slice](one_piece_camera_acceptance_slice.md).
 It establishes representative local behavior before the full hardware matrix;
 its planned checks do not close any gate below.
+The [2026-10-06 device checkpoint](one_piece_device_review.md) records a passing
+signed ordinary Debug build and successful in-place install at clean `3fe972a`.
+Launch was denied by the locked phone; camera/local-durability/accessibility
+observations remain pending. Build/install preparation does not close hardware
+or release-candidate acceptance.
 
 | Gate | Procedure | Status |
 | --- | --- | --- |

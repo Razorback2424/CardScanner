@@ -1,6 +1,6 @@
 # Documentation map
 
-**Status:** current navigation map — 2026-10-06
+**Status:** current navigation map — 2026-10-07
 
 This map defines which repository documents are current authorities. Source code,
 tests, build settings, and the latest recorded evidence outrank older plans and
@@ -10,6 +10,7 @@ chronological notes.
 
 | Concern | Current authority |
 | --- | --- |
+| Bulk intake differentiation study | [`plans/bulk-intake-differentiation-plan.md`](plans/bulk-intake-differentiation-plan.md) — owner-approved stages; metrics first, then a required device baseline before behavior changes. Formal study protocol remains pending. |
 | Product behavior and supported scope | [`README.md`](../README.md), `TradingCardScanner/`, and `TradingCardScannerTests/` |
 | Card coverage gaps and research priorities | [`audits/card-coverage-gaps-and-research.md`](audits/card-coverage-gaps-and-research.md) — dated source/data review separating explicit exclusions, unresolved printings and unverified completeness; game-specific plans retain implementation authority. |
 | Useful card coverage data | [`research/card-coverage-gap-data/README.md`](research/card-coverage-gap-data/README.md) — three retained missing-data/regression tables, with duplicate and unsupported inputs excluded; no runtime adoption or completeness certification. |

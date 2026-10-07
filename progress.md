@@ -1,3 +1,18 @@
+- Bulk intake Stage 0 (2026-10-07; `3fe972a` plus existing local changes):
+  added the default-off, local, backup-excluded session metrics actor, ordered
+  scanner event hooks and JSON ShareLink export in Settings → Scanning. The
+  payload contains fixed outcomes, durations, interruptions and counters;
+  runtime IDs, card names, prices and images are excluded. Unreadable evidence
+  is preserved. Debug build and 118/118 selected simulator tests pass (4 new
+  metrics-log, 97 scanner, 17 unresolved-store; no failures or skips), including
+  dismissed-choice logging with baseline behavior unchanged. Build/test results
+  use the external SSD at `TradingCardScannerDerivedData/bulk-intake-stage-0/`.
+  Documentation links and whitespace checks pass. The
+  [staged plan](docs/plans/bulk-intake-differentiation-plan.md) records the accepted
+  later fixes; Stage 1 waits for the owner's pre-change device baseline. No
+  physical-device, system share-sheet, provider, CloudKit or release acceptance
+  is claimed. No commit or push was made.
+
 - Cross-game scanner edge cases (2026-10-06; `412a09d` plus local changes):
   fixed explicit foreign Pokémon footer leakage into English recognition and
   secondary fallback, unknown Pokémon identity fields in live/recovery lookups,
@@ -1949,3 +1964,48 @@ historical.
   release gates remain open. See the
   [implementation ledger](docs/plans/one_piece_code_implementation.md) and
   [priority reconciliation](docs/plans/documentation_audit.md).
+
+- **2026-10-06 — One Piece camera acceptance preparation** (clean `3fe972a`,
+  `merge/one-piece-integration`, before these evidence-document edits): built
+  the ordinary signed Debug iOS app with all build data on the external SSD.
+  Build and signature verification pass; original name/bundle identity and
+  unchanged owner seed hash are verified. In-place installation succeeds on
+  iPhone 15 Pro Max / iOS 26.6.1. Launch without review flags is denied because
+  the phone is locked. Five compile warnings, no errors; no application code
+  changed or tests rerun. Prepared six bounded sample records using the retained
+  registry and the existing parent sample selector. All physical observations,
+  existing-collection confirmation, camera/save/relaunch, offline/recovery,
+  accessibility, provider and sync acceptance remain pending. No uninstall,
+  data reset or collection export occurred. Evidence is external under
+  `CodexBuilds/OnePieceCameraAcceptance-20261006-3fe972a/`; raw device logs and
+  identifiers are not in the repository. Next: unlock/open the usual app and
+  present an exactly matched owner card for the first checkpoint in the
+  [camera plan](docs/plans/one_piece_camera_acceptance_slice.md); see the
+  [device record](docs/plans/one_piece_device_review.md).
+
+- **2026-10-07 — Catalog artwork, visual iteration 1:** initial simulator
+  capture confirmed deliberate Magic code tiles, missing One Piece artwork
+  projection and card-fan overflow. Reused real Magic card/illustration URLs,
+  and constrained fan alignment. Existing regression coverage established that
+  One Piece source images are review evidence by default. The owner explicitly
+  requested real One Piece cards, so the owner bootstrap now opts into exact
+  recorded manufacturer image URLs tied to each artwork's hash; general review
+  and production defaults are preserved. One Piece does not use the nautical
+  emblem. Missing-art visual QA uses a Debug-only fixture with no collection
+  writes. Evidence is external under
+  `CodexBuilds/CatalogArtwork-20261007/`.
+
+- **2026-10-07 — Catalog artwork, final visual verification:** corrected the
+  illustration bounds so NEW/game badges stay visible, and suppressed failed
+  fan slots instead of showing gray card backs. Inspected the settled real
+  catalog in light and dark, accessibility-extra-large text, the deterministic
+  missing-artwork state and the repeated final dark capture. The owner catalog
+  shows actual One Piece card renders; absent One Piece game artwork leaves a
+  text-only row. Decorative fans hide at accessibility text sizes. The focused
+  browse/One Piece/Pokémon suites passed 216 tests; a final selected rendering
+  recheck passed 7 overlapping tests, and the final app build succeeded.
+  `git diff --check` passed. The scoped visual/HIG checklist and screenshots
+  remain on the external SSD under `CodexBuilds/CatalogArtwork-20261007/`.
+  General review/production artwork defaults remain unchanged; this enables
+  recorded artwork in the owner's local configuration. No physical-device
+  installation or verification was performed.

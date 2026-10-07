@@ -4,6 +4,15 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
+**Camera acceptance preparation — 2026-10-06, clean `3fe972a`:** ordinary signed
+Debug device build, signature/identity/seed checks and in-place installation
+pass on iPhone 15 Pro Max / iOS 26.6.1. Launch is denied because the phone is
+locked. The [device record](one_piece_device_review.md) retains the five build
+warnings, external evidence location and pending observations. No application
+code change, test rerun, physical scan or collection verification occurred.
+The [bounded camera plan](one_piece_camera_acceptance_slice.md) remains the next
+acceptance work after unlock and presentation of an exactly matched owner card.
+
 **Existing-save reliability — 2026-10-06, `230a55f` plus local changes on
 `merge/one-piece-integration`:** the owner prioritized existing saves and
 explicitly deferred speculative supersession under KISS/YAGNI. The retained

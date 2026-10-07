@@ -1,12 +1,25 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-06
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-07
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-06
+## Current authority boundary — updated 2026-10-07
+
+**Bulk intake measurement — 2026-10-07:** the
+[staged differentiation plan](bulk-intake-differentiation-plan.md) records the
+2026-10-06 owner decisions and Stage 0 implementation. Its privacy-safe, local,
+default-off scanner log passes 118/118 focused simulator tests (4 metrics,
+97 scanner and 17 unresolved-store tests; no skips/failures) before an owner
+device baseline. Stage 1 and later behavior changes remain pending. This study
+informs differentiation within the Collection Integrity strategy and is separate
+from its frozen 42-day retention experiment. The
+[release go/no-go framework §6](../release/card-scanner-1.0-go-no-go-framework.md#6-competitor-benchmarking-is-intelligence-not-a-launch-gate)
+keeps competitor benchmarking outside launch arithmetic. No participant study starts until
+the bulk intake protocol freezes supported decks, app order and thresholds.
+Simulator instrumentation tests do not certify device speed or silent-error rates.
 
 **Next-slice planning — 2026-10-06, `230a55f` plus existing local changes:** the
 [camera acquisition/relaunch plan](one_piece_camera_acceptance_slice.md) details
