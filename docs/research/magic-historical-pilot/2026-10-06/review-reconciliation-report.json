@@ -1,0 +1,48 @@
+{
+  "artifactBytes": 392444,
+  "artifactSHA256": "b98b25fb47865eab834ab0bc3fa7c97b749848afb887894691e60c2b168d5a9b",
+  "completeKeyCount": 3,
+  "deviceAcceptance": "pending",
+  "discrepancies": [
+    {
+      "kind": "printing_date_correction",
+      "printingDate": "1998-06-01",
+      "printingID": "7ae4162d-e080-4db1-912f-d53674c76170",
+      "sourceSetDate": "1998-06-15"
+    }
+  ],
+  "inputIndexSHA256": "78dba1bd0dd232d936bcaea08dd80b5aee849ac32d9ca3ecb0715885fa5b8858",
+  "observedOn": "2026-10-06",
+  "productionEnabled": false,
+  "reconciledPrintingCount": 150,
+  "reviewedFronts": [
+    {
+      "collectorNumber": "1",
+      "denominator": 143,
+      "imageSHA256": "b4c591b534efd94d29384809e142e19e731be3fea45269846a2f93e78726387a",
+      "imageURL": "https://cards.scryfall.io/large/front/f/2/f20a1c6d-ec6a-4bd6-b3b2-b997f71d41fc.jpg?1783946533",
+      "layout": "normal",
+      "name": "Allay",
+      "printingID": "f20a1c6d-ec6a-4bd6-b3b2-b997f71d41fc"
+    },
+    {
+      "collectorNumber": "3",
+      "denominator": 143,
+      "imageSHA256": "039777466fdc666c71f6cb0ebf3a10cca2989ee207904f415261d274e677ad2d",
+      "imageURL": "https://cards.scryfall.io/large/front/0/2/024ae668-a1ae-4020-89c8-acbd8bd0a691.jpg?1783946532",
+      "layout": "normal",
+      "name": "Cataclysm",
+      "printingID": "024ae668-a1ae-4020-89c8-acbd8bd0a691"
+    },
+    {
+      "collectorNumber": "89",
+      "denominator": 143,
+      "imageSHA256": "143d7817081c1aad8ae5f200675e369dad12bf2fd45958d7470a0aaa7f70481b",
+      "imageURL": "https://cards.scryfall.io/large/front/d/5/d5066b1b-3910-4434-83d6-030851f20bcf.jpg?1783946510",
+      "layout": "normal",
+      "name": "Monstrous Hound",
+      "printingID": "d5066b1b-3910-4434-83d6-030851f20bcf"
+    }
+  ],
+  "sourceContext": "a8734fffc369e4c7dba69a214d363773189ff1cabc92a6b1beb15b42030d607b"
+}

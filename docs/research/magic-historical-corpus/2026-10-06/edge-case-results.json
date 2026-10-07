@@ -1,0 +1,305 @@
+{
+  "observedOn": "2026-10-06",
+  "checkout": "412a09d plus local changes",
+  "scope": "11 additional provider searches; captured metadata replay, not optical evidence",
+  "verification": {
+    "focusedTestsPassed": 9,
+    "focusedFailures": 0,
+    "providerFamiliesReplayed": 11,
+    "exactPrintingsResolved": 29,
+    "pythonTestsPassed": 22,
+    "buildForTesting": "passed",
+    "finalRegression": "passed",
+    "finalResultBundle": "Edge-Final-20261006.xcresult",
+    "simulatorTestsPassed": 432,
+    "failures": 0,
+    "skips": 0,
+    "originalCorpusImagesMatched": 27,
+    "simulator": "iPhone 17 Pro iOS 26.5"
+  },
+  "historicalTitleCount": 14384,
+  "vocabularySHA256": "5f342446b1959c609c6daa3e07848f2fb65e6bc4b4797826e711a4c754cba9f8",
+  "records": [
+    {
+      "title": "Student of Warfare",
+      "captureSHA256": "442faec453acd8a0262f28e5cf6a3b33e77e68f405672e71d8e5cb95f8f426cb",
+      "providerRows": 1,
+      "eligibleChoices": 1,
+      "printingIDs": [
+        "9f4df9be-324b-458a-9379-ab4aa437a6d2"
+      ]
+    },
+    {
+      "title": "Insectile Aberration",
+      "captureSHA256": "8f764b15904d1d43a2842a16c66eadbab27d2094fe6a7c76e2bee80841c0086b",
+      "providerRows": 1,
+      "eligibleChoices": 1,
+      "printingIDs": [
+        "11bf83bb-c95b-4b4f-9a56-ce7a1816307a"
+      ]
+    },
+    {
+      "title": "Erayo's Essence",
+      "captureSHA256": "ac36e3ecb093eece1daf496cfd15d3c55e33d7d0b3e251a1fb211962a98caad1",
+      "providerRows": 1,
+      "eligibleChoices": 1,
+      "printingIDs": [
+        "0b61d772-2d8b-4acf-9dd2-b2e8b03538c8"
+      ]
+    },
+    {
+      "title": "Fire",
+      "captureSHA256": "7fd53490667d9003868e733c822cfdca0e2de8aaa72ec6e5838a87a0e48b6dc7",
+      "providerRows": 8,
+      "eligibleChoices": 8,
+      "printingIDs": [
+        "ab8292ae-9a52-43e7-92f7-0f45f4bb71ec",
+        "230e65b2-a908-4418-8ef9-ecc475ff0b27",
+        "f98f4538-5b5b-475d-b98f-49d01dae6f04",
+        "04cb4e4e-8275-4132-8f1a-84b486725400",
+        "12279d5e-eff2-45bd-bb56-a953b56ff76a",
+        "ef5df76e-1482-4677-a932-54b92384c3c3",
+        "0a76d227-c899-409f-a01b-d3ca16b56ddc",
+        "841b28eb-e16b-434e-aaaa-6a5ae8bccc19"
+      ]
+    },
+    {
+      "title": "Ice",
+      "captureSHA256": "34fad54e50924cda88c377b90a6a76dcaee6553a189bd61d18c5fbfdf628241a",
+      "providerRows": 8,
+      "eligibleChoices": 8,
+      "printingIDs": [
+        "ab8292ae-9a52-43e7-92f7-0f45f4bb71ec",
+        "230e65b2-a908-4418-8ef9-ecc475ff0b27",
+        "f98f4538-5b5b-475d-b98f-49d01dae6f04",
+        "04cb4e4e-8275-4132-8f1a-84b486725400",
+        "12279d5e-eff2-45bd-bb56-a953b56ff76a",
+        "ef5df76e-1482-4677-a932-54b92384c3c3",
+        "0a76d227-c899-409f-a01b-d3ca16b56ddc",
+        "841b28eb-e16b-434e-aaaa-6a5ae8bccc19"
+      ]
+    },
+    {
+      "title": "\u00c6ther Vial",
+      "captureSHA256": "1ac506aa8573fe6888aef55e10134bf12cbc68bb950f62f2360b2bcfbf2c087c",
+      "providerRows": 3,
+      "eligibleChoices": 3,
+      "printingIDs": [
+        "6774c646-76d4-4991-a7f3-b753ef200ce5",
+        "741c479b-5e92-4837-9673-9bc72aa11d26",
+        "d93510d4-7772-4260-b862-6dc096496404"
+      ]
+    },
+    {
+      "title": "\"Ach! Hans, Run!\"",
+      "captureSHA256": "4f1f0eab33585084b524ced9b8a9452d253a7830dfc7d5fd0ea12706b4c6787f",
+      "providerRows": 1,
+      "eligibleChoices": 1,
+      "printingIDs": [
+        "84f2c8f5-8e11-4639-b7de-00e4a2cbabee"
+      ]
+    },
+    {
+      "title": "Illusion",
+      "captureSHA256": "0291e9d552a85bc07c8d0cd239fe20034ceae9f0dcff2ab543d22a76d939f9b2",
+      "providerRows": 3,
+      "eligibleChoices": 1,
+      "printingIDs": [
+        "8e7dd90a-4f93-43aa-b503-18289fdd571e"
+      ]
+    },
+    {
+      "title": "B.F.M. (Big Furry Monster)",
+      "captureSHA256": "fe8cb0f636b26ea572d91713f27c3af962b075b90f86a413de4a5b39fb59bcd8",
+      "providerRows": 2,
+      "eligibleChoices": 2,
+      "printingIDs": [
+        "a9f9c279-e382-4feb-9575-196e7cf5d7dc",
+        "d15c6375-2e4e-47f7-88e1-d90794e7f724"
+      ]
+    },
+    {
+      "title": "Kongming, \"Sleeping Dragon\"",
+      "captureSHA256": "0934d67c493051db34cc18b8d12f169bfcc62e8c928ea49e745d50f13ebd5968",
+      "providerRows": 2,
+      "eligibleChoices": 2,
+      "printingIDs": [
+        "5432b863-21cc-4898-9463-29049f939e51",
+        "f4ae0a05-1870-4f4a-b8a2-bfb5381acacb"
+      ]
+    },
+    {
+      "title": "Pang Tong, \"Young Phoenix\"",
+      "captureSHA256": "6a614d2d5a14488cf6abc772eee6d3f1bba3aeb7d642ca5d614d3e103c902038",
+      "providerRows": 1,
+      "eligibleChoices": 1,
+      "printingIDs": [
+        "f484d47a-fb1d-4746-8f1d-dd9d24e67c1a"
+      ]
+    }
+  ],
+  "corpusReplay": [
+    {
+      "collector": "",
+      "index": 1,
+      "printingChoices": 31,
+      "recognizedTitle": "Llanowar Elves"
+    },
+    {
+      "collector": "",
+      "index": 2,
+      "printingChoices": 5,
+      "recognizedTitle": "Black Lotus"
+    },
+    {
+      "collector": "",
+      "index": 3,
+      "printingChoices": 26,
+      "recognizedTitle": "City of Brass"
+    },
+    {
+      "collector": "",
+      "index": 4,
+      "printingChoices": 5,
+      "recognizedTitle": "Necropotence"
+    },
+    {
+      "collector": "",
+      "index": 5,
+      "printingChoices": 1,
+      "recognizedTitle": "Lion's Eye Diamond"
+    },
+    {
+      "collector": "129",
+      "index": 6,
+      "printingChoices": 3,
+      "recognizedTitle": "Survival of the Fittest"
+    },
+    {
+      "collector": "",
+      "index": 7,
+      "printingChoices": 3,
+      "recognizedTitle": "Grim Monolith"
+    },
+    {
+      "collector": "231",
+      "index": 8,
+      "printingChoices": 28,
+      "recognizedTitle": "Birds of Paradise"
+    },
+    {
+      "collector": "",
+      "index": 9,
+      "printingChoices": 8,
+      "recognizedTitle": "Fire // Ice"
+    },
+    {
+      "collector": "58",
+      "index": 10,
+      "printingChoices": 32,
+      "recognizedTitle": "Wrath of God"
+    },
+    {
+      "collector": "131",
+      "index": 11,
+      "printingChoices": 1,
+      "recognizedTitle": "Nezumi Shortfang"
+    },
+    {
+      "collector": "10",
+      "index": 12,
+      "printingChoices": 347,
+      "recognizedTitle": "Forest"
+    },
+    {
+      "collector": "",
+      "index": 13,
+      "printingChoices": 1,
+      "recognizedTitle": "Research // Development"
+    },
+    {
+      "collector": "85",
+      "index": 14,
+      "printingChoices": 2,
+      "recognizedTitle": "Damnation"
+    },
+    {
+      "collector": "153",
+      "index": 15,
+      "printingChoices": 2,
+      "recognizedTitle": "Tarmogoyf"
+    },
+    {
+      "collector": "51a",
+      "index": 16,
+      "printingChoices": 1,
+      "recognizedTitle": "Delver of Secrets"
+    },
+    {
+      "collector": "181a",
+      "index": 17,
+      "printingChoices": 1,
+      "recognizedTitle": "Garruk Relentless"
+    },
+    {
+      "collector": "129",
+      "index": 18,
+      "printingChoices": 1,
+      "recognizedTitle": "Bonfire of the Damned"
+    },
+    {
+      "collector": "281",
+      "index": 19,
+      "printingChoices": 4,
+      "recognizedTitle": "Command Tower"
+    },
+    {
+      "collector": "",
+      "index": 20,
+      "printingChoices": 2,
+      "recognizedTitle": "Mox Diamond"
+    },
+    {
+      "collector": "",
+      "index": 21,
+      "printingChoices": 18,
+      "recognizedTitle": "Lightning Bolt"
+    },
+    {
+      "collector": "",
+      "index": 22,
+      "printingChoices": 9,
+      "recognizedTitle": "Erhnam Djinn"
+    },
+    {
+      "collector": "",
+      "index": 23,
+      "printingChoices": 7,
+      "recognizedTitle": "Psionic Blast"
+    },
+    {
+      "collector": "213",
+      "index": 24,
+      "printingChoices": 6,
+      "recognizedTitle": "Garruk Wildspeaker"
+    },
+    {
+      "collector": "229",
+      "index": 25,
+      "printingChoices": 3,
+      "recognizedTitle": "Kitchen Finks"
+    },
+    {
+      "collector": "237",
+      "index": 26,
+      "printingChoices": 342,
+      "recognizedTitle": "Island"
+    },
+    {
+      "collector": "57",
+      "index": 27,
+      "printingChoices": 3,
+      "recognizedTitle": "Dismember"
+    }
+  ]
+}

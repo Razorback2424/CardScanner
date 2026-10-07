@@ -1,0 +1,20 @@
+{
+  "countsBySetDisposition": {
+    "outside_phase_1": 360,
+    "phase_1_review_lead": 262,
+    "phase_2": 40,
+    "special_or_child": 248
+  },
+  "input": "TradingCardScanner/MagicCatalogSeed/catalog.json",
+  "inputGeneratedAt": "2026-09-20T00:00:00.000Z",
+  "inputRevision": 1,
+  "inputSHA256": "7dc153f1b86599a0ee0924d8faac54c950d0d50bcc5e827f2a14d3583da67774",
+  "inputSchemaVersion": 1,
+  "inventorySHA256": "8dc3e55f2b8c8753000bd8babc8a9e6f88572e9601a2f9d164ee6059855d60d2",
+  "liveDirectoryContext": "not captured",
+  "physicalPrintingDenominator": null,
+  "printingReconciliation": "not performed",
+  "processingVersion": 1,
+  "reviewedOn": "2026-10-06",
+  "source": "existing bundled seed; no new provider download"
+}

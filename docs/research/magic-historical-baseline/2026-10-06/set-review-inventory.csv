@@ -1,0 +1,911 @@
+set_id,code,name,release_date,set_type,browse_enabled,modern_scan_enabled,disposition,reason
+a66a6124-0d81-488d-b080-91f5ba7fbad0,10E,Tenth Edition,2007-07-13,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cd7694b9-339c-405d-a991-14413d4f6d5c,2ED,Unlimited Edition,1993-12-01,core,true,false,phase_2,pre-Exodus; visible number not established
+5a645837-b050-449f-ac90-1e7ccbf45031,2X2,Double Masters 2022,2022-07-08,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+372dafe8-b5d1-4b81-998f-3ae96b59498a,2XM,Double Masters,2020-08-07,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c3cddb17-44d9-4abd-8d19-666f6c5171fe,30A,30th Anniversary Edition,2022-11-28,memorabilia,false,false,special_or_child,separate content/layout review required
+45a69797-8adf-468e-a4e1-ba81fd9d66ac,3ED,Revised Edition,1994-04-11,core,true,false,phase_2,pre-Exodus; visible number not established
+f35f5dd8-5b95-4f52-bbe7-1c62909a8d08,40K,"Warhammer 40,000 Commander",2022-10-07,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+daa633b3-2bdb-48a2-a40e-3de16b6e41a5,4BB,Fourth Edition Foreign Black Border,1995-04-01,core,true,false,phase_2,pre-Exodus; visible number not established
+2dd259d4-dc13-4956-a2dc-3e1d70b4a743,4ED,Fourth Edition,1995-04-01,core,true,false,phase_2,pre-Exodus; visible number not established
+e4bc1b87-5476-463c-8640-4c414ecf1763,5DN,Fifth Dawn,2004-06-04,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+5afd2f4b-8309-4f45-a2b2-3785018474cb,5ED,Fifth Edition,1997-03-24,core,true,false,phase_2,pre-Exodus; visible number not established
+78ee1957-d5d4-4551-acae-b1b418e8a50b,6ED,Classic Sixth Edition,1999-04-21,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+230f38aa-9511-4db8-a3aa-aeddbc3f7bb9,7ED,Seventh Edition,2001-04-11,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cae8d29d-5979-4d8f-884d-7f3183bcc886,8ED,Eighth Edition,2003-07-28,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e70c8572-4732-4e92-a140-b4e3c1c84c93,9ED,Ninth Edition,2005-07-29,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+41ee6e2f-69b3-4c53-8a8e-960f5e974cfc,A25,Masters 25,2018-03-16,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+40e35daf-ebfb-4b68-9e28-f28b04a0bb57,AACR,Assassin's Creed Art Series,2024-07-05,memorabilia,false,false,special_or_child,separate content/layout review required
+8696ef63-3530-4453-a0f8-7fd3bd09306a,AAFR,Adventures in the Forgotten Realms Art Series,2021-07-23,memorabilia,false,false,special_or_child,separate content/layout review required
+4012d64e-1e3d-4380-a631-1aa9ee9244b3,ABLB,Bloomburrow Art Series,2024-08-02,memorabilia,false,false,special_or_child,separate content/layout review required
+6e00ad96-8258-4430-b6ee-040f92bc8d99,ABRO,The Brothers' War Art Series,2022-11-18,memorabilia,false,false,special_or_child,separate content/layout review required
+5a1e41c1-05f4-4c73-9bc4-a2d7889ac3bb,ACLB,Battle for Baldur's Gate Art Series,2022-06-10,memorabilia,false,false,special_or_child,separate content/layout review required
+2b5268ef-c332-4cfc-bd22-804ef512f625,ACMM,Commander Masters Art Series,2023-08-04,memorabilia,false,false,special_or_child,separate content/layout review required
+54b67b0b-cd3f-4e0d-ac25-fef5d966409b,ACR,Assassin's Creed,2024-07-05,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e10cf192-68e9-4c3f-ab44-31fe594cc7d4,ADFT,Aetherdrift Art Series,2025-02-14,memorabilia,false,false,special_or_child,separate content/layout review required
+8aaceeb7-7dd8-4fda-a95e-d9ec9c50860a,ADMU,Dominaria United Art Series,2022-09-09,memorabilia,false,false,special_or_child,separate content/layout review required
+335eb1c9-293c-43af-ab98-77726e19f376,ADSK,Duskmourn: House of Horror Art Series,2024-09-27,memorabilia,false,false,special_or_child,separate content/layout review required
+dc87145e-8510-47bf-989f-330b6156ea8c,AECL,Lorwyn Eclipsed Art Series,2026-01-23,memorabilia,false,false,special_or_child,separate content/layout review required
+96ca2500-2ba9-4d63-b73c-608096f69db5,AEOE,Edge of Eternities Art Series,2025-08-01,memorabilia,false,false,special_or_child,separate content/layout review required
+a4a0db50-8826-4e73-833c-3fd934375f96,AER,Aether Revolt,2017-01-20,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+db1b46f9-893c-4623-9465-985ff6e4472c,AFC,Forgotten Realms Commander,2021-07-23,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+dae4bf74-97f7-40a6-ac46-54b6b0d8a58d,AFDN,Foundations Art Series,2024-11-15,memorabilia,false,false,special_or_child,separate content/layout review required
+77b0f33a-10f6-4559-b53a-1c9f0e15149c,AFIN,Final Fantasy Art Series,2025-06-13,memorabilia,false,false,special_or_child,separate content/layout review required
+e1ef87ba-ba92-4573-817f-543b996d2851,AFR,Adventures in the Forgotten Realms,2021-07-23,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+03368b5a-dcb8-4742-bf70-f194718d0bc8,AINR,Innistrad Remastered Art Series,2025-01-24,memorabilia,false,false,special_or_child,separate content/layout review required
+02d1c536-68bc-4208-9b65-7741ef1f9da8,AKH,Amonkhet,2017-04-28,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b8e64975-c16d-4463-b465-6c7dfcc579ff,AKHM,Kaldheim Art Series,2021-02-05,memorabilia,false,false,special_or_child,separate content/layout review required
+d667aaec-09b7-4406-b6fa-60795132dc11,ALA,Shards of Alara,2008-10-03,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+1135b292-4f02-4eec-8623-a1b7aee474df,ALCI,The Lost Caverns of Ixalan Art Series,2023-11-17,memorabilia,false,false,special_or_child,separate content/layout review required
+64987b06-4a5c-443d-b560-ff5691744582,ALL,Alliances,1996-06-10,expansion,true,false,phase_2,pre-Exodus; visible number not established
+af23b3cb-d42f-426b-90f0-8a07fcb302b8,ALTR,Tales of Middle-earth Art Series,2023-06-23,memorabilia,false,false,special_or_child,separate content/layout review required
+198c5205-2614-43dd-b8c2-6e77aa0e5e91,AMH1,Modern Horizons Art Series,2019-06-14,memorabilia,false,false,special_or_child,separate content/layout review required
+95671546-fd82-43e2-966f-eba5968f629b,AMH2,Modern Horizons 2 Art Series,2021-06-18,memorabilia,false,false,special_or_child,separate content/layout review required
+aa309847-aed2-4947-af5b-d777deb01190,AMH3,Modern Horizons 3 Art Series,2024-06-14,memorabilia,false,false,special_or_child,separate content/layout review required
+fe07d074-f59a-4765-bbbf-80b9bca25130,AMID,Midnight Hunt Art Series,2021-09-24,memorabilia,false,false,special_or_child,separate content/layout review required
+cebbaa6a-05a8-4737-889c-0dee42e6af33,AMKM,Murders at Karlov Manor Art Series,2024-02-09,memorabilia,false,false,special_or_child,separate content/layout review required
+f835c2e6-0f96-4a98-9e6c-5d2836ce1c54,AMOM,March of the Machine Art Series,2023-04-21,memorabilia,false,false,special_or_child,separate content/layout review required
+7150d109-948b-4388-8847-5fff875d9893,AMSH,Marvel Super Heroes Art Series,2026-06-26,memorabilia,false,false,special_or_child,separate content/layout review required
+d94185a1-24a1-4cd9-855d-8c4d5f5ebf5b,ANEO,Neon Dynasty Art Series,2022-02-18,memorabilia,false,false,special_or_child,separate content/layout review required
+7024a171-1b99-49dc-8777-0db9c552eb06,AONE,Phyrexia: All Will Be One Art Series,2023-02-10,memorabilia,false,false,special_or_child,separate content/layout review required
+9d2325c7-06a4-4404-8bbf-1fcdf02f15ac,AOTJ,Outlaws of Thunder Junction Art Series,2024-04-19,memorabilia,false,false,special_or_child,separate content/layout review required
+e4e00913-d08d-4899-86ea-5cf631e09ce0,APC,Apocalypse,2001-06-04,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+db486ec5-141d-4781-9ee5-5456926934c1,ARB,Alara Reborn,2009-04-30,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8bc5ec64-18d5-4c81-96a1-8f619d81a019,ARC,Archenemy,2010-06-18,archenemy,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+856f63eb-e056-43e5-8a56-7a58e1608940,ARN,Arabian Nights,1993-12-17,expansion,true,false,phase_2,pre-Exodus; visible number not established
+32d16b44-d39f-42af-80d8-470700c7259c,ASNC,New Capenna Art Series,2022-04-29,memorabilia,false,false,special_or_child,separate content/layout review required
+16b35ba7-ab4d-4d0f-8d29-4de7d30d0e22,ASOS,Secrets of Strixhaven Art Series,2026-04-24,memorabilia,false,false,special_or_child,separate content/layout review required
+017a97c4-45f6-4184-95ce-f6e545e9ee17,ASPM,Marvel's Spider-Man Art Series,2025-09-26,memorabilia,false,false,special_or_child,separate content/layout review required
+fbd78c96-cc9d-451e-afb1-2e0022235aa0,ASTX,Strixhaven Art Series,2021-04-23,memorabilia,false,false,special_or_child,separate content/layout review required
+8e84d6a0-e29e-41da-884c-ece6a65e84be,ATDM,Tarkir: Dragonstorm Art Series,2025-04-11,memorabilia,false,false,special_or_child,separate content/layout review required
+49c9409d-5948-4c00-bd0a-bf3ebd50e23a,ATH,Anthologies,1998-11-01,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8b34342c-6a98-482f-82bf-358e500fd8ff,ATLA,Avatar: the Last Airbender Art Series,2025-11-21,memorabilia,false,false,special_or_child,separate content/layout review required
+73e4a8a8-2b32-4832-bb09-9c94b47a2b2b,ATLE,Avatar: the Last Airbender Eternal Art Series,2025-11-21,memorabilia,false,false,special_or_child,separate content/layout review required
+27d8aebd-ed26-42a9-8f32-2d52d68b9305,ATMT,Teenage Mutant Ninja Turtles Art Series,2026-03-06,memorabilia,false,false,special_or_child,separate content/layout review required
+819f9678-87dd-4aba-a47b-2d553bfea21f,ATQ,Antiquities,1994-03-04,expansion,true,false,phase_2,pre-Exodus; visible number not established
+595121bf-ef1d-4ee8-a8ce-591ca2a74ef1,AVOW,Crimson Vow Art Series,2021-11-19,memorabilia,false,false,special_or_child,separate content/layout review required
+039810a9-92d7-4f2d-b2d0-ca661ac586c0,AVR,Avacyn Restored,2012-05-04,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+619b10dc-7915-41ef-9590-83770f3bff68,AWOE,Wilds of Eldraine Art Series,2023-09-08,memorabilia,false,false,special_or_child,separate content/layout review required
+168acc08-0dea-40e7-ab0d-93bb2832e72b,AZNR,Zendikar Rising Art Series,2020-09-25,memorabilia,false,false,special_or_child,separate content/layout review required
+95f97fbc-58ef-4645-982e-43e2db6f1124,BBD,Battlebond,2018-06-08,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d672ed60-4161-4b21-874a-584b13b2fc35,BCHR,Chronicles Foreign Black Border,1995-07-01,masters,true,false,phase_2,pre-Exodus; visible number not established
+91719374-7ac5-4afa-ada8-5da964dcf1d4,BFZ,Battle for Zendikar,2015-10-02,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+14332d2c-ba93-4498-bf3f-9d601f88f783,BIG,The Big Score,2024-04-19,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a2f58272-bba6-439d-871e-7a46686ac018,BLB,Bloomburrow,2024-08-02,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c0f860b9-a2d0-4fd7-bfac-a49ac60c84f1,BLC,Bloomburrow Commander,2024-08-02,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+50a80fe4-a757-408f-ad23-52c5cc5f45cc,BNG,Born of the Gods,2014-02-07,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d4b88587-a1f5-4b47-9e24-78ec9e57bd0e,BOK,Betrayers of Kamigawa,2005-02-04,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+59ed954b-74c0-4db3-8a2b-1d395e33288e,BOT,Transformers,2022-11-18,eternal,true,true,outside_phase_1,modern interval; existing scanning policy retained
+81118b2a-b5c8-4fdc-830a-ce5b74eb60b9,BRB,Battle Royale Box Set,1999-11-12,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+81d56780-1efc-4487-9803-43d634ca13d0,BRC,The Brothers' War Commander,2022-11-18,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4219a14e-6701-4ddd-a185-21dc054ab19b,BRO,The Brothers' War,2022-11-18,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1dbdd608-c330-4199-901f-9d141ae03786,BRR,The Brothers' War Retro Artifacts,2022-11-18,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+cdc88d15-c4de-4210-a7e4-dcc366de845f,BTD,Beatdown Box Set,2000-10-01,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+c62e6d4f-af8c-4f27-9bc8-361291890146,C13,Commander 2013,2013-11-01,commander,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+0980a6e2-eb78-4ad2-8396-cef08fce365e,C14,Commander 2014,2014-11-07,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ea6c99f9-5489-4504-b30c-c819fa3b1fd3,C15,Commander 2015,2015-11-13,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3e0d713a-b5cb-4287-81b9-a57d4dcaf415,C16,Commander 2016,2016-11-11,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5caec427-0c78-4c37-b4ec-30f7e0ba9abf,C17,Commander 2017,2017-08-25,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+06ce6bc2-85cd-4cca-85b1-8c620d3e0902,C18,Commander 2018,2018-08-10,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0fa3ccbb-d86d-4a2e-a55e-c4979c4feeb2,C19,Commander 2019,2019-08-23,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+f60ec786-1f8d-42f7-9abc-0d880fe243f6,C20,Commander 2020,2020-04-17,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+27bf6dbd-a9e1-4904-afa7-d28fc7745c4f,C21,Commander 2021,2021-04-23,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4de7b6af-43e2-4cd8-990e-3927b65ba62f,CC1,Commander Collection: Green,2020-12-04,arsenal,true,true,outside_phase_1,modern interval; existing scanning policy retained
+78a7f4da-4838-4011-9f58-de8020d1fd2d,CC2,Commander Collection: Black,2022-01-28,arsenal,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6183d21f-a0af-4118-ba58-aca1d8719c01,CHK,Champions of Kamigawa,2004-10-01,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+985eab7d-655a-4cb0-ba74-d48c8dcfb3d4,CHR,Chronicles,1995-07-01,masters,true,false,phase_2,pre-Exodus; visible number not established
+5e4c3fe8-fd57-4b20-ad56-c03790a16cea,CLB,Commander Legends: Battle for Baldur's Gate,2022-06-10,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d4bfabcf-a859-43a4-9d8a-665533c8b174,CLU,Ravnica: Clue Edition,2024-02-23,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bf95efbe-b991-4f7c-b9e9-04f0bc59969a,CM1,Commander's Arsenal,2012-11-02,arsenal,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2ba5b1a3-40ed-422e-981d-56753004dfc6,CM2,Commander Anthology Volume II,2018-06-08,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fd4d8463-0156-4c60-a40e-778762bb90e4,CMA,Commander Anthology,2017-06-09,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+8ffdef42-91f1-429f-bcd0-15778c57845c,CMB1,Mystery Booster Playtest Cards 2019,2019-11-07,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e18a60f0-bf18-487e-a7bb-a23ac6bd7a65,CMB2,Mystery Booster Playtest Cards 2021,2021-08-20,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+84ff1a64-4e69-4ed2-8c08-26206e3b97a0,CMD,Commander 2011,2011-06-17,commander,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cd05036f-2698-43e6-a48e-5c8d82f0a551,CMM,Commander Masters,2023-08-04,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+39de6fbf-1f11-48d0-8f04-f0407f6a0732,CMR,Commander Legends,2020-11-20,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ad1b8847-1905-4080-9e26-80691ea7c1ef,CN2,Conspiracy: Take the Crown,2016-08-26,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7d4ebb59-a50b-45b8-8fff-ab70767819a5,CNS,Conspiracy,2014-06-06,draft_innovation,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+76b2db58-904c-4e49-8580-9f62f7b3cca4,CON,Conflux,2009-02-06,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b1736f4e-cb0d-468a-9b4f-b08fb147cc17,CP1,Magic 2015 Clash Pack,2014-07-18,starter,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a1bcdc11-74b2-4c86-880f-ae193857ae54,CP2,Fate Reforged Clash Pack,2015-01-23,starter,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e6177218-1e8b-488e-8a4c-ef3af130b600,CP3,Magic Origins Clash Pack,2015-07-17,starter,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1f4f105f-73e4-4f03-849e-82a204807847,CSP,Coldsnap,2006-07-21,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+fd92cc13-e08d-4793-ae51-c4bd5e98210f,CST,Coldsnap Theme Decks,2006-07-21,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+5c1638d2-bce9-463e-b0ec-469336cb1bd2,DBL,Innistrad: Double Feature,2022-01-28,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+935e91e9-61c2-4b35-a85a-c08fef3b420b,DCI,DCI Promos,2006-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+94bd6d6b-a3df-4f03-b25f-ee3f57f7f2da,DD1,Duel Decks: Elves vs. Goblins,2007-11-16,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7161cc1c-adbd-479c-9125-df4c40b0e3ad,DD2,Duel Decks: Jace vs. Chandra,2008-11-07,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+4a1b5533-e4a3-456e-9fb1-53e754402c23,DDC,Duel Decks: Divine vs. Demonic,2009-04-10,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+15f41db6-1810-475b-bf2c-24a488050a37,DDD,Duel Decks: Garruk vs. Liliana,2009-10-30,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+bf561626-56ca-4eb0-a2de-b84dbe7874f8,DDE,Duel Decks: Phyrexia vs. the Coalition,2010-03-19,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2a5a88d5-e2ac-4252-bc4e-62654b1f9a46,DDF,Duel Decks: Elspeth vs. Tezzeret,2010-09-03,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cf842e69-7a05-48e2-adac-fd177087caf5,DDG,Duel Decks: Knights vs. Dragons,2011-04-01,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+bad1fe7e-27df-4999-821b-d477c2ec658d,DDH,Duel Decks: Ajani vs. Nicol Bolas,2011-09-02,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a29e8ace-bbcd-4507-b159-7ec77d28f792,DDI,Duel Decks: Venser vs. Koth,2012-03-30,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2dfea68b-b0c4-4f63-ba6c-36c9a6e3030f,DDJ,Duel Decks: Izzet vs. Golgari,2012-09-07,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+529a5259-8a88-4baf-86a0-cd88098c3ce7,DDK,Duel Decks: Sorin vs. Tibalt,2013-03-15,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7dfc5406-c4cf-479d-b005-11e578752dc9,DDL,Duel Decks: Heroes vs. Monsters,2013-09-06,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a80b4ba1-7485-4c16-b745-eeea904863c3,DDM,Duel Decks: Jace vs. Vraska,2014-03-14,duel_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+163844e5-077e-4e2c-a0f0-fa33fbc7bb3b,DDN,Duel Decks: Speed vs. Cunning,2014-09-05,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6b350326-34f3-43c6-8df5-2b1d9a61ceff,DDO,Duel Decks: Elspeth vs. Kiora,2015-02-27,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0dbc7609-b12c-471a-bfd3-c57bc670c445,DDP,Duel Decks: Zendikar vs. Eldrazi,2015-08-28,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9f6e1af2-3913-47d6-aa6a-81f34ec7224c,DDQ,Duel Decks: Blessed vs. Cursed,2016-02-26,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+20e10d8d-c2b0-4d3f-942d-28ae9e137c6e,DDR,Duel Decks: Nissa vs. Ob Nixilis,2016-09-02,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+758fe4d1-ce2b-4106-8cec-820841d730af,DDS,Duel Decks: Mind vs. Might,2017-03-31,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c77df674-0ef5-47d9-ab22-56a6e1dc901c,DDT,Duel Decks: Merfolk vs. Goblins,2017-10-24,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+01e30e53-f292-4c39-ab09-435b015877f5,DDU,Duel Decks: Elves vs. Inventors,2018-04-06,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+23464cc2-a69c-427d-b8a7-08e5d80235d7,DFT,Aetherdrift,2025-02-14,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c8bd8520-cd98-45cd-b533-8d40c2087426,DGM,Dragon's Maze,2013-05-03,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+fdebeda1-b95f-4343-8a94-d125821e6b5c,DIS,Dissension,2006-05-05,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8052750a-aaf2-46fc-b46d-633f14124017,DKA,Dark Ascension,2012-02-03,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cfcec75d-481b-4b24-bcaa-a7185cf32e15,DKM,Deckmasters,2001-12-01,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+78076b27-f888-4723-b27c-44074accd261,DMC,Dominaria United Commander,2022-09-09,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ca4c2884-e539-4b7f-980d-5d6a50220f2a,DMR,Dominaria Remastered,2023-01-13,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4e47a6cd-cdeb-4b0f-8f24-cfe1a0127cb3,DMU,Dominaria United,2022-09-09,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+be1daba3-51c9-4e7e-9212-36e68addc26c,DOM,Dominaria,2018-04-27,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+491666a2-3de4-4214-8238-2dad9dfb5a7a,DPA,Duels of the Planeswalkers,2010-06-04,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+c1cec8aa-5906-41d9-ae01-cbdde2e776fb,DRB,From the Vault: Dragons,2008-08-29,from_the_vault,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d33ef7a4-41bb-4f16-bad3-b3ee13c257e6,DRC,Aetherdrift Commander,2025-02-14,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a21c6836-c435-459a-81e3-22d2da174549,DRK,The Dark,1994-08-01,expansion,true,false,phase_2,pre-Exodus; visible number not established
+4c822528-83c3-42c7-8708-dd1d37166819,DSC,Duskmourn: House of Horror Commander,2024-09-27,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a111d8a9-b647-48ec-afab-2b78f92173f5,DSK,Duskmourn: House of Horror,2024-09-27,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e29cb2dd-1345-4032-abfe-e52e8c8ce074,DST,Darksteel,2004-02-06,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7e72625f-f320-4552-a719-d11e2f1853bd,DTK,Dragons of Tarkir,2015-03-27,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+02a67a0d-b4da-4ca9-be01-b0d78dc62ed0,DVD,Duel Decks Anthology: Divine vs. Demonic,2014-12-05,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bf058cce-027d-4784-85e7-2750533a11df,E01,Archenemy: Nicol Bolas,2017-06-16,archenemy,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a5531353-3534-4882-8802-0304e5c2bf64,E02,Explorers of Ixalan,2017-11-24,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+805b5a0c-f8bb-4555-86ea-eb9ec36a011a,ECC,Lorwyn Eclipsed Commander,2026-01-23,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5d293ad8-a749-4725-bd5c-c4e1db828bd0,ECL,Lorwyn Eclipsed,2026-01-23,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a90a7b2f-9dd8-4fc7-9f7d-8ea2797ec782,ELD,Throne of Eldraine,2019-10-04,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1f29f022-3ace-4c96-85e8-1f7b63aadf7e,EMA,Eternal Masters,2016-06-10,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5f0e4093-334f-4439-bbb5-a0affafd0ffc,EMN,Eldritch Moon,2016-07-22,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44,EOC,Edge of Eternities Commander,2025-08-01,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+452951cf-378b-4472-b7fe-572fe2af2ac0,EOE,Edge of Eternities,2025-08-01,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+538306e5-d40a-44c0-b9df-2f6c4b130c9f,EOS,Edge of Eternities: Stellar Sights,2025-08-01,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+86b4dfef-f2d1-49d6-825d-7df6bda44357,EVE,Eventide,2008-07-25,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d5dbdea8-45f6-4d22-990b-6b6897f99d18,EVG,Duel Decks Anthology: Elves vs. Goblins,2014-12-05,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1401f7af-2e71-476d-9813-991084ed0bb9,EXO,Exodus,1998-06-15,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f6ccda04-e8ef-4260-8453-9408d788bacf,EXP,Zendikar Expeditions,2015-10-02,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1edf0887-20de-4e75-bce3-45d842f0066d,F01,Friday Night Magic 2001,2001-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+1037d505-8080-4f98-92c6-c9816735c172,F02,Friday Night Magic 2002,2002-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+338dca3f-bcaf-43f8-a5a8-0aeaa241dec5,F03,Friday Night Magic 2003,2003-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+10b8cbe8-4beb-496b-97d7-889a81dde83b,F04,Friday Night Magic 2004,2004-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ff1a761c-57d0-45b5-be9f-16019ce0f652,F05,Friday Night Magic 2005,2005-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+40b38065-0746-4679-89c4-172197bba904,F06,Friday Night Magic 2006,2006-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+1afde513-cf57-40a6-9e4b-aab815dad104,F07,Friday Night Magic 2007,2007-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+1d9c28af-5035-4b6d-9944-62b51cfd688d,F08,Friday Night Magic 2008,2008-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a540bc4f-d0c3-4758-9636-547ec9df7fc9,F09,Friday Night Magic 2009,2009-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+0790f41d-e012-46b7-b97c-bfeda3489a4f,F10,Friday Night Magic 2010,2010-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+757ed42f-384b-450d-ab70-217cadca2847,F11,Friday Night Magic 2011,2011-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6df07fcb-8b2a-43a6-82bc-97e92312a921,F12,Friday Night Magic 2012,2012-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+4f0f5416-2f39-4339-8b9a-5454d94a4ca6,F13,Friday Night Magic 2013,2013-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ed1404ce-ac05-4d93-8283-163a50bfc9b5,F14,Friday Night Magic 2014,2014-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b34e3169-310e-4161-82c8-868b38b9cc91,F15,Friday Night Magic 2015,2015-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+820ba719-0234-4ca7-9d72-e0f8d56460bb,F16,Friday Night Magic 2016,2016-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+690dae5c-2de4-4071-b77c-19883791f987,F17,Friday Night Magic 2017,2017-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3a1c398c-c72b-4617-acae-3e6b06ae08d5,F18,Friday Night Magic 2018,2017-12-27,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+60648044-9f6a-4961-81af-47a0a94dfac9,FBB,Foreign Black Border,1994-04-11,core,true,false,phase_2,pre-Exodus; visible number not established
+5f2176db-3c44-459d-8a57-7c51e770a476,FCA,Final Fantasy: Through the Ages,2025-06-13,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+2a0b24ac-7614-4a08-b58a-b64f7c173361,FDC,Foundations Commander,2024-11-15,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a7ecb771-d1b6-4dec-8cf5-8d45179f21e0,FDN,Foundations,2024-11-15,core,true,true,outside_phase_1,modern interval; existing scanning policy retained
+cf7390b1-341a-4ae8-a325-da0f5f322f13,FEM,Fallen Empires,1994-11-01,expansion,true,false,phase_2,pre-Exodus; visible number not established
+30659956-4558-4cbf-a65f-34cd00c89579,FIC,Final Fantasy Commander,2025-06-13,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea,FIN,Final Fantasy,2025-06-13,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b9c0c822-3cac-46ec-801d-0ec322913387,FNM,Friday Night Magic 2000,2000-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6595985e-39cf-4ca3-b43d-dd3e64749fdc,FRA,Reality Fracture,2026-10-02,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+cfd10490-7397-4143-bda7-d388b877636f,FRC,Reality Fracture Commander,2026-10-02,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7bb5cb2b-081a-4c8c-b7e1-494046e6baa1,FRF,Fate Reforged,2015-01-23,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bf951ddb-4445-4923-87cb-3fe4ac3c6b9a,FUT,Future Sight,2007-05-04,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+0964514c-cf50-468d-9cf7-a388aff65de9,G00,Judge Gift Cards 2000,2000-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b704de85-87bd-4fa4-8bf0-df7380c83af8,G01,Judge Gift Cards 2001,2001-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a3dc11d1-f22b-44fe-81db-3470aecb6bbc,G02,Judge Gift Cards 2002,2002-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d77319c6-78a1-48d4-bc87-cbf4b1baed07,G03,Judge Gift Cards 2003,2003-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+68b258e6-d659-457c-a3d6-9da5d7cd6aa1,G04,Judge Gift Cards 2004,2004-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+0a722d87-0ce5-46e5-94e1-6f58f931a381,G05,Judge Gift Cards 2005,2005-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+be42d9f4-d1af-4b58-8efa-99484f478022,G06,Judge Gift Cards 2006,2006-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+4624619f-b5bf-4822-b364-8385a09a69da,G07,Judge Gift Cards 2007,2007-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+587e3ddb-7ffd-4e17-85e0-7846846d677f,G08,Judge Gift Cards 2008,2008-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cf3a6c7e-f8e1-4c3f-95da-8b4ad094f489,G09,Judge Gift Cards 2009,2009-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f9a512bb-f2ab-4805-8480-16decaacab3a,G10,Judge Gift Cards 2010,2010-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e9ec9f60-333b-48f7-8e73-5db562638a54,G11,Judge Gift Cards 2011,2011-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e8b03e62-498f-49c9-8228-55436c7f9cb6,G17,2017 Gift Pack,2017-10-20,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+be071312-2af9-4c4a-bcba-b726ee1eabb1,G18,M19 Gift Pack,2018-11-16,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+08041686-693b-4b57-9e87-76ba81f3b1a3,G99,Judge Gift Cards 1999,1999-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+5f61e142-b5df-4bab-8f7d-81c2c088596d,GDY,Game Day Promos,2022-04-08,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+600bdba8-0b12-454f-811c-438e0d9eb9b6,GK1,GRN Guild Kit,2018-11-02,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ce193344-b2a8-4b56-8243-c6ba4f6e20ef,GK2,RNA Guild Kit,2019-02-15,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a72727dd-dbab-4158-a772-a08825735169,GN2,Game Night 2019,2019-11-15,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fe88ea3a-0e2c-44b9-9210-35bfdec1e288,GN3,Game Night: Free-for-All,2022-10-14,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+cdbedc27-4f24-4d89-ace1-8da1b36ac78e,GNT,Game Night,2018-11-16,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+594b4d09-8ce1-494d-bdb2-842c124bd087,GPT,Guildpact,2006-02-03,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+597c6d4a-8212-4903-a6af-12c4ae9e13f0,GRN,Guilds of Ravnica,2018-10-05,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+19c285e9-68e0-45e1-b82b-ac6051eb43be,GS1,Global Series Jiang Yanggu & Mu Yanling,2018-06-22,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+035a05f7-e020-4f50-a141-ed16ba704bd2,GTC,Gatecrash,2013-02-01,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+db352daa-9827-44ca-ba19-511969a97689,GVL,Duel Decks Anthology: Garruk vs. Liliana,2014-12-05,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3a045e59-64b5-465d-9dbd-f4ddadf8f4dc,H09,Premium Deck Series: Slivers,2009-11-20,premium_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2790698c-b015-4864-9eea-8b6964478432,H17,HasCon 2017,2017-09-20,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7b3294cf-104e-43fb-8170-add3e78faca7,H1R,Modern Horizons 1 Timeshifts,2021-06-18,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+20e53d4f-2ce8-4d82-9c7c-e6378a0134ad,H2R,Modern Horizons 2 Timeshifts,2024-06-14,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5ba8edcc-a729-4023-8a68-0280ad19337e,HHO,Happy Holidays,2006-12-31,funny,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+5ac1f606-e682-46e9-ad0f-122a3783581b,HML,Homelands,1995-10-01,expansion,true,false,phase_2,pre-Exodus; visible number not established
+59218c23-cb7a-4fde-9cff-3f2f71af1308,HOB,The Hobbit,2026-08-14,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a185c905-5359-4f40-85c3-a3eae2ca4ff0,HOC,The Hobbit Eternal,2026-08-14,eternal,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7137ffeb-eb1d-466c-a0d3-3157f52b1b10,HOP,Planechase,2009-09-04,planechase,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+65ff168b-bb94-47a5-a8f9-4ec6c213e768,HOU,Hour of Devastation,2017-07-14,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b0e08eea-5c01-4406-a6e2-dcd09c5e5b67,ICE,Ice Age,1995-06-03,expansion,true,false,phase_2,pre-Exodus; visible number not established
+19feda43-15ab-427e-a0e4-148a4bf2b03a,IKO,Ikoria: Lair of Behemoths,2020-04-24,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+741bcd30-7709-4133-8919-f4b46483bed7,IMA,Iconic Masters,2017-11-17,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b9618c8c-9f31-4b42-9798-2991893c27bf,INR,Innistrad Remastered,2025-01-24,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b9ae5e02-7726-47ca-b5e4-5ec402b41cd1,INV,Invasion,2000-10-02,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d1026945-2969-42b9-be53-f941405a58cb,ISD,Innistrad,2011-09-30,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ebcaf6a7-c14c-4479-a228-2b24b6c11c9e,ITP,Introductory Two-Player Set,1996-12-31,starter,true,false,phase_2,pre-Exodus; visible number not established
+d2de9024-04a9-487c-8ca7-9111fb2a0fe0,J12,Judge Gift Cards 2012,2012-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e9d7337b-b74e-43ae-820e-a6d26b23c9f3,J13,Judge Gift Cards 2013,2013-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+27b3e564-c016-47d4-8a63-55b0034f9e30,J14,Judge Gift Cards 2014,2014-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6f528eed-2bc2-4a27-bb27-937c211754b3,J15,Judge Gift Cards 2015,2015-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a3490e7b-791b-4ed3-bd0c-6fb19b819150,J16,Judge Gift Cards 2016,2016-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6c69afe8-bb1e-466f-a46a-4a3e92351b25,J17,Judge Gift Cards 2017,2017-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+71da38d2-c15a-45c4-97b2-a791a2fd695b,J18,Judge Gift Cards 2018,2018-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0fbc0a38-0462-47d1-b0a2-dcd401d044bd,J19,Judge Gift Cards 2019,2019-04-10,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1b90366b-7692-44ea-bd55-f17fa92869a5,J20,Judge Gift Cards 2020,2020-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+247df475-e4ce-4e5e-9317-11892d2211e0,J22,Jumpstart 2022,2022-12-02,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9201567c-bab5-4720-aac9-260e6741f115,J25,Foundations Jumpstart,2024-11-15,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+804c01dd-4714-440a-950e-2f2130d781f3,JGP,Judge Gift Cards 1998,1998-01-01,promo,true,false,phase_2,pre-Exodus; visible number not established
+0f6ccf25-a627-4263-86df-5757137f1696,JMP,Jumpstart,2020-07-17,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+204d2dca-1887-4721-9558-164aa7bbeb4f,JOU,Journey into Nyx,2014-05-02,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+05f9add2-710e-4af4-a091-732a73365bfd,JP1,Hobby Japan Promos,2002-07-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cd82de1a-36fd-4618-bfe8-b45532a582d9,JUD,Judgment,2002-05-27,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+37832684-2fe0-4b06-842b-eec06e5a17cb,JVC,Duel Decks Anthology: Jace vs. Chandra,2014-12-05,duel_deck,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d532ef25-e52b-4276-941a-3a1c095544b0,KHC,Kaldheim Commander,2021-02-05,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+43057fad-b1c1-437f-bc48-0045bce6d8c9,KHM,Kaldheim,2021-02-05,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d667e468-be8f-411f-a030-473d148deb74,KLD,Kaladesh,2016-09-30,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6c7a715c-ded9-449e-89b0-c665773e9c3c,KTK,Khans of Tarkir,2014-09-26,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d253edc3-5bc7-4cf1-9446-a8540dedffa5,LCC,The Lost Caverns of Ixalan Commander,2023-11-17,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+70169a6e-89d1-4a3a-aef7-3152958d55ac,LCI,The Lost Caverns of Ixalan,2023-11-17,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+288bd996-960e-448b-a187-9504c1930c2c,LEA,Limited Edition Alpha,1993-08-05,core,true,false,phase_2,pre-Exodus; visible number not established
+5307bd88-637c-4a5c-9801-a0d887715302,LEB,Limited Edition Beta,1993-10-04,core,true,false,phase_2,pre-Exodus; visible number not established
+78c50b4b-b220-455b-a2d5-cee458fa56f3,LEG,Legends,1994-06-01,expansion,true,false,phase_2,pre-Exodus; visible number not established
+c2d60a18-1a81-4784-8e0c-e1de2f43c5cf,LGN,Legions,2003-02-03,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+dd42508d-39e5-46f3-a5a9-eb7bd0002878,LMAR,Marvel Legends Series Inserts,2025-09-30,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+30ec97cb-dca9-4bf4-a98b-310f9d8ceaff,LRW,Lorwyn,2007-10-12,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e567c19c-0fe4-446e-a7bf-fce8a150cd2e,LTC,Tales of Middle-earth Commander,2023-06-23,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+08078706-ac5d-439b-8f01-894d38751367,LTR,The Lord of the Rings: Tales of Middle-earth,2023-06-23,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0dba38a9-6b9d-4768-9831-4e03e8970a0b,M10,Magic 2010,2009-07-17,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+485d2468-18c8-42a4-9482-ca1c51e0470e,M11,Magic 2011,2010-07-16,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+5cdd2643-229c-4441-a62a-c34e4b531e1c,M12,Magic 2012,2011-07-15,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f9b0c6f4-8a4f-4f36-ad3c-e1e16fb8535d,M13,Magic 2013,2012-07-13,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e03ee1c0-ecd2-4fcc-ac3c-e8fdb103a847,M14,Magic 2014,2013-07-19,core,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6ce49890-3b37-42a5-8932-dbeef1d7b62c,M15,Magic 2015,2014-07-18,core,true,true,outside_phase_1,modern interval; existing scanning policy retained
+2f5f2509-56db-414d-9a7e-6e312ec3760c,M19,Core Set 2019,2018-07-13,core,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4a787360-9767-4f44-80b1-2405dc5e39c7,M20,Core Set 2020,2019-07-12,core,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bc94aba1-7376-4e02-a12d-3a2efb66ab0f,M21,Core Set 2021,2020-07-03,core,true,true,outside_phase_1,modern interval; existing scanning policy retained
+f5e00721-cf99-43ba-bf16-b22d56d12c73,M3C,Modern Horizons 3 Commander,2024-06-14,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+159f2a38-6a67-48fb-b583-2538554d70a3,MAR,Marvel Universe,2025-09-26,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6727e43d-31b6-45b0-ae05-7a811ba72f70,MAT,March of the Machine: The Aftermath,2023-05-12,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1e6879fe-2f29-4ad7-8d42-7f5bfb469f4a,MB2,Mystery Booster 2,2024-08-02,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a4135564-9f37-4aaf-963a-90666f843e0d,MBC,Mystery Booster Commander Edition,2026-11-09,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+f46c57e3-9301-4006-a6ca-06f3f65961fb,MBS,Mirrodin Besieged,2011-02-04,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+3c31de17-6766-448e-a4eb-878d83031f3e,MD1,Modern Event Deck 2014,2014-05-30,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+08aabe3a-7c0e-4c48-b2c2-57dcb5a266a4,MED,Mythic Edition,2018-10-05,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fe04d7bf-1965-45e8-8de1-4bfc5b636d5f,MGB,Multiverse Gift Box,1996-11-01,box,true,false,phase_2,pre-Exodus; visible number not established
+d7efccd6-55bc-4fb8-9138-e72577510a99,MH1,Modern Horizons,2019-06-14,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c1c7eb8c-f205-40ab-a609-767cb296544e,MH2,Modern Horizons 2,2021-06-18,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3ed80bb6-77e8-4aa7-8262-95377a38aba1,MH3,Modern Horizons 3,2024-06-14,draft_innovation,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7f9a4deb-715e-47d2-afac-3843ef92f39b,MIC,Midnight Hunt Commander,2021-09-24,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+44b8eb8f-fa23-401a-98b5-1fbb9871128e,MID,Innistrad: Midnight Hunt,2021-09-24,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5f06acf3-8123-4a78-b2e7-089b0b775a4a,MIR,Mirage,1996-10-08,expansion,true,false,phase_2,pre-Exodus; visible number not established
+286c37ca-ba65-4d3e-8c5d-d1878d88fd95,MKC,Murders at Karlov Manor Commander,2024-02-09,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+2b17794b-15c3-4796-ad6f-0887a0eceeca,MKM,Murders at Karlov Manor,2024-02-09,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+28cac015-43df-4e88-90d0-95dcdd894834,MM2,Modern Masters 2015,2015-05-22,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+02624962-f727-4c31-bbf2-a94fa6c5b653,MM3,Modern Masters 2017,2017-03-17,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0b7020f2-336d-4706-9ce6-f6710b9ebd5c,MMA,Modern Masters,2013-06-07,masters,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+385e11a4-492b-4d07-b4a6-a1409ef829b8,MMQ,Mercadian Masques,1999-10-04,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6bba5de9-5afb-42af-a7eb-24ac854bf671,MOC,March of the Machine Commander,2023-04-21,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+392f7315-dc53-40a3-a2cc-5482dbd498b3,MOM,March of the Machine,2023-04-21,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c41550df-7b41-41a3-85ab-8612eb2f168f,MOR,Morningtide,2008-02-01,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+c26402e7-838e-48db-a4b2-7abfc305998a,MP2,Amonkhet Invocations,2017-04-28,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+84cd4f76-a638-41ac-8c60-3a82d8708b5c,MPR,Magic Player Rewards 2001,2001-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+910ea2a2-9f6a-4665-98f6-165ea7928952,MPS,Kaladesh Inventions,2016-09-30,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1d4f90ba-8d4a-4ee5-bc2f-e2d6bffe4955,MRD,Mirrodin,2003-10-02,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+9d739461-c5ac-43a1-af41-3d5a585b5c8d,MSC,Marvel Super Heroes Commander,2026-06-26,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ba9bf625-681c-4a4e-ab48-399b2fecac6b,MSH,Marvel Super Heroes,2026-06-26,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a3f8daea-b24e-4e5c-a4d9-ec8910e9078a,MUL,Multiverse Legends,2023-04-21,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c51de34b-d4d6-4179-a432-573744ded119,NCC,New Capenna Commander,2022-04-29,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5b4d929d-bdf9-4bbf-858e-e248f53325ad,NEC,Neon Dynasty Commander,2022-02-18,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fa5d1fdb-f781-473d-b14d-50396d40d43f,NEM,Nemesis,2000-02-14,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+59a2059f-5482-433f-8761-eb2e17859b71,NEO,Kamigawa: Neon Dynasty,2022-02-18,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e8e356d8-6d01-4dab-aa07-d0999dc9359f,NPH,New Phyrexia,2011-05-13,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+238beedf-1d4d-475f-a980-527ba2f55dc6,OARC,Archenemy Schemes,2010-06-18,archenemy,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b0d90d2d-494a-4224-bfa0-36ce5ee281b1,ODY,Odyssey,2001-10-01,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+aa50a66a-0eb3-4bb5-acad-bc6c96f98663,OE01,Archenemy: Nicol Bolas Schemes,2017-06-16,archenemy,true,true,outside_phase_1,modern interval; existing scanning policy retained
+cd51d245-8f95-45b0-ab5f-e2b3a3eb5dfe,OGW,Oath of the Gatewatch,2016-01-22,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7a8b75a9-7c92-4c3f-976a-322e1eb3b6b6,OHOP,Planechase Planes,2009-09-04,planechase,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8c5e86d4-ae2d-42f7-a0e5-0e4141eb953d,ONC,Phyrexia: All Will Be One Commander,2023-02-10,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+04bef644-343f-4230-95ee-255f29aa67a2,ONE,Phyrexia: All Will Be One,2023-02-10,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+914a6c6d-cb3b-45e8-a2db-9978a2339faf,ONS,Onslaught,2002-10-07,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7079031b-c5b0-4353-87af-a63a0f204f47,OPC2,Planechase 2012 Planes,2012-06-01,planechase,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ada3345c-d416-49bc-92e0-73363ddee5c8,OPCA,Planechase Anthology Planes,2016-11-25,planechase,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0eeb9a9a-20ac-404d-b55f-aeb7a43a7f62,ORI,Magic Origins,2015-07-17,core,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d6548798-0c10-4509-b71a-2d8b1d14665a,OTC,Outlaws of Thunder Junction Commander,2024-04-19,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+55a85ebe-644e-4bef-8be8-5290408be3d1,OTJ,Outlaws of Thunder Junction,2024-04-19,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+8b51294d-fc54-410c-83b2-0168837ede87,OTP,Breaking News,2024-04-19,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ac67f18a-4f0e-407e-bab1-a9fe4f659565,P02,Portal Second Age,1998-06-24,starter,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+dfa906ff-63d8-4065-abef-809988337288,P03,Magic Player Rewards 2003,2003-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+5ba81c6d-2344-4760-bb13-b7276205e73e,P04,Magic Player Rewards 2004,2004-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e7f182b7-cd28-46de-bce8-223e83a78ae0,P05,Magic Player Rewards 2005,2005-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+619f656b-94dc-4772-bc99-62bac48f1eb9,P06,Magic Player Rewards 2006,2006-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+c1a38fe6-73f4-4414-897b-f1215a7c948f,P07,Magic Player Rewards 2007,2007-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6c1d0a31-b5d2-421d-95f4-5816382f764f,P08,Magic Player Rewards 2008,2008-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+824eec08-e609-41db-8de4-4e58d8aeb37d,P09,Magic Player Rewards 2009,2009-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d871e33b-7086-4549-89d6-fedd4422161f,P10,Magic Player Rewards 2010,2010-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b147ad00-d7c9-4a15-bb2a-8cef5aa620ce,P10E,Tenth Edition Promos,2007-07-13,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ba0f80c9-7a21-425b-8a02-cb17c2a50e36,P11,Magic Player Rewards 2011,2011-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+09c785bc-370d-4746-b618-c22d767cb34f,P15A,15th Anniversary Cards,2008-04-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a8c14f2c-e917-4919-9eb7-32c7cc37107a,P22,Judge Gift Cards 2022,2022-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0ccafe7e-c9ee-4742-89fd-06f1e14eacb0,P23,Judge Gift Cards 2023,2023-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0f5b91bf-e0bd-444b-82b5-03906ba86e88,P2HG,Two-Headed Giant Tournament,2005-12-09,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f3d98295-0697-433a-9429-d04600da2295,P30A,30th Anniversary Play Promos,2022-09-02,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+796c1128-14f7-44c4-93fd-cf7366caaa25,P30H,30th Anniversary History Promos,2022-09-09,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a3ab636c-20a0-4d79-b55a-e097c2a03cd5,P30M,30th Anniversary Misc Promos,2022-09-02,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fb140855-cf1e-4496-9104-7ab45e2afe36,P30T,30th Anniversary Celebration Tokyo,2023-09-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ff5503b1-ac4c-4164-b7e4-6bca31640493,P5DN,Fifth Dawn Promos,2004-06-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ff1b44ae-5f8b-4bb2-b87a-b27f53f2b0c9,P8ED,Eighth Edition Promos,2003-07-28,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e55f6145-ebd1-4e6d-b72a-7aab9ed7b058,P9ED,Ninth Edition Promos,2005-07-29,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2acdb824-7cac-4858-a77e-ac868eed5270,PAER,Aether Revolt Promos,2017-01-20,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+983f027f-76f9-462d-8eb5-458dcbf029b4,PAFR,Adventures in the Forgotten Realms Promos,2021-07-23,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c1847ece-b71e-4125-973a-465dfb35e496,PAKH,Amonkhet Promos,2017-04-28,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a004c98d-1423-443f-b51c-1c8f5dc21b0d,PAL00,Arena League 2000,2000-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8571b7e5-3c24-4a26-a936-31549a18a2c3,PAL01,Arena League 2001,2001-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+25e5166c-7c44-4c69-ad78-3f1668ab3156,PAL02,Arena League 2002,2002-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+bf8bc347-ae11-43d4-98da-3625566668dd,PAL03,Arena League 2003,2003-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2afca034-842a-4488-af35-c79df13eb21d,PAL04,Arena League 2004,2004-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+16b62eb1-0cab-47c9-a0c2-be6e781ece03,PAL05,Arena League 2005,2005-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+db0343a8-d158-41dc-bef4-38477d42a579,PAL06,Arena League 2006,2006-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+01f0deac-9fcc-4c2b-a932-92c705fb558f,PAL99,Arena League 1999,1999-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f31d9028-0a82-4d31-b874-4fdde618948e,PALA,Shards of Alara Promos,2008-10-03,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+994d1115-3d9e-494d-be58-45ff635a9595,PALP,Asia Pacific Land Program,1998-09-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+3267d03d-12cd-41ae-9d4d-80af0493f138,PAPC,Apocalypse Promos,2001-06-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+352a7433-5b06-4381-99e9-fc3b6282dd2c,PARB,Alara Reborn Promos,2009-04-30,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2767f6e4-4a9c-4515-a5c1-51dd95660fc4,PARL,Arena League 1996,1996-08-02,promo,true,false,phase_2,pre-Exodus; visible number not established
+b933d4a1-3d0a-45fb-a73c-a9ae2ba928b0,PAVR,Avacyn Restored Promos,2012-04-28,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+04e3fb66-920f-4c47-b17e-8aa2681cebdf,PBBD,Battlebond Promos,2018-06-08,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1b5e95bd-4947-4991-8d7d-b770d6b2aaff,PBFZ,Battle for Zendikar Promos,2015-10-02,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+0a8482de-062d-460f-8558-39044fed4a24,PBIG,The Big Score Promos,2025-08-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3e2b178a-4f7b-4bb3-9af3-3c1ffcdfaa3e,PBLB,Bloomburrow Promos,2024-08-02,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6733ed2b-f650-4db7-8d7d-d1fba3f60928,PBNG,Born of the Gods Promos,2014-02-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+34e1a029-1103-4e95-aafb-02949a6780b4,PBOK,Betrayers of Kamigawa Promos,2005-02-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7e8b0464-6ce5-4184-abc7-3de544eebc6a,PBRO,The Brothers' War Promos,2022-11-18,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9fb2f83e-7015-4aa9-808f-310ccf0fdb9c,PC2,Planechase 2012,2012-06-01,planechase,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ceadd605-dfba-4998-b96d-e8e8138aa20f,PCA,Planechase Anthology,2016-11-25,planechase,true,true,outside_phase_1,modern interval; existing scanning policy retained
+665a9dff-f9d2-4932-8feb-822fa1d020e5,PCBB,Cowboy Bebop,2024-08-02,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+57b23d04-034d-4d04-ba0e-524b6ba03eb7,PCHK,Champions of Kamigawa Promos,2004-10-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a6254b2a-0154-459a-936e-5967018d823b,PCLB,Battle for Baldur's Gate Promos,2022-06-10,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3bbd8312-611e-4479-9658-ac96482b97ae,PCMP,Champs and States,2006-03-18,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a850cf95-dd0b-43fa-9889-4dbd1299f85d,PCMR,Commander Legends Promos,2020-11-20,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+f57afd70-7944-47d6-83fb-264d05442710,PCNS,Conspiracy Promos,2014-06-06,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+0ce7fd53-7c14-4d16-a4c3-5c47ad8a8e5b,PCON,Conflux Promos,2009-02-06,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+77cab0a2-267d-47b0-b5ef-2ccdc692f198,PCSP,Coldsnap Promos,2006-07-21,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+c233bd36-57c0-4aa2-ae6c-7aeabfb4e3ce,PCY,Prophecy,2000-06-05,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e0d91aba-be11-4ddd-96a4-4753e708458a,PD2,Premium Deck Series: Fire and Lightning,2010-11-19,premium_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b6d6ba83-3b91-4203-8103-320cfa50f848,PD3,Premium Deck Series: Graveborn,2011-11-18,premium_deck,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cc05a3a1-fb38-4d6d-b3d3-032e90b49d00,PDFT,Aetherdrift Promos,2025-02-14,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d29698eb-32e4-448f-977f-aa9b31c408b5,PDGM,Dragon's Maze Promos,2013-04-27,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7dba077a-f97b-4308-b39f-9a1132550f27,PDIS,Dissension Promos,2006-05-05,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f784e27e-4af8-4b11-8d45-826388d63604,PDKA,Dark Ascension Promos,2012-01-28,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8d8c82dd-0cc2-43b8-8d1c-7620fc4d98d7,PDMU,Dominaria United Promos,2022-09-09,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e61a976d-a9ce-42bd-ad9e-f51b1c8fc434,PDOM,Dominaria Promos,2018-04-27,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ec8ce795-db8a-44f2-83ac-d6a6914ee4db,PDP10,Duels of the Planeswalkers 2010 Promos,2010-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+9ed1e58a-9f8a-41f8-b1ca-9f661e3f9ca8,PDP12,Duels of the Planeswalkers 2012 Promos,2011-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f972b795-5d5d-406c-9326-a241b11480a9,PDP13,Duels of the Planeswalkers 2013 Promos,2012-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+17abd72e-22ed-4b47-87ca-929a378d0439,PDP14,Duels of the Planeswalkers 2014 Promos,2013-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+771d02d5-d5b3-4ede-9913-efd08fc7e828,PDP15,Duels of the Planeswalkers 2015 Promos,2014-07-09,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+c77cb8ee-8c7c-4177-af59-53d591150bef,PDRC,Dragon Con,1994-07-15,promo,true,false,phase_2,pre-Exodus; visible number not established
+6d202752-1655-491f-b3a2-86dbd35fbec8,PDSK,Duskmourn: House of Horror Promos,2024-09-27,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b586f845-b8dd-455f-ae21-817d0c09ec61,PDST,Darksteel Promos,2004-02-06,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7f424509-214f-4d0e-91ab-18a99e83afef,PDTK,Dragons of Tarkir Promos,2015-03-27,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b827a610-c075-4f3c-aa35-11bd10981fa8,PDTP,Duels of the Planeswalkers 2009 Promos,2009-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7b7b61ef-e1f4-4ac6-818e-c3489d954298,PECL,Lorwyn Eclipsed Promos,2026-01-23,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5f593578-5079-4988-8e88-a3df186bdc2b,PELD,Throne of Eldraine Promos,2019-10-04,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fe73e363-c74e-4211-a728-0f4d01f9cb29,PELP,European Land Program,2000-02-05,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a173a21c-7d0f-4bdd-97df-72ce0b661d62,PEMN,Eldritch Moon Promos,2016-07-22,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7163fd7f-bf43-4380-a718-de52ba50bb78,PEOE,Edge of Eternities Promos,2025-08-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+67920ddd-5260-42c0-831e-acbd7e135dd3,PEVE,Eventide Promos,2008-07-25,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+80e2b258-2a37-4c71-a13d-9860d8bd8807,PEWK,Eternal Weekend,2022-11-26,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a4bfc8e0-22bb-463b-8f7d-5dc926438dca,PEXO,Exodus Promos,1998-06-15,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+3d0d0d5b-e6d6-4dea-9250-5cea04725638,PF19,MagicFest 2019,2019-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+09e53c37-1e43-4f45-933d-af75b9cd6f76,PF20,MagicFest 2020,2020-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+14b6bb0f-b54e-49c6-adfa-984129093046,PF23,MagicFest 2023,2023-07-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+95e7f33c-9a0e-4775-bf01-9d85dc57aba1,PF24,MagicFest 2024,2024-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9e40b5c2-28f3-4bb3-b6dc-d2e904f3f3fa,PF25,MagicFest 2025,2025-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a33565f7-90cd-43d7-83cf-84d50ee2add4,PF26,MagicFest 2026,2026-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9cfdcd69-25f3-44cf-99e0-1f0ab0d61c20,PFDN,Foundations Promos,2024-11-15,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ff405aba-0309-4694-a6d5-e657024f7ad0,PFIN,Final Fantasy Promos,2025-06-13,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+aa9f80e3-8d60-46b7-b91e-eb1736fde866,PFRF,Fate Reforged Promos,2015-01-23,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9d290d54-2aec-4d5e-8ffc-c9714f4437d4,PFUT,Future Sight Promos,2007-05-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a77ddc05-da91-4dce-b564-bfb13766d23b,PGPT,Guildpact Promos,2006-02-03,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+08e04147-c201-4c75-9b30-a566164ecaf3,PGPX,Grand Prix Promos,2007-02-24,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ea8a86b2-f171-4942-b52c-6c4e67d1acca,PGRN,Guilds of Ravnica Promos,2018-10-05,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+30c0fe51-0ce7-40c4-9bf4-2836a0dc063b,PGRU,Guru,1999-07-12,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2a51bc89-cf7c-4c31-af17-f46bd45fef40,PGTC,Gatecrash Promos,2013-01-26,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6213f371-2428-42aa-a0a9-52c4947039ed,PH17,2017 Heroes of the Realm,2018-08-01,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+38346fd1-60eb-4f27-850d-81c9967e8c3e,PH18,2018 Heroes of the Realm,2019-08-01,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+dea849fc-18c3-4327-8c1e-72583d6f08e8,PH19,2019 Heroes of the Realm,2020-08-01,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3bb49836-a6be-4249-a461-8a34a4cf48a2,PH20,2020 Heroes of the Realm,2021-08-01,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+38549f4f-6e79-46d9-b2f9-52ab0245ee06,PH21,2021 Heroes of the Realm,2022-08-01,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+db138fa6-33da-4062-9e48-712cdb893528,PH22,2022 Heroes of the Realm,2023-08-01,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ecbf5a1a-ccdd-4279-856c-928977171f05,PH23,2023 Heroes of the Realm,2025-08-24,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ef3f6784-a6e8-41ff-8bed-72e0c7121298,PHOP,Planechase Promos,2009-09-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+220548b3-7b6a-43e0-a423-8eefe7feb1a0,PHOU,Hour of Devastation Promos,2017-07-14,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b32cc4a1-1e06-4bec-bab6-89b2691b57a4,PHPR,HarperPrism Book Promos,1994-09-01,promo,true,false,phase_2,pre-Exodus; visible number not established
+e9dbe497-c76a-4037-82c1-7ef338d6c54c,PHTR,2016 Heroes of the Realm,2017-09-20,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ff711291-dc0f-4b9a-bd3d-663428550d55,PHUK,Hachette UK,2006-01-01,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+33438cf7-6acb-48f0-8581-215d1e4995e5,PIDW,IDW Comics Inserts,2012-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+0e5fad97-b777-437a-b015-44428c42bf46,PIKO,Ikoria: Lair of Behemoths Promos,2020-04-24,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+907dbba9-bb5e-4d07-b681-ab8641cb1ada,PINV,Invasion Promos,2000-10-02,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d84d7a49-2ef4-4808-83b4-8c65b4aa0e2d,PIP,Fallout,2024-03-08,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+94d2e8a2-5ae8-4b7e-a7db-6770d5cfa6fd,PISD,Innistrad Promos,2011-09-24,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+44c67c2c-7c14-4853-8dad-943a60816a05,PJ21,Judge Gift Cards 2021,2021-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fc8c6e1b-73fa-430f-b4d9-a6483369ee26,PJAS,Junior APAC Series,2006-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+94714b9a-cfb2-4514-a1fb-1071146cff69,PJJT,Japan Junior Tournament,2003-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e401cbac-165b-433b-a42b-3f00ffc46652,PJOU,Journey into Nyx Promos,2014-04-26,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6a1e8cf5-a516-4fc2-8d99-96862f4117f9,PJSC,Japan Standard Cup,2025-02-09,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fd4b6116-533a-4e70-98df-f0131a67f1dc,PJSE,Junior Series Europe,2005-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a1aed70a-561a-4766-97ce-ad56bef407c0,PJUD,Judgment Promos,2002-05-27,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+4d7b6bf0-0ded-49a0-8c0e-b1ae2bfba77c,PKHM,Kaldheim Promos,2021-02-05,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a3531980-f20d-4857-9de0-1b6826ef68e9,PKLD,Kaladesh Promos,2016-09-30,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+95318a25-1983-40ae-b315-140160078e3c,PKTK,Khans of Tarkir Promos,2014-09-26,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+dc1dbedc-9604-4c3a-886a-7be05f7e006a,PL21,Year of the Ox 2021,2021-01-25,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+377f9635-6eac-42ca-9e60-f422c90a0eef,PL22,Year of the Tiger 2022,2022-02-25,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5461ef40-3b5c-49ea-81d9-67f4ae77c2b5,PL23,Year of the Rabbit 2023,2023-02-10,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+f5c8ab78-698b-4967-aebb-3f762d9b6044,PL24,Year of the Dragon 2024,2024-02-08,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d0c670b6-e070-4ba9-9bf1-9c661ba9c7c5,PL25,Year of the Snake 2025,2025-02-14,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+20083173-c2da-4009-a6bd-5d56da78968d,PL26,Year of the Horse 2026,2026-02-17,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5a1b571c-73e9-4c14-b9d4-a62507d85789,PLC,Planar Chaos,2007-02-02,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+c2d4f3dd-aea0-4aec-bf7d-477e625483a6,PLCI,The Lost Caverns of Ixalan Promos,2023-11-17,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3eaad315-374e-4fea-bf03-1d8c23883881,PLG20,Love Your LGS 2020,2020-05-18,promo,true,false,outside_phase_1,modern interval; existing scanning policy retained
+640891dc-bc2d-4f9d-aee9-6e057f1fa60c,PLG21,Love Your LGS 2021,2021-06-22,promo,true,false,outside_phase_1,modern interval; existing scanning policy retained
+4c5b03fd-184b-4b7d-8170-3b24b9a4c0c4,PLG22,Love Your LGS 2022,2022-07-01,promo,true,false,outside_phase_1,modern interval; existing scanning policy retained
+d72a9b9d-4a13-4d8b-a1b3-756c4575e4f8,PLG24,Love Your LGS 2024,2024-08-06,promo,true,false,outside_phase_1,modern interval; existing scanning policy retained
+6fe6aa88-9964-45fe-bce1-f9eb8f721fe5,PLG25,Love Your LGS 2025,2025-03-26,promo,true,false,outside_phase_1,modern interval; existing scanning policy retained
+5b6a6daa-5a80-435c-a534-fd5dd04c5540,PLGM,DCI Legend Membership,1996-07-01,promo,true,false,phase_2,pre-Exodus; visible number not established
+33d36849-7710-4766-90c6-728c3f625003,PLGN,Legions Promos,2003-02-03,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b0ccaabd-33b7-4c4e-afea-701d032496e7,PLNY,Lunar New Year 2018,2018-02-16,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+091fc340-30ea-4054-a013-44bc345b9c9e,PLRW,Lorwyn Promos,2007-10-12,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+82dc193b-bd5f-4883-a93f-a4155b467ee0,PLS,Planeshift,2001-02-05,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+67e47ba2-b019-4181-9005-fe9fc021de44,PLST,The List,2020-09-26,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+cca2aac9-0d45-4b83-8a76-7de66ca41755,PLTC,Tales of Middle-earth Deluxe Commander Kit,2024-10-16,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1012754e-18e5-4a76-b9a3-24c55eaab1c5,PLTR,Tales of Middle-earth Promos,2023-06-23,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+37d3c9b9-0583-425e-8c14-10d4d4a28a57,PM10,Magic 2010 Promos,2009-07-16,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8d3a0693-6b2a-4955-aeda-4888b2665dd0,PM11,Magic 2011 Promos,2010-07-15,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+488be4f7-19cb-42d5-bba3-189c221e535d,PM12,Magic 2012 Promos,2011-07-14,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+9403aa68-56ab-48ce-86c1-10a53c54a172,PM13,Magic 2013 Promos,2012-07-12,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+bddcd9c6-a02d-4f17-b903-3630b580d33b,PM14,Magic 2014 Promos,2013-07-18,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b263197c-a306-4795-937f-32fabc532d9e,PM15,Magic 2015 Promos,2014-07-17,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ee765d6b-a5ee-4bcd-bbd0-9bc55697ed3c,PM19,Core Set 2019 Promos,2018-07-13,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bb017236-6da1-4558-a8bd-cf020e964530,PM20,Core Set 2020 Promos,2019-07-12,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d4474b31-acac-4d3b-9baa-b596f829070b,PM21,Core Set 2021 Promos,2020-07-03,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+064626d0-7536-42b9-89a8-334c66fd88ae,PMAT,March of the Machine: The Aftermath Promos,2023-11-17,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+8a59d98a-4e13-4943-b06c-b35868e954ba,PMBS,Mirrodin Besieged Promos,2011-02-03,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+0cd69528-1ce7-46e0-ac5e-fd10f8699d33,PMDA,Magic × Duel Masters Promos,2023-09-08,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+80b77354-aa37-420c-a9a2-8a0c66989f23,PMEI,Media and Collaboration Promos,1995-01-01,promo,true,false,phase_2,pre-Exodus; visible number not established
+20fb960d-f44a-495e-8667-6b36daecc03d,PMH1,Modern Horizons Promos,2019-06-14,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5193f80f-0b66-47b9-86fe-a3fc70763d3a,PMH2,Modern Horizons 2 Promos,2021-06-18,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+8f33d6e8-fe8a-4c8e-a96d-8fe32660e775,PMH3,Modern Horizons 3 Promos,2024-06-14,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e7f1d597-3f0b-4892-a857-ac6f8f6f1058,PMID,Innistrad: Midnight Hunt Promos,2021-09-24,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5226ce19-28b1-462f-89a2-460e994824dd,PMKM,Murders at Karlov Manor Promos,2024-02-09,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+98161b77-01f1-492d-80f2-7fb44f3dd260,PMMQ,Mercadian Masques Promos,1999-10-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+4af147e4-cf99-4f32-a77e-d116412f469a,PMOM,March of the Machine Promos,2023-04-21,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9bd20131-fe8c-4a5d-9841-7347024ca54a,PMOR,Morningtide Promos,2008-02-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7fc829b2-1406-43ff-b741-ea815ecdce02,PMPS,Magic Premiere Shop 2005,2005-10-07,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7d536fe7-6170-42b4-bdb5-6a05b800a839,PMPS06,Magic Premiere Shop 2006,2006-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+08e31fdf-eb5e-4acd-92ca-b4e9701458a6,PMPS07,Magic Premiere Shop 2007,2007-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+bfaa9b8b-d62e-4c8a-9f26-7ad85bdf519f,PMPS08,Magic Premiere Shop 2008,2008-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f70dfde4-9b8e-4a3c-b773-c93725776508,PMPS09,Magic Premiere Shop 2009,2009-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+40a2286d-7884-40e3-8ae2-9869266c65ee,PMPS10,Magic Premiere Shop 2010,2010-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+0ae3920d-0360-48f8-8172-6bb6666ba22c,PMPS11,Magic Premiere Shop 2011,2011-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+387eb35e-18ae-4162-9332-2c2d3a1d16c1,PMRD,Mirrodin Promos,2004-06-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e19b1496-25e6-4aa8-ba89-3b0de097a3e9,PNAT,Nationals Promos,2018-01-25,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+8f92ac22-a208-41a8-b77c-ceffbeb6a255,PNCC,New Capenna Commander Promos,2022-04-29,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b302372a-fff8-43bf-95cf-e3d1d2bca9c9,PNEM,Nemesis Promos,2000-02-14,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b3161020-d74f-48cc-bc9d-d7233e64e524,PNEO,Kamigawa: Neon Dynasty Promos,2022-02-18,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+659f3361-e6e9-4891-925f-1d6795bab6ab,PNPH,New Phyrexia Promos,2011-05-12,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+52dc2f6b-0895-483d-8a15-3c6052612a79,PODY,Odyssey Promos,2001-10-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7de0b874-7cb5-495b-9b2c-137a92d3d493,POGW,Oath of the Gatewatch Promos,2016-01-22,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a43681f0-e7f5-415b-bf1f-f9e52ad8213c,PONE,Phyrexia: All Will Be One Promos,2023-02-10,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b8385212-69cb-4b73-a013-d6d4e9efa261,PONS,Onslaught Promos,2002-09-28,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+478c47df-5058-4ce6-830e-7e80732b2ca9,POR,Portal,1997-05-01,starter,true,false,phase_2,pre-Exodus; visible number not established
+f021d220-d395-41fc-8366-5a05db1a0bdf,PORI,Magic Origins Promos,2015-07-17,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+efa35c12-8c68-4d9d-9081-f0f57e564ba3,POTJ,Outlaws of Thunder Junction Promos,2024-04-19,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+34e39301-d557-47d1-bcc1-1ab44c02bc04,PPCY,Prophecy Promos,2000-06-05,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+f4e4582f-0ae8-42d7-acb7-49c29958a25e,PPLC,Planar Chaos Promos,2007-02-02,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7110534f-7944-45f8-9b93-19240253201b,PPLS,Planeshift Promos,2001-02-05,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+32bb437f-76d4-48d6-a888-8a3491198b46,PPP1,M20 Promo Packs,2019-07-12,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e82b640d-bacf-41a5-8cf9-85e1ffeee71e,PPRO,Pro Tour Promos,2007-02-09,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+27b4f670-a760-4783-9f5a-4986c3a50e86,PPTK,Portal Three Kingdoms Promos,1999-05-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b3978acb-8a06-4362-b835-dbda8611a48c,PR2,Magic Player Rewards 2002,2002-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6865f8ba-0884-498a-acd9-a765d7368e89,PR23,Regional Championship Qualifiers 2023,2023-01-07,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bc3c3b61-352b-4dc4-8383-415b9ad1845b,PRAV,Ravnica: City of Guilds Promos,2005-10-07,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+16c10b7c-f1f5-432f-a54d-ca76cf262c6d,PRCQ,Regional Championship Qualifiers 2022,2022-10-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1d525181-1060-4b4f-ad60-5474b0cb0958,PRED,Redemption Program,1996-10-01,promo,true,false,phase_2,pre-Exodus; visible number not established
+e7140c68-d478-4ca3-9185-9a64d5e104df,PRIX,Rivals of Ixalan Promos,2018-01-19,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+503230ec-81e3-4f92-b847-ff435b1652e0,PRNA,Ravnica Allegiance Promos,2019-01-25,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3af1f1ab-7b96-4535-912c-3a225b1783bc,PROE,Rise of the Eldrazi Promos,2010-04-23,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+4e3ab176-9a9c-41cf-8b74-8c7d5e6731f7,PRTR,Return to Ravnica Promos,2012-10-05,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ee3a8eb6-0583-492b-8be5-265795d38038,PRW2,RNA Ravnica Weekend,2019-02-16,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3a6a9844-812a-4576-ab71-0e7bc9b16f3b,PRWK,GRN Ravnica Weekend,2018-11-09,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+97fe7b09-5b23-4fcb-a9ae-6803c5314382,PS11,Salvat 2011,2011-01-01,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+09d844de-a5ec-401c-9b0f-f99be569b8f9,PS14,San Diego Comic-Con 2014,2014-07-08,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+a7525618-105f-4f97-98c9-0ed1522d4a8d,PS15,San Diego Comic-Con 2015,2015-07-09,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b522ae3f-4980-4685-9702-b3360e05ed61,PS16,San Diego Comic-Con 2016,2016-10-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+68ba0a73-fe68-48f4-a062-4a9f663520e6,PS17,San Diego Comic-Con 2017,2017-07-20,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+cc3852c4-5b7b-4afa-ad66-aa7e88daa262,PS18,San Diego Comic-Con 2018,2018-07-19,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9e585a9c-2bba-4310-94a9-036329ee264c,PS19,San Diego Comic-Con 2019,2019-07-18,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1132e6a3-d93a-4ed1-8724-ad5e8e5a1d41,PSAL,Salvat 2005,2005-08-22,box,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+48e783b7-4219-4348-aacb-86ea5c491af2,PSCG,Scourge Promos,2003-05-26,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+19132aaf-ed11-4985-9cac-a8dc58827701,PSDC,San Diego Comic-Con 2013,2013-07-18,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+785c5919-8fbc-4ab9-a59f-51ee189b84d2,PSHM,Shadowmoor Promos,2008-05-02,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b651abe6-2c19-4ba0-8fa1-9b5909ccbef7,PSNC,Streets of New Capenna Promos,2022-04-29,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e1068688-13ff-4a3f-8c66-439162505e7a,PSOI,Shadows over Innistrad Promos,2016-04-08,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+31daa10a-9490-42aa-a630-1a9c2d9ae492,PSOK,Saviors of Kamigawa Promos,2005-06-03,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+761e8299-b38f-49b6-b6c4-f0315576f631,PSOM,Scars of Mirrodin Promos,2010-09-30,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ad780626-4b50-4b92-b5c1-49e060bd597d,PSOS,Secrets of Strixhaven Promos,2026-04-24,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+053b14b2-b622-44ce-a695-5881e2580e1d,PSPL,Spotlight Series,2025-01-03,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bc339a49-60cb-4500-aede-0a887b693297,PSPM,Marvel's Spider-Man Promos,2025-09-26,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9a2e709a-04ee-4d4d-b41e-0642822855b3,PSS1,BFZ Standard Series,2015-10-02,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6e61f42a-48ff-4cde-8cc7-06dfec6ac11f,PSS2,XLN Standard Showdown,2017-09-29,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+60ec31ea-b56b-4b64-b0ef-cee965f8b45e,PSS3,M19 Standard Showdown,2018-07-13,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ea22caa2-a5e3-4bcd-a15c-1027fcc7bc58,PSS4,MKM Standard Showdown,2024-02-10,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+02ffcfa7-6d81-4f7b-9e22-f3d207834014,PSS5,FIN Standard Showdown,2025-06-13,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+726bc009-a94a-4fd2-acb2-58d8c70b8f1c,PSTH,Stronghold Promos,1998-03-02,promo,true,false,phase_2,pre-Exodus; visible number not established
+bc98232b-a539-4f81-92b5-2efc57d38f53,PSTX,Strixhaven: School of Mages Promos,2021-04-23,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7708825d-7afc-472a-ac35-348713ffb3e1,PSUS,Junior Super Series,1999-12-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+3e69d407-6a48-4073-97b3-9b7720aed6b6,PSVC,Summer Vacation Promos 2022,2022-08-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+8650bb2b-88b4-4769-bb10-1c6107b37bdd,PTBRO,The Brothers' War Southeast Asia Tokens,2022-11-18,token,false,false,special_or_child,separate content/layout review required
+f17bfc1b-a0dc-45df-9585-84d8d433124f,PTDM,Tarkir: Dragonstorm Promos,2025-04-11,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+16641515-88d3-4fc8-9b49-86e2991f1713,PTDMU,Dominaria United Southeast Asia Tokens,2022-09-09,token,false,false,special_or_child,separate content/layout review required
+d264b61b-bfb3-4388-be42-e34a1eaa00c2,PTG,Ponies: The Galloping,2019-10-22,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+66d787e4-101d-4f72-a4ed-7c38df9b99fe,PTHB,Theros Beyond Death Promos,2020-01-24,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ae24da1d-4b3e-4eff-8860-0d69b2754175,PTHS,Theros Promos,2013-09-21,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+2676ff2e-9d86-4b5b-b935-e84e41b0755e,PTK,Portal Three Kingdoms,1999-05-01,starter,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6f68a621-24b7-4371-a25c-9fff3ed68b8f,PTKDF,Tarkir Dragonfury,2015-04-03,promo,true,false,outside_phase_1,modern interval; existing scanning policy retained
+60e818be-1263-4006-a196-7011fb9076c8,PTLA,Avatar: The Last Airbender Promos,2025-11-21,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1645fb19-71a7-4634-99b8-bf703e861b6b,PTMP,Tempest Promos,1997-10-14,promo,true,false,phase_2,pre-Exodus; visible number not established
+f64d8b9e-bff0-4247-8113-7fd799c997c2,PTOR,Torment Promos,2002-02-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cd69bbcb-1777-424c-a70d-f5e87d63168b,PTSNC,Streets of New Capenna Southeast Asia Tokens,2022-04-30,promo,true,false,outside_phase_1,modern interval; existing scanning policy retained
+666d27e3-224d-4782-8a00-663c9c352837,PTSP,Time Spiral Promos,2006-10-06,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b0b68008-d01b-4250-9069-fdd4925213a6,PTSR,Time Spiral Remastered Promos,2023-09-08,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1cec5029-d9b9-4cbb-8a50-9c3a0f95d677,PUDS,Urza's Destiny Promos,1999-06-07,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+533dd7ca-2128-4d21-911a-a12f9b7b369e,PULG,Urza's Legacy Promos,1999-02-15,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+bb516e44-1185-4bd5-9025-2c1b994beaac,PUMA,Ultimate Box Topper,2018-12-07,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+eb16c832-baf5-4a7c-ac8b-3c35b31aa6df,PUNH,Unhinged Promos,2004-11-19,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6171d14f-93ff-4c25-af52-a8a8179237c1,PUNK,Black Lotus Unknown Planechase,2024-02-24,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a9fbcd3c-290f-4fa1-b227-dbab037c0c91,PURL,URL/Convention Promos,2009-02-08,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+fa0c6488-475f-4e88-8149-e131619bd215,PUSG,Urza's Saga Promos,1998-10-12,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d9724b93-8557-4e7b-b056-919d2f8c385b,PUST,Unstable Promos,2017-12-08,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3c098543-7919-46d5-b14d-aa0444fd6573,PVAN,Vanguard Series,1997-05-01,vanguard,true,false,phase_2,pre-Exodus; visible number not established
+5636218c-a0d2-45ee-9552-dbc54e8a91a3,PVOW,Innistrad: Crimson Vow Promos,2021-11-19,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+87732dfe-7fba-44e4-8c9c-fcf64c335e97,PW11,Wizards Play Network 2011,2011-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+380cde80-8b8d-47c7-847f-aa4eeb388b43,PW12,Wizards Play Network 2012,2012-01-01,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+ab6507a5-d3c1-4384-927c-4ec7e6fd1e20,PW21,Wizards Play Network 2021,2021-06-18,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b11b2817-d7b5-4207-9271-e109936561ed,PW22,Wizards Play Network 2022,2022-03-05,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3963badb-c147-489a-95a7-6520a2960bf6,PW23,Wizards Play Network 2023,2023-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+47c94e14-a3a2-4353-910d-dfc310dc869a,PW24,Wizards Play Network 2024,2024-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+eac8a97a-7eb5-4d0f-8206-e4963e57b265,PW25,Wizards Play Network 2025,2025-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6e547347-15c9-4756-b176-74ed3cd18fb2,PW26,Wizards Play Network 2026,2026-01-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9981777b-983e-4f17-b9b1-fe32cf243e23,PWAR,War of the Spark Promos,2019-05-03,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+d08fce7e-36a9-4617-8a14-24eb460bcbaf,PWCS,Planeswalker Championship Promos,2019-10-01,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+909bf1bb-3277-41d6-af0f-293df1203099,PWOE,Wilds of Eldraine Promos,2023-09-08,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+af254727-ca30-48fd-b9bf-144f7e1a308f,PWOR,World Championship Promos,1999-08-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+34aa79e7-b75b-48c5-aa3f-7effc613e06d,PWOS,Wizards of the Coast Online Store,1999-09-04,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7fe6f402-6e57-476c-8f7b-500fd08e3099,PWWK,Worldwake Promos,2010-02-05,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e2876a7e-3444-49cc-a299-aae5094f3566,PXLN,Ixalan Promos,2017-09-29,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+2b5230c7-25a8-4521-9f6a-7e3cefb07213,PXTC,XLN Treasure Chest,2017-11-24,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+59aecbd0-4c5b-4dd7-a0f2-ba16b4403c56,PZA,Teenage Mutant Ninja Turtles Source Material,2026-03-06,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b643670d-7a22-4869-b49c-89cdf9c9b627,PZEN,Zendikar Promos,2009-10-02,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+76c61d42-610a-4b5a-880a-7a1fc1222f81,PZNR,Zendikar Rising Promos,2020-09-25,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ae1cbc8b-eb24-4e7e-9cd4-6691f5478767,Q06,Pioneer Challenger Decks 2021,2021-10-15,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+05fccc6b-1c39-46b6-a492-ac9383a5abfe,Q07,Challenger Decks 2022,2022-04-01,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+15fccbe8-2825-41ca-9d0a-67aebdf91c4a,RAV,Ravnica: City of Guilds,2005-10-07,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+bec33d25-cf6f-460f-918d-29b3009686bb,REN,Renaissance,1995-08-01,masters,true,false,phase_2,pre-Exodus; visible number not established
+647b6fd3-6935-4b96-85a4-d0191487ea5a,REX,Jurassic World Collection,2023-11-17,eternal,true,true,outside_phase_1,modern interval; existing scanning policy retained
+07300e67-c2bb-4200-b526-204574a5ed45,RFIN,Final Fantasy Regional Promos,2025-06-13,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4c53f6a5-90a1-44d6-a21b-bfa9dafba9e8,RIN,Rinascimento,1995-08-01,masters,true,false,phase_2,pre-Exodus; visible number not established
+2f7e40fc-772d-4a85-bfdd-01653c41d0fa,RIX,Rivals of Ixalan,2018-01-19,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+97a7fd84-8d89-45a3-b48b-c951f6a3f9f1,RNA,Ravnica Allegiance,2019-01-25,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+eadb8a82-ec56-4623-b50e-42e7e60cb535,ROE,Rise of the Eldrazi,2010-04-23,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8a407de5-5d19-44ad-ad77-6417c5ee6083,RQS,Rivals Quick Start Set,1996-07-01,box,true,false,phase_2,pre-Exodus; visible number not established
+80b2374d-c5f1-403e-9772-f6c806fd275e,RTR,Return to Ravnica,2012-10-05,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+fed2c8cd-ab92-44f6-808a-41e7809bcfe2,RVR,Ravnica Remastered,2024-01-12,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+1c105623-2564-40d7-a3aa-4134787fb127,S00,Starter 2000,2000-04-01,starter,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+7e345c51-7a88-4c7a-8184-4e1ba493b40d,S99,Starter 1999,1999-07-01,starter,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+440c0aa1-45ce-4323-a74b-b9d3d9f0513c,SBRO,The Brothers' War Substitute Cards,2022-11-18,token,false,false,special_or_child,separate content/layout review required
+adc5d965-43ea-46bc-aebd-8a39282ce168,SCD,Starter Commander Decks,2022-12-02,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5133c3a1-1412-4ce6-a1f0-73b695966ded,SCG,Scourge,2003-05-26,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+211b56b9-961e-4eab-8245-a2f52dd9af47,SCH,Store Championships,2022-07-09,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6c6374a8-d70e-410f-a3c4-978a18fdbaa0,SDS,Stardates,2026-11-13,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c18c0ba1-2081-4808-9b2e-549bc3a666f3,SHM,Shadowmoor,2008-05-02,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+30d7dea6-881a-49ec-9a13-d0df9f15b009,SKHM,Kaldheim Substitute Cards,2021-02-05,token,false,false,special_or_child,separate content/layout review required
+8224dce1-ca9c-45af-ac77-78bfc6042ae2,SLC,Secret Lair Countdown,2022-11-01,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+e5049c18-a21d-4536-b0dc-16cf66de458d,SLCI,The Lost Caverns of Ixalan Substitute Cards,2023-11-17,token,false,false,special_or_child,separate content/layout review required
+4d92a8a7-ccb0-437d-abdc-9d70fc5ed672,SLD,Secret Lair Drop,2019-12-02,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c325b3f9-51e1-416b-83b1-138f11790dd1,SLP,Secret Lair Promo,2023-02-17,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6333fd9a-d48e-497f-83fd-30609018e5cb,SLU,Secret Lair: Ultimate Edition,2020-05-29,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3c318e12-9152-4300-a096-4f58a6438897,SLX,Universes Within,2022-03-03,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fbbad14d-1d42-4204-ade6-911876dc7c06,SLZ,The Zeta Set,2026-09-02,box,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c01b381e-9acc-44bf-82d7-8834a41421fc,SMH3,Modern Horizons 3 Substitute Cards,2024-06-14,token,false,false,special_or_child,separate content/layout review required
+b2c4b255-2603-478b-b343-3f3bd433896d,SMID,Innistrad: Midnight Hunt Substitute Cards,2021-09-24,token,false,false,special_or_child,separate content/layout review required
+69cb6b1c-61db-4d66-beee-b849b34a519c,SMOM,March of the Machine Substitute Cards,2023-04-21,token,false,false,special_or_child,separate content/layout review required
+df837242-8c15-42e4-b049-c933a02dc501,SNC,Streets of New Capenna,2022-04-29,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5539f49e-d43b-4b0d-b7df-7173e48ab018,SNEO,Kamigawa: Neon Dynasty Substitute Cards,2022-02-18,token,false,false,special_or_child,separate content/layout review required
+f57497ce-4c8f-45e3-9cd9-395148357189,SOA,Secrets of Strixhaven Mystical Archive,2026-04-24,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+97fab8d1-480a-419d-ab14-663968e29b9c,SOC,Secrets of Strixhaven Commander,2026-04-24,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5e914d7e-c1e9-446c-a33d-d093c02b2743,SOI,Shadows over Innistrad,2016-04-08,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4db16ad3-2b95-442f-bb6b-e9aa7fe7f769,SOK,Saviors of Kamigawa,2005-06-03,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+8f403072-9b22-4e69-8d59-22dc4c97fd8d,SOM,Scars of Mirrodin,2010-10-01,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+e487c9ce-5e76-4756-bcd0-e4b7db5c38a3,SOS,Secrets of Strixhaven,2026-04-24,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+57f25bcf-c541-418d-87c2-57361d57d35e,SPE,Marvel's Spider-Man Eternal,2025-09-26,eternal,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c01003a2-b3e2-4e7f-a26d-2348144c8056,SPG,Special Guests,2023-11-17,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a1c7b891-9e96-434c-9994-be58b62b27f1,SPM,Marvel's Spider-Man,2025-09-26,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a24031db-1378-420f-b671-bcaec52d6f6c,SS1,Signature Spellbook: Jace,2018-06-15,spellbook,true,true,outside_phase_1,modern interval; existing scanning policy retained
+9ae53f04-9cbb-45db-8b5c-972fe847a984,SS2,Signature Spellbook: Gideon,2019-06-28,spellbook,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4887d21f-71e7-4d7a-a079-e9521fd7e6d7,SS3,Signature Spellbook: Chandra,2020-06-26,spellbook,true,true,outside_phase_1,modern interval; existing scanning policy retained
+81a2daee-8c16-4b78-9447-e80d7174f9a3,SSTX,Strixhaven: School of Mages Substitute Cards,2021-04-23,token,false,false,special_or_child,separate content/layout review required
+5064a720-907f-4cb6-a425-766dc1dd7374,STA,Strixhaven Mystical Archive,2021-04-23,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5c83396a-d386-4367-926b-571a75b086a3,STH,Stronghold,1998-03-02,expansion,true,false,phase_2,pre-Exodus; visible number not established
+541c3c28-8747-40e5-a231-8e8f33234859,STX,Strixhaven: School of Mages,2021-04-23,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7993c591-1361-4dcb-b2af-ac94dd8e86e8,SUM,Summer Magic / Edgar,1994-06-21,core,true,false,phase_2,pre-Exodus; visible number not established
+565e3302-2fed-487e-a0f7-7f8037d25030,SUNF,Unfinity Sticker Sheets,2022-10-07,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+50d5276a-954f-4497-b313-a69dcdbdbf91,SVOW,Innistrad: Crimson Vow Substitute Cards,2021-11-19,token,false,false,special_or_child,separate content/layout review required
+3bcb5e53-5ebb-4ff4-b76a-fc378bca0157,SZNR,Zendikar Rising Substitute Cards,2020-09-25,token,false,false,special_or_child,separate content/layout review required
+751d03a0-bd98-406c-9c5a-307ab95d50bb,T10E,Tenth Edition Tokens,2007-07-13,token,false,false,special_or_child,separate content/layout review required
+9645dac1-faea-41a3-83c3-20df714c2c92,T2X2,Double Masters 2022 Tokens,2022-07-08,token,false,false,special_or_child,separate content/layout review required
+b4027d72-f717-4bfc-81f6-12a3fcc3866b,T2XM,Double Masters Tokens,2020-08-07,token,false,false,special_or_child,separate content/layout review required
+3f5e3680-ab46-4517-9444-38d367b01f92,T30A,30th Anniversary Tokens,2022-11-28,token,false,false,special_or_child,separate content/layout review required
+671f2e10-501c-42ef-a1e3-9aa63ec3ec6c,T40K,"Warhammer 40,000 Tokens",2022-10-07,token,false,false,special_or_child,separate content/layout review required
+d7332292-8eae-4d07-b48d-c96effb3994a,TA25,Masters 25 Tokens,2018-03-16,token,false,false,special_or_child,separate content/layout review required
+40745188-c35f-4f69-89db-1fe5b46b65ba,TACR,Assassin's Creed Tokens,2024-07-05,token,false,false,special_or_child,separate content/layout review required
+540e9f76-9408-49bb-910f-ab9c5baea23f,TAER,Aether Revolt Tokens,2017-01-20,token,false,false,special_or_child,separate content/layout review required
+28158e6a-efa3-42d8-90da-b8c7a7cc9dea,TAFC,Forgotten Realms Commander Tokens,2021-07-23,token,false,false,special_or_child,separate content/layout review required
+68e8eca4-2c75-4f44-8519-59489e76b719,TAFR,Adventures in the Forgotten Realms Tokens,2021-07-23,token,false,false,special_or_child,separate content/layout review required
+739edf06-0069-4a07-8995-18ff67083e8e,TAKH,Amonkhet Tokens,2017-04-28,token,false,false,special_or_child,separate content/layout review required
+835956e2-d0ea-4219-b77e-b439208d0655,TALA,Shards of Alara Tokens,2008-10-03,token,false,false,special_or_child,separate content/layout review required
+f1c5bbc9-2b74-443f-8b26-f495f2b4de18,TARB,Alara Reborn Tokens,2009-04-30,token,false,false,special_or_child,separate content/layout review required
+c362c2a9-2782-4cbc-917f-05334cb81c5b,TAVR,Avacyn Restored Tokens,2012-05-04,token,false,false,special_or_child,separate content/layout review required
+b08b40c1-a3fc-4920-a4f6-842c7286fb98,TBBD,Battlebond Tokens,2018-06-08,token,false,false,special_or_child,separate content/layout review required
+b0b5bce3-fe9f-49ca-848d-dc6e2d39c810,TBFZ,Battle for Zendikar Tokens,2015-10-02,token,false,false,special_or_child,separate content/layout review required
+d73ac1ef-7042-4548-994e-9eb4d34988dc,TBIG,The Big Score Tokens,2024-04-19,token,false,false,special_or_child,separate content/layout review required
+98ffb0ad-639e-4861-b81d-dd5ae734badf,TBLB,Bloomburrow Tokens,2024-08-02,token,false,false,special_or_child,separate content/layout review required
+c19783ef-387f-4974-9185-56be15c7ac0d,TBLC,Bloomburrow Commander Tokens,2024-08-02,token,false,false,special_or_child,separate content/layout review required
+81dd6941-9598-43ab-abd7-fd5f2b71b171,TBNG,Born of the Gods Tokens,2014-02-07,token,false,false,special_or_child,separate content/layout review required
+99e9841c-837b-4920-9165-1c7ef693f40e,TBOT,Transformers Tokens,2022-11-18,token,false,false,special_or_child,separate content/layout review required
+32685506-c036-4773-9ccd-2ef50f28b2a1,TBRC,The Brothers' War Commander Tokens,2022-11-18,token,false,false,special_or_child,separate content/layout review required
+2279da90-6de2-4335-b846-6000707940b0,TBRO,The Brothers' War Tokens,2022-11-18,token,false,false,special_or_child,separate content/layout review required
+58172859-996d-49d0-9016-460714a8ae01,TC14,Commander 2014 Tokens,2014-11-07,token,false,false,special_or_child,separate content/layout review required
+75af5bab-521e-47f4-b3b6-655ebddf5cb2,TC15,Commander 2015 Tokens,2015-11-13,token,false,false,special_or_child,separate content/layout review required
+b8c05f6f-ae4b-436b-a475-09e768ca6a2e,TC16,Commander 2016 Tokens,2016-11-11,token,false,false,special_or_child,separate content/layout review required
+d6402450-8ab0-4ae6-b909-87ef6464a637,TC17,Commander 2017 Tokens,2017-08-25,token,false,false,special_or_child,separate content/layout review required
+8d858150-d438-49cb-81d6-8fc5b8feccc4,TC18,Commander 2018 Tokens,2018-08-09,token,false,false,special_or_child,separate content/layout review required
+3e10647f-a051-4790-af9d-7501544fac73,TC19,Commander 2019 Tokens,2019-08-01,token,false,false,special_or_child,separate content/layout review required
+bc7f97a6-1fd5-43cf-98f9-9f0d4872b2d1,TC20,Commander 2020 Tokens,2020-04-17,token,false,false,special_or_child,separate content/layout review required
+0626d2d5-5b60-48fa-97b5-960eb263a051,TC21,Commander 2021 Tokens,2021-04-23,token,false,false,special_or_child,separate content/layout review required
+942706db-55db-4d8b-8337-deca3a4b522c,TCLB,Battle for Baldur's Gate Tokens,2022-06-10,token,false,false,special_or_child,separate content/layout review required
+fa6a256f-bad4-495d-a2f7-007c0a773307,TCM2,Commander Anthology Volume II Tokens,2018-06-08,token,false,false,special_or_child,separate content/layout review required
+87645e3f-e06e-4cda-9f2c-5ea9232674bc,TCMA,Commander Anthology Tokens,2017-06-09,token,false,false,special_or_child,separate content/layout review required
+3fa29655-8840-4a5b-8289-3964109e436b,TCMM,Commander Masters Tokens,2023-08-04,token,false,false,special_or_child,separate content/layout review required
+6bcdcd3c-15a1-49b2-bbe7-639d18395a5d,TCMR,Commander Legends Tokens,2020-11-20,token,false,false,special_or_child,separate content/layout review required
+05253e32-2e5b-41e3-8be4-c55cd31fe5fd,TCN2,Conspiracy: Take the Crown Tokens,2016-08-26,token,false,false,special_or_child,separate content/layout review required
+48fa7ece-52b1-446b-9855-413ee4714185,TCNS,Conspiracy Tokens,2014-06-06,token,false,false,special_or_child,separate content/layout review required
+a7f9ec0e-e886-46d2-9857-4546c8e6fd32,TCON,Conflux Tokens,2009-02-06,token,false,false,special_or_child,separate content/layout review required
+bca9779c-0a0b-4ac1-8794-f3fc25549cf4,TDC,Tarkir: Dragonstorm Commander,2025-04-11,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+005f56a5-9661-4bd1-bf05-cf133ccdcdcf,TDD1,Duel Decks: Elves vs. Goblins Tokens,2007-11-16,token,false,false,special_or_child,separate content/layout review required
+596b1b68-c669-44e8-8163-5a5e272f77e8,TDD2,Duel Decks: Jace vs. Chandra Tokens,2008-11-07,token,false,false,special_or_child,separate content/layout review required
+4281ce5b-05ea-4ff1-a242-8c136cce5224,TDDC,Duel Decks: Divine vs. Demonic Tokens,2009-04-10,token,false,false,special_or_child,separate content/layout review required
+bc6b3b40-d55f-44d3-9c7a-a5279cdf1fc8,TDDD,Duel Decks: Garruk vs. Liliana Tokens,2009-10-30,token,false,false,special_or_child,separate content/layout review required
+f0431641-4f76-4a4a-bc80-37a95f986d73,TDDE,Duel Decks: Phyrexia vs. the Coalition Tokens,2010-03-19,token,false,false,special_or_child,separate content/layout review required
+0bded9df-2f2b-4862-b35f-1e64d3decb8b,TDDF,Duel Decks: Elspeth vs. Tezzeret Tokens,2010-09-03,token,false,false,special_or_child,separate content/layout review required
+f5a051a3-ead3-469a-83e4-c6669f880085,TDDG,Duel Decks: Knights vs. Dragons Tokens,2011-04-01,token,false,false,special_or_child,separate content/layout review required
+982f060c-1508-4f2e-8cbc-a5675dbe4477,TDDH,Duel Decks: Ajani vs. Nicol Bolas Tokens,2011-09-02,token,false,false,special_or_child,separate content/layout review required
+7ed0ca7e-daea-4cf6-8667-9fdc894e539c,TDDI,Duel Decks: Venser vs. Koth Tokens,2012-03-30,token,false,false,special_or_child,separate content/layout review required
+8568648a-da9d-4440-a826-a065266c7a4e,TDDJ,Duel Decks: Izzet vs. Golgari Tokens,2012-09-07,token,false,false,special_or_child,separate content/layout review required
+5a20bd6d-97c6-4ba1-b737-9c6455777cf1,TDDK,Duel Decks: Sorin vs. Tibalt Tokens,2013-03-15,token,false,false,special_or_child,separate content/layout review required
+8dd89664-d3d2-4cc3-8808-7c84533e9670,TDDL,Duel Decks: Heroes vs. Monsters Tokens,2013-09-06,token,false,false,special_or_child,separate content/layout review required
+1347a008-d8da-46d5-82f7-fe25527bbbd0,TDDM,Duel Decks: Jace vs. Vraska Tokens,2014-03-14,token,false,false,special_or_child,separate content/layout review required
+873340b9-7204-4f92-9638-c85419be0a80,TDDS,Duel Decks: Mind vs. Might Tokens,2017-03-31,token,false,false,special_or_child,separate content/layout review required
+0e125579-396f-4614-9557-717698b06462,TDDT,Duel Decks: Merfolk vs. Goblins Tokens,2017-10-24,token,false,false,special_or_child,separate content/layout review required
+ec7c4edd-56ae-46a7-9c05-efbff73bcf8c,TDDU,Duel Decks: Elves vs. Inventors Tokens,2018-04-06,token,false,false,special_or_child,separate content/layout review required
+3916f769-ad69-4527-9700-33b266113013,TDFT,Aetherdrift Tokens,2025-02-14,token,false,false,special_or_child,separate content/layout review required
+73406582-d0f6-4c0b-a23d-465485e5a05c,TDGM,Dragon's Maze Tokens,2013-05-03,token,false,false,special_or_child,separate content/layout review required
+5b70a0fa-6968-4e29-b9a1-62d3be626b65,TDKA,Dark Ascension Tokens,2012-02-03,token,false,false,special_or_child,separate content/layout review required
+1361ca81-1304-49a8-b2e6-e76a4aa4a8c3,TDM,Tarkir: Dragonstorm,2025-04-11,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+03a103bc-60be-463f-a2ab-3d2ad5363354,TDMC,Dominaria United Commander Tokens,2022-09-09,token,false,false,special_or_child,separate content/layout review required
+d583889f-a8c3-48ce-82c1-361c06de93dc,TDMR,Dominaria Remastered Tokens,2023-01-13,token,false,false,special_or_child,separate content/layout review required
+1e96e903-601f-4286-b61e-8da021cbceff,TDMU,Dominaria United Tokens,2022-09-09,token,false,false,special_or_child,separate content/layout review required
+c402d02c-7d42-41e4-99ea-d2540ca10b0c,TDOM,Dominaria Tokens,2018-04-27,token,false,false,special_or_child,separate content/layout review required
+f51d00d3-6ab4-4fa9-90ce-702aed612e9b,TDRC,Aetherdrift Commander Tokens,2025-02-14,token,false,false,special_or_child,separate content/layout review required
+faf368ed-8cd5-40cf-9ca3-8298bd1f244e,TDSC,Duskmourn Commander Tokens,2024-09-27,token,false,false,special_or_child,separate content/layout review required
+756a7010-a91f-46fd-be50-f4ff9aa741d0,TDSK,Duskmourn: House of Horror Tokens,2024-09-27,token,false,false,special_or_child,separate content/layout review required
+e9bd9e1e-754a-4d8f-a1d1-b9b6f18474c5,TDTK,Dragons of Tarkir Tokens,2015-03-27,token,false,false,special_or_child,separate content/layout review required
+63fb2d9f-a193-4dac-b160-dd117b3e3053,TDVD,Duel Decks Anthology: Divine vs. Demonic Tokens,2014-12-05,token,false,false,special_or_child,separate content/layout review required
+31a6abc8-69af-4aea-883e-7b9265fee9f6,TE01,Archenemy: Nicol Bolas Tokens,2017-09-08,token,false,false,special_or_child,separate content/layout review required
+8c48e6a3-51df-467b-b251-aaa17095787b,TECC,Lorwyn Eclipsed Commander Tokens,2026-01-23,token,false,false,special_or_child,separate content/layout review required
+f5380338-65e9-4885-8989-b23350cd27de,TECL,Lorwyn Eclipsed Tokens,2026-01-23,token,false,false,special_or_child,separate content/layout review required
+53a599cf-9e16-4bc1-91b9-95e541e0848d,TELD,Throne of Eldraine Tokens,2019-10-04,token,false,false,special_or_child,separate content/layout review required
+f3d04563-054b-45b3-aec4-9ccc9acaf15d,TEMA,Eternal Masters Tokens,2016-06-10,token,false,false,special_or_child,separate content/layout review required
+eaa440dd-b2b5-4228-b7da-9071818497a2,TEMN,Eldritch Moon Tokens,2016-07-22,token,false,false,special_or_child,separate content/layout review required
+a447114b-d795-4222-b903-b578f7ce8c23,TEOC,Edge of Eternities Commander Tokens,2025-08-01,token,false,false,special_or_child,separate content/layout review required
+8c318768-896e-4388-9211-48462b98245e,TEOE,Edge of Eternities Tokens,2025-08-01,token,false,false,special_or_child,separate content/layout review required
+107e2bde-bf04-42e9-ab9d-44175d1bebe7,TEVE,Eventide Tokens,2008-07-25,token,false,false,special_or_child,separate content/layout review required
+b9ffeaf1-b0d1-4fbc-a899-c41d37c7203e,TEVG,Duel Decks Anthology: Elves vs. Goblins Tokens,2014-12-05,token,false,false,special_or_child,separate content/layout review required
+9c2ab581-f38a-4a77-8bf6-585ba8bb9c0b,TFDC,Foundations Commander Tokens,2026-10-02,token,false,false,special_or_child,separate content/layout review required
+abb31a61-9d0e-47ed-852a-8c5249396c7d,TFDN,Foundations Tokens,2024-11-15,token,false,false,special_or_child,separate content/layout review required
+40f74ca2-e802-4278-ba9d-5fb5da32e2ab,TFIC,Final Fantasy Commander Tokens,2025-06-13,token,false,false,special_or_child,separate content/layout review required
+e6f97941-6b02-4951-966f-522722cb6339,TFIN,Final Fantasy Tokens,2025-06-13,token,false,false,special_or_child,separate content/layout review required
+8a39f34a-1963-4d72-b423-5813d33b1aa7,TFRA,Reality Fracture Tokens,2026-10-02,token,false,false,special_or_child,separate content/layout review required
+c4c1ce20-ddbc-48e1-83ad-7c3b849ec9ef,TFRC,Reality Fracture Commander Tokens,2026-10-02,token,false,false,special_or_child,separate content/layout review required
+bd0fb627-519a-4597-8977-74aa69ab31f5,TFRF,Fate Reforged Tokens,2015-01-23,token,false,false,special_or_child,separate content/layout review required
+9cabda5f-97cd-4eb3-93b9-83d1e9a191cb,TGK1,GRN Guild Kit Tokens,2018-11-02,token,false,false,special_or_child,separate content/layout review required
+e679befd-f788-46ab-a000-bcd1b0c56ff2,TGK2,RNA Guild Kit Tokens,2019-02-15,token,false,false,special_or_child,separate content/layout review required
+d724cb13-6907-47a9-8a24-22c16be11302,TGN2,Game Night 2019 Tokens,2019-11-15,token,false,false,special_or_child,separate content/layout review required
+652510f2-c873-4c82-9f8c-5cc4c5ea80ba,TGN3,Game Night: Free-for-All Tokens,2022-10-14,token,false,false,special_or_child,separate content/layout review required
+967bba11-2f81-452c-98c4-56bd7c051242,TGRN,Guilds of Ravnica Tokens,2018-10-05,token,false,false,special_or_child,separate content/layout review required
+4a5fbb89-2871-4c06-9b55-0a7911857118,TGTC,Gatecrash Tokens,2013-02-01,token,false,false,special_or_child,separate content/layout review required
+cc86f9d1-d866-432a-bb10-0ea81699ebed,TGVL,Duel Decks Anthology: Garruk vs. Liliana Tokens,2014-12-05,token,false,false,special_or_child,separate content/layout review required
+5f23a78d-cda1-462a-8be3-a62b40c34913,THB,Theros Beyond Death,2020-01-24,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4be6c17a-b478-4a20-b1a7-4b7905323074,THOB,The Hobbit Tokens,2026-08-14,token,false,false,special_or_child,separate content/layout review required
+cb890bc8-ec73-449e-9be0-46891f39eea1,THOU,Hour of Devastation Tokens,2017-07-14,token,false,false,special_or_child,separate content/layout review required
+69093d6f-e25a-41a4-8cf5-688d7f11c0fb,THS,Theros,2013-09-27,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+382e0900-dd85-4f23-9dcf-24c9d2971f1b,TIKO,Ikoria: Lair of Behemoths Tokens,2020-04-24,token,false,false,special_or_child,separate content/layout review required
+a687cc0c-894b-4373-87b0-737cbace1da6,TIMA,Iconic Masters Tokens,2017-11-29,token,false,false,special_or_child,separate content/layout review required
+de27268e-c9c5-4d97-9bfd-28ad8cb7b1a0,TINR,Innistrad Remastered Tokens,2025-01-24,token,false,false,special_or_child,separate content/layout review required
+a91850e1-a8b4-49dd-a5dc-2a73ea4f9e40,TISD,Innistrad Tokens,2011-09-30,token,false,false,special_or_child,separate content/layout review required
+6e8a17bb-5e09-475f-9832-4369ee84e1e4,TJOU,Journey into Nyx Tokens,2014-05-02,token,false,false,special_or_child,separate content/layout review required
+d183a05b-125e-48a5-b8cf-2dc69d9caec9,TJVC,Duel Decks Anthology: Jace vs. Chandra Tokens,2014-12-05,token,false,false,special_or_child,separate content/layout review required
+d44c4073-9771-4a9a-a304-317591f3de8c,TKHC,Kaldheim Commander Tokens,2021-02-05,token,false,false,special_or_child,separate content/layout review required
+c3ee48f1-6f93-42d4-b05c-65a04d02a488,TKHM,Kaldheim Tokens,2021-02-05,token,false,false,special_or_child,separate content/layout review required
+8980a939-9003-46ee-bd9a-a6bdefd18e26,TKLD,Kaladesh Tokens,2016-09-30,token,false,false,special_or_child,separate content/layout review required
+703ad254-4167-46a7-be4f-a0b86247a42b,TKTK,Khans of Tarkir Tokens,2014-09-26,token,false,false,special_or_child,separate content/layout review required
+118f7e64-5caa-4cb7-99a8-184f4d3a7422,TLA,Avatar: The Last Airbender,2025-11-21,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+76e77066-7b87-4e70-82eb-769a17b744fa,TLCC,The Lost Caverns of Ixalan Commander Tokens,2023-11-17,token,false,false,special_or_child,separate content/layout review required
+07ee7ac3-059b-4de5-924a-2bd1b7910c8b,TLCI,The Lost Caverns of Ixalan Tokens,2023-11-17,token,false,false,special_or_child,separate content/layout review required
+a75e6ceb-d62c-4063-8e96-f269e3a0b025,TLE,Avatar: The Last Airbender Eternal,2025-11-21,eternal,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bfd36a58-a297-44e8-9421-3010f541eec9,TLRW,Lorwyn Tokens,2007-10-12,token,false,false,special_or_child,separate content/layout review required
+e88d1f88-385e-4cdc-afbb-c23f3d48f61a,TLTC,Tales of Middle-earth Commander Tokens,2023-06-23,token,false,false,special_or_child,separate content/layout review required
+f6267b1d-21e9-4a7f-a5b3-7c2af4fc958b,TLTR,Tales of Middle-earth Tokens,2023-06-23,token,false,false,special_or_child,separate content/layout review required
+6d9f49c1-4784-4fd6-a9f1-05e36e25befe,TM10,Magic 2010 Tokens,2009-07-17,token,false,false,special_or_child,separate content/layout review required
+ac8f1cc2-3d92-4389-8de4-8a7a8aec2aba,TM11,Magic 2011 Tokens,2010-07-16,token,false,false,special_or_child,separate content/layout review required
+56ca128d-320c-430f-b083-1950f80aa11f,TM12,Magic 2012 Tokens,2011-07-15,token,false,false,special_or_child,separate content/layout review required
+cd869f42-f58f-4ce3-a79d-7949b514ba52,TM13,Magic 2013 Tokens,2012-07-13,token,false,false,special_or_child,separate content/layout review required
+4fd45589-264c-461b-8ccd-66f952f81764,TM14,Magic 2014 Tokens,2013-07-19,token,false,false,special_or_child,separate content/layout review required
+ae4f4088-26d4-479c-b615-1027c25bb577,TM15,Magic 2015 Tokens,2014-07-18,token,false,false,special_or_child,separate content/layout review required
+f291a61b-4afa-4c57-85ac-c67d5ab1403d,TM19,Core Set 2019 Tokens,2018-07-13,token,false,false,special_or_child,separate content/layout review required
+2f0b935f-c299-4f84-9e8b-95c65ebb9aed,TM20,Core Set 2020 Tokens,2019-07-12,token,false,false,special_or_child,separate content/layout review required
+06cfcf14-ff33-4210-a531-c2818637f7df,TM21,Core Set 2021 Tokens,2020-07-03,token,false,false,special_or_child,separate content/layout review required
+e912a6f3-790f-4950-bacf-4693f517b469,TM3C,Modern Horizons 3 Commander Tokens,2024-06-14,token,false,false,special_or_child,separate content/layout review required
+ab9695ca-ca49-46c2-9bc4-c18e50f8689b,TMBS,Mirrodin Besieged Tokens,2011-02-04,token,false,false,special_or_child,separate content/layout review required
+178a07bb-cd54-4443-8b62-675e0c52cfe3,TMC,Teenage Mutant Ninja Turtles Eternal,2026-03-06,eternal,true,true,outside_phase_1,modern interval; existing scanning policy retained
+a6402e47-32d9-444d-bf16-8fc5af745241,TMD1,Modern Event Deck 2014 Tokens,2014-05-30,token,false,false,special_or_child,separate content/layout review required
+3a9213f3-71d0-4e17-a9f4-f85f705f3cbe,TMED,Mythic Edition Tokens,2018-10-05,token,false,false,special_or_child,separate content/layout review required
+7751e019-c7da-4117-b05a-5a4ba8261aa8,TMH1,Modern Horizons Tokens,2019-05-30,token,false,false,special_or_child,separate content/layout review required
+b25a75f7-3f5b-4056-8ab8-a463d18ce818,TMH2,Modern Horizons 2 Tokens,2021-06-18,token,false,false,special_or_child,separate content/layout review required
+7aa71d91-3b45-4a2f-a183-0b3c1918c285,TMH3,Modern Horizons 3 Tokens,2024-06-14,token,false,false,special_or_child,separate content/layout review required
+56d23ab2-9edd-4250-bf33-3225c183cc1a,TMIC,Midnight Hunt Commander Tokens,2021-09-24,token,false,false,special_or_child,separate content/layout review required
+cb7c7eac-c13c-465e-b276-85517f1472d8,TMID,Innistrad: Midnight Hunt Tokens,2021-09-24,token,false,false,special_or_child,separate content/layout review required
+94023707-128c-438e-95e3-c86f1ce72fb5,TMKC,Murders at Karlov Manor Commander Tokens,2024-02-09,token,false,false,special_or_child,separate content/layout review required
+4be7158b-d5e6-4558-accc-ed0661f2371b,TMKM,Murders at Karlov Manor Tokens,2024-02-09,token,false,false,special_or_child,separate content/layout review required
+f7aa47c6-c1e2-4de5-9a68-4406d84bd6bb,TMM2,Modern Masters 2015 Tokens,2015-05-22,token,false,false,special_or_child,separate content/layout review required
+6ea10568-e3e6-4a54-9ba5-cabfc2715eeb,TMM3,Modern Masters 2017 Tokens,2017-03-17,token,false,false,special_or_child,separate content/layout review required
+e03160f8-6045-4613-9869-f5f4fa12604d,TMMA,Modern Masters Tokens,2013-06-07,token,false,false,special_or_child,separate content/layout review required
+f61d6546-a7e4-438b-99ce-58a483a4fd9a,TMOC,March of the Machine Commander Tokens,2023-04-21,token,false,false,special_or_child,separate content/layout review required
+2c73a39a-a359-41e7-879a-3857234f2a4b,TMOM,March of the Machine Tokens,2023-04-21,token,false,false,special_or_child,separate content/layout review required
+cf25354d-817d-4756-b786-604ac93ba3b7,TMOR,Morningtide Tokens,2008-02-01,token,false,false,special_or_child,separate content/layout review required
+10df3a67-178e-4363-8668-34f0e6edf2a7,TMP,Tempest,1997-10-14,expansion,true,false,phase_2,pre-Exodus; visible number not established
+1a555c51-d5da-4f1d-ac1c-5cce81d5d8dc,TMSC,Marvel Super Heroes Commander Tokens,2026-06-26,token,false,false,special_or_child,separate content/layout review required
+1226146b-024f-4456-be60-edf06fc054df,TMSH,Marvel Super Heroes Tokens,2026-06-26,token,false,false,special_or_child,separate content/layout review required
+03990f52-1d8a-4ce8-828a-c9bf633f0de6,TMT,Teenage Mutant Ninja Turtles,2026-03-06,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fd03645a-f585-43e2-94d3-f8932b7e9284,TMUL,Multiverse Legends Tokens,2023-04-21,token,false,false,special_or_child,separate content/layout review required
+d6ddbf54-6a77-47d6-9b9c-b6587079b967,TNCC,New Capenna Commander Tokens,2022-04-29,token,false,false,special_or_child,separate content/layout review required
+5bd03f4f-1766-4a47-a70b-e717651f06be,TNEC,Neon Dynasty Commander Tokens,2022-02-18,token,false,false,special_or_child,separate content/layout review required
+8bb113fb-6138-4993-877b-5cd01f8d7529,TNEO,Kamigawa: Neon Dynasty Tokens,2022-02-18,token,false,false,special_or_child,separate content/layout review required
+7b5e3883-6588-412a-b979-7de44d50b3de,TNPH,New Phyrexia Tokens,2011-05-13,token,false,false,special_or_child,separate content/layout review required
+0898d3dd-a7dd-4d65-bddc-3a0e32a1dfd0,TOGW,Oath of the Gatewatch Tokens,2016-01-22,token,false,false,special_or_child,separate content/layout review required
+04ed1b78-cc80-4888-9536-c69facdc19e3,TONC,Phyrexia: All Will Be One Commander Tokens,2023-02-03,token,false,false,special_or_child,separate content/layout review required
+e7b7618d-1fa1-44a8-9cd7-7fe360626917,TONE,Phyrexia: All Will Be One Tokens,2023-02-03,token,false,false,special_or_child,separate content/layout review required
+e0b3fda1-a6ca-4996-849b-08b463d39484,TOR,Torment,2002-02-04,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+cfc3f929-420a-4236-8d06-8e227cfb6933,TORI,Magic Origins Tokens,2015-07-17,token,false,false,special_or_child,separate content/layout review required
+e25e9845-1a2f-420d-a9fb-12a15058b50d,TOTC,Outlaws of Thunder Junction Commander Tokens,2024-04-19,token,false,false,special_or_child,separate content/layout review required
+d287eb38-a1b8-4d01-bdfe-4ccbd2837145,TOTJ,Outlaws of Thunder Junction Tokens,2024-04-19,token,false,false,special_or_child,separate content/layout review required
+b609eb59-1d0d-4fd0-bc25-3e3eeccf0913,TOTP,Breaking News Tokens,2024-04-19,token,false,false,special_or_child,separate content/layout review required
+b2578381-a42d-4fa5-b9ab-9265f4cca101,TPCA,Planechase Anthology Tokens,2016-11-25,token,false,false,special_or_child,separate content/layout review required
+0516d9a9-8262-4fed-9207-7deca5306cdf,TPIP,Fallout Tokens,2024-03-08,token,false,false,special_or_child,separate content/layout review required
+a38c10be-90b1-4bb9-bd74-46784a751ac3,TRC,Star Trek Commander,2026-11-13,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+883ce74c-d4b4-4ee8-84d2-c1377fea1596,TREX,Jurassic World Collection Tokens,2023-11-17,token,false,false,special_or_child,separate content/layout review required
+a49703ee-b842-44f1-aff3-20a7c75253f6,TRIX,Rivals of Ixalan Tokens,2018-01-19,token,false,false,special_or_child,separate content/layout review required
+b47039dc-da5a-448c-8feb-e77d458108a6,TRK,Star Trek,2026-11-13,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+7766a0e4-ff37-4ceb-b68c-6f9336c64ba0,TRNA,Ravnica Allegiance Tokens,2019-01-25,token,false,false,special_or_child,separate content/layout review required
+855dd9b4-d26a-42e0-b693-81aade8affa8,TROE,Rise of the Eldrazi Tokens,2010-04-23,token,false,false,special_or_child,separate content/layout review required
+56289aec-fc72-4bc1-ad67-fac850de5b4e,TRTR,Return to Ravnica Tokens,2012-10-05,token,false,false,special_or_child,separate content/layout review required
+c74a3d37-4b0c-49fd-baa6-9d80756ed50c,TRVR,Ravnica Remastered Tokens,2024-01-12,token,false,false,special_or_child,separate content/layout review required
+6519be58-b8cb-4cd7-9f5b-4db23364715b,TSB,Time Spiral Timeshifted,2006-10-06,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+46b761a4-df4f-47e8-bcf6-2a55bb511fc4,TSCD,Starter Commander Deck Tokens,2022-12-02,token,false,false,special_or_child,separate content/layout review required
+2dd7782a-5e58-4338-81ff-0841c66ee647,TSHM,Shadowmoor Tokens,2008-05-02,token,false,false,special_or_child,separate content/layout review required
+c1b4fd5f-1ffc-420a-a50a-241b72b10ea7,TSNC,Streets of New Capenna Tokens,2022-04-29,token,false,false,special_or_child,separate content/layout review required
+cb590d57-927c-437a-934c-7f774881d1c9,TSOC,Secrets of Strixhaven Commander Tokens,2026-04-24,token,false,false,special_or_child,separate content/layout review required
+114885aa-26f2-45a5-822f-376ae5374d63,TSOI,Shadows over Innistrad Tokens,2016-04-08,token,false,false,special_or_child,separate content/layout review required
+1ea34c50-24cc-4e12-bdf5-12ef7d8a522f,TSOM,Scars of Mirrodin Tokens,2010-10-01,token,false,false,special_or_child,separate content/layout review required
+2c5a240e-9938-418e-a85d-8c4b098144bc,TSOS,Secrets of Strixhaven Tokens,2026-04-24,token,false,false,special_or_child,separate content/layout review required
+c1d109bc-ffd8-428f-8d7d-3f8d7e648046,TSP,Time Spiral,2006-10-06,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+6a930c14-c228-45d6-8580-05218153815a,TSPM,Marvel's Spider-Man Tokens,2025-09-26,token,false,false,special_or_child,separate content/layout review required
+11e90d1b-0502-43e6-b056-e24836523c13,TSR,Time Spiral Remastered,2021-03-19,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+5a24058d-2b14-4f38-b906-9d2509da1c90,TSTX,Strixhaven: School of Mages Tokens,2021-04-23,token,false,false,special_or_child,separate content/layout review required
+2a667754-20c4-4deb-b2b6-d9f7c018c190,TTDC,Tarkir: Dragonstorm Commander Tokens,2025-04-11,token,false,false,special_or_child,separate content/layout review required
+0c9ae251-ec77-4906-b505-02820b7ccedb,TTDM,Tarkir: Dragonstorm Tokens,2025-04-11,token,false,false,special_or_child,separate content/layout review required
+200c397b-bf57-46a2-8ebf-592148fd49a4,TTHB,Theros Beyond Death Tokens,2020-01-24,token,false,false,special_or_child,separate content/layout review required
+fbed88b2-db9b-4606-8202-8ff746f0513f,TTHS,Theros Tokens,2013-09-27,token,false,false,special_or_child,separate content/layout review required
+89b3c0da-5cc2-4895-b592-36e754f856b8,TTLA,Avatar: The Last Airbender Tokens,2025-11-21,token,false,false,special_or_child,separate content/layout review required
+746b850e-380b-45a3-90c7-32a660789828,TTLE,Avatar: The Last Airbender Eternal Tokens,2025-11-21,token,false,false,special_or_child,separate content/layout review required
+1b3d029e-609e-44de-a210-8c6a531dffc4,TTMC,Teenage Mutant Ninja Turtles Eternal Tokens,2026-03-06,token,false,false,special_or_child,separate content/layout review required
+914ad085-2264-40ad-84cb-b7e3d63bb5fe,TTMT,Teenage Mutant Ninja Turtles Tokens,2026-03-06,token,false,false,special_or_child,separate content/layout review required
+4edafaae-5000-4dab-8d7a-54c5b7566bf4,TTRK,Star Trek Tokens,2026-11-13,token,false,false,special_or_child,separate content/layout review required
+92e36faf-5459-428f-b1fa-687ad31ebfcc,TTSR,Time Spiral Remastered Tokens,2021-03-19,token,false,false,special_or_child,separate content/layout review required
+cf1f416e-ea50-4d93-8f75-c3a49c8238cf,TUGL,Unglued Tokens,1998-08-11,token,false,false,special_or_child,separate content/layout review required
+804240d7-957c-4860-a684-d3d51dfe1c77,TUMA,Ultimate Masters Tokens,2018-12-07,token,false,false,special_or_child,separate content/layout review required
+8fe3f935-7c8d-4a4e-a051-c0b0f251d262,TUND,Unsanctioned Tokens,2020-02-29,token,false,false,special_or_child,separate content/layout review required
+a60124f9-8002-4769-ac16-387b61fa2bc6,TUNF,Unfinity Tokens,2022-10-07,token,false,false,special_or_child,separate content/layout review required
+f494ec08-2e39-4228-bddb-200967e2b109,TUST,Unstable Tokens,2017-12-08,token,false,false,special_or_child,separate content/layout review required
+1316053f-0acb-48cf-b140-b8cf29437662,TVOC,Crimson Vow Commander Tokens,2021-11-19,token,false,false,special_or_child,separate content/layout review required
+381f2eb8-544e-409c-a8c5-7171cd78edea,TVOW,Innistrad: Crimson Vow Tokens,2021-11-19,token,false,false,special_or_child,separate content/layout review required
+347699d9-cef8-457f-b08d-691abe09fc9c,TWAR,War of the Spark Tokens,2019-05-03,token,false,false,special_or_child,separate content/layout review required
+d2d6e9d3-40dd-4e84-897f-fb8f82fc6b91,TWHO,Doctor Who Tokens,2023-10-13,token,false,false,special_or_child,separate content/layout review required
+1e769157-d90e-4b4f-bd6e-67162a3285ad,TWOC,Wilds of Eldraine Commander Tokens,2023-09-08,token,false,false,special_or_child,separate content/layout review required
+273c0661-0af3-4b64-880f-e287799325e9,TWOE,Wilds of Eldraine Tokens,2023-09-08,token,false,false,special_or_child,separate content/layout review required
+066f22e0-c762-4222-8d99-ff262ead231e,TWWK,Worldwake Tokens,2010-02-05,token,false,false,special_or_child,separate content/layout review required
+52f094c5-f3ed-42fc-b6a4-4004c0a48f50,TXLN,Ixalan Tokens,2017-09-29,token,false,false,special_or_child,separate content/layout review required
+f97260a2-5fb8-4261-aedc-ce0836b01400,TZEN,Zendikar Tokens,2009-10-02,token,false,false,special_or_child,separate content/layout review required
+cfb7e832-fe79-4b5c-ba3d-2d59009525e7,TZNC,Zendikar Rising Commander Tokens,2020-09-25,token,false,false,special_or_child,separate content/layout review required
+ee023dc4-fe71-4224-be95-7c889d771ee1,TZNR,Zendikar Rising Tokens,2020-09-25,token,false,false,special_or_child,separate content/layout review required
+44f17b37-dcf8-4239-baab-1efc00cd3480,UDS,Urza's Destiny,1999-06-07,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+fc7ea025-628e-45f4-9e0b-73681b1f68b7,UGIN,Ugin's Fate,2015-01-17,promo,true,true,outside_phase_1,modern interval; existing scanning policy retained
+3404fc78-6678-4cf4-bd39-4c0be3bb7baf,UGL,Unglued,1998-08-11,funny,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+78ced61b-4b8a-4b33-b6b2-f5bd66f1a75a,ULG,Urza's Legacy,1999-02-15,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+455ba7d5-aa10-4a08-bc1a-361f4d5e6219,ULST,The List (Unfinity Foil Edition),2022-10-07,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+2ec77b94-6d47-4891-a480-5d0b4e5c9372,UMA,Ultimate Masters,2018-12-07,masters,true,true,outside_phase_1,modern interval; existing scanning policy retained
+fccfdf97-f5f2-43b4-9be9-9255414e6633,UND,Unsanctioned,2020-02-29,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b314f553-8f07-4ba9-96c8-16be7784eff3,UNF,Unfinity,2022-10-07,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+4c8bc76a-05a5-43db-aaf0-34deb347b871,UNH,Unhinged,2004-11-19,funny,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d2703c4f-66b6-438d-9368-ebb55aa12e78,UNK,Unknown Event,2023-02-15,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+c330df40-51db-4caf-bde6-48df6c181001,USG,Urza's Saga,1998-10-12,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+83491685-880d-41dd-a4af-47d2b3b17c10,UST,Unstable,2017-12-08,funny,true,true,outside_phase_1,modern interval; existing scanning policy retained
+6254693f-c620-4e47-8bab-01085f8c3ffb,V09,From the Vault: Exiled,2009-08-28,from_the_vault,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+3e3ea3e8-3d63-481f-b3ec-03c4f50b602e,V10,From the Vault: Relics,2010-08-27,from_the_vault,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b83c0908-ae67-47eb-9099-7a1791ada84a,V11,From the Vault: Legends,2011-08-26,from_the_vault,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+b9259658-67bf-451b-b78b-f5545129e9bd,V12,From the Vault: Realms,2012-08-31,from_the_vault,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+815577c6-652f-4171-8298-c1063c5bced1,V13,From the Vault: Twenty,2013-08-23,from_the_vault,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+21dd7ae2-1196-46d4-9acf-4ff9d82797be,V14,From the Vault: Annihilation,2014-08-22,from_the_vault,true,true,outside_phase_1,modern interval; existing scanning policy retained
+bd5cb4e5-8090-4bd9-bcd4-89741056689b,V15,From the Vault: Angels,2015-08-21,from_the_vault,true,true,outside_phase_1,modern interval; existing scanning policy retained
+599b33cd-678b-4149-9e68-2a59da7d7f81,V16,From the Vault: Lore,2016-08-19,from_the_vault,true,true,outside_phase_1,modern interval; existing scanning policy retained
+63c89a12-d115-4084-a4af-fceef40ca02f,V17,From the Vault: Transform,2017-11-24,from_the_vault,true,true,outside_phase_1,modern interval; existing scanning policy retained
+2c32f1a9-7921-4826-bea0-80bbac70532c,VIS,Visions,1997-02-03,expansion,true,false,phase_2,pre-Exodus; visible number not established
+b2e444f7-41e6-4172-ba01-47d91d5e7bbc,VOC,Crimson Vow Commander,2021-11-19,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+8144b676-569f-4716-8005-bc8f0778f3fa,VOW,Innistrad: Crimson Vow,2021-11-19,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b3a0e4a1-5f2c-44e1-8558-61e6dcd88fda,W16,Welcome Deck 2016,2016-04-08,starter,true,true,outside_phase_1,modern interval; existing scanning policy retained
+2027da7f-c82a-4080-af34-4b9edf7c5132,W17,Welcome Deck 2017,2017-04-15,starter,true,true,outside_phase_1,modern interval; existing scanning policy retained
+ee044f0b-e101-4ead-8d0e-aa510aad4277,WAR,War of the Spark,2019-05-03,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b2bb7a14-16a2-4311-ab64-631a0252730c,WDMU,DMU Japanese Promo Tokens,2022-09-09,token,false,false,special_or_child,separate content/layout review required
+89c17dd0-1974-49b4-a026-ea42d1fb2e60,WFIN,FIN Asia WPN Promo Tokens,2025-06-13,token,false,false,special_or_child,separate content/layout review required
+efdfdd99-cee7-4c11-a5e9-03d60f88bdd6,WHO,Doctor Who,2023-10-13,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+b3bbcbc0-769d-42df-80f3-924385ac4f67,WMC,World Magic Cup Qualifiers,2013-04-06,promo,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+d37543a8-f7f9-4d77-a2dc-0c5d36667187,WMKM,MKM Japanese Promo Tokens,2024-02-09,token,false,false,special_or_child,separate content/layout review required
+19e95cc8-2387-4ea4-9045-19a130effe7f,WMOM,MOM Japanese Promo Tokens,2023-04-21,token,false,false,special_or_child,separate content/layout review required
+51c0814a-2db2-4182-9aac-77340e9a540d,WOC,Wilds of Eldraine Commander,2023-09-08,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+79139661-13ee-43c4-8bad-a8c069f1a1df,WOE,Wilds of Eldraine,2023-09-08,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+59fd7824-7248-420f-95bf-5c23bfbad276,WONE,ONE Japanese Promo Tokens,2023-01-27,token,false,false,special_or_child,separate content/layout review required
+d1eba841-452b-4f81-88c9-b32973ac8176,WOT,Wilds of Eldraine: Enchanting Tales,2023-09-08,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+700997ac-add2-4ce2-992e-5efa0fdfc0e9,WTH,Weatherlight,1997-06-09,expansion,true,false,phase_2,pre-Exodus; visible number not established
+2f248ce6-c2a5-4c6f-a2be-0c593fbe173c,WWK,Worldwake,2010-02-05,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+4cd014a3-abf0-4192-9d55-d96d9c5c7eca,WWOE,WOE Japanese Promo Tokens,2023-09-08,token,false,false,special_or_child,separate content/layout review required
+fe0dad85-54bc-4151-9200-d68da84dd0f2,XLN,Ixalan,2017-09-29,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained
+eb16a2bd-a218-4e4e-8339-4aa1afc0c8d2,ZEN,Zendikar,2009-10-02,expansion,true,false,phase_1_review_lead,set date only; printing/paper/English/visible-number/layout evidence missing
+25c6bd9b-4e10-40a4-b9b5-0f4d9b5852a1,ZNC,Zendikar Rising Commander,2020-09-25,commander,true,true,outside_phase_1,modern interval; existing scanning policy retained
+24e668b5-8312-498e-9bd7-c77a102bb55c,ZNE,Zendikar Rising Expeditions,2020-09-25,masterpiece,true,true,outside_phase_1,modern interval; existing scanning policy retained
+f4e01fa7-b254-42dd-849f-69b58027a8c4,ZNR,Zendikar Rising,2020-09-25,expansion,true,true,outside_phase_1,modern interval; existing scanning policy retained

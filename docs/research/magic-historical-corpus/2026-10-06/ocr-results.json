@@ -1,0 +1,165 @@
+{
+  "collectionRows": 1,
+  "deviceAcceptance": "pending",
+  "expectedAbstentions": 26,
+  "expectedRecognitions": 1,
+  "images": [
+    {
+      "index": 1,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 2,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 3,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 4,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 5,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 6,
+      "partition": "calibration_positive",
+      "recognized": true
+    },
+    {
+      "index": 7,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 8,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 9,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 10,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 11,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 12,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 13,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 14,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 15,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 16,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 17,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 18,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 19,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 20,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 21,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 22,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 23,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 24,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 25,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 26,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    },
+    {
+      "index": 27,
+      "partition": "scope_abstention_control",
+      "recognized": false
+    }
+  ],
+  "transport": "retained provider capture",
+  "observedOn": "2026-10-06",
+  "environment": "iPhone 17 Pro simulator, iOS 26.5",
+  "acceptanceBoundary": "One calibrated photographic positive with manually annotated card bounds, 26 current-pilot scope abstention controls. Repeated still evidence is not independent camera frames. No held-out positive, device, thermal or production acceptance.",
+  "resultBundle": "Corpus-Focused-20261006-r2.xcresult",
+  "providerSearchSHA256": "7510226e9e0a68830d8264b7ce39c7807e4e54d0e0667b0595acb846ca592a9e",
+  "indexSHA256": "7eb7a47976abd39719768e45506bb33ebd85d2d05facdc5e609d194229df4972",
+  "focusedTests": {
+    "executed": 27,
+    "failures": 0,
+    "skipped": 0
+  },
+  "regressionTests": {
+    "executed": 316,
+    "failures": 0,
+    "skipped": 0,
+    "resultBundle": "Corpus-Regression-20261006.xcresult"
+  },
+  "pythonTests": {
+    "executed": 20,
+    "failures": 0
+  }
+}

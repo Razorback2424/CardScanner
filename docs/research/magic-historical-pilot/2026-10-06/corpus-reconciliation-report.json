@@ -1,0 +1,53 @@
+{
+  "artifactBytes": 392730,
+  "artifactSHA256": "7eb7a47976abd39719768e45506bb33ebd85d2d05facdc5e609d194229df4972",
+  "completeKeyCount": 4,
+  "deviceAcceptance": "pending",
+  "discrepancies": [],
+  "inputIndexSHA256": "b98b25fb47865eab834ab0bc3fa7c97b749848afb887894691e60c2b168d5a9b",
+  "observedOn": "2026-10-06",
+  "productionEnabled": false,
+  "reconciledPrintingCount": 150,
+  "reviewedFronts": [
+    {
+      "collectorNumber": "1",
+      "denominator": 143,
+      "imageSHA256": "b4c591b534efd94d29384809e142e19e731be3fea45269846a2f93e78726387a",
+      "imageURL": "https://cards.scryfall.io/large/front/f/2/f20a1c6d-ec6a-4bd6-b3b2-b997f71d41fc.jpg?1783946533",
+      "layout": "normal",
+      "name": "Allay",
+      "printingID": "f20a1c6d-ec6a-4bd6-b3b2-b997f71d41fc"
+    },
+    {
+      "collectorNumber": "3",
+      "denominator": 143,
+      "imageSHA256": "039777466fdc666c71f6cb0ebf3a10cca2989ee207904f415261d274e677ad2d",
+      "imageURL": "https://cards.scryfall.io/large/front/0/2/024ae668-a1ae-4020-89c8-acbd8bd0a691.jpg?1783946532",
+      "layout": "normal",
+      "name": "Cataclysm",
+      "printingID": "024ae668-a1ae-4020-89c8-acbd8bd0a691"
+    },
+    {
+      "collectorNumber": "89",
+      "denominator": 143,
+      "imageSHA256": "143d7817081c1aad8ae5f200675e369dad12bf2fd45958d7470a0aaa7f70481b",
+      "imageURL": "https://cards.scryfall.io/large/front/d/5/d5066b1b-3910-4434-83d6-030851f20bcf.jpg?1783946510",
+      "layout": "normal",
+      "name": "Monstrous Hound",
+      "printingID": "d5066b1b-3910-4434-83d6-030851f20bcf"
+    },
+    {
+      "collectorNumber": "129",
+      "corpusIndex": 6,
+      "denominator": 143,
+      "imageFilename": "06_Survival_of_the_Fittest_Exodus.jpg",
+      "imageKind": "photographic_front",
+      "imageSHA256": "374bb938e5f44ea4482e75b0f33dac90f2931584d15b6b8155873bb586dfc0a2",
+      "imageURL": "https://shop.threeforonetrading.com/cdn/shop/files/27522_1_1024x.jpg?v=1756903814",
+      "layout": "normal",
+      "name": "Survival of the Fittest",
+      "printingID": "c060c178-3c0e-493f-b6f0-ead5b1d6f191"
+    }
+  ],
+  "sourceContext": "5f287063719402ea670a0179df0de958298222c83d152269d850c884254c3731"
+}

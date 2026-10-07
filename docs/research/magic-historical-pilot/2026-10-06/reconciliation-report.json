@@ -1,0 +1,45 @@
+{
+  "artifactBytes": 383009,
+  "artifactSHA256": "78dba1bd0dd232d936bcaea08dd80b5aee849ac32d9ca3ecb0715885fa5b8858",
+  "automaticUniquenessEnabled": false,
+  "catalogSHA256": "7dc153f1b86599a0ee0924d8faac54c950d0d50bcc5e827f2a14d3583da67774",
+  "countsByDisposition": {
+    "non_english_or_unknown": 2610,
+    "outside_phase_1": 68463,
+    "paper_unproven": 9355,
+    "phase_1_physical_review_pending": 19962,
+    "phase_2": 5633,
+    "unreleased": 256,
+    "unsupported_layout_or_product": 17543
+  },
+  "ledgerSHA256": "19ff43aa48c8cffd35328d6a43892b81ae4c55033f01a49334e2a5e8e47ca8a1",
+  "observedOn": "2026-10-06",
+  "physicalPrintingDenominator": null,
+  "processingVersion": 1,
+  "projectionPrintings": 150,
+  "reconciledPilotPrintings": 143,
+  "rejectedGroups": [],
+  "sourceRows": 123822,
+  "sources": [
+    {
+      "dataDate": "2026-10-06",
+      "kind": "mtgjsonAllPrintings",
+      "sha256": "b7c4c4e6b06d9b69b2509f1f230b9c8d3c024cfad5d20e640db0a4e58079bca9",
+      "url": "https://mtgjson.com/api/v5/AllPrintings.json.gz"
+    },
+    {
+      "dataDate": "2026-10-06",
+      "kind": "mtgjsonPilot",
+      "sha256": "0a6dbeef299e0a554373819f2db2555b383e8e4711870de676211d99fdf62d7d",
+      "url": "https://mtgjson.com/api/v5/EXO.json"
+    },
+    {
+      "dataDate": "2026-10-06",
+      "kind": "scryfallPilot",
+      "sha256": "b8e4e543478bd2a6a5ceb258504f0bcce17c74dd63df6c995ec94f85a127b7e4",
+      "url": "https://api.scryfall.com/cards/search?q=set%3Aexo%20lang%3Aen&unique=prints"
+    }
+  ],
+  "unresolvedKeys": 0,
+  "unverifiedCollisionPrintings": 7
+}

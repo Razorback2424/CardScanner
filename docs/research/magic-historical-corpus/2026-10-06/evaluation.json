@@ -1,0 +1,468 @@
+{
+  "schemaVersion": 1,
+  "generalProviderCaptureSHA256": "94273137e82bc83ba5dcc33fba9b9a0049eed9db0a99cd5bbaf232bc6bb0a5c8",
+  "providerSearchSHA256": "7510226e9e0a68830d8264b7ce39c7807e4e54d0e0667b0595acb846ca592a9e",
+  "observedOn": "2026-10-06",
+  "acceptanceBoundary": "General evaluation uses automated rectangle/whole-frame OCR on all 27 originals and referenceTitle assertions. cardRect, partition and expectedPrintingID describe the preserved optional Exodus pilot only. Static reference evidence does not certify held-out precision or independent camera frames.",
+  "records": [
+    {
+      "index": 1,
+      "referenceTitle": "Llanowar Elves",
+      "filename": "01_Llanowar_Elves_Alpha.jpg",
+      "sha256": "61203cd6aa03e22fb8890546dae41fac95aca6a28e6e74a969af261e9ca59c0d",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 2,
+      "referenceTitle": "Black Lotus",
+      "filename": "02_Black_Lotus_Alpha.jpg",
+      "sha256": "0a8af18183a3d9063975765e0c06a3fc41ab3c6bfeabbd25081db1a25f05f891",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 3,
+      "referenceTitle": "City of Brass",
+      "filename": "03_City_of_Brass_Chronicles.jpg",
+      "sha256": "8f4d3ff00af510ea14936c772814c19ea39deab52ad78ede7dda251810ed2beb",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 4,
+      "referenceTitle": "Necropotence",
+      "filename": "04_Necropotence_Ice_Age.jpg",
+      "sha256": "d8eca6281cc024b4eb75a2f892e6e230ffe612ff412dacad344864be868bf6f1",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 5,
+      "referenceTitle": "Lion's Eye Diamond",
+      "filename": "05_Lions_Eye_Diamond_Mirage.jpg",
+      "sha256": "3d440777781919da55c5153356dcb93a6c5d202774deac4db8b478bd27682317",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 6,
+      "referenceTitle": "Survival of the Fittest",
+      "filename": "06_Survival_of_the_Fittest_Exodus.jpg",
+      "sha256": "374bb938e5f44ea4482e75b0f33dac90f2931584d15b6b8155873bb586dfc0a2",
+      "classification": "photographic_example",
+      "partition": "calibration_positive",
+      "cardRect": [
+        0.202,
+        0.082,
+        0.606,
+        0.835
+      ],
+      "expectedTitle": "Survival of the Fittest",
+      "expectedCollectorNumber": "129",
+      "expectedPrintingID": "c060c178-3c0e-493f-b6f0-ead5b1d6f191"
+    },
+    {
+      "index": 7,
+      "referenceTitle": "Grim Monolith",
+      "filename": "07_Grim_Monolith_Urzas_Legacy_Foil.jpg",
+      "sha256": "3fdcee6d20b1031e78fc3d4481a8a332fc25ecc8f477127c325f97aca1f59f41",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 8,
+      "referenceTitle": "Birds of Paradise",
+      "filename": "08_Birds_of_Paradise_7ED_Foil.jpg",
+      "sha256": "1c5099f867e2c7ce418e75f293f0eef119753af311e64ff304de80e877c7736f",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 9,
+      "referenceTitle": "Fire // Ice",
+      "filename": "09_Fire_Ice_Apocalypse.jpg",
+      "sha256": "c66d49d42faa6a3b47aff4dd9b690171b43167c964d09cd5b18d8ef079c911e8",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 10,
+      "referenceTitle": "Wrath of God",
+      "filename": "10_Wrath_of_God_8ED.jpg",
+      "sha256": "9d9eeea65698abff27143fd043155b441c62c74803dae0f7dd2761237bdc2e9e",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 11,
+      "referenceTitle": "Nezumi Shortfang",
+      "filename": "11_Nezumi_Shortfang_Champions_of_Kamigawa.jpg",
+      "sha256": "feaf0dbca5669ffe67b43cbeb6f96597ddce79f91529a1d825268f631da3a1b1",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 12,
+      "referenceTitle": "Forest",
+      "filename": "12_Forest_Unhinged.jpg",
+      "sha256": "8431ecaa6b2c707da4ba92c393dac30f92a7548db21077bd668d600ccbb8d28d",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 13,
+      "referenceTitle": "Research // Development",
+      "filename": "13_Research_Development_Dissension.jpg",
+      "sha256": "c2ecf3929954c90122c502b634716fa4d5a5aa20b0743cf875f21eb92cf378f5",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 14,
+      "referenceTitle": "Damnation",
+      "filename": "14_Damnation_Planar_Chaos.jpg",
+      "sha256": "249f36826a8d00ea7e2dc3491e9ae6335a507612580470cc983da6fc246f827f",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 15,
+      "referenceTitle": "Tarmogoyf",
+      "filename": "15_Tarmogoyf_Future_Sight.jpg",
+      "sha256": "8d7055270b624208eede140a9b2d8ed2f3c14e1938b95ad68df45ca56b0d667a",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 16,
+      "referenceTitle": "Delver of Secrets",
+      "filename": "16_Delver_of_Secrets_Innistrad.jpg",
+      "sha256": "34a7713012b3955261ed264d37a7aad4d9faf3567c4f5959d5c3dcadf9bdc143",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 17,
+      "referenceTitle": "Garruk Relentless",
+      "filename": "17_Garruk_Relentless_Innistrad.jpg",
+      "sha256": "5302f5a63b02146a1ab5fdc8d26b292e489e631e2335f397df27ff27498c4a1d",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 18,
+      "referenceTitle": "Bonfire of the Damned",
+      "filename": "18_Bonfire_of_the_Damned_Avacyn_Restored.jpg",
+      "sha256": "625e68b25f849c5ddf57c1e2d3e1564e49d738f28cdfcea86ce3ef3b4b8c09f0",
+      "classification": "clean_front_control",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 19,
+      "referenceTitle": "Command Tower",
+      "filename": "19_Command_Tower_Commander_2013.jpg",
+      "sha256": "528f05e10d8013ee1dfe46723646cd9b44141394c9bb4d8e6f1756692492fcec",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 20,
+      "referenceTitle": "Mox Diamond",
+      "filename": "20_Mox_Diamond_FTV_Relics.jpg",
+      "sha256": "68f527e72f3d3f5a5ba0c2f3d82e4c450359862813e079e0cb5bf1de508d88c6",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 21,
+      "referenceTitle": "Lightning Bolt",
+      "filename": "21_Lightning_Bolt_Revised.jpg",
+      "sha256": "76b54698337c0f8e5260cba86204e340f8005ba8d256d3ee85f7f17a9c02e37f",
+      "classification": "clean_front_control",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 22,
+      "referenceTitle": "Erhnam Djinn",
+      "filename": "22_Erhnam_Djinn_Arabian_Nights.jpg",
+      "sha256": "cea9e6ab1d1c95da4b5af10a01c3a4d9844eb8c67e30394fda8f8fcb8956f7f7",
+      "classification": "photographic_example",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 23,
+      "referenceTitle": "Psionic Blast",
+      "filename": "23_Psionic_Blast_Time_Spiral_Timeshifted.jpg",
+      "sha256": "b840e1ba61dbd4d0270d3584365d502f91e01cba3126acdacb29e1d7af650882",
+      "classification": "clean_front_control",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 24,
+      "referenceTitle": "Garruk Wildspeaker",
+      "filename": "24_Garruk_Wildspeaker_Lorwyn.jpg",
+      "sha256": "7c994cb992576f770a4133afac98e66d28dec9d999172ca854dd5022334c82a2",
+      "classification": "clean_front_control",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 25,
+      "referenceTitle": "Kitchen Finks",
+      "filename": "25_Kitchen_Finks_Shadowmoor.jpg",
+      "sha256": "d42fd94f9273cdb4cb2ef727b07c0168aa7c1e6e0ac98bbf95f10def5f680664",
+      "classification": "clean_front_control",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 26,
+      "referenceTitle": "Island",
+      "filename": "26_Island_Zendikar_Full_Art.jpg",
+      "sha256": "14f82caf0341bbf6ef775d6f75ce72d5c50096ed9be4ebb648ed237f0ecd8e22",
+      "classification": "clean_front_control",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    },
+    {
+      "index": 27,
+      "referenceTitle": "Dismember",
+      "filename": "27_Dismember_New_Phyrexia.jpg",
+      "sha256": "d1b7fa267cb5f43bb2f7fa73a903b3be2690b49d23ad1cab557942c2262faa5f",
+      "classification": "clean_front_control",
+      "partition": "scope_abstention_control",
+      "cardRect": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "expectedTitle": null,
+      "expectedCollectorNumber": null,
+      "expectedPrintingID": null
+    }
+  ]
+}

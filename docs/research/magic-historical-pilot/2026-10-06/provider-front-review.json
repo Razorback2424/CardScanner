@@ -1,0 +1,10 @@
+{
+  "reviewedOn": "2026-10-06",
+  "reviewKind": "provider_front_visible_number",
+  "acceptanceBoundary": "Printed-front review only. No photographed-device, glare, sleeve, held-out or camera accuracy acceptance.",
+  "records": [
+    {"printingID": "f20a1c6d-ec6a-4bd6-b3b2-b997f71d41fc", "name": "Allay", "collectorNumber": "1", "denominator": 143, "layout": "normal", "imageSHA256": "b4c591b534efd94d29384809e142e19e731be3fea45269846a2f93e78726387a"},
+    {"printingID": "024ae668-a1ae-4020-89c8-acbd8bd0a691", "name": "Cataclysm", "collectorNumber": "3", "denominator": 143, "layout": "normal", "imageSHA256": "039777466fdc666c71f6cb0ebf3a10cca2989ee207904f415261d274e677ad2d"},
+    {"printingID": "d5066b1b-3910-4434-83d6-030851f20bcf", "name": "Monstrous Hound", "collectorNumber": "89", "denominator": 143, "layout": "normal", "imageSHA256": "143d7817081c1aad8ae5f200675e369dad12bf2fd45958d7470a0aaa7f70481b"}
+  ]
+}
