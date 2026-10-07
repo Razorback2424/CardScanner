@@ -1,5 +1,24 @@
 # Browse set directory — artwork, counts, and price sort
 
+**Browse reliability update — 2026-10-07:** implemented in the dirty working
+tree on `merge/one-piece-integration`, base `1711b06`. Checklist browsing and
+detail loading now share authorization for active registry sets and verified
+bundled sets. Bundled access adds no scanner authority. Provider/set/card
+membership and signed counts remain checked, including after registry changes.
+Provider card payloads are shared while virtual-edition details retain their
+requested set/print-run context. Mixed directories use bundled ordering unless
+the signed ordering covers the complete directory.
+
+The focused browse/checklist/One Piece/pricing selection passed 405 tests; a
+final targeted run passed 95 tests, both with zero failures (overlapping
+selections). The final Debug simulator build passed. Cold-launch Browse →
+Pokémon → first card loaded Tropius from Pitch Black successfully on iPad
+iOS 26.5. Post-refresh authorization is covered deterministically; the same
+manual live route after a full catalog refresh remains unverified. The exact
+card in the reported installed-build failure remains unconfirmed. Evidence is
+external under `CodexBuilds/BrowseReliability-20261007*`; see the dated
+[progress record](../../progress.md) for the verification boundary.
+
 **Status:** implementation and deterministic verification landed in the working
 tree 2026-09-15; the focused Browse selectors then passed **130/130 with 0
 failures** after the second hardening pass, sort-price cache correction, and

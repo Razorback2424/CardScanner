@@ -55,6 +55,25 @@ is claimed. Stage 4B remains disabled.
 
 ## Final architectural decision
 
+**Card-detail history audit — 2026-10-07:** owned-card details still render
+`PriceObservation` / `PriceCheckDay` knowledge history. Stage 4A does not feed
+that chart or backfill unchecked dates. `JustTCGBatchRequest` exposes an
+`includePriceHistory` flag, but current callers pass false and `JustTCGVariant`
+does not decode a point series. Comments previously describing lazy detail
+history fetching were aspirational and have been corrected. Reserved
+`PriceRecord` summary fields are not an implemented historical feed.
+
+The provider's current [v1 API reference](https://www.justtcg.com/docs/api/cards)
+documents `priceHistory` points (`t`, `p`), and its
+[changelog](https://justtcg.com/docs/changelog) documents a one-year daily series.
+The next history slice is a lazy, cached, exact printing/finish/condition lookup
+for card details, with explicit provider attribution, range coverage and
+unavailable states. It must remain separate from portfolio knowledge history:
+importing provider backfill as local observations/checks would rewrite the
+meaning of previously published portfolio results. Source transitions must not
+be presented as market trends. No historical feed or provider acceptance is
+claimed by the chart-label/scrubbing work.
+
 Split the current Stage 4 into two separate capabilities:
 
 **Stage 4A — Device-Local Browse Price History**

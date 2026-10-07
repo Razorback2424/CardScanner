@@ -8,6 +8,23 @@ history.
 
 ## Current authority boundary — updated 2026-10-07
 
+**Browse reliability and One Piece sealed — 2026-10-07:** the
+[browse directory plan](browse_set_directory_remediation_plan.md) now records
+shared bundled/registry authorization, detail identity checks and edition/order
+isolation. The [One Piece ledger](one_piece_code_implementation.md) owns enabled
+runtime sealed browse/repricing evidence. The integration plan's older sealed
+follow-up scope is superseded by this implemented capability; legacy import
+normalization restrictions remain distinct. Focused simulator verification does
+not close live-provider, physical-device, CloudKit or production-rollout gates.
+
+**Card-detail price history — 2026-10-07:** the
+[pricing plan audit](browse_pricing_coverage_plan.md#final-architectural-decision)
+reconciles the implemented Browse-only accumulation with the unimplemented
+provider backfill path. Existing request flags, reserved summary fields and
+comments about lazy detail fetching did not constitute historical series
+integration. Owned charts still use device knowledge history; unchecked-date
+market history remains an open implementation slice.
+
 **Bulk intake measurement — 2026-10-07:** the
 [staged differentiation plan](bulk-intake-differentiation-plan.md) records the
 2026-10-06 owner decisions and Stage 0 implementation. Its privacy-safe, local,

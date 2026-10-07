@@ -31,10 +31,16 @@ identity must never receive a base-card price or become a confidently owned
 parallel through inference alone.
 
 Initial scope is English numbered raw cards. DON!! has a separately gated visual
-catalog. Graded One Piece pricing, sealed products, non-English recognition, and
+catalog. Graded One Piece pricing, non-English recognition, and
 automatic optical finish assignment are separate follow-ups. Do not promise
 day-one coverage or production readiness until the relevant corpus, rights,
 provider, device, and rollout evidence exists.
+
+**2026-10-07 scope update:** One Piece sealed browsing and exact vendor batch
+repricing are implemented for enabled runtimes; see the
+[implementation ledger](one_piece_code_implementation.md). This capability adds
+no raw-card scanner authority or production collection-write permission. Live
+provider acceptance remains open.
 
 ## Architecture contracts and current adaptation
 

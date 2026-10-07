@@ -2009,3 +2009,129 @@ historical.
   General review/production artwork defaults remain unchanged; this enables
   recorded artwork in the owner's local configuration. No physical-device
   installation or verification was performed.
+
+- **2026-10-07 — Card detail price chart:** added currency Y-axis labels,
+  subtle gridlines, smaller observation dots and horizontal scrubbing that
+  updates the headline price/date. Unchecked spans show no price; release,
+  cancellation and range changes restore the current display. VoiceOver
+  stepping/reset actions are implemented; source timestamps can wrap. The
+  focused owned/Browse chart tests pass 15/15, including recorded-step and
+  unchecked-gap regressions. Inspected synthetic month, held-price scrub and
+  gap captures in a separate QA Simulator; native post-release snapshots
+  restore the current amount. Existing user edits and Simulator data were
+  preserved. Testing concluded at the owner's request; larger-text, actual
+  VoiceOver and physical-device acceptance remain unverified. Evidence is on
+  the SSD under `CodexBuilds/CardPriceChart-20261007/`; scoped acceptance is in
+  [the chart checklist](references/card_price_chart_success_checklist.md).
+  The source audit confirms Browse-only local accumulation landed, while
+  JustTCG historical series fetching/decoding never landed. Corrected
+  aspirational comments and recorded the distinct provider-history slice in
+  [the pricing plan](docs/plans/browse_pricing_coverage_plan.md#final-architectural-decision).
+  No historical backfill, provider acceptance or release readiness is claimed.
+  Final Debug simulator build passes after moving the VoiceOver reset action
+  outside the chart modifier chain to resolve a compiler complexity error;
+  whitespace checks pass. No additional test run was started after the owner
+  requested testing conclude.
+
+- **2026-10-07 — Startup, iteration 1:** replaced separate storage/catalog
+  loading labels with one collection opening. The tab tree stays mounted but
+  hidden until the first local portfolio result or an integrity defect arrives;
+  subsequent replays retain the visible portfolio. The reveal uses a short
+  opacity transition and respects Reduce Motion, with no minimum splash time.
+  Simulator build succeeded. Visual and focused test verification are in
+  progress; synthetic evidence is external under `CodexBuilds/Startup-20261007/`.
+
+- **2026-10-07 — Startup, verified:** inspected the opening in light, dark,
+  and accessibility-extra-large text, repeated the final opening capture, and
+  verified the settled synthetic Portfolio route shows its value and tabs.
+  The simulator build and 8 selected portfolio trust/cold-start/retained-value
+  tests passed; `git diff --check` passed. Source review confirms integrity
+  defects reveal the failure UI and Reduce Motion disables the reveal fade.
+  HIG gate passed for this scoped change. No startup speed measurement or
+  physical-device verification is claimed. Evidence and scoped checklist remain
+  external under `CodexBuilds/Startup-20261007/`.
+
+- **2026-10-07 — Opening v2, iteration 1:** implemented the supplied lock-on
+  handoff plan with one app-level overlay, an honest count from the existing
+  valuation pass, matching light/dark launch assets, readiness latching, fast
+  handoff and Reduce Motion support. Replaced the first-pass opening views.
+  Initial simulator build passed; focused tests and visual checks are underway.
+  Evidence is external under `CodexBuilds/OpeningV2-20261007/`.
+
+- **2026-10-07 — Opening v2, review stopping point (unfinished):** stopped
+  at the owner's request. The v2 card/guides, captions, app-level coordinator,
+  copy-count projection and matching launch assets are implemented and uncommitted.
+  Simulator builds passed; the selected opening/portfolio suites executed 93
+  tests with 1 skipped and 0 failures, and a later focused recheck passed 15 tests.
+  Inspected light and dark/accessibility opening layouts and recorded launch
+  frames. **The live Portfolio handoff remains unresolved:** a normal
+  `PortfolioToday` launch stays on the opening even though storage is ready.
+  Changes to container construction and scene dependency registration did not
+  resolve the observed issue. Next: trace runtime/service mounting and the
+  readiness reporter, then repeat the motion recordings. Reduce Motion motion,
+  warm fast-path behavior, Scan bypass, tap timing and iCloud/error transitions
+  remain unverified. Debuggers are detached; unrelated existing user changes
+  are preserved. No physical-device readiness is claimed.
+
+- **2026-10-07 — Opening v2, polish iteration:** preserved the owner's
+  `Color.clear` bootstrap fix and overflow-safe valuation changes. Slowed the
+  guide settle, staggered the ready caption, added a subtle ready outline, and
+  expanded the handoff to a 720 ms ready beat plus a 480 ms reveal. Quick-ready
+  launches use a shorter beat; Reduce Motion keeps a brief fade without inset,
+  entry-offset or scale movement. The opening test suite passed; simulator
+  motion captures are underway. This intentionally gives the ready presentation
+  more time rather than claiming faster startup computation.
+
+- **2026-10-07 — Browse reliability and One Piece sealed:** implemented on
+  `merge/one-piece-integration`, base `1711b06` plus preserved local changes.
+  Pokémon checklist/detail authorization now accepts active signed registry
+  sets and verified bundled sets under one policy, without granting bundled
+  scanner authority. Provider identity/membership and signed count checks remain;
+  registry changes invalidate authority, shared provider fetches preserve virtual
+  edition context, and mixed release ordering uses complete signed ordering or
+  consistent bundled ranks. Cancellation/shared-waiter, stale-price fallback and
+  supplemental-pricing regressions remain covered.
+  Enabled One Piece runtimes now expose sealed browsing through the documented
+  JustTCG mapping, injected capability gates and existing vendor directories,
+  pagination, caches, artwork and request budgets. Add/Undo retains existing write
+  gates; blocked saving is explicit. Exact vendor sealed variants reach batch
+  repricing; raw-card pricing behavior remains covered. Typed recovery feedback
+  offers Retry/Refresh Catalog appropriately and retains usable cached content.
+  No persistence migration or production rollout/write-permission change occurred.
+  Focused browse/checklist/One Piece/pricing tests passed **405/405**, and the final
+  targeted recheck passed **95/95**, zero failures (overlapping selections).
+  The final Debug simulator build passed; artifacts/results are external under
+  `CodexBuilds/BrowseReliability-20261007*`. Earlier failing runs exposed obsolete
+  empty-membership fixtures and a request-body-stream fixture crash; the fixtures
+  were corrected before the clean runs.
+  Cold-launch Browse → Pokémon → first card loaded Tropius / Pitch Black on iPad
+  iOS 26.5. The exact reported installed-build card remains unconfirmed.
+  Post-catalog-refresh detail loading passed deterministically; a manual live
+  full-refresh route remains unverified. An opt-in Debug recorded-provider route
+  with isolated collection storage verified One Piece directory → two product
+  pages → detail → permitted Add/Undo (quantity returns to its prior value),
+  blocked saving, and offline Retry recovery. Inspected accessibility XXXL
+  directory/error layouts remain readable, with no empty vendor section on total
+  failure; restored the simulator's original text size. Scoped HIG feedback review
+  passes; no full VoiceOver audit is claimed. Exact sealed repricing is test
+  evidence, not a live request. Live JustTCG acceptance remains open: the existing
+  key was unavailable in the simulator and host keychain. Physical-device,
+  CloudKit, archive and release readiness remain unverified. Current browse and
+  One Piece plans and documentation reconciliation were updated; user changes
+  remain uncommitted. All 363 checked local documentation links and
+  `git diff --check` pass.
+
+- **2026-10-07 — OP16/OP17 pricing gap investigation:** read-only audit of the
+  owner signed payload, retained review decisions, pricing/sort UI and fresh
+  public TCGCSV products/prices. The strict canonical-name match holds vendor
+  number-suffixed titles: 27 missing mappings for OP17, matching the reported
+  count, and 37 for OP16 versus the reported 36 (installed generation/cache not
+  inspected). All have unique number-suffixed base candidates; 63 have the exact
+  catalog finish and a live quote. OP16-030 is Normal in the catalog but Foil at
+  the vendor and requires separate review. All 174 existing mappings validate
+  against live data. Missing mappings become unresolved Retry UI; Retry cannot
+  add catalog authority. Findings and focused repair direction are recorded in
+  `docs/audits/one-piece-op16-op17-pricing-gaps.md`; public captures and per-card
+  audit are external under `CodexBuilds/OnePiecePricingGaps-20261007/`. No code,
+  signed catalog, collection or rollout changes; no simulator tests required for
+  this investigation.

@@ -4,6 +4,40 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
+**OP16/OP17 pricing investigation — 2026-10-07:** the
+[read-only audit](../audits/one-piece-op16-op17-pricing-gaps.md) identifies
+37/27 held owner-catalog market mappings caused by vendor printed-number title
+suffixes. Live public TCGCSV data has exact-finish candidate quotes for 36/27;
+OP16-030 has a separate Normal/Foil disagreement. Existing mapped rows still
+validate. OP16's reported display count of 36 versus 37 local missing mappings
+requires installed-generation/cache evidence. No mapping or runtime changes
+were made; Retry cannot repair these missing catalog joins.
+
+**Sealed browse repair — 2026-10-07, base `1711b06` plus local changes:**
+enabled One Piece runtimes, including the owner runtime, now expose `.sealed`.
+Disabled and validation-only configurations remain disabled. JustTCG requests
+use the documented `one-piece-card-game` mapping and existing English vendor
+directories, pagination, caches, artwork and quotas. Unsupported requests are
+rejected before cache/request access. Exact vendor product/variant identities
+remain separate from physical raw-card identities; batch sealed repricing uses
+the injected capabilities. Raw-card pricing and its fallback restrictions remain
+covered by the focused regression suite.
+
+Add/Undo follows the injected collection-write capability and the existing
+CollectionStore/CloudKit gates; blocked writes show “Saving unavailable”. Typed
+feedback distinguishes connectivity (Retry), catalog (Refresh Catalog), feature
+availability and credential access. Failed directory retries preserve cached
+content and omit empty vendor sections. No production write permission or signed
+catalog rollout setting changed, and no persistence migration was introduced.
+
+The 405-test focused suite and final 95-test targeted suite passed with zero
+failures; these overlap. The final Debug simulator build passed. Recorded-provider
+iPad UI evidence covers directory → pagination → detail → Add/Undo; live JustTCG
+verification remains pending because the existing key is unavailable in the
+simulator and host keychain. Exact sealed repricing is deterministic test evidence,
+not a live-provider observation. Physical-device, CloudKit and release gates stay
+open. Artifacts are external under `CodexBuilds/BrowseReliability-20261007*`.
+
 **Camera acceptance preparation — 2026-10-06, clean `3fe972a`:** ordinary signed
 Debug device build, signature/identity/seed checks and in-place installation
 pass on iPhone 15 Pro Max / iOS 26.6.1. Launch is denied because the phone is
