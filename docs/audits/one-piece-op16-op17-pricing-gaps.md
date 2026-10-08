@@ -1,5 +1,50 @@
 # OP16 / OP17 pricing gap investigation
 
+**Systematic repair — 2026-10-07:** the shared reviewer now supports exact short
+number suffixes, full-number suffixes and hyphenated full identifiers (including
+unpadded numeric digits). It validates the suffix against the independent Number
+field and retains category, release group, unique base title and exact finish
+checks. Alternate Art, Manga, Parallel, Winner, duplicate candidates and wrong
+identifiers remain rejected. The review report now groups coverage and held
+reasons by release rather than leaving a flat queue for manual fixes.
+
+The complete 2,373 eligible ordinary base-card decisions across 48 sets were
+replayed from retained, hash-checked captures. **406 new mappings across 39 sets**
+raise exact coverage from 1,961 to **2,367**. OP17 gains all 27 missing mappings;
+OP16 gains 36 and retains OP16-030's finish disagreement. OP14's separate
+`Monkey.D.Luffy - OP14-34` formatting issue is also handled by the common rule.
+
+Fresh, paced public TCGCSV captures independently validate all 2,367 mapped
+product identities, expected finish lanes and USD quotes with zero failures.
+The other six held decisions are finish disagreements: EB03-001, OP16-030,
+ST22-001, ST21-001, ST21-003 and ST21-008. Their reviewed physical finish differs
+from the base vendor lane. This repair does not reinterpret owned finishes or
+borrow a parallel/foil quote to hide those conflicts.
+
+The updated registry, market observations/inventories and coverage report are
+retained in the review corpus. Mapping-only signed owner revision **2** is bundled
+with a new ephemeral review key's public pin alongside the retained old pin.
+Publication validates the previous signed baseline, unchanged identities/finishes
+and existing mappings, and independently verifies the signature and manifest.
+Production rollout and write permissions remain unchanged. The shared reviewer,
+regressions and [update preparer](../../scripts/prepare_one_piece_owner_update.py)
+make the repair reproducible. Artifacts are external under
+`CodexBuilds/OnePieceMappingRepair-20261007/`.
+
+Verification: all 81 Python tests, 46 core tests and 88 One Piece simulator app
+tests pass. The app tests include cross-family bundled mappings, trusted review
+key rotation, blocked/unmatched finishes, exact pricing and collection safeguards.
+The first core run failed only its old 1,961-mapping corpus expectation; it was
+updated to 2,367 before the clean full recheck. The signed manifests agree and
+classify exactly 406 mapping invalidations, with no physical identity changes.
+The built simulator app contains revision 2 and its matching pin. The checkout
+advanced through owner commits during this work; the final implementation is
+verified against `0641b3a` plus local changes. The final Debug simulator build,
+271 local documentation links and `git diff --check` pass. No device install, CloudKit or
+production readiness is claimed.
+
+The original investigation below is historical evidence preceding this repair.
+
 **Date:** 2026-10-07. **Candidate:** `merge/one-piece-integration`, base
 `1711b06` plus existing local changes. Read-only investigation; no application,
 signed catalog, collection, or rollout changes.

@@ -8,6 +8,13 @@ history.
 
 ## Current authority boundary — updated 2026-10-07
 
+**Systematic One Piece market mapping repair — 2026-10-07:** the
+[pricing gap audit](../audits/one-piece-op16-op17-pricing-gaps.md) now records the
+shared repair and signed owner revision 2. The earlier 1,961 exact / 412 held
+baseline and “investigation only” notes are historical: current coverage is
+2,367 exact / six held finish disagreements. This expands local owner pricing
+authority without changing physical identity or production rollout authority.
+
 **Browse reliability and One Piece sealed — 2026-10-07:** the
 [browse directory plan](browse_set_directory_remediation_plan.md) now records
 shared bundled/registry authorization, detail identity checks and edition/order

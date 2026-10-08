@@ -2135,3 +2135,32 @@ historical.
   audit are external under `CodexBuilds/OnePiecePricingGaps-20261007/`. No code,
   signed catalog, collection or rollout changes; no simulator tests required for
   this investigation.
+
+- **2026-10-07 — Systematic One Piece mapping repair:** audited all 2,373
+  eligible ordinary-base decisions across 48 sets, then fixed the shared title
+  policy for exact short/full parenthesized identifiers and hyphenated full
+  identifiers. Independent printed-number, release-group, unique-product and
+  finish checks remain strict. Wrong numbers, duplicate products, Alternate Art,
+  Manga and other treatment qualifiers remain rejected. Added **406 mappings
+  across 39 sets** (OP17 +27, OP16 +36), raising exact coverage to **2,367**.
+  Fresh paced public TCGCSV captures validate all 2,367 identities and expected
+  finish quotes with zero failures. Six true finish disagreements stay held:
+  EB03-001, OP16-030, ST22-001, ST21-001, ST21-003 and ST21-008. No physical
+  finish or ownership identity was changed to force a quote.
+  Updated corpus/evidence and per-set held-reason reporting; the reusable
+  `prepare_one_piece_owner_update.py` validates a mapping-only transition from
+  the previous signed baseline and signs/verifies the next owner revision with
+  an ephemeral review key. Bundled owner revision **2** retains the previous pin
+  and adds its new public pin; local bootstrap supports that explicitly pinned
+  rotation. Production rollout, collection permissions and persistence are
+  unchanged. All **81 Python**, **46 core**, and **88 One Piece simulator app**
+  tests pass. The initial core run exposed an obsolete 1,961-count expectation;
+  it was updated for the expanded reviewed corpus before the clean recheck.
+  The publication manifests agree and list exactly 406 mapping invalidations.
+  The built app contains revision 2 and its pin. Verified against `0641b3a` plus
+  local changes after owner commits advanced the checkout during this task.
+  Accepted publication, captures, tests and logs remain external under
+  `CodexBuilds/OnePieceMappingRepair-20261007/` (accepted signed artifacts are in
+  `publication-r2/`). Device installation, CloudKit and release readiness are
+  not established. Final Debug simulator build, 271 local documentation links
+  and `git diff --check` pass. I did not commit or push.

@@ -4,6 +4,15 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
+**Systematic mapping repair — 2026-10-07:** shared exact-identifier title rules
+repair 406 mappings across 39 sets, including 27 OP17 and 36 OP16 cards. All
+2,367 resulting mappings pass fresh public vendor identity/finish/quote checks.
+Six genuine finish disagreements stay held; physical IDs, finishes and previous
+mappings are unchanged. Signed owner revision 2 and its new public review pin are
+bundled; the old pin remains trusted for the baseline. See the updated
+[audit](../audits/one-piece-op16-op17-pricing-gaps.md) and reusable publisher
+preparation script. Production rollout, collection gates and storage are unchanged.
+
 **OP16/OP17 pricing investigation — 2026-10-07:** the
 [read-only audit](../audits/one-piece-op16-op17-pricing-gaps.md) identifies
 37/27 held owner-catalog market mappings caused by vendor printed-number title
