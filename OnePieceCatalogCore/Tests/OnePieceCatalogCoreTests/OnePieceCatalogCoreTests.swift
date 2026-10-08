@@ -63,7 +63,7 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             inventories: originalInventories + eventInventories + retailInventories, revision: 1, generatedAt: "2026-10-04T23:00:00Z")
         XCTAssertEqual(release.registry, withoutMarket.registry,
                        "Market product observations cannot allocate extra printing IDs")
-        XCTAssertEqual(release.registry.printings.flatMap(\.marketMappings).count, 1961)
+        XCTAssertEqual(release.registry.printings.flatMap(\.marketMappings).count, 2367)
         XCTAssertTrue(release.registry.printings.filter { $0.treatment != "Standard artwork" }
             .allSatisfy { $0.marketMappings.isEmpty })
         XCTAssertTrue(release.indexes.automaticCandidateIDsByCanonicalID.isEmpty)

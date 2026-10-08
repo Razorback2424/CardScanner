@@ -70,8 +70,10 @@
     {
       "printingID": "3c334c55-6f0d-4e39-8b87-acb9b9f60334",
       "number": "ST01-012",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "288241",
+      "groupID": 3189,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "a424db7b-62fd-4c62-bece-ca4145a8deb5",
@@ -84,8 +86,10 @@
     {
       "printingID": "2549e676-c525-499e-91fd-80ec9b16f4f8",
       "number": "OP01-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "454512",
+      "groupID": 3188,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "5cbf971f-5f19-4535-9d9d-b80b4f1cc846",
@@ -186,14 +190,18 @@
     {
       "printingID": "1ba4570b-889e-46ab-8853-05312193c291",
       "number": "OP01-024",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "453508",
+      "groupID": 3188,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e0292a58-ebd5-4cb5-8838-0ecd6595d2a3",
       "number": "OP01-025",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "453510",
+      "groupID": 3188,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "68e2d31c-fb20-425c-b9b6-ae014123da77",
@@ -286,14 +294,18 @@
     {
       "printingID": "c41da456-7f7f-4a95-a116-59da0da79f6b",
       "number": "OP01-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "454585",
+      "groupID": 3188,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6ea6c161-5c31-459d-afa6-a954fe84187e",
       "number": "OP01-062",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "454588",
+      "groupID": 3188,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7be56c22-78cd-44ba-a239-3434ea089143",
@@ -314,8 +326,10 @@
     {
       "printingID": "0d186519-6b9d-4e05-be56-f51b364235bb",
       "number": "OP01-067",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "453519",
+      "groupID": 3188,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "6a2c52ea-1e98-43ab-9f57-487d78c454f7",
@@ -336,8 +350,10 @@
     {
       "printingID": "52f4d5ee-55fb-479a-b8e0-c03f37460fcb",
       "number": "OP01-073",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "454602",
+      "groupID": 3188,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e89bea84-19c0-4494-8ff6-2c5267a9b914",
@@ -406,8 +422,10 @@
     {
       "printingID": "cb934c53-8e16-4103-9e74-1b7530c104d6",
       "number": "OP01-091",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "454622",
+      "groupID": 3188,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "b08e8bd8-80dd-416f-9a41-0529e3f432b8",
@@ -420,8 +438,10 @@
     {
       "printingID": "9ccacc1d-eb53-4357-9567-014bee49b70a",
       "number": "OP01-094",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "453521",
+      "groupID": 3188,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "7f058296-f4f1-4c2c-9b28-79465babd9eb",
@@ -514,8 +534,10 @@
     {
       "printingID": "e9afee75-a46c-4142-900b-e5a85390ba1e",
       "number": "OP01-114",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "454652",
+      "groupID": 3188,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "c629ad2f-7610-4449-87fc-20adc24ac228",
@@ -536,8 +558,10 @@
     {
       "printingID": "dbb8388b-59b2-4123-878d-095b92180c2f",
       "number": "ST02-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "288249",
+      "groupID": 3191,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "aac59c3d-5de2-47b9-8348-6531ce4c5166",
@@ -726,8 +750,10 @@
     {
       "printingID": "71761ed7-f415-479e-a878-2bcd426d8b7f",
       "number": "OP02-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "482424",
+      "groupID": 17698,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "1424758b-bc4e-4325-b6f2-3741aca308de",
@@ -740,8 +766,10 @@
     {
       "printingID": "66ed14f4-51b6-4574-901e-7c91a31cc852",
       "number": "OP02-004",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "482423",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e39f9954-885c-4536-875a-869dcd96103f",
@@ -1034,8 +1062,10 @@
     {
       "printingID": "b68f0491-2c13-4999-97ef-edb58ce0cc97",
       "number": "OP02-041",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "486367",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "b280f772-51c6-4b88-8dca-f828ee7aa1d1",
@@ -1096,8 +1126,10 @@
     {
       "printingID": "13ec8347-8d34-4f6b-968f-a165e7be763a",
       "number": "OP02-049",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "486387",
+      "groupID": 17698,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "111cba73-1411-4d06-9315-e5eb3ef387bd",
@@ -1110,8 +1142,10 @@
     {
       "printingID": "a369c89b-f548-4189-8d44-47b4b7495794",
       "number": "OP02-051",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "486390",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "a8d72024-a1b0-4fe1-a4a4-857e83feffa1",
@@ -1196,8 +1230,10 @@
     {
       "printingID": "e098028d-aa0d-44a5-84b5-b0c44bbc092d",
       "number": "OP02-062",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "485238",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "58453177-4110-43ad-99d9-ef5e9fbcafb9",
@@ -1370,8 +1406,10 @@
     {
       "printingID": "b71531e1-7e01-4be1-a720-eb0f1315a92f",
       "number": "OP02-085",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "486452",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "134dd813-15c5-4a60-b2d8-ec36580f58c1",
@@ -1432,8 +1470,10 @@
     {
       "printingID": "87f5e82b-29a9-4f3d-ae38-c618d5d1c644",
       "number": "OP02-093",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "486462",
+      "groupID": 17698,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7dcb76f2-7d40-4659-b4ca-2a8286c721ed",
@@ -1454,8 +1494,10 @@
     {
       "printingID": "d6d112db-8470-45ec-94b1-1cbeadaf2243",
       "number": "OP02-096",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "486468",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "60a711cd-8475-4e5e-bd14-132cbbcf4a68",
@@ -1500,8 +1542,10 @@
     {
       "printingID": "dab765d0-d97c-4310-863c-6f7ae67ca880",
       "number": "OP02-102",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "486481",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "fa9aadc6-4ad2-4d63-b2e8-2f82412ae90e",
@@ -1602,8 +1646,10 @@
     {
       "printingID": "537e5f6d-f3f8-419e-9d99-55cfc234d89b",
       "number": "OP02-115",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "486492",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "fabb1e44-1997-48e0-b257-f6e345339abf",
@@ -1648,8 +1694,10 @@
     {
       "printingID": "ea9af4af-bb67-485f-a097-63d82222499b",
       "number": "OP02-121",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "485397",
+      "groupID": 17698,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "c689b8c0-683d-4989-b916-b95e6a8c1e81",
@@ -1998,8 +2046,10 @@
     {
       "printingID": "7706d62f-6a78-4d25-be8f-f1c863f0adb0",
       "number": "ST07-010",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "500145",
+      "groupID": 22930,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "b944c954-aae1-452f-8411-59bf3a04210a",
@@ -2060,8 +2110,10 @@
     {
       "printingID": "65d8d51e-7bd4-4129-8946-b91f54b42274",
       "number": "ST08-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "503233",
+      "groupID": 22956,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4b2b4462-b9fd-4b47-b88b-4e68fa47fa6d",
@@ -2138,8 +2190,10 @@
     {
       "printingID": "8f0ff5bf-0bb7-4107-be35-ba5f37411641",
       "number": "ST08-011",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "503236",
+      "groupID": 22956,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a3e322fc-cf42-4333-a971-b2f1cd2a1749",
@@ -2176,8 +2230,10 @@
     {
       "printingID": "08ff802b-508a-4271-9291-2deb5604a731",
       "number": "ST09-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "503523",
+      "groupID": 22957,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "69b0a5a8-bcdf-4d1e-8934-279569cacc46",
@@ -2262,14 +2318,18 @@
     {
       "printingID": "6fb45909-903f-434a-b348-d422619e639c",
       "number": "ST09-012",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "504461",
+      "groupID": 22957,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "36929f53-85c1-44b5-b521-2236bc890023",
       "number": "ST09-013",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "504462",
+      "groupID": 22957,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a1f7d12c-5842-45bc-b6b1-fbd76d0f9c07",
@@ -2346,8 +2406,10 @@
     {
       "printingID": "4ded5d95-bf8d-4c46-9239-228d07d1d462",
       "number": "OP03-008",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "499886",
+      "groupID": 22890,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "cedc136f-6ec5-4b11-9417-278e41e7ed6f",
@@ -2520,8 +2582,10 @@
     {
       "printingID": "367533b6-4926-4829-9048-c49d03ab5482",
       "number": "OP03-030",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "499902",
+      "groupID": 22890,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "22b66a92-68b0-465f-859e-4501f81bf1ad",
@@ -2534,8 +2598,10 @@
     {
       "printingID": "801831e2-9cb8-484c-95d6-abcce3171737",
       "number": "OP03-032",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "499904",
+      "groupID": 22890,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "642f97dc-ff93-4669-9215-f800a40a61fd",
@@ -2596,8 +2662,10 @@
     {
       "printingID": "3fe47c2c-ca03-458b-af18-2ca041698666",
       "number": "OP03-040",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "498253",
+      "groupID": 22890,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "81c235be-f056-4258-b41d-1f956bd27e7f",
@@ -2730,14 +2798,18 @@
     {
       "printingID": "37e5417f-5a2e-4ddd-b29c-d810f44e1c2a",
       "number": "OP03-059",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "499990",
+      "groupID": 22890,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "d30e5bfa-5297-4867-bb74-4265a356f89a",
       "number": "OP03-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "499992",
+      "groupID": 22890,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "698d8715-aa15-40c9-ac83-6114140c98e7",
@@ -2822,8 +2894,10 @@
     {
       "printingID": "bd2848c4-ef1e-4c1a-bc86-0dfddc4512ea",
       "number": "OP03-071",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "500010",
+      "groupID": 22890,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9607b8a9-ffd0-4b76-a628-c6bab281449d",
@@ -2860,14 +2934,18 @@
     {
       "printingID": "ca8028fd-76f4-4e3f-8ad4-fd8fe2709523",
       "number": "OP03-076",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "498485",
+      "groupID": 22890,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "0f38fd04-1281-4948-b13a-c7b1cc7ab879",
       "number": "OP03-077",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "498481",
+      "groupID": 22890,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a63c637e-76fb-47f2-932d-4e0231a5f27f",
@@ -2888,14 +2966,18 @@
     {
       "printingID": "ed8855fb-35cc-432e-836b-86cde3dfe068",
       "number": "OP03-080",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "500017",
+      "groupID": 22890,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "18d88eb5-b4dd-4547-b09d-ded417a64308",
       "number": "OP03-081",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "500019",
+      "groupID": 22890,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "ff6cfde7-887a-40ec-85cd-17d637f98698",
@@ -2980,8 +3062,10 @@
     {
       "printingID": "1eb63e91-4162-4efe-8126-04578a631b87",
       "number": "OP03-092",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "500040",
+      "groupID": 22890,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "5311ef75-8de4-43d9-b927-94a2d04425c9",
@@ -3034,8 +3118,10 @@
     {
       "printingID": "7834cac2-a454-4224-a9e1-3d7bc3d90e65",
       "number": "OP03-099",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "498483",
+      "groupID": 22890,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "f2063869-9705-4779-b0f2-9b43e4b8ed4b",
@@ -3152,8 +3238,10 @@
     {
       "printingID": "b53bb06f-fbc9-4cd4-af88-5579f176cc84",
       "number": "OP03-114",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "500092",
+      "groupID": 22890,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "3c9364bd-7d2a-4281-993a-1906e5bdc85d",
@@ -3222,26 +3310,34 @@
     {
       "printingID": "8121c736-ffa2-4e65-a9f5-c26d2887dec2",
       "number": "OP03-123",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "500120",
+      "groupID": 22890,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "759981fc-1969-441f-87e8-5c0f05749857",
       "number": "ST10-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "525044",
+      "groupID": 23243,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "95eb0f04-32e1-46b2-8264-94b338d7179f",
       "number": "ST10-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "525045",
+      "groupID": 23243,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "38b6e7b5-116c-447e-bc90-0ed944945ef2",
       "number": "ST10-003",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "525046",
+      "groupID": 23243,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "89d72fa2-f74e-4455-86eb-aaec12d3bd7f",
@@ -3262,8 +3358,10 @@
     {
       "printingID": "d9865b2d-2668-4972-b835-26058b39c9c5",
       "number": "ST10-006",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "525049",
+      "groupID": 23243,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "f07ad00a-b086-4ec3-9f34-f4bef6b222dc",
@@ -3292,8 +3390,10 @@
     {
       "printingID": "7addcf7e-57b8-4c38-94ad-32117e3823fa",
       "number": "ST10-010",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "525053",
+      "groupID": 23243,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "854e62ff-f7a4-4ee3-9952-c6ea4bc7591e",
@@ -3314,8 +3414,10 @@
     {
       "printingID": "f1903f32-abfa-4142-8cc7-37a0808450d2",
       "number": "ST10-013",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "525057",
+      "groupID": 23243,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "3086d2ca-ae33-4e0e-9052-387f28277018",
@@ -3352,8 +3454,10 @@
     {
       "printingID": "7372eff7-af2f-4dfa-b725-233c1bb1596f",
       "number": "OP04-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "510762",
+      "groupID": 23024,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "1d0316c9-36b8-40ee-b647-bbeb7b26f433",
@@ -3398,8 +3502,10 @@
     {
       "printingID": "a5459076-71b4-4a75-8ccb-6220503b04b6",
       "number": "OP04-007",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "516733",
+      "groupID": 23024,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "59ff6cef-630b-481e-bcd3-7fde30e1ac88",
@@ -3452,8 +3558,10 @@
     {
       "printingID": "e9eb334a-9191-45b3-8c96-81c41da46400",
       "number": "OP04-014",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "516740",
+      "groupID": 23024,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "ddc59aa0-1989-4574-99ac-a9e460ae6c7d",
@@ -3490,8 +3598,10 @@
     {
       "printingID": "09608fd7-34f5-4654-9e5d-33b15e68ec50",
       "number": "OP04-019",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "510896",
+      "groupID": 23024,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a5166c6c-c5da-4b9e-a4cc-a3a66ca671f9",
@@ -3584,8 +3694,10 @@
     {
       "printingID": "a9a6be6b-547a-4ce1-8774-b904cfef39e4",
       "number": "OP04-031",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "513464",
+      "groupID": 23024,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "438f48ff-1497-4489-8dc5-782d0ee4a444",
@@ -3646,14 +3758,18 @@
     {
       "printingID": "baaf8953-0840-4ec5-b665-93edfc128ba6",
       "number": "OP04-039",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "510993",
+      "groupID": 23024,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7e7f9229-de7b-4ea1-9715-5b706e1de1dc",
       "number": "OP04-040",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "511397",
+      "groupID": 23024,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "720cac7d-5fde-457b-a606-473fd5c56896",
@@ -3698,8 +3814,10 @@
     {
       "printingID": "e96689b2-5a89-436c-9241-84bae9071aaa",
       "number": "OP04-046",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "516763",
+      "groupID": 23024,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "5c622325-0c6c-432a-bddb-37ddc861f9dd",
@@ -3792,8 +3910,10 @@
     {
       "printingID": "6524c6ff-d151-44bc-93fa-20bd76ac9702",
       "number": "OP04-058",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "511765",
+      "groupID": 23024,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "51c72a93-4b05-4182-a110-8b5417887d21",
@@ -3806,8 +3926,10 @@
     {
       "printingID": "dd5d201d-6d7b-42c9-b252-27e4d70f23fc",
       "number": "OP04-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "514247",
+      "groupID": 23024,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "90512b30-b527-44bb-8fdd-0f5160766d5a",
@@ -4044,8 +4166,10 @@
     {
       "printingID": "5002049f-f365-4bae-bfea-3d78edf2c55f",
       "number": "OP04-090",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "515278",
+      "groupID": 23024,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "d7494b83-aa30-4677-b81b-b63a7d56cb13",
@@ -4058,8 +4182,10 @@
     {
       "printingID": "9f5d9005-92cc-4c61-b03e-b11ac2eabfde",
       "number": "OP04-092",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "516803",
+      "groupID": 23024,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "cfa095b9-1299-43b5-b36e-521c39ff7302",
@@ -4152,8 +4278,10 @@
     {
       "printingID": "2d184c43-bc7f-4322-8d6b-7df440a34e4b",
       "number": "OP04-104",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "515282",
+      "groupID": 23024,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "5cd0b4a6-7507-4233-abd0-7d0f71f7a9b0",
@@ -4262,8 +4390,10 @@
     {
       "printingID": "1cc7928c-83c7-403d-816b-ec55306125b9",
       "number": "OP04-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "515312",
+      "groupID": 23024,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "1b6eda0e-1bcb-49d0-b8d9-27042b4b3dd6",
@@ -4276,14 +4406,18 @@
     {
       "printingID": "20e55c7e-f793-48d1-8871-fe8e57ab3a53",
       "number": "OP05-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528529",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "2a64aa4a-385a-4d13-8079-a87cb689ac0e",
       "number": "OP05-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528531",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "480bfdc0-8203-4bd9-8de6-6cfdb37a6ad7",
@@ -4320,8 +4454,10 @@
     {
       "printingID": "9519dbee-ca30-4330-923e-fccfb6124702",
       "number": "OP05-007",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "527009",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "8ed28173-6cc6-4004-a125-565e674a0deb",
@@ -4382,8 +4518,10 @@
     {
       "printingID": "801c9e87-9750-4c0c-9204-a73090bdd683",
       "number": "OP05-015",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528545",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "dcce2487-923d-442d-a86f-1793a8d3ec8f",
@@ -4436,8 +4574,10 @@
     {
       "printingID": "18a66a7d-68c9-4b64-8bca-3098b3ea4a5f",
       "number": "OP05-022",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528557",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "0da42526-6e63-4e47-ae55-fa30699fbdd3",
@@ -4474,26 +4614,34 @@
     {
       "printingID": "e91acb91-bd91-4368-9431-e195591ed4db",
       "number": "OP05-027",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528566",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "496b0d38-ca67-4175-9431-d4596e66009d",
       "number": "OP05-028",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528568",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6181bea9-fac6-4a0a-b8bc-c131bb44a477",
       "number": "OP05-029",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528571",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "93387e4b-5850-4742-a46a-d286ea87adc3",
       "number": "OP05-030",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528574",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "5048156f-4d17-4612-9955-a352f14e424f",
@@ -4506,14 +4654,18 @@
     {
       "printingID": "513e5326-3a4a-4933-adbd-503c1e9926be",
       "number": "OP05-033",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528579",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "85f2aa03-094c-40ae-81ad-0293eefbadf3",
       "number": "OP05-034",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "527873",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "ebe184f6-7c70-4eca-b010-0ce29b3d4043",
@@ -4718,8 +4870,10 @@
     {
       "printingID": "fa84f1f2-bcc4-48a8-b78c-bbde8bf517d0",
       "number": "OP05-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528616",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "39a81ae0-34a5-408b-92b1-74864c78bc56",
@@ -4788,8 +4942,10 @@
     {
       "printingID": "af5230b3-00b3-4d70-89c8-8e10bef88fc1",
       "number": "OP05-069",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "527875",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "aa372c94-76e8-4206-89e6-2ae53d3a31c1",
@@ -4978,8 +5134,10 @@
     {
       "printingID": "28babcd7-f87f-46b7-b5ca-30dd66a23493",
       "number": "OP05-093",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528164",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "29052cb1-c22a-4c1c-8018-a093dfbb6d08",
@@ -5016,8 +5174,10 @@
     {
       "printingID": "ce001147-d5f9-4868-8bad-8d3919921ac2",
       "number": "OP05-098",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "528660",
+      "groupID": 23213,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "51088b87-bb36-458d-9b98-f8824a9e42f4",
@@ -5030,8 +5190,10 @@
     {
       "printingID": "e4c3e05b-757f-4c19-adb0-aea68f6d899c",
       "number": "OP05-100",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "527022",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "d2d0fcc4-b2d0-45e5-8c7a-5d1244a446ce",
@@ -5172,26 +5334,34 @@
     {
       "printingID": "f2cf0702-e151-42bf-aa6a-b443818fe14f",
       "number": "OP05-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "527045",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "7a63a35f-4d9c-4e0d-82ef-74589203f2cc",
       "number": "OP05-119",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "527024",
+      "groupID": 23213,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "1ec567ec-def7-4c89-bde1-4fa34ec7b7ea",
       "number": "ST11-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "533879",
+      "groupID": 23250,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "1765ff55-fbb9-4f8e-814b-f0d299e94ad8",
       "number": "ST11-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "533880",
+      "groupID": 23250,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "8d438939-46d2-497f-b4fa-8ba6c273232f",
@@ -5253,7 +5423,7 @@
       "printingID": "6b1888d2-bdac-4fc2-97c1-c7aabf57694d",
       "number": "EB03-001",
       "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "reason": "missing-exact-finish-lane"
     },
     {
       "printingID": "ce9a8441-025c-4be6-8761-f82170c76354",
@@ -5266,8 +5436,10 @@
     {
       "printingID": "a3816bd4-75ed-40c6-b650-b828c786f1f7",
       "number": "EB03-003",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672742",
+      "groupID": 24545,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "be7068cd-beea-427a-a3c1-8c6e948f54ff",
@@ -5288,8 +5460,10 @@
     {
       "printingID": "045d59f4-b550-4b31-8f92-9ad3a464b65b",
       "number": "EB03-006",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672746",
+      "groupID": 24545,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4aadb2ed-166a-4e97-bf47-6815eb6d0416",
@@ -5430,8 +5604,10 @@
     {
       "printingID": "89b96e8b-e821-4d97-912f-4883a3e5c13f",
       "number": "EB03-024",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672767",
+      "groupID": 24545,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "70017be7-951b-4cc4-8752-d9ae96e80e1f",
@@ -5588,8 +5764,10 @@
     {
       "printingID": "bada9bc5-abd4-4474-a158-d9b883dcbd4f",
       "number": "EB03-045",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672795",
+      "groupID": 24545,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "61b1a563-1dc1-4c58-b641-88a82973ecb7",
@@ -5650,20 +5828,26 @@
     {
       "printingID": "e4c7d40d-02ea-44db-b426-c8d8eaf093c0",
       "number": "EB03-053",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672804",
+      "groupID": 24545,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9ef328c8-aa23-4cc2-8351-c2000051abbd",
       "number": "EB03-054",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672806",
+      "groupID": 24545,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8ec30263-3c59-4ebe-9454-df44b0e94718",
       "number": "EB03-055",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672807",
+      "groupID": 24545,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "93ee2a00-27bf-407d-afb8-ba680b5fbf97",
@@ -5708,8 +5892,10 @@
     {
       "printingID": "d2af02f4-adec-41bb-a5b7-ebd9c8481748",
       "number": "EB03-061",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672815",
+      "groupID": 24545,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "1c2fa8ee-78f0-413f-86eb-73d255742e7c",
@@ -5794,8 +5980,10 @@
     {
       "printingID": "1004e90c-d5d0-4ca1-8d93-70536e37ccc3",
       "number": "EB02-010",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "629100",
+      "groupID": 23834,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a216af11-5e5c-421d-a592-b1f5074c24ea",
@@ -6040,8 +6228,10 @@
     {
       "printingID": "733d7a48-dcd2-4093-995e-fdd6429805ad",
       "number": "EB02-041",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "629139",
+      "groupID": 23834,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "a35a9cc9-27ba-4df3-bb4e-c9b1102a6c15",
@@ -6190,14 +6380,18 @@
     {
       "printingID": "401fab4d-8efb-4c4b-957d-2ad17c2a00c3",
       "number": "EB02-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "629164",
+      "groupID": 23834,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "44d89bf0-14c2-42de-8d46-ac9659b2420e",
       "number": "EB02-061",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "629165",
+      "groupID": 23834,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "b0042ae5-5b25-448c-b9c1-3ec9b0b07781",
@@ -6330,8 +6524,10 @@
     {
       "printingID": "8caebf5b-7b23-4c01-a6e9-868dee634a3a",
       "number": "EB01-017",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "544545",
+      "groupID": 23333,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6f72842d-76ac-404c-b76b-1b43921ecfdb",
@@ -6456,8 +6652,10 @@
     {
       "printingID": "2aee0cda-d49f-44df-b36a-7163b7787fab",
       "number": "EB01-033",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "544565",
+      "groupID": 23333,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "f2f47b3c-cfc7-46ad-bef8-b731c6ec3105",
@@ -6550,26 +6748,34 @@
     {
       "printingID": "6aeb0510-bd64-4b08-b547-5478f3a00de9",
       "number": "EB01-045",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "544579",
+      "groupID": 23333,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8d403b41-9927-406b-a309-3f1b1bdc2f7c",
       "number": "EB01-046",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "544580",
+      "groupID": 23333,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2ee0c32e-5695-4e59-a2a2-b7a5296eeb8b",
       "number": "EB01-047",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "544582",
+      "groupID": 23333,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "670c7aa2-4166-4383-be10-d1eb85539b52",
       "number": "EB01-048",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "544583",
+      "groupID": 23333,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "0451d0df-c6e1-414e-9924-5ec8d6304485",
@@ -6678,8 +6884,10 @@
     {
       "printingID": "09d7669a-6a3c-4a60-879b-70d7d1fb9da8",
       "number": "OP17-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "705925",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "f65c2b14-4ec2-4daa-8e0d-334c3535de9a",
@@ -6708,8 +6916,10 @@
     {
       "printingID": "036b0165-f7c4-4738-ab0f-0a7c94352afc",
       "number": "OP17-005",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "711499",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "bf2957dc-030d-4437-a659-c0604522583a",
@@ -6826,8 +7036,10 @@
     {
       "printingID": "0ba59102-fef1-416c-ba43-ca9c125f64dc",
       "number": "OP17-020",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "705922",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "e9fb2b06-b141-4429-aae8-c4673defc91c",
@@ -6840,14 +7052,18 @@
     {
       "printingID": "16b5d88b-e3d2-4fb0-8841-c22e6ad61f54",
       "number": "OP17-022",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "707120",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9b34ae3c-4ae7-4730-b481-eeabc6ce0a57",
       "number": "OP17-023",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712604",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "e0b8a67d-badb-4727-8d9b-47b358101aad",
@@ -6900,8 +7116,10 @@
     {
       "printingID": "15522991-e2c3-41cd-aad1-babbd55ad036",
       "number": "OP17-030",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712607",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "e1b19cd0-3317-4d3b-98a4-4fff4cbec04d",
@@ -6938,8 +7156,10 @@
     {
       "printingID": "d4508261-a092-4ec7-b33a-7d19c01901f4",
       "number": "OP17-035",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712609",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "3a995c37-61d6-4c7b-82e3-36e3578b0320",
@@ -6968,14 +7188,18 @@
     {
       "printingID": "3c549ee1-4ae0-4d08-9c08-d53e3d882c1a",
       "number": "OP17-039",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712086",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9e05007d-ae06-4958-bafd-de568197a3f9",
       "number": "OP17-040",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712031",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "53001d17-0077-4936-bb19-21324750df1d",
@@ -6988,8 +7212,10 @@
     {
       "printingID": "82e03cd4-7c5b-484d-8352-8a26f5ff3644",
       "number": "OP17-042",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712613",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "7ed8949f-1f83-43f7-aaa7-03c301082382",
@@ -7026,32 +7252,42 @@
     {
       "printingID": "96bac4be-9de6-45d8-ac44-702a25f23b6a",
       "number": "OP17-047",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712618",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "29e9a1ce-aef4-48d5-acb6-4ac9672d53e6",
       "number": "OP17-048",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "710542",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2fac2cb5-0247-4c2f-a013-94acd3df4ec9",
       "number": "OP17-049",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712088",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "ae3a2b94-614c-449c-b589-ed1c3f415e00",
       "number": "OP17-050",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712619",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "cfbe3fb7-d487-4174-82ad-95b3363f051e",
       "number": "OP17-051",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712620",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4e2789e1-8f10-4bb2-afb6-e868c44dae0e",
@@ -7104,8 +7340,10 @@
     {
       "printingID": "df4a2b80-7127-48a6-96e6-7b92d1eda234",
       "number": "OP17-058",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "707117",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "3da96480-c870-40cc-8c9e-ea6b6a48fb27",
@@ -7134,14 +7372,18 @@
     {
       "printingID": "9b42de0d-de7b-4e91-9bc9-33e990650e3d",
       "number": "OP17-062",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "707133",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "271a476c-a5d6-46ae-8726-dffa015e0f66",
       "number": "OP17-063",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "710578",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "830eaaaf-f0f7-4dc6-82f3-568fbd192ed4",
@@ -7266,8 +7508,10 @@
     {
       "printingID": "9a7779f2-02b2-4d81-9e09-26a77ace8b9f",
       "number": "OP17-079",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "707123",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "d5c6d5f3-8b94-468e-bb6d-c749026ff582",
@@ -7296,8 +7540,10 @@
     {
       "printingID": "b7b51784-56b8-4253-85ea-6a06048170dd",
       "number": "OP17-083",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "707119",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a89101e4-bb6e-4e14-8145-479c71d2b611",
@@ -7318,8 +7564,10 @@
     {
       "printingID": "fb68adc0-7b1e-4d7b-af43-cb42733f0045",
       "number": "OP17-086",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712641",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9c27b445-c7c4-42c2-a8e4-c71b8070a8c8",
@@ -7372,8 +7620,10 @@
     {
       "printingID": "afb84af9-93d4-4c6a-9c92-1f8d5bbc2b1b",
       "number": "OP17-093",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "710861",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "539062a7-f5e2-4085-8ec1-ee49ab4c3e6e",
@@ -7386,8 +7636,10 @@
     {
       "printingID": "94fad8f9-9314-48fb-b4e2-354afd4a5ee0",
       "number": "OP17-095",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "710617",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "76b94e66-df34-4799-b26f-4a638636acc8",
@@ -7416,8 +7668,10 @@
     {
       "printingID": "7e50c700-cd3a-492a-8ca6-f98119c0996d",
       "number": "OP17-099",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "707138",
+      "groupID": 24736,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "5eeba85c-28a8-44a4-87d3-1e4e10b904a8",
@@ -7518,14 +7772,18 @@
     {
       "printingID": "a682a156-8d3f-4609-997d-7edeff9fd3c4",
       "number": "OP17-112",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "711325",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4842b2f0-6b0b-40ef-88f0-36f24043050b",
       "number": "OP17-113",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "712659",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e1eae7e7-456d-43db-ba67-5e6a39776dfd",
@@ -7562,8 +7820,10 @@
     {
       "printingID": "b7b9be1b-0be4-4424-a859-81ff630dc842",
       "number": "OP17-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "709836",
+      "groupID": 24736,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "01d72268-f941-4254-9924-b72b0caeda28",
@@ -7576,8 +7836,10 @@
     {
       "printingID": "ec37cd65-c9e1-40ae-bfae-8beb71fda25d",
       "number": "OP16-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "693417",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "92fdcd80-dfde-4692-a934-4c6163841f9c",
@@ -7742,8 +8004,10 @@
     {
       "printingID": "e45163c1-27e8-4f0e-994f-77e3127bc61b",
       "number": "OP16-022",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696006",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "99acbb49-686d-4176-9ece-3608f93fa326",
@@ -7772,14 +8036,18 @@
     {
       "printingID": "e15cab32-499e-4041-9f5b-b0890a8cc4d2",
       "number": "OP16-026",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696011",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9176e571-e917-4b84-96f4-7ad065df0362",
       "number": "OP16-027",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696013",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "8e860c0f-f60b-48df-a580-209bd9223db4",
@@ -7801,13 +8069,15 @@
       "printingID": "8eed7623-5bd3-4fb4-8d03-223b7df0f316",
       "number": "OP16-030",
       "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "reason": "missing-exact-finish-lane"
     },
     {
       "printingID": "ba1c7591-e9df-44da-b0d1-f903c9c784b8",
       "number": "OP16-031",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696017",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "1f70d7a0-1115-4f0c-b689-22d44c8cd0f5",
@@ -7828,26 +8098,34 @@
     {
       "printingID": "211d825b-c0c5-4169-9b58-8fcf02ad59f9",
       "number": "OP16-034",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696019",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "81507287-524b-4934-ae94-6863c4461680",
       "number": "OP16-035",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696021",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "e90aedcb-76aa-46ee-9431-9e0cc7dd6578",
       "number": "OP16-036",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696022",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a87828a8-413f-4e1a-9c87-493bf9dc7ace",
       "number": "OP16-037",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696023",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "d4d26904-afee-40a2-adb7-269c5385e968",
@@ -7876,8 +8154,10 @@
     {
       "printingID": "f1aed49d-ee7a-43bf-bfae-5b12a762c177",
       "number": "OP16-041",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696027",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "b93390dd-a6a1-4406-a57e-4903ad671625",
@@ -7898,8 +8178,10 @@
     {
       "printingID": "d5fef1fa-772f-48e3-ae33-c520931bd211",
       "number": "OP16-044",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696031",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "39c3a65e-c380-4395-bdcc-78764839f896",
@@ -7912,26 +8194,34 @@
     {
       "printingID": "41228f91-fef6-4fd4-8ec6-2bd5154385ac",
       "number": "OP16-046",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696033",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "49d87da6-75cb-4f55-b30f-fb9086a4930a",
       "number": "OP16-047",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696034",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "e077cfcb-1a1d-42b8-bd87-cd98f419d524",
       "number": "OP16-048",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "694644",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "171d0986-2de8-428d-a6c3-8f3965aec035",
       "number": "OP16-049",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696035",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "2c936ce0-5e24-46af-b548-c52a06342c09",
@@ -7952,14 +8242,18 @@
     {
       "printingID": "11567659-0ba4-4efc-91a1-3024cf80e4b6",
       "number": "OP16-052",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696038",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "1dfa3847-f0d7-4d27-88e3-7fc8059236ae",
       "number": "OP16-053",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696039",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "1eab04ef-c439-4b3d-8939-1ca710a45c00",
@@ -7972,14 +8266,18 @@
     {
       "printingID": "39db8c9e-1498-46c4-827b-36e16966c034",
       "number": "OP16-055",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696041",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2ceeaa7b-1452-4a33-ae4c-566b554d4372",
       "number": "OP16-056",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696043",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "1b82b0eb-cbda-4a2b-96f3-911f343cc495",
@@ -8008,8 +8306,10 @@
     {
       "printingID": "5e0ba0c9-610d-4cc2-92fc-19ef2f178923",
       "number": "OP16-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "694653",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "f37fccaa-c957-4b5e-9998-18428b8e670a",
@@ -8054,8 +8354,10 @@
     {
       "printingID": "7990a255-a279-4289-ab13-453d91bfcf93",
       "number": "OP16-066",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696054",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "16e54fa2-8e04-4a58-8a2b-113974b70730",
@@ -8068,14 +8370,18 @@
     {
       "printingID": "854128e0-c3b2-44c2-b5d1-143c3b0a3c62",
       "number": "OP16-068",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696056",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "918dd6f4-a9e8-4a16-b4da-4b8bf529eb21",
       "number": "OP16-069",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696057",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "76b60ad4-55a7-467f-ba0b-2ce92f368b9b",
@@ -8152,14 +8458,18 @@
     {
       "printingID": "d198ac8e-c428-41b5-9aa7-f44b3f8b3061",
       "number": "OP16-079",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "694067",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9d15de00-0082-4bb8-b3ce-73819154464e",
       "number": "OP16-080",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "694627",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7523c515-afd5-4a1c-bdaa-8d545c25ff8a",
@@ -8188,14 +8498,18 @@
     {
       "printingID": "fbb44e5d-b00f-4003-9512-f10266fcdaf3",
       "number": "OP16-084",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696068",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "77e94600-2e72-4cbc-b632-804dbf11e8cc",
       "number": "OP16-085",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "694642",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "372b3209-d9d4-4336-a9f9-3716a3a12c00",
@@ -8256,38 +8570,50 @@
     {
       "printingID": "8289384b-f9b9-4a1b-a5b3-c3549b4b5717",
       "number": "OP16-093",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696076",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8ff3f3bc-22ee-4e58-a370-c48c9d130051",
       "number": "OP16-094",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696077",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "c05b88a8-c202-4cea-8601-04ca9eb079d2",
       "number": "OP16-095",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696078",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "aefd96f4-5984-485b-972d-d4fe4ce98ab4",
       "number": "OP16-096",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696079",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4b8426f5-c88f-40de-99f5-82bc0391348c",
       "number": "OP16-097",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696080",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "0b8afb23-f882-4643-ba06-b52ebc231993",
       "number": "OP16-098",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "694640",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "b71fd65d-3592-4861-b3b1-4d60a29af0a4",
@@ -8396,8 +8722,10 @@
     {
       "printingID": "14a31e00-3242-436e-8ec2-6bb7f5ac2b6b",
       "number": "OP16-112",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "696095",
+      "groupID": 24664,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4fe0a326-3372-438c-999c-0ff1aa39ee87",
@@ -8442,20 +8770,26 @@
     {
       "printingID": "27df53e0-6b29-4ea2-b19f-6ad8487a0e31",
       "number": "OP16-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "694932",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "99ff948e-c56c-4053-ab11-05770f4bb9cc",
       "number": "OP16-119",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "695756",
+      "groupID": 24664,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "eecbbc9a-2b2c-4887-9be9-e8506941b404",
       "number": "OP15-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685336",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6dc3bf40-810c-49a3-a0a2-3d1550826745",
@@ -8508,14 +8842,18 @@
     {
       "printingID": "96549f88-835b-455b-a9dd-2dd5b0bbbd0b",
       "number": "OP15-008",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685347",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "bf2482e7-4620-45a4-a036-802cd2f892f4",
       "number": "OP15-009",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685349",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9db8bd3b-9b7c-4877-82fb-8dbb8dcaaab4",
@@ -8616,8 +8954,10 @@
     {
       "printingID": "757659f2-5383-4769-8cd9-c580b9ab15af",
       "number": "OP15-022",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685362",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "15eb8c72-2709-405d-8947-1257cd0a3b94",
@@ -8670,8 +9010,10 @@
     {
       "printingID": "b72c8101-f527-4910-b4fd-40e5f5e06df6",
       "number": "OP15-029",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685371",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "912db83d-657a-45ed-b538-6aa93c935bd4",
@@ -8692,8 +9034,10 @@
     {
       "printingID": "e1ea250e-f6a3-47b6-8aca-e7804cd424de",
       "number": "OP15-032",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685374",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4731c934-9e02-4842-b16e-c5cd0d758a5f",
@@ -8746,8 +9090,10 @@
     {
       "printingID": "2bde316a-1082-466f-985a-bfbab7f56c72",
       "number": "OP15-039",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685382",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "60ba3ab7-d0a8-4264-9433-fa832923555c",
@@ -8808,8 +9154,10 @@
     {
       "printingID": "138643d4-269b-4ee2-a8fd-609b6626ee76",
       "number": "OP15-047",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685392",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2b0af608-c677-43bb-801a-e55a72f5e648",
@@ -8838,8 +9186,10 @@
     {
       "printingID": "1ea95bb9-e20a-4b64-81cd-88f47d20c6eb",
       "number": "OP15-051",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685397",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "062ecbdc-ed40-48d7-9bef-36bd88e65de2",
@@ -8852,8 +9202,10 @@
     {
       "printingID": "b7b10a41-39ad-4ad5-be22-4594b0610907",
       "number": "OP15-053",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685399",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2544f68a-5578-44a3-b9fb-4c23d71b3515",
@@ -8890,8 +9242,10 @@
     {
       "printingID": "14175ceb-83c5-4050-9cd2-a23a957d10ff",
       "number": "OP15-058",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685405",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "170ab9f1-ca30-48f1-af41-1d6f6b4a1a13",
@@ -8904,8 +9258,10 @@
     {
       "printingID": "72f75d9b-92cf-4662-b88b-9062e2678693",
       "number": "OP15-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685408",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "ff9a7f4f-2022-472e-bedf-5212057707b3",
@@ -9070,8 +9426,10 @@
     {
       "printingID": "b41722cb-dc32-4170-8874-dad0047ef350",
       "number": "OP15-081",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685433",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "aa88c820-2e03-4c99-9d06-e5ab5aa6fe4e",
@@ -9100,20 +9458,26 @@
     {
       "printingID": "5c769b0b-337f-4e08-b9bf-1d3778b89d9c",
       "number": "OP15-085",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685437",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "c4e9bee8-08a1-4e93-a2b9-6c3aa6897899",
       "number": "OP15-086",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685438",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "0eb04e30-0bf5-4a14-bb1c-e51c78a74d94",
       "number": "OP15-087",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685440",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7e88cc85-5e89-47a3-956e-f7a1be4da374",
@@ -9150,8 +9514,10 @@
     {
       "printingID": "2ba8bae3-20e9-42b0-920b-aa8dbf0a7b48",
       "number": "OP15-092",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685445",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "5c723d3a-b82c-473b-8fd1-c0153ccb27e6",
@@ -9164,8 +9530,10 @@
     {
       "printingID": "023f4032-aabb-44cd-98d2-b171d500ff68",
       "number": "OP15-094",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685448",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6c1518ca-a6a4-4813-80a1-258ecdd2d8d2",
@@ -9194,8 +9562,10 @@
     {
       "printingID": "81da094a-2d75-4128-ab13-53934e287baf",
       "number": "OP15-098",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685452",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "cf57c7ae-ef0c-47ab-ac6b-44cbe6aae847",
@@ -9248,8 +9618,10 @@
     {
       "printingID": "acf6a12b-333b-4cb6-92fe-9b65107bbced",
       "number": "OP15-105",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685460",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "79550f68-a446-4135-be44-40cbf9bbaf7a",
@@ -9262,20 +9634,26 @@
     {
       "printingID": "7132b9eb-d6ed-4198-b9ef-b2f7d9d8c6d1",
       "number": "OP15-107",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685462",
+      "groupID": 24637,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "172a679b-da8d-4624-887a-433c2fe15983",
       "number": "OP15-108",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685463",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e7967426-91fc-496d-bb5e-b927296191fe",
       "number": "OP15-109",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685464",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "22d9574f-5258-47f9-96d1-f5e04213bada",
@@ -9304,8 +9682,10 @@
     {
       "printingID": "b743c529-795b-46fe-ab17-f1095c9ad01f",
       "number": "OP15-113",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685469",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2608f1b1-7cf2-4509-80fb-b1d3b25debcf",
@@ -9342,20 +9722,26 @@
     {
       "printingID": "0a0a14b8-783e-447e-8fe9-f8ea0b8cc8d4",
       "number": "OP15-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685477",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "a94efbfd-58a5-441a-86bc-3e75a9e6eeae",
       "number": "OP15-119",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "685480",
+      "groupID": 24637,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "ef662b43-4e38-4e66-9ec9-7e8b316310f9",
       "number": "OP14-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "666518",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "d537c32a-94d1-4400-adf7-87dc93702264",
@@ -9416,8 +9802,10 @@
     {
       "printingID": "0694fb9b-fd92-42af-87c0-851a473b889e",
       "number": "OP14-009",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "668636",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "f723ec4a-0931-4b0d-8f6f-68c9da709e40",
@@ -9446,20 +9834,26 @@
     {
       "printingID": "972809d7-e11e-4d6d-a0dc-1f02fb13dbdb",
       "number": "OP14-013",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "666520",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "90577bfb-6100-4228-80c1-d1698177d7c2",
       "number": "OP14-014",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "671359",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e5fc3132-fcc9-468c-858f-2c07237b4bc5",
       "number": "OP14-015",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "672111",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "db3d9ec9-c9e2-440c-81ce-cf7ed7335719",
@@ -9496,14 +9890,18 @@
     {
       "printingID": "c2e5a69d-f6e0-49f8-8907-bbe94b723707",
       "number": "OP14-020",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "666524",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "10108b58-3c85-44c4-8b56-07ae496a94d8",
       "number": "OP14-021",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "671364",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "99fbad65-d101-4ad2-aac8-560fc19427db",
@@ -9564,8 +9962,10 @@
     {
       "printingID": "a8782de2-8b48-45cb-a824-f9ad1eee577f",
       "number": "OP14-030",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "671373",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8d25c5ee-cf17-429a-b002-dbf40a84fc60",
@@ -9586,14 +9986,18 @@
     {
       "printingID": "58479983-6e24-4444-8a88-64d5517edc1f",
       "number": "OP14-033",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "666526",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "8d6d19cf-bca5-4413-bb40-92d2388997ae",
       "number": "OP14-034",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "671375",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9a10b4a7-e98c-4386-9cf3-dc05dd49af11",
@@ -9638,14 +10042,18 @@
     {
       "printingID": "1b900b35-ffbb-4219-bb76-bca734f98307",
       "number": "OP14-040",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "668568",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "ed5638d7-abf8-4d06-8310-e1a171a0c5a6",
       "number": "OP14-041",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "668333",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "50a160ae-9b59-4aa6-a93e-1c5b2428b7e1",
@@ -9706,8 +10114,10 @@
     {
       "printingID": "18301b41-5386-4782-b2f1-880f9ff0159f",
       "number": "OP14-049",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "668570",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "dc7958fd-1248-4a75-92b4-a21b3a2c48ca",
@@ -9792,8 +10202,10 @@
     {
       "printingID": "2e7a69e6-54d9-47df-9765-82a065d250dd",
       "number": "OP14-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "666528",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "435ee4bb-95ab-4cd5-abb9-e0aad59c62fa",
@@ -9862,8 +10274,10 @@
     {
       "printingID": "6477fc34-5259-46d4-82bb-e8d2d25ab488",
       "number": "OP14-069",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "668638",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "bc075be2-2d03-4df3-9da8-3b1b9e015e52",
@@ -9940,14 +10354,18 @@
     {
       "printingID": "ba804db2-3dab-41ba-b67e-dfe6c4829996",
       "number": "OP14-079",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "666761",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "b0fe19d6-6419-47a7-8fc0-fd4cf93ceb9d",
       "number": "OP14-080",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "666572",
+      "groupID": 24537,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4484a1c3-1882-41e0-8a03-d1da6075324c",
@@ -10136,8 +10554,10 @@
     {
       "printingID": "220cb636-17ee-4208-a2e6-e325645efc2d",
       "number": "OP14-104",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "666574",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "28d9d078-ea30-447f-a38a-f103e038f111",
@@ -10190,14 +10610,18 @@
     {
       "printingID": "a6ab63a4-a679-4409-b0ab-be94fe201e6a",
       "number": "OP14-111",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "671441",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "26982c05-710c-43fb-b5d8-950f277218c9",
       "number": "OP14-112",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "668342",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "f2ade8b9-e3ce-415f-8098-a0854525d6b8",
@@ -10250,38 +10674,50 @@
     {
       "printingID": "5c0d9a0d-eb0d-48ec-af40-5208b2bdad08",
       "number": "OP14-119",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "668641",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "210add6d-bbec-4b74-b19a-54bb10cff3f9",
       "number": "OP14-120",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "668640",
+      "groupID": 24537,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "3b17c724-84b4-4cc5-8efe-db958426a077",
       "number": "OP13-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657250",
+      "groupID": 24303,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7bcedbcb-049d-479d-b7be-3863a8068040",
       "number": "OP13-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657252",
+      "groupID": 24303,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "2e1415b8-1b32-4b32-99ac-9050a7b54129",
       "number": "OP13-003",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657254",
+      "groupID": 24303,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "abce1385-a531-4531-9569-425bcd2b68d0",
       "number": "OP13-004",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657256",
+      "groupID": 24303,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8bc4a2f5-1bf9-4ebe-8a64-9448ee35fe32",
@@ -10470,8 +10906,10 @@
     {
       "printingID": "aa8398f9-c146-4309-b3a4-cf29b48599d0",
       "number": "OP13-028",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657285",
+      "groupID": 24303,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "92386376-92aa-4fc4-b1c4-987974b3cfae",
@@ -10756,14 +11194,18 @@
     {
       "printingID": "a6932b05-9d87-4fdd-bfbc-f8de382b0591",
       "number": "OP13-064",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657325",
+      "groupID": 24303,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2507afe4-95e3-4fa8-96cc-5eb1b4bbbf66",
       "number": "OP13-065",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657327",
+      "groupID": 24303,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "5892b97e-e6b5-49b4-9ee7-38adbe099eea",
@@ -11032,8 +11474,10 @@
     {
       "printingID": "f0da6e0a-09d7-4b26-afa4-2600dfe2c19c",
       "number": "OP13-100",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657377",
+      "groupID": 24303,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "e436df63-4a24-4ca6-bda5-092043cea1c0",
@@ -11094,14 +11538,18 @@
     {
       "printingID": "41740992-96fe-4b6a-8e90-0f7eccfc6859",
       "number": "OP13-108",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657386",
+      "groupID": 24303,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "86021a6d-16d8-43bb-a645-455452e0d77e",
       "number": "OP13-109",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657388",
+      "groupID": 24303,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9826e501-758b-499c-9bad-b22e3098af95",
@@ -11170,8 +11618,10 @@
     {
       "printingID": "357e0c91-86c4-408a-8a2b-aff4adaccf4e",
       "number": "OP13-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "657400",
+      "groupID": 24303,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "42c7e8b1-ba95-4b89-9d6c-5a27f85ba4aa",
@@ -11224,14 +11674,18 @@
     {
       "printingID": "f64d854a-05df-4118-9c1a-d47ba8ffa780",
       "number": "OP12-007",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643731",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9891096b-12d0-4b75-bfdf-e8bc3c28b120",
       "number": "OP12-008",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643732",
+      "groupID": 24302,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4fa46cae-64ff-4f61-b1b2-1d3aafeb70ad",
@@ -11260,8 +11714,10 @@
     {
       "printingID": "a73b3a65-ba8d-454f-90a6-11918cfcc709",
       "number": "OP12-012",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643737",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8b9a2f56-9146-467a-88ba-4d8a0121f78f",
@@ -11322,8 +11778,10 @@
     {
       "printingID": "b0801ef1-f6aa-4173-84f7-304d4f7353ac",
       "number": "OP12-020",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643747",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "67794fe2-7e12-44f6-9080-32e845e6e0bf",
@@ -11448,8 +11906,10 @@
     {
       "printingID": "1c84fea8-51fe-4be9-a334-930f204c487a",
       "number": "OP12-036",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643767",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "99dd5f23-a223-4dfc-99b0-d55277f9b256",
@@ -11478,14 +11938,18 @@
     {
       "printingID": "6d8dd9c4-655d-4e4f-9008-de1084bcaa6b",
       "number": "OP12-040",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643772",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "0f15be2d-44a6-4ea9-b7c7-6c47b3517789",
       "number": "OP12-041",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643774",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "29c08f27-89e6-4940-b86b-8ad2c4b1f646",
@@ -11498,8 +11962,10 @@
     {
       "printingID": "717f0e78-eb68-4d06-93a8-a67c26f11eec",
       "number": "OP12-043",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643777",
+      "groupID": 24302,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "09a322ef-a561-4b3d-8017-014ca0364361",
@@ -11536,14 +12002,18 @@
     {
       "printingID": "26e3285a-f775-4b3a-9c81-526e6dfc3114",
       "number": "OP12-048",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643783",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6d6e8f43-4759-48ce-9a67-98871ec90490",
       "number": "OP12-049",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643784",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "18da8813-063d-483c-b24d-5c94fd72f6f7",
@@ -11636,8 +12106,10 @@
     {
       "printingID": "cfec26e6-61e6-410a-b731-5225bdef657d",
       "number": "OP12-061",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643798",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4ce86237-3c49-4bbe-87c7-74b1937c934e",
@@ -11666,8 +12138,10 @@
     {
       "printingID": "b9ab8256-ae54-4ff9-8300-68a9fa6772dc",
       "number": "OP12-065",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643804",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "f94575ed-0ea5-48f3-a424-9b41a4ea6d23",
@@ -11704,8 +12178,10 @@
     {
       "printingID": "8b63071e-2dbc-4427-85c6-635adc9e22ba",
       "number": "OP12-070",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643809",
+      "groupID": 24302,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "6a5803d2-9e58-4bbd-8344-3fc9c83708f2",
@@ -11726,8 +12202,10 @@
     {
       "printingID": "289a4412-840d-41fd-a969-e6016e2e9747",
       "number": "OP12-073",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643813",
+      "groupID": 24302,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4354a8f6-b724-46ae-93bf-8d0abc3c8755",
@@ -11788,8 +12266,10 @@
     {
       "printingID": "7c23a306-2834-41d8-9858-11409696e78e",
       "number": "OP12-081",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643822",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "07b96dfb-bcdc-4404-92ab-6c6de6ddb4f0",
@@ -11810,8 +12290,10 @@
     {
       "printingID": "03f9e74b-bed4-41ac-95e3-790f5e77ef4f",
       "number": "OP12-084",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643826",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4b5023bf-b606-42d9-bc46-737120c6c5f6",
@@ -11824,8 +12306,10 @@
     {
       "printingID": "b304e45d-c44e-43ae-b3ad-8f14ca162c22",
       "number": "OP12-086",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643828",
+      "groupID": 24302,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "029a99ed-3109-4032-ab98-c4ab8820f603",
@@ -11942,8 +12426,10 @@
     {
       "printingID": "99c8e85f-4506-4056-b2b9-dd0ff34090fd",
       "number": "OP12-101",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643846",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "34d6e43b-6295-4e35-a055-b26057204d0e",
@@ -11980,8 +12466,10 @@
     {
       "printingID": "9110cb45-ca80-469e-9065-ff0c5b89a270",
       "number": "OP12-106",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643852",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "f6654f6c-b4a9-40c8-80a0-a5e3c387cd57",
@@ -11994,8 +12482,10 @@
     {
       "printingID": "b85bcda6-1fd8-459a-a89c-c8ce6f258740",
       "number": "OP12-108",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643854",
+      "groupID": 24302,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "fdb1050e-bc62-4de8-b71c-e7b1efe05596",
@@ -12016,20 +12506,26 @@
     {
       "printingID": "20790496-ee17-470f-a29c-598a2782a321",
       "number": "OP12-111",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643858",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "2422ccd0-39ed-4eae-aabb-c8d501e326e3",
       "number": "OP12-112",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643859",
+      "groupID": 24302,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "68043145-e773-40e6-8620-5081b2b037ac",
       "number": "OP12-113",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643860",
+      "groupID": 24302,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "36b50db6-8c45-4a37-bec9-e0e31b7e7aa2",
@@ -12066,8 +12562,10 @@
     {
       "printingID": "04e3e0ae-1507-44d4-8454-777778b20e13",
       "number": "OP12-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "643865",
+      "groupID": 24302,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "50d72500-4301-46e9-8775-114550935b42",
@@ -12080,8 +12578,10 @@
     {
       "printingID": "8084f96a-87cd-4f84-8938-c844dd0e91bd",
       "number": "OP11-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632355",
+      "groupID": 24241,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "b1f7ab79-0e15-418b-b06a-c7de55ecd326",
@@ -12238,14 +12738,18 @@
     {
       "printingID": "ba8ca986-0fd6-4862-8269-f9661fa0edfb",
       "number": "OP11-021",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632380",
+      "groupID": 24241,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "5c90ff94-2686-412a-9e7e-ac328d0e93a2",
       "number": "OP11-022",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632382",
+      "groupID": 24241,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "073394ca-2a17-4560-904f-2d85ae85d79f",
@@ -12306,14 +12810,18 @@
     {
       "printingID": "f3ca7a3e-c06e-409b-b025-01b8e5deeccc",
       "number": "OP11-030",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632392",
+      "groupID": 24241,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "f1fec5b8-b7ad-43c4-960d-9e0b92370295",
       "number": "OP11-031",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632393",
+      "groupID": 24241,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "bd35d868-bee9-498d-8596-adec68ed439e",
@@ -12382,14 +12890,18 @@
     {
       "printingID": "b67face4-4663-43d7-bbd8-adb29b6777d5",
       "number": "OP11-040",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632403",
+      "groupID": 24241,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "5ab64ad4-949f-413b-ab61-c3f4299753ba",
       "number": "OP11-041",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632405",
+      "groupID": 24241,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6c53dbd8-b816-4792-a052-50539baad491",
@@ -12442,8 +12954,10 @@
     {
       "printingID": "6260e339-384c-4465-8175-6809c061443e",
       "number": "OP11-048",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632414",
+      "groupID": 24241,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e3ae16bf-4bbc-4046-86c3-269ec102b457",
@@ -12488,8 +13002,10 @@
     {
       "printingID": "88d4df30-465f-49a1-b32c-89b29b59112d",
       "number": "OP11-054",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632421",
+      "groupID": 24241,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "7d372443-25b6-480e-9dcc-7de95739c487",
@@ -12518,8 +13034,10 @@
     {
       "printingID": "fb53c361-0bd9-4b53-a7c5-8d145575ad03",
       "number": "OP11-058",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632426",
+      "groupID": 24241,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6a31db9b-288d-4092-aff3-cbec1790577a",
@@ -12548,8 +13066,10 @@
     {
       "printingID": "6dbe1de9-715c-4162-9daa-b9a969a9d806",
       "number": "OP11-062",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632430",
+      "groupID": 24241,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "0a258fbe-5b16-4aba-b9b0-c045a85a6497",
@@ -12586,8 +13106,10 @@
     {
       "printingID": "c811ce8a-dd7f-4ef7-8ebc-a593e4a31955",
       "number": "OP11-067",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632436",
+      "groupID": 24241,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "946fd54a-9352-4721-9fdf-15f6907dec7a",
@@ -12856,8 +13378,10 @@
     {
       "printingID": "572896db-31d2-4ac3-8a5b-11033ee4aa20",
       "number": "OP11-101",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632477",
+      "groupID": 24241,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "d6b96bb9-166a-41ce-87a5-2d038e6626b2",
@@ -12990,32 +13514,42 @@
     {
       "printingID": "01d1c292-900f-47cc-b871-c67671d92284",
       "number": "OP11-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632497",
+      "groupID": 24241,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "f992d70c-5406-49cf-ace2-980446e16ada",
       "number": "OP11-119",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632500",
+      "groupID": 24241,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "02c1fd21-b74a-4d7e-99a4-24d1d10899cb",
       "number": "OP10-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617030",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "142c518a-6c69-4562-8c57-12e073ef367c",
       "number": "OP10-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617032",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a2836d92-9859-4450-916d-8da489fe8715",
       "number": "OP10-003",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617034",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "e34dcb20-f630-4e27-8841-469ea688e675",
@@ -13028,8 +13562,10 @@
     {
       "printingID": "376ba2a3-ef93-43d6-9a7d-079760227f8e",
       "number": "OP10-006",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617039",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a7fc111d-1808-4b58-8128-a7794b6d3f6e",
@@ -13066,8 +13602,10 @@
     {
       "printingID": "9b23036e-d2dc-49b8-836b-868a87d3c39c",
       "number": "OP10-011",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617044",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "7787b7c9-f2e4-4cff-a2d0-504d0af329d2",
@@ -13080,14 +13618,18 @@
     {
       "printingID": "b5c4db46-421b-4df4-879b-69fefc21d39c",
       "number": "OP10-013",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617046",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "2649ad0d-41f0-461c-b9f7-9dd35c52ea51",
       "number": "OP10-014",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617047",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "25b8d86a-6d2f-4b75-82c0-d767b97a0b74",
@@ -13148,8 +13690,10 @@
     {
       "printingID": "eadeb92e-6739-43d2-b0e2-fbeb710bd4b0",
       "number": "OP10-022",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617057",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8dbaaf75-2ead-43b3-b738-42d3e55a585b",
@@ -13178,20 +13722,26 @@
     {
       "printingID": "a8867956-cc37-42cb-ab0b-1551d9c78178",
       "number": "OP10-026",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617062",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "36a336b6-22b2-4322-a69b-0484689119f7",
       "number": "OP10-027",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617063",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "87f4e654-2f74-4bfd-adb9-acb0fcd3ddd1",
       "number": "OP10-028",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617064",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7c75e0ac-eef7-4bf1-8496-9d6954bc5059",
@@ -13204,8 +13754,10 @@
     {
       "printingID": "5730ed20-93d1-4716-b24d-0aa3d3b52bb8",
       "number": "OP10-030",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617066",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "bdd88cc6-9c47-458e-a766-3ea8ad1c4f9d",
@@ -13226,26 +13778,34 @@
     {
       "printingID": "19af24cb-061c-4b8b-b410-4173af47c1c1",
       "number": "OP10-033",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617071",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "69c9f2bd-2492-4a70-8399-6218d448fbd2",
       "number": "OP10-034",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617072",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8d848346-2f1d-4540-a1c4-859871d61554",
       "number": "OP10-035",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617073",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "01310eba-31b5-45cb-8400-47b2ed723138",
       "number": "OP10-036",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617074",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "afc3a0b8-420d-4c90-b044-ece7a968d200",
@@ -13258,8 +13818,10 @@
     {
       "printingID": "42cb5b6c-72d9-4cf7-b7ca-2970776d62a6",
       "number": "OP10-038",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617077",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a8625d3e-bc2b-4898-af5d-de959b37d87f",
@@ -13288,8 +13850,10 @@
     {
       "printingID": "cf24d7d7-3902-45ac-9551-7a63315cd07c",
       "number": "OP10-042",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617081",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "44e1721b-44ea-4c07-baa1-20e47958ec29",
@@ -13310,8 +13874,10 @@
     {
       "printingID": "65aff010-b8fd-4813-8a98-ffa4acce72cb",
       "number": "OP10-045",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617085",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "d7229aee-b211-404c-8760-0a60e877100a",
@@ -13468,8 +14034,10 @@
     {
       "printingID": "a19c310d-01d4-40f5-b84f-ed3d57907480",
       "number": "OP10-065",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617108",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "22ada2ea-cee0-4b0d-b25f-71b98c5c12f7",
@@ -13594,8 +14162,10 @@
     {
       "printingID": "29b4aa11-0686-4a91-b563-54d692c763f4",
       "number": "OP10-081",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617127",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "633b281c-0508-4597-afe7-6682ebebafe9",
@@ -13608,8 +14178,10 @@
     {
       "printingID": "844dce7b-decf-4f9c-b250-abfd76a39519",
       "number": "OP10-083",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617130",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "73b1f8b6-d464-4aa2-9604-9b754a1c17ba",
@@ -13638,14 +14210,18 @@
     {
       "printingID": "e500462e-4e64-45d6-9b4c-ee0590ab90ad",
       "number": "OP10-087",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617134",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7b3db12f-19e2-4373-b411-2fd325fe9da0",
       "number": "OP10-088",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617135",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "ca4e9ceb-80b5-4e16-9e9a-a7e830479bc6",
@@ -13658,20 +14234,26 @@
     {
       "printingID": "6249d80c-c835-4898-9870-10ff39499212",
       "number": "OP10-090",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617137",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9fb04e72-14de-4083-9fc3-f697f10367d7",
       "number": "OP10-091",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617139",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "3d289939-e3c3-44bc-b939-f6f85d557185",
       "number": "OP10-092",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617140",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a5806680-b957-461f-bd5e-67ad120aceb1",
@@ -13692,8 +14274,10 @@
     {
       "printingID": "d4b32164-7bb7-47ad-904c-f30e01948d92",
       "number": "OP10-095",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617143",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "27d27bd3-e09b-4a19-a1e8-7b2e0576605a",
@@ -13722,8 +14306,10 @@
     {
       "printingID": "dd3409a7-ed5e-4b7c-a097-20193a7c58bc",
       "number": "OP10-099",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617147",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4688f62b-13c8-4b47-8772-3c6074e235b2",
@@ -13768,8 +14354,10 @@
     {
       "printingID": "1d857eb7-b107-4582-966a-68b374b04a7b",
       "number": "OP10-105",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617154",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "21052ed7-3437-46f8-845b-2542afcea701",
@@ -13814,20 +14402,26 @@
     {
       "printingID": "4171a9fc-1ca7-40f1-8bb3-5151571f4032",
       "number": "OP10-111",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617160",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "c11e19da-8c1c-4539-95c2-baf0ef514b6c",
       "number": "OP10-112",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617162",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "b011c9e6-167c-4802-918f-999ff946289b",
       "number": "OP10-113",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617164",
+      "groupID": 23766,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9b7da2c5-67e4-4157-9df2-69db92b3cdc8",
@@ -13864,20 +14458,26 @@
     {
       "printingID": "c4658bd8-84d6-4af1-a663-970647251634",
       "number": "OP10-118",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617169",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "63211d18-a2f1-440a-a24a-65caf40c2dbd",
       "number": "OP10-119",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "617171",
+      "groupID": 23766,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "0af35cca-7f79-470e-9a3c-13d1b4c5d4ad",
       "number": "OP09-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596919",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "da91bc74-d97f-410a-94d0-5142327b5983",
@@ -13898,8 +14498,10 @@
     {
       "printingID": "5c2b1245-8229-4276-bc33-b2175b023841",
       "number": "OP09-004",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596924",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "90500133-78dd-4771-9554-42ad76eb29e2",
@@ -14040,20 +14642,26 @@
     {
       "printingID": "4dc4a57f-8b5f-49e2-9f8f-bb3c7497c4c5",
       "number": "OP09-022",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596946",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a5c58e31-011a-4e86-9e7c-86a0b5869eae",
       "number": "OP09-024",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596950",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "cae64a74-c470-46c9-b634-50d80292f1be",
       "number": "OP09-025",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596951",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "d58da50c-9890-4cc3-9216-ccff887d8def",
@@ -14066,14 +14674,18 @@
     {
       "printingID": "003c2a7f-961f-455d-b36f-e16e3e0371b9",
       "number": "OP09-027",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596953",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "8024cec6-cb39-4cd8-8585-e2d246c7b4fb",
       "number": "OP09-028",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596954",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "187c1654-ab0c-42dc-b486-bdd93c2289a6",
@@ -14102,14 +14714,18 @@
     {
       "printingID": "e0cd5de9-ac92-4b7e-a982-1ae25359e1dd",
       "number": "OP09-032",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596958",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "36f86aa2-ad63-48cf-a20a-fe98b0e0be38",
       "number": "OP09-033",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596959",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7bc85eca-23d3-4640-b3cb-b684cf657967",
@@ -14130,20 +14746,26 @@
     {
       "printingID": "d4a6e506-6c30-4d1d-9e87-c8b535c7e944",
       "number": "OP09-036",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596963",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "e8da31dd-5cca-4763-8d71-f3964054d8dd",
       "number": "OP09-037",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596964",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "db6882bc-267b-4a15-95cf-615df96e5c43",
       "number": "OP09-038",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596966",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4bc39620-e19d-4819-aa2b-66fb627400f0",
@@ -14172,8 +14794,10 @@
     {
       "printingID": "1acb0c43-43e3-434a-80f4-88c3df65af8f",
       "number": "OP09-042",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596970",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "663b98b1-a153-413f-9c06-15a2afb745d3",
@@ -14202,8 +14826,10 @@
     {
       "printingID": "7661e90a-a4c4-4c4b-b86f-de294cea7db8",
       "number": "OP09-046",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596975",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "19cbb1d8-bc4f-4e71-81ca-e64440ab7b96",
@@ -14232,14 +14858,18 @@
     {
       "printingID": "29d91e17-eccf-4516-9a57-e037e8f9dbff",
       "number": "OP09-050",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596981",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "24ec6653-4d83-4997-85e4-4414de12c951",
       "number": "OP09-051",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596983",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "717e58da-7c55-41d7-a781-35475fe586aa",
@@ -14316,20 +14946,26 @@
     {
       "printingID": "5d4d6d48-3390-4612-b923-2ef996bf2851",
       "number": "OP09-061",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596996",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "60c90718-8c1f-4c01-985a-537952b16d9d",
       "number": "OP09-062",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "596998",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "a2bf11cf-66f5-4034-820b-74bb0f7a3fc9",
       "number": "OP09-063",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597000",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "3ee95f9f-71e8-4be7-a344-ede37c2c0db7",
@@ -14342,8 +14978,10 @@
     {
       "printingID": "3f463617-454c-463f-9a36-770af5291393",
       "number": "OP09-065",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597002",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "da2fa159-b709-453e-89b5-9b773cb644f3",
@@ -14364,32 +15002,42 @@
     {
       "printingID": "596f114e-dbd3-49b3-9d46-34b8056da03c",
       "number": "OP09-068",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597006",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "bd8ea167-339f-49ee-9662-eb60ede567a7",
       "number": "OP09-069",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597007",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "bce1d2d8-16ef-4f69-8347-56c6207cfaf3",
       "number": "OP09-070",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597009",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "f34dc006-e479-48d8-b4f9-feed3060a6a7",
       "number": "OP09-071",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597010",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "013d8657-1657-4b16-a52e-302f52fc66b8",
       "number": "OP09-073",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597013",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "ba953629-ca79-4d1a-bf98-e5d096901c43",
@@ -14410,8 +15058,10 @@
     {
       "printingID": "bb64971c-74c4-40ca-8be0-04eddef41bd3",
       "number": "OP09-076",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597016",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "6e45b088-9467-4728-971d-da3f1d553e78",
@@ -14448,8 +15098,10 @@
     {
       "printingID": "fd9070dc-f757-4553-8bc3-19c9fe256f3f",
       "number": "OP09-081",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597021",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "1ac3bfaf-bdeb-4c5e-9d2a-6e0dc5c66f4e",
@@ -14534,14 +15186,18 @@
     {
       "printingID": "08ba1e31-552b-44c1-8420-70edad100b7c",
       "number": "OP09-092",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597033",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "bb54f284-f270-4b73-a697-1516584a78cc",
       "number": "OP09-093",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597034",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "884bb23d-7b89-4f17-bdaf-81ad86be3c97",
@@ -14626,14 +15282,18 @@
     {
       "printingID": "ee32ff42-95c8-4063-8b93-be574cfe9fd7",
       "number": "OP09-104",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597049",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "a593659a-873f-4ccc-9269-4fb5bc02998e",
       "number": "OP09-105",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597050",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "ffcf1af2-6df5-4f12-bd69-8e1aab8fe863",
@@ -14646,8 +15306,10 @@
     {
       "printingID": "c36394e6-04b1-4519-a568-a4ba05d335cc",
       "number": "OP09-107",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597052",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "8e666a35-8a0e-4f59-8280-385ed4ecb958",
@@ -14676,8 +15338,10 @@
     {
       "printingID": "459eea37-d785-4228-ba56-28322c989da9",
       "number": "OP09-111",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597057",
+      "groupID": 23589,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "3803e335-896c-4951-a36f-ece8d5aaf71b",
@@ -14738,14 +15402,18 @@
     {
       "printingID": "4c451732-39e3-46fe-850a-5649c470ee03",
       "number": "OP09-119",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "597067",
+      "groupID": 23589,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "89e02f2d-8fa7-467f-90e4-b2c4f5c82984",
       "number": "OP08-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558021",
+      "groupID": 23462,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "f88dfc06-eb42-4f2d-965a-bbad59596a70",
@@ -14790,8 +15458,10 @@
     {
       "printingID": "82196cb0-9263-45cb-b842-a3e353bf7f27",
       "number": "OP08-007",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558029",
+      "groupID": 23462,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "49ce0e7d-18ac-4698-9ce2-782aec64d105",
@@ -14900,8 +15570,10 @@
     {
       "printingID": "64d6909b-98bd-4454-af3c-3076243f8241",
       "number": "OP08-021",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558045",
+      "groupID": 23462,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "00aedd2d-f417-4fc9-b2cc-adcaacb796f7",
@@ -14914,8 +15586,10 @@
     {
       "printingID": "68838c53-ebdb-41ff-a0c6-615e05a7020c",
       "number": "OP08-023",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558048",
+      "groupID": 23462,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "fc42acf9-e9fd-43fd-aad6-08e2ca9d5573",
@@ -15184,14 +15858,18 @@
     {
       "printingID": "614a7bf2-b011-43da-bc42-fe654908c400",
       "number": "OP08-057",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558086",
+      "groupID": 23462,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9ae48af5-19a2-477b-898a-f0d6fa1e14f2",
       "number": "OP08-058",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558088",
+      "groupID": 23462,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "6139f826-698f-4ae8-9d00-eafde614db51",
@@ -15204,8 +15882,10 @@
     {
       "printingID": "85c0a628-85bb-4d6d-85c4-5e5269fb8417",
       "number": "OP08-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558091",
+      "groupID": 23462,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "cbde51d7-d5b4-45f6-ba06-2cb97c059dcf",
@@ -15218,14 +15898,18 @@
     {
       "printingID": "f95bfa08-e056-4a06-bca4-c4101f18e06b",
       "number": "OP08-062",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558093",
+      "groupID": 23462,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "41423a55-b891-4bfd-a996-f5c96454e547",
       "number": "OP08-063",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558094",
+      "groupID": 23462,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "78739825-c7f9-43c9-a178-a478cb960fcc",
@@ -15254,8 +15938,10 @@
     {
       "printingID": "11372a0f-2733-467a-8f37-4916bef080c0",
       "number": "OP08-067",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558098",
+      "groupID": 23462,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4bfa0b1f-4044-4d58-b6a8-3511ec82d652",
@@ -15500,14 +16186,18 @@
     {
       "printingID": "a8540c4e-d729-4e2b-986a-285907e8b686",
       "number": "OP08-098",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558135",
+      "groupID": 23462,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "df5c206e-b4c3-4651-ae65-17e8e1296a1d",
       "number": "OP08-099",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "558137",
+      "groupID": 23462,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "c754b261-8b53-4108-97f0-7906dab55e16",
@@ -15672,8 +16362,10 @@
     {
       "printingID": "4787a2b1-37bf-4c7e-b1e4-20f11977f96b",
       "number": "OP07-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545778",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "faed322b-c68b-42bd-9901-f800917fce2b",
@@ -15782,8 +16474,10 @@
     {
       "printingID": "152f2187-db3b-422f-ae10-98d3093d4b44",
       "number": "OP07-015",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545794",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9a2f5827-f51b-44eb-b30f-7088158ce4b8",
@@ -15812,8 +16506,10 @@
     {
       "printingID": "fe3f68e3-7938-4155-a06e-631135e7dcc0",
       "number": "OP07-019",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545799",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "70c9bc3e-92cd-41c3-a8e1-edf603d65ea7",
@@ -15866,14 +16562,18 @@
     {
       "printingID": "8003b30e-9f2b-4113-97a5-92c2220d2aa8",
       "number": "OP07-026",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545808",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "7e9c3ed5-0fc5-496c-8329-5cd99d133c63",
       "number": "OP07-027",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545810",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4dce69d4-b7cf-4598-a23a-07bd70627f8c",
@@ -15918,14 +16618,18 @@
     {
       "printingID": "d0a0e3ba-822d-430f-9ec8-e914de3d7ee4",
       "number": "OP07-033",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545817",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "b3be80f9-4f94-4731-bd53-cdc6708163c2",
       "number": "OP07-034",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545818",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "9cb4414e-2ecf-4029-9732-922e56cf6d20",
@@ -15954,8 +16658,10 @@
     {
       "printingID": "1e16481a-58b4-4d99-a14b-fb3e7aad79d6",
       "number": "OP07-038",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545822",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "201b4526-c353-4e44-bbda-be3c4eb11272",
@@ -15984,8 +16690,10 @@
     {
       "printingID": "0510465a-ebb0-40d2-9c23-2909ea1124a7",
       "number": "OP07-042",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545827",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "926a04e7-cb26-40a6-beb7-4fb0263e1599",
@@ -16006,8 +16714,10 @@
     {
       "printingID": "0528534e-c151-43df-a269-7504d69ce87f",
       "number": "OP07-045",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545830",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "857f362a-a70b-470b-9499-947acd6d1895",
@@ -16020,8 +16730,10 @@
     {
       "printingID": "f754a989-6d7e-4b2f-8ecc-c6be418cb301",
       "number": "OP07-047",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545834",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "279997f3-f752-45c4-995b-f83c11d3b1fe",
@@ -16050,8 +16762,10 @@
     {
       "printingID": "b8c81c1d-4251-40ba-bbd6-7e2f3987c840",
       "number": "OP07-051",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545839",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "952162fe-2460-4944-bc2d-b0c343179991",
@@ -16064,8 +16778,10 @@
     {
       "printingID": "9619a130-2a0a-44bb-ad25-93e1edf88b21",
       "number": "OP07-053",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545843",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9ec9ab09-bc64-4585-bfd6-96a2d8c9b1c0",
@@ -16110,8 +16826,10 @@
     {
       "printingID": "3c53b505-c2af-462f-bc69-2a626343955a",
       "number": "OP07-059",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545849",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "c513828b-9278-4f8f-ad7b-6951d72f97c9",
@@ -16164,8 +16882,10 @@
     {
       "printingID": "d6b9f58c-f6f8-4ffc-a89f-72bc3b0c6f61",
       "number": "OP07-066",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545858",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2ad6f302-53cd-48d4-ba62-d390341e01ae",
@@ -16202,8 +16922,10 @@
     {
       "printingID": "e0769ee4-f20b-491a-ae26-912d8f83ce78",
       "number": "OP07-071",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545863",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "66a337d8-8626-4f22-a8f1-dcf33f8b1b95",
@@ -16216,8 +16938,10 @@
     {
       "printingID": "44631e8f-4ad0-4b28-b4d9-74f1b40e3c91",
       "number": "OP07-073",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545867",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "c6beaec2-ed38-49dc-bfe3-f98238d24189",
@@ -16262,8 +16986,10 @@
     {
       "printingID": "32f5d61e-6dff-48a2-bca9-42df84c8775a",
       "number": "OP07-079",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545873",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7b4f74c5-44a3-4e04-ad1e-58d4cfbd9517",
@@ -16292,8 +17018,10 @@
     {
       "printingID": "22798d2d-3025-48e7-8b32-7255ee40b6a1",
       "number": "OP07-083",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545878",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "c7f76901-aa8c-4c8f-a5b4-07c339bb25cc",
@@ -16354,8 +17082,10 @@
     {
       "printingID": "6ad6acc2-ee07-4b5b-a4f9-8f0c39daf032",
       "number": "OP07-091",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545887",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "261dc9dd-7f56-4cfd-9b3e-a6062b484e5b",
@@ -16368,8 +17098,10 @@
     {
       "printingID": "cd1e8a28-c608-447d-a1af-1c509c2c858f",
       "number": "OP07-093",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545889",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "b735afb5-aee9-407e-afe3-dd7a77abe504",
@@ -16438,14 +17170,18 @@
     {
       "printingID": "d290a825-1dba-4f08-8972-8283c707a5c7",
       "number": "OP07-102",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545899",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "ee74777d-ed9f-4353-90dc-ce6aafdbaae8",
       "number": "OP07-103",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545900",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "d29e9fe0-d735-458a-a48e-5569505e8ecf",
@@ -16490,8 +17226,10 @@
     {
       "printingID": "827db3b5-c3f7-4113-8c8f-7e4e68530e9e",
       "number": "OP07-109",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545907",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "be11bc21-29f0-4353-b566-bc5fd569e00a",
@@ -16520,8 +17258,10 @@
     {
       "printingID": "c8770683-7095-42f3-bab2-08ceadf2e777",
       "number": "OP07-113",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545913",
+      "groupID": 23387,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "eca5781a-c6c1-4279-bcb7-caaed070706e",
@@ -16566,8 +17306,10 @@
     {
       "printingID": "103cd74a-6cd0-4709-bef9-392d5db080cf",
       "number": "OP07-119",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "545920",
+      "groupID": 23387,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "59421b02-3f19-47ce-8533-b3209bd735bb",
@@ -16716,14 +17458,18 @@
     {
       "printingID": "31ad99f6-28b0-49e3-b2fd-e9aaa4484085",
       "number": "OP06-020",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "539767",
+      "groupID": 23272,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "167807af-c850-4d5a-9736-fe02e756a5a7",
       "number": "OP06-021",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541043",
+      "groupID": 23272,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "2c286a96-c13c-4973-a0b7-4c519d07132c",
@@ -16832,8 +17578,10 @@
     {
       "printingID": "316ef605-bd9f-46a2-8870-087b9a23dd79",
       "number": "OP06-035",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "539772",
+      "groupID": 23272,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "8b9305c1-d06d-40b9-b416-e3806e3a5581",
@@ -16870,8 +17618,10 @@
     {
       "printingID": "38b286cd-c536-491a-80e9-06caf7243efd",
       "number": "OP06-042",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541006",
+      "groupID": 23272,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "7edd3600-c260-47a0-990d-d51b4807bf7b",
@@ -16980,8 +17730,10 @@
     {
       "printingID": "53691461-dafa-48ea-b6a5-356675f6c2ca",
       "number": "OP06-060",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541621",
+      "groupID": 23272,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "bf8411cf-764e-4774-ba64-ba01214d2ad4",
@@ -17002,20 +17754,26 @@
     {
       "printingID": "2913e94a-e30d-432d-a2db-e50b1449af27",
       "number": "OP06-066",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541624",
+      "groupID": 23272,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "b09e4453-2875-4809-a86f-acfb4ac605f7",
       "number": "OP06-068",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541625",
+      "groupID": 23272,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "1448889b-f7f7-4593-b907-aa1acb2b3563",
       "number": "OP06-069",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541063",
+      "groupID": 23272,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "01abef08-f2da-49f5-8cb3-aa622f4f485b",
@@ -17084,8 +17842,10 @@
     {
       "printingID": "795885d2-c9b4-499a-b45b-2c6c94cee74f",
       "number": "OP06-080",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541053",
+      "groupID": 23272,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "4d3fe12d-8c34-434f-896f-25d2d2e47018",
@@ -17122,8 +17882,10 @@
     {
       "printingID": "813aec32-0ed7-43de-8ad9-1313c215c5d6",
       "number": "OP06-086",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541055",
+      "groupID": 23272,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "84cc1c00-4b6f-4696-884d-72758b198c9d",
@@ -17160,8 +17922,10 @@
     {
       "printingID": "c760d1d5-8726-4eb1-8da2-a38b2efaad20",
       "number": "OP06-093",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "541059",
+      "groupID": 23272,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "2b713e51-9077-4ae2-b931-1ce092ff8836",
@@ -17366,8 +18130,10 @@
     {
       "printingID": "e8a7c6f6-2fb2-4d09-a750-353984da0509",
       "number": "ST29-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "671534",
+      "groupID": 24575,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "c889126c-6ae3-4b83-ad52-fe719a87bb80",
@@ -17452,8 +18218,10 @@
     {
       "printingID": "d79b7c17-5fbb-4319-a9a9-1d148abb8bf0",
       "number": "ST29-012",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "671605",
+      "groupID": 24575,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "2cc544b6-b7b3-42d0-9c8a-7b4552ea0baa",
@@ -17538,8 +18306,10 @@
     {
       "printingID": "d74b1d74-c808-4aaa-a80a-5f8dc9b595bc",
       "number": "ST26-005",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "632778",
+      "groupID": 24285,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "875da939-e995-4c63-994a-044fdedfd818",
@@ -17600,14 +18370,16 @@
     {
       "printingID": "057f217d-5e4e-48c7-b96b-f3244f9ad2a7",
       "number": "ST23-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "633762",
+      "groupID": 24282,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e2370f0c-ddfc-400c-af0d-331557b4f400",
       "number": "ST22-001",
       "status": "held",
-      "reason": "missing-or-duplicate-exact-finish-lane"
+      "reason": "missing-exact-finish-lane"
     },
     {
       "printingID": "21d761d7-6c02-49c9-b0a9-23b52869bbc7",
@@ -17741,25 +18513,27 @@
       "printingID": "511d00c0-5253-4971-ba56-ba6af602b033",
       "number": "ST21-001",
       "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "reason": "missing-exact-finish-lane"
     },
     {
       "printingID": "04f9135e-b149-4282-a649-7359d2a59437",
       "number": "ST21-003",
       "status": "held",
-      "reason": "missing-or-duplicate-exact-finish-lane"
+      "reason": "missing-exact-finish-lane"
     },
     {
       "printingID": "b5d66d6c-3b23-4eab-9a8c-a03e07fdbab1",
       "number": "ST21-008",
       "status": "held",
-      "reason": "missing-or-duplicate-exact-finish-lane"
+      "reason": "missing-exact-finish-lane"
     },
     {
       "printingID": "5459ebd6-307c-48fd-929f-bc33946864ff",
       "number": "ST21-014",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "615590",
+      "groupID": 23991,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "18b8cf74-2671-4a84-a9cc-5177e051c9ad",
@@ -17780,8 +18554,10 @@
     {
       "printingID": "754df271-6b8e-49b4-bd35-ba951b6ea72a",
       "number": "ST20-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "581061",
+      "groupID": 23495,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "9f1c545c-0afe-4d43-9abe-c09c8051819b",
@@ -17802,8 +18578,10 @@
     {
       "printingID": "0f33b483-058d-4ec2-9bfb-fff937fbdd85",
       "number": "ST20-004",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "581064",
+      "groupID": 23495,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "b14d4230-11b2-4b98-95f1-598c8b5000a6",
@@ -17816,8 +18594,10 @@
     {
       "printingID": "27cc8d0f-5543-430a-8614-1f493937b230",
       "number": "ST19-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "581046",
+      "groupID": 23494,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "32929519-8074-4dc3-9180-2a6295a025e8",
@@ -17854,8 +18634,10 @@
     {
       "printingID": "768d50bf-026f-4ebc-977d-3f1d4e8a8c6f",
       "number": "ST18-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "581031",
+      "groupID": 23493,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "be44a56c-db24-4899-b281-0006889eaa44",
@@ -17876,8 +18658,10 @@
     {
       "printingID": "47b49203-af4a-4ee4-9a65-e1e47dcbf347",
       "number": "ST18-004",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "581034",
+      "groupID": 23493,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "b6a932a8-9d64-4206-a8db-adbc95c547d4",
@@ -17898,8 +18682,10 @@
     {
       "printingID": "d88a19bd-6b45-4617-a641-4afe44bc3cc7",
       "number": "ST17-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "581017",
+      "groupID": 23492,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "a8a53640-4ff1-462f-8eea-f15efd2b3555",
@@ -17928,8 +18714,10 @@
     {
       "printingID": "9f82c46d-1bd1-4dea-a9bf-824ab6b4b067",
       "number": "ST16-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "581001",
+      "groupID": 23491,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "6c7276d8-9e6e-40ea-a66e-a790d585c271",
@@ -17958,8 +18746,10 @@
     {
       "printingID": "676c0ce6-922a-488b-97b9-768e4b25ac35",
       "number": "ST16-005",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "581005",
+      "groupID": 23491,
+      "lane": "Normal",
+      "status": "exact"
     },
     {
       "printingID": "fcb425ee-d747-4499-9de5-dfbe98691beb",
@@ -17972,8 +18762,10 @@
     {
       "printingID": "7116cc70-5615-4be9-8015-d3cc9b9f1e71",
       "number": "ST15-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "580987",
+      "groupID": 23490,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "e0ff0a30-eb55-4a3b-8847-28f04e652b8c",
@@ -18002,8 +18794,10 @@
     {
       "printingID": "682f6e16-711a-49bc-9267-5cac037d41f4",
       "number": "ST14-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "548412",
+      "groupID": 23489,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "b759bdde-da28-4023-a3a0-f288f24e4166",
@@ -18032,20 +18826,26 @@
     {
       "printingID": "19417b30-e5d6-457e-8343-87a730d03a45",
       "number": "ST13-001",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543603",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "f0a4fe73-afef-4357-8e37-016137eac0d0",
       "number": "ST13-002",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543604",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "4bde8d88-7c1a-4188-8142-4b4fcf52149d",
       "number": "ST13-003",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543605",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "23bad1cf-e6d9-438b-8224-de94826974d5",
@@ -18074,14 +18874,18 @@
     {
       "printingID": "3cc128df-47d5-4033-b113-864cb75a8212",
       "number": "ST13-007",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543609",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "aa0d7f7a-c0c0-4860-bfef-2bc00ba4e196",
       "number": "ST13-008",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543610",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "ca11f6d6-8721-4a78-b526-050fbe2b17a4",
@@ -18094,14 +18898,18 @@
     {
       "printingID": "c1d7e576-2c07-49ff-b193-41d633d45c7b",
       "number": "ST13-010",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543612",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "73436068-f944-4dee-83e6-f0ace9c4fc36",
       "number": "ST13-011",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543613",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "f97b1856-f6f3-420a-bc45-c09a84f16c35",
@@ -18122,14 +18930,18 @@
     {
       "printingID": "71a40186-557c-4fa9-a909-26953b6c372e",
       "number": "ST13-014",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543616",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "0987b8a3-9705-41d9-86a3-b47b2550516c",
       "number": "ST13-015",
-      "status": "held",
-      "reason": "nonunique-or-qualified-title"
+      "productID": "543617",
+      "groupID": 23349,
+      "lane": "Foil",
+      "status": "exact"
     },
     {
       "printingID": "632d2101-d06a-4ec6-a170-1b8e65190d7d",
@@ -18163,5 +18975,258 @@
       "lane": "Foil",
       "status": "exact"
     }
-  ]
+  ],
+  "sets": {
+    "product:eb01-extra-booster-memorial-collection-2024": {
+      "exact": 61,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:eb02-extra-booster-anime-25th-collection-2025": {
+      "exact": 61,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:eb03-extra-booster-one-piece-heroines-edition-2026": {
+      "exact": 60,
+      "held": 1,
+      "reasons": {
+        "missing-exact-finish-lane": 1
+      }
+    },
+    "product:op01-romance-dawn-2022": {
+      "exact": 59,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op02-paramount-war-2023": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op03-pillars-of-strength-2023": {
+      "exact": 121,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op04-kingdoms-of-intrigue-2023": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op05-awakening-of-the-new-era-2023": {
+      "exact": 118,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op06-wings-of-the-captain-2024": {
+      "exact": 102,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op07-500-years-in-the-future-2024": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op08-two-legends-2024": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op09-emperors-in-the-new-world-2024": {
+      "exact": 117,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op10-royal-blood-2025": {
+      "exact": 118,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op11-a-fist-of-divine-speed-2025": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op12-legacy-of-the-master-2025": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op13-carrying-on-his-will-2025": {
+      "exact": 117,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op14-the-azure-sea-s-seven-2026": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op15-adventure-on-kami-s-island-2026": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:op16-the-time-of-battle-2026": {
+      "exact": 118,
+      "held": 1,
+      "reasons": {
+        "missing-exact-finish-lane": 1
+      }
+    },
+    "product:op17-the-world-s-strongest-warriors-2026": {
+      "exact": 119,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st01-straw-hat-crew-2022": {
+      "exact": 10,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st02-worst-generation-2022": {
+      "exact": 9,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st03-seven-warlords-2022": {
+      "exact": 8,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st04-animal-kingdom-pirates-2022": {
+      "exact": 7,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st05-film-edition-2023": {
+      "exact": 17,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st06-absolute-justice-2023": {
+      "exact": 17,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st07-big-mom-pirates-2023": {
+      "exact": 17,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st08-monkey-d-luffy-2023": {
+      "exact": 15,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st09-yamato-2023": {
+      "exact": 15,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st10-three-captains-2023": {
+      "exact": 17,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st11-uta-2024": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st12-zoro-and-sanji-2024": {
+      "exact": 4,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st13-st-13-ultra-deck-the-three-brothers-2024": {
+      "exact": 19,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st14-st-14-starter-deck-14-3d2y-2024": {
+      "exact": 4,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st15-st-15-starter-deck-15-red-edward-newgate-2024": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st16-st-16-starter-deck-16-green-uta-2024": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st17-st-17-starter-deck-17-blue-donquixote-doflamingo-2024": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st18-st-18-starter-deck-18-purple-monkey-d-luffy-2024": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st19-st-19-starter-deck-19-black-smoker-2024": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st20-st-20-starter-deck-20-yellow-charlotte-katakuri-2024": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st21-st-21-starter-deck-21-ex-gear-5-2025": {
+      "exact": 3,
+      "held": 3,
+      "reasons": {
+        "missing-exact-finish-lane": 3
+      }
+    },
+    "product:st22-st-22-starter-deck-22-ace-newgate-2025": {
+      "exact": 16,
+      "held": 1,
+      "reasons": {
+        "missing-exact-finish-lane": 1
+      }
+    },
+    "product:st23-st-23-starter-deck-23-red-shanks-2025": {
+      "exact": 2,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st24-st-24-starter-deck-24-green-jewelry-bonney-2025": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st25-st-25-starter-deck-25-blue-buggy-2025": {
+      "exact": 1,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st26-st-26-starter-deck-26-purple-black-monkey-d-luffy-2025": {
+      "exact": 5,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st27-st-27-starter-deck-27-black-marshall-d-teach-2025": {
+      "exact": 1,
+      "held": 0,
+      "reasons": {}
+    },
+    "product:st29-st-29-starter-deck-29-egghead-2026": {
+      "exact": 17,
+      "held": 0,
+      "reasons": {}
+    }
+  },
+  "heldReasons": {
+    "missing-exact-finish-lane": 6
+  }
 }

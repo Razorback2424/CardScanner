@@ -6,8 +6,14 @@ broader physical reconciliation incomplete — 2026-10-04. This directory is
 publisher review input, not a production seed or a complete printing corpus.
 Nothing here enables production scanning, ownership, pricing or asset distribution.
 
-Base pricing review (2026-10-04): 1,961 exact original-release market mappings,
-412 held decisions and 48 retained price-group responses. The dedicated
+Base pricing review (updated 2026-10-07): 2,367 exact original-release market
+mappings, six held finish disagreements and 48 retained price-group responses.
+The shared reviewer accepts an exact printed identifier in short parentheses,
+full-number parentheses or a full-number hyphen suffix; treatment qualifiers,
+wrong numbers, ambiguous products and incorrect finishes remain rejected.
+The systematic pass adds 406 mappings across 39 sets without changing any
+physical ID, finish or existing mapping. All 2,367 mappings separately passed
+fresh public vendor identity/finish/quote checks. The dedicated
 `base-market-*` files retain aggregate USD Normal/Foil crosswalks and evidence;
 no condition-specific SKU is claimed. Physical IDs/counts are unchanged.
 The explicit local debug review kit now enables exact mapped pricing.
