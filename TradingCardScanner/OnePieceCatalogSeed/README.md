@@ -6,6 +6,13 @@ launch without custom Info.plist settings, Documents copies or saved preferences
 It uses the normal collection storage. This is separate from the production
 publication seed described below.
 
+The 2026-10-07 mapping-only owner revision is **2**, with 406 additional exact
+mappings across 39 sets. The existing public pin is retained alongside the new
+owner review pin. Physical IDs and supported finishes are unchanged. The
+[owner-update preparer](../../scripts/prepare_one_piece_owner_update.py) validates
+against the signed previous release and independently verifies the new signature
+and publication manifest; private keys are ephemeral and never retained.
+
 No production seed is supplied yet. Synthetic test fixtures must not be bundled
 as a production catalog or used to claim printing-universe completeness.
 

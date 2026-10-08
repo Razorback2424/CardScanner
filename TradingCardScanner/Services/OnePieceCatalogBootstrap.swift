@@ -117,7 +117,7 @@ enum OnePieceCatalogBootstrap {
             }
             return try localReviewRuntime(arguments: ["-one_piece_local_review", "-one_piece_review_seed", bundledSeed.path,
                                                       "-one_piece_review_public_key", pin], bundle: bundle, now: now,
-                                              includeRecordedArtwork: true)
+                includeRecordedArtwork: true, pinnedReviewKeys: pins)
         }
         let configured = bundle.object(forInfoDictionaryKey: "ONE_PIECE_OWNER_CATALOG_ENABLED") as? Bool == true
         guard configured || preferences.bool(forKey: "onePieceOwnerCatalogEnabled") else { return nil }
@@ -153,7 +153,8 @@ enum OnePieceCatalogBootstrap {
     static func localReviewRuntime(arguments: [String] = ProcessInfo.processInfo.arguments,
                                    bundle: Bundle = .main,
                                    now: Date = .now,
-                                   includeRecordedArtwork: Bool = false) throws -> CardGameRuntime? {
+                                   includeRecordedArtwork: Bool = false,
+                                   pinnedReviewKeys: [String: String]? = nil) throws -> CardGameRuntime? {
         let arguments = localReviewLaunchArguments(arguments: arguments, bundleIdentifier: bundle.bundleIdentifier,
             publicKey: bundle.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_PUBLIC_KEY") as? String,
             reviewEnabled: bundle.object(forInfoDictionaryKey: "ONE_PIECE_LOCAL_REVIEW_ENABLED") as? Bool == true)
@@ -170,8 +171,15 @@ enum OnePieceCatalogBootstrap {
             seedURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 .appendingPathComponent("one-piece-local-review.json")
         } else { seedURL = URL(fileURLWithPath: seedPath) }
+        let encodedPins: String
+        if let pinnedReviewKeys {
+            encodedPins = pinnedReviewKeys.sorted(by: { $0.key < $1.key })
+                .map { "\($0.key):\($0.value)" }.joined(separator: ",")
+        } else {
+            encodedPins = "one-piece-local-review:\(try value("-one_piece_review_public_key"))"
+        }
         let configuration = try OnePieceCatalogBootstrapConfiguration(mode: .remoteAuthority,
-            pinnedKeys: "one-piece-local-review:\(try value("-one_piece_review_public_key"))",
+            pinnedKeys: encodedPins,
             baseURL: "https://scanstash-catalog-prod.web.app")
         let handle = try FileHandle(forReadingFrom: seedURL)
         defer { try? handle.close() }

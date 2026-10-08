@@ -243,6 +243,42 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertTrue(defaults.registry.variantLockMenu.contains { $0.game == .onePiece && !$0.options.isEmpty })
     }
 
+    func testBundledOwnerCatalogRepairsIdentifierTitlesAcrossReleaseFamilies() throws {
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.ownerRuntime())
+        let adapter = try XCTUnwrap(runtime.catalog as? OnePieceCatalogAdapter)
+        for number in ["OP17-020", "OP16-052", "OP15-001", "OP14-034", "ST01-012", "EB03-010"] {
+            let printing = try XCTUnwrap(adapter.registry.printingsByCanonicalID["one-piece:en:" + number]?
+                .first(where: { $0.status == .verified && $0.treatment == "Standard artwork" }))
+            XCTAssertFalse(printing.marketMappings.isEmpty, number)
+        }
+        let disputed = try XCTUnwrap(adapter.registry.printingsByCanonicalID["one-piece:en:OP16-030"]?
+            .first(where: { $0.status == .verified && $0.treatment == "Standard artwork" }))
+        XCTAssertTrue(disputed.marketMappings.isEmpty)
+        XCTAssertEqual(disputed.supportedVariantIDs, ["normal"])
+    }
+
+    func testLocalOwnerReviewRotationRequiresAnExplicitMatchingPublicPin() throws {
+        let registry = try registry(), old = Curve25519.Signing.PrivateKey(), rotated = Curve25519.Signing.PrivateKey()
+        let keyID = "one-piece-owner-review-r2"
+        let envelope = try OnePieceCatalogSignature.sign(registry.verifiedRelease.release, keyID: keyID, privateKey: rotated)
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let seed = root.appendingPathComponent("seed.json")
+        try JSONEncoder().encode(envelope).write(to: seed)
+        let oldPin = old.publicKey.rawRepresentation.base64EncodedString()
+        let args = ["-one_piece_local_review", "-one_piece_review_seed", seed.path,
+                    "-one_piece_review_public_key", oldPin]
+        XCTAssertThrowsError(try OnePieceCatalogBootstrap.localReviewRuntime(arguments: args, now: now))
+        XCTAssertThrowsError(try OnePieceCatalogBootstrap.localReviewRuntime(arguments: args, now: now,
+            pinnedReviewKeys: ["one-piece-local-review": oldPin, keyID: oldPin]))
+        let runtime = try XCTUnwrap(OnePieceCatalogBootstrap.localReviewRuntime(arguments: args, now: now,
+            pinnedReviewKeys: ["one-piece-local-review": oldPin,
+                               keyID: rotated.publicKey.rawRepresentation.base64EncodedString()]))
+        XCTAssertEqual(runtime.catalog?.generation, registry.generation)
+        XCTAssertTrue(runtime.descriptor.capabilities.contains(.collectionWrite))
+    }
+
     func testOwnerCatalogUsesNormalStorageAndRetainsVerifiedAuthorityForOrdinaryBuilds() throws {
         let registry = try registry(), key = Curve25519.Signing.PrivateKey()
         let envelope = try OnePieceCatalogSignature.sign(registry.verifiedRelease.release,
