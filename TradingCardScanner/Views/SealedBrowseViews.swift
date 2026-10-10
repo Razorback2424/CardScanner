@@ -735,6 +735,23 @@ struct SealedProductGridView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
                 .padding()
+            } else if model.products.isEmpty, let errorMessage = model.errorMessage {
+                ContentUnavailableView {
+                    Label("Couldn't load products", systemImage: "wifi.exclamationmark")
+                } description: {
+                    Text(errorMessage)
+                } actions: {
+                    Button("Retry") {
+                        Task { await model.loadProducts(game: game, setID: set.id) }
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            } else if model.products.isEmpty {
+                ContentUnavailableView(
+                    "No Sealed Products",
+                    systemImage: "shippingbox",
+                    description: Text("This set has no sealed products in the price catalogue.")
+                )
             }
         }
         .navigationTitle(set.name)
@@ -854,7 +871,6 @@ struct SealedProductDetailView: View {
                 undoBanner.contentWidthLimit(.standard)
             }
         }
-        .onDisappear { undoTask?.cancel() }
         .alert(
             addAlertTitle,
             isPresented: Binding(

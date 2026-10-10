@@ -570,10 +570,7 @@ final class MagicTreatmentTests: XCTestCase {
         )
 
         XCTAssertEqual(
-            SetCompletionCalculator.progress(
-                for: set,
-                cards: owned + [treatedCopyOfOneNumber]
-            ),
+            CatalogOwnershipIndex(owned + [treatedCopyOfOneNumber]).progress(for: set),
             SetCompletion(owned: numbers.count, total: numbers.count, unit: "cards")
         )
     }

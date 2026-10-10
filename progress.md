@@ -1,3 +1,18 @@
+- Portfolio validation and remediation (2026-10-09; `3c28b30` plus local changes):
+  validated the ten supplied findings and fixed ownership refresh staleness,
+  synchronous history ranges, replay-consistent accounting, pre-epoch holdings,
+  no-op delta publications, loading/exclusion/diagnostic copy and live details.
+  Retained terminal pricing replay and the tested performance-factor pipeline.
+  Focused simulator suite: 147 executed, one opt-in performance baseline skipped,
+  zero failures (146 passed). The first runner failed to bootstrap; two new
+  fixtures were corrected before the final pass. Inspected normal PortfolioToday
+  and PortfolioHistory screenshots from the tested app on an isolated simulator;
+  artifacts remain outside the repo. Build/results use external-drive
+  `CodexBuilds/PortfolioReview/`. The
+  [remediation ledger](docs/audits/portfolio-review-remediation.md) records scope,
+  plan reconciliation, HIG review and evidence limits. Device timing, provider,
+  CloudKit and release gates remain open. No commit or push was made by this task.
+
 - Bulk intake Stage 0 (2026-10-07; `3fe972a` plus existing local changes):
   added the default-off, local, backup-excluded session metrics actor, ordered
   scanner event hooks and JSON ShareLink export in Settings → Scanning. The

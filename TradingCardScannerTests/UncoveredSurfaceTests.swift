@@ -630,6 +630,31 @@ final class SealedBrowseSurfaceTests: XCTestCase {
         XCTAssertEqual(productOffsets, [0, 1])
     }
 
+    func testSealedInitialProductFailuresCanRetrySuccessfully() async throws {
+        let failures: [Error] = [URLError(.timedOut), JustTCGTransport.TransportError.badResponse(status: 401),
+                                 JustTCGTransport.TransportError.budgetReached(resetAt: .now)]
+        for failure in failures {
+            let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let product = SealedProductSummary(id: "retry-product", name: "Booster Box", setName: "Set",
+                                              variantID: nil, marketPriceUSD: nil, updatedAt: nil, imageURL: nil)
+            let provider = UncoveredSealedBrowseProvider(products: [product])
+            await provider.fail(with: failure)
+            let model = SealedBrowseModel(client: provider, cache: CatalogCacheStore(root: root), isConfigured: { true })
+            await model.loadProducts(game: .pokemon, setID: "set")
+            XCTAssertTrue(model.products.isEmpty)
+            XCTAssertEqual(model.errorMessage, SealedBrowseModel.message(for: failure))
+            XCTAssertFalse(model.isLoading)
+
+            await provider.fail(with: nil)
+            await model.loadProducts(game: .pokemon, setID: "set")
+            XCTAssertEqual(model.products, [product])
+            XCTAssertNil(model.errorMessage)
+            let offsets = await provider.productOffsets()
+            XCTAssertEqual(offsets, [0, 0])
+        }
+    }
+
     func testSealedBrowseStatesMissingCredentialsWithoutCallingTheProvider() async throws {
         let root = FileManager.default.temporaryDirectory
             .appendingPathComponent("SealedBrowseSurfaceTests-\(UUID().uuidString)", isDirectory: true)

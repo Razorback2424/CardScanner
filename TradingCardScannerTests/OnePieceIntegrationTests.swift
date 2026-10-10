@@ -2314,7 +2314,6 @@ final class OnePieceIntegrationTests: XCTestCase {
                 variant: .normal, variantResolution: .userConfirmed)
         }
         let other = row(uuid(2).uuidString.lowercased())
-        XCTAssertFalse(SetCompletionCalculator.owns(summary, cards: [other]))
         XCTAssertFalse(CatalogOwnershipIndex([other]).owns(summary))
         XCTAssertEqual(CatalogOwnershipIndex([other]).quantity(of: summary), 0)
         XCTAssertEqual(CatalogOwnershipIndex([other]).progress(for: primary).owned, 0)
@@ -2324,7 +2323,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertEqual(index.progress(for: primary).owned, 1)
         let bundle = try XCTUnwrap(sets.first { $0.providerID == "fixture-bundle" })
         XCTAssertEqual(index.progress(for: bundle).owned, 1, "One physical copy participates in both product checklists")
-        XCTAssertEqual(SetCompletionCalculator.progress(for: bundle, cards: [exact]).unit, "printings")
+        XCTAssertEqual(index.progress(for: bundle).unit, "printings")
         let encoded = try JSONEncoder().encode(summary)
         XCTAssertEqual(try JSONDecoder().decode(CatalogCardSummary.self, from: encoded), summary)
         XCTAssertEqual(try JSONDecoder().decode(CatalogSet.self, from: JSONEncoder().encode(bundle)), bundle)

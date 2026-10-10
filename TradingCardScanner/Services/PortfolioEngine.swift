@@ -163,6 +163,9 @@ final class PortfolioEngine: ObservableObject {
     /// retain the last usable summary without making `summary` appear ready
     /// while work is still in flight.
     private var lastUsableSummary: PortfolioSummary?
+    /// Matches the attribution, contributions and closes from the last replay.
+    /// Live price deltas update the headline separately until the next replay.
+    private(set) var replaySummary: PortfolioSummary?
     private var lastComputedDay: Date?
     private var computationTask: Task<Void, Never>?
     /// Input changes can arrive in bursts while a refresh checkpoints its
@@ -227,7 +230,7 @@ final class PortfolioEngine: ObservableObject {
     /// Whether the portfolio day has rolled over since the last computation.
     /// Cheap enough to ask on every foreground.
     func needsRecomputeForNewDay(now: Date = .now) -> Bool {
-        guard let lastComputedDay else { return true }
+        guard !needsEpochRetry, let lastComputedDay else { return true }
         let timeZone = PortfolioCalendar.pinnedTimeZone() ?? .current
         return PortfolioCalendar.day(containing: now, in: timeZone) != lastComputedDay
     }
@@ -266,7 +269,7 @@ final class PortfolioEngine: ObservableObject {
                                uniquingKeysWith: { _, newest in newest })
         var total = summary.currentValue
         var changed = false
-        holdings = holdings.map { holding in
+        let updatedHoldings = holdings.map { holding in
             guard let display = byKey[holding.priceStorageKey] else { return holding }
             let oldValue = holding.holdingValue
             // The portfolio has no FX rate. Keep the incremental path aligned
@@ -292,7 +295,7 @@ final class PortfolioEngine: ObservableObject {
             return updated
         }
         guard changed else { return }
-        holdings = PortfolioHoldingSnapshot.rankedByUnitPrice(holdings)
+        holdings = PortfolioHoldingSnapshot.rankedByUnitPrice(updatedHoldings)
         // This is intentionally only the live headline/holding valuation. The
         // authoritative terminal replay still owns attribution, coverage,
         // unpriced counts, historical closes, and their persistence; changing
@@ -310,7 +313,7 @@ final class PortfolioEngine: ObservableObject {
     /// observation log and the check-day rows, then replaying them — happens on
     /// `PortfolioComputationActor`. Only the small act of building the summary
     /// and writing at most a few hundred close rows happens here.
-    func recompute(context: ModelContext, now: Date = .now) {
+    func recompute(context: ModelContext, now: Date = .now, bypassPriceRefreshGate: Bool = false) {
         let intervalMetadata = "api=recompute"
         let intervalState = PerformanceSignpost.beginInterval(
             "portfolio.recompute",
@@ -320,7 +323,7 @@ final class PortfolioEngine: ObservableObject {
         recompute(
             context: context,
             now: now,
-            bypassPriceRefreshGate: false,
+            bypassPriceRefreshGate: bypassPriceRefreshGate,
             intervalState: intervalState,
             intervalMetadata: intervalMetadata
         )
@@ -500,6 +503,11 @@ final class PortfolioEngine: ObservableObject {
             if var retained = lastUsableSummary {
                 retained.defects = computation.defects
                 retained.isAuthoritative = false
+                if var replay = replaySummary {
+                    replay.defects = computation.defects
+                    replay.isAuthoritative = false
+                    replaySummary = replay
+                }
                 status = .ready(retained)
             } else {
                 // There is no trustworthy value to retain on first launch.
@@ -529,15 +537,6 @@ final class PortfolioEngine: ObservableObject {
         summary.defects = computation.defects
         summary.isAuthoritative = summary.defects.isEmpty
 
-        guard let epoch = PortfolioEpoch.startedAt() else {
-            integrityDefects = summary.defects
-            lastUsableSummary = summary
-            status = .ready(summary)
-            return
-        }
-
-        summary.isMigrationDay = PortfolioEpoch.isMigrationDay(now, epoch: epoch, timeZone: timeZone)
-
         let replay = computation.replay
         contributionIndex = replay.contributionIndex
         holdings = computation.holdings
@@ -550,6 +549,17 @@ final class PortfolioEngine: ObservableObject {
             ),
             live: replay.live?.performanceFactor
         )
+
+        guard let epoch = PortfolioEpoch.startedAt() else {
+            integrityDefects = summary.defects
+            lastUsableSummary = summary
+            replaySummary = summary
+            status = .ready(summary)
+            return
+        }
+
+        summary.isMigrationDay = PortfolioEpoch.isMigrationDay(now, epoch: epoch, timeZone: timeZone)
+
         summary.coverage = replay.live?.coverageToday(
             index: computation.coverage,
             heldInstruments: Set(valuation.instrumentsHeld),
@@ -616,6 +626,7 @@ final class PortfolioEngine: ObservableObject {
         // this snapshot, so capturing it before coverage and attribution are
         // filled in would make the fallback look mysteriously incomplete.
         lastUsableSummary = summary
+        replaySummary = summary
         status = .ready(summary)
     }
 

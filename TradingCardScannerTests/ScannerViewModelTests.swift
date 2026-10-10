@@ -662,6 +662,81 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertNil(model.pendingSlabConversionOffer)
     }
 
+    func testRawFallbackCannotOverwriteConvertedGradedScan() async throws {
+        let gradedVariant = GradedVariant(
+            id: "converted-graded", cardID: "converted-card", company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            marketPriceUSD: 250, updatedAt: nil
+        )
+        let rawQuote = PriceLookup.price(NormalizedPrice(
+            unitMarketPriceUSD: 12, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "raw", sourceUpdatedAt: nil, fetchedAt: .now
+        ))
+        for outcome in [ScannedGradedOutcome.bound(gradedVariant), .unavailable] {
+            let gate = ScannerGradedResolverGate()
+            let model = try makeModel(
+                variants: [.normal], gradedOutcome: outcome, gradedResolverGate: gate
+            )
+            let encounterID = UUID()
+            confirm(model, scannerIdentifier(), encounterID: encounterID)
+            let committed = await waitUntil { model.sessionScans.count == 1 }
+            XCTAssertTrue(committed)
+            let rawScan = try XCTUnwrap(model.sessionScans.first)
+            // The same delivery path must still publish quotes to eligible raw scans.
+            model.deliverFallbackQuoteForTesting(rawQuote, requestedScan: rawScan)
+            XCTAssertEqual(model.recent.first?.price, rawQuote)
+
+            let slab = try XCTUnwrap(gradedSubject(value: "10", label: "Gem Mint").slab)
+            model.scanner.onPostCommitSlabEvidence?(encounterID, slab)
+            let offered = await waitUntil { model.pendingSlabConversionOffer != nil }
+            XCTAssertTrue(offered)
+            await model.convertRawScanToGraded(scanID: rawScan.id)
+            await gate.waitUntilStarted()
+            let pendingPrice = try XCTUnwrap(model.sessionScans.first?.price)
+            model.deliverFallbackQuoteForTesting(rawQuote, requestedScan: rawScan)
+            XCTAssertEqual(model.sessionScans.first?.price, pendingPrice)
+            XCTAssertEqual(model.recent.first?.price, pendingPrice)
+            XCTAssertEqual(model.receipt?.price, pendingPrice)
+            XCTAssertTrue(model.sessionScans.first?.isGradedPricePending == true)
+
+            await gate.release()
+            let completed = await waitUntil { model.sessionScans.first?.isGradedPricePending == false }
+            XCTAssertTrue(completed)
+            let finalPrice = try XCTUnwrap(model.sessionScans.first?.price)
+            if case .bound = outcome {
+                guard case let .price(price) = finalPrice else {
+                    XCTFail("Expected graded price")
+                    continue
+                }
+                XCTAssertEqual(price.unitMarketPriceUSD, 250)
+            } else {
+                XCTAssertEqual(finalPrice, pendingPrice)
+            }
+            model.deliverFallbackQuoteForTesting(rawQuote, requestedScan: rawScan)
+            XCTAssertEqual(model.sessionScans.first?.price, finalPrice)
+            XCTAssertEqual(model.recent.first?.price, finalPrice)
+            XCTAssertEqual(model.receipt?.price, finalPrice)
+            XCTAssertFalse(model.sessionScans.first?.isGradedPricePending == true)
+        }
+    }
+
+    func testCatalogObserversReleaseReplacedModels() async throws {
+        let pokemon = PokemonCatalogCoordinator(rolloutMode: .bundledValidationOnly)
+        let magic = MagicCatalogCoordinator(rolloutMode: .legacyLive)
+        for _ in 0..<3 {
+            var model: ScannerViewModel? = try makeModel(
+                variants: [.normal], catalogCoordinator: pokemon,
+                magicCatalogCoordinator: magic
+            )
+            weak var releasedModel = model
+            await settle()
+            XCTAssertNotNil(releasedModel)
+            model = nil
+            let released = await waitUntil { releasedModel == nil }
+            XCTAssertTrue(released, "Catalog stream waits must not retain the scanner model")
+        }
+    }
+
     func testSlabPriceBindingStartsAfterUnboundCollectionCommit() async throws {
         let wasEnforced = CollectionWriteSerializer.enforcesOwnershipRule
         CollectionWriteSerializer.enforcesOwnershipRule = true
@@ -3074,6 +3149,36 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 0)
     }
 
+    func testDeferredRestartUsesLatestSceneActivity() async throws {
+        for latestIsActive in [false, true] {
+            let gate = ScannerCollectionAddGate(outcome: .success)
+            let model = try makeModel(
+                variants: [.normal], collectionAddOverride: { try await gate.add($0) }
+            )
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await gate.waitUntilStarted()
+            model.viewDisappeared()
+            model.start(
+                context: context(), isSceneActive: !latestIsActive,
+                startCamera: false, shouldRefreshMagicDirectory: false
+            )
+            model.scenePhaseChanged(isActive: latestIsActive)
+            await gate.release()
+            let restarted = await waitUntil { model.isScannerSessionActiveForTesting }
+            XCTAssertTrue(restarted)
+            XCTAssertEqual(model.scanner.isRecognitionPausedForTesting, !latestIsActive)
+            await gate.allowSuccess()
+            confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+            if latestIsActive {
+                let acquired = await waitUntil { model.sessionScans.count == 1 }
+                XCTAssertTrue(acquired)
+            } else {
+                await settle()
+                XCTAssertTrue(model.sessionScans.isEmpty)
+            }
+        }
+    }
+
     func testInactiveOverlayPreservesPendingChoiceButBackgroundInvalidatesIt() async throws {
         let model = try makeModel(variants: [.normal, .holo])
         let encounterID = UUID()
@@ -3475,7 +3580,9 @@ final class ScannerViewModelTests: XCTestCase {
         sessionMetricsLog: ScanSessionMetricsLog? = nil,
         metricsDefaults: UserDefaults = .standard,
         offline: PokemonOfflineCatalog? = nil,
-        printingCatalog: (any GameCatalogAdapter)? = nil
+        printingCatalog: (any GameCatalogAdapter)? = nil,
+        catalogCoordinator: PokemonCatalogCoordinator? = nil,
+        magicCatalogCoordinator: MagicCatalogCoordinator? = nil
     ) throws -> ScannerViewModel {
         let context = try makeContext()
         let root = FileManager.default.temporaryDirectory
@@ -3533,6 +3640,8 @@ final class ScannerViewModelTests: XCTestCase {
             priceCheckRefreshProvider: priceCheckOutcome.map {
                 ScannerStubPriceCheckProvider(outcome: $0)
             },
+            catalogCoordinator: catalogCoordinator,
+            magicCatalogCoordinator: magicCatalogCoordinator,
             unresolvedScanStore: unresolvedScanStore ?? UnresolvedScanStore(
                 fileURL: root.appendingPathComponent("Scanner/unresolved-scans.json")
             ),

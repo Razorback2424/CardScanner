@@ -570,9 +570,13 @@ struct StoreRevisionMonitor: View {
         if cardsChanged || inventoryChanged || activitiesChanged {
             CollectionStore(context: modelContext).invalidateIdentityAliasCache()
             // Establish the baseline before the stale-price pass can begin.
-            // Once a pass is already in flight, its terminal gate owns the one
-            // trailing replay instead.
-            if !isRefreshInFlight {
+            // Ownership edits must become visible even during a price pass.
+            if isRefreshInFlight {
+                portfolio.recompute(context: modelContext, bypassPriceRefreshGate: true)
+                // This request already includes the Magic inputs below, even
+                // when it coalesces behind a computation currently running.
+                recomputedBaseline = true
+            } else {
                 let portfolioState = PerformanceSignpost.beginInterval(
                     "storeRevision.portfolioRecompute",
                     id: PerformanceSignpost.makeID(),
@@ -860,7 +864,7 @@ struct StoreRevisionHistoryMonitor: View {
     let hasStartedPortfolio: Bool
 
     private var taskID: String {
-        "\(hasStartedPortfolio)-\(portfolio.inputRevision)-\(history.range.rawValue)"
+        "\(hasStartedPortfolio)-\(portfolio.inputRevision)"
     }
 
     var body: some View {
@@ -868,7 +872,7 @@ struct StoreRevisionHistoryMonitor: View {
             guard hasStartedPortfolio else { return }
             history.recompute(
                 context: modelContext,
-                summary: portfolio.summary,
+                summary: portfolio.replaySummary,
                 factors: portfolio.performanceFactors,
                 contributions: portfolio.contributionIndex
             )

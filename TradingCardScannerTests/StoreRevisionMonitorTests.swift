@@ -6,6 +6,92 @@ import XCTest
 
 @MainActor
 final class StoreRevisionMonitorTests: XCTestCase {
+    func testOwnershipEditReplaysBeforeAnActivePriceRefreshFinishes() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+                                          configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let card = monitorCard(game: .pokemon)
+        context.insert(card)
+        let baselineOperationID = UUID()
+        context.insert(InventoryEvent(operationID: baselineOperationID, leg: nil, kind: .initialBalance, source: .catalog,
+                                      collectionKey: card.collectionKey, priceStorageKey: card.priceKey,
+                                      deltaQuantity: 1, occurredAt: .now, valuation: .unpriced))
+        context.insert(CollectionActivity(card: card, source: .catalog, quantity: 1,
+                                          ledgerOperationIDs: [baselineOperationID]))
+        let price = PriceRecord(key: card.priceKey, game: .pokemon,
+                                printingID: card.providerID, variantID: card.variantID)
+        price.unitMarketPriceUSD = 1
+        price.lastCheckedAt = .now
+        context.insert(price)
+        try context.save()
+        let computations = MonitorAttemptCount()
+        let portfolio = PortfolioEngine(computationProvider: { container, epoch, now, timeZone in
+            await computations.increment()
+            return await PortfolioComputationActor(modelContainer: container)
+                .compute(epoch: epoch, liveInstant: now, timeZoneIdentifier: timeZone)
+        })
+        let refresh = PriceRefreshController()
+        let gate = MonitorRefreshGate()
+        defer { Task { await gate.release() } }
+        refresh.setPokemonFetchOverrideForTesting { printing in
+            await gate.wait()
+            let data = Data("""
+            {"id":"\(printing.printingID)","localId":"1","name":"Monitor Card",
+             "set":{"id":"fixture","name":"Monitor Set","cardCount":{"total":1,"official":1}},
+             "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":false,"wPromo":false},
+             "pricing":{"tcgplayer":{"normal":{"marketPrice":1.0}}}}
+            """.utf8)
+            return .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: data), setCode: "MON")
+        }
+        let signal = PriceRefreshCompletionSignal()
+        refresh.registerCompletionSignal(signal)
+        portfolio.start(context: context)
+        let window = host(container: container, refresh: refresh, signal: signal,
+                          writes: DerivedStateWriteCoordinator(), scene: MonitorScene(), portfolio: portfolio)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        for _ in 0..<100 where signal.generation == 0 || portfolio.isRecomputing {
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        try await Task.sleep(for: .milliseconds(500))
+        let before = await computations.value
+        price.lastCheckedAt = Date.now.addingTimeInterval(-9 * 60 * 60)
+        try context.save()
+        let pass = Task {
+            await refresh.refresh(PriceRefreshRequest(usesPriceFallback: false, includeImported: true,
+                                  forceUnsupportedRetry: false, sortOldestFirst: true,
+                                  maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false), container: container)
+        }
+        for _ in 0..<100 {
+            if await gate.started { break }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        let started = await gate.started
+        XCTAssertTrue(started)
+        card.quantity += 1
+        let editOperationID = UUID()
+        context.insert(InventoryEvent(operationID: editOperationID, leg: nil, kind: .acquire, source: .catalog,
+                                      collectionKey: card.collectionKey, priceStorageKey: card.priceKey,
+                                      deltaQuantity: 1, occurredAt: .now, valuation: .unpriced))
+        context.insert(CollectionActivity(card: card, source: .catalog, quantity: 1,
+                                          ledgerOperationIDs: [editOperationID]))
+        try context.save()
+        for _ in 0..<100 {
+            if await computations.value > before && !portfolio.isRecomputing { break }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        let duringPass = await computations.value
+        XCTAssertTrue(refresh.isPassInFlight)
+        XCTAssertEqual(duringPass, before + 1)
+        XCTAssertEqual(portfolio.holdings.first?.quantity, 2)
+        await gate.release()
+        _ = await pass.value
+        for _ in 0..<100 where portfolio.isRecomputing {
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        let afterPass = await computations.value
+        XCTAssertEqual(afterPass, before + 2, "Ownership replay plus the controller's terminal replay")
+    }
+
     func testForegroundReconsidersUnchangedTargetsAndDefersThroughBulkWrites() async throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
                                           configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
@@ -256,6 +342,24 @@ final class StoreRevisionMonitorTests: XCTestCase {
             ModelContext.NotificationKey.deletedIdentifiers: [PersistentIdentifier]()
         ]
         return StoreRevisionSaveFilter.isRelevantSave(userInfo: info, passInFlight: passInFlight)
+    }
+}
+
+private actor MonitorRefreshGate {
+    private(set) var started = false
+    private var continuation: CheckedContinuation<Void, Never>?
+    private var released = false
+
+    func wait() async {
+        started = true
+        guard !released else { return }
+        await withCheckedContinuation { continuation = $0 }
+    }
+
+    func release() {
+        released = true
+        continuation?.resume()
+        continuation = nil
     }
 }
 

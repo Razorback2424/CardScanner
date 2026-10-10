@@ -230,11 +230,14 @@ final class PortfolioHistoryStore: ObservableObject {
     @Published var range: PortfolioHistoryRange {
         didSet {
             UserDefaults.standard.set(range.rawValue, forKey: "portfolioHistoryRange")
-            if oldValue != range { result = nil }
+            if oldValue != range, let cachedInput {
+                result = PortfolioHistoryEngine.calculate(input: cachedInput, range: range)
+            }
         }
     }
 
     @Published private(set) var result: PortfolioHistoryResult?
+    private var cachedInput: PortfolioHistoryInput?
 
     init() {
         range = PortfolioHistoryRange(
@@ -260,6 +263,7 @@ final class PortfolioHistoryStore: ObservableObject {
         now: Date = .now
     ) {
         guard let summary else {
+            cachedInput = nil
             result = nil
             return
         }
@@ -274,6 +278,7 @@ final class PortfolioHistoryStore: ObservableObject {
             // History is derived from persisted closes. If that read is
             // unavailable, publishing an empty chart would make a storage
             // problem look like missing history.
+            cachedInput = nil
             result = nil
             return
         }
@@ -291,18 +296,17 @@ final class PortfolioHistoryStore: ObservableObject {
                 removed: $0.removedContribution
             )
         }
-        result = PortfolioHistoryEngine.calculate(
-            input: PortfolioHistoryInput(
-                closes: closes,
-                summary: summary,
-                epoch: PortfolioEpoch.startedAt(),
-                timeZoneIdentifier: timeZone.identifier,
-                now: now,
-                factors: factors,
-                contributions: contributions
-            ),
-            range: range
+        let input = PortfolioHistoryInput(
+            closes: closes,
+            summary: summary,
+            epoch: PortfolioEpoch.startedAt(),
+            timeZoneIdentifier: timeZone.identifier,
+            now: now,
+            factors: factors,
+            contributions: contributions
         )
+        cachedInput = input
+        result = PortfolioHistoryEngine.calculate(input: input, range: range)
     }
 
 }

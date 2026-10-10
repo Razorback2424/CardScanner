@@ -1,5 +1,7 @@
 import Foundation
+import Combine
 import SwiftData
+import SwiftUI
 import UIKit
 import XCTest
 import PokemonCatalogCore
@@ -639,6 +641,7 @@ final class BrowseFeatureTests: XCTestCase {
         ]))
         let model = BrowseViewModel(catalog: catalog, includesSealedProducts: false)
         await model.loadSets()
+        let initialRevision = model.catalogRevision
         let task = Task { await model.observeCatalogUpdates() }
         defer { task.cancel() }
         await catalog.publishUpdate(game: .onePiece, revision: 2)
@@ -646,6 +649,10 @@ final class BrowseFeatureTests: XCTestCase {
         XCTAssertTrue(updated)
         let unaffectedCount = await catalog.directoryFetchCount(for: .pokemon)
         XCTAssertEqual(unaffectedCount, 1)
+        let revisionChanged = await waitUntil {
+            await MainActor.run { model.catalogRevision > initialRevision }
+        }
+        XCTAssertTrue(revisionChanged, "An unchanged directory must still invalidate completion")
     }
 
     @MainActor
@@ -3043,7 +3050,7 @@ final class BrowseCollectionTests: XCTestCase {
         ]
 
         XCTAssertEqual(
-            SetCompletionCalculator.progress(for: set, cards: cards),
+            CatalogOwnershipIndex(cards).progress(for: set),
             SetCompletion(owned: 2, total: 180, unit: "cards")
         )
     }
@@ -3433,7 +3440,7 @@ final class BrowseCollectionTests: XCTestCase {
         imported.setCode = "Prismatic Evolutions"
         imported.catalogProviderID = "sv08.5-076"
 
-        XCTAssertEqual(SetCompletionCalculator.progress(for: set, cards: [imported]).owned, 1)
+        XCTAssertEqual(CatalogOwnershipIndex([imported]).progress(for: set).owned, 1)
     }
 
     func testStampedReprintDoesNotCompleteItsSourceExpansionSlot() throws {
@@ -3467,8 +3474,8 @@ final class BrowseCollectionTests: XCTestCase {
             imageURL: nil
         )
 
-        XCTAssertEqual(SetCompletionCalculator.progress(for: lostOrigin, cards: [owned]).owned, 0)
-        XCTAssertFalse(SetCompletionCalculator.owns(gengar, cards: [owned]))
+        XCTAssertEqual(CatalogOwnershipIndex([owned]).progress(for: lostOrigin).owned, 0)
+        XCTAssertFalse(CatalogOwnershipIndex([owned]).owns(gengar))
     }
 
     func testAddingStampedGengarStoresStampedReleaseMetadataAndArtwork() throws {
@@ -3637,9 +3644,9 @@ final class BrowseCollectionTests: XCTestCase {
         )
         let nonfoil = magicCompletionCard(number: "10", variant: .nonfoil)
 
-        XCTAssertFalse(SetCompletionCalculator.owns(summary, cards: [genericFoil]))
-        XCTAssertFalse(SetCompletionCalculator.owns(summary, cards: [nonfoil]))
-        XCTAssertTrue(SetCompletionCalculator.owns(summary, cards: [treatedFoil]))
+        XCTAssertFalse(CatalogOwnershipIndex([genericFoil]).owns(summary))
+        XCTAssertFalse(CatalogOwnershipIndex([nonfoil]).owns(summary))
+        XCTAssertTrue(CatalogOwnershipIndex([treatedFoil]).owns(summary))
         XCTAssertEqual(
             CatalogOwnershipIndex([genericFoil, treatedFoil]).quantity(of: summary),
             1
@@ -3664,7 +3671,7 @@ final class BrowseCollectionTests: XCTestCase {
         ]
 
         XCTAssertEqual(
-            SetCompletionCalculator.progress(for: set, cards: owned),
+            CatalogOwnershipIndex(owned).progress(for: set),
             SetCompletion(owned: 2, total: 2, unit: "cards")
         )
     }
@@ -5405,7 +5412,7 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         }
     }
 
-    func testCatalogSetCompletionCapsExactChecklistReadsAtFortyCandidates() async {
+    func testCatalogSetCompletionCapsExactChecklistReadsAndUsesExactLoadedProgressForOverflow() async throws {
         var sets: [CatalogSet] = []
         var entries: [PokemonChecklistSnapshotEntry] = []
         var checklists: [String: [CatalogCardSummary]] = [:]
@@ -5435,15 +5442,17 @@ final class PokemonChecklistBrowseTests: XCTestCase {
                 thumbnailURL: nil,
                 imageURL: nil,
                 masterSetVariant: .normal,
-                isSoleSlotForCard: true
+                isSoleSlotForCard: false
             )
+            var reverseSlot = slot
+            reverseSlot.masterSetVariant = .reverse
             let entry = PokemonChecklistSnapshotEntry(
                 set: set,
                 providerID: providerID,
                 providerFingerprint: "fixture",
                 officialCount: 99,
-                standardSlotCount: 1,
-                expandedSlotCount: 1,
+                standardSlotCount: 2,
+                expandedSlotCount: 2,
                 resource: "sets/\(providerID).json"
             )
             let owned = completionCard(number: "001", variant: .normal)
@@ -5454,8 +5463,14 @@ final class PokemonChecklistBrowseTests: XCTestCase {
 
             sets.append(set)
             entries.append(entry)
-            checklists[set.id] = [slot]
+            checklists[set.id] = [slot, reverseSlot]
             ownedCards.append(owned)
+            let reverseOwned = completionCard(number: "001", variant: .reverse)
+            reverseOwned.collectionKey = "overflow-reverse-\(index)"
+            reverseOwned.providerID = slot.providerID
+            reverseOwned.setName = set.name
+            reverseOwned.setCode = set.code
+            ownedCards.append(reverseOwned)
 
             if index == 40 {
                 let secondOwned = completionCard(number: "002", variant: .normal)
@@ -5479,19 +5494,210 @@ final class PokemonChecklistBrowseTests: XCTestCase {
 
         XCTAssertEqual(
             index.completion(for: sets[0], tier: .standard),
-            SetCompletion(owned: 1, total: 1, unit: "variations")
+            SetCompletion(owned: 2, total: 2, unit: "variations")
         )
         XCTAssertEqual(
             index.completion(for: sets[40], tier: .standard),
-            SetCompletion(owned: 1, total: 1, unit: "variations")
+            SetCompletion(owned: 2, total: 2, unit: "variations")
         )
         let overflowSets = sets.filter {
             index.completion(for: $0, tier: .standard)?.unit == "cards"
         }
         XCTAssertEqual(overflowSets.count, 1)
         XCTAssertNotEqual(overflowSets.first?.id, sets[40].id)
+        let overflowSet = try XCTUnwrap(overflowSets.first)
+        let overflow = try XCTUnwrap(index.completion(for: overflowSet, tier: .standard))
+        XCTAssertEqual(overflow.owned, 1)
+        XCTAssertNil(overflow.total, "Collector numbers must not divide by variation slots")
+        XCTAssertNil(overflow.fraction)
+        let slots = try XCTUnwrap(checklists[overflowSet.id])
+        let ownership = CatalogOwnershipIndex(ownedCards)
+        XCTAssertEqual(
+            CatalogSetCompletionPresentation.progress(
+                for: overflowSet, slots: slots, isFullyLoaded: true,
+                ownership: ownership, completions: index, tier: .standard
+            ),
+            SetCompletion(owned: 2, total: 2, unit: "variations")
+        )
+        XCTAssertEqual(
+            CatalogSetCompletionPresentation.progress(
+                for: overflowSet, slots: slots, isFullyLoaded: false,
+                ownership: ownership, completions: index, tier: .standard
+            ), overflow
+        )
+        let updatedOwnership = CatalogOwnershipIndex(ownedCards.filter {
+            $0.setCode != overflowSet.code || $0.variantID != PhysicalVariant.reverse.id
+        })
+        XCTAssertEqual(
+            CatalogSetCompletionPresentation.progress(
+                for: overflowSet, slots: slots, isFullyLoaded: true,
+                ownership: updatedOwnership, completions: index, tier: .standard
+            ).owned, 1, "Loaded progress must reflect collection edits before the index rebuilds"
+        )
         let checklistRequests = await checklistStore.checklistRequestCount()
         XCTAssertEqual(checklistRequests, 40)
+    }
+
+    @MainActor
+    func testCatalogSetCompletionReusesInputsWithoutRepublishingAndRefreshesChangedManifest() async {
+        let set = sampleSet(id: "fixture", name: "Fixture")
+        let slot = sampleSummary(set: set, name: "Card")
+        let card = completionCard(number: "001", variant: .normal)
+        card.providerID = slot.providerID
+        card.setCode = set.code
+        let ownership = CatalogOwnershipIndex([card])
+        func entry(fingerprint: String, count: Int) -> PokemonChecklistSnapshotEntry {
+            .init(set: set, providerID: set.providerID, providerFingerprint: fingerprint,
+                  standardSlotCount: count, expandedSlotCount: count, resource: "fixture.json")
+        }
+        let checklists = CountingChecklistStore(
+            entries: [entry(fingerprint: "first", count: 1)], checklists: [set.id: [slot]]
+        )
+        let store = CatalogSetCompletionStore(builder: .init(checklistStore: checklists))
+        var publications = 0
+        let subscription = store.$index.dropFirst().sink { _ in publications += 1 }
+        defer { subscription.cancel() }
+
+        await store.rebuild(sets: [set], ownership: ownership, tier: .standard)
+        await store.rebuild(sets: [set], ownership: ownership, tier: .standard)
+        await store.rebuild(sets: [set], ownership: ownership, tier: .standard)
+        var requests = await checklists.checklistRequestCount()
+        XCTAssertEqual(requests, 1, "Reopening Browse must reuse the completed build")
+        XCTAssertEqual(publications, 1)
+
+        await store.rebuild(sets: [set], ownership: ownership, tier: .expanded)
+        requests = await checklists.checklistRequestCount()
+        XCTAssertEqual(requests, 2, "A tier change must rebuild")
+        await store.rebuild(sets: [set], ownership: .init(rows: []), tier: .expanded)
+        XCTAssertEqual(store.index?.completion(for: set, tier: .expanded)?.owned, 0)
+        await store.rebuild(sets: [set], ownership: ownership, tier: .expanded)
+        requests = await checklists.checklistRequestCount()
+        XCTAssertEqual(requests, 3, "Collection changes must rebuild")
+
+        var reverse = slot
+        reverse.masterSetVariant = .reverse
+        await checklists.replace(entries: [entry(fingerprint: "second", count: 2)],
+                                 checklists: [set.id: [slot, reverse]])
+        await store.rebuild(sets: [set], ownership: ownership, tier: .expanded)
+        requests = await checklists.checklistRequestCount()
+        XCTAssertEqual(requests, 4, "Changed checklist contents must invalidate identical directory inputs")
+        XCTAssertEqual(store.index?.completion(for: set, tier: .expanded),
+                       SetCompletion(owned: 1, total: 2, unit: "variations"))
+
+        let changedSet = sampleSet(id: "fixture", name: "Renamed fixture")
+        await store.rebuild(sets: [changedSet], ownership: ownership, tier: .expanded)
+        requests = await checklists.checklistRequestCount()
+        XCTAssertEqual(requests, 5, "Same-count directory changes must rebuild")
+        XCTAssertEqual(publications, 5, "Equal completion values must not be republished")
+    }
+
+    @MainActor
+    func testCatalogSetCompletionPublishesOnlyNewestCoalescedRequest() async {
+        let set = sampleSet(id: "fixture", name: "Fixture")
+        let slot = sampleSummary(set: set, name: "Card")
+        let card = completionCard(number: "001", variant: .normal)
+        card.providerID = slot.providerID
+        card.setCode = set.code
+        let entry = PokemonChecklistSnapshotEntry(set: set, providerID: set.providerID,
+            standardSlotCount: 1, expandedSlotCount: 1, resource: "fixture.json")
+        let checklists = CountingChecklistStore(entries: [entry], checklists: [set.id: [slot]])
+        await checklists.pauseNextChecklist()
+        let store = CatalogSetCompletionStore(builder: .init(checklistStore: checklists))
+        var publications: [CatalogSetCompletionIndex?] = []
+        let subscription = store.$index.dropFirst().sink { publications.append($0) }
+        defer { subscription.cancel() }
+        let first = Task { await store.rebuild(sets: [set], ownership: .init([card]), tier: .standard) }
+        let started = await waitUntil { await checklists.checklistRequestCount() == 1 }
+        XCTAssertTrue(started)
+        var newestStarted = false
+        let newest = Task {
+            newestStarted = true
+            await store.rebuild(sets: [set], ownership: .init(rows: []), tier: .expanded)
+        }
+        let queued = await waitUntil { await MainActor.run { newestStarted } }
+        XCTAssertTrue(queued)
+        await checklists.resumeChecklist()
+        await first.value
+        await newest.value
+        XCTAssertEqual(publications.count, 1)
+        XCTAssertEqual(store.index?.completion(for: set, tier: .expanded),
+                       SetCompletion(owned: 0, total: 1, unit: "variations"))
+        XCTAssertNil(store.index?.completion(for: set, tier: .standard))
+    }
+
+    func testCatalogSetCompletionRetriesUnavailableChecklistWithUnchangedManifest() async {
+        let set = sampleSet(id: "fixture", name: "Fixture")
+        let slot = sampleSummary(set: set, name: "Card")
+        let card = completionCard(number: "001", variant: .normal)
+        card.providerID = slot.providerID
+        card.setCode = set.code
+        let entry = PokemonChecklistSnapshotEntry(set: set, providerID: set.providerID,
+            standardSlotCount: 1, expandedSlotCount: 1, resource: "fixture.json")
+        let checklists = CountingChecklistStore(entries: [entry], checklists: [:])
+        let builder = CatalogSetCompletionBuilder(checklistStore: checklists)
+        let ownership = CatalogOwnershipIndex([card])
+        let unavailable = await builder.build(sets: [set], ownership: ownership, tier: .standard)
+        XCTAssertEqual(unavailable.completion(for: set, tier: .standard)?.owned, 0)
+        await checklists.replace(entries: [entry], checklists: [set.id: [slot]])
+        let restored = await builder.build(sets: [set], ownership: ownership, tier: .standard)
+        XCTAssertEqual(restored.completion(for: set, tier: .standard)?.owned, 1)
+        let reads = await checklists.checklistRequestCount()
+        XCTAssertEqual(reads, 2)
+    }
+
+    func testCatalogSetCompletionStartedFilterUsesSelectedTier() async {
+        let set = sampleSet(id: "fixture", name: "Fixture")
+        let normal = sampleSummary(set: set, name: "Card")
+        var expandedSlot = normal
+        expandedSlot.masterSetVariant = .masterBall
+        expandedSlot.isExpandedMasterSetVariant = true
+        let card = completionCard(number: "001", variant: .masterBall)
+        card.providerID = normal.providerID
+        card.setCode = set.code
+        let ownership = CatalogOwnershipIndex([card])
+        let entry = PokemonChecklistSnapshotEntry(set: set, providerID: set.providerID,
+            standardSlotCount: 1, expandedSlotCount: 2, resource: "fixture.json")
+        let builder = CatalogSetCompletionBuilder(checklistStore: CountingChecklistStore(
+            entries: [entry], checklists: [set.id: [normal, expandedSlot]]
+        ))
+        let standard = await builder.build(sets: [set], ownership: ownership, tier: .standard)
+        let expanded = await builder.build(sets: [set], ownership: ownership, tier: .expanded)
+        XCTAssertTrue(CatalogSetListFilter.started.includes(set, ownership: ownership))
+        XCTAssertFalse(CatalogSetListFilter.started.includes(
+            set, ownership: ownership, completions: standard, tier: .standard
+        ))
+        XCTAssertTrue(CatalogSetListFilter.started.includes(
+            set, ownership: ownership, completions: expanded, tier: .expanded
+        ))
+        XCTAssertTrue(CatalogSetListFilter.started.includes(
+            set, ownership: ownership, completions: standard, tier: .expanded
+        ), "A stale tier must fall back to ownership")
+    }
+
+    func testCatalogSetCompletionNonPokemonShortcutPreservesOwnershipAndPhysicalMembership() async {
+        func set(_ game: CardGame, code: String, printingIDs: Set<String>? = nil) -> CatalogSet {
+            .init(catalogID: .init(game: game, providerID: code), name: code, code: code,
+                  logoURL: nil, symbolURL: nil, cardCount: 10, releaseDate: nil, sortRank: 1,
+                  physicalPrintingIDs: printingIDs)
+        }
+        let card = CollectedCard(collectionKey: "magic-owned", game: .magic, providerID: "printing",
+            name: "Card", setName: "Fixture", setCode: "FiX", cardNumber: "001",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .nonfoil,
+            variantResolution: .userConfirmed)
+        let sets = [set(.magic, code: "fix"), set(.magic, code: "unowned"),
+                    set(.magic, code: " fix "), set(.onePiece, code: "FIX"),
+                    set(.magic, code: "bundle", printingIDs: ["PRINTING"]),
+                    set(.onePiece, code: "bundle", printingIDs: ["PRINTING"])]
+        let ownership = CatalogOwnershipIndex([card])
+        let checklists = CountingChecklistStore(entries: [], checklists: [:])
+        let index = await CatalogSetCompletionBuilder(checklistStore: checklists).build(
+            sets: sets, ownership: ownership, tier: .standard
+        )
+        for set in sets {
+            XCTAssertEqual(index.completion(for: set, tier: .standard), ownership.progress(for: set))
+        }
+        let reads = await checklists.checklistRequestCount()
+        XCTAssertEqual(reads, 0)
     }
 
     func testCatalogSetCompletionUsesManifestDenominatorAndSkipsUnownedChecklistReads() async {
@@ -5564,21 +5770,10 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         let standard = await builder.build(sets: [set], ownership: owned, tier: .standard)
         XCTAssertEqual(
             standard.completion(for: set, tier: .standard),
-            SetCompletionCalculator.progress(for: [normal], cards: [ownedCard])
-        )
-        XCTAssertEqual(
-            standard.completion(for: set, tier: .standard),
             owned.progress(for: [normal])
         )
 
         let expanded = await builder.build(sets: [set], ownership: owned, tier: .expanded)
-        XCTAssertEqual(
-            expanded.completion(for: set, tier: .expanded),
-            SetCompletionCalculator.progress(
-                for: [normal, masterBall],
-                cards: [ownedCard]
-            )
-        )
         XCTAssertEqual(
             expanded.completion(for: set, tier: .expanded),
             owned.progress(for: [normal, masterBall])
@@ -6583,6 +6778,14 @@ final class PokemonChecklistBrowseTests: XCTestCase {
         return directory
     }
 
+    private func waitUntil(_ condition: @escaping () async -> Bool) async -> Bool {
+        for _ in 0..<100 {
+            if await condition() { return true }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+        return false
+    }
+
     private func completionCard(
         number: String,
         variant: PhysicalVariant,
@@ -6686,9 +6889,11 @@ private final class PokemonBulkPriceURLProtocol: URLProtocol, @unchecked Sendabl
 private enum TestError: Error { case failed }
 
 private actor CountingChecklistStore: CatalogSetCompletionChecklistStore {
-    private let entries: [PokemonChecklistSnapshotEntry]
-    private let checklists: [String: [CatalogCardSummary]]
+    private var entries: [PokemonChecklistSnapshotEntry]
+    private var checklists: [String: [CatalogCardSummary]]
     private var checklistRequests = 0
+    private var shouldPause = false
+    private var paused: CheckedContinuation<Void, Never>?
 
     init(
         entries: [PokemonChecklistSnapshotEntry],
@@ -6704,7 +6909,23 @@ private actor CountingChecklistStore: CatalogSetCompletionChecklistStore {
 
     func mergedChecklist(for setID: CatalogSetID) async -> [CatalogCardSummary]? {
         checklistRequests += 1
+        if shouldPause {
+            shouldPause = false
+            await withCheckedContinuation { paused = $0 }
+        }
         return checklists[setID.id]
+    }
+
+    func replace(entries: [PokemonChecklistSnapshotEntry], checklists: [String: [CatalogCardSummary]]) {
+        self.entries = entries
+        self.checklists = checklists
+    }
+
+    func pauseNextChecklist() { shouldPause = true }
+
+    func resumeChecklist() {
+        paused?.resume()
+        paused = nil
     }
 
     func checklistRequestCount() -> Int {
@@ -6801,6 +7022,240 @@ private actor EmptyBrowseCatalog: BrowseCatalogProviding {
     func prepareCatalog() async {}
 
     func searchCount() -> Int { searches }
+}
+
+@MainActor
+final class BrowsePaginationRenderTests: XCTestCase {
+    func testGamePaginationWaitsUntilFooterIsScrolledIntoView() async throws {
+        let set = fixtureSet("first")
+        let catalog = RenderPagingCatalog(sets: [set], cardsPerPage: 40)
+        var scrollProxy: ScrollViewProxy?
+        let window = try host(CatalogGameCardsView(
+            game: .magic, sets: [set], catalog: catalog, isActive: true, search: .constant("")
+        ), height: 800, onScrollReady: { scrollProxy = $0 })
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(1, catalog: catalog)
+        try await Task.sleep(for: .milliseconds(250))
+        let initial = await catalog.requests
+        XCTAssertEqual(initial, ["first:start"])
+        let scroll = try XCTUnwrap(findScrollView(in: window))
+        XCTAssertGreaterThan(scroll.contentSize.height, scroll.bounds.height)
+        let proxy = try XCTUnwrap(scrollProxy)
+        for count in 2...3 {
+            // A lazy grid revises its estimated content height as rows render.
+            for _ in 0..<60 {
+                if await catalog.requests.count >= count { break }
+                proxy.scrollTo("catalog-pagination-footer", anchor: .bottom)
+                try await Task.sleep(for: .milliseconds(30))
+            }
+            try await waitForRequests(count, catalog: catalog)
+        }
+        let requests = await catalog.requests
+        XCTAssertEqual(requests, ["first:start", "first:1", "first:2"])
+    }
+
+    func testGameFooterLoadsThreePagesAndThenTheNextSet() async throws {
+        let sets = [fixtureSet("first", rank: 2), fixtureSet("second", rank: 1)]
+        let catalog = RenderPagingCatalog(sets: sets)
+        let window = try host(CatalogGameCardsView(
+            game: .magic, sets: sets, catalog: catalog, isActive: true, search: .constant("")
+        ))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(6, catalog: catalog)
+        let requests = await catalog.requests
+        XCTAssertEqual(requests, ["first:start", "first:1", "first:2", "second:start", "second:1", "second:2"])
+    }
+
+    func testGameSearchFooterLoadsThreePages() async throws {
+        let catalog = RenderPagingCatalog(sets: [fixtureSet("first")])
+        let window = try host(CatalogGameCardsView(
+            game: .magic, sets: [], catalog: catalog, isActive: true, search: .constant("fixture")
+        ))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(3, catalog: catalog)
+        let requests = await catalog.requests
+        XCTAssertEqual(requests, ["search:start", "search:1", "search:2"])
+    }
+
+    func testSetFooterLoadsThreePages() async throws {
+        let set = fixtureSet("first")
+        let catalog = RenderPagingCatalog(sets: [set])
+        let window = try host(CatalogSetCardsView(set: set, catalog: catalog))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(3, catalog: catalog)
+        let requests = await catalog.requests
+        XCTAssertEqual(requests, ["first:start", "first:1", "first:2"])
+    }
+
+    func testSetPricesCancelOnDisappearanceAndResumeOnReturn() async throws {
+        let set = fixtureSet("first")
+        let catalog = RenderPagingCatalog(sets: [set], pageCount: 1, holdsPrices: true)
+        let window = try host(CatalogSetCardsView(set: set, catalog: catalog))
+        let controller = try XCTUnwrap(window.rootViewController)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForPriceRequests(started: 1, cancelled: 0, catalog: catalog)
+
+        window.isHidden = true
+        window.rootViewController = nil
+        try await waitForPriceRequests(started: 1, cancelled: 1, catalog: catalog)
+
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        controller.view.layoutIfNeeded()
+        try await waitForPriceRequests(started: 2, cancelled: 1, catalog: catalog)
+    }
+
+    private func waitForPriceRequests(started: Int, cancelled: Int, catalog: RenderPagingCatalog) async throws {
+        for _ in 0..<100 {
+            if await catalog.priceCounts() == [started, cancelled] { return }
+            try await Task.sleep(for: .milliseconds(30))
+        }
+        let counts = await catalog.priceCounts()
+        XCTAssertEqual(counts, [started, cancelled])
+    }
+
+    func testGameCatalogUpdateDiscardsDelayedOldResponseAndCursor() async throws {
+        let oldSet = fixtureSet("withdrawn")
+        let catalog = RenderPagingCatalog(sets: [oldSet], holdsFirstPage: true)
+        let window = try host(CatalogGameCardsView(
+            game: .magic, sets: [oldSet], catalog: catalog, isActive: true, search: .constant("")
+        ))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(1, catalog: catalog)
+        await catalog.publish(sets: [fixtureSet("replacement")])
+        try await waitForRequests(4, catalog: catalog)
+        await catalog.releaseFirstPage()
+        try await Task.sleep(for: .milliseconds(150))
+        let requests = await catalog.requests
+        XCTAssertEqual(requests, ["withdrawn:start", "replacement:start", "replacement:1", "replacement:2"])
+    }
+
+    func testActiveGameSearchRestartsOnCatalogUpdate() async throws {
+        let catalog = RenderPagingCatalog(sets: [fixtureSet("old")])
+        let window = try host(CatalogGameCardsView(
+            game: .magic, sets: [], catalog: catalog, isActive: true, search: .constant("fixture")
+        ))
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(3, catalog: catalog)
+        await catalog.publish(sets: [fixtureSet("new")])
+        try await waitForRequests(6, catalog: catalog)
+        let requests = await catalog.requests
+        XCTAssertEqual(requests, ["search:start", "search:1", "search:2", "search:start", "search:1", "search:2"])
+    }
+
+    private func fixtureSet(_ id: String, rank: Int = 0) -> CatalogSet {
+        CatalogSet(catalogID: .init(game: .magic, providerID: id), name: id, code: id,
+                   logoURL: nil, symbolURL: nil, cardCount: 3, releaseDate: nil, sortRank: rank)
+    }
+
+    private func findScrollView(in view: UIView) -> UIScrollView? {
+        var candidates = view.subviews.compactMap { self.findScrollView(in: $0) }
+        if let scroll = view as? UIScrollView { candidates.append(scroll) }
+        return candidates.max { $0.contentSize.height < $1.contentSize.height }
+    }
+
+    private func host<V: View>(_ view: V, height: CGFloat = 2400,
+                               onScrollReady: @escaping (ScrollViewProxy) -> Void = { _ in }) throws -> UIWindow {
+        // Keep every small fixture page within the viewport: the footer must
+        // continue while visible, without needing to recreate the screen.
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive })
+        let window = UIWindow(windowScene: scene)
+        window.frame = CGRect(x: 0, y: 0, width: 600, height: height)
+        let controller = UIHostingController(rootView: NavigationStack {
+            ScrollViewReader { proxy in
+                view.environmentObject(CollectionProjectionStore())
+                    .environmentObject(CatalogSetCompletionStore())
+                    .onAppear { onScrollReady(proxy) }
+            }
+        })
+        window.rootViewController = controller
+        window.makeKeyAndVisible()
+        controller.view.frame = window.bounds
+        controller.view.layoutIfNeeded()
+        return window
+    }
+
+    private func waitForRequests(_ count: Int, catalog: RenderPagingCatalog) async throws {
+        for _ in 0..<100 {
+            if await catalog.requests.count >= count { break }
+            try await Task.sleep(for: .milliseconds(30))
+        }
+        // Also detect duplicate/eager requests after the final cursor.
+        try await Task.sleep(for: .milliseconds(100))
+        let actual = await catalog.requests.count
+        XCTAssertEqual(actual, count)
+    }
+}
+
+private actor RenderPagingCatalog: BrowseCatalogProviding {
+    private var directory: [CatalogSet]
+    private(set) var requests: [String] = []
+    private var holdsFirstPage: Bool
+    private let cardsPerPage: Int
+    private let pageCount: Int
+    private let holdsPrices: Bool
+    private var priceStarts = 0
+    private var priceCancellations = 0
+    private var firstPageGate: CheckedContinuation<Void, Never>?
+    private var updateContinuation: AsyncStream<BrowseCatalogUpdate>.Continuation?
+
+    init(sets: [CatalogSet], holdsFirstPage: Bool = false, cardsPerPage: Int = 1,
+         pageCount: Int = 3, holdsPrices: Bool = false) {
+        directory = sets
+        self.holdsFirstPage = holdsFirstPage
+        self.cardsPerPage = cardsPerPage
+        self.pageCount = pageCount
+        self.holdsPrices = holdsPrices
+    }
+    func catalogUpdates() async -> AsyncStream<BrowseCatalogUpdate> {
+        let stream = AsyncStream<BrowseCatalogUpdate>.makeStream()
+        updateContinuation = stream.continuation
+        return stream.stream
+    }
+    func publish(sets: [CatalogSet]) {
+        directory = sets
+        updateContinuation?.yield(.init(game: .magic, revision: 1, providerSetID: nil))
+    }
+    func releaseFirstPage() {
+        firstPageGate?.resume()
+        firstPageGate = nil
+    }
+    func sets(for game: CardGame) async throws -> [CatalogSet] { directory }
+    func cards(in set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        try await page(route: set.providerID, set: set, cursor: cursor)
+    }
+    func searchCards(named query: String, game: CardGame, setIDs: Set<CatalogSetID>, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        try await page(route: "search", set: directory[0], cursor: cursor)
+    }
+    private func page(route: String, set: CatalogSet, cursor: String?) async throws -> CatalogPage<CatalogCardSummary> {
+        requests.append("\(route):\(cursor ?? "start")")
+        if holdsFirstPage {
+            holdsFirstPage = false
+            // Deliberately ignore cancellation to exercise application guards.
+            await withCheckedContinuation { firstPageGate = $0 }
+        }
+        try? await Task.sleep(for: .milliseconds(20))
+        let number = cursor.flatMap(Int.init) ?? 0
+        let cards = (0..<cardsPerPage).map { index in
+            CatalogCardSummary(game: .magic, providerID: "\(route)-\(number)-\(index)", setID: set.catalogID,
+                                      setName: set.name, setCode: set.code, name: "Fixture \(number)",
+                                      collectorNumber: String(number * cardsPerPage + index), thumbnailURL: nil, imageURL: nil)
+        }
+        return CatalogPage(items: cards, nextCursor: number + 1 < pageCount ? String(number + 1) : nil)
+    }
+    func details(for summary: CatalogCardSummary) async throws -> CatalogCardDetails { throw TestError.failed }
+    nonisolated func sortPrices(for cards: [CatalogCardSummary]) -> AsyncStream<[String: Double]> {
+        guard holdsPrices else { return AsyncStream { $0.finish() } }
+        return AsyncStream { continuation in
+            Task { await self.recordPriceStart() }
+            continuation.onTermination = { _ in Task { await self.recordPriceCancellation() } }
+        }
+    }
+    private func recordPriceStart() { priceStarts += 1 }
+    private func recordPriceCancellation() { priceCancellations += 1 }
+    func priceCounts() -> [Int] { [priceStarts, priceCancellations] }
 }
 
 private actor PagingBrowseCatalog: BrowseCatalogProviding {

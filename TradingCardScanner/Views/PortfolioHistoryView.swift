@@ -27,7 +27,8 @@ struct PortfolioHistoryScrubSelection: Equatable {
         in result: PortfolioHistoryResult?,
         currentValue: Money?
     ) -> Money? {
-        selectedPoint(in: result)?.value ?? currentValue
+        guard let point = selectedPoint(in: result) else { return currentValue }
+        return point.isLive ? currentValue ?? point.value : point.value
     }
 }
 
@@ -37,7 +38,7 @@ enum PortfolioHeadlineAccessibility {
         currentValue: Money?,
         isRecomputing: Bool
     ) -> String {
-        if let selectedPoint {
+        if let selectedPoint, !selectedPoint.isLive {
             let date = selectedPoint.displayDay.formatted(
                 date: .complete,
                 time: .omitted
@@ -46,7 +47,7 @@ enum PortfolioHeadlineAccessibility {
         }
         guard let currentValue else {
             return isRecomputing
-                ? "Collection value unavailable. Calculating portfolio."
+                ? "Calculating collection value."
                 : "Collection value unavailable"
         }
         let value = "Collection value, \(currentValue.formatted())"
@@ -371,11 +372,5 @@ private struct PortfolioChartDescriptor: AXChartDescriptorRepresentable {
             $0.anchorValue + last.cumulativeMarketMovement
         } ?? last.value
         return "Market movement from \(firstValue.formatted()) to \(lastValue.formatted()) across \(result.points.count) real points."
-    }
-}
-
-private extension Array {
-    subscript(safe index: Index) -> Element? {
-        indices.contains(index) ? self[index] : nil
     }
 }

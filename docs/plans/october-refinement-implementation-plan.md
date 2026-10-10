@@ -369,7 +369,11 @@ already incorporated the post-migration Magic inputs, omit the later
 `magicChanged` replay for the same observation. Keep migration before baseline
 valuation, and retain the Magic-only path when no earlier branch covered it.
 
-An active price pass continues to own the trailing replay. Do not remove the
+**2026-10-09 clarification:** [Portfolio remediation](../audits/portfolio-review-remediation.md)
+adds an immediate coalesced replay for ownership edits during a price pass.
+The gate continues to defer price checkpoints; terminal pricing replay remains.
+
+An active price pass continues to own the trailing pricing replay. Do not remove the
 controller's terminal replay, including its existing empty-pass behavior, or
 globally suppress new work because a prior apply computed once. Recheck
 generation/storage fences after suspension; genuinely newer input still needs

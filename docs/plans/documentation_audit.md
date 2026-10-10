@@ -8,6 +8,13 @@ history.
 
 ## Current authority boundary — updated 2026-10-07
 
+**Portfolio refresh/ownership reconciliation — 2026-10-09:** the
+[portfolio remediation](../audits/portfolio-review-remediation.md) qualifies the
+October plan §H rule: price checkpoints remain gated, while ownership changes
+request immediate coalesced replay during an active price pass. The controller's
+terminal replay is retained. This trades additional replay work on user edits
+for consistent Collection and Portfolio ownership presentation.
+
 **Systematic One Piece market mapping repair — 2026-10-07:** the
 [pricing gap audit](../audits/one-piece-op16-op17-pricing-gaps.md) now records the
 shared repair and signed owner revision 2. The earlier 1,961 exact / 412 held

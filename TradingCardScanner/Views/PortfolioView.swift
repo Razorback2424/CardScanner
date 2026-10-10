@@ -286,7 +286,7 @@ struct PortfolioView: View {
                         Button("Pricing and data details", systemImage: "info.circle") {
                             detailsDestination = PortfolioDetailsDestination(
                                 summary: summary,
-                                historyResult: activeHistoryResult
+                                historyResult: nil
                             )
                         }
                         .labelStyle(.iconOnly)
@@ -308,9 +308,11 @@ struct PortfolioView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(item: $detailsDestination) { destination in
                 PortfolioDetailsView(
-                    summary: destination.summary,
+                    portfolio: portfolio,
+                    history: history,
+                    fallbackSummary: destination.summary,
                     refresh: refresh,
-                    historyResult: destination.historyResult
+                    snapshotHistoryResult: destination.historyResult
                 )
             }
             .navigationDestination(item: $contributorContext) { context in
@@ -358,6 +360,7 @@ struct PortfolioView: View {
             selectedPoint: selectedHistoryPoint,
             currentValue: portfolio.summary?.currentValue,
             isRecomputing: portfolio.isRecomputing
+                || (portfolio.summary == nil && portfolio.integrityDefects.isEmpty)
         )
     }
 
@@ -462,7 +465,7 @@ struct PortfolioView: View {
                                 .foregroundStyle(.secondary.opacity(0.75))
                         }
                     } else {
-                        Text("Value unavailable")
+                        Text(portfolio.integrityDefects.isEmpty ? "—" : "Value unavailable")
                             .font(.system(size: 54, weight: .bold, design: .rounded))
                             .foregroundStyle(PortfolioPalette.value)
                     }
@@ -512,6 +515,10 @@ struct PortfolioView: View {
                 isRecomputing: portfolio.isRecomputing
             )
 
+            if let summary = portfolio.summary {
+                PortfolioExcludedCopiesDisclosure(summary: summary)
+            }
+
             if portfolio.summary?.isMigrationDay == true {
                 Text("Tracking started today")
                     .font(.subheadline)
@@ -532,11 +539,27 @@ struct PortfolioView: View {
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(PortfolioPalette.attention)
 
-            ForEach(defects) { defect in
-                Text(defect.detail)
+            Text("\(defects.count) \(defects.count == 1 ? "issue needs" : "issues need") reconciliation.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            ForEach(Array(defects.prefix(3))) { defect in
+                Text(integrityDefectDescription(defect))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+            if defects.count > 3 {
+                Text("And \(defects.count - 3) more. See Pricing & Data for details.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Button("View data details") {
+                detailsDestination = PortfolioDetailsDestination(
+                    summary: portfolio.summary ?? PortfolioSummary(defects: defects, isAuthoritative: false),
+                    historyResult: nil
+                )
+            }
+            .font(.subheadline.weight(.semibold))
 
             if canRepairQuantityDefects {
                 Button("Reconcile with Collection") {
@@ -568,13 +591,13 @@ struct PortfolioView: View {
                         ProgressView()
                             .controlSize(.small)
                     } else {
-                        Text("Rebuild pricing evidence")
+                        Text("Retry reconciliation")
                     }
                 }
                 .font(.subheadline.weight(.semibold))
                 .buttonStyle(.bordered)
                 .disabled(isRebuildingPortfolioEvidence)
-                .accessibilityHint("Re-reads stored price records and rebuilds missing local pricing evidence without changing collection contents")
+                .accessibilityHint("Re-reads stored collection and pricing data and recalculates the portfolio")
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -583,6 +606,14 @@ struct PortfolioView: View {
             PortfolioPalette.attention.opacity(0.12),
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
+    }
+
+    private func integrityDefectDescription(_ defect: LedgerIntegrityDefect) -> String {
+        if defect.reason == .quantityMismatch,
+           let holding = portfolio.holdings.first(where: { $0.collectionKey == defect.collectionKey }) {
+            return "\(holding.name): collection records disagree about the quantity."
+        }
+        return defect.reason.title
     }
 
     private func repairQuantityMismatches() {
@@ -597,7 +628,7 @@ struct PortfolioView: View {
             }
             Task { @MainActor in
                 await Task.yield()
-                portfolio.recompute(context: modelContext)
+                portfolio.recompute(context: modelContext, bypassPriceRefreshGate: true)
             }
         } catch {
             quantityRepairError = "No changes were saved. The repair can be retried after the records are available."
@@ -792,26 +823,23 @@ struct PortfolioView: View {
         return text
     }
 
-    @ViewBuilder
-    private func coverage(_ coverage: PortfolioCoverage) -> some View {
-        switch coverage.state {
-        case .unknown:
-            EmptyView()
-        case .complete:
-            Label("\(coverage.refreshed) of \(coverage.total) checked today", systemImage: "checkmark.circle")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        case .partial:
-            VStack(alignment: .leading, spacing: 2) {
-                Text("\(coverage.refreshed) of \(coverage.total) checked today")
-                    .font(.subheadline.weight(.semibold))
-                Text("\(coverage.carriedForward) still show an earlier price.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+}
+
+private struct PortfolioExcludedCopiesDisclosure: View {
+    let summary: PortfolioSummary
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            if summary.unpricedCount > 0 {
+                Text("\(summary.unpricedCount) \(summary.unpricedCount == 1 ? "copy is" : "copies are") unpriced, not included in the total.")
+            }
+            if summary.otherCurrencyCount > 0 {
+                Text("\(summary.otherCurrencyCount) \(summary.otherCurrencyCount == 1 ? "copy is" : "copies are") priced in another currency, not included in the total.")
             }
         }
+        .font(.caption)
+        .foregroundStyle(.secondary)
     }
-
 }
 
 private struct PortfolioMoversInfoPopover: View {
@@ -1003,8 +1031,7 @@ private enum PortfolioContributionPresentation {
     }
 
     static func signed(_ amount: Money) -> String {
-        let sign = amount.tenThousandths < 0 ? "−" : "+"
-        return sign + amount.magnitude.formatted()
+        PortfolioHistoryDisplay.signedCurrency(amount)
     }
 
     static func color(_ amount: Money) -> Color { PortfolioPalette.direction(amount) }
@@ -1497,20 +1524,38 @@ private struct PortfolioOwnedCardDestination: View {
 }
 
 private struct PortfolioDetailsView: View {
-    let summary: PortfolioSummary
+    @ObservedObject var portfolio: PortfolioEngine
+    @ObservedObject var history: PortfolioHistoryStore
+    let fallbackSummary: PortfolioSummary
     @ObservedObject var refresh: PriceRefreshController
-    let historyResult: PortfolioHistoryResult?
+    let snapshotHistoryResult: PortfolioHistoryResult?
+
+    private var summary: PortfolioSummary { portfolio.summary ?? fallbackSummary }
+    private var historyResult: PortfolioHistoryResult? { snapshotHistoryResult ?? history.activeResult }
 
     var body: some View {
         List {
             Section("Pricing coverage") {
                 LabeledContent("Checked today", value: "\(summary.coverage.refreshed) of \(summary.coverage.total)")
                 if summary.coverage.carriedForward > 0 {
-                    Text("\(summary.coverage.carriedForward) copies still show an earlier price.")
+                    Text("\(summary.coverage.carriedForward) prices are carried forward from an earlier check.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
                 refreshStatus
+                PortfolioExcludedCopiesDisclosure(summary: summary)
+            }
+
+            if !summary.defects.isEmpty {
+                Section("Data issues") {
+                    ForEach(summary.defects) { defect in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(defect.reason.title).font(.subheadline.weight(.semibold))
+                            Text(defect.detail).font(.footnote).foregroundStyle(.secondary)
+                        }
+                        .textSelection(.enabled)
+                    }
+                }
             }
 
             Section("Portfolio") {
@@ -1614,8 +1659,7 @@ private struct PortfolioDetailsView: View {
     }
 
     private func signed(_ amount: Money) -> String {
-        let prefix = amount.tenThousandths > 0 ? "+" : amount.tenThousandths < 0 ? "−" : ""
-        return prefix + amount.magnitude.formatted()
+        PortfolioHistoryDisplay.signedCurrency(amount)
     }
 
     @ViewBuilder
@@ -1723,7 +1767,8 @@ private struct PortfolioAttentionBadge: ViewModifier {
         }
         if needsAttentionFromPortfolio { return true }
         if case let .finished(result) = refresh.status {
-            return result.targetBuildFailed
+            return result.wasCancelled
+                || result.targetBuildFailed
                 || result.providerUnreachable
                 || result.failed > 0
                 || result.persistenceFailed

@@ -1025,6 +1025,21 @@ struct CatalogSetCompletionIndex: Equatable, Sendable {
     }
 }
 
+enum CatalogSetCompletionPresentation {
+    static func progress(
+        for set: CatalogSet,
+        slots: [CatalogCardSummary],
+        isFullyLoaded: Bool,
+        ownership: CatalogOwnershipIndex,
+        completions: CatalogSetCompletionIndex?,
+        tier: PokemonMasterSetTier
+    ) -> SetCompletion {
+        if set.game == .pokemon, isFullyLoaded { return ownership.progress(for: slots) }
+        return completions?.completion(for: set, tier: tier)
+            ?? (set.game == .pokemon ? ownership.progress(for: slots) : ownership.progress(for: set))
+    }
+}
+
 /// Sorting options for the catalog's set directory. These are deliberately
 /// separate from `CatalogSetSort`, which sorts cards inside one set.
 enum CatalogSetListSort: String, CaseIterable, Identifiable, Sendable {
@@ -1062,142 +1077,9 @@ enum CatalogSetListFilter: String, CaseIterable, Identifiable, Sendable {
     }
 }
 
-/// Set-list completion counts distinct numbered cards because the provider's
-/// set total is a card count. The loaded set screen uses the separate slot
-/// overload below, where both numerator and denominator are variations.
+/// Shared normalization for printed collector numbers. Ownership and progress
+/// matching live in CatalogOwnershipIndex.
 enum SetCompletionCalculator {
-    static func progress(for set: CatalogSet, cards: [CollectedCard]) -> SetCompletion {
-        if let ids = set.physicalPrintingIDs {
-            let owned = Set(cards.filter {
-                $0.cardGame == set.game && $0.quantity > 0 && $0.itemKind.countsTowardSetCompletion
-            }.flatMap { [$0.providerID.lowercased(), $0.catalogProviderID?.lowercased()].compactMap { $0 } })
-            return .init(owned: ids.intersection(owned).count, total: ids.count, unit: "printings")
-        }
-        let numbers = Set(cards.compactMap { card -> String? in
-            guard belongs(card, to: set) else { return nil }
-            return canonicalNumber(card.cardNumber)
-        })
-        return SetCompletion(
-            owned: numbers.count,
-            total: set.cardCount,
-            unit: "cards"
-        )
-    }
-
-    static func owns(_ summary: CatalogCardSummary, cards: [CollectedCard]) -> Bool {
-        guard let targetNumber = canonicalNumber(summary.collectorNumber) else { return false }
-        let targetProviderID = summary.providerID.lowercased()
-        let requiredTreatmentIDs = Set(
-            MagicTreatmentKeyCodec.canonicalIDs(from: summary.magicTreatmentIDsRaw)
-        )
-        return cards.contains { card in
-            guard card.itemKind.countsTowardSetCompletion else { return false }
-            guard !PokemonStampedReleaseCatalog.isStamped(variantID: card.variantID) else {
-                return false
-            }
-            guard card.cardGame == summary.game, card.quantity > 0 else { return false }
-            guard pokemonPrintRunMatches(card, required: summary.pokemonPrintRun) else {
-                return false
-            }
-            let identityMatches: Bool
-            if card.providerID.lowercased() == targetProviderID
-                || card.catalogProviderID?.lowercased() == targetProviderID {
-                identityMatches = true
-            } else {
-                guard summary.catalogGeneration == nil else { return false }
-                guard canonicalNumber(card.cardNumber) == targetNumber else { return false }
-                let cardCode = normalized(card.setCode)
-                identityMatches = cardCode == normalized(summary.setCode)
-                    || normalized(card.setName) == normalized(summary.setName)
-            }
-            guard identityMatches else { return false }
-            guard treatmentIDs(for: card) == requiredTreatmentIDs
-                || requiredTreatmentIDs.isEmpty else {
-                return false
-            }
-            guard let required = summary.masterSetVariant else { return true }
-            if card.variantID == nil && summary.isSoleSlotForCard { return true }
-            return masterVariantID(card.variantID) == masterVariantID(required.id)
-        }
-    }
-
-    static func progress(
-        for slots: [CatalogCardSummary],
-        cards: [CollectedCard]
-    ) -> SetCompletion {
-        SetCompletion(
-            owned: slots.reduce(0) { $0 + (owns($1, cards: cards) ? 1 : 0) },
-            total: slots.count,
-            unit: "variations"
-        )
-    }
-
-    private static func treatmentIDs(for card: CollectedCard) -> Set<String> {
-        let rawIDs: [String]
-        switch card.itemKind {
-        case .rawCard:
-            rawIDs = card.magicTreatmentIDs(for: card.variant)
-        case .gradedCard, .sealedProduct:
-            rawIDs = card.magicTreatmentIDsRaw
-        }
-        return Set(MagicTreatmentKeyCodec.canonicalIDs(from: rawIDs))
-    }
-
-    private static func belongs(_ card: CollectedCard, to set: CatalogSet) -> Bool {
-        // A sealed product is not a card and completes no slot. Graded copies do
-        // count, and because progress is measured over a *set* of collector
-        // numbers, a raw and a graded copy of the same card count once between
-        // them — owning three grades of one card cannot inflate completion.
-        guard card.itemKind.countsTowardSetCompletion else { return false }
-        guard !PokemonStampedReleaseCatalog.isStamped(variantID: card.variantID) else {
-            return false
-        }
-        guard card.cardGame == set.game else { return false }
-        guard pokemonPrintRunMatches(card, required: set.pokemonPrintRun) else { return false }
-
-        let normalizedCardCode = normalized(card.setCode)
-        let normalizedSetCode = normalized(set.code)
-        if normalizedCardCode == normalizedSetCode { return true }
-
-        guard set.game == .pokemon else { return false }
-        let providerID = card.catalogProviderID ?? card.providerID
-        return providerID.lowercased().hasPrefix(set.providerID.lowercased() + "-")
-    }
-
-    private static func pokemonPrintRunMatches(
-        _ card: CollectedCard,
-        required: PokemonPrintRun?
-    ) -> Bool {
-        guard card.cardGame == .pokemon else { return true }
-        switch required {
-        case .firstEdition:
-            return card.pokemonPrintRun == .firstEdition
-        case .shadowless:
-            return card.pokemonPrintRun == .shadowless
-        case .unlimited:
-            // Rows written before print-run persistence were Unlimited unless
-            // they used the legacy first-edition pseudo-finish.
-            return card.pokemonPrintRun == .unlimited || card.pokemonPrintRun == nil
-        case nil:
-            return card.pokemonPrintRun == nil
-        }
-    }
-
-    private static func masterVariantID(_ variantID: String?) -> String {
-        switch variantID {
-        case PhysicalVariant.reverse.id: return PhysicalVariant.reverse.id
-        case PhysicalVariant.pokeBall.id: return PhysicalVariant.pokeBall.id
-        case PhysicalVariant.masterBall.id: return PhysicalVariant.masterBall.id
-        case PhysicalVariant.duskBall.id: return PhysicalVariant.duskBall.id
-        case PhysicalVariant.friendBall.id: return PhysicalVariant.friendBall.id
-        case PhysicalVariant.quickBall.id: return PhysicalVariant.quickBall.id
-        case PhysicalVariant.loveBall.id: return PhysicalVariant.loveBall.id
-        case PhysicalVariant.normal.id, PhysicalVariant.firstEdition.id, nil:
-            return PhysicalVariant.normal.id
-        case let value?: return value
-        }
-    }
-
     static func canonicalNumber(_ value: String) -> String? {
         let printed = value.split(separator: "/", maxSplits: 1).first.map(String.init) ?? value
         let trimmed = printed.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -1219,23 +1101,10 @@ enum SetCompletionCalculator {
 
         return Int(trimmed).map(String.init) ?? trimmed.lowercased()
     }
-
-    private static func normalized(_ value: String) -> String {
-        value.folding(
-            options: [.caseInsensitive, .diacriticInsensitive],
-            locale: Locale(identifier: "en_US_POSIX")
-        )
-    }
 }
 
-/// Ownership answers for a page of catalog slots, prepared once.
-///
-/// `SetCompletionCalculator.owns` scans the whole collection and case-folds
-/// strings on every comparison. A browse grid asks it twice per visible card —
-/// once for the check badge, once for the owned quantity — so on a large
-/// collection the same scan runs over and over while the user scrolls. Bucketing
-/// the collection by collector number and provider ID first narrows each answer
-/// to a handful of candidates without changing what counts as a match.
+/// Ownership snapshots bucket collection rows by collector number and provider
+/// ID, narrowing each catalog-slot answer to a handful of candidates.
 struct CatalogOwnershipCardSnapshot: Equatable, Sendable, Identifiable {
     let collectionKey: String
     let game: CardGame
@@ -1338,37 +1207,8 @@ struct CatalogOwnershipIndex: Equatable, Sendable {
     }
 
     func owns(_ summary: CatalogCardSummary) -> Bool {
-        guard let targetNumber = SetCompletionCalculator.canonicalNumber(summary.collectorNumber)
-        else { return false }
-        let targetProviderID = summary.providerID.lowercased()
-        let requiredTreatmentIDs = Set(
-            MagicTreatmentKeyCodec.canonicalIDs(from: summary.magicTreatmentIDsRaw)
-        )
-        return candidates(for: summary).contains { card in
-            guard card.itemKind.countsTowardSetCompletion,
-                  !PokemonStampedReleaseCatalog.isStamped(variantID: card.variantID),
-                  card.game == summary.game,
-                  card.quantity > 0,
-                  Self.pokemonPrintRunMatches(card, required: summary.pokemonPrintRun)
-            else { return false }
-
-            let identityMatches: Bool
-            if card.providerID.lowercased() == targetProviderID
-                || card.catalogProviderID?.lowercased() == targetProviderID {
-                identityMatches = true
-            } else {
-                guard SetCompletionCalculator.canonicalNumber(card.cardNumber) == targetNumber
-                else { return false }
-                identityMatches = Self.normalized(card.setCode) == Self.normalized(summary.setCode)
-                    || Self.normalized(card.setName) == Self.normalized(summary.setName)
-            }
-            guard identityMatches else { return false }
-            guard Self.treatmentIDs(for: card) == requiredTreatmentIDs
-                || requiredTreatmentIDs.isEmpty else { return false }
-            guard let required = summary.masterSetVariant else { return true }
-            if card.variantID == nil && summary.isSoleSlotForCard { return true }
-            return Self.masterVariantID(card.variantID) == Self.masterVariantID(required.id)
-        }
+        guard SetCompletionCalculator.canonicalNumber(summary.collectorNumber) != nil else { return false }
+        return candidates(for: summary).contains { Self.matches($0, summary: summary) }
     }
 
     func quantity(of summary: CatalogCardSummary) -> Int {

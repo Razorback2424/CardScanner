@@ -1,3 +1,4 @@
+import Combine
 import XCTest
 import SwiftData
 @testable import TradingCardScanner
@@ -3100,6 +3101,7 @@ final class PortfolioReconciliationTests: XCTestCase {
         let engine = PortfolioEngine()
         await engine.recomputeAndWait(context: context, now: now)
         XCTAssertEqual(engine.summary?.currentValue, money(10))
+        let replayValue = engine.replaySummary?.currentValue
 
         engine.applyPriceDeltas([
             PriceDelta(
@@ -3117,6 +3119,8 @@ final class PortfolioReconciliationTests: XCTestCase {
             )
         ])
         XCTAssertEqual(engine.summary?.currentValue, money(30))
+        XCTAssertEqual(engine.replaySummary?.currentValue, replayValue,
+                       "History must keep the value that matches the replay attribution")
         XCTAssertEqual(engine.holdings.first?.unitPrice, money(30))
 
         engine.applyPriceDeltas([
@@ -3127,6 +3131,99 @@ final class PortfolioReconciliationTests: XCTestCase {
         ])
         XCTAssertEqual(engine.summary?.currentValue, .zero)
         XCTAssertNil(engine.holdings.first?.unitPrice)
+    }
+
+    func testHistoryRangeRecalculatesSynchronouslyAndKeepsReplayAccountingDuringDeltas() async throws {
+        let context = try makeContext()
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        let epoch = now.addingTimeInterval(-3 * 86_400)
+        let defaults = UserDefaults.standard
+        let previousEpoch = defaults.object(forKey: PortfolioEpoch.defaultsKey)
+        let previousRange = defaults.object(forKey: "portfolioHistoryRange")
+        defaults.set(epoch.timeIntervalSince1970, forKey: PortfolioEpoch.defaultsKey)
+        defer {
+            defaults.set(previousEpoch, forKey: PortfolioEpoch.defaultsKey)
+            defaults.set(previousRange, forKey: "portfolioHistoryRange")
+        }
+        let owned = card(key: "history-delta", dateAdded: epoch)
+        context.insert(owned)
+        let operationID = UUID()
+        let record = PriceRecord(key: owned.priceKey, game: .pokemon,
+                                 printingID: owned.providerID, variantID: owned.variantID)
+        record.apply(NormalizedPrice(unitMarketPriceUSD: 10, currencyCode: "USD", source: .tcgplayer,
+                                     sourceVariantID: "normal", sourceUpdatedAt: epoch, fetchedAt: epoch))
+        context.insert(record)
+        context.insert(InventoryEvent(operationID: operationID, leg: nil, kind: .initialBalance, source: .catalog,
+                                      collectionKey: owned.collectionKey, priceStorageKey: owned.priceKey,
+                                      deltaQuantity: 1, occurredAt: epoch, valuation: .unpriced))
+        context.insert(CollectionActivity(card: owned, source: .catalog, quantity: 1,
+                                          occurredAt: epoch, ledgerOperationIDs: [operationID]))
+        try context.save()
+        let engine = PortfolioEngine()
+        await engine.recomputeAndWait(context: context, now: now)
+        engine.applyPriceDeltas([PriceDelta(key: owned.priceKey, display: PriceDisplay(amount: 25, currencyCode: "USD"))])
+        let history = PortfolioHistoryStore()
+        history.range = .oneMonth
+        history.recompute(context: context, summary: engine.replaySummary, factors: engine.performanceFactors,
+                          contributions: engine.contributionIndex, now: now)
+        XCTAssertFalse(try XCTUnwrap(history.activeResult).isEmpty)
+        for range in PortfolioHistoryRange.allCases {
+            history.range = range
+            let result = try XCTUnwrap(history.activeResult)
+            XCTAssertEqual(result.range, range)
+            XCTAssertEqual(result.accounting?.unexplained, .zero)
+        }
+        XCTAssertEqual(engine.summary?.currentValue, money(25))
+        history.recompute(context: context, summary: nil, factors: engine.performanceFactors,
+                          contributions: engine.contributionIndex, now: now)
+        history.range = .all
+        XCTAssertNil(history.activeResult, "Cleared inputs must not resurrect stale history")
+    }
+
+    func testHoldingsPublishBeforeEpochAndNoOpDeltasDoNotRepublish() async throws {
+        let context = try makeContext()
+        let now = Date(timeIntervalSince1970: 2_000_000_000)
+        let defaults = UserDefaults.standard
+        let previousEpoch = defaults.object(forKey: PortfolioEpoch.defaultsKey)
+        defaults.removeObject(forKey: PortfolioEpoch.defaultsKey)
+        defer { defaults.set(previousEpoch, forKey: PortfolioEpoch.defaultsKey) }
+        let owned = card(key: "no-epoch", dateAdded: now)
+        context.insert(owned)
+        try context.save()
+        let engine = PortfolioEngine()
+        await engine.recomputeAndWait(context: context, now: now)
+        XCTAssertEqual(engine.holdings.first?.collectionKey, owned.collectionKey)
+        var publications = 0
+        let subscription = engine.$holdings.dropFirst().sink { _ in publications += 1 }
+        defer { subscription.cancel() }
+        engine.applyPriceDeltas([PriceDelta(key: "unowned", display: PriceDisplay(amount: 15, currencyCode: "USD"))])
+        engine.applyPriceDeltas([PriceDelta(key: owned.priceKey, display: PriceDisplay(amount: nil, currencyCode: "USD"))])
+        XCTAssertEqual(publications, 0)
+        engine.applyPriceDeltas([PriceDelta(key: owned.priceKey, display: PriceDisplay(amount: 15, currencyCode: "USD"))])
+        XCTAssertEqual(publications, 1)
+    }
+
+    func testOwnershipReplayCanBypassRefreshGateWhilePriceCheckpointsStayDeferred() async throws {
+        let context = try makeContext()
+        let gate = PortfolioComputationGate()
+        let engine = PortfolioEngine(computationProvider: { container, epoch, now, timeZone in
+            await gate.wait()
+            return await PortfolioComputationActor(modelContainer: container)
+                .compute(epoch: epoch, liveInstant: now, timeZoneIdentifier: timeZone)
+        })
+        engine.beginPriceRefresh()
+        engine.recompute(context: context)
+        XCTAssertFalse(engine.isRecomputing)
+        engine.recompute(context: context, bypassPriceRefreshGate: true)
+        await waitForComputationGate(gate, count: 1)
+        await gate.release()
+        await waitForRecomputeToFinish(engine)
+        XCTAssertEqual(engine.inputRevision, 1)
+        engine.endPriceRefresh(context: context, requiresReplay: false)
+        await waitForComputationGate(gate, count: 1)
+        await gate.release()
+        await waitForRecomputeToFinish(engine)
+        XCTAssertEqual(engine.inputRevision, 2, "The deferred checkpoint still receives its terminal replay")
     }
 
     func testFastAndAuthoritativeValuationAgreeAcrossCurrencyAndInvalidationTransitions() async throws {

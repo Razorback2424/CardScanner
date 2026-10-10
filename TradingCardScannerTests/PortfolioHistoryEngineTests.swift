@@ -154,7 +154,7 @@ final class PortfolioHistoryEngineTests: XCTestCase {
             ),
             range: .all
         )
-        let point = try XCTUnwrap(result.points.last)
+        let point = try XCTUnwrap(result.points.last(where: { !$0.isLive }))
         let plottedMarketValue = try XCTUnwrap(result.accounting).anchorValue
             + point.cumulativeMarketMovement
         XCTAssertNotEqual(point.value, plottedMarketValue)
@@ -187,6 +187,22 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         selection.select(pointID: pointID)
         selection.rangeChanged()
         XCTAssertNil(selection.selectedPoint(in: result))
+    }
+
+    func testScrubbingTodayUsesTheLatestLiveValueAndAccessibilityLabel() throws {
+        let result = PortfolioHistoryEngine.calculate(
+            input: input(closes: [close(1, value: 100)], currentValue: 100, now: date(2, hour: 12)),
+            range: .all
+        )
+        let point = try XCTUnwrap(result.points.last)
+        XCTAssertTrue(point.isLive)
+        var selection = PortfolioHistoryScrubSelection()
+        selection.select(pointID: point.id)
+        XCTAssertEqual(selection.headlineValue(in: result, currentValue: money(125)), money(125))
+        XCTAssertEqual(
+            PortfolioHeadlineAccessibility.label(selectedPoint: point, currentValue: money(125), isRecomputing: false),
+            "Collection value, \(money(125).formatted())"
+        )
     }
 
     func testScrubSelectionResolvesPointAgainAfterHistoryRefresh() throws {

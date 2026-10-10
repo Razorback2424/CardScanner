@@ -1658,7 +1658,6 @@ final class ScannerViewModel: ObservableObject {
     /// has published its summary and cleared its projections.
     private struct PendingSessionStart {
         let container: ModelContainer
-        let isSceneActive: Bool
         let startCamera: Bool
         let shouldRefreshMagicDirectory: Bool
         let summaryStore: ScanSessionSummaryStore?
@@ -1897,14 +1896,13 @@ final class ScannerViewModel: ObservableObject {
         if let catalogCoordinator {
             let scanner = self.scanner
             let catalog = self.catalog
-            pokemonCatalogTask = Task { @MainActor in
+            pokemonCatalogTask = Task { @MainActor [weak self] in
                 // Register before loading so an activation racing the initial
                 // read cannot be lost between the bundled seed and the
                 // persisted/current release.
                 let events = await catalogCoordinator.activationEvents()
                 await catalogCoordinator.loadPersistedOrBundled()
                 let initialRegistry = await catalogCoordinator.registry
-                self.currentPokemonRegistry = initialRegistry
                 let checklistEntries = await PokemonChecklistStore.shared.mergedEntries()
                 let knownOfficialCounts = { (registry: PokemonCatalogRegistry) in
                     var counts = registry.descriptors.reduce(into: [String: Int]()) {
@@ -1922,16 +1920,20 @@ final class ScannerViewModel: ObservableObject {
                     return counts
                 }
                 let initialOfficialCounts = knownOfficialCounts(initialRegistry)
-                self.currentPokemonOfficialCounts = initialOfficialCounts
-                scanner.usePokemonRegistry(
-                    initialRegistry,
-                    knownOfficialCounts: initialOfficialCounts
-                )
-                await catalog.updateRegistry(initialRegistry)
-                await self.reloadUnresolvedScans(registry: initialRegistry)
+                do {
+                    guard let self, !Task.isCancelled else { return }
+                    self.currentPokemonRegistry = initialRegistry
+                    self.currentPokemonOfficialCounts = initialOfficialCounts
+                    scanner.usePokemonRegistry(
+                        initialRegistry,
+                        knownOfficialCounts: initialOfficialCounts
+                    )
+                    await catalog.updateRegistry(initialRegistry)
+                    await self.reloadUnresolvedScans(registry: initialRegistry)
+                }
 
                 for await event in events {
-                    guard !Task.isCancelled else { return }
+                    guard let self, !Task.isCancelled else { return }
                     self.currentPokemonRegistry = event.registry
                     let officialCounts = knownOfficialCounts(event.registry)
                     self.currentPokemonOfficialCounts = officialCounts
@@ -1946,19 +1948,22 @@ final class ScannerViewModel: ObservableObject {
         }
 
         if let magicCatalogCoordinator {
-            magicCatalogTask = Task { @MainActor in
+            magicCatalogTask = Task { @MainActor [weak self] in
                 let events = await magicCatalogCoordinator.activationEvents()
                 await magicCatalogCoordinator.loadPersistedOrBundled()
                 let mode = await magicCatalogCoordinator.currentRolloutMode
                 let initialRegistry = await magicCatalogCoordinator.registry
-                if mode == .remoteAuthority {
-                    self.magicSetDefinitions = initialRegistry.scannerDefinitions
-                    self.installMagicDefinitions(initialRegistry.scannerDefinitions)
+                do {
+                    guard let self, !Task.isCancelled else { return }
+                    if mode == .remoteAuthority {
+                        self.magicSetDefinitions = initialRegistry.scannerDefinitions
+                        self.installMagicDefinitions(initialRegistry.scannerDefinitions)
+                    }
+                    await self.reloadUnresolvedScans(registry: self.currentPokemonRegistry)
                 }
-                await self.reloadUnresolvedScans(registry: self.currentPokemonRegistry)
 
                 for await event in events {
-                    guard !Task.isCancelled else { return }
+                    guard let self, !Task.isCancelled else { return }
                     guard event.scannerProjectionChanged else { continue }
                     self.magicSetDefinitions = event.registry.scannerDefinitions
                     self.installMagicDefinitions(event.registry.scannerDefinitions)
@@ -2041,7 +2046,6 @@ final class ScannerViewModel: ObservableObject {
             // append into the new session's arrays.
             pendingSessionStart = PendingSessionStart(
                 container: context.container,
-                isSceneActive: isSceneActive,
                 startCamera: startCamera,
                 shouldRefreshMagicDirectory: shouldRefreshMagicDirectory,
                 summaryStore: summaryStore,
@@ -2160,15 +2164,8 @@ final class ScannerViewModel: ObservableObject {
         sessionFinalizationTask = Task { @MainActor [weak self] in
             guard let self else { return }
             let deadline = Date.now.addingTimeInterval(Self.sessionFinalizationDrainTimeout)
-            // Cancellation is the invalidation fence. Do not await an
-            // uncooperative identification task before starting the bounded
-            // drain, because a hung provider would otherwise keep the next
-            // scanner appearance blocked forever.
-            while self.identificationTask != nil,
-                  !Task.isCancelled,
-                  Date.now < deadline {
-                try? await Task.sleep(for: .milliseconds(10))
-            }
+            // Identification was cancelled and fenced by invalidation above.
+            // Only writes already handed to the writer need a bounded drain.
             while self.pendingWriteCounts[finalizingSessionID, default: 0] > 0,
                   !Task.isCancelled,
                   Date.now < deadline {
@@ -2202,7 +2199,7 @@ final class ScannerViewModel: ObservableObject {
                   self.recognitionEligibility.isScannerVisible else { return }
             self.start(
                 context: ModelContext(pendingStart.container),
-                isSceneActive: pendingStart.isSceneActive,
+                isSceneActive: self.recognitionEligibility.isSceneActive,
                 startCamera: pendingStart.startCamera,
                 shouldRefreshMagicDirectory: pendingStart.shouldRefreshMagicDirectory,
                 summaryStore: pendingStart.summaryStore,
@@ -3821,6 +3818,14 @@ final class ScannerViewModel: ObservableObject {
 #if DEBUG
     func transientRetryCountForTesting(for key: ScanSuppressionKey) -> Int {
         transientRetryCounts[key, default: 0]
+    }
+
+    func deliverFallbackQuoteForTesting(_ quote: PriceLookup, requestedScan: RecentScan) {
+        applyFallbackQuote(
+            quote,
+            priceKey: fallbackPriceKey(for: requestedScan),
+            scanIDsBySession: [scannerSessionID: [requestedScan.id]]
+        )
     }
 
     var unresolvedCandidatesWritebackHookForTesting: (() -> Void)?
@@ -5521,6 +5526,7 @@ final class ScannerViewModel: ObservableObject {
         for index in sessionScans.indices {
             let scan = sessionScans[index]
             guard scanIDs.contains(scan.id),
+                  scan.subject.slab == nil,
                   fallbackPriceKey(for: scan) == priceKey else { continue }
 
             let replacement = scan.updating(price: quote)
