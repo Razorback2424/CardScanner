@@ -464,6 +464,14 @@ activation is claimed.
 
 ## Lorcana research import — 2026-10-03
 
+**2026-10-12 implementation checkpoint:** the current plan now records bounded
+Lorcast card/set ingestion and retained source metadata, with 60 focused simulator
+tests passing at base `b1959c6` plus changes on `feat/lorcana-implementation`.
+The [source inventory](../research/lorcana-source-corpus.md) separates provider
+observations from reviewed physical footer/finish/size/stamp evidence. The older
+worktree and 44-test description below is historical; no production, ownership,
+pricing, exact-printing or whole-corpus acceptance is inferred from either run.
+
 **2026-10-04 recalibration:** the [Lorcana implementation plan](lorcana_code_implementation.md)
 is now the execution authority for the existing uncommitted `one-piece-integration`
 worktree at base `69c714f`. Shared runtime/recognition/catalog/recovery boundaries

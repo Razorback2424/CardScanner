@@ -1,3 +1,23 @@
+- Lorcana Slice 2 provider ingestion (2026-10-12; `feat/lorcana-implementation`
+  at base `b1959c6` plus local changes): created the requested implementation
+  branch while preserving existing Browse/Collection edits. Rechecked Lorcast's
+  API and added bounded offline card/set normalization, mandatory all-print
+  requests, receipt/body provenance, continuation/envelope rejection and
+  fail-closed malformed/duplicate/conflicting metadata checks. Retained four
+  public JSON responses containing 31 card rows and 26 provider sets, with no
+  image downloads or inferred physical UUID/footer/finish/market authority.
+  App/test target build and 60/60 selected simulator cases pass (12 new ingestion,
+  13 Lorcana integration, 31 forward compatibility, four suppression; no skips
+  or failures). External SSD results use `CodexBuilds/LorcanaImplementation-20261012/`.
+  XcodeBuildMCP's post-run parser hit internal disk exhaustion; direct result
+  inspection confirmed the completed passing bundle, which also records one
+  internal QoS warning. Capture syntax, receipt digests, project syntax, links
+  and whitespace checks pass. See the [implementation plan](docs/plans/lorcana_code_implementation.md)
+  and [source inventory](docs/research/lorcana-source-corpus.md). Physical records,
+  finish evidence, rights, camera/device, activation, ownership, pricing, sync
+  and release acceptance remain open; production stays disabled. No commit or
+  push was made.
+
 - Portfolio validation and remediation (2026-10-09; `3c28b30` plus local changes):
   validated the ten supplied findings and fixed ownership refresh staleness,
   synchronous history ranges, replay-consistent accounting, pre-epoch holdings,

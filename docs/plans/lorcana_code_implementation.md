@@ -1,7 +1,10 @@
 # Lorcana implementation plan
 
-**Status:** first research slice implemented; remaining plan reconciled with the
-current shared game adapters — 2026-10-05. Production Lorcana support is disabled.
+**Status:** Slice 1 implemented; Slice 2 bounded provider ingestion implemented,
+with 60 focused simulator tests passing — 2026-10-12. Production Lorcana support is disabled.
+Current work is on `feat/lorcana-implementation` at base `b1959c6` plus local
+changes. See the [retained source checkpoint](../research/lorcana-source-corpus.md)
+for provider-contract review, captured metadata and the open physical inventory.
 **Source review:** integration at `6b64abe` and subsequent review work through
 `55dc1e4` on `merge/one-piece-integration`. The remaining-audit cleanup removes
 the accidentally tracked `undefined/` adapter copies and corrects the extracted
@@ -154,11 +157,17 @@ close. A local test capability is not authorization to enable production.
 
 ### Slice 2: reviewed source corpus and exact physical resolution
 
-- [ ] Recheck provider contracts when implementation starts. Add bounded Lorcast
+- [x] Recheck provider contracts when implementation starts. Add bounded Lorcast
   DTO/normalization using all-print results, pagination/continuation detection and
   retained response provenance. Keep provider set codes separate from reviewed
   printed footer mappings. Reuse capture/replay mechanics where appropriate;
   One Piece's Bandai/Limitless parsers and package rules are not Lorcana contracts.
+  The 2026-10-12 implementation adds offline card/set DTO normalization and a
+  bounded capture tool with raw-body receipts, all-print queries and fail-closed
+  continuation/envelope detection. Four retained responses contain 31 card rows
+  and 26 provider set rows; 60 focused simulator tests pass, including 12 new
+  ingestion cases. Provider ingestion
+  does not promote these observations into verified physical records.
 - [ ] Establish a small permitted real corpus: ordinary normal/foil pair, premium
   numerator, cross-set reprint, promo/stamp ambiguity, landscape Location,
   same-footer standard/oversized ambiguity and Quest/special-layout records.
@@ -290,6 +299,33 @@ Keep full-suite regression separate from targeted checkpoints. Use an external
 SSD for future build artifacts when available; this plan update runs no build.
 
 ## Verification evidence and limits
+
+### Bounded provider-ingestion checkpoint — 2026-10-12
+
+On `feat/lorcana-implementation` at base `b1959c6` plus local changes, rechecked
+Lorcast's API contract and captured four public metadata responses with exact
+bytes and receipt digests. Added offline all-print card/set normalization,
+continuation/envelope rejection, response/request bounds, literal collector
+strings and duplicate/conflicting provider-identity validation. These
+observations do not become physical records or confer footer/finish authority.
+The [source checkpoint](../research/lorcana-source-corpus.md) retains the inventory.
+
+The app/test target builds and all 60 selected simulator cases pass, with no
+skips or failures: 12 `LorcastSourceNormalizerTests`, 13 `LorcanaIntegrationTests`,
+31 `CardGameForwardCompatibilityTests` and four `ScanSubjectSuppressionTests`.
+Used `TradingCardScanner-ProfileLocal` / `DebugRemoteLocal` on the isolated iOS
+26.5 review simulator, with derived data and `source-checkpoint.xcresult` under
+the external SSD's `CodexBuilds/LorcanaImplementation-20261012/` directory.
+XcodeBuildMCP's post-run report parser could not write its internal log because
+the internal disk was full; direct `xcresulttool` inspection confirmed the saved
+bundle's `Passed` result and 60/60 counts. Its summary also records one internal
+QoS warning; this is not a device performance checkpoint.
+
+Capture-tool syntax, four receipt/body digests, documentation links, project
+syntax and whitespace checks pass. Existing Browse/Collection edits are
+preserved. No commit/push, production registration, new physical UUIDs, finish
+policy, ownership, pricing or signed activation was added. Real footer/finish,
+rights/publication, camera, device, CloudKit and release gates remain open.
 
 ### Current documentation/source review — 2026-10-05
 

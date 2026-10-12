@@ -1,0 +1,9 @@
+{
+  "bodySHA256": "c5b300de942680f7c66f04645435c022b101214928580c53965d2ea72f301193",
+  "contentType": "application/json",
+  "paginationHeaders": {},
+  "receivedAt": "2026-10-12T23:03:32Z",
+  "requestedURL": "https://api.lorcast.com/v0/cards/search?q=elsa+set%3A1&unique=prints",
+  "responseURL": "https://api.lorcast.com/v0/cards/search?q=elsa+set%3A1&unique=prints",
+  "statusCode": 200
+}

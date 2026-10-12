@@ -96,6 +96,9 @@
 		F30A00000000000000000002 /* LorcanaRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000002; };
 		F30A00000000000000000003 /* LorcanaGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000003; };
 		F30A00000000000000000004 /* LorcanaIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000004; };
+		F30A00000000000000000005 /* LorcastSourceNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000005; };
+		F30A00000000000000000006 /* LorcastSourceNormalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000006; };
+		F30A00000000000000000007 /* Lorcana source fixtures in Resources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000007; };
 		F11A00000000000000000002 /* PokemonRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11B00000000000000000002; };
 		F11A00000000000000000003 /* MagicRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11B00000000000000000003; };
 		F12A00000000000000000001 /* GameVariantPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12B00000000000000000001; };
@@ -414,6 +417,9 @@
 		F30B00000000000000000002 /* LorcanaRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaRecognitionAdapter.swift; sourceTree = "<group>"; };
 		F30B00000000000000000003 /* LorcanaGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaGameRuntime.swift; sourceTree = "<group>"; };
 		F30B00000000000000000004 /* LorcanaIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaIntegrationTests.swift; sourceTree = "<group>"; };
+		F30B00000000000000000005 /* LorcastSourceNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcastSourceNormalizer.swift; sourceTree = "<group>"; };
+		F30B00000000000000000006 /* LorcastSourceNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcastSourceNormalizerTests.swift; sourceTree = "<group>"; };
+		F30B00000000000000000007 /* Lorcana source fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures/Lorcana; sourceTree = "<group>"; };
 		F11B00000000000000000002 /* PokemonRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonRecognitionAdapter.swift; sourceTree = "<group>"; };
 		F11B00000000000000000003 /* MagicRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicRecognitionAdapter.swift; sourceTree = "<group>"; };
 		F12B00000000000000000001 /* GameVariantPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GameVariantPolicy.swift; sourceTree = "<group>"; };
@@ -713,6 +719,7 @@
 				F30B00000000000000000001,
 				F30B00000000000000000002,
 				F30B00000000000000000003,
+				F30B00000000000000000005,
 				F11B00000000000000000001, F11B00000000000000000002, F11B00000000000000000003,
 				F12B00000000000000000001, F12B00000000000000000002, F12B00000000000000000003,
                 F16B00000000000000000001,
@@ -972,6 +979,8 @@
 				F18B00000000000000000004,
 				F17B00000000000000000006,
 				F30B00000000000000000004,
+				F30B00000000000000000006,
+				F30B00000000000000000007,
 				B0020020 /* CollectionQueryTests.swift */,
 				B0020060 /* PortfolioTrustPassTests.swift */,
 				BF0A0002 /* AppOpeningTests.swift */,
@@ -1175,6 +1184,7 @@
 			files = (
 				A00200E1 /* MagicTreatmentSnapshot in Resources */,
 				A0090304 /* TCGCSV30th.json in Resources */,
+				F30A00000000000000000007 /* Lorcana source fixtures in Resources */,
 				A00200E3 /* MagicTreatmentCatalog in Resources */,
 				A6F06E16B0A2C00200000001 /* TradingCards fixtures in Resources */,
 			);
@@ -1282,6 +1292,7 @@
 				F30A00000000000000000001,
 				F30A00000000000000000002,
 				F30A00000000000000000003,
+				F30A00000000000000000005,
 				F11A00000000000000000002 /* PokemonRecognitionAdapter.swift in Sources */,
 				F11A00000000000000000003 /* MagicRecognitionAdapter.swift in Sources */,
 				F12A00000000000000000001 /* GameVariantPolicy.swift in Sources */,
@@ -1427,6 +1438,7 @@
 				F18A00000000000000000004,
 				F17A00000000000000000006,
 				F30A00000000000000000004,
+				F30A00000000000000000006,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
 				A0020060 /* PortfolioTrustPassTests.swift in Sources */,
 				AF0A0002 /* AppOpeningTests.swift in Sources */,

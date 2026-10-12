@@ -192,7 +192,7 @@ struct CollectionView: View {
     /// lives here rather than in a closure destination so it survives the
     /// window shrinking to one column and widening back out — resizing must
     /// never throw away where the user was.
-    @State private var navigationPath: [Destination] = []
+    @State private var navigationPath = NavigationPath()
     /// A Collection-local guard prevents double taps without disabling a
     /// request that should join an already-running automatic controller pass.
     @State private var collectionRefreshRequestInFlight = false
@@ -204,7 +204,7 @@ struct CollectionView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    /// Both of the collection's destinations, so one hierarchy drives a push on a
+    /// The collection's destinations, so one hierarchy drives a push on a
     /// phone-sized window and a second column on an iPad-sized one. `card` carries
     /// the row id rather than the model object: a removed card's id simply stops
     /// resolving, which is how the detail column falls back to its placeholder.
@@ -346,7 +346,7 @@ struct CollectionView: View {
             guard opensMovementDetailsOnLaunch, navigationPath.isEmpty else { return }
             try? await Task.sleep(for: .milliseconds(300))
             guard let entry = snapshot.entries.first else { return }
-            navigationPath = [.card(entry.id), .movement(entry.id)]
+            navigationPath = NavigationPath([Destination.card(entry.id), .movement(entry.id)])
         }
         .task(id: opensCardDetailOnLaunch ? cardDetailLaunchTaskID : nil) {
             guard opensCardDetailOnLaunch, navigationPath.isEmpty else { return }
@@ -359,7 +359,7 @@ struct CollectionView: View {
             }
             guard let targetID,
                   snapshot.entries.contains(where: { $0.id == targetID }) else { return }
-            navigationPath = [.card(targetID)]
+            navigationPath = NavigationPath([Destination.card(targetID)])
         }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
@@ -480,7 +480,7 @@ struct CollectionView: View {
     /// appending keeps the column one level deep: picking a second card from the
     /// grid should show that card, not stack it behind the first.
     private func select(_ destination: Destination) {
-        navigationPath = [destination]
+        navigationPath = NavigationPath([destination])
     }
 
     @ViewBuilder

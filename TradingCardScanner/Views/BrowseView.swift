@@ -5,6 +5,17 @@ import SwiftData
 import SwiftUI
 import UIKit
 
+private struct CatalogSetNavigationKey: EnvironmentKey {
+    static let defaultValue: (CatalogSet) -> Void = { _ in }
+}
+
+private extension EnvironmentValues {
+    var openCatalogSet: (CatalogSet) -> Void {
+        get { self[CatalogSetNavigationKey.self] }
+        set { self[CatalogSetNavigationKey.self] = newValue }
+    }
+}
+
 @MainActor
 final class BrowseViewModel: ObservableObject {
     struct Lane {
@@ -433,6 +444,7 @@ struct BrowseView: View {
         .scrollDismissesKeyboard(.interactively)
         .navigationTitle("Catalog")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Settings", systemImage: "gearshape") {
@@ -455,6 +467,9 @@ struct BrowseView: View {
             await model.loadSets()
             await backfillPokemonReleaseOrder()
             requestSetCompletionRebuild()
+        }
+        .navigationDestination(for: CatalogSet.self) { set in
+            CatalogSetCardsView(set: set, catalog: model.catalog)
         }
         .task {
             await model.observeCatalogUpdates()
@@ -649,9 +664,7 @@ struct BrowseView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     LazyHStack(alignment: .top, spacing: 12) {
                         ForEach(releaseRail.sets) { set in
-                            NavigationLink {
-                                CatalogSetCardsView(set: set, catalog: model.catalog)
-                            } label: {
+                            NavigationLink(value: set) {
                                 CatalogSetTile(
                                     set: set,
                                     completion: setCompletionStore.index?.completion(
@@ -1718,6 +1731,7 @@ private struct CatalogSetListView: View {
     let sets: [CatalogSet]
     let catalog: any BrowseCatalogProviding
     @State private var search = ""
+    @State private var selectedSet: CatalogSet?
     @State private var sort: CatalogSetListSort = .newestFirst
     @State private var filter: CatalogSetListFilter = .all
     @AppStorage("pokemonMasterSetTier") private var masterSetTier: PokemonMasterSetTier = .standard
@@ -1805,6 +1819,10 @@ private struct CatalogSetListView: View {
         .safeAreaPadding(.bottom, 24)
         .navigationTitle("\(game.label) Sets")
         .searchable(text: $search, prompt: "Search sets")
+        .navigationDestination(item: $selectedSet) { set in
+            CatalogSetCardsView(set: set, catalog: catalog)
+        }
+        .environment(\.openCatalogSet) { selectedSet = $0 }
     }
 
     private var setListFilters: some View {
@@ -1954,6 +1972,7 @@ private struct CatalogSetGroupSection: View {
 }
 
 private struct CatalogSetGrid: View {
+    @Environment(\.openCatalogSet) private var openCatalogSet
     let sets: [CatalogSet]
     let columns: [GridItem]
     let catalog: any BrowseCatalogProviding
@@ -1964,8 +1983,8 @@ private struct CatalogSetGrid: View {
     var body: some View {
         LazyVGrid(columns: columns, alignment: .leading, spacing: 22) {
             ForEach(sets) { set in
-                NavigationLink {
-                    CatalogSetCardsView(set: set, catalog: catalog)
+                Button {
+                    openCatalogSet(set)
                 } label: {
                     CatalogSetTile(
                         set: set,
@@ -2103,8 +2122,9 @@ struct CatalogSetCardsView: View {
         } action: { viewport = $0 }
         .navigationTitle(set.name)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
         .safeAreaPadding(.bottom, 24)
-        .searchable(text: $search, prompt: "Name or number")
+        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Name or number")
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Menu {

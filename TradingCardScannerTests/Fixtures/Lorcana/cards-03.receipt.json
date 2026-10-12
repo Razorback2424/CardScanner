@@ -1,0 +1,9 @@
+{
+  "bodySHA256": "cd821591e5be726ac1184872e3d4054e8bcbe0cf4da1f748cb1185fd93bd1610",
+  "contentType": "application/json",
+  "paginationHeaders": {},
+  "receivedAt": "2026-10-12T23:03:32Z",
+  "requestedURL": "https://api.lorcast.com/v0/cards/search?q=type%3Alocation+set%3A3&unique=prints",
+  "responseURL": "https://api.lorcast.com/v0/cards/search?q=type%3Alocation+set%3A3&unique=prints",
+  "statusCode": 200
+}
