@@ -16,10 +16,11 @@ struct LorcanaBrowseAdapter: GameBrowseAdapter {
         self.registry = registry
         let catalog = LorcanaCatalogAdapter(registry: registry)
         var grouped: [CatalogSetID: [(LorcanaPhysicalPrinting, ResolvedCatalogCard)]] = [:]
-        for printing in registry.physicalCatalog?.printingByID.values ?? Dictionary<UUID, LorcanaPhysicalPrinting>().values {
-            guard let card = try? catalog.resolution(forPrintingID: printing.id).card else { continue }
-            let id = CatalogSetID(game: .lorcana, providerID: printing.identity.footer.setScopeID)
-            grouped[id, default: []].append((printing, card))
+        for footer in registry.familiesByFooter.keys {
+            for (printing, resolution) in catalog.resolutions(forFooter: footer) {
+                let id = CatalogSetID(game: .lorcana, providerID: footer.setScopeID)
+                grouped[id, default: []].append((printing, resolution.card))
+            }
         }
         var sets: [CatalogSetID: CatalogSet] = [:], cards: [CatalogSetID: [CatalogCardSummary]] = [:]
         var texts: [String: String] = [:]

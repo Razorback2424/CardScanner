@@ -74,6 +74,11 @@ final class LorcanaOwnershipTests: XCTestCase {
         let page = try await adapter.cards(in: set, cursor: nil)
         XCTAssertEqual(page.items.count, 2)
         XCTAssertNotEqual(page.items[0].name, page.items[1].name)
+        XCTAssertEqual(Set(page.items.map(\.name)), ["Fixture Elsa · Stamp: Fixture Stamp 1", "Fixture Elsa · Stamp: Fixture Stamp 2"])
+        for summary in page.items {
+            let exact = try await adapter.details(for: summary)
+            XCTAssertEqual(summary.name, exact.card.name)
+        }
         let detail = try await adapter.details(for: page.items[0])
         let row = CollectedCard(collectionKey: detail.card.collectionKey(variant: .foil), game: .lorcana,
             providerID: detail.card.physicalPrintingID, name: detail.card.name, setName: detail.card.setName,
@@ -83,6 +88,14 @@ final class LorcanaOwnershipTests: XCTestCase {
         XCTAssertTrue(index.owns(page.items[0])); XCTAssertFalse(index.owns(page.items[1]))
         XCTAssertEqual(index.progress(for: set).owned, 1)
         XCTAssertEqual(index.progress(for: set).unit, "printings")
+    }
+
+    func testBrowseConstructionPerformanceForLargeReviewedFamily() throws {
+        let registry = try registry(count: 62)
+        measure(metrics: [XCTClockMetric()]) {
+            let adapter = LorcanaBrowseAdapter(registry: registry)
+            XCTAssertEqual(adapter.generation, registry.generation)
+        }
     }
 
     func testIncompleteUniverseCannotBeBrowsedOrImported() async throws {
@@ -167,6 +180,323 @@ final class LorcanaOwnershipTests: XCTestCase {
     }
 
     #if DEBUG && LOCAL_ONLY_SIGNING
+    private func manifestAddingOversized(name: String = "Fixture Elsa") throws -> LorcanaPhysicalCatalogManifest {
+        let original = try manifest(name: name), first = try XCTUnwrap(original.physicalPrintings.first)
+        let second = LorcanaPhysicalPrinting(id: id(2), identity: .init(canonicalCardID: canonicalID,
+            footer: first.identity.footer, artworkID: artworkID, distributionID: "booster", stamp: nil,
+            size: .oversized, layout: "normal"), providerSetCode: first.providerSetCode, setName: first.setName,
+            artworkLabel: first.artworkLabel, distributionLabel: first.distributionLabel, imageURL: nil,
+            status: .verified, identityEvidence: first.identityEvidence, finishes: first.finishes,
+            finishUniverseEvidenceReference: first.finishUniverseEvidenceReference, sourceAliases: first.sourceAliases)
+        return .init(schemaVersion: 2, reviewedAt: now, printFamilies: original.printFamilies,
+            canonicalCards: original.canonicalCards, physicalPrintings: [first, second],
+            universes: [.init(footer: first.identity.footer, printingIDs: [first.id, second.id],
+                isComplete: true, evidenceReference: "fixture:expanded-universe")], corrections: [])
+    }
+
+    private func signed(_ manifest: LorcanaPhysicalCatalogManifest, revision: Int,
+                        key: Curve25519.Signing.PrivateKey) throws -> LorcanaCatalogReleaseEnvelope {
+        try LorcanaCatalogSignature.sign(.init(schemaVersion: 1, gameID: "lorcana", revision: revision,
+            generatedAt: now, catalog: manifest), keyID: "lorcana-ownership-activation", privateKey: key)
+    }
+
+    private func activationFixture(root: URL, initial: LorcanaPhysicalCatalogManifest) async throws
+        -> (model: ScannerViewModel, container: ModelContainer, coordinator: LorcanaCatalogCoordinator,
+            key: Curve25519.Signing.PrivateKey) {
+        let key = Curve25519.Signing.PrivateKey(), registry = try LorcanaCatalogRegistry(manifest: initial)
+        let store = try LorcanaCatalogReleaseStore(root: root.appendingPathComponent("releases"),
+            keys: ["lorcana-ownership-activation": key.publicKey], bundledEnvelope: signed(initial, revision: 1, key: key), now: now)
+        let coordinator = LorcanaCatalogCoordinator(store: store), container = try container()
+        let runtime = LorcanaGameRuntime(reviewedRegistry: registry, coordinator: coordinator, collectionWrites: true).runtime
+        let runtimes = try await CardGameRuntimeContainer(runtimes: [runtime]).bound(to: container)
+        let model = ScannerViewModel(gameRegistry: runtimes.registry, catalog: runtimes.makeCardCatalog(),
+            unresolvedScanStore: UnresolvedScanStore(fileURL: root.appendingPathComponent("recovery.json")))
+        model.start(context: container.mainContext, startCamera: false, shouldRefreshMagicDirectory: false)
+        model.observeCatalogActivations([try XCTUnwrap(runtimes.runtime(for: .lorcana)?.activationSource)])
+        let ready = await waitUntil { self.scannerGeneration(model) == registry.generation }
+        XCTAssertTrue(ready)
+        return (model, container, coordinator, key)
+    }
+
+    private func scannerGeneration(_ model: ScannerViewModel) -> String? {
+        guard case let .identified(subject) = model.scanner.recognitionOutcomeForTesting(["207/204 EN 1"]) else { return nil }
+        return subject.identifier.catalogGeneration
+    }
+
+    private func acquisitionCandidate(_ registry: LorcanaCatalogRegistry) async throws -> CollectionCommitCandidate {
+        let identifier = try LorcanaRecognitionAdapter.identifier(
+            XCTUnwrap(registry.physicalCatalog?.manifest.physicalPrintings.first?.identity.footer), generation: registry.generation)
+        guard case let .resolved(resolution) = try await LorcanaCatalogAdapter(registry: registry).lookup(identifier) else {
+            throw CatalogLookupError.invalidAdapterOutcome
+        }
+        return CollectionCommitCandidate(resolvedScan: .init(request: .init(subject: .init(identifier: identifier),
+            purpose: .collection, generation: 0), card: resolution.card,
+            resolved: .init(variant: .foil, resolution: .userConfirmed), identityResolution: .printedIdentifier,
+            pokemonPrintRun: nil, options: [.normal, .foil], catalogRetrievedAt: now))
+    }
+
+    func testActivationWhileFinishPendingRequiresNewPrintingEvidenceBeforeSaving() async throws {
+        for explicitPrinting in [false, true] {
+            let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+            let initial = try (explicitPrinting ? manifestAddingOversized() : manifest())
+            let fixture = try await activationFixture(root: root, initial: initial), model = fixture.model
+            defer { model.viewDisappeared() }
+            guard case let .identified(subject) = model.scanner.recognitionOutcomeForTesting(["207/204 EN 1"]) else { return XCTFail() }
+            model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+            if explicitPrinting {
+                let choice = await waitUntil { model.pendingIdentityChoice != nil && !model.isIdentificationProcessingForTesting }
+                XCTAssertTrue(choice)
+                model.choose(try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first { $0.id == self.id().uuidString.lowercased() }))
+            }
+            let finish = await waitUntil { model.pendingChoice != nil && !model.isIdentificationProcessingForTesting }
+            XCTAssertTrue(finish)
+            let next = try manifestAddingOversized(name: "Updated fixture")
+            guard case let .activated(snapshot) = await fixture.coordinator.activate(try signed(next, revision: 2, key: fixture.key), now: now) else {
+                return XCTFail("Fixture must be a valid protected transition")
+            }
+            let installed = await waitUntil { self.scannerGeneration(model) == snapshot.catalog.generation }
+            XCTAssertTrue(installed)
+            model.choose(.foil)
+            let rejected = await waitUntil { !model.unresolvedScans.isEmpty && !model.isIdentificationProcessingForTesting }
+            XCTAssertTrue(rejected)
+            XCTAssertEqual(model.successCount, 0)
+            let context = ModelContext(fixture.container)
+            XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+            XCTAssertTrue(try context.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+            XCTAssertTrue(try context.fetch(FetchDescriptor<CollectionActivity>()).isEmpty)
+            let row = try XCTUnwrap(model.unresolvedScans.first)
+            XCTAssertEqual(row.reason, .noCatalogEntry); XCTAssertNil(row.pendingCommit)
+            model.resolveUnresolved(id: row.id, choice: .retryLookup)
+            let retried = await waitUntil { model.pendingIdentityChoice?.identifier.catalogGeneration == snapshot.catalog.generation
+                && !model.isIdentificationProcessingForTesting }
+            XCTAssertTrue(retried)
+            model.choose(try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first { $0.id == self.id(2).uuidString.lowercased() }))
+            let newFinish = await waitUntil { model.pendingChoice != nil && !model.isIdentificationProcessingForTesting }
+            XCTAssertTrue(newFinish)
+            model.choose(.foil)
+            let saved = await waitUntil { model.successCount == 1 }; XCTAssertTrue(saved)
+            let stored = try XCTUnwrap(ModelContext(fixture.container).fetch(FetchDescriptor<CollectedCard>()).first)
+            XCTAssertEqual(stored.collectionKey, "lorcana:\(id(2).uuidString.lowercased())#foil")
+            XCTAssertTrue(model.unresolvedScans.isEmpty)
+        }
+    }
+
+    func testActivationWhileDuplicatePendingDoesNotRestoreStaleSavePrompt() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try await activationFixture(root: root, initial: manifest()), model = fixture.model
+        defer { model.viewDisappeared() }
+        let candidate = try await acquisitionCandidate(registry())
+        model.fileUnresolvedForTesting(candidate.subject, reason: .saveFailed(inMemoryCandidateID: candidate.requestID),
+            isAdditionalCopy: true, pendingCommit: candidate)
+        let rowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+        model.resolveUnresolved(id: rowID, choice: .retrySave)
+        let duplicate = await waitUntil { model.pendingDuplicateConfirmation != nil && !model.isIdentificationProcessingForTesting }
+        XCTAssertTrue(duplicate)
+        guard case let .activated(snapshot) = await fixture.coordinator.activate(
+            try signed(manifestAddingOversized(), revision: 2, key: fixture.key), now: now) else { return XCTFail() }
+        let installed = await waitUntil { self.scannerGeneration(model) == snapshot.catalog.generation }; XCTAssertTrue(installed)
+        model.addAnother()
+        let rejected = await waitUntil { model.unresolvedScans.first?.reason == .noCatalogEntry && !model.isIdentificationProcessingForTesting }
+        XCTAssertTrue(rejected)
+        XCTAssertNil(model.pendingDuplicateConfirmation)
+        XCTAssertNil(model.unresolvedScans.first?.pendingCommit)
+        XCTAssertEqual(model.unresolvedScans.first?.id, rowID)
+        XCTAssertEqual(model.unresolvedScans.first?.isAdditionalCopy, true)
+        XCTAssertTrue(try ModelContext(fixture.container).fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        model.resolveUnresolved(id: rowID, choice: .retryLookup)
+        let retried = await waitUntil { model.pendingIdentityChoice != nil && !model.isIdentificationProcessingForTesting }; XCTAssertTrue(retried)
+        model.choose(try XCTUnwrap(model.pendingIdentityChoice?.displayCandidates.first))
+        let finish = await waitUntil { model.pendingChoice != nil && !model.isIdentificationProcessingForTesting }; XCTAssertTrue(finish)
+        model.choose(.foil)
+        let newDuplicate = await waitUntil { model.pendingDuplicateConfirmation != nil && !model.isIdentificationProcessingForTesting }
+        XCTAssertTrue(newDuplicate)
+        model.addAnother()
+        let saved = await waitUntil { model.successCount == 1 }; XCTAssertTrue(saved)
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+    }
+
+    func testStaleRetrySaveRequiresLookupEvenWhenOldPrintingIsAlreadyOwned() async throws {
+        for additionalCopy in [false, true] {
+            let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+            let fixture = try await activationFixture(root: root, initial: manifest()), model = fixture.model
+            defer { model.viewDisappeared() }
+            let candidate = try await acquisitionCandidate(registry())
+            _ = try CollectionStore(context: fixture.container.mainContext).add(candidate.card, resolved: candidate.resolved)
+            model.fileUnresolvedForTesting(candidate.subject, reason: .saveFailed(inMemoryCandidateID: candidate.requestID),
+                isAdditionalCopy: additionalCopy, pendingCommit: candidate)
+            let rowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+            guard case let .activated(snapshot) = await fixture.coordinator.activate(
+                try signed(manifestAddingOversized(), revision: 2, key: fixture.key), now: now) else { return XCTFail() }
+            let installed = await waitUntil { self.scannerGeneration(model) == snapshot.catalog.generation }; XCTAssertTrue(installed)
+            model.resolveUnresolved(id: rowID, choice: .retrySave)
+            let rejected = await waitUntil { model.unresolvedScans.first?.reason == .noCatalogEntry && !model.isIdentificationProcessingForTesting }
+            XCTAssertTrue(rejected)
+            XCTAssertEqual(model.unresolvedScans.first?.id, rowID)
+            XCTAssertNil(model.unresolvedScans.first?.pendingCommit)
+            XCTAssertNil(model.pendingDuplicateConfirmation)
+            XCTAssertEqual(model.successCount, 0)
+            XCTAssertEqual(try ModelContext(fixture.container).fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+            // Even an obsolete UI action falls back to a fresh lookup after the
+            // old in-memory commit is discarded.
+            model.resolveUnresolved(id: rowID, choice: .retrySave)
+            let retried = await waitUntil { model.pendingIdentityChoice?.identifier.catalogGeneration == snapshot.catalog.generation }
+            XCTAssertTrue(retried)
+        }
+    }
+
+    func testWriterRejectsActivationAfterSuccessfulAcquisitionPreflightAndRollsBackAllStaging() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let kit = try LorcanaLocalReviewKit.make(manifest: manifest(), root: root, now: now, allowCollectionWrites: true)
+        let container = try container(), runtimes = try await kit.bound(to: container)
+        let candidate = try await acquisitionCandidate(registry())
+        try await runtimes.makeCardCatalog().validateAcquisition(candidate.identifier,
+            printingID: candidate.card.physicalPrintingID, automatic: true)
+        let next = try LorcanaCatalogRegistry(manifest: manifestAddingOversized(), previous: registry())
+        XCTAssertTrue(CollectionStore.installCatalogAdapter(LorcanaCatalogAdapter(registry: next), revision: 2, for: container))
+        let writer = ScannerCollectionWriter(modelContainer: container)
+        do { _ = try await writer.containsCollectionEntry(for: candidate); XCTFail("Stale evidence cannot dismiss recovery as already owned") }
+        catch CatalogLookupError.staleCatalog {}
+        do { _ = try await writer.add(candidate); XCTFail("A valid UUID cannot authorize an obsolete scan") }
+        catch CatalogLookupError.staleCatalog {}
+        let context = ModelContext(container)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<InventoryEvent>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<CollectionActivity>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        let identifier = try LorcanaRecognitionAdapter.identifier(
+            XCTUnwrap(next.physicalCatalog?.manifest.physicalPrintings.first?.identity.footer), generation: next.generation)
+        guard case let .needsPrintingChoice(_, choices) = try await LorcanaCatalogAdapter(registry: next).lookup(identifier) else { return XCTFail() }
+        let resolution = try await LorcanaCatalogAdapter(registry: next).resolve(XCTUnwrap(choices.first), for: identifier)
+        let current = CollectionCommitCandidate(resolvedScan: .init(request: .init(subject: .init(identifier: identifier),
+            purpose: .collection, generation: 0), card: resolution.card,
+            resolved: .init(variant: .foil, resolution: .userConfirmed), identityResolution: .userSelectedPrinting,
+            pokemonPrintRun: nil, options: [.normal, .foil], catalogRetrievedAt: now))
+        _ = try await writer.add(current)
+        XCTAssertEqual(try ModelContext(container).fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+    }
+
+    func testCatalogRecoveryCorrectsUnknownFooterAndRevalidatesPendingSelectionAcrossActivation() async throws {
+        for activateWhilePending in [false, true] {
+            let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+            let fixture = try await activationFixture(root: root, initial: manifest()), model = fixture.model
+            defer { model.viewDisappeared() }
+            let original = ScanSubject(identifier: try LorcanaRecognitionAdapter.identifier(
+                .init(collectorNumber: "999", denominator: "204", language: "en", printedSetMarker: "1"),
+                generation: registry().generation))
+            model.fileUnresolvedForTesting(original, reason: .noCatalogEntry)
+            let rowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+            guard case let .activated(snapshot) = await fixture.coordinator.activate(
+                try signed(manifestAddingOversized(), revision: 2, key: fixture.key), now: now) else { return XCTFail() }
+            let installed = await waitUntil { self.scannerGeneration(model) == snapshot.catalog.generation }; XCTAssertTrue(installed)
+            let browse = try XCTUnwrap(snapshot.browse), sets = try await browse.sets()
+            let page = try await browse.cards(in: XCTUnwrap(sets.first), cursor: nil)
+            let summary = try XCTUnwrap(page.items.first { $0.providerID == self.id(2).uuidString.lowercased() })
+            let details = try await browse.details(for: summary)
+            model.resolveUnresolved(id: rowID, choice: .catalog(details, printRun: nil, variant: nil))
+            let finish = await waitUntil { model.pendingChoice != nil && !model.isIdentificationProcessingForTesting }; XCTAssertTrue(finish)
+            XCTAssertEqual(model.pendingChoice?.request.subject, original)
+            XCTAssertEqual(model.pendingChoice?.request.acquisitionIdentifier.catalogGeneration, snapshot.catalog.generation)
+            if activateWhilePending {
+                guard case let .activated(next) = await fixture.coordinator.activate(
+                    try signed(manifestAddingOversized(name: "Updated catalog selection"), revision: 3, key: fixture.key), now: now) else { return XCTFail() }
+                let updated = await waitUntil { self.scannerGeneration(model) == next.catalog.generation }; XCTAssertTrue(updated)
+            }
+            model.choose(.foil)
+            let settled = await waitUntil { !model.isIdentificationProcessingForTesting }; XCTAssertTrue(settled)
+            if activateWhilePending {
+                XCTAssertEqual(model.successCount, 0)
+                XCTAssertEqual(model.unresolvedScans.first?.id, rowID)
+                XCTAssertNil(model.unresolvedScans.first?.pendingCommit)
+                XCTAssertEqual(model.unresolvedScans.first?.subject, original)
+                XCTAssertTrue(try ModelContext(fixture.container).fetch(FetchDescriptor<CollectedCard>()).isEmpty)
+            } else {
+                XCTAssertEqual(model.successCount, 1)
+                XCTAssertEqual(model.sessionScans.first?.subject, original)
+                XCTAssertEqual(try ModelContext(fixture.container).fetch(FetchDescriptor<CollectedCard>()).first?.collectionKey,
+                    "lorcana:\(id(2).uuidString.lowercased())#foil")
+                XCTAssertTrue(model.unresolvedScans.isEmpty)
+            }
+        }
+    }
+
+    func testRetrySavePreservesExplicitCatalogAcquisitionAlongsideOriginalUnknownFooter() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let fixture = try await activationFixture(root: root, initial: manifest()), model = fixture.model
+        defer { model.viewDisappeared() }
+        let known = try await acquisitionCandidate(registry())
+        let original = ScanSubject(identifier: try LorcanaRecognitionAdapter.identifier(
+            .init(collectorNumber: "999", denominator: "204", language: "en", printedSetMarker: "1"),
+            generation: registry().generation))
+        let request = ScanRequest(subject: original, purpose: .collection, generation: 0).acquiring(known.identifier)
+        let candidate = CollectionCommitCandidate(resolvedScan: .init(request: request, card: known.card,
+            resolved: known.resolved, identityResolution: .userSelectedPrinting, pokemonPrintRun: nil,
+            options: known.options, catalogRetrievedAt: now))
+        model.fileUnresolvedForTesting(original, reason: .saveFailed(inMemoryCandidateID: candidate.requestID), pendingCommit: candidate)
+        let rowID = try XCTUnwrap(model.unresolvedScans.first?.id)
+        model.resolveUnresolved(id: rowID, choice: .retrySave)
+        let saved = await waitUntil { model.successCount == 1 }; XCTAssertTrue(saved)
+        XCTAssertEqual(model.sessionScans.first?.subject, original)
+        XCTAssertEqual(try ModelContext(fixture.container).fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 1)
+        XCTAssertTrue(model.unresolvedScans.isEmpty)
+    }
+
+    func testReviewLaunchRequiresExactOptInAndUsesStableSyntheticIdentities() throws {
+        XCTAssertFalse(LorcanaReviewLaunch.isEnabled(arguments: []))
+        XCTAssertFalse(LorcanaReviewLaunch.isEnabled(arguments: ["-ui_debug_route"]))
+        XCTAssertFalse(LorcanaReviewLaunch.isEnabled(arguments: ["-ui_debug_route", "Browse"]))
+        XCTAssertTrue(LorcanaReviewLaunch.isEnabled(arguments: ["-ui_debug_route", "LorcanaReview"]))
+        let first = try LorcanaCatalogRegistry(manifest: LorcanaReviewLaunch.fixtureManifest())
+        let second = try LorcanaCatalogRegistry(manifest: LorcanaReviewLaunch.fixtureManifest(), previous: first)
+        XCTAssertEqual(first.generation, second.generation)
+        XCTAssertTrue(try XCTUnwrap(first.physicalCatalog).manifest.physicalPrintings.allSatisfy {
+            $0.identityEvidence.allSatisfy { $0.reference.hasPrefix("synthetic-ui:") }
+        })
+    }
+
+    func testReviewLaunchSamplesReachRealLookupAndFailClosedWithoutArtworkOrReview() async throws {
+        let registry = try LorcanaCatalogRegistry(manifest: LorcanaReviewLaunch.fixtureManifest())
+        let adapter = LorcanaCatalogAdapter(registry: registry)
+        for sample in LorcanaReviewLaunch.Sample.allCases {
+            guard case let .identified(subject) = LorcanaRecognitionAdapter(registry: registry)
+                .identify([.init(text: sample.footerText)]) else { XCTFail(sample.rawValue); continue }
+            let outcome = try await adapter.lookup(subject.identifier)
+            switch (sample, outcome) {
+            case (.size, .needsPrintingChoice(_, let choices)), (.stamp, .needsPrintingChoice(_, let choices)):
+                XCTAssertEqual(choices.count, 2)
+            case (.oversized, .needsPrintingChoice(_, let choices)):
+                XCTAssertEqual(choices.count, 1)
+            case (.standard, .resolved), (.landscape, .resolved),
+                 (.artworkUnavailable, .catalogIncomplete), (.held, .catalogIncomplete), (.unknown, .catalogIncomplete):
+                break
+            default: XCTFail("Unexpected review outcome for \(sample.rawValue)")
+            }
+        }
+    }
+
+    func testReviewLaunchKitReopensOnlyIsolatedDiskOwnershipWithStableKeys() async throws {
+        let root = root(); defer { try? FileManager.default.removeItem(at: root) }
+        let kit = try LorcanaReviewLaunch.makeKit(root: root)
+        let disk = try container(url: kit.collectionDirectory.appendingPathComponent("default.store"))
+        let runtimes = try await kit.bound(to: disk)
+        XCTAssertEqual(runtimes.registry.games(supporting: .scan), [.lorcana])
+        XCTAssertTrue(runtimes.registry.supports(.lorcana, .collectionWrite))
+        XCTAssertNil(runtimes.runtime(for: .lorcana)?.pricing)
+        let registry = try LorcanaCatalogRegistry(manifest: LorcanaReviewLaunch.fixtureManifest())
+        let footer = try LorcanaPrintedIdentity(collectorNumber: "23", denominator: "204", language: "en", printedSetMarker: "1")
+        let identifier = try LorcanaRecognitionAdapter.identifier(footer, generation: registry.generation)
+        guard case let .resolved(result) = try await LorcanaCatalogAdapter(registry: registry).lookup(identifier) else { return XCTFail() }
+        let card = result.card
+        _ = try CollectionStore(context: disk.mainContext).add(card, resolved: .init(variant: .foil, resolution: .userConfirmed))
+        let next = try LorcanaReviewLaunch.makeKit(root: root)
+        XCTAssertNotEqual(kit.publicKey, next.publicKey)
+        _ = try await next.bound(to: disk)
+        let retained = try XCTUnwrap(ModelContext(disk).fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertEqual(retained.collectionKey, card.collectionKey(variant: .foil))
+        let unrelated = try container(url: root.appendingPathComponent("default.store"))
+        do { _ = try await next.bound(to: unrelated); XCTFail("Ordinary storage must be rejected") }
+        catch LorcanaLocalReviewKit.ValidationError.nonIsolatedCollection {}
+    }
+
     func testDebugWritesRequireAnIsolatedContainerAndStayDisabledOnUnboundRuntime() async throws {
         let root = root(); defer { try? FileManager.default.removeItem(at: root) }
         let kit = try LorcanaLocalReviewKit.make(manifest: manifest(), root: root, now: now, allowCollectionWrites: true)
@@ -176,7 +506,7 @@ final class LorcanaOwnershipTests: XCTestCase {
         let unrelated = try container(url: root.appendingPathComponent("unrelated.store"))
         do { _ = try await kit.bound(to: unrelated); XCTFail() }
         catch LorcanaLocalReviewKit.ValidationError.nonIsolatedCollection {}
-        XCTAssertNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
+        XCTAssertFalse(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana)!.descriptor.capabilities.contains(.collectionWrite))
     }
 
     func testBrowseAddUndoAndUnsupportedFinishLeaveNoOwnership() async throws {

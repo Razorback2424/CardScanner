@@ -122,7 +122,7 @@ final class LorcanaIntegrationTests: XCTestCase {
         let invalid = LorcanaPrintFamily(footer: original.footer, providerSetCode: " ", name: original.name,
             version: nil, rarity: "Promo", layout: "normal", sourceAliases: original.sourceAliases, footerEvidenceReference: "")
         XCTAssertThrowsError(try registry([invalid]))
-        let invalidFooter = Data(#"{"collectorNumber":"0","denominator":"204","language":"en","printedSetMarker":"1"}"#.utf8)
+        let invalidFooter = Data(#"{"collectorNumber":"-1","denominator":"204","language":"en","printedSetMarker":"1"}"#.utf8)
         XCTAssertThrowsError(try JSONDecoder().decode(LorcanaPrintedIdentity.self, from: invalidFooter))
     }
 
@@ -166,7 +166,7 @@ final class LorcanaIntegrationTests: XCTestCase {
         XCTAssertTrue(container.registry.variantLockMenu.isEmpty)
         XCTAssertTrue(container.registry.supports(.lorcana, .browse))
         XCTAssertNil(runtime.pricing); XCTAssertNotNil(runtime.importer); XCTAssertNotNil(runtime.browse)
-        XCTAssertNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
+        XCTAssertNotNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertFalse(CardGameRegistry.standard.enabledGames.contains(.lorcana))
         XCTAssertEqual(CardGame.lorcana.label, "Disney Lorcana")
         XCTAssertEqual(try JSONDecoder().decode(CardGame.self, from: JSONEncoder().encode(CardGame.lorcana)), .lorcana)

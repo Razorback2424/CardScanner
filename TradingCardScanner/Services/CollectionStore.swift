@@ -577,7 +577,7 @@ actor ScannerCollectionWriter {
                         resolved: candidate.resolved,
                         savesChanges: false
                     )
-                    try saveModelContext(context)
+                    try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier)
                     store.invalidateIdentityAliasCache()
                     return mutation
                 }
@@ -603,7 +603,7 @@ actor ScannerCollectionWriter {
             // Both add and correction use the same staging gate: a lookup with
             // no provider observation must leave the price ledger untouched.
             stagePrice(candidate.price, for: stored, in: context)
-            try saveModelContext(context)
+            try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier)
             return mutation
           } catch {
             // The staged add, ledger event, activity and price write are one
@@ -618,6 +618,7 @@ actor ScannerCollectionWriter {
 
     func containsCollectionEntry(for candidate: CollectionCommitCandidate) throws -> Bool {
         try performOwnershipWrite { context in
+            try validateAcquisitionContext(candidate.acquisitionIdentifier, in: context)
             let baseKey = candidate.card.collectionKey(variant: candidate.resolved.variant)
             let key = candidate.pokemonPrintRun.map {
                 "\(baseKey)@\($0.rawValue)"
@@ -824,8 +825,9 @@ actor ScannerCollectionWriter {
         }
     }
 
-    private func saveModelContext(_ context: ModelContext) throws {
+    private func saveModelContext(_ context: ModelContext, acquisitionIdentifier: ScanIdentifier? = nil) throws {
         try CollectionStore(context: context).validatePendingGameWrites()
+        try validateAcquisitionContext(acquisitionIdentifier, in: context)
         #if DEBUG
         if let saveOverrideForTesting {
             self.saveOverrideForTesting = nil
@@ -834,6 +836,19 @@ actor ScannerCollectionWriter {
         }
         #endif
         try context.save()
+    }
+
+    private func validateAcquisitionContext(_ identifier: ScanIdentifier?, in context: ModelContext) throws {
+        // The catalog may activate after scanner preflight but before this
+        // background transaction. Exact UUID validity alone cannot preserve an
+        // automatic decision made under an older physical-printing universe.
+        if let identifier, identifier.game == .lorcana {
+            guard let adapter = CollectionStoreSessionRegistry.shared
+                .mutationAuthority(for: identifier.game, container: context.container).adapter else {
+                throw CatalogLookupError.staleCatalog
+            }
+            _ = try adapter.prepareLookupIdentifier(identifier)
+        }
     }
 
     func undo(_ mutation: CollectionMutation) throws {

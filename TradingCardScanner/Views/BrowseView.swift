@@ -340,7 +340,7 @@ final class BrowseViewModel: ObservableObject {
 
     private func sealedLaneIsRequested(for game: CardGame) -> Bool {
         includesSealedProducts && gameRegistry.supports(game, .sealed)
-            && (sealedModel.isConfigured || !(sealedModel.searchLanes[game]?.products.isEmpty ?? true))
+            && (sealedModel.isConfigured(for: game) || !(sealedModel.searchLanes[game]?.products.isEmpty ?? true))
     }
 
     private func searchCardLanes(games: [CardGame], query: String, token: UUID) async {

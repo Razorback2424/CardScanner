@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-13",
+  "records": [
+    {
+      "productID": 692489,
+      "sourceCardID": "lorcanajson:en:3250",
+      "printedIdentifier": "57/P3 • EN • 12",
+      "expectedName": "Buzz Lightyear - Space Ranger",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/692489_400w.jpg",
+      "bodySHA256": "44892abfb6f9a5c928ed85200417461acf5e4260420f77aee33f9c72b9168d7c"
+    }
+    ,
+    {
+      "productID": 692490,
+      "sourceCardID": "lorcanajson:en:3235",
+      "printedIdentifier": "58/P3 • EN • 13",
+      "expectedName": "Sulley - The New Boss",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/692490_400w.jpg",
+      "bodySHA256": "5abd3da4e9082b6ab9a3bf7675d09d65f81effec8c29ecb1590196d3657875ba"
+    }
+    ,
+    {
+      "productID": 692491,
+      "sourceCardID": "lorcanajson:en:3236",
+      "printedIdentifier": "60/P3 • EN • 13",
+      "expectedName": "Woody - Helping a Friend",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/692491_400w.jpg",
+      "bodySHA256": "aa2f43ebd54c6656efed975b7c1dfe05ebc42486ce45ae990c075d3dd053ad8a"
+    }
+    ,
+    {
+      "productID": 705078,
+      "sourceCardID": "lorcanajson:en:3217",
+      "printedIdentifier": "9/P4 • EN • 13",
+      "expectedName": "Morph - Little Imitator",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705078_400w.jpg",
+      "bodySHA256": "ad400bc5b6b7b04bad0dbacb25d0971bc466b4fac91d899bb4b63edfddf2b046"
+    }
+    ,
+    {
+      "productID": 705079,
+      "sourceCardID": "lorcanajson:en:3219",
+      "printedIdentifier": "11/P4 • EN • 13",
+      "expectedName": "Randall Boggs - Scary Smart",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705079_400w.jpg",
+      "bodySHA256": "5fe1d42502a606d0a5ca0c78af58eeeda94500a414280ed4433312a2f81aa534"
+    }
+    ,
+    {
+      "productID": 705080,
+      "sourceCardID": "lorcanajson:en:3218",
+      "printedIdentifier": "10/P4 • EN • 13",
+      "expectedName": "Meilin Lee - Lead Vocalist",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705080_400w.jpg",
+      "bodySHA256": "c86a13980ce8965c2839c382a2b9a5572fb084e487f9bfddd3ba507327720eab"
+    }
+    ,
+    {
+      "productID": 705081,
+      "sourceCardID": "lorcanajson:en:3222",
+      "printedIdentifier": "14/P4 • EN • 13",
+      "expectedName": "If I Didn't Have You",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705081_400w.jpg",
+      "bodySHA256": "8f8223c10d6649b77e89c5893d8bcf27c0f50d0c12aa32a8407b2b77ca332187"
+    }
+    ,
+    {
+      "productID": 705082,
+      "sourceCardID": "lorcanajson:en:3221",
+      "printedIdentifier": "13/P4 • EN • 13",
+      "expectedName": "Belle - Always Reading",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705082_400w.jpg",
+      "bodySHA256": "12e40fb4002786d110c786af3d546fc71a853d8e5c3e1cb78604f2cdfc113fdb"
+    }
+    ,
+    {
+      "productID": 705083,
+      "sourceCardID": "lorcanajson:en:3220",
+      "printedIdentifier": "12/P4 • EN • 13",
+      "expectedName": "Tigger - Hunny Barbarian",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705083_400w.jpg",
+      "bodySHA256": "a722d685d90eff2f8092545f349a3218bc46048437823bfad841d596721edfc9"
+    }
+    ,
+    {
+      "productID": 705086,
+      "sourceCardID": "lorcanajson:en:3251",
+      "printedIdentifier": "4/DIS • EN • 13",
+      "expectedName": "Maleficent - Exultant Spellcaster",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705086_400w.jpg",
+      "bodySHA256": "110836aed37e2cf54e2b6b29b735e2f12e6a31f8e47a096595c179bc312ec9d6"
+    }
+    ,
+    {
+      "productID": 709896,
+      "sourceCardID": "lorcanajson:en:3574",
+      "printedIdentifier": "16/PD1 • EN • 13",
+      "expectedName": "With a Few Good Friends",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/709896_400w.jpg",
+      "bodySHA256": "230ea100e12db735bb4e9c2280eb0a5349f34e88c64c2fd0f366cf8bbd2f4913"
+    }
+    ,
+    {
+      "productID": 711353,
+      "sourceCardID": "lorcanajson:en:3586",
+      "printedIdentifier": "10/D23 • EN • 11",
+      "expectedName": "Angel - Siren Singer",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711353_400w.jpg",
+      "bodySHA256": "4069ee782bdac86543cc824f39c1b40142fc9dd0174ccf70733270bc88cb1239"
+    }
+    ,
+    {
+      "productID": 711355,
+      "sourceCardID": "lorcanajson:en:3587",
+      "printedIdentifier": "11/D23 • EN • 11",
+      "expectedName": "Pocahontas - Following the Wind",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711355_400w.jpg",
+      "bodySHA256": "adbb67b7dd8a9c34f9fb51e2696d6d080c63daad14136e68ea3460268733468e"
+    }
+    ,
+    {
+      "productID": 711358,
+      "sourceCardID": "lorcanajson:en:3588",
+      "printedIdentifier": "12/D23 • EN • 13",
+      "expectedName": "Mushu - Stealthy Dragon",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711358_400w.jpg",
+      "bodySHA256": "1c30d3216e96536d339e172ac5be8af7cedf162e851e050fdfc2c2ebd79db772"
+    }
+    ,
+    {
+      "productID": 711359,
+      "sourceCardID": "lorcanajson:en:3590",
+      "printedIdentifier": "14/D23 • EN • 10",
+      "expectedName": "Judy Hopps - Uncovering Clues",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711359_400w.jpg",
+      "bodySHA256": "0bb573186a9f6a506a612548dfb979227f973b5e1d298a52a45f6b6acafa8954"
+    }
+    ,
+    {
+      "productID": 711360,
+      "sourceCardID": "lorcanajson:en:3591",
+      "printedIdentifier": "15/D23 • EN • 12",
+      "expectedName": "Mr. Incredible - Taking Out the Trash",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711360_400w.jpg",
+      "bodySHA256": "852021e68ca6bec6ecdbcc45356bebc998aafe5341d47a2812781d0a4cc06493"
+    }
+    ,
+    {
+      "productID": 711367,
+      "sourceCardID": "lorcanajson:en:3585",
+      "printedIdentifier": "9/D23 • EN • 12",
+      "expectedName": "Woody - Leader of the Toys",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711367_400w.jpg",
+      "bodySHA256": "a7a72c5f80e7db27983171dc9e707ee1025795bc2a1eecf29a83e63beb9c710d"
+    }
+    ,
+    {
+      "productID": 711443,
+      "sourceCardID": "lorcanajson:en:3226",
+      "printedIdentifier": "2/PD1 • EN • 11",
+      "expectedName": "Rapunzel - Ethereal Protector",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711443_400w.jpg",
+      "bodySHA256": "d9bde9c32e8686d1d2d7f219fed28e33eb014e6e329c8306ee4ce970dbe28fef"
+    }
+    ,
+    {
+      "productID": 711485,
+      "sourceCardID": "lorcanajson:en:3594",
+      "printedIdentifier": "15/PD1 • EN • 12",
+      "expectedName": "Pegasus - Searching High and Low",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711485_400w.jpg",
+      "bodySHA256": "3363d6d00b990e8fafa4c27fa46e511a0d63decfdaf4d9218e58c4c9227f3774"
+    }
+    ,
+    {
+      "productID": 712042,
+      "sourceCardID": "lorcanajson:en:3246",
+      "printedIdentifier": "6/DIS • EN • 10",
+      "expectedName": "Mickey Mouse - Amber Champion",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712042_400w.jpg",
+      "bodySHA256": "25e1da2906d496ea9da73bfe58d263c07261d77cec6ce69b20a230e1e3d8b045"
+    }
+    ,
+    {
+      "productID": 719967,
+      "sourceCardID": "lorcanajson:en:3233",
+      "printedIdentifier": "18/PD1 • EN • 13",
+      "expectedName": "Sulley - Protective Monster",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/719967_400w.jpg",
+      "bodySHA256": "8662afb9b0f2ae282384c77f23f67c37088a44888b8a16565934578c41f56394"
+    }
+    ,
+    {
+      "productID": 719968,
+      "sourceCardID": "lorcanajson:en:3234",
+      "printedIdentifier": "19/PD1 • EN • 13",
+      "expectedName": "Violet Parr - Super Resilient",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/719968_400w.jpg",
+      "bodySHA256": "1791a9ebfc78576b4c754d6fc28f940cd20fa76a2637e6504d067e415b6d693c"
+    }
+    ,
+    {
+      "productID": 721876,
+      "sourceCardID": "lorcanajson:en:3572",
+      "printedIdentifier": "246/207 • EN • 13",
+      "expectedName": "Christopher Robin - Hunny Sage",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721876_400w.jpg",
+      "bodySHA256": "a57fb5ce08b3cbc92d217eb9f4835d583fa4f3863ec54c464641e8b9ed1384e4"
+    }
+    ,
+    {
+      "productID": 721878,
+      "sourceCardID": "lorcanajson:en:3573",
+      "printedIdentifier": "247/207 • EN • 13",
+      "expectedName": "Violet Parr - Super Resilient",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721878_400w.jpg",
+      "bodySHA256": "bc6061025efd682974b74c68b7bdbafd310f702f1224f9657f9b0bff81c892c0"
+    }
+    ,
+    {
+      "productID": 721882,
+      "sourceCardID": "lorcanajson:en:3571",
+      "printedIdentifier": "243/204 • EN • 12",
+      "expectedName": "Mr. Incredible - Super Strong",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721882_400w.jpg",
+      "bodySHA256": "43f75a71e1af436f4b9a879f2281c4897459e36365f3c57a772a3c5243b8a87c"
+    }
+    ,
+    {
+      "productID": 721891,
+      "sourceCardID": "lorcanajson:en:3570",
+      "printedIdentifier": "243/204 • EN • 11",
+      "expectedName": "Sven - Leaping Reindeer",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/721891_400w.jpg",
+      "bodySHA256": "de6025e8510a6d9b8f7e739dcdd4f8e8e0b3d025512a42c3b21f0fa90662c20c"
+    }
+    ,
+    {
+      "productID": 722667,
+      "sourceCardID": "lorcanajson:en:3575",
+      "printedIdentifier": "17/PD1 • EN • 14",
+      "expectedName": "The Beanstalk - Onward and Upward",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/722667_400w.jpg",
+      "bodySHA256": "1648633802b33ac3c7cbce6eb350635af9e1f5661e35fba55c2f45a68719b887"
+    }
+    ,
+    {
+      "productID": 554628,
+      "printedIdentifier": "5/C1 • EN • 1",
+      "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/554628.jpg",
+      "bodySHA256": "cecda2bc154f83a773c5990b6989e63ce4a860ce77fa523636b3f5630146c6c4",
+      "expectedName": "Mickey Mouse - Brave Little Tailor (Serial Numbered)"
+    },
+    {
+      "productID": 616373,
+      "printedIdentifier": "15/P2 • EN • 1",
+      "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/616373.jpg",
+      "bodySHA256": "746f6d4e35142c092d776a49259576b64dcbda1c136abb0deb826e3e703f36b1",
+      "expectedName": "Mickey Mouse - True Friend"
+    },
+    {
+      "productID": 636354,
+      "printedIdentifier": "17/P2 • EN • 4",
+      "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/636354.jpg",
+      "bodySHA256": "45e4eadd1392525354602e64a773ad018229d2eadd9bf7554c7e60a280e36ce3",
+      "expectedName": "Anna - Braving the Storm"
+    },
+    {
+      "productID": 647091,
+      "printedIdentifier": "16/P2 • EN • 1",
+      "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/647091.jpg",
+      "bodySHA256": "814fcf7e124bbf5dc82cc04b22d685cf67669713e6a5025b1d6bfca608ca67b9",
+      "expectedName": "Elsa - Queen Regent"
+    },
+    {
+      "productID": 711519,
+      "printedIdentifier": "1/C3 • EN • 9",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711519_400w.jpg",
+      "bodySHA256": "4e3c0f0c246931816bcdc5c46db7b0b0a1c82ea79d7f6dc536b074cad4ce737a",
+      "expectedName": "Mother Knows Best"
+    },
+    {
+      "productID": 711520,
+      "printedIdentifier": "13/C3 • EN • 9",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711520_400w.jpg",
+      "bodySHA256": "8c58f7e65e9ad155ec22b14055540bbd6fdc4d5312d0ac18d88c29c8b611a5ca",
+      "expectedName": "Mother Knows Best (Foil)"
+    },
+    {
+      "productID": 712024,
+      "printedIdentifier": "15/C2 • EN • 9",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712024_400w.jpg",
+      "bodySHA256": "1ce371b9c0a47ab477b8c402bcb690fa35ec6e5e334d98231340cb96ae06c2ac",
+      "expectedName": "Stand Out"
+    },
+    {
+      "productID": 712025,
+      "printedIdentifier": "16/C2 • EN • 8",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712025_400w.jpg",
+      "bodySHA256": "077bbf2b293453602777b3f7a71e6b410311650f6f724339f0dcd44ccc587052",
+      "expectedName": "Down in New Orleans"
+    },
+    {
+      "productID": 712026,
+      "printedIdentifier": "17/C2 • EN • 10",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712026_400w.jpg",
+      "bodySHA256": "320738a5a60d9df143c4ef8f9c316ff3fcff4f82a46976f13a0dd00db2a65985",
+      "expectedName": "The Headless Horseman - Cursed Rider"
+    },
+    {
+      "productID": 712027,
+      "printedIdentifier": "18/C2 • EN • 8",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712027_400w.jpg",
+      "bodySHA256": "84be38ca3418fd8e5fa4fc5882eb9a70d2e24c266ee29d149cb21f9ff63824c3",
+      "expectedName": "Tinker Bell - Insistent Fairy"
+    },
+    {
+      "productID": 714566,
+      "printedIdentifier": "11/C2 • EN • 9",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/714566_400w.jpg",
+      "bodySHA256": "aafc9e2b0f08dc4537ca686f5572905728c4c7efea39b24f48903daf8440f104",
+      "expectedName": "Stand Out (Foil)"
+    },
+    {
+      "productID": 715979,
+      "printedIdentifier": "12/C2 • EN • 8",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/715979_400w.jpg",
+      "bodySHA256": "9aab8a31380048e3d0c382d687cd2d4fb05294a4e4400826f7dc60cfa6eb1708",
+      "expectedName": "Down in New Orleans (Foil)"
+    },
+    {
+      "productID": 715981,
+      "printedIdentifier": "14/C2 • EN • 8",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/715981_400w.jpg",
+      "bodySHA256": "f726c3a73faed9fdbf5d32f3e4343c7a8ba7b26f6efd2921ea75f8d12c1f27d9",
+      "expectedName": "Tinker Bell - Insistent Fairy (Foil)"
+    },
+    {
+      "productID": 552741,
+      "printedIdentifier": "EN • Q1",
+      "unnumberedSetMarker": "Q1",
+      "recognitionTitles": [
+        "Ursula - Ruler of Lorcana"
+      ],
+      "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/552741.jpg",
+      "bodySHA256": "eba1f658084fbf423586b38096edb8dd4f2679305cb66688201b9e6d289e3040",
+      "expectedName": "Ursula - Ruler of Lorcana (Oversized)"
+    },
+    {
+      "productID": 552744,
+      "printedIdentifier": "EN • Q1",
+      "unnumberedSetMarker": "Q1",
+      "recognitionTitles": [
+        "The Encounter"
+      ],
+      "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/552744.jpg",
+      "bodySHA256": "5a1f9cf260e2879665ad41ea421b90bf7204531cc197417110d458225c6a19ed",
+      "expectedName": "The Encounter // A Dark Realm - Battleground (Oversized)"
+    },
+    {
+      "productID": 552745,
+      "printedIdentifier": "EN • Q1",
+      "unnumberedSetMarker": "Q1",
+      "recognitionTitles": [
+        "The Lair"
+      ],
+      "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/552745.jpg",
+      "bodySHA256": "cc4130d3107c52db2ee4f4d528bf3ecdd36b86d3a10bd86dce903d5d5b3d433a",
+      "expectedName": "The Lair // Infinite Wrath - Battleground (Oversized)"
+    },
+    {
+      "productID": 639460,
+      "printedIdentifier": "EN • Q2",
+      "unnumberedSetMarker": "Q2",
+      "recognitionTitles": [
+        "Jafar - Supreme Sorcerer of Lorcana"
+      ],
+      "reference": "https://product-images.tcgplayer.com/fit-in/1000x1000/639460.jpg",
+      "bodySHA256": "149796ffef088be3948c848ff8cd725621ecc8141a4d8fa1d421d6c1fcb9a545",
+      "expectedName": "Jafar - Supreme Sorcerer of Lorcana (Oversized)"
+    },
+    {
+      "productID": 516775,
+      "printedIdentifier": "5/204 • EN • 1",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/516775_400w.jpg",
+      "bodySHA256": "67211f767631b0ed73ae7d19e3590ebb4ef6ae0d3df934924fc288790908dd50",
+      "expectedName": "Hades - King of Olympus (Oversized)"
+    },
+    {
+      "productID": 516778,
+      "printedIdentifier": "118/204 • EN • 1",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/516778_400w.jpg",
+      "bodySHA256": "8eb26102d972b105a70ac0812a40d333da3d98543eca33d652a453f5c2d17a08",
+      "expectedName": "Mulan - Imperial Soldier (Oversized)"
+    },
+    {
+      "productID": 539145,
+      "printedIdentifier": "89/204 • EN • 3",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/539145_400w.jpg",
+      "bodySHA256": "2dedac5571d3b3a1f88a1fae0157c6df3fdd68f29bf68c13ccd5f75c3c69eaa5",
+      "expectedName": "Stitch - Covert Agent (Oversized)"
+    },
+    {
+      "productID": 539148,
+      "printedIdentifier": "157/204 • EN • 3",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/539148_400w.jpg",
+      "bodySHA256": "fa0e2f93729113e845c7b52eebb2fd119537d82ccd37620d1e48a6abaf4d76ff",
+      "expectedName": "Tinker Bell - Very Clever Fairy (Oversized)"
+    },
+    {
+      "productID": 597095,
+      "printedIdentifier": "73/204 • EN • 2",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/597095_400w.jpg",
+      "bodySHA256": "a55ad105b40424f1dc88ecf945d64c512c1a882967c0718c592ac0ccb91d6425",
+      "expectedName": "Bucky - Squirrel Squeak Tutor (Errata Version)"
+    },
+    {
+      "productID": 618771,
+      "printedIdentifier": "39/204 • EN • 2",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/618771_400w.jpg",
+      "bodySHA256": "4feab92170fcec47bd0fc08efedc5fdae04f294b13d9b64a04117e5cbb569b79",
+      "expectedName": "Elsa - Gloves Off (Errata Version)"
+    },
+    {
+      "productID": 668575,
+      "sourceCardID": "lorcanajson:en:3245",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/668575_400w.jpg",
+      "bodySHA256": "3e3647b970b6059df89933ebab0abe60341ce95d2ceaa79f3ed828aa45640ff8",
+      "expectedName": "Stitch - Rock Star"
+    },
+    {
+      "productID": 722695,
+      "sourceCardID": "lorcanajson:en:3551",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/722695_200w.jpg",
+      "bodySHA256": "492810b954f215a9cddd2196e165eeeb11d90dcafc311081bd407dc090ff2bf8",
+      "expectedName": "Vine Tendril"
+    },
+    {
+      "productID": 672385,
+      "sourceCardID": "lorcanajson:en:2460",
+      "expectedName": "Let It Go (Disney Lorcana Challenge)",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/672385_400w.jpg",
+      "bodySHA256": "809f8d207c184acde99395858766675b59b1f1a831a9d2ee0c7bd6b3d9cba1b2"
+    },
+    {
+      "productID": 705084,
+      "sourceCardID": "lorcanajson:en:3223",
+      "expectedName": "Rapunzel - Escaping the Tower (Store Championship Participant)",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705084_400w.jpg",
+      "bodySHA256": "37b0119ca622cb27277989988b85c128e22cac12920d081fc77d9278439b5ab2"
+    },
+    {
+      "productID": 705085,
+      "sourceCardID": "lorcanajson:en:3224",
+      "expectedName": "Rapunzel - Escaping the Tower (Store Championship)",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/705085_400w.jpg",
+      "bodySHA256": "6300226801d725b9cb51da1358151d25ef43d1b5878ecbadca6ae04c9bdc01be"
+    },
+    {
+      "productID": 712043,
+      "sourceCardID": "lorcanajson:en:3248",
+      "expectedName": "Buzz Lightyear - Providing Cover (Magical Places Promo)",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712043_400w.jpg",
+      "bodySHA256": "23589e05490d4473897cd9541b35b40933537bc5e0020fb277110a426139f0a9"
+    },
+    {
+      "productID": 712044,
+      "sourceCardID": "lorcanajson:en:3247",
+      "expectedName": "Elsa - The Fifth Spirit (Magical Places Promo)",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/712044_400w.jpg",
+      "bodySHA256": "0a95cf3bbec5db53324a2d905344dec75cdccad4c656c8d23028133c889f9dad"
+    },
+    {
+      "productID": 711361,
+      "sourceCardID": "lorcanajson:en:3589",
+      "expectedName": "Hector Rivera - Gone to Pieces",
+      "reference": "https://tcgplayer-cdn.tcgplayer.com/product/711361_200w.jpg",
+      "bodySHA256": "e0fd6df5d684b2aaab985f799ad0d4fcbdaaad9b4cabcda5023bdb76cfd420a6"
+    }
+  ]
+}

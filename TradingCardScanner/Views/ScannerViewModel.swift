@@ -83,12 +83,22 @@ struct ScanRequest: Identifiable, Equatable {
     let encounterID: UUID
     let heldRepeatAuthorizationID: UUID?
     let unresolvedScanID: UUID?
+    let catalogSelectionIdentifier: ScanIdentifier?
 
     var identifier: ScanIdentifier { subject.identifier }
+    var acquisitionIdentifier: ScanIdentifier { catalogSelectionIdentifier ?? identifier }
+
+    func acquiring(_ identifier: ScanIdentifier) -> Self {
+        .init(id: id, subject: subject, purpose: purpose, generation: generation, encounterID: encounterID,
+            heldRepeatAuthorizationID: heldRepeatAuthorizationID, unresolvedScanID: unresolvedScanID,
+            catalogSelectionIdentifier: identifier == self.identifier ? nil : identifier)
+    }
+
     func confirmingMagicEnglish() throws -> Self {
         .init(id: id, subject: .init(identifier: try identifier.confirmingMagicEnglish(), slab: subject.slab,
               inferredNameReadings: subject.inferredNameReadings), purpose: purpose, generation: generation,
-              encounterID: encounterID, heldRepeatAuthorizationID: heldRepeatAuthorizationID, unresolvedScanID: unresolvedScanID)
+              encounterID: encounterID, heldRepeatAuthorizationID: heldRepeatAuthorizationID, unresolvedScanID: unresolvedScanID,
+              catalogSelectionIdentifier: catalogSelectionIdentifier)
     }
 
     init(
@@ -98,7 +108,8 @@ struct ScanRequest: Identifiable, Equatable {
         generation: Int,
         encounterID: UUID = UUID(),
         heldRepeatAuthorizationID: UUID? = nil,
-        unresolvedScanID: UUID? = nil
+        unresolvedScanID: UUID? = nil,
+        catalogSelectionIdentifier: ScanIdentifier? = nil
     ) {
         self.id = id
         self.subject = subject
@@ -107,6 +118,7 @@ struct ScanRequest: Identifiable, Equatable {
         self.encounterID = encounterID
         self.heldRepeatAuthorizationID = heldRepeatAuthorizationID
         self.unresolvedScanID = unresolvedScanID
+        self.catalogSelectionIdentifier = catalogSelectionIdentifier
     }
 
 }
@@ -149,6 +161,7 @@ struct CollectionCommitCandidate: Sendable {
     let requestID: UUID
     let unresolvedScanID: UUID?
     let subject: ScanSubject
+    let acquisitionIdentifier: ScanIdentifier
     let card: IdentifiedCard
     let resolved: ResolvedVariant
     let identityResolution: IdentityResolution
@@ -166,6 +179,7 @@ struct CollectionCommitCandidate: Sendable {
         requestID = resolvedScan.request.id
         unresolvedScanID = resolvedScan.request.unresolvedScanID
         subject = resolvedScan.request.subject
+        acquisitionIdentifier = resolvedScan.request.acquisitionIdentifier
         card = resolvedScan.card
         resolved = resolvedScan.resolved
         identityResolution = resolvedScan.identityResolution
@@ -228,6 +242,7 @@ struct CollectionCommitCandidate: Sendable {
         requestID: UUID,
         unresolvedScanID: UUID? = nil,
         subject: ScanSubject,
+        acquisitionIdentifier: ScanIdentifier? = nil,
         card: IdentifiedCard,
         resolved: ResolvedVariant,
         identityResolution: IdentityResolution,
@@ -242,6 +257,7 @@ struct CollectionCommitCandidate: Sendable {
         self.requestID = requestID
         self.unresolvedScanID = unresolvedScanID
         self.subject = subject
+        self.acquisitionIdentifier = acquisitionIdentifier ?? subject.identifier
         self.card = card
         self.resolved = resolved
         self.identityResolution = identityResolution
@@ -2939,10 +2955,12 @@ final class ScannerViewModel: ObservableObject {
         }
         let accepted = beginPendingResolution(requestID: pending.candidate.requestID) { [weak self] in
             guard let self else { return }
-            guard await self.commitAuthorizedCollectionCandidate(
+            let outcome = await self.commitAuthorizedCollectionCandidate(
                 pending.candidate,
                 authorization: .addAnother
-            ) else {
+            )
+            guard outcome == .committed else {
+                guard outcome == .failed else { return }
                 self.pendingDuplicateConfirmation = pending
                 self.scanner.pauseRecognition()
                 return
@@ -3438,7 +3456,7 @@ final class ScannerViewModel: ObservableObject {
                 return
             }
             let resolved = ResolvedScan(
-                request: retryRequest,
+                request: retryRequest.acquiring(pending.acquisitionIdentifier),
                 card: pending.card,
                 resolved: pending.resolved,
                 identityResolution: pending.identityResolution,
@@ -3450,6 +3468,22 @@ final class ScannerViewModel: ObservableObject {
             let retryCandidate = CollectionCommitCandidate(resolvedScan: resolved)
             let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
                 guard let self else { return }
+                if retryCandidate.identifier.game == .lorcana {
+                    do {
+                        try await self.catalog.validateAcquisition(retryCandidate.acquisitionIdentifier,
+                            printingID: retryCandidate.card.physicalPrintingID,
+                            automatic: retryCandidate.identityResolution != .userSelectedPrinting)
+                    } catch is CatalogLookupError {
+                        guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
+                        self.fileLorcanaAcquisitionForLookup(retryCandidate, isAdditionalCopy: row.isAdditionalCopy)
+                        return
+                    } catch {
+                        guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
+                        self.handleLookupFailure(retryRequest, error)
+                        return
+                    }
+                    guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
+                }
                 if row.isAdditionalCopy {
                     self.presentRecoveredDuplicate(retryCandidate, rowID: row.id)
                     return
@@ -3472,6 +3506,11 @@ final class ScannerViewModel: ObservableObject {
                             return
                         }
                     } catch {
+                        if retryCandidate.identifier.game == .lorcana, error is CatalogLookupError {
+                            guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
+                            self.fileLorcanaAcquisitionForLookup(retryCandidate, isAdditionalCopy: row.isAdditionalCopy)
+                            return
+                        }
                         self.fileUnresolved(
                             request: retryRequest,
                             reason: .saveFailed(inMemoryCandidateID: retryCandidate.requestID),
@@ -3495,6 +3534,16 @@ final class ScannerViewModel: ObservableObject {
             let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
                 guard let self, self.isCurrent(retryRequest) else { return }
                 let card = details.card
+                let request: ScanRequest
+                do {
+                    let identifier = try await self.catalog.identifierForCatalogSelection(card, original: retryRequest.identifier)
+                    guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
+                    request = retryRequest.acquiring(identifier)
+                } catch {
+                    guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
+                    self.handleLookupFailure(retryRequest, error)
+                    return
+                }
                 let printRuns = card.game == .pokemon
                     ? PokemonMasterSetDefinition.printRuns(forSetProviderID: card.variantEvidence.setID) : []
                 let printRun = (selectedRun ?? row.subject.slab?.printedPrintRun)
@@ -3507,7 +3556,7 @@ final class ScannerViewModel: ObservableObject {
                 if let selectedVariant, options.contains(selectedVariant),
                    printRuns.isEmpty || printRun != nil || row.subject.slab != nil {
                     await self.route(ResolvedScan(
-                        request: retryRequest, card: card,
+                        request: request, card: card,
                         resolved: ResolvedVariant(variant: selectedVariant, resolution: .userConfirmed),
                         identityResolution: .userSelectedPrinting,
                         pokemonPrintRun: printRun,
@@ -3515,12 +3564,12 @@ final class ScannerViewModel: ObservableObject {
                         catalogRetrievedAt: details.retrievedAt
                     ))
                 } else if let printRun {
-                    await self.resolveVariant(for: retryRequest, card: card,
+                    await self.resolveVariant(for: request, card: card,
                                               pokemonPrintRun: printRun,
                                               catalogRetrievedAt: details.retrievedAt,
                                               identityResolution: .userSelectedPrinting)
                 } else {
-                    await self.resolvePrintRun(for: retryRequest, card: card,
+                    await self.resolvePrintRun(for: request, card: card,
                                                catalogRetrievedAt: details.retrievedAt,
                                                labelPrintRun: row.subject.slab?.printedPrintRun,
                                                identityResolution: .userSelectedPrinting)
@@ -4279,11 +4328,12 @@ final class ScannerViewModel: ObservableObject {
             let candidate = CollectionCommitCandidate(resolvedScan: resolvedScan)
             if let duplicateChoiceContext,
                isValidDuplicateChoiceContext(duplicateChoiceContext, for: candidate) {
-                guard await commitAuthorizedCollectionCandidate(
+                let outcome = await commitAuthorizedCollectionCandidate(
                     candidate,
                     authorization: .addAnother
-                ) else {
-                    if isCurrent(resolvedScan.request), let retryVariantChoice {
+                )
+                guard outcome == .committed else {
+                    if outcome == .failed, isCurrent(resolvedScan.request), let retryVariantChoice {
                         pendingChoice = retryVariantChoice
                         scanner.pauseRecognition()
                     }
@@ -5016,6 +5066,10 @@ final class ScannerViewModel: ObservableObject {
         case heldRepeat
     }
 
+    private enum CollectionCommitOutcome {
+        case committed, failed, requiresLookup
+    }
+
     /// Collection routing is identity-first. A matching identity can reach a
     /// prompt only with spatial evidence or a later committed card with a
     /// different canonical identity. No evidence means suppression, never a
@@ -5041,7 +5095,7 @@ final class ScannerViewModel: ObservableObject {
         switch decision {
         case .automatic:
             diagnostic("routingAutomatic")
-            guard await commitAuthorizedCollectionCandidate(candidate, authorization: .automatic) else { return }
+            guard await commitAuthorizedCollectionCandidate(candidate, authorization: .automatic) == .committed else { return }
             pruneSpatialResetProofsToLiveHistory()
         case .suppress:
             suppressCollectionCandidate(
@@ -5162,7 +5216,9 @@ final class ScannerViewModel: ObservableObject {
         heldRepeatAuthorizationState = nil
         heldDuplicateOffer = nil
 
-        guard await commitAuthorizedCollectionCandidate(candidate, authorization: .heldRepeat) else {
+        let outcome = await commitAuthorizedCollectionCandidate(candidate, authorization: .heldRepeat)
+        guard outcome == .committed else {
+            guard outcome == .failed else { return }
             // The consumed permit is never restored. Publish a fresh offer and
             // make the next tap create a new scanner-owned authorization.
             clearRecognizedAcknowledgement(for: candidate.encounterID)
@@ -5192,7 +5248,7 @@ final class ScannerViewModel: ObservableObject {
     private func commitAuthorizedCollectionCandidate(
         _ candidate: CollectionCommitCandidate,
         authorization: CollectionCommitAuthorization
-    ) async -> Bool {
+    ) async -> CollectionCommitOutcome {
         let isAdditionalCopy: Bool
         switch authorization {
         case .automatic: isAdditionalCopy = false
@@ -5201,7 +5257,7 @@ final class ScannerViewModel: ObservableObject {
         guard isStorageGenerationCurrent else {
             clearAcknowledgement(for: candidate.encounterID)
             endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
-            return false
+            return .failed
         }
         guard gameRegistry.supports(candidate.card.game, .collectionWrite) else {
             fileUnresolved(request: scanRequest(for: candidate), reason: .saveFailed(inMemoryCandidateID: candidate.requestID),
@@ -5210,7 +5266,7 @@ final class ScannerViewModel: ObservableObject {
             endOneCardScan(encounterID: candidate.encounterID, outcome: "collection-game-write-disabled")
             show(ScanNote(text: "Collection saving is not enabled for this game yet. Saved to Needs attention.", tone: .problem))
             feedback.problem()
-            return false
+            return .failed
         }
         guard collectionAddOverride != nil || collectionWriter != nil else {
             fileUnresolved(
@@ -5227,7 +5283,7 @@ final class ScannerViewModel: ObservableObject {
             ) {
                 show(ScanNote(text: message, tone: .problem))
             }
-            return false
+            return .failed
         }
 
         let writeSessionID = scannerSessionID
@@ -5247,8 +5303,9 @@ final class ScannerViewModel: ObservableObject {
             let addOverride = collectionAddOverride
             let writer = collectionWriter
             let writeCandidate = {
-                if candidate.identifier.game == .magic, candidate.identifier.namespace.hasPrefix("historical") {
-                    try await self.catalog.validateAcquisition(candidate.identifier,
+                if candidate.identifier.game == .lorcana
+                    || (candidate.identifier.game == .magic && candidate.identifier.namespace.hasPrefix("historical")) {
+                    try await self.catalog.validateAcquisition(candidate.acquisitionIdentifier,
                         printingID: candidate.card.physicalPrintingID,
                         automatic: candidate.identityResolution != .userSelectedPrinting)
                 }
@@ -5280,12 +5337,12 @@ final class ScannerViewModel: ObservableObject {
             guard writeSessionID == scannerSessionID else {
                 clearAcknowledgement(for: candidate.encounterID)
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
-                return false
+                return .failed
             }
             guard isStorageGenerationCurrent else {
                 clearAcknowledgement(for: candidate.encounterID)
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "storage-generation-stale")
-                return false
+                return .failed
             }
 
             if mutation.wasDuplicate {
@@ -5302,7 +5359,7 @@ final class ScannerViewModel: ObservableObject {
                 resumeRecognitionIfPossible()
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "certified-duplicate")
                 diagnostic("certifiedDuplicateNoOp")
-                return true
+                return .committed
             }
 
             if pendingChoice?.request.id == candidate.requestID {
@@ -5330,12 +5387,16 @@ final class ScannerViewModel: ObservableObject {
             }
             resumeRecognitionIfPossible()
             diagnostic(candidate.subject.slab == nil ? "collectionCommit" : "gradedCollectionCommit")
-            return true
+            return .committed
         } catch {
             guard writeSessionID == scannerSessionID else {
                 clearAcknowledgement(for: candidate.encounterID)
                 endOneCardScan(encounterID: candidate.encounterID, outcome: "session-stale")
-                return false
+                return .failed
+            }
+            if candidate.identifier.game == .lorcana, error is CatalogLookupError {
+                fileLorcanaAcquisitionForLookup(candidate, isAdditionalCopy: isAdditionalCopy)
+                return .requiresLookup
             }
             fileUnresolved(
                 request: scanRequest(for: candidate),
@@ -5352,8 +5413,27 @@ final class ScannerViewModel: ObservableObject {
                 show(ScanNote(text: message, tone: .problem))
             }
             feedback.problem()
-            return false
+            return .failed
         }
+    }
+
+    private func fileLorcanaAcquisitionForLookup(_ candidate: CollectionCommitCandidate, isAdditionalCopy: Bool) {
+        let request = scanRequest(for: candidate)
+        fileUnresolved(request: request, reason: .noCatalogEntry, isAdditionalCopy: isAdditionalCopy)
+        // Recovery merging normally retains an in-memory failed save. This
+        // candidate instead needs new printing evidence, including on Retry.
+        let rowID = request.unresolvedScanID ?? request.encounterID
+        if let index = unresolvedScans.firstIndex(where: { $0.id == rowID }) {
+            var row = unresolvedScans[index]
+            row.pendingCommit = nil
+            row.printingCandidates = []
+            row.resolvedProviderID = nil
+            unresolvedScans[index] = row
+        }
+        clearAcknowledgement(for: candidate.encounterID)
+        endOneCardScan(encounterID: candidate.encounterID, outcome: "catalog-acquisition-stale")
+        show(ScanNote(text: "The catalog changed. Review this card again in Needs attention.", tone: .problem))
+        feedback.problem()
     }
 
     /// Price metadata is secondary to a successful collection mutation. This
@@ -5914,7 +5994,8 @@ final class ScannerViewModel: ObservableObject {
             generation: scanGeneration,
             encounterID: candidate.encounterID,
             heldRepeatAuthorizationID: candidate.heldRepeatAuthorizationID,
-            unresolvedScanID: candidate.unresolvedScanID
+            unresolvedScanID: candidate.unresolvedScanID,
+            catalogSelectionIdentifier: candidate.acquisitionIdentifier == candidate.identifier ? nil : candidate.acquisitionIdentifier
         )
     }
 

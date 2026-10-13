@@ -194,6 +194,40 @@ final class LorcanaPhysicalCatalogTests: XCTestCase {
         _ = try await adapter.resolve(choices[1], for: identifier(registry))
     }
 
+    func testBatchResolutionPreservesSizeLabelsAndWithholdsUnreviewedOrIndistinguishableFamilies() throws {
+        let complete = try registry([printing(), printing(id: secondID, size: .oversized)])
+        let rows = LorcanaCatalogAdapter(registry: complete).resolutions(forFooter: try footer())
+        XCTAssertEqual(Set(rows.map { $0.printing.id }), [firstID, secondID])
+        XCTAssertEqual(Set(rows.map { $0.resolution.card.name }), [
+            "Fixture Elsa — Spirit of Winter · Size: Standard", "Fixture Elsa — Spirit of Winter · Size: Oversized"
+        ])
+        let secondArtwork = UUID(uuidString: "A0000000-0000-0000-0000-000000000002")!
+        let held = try registry([printing(), printing(id: secondID, size: .oversized, status: .provisional)])
+        let indistinguishable = try registry([printing(), printing(id: secondID, artwork: secondArtwork)])
+        let incomplete = try registry([printing()], complete: false)
+        for catalog in [held, indistinguishable, incomplete] {
+            XCTAssertTrue(LorcanaCatalogAdapter(registry: catalog).resolutions(forFooter: try footer()).isEmpty)
+        }
+    }
+
+    func testBatchedCompactLabelsKeepCollisionFallbackAndHandleEmptyOrSingletonChoices() {
+        func candidate(_ id: String, treatment: String, distribution: String) -> PhysicalPrintingCandidate {
+            .init(id: id, game: .lorcana, canonicalCardID: "fixture", language: "en", catalogGeneration: "fixture",
+                name: "Fixture", printedIdentifier: "207/204 EN 1", treatmentLabel: treatment, distributionLabel: distribution)
+        }
+        let first = candidate("first", treatment: "Original", distribution: "Premium")
+        let second = candidate("second", treatment: "Premium", distribution: "Original")
+        let third = candidate("third", treatment: "Premium", distribution: "Premium")
+        let choices = [first, second, third]
+        let labels = PhysicalPrintingCandidate.compactChoiceLabels(among: choices)
+        XCTAssertEqual(labels[first.id], "Original · Premium")
+        XCTAssertEqual(labels[second.id], "Premium · Original")
+        XCTAssertEqual(labels[third.id], "Premium · Premium")
+        XCTAssertEqual(Set(labels.values).count, 3)
+        XCTAssertTrue(PhysicalPrintingCandidate.compactChoiceLabels(among: []).isEmpty)
+        XCTAssertEqual(PhysicalPrintingCandidate.compactChoiceLabels(among: [first])[first.id], "Original")
+    }
+
     func testTamperedCrossGameAndStaleChoicesCannotResolve() async throws {
         let registry = try registry([printing(), printing(id: secondID, size: .oversized)])
         let adapter = LorcanaCatalogAdapter(registry: registry), identifier = try identifier(registry)
@@ -366,6 +400,6 @@ final class LorcanaPhysicalCatalogTests: XCTestCase {
         XCTAssertTrue(runtime.descriptor.capabilities.contains(.browse))
         XCTAssertNotNil(runtime.browse); XCTAssertNotNil(runtime.importer); XCTAssertNil(runtime.pricing)
         XCTAssertNil(runtime.activationSource)
-        XCTAssertNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
+        XCTAssertFalse(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana)!.descriptor.capabilities.contains(.collectionWrite))
     }
 }

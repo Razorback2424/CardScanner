@@ -92,6 +92,13 @@ actor CardCatalog {
         return try adapter.identifierForRetry(identifier)
     }
 
+    func identifierForCatalogSelection(_ card: IdentifiedCard, original: ScanIdentifier) throws -> ScanIdentifier {
+        guard card.game == original.game, let adapter = gameCatalogAdapters.adapter(for: card.game) else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+        return try adapter.identifierForCatalogSelection(printingID: card.physicalPrintingID, original: original)
+    }
+
     init(
         source: any PokemonCardSource = LivePokemonCardSource(),
         offline: PokemonOfflineCatalog? = nil,

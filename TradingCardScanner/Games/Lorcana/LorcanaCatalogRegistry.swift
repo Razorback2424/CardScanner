@@ -12,14 +12,18 @@ struct LorcanaPrintedIdentity: Hashable, Codable, Sendable {
     enum ValidationError: Error { case invalidFooter }
 
     init(collectorNumber: String, denominator: String, language: String, printedSetMarker: String) throws {
-        guard Self.matches(collectorNumber, "[0-9]{1,4}"), let number = Int(collectorNumber), number > 0,
+        let digits = String(collectorNumber.prefix(while: { $0.isNumber }))
+        let suffix = String(collectorNumber.dropFirst(digits.count)).uppercased()
+        // Fabled's Bruno — Undetected Uncle is physically numbered 0/204.
+        // Whether OCR may accept zero is determined by installed footer mappings.
+        guard Self.matches(collectorNumber, "[0-9]{1,4}[A-Za-z]?"), let number = Int(digits), number >= 0,
               Self.matches(denominator, "[A-Z0-9][A-Z0-9-]{0,11}"),
               Int(denominator) != 0,
               Self.matches(language, "[a-z]{2}"),
               Self.matches(printedSetMarker, "[A-Z0-9][A-Z0-9-]{0,11}") else {
             throw ValidationError.invalidFooter
         }
-        self.collectorNumber = String(number)
+        self.collectorNumber = String(number) + suffix
         self.denominator = denominator
         self.language = language
         self.printedSetMarker = printedSetMarker

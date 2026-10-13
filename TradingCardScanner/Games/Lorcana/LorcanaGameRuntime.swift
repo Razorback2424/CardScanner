@@ -25,6 +25,13 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
         try LorcanaRecognitionAdapter.identifier(footer(for: identifier), generation: generation)
     }
 
+    func identifierForCatalogSelection(printingID: String, original: ScanIdentifier) throws -> ScanIdentifier {
+        guard original.game == game, let id = UUID(uuidString: printingID), id.uuidString.lowercased() == printingID,
+              let printing = registry.physicalCatalog?.printingByID[id] else { throw CatalogLookupError.invalidPrintingChoice }
+        _ = try resolution(forPrintingID: id)
+        return try LorcanaRecognitionAdapter.identifier(printing.identity.footer, generation: generation)
+    }
+
     func prepareLookupIdentifier(_ identifier: ScanIdentifier) throws -> ScanIdentifier {
         guard identifier.catalogGeneration == generation else { throw CatalogLookupError.staleCatalog }
         _ = try footer(for: identifier)
@@ -116,6 +123,21 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
         return try resolution(printing, canonical: canonical)
     }
 
+    /// Browse prepares an entire family at once. Each target retains the same
+    /// acquisition checks as exact UUID resolution, including visible evidence.
+    func resolutions(forFooter footer: LorcanaPrintedIdentity)
+        -> [(printing: LorcanaPhysicalPrinting, resolution: CardCatalog.CatalogResolution)] {
+        guard let physical = registry.physicalCatalog, let printings = physical.reviewedPrintings(for: footer),
+              let first = printings.first, let canonical = physical.canonicalByID[first.identity.canonicalCardID] else { return [] }
+        let candidates = printings.map { candidate($0, canonical: canonical) }
+        let labels = printings.count > 1 ? PhysicalPrintingCandidate.compactChoiceLabels(among: candidates) : [:]
+        return zip(printings, candidates).compactMap { printing, candidate in
+            guard candidate.selectionEvidence(among: candidates) != .insufficient,
+                  let resolved = try? resolution(printing, canonical: canonical, siblingChoiceLabel: labels[candidate.id]) else { return nil }
+            return (printing, resolved)
+        }
+    }
+
     func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?,
                                     itemKindRaw: String, collectionKey: String) throws {
         guard itemKindRaw == CollectionItemKind.rawCard.rawValue,
@@ -139,12 +161,15 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
                                   "Layout: \(printing.identity.layout)"])
     }
 
-    private func resolution(_ printing: LorcanaPhysicalPrinting, canonical: LorcanaCanonicalCard) throws -> CardCatalog.CatalogResolution {
+    private func resolution(_ printing: LorcanaPhysicalPrinting, canonical: LorcanaCanonicalCard,
+                            siblingChoiceLabel: String? = nil) throws -> CardCatalog.CatalogResolution {
         let footer = printing.identity.footer
         let variants = printing.finishes.map { $0.finish.variant }.sorted { $0.choicePriority < $1.choicePriority }
-        let siblings = registry.physicalCatalog?.reviewedPrintings(for: footer) ?? []
+        let siblings = siblingChoiceLabel == nil ? registry.physicalCatalog?.reviewedPrintings(for: footer) ?? [] : []
         let name: String
-        if siblings.count > 1 {
+        if let siblingChoiceLabel {
+            name = canonical.displayName + " · " + siblingChoiceLabel
+        } else if siblings.count > 1 {
             let choices = siblings.map { candidate($0, canonical: canonical) }
             name = canonical.displayName + " · " + candidate(printing, canonical: canonical).compactChoiceLabel(among: choices)
         } else if printing.identity.size == .oversized || printing.identity.stamp != nil || printing.identity.layout != "normal" {

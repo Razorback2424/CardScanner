@@ -848,6 +848,7 @@ final class CardScanner: NSObject, ObservableObject {
     )
     private let videoOutput = AVCaptureVideoDataOutput()
     private let footerRequest = VNRecognizeTextRequest()
+    private let fullCardTextRequest = VNRecognizeTextRequest()
     private let titleRequest = VNRecognizeTextRequest()
     private let labelRequest = VNRecognizeTextRequest()
     private let trackingSequenceHandler = VNSequenceRequestHandler()
@@ -1613,6 +1614,10 @@ final class CardScanner: NSObject, ObservableObject {
         // numeric-heavy identifier strip; keep the custom set vocabulary for MVP.
         footerRequest.usesLanguageCorrection = true
         footerRequest.customWords = profile.customWords
+
+        fullCardTextRequest.recognitionLevel = .accurate
+        fullCardTextRequest.recognitionLanguages = ["en-US"]
+        fullCardTextRequest.usesLanguageCorrection = true
 
         titleRequest.recognitionLevel = .accurate
         titleRequest.recognitionLanguages = ["en-US"]
@@ -3450,6 +3455,17 @@ struct RecognitionProfile: Sendable {
     func identify(_ lines: [RecognizedLine]) -> RecognitionOutcome {
         recognizers.identify(lines)
     }
+
+    func needsFullCardText(afterFooterLines lines: [RecognizedLine], outcome: RecognitionOutcome) -> Bool {
+        // Existing identified, ambiguous and fallback-blocked frames retain
+        // their outcome. No extra Vision work is added to ordinary card scans.
+        guard outcome == .nothing else { return false }
+        return recognizers.needsFullCardText(afterFooterLines: lines)
+    }
+
+    func identify(footerLines: [RecognizedLine], fullCardLines: [RecognizedLine]) -> RecognitionOutcome {
+        recognizers.identify(footerLines: footerLines, fullCardLines: fullCardLines)
+    }
 }
 
 enum RecognitionOutcome: Equatable {
@@ -3577,7 +3593,7 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 "encounter=\(latchEncounterID?.uuidString ?? "none")"
             )
             let lines: [RecognizedLine]
-            let outcome: RecognitionOutcome
+            var outcome: RecognitionOutcome
             do {
                 defer {
                     PerformanceSignpost.endInterval(
@@ -3593,6 +3609,14 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 )
                 updateAssistance(from: lines)
                 outcome = profile.identify(lines)
+                if subjectMode == .raw, profile.needsFullCardText(afterFooterLines: lines, outcome: outcome) {
+                    fullCardTextRequest.regionOfInterest = CardFramingRegion.cardVisionRect
+                    fullCardTextRequest.customWords = profile.customWords
+                    try handler.perform([fullCardTextRequest])
+                    let fullCardLines = recognizedLines(from: fullCardTextRequest,
+                        roi: fullCardTextRequest.regionOfInterest, sourceSize: sourceSize)
+                    outcome = profile.identify(footerLines: lines, fullCardLines: fullCardLines)
+                }
             }
             var historical: ScanIdentifier?
             if case .nothing = outcome {

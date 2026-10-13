@@ -469,7 +469,7 @@ final class LorcanaCatalogActivationTests: XCTestCase {
         XCTAssertEqual(snapshot.revision, 1)
         XCTAssertEqual(first.runtime.descriptor.capabilities, [.scan, .browse])
         XCTAssertFalse(FileManager.default.fileExists(atPath: root.path))
-        XCTAssertNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
+        XCTAssertNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana)?.activationSource)
         XCTAssertNil(first.runtime.pricing); XCTAssertNotNil(first.runtime.browse); XCTAssertNotNil(first.runtime.importer)
     }
     #endif

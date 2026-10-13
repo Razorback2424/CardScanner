@@ -23,6 +23,16 @@ struct ScannerView: View {
     @Environment(\.cardGameRuntimes) private var runtimes
     @State private var acceptanceNumber = OnePieceCatalogBootstrap.acceptanceNumber()
     @State private var injectedAcceptanceSample = false
+    @State private var lorcanaSample = LorcanaReviewLaunch.initialSample
+    @State private var injectedLorcanaSample = false
+
+    private func injectLorcanaSample() {
+        guard let recognizer = runtimes?.runtime(for: .lorcana)?.recognizer,
+              case let .identified(subject) = recognizer.identify([.init(text: lorcanaSample.footerText)]) else { return }
+        // Use the actual scanner/model callback and catalog authority. This is
+        // synthetic OCR input, not a fabricated successful scan or device proof.
+        model.scanner.onConfirmedSubjectCandidate?(nil, UUID(), subject, nil)
+    }
 
     private var acceptanceReady: Bool {
         OnePieceCatalogBootstrap.isAcceptanceLaunch() && injectedAcceptanceSample
@@ -104,6 +114,29 @@ struct ScannerView: View {
         }
 #if DEBUG && LOCAL_ONLY_SIGNING
         .safeAreaInset(edge: .top) {
+            if LorcanaReviewLaunch.isEnabled() {
+                VStack(alignment: .leading, spacing: 8) {
+                    Menu {
+                        Picker("Review sample", selection: $lorcanaSample) {
+                            ForEach(LorcanaReviewLaunch.Sample.allCases) { sample in
+                                Text(sample.label).tag(sample)
+                            }
+                        }
+                    } label: {
+                        Label(lorcanaSample.label, systemImage: "list.bullet")
+                            .frame(minHeight: 44)
+                    }
+                    .accessibilityIdentifier("lorcana-review-sample")
+                    Button("Scan synthetic footer", action: injectLorcanaSample)
+                        .buttonStyle(.borderedProminent)
+                        .frame(minHeight: 44)
+                        .accessibilityIdentifier("lorcana-review-inject")
+                        .disabled(model.pendingIdentityChoice != nil || model.pendingChoice != nil
+                            || model.pendingPrintRunChoice != nil || model.isIdentificationProcessingForTesting
+                            || runtimes?.runtime(for: .lorcana) == nil)
+                }
+                .padding(8).frame(maxWidth: .infinity, alignment: .leading).background(.regularMaterial)
+            }
             if OnePieceCatalogBootstrap.isAcceptanceLaunch() {
                 VStack(spacing: 4) {
                     Text("One Piece acceptance · Separate test collection")
@@ -142,7 +175,7 @@ struct ScannerView: View {
             guard scannerScreenshotRoute == nil else { return }
 #endif
 #if DEBUG && LOCAL_ONLY_SIGNING
-            let usesCamera = !OnePieceCatalogBootstrap.isAcceptanceLaunch()
+            let usesCamera = !OnePieceCatalogBootstrap.isAcceptanceLaunch() && !LorcanaReviewLaunch.isEnabled()
 #else
             let usesCamera = true
 #endif
@@ -156,6 +189,12 @@ struct ScannerView: View {
                 storageGeneration: storageGeneration
             )
 #if DEBUG && LOCAL_ONLY_SIGNING
+            if LorcanaReviewLaunch.isEnabled(), !injectedLorcanaSample {
+                injectedLorcanaSample = true
+                model.setPurpose(.collection)
+                model.clearFinishLocks()
+                injectLorcanaSample()
+            }
             if OnePieceCatalogBootstrap.isAcceptanceLaunch(), !injectedAcceptanceSample {
                 injectedAcceptanceSample = true
                 model.setPurpose(.collection)

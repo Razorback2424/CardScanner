@@ -116,7 +116,12 @@ final class SealedBrowseModel: ObservableObject {
         self.credentialsAvailable = isConfigured
     }
 
-    var isConfigured: Bool { credentialsAvailable() }
+    var isConfigured: Bool {
+        credentialsAvailable() || gameRegistry.supports(.lorcana, .sealed)
+    }
+    func isConfigured(for game: CardGame) -> Bool {
+        credentialsAvailable() || (game == .lorcana && gameRegistry.supports(game, .sealed))
+    }
 
     func clearSearch() {
         searchGeneration = UUID()
@@ -150,6 +155,7 @@ final class SealedBrowseModel: ObservableObject {
         var gamesToFetch: [CardGame] = []
 
         for game in games {
+            let isConfigured = isConfigured(for: game)
             let key = CatalogCacheStore.sealedPageKey(
                 game: game,
                 setID: nil,
@@ -227,6 +233,7 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadMoreSearch(game: CardGame, query: String) async {
+        let isConfigured = isConfigured(for: game)
         guard gameRegistry.supports(game, .sealed) else { return }
         let normalizedQuery = CardNameSearch.normalize(query)
         guard normalizedQuery.count >= 2,
@@ -303,6 +310,7 @@ final class SealedBrowseModel: ObservableObject {
     /// One request, and only when the directory is not already loaded for this
     /// game. Sealed browse is interactive, but it is still the user's quota.
     func loadSetsIfNeeded(game: CardGame, forceRefresh: Bool = false) async {
+        let isConfigured = isConfigured(for: game)
         guard gameRegistry.supports(game, .sealed) else {
             setsRequestID = UUID()
             activeSetsGame = nil
@@ -363,6 +371,7 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadProducts(game: CardGame, setID: String?, query: String? = nil) async {
+        let isConfigured = isConfigured(for: game)
         guard gameRegistry.supports(game, .sealed) else {
             productsRequestID = UUID()
             activeProductRoute = nil
@@ -427,6 +436,7 @@ final class SealedBrowseModel: ObservableObject {
     }
 
     func loadMore(game: CardGame, setID: String?, query: String? = nil) async {
+        let isConfigured = isConfigured(for: game)
         guard gameRegistry.supports(game, .sealed) else { return }
         let route = ProductRoute(game: game, setID: setID, query: query)
         guard hasMore, activeProductRoute != route else { return }
@@ -554,9 +564,9 @@ struct SealedSetDirectoryContent: View {
 
     var body: some View {
         List {
-            if !model.isConfigured, !hasUsableCachedDirectory {
+            if !model.isConfigured(for: game), !hasUsableCachedDirectory {
                 unconfigured
-            } else if !model.isConfigured, hasUsableCachedDirectory {
+            } else if !model.isConfigured(for: game), hasUsableCachedDirectory {
                 Text("Showing saved sealed sets. Set up sealed browsing to refresh this directory.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -613,13 +623,13 @@ struct SealedSetDirectoryContent: View {
         .overlay {
             if model.isLoading, model.sets.isEmpty {
                 ProgressView("Loading sealed sets…")
-            } else if model.sets.isEmpty, model.errorMessage == nil, model.isConfigured {
+            } else if model.sets.isEmpty, model.errorMessage == nil, model.isConfigured(for: game) {
                 ContentUnavailableView(
                     "No Sealed Products",
                     systemImage: "shippingbox",
                     description: Text("This game has no sealed products in the price catalogue.")
                 )
-            } else if (model.isConfigured || hasUsableCachedDirectory),
+            } else if (model.isConfigured(for: game) || hasUsableCachedDirectory),
                       !normalizedSearch.isEmpty,
                       visibleSets.isEmpty {
                 ContentUnavailableView(
@@ -727,7 +737,7 @@ struct SealedProductGridView: View {
         .overlay {
             if model.isLoading, model.products.isEmpty {
                 ProgressView("Loading products…")
-            } else if !model.isConfigured, model.products.isEmpty {
+            } else if !model.isConfigured(for: game), model.products.isEmpty {
                 Label(
                     "Add a pricing API key in Settings to browse sealed products.",
                     systemImage: "key"

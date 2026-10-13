@@ -338,7 +338,8 @@ struct CollectionStorageBootstrapDependencies {
     ) -> Self {
         var paths = CollectionStoragePaths.production(fileManager: fileManager)
 #if DEBUG && LOCAL_ONLY_SIGNING
-        if let directory = OnePieceCatalogBootstrap.developerStorageDirectory() {
+        if let directory = LorcanaReviewLaunch.isEnabled() ? LorcanaReviewLaunch.storageDirectory
+            : OnePieceCatalogBootstrap.developerStorageDirectory() {
             paths = .production(resolvedApplicationSupportURL: paths.applicationSupportURL
                 .appendingPathComponent(directory, isDirectory: true))
         }
