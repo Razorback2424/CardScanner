@@ -1292,6 +1292,13 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
         return (nil, CardGameRegistry.standard.supports(game, .collectionWrite))
     }
 
+    func mutationAuthority(for game: CardGame, container: ModelContainer)
+        -> (adapter: (any GameCatalogAdapter)?, requiresCatalog: Bool) {
+        lock.lock(); defer { lock.unlock() }
+        guard let entry = entries[ObjectIdentifier(container)], entry.hasCatalogAuthority else { return (nil, false) }
+        return (entry.catalogAdapters?.adapter(for: game), !entry.legacyCorrectionGames.contains(game))
+    }
+
     func gameRegistry(for container: ModelContainer, fallback: CardGameRegistry = .standard) -> CardGameRegistry {
         lock.lock()
         defer { lock.unlock() }
@@ -1474,7 +1481,13 @@ struct CollectionStore {
             }
         }
         for model in models {
-            if let row = model as? CollectedCard { try requireWritableGame(row.cardGame) }
+            if let row = model as? CollectedCard {
+                try requireWritableGame(row.cardGame)
+                let authority = CollectionStoreSessionRegistry.shared.mutationAuthority(for: row.cardGame, container: context.container)
+                guard authority.adapter != nil || !authority.requiresCatalog else { throw CatalogLookupError.invalidPrintingChoice }
+                try authority.adapter?.validateCollectionMutation(printingID: row.providerID, catalogProviderID: row.catalogProviderID,
+                    variantID: row.variantID, itemKindRaw: row.itemKindRaw, collectionKey: row.collectionKey)
+            }
             if let activity = model as? CollectionActivity { try requireWritableActivity(activity, gamesByKey: gamesByKey) }
             if let event = model as? InventoryEvent {
                 try requireWritableGame(historyGame(for: event.collectionKey, gamesByKey: gamesByKey))

@@ -132,6 +132,11 @@ struct CollectionCSVEntry: Sendable, Equatable {
     /// Raw card, graded slab or sealed product. Defaulted so every existing
     /// construction site keeps meaning what it meant.
     var itemKind: CollectionItemKind = .rawCard
+    /// Retain supplied evidence before legacy enum projection. New adapters must
+    /// not accept an unknown future kind just because the parser displayed Raw.
+    var sourceItemKindRaw: String? = nil
+    var sourceLanguage: String? = nil
+    var conflictingSourceIdentity = false
     var gradingCompany: GradingCompany?
     var grade: CardGrade?
     var pokemonPrintRun: PokemonPrintRun?
@@ -327,7 +332,7 @@ enum CollectionCSV {
                 entry.imageURL ?? "",
                 entry.thumbnailURL ?? "",
                 formatter.string(from: entry.dateAdded),
-                entry.itemKind.rawValue,
+                entry.sourceItemKindRaw ?? entry.itemKind.rawValue,
                 entry.justTCGCardID ?? "",
                 entry.justTCGVariantID ?? "",
                 entry.justTCGAPIVersion ?? "",
@@ -342,10 +347,12 @@ enum CollectionCSV {
                 MagicTreatmentKeyCodec.encodeQualifiers(entry.magicTreatmentQualifiers) ?? "",
                 entry.magicContentKindRaw,
                 entry.collectionKey,
-                entry.catalogProviderID ?? ""
+                entry.catalogProviderID ?? "",
+                entry.sourceLanguage ?? "",
+                entry.conflictingSourceIdentity ? "true" : ""
             ]
         }
-        return CollectionCSVDocument(text: csvText(headers: exportHeaders, rows: rows))
+        return CollectionCSVDocument(text: csvText(headers: exportHeaders + ["source_language", "source_identity_conflict"], rows: rows))
     }
 
     /// Daily closes, one row per revision.
@@ -599,6 +606,9 @@ enum CollectionCSV {
                     )
                 }
                 if var existing = entriesByKey[entry.collectionKey] {
+                    existing.conflictingSourceIdentity = existing.conflictingSourceIdentity || entry.conflictingSourceIdentity
+                        || !sameImportIdentity(existing, entry)
+                    if existing.sourceLanguage == nil { existing.sourceLanguage = entry.sourceLanguage }
                     if isCertified(entry) || isCertified(existing) {
                         // A certificate identifies one physical slab. Duplicate
                         // export rows must not turn that slab into a stack.
@@ -626,6 +636,27 @@ enum CollectionCSV {
         )
         plan.fingerprint = fingerprint(for: plan.entries)
         return plan
+    }
+
+    /// A duplicate key cannot erase conflicting evidence before the installed
+    /// adapter sees it. Display metadata/date differences may still merge.
+    private static func sameImportIdentity(_ lhs: CollectionCSVEntry, _ rhs: CollectionCSVEntry) -> Bool {
+        func language(_ value: String) -> String {
+            let lower = value.lowercased()
+            return ["en", "eng", "english"].contains(lower) ? "en" : lower
+        }
+        let languageMatches = lhs.sourceLanguage == nil || rhs.sourceLanguage == nil
+            || language(lhs.sourceLanguage!) == language(rhs.sourceLanguage!)
+        return lhs.game == rhs.game && lhs.providerID == rhs.providerID
+            && (lhs.catalogProviderID ?? lhs.providerID) == (rhs.catalogProviderID ?? rhs.providerID)
+            && lhs.cardNumber == rhs.cardNumber && lhs.variant?.id == rhs.variant?.id
+            && lhs.itemKind == rhs.itemKind && (lhs.sourceItemKindRaw ?? lhs.itemKind.rawValue) == (rhs.sourceItemKindRaw ?? rhs.itemKind.rawValue)
+            && languageMatches && lhs.pokemonPrintRun == rhs.pokemonPrintRun
+            && lhs.magicTreatmentIDsRaw == rhs.magicTreatmentIDsRaw && lhs.magicTreatmentQualifiers == rhs.magicTreatmentQualifiers
+            && lhs.magicContentKindRaw == rhs.magicContentKindRaw && lhs.gradingCompany == rhs.gradingCompany
+            && lhs.grade == rhs.grade && lhs.certificationNumber == rhs.certificationNumber
+            && lhs.justTCGCardID == rhs.justTCGCardID && lhs.justTCGVariantID == rhs.justTCGVariantID
+            && lhs.justTCGAPIVersion == rhs.justTCGAPIVersion && lhs.marketRegionRaw == rhs.marketRegionRaw
     }
 
     static func apply(
@@ -1024,6 +1055,7 @@ enum CollectionCSV {
                                 totalEntries: plan.entries.count
                             )
                         }
+                        try collectionStore.validatePendingGameWrites()
                         try context.save()
                         collectionStore.invalidateIdentityAliasCache()
                         inserted += rowInserted
@@ -1112,7 +1144,7 @@ enum CollectionCSV {
         } else {
             game = isScryfallExport ? .magic : .pokemon
         }
-        guard isSupportedLanguage(value(["language", "lang"], in: row)) else { return [] }
+        guard isSupportedLanguage(value(["language", "lang", "source_language"], in: row)) else { return [] }
         let setName = value(["set_name"], in: row) ?? "Unknown Set"
         let setCode = value(["set_code", "set"], in: row) ?? ""
         let cardNumber = canonicalImportedCardNumber(
@@ -1190,7 +1222,7 @@ enum CollectionCSV {
                 qualifier: value(["grading_qualifier"], in: row)
             )
         }
-        return [makeEntry(
+        var entry = makeEntry(
             game: game, providerID: providerID, catalogProviderID: catalogProviderID,
             explicitCollectionKey: explicitCollectionKey,
             name: name, setName: setName,
@@ -1209,7 +1241,11 @@ enum CollectionCSV {
             magicTreatmentIDs: treatmentIDs,
             magicTreatmentQualifiers: treatmentQualifiers,
             magicContentKindRaw: contentKindRaw
-        )]
+        )
+        entry.sourceItemKindRaw = nonempty(value(["item_kind"], in: row))
+        entry.sourceLanguage = nonempty(value(["language", "lang", "source_language"], in: row))
+        entry.conflictingSourceIdentity = value(["source_identity_conflict"], in: row)?.lowercased() == "true"
+        return [entry]
     }
 
     private static func importedGame(_ value: String) -> CardGame {

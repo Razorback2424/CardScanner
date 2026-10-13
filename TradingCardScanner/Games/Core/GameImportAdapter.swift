@@ -58,6 +58,7 @@ struct GameImportAdapterRegistry: Sendable {
     }
     func adapter(for game: CardGame) -> (any GameImportAdapter)? { adapters[game] }
     func validate(_ entry: CollectionCSVEntry) throws {
+        guard !entry.conflictingSourceIdentity else { throw GameImportValidationError.contradictoryIdentity }
         if let adapter = adapters[entry.game] {
             try adapter.validate(entry)
             return

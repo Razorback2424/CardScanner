@@ -173,9 +173,15 @@ protocol GameCatalogAdapter: Sendable {
     /// Revalidates a user-requested finish change against the currently
     /// installed physical printing before collection rows or ledger history move.
     func validateVariantCorrection(printingID: String, variantID: String?) throws
+    /// Synchronous final guard under the container's ownership transaction. It
+    /// also validates CSV/staged rows against authority installed after lookup.
+    func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?,
+                                    itemKindRaw: String, collectionKey: String) throws
 }
 
 extension GameCatalogAdapter {
+    func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?,
+                                    itemKindRaw: String, collectionKey: String) throws {}
     func lookupPrintingChoices(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome? { nil }
     func validateLookupContext(_ identifier: ScanIdentifier) async throws {}
     func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {}
