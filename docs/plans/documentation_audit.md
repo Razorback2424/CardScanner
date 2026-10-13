@@ -464,6 +464,43 @@ activation is claimed.
 
 ## Lorcana research import — 2026-10-03
 
+**2026-10-12 local ownership follow-up:** at `9d7c780c` plus local changes on
+`feat/lorcana-implementation`, Slice 4 supplies local reviewed-printing Browse,
+exact UUID/finish CSV validation, coherent activated import metadata and checked
+isolated debug writes. The final save guard rejects stale/incomplete catalog
+authority; duplicate CSV keys retain conflicting evidence through failed exports.
+The [implementation plan](lorcana_code_implementation.md) records 240 passing
+regression cases outside ownership plus the final 13/13 ownership replay. One
+initial assertion about imported set names was corrected; this is passing
+evidence for 253 distinct selected cases across runs. Earlier scan-only and
+missing-Browse/import statements describe previous checkpoints. Physical claims
+remain synthetic; rendered UI, real seed/corpus/device/performance, pricing,
+production writes/sync and rollout gates remain open.
+
+**2026-10-12 signed-activation follow-up:** at `9d7c780c` plus local changes on
+`feat/lorcana-implementation`, the [signed local contract](../research/lorcana-signed-activation.md)
+now defines bounded canonical releases, independent trust/paths, protected
+durable transitions/recovery, coherent container-bound snapshots and an explicit
+ephemeral debug seed kit. The final app/test build and 129 focused simulator
+cases pass, including 23 new activation cases and shared/One Piece regressions.
+Earlier statements below that Lorcana lacks signed activation are historical.
+This checkpoint uses synthetic physical claims and a supplied-manifest injection
+API; real seed/corpus, rendered/device/camera/performance, production keys/hosting/
+rights, ownership/Browse/import/pricing, sync and release gates remain open.
+
+**2026-10-12 physical-contract follow-up:** at `9d7c780c` plus local changes, the
+[schema-2 local contract](../research/lorcana-physical-contract.md) adds permanent
+physical UUIDs, canonical relationships, reviewed candidate universes,
+correction/transition validation, exact catalog/printing choice and per-printing
+finish checks. Schema-1 still returns incomplete outcomes. All new physical
+references are synthetic test claims; the source inventory contains no promoted
+real physical seed. The app/test build and final 82-case simulator checkpoint
+pass with no failures/skips; these contracts do not establish physical acceptance.
+Production, real-corpus, ownership, pricing, signed activation
+and release gates remain open. The execution plan separates completed code
+contracts from physical acceptance; old “only incomplete” source descriptions
+apply to schema-1 and the earlier checkpoint.
+
 **2026-10-12 implementation checkpoint:** the current plan now records bounded
 Lorcast card/set ingestion and retained source metadata, with 60 focused simulator
 tests passing at base `b1959c6` plus changes on `feat/lorcana-implementation`.

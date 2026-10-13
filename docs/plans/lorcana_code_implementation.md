@@ -1,10 +1,14 @@
 # Lorcana implementation plan
 
-**Status:** Slice 1 implemented; Slice 2 bounded provider ingestion implemented,
-with 60 focused simulator tests passing — 2026-10-12. Production Lorcana support is disabled.
-Current work is on `feat/lorcana-implementation` at base `b1959c6` plus local
-changes. See the [retained source checkpoint](../research/lorcana-source-corpus.md)
-for provider-contract review, captured metadata and the open physical inventory.
+**Status:** Slices 1–3 and Slice 4 local ownership/Browse/import code implemented;
+253 distinct selected simulator cases have passing evidence across the regression
+run and corrected ownership replay — 2026-10-12. Rendered Slice 4 acceptance is open.
+Production Lorcana support is disabled. Current work is on
+`feat/lorcana-implementation` at `9d7c780c` plus local changes. See the
+[source checkpoint](../research/lorcana-source-corpus.md) and
+[local physical contract](../research/lorcana-physical-contract.md) and
+[signed activation contract](../research/lorcana-signed-activation.md). Real physical
+corpus acceptance remains open; synthetic review fixtures do not close it.
 **Source review:** integration at `6b64abe` and subsequent review work through
 `55dc1e4` on `merge/one-piece-integration`. The remaining-audit cleanup removes
 the accidentally tracked `undefined/` adapter copies and corrects the extracted
@@ -34,7 +38,7 @@ unverified release timelines. Current code and new evidence outrank that snapsho
 | Optical foil classification in the early path | Preserve explicit finish selection. Optical classification is deferred until measured deterministic evidence can justify it; no foil inference from price fields or rarity. |
 | Extract shared adapters and signing infrastructure before Lorcana | Core runtime, catalog, recognition, variants, Browse, import and pricing interfaces already exist, as do shared signed storage/transport. Implement Lorcana's data contract and thin domain integration against them. No new adapter framework or generalized publisher is a prerequisite. |
 | Treat One Piece implementation as Lorcana readiness | One Piece supplies working integration patterns, not Lorcana physical evidence, market mappings, keys, rights or sync approval. Its source normalizers and catalog-core domain remain game-specific. |
-| Enable every feature when the game descriptor is added | Capabilities are independent. The current Lorcana runtime has only `.scan`; Browse, exact ownership and pricing need their own adapters, evidence and rollout decisions. |
+| Enable every feature when the game descriptor is added | Capabilities are independent. Explicit Lorcana injection supports scan and local Browse; the debug review kit can enable exact ownership only after checking isolated storage. Pricing and production registration remain disabled. |
 
 ### Shared foundation available now
 
@@ -46,13 +50,13 @@ not a claim that Lorcana already implements the corresponding feature.
 | `Models/CardGame.swift`, `CardGameRegistry.swift` | Stable string identity and capability discovery are implemented. Standard registration names Disney Lorcana with no capabilities; `CardGameRuntimeContainer.appDefaults()` omits its runtime. Preserve unknown stored games and finish IDs. |
 | [`CardGameRuntimeContainer`](../../TradingCardScanner/Games/Core/CardGameRuntime.swift) | Compose recognizer, catalog, variant policy and optional Browse/import/pricing/activation adapters. Runtime factories feed scanner, Browse and normalization; `bound(to:isCurrent:)` binds authority to the actual storage session before consumers are constructed. Extend this composition rather than adding global Lorcana services to shared screens. |
 | [`GameRecognitionAdapter`](../../TradingCardScanner/Games/Core/GameRecognitionAdapter.swift), `Services/CardScanner.swift` | Registry evaluates every recognizer; ambiguity cannot be won by registration order. Adapter/vocabulary installation occurs between frames; semantic updates apply even when vocabulary is unchanged. Supply Lorcana evidence and measured camera support through this path. |
-| [`GameCatalogAdapter`](../../TradingCardScanner/Games/Core/GameCatalogAdapter.swift), `Services/CardCatalog.swift` | Resolved, printing-choice and incomplete outcomes, prepared identifiers, generation checks, bounded caches and request coalescing already exist. Explicit retry rebases evidence; a user's physical-printing selection is not a default cached for the footer. Lorcana currently returns only incomplete outcomes. |
+| [`GameCatalogAdapter`](../../TradingCardScanner/Games/Core/GameCatalogAdapter.swift), `Services/CardCatalog.swift` | Resolved, printing-choice and incomplete outcomes, prepared identifiers, generation checks, bounded caches and request coalescing already exist. Explicit retry rebases evidence; a user's physical-printing selection is not a default cached for the footer. Lorcana schema-1 remains incomplete; schema-2 locally injected reviewed records may resolve exactly or require physical choice. No real physical seed is activated. |
 | [`ResolvedCatalogCard`](../../TradingCardScanner/Models/ResolvedCatalogCard.swift), `PhysicalPrintingCandidate` | Generic exact-printing metadata, finish evidence and stable game/printing/finish ownership keys are available. Allocate reviewed Lorcana physical UUIDs; a family ID, provider print ID or artwork URL cannot substitute for one. |
 | `Services/UnresolvedScanStore.swift`, `Views/ScannerViewModel.swift`, `Views/ScanSessionOverlays.swift` | Versioned generic evidence, read-only recovery without a module, explicit printing choice and subsequent finish resolution are available. Reuse the compact choice bar/Details comparison, including unavailable-artwork and insufficient-distinction safeguards. Keep recovery encounter identity separate from footer suppression and ownership. |
-| [`GameBrowseAdapter`](../../TradingCardScanner/Games/Core/GameBrowseAdapter.swift), [`GameImportAdapter`](../../TradingCardScanner/Games/Core/GameImportAdapter.swift) | Game-owned local sets/search/details and exact CSV validation/metadata are available. Lorcana supplies neither adapter yet. New-game imports require an installed validator; a writable descriptor alone is insufficient. |
-| `GameCatalogSnapshot`, `GameCatalogActivationSource`, [`CollectionAuthorizedActivationSource`](../../TradingCardScanner/Games/Core/CollectionAuthorizedActivationSource.swift) | Publish one immutable catalog/recognizer/variant/Browse/import/price-authority snapshot. The container-bound wrapper installs collection validation and saves managed-price withdrawals before publishing; revisions and retired storage sessions are guarded. Lorcana has no coordinator or activation source yet. |
+| [`GameBrowseAdapter`](../../TradingCardScanner/Games/Core/GameBrowseAdapter.swift), [`GameImportAdapter`](../../TradingCardScanner/Games/Core/GameImportAdapter.swift) | Lorcana supplies local reviewed-printing sets/search/details, generation/scope-bound cursors, exact CSV validation and metadata. New-game imports require an installed validator; a writable descriptor alone is insufficient. |
+| `GameCatalogSnapshot`, `GameCatalogActivationSource`, [`CollectionAuthorizedActivationSource`](../../TradingCardScanner/Games/Core/CollectionAuthorizedActivationSource.swift) | Publish one immutable catalog/recognizer/variant/Browse/import/price-authority snapshot. The container-bound wrapper installs collection validation and saves managed-price withdrawals before publishing; revisions and retired storage sessions are guarded. Lorcana publishes catalog, recognition, variants, Browse and import from the same registry through this boundary. Pricing remains a later slice. |
 | [`GamePriceAdapter`](../../TradingCardScanner/Games/Core/GamePriceAdapter.swift) | Exact resolved and stored-printing refresh paths, provider-fallback policy and activation validation exist. Use reviewed Lorcana mappings and `GameCatalogPriceAuthority`; One Piece's TCGCSV joins and source policy are not transferable mappings. |
-| [`SignedCatalogReleaseStore`](../../TradingCardScanner/Services/SignedCatalogReleaseStore.swift), [`SignedCatalogUpdateClient`](../../TradingCardScanner/Services/SignedCatalogUpdateClient.swift) | Shared two-slot persistence and bounded conditional HTTPS transport are implemented. Lorcana still needs its own signed envelope, canonical encoding, verification/transition rules, namespace, trust keys, seed and bootstrap configuration. |
+| [`SignedCatalogReleaseStore`](../../TradingCardScanner/Services/SignedCatalogReleaseStore.swift), [`SignedCatalogUpdateClient`](../../TradingCardScanner/Services/SignedCatalogUpdateClient.swift) | Shared two-slot persistence and bounded conditional HTTPS transport are implemented. Lorcana now wraps them with its own envelope, canonical encoding, verification/transition/recovery rules, namespace and explicit ephemeral debug seed kit. Real reviewed seed, production pins/hosting/bootstrap and performance acceptance remain open. |
 
 Pokémon and Magic catalog lookup now lives under their game modules. Legacy
 Browse/import extraction and signed legacy runtime activation remain incomplete.
@@ -123,7 +127,8 @@ families remain provisional physical evidence, so lookup returns
 an exact card or physical choice from a provider family ID.
 
 `LorcanaGameRuntime` plugs into existing registration with research scan
-capability only and an empty variant policy. Production `appDefaults` does not
+capability only and an empty variant policy for schema-1. The schema-2 follow-up
+supplies only reviewed eligible finishes. Production `appDefaults` does not
 register it. The standard descriptor supplies a display name only. Browse,
 pricing, import enrichment, sealed products and collection writes stay disabled.
 No schema changes to collection or unresolved records, provider requests, signed
@@ -174,22 +179,31 @@ close. A local test capability is not authorization to enable production.
   Unsupported classes stay explicitly incomplete. Maintain a separate inventory
   of releases/classes still to reconcile; fixture coverage or a provider set list
   cannot close physical-universe completeness.
-- [ ] Extend the research data model with reviewed canonical relationships,
+- [x] Extend the research data model with reviewed canonical relationships,
   permanent app-owned physical UUIDs, artwork/distribution/stamp/size distinctions,
   retained aliases, corrections and per-printing finish evidence. Schema-1
   families remain provisional; promotion needs an explicit versioned contract and
   transition validation. Preserve prior footer recovery rather than rekeying it
   as an owned card or treating a provider alias as a permanent UUID.
-- [ ] Extend `LorcanaCatalogAdapter` to produce `needsPrintingChoice` or exact
+  Schema-2 now implements this contract and previous-registry transition checks;
+  all test review claims are synthetic. Real reviewed physical records remain
+  part of the unchecked corpus gate above.
+- [x] Extend `LorcanaCatalogAdapter` to produce `needsPrintingChoice` or exact
   `ResolvedCatalogCard` only from verified physical records. Unreviewed,
   conflicted, missing-finish or incomplete candidate universes cannot establish
   uniqueness. Same-footer standard/oversized records need additional evidence or
   explicit distinction; complete footer evidence alone does not establish size.
-- [ ] Supply evidence-backed `LorcanaVariantPolicy` options and override
+  Singleton oversized records also ask for explicit size choice. Current
+  acquisition and exact candidate/metadata validation reject stale or tampered
+  evidence; indistinguishable alternatives remain incomplete.
+- [x] Supply evidence-backed `LorcanaVariantPolicy` options and override
   `validateVariantCorrection(printingID:variantID:)` against the exact installed
   printing. A game-wide finish menu does not validate every printing. Reuse the
   existing printing choice followed by finish selection; optical foil inference
   is not required for this milestone.
+  The menu uses reviewed eligible finishes, while corrections validate the exact
+  printing. Synthetic normal/foil/stamp/size fixtures validate these boundaries;
+  no production finish evidence is inferred from Lorcast prices or rarity.
 
 **Exit evidence:** retained source/footer/finish claims replay deterministically;
 UUIDs survive regeneration and alias/metadata updates; recognition reaches
@@ -201,22 +215,35 @@ gated.
 
 ### Slice 3: signed local activation and coherent runtime publication
 
-- [ ] Define the Lorcana signed contract, bounded payload, canonical bytes,
+- [x] Define the Lorcana signed contract, bounded payload, canonical bytes,
   key namespace, revision/content collision policy and protected identity/finish
   corrections. Wrap the existing shared store/client; retain independent domain
   paths, verification and fallback rules. Create an explicit debug local kit with
   an ephemeral review key and validated seed. Production defaults remain disabled.
-- [ ] Add a Lorcana coordinator implementing `GameCatalogActivationSource` and
+  Release schema 1 carries the physical schema-2 manifest; canonical payload and
+  pin ID define equal-revision content after independent signature verification.
+  Durable transitions retain UUIDs/evidence/finishes; supersession requires a new
+  reviewed UUID and retained correction history. Recovery validates against the
+  verified predecessor or seed. The debug kit requires a supplied manifest and
+  isolated cache root; synthetic fixtures do not establish real seed acceptance.
+- [x] Add a Lorcana coordinator implementing `GameCatalogActivationSource` and
   publish `GameCatalogSnapshot` values from one immutable registry. Bind through
   `CardGameRuntimeContainer.bound(to:isCurrent:)`; let its collection-authorized
   wrapper install authority before scanner, Browse, normalization or pricing sees
   the next generation. Avoid parallel screen-specific activation subscriptions
   that bypass this boundary.
-- [ ] Install recognition semantics/vocabulary between frames through the
+- [x] Install recognition semantics/vocabulary between frames through the
   current scanner path. Reject in-flight old-generation catalog results and
   physical choices; explicit retry may rebase the same footer but must ask again
   when printing evidence changes. Clear/rebase affected Browse cursors and import
-  metadata through existing activation consumers as those adapters are added.
+  metadata through existing activation consumers.
+  Existing scanner activation is reused; Lorcana tests cover bound publication,
+  metadata-only generations, stale completions/choices and explicit recovery
+  retry. No new scanner dispatch cases were added. Slice 4 adds coherent local
+  Browse/import snapshots; production rollout remains gated.
+- [ ] Accept the real reviewed seed and measure selected-corpus activation
+  time/memory; capture rendered review/device evidence. The code foundation and
+  synthetic tests do not close these acceptance gates.
 
 **Exit evidence:** invalid signature/schema, rollback/revision collision,
 interrupted writes, previous-slot recovery, concurrent updates and metadata-only
@@ -227,25 +254,42 @@ corpus; shared transport tests do not replace Lorcana contract tests.
 
 ### Slice 4: local ownership, Browse and import/export acceptance
 
-- [ ] Implement `LorcanaBrowseAdapter` and `LorcanaImportAdapter`; attach them to
+- [x] Implement `LorcanaBrowseAdapter` and `LorcanaImportAdapter`; attach them to
   the runtime and activation snapshot. Browse uses verified physical targets;
   gameplay completion and physical-printing completion remain distinct. Import
   validates exact UUID/reviewed alias, footer/language, raw item kind, supported
   finish and ownership key before writes, using current runtime import adapters.
-- [ ] Exercise the existing container-scoped collection authority and transaction
+  Local rails count reviewed physical printings, not whole-set gameplay coverage.
+  Import writes require an explicit exact UUID; a reviewed source alias can
+  enrich metadata only when accompanied by that UUID. Duplicate CSV keys retain
+  conflicting identity evidence, including in failed-row re-exports, rather than
+  silently merging it away. Unknown supplied raw item kinds remain available to
+  the validator before legacy enum projection.
+- [x] Exercise the existing container-scoped collection authority and transaction
   guards for scan, printing/finish correction, Browse add/undo, CSV,
   normalization and recovery. Missing adapters, withdrawn capabilities or
   quarantined printings must reject mutation without changing ownership/history.
   Preserve readable unknown-game/finish rows when the module is unavailable.
-- [ ] Enable `.collectionWrite` only in the explicit isolated local review setup
+  The catalog adapter supplies a synchronous final mutation validator; collection
+  commits and CSV transactions recheck installed container authority before save.
+  Deterministic cases cover scan printing/finish acquisition, finish correction,
+  add/undo, quantity changes, stale CSV adapters, missing catalog authority and
+  withdrawn write capability. Physical fixtures cover held/unreviewed universes;
+  forward-compatibility tests retain unavailable-module rows. Real mixed-client
+  and rendered interaction acceptance remain open.
+- [x] Enable `.collectionWrite` only in the explicit isolated local review setup
   once these contracts pass. Use stable game + physical UUID + finish keys;
   adding a finish or changing a market alias must not split existing ownership.
   Recovery export/retry remains available when exact resolution is incomplete;
   resolving one encounter must not remove another copy's recovery row.
-- [ ] Verify local scan/choice/finish/save → relaunch, Browse/add/undo and CSV
-  round-trip against the same reviewed registry. Render the existing compact
-  choice/Details and finish flows on phone/tablet and large text; inaccessible
-  artwork or identical labels cannot permit an unsupported selection.
+  `LorcanaLocalReviewKit.make(...allowCollectionWrites: true)` requires subsequent
+  checked container binding; the public unbound runtime remains read-only.
+- [x] Verify local scan/choice/finish/save, disk-backed storage relaunch,
+  Browse/add/undo and CSV round-trip against the same reviewed registry.
+- [ ] Render the existing compact choice/Details and finish flows on phone/tablet
+  and large text; inaccessible artwork or identical labels cannot permit an
+  unsupported selection. The debug kit is still an injection API, not a rendered
+  launch route or accepted physical seed.
 
 **Exit evidence:** deterministic storage/recovery and import tests plus rendered
 local interaction/relaunch evidence for representative base cases. Record real
@@ -299,6 +343,137 @@ Keep full-suite regression separate from targeted checkpoints. Use an external
 SSD for future build artifacts when available; this plan update runs no build.
 
 ## Verification evidence and limits
+
+### Local ownership, Browse and import checkpoint — 2026-10-12
+
+At `9d7c780c` plus local changes on `feat/lorcana-implementation`, completed the
+partly implemented Slice 4 adapters, runtime/snapshot integration and checked
+debug collection binding. Browse exposes only acquirable reviewed physical UUIDs
+with distinct labels and exact printing completion. CSV validates physical UUID,
+supplied footer/language and raw item kind, finish and ownership key. Duplicate
+keys preserve conflicting source evidence across merge and failed-row export.
+The final container catalog guard protects collection and CSV saves even when
+an earlier lookup or import validator used a stale registry.
+
+Final app/test builds pass. The 253-case selected regression run passed 252 cases
+and failed one new test assertion that incorrectly expected normalization to
+replace an imported set name. Normalization supplies catalog ID and set code;
+the corrected assertion verifies those fields. After rebuilding, all 13
+`LorcanaOwnershipTests` pass with no failures/skips. The other 240 selected cases
+already passed and were not repeated: 24 Lorcana activation (including new
+coherent Browse/import activation coverage), 22 physical, 13 integration,
+31 forward compatibility, 35 Browse collection, five CSV resume, 32 activity
+history, 26 item kind, 11 collection key, 17 collection continuity, 16 imported
+item kind and eight One Piece import/normalization regressions. Together these
+runs provide passing evidence for 253 distinct selected cases, not a single
+253/253 final replay or a full-suite checkpoint.
+
+Ownership cases exercise scanner printing → finish → save with independent
+recovery encounters, exact Browse add/undo, unsupported finish rollback,
+disk-backed CSV save → normalization → relaunch → export/import, pagination
+scope/generation changes, incomplete catalogs, finish correction, quantity/history
+preservation after authority withdrawal, missing adapters and read-only binding.
+All physical records and review claims remain synthetic.
+
+Used `TradingCardScanner-ProfileLocal` / `DebugRemoteLocal` on the isolated iOS
+26.5 QA simulator. Derived data, package cache, build logs,
+`ownership-regressions.xcresult` and `ownership-final.xcresult` are under the
+external SSD's `CodexBuilds/LorcanaImplementation-20261012/`. Simulator startup
+delayed the first focused run; it subsequently passed all 12 initial cases.
+Final fixture setup creates its own store directory before opening SwiftData.
+The saved results retain an internal QoS warning; these runs are not device or
+selected-real-corpus performance evidence.
+
+Rendered phone/tablet/large-text and VoiceOver flows, the real reviewed seed,
+camera/corpus/performance, provider/rights/hosting/keys, exact pricing, production
+ownership/CloudKit and release acceptance remain open. Production app defaults
+still omit Lorcana. No commit or push was made.
+
+### Signed local activation checkpoint — 2026-10-12
+
+At `9d7c780c` plus local changes on `feat/lorcana-implementation`, added the
+Lorcana signed release, canonical bounded payload, independent pins/paths,
+protected durable transitions/recovery, shared conditional transport wrapper,
+coherent activation coordinator and explicit ephemeral debug seed kit. Scan-only
+runtime injection binds through the existing collection-authorized source.
+Supersession retains old UUIDs/evidence and never migrates ownership automatically.
+See the [signed contract](../research/lorcana-signed-activation.md).
+
+The final app/test build and 129/129 selected simulator cases pass with no
+failures/skips: 23 new Lorcana activation, 22 physical, 13 integration, 12 source,
+31 forward compatibility, four suppression, eight shared store, five shared
+transport and 11 One Piece activation regressions. Cases cover invalid signatures,
+canonical/schema/time/byte bounds, revision collisions/rollback, protected
+identity/finish corrections, interrupted writes/recovery, concurrency, metadata
+generations, container rebinding/retirement, stale completions/choices and actual
+scanner/recovery callbacks. The result records one internal QoS warning in the
+write-fault test; it does not establish selected-corpus/device performance.
+
+Used `TradingCardScanner-ProfileLocal` / `DebugRemoteLocal` on the isolated iOS
+26.5 QA simulator. Derived data, dependency cache, temporary build data, full and
+selected prepared packages, build logs and `activation-final.xcresult` are under
+the external SSD's `CodexBuilds/LorcanaImplementation-20261012/`. The selected
+package omits only unused centering/Magic/CSV test resources, retaining all app
+resources, Lorcana fixtures and compiled code. Original package symlinks and
+executable text sections were verified after ad-hoc signing. The full package
+and omitted source fixtures remain intact.
+
+The first build found missing `try` annotations in test fixtures. Several launch/
+install attempts then failed before executing tests due to internal simulator
+storage or its leftover install placeholder. Task-generated prior app bundles
+were preserved on the SSD. An attempted external relocation of QA runtime data
+was denied by macOS; its original directory was restored and boot verified.
+The placeholder was removed after backing up matching QA app data, which was
+restored to the reinstalled app. A shutdown cleared temporary speech cache before
+the planned cache move, so that move made no filesystem change. No simulator
+erase or main-simulator change occurred.
+
+The first complete replay passed 128 cases with one signature-round-trip fixture
+failure: payloads matched while signatures differed. Equal-revision content now
+compares the verified canonical payload and pin ID, and tests independently
+verify re-signatures. The final replay passes all 129 cases. Production defaults,
+real reviewed seed/corpus, rendered review launch, activation time/memory, device/
+camera, rights/hosting/keys, ownership/Browse/import/pricing, sync and release
+acceptance remain open. No commit or push was made.
+
+### Local physical-contract checkpoint — 2026-10-12
+
+At `9d7c780c` plus local changes on `feat/lorcana-implementation`, schema-2 adds
+explicit canonical relationships, permanent physical UUIDs, protected physical
+identity, retained aliases/evidence/corrections and previous-registry transition
+validation. The catalog now returns exact resolution or physical-printing choice
+from complete reviewed local universes, with per-printing finish validation.
+Incomplete/conflicted/unreviewed universes and indistinguishable alternatives
+remain incomplete; oversized acquisition needs explicit size choice. Known exact
+verified UUIDs retain finish authority independently of footer discovery.
+
+The app/test target builds and the final prepared-package run passes 82/82 cases
+with no failures/skips: 22 `LorcanaPhysicalCatalogTests`, 13 Lorcana integration,
+12 source normalization, 31 forward compatibility and four suppression tests.
+The physical cases include real recognizer input, exact choice/finish resolution,
+relaunch/missing-module recovery, metadata/alias/finish additions with stable
+keys, stale/tampered choices, correction history and false-uniqueness rejection.
+All physical evidence references/UUIDs in these cases are synthetic fixtures.
+See the [local contract](../research/lorcana-physical-contract.md) for scope.
+
+Used `TradingCardScanner-ProfileLocal` / `DebugRemoteLocal` and the isolated iOS
+26.5 review simulator. Derived data, package cache, prepared packages, build logs
+and `physical-final.xcresult` remain under the external SSD's
+`CodexBuilds/LorcanaImplementation-20261012/`. The wrapper's first build hit
+internal disk exhaustion while copying its test package; this task's partial and
+earlier packages were preserved by relocation to the SSD. Direct/prepared runs
+were interrupted during investigation of buffered output; one interrupted
+prepared run had 52 passes and one canceled test. A later complete run had 81
+passes and one fixture failure because textual JSON replacement did not mutate
+an escaped footer. Decoded-field mutation corrected the fixture; the final
+82-case run passes. The result retains one internal QoS warning, not device
+performance evidence.
+
+Project syntax, new/changed documentation links and whitespace checks pass. No
+central game cases, new UI framework, collection schema changes, real physical
+seed, production registration, ownership, Browse/import, pricing or signed
+activation was added. Real corpus, rendered/device/camera, rights, sync and
+release acceptance remain open. No commit or push was made.
 
 ### Bounded provider-ingestion checkpoint — 2026-10-12
 

@@ -1,3 +1,71 @@
+- Lorcana Slice 4 local ownership/Browse/CSV (2026-10-12;
+  `feat/lorcana-implementation` at `9d7c780c` plus local changes): completed the
+  partly implemented local adapters and connected them to coherent runtime
+  activation. Added checked isolated debug binding, exact UUID/finish import,
+  duplicate-source conflict retention and final container catalog validation
+  before collection/CSV saves. Scanner printing/finish acquisition and recovery,
+  Browse add/undo, finish correction/withdrawal, pagination, normalization,
+  disk-backed relaunch and CSV round-trip have deterministic coverage. App/test
+  builds pass. The broad selected run passed 252/253; one new test expected an
+  imported set name to be replaced, contrary to the metadata contract. The final
+  corrected ownership replay passes 13/13 with no failures/skips; 240 other
+  regression cases passed and were not repeated. These runs establish passing
+  evidence for 253 distinct selected cases. Results retain an internal QoS
+  warning. SSD build/cache/log/result artifacts remain under
+  `CodexBuilds/LorcanaImplementation-20261012/`, including
+  `ownership-regressions.xcresult` and `ownership-final.xcresult`. All physical
+  records remain synthetic. Rendered UI, real seed/corpus/device/performance,
+  pricing, production ownership/CloudKit and release gates remain open; production
+  defaults omit Lorcana. No commit or push was made.
+- Lorcana Slice 3 signed local activation (2026-10-12; `feat/lorcana-implementation`
+  at `9d7c780c` plus local changes): added bounded canonical Ed25519 releases,
+  independent trust/cache/transport wrappers, protected durable UUID/finish/
+  evidence transitions and predecessor-validated recovery. Added immutable
+  coordinator snapshots, container-authorized publication, scanner/recovery
+  activation and a supplied-manifest debug kit with ephemeral keys. Production
+  remains disabled and the runtime retains only `.scan`. The final app/test build
+  and 129/129 selected simulator cases pass, including 23 new activation cases
+  and shared/One Piece regressions, with no failures/skips. One internal QoS
+  warning remains in a write-fault case. Build/cache/temp/package/log/result
+  artifacts use the external SSD's `CodexBuilds/LorcanaImplementation-20261012/`.
+  Selected packaging retains all app resources, tested fixtures and compiled
+  code; unused test assets are preserved in the full package/source. Fixture
+  compiler annotations and a signature-equality assumption were corrected;
+  canonical payload/pin equality now permits independently verified re-signatures.
+  Installer/storage attempts failed before cases ran. Prior QA app bundles/data
+  were preserved on the SSD; its runtime directory was restored after macOS
+  denied an external data path, and app data restored after placeholder repair.
+  No simulator erase or main-simulator change occurred. See the
+  [plan](docs/plans/lorcana_code_implementation.md) and
+  [signed contract](docs/research/lorcana-signed-activation.md). Real corpus/seed,
+  rendered/device/camera/performance, production keys/hosting/rights, ownership/
+  Browse/import/pricing, sync and release acceptance remain open. No commit/push.
+
+- Lorcana Slice 2 physical contract (2026-10-12; `feat/lorcana-implementation`
+  at `9d7c780c` plus local changes): added schema-2 canonical/physical UUIDs,
+  size/artwork/distribution/stamp identity, explicit per-printing finish evidence,
+  complete candidate universes and retained correction/transition history.
+  Extended local catalog lookup, exact printing choice, acquisition validation,
+  finish menu and UUID-specific finish correction through existing game adapters.
+  Known verified UUIDs retain finish authority when discovery is incomplete;
+  acquisition cannot infer uniqueness by filtering unresolved alternatives.
+  Real recognizer input, size/stamp/artwork distinctions, stable keys, stale/
+  tampered choices and relaunch/read-only recovery are covered by 22 new
+  synthetic physical-contract tests. App/test target build and final 82/82
+  selected simulator cases pass, with no failures/skips. External SSD artifacts
+  use `CodexBuilds/LorcanaImplementation-20261012/physical-final.*`.
+  Internal disk exhaustion blocked the wrapper's initial package copy; only
+  this conversation's generated packages were preserved by relocation to the
+  SSD. Buffered progress led to interrupted runs; one prepared run had 52
+  passes and a canceled test. A complete replay then had 81 passes and one
+  ineffective JSON-tampering fixture; decoded-field edits fixed it before the
+  final pass. One internal QoS warning remains. Project syntax, links and
+  whitespace checks pass. See the [plan](docs/plans/lorcana_code_implementation.md)
+  and [physical contract](docs/research/lorcana-physical-contract.md). Real physical
+  corpus, signing, ownership/Browse/import/pricing, native/device/camera, rights,
+  sync and release gates remain open; production stays disabled. No collection
+  schema changes, simulator erase, commit or push was made.
+
 - Lorcana Slice 2 provider ingestion (2026-10-12; `feat/lorcana-implementation`
   at base `b1959c6` plus local changes): created the requested implementation
   branch while preserving existing Browse/Collection edits. Rechecked Lorcast's

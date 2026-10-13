@@ -81,8 +81,10 @@ Review new captures and record their own acceptance evidence.
 
 No source observation feeds the runtime registry automatically. Schema-1 print
 families remain provisional, unknown-footer recovery remains available, and
-production registration, ownership and pricing remain disabled. The next task
-is reviewed physical records and a versioned identity/finish transition contract.
+production registration, ownership and pricing remain disabled. The
+[schema-2 physical contract](lorcana-physical-contract.md) now implements local
+identity/finish transitions and exact resolution against synthetic review
+fixtures. Actual reviewed physical records and the inventory above remain open.
 
 ## Verification
 
