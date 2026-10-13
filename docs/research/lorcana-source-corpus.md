@@ -1,5 +1,12 @@
 # Lorcana provider observation checkpoint
 
+**2026-10-13 superseding discovery inventory:** the
+[catalog coverage checkpoint](lorcana-catalog-coverage.md) records the complete
+retained English source dataset, supplemental products and offline sealed browse.
+The bounded Lorcast captures and evidence boundaries below remain historical;
+default source discovery is now registered, while physical acquisition,
+collection writes, signed production activation and pricing remain disabled.
+
 **Status:** bounded source ingestion implemented; 60 focused simulator tests pass —
 2026-10-12, `feat/lorcana-implementation` at base `b1959c6` plus local changes.
 The [implementation plan](../plans/lorcana_code_implementation.md) remains the
@@ -66,6 +73,11 @@ Do not overwrite the dated fixtures with later market prices or provider edits.
 Review new captures and record their own acceptance evidence.
 
 ## Remaining physical evidence inventory
+
+The [representative real-card reference package](lorcana-real-card-corpus/README.md)
+is now retained separately: 29 unapproved candidates, 35 cited sources and 25
+specified, unexecuted scenarios. It supplies specimen targets and a blank review
+packet, not physical evidence, provider receipt joins or catalog authority.
 
 | Class / concern | Current evidence | Still required |
 | --- | --- | --- |

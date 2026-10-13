@@ -8,6 +8,25 @@ history.
 
 ## Current authority boundary — updated 2026-10-07
 
+**Lorcana catalog discovery — 2026-10-13:** the owner requested English cards
+and sealed-product completeness for Browse and scanner lookup. The
+[coverage checkpoint](../research/lorcana-catalog-coverage.md) records 3,556
+source cards, 26 supplemental observations, 177 sealed products and 322 passing
+continuation simulator tests. The initial 80 supplemental observations included
+53 duplicate aliases and a card bundle; scoped joins and 58 inspected public
+images now reconcile them. Default discovery/recognition is registered. Older
+statements that all production registration is disabled are historical for
+discovery only. Source IDs cannot authorize physical acquisition or collection
+writes. Signed activation, pricing, real-card and release acceptance remain
+open. Three Palace Heist components still lack automatic recognition evidence;
+they now support explicit catalog recovery. That gap and the partial Q3/C3
+source scopes prevent a whole-physical-catalog completeness claim.
+The camera now conditionally reads same-frame card text for supported unnumbered
+Quest footers. This closes an integration gap not covered by earlier literal
+footer tests. Observed native hyphen/S7 OCR readings have bounded parser repairs;
+body text cannot feed another game's recognizer or unrelated historical fallback.
+The macOS CPU diagnostic is distinct from still-open device/camera acceptance.
+
 **Portfolio refresh/ownership reconciliation — 2026-10-09:** the
 [portfolio remediation](../audits/portfolio-review-remediation.md) qualifies the
 October plan §H rule: price checkpoints remain gated, while ownership changes
@@ -463,6 +482,31 @@ live workflow, physical corpus certification, asset redistribution or production
 activation is claimed.
 
 ## Lorcana research import — 2026-10-03
+
+**2026-10-12 UI review implementation:** the
+[isolated review launch](../research/lorcana-ui-review.md) now uses the existing
+scanner/choice/finish/Collection/Browse/CSV surfaces with a signed synthetic seed.
+Earlier descriptions of the debug kit as only an injection API are superseded
+for this route. Rendered phone/iPad/accessibility acceptance and all physical
+evidence requirements remain open; fixture UUIDs are not real-card authority.
+
+**2026-10-12 minimum acceptance preparation:** the supplied
+[12-specimen batch](../research/lorcana-real-card-corpus/minimum-acceptance/README.md)
+preserves all 26 files and three matching corpus snapshots. Local replay passes
+23 offline assertions and 16 Python precheck tests; all packets remain unapproved
+and all 25 iOS scenarios remain unexecuted. Published-photo and dimension claims
+are research only. Package statements about unavailable Xcode/checkouts describe
+its original preparation environment. The narrower target selection defers
+Mulan and other cases; it does not close the broader corpus or footer universes.
+
+**2026-10-12 representative reference import:** at base `1e368b3`, the supplied
+[real-card package](../research/lorcana-real-card-corpus/README.md) is preserved
+with matching original checksums. It has 29 inactive candidates, 35 cited sources
+and 25 unexecuted scenarios; the original guide's 23-scenario summary is stale.
+This closes source selection only. Earlier requirements for a permitted physical
+corpus still apply: no photographs, UUIDs, finish approvals or signed real seed
+are supplied. The Slice 2 corpus checkbox remains open, and the source package
+does not alter the runtime or production registration.
 
 **2026-10-12 local ownership follow-up:** at `9d7c780c` plus local changes on
 `feat/lorcana-implementation`, Slice 4 supplies local reviewed-printing Browse,

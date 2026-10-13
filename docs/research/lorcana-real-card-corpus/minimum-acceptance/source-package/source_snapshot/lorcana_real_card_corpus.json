@@ -1,0 +1,1306 @@
+{
+  "schema_id": "lorcana-real-physical-reference-corpus/v1",
+  "as_of": "2026-10-12",
+  "source_basis": "public publisher and third-party website research retrieved Oct 12 2026; separate from provider capture receipts and reviewed card-in-hand evidence",
+  "manifest_eligible": false,
+  "production_registration_eligible": false,
+  "default_physical_evidence_status": "NO PHYSICAL PHOTOS OR MEASUREMENTS RETAINED",
+  "identifiers_policy": "No app-owned physical UUIDs allocated; case IDs are temporary research labels, not collection or catalog keys.",
+  "finish_policy": "finish_candidates_not_authorized is documentation inventory only; never copy it into reviewed eligible finishes without physical validation",
+  "sources": {
+    "OFF_FIRST": {
+      "category": "publisher",
+      "url": "https://www.disneylorcana.com/en-US/product",
+      "supports": "Ravensburger First Chapter product: Hades and Mulan playable/oversized foil cards"
+    },
+    "OFF_QUEST": {
+      "category": "publisher",
+      "url": "https://www.disneylorcana.com/en-US/product/deep-trouble",
+      "supports": "Ravensburger Deep Trouble: 50 scenario cards, gold-backed deck, Ursula and battleground oversized cards"
+    },
+    "OFF_ELSA": {
+      "category": "publisher",
+      "url": "https://cards.disneylorcana.com/en-US/?cardId=207",
+      "supports": "Official Elsa Spirit of Winter Enchanted collector 207/204 EN 1"
+    },
+    "OFF_ENCHANT": {
+      "category": "publisher",
+      "url": "https://www.disneylorcana.com/en-US/news/enchanted-reveal",
+      "supports": "Ravensburger: Enchanted alternate artwork numbered beyond 204 with Inkwash foil"
+    },
+    "OFF_REPRINT": {
+      "category": "publisher",
+      "url": "https://www.disneylorcana.com/en-US/news/2025/08/2025-8-release-notes-fabled",
+      "supports": "Ravensburger: Stitch Rock Star first chapter vs Fabled reprint, gameplay identity preserved"
+    },
+    "OFF_Q1": {
+      "category": "publisher",
+      "url": "https://cards.disneylorcana.com/en-US/?cardId=943",
+      "supports": "Official Ursula Contract printed collector 30/31 EN Q1"
+    },
+    "OFF_VINE197": {
+      "category": "publisher",
+      "url": "https://cards.disneylorcana.com/en-US/?cardId=3168",
+      "supports": "Official The Vine Towering Stalk 197/207 EN 13"
+    },
+    "OFF_VINE207": {
+      "category": "publisher",
+      "url": "https://cards.disneylorcana.com/en-US/?cardId=3178",
+      "supports": "Official Vine Entrance 207/207 EN 13 (Location)"
+    },
+    "LORCAST_SPEC": {
+      "category": "provider_documentation",
+      "url": "https://lorcast.com/docs/api/cards",
+      "supports": "Provider IDs/collector strings/layout/unique=prints; not physical evidence"
+    },
+    "HADES": {
+      "category": "community",
+      "url": "https://lorcanaplayer.com/card/hades-king-of-olympus/",
+      "supports": "Hades 5/204 and playable/jumbo foils"
+    },
+    "HADES_JUMBO": {
+      "category": "market",
+      "url": "https://www.pricecharting.com/game/lorcana-first-chapter/hades-king-of-olympus-oversized-5",
+      "supports": "Separate jumbo market item with 5/204 number"
+    },
+    "MULAN": {
+      "category": "community",
+      "url": "https://mushureport.com/mulan-imperial-soldier-gift-set-clear-image/",
+      "supports": "Mulan 118/204 EN 1"
+    },
+    "ELSA": {
+      "category": "market",
+      "url": "https://inkdecks.com/cards/details-elsa-spirit-of-winter",
+      "supports": "Elsa TFC 42/204 normal and foil; 207/204 Enchanted"
+    },
+    "STITCH": {
+      "category": "community",
+      "url": "https://wiki.mushureport.com/wiki/Stitch_-_Rock_Star",
+      "supports": "Stitch footer history 1TFC EN 2/P1, 23/204 EN 1 and 3/204 EN 9"
+    },
+    "STITCH_FOILS": {
+      "category": "market",
+      "url": "https://inkdecks.com/cards/details-stitch-rock-star",
+      "supports": "Stitch standard and foil printing variants"
+    },
+    "MICKEY": {
+      "category": "community",
+      "url": "https://lorcanaplayer.com/card/mickey-mouse-brave-little-tailor-d23-expo/",
+      "supports": "D23 Mickey Brave Little Tailor promo and D23/1st stamps"
+    },
+    "MICKEY_PROMO": {
+      "category": "community",
+      "url": "https://lorcanaplayer.com/set/promo-set-1/",
+      "supports": "Original 2022 1TFC EN 1/P1 reversed footer order"
+    },
+    "D23_2022_FINISH": {
+      "category": "community",
+      "url": "https://lorcanaplayer.com/set/d23-expo/",
+      "supports": "2022 D23 Mickey nonfoil and other six Collector Set cards foil, all special stamps"
+    },
+    "D23_STITCH": {
+      "category": "community",
+      "url": "https://lorcanaplayer.com/card/stitch-rock-star-d23-expo/",
+      "supports": "2022 D23 Stitch 2/P1 Enchanted-like special stamped foil promo (not ordinary The First Chapter)"
+    },
+    "MOTUNUI": {
+      "category": "community",
+      "url": "https://wiki.mushureport.com/wiki/Into_the_Inklands_Card_List",
+      "supports": "Motunui 170/204 EN 3 Location"
+    },
+    "MOTUNUI_FINISH": {
+      "category": "market",
+      "url": "https://inkdecks.com/cards/details-motunui-island-paradise",
+      "supports": "Motunui 170/204 nonfoil and foil"
+    },
+    "PUPPIES": {
+      "category": "community",
+      "url": "https://wiki.mushureport.com/wiki/Dalmatian_Puppy_-_Tail_Wagger",
+      "supports": "Five alternate illustrations 4a–4e/204 EN 3"
+    },
+    "PUPPIES_FOIL": {
+      "category": "market",
+      "url": "https://inkdecks.com/cards/details-dalmatian-puppy-tail-wagger",
+      "supports": "Five lettered variants normal/foil"
+    },
+    "CINDERELLA": {
+      "category": "community",
+      "url": "https://wiki.mushureport.com/wiki/Cinderella_-_Stouthearted",
+      "supports": "Cinderella 177/204 EN2, 3/C1 EN2, 02/D23 EN2"
+    },
+    "CINDERELLA_C1": {
+      "category": "community",
+      "url": "https://lorcanaplayer.com/card/cinderella-stouthearted-challenge-promo-foil/",
+      "supports": "Same 3/C1 printed ID on foil and nonfoil, distinct prize distributions"
+    },
+    "CINDERELLA_STANDARD": {
+      "category": "community",
+      "url": "https://ready-set-draw.com/en/cards/cinderella-stouthearted",
+      "supports": "177/204 EN2 standard and foil finishes documented as collector printings"
+    },
+    "OFF_CINDERELLA_D23": {
+      "category": "publisher",
+      "url": "https://cards.disneylorcana.com/en-US/?cardId=1192",
+      "supports": "Official Cinderella D23 display shows 2/D23 EN2, while multiple third parties show 02/D23 EN2; raw physical footer requires confirmation"
+    },
+    "CINDERELLA_FR": {
+      "category": "market",
+      "url": "https://www.lorcards.fr/cards/ascension-des-floodborn-177-204-cendrillon-coeur-vaillant",
+      "supports": "French printing 177/204 FR 2"
+    },
+    "CINDERELLA_D23": {
+      "category": "market",
+      "url": "https://www.coleka.com/en/trading-cards/disney-lorcana-tcg/lorcana-promo-cards/cinderella-stouthearted_i1829509",
+      "supports": "D23 2024 printing 2/D23 EN2"
+    },
+    "Q1_STUDY": {
+      "category": "community",
+      "url": "https://lorcanaplayer.com/set/illumineers-quest-deep-trouble/",
+      "supports": "Q1 31 numbered cards and unnumbered oversized cards"
+    },
+    "QUEST_FRAMES": {
+      "category": "community",
+      "url": "https://wiki.mushureport.com/wiki/Illumineer%27s_Quest_-_Deep_Trouble",
+      "supports": "223/204 EN4 Yen Sid, 225/204 EN4 Mickey decorated Deep Trouble cards"
+    },
+    "QUEST_MMICKEY": {
+      "category": "community",
+      "url": "https://wiki.mushureport.com/wiki/Mickey_Mouse_-_Playful_Sorcerer",
+      "supports": "Mickey 187/204 EN4 and 225/204 EN4"
+    },
+    "QUEST_URSULA": {
+      "category": "community",
+      "url": "https://lorcanaplayer.com/card/ursula-ruler-of-lorcana-deep-trouble/",
+      "supports": "Ursula Ruler of Lorcana oversized lacks collector number"
+    },
+    "VINE_FINISH": {
+      "category": "market",
+      "url": "https://lorcanaplayer.com/card/the-vine-towering-stalk/",
+      "supports": "197/207 EN13 available normal and foil"
+    },
+    "FIRSTCHAPTER_FOIL": {
+      "category": "publisher",
+      "url": "https://disneyparksblog.com/products/getting-started-with-disney-lorcana-trading-card-game/",
+      "supports": "The First Chapter ordinary main-set cards each normal and foil"
+    }
+  },
+  "entries": [
+    {
+      "case_id": "LRC-001",
+      "name": "Hades – King of Olympus",
+      "published_footer": "5/204 · EN · 1",
+      "footer_parts": {
+        "numerator": "5",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "1"
+      },
+      "physical_distinction_claim": "The First Chapter standard artwork/standard card",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_FIRST",
+        "HADES",
+        "FIRSTCHAPTER_FOIL"
+      ],
+      "acceptance_tests": [
+        "standard-vs-foil-finish",
+        "same-footer-vs-oversized",
+        "no-inferred-size"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-002",
+      "name": "Hades – King of Olympus",
+      "published_footer": "5/204 · EN · 1",
+      "footer_parts": {
+        "numerator": "5",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "1"
+      },
+      "physical_distinction_claim": "The First Chapter Gift Set oversized artwork matched to standard card",
+      "layout_claim": "portrait",
+      "size_claim": "oversized",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_FIRST",
+        "HADES",
+        "HADES_JUMBO"
+      ],
+      "acceptance_tests": [
+        "same-footer-vs-standard",
+        "requires-explicit-size"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-003",
+      "name": "Mulan – Imperial Soldier",
+      "published_footer": "118/204 · EN · 1",
+      "footer_parts": {
+        "numerator": "118",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "1"
+      },
+      "physical_distinction_claim": "The First Chapter standard-size physical card",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_FIRST",
+        "MULAN",
+        "FIRSTCHAPTER_FOIL"
+      ],
+      "acceptance_tests": [
+        "standard-vs-oversized",
+        "same-artwork-size-boundary"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-004",
+      "name": "Mulan – Imperial Soldier",
+      "published_footer": "118/204 · EN · 1",
+      "footer_parts": {
+        "numerator": "118",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "1"
+      },
+      "physical_distinction_claim": "The First Chapter Gift Set jumbo",
+      "layout_claim": "portrait",
+      "size_claim": "oversized",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_FIRST",
+        "MULAN"
+      ],
+      "acceptance_tests": [
+        "same-footer-vs-standard",
+        "requires-explicit-size"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-005",
+      "name": "Elsa – Spirit of Winter",
+      "published_footer": "42/204 · EN · 1",
+      "footer_parts": {
+        "numerator": "42",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "1"
+      },
+      "physical_distinction_claim": "The First Chapter ordinary illustration",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "ELSA",
+        "FIRSTCHAPTER_FOIL"
+      ],
+      "acceptance_tests": [
+        "separate-standard-art-from-enchanted"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-006",
+      "name": "Elsa – Spirit of Winter",
+      "published_footer": "207/204 · EN · 1",
+      "footer_parts": {
+        "numerator": "207",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "1"
+      },
+      "physical_distinction_claim": "The First Chapter Enchanted different illustration",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "inkwash_foil"
+      ],
+      "source_ids": [
+        "OFF_ELSA",
+        "OFF_ENCHANT",
+        "ELSA"
+      ],
+      "acceptance_tests": [
+        "premium-numerator",
+        "artwork-not-finish",
+        "no-nonfoil-inference"
+      ],
+      "priority": "core_reference_high_value",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-007",
+      "name": "Stitch – Rock Star",
+      "published_footer": "23/204 · EN · 1",
+      "footer_parts": {
+        "numerator": "23",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "1"
+      },
+      "physical_distinction_claim": "The First Chapter normal illustration",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_REPRINT",
+        "STITCH",
+        "STITCH_FOILS"
+      ],
+      "acceptance_tests": [
+        "cross-set-reprint-distinct-physical-key",
+        "shared-gameplay-identity"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-008",
+      "name": "Stitch – Rock Star",
+      "published_footer": "3/204 · EN · 9",
+      "footer_parts": {
+        "numerator": "3",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "9"
+      },
+      "physical_distinction_claim": "Fabled reprint of The First Chapter artwork",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_REPRINT",
+        "STITCH",
+        "STITCH_FOILS"
+      ],
+      "acceptance_tests": [
+        "cross-set-reprint-distinct-physical-key",
+        "shared-gameplay-identity"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-009",
+      "name": "Stitch – Rock Star",
+      "published_footer": "1TFC · EN · 2/P1",
+      "footer_parts": {
+        "numerator": null,
+        "denominator_or_token": null,
+        "language": "EN",
+        "printed_marker": null
+      },
+      "physical_distinction_claim": "D23 2022 Collector Set promotional artwork with event/first marks",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "holo_foil"
+      ],
+      "source_ids": [
+        "STITCH",
+        "MICKEY_PROMO",
+        "D23_STITCH",
+        "D23_2022_FINISH"
+      ],
+      "acceptance_tests": [
+        "2022-reversed-footer",
+        "separate-stamped-printing",
+        "no-silent-parser-rewrite"
+      ],
+      "priority": "edge_hold",
+      "review_status": "held_unsupported_footer_layout",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false,
+      "special_footer_tokens": [
+        "1TFC",
+        "EN",
+        "2/P1"
+      ]
+    },
+    {
+      "case_id": "LRC-010",
+      "name": "Mickey Mouse – Brave Little Tailor",
+      "published_footer": "115/204 · EN · 1",
+      "footer_parts": {
+        "numerator": "115",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "1"
+      },
+      "physical_distinction_claim": "The First Chapter ordinary illustration",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "MICKEY",
+        "MICKEY_PROMO",
+        "FIRSTCHAPTER_FOIL"
+      ],
+      "acceptance_tests": [
+        "standard-versus-d23-stamp"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-011",
+      "name": "Mickey Mouse – Brave Little Tailor",
+      "published_footer": "1TFC · EN · 1/P1",
+      "footer_parts": {
+        "numerator": null,
+        "denominator_or_token": null,
+        "language": "EN",
+        "printed_marker": null
+      },
+      "physical_distinction_claim": "D23 2022 first-edition stamped promo",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil"
+      ],
+      "source_ids": [
+        "MICKEY",
+        "MICKEY_PROMO",
+        "D23_2022_FINISH"
+      ],
+      "acceptance_tests": [
+        "stamped-separate-physical-print",
+        "2022-reversed-footer"
+      ],
+      "priority": "edge_hold",
+      "review_status": "held_unsupported_footer_layout",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false,
+      "special_footer_tokens": [
+        "1TFC",
+        "EN",
+        "1/P1"
+      ]
+    },
+    {
+      "case_id": "LRC-012",
+      "name": "Motunui – Island Paradise",
+      "published_footer": "170/204 · EN · 3",
+      "footer_parts": {
+        "numerator": "170",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "3"
+      },
+      "physical_distinction_claim": "Into the Inklands horizontal Location",
+      "layout_claim": "landscape",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "MOTUNUI",
+        "MOTUNUI_FINISH",
+        "LORCAST_SPEC"
+      ],
+      "acceptance_tests": [
+        "landscape-roi",
+        "nonportrait-choice"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-013a",
+      "name": "Dalmatian Puppy – Tail Wagger",
+      "published_footer": "4a/204 · EN · 3",
+      "footer_parts": {
+        "numerator": "4a",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "3"
+      },
+      "physical_distinction_claim": "Into the Inklands illustration a (one of five distinct arts)",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "PUPPIES",
+        "PUPPIES_FOIL"
+      ],
+      "acceptance_tests": [
+        "alphanumeric-numerator",
+        "five-distinct-artworks",
+        "shared-gameplay-identity"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-013b",
+      "name": "Dalmatian Puppy – Tail Wagger",
+      "published_footer": "4b/204 · EN · 3",
+      "footer_parts": {
+        "numerator": "4b",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "3"
+      },
+      "physical_distinction_claim": "Into the Inklands illustration b (one of five distinct arts)",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "PUPPIES",
+        "PUPPIES_FOIL"
+      ],
+      "acceptance_tests": [
+        "alphanumeric-numerator",
+        "five-distinct-artworks",
+        "shared-gameplay-identity"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-013c",
+      "name": "Dalmatian Puppy – Tail Wagger",
+      "published_footer": "4c/204 · EN · 3",
+      "footer_parts": {
+        "numerator": "4c",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "3"
+      },
+      "physical_distinction_claim": "Into the Inklands illustration c (one of five distinct arts)",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "PUPPIES",
+        "PUPPIES_FOIL"
+      ],
+      "acceptance_tests": [
+        "alphanumeric-numerator",
+        "five-distinct-artworks",
+        "shared-gameplay-identity"
+      ],
+      "priority": "expanded",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-013d",
+      "name": "Dalmatian Puppy – Tail Wagger",
+      "published_footer": "4d/204 · EN · 3",
+      "footer_parts": {
+        "numerator": "4d",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "3"
+      },
+      "physical_distinction_claim": "Into the Inklands illustration d (one of five distinct arts)",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "PUPPIES",
+        "PUPPIES_FOIL"
+      ],
+      "acceptance_tests": [
+        "alphanumeric-numerator",
+        "five-distinct-artworks",
+        "shared-gameplay-identity"
+      ],
+      "priority": "expanded",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-013e",
+      "name": "Dalmatian Puppy – Tail Wagger",
+      "published_footer": "4e/204 · EN · 3",
+      "footer_parts": {
+        "numerator": "4e",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "3"
+      },
+      "physical_distinction_claim": "Into the Inklands illustration e (one of five distinct arts)",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "PUPPIES",
+        "PUPPIES_FOIL"
+      ],
+      "acceptance_tests": [
+        "alphanumeric-numerator",
+        "five-distinct-artworks",
+        "shared-gameplay-identity"
+      ],
+      "priority": "expanded",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-014",
+      "name": "Cinderella – Stouthearted",
+      "published_footer": "177/204 · EN · 2",
+      "footer_parts": {
+        "numerator": "177",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "2"
+      },
+      "physical_distinction_claim": "Rise of the Floodborn ordinary English printing",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "CINDERELLA",
+        "CINDERELLA_STANDARD"
+      ],
+      "acceptance_tests": [
+        "standard-versus-promos",
+        "language-boundary"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-015",
+      "name": "Cendrillon – Cœur vaillant",
+      "published_footer": "177/204 · FR · 2",
+      "footer_parts": {
+        "numerator": "177",
+        "denominator_or_token": "204",
+        "language": "FR",
+        "printed_marker": "2"
+      },
+      "physical_distinction_claim": "Rise of the Floodborn ordinary French printing, same gameplay identity",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "CINDERELLA_FR"
+      ],
+      "acceptance_tests": [
+        "language-part-of-identity",
+        "no-English-default"
+      ],
+      "priority": "expanded",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-016",
+      "name": "Cinderella – Stouthearted",
+      "published_footer": "3/C1 · EN · 2",
+      "footer_parts": {
+        "numerator": "3",
+        "denominator_or_token": "C1",
+        "language": "EN",
+        "printed_marker": "2"
+      },
+      "physical_distinction_claim": "Challenge Set 1 promo artwork; nonfoil and foil distributed by different event channels",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "foil"
+      ],
+      "source_ids": [
+        "CINDERELLA",
+        "CINDERELLA_C1"
+      ],
+      "acceptance_tests": [
+        "literal-token-C1",
+        "same-footer-finish-ambiguity",
+        "distribution-versus-finish-policy"
+      ],
+      "priority": "edge_hold",
+      "review_status": "held_requires_distribution_identity_policy",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false,
+      "finish_distribution_review": "Nonfoil ticket-prize / foil high-placement prize; decide physical UUID treatment from reviewed contract before activation."
+    },
+    {
+      "case_id": "LRC-017",
+      "name": "Cinderella – Stouthearted",
+      "published_footer": "02/D23 · EN · 2",
+      "footer_parts": {
+        "numerator": "02",
+        "denominator_or_token": "D23",
+        "language": "EN",
+        "printed_marker": "2"
+      },
+      "physical_distinction_claim": "D23 Expo 2024 promo with special event edition/mark",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "special_finish_requires_capture"
+      ],
+      "source_ids": [
+        "CINDERELLA",
+        "CINDERELLA_D23",
+        "OFF_CINDERELLA_D23"
+      ],
+      "acceptance_tests": [
+        "literal-promo-denominator-D23",
+        "promo-versus-base-artwork",
+        "retain-two-conflicting-lexical-claims"
+      ],
+      "priority": "edge_hold",
+      "review_status": "held_printed_footer_lexeme_conflict",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false,
+      "footer_display_conflict": {
+        "official_digital_gallery": "2/D23 · EN · 2",
+        "third_party_collectors": "02/D23 · EN · 2",
+        "resolution_needed": "Inspect literal printed numeral including any leading zero before mapping; do not normalize away mismatch or accept a uniqueness conclusion."
+      }
+    },
+    {
+      "case_id": "LRC-018",
+      "name": "Ursula's Contract",
+      "published_footer": "30/31 · EN · Q1",
+      "footer_parts": {
+        "numerator": "30",
+        "denominator_or_token": "31",
+        "language": "EN",
+        "printed_marker": "Q1"
+      },
+      "physical_distinction_claim": "Deep Trouble gold-backed scenario card",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "scenario_card",
+      "finish_candidates_not_authorized": [
+        "finish_unknown"
+      ],
+      "source_ids": [
+        "OFF_QUEST",
+        "OFF_Q1",
+        "Q1_STUDY"
+      ],
+      "acceptance_tests": [
+        "denominator-31",
+        "nonnumeric-set-marker-Q1",
+        "gold-back",
+        "scenario-item-kind"
+      ],
+      "priority": "core_hold",
+      "review_status": "held_scenario_itemkind_authority",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-019",
+      "name": "Mickey Mouse – Playful Sorcerer",
+      "published_footer": "187/204 · EN · 4",
+      "footer_parts": {
+        "numerator": "187",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "4"
+      },
+      "physical_distinction_claim": "Ursula's Return ordinary printing",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "QUEST_MMICKEY",
+        "QUEST_FRAMES"
+      ],
+      "acceptance_tests": [
+        "high-number-reprint-counterpart"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-020",
+      "name": "Mickey Mouse – Playful Sorcerer",
+      "published_footer": "225/204 · EN · 4",
+      "footer_parts": {
+        "numerator": "225",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "4"
+      },
+      "physical_distinction_claim": "Deep Trouble deck exclusive inky frame; not Enchanted",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_QUEST",
+        "QUEST_FRAMES",
+        "QUEST_MMICKEY"
+      ],
+      "acceptance_tests": [
+        "premium-numerator-not-necessarily-enchanted",
+        "distribution-and-frame-distinction"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-021",
+      "name": "Yen Sid – Powerful Sorcerer",
+      "published_footer": "59/204 · EN · 4",
+      "footer_parts": {
+        "numerator": "59",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "4"
+      },
+      "physical_distinction_claim": "Ursula's Return ordinary printing",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "QUEST_FRAMES"
+      ],
+      "acceptance_tests": [
+        "paired-with-decorated-223"
+      ],
+      "priority": "expanded",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-022",
+      "name": "Yen Sid – Powerful Sorcerer",
+      "published_footer": "223/204 · EN · 4",
+      "footer_parts": {
+        "numerator": "223",
+        "denominator_or_token": "204",
+        "language": "EN",
+        "printed_marker": "4"
+      },
+      "physical_distinction_claim": "Deep Trouble decorated inky border foil",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "cold_foil"
+      ],
+      "source_ids": [
+        "QUEST_FRAMES"
+      ],
+      "acceptance_tests": [
+        "premium-not-enchanted",
+        "printed-same-card-gameplay"
+      ],
+      "priority": "expanded",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-023",
+      "name": "Ursula – Ruler of Lorcana",
+      "published_footer": null,
+      "footer_parts": {
+        "numerator": null,
+        "denominator_or_token": null,
+        "language": null,
+        "printed_marker": null
+      },
+      "physical_distinction_claim": "Unnumbered oversized boss/representational card from Deep Trouble",
+      "layout_claim": "portrait",
+      "size_claim": "oversized",
+      "item_kind_candidate": "oversized_scenario",
+      "finish_candidates_not_authorized": [
+        "speckled_foil_reported"
+      ],
+      "source_ids": [
+        "OFF_QUEST",
+        "QUEST_URSULA",
+        "Q1_STUDY"
+      ],
+      "acceptance_tests": [
+        "no-collector-footer",
+        "no-fabricated-identity"
+      ],
+      "priority": "edge_hold",
+      "review_status": "held_unnumbered_no_footer",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-024",
+      "name": "The Vine – Towering Stalk",
+      "published_footer": "197/207 · EN · 13",
+      "footer_parts": {
+        "numerator": "197",
+        "denominator_or_token": "207",
+        "language": "EN",
+        "printed_marker": "13"
+      },
+      "physical_distinction_claim": "Attack of the Vine! normal character",
+      "layout_claim": "portrait",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_VINE197",
+        "VINE_FINISH"
+      ],
+      "acceptance_tests": [
+        "real-non204-denominator",
+        "finish-pair"
+      ],
+      "priority": "expanded",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    },
+    {
+      "case_id": "LRC-025",
+      "name": "Vine Entrance – Ominous Passageway",
+      "published_footer": "207/207 · EN · 13",
+      "footer_parts": {
+        "numerator": "207",
+        "denominator_or_token": "207",
+        "language": "EN",
+        "printed_marker": "13"
+      },
+      "physical_distinction_claim": "Attack of the Vine! landscape Location",
+      "layout_claim": "landscape",
+      "size_claim": "standard",
+      "item_kind_candidate": "card",
+      "finish_candidates_not_authorized": [
+        "nonfoil",
+        "cold_foil"
+      ],
+      "source_ids": [
+        "OFF_VINE207"
+      ],
+      "acceptance_tests": [
+        "real-non204-denominator",
+        "207-equals-denominator",
+        "landscape-roi"
+      ],
+      "priority": "core",
+      "review_status": "source_documented_physical_unreviewed",
+      "physical_uuid": null,
+      "eligible_finish_ids": null,
+      "provider_aliases": [],
+      "reference_image_files": [],
+      "actual_card_image_files": [],
+      "measurement_mm": null,
+      "review_signoff": null,
+      "activation_permitted": false
+    }
+  ],
+  "review_required_per_entry": [
+    "Full-resolution front image with card/ruler showing physical scale",
+    "Full-resolution back image (especially Q1 scenario gold back)",
+    "Uncropped screenshot of actual scanner ROI observation",
+    "Macro bottom footer showing all literal printed separators and tokens",
+    "Angled-light front photographs for each asserted finish, with comparison when ambiguity exists",
+    "Macro distinguishing artwork, stamp, frame, size, distribution",
+    "Legal/permission and evidence provenance; SHA-256 per retained file",
+    "Two-person signoff on exact physical identity, complete candidate universe and eligible finishes",
+    "Permanent app-owned physical UUID allocated only by reviewed signed transition process"
+  ],
+  "known_limitations": [
+    "One Piece repository branch not available through connected GitHub installation in this session; use as standalone research input, not codebase edit.",
+    "No direct Lorcast live API JSON downloaded or verified for these entries; provider aliases not populated.",
+    "No real card-in-hand evidence collected; site catalog scans and vendor listings are not physical corpus acceptance.",
+    "No rights or publication consent to redistribute images established.",
+    "Real camera geometry, orientation, size, finish classification and timing are not measured."
+  ]
+}

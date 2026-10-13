@@ -1,0 +1,671 @@
+{
+  "schema_id": "lorcana-minimum-acceptance-execution-matrix/v1",
+  "as_of": "2026-10-12",
+  "derived_from_original_25_scenarios": true,
+  "scenario_count": 25,
+  "actual_runtime_passes": 0,
+  "runtime_test_execution_environment_available": false,
+  "scenarios": [
+    {
+      "scenario_id": "LRC-AC-01",
+      "original_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "scan+catalog",
+      "action_to_execute_in_actual_app": "Recognize one unambiguous 5/204 EN 1 footer with both Hades standard and jumbo eligible in the registry",
+      "required_expected_result": "needsPrintingChoice, never silent resolution or normal-size assumption",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-02",
+      "original_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "choice+finish+save",
+      "action_to_execute_in_actual_app": "Choose jumbo then try standard-only finish or tamper selected UUID/generation",
+      "required_expected_result": "Refuse unsupported finish/printing; no save and no ownership/history modification",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-03",
+      "original_case_ids": [
+        "LRC-002"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-002"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "catalog+choice",
+      "action_to_execute_in_actual_app": "Review a scoped registry where a jumbo is the only known verified candidate; provide footer alone",
+      "required_expected_result": "Singleton jumbo still asks to confirm oversized physical size before exact save",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-04",
+      "original_case_ids": [
+        "LRC-003",
+        "LRC-004"
+      ],
+      "minimum_selection_case_ids": [],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-003",
+        "LRC-004"
+      ],
+      "surface": "recognition+catalog",
+      "action_to_execute_in_actual_app": "Repeat same-footer discovery with Mulan gift set foils at both sizes",
+      "required_expected_result": "Two physically distinguishable candidates and explicit selection; no exception keyed on name",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "NOT_SELECTED_IN_FIRST_BATCH",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-05",
+      "original_case_ids": [
+        "LRC-001"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-001"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "finish+ownership+relaunch",
+      "action_to_execute_in_actual_app": "Select confirmed standard Hades printing with supported normal and cold-foil specimens",
+      "required_expected_result": "Finish picker offers only independently reviewed eligible finishes; exact ID + finish persists across relaunch",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-06",
+      "original_case_ids": [
+        "LRC-005",
+        "LRC-006"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-006"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-005"
+      ],
+      "surface": "catalog+ownership",
+      "action_to_execute_in_actual_app": "Scan normal 42/204 vs Enchanted 207/204 TFC Elsa",
+      "required_expected_result": "Separate physical printings and stable IDs; enchanted never appears as an eligible finish beneath 42/204",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-07",
+      "original_case_ids": [
+        "LRC-007",
+        "LRC-008"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-007",
+        "LRC-008"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "browse+ownership",
+      "action_to_execute_in_actual_app": "Add both Stitch printings then inspect Browse/collection/completion",
+      "required_expected_result": "Two physical UUID+finish keys remain distinct; gameplay identity may group as reprints, physical completion does not",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-08",
+      "original_case_ids": [
+        "LRC-013a",
+        "LRC-013b",
+        "LRC-013c",
+        "LRC-013d",
+        "LRC-013e"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-013a",
+        "LRC-013c"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-013b",
+        "LRC-013d",
+        "LRC-013e"
+      ],
+      "surface": "scanner+catalog",
+      "action_to_execute_in_actual_app": "Use literal 4a/4b/4c/4d/4e printed inputs and their five different art identities",
+      "required_expected_result": "Five different candidate identity keys; if parser lacks lettered support each is recoverably unresolved, never 4/204 or default artwork",
+      "original_precondition": "source_research_or_supported_parser",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-09",
+      "original_case_ids": [
+        "LRC-009",
+        "LRC-011"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-011"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-009"
+      ],
+      "surface": "recognizer+recovery",
+      "action_to_execute_in_actual_app": "Present 1TFC EN 1/P1 and 1TFC EN 2/P1 historical promo footers",
+      "required_expected_result": "No ordinary three-part footer misparse; must remain held/recoverable until measured alternate syntax support; stamps distinct",
+      "original_precondition": "source_research_or_supported_parser",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-10",
+      "original_case_ids": [
+        "LRC-012"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-012"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "camera+recognizer",
+      "action_to_execute_in_actual_app": "Capture Motunui on real landscape card in more than one orientation",
+      "required_expected_result": "Accept only supported actual ROI geometry and contiguous footer observation; else safe recovery, no blind rotation guess",
+      "original_precondition": "real_device_roi_capture",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-11",
+      "original_case_ids": [
+        "LRC-014",
+        "LRC-015"
+      ],
+      "minimum_selection_case_ids": [],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-014",
+        "LRC-015"
+      ],
+      "surface": "catalog+collection",
+      "action_to_execute_in_actual_app": "Resolve Cinderella EN vs FR 177/204 set 2 including both normal and foil evidence",
+      "required_expected_result": "Language part of physical identity/ownership. No English default or cross-language normalization",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "NOT_SELECTED_IN_FIRST_BATCH",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-12",
+      "original_case_ids": [
+        "LRC-016"
+      ],
+      "minimum_selection_case_ids": [],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-016"
+      ],
+      "surface": "catalog+variant",
+      "action_to_execute_in_actual_app": "Review Challenge Cinderella 3/C1 in both nonfoil and foil distribution forms",
+      "required_expected_result": "Literal C1 retained; explicit reviewer policy controls whether finishes share an exact printing or distinct intrinsic stamp identity; unreviewed decision blocks save",
+      "original_precondition": "held_until_distribution_and_finish_review",
+      "source_preflight_status": "NOT_SELECTED_IN_FIRST_BATCH",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-13",
+      "original_case_ids": [
+        "LRC-017"
+      ],
+      "minimum_selection_case_ids": [],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-017"
+      ],
+      "surface": "source-normalization",
+      "action_to_execute_in_actual_app": "Compare 02/D23 third-party text with 2/D23 official digital display",
+      "required_expected_result": "Conflict stays visible and held; do not strip leading zero or assign permanent alias until photographed printed footer resolves claim",
+      "original_precondition": "source_conflict_research",
+      "source_preflight_status": "NOT_SELECTED_IN_FIRST_BATCH",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-14",
+      "original_case_ids": [
+        "LRC-018"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-018"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "scanner+import+ownership",
+      "action_to_execute_in_actual_app": "Capture gold-backed Ursula Contract 30/31 EN Q1 and test CSV raw item-kind path",
+      "required_expected_result": "Q1 and denominator 31 stay literal; unknown specialized item kind remains accessible to validator; no collection write before validated item-kind authority",
+      "original_precondition": "held_until_itemkind_and_physical_review",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-15",
+      "original_case_ids": [
+        "LRC-019",
+        "LRC-020",
+        "LRC-021",
+        "LRC-022"
+      ],
+      "minimum_selection_case_ids": [],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-019",
+        "LRC-020",
+        "LRC-021",
+        "LRC-022"
+      ],
+      "surface": "catalog+variant",
+      "action_to_execute_in_actual_app": "Compare ordinary Mickey 187 and special 225, ordinary Yen Sid 59 and special 223, denominator 204",
+      "required_expected_result": "Premium numerator accepts higher than denom but does not imply Enchanted; dedicated distinct physical UUID for framed Quest counterpart",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "NOT_SELECTED_IN_FIRST_BATCH",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-16",
+      "original_case_ids": [
+        "LRC-023"
+      ],
+      "minimum_selection_case_ids": [],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-023"
+      ],
+      "surface": "recognizer+catalog",
+      "action_to_execute_in_actual_app": "Attempt to auto-resolve unnumbered oversized Ursula boss via invented footer or similar card name",
+      "required_expected_result": "Return incomplete/unsupported until an exact manually verified catalog UUID and raw kind supported; no synthetic footer",
+      "original_precondition": "held_no_footer",
+      "source_preflight_status": "NOT_SELECTED_IN_FIRST_BATCH",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-17",
+      "original_case_ids": [
+        "LRC-024",
+        "LRC-025"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-025"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-024"
+      ],
+      "surface": "recognizer+catalog",
+      "action_to_execute_in_actual_app": "Resolve 197/207 EN 13 and 207/207 EN 13",
+      "required_expected_result": "Accept actual denominator 207 as literal, including numerator equal to it; no 204 horizon; landscape for 207 Location",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-18",
+      "original_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "activation+choice+recovery",
+      "action_to_execute_in_actual_app": "Change catalog generation while printing chooser and price-independent finish step are open",
+      "required_expected_result": "Reject stale choice, preserve original evidence, explicit retry rebases and asks again where candidate evidence changed",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-19",
+      "original_case_ids": [
+        "LRC-007",
+        "LRC-008"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-007",
+        "LRC-008"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "csv+collection",
+      "action_to_execute_in_actual_app": "Import CSV referencing gameplay identity, provider alias or 23/204 footer without exact reviewed physical UUID",
+      "required_expected_result": "Reject mutation and retain failed-row evidence; full exact UUID+game+finish keys required",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-20",
+      "original_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "scanner+recovery+relaunch",
+      "action_to_execute_in_actual_app": "Write two identical-footer scan encounters; resolve only encounter A",
+      "required_expected_result": "B recovery remains; suppression/encounter identity/ownership do not collapse together; ownership correct after app relaunch",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-21",
+      "original_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "authority+collection",
+      "action_to_execute_in_actual_app": "Withdraw supported finish/write capability or retire bound storage session while a save is in flight",
+      "required_expected_result": "Final synchronous catalog and collection guards block writes, history untouched and readable unknown rows retained",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-22",
+      "original_case_ids": [
+        "LRC-001",
+        "LRC-007",
+        "LRC-008"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-001",
+        "LRC-007",
+        "LRC-008"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "signed-release+activation+ownership",
+      "action_to_execute_in_actual_app": "Accept corrected provider alias/artwork metadata and re-sign same physical reviewed printing",
+      "required_expected_result": "App-owned permanent physical UUID and original ownership remain stable; content revision and corrections pass signed predecessor check",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-23",
+      "original_case_ids": [
+        "LRC-001",
+        "LRC-002",
+        "LRC-012",
+        "LRC-018"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-001",
+        "LRC-002",
+        "LRC-012",
+        "LRC-018"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [],
+      "surface": "phone+tablet+accessibility",
+      "action_to_execute_in_actual_app": "Inspect inaccessible artwork, visually indistinguishable candidate text and large-text / VoiceOver picker flows",
+      "required_expected_result": "Cannot select unsupported candidate on identical labels; details contain accessible size/distinction, blocked when insufficient, no change to ownership",
+      "original_precondition": "real_rendered_ui",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-24",
+      "original_case_ids": [
+        "LRC-016",
+        "LRC-017",
+        "LRC-023"
+      ],
+      "minimum_selection_case_ids": [],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-016",
+        "LRC-017",
+        "LRC-023"
+      ],
+      "surface": "manifest+signed-transition",
+      "action_to_execute_in_actual_app": "Attempt schema-2 promotion of held disputed footer, distribution finish, or unnumbered special card",
+      "required_expected_result": "Promotion validator fails and active catalog remains unchanged until identity evidence/reviewer signoff resolves each hold",
+      "original_precondition": "source_research",
+      "source_preflight_status": "NOT_SELECTED_IN_FIRST_BATCH",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    },
+    {
+      "scenario_id": "LRC-AC-25",
+      "original_case_ids": [
+        "LRC-003",
+        "LRC-004",
+        "LRC-018"
+      ],
+      "minimum_selection_case_ids": [
+        "LRC-018"
+      ],
+      "other_required_case_ids_not_in_minimum_set": [
+        "LRC-003",
+        "LRC-004"
+      ],
+      "surface": "import+ownership",
+      "action_to_execute_in_actual_app": "Submit external metadata with source alias but wrong game, item type or printing size",
+      "required_expected_result": "Cross-game and raw item-kind discrepancies are retained and rejected; source alias does not override exact physical UUID authority",
+      "original_precondition": "reviewed_seed",
+      "source_preflight_status": "REFERENCED_IN_SOURCE_CORPUS",
+      "iOS_runtime_execution_status": "NOT_RUN_BLOCKED",
+      "blocking_requirements": [
+        "physical front/back/footer/foil/size evidence for applicable specimens",
+        "two independent reviewer signoffs and candidate-universe scope verification",
+        "eligible signed isolated-local review seed",
+        "accessible macOS/Xcode repository and isolated simulator or iPhone"
+      ],
+      "pass_evidence": null,
+      "actual_result": null
+    }
+  ]
+}

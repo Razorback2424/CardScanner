@@ -3,12 +3,23 @@
 **Status:** Slices 1–3 and Slice 4 local ownership/Browse/import code implemented;
 253 distinct selected simulator cases have passing evidence across the regression
 run and corrected ownership replay — 2026-10-12. Rendered Slice 4 acceptance is open.
-Production Lorcana support is disabled. Current work is on
+**2026-10-13 discovery update:** the owner-requested English completeness pass
+adds default source discovery, real-footer recognition and offline sealed browse.
+The [coverage checkpoint](../research/lorcana-catalog-coverage.md) owns this
+inventory, the continuation's 322 passing focused tests and remaining gaps. Earlier statements here
+that `appDefaults` omits all Lorcana support are historical for discovery;
+reviewed physical acquisition, collection writes, production signed activation
+and pricing remain disabled. Slice 4 physical acceptance gates remain open.
+Current work is on
 `feat/lorcana-implementation` at `9d7c780c` plus local changes. See the
 [source checkpoint](../research/lorcana-source-corpus.md) and
 [local physical contract](../research/lorcana-physical-contract.md) and
 [signed activation contract](../research/lorcana-signed-activation.md). Real physical
 corpus acceptance remains open; synthetic review fixtures do not close it.
+The [representative reference corpus](../research/lorcana-real-card-corpus/README.md)
+now retains 29 unapproved candidates, 35 source references and 25 unexecuted
+acceptance scenarios. Source selection is recorded; physical specimens,
+independent review and approved local-seed promotion remain required.
 **Source review:** integration at `6b64abe` and subsequent review work through
 `55dc1e4` on `merge/one-piece-integration`. The remaining-audit cleanup removes
 the accidentally tracked `undefined/` adapter copies and corrects the extracted
@@ -179,6 +190,14 @@ close. A local test capability is not authorization to enable production.
   Unsupported classes stay explicitly incomplete. Maintain a separate inventory
   of releases/classes still to reconcile; fixture coverage or a provider set list
   cannot close physical-universe completeness.
+  The 2026-10-12 supplied reference package is retained in the
+  [real-card corpus](../research/lorcana-real-card-corpus/README.md). Its offline
+  structural validator passes, but no specimen photographs, reviewed physical
+  UUIDs or authorized finishes exist; this checkbox remains open.
+  The [minimum physical acceptance batch](../research/lorcana-real-card-corpus/minimum-acceptance/README.md)
+  adds 12 unapproved specimen slots and maps all 25 runtime scenarios. Local
+  replay passes 23 offline checks and 16 Python precheck tests, with 0/12 approved
+  packets and 0/25 iOS scenarios executed. This is acquisition preparation only.
 - [x] Extend the research data model with reviewed canonical relationships,
   permanent app-owned physical UUIDs, artwork/distribution/stamp/size distinctions,
   retained aliases, corrections and per-printing finish evidence. Schema-1
@@ -288,8 +307,11 @@ corpus; shared transport tests do not replace Lorcana contract tests.
   Browse/add/undo and CSV round-trip against the same reviewed registry.
 - [ ] Render the existing compact choice/Details and finish flows on phone/tablet
   and large text; inaccessible artwork or identical labels cannot permit an
-  unsupported selection. The debug kit is still an injection API, not a rendered
-  launch route or accepted physical seed.
+  unsupported selection. The [debug UI review route](../research/lorcana-ui-review.md)
+  is now implemented with isolated persistent collection/recovery/cache storage,
+  an ephemeral synthetic seed and real scanner callback injection. Its sample
+  menu reaches size/stamp choices, finish selection and incomplete outcomes.
+  Rendered acceptance and an accepted physical seed remain open.
 
 **Exit evidence:** deterministic storage/recovery and import tests plus rendered
 local interaction/relaunch evidence for representative base cases. Record real

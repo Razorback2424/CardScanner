@@ -1,3 +1,73 @@
+- Lorcana catalog accuracy continuation (2026-10-13; local changes): inspected
+  58 public card images and retained references/digests. Corrected 53 redundant
+  card listings and one card bundle, added 13 missing promo footers, verified
+  six oversized/errata footers and four unnumbered Quest mappings. Exact source
+  joins now handle accents/rarity qualifiers within the correct set; cross-set
+  promo aliases need image evidence. Inventory is 3,582 English card records
+  and 177 sealed products. All 3,574 numbered records pass recognition/lookup;
+  all five unnumbered records pass exact title/Quest checks; all records support
+  explicit scanner recovery. The three unreadable Palace Heist components stay
+  held for automatic recognition. Upcoming labels advance on release and bind
+  browse generations to the transition. Continuation passes 135 simulator and
+  eight Python tests; all 58 image digests match. A further camera integration
+  fix conditionally reads same-frame card text for known unnumbered Quest footers,
+  isolates that text from other games and blocks unrelated historical fallback.
+  Six public-image macOS CPU OCR probes succeeded after host acceleration failed;
+  observed hyphens/S7 now receive bounded repairs, while real suffixes and
+  competing repairs remain protected. Unnumbered source sequence numbers are
+  hidden from printed-number presentation. Final expanded run passes 322 tests,
+  zero failures/skips. SSD result:
+  `CodexBuilds/LorcanaCoverage-20261013/Continuation-4.xcresult` (one internal QoS
+  runtime warning). Final oversized/errata browse regrouping also passes all 16
+  coverage tests at `Final-Browse-Grouping.xcresult` (two internal QoS warnings).
+  Physical acquisition/collection writes, signed delivery,
+  pricing, camera/device/CloudKit/release gates remain open. No commit or push.
+- Lorcana English catalog completeness pass (2026-10-13; local changes):
+  registered offline source discovery with all 3,556 English LorcanaJSON cards,
+  80 additional market observations and 177 sealed products across all 21
+  TCGCSV groups. Fixed actual bullet/D23 footer formats, artwork suffixes,
+  Fabled collector zero and the unnumbered Q3 token. Preserved unknown finishes,
+  partial/upcoming labels and separate physical authority. All 3,555 numbered
+  source cards pass OCR-text recognition/lookup; all 3,636 card records and 177
+  sealed products pass inventory traversal. Final focused simulator run passes
+  134 tests, zero failures/skips; six builder tests pass. SSD result:
+  `CodexBuilds/LorcanaCoverage-20261013/Focused-3.xcresult`. Thirty-three market
+  rows still need footer review; source-only acquisition/saving, pricing,
+  signed production delivery, device/camera/CloudKit/release acceptance remain
+  gated. See `docs/research/lorcana-catalog-coverage.md`. No commit or push.
+- Lorcana isolated UI review launch (2026-10-12; base `1e368b3` plus local
+  changes): implemented the opt-in `LorcanaReview` DebugRemoteLocal route with
+  isolated collection/portfolio/recovery/catalog-cache storage and an ephemeral
+  signed synthetic seed. Eight samples exercise actual scanner callback lookup,
+  size/stamp choices, finish selection and held/unknown/unavailable-artwork
+  recovery through existing screens. Synthetic names/banner remain visible;
+  no camera or price provider runs in this harness. App/test compilation passes;
+  the final three new review-launch tests pass with zero failures/skips/runtime
+  warnings. The earlier regression log records 62 selected contract passes;
+  Xcode stalled in result finalization and that process was stopped, so only the
+  later three-test bundle is confirmed finalized. SSD artifacts are under
+  `CodexBuilds/LorcanaReviewLaunch-20261012/`. Rendered UI, phone/iPad/large-text,
+  VoiceOver, real-card and device acceptance remain open. Production Lorcana
+  stays disabled; no commit or push was made.
+- Lorcana minimum physical acceptance preparation (2026-10-12): retained the
+  supplied 26-file package under the real-card corpus, with all checksums matching
+  and three source snapshots identical to the earlier import. Locally replayed
+  23 offline assertions and 16 Python evidence-precheck tests, all passing.
+  Twelve specimen packets remain unapproved; all 25 iOS scenarios remain unrun.
+  Linked the acquisition workflow and documented the precheck's declaration-only
+  boundary. No real photos, measurements, human approvals, UUIDs, finishes or
+  signed seed were created. No Swift/runtime changes, simulator tests, commits
+  or pushes; production Lorcana remains disabled.
+- Lorcana representative reference corpus (2026-10-12; base `1e368b3`):
+  imported the supplied eight-file research package byte-for-byte under
+  `docs/research/lorcana-real-card-corpus/source-package/` and linked its review
+  workflow from the current plan. Offline validation passes for 29 inactive
+  reference candidates, 35 cited sources and 25 specified scenarios; all supplied
+  SHA-256 checksums match. Documented the original guide's stale 23-scenario
+  count and generator-only `/mnt/data` paths. Physical specimens, two independent
+  reviews, exact UUID/finish approval and approved isolated-seed promotion remain
+  open. No acceptance scenarios or simulator tests were executed, no runtime
+  changed and production Lorcana support remains disabled.
 - Lorcana Slice 4 local ownership/Browse/CSV (2026-10-12;
   `feat/lorcana-implementation` at `9d7c780c` plus local changes): completed the
   partly implemented local adapters and connected them to coherent runtime

@@ -1,0 +1,693 @@
+{
+  "schema_id": "lorcana-minimum-real-specimen-targets/v1",
+  "research_as_of": "2026-10-12",
+  "basis_snapshot_sha256": "13002ca045741dfaa2ab3ef2e4ff4ba73c673a8b53342411ab705aa272a2589c",
+  "requested_specimen_instances": 12,
+  "all_target_items_are_unapproved": true,
+  "seed_manifest_generated": false,
+  "runtime_scenarios_executed": false,
+  "note": "Research facts and published imagery are independent of true specimen observation, two human reviews, owned UUID/finish authorization, signing, and actual scanner/app testing.",
+  "dimension_reference": {
+    "url": "https://www.wargamer.com/disney-lorcana/card-size",
+    "standard_portrait_mm": {
+      "width": 63.5,
+      "height": 88.9
+    },
+    "gift_set_oversized_mm": {
+      "width": 87.9,
+      "height": 125.9
+    },
+    "source_type": "publication relaying manufacturer for jumbo, NOT measured here"
+  },
+  "specimens": [
+    {
+      "slot_id": "MIN-01",
+      "case_id": "LRC-001",
+      "target_finish_not_authorized": "nonfoil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Ordinary normal finish for the exact Hades standard physical printing.",
+      "published_artwork_reference_not_specimen_observation": "Alex Accorsi artwork: Hades seated on a golden throne.",
+      "research_claims": [
+        {
+          "url": "https://inkdecks.com/cards/details-hades-king-of-olympus",
+          "claim": "Two product finishes listed for 5/204, normal and foil; market listing cannot authorize finishes.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://lorcast.com/cards/1/5/hades-king-of-olympus",
+          "claim": "Independent provider catalog lists ordinary physical card and both price columns.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://lorcanaplayer.com/card/hades-king-of-olympus/",
+          "claim": "Confirms Hades 5/204, artwork and Gift Set foil family.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": {
+        "url": "https://i.ebayimg.com/images/g/OtQAAOSwCExmcQUp/s-l1200.jpg",
+        "page": "https://www.ebay.com/itm/296511271617",
+        "observation": "An eBay listing close-up of a physical-looking Hades card displays the bottom-left 5/204 EN 1 and throne artwork. No size reference, back image, or finish-under-light evidence; cannot certify this image as the selected nonfoil specimen."
+      },
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "5/204 · EN · 1",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "normal-foil-distinct-ownership",
+        "identical-physical-uuid-across-finishes-after_review"
+      ],
+      "blocking_reason": "Finish still requires physical light observation."
+    },
+    {
+      "slot_id": "MIN-02",
+      "case_id": "LRC-001",
+      "target_finish_not_authorized": "cold_foil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Playable-size foil for Hades from First Chapter Gift Set; paired with normal.",
+      "published_artwork_reference_not_specimen_observation": "Same Hades throne artwork; verify no distribution/stamp change.",
+      "research_claims": [
+        {
+          "url": "https://www.disneylorcana.com/en-US/product",
+          "claim": "Publisher confirms playable-size Hades foil in Gift Set.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://www.tcgplayer.com/content/article/Buyer-s-Guide-to-Disney-Lorcana-The-First-Chapter/34bf5c98-963a-42e9-98a2-cee1851ca18b/",
+          "claim": "Independent gift-set contents verify playable foil and separate oversized foil.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": null,
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "5/204 · EN · 1",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "finish-eligibility-exact-printing",
+        "same-footer-physical-choice"
+      ],
+      "blocking_reason": "Foil treatment not optically measured."
+    },
+    {
+      "slot_id": "MIN-03",
+      "case_id": "LRC-002",
+      "target_finish_not_authorized": "foil_unspecified",
+      "target_physical_form": "oversized",
+      "sampling_rationale": "Oversized foil with identical Hades footer; physical UUID must differ from standard.",
+      "published_artwork_reference_not_specimen_observation": "Same Hades throne image, physically oversized.",
+      "research_claims": [
+        {
+          "url": "https://www.disneylorcana.com/en-US/product",
+          "claim": "Publisher explicitly distinguishes oversized from playable-size Hades foils.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://wiki.mushureport.com/wiki/The_First_Chapter_Gift_Set",
+          "claim": "Independent product inventory lists oversized Hades 5/204 EN 1.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://www.wargamer.com/disney-lorcana/card-size",
+          "claim": "Reported jumbo dimensions, attributed by reporter to Ravensburger; not an observed specimen measurement.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": null,
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 87.9,
+          "height": 125.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "5/204 · EN · 1",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "same-footer-size-choice",
+        "oversized-explicit-confirmation",
+        "no-silent-default-size"
+      ],
+      "blocking_reason": "No ruler/reference photograph or actual size measurement."
+    },
+    {
+      "slot_id": "MIN-04",
+      "case_id": "LRC-007",
+      "target_finish_not_authorized": "nonfoil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Original Stitch Rock Star gameplay identity and printing.",
+      "published_artwork_reference_not_specimen_observation": "Stitch singing/performing; compare publisher gallery for exact artwork.",
+      "research_claims": [
+        {
+          "url": "https://www.disneylorcana.com/en-US/news/2025/08/2025-8-release-notes-fabled",
+          "claim": "Publisher explains original vs reprint sharing gameplay identity.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://cards.disneylorcana.com/en-US/?cardId=23",
+          "claim": "Official gallery identifies First Chapter 23/204 EN 1.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://wiki.mushureport.com/wiki/Stitch_-_Rock_Star",
+          "claim": "Independent footer history corroboration.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": null,
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "23/204 · EN · 1",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "separate-printing-uuid-from-reprint",
+        "gameplay-reprint-grouping"
+      ],
+      "blocking_reason": "No actual foil/sample images or measurements."
+    },
+    {
+      "slot_id": "MIN-05",
+      "case_id": "LRC-008",
+      "target_finish_not_authorized": "nonfoil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Fabled reprint must never silently rekey First Chapter ownership.",
+      "published_artwork_reference_not_specimen_observation": "Reported same core artwork as original, with small presentation/readability differences.",
+      "research_claims": [
+        {
+          "url": "https://www.disneylorcana.com/en-US/news/2025/08/2025-8-release-notes-fabled",
+          "claim": "Publisher confirms reprint relation and small visible card changes.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://lorcanaplayer.com/card/stitch-rock-star-fabled/",
+          "claim": "Fabled 3/204, official-app card illustration described.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://wiki.mushureport.com/wiki/Fabled_Card_List",
+          "claim": "Independent Fabled 3/204 EN 9 release record.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": null,
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "3/204 · EN · 9",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "independent-ownership-from-first-chapter",
+        "footer-scope"
+      ],
+      "blocking_reason": "No reviewed print-to-gameplay canonical relation signed."
+    },
+    {
+      "slot_id": "MIN-06",
+      "case_id": "LRC-006",
+      "target_finish_not_authorized": "enchanted_foil_unverified",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Premium numerator 207/204, alternate Elsa artwork and specialty foil are NOT a finish of 42/204.",
+      "published_artwork_reference_not_specimen_observation": "Alternate Elsa – Spirit of Winter enchanted art credited to Matthew Robert Davies.",
+      "research_claims": [
+        {
+          "url": "https://cards.disneylorcana.com/en-US/?cardId=207",
+          "claim": "Publisher gallery identifies 207/204 EN 1, Elsa Enchanted and credited illustrator.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://www.disneylorcana.com/en-US/news/enchanted-reveal",
+          "claim": "Publisher describes Enchanted treatment distinct from ordinary artwork.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://wiki.mushureport.com/wiki/The_First_Chapter_Card_List",
+          "claim": "Independent premium numbering inventory.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": {
+        "url": "https://elemental.cards/cdn/shop/files/rn-image_picker_lib_temp_26f04df2-999a-4ce6-b792-c5c1978a3189.jpg?v=1765902554",
+        "page": "https://elemental.cards/products/elsa-spirit-of-winter-enchanted-the-first-chapter-lorcana-207-204-lp",
+        "observation": "Retailer photograph of Elsa Enchanted propped on a small wooden stand shows 207/204 EN 1, alternate Elsa artwork and apparent reflective treatment. Not an angled-light review or first-hand captured specimen."
+      },
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "207/204 · EN · 1",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "premium-numerator-not-finish",
+        "separate-printing-and-artwork",
+        "no-rarity-derived-finish"
+      ],
+      "blocking_reason": "Expensive specimen; photo required; no foil optical proof."
+    },
+    {
+      "slot_id": "MIN-07",
+      "case_id": "LRC-013a",
+      "target_finish_not_authorized": "nonfoil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Literal 4a collector numerator and artwork a.",
+      "published_artwork_reference_not_specimen_observation": "Dalmatian Puppy Tail Wagger illustration a; distinguish from art c by side-by-side physical capture.",
+      "research_claims": [
+        {
+          "url": "https://wiki.mushureport.com/wiki/Dalmatian_Puppy_-_Tail_Wagger",
+          "claim": "Lists separate five lettered artwork variants 4a–4e EN 3.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://www.pricecharting.com/game/lorcana-into-the-inklands/dalmatian-puppy-tail-wagger-4a",
+          "claim": "Independent marketplace track of 4a physical identity.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": null,
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "4a/204 · EN · 3",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "literal-lettered-number",
+        "distinct-artwork-uuid",
+        "conservative-unresolved-parser"
+      ],
+      "blocking_reason": "Current research parser numeric grammar does not establish 4a recognition."
+    },
+    {
+      "slot_id": "MIN-08",
+      "case_id": "LRC-013c",
+      "target_finish_not_authorized": "cold_foil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Artwork c with different alphanumeric footer and documented photographed card.",
+      "published_artwork_reference_not_specimen_observation": "Dalmatian puppy on yellow couch; seller front photo shows bottom-left 4c/204 EN 3.",
+      "research_claims": [
+        {
+          "url": "https://wiki.mushureport.com/wiki/Dalmatian_Puppy_-_Tail_Wagger",
+          "claim": "Lists five separate designs including 4c/204 EN 3.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://tcglance.com/products/dalmatian-puppy-foil-tail-wagger-4c-204",
+          "claim": "Retailer labels 4c as foil and displays a photo of a held, sleeved physical card.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": {
+        "url": "https://tcglance.com/cdn/shop/files/36A8B024-CB1D-4756-8586-212221B8E8E3.jpg?v=1710179008",
+        "page": "https://tcglance.com/products/dalmatian-puppy-foil-tail-wagger-4c-204",
+        "observation": "Retailer photograph of physical card in holder appears to show 4c/204 EN 3, puppy-on-couch illustration. Foil effect and actual dimensions cannot be validated from this static view."
+      },
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "4c/204 · EN · 3",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "lettered-art-difference",
+        "no-default-artwork",
+        "conservative-unresolved-parser"
+      ],
+      "blocking_reason": "Photo not permissioned for catalog redistribution; no physical foil measurement."
+    },
+    {
+      "slot_id": "MIN-09",
+      "case_id": "LRC-012",
+      "target_finish_not_authorized": "nonfoil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Location has landscape-oriented card layout on standard card stock; footer ROI differs.",
+      "published_artwork_reference_not_specimen_observation": "Motunui tropical island panorama with palm trees, huts and green hills.",
+      "research_claims": [
+        {
+          "url": "https://lorcanaplayer.com/card/motunui-island-paradise/",
+          "claim": "Location #170 Into the Inklands, credited Etienne Savoie.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://wiki.mushureport.com/wiki/Into_the_Inklands_Card_List",
+          "claim": "Independent 170/204 EN 3 Location inventory.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://lorcast.com/cards/3/170/motunui-island-paradise",
+          "claim": "Provider describes layout and set printing separately from Fabled reprint.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": {
+        "url": "https://i.ebayimg.com/images/g/d9sAAOSwOphl5p0Q/s-l1200.png",
+        "page": "https://www.ebay.com/itm/305434042999",
+        "observation": "Cropped marketplace card image displays Motunui horizontal Location artwork and 170/204 EN 3 at bottom-left. Whether the image depicts a photograph of the actual sold specimen or catalog art is unverified, so it is NOT physical evidence."
+      },
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 88.9,
+          "height": 63.5
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "as_scanned_landscape",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "170/204 · EN · 3",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "landscape-roi",
+        "no-auto-rotation",
+        "location-layout"
+      ],
+      "blocking_reason": "No real camera landscape ROI capture."
+    },
+    {
+      "slot_id": "MIN-10",
+      "case_id": "LRC-011",
+      "target_finish_not_authorized": "nonfoil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "2022 D23 promo explicitly stamped and uses early reversed nonstandard collector syntax.",
+      "published_artwork_reference_not_specimen_observation": "Mickey Mouse Brave Little Tailor carrying oversized scissors; bottom D23 Expo and 1st marks.",
+      "research_claims": [
+        {
+          "url": "https://lorcanaplayer.com/card/mickey-mouse-brave-little-tailor-d23-expo/",
+          "claim": "Specialist collector record describes D23 Expo and first-edition marks and confirms nonfoil.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://wiki.mushureport.com/wiki/D23_Expo_2022_promotional_card",
+          "claim": "Independent 2022 promo provenance and stamp comparison to TFC.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://lorcanaplayer.com/set/promo-set-1/",
+          "claim": "Early 1TFC EN 1/P1 three-token ordering vs later printed grammar.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": {
+        "url": "https://i.ebayimg.com/images/g/iz4AAOSwec1jG5Dl/s-l1600.jpg",
+        "page": "https://www.ebay.com/itm/225211725031",
+        "observation": "Seller photograph held in a hand visibly shows 1TFC at left, EN and 1/P1 with separate centered D23 Expo and 1st logo marks; reported nonfoil cannot be confirmed under angled light."
+      },
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "1TFC · EN · 1/P1",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "stamped-promo-dedicated-physical",
+        "historical-footer-held",
+        "never-rewrite-to-ordinary-footer"
+      ],
+      "blocking_reason": "Unsupported historical OCR/footer grammar; costly seller photo does not grant rights or full physical review."
+    },
+    {
+      "slot_id": "MIN-11",
+      "case_id": "LRC-018",
+      "target_finish_not_authorized": "unknown",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Gold-backed Deep Trouble scenario card with literal Q1 marker and 31 denominator.",
+      "published_artwork_reference_not_specimen_observation": "Ursula's Contract item text and custom scenario back rather than ordinary Lorcana deck back.",
+      "research_claims": [
+        {
+          "url": "https://cards.disneylorcana.com/en-US/?cardId=943",
+          "claim": "Publisher gallery confirms 30/31 EN Q1 and Item card type.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://www.disneylorcana.com/en-US/product/deep-trouble",
+          "claim": "Publisher confirms distinct gold-backed 50-card Ursula scenario deck.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://wiki.mushureport.com/wiki/Illumineer%27s_Quest_-_Deep_Trouble",
+          "claim": "Independent scenario product inventory.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": null,
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 63.5,
+          "height": 88.9
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "portrait",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "30/31 · EN · Q1",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "literal-q1-marker",
+        "special-raw-item-kind",
+        "do-not-import-special-as-normal",
+        "no-collection-write"
+      ],
+      "blocking_reason": "Raw kind and finish authority unresolved; unknown actual back photo."
+    },
+    {
+      "slot_id": "MIN-12",
+      "case_id": "LRC-025",
+      "target_finish_not_authorized": "nonfoil",
+      "target_physical_form": "standard",
+      "sampling_rationale": "Confirmed denominator 207 and landscape Location for Attack of the Vine, set marker 13.",
+      "published_artwork_reference_not_specimen_observation": "Vine Entrance – Ominous Passageway Location artwork credited to Douglas De La Hoz.",
+      "research_claims": [
+        {
+          "url": "https://cards.disneylorcana.com/en-US/?cardId=3178",
+          "claim": "Official gallery confirms 207/207 EN 13, Location, rare and illustrator.",
+          "source_kind": "publisher",
+          "observed_via_public_web_research_on": "2026-10-12"
+        },
+        {
+          "url": "https://inkfall.de/card/3178?lang=en",
+          "claim": "Independent collector record reports 207/207 EN 13 and Location card.",
+          "source_kind": "specialist_catalog_or_retailer",
+          "observed_via_public_web_research_on": "2026-10-12"
+        }
+      ],
+      "secondary_public_photo_not_physically_verified": null,
+      "expected_acceptance_dimensions_mm_not_measured": {
+        "reported": {
+          "width": 88.9,
+          "height": 63.5
+        },
+        "source_url": "https://www.wargamer.com/disney-lorcana/card-size",
+        "orientation": "as_scanned_landscape",
+        "measured_specimen_width_mm": null,
+        "measured_specimen_height_mm": null,
+        "status": "INDUSTRY_REFERENCE_NOT_AN_OBSERVED_CARD",
+        "caveat": "Published approximate size; the cited sizing article has an inconsistent inch conversion for standard cards; independently measure each physical specimen."
+      },
+      "published_footer_reference_not_physical_transcription": "207/207 · EN · 13",
+      "source_review_decision": "SUPPORTED_AS_PUBLISHED_CLAIM_PHYSICAL_REVIEW_PENDING",
+      "physical_independent_review_decision": "QUARANTINE_UNAPPROVED",
+      "physical_approval": false,
+      "activation_permitted": false,
+      "source_scope_not_complete_for_same_footer": true,
+      "expected_behavior_labels": [
+        "non204-denominator",
+        "numerator-equals-denominator",
+        "landscape-location-roi"
+      ],
+      "blocking_reason": "No physical print photo or actual device camera evidence."
+    }
+  ],
+  "deferred_conflicts": [
+    {
+      "case_id": "LRC-017",
+      "issue": "2024 Cinderella D23 leading-zero disagreement",
+      "official_gallery_claim": "2/D23 · EN · 2",
+      "collector_claim": "02/D23 · EN · 2",
+      "status": "QUARANTINE_PRINTED_LEXEME_UNVERIFIED",
+      "urls": [
+        "https://cards.disneylorcana.com/en-US/?cardId=1192",
+        "https://lorcanaplayer.com/card/cinderella-stouthearted-d23-collection/"
+      ]
+    },
+    {
+      "case_id": "LRC-016",
+      "issue": "Challenge Cinderella 3/C1 foil/nonfoil distribution and physical-authority distinction",
+      "status": "QUARANTINE_FINISH_AND_DISTRIBUTION",
+      "urls": [
+        "https://lorcanaplayer.com/card/cinderella-stouthearted-challenge-promo-foil/"
+      ]
+    },
+    {
+      "case_id": "LRC-023",
+      "issue": "Unnumbered oversized Ursula requires manual exact identity and raw kind",
+      "status": "QUARANTINE_NO_FOOTER",
+      "urls": [
+        "https://www.disneylorcana.com/en-US/product/deep-trouble"
+      ]
+    },
+    {
+      "case_id": "LRC-008",
+      "issue": "One secondary Fabled card page says original came from Into the Inklands, contradicted by publisher release notes and 23/204 The First Chapter printing",
+      "resolution": "Publisher first-chapter reprint relation controls research summary. Do not use secondary article mistake as catalog identity evidence.",
+      "urls": [
+        "https://lorcanaplayer.com/card/stitch-rock-star-fabled/",
+        "https://www.disneylorcana.com/en-US/news/2025/08/2025-8-release-notes-fabled"
+      ]
+    }
+  ],
+  "source_universe_status": "OPEN_AND_UNRECONCILED",
+  "production_enabled": false
+}
