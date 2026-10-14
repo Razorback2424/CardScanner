@@ -143,11 +143,13 @@ struct CatalogCardDetailView: View {
 
             treatmentSection(details.card)
             ownedSection(details.card)
-            if catalog.gameRegistry.supports(summary.game, .pricing) {
+            if catalog.gameRegistry.supports(summary.game, .pricing),
+               details.collectionWriteUnavailableReason == nil {
                 priceSection(details.card)
                 browsePriceHistorySection()
             } else {
-                Text("Pricing unavailable")
+                Text(details.collectionWriteUnavailableReason == nil
+                     ? "Pricing unavailable" : "Pricing unavailable for this printing")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
@@ -159,6 +161,9 @@ struct CatalogCardDetailView: View {
                 CardDetailMarketplaceButton(url: url)
             }
 
+            if let reason = details.collectionWriteUnavailableReason {
+                Text(reason).font(.footnote).foregroundStyle(.secondary)
+            }
             if let catalogCardSelection {
                 Button {
                     catalogCardSelection(details, summary)
@@ -168,6 +173,7 @@ struct CatalogCardDetailView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .accessibilityHint("Resolve the saved scan using this catalog printing")
+                .disabled(details.collectionWriteUnavailableReason != nil)
             } else {
                 Button { prepareAdd(details.card) } label: {
                     Label(
@@ -189,7 +195,8 @@ struct CatalogCardDetailView: View {
                 } message: {
                     Text("Add the physical version you own.")
                 }
-                .disabled(!catalog.gameRegistry.supports(summary.game, .collectionWrite))
+                .disabled(!catalog.gameRegistry.supports(summary.game, .collectionWrite)
+                    || details.collectionWriteUnavailableReason != nil)
 
                 // A slab is a distinct object with a grade the user chooses.
                 Button { showsGradedPicker = true } label: {
@@ -331,7 +338,9 @@ struct CatalogCardDetailView: View {
     }
 
     private func loadMappedPrices() async {
-        guard let card = details?.card, catalog.gameRegistry.supports(card.game, .pricing) else { return }
+        guard let loadedDetails = details, loadedDetails.collectionWriteUnavailableReason == nil,
+              catalog.gameRegistry.supports(loadedDetails.card.game, .pricing) else { return }
+        let card = loadedDetails.card
         mappedPriceCheckFinished = false
         failedPriceVariantIDs = []
         let retryID = priceRetryID

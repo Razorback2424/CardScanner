@@ -113,6 +113,8 @@ final class LorcanaPhysicalCatalogTests: XCTestCase {
         guard case let .needsPrintingChoice(_, choices) = try await adapter.lookup(identifier(registry)) else { return XCTFail() }
         XCTAssertEqual(choices.count, 1)
         XCTAssertTrue(choices[0].choiceLabel.contains("Oversized"))
+        XCTAssertTrue(choices[0].compactChoiceLabel(among: choices).contains("Oversized"),
+            "A singleton compact action must still identify the required size choice")
         let card = try await adapter.resolve(choices[0], for: identifier(registry)).card
         XCTAssertEqual(card.physicalPrintingID, firstID.uuidString.lowercased())
     }
@@ -394,12 +396,14 @@ final class LorcanaPhysicalCatalogTests: XCTestCase {
     func testPhysicalRuntimeKeepsIndependentProductionCapabilitiesDisabled() throws {
         let registry = try registry(), runtime = LorcanaGameRuntime(registry: registry).runtime
         XCTAssertEqual(runtime.variantPolicy.selectableVariants, [.normal, .foil])
-        for capability in [CardGameCapabilities.collectionWrite, .pricing, .sealed] {
+        for capability in [CardGameCapabilities.collectionWrite, .sealed] {
             XCTAssertFalse(runtime.descriptor.capabilities.contains(capability))
         }
         XCTAssertTrue(runtime.descriptor.capabilities.contains(.browse))
-        XCTAssertNotNil(runtime.browse); XCTAssertNotNil(runtime.importer); XCTAssertNil(runtime.pricing)
+        XCTAssertNotNil(runtime.browse); XCTAssertNotNil(runtime.importer); XCTAssertNotNil(runtime.pricing)
+        XCTAssertTrue(runtime.descriptor.capabilities.contains(.pricing))
+        XCTAssertTrue(runtime.priceAuthority?.identityByPriceKey.isEmpty == true)
         XCTAssertNil(runtime.activationSource)
-        XCTAssertFalse(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana)!.descriptor.capabilities.contains(.collectionWrite))
+        XCTAssertTrue(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana)!.descriptor.capabilities.contains(.collectionWrite))
     }
 }

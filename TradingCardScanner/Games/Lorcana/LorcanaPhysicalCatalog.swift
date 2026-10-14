@@ -51,6 +51,33 @@ struct LorcanaPhysicalFinishEvidence: Codable, Sendable {
     let evidenceReferences: [String]
 }
 
+/// Reviewed product/finish join, separate from physical identity and finish evidence.
+/// TCGCSV supplies aggregate US/USD observations, never a condition-specific SKU.
+struct LorcanaMarketMapping: Codable, Hashable, Sendable {
+    let finish: LorcanaPhysicalFinish
+    let groupID: Int
+    let productID: Int
+    let productName: String
+    /// Exact marketplace Number field, which may include the printed denominator.
+    let productNumber: String
+    let providerVariantID: String
+    let market: String
+    let currency: String
+    let condition: String
+    let evidenceReferences: [String]
+
+    var hasValidMarketLane: Bool {
+        market == "us" && currency == "USD" && condition == "aggregate"
+            && (finish == .normal ? providerVariantID == "Normal" : ["Cold Foil", "Holofoil"].contains(providerVariantID))
+    }
+
+    var normalized: Self {
+        .init(finish: finish, groupID: groupID, productID: productID, productName: productName,
+              productNumber: productNumber, providerVariantID: providerVariantID, market: market,
+              currency: currency, condition: condition, evidenceReferences: evidenceReferences.sorted())
+    }
+}
+
 struct LorcanaPhysicalPrinting: Codable, Sendable {
     let id: UUID
     let identity: LorcanaPhysicalIdentity
@@ -66,6 +93,8 @@ struct LorcanaPhysicalPrinting: Codable, Sendable {
     /// Aliases may be shared by physical records under the same family. Such an
     /// alias is provenance, never authority to pick a printing or ownership key.
     let sourceAliases: [LorcanaSourceAlias]
+    /// Absent on older signed catalogs. No family alias grants pricing authority.
+    var marketMappings: [LorcanaMarketMapping]? = nil
 }
 
 struct LorcanaPhysicalUniverse: Codable, Sendable {
@@ -120,6 +149,7 @@ struct LorcanaPhysicalCatalog: Sendable {
         }
         var printings: [UUID: LorcanaPhysicalPrinting] = [:]
         var identities: Set<LorcanaPhysicalIdentity> = []
+        var marketLanes: Set<String> = []
         for printing in manifest.physicalPrintings {
             guard let family = families[printing.identity.footer], canonical[printing.identity.canonicalCardID] != nil,
                   printing.providerSetCode == family.providerSetCode,
@@ -143,6 +173,24 @@ struct LorcanaPhysicalCatalog: Sendable {
             if printing.status == .verified {
                 guard Set(printing.identityEvidence.map(\.kind)) == Set(LorcanaPhysicalEvidenceKind.allCases),
                       !printing.finishes.isEmpty, printing.finishUniverseEvidenceReference != nil else {
+                    throw ValidationError.invalidPrinting
+                }
+            }
+            let mappings = printing.marketMappings ?? []
+            guard mappings.count <= printing.finishes.count,
+                  Set(mappings.map(\.finish)).count == mappings.count else { throw ValidationError.invalidPrinting }
+            for mapping in mappings {
+                guard printing.identity.footer.language == "en", mapping.groupID > 0, mapping.productID > 0,
+                      Self.text(mapping.productName), Self.text(mapping.productNumber),
+                      [printing.identity.footer.collectorNumber,
+                       printing.identity.footer.collectorNumber + "/" + printing.identity.footer.denominator].contains(mapping.productNumber),
+                      mapping.hasValidMarketLane,
+                      printing.finishes.contains(where: { $0.finish == mapping.finish }),
+                      Self.references(mapping.evidenceReferences) else { throw ValidationError.invalidPrinting }
+                // A marketplace lane cannot silently price two distinct active
+                // physical objects (e.g. stamped versus ordinary or oversized).
+                if printing.status != .superseded,
+                   !marketLanes.insert("\(mapping.productID):\(mapping.providerVariantID)").inserted {
                     throw ValidationError.invalidPrinting
                 }
             }
@@ -244,7 +292,8 @@ struct LorcanaPhysicalCatalog: Sendable {
                         }, finishes: $0.finishes.sorted { $0.finish.rawValue < $1.finish.rawValue }.map {
                             .init(finish: $0.finish, evidenceReferences: $0.evidenceReferences.sorted())
                         }, finishUniverseEvidenceReference: $0.finishUniverseEvidenceReference,
-                        sourceAliases: $0.sourceAliases.sorted { $0.provider == $1.provider ? $0.id < $1.id : $0.provider < $1.provider })
+                        sourceAliases: $0.sourceAliases.sorted { $0.provider == $1.provider ? $0.id < $1.id : $0.provider < $1.provider },
+                        marketMappings: $0.marketMappings.map { $0.map(\.normalized).sorted { $0.finish.rawValue < $1.finish.rawValue } })
               }, universes: manifest.universes.sorted { $0.footer.evidenceKey < $1.footer.evidenceKey }.map {
                   .init(footer: $0.footer, printingIDs: $0.printingIDs.sorted { $0.uuidString < $1.uuidString },
                         isComplete: $0.isComplete, evidenceReference: $0.evidenceReference)

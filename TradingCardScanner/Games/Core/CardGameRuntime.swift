@@ -281,7 +281,7 @@ struct CardGameRuntimeContainer: Sendable {
         var modules = [PokemonGameRuntime().runtime, MagicGameRuntime().runtime]
         var unavailable: [CardGameDescriptor] = []
         do {
-            modules.append(try LorcanaDiscoveryCatalog.bundled.get().runtime)
+            modules.append(try LorcanaDiscoveryCatalog.bundledMarket.get().runtime)
         } catch {
             Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
                 .error("Lorcana discovery seed rejected; existing games remain available")

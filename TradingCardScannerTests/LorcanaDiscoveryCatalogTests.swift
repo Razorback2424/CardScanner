@@ -152,11 +152,12 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
             variantID: "normal", itemKindRaw: "rawCard", collectionKey: "lorcana:lorcanajson:en:1#normal"))
     }
 
-    func testDefaultRuntimeRegistersDiscoveryWithoutOwnershipOrPriceAuthority() throws {
+    func testDefaultRuntimeRegistersReviewedMarketAuthorityAlongsideDiscovery() throws {
         let runtime = try XCTUnwrap(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertTrue(runtime.descriptor.capabilities.contains([.scan, .browse, .sealed]))
-        XCTAssertFalse(runtime.descriptor.capabilities.contains(.collectionWrite))
-        XCTAssertNil(runtime.priceAuthority); XCTAssertNil(runtime.pricing); XCTAssertNil(runtime.importer)
+        XCTAssertTrue(runtime.descriptor.capabilities.contains([.collectionWrite, .pricing]))
+        XCTAssertEqual(runtime.priceAuthority?.identityByPriceKey.count,3_232)
+        XCTAssertNotNil(runtime.pricing); XCTAssertNotNil(runtime.importer)
     }
 
     func testAllReviewedUnnumberedCardsRequireExactTitlesAndQuestMarkers() async throws {

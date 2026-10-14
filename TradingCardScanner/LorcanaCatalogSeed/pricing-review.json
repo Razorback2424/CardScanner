@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 2,
+  "reviewedAt": 813598200,
+  "printFamilies": [
+    {
+      "footer": {
+        "collectorNumber": "5",
+        "denominator": "204",
+        "language": "en",
+        "printedSetMarker": "1"
+      },
+      "providerSetCode": "1",
+      "name": "Hades",
+      "version": "King of Olympus",
+      "rarity": "Rare",
+      "layout": "normal",
+      "sourceAliases": [
+        {
+          "provider": "lorcanajson",
+          "id": "lorcanajson:en:5"
+        },
+        {
+          "provider": "tcgcsv",
+          "id": "tcgcsv:71:485364"
+        },
+        {
+          "provider": "tcgcsv",
+          "id": "tcgcsv:71:516775"
+        }
+      ],
+      "footerEvidenceReference": "https://api.lorcana.ravensburger.com/images/en/set1/5_eb74bbe5d3dfea633d596496243d7972e930b81a.jpg"
+    }
+  ],
+  "canonicalCards": [
+    {
+      "id": "bc7b5308-e106-4b45-ab07-a21f5cba1adf",
+      "name": "Hades",
+      "version": "King of Olympus",
+      "relationshipEvidenceReferences": [
+        "https://www.disneylorcana.com/en-US/product",
+        "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+      ]
+    }
+  ],
+  "physicalPrintings": [
+    {
+      "identity": {
+        "canonicalCardID": "bc7b5308-e106-4b45-ab07-a21f5cba1adf",
+        "footer": {
+          "collectorNumber": "5",
+          "denominator": "204",
+          "language": "en",
+          "printedSetMarker": "1"
+        },
+        "artworkID": "2f6390d3-02e9-4ebc-97b0-6fc652772830",
+        "distributionID": "the-first-chapter",
+        "size": "standard",
+        "layout": "normal"
+      },
+      "providerSetCode": "1",
+      "setName": "The First Chapter",
+      "artworkLabel": "Original artwork",
+      "distributionLabel": "The First Chapter playable card",
+      "imageURL": "https://api.lorcana.ravensburger.com/images/en/set1/5_eb74bbe5d3dfea633d596496243d7972e930b81a.jpg",
+      "status": "verified",
+      "identityEvidence": [
+        {
+          "kind": "printedFooter",
+          "reference": "https://api.lorcana.ravensburger.com/images/en/set1/5_eb74bbe5d3dfea633d596496243d7972e930b81a.jpg"
+        },
+        {
+          "kind": "artwork",
+          "reference": "https://api.lorcana.ravensburger.com/images/en/set1/5_eb74bbe5d3dfea633d596496243d7972e930b81a.jpg"
+        },
+        {
+          "kind": "distribution",
+          "reference": "https://www.disneylorcana.com/en-US/product"
+        },
+        {
+          "kind": "stamp",
+          "reference": "https://api.lorcana.ravensburger.com/images/en/set1/5_eb74bbe5d3dfea633d596496243d7972e930b81a.jpg"
+        },
+        {
+          "kind": "size",
+          "reference": "https://www.disneylorcana.com/en-US/product"
+        }
+      ],
+      "finishes": [
+        {
+          "finish": "normal",
+          "evidenceReferences": [
+            "https://disneyparksblog.com/products/getting-started-with-disney-lorcana-trading-card-game/",
+            "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+          ]
+        },
+        {
+          "finish": "foil",
+          "evidenceReferences": [
+            "https://www.disneylorcana.com/en-US/product",
+            "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+          ]
+        }
+      ],
+      "finishUniverseEvidenceReference": "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13",
+      "sourceAliases": [
+        {
+          "provider": "lorcanajson",
+          "id": "lorcanajson:en:5"
+        },
+        {
+          "provider": "tcgcsv",
+          "id": "tcgcsv:71:485364"
+        }
+      ],
+      "id": "5c35671f-b9d5-42c5-b30f-4eb61a24115c",
+      "marketMappings": [
+        {
+          "finish": "normal",
+          "groupID": 22937,
+          "productID": 485364,
+          "productName": "Hades - King of Olympus",
+          "productNumber": "5/204",
+          "providerVariantID": "Normal",
+          "market": "us",
+          "currency": "USD",
+          "condition": "aggregate",
+          "evidenceReferences": [
+            "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13",
+            "https://tcgcsv.com/tcgplayer/71/22937/products",
+            "sha256:02078dafdcb20eabff4488d66a9562ef576f1674a657b206278fea986824a211",
+            "https://tcgcsv.com/docs"
+          ]
+        },
+        {
+          "finish": "foil",
+          "groupID": 22937,
+          "productID": 485364,
+          "productName": "Hades - King of Olympus",
+          "productNumber": "5/204",
+          "providerVariantID": "Cold Foil",
+          "market": "us",
+          "currency": "USD",
+          "condition": "aggregate",
+          "evidenceReferences": [
+            "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13",
+            "https://tcgcsv.com/tcgplayer/71/22937/products",
+            "sha256:02078dafdcb20eabff4488d66a9562ef576f1674a657b206278fea986824a211",
+            "https://tcgcsv.com/docs"
+          ]
+        }
+      ]
+    },
+    {
+      "identity": {
+        "canonicalCardID": "bc7b5308-e106-4b45-ab07-a21f5cba1adf",
+        "footer": {
+          "collectorNumber": "5",
+          "denominator": "204",
+          "language": "en",
+          "printedSetMarker": "1"
+        },
+        "artworkID": "2f6390d3-02e9-4ebc-97b0-6fc652772830",
+        "distributionID": "the-first-chapter-gift-set",
+        "size": "oversized",
+        "layout": "normal"
+      },
+      "providerSetCode": "1",
+      "setName": "The First Chapter",
+      "artworkLabel": "Original artwork",
+      "distributionLabel": "The First Chapter gift set · Oversized",
+      "imageURL": "https://tcgplayer-cdn.tcgplayer.com/product/516775_200w.jpg",
+      "status": "verified",
+      "identityEvidence": [
+        {
+          "kind": "printedFooter",
+          "reference": "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+        },
+        {
+          "kind": "artwork",
+          "reference": "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+        },
+        {
+          "kind": "distribution",
+          "reference": "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+        },
+        {
+          "kind": "stamp",
+          "reference": "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+        },
+        {
+          "kind": "size",
+          "reference": "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+        }
+      ],
+      "finishes": [
+        {
+          "finish": "foil",
+          "evidenceReferences": [
+            "https://www.disneylorcana.com/en-US/product",
+            "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+          ]
+        }
+      ],
+      "finishUniverseEvidenceReference": "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13",
+      "sourceAliases": [
+        {
+          "provider": "tcgcsv",
+          "id": "tcgcsv:71:516775"
+        }
+      ],
+      "id": "64cde47d-47b8-4d05-ac65-05975c59ead4"
+    }
+  ],
+  "universes": [
+    {
+      "footer": {
+        "collectorNumber": "5",
+        "denominator": "204",
+        "language": "en",
+        "printedSetMarker": "1"
+      },
+      "printingIDs": [
+        "5c35671f-b9d5-42c5-b30f-4eb61a24115c",
+        "64cde47d-47b8-4d05-ac65-05975c59ead4"
+      ],
+      "isComplete": true,
+      "evidenceReference": "docs/research/lorcana-pricing-review.md#public-reference-review-2026-10-13"
+    }
+  ],
+  "corrections": []
+}

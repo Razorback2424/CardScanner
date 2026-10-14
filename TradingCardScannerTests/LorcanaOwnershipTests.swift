@@ -480,7 +480,8 @@ final class LorcanaOwnershipTests: XCTestCase {
         let runtimes = try await kit.bound(to: disk)
         XCTAssertEqual(runtimes.registry.games(supporting: .scan), [.lorcana])
         XCTAssertTrue(runtimes.registry.supports(.lorcana, .collectionWrite))
-        XCTAssertNil(runtimes.runtime(for: .lorcana)?.pricing)
+        XCTAssertNotNil(runtimes.runtime(for: .lorcana)?.pricing)
+        XCTAssertTrue(runtimes.runtime(for: .lorcana)?.priceAuthority?.identityByPriceKey.isEmpty == true)
         let registry = try LorcanaCatalogRegistry(manifest: LorcanaReviewLaunch.fixtureManifest())
         let footer = try LorcanaPrintedIdentity(collectorNumber: "23", denominator: "204", language: "en", printedSetMarker: "1")
         let identifier = try LorcanaRecognitionAdapter.identifier(footer, generation: registry.generation)
@@ -506,7 +507,7 @@ final class LorcanaOwnershipTests: XCTestCase {
         let unrelated = try container(url: root.appendingPathComponent("unrelated.store"))
         do { _ = try await kit.bound(to: unrelated); XCTFail() }
         catch LorcanaLocalReviewKit.ValidationError.nonIsolatedCollection {}
-        XCTAssertFalse(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana)!.descriptor.capabilities.contains(.collectionWrite))
+        XCTAssertTrue(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana)!.descriptor.capabilities.contains(.collectionWrite))
     }
 
     func testBrowseAddUndoAndUnsupportedFinishLeaveNoOwnership() async throws {

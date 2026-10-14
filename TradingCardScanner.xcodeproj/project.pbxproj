@@ -303,6 +303,9 @@
 		F35A00000000000000000003 /* PokemonHistoricalCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000003; };
 		F35A00000000000000000004 /* TCGdexCircuitBreaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000004; };
 		F35A00000000000000000005 /* BoundedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000005; };
+		F30A00000000000000000015 /* LorcanaPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000015; };
+		F30A00000000000000000016 /* LorcanaPricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000016; };
+		F30A00000000000000000017 /* TCGCSVProductPriceSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000017; };
 /* End PBXBuildFile section */
         F22A00000000000000000001 = {isa = PBXBuildFile; fileRef = F22B00000000000000000001; };
         F21A00000000000000000001 = {isa = PBXBuildFile; fileRef = F21B00000000000000000001; };
@@ -642,6 +645,9 @@
 		F35B00000000000000000003 /* PokemonHistoricalCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonHistoricalCatalog.swift; sourceTree = "<group>"; };
 		F35B00000000000000000004 /* TCGdexCircuitBreaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/TCGdexCircuitBreaker.swift; sourceTree = "<group>"; };
 		F35B00000000000000000005 /* BoundedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/BoundedCache.swift; sourceTree = "<group>"; };
+		F30B00000000000000000015 /* LorcanaPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaPriceAdapter.swift; sourceTree = "<group>"; };
+		F30B00000000000000000016 /* LorcanaPricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaPricingTests.swift; sourceTree = "<group>"; };
+		F30B00000000000000000017 /* TCGCSVProductPriceSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGCSVProductPriceSource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
         F22B00000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogBootstrap.swift; sourceTree = "<group>"; };
         F22B00000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/OnePieceCatalogProduction.xcconfig; sourceTree = "<group>"; };
@@ -754,6 +760,7 @@
 				F30B0000000000000000000F,
 				F30B00000000000000000010,
 				F30B00000000000000000012,
+				F30B00000000000000000015 /* LorcanaPriceAdapter.swift */,
 				F30B00000000000000000014,
 				F11B00000000000000000001, F11B00000000000000000002, F11B00000000000000000003,
 				F12B00000000000000000001, F12B00000000000000000002, F12B00000000000000000003,
@@ -921,6 +928,7 @@
 				B0010093 /* TCGplayerLink.swift */,
 				B00100B1 /* QuoteCache.swift */,
 				B00100B2 /* PriceQuoteService.swift */,
+				F30B00000000000000000017 /* TCGCSVProductPriceSource.swift */,
 				B00100B4 /* PriceCheckCoordinator.swift */,
 				B00100B5 /* PriceFallbackQuoteResolver.swift */,
 				B00100B6 /* GradedLabelParser.swift */,
@@ -1019,6 +1027,7 @@
 				F30B0000000000000000000E,
 				F30B00000000000000000011,
 				F30B00000000000000000013,
+				F30B00000000000000000016 /* LorcanaPricingTests.swift */,
 				F30B00000000000000000007,
 				B0020020 /* CollectionQueryTests.swift */,
 				B0020060 /* PortfolioTrustPassTests.swift */,
@@ -1340,7 +1349,9 @@
 				F30A0000000000000000000D,
 				F30A0000000000000000000F,
 				F30A00000000000000000012,
+				F30A00000000000000000015 /* LorcanaPriceAdapter.swift in Sources */,
 				F30A00000000000000000010,
+				F30A00000000000000000017 /* TCGCSVProductPriceSource.swift in Sources */,
 				F11A00000000000000000002 /* PokemonRecognitionAdapter.swift in Sources */,
 				F11A00000000000000000003 /* MagicRecognitionAdapter.swift in Sources */,
 				F12A00000000000000000001 /* GameVariantPolicy.swift in Sources */,
@@ -1491,6 +1502,7 @@
 				F30A0000000000000000000E,
 				F30A00000000000000000011,
 				F30A00000000000000000013,
+				F30A00000000000000000016 /* LorcanaPricingTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
 				A0020060 /* PortfolioTrustPassTests.swift in Sources */,
 				AF0A0002 /* AppOpeningTests.swift in Sources */,

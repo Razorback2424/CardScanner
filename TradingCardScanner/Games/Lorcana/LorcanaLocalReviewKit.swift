@@ -14,9 +14,10 @@ struct LorcanaLocalReviewKit: Sendable {
     private let registry: LorcanaCatalogRegistry
     private let root: URL
     private let allowsCollectionWrites: Bool
-    enum ValidationError: Error { case nonIsolatedCollection }
+    private let storageDirectory: String
+    enum ValidationError: Error { case nonIsolatedCollection, invalidStorageDirectory }
 
-    var collectionDirectory: URL { root.appendingPathComponent("LorcanaLocalReview", isDirectory: true) }
+    var collectionDirectory: URL { root.appendingPathComponent(storageDirectory, isDirectory: true) }
 
     /// A writable module is returned only after checking the actual model
     /// container. The public unbound runtime remains read-only.
@@ -24,7 +25,7 @@ struct LorcanaLocalReviewKit: Sendable {
     func bound(to container: ModelContainer,
                isCurrent: @escaping @MainActor @Sendable () -> Bool = { true }) async throws -> CardGameRuntimeContainer {
         if allowsCollectionWrites {
-            let directory = root.resolvingSymlinksInPath().appendingPathComponent("LorcanaLocalReview").path + "/"
+            let directory = collectionDirectory.resolvingSymlinksInPath().path + "/"
             guard !container.configurations.isEmpty, container.configurations.allSatisfy({ configuration in
                 configuration.cloudKitContainerIdentifier == nil && configuration.allowsSave
                     && (configuration.isStoredInMemoryOnly || configuration.url.resolvingSymlinksInPath().path.hasPrefix(directory))
@@ -36,27 +37,37 @@ struct LorcanaLocalReviewKit: Sendable {
     }
 
     static func make(manifest: LorcanaPhysicalCatalogManifest, root: URL, now: Date = .now,
-                     allowCollectionWrites: Bool = false) throws -> Self {
+                     allowCollectionWrites: Bool = false, storageDirectory: String = "LorcanaLocalReview") throws -> Self {
+        guard ["LorcanaLocalReview", "LorcanaPricingReview"].contains(storageDirectory) else {
+            throw ValidationError.invalidStorageDirectory
+        }
         let key = Curve25519.Signing.PrivateKey(), keyID = "lorcana-local-review"
         let seed = try LorcanaCatalogSignature.sign(.init(schemaVersion: 1, gameID: CardGame.lorcana.rawValue,
             revision: 1, generatedAt: now, catalog: manifest), keyID: keyID, privateKey: key)
         let keys = [keyID: key.publicKey]
         let verified = try LorcanaCatalogSignature.verify(seed, trustedKeys: keys, now: now)
-        let store = try LorcanaCatalogReleaseStore(root: root.appendingPathComponent("LorcanaLocalReview", isDirectory: true)
+        let store = try LorcanaCatalogReleaseStore(root: root.appendingPathComponent(storageDirectory, isDirectory: true)
             .appendingPathComponent("CatalogReleases", isDirectory: true), keys: keys, bundledEnvelope: seed, now: now)
         let coordinator = LorcanaCatalogCoordinator(store: store)
         return .init(seed: seed, publicKey: key.publicKey.rawRepresentation, coordinator: coordinator,
             runtime: LorcanaGameRuntime(registry: verified.registry, coordinator: coordinator).runtime,
-            registry: verified.registry, root: root.standardizedFileURL, allowsCollectionWrites: allowCollectionWrites)
+            registry: verified.registry, root: root.standardizedFileURL, allowsCollectionWrites: allowCollectionWrites,
+            storageDirectory: storageDirectory)
     }
 }
 
-/// A deterministic UI workspace, never a source of real physical-card authority.
-/// Keep the route, fixture identities and all storage out of production builds.
+/// Explicit isolated development workspaces for synthetic UI and public-reference
+/// pricing review. Neither route grants production physical-card authority.
 enum LorcanaReviewLaunch {
-    static let storageDirectory = "LorcanaLocalReview"
+    static var storageDirectory: String { isPricingReview ? "LorcanaPricingReview" : "LorcanaLocalReview" }
+    static var isPricingReview: Bool { value("-ui_debug_route") == "LorcanaPricingReview" }
+    static var banner: String {
+        isPricingReview ? "Lorcana pricing review · Public references · Separate collection"
+            : "Lorcana UI review · Synthetic cards · Separate collection"
+    }
+    static var samples: [Sample] { isPricingReview ? [.size, .unknown] : Sample.allCases }
     static func isEnabled(arguments: [String] = ProcessInfo.processInfo.arguments) -> Bool {
-        value("-ui_debug_route", arguments: arguments) == "LorcanaReview"
+        ["LorcanaReview", "LorcanaPricingReview"].contains(value("-ui_debug_route", arguments: arguments) ?? "")
     }
 
     static func value(_ flag: String, arguments: [String] = ProcessInfo.processInfo.arguments) -> String? {
@@ -95,15 +106,33 @@ enum LorcanaReviewLaunch {
     }
 
     static var initialSample: Sample {
-        value("-ui_debug_state").flatMap(Sample.init(rawValue:)) ?? .size
+        if isPricingReview { return value("-ui_debug_state") == "unknown" ? .unknown : .size }
+        return value("-ui_debug_state").flatMap(Sample.init(rawValue:)) ?? .size
     }
 
     static func makeKit(root: URL? = nil) throws -> LorcanaLocalReviewKit {
         guard let root = root ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
         else { throw CollectionStorageBootstrapError.storageLocationUnavailable }
-        // Stable fixture UUIDs survive review-app relaunch, but cannot be promoted
-        // into the real catalog. All evidence references explicitly say synthetic.
-        return try .make(manifest: fixtureManifest(), root: root, allowCollectionWrites: true)
+        // Synthetic and public-reference UUIDs/storage stay separate. Both
+        // routes survive relaunch without changing ordinary runtime authority.
+        return try .make(manifest: isPricingReview ? pricingManifest(withdrawn: value("-ui_debug_state") == "withdrawn")
+            : fixtureManifest(), root: root, allowCollectionWrites: true, storageDirectory: storageDirectory)
+    }
+
+    /// Public-reference-reviewed acceptance seed. Never registered by appDefaults;
+    /// stable IDs belong to these explicit records, not to the synthetic UI cards.
+    static func pricingManifest(withdrawn: Bool = false) throws -> LorcanaPhysicalCatalogManifest {
+        guard let url = Bundle.main.url(forResource: "pricing-review", withExtension: "json",
+                                       subdirectory: "LorcanaCatalogSeed") else { throw BrowseCatalogError.badResponse }
+        var manifest = try JSONDecoder().decode(LorcanaPhysicalCatalogManifest.self, from: Data(contentsOf: url))
+        if withdrawn {
+            var printings = manifest.physicalPrintings
+            for index in printings.indices { printings[index].marketMappings = nil }
+            manifest = .init(schemaVersion: manifest.schemaVersion, reviewedAt: manifest.reviewedAt,
+                printFamilies: manifest.printFamilies, canonicalCards: manifest.canonicalCards,
+                physicalPrintings: printings, universes: manifest.universes, corrections: manifest.corrections)
+        }
+        return manifest
     }
 
     static func fixtureManifest() throws -> LorcanaPhysicalCatalogManifest {

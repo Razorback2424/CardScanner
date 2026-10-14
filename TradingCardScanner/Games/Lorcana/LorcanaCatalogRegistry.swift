@@ -112,7 +112,8 @@ struct LorcanaCatalogRegistry: Sendable {
         }
     }
 
-    init(manifest: LorcanaPhysicalCatalogManifest, previous: LorcanaCatalogRegistry? = nil) throws {
+    init(manifest: LorcanaPhysicalCatalogManifest, previous: LorcanaCatalogRegistry? = nil,
+         presentationContext: String? = nil) throws {
         guard manifest.schemaVersion == 2 else { throw ValidationError.unsupportedSchema }
         let familyRegistry = try Self(manifest: .init(schemaVersion: 1, printFamilies: manifest.printFamilies))
         let physical = try LorcanaPhysicalCatalog(manifest: manifest, families: familyRegistry.familiesByFooter)
@@ -123,7 +124,8 @@ struct LorcanaCatalogRegistry: Sendable {
             printFamilies: normalizedFamilies, canonicalCards: normalized.canonicalCards,
             physicalPrintings: normalized.physicalPrintings, universes: normalized.universes, corrections: normalized.corrections)
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
-        generation = "lorcana:s2:" + SHA256.hash(data: try encoder.encode(combined)).map { String(format: "%02x", $0) }.joined()
+        let context = presentationContext.map { Data(("\u{0}" + $0).utf8) } ?? Data()
+        generation = "lorcana:s2:" + SHA256.hash(data: try encoder.encode(combined) + context).map { String(format: "%02x", $0) }.joined()
         familiesByFooter = familyRegistry.familiesByFooter; customWords = familyRegistry.customWords
         denominatorsByScope = familyRegistry.denominatorsByScope; physicalCatalog = physical
         normalizedPhysicalManifest = combined

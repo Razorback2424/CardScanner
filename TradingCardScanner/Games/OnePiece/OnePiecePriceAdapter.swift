@@ -5,44 +5,16 @@ protocol OnePieceMarketPriceSource: Sendable {
     func quote(mapping: OnePieceMarketMapping, number: String, generation: String?, minimumFetchedAt: Date?) async throws -> PriceLookup
 }
 
-/// Product-level USD market observations. No condition-specific SKU is claimed.
+/// One Piece owns mapping validation; the bounded feed transport is shared.
 actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
-    static let shared = OnePieceTCGCSVPriceSource()
-    private struct Response<Row: Decodable>: Decodable {
-        let success: Bool
-        let errors: [String]
-        let results: [Row]
-        let totalItems: Int?
-    }
-    private struct Product: Codable, Sendable {
-        struct Field: Codable, Sendable { let name: String; let value: String }
-        let productId: Int; let categoryId: Int; let groupId: Int
-        let name: String; let extendedData: [Field]
-    }
-    private struct Price: Codable, Sendable {
-        let productId: Int; let subTypeName: String; let marketPrice: Double?
-    }
-    private struct Snapshot: Codable, Sendable {
-        let products: [Product]; let prices: [Price]; let fetchedAt: Date
-        var catalogGeneration: String? = nil
-    }
-    private let session: URLSession
-    private let cacheDirectory: URL
-    private struct CacheKey: Hashable {
-        let group: Int
-        let generation: String?
-        let minimumFetchedAt: Date?
-    }
-    private var snapshots: [Int: Snapshot] = [:]
-    private var pending: [CacheKey: Task<Snapshot, Error>] = [:]
-    private var failures: [CacheKey: Date] = [:]
-    private var nextRequestAt = Date.distantPast
+    static let shared = OnePieceTCGCSVPriceSource(transport: .shared)
+    private let transport: TCGCSVProductPriceSource
+    private init(transport: TCGCSVProductPriceSource) { self.transport = transport }
     init(session: URLSession = .shared,
          cacheDirectory: URL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("OnePieceTCGCSV-v2")) {
-        self.session = session; self.cacheDirectory = cacheDirectory
+        transport = TCGCSVProductPriceSource(session: session, cacheDirectory: cacheDirectory)
     }
-
     func quote(mapping: OnePieceMarketMapping, number: String, generation: String? = nil,
                minimumFetchedAt: Date? = nil) async throws -> PriceLookup {
         guard mapping.provider == "tcgplayer", mapping.market == "us", mapping.currency == "USD",
@@ -53,88 +25,8 @@ actor OnePieceTCGCSVPriceSource: OnePieceMarketPriceSource {
               let lane = mapping.providerVariantID, ["Normal", "Foil"].contains(lane),
               ["normal": "Normal", "foil": "Foil"][mapping.variantID] == lane,
               mapping.qualifiers["finish"] == lane else { throw PriceQuoteError.identityMismatch }
-        let snapshot = try await snapshot(group: group, generation: generation, minimumFetchedAt: minimumFetchedAt)
-        try Task.checkCancellation()
-        let products = snapshot.products.filter { $0.productId == productID }
-        guard products.count == 1, let product = products.first,
-              product.categoryId == 68, product.groupId == group, product.name == name,
-              product.extendedData.filter({ $0.name == "Number" }).map(\.value) == [number] else {
-            throw PriceQuoteError.identityMismatch
-        }
-        let rows = snapshot.prices.filter { $0.productId == productID && $0.subTypeName == lane }
-        guard rows.count <= 1 else { throw PriceQuoteError.identityMismatch }
-        guard let amount = rows.first?.marketPrice else { return .unavailable(.tcgCSV) }
-        guard amount.isFinite, amount >= 0 else { throw PriceQuoteError.providerUnavailable }
-        return .price(.init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgCSV,
-            sourceVariantID: "tcgplayer:\(productID):\(lane)", sourceUpdatedAt: nil, fetchedAt: snapshot.fetchedAt))
-    }
-
-    private func snapshot(group: Int, generation: String?, minimumFetchedAt: Date?) async throws -> Snapshot {
-        // A withdrawal starts a new request cohort. It must not join a fetch
-        // that began before its watermark, even within the same generation.
-        let key = CacheKey(group: group, generation: generation, minimumFetchedAt: minimumFetchedAt)
-        let file = cacheDirectory.appendingPathComponent("\(group).json")
-        if snapshots[group]?.catalogGeneration != generation || snapshots[group] == nil,
-           let bytes = try? Data(contentsOf: file), bytes.count <= 16 * 1_024 * 1_024,
-           let value = try? JSONDecoder().decode(Snapshot.self, from: bytes), value.catalogGeneration == generation {
-            snapshots[group] = value
-        }
-        if let cached = snapshots[group], cached.catalogGeneration == generation,
-           minimumFetchedAt.map({ cached.fetchedAt > $0 }) ?? true,
-           Date.now.timeIntervalSince(cached.fetchedAt) >= 0,
-           Date.now.timeIntervalSince(cached.fetchedAt) < 86_400 { return cached }
-        if let task = pending[key] {
-            let result = try await task.value
-            if minimumFetchedAt.map({ result.fetchedAt > $0 }) ?? true { return result }
-            throw PriceQuoteError.providerUnavailable
-        }
-        if let failure = failures[key], Date.now.timeIntervalSince(failure) < 900 {
-            throw PriceQuoteError.providerUnavailable
-        }
-        let task = Task {
-            let fetchedAt = Date.now
-            let products = try JSONDecoder().decode(Response<Product>.self,
-                from: await self.fetch(group: group, resource: "products"))
-            let prices = try JSONDecoder().decode(Response<Price>.self,
-                from: await self.fetch(group: group, resource: "prices"))
-            guard products.success, products.errors.isEmpty, prices.success, prices.errors.isEmpty,
-                  products.totalItems.map({ $0 == products.results.count }) ?? true,
-                  prices.totalItems.map({ $0 == prices.results.count }) ?? true else {
-                throw PriceQuoteError.providerUnavailable
-            }
-            return Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
-                catalogGeneration: generation)
-        }
-        pending[key] = task
-        defer { pending[key] = nil }
-        let value: Snapshot
-        do { value = try await task.value; failures[key] = nil }
-        catch { if !(error is CancellationError) { failures[key] = .now }; throw error }
-        guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
-            throw PriceQuoteError.providerUnavailable
-        }
-        // A slower, older request must not replace a newer cached observation.
-        if snapshots[group].map({ value.fetchedAt >= $0.fetchedAt }) ?? true {
-            snapshots[group] = value
-        }
-        if snapshots[group]?.fetchedAt == value.fetchedAt, let bytes = try? JSONEncoder().encode(value) {
-            try? FileManager.default.createDirectory(at: cacheDirectory, withIntermediateDirectories: true)
-            try? bytes.write(to: file, options: .atomic)
-        }
-        return value
-    }
-
-    private func fetch(group: Int, resource: String) async throws -> Data {
-        let start = max(nextRequestAt, .now)
-        nextRequestAt = start.addingTimeInterval(0.1)
-        if start.timeIntervalSinceNow > 0 { try await Task.sleep(for: .seconds(start.timeIntervalSinceNow)) }
-        var request = URLRequest(url: URL(string: "https://tcgcsv.com/tcgplayer/68/\(group)/\(resource)")!)
-        request.timeoutInterval = 15
-        request.setValue("ScanStash/1.0 (iOS; daily One Piece market pricing)", forHTTPHeaderField: "User-Agent")
-        let (data, response) = try await session.data(for: request)
-        guard let http = response as? HTTPURLResponse, http.statusCode == 200,
-              data.count <= 8 * 1_024 * 1_024 else { throw PriceQuoteError.providerUnavailable }
-        return data
+        return try await transport.quote(category: 68, group: group, productID: productID,
+            name: name, number: number, lane: lane, generation: generation, minimumFetchedAt: minimumFetchedAt)
     }
 }
 

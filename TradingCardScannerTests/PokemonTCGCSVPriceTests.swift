@@ -563,7 +563,10 @@ private struct BrowseSupplementTransport: PokemonBrowseTransport {
     func fetchSetDirectory() async throws -> [TCGdexBrowseSet] { [] }
     func fetchSet(id: String) async throws -> TCGdexSetCatalog {
         try JSONDecoder().decode(TCGdexSetCatalog.self,
-            from: Data(#"{"id":"30th-c","name":"Test Set","cards":[]}"#.utf8))
+            from: JSONSerialization.data(withJSONObject: [
+                "id": card.set.id, "name": "Test Set",
+                "cards": [["id": card.id, "localId": card.localId, "name": card.name]]
+            ]))
     }
     func fetchCard(id: String) async throws -> TCGdexCard {
         if state.isOffline { throw URLError(.notConnectedToInternet) }

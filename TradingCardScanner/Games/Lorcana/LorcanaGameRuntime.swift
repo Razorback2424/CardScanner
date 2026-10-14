@@ -155,7 +155,10 @@ struct LorcanaCatalogAdapter: GameCatalogAdapter {
         .init(id: printing.id.uuidString.lowercased(), game: game, canonicalCardID: canonical.id.uuidString.lowercased(),
               language: printing.identity.footer.language, catalogGeneration: generation, name: canonical.displayName,
               printedIdentifier: printing.identity.footer.displayIdentifier, releaseLabel: printing.setName,
-              treatmentLabel: printing.artworkLabel, distributionLabel: printing.distributionLabel,
+              treatmentLabel: printing.identity.size == .oversized
+                && registry.physicalCatalog?.reviewedPrintings(for: printing.identity.footer)?.count == 1
+                ? "Oversized · \(printing.artworkLabel)" : printing.artworkLabel,
+              distributionLabel: printing.distributionLabel,
               thumbnailURL: printing.imageURL, artworkID: printing.identity.artworkID.uuidString.lowercased(),
               distinctionLabels: ["Size: \(printing.identity.size.label)", "Stamp: \(printing.identity.stamp ?? "Unstamped")",
                                   "Layout: \(printing.identity.layout)"])
@@ -202,6 +205,7 @@ struct LorcanaVariantPolicy: GameVariantPolicy {
 struct LorcanaGameRuntime: Sendable {
     let registry: LorcanaCatalogRegistry
     var coordinator: LorcanaCatalogCoordinator? = nil
+    var pricingEnabled = true
     private var collectionWrites = false
     init(registry: LorcanaCatalogRegistry, coordinator: LorcanaCatalogCoordinator? = nil) {
         self.registry = registry; self.coordinator = coordinator
@@ -213,11 +217,17 @@ struct LorcanaGameRuntime: Sendable {
     }
     #endif
     var runtime: CardGameRuntime {
-        .init(descriptor: .init(game: .lorcana, displayName: "Disney Lorcana", sortOrder: 3,
-                              capabilities: collectionWrites ? [.scan, .browse, .collectionWrite] : [.scan, .browse]),
-              variantPolicy: LorcanaVariantPolicy(registry: registry), recognizer: LorcanaRecognitionAdapter(registry: registry),
+        var capabilities: CardGameCapabilities = collectionWrites ? [.scan, .browse, .collectionWrite] : [.scan, .browse]
+        let supportsPricing = pricingEnabled && registry.physicalCatalog != nil
+        if supportsPricing { capabilities.insert(.pricing) }
+        return .init(descriptor: .init(game: .lorcana, displayName: "Disney Lorcana", sortOrder: 3,
+                              capabilities: capabilities),
+              variantPolicy: LorcanaVariantPolicy(registry: registry),
+              pricing: supportsPricing ? LorcanaPriceAdapter(registry: registry, coordinator: coordinator) : nil,
+              recognizer: LorcanaRecognitionAdapter(registry: registry),
               catalog: LorcanaCatalogAdapter(registry: registry), browse: LorcanaBrowseAdapter(registry: registry),
-              importer: LorcanaImportAdapter(registry: registry), activationSource: coordinator,
+              importer: LorcanaImportAdapter(registry: registry), priceAuthority: LorcanaPriceAdapter.priceAuthority(registry),
+              activationSource: coordinator,
               requiresLaunchActivation: false)
     }
 }

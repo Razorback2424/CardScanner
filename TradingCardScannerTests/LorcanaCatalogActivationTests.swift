@@ -467,10 +467,11 @@ final class LorcanaCatalogActivationTests: XCTestCase {
         XCTAssertNotEqual(first.publicKey, second.publicKey)
         let snapshot = try await snapshot(first.coordinator)
         XCTAssertEqual(snapshot.revision, 1)
-        XCTAssertEqual(first.runtime.descriptor.capabilities, [.scan, .browse])
+        XCTAssertEqual(first.runtime.descriptor.capabilities, [.scan, .browse, .pricing])
         XCTAssertFalse(FileManager.default.fileExists(atPath: root.path))
         XCTAssertNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana)?.activationSource)
-        XCTAssertNil(first.runtime.pricing); XCTAssertNotNil(first.runtime.browse); XCTAssertNotNil(first.runtime.importer)
+        XCTAssertNotNil(first.runtime.pricing); XCTAssertNotNil(first.runtime.browse); XCTAssertNotNil(first.runtime.importer)
+        XCTAssertTrue(snapshot.priceAuthority?.identityByPriceKey.isEmpty == true)
     }
     #endif
 }

@@ -89,7 +89,8 @@ actor LorcanaCatalogCoordinator: GameCatalogActivationSource {
         let registry = head.registry
         let next = GameCatalogSnapshot(revision: revision, catalog: LorcanaCatalogAdapter(registry: registry),
             recognizer: LorcanaRecognitionAdapter(registry: registry), variantPolicy: LorcanaVariantPolicy(registry: registry),
-            browse: LorcanaBrowseAdapter(registry: registry), importer: LorcanaImportAdapter(registry: registry))
+            browse: LorcanaBrowseAdapter(registry: registry), importer: LorcanaImportAdapter(registry: registry),
+            priceAuthority: LorcanaPriceAdapter.priceAuthority(registry))
         snapshot = next
         if publish { for continuation in continuations.values { continuation.yield(next) } }
         return next

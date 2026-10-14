@@ -32,7 +32,11 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(page.items.first?.variantID, "vendor-sealed")
         XCTAssertEqual(page.items.first?.marketPriceUSD, 99.25)
         XCTAssertFalse(page.hasMore)
-        do { _ = try await client.sealedSets(game: .lorcana); XCTFail("Unsupported game must fail before transport") }
+        let lorcanaSets = try await client.sealedSets(game: .lorcana)
+        XCTAssertEqual(lorcanaSets.reduce(0) { $0 + $1.sealedCount }, 177)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1,
+                       "Bundled Lorcana discovery must not use JustTCG transport")
+        do { _ = try await client.sealedSets(game: CardGame(rawValue: "future-unsupported-game")); XCTFail("Unsupported game must fail before transport") }
         catch is CardGameSupportError { }
         XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
         let stoppedLedger = JustTCGRequestLedger(defaults: defaults)
