@@ -1,5 +1,15 @@
 # Production refinement review and remediation plan
 
+**Follow-up — 2026-10-14:** K's previously failing simulator latency case is
+corrected in the current Lorcana working tree through exact native scalar/median
+optimization. REQ-022 passes unchanged limits (upper median 0.586 s, maximum
+0.649 s), reference parity passes, and the final full target has 2,188 passed,
+zero failed and 12 skipped. The [production checkpoint](../release/lorcana-production-acceptance.md)
+owns this dated evidence and rebuilt development archive/export. App privacy/
+support copy and Bluehost upload files are prepared; live publication is pending.
+Earlier deferral/failure notes below are historical for this simulator check;
+hardware and broader release acceptance remain open.
+
 **Status:** A–J implemented and regression-verified; K triaged with the existing
 latency gate open. L profiling and M screenshot/device/native acceptance deferred
 at the owner's request; legal/support pages remain placeholders — 2026-10-03.

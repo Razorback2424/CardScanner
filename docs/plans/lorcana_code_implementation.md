@@ -1,9 +1,65 @@
 # Lorcana implementation plan
 
-**Status:** Slices 1–3 and Slice 4 local ownership/Browse/import code implemented;
+**Current status — 2026-10-14:** normal app registration now enables exact raw
+ownership, import and pricing for **1,616 ordinary printings / 3,232 Normal and
+Cold Foil mappings across expansions 1–8**, using the existing scanner, Price
+Check, Browse and collection refresh components. All 3,582 discovery card rows
+and 177 sealed products remain visible; unsupported rows stay read-only and
+unpriced. The owner authorized public online evidence and normal-workflow
+enablement. The [normal pricing rollout checkpoint](../research/lorcana-normal-pricing-rollout.md)
+owns mapping scope, held discrepancies and current acceptance results.
+
+**Independent continuation — 2026-10-14:** all **3,232 enabled pricing lanes**
+pass fresh-feed acceptance through the shared quote service/adapter; all 19
+pricing cases pass with live opt-in, zero failures/skips and two internal QoS
+warnings. A retained-source replay reproduces the catalog and permanent UUID
+ledger exactly. The new full-matrix test remains opt-in for routine/offline runs.
+Local App Store export was attempted without provisioning changes and failed
+because the distribution profile is unavailable; development packaging remains
+verified. No app/catalog behavior changed, and no physical-card or deferred
+privacy/support work was performed. See the production checkpoint for exact
+results, the pre-existing architecture audit failure and remaining boundaries.
+
+The [production acceptance checkpoint](../release/lorcana-production-acceptance.md)
+now records the rebuilt development-signed ReleaseLocal archive and verified
+development IPA export. The complete final simulator run has **2,188 passed,
+zero failed and 12 skipped across 2,200 cases**, with five runtime warnings.
+Centering scalar-loop/median optimization preserves exact reference geometry
+and profiles; REQ-022 passes unchanged limits with a final full-run upper median
+of **0.586 s** and maximum **0.649 s**. Historical 2026-10-13 failures remain
+recorded in that checkpoint. [Bluehost publication files and upload steps](../legal/bluehost-publication.md)
+and [reviewer notes without physical cards](../release/lorcana-app-review-notes.md)
+are prepared. Live privacy/support publication, verification and submission URL
+configuration are **deferred at the owner's request (2026-10-14)**. Prepared
+files remain available; the submission prerequisite is not marked complete. This is
+a bundled release catalog; App Store publication, physical-device/camera and
+publication/asset-rights acceptance remain open. Current 1.0 storage is on-device
+with sync disabled; live mixed-client CloudKit is deferred to a future sync release.
+Production
+key/hosting setup applies to future remote updates, not loading this bundled
+catalog. Earlier dated default-unpriced/disabled-write claims below are historical
+and superseded for this ordinary mapped scope.
+
+The archive compiler exposed a finish-chooser check against `nil` on a
+nonoptional legacy enum. Matching its `.opaque` generic-card case now retains
+the full Lorcana footer identifier. The final simulator build and inspected phone/
+tablet rendering pass; rebuilt signed iOS archive, strict signature verification
+and final development IPA export also pass in the
+production checkpoint.
+
+**Historical Hades checkpoint — 2026-10-13:** the owner requested online
+evidence for the next bounded pricing slice. A separate local review seed now
+maps ordinary English Hades Normal/Cold Foil and retains Oversized as an unmapped
+comparison. The [mapping/provider checkpoint](../research/lorcana-pricing-review.md)
+records evidence, exact joins and live replay. Its Hades UUIDs are retained in
+the expanded normal catalog; the 12 physical specimen packets remain unapproved.
+
+**Earlier local acceptance:** Slices 1–3 and Slice 4 local ownership/Browse/import code implemented;
 253 distinct selected simulator cases have passing evidence across the regression
-run and corrected ownership replay — 2026-10-12. Rendered Slice 4 acceptance is open.
-**2026-10-13 discovery update:** the owner-requested English completeness pass
+run and corrected ownership replay — 2026-10-12. The 2026-10-13 bounded
+phone/iPad synthetic rendered pass is complete, with 204 final scoped tests
+passing; real physical/device/provider acceptance remains open.
+**Historical discovery-only checkpoint — 2026-10-13:** the owner-requested English completeness pass
 adds default source discovery, real-footer recognition and offline sealed browse.
 The [coverage checkpoint](../research/lorcana-catalog-coverage.md) owns this
 inventory, the continuation's 322 passing focused tests and remaining gaps. Earlier statements here
@@ -11,15 +67,17 @@ that `appDefaults` omits all Lorcana support are historical for discovery;
 reviewed physical acquisition, collection writes, production signed activation
 and pricing remain disabled. Slice 4 physical acceptance gates remain open.
 Current work is on
-`feat/lorcana-implementation` at `9d7c780c` plus local changes. See the
+`feat/lorcana-implementation` at `8613a1d` plus local changes. See the
 [source checkpoint](../research/lorcana-source-corpus.md) and
 [local physical contract](../research/lorcana-physical-contract.md) and
 [signed activation contract](../research/lorcana-signed-activation.md). Real physical
 corpus acceptance remains open; synthetic review fixtures do not close it.
 The [representative reference corpus](../research/lorcana-real-card-corpus/README.md)
 now retains 29 unapproved candidates, 35 source references and 25 unexecuted
-acceptance scenarios. Source selection is recorded; physical specimens,
-independent review and approved local-seed promotion remain required.
+physical acceptance scenarios. Physical specimens and independent review remain
+required for that camera/specimen evidence. They are not an additional packet
+prerequisite for the 1,616 ordinary mappings already reviewed online and enabled
+in the bundled normal catalog.
 **Source review:** integration at `6b64abe` and subsequent review work through
 `55dc1e4` on `merge/one-piece-integration`. The remaining-audit cleanup removes
 the accidentally tracked `undefined/` adapter copies and corrects the extracted
@@ -37,7 +95,7 @@ This is the current implementation authority. The [imported Lorcana research](..
 remains source/background research, with nonportable original citations and
 unverified release timelines. Current code and new evidence outrank that snapshot.
 
-## Recalibration against the current code — 2026-10-05
+## Historical recalibration against the code — 2026-10-05
 
 | Earlier proposal | Current code / decision |
 | --- | --- |
@@ -295,7 +353,7 @@ corpus; shared transport tests do not replace Lorcana contract tests.
   add/undo, quantity changes, stale CSV adapters, missing catalog authority and
   withdrawn write capability. Physical fixtures cover held/unreviewed universes;
   forward-compatibility tests retain unavailable-module rows. Real mixed-client
-  and rendered interaction acceptance remain open.
+  acceptance remains open; bounded synthetic rendering is recorded below.
 - [x] Enable `.collectionWrite` only in the explicit isolated local review setup
   once these contracts pass. Use stable game + physical UUID + finish keys;
   adding a finish or changing a market alias must not split existing ownership.
@@ -305,13 +363,47 @@ corpus; shared transport tests do not replace Lorcana contract tests.
   checked container binding; the public unbound runtime remains read-only.
 - [x] Verify local scan/choice/finish/save, disk-backed storage relaunch,
   Browse/add/undo and CSV round-trip against the same reviewed registry.
-- [ ] Render the existing compact choice/Details and finish flows on phone/tablet
+- [x] Render the existing compact choice/Details and finish flows on phone/tablet
   and large text; inaccessible artwork or identical labels cannot permit an
   unsupported selection. The [debug UI review route](../research/lorcana-ui-review.md)
   is now implemented with isolated persistent collection/recovery/cache storage,
   an ephemeral synthetic seed and real scanner callback injection. Its sample
   menu reaches size/stamp choices, finish selection and incomplete outcomes.
-  Rendered acceptance and an accepted physical seed remain open.
+  The 2026-10-13 synthetic portrait simulator pass covers both form factors,
+  default light and accessibility dark layouts, explicit printing/finish actions,
+  incomplete recovery and local ownership. An accepted physical seed, spoken
+  VoiceOver interaction and real-device/camera acceptance remain open.
+
+#### Rendered UI checkpoint — 2026-10-13
+
+Verified at `8613a1d` on `feat/lorcana-implementation` plus local changes in
+DebugRemoteLocal. The [UI review checkpoint](../research/lorcana-ui-review.md)
+records the complete matrix and evidence boundary. Dedicated iPhone 17 Pro and
+iPad Pro 11-inch M4 simulators ran iOS 26.5; all eight fixture outcomes were
+visually inspected. Accessibility-extra-large (AX3) dark captures confirm stacked,
+reachable choices and wrapped mode/finish labels; phone choices remain reachable
+through scrolling. Device rotation and spoken VoiceOver were not accepted here.
+
+Fixed camera/Details contrast, title and control truncation, explicit oversized
+labeling and neutral incomplete-resolution copy. A rendered first-save failure
+also exposed a launch-projection/revision-monitor baseline race; a loaded stale
+projection now reconciles on first observation. The iPad first save updates
+Collection/Browse without relaunch. Standard/Foil save and immediate scan Undo,
+Browse Normal add/Undo, repeated-card suppression, retained unresolved encounters/retry and
+review-store relaunch were exercised through the existing app surfaces.
+
+Final `accessibility-final-tests.xcresult`: **204 passed, 0 failed, 0 skipped**,
+verified with `xcresulttool`; a QoS priority-inversion warning is recorded. This
+is scoped regression evidence, not a new full-suite or performance baseline.
+External SSD evidence: `CodexBuilds/LorcanaUIAcceptance-20261013/`, including the
+final device state directories, Details/ownership/recovery captures and success
+checklist. Earlier launch-transition/finding frames are historical diagnostics.
+
+Real physical seed/corpus approval, camera and device acceptance, spoken
+VoiceOver, production signed activation, mapped live pricing/provider rights,
+CloudKit/mixed-client and release gates remain open. The synthetic route has no
+approved market mappings; readable unavailable pricing does not close Slice 5's
+real mapped/unmapped pricing acceptance.
 
 **Exit evidence:** deterministic storage/recovery and import tests plus rendered
 local interaction/relaunch evidence for representative base cases. Record real
@@ -320,25 +412,152 @@ graded support and shared-sync production writes remain independently gated.
 
 ### Slice 5: exact pricing through the current shared authority
 
-- [ ] Select a permitted provider and review exact physical-printing/finish,
+- [x] Select a permitted provider and review exact physical-printing/finish,
   currency and condition or aggregate-price joins. Provider price columns are
   neither finish authority nor proof of a complete market mapping. Do not inherit
   One Piece's TCGCSV provider choice or promote Lorcast family prices to all
   corresponding physical UUIDs.
-- [ ] Implement `LorcanaPriceAdapter` for resolved and stored-printing refresh;
+  Completed for the owner-authorized public-reference ordinary scope across
+  expansions 1–8 using TCGCSV's documented public access. Card-in-hand verification,
+  premium/promo/Quest/later-set mappings and publication/asset rights remain
+  separate gates; [the rollout checkpoint](../research/lorcana-normal-pricing-rollout.md)
+  records the exact reviewed join policy.
+- [x] Implement `LorcanaPriceAdapter` for resolved and stored-printing refresh;
   withhold unmapped prices and disable name/number fallback. Register `.pricing`
   separately, with mappings in `GameCatalogPriceAuthority` and catalog mapping
   fingerprints on managed quotes. Use the runtime's activated price wrapper for
   pre/post-request validation and persisted withdrawal before new activation.
-- [ ] Cover Price Check, scanner post-save quotes, Browse detail/add and collection
+- [x] Cover Price Check, scanner post-save quotes, Browse detail/add and collection
   refresh. Changed/withdrawn mappings reject cached and in-flight quotes; manual
   values remain intact. Preserve feed receipt times and bind caches to reviewed
   catalog semantics when needed. No capability means no provider requests.
+- [x] Execute the bounded mapped/unmapped live-provider workflow through existing
+  Price Check, scanner save, Browse and collection refresh, including relaunch,
+  cache receipt reuse and persisted mapping withdrawal. Source review and live
+  results are separate from physical-camera/device and production acceptance.
 
 **Exit evidence:** one reviewed mapped base case and one unmapped/special printing
 save and refresh independently, including relaunch and mapping withdrawal.
 Deterministic tests and permitted live-provider evidence are recorded separately;
 One Piece's price/UI checkpoint is not Lorcana evidence.
+
+#### Pricing code checkpoint — 2026-10-13
+
+Implementation on `feat/lorcana-implementation` at `8613a1d` plus local changes:
+
+- Optional `marketMappings` on schema-2 physical printings preserve decoding and
+  canonical signed bytes for older unmapped catalogs. Each mapping records an
+  exact product ID, group, title, marketplace Number, selected finish/lane,
+  US/USD aggregate scope and review references. Mapping edits change the catalog
+  generation and price fingerprint without changing physical UUIDs or ownership.
+  Duplicate active product/finish lanes, unsupported scope and incompatible
+  physical finishes are rejected.
+- [TCGCSV](https://tcgcsv.com/) documents public product/price feeds and explicitly
+  excludes condition-specific SKU data. Independently inspected category **71**,
+  group **22937** products/prices on this date contain `Normal`, `Cold Foil` and
+  `Holofoil` lanes. The Lorcana join uses the explicitly reviewed lane; generic
+  `foil` does not infer which market lane applies. Product 510153's `207/204`
+  Number and Holofoil row verify the feed contract, not a physical UUID mapping.
+- `TCGCSVProductPriceSource` reuses One Piece's bounded transport, pacing,
+  coalescing, daily disk cache, failure backoff, generation scope and withdrawal
+  watermark. Category/group cache keys keep games separate. Existing unscoped
+  One Piece cache files are refreshed once rather than promoted into the shared
+  cache. Feed receipt times remain unchanged on reuse; no source-update timestamp
+  or condition-specific price is invented.
+- The physical runtime registers `.pricing` separately from collection writes;
+  `pricingEnabled = false` suppresses the adapter/capability. Schema-1 families
+  and pure source-only discovery cannot request physical prices. Normal app
+  discovery now composes the reviewed physical catalog. Unmapped exact printings
+  and finishes return unavailable without provider I/O or name/number fallback.
+- Signed snapshots publish `GameCatalogPriceAuthority`. Container binding saves
+  withdrawals before new catalog publication; mapping fingerprints and current
+  physical resolution reject changed/withdrawn in-flight quotes. PriceStore and
+  reference-quote withdrawal preserve manual imported values.
+
+The later normal-workflow checkpoint expands the mapping/provider slice beyond
+Hades. Unsupported classes, physical-device acceptance and production rights
+remain open. A market-bearing signed payload requires this updated reader; older
+readers fail canonical verification rather than silently dropping its mappings.
+Production activation and mixed-client acceptance remain separate gates.
+
+**Verification:** Debug build and 125 Lorcana/Lorcast plus 88 One Piece simulator
+tests pass on iPhone 17 Pro / iOS 26.5, including 13 new Lorcana pricing cases.
+Shared pricing, quote-cache and refresh lifecycle tests also pass. The broader
+selection executed 322 cases: **321 passed, 1 failed, 0 skipped**. The unchanged
+`PokemonTCGCSVPriceTests.testBrowseDetailsRetainSupplementalQuoteAndProvenanceWhenOffline`
+fails with `unknownSet`, also reproduced when selected alone. This is not a
+green full-suite baseline. Build data, results and public-feed captures are
+external under `CodexBuilds/LorcanaPricing-20261013/`; the broad result is
+`regression-4.xcresult` and isolated failure is `pokemon-isolated-5.xcresult`.
+This earlier code checkpoint did not claim real mappings or rendered/live pricing.
+The public-reference checkpoint below supersedes that gap only for its bounded
+local seed. Physical-device, CloudKit, production signed activation and release
+acceptance remain open.
+
+#### Public-reference live pricing checkpoint — 2026-10-13
+
+At `8613a1d` plus local changes on `feat/lorcana-implementation`, added a separate
+DebugRemoteLocal `LorcanaPricingReview` seed/store, with two explicit market lanes
+for one standard Hades UUID. Publisher footer/artwork/finish/size sources and
+TCGCSV category/group/product/Number evidence were reviewed independently of
+price amounts. Standard and oversized share the known footer but remain distinct
+physical IDs; oversized has no mapping in this slice. The owner authorized
+public online evidence; no card-in-hand measurement or two-person specimen
+approval is claimed. See [the review and replay](../research/lorcana-pricing-review.md).
+
+Live TCGCSV retrieval passes the existing adapter/price authority, Price Check
+without ownership, scanner post-save quote, Browse detail, collection refresh,
+disk-backed relaunch/receipt reuse and mapping withdrawal without ownership loss.
+Actual receipt observations were **$0.19 Normal / $0.35 Cold Foil**, USD aggregate;
+they are dated evidence, not constants in the implementation. The expiring,
+seed-bound test opt-in is removed after acceptance; a separate no-opt-in replay
+skips as intended. Final `live-final.xcresult` is verified with `xcresulttool`:
+**86 passed, 0 failed, 0 skipped**, with two internal QoS warnings. Rendered phone
+Price Check, scanner quote, Collection/Browse, withdrawal and restored refresh
+pass; tablet choice rendering is inspected but its pricing taps did not advance.
+This is a focused live/local checkpoint, not a full-suite or device certification.
+
+Evidence is external at `CodexBuilds/LorcanaLivePricing-20261013/`; Xcode's
+post-test finalization took about ten minutes after all cases passed. At this
+historical checkpoint default discovery remained unpriced. Its source IDs still
+cannot become physical ownership keys. The retained physical-corpus scenarios, production rights/keys/activation,
+spoken VoiceOver, camera/device, sync and release gates remain open.
+
+#### Normal-workflow expansion checkpoint — 2026-10-13
+
+The [offline builder](../../scripts/build_lorcana_market_catalog.py) and persistent
+[UUID ledger](../../TradingCardScanner/LorcanaCatalogSeed/physical-id-assignments.json)
+promote exact English ordinary joins into the bundled `market.json`. Normal
+registration combines its physical authority with existing discovery and sealed
+inventory. Scanner resolution, Browse summaries/details and collection writes
+use the same physical UUID; source IDs never gain mutation authority. Footer,
+title, marketplace Number/group and both exact finish lanes must agree. Source
+collisions and qualified product siblings remain held. Amounts do not determine
+the supported finishes, and no fuzzy pricing fallback is added.
+
+Live normal-runtime acceptance obtained **16 exact USD quotes across eight sets**,
+then saved eight foil rows and refreshed them through the common collection
+worker. The 260-case pricing/ownership/catalog/activation/One Piece regression
+passes, followed by a 100-case Lorcana/Browse replay and a 66-case Browse replay
+after the rendered held-printing fix; each has zero failures/skips. These are
+overlapping scoped runs, not additive full-suite totals. Twelve Python source
+builder tests pass. See the rollout checkpoint for final rendered/build evidence
+and receipt paths. Normal iPhone and iPad Browse display both price lanes and save
+the chosen finish into ordinary Collection; relaunch preserves copies and quotes.
+Held details disable Add and display unavailable pricing. Native Device Hub
+controls completed iPad interaction after semantic simulator taps failed.
+The final relaunch pass also fixed shared empty automatic refresh queues leaving
+an updating indicator visible: queue ownership now publishes its lifecycle, with
+a regression for the idle-to-idle completion. Phone/tablet relaunch and explicit
+tablet refresh render cleanly without changing pricing or freshness policy.
+The finalized post-fix bundle confirms 239 passing cases, zero failures and two expected
+live-opt-in skips; the earlier live replay passed before the opt-in was removed.
+Debug build-for-testing and arm64 ReleaseLocal rebuild pass. The bundle has one
+internal QoS warning; its finalization took about ten minutes after the cases ended.
+The prior isolated Pokémon `unknownSet` failure was closed in the later
+[production checkpoint](../release/lorcana-production-acceptance.md): the fixture
+now includes its requested card in its set, with 25/25 Pokémon TCGCSV tests passing.
+The production membership guard is unchanged. This is not full-app certification.
 
 ### Slice 6: measured camera support, broader coverage and production gates
 
@@ -352,17 +571,56 @@ One Piece's price/UI checkpoint is not Lorcana evidence.
   set counts and hypothetical serial fields as background requiring fresh review.
   Add optical ranking/stamp/foil assistance only after measured benefit; explicit
   printing and finish selection remain the usable base path.
-- [ ] Prepare dedicated production keys, validated seed, hosting/update delivery,
-  rights/provider decisions, device performance and an enforceable mixed-client
-  collection policy. Audit every ownership entry point before enabling shared
-  writes; minimum-version metadata alone is not CloudKit enforcement.
-  Production runtime registration is the final rollout step after those gates,
-  not a consequence of declaring `CardGame.lorcana` or passing local tests.
+- [x] Register the owner-authorized bundled ordinary catalog in the normal app,
+  with per-printing ownership/import/price validation and unchanged storage models.
+- [x] Build actual iOS archives and verify bundled catalog/privacy resources;
+  strict development signature verification and development IPA export pass.
+  Unsigned Release and development-signed ReleaseLocal are packaging evidence,
+  not distribution/TestFlight acceptance.
+- [x] Close the known Pokémon Browse supplemental-quote regression and run local
+  storage/schema/forward-compatibility checks; see the production checkpoint for
+  finalized counts and skipped hardware/live assertions.
+- [ ] Complete release-candidate physical-device camera/performance and spoken
+  VoiceOver acceptance. No physical cards are currently available; the paired
+  iPhone was locked. Simulator evidence does not close these checks.
+- [ ] Complete publication/asset-rights review and distribution/TestFlight acceptance.
+  Unsupported printings remain held.
+- [ ] **Deferred by owner — 2026-10-14:** deploy and verify app privacy/support
+  pages, configure verified build URLs and reconcile App Store Connect URLs. Current
+  `/privacy` covers only the website/waitlist and `/support` returns 404; the
+  submission build URLs remain empty. Unsupported printings remain held.
+  The 2026-10-14 self-contained upload package and Bluehost walkthrough are
+  prepared and browser-checked; publication/live verification and URL configuration
+  are paused until the owner resumes this step.
+- [x] Execute full simulator regression and final corrected provider/parser/scanner
+  replay; the finalized 2026-10-14 complete target passes 2,188 cases with 12
+  skips and zero failures. The checkpoint retains earlier failures and setup replay.
+- [x] Fix the reproduced simulator centering timing failure without weakening
+  the existing contract: native scalar loops/median sorting retain exact fixture
+  geometry/profiles and unchanged resolution/thresholds. REQ-022 passes 0.8/1.5 s
+  limits. Physical-device latency remains part of the unchecked hardware gate.
+- [x] Prepare a normal-workflow reviewer path that requires no physical cards;
+  this handoff does not imply App Store submission or camera acceptance.
+- [x] Revalidate every enabled printing/finish through fresh provider feeds:
+  3,232 priced lanes across eight sets, zero unavailable/mismatched. Retain the
+  opt-in full-matrix test and exact catalog/UUID replay evidence. Fresh retrieval
+  does not imply real-time market data or authorization for held printings.
+- [x] Run local distribution-export preflight without portal changes/uploads;
+  record the missing distribution profile. This completes the check, while
+  obtaining a distribution-signed candidate and TestFlight acceptance remain open.
+- [ ] Before a future sync release, complete mixed-client CloudKit acceptance.
+  This is deferred for current on-device 1.0; no sync activation or schema change
+  was made. Minimum-version metadata alone is not CloudKit enforcement.
+- [ ] Configure dedicated keys and hosting/update delivery if remote signed
+  catalog updates are enabled. The bundled catalog does not depend on this work;
+  do not invent credentials or silently enable unsigned remote updates.
 
 **Exit evidence:** dated Lorcana corpus/camera/provider/device and ownership-policy
 acceptance with explicit unsupported classes, followed by archive/release checks.
 Keep full-suite regression separate from targeted checkpoints. Use an external
-SSD for future build artifacts when available; this plan update runs no build.
+SSD for build artifacts when available; current iOS archives and tests are
+recorded in the production checkpoint. Remote delivery and live sync are not
+prerequisites for the current bundled, on-device release.
 
 ## Verification evidence and limits
 

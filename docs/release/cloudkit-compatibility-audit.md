@@ -4,6 +4,13 @@ Status: local source gate passed; entitled construction and Development /
 Production CloudKit inspection are blocked until the approved App ID and
 container are enrolled.
 
+**Scope clarification — 2026-10-13:** current 1.0 production wiring uses unproven
+restoration readiness and Settings explicitly says sync is unavailable. Live
+CloudKit gates below apply before enabling a future sync release, not before
+shipping the bundled on-device Lorcana catalog. The source prohibition audit and
+focused schema/storage tests pass in the [production checkpoint](lorcana-production-acceptance.md);
+no entitled-device/schema/promotion gate is closed by that local evidence.
+
 The collection anchor protocol now uses `CardScannerCollectionAnchor` format 2
 with the base `storeID`, `formatVersion`, and `createdAt` fields plus the
 explicit `remoteGeneration` readiness field. The source decoder fails closed on
@@ -13,7 +20,7 @@ readiness plan; it has not been created, inspected, or promoted in CloudKit
 Production. The generation's live update semantics still require Task 4A/4B
 observability and entitled-device proof.
 
-The public 1.0 structured configuration is limited to five synced models:
+The prospective shared structured configuration is limited to five models:
 `CollectedCard`, `PriceRecord`, `ProductIdentity`, `CollectionActivity`, and
 `InventoryEvent`. Device-local quote, observation, close, and artwork models
 are not related to those records and remain outside the CloudKit configuration.

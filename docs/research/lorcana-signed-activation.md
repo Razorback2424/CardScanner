@@ -6,6 +6,11 @@ focused simulator tests passing — 2026-10-12,
 in tests is synthetic. The [implementation plan](../plans/lorcana_code_implementation.md)
 retains real-corpus, device, rights and production acceptance authority.
 
+The later [normal pricing rollout](lorcana-normal-pricing-rollout.md) enables a
+bundled ordinary catalog without remote activation. This signed-delivery contract
+remains available for future remote updates; older disabled-default claims below
+are historical for the now registered ordinary scope.
+
 ## Signed contract and protected updates
 
 [`LorcanaCatalogRelease`](../../TradingCardScanner/Games/Lorcana/LorcanaCatalogRelease.swift)

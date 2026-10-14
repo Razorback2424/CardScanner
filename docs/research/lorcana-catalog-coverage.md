@@ -1,9 +1,12 @@
 # Lorcana browse and scanner coverage
 
 **Status:** English source discovery and sealed browse implemented — 2026-10-13.
-322 focused simulator tests and eight builder tests pass. Physical acquisition,
-collection writes, pricing, signed production delivery and real-camera acceptance
-remain open. This expands discovery; it does not approve the real-card corpus.
+322 focused simulator tests and eight builder tests pass. This checkpoint owns
+the inventory below. The later [normal pricing rollout](lorcana-normal-pricing-rollout.md)
+enables exact ordinary acquisition, collection writes and pricing across sets 1–8.
+Earlier discovery-only/read-only limitations here are historical for that mapped
+scope; held rows, signed remote delivery and real-camera acceptance remain separate.
+Neither checkpoint approves the retained physical specimen corpus.
 
 ## Inventory and source reconciliation
 

@@ -1,8 +1,9 @@
 # Lorcana isolated UI review launch
 
-**Status:** debug review launch implemented — 2026-10-12. Rendered phone/iPad,
-large-text, VoiceOver and real-device acceptance remain open. This route uses
-synthetic physical records and does not approve the real-card research corpus.
+**Status:** bounded rendered simulator acceptance passed — 2026-10-13.
+Phone/iPad printing and finish flows, large-text scrolling and local ownership
+were exercised with synthetic physical records. VoiceOver interaction,
+real-device/camera and real-card corpus acceptance remain open.
 
 ## Launch
 
@@ -58,13 +59,60 @@ returns to the ordinary collection; no store is erased, copied or migrated by
 the route. Writable binding rejects an unrelated on-disk container or a CloudKit
 configuration. Ordinary preferences, such as sort order, remain app preferences.
 
-The launch intentionally has no pricing provider and cannot establish market,
+The launch has no approved market mappings or provider I/O and cannot establish market,
 physical finish, camera, production registration or shared-sync acceptance.
 Source inspection checks native controls, Dynamic Type fonts, vertical sample
 controls and 44-point minimum action height. Actual rendering and accessibility
-interaction require the subsequent acceptance pass.
+interaction evidence is recorded below; spoken VoiceOver interaction remains open.
 
-## Verification checkpoint
+## Rendered acceptance checkpoint — 2026-10-13
+
+Verified on `feat/lorcana-implementation`, base `8613a1d` plus local pricing and
+UI fixes, using DebugRemoteLocal. Dedicated iPhone 17 Pro and iPad Pro 11-inch
+M4 simulators both ran iOS 26.5. An initial iPad M5/iOS 27 capture was supplemental;
+the repeatable tablet acceptance used the dedicated M4 simulator. Portrait
+screens were inspected; the `landscape` sample describes card layout, not device
+rotation. Shared simulator contention prompted isolated devices without erasing
+ordinary collection data.
+
+| Check | Rendered result |
+| --- | --- |
+| Eight fixtures on both devices | Size/stamp distinctions and standard/landscape finish choices are readable. Oversized-only still requires size evidence. Unknown, held and indistinguishable artwork remain incomplete, with retry and no ownership write. |
+| Printing Details | Readable metadata and explicit size actions in the native sheet; selected standard and oversized identities reach the existing save flow. |
+| Default light / accessibility dark | Mode/finish labels wrap; accessibility choices stack. Phone scrolling reaches both sizes and both finishes; tablet size actions fit directly. Tested accessibility-extra-large (AX3), not every text size. |
+| Ownership | Standard → Foil saves; immediate scan Undo removes it. First iPad save updates Collection and Browse without relaunch. Browse detail explains missing artwork/unmapped price and its native finish picker adds Normal; immediate Browse Undo on phone removes only that new Normal copy. Relaunch retains one Foil copy. |
+| Repeated encounter / recovery | Repeated same-session card is suppressed as already added. Unresolved Scans lists retained incomplete encounters and states that nothing was added. Phone recovery detail exposes retry/search/dismiss; Retry lookup returns the same incomplete result without adding ownership. |
+
+The pass found and fixed white camera controls on the stopped white preview,
+low-contrast Details text, truncated card titles and top controls, ambiguous
+oversized-only labeling, inaccurate missing-card copy, and a first-save race
+between launch projection and the revision monitor baseline. Camera chrome now
+uses a black backing/dark appearance; titles wrap, accessibility controls stack
+and scroll, size labeling is explicit, incomplete lookup copy is neutral, and an
+existing stale launch projection is reconciled on the monitor's first observation.
+
+**HIG gate:** PASS for inspected portrait printing/finish choices, readable
+light/dark surfaces, tested Dynamic Type layout, native sheets, clear no-write
+outcomes and descriptive action labels. RISK remains for spoken VoiceOver focus,
+real camera backgrounds/orientation and physical-device behavior; those require
+their own interaction evidence. No release or App Review certification is implied.
+
+Final scoped regression: **204 passed, 0 failed, 0 skipped** in
+`accessibility-final-tests.xcresult`, verified with `xcresulttool`. It covers
+scanner, ownership, pricing, catalog activation/physical identity, rotation
+contracts and revision monitoring. A QoS priority-inversion runtime warning was
+recorded; no full-suite success or performance acceptance is claimed.
+
+Evidence remains outside the repository on the external SSD at
+`CodexBuilds/LorcanaUIAcceptance-20261013/`: `iphone-qa/final-states/`,
+`ipad26/final-states/` (artwork uses `artworkUnavailable-recapture/`),
+`iphone-qa/accessibility-dark-size/`, `ipad26/accessibility-dark-size/`,
+`ipad26/final-size/details.png`, interaction captures and the success checklist.
+Launch-transition frames and earlier finding captures are retained as historical
+diagnostics, not accepted final renders. No private screenshots or simulator IDs
+were added to the repository; no commit or push was made.
+
+## Historical launch-contract checkpoint — 2026-10-12
 
 At base `1e368b3` plus local changes, the DebugRemoteLocal app/test build passes.
 The final three review-launch tests pass with zero failures/skips and no runtime

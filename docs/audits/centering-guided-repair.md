@@ -1,5 +1,15 @@
 # Guided centering repair
 
+**Latest timing follow-up — 2026-10-14:** the previously failing REQ-022 case
+passes in the current Lorcana working tree after exact native scalar/median
+optimization. Final full-target results: 2,188 passed, zero failed, 12 skipped;
+REQ-022 upper median 0.586 s, maximum 0.649 s at unchanged 0.8/1.5 s limits.
+Kernel and ten-fixture geometry/profile parity pass. See the
+[production checkpoint](../release/lorcana-production-acceptance.md) for candidate,
+stage measurements and archive/export evidence. This replaces the simulator
+timing failure status in the historical checkpoints below; hardware/automatic
+held-out and rendered accessibility acceptance remain separate.
+
 **Status:** guided correctness and regression checks pass apart from the known
 latency case; review follow-up fixes applied; final numeric-field accessibility
 and inner-capture rechecks await an unlocked Mac — 2026-10-02.

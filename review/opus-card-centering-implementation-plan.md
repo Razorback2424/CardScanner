@@ -1,5 +1,17 @@
 # Card Centering — Authoritative Implementation & Validation Plan
 
+**Latest simulator latency follow-up — 2026-10-14:** the
+[Lorcana production checkpoint](../docs/release/lorcana-production-acceptance.md)
+records the current `feat/lorcana-implementation` working tree at base `8613a1d`.
+The reproduced REQ-022 failure is corrected by native scalar loops/median sorting
+under the existing strict C compilation policy. Exact kernel and ten-fixture
+geometry/profile parity pass; resolution, sampling, thresholds, selection,
+confidence and the 0.8/1.5 s limits are unchanged. The final complete simulator
+target has 2,188 passed, zero failed and 12 skipped; REQ-022 upper median is
+0.586 s and maximum 0.649 s. This supersedes earlier simulator timing failures
+for that candidate, without closing hardware latency, held-out accuracy or
+the broader completion contract below.
+
 **Status:** Contract for a Luna Max *Pursue Goal* run. Written 2026-09-11 from a read-only
 investigation plus a measured baseline over the full HEIC corpus; amended 2026-09-12 through
 revision F with raw-fixture branch evidence, the safety-preserving E-B repair, the E-D

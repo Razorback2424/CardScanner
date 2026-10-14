@@ -1,6 +1,6 @@
 # Scanstash Support
 
-This support page covers Scanstash 1.0 on iPhone and iPad. The app is referred to as CardScanner in its source code and some in-app text.
+This support page covers Scanstash 1.0 on iPhone and iPad. Some in-app text uses the name CardScanner.
 
 ## Contact
 
@@ -21,6 +21,10 @@ Use even lighting, avoid glare, and keep the whole card visible. Confirm the set
 ## Catalog and pricing
 
 Catalog downloads and fresh pricing require a working network connection. Saved collection records and available offline catalog data remain usable without one. If a provider is unavailable or rate-limited, wait before retrying. For JustTCG issues, check or remove the key in pricing settings without sending it to support. To limit background updates, use iOS Background App Refresh settings; requests while using the app can still occur. Prices are reference information and may be stale or unavailable; they do not guarantee a sale price or a professional grade.
+
+Lorcana collection saves and pricing currently cover reviewed ordinary English printings from the first eight expansions, with explicit Normal/Foil selection. Other cards may appear in Browse while pricing or Add is unavailable. Premium, promo, Quest, later-set and ambiguous printings remain outside that reviewed ordinary scope.
+
+Lorcana metadata uses [LorcanaJSON](https://lorcanajson.org/), and ordinary reference pricing uses [TCGCSV](https://tcgcsv.com/)'s TCGplayer-derived aggregate feeds. Card artwork, text and trademarks remain with their respective rights holders. Naming a publisher or source does not imply its endorsement of Scanstash.
 
 ## Collection storage
 

@@ -6,6 +6,10 @@ simulator tests pass — 2026-10-12, `feat/lorcana-implementation` at
 synthetic. The [implementation plan](../plans/lorcana_code_implementation.md)
 retains real-corpus and production acceptance authority.
 
+The later [normal pricing rollout](lorcana-normal-pricing-rollout.md) adopts this
+contract for public-source-reviewed ordinary printings in normal app registration.
+The synthetic test checkpoint below remains dated evidence, not current coverage.
+
 ## Identity and evidence
 
 [`LorcanaPhysicalCatalog`](../../TradingCardScanner/Games/Lorcana/LorcanaPhysicalCatalog.swift)
