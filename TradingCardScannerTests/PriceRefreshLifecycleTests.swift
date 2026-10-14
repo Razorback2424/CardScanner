@@ -1,3 +1,4 @@
+import Combine
 import SwiftData
 import XCTest
 @testable import TradingCardScanner
@@ -48,6 +49,24 @@ private actor PriceRefreshAttemptCounter {
 
 @MainActor
 final class PriceRefreshLifecycleTests: XCTestCase {
+    func testEmptyAutomaticPassNotifiesObserversWhenQueueEndsWithoutStatusChange() async throws {
+        let container = try makeContainer(withCard: false)
+        let controller = PriceRefreshController()
+        var observedBusyStates: [Bool] = []
+        let observation = controller.objectWillChange.sink {
+            observedBusyStates.append(controller.isPassInFlight)
+        }
+        defer { observation.cancel() }
+
+        let result = await controller.refresh(Self.request, container: container)
+
+        XCTAssertFalse(result.didRun)
+        XCTAssertFalse(controller.isPassInFlight)
+        if case .idle = controller.status {} else { XCTFail("An empty automatic pass stays idle") }
+        XCTAssertTrue(observedBusyStates.contains(true),
+                      "The UI must receive the terminal notification while queue ownership clears")
+    }
+
     func testForegroundJoinPromotesQueueAndBackgroundCancelIsScoped() async throws {
         let container = try makeContainer(withCard: true)
         let controller = PriceRefreshController()

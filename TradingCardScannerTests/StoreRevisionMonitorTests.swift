@@ -6,6 +6,31 @@ import XCTest
 
 @MainActor
 final class StoreRevisionMonitorTests: XCTestCase {
+    func testFirstObservationReconcilesACollectionSavedAfterLaunchProjection() async throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let projection = CollectionProjectionStore()
+        await projection.rebuild(container: container)
+        XCTAssertTrue(projection.snapshot?.rows.isEmpty == true)
+        let writes = DerivedStateWriteCoordinator()
+        writes.beginBulkWrite()
+        let signal = PriceRefreshCompletionSignal(), refresh = PriceRefreshController()
+        refresh.registerCompletionSignal(signal)
+        let window = host(container: container, refresh: refresh, signal: signal,
+            writes: writes, scene: MonitorScene(), projection: projection)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        let card = monitorCard(game: .lorcana)
+        container.mainContext.insert(card)
+        try container.mainContext.save()
+        XCTAssertTrue(projection.snapshot?.rows.isEmpty == true)
+        writes.endBulkWrite()
+        for _ in 0..<100 where projection.snapshot?.rows.isEmpty != false {
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        XCTAssertEqual(projection.snapshot?.rows.map(\.id), [card.collectionKey])
+        XCTAssertEqual(projection.snapshot?.rows.first?.quantity, 1)
+    }
+
     func testOwnershipEditReplaysBeforeAnActivePriceRefreshFinishes() async throws {
         let container = try ModelContainer(for: CollectionStorageModelSchema.full,
                                           configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
@@ -208,12 +233,13 @@ final class StoreRevisionMonitorTests: XCTestCase {
 
     private func host(container: ModelContainer, refresh: PriceRefreshController,
                       signal: PriceRefreshCompletionSignal, writes: DerivedStateWriteCoordinator,
-                      scene: MonitorScene, portfolio: PortfolioEngine? = nil) -> UIWindow {
+                      scene: MonitorScene, portfolio: PortfolioEngine? = nil,
+                      projection: CollectionProjectionStore? = nil) -> UIWindow {
         let portfolio = portfolio ?? PortfolioEngine()
         let storage = CollectionStorageGeneration()
         storage.installReady(storeID: UUID())
         refresh.registerPortfolio(portfolio)
-        let monitor = StoreRevisionMonitor(portfolio: portfolio, projectionStore: CollectionProjectionStore(),
+        let monitor = StoreRevisionMonitor(portfolio: portfolio, projectionStore: projection ?? CollectionProjectionStore(),
                                            priceSnapshot: PriceSnapshotStore(), revisionStore: StoreRevisionStore(),
                                            refresh: refresh, storageGeneration: storage,
                                            hasStartedPortfolio: true, completionSignal: signal)

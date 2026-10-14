@@ -2811,7 +2811,9 @@ final class PriceRefreshController: ObservableObject {
     /// produced it, silently, partway through. Cancellation is still available
     /// — `cancelRefresh()` — but it now means "the user left", which is the only
     /// thing it was ever supposed to mean.
-    private var activeRefresh: Task<PriceRefreshResult, Never>?
+    // Empty automatic passes can keep status idle throughout. Publish queue
+    // ownership too so an observed refresh indicator clears when they finish.
+    @Published private var activeRefresh: Task<PriceRefreshResult, Never>?
     private(set) var activeRefreshOwner: Owner?
     private var activeRefreshQueueID: UUID?
     private var preemptedRefreshQueueIDs: Set<UUID> = []

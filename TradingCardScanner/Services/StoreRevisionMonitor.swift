@@ -458,6 +458,17 @@ struct StoreRevisionMonitor: View {
 
         guard let previousFingerprint else {
             self.previousFingerprint = fingerprint
+            // A fast first scan can commit during the initial scanner bulk
+            // interval, after the launch projection but before this baseline.
+            // Reconcile that ownership change instead of accepting a stale
+            // empty grid as the baseline until the next save or relaunch.
+            let projectedCount = projectionStore.snapshot?.physicalRowCountsByKey.values.reduce(0, +)
+            if let projectedCount, projectedCount != fingerprint.cardCount {
+                await projectionStore.rebuild(container: modelContext.container)
+                await priceSnapshot.rebuild(container: modelContext.container)
+                await portfolio.recomputeAndWait(context: modelContext)
+                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
+            }
             let currentPendingFingerprint = StoreRevisionFingerprinting
                 .pendingMagicMigrationFingerprint(fingerprint.pendingMagicMigrationKeys)
             let priorPendingFingerprint = UserDefaults.standard.string(
