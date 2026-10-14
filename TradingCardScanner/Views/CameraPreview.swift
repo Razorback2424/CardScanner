@@ -32,6 +32,9 @@ struct CameraPreview: UIViewRepresentable {
 
     func makeUIView(context: Context) -> PreviewView {
         let view = PreviewView()
+        // Keep white camera controls readable before a frame arrives and when
+        // the camera is stopped in the isolated review route.
+        view.backgroundColor = .black
         view.previewLayer.session = scanner.session
         view.previewLayer.videoGravity = .resizeAspectFill
         view.rotation = scanner.rotation

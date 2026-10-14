@@ -389,6 +389,7 @@ struct VariantChoiceBar: View {
     let choice: PendingVariantChoice
     let onChoose: (PhysicalVariant) -> Void
     let onDismiss: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -396,25 +397,23 @@ struct VariantChoiceBar: View {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(choice.card.name)
                         .font(.title3.bold())
-                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     Text(variantChoiceIdentifier)
                         .font(.caption.monospacedDigit())
                         .foregroundStyle(.white.opacity(0.7))
+                    Text(choice.card.setName)
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.7))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-
-                Text(choice.card.setName)
-                    .font(.title3.weight(.semibold))
-                    .multilineTextAlignment(.trailing)
-                    .lineLimit(2)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
 
                 Button(action: onDismiss) {
                     Image(systemName: "xmark")
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(.white.opacity(0.75))
-                        .frame(width: 30, height: 30)
+                        .frame(width: 44, height: 44)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -447,6 +446,9 @@ struct VariantChoiceBar: View {
     }
 
     private var variantChoiceIdentifier: String {
+        if case .opaque = choice.identifier.legacyIdentity {
+            return choice.identifier.displayIdentifier
+        }
         if case .pokemonHistorical = choice.identifier.legacyIdentity {
             return choice.identifier.displayIdentifier
         }
@@ -457,14 +459,15 @@ struct VariantChoiceBar: View {
     private var options: some View {
         // Three or fewer stay on one row, which keeps every button under the
         // thumb. Beyond that a second row beats shrinking the targets.
-        if choice.options.count <= 3 {
+        if choice.options.count <= 3 && !dynamicTypeSize.isAccessibilitySize {
             HStack(spacing: 10) {
                 ForEach(choice.options) { option in
                     button(for: option)
                 }
             }
         } else {
-            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+            LazyVGrid(columns: dynamicTypeSize.isAccessibilitySize
+                ? [GridItem(.flexible())] : [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
                 ForEach(choice.options) { option in
                     button(for: option)
                 }
@@ -479,10 +482,11 @@ struct VariantChoiceBar: View {
         } label: {
             Text(label)
                 .font(.subheadline.weight(.semibold))
-                .lineLimit(1)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                .fixedSize(horizontal: false, vertical: true)
                 .minimumScaleFactor(0.8)
                 .frame(maxWidth: .infinity)
-                .frame(height: 50)
+                .frame(minHeight: 50)
         }
         .appGlassOptionButton()
         .foregroundStyle(.white)
@@ -613,6 +617,7 @@ struct PrintingChoiceBar: View {
 
             HStack {
                 Text(candidates.count > 2 ? "Choose a printing · \(candidates.count) options" : "Choose a printing")
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer()
                 Button("Details") { showingDetails = true }
                     .buttonStyle(.plain)
@@ -819,13 +824,14 @@ struct PrintingCandidateButton: View {
                     if isSelectable {
                         Text("Select this printing")
                             .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Color.accentColor)
+                            .foregroundStyle(isOnCamera ? Color.white : Color.primary)
                     }
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .multilineTextAlignment(.leading)
+            .foregroundStyle(isOnCamera ? Color.white : Color.primary)
             .padding(12)
             .frame(minHeight: 44)
             .contentShape(Rectangle())

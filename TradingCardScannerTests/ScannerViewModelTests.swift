@@ -2276,7 +2276,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(failed)
         XCTAssertEqual(
             model.scanAcknowledgement?.message,
-            "Read MEP 095, but the catalog has no card with that number. Nothing was added."
+            "Read MEP 095, but the catalog could not resolve an exact printing. Nothing was added."
         )
         let filed = await waitUntil { model.unresolvedScans.count == 1 }
         XCTAssertTrue(filed, "a deterministic catalog miss is filed on the first failure")
@@ -2490,7 +2490,7 @@ final class ScannerViewModelTests: XCTestCase {
         confirm(model, scannerIdentifier(), encounterID: UUID())
 
         let noteShown = await waitUntil {
-            model.note?.text.contains("catalog has no card") == true
+            model.note?.text.contains("could not resolve an exact printing") == true
         }
         XCTAssertTrue(noteShown)
         XCTAssertTrue(model.unresolvedScans.isEmpty)

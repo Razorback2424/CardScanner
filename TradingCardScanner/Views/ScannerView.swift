@@ -35,7 +35,8 @@ struct ScannerView: View {
     }
 
     private var acceptanceReady: Bool {
-        OnePieceCatalogBootstrap.isAcceptanceLaunch() && injectedAcceptanceSample
+        ((OnePieceCatalogBootstrap.isAcceptanceLaunch() && injectedAcceptanceSample)
+            || (LorcanaReviewLaunch.isEnabled() && injectedLorcanaSample))
             && model.recognitionCount > 0 && !model.isIdentificationProcessingForTesting
             && (model.pendingIdentityChoice != nil || model.pendingChoice != nil
                 || model.successCount > 0 || model.unresolvedCount > 0)
@@ -46,7 +47,9 @@ struct ScannerView: View {
         guard acceptanceReady,
               let index = arguments.firstIndex(of: "-ui_debug_ready_path"),
               arguments.indices.contains(index + 1) else { return }
-        try? Data(#"{"onePieceAcceptanceReady":true}"#.utf8)
+        let marker = LorcanaReviewLaunch.isEnabled()
+            ? #"{"lorcanaReviewReady":true}"# : #"{"onePieceAcceptanceReady":true}"#
+        try? Data(marker.utf8)
             .write(to: URL(fileURLWithPath: arguments[index + 1]), options: .atomic)
     }
 
@@ -111,6 +114,9 @@ struct ScannerView: View {
                     isShowingSessionReview = true
                 }
             )
+            // Camera chrome uses white labels in either app appearance. Match
+            // the material and button contrast to that fixed foreground.
+            .environment(\.colorScheme, .dark)
         }
 #if DEBUG && LOCAL_ONLY_SIGNING
         .safeAreaInset(edge: .top) {
@@ -118,16 +124,22 @@ struct ScannerView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Menu {
                         Picker("Review sample", selection: $lorcanaSample) {
-                            ForEach(LorcanaReviewLaunch.Sample.allCases) { sample in
+                            ForEach(LorcanaReviewLaunch.samples) { sample in
                                 Text(sample.label).tag(sample)
                             }
                         }
                     } label: {
                         Label(lorcanaSample.label, systemImage: "list.bullet")
+                            .font(.caption2)
+                            .fixedSize(horizontal: false, vertical: true)
                             .frame(minHeight: 44)
                     }
                     .accessibilityIdentifier("lorcana-review-sample")
-                    Button("Scan synthetic footer", action: injectLorcanaSample)
+                    Button(action: injectLorcanaSample) {
+                        Text("Scan synthetic footer")
+                            .font(.caption2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                         .buttonStyle(.borderedProminent)
                         .frame(minHeight: 44)
                         .accessibilityIdentifier("lorcana-review-inject")
@@ -283,10 +295,25 @@ private struct ScannerChrome: View {
     let openReview: (RecentScan) -> Void
     let openUnresolved: () -> Void
     let openSessionReview: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @Namespace private var glassNamespace
 
     var body: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            GeometryReader { geometry in
+                ScrollView {
+                    chromeStack.frame(minHeight: geometry.size.height)
+                }
+                .scrollBounceBehavior(.basedOnSize)
+                .accessibilityIdentifier("scanner-accessibility-content")
+            }
+        } else {
+            chromeStack
+        }
+    }
+
+    private var chromeStack: some View {
         VStack(spacing: 10) {
             ScannerTopBar(
                 purpose: model.purpose,
@@ -543,6 +570,7 @@ private struct ScannerTopBar: View, Equatable {
     let setFinishLock: (VariantLock?, CardGame) -> Void
     let clearFinishLocks: () -> Void
     let openSettings: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     @Namespace private var glassNamespace
 
@@ -596,14 +624,15 @@ private struct ScannerTopBar: View, Equatable {
                     .font(.system(size: 13, weight: .semibold))
                 Text(purpose.title)
                     .font(.subheadline.weight(.semibold))
-                    .lineLimit(1)
+                    .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                    .fixedSize(horizontal: false, vertical: true)
                 Image(systemName: "chevron.down")
                     .font(.system(size: 10, weight: .bold))
                     .foregroundStyle(.white.opacity(0.7))
             }
             .foregroundStyle(.white)
             .padding(.horizontal, 12)
-            .frame(height: 44)
+            .frame(minHeight: 44)
             .appPillGlass(interactive: true)
             .appGlassEffectID("scanner-purpose", in: glassNamespace)
             .appGlassEffectUnion("scanner-top-controls", in: glassNamespace)
@@ -617,20 +646,35 @@ private struct ScannerTopBar: View, Equatable {
     /// Almost nothing. There is no game picker because the printed identifier
     /// already says which game the card is, and asking the user to pre-declare it
     /// was asking for information the card carries.
-    private var topBar: some View {
-        HStack(spacing: 8) {
-            purposeControl
+    private var finishLockControl: some View {
+        FinishLockControl(
+            subjectMode: subjectMode,
+            locks: finishLocks,
+            variantLockMenu: variantLockMenu,
+            setSubjectMode: setSubjectMode,
+            setLock: setFinishLock,
+            clearLocks: clearFinishLocks,
+            glassNamespace: glassNamespace
+        )
+        .equatable()
+    }
 
-            FinishLockControl(
-                subjectMode: subjectMode,
-                locks: finishLocks,
-                variantLockMenu: variantLockMenu,
-                setSubjectMode: setSubjectMode,
-                setLock: setFinishLock,
-                clearLocks: clearFinishLocks,
-                glassNamespace: glassNamespace
-            )
-            .equatable()
+    @ViewBuilder
+    private var topBar: some View {
+      Group {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    purposeControl
+                    Spacer(minLength: 4)
+                    settingsButton
+                }
+                finishLockControl
+            }
+        } else {
+          HStack(spacing: 8) {
+            purposeControl
+            finishLockControl
 
             if isSlowIdentifying {
                 ProgressView()
@@ -642,7 +686,9 @@ private struct ScannerTopBar: View, Equatable {
             Spacer(minLength: 0)
 
             settingsButton
+          }
         }
+      }
         .animation(.easeOut(duration: 0.2), value: isSlowIdentifying)
     }
 
@@ -681,6 +727,7 @@ private struct FinishLockControl: View, Equatable {
     let setLock: (VariantLock?, CardGame) -> Void
     let clearLocks: () -> Void
     let glassNamespace: Namespace.ID
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.subjectMode == rhs.subjectMode && lhs.locks == rhs.locks
@@ -766,7 +813,7 @@ private struct FinishLockControl: View, Equatable {
                     }
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
-                    .frame(height: 44)
+                    .frame(minHeight: 44)
                     .appPillGlass(tint: .cyan, interactive: true)
                 } else {
                     HStack(spacing: 6) {
@@ -774,14 +821,15 @@ private struct FinishLockControl: View, Equatable {
                             .font(.system(size: 13, weight: .semibold))
                         Text(summary)
                             .font(.subheadline.weight(.semibold))
-                            .lineLimit(1)
+                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                            .fixedSize(horizontal: false, vertical: true)
                         Image(systemName: "chevron.down")
                             .font(.system(size: 10, weight: .bold))
                             .foregroundStyle(.white.opacity(0.7))
                     }
                     .foregroundStyle(.white)
                     .padding(.horizontal, 12)
-                    .frame(height: 44)
+                    .frame(minHeight: 44)
                     .appPillGlass(tint: locks.isEmpty ? nil : .red, interactive: true)
                 }
             }

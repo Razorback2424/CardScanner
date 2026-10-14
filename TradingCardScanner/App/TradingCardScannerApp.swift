@@ -105,8 +105,8 @@ private struct CollectionSessionContent: View {
                 VStack(spacing: 0) {
 #if DEBUG && LOCAL_ONLY_SIGNING
                     if LorcanaReviewLaunch.isEnabled() {
-                        Label("Lorcana UI review · Synthetic cards · Separate collection", systemImage: "testtube.2")
-                            .font(.footnote)
+                        Label(LorcanaReviewLaunch.banner, systemImage: "testtube.2")
+                            .font(.caption2)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(8)
                             .background(.regularMaterial)

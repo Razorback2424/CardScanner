@@ -5822,7 +5822,7 @@ final class ScannerViewModel: ObservableObject {
         case .notInCatalog:
             switch unresolvedReason {
             case .noCatalogEntry:
-                return "Read \(displayIdentifier), but the catalog has no card with that number. Nothing was added."
+                return "Read \(displayIdentifier), but the catalog could not resolve an exact printing. Nothing was added."
             case .interrupted, .noConfirmedMatch, .lookupFailed, .providerUnavailable:
                 return purpose == .collection
                     ? "Couldn't confirm which card this is. Saved to Needs attention."
