@@ -2,6 +2,13 @@
 
 **Status:** current navigation map — 2026-10-14
 
+The latest [Lorcana edge-case checkpoint](release/lorcana-production-acceptance.md)
+records corrected offline batch handling, no-price accounting and invalid-cache
+recovery, with 162/162 shared/live cases and all 3,232 enabled pricing lanes
+passing. The earlier transport retry/cancellation fixes remain covered. Earlier full-target
+and development archive results below predate these fixes. App Store exports
+and web page/URL work remain owner-deferred.
+
 The [Lorcana normal pricing rollout](research/lorcana-normal-pricing-rollout.md)
 now records 1,616 ordinary mapped printings across eight sets in normal app
 registration, using shared ownership and pricing workflows. The

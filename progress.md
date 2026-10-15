@@ -1,3 +1,46 @@
+- Lorcana holistic edge-case sweep (2026-10-14; local changes over `ec6d64c`
+  and the preceding uncommitted recovery work): reproduced three defects in
+  selected failing regressions. Mapped offline batches retried the same
+  unreachable feed for every owned finish without reporting unreachability;
+  explicit no-price results missed completed-check accounting; invalid decoded
+  data could poison the daily disk cache, including unrepresentable amounts.
+  Fixed batch stopping/summary handling with independent mapped/legacy flags,
+  named-provider absence accounting, and validation before cache publication and
+  disk hydration. Duplicate products/lanes, cross-category/group data and invalid
+  amounts reject; valid null/zero caches remain usable. Added five tests including
+  corrected legacy-cache recovery and healthy Pokémon work continuing past its
+  first concurrent batches. Finalized final shared/live replay passes 162/162,
+  zero failures/skips and two internal QoS warnings; fresh matrix still returns
+  all 3,232 quotes across eight sets. Earlier focused replay passes 50 with three
+  live skips before the final mixed-provider test. Evidence, fresh reports and
+  eight group snapshots remain on SSD at `CodexBuilds/LorcanaEdgeSweep-20261014/`;
+  exact-seed live opt-in removed. Updated the implementation/production checkpoints
+  and doc pointers. No mappings, schema, CSV or UI changes; no full-target rerun,
+  App Store export, web update, physical test, portal change, commit or push.
+
+- Lorcana collection-integrity/failure-recovery acceptance (2026-10-14;
+  clean starting `feat/lorcana-implementation@ec6d64c`, local changes): reproduced
+  the shared TCGCSV feed retaining transport failures for 15 minutes across
+  offline, connection loss, timeout and URL cancellation. The source now permits
+  recovered transport retries while keeping rejected-feed/HTTP cooldowns,
+  pacing, exact product/finish and cache/watermark rules. Mapped refresh now
+  treats URL cancellation and cancelled-task errors as abandoned work instead
+  of provider failures. Added seven meaningful acceptance cases for recovery,
+  last-good price/ownership retention, Normal/Foil quantities, Add/Undo, stale
+  edits, disk reopen, CSV round-trip/idempotence and failed-row correction/retry.
+  Stored owner-entered/imported reference values survive reopen; CSV remains
+  inventory-only, with no new price/history backup claim. Finalized shared run
+  passes 154, zero failures, three deliberate live opt-in skips across 157 cases,
+  one internal QoS runtime warning; includes One Piece integration, CSV resume
+  and refresh lifecycle. Earlier red bundle has one failed recovery case; first
+  focused follow-up passes 44 with three skips before final scenario additions.
+  Evidence stays on SSD at `CodexBuilds/LorcanaIntegrityRecovery-20261014/`.
+  No mappings/schema/CSV format/UI changes, personal export, live opt-in,
+  physical-card work, App Store export, web update, commit or push. Updated
+  implementation/production checkpoints and documentation authority pointers;
+  exports and web page/URL work remain explicitly deferred. Earlier full-target
+  and development archive evidence predates these production recovery fixes.
+
 - Lorcana independent rollout continuation (2026-10-14; local changes): added
   seed-bound opt-in acceptance for every enabled printing/finish using the
   existing runtime, quote service and TCGCSV adapter with fresh isolated group

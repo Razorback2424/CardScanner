@@ -9,7 +9,32 @@ unpriced. The owner authorized public online evidence and normal-workflow
 enablement. The [normal pricing rollout checkpoint](../research/lorcana-normal-pricing-rollout.md)
 owns mapping scope, held discrepancies and current acceptance results.
 
-**Independent continuation — 2026-10-14:** all **3,232 enabled pricing lanes**
+**Latest edge-case sweep — 2026-10-14:** continued from `ec6d64c` plus the
+preceding recovery changes. Fixed repeated requests after an unreachable mapped
+feed, missing completion accounting for explicit no-price answers, and invalid
+feed/disk snapshots poisoning the daily cache. Duplicate or cross-group data and
+invalid Money amounts now reject before caching; valid null/zero prices remain
+supported. Separate reachability flags preserve healthy Pokémon batches when
+TCGCSV is down. Five new regressions and the final shared/live selection pass:
+**162 passed, zero failed/skipped**, two internal QoS warnings. Fresh validation
+still prices all **3,232 enabled lanes** across eight sets. The
+[production checkpoint](../release/lorcana-production-acceptance.md) records
+reproductions, cache repair and verification limits. No full-target rerun,
+archive/export, web update or physical-card acceptance is claimed.
+
+**Earlier collection integrity/recovery — 2026-10-14:** at clean starting HEAD `ec6d64c`
+plus local changes, Normal/Foil quantity, undo, disk reopen, CSV round-trip and
+partial-import retry acceptance pass. Fixed the shared feed's 15-minute cooldown
+after transport interruptions and prevented cancelled mapped refreshes from
+recording provider failures. Final shared regression: **154 passed, zero failed,
+three deliberate live skips / 157 cases**, one internal QoS warning. All seven
+new acceptance tests pass; One Piece and shared CSV/refresh regressions pass.
+See the [production checkpoint](../release/lorcana-production-acceptance.md) for
+reproduction, scenarios and limits. **App Store exports and web page/URL updates
+remain owner-deferred.** Prior full-target/live/archive evidence below belongs
+to its earlier candidate; no new full-target or archive/export is claimed here.
+
+**Earlier independent continuation — 2026-10-14:** all **3,232 enabled pricing lanes**
 pass fresh-feed acceptance through the shared quote service/adapter; all 19
 pricing cases pass with live opt-in, zero failures/skips and two internal QoS
 warnings. A retained-source replay reproduces the catalog and permanent UUID
@@ -22,7 +47,7 @@ results, the pre-existing architecture audit failure and remaining boundaries.
 
 The [production acceptance checkpoint](../release/lorcana-production-acceptance.md)
 now records the rebuilt development-signed ReleaseLocal archive and verified
-development IPA export. The complete final simulator run has **2,188 passed,
+development IPA export for that earlier candidate. The earlier complete simulator baseline has **2,188 passed,
 zero failed and 12 skipped across 2,200 cases**, with five runtime warnings.
 Centering scalar-loop/median optimization preserves exact reference geometry
 and profiles; REQ-022 passes unchanged limits with a final full-run upper median
@@ -601,6 +626,18 @@ The production membership guard is unchanged. This is not full-app certification
   limits. Physical-device latency remains part of the unchecked hardware gate.
 - [x] Prepare a normal-workflow reviewer path that requires no physical cards;
   this handoff does not imply App Store submission or camera acceptance.
+- [x] Complete isolated Lorcana collection-integrity/failure-recovery acceptance:
+  Normal/Foil quantities, duplicate Add/Undo, stale edits, relaunch, CSV repeat/
+  failed-row recovery, last-good-price retention and interrupted refresh resume.
+  Correct shared transport retry/cancellation behavior; final 157-case regression
+  has 154 passed, zero failed and three live opt-in skips. CSV does not back up
+  separate saved-price records; no CSV format or storage schema change was made.
+- [x] Complete the follow-up edge-case sweep: bounded unreachable-feed batches,
+  independent healthy-provider work, explicit no-price completion accounting,
+  pre-cache feed validation and legacy invalid-cache recovery. Final shared/live
+  regression passes 162/162, including fresh quotes for all 3,232 enabled lanes.
+  Valid zero/null caching, ownership and withdrawal/cancellation behavior remain
+  covered. Deferred exports/web work and physical/source-rights gates stay open.
 - [x] Revalidate every enabled printing/finish through fresh provider feeds:
   3,232 priced lanes across eight sets, zero unavailable/mismatched. Retain the
   opt-in full-matrix test and exact catalog/UUID replay evidence. Fresh retrieval
@@ -608,6 +645,7 @@ The production membership guard is unchanged. This is not full-app certification
 - [x] Run local distribution-export preflight without portal changes/uploads;
   record the missing distribution profile. This completes the check, while
   obtaining a distribution-signed candidate and TestFlight acceptance remain open.
+  **Further App Store exports are owner-deferred (2026-10-14).**
 - [ ] Before a future sync release, complete mixed-client CloudKit acceptance.
   This is deferred for current on-device 1.0; no sync activation or schema change
   was made. Minimum-version metadata alone is not CloudKit enforcement.

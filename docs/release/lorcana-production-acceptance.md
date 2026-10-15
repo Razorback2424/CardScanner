@@ -1,16 +1,20 @@
 # Lorcana production acceptance checkpoint
 
-**Status — 2026-10-14:** bundled ordinary pricing is enabled in the normal app;
-centering timing is corrected, the complete simulator regression passes, and
-rebuilt development-signed iOS archive/export checks pass. **Not certified for
-App Store submission.** Candidate: `feat/lorcana-implementation`, base `8613a1d`
-plus uncommitted changes. No commit, push, device installation, portal change or
-upload was performed in this production-check pass.
+**Status — 2026-10-14:** bundled ordinary pricing is enabled; collection integrity
+and failure recovery pass simulator acceptance, with a later edge-case sweep
+passing 162 shared/live cases after three additional fixes. Current candidate:
+`feat/lorcana-implementation`, original clean starting HEAD
+`ec6d64c` plus local changes. Earlier complete-target, live-provider and archive
+evidence is retained below for its recorded candidate; the archive predates the
+recovery fixes. **Not certified for App Store submission.** No commit, push,
+device installation, portal change or upload was performed in this pass.
 
 **Owner deferral — 2026-10-14:** privacy/support page publication, live-page
 verification and app/App Store Connect URL configuration are deferred until
 resumed. Retain the prepared files and walkthrough. This does not close the
 submission prerequisite; other rollout work can proceed independently.
+App Store exports are also explicitly deferred for the collection-integrity/
+recovery pass; none was attempted.
 
 The [implementation plan](../plans/lorcana_code_implementation.md) owns execution.
 The [normal pricing checkpoint](../research/lorcana-normal-pricing-rollout.md)
@@ -18,6 +22,95 @@ owns the mapping/source decisions, live eight-set pricing and rendered iPhone/iP
 simulator evidence. This follow-up does not rerun or relabel that live acceptance.
 
 ## Candidate and regression evidence
+
+### Holistic edge-case sweep — 2026-10-14
+
+Continued from the preceding uncommitted recovery fixes on `ec6d64c`, preserving
+that work. The sweep covers Lorcana and the shared product feed/refresh paths;
+it does not claim a whole-repository review or reopen deferred export/web work.
+Three new regressions failed before their fixes:
+
+| Defect | Correction and regression boundary |
+| --- | --- |
+| An unreachable mapped feed was attempted again for each owned printing/finish, and did not set the refresh's unreachable-provider summary. | Stop the mapped-feed loop after the first classified unreachable response, retaining prior values and marking the actual failed attempt. A later refresh can retry. The mapped-feed reachability flag is separate from the legacy catalog flag, so a failing TCGCSV host does not stop healthy Pokémon batches. |
+| An explicit no-price response was persisted but not counted as a completed provider check in the refresh summary. | Count observations with a named provider, including valid absence; `.unavailable(nil)` remains a no-provider no-op. No amount is fabricated for a missing quote. |
+| Invalid decoded feed data entered the daily cache before product/lane/amount checks, so it could keep failing after relaunch. Finite amounts outside Money's range could also escape the transport as quotes. | Validate new responses before either cache accepts them and validate older disk snapshots on hydration. Reject duplicate product IDs/price lanes, cross-category/group products, negative and unrepresentable amounts. Existing invalid snapshots are ignored and replaced on a successful fetch. Null and zero prices remain valid and reusable. |
+
+Rejecting an invalid group response uses the existing provider-failure cooldown
+rather than trusting it for the daily cache window. This protects quote identity
+and valuation while retaining last-good collection values. Request pacing,
+transport retry behavior, generation/withdrawal watermarks, permanent UUIDs,
+mappings and supported/held scope remain unchanged.
+
+| Verification | Finalized result |
+| --- | --- |
+| Reproduction | `before-fix.xcresult`: three selected cases, three failed. Cache cases cover duplicate products, wrong category/group, duplicate lanes, negative and overflowing amounts, including legacy disk snapshots. |
+| Intermediate Lorcana replay | `after-fix-replay.xcresult`: 50 passed, zero failed, three live skips / 53 cases; one internal QoS warning. This preceded the final mixed-provider regression addition. |
+| Final rebuilt shared/live selection | **162 passed, zero failed/skipped**, two internal QoS runtime warnings. `final-shared-live.xcresult` includes Lorcana ownership/pricing, One Piece integration, CSV resume and refresh lifecycle checks. Five new tests cover the three failures plus valid null/zero caching and independent healthy-provider batches. |
+| Fresh live matrix after validation changes | **3,232 priced lanes / 1,616 printings across eight sets; zero unavailable or mismatched.** New isolated cache contains eight valid group snapshots. Existing normal-app eight-set and Hades save/refresh/relaunch/withdrawal live cases also pass. |
+| Ownership, CSV and cancellation regressions | PASS in the final selection; no collection schema, CSV format, printing mapping or UI change. |
+
+An initial fix build caught a declaration-scope error in the reachability flag;
+separate mapped/legacy flags corrected it before the successful replays. Build
+and runtime diagnostics remain; this is not warning-free certification.
+
+Evidence is external at `CodexBuilds/LorcanaEdgeSweep-20261014/`, including the
+three fresh live reports and eight group snapshots. Report modification times
+were checked against this run's opt-in time before retention. The temporary
+one-hour, exact-seed opt-in was removed after the run. No App Store export,
+webpage update, physical-device/card test, commit, push or portal change occurred.
+Earlier complete-target and archive results remain earlier-candidate evidence;
+no new full-target or archive/export run is claimed for these fixes.
+
+### Collection integrity and failure recovery — 2026-10-14
+
+The acceptance pass uses isolated simulator stores and the existing CollectionStore,
+CSV importer/exporter, bound quote service, TCGCSV source and collection refresh
+worker. No real collection or physical cards are used. Controlled URLProtocol
+and actor failures exercise recovery without a live-provider opt-in. No pricing
+mappings, ownership schema, CSV format, UI or supported printing scope changed.
+
+Two defects were corrected:
+
+1. The shared product feed cached network failures for 15 minutes as if the
+   provider had rejected the request. An immediate retry after offline,
+   connection-loss, timeout or URL cancellation therefore returned
+   `providerUnavailable` even when the next transport response was valid.
+   `TCGCSVProductPriceSource` now permits transport/cancellation retries while
+   retaining its existing HTTP/feed rejection cooldown, request pacing, exact
+   product/finish checks and cache identity/watermark rules. This also applies
+   to One Piece through the already shared component.
+2. The mapped collection-refresh path recorded URL cancellation as a provider
+   failure. It now treats that cancellation like Swift task cancellation and
+   checks the task's cancellation state before recording a caught failure.
+   Abandoned quotes/checks are not published; a later refresh can resume.
+
+| Check | Finalized result / acceptance |
+| --- | --- |
+| Pre-fix transport recovery regression | One selected case fails across offline, connection loss, timeout and URL cancellation. `recovery-before-fix.xcresult` retains the reproduction. |
+| Final shared regression | **154 passed, zero failed, three skipped / 157 cases**, one internal QoS runtime warning. `shared-recovery-regression.xcresult` includes Lorcana ownership/pricing, One Piece integration, PriceRefreshLifecycleTests and CSVImportResumeTests. |
+| Lorcana ownership subset | **25 passed**, zero failed/skipped. Includes the two new integrity/retry scenarios. |
+| Lorcana pricing subset | **21 passed, zero failed, three skipped / 24 cases**. The three expiring-opt-in live checks are deliberately skipped; earlier live acceptance is separate evidence. |
+| Normal/Foil quantity and identity integrity | PASS — bundled Ariel Normal ×2 and Foil ×3; duplicate Add/Undo restores Normal ×2, quantity edit produces Foil ×7, stale quantity edit and unsupported finish reject. Exact finish-qualified UUID keys survive disk reopen. |
+| Stored reference price | PASS — a separately stored `importedCSV` owner-entered reference value survives local-store reopen. This is persistence evidence, not a new manual-price UI test. |
+| CSV round-trip and repeat import | PASS — both finish-qualified rows and all nine copies survive the shared isolated export/import path; replaying the same plan adds zero copies. CSV remains inventory transfer, not a backup of separate price records/history/artwork. |
+| Partial CSV failure and correction | PASS — unknown UUID row fails while a valid row commits; export only the failed entry, correct its exact UUID/key, retry, then replay. Two total copies remain without duplicating the first committed row. |
+| Offline/provider failure retention | PASS — an old exact Foil quote remains available with its original fetch time and failure metadata after an unreachable refresh and disk reopen; Normal/Foil quantities remain separate. A recovered quote replaces the amount and clears failure metadata. |
+| Cancellation and resume | PASS — URL cancellation creates no failed/successful provider check. Cancelling a paused worker publishes neither an abandoned quote nor a failure; its next run obtains the exact price without changing ownership. |
+| Provider-data protection | PASS — malformed feed retains cooldown; exact lane mismatch, duplicate lane, mapping withdrawal and cached receipt tests remain green. |
+| Missing artwork metadata | PASS in existing synthetic ownership/pricing fixtures with nil image URLs; artwork is not required for Add/Undo/CSV/pricing. A new rendered image-download failure pass was not performed. |
+
+Seven focused acceptance tests were added. The earlier intermediate replay
+reported 44 passed and three live skips before the final partial-import/task-
+interruption additions; the finalized 157-case run rebuilt all final changes.
+Artifacts use the external SSD at `CodexBuilds/LorcanaIntegrityRecovery-20261014/`
+and the existing SSD derived-data/package caches. No live opt-in was enabled,
+no personal collection export was retained, and no webpage or App Store export
+work was performed. Existing compiler/test diagnostics remain; this is not a
+warning-free run. The earlier full-target and development archive checkpoints
+were not rerun and do not certify this changed binary. Physical-device, rendered
+accessibility, source/artwork rights and deferred release tasks retain their
+existing evidence boundaries.
 
 ### Independent rollout continuation — 2026-10-14
 

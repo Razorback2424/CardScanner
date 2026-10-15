@@ -8,6 +8,31 @@ history.
 
 ## Current authority boundary — updated 2026-10-14
 
+**Latest Lorcana edge-case sweep — 2026-10-14:** the
+[production checkpoint](../release/lorcana-production-acceptance.md) records three
+additional reproduced defects and five new tests: unreachable mapped batches,
+explicit no-price completion, malformed/invalid daily caches, valid null/zero
+reuse and independent healthy Pokémon batches. The final rebuilt shared/live
+selection passes 162/162 with two internal QoS warnings; all 3,232 enabled lanes
+return valid fresh-feed quotes. No mappings/models/CSV/UI changes, archive/export,
+web update or physical acceptance occurred. The earlier 154-case recovery
+selection remains historical intermediate evidence; current full-target/archive
+certification is not inferred from the newer scoped run. Deferrals remain in force.
+
+**Lorcana collection integrity/recovery — 2026-10-14:** current candidate starts
+clean at `ec6d64c` plus local changes. The [production checkpoint](../release/lorcana-production-acceptance.md)
+records seven new acceptance tests, the reproduced transport cooldown failure,
+and fixes in the shared TCGCSV source and mapped refresh cancellation handling.
+Final regression passes 154 cases, zero failures, three deliberate live skips
+across 157 cases, with one internal QoS warning. It includes exact Normal/Foil
+ownership/quantity/undo/relaunch/CSV and failure/interrupt/resume scenarios,
+One Piece integration and shared CSV/refresh lifecycle checks. Separate price
+records persist locally but are intentionally outside inventory CSV transfer.
+No mappings, models or CSV format changed. Earlier full-target/live/archive
+evidence remains snapshot-specific; no new archive/export or full-target run is
+claimed for these recovery fixes. App Store exports and web page/URL work remain
+explicitly deferred; physical/source-rights acceptance is not closed.
+
 **Independent Lorcana continuation — 2026-10-14:** the
 [production checkpoint](../release/lorcana-production-acceptance.md) now records
 all 3,232 enabled lanes passing fresh-feed acceptance and 19/19 pricing cases
