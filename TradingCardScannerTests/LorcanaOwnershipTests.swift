@@ -550,6 +550,82 @@ final class LorcanaOwnershipTests: XCTestCase {
         XCTAssertEqual(try target.mainContext.fetch(FetchDescriptor<CollectedCard>()).first?.collectionKey, rows.first?.collectionKey)
     }
 
+    func testBundledNormalFoilQuantitiesUndoAndCSVReplaySurviveRelaunch() async throws {
+        let directory = root()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let url = directory.appendingPathComponent("collection.store")
+        let original = try container(url: url)
+        _ = try await CardGameRuntimeContainer.appDefaults().bound(to: original)
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let printing = try XCTUnwrap(catalog.registry.physicalCatalog?.manifest.physicalPrintings.first {
+            $0.identity.footer.printedSetMarker == "1" && $0.identity.footer.collectorNumber == "1"
+        })
+        let card = try LorcanaCatalogAdapter(registry: catalog.registry).resolution(forPrintingID: printing.id).card
+        let store = CollectionStore(context: original.mainContext)
+        _ = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed), quantity: 2)
+        _ = try store.add(card, resolved: .init(variant: .foil, resolution: .userConfirmed), quantity: 3)
+        let duplicate = try store.add(card, resolved: .init(variant: .normal, resolution: .userConfirmed))
+        try store.undo(duplicate)
+        let foil = try XCTUnwrap(original.mainContext.fetch(FetchDescriptor<CollectedCard>()).first { $0.variantID == "foil" })
+        XCTAssertEqual(try store.setQuantity(7, for: foil), 7)
+        XCTAssertThrowsError(try store.setQuantity(9, forCollectionKey: foil.collectionKey, expectedCurrent: 3))
+        XCTAssertEqual(foil.quantity, 7)
+        XCTAssertThrowsError(try store.add(card, resolved: .init(variant: .reverse, resolution: .userConfirmed)))
+        let prices = PriceStore(context: original.mainContext)
+        let entered = PriceLookup.price(.init(unitMarketPriceUSD: 22, currencyCode: "USD", source: .importedCSV,
+            sourceVariantID: "owner-entered", sourceUpdatedAt: nil, fetchedAt: .now))
+        XCTAssertTrue(prices.store(entered, game: .lorcana, printingID: card.physicalPrintingID, variantID: "normal"))
+        XCTAssertTrue(prices.save())
+
+        let reopened = try container(url: url)
+        let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(Dictionary(uniqueKeysWithValues: rows.map { ($0.variantID!, $0.quantity) }), ["normal": 2, "foil": 7])
+        XCTAssertEqual(Set(rows.map(\.catalogProviderID)), [card.physicalPrintingID])
+        XCTAssertEqual(PriceStore(context: reopened.mainContext).record(forKey:
+            PriceRecord.key(game: .lorcana, printingID: card.physicalPrintingID, variantID: "normal"))?.effectiveUnitMarketPriceUSD, 22)
+
+        let csv = try await CollectionCSV.exportIsolated(from: reopened)
+        let plan = try CollectionCSV.parse(Data(csv.text.utf8))
+        let target = try container()
+        let bound = try await CardGameRuntimeContainer.appDefaults().bound(to: target)
+        let result = try await apply(plan, to: target, runtimes: bound)
+        XCTAssertTrue(result.failedRows.isEmpty)
+        XCTAssertEqual(result.importedQuantity, 9)
+        let repeated = try await apply(plan, to: target, runtimes: bound)
+        XCTAssertEqual(repeated.importedQuantity, 0)
+        let imported = try ModelContext(target).fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Dictionary(uniqueKeysWithValues: imported.map { ($0.collectionKey, $0.quantity) }),
+            Dictionary(uniqueKeysWithValues: rows.map { ($0.collectionKey, $0.quantity) }))
+        // CSV is an inventory transfer, not a backup of separate price records.
+        XCTAssertTrue(try ModelContext(target).fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+    }
+
+    func testFailedCSVRowCanBeCorrectedAndRetriedWithoutDuplicatingCommittedCopies() async throws {
+        let directory = root()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let kit = try LorcanaLocalReviewKit.make(manifest: manifest(count: 2), root: directory, now: now, allowCollectionWrites: true)
+        let host = try container(), bound = try await kit.bound(to: host)
+        let input = CollectionCSV.exportFailedEntries([try entry(1), try entry(99)])
+        let first = try await apply(CollectionCSV.parse(Data(input.text.utf8)), to: host, runtimes: bound)
+        XCTAssertEqual(first.importedQuantity, 1)
+        XCTAssertEqual(first.failedRows.count, 1)
+        XCTAssertEqual(try ModelContext(host).fetch(FetchDescriptor<CollectedCard>()).count, 1)
+        let failed = CollectionCSV.exportFailedEntries(first.failedEntries)
+        let corrected = failed.text.replacingOccurrences(of: id(99).uuidString.lowercased(), with: id(2).uuidString.lowercased())
+        let plan = try CollectionCSV.parse(Data(corrected.utf8))
+        let recovered = try await apply(plan, to: host, runtimes: bound)
+        XCTAssertEqual(recovered.importedQuantity, 1)
+        XCTAssertTrue(recovered.failedRows.isEmpty)
+        let repeated = try await apply(plan, to: host, runtimes: bound)
+        XCTAssertEqual(repeated.importedQuantity, 0)
+        XCTAssertEqual(repeated.alreadyImportedEntries, 1)
+        let rows = try ModelContext(host).fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(rows.count, 2)
+        XCTAssertEqual(rows.reduce(0) { $0 + $1.quantity }, 2)
+        XCTAssertEqual(Set(rows.map(\.collectionKey)), Set([id(1), id(2)].map { "lorcana:\($0.uuidString.lowercased())#foil" }))
+    }
+
     func testStaleImportAdapterCannotWriteAfterCatalogAuthorityBecomesIncomplete() async throws {
         let root = root(); defer { try? FileManager.default.removeItem(at: root) }
         let kit = try LorcanaLocalReviewKit.make(manifest: manifest(), root: root, now: now, allowCollectionWrites: true)

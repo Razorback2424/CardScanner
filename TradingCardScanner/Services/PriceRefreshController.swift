@@ -416,6 +416,7 @@ actor PriceRefreshModelActor {
         var failed = 0
         var latestSourceUpdate: Date?
         var checkedUnstampedProvider = false
+        var mappedProviderUnreachable = false
         var changedPrices = false
         var persistenceFailed = false
         var gradedLookupMisses = 0
@@ -541,16 +542,23 @@ actor PriceRefreshModelActor {
                 guard storageContinuation?() ?? true, !Task.isCancelled else { break }
                 let previous = store.record(forKey: target.id)?.effectiveUnitMarketPriceUSD
                 let amount: Double?
-                if case let .price(price) = lookup { amount = price.unitMarketPriceUSD; checkedUnstampedProvider = true }
+                if lookup.hasObservation { checkedUnstampedProvider = true }
+                if case let .price(price) = lookup { amount = price.unitMarketPriceUSD }
                 else { amount = previous }
                 stage(store.store(lookup, game: target.game, printingID: target.printingID,
                     variantID: target.variantID, at: .now), key: target.id,
                     priced: { if case .price = lookup { return true }; return false }(), changed: previous != amount)
             } catch is CancellationError { break }
+            catch let error as URLError where error.code == .cancelled { break }
             catch {
+                guard !Task.isCancelled else { break }
                 failed += 1
                 stage(store.recordFailure(game: target.game, printingID: target.printingID,
                     variantID: target.variantID, at: .now), key: target.id)
+                if let transport = error as? URLError, PriceFetchOutcome.isUnreachable(transport) {
+                    mappedProviderUnreachable = true
+                    break
+                }
             }
             if checkpointIsDue() { _ = await commitStaged() }
         }
@@ -1025,7 +1033,7 @@ actor PriceRefreshModelActor {
                 checkedUnstampedProvider: checkedUnstampedProvider,
                 changedPrices: changedPrices,
                 foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
-                providerUnreachable: providerUnreachable,
+                providerUnreachable: providerUnreachable || mappedProviderUnreachable,
                 persistenceFailed: persistenceFailed,
                 gradedLookupMisses: gradedLookupMisses,
                 gradedTransportFailures: gradedTransportFailures,

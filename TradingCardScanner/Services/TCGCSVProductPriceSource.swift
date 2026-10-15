@@ -29,6 +29,10 @@ actor TCGCSVProductPriceSource {
         let generation: String?
         let minimumFetchedAt: Date?
     }
+    private struct LaneKey: Hashable {
+        let productID: Int
+        let lane: String
+    }
     private var snapshots: [GroupKey: Snapshot] = [:]
     private var pending: [CacheKey: Task<Snapshot, Error>] = [:]
     private var failures: [CacheKey: Date] = [:]
@@ -67,7 +71,8 @@ actor TCGCSVProductPriceSource {
         let file = cacheDirectory.appendingPathComponent("\(group.category)-\(group.group).json")
         if snapshots[group]?.catalogGeneration != generation || snapshots[group] == nil,
            let bytes = try? Data(contentsOf: file), bytes.count <= 16 * 1_024 * 1_024,
-           let value = try? JSONDecoder().decode(Snapshot.self, from: bytes), value.catalogGeneration == generation {
+           let value = try? JSONDecoder().decode(Snapshot.self, from: bytes), value.catalogGeneration == generation,
+           (try? validate(value, group: group)) != nil {
             snapshots[group] = value
         }
         if let cached = snapshots[group], cached.catalogGeneration == generation,
@@ -93,14 +98,22 @@ actor TCGCSVProductPriceSource {
                   prices.totalItems.map({ $0 == prices.results.count }) ?? true else {
                 throw PriceQuoteError.providerUnavailable
             }
-            return Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
+            let snapshot = Snapshot(products: products.results, prices: prices.results, fetchedAt: fetchedAt,
                 catalogGeneration: generation)
+            try self.validate(snapshot, group: group)
+            return snapshot
         }
         pending[key] = task
         defer { pending[key] = nil }
         let value: Snapshot
         do { value = try await task.value; failures[key] = nil }
-        catch { if !(error is CancellationError) { failures[key] = .now }; throw error }
+        catch {
+            // A transport interruption is not a provider response. Let a later
+            // user refresh retry when connectivity returns; retain the cooldown
+            // for rejected HTTP responses and malformed/failed feed envelopes.
+            if !(error is CancellationError), !(error is URLError) { failures[key] = .now }
+            throw error
+        }
         guard minimumFetchedAt.map({ value.fetchedAt > $0 }) ?? true else {
             throw PriceQuoteError.providerUnavailable
         }
@@ -113,6 +126,20 @@ actor TCGCSVProductPriceSource {
             try? bytes.write(to: file, options: .atomic)
         }
         return value
+    }
+
+    /// Reject invalid group responses before either cache can retain them for
+    /// a day. Apply the same contract to disk snapshots from older app versions.
+    private func validate(_ snapshot: Snapshot, group: GroupKey) throws {
+        guard snapshot.products.allSatisfy({ $0.categoryId == group.category && $0.groupId == group.group }),
+              Set(snapshot.products.map(\.productId)).count == snapshot.products.count,
+              Set(snapshot.prices.map { LaneKey(productID: $0.productId, lane: $0.subTypeName) }).count == snapshot.prices.count else {
+            throw PriceQuoteError.identityMismatch
+        }
+        guard snapshot.prices.allSatisfy({ row in
+            guard let amount = row.marketPrice else { return true }
+            return amount >= 0 && Money(rounding: amount) != nil
+        }) else { throw PriceQuoteError.providerUnavailable }
     }
 
     private func fetch(group: GroupKey, resource: String) async throws -> Data {

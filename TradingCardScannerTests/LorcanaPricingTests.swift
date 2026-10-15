@@ -8,11 +8,19 @@ private actor LorcanaTestPriceSource: LorcanaMarketPriceSource {
     private(set) var calls = 0
     private(set) var minimum: Date?
     var waiting = false
+    private var failure: URLError.Code?
+    private var noQuote = false
+    private(set) var healthyFetches: Set<String> = []
     private var continuation: CheckedContinuation<Void, Never>?
     func pause() { waiting = true }
     func resume() { waiting = false; continuation?.resume(); continuation = nil }
+    func fail(with code: URLError.Code?) { failure = code }
+    func setUnavailable(_ value: Bool) { noQuote = value }
+    func recordHealthyFetch(_ id: String) { healthyFetches.insert(id) }
     func quote(mapping: LorcanaMarketMapping, generation: String, minimumFetchedAt: Date?) async throws -> PriceLookup {
         calls += 1; minimum = minimumFetchedAt
+        if let failure { throw URLError(failure) }
+        if noQuote { return .unavailable(.tcgCSV) }
         if waiting { await withCheckedContinuation { continuation = $0 } }
         return .price(.init(unitMarketPriceUSD: 8.16, currencyCode: "USD", source: .tcgCSV,
             sourceVariantID: "tcgplayer:\(mapping.productID):\(mapping.providerVariantID)",
@@ -378,6 +386,297 @@ final class LorcanaPricingTests: XCTestCase {
                 XCTAssertTrue(["duplicate", "wrong-category", "wrong-number"].contains(mode))
             }
         }
+    }
+
+    func testOfflineBatchStopsAfterFirstUnreachableRequestAndCanRetry() async throws {
+        let registry = try registry(mappings: [mapping(finish: .normal), mapping()])
+        let source = LorcanaTestPriceSource(), host = try container()
+        let bound = try await runtimes(registry, source: source).bound(to: host)
+        let card = try LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id()).card
+        for variant in [PhysicalVariant.normal, .foil] {
+            _ = try CollectionStore(context: host.mainContext).add(card, resolved: .init(variant: variant, resolution: .userConfirmed))
+        }
+        let worker = PriceRefreshModelActor(modelContainer: host)
+        await worker.configureGamePricing(bound.makePriceQuoteService())
+        let request = PriceRefreshRequest(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false)
+        await source.fail(with: .notConnectedToInternet)
+        guard case let .completed(failed) = await worker.run(request, progress: { _ in }, shouldContinue: nil) else { return XCTFail() }
+        let calls = await source.calls
+        XCTAssertEqual(calls, 1, "Unreachable host must not be retried for every owned finish")
+        XCTAssertTrue(failed.providerUnreachable)
+        XCTAssertEqual(failed.failed, 1)
+        await source.fail(with: nil)
+        guard case let .completed(recovered) = await worker.run(request, progress: { _ in }, shouldContinue: nil) else { return XCTFail() }
+        XCTAssertEqual(recovered.priced, 2)
+        XCTAssertFalse(recovered.providerUnreachable)
+        XCTAssertEqual(try ModelContext(host).fetch(FetchDescriptor<CollectedCard>()).count, 2)
+    }
+
+    func testMappedHostFailureDoesNotStopHealthyPokemonBatches() async throws {
+        let registry = try registry(mappings: [mapping()]), source = LorcanaTestPriceSource()
+        let host = try container()
+        let lorcana = try XCTUnwrap(runtimes(registry, source: source).runtime(for: .lorcana))
+        let pokemon = try XCTUnwrap(CardGameRuntimeContainer.appDefaults().runtime(for: .pokemon))
+        let bound = try await CardGameRuntimeContainer(runtimes: [lorcana, pokemon]).bound(to: host)
+        let card = try LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id()).card
+        _ = try CollectionStore(context: host.mainContext).add(card, resolved: .init(variant: .foil, resolution: .userConfirmed))
+        for index in 0..<10 {
+            host.mainContext.insert(CollectedCard(collectionKey: "pokemon:healthy-\(index)#normal", game: .pokemon,
+                providerID: "healthy-\(index)", name: "Healthy fixture", setName: "Fixture", setCode: "healthy",
+                cardNumber: String(index), rarity: nil, imageURL: nil, thumbnailURL: nil,
+                variant: .normal, variantResolution: .userConfirmed))
+        }
+        try host.mainContext.save()
+        await source.fail(with: .notConnectedToInternet)
+        let worker = PriceRefreshModelActor(modelContainer: host)
+        await worker.configureGamePricing(bound.makePriceQuoteService())
+        await worker.setPokemonFetchOverrideForTesting { printing in
+            await source.recordHealthyFetch(printing.printingID)
+            return .pokemon(TCGdexCard(id: printing.printingID, localId: "1", name: "Healthy fixture", image: nil,
+                rarity: nil, set: .init(id: "healthy", name: "Fixture", cardCount: .init(total: 10, official: 10)),
+                variants: nil, pricing: nil, variantsDetailed: nil), setCode: "healthy")
+        }
+        guard case let .completed(result) = await worker.run(.init(usesPriceFallback: false, includeImported: true,
+            forceUnsupportedRetry: true, sortOldestFirst: false, maximumTargetCount: nil,
+            markRecentlyCheckedIfEmpty: false), progress: { _ in }, shouldContinue: nil) else { return XCTFail() }
+        let healthy = await source.healthyFetches
+        XCTAssertEqual(healthy.count, 10)
+        XCTAssertTrue(result.providerUnreachable)
+        XCTAssertEqual(try ModelContext(host).fetch(FetchDescriptor<CollectedCard>()).count, 11)
+    }
+
+    func testExplicitNoQuoteCountsAsCompletedProviderCheck() async throws {
+        let registry = try registry(mappings: [mapping()]), source = LorcanaTestPriceSource()
+        let host = try container(), bound = try await runtimes(registry, source: source).bound(to: host)
+        let card = try LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id()).card
+        _ = try CollectionStore(context: host.mainContext).add(card, resolved: .init(variant: .foil, resolution: .userConfirmed))
+        await source.setUnavailable(true)
+        let worker = PriceRefreshModelActor(modelContainer: host)
+        await worker.configureGamePricing(bound.makePriceQuoteService())
+        guard case let .completed(result) = await worker.run(.init(usesPriceFallback: false, includeImported: true,
+            forceUnsupportedRetry: true, sortOldestFirst: false, maximumTargetCount: nil,
+            markRecentlyCheckedIfEmpty: false), progress: { _ in }, shouldContinue: nil) else { return XCTFail() }
+        XCTAssertTrue(result.checkedUnstampedProvider)
+        XCTAssertEqual(result.failed, 0)
+        XCTAssertEqual(result.priced, 0)
+        let record = PriceStore(context: ModelContext(host)).record(forKey:
+            PriceRecord.key(game: .lorcana, printingID: card.physicalPrintingID, variantID: "foil"))
+        XCTAssertNotNil(record?.lastSuccessfulCheckAt)
+        XCTAssertNil(record?.effectiveUnitMarketPriceUSD)
+    }
+
+    func testInvalidFeedCannotPoisonDiskCacheAcrossRelaunch() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); LorcanaPricingProtocol.handler = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [LorcanaPricingProtocol.self]
+        let product: [String: Any] = ["productId": 510153, "categoryId": 71, "groupId": 22937,
+            "name": "Fixture Elsa", "extendedData": [["name": "Number", "value": "207/204"]]]
+        let price: [String: Any] = ["productId": 510153, "subTypeName": "Holofoil", "marketPrice": 8.16]
+        func envelope(_ rows: [[String: Any]]) throws -> Data {
+            try JSONSerialization.data(withJSONObject: ["success": true, "errors": [], "results": rows])
+        }
+        let goodProducts = try envelope([product]), goodPrices = try envelope([price])
+        for mode in ["duplicate-products", "wrong-category", "wrong-group", "duplicate-lanes", "negative", "overflow"] {
+            var products = [product], prices = [price]
+            switch mode {
+            case "duplicate-products": products.append(product)
+            case "wrong-category": products[0]["categoryId"] = 68
+            case "wrong-group": products[0]["groupId"] = 1
+            case "duplicate-lanes": prices.append(price)
+            case "negative": prices[0]["marketPrice"] = -1
+            default: prices[0]["marketPrice"] = 1e20
+            }
+            let badProducts = try envelope(products), badPrices = try envelope(prices)
+            let directory = root.appendingPathComponent(mode)
+            let session = URLSession(configuration: config)
+            defer { session.invalidateAndCancel() }
+            LorcanaPricingProtocol.handler = { request in
+                request.url!.lastPathComponent == "products" ? badProducts : badPrices
+            }
+            let source = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: directory))
+            do {
+                _ = try await source.quote(mapping: mapping(), generation: "cache-validation", minimumFetchedAt: nil)
+                XCTFail("Invalid feed must be rejected: \(mode)")
+            } catch {}
+            LorcanaPricingProtocol.handler = { request in
+                request.url!.lastPathComponent == "products" ? goodProducts : goodPrices
+            }
+            let reopened = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: directory))
+            do {
+                guard case let .price(recovered) = try await reopened.quote(mapping: mapping(), generation: "cache-validation", minimumFetchedAt: nil) else { XCTFail(); continue }
+                XCTAssertEqual(recovered.unitMarketPriceUSD, 8.16)
+            } catch { XCTFail("Rejected feed must not persist for the daily cache window: \(mode): \(error)") }
+
+            // Also repair a malformed snapshot persisted by an older app version.
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            let legacy = try JSONSerialization.data(withJSONObject: ["products": products, "prices": prices,
+                "fetchedAt": Date.now.timeIntervalSinceReferenceDate, "catalogGeneration": "cache-validation"])
+            try legacy.write(to: directory.appendingPathComponent("71-22937.json"), options: .atomic)
+            let upgraded = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: directory))
+            do {
+                guard case let .price(recovered) = try await upgraded.quote(mapping: mapping(), generation: "cache-validation", minimumFetchedAt: nil) else { XCTFail(); continue }
+                XCTAssertEqual(recovered.unitMarketPriceUSD, 8.16)
+            } catch { XCTFail("Legacy invalid snapshot must be replaced: \(mode): \(error)") }
+        }
+    }
+
+    func testValidNullAndZeroPricesRetainDailyCache() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); LorcanaPricingProtocol.handler = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [LorcanaPricingProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        LorcanaPricingProtocol.handler = { request in
+            Data((request.url!.lastPathComponent == "products"
+                ? #"{"success":true,"errors":[],"results":[{"productId":510153,"categoryId":71,"groupId":22937,"name":"Fixture Elsa","extendedData":[{"name":"Number","value":"207/204"}]}]}"#
+                : #"{"success":true,"errors":[],"results":[{"productId":510153,"subTypeName":"Normal","marketPrice":0},{"productId":510153,"subTypeName":"Holofoil","marketPrice":null}]}"#).utf8)
+        }
+        let source = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: root))
+        let absent = try await source.quote(mapping: mapping(), generation: "valid", minimumFetchedAt: nil)
+        XCTAssertEqual(absent, .unavailable(.tcgCSV))
+        LorcanaPricingProtocol.handler = { _ in XCTFail("Valid null/zero feed must remain reusable"); throw URLError(.notConnectedToInternet) }
+        let reopened = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: root))
+        guard case let .price(zero) = try await reopened.quote(mapping: mapping(finish: .normal), generation: "valid", minimumFetchedAt: nil) else { return XCTFail() }
+        XCTAssertEqual(zero.unitMarketPriceUSD, 0)
+        let cachedAbsent = try await reopened.quote(mapping: mapping(), generation: "valid", minimumFetchedAt: nil)
+        XCTAssertEqual(cachedAbsent, absent)
+    }
+
+    func testCancelledRefreshDoesNotRecordProviderFailureAndCanResume() async throws {
+        let registry = try registry(mappings: [mapping()]), source = LorcanaTestPriceSource()
+        let host = try container(), bound = try await runtimes(registry, source: source).bound(to: host)
+        let card = try LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id()).card
+        _ = try CollectionStore(context: host.mainContext).add(card, resolved: .init(variant: .foil, resolution: .userConfirmed), quantity: 3)
+        let worker = PriceRefreshModelActor(modelContainer: host)
+        await worker.configureGamePricing(bound.makePriceQuoteService())
+        let request = PriceRefreshRequest(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false)
+        await source.fail(with: .cancelled)
+        _ = await worker.run(request, progress: { _ in }, shouldContinue: nil)
+        let key = PriceRecord.key(game: .lorcana, printingID: card.physicalPrintingID, variantID: "foil")
+        XCTAssertNil(PriceStore(context: ModelContext(host)).record(forKey: key)?.lastFailureAt)
+        XCTAssertNil(PriceStore(context: ModelContext(host)).record(forKey: key)?.lastSuccessfulCheckAt)
+        await source.fail(with: nil)
+        _ = await worker.run(request, progress: { _ in }, shouldContinue: nil)
+        XCTAssertEqual(PriceStore(context: ModelContext(host)).record(forKey: key)?.effectiveUnitMarketPriceUSD, 8.16)
+        XCTAssertEqual(try ModelContext(host).fetch(FetchDescriptor<CollectedCard>()).first?.quantity, 3)
+    }
+
+    func testInterruptedCollectionWorkerCanResumeWithoutPublishingAbandonedQuote() async throws {
+        let registry = try registry(mappings: [mapping()]), source = LorcanaTestPriceSource()
+        let host = try container(), bound = try await runtimes(registry, source: source).bound(to: host)
+        let card = try LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id()).card
+        _ = try CollectionStore(context: host.mainContext).add(card, resolved: .init(variant: .foil, resolution: .userConfirmed))
+        let worker = PriceRefreshModelActor(modelContainer: host)
+        await worker.configureGamePricing(bound.makePriceQuoteService())
+        let request = PriceRefreshRequest(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false)
+        await source.pause()
+        let interrupted = Task { await worker.run(request, progress: { _ in }, shouldContinue: nil) }
+        for _ in 0..<300 {
+            if await source.calls == 1 { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let calls = await source.calls
+        XCTAssertEqual(calls, 1)
+        interrupted.cancel()
+        await source.resume()
+        _ = await interrupted.value
+        let key = PriceRecord.key(game: .lorcana, printingID: card.physicalPrintingID, variantID: "foil")
+        XCTAssertNil(PriceStore(context: ModelContext(host)).record(forKey: key)?.effectiveUnitMarketPriceUSD)
+        XCTAssertNil(PriceStore(context: ModelContext(host)).record(forKey: key)?.lastFailureAt)
+        _ = await worker.run(request, progress: { _ in }, shouldContinue: nil)
+        XCTAssertEqual(PriceStore(context: ModelContext(host)).record(forKey: key)?.effectiveUnitMarketPriceUSD, 8.16)
+        XCTAssertEqual(try ModelContext(host).fetch(FetchDescriptor<CollectedCard>()).count, 1)
+    }
+
+    func testProviderFailureKeepsLastGoodPriceAndOwnedCopiesAcrossRelaunch() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let url = root.appendingPathComponent("collection.store")
+        let registry = try registry(mappings: [mapping()]), source = LorcanaTestPriceSource()
+        let host = try container(url: url), bound = try await runtimes(registry, source: source).bound(to: host)
+        let card = try LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id()).card
+        let collection = CollectionStore(context: host.mainContext)
+        for (variant, count) in [(PhysicalVariant.normal, 2), (.foil, 3)] {
+            _ = try collection.add(card, resolved: .init(variant: variant, resolution: .userConfirmed), quantity: count)
+        }
+        let oldDate = Date.now.addingTimeInterval(-3 * 86_400)
+        let prices = PriceStore(context: host.mainContext)
+        var price = NormalizedPrice(unitMarketPriceUSD: 7.25, currencyCode: "USD", source: .tcgCSV,
+            sourceVariantID: "tcgplayer:510153:Holofoil", sourceUpdatedAt: nil, fetchedAt: oldDate)
+        price.catalogIdentity = LorcanaPriceAdapter.mappingIdentity(mapping())
+        XCTAssertTrue(prices.store(.price(price), game: .lorcana, printingID: card.physicalPrintingID, variantID: "foil", at: oldDate))
+        XCTAssertTrue(prices.save())
+        await source.fail(with: .notConnectedToInternet)
+        let worker = PriceRefreshModelActor(modelContainer: host)
+        await worker.configureGamePricing(bound.makePriceQuoteService())
+        _ = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+            sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false), progress: { _ in }, shouldContinue: nil)
+        let reopened = try container(url: url)
+        let key = PriceRecord.key(game: .lorcana, printingID: card.physicalPrintingID, variantID: "foil")
+        let retained = try XCTUnwrap(PriceStore(context: reopened.mainContext).record(forKey: key))
+        XCTAssertEqual(retained.effectiveUnitMarketPriceUSD, 7.25)
+        XCTAssertEqual(retained.fetchedAt, oldDate)
+        XCTAssertNotNil(retained.lastFailureAt)
+        let rows = try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>())
+        XCTAssertEqual(Dictionary(uniqueKeysWithValues: rows.map { ($0.variantID!, $0.quantity) }), ["normal": 2, "foil": 3])
+        await source.fail(with: nil)
+        let service = try await runtimes(registry, source: source).bound(to: reopened).makePriceQuoteService()
+        let recovered = try await service.refreshStoredPrinting(game: .lorcana, printingID: card.physicalPrintingID, variant: .foil)
+        let reopenedPrices = PriceStore(context: reopened.mainContext)
+        XCTAssertTrue(reopenedPrices.store(recovered, game: .lorcana, printingID: card.physicalPrintingID, variantID: "foil"))
+        XCTAssertTrue(reopenedPrices.save())
+        XCTAssertEqual(reopenedPrices.record(forKey: key)?.effectiveUnitMarketPriceUSD, 8.16)
+        XCTAssertNil(reopenedPrices.record(forKey: key)?.lastFailureAt)
+    }
+
+    func testTransportInterruptionCanRetryImmediatelyAfterConnectionRecovers() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); LorcanaPricingProtocol.handler = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [LorcanaPricingProtocol.self]
+        for code in [URLError.Code.notConnectedToInternet, .networkConnectionLost, .timedOut, .cancelled] {
+            let session = URLSession(configuration: config)
+            defer { session.invalidateAndCancel() }
+            let source = LorcanaTCGCSVPriceSource(transport: .init(session: session,
+                cacheDirectory: root.appendingPathComponent(String(code.rawValue))))
+            LorcanaPricingProtocol.handler = { _ in throw URLError(code) }
+            do {
+                _ = try await source.quote(mapping: mapping(), generation: "recovery", minimumFetchedAt: nil)
+                XCTFail("Expected the interrupted request to fail")
+            } catch let error as URLError { XCTAssertEqual(error.code, code) }
+            LorcanaPricingProtocol.handler = { request in
+                Data((request.url!.lastPathComponent == "products"
+                    ? #"{"success":true,"errors":[],"results":[{"productId":510153,"categoryId":71,"groupId":22937,"name":"Fixture Elsa","extendedData":[{"name":"Number","value":"207/204"}]}]}"#
+                    : #"{"success":true,"errors":[],"results":[{"productId":510153,"subTypeName":"Holofoil","marketPrice":8.16}]}"#).utf8)
+            }
+            do {
+                let result = try await source.quote(mapping: mapping(), generation: "recovery", minimumFetchedAt: nil)
+                guard case let .price(price) = result else { XCTFail("Expected a recovered quote"); continue }
+                XCTAssertEqual(price.unitMarketPriceUSD, 8.16)
+            } catch { XCTFail("Recovered connection must not inherit a provider cooldown: \(code): \(error)") }
+        }
+    }
+
+    func testMalformedFeedStillUsesProviderCooldown() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root); LorcanaPricingProtocol.handler = nil }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [LorcanaPricingProtocol.self]
+        let session = URLSession(configuration: config)
+        defer { session.invalidateAndCancel() }
+        let source = LorcanaTCGCSVPriceSource(transport: .init(session: session, cacheDirectory: root))
+        LorcanaPricingProtocol.handler = { _ in Data("not a valid feed".utf8) }
+        do { _ = try await source.quote(mapping: mapping(), generation: "recovery", minimumFetchedAt: nil); XCTFail() }
+        catch is DecodingError {}
+        LorcanaPricingProtocol.handler = { _ in XCTFail("Rejected feed retains its cooldown"); return Data() }
+        do { _ = try await source.quote(mapping: mapping(), generation: "recovery", minimumFetchedAt: nil); XCTFail() }
+        catch PriceQuoteError.providerUnavailable {}
     }
 
     func testBoundStoredRefreshPropagatesPersistedWithdrawalWatermark() async throws {
