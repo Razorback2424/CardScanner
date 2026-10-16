@@ -695,8 +695,8 @@ final class LorcanaPricingTests: XCTestCase {
         let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
         XCTAssertEqual(catalog.cardsByID.count, 3_582)
         XCTAssertEqual(catalog.products.count, 177)
-        XCTAssertEqual(catalog.registry.physicalCatalog?.manifest.physicalPrintings.count, 1_617)
-        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count, 3_232)
+        XCTAssertEqual(catalog.registry.physicalCatalog?.manifest.physicalPrintings.count, 1_749)
+        XCTAssertEqual(LorcanaPriceAdapter.priceAuthority(catalog.registry).identityByPriceKey.count, 3_364)
         let module = try XCTUnwrap(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertTrue(module.descriptor.capabilities.contains(.pricing))
         XCTAssertTrue(module.descriptor.capabilities.contains(.collectionWrite))
@@ -715,14 +715,14 @@ final class LorcanaPricingTests: XCTestCase {
         XCTAssertEqual(details.card.collectionKey(variant: .foil), card.collectionKey(variant: .foil))
         XCTAssertNil(details.collectionWriteUnavailableReason)
         let heldPage = try await catalog.search(query: "Elsa", setIDs: [], cursor: nil)
-        let heldSummary = try XCTUnwrap(heldPage.items.first { $0.collectorNumber == "207" })
+        let heldSummary = try XCTUnwrap(heldPage.items.first { $0.collectorNumber == "210" })
         let heldDetails = try await catalog.details(for: heldSummary)
         XCTAssertNotNil(heldDetails.collectionWriteUnavailableReason)
-        guard case let .identified(held) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: "207/204 EN 1")]),
+        guard case let .identified(held) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: "210/204 EN 9")]),
               case let .needsPrintingChoice(_, candidates) = try await catalog.lookup(held.identifier) else { return XCTFail() }
         do {
             try await catalog.validateAcquisition(held.identifier, printingID: try XCTUnwrap(candidates.first).id, automatic: false)
-            XCTFail("Unreviewed Enchanted cannot inherit ordinary ownership")
+            XCTFail("Later unreviewed Enchanted cannot inherit the first-eight-set policy")
         } catch CatalogLookupError.catalogIncomplete {}
     }
 
@@ -746,6 +746,33 @@ final class LorcanaPricingTests: XCTestCase {
         let rows = try host.mainContext.fetch(FetchDescriptor<CollectedCard>())
         XCTAssertEqual(rows.count,1)
         XCTAssertEqual(rows.first?.game, "lorcana")
+    }
+
+    func testAll132EnchantedPrintingsResolveAndImportAsTheirOwnFoilIdentity() async throws {
+        let catalog = try LorcanaDiscoveryCatalog.bundledMarket.get()
+        let physical = try XCTUnwrap(catalog.registry.physicalCatalog)
+        let enchanted = physical.manifest.physicalPrintings.filter { $0.identity.distributionID.hasPrefix("enchanted-expansion-") }
+        XCTAssertEqual(enchanted.count, 132)
+        let importer = LorcanaImportAdapter(registry: catalog.registry)
+        for printing in enchanted {
+            let footer = printing.identity.footer
+            guard case let .identified(subject) = LorcanaDiscoveryRecognizer(catalog: catalog).identify([.init(text: footer.displayIdentifier)]),
+                  case let .resolved(resolution) = try await catalog.lookup(subject.identifier) else {
+                return XCTFail("Enchanted footer must resolve: \(footer)")
+            }
+            let card = resolution.card
+            XCTAssertEqual(card.providerID, printing.id.uuidString.lowercased())
+            XCTAssertEqual(card.variantEvidence.catalogVariants, [.foil])
+            try await catalog.validateAcquisition(subject.identifier, printingID: card.providerID, automatic: true)
+            let csv = "game,provider_id,card_name,card_number,finish,quantity\nlorcana,\(card.providerID),Enchanted,\(footer.displayIdentifier),foil,1\n"
+            let entry = try XCTUnwrap(CollectionCSV.parse(Data(csv.utf8)).entries.first)
+            try importer.validate(entry)
+            XCTAssertEqual(entry.collectionKey, card.collectionKey(variant: .foil))
+            let mapping = try XCTUnwrap(printing.marketMappings?.first)
+            XCTAssertEqual(mapping.providerVariantID, "Holofoil")
+            XCTAssertEqual(mapping.finish, .foil)
+            XCTAssertEqual(printing.marketMappings?.count, 1)
+        }
     }
 
     func testLiveNormalAppMultiSetPricing() async throws {

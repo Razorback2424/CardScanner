@@ -156,7 +156,7 @@ final class LorcanaDiscoveryCatalogTests: XCTestCase {
         let runtime = try XCTUnwrap(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertTrue(runtime.descriptor.capabilities.contains([.scan, .browse, .sealed]))
         XCTAssertTrue(runtime.descriptor.capabilities.contains([.collectionWrite, .pricing]))
-        XCTAssertEqual(runtime.priceAuthority?.identityByPriceKey.count,3_232)
+        XCTAssertEqual(runtime.priceAuthority?.identityByPriceKey.count,3_364)
         XCTAssertNotNil(runtime.pricing); XCTAssertNotNil(runtime.importer)
     }
 

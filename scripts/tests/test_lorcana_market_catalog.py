@@ -61,5 +61,35 @@ class MarketCatalogTests(unittest.TestCase):
         changed=copy.deepcopy(m);changed['physicalPrintings']=[]
         with self.assertRaises(ValueError): validate_previous(changed,m)
 
+    def enchanted(self):
+        self.row.update(name='Hades - King of Olympus', rarity='Enchanted', number='205', foilTypes=['Lava'],
+            imageURL='https://api.lorcana.ravensburger.com/images/en/set1/205_example.jpg')
+        self.row['footer']['collectorNumber'] = '205'
+        self.product.update(name=self.row['name']+' (Enchanted)')
+        self.product['extendedData']=[dict(name='Number',value='205/204'),dict(name='Rarity',value='Enchanted')]
+        self.prices=[dict(productId=494102,subTypeName='Holofoil',marketPrice=None)]
+
+    def testEnchantedIsAnExactSeparateFoilPrintingWithStableIdentity(self):
+        self.enchanted()
+        manifest,ledger,report=self.run_build()
+        self.assertEqual(report['mappingCount'],1)
+        printing=manifest['physicalPrintings'][0]
+        self.assertEqual(printing['identity']['distributionID'],'enchanted-expansion-1')
+        self.assertEqual([x['finish'] for x in printing['finishes']],['foil'])
+        self.assertEqual(printing['marketMappings'][0]['providerVariantID'],'Holofoil')
+        self.assertEqual(manifest,self.run_build(ledger)[0])
+
+    def testEnchantedCannotBorrowOrdinaryFinishOrUnreviewedPattern(self):
+        self.enchanted()
+        self.prices.append(dict(productId=494102,subTypeName='Normal'))
+        self.assertEqual(self.run_build()[2]['mappingCount'],0)
+        self.prices=self.prices[:1]
+        for patterns in [['Silver'],['Lava','None'],['Magma']]:
+            self.row['foilTypes']=patterns
+            self.assertEqual(self.run_build()[2]['mappingCount'],0)
+        self.row['foilTypes']=['Lava']
+        self.product['extendedData'][1]['value']='Legendary'
+        self.assertEqual(self.run_build()[2]['mappingCount'],0)
+
 
 if __name__=='__main__': unittest.main()
