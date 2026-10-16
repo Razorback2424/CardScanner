@@ -6,6 +6,49 @@ import SwiftData
 import SwiftUI
 import UIKit
 
+/// A quantity read or saved by this detail belongs to the exact ownership
+/// inputs it observed. A newer projection immediately makes that cache stale.
+struct CollectionDetailQuantityState {
+    struct Input: Hashable {
+        let collectionKey: String
+        let physicalQuantity: Int
+        let logicalQuantity: Int?
+        let isLogicalConflict: Bool
+        let treatments: [String]
+
+        var displayedQuantity: Int {
+            // A sibling-context save can merge the physical rows before the
+            // collection projection publishes its new total.
+            isLogicalConflict ? max(logicalQuantity ?? physicalQuantity, physicalQuantity) : physicalQuantity
+        }
+    }
+
+    private var input: Input?
+    private var quantity: Int?
+    private(set) var revision: UInt = 0
+
+    func savedQuantity(for input: Input) -> Int? {
+        self.input == input ? quantity : nil
+    }
+
+    func displayedQuantity(for input: Input) -> Int {
+        savedQuantity(for: input) ?? input.displayedQuantity
+    }
+
+    @discardableResult
+    mutating func update(
+        _ quantity: Int?,
+        for input: Input,
+        expectedRevision: UInt? = nil
+    ) -> Bool {
+        if let expectedRevision, revision != expectedRevision { return false }
+        self.input = input
+        self.quantity = quantity
+        revision &+= 1
+        return true
+    }
+}
+
 private struct CardDetailFact: Identifiable {
     let id: Int
     let label: String
@@ -63,8 +106,7 @@ struct CollectionCardDetailView: View {
     @State private var artworkGeneration = 0
     @State private var pendingArtwork: ArtworkRequest?
     @State private var artworkAccent: ArtworkAccent?
-    @State private var projectedQuantity: Int?
-    @State private var lastSavedLogicalQuantity: Int?
+    @State private var quantityState = CollectionDetailQuantityState()
     @State private var selectedPriceDate: Date?
 #if DEBUG
     @State private var isShowingPrintingDetailsRoute = false
@@ -227,26 +269,8 @@ struct CollectionCardDetailView: View {
         .task(id: card.catalogProviderID ?? card.providerID) {
             await loadMarketplaceLinkIfNeeded()
         }
-        .task(id: card.collectionKey) {
-            projectedQuantity = nil
-            lastSavedLogicalQuantity = nil
-            await refreshDisplayedQuantity(
-                collectionKey: card.collectionKey,
-                treatments: card.magicTreatmentIDsRaw
-            )
-        }
-        .onChange(of: card.quantity) { _, _ in
-            if isLogicalConflict {
-                Task { @MainActor in
-                    await refreshDisplayedQuantity(
-                        collectionKey: card.collectionKey,
-                        treatments: card.magicTreatmentIDsRaw
-                    )
-                }
-            } else {
-                projectedQuantity = nil
-                lastSavedLogicalQuantity = card.quantity
-            }
+        .task(id: quantityInput) {
+            await refreshDisplayedQuantity(for: quantityInput)
         }
         .task(id: pendingArtwork?.id) {
             guard let request = pendingArtwork else { return }
@@ -836,6 +860,7 @@ struct CollectionCardDetailView: View {
         CardDetailOwnershipPanel(
             quantity: displayedQuantity,
             holdingTotal: holdingTotal,
+            allowsQuantityIncrease: card.allowsQuantityAggregation,
             onDecrease: { updateQuantity(displayedQuantity - 1) },
             onIncrease: { updateQuantity(displayedQuantity + 1) }
         ) {
@@ -1268,25 +1293,31 @@ struct CollectionCardDetailView: View {
     }
 
     private var displayedQuantity: Int {
-        projectedQuantity ?? (isLogicalConflict ? logicalQuantity ?? card.quantity : card.quantity)
+        quantityState.displayedQuantity(for: quantityInput)
     }
 
-    /// The projected quantity is authoritative while duplicate rows are being
-    /// healed. Read it on appearance and after a quantity mutation rather than
-    /// rebuilding a full projection for every unrelated detail-view render.
-    private func refreshDisplayedQuantity(
-        collectionKey: String,
-        treatments: [String]
-    ) async {
+    private var quantityInput: CollectionDetailQuantityState.Input {
+        .init(
+            collectionKey: card.collectionKey,
+            physicalQuantity: card.quantity,
+            logicalQuantity: logicalQuantity,
+            isLogicalConflict: isLogicalConflict,
+            treatments: card.magicTreatmentIDsRaw
+        )
+    }
+
+    /// Re-read only when ownership inputs change. Revision checks keep a read
+    /// started before a saved edit from replacing that edit's newer receipt.
+    private func refreshDisplayedQuantity(for input: CollectionDetailQuantityState.Input) async {
+        let revision = quantityState.revision
         let reader = CollectionDetailQuantityReader(modelContainer: modelContext.container)
         do {
             let liveQuantity = try await reader.logicalQuantity(
-                forAnyKey: collectionKey,
-                magicTreatmentIDsRaw: treatments
+                forAnyKey: input.collectionKey,
+                magicTreatmentIDsRaw: input.treatments
             )
-            guard !Task.isCancelled, card.collectionKey == collectionKey else { return }
-            projectedQuantity = liveQuantity
-            lastSavedLogicalQuantity = liveQuantity
+            guard !Task.isCancelled, quantityInput == input else { return }
+            quantityState.update(liveQuantity, for: input, expectedRevision: revision)
         } catch {
             // Keep the last displayed value; a later explicit refresh can retry.
         }
@@ -1294,34 +1325,29 @@ struct CollectionCardDetailView: View {
 
     private func updateQuantity(_ newQuantity: Int) {
         guard (1...CollectionQuantityLimits.maximum).contains(newQuantity) else { return }
-        guard let expectedCurrent = lastSavedLogicalQuantity else {
-            if isLogicalConflict {
-                errorMessage = "These synced copies could not be reconciled, so their quantity cannot be changed yet."
-                return
-            }
-            let collectionKey = card.collectionKey
-            let treatments = card.magicTreatmentIDsRaw
+        let input = quantityInput
+        guard let expectedCurrent = quantityState.savedQuantity(for: input) else {
             Task { @MainActor in
-                await refreshDisplayedQuantity(
-                    collectionKey: collectionKey,
-                    treatments: treatments
-                )
-                guard card.collectionKey == collectionKey else { return }
-                guard let refreshedQuantity = lastSavedLogicalQuantity else {
+                await refreshDisplayedQuantity(for: input)
+                guard quantityInput == input else { return }
+                guard let refreshedQuantity = quantityState.savedQuantity(for: input) else {
                     errorMessage = "The current quantity could not be loaded. Try again in a moment."
                     return
                 }
-                persistQuantity(newQuantity, expectedCurrent: refreshedQuantity)
+                persistQuantity(newQuantity, expectedCurrent: refreshedQuantity, input: input)
             }
             return
         }
-        persistQuantity(newQuantity, expectedCurrent: expectedCurrent)
+        persistQuantity(newQuantity, expectedCurrent: expectedCurrent, input: input)
     }
 
-    private func persistQuantity(_ newQuantity: Int, expectedCurrent: Int) {
-        let collectionKey = card.collectionKey
-        let treatments = card.magicTreatmentIDsRaw
-        let oldDisplayed = displayedQuantity
+    private func persistQuantity(
+        _ newQuantity: Int,
+        expectedCurrent: Int,
+        input: CollectionDetailQuantityState.Input
+    ) {
+        let collectionKey = input.collectionKey
+        let treatments = input.treatments
         let persist = {
             try CollectionWriteSerializer.perform(
                 container: modelContext.container,
@@ -1337,10 +1363,7 @@ struct CollectionCardDetailView: View {
         }
         do {
             let savedQuantity = try persist()
-            lastSavedLogicalQuantity = savedQuantity
-            projectedQuantity = isLogicalConflict
-                ? oldDisplayed + savedQuantity - expectedCurrent
-                : savedQuantity
+            quantityState.update(savedQuantity, for: input)
         } catch CollectionStoreError.priceIdentityExclusivityRequired {
             // The serialized write found an identity rewrite that appeared
             // after the optimistic preflight. Retry under the refresh gate.
@@ -1349,16 +1372,11 @@ struct CollectionCardDetailView: View {
                     let savedQuantity = try await CollectionExclusiveWrites.retryingIfRequired {
                         try persist()
                     }
-                    lastSavedLogicalQuantity = savedQuantity
-                    projectedQuantity = isLogicalConflict
-                        ? oldDisplayed + savedQuantity - expectedCurrent
-                        : savedQuantity
+                    guard quantityInput == input else { return }
+                    quantityState.update(savedQuantity, for: input)
                 } catch {
                     if case CollectionStoreError.staleQuantity = error {
-                        await refreshDisplayedQuantity(
-                            collectionKey: collectionKey,
-                            treatments: treatments
-                        )
+                        await refreshDisplayedQuantity(for: quantityInput)
                     }
                     errorMessage = error.localizedDescription
                 }
@@ -1366,10 +1384,7 @@ struct CollectionCardDetailView: View {
         } catch {
             if case CollectionStoreError.staleQuantity = error {
                 Task { @MainActor in
-                    await refreshDisplayedQuantity(
-                        collectionKey: collectionKey,
-                        treatments: treatments
-                    )
+                    await refreshDisplayedQuantity(for: quantityInput)
                 }
             }
             errorMessage = error.localizedDescription
@@ -1897,6 +1912,7 @@ struct CardDetailMarketplaceButton: View {
 private struct CardDetailOwnershipPanel<Details: View>: View {
     let quantity: Int
     let holdingTotal: String?
+    let allowsQuantityIncrease: Bool
     let onDecrease: () -> Void
     let onIncrease: () -> Void
     private let details: Details
@@ -1904,12 +1920,14 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
     init(
         quantity: Int,
         holdingTotal: String?,
+        allowsQuantityIncrease: Bool,
         onDecrease: @escaping () -> Void,
         onIncrease: @escaping () -> Void,
         @ViewBuilder details: () -> Details
     ) {
         self.quantity = quantity
         self.holdingTotal = holdingTotal
+        self.allowsQuantityIncrease = allowsQuantityIncrease
         self.onDecrease = onDecrease
         self.onIncrease = onIncrease
         self.details = details()
@@ -1997,7 +2015,7 @@ private struct CardDetailOwnershipPanel<Details: View>: View {
                     .frame(width: 44, height: 44)
                     .contentShape(Rectangle())
             }
-            .disabled(quantity >= CollectionQuantityLimits.maximum)
+            .disabled(!allowsQuantityIncrease || quantity >= CollectionQuantityLimits.maximum)
             .accessibilityLabel("Increase quantity")
         }
         .buttonStyle(.borderless)

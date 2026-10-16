@@ -2813,6 +2813,11 @@ struct CollectionStore {
                 throw CollectionStoreError.staleQuantity
             }
             try requireWritableGame(target.cardGame)
+            guard target.allowsQuantityAggregation || newQuantity <= target.quantity else {
+                throw CollectionStoreError.quantityOutOfRange(
+                    "a certified slab represents one physical item"
+                )
+            }
             let delta = newQuantity - target.quantity
             guard delta != 0 else { return target.quantity }
             let operationID = UUID()
