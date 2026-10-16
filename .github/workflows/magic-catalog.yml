@@ -165,7 +165,18 @@ jobs:
           echo "Magic catalog publish environment: $publish_environment"
           {
             echo "## Magic catalog production candidate"
-            jq -r '"- Revision: \(.revision)", "- Descriptor count: \(.descriptorCount)", "- Change class: \(.changeClass)", "- Added: \(.addedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Content: \(.contentChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Authority: \(.authorityChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Removed: \(.removedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Scanner projection changes: \(.scannerProjectionChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Browse projection changes: \(.browseProjectionChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Routing projection changes: \(.routingProjectionChangedCodes | if length == 0 then \"none\" else join(\", \") end)", "- Warnings: \(.warnings | length)"' \
+            jq -r '
+              "- Revision: \(.revision)",
+              "- Descriptor count: \(.descriptorCount)",
+              "- Change class: \(.changeClass)",
+              "- Added: \(.addedCodes | if length == 0 then "none" else join(", ") end)",
+              "- Content: \(.contentChangedCodes | if length == 0 then "none" else join(", ") end)",
+              "- Authority: \(.authorityChangedCodes | if length == 0 then "none" else join(", ") end)",
+              "- Removed: \(.removedCodes | if length == 0 then "none" else join(", ") end)",
+              "- Scanner projection changes: \(.scannerProjectionChangedCodes | if length == 0 then "none" else join(", ") end)",
+              "- Browse projection changes: \(.browseProjectionChangedCodes | if length == 0 then "none" else join(", ") end)",
+              "- Routing projection changes: \(.routingProjectionChangedCodes | if length == 0 then "none" else join(", ") end)",
+              "- Warnings: \(.warnings | length)"' \
               magic-publisher/reports/production.json
             echo "- Approval required: $requires_approval"
             echo "- Publish environment: $publish_environment"
