@@ -3184,7 +3184,10 @@ enum PokemonMasterSetDefinition {
     static func requiredVariants(
         for card: TCGdexCard
     ) -> [(variant: PhysicalVariant, isExpanded: Bool, isSole: Bool)] {
-        var variants = card.catalogVariants.filter {
+        var variants = PokemonVariantRules.apply(to: VariantEvidence(
+            game: .pokemon, setID: card.set.id, cardNumber: card.localId,
+            catalogVariants: card.catalogVariants
+        )).variants.filter {
             $0.id != PhysicalVariant.firstEdition.id
         }
 
