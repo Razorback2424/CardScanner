@@ -42,10 +42,10 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             from: Data(contentsOf: directory.appendingPathComponent("event-observations.json")))
         let eventInventories = try decoder.decode([OnePieceSourceInventory].self,
             from: Data(contentsOf: directory.appendingPathComponent("event-inventories.json")))
-        let retailObservations = try ["retail-observations.json", "starter-booster-observations.json", "base-market-observations.json"].flatMap {
+        let retailObservations = try ["retail-observations.json", "starter-booster-observations.json", "base-market-observations.json", "special-printings-observations.json"].flatMap {
             try decoder.decode([OnePieceSourceObservation].self, from: Data(contentsOf: directory.appendingPathComponent($0)))
         }
-        let retailInventories = try ["retail-inventories.json", "starter-booster-inventories.json", "base-market-inventories.json"].flatMap {
+        let retailInventories = try ["retail-inventories.json", "starter-booster-inventories.json", "base-market-inventories.json", "special-printings-inventories.json"].flatMap {
             try decoder.decode([OnePieceSourceInventory].self, from: Data(contentsOf: directory.appendingPathComponent($0)))
         }
         let marketInventories = try decoder.decode([OnePieceSourceInventory].self,
@@ -89,10 +89,10 @@ final class OnePieceCatalogCoreTests: XCTestCase {
             from: Data(contentsOf: directory.appendingPathComponent("event-observations.json")))
         let eventInventories = try decoder.decode([OnePieceSourceInventory].self,
             from: Data(contentsOf: directory.appendingPathComponent("event-inventories.json")))
-        let retailObservations = try ["retail-observations.json", "starter-booster-observations.json", "base-market-observations.json"].flatMap {
+        let retailObservations = try ["retail-observations.json", "starter-booster-observations.json", "base-market-observations.json", "special-printings-observations.json"].flatMap {
             try decoder.decode([OnePieceSourceObservation].self, from: Data(contentsOf: directory.appendingPathComponent($0)))
         }
-        let retailInventories = try ["retail-inventories.json", "starter-booster-inventories.json", "base-market-inventories.json"].flatMap {
+        let retailInventories = try ["retail-inventories.json", "starter-booster-inventories.json", "base-market-inventories.json", "special-printings-inventories.json"].flatMap {
             try decoder.decode([OnePieceSourceInventory].self, from: Data(contentsOf: directory.appendingPathComponent($0)))
         }
         let release = try OnePieceCatalogBuilder.build(registry: registry, observations: observations + eventObservations + retailObservations,
@@ -100,7 +100,7 @@ final class OnePieceCatalogCoreTests: XCTestCase {
         XCTAssertTrue(Set(registry.canonicalCards.map(\.printedNumber)).isSuperset(of: ["OP01-120", "ST01-007", "P-001"]))
         XCTAssertEqual(registry.canonicalCards.count, 2692)
         XCTAssertTrue(registry.canonicalCards.allSatisfy { !$0.printingCoverageComplete })
-        XCTAssertEqual(registry.printings.count, 2745)
+        XCTAssertEqual(registry.printings.count, 2748)
         let winner = try XCTUnwrap(registry.printings.first { $0.id.uuidString.lowercased() == "348ad90a-43d8-49b5-a384-4d9cc2a1fe27" })
         XCTAssertEqual(winner.status, .verified)
         XCTAssertEqual(winner.supportedVariantIDs, ["foil"])
@@ -113,6 +113,11 @@ final class OnePieceCatalogCoreTests: XCTestCase {
         XCTAssertEqual(participant.status, .provisional)
         XCTAssertTrue(participant.supportedVariantIDs.isEmpty)
         XCTAssertNil(participant.stamp)
+        let specials = registry.printings.filter { $0.review?.reference.hasPrefix("english-stress/special-printings-review.json#") == true }
+        XCTAssertEqual(specials.count, 3)
+        XCTAssertEqual(Set(specials.map(\.canonicalCardID)), ["one-piece:en:OP01-001", "one-piece:en:OP01-120"])
+        XCTAssertTrue(specials.allSatisfy { $0.status == .verified && $0.supportedVariantIDs == ["foil"] })
+        XCTAssertEqual(Set(specials.map(\.artworkID)).count, 3)
         XCTAssertTrue(registry.artworks.allSatisfy { $0.referenceImageURL == nil })
         XCTAssertTrue(release.indexes.automaticCandidateIDsByCanonicalID.isEmpty)
         XCTAssertTrue(inventories.allSatisfy { !$0.paginationComplete })
@@ -135,10 +140,10 @@ final class OnePieceCatalogCoreTests: XCTestCase {
         let decoder = JSONDecoder()
         let registry = try decoder.decode(OnePieceRegistryDocument.self,
             from: Data(contentsOf: directory.appendingPathComponent("registry.json")))
-        let observations = try ["observations", "tcgcsv-observations", "event-observations", "retail-observations", "starter-booster-observations", "base-market-observations"].flatMap {
+        let observations = try ["observations", "tcgcsv-observations", "event-observations", "retail-observations", "starter-booster-observations", "base-market-observations", "special-printings-observations"].flatMap {
             try decoder.decode([OnePieceSourceObservation].self, from: Data(contentsOf: directory.appendingPathComponent($0 + ".json")))
         }
-        let inventories = try ["inventories", "tcgcsv-inventories", "event-inventories", "retail-inventories", "starter-booster-inventories", "base-market-inventories"].flatMap {
+        let inventories = try ["inventories", "tcgcsv-inventories", "event-inventories", "retail-inventories", "starter-booster-inventories", "base-market-inventories", "special-printings-inventories"].flatMap {
             try decoder.decode([OnePieceSourceInventory].self, from: Data(contentsOf: directory.appendingPathComponent($0 + ".json")))
         }
         let release = try OnePieceCatalogBuilder.build(registry: registry, observations: observations,

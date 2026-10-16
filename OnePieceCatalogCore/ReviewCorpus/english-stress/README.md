@@ -1,5 +1,15 @@
 # English stress-source review inputs
 
+**Specialty addition — 2026-10-15:** the registry now retains 2,748 printings,
+including 2,493 verified English printings. Three original Romance Dawn parallels
+have separate permanent IDs, exact official-image/retailer-finish evidence in
+`special-printings-observations.json`, and a `special-printings-review.json`
+receipt. Separate inventory files preserve regeneration of the ordinary corpus.
+Family completeness remains false. The unsigned revision-3 owner candidate is
+validated; installing a newly signed owner seed/pin awaits explicit approval.
+The installed owner revision 2 remains unchanged. Counts below describe the
+earlier ordinary-corpus checkpoint.
+
 Status: 2,490 verified printings, 224 provisional records and 31 conflicted
 records across 2,692 canonical cards;
 broader physical reconciliation incomplete — 2026-10-04. This directory is

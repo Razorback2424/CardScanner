@@ -547,10 +547,10 @@ final class OnePieceIntegrationTests: XCTestCase {
         let decoder = JSONDecoder()
         let document = try decoder.decode(OnePieceRegistryDocument.self,
             from: Data(contentsOf: directory.appendingPathComponent("registry.json")))
-        let observations = try ["observations.json", "tcgcsv-observations.json", "event-observations.json", "retail-observations.json", "starter-booster-observations.json", "base-market-observations.json"].flatMap {
+        let observations = try ["observations.json", "tcgcsv-observations.json", "event-observations.json", "retail-observations.json", "starter-booster-observations.json", "base-market-observations.json", "special-printings-observations.json"].flatMap {
             try decoder.decode([OnePieceSourceObservation].self, from: Data(contentsOf: directory.appendingPathComponent($0)))
         }
-        let inventories = try ["inventories.json", "tcgcsv-inventories.json", "event-inventories.json", "retail-inventories.json", "starter-booster-inventories.json", "base-market-inventories.json"].flatMap {
+        let inventories = try ["inventories.json", "tcgcsv-inventories.json", "event-inventories.json", "retail-inventories.json", "starter-booster-inventories.json", "base-market-inventories.json", "special-printings-inventories.json"].flatMap {
             try decoder.decode([OnePieceSourceInventory].self, from: Data(contentsOf: directory.appendingPathComponent($0)))
         }
         let timestamp = "2026-10-04T17:00:00Z"
@@ -584,6 +584,30 @@ final class OnePieceIntegrationTests: XCTestCase {
         XCTAssertNil(selected.card.thumbnailImageURL, "Review asset rights do not authorize app image distribution")
         XCTAssertTrue(registry.verifiedRelease.release.indexes.automaticCandidateIDsByCanonicalID.isEmpty)
         XCTAssertFalse(OnePieceGameRuntime(registry: registry).runtime.descriptor.capabilities.contains(.collectionWrite))
+    }
+
+    func testReviewedRomanceDawnParallelsAreExplicitDistinctChoices() async throws {
+        let registry = try reviewedAwardRegistry()
+        let adapter = OnePieceCatalogAdapter(registry: registry)
+        let profile = OnePieceScanProfile(registry: registry, languageConfirmation: .userConfirmedEnglish)
+        for (number, expectedCount) in [("OP01-001", 2), ("OP01-120", 3)] {
+            guard case let .identified(subject) = profile.identify([.init(text: number)]),
+                  case let .needsPrintingChoice(_, candidates) = try await adapter.lookup(subject.identifier) else {
+                return XCTFail("Incomplete base/parallel family must remain an explicit choice")
+            }
+            XCTAssertEqual(candidates.count, expectedCount)
+            XCTAssertEqual(Set(candidates.map(\.id)).count, expectedCount)
+            for candidate in candidates {
+                let resolution = try await adapter.resolve(candidate, for: subject.identifier)
+                XCTAssertEqual(resolution.card.providerID, candidate.id)
+                XCTAssertFalse(resolution.card.variantEvidence.catalogVariants.isEmpty)
+                try await adapter.validateAcquisition(subject.identifier, printingID: candidate.id, automatic: false)
+                do {
+                    try await adapter.validateAcquisition(subject.identifier, printingID: candidate.id, automatic: true)
+                    XCTFail("Known verified siblings require an explicit printing choice")
+                } catch {}
+            }
+        }
     }
 
     func testST10ReprintReviewUsesManufacturerEvidenceWithoutRetailerClaims() throws {
@@ -1113,6 +1137,7 @@ final class OnePieceIntegrationTests: XCTestCase {
             defer { model.viewDisappeared() }
             let printing = try XCTUnwrap(reviewed.printingByID.values.first {
                 $0.canonicalCardID == "one-piece:en:" + number && $0.releaseID == product
+                    && $0.treatment == "Standard artwork"
             })
             guard case let .identified(subject) = OnePieceScanProfile(registry: reviewed).identify([.init(text: number)]) else {
                 return XCTFail("Standard card number must be recognized")
@@ -1140,7 +1165,7 @@ final class OnePieceIntegrationTests: XCTestCase {
         }
         let browse = OnePieceBrowseAdapter(registry: reviewed)
         let sets = try await browse.sets()
-        for (product, count) in [("product:st01-straw-hat-crew-2022", 10), ("product:op01-romance-dawn-2022", 59),
+        for (product, count) in [("product:st01-straw-hat-crew-2022", 10), ("product:op01-romance-dawn-2022", 62),
                                 ("product:st02-worst-generation-2022", 9), ("product:st03-seven-warlords-2022", 8),
                                 ("product:st04-animal-kingdom-pirates-2022", 7),
                                 ("product:op02-paramount-war-2023", 119), ("product:st05-film-edition-2023", 17),

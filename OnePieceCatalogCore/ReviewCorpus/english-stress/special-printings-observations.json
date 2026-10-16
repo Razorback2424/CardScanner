@@ -1,0 +1,212 @@
+[
+  {
+    "id": "special-printings-20261015:OP01-001_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "OP01-001_p1"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569101",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "ad50e6fdafc855030448b2a56e76c892aaffbd34aeb66142f7e7dce620287254",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-001",
+      "name": "Roronoa Zoro",
+      "treatment": "Alternate artwork",
+      "blockText": "1",
+      "sourceLabel": "-ROMANCE DAWN- [OP01]",
+      "referenceImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-001_p1.png?260929"
+    }
+  },
+  {
+    "id": "special-printings-20261015:OP01-001_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "OP01-001_p1"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-001_p1.png?260929",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "87fd7acc54d71366e7d325ef09a23f184314f2ee82eacc729fa7c4229ab916b2",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-001",
+      "name": "Roronoa Zoro",
+      "treatment": "Alternate artwork",
+      "blockText": "1",
+      "sourceLabel": "-ROMANCE DAWN- [OP01]",
+      "referenceImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-001_p1.png?260929",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "87fd7acc54d71366e7d325ef09a23f184314f2ee82eacc729fa7c4229ab916b2"
+  },
+  {
+    "id": "special-printings-20261015:OP01-001_p1:finish",
+    "kind": "catalog",
+    "alias": {
+      "provider": "coretcg",
+      "sourceID": "/Products/134824/68/3188/Roronoa-Zoro-001-Parallel"
+    },
+    "sourceURL": "https://coretcg.com/Products/0/68/3188/Romance-Dawn?l=144&stockStatus=0",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "7eaf375d785ff4d32db0e32fff0f90046e4a4d24853ee16cb3ee31fde83f5bc6",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-001",
+      "name": "Roronoa Zoro (001) (Parallel)",
+      "treatment": "Alternate artwork",
+      "finishVariantID": "foil",
+      "sourceRole": "retailer-exact-printing-specification"
+    }
+  },
+  {
+    "id": "special-printings-20261015:OP01-120_p1:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "OP01-120_p1"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569101",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "ad50e6fdafc855030448b2a56e76c892aaffbd34aeb66142f7e7dce620287254",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-120",
+      "name": "Shanks",
+      "treatment": "Alternate artwork",
+      "blockText": "1",
+      "sourceLabel": "-ROMANCE DAWN- [OP01]",
+      "referenceImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p1.png?260929"
+    }
+  },
+  {
+    "id": "special-printings-20261015:OP01-120_p1:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "OP01-120_p1"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p1.png?260929",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "d8c3d5c8ebf5509e55eb117dc7825e7a317d25949cd29e9bb262d8b602b2d99a",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-120",
+      "name": "Shanks",
+      "treatment": "Alternate artwork",
+      "blockText": "1",
+      "sourceLabel": "-ROMANCE DAWN- [OP01]",
+      "referenceImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p1.png?260929",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "d8c3d5c8ebf5509e55eb117dc7825e7a317d25949cd29e9bb262d8b602b2d99a"
+  },
+  {
+    "id": "special-printings-20261015:OP01-120_p1:finish",
+    "kind": "catalog",
+    "alias": {
+      "provider": "coretcg",
+      "sourceID": "/Products/134835/68/3188/Shanks-Parallel"
+    },
+    "sourceURL": "https://coretcg.com/Products/0/68/3188/Romance-Dawn?l=144&stockStatus=0",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "7eaf375d785ff4d32db0e32fff0f90046e4a4d24853ee16cb3ee31fde83f5bc6",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-120",
+      "name": "Shanks (Parallel)",
+      "treatment": "Alternate artwork",
+      "finishVariantID": "foil",
+      "sourceRole": "retailer-exact-printing-specification"
+    }
+  },
+  {
+    "id": "special-printings-20261015:OP01-120_p2:catalog",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "OP01-120_p2"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569101",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "ad50e6fdafc855030448b2a56e76c892aaffbd34aeb66142f7e7dce620287254",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-120",
+      "name": "Shanks",
+      "treatment": "Manga artwork",
+      "blockText": "1",
+      "sourceLabel": "-ROMANCE DAWN- [OP01]",
+      "referenceImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p2.png?260929"
+    }
+  },
+  {
+    "id": "special-printings-20261015:OP01-120_p2:render",
+    "kind": "catalog",
+    "alias": {
+      "provider": "bandai",
+      "sourceID": "OP01-120_p2"
+    },
+    "sourceURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p2.png?260929",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "3abfff97814fcc051db65f88b2fcbe4da83661a234ab7fa6a46d01c18a81d46a",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-120",
+      "name": "Shanks",
+      "treatment": "Manga artwork",
+      "blockText": "1",
+      "sourceLabel": "-ROMANCE DAWN- [OP01]",
+      "referenceImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p2.png?260929",
+      "sourceRole": "watermarked-digital-render"
+    },
+    "imageSHA256": "3abfff97814fcc051db65f88b2fcbe4da83661a234ab7fa6a46d01c18a81d46a"
+  },
+  {
+    "id": "special-printings-20261015:OP01-120_p2:finish",
+    "kind": "catalog",
+    "alias": {
+      "provider": "coretcg",
+      "sourceID": "/Products/134836/68/3188/Shanks-Parallel-Alternate-Art"
+    },
+    "sourceURL": "https://coretcg.com/Products/0/68/3188/Romance-Dawn?l=144&stockStatus=0",
+    "observedAt": "2026-10-15T13:18:36Z",
+    "language": "en",
+    "payloadSHA256": "7eaf375d785ff4d32db0e32fff0f90046e4a4d24853ee16cb3ee31fde83f5bc6",
+    "productEvidence": [
+      "product:op01-romance-dawn-2022"
+    ],
+    "printedEvidence": {
+      "number": "OP01-120",
+      "name": "Shanks (Parallel) (Alternate Art)",
+      "treatment": "Manga artwork",
+      "finishVariantID": "foil",
+      "sourceRole": "retailer-exact-printing-specification"
+    }
+  }
+]

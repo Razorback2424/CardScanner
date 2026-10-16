@@ -38061,6 +38061,27 @@
       "observationIDs": [
         "launch-products:product:prb01-one-piece-card-the-best-2024:PRB01-001:render"
       ]
+    },
+    {
+      "id": "c927cbc1-6aea-4f6d-bfca-2b273e8d543e",
+      "imageSHA256": "87fd7acc54d71366e7d325ef09a23f184314f2ee82eacc729fa7c4229ab916b2",
+      "observationIDs": [
+        "special-printings-20261015:OP01-001_p1:render"
+      ]
+    },
+    {
+      "id": "a26f4916-247e-4624-bafd-62f33fc41731",
+      "imageSHA256": "d8c3d5c8ebf5509e55eb117dc7825e7a317d25949cd29e9bb262d8b602b2d99a",
+      "observationIDs": [
+        "special-printings-20261015:OP01-120_p1:render"
+      ]
+    },
+    {
+      "id": "22480aa8-f731-4305-abf6-8d75aad0b15f",
+      "imageSHA256": "3abfff97814fcc051db65f88b2fcbe4da83661a234ab7fa6a46d01c18a81d46a",
+      "observationIDs": [
+        "special-printings-20261015:OP01-120_p2:render"
+      ]
     }
   ],
   "printings": [
@@ -264132,6 +264153,189 @@
         {
           "provider": "bandai",
           "sourceID": "product:prb01-one-piece-card-the-best-2024:standard:PRB01-001"
+        }
+      ],
+      "marketMappings": [],
+      "supersedes": []
+    },
+    {
+      "id": "66334969-8762-4141-b78b-2fed7165a53c",
+      "canonicalCardID": "one-piece:en:OP01-001",
+      "artworkID": "c927cbc1-6aea-4f6d-bfca-2b273e8d543e",
+      "language": "en",
+      "releaseID": "product:op01-romance-dawn-2022",
+      "treatment": "Alternate artwork",
+      "blockText": "1",
+      "supportedVariantIDs": [
+        "foil"
+      ],
+      "status": "verified",
+      "review": {
+        "reference": "english-stress/special-printings-review.json#OP01-001_p1",
+        "evidence": [
+          {
+            "kind": "printedIdentity",
+            "observationID": "special-printings-20261015:OP01-001_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "language",
+            "observationID": "special-printings-20261015:OP01-001_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "release",
+            "observationID": "special-printings-20261015:OP01-001_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "treatment",
+            "observationID": "special-printings-20261015:OP01-001_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "footer",
+            "observationID": "special-printings-20261015:OP01-001_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "artwork",
+            "observationID": "special-printings-20261015:OP01-001_p1:render",
+            "detail": "Visually inspected official render and exact market thumbnail; artwork and printed number agree. No foil inference from the image."
+          },
+          {
+            "kind": "finish",
+            "observationID": "special-printings-20261015:OP01-001_p1:finish",
+            "detail": "Independent exact English parallel listing explicitly specifies Foil; source prices and rarity do not supply finish evidence."
+          }
+        ]
+      },
+      "sourceAliases": [
+        {
+          "provider": "bandai",
+          "sourceID": "OP01-001_p1"
+        }
+      ],
+      "marketMappings": [],
+      "supersedes": []
+    },
+    {
+      "id": "915c6133-40be-4e95-9287-23014d5f0ec0",
+      "canonicalCardID": "one-piece:en:OP01-120",
+      "artworkID": "a26f4916-247e-4624-bafd-62f33fc41731",
+      "language": "en",
+      "releaseID": "product:op01-romance-dawn-2022",
+      "treatment": "Alternate artwork",
+      "blockText": "1",
+      "supportedVariantIDs": [
+        "foil"
+      ],
+      "status": "verified",
+      "review": {
+        "reference": "english-stress/special-printings-review.json#OP01-120_p1",
+        "evidence": [
+          {
+            "kind": "printedIdentity",
+            "observationID": "special-printings-20261015:OP01-120_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "language",
+            "observationID": "special-printings-20261015:OP01-120_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "release",
+            "observationID": "special-printings-20261015:OP01-120_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "treatment",
+            "observationID": "special-printings-20261015:OP01-120_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "footer",
+            "observationID": "special-printings-20261015:OP01-120_p1:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "artwork",
+            "observationID": "special-printings-20261015:OP01-120_p1:render",
+            "detail": "Visually inspected official render and exact market thumbnail; artwork and printed number agree. No foil inference from the image."
+          },
+          {
+            "kind": "finish",
+            "observationID": "special-printings-20261015:OP01-120_p1:finish",
+            "detail": "Independent exact English parallel listing explicitly specifies Foil; source prices and rarity do not supply finish evidence."
+          }
+        ]
+      },
+      "sourceAliases": [
+        {
+          "provider": "bandai",
+          "sourceID": "OP01-120_p1"
+        }
+      ],
+      "marketMappings": [],
+      "supersedes": []
+    },
+    {
+      "id": "1eb727b5-eadd-4e50-89c6-a8bd7b7a05c8",
+      "canonicalCardID": "one-piece:en:OP01-120",
+      "artworkID": "22480aa8-f731-4305-abf6-8d75aad0b15f",
+      "language": "en",
+      "releaseID": "product:op01-romance-dawn-2022",
+      "treatment": "Manga artwork",
+      "blockText": "1",
+      "supportedVariantIDs": [
+        "foil"
+      ],
+      "status": "verified",
+      "review": {
+        "reference": "english-stress/special-printings-review.json#OP01-120_p2",
+        "evidence": [
+          {
+            "kind": "printedIdentity",
+            "observationID": "special-printings-20261015:OP01-120_p2:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "language",
+            "observationID": "special-printings-20261015:OP01-120_p2:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "release",
+            "observationID": "special-printings-20261015:OP01-120_p2:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "treatment",
+            "observationID": "special-printings-20261015:OP01-120_p2:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "footer",
+            "observationID": "special-printings-20261015:OP01-120_p2:catalog",
+            "detail": "Reviewed original English Romance Dawn artwork alias, printed number, release and visible treatment."
+          },
+          {
+            "kind": "artwork",
+            "observationID": "special-printings-20261015:OP01-120_p2:render",
+            "detail": "Visually inspected official render and exact market thumbnail; artwork and printed number agree. No foil inference from the image."
+          },
+          {
+            "kind": "finish",
+            "observationID": "special-printings-20261015:OP01-120_p2:finish",
+            "detail": "Independent exact English parallel listing explicitly specifies Foil; source prices and rarity do not supply finish evidence."
+          }
+        ]
+      },
+      "sourceAliases": [
+        {
+          "provider": "bandai",
+          "sourceID": "OP01-120_p2"
         }
       ],
       "marketMappings": [],

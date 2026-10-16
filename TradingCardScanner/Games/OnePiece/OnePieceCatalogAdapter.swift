@@ -80,6 +80,23 @@ struct OnePieceCatalogAdapter: GameCatalogAdapter {
         return try resolution(for: printing, canonical: card)
     }
 
+    func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {
+        guard let canonical = try canonical(for: identifier),
+              let id = UUID(uuidString: printingID), id.uuidString.lowercased() == printingID,
+              let printing = registry.printingByID[id], printing.canonicalCardID == canonical.id,
+              printing.language == "en", printing.status == .verified else {
+            throw CatalogLookupError.invalidPrintingChoice
+        }
+        // Recheck the same decision used by lookup. An automatic save cannot
+        // bypass a family picker, including after additive catalog activation.
+        if automatic {
+            guard case let .resolved(resolution) = try await lookup(identifier),
+                  resolution.card.providerID == printingID else {
+                throw CatalogLookupError.invalidPrintingChoice
+            }
+        }
+    }
+
     private func canonical(for identifier: ScanIdentifier) throws -> OnePieceCanonicalCard? {
         guard identifier.catalogGeneration == generation else {
             throw CatalogLookupError.staleCatalog

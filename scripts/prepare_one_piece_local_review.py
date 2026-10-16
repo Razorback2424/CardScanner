@@ -30,7 +30,7 @@ def main():
     output.mkdir(parents=True, exist_ok=False)
     for stem in ("observations", "inventories"):
         combined = []
-        for filename in (f"{stem}.json", f"tcgcsv-{stem}.json", f"event-{stem}.json", f"retail-{stem}.json", f"starter-booster-{stem}.json", f"base-market-{stem}.json"):
+        for filename in (f"{stem}.json", f"tcgcsv-{stem}.json", f"event-{stem}.json", f"retail-{stem}.json", f"starter-booster-{stem}.json", f"base-market-{stem}.json", f"special-printings-{stem}.json"):
             combined.extend(json.loads((corpus / filename).read_text()))
         (output / f"{stem}.json").write_text(json.dumps(combined, sort_keys=True))
     candidate = output / "candidate.json"

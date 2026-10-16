@@ -1,0 +1,25 @@
+[
+  {
+    "provider": "bandai",
+    "snapshotID": "special-printings-20261015:bandai",
+    "paginationComplete": false,
+    "observationIDs": [
+      "special-printings-20261015:OP01-001_p1:catalog",
+      "special-printings-20261015:OP01-001_p1:render",
+      "special-printings-20261015:OP01-120_p1:catalog",
+      "special-printings-20261015:OP01-120_p1:render",
+      "special-printings-20261015:OP01-120_p2:catalog",
+      "special-printings-20261015:OP01-120_p2:render"
+    ]
+  },
+  {
+    "provider": "coretcg",
+    "snapshotID": "special-printings-20261015:coretcg",
+    "paginationComplete": false,
+    "observationIDs": [
+      "special-printings-20261015:OP01-001_p1:finish",
+      "special-printings-20261015:OP01-120_p1:finish",
+      "special-printings-20261015:OP01-120_p2:finish"
+    ]
+  }
+]
