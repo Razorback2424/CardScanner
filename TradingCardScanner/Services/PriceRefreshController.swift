@@ -322,6 +322,20 @@ actor PriceRefreshModelActor {
             if request.gradedOnly {
                 staleTargets = staleTargets.filter { $0.itemKind == .gradedCard }
             }
+            if request.maximumTargetCount != nil {
+                // A capped background window must not keep selecting vendor-only
+                // rows that cannot run under the current settings/credentials.
+                // Leave their provider-check evidence untouched for a later retry.
+                let hasVendorCredentials = PriceVendorCredentials.hasKey
+                staleTargets = staleTargets.filter {
+                    PriceRefreshController.canAttemptRefresh(
+                        $0,
+                        usesPriceFallback: request.usesPriceFallback,
+                        hasVendorCredentials: hasVendorCredentials,
+                        pricing: gamePricing
+                    )
+                }
+            }
             if request.sortOldestFirst {
                 staleTargets.sort {
                     ($0.lastCheckedAt ?? .distantPast) < ($1.lastCheckedAt ?? .distantPast)
@@ -2979,6 +2993,29 @@ final class PriceRefreshController: ObservableObject {
             gradedLookupMisses: result.gradedLookupMisses,
             gradedTransportFailures: result.gradedTransportFailures
         )
+    }
+
+    /// Whether a target can make progress in a bounded refresh window.
+    nonisolated static func canAttemptRefresh(
+        _ target: PriceTarget,
+        usesPriceFallback: Bool,
+        hasVendorCredentials: Bool,
+        pricing: PriceQuoteService
+    ) -> Bool {
+        switch target.itemKind {
+        case .rawCard:
+            return pricing.supportsStoredPrintingRefresh(for: target.game)
+                || CardGameRegistry.standard.supports(target.game, .pricing)
+        case .sealedProduct:
+            return pricing.supportsSealedPricing(for: target.game)
+                && hasVendorCredentials
+                && permitsVendorWork(for: target, usesFallback: usesPriceFallback)
+        case .gradedCard:
+            guard pricing.supportsGradedPricing(for: target.game) else { return false }
+            // Incomplete slabs can still receive the local capability stamp.
+            return (target.marketVariantID == nil && !target.canResolveGradedVariant)
+                || hasVendorCredentials
+        }
     }
 
     /// Targets that a refresh should bother with.

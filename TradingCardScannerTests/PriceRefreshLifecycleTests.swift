@@ -49,6 +49,83 @@ private actor PriceRefreshAttemptCounter {
 
 @MainActor
 final class PriceRefreshLifecycleTests: XCTestCase {
+    func testCappedRefreshSkipsDisabledSealedRowsBeforeSelectingRawWork() async throws {
+        let container = try makeContainer(withCard: true)
+        let context = container.mainContext
+        let raw = try XCTUnwrap(context.fetch(FetchDescriptor<CollectedCard>()).first)
+        XCTAssertTrue(PriceStore(context: context).recordFailure(game: raw.cardGame,
+            printingID: raw.priceStorageID, variantID: raw.variantID,
+            at: .now.addingTimeInterval(-9 * 60 * 60)))
+        for index in 0..<3 {
+            let row = CollectedCard(collectionKey: "sealed-\(index)", game: .pokemon,
+                providerID: "sealed-\(index)", name: "Sealed Box \(index)", setName: "Lifecycle Set",
+                setCode: "LIF", cardNumber: "", rarity: nil,
+                imageURL: "https://example.com/box.png", thumbnailURL: nil,
+                variant: nil, variantResolution: .imported)
+            row.itemKindRaw = CollectionItemKind.sealedProduct.rawValue
+            row.justTCGVariantID = "sealed-market-\(index)"
+            context.insert(row)
+        }
+        try context.save()
+        let controller = PriceRefreshController()
+        let attempts = PriceRefreshAttemptCounter()
+        controller.setPokemonFetchOverrideForTesting { printing in
+            _ = await attempts.next()
+            return .pokemon(Self.card(id: printing.printingID), setCode: "LIF")
+        }
+        let request = PriceRefreshRequest(usesPriceFallback: false, includeImported: true,
+            forceUnsupportedRetry: false, sortOldestFirst: true,
+            maximumTargetCount: 3, markRecentlyCheckedIfEmpty: false)
+
+        // No catalog price is supplied, so this raw target stays eligible for
+        // the second pass. The sealed entries must not monopolize either pass.
+        for _ in 0..<2 {
+            let result = await controller.refresh(request, container: container, owner: .background)
+            XCTAssertTrue(result.didRun)
+            XCTAssertFalse(result.targetBuildFailed)
+        }
+        let count = await attempts.value()
+        XCTAssertEqual(count, 2)
+        let fresh = ModelContext(container)
+        let sealed = try fresh.fetch(FetchDescriptor<CollectedCard>()).filter { $0.itemKind == .sealedProduct }
+        XCTAssertEqual(sealed.count, 3)
+        for row in sealed {
+            XCTAssertNil(PriceStore(context: fresh).record(forKey: row.priceKey),
+                "Skipping unavailable work must not fabricate a provider check")
+        }
+    }
+
+    func testBoundedRefreshEligibilityPreservesVendorArtworkAndCredentialRecovery() throws {
+        let container = try makeContainer(withCard: true)
+        var target = try XCTUnwrap(PriceRefreshTargets.make(context: container.mainContext,
+            usesPriceFallback: false, includeImported: true).first)
+        let pricing = PriceQuoteService()
+        func eligible(fallback: Bool, credentials: Bool) -> Bool {
+            PriceRefreshController.canAttemptRefresh(target, usesPriceFallback: fallback,
+                hasVendorCredentials: credentials, pricing: pricing)
+        }
+        XCTAssertTrue(eligible(fallback: false, credentials: false), "Raw catalog work needs no vendor key")
+        target.itemKind = .sealedProduct
+        XCTAssertFalse(eligible(fallback: false, credentials: true))
+        XCTAssertFalse(eligible(fallback: true, credentials: false))
+        XCTAssertTrue(eligible(fallback: true, credentials: true))
+        target.needsArtwork = true
+        XCTAssertTrue(eligible(fallback: false, credentials: true), "Sealed artwork has its own vendor exception")
+        XCTAssertFalse(eligible(fallback: false, credentials: false))
+        target.itemKind = .gradedCard
+        target.marketVariantID = "bound-slab"
+        XCTAssertFalse(eligible(fallback: true, credentials: false))
+        XCTAssertTrue(eligible(fallback: false, credentials: true), "Graded pricing is independent of raw fallback")
+        target.marketVariantID = nil
+        XCTAssertTrue(eligible(fallback: false, credentials: false), "Incomplete slabs still receive their local capability stamp")
+        target.gradedIdentity = .init(name: "Lifecycle Card", setName: "Lifecycle Set",
+            collectorNumber: "1", catalogID: "lifecycle-card", pokemonPrintRun: nil)
+        target.gradingCompany = .psa
+        target.grade = "10"
+        XCTAssertFalse(eligible(fallback: false, credentials: false))
+        XCTAssertTrue(eligible(fallback: false, credentials: true))
+    }
+
     func testEmptyAutomaticPassNotifiesObserversWhenQueueEndsWithoutStatusChange() async throws {
         let container = try makeContainer(withCard: false)
         let controller = PriceRefreshController()
