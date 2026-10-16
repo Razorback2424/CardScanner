@@ -1,3 +1,33 @@
+- Four-game specialty catalog coverage (2026-10-15; `35473ed` plus existing
+  local changes): compared fresh Scryfall/TCGdex directories, all 87 One Piece
+  marketplace groups, LorcanaJSON and eight fresh Lorcana product/finish feeds.
+  Adopted 132 original Enchanted printings with exact Holofoil joins; all previous
+  1,617 Lorcana physical records are preserved. Current catalog has 1,749 physical
+  records and 3,364 exact price lanes. Replaced the broad Pokémon reverse-holo
+  ball fallback with 471 exact eligibility rows, shared with Browse generation;
+  standard-English detailed lookup also excludes foreign/jumbo identity and
+  quote/link evidence. Added six Magic mappings for actual PRM/Dragonfury footer
+  labels rather than assuming provider set codes are printed. Added three verified
+  original Romance Dawn parallel/manga records to the One Piece review registry,
+  with 2,748 retained / 2,493 verified English records and all 2,745 previous
+  printing records preserved. New acquisition validation prevents automatic saves
+  from bypassing known sibling choices; existing sole-verified policy is retained.
+  Unsigned revision 3 validates as protected review. Automatic approval review
+  rejected generating/trusting a new signing key and replacing the local owner
+  seed without explicit approval; installed owner revision 2/pins are unchanged.
+  The [dated audit and discrepancy tables](docs/research/catalog-variant-coverage-2026-10-15/README.md)
+  distinguish offline gaps, unreviewed source products and physical ownership.
+  Publisher tests pass 46/46, Python tests 95/95, and the final Pokémon price/link/
+  Browse/identity replay passes 211/211. The finalized cross-game selection passes
+  467 tests, zero failures, three deliberate live-only skips across 470 cases.
+  Intermediate failures exposed stale fixture loading, artwork opt-in leakage,
+  automatic picker bypass, and a nondeterministic standard-art test; all corrected
+  before the final green run. Public captures and unsigned candidate are retained
+  under external `CodexBuilds/CatalogCoverage-20261015/PublicSources`; final result
+  bundles use the SSD volume's `CodexBuilds/CatalogCoverage-20261015/`. No commit,
+  push, production deployment, private signing material, optical/device or
+  worldwide-completeness certification.
+
 - Lorcana holistic edge-case sweep (2026-10-14; local changes over `ec6d64c`
   and the preceding uncommitted recovery work): reproduced three defects in
   selected failing regressions. Mapped offline batches retried the same

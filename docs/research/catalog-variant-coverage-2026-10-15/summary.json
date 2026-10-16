@@ -1,0 +1,136 @@
+{
+  "boundary": "Public source records are discovery leads, not a complete physical-printing denominator.",
+  "lorcana": {
+    "discoveryOnlyRarities": {
+      "Common": 442,
+      "Enchanted": 108,
+      "Epic": 108,
+      "Iconic": 12,
+      "Legendary": 79,
+      "Promo": 13,
+      "Quest": 7,
+      "Rare": 296,
+      "Special": 319,
+      "Super Rare": 118,
+      "Uncommon": 331
+    },
+    "discoveryOnlyRecords": 1833,
+    "discoveryRecords": 3582,
+    "enchantedPrintings": 132,
+    "exactFinishMappings": 3364,
+    "physicalPrintings": 1749,
+    "upstreamGeneratedOn": "2026-10-10T17:54:17",
+    "upstreamMissingFromDiscovery": [],
+    "upstreamRecords": 3556
+  },
+  "magic": {
+    "directorySets": 1059,
+    "longCodeSets": 7,
+    "longCodeSourceRecords": 34,
+    "note": "PT SNC contains token layouts despite promo set metadata. Long provider codes do not prove printed codes.",
+    "reviewedFooterMappings": 6
+  },
+  "onePiece": {
+    "installedRevision": 2,
+    "installedVerifiedEnglishPrintings": 2490,
+    "note": "Unmatched means no exact installed market association. It does not prove a missing physical printing; duplicate listings, unpriced known cards, presales and other scope are retained for review.",
+    "pendingReviewedPrintings": 3,
+    "reviewVerifiedEnglishPrintings": 2493,
+    "sourceRecords": 7462,
+    "unmatchedClasses": {
+      "alternate_art": 710,
+      "anniversary": 313,
+      "base_or_standard": 806,
+      "celebration": 58,
+      "demo_deck": 29,
+      "event_pack": 87,
+      "finalist_top": 166,
+      "full_art": 75,
+      "gold": 75,
+      "illustration_box": 27,
+      "jolly_roger_foil": 72,
+      "judge": 104,
+      "manga": 47,
+      "pandaman_art": 6,
+      "participant": 96,
+      "pre_release": 536,
+      "premium_card_collection": 155,
+      "promotion": 224,
+      "promotion_pack": 13,
+      "regional": 8,
+      "release_event": 573,
+      "reprint": 255,
+      "revision": 33,
+      "sealed_battle": 16,
+      "serial_numbered": 7,
+      "signature": 2,
+      "sp": 150,
+      "special_foil": 1,
+      "super_alt_art": 8,
+      "super_leader_alt_art": 1,
+      "tournament": 86,
+      "treasure_cup": 44,
+      "treasure_rare": 9,
+      "wanted_poster": 11,
+      "winner_champion": 292
+    },
+    "unmatchedPresales": 122,
+    "unmatchedSourceProducts": 5095,
+    "upstreamBuild": "2026-10-14T20:05:55+0000"
+  },
+  "pokemon": {
+    "currentProviderSets": 220,
+    "digitalSetsAmongAbsent": 15,
+    "distinctProviderSets": 146,
+    "note": "All 471 retained ball slots already exist in bundled checklists. Resolver fallback was broader; tests now protect exact eligibility. Other stamp/edition distributions have no independent complete denominator.",
+    "parallelInventories": [
+      {
+        "bundledSlots": 167,
+        "expectedSlots": 167,
+        "missingSlots": 0,
+        "set": "sv08.5",
+        "unexpectedSlots": 0
+      },
+      {
+        "bundledSlots": 152,
+        "expectedSlots": 152,
+        "missingSlots": 0,
+        "set": "sv10.5b",
+        "unexpectedSlots": 0
+      },
+      {
+        "bundledSlots": 152,
+        "expectedSlots": 152,
+        "missingSlots": 0,
+        "set": "sv10.5w",
+        "unexpectedSlots": 0
+      }
+    ],
+    "setEntries": 157,
+    "setsAbsentOffline": 74,
+    "snapshotGeneratedAt": "2026-09-15T23:26:30Z"
+  },
+  "schemaVersion": 1,
+  "sources": {
+    "lorcanaCards": {
+      "bytes": 9552447,
+      "sha256": "f05e878cd2fc3a3b7a77cd8857c9d6d8e52605292bf9678de1d6c5edc3e9363d"
+    },
+    "magicSets": {
+      "bytes": 628157,
+      "sha256": "93e7e4949be4c7bb2cb9a41bd939e7c1073a84475bb635e81dfeeac1954c7801"
+    },
+    "onePieceProducts": {
+      "bytes": 23349426,
+      "sha256": "0336b04b4bbfa6ab763c4f5ec9cd7f5be4eebe98fca2d872be4e541e51602684"
+    },
+    "pokemonPocketSeries": {
+      "bytes": 2497,
+      "sha256": "6f9959038b30271ec4480f1d8929216a78b16fcb6778467471ba4fa91c1a0ded"
+    },
+    "pokemonSets": {
+      "bytes": 35673,
+      "sha256": "5d1d49cc20ff35b5b93bd14226d80e9298b6ab33ce086ab128fbb6bd8cb5c79a"
+    }
+  }
+}

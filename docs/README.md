@@ -1,6 +1,12 @@
 # Documentation map
 
-**Status:** current navigation map — 2026-10-14
+**Status:** current navigation map — 2026-10-15
+
+The [four-game specialty coverage review](research/catalog-variant-coverage-2026-10-15/README.md)
+records exact Pokémon eligibility repairs, six Magic promo-footer mappings and
+132 enabled Lorcana Enchanted printings. Three new One Piece review printings
+await approval for signed local activation. Its discrepancy ledgers separate
+discovery, physical ownership, pricing and unresolved specialty scope.
 
 The latest [Lorcana edge-case checkpoint](release/lorcana-production-acceptance.md)
 records corrected offline batch handling, no-price accounting and invalid-cache

@@ -4,6 +4,15 @@
 **Started:** 2026-10-03, worktree `one-piece-integration`, base `69c714f`.
 **Scope:** the owner's full code-level plan, corrected by the source review.
 
+**Specialty-printing review — 2026-10-15:** three independently reconciled original
+Romance Dawn printings (alternate Zoro, alternate Shanks and manga Shanks) are
+added to the durable review corpus, bringing it to 2,748 retained / 2,493 verified
+English printings. All existing IDs and family-completeness flags are preserved.
+The additive unsigned revision-3 candidate validates against owner revision 2.
+Automatic approval review rejected generating a new signing key, trusting its
+public pin and replacing the bundled seed without explicit approval. Owner
+revision 2 remains installed. See the [evidence and remaining ledgers](../research/catalog-variant-coverage-2026-10-15/README.md).
+
 **Systematic mapping repair — 2026-10-07:** shared exact-identifier title rules
 repair 406 mappings across 39 sets, including 27 OP17 and 36 OP16 cards. All
 2,367 resulting mappings pass fresh public vendor identity/finish/quote checks.

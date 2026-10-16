@@ -1,12 +1,27 @@
 # Documentation and artifact audit
 
-**Audit date:** 2026-10-02; implementation evidence updated 2026-10-14
+**Audit date:** 2026-10-02; implementation evidence updated 2026-10-15
 **Purpose:** reconcile the chronological progress log, implementation plans,
 QA checklists, and simulator evidence so that an old “pending” note is not
 mistaken for a current defect—and a real validation gap is not lost in the
 history.
 
-## Current authority boundary — updated 2026-10-14
+## Current authority boundary — updated 2026-10-15
+
+**Four-game specialty coverage — 2026-10-15:** the
+[coverage authority](../audits/card-coverage-gaps-and-research.md) links a fresh
+four-game review and reproducible discrepancy ledgers. Its exact Pokémon rules
+and 132 Lorcana Enchanted additions supersede broad-ball and ordinary-only scope
+claims for this adopted subset. Earlier 1,616/3,232 Lorcana totals remain dated
+evidence; current mappings total 1,748/3,364. PLG20's provider code is not its
+printed PRM code, correcting the earlier proposed length-only remedy. One Piece
+review data now contains three more verified parallels, while the signed owner
+seed remains revision 2 because new-key/pin activation requires explicit approval.
+Review-corpus improvements cannot be presented as installed owner coverage.
+The current One Piece source permits sole-verified resolution even when physical
+coverage flags are false; older prose implying those flags enforce abstention is
+not the current runtime contract. New known siblings require choices, and the
+new acquisition check prevents an automatic save from bypassing that picker.
 
 **Latest Lorcana edge-case sweep — 2026-10-14:** the
 [production checkpoint](../release/lorcana-production-acceptance.md) records three

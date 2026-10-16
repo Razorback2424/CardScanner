@@ -1,0 +1,993 @@
+{
+  "addedPrintings": [
+    {
+      "groupID": 23536,
+      "printingID": "45d22908-c097-4852-b4cd-d5c6b0323099",
+      "productID": 561993,
+      "sourceID": "lorcanajson:en:1161",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "84431cda-702c-4933-b335-cab1235c33c7",
+      "productID": 561992,
+      "sourceID": "lorcanajson:en:1162",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "05f3e95e-2837-4af1-84cd-6687ff65f0e8",
+      "productID": 561979,
+      "sourceID": "lorcanajson:en:1163",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "dd19493a-0d77-4fe5-870b-240ee99e8d8e",
+      "productID": 561977,
+      "sourceID": "lorcanajson:en:1164",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "955915ad-11fe-4324-bee6-7f341d94b7cd",
+      "productID": 561994,
+      "sourceID": "lorcanajson:en:1165",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "eb1d2997-fae3-474e-9a7f-5ae8c4a3132d",
+      "productID": 561982,
+      "sourceID": "lorcanajson:en:1166",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "0d178777-8b85-4deb-a47a-d0e58fec958e",
+      "productID": 561991,
+      "sourceID": "lorcanajson:en:1167",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "14510738-2be2-4707-9b98-39395119e247",
+      "productID": 561980,
+      "sourceID": "lorcanajson:en:1168",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "5afe0044-4a89-4da7-950c-bdf858ad477b",
+      "productID": 561983,
+      "sourceID": "lorcanajson:en:1169",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "5a55f57c-4ed4-4612-8aea-ba3c5b694ce1",
+      "productID": 559716,
+      "sourceID": "lorcanajson:en:1170",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "d8a75196-6739-49a3-bb29-0dbe69f39f4b",
+      "productID": 561984,
+      "sourceID": "lorcanajson:en:1171",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "2ffcfdd9-d75f-4f79-90c8-451ff4dbb05c",
+      "productID": 562000,
+      "sourceID": "lorcanajson:en:1172",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "5dbb84b5-a4b4-411f-bd76-7e221cae9ef5",
+      "productID": 562021,
+      "sourceID": "lorcanajson:en:1173",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "48582591-ce87-4160-ace4-612e8e84bc3d",
+      "productID": 561995,
+      "sourceID": "lorcanajson:en:1174",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "d0629d39-aa60-4233-a9da-4bac0791ed56",
+      "productID": 561976,
+      "sourceID": "lorcanajson:en:1175",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "3a9e5913-b4ca-40a2-9190-3954722bdcb6",
+      "productID": 562007,
+      "sourceID": "lorcanajson:en:1176",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "6c4c53b8-4a92-4153-bfe1-35054dc7abc9",
+      "productID": 561981,
+      "sourceID": "lorcanajson:en:1177",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23536,
+      "printingID": "796c563b-e5c1-4ba9-82bd-aa5ae5a858db",
+      "productID": 561978,
+      "sourceID": "lorcanajson:en:1178",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "2c7298ba-853d-4c0e-9928-c65b2dc0e604",
+      "productID": 592030,
+      "sourceID": "lorcanajson:en:1404",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "1ed859e5-ae07-47c0-83d4-ca6eec0e61dd",
+      "productID": 592031,
+      "sourceID": "lorcanajson:en:1405",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "fb76bf0e-47ed-41d4-a2d3-8118fad9e462",
+      "productID": 592001,
+      "sourceID": "lorcanajson:en:1406",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "e465a0a1-c698-4f6d-8a05-26a715a6e4a6",
+      "productID": 592032,
+      "sourceID": "lorcanajson:en:1407",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "d906b13e-005b-438a-b21f-2f3fb3639d22",
+      "productID": 592013,
+      "sourceID": "lorcanajson:en:1408",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "f4c95fee-973f-42b9-bb70-fbe23ff92c77",
+      "productID": 592034,
+      "sourceID": "lorcanajson:en:1409",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "43241bbd-8e26-4b3f-b82f-70d4cf239d46",
+      "productID": 592040,
+      "sourceID": "lorcanajson:en:1410",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "200b4efc-b8cd-4e6b-b54c-de404667bffe",
+      "productID": 591994,
+      "sourceID": "lorcanajson:en:1411",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "878fa2bd-773f-48fd-b9de-8bbc3c8c426f",
+      "productID": 591998,
+      "sourceID": "lorcanajson:en:1412",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "24d72fb8-3c10-4dda-b914-3d011ab104f5",
+      "productID": 592036,
+      "sourceID": "lorcanajson:en:1413",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "22a82a3d-1d26-4d2a-995f-f88894a05470",
+      "productID": 592037,
+      "sourceID": "lorcanajson:en:1414",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "a233ba23-793c-4b84-8fd8-e8803d30d225",
+      "productID": 592000,
+      "sourceID": "lorcanajson:en:1415",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "1e930829-8e1b-4a3f-a5a2-4caf4901256a",
+      "productID": 592038,
+      "sourceID": "lorcanajson:en:1416",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "7c9a90c5-d0d8-4793-b25f-dab45e638ce3",
+      "productID": 591999,
+      "sourceID": "lorcanajson:en:1417",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "bb98147b-9f8b-43eb-9b24-9933cf224134",
+      "productID": 592012,
+      "sourceID": "lorcanajson:en:1418",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "0a0c0504-a444-4ed7-be9e-fd6e269ac973",
+      "productID": 590822,
+      "sourceID": "lorcanajson:en:1419",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "cf6dfefd-fc74-4922-9f61-50b345dd0570",
+      "productID": 592014,
+      "sourceID": "lorcanajson:en:1420",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23746,
+      "printingID": "9b7b0cc7-93be-423e-9509-e4cc7b8dc985",
+      "productID": 593162,
+      "sourceID": "lorcanajson:en:1421",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "b25dfa6b-f4c5-4bd0-bf1b-86525e19ede2",
+      "productID": 619733,
+      "sourceID": "lorcanajson:en:1638",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "2bda3c57-f500-4c88-b31f-94d6a69a6d1f",
+      "productID": 619734,
+      "sourceID": "lorcanajson:en:1639",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "e79446de-daa5-4fee-85c2-88b288197d25",
+      "productID": 619735,
+      "sourceID": "lorcanajson:en:1640",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "423df134-48ae-43f5-9c2e-64876ed8bd5e",
+      "productID": 619736,
+      "sourceID": "lorcanajson:en:1641",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "51f70cf3-f494-440a-9476-c5f8beb8016e",
+      "productID": 619737,
+      "sourceID": "lorcanajson:en:1642",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "1844a370-16be-4c28-8f3e-237f4ebfebf8",
+      "productID": 619738,
+      "sourceID": "lorcanajson:en:1643",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "6e559d84-975b-49f5-bfd8-5621b2217ff8",
+      "productID": 619739,
+      "sourceID": "lorcanajson:en:1644",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "535f35f4-2183-48e6-87c1-33c98ad8f4e5",
+      "productID": 619740,
+      "sourceID": "lorcanajson:en:1645",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "cef281a7-bfee-4d47-a894-28a9e5c50407",
+      "productID": 619741,
+      "sourceID": "lorcanajson:en:1646",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "3ae802fd-a119-4165-90af-ebd4315a3197",
+      "productID": 619742,
+      "sourceID": "lorcanajson:en:1647",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "0ce61d09-3ecd-48cc-aebf-b411abdb1082",
+      "productID": 619743,
+      "sourceID": "lorcanajson:en:1648",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "b1c43563-a827-4c13-8f6f-13447847d489",
+      "productID": 619744,
+      "sourceID": "lorcanajson:en:1649",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "e534cdb5-41b3-45bb-90fe-e8612f6000ff",
+      "productID": 619745,
+      "sourceID": "lorcanajson:en:1650",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "1365db5e-5191-48e6-8d1b-a70c0efe7a9b",
+      "productID": 619746,
+      "sourceID": "lorcanajson:en:1651",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "e4ecb1dc-7106-43ba-877e-9eb808ab8cbb",
+      "productID": 619747,
+      "sourceID": "lorcanajson:en:1652",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "b406e294-10e2-4942-9bd3-e624e4daa2ca",
+      "productID": 619748,
+      "sourceID": "lorcanajson:en:1653",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "b7ff185f-8900-40de-97ce-f517e69bf2fc",
+      "productID": 619749,
+      "sourceID": "lorcanajson:en:1654",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24011,
+      "printingID": "e1ab1b99-ff37-4b3e-9fef-d8b0faf9bc48",
+      "productID": 619750,
+      "sourceID": "lorcanajson:en:1655",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "fb66c4ad-6ca9-4cf1-abf1-596c383ab8fa",
+      "productID": 633053,
+      "sourceID": "lorcanajson:en:1869",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "34d6073e-0e93-4882-a6c2-3f6e2677d446",
+      "productID": 632252,
+      "sourceID": "lorcanajson:en:1870",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "fe2c52e9-a8f5-4895-8503-01197ac3d4d3",
+      "productID": 632686,
+      "sourceID": "lorcanajson:en:1871",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "1cea09c8-aa8e-4dc5-8c5d-aef4638006ce",
+      "productID": 631992,
+      "sourceID": "lorcanajson:en:1872",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "78be307f-a87f-4a00-b890-ce512f8f60c2",
+      "productID": 633099,
+      "sourceID": "lorcanajson:en:1873",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "61303048-5f66-45db-a406-05609c6a1f88",
+      "productID": 632245,
+      "sourceID": "lorcanajson:en:1874",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "1265e1e7-9423-4fe4-89fc-081e9e38cac5",
+      "productID": 632208,
+      "sourceID": "lorcanajson:en:1875",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "ccfe5f1e-9f64-48a0-aa79-55ffe4d5116e",
+      "productID": 631975,
+      "sourceID": "lorcanajson:en:1876",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "2af83025-5ef2-46c9-8881-8a25844eabf6",
+      "productID": 632720,
+      "sourceID": "lorcanajson:en:1877",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "45441ddd-b0cc-498f-a5be-e34b79c72fc9",
+      "productID": 633103,
+      "sourceID": "lorcanajson:en:1878",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "6a56ee4c-5a75-4a17-84a0-42c6098ae845",
+      "productID": 632251,
+      "sourceID": "lorcanajson:en:1879",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "6afe811e-970c-44f6-b6e5-fabbe29ff572",
+      "productID": 631988,
+      "sourceID": "lorcanajson:en:1880",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "727796dc-03b4-489b-92e9-376082ad82fa",
+      "productID": 632684,
+      "sourceID": "lorcanajson:en:1881",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "1fa28a97-a155-4b3a-8305-6d283d413bb9",
+      "productID": 632228,
+      "sourceID": "lorcanajson:en:1882",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "1478373b-8d74-42be-946a-db04fb61b877",
+      "productID": 631989,
+      "sourceID": "lorcanajson:en:1883",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "c0c3f792-e776-4d99-8ad6-c926c5bef851",
+      "productID": 633104,
+      "sourceID": "lorcanajson:en:1884",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "5681c9b4-ea8c-4bf8-9beb-db6fcd9dc762",
+      "productID": 633098,
+      "sourceID": "lorcanajson:en:1885",
+      "status": "mapped"
+    },
+    {
+      "groupID": 24258,
+      "printingID": "5cc87e48-25cc-4c6a-89a8-a1989a540190",
+      "productID": 631990,
+      "sourceID": "lorcanajson:en:1886",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "a5a47981-dfe5-4528-b263-ec0c500c9466",
+      "productID": 510148,
+      "sourceID": "lorcanajson:en:205",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "a70bd533-243c-42d9-9849-b4ac0706aae5",
+      "productID": 510152,
+      "sourceID": "lorcanajson:en:206",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "6aacae0a-e8ae-4e70-a23b-d6c65e29cfd2",
+      "productID": 510153,
+      "sourceID": "lorcanajson:en:207",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "86007318-a757-4394-b768-f6fd0201b434",
+      "productID": 510154,
+      "sourceID": "lorcanajson:en:208",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "138273f7-9240-4edc-b5e1-5347798fe730",
+      "productID": 510155,
+      "sourceID": "lorcanajson:en:209",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "f50d4a2e-b486-4ecd-95fd-7071aaa8bd0c",
+      "productID": 510156,
+      "sourceID": "lorcanajson:en:210",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "5c26f743-8754-447c-b6ac-f383d96b3489",
+      "productID": 510157,
+      "sourceID": "lorcanajson:en:211",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "ea077e3c-8b19-4815-863e-1339146a28d6",
+      "productID": 510158,
+      "sourceID": "lorcanajson:en:212",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "31fa642b-e60b-4ae8-a85b-a9f15efc90b3",
+      "productID": 510159,
+      "sourceID": "lorcanajson:en:213",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "5f592675-a7c8-45a0-820f-68723db3e0f1",
+      "productID": 510161,
+      "sourceID": "lorcanajson:en:214",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "700260fc-f04e-403b-a7f8-3412d404b3fc",
+      "productID": 510162,
+      "sourceID": "lorcanajson:en:215",
+      "status": "mapped"
+    },
+    {
+      "groupID": 22937,
+      "printingID": "4be52d40-e520-4271-a549-b57fe8c4ff0e",
+      "productID": 510163,
+      "sourceID": "lorcanajson:en:216",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "2fe7865c-6c69-4e3e-81d2-5b461d7d2d34",
+      "productID": 527802,
+      "sourceID": "lorcanajson:en:421",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "22256eb3-1935-4e9d-8727-31965e75d25b",
+      "productID": 527799,
+      "sourceID": "lorcanajson:en:422",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "a41ece2d-d812-4d0e-b224-980b999573ae",
+      "productID": 527797,
+      "sourceID": "lorcanajson:en:423",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "157c2f9c-9ac1-4bfa-81a9-8b3e7c2a23a9",
+      "productID": 528107,
+      "sourceID": "lorcanajson:en:424",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "4ee3e1de-a424-489b-8844-ebb208c69489",
+      "productID": 528108,
+      "sourceID": "lorcanajson:en:425",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "56aa99e4-cb8e-4122-911a-9e84b396fcbe",
+      "productID": 527800,
+      "sourceID": "lorcanajson:en:426",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "0db0d394-cb42-43d2-b643-858e60b9735d",
+      "productID": 528109,
+      "sourceID": "lorcanajson:en:427",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "cee014a9-c4d6-44d2-bcec-715e640b58ce",
+      "productID": 528110,
+      "sourceID": "lorcanajson:en:428",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "8df27548-bcc5-4b11-8367-42fd028a9e44",
+      "productID": 528111,
+      "sourceID": "lorcanajson:en:429",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "20fa75aa-ac6d-4b8e-8f3d-61b9852d9334",
+      "productID": 528112,
+      "sourceID": "lorcanajson:en:430",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "da0f6507-7878-49a1-8f6c-d1ea93834e95",
+      "productID": 528113,
+      "sourceID": "lorcanajson:en:431",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23303,
+      "printingID": "a7c08b83-ac1e-4654-aced-83fbc8f67f74",
+      "productID": 527798,
+      "sourceID": "lorcanajson:en:432",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "6570db66-98e2-409d-a4eb-c35ca34ee1e0",
+      "productID": 539156,
+      "sourceID": "lorcanajson:en:641",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "0c0c26ed-bb0d-4f32-98b7-61d081aa9bb7",
+      "productID": 539273,
+      "sourceID": "lorcanajson:en:642",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "2e52ce66-fd04-46bc-bc2d-ec16bc674965",
+      "productID": 539157,
+      "sourceID": "lorcanajson:en:643",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "63a6a378-9b5e-425e-bb18-725af5fbcf83",
+      "productID": 539158,
+      "sourceID": "lorcanajson:en:644",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "a338d339-19f8-441c-9891-3b90deac6d1f",
+      "productID": 539159,
+      "sourceID": "lorcanajson:en:645",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "ec9881f7-1539-4b08-be31-837e872c4e07",
+      "productID": 539162,
+      "sourceID": "lorcanajson:en:646",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "10084f6f-ead5-404e-8df1-fe209293f67d",
+      "productID": 539163,
+      "sourceID": "lorcanajson:en:647",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "5e2d2878-69c8-4665-8053-f343fd0eaeea",
+      "productID": 539164,
+      "sourceID": "lorcanajson:en:648",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "c5506cc4-b2cc-4eb8-9274-5cf413e69f0d",
+      "productID": 539165,
+      "sourceID": "lorcanajson:en:649",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "f62054aa-9dd4-4604-8959-e6cc35ae14e9",
+      "productID": 539166,
+      "sourceID": "lorcanajson:en:650",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "ac3cb0b5-06cb-4734-839b-55655fc9f090",
+      "productID": 539274,
+      "sourceID": "lorcanajson:en:651",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "d49d148f-1ad1-4a20-9ffb-7f696f3ef5da",
+      "productID": 539167,
+      "sourceID": "lorcanajson:en:652",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "77ffde8b-75f9-4bce-8073-941325c639a4",
+      "productID": 539275,
+      "sourceID": "lorcanajson:en:653",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "7da170b5-fee2-4da3-8fbb-de37b2d41f6e",
+      "productID": 539168,
+      "sourceID": "lorcanajson:en:654",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "b29dc2c3-110e-4b77-8415-20fda24b4c60",
+      "productID": 539169,
+      "sourceID": "lorcanajson:en:655",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "31150f18-4a31-4980-a39c-acd757c17660",
+      "productID": 539276,
+      "sourceID": "lorcanajson:en:656",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "16f17ede-e5d2-4d8a-b0ef-0bdaff152d1c",
+      "productID": 539171,
+      "sourceID": "lorcanajson:en:657",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23367,
+      "printingID": "78938e97-e755-4ea4-aab0-7e314d9ed3ed",
+      "productID": 539173,
+      "sourceID": "lorcanajson:en:658",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "42b7756d-438c-4668-9349-5799a5e55d1e",
+      "productID": 550544,
+      "sourceID": "lorcanajson:en:896",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "1668480b-c064-4bd6-b78b-01ec6900c5c9",
+      "productID": 550537,
+      "sourceID": "lorcanajson:en:897",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "159bbb62-978d-47f6-b122-c50b5bb0b4a3",
+      "productID": 550718,
+      "sourceID": "lorcanajson:en:898",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "63b74832-a66b-4360-be1d-e6e3f029e942",
+      "productID": 550844,
+      "sourceID": "lorcanajson:en:899",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "65ca0dc5-83ad-4567-8234-1391d9386c9e",
+      "productID": 550538,
+      "sourceID": "lorcanajson:en:900",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "ebc99015-692e-4056-bcd9-26bcb648ea4d",
+      "productID": 551943,
+      "sourceID": "lorcanajson:en:901",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "49228bbb-011b-40e0-837f-c7bcb82907b6",
+      "productID": 550535,
+      "sourceID": "lorcanajson:en:902",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "43894934-eda7-4457-8df6-98daac4d892e",
+      "productID": 551944,
+      "sourceID": "lorcanajson:en:903",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "7a6b2d76-b4bc-4d1d-bc42-20ac7b0c6b3e",
+      "productID": 550541,
+      "sourceID": "lorcanajson:en:904",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "dc1800da-4163-4e22-8c0a-e5e1bd40a8fb",
+      "productID": 550542,
+      "sourceID": "lorcanajson:en:905",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "fe3547da-955e-448f-8300-91fcbb42c48c",
+      "productID": 550839,
+      "sourceID": "lorcanajson:en:906",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "af8c0cda-80f0-43de-a8cb-c28d4c52a243",
+      "productID": 550838,
+      "sourceID": "lorcanajson:en:907",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "944b0035-da1b-455c-88cf-ad20e0a361b3",
+      "productID": 550674,
+      "sourceID": "lorcanajson:en:908",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "f3157d4d-a988-42cc-b53d-85229fd1a4c0",
+      "productID": 550540,
+      "sourceID": "lorcanajson:en:909",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "17d2e111-9ead-40f8-a0fc-d2754fabffe6",
+      "productID": 550719,
+      "sourceID": "lorcanajson:en:910",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "8dcf2ba8-cec8-4f36-87bd-6497c2c6ce92",
+      "productID": 550549,
+      "sourceID": "lorcanajson:en:911",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "68c266d2-675e-421b-9016-02ba6ed0cafe",
+      "productID": 550721,
+      "sourceID": "lorcanajson:en:912",
+      "status": "mapped"
+    },
+    {
+      "groupID": 23474,
+      "printingID": "f45080f0-5b39-481a-ace3-0a529845bf4f",
+      "productID": 550536,
+      "sourceID": "lorcanajson:en:913",
+      "status": "mapped"
+    }
+  ],
+  "discoverySHA256": "8b5665f25aff880943f154902e42b27a6e80fd530f7e075f6c59246999af2ffd",
+  "exactFinishMappings": 3364,
+  "groups": [
+    {
+      "code": "1",
+      "groupID": 22937,
+      "name": "The First Chapter",
+      "pricesSHA256": "f227bacfc5dd70d0c6c0a1143b25aa7cf30ee161a9e5c0ee1ef81207d21390ee",
+      "productsSHA256": "02078dafdcb20eabff4488d66a9562ef576f1674a657b206278fea986824a211"
+    },
+    {
+      "code": "2",
+      "groupID": 23303,
+      "name": "Rise of the Floodborn",
+      "pricesSHA256": "2528b2c0eed7748ed4c8fd19b6d98ec54a9dac2544df5f30b25259bef04ba30e",
+      "productsSHA256": "1b4b5e1c6006147e49ed665747ea8e379d5b7b6dac3ef3f04491c677878eba55"
+    },
+    {
+      "code": "3",
+      "groupID": 23367,
+      "name": "Into the Inklands",
+      "pricesSHA256": "840e5ea84c1c7e58cb96de90964938fc3b2dc7b86d50e5351f8c07f2f6973656",
+      "productsSHA256": "3431454e620e995f10eb3e55a6509ed0c82ec47b9385a839434510c88cd25b3b"
+    },
+    {
+      "code": "4",
+      "groupID": 23474,
+      "name": "Ursula's Return",
+      "pricesSHA256": "9e546959ddf25883ccb8a7b9fb932550fa5ffeaebb914e2f55c22bfbb9791236",
+      "productsSHA256": "814ca33c07dea0fc7beca4f1351806e9ed3aa399f6f571f613ebe389b70d5acf"
+    },
+    {
+      "code": "5",
+      "groupID": 23536,
+      "name": "Shimmering Skies",
+      "pricesSHA256": "0c2f2ef7085a7354073433b11ab864a14746c249f3b479bbf52c18756ecff9e5",
+      "productsSHA256": "7eea05ae94c8de580bf8ab54ab062e214161c56e79cfd34b41a4093a5e5e0f4d"
+    },
+    {
+      "code": "6",
+      "groupID": 23746,
+      "name": "Azurite Sea",
+      "pricesSHA256": "8c5fe6820d5697ce8a789a44366263c7e20ad9f57c5b6ae958d8775dfd0f43f9",
+      "productsSHA256": "9aee19c5267628ca0e6ced8d24611dbf0d482a16e97db837d6963cd5d04440cf"
+    },
+    {
+      "code": "7",
+      "groupID": 24011,
+      "name": "Archazia's Island",
+      "pricesSHA256": "db84cb72b83857cabb7e8ec08f80a8ce1f33766784dc70da5f35e2a04cd538f3",
+      "productsSHA256": "330fd34d3037454210c6311593fac794cf8b1a31afefff42cda71b366f263817"
+    },
+    {
+      "code": "8",
+      "groupID": 24258,
+      "name": "The Reign of Jafar",
+      "pricesSHA256": "12b73a688a3c2ee3c531939ad1c22335362696547d3f47ad3685e0b560611e76",
+      "productsSHA256": "3cce650c1a8e0e25fccf23a680273bdb83b836db785ce0feaf3db96bbfc78792"
+    }
+  ],
+  "newPhysicalPrintings": 1749,
+  "previousPhysicalRecordsPreserved": 1617,
+  "reviewedAt": 813763640.962881,
+  "schemaVersion": 1,
+  "sourceObservedOn": "2026-10-15"
+}

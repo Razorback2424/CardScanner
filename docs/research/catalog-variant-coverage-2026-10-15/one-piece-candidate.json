@@ -1,0 +1,11 @@
+{
+  "newVerifiedEnglishPrintings": 3,
+  "payloadSHA256": "65070cad955e848fefa91cd6c87d0e23a753d0b245b70a496c7b28fea2837822",
+  "previousInstalledRevision": 2,
+  "previousPrintingRecordsPreserved": 2745,
+  "retainedPhysicalPrintingCount": 2748,
+  "revision": 3,
+  "schemaVersion": 1,
+  "signatureStatus": "unsigned; new local signing key/public pin requires explicit approval",
+  "sourceReview": "../../../OnePieceCatalogCore/ReviewCorpus/english-stress/special-printings-review.json"
+}

@@ -1,0 +1,8 @@
+code,name,release,source_record_count,set_type,source_url,disposition
+plg20,Love Your LGS 2020,2020-05-18,2,promo,https://api.scryfall.com/sets/plg20,Reviewed printed-footer mappings
+plg21,Love Your LGS 2021,2021-06-22,11,promo,https://api.scryfall.com/sets/plg21,Needs actual footer/layout reconciliation
+plg22,Love Your LGS 2022,2022-07-01,2,promo,https://api.scryfall.com/sets/plg22,Needs actual footer/layout reconciliation
+plg24,Love Your LGS 2024,2024-08-06,7,promo,https://api.scryfall.com/sets/plg24,Needs actual footer/layout reconciliation
+plg25,Love Your LGS 2025,2025-03-26,2,promo,https://api.scryfall.com/sets/plg25,Needs actual footer/layout reconciliation
+ptkdf,Tarkir Dragonfury,2015-04-03,4,promo,https://api.scryfall.com/sets/ptkdf,Reviewed printed-footer mappings
+ptsnc,Streets of New Capenna Southeast Asia Tokens,2022-04-30,6,promo,https://api.scryfall.com/sets/ptsnc,Needs actual footer/layout reconciliation

@@ -1,5 +1,14 @@
 # Lorcana normal-workflow pricing rollout
 
+**Enchanted extension — 2026-10-15:** the
+[four-game review](catalog-variant-coverage-2026-10-15/README.md) adds all 132
+original Enchanted printings across sets 1–8 using exact footers, reviewed
+Lava/VerticalWave foiling and exact Holofoil market joins. The original 1,617
+physical records are preserved. Current totals are 1,749 physical records,
+1,748 mapped printings and 3,364 finish mappings. Earlier ordinary-only totals
+below are dated evidence. Later Enchanted, Epic/Iconic and special distributions
+remain outside the adopted policy; discovery and ownership are separate.
+
 **Status:** normal app registration, expanded ordinary mappings and bounded
 live/simulator acceptance passed — 2026-10-13, `8613a1d` plus local changes on
 `feat/lorcana-implementation`.
