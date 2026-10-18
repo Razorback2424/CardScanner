@@ -518,7 +518,12 @@ struct CollectionVariantCorrectionClaim: Equatable, Sendable {
 /// and variant correction. Only value snapshots and `CollectionMutation` cross
 /// the boundary; no SwiftData model object is returned to the view model.
 @ModelActor
-actor ScannerCollectionWriter {
+actor ScannerCollectionWriter: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     #if DEBUG
     private var saveOverrideForTesting: (@Sendable () throws -> Void)?
 
@@ -1339,7 +1344,12 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
 /// Reads the detail screen's logical quantity without doing SwiftData fetches
 /// on the main actor. Only the value crosses back to the view.
 @ModelActor
-actor CollectionDetailQuantityReader {
+actor CollectionDetailQuantityReader: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     func logicalQuantity(
         forAnyKey key: String,
         magicTreatmentIDsRaw: [String]
@@ -5358,7 +5368,12 @@ struct CollectionStore {
 /// main-actor context. The continuation is checked before each position and
 /// before commit so a storage transition rolls the operation back atomically.
 @ModelActor
-actor CollectionDeletionModelActor {
+actor CollectionDeletionModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     func deleteAll(
         shouldContinue: @escaping StorageGenerationContinuation,
         exclusiveToken: UUID? = nil

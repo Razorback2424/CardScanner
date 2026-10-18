@@ -140,7 +140,7 @@ final class CollectionCatalogNormalizer: ObservableObject {
 
         let now = Date.now
         isCollectingInputs = true
-        let inputActor = CollectionCatalogNormalizationInputActor(
+        let inputActor = await CollectionCatalogNormalizationInputActor.makeBackground(
             modelContainer: context.container
         )
         let inputs = await inputActor.inputs(now: now, gameRegistry: gameRegistry)
@@ -426,7 +426,12 @@ final class CollectionCatalogNormalizer: ObservableObject {
 /// normalizer, so no SwiftData model or persistent identifier is retained
 /// across the provider suspension.
 @ModelActor
-actor CollectionCatalogNormalizationInputActor {
+actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     fileprivate func inputs(now: Date, gameRegistry: CardGameRegistry) -> ImportedCatalogNormalizationInputs {
         let readContext = ModelContext(modelContext.container)
         let store = CollectionStore(context: readContext, gameRegistry: gameRegistry)

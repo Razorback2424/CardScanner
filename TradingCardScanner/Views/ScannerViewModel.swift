@@ -578,8 +578,8 @@ struct PriceCheckResult: Identifiable {
         switch quote {
         case let .price(price):
             return PriceDisplay(
-                amount: price.unitMarketPriceUSD,
-                currencyCode: price.currencyCode,
+                amount: price.isUsableUSD ? price.unitMarketPriceUSD : nil,
+                currencyCode: "USD",
                 source: price.source,
                 sourceUpdatedAt: price.sourceUpdatedAt,
                 fetchedAt: price.fetchedAt,
@@ -1536,7 +1536,10 @@ final class ScannerViewModel: ObservableObject {
     private var sessionUnresolvedIDs: Set<UUID> = []
     private var transientRetryCounts: [ScanSuppressionKey: Int] = [:]
 
-    private var collectionWriter: ScannerCollectionWriter?
+    /// Starting the camera stays synchronous. Durable operations capture this
+    /// session's preparation task and await it inside their tracked write, so
+    /// ending a session still drains the first write even during preparation.
+    private var collectionWriter: Task<ScannerCollectionWriter, Never>?
     /// Tests can hold or fail the add operation without replacing the concrete
     /// writer used by undo and correction flows.
     private let collectionAddOverride: (@Sendable (CollectionCommitCandidate) async throws -> CollectionMutation)?
@@ -2078,13 +2081,13 @@ final class ScannerViewModel: ObservableObject {
         storageGenerationToken = storageGeneration?.currentToken()
         let beginsNewSession = !isScannerSessionActive
         CollectionStore.configureGames(gameRegistry, for: context.container)
-        if !isScannerSessionActive {
+        if !isScannerSessionActive || collectionWriter == nil {
             isScannerSessionActive = true
             modelContainer = context.container
-            collectionWriter = ScannerCollectionWriter(modelContainer: context.container)
-        } else if collectionWriter == nil {
-            modelContainer = context.container
-            collectionWriter = ScannerCollectionWriter(modelContainer: context.container)
+            let container = context.container
+            collectionWriter = Task {
+                await ScannerCollectionWriter.makeBackground(modelContainer: container)
+            }
         }
         if beginsNewSession {
             scannerSessionID = UUID()
@@ -3258,6 +3261,7 @@ final class ScannerViewModel: ObservableObject {
         beginTrackedWrite(for: writeSessionID)
         defer { endTrackedWrite(for: writeSessionID) }
         do {
+            let collectionWriter = await collectionWriter.value
             try await collectionWriter.undo(scan.mutation)
         } catch {
             guard writeSessionID == scannerSessionID else { return false }
@@ -3491,6 +3495,7 @@ final class ScannerViewModel: ObservableObject {
                 if retryCandidate.subject.slab == nil,
                    let writer = self.collectionWriter {
                     do {
+                        let writer = await writer.value
                         if try await writer.containsCollectionEntry(for: retryCandidate) {
                             self.clearResolvedUnresolvedRows(
                                 for: retryCandidate.card,
@@ -3680,6 +3685,7 @@ final class ScannerViewModel: ObservableObject {
 
         let mutation: CollectionMutation?
         do {
+            let collectionWriter = await collectionWriter.value
             let correction = {
                 try await collectionWriter.correct(
                     card: scan.card,
@@ -4438,6 +4444,7 @@ final class ScannerViewModel: ObservableObject {
         defer { endTrackedWrite(for: writeSessionID) }
 
         do {
+            let collectionWriter = await collectionWriter.value
             let conversion = {
                 try await collectionWriter.convertRawScanToGraded(
                     scan,
@@ -4576,6 +4583,7 @@ final class ScannerViewModel: ObservableObject {
                     self.beginTrackedWrite(for: writeSessionID)
                     defer { self.endTrackedWrite(for: writeSessionID) }
                     do {
+                        let collectionWriter = await collectionWriter.value
                         guard let latest = self.sessionScans.first(where: { $0.id == scanID }),
                               Self.isCompatibleGradedEvidence(latest.subject.slab, with: slab),
                               !self.undoingScanIDs.contains(scanID) else { return }
@@ -4600,6 +4608,7 @@ final class ScannerViewModel: ObservableObject {
             }
             let collectionKeyBeforeGateWait = current.mutation.collectionKey
             do {
+                let collectionWriter = await collectionWriter.value
                 // The identity gate can wait for an entire refresh pass. Resolve
                 // the scan's current mutation only after that wait, then track
                 // just the actual ownership write so ending the scan session
@@ -4784,6 +4793,7 @@ final class ScannerViewModel: ObservableObject {
 
         let mutation: CollectionMutation
         do {
+            let collectionWriter = await collectionWriter.value
             let refinementOverride = certificationRefinementOverride
             let refine = {
                 if let refinementOverride { return try await refinementOverride(scan, updatedSlab) }
@@ -5301,7 +5311,7 @@ final class ScannerViewModel: ObservableObject {
         do {
             let mutation: CollectionMutation
             let addOverride = collectionAddOverride
-            let writer = collectionWriter
+            let writer = await collectionWriter?.value
             let writeCandidate = {
                 if candidate.identifier.game == .lorcana
                     || (candidate.identifier.game == .magic && candidate.identifier.namespace.hasPrefix("historical")) {

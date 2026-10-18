@@ -119,6 +119,48 @@ final class CollectionStoreDigestTests: XCTestCase {
         )
     }
 
+    func testIsolatedDigestMatchesSavedMaterialRows() async throws {
+        let container = try makeContainer()
+        try seed(container.mainContext, reversed: true)
+        let expected = try CollectionStoreDigester.make(in: container.mainContext, storeID: storeID)
+        let actual = try await CollectionStoreDigester.makeIsolated(from: container, storeID: storeID)
+        XCTAssertEqual(actual, expected)
+    }
+
+    func testNonfiniteMaterialValueRejectsDigest() throws {
+        let container = try makeContainer()
+        try seed(container.mainContext, reversed: false)
+        let record = try XCTUnwrap(container.mainContext.fetch(FetchDescriptor<PriceRecord>()).first)
+        record.unitMarketPriceUSD = .infinity
+        XCTAssertThrowsError(try CollectionStoreDigester.make(in: container.mainContext, storeID: storeID)) {
+            XCTAssertEqual($0 as? CollectionStoreDigestError, .encodingFailed)
+        }
+    }
+
+    func testIsolatedDiagnosticCSVExportsMatchSavedRowsAndArtworkOverrides() async throws {
+        let container = try ModelContainer(
+            for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)]
+        )
+        let context = container.mainContext
+        try seed(context, reversed: true)
+        let cards = try context.fetch(FetchDescriptor<CollectedCard>())
+        let records = try context.fetch(FetchDescriptor<PriceRecord>())
+        let missingArtworkCard = try XCTUnwrap(cards.first { $0.imageURL == nil })
+        context.insert(LocalArtworkOverride(collectionKey: missingArtworkCard.collectionKey, filename: "fixture.jpg"))
+        // Exercise an unpriced row as well as a priced row.
+        try XCTUnwrap(records.first).unitMarketPriceUSD = nil
+        try context.save()
+
+        let unpriced = try await CollectionCSV.exportIsolated(from: container, kind: .unpriced)
+        XCTAssertEqual(unpriced.text, CollectionCSV.exportUnpriced(cards, priceRecords: records).text)
+        let artwork = try await CollectionCSV.exportIsolated(from: container, kind: .missingArtwork)
+        XCTAssertEqual(artwork.text, CollectionCSV.exportMissingArtwork(
+            cards, priceRecords: records, localArtworkKeys: [missingArtworkCard.collectionKey]
+        ).text)
+        XCTAssertFalse(artwork.text.contains(missingArtworkCard.name))
+    }
+
     func testEveryMaterialCategoryChangesTheDigest() throws {
         let container = try makeContainer()
         try seed(container.mainContext, reversed: false)

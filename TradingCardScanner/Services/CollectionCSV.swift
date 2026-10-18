@@ -239,11 +239,16 @@ enum CollectionCSV {
 
     /// Fetch and format on an actor created off main; model instances stay in
     /// that actor's context and only the CSV text crosses the isolation boundary.
-    static func exportIsolated(from container: ModelContainer) async throws -> CollectionCSVDocument {
-        let exporter = await Task.detached(priority: .userInitiated) {
-            CollectionCSVExportActor(modelContainer: container)
-        }.value
-        return CollectionCSVDocument(text: try await exporter.text())
+    enum ExportKind: Sendable {
+        case collection, portfolioHistory, unpriced, missingArtwork
+    }
+
+    static func exportIsolated(
+        from container: ModelContainer,
+        kind: ExportKind = .collection
+    ) async throws -> CollectionCSVDocument {
+        let exporter = await CollectionCSVExportActor.makeBackground(modelContainer: container)
+        return CollectionCSVDocument(text: try await exporter.text(kind: kind))
     }
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -1113,7 +1118,7 @@ enum CollectionCSV {
         progress: (@Sendable (Int, Int) -> Void)? = nil,
         shouldContinue: (@Sendable () -> Bool)? = nil
     ) async throws -> CollectionCSVImportResult {
-        let importer = CollectionCSVImportActor(modelContainer: container)
+        let importer = await CollectionCSVImportActor.makeBackground(modelContainer: container)
         return try await importer.apply(
             plan,
             exclusiveToken: exclusiveToken,
@@ -1907,9 +1912,32 @@ enum CollectionCSV {
 
 /// Keeps export models in the context that fetched them.
 @ModelActor
-actor CollectionCSVExportActor {
-    func text() throws -> String {
-        CollectionCSV.export(try modelContext.fetch(FetchDescriptor<CollectedCard>())).text
+actor CollectionCSVExportActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    func text(kind: CollectionCSV.ExportKind) throws -> String {
+        switch kind {
+        case .collection:
+            return CollectionCSV.export(try modelContext.fetch(FetchDescriptor<CollectedCard>())).text
+        case .portfolioHistory:
+            return CollectionCSV.exportPortfolioHistory(
+                try modelContext.fetch(FetchDescriptor<PortfolioDailyClose>())
+            ).text
+        case .unpriced:
+            return CollectionCSV.exportUnpriced(
+                try modelContext.fetch(FetchDescriptor<CollectedCard>()),
+                priceRecords: try modelContext.fetch(FetchDescriptor<PriceRecord>())
+            ).text
+        case .missingArtwork:
+            return CollectionCSV.exportMissingArtwork(
+                try modelContext.fetch(FetchDescriptor<CollectedCard>()),
+                priceRecords: try modelContext.fetch(FetchDescriptor<PriceRecord>()),
+                localArtworkKeys: Set(try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>()).map(\.collectionKey))
+            ).text
+        }
     }
 }
 
@@ -1917,7 +1945,12 @@ actor CollectionCSVExportActor {
 /// for the complete synchronous import operation, so no model reference or
 /// ownership lock crosses an actor suspension point.
 @ModelActor
-actor CollectionCSVImportActor {
+actor CollectionCSVImportActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     func apply(
         _ plan: CollectionCSVImportPlan,
         exclusiveToken: UUID,

@@ -42,6 +42,13 @@ final class LaunchModelActorTests: XCTestCase {
         try await assertBackground(await StoreRevisionModelActor.makeBackground(modelContainer: container))
         try await assertBackground(await PriceRefreshTargetModelActor.makeBackground(modelContainer: container))
         try await assertBackground(await PriceRefreshModelActor.makeBackground(modelContainer: container))
+        try await assertBackground(await ScannerCollectionWriter.makeBackground(modelContainer: container))
+        try await assertBackground(await CollectionDetailQuantityReader.makeBackground(modelContainer: container))
+        try await assertBackground(await CollectionDeletionModelActor.makeBackground(modelContainer: container))
+        try await assertBackground(await CollectionCSVExportActor.makeBackground(modelContainer: container))
+        try await assertBackground(await CollectionCSVImportActor.makeBackground(modelContainer: container))
+        try await assertBackground(await CollectionStoreDigestActor.makeBackground(modelContainer: container))
+        try await assertBackground(await CollectionCatalogNormalizationInputActor.makeBackground(modelContainer: container))
     }
 
     private func assertBackground<T: ModelActor>(

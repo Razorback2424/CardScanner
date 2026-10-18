@@ -30,6 +30,11 @@ enum CollectionStoreDigestError: LocalizedError, Equatable {
 }
 
 enum CollectionStoreDigester {
+    static func makeIsolated(from container: ModelContainer, storeID: UUID) async throws -> CollectionStoreDigest {
+        let worker = await CollectionStoreDigestActor.makeBackground(modelContainer: container)
+        return try await worker.make(storeID: storeID)
+    }
+
     static func make(
         in context: ModelContext,
         storeID: UUID
@@ -49,16 +54,15 @@ enum CollectionStoreDigester {
             throw CollectionStoreDigestError.fetchFailed
         }
 
-        let canonical = CanonicalStore(
-            cards: cards.map(CardProjection.init).sorted(by: stableOrder),
-            priceRecords: priceRecords.map(PriceRecordProjection.init).sorted(by: stableOrder),
-            productIdentities: productIdentities.map(ProductIdentityProjection.init).sorted(by: stableOrder),
-            activities: activities.map(ActivityProjection.init).sorted(by: stableOrder),
-            events: events.map(InventoryEventProjection.init).sorted(by: stableOrder)
-        )
-
         let bytes: Data
         do {
+            let canonical = try CanonicalStore(
+                cards: stableSorted(cards.map(CardProjection.init)),
+                priceRecords: stableSorted(priceRecords.map(PriceRecordProjection.init)),
+                productIdentities: stableSorted(productIdentities.map(ProductIdentityProjection.init)),
+                activities: stableSorted(activities.map(ActivityProjection.init)),
+                events: stableSorted(events.map(InventoryEventProjection.init))
+            )
             bytes = try canonicalEncoder.encode(canonical)
         } catch {
             throw CollectionStoreDigestError.encodingFailed
@@ -107,12 +111,24 @@ enum CollectionStoreDigester {
         return encoder
     }()
 
-    private static func stableOrder<T: Encodable>(_ lhs: T, _ rhs: T) -> Bool {
-        guard let left = try? canonicalEncoder.encode(lhs),
-              let right = try? canonicalEncoder.encode(rhs) else {
-            return false
-        }
-        return left.lexicographicallyPrecedes(right)
+    /// Keep the format's byte ordering while encoding each sort key once,
+    /// rather than encoding both complete records on every comparison.
+    private static func stableSorted<T: Encodable>(_ values: [T]) throws -> [T] {
+        try values.map { (value: $0, key: try canonicalEncoder.encode($0)) }
+            .sorted { $0.key.lexicographicallyPrecedes($1.key) }
+            .map(\.value)
+    }
+}
+
+@ModelActor
+actor CollectionStoreDigestActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    func make(storeID: UUID) throws -> CollectionStoreDigest {
+        try CollectionStoreDigester.make(in: modelContext, storeID: storeID)
     }
 }
 

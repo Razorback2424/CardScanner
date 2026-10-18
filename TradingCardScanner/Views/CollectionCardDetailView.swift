@@ -1310,7 +1310,7 @@ struct CollectionCardDetailView: View {
     /// started before a saved edit from replacing that edit's newer receipt.
     private func refreshDisplayedQuantity(for input: CollectionDetailQuantityState.Input) async {
         let revision = quantityState.revision
-        let reader = CollectionDetailQuantityReader(modelContainer: modelContext.container)
+        let reader = await CollectionDetailQuantityReader.makeBackground(modelContainer: modelContext.container)
         do {
             let liveQuantity = try await reader.logicalQuantity(
                 forAnyKey: input.collectionKey,
