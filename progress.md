@@ -4,9 +4,10 @@
   of main. The development-signed `ReleaseLocal` iOS build succeeded using the
   external SSD; the bundled owner catalog and public pins matched the committed
   source byte-for-byte. CoreDevice successfully installed the app over the
-  existing personal iPhone installation. Automatic launch was denied because
-  the phone was locked, so physical-device startup and visible One Piece
-  availability remain unverified. The Mac's standalone strict signature check
+  existing personal iPhone installation. The initial launch was denied while
+  the phone was locked; after the owner unlocked it, CoreDevice successfully
+  launched the installed app. Visible One Piece availability remains unverified.
+  The Mac's standalone strict signature check
   reported `CSSMERR_TP_NOT_TRUSTED`; the device nevertheless accepted installation.
   No production rollout or release-readiness claim is made.
 
