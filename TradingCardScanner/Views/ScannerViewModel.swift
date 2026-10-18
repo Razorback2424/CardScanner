@@ -316,9 +316,6 @@ enum DuplicateEvidence: Equatable, Sendable {
     /// A filed prompt remains a request for a fresh explicit ownership tap.
     case needsAttention(rowID: UUID)
     case spatialExit(SpatialResetProof)
-    /// A committed card after the earlier copy is durable replacement context,
-    /// even when the camera lost its tracker before it could emit a link.
-    case committedReplacement(CommittedSessionScan)
 }
 
 enum CollectionCandidateRoutingDecision: Equatable {
@@ -337,20 +334,12 @@ enum CollectionCandidateRoutingPolicy {
         history: [CommittedSessionScan] = [],
         proofs: [SpatialResetProof]
     ) -> CollectionCandidateRoutingDecision {
-        // `previous` remains as a compatibility/default input for callers that
-        // only have one committed item. The scanner supplies the bounded full
-        // history so an older still-present printing cannot lose duplicate
-        // protection merely because an unrelated card committed afterwards.
-        let candidates = history.isEmpty
-            ? previous.map { [$0] } ?? []
-            : history
-        guard let previous = candidates.reversed().first(where: {
-            $0.identity.matchesForDuplicateSuppression(identity)
-        }) else {
+        // Guard consecutive reads of the same card. Once a different card has
+        // committed, returning to an earlier identity is a normal additional
+        // copy, even if spatial proof for that older presentation still exists.
+        guard let previous = history.last ?? previous,
+              previous.identity.matchesForDuplicateSuppression(identity) else {
             return .automatic
-        }
-        guard let previousIndex = candidates.firstIndex(where: { $0.id == previous.id }) else {
-            return .suppress
         }
 
         if let proof = proofs.first(where: { proof in
@@ -362,15 +351,6 @@ enum CollectionCandidateRoutingPolicy {
             return .duplicate(.spatialExit(proof))
         }
 
-        // Committed history is itself enough to show that the earlier card was
-        // replaced in the scan session. Use only the canonical card identity:
-        // grade, finish, and print-run differences do not make a new card.
-        if let replacingScan = candidates.dropFirst(previousIndex + 1).first(where: {
-            $0.encounterID != previous.encounterID
-                && $0.identity.canonicalID != previous.identity.canonicalID
-        }) {
-            return .duplicate(.committedReplacement(replacingScan))
-        }
         return .suppress
     }
 }
@@ -1513,9 +1493,8 @@ final class ScannerViewModel: ObservableObject {
     let scanner: CardScanner
     @Published private(set) var gameRegistry: CardGameRegistry
 
-    /// The latch needs only its bounded recent window for duplicate routing.
-    /// The UI rail keeps a few more cards for a useful visual history, but no
-    /// scanner session should retain every decoded catalog payload forever.
+    /// Keep bounded presentation history for held-copy authorization and
+    /// spatial proofs. Automatic duplicate routing uses only the latest entry.
     private static let committedHistoryLimit = CardLatch.recentlyConsumedLimit
     private static let recentScanLimit = 5
 
@@ -2704,11 +2683,6 @@ final class ScannerViewModel: ObservableObject {
                 return nil
             }
             return .spatialExit(spatialResetProofs.remove(at: index))
-        case let .committedReplacement(replacing):
-            guard committedSessionHistory.contains(where: {
-                $0.id == replacing.id && $0.encounterID == replacing.encounterID
-            }) else { return nil }
-            return .committedReplacement(replacing)
         }
     }
 
@@ -2785,14 +2759,6 @@ final class ScannerViewModel: ObservableObject {
                 return token == previous.presentationToken
             }
             return proof.encounterID == previous.encounterID
-        case let .committedReplacement(replacing):
-            guard let replacingIndex = committedSessionHistory.firstIndex(where: {
-                      $0.id == replacing.id && $0.encounterID == replacing.encounterID
-                  }),
-                  replacingIndex > previousIndex else { return false }
-            let committedReplacement = committedSessionHistory[replacingIndex]
-            return committedReplacement.encounterID != previous.encounterID
-                && committedReplacement.identity.canonicalID != previous.identity.canonicalID
         }
     }
 
@@ -5091,10 +5057,8 @@ final class ScannerViewModel: ObservableObject {
         case committed, failed, requiresLookup
     }
 
-    /// Collection routing is identity-first. A matching identity can reach a
-    /// prompt only with spatial evidence or a later committed card with a
-    /// different canonical identity. No evidence means suppression, never a
-    /// reseed or collection mutation.
+    /// Consecutive matching identities require spatial evidence before asking
+    /// about another copy. A return after a different committed card adds normally.
     private func routeCollectionCandidate(_ candidate: CollectionCommitCandidate) async {
         if let rowID = candidate.unresolvedScanID,
            unresolvedScans.contains(where: { $0.id == rowID && $0.isAdditionalCopy }) {
@@ -5136,9 +5100,8 @@ final class ScannerViewModel: ObservableObject {
                 return
             }
 
-            // Spatial evidence is consumed here. History replacement evidence
-            // stays valid only while its committed entry remains after the
-            // earlier scan; both are revalidated before an Add another write.
+            // Spatial evidence is consumed here and revalidated against the
+            // committed presentation before an Add another write.
             // The detached candidate owns this snapshot while the user decides.
             pendingChoice = nil
             pendingPrintRunChoice = nil
@@ -5653,6 +5616,9 @@ final class ScannerViewModel: ObservableObject {
             fileUnresolved(request: request, reason: .interrupted)
         }
         scanGeneration += 1
+        // Future camera confirmations must carry the new generation. Otherwise
+        // every real scanner callback is rejected as stale after this prompt.
+        updateScannerConfirmationContext()
         identificationTask?.cancel()
         identificationTask = nil
         resetIdentificationProgress()

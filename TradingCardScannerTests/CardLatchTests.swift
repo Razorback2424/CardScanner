@@ -1404,14 +1404,12 @@ final class CardLatchTests: XCTestCase {
         )
     }
 
-    func testCollectionRoutingProtectsAnOlderCommittedPrintingToo() {
+    func testCollectionRoutingAddsNonconsecutiveCopiesWithOrWithoutOldProof() {
         let older = committedSessionScan(identity: "pokemon:obf-223")
         let latest = committedSessionScan(identity: "pokemon:pal-204")
         let sameAsOlder = ConsecutiveScanIdentity(canonicalID: older.identity.canonicalID)
 
-        // The OCR/latch memory is bounded but intentionally wider than one
-        // commit. A later unrelated card must not erase the older printing's
-        // duplicate protection.
+        // A different committed card ends consecutive duplicate protection.
         XCTAssertEqual(
             CollectionCandidateRoutingPolicy.decision(
                 for: sameAsOlder,
@@ -1419,8 +1417,7 @@ final class CardLatchTests: XCTestCase {
                 history: [older, latest],
                 proofs: []
             ),
-            .duplicate(.committedReplacement(latest)),
-            "a later committed, different card is replacement evidence even if tracking was lost"
+            .automatic
         )
 
         XCTAssertEqual(
@@ -1445,12 +1442,12 @@ final class CardLatchTests: XCTestCase {
                 history: [older, latest],
                 proofs: [proof]
             ),
-            .duplicate(.spatialExit(proof))
+            .automatic
         )
 
     }
 
-    func testCommittedReplacementUsesMagicCanonicalIdentityAndIgnoresSlabGrade() {
+    func testNonconsecutiveMagicAndDifferentSlabIdentityAddAutomatically() {
         let magicVariantEvidence = VariantEvidence(
             game: .magic,
             setID: "neo",
@@ -1468,8 +1465,7 @@ final class CardLatchTests: XCTestCase {
         }
         XCTAssertEqual(lockedMagicFinish.variant, .foil)
 
-        // Finish resolution does not change the Magic card's canonicalID, so
-        // picker and finish-lock scans use the same replacement routing rule.
+        // Both picker and finish-lock scans use consecutive identity routing.
         let magicA = committedSessionScan(identity: "magic:neo-042")
         let magicB = committedSessionScan(identity: "magic:neo-043")
         XCTAssertEqual(
@@ -1479,7 +1475,7 @@ final class CardLatchTests: XCTestCase {
                 history: [magicA, magicB],
                 proofs: []
             ),
-            .duplicate(.committedReplacement(magicB))
+            .automatic
         )
 
         let rawA = committedSessionScan(identity: "pokemon:obf-223")
@@ -1499,8 +1495,8 @@ final class CardLatchTests: XCTestCase {
                 history: [rawA, gradedA],
                 proofs: []
             ),
-            .suppress,
-            "a grade-only difference has the same canonical card ID and cannot replace the raw card"
+            .automatic,
+            "a different slab identity is a distinct presentation"
         )
     }
 
@@ -1627,7 +1623,7 @@ final class CardLatchTests: XCTestCase {
                 history: [first, committedB],
                 proofs: []
             ),
-            .duplicate(.committedReplacement(committedB))
+            .automatic
         )
     }
 
