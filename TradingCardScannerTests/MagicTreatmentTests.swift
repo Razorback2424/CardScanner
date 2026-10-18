@@ -306,6 +306,37 @@ final class MagicTreatmentTests: XCTestCase {
         XCTAssertNotEqual(uppercase.id, "FutureFoil")
     }
 
+    func testTreatmentEvidenceDeduplicatesIDsWithoutLosingUnknownSpellingOrQualifiers() throws {
+        let future = try XCTUnwrap(MagicTreatment(id: "FutureFoil"))
+        let duplicate = try XCTUnwrap(MagicTreatment(id: "futurefoil"))
+        let evidence = MagicTreatmentEvidence(treatments: [.neonInk, .neonInk, future, duplicate],
+                                              qualifiers: ["NEONINK": "red"])
+
+        XCTAssertEqual(evidence.treatments, [.neonInk, future])
+        XCTAssertEqual(evidence.displayLabels, ["Neon Ink · Red", future.label])
+        XCTAssertEqual(evidence.treatments.last?.providerSignal, "FutureFoil")
+    }
+
+    func testGradedTreatmentDisplayHandlesDuplicateStoredIDs() throws {
+        let card = CollectedCard(
+            collectionKey: "graded-fixture", game: .magic, providerID: "fixture",
+            name: "Fixture", setName: "Fixture Set", setCode: "FIC", cardNumber: "1",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .foil,
+            variantResolution: .userConfirmed, magicTreatments: [.neonInk]
+        )
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        card.magicTreatmentIDsRaw = ["neonink", "NEONINK"]
+        card.magicTreatmentQualifiers = ["neonink": "red"]
+        // Fail before exercising the dictionary-building display path on the
+        // old implementation, where these duplicates would trap the process.
+        guard card.magicTreatmentEvidence.treatments.count == 1 else {
+            return XCTFail("Stored duplicate IDs must form one treatment before building qualifier lookups")
+        }
+
+        XCTAssertEqual(card.displayedMagicTreatmentEvidence.treatments, [.neonInk])
+        XCTAssertEqual(card.displayedMagicTreatmentEvidence.qualifier(for: .neonInk), "red")
+    }
+
     func testScryfallDecodesTreatmentEvidenceBesideFoil() throws {
         let card = try decodeMagic(
             finishes: ["foil"],
