@@ -1252,8 +1252,8 @@ final class OnePieceIntegrationTests: XCTestCase {
         var prices: [String: Double] = [:]
         for await update in catalog.sortPriceUpdates(for: [summary]) { prices = update.prices }
         XCTAssertEqual(prices[summary.id], 8.16)
-        let normal = try await catalog.price(for: summary, variant: .normal)
-        XCTAssertEqual(normal, .unavailable(nil))
+        do { _ = try await catalog.price(for: summary, variant: .normal); XCTFail("Expected mapping gap") }
+        catch PriceQuoteError.mappingUnavailable {}
         let quote = try await catalog.price(for: summary, variant: .foil)
         guard case let .price(price) = quote else { return XCTFail("Details must use the same mapped foil") }
         XCTAssertEqual(price.unitMarketPriceUSD, prices[summary.id])

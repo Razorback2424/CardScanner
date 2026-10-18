@@ -7026,6 +7026,48 @@ private actor EmptyBrowseCatalog: BrowseCatalogProviding {
 
 @MainActor
 final class BrowsePaginationRenderTests: XCTestCase {
+    func testSetNavigationFromInitiallyInactivePhoneTabPreservesSafeArea() async throws {
+        let set = fixtureSet("first")
+        let catalog = RenderPagingCatalog(sets: [set], cardsPerPage: 40, pageCount: 1)
+        let state = CatalogNavigationRenderState()
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive })
+        let window = UIWindow(windowScene: scene)
+        window.frame = UIScreen.main.bounds
+        window.rootViewController = UIHostingController(rootView:
+            CatalogNavigationRenderHarness(state: state, set: set, catalog: catalog)
+                .environment(\.horizontalSizeClass, .compact)
+                .environmentObject(CollectionProjectionStore())
+                .environmentObject(CatalogSetCompletionStore())
+        )
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await Task.sleep(for: .milliseconds(150))
+        state.tab = 1
+        try await Task.sleep(for: .milliseconds(250))
+        state.path = [1]
+        try await Task.sleep(for: .milliseconds(250))
+        state.path = [1, 2]
+        try await waitForRequests(1, catalog: catalog)
+        try await Task.sleep(for: .milliseconds(350))
+
+        let search = try XCTUnwrap(findTextField(in: window))
+        let searchFrame = search.convert(search.bounds, to: window)
+        XCTAssertGreaterThanOrEqual(searchFrame.minY, window.safeAreaInsets.top + 44,
+                                    "Search must be below both the status bar and navigation bar after switching tabs")
+        let scroll = try XCTUnwrap(findScrollView(in: window))
+        XCTAssertGreaterThanOrEqual(scroll.convert(CGPoint.zero, to: window).y, searchFrame.maxY)
+
+        state.path = [1]
+        try await Task.sleep(for: .milliseconds(350))
+        state.path = [1, 2]
+        try await waitForRequests(2, catalog: catalog)
+        let reopenedSearch = try XCTUnwrap(findTextField(in: window))
+        XCTAssertGreaterThanOrEqual(reopenedSearch.convert(reopenedSearch.bounds, to: window).minY,
+                                    window.safeAreaInsets.top + 44)
+    }
+
     func testGamePaginationWaitsUntilFooterIsScrolledIntoView() async throws {
         let set = fixtureSet("first")
         let catalog = RenderPagingCatalog(sets: [set], cardsPerPage: 40)
@@ -7224,6 +7266,45 @@ final class BrowsePaginationRenderTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(100))
         let actual = await catalog.requests.count
         XCTAssertEqual(actual, count)
+    }
+}
+
+@MainActor
+private final class CatalogNavigationRenderState: ObservableObject {
+    @Published var tab = 0
+    @Published var path: [Int] = []
+}
+
+private struct CatalogNavigationRenderHarness: View {
+    @ObservedObject var state: CatalogNavigationRenderState
+    let set: CatalogSet
+    let catalog: any BrowseCatalogProviding
+    @State private var showsFilters = false
+
+    var body: some View {
+        TabView(selection: $state.tab) {
+            NavigationStack { Text("Portfolio") }
+                .tabItem { Label("Portfolio", systemImage: "chart.line.uptrend.xyaxis") }
+                .tag(0)
+            NavigationStack(path: $state.path) {
+                ScrollView { Text("Collection") }
+                    .toolbar(.hidden, for: .navigationBar)
+                    .safeAreaInset(edge: .top) { Text("Collection") }
+                    .navigationDestination(for: Int.self) { route in
+                        if route == 1 {
+                            Text("Catalog")
+                                .navigationTitle("Catalog")
+                                .navigationBarTitleDisplayMode(.inline)
+                                .toolbar(.visible, for: .navigationBar)
+                        } else {
+                            CatalogSetCardsView(set: set, catalog: catalog)
+                        }
+                    }
+            }
+            .modifier(CollectionFilterPresentation(isPresented: $showsFilters, filters: Text("Filters")))
+            .tabItem { Label("Collection", systemImage: "rectangle.stack") }
+            .tag(1)
+        }
     }
 }
 

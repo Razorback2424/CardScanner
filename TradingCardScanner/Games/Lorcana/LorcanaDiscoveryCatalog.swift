@@ -287,7 +287,7 @@ struct LorcanaDiscoveryCatalog: GameCatalogAdapter, GameBrowseAdapter, SealedBro
         // Reviewed physical UUIDs retain their existing exact pricing authority.
         guard sourceByPhysicalID[summary.providerID] == nil else { return nil }
         guard let mapping = browseMappings[summary.providerID]?.first(where: { $0.finish.variant == variant }) else {
-            return .unavailable(nil)
+            throw PriceQuoteError.mappingUnavailable
         }
         return try await browsePriceSource.quote(category: 71, group: mapping.groupID, productID: mapping.productID,
             name: mapping.productName, number: mapping.productNumber.isEmpty ? nil : mapping.productNumber,

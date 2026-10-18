@@ -5,6 +5,7 @@ import SwiftData
 /// prevents a disabled fallback or an exhausted vendor budget from masquerading
 /// as proof that the card has no price.
 enum PriceCheckRefreshIssue: Equatable, Sendable {
+    case mappingUnavailable
     case unsupportedGame
     /// The provider matched the product but has no listing for its exact
     /// finish. This is the only terminal absence claim about the price.
@@ -34,6 +35,7 @@ enum PriceCheckRefreshIssue: Equatable, Sendable {
 /// The transient state of the Price Check sheet. `lastKnown` deliberately keeps
 /// its issue so a cached amount remains useful without being presented as current.
 enum PriceCheckQuoteState: Equatable, Sendable {
+    case mappingUnavailable
     case unsupportedGame
     case checking
     case current
@@ -121,6 +123,8 @@ private final class LivePriceCheckRefreshProvider: PriceCheckRefreshProvider {
             return .failed(.unsupportedGame)
         } catch PriceQuoteError.identityMismatch {
             return .failed(.notMatched)
+        } catch PriceQuoteError.mappingUnavailable {
+            return .failed(.mappingUnavailable)
         } catch {
             guard quoteService.allowsProviderFallback(for: card.game) else { return .failed(.providerUnavailable) }
             // JustTCG is deliberately sequential: it is consulted only after
@@ -403,6 +407,12 @@ final class PriceCheckCoordinator {
             pokemonPrintRun: result.pokemonPrintRun
         )
         guard shouldContinue?() ?? true else { return .cancelled }
+        if case let .quote(.price(price)) = outcome, !price.isUsableUSD {
+            return .failed(.providerUnavailable)
+        }
+        if case .quote(.unavailable(nil)) = outcome {
+            return .failed(.providerUnavailable)
+        }
         if case let .quote(quote) = outcome,
            case .price = quote {
             let key = quoteKey(for: result.resolvedScan)

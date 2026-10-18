@@ -205,13 +205,21 @@ final class LorcanaPricingTests: XCTestCase {
         let page = try await catalog.cards(in: set, cursor: nil)
         let summary = try XCTUnwrap(page.items.first { $0.providerID == id().uuidString.lowercased() })
         var prices: [String: Double] = [:]
-        for await update in catalog.sortPriceUpdates(for: page.items) { prices = update.prices }
+        var missingMappings: Set<String> = []
+        for await update in catalog.sortPriceUpdates(for: page.items) {
+            prices = update.prices
+            missingMappings = update.missingMappingIDs
+            XCTAssertTrue(update.unresolvedIDs.isEmpty, "Missing mappings are not request failures")
+        }
         XCTAssertEqual(prices[summary.id], 8.16); XCTAssertEqual(prices.count, 1)
+        XCTAssertFalse(missingMappings.contains(summary.id), "An available exact finish still prices the printing")
+        let unpriced = try XCTUnwrap(page.items.first { $0.providerID == id(2).uuidString.lowercased() })
+        XCTAssertTrue(missingMappings.contains(unpriced.id))
         let quote = try await catalog.price(for: summary, variant: .foil)
         guard case let .price(price) = quote else { return XCTFail() }
         XCTAssertEqual(price.unitMarketPriceUSD, prices[summary.id])
-        let normal = try await catalog.price(for: summary, variant: .normal)
-        XCTAssertEqual(normal, .unavailable(nil))
+        do { _ = try await catalog.price(for: summary, variant: .normal); XCTFail("Expected mapping gap") }
+        catch PriceQuoteError.mappingUnavailable {}
     }
 
     func testPriceCheckRefreshUsesReferenceQuotesWithoutCollectionWrites() async throws {
@@ -230,6 +238,17 @@ final class LorcanaPricingTests: XCTestCase {
             variantID: "foil")?.effectiveAmount, 8.16)
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
         XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        let unmappedScan = ResolvedScan(request: scan.request, card: card,
+            resolved: .init(variant: .normal, resolution: .userConfirmed), pokemonPrintRun: nil,
+            options: [.normal, .foil], catalogRetrievedAt: now)
+        let unmappedResult = coordinator.present(unmappedScan)
+        let unmappedOutcome = await coordinator.refresh(unmappedResult)
+        XCTAssertEqual(unmappedOutcome, .failed(.mappingUnavailable))
+        let calls = await source.calls
+        XCTAssertEqual(calls, 1, "A mapping gap cannot query an unrelated provider finish")
+        XCTAssertNil(QuoteCache(context: container.mainContext).quote(game: .lorcana,
+            printingID: card.providerID, variantID: "normal"))
+        XCTAssertTrue(try container.mainContext.fetch(FetchDescriptor<CollectedCard>()).isEmpty)
     }
 
     func testScannerSaveQueuesExactPricing() async throws {
@@ -263,18 +282,29 @@ final class LorcanaPricingTests: XCTestCase {
             let card = try LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id(index)).card
             _ = try store.add(card, resolved: .init(variant: .foil, resolution: .userConfirmed))
         }
+        let legacyPrices = PriceStore(context: container.mainContext)
+        for index in [1, 2] {
+            XCTAssertTrue(legacyPrices.recordUnsupportedProvider(game: .lorcana,
+                printingID: id(index).uuidString.lowercased(), variantID: "foil"))
+        }
+        XCTAssertTrue(legacyPrices.save())
         let worker = PriceRefreshModelActor(modelContainer: container)
         await worker.configureGamePricing(bound.makePriceQuoteService())
-        let outcome = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: true,
+        let outcome = await worker.run(.init(usesPriceFallback: false, includeImported: true, forceUnsupportedRetry: false,
             sortOldestFirst: false, maximumTargetCount: nil, markRecentlyCheckedIfEmpty: false), progress: { _ in }, shouldContinue: nil)
         guard case let .completed(result) = outcome else { return XCTFail("Expected completed refresh") }
         XCTAssertEqual(result.failed, 0, "Mapped games must not also enter the legacy fetch path")
+        XCTAssertEqual(result.missingMappings, 1)
         let reopened = try self.container(url: root.appendingPathComponent("collection.store"))
         XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).count, 2)
         let prices = PriceStore(context: reopened.mainContext)
         XCTAssertEqual(prices.record(forKey: PriceRecord.key(game: .lorcana, printingID: id().uuidString.lowercased(), variantID: "foil"))?.effectiveUnitMarketPriceUSD, 8.16)
         XCTAssertNil(prices.record(forKey: PriceRecord.key(game: .lorcana, printingID: id().uuidString.lowercased(), variantID: "foil"))?.lastFailureAt)
         XCTAssertNil(prices.record(forKey: PriceRecord.key(game: .lorcana, printingID: id(2).uuidString.lowercased(), variantID: "foil"))?.effectiveUnitMarketPriceUSD)
+        let missing = try XCTUnwrap(prices.record(forKey: PriceRecord.key(game: .lorcana,
+            printingID: id(2).uuidString.lowercased(), variantID: "foil")))
+        XCTAssertEqual(missing.lastFailureReasonRaw, PricingDiagnosticReason.missingMarketMapping.rawValue)
+        XCTAssertNil(missing.lastFailureAt)
     }
 
     func testSignedWithdrawalRejectsInFlightQuoteAndPreservesManualValues() async throws {
@@ -311,8 +341,8 @@ final class LorcanaPricingTests: XCTestCase {
         XCTAssertNil(reference.effectiveAmount)
         reference.apply(quote, at: .now); XCTAssertNil(reference.effectiveAmount)
         XCTAssertEqual(PriceStore(context: fresh).record(forKey: PriceRecord.key(game: .lorcana, printingID: printing, variantID: "normal"))?.effectiveUnitMarketPriceUSD, 22)
-        let unavailable = try await service.refreshStoredPrinting(game: .lorcana, printingID: printing, variant: .foil)
-        XCTAssertEqual(unavailable, .unavailable(nil))
+        do { _ = try await service.refreshStoredPrinting(game: .lorcana, printingID: printing, variant: .foil); XCTFail("Expected mapping gap") }
+        catch PriceQuoteError.mappingUnavailable {}
     }
 
     func testMappingChangeWithdrawsOldReceiptsAndFetchesNewIdentity() async throws {
@@ -938,8 +968,8 @@ final class LorcanaPricingTests: XCTestCase {
         XCTAssertEqual(normalPrice.currencyCode, "USD"); XCTAssertNil(foilPrice.sourceUpdatedAt)
         XCTAssertEqual(normalPrice.fetchedAt, foilPrice.fetchedAt)
         XCTAssertEqual(foilPrice.catalogIdentity, LorcanaPriceAdapter.mappingIdentity(try XCTUnwrap(standard.marketMappings?.last)))
-        let unavailable = try await service.refreshStoredPrinting(game: .lorcana, printingID: special.providerID, variant: .foil)
-        XCTAssertEqual(unavailable, .unavailable(nil))
+        do { _ = try await service.refreshStoredPrinting(game: .lorcana, printingID: special.providerID, variant: .foil); XCTFail("Expected mapping gap") }
+        catch PriceQuoteError.mappingUnavailable {}
 
         let identifier = try LorcanaRecognitionAdapter.identifier(standard.identity.footer, generation: registry.generation)
         let scan = ResolvedScan(request: .init(subject: .init(identifier: identifier), purpose: .priceCheck, generation: 0),
@@ -998,8 +1028,8 @@ final class LorcanaPricingTests: XCTestCase {
         let withdrawn = try LorcanaCatalogRegistry(manifest: LorcanaReviewLaunch.pricingManifest(withdrawn: true), previous: registry)
         let withdrawnRuntime = try await runtimes(withdrawn, source: source).bound(to: reopened)
         XCTAssertNil(PriceStore(context: ModelContext(reopened)).record(forKey: priceKey)?.effectiveUnitMarketPriceUSD)
-        let noQuote = try await withdrawnRuntime.makePriceQuoteService().refreshStoredPrinting(game: .lorcana, printingID: base.providerID, variant: .foil)
-        XCTAssertEqual(noQuote, .unavailable(nil))
+        do { _ = try await withdrawnRuntime.makePriceQuoteService().refreshStoredPrinting(game: .lorcana, printingID: base.providerID, variant: .foil); XCTFail("Expected mapping gap") }
+        catch PriceQuoteError.mappingUnavailable {}
         XCTAssertEqual(try reopened.mainContext.fetch(FetchDescriptor<CollectedCard>()).count, 2)
 
         let report: [String: Any] = ["passed": true, "catalogGeneration": registry.generation,

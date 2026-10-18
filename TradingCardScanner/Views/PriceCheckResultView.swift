@@ -158,6 +158,9 @@ struct PriceCheckResultView: View {
     @ViewBuilder
     private var noQuoteState: some View {
         switch result.quoteState {
+        case .mappingUnavailable:
+            ContentUnavailableView("Price not mapped yet", systemImage: "info.circle",
+                description: Text("This exact printing and finish needs a marketplace mapping. A market quote has not been checked."))
         case .checking where result.isRefreshing || result.shouldAutoRefresh:
             VStack(spacing: 10) {
                 ProgressView()
@@ -305,6 +308,8 @@ struct PriceCheckResultView: View {
 
     private func lastKnownMessage(for issue: PriceCheckRefreshIssue) -> String {
         switch issue {
+        case .mappingUnavailable:
+            return "Price mapping pending — showing last known"
         case .noExactPrice:
             return hasTreatment
                 ? "No exact treatment price — showing last known"

@@ -59,6 +59,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
     case justTCGVariantUnresolved = "justtcg_variant_unresolved"
     case invalidProviderQuote = "invalid_provider_quote"
     case noSupportedProvider = "no_supported_provider"
+    case missingMarketMapping = "missing_market_mapping"
 
     var title: String {
         switch self {
@@ -76,6 +77,7 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
         case .justTCGVariantUnresolved: return "Market variant not resolved"
         case .invalidProviderQuote: return "Invalid provider quote rejected"
         case .noSupportedProvider: return "No supported price provider"
+        case .missingMarketMapping: return "Price not mapped yet"
         }
     }
 
@@ -109,6 +111,8 @@ enum PricingDiagnosticReason: String, Equatable, Sendable {
             return "The provider returned a non-finite or unrepresentable amount. The quote was rejected and the prior value was kept."
         case .noSupportedProvider:
             return "This item has no provider that can answer its exact identity. It will be retried occasionally rather than on every refresh."
+        case .missingMarketMapping:
+            return "The catalog has no approved marketplace mapping for this exact printing and finish. This does not mean a market price is unavailable."
         }
     }
 
@@ -127,6 +131,9 @@ enum PricingDiagnostics {
         for card: CollectedCard,
         record: PriceRecord?
     ) -> PricingDiagnosticReason {
+        if record?.lastFailureReasonRaw == PricingDiagnosticReason.missingMarketMapping.rawValue {
+            return .missingMarketMapping
+        }
         if let coverageReason = record?.lastFailureReasonRaw.flatMap(PricingDiagnosticReason.init(rawValue:)),
            coverageReason.isGradedCoverageResult {
             return coverageReason
@@ -1158,6 +1165,27 @@ struct PriceStore {
         if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
         record.lastCheckedAt = date
         record.lastFailureReasonRaw = PricingDiagnosticReason.noSupportedProvider.rawValue
+        record.lastFailureAt = nil
+        return true
+    }
+
+    /// Records catalog coverage without inventing a provider observation or
+    /// a failed request. Existing quotes and ownership remain untouched.
+    @discardableResult
+    func recordMissingMapping(
+        game: CardGame, printingID: String, variantID: String?, at date: Date = .now,
+        treatmentIDs: [String] = []
+    ) -> Bool {
+        let key = PriceRecord.key(game: game, printingID: printingID, variantID: variantID, treatmentIDs: treatmentIDs)
+        if enqueue(keys: [key], {
+            guard $0.recordMissingMapping(game: game, printingID: printingID, variantID: variantID,
+                                          at: date, treatmentIDs: treatmentIDs) else { throw CheckpointError.writeFailed }
+        }) { return true }
+        guard let record = recordForWrite(key: key, game: game, printingID: printingID,
+                                         variantID: variantID, treatmentIDs: treatmentIDs) else { return false }
+        if let checkedAt = record.lastCheckedAt, checkedAt > date { return true }
+        record.lastCheckedAt = date
+        record.lastFailureReasonRaw = PricingDiagnosticReason.missingMarketMapping.rawValue
         record.lastFailureAt = nil
         return true
     }

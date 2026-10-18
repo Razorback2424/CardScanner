@@ -986,6 +986,7 @@ struct CatalogPriceUpdate: Sendable, Equatable {
     let prices: [String: Double]
     let resolvedIDs: Set<String>
     let unresolvedIDs: Set<String>
+    var missingMappingIDs: Set<String> = []
 }
 
 extension CatalogPage: Codable where Element: Codable {}

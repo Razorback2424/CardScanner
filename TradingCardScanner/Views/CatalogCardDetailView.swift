@@ -349,6 +349,9 @@ struct CatalogCardDetailView: View {
                 let quote = try await catalog.price(for: summary, variant: variant)
                 guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
                 mappedPrices[variant.id] = quote
+            } catch PriceQuoteError.mappingUnavailable {
+                guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
+                mappedPrices[variant.id] = .unavailable(nil)
             } catch {
                 guard !Task.isCancelled, details?.card.id == card.id, priceRetryID == retryID else { return }
                 failedPriceVariantIDs.insert(variant.id)
@@ -359,7 +362,7 @@ struct CatalogCardDetailView: View {
 
     @ViewBuilder private var priceRetryButton: some View {
         if mappedPriceCheckFinished && (!failedPriceVariantIDs.isEmpty
-            || mappedPrices.values.contains(where: { if case .unavailable = $0 { return true }; return false })) {
+            || mappedPrices.values.contains(where: { if case let .unavailable(source) = $0 { return source != nil }; return false })) {
             Button("Retry prices") {
                 mappedPriceCheckFinished = false
                 Task {

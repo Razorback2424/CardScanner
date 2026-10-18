@@ -4,6 +4,30 @@ import SwiftData
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testMappingGapPreservesQuoteAndDoesNotInventProviderChecksOrOwnership() throws {
+        let (container, context) = try makePriceContext()
+        defer { withExtendedLifetime(container) {} }
+        let store = PriceStore(context: context)
+        let at = Date.now.addingTimeInterval(-60)
+        let quote = NormalizedPrice(unitMarketPriceUSD: 42, currencyCode: "USD", source: .tcgCSV,
+            sourceVariantID: "exact", sourceUpdatedAt: nil, fetchedAt: at)
+        XCTAssertTrue(store.store(.price(quote), game: .pokemon, printingID: "fixture", variantID: "holo", at: at))
+        XCTAssertTrue(store.save())
+        let observations = try context.fetchCount(FetchDescriptor<PriceObservation>())
+        let checks = try context.fetchCount(FetchDescriptor<PriceCheckDay>())
+        let key = PriceRecord.key(game: .pokemon, printingID: "fixture", variantID: "holo")
+        let successfulAt = store.record(forKey: key)?.lastSuccessfulCheckAt
+        XCTAssertTrue(store.recordMissingMapping(game: .pokemon, printingID: "fixture", variantID: "holo"))
+        XCTAssertTrue(store.save())
+        let record = try XCTUnwrap(store.record(forKey: key))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 42)
+        XCTAssertEqual(record.lastSuccessfulCheckAt, successfulAt)
+        XCTAssertNil(record.lastFailureAt)
+        XCTAssertEqual(record.lastFailureReasonRaw, PricingDiagnosticReason.missingMarketMapping.rawValue)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceObservation>()), observations)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceCheckDay>()), checks)
+    }
+    @MainActor
     func testCachedBrowseDetailsCannotRestampAnOldPriceOverANewerQuote() throws {
         let (container, context) = try makePriceContext()
         defer { withExtendedLifetime(container) {} }
@@ -292,6 +316,7 @@ final class PricingTests: XCTestCase {
             #"{"tcgplayer":{"unit":"USD","normal":{"marketPrice":-1}}}"#)
         XCTAssertEqual(CardPricing.price(for: card, variant: .normal, magicTreatments: []), .unavailable(.tcgplayer))
         for amount in [Double.nan, .infinity, -1] {
+            XCTAssertNil(CatalogSortPriceResolution.cachedPrice(amount))
             let lookup = PriceLookup.price(.init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgplayer,
                 sourceVariantID: "normal", sourceUpdatedAt: nil, fetchedAt: .now))
             XCTAssertTrue(PriceFallbackQuoteResolver.needsFallback(lookup))

@@ -322,7 +322,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
             var staleTargets = PriceRefreshController.staleTargets(
                 from: allTargets,
                 usesPriceFallback: request.usesPriceFallback,
-                forceUnsupportedRetry: request.forceUnsupportedRetry
+                forceUnsupportedRetry: request.forceUnsupportedRetry,
+                pricing: gamePricing
             )
             if request.gradedOnly {
                 staleTargets = staleTargets.filter { $0.itemKind == .gradedCard }
@@ -433,6 +434,7 @@ actor PriceRefreshModelActor: BackgroundModelActor {
         }
         var priced = 0
         var failed = 0
+        var missingMappings = 0
         var latestSourceUpdate: Date?
         var checkedUnstampedProvider = false
         var mappedProviderUnreachable = false
@@ -568,6 +570,10 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 stage(store.store(lookup, game: target.game, printingID: target.printingID,
                     variantID: target.variantID, at: .now), key: target.id,
                     priced: { if case .price = lookup { return true }; return false }(), changed: previous != amount)
+            } catch PriceQuoteError.mappingUnavailable {
+                missingMappings += 1
+                stage(store.recordMissingMapping(game: target.game, printingID: target.printingID,
+                    variantID: target.variantID, treatmentIDs: target.magicTreatmentIDsRaw), key: target.id)
             } catch is CancellationError { break }
             catch let error as URLError where error.code == .cancelled { break }
             catch {
@@ -1061,7 +1067,8 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 reconciledDuplicateRecords: reconciledDuplicateRecords,
                 repairedFinishes: repairedFinishes,
                 backfilledFinishes: backfilledFinishes,
-                priceDeltas: finalPriceDeltas
+                priceDeltas: finalPriceDeltas,
+                missingMappings: missingMappings
             )
         )
     }
@@ -1555,13 +1562,11 @@ actor PriceRefreshModelActor: BackgroundModelActor {
                 ?? identities.cachedVariantID(forKey: key, using: identityIndex)
             let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
             let external = candidate.externalLookups
-            // An old failed name search must not suppress a newly available
-            // exact product handle. Once resolved, ordinary vendor pacing resumes.
-            let hasNewDirectLookup = cachedVariant == nil && cachedCard == nil && !external.isEmpty
-            guard hasNewDirectLookup || identities.fallbackCheckIsDue(
+            guard identities.fallbackCheckIsDue(
                 forKey: key,
                 minimumInterval: PriceRefreshController.fallbackRefreshInterval,
-                using: identityIndex
+                using: identityIndex,
+                hasDirectLookup: !external.isEmpty
             ) else {
                 completed += 1
                 await publishFallbackProgress()
@@ -2708,6 +2713,7 @@ struct PriceRefreshWorkResult: Sendable {
     let repairedFinishes: Int
     let backfilledFinishes: Int
     let priceDeltas: [PriceDelta]
+    var missingMappings = 0
 }
 
 enum PriceRefreshWorkOutcome: Sendable {
@@ -2790,6 +2796,7 @@ final class PriceRefreshController: ObservableObject {
         var gradedTransportFailures = 0
         /// The target snapshot could not be read, so no refresh claim is safe.
         var targetBuildFailed = false
+        var missingMappings = 0
     }
 
     enum Status: Equatable {
@@ -2984,7 +2991,8 @@ final class PriceRefreshController: ObservableObject {
                 repairedFinishes: result.repairedFinishes,
                 backfilledFinishes: result.backfilledFinishes,
                 gradedLookupMisses: result.gradedLookupMisses,
-                gradedTransportFailures: result.gradedTransportFailures
+                gradedTransportFailures: result.gradedTransportFailures,
+                missingMappings: result.missingMappings
             )
         )
     }
@@ -3038,7 +3046,8 @@ final class PriceRefreshController: ObservableObject {
         from targets: [PriceTarget],
         now: Date = .now,
         usesPriceFallback: Bool = true,
-        forceUnsupportedRetry: Bool = false
+        forceUnsupportedRetry: Bool = false,
+        pricing: PriceQuoteService? = nil
     ) -> [PriceTarget] {
         targets.filter { target in
             // A recent legacy miss must not delay trying the newly available
@@ -3058,6 +3067,10 @@ final class PriceRefreshController: ObservableObject {
                 } ?? true
             }
             if target.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+                // A newly registered exact adapter supersedes a legacy raw
+                // capability stamp, independently of the paid fallback setting.
+                if target.itemKind == .rawCard,
+                   pricing?.supportsStoredPrintingRefresh(for: target.game) == true { return true }
                 // Raw capability results use the long interval. Unbound slabs
                 // use their own weekly graded-catalog retry policy regardless
                 // of the raw-price fallback preference.

@@ -173,9 +173,17 @@ struct ProductIdentityStore {
         forKey key: String,
         minimumInterval: TimeInterval,
         now: Date = .now,
-        using index: ProductIdentityIndex? = nil
+        using index: ProductIdentityIndex? = nil,
+        hasDirectLookup: Bool = false
     ) -> Bool {
         guard let identity = identity(forKey: key, using: index) else { return true }
+        // A newly available exact handle supersedes an old text-search miss.
+        // A successful keyed response clears that miss below, so this bypass
+        // cannot repeatedly spend requests after an exact lookup also misses.
+        if hasDirectLookup, identity.vendorCardID == nil, identity.vendorVariantID == nil,
+           identity.unmatchedAt != nil { return true }
+        if identity.vendorCardID == nil, identity.vendorVariantID == nil, identity.unmatchedAt != nil,
+           identity.attemptVersion < ProductIdentity.currentAttemptVersion { return true }
         // Older stores have no dedicated fallback watermark yet. Their last
         // successful identity answer is a safe first cooldown anchor.
         guard let checkedAt = identity.fallbackCheckedAt
@@ -203,6 +211,7 @@ struct ProductIdentityStore {
             identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
         identity.fallbackCheckedAt = date
+        identity.unmatchedAt = nil
         return true
     }
 

@@ -132,12 +132,14 @@ private struct ScannerStubPokemonSource: PokemonCardSource {
     let cardsByLocalID: [String: TCGdexCard]
     let delayNanoseconds: UInt64
     let fetchGate: ScannerFetchGate?
+    let fetchHoldGates: [String: ScannerFetchGate]
     let catalogMiss: Bool
     let failure: Failure?
     let failureSwitch: ScannerCatalogFailureSwitch?
 
     func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
         await fetchGate?.markStarted()
+        await fetchHoldGates[Int(localID).map(String.init) ?? localID]?.hold()
         if let failure, await failureSwitch?.isFailureEnabled() ?? true {
             switch failure {
             case .transient: throw TCGdexError.badResponse
@@ -306,6 +308,67 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.pendingChoice?.identityResolution, .userSelectedPrinting)
         XCTAssertNil(model.pendingIdentityChoice)
         model.viewDisappeared()
+    }
+
+    func testClassicPhotoFootersOfferBothPrintingsBeforeFinishOrCollectionWrite() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root)
+        let classicSet = CatalogSet(
+            catalogID: .init(game: .pokemon, providerID: "30th-c"),
+            name: "30th Celebration Classic Collection", code: "30C",
+            logoURL: nil, symbolURL: nil, cardCount: 30, releaseDate: nil, sortRank: 1
+        )
+        let classicCards = [("003", "Metagross"), ("014", "Pikachu")].map { number, name in
+            CatalogCardSummary(
+                game: .pokemon, providerID: "30th-c-\(number)", setID: classicSet.catalogID,
+                setName: classicSet.name, setCode: classicSet.code, name: name,
+                collectorNumber: number, thumbnailURL: nil, imageURL: nil, masterSetVariant: .normal
+            )
+        }
+        try await store.replace(PokemonChecklistSnapshot(
+            manifest: .init(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now, directoryFingerprint: "classic-photo-test",
+                entries: [.init(
+                    set: classicSet, providerID: "30th-c", officialCount: 30,
+                    standardSlotCount: 30, expandedSlotCount: 30, resource: "classic.json"
+                )]
+            ),
+            checklists: [classicSet.id: classicCards]
+        ))
+        let fixtures = [
+            (footer: "11/113", title: "Metagross δ", original: "ex11-11", classic: "30th-c-003"),
+            (footer: "11/113", title: "Metagross", original: "ex11-11", classic: "30th-c-003"),
+            (footer: "58/102", title: "Pikachu", original: "base1-58", classic: "30th-c-014")
+        ]
+        for fixture in fixtures {
+            let model = try makeModel(variants: [.normal], offline: PokemonOfflineCatalog(store: store))
+            let identifier = try XCTUnwrap(PokemonHistoricalScanParser.parse(
+                numberLines: [fixture.footer], titleLines: [fixture.title]
+            ))
+            confirm(model, identifier, encounterID: UUID())
+            let appeared = await waitUntil { model.pendingIdentityChoice != nil }
+            XCTAssertTrue(appeared, fixture.title)
+            let choice = try XCTUnwrap(model.pendingIdentityChoice)
+            XCTAssertEqual(Set(choice.candidates.map(\.providerID)), [fixture.original, fixture.classic])
+            XCTAssertTrue(choice.displayCandidates.contains { $0.releaseLabel == "30th Classic · 2026" })
+            XCTAssertNil(model.pendingChoice)
+            XCTAssertNil(model.pendingPrintRunChoice)
+            XCTAssertTrue(model.recent.isEmpty)
+            let classic = try XCTUnwrap(choice.candidates.first { $0.providerID == fixture.classic })
+            model.choose(classic)
+            let saved = await waitUntil { model.recent.first?.card.providerID == fixture.classic }
+            XCTAssertTrue(saved, fixture.title)
+            XCTAssertEqual(model.recent.first?.card.variantEvidence.setID, "30th-c")
+            XCTAssertEqual(model.recent.first?.card.displayCardNumber, fixture.footer)
+            let rows = try context().fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.providerID, fixture.classic)
+            XCTAssertEqual(rows.first?.identityResolution, .userSelectedPrinting)
+            model.viewDisappeared()
+        }
     }
 
     func testDismissedGenericPrintingChoicesRetainSeparateEncounters() async throws {
@@ -1298,7 +1361,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
     }
 
-    func testREQ006RefreshedNonUSDQuoteRemainsChecking() async throws {
+    func testREQ006RefreshedNonUSDQuoteIsRejectedAsProviderFailure() async throws {
         let refreshedAt = Date(timeIntervalSince1970: 1_800_000_000)
         let refreshed = PriceLookup.price(
             NormalizedPrice(
@@ -1327,7 +1390,7 @@ final class ScannerViewModelTests: XCTestCase {
         }
 
         XCTAssertTrue(refreshedState)
-        XCTAssertEqual(model.priceCheckResult?.quoteState, .checking)
+        XCTAssertEqual(model.priceCheckResult?.quoteState, .providerUnavailable)
         XCTAssertEqual(model.priceCheckResult?.display.currencyCode, "USD")
         XCTAssertNil(model.priceCheckResult?.display.amount)
     }
@@ -2252,6 +2315,36 @@ final class ScannerViewModelTests: XCTestCase {
 
         XCTAssertTrue(resumed)
         XCTAssertEqual(model.sessionScans.first?.card.id, "pokemon:test-set-002")
+    }
+
+    func testCancelledLookupProgressClearsImmediatelyAndCannotClearANewerLookup() async throws {
+        let first = ScannerFetchGate()
+        let second = ScannerFetchGate()
+        let model = try makeModel(variants: [.normal], fetchHoldGates: ["1": first, "2": second])
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await first.waitUntilStarted()
+        let firstSpinner = await waitUntil { model.isSlowIdentifying }
+        XCTAssertTrue(firstSpinner)
+
+        model.setPurpose(.priceCheck)
+        XCTAssertFalse(model.isSlowIdentifying, "A cancelled network task must not retain visible progress")
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+        await second.waitUntilStarted()
+        let secondSpinner = await waitUntil { model.isSlowIdentifying }
+        XCTAssertTrue(secondSpinner)
+
+        await first.release()
+        let oldCompletion = await waitUntil {
+            model.diagnosticEventsForTesting.contains("staleIdentificationProgressIgnored")
+        }
+        XCTAssertTrue(oldCompletion)
+        XCTAssertTrue(model.isSlowIdentifying, "Old cleanup must not hide the current request's progress")
+
+        await second.release()
+        let completed = await waitUntil { model.priceCheckResult != nil }
+        XCTAssertTrue(completed)
+        XCTAssertFalse(model.isSlowIdentifying)
+        model.endSession()
     }
 
     func testCatalogMissFilesPromoWithNoCatalogEntryReasonImmediately() async throws {
@@ -3564,6 +3657,7 @@ final class ScannerViewModelTests: XCTestCase {
         tertiaryVariants: [PhysicalVariant]? = nil,
         delayNanoseconds: UInt64 = 0,
         fetchGate: ScannerFetchGate? = nil,
+        fetchHoldGates: [String: ScannerFetchGate] = [:],
         catalogMiss: Bool = false,
         gradedOutcome: ScannedGradedOutcome? = nil,
         setProviderID: String = "test-set",
@@ -3613,6 +3707,7 @@ final class ScannerViewModelTests: XCTestCase {
                 ],
                 delayNanoseconds: delayNanoseconds,
                 fetchGate: fetchGate,
+                fetchHoldGates: fetchHoldGates,
                 catalogMiss: catalogMiss,
                 failure: sourceFailure,
                 failureSwitch: failureSwitch

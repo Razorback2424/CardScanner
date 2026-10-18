@@ -63,7 +63,7 @@ enum CollectionRefreshStatusResolver {
                 isTransient: false
             )
         case .recentlyChecked:
-            return fallbackWarning ?? transient("Prices already current")
+            return fallbackWarning ?? transient("No prices due for refresh")
         case let .finished(summary):
             let updates = finishUpdates(for: summary)
             if summary.wasCancelled {
@@ -87,13 +87,16 @@ enum CollectionRefreshStatusResolver {
                 || summary.reconciledDuplicateRecords > 0 {
                 return warningWithFinishUpdates("Prices updated with some issues", updates)
             }
+            if summary.missingMappings > 0 {
+                return transient("Price mappings pending for \(summary.missingMappings) items")
+            }
             if !updates.isEmpty {
                 return transient(updates)
             }
             if summary.changedPrices {
                 return transient("Prices updated")
             }
-            return transient("Prices checked — already current")
+            return transient(summary.priced > 0 ? "Prices checked — already current" : "Price check complete")
         }
 
         return fallbackWarning

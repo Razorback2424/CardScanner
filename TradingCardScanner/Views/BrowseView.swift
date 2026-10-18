@@ -2061,6 +2061,7 @@ struct CatalogSetCardsView: View {
     @State private var prices: [String: Double] = [:]
     @State private var resolvedPriceSlotIDs: Set<String> = []
     @State private var unresolvedPriceSlotIDs: Set<String> = []
+    @State private var missingMappingPriceSlotIDs: Set<String> = []
     @State private var priceLoadState = CatalogPriceLoadState()
     @State private var contentGeneration = UUID()
     @State private var visibleGroups: [CatalogCardDisplayGroup] = []
@@ -2276,6 +2277,7 @@ struct CatalogSetCardsView: View {
         return resolvedPriceSlotIDs
             .intersection(ids)
             .subtracting(prices.keys)
+            .subtracting(missingMappingPriceSlotIDs)
             .count
     }
 
@@ -2292,8 +2294,13 @@ struct CatalogSetCardsView: View {
                 .foregroundStyle(.secondary)
                 .padding(.top, 12)
             } else if priceLoadState.hasLoadedPrices,
-                      unresolvedPriceSlotCount > 0 || noUSDPriceSlotCount > 0 {
+                      unresolvedPriceSlotCount > 0 || noUSDPriceSlotCount > 0 || !missingMappingPriceSlotIDs.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
+                    if !missingMappingPriceSlotIDs.isEmpty {
+                        Label("Price mappings pending for \(missingMappingPriceSlotIDs.count) cards", systemImage: "info.circle")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
                     if unresolvedPriceSlotCount > 0 {
                         HStack(alignment: .firstTextBaseline, spacing: 10) {
                             Label(
@@ -2394,6 +2401,7 @@ struct CatalogSetCardsView: View {
             prices.removeAll()
             resolvedPriceSlotIDs.removeAll()
             unresolvedPriceSlotIDs.removeAll()
+            missingMappingPriceSlotIDs.removeAll()
         }
         isLoading = true
         defer {
@@ -2559,6 +2567,8 @@ struct CatalogSetCardsView: View {
             }
             prices.merge(update.prices) { _, newest in newest }
             resolvedPriceSlotIDs.formUnion(update.resolvedIDs)
+            missingMappingPriceSlotIDs.subtract(update.resolvedIDs.union(update.unresolvedIDs))
+            missingMappingPriceSlotIDs.formUnion(update.missingMappingIDs)
             unresolvedPriceSlotIDs.formUnion(update.unresolvedIDs)
             resolvedPriceSlotIDs.subtract(update.unresolvedIDs)
             unresolvedPriceSlotIDs.subtract(update.resolvedIDs)
@@ -2580,7 +2590,7 @@ struct CatalogSetCardsView: View {
         let retryIDs = Array(
             unresolvedPriceSlotIDs.union(
                 resolvedPriceSlotIDs.subtracting(prices.keys)
-            ).intersection(displayedIDs)
+            ).subtracting(missingMappingPriceSlotIDs).intersection(displayedIDs)
         )
         priceLoadTask?.cancel()
         priceLoadTask = nil
@@ -2588,6 +2598,7 @@ struct CatalogSetCardsView: View {
         prices.removeAll()
         resolvedPriceSlotIDs.removeAll()
         unresolvedPriceSlotIDs.removeAll()
+        missingMappingPriceSlotIDs.removeAll()
         priceLoadState.invalidate()
         Task { @MainActor in
             await catalog.resetPriceResolution(for: retryIDs)

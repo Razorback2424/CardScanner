@@ -189,6 +189,18 @@ final class CollectionQueryTests: XCTestCase {
         )
     }
 
+    func testMappingCoverageIsNotPresentedAsCurrentPricesOrProviderFailure() {
+        let summary = PriceRefreshController.Summary(checkedAt: .now, priced: 0, failed: 0,
+            latestSourceUpdate: nil, checkedUnstampedProvider: false, changedPrices: false,
+            foundNothingNewer: true, missingMappings: 2)
+        let presentation = CollectionRefreshStatusResolver.presentation(for:
+            .init(status: .finished(summary), fallbackStatus: .idle))
+        XCTAssertEqual(presentation?.message, "Price mappings pending for 2 items")
+        XCTAssertEqual(presentation?.isWarning, false)
+        XCTAssertEqual(CollectionRefreshStatusResolver.presentation(for:
+            .init(status: .recentlyChecked, fallbackStatus: .idle))?.message, "No prices due for refresh")
+    }
+
     // MARK: - Collector numbers are not integers
 
     func testCardNumberSortIsNumericNotLexical() {

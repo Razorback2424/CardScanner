@@ -47,6 +47,33 @@ final class ProductFallbackTests: XCTestCase {
 
     // MARK: - What falls through
 
+    func testNewDirectHandleReopensSearchMissOnceThenRespectsKeyedResponseCooldown() throws {
+        let store = ProductIdentityStore(context: try makeContext())
+        let now = Date.now
+        XCTAssertTrue(store.record(.noProductMatch, forKey: "key", at: now))
+        XCTAssertFalse(store.fallbackCheckIsDue(forKey: "key", minimumInterval: 604800, now: now))
+        XCTAssertTrue(store.fallbackCheckIsDue(forKey: "key", minimumInterval: 604800, now: now, hasDirectLookup: true))
+        XCTAssertTrue(store.recordFallbackCheck(forKey: "key", at: now.addingTimeInterval(1)))
+        XCTAssertNil(store.identity(forKey: "key")?.unmatchedAt)
+        XCTAssertFalse(store.fallbackCheckIsDue(forKey: "key", minimumInterval: 604800,
+            now: now.addingTimeInterval(2), hasDirectLookup: true))
+        XCTAssertTrue(store.fallbackCheckIsDue(forKey: "key", minimumInterval: 604800,
+            now: now.addingTimeInterval(604802), hasDirectLookup: true))
+    }
+
+    func testMatchingRuleRevisionReopensNegativeCacheWithoutDiscardingResolvedHandles() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        let now = Date.now
+        context.insert(ProductIdentity(key: "negative", vendor: .justTCG, fallbackCheckedAt: now,
+            unmatchedAt: now, attemptVersion: ProductIdentity.currentAttemptVersion - 1))
+        context.insert(ProductIdentity(key: "resolved", vendor: .justTCG, vendorCardID: "exact-product",
+            resolvedAt: now, fallbackCheckedAt: now, attemptVersion: ProductIdentity.currentAttemptVersion - 1))
+        XCTAssertTrue(store.fallbackCheckIsDue(forKey: "negative", minimumInterval: 604800, now: now))
+        XCTAssertFalse(store.fallbackCheckIsDue(forKey: "resolved", minimumInterval: 604800, now: now))
+        XCTAssertEqual(store.cachedCardID(forKey: "resolved"), "exact-product")
+    }
+
     func testCatalogPriceInDollarsFinishesTheJob() {
         XCTAssertFalse(PriceRefreshController.needsFallback(.price(usd(3.75))))
     }

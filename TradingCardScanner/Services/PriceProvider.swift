@@ -47,9 +47,11 @@ enum CatalogSortPriceResolution: Equatable, Sendable {
     case priced(Double)
     case noUSDQuote
     case unresolved
+    case mappingMissing
 
     static func cachedPrice(_ value: Double?) -> Self? {
-        value.map(Self.priced)
+        guard let value, PortfolioPriceEligibility.eligibleUnitPrice(amount: value, currencyCode: "USD") != nil else { return nil }
+        return .priced(value)
     }
 
     static func exactLookup(_ lookup: PriceLookup) -> Self {
@@ -76,6 +78,7 @@ enum CatalogSortPriceResolution: Equatable, Sendable {
         }
         if let highest = prices.max() { return .priced(highest) }
         if results.contains(.unresolved) { return .unresolved }
+        if results.contains(.mappingMissing) { return .mappingMissing }
         return .noUSDQuote
     }
 }

@@ -1573,7 +1573,7 @@ final class ScannerViewModel: ObservableObject {
     /// scanner back to the snapshot.
     private var magicSetDefinitions = MagicSetSnapshot.definitions
     private var hasRefreshedMagicDirectory = false
-    private var identificationsInFlight = 0
+    private var identificationsInFlight: Set<UUID> = []
     private var slowLookupTask: Task<Void, Never>?
     /// Confirmations are consumed in physical scan order. Catalog prefetching can
     /// still overlap the network work, but only one result is allowed to mutate
@@ -2594,6 +2594,7 @@ final class ScannerViewModel: ObservableObject {
         cancelPriceCheckRefresh()
         identificationTask?.cancel()
         identificationTask = nil
+        resetIdentificationProgress()
         activeIdentificationRequestID = nil
         activeIdentificationRequest = nil
         isProcessingIdentification = false
@@ -3169,8 +3170,8 @@ final class ScannerViewModel: ObservableObject {
 
         let accepted = beginPendingResolution(requestID: pending.request.id) { [weak self] in
             guard let self else { return }
-            self.beginIdentification()
-            defer { self.endIdentification() }
+            self.beginIdentification(request.id)
+            defer { self.endIdentification(request.id) }
             do {
                 let resolution: CardCatalog.CatalogResolution
                 if let evidence = pending.evidence,
@@ -3435,8 +3436,8 @@ final class ScannerViewModel: ObservableObject {
             guard row.printingCandidates.contains(candidate) else { return }
             let accepted = beginPendingResolution(requestID: retryRequest.id) { [weak self] in
                 guard let self else { return }
-                self.beginIdentification()
-                defer { self.endIdentification() }
+                self.beginIdentification(retryRequest.id)
+                defer { self.endIdentification(retryRequest.id) }
                 do {
                     let resolution = try await self.catalog.resolvePrintingChoice(candidate, for: printingRequest.identifier)
                     guard !Task.isCancelled, self.isCurrent(retryRequest) else { return }
@@ -3600,8 +3601,8 @@ final class ScannerViewModel: ObservableObject {
             )
             let accepted = beginPendingResolution(requestID: request.id) { [weak self] in
                 guard let self else { return }
-                self.beginIdentification()
-                defer { self.endIdentification() }
+                self.beginIdentification(request.id)
+                defer { self.endIdentification(request.id) }
                 do {
                     let card = try await self.catalog.card(for: candidate, matching: evidence)
                     guard !Task.isCancelled, self.isCurrent(request) else {
@@ -3975,8 +3976,9 @@ final class ScannerViewModel: ObservableObject {
     }
 
     private func identify(_ request: ScanRequest) async {
-        beginIdentification()
-        defer { endIdentification() }
+        guard !Task.isCancelled, isCurrent(request) else { return }
+        beginIdentification(request.id)
+        defer { endIdentification(request.id) }
         let resolution: CardCatalog.CatalogResolution
         do {
             let catalogID = PerformanceSignpost.makeID()
@@ -4104,22 +4106,31 @@ final class ScannerViewModel: ObservableObject {
         }
     }
 
-    private func beginIdentification() {
-        identificationsInFlight += 1
-        guard identificationsInFlight == 1 else { return }
+    private func beginIdentification(_ requestID: UUID) {
+        guard !Task.isCancelled, activeIdentificationRequestID == requestID else { return }
+        identificationsInFlight.insert(requestID)
+        guard identificationsInFlight.count == 1 else { return }
 
         slowLookupTask = Task { @MainActor [weak self] in
             try? await Task.sleep(for: Self.slowLookupThreshold)
-            guard !Task.isCancelled, let self, self.identificationsInFlight > 0 else { return }
+            guard !Task.isCancelled, let self, !self.identificationsInFlight.isEmpty else { return }
             self.isSlowIdentifying = true
         }
     }
 
-    private func endIdentification() {
-        identificationsInFlight -= 1
-        guard identificationsInFlight <= 0 else { return }
-        identificationsInFlight = 0
+    private func endIdentification(_ requestID: UUID) {
+        guard identificationsInFlight.remove(requestID) != nil else {
+            diagnostic("staleIdentificationProgressIgnored")
+            return
+        }
+        guard identificationsInFlight.isEmpty else { return }
+        resetIdentificationProgress()
+    }
+
+    private func resetIdentificationProgress() {
+        identificationsInFlight.removeAll()
         slowLookupTask?.cancel()
+        slowLookupTask = nil
         isSlowIdentifying = false
     }
 
@@ -5644,6 +5655,7 @@ final class ScannerViewModel: ObservableObject {
         scanGeneration += 1
         identificationTask?.cancel()
         identificationTask = nil
+        resetIdentificationProgress()
         activeIdentificationRequestID = nil
         activeIdentificationRequest = nil
         isProcessingIdentification = false
@@ -5744,7 +5756,7 @@ final class ScannerViewModel: ObservableObject {
                 }
                 latest.checkedAt = .now
                 latest.isRefreshing = false
-                latest.refreshFailed = true
+                latest.refreshFailed = issue != .mappingUnavailable
                 latest.quoteState = latest.hasUsableAmount
                     ? .lastKnown(issue)
                     : Self.quoteState(for: issue)
@@ -5776,6 +5788,7 @@ final class ScannerViewModel: ObservableObject {
 
     private static func quoteState(for issue: PriceCheckRefreshIssue) -> PriceCheckQuoteState {
         switch issue {
+        case .mappingUnavailable: return .mappingUnavailable
         case .noExactPrice: return .noExactPrice
         case .notMatched: return .notMatched
         case .unsupportedFinish: return .unsupportedFinish

@@ -4,6 +4,33 @@ import XCTest
 
 @MainActor
 final class QuoteCacheTests: XCTestCase {
+    func testForeignRefreshCannotOverwriteLastGoodUSDReferenceQuote() async throws {
+        let context = try makeContext()
+        let scan = priceCheckScan()
+        let cache = QuoteCache(context: context)
+        let prior = quote(42, at: .now.addingTimeInterval(-60))
+        let key = scan.card.providerID
+        cache.store(prior, game: .pokemon, printingID: key, variantID: scan.resolved.variant?.id)
+        let foreign = PriceLookup.price(NormalizedPrice(unitMarketPriceUSD: 999, currencyCode: "EUR", source: .cardmarket,
+            sourceVariantID: "foreign", sourceUpdatedAt: nil, fetchedAt: .now))
+        let coordinator = PriceCheckCoordinator(context: context, refreshProvider: StubPriceCheckProvider(outcome: .quote(foreign)))
+        let result = coordinator.present(scan)
+        let outcome = await coordinator.refresh(result)
+        XCTAssertEqual(outcome, .failed(.providerUnavailable))
+        XCTAssertEqual(cache.quote(game: .pokemon, printingID: key, variantID: scan.resolved.variant?.id)?.effectiveAmount, 42)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceRecord>()).isEmpty)
+        XCTAssertTrue(try context.fetch(FetchDescriptor<PriceObservation>()).isEmpty)
+    }
+
+    func testNoProviderObservationDoesNotClaimAnAbsentMarketQuote() async throws {
+        let context = try makeContext()
+        let coordinator = PriceCheckCoordinator(context: context,
+            refreshProvider: StubPriceCheckProvider(outcome: .quote(.unavailable(nil))))
+        let result = coordinator.present(priceCheckScan())
+        let outcome = await coordinator.refresh(result)
+        XCTAssertEqual(outcome, .failed(.providerUnavailable))
+        XCTAssertTrue(try context.fetch(FetchDescriptor<ReferenceQuote>()).isEmpty)
+    }
     func testMissingPricingAdapterIsTerminalInLivePriceCheck() async throws {
         let context = try makeContext()
         let service = PriceQuoteService(registry: .standard,
