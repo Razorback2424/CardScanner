@@ -68,15 +68,22 @@ final class CameraRotationTracker: NSObject, ObservableObject {
         guard changed else { return }
         if Thread.isMainThread {
             MainActor.assumeIsolated { [weak self] in
-                self?.previewAngle = angle
+                self?.publishCurrentAngle()
             }
         } else {
             DispatchQueue.main.async { [weak self] in
                 MainActor.assumeIsolated {
-                    self?.previewAngle = angle
+                    self?.publishCurrentAngle()
                 }
             }
         }
+    }
+
+    private func publishCurrentAngle() {
+        // A queued background report may run after a newer main-thread one.
+        // Publish the latest mirror instead of replaying its captured angle.
+        let angle = currentAngle
+        if previewAngle != angle { previewAngle = angle }
     }
 
     /// The rotation that makes the sensor image upright for a screen turned this

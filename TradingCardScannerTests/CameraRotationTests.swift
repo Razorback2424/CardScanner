@@ -169,6 +169,29 @@ final class CameraRotationTests: XCTestCase {
         wait(for: [read], timeout: 1)
     }
 
+    func testQueuedRotationCannotOverwriteANewerMainThreadReport() async {
+        let tracker = CameraRotationTracker()
+        // Keep the main queue occupied until the background report has queued
+        // its publication, then publish a newer orientation before it runs.
+        let reported = DispatchSemaphore(value: 0)
+        DispatchQueue.global().async {
+            tracker.report(180)
+            reported.signal()
+        }
+        guard reported.wait(timeout: .now() + 5) == .success else {
+            return XCTFail("Background report did not complete")
+        }
+        tracker.report(270)
+        XCTAssertEqual(tracker.previewAngle, 270)
+
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            DispatchQueue.main.async { continuation.resume() }
+        }
+
+        XCTAssertEqual(tracker.currentAngle, 270)
+        XCTAssertEqual(tracker.previewAngle, 270)
+    }
+
     func testAngleNormalizationSnapsToQuarterTurnsAndWraps() {
         XCTAssertEqual(CardFramingRegion.normalizedRotationAngle(89.999), 90)
         XCTAssertEqual(CardFramingRegion.normalizedRotationAngle(360), 0)
