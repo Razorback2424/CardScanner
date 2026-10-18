@@ -67,6 +67,7 @@ chronological notes.
 | Artwork fallback contract | [`plans/artwork-fallback-plan.md`](plans/artwork-fallback-plan.md) and `TradingCardScanner/Services/ArtworkFallbacks.swift` |
 | Per-card price history chart | [`plans/price_history_chart_plan.md`](plans/price_history_chart_plan.md) and `PriceHistoryChartModel` in `TradingCardScanner/Views/CollectionCardDetailView.swift` |
 | Price-refresh scale backlog | [`plans/price_refresh_scale_plan.md`](plans/price_refresh_scale_plan.md) |
+| Pricing correctness and coverage sequence | [`plans/pricing_correctness_and_coverage.md`](plans/pricing_correctness_and_coverage.md) — USD enforcement, mapping/quote/failure distinctions and negative-cache recovery before reviewed mapping expansion and a complete census. |
 | Pokémon USD pricing coverage | [`plans/browse_pricing_coverage_plan.md`](plans/browse_pricing_coverage_plan.md) — device-local TCGCSV fallback for both 30th sets; 322 focused simulator tests and a live 188-card feed check passed 2026-09-30. General bulk-provider migration remains unresolved. |
 | Finish-effect rendering performance | [`superpowers/plans/2026-09-12-foil-effect-performance.md`](superpowers/plans/2026-09-12-foil-effect-performance.md) |
 | Future shared pricing backend | [`plans/shared_pricing_cache_plan.md`](plans/shared_pricing_cache_plan.md) |

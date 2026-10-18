@@ -8,6 +8,15 @@ history.
 
 ## Current authority boundary — updated 2026-10-15
 
+**Pricing correctness follow-up — 2026-10-18:** the
+[execution plan](pricing_correctness_and_coverage.md) separates correctness,
+reviewed mapping recovery, shared retrieval and the complete coverage census.
+Earlier native-EUR current-display behavior is superseded by the USD contract.
+Missing mappings are catalog coverage rather than proof of an upstream null or
+a failed provider request. Earlier mapped-lane live checks do not establish
+coverage for discovery-only records. The new plan records its own bounded
+simulator evidence and leaves provider/device/release acceptance open.
+
 **Four-game specialty coverage — 2026-10-15:** the
 [coverage authority](../audits/card-coverage-gaps-and-research.md) links a fresh
 four-game review and reproducible discrepancy ledgers. Its exact Pokémon rules

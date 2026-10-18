@@ -1,3 +1,31 @@
+- Pricing correctness before coverage expansion (2026-10-18; `56d981f` plus
+  local changes): completed the Priority 1 follow-up to the committed pricing
+  baseline, preserving pre-existing navigation edits. Missing marketplace
+  mappings now have a distinct outcome across Browse, details, Price Check,
+  collection diagnostics and refresh summaries; they neither count as provider
+  failures nor fabricate observations/successful provider checks. A priced
+  finish still supplies an unqualified printing's sort price when a sibling
+  finish lacks a mapping. Foreign/invalid Price Check responses cannot replace
+  a valid USD reference quote. Newly available exact handles and matcher
+  revisions reopen obsolete search misses; successful keyed responses restore
+  ordinary cooldowns. New exact adapters also supersede old raw capability
+  stamps without requiring paid fallback. Signed iPhone 17 / iOS 27 regression:
+  522 passed, four deliberate opt-in skips, zero failures across 526 cases;
+  `TEST SUCCEEDED`, exit zero. Coverage includes pricing/transport contracts,
+  Browse, source-null/mapping distinction, reference-cache and refresh recovery,
+  ownership preservation, portfolio reconciliation and Collection status copy.
+  The first unsigned run exposed aggregation/expectation changes and Keychain
+  entitlement failures; code/tests were corrected and simulator signing restored
+  the credential tests without production credential changes. Evidence:
+  `/Volumes/Keller Family Photos/CardScannerBuild/PricingCorrectness-20261018-Verified.xcresult`.
+  No new mapping data, UUIDs, ownership/schema migration, provider deployment,
+  physical-device install, commit or push. Provider-path unification, reviewed
+  coverage batches, prerelease/serialized reconciliation and the complete
+  census remain deferred in
+  [the current execution plan](docs/plans/pricing_correctness_and_coverage.md).
+  HIG source review passes; no new rendered-device/VoiceOver or release claim.
+  All 195 local links in affected documentation and `git diff --check` pass.
+
 - Performance follow-up sweep (2026-10-18; local changes over `8e882eb`):
   extended the dedicated serial model executor to the six remaining database
   workers used by scanner writes, detail quantity reads, collection deletion,
@@ -2734,3 +2762,23 @@ historical.
   `artifacts/catalog_navigation_checklist.md`. No physical-device verification,
   commit, push or release is claimed. Existing and concurrent user changes
   were preserved.
+- **2026-10-18 — Reproduced and fixed normal-launch Catalog safe-area loss:**
+  user screenshots showed search behind the status bar and clipped card-detail
+  artwork. Reproduced on iOS 27 Simulator only after starting on Portfolio and
+  switching to Collection before Plus → Magic; the earlier direct-Collection
+  checks missed this path. The closed Collection inspector installs a UIKit
+  split wrapper around the phone stack and loses pushed content's safe-area
+  layout/touch handling in this lifecycle. Compact/unspecified-width filters now
+  use a sheet; regular-width filters retain the inspector. Collection chrome,
+  navigation and catalog behavior otherwise remain unchanged. New inactive-tab
+  navigation regression passes with the fix and fails when restoring the old
+  inspector (search minY 19.67 vs required 106 points, on first push and reopen).
+  Restored correct code; final suite passes 11/11 Browse/detail render tests.
+  Direct touch events verify normal launch → Collection → Plus → Magic → card
+  detail → Back → Catalog → Pokémon → Sets → set, scrolling back to its complete
+  header, then returning to Collection and opening/closing filters. Inspected
+  before/after captures and local checklist; external evidence remains under
+  `CodexBuilds/CatalogScrollFix-20261018/`. Optimized signed ReleaseLocal iPhone
+  build, strict signature verification, in-place installation and normal launch
+  succeed; no uninstall or data reset. Owner confirmation of physical navigation
+  remains distinct from install/launch success. No commit, push or release.
