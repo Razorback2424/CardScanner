@@ -286,7 +286,7 @@ struct PortfolioView: View {
                         Button("Pricing and data details", systemImage: "info.circle") {
                             detailsDestination = PortfolioDetailsDestination(
                                 summary: summary,
-                                historyResult: activeHistoryResult
+                                historyResult: nil
                             )
                         }
                         .labelStyle(.iconOnly)
@@ -306,11 +306,20 @@ struct PortfolioView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+#if DEBUG
+            .task(id: activeHistoryResult) {
+                guard ProcessInfo.processInfo.arguments.contains("PortfolioAdditions"),
+                      let summary = portfolio.summary, let result = activeHistoryResult else { return }
+                detailsDestination = PortfolioDetailsDestination(summary: summary, historyResult: result)
+            }
+#endif
             .navigationDestination(item: $detailsDestination) { destination in
                 PortfolioDetailsView(
-                    summary: destination.summary,
+                    portfolio: portfolio,
+                    history: history,
+                    fallbackSummary: destination.summary,
                     refresh: refresh,
-                    historyResult: destination.historyResult
+                    snapshotHistoryResult: destination.historyResult
                 )
             }
             .navigationDestination(item: $contributorContext) { context in
@@ -358,6 +367,7 @@ struct PortfolioView: View {
             selectedPoint: selectedHistoryPoint,
             currentValue: portfolio.summary?.currentValue,
             isRecomputing: portfolio.isRecomputing
+                || (portfolio.summary == nil && portfolio.integrityDefects.isEmpty)
         )
     }
 
@@ -462,7 +472,7 @@ struct PortfolioView: View {
                                 .foregroundStyle(.secondary.opacity(0.75))
                         }
                     } else {
-                        Text("Value unavailable")
+                        Text(portfolio.integrityDefects.isEmpty ? "—" : "Value unavailable")
                             .font(.system(size: 54, weight: .bold, design: .rounded))
                             .foregroundStyle(PortfolioPalette.value)
                     }
@@ -512,6 +522,10 @@ struct PortfolioView: View {
                 isRecomputing: portfolio.isRecomputing
             )
 
+            if let summary = portfolio.summary {
+                PortfolioExcludedCopiesDisclosure(summary: summary)
+            }
+
             if portfolio.summary?.isMigrationDay == true {
                 Text("Tracking started today")
                     .font(.subheadline)
@@ -532,11 +546,27 @@ struct PortfolioView: View {
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(PortfolioPalette.attention)
 
-            ForEach(defects) { defect in
-                Text(defect.detail)
+            Text("\(defects.count) \(defects.count == 1 ? "issue needs" : "issues need") reconciliation.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            ForEach(Array(defects.prefix(3))) { defect in
+                Text(integrityDefectDescription(defect))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             }
+            if defects.count > 3 {
+                Text("And \(defects.count - 3) more. See Pricing & Data for details.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+
+            Button("View data details") {
+                detailsDestination = PortfolioDetailsDestination(
+                    summary: portfolio.summary ?? PortfolioSummary(defects: defects, isAuthoritative: false),
+                    historyResult: nil
+                )
+            }
+            .font(.subheadline.weight(.semibold))
 
             if canRepairQuantityDefects {
                 Button("Reconcile with Collection") {
@@ -568,13 +598,13 @@ struct PortfolioView: View {
                         ProgressView()
                             .controlSize(.small)
                     } else {
-                        Text("Rebuild pricing evidence")
+                        Text("Retry reconciliation")
                     }
                 }
                 .font(.subheadline.weight(.semibold))
                 .buttonStyle(.bordered)
                 .disabled(isRebuildingPortfolioEvidence)
-                .accessibilityHint("Re-reads stored price records and rebuilds missing local pricing evidence without changing collection contents")
+                .accessibilityHint("Re-reads stored collection and pricing data and recalculates the portfolio")
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -583,6 +613,14 @@ struct PortfolioView: View {
             PortfolioPalette.attention.opacity(0.12),
             in: RoundedRectangle(cornerRadius: 14, style: .continuous)
         )
+    }
+
+    private func integrityDefectDescription(_ defect: LedgerIntegrityDefect) -> String {
+        if defect.reason == .quantityMismatch,
+           let holding = portfolio.holdings.first(where: { $0.collectionKey == defect.collectionKey }) {
+            return "\(holding.name): collection records disagree about the quantity."
+        }
+        return defect.reason.title
     }
 
     private func repairQuantityMismatches() {
@@ -597,7 +635,7 @@ struct PortfolioView: View {
             }
             Task { @MainActor in
                 await Task.yield()
-                portfolio.recompute(context: modelContext)
+                portfolio.recompute(context: modelContext, bypassPriceRefreshGate: true)
             }
         } catch {
             quantityRepairError = "No changes were saved. The repair can be retried after the records are available."
@@ -792,26 +830,23 @@ struct PortfolioView: View {
         return text
     }
 
-    @ViewBuilder
-    private func coverage(_ coverage: PortfolioCoverage) -> some View {
-        switch coverage.state {
-        case .unknown:
-            EmptyView()
-        case .complete:
-            Label("\(coverage.refreshed) of \(coverage.total) checked today", systemImage: "checkmark.circle")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        case .partial:
-            VStack(alignment: .leading, spacing: 2) {
-                Text("\(coverage.refreshed) of \(coverage.total) checked today")
-                    .font(.subheadline.weight(.semibold))
-                Text("\(coverage.carriedForward) still show an earlier price.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+}
+
+private struct PortfolioExcludedCopiesDisclosure: View {
+    let summary: PortfolioSummary
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            if summary.unpricedCount > 0 {
+                Text("\(summary.unpricedCount) \(summary.unpricedCount == 1 ? "copy is" : "copies are") unpriced, not included in the total.")
+            }
+            if summary.otherCurrencyCount > 0 {
+                Text("\(summary.otherCurrencyCount) \(summary.otherCurrencyCount == 1 ? "copy is" : "copies are") priced in another currency, not included in the total.")
             }
         }
+        .font(.caption)
+        .foregroundStyle(.secondary)
     }
-
 }
 
 private struct PortfolioMoversInfoPopover: View {
@@ -1003,8 +1038,7 @@ private enum PortfolioContributionPresentation {
     }
 
     static func signed(_ amount: Money) -> String {
-        let sign = amount.tenThousandths < 0 ? "−" : "+"
-        return sign + amount.magnitude.formatted()
+        PortfolioHistoryDisplay.signedCurrency(amount)
     }
 
     static func color(_ amount: Money) -> Color { PortfolioPalette.direction(amount) }
@@ -1497,20 +1531,41 @@ private struct PortfolioOwnedCardDestination: View {
 }
 
 private struct PortfolioDetailsView: View {
-    let summary: PortfolioSummary
+    @ObservedObject var portfolio: PortfolioEngine
+    @ObservedObject var history: PortfolioHistoryStore
+    let fallbackSummary: PortfolioSummary
     @ObservedObject var refresh: PriceRefreshController
-    let historyResult: PortfolioHistoryResult?
+    let snapshotHistoryResult: PortfolioHistoryResult?
+#if DEBUG
+    @State private var showsAdditionsDebugScreen = false
+#endif
+
+    private var summary: PortfolioSummary { portfolio.summary ?? fallbackSummary }
+    private var historyResult: PortfolioHistoryResult? { snapshotHistoryResult ?? history.activeResult }
 
     var body: some View {
         List {
             Section("Pricing coverage") {
                 LabeledContent("Checked today", value: "\(summary.coverage.refreshed) of \(summary.coverage.total)")
                 if summary.coverage.carriedForward > 0 {
-                    Text("\(summary.coverage.carriedForward) copies still show an earlier price.")
+                    Text("\(summary.coverage.carriedForward) prices are carried forward from an earlier check.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
                 refreshStatus
+                PortfolioExcludedCopiesDisclosure(summary: summary)
+            }
+
+            if !summary.defects.isEmpty {
+                Section("Data issues") {
+                    ForEach(summary.defects) { defect in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(defect.reason.title).font(.subheadline.weight(.semibold))
+                            Text(defect.detail).font(.footnote).foregroundStyle(.secondary)
+                        }
+                        .textSelection(.enabled)
+                    }
+                }
             }
 
             Section("Portfolio") {
@@ -1537,6 +1592,17 @@ private struct PortfolioDetailsView: View {
         }
         .navigationTitle("Pricing & Data")
         .navigationBarTitleDisplayMode(.inline)
+#if DEBUG
+        .navigationDestination(isPresented: $showsAdditionsDebugScreen) {
+            if let result = historyResult {
+                PortfolioAdditionsView(result: result, holdings: portfolio.holdings)
+            }
+        }
+        .task {
+            let arguments = ProcessInfo.processInfo.arguments
+            showsAdditionsDebugScreen = arguments.contains("PortfolioAdditions") && arguments.contains("cards")
+        }
+#endif
     }
 
     @ViewBuilder
@@ -1547,10 +1613,15 @@ private struct PortfolioDetailsView: View {
                 LabeledContent("Current portfolio value", value: accounting.endValue.formatted())
                 LabeledContent("Portfolio value change", value: signed(accounting.totalChange))
                 if PortfolioHistoryDisplay.hasBreakdown(accounting) {
-                    LabeledContent(
-                        "Cards added",
-                        value: signed(accounting.added + accounting.newlyAddedValue)
-                    )
+                    NavigationLink {
+                        PortfolioAdditionsView(result: result, holdings: portfolio.holdings)
+                    } label: {
+                        LabeledContent(
+                            "Cards added",
+                            value: signed(accounting.added + accounting.newlyAddedValue)
+                        )
+                    }
+                    .accessibilityHint("Shows the cards and values that make up this amount")
                     .padding(.leading, 16)
                     LabeledContent("Cards removed", value: signed(-accounting.removed))
                         .padding(.leading, 16)
@@ -1614,8 +1685,7 @@ private struct PortfolioDetailsView: View {
     }
 
     private func signed(_ amount: Money) -> String {
-        let prefix = amount.tenThousandths > 0 ? "+" : amount.tenThousandths < 0 ? "−" : ""
-        return prefix + amount.magnitude.formatted()
+        PortfolioHistoryDisplay.signedCurrency(amount)
     }
 
     @ViewBuilder
@@ -1677,6 +1747,125 @@ private struct PortfolioDetailsView: View {
     }
 }
 
+/// Uses the frozen period's replay values, rather than today's card prices or
+/// activity timestamps, which cannot explain additions first priced later.
+private struct PortfolioAdditionsView: View {
+    let result: PortfolioHistoryResult
+    let holdings: [PortfolioHoldingSnapshot]
+    @Environment(\.modelContext) private var modelContext
+    @State private var historicalLabels: [String: CardLabel] = [:]
+    @State private var historyLoadFailed = false
+
+    private struct CardLabel {
+        let name: String
+        let detail: String
+    }
+
+    private var total: Money {
+        guard let accounting = result.accounting else { return .zero }
+        return accounting.added + accounting.newlyAddedValue
+    }
+
+    private var unitemizedValue: Money {
+        total - result.additions.values.reduce(.zero, +)
+    }
+
+    private var labelsByKey: [String: CardLabel] {
+        var labels = historicalLabels
+        for holding in holdings where result.additions[holding.collectionKey] != nil {
+            labels[holding.collectionKey] = CardLabel(name: holding.name, detail: holding.detail)
+        }
+        return labels
+    }
+
+    var body: some View {
+        let labels = labelsByKey
+        let keys = result.additions.keys.sorted {
+            let lhs = labels[$0]?.name ?? $0
+            let rhs = labels[$1]?.name ?? $1
+            return lhs == rhs ? $0 < $1 : lhs.localizedStandardCompare(rhs) == .orderedAscending
+        }
+        List {
+            Section {
+                LabeledContent("Cards added", value: PortfolioHistoryDisplay.signedCurrency(total))
+            } header: {
+                Text("\(result.range.rawValue) total")
+            } footer: {
+                Text("Values reflect when cards were added, including first prices learned later in this period. Market price changes are shown separately in Pricing & Data.")
+            }
+
+            Section("Cards in this amount") {
+                ForEach(keys, id: \.self) { key in
+                    let card = labels[key] ?? CardLabel(
+                        name: "Card details unavailable",
+                        detail: "This card’s name is unavailable in this device’s history."
+                    )
+                    VStack(alignment: .leading, spacing: 4) {
+                        LabeledContent {
+                            Text(PortfolioHistoryDisplay.signedCurrency(result.additions[key] ?? .zero))
+                                .monospacedDigit()
+                        } label: {
+                            Text(card.name)
+                        }
+                        if !card.detail.isEmpty {
+                            Text(card.detail)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+                if result.additions.isEmpty && unitemizedValue.isZero {
+                    Text("No cards contributed added value during this period.")
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if !unitemizedValue.isZero {
+                Section {
+                    LabeledContent("Unitemized value", value: PortfolioHistoryDisplay.signedCurrency(unitemizedValue))
+                } footer: {
+                    Text("The recorded total includes value whose card details are unavailable in this device’s replay history.")
+                }
+            }
+            if historyLoadFailed {
+                Section {
+                    Text("Some historical card names couldn’t be loaded.")
+                        .foregroundStyle(.secondary)
+                    Button("Retry") { loadHistoricalLabels() }
+                }
+            }
+        }
+        .navigationTitle("Cards Added")
+        .navigationBarTitleDisplayMode(.inline)
+        .task { loadHistoricalLabels() }
+    }
+
+    private func loadHistoricalLabels() {
+        let keys = Array(result.additions.keys)
+        do {
+            let activities = try modelContext.fetch(FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { keys.contains($0.collectionKey) },
+                sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+            ))
+            var labels: [String: CardLabel] = [:]
+            for activity in activities where labels[activity.collectionKey] == nil {
+                labels[activity.collectionKey] = CardLabel(
+                    name: activity.name,
+                    detail: [activity.game.label, activity.setName, activity.cardNumber,
+                             activity.pokemonPrintRun?.label, activity.variantLabel,
+                             activity.magicTreatmentEvidence.displayLabel]
+                        .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
+                )
+            }
+            historicalLabels = labels
+            historyLoadFailed = false
+        } catch {
+            historyLoadFailed = true
+        }
+    }
+}
+
 
 /// The refresh button, isolated so the four-times-a-second progress publisher
 /// invalidates a 44-point control rather than the whole Portfolio tree.
@@ -1723,7 +1912,8 @@ private struct PortfolioAttentionBadge: ViewModifier {
         }
         if needsAttentionFromPortfolio { return true }
         if case let .finished(result) = refresh.status {
-            return result.targetBuildFailed
+            return result.wasCancelled
+                || result.targetBuildFailed
                 || result.providerUnreachable
                 || result.failed > 0
                 || result.persistenceFailed

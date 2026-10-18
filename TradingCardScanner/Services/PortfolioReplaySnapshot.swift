@@ -592,7 +592,12 @@ enum PortfolioReplaySnapshotBuilder {
 /// recomputation and the rest is SwiftData materialising observation and
 /// check-day rows. That is the work that has to leave.
 @ModelActor
-actor PortfolioComputationActor {
+actor PortfolioComputationActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     /// Computes live portfolio state only.
     ///
     /// `liveInstant` is the current instant captured by the live caller. A

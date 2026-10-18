@@ -852,6 +852,7 @@ struct PokemonScanProfile: Sendable {
 
     func inferredIdentifier(from number: PokemonPrintedNumberEvidence) -> ScanIdentifier? {
         guard case .officialSet = number.scheme,
+              PokemonHistoricalIdentityResolver.membershipIdentities(for: number, in: registry).isEmpty,
               let definition = inferableDefinitions[number.denominator] else { return nil }
         let digits = String(number.localID.prefix { $0.isNumber })
         let suffix = String(number.localID.dropFirst(digits.count))

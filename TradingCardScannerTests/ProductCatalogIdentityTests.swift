@@ -103,6 +103,24 @@ final class ProductCatalogIdentityTests: XCTestCase {
         )
     }
 
+    func testAmbiguousJapanesePrefixCannotBeOverriddenByANameMatch() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "sv3-one-pokemon-japan", name: "Requested Set"),
+            (id: "sv3-two-pokemon-japan", name: "Another Set")
+        ])
+
+        XCTAssertNil(ProductCatalogIdentity.setSlug(setName: "Requested Set", japaneseSetID: "SV3",
+                                                    game: .pokemonJapan, directory: directory))
+    }
+
+    func testDuplicateJapaneseDirectoryRowsAreNotConflictingSets() {
+        let slug = "sv3-one-pokemon-japan"
+        let directory = ProductSetDirectory(sets: [(id: slug, name: nil), (id: slug, name: nil)])
+
+        XCTAssertEqual(ProductCatalogIdentity.setSlug(setName: "Unrelated Provider Name", japaneseSetID: "SV3",
+                                                      game: .pokemonJapan, directory: directory), slug)
+    }
+
     func testEnglishSetSlugIsBuiltFromTheSetName() {
         let cases: [(String, ProductCatalogIdentity.Game, String)] = [
             ("Art Series: FINAL FANTASY", .magic, "art-series-final-fantasy-magic-the-gathering"),
@@ -302,11 +320,31 @@ final class ProductCatalogIdentityTests: XCTestCase {
         XCTAssertNil(directory.slug(forCatalogSetName: "Dragon", game: .pokemon))
     }
 
+    func testAmbiguousExactNamesCannotFallBackToAnEraStrippedAlias() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "first-dragon-pokemon", name: "Dragon"),
+            (id: "second-dragon-pokemon", name: "Dragon"),
+            (id: "ex-dragon-pokemon", name: "EX Dragon")
+        ])
+
+        XCTAssertNil(directory.slug(forCatalogSetName: "Dragon", game: .pokemon))
+    }
+
+    func testAmbiguousPublishedNamesCannotFallBackToADerivedSlug() {
+        let directory = ProductSetDirectory(sets: [
+            (id: "dragon-pokemon", name: "Dragon"),
+            (id: "other-dragon-pokemon", name: "Dragon")
+        ])
+
+        XCTAssertNil(directory.slug(forCatalogSetName: "Dragon", game: .pokemon))
+    }
+
     /// An exact name beats an era-stripped one, so a set whose real name
     /// collides with another's suffix cannot be displaced by it.
     func testExactNameOutranksAnEraStrippedMatch() {
         let directory = ProductSetDirectory(sets: [
             (id: "ex-dragon-pokemon", name: "EX Dragon"),
+            (id: "sv-dragon-pokemon", name: "SV Dragon"),
             (id: "dragon-pokemon", name: "Dragon")
         ])
 

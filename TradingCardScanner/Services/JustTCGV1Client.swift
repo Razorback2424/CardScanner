@@ -83,6 +83,7 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
     /// is unreliable, and a wrong mapping shows the user the wrong products —
     /// so sealed browse deliberately uses their directory as published.
     func sealedSets(game: CardGame) async throws -> [SealedSetSummary] {
+        if game == .lorcana { return try await LorcanaDiscoveryCatalog.bundled.get().sealedSets(game: game) }
         let response: SetsResponse = try await transport.get(
             "v1/sets",
             query: [("game", try Self.gameSlug(for: game))],
@@ -112,6 +113,10 @@ struct JustTCGV1Client: Sendable, SealedBrowseProviding {
         offset: Int = 0,
         limit: Int = JustTCGQuota.maximumPageSize
     ) async throws -> MarketCatalogPage<SealedProductSummary> {
+        if game == .lorcana {
+            return try await LorcanaDiscoveryCatalog.bundled.get().searchSealedProducts(
+                game: game, setID: setID, query: query, offset: offset)
+        }
         var parameters: [(String, String)] = [
             ("game", try Self.gameSlug(for: game)),
             // Verified against the live API: this genuinely filters, and the

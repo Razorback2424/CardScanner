@@ -415,7 +415,7 @@ struct StoreRevisionMonitor: View {
                 try? await Task.sleep(for: .milliseconds(300))
                 guard !Task.isCancelled, !writeCoordinator.isBulkWriteInFlight else { return }
 
-                let actor = StoreRevisionModelActor(modelContainer: modelContext.container)
+                let actor = await StoreRevisionModelActor.makeBackground(modelContainer: modelContext.container)
                 let fingerprint = await actor.fingerprint()
                 guard await actor.readSucceeded() else { return }
                 guard !Task.isCancelled,
@@ -458,6 +458,17 @@ struct StoreRevisionMonitor: View {
 
         guard let previousFingerprint else {
             self.previousFingerprint = fingerprint
+            // A fast first scan can commit during the initial scanner bulk
+            // interval, after the launch projection but before this baseline.
+            // Reconcile that ownership change instead of accepting a stale
+            // empty grid as the baseline until the next save or relaunch.
+            let projectedCount = projectionStore.snapshot?.physicalRowCountsByKey.values.reduce(0, +)
+            if let projectedCount, projectedCount != fingerprint.cardCount {
+                await projectionStore.rebuild(container: modelContext.container)
+                await priceSnapshot.rebuild(container: modelContext.container)
+                await portfolio.recomputeAndWait(context: modelContext)
+                guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
+            }
             let currentPendingFingerprint = StoreRevisionFingerprinting
                 .pendingMagicMigrationFingerprint(fingerprint.pendingMagicMigrationKeys)
             let priorPendingFingerprint = UserDefaults.standard.string(
@@ -481,9 +492,10 @@ struct StoreRevisionMonitor: View {
             let didRunMigration = shouldRunMigration
             if didRunMigration {
                 guard storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
-                let refreshedKeys = await StoreRevisionModelActor(
+                let actor = await StoreRevisionModelActor.makeBackground(
                     modelContainer: modelContext.container
-                ).pendingMagicMigrationKeys()
+                )
+                let refreshedKeys = await actor.pendingMagicMigrationKeys()
                 UserDefaults.standard.set(
                     StoreRevisionFingerprinting.pendingMagicMigrationFingerprint(refreshedKeys),
                     forKey: Self.pendingMagicMigrationFingerprintKey
@@ -570,9 +582,13 @@ struct StoreRevisionMonitor: View {
         if cardsChanged || inventoryChanged || activitiesChanged {
             CollectionStore(context: modelContext).invalidateIdentityAliasCache()
             // Establish the baseline before the stale-price pass can begin.
-            // Once a pass is already in flight, its terminal gate owns the one
-            // trailing replay instead.
-            if !isRefreshInFlight {
+            // Ownership edits must become visible even during a price pass.
+            if isRefreshInFlight {
+                portfolio.recompute(context: modelContext, bypassPriceRefreshGate: true)
+                // This request already includes the Magic inputs below, even
+                // when it coalesces behind a computation currently running.
+                recomputedBaseline = true
+            } else {
                 let portfolioState = PerformanceSignpost.beginInterval(
                     "storeRevision.portfolioRecompute",
                     id: PerformanceSignpost.makeID(),
@@ -743,7 +759,7 @@ struct StoreRevisionMonitor: View {
             return
         }
         if reconsiderAge && !shouldForceUnsupportedRetry {
-            let actor = PriceRefreshTargetModelActor(modelContainer: modelContext.container)
+            let actor = await PriceRefreshTargetModelActor.makeBackground(modelContainer: modelContext.container)
             guard let hasStaleTargets = await actor.hasStaleTargets(usesPriceFallback: usesPriceFallback),
                   storageGeneration.isCurrent(storageToken), !Task.isCancelled else { return }
             if !hasStaleTargets {
@@ -834,7 +850,7 @@ struct StoreRevisionMonitor: View {
                   !self.writeCoordinator.isBulkWriteInFlight,
                   let storageToken = self.storageGeneration.currentToken() else { return }
 
-            let actor = StoreRevisionModelActor(modelContainer: self.modelContext.container)
+            let actor = await StoreRevisionModelActor.makeBackground(modelContainer: self.modelContext.container)
             let fingerprint = await actor.fingerprint()
             guard await actor.readSucceeded(),
                   self.pendingForcedFallbackRetry.isPending,
@@ -860,7 +876,7 @@ struct StoreRevisionHistoryMonitor: View {
     let hasStartedPortfolio: Bool
 
     private var taskID: String {
-        "\(hasStartedPortfolio)-\(portfolio.inputRevision)-\(history.range.rawValue)"
+        "\(hasStartedPortfolio)-\(portfolio.inputRevision)"
     }
 
     var body: some View {
@@ -868,7 +884,7 @@ struct StoreRevisionHistoryMonitor: View {
             guard hasStartedPortfolio else { return }
             history.recompute(
                 context: modelContext,
-                summary: portfolio.summary,
+                summary: portfolio.replaySummary,
                 factors: portfolio.performanceFactors,
                 contributions: portfolio.contributionIndex
             )
@@ -877,7 +893,12 @@ struct StoreRevisionHistoryMonitor: View {
 }
 
 @ModelActor
-actor StoreRevisionModelActor {
+actor StoreRevisionModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     private var lastReadSucceeded = false
 
     func readSucceeded() -> Bool { lastReadSucceeded }

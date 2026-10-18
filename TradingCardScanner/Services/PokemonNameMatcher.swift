@@ -12,9 +12,9 @@ enum PokemonNameMatcher {
     /// suppresses fuzzy matches, so a near spelling cannot compete with a name
     /// that OCR read exactly.
     static func matches(_ names: [String], readings: [String]) -> [Int] {
-        let normalizedNames = names.map(CatalogIdentityNormalization.canonicalText)
+        let normalizedNames = names.map(normalizedName)
         let normalizedReadings = readings
-            .map(CatalogIdentityNormalization.canonicalText)
+            .map(normalizedName)
             .filter { !$0.isEmpty }
 
         let exact = normalizedNames.indices.filter { index in
@@ -38,6 +38,17 @@ enum PokemonNameMatcher {
                     <= maximumDistance
             }
         }
+    }
+
+    private static func normalizedName(_ raw: String) -> String {
+        let canonical = CatalogIdentityNormalization.canonicalText(raw)
+        // Providers append the Delta Species symbol to original titles but
+        // omit it on Classic reprints. It cannot distinguish those printings:
+        // both carry the same title and collector-number footer.
+        if canonical.hasSuffix(" δ") {
+            return String(canonical.dropLast(2)).trimmingCharacters(in: .whitespaces)
+        }
+        return canonical
     }
 
     private static func compact(_ canonical: String) -> String {

@@ -96,6 +96,22 @@
 		F30A00000000000000000002 /* LorcanaRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000002; };
 		F30A00000000000000000003 /* LorcanaGameRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000003; };
 		F30A00000000000000000004 /* LorcanaIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000004; };
+		F30A00000000000000000005 /* LorcastSourceNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000005; };
+		F30A00000000000000000006 /* LorcastSourceNormalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000006; };
+		F30A00000000000000000007 /* Lorcana source fixtures in Resources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000007; };
+		F30A00000000000000000008 /* LorcanaPhysicalCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000008; };
+		F30A00000000000000000009 /* LorcanaPhysicalCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000009; };
+		F30A0000000000000000000A /* LorcanaCatalogRelease.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B0000000000000000000A; };
+		F30A0000000000000000000B /* LorcanaCatalogReleaseStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B0000000000000000000B; };
+		F30A0000000000000000000C /* LorcanaCatalogCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B0000000000000000000C; };
+		F30A0000000000000000000D /* LorcanaLocalReviewKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B0000000000000000000D; };
+		F30A0000000000000000000E /* LorcanaCatalogActivationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B0000000000000000000E; };
+		F30A0000000000000000000F /* LorcanaBrowseAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B0000000000000000000F; };
+		F30A00000000000000000010 /* LorcanaImportAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000010; };
+		F30A00000000000000000011 /* LorcanaOwnershipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000011; };
+		F30A00000000000000000012 /* LorcanaDiscoveryCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000012; };
+		F30A00000000000000000013 /* LorcanaDiscoveryCatalogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000013; };
+		F30A00000000000000000014 /* LorcanaCatalogSeed in Resources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000014; };
 		F11A00000000000000000002 /* PokemonRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11B00000000000000000002; };
 		F11A00000000000000000003 /* MagicRecognitionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11B00000000000000000003; };
 		F12A00000000000000000001 /* GameVariantPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12B00000000000000000001; };
@@ -127,6 +143,7 @@
 		A0010032 /* PriceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010032 /* PriceStore.swift */; };
 		A0010033 /* PriceRefreshController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010033 /* PriceRefreshController.swift */; };
 		A00100F0 /* PriceSnapshotStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F0 /* PriceSnapshotStore.swift */; };
+		A0090A02 /* BackgroundModelActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090A02 /* BackgroundModelActor.swift */; };
 		A00100F1 /* CollectionProjectionActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F1 /* CollectionProjectionActor.swift */; };
 		A00100F2 /* StoreRevisionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F2 /* StoreRevisionMonitor.swift */; };
 		A00100D0 /* PriceRefreshTargets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D0 /* PriceRefreshTargets.swift */; };
@@ -175,6 +192,7 @@
 		A0020154 /* RefreshStructuralWriteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020154 /* RefreshStructuralWriteTests.swift */; };
 		A0020155 /* CSVImportResumeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020155 /* CSVImportResumeTests.swift */; };
 		A0020156 /* StoreRevisionMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020156 /* StoreRevisionMonitorTests.swift */; };
+		A0090A01 /* LaunchModelActorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0090A01 /* LaunchModelActorTests.swift */; };
 		A0020157 /* PriceRefreshLifecycleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020157 /* PriceRefreshLifecycleTests.swift */; };
 		A0020158 /* ArtworkOrphanSweepTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020158 /* ArtworkOrphanSweepTests.swift */; };
 		A00200C0 /* CollectionActivityHistoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00200C0 /* CollectionActivityHistoryTests.swift */; };
@@ -287,6 +305,9 @@
 		F35A00000000000000000003 /* PokemonHistoricalCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000003; };
 		F35A00000000000000000004 /* TCGdexCircuitBreaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000004; };
 		F35A00000000000000000005 /* BoundedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35B00000000000000000005; };
+		F30A00000000000000000015 /* LorcanaPriceAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000015; };
+		F30A00000000000000000016 /* LorcanaPricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000016; };
+		F30A00000000000000000017 /* TCGCSVProductPriceSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = F30B00000000000000000017; };
 /* End PBXBuildFile section */
         F22A00000000000000000001 = {isa = PBXBuildFile; fileRef = F22B00000000000000000001; };
         F21A00000000000000000001 = {isa = PBXBuildFile; fileRef = F21B00000000000000000001; };
@@ -414,6 +435,22 @@
 		F30B00000000000000000002 /* LorcanaRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaRecognitionAdapter.swift; sourceTree = "<group>"; };
 		F30B00000000000000000003 /* LorcanaGameRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaGameRuntime.swift; sourceTree = "<group>"; };
 		F30B00000000000000000004 /* LorcanaIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaIntegrationTests.swift; sourceTree = "<group>"; };
+		F30B00000000000000000005 /* LorcastSourceNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcastSourceNormalizer.swift; sourceTree = "<group>"; };
+		F30B00000000000000000006 /* LorcastSourceNormalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcastSourceNormalizerTests.swift; sourceTree = "<group>"; };
+		F30B00000000000000000007 /* Lorcana source fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures/Lorcana; sourceTree = "<group>"; };
+		F30B00000000000000000008 /* LorcanaPhysicalCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaPhysicalCatalog.swift; sourceTree = "<group>"; };
+		F30B00000000000000000009 /* LorcanaPhysicalCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaPhysicalCatalogTests.swift; sourceTree = "<group>"; };
+		F30B0000000000000000000A /* LorcanaCatalogRelease.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaCatalogRelease.swift; sourceTree = "<group>"; };
+		F30B0000000000000000000B /* LorcanaCatalogReleaseStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaCatalogReleaseStore.swift; sourceTree = "<group>"; };
+		F30B0000000000000000000C /* LorcanaCatalogCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaCatalogCoordinator.swift; sourceTree = "<group>"; };
+		F30B0000000000000000000D /* LorcanaLocalReviewKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaLocalReviewKit.swift; sourceTree = "<group>"; };
+		F30B0000000000000000000E /* LorcanaCatalogActivationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaCatalogActivationTests.swift; sourceTree = "<group>"; };
+		F30B0000000000000000000F /* LorcanaBrowseAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaBrowseAdapter.swift; sourceTree = "<group>"; };
+		F30B00000000000000000010 /* LorcanaImportAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaImportAdapter.swift; sourceTree = "<group>"; };
+		F30B00000000000000000011 /* LorcanaOwnershipTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaOwnershipTests.swift; sourceTree = "<group>"; };
+		F30B00000000000000000012 /* LorcanaDiscoveryCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaDiscoveryCatalog.swift; sourceTree = "<group>"; };
+		F30B00000000000000000013 /* LorcanaDiscoveryCatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaDiscoveryCatalogTests.swift; sourceTree = "<group>"; };
+		F30B00000000000000000014 /* LorcanaCatalogSeed */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ../LorcanaCatalogSeed; sourceTree = "<group>"; };
 		F11B00000000000000000002 /* PokemonRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonRecognitionAdapter.swift; sourceTree = "<group>"; };
 		F11B00000000000000000003 /* MagicRecognitionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Magic/MagicRecognitionAdapter.swift; sourceTree = "<group>"; };
 		F12B00000000000000000001 /* GameVariantPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GameVariantPolicy.swift; sourceTree = "<group>"; };
@@ -445,6 +482,7 @@
 		B0010032 /* PriceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceStore.swift; sourceTree = "<group>"; };
 		B0010033 /* PriceRefreshController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshController.swift; sourceTree = "<group>"; };
 		B00100F0 /* PriceSnapshotStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceSnapshotStore.swift; sourceTree = "<group>"; };
+		B0090A02 /* BackgroundModelActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundModelActor.swift; sourceTree = "<group>"; };
 		B00100F1 /* CollectionProjectionActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionProjectionActor.swift; sourceTree = "<group>"; };
 		B00100F2 /* StoreRevisionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreRevisionMonitor.swift; sourceTree = "<group>"; };
 		B00100D0 /* PriceRefreshTargets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshTargets.swift; sourceTree = "<group>"; };
@@ -494,6 +532,7 @@
 		B0020154 /* RefreshStructuralWriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshStructuralWriteTests.swift; sourceTree = "<group>"; };
 		B0020155 /* CSVImportResumeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVImportResumeTests.swift; sourceTree = "<group>"; };
 		B0020156 /* StoreRevisionMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreRevisionMonitorTests.swift; sourceTree = "<group>"; };
+		B0090A01 /* LaunchModelActorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchModelActorTests.swift; sourceTree = "<group>"; };
 		B0020157 /* PriceRefreshLifecycleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshLifecycleTests.swift; sourceTree = "<group>"; };
 		B0020158 /* ArtworkOrphanSweepTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkOrphanSweepTests.swift; sourceTree = "<group>"; };
 		B00200C0 /* CollectionActivityHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionActivityHistoryTests.swift; sourceTree = "<group>"; };
@@ -610,6 +649,9 @@
 		F35B00000000000000000003 /* PokemonHistoricalCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pokemon/PokemonHistoricalCatalog.swift; sourceTree = "<group>"; };
 		F35B00000000000000000004 /* TCGdexCircuitBreaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/TCGdexCircuitBreaker.swift; sourceTree = "<group>"; };
 		F35B00000000000000000005 /* BoundedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/BoundedCache.swift; sourceTree = "<group>"; };
+		F30B00000000000000000015 /* LorcanaPriceAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lorcana/LorcanaPriceAdapter.swift; sourceTree = "<group>"; };
+		F30B00000000000000000016 /* LorcanaPricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LorcanaPricingTests.swift; sourceTree = "<group>"; };
+		F30B00000000000000000017 /* TCGCSVProductPriceSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCGCSVProductPriceSource.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
         F22B00000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnePieceCatalogBootstrap.swift; sourceTree = "<group>"; };
         F22B00000000000000000002 = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config/OnePieceCatalogProduction.xcconfig; sourceTree = "<group>"; };
@@ -713,6 +755,17 @@
 				F30B00000000000000000001,
 				F30B00000000000000000002,
 				F30B00000000000000000003,
+				F30B00000000000000000005,
+				F30B00000000000000000008,
+				F30B0000000000000000000A,
+				F30B0000000000000000000B,
+				F30B0000000000000000000C,
+				F30B0000000000000000000D,
+				F30B0000000000000000000F,
+				F30B00000000000000000010,
+				F30B00000000000000000012,
+				F30B00000000000000000015 /* LorcanaPriceAdapter.swift */,
+				F30B00000000000000000014,
 				F11B00000000000000000001, F11B00000000000000000002, F11B00000000000000000003,
 				F12B00000000000000000001, F12B00000000000000000002, F12B00000000000000000003,
                 F16B00000000000000000001,
@@ -842,6 +895,7 @@
 				B0010032 /* PriceStore.swift */,
 				B0010033 /* PriceRefreshController.swift */,
 				B00100F0 /* PriceSnapshotStore.swift */,
+				B0090A02 /* BackgroundModelActor.swift */,
 				B00100F1 /* CollectionProjectionActor.swift */,
 				B00100F2 /* StoreRevisionMonitor.swift */,
 				B00100D0 /* PriceRefreshTargets.swift */,
@@ -879,6 +933,7 @@
 				B0010093 /* TCGplayerLink.swift */,
 				B00100B1 /* QuoteCache.swift */,
 				B00100B2 /* PriceQuoteService.swift */,
+				F30B00000000000000000017 /* TCGCSVProductPriceSource.swift */,
 				B00100B4 /* PriceCheckCoordinator.swift */,
 				B00100B5 /* PriceFallbackQuoteResolver.swift */,
 				B00100B6 /* GradedLabelParser.swift */,
@@ -972,6 +1027,13 @@
 				F18B00000000000000000004,
 				F17B00000000000000000006,
 				F30B00000000000000000004,
+				F30B00000000000000000006,
+				F30B00000000000000000009,
+				F30B0000000000000000000E,
+				F30B00000000000000000011,
+				F30B00000000000000000013,
+				F30B00000000000000000016 /* LorcanaPricingTests.swift */,
+				F30B00000000000000000007,
 				B0020020 /* CollectionQueryTests.swift */,
 				B0020060 /* PortfolioTrustPassTests.swift */,
 				BF0A0002 /* AppOpeningTests.swift */,
@@ -1005,6 +1067,7 @@
 				B0020154 /* RefreshStructuralWriteTests.swift */,
 				B0020155 /* CSVImportResumeTests.swift */,
 				B0020156 /* StoreRevisionMonitorTests.swift */,
+				B0090A01 /* LaunchModelActorTests.swift */,
 				B0020157 /* PriceRefreshLifecycleTests.swift */,
 				B0020158 /* ArtworkOrphanSweepTests.swift */,
 				B00200C0 /* CollectionActivityHistoryTests.swift */,
@@ -1164,6 +1227,7 @@
 				A00100C1 /* PokemonChecklistSnapshot in Resources */,
 				A00100E4 /* MagicTreatmentCatalog in Resources */,
 				A0010128 /* MagicCatalogSeed in Resources */,
+				F30A00000000000000000014 /* LorcanaCatalogSeed in Resources */,
 				A001019B /* MagicHistoricalPilot in Resources */,
 				F11D00000000000000000090 /* OnePieceOwnerCatalog in Resources */,
 			);
@@ -1175,6 +1239,7 @@
 			files = (
 				A00200E1 /* MagicTreatmentSnapshot in Resources */,
 				A0090304 /* TCGCSV30th.json in Resources */,
+				F30A00000000000000000007 /* Lorcana source fixtures in Resources */,
 				A00200E3 /* MagicTreatmentCatalog in Resources */,
 				A6F06E16B0A2C00200000001 /* TradingCards fixtures in Resources */,
 			);
@@ -1282,6 +1347,17 @@
 				F30A00000000000000000001,
 				F30A00000000000000000002,
 				F30A00000000000000000003,
+				F30A00000000000000000005,
+				F30A00000000000000000008,
+				F30A0000000000000000000A,
+				F30A0000000000000000000B,
+				F30A0000000000000000000C,
+				F30A0000000000000000000D,
+				F30A0000000000000000000F,
+				F30A00000000000000000012,
+				F30A00000000000000000015 /* LorcanaPriceAdapter.swift in Sources */,
+				F30A00000000000000000010,
+				F30A00000000000000000017 /* TCGCSVProductPriceSource.swift in Sources */,
 				F11A00000000000000000002 /* PokemonRecognitionAdapter.swift in Sources */,
 				F11A00000000000000000003 /* MagicRecognitionAdapter.swift in Sources */,
 				F12A00000000000000000001 /* GameVariantPolicy.swift in Sources */,
@@ -1333,6 +1409,7 @@
 				A0010032 /* PriceStore.swift in Sources */,
 				A0010033 /* PriceRefreshController.swift in Sources */,
 				A00100F0 /* PriceSnapshotStore.swift in Sources */,
+				A0090A02 /* BackgroundModelActor.swift in Sources */,
 				A00100F1 /* CollectionProjectionActor.swift in Sources */,
 				A00100F2 /* StoreRevisionMonitor.swift in Sources */,
 				A00100D0 /* PriceRefreshTargets.swift in Sources */,
@@ -1427,6 +1504,12 @@
 				F18A00000000000000000004,
 				F17A00000000000000000006,
 				F30A00000000000000000004,
+				F30A00000000000000000006,
+				F30A00000000000000000009,
+				F30A0000000000000000000E,
+				F30A00000000000000000011,
+				F30A00000000000000000013,
+				F30A00000000000000000016 /* LorcanaPricingTests.swift in Sources */,
 				A0020020 /* CollectionQueryTests.swift in Sources */,
 				A0020060 /* PortfolioTrustPassTests.swift in Sources */,
 				AF0A0002 /* AppOpeningTests.swift in Sources */,
@@ -1459,6 +1542,7 @@
 				A0020154 /* RefreshStructuralWriteTests.swift in Sources */,
 				A0020155 /* CSVImportResumeTests.swift in Sources */,
 				A0020156 /* StoreRevisionMonitorTests.swift in Sources */,
+				A0090A01 /* LaunchModelActorTests.swift in Sources */,
 				A0020157 /* PriceRefreshLifecycleTests.swift in Sources */,
 				A0020158 /* ArtworkOrphanSweepTests.swift in Sources */,
 				A00200C0 /* CollectionActivityHistoryTests.swift in Sources */,

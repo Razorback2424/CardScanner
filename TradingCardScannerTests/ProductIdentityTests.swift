@@ -153,6 +153,58 @@ final class ProductIdentityTests: XCTestCase {
         XCTAssertTrue(identity.isCurrent())
     }
 
+    func testVariantOnlyBatchResolutionRemainsReusableAcrossMatcherVersions() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        XCTAssertTrue(store.recordBatchResolution(forKey: "variant-only", cardID: nil, variantID: "exact-variant"))
+        XCTAssertTrue(store.save())
+        let identity = try XCTUnwrap(store.identity(forKey: "variant-only"))
+        identity.attemptVersion = ProductIdentity.currentAttemptVersion - 1
+        let index = ProductIdentityIndex(context: context)
+
+        XCTAssertTrue(identity.isCurrent())
+        XCTAssertFalse(store.needsResolution(forKey: "variant-only", using: index))
+        XCTAssertEqual(store.cachedVariantID(forKey: "variant-only", using: index), "exact-variant")
+        XCTAssertEqual(store.cachedVariantID(forKey: "variant-only"), "exact-variant")
+    }
+
+    func testVariantOnlyPriceOutcomeDoesNotRecordAProductMiss() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        let price = NormalizedPrice(unitMarketPriceUSD: 10, currencyCode: "USD", source: .justTCG,
+                                    sourceVariantID: "exact-variant", sourceUpdatedAt: nil, fetchedAt: .now)
+        XCTAssertTrue(store.record(.price(price, vendorCardID: nil, vendorVariantID: "exact-variant"), forKey: "variant-only"))
+
+        XCTAssertNil(store.identity(forKey: "variant-only")?.unmatchedAt)
+        XCTAssertFalse(store.needsResolution(forKey: "variant-only"))
+        XCTAssertEqual(store.cachedVariantID(forKey: "variant-only"), "exact-variant")
+    }
+
+    func testNoListingDoesNotMixAnOldVariantWithACorrectedProduct() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        for cardID in ["original-card", "corrected-card"] {
+            XCTAssertTrue(store.recordBatchResolution(forKey: cardID, cardID: "original-card", variantID: "old-variant"))
+            XCTAssertTrue(store.record(.noListingForVariant(vendorCardID: cardID), forKey: cardID))
+
+            XCTAssertEqual(store.cachedVariantID(forKey: cardID), cardID == "original-card" ? "old-variant" : nil)
+            XCTAssertEqual(store.cachedCardID(forKey: cardID), cardID)
+            XCTAssertFalse(store.needsResolution(forKey: cardID))
+        }
+    }
+
+    func testCardOnlyBatchResolutionDoesNotReuseAnotherProductsVariant() throws {
+        let context = try makeContext()
+        let store = ProductIdentityStore(context: context)
+        XCTAssertTrue(store.recordBatchResolution(forKey: "card", cardID: "original-card", variantID: "old-variant"))
+        XCTAssertTrue(store.recordBatchResolution(forKey: "card", cardID: "original-card", variantID: nil))
+        XCTAssertEqual(store.cachedVariantID(forKey: "card"), "old-variant")
+
+        XCTAssertTrue(store.recordBatchResolution(forKey: "card", cardID: "corrected-card", variantID: nil))
+        XCTAssertEqual(store.cachedCardID(forKey: "card"), "corrected-card")
+        XCTAssertNil(store.cachedVariantID(forKey: "card"))
+    }
+
     /// A miss is cached so the search does not repeat every refresh — the whole
     /// point of the record for cards the vendor does not carry.
     func testRecentMissIsTreatedAsCurrentSoTheSearchIsNotRepeated() {

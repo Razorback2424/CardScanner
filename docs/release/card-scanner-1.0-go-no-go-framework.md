@@ -1,5 +1,13 @@
 # Card Scanner 1.0 Go/No-Go Framework
 
+**Current storage boundary — 2026-10-13:** production wiring and Settings keep
+collections on-device with sync unavailable. Local storage continuity remains a
+1.0 release responsibility; entitled CloudKit enrollment, restoration and
+two-device convergence below are gates before enabling a future sync release.
+The [Lorcana production checkpoint](lorcana-production-acceptance.md) records local
+schema/storage checks and actual iOS development archive/export evidence without
+closing distribution, physical-camera or full-app release certification.
+
 ## Purpose
 
 The objective is not to prove Card Scanner is bug-free.

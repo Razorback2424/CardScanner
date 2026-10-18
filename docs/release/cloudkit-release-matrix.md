@@ -1,5 +1,10 @@
 # CardScanner CloudKit release matrix
 
+**Scope clarification — 2026-10-13:** current 1.0 production wiring keeps collections
+on-device and does not enable sync. This matrix is a future sync release gate;
+all live rows remain NOT RUN. Local Lorcana storage compatibility and archive
+evidence are recorded in the [production checkpoint](lorcana-production-acceptance.md).
+
 This matrix is intentionally present before external enrollment. Every row is
 `NOT RUN` until the exact signed TestFlight candidate, Production container,
 and two physical devices are available.

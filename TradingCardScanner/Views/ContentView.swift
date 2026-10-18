@@ -222,6 +222,10 @@ struct ContentView: View {
             case "PortfolioHistory":
                 PortfolioDebugFixtures.seedHistoryIfNeeded(in: modelContext)
                 history.range = .all
+            case "PortfolioAdditions":
+                PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+                PortfolioDebugFixtures.seedAdditionsIfNeeded(in: modelContext)
+                history.range = .oneDay
             default:
                 break
             }
@@ -274,7 +278,7 @@ struct ContentView: View {
 #if DEBUG && LOCAL_ONLY_SIGNING
             // Let launch migrations and the initial projection settle before
             // the acceptance route starts a scanner bulk-write interval.
-            if OnePieceCatalogBootstrap.isAcceptanceLaunch() { selectedTab = .scan }
+            if OnePieceCatalogBootstrap.isAcceptanceLaunch() || LorcanaReviewLaunch.isEnabled() { selectedTab = .scan }
 #endif
             let report = await MagicTreatmentMigrationCoordinator.shared.runNetwork(
                 in: modelContext,
@@ -355,7 +359,7 @@ struct ContentView: View {
 
     @MainActor
     private func updateFallbackAvailability() async {
-        let actor = PriceRefreshTargetModelActor(modelContainer: modelContext.container)
+        let actor = await PriceRefreshTargetModelActor.makeBackground(modelContainer: modelContext.container)
         let pending = await actor.pendingCount(
             usesPriceFallback: usesPriceFallback,
             includeImported: true

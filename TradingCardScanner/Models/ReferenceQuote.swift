@@ -59,13 +59,15 @@ final class ReferenceQuote {
     var source: PriceSource? { sourceRaw.flatMap(PriceSource.init(rawValue:)) }
 
     var effectiveAmount: Double? {
-        invalidatedAt == nil ? amount : nil
+        guard invalidatedAt == nil,
+              PortfolioPriceEligibility.eligibleUnitPrice(amount: amount, currencyCode: currencyCode) != nil else { return nil }
+        return amount
     }
 
     var display: PriceDisplay {
         PriceDisplay(
             amount: effectiveAmount,
-            currencyCode: currencyCode,
+            currencyCode: "USD",
             source: source,
             sourceUpdatedAt: sourceUpdatedAt,
             fetchedAt: retrievedAt,
@@ -76,13 +78,15 @@ final class ReferenceQuote {
 
     func apply(_ lookup: PriceLookup, at date: Date) {
         if case let .price(price) = lookup, let invalidatedAt, price.fetchedAt <= invalidatedAt { return }
-        lastCheckedAt = date
-        lastFailureAt = nil
+        // Cached catalog responses can finish after a newer lookup. Their
+        // arrival time must not replace the newer price or its freshness.
+        if case let .price(price) = lookup, let retrievedAt, price.fetchedAt < retrievedAt { return }
 
         switch lookup {
         case let .price(price):
-            guard Money(rounding: price.unitMarketPriceUSD) != nil else {
-                lastFailureAt = date
+            guard price.unitMarketPriceUSD >= 0,
+                  Money(rounding: price.unitMarketPriceUSD) != nil else {
+                recordFailure(at: date)
                 return
             }
             amount = price.unitMarketPriceUSD
@@ -100,9 +104,16 @@ final class ReferenceQuote {
             // unavailable while the cache remains available for a later failure.
             break
         }
+
+        // Presenting an existing quote replays its retrieval date; it is not
+        // a new successful check that can clear a later failed refresh.
+        guard lastCheckedAt.map({ date >= $0 }) ?? true else { return }
+        lastCheckedAt = date
+        lastFailureAt = nil
     }
 
     func recordFailure(at date: Date) {
+        guard lastCheckedAt.map({ date >= $0 }) ?? true else { return }
         lastCheckedAt = date
         lastFailureAt = date
     }

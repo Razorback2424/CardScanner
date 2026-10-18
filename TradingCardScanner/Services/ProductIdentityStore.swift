@@ -173,9 +173,17 @@ struct ProductIdentityStore {
         forKey key: String,
         minimumInterval: TimeInterval,
         now: Date = .now,
-        using index: ProductIdentityIndex? = nil
+        using index: ProductIdentityIndex? = nil,
+        hasDirectLookup: Bool = false
     ) -> Bool {
         guard let identity = identity(forKey: key, using: index) else { return true }
+        // A newly available exact handle supersedes an old text-search miss.
+        // A successful keyed response clears that miss below, so this bypass
+        // cannot repeatedly spend requests after an exact lookup also misses.
+        if hasDirectLookup, identity.vendorCardID == nil, identity.vendorVariantID == nil,
+           identity.unmatchedAt != nil { return true }
+        if identity.vendorCardID == nil, identity.vendorVariantID == nil, identity.unmatchedAt != nil,
+           identity.attemptVersion < ProductIdentity.currentAttemptVersion { return true }
         // Older stores have no dedicated fallback watermark yet. Their last
         // successful identity answer is a safe first cooldown anchor.
         guard let checkedAt = identity.fallbackCheckedAt
@@ -203,6 +211,7 @@ struct ProductIdentityStore {
             identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
         identity.fallbackCheckedAt = date
+        identity.unmatchedAt = nil
         return true
     }
 
@@ -240,7 +249,12 @@ struct ProductIdentityStore {
             identity.magicTreatmentIDsRaw = MagicTreatmentKeyCodec.storedIDs(from: treatmentIDs)
         }
         identity.attemptVersion = ProductIdentity.currentAttemptVersion
-        if let cardID { identity.vendorCardID = cardID }
+        if let cardID {
+            // A partial response can correct the product without returning a
+            // variant. Never attach the previous product's variant to it.
+            if cardID != identity.vendorCardID { identity.vendorVariantID = nil }
+            identity.vendorCardID = cardID
+        }
         if let variantID { identity.vendorVariantID = variantID }
         identity.resolvedAt = date
         identity.fallbackCheckedAt = date
@@ -298,12 +312,13 @@ struct ProductIdentityStore {
             identity.vendorVariantID = vendorVariantID
             identity.resolvedAt = date
             identity.fallbackCheckedAt = date
-            identity.unmatchedAt = vendorCardID == nil ? date : nil
+            identity.unmatchedAt = vendorCardID == nil && vendorVariantID == nil ? date : nil
 
         case let .noListingForVariant(vendorCardID):
             // The product exists. That it has no listing in this finish is a
             // fact about the listing, not about whether the card was found — so
             // the handle is kept and the search is not repeated.
+            if vendorCardID != identity.vendorCardID { identity.vendorVariantID = nil }
             identity.vendorCardID = vendorCardID
             identity.resolvedAt = date
             identity.fallbackCheckedAt = date

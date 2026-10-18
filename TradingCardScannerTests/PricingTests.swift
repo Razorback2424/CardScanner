@@ -4,6 +4,30 @@ import SwiftData
 
 final class PricingTests: XCTestCase {
     @MainActor
+    func testMappingGapPreservesQuoteAndDoesNotInventProviderChecksOrOwnership() throws {
+        let (container, context) = try makePriceContext()
+        defer { withExtendedLifetime(container) {} }
+        let store = PriceStore(context: context)
+        let at = Date.now.addingTimeInterval(-60)
+        let quote = NormalizedPrice(unitMarketPriceUSD: 42, currencyCode: "USD", source: .tcgCSV,
+            sourceVariantID: "exact", sourceUpdatedAt: nil, fetchedAt: at)
+        XCTAssertTrue(store.store(.price(quote), game: .pokemon, printingID: "fixture", variantID: "holo", at: at))
+        XCTAssertTrue(store.save())
+        let observations = try context.fetchCount(FetchDescriptor<PriceObservation>())
+        let checks = try context.fetchCount(FetchDescriptor<PriceCheckDay>())
+        let key = PriceRecord.key(game: .pokemon, printingID: "fixture", variantID: "holo")
+        let successfulAt = store.record(forKey: key)?.lastSuccessfulCheckAt
+        XCTAssertTrue(store.recordMissingMapping(game: .pokemon, printingID: "fixture", variantID: "holo"))
+        XCTAssertTrue(store.save())
+        let record = try XCTUnwrap(store.record(forKey: key))
+        XCTAssertEqual(record.effectiveUnitMarketPriceUSD, 42)
+        XCTAssertEqual(record.lastSuccessfulCheckAt, successfulAt)
+        XCTAssertNil(record.lastFailureAt)
+        XCTAssertEqual(record.lastFailureReasonRaw, PricingDiagnosticReason.missingMarketMapping.rawValue)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceObservation>()), observations)
+        XCTAssertEqual(try context.fetchCount(FetchDescriptor<PriceCheckDay>()), checks)
+    }
+    @MainActor
     func testCachedBrowseDetailsCannotRestampAnOldPriceOverANewerQuote() throws {
         let (container, context) = try makePriceContext()
         defer { withExtendedLifetime(container) {} }
@@ -146,6 +170,8 @@ final class PricingTests: XCTestCase {
         )
         XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: nil, currencyCode: "USD"))
         XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: .nan, currencyCode: "USD"))
+        XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: -1, currencyCode: "USD"))
+        XCTAssertEqual(PortfolioPriceEligibility.eligibleUnitPrice(amount: 0, currencyCode: "USD"), .zero)
     }
 
     @MainActor
@@ -171,7 +197,7 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(try context.fetch(FetchDescriptor<PriceObservation>()).count, 2)
     }
 
-    func testLegacyCardmarketObservationRemainsVisibleInItsNativeCurrency() {
+    func testLegacyCardmarketObservationIsRetainedWithoutBecomingTheCurrentCardPrice() {
         let fetchedAt = Date(timeIntervalSince1970: 1_800_000_000)
         let record = PriceRecord(
             key: "pokemon:promo-078:cosmos",
@@ -196,14 +222,14 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(record.currencyCode, "EUR")
         XCTAssertEqual(record.source, .cardmarket)
         XCTAssertNil(record.effectiveUnitMarketPriceUSD)
-        XCTAssertEqual(record.display.amount, 1.43)
-        XCTAssertEqual(record.display.currencyCode, "EUR")
+        XCTAssertNil(record.display.amount)
+        XCTAssertEqual(record.display.currencyCode, "USD")
         XCTAssertEqual(record.display.source, .cardmarket)
-        XCTAssertEqual(record.display.state(now: fetchedAt.addingTimeInterval(60)), .current)
+        XCTAssertEqual(record.display.state(now: fetchedAt.addingTimeInterval(60)), .unavailable)
     }
 
     @MainActor
-    func testSharedPriceSnapshotKeepsLegacyEURVisibleWithoutUsingItForUSDValuation() {
+    func testSharedPriceSnapshotWithholdsLegacyEURFromCurrentCardPrices() {
         let record = PriceRecord(
             key: "pokemon:promo-078:cosmos",
             game: .pokemon,
@@ -230,10 +256,10 @@ final class PricingTests: XCTestCase {
         XCTAssertEqual(record.currencyCode, "EUR")
         XCTAssertEqual(record.source, .cardmarket)
         XCTAssertNil(record.effectiveUnitMarketPriceUSD)
-        XCTAssertEqual(displayed?.currencyCode, "EUR")
-        XCTAssertEqual(displayed?.amount, 1.43)
+        XCTAssertEqual(displayed?.currencyCode, "USD")
+        XCTAssertNil(displayed?.amount)
         XCTAssertEqual(displayed?.source, .cardmarket)
-        XCTAssertEqual(displayed?.state(), .current)
+        XCTAssertEqual(displayed?.state(), .unknown)
     }
 
     private func pokemonCard(
@@ -278,6 +304,81 @@ final class PricingTests: XCTestCase {
     }
 
     // MARK: - A price belongs to printing *and* variant
+
+    func testTCGplayerPayloadWithExplicitForeignCurrencyCannotBecomeUSD() throws {
+        let card = try pokemonCard(pricingJSON:
+            #"{"tcgplayer":{"unit":"EUR","normal":{"marketPrice":9.50}}}"#)
+        XCTAssertEqual(CardPricing.price(for: card, variant: .normal, magicTreatments: []), .unavailable(.tcgplayer))
+    }
+
+    func testInvalidMarketAmountCannotFinishUSDLookup() throws {
+        let card = try pokemonCard(pricingJSON:
+            #"{"tcgplayer":{"unit":"USD","normal":{"marketPrice":-1}}}"#)
+        XCTAssertEqual(CardPricing.price(for: card, variant: .normal, magicTreatments: []), .unavailable(.tcgplayer))
+        for amount in [Double.nan, .infinity, -1] {
+            XCTAssertNil(CatalogSortPriceResolution.cachedPrice(amount))
+            let lookup = PriceLookup.price(.init(unitMarketPriceUSD: amount, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "normal", sourceUpdatedAt: nil, fetchedAt: .now))
+            XCTAssertTrue(PriceFallbackQuoteResolver.needsFallback(lookup))
+        }
+    }
+
+    func testExactPokemonProductHandleIsAvailableEvenWhenMarketAmountIsMissing() throws {
+        let card = try pokemonCard(pricingJSON:
+            #"{"tcgplayer":{"unit":"USD","normal":{"productId":12345,"marketPrice":null}}}"#)
+        XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: card, variant: .normal), [.tcgplayerID("12345")])
+        XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: .reverse).isEmpty)
+        for run in [PokemonPrintRun.firstEdition, .shadowless] {
+            XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: card, variant: .normal, pokemonPrintRun: run).isEmpty)
+        }
+    }
+
+    func testDetailedProductHandlesRequireUniqueStandardEnglishPhysicalIdentity() throws {
+        func card(_ rows: String) throws -> IdentifiedCard {
+            let json = """
+            {"id":"sv08.5-074","localId":"074","name":"Eevee",
+             "set":{"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":180,"official":131}},
+             "variants_detailed":[\(rows)]}
+            """
+            return .pokemon(try JSONDecoder().decode(TCGdexCard.self, from: Data(json.utf8)), setCode: "PRE")
+        }
+        let plain = #"{"type":"holo","size":"standard","thirdParty":{"tcgplayer":12345}}"#
+        let extras = #"{"type":"holo","size":"jumbo","thirdParty":{"tcgplayer":999}}, {"type":"holo","languages":["ja"],"thirdParty":{"tcgplayer":998}}, {"type":"holo","stamp":["1st-edition"],"thirdParty":{"tcgplayer":997}}"#
+        XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: try card(plain + "," + extras), variant: .holo), [.tcgplayerID("12345")])
+        let conflicting = #"{"type":"holo","size":"standard","thirdParty":{"tcgplayer":54321}}"#
+        XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: try card(plain + "," + conflicting), variant: .holo).isEmpty)
+        XCTAssertTrue(PriceFallbackQuoteResolver.directLookups(card: try card(extras), variant: .holo).isEmpty)
+        let cosmos = #"{"type":"holo","foil":"cosmos","size":"standard","thirdParty":{"tcgplayer":694692},"pricing":{"tcgplayer":null}}"#
+        XCTAssertEqual(PriceFallbackQuoteResolver.directLookups(card: try card(cosmos),
+            variant: .pokemonFoilPattern("cosmos")), [.tcgplayerID("694692")])
+    }
+
+    func testCurrentCardAndReferencePricesUseUSDForEveryGameAndRetainForeignEvidence() {
+        for game in [CardGame.pokemon, .magic, .lorcana, .onePiece] {
+            let foreign = NormalizedPrice(unitMarketPriceUSD: 19, currencyCode: "EUR", source: .cardmarket,
+                sourceVariantID: "foreign", sourceUpdatedAt: nil, fetchedAt: .now)
+            let record = PriceRecord(key: "fixture", game: game, printingID: "fixture", variantID: "normal")
+            record.apply(foreign)
+            let reference = ReferenceQuote(key: "fixture", game: game, printingID: "fixture", variantID: "normal")
+            reference.apply(.price(foreign), at: .now)
+            XCTAssertNil(record.display.amount)
+            XCTAssertNil(reference.display.amount)
+            XCTAssertEqual(record.display.currencyCode, "USD")
+            XCTAssertEqual(reference.display.currencyCode, "USD")
+            XCTAssertEqual(record.unitMarketPriceUSD, 19)
+            XCTAssertEqual(reference.amount, 19)
+            for enabled in [false, true] {
+                XCTAssertFalse(PriceRefreshController.hasFinishedPrice(amount: 19, currencyCode: "EUR", usesFallback: enabled))
+                XCTAssertTrue(PriceRefreshController.hasFinishedPrice(amount: 19, currencyCode: "USD", usesFallback: enabled))
+            }
+            let usd = NormalizedPrice(unitMarketPriceUSD: 21, currencyCode: "USD", source: .tcgplayer,
+                sourceVariantID: "exact", sourceUpdatedAt: nil, fetchedAt: .now)
+            record.apply(usd)
+            reference.apply(.price(usd), at: .now)
+            XCTAssertEqual(record.display.amount, 21)
+            XCTAssertEqual(reference.display.amount, 21)
+        }
+    }
 
     func testReverseHoloReadsTheReverseHoloListing() throws {
         guard case let .price(price) = CardPricing.price(

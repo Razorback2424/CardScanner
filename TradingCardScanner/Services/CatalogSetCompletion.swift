@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import OSLog
 
 /// The completion builder only needs the manifest for every set and one
 /// checklist for the owned candidates it actually resolves. Keeping this seam
@@ -14,6 +15,13 @@ extension PokemonChecklistStore: CatalogSetCompletionChecklistStore {}
 
 actor CatalogSetCompletionBuilder {
     private let checklistStore: any CatalogSetCompletionChecklistStore
+    private struct BuildInputs: Equatable {
+        let sets: [CatalogSet]
+        let ownership: CatalogOwnershipIndex
+        let tier: PokemonMasterSetTier
+        let entries: [PokemonChecklistSnapshotEntry]
+    }
+    private var lastBuild: (inputs: BuildInputs, index: CatalogSetCompletionIndex)?
 
     init(
         checklistStore: any CatalogSetCompletionChecklistStore = PokemonChecklistStore.shared
@@ -27,6 +35,12 @@ actor CatalogSetCompletionBuilder {
         tier: PokemonMasterSetTier
     ) async -> CatalogSetCompletionIndex {
         let entries = await checklistStore.mergedEntries()
+        // The manifest fingerprints also catch checklist changes while Browse
+        // was closed, even when the directory and collection are unchanged.
+        let inputs = BuildInputs(sets: sets, ownership: ownership, tier: tier, entries: entries)
+        if let lastBuild, lastBuild.inputs == inputs { return lastBuild.index }
+        let interval = PerformanceSignpost.signposter.beginInterval("CatalogSetCompletion.build")
+        defer { PerformanceSignpost.signposter.endInterval("CatalogSetCompletion.build", interval) }
         let entriesBySetID = entries.reduce(into: [String: PokemonChecklistSnapshotEntry]()) {
             result, entry in
             result[entry.set.id] = entry
@@ -57,7 +71,7 @@ actor CatalogSetCompletionBuilder {
         // into a checklist crawl. The first forty candidates receive exact
         // variation progress. They are selected by owned-row count above so
         // the bounded exact work is stable and useful; overflow deliberately
-        // uses collector-number progress with the same manifest denominator.
+        // shows collector numbers without a variation denominator or percentage.
         let exactCandidateIDs = Set(
             pokemonCandidates.prefix(40).map(\.id)
         )
@@ -66,16 +80,25 @@ actor CatalogSetCompletionBuilder {
         )
         var exactChecklistsBySetID: [String: [CatalogCardSummary]] = [:]
         exactChecklistsBySetID.reserveCapacity(exactCandidateIDs.count)
+        var allChecklistsLoaded = true
         for candidate in pokemonCandidates.prefix(40) {
-            exactChecklistsBySetID[candidate.id] =
-                await checklistStore.mergedChecklist(for: candidate.catalogID) ?? []
+            if let checklist = await checklistStore.mergedChecklist(for: candidate.catalogID) {
+                exactChecklistsBySetID[candidate.id] = checklist
+            } else {
+                allChecklistsLoaded = false
+            }
         }
 
         var completions: [String: SetCompletion] = [:]
         completions.reserveCapacity(sets.count)
         for set in sets {
             guard set.game == .pokemon else {
-                completions[set.id] = ownership.progress(for: set)
+                if set.physicalPrintingIDs == nil,
+                   !ownedKeys.codes.contains(normalizedKey(set.code)) {
+                    completions[set.id] = SetCompletion(owned: 0, total: set.cardCount, unit: "cards")
+                } else {
+                    completions[set.id] = ownership.progress(for: set)
+                }
                 continue
             }
 
@@ -108,7 +131,7 @@ actor CatalogSetCompletionBuilder {
                 let progress = ownership.progress(for: set)
                 completions[set.id] = SetCompletion(
                     owned: progress.owned,
-                    total: total,
+                    total: nil,
                     unit: "cards"
                 )
             } else {
@@ -123,7 +146,10 @@ actor CatalogSetCompletionBuilder {
             }
         }
 
-        return CatalogSetCompletionIndex(completions: completions, tier: tier)
+        let index = CatalogSetCompletionIndex(completions: completions, tier: tier)
+        // A transient unavailable checklist must be retried on the next request.
+        lastBuild = allChecklistsLoaded ? (inputs, index) : nil
+        return index
     }
 
     private func normalizedKey(_ value: String) -> String {
@@ -185,7 +211,7 @@ final class CatalogSetCompletionStore: ObservableObject {
                 )
                 guard !Task.isCancelled else { return }
                 guard !self.rebuildRequested else { continue }
-                self.index = candidate
+                if self.index != candidate { self.index = candidate }
             }
         }
         rebuildTask = task

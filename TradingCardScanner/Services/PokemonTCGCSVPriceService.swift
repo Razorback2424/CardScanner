@@ -197,7 +197,8 @@ actor PokemonTCGCSVPriceService: PokemonTCGCSVPriceSource {
         let priceResponse = try JSONDecoder().decode(Response<Price>.self, from: prices)
         guard productResponse.success, productResponse.errors.isEmpty,
               priceResponse.success, priceResponse.errors.isEmpty,
-              productResponse.totalItems.map({ $0 == productResponse.results.count }) ?? true else {
+              productResponse.totalItems.map({ $0 == productResponse.results.count }) ?? true,
+              priceResponse.totalItems.map({ $0 == priceResponse.results.count }) ?? true else {
             throw PokemonTCGCSVError.invalidResponse
         }
         let productsByID = Dictionary(grouping: productResponse.results, by: \.productId)

@@ -36,7 +36,7 @@ def main():
     previous_path.write_bytes(previous)
     for stem in ('observations', 'inventories'):
         combined = []
-        for prefix in ('', 'tcgcsv-', 'event-', 'retail-', 'starter-booster-', 'base-market-'):
+        for prefix in ('', 'tcgcsv-', 'event-', 'retail-', 'starter-booster-', 'base-market-', 'special-printings-'):
             combined.extend(json.loads((args.corpus / f'{prefix}{stem}.json').read_bytes()))
         (output / f'{stem}.json').write_text(json.dumps(combined))
     revision = baseline['revision'] + 1

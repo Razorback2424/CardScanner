@@ -1,0 +1,372 @@
+{
+  "schema_id": "lorcana-real-physical-acceptance-cases/v1",
+  "as_of": "2026-10-12",
+  "execution_status": "NONE_EXECUTED",
+  "root_source_manifest": "lorcana_real_card_corpus.json",
+  "precondition_definitions": {
+    "reviewed_seed": "Needs physically reviewed, locally signed schema-2 seed; none supplied",
+    "source_research_or_supported_parser": "Pass only if syntax is explicitly supported; otherwise correct result is safe incomplete + retained evidence",
+    "real_device_roi_capture": "Cannot be marked pass without real camera observations",
+    "real_rendered_ui": "Cannot be marked pass without captured phone/tablet/large-text/VoiceOver interactions",
+    "source_research": "Evaluate documentation only; no production promotion",
+    "source_conflict_research": "Hold until card-in-hand literal footer observation",
+    "held_until_distribution_and_finish_review": "Do not activate any unreviewed C1 distribution finish claim",
+    "held_until_itemkind_and_physical_review": "Keep gold-backed special scenario class out of writable catalog",
+    "held_no_footer": "No footer to recognize; manual exact record support must be reviewed"
+  },
+  "scenarios": [
+    {
+      "scenario_id": "LRC-AC-01",
+      "case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "surface": "scan+catalog",
+      "precondition": "reviewed_seed",
+      "action": "Recognize one unambiguous 5/204 EN 1 footer with both Hades standard and jumbo eligible in the registry",
+      "expected_result": "needsPrintingChoice, never silent resolution or normal-size assumption",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-02",
+      "case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "surface": "choice+finish+save",
+      "precondition": "reviewed_seed",
+      "action": "Choose jumbo then try standard-only finish or tamper selected UUID/generation",
+      "expected_result": "Refuse unsupported finish/printing; no save and no ownership/history modification",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-03",
+      "case_ids": [
+        "LRC-002"
+      ],
+      "surface": "catalog+choice",
+      "precondition": "reviewed_seed",
+      "action": "Review a scoped registry where a jumbo is the only known verified candidate; provide footer alone",
+      "expected_result": "Singleton jumbo still asks to confirm oversized physical size before exact save",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-04",
+      "case_ids": [
+        "LRC-003",
+        "LRC-004"
+      ],
+      "surface": "recognition+catalog",
+      "precondition": "reviewed_seed",
+      "action": "Repeat same-footer discovery with Mulan gift set foils at both sizes",
+      "expected_result": "Two physically distinguishable candidates and explicit selection; no exception keyed on name",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-05",
+      "case_ids": [
+        "LRC-001"
+      ],
+      "surface": "finish+ownership+relaunch",
+      "precondition": "reviewed_seed",
+      "action": "Select confirmed standard Hades printing with supported normal and cold-foil specimens",
+      "expected_result": "Finish picker offers only independently reviewed eligible finishes; exact ID + finish persists across relaunch",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-06",
+      "case_ids": [
+        "LRC-005",
+        "LRC-006"
+      ],
+      "surface": "catalog+ownership",
+      "precondition": "reviewed_seed",
+      "action": "Scan normal 42/204 vs Enchanted 207/204 TFC Elsa",
+      "expected_result": "Separate physical printings and stable IDs; enchanted never appears as an eligible finish beneath 42/204",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-07",
+      "case_ids": [
+        "LRC-007",
+        "LRC-008"
+      ],
+      "surface": "browse+ownership",
+      "precondition": "reviewed_seed",
+      "action": "Add both Stitch printings then inspect Browse/collection/completion",
+      "expected_result": "Two physical UUID+finish keys remain distinct; gameplay identity may group as reprints, physical completion does not",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-08",
+      "case_ids": [
+        "LRC-013a",
+        "LRC-013b",
+        "LRC-013c",
+        "LRC-013d",
+        "LRC-013e"
+      ],
+      "surface": "scanner+catalog",
+      "precondition": "source_research_or_supported_parser",
+      "action": "Use literal 4a/4b/4c/4d/4e printed inputs and their five different art identities",
+      "expected_result": "Five different candidate identity keys; if parser lacks lettered support each is recoverably unresolved, never 4/204 or default artwork",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-09",
+      "case_ids": [
+        "LRC-009",
+        "LRC-011"
+      ],
+      "surface": "recognizer+recovery",
+      "precondition": "source_research_or_supported_parser",
+      "action": "Present 1TFC EN 1/P1 and 1TFC EN 2/P1 historical promo footers",
+      "expected_result": "No ordinary three-part footer misparse; must remain held/recoverable until measured alternate syntax support; stamps distinct",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-10",
+      "case_ids": [
+        "LRC-012"
+      ],
+      "surface": "camera+recognizer",
+      "precondition": "real_device_roi_capture",
+      "action": "Capture Motunui on real landscape card in more than one orientation",
+      "expected_result": "Accept only supported actual ROI geometry and contiguous footer observation; else safe recovery, no blind rotation guess",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-11",
+      "case_ids": [
+        "LRC-014",
+        "LRC-015"
+      ],
+      "surface": "catalog+collection",
+      "precondition": "reviewed_seed",
+      "action": "Resolve Cinderella EN vs FR 177/204 set 2 including both normal and foil evidence",
+      "expected_result": "Language part of physical identity/ownership. No English default or cross-language normalization",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-12",
+      "case_ids": [
+        "LRC-016"
+      ],
+      "surface": "catalog+variant",
+      "precondition": "held_until_distribution_and_finish_review",
+      "action": "Review Challenge Cinderella 3/C1 in both nonfoil and foil distribution forms",
+      "expected_result": "Literal C1 retained; explicit reviewer policy controls whether finishes share an exact printing or distinct intrinsic stamp identity; unreviewed decision blocks save",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-13",
+      "case_ids": [
+        "LRC-017"
+      ],
+      "surface": "source-normalization",
+      "precondition": "source_conflict_research",
+      "action": "Compare 02/D23 third-party text with 2/D23 official digital display",
+      "expected_result": "Conflict stays visible and held; do not strip leading zero or assign permanent alias until photographed printed footer resolves claim",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-14",
+      "case_ids": [
+        "LRC-018"
+      ],
+      "surface": "scanner+import+ownership",
+      "precondition": "held_until_itemkind_and_physical_review",
+      "action": "Capture gold-backed Ursula Contract 30/31 EN Q1 and test CSV raw item-kind path",
+      "expected_result": "Q1 and denominator 31 stay literal; unknown specialized item kind remains accessible to validator; no collection write before validated item-kind authority",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-15",
+      "case_ids": [
+        "LRC-019",
+        "LRC-020",
+        "LRC-021",
+        "LRC-022"
+      ],
+      "surface": "catalog+variant",
+      "precondition": "reviewed_seed",
+      "action": "Compare ordinary Mickey 187 and special 225, ordinary Yen Sid 59 and special 223, denominator 204",
+      "expected_result": "Premium numerator accepts higher than denom but does not imply Enchanted; dedicated distinct physical UUID for framed Quest counterpart",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-16",
+      "case_ids": [
+        "LRC-023"
+      ],
+      "surface": "recognizer+catalog",
+      "precondition": "held_no_footer",
+      "action": "Attempt to auto-resolve unnumbered oversized Ursula boss via invented footer or similar card name",
+      "expected_result": "Return incomplete/unsupported until an exact manually verified catalog UUID and raw kind supported; no synthetic footer",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-17",
+      "case_ids": [
+        "LRC-024",
+        "LRC-025"
+      ],
+      "surface": "recognizer+catalog",
+      "precondition": "reviewed_seed",
+      "action": "Resolve 197/207 EN 13 and 207/207 EN 13",
+      "expected_result": "Accept actual denominator 207 as literal, including numerator equal to it; no 204 horizon; landscape for 207 Location",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-18",
+      "case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "surface": "activation+choice+recovery",
+      "precondition": "reviewed_seed",
+      "action": "Change catalog generation while printing chooser and price-independent finish step are open",
+      "expected_result": "Reject stale choice, preserve original evidence, explicit retry rebases and asks again where candidate evidence changed",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-19",
+      "case_ids": [
+        "LRC-007",
+        "LRC-008"
+      ],
+      "surface": "csv+collection",
+      "precondition": "reviewed_seed",
+      "action": "Import CSV referencing gameplay identity, provider alias or 23/204 footer without exact reviewed physical UUID",
+      "expected_result": "Reject mutation and retain failed-row evidence; full exact UUID+game+finish keys required",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-20",
+      "case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "surface": "scanner+recovery+relaunch",
+      "precondition": "reviewed_seed",
+      "action": "Write two identical-footer scan encounters; resolve only encounter A",
+      "expected_result": "B recovery remains; suppression/encounter identity/ownership do not collapse together; ownership correct after app relaunch",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-21",
+      "case_ids": [
+        "LRC-001",
+        "LRC-002"
+      ],
+      "surface": "authority+collection",
+      "precondition": "reviewed_seed",
+      "action": "Withdraw supported finish/write capability or retire bound storage session while a save is in flight",
+      "expected_result": "Final synchronous catalog and collection guards block writes, history untouched and readable unknown rows retained",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-22",
+      "case_ids": [
+        "LRC-001",
+        "LRC-007",
+        "LRC-008"
+      ],
+      "surface": "signed-release+activation+ownership",
+      "precondition": "reviewed_seed",
+      "action": "Accept corrected provider alias/artwork metadata and re-sign same physical reviewed printing",
+      "expected_result": "App-owned permanent physical UUID and original ownership remain stable; content revision and corrections pass signed predecessor check",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-23",
+      "case_ids": [
+        "LRC-001",
+        "LRC-002",
+        "LRC-012",
+        "LRC-018"
+      ],
+      "surface": "phone+tablet+accessibility",
+      "precondition": "real_rendered_ui",
+      "action": "Inspect inaccessible artwork, visually indistinguishable candidate text and large-text / VoiceOver picker flows",
+      "expected_result": "Cannot select unsupported candidate on identical labels; details contain accessible size/distinction, blocked when insufficient, no change to ownership",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-24",
+      "case_ids": [
+        "LRC-016",
+        "LRC-017",
+        "LRC-023"
+      ],
+      "surface": "manifest+signed-transition",
+      "precondition": "source_research",
+      "action": "Attempt schema-2 promotion of held disputed footer, distribution finish, or unnumbered special card",
+      "expected_result": "Promotion validator fails and active catalog remains unchanged until identity evidence/reviewer signoff resolves each hold",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    },
+    {
+      "scenario_id": "LRC-AC-25",
+      "case_ids": [
+        "LRC-003",
+        "LRC-004",
+        "LRC-018"
+      ],
+      "surface": "import+ownership",
+      "precondition": "reviewed_seed",
+      "action": "Submit external metadata with source alias but wrong game, item type or printing size",
+      "expected_result": "Cross-game and raw item-kind discrepancies are retained and rejected; source alias does not override exact physical UUID authority",
+      "severity": "critical",
+      "execution_status": "specified_not_run",
+      "evidence_artifact_links": []
+    }
+  ]
+}

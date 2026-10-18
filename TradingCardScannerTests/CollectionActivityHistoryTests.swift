@@ -6,6 +6,76 @@ import XCTest
 final class CollectionActivityHistoryTests: XCTestCase {
     private var container: ModelContainer?
 
+    func testDetailQuantityInvalidatesWhenASiblingDuplicateArrivesAndCanStillBeEdited() async throws {
+        let context = try makeContext()
+        let store = CollectionStore(context: context)
+        let mutation = try store.add(identifiedCard(), resolved: .init(variant: .normal, resolution: .userConfirmed))
+        let original = try XCTUnwrap(store.card(forKey: mutation.collectionKey))
+        let originalInput = CollectionDetailQuantityState.Input(collectionKey: original.collectionKey,
+            physicalQuantity: 1, logicalQuantity: 1, isLogicalConflict: false, treatments: [])
+        var state = CollectionDetailQuantityState()
+        state.update(1, for: originalInput)
+        let oldReadRevision = state.revision
+
+        let siblingContext = ModelContext(context.container)
+        let duplicate = makeCollectedCard(quantity: 2)
+        duplicate.dateAdded = original.dateAdded.addingTimeInterval(1)
+        siblingContext.insert(duplicate)
+        let operationID = UUID()
+        _ = InventoryLedger(context: siblingContext).record(duplicate, kind: .acquire,
+            source: .scan, deltaQuantity: 2, operationID: operationID)
+        _ = try CollectionStore(context: siblingContext).appendActivity(duplicate,
+            source: .scan, kind: .added, deltaQuantity: 2, ledgerOperationIDs: [operationID])
+        try siblingContext.save()
+
+        let fresh = ModelContext(context.container)
+        let projection = LogicalCollection.project(cards: try fresh.fetch(FetchDescriptor<CollectedCard>())) { $0.priceKey }
+        let position = try XCTUnwrap(projection.byKey[mutation.collectionKey])
+        XCTAssertEqual(position.representative.quantity, 1, "The original observed row did not change")
+        let changedInput = CollectionDetailQuantityState.Input(collectionKey: mutation.collectionKey,
+            physicalQuantity: position.representative.quantity, logicalQuantity: position.quantity,
+            isLogicalConflict: position.physicalRowCount > 1, treatments: [])
+        XCTAssertNotEqual(changedInput, originalInput, "Restart the detail task when only the logical total changes")
+        XCTAssertEqual(state.displayedQuantity(for: changedInput), 3)
+        XCTAssertNil(state.savedQuantity(for: changedInput), "Do not reuse the old compare-and-set value")
+
+        let reader = CollectionDetailQuantityReader(modelContainer: context.container)
+        let live = try await reader.logicalQuantity(forAnyKey: mutation.collectionKey, magicTreatmentIDsRaw: [])
+        state.update(live, for: changedInput)
+        XCTAssertFalse(state.update(1, for: originalInput, expectedRevision: oldReadRevision))
+        let saved = try CollectionWriteSerializer.perform(container: context.container, timeout: .mainThread) {
+            try CollectionStore(context: $0).setQuantity(4, forCollectionKey: mutation.collectionKey,
+                expectedCurrent: XCTUnwrap(state.savedQuantity(for: changedInput)))
+        }
+        let beforeSaveReadRevision = state.revision
+        state.update(saved, for: changedInput)
+        XCTAssertFalse(state.update(3, for: changedInput, expectedRevision: beforeSaveReadRevision),
+            "An older read must not overwrite the just-saved quantity")
+        XCTAssertEqual(state.displayedQuantity(for: changedInput), 4)
+        let verification = ModelContext(context.container)
+        XCTAssertEqual(try verification.fetch(FetchDescriptor<CollectedCard>()).map(\.quantity), [4])
+        XCTAssertEqual(InventoryLedger.quantities(from: try verification.fetch(FetchDescriptor<InventoryEvent>()))[mutation.collectionKey], 4)
+    }
+
+    func testDetailQuantityInvalidatesWhenOnlyAnExistingDuplicateTotalChanges() {
+        var state = CollectionDetailQuantityState()
+        let first = CollectionDetailQuantityState.Input(collectionKey: "duplicate",
+            physicalQuantity: 1, logicalQuantity: 3, isLogicalConflict: true, treatments: [])
+        state.update(3, for: first)
+        let changed = CollectionDetailQuantityState.Input(collectionKey: "duplicate",
+            physicalQuantity: 1, logicalQuantity: 4, isLogicalConflict: true, treatments: [])
+        XCTAssertNotEqual(first, changed)
+        XCTAssertEqual(state.displayedQuantity(for: changed), 4)
+        XCTAssertNil(state.savedQuantity(for: changed))
+        let merged = CollectionDetailQuantityState.Input(collectionKey: "duplicate",
+            physicalQuantity: 4, logicalQuantity: 4, isLogicalConflict: false, treatments: [])
+        XCTAssertEqual(state.displayedQuantity(for: merged), 4)
+        let merging = CollectionDetailQuantityState.Input(collectionKey: "duplicate",
+            physicalQuantity: 4, logicalQuantity: 3, isLogicalConflict: true, treatments: [])
+        XCTAssertEqual(state.displayedQuantity(for: merging), 4,
+            "A lagging projection must not undo the merged row's saved count")
+    }
+
     func testBlankLegacyActivityGameFallsBackWithoutChangingUnknownGames() {
         let activity = CollectionActivity(card: makeCollectedCard(quantity: 1), source: .scan)
         activity.gameRaw = ""

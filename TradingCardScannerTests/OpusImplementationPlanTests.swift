@@ -481,7 +481,7 @@ final class OpusImplementationPlanTests: XCTestCase {
         XCTAssertEqual(computation.valuation.unpricedCount, 0)
     }
 
-    func testREQ006NonUSDLocalPriceRecordIsCheckingButStillVisible() throws {
+    func testREQ006NonUSDLocalPriceRecordWaitsForUSDRefresh() throws {
         let container = try ModelContainer(
             for: ReferenceQuote.self,
             PriceRecord.self,
@@ -516,12 +516,12 @@ final class OpusImplementationPlanTests: XCTestCase {
         let result = PriceCheckCoordinator(context: context).present(scan)
 
         XCTAssertEqual(result.quoteState, .checking)
-        XCTAssertEqual(result.display.amount, 12)
-        XCTAssertEqual(result.display.currencyCode, "EUR")
+        XCTAssertNil(result.display.amount)
+        XCTAssertEqual(result.display.currencyCode, "USD")
         XCTAssertTrue(result.shouldAutoRefresh)
     }
 
-    func testREQ006NonUSDReferenceQuoteIsCheckingButStillVisible() throws {
+    func testREQ006NonUSDReferenceQuoteWaitsForUSDRefresh() throws {
         let container = try ModelContainer(
             for: ReferenceQuote.self,
             PriceRecord.self,
@@ -552,8 +552,8 @@ final class OpusImplementationPlanTests: XCTestCase {
         let result = PriceCheckCoordinator(context: context).present(scan)
 
         XCTAssertEqual(result.quoteState, .checking)
-        XCTAssertEqual(result.display.amount, 12)
-        XCTAssertEqual(result.display.currencyCode, "EUR")
+        XCTAssertNil(result.display.amount)
+        XCTAssertEqual(result.display.currencyCode, "USD")
         XCTAssertTrue(result.shouldAutoRefresh)
     }
 

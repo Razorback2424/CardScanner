@@ -132,12 +132,14 @@ private struct ScannerStubPokemonSource: PokemonCardSource {
     let cardsByLocalID: [String: TCGdexCard]
     let delayNanoseconds: UInt64
     let fetchGate: ScannerFetchGate?
+    let fetchHoldGates: [String: ScannerFetchGate]
     let catalogMiss: Bool
     let failure: Failure?
     let failureSwitch: ScannerCatalogFailureSwitch?
 
     func fetchTCGdexCard(setID: String, localID: String) async throws -> TCGdexCard {
         await fetchGate?.markStarted()
+        await fetchHoldGates[Int(localID).map(String.init) ?? localID]?.hold()
         if let failure, await failureSwitch?.isFailureEnabled() ?? true {
             switch failure {
             case .transient: throw TCGdexError.badResponse
@@ -306,6 +308,67 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.pendingChoice?.identityResolution, .userSelectedPrinting)
         XCTAssertNil(model.pendingIdentityChoice)
         model.viewDisappeared()
+    }
+
+    func testClassicPhotoFootersOfferBothPrintingsBeforeFinishOrCollectionWrite() async throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let store = PokemonChecklistStore(root: root)
+        let classicSet = CatalogSet(
+            catalogID: .init(game: .pokemon, providerID: "30th-c"),
+            name: "30th Celebration Classic Collection", code: "30C",
+            logoURL: nil, symbolURL: nil, cardCount: 30, releaseDate: nil, sortRank: 1
+        )
+        let classicCards = [("003", "Metagross"), ("014", "Pikachu")].map { number, name in
+            CatalogCardSummary(
+                game: .pokemon, providerID: "30th-c-\(number)", setID: classicSet.catalogID,
+                setName: classicSet.name, setCode: classicSet.code, name: name,
+                collectorNumber: number, thumbnailURL: nil, imageURL: nil, masterSetVariant: .normal
+            )
+        }
+        try await store.replace(PokemonChecklistSnapshot(
+            manifest: .init(
+                schemaVersion: PokemonChecklistSnapshotVersion.schema,
+                rulesVersion: PokemonChecklistSnapshotVersion.masterSetRules,
+                generatedAt: .now, directoryFingerprint: "classic-photo-test",
+                entries: [.init(
+                    set: classicSet, providerID: "30th-c", officialCount: 30,
+                    standardSlotCount: 30, expandedSlotCount: 30, resource: "classic.json"
+                )]
+            ),
+            checklists: [classicSet.id: classicCards]
+        ))
+        let fixtures = [
+            (footer: "11/113", title: "Metagross δ", original: "ex11-11", classic: "30th-c-003"),
+            (footer: "11/113", title: "Metagross", original: "ex11-11", classic: "30th-c-003"),
+            (footer: "58/102", title: "Pikachu", original: "base1-58", classic: "30th-c-014")
+        ]
+        for fixture in fixtures {
+            let model = try makeModel(variants: [.normal], offline: PokemonOfflineCatalog(store: store))
+            let identifier = try XCTUnwrap(PokemonHistoricalScanParser.parse(
+                numberLines: [fixture.footer], titleLines: [fixture.title]
+            ))
+            confirm(model, identifier, encounterID: UUID())
+            let appeared = await waitUntil { model.pendingIdentityChoice != nil }
+            XCTAssertTrue(appeared, fixture.title)
+            let choice = try XCTUnwrap(model.pendingIdentityChoice)
+            XCTAssertEqual(Set(choice.candidates.map(\.providerID)), [fixture.original, fixture.classic])
+            XCTAssertTrue(choice.displayCandidates.contains { $0.releaseLabel == "30th Classic · 2026" })
+            XCTAssertNil(model.pendingChoice)
+            XCTAssertNil(model.pendingPrintRunChoice)
+            XCTAssertTrue(model.recent.isEmpty)
+            let classic = try XCTUnwrap(choice.candidates.first { $0.providerID == fixture.classic })
+            model.choose(classic)
+            let saved = await waitUntil { model.recent.first?.card.providerID == fixture.classic }
+            XCTAssertTrue(saved, fixture.title)
+            XCTAssertEqual(model.recent.first?.card.variantEvidence.setID, "30th-c")
+            XCTAssertEqual(model.recent.first?.card.displayCardNumber, fixture.footer)
+            let rows = try context().fetch(FetchDescriptor<CollectedCard>())
+            XCTAssertEqual(rows.count, 1)
+            XCTAssertEqual(rows.first?.providerID, fixture.classic)
+            XCTAssertEqual(rows.first?.identityResolution, .userSelectedPrinting)
+            model.viewDisappeared()
+        }
     }
 
     func testDismissedGenericPrintingChoicesRetainSeparateEncounters() async throws {
@@ -660,6 +723,81 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.committedSessionHistory.first?.id, original.id)
         XCTAssertEqual(model.successCount, 1)
         XCTAssertNil(model.pendingSlabConversionOffer)
+    }
+
+    func testRawFallbackCannotOverwriteConvertedGradedScan() async throws {
+        let gradedVariant = GradedVariant(
+            id: "converted-graded", cardID: "converted-card", company: .psa,
+            grade: CardGrade(value: "10", label: "Gem Mint"),
+            marketPriceUSD: 250, updatedAt: nil
+        )
+        let rawQuote = PriceLookup.price(NormalizedPrice(
+            unitMarketPriceUSD: 12, currencyCode: "USD", source: .justTCG,
+            sourceVariantID: "raw", sourceUpdatedAt: nil, fetchedAt: .now
+        ))
+        for outcome in [ScannedGradedOutcome.bound(gradedVariant), .unavailable] {
+            let gate = ScannerGradedResolverGate()
+            let model = try makeModel(
+                variants: [.normal], gradedOutcome: outcome, gradedResolverGate: gate
+            )
+            let encounterID = UUID()
+            confirm(model, scannerIdentifier(), encounterID: encounterID)
+            let committed = await waitUntil { model.sessionScans.count == 1 }
+            XCTAssertTrue(committed)
+            let rawScan = try XCTUnwrap(model.sessionScans.first)
+            // The same delivery path must still publish quotes to eligible raw scans.
+            model.deliverFallbackQuoteForTesting(rawQuote, requestedScan: rawScan)
+            XCTAssertEqual(model.recent.first?.price, rawQuote)
+
+            let slab = try XCTUnwrap(gradedSubject(value: "10", label: "Gem Mint").slab)
+            model.scanner.onPostCommitSlabEvidence?(encounterID, slab)
+            let offered = await waitUntil { model.pendingSlabConversionOffer != nil }
+            XCTAssertTrue(offered)
+            await model.convertRawScanToGraded(scanID: rawScan.id)
+            await gate.waitUntilStarted()
+            let pendingPrice = try XCTUnwrap(model.sessionScans.first?.price)
+            model.deliverFallbackQuoteForTesting(rawQuote, requestedScan: rawScan)
+            XCTAssertEqual(model.sessionScans.first?.price, pendingPrice)
+            XCTAssertEqual(model.recent.first?.price, pendingPrice)
+            XCTAssertEqual(model.receipt?.price, pendingPrice)
+            XCTAssertTrue(model.sessionScans.first?.isGradedPricePending == true)
+
+            await gate.release()
+            let completed = await waitUntil { model.sessionScans.first?.isGradedPricePending == false }
+            XCTAssertTrue(completed)
+            let finalPrice = try XCTUnwrap(model.sessionScans.first?.price)
+            if case .bound = outcome {
+                guard case let .price(price) = finalPrice else {
+                    XCTFail("Expected graded price")
+                    continue
+                }
+                XCTAssertEqual(price.unitMarketPriceUSD, 250)
+            } else {
+                XCTAssertEqual(finalPrice, pendingPrice)
+            }
+            model.deliverFallbackQuoteForTesting(rawQuote, requestedScan: rawScan)
+            XCTAssertEqual(model.sessionScans.first?.price, finalPrice)
+            XCTAssertEqual(model.recent.first?.price, finalPrice)
+            XCTAssertEqual(model.receipt?.price, finalPrice)
+            XCTAssertFalse(model.sessionScans.first?.isGradedPricePending == true)
+        }
+    }
+
+    func testCatalogObserversReleaseReplacedModels() async throws {
+        let pokemon = PokemonCatalogCoordinator(rolloutMode: .bundledValidationOnly)
+        let magic = MagicCatalogCoordinator(rolloutMode: .legacyLive)
+        for _ in 0..<3 {
+            var model: ScannerViewModel? = try makeModel(
+                variants: [.normal], catalogCoordinator: pokemon,
+                magicCatalogCoordinator: magic
+            )
+            weak var releasedModel = model
+            await settle()
+            XCTAssertNotNil(releasedModel)
+            model = nil
+            let released = await waitUntil { releasedModel == nil }
+            XCTAssertTrue(released, "Catalog stream waits must not retain the scanner model")
+        }
     }
 
     func testSlabPriceBindingStartsAfterUnboundCollectionCommit() async throws {
@@ -1223,7 +1361,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(try context().fetch(FetchDescriptor<CollectedCard>()).isEmpty)
     }
 
-    func testREQ006RefreshedNonUSDQuoteRemainsChecking() async throws {
+    func testREQ006RefreshedNonUSDQuoteIsRejectedAsProviderFailure() async throws {
         let refreshedAt = Date(timeIntervalSince1970: 1_800_000_000)
         let refreshed = PriceLookup.price(
             NormalizedPrice(
@@ -1247,14 +1385,14 @@ final class ScannerViewModelTests: XCTestCase {
         let refreshedState = await waitUntil {
             guard let result = model.priceCheckResult else { return false }
             return !result.isRefreshing
-                && result.display.currencyCode == "EUR"
-                && result.display.amount == 12
+                && result.display.currencyCode == "USD"
+                && result.display.amount == nil
         }
 
         XCTAssertTrue(refreshedState)
-        XCTAssertEqual(model.priceCheckResult?.quoteState, .checking)
-        XCTAssertEqual(model.priceCheckResult?.display.currencyCode, "EUR")
-        XCTAssertEqual(model.priceCheckResult?.display.amount, 12)
+        XCTAssertEqual(model.priceCheckResult?.quoteState, .providerUnavailable)
+        XCTAssertEqual(model.priceCheckResult?.display.currencyCode, "USD")
+        XCTAssertNil(model.priceCheckResult?.display.amount)
     }
 
     func testSameIdentityWithoutSpatialProofIsSuppressed() async throws {
@@ -2179,6 +2317,36 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.sessionScans.first?.card.id, "pokemon:test-set-002")
     }
 
+    func testCancelledLookupProgressClearsImmediatelyAndCannotClearANewerLookup() async throws {
+        let first = ScannerFetchGate()
+        let second = ScannerFetchGate()
+        let model = try makeModel(variants: [.normal], fetchHoldGates: ["1": first, "2": second])
+        confirm(model, scannerIdentifier(), encounterID: UUID())
+        await first.waitUntilStarted()
+        let firstSpinner = await waitUntil { model.isSlowIdentifying }
+        XCTAssertTrue(firstSpinner)
+
+        model.setPurpose(.priceCheck)
+        XCTAssertFalse(model.isSlowIdentifying, "A cancelled network task must not retain visible progress")
+        confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+        await second.waitUntilStarted()
+        let secondSpinner = await waitUntil { model.isSlowIdentifying }
+        XCTAssertTrue(secondSpinner)
+
+        await first.release()
+        let oldCompletion = await waitUntil {
+            model.diagnosticEventsForTesting.contains("staleIdentificationProgressIgnored")
+        }
+        XCTAssertTrue(oldCompletion)
+        XCTAssertTrue(model.isSlowIdentifying, "Old cleanup must not hide the current request's progress")
+
+        await second.release()
+        let completed = await waitUntil { model.priceCheckResult != nil }
+        XCTAssertTrue(completed)
+        XCTAssertFalse(model.isSlowIdentifying)
+        model.endSession()
+    }
+
     func testCatalogMissFilesPromoWithNoCatalogEntryReasonImmediately() async throws {
         let model = try makeModel(variants: [.normal], catalogMiss: true)
         let identifier = try XCTUnwrap(ScanParser.parsePokemon("MEP 095"))
@@ -2201,7 +2369,7 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertTrue(failed)
         XCTAssertEqual(
             model.scanAcknowledgement?.message,
-            "Read MEP 095, but the catalog has no card with that number. Nothing was added."
+            "Read MEP 095, but the catalog could not resolve an exact printing. Nothing was added."
         )
         let filed = await waitUntil { model.unresolvedScans.count == 1 }
         XCTAssertTrue(filed, "a deterministic catalog miss is filed on the first failure")
@@ -2415,7 +2583,7 @@ final class ScannerViewModelTests: XCTestCase {
         confirm(model, scannerIdentifier(), encounterID: UUID())
 
         let noteShown = await waitUntil {
-            model.note?.text.contains("catalog has no card") == true
+            model.note?.text.contains("could not resolve an exact printing") == true
         }
         XCTAssertTrue(noteShown)
         XCTAssertTrue(model.unresolvedScans.isEmpty)
@@ -3074,6 +3242,36 @@ final class ScannerViewModelTests: XCTestCase {
         XCTAssertEqual(model.successCount, 0)
     }
 
+    func testDeferredRestartUsesLatestSceneActivity() async throws {
+        for latestIsActive in [false, true] {
+            let gate = ScannerCollectionAddGate(outcome: .success)
+            let model = try makeModel(
+                variants: [.normal], collectionAddOverride: { try await gate.add($0) }
+            )
+            confirm(model, scannerIdentifier(), encounterID: UUID())
+            await gate.waitUntilStarted()
+            model.viewDisappeared()
+            model.start(
+                context: context(), isSceneActive: !latestIsActive,
+                startCamera: false, shouldRefreshMagicDirectory: false
+            )
+            model.scenePhaseChanged(isActive: latestIsActive)
+            await gate.release()
+            let restarted = await waitUntil { model.isScannerSessionActiveForTesting }
+            XCTAssertTrue(restarted)
+            XCTAssertEqual(model.scanner.isRecognitionPausedForTesting, !latestIsActive)
+            await gate.allowSuccess()
+            confirm(model, scannerIdentifier(cardNumber: "002"), encounterID: UUID())
+            if latestIsActive {
+                let acquired = await waitUntil { model.sessionScans.count == 1 }
+                XCTAssertTrue(acquired)
+            } else {
+                await settle()
+                XCTAssertTrue(model.sessionScans.isEmpty)
+            }
+        }
+    }
+
     func testInactiveOverlayPreservesPendingChoiceButBackgroundInvalidatesIt() async throws {
         let model = try makeModel(variants: [.normal, .holo])
         let encounterID = UUID()
@@ -3459,6 +3657,7 @@ final class ScannerViewModelTests: XCTestCase {
         tertiaryVariants: [PhysicalVariant]? = nil,
         delayNanoseconds: UInt64 = 0,
         fetchGate: ScannerFetchGate? = nil,
+        fetchHoldGates: [String: ScannerFetchGate] = [:],
         catalogMiss: Bool = false,
         gradedOutcome: ScannedGradedOutcome? = nil,
         setProviderID: String = "test-set",
@@ -3475,7 +3674,9 @@ final class ScannerViewModelTests: XCTestCase {
         sessionMetricsLog: ScanSessionMetricsLog? = nil,
         metricsDefaults: UserDefaults = .standard,
         offline: PokemonOfflineCatalog? = nil,
-        printingCatalog: (any GameCatalogAdapter)? = nil
+        printingCatalog: (any GameCatalogAdapter)? = nil,
+        catalogCoordinator: PokemonCatalogCoordinator? = nil,
+        magicCatalogCoordinator: MagicCatalogCoordinator? = nil
     ) throws -> ScannerViewModel {
         let context = try makeContext()
         let root = FileManager.default.temporaryDirectory
@@ -3506,6 +3707,7 @@ final class ScannerViewModelTests: XCTestCase {
                 ],
                 delayNanoseconds: delayNanoseconds,
                 fetchGate: fetchGate,
+                fetchHoldGates: fetchHoldGates,
                 catalogMiss: catalogMiss,
                 failure: sourceFailure,
                 failureSwitch: failureSwitch
@@ -3533,6 +3735,8 @@ final class ScannerViewModelTests: XCTestCase {
             priceCheckRefreshProvider: priceCheckOutcome.map {
                 ScannerStubPriceCheckProvider(outcome: $0)
             },
+            catalogCoordinator: catalogCoordinator,
+            magicCatalogCoordinator: magicCatalogCoordinator,
             unresolvedScanStore: unresolvedScanStore ?? UnresolvedScanStore(
                 fileURL: root.appendingPathComponent("Scanner/unresolved-scans.json")
             ),

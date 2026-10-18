@@ -1,0 +1,75 @@
+set_id,name,provider_card_count,source_url,disposition
+miscp,Miscellaneous Promos,1,https://api.tcgdex.net/v2/en/sets/miscp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+basep,Wizards Black Star Promos,53,https://api.tcgdex.net/v2/en/sets/basep,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+wp,W Promotional,7,https://api.tcgdex.net/v2/en/sets/wp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+jumbo,Jumbo cards,160,https://api.tcgdex.net/v2/en/sets/jumbo,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+si1,Southern Islands,18,https://api.tcgdex.net/v2/en/sets/si1,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+sp,Sample,10,https://api.tcgdex.net/v2/en/sets/sp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+np,Nintendo Black Star Promos,40,https://api.tcgdex.net/v2/en/sets/np,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-ex-latia,EX trainer Kit (Latias),10,https://api.tcgdex.net/v2/en/sets/tk-ex-latia,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-ex-latio,EX trainer Kit (Latios),10,https://api.tcgdex.net/v2/en/sets/tk-ex-latio,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop1,POP Series 1,17,https://api.tcgdex.net/v2/en/sets/pop1,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop2,POP Series 2,17,https://api.tcgdex.net/v2/en/sets/pop2,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-ex-m,EX trainer Kit 2 (Minun),12,https://api.tcgdex.net/v2/en/sets/tk-ex-m,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-ex-p,EX trainer Kit 2 (Plusle),12,https://api.tcgdex.net/v2/en/sets/tk-ex-p,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop3,POP Series 3,17,https://api.tcgdex.net/v2/en/sets/pop3,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop4,POP Series 4,17,https://api.tcgdex.net/v2/en/sets/pop4,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop5,POP Series 5,17,https://api.tcgdex.net/v2/en/sets/pop5,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+dpp,DP Black Star Promos,56,https://api.tcgdex.net/v2/en/sets/dpp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-dp-l,DP trainer Kit (Lucario),11,https://api.tcgdex.net/v2/en/sets/tk-dp-l,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-dp-m,DP trainer Kit (Manaphy),12,https://api.tcgdex.net/v2/en/sets/tk-dp-m,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop6,POP Series 6,17,https://api.tcgdex.net/v2/en/sets/pop6,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop7,POP Series 7,17,https://api.tcgdex.net/v2/en/sets/pop7,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop8,POP Series 8,17,https://api.tcgdex.net/v2/en/sets/pop8,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+pop9,POP Series 9,17,https://api.tcgdex.net/v2/en/sets/pop9,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+hgssp,HGSS Black Star Promos,25,https://api.tcgdex.net/v2/en/sets/hgssp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-hs-r,HS trainer Kit (Raichu),30,https://api.tcgdex.net/v2/en/sets/tk-hs-r,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-hs-g,HS trainer Kit (Gyarados),30,https://api.tcgdex.net/v2/en/sets/tk-hs-g,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+bwp,BW Black Star Promos,101,https://api.tcgdex.net/v2/en/sets/bwp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2011bw,McDonald's Collection 2011,12,https://api.tcgdex.net/v2/en/sets/2011bw,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-bw-e,BW trainer Kit (Excadrill),30,https://api.tcgdex.net/v2/en/sets/tk-bw-e,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-bw-z,BW trainer Kit (Zoroark),30,https://api.tcgdex.net/v2/en/sets/tk-bw-z,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2012bw,McDonald's Collection 2012,12,https://api.tcgdex.net/v2/en/sets/2012bw,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+xyp,XY Black Star Promos,216,https://api.tcgdex.net/v2/en/sets/xyp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+rc,Radiant Collection,25,https://api.tcgdex.net/v2/en/sets/rc,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-xy-n,XY trainer Kit (Noivern),30,https://api.tcgdex.net/v2/en/sets/tk-xy-n,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-xy-sy,XY trainer Kit (Sylveon),30,https://api.tcgdex.net/v2/en/sets/tk-xy-sy,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2014xy,McDonald's Collection 2014,12,https://api.tcgdex.net/v2/en/sets/2014xy,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-xy-b,XY trainer Kit (Bisharp),30,https://api.tcgdex.net/v2/en/sets/tk-xy-b,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-xy-w,XY trainer Kit (Wigglytuff),30,https://api.tcgdex.net/v2/en/sets/tk-xy-w,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-xy-latio,XY trainer Kit (Latios),30,https://api.tcgdex.net/v2/en/sets/tk-xy-latio,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-xy-latia,XY trainer Kit (Latias),30,https://api.tcgdex.net/v2/en/sets/tk-xy-latia,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2015xy,McDonald's Collection 2015,12,https://api.tcgdex.net/v2/en/sets/2015xy,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-xy-p,XY trainer Kit (Pikachu Libre),30,https://api.tcgdex.net/v2/en/sets/tk-xy-p,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-xy-su,XY trainer Kit (Suicune),30,https://api.tcgdex.net/v2/en/sets/tk-xy-su,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2016xy,McDonald's Collection 2016,12,https://api.tcgdex.net/v2/en/sets/2016xy,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+smp,SM Black Star Promos,248,https://api.tcgdex.net/v2/en/sets/smp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-sm-r,SM trainer Kit (Alolan Raichu),30,https://api.tcgdex.net/v2/en/sets/tk-sm-r,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+tk-sm-l,SM trainer Kit (Lycanroc),30,https://api.tcgdex.net/v2/en/sets/tk-sm-l,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2017sm,McDonald's Collection 2017,12,https://api.tcgdex.net/v2/en/sets/2017sm,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2018sm,McDonald's Collection 2018,12,https://api.tcgdex.net/v2/en/sets/2018sm,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2019sm,McDonald's Collection 2019,12,https://api.tcgdex.net/v2/en/sets/2019sm,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+swshp,SWSH Black Star Promos,307,https://api.tcgdex.net/v2/en/sets/swshp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2021swsh,McDonald's Collection 2021,25,https://api.tcgdex.net/v2/en/sets/2021swsh,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2022swsh,McDonald's Collection 2022,15,https://api.tcgdex.net/v2/en/sets/2022swsh,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+svp,SVP Black Star Promos,226,https://api.tcgdex.net/v2/en/sets/svp,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+2023sv,McDonald's Collection 2023,15,https://api.tcgdex.net/v2/en/sets/2023sv,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+P-A,Promos-A,100,https://api.tcgdex.net/v2/en/sets/P-A,Digital Pocket; outside physical scope
+A1,Genetic Apex,286,https://api.tcgdex.net/v2/en/sets/A1,Digital Pocket; outside physical scope
+2024sv,McDonald's Collection 2024,15,https://api.tcgdex.net/v2/en/sets/2024sv,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+A1a,Mythical Island,86,https://api.tcgdex.net/v2/en/sets/A1a,Digital Pocket; outside physical scope
+A2,Space-Time Smackdown,207,https://api.tcgdex.net/v2/en/sets/A2,Digital Pocket; outside physical scope
+A2a,Triumphant Light,96,https://api.tcgdex.net/v2/en/sets/A2a,Digital Pocket; outside physical scope
+A2b,Shining Revelry,111,https://api.tcgdex.net/v2/en/sets/A2b,Digital Pocket; outside physical scope
+A3,Celestial Guardians,239,https://api.tcgdex.net/v2/en/sets/A3,Digital Pocket; outside physical scope
+A3a,Extradimensional Crisis,103,https://api.tcgdex.net/v2/en/sets/A3a,Digital Pocket; outside physical scope
+A3b,Eevee Grove,107,https://api.tcgdex.net/v2/en/sets/A3b,Digital Pocket; outside physical scope
+A4,Wisdom of Sea and Sky,241,https://api.tcgdex.net/v2/en/sets/A4,Digital Pocket; outside physical scope
+A4a,Secluded Springs,105,https://api.tcgdex.net/v2/en/sets/A4a,Digital Pocket; outside physical scope
+mep,MEP Black Star Promos,89,https://api.tcgdex.net/v2/en/sets/mep,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+B1,Mega Rising,331,https://api.tcgdex.net/v2/en/sets/B1,Digital Pocket; outside physical scope
+B1a,Crimson Blaze,103,https://api.tcgdex.net/v2/en/sets/B1a,Digital Pocket; outside physical scope
+B2,Fantastical Parade,234,https://api.tcgdex.net/v2/en/sets/B2,Digital Pocket; outside physical scope
+B2a,Paldean Wonders,131,https://api.tcgdex.net/v2/en/sets/B2a,Digital Pocket; outside physical scope
+30th,30th Celebration,158,https://api.tcgdex.net/v2/en/sets/30th,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"
+30th-c,30th Classic Collection,30,https://api.tcgdex.net/v2/en/sets/30th-c,"Absent from offline checklist; live lookup may exist, release/scope must be reconciled"

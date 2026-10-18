@@ -123,7 +123,7 @@ final class PriceFallbackQuoteResolver {
             // payload may still be quoted by the configured fallback vendor.
             return source != nil || identifiedCatalogCard
         case let .price(price):
-            return price.currencyCode.caseInsensitiveCompare("USD") != .orderedSame
+            return !price.isUsableUSD
         }
     }
 
@@ -145,7 +145,8 @@ final class PriceFallbackQuoteResolver {
             variant: variant,
             pokemonPrintRun: pokemonPrintRun,
             treatmentIDs: treatmentIDs,
-            lookupCandidates: Self.directLookups(card: card, variant: variant)
+            lookupCandidates: Self.directLookups(card: card, variant: variant, pokemonPrintRun: pokemonPrintRun),
+            exactPhysicalProductID: CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun).map(String.init)
         )
     }
 
@@ -192,7 +193,8 @@ final class PriceFallbackQuoteResolver {
         pokemonPrintRun: PokemonPrintRun?,
         treatmentIDs: [String] = [],
         marketVariantID: String? = nil,
-        lookupCandidates: [JustTCGBatchLookup] = []
+        lookupCandidates: [JustTCGBatchLookup] = [],
+        exactPhysicalProductID: String? = nil
     ) async -> PriceFallbackQuoteResolution {
         // This free exact-product path is independent of the paid vendor setting/key.
         guard gameRegistry.supports(game, .pricing) else { return .failed(.unsupportedGame) }
@@ -262,7 +264,8 @@ final class PriceFallbackQuoteResolver {
             lookupCandidates: lookupCandidates,
             currentAmount: nil,
             lastCheckedAt: nil,
-            magicTreatmentIDsRaw: treatmentIDs
+            magicTreatmentIDsRaw: treatmentIDs,
+            exactPhysicalProductID: exactPhysicalProductID
         )
 
         if let lookup = target.lookup {
@@ -337,9 +340,13 @@ final class PriceFallbackQuoteResolver {
     /// the same TCGplayer product id in Scryfall's purchase metadata.
     nonisolated static func directLookups(
         card: IdentifiedCard,
-        variant: PhysicalVariant?
+        variant: PhysicalVariant?,
+        pokemonPrintRun: PokemonPrintRun? = nil
     ) -> [JustTCGBatchLookup] {
         var lookups = verifiedLookups(card: card, variant: variant)
+        if let productID = CardPricing.tcgplayerProductID(for: card, variant: variant, printRun: pokemonPrintRun) {
+            lookups.append(.tcgplayerID(String(productID)))
+        }
         if case let .magic(magic) = card.legacyIdentity,
            let tcgplayerID = magic.tcgplayerID {
             lookups.append(.tcgplayerID(String(tcgplayerID)))

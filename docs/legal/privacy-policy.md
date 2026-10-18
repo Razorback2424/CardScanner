@@ -1,10 +1,18 @@
 # Scanstash Privacy Policy
 
-Effective date: 2026-10-03
+Effective date: 2026-10-14 (publication draft)
 
-This policy describes Scanstash 1.0, the trading-card scanning and collection app referred to as CardScanner in its source code. For privacy questions or requests, email [Info@scan-stash.com](mailto:Info@scan-stash.com). See also [Scanstash Support](support.md).
+This policy covers Scanstash 1.0, the trading-card scanning and collection app, and the website at scan-stash.com. For app privacy questions or requests, email [Info@scan-stash.com](mailto:Info@scan-stash.com). Website form and waitlist requests can be sent to [hello@scan-stash.com](mailto:hello@scan-stash.com). See also [Scanstash Support](support.md).
 
-**Repository publication status:** revised app-policy draft; not a live website. Complete the [publication checks](README.md) before using this policy for App Store submission. This status note is for maintainers and should not appear on the published page.
+**Repository publication status:** revised app-and-website policy draft; not a live website. Complete the [publication checks](README.md) before using this policy for App Store submission. This status note is for maintainers and should not appear on the published page.
+
+## Website forms and hosting
+
+Joining the website waitlist provides your email address. Contact forms provide your name, email and message; direct email supplies whatever you include. We use these details for launch communications, answering questions and operating the site, without selling them or using them for third-party advertising.
+
+FormSubmit handles website forms and forwards them to hello@scan-stash.com. Its published submission archive retains entries for 30 days; its own privacy practices also apply. Bluehost and hosting infrastructure may receive connection and security logs, including IP address, browser, requested page and time. The website has no advertising trackers, session replay or behavioral-advertising cookies. A later analytics integration would require an updated policy.
+
+The website accepts no card-photo or collection uploads. We retain waitlist/contact information as reasonably needed for the stated purposes. Request deletion of website submissions at hello@scan-stash.com. The app's separate practices follow below.
 
 ## Information stored on your devices
 
@@ -27,6 +35,14 @@ To identify cards and retrieve catalog, artwork, or pricing information, Scansta
 A user-provided JustTCG key is stored in the device Keychain and sent to JustTCG to authenticate requests. It may associate requests with your JustTCG account. Remove the key using the pricing settings' key-removal control; do not rely on uninstalling the app to remove Keychain entries. You can limit background updates using iOS Background App Refresh settings. This does not disable requests made while using the app, including manual lookups and catalog downloads.
 
 Our policy is to use providers that protect shared user data at least as well as this policy and Apple's App Review privacy requirements. We do not authorize providers to use shared data for advertising or cross-app tracking. Provider protections and retention must be verified before release; see the maintainer publication checks.
+
+Lorcana discovery and reviewed ordinary-printing metadata are bundled from public
+source snapshots, including LorcanaJSON. Ordinary Lorcana pricing requests use
+TCGCSV's public product/finish feeds. Card artwork is retrieved from the public
+Ravensburger and TCGplayer image URLs referenced by the catalog; those hosts receive
+the connection information and public resource path needed to serve the image.
+The app does not send its allocated Lorcana printing UUIDs, collection exports or
+camera frames to these sources. Optional JustTCG authentication is described above.
 
 To keep Pokémon set definitions current, CardScanner may also retrieve a small
 signed catalog-control file from `catalog.scan-stash.com`. It contains app-owned

@@ -1,3 +1,4 @@
+import AVFoundation
 import Vision
 import XCTest
 @testable import TradingCardScanner
@@ -38,6 +39,186 @@ final class CardLatchTests: XCTestCase {
         CardScanner.feedForwardTrackerObservation(latest, into: request)
 
         XCTAssertEqual(request.inputObservation.boundingBox, latest.boundingBox)
+    }
+
+    func testLongStackReleasesEachReplacedTrackingSequenceAndRequest() {
+        let scanner = CardScanner()
+
+        for number in 1...100 {
+            weak let previousSequence = scanner.trackingSequenceForTesting
+            weak let previousRequest = scanner.trackingRequestForTesting
+            scanner.beginTrackingPresentationForTesting(subject(pokemon(number)))
+
+            XCTAssertNil(previousSequence, "Sequence retained after card \(number)")
+            XCTAssertNil(previousRequest, "Tracker retained after card \(number)")
+            XCTAssertNotNil(scanner.trackingSequenceForTesting)
+            XCTAssertNotNil(scanner.trackingRequestForTesting)
+        }
+
+        weak let finalSequence = scanner.trackingSequenceForTesting
+        weak let finalRequest = scanner.trackingRequestForTesting
+        scanner.endSession()
+        scanner.drainVisionQueueForTesting()
+
+        XCTAssertNil(finalSequence)
+        XCTAssertNil(finalRequest)
+        XCTAssertNil(scanner.trackingSequenceForTesting)
+    }
+
+    func testTrackerLossReleasesResourcesAndDoesNotReseedTheSamePresentation() {
+        let scanner = CardScanner()
+        let card = subject(pokemon(1))
+        scanner.beginTrackingPresentationForTesting(card)
+        weak let sequence = scanner.trackingSequenceForTesting
+        weak let request = scanner.trackingRequestForTesting
+
+        scanner.invalidateSpatialContinuity()
+        scanner.drainVisionQueueForTesting()
+        XCTAssertNil(sequence)
+        XCTAssertNil(request)
+
+        scanner.beginTrackingPresentationForTesting(card)
+        XCTAssertNil(scanner.trackingSequenceForTesting)
+        XCTAssertNil(scanner.trackingRequestForTesting)
+
+        scanner.beginTrackingPresentationForTesting(subject(pokemon(2)))
+        XCTAssertNotNil(scanner.trackingSequenceForTesting)
+        XCTAssertNotNil(scanner.trackingRequestForTesting)
+    }
+
+    func testRepeatedVisionFailuresRebuildOnceWithoutForgettingConsumedCard() async {
+        let scanner = CardScanner()
+        let card = subject(pokemon(1))
+        scanner.receiveFooterOutcomeForTesting(.identified(card), at: 0)
+        scanner.receiveFooterOutcomeForTesting(.identified(card), at: 0.25)
+        weak let originalRequest = scanner.footerRequestForTesting
+        let error = NSError(domain: "VisionTest", code: 1)
+
+        for _ in 0..<2 { scanner.receiveVisionFrameResultForTesting(error: error) }
+        XCTAssertNotNil(originalRequest)
+        XCTAssertNil(scanner.cameraIssue)
+        scanner.receiveVisionFrameResultForTesting(error: error)
+        XCTAssertNil(originalRequest)
+        weak let rebuiltRequest = scanner.footerRequestForTesting
+
+        for _ in 0..<100 { scanner.receiveVisionFrameResultForTesting(error: error) }
+        await flushCameraCallbacks(scanner)
+        XCTAssertNotNil(rebuiltRequest, "A continuous failure must not endlessly allocate new requests")
+        XCTAssertEqual(scanner.cameraIssue, .recognitionFailed)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, card)
+
+        scanner.receiveVisionFrameResultForTesting()
+        await flushCameraCallbacks(scanner)
+        XCTAssertNil(scanner.cameraIssue)
+        XCTAssertEqual(scanner.latchedSubjectForTesting, card)
+    }
+
+    func testVisionFailureRecoveryPreservesSlabModeAndSessionEndClearsFailure() async {
+        let scanner = CardScanner()
+        scanner.setSubjectMode(.slab)
+        scanner.drainVisionQueueForTesting()
+        let roi = scanner.footerRegionOfInterestForTesting
+        let words = scanner.footerRequestForTesting.customWords
+        for _ in 0..<6 {
+            scanner.receiveVisionFrameResultForTesting(error: NSError(domain: "VisionTest", code: 1))
+        }
+        await flushCameraCallbacks(scanner)
+        XCTAssertEqual(scanner.cameraIssue, .recognitionFailed)
+        XCTAssertEqual(scanner.footerRegionOfInterestForTesting, roi)
+        XCTAssertEqual(scanner.footerRequestForTesting.customWords, words)
+        XCTAssertEqual(scanner.subjectModeForTesting, .slab)
+
+        weak let previousRequest = scanner.footerRequestForTesting
+        scanner.endSession()
+        await flushCameraCallbacks(scanner)
+        XCTAssertNil(previousRequest)
+        XCTAssertNil(scanner.cameraIssue)
+    }
+
+    func testVisionRecoveryCannotClearAnIndependentCameraFailure() {
+        let state = CardScannerUIState()
+        state.setCameraIssue(.configurationFailed)
+        state.setRecognitionFailed(true)
+        state.setRecognitionFailed(false)
+        XCTAssertEqual(state.cameraIssue, .configurationFailed)
+        state.setRecognitionFailed(true)
+        state.setCameraIssue(nil)
+        XCTAssertEqual(state.cameraIssue, .recognitionFailed)
+    }
+
+    func testMediaServicesResetRestartsOnlyAnActiveCameraAndResumesAfterRecovery() async {
+        for wantsRunning in [false, true] {
+            let scanner = CardScanner()
+            var restarts = 0
+            var events: [String] = []
+            scanner.prepareRuntimeRecoveryForTesting(wantsRunning: wantsRunning) {
+                restarts += 1
+                return true
+            }
+            scanner.onCameraInterruption = { events.append("interrupted") }
+            scanner.onCameraInterruptionEnded = { events.append("recovered") }
+            NotificationCenter.default.post(
+                name: AVCaptureSession.runtimeErrorNotification, object: scanner.session,
+                userInfo: [AVCaptureSessionErrorKey: NSError(
+                    domain: AVFoundationErrorDomain,
+                    code: AVError.Code.mediaServicesWereReset.rawValue
+                )]
+            )
+            await flushCameraCallbacks(scanner)
+            XCTAssertEqual(restarts, wantsRunning ? 1 : 0)
+            XCTAssertEqual(events, wantsRunning ? ["interrupted", "recovered"] : [])
+            XCTAssertNil(scanner.cameraIssue)
+        }
+    }
+
+    func testUnrecoverableCameraErrorsStayVisibleWithoutPretendingToResume() async {
+        for code in [AVError.Code.mediaServicesWereReset, .unknown] {
+            let scanner = CardScanner()
+            var restarts = 0
+            var events: [String] = []
+            scanner.prepareRuntimeRecoveryForTesting(wantsRunning: true) {
+                restarts += 1
+                return false
+            }
+            scanner.onCameraInterruption = { events.append("interrupted") }
+            scanner.onCameraInterruptionEnded = { events.append("recovered") }
+            NotificationCenter.default.post(
+                name: AVCaptureSession.runtimeErrorNotification, object: scanner.session,
+                userInfo: [AVCaptureSessionErrorKey: NSError(domain: AVFoundationErrorDomain, code: code.rawValue)]
+            )
+            await flushCameraCallbacks(scanner)
+            XCTAssertEqual(restarts, code == .mediaServicesWereReset ? 1 : 0)
+            XCTAssertEqual(events, ["interrupted"])
+            XCTAssertEqual(scanner.cameraIssue, .configurationFailed)
+        }
+    }
+
+    func testRepeatedMediaServicesResetDoesNotCreateARestartLoop() async {
+        let scanner = CardScanner()
+        var restarts = 0
+        scanner.prepareRuntimeRecoveryForTesting(wantsRunning: true) {
+            restarts += 1
+            return true
+        }
+        for _ in 0..<3 {
+            NotificationCenter.default.post(
+                name: AVCaptureSession.runtimeErrorNotification, object: scanner.session,
+                userInfo: [AVCaptureSessionErrorKey: NSError(
+                    domain: AVFoundationErrorDomain, code: AVError.Code.mediaServicesWereReset.rawValue
+                )]
+            )
+            await flushCameraCallbacks(scanner)
+        }
+        XCTAssertEqual(restarts, 1)
+        XCTAssertEqual(scanner.cameraIssue, .configurationFailed)
+    }
+
+    private func flushCameraCallbacks(_ scanner: CardScanner) async {
+        scanner.drainSessionQueueForTesting()
+        scanner.drainVisionQueueForTesting()
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async { continuation.resume() }
+        }
     }
 
     private func pokemon(_ number: Int, code: String = "OBF") -> ScanIdentifier {

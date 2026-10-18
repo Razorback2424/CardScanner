@@ -1,8 +1,32 @@
 # Card coverage gaps and research priorities
 
-**Reviewed:** 2026-10-05
-**Candidate:** `f40e704` plus existing local changes.
-**Status:** research backlog based on source, bundled data and recorded evidence; not an exhaustive upstream inventory or device acceptance report.
+**Reviewed:** 2026-10-15; original research baseline retained below.
+**Candidate:** `35473ed` plus existing local changes.
+**Status:** specialty coverage fixes and a four-game discrepancy review; no worldwide completeness or device certification.
+
+## Latest four-game review — 2026-10-15
+
+The [current evidence and discrepancy ledgers](../research/catalog-variant-coverage-2026-10-15/README.md)
+record a fresh directory/product comparison across Pokémon, Magic, One Piece and
+Lorcana. Implemented fixes use exact Pokémon ball eligibility, six actual Magic
+promo-footer mappings, and 132 newly enabled Lorcana Enchanted identities with
+exact Holofoil joins. Three verified One Piece parallels are added to the review
+registry and validated as an additive unsigned candidate; the installed signed
+owner seed remains revision 2 pending explicit approval of a new trusted pin.
+
+Two earlier assumptions are corrected. All 471 supplied Pokémon ball slots were
+already in the bundled checklists; the broad runtime fallback was the defect.
+PLG20 does not print its five-character provider code: its inspected cards print
+PRM, while Dragonfury prints DTK with a promo label. Widening code length alone
+would not fix those identities. The retained handoff CSV remains historical input.
+
+The ledgers distinguish 74 Pokémon entries absent offline (15 are digital Pocket),
+5,095 unmatched One Piece marketplace products (including duplicates, known
+unpriced objects and 122 presales), and 1,833 Lorcana discovery-only records.
+None of those totals is a count of missing distinct physical cards. The detailed
+capability boundaries and verification below remain necessary.
+
+## Original research baseline — 2026-10-05
 
 ## Finding and proposed scope
 

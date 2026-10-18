@@ -24,6 +24,7 @@ private struct SettingsContentView: View {
     @State private var isShowingCSVImporter = false
     @State private var isShowingCSVExporter = false
     @State private var isPreparingCSVExport = false
+    @State private var isPreparingDiagnosticsExport = false
     @State private var isShowingDiagnosticsExporter = false
     @State private var csvExportDocument: CollectionCSVDocument?
     @State private var diagnosticsDocument: JSONExportDocument?
@@ -236,25 +237,7 @@ private struct SettingsContentView: View {
             .disabled(writeCoordinator.activeExclusiveOperation != nil)
 
             Button("Export CSV", systemImage: "square.and.arrow.up") {
-                guard let token = storageGeneration.currentToken() else { return }
-                isPreparingCSVExport = true
-                Task { @MainActor in
-                    defer { isPreparingCSVExport = false }
-                    do {
-                        let document = try await CollectionCSV.exportIsolated(from: modelContext.container)
-                        guard storageGeneration.isCurrent(token) else { return }
-                        csvExportDocument = document
-                        csvExportFilename = "CardScanner Collection"
-                        isShowingCSVExporter = true
-                    } catch {
-                        guard storageGeneration.isCurrent(token) else { return }
-                        writeCoordinator.csvMessage = CSVMessage(
-                            title: "Export Failed",
-                            message: error.localizedDescription,
-                            skippedCSVText: nil
-                        )
-                    }
-                }
+                prepareCSVExport(.collection, filename: "CardScanner Collection")
             }
             .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
@@ -290,21 +273,9 @@ private struct SettingsContentView: View {
             }
 
             Button("Export Value History", systemImage: "square.and.arrow.up") {
-                do {
-                    csvExportDocument = CollectionCSV.exportPortfolioHistory(
-                        try PortfolioEngine.allCloses(in: modelContext)
-                    )
-                    csvExportFilename = "CardScanner Value History"
-                    isShowingCSVExporter = true
-                } catch {
-                    writeCoordinator.csvMessage = CSVMessage(
-                        title: "Export Failed",
-                        message: error.localizedDescription,
-                        skippedCSVText: nil
-                    )
-                }
+                prepareCSVExport(.portfolioHistory, filename: "CardScanner Value History")
             }
-            .disabled(portfolioCloseCount == 0)
+            .disabled(portfolioCloseCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
         } header: {
             Text("Portfolio")
         } footer: {
@@ -364,45 +335,14 @@ private struct SettingsContentView: View {
         Section {
             DisclosureGroup("Developer") {
                 Button("Export Unpriced Cards", systemImage: "dollarsign.circle") {
-                    do {
-                        let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
-                        let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
-                        csvExportDocument = CollectionCSV.exportUnpriced(cards, priceRecords: priceRecords)
-                        csvExportFilename = "CardScanner Unpriced Cards"
-                        isShowingCSVExporter = true
-                    } catch {
-                        writeCoordinator.csvMessage = CSVMessage(
-                            title: "Export Failed",
-                            message: error.localizedDescription,
-                            skippedCSVText: nil
-                        )
-                    }
+                    prepareCSVExport(.unpriced, filename: "CardScanner Unpriced Cards")
                 }
-                .disabled(collectionCardCount == 0)
+                .disabled(collectionCardCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
                 Button("Export Missing Artwork", systemImage: "photo") {
-                    do {
-                        let cards = try modelContext.fetch(FetchDescriptor<CollectedCard>())
-                        let priceRecords = try modelContext.fetch(FetchDescriptor<PriceRecord>())
-                        let artworkOverrides = try modelContext.fetch(
-                            FetchDescriptor<LocalArtworkOverride>()
-                        )
-                        csvExportDocument = CollectionCSV.exportMissingArtwork(
-                            cards,
-                            priceRecords: priceRecords,
-                            localArtworkKeys: Set(artworkOverrides.map(\.collectionKey))
-                        )
-                        csvExportFilename = "CardScanner Missing Artwork"
-                        isShowingCSVExporter = true
-                    } catch {
-                        writeCoordinator.csvMessage = CSVMessage(
-                            title: "Export Failed",
-                            message: error.localizedDescription,
-                            skippedCSVText: nil
-                        )
-                    }
+                    prepareCSVExport(.missingArtwork, filename: "CardScanner Missing Artwork")
                 }
-                .disabled(missingArtworkCount == 0)
+                .disabled(missingArtworkCount == 0 || isPreparingCSVExport || writeCoordinator.activeExclusiveOperation != nil)
 
 #if DEBUG
                 Button("Run Overnight Price Refresh", systemImage: "moon.stars") {
@@ -416,7 +356,7 @@ private struct SettingsContentView: View {
                 Button("Export Sync Diagnostics", systemImage: "waveform.path.ecg") {
                     exportSyncDiagnostics()
                 }
-                .disabled(!TradingCardScannerApp.storageIsReady)
+                .disabled(!TradingCardScannerApp.storageIsReady || isPreparingDiagnosticsExport)
                 Text("Redacted diagnostic data for support. It does not include card names, collection contents, credentials, or images.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
@@ -505,9 +445,35 @@ private struct SettingsContentView: View {
         browseHistoryDiagnostics = await BrowsePriceHistoryStore.shared.diagnostics()
     }
 
+    private func prepareCSVExport(_ kind: CollectionCSV.ExportKind, filename: String) {
+        guard !isPreparingCSVExport,
+              let token = storageGeneration.currentToken() else { return }
+        let container = modelContext.container
+        isPreparingCSVExport = true
+        Task { @MainActor in
+            defer { isPreparingCSVExport = false }
+            do {
+                let document = try await CollectionCSV.exportIsolated(from: container, kind: kind)
+                guard storageGeneration.isCurrent(token) else { return }
+                csvExportDocument = document
+                csvExportFilename = filename
+                isShowingCSVExporter = true
+            } catch {
+                guard storageGeneration.isCurrent(token) else { return }
+                writeCoordinator.csvMessage = CSVMessage(
+                    title: "Export Failed",
+                    message: error.localizedDescription,
+                    skippedCSVText: nil
+                )
+            }
+        }
+    }
+
     private func exportSyncDiagnostics() {
+        guard !isPreparingDiagnosticsExport else { return }
         guard TradingCardScannerApp.storageIsReady,
-              let storeID = TradingCardScannerApp.activeStoreID else {
+              let storeID = TradingCardScannerApp.activeStoreID,
+              let token = storageGeneration.currentToken() else {
             writeCoordinator.csvMessage = CSVMessage(
                 title: "Storage Is Not Ready",
                 message: "Sync diagnostics are available after collection storage finishes opening.",
@@ -515,32 +481,39 @@ private struct SettingsContentView: View {
             )
             return
         }
-        do {
-            let digest = try CollectionStoreDigester.make(in: modelContext, storeID: storeID)
-            let snapshot = CloudSyncDiagnosticsSnapshot(
-                schemaVersion: 1,
-                appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown",
-                buildNumber: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown",
-                osVersion: UIDevice.current.systemVersion,
-                deviceClass: UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone",
-                storageModeRaw: TradingCardScannerApp.activeStorageMode.rawValue,
-                cloudAccountStatusRaw: TradingCardScannerApp.activeCloudAccountStatusRaw,
-                attachmentStateRaw: TradingCardScannerApp.activeAttachmentStateRaw,
-                storeIDSuffix: digest.storeIDSuffix,
-                digest: digest,
-                lastBootstrapErrorCategory: TradingCardScannerApp.lastBootstrapErrorCategory,
-                generatedAt: .now
-            )
-            diagnosticsDocument = JSONExportDocument(
-                data: try CollectionStoreDigester.redactedJSON(for: snapshot)
-            )
-            isShowingDiagnosticsExporter = true
-        } catch {
-            writeCoordinator.csvMessage = CSVMessage(
-                title: "Export Failed",
-                message: "CardScanner could not create a redacted diagnostics export.",
-                skippedCSVText: nil
-            )
+        let container = modelContext.container
+        isPreparingDiagnosticsExport = true
+        Task { @MainActor in
+            defer { isPreparingDiagnosticsExport = false }
+            do {
+                let digest = try await CollectionStoreDigester.makeIsolated(from: container, storeID: storeID)
+                guard storageGeneration.isCurrent(token) else { return }
+                let snapshot = CloudSyncDiagnosticsSnapshot(
+                    schemaVersion: 1,
+                    appVersion: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown",
+                    buildNumber: Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown",
+                    osVersion: UIDevice.current.systemVersion,
+                    deviceClass: UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone",
+                    storageModeRaw: TradingCardScannerApp.activeStorageMode.rawValue,
+                    cloudAccountStatusRaw: TradingCardScannerApp.activeCloudAccountStatusRaw,
+                    attachmentStateRaw: TradingCardScannerApp.activeAttachmentStateRaw,
+                    storeIDSuffix: digest.storeIDSuffix,
+                    digest: digest,
+                    lastBootstrapErrorCategory: TradingCardScannerApp.lastBootstrapErrorCategory,
+                    generatedAt: .now
+                )
+                diagnosticsDocument = JSONExportDocument(
+                    data: try CollectionStoreDigester.redactedJSON(for: snapshot)
+                )
+                isShowingDiagnosticsExporter = true
+            } catch {
+                guard storageGeneration.isCurrent(token) else { return }
+                writeCoordinator.csvMessage = CSVMessage(
+                    title: "Export Failed",
+                    message: "CardScanner could not create a redacted diagnostics export.",
+                    skippedCSVText: nil
+                )
+            }
         }
     }
 
@@ -710,7 +683,7 @@ private struct SettingsContentView: View {
         Task { @MainActor in
             defer { writeCoordinator.endCollectionDelete(token: operationToken) }
             do {
-                let actor = CollectionDeletionModelActor(modelContainer: container)
+                let actor = await CollectionDeletionModelActor.makeBackground(modelContainer: container)
                 let didDelete = try await CollectionExclusiveWrites.withPriceIdentityExclusivity {
                     let exclusiveToken = try CollectionWriteSerializer.beginExclusive(timeout: .mainThread)
                     defer { CollectionWriteSerializer.endExclusive(exclusiveToken) }

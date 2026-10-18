@@ -6,6 +6,67 @@ import SwiftData
 /// raw singles. The rules that keep them from contaminating what was there.
 @MainActor
 final class CollectionItemKindTests: XCTestCase {
+    func testQuantityIncreaseCannotDuplicateCertifiedSlab() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let mutation = try store.addGraded(
+            underlying: identifiedPokemonCard(),
+            variant: GradedVariant(id: "certified-market", company: .psa,
+                grade: CardGrade(value: "10"), marketPriceUSD: 500, updatedAt: nil),
+            certificationNumber: "11111111"
+        )
+        let eventCount = try context.fetchCount(FetchDescriptor<InventoryEvent>())
+        let activityCount = try context.fetchCount(FetchDescriptor<CollectionActivity>())
+
+        XCTAssertThrowsError(try store.setQuantity(2,
+            forCollectionKey: mutation.collectionKey, expectedCurrent: 1)) { error in
+            guard case CollectionStoreError.quantityOutOfRange = error else {
+                return XCTFail("Expected a certified quantity rejection, got \(error)")
+            }
+        }
+
+        let fresh = ModelContext(context.container)
+        let row = try XCTUnwrap(CollectionStore(context: fresh).card(forKey: mutation.collectionKey))
+        XCTAssertFalse(row.allowsQuantityAggregation)
+        XCTAssertEqual(row.quantity, 1)
+        XCTAssertEqual(InventoryLedger.quantities(from: try fresh.fetch(FetchDescriptor<InventoryEvent>()))[row.collectionKey], 1)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<InventoryEvent>()), eventCount)
+        XCTAssertEqual(try fresh.fetchCount(FetchDescriptor<CollectionActivity>()), activityCount)
+        XCTAssertEqual(PriceStore(context: fresh).record(forKey: row.priceKey)?.effectiveUnitMarketPriceUSD, 500)
+        XCTAssertFalse(context.hasChanges)
+    }
+
+    func testCertifiedLegacyQuantityCanDecreaseAndUncertifiedQuantityCanIncrease() throws {
+        let container = try ModelContainer(for: CollectionStorageModelSchema.full,
+            configurations: [ModelConfiguration(isStoredInMemoryOnly: true)])
+        let context = container.mainContext
+        let store = CollectionStore(context: context)
+        let variant = GradedVariant(id: "quantity-market", company: .psa,
+            grade: CardGrade(value: "10"), marketPriceUSD: 500, updatedAt: nil)
+        let certified = try store.addGraded(underlying: identifiedPokemonCard(),
+            variant: variant, certificationNumber: "11111111")
+        let row = try XCTUnwrap(store.card(forKey: certified.collectionKey))
+        // Model a pre-existing legacy defect without silently repairing it.
+        row.quantity = 3
+        let operationID = UUID()
+        _ = InventoryLedger(context: context).record(row, kind: .quantityAdjust,
+            source: .correction, deltaQuantity: 2, operationID: operationID)
+        _ = try store.appendActivity(row, source: .correction, kind: .quantityAdjusted,
+            deltaQuantity: 2, ledgerOperationIDs: [operationID])
+        try context.save()
+
+        XCTAssertEqual(try store.setQuantity(2, forCollectionKey: certified.collectionKey, expectedCurrent: 3), 2)
+        XCTAssertEqual(try store.setQuantity(1, forCollectionKey: certified.collectionKey, expectedCurrent: 2), 1)
+        let uncertified = try store.addGraded(underlying: identifiedPokemonCard(),
+            variant: variant, certificationNumber: nil)
+        XCTAssertEqual(try store.setQuantity(2, forCollectionKey: uncertified.collectionKey, expectedCurrent: 1), 2)
+        let quantities = InventoryLedger.quantities(from: try context.fetch(FetchDescriptor<InventoryEvent>()))
+        XCTAssertEqual(quantities[certified.collectionKey], 1)
+        XCTAssertEqual(quantities[uncertified.collectionKey], 2)
+    }
+
     func testGradedFinishCorrectionFindsSurvivingAcquisitionAfterNewestUndo() throws {
         let container = try ProductionRowFixtures.makeContainer()
         let context = container.mainContext

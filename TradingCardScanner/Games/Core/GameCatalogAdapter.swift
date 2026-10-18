@@ -74,37 +74,52 @@ struct PhysicalPrintingCandidate: Identifiable, Hashable, Codable, Sendable {
     /// Prefer the shortest published distinction, retaining longer evidence
     /// when otherwise identical labels would collapse two physical choices.
     func compactChoiceLabel(among candidates: [Self]) -> String {
+        let short = shortChoiceLabel(among: candidates)
+        if candidates.contains(where: { $0.id != id && $0.shortChoiceLabel(among: candidates) == short
+            && ($0.choiceLabel != choiceLabel || $0.releaseDate != releaseDate) }) {
+            return ([choiceLabel, releaseDateLabel].compactMap { $0 }).joined(separator: " · ")
+        }
+        return short
+    }
+
+    /// Whole-family consumers compute each short label once rather than
+    /// repeating every sibling's disambiguation for every returned card.
+    static func compactChoiceLabels(among candidates: [Self]) -> [String: String] {
+        let choices = candidates.map { (candidate: $0, short: $0.shortChoiceLabel(among: candidates)) }
+        var labels: [String: String] = [:]
+        for (candidate, short) in choices {
+            let collides = choices.contains { $0.candidate.id != candidate.id && $0.short == short
+                && ($0.candidate.choiceLabel != candidate.choiceLabel || $0.candidate.releaseDate != candidate.releaseDate) }
+            labels[candidate.id] = collides
+                ? ([candidate.choiceLabel, candidate.releaseDateLabel].compactMap { $0 }).joined(separator: " · ") : short
+        }
+        return labels
+    }
+
+    private func shortChoiceLabel(among candidates: [Self]) -> String {
         func parts(_ candidate: Self) -> [String] {
             let release = candidate.releaseLabel?.components(separatedBy: " · ")
                 .filter { $0 != "English" }.joined(separator: " · ")
             return [candidate.treatmentLabel ?? "", candidate.distributionLabel ?? "", release ?? ""]
                 + candidate.identificationDetails + [candidate.releaseDateLabel ?? ""]
         }
-        func shortLabel(_ candidate: Self) -> String {
-            let own = parts(candidate)
-            var remaining = candidates.filter { $0.id != candidate.id }.map(parts)
-            var labels: [String] = []
-            // A release or stamp that alone distinguishes the candidate beats
-            // combining several individually repeated pieces of metadata.
-            if let unique = own.enumerated().first(where: { index, value in
-                !value.isEmpty && !remaining.isEmpty
-                    && remaining.allSatisfy({ !$0.indices.contains(index) || $0[index] != value })
-            }) { return unique.element }
-            for (index, value) in own.enumerated() where !value.isEmpty {
-                guard remaining.contains(where: { !$0.indices.contains(index) || $0[index] != value }) else { continue }
-                labels.append(value)
-                remaining = remaining.filter { $0.indices.contains(index) && $0[index] == value }
-                if remaining.isEmpty { break }
-            }
-            return labels.isEmpty ? (own.first(where: { !$0.isEmpty }) ?? candidate.name)
-                : labels.joined(separator: " · ")
+        let own = parts(self)
+        var remaining = candidates.filter { $0.id != id }.map(parts)
+        var labels: [String] = []
+        // A release or stamp that alone distinguishes the candidate beats
+        // combining several individually repeated pieces of metadata.
+        if let unique = own.enumerated().first(where: { index, value in
+            !value.isEmpty && !remaining.isEmpty
+                && remaining.allSatisfy({ !$0.indices.contains(index) || $0[index] != value })
+        }) { return unique.element }
+        for (index, value) in own.enumerated() where !value.isEmpty {
+            guard remaining.contains(where: { !$0.indices.contains(index) || $0[index] != value }) else { continue }
+            labels.append(value)
+            remaining = remaining.filter { $0.indices.contains(index) && $0[index] == value }
+            if remaining.isEmpty { break }
         }
-        let short = shortLabel(self)
-        if candidates.contains(where: { $0.id != id && shortLabel($0) == short
-            && ($0.choiceLabel != choiceLabel || $0.releaseDate != releaseDate) }) {
-            return ([choiceLabel, releaseDateLabel].compactMap { $0 }).joined(separator: " · ")
-        }
-        return short
+        return labels.isEmpty ? (own.first(where: { !$0.isEmpty }) ?? name)
+            : labels.joined(separator: " · ")
     }
 
     var releaseDateLabel: String? {
@@ -160,6 +175,9 @@ protocol GameCatalogAdapter: Sendable {
     func prewarm() async
     /// Explicit retry may rebase printed evidence, never a saved printing choice.
     func identifierForRetry(_ identifier: ScanIdentifier) throws -> ScanIdentifier
+    /// Explicit catalog recovery may correct OCR. Pin acquisition to the chosen
+    /// printing while the scanner retains the original observation separately.
+    func identifierForCatalogSelection(printingID: String, original: ScanIdentifier) throws -> ScanIdentifier
     func lookup(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome
     /// Optional fresh membership lookup for explicit choices. It must not
     /// turn a user's answer into automatic resolution after language confirmation.
@@ -173,9 +191,16 @@ protocol GameCatalogAdapter: Sendable {
     /// Revalidates a user-requested finish change against the currently
     /// installed physical printing before collection rows or ledger history move.
     func validateVariantCorrection(printingID: String, variantID: String?) throws
+    /// Synchronous final guard under the container's ownership transaction. It
+    /// also validates CSV/staged rows against authority installed after lookup.
+    func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?,
+                                    itemKindRaw: String, collectionKey: String) throws
 }
 
 extension GameCatalogAdapter {
+    func identifierForCatalogSelection(printingID: String, original: ScanIdentifier) throws -> ScanIdentifier { original }
+    func validateCollectionMutation(printingID: String, catalogProviderID: String?, variantID: String?,
+                                    itemKindRaw: String, collectionKey: String) throws {}
     func lookupPrintingChoices(_ identifier: ScanIdentifier) async throws -> CatalogLookupOutcome? { nil }
     func validateLookupContext(_ identifier: ScanIdentifier) async throws {}
     func validateAcquisition(_ identifier: ScanIdentifier, printingID: String, automatic: Bool) async throws {}

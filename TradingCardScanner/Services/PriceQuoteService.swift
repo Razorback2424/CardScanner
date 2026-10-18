@@ -3,6 +3,9 @@ import Foundation
 enum PriceQuoteError: Error {
     case identityMismatch
     case providerUnavailable
+    /// The catalog has no approved product/finish association. No provider
+    /// request failed, and no market-quote absence has been established.
+    case mappingUnavailable
     /// Capability absence is terminal: callers must not try another provider.
     case pricingUnsupported
 }
@@ -52,7 +55,8 @@ struct PriceQuoteService: Sendable {
         guard supportsStoredPrintingRefresh(for: game), let adapter = adapters.adapter(for: game) else {
             throw PriceQuoteError.pricingUnsupported
         }
-        return try await adapter.refreshStoredPrinting(printingID, variant: variant)
+        return try Self.validated(await adapter.refreshStoredPrinting(printingID, variant: variant),
+                                  requiresMapping: true)
     }
 
     func refresh(card: IdentifiedCard, variant: PhysicalVariant?,
@@ -71,7 +75,15 @@ struct PriceQuoteService: Sendable {
               let adapter = adapters.adapter(for: request.identity.game) else {
             throw PriceQuoteError.pricingUnsupported
         }
-        return try await adapter.refresh(request)
+        return try Self.validated(await adapter.refresh(request), requiresMapping: adapter.supportsStoredPrintingRefresh)
+    }
+
+    private static func validated(_ lookup: PriceLookup, requiresMapping: Bool) throws -> PriceLookup {
+        if requiresMapping, lookup == .unavailable(nil) { throw PriceQuoteError.mappingUnavailable }
+        if case let .price(price) = lookup, !price.isUsableUSD {
+            throw PriceQuoteError.providerUnavailable
+        }
+        return lookup
     }
 
     static func failureKind(for error: Error) -> TCGdexCircuitBreaker.Failure {

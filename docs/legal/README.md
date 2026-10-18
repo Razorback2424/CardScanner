@@ -2,6 +2,26 @@
 
 **Status:** app copy reviewed against current source and Apple guidance on 2026-10-03; publication and owner/provider verification remain open.
 
+**Owner deferral — 2026-10-14:** privacy/support page publication, live-page
+verification and app/App Store Connect URL configuration are deferred until
+the owner resumes this step. Drafts, the upload package and walkthrough are
+retained. This records scheduling, not completed publication or submission readiness.
+
+**2026-10-13 Lorcana check:** `/privacy` returns HTTP 200, but its current text is
+a website/waitlist policy that explicitly defers mobile-app practices. `/support`
+returns HTTP 404. Neither result closes the app publication gate or justifies
+setting the currently empty app URLs. The app-policy draft now describes bundled
+Lorcana metadata, public TCGCSV feed requests and referenced artwork hosts. The
+source/privacy review is recorded in the [Lorcana production checkpoint](../release/lorcana-production-acceptance.md).
+
+**2026-10-14 follow-up:** the owner identified Bluehost. The
+[publication walkthrough](bluehost-publication.md) records the prepared,
+locally browser-checked HTML package and safe File Manager steps. The canonical
+privacy draft now covers both the existing website/waitlist and the app; support
+adds Lorcana scope and source credits. Both live-page limitations were rechecked
+and remain open until owner upload and verification. No app URL was configured
+prematurely, and no hosting login or email was sent.
+
 The existing [privacy policy](privacy-policy.md) and [support page](support.md) are the canonical app-page drafts. The owner confirmed the public app name **Scanstash** and live contact **Info@scan-stash.com**. No website implementation was found in this iOS repository. The future website specification remains separate.
 
 ## Before publication and App Store submission

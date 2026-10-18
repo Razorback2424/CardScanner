@@ -250,7 +250,12 @@ struct RefreshRowPatch: Sendable {
 /// SwiftData model object never has to cross back to the main actor while a
 /// provider request is suspended.
 @ModelActor
-actor PriceRefreshModelActor {
+actor PriceRefreshModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     private var gamePricing = PriceQuoteService()
     func configureGamePricing(_ service: PriceQuoteService) { gamePricing = service }
     private let tcgdex = TCGdexService()
@@ -317,10 +322,25 @@ actor PriceRefreshModelActor {
             var staleTargets = PriceRefreshController.staleTargets(
                 from: allTargets,
                 usesPriceFallback: request.usesPriceFallback,
-                forceUnsupportedRetry: request.forceUnsupportedRetry
+                forceUnsupportedRetry: request.forceUnsupportedRetry,
+                pricing: gamePricing
             )
             if request.gradedOnly {
                 staleTargets = staleTargets.filter { $0.itemKind == .gradedCard }
+            }
+            if request.maximumTargetCount != nil {
+                // A capped background window must not keep selecting vendor-only
+                // rows that cannot run under the current settings/credentials.
+                // Leave their provider-check evidence untouched for a later retry.
+                let hasVendorCredentials = PriceVendorCredentials.hasKey
+                staleTargets = staleTargets.filter {
+                    PriceRefreshController.canAttemptRefresh(
+                        $0,
+                        usesPriceFallback: request.usesPriceFallback,
+                        hasVendorCredentials: hasVendorCredentials,
+                        pricing: gamePricing
+                    )
+                }
             }
             if request.sortOldestFirst {
                 staleTargets.sort {
@@ -414,8 +434,10 @@ actor PriceRefreshModelActor {
         }
         var priced = 0
         var failed = 0
+        var missingMappings = 0
         var latestSourceUpdate: Date?
         var checkedUnstampedProvider = false
+        var mappedProviderUnreachable = false
         var changedPrices = false
         var persistenceFailed = false
         var gradedLookupMisses = 0
@@ -532,6 +554,7 @@ actor PriceRefreshModelActor {
             $0.itemKind == .rawCard && $0.importedIdentity == nil
                 && gamePricing.supportsStoredPrintingRefresh(for: $0.game)
         }
+        let mappedTargetIDs = Set(mappedTargets.map(\.id))
         for target in mappedTargets {
             guard storageContinuation?() ?? true, !Task.isCancelled else { break }
             do {
@@ -541,16 +564,27 @@ actor PriceRefreshModelActor {
                 guard storageContinuation?() ?? true, !Task.isCancelled else { break }
                 let previous = store.record(forKey: target.id)?.effectiveUnitMarketPriceUSD
                 let amount: Double?
-                if case let .price(price) = lookup { amount = price.unitMarketPriceUSD; checkedUnstampedProvider = true }
+                if lookup.hasObservation { checkedUnstampedProvider = true }
+                if case let .price(price) = lookup { amount = price.unitMarketPriceUSD }
                 else { amount = previous }
                 stage(store.store(lookup, game: target.game, printingID: target.printingID,
                     variantID: target.variantID, at: .now), key: target.id,
                     priced: { if case .price = lookup { return true }; return false }(), changed: previous != amount)
+            } catch PriceQuoteError.mappingUnavailable {
+                missingMappings += 1
+                stage(store.recordMissingMapping(game: target.game, printingID: target.printingID,
+                    variantID: target.variantID, treatmentIDs: target.magicTreatmentIDsRaw), key: target.id)
             } catch is CancellationError { break }
+            catch let error as URLError where error.code == .cancelled { break }
             catch {
+                guard !Task.isCancelled else { break }
                 failed += 1
                 stage(store.recordFailure(game: target.game, printingID: target.printingID,
                     variantID: target.variantID, at: .now), key: target.id)
+                if let transport = error as? URLError, PriceFetchOutcome.isUnreachable(transport) {
+                    mappedProviderUnreachable = true
+                    break
+                }
             }
             if checkpointIsDue() { _ = await commitStaged() }
         }
@@ -558,6 +592,7 @@ actor PriceRefreshModelActor {
             ($0.itemKind == .sealedProduct ? gamePricing.supportsSealedPricing(for: $0.game)
                 : CardGameRegistry.standard.supports($0.game, .pricing))
                 && !unsupportedIDs.contains($0.id)
+                && !mappedTargetIDs.contains($0.id)
         }
         let vendorNative = supportedTargets.filter(\.isVendorNative)
         // An unbound graded row is neither a catalog-card request nor a raw
@@ -1025,14 +1060,15 @@ actor PriceRefreshModelActor {
                 checkedUnstampedProvider: checkedUnstampedProvider,
                 changedPrices: changedPrices,
                 foundNothingNewer: !isNewer(latestSourceUpdate, than: previousLatest),
-                providerUnreachable: providerUnreachable,
+                providerUnreachable: providerUnreachable || mappedProviderUnreachable,
                 persistenceFailed: persistenceFailed,
                 gradedLookupMisses: gradedLookupMisses,
                 gradedTransportFailures: gradedTransportFailures,
                 reconciledDuplicateRecords: reconciledDuplicateRecords,
                 repairedFinishes: repairedFinishes,
                 backfilledFinishes: backfilledFinishes,
-                priceDeltas: finalPriceDeltas
+                priceDeltas: finalPriceDeltas,
+                missingMappings: missingMappings
             )
         )
     }
@@ -1522,26 +1558,27 @@ actor PriceRefreshModelActor {
                 variantID: candidate.target.variantID,
                 treatmentIDs: candidate.target.magicTreatmentIDsRaw
             )
+            let cachedVariant = candidate.target.marketVariantID
+                ?? identities.cachedVariantID(forKey: key, using: identityIndex)
+            let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
+            let external = candidate.externalLookups
             guard identities.fallbackCheckIsDue(
                 forKey: key,
                 minimumInterval: PriceRefreshController.fallbackRefreshInterval,
-                using: identityIndex
+                using: identityIndex,
+                hasDirectLookup: !external.isEmpty
             ) else {
                 completed += 1
                 await publishFallbackProgress()
                 continue
             }
-            let cachedVariant = candidate.target.marketVariantID
-                ?? identities.cachedVariantID(forKey: key, using: identityIndex)
-            let cachedCard = identities.cachedCardID(forKey: key, using: identityIndex)
-            if cachedVariant == nil, cachedCard == nil,
+            if cachedVariant == nil, cachedCard == nil, external.isEmpty,
                !identities.needsResolution(forKey: key, using: identityIndex) {
                 completed += 1
                 await publishFallbackProgress()
                 continue
             }
 
-            let external = candidate.externalLookups
             guard cachedVariant != nil || !external.isEmpty else {
                 needsIdentity.append(candidate)
                 continue
@@ -1570,7 +1607,12 @@ actor PriceRefreshModelActor {
                     justTCGFetchedAt: candidate.target.justTCGFetchedAt,
                     magicTreatmentIDsRaw: candidate.target.magicTreatmentIDsRaw,
                     requiresFullResponse: !candidate.target.hasPrice
-                        || candidate.target.needsArtwork
+                        || candidate.target.needsArtwork,
+                    exactPhysicalProductID: candidate.card.flatMap {
+                        CardPricing.tcgplayerProductID(for: $0,
+                            variant: candidate.target.variantID.map(PhysicalVariant.resolving),
+                            printRun: candidate.target.pokemonPrintRun).map(String.init)
+                    }
                 )
             )
         }
@@ -2671,6 +2713,7 @@ struct PriceRefreshWorkResult: Sendable {
     let repairedFinishes: Int
     let backfilledFinishes: Int
     let priceDeltas: [PriceDelta]
+    var missingMappings = 0
 }
 
 enum PriceRefreshWorkOutcome: Sendable {
@@ -2753,6 +2796,7 @@ final class PriceRefreshController: ObservableObject {
         var gradedTransportFailures = 0
         /// The target snapshot could not be read, so no refresh claim is safe.
         var targetBuildFailed = false
+        var missingMappings = 0
     }
 
     enum Status: Equatable {
@@ -2811,7 +2855,9 @@ final class PriceRefreshController: ObservableObject {
     /// produced it, silently, partway through. Cancellation is still available
     /// — `cancelRefresh()` — but it now means "the user left", which is the only
     /// thing it was ever supposed to mean.
-    private var activeRefresh: Task<PriceRefreshResult, Never>?
+    // Empty automatic passes can keep status idle throughout. Publish queue
+    // ownership too so an observed refresh indicator clears when they finish.
+    @Published private var activeRefresh: Task<PriceRefreshResult, Never>?
     private(set) var activeRefreshOwner: Owner?
     private var activeRefreshQueueID: UUID?
     private var preemptedRefreshQueueIDs: Set<UUID> = []
@@ -2945,7 +2991,8 @@ final class PriceRefreshController: ObservableObject {
                 repairedFinishes: result.repairedFinishes,
                 backfilledFinishes: result.backfilledFinishes,
                 gradedLookupMisses: result.gradedLookupMisses,
-                gradedTransportFailures: result.gradedTransportFailures
+                gradedTransportFailures: result.gradedTransportFailures,
+                missingMappings: result.missingMappings
             )
         )
     }
@@ -2971,12 +3018,36 @@ final class PriceRefreshController: ObservableObject {
         )
     }
 
+    /// Whether a target can make progress in a bounded refresh window.
+    nonisolated static func canAttemptRefresh(
+        _ target: PriceTarget,
+        usesPriceFallback: Bool,
+        hasVendorCredentials: Bool,
+        pricing: PriceQuoteService
+    ) -> Bool {
+        switch target.itemKind {
+        case .rawCard:
+            return pricing.supportsStoredPrintingRefresh(for: target.game)
+                || CardGameRegistry.standard.supports(target.game, .pricing)
+        case .sealedProduct:
+            return pricing.supportsSealedPricing(for: target.game)
+                && hasVendorCredentials
+                && permitsVendorWork(for: target, usesFallback: usesPriceFallback)
+        case .gradedCard:
+            guard pricing.supportsGradedPricing(for: target.game) else { return false }
+            // Incomplete slabs can still receive the local capability stamp.
+            return (target.marketVariantID == nil && !target.canResolveGradedVariant)
+                || hasVendorCredentials
+        }
+    }
+
     /// Targets that a refresh should bother with.
     nonisolated static func staleTargets(
         from targets: [PriceTarget],
         now: Date = .now,
         usesPriceFallback: Bool = true,
-        forceUnsupportedRetry: Bool = false
+        forceUnsupportedRetry: Bool = false,
+        pricing: PriceQuoteService? = nil
     ) -> [PriceTarget] {
         targets.filter { target in
             // A recent legacy miss must not delay trying the newly available
@@ -2996,6 +3067,10 @@ final class PriceRefreshController: ObservableObject {
                 } ?? true
             }
             if target.lastFailureReasonRaw == PricingDiagnosticReason.noSupportedProvider.rawValue {
+                // A newly registered exact adapter supersedes a legacy raw
+                // capability stamp, independently of the paid fallback setting.
+                if target.itemKind == .rawCard,
+                   pricing?.supportsStoredPrintingRefresh(for: target.game) == true { return true }
                 // Raw capability results use the long interval. Unbound slabs
                 // use their own weekly graded-catalog retry policy regardless
                 // of the raw-price fallback preference.
@@ -3048,16 +3123,17 @@ final class PriceRefreshController: ObservableObject {
     /// miss is revisited weekly instead of treated as a stable capability gap.
     nonisolated static let gradedCoverageRetryInterval: TimeInterval = 7 * 24 * 60 * 60
 
-    /// The historical non-Pokémon rule: a provider's native-currency amount
-    /// counts when fallback is off, and requires USD when fallback is enabled.
+    /// Every game's current valuation uses USD, independently of whether the
+    /// optional paid fallback is enabled.
     nonisolated static func hasFinishedPrice(
         amount: Double?,
         currencyCode: String?,
         usesFallback: Bool
     ) -> Bool {
-        guard amount != nil else { return false }
-        return !usesFallback
-            || currencyCode?.caseInsensitiveCompare("USD") == .orderedSame
+        guard let currencyCode else { return false }
+        return PortfolioPriceEligibility.eligibleUnitPrice(
+            amount: amount, currencyCode: currencyCode
+        ) != nil
     }
 
     /// Pokémon collection valuation is always denominated in USD. Provider
@@ -3067,8 +3143,7 @@ final class PriceRefreshController: ObservableObject {
         amount: Double?,
         currencyCode: String?
     ) -> Bool {
-        amount != nil
-            && currencyCode?.caseInsensitiveCompare("USD") == .orderedSame
+        hasFinishedPrice(amount: amount, currencyCode: currencyCode, usesFallback: false)
     }
 
     /// Sealed artwork is part of the owned product, not an optional price
@@ -3494,7 +3569,7 @@ final class PriceRefreshController: ObservableObject {
         activeQueueRequest = initialRequest
         lastProgressPublicationAt = nil
         lastPublishedProgressPercent = nil
-        let worker = PriceRefreshModelActor(modelContainer: container)
+        let worker = await PriceRefreshModelActor.makeBackground(modelContainer: container)
         await worker.configureGamePricing(gamePricing)
         if let pokemonFetchOverrideForTesting {
             await worker.setPokemonFetchOverrideForTesting(pokemonFetchOverrideForTesting)
@@ -3717,11 +3792,11 @@ final class PriceRefreshController: ObservableObject {
                !justTCGCardID.isEmpty {
                 return [.cardID(justTCGCardID)]
             }
-            guard case let .magic(magic)? = card?.legacyIdentity,
-                  let tcgplayerID = magic.tcgplayerID else {
-                return []
-            }
-            return [.tcgplayerID(String(tcgplayerID))]
+            guard let card else { return [] }
+            return PriceFallbackQuoteResolver.directLookups(
+                card: card, variant: target.variantID.map(PhysicalVariant.resolving),
+                pokemonPrintRun: target.pokemonPrintRun
+            )
         }
 
         func subject(vendorCardID: String?) -> ProductPriceSubject? {

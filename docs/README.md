@@ -1,6 +1,36 @@
 # Documentation map
 
-**Status:** current navigation map — 2026-10-07
+**Status:** current navigation map — 2026-10-15
+
+The [four-game specialty coverage review](research/catalog-variant-coverage-2026-10-15/README.md)
+records exact Pokémon eligibility repairs, six Magic promo-footer mappings and
+132 enabled Lorcana Enchanted printings. Three new One Piece review printings
+await approval for signed local activation. Its discrepancy ledgers separate
+discovery, physical ownership, pricing and unresolved specialty scope.
+
+The latest [Lorcana edge-case checkpoint](release/lorcana-production-acceptance.md)
+records corrected offline batch handling, no-price accounting and invalid-cache
+recovery, with 162/162 shared/live cases and all 3,232 enabled pricing lanes
+passing. The earlier transport retry/cancellation fixes remain covered. Earlier full-target
+and development archive results below predate these fixes. App Store exports
+and web page/URL work remain owner-deferred.
+
+The [Lorcana normal pricing rollout](research/lorcana-normal-pricing-rollout.md)
+now records 1,616 ordinary mapped printings across eight sets in normal app
+registration, using shared ownership and pricing workflows. The
+[coverage checkpoint](research/lorcana-catalog-coverage.md) retains discovery and
+sealed inventory authority. Older disabled-write/pricing claims are historical
+for this mapped scope. The [production checkpoint](release/lorcana-production-acceptance.md)
+records rebuilt iOS development archive/export, corrected centering timing and
+a finalized full simulator run (2,188 passed, zero failed, 12 skipped);
+physical-device, rights, live app pages and distribution gates remain open.
+Live sync is deferred for current on-device 1.0.
+The later independent continuation verifies all 3,232 enabled pricing lanes with
+fresh feeds and passes 19 pricing cases. Local App Store export records a missing
+distribution profile; deferred privacy/support work remains paused.
+The [Bluehost publication guide](legal/bluehost-publication.md) and
+[reviewer path without physical cards](release/lorcana-app-review-notes.md) are
+prepared handoff materials, not published/submitted evidence.
 
 This map defines which repository documents are current authorities. Source code,
 tests, build settings, and the latest recorded evidence outrank older plans and
@@ -28,11 +58,16 @@ chronological notes.
 | Automatic Pokémon set updates | [`plans/automatic_pokemon_catalog_updates_plan.md`](plans/automatic_pokemon_catalog_updates_plan.md) — Slices A–E implemented; F04 automatic discovery and the revision-1 authority rehearsal completed 2026-09-19; schema-1 additive fingerprints, canonical publisher/device parity, fail-closed classification, durable targeted reconciliation, parent-artwork metadata, and set-specific Browse updates were implemented 2026-09-20; protected baseline publication, auto-environment setup, four-hour schedule, live-provider, physical-device/offline, first real update, and release acceptance remain open |
 | Magic catalog signing and publication | [`plans/magic_catalog_key_handling_runbook.md`](plans/magic_catalog_key_handling_runbook.md) — current authority for Magic-specific key custody, signed catalog releases, protected/automatic publication routing, Scryfall boundaries, and rollout safeguards; owner key-pin input remains open and rollout remains `legacy-live` |
 | One Piece expansion | [`plans/one_piece_catalog_integration_plan.md`](plans/one_piece_catalog_integration_plan.md) — catalog design, source roles and acceptance; [`plans/one_piece_code_implementation.md`](plans/one_piece_code_implementation.md) records the full ordinary corpus, exact pricing and integrated local acceptance slice. [`plans/one_piece_release_acceptance.md`](plans/one_piece_release_acceptance.md) separates simulator evidence from device/provider/sync/publication gates. Production publication remains disabled. |
-| Lorcana integration | [`plans/lorcana_code_implementation.md`](plans/lorcana_code_implementation.md) — current execution authority, recalibrated for the shared game adapters; first local print-family/footer/recovery slice has 44 focused passing tests. Production registration, exact physical resolution and provider/corpus gates remain open. [`audits/lorcana-data-variant-scanner-architecture-audit.md`](audits/lorcana-data-variant-scanner-architecture-audit.md) remains imported background research. |
+| Lorcana integration | [`plans/lorcana_code_implementation.md`](plans/lorcana_code_implementation.md) — current execution and verification authority for ingestion, schema-2 physical resolution, signing contracts, normal ordinary ownership/Browse/CSV and shared pricing. [`research/lorcana-source-corpus.md`](research/lorcana-source-corpus.md) records provider observations; [`research/lorcana-physical-contract.md`](research/lorcana-physical-contract.md) records UUID/choice/finish contracts; [`research/lorcana-signed-activation.md`](research/lorcana-signed-activation.md) records protected remote updates. [`research/lorcana-real-card-corpus/README.md`](research/lorcana-real-card-corpus/README.md) retains unapproved physical scenarios. Public-source review and simulator/live-price evidence do not close physical-device/camera, publication/asset rights or distribution gates. Live sync is deferred for on-device 1.0. [`audits/lorcana-data-variant-scanner-architecture-audit.md`](audits/lorcana-data-variant-scanner-architecture-audit.md) remains background research. |
+| Lorcana UI review launch | [`research/lorcana-ui-review.md`](research/lorcana-ui-review.md) — opt-in isolated debug workspace with synthetic scan/choice/finish/Browse/CSV flows; bounded phone/tablet rendering passed. Physical-device/camera and spoken VoiceOver acceptance remain open. |
+| Lorcana normal pricing rollout | [`research/lorcana-normal-pricing-rollout.md`](research/lorcana-normal-pricing-rollout.md) — expanded ordinary mappings, persistent UUID ledger, exact source policy, normal app integration and live eight-set acceptance. Held/premium/promo/Quest/later records stay read-only and unpriced. |
+| Lorcana production acceptance | [`release/lorcana-production-acceptance.md`](release/lorcana-production-acceptance.md) — rebuilt iOS development archive/export, catalog packaging, corrected centering timing and green full simulator regression; hardware, app legal-page publication, source rights and distribution remain open. CloudKit is deferred for on-device 1.0. |
+| Lorcana earlier local pricing review | [`research/lorcana-pricing-review.md`](research/lorcana-pricing-review.md) — historical isolated Hades review/replay; its physical UUIDs and reviewed joins are retained in the expanded normal catalog. |
 | Browse set directory defects (artwork kind, set counts, price sort) | [`plans/browse_set_directory_remediation_plan.md`](plans/browse_set_directory_remediation_plan.md) |
 | Artwork fallback contract | [`plans/artwork-fallback-plan.md`](plans/artwork-fallback-plan.md) and `TradingCardScanner/Services/ArtworkFallbacks.swift` |
 | Per-card price history chart | [`plans/price_history_chart_plan.md`](plans/price_history_chart_plan.md) and `PriceHistoryChartModel` in `TradingCardScanner/Views/CollectionCardDetailView.swift` |
 | Price-refresh scale backlog | [`plans/price_refresh_scale_plan.md`](plans/price_refresh_scale_plan.md) |
+| Pricing correctness and coverage sequence | [`plans/pricing_correctness_and_coverage.md`](plans/pricing_correctness_and_coverage.md) — USD enforcement, mapping/quote/failure distinctions and negative-cache recovery before reviewed mapping expansion and a complete census. |
 | Pokémon USD pricing coverage | [`plans/browse_pricing_coverage_plan.md`](plans/browse_pricing_coverage_plan.md) — device-local TCGCSV fallback for both 30th sets; 322 focused simulator tests and a live 188-card feed check passed 2026-09-30. General bulk-provider migration remains unresolved. |
 | Finish-effect rendering performance | [`superpowers/plans/2026-09-12-foil-effect-performance.md`](superpowers/plans/2026-09-12-foil-effect-performance.md) |
 | Future shared pricing backend | [`plans/shared_pricing_cache_plan.md`](plans/shared_pricing_cache_plan.md) |

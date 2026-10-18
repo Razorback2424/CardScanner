@@ -63,7 +63,7 @@ enum CollectionRefreshStatusResolver {
                 isTransient: false
             )
         case .recentlyChecked:
-            return fallbackWarning ?? transient("Prices already current")
+            return fallbackWarning ?? transient("No prices due for refresh")
         case let .finished(summary):
             let updates = finishUpdates(for: summary)
             if summary.wasCancelled {
@@ -87,13 +87,16 @@ enum CollectionRefreshStatusResolver {
                 || summary.reconciledDuplicateRecords > 0 {
                 return warningWithFinishUpdates("Prices updated with some issues", updates)
             }
+            if summary.missingMappings > 0 {
+                return transient("Price mappings pending for \(summary.missingMappings) items")
+            }
             if !updates.isEmpty {
                 return transient(updates)
             }
             if summary.changedPrices {
                 return transient("Prices updated")
             }
-            return transient("Prices checked — already current")
+            return transient(summary.priced > 0 ? "Prices checked — already current" : "Price check complete")
         }
 
         return fallbackWarning
@@ -146,6 +149,24 @@ private struct CollectionRefreshFeedback: Equatable {
     let presentation: CollectionRefreshStatusPresentation
 }
 
+/// A closed inspector still wraps its content in a UIKit split controller.
+/// Created in an inactive phone tab, that wrapper can lose the navigation
+/// stack's safe-area insets and touch handling on subsequent pushes/pops.
+struct CollectionFilterPresentation<Filters: View>: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Binding var isPresented: Bool
+    let filters: Filters
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if horizontalSizeClass == .regular {
+            content.inspector(isPresented: $isPresented) { filters }
+        } else {
+            content.sheet(isPresented: $isPresented) { filters }
+        }
+    }
+}
+
 /// Collection is for finding, filtering, and managing owned items. Portfolio
 /// accounting and price refresh ownership remain app-scoped in `ContentView`.
 struct CollectionView: View {
@@ -176,9 +197,7 @@ struct CollectionView: View {
     /// debounce so a large grid is not rebuilt on every keystroke.
     @State private var searchQuery = ""
     @State private var filters = CollectionFilters.none
-    /// Filters are an inspector rather than a sheet: in a wide window they sit
-    /// beside the grid so the result of a change is visible as it is made, and
-    /// SwiftUI falls back to a sheet when there is no room for a column.
+    /// Wide windows keep filters beside the grid; phone filters use a sheet.
     @State private var isShowingFilters = false
     @State private var isShowingSettings = false
     @State private var pendingRemoval: RemovedCardSnapshot?
@@ -192,7 +211,7 @@ struct CollectionView: View {
     /// lives here rather than in a closure destination so it survives the
     /// window shrinking to one column and widening back out — resizing must
     /// never throw away where the user was.
-    @State private var navigationPath: [Destination] = []
+    @State private var navigationPath = NavigationPath()
     /// A Collection-local guard prevents double taps without disabling a
     /// request that should join an already-running automatic controller pass.
     @State private var collectionRefreshRequestInFlight = false
@@ -204,7 +223,7 @@ struct CollectionView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    /// Both of the collection's destinations, so one hierarchy drives a push on a
+    /// The collection's destinations, so one hierarchy drives a push on a
     /// phone-sized window and a second column on an iPad-sized one. `card` carries
     /// the row id rather than the model object: a removed card's id simply stops
     /// resolving, which is how the detail column falls back to its placeholder.
@@ -291,23 +310,10 @@ struct CollectionView: View {
                 }
             }
         }
-        // The option tallies each walk every entry and sort the result, and a
-        // modifier's arguments are evaluated whenever `body` runs — so closed or
-        // not, they were paid for on every keystroke in the search field. Behind
-        // the presentation flag they are computed only when the inspector is up.
-        .inspector(isPresented: $isShowingFilters) {
-            if isShowingFilters {
-                CollectionFilterSheet(
-                    isPresented: $isShowingFilters,
-                    filters: $filters,
-                    setOptions: setOptions(optionRows),
-                    finishOptions: finishOptions(optionRows),
-                    treatmentOptions: treatmentOptions(optionRows),
-                    gradingCompanyOptions: gradingCompanyOptions(optionRows),
-                    gradeOptions: gradeOptions(optionRows)
-                )
-            }
-        }
+        .modifier(CollectionFilterPresentation(
+            isPresented: $isShowingFilters,
+            filters: collectionFilters(optionRows)
+        ))
         .sheet(isPresented: $isShowingSettings) {
             SettingsView()
         }
@@ -346,7 +352,7 @@ struct CollectionView: View {
             guard opensMovementDetailsOnLaunch, navigationPath.isEmpty else { return }
             try? await Task.sleep(for: .milliseconds(300))
             guard let entry = snapshot.entries.first else { return }
-            navigationPath = [.card(entry.id), .movement(entry.id)]
+            navigationPath = NavigationPath([Destination.card(entry.id), .movement(entry.id)])
         }
         .task(id: opensCardDetailOnLaunch ? cardDetailLaunchTaskID : nil) {
             guard opensCardDetailOnLaunch, navigationPath.isEmpty else { return }
@@ -359,7 +365,7 @@ struct CollectionView: View {
             }
             guard let targetID,
                   snapshot.entries.contains(where: { $0.id == targetID }) else { return }
-            navigationPath = [.card(targetID)]
+            navigationPath = NavigationPath([Destination.card(targetID)])
         }
         .safeAreaInset(edge: .bottom) {
             if let pendingRemoval {
@@ -370,6 +376,22 @@ struct CollectionView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(removalErrorMessage ?? "Please try again.")
+        }
+    }
+
+    @ViewBuilder
+    private func collectionFilters(_ optionRows: [CollectionRow]) -> some View {
+        // Keep tallying and sorting behind the presentation flag.
+        if isShowingFilters {
+            CollectionFilterSheet(
+                isPresented: $isShowingFilters,
+                filters: $filters,
+                setOptions: setOptions(optionRows),
+                finishOptions: finishOptions(optionRows),
+                treatmentOptions: treatmentOptions(optionRows),
+                gradingCompanyOptions: gradingCompanyOptions(optionRows),
+                gradeOptions: gradeOptions(optionRows)
+            )
         }
     }
 
@@ -480,7 +502,7 @@ struct CollectionView: View {
     /// appending keeps the column one level deep: picking a second card from the
     /// grid should show that card, not stack it behind the first.
     private func select(_ destination: Destination) {
-        navigationPath = [destination]
+        navigationPath = NavigationPath([destination])
     }
 
     @ViewBuilder

@@ -1,0 +1,21 @@
+test_actual_photos_and_dimensions_required (test_gate_audit.IndependentEvidenceGateTests.test_actual_photos_and_dimensions_required) ... ok
+test_all_original_runtime_scenarios_remain_unexecuted (test_gate_audit.IndependentEvidenceGateTests.test_all_original_runtime_scenarios_remain_unexecuted) ... ok
+test_d23_cinderella_conflict_not_normalized (test_gate_audit.IndependentEvidenceGateTests.test_d23_cinderella_conflict_not_normalized) ... ok
+test_every_research_preflight_invariant (test_gate_audit.IndependentEvidenceGateTests.test_every_research_preflight_invariant) ... ok
+test_fake_uuid_alone_never_authorizes (test_gate_audit.IndependentEvidenceGateTests.test_fake_uuid_alone_never_authorizes) ... ok
+test_held_promo_footer_does_not_become_ordinary (test_gate_audit.IndependentEvidenceGateTests.test_held_promo_footer_does_not_become_ordinary) ... ok
+test_lettered_numbers_remain_literal (test_gate_audit.IndependentEvidenceGateTests.test_lettered_numbers_remain_literal) ... ok
+test_no_public_image_promotes_a_physical_card (test_gate_audit.IndependentEvidenceGateTests.test_no_public_image_promotes_a_physical_card) ... ok
+test_one_reviewer_cannot_promote (test_gate_audit.IndependentEvidenceGateTests.test_one_reviewer_cannot_promote) ... ok
+test_production_shared_sync_flag_must_remain_false (test_gate_audit.IndependentEvidenceGateTests.test_production_shared_sync_flag_must_remain_false) ... ok
+test_published_footer_cannot_stand_in_for_actual_footer (test_gate_audit.IndependentEvidenceGateTests.test_published_footer_cannot_stand_in_for_actual_footer) ... ok
+test_quarantine_without_full_candidate_universe (test_gate_audit.IndependentEvidenceGateTests.test_quarantine_without_full_candidate_universe) ... ok
+test_quest_raw_kind_distinguished (test_gate_audit.IndependentEvidenceGateTests.test_quest_raw_kind_distinguished) ... ok
+test_retailer_finish_claim_not_authority (test_gate_audit.IndependentEvidenceGateTests.test_retailer_finish_claim_not_authority) ... ok
+test_same_footer_size_is_not_finish_only (test_gate_audit.IndependentEvidenceGateTests.test_same_footer_size_is_not_finish_only) ... ok
+test_two_identical_reviewers_are_not_independent (test_gate_audit.IndependentEvidenceGateTests.test_two_identical_reviewers_are_not_independent) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.014s
+
+OK

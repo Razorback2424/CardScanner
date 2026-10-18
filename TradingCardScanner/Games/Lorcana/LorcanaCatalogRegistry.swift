@@ -12,14 +12,18 @@ struct LorcanaPrintedIdentity: Hashable, Codable, Sendable {
     enum ValidationError: Error { case invalidFooter }
 
     init(collectorNumber: String, denominator: String, language: String, printedSetMarker: String) throws {
-        guard Self.matches(collectorNumber, "[0-9]{1,4}"), let number = Int(collectorNumber), number > 0,
+        let digits = String(collectorNumber.prefix(while: { $0.isNumber }))
+        let suffix = String(collectorNumber.dropFirst(digits.count)).uppercased()
+        // Fabled's Bruno — Undetected Uncle is physically numbered 0/204.
+        // Whether OCR may accept zero is determined by installed footer mappings.
+        guard Self.matches(collectorNumber, "[0-9]{1,4}[A-Za-z]?"), let number = Int(digits), number >= 0,
               Self.matches(denominator, "[A-Z0-9][A-Z0-9-]{0,11}"),
               Int(denominator) != 0,
               Self.matches(language, "[a-z]{2}"),
               Self.matches(printedSetMarker, "[A-Z0-9][A-Z0-9-]{0,11}") else {
             throw ValidationError.invalidFooter
         }
-        self.collectorNumber = String(number)
+        self.collectorNumber = String(number) + suffix
         self.denominator = denominator
         self.language = language
         self.printedSetMarker = printedSetMarker
@@ -40,6 +44,7 @@ struct LorcanaPrintedIdentity: Hashable, Codable, Sendable {
     var displayIdentifier: String { "\(collectorNumber)/\(denominator) \(language.uppercased()) \(printedSetMarker)" }
     var evidenceKey: String { "\(language):\(printedSetMarker):\(collectorNumber):\(denominator)" }
     var familyID: String { "lorcana-family:\(evidenceKey)" }
+    var setScopeID: String { "lorcana-set:\(language):\(printedSetMarker):\(denominator)" }
 
     static func matches(_ value: String, _ pattern: String) -> Bool {
         value.range(of: "\\A(?:\(pattern))\\z", options: .regularExpression) != nil
@@ -89,10 +94,41 @@ struct LorcanaCatalogRegistry: Sendable {
     let familiesByFooter: [LorcanaPrintedIdentity: LorcanaPrintFamily]
     let customWords: [String]
     let denominatorsByScope: [String: Set<String>]
+    let physicalCatalog: LorcanaPhysicalCatalog?
+    /// The same normalized manifest is used for generations and signed bytes.
+    let normalizedPhysicalManifest: LorcanaPhysicalCatalogManifest?
 
-    init(data: Data) throws {
+    init(data: Data, previous: LorcanaCatalogRegistry? = nil) throws {
         guard data.count <= 8 * 1_024 * 1_024 else { throw ValidationError.oversizedManifest }
-        try self.init(manifest: JSONDecoder().decode(LorcanaCatalogManifest.self, from: data))
+        struct Schema: Decodable { let schemaVersion: Int }
+        let decoder = JSONDecoder()
+        switch try decoder.decode(Schema.self, from: data).schemaVersion {
+        case 1:
+            guard previous?.physicalCatalog == nil else { throw LorcanaPhysicalCatalog.ValidationError.invalidTransition }
+            try self.init(manifest: decoder.decode(LorcanaCatalogManifest.self, from: data))
+        case 2:
+            try self.init(manifest: decoder.decode(LorcanaPhysicalCatalogManifest.self, from: data), previous: previous)
+        default: throw ValidationError.unsupportedSchema
+        }
+    }
+
+    init(manifest: LorcanaPhysicalCatalogManifest, previous: LorcanaCatalogRegistry? = nil,
+         presentationContext: String? = nil) throws {
+        guard manifest.schemaVersion == 2 else { throw ValidationError.unsupportedSchema }
+        let familyRegistry = try Self(manifest: .init(schemaVersion: 1, printFamilies: manifest.printFamilies))
+        let physical = try LorcanaPhysicalCatalog(manifest: manifest, families: familyRegistry.familiesByFooter)
+        if let previous { try physical.validateTransition(from: previous) }
+        let normalizedFamilies = Self.normalizedFamilies(manifest.printFamilies)
+        let normalized = physical.normalizedManifest
+        let combined = LorcanaPhysicalCatalogManifest(schemaVersion: 2, reviewedAt: normalized.reviewedAt,
+            printFamilies: normalizedFamilies, canonicalCards: normalized.canonicalCards,
+            physicalPrintings: normalized.physicalPrintings, universes: normalized.universes, corrections: normalized.corrections)
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+        let context = presentationContext.map { Data(("\u{0}" + $0).utf8) } ?? Data()
+        generation = "lorcana:s2:" + SHA256.hash(data: try encoder.encode(combined) + context).map { String(format: "%02x", $0) }.joined()
+        familiesByFooter = familyRegistry.familiesByFooter; customWords = familyRegistry.customWords
+        denominatorsByScope = familyRegistry.denominatorsByScope; physicalCatalog = physical
+        normalizedPhysicalManifest = combined
     }
 
     init(manifest: LorcanaCatalogManifest) throws {
@@ -118,19 +154,25 @@ struct LorcanaCatalogRegistry: Sendable {
             }
         }
         familiesByFooter = families
+        physicalCatalog = nil
+        normalizedPhysicalManifest = nil
         denominatorsByScope = Dictionary(grouping: families.keys, by: { "\($0.language):\($0.printedSetMarker)" })
             .mapValues { Set($0.map(\.denominator)) }
         customWords = Array(Set(families.keys.flatMap { [$0.printedSetMarker, $0.denominator, $0.language.uppercased()] })).sorted()
         // Stable content generation protects choices/retries when metadata changes.
-        let normalized = LorcanaCatalogManifest(schemaVersion: 1, printFamilies: manifest.printFamilies
+        let normalized = LorcanaCatalogManifest(schemaVersion: 1, printFamilies: Self.normalizedFamilies(manifest.printFamilies))
+        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+        generation = "lorcana:s1:" + SHA256.hash(data: try encoder.encode(normalized)).map { String(format: "%02x", $0) }.joined()
+    }
+
+    private static func normalizedFamilies(_ families: [LorcanaPrintFamily]) -> [LorcanaPrintFamily] {
+        families
             .sorted { $0.footer.evidenceKey < $1.footer.evidenceKey }.map { family in
                 .init(footer: family.footer, providerSetCode: family.providerSetCode, name: family.name,
                       version: family.version, rarity: family.rarity, layout: family.layout,
                       sourceAliases: family.sourceAliases.sorted {
                           $0.provider == $1.provider ? $0.id < $1.id : $0.provider < $1.provider
                       }, footerEvidenceReference: family.footerEvidenceReference)
-            })
-        let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
-        generation = "lorcana:s1:" + SHA256.hash(data: try encoder.encode(normalized)).map { String(format: "%02x", $0) }.joined()
+            }
     }
 }

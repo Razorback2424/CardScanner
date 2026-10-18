@@ -413,7 +413,8 @@ struct MagicTreatmentEvidence: Equatable, Hashable, Sendable {
         treatments: [MagicTreatment],
         qualifiers: [String: String] = [:]
     ) {
-        self.treatments = treatments
+        var seen = Set<String>()
+        self.treatments = treatments.filter { seen.insert($0.id).inserted }
         self.qualifiers = MagicTreatmentKeyCodec.storedQualifiers(from: qualifiers)
     }
 

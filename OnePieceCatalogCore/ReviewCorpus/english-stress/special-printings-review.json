@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-15T13:18:36Z",
+  "scope": "Three visually reconciled original Romance Dawn parallel printings; families remain incomplete",
+  "captures": [
+    {
+      "sourceURL": "https://en.onepiece-cardgame.com/cardlist/?series=569101",
+      "rawFile": "bandai-op01.html",
+      "payloadSHA256": "ad50e6fdafc855030448b2a56e76c892aaffbd34aeb66142f7e7dce620287254",
+      "byteCount": 412512,
+      "observedAt": "2026-10-15T13:18:36Z"
+    },
+    {
+      "sourceURL": "https://coretcg.com/Products/0/68/3188/Romance-Dawn?l=144&stockStatus=0",
+      "rawFile": "coretcg-op01.html",
+      "payloadSHA256": "7eaf375d785ff4d32db0e32fff0f90046e4a4d24853ee16cb3ee31fde83f5bc6",
+      "byteCount": 616873,
+      "observedAt": "2026-10-15T13:18:36Z"
+    }
+  ],
+  "printings": [
+    {
+      "artworkAlias": "OP01-001_p1",
+      "printedNumber": "OP01-001",
+      "printingID": "66334969-8762-4141-b78b-2fed7165a53c",
+      "artworkID": "c927cbc1-6aea-4f6d-bfca-2b273e8d543e",
+      "treatment": "Alternate artwork",
+      "finish": "foil",
+      "officialURL": "https://en.onepiece-cardgame.com/cardlist/?series=569101",
+      "officialImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-001_p1.png?260929",
+      "officialImageSHA256": "87fd7acc54d71366e7d325ef09a23f184314f2ee82eacc729fa7c4229ab916b2",
+      "retailerURL": "https://coretcg.com/Products/0/68/3188/Romance-Dawn?l=144&stockStatus=0",
+      "retailerListingPath": "/Products/134824/68/3188/Roronoa-Zoro-001-Parallel",
+      "retailerTitle": "Roronoa Zoro (001) (Parallel)",
+      "retailerFinishText": "English - Near Mint - Foil",
+      "comparisonProductID": 454513,
+      "comparisonImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/454513_200w.jpg",
+      "comparisonImageSHA256": "4a8669205e8291c9959e77f0d005473cfeaca38f8615c190da2599fa6a64430b",
+      "marketMappingStatus": "unpriced; visual comparison is not an exact market-lane mapping",
+      "physicalFamilyComplete": false
+    },
+    {
+      "artworkAlias": "OP01-120_p1",
+      "printedNumber": "OP01-120",
+      "printingID": "915c6133-40be-4e95-9287-23014d5f0ec0",
+      "artworkID": "a26f4916-247e-4624-bafd-62f33fc41731",
+      "treatment": "Alternate artwork",
+      "finish": "foil",
+      "officialURL": "https://en.onepiece-cardgame.com/cardlist/?series=569101",
+      "officialImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p1.png?260929",
+      "officialImageSHA256": "d8c3d5c8ebf5509e55eb117dc7825e7a317d25949cd29e9bb262d8b602b2d99a",
+      "retailerURL": "https://coretcg.com/Products/0/68/3188/Romance-Dawn?l=144&stockStatus=0",
+      "retailerListingPath": "/Products/134835/68/3188/Shanks-Parallel",
+      "retailerTitle": "Shanks (Parallel)",
+      "retailerFinishText": "English - Near Mint - Foil",
+      "comparisonProductID": 454665,
+      "comparisonImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/454665_200w.jpg",
+      "comparisonImageSHA256": "23f7bd58f62f9ecdb71439ac6938c2b9f5b7972721628320d979a519d61ca42c",
+      "marketMappingStatus": "unpriced; visual comparison is not an exact market-lane mapping",
+      "physicalFamilyComplete": false
+    },
+    {
+      "artworkAlias": "OP01-120_p2",
+      "printedNumber": "OP01-120",
+      "printingID": "1eb727b5-eadd-4e50-89c6-a8bd7b7a05c8",
+      "artworkID": "22480aa8-f731-4305-abf6-8d75aad0b15f",
+      "treatment": "Manga artwork",
+      "finish": "foil",
+      "officialURL": "https://en.onepiece-cardgame.com/cardlist/?series=569101",
+      "officialImageURL": "https://en.onepiece-cardgame.com/images/cardlist/card/OP01-120_p2.png?260929",
+      "officialImageSHA256": "3abfff97814fcc051db65f88b2fcbe4da83661a234ab7fa6a46d01c18a81d46a",
+      "retailerURL": "https://coretcg.com/Products/0/68/3188/Romance-Dawn?l=144&stockStatus=0",
+      "retailerListingPath": "/Products/134836/68/3188/Shanks-Parallel-Alternate-Art",
+      "retailerTitle": "Shanks (Parallel) (Alternate Art)",
+      "retailerFinishText": "English - Near Mint - Foil",
+      "comparisonProductID": 454666,
+      "comparisonImageURL": "https://tcgplayer-cdn.tcgplayer.com/product/454666_200w.jpg",
+      "comparisonImageSHA256": "22256362e8f7c882244cd169eb6134dd979c292a79002f79b3432b9a6c1d86b7",
+      "marketMappingStatus": "unpriced; visual comparison is not an exact market-lane mapping",
+      "physicalFamilyComplete": false
+    }
+  ]
+}

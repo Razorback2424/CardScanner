@@ -122,7 +122,7 @@ final class LorcanaIntegrationTests: XCTestCase {
         let invalid = LorcanaPrintFamily(footer: original.footer, providerSetCode: " ", name: original.name,
             version: nil, rarity: "Promo", layout: "normal", sourceAliases: original.sourceAliases, footerEvidenceReference: "")
         XCTAssertThrowsError(try registry([invalid]))
-        let invalidFooter = Data(#"{"collectorNumber":"0","denominator":"204","language":"en","printedSetMarker":"1"}"#.utf8)
+        let invalidFooter = Data(#"{"collectorNumber":"-1","denominator":"204","language":"en","printedSetMarker":"1"}"#.utf8)
         XCTAssertThrowsError(try JSONDecoder().decode(LorcanaPrintedIdentity.self, from: invalidFooter))
     }
 
@@ -160,12 +160,13 @@ final class LorcanaIntegrationTests: XCTestCase {
         let runtime = LorcanaGameRuntime(registry: try registry()).runtime
         let container = try CardGameRuntimeContainer(runtimes: [runtime])
         XCTAssertEqual(container.registry.enabledGames, [.lorcana])
-        for capability in [CardGameCapabilities.browse, .pricing, .sealed, .collectionWrite] {
+        for capability in [CardGameCapabilities.pricing, .sealed, .collectionWrite] {
             XCTAssertFalse(container.registry.supports(.lorcana, capability))
         }
         XCTAssertTrue(container.registry.variantLockMenu.isEmpty)
-        XCTAssertNil(runtime.pricing); XCTAssertNil(runtime.importer); XCTAssertNil(runtime.browse)
-        XCTAssertNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
+        XCTAssertTrue(container.registry.supports(.lorcana, .browse))
+        XCTAssertNil(runtime.pricing); XCTAssertNotNil(runtime.importer); XCTAssertNotNil(runtime.browse)
+        XCTAssertNotNil(CardGameRuntimeContainer.appDefaults().runtime(for: .lorcana))
         XCTAssertFalse(CardGameRegistry.standard.enabledGames.contains(.lorcana))
         XCTAssertEqual(CardGame.lorcana.label, "Disney Lorcana")
         XCTAssertEqual(try JSONDecoder().decode(CardGame.self, from: JSONEncoder().encode(CardGame.lorcana)), .lorcana)

@@ -1,0 +1,120 @@
+{
+  "schema_id": "lorcana-real-specimen-evidence/v1",
+  "packet_status": "UNFILLED_TEMPLATE_NOT_EVIDENCE",
+  "source_corpus_case_id": null,
+  "specimen_id": null,
+  "physical_card_access": {
+    "observed_mode": null,
+    "allowed_values": ["actual_card_in_hand", "permissioned_collector_specimen", "published_secondary_image"],
+    "origin_or_custodian": null,
+    "location_region": null,
+    "observed_at_utc": null,
+    "product_or_distribution_claim": null,
+    "retention_permission_reference": null,
+    "image_redistribution_permitted": null,
+    "chain_of_custody_notes": null
+  },
+  "assets": [
+    {
+      "kind": "uncropped_front",
+      "path": null,
+      "sha256": null,
+      "capture_time_utc": null,
+      "reference_scale_visible": null
+    },
+    {
+      "kind": "uncropped_back",
+      "path": null,
+      "sha256": null,
+      "capture_time_utc": null,
+      "reference_scale_visible": null
+    },
+    {
+      "kind": "macro_literal_footer",
+      "path": null,
+      "sha256": null,
+      "capture_time_utc": null,
+      "reference_scale_visible": null
+    },
+    {
+      "kind": "artwork_or_stamp_macro",
+      "path": null,
+      "sha256": null,
+      "capture_time_utc": null,
+      "reference_scale_visible": null
+    },
+    {
+      "kind": "angled_light_finish",
+      "path": null,
+      "sha256": null,
+      "capture_time_utc": null,
+      "reference_scale_visible": null
+    },
+    {
+      "kind": "device_roi_full_frame",
+      "path": null,
+      "sha256": null,
+      "capture_time_utc": null,
+      "reference_scale_visible": null
+    }
+  ],
+  "literal_physical_observations": {
+    "footer_text_preserve_exact_glyphs_and_spacing": null,
+    "collector_numerator": null,
+    "denominator_or_literal_token": null,
+    "language_printed": null,
+    "set_marker_printed": null,
+    "footer_order": null,
+    "footer_orientation": null,
+    "top_level_card_type_visible": null,
+    "physical_width_mm": null,
+    "physical_height_mm": null,
+    "dimension_method": null,
+    "oversized_compared_to_standard_photo_ref": null,
+    "front_artwork_description": null,
+    "stamp_description": null,
+    "frame_type": null,
+    "physical_card_back_description": null,
+    "finish_observed_under_light": null,
+    "finish_observation_is_confident": null,
+    "source_to_photo_discrepancies": [],
+    "unresolved_or_unsupported_item_kind": null
+  },
+  "camera_observation": {
+    "real_device_test_completed": false,
+    "device_model": null,
+    "os_version": null,
+    "orientation": null,
+    "lighting": null,
+    "raw_ocr_observation_refs": [],
+    "roi_geometry_refs": [],
+    "candidate_or_unresolved_result": null,
+    "notes": null
+  },
+  "review_scopes": {
+    "physical_identity_confirmed": false,
+    "finish_authority_confirmed": false,
+    "literal_footer_mapping_confirmed": false,
+    "footer_candidate_universe_complete_for_explicit_scope": false,
+    "scope_definition": null,
+    "competing_candidate_ids_examined": [],
+    "source_receipt_sha256_links": [],
+    "source_to_provider_alias_join_reviewed": false,
+    "candidate_conflicts": [],
+    "allow_unknown_classes_to_remain_incomplete": true
+  },
+  "reviewers": [
+    {"reviewer_id": null, "reviewed_hashes": [], "identity_decision": "pending", "finish_decision": "pending", "universe_decision": "pending", "signed_at_utc": null},
+    {"reviewer_id": null, "reviewed_hashes": [], "identity_decision": "pending", "finish_decision": "pending", "universe_decision": "pending", "signed_at_utc": null}
+  ],
+  "proposed_activation": {
+    "app_owned_permanent_physical_uuid": null,
+    "approved_eligible_finish_ids": null,
+    "footer_mapping_reference": null,
+    "protected_transition_reference": null,
+    "publisher_set_code_separate_from_footer": null,
+    "gameplay_canonical_relation_reference": null,
+    "approved_for_isolated_local_review_seed": false,
+    "production_or_shared_sync_allowed": false
+  }
+}

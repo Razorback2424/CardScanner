@@ -163,7 +163,7 @@ final class PriceSnapshotStore: ObservableObject {
                 completedAttempts += 1
                 self.rebuildRequested = false
                 let startingRevision = self.revision
-                let actor = PriceSnapshotModelActor(modelContainer: container)
+                let actor = await PriceSnapshotModelActor.makeBackground(modelContainer: container)
                 let snapshot = await actor.snapshot()
                 guard await actor.readSucceeded() else { return }
                 guard !Task.isCancelled else { return }
@@ -199,7 +199,12 @@ final class PriceSnapshotStore: ObservableObject {
 /// Reads the durable store once on its own model-actor executor. The UI never
 /// needs to hash or refetch a whole price table after an individual delta.
 @ModelActor
-actor PriceSnapshotModelActor {
+actor PriceSnapshotModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     private var lastReadSucceeded = false
 
     func readSucceeded() -> Bool { lastReadSucceeded }

@@ -1996,6 +1996,8 @@ enum CardCenteringAnalyzer {
             bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
         ) else { throw CardCenteringAnalyzerError.renderFailed }
         context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+#if DEBUG
+        if useReferenceCalculations {
         var result: [Pixel] = []
         result.reserveCapacity(width * height)
         var index = 0
@@ -2006,6 +2008,11 @@ enum CardCenteringAnalyzer {
             result.append(Pixel(l: red, a: green, b: blue))
             index += 4
         }
+        return result
+        }
+#endif
+        var result = [Pixel](repeating: Pixel(l: 0, a: 0, b: 0), count: width * height)
+        TCSCenteringDecodeRGBA(bytes, &result, width * height)
         return result
     }
 
@@ -2406,6 +2413,17 @@ enum CardCenteringAnalyzer {
             let r = value / 256, g = value % 256, b = (r + g) % 256
             return Pixel(l: Float(r) / 255, a: Float(g) / 255, b: Float(b) / 255)
         }
+        let bytes = (0..<65_536).flatMap { value -> [UInt8] in
+            let r = value / 256, g = value % 256
+            return [UInt8(r), UInt8(g), UInt8((r + g) % 256), UInt8(value % 256)]
+        }
+        var decoded = [Pixel](repeating: Pixel(l: 0, a: 0, b: 0), count: rgb.count)
+        TCSCenteringDecodeRGBA(bytes, &decoded, rgb.count)
+        for index in rgb.indices {
+            guard decoded[index].l.bitPattern == rgb[index].l.bitPattern,
+                  decoded[index].a.bitPattern == rgb[index].a.bitPattern,
+                  decoded[index].b.bitPattern == rgb[index].b.bitPattern else { return false }
+        }
         var lab = [Pixel](repeating: Pixel(l: 0, a: 0, b: 0), count: rgb.count)
         TCSCenteringConvertLab(rgb, &lab, rgb.count, linearizedBytes)
         for index in rgb.indices {
@@ -2413,6 +2431,19 @@ enum CardCenteringAnalyzer {
             guard lab[index].l.bitPattern == expected.l.bitPattern,
                   lab[index].a.bitPattern == expected.a.bitPattern,
                   lab[index].b.bitPattern == expected.b.bitPattern else { return false }
+        }
+        for count in [0, 1, 2, 3, 255, 256, 1_023] {
+            let floats = lab.prefix(count).map(\.a)
+            let doubles = floats.map { Double($0) / 3 }
+            var floatScratch = floats, doubleScratch = doubles
+            let floatMedian = floatScratch.withUnsafeMutableBufferPointer {
+                TCSCenteringMedianFloat($0.baseAddress, $0.count)
+            }
+            let doubleMedian = doubleScratch.withUnsafeMutableBufferPointer {
+                TCSCenteringMedianDouble($0.baseAddress, $0.count)
+            }
+            guard floatMedian.bitPattern == referenceMedian(floats).bitPattern,
+                  doubleMedian.bitPattern == referenceMedian(doubles).bitPattern else { return false }
         }
         let width = 256, height = 256
         var gx = [Float](repeating: 0, count: height * (width - 1))
@@ -2428,6 +2459,40 @@ enum CardCenteringAnalyzer {
                 guard gy[y * width + x].bitPattern == distance(lab[y * width + x], lab[(y + 1) * width + x]).bitPattern else { return false }
             }
         }
+        for (xRange, yRange) in [(0..<(width - 1), 0..<(height - 1)), (7..<31, 11..<43)] {
+            var vertical = [Float](repeating: 0, count: xRange.count)
+            var horizontal = [Float](repeating: 0, count: yRange.count)
+            TCSCenteringVerticalScores(gx, Int32(width - 1), Int32(xRange.lowerBound), Int32(xRange.upperBound),
+                                       Int32(yRange.lowerBound), Int32(yRange.upperBound), &vertical)
+            TCSCenteringHorizontalScores(gy, Int32(width), Int32(xRange.lowerBound), Int32(xRange.upperBound),
+                                         Int32(yRange.lowerBound), Int32(yRange.upperBound), &horizontal)
+            for x in xRange {
+                var total: Float = 0
+                for y in yRange { total += gx[y * (width - 1) + x] }
+                guard vertical[x - xRange.lowerBound].bitPattern == (total / Float(yRange.count)).bitPattern else { return false }
+            }
+            for y in yRange {
+                var total: Float = 0
+                for x in xRange { total += gy[y * width + x] }
+                guard horizontal[y - yRange.lowerBound].bitPattern == (total / Float(xRange.count)).bitPattern else { return false }
+            }
+        }
+        var silhouette = [Int](repeating: 0, count: width)
+        var expectedSilhouette = silhouette
+        for y in 0..<height {
+            let row = y * width, left = lab[row], right = lab[row + width - 1]
+            lab.withUnsafeBufferPointer { buffer in
+                TCSCenteringSilhouetteRow(buffer.baseAddress! + row, Int32(width), left, right, &silhouette)
+            }
+            for x in 0..<width {
+                let progress = Float(x) / Float(width - 1)
+                let background = Pixel(l: left.l + progress * (right.l - left.l),
+                                       a: left.a + progress * (right.a - left.a),
+                                       b: left.b + progress * (right.b - left.b))
+                if distance(lab[row + x], background) >= 8 { expectedSilhouette[x] += 1 }
+            }
+        }
+        guard silhouette == expectedSilhouette else { return false }
         for threshold in [Float(0), 5, 10, 80] {
             let background = lab[32_768]
             var columns = [Int](repeating: 0, count: width), rows = [Int](repeating: 0, count: height)
@@ -2456,19 +2521,35 @@ enum CardCenteringAnalyzer {
 
     private static func verticalScores(_ gradient: [Float], width: Int, height: Int, xRange: Range<Int>, yRange: Range<Int>) -> [Float] {
         let gradientWidth = width - 1
+#if DEBUG
+        if useReferenceCalculations {
         return xRange.map { x in
             var total: Float = 0
             for y in yRange { total += gradient[y * gradientWidth + x] }
             return total / Float(max(1, yRange.count))
         }
+        }
+#endif
+        var scores = [Float](repeating: 0, count: xRange.count)
+        TCSCenteringVerticalScores(gradient, Int32(gradientWidth), Int32(xRange.lowerBound), Int32(xRange.upperBound),
+                                   Int32(yRange.lowerBound), Int32(yRange.upperBound), &scores)
+        return scores
     }
 
     private static func horizontalScores(_ gradient: [Float], width: Int, height: Int, yRange: Range<Int>, xRange: Range<Int>) -> [Float] {
-        yRange.map { y in
+#if DEBUG
+        if useReferenceCalculations {
+        return yRange.map { y in
             var total: Float = 0
             for x in xRange { total += gradient[y * width + x] }
             return total / Float(max(1, xRange.count))
         }
+        }
+#endif
+        var scores = [Float](repeating: 0, count: yRange.count)
+        TCSCenteringHorizontalScores(gradient, Int32(width), Int32(xRange.lowerBound), Int32(xRange.upperBound),
+                                     Int32(yRange.lowerBound), Int32(yRange.upperBound), &scores)
+        return scores
     }
 
     private static func candidates(
@@ -2554,7 +2635,8 @@ enum CardCenteringAnalyzer {
             let rightSamples = ((width - sampleWidth)..<width).map { lab[row + $0] }
             let leftBackground = medianPixel(leftSamples)
             let rightBackground = medianPixel(rightSamples)
-
+#if DEBUG
+            if useReferenceCalculations {
             for x in 0..<width {
                 let progress = Float(x) / Float(max(width - 1, 1))
                 let background = Pixel(
@@ -2566,6 +2648,16 @@ enum CardCenteringAnalyzer {
                     foregroundCounts[x] += 1
                 }
             }
+            } else {
+                lab.withUnsafeBufferPointer { buffer in
+                    TCSCenteringSilhouetteRow(buffer.baseAddress! + row, Int32(width), leftBackground, rightBackground, &foregroundCounts)
+                }
+            }
+#else
+            lab.withUnsafeBufferPointer { buffer in
+                TCSCenteringSilhouetteRow(buffer.baseAddress! + row, Int32(width), leftBackground, rightBackground, &foregroundCounts)
+            }
+#endif
         }
 
         let occupancy = foregroundCounts.map { Float($0) / Float(yRange.count) }
@@ -4636,10 +4728,32 @@ enum CardCenteringAnalyzer {
         min(max(value, lower), upper)
     }
 
-    private static func median<T: BinaryFloatingPoint>(_ values: [T]) -> T {
+    private static func median(_ values: [Float]) -> Float {
+#if DEBUG
+        if useReferenceCalculations { return referenceMedian(values) }
+#endif
+        var scratch = values
+        return scratch.withUnsafeMutableBufferPointer { buffer in
+            TCSCenteringMedianFloat(buffer.baseAddress, buffer.count)
+        }
+    }
+
+    private static func median(_ values: [Double]) -> Double {
+#if DEBUG
+        if useReferenceCalculations { return referenceMedian(values) }
+#endif
+        var scratch = values
+        return scratch.withUnsafeMutableBufferPointer { buffer in
+            TCSCenteringMedianDouble(buffer.baseAddress, buffer.count)
+        }
+    }
+
+#if DEBUG
+    private static func referenceMedian<T: BinaryFloatingPoint>(_ values: [T]) -> T {
         guard !values.isEmpty else { return 0 }
         let sorted = values.sorted()
         let middle = sorted.count / 2
         return sorted.count.isMultiple(of: 2) ? (sorted[middle - 1] + sorted[middle]) / 2 : sorted[middle]
     }
+#endif
 }

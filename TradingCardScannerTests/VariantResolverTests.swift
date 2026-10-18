@@ -407,6 +407,61 @@ final class VariantResolverTests: XCTestCase {
         XCTAssertEqual(outcome, .resolved(ResolvedVariant(variant: .masterBall, resolution: .finishLock)))
     }
 
+    func testBallPatternsUseExactEligibilityRatherThanEveryReverseHolo() {
+        for (set, number) in [("sv08.5", "093"), ("sv10.5b", "079"), ("sv10.5w", "086")] {
+            let evidence = pokemon(setID: set, variants: [.normal, .reverse], number: number)
+            let options = VariantResolver.options(for: evidence)
+            XCTAssertTrue(options.contains(.pokeBall))
+            XCTAssertFalse(options.contains(.masterBall))
+            guard case .needsChoice(_, let rejected) = VariantResolver.resolve(evidence, finishLock: .masterBall) else {
+                return XCTFail("An ineligible Master Ball lock cannot select a finish")
+            }
+            XCTAssertEqual(rejected?.finish, .masterBall)
+        }
+        for number in ["006", "119", "131", "001a", "999"] {
+            XCTAssertEqual(Set(VariantResolver.options(for: pokemon(setID: "sv08.5",
+                variants: [.normal, .reverse], number: number))), Set([.normal, .reverse]))
+        }
+        XCTAssertEqual(VariantResolver.options(for: pokemon(setID: "sv08.5", variants: [.reverse], number: "1")),
+                       VariantResolver.options(for: pokemon(setID: "sv08.5", variants: [.reverse], number: "001")))
+        // An additive fallback must not erase newer exact provider evidence.
+        XCTAssertTrue(VariantResolver.options(for: pokemon(setID: "sv08.5",
+            variants: [.reverse, .masterBall], number: "093")).contains(.masterBall))
+    }
+
+    func testExactBallPatternInventoriesHaveAll471Slots() {
+        let expected = ["sv08.5": ["pokeBall": 100, "masterBall": 67],
+                        "sv10.5b": ["pokeBall": 80, "masterBall": 72],
+                        "sv10.5w": ["pokeBall": 80, "masterBall": 72]]
+        for (set, counts) in expected {
+            for (variant, count) in counts {
+                XCTAssertEqual((1...180).filter { number in
+                    VariantResolver.options(for: pokemon(setID: set, variants: [.reverse], number: String(number)))
+                        .contains(where: { $0.id == variant })
+                }.count, count, "\(set) \(variant)")
+            }
+        }
+    }
+
+    func testBrowseSlotsAndScannerShareExactParallelEligibility() throws {
+        let card = try JSONDecoder().decode(TCGdexCard.self, from: Data(#"""
+        {"id":"sv08.5-093","localId":"093","name":"Amarys",
+         "set":{"id":"sv08.5","name":"Prismatic Evolutions","cardCount":{"total":180,"official":131}},
+         "variants":{"firstEdition":false,"holo":false,"normal":true,"reverse":true},
+         "variants_detailed":[{"type":"reverse","foil":"masterball","languages":["ja"],"size":"standard"},
+                                {"type":"holo","foil":"cosmos","languages":["en"],"size":"jumbo"},
+                                {"type":"reverse","foil":"pokeball","languages":["ja"],"size":"standard","thirdParty":{"tcgplayer":11}},
+                                {"type":"reverse","foil":"pokeball","languages":["en"],"size":"standard","thirdParty":{"tcgplayer":99}}]}
+        """#.utf8))
+        XCTAssertEqual(Set(PokemonMasterSetDefinition.requiredVariants(for: card).map(\.variant)),
+                       Set([.normal, .reverse, .pokeBall]))
+        XCTAssertEqual(Set(VariantResolver.options(for: IdentifiedCard.pokemon(card, setCode: "PRE").variantEvidence)),
+                       Set([.normal, .reverse, .pokeBall]))
+        XCTAssertNil(card.detailedVariant(for: .masterBall))
+        XCTAssertNil(card.detailedVariant(for: PhysicalVariant.pokemonFoilPattern("cosmos")))
+        XCTAssertEqual(card.detailedVariant(for: .pokeBall)?.thirdParty?.tcgplayer, 99)
+    }
+
     // MARK: - Stamped releases
 
     func testLostOriginGengarOffersItsExactStampedRelease() throws {

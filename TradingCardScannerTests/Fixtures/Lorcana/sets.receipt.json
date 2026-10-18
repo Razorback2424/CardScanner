@@ -1,0 +1,9 @@
+{
+  "bodySHA256": "db7577fedad24f1f24a01dbf73b4fc5ee54187b4e44b25303754a4e0ff62879a",
+  "contentType": "application/json",
+  "paginationHeaders": {},
+  "receivedAt": "2026-10-12T23:03:31Z",
+  "requestedURL": "https://api.lorcast.com/v0/sets",
+  "responseURL": "https://api.lorcast.com/v0/sets",
+  "statusCode": 200
+}

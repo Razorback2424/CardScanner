@@ -231,7 +231,7 @@ final class CollectedCard {
         case .rawCard:
             treatments = magicTreatmentIDs(for: variant).compactMap(MagicTreatment.init(id:))
         case .gradedCard, .sealedProduct:
-            treatments = magicTreatments
+            treatments = magicTreatmentEvidence.treatments
         }
         let qualifiers = Dictionary(uniqueKeysWithValues: treatments.compactMap { treatment in
             magicTreatmentEvidence.qualifier(for: treatment).map { (treatment.id, $0) }

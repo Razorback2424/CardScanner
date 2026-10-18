@@ -54,6 +54,11 @@ elif [[ "$ROUTE" == "OnePieceAcceptance" ]]; then
   MARKER_PATH="$CONTAINER_PATH/Documents/one-piece-ui-ready.json"
   MARKER_PATTERN='onePieceAcceptanceReady'
   MARKER_ARTIFACT='one-piece-ready.json'
+elif [[ "$ROUTE" == "LorcanaReview" || "$ROUTE" == "LorcanaPricingReview" ]]; then
+  CONTAINER_PATH="$("${SIMCTL[@]}" get_app_container "$UI_DEVICE_ID" "$BUNDLE_ID" data)"
+  MARKER_PATH="$CONTAINER_PATH/Documents/lorcana-ui-ready.json"
+  MARKER_PATTERN='lorcanaReviewReady'
+  MARKER_ARTIFACT='lorcana-ready.json'
 fi
 if [[ -n "${MARKER_PATH:-}" ]]; then
   rm -f "$MARKER_PATH"

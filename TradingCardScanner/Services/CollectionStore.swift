@@ -518,7 +518,12 @@ struct CollectionVariantCorrectionClaim: Equatable, Sendable {
 /// and variant correction. Only value snapshots and `CollectionMutation` cross
 /// the boundary; no SwiftData model object is returned to the view model.
 @ModelActor
-actor ScannerCollectionWriter {
+actor ScannerCollectionWriter: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     #if DEBUG
     private var saveOverrideForTesting: (@Sendable () throws -> Void)?
 
@@ -577,7 +582,7 @@ actor ScannerCollectionWriter {
                         resolved: candidate.resolved,
                         savesChanges: false
                     )
-                    try saveModelContext(context)
+                    try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier)
                     store.invalidateIdentityAliasCache()
                     return mutation
                 }
@@ -603,7 +608,7 @@ actor ScannerCollectionWriter {
             // Both add and correction use the same staging gate: a lookup with
             // no provider observation must leave the price ledger untouched.
             stagePrice(candidate.price, for: stored, in: context)
-            try saveModelContext(context)
+            try saveModelContext(context, acquisitionIdentifier: candidate.acquisitionIdentifier)
             return mutation
           } catch {
             // The staged add, ledger event, activity and price write are one
@@ -618,6 +623,7 @@ actor ScannerCollectionWriter {
 
     func containsCollectionEntry(for candidate: CollectionCommitCandidate) throws -> Bool {
         try performOwnershipWrite { context in
+            try validateAcquisitionContext(candidate.acquisitionIdentifier, in: context)
             let baseKey = candidate.card.collectionKey(variant: candidate.resolved.variant)
             let key = candidate.pokemonPrintRun.map {
                 "\(baseKey)@\($0.rawValue)"
@@ -824,8 +830,9 @@ actor ScannerCollectionWriter {
         }
     }
 
-    private func saveModelContext(_ context: ModelContext) throws {
+    private func saveModelContext(_ context: ModelContext, acquisitionIdentifier: ScanIdentifier? = nil) throws {
         try CollectionStore(context: context).validatePendingGameWrites()
+        try validateAcquisitionContext(acquisitionIdentifier, in: context)
         #if DEBUG
         if let saveOverrideForTesting {
             self.saveOverrideForTesting = nil
@@ -834,6 +841,19 @@ actor ScannerCollectionWriter {
         }
         #endif
         try context.save()
+    }
+
+    private func validateAcquisitionContext(_ identifier: ScanIdentifier?, in context: ModelContext) throws {
+        // The catalog may activate after scanner preflight but before this
+        // background transaction. Exact UUID validity alone cannot preserve an
+        // automatic decision made under an older physical-printing universe.
+        if let identifier, identifier.game == .lorcana {
+            guard let adapter = CollectionStoreSessionRegistry.shared
+                .mutationAuthority(for: identifier.game, container: context.container).adapter else {
+                throw CatalogLookupError.staleCatalog
+            }
+            _ = try adapter.prepareLookupIdentifier(identifier)
+        }
     }
 
     func undo(_ mutation: CollectionMutation) throws {
@@ -1292,6 +1312,13 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
         return (nil, CardGameRegistry.standard.supports(game, .collectionWrite))
     }
 
+    func mutationAuthority(for game: CardGame, container: ModelContainer)
+        -> (adapter: (any GameCatalogAdapter)?, requiresCatalog: Bool) {
+        lock.lock(); defer { lock.unlock() }
+        guard let entry = entries[ObjectIdentifier(container)], entry.hasCatalogAuthority else { return (nil, false) }
+        return (entry.catalogAdapters?.adapter(for: game), !entry.legacyCorrectionGames.contains(game))
+    }
+
     func gameRegistry(for container: ModelContainer, fallback: CardGameRegistry = .standard) -> CardGameRegistry {
         lock.lock()
         defer { lock.unlock() }
@@ -1317,7 +1344,12 @@ private final class CollectionStoreSessionRegistry: @unchecked Sendable {
 /// Reads the detail screen's logical quantity without doing SwiftData fetches
 /// on the main actor. Only the value crosses back to the view.
 @ModelActor
-actor CollectionDetailQuantityReader {
+actor CollectionDetailQuantityReader: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     func logicalQuantity(
         forAnyKey key: String,
         magicTreatmentIDsRaw: [String]
@@ -1474,7 +1506,13 @@ struct CollectionStore {
             }
         }
         for model in models {
-            if let row = model as? CollectedCard { try requireWritableGame(row.cardGame) }
+            if let row = model as? CollectedCard {
+                try requireWritableGame(row.cardGame)
+                let authority = CollectionStoreSessionRegistry.shared.mutationAuthority(for: row.cardGame, container: context.container)
+                guard authority.adapter != nil || !authority.requiresCatalog else { throw CatalogLookupError.invalidPrintingChoice }
+                try authority.adapter?.validateCollectionMutation(printingID: row.providerID, catalogProviderID: row.catalogProviderID,
+                    variantID: row.variantID, itemKindRaw: row.itemKindRaw, collectionKey: row.collectionKey)
+            }
             if let activity = model as? CollectionActivity { try requireWritableActivity(activity, gamesByKey: gamesByKey) }
             if let event = model as? InventoryEvent {
                 try requireWritableGame(historyGame(for: event.collectionKey, gamesByKey: gamesByKey))
@@ -2785,6 +2823,11 @@ struct CollectionStore {
                 throw CollectionStoreError.staleQuantity
             }
             try requireWritableGame(target.cardGame)
+            guard target.allowsQuantityAggregation || newQuantity <= target.quantity else {
+                throw CollectionStoreError.quantityOutOfRange(
+                    "a certified slab represents one physical item"
+                )
+            }
             let delta = newQuantity - target.quantity
             guard delta != 0 else { return target.quantity }
             let operationID = UUID()
@@ -5325,7 +5368,12 @@ struct CollectionStore {
 /// main-actor context. The continuation is checked before each position and
 /// before commit so a storage transition rolls the operation back atomically.
 @ModelActor
-actor CollectionDeletionModelActor {
+actor CollectionDeletionModelActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     func deleteAll(
         shouldContinue: @escaping StorageGenerationContinuation,
         exclusiveToken: UUID? = nil

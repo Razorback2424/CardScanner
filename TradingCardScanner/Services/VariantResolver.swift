@@ -246,6 +246,8 @@ struct PokemonVariantRule: Equatable, Sendable {
     let requiredCatalogVariant: PhysicalVariant
     let adds: [PhysicalVariant]
     let removes: [PhysicalVariant]
+    /// Exact provider-backed eligibility. nil is reserved for genuinely set-wide rules.
+    var cardNumbers: Set<Int>? = nil
 }
 
 /// The small supplemental layer this app owns.
@@ -257,17 +259,83 @@ struct PokemonVariantRule: Equatable, Sendable {
 ///
 ///     TCGdex card + our set-specific variant metadata = possible physical variants
 enum PokemonVariantRules {
-    /// Prismatic Evolutions and the Black Bolt / White Flare pair print Poké Ball
-    /// and Master Ball parallel patterns alongside the ordinary reverse holo.
-    /// Nothing on the card's identifier strip distinguishes them, which is exactly
-    /// the case where the human holds information the scanner cannot have.
+    /// Exact rows from the retained provider-explicit eligibility table, pinned to
+    /// tcgdex/cards-database 99c994747cf7519a3e51166cc932de79a88bd4b3.
+    /// Trainers and ex cards cannot inherit both patterns merely by having reverse.
     static let all: [PokemonVariantRule] = [
         PokemonVariantRule(
-            id: "pokemon.ballPatterns",
-            setIDs: ["sv08.5", "sv10.5b", "sv10.5w"],
-            requiredCatalogVariant: .reverse,
-            adds: [.pokeBall, .masterBall],
-            removes: []
+            id: "pokemon.sv08.5.masterball",
+            setIDs: ["sv08.5"], requiredCatalogVariant: .reverse,
+            adds: [.masterBall], removes: [],
+            cardNumbers: [
+                1, 2, 3, 4, 5, 7, 8, 9, 10, 13, 15, 16, 18, 19, 20, 21,
+                22, 24, 25, 29, 33, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45, 46,
+                47, 48, 49, 50, 52, 53, 54, 55, 57, 59, 61, 62, 63, 65, 66, 67,
+                68, 69, 70, 71, 72, 74, 77, 78, 79, 80, 81, 83, 84, 85, 86, 87,
+                88, 89, 90,
+            ]
+        ),
+        PokemonVariantRule(
+            id: "pokemon.sv08.5.pokeball",
+            setIDs: ["sv08.5"], requiredCatalogVariant: .reverse,
+            adds: [.pokeBall], removes: [],
+            cardNumbers: [
+                1, 2, 3, 4, 5, 7, 8, 9, 10, 13, 15, 16, 18, 19, 20, 21,
+                22, 24, 25, 29, 33, 35, 36, 37, 38, 39, 40, 42, 43, 44, 45, 46,
+                47, 48, 49, 50, 52, 53, 54, 55, 57, 59, 61, 62, 63, 65, 66, 67,
+                68, 69, 70, 71, 72, 74, 77, 78, 79, 80, 81, 83, 84, 85, 86, 87,
+                88, 89, 90, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105,
+                106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 118, 120, 121, 122, 123, 124,
+                125, 126, 127, 130,
+            ]
+        ),
+        PokemonVariantRule(
+            id: "pokemon.sv10.5b.masterball",
+            setIDs: ["sv10.5b"], requiredCatalogVariant: .reverse,
+            adds: [.masterBall], removes: [],
+            cardNumbers: [
+                1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 45, 47, 48, 49, 50, 51, 52, 53,
+                54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 68, 69, 70,
+                71, 72, 73, 74, 75, 76, 77, 78,
+            ]
+        ),
+        PokemonVariantRule(
+            id: "pokemon.sv10.5b.pokeball",
+            setIDs: ["sv10.5b"], requiredCatalogVariant: .reverse,
+            adds: [.pokeBall], removes: [],
+            cardNumbers: [
+                1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 29, 30, 31, 32, 33, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 45, 47, 48, 49, 50, 51, 52, 53,
+                54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 68, 69, 70,
+                71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86,
+            ]
+        ),
+        PokemonVariantRule(
+            id: "pokemon.sv10.5w.masterball",
+            setIDs: ["sv10.5w"], requiredCatalogVariant: .reverse,
+            adds: [.masterBall], removes: [],
+            cardNumbers: [
+                1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 32, 33, 34, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 51, 52,
+                53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 68, 69,
+                70, 71, 72, 73, 74, 75, 76, 78,
+            ]
+        ),
+        PokemonVariantRule(
+            id: "pokemon.sv10.5w.pokeball",
+            setIDs: ["sv10.5w"], requiredCatalogVariant: .reverse,
+            adds: [.pokeBall], removes: [],
+            cardNumbers: [
+                1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 32, 33, 34, 35,
+                36, 37, 38, 39, 40, 41, 42, 43, 44, 46, 47, 48, 49, 50, 51, 52,
+                53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 68, 69,
+                70, 71, 72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86,
+            ]
         )
     ]
 
@@ -288,6 +356,10 @@ enum PokemonVariantRules {
 
         for rule in rules where rule.setIDs.contains(evidence.setID) {
             guard variants.contains(rule.requiredCatalogVariant) else { continue }
+            if let numbers = rule.cardNumbers {
+                guard evidence.cardNumber.allSatisfy({ $0.isASCII && $0.isNumber }),
+                      let number = Int(evidence.cardNumber), numbers.contains(number) else { continue }
+            }
             applied = true
             variants.removeAll { rule.removes.contains($0) }
             for addition in rule.adds where !variants.contains(addition) {

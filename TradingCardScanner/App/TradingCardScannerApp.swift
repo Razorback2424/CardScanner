@@ -49,6 +49,16 @@ struct TradingCardScannerApp: App {
             .environmentObject(opening)
             .task {
                 guard runtimes == nil else { return }
+#if DEBUG && LOCAL_ONLY_SIGNING
+                if LorcanaReviewLaunch.isEnabled() {
+                    await storageBootstrap.start()
+                    guard !Task.isCancelled else { return }
+                    // Actual review authority is installed below, only after
+                    // checking the process-authoritative isolated container.
+                    self.runtimes = try? CardGameRuntimeContainer(runtimes: [])
+                    return
+                }
+#endif
                 async let prepared = CardGameRuntimeContainer.preparedAppDefaults()
                 await storageBootstrap.start()
                 let runtimes = await prepared
@@ -93,6 +103,16 @@ private struct CollectionSessionContent: View {
         Group {
             if let services {
                 VStack(spacing: 0) {
+#if DEBUG && LOCAL_ONLY_SIGNING
+                    if LorcanaReviewLaunch.isEnabled() {
+                        Label(LorcanaReviewLaunch.banner, systemImage: "testtube.2")
+                            .font(.caption2)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(8)
+                            .background(.regularMaterial)
+                            .accessibilityIdentifier("lorcana-review-banner")
+                    }
+#endif
                     if !services.runtimes.unavailableGames.isEmpty {
                         CatalogRecoveryBanner(names: unavailableNames(services.runtimes),
                             scanner: services.scanner, preparing: preparing, recoveryReady: recoveryReady) { attempt += 1 }
@@ -124,9 +144,23 @@ private struct CollectionSessionContent: View {
                 // an explicit retry re-reads configuration and the bundled seed.
                 guard services?.scanner.canReloadCatalogs != false else { return }
                 let candidate = runtimes.unavailableGames.isEmpty ? runtimes : await CardGameRuntimeContainer.preparedAppDefaults()
-                let bound = try await candidate.bound(to: container, recovering: services?.runtimes, isCurrent: {
+                let bound: CardGameRuntimeContainer
+#if DEBUG && LOCAL_ONLY_SIGNING
+                if LorcanaReviewLaunch.isEnabled() {
+                    let kit = try LorcanaReviewLaunch.makeKit()
+                    bound = try await kit.bound(to: container, isCurrent: {
+                        CollectionStorageGeneration.shared.activeSession()?.container === container
+                    })
+                } else {
+                    bound = try await candidate.bound(to: container, recovering: services?.runtimes, isCurrent: {
+                        CollectionStorageGeneration.shared.activeSession()?.container === container
+                    })
+                }
+#else
+                bound = try await candidate.bound(to: container, recovering: services?.runtimes, isCurrent: {
                     CollectionStorageGeneration.shared.activeSession()?.container === container
                 })
+#endif
                 try Task.checkCancellation()
                 guard services?.scanner.canReloadCatalogs != false else { return }
                 if services == nil || services?.runtimes.registry.games(supporting: []) != bound.registry.games(supporting: [])

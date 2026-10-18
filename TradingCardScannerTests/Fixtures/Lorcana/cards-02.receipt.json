@@ -1,0 +1,9 @@
+{
+  "bodySHA256": "0dd19746916277eb6b28f831317077c3ca67d1056f92301d279048b4df6f7786",
+  "contentType": "application/json",
+  "paginationHeaders": {},
+  "receivedAt": "2026-10-12T23:03:32Z",
+  "requestedURL": "https://api.lorcast.com/v0/cards/search?q=distract&unique=prints",
+  "responseURL": "https://api.lorcast.com/v0/cards/search?q=distract&unique=prints",
+  "statusCode": 200
+}

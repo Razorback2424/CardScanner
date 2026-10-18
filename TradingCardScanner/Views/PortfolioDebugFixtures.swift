@@ -194,6 +194,28 @@ enum PortfolioDebugFixtures {
         }
     }
 
+    /// A repeatable $81.64 addition for the Pricing & Data drill-down.
+    @MainActor
+    static func seedAdditionsIfNeeded(in modelContext: ModelContext) {
+        try? performFixtureWrite(in: modelContext) { context in
+            let existingIDs = Set(try context.fetch(FetchDescriptor<CollectedCard>()).map(\.providerID))
+            let store = CollectionStore(context: context)
+            for (id, name, price) in [
+                ("ui-additions-bundle", "QA Booster Bundle", 42.25),
+                ("ui-additions-box", "QA Collection Box", 39.39)
+            ] where !existingIDs.contains(id) {
+                _ = try store.addSealed(
+                    SealedProductSummary(
+                        id: id, name: name, setName: "Addition Details QA",
+                        variantID: "\(id)-variant", marketPriceUSD: price,
+                        updatedAt: .now, imageURL: nil
+                    ),
+                    game: .pokemon
+                )
+            }
+        }
+    }
+
     /// A month of synthetic prices with explicit unchecked spans for chart QA.
     @MainActor
     static func seedCardPriceChartIfRequested(in modelContext: ModelContext) {

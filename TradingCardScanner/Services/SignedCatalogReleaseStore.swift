@@ -24,9 +24,11 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
     private let revisionPolicy: RevisionPolicy
     private let strictRevisionContent: Bool
     private let rejectLowerRevision: Bool
+    private let validateRecovery: Bool
     private let fallback: StoredRelease?
     private let revision: @Sendable (Release) -> Int
     private let encode: @Sendable (Envelope) throws -> Data
+    private let sameRevisionContent: @Sendable (StoredRelease, StoredRelease) -> Bool
     private let validateTransition: @Sendable (StoredRelease?, StoredRelease) throws -> Void
     private let readData: @Sendable (URL) throws -> Data
     private let writeData: @Sendable (Data, URL) throws -> Void
@@ -38,16 +40,20 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
     init(root: URL, currentName: String, previousName: String,
          revisionPolicy: RevisionPolicy, strictRevisionContent: Bool = false,
          rejectLowerRevision: Bool = false,
+         validateRecovery: Bool = false,
          fallback: StoredRelease? = nil,
          revision: @escaping @Sendable (Release) -> Int,
          encode: @escaping @Sendable (Envelope) throws -> Data,
+         sameRevisionContent: @escaping @Sendable (StoredRelease, StoredRelease) -> Bool = { $0.envelope == $1.envelope },
          validateTransition: @escaping @Sendable (StoredRelease?, StoredRelease) throws -> Void = { _, _ in },
          readData: @escaping @Sendable (URL) throws -> Data = { try Data(contentsOf: $0) },
          writeData: @escaping @Sendable (Data, URL) throws -> Void = { try $0.write(to: $1, options: .atomic) }) {
         self.root = root; self.currentName = currentName; self.previousName = previousName
         self.revisionPolicy = revisionPolicy; self.strictRevisionContent = strictRevisionContent
         self.rejectLowerRevision = rejectLowerRevision
+        self.validateRecovery = validateRecovery
         self.fallback = fallback; self.revision = revision; self.encode = encode
+        self.sameRevisionContent = sameRevisionContent
         self.validateTransition = validateTransition; self.readData = readData; self.writeData = writeData
     }
 
@@ -71,7 +77,26 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
                 return nil
             }
         }
-        if let loaded = read(.current) {
+        if validateRecovery {
+            // Opt-in domains protect a recovered head against the independently
+            // verified predecessor (or seed), including revision and UUID rules.
+            func accepts(_ loaded: StoredRelease, after prior: StoredRelease?, slot: Slot) -> Bool {
+                do {
+                    if let prior {
+                        let nextRevision = revision(loaded.release), priorRevision = revision(prior.release)
+                        guard nextRevision >= priorRevision else { throw SignedCatalogStoreError.revisionRollback }
+                        if nextRevision == priorRevision {
+                            guard sameRevisionContent(loaded, prior) else { throw SignedCatalogStoreError.revisionCollision }
+                        } else { try validateTransition(prior, loaded) }
+                    }
+                    return true
+                } catch { rejectedSlot(url(slot).lastPathComponent); return false }
+            }
+            if let loaded = read(.previous), accepts(loaded.0, after: fallback, slot: .previous) { previous = loaded.0 }
+            if let loaded = read(.current), accepts(loaded.0, after: previous ?? fallback, slot: .current) {
+                current = loaded.0; currentBytes = loaded.1
+            }
+        } else if let loaded = read(.current) {
             current = loaded.0; currentBytes = loaded.1
         } else {
             previous = read(.previous)?.0
@@ -84,7 +109,8 @@ actor SignedCatalogReleaseStore<Envelope: Codable & Equatable & Sendable, Releas
         let nextRevision = revision(next.release)
         if let previousRevision, nextRevision <= previousRevision {
             if rejectLowerRevision && nextRevision < previousRevision { throw SignedCatalogStoreError.revisionRollback }
-            if strictRevisionContent, nextRevision == previousRevision, comparison?.envelope != next.envelope {
+            if strictRevisionContent, nextRevision == previousRevision, let comparison,
+               !sameRevisionContent(comparison, next) {
                 throw SignedCatalogStoreError.revisionCollision
             }
             return .alreadyCurrent

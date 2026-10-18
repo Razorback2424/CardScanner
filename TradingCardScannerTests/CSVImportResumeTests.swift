@@ -4,6 +4,44 @@ import XCTest
 
 @MainActor
 final class CSVImportResumeTests: XCTestCase {
+    func testNativeImportAllowsAnExtraCategoryColumn() throws {
+        let csv = "provider_id,card_name,quantity,category\nbase1-4,Charizard,2,Pokemon\n"
+        let plan = try CollectionCSV.parse(Data(csv.utf8))
+
+        XCTAssertEqual(plan.entries.first?.providerID, "base1-4")
+        XCTAssertEqual(plan.totalQuantity, 2)
+    }
+
+    func testDelimiterDetectionIgnoresQuotedHeaderPunctuation() throws {
+        for delimiter in [",", ";", "\t"] {
+            let other = delimiter == ";" ? "," : ";"
+            let noteHeader = "\"notes\(String(repeating: other, count: 8))\""
+            let csv = ["provider_id", "card_name", "quantity", noteHeader].joined(separator: delimiter)
+                + "\n" + ["base1-4", "Charizard", "2", "note"].joined(separator: delimiter) + "\n"
+            let plan = try CollectionCSV.parse(Data(csv.utf8))
+
+            XCTAssertEqual(plan.totalQuantity, 2, "delimiter: \(delimiter)")
+        }
+    }
+
+    func testUnterminatedQuotedCellRejectsTheImport() {
+        let csv = "provider_id,card_name,quantity\nbase1-4,Charizard,1\nbase1-2,\"Blastoise,2\n"
+
+        XCTAssertThrowsError(try CollectionCSV.parse(Data(csv.utf8))) { error in
+            guard case CollectionCSVError.unreadableFile = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
+    }
+
+    func testQuotedNamesKeepEscapedQuotesAndEmbeddedNewlines() throws {
+        let csv = "provider_id,card_name,quantity\nbase1-4,\"Charizard \"\"special\"\"\nprinting\",2\n"
+        let plan = try CollectionCSV.parse(Data(csv.utf8))
+
+        XCTAssertEqual(plan.entries.first?.name, "Charizard \"special\"\nprinting")
+        XCTAssertEqual(plan.totalQuantity, 2)
+    }
+
     func testInterruptedImportResumesOnlyEntriesWithoutLedgerEvents() throws {
         let container = try makeContainer()
         let plan = try parsedPlan(rows: [

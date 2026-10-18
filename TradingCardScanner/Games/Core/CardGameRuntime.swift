@@ -280,6 +280,13 @@ struct CardGameRuntimeContainer: Sendable {
     static func appDefaults() -> Self {
         var modules = [PokemonGameRuntime().runtime, MagicGameRuntime().runtime]
         var unavailable: [CardGameDescriptor] = []
+        do {
+            modules.append(try LorcanaDiscoveryCatalog.bundledMarket.get().runtime)
+        } catch {
+            Logger(subsystem: Bundle.main.bundleIdentifier ?? "CardScanner", category: "CatalogBootstrap")
+                .error("Lorcana discovery seed rejected; existing games remain available")
+            unavailable.append(LorcanaDiscoveryCatalog.descriptor)
+        }
 #if DEBUG && LOCAL_ONLY_SIGNING
         let arguments = ProcessInfo.processInfo.arguments
         if let route = arguments.firstIndex(of: "-ui_debug_route"), arguments.indices.contains(route + 1),
@@ -324,7 +331,8 @@ struct CardGameRuntimeContainer: Sendable {
         scanner.useAdditionalRecognitionAdapters(recognitionAdapters)
         var reviewRecovery: UnresolvedScanStore?
 #if DEBUG && LOCAL_ONLY_SIGNING
-        if let directory = OnePieceCatalogBootstrap.developerStorageDirectory(),
+        if let directory = LorcanaReviewLaunch.isEnabled() ? LorcanaReviewLaunch.storageDirectory
+            : OnePieceCatalogBootstrap.developerStorageDirectory(),
            let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             reviewRecovery = UnresolvedScanStore(fileURL: support
                 .appendingPathComponent(directory).appendingPathComponent("Scanner/unresolved-scans.json"))

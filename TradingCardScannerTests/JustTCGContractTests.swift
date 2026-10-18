@@ -32,7 +32,11 @@ final class JustTCGContractTests: XCTestCase {
         XCTAssertEqual(page.items.first?.variantID, "vendor-sealed")
         XCTAssertEqual(page.items.first?.marketPriceUSD, 99.25)
         XCTAssertFalse(page.hasMore)
-        do { _ = try await client.sealedSets(game: .lorcana); XCTFail("Unsupported game must fail before transport") }
+        let lorcanaSets = try await client.sealedSets(game: .lorcana)
+        XCTAssertEqual(lorcanaSets.reduce(0) { $0 + $1.sealedCount }, 177)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1,
+                       "Bundled Lorcana discovery must not use JustTCG transport")
+        do { _ = try await client.sealedSets(game: CardGame(rawValue: "future-unsupported-game")); XCTFail("Unsupported game must fail before transport") }
         catch is CardGameSupportError { }
         XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
         let stoppedLedger = JustTCGRequestLedger(defaults: defaults)
@@ -473,6 +477,37 @@ final class JustTCGContractTests: XCTestCase {
         ) else {
             return XCTFail("the same ordinary Foil listing should remain usable")
         }
+    }
+
+    func testNamedPokemonParallelCanUseOnlyItsExactPhysicalProductAndSingleNearMintListing() throws {
+        func response(_ variants: String) throws -> JustTCGBatchResponse {
+            try JSONDecoder().decode(JustTCGBatchResponse.self, from: Data("""
+            {"data":[{"uuid":"cosmos-product","tcgplayerId":"694692","variants":[\(variants)]}]}
+            """.utf8))
+        }
+        let nearMint = #"{"uuid":"nm","condition":"Near Mint","printing":"Holofoil","price":2.34}"#
+        let played = #"{"uuid":"lp","condition":"Lightly Played","printing":"Holofoil","price":1.20}"#
+        var target = MarketPriceTarget(priceKey: "cosmos", game: .pokemon, printingID: "mep-078",
+            variantID: PhysicalVariant.pokemonFoilPattern("cosmos").id, itemKind: .rawCard,
+            marketVariantID: nil, lookupCandidates: [.tcgplayerID("694692")], currentAmount: nil,
+            lastCheckedAt: nil, exactPhysicalProductID: "694692")
+        guard case let .matched(_, variant) = JustTCGRefreshCoordinator.exactListing(
+            lookup: .tcgplayerID("694692"), owners: [target], response: try response(played + "," + nearMint)
+        ) else { return XCTFail("Exact Cosmos product should be priceable") }
+        XCTAssertEqual(variant.variantId, "nm")
+
+        let anotherNM = #"{"uuid":"other-nm","condition":"Near Mint","printing":"Normal","price":99}"#
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .tcgplayerID("694692"), owners: [target], response: try response(nearMint + "," + anotherNM)
+        ) else { return XCTFail("Multiple NM listings are ambiguous") }
+        target.exactPhysicalProductID = "999999"
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .tcgplayerID("694692"), owners: [target], response: try response(nearMint)
+        ) else { return XCTFail("A different product must never answer this parallel") }
+        target.exactPhysicalProductID = nil
+        guard case .noExactListing = JustTCGRefreshCoordinator.exactListing(
+            lookup: .tcgplayerID("694692"), owners: [target], response: try response(nearMint)
+        ) else { return XCTFail("A stored generic handle alone cannot authorize a named parallel") }
     }
 
     // MARK: - Which identifier the vendor can actually resolve

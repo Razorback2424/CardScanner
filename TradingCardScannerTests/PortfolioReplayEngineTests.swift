@@ -69,6 +69,69 @@ final class PortfolioReplayEngineTests: XCTestCase {
         )
     }
 
+    func testAdditionBreakdownKeepsAcquisitionValuesAfterPriceChangesAndRemoval() throws {
+        let result = PortfolioReplayEngine.replay(input(
+            events: [
+                event(delta: 2, at: at(1, hour: 9), position: "a", instrument: "a"),
+                event(.recordExisting, delta: 1, at: at(1, hour: 10), position: "b", instrument: "b"),
+                event(.dispose, delta: -2, at: at(1, hour: 12), position: "a", instrument: "a")
+            ],
+            observations: [
+                observation(10, at: at(1, hour: 8), instrument: "a"),
+                observation(7, at: at(1, hour: 8), instrument: "b"),
+                observation(12, at: at(1, hour: 11), instrument: "a")
+            ],
+            epoch: day(1), through: at(1, hour: 13)
+        ))
+        let live = try XCTUnwrap(result.live)
+        XCTAssertEqual(live.additions, ["a": usd(20), "b": usd(7)])
+        XCTAssertEqual(live.additions.values.reduce(.zero, +), live.attribution.added + live.attribution.newlyAddedValue)
+        XCTAssertEqual(live.attribution.market, usd(4))
+        XCTAssertEqual(result.contributionIndex.additionsByDay[day(1)], live.additions)
+    }
+
+    func testAdditionBreakdownIncludesFirstPriceLearnedOnALaterDay() throws {
+        let result = PortfolioReplayEngine.replay(input(
+            events: [event(delta: 3, at: at(1, hour: 9))],
+            observations: [observation(5, at: at(2, hour: 10))],
+            epoch: day(1), through: at(2, hour: 12)
+        ))
+        XCTAssertEqual(result.days.first?.additions, ["position": .zero])
+        let live = try XCTUnwrap(result.live)
+        XCTAssertEqual(live.additions, ["position": usd(15)])
+        XCTAssertEqual(live.additions.values.reduce(.zero, +), live.attribution.added + live.attribution.newlyAddedValue)
+    }
+
+    func testAdditionBreakdownTracksSharedFirstPriceAndUnpricedRemovals() throws {
+        let result = PortfolioReplayEngine.replay(input(
+            events: [
+                event(delta: 2, at: at(1, hour: 9), position: "a"),
+                event(delta: 3, at: at(1, hour: 10), position: "b"),
+                event(.dispose, delta: -1, at: at(1, hour: 11), position: "b")
+            ],
+            observations: [observation(4, at: at(1, hour: 12))],
+            epoch: day(1), through: at(1, hour: 13)
+        ))
+        let live = try XCTUnwrap(result.live)
+        XCTAssertEqual(live.additions, ["a": usd(8), "b": usd(8)])
+        XCTAssertEqual(live.additions.values.reduce(.zero, +), live.attribution.added + live.attribution.newlyAddedValue)
+    }
+
+    func testAdditionBreakdownExcludesSameDayUndoAndQuantityCorrections() throws {
+        let original = event(delta: 1, at: at(1, hour: 9), position: "undone")
+        let result = PortfolioReplayEngine.replay(input(
+            events: [
+                original,
+                event(delta: -1, at: at(1, hour: 10), position: "undone", reverses: original.eventID),
+                event(.quantityAdjust, delta: 1, at: at(1, hour: 11), position: "adjusted"),
+                event(delta: 1, at: at(1, hour: 12), position: "added")
+            ],
+            observations: [observation(10, at: at(1, hour: 8))],
+            epoch: day(1), through: at(1, hour: 13)
+        ))
+        XCTAssertEqual(result.live?.additions, ["added": usd(10)])
+    }
+
     // MARK: - Equivalence with the engine being replaced
 
     /// The replay's still-open day must attribute exactly as

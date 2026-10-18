@@ -132,6 +132,11 @@ struct CollectionCSVEntry: Sendable, Equatable {
     /// Raw card, graded slab or sealed product. Defaulted so every existing
     /// construction site keeps meaning what it meant.
     var itemKind: CollectionItemKind = .rawCard
+    /// Retain supplied evidence before legacy enum projection. New adapters must
+    /// not accept an unknown future kind just because the parser displayed Raw.
+    var sourceItemKindRaw: String? = nil
+    var sourceLanguage: String? = nil
+    var conflictingSourceIdentity = false
     var gradingCompany: GradingCompany?
     var grade: CardGrade?
     var pokemonPrintRun: PokemonPrintRun?
@@ -234,11 +239,16 @@ enum CollectionCSV {
 
     /// Fetch and format on an actor created off main; model instances stay in
     /// that actor's context and only the CSV text crosses the isolation boundary.
-    static func exportIsolated(from container: ModelContainer) async throws -> CollectionCSVDocument {
-        let exporter = await Task.detached(priority: .userInitiated) {
-            CollectionCSVExportActor(modelContainer: container)
-        }.value
-        return CollectionCSVDocument(text: try await exporter.text())
+    enum ExportKind: Sendable {
+        case collection, portfolioHistory, unpriced, missingArtwork
+    }
+
+    static func exportIsolated(
+        from container: ModelContainer,
+        kind: ExportKind = .collection
+    ) async throws -> CollectionCSVDocument {
+        let exporter = await CollectionCSVExportActor.makeBackground(modelContainer: container)
+        return CollectionCSVDocument(text: try await exporter.text(kind: kind))
     }
 
     static func export(_ cards: [CollectedCard]) -> CollectionCSVDocument {
@@ -327,7 +337,7 @@ enum CollectionCSV {
                 entry.imageURL ?? "",
                 entry.thumbnailURL ?? "",
                 formatter.string(from: entry.dateAdded),
-                entry.itemKind.rawValue,
+                entry.sourceItemKindRaw ?? entry.itemKind.rawValue,
                 entry.justTCGCardID ?? "",
                 entry.justTCGVariantID ?? "",
                 entry.justTCGAPIVersion ?? "",
@@ -342,10 +352,12 @@ enum CollectionCSV {
                 MagicTreatmentKeyCodec.encodeQualifiers(entry.magicTreatmentQualifiers) ?? "",
                 entry.magicContentKindRaw,
                 entry.collectionKey,
-                entry.catalogProviderID ?? ""
+                entry.catalogProviderID ?? "",
+                entry.sourceLanguage ?? "",
+                entry.conflictingSourceIdentity ? "true" : ""
             ]
         }
-        return CollectionCSVDocument(text: csvText(headers: exportHeaders, rows: rows))
+        return CollectionCSVDocument(text: csvText(headers: exportHeaders + ["source_language", "source_identity_conflict"], rows: rows))
     }
 
     /// Daily closes, one row per revision.
@@ -548,7 +560,7 @@ enum CollectionCSV {
             .replacingOccurrences(of: "\r", with: "\n")
 
         let delimiter = delimiter(in: text)
-        let table = parseRows(text, delimiter: delimiter)
+        let table = try parseRows(text, delimiter: delimiter)
         guard let rawHeaders = table.first, !rawHeaders.isEmpty else {
             throw CollectionCSVError.missingColumns
         }
@@ -584,7 +596,7 @@ enum CollectionCSV {
                 continue
             }
 
-            let parsed = entries(from: row)
+            let parsed = entries(from: row, isPortfolioExport: isPortfolioExport)
             if parsed.isEmpty {
                 skippedRows += 1
                 skippedValues.append(values)
@@ -599,6 +611,9 @@ enum CollectionCSV {
                     )
                 }
                 if var existing = entriesByKey[entry.collectionKey] {
+                    existing.conflictingSourceIdentity = existing.conflictingSourceIdentity || entry.conflictingSourceIdentity
+                        || !sameImportIdentity(existing, entry)
+                    if existing.sourceLanguage == nil { existing.sourceLanguage = entry.sourceLanguage }
                     if isCertified(entry) || isCertified(existing) {
                         // A certificate identifies one physical slab. Duplicate
                         // export rows must not turn that slab into a stack.
@@ -626,6 +641,27 @@ enum CollectionCSV {
         )
         plan.fingerprint = fingerprint(for: plan.entries)
         return plan
+    }
+
+    /// A duplicate key cannot erase conflicting evidence before the installed
+    /// adapter sees it. Display metadata/date differences may still merge.
+    private static func sameImportIdentity(_ lhs: CollectionCSVEntry, _ rhs: CollectionCSVEntry) -> Bool {
+        func language(_ value: String) -> String {
+            let lower = value.lowercased()
+            return ["en", "eng", "english"].contains(lower) ? "en" : lower
+        }
+        let languageMatches = lhs.sourceLanguage == nil || rhs.sourceLanguage == nil
+            || language(lhs.sourceLanguage!) == language(rhs.sourceLanguage!)
+        return lhs.game == rhs.game && lhs.providerID == rhs.providerID
+            && (lhs.catalogProviderID ?? lhs.providerID) == (rhs.catalogProviderID ?? rhs.providerID)
+            && lhs.cardNumber == rhs.cardNumber && lhs.variant?.id == rhs.variant?.id
+            && lhs.itemKind == rhs.itemKind && (lhs.sourceItemKindRaw ?? lhs.itemKind.rawValue) == (rhs.sourceItemKindRaw ?? rhs.itemKind.rawValue)
+            && languageMatches && lhs.pokemonPrintRun == rhs.pokemonPrintRun
+            && lhs.magicTreatmentIDsRaw == rhs.magicTreatmentIDsRaw && lhs.magicTreatmentQualifiers == rhs.magicTreatmentQualifiers
+            && lhs.magicContentKindRaw == rhs.magicContentKindRaw && lhs.gradingCompany == rhs.gradingCompany
+            && lhs.grade == rhs.grade && lhs.certificationNumber == rhs.certificationNumber
+            && lhs.justTCGCardID == rhs.justTCGCardID && lhs.justTCGVariantID == rhs.justTCGVariantID
+            && lhs.justTCGAPIVersion == rhs.justTCGAPIVersion && lhs.marketRegionRaw == rhs.marketRegionRaw
     }
 
     static func apply(
@@ -1024,6 +1060,7 @@ enum CollectionCSV {
                                 totalEntries: plan.entries.count
                             )
                         }
+                        try collectionStore.validatePendingGameWrites()
                         try context.save()
                         collectionStore.invalidateIdentityAliasCache()
                         inserted += rowInserted
@@ -1081,7 +1118,7 @@ enum CollectionCSV {
         progress: (@Sendable (Int, Int) -> Void)? = nil,
         shouldContinue: (@Sendable () -> Bool)? = nil
     ) async throws -> CollectionCSVImportResult {
-        let importer = CollectionCSVImportActor(modelContainer: container)
+        let importer = await CollectionCSVImportActor.makeBackground(modelContainer: container)
         return try await importer.apply(
             plan,
             exclusiveToken: exclusiveToken,
@@ -1093,8 +1130,8 @@ enum CollectionCSV {
         )
     }
 
-    private static func entries(from row: [String: String]) -> [CollectionCSVEntry] {
-        if row["category"] != nil {
+    private static func entries(from row: [String: String], isPortfolioExport: Bool) -> [CollectionCSVEntry] {
+        if isPortfolioExport {
             return portfolioEntries(from: row)
         }
 
@@ -1112,7 +1149,7 @@ enum CollectionCSV {
         } else {
             game = isScryfallExport ? .magic : .pokemon
         }
-        guard isSupportedLanguage(value(["language", "lang"], in: row)) else { return [] }
+        guard isSupportedLanguage(value(["language", "lang", "source_language"], in: row)) else { return [] }
         let setName = value(["set_name"], in: row) ?? "Unknown Set"
         let setCode = value(["set_code", "set"], in: row) ?? ""
         let cardNumber = canonicalImportedCardNumber(
@@ -1190,7 +1227,7 @@ enum CollectionCSV {
                 qualifier: value(["grading_qualifier"], in: row)
             )
         }
-        return [makeEntry(
+        var entry = makeEntry(
             game: game, providerID: providerID, catalogProviderID: catalogProviderID,
             explicitCollectionKey: explicitCollectionKey,
             name: name, setName: setName,
@@ -1209,7 +1246,11 @@ enum CollectionCSV {
             magicTreatmentIDs: treatmentIDs,
             magicTreatmentQualifiers: treatmentQualifiers,
             magicContentKindRaw: contentKindRaw
-        )]
+        )
+        entry.sourceItemKindRaw = nonempty(value(["item_kind"], in: row))
+        entry.sourceLanguage = nonempty(value(["language", "lang", "source_language"], in: row))
+        entry.conflictingSourceIdentity = value(["source_identity_conflict"], in: row)?.lowercased() == "true"
+        return [entry]
     }
 
     private static func importedGame(_ value: String) -> CardGame {
@@ -1791,14 +1832,25 @@ enum CollectionCSV {
     }
 
     private static func delimiter(in text: String) -> Character {
-        let firstLine = text.prefix { $0 != "\n" && $0 != "\r" }
         let candidates: [Character] = [";", ",", "\t"]
+        var counts: [Character: Int] = [:]
+        var inQuotes = false
+        // Header labels may contain delimiters or newlines inside quotes.
+        // Doubled quotes toggle twice and leave the enclosing quote state intact.
+        for character in text {
+            if character == "\"" {
+                inQuotes.toggle()
+            } else if !inQuotes {
+                if character == "\n" || character == "\r" { break }
+                if candidates.contains(character) { counts[character, default: 0] += 1 }
+            }
+        }
         return candidates.max { left, right in
-            firstLine.filter { $0 == left }.count < firstLine.filter { $0 == right }.count
+            counts[left, default: 0] < counts[right, default: 0]
         } ?? ","
     }
 
-    private static func parseRows(_ text: String, delimiter: Character) -> [[String]] {
+    private static func parseRows(_ text: String, delimiter: Character) throws -> [[String]] {
         let characters = Array(text)
         var rows: [[String]] = []
         var row: [String] = []
@@ -1835,6 +1887,8 @@ enum CollectionCSV {
             index += 1
         }
 
+        // Never offer a partial import from a truncated quoted record.
+        guard !inQuotes else { throw CollectionCSVError.unreadableFile }
         if !field.isEmpty || !row.isEmpty {
             row.append(field)
             if row.contains(where: { !$0.isEmpty }) { rows.append(row) }
@@ -1858,9 +1912,32 @@ enum CollectionCSV {
 
 /// Keeps export models in the context that fetched them.
 @ModelActor
-actor CollectionCSVExportActor {
-    func text() throws -> String {
-        CollectionCSV.export(try modelContext.fetch(FetchDescriptor<CollectedCard>())).text
+actor CollectionCSVExportActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
+    func text(kind: CollectionCSV.ExportKind) throws -> String {
+        switch kind {
+        case .collection:
+            return CollectionCSV.export(try modelContext.fetch(FetchDescriptor<CollectedCard>())).text
+        case .portfolioHistory:
+            return CollectionCSV.exportPortfolioHistory(
+                try modelContext.fetch(FetchDescriptor<PortfolioDailyClose>())
+            ).text
+        case .unpriced:
+            return CollectionCSV.exportUnpriced(
+                try modelContext.fetch(FetchDescriptor<CollectedCard>()),
+                priceRecords: try modelContext.fetch(FetchDescriptor<PriceRecord>())
+            ).text
+        case .missingArtwork:
+            return CollectionCSV.exportMissingArtwork(
+                try modelContext.fetch(FetchDescriptor<CollectedCard>()),
+                priceRecords: try modelContext.fetch(FetchDescriptor<PriceRecord>()),
+                localArtworkKeys: Set(try modelContext.fetch(FetchDescriptor<LocalArtworkOverride>()).map(\.collectionKey))
+            ).text
+        }
     }
 }
 
@@ -1868,7 +1945,12 @@ actor CollectionCSVExportActor {
 /// for the complete synchronous import operation, so no model reference or
 /// ownership lock crosses an actor suspension point.
 @ModelActor
-actor CollectionCSVImportActor {
+actor CollectionCSVImportActor: BackgroundModelActor {
+    init(modelContainer: ModelContainer, modelExecutor: any ModelExecutor) {
+        self.modelContainer = modelContainer
+        self.modelExecutor = modelExecutor
+    }
+
     func apply(
         _ plan: CollectionCSVImportPlan,
         exclusiveToken: UUID,

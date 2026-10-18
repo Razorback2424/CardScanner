@@ -248,6 +248,30 @@ final class ScanParserTests: XCTestCase {
         XCTAssertFalse(PokemonNameMatcher.agrees(cardName: "Mew", readings: ["New"]))
     }
 
+    func testDeltaSpeciesTitleDoesNotEliminateItsClassicReprint() {
+        for reading in ["Metagross", "Metagross δ", "Metagros δ"] {
+            XCTAssertEqual(
+                PokemonNameMatcher.matches(["Metagross δ", "Metagross"], readings: [reading]),
+                [0, 1],
+                reading
+            )
+        }
+        XCTAssertFalse(PokemonNameMatcher.agrees(cardName: "Metang", readings: ["Metagross δ"]))
+        XCTAssertFalse(PokemonNameMatcher.agrees(cardName: "Pikachu VMAX", readings: ["Pikachu"]))
+    }
+
+    func testDenominatorInferencePreservesClassicFooterCollisions() {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let profile = PokemonScanProfile(
+            registry: registry,
+            knownOfficialCounts: ["swsh8": 264, "swsh9": 172, "sv02": 193]
+        )
+        for footer in ["114/264", "123/172", "203/193"] {
+            XCTAssertNil(profile.inferredIdentifier(from: officialNumber(footer)), footer)
+        }
+        XCTAssertNotNil(profile.inferredIdentifier(from: officialNumber("1/193")))
+    }
+
     func testConfirmationWindowPrefersCodeReadAndMergesHistoricalReadings() throws {
         let code = try XCTUnwrap(ScanParser.parsePokemon("ASC 015/217"))
         let inferred = ScanSubject(
@@ -972,6 +996,33 @@ final class ScanParserTests: XCTestCase {
             magicProfile.parse(["0042", "PLST", "EN"])?.displayIdentifier,
             "PLST 42 EN"
         )
+    }
+
+    func testMagicPromosResolveTheirPrintedFooterRatherThanProviderSetCode() {
+        let adapter = MagicRecognitionAdapter(profile: magicProfile)
+        for (label, rarity, number) in [("Bring-a-Friend", "U", "1"), ("Welcome Back", "P", "2")] {
+            let lines = ["001/001 \(rarity) \(label)", "PRM ★ EN © 2020 Wizards"].map { RecognizedLine(text: $0) }
+            XCTAssertEqual(adapter.identify(lines), .identified(ScanSubject(identifier:
+                .magic(setCode: "PLG20", collectorNumber: number, language: "en"))))
+        }
+        for footer in ["001/001 U Bring-a-Friend PRM EN", "001/001 U Bring-a-Friend PRM EN © 2021",
+                       "001/001 P Welcome Back PRM FR © 2020", "002/001 P Welcome Back PRM EN © 2020"] {
+            guard case .rejected = adapter.identify([.init(text: footer)]) else {
+                return XCTFail("Incomplete/conflicting promo evidence must not identify: \(footer)")
+            }
+        }
+        let competing = ["001/001 U Bring-a-Friend", "001/001 P Welcome Back", "PRM EN © 2020"]
+        XCTAssertEqual(adapter.identify(competing.map { .init(text: $0) }), .ambiguous)
+    }
+
+    func testDragonfuryLabelSelectsPromoInsteadOfSameNumberInBaseSet() {
+        let adapter = MagicRecognitionAdapter(profile: MagicScanProfile(definitions: [.init(code: "DTK", printedSize: 264)]))
+        for number in ["135", "138", "187", "248"] {
+            XCTAssertEqual(adapter.identify([.init(text: "\(number)/264 C Tarkir Dragonfury"), .init(text: "DTK • EN © 2015 Wizards")]),
+                .identified(ScanSubject(identifier: .magic(setCode: "PTKDF", collectorNumber: number, language: "en"))))
+        }
+        XCTAssertEqual(adapter.identify([.init(text: "135/264 C"), .init(text: "DTK • EN © 2015 Wizards")]),
+            .identified(ScanSubject(identifier: .magic(setCode: "DTK", collectorNumber: "135", language: "en"))))
     }
 
     func testMagicStillRejectsTwoIdentitiesInOneFrame() {

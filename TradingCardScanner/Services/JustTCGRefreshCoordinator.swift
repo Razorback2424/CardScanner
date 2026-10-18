@@ -39,6 +39,10 @@ struct MarketPriceTarget: Hashable, Sendable {
     /// ambiguity the delta clock is supposed to prevent. Such a row forces its
     /// whole chunk to ask for a full response.
     var requiresFullResponse: Bool = false
+    /// Catalog evidence scoped to this physical variant, rather than a generic
+    /// printing handle. Allows a named Pokémon parallel to use the sole NM
+    /// listing on that exact product without enabling a name-search fallback.
+    var exactPhysicalProductID: String? = nil
 
     init(
         priceKey: String,
@@ -52,7 +56,8 @@ struct MarketPriceTarget: Hashable, Sendable {
         lastCheckedAt: Date?,
         justTCGFetchedAt: Date? = nil,
         magicTreatmentIDsRaw: [String] = [],
-        requiresFullResponse: Bool = false
+        requiresFullResponse: Bool = false,
+        exactPhysicalProductID: String? = nil
     ) {
         self.priceKey = priceKey
         self.game = game
@@ -66,6 +71,7 @@ struct MarketPriceTarget: Hashable, Sendable {
         self.justTCGFetchedAt = justTCGFetchedAt
         self.magicTreatmentIDsRaw = magicTreatmentIDsRaw
         self.requiresFullResponse = requiresFullResponse
+        self.exactPhysicalProductID = exactPhysicalProductID
     }
 
     /// The single identifier this target should be sent as.
@@ -513,7 +519,10 @@ struct JustTCGRefreshCoordinator {
         // it is known physical evidence that this resolver cannot translate,
         // so it must remain unpriced rather than borrowing the sole Near Mint
         // listing by accident.
-        guard wanted.isEmpty, owners.allSatisfy({ $0.variantID == nil }) else { return nil }
+        guard wanted.isEmpty, owners.allSatisfy({
+            $0.variantID == nil || ($0.game == .pokemon && $0.exactPhysicalProductID != nil
+                && $0.exactPhysicalProductID == card.tcgplayerId)
+        }) else { return nil }
         let nearMint = variants.filter {
             $0.condition?.caseInsensitiveCompare(ProductFinish.condition) == .orderedSame
         }

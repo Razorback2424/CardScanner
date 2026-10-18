@@ -104,7 +104,8 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
         // same class of fact as the booleans above — so it belongs here, and a
         // pattern the boolean set cannot express stops being invisible.
         for detailed in variantsDetailed ?? [] {
-            guard let variant = detailed.physicalVariant,
+            guard detailed.isStandardEnglish,
+                  let variant = detailed.physicalVariant,
                   !replacedBaseIDs.contains(variant.id),
                   !result.contains(variant) else { continue }
             result.append(variant)
@@ -119,11 +120,11 @@ struct TCGdexCard: Decodable, Identifiable, Sendable {
     /// published one for it.
     func detailedVariant(for variant: PhysicalVariant) -> TCGdexDetailedVariant? {
         if PokemonCatalogStampVariant.decode(variant.id) != nil {
-            return variantsDetailed?.first { $0.stampedPhysicalVariant?.id == variant.id }
+            return variantsDetailed?.first { $0.isStandardEnglish && $0.stampedPhysicalVariant?.id == variant.id }
         }
         return variantsDetailed?.first {
-            $0.physicalVariant == variant && $0.genericStamps.isEmpty
-        } ?? variantsDetailed?.first { $0.physicalVariant == variant }
+            $0.isStandardEnglish && $0.physicalVariant == variant && $0.genericStamps.isEmpty
+        } ?? variantsDetailed?.first { $0.isStandardEnglish && $0.physicalVariant == variant }
     }
 
     /// Exact stamp choices are exposed only when TCGdex publishes more than one
@@ -506,9 +507,10 @@ struct TCGPlayerPricing: Decodable, Sendable {
     let holofoil: TCGPlayerPricePoint?
     let reverse: TCGPlayerPricePoint?
     let reverseHolofoil: TCGPlayerPricePoint?
+    var unit: String? = nil
 
     enum CodingKeys: String, CodingKey {
-        case updated
+        case updated, unit
         case normal
         case holo
         case holofoil
@@ -565,6 +567,12 @@ enum FlexibleDate {
 
 struct TCGPlayerPricePoint: Decodable, Sendable {
     let marketPrice: Double?
+    var productID: Int? = nil
+
+    enum CodingKeys: String, CodingKey {
+        case marketPrice
+        case productID = "productId"
+    }
 }
 
 /// The exact Scryfall printing returned by the direct set/number/language lookup.
