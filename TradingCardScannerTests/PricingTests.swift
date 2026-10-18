@@ -146,6 +146,8 @@ final class PricingTests: XCTestCase {
         )
         XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: nil, currencyCode: "USD"))
         XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: .nan, currencyCode: "USD"))
+        XCTAssertNil(PortfolioPriceEligibility.eligibleUnitPrice(amount: -1, currencyCode: "USD"))
+        XCTAssertEqual(PortfolioPriceEligibility.eligibleUnitPrice(amount: 0, currencyCode: "USD"), .zero)
     }
 
     @MainActor

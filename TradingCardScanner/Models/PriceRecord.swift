@@ -50,7 +50,7 @@ enum PortfolioPriceEligibility {
     /// policy.
     static func eligibleUnitPrice(amount: Double?, currencyCode: String) -> Money? {
         guard currencyCode.caseInsensitiveCompare("USD") == .orderedSame,
-              let amount else { return nil }
+              let amount, amount >= 0 else { return nil }
         return Money(rounding: amount)
     }
 

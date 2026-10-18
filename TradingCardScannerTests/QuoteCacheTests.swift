@@ -163,6 +163,67 @@ final class QuoteCacheTests: XCTestCase {
         XCTAssertTrue(record.display.refreshFailed)
     }
 
+    func testOlderQuoteCannotReplaceNewerCachedPrice() throws {
+        let cache = QuoteCache(context: try makeContext())
+        let older = Date(timeIntervalSince1970: 1_700_000_000)
+        let newer = older.addingTimeInterval(60)
+        cache.store(quote(20, at: newer), game: .pokemon, printingID: "card", variantID: nil, at: newer)
+
+        let record = cache.store(quote(10, at: older), game: .pokemon, printingID: "card",
+                                 variantID: nil, at: newer.addingTimeInterval(60))
+
+        XCTAssertEqual(record.amount, 20)
+        XCTAssertEqual(record.retrievedAt, newer)
+    }
+
+    func testPresentingCachedQuotePreservesLaterRefreshFailure() throws {
+        let context = try makeContext()
+        let cache = QuoteCache(context: context)
+        let retrieved = Date(timeIntervalSince1970: 1_700_000_000)
+        let failed = retrieved.addingTimeInterval(60)
+        cache.store(quote(20, at: retrieved), game: .pokemon, printingID: "sv10-085", variantID: nil, at: retrieved)
+        let record = cache.recordFailure(game: .pokemon, printingID: "sv10-085", variantID: nil, at: failed)
+
+        _ = PriceCheckCoordinator(context: context).present(priceCheckScan())
+
+        XCTAssertEqual(record.lastCheckedAt, failed)
+        XCTAssertEqual(record.lastFailureAt, failed)
+        XCTAssertEqual(record.amount, 20)
+
+        let recovered = failed.addingTimeInterval(60)
+        cache.store(quote(30, at: recovered), game: .pokemon, printingID: "sv10-085", variantID: nil, at: recovered)
+        XCTAssertEqual(record.lastCheckedAt, recovered)
+        XCTAssertNil(record.lastFailureAt)
+        XCTAssertEqual(record.amount, 30)
+    }
+
+    func testOlderFailureCannotMarkNewerQuoteAsFailed() throws {
+        let cache = QuoteCache(context: try makeContext())
+        let older = Date(timeIntervalSince1970: 1_700_000_000)
+        let newer = older.addingTimeInterval(60)
+        cache.store(quote(20, at: newer), game: .pokemon, printingID: "card", variantID: nil, at: newer)
+
+        let record = cache.recordFailure(game: .pokemon, printingID: "card", variantID: nil, at: older)
+
+        XCTAssertEqual(record.lastCheckedAt, newer)
+        XCTAssertNil(record.lastFailureAt)
+    }
+
+    func testNegativeQuoteCannotReplaceLastKnownPrice() throws {
+        let cache = QuoteCache(context: try makeContext())
+        let retrieved = Date(timeIntervalSince1970: 1_700_000_000)
+        let failed = retrieved.addingTimeInterval(60)
+        cache.store(quote(20, at: retrieved), game: .pokemon, printingID: "card", variantID: nil, at: retrieved)
+
+        let invalid = quote(-1, at: failed)
+        let record = cache.store(invalid, game: .pokemon, printingID: "card", variantID: nil, at: failed)
+
+        XCTAssertEqual(record.amount, 20)
+        XCTAssertEqual(record.retrievedAt, retrieved)
+        XCTAssertEqual(record.lastFailureAt, failed)
+        XCTAssertFalse(PriceCheckCoordinator.isUsableUSD(invalid))
+    }
+
     func testScanRequestKeepsItsCapturedPurpose() {
         let identifier = ScanIdentifier.magic(
             setCode: "MKM",
