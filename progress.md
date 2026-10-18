@@ -2883,3 +2883,16 @@ historical.
   a settled recapture; an unrelated existing catalog-unavailable banner was
   left unchanged. Documentation links and diff whitespace checks pass. No
   hardcoded user price, physical-device installation, commit, push or release.
+- **2026-10-18 — Scanner confirmation placement:** moved passive saving/add
+  feedback below the top controls, leaving the footer reading area clear while
+  the recent-card rail and session review remain at the bottom. Explicit choices
+  retain their existing lower action surface. Camera/recognition geometry is
+  unchanged. Added a DEBUG-only 38-card session fixture with no collection writes.
+  Simulator build passed; inspected the standard-size 38-card layout on a
+  dedicated iPhone 17 / iOS 27 simulator. Evidence: external SSD
+  `CodexBuilds/ScannerFeedback-20261018/`; checklist:
+  `artifacts/scanner_feedback_checklist.md`. Accessibility-large exposed existing
+  title compression and session-control overlap, recorded as unresolved limits.
+  Simulator camera guides are absent without live camera input; no physical
+  camera alignment, device installation or release claim. Concurrent scanner
+  routing/test changes were preserved. Whitespace validation passed.

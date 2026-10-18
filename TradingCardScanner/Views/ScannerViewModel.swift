@@ -6084,6 +6084,7 @@ final class ScannerViewModel: ObservableObject {
     /// hard case on purpose: a long name, a full identifier line, and a priced
     /// printing all competing for one row.
     func seedReceiptFixtureForScreenshot() {
+        defer { seedLongSessionFixtureForScreenshot() }
         let isTrustReceipt = ProcessInfo.processInfo.arguments.contains("TrustScanReceipt")
         let resolution = isTrustReceipt ? PortfolioDebugFixtures.debugResolution() : nil
         let variantLabel: String
@@ -6119,6 +6120,46 @@ final class ScannerViewModel: ObservableObject {
                 )
             ),
             resolution: resolution
+        )
+    }
+
+    /// Reproduce a sustained session without collection writes or the camera.
+    private func seedLongSessionFixtureForScreenshot() {
+        guard ProcessInfo.processInfo.arguments.contains("long-session") else { return }
+        let card = IdentifiedCard.pokemon(
+            TCGdexCard(
+                id: "debug-set-035", localId: "035", name: "Duskull",
+                image: nil, rarity: "Common",
+                set: TCGdexSetBrief(
+                    id: "debug-set", name: "Scanner Layout QA",
+                    cardCount: TCGdexCardCount(total: 131, official: 131)
+                ),
+                variants: nil, pricing: nil, variantsDetailed: nil
+            ),
+            setCode: "PRE"
+        )
+        let subject = ScanSubject(identifier: .pokemon(
+            setCode: "PRE", cardNumber: "035", printedTotal: 131,
+            setDefinition: PokemonSetDefinition(
+                printedCode: "PRE", tcgdexSetID: "debug-set",
+                officialCount: 131, releaseIndex: 0
+            )
+        ))
+        sessionScans = (0..<38).map { index in
+            RecentScan(
+                subject: subject, card: card,
+                resolved: ResolvedVariant(variant: .normal, resolution: .finishLock),
+                options: [.normal],
+                mutation: CollectionMutation(
+                    collectionKey: "scanner-layout-\(index)", activityID: nil, didInsert: true
+                )
+            )
+        }
+        recent = Array(sessionScans.prefix(5))
+        receipt = ScanReceipt(
+            scanID: sessionScans[0].id, name: "Duskull", identifier: "PRE 035/131",
+            variantLabel: "Normal", treatmentDiagnostics: [], thumbnailURL: nil,
+            price: .unavailable(nil), resolution: .finishLock
         )
     }
 

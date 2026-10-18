@@ -3,7 +3,7 @@ import SwiftUI
 
 /// One continuous session. The camera is the product surface and never goes
 /// away: there is no result screen, no confirm step, and no dismiss animation
-/// between cards. Success is a receipt that appears underneath while the next
+/// between cards. Success is a receipt below the top controls while the next
 /// card is already being read.
 struct ScannerView: View {
     let browseCatalog: BrowseCatalog
@@ -329,6 +329,10 @@ private struct ScannerChrome: View {
             )
             .equatable()
 
+            // Keep transient feedback above the card footer. The preview and
+            // its reading region stay fixed as receipts arrive during a run.
+            scanFeedback
+
             if let note = model.note {
                 ScanNoteView(note: note)
                     .transition(.move(edge: .top).combined(with: .opacity))
@@ -426,15 +430,34 @@ private struct ScannerChrome: View {
                 )
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
-            } else if let acknowledgement = model.scanAcknowledgement {
+            }
+
+            ScannerSlabPromptView(
+                state: scanner.uiState,
+                switchToRaw: { model.setSubjectMode(.raw) }
+            )
+
+            sessionHistory
+        }
+    }
+
+    @ViewBuilder
+    private var scanFeedback: some View {
+        // Explicit choices retain the lower, reachable action surface and
+        // suppress passive feedback just as they did in the original stack.
+        if model.pendingDuplicateConfirmation == nil,
+           model.pendingIdentityChoice == nil,
+           model.pendingPrintRunChoice == nil,
+           model.pendingChoice == nil {
+            if let acknowledgement = model.scanAcknowledgement {
                 ScanAcknowledgementCard(
                     acknowledgement: acknowledgement,
                     onRetryScan: {
                         model.retryFailedScan(encounterID: acknowledgement.encounterID)
                     }
                 )
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                    .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .appGlassEffectID("scanner-feedback", in: glassNamespace)
             } else if model.purpose == .collection, let receipt = model.receipt {
                 ScanReceiptCard(
                     receipt: receipt,
@@ -448,50 +471,46 @@ private struct ScannerChrome: View {
                         openReview(scan)
                     }
                 )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-                .appGlassEffectID("scanner-bottom-stack", in: glassNamespace)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .appGlassEffectID("scanner-feedback", in: glassNamespace)
             }
+        }
+    }
 
-            ScannerSlabPromptView(
-                state: scanner.uiState,
-                switchToRaw: { model.setSubjectMode(.raw) }
-            )
+    private var sessionHistory: some View {
+        VStack(alignment: .trailing, spacing: 8) {
+            if model.purpose == .collection, !model.recent.isEmpty {
+                RecentScanRail(
+                    scans: model.recent,
+                    gradedPriceUpdatedScanID: model.gradedPriceUpdatedScanID,
+                    onSelect: openReview,
+                    onDelete: model.deleteRecentScan
+                )
+                    .frame(maxWidth: .infinity)
 
-            VStack(alignment: .trailing, spacing: 8) {
-                if model.purpose == .collection, !model.recent.isEmpty {
-                    RecentScanRail(
-                        scans: model.recent,
-                        gradedPriceUpdatedScanID: model.gradedPriceUpdatedScanID,
-                        onSelect: openReview,
-                        onDelete: model.deleteRecentScan
-                    )
-                        .frame(maxWidth: .infinity)
-
-                    if model.sessionScans.count > 5 {
-                        Button {
-                            openSessionReview()
-                        } label: {
-                            Label(
-                                "Review session · \(model.sessionScans.count) cards",
-                                systemImage: "list.bullet.rectangle"
-                            )
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 11)
-                            .padding(.vertical, 7)
-                            .appPillGlass()
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Review session, \(model.sessionScans.count) cards")
-                        .accessibilityHint("Opens every card added during this scanner visit.")
+                if model.sessionScans.count > 5 {
+                    Button {
+                        openSessionReview()
+                    } label: {
+                        Label(
+                            "Review session · \(model.sessionScans.count) cards",
+                            systemImage: "list.bullet.rectangle"
+                        )
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 11)
+                        .padding(.vertical, 7)
+                        .appPillGlass()
                     }
-                }
-
-                if model.unresolvedCount > 0 {
-                    unresolvedChip
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Review session, \(model.sessionScans.count) cards")
+                    .accessibilityHint("Opens every card added during this scanner visit.")
                 }
             }
 
+            if model.unresolvedCount > 0 {
+                unresolvedChip
+            }
         }
     }
 
