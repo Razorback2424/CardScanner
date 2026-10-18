@@ -139,6 +139,72 @@ final class PokemonTCGCSVPriceTests: XCTestCase {
         }
     }
 
+    func testPriceResponseRejectsDeclaredRowCountMismatches() throws {
+        let fixture = try XCTUnwrap(fixtures()["30th-c"])
+        let products = try JSONSerialization.data(withJSONObject: fixture["products"]!)
+        let originalRows = (fixture["prices"] as! [String: Any])["results"] as! [[String: Any]]
+        for declaredCount in [originalRows.count, originalRows.count - 2] {
+            var prices = fixture["prices"] as! [String: Any]
+            prices["results"] = originalRows.filter { $0["productId"] as? Int != 716194 }
+            prices["totalItems"] = declaredCount
+
+            XCTAssertThrowsError(try PokemonTCGCSVPriceService.decodeSnapshot(
+                products: products, prices: JSONSerialization.data(withJSONObject: prices),
+                setID: "30th-c", feedBuild: "build", fetchedAt: date
+            )) { error in
+                guard case PokemonTCGCSVError.invalidResponse = error else {
+                    return XCTFail("Unexpected error: \(error)")
+                }
+            }
+        }
+    }
+
+    func testCompletePriceResponseWithDeclaredRowCountIsAccepted() throws {
+        let fixture = try XCTUnwrap(fixtures()["30th-c"])
+        var prices = fixture["prices"] as! [String: Any]
+        prices["totalItems"] = (prices["results"] as! [[String: Any]]).count
+        let result = try PokemonTCGCSVPriceService.decodeSnapshot(
+            products: JSONSerialization.data(withJSONObject: fixture["products"]!),
+            prices: JSONSerialization.data(withJSONObject: prices),
+            setID: "30th-c", feedBuild: "build", fetchedAt: date
+        )
+
+        XCTAssertEqual(result.valuesByCardID.count, 30)
+        XCTAssertNotNil(result.valuesByCardID["30th-c-014"])
+    }
+
+    func testPartialPriceFeedIsNotCachedAndExplicitRetryCanRecover() async throws {
+        let validServer = try server()
+        var routes = validServer.routes
+        let pricePath = "/tcgplayer/3/24837/prices"
+        var prices = try XCTUnwrap(JSONSerialization.jsonObject(with: routes[pricePath]!) as? [String: Any])
+        let rows = prices["results"] as! [[String: Any]]
+        prices["totalItems"] = rows.count
+        prices["results"] = rows.filter { $0["productId"] as? Int != 716194 }
+        routes[pricePath] = try JSONSerialization.data(withJSONObject: prices)
+        let partialServer = TCGCSVTestServer(routes: routes, now: date)
+        TCGCSVTestURLProtocol.server = partialServer
+        defer { TCGCSVTestURLProtocol.server = nil }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let service = makeService(server: partialServer, root: root)
+
+        do {
+            _ = try await service.snapshot(setID: "30th-c", retry: false)
+            XCTFail("A partial feed must fail instead of confirming a missing price")
+        } catch {
+            guard case PokemonTCGCSVError.invalidResponse = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: root.appendingPathComponent("30th-c.json").path))
+
+        TCGCSVTestURLProtocol.server = validServer
+        let recovered = try await service.snapshot(setID: "30th-c", retry: true)
+        XCTAssertEqual(recovered.valuesByCardID.count, 30)
+        XCTAssertNotNil(recovered.valuesByCardID["30th-c-014"])
+    }
+
     func testReviewedFinishEvidenceCorrectsGeneratedNormalOnlyForMappedCards() throws {
         for id in ["30th-053", "30th-c-014"] {
             let card = try Self.card(id)
