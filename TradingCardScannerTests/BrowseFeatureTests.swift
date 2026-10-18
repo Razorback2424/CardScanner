@@ -7087,6 +7087,39 @@ final class BrowsePaginationRenderTests: XCTestCase {
         XCTAssertEqual(requests, ["first:start", "first:1", "first:2"])
     }
 
+    func testSetLoadingKeepsScrollOriginBelowSearchAndReturnsToTop() async throws {
+        let set = fixtureSet("first")
+        let catalog = RenderPagingCatalog(
+            sets: [set], holdsFirstPage: true, cardsPerPage: 40, pageCount: 1
+        )
+        let window = try host(CatalogSetCardsView(set: set, catalog: catalog), height: 800)
+        defer { window.isHidden = true; window.rootViewController = nil }
+        try await waitForRequests(1, catalog: catalog)
+        await catalog.releaseFirstPage()
+        for _ in 0..<100 {
+            if let scroll = findScrollView(in: window),
+               scroll.contentSize.height > scroll.bounds.height { break }
+            try await Task.sleep(for: .milliseconds(30))
+        }
+        try await Task.sleep(for: .milliseconds(150))
+        let scroll = try XCTUnwrap(findScrollView(in: window))
+        let search = try XCTUnwrap(findTextField(in: window))
+        let searchFrame = search.convert(search.bounds, to: window)
+        let contentTop = scroll.convert(
+            CGPoint(x: 0, y: 0), to: window
+        ).y
+        XCTAssertGreaterThan(scroll.contentSize.height, scroll.bounds.height)
+        XCTAssertEqual(scroll.contentOffset.y, -scroll.adjustedContentInset.top, accuracy: 1)
+        XCTAssertGreaterThanOrEqual(contentTop, searchFrame.maxY,
+                                    "The first content must be below the search field without pulling down")
+
+        scroll.setContentOffset(CGPoint(x: 0, y: 400), animated: false)
+        scroll.setContentOffset(CGPoint(x: 0, y: -scroll.adjustedContentInset.top), animated: false)
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertEqual(scroll.contentOffset.y, -scroll.adjustedContentInset.top, accuracy: 1)
+        XCTAssertGreaterThanOrEqual(scroll.convert(CGPoint.zero, to: window).y, searchFrame.maxY)
+    }
+
     func testSetPricesCancelOnDisappearanceAndResumeOnReturn() async throws {
         let set = fixtureSet("first")
         let catalog = RenderPagingCatalog(sets: [set], pageCount: 1, holdsPrices: true)
@@ -7152,6 +7185,11 @@ final class BrowsePaginationRenderTests: XCTestCase {
         var candidates = view.subviews.compactMap { self.findScrollView(in: $0) }
         if let scroll = view as? UIScrollView { candidates.append(scroll) }
         return candidates.max { $0.contentSize.height < $1.contentSize.height }
+    }
+
+    private func findTextField(in view: UIView) -> UITextField? {
+        if let field = view as? UITextField { return field }
+        return view.subviews.lazy.compactMap { self.findTextField(in: $0) }.first
     }
 
     private func host<V: View>(_ view: V, height: CGFloat = 2400,

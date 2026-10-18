@@ -1260,6 +1260,43 @@ struct CatalogPriceLoadState: Equatable, Sendable {
     }
 }
 
+/// Keep catalog search in the screen's layout. Navigation-bar search controllers
+/// survive pushes in this shared stack and can leave stale scroll insets or a
+/// search presentation intercepting touches after a pop.
+private struct CatalogSearchField: View {
+    @Binding var text: String
+    let prompt: String
+    @FocusState private var isFocused: Bool
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+            TextField(prompt, text: $text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .focused($isFocused)
+                .submitLabel(.done)
+                .onSubmit { isFocused = false }
+                .accessibilityLabel(prompt)
+            if !text.isEmpty {
+                Button("Clear search", systemImage: "xmark.circle.fill") { text = "" }
+                    .labelStyle(.iconOnly)
+                    .foregroundStyle(.secondary)
+                    .frame(minWidth: 44, minHeight: 44)
+            }
+        }
+        .padding(.horizontal, 14)
+        .frame(minHeight: 48)
+        .background(.quaternary.opacity(0.65), in: RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 10)
+        .background(Color(uiColor: .systemBackground))
+        .onDisappear { isFocused = false }
+    }
+}
+
 private struct CatalogGameBrowseView: View {
     @Environment(\.catalogCardSelection) private var catalogCardSelection
     let game: CardGame
@@ -1311,10 +1348,13 @@ private struct CatalogGameBrowseView: View {
         }
         .navigationTitle(game.label)
         .navigationBarTitleDisplayMode(.inline)
-        .searchable(
-            text: $search,
-            prompt: "Search \(game.label) \(contentKind == .cards ? "cards" : "sets")"
-        )
+        .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            CatalogSearchField(
+                text: $search,
+                prompt: "Search \(game.label) \(contentKind == .cards ? "cards" : "sets")"
+            )
+        }
         .toolbar {
             if contentKind == .cards {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -1818,7 +1858,9 @@ private struct CatalogSetListView: View {
         .scrollDismissesKeyboard(.interactively)
         .safeAreaPadding(.bottom, 24)
         .navigationTitle("\(game.label) Sets")
-        .searchable(text: $search, prompt: "Search sets")
+        .safeAreaInset(edge: .top, spacing: 0) {
+            CatalogSearchField(text: $search, prompt: "Search sets")
+        }
         .navigationDestination(item: $selectedSet) { set in
             CatalogSetCardsView(set: set, catalog: catalog)
         }
@@ -2068,7 +2110,9 @@ struct CatalogSetCardsView: View {
     var body: some View {
         let owned = projectionStore.snapshot?.ownership ?? CatalogOwnershipIndex(rows: [])
         return ScrollView {
-            LazyVStack {
+            // Only the card grid needs lazy layout. Keep the header's identity
+            // and origin stable when a short loading state becomes a long grid.
+            VStack {
                 if cards.isEmpty && isLoading {
                     VStack(spacing: 12) {
                         ProgressView()
@@ -2124,7 +2168,10 @@ struct CatalogSetCardsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
         .safeAreaPadding(.bottom, 24)
-        .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Name or number")
+        .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            CatalogSearchField(text: $search, prompt: "Name or number")
+        }
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Menu {
