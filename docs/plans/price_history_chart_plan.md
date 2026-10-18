@@ -12,6 +12,13 @@ not start at acquisition and is not limited to days the app checked a price.
 The movement badge compares the first and last provider prices in the selected
 range. Catalog details allow finish selection when multiple finishes exist.
 
+The collection detail's default headline uses the same current quote as its
+holding value and collection total, with that quote's source and timestamp.
+Loading history must not replace that quote. JustTCG history changes and the
+latest history timestamp are labeled separately; a dragged historical price
+is explicitly dated. Exact marketplace product links are available across games
+when the shared link builder has a trusted destination.
+
 The chart draws a continuous linear price line with a restrained area fill.
 Dragging selects an actual provider price and its timestamp; connected lines
 do not create synthetic daily observations. Empty or failed provider results

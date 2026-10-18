@@ -2854,3 +2854,18 @@ historical.
   documentation links and `git diff --check` pass. Existing user changes were
   preserved. No live-provider acceptance, physical-device install, commit,
   push, archive or release claim.
+- **2026-10-18 — Collection detail quote consistency:** the default headline
+  now uses the same `PriceDisplay` as ownership value and collection totals,
+  instead of replacing it with the newest JustTCG history point. Quote source
+  and timestamp are visible; historical movement and timestamps are grouped
+  and labeled as history. Removed the Magic-only screen restriction on exact
+  marketplace links, reusing the existing cross-game link builder. Debug
+  simulator build and 27 focused tests pass (14 link, 13 chart-model). Inspected
+  populated-history and empty/error captures on isolated iPhone 17 / iOS 27;
+  the synthetic $342 quote remains separate from the historical series and
+  equals the one-copy holding value. Evidence: external SSD
+  `CodexBuilds/CollectionQuoteFix-20261018/`; checklist:
+  `artifacts/collection_quote_fix_checklist.md`. Fresh simulator startup needed
+  a settled recapture; an unrelated existing catalog-unavailable banner was
+  left unchanged. Documentation links and diff whitespace checks pass. No
+  hardcoded user price, physical-device installation, commit, push or release.

@@ -196,7 +196,7 @@ struct CollectionCardDetailView: View {
                     VStack(spacing: 0) {
                         heroSection
                         cardIdentitySection
-                        valuationSection(model: chartModel, movement: movement)
+                        valuationSection(model: chartModel)
                             .id("card-price-valuation")
                         priceHistorySection(model: chartModel, movement: movement)
                         marketplaceSection
@@ -873,7 +873,7 @@ struct CollectionCardDetailView: View {
         .padding(.top, 24)
     }
 
-    private func valuationSection(model: PriceHistoryChartModel, movement: CardDetailMovementDisplay) -> some View {
+    private func valuationSection(model: PriceHistoryChartModel) -> some View {
         VStack(spacing: 0) {
             if let selectedPriceDate {
                 let sample = model.sample(at: selectedPriceDate)
@@ -888,20 +888,16 @@ struct CollectionCardDetailView: View {
                     .foregroundStyle(.secondary)
                     .padding(.top, 10)
             } else {
-                if let latest = marketHistory.last, let amount = Money(rounding: latest.p) {
-                    Text(amount.formatted(currencyCode: "USD"))
-                        .font(.system(size: 52, weight: .bold, design: .rounded))
-                        .monospacedDigit()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                } else {
-                    CardDetailHeroPrice(price: price)
+                // History is a separate provider series, not the quote used by
+                // collection/portfolio valuation. Never let it replace that quote.
+                CardDetailHeroPrice(price: price)
+                if let source = price.source {
+                    Text(priceSourceDescription(source))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 10)
                 }
-                CardDetailMovementPill(
-                    display: movement,
-                    currencyCode: "USD"
-                )
-                .padding(.top, 10)
             }
         }
         .frame(maxWidth: .infinity, minHeight: 104)
@@ -960,6 +956,15 @@ struct CollectionCardDetailView: View {
         movement: CardDetailMovementDisplay
     ) -> some View {
         VStack(spacing: 0) {
+            // This change belongs to JustTCG's historical series, which can
+            // differ from the current valuation quote's source and timestamp.
+            Text("JustTCG history change")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            CardDetailMovementPill(display: movement, currencyCode: "USD")
+                .padding(.top, 6)
+                .padding(.bottom, 16)
+
             PriceHistoryChartView(
                 model: model,
                 currencyCode: "USD",
@@ -983,7 +988,7 @@ struct CollectionCardDetailView: View {
                 .padding(.top, 8)
 
             if let latest = marketHistory.last {
-                Text("Latest market price · \(Date(timeIntervalSince1970: latest.t).formatted(date: .abbreviated, time: .shortened))")
+                Text("Latest history point · \(Date(timeIntervalSince1970: latest.t).formatted(date: .abbreviated, time: .shortened))")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -1419,16 +1424,10 @@ struct CollectionCardDetailView: View {
         return "\(source.label) · checked \(price.fetchedAt?.formatted(date: .abbreviated, time: .shortened) ?? "never")"
     }
 
-    /// Scryfall's purchase URL identifies the exact Magic printing, but its URL
-    /// does not promise a preselected finish. Say that plainly and never expose
-    /// it for an unsupported or unknown finish.
+    /// The shared builder requires an exact marketplace product or a trusted
+    /// provider URL. Pokémon products are just as eligible as Magic printings.
     private var exactTCGPlayerPrintingURL: URL? {
-        guard card.cardGame == .magic,
-              let variantID = card.variantID,
-              variantID == PhysicalVariant.nonfoil.id || variantID == PhysicalVariant.foil.id else {
-            return nil
-        }
-        return TCGplayerLinkBuilder.url(for: card)
+        TCGplayerLinkBuilder.url(for: card)
     }
 
     @MainActor
