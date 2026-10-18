@@ -16,6 +16,13 @@ fresh preferences, repeated bootstrap, all five game capabilities and variant
 menus. Existing Debug integration tests cover catalog content and trusted-key
 verification. Verification results are recorded in `progress.md`.
 
+**Personal-device installation — 2026-10-18:** committed fix `75601a1` built
+successfully as development-signed `ReleaseLocal` for iOS and installed over the
+existing personal iPhone app. The bundled owner catalog and pins matched source.
+Launch verification was blocked by the locked phone; visible One Piece and
+physical-device startup remain unchecked. The host's strict signature check
+reported a trust-chain error, while CoreDevice accepted the installation.
+
 **Specialty-printing review — 2026-10-15:** three independently reconciled original
 Romance Dawn printings (alternate Zoro, alternate Shanks and manga Shanks) are
 added to the durable review corpus, bringing it to 2,748 retained / 2,493 verified

@@ -1,3 +1,15 @@
+- Personal-device installation (2026-10-18; `75601a1`): the One Piece
+  availability fix, tests and simulator evidence were committed and pushed to
+  `origin/main`. Every other fetched local/remote branch was already an ancestor
+  of main. The development-signed `ReleaseLocal` iOS build succeeded using the
+  external SSD; the bundled owner catalog and public pins matched the committed
+  source byte-for-byte. CoreDevice successfully installed the app over the
+  existing personal iPhone installation. Automatic launch was denied because
+  the phone was locked, so physical-device startup and visible One Piece
+  availability remain unverified. The Mac's standalone strict signature check
+  reported `CSSMERR_TP_NOT_TRUSTED`; the device nevertheless accepted installation.
+  No production rollout or release-readiness claim is made.
+
 - One Piece availability across local build configurations (2026-10-18): fixed
   the bundled owner runtime being excluded from `ReleaseLocal` by a Debug-only
   compilation guard. ProfileLocal can now replace Debug under the same app
