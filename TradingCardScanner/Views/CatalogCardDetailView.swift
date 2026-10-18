@@ -39,7 +39,7 @@ struct CatalogCardDetailView: View {
     /// its answer was thrown away. Same rule the scanner already uses.
     @State private var fallbackQuoteTasks: [String: Task<Void, Never>] = [:]
     @State private var showsGradedPicker = false
-    @State private var browseHistorySeries: [BrowsePricePersistedSeries] = []
+    @State private var historyVariantID: String?
     @State private var mappedPrices: [String: PriceLookup] = [:]
     @State private var mappedPriceCheckFinished = false
     @State private var failedPriceVariantIDs: Set<String> = []
@@ -47,7 +47,6 @@ struct CatalogCardDetailView: View {
     /// One transport per presentation, so the graded picker shares the app's
     /// pacing and request ledger rather than keeping its own.
     private let marketTransport = JustTCGTransport.shared
-    private let browsePriceHistoryStore = BrowsePriceHistoryStore.shared
 
     var body: some View {
         ScrollView {
@@ -81,16 +80,6 @@ struct CatalogCardDetailView: View {
         }
         .task { if details == nil { await load() } }
         .task(id: "\(details?.card.id ?? ""):\(priceRetryID)") { await loadMappedPrices() }
-        .onReceive(NotificationCenter.default.publisher(
-            for: BrowsePriceHistoryStore.didChange, object: browsePriceHistoryStore
-        ).receive(on: RunLoop.main)) { notification in
-            guard notification.userInfo?["setID"] as? String == summary.setID.id else { return }
-            Task { @MainActor in
-                browseHistorySeries = await browsePriceHistoryStore.series(
-                    game: summary.game, setID: summary.setID.id, printingID: summary.id
-                )
-            }
-        }
         .sheet(isPresented: $showsGradedPicker) {
             if let details {
                 GradedVariantPickerView(
@@ -376,18 +365,23 @@ struct CatalogCardDetailView: View {
 
     @ViewBuilder
     private func browsePriceHistorySection() -> some View {
-        BrowsePriceHistoryChartView(
-            model: BrowsePriceHistoryChartModel(series: displayedBrowseHistorySeries)
-        )
-    }
-
-    private var displayedBrowseHistorySeries: [BrowsePricePersistedSeries] {
-        guard let variant = summary.masterSetVariant,
-              let descriptor = variant.browsePriceHistoryDescriptorV1 else {
-            return browseHistorySeries
-        }
-        return browseHistorySeries.filter {
-            $0.key.variantDescriptor == descriptor
+        if let details {
+            let variants = details.card.variantEvidence.catalogVariants
+            let variant = summary.masterSetVariant
+                ?? variants.first(where: { $0.id == historyVariantID }) ?? variants.first
+            if summary.masterSetVariant == nil, variants.count > 1 {
+                Picker("History finish", selection: Binding(
+                    get: { variant?.id ?? "" }, set: { historyVariantID = $0 }
+                )) {
+                    ForEach(variants) { Text($0.label).tag($0.id) }
+                }
+                .pickerStyle(.menu)
+                .padding(.horizontal, 16)
+            }
+            CardMarketHistoryPanel(request: .init(card: details.card,
+                variant: variant,
+                printRun: summary.pokemonPrintRun))
+                .id(variant?.id ?? "unknown")
         }
     }
 
@@ -625,11 +619,6 @@ struct CatalogCardDetailView: View {
         defer { isLoading = false }
         do {
             details = try await catalog.details(for: summary)
-            browseHistorySeries = await browsePriceHistoryStore.series(
-                game: summary.game,
-                setID: summary.setID.id,
-                printingID: summary.id
-            )
         }
         catch is CancellationError { return }
         catch { self.error = CatalogFailurePresentation(error: error) }

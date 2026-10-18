@@ -80,8 +80,7 @@ extension JustTCGBatchLookup: Encodable {
 struct JustTCGBatchRequest: Encodable, Sendable {
     let items: [JustTCGBatchLookup]
     /// Routine collection pricing never asks for history. History is an order of
-    /// magnitude more data. The request flag is available for a future detail
-    /// history path; no current caller requests or decodes a historical series.
+    /// magnitude more data. Detail screens request history separately.
     let includePriceHistory: Bool
     /// Only variants the vendor has repriced since this moment. A delta.
     let updatedAfter: Date?
@@ -308,6 +307,14 @@ struct JustTCGVariant: Decodable, Sendable {
     let lastUpdated: Double?
     /// Present only on `/v2/cards` results for graded slabs.
     let grading: JustTCGGrading?
+    let priceHistory: [JustTCGHistoryPoint]?
+
+    var historyUSD: [JustTCGHistoryPoint] {
+        if let priceHistory, currency == nil || currency?.uppercased() == "USD" {
+            return priceHistory
+        }
+        return usdMarket?.priceHistory ?? []
+    }
 
     // Rolling statistics, returned alongside the price. Populated on every
     // response, so they cost nothing extra and can back a "limited market
@@ -377,7 +384,7 @@ struct JustTCGVariant: Decodable, Sendable {
 
     enum CodingKeys: String, CodingKey {
         case id, uuid, type, condition, printing, language, tcgplayerSkuId
-        case price, currency, lastUpdated, grading, markets
+        case price, currency, lastUpdated, grading, markets, priceHistory
         case priceChange24hr, priceChange7d, minPrice7d, maxPrice7d
         case covPrice7d, priceChangesCount7d
     }
@@ -389,11 +396,19 @@ struct JustTCGMarket: Decodable, Sendable {
     let currency: String?
     let price: Double?
     let updatedAt: Double?
+    let priceHistory: [JustTCGHistoryPoint]?
 
     enum CodingKeys: String, CodingKey {
         case region, currency, price
         case updatedAt = "updated_at"
+        case priceHistory = "price_history"
     }
+}
+
+/// Provider timestamps, never the time the app happened to check a price.
+struct JustTCGHistoryPoint: Codable, Equatable, Sendable {
+    let p: Double
+    let t: Double
 }
 
 /// The grading block on a v2 variant.

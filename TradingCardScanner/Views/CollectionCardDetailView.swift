@@ -76,6 +76,7 @@ private struct CardDetailMovementDisplay: Equatable {
 }
 
 struct CollectionCardDetailView: View {
+    @Environment(\.cardGameRuntimes) private var runtimes
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @ScaledMetric(relativeTo: .largeTitle) private var titleFontSize: CGFloat = 32
@@ -84,8 +85,6 @@ struct CollectionCardDetailView: View {
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.cardFinishMotionSource) private var cardFinishMotion
     @Bindable var card: CollectedCard
-    @Query private var priceObservations: [PriceObservation]
-    @Query private var priceCheckDays: [PriceCheckDay]
     @Query private var collectionActivities: [CollectionActivity]
     @Query private var ungradedReferenceRecords: [PriceRecord]
     let price: PriceDisplay
@@ -101,6 +100,7 @@ struct CollectionCardDetailView: View {
     private let priceHistoryInstrumentKey: String
 
     @State private var isConfirmingRemoval = false
+    @State private var isChoosingArtwork = false
     @State private var selectedArtwork: PhotosPickerItem?
     @State private var errorMessage: String?
     @State private var artworkGeneration = 0
@@ -108,6 +108,10 @@ struct CollectionCardDetailView: View {
     @State private var artworkAccent: ArtworkAccent?
     @State private var quantityState = CollectionDetailQuantityState()
     @State private var selectedPriceDate: Date?
+    @State private var marketHistory: [JustTCGHistoryPoint] = []
+    @State private var marketHistoryError: String?
+    @State private var isLoadingMarketHistory = false
+    @State private var marketHistoryRetry = 0
 #if DEBUG
     @State private var isShowingPrintingDetailsRoute = false
 #endif
@@ -154,14 +158,6 @@ struct CollectionCardDetailView: View {
             descriptor.fetchLimit = 1
             self._ungradedReferenceRecords = Query(descriptor)
         }
-        self._priceObservations = Query(
-            filter: #Predicate<PriceObservation> { $0.instrumentKey == resolvedInstrumentKey },
-            sort: [SortDescriptor(\PriceObservation.receivedAt, order: .forward)]
-        )
-        self._priceCheckDays = Query(
-            filter: #Predicate<PriceCheckDay> { $0.instrumentKey == resolvedInstrumentKey },
-            sort: [SortDescriptor(\PriceCheckDay.portfolioDay, order: .forward)]
-        )
         let resolvedCollectionKey = card.collectionKey
         if card.itemKind == .gradedCard {
             self._collectionActivities = Query(Self.gradedAcquisitionDescriptor(for: resolvedCollectionKey))
@@ -220,7 +216,7 @@ struct CollectionCardDetailView: View {
                     let arguments = ProcessInfo.processInfo.arguments
                     if let index = arguments.firstIndex(of: "-ui_debug_state"),
                        arguments.indices.contains(index + 1),
-                       arguments[index + 1] == "price-chart" {
+                       arguments[index + 1].hasPrefix("price-chart") {
                         try? await Task.sleep(for: .milliseconds(300))
                         scrollProxy.scrollTo("card-price-valuation", anchor: .top)
                     }
@@ -229,6 +225,10 @@ struct CollectionCardDetailView: View {
             }
         }
         .environment(\.colorScheme, .dark)
+        .task(id: marketHistoryRequest) { await loadMarketHistory() }
+        .task(id: marketHistoryRetry) {
+            if marketHistoryRetry > 0 { await loadMarketHistory() }
+        }
         .onChange(of: history.range) { _, _ in selectedPriceDate = nil }
         .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
@@ -245,6 +245,13 @@ struct CollectionCardDetailView: View {
         // tab bar visible puts it over the identity block at the hero's resting
         // height, clipping the card name before the user can scroll.
         .toolbar(.hidden, for: .tabBar)
+        // Keep the presentation host alive after the toolbar menu dismisses.
+        .photosPicker(isPresented: $isChoosingArtwork, selection: $selectedArtwork, matching: .images)
+        .onChange(of: selectedArtwork) { _, item in
+            guard let item else { return }
+            artworkGeneration &+= 1
+            pendingArtwork = ArtworkRequest(id: artworkGeneration, item: item)
+        }
 #if DEBUG
         // Capture-only hook for the deterministic details route. Normal
         // launches do not pass this argument, so the destination remains a
@@ -323,7 +330,9 @@ struct CollectionCardDetailView: View {
 
             Divider()
 
-            PhotosPicker(selection: $selectedArtwork, matching: .images) {
+            Button {
+                isChoosingArtwork = true
+            } label: {
                 Label(
                     localArtworkFilename == nil ? "Choose Photo" : "Replace Photo",
                     systemImage: "photo.badge.plus"
@@ -349,11 +358,6 @@ struct CollectionCardDetailView: View {
         }
         .accessibilityLabel("Card actions")
         .accessibilityHint("Open collection history, manage artwork, or remove this card.")
-        .onChange(of: selectedArtwork) { _, item in
-            guard let item else { return }
-            artworkGeneration &+= 1
-            pendingArtwork = ArtworkRequest(id: artworkGeneration, item: item)
-        }
     }
 
     /// The printed card's corner. Shared with `CardFinishOverlay` so the sheen
@@ -381,7 +385,6 @@ struct CollectionCardDetailView: View {
 
             artwork
                 .frame(maxWidth: 315)
-                .aspectRatio(0.716, contentMode: .fit)
                 .clipShape(
                     RoundedRectangle(cornerRadius: Self.cardCornerRadius, style: .continuous)
                 )
@@ -874,21 +877,29 @@ struct CollectionCardDetailView: View {
         VStack(spacing: 0) {
             if let selectedPriceDate {
                 let sample = model.sample(at: selectedPriceDate)
-                Text(sample?.amount.formatted(currencyCode: price.currencyCode) ?? "—")
+                Text(sample?.amount.formatted(currencyCode: "USD") ?? "—")
                     .font(.system(size: 52, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
-                Text(sample.map { "Recorded price · \($0.date.formatted(date: .abbreviated, time: .shortened))" }
-                     ?? "Not checked · \(selectedPriceDate.formatted(date: .abbreviated, time: .omitted))")
+                Text(sample.map { "JustTCG · \($0.date.formatted(date: .abbreviated, time: .omitted))" }
+                     ?? "No market history for this date")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(.top, 10)
             } else {
-                CardDetailHeroPrice(price: price)
+                if let latest = marketHistory.last, let amount = Money(rounding: latest.p) {
+                    Text(amount.formatted(currencyCode: "USD"))
+                        .font(.system(size: 52, weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                } else {
+                    CardDetailHeroPrice(price: price)
+                }
                 CardDetailMovementPill(
                     display: movement,
-                    currencyCode: price.currencyCode
+                    currencyCode: "USD"
                 )
                 .padding(.top, 10)
             }
@@ -898,84 +909,50 @@ struct CollectionCardDetailView: View {
     }
 
     private func makePriceHistoryModel() -> PriceHistoryChartModel {
-        PriceHistoryChartModel.make(
-            observations: priceObservations,
-            checkDays: priceCheckDays,
-            currencyCode: price.currencyCode,
-            range: history.range,
-            now: .now,
-            timeZone: PortfolioCalendar.pinnedTimeZone() ?? .current
-        )
+        PriceHistoryChartModel.market(points: marketHistory, range: history.range)
+    }
+
+    private var marketHistoryRequest: CardMarketHistoryRequest { .init(card: card) }
+
+    @MainActor
+    private func loadMarketHistory() async {
+        let request = marketHistoryRequest
+        marketHistory = await CardMarketHistoryService.shared.cached(request)
+        marketHistoryError = nil
+        isLoadingMarketHistory = true
+        defer { isLoadingMarketHistory = false }
+#if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        if let index = arguments.firstIndex(of: "-ui_debug_state"), arguments.indices.contains(index + 1) {
+            let state = arguments[index + 1]
+            if state.hasPrefix("price-chart") {
+                marketHistory = state == "price-chart" ? CardMarketHistoryFixture.points : []
+                marketHistoryError = state == "price-chart-error" ? "JustTCG history could not be loaded. Try again." : nil
+                return
+            }
+        }
+#endif
+        do {
+            let resolved = await request.resolvingMarketMapping(in: runtimes)
+            let points = try await CardMarketHistoryService.shared.history(for: resolved)
+            try Task.checkCancellation()
+            guard request == marketHistoryRequest else { return }
+            marketHistory = points
+        } catch is CancellationError { return }
+        catch { marketHistoryError = error.localizedDescription }
     }
 
     private func movementDisplay(for model: PriceHistoryChartModel) -> CardDetailMovementDisplay {
-        let periodText = history.range.pastPeriodPhrase
-        switch history.movementState(for: card.collectionKey) {
-        case .historyRecording:
-            return CardDetailMovementDisplay(
-                status: .recording,
-                direction: .flat,
-                amount: nil,
-                percentage: nil,
-                periodText: periodText
-            )
-        case .noRecordedMarketMovement:
-            return CardDetailMovementDisplay(
-                status: .none,
-                direction: .flat,
-                amount: nil,
-                percentage: nil,
-                periodText: periodText
-            )
-        case let .recorded(detail):
-            let unitMovement = detail.cumulativeUnitMovement
-            // The hero reports per-copy market movement. `totalImpact` can
-            // include quantity effects and is intentionally not a substitute
-            // when the replay cannot reconstruct a unit-price delta.
-            let amount = unitMovement
-            let direction: CardDetailMovementDisplay.Direction
-            if amount.isZero {
-                direction = .flat
-            } else if amount < .zero {
-                direction = .negative
-            } else {
-                direction = .positive
-            }
-
-            return CardDetailMovementDisplay(
-                status: .recorded,
-                direction: direction,
-                amount: amount,
-                percentage: unitMovement.isZero ? nil : movementPercentage(
-                    for: detail,
-                    amount: unitMovement,
-                    model: model
-                ),
-                periodText: periodText
-            )
-        }
+        let amount = model.samples.count > 1 ? model.samples.last!.amount - model.samples.first!.amount : nil
+        return CardDetailMovementDisplay(
+            status: amount == nil ? .none : .recorded,
+            direction: amount.map { $0 < .zero ? .negative : ($0 > .zero ? .positive : .flat) } ?? .flat,
+            amount: amount,
+            percentage: amount.flatMap { PortfolioHistoryDisplay.percentChange(amount: $0, anchor: model.samples.first!.amount) },
+            periodText: history.range == .all ? "available history" : history.range.pastPeriodPhrase
+        )
     }
 
-    /// A percentage is only honest when the selected history provides a
-    /// continuous, market-only path whose starting price can be reconstructed
-    /// from the eligible movement projection. Source repairs, gaps, and
-    /// changing quantities deliberately fall back to the dollar movement.
-    private func movementPercentage(
-        for detail: PortfolioContributionDetail,
-        amount: Money,
-        model: PriceHistoryChartModel
-    ) -> Double? {
-        guard detail.hasConsistentQuantity,
-              model.observationCount >= 2,
-              !model.hasGaps,
-              model.samples.allSatisfy({ $0.kind == nil || $0.kind == .marketUpdate }),
-              let first = model.samples.first,
-              let last = model.samples.last else { return nil }
-
-        let baseline = last.amount - amount
-        guard baseline > .zero, baseline == first.amount else { return nil }
-        return PortfolioHistoryDisplay.percentChange(amount: amount, anchor: baseline)
-    }
 
     @ViewBuilder
     private func priceHistorySection(
@@ -985,7 +962,7 @@ struct CollectionCardDetailView: View {
         VStack(spacing: 0) {
             PriceHistoryChartView(
                 model: model,
-                currencyCode: price.currencyCode,
+                currencyCode: "USD",
                 direction: movement.direction,
                 selectedDate: $selectedPriceDate
             )
@@ -998,18 +975,26 @@ struct CollectionCardDetailView: View {
             )
             .padding(.top, 10)
 
-            Text(model.samples.count > 1 ? "Recorded on this device · Drag to explore" : "Recorded on this device")
+            Text(model.samples.count > 1 ? "JustTCG market history · Drag to explore" : "JustTCG market history")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
 
-            CardDetailSourceLegend(
-                sourceDescription: price.source.map(priceSourceDescription),
-                hasGaps: model.hasGaps
-            )
-            .padding(.top, 10)
+            if let latest = marketHistory.last {
+                Text("Latest market price · \(Date(timeIntervalSince1970: latest.t).formatted(date: .abbreviated, time: .shortened))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 6)
+            }
+
+            MarketHistoryStatusView(isLoading: isLoadingMarketHistory, error: marketHistoryError,
+                                    hasHistory: !marketHistory.isEmpty, retry: { marketHistoryRetry += 1 })
+                .padding(.horizontal, 16)
+                .padding(.top, 10)
 
             if price.refreshFailed {
                 Label("Last refresh failed", systemImage: "exclamationmark.triangle")
@@ -1106,7 +1091,7 @@ struct CollectionCardDetailView: View {
 
     @ViewBuilder
     private var artwork: some View {
-        ZStack {
+        Group {
             if let image = CollectionArtworkStore.image(filename: localArtworkFilename) {
                 Image(uiImage: image)
                     .resizable()
@@ -1134,7 +1119,10 @@ struct CollectionCardDetailView: View {
                     missingArtworkPlaceholder
                 }
             }
-
+        }
+        .overlay {
+            // An overlay follows the fitted artwork's bounds without adding
+            // flexible height above and below the printed card.
             CardFinishOverlay(
                 variant: card.variant,
                 resolution: card.variantResolution,
@@ -1144,7 +1132,6 @@ struct CollectionCardDetailView: View {
                 motionUsage: .detail
             )
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private var missingArtworkPlaceholder: some View {
@@ -1161,6 +1148,7 @@ struct CollectionCardDetailView: View {
         .foregroundStyle(.secondary)
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .aspectRatio(0.716, contentMode: .fit)
     }
 
     @MainActor
@@ -1777,7 +1765,7 @@ private struct CardDetailMovementPill: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         case .none:
-            Text("No recorded movement")
+            Text("Movement unavailable")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         case .recorded:
@@ -2183,6 +2171,27 @@ struct PriceHistoryChartModel: Equatable {
     let segments: [PriceHistorySegment]
     let observationCount: Int
     let checkedDayCount: Int
+    var isProviderHistory = false
+
+    static func market(points: [JustTCGHistoryPoint], range: PortfolioHistoryRange, now: Date = .now) -> Self {
+        let timeZone = TimeZone(secondsFromGMT: 0)!
+        let calendar = PortfolioCalendar.calendar(in: timeZone)
+        let valid = points.filter { $0.p.isFinite && $0.p >= 0 && $0.t.isFinite && $0.t > 0 && $0.t <= now.timeIntervalSince1970 }
+            .sorted { $0.t < $1.t }
+        let start = range.requestedStart(now: now, calendar: calendar, earliest: valid.first.map { Date(timeIntervalSince1970: $0.t) })
+        let samples = valid.compactMap { point -> PriceHistorySample? in
+            let date = Date(timeIntervalSince1970: point.t)
+            guard date >= start, let amount = Money(rounding: point.p) else { return nil }
+            return PriceHistorySample(id: "market-\(point.t)", date: date, day: calendar.startOfDay(for: date),
+                                      amount: amount, kind: nil, isObservation: true)
+        }
+        let lower = samples.first?.date ?? start
+        let upper = max(samples.last?.date ?? now, lower.addingTimeInterval(60))
+        return Self(currencyCode: "USD", timeZone: timeZone, rangeStart: start, rangeEnd: now,
+                    plotRangeStart: lower, plotRangeEnd: upper, samples: samples,
+                    segments: samples.isEmpty ? [] : [.init(id: "market", samples: samples)],
+                    observationCount: samples.count, checkedDayCount: 0, isProviderHistory: true)
+    }
 
     var hasGaps: Bool {
         segments.count > 1 && observationCount >= 2
@@ -2239,6 +2248,7 @@ struct PriceHistoryChartModel: Equatable {
     }
 
     var summary: String {
+        if isProviderHistory { return "\(samples.count) historical market prices from JustTCG." }
         let observationLabel = observationCount == 1 ? "1 changed price" : "\(observationCount) changed prices"
         let checkLabel = checkedDayCount == 1 ? "1 checked day" : "\(checkedDayCount) checked days"
         return "\(observationLabel) across \(checkLabel)."
@@ -2248,6 +2258,9 @@ struct PriceHistoryChartModel: Equatable {
     /// borrows a distant price, even when that observation is the nearest one.
     func sample(at date: Date) -> PriceHistorySample? {
         guard plotRange.contains(date) else { return nil }
+        if isProviderHistory {
+            return samples.min { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }
+        }
         for segment in segments {
             guard let first = segment.samples.first, let last = segment.samples.last else { continue }
             if date >= first.date && date <= last.date {
@@ -2507,6 +2520,91 @@ private extension PriceObservationKind {
     }
 }
 
+/// Shared by catalog and collection details; no ownership is required.
+struct CardMarketHistoryPanel: View {
+    @Environment(\.cardGameRuntimes) private var runtimes
+    let request: CardMarketHistoryRequest
+    @State private var points: [JustTCGHistoryPoint] = []
+    @State private var range: PortfolioHistoryRange = .threeMonths
+    @State private var selection: Date?
+    @State private var error: String?
+    @State private var isLoading = false
+    @State private var retryID = 0
+
+    var body: some View {
+        let model = PriceHistoryChartModel.market(points: points, range: range)
+        let direction: CardDetailMovementDisplay.Direction = model.samples.first.flatMap { first in
+            model.samples.last.map { $0.amount < first.amount ? .negative : ($0.amount > first.amount ? .positive : .flat) }
+        } ?? .flat
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Market price history").font(.headline).padding(.horizontal, 16)
+            if let selection, let sample = model.sample(at: selection) {
+                Text("\(sample.amount.formatted(currencyCode: "USD")) · \(sample.date.formatted(date: .abbreviated, time: .omitted))")
+                    .font(.subheadline.monospacedDigit()).padding(.horizontal, 16)
+            }
+            PriceHistoryChartView(model: model, currencyCode: "USD", direction: direction, selectedDate: $selection)
+            CardDetailRangeSelector(selection: range, direction: direction, onSelect: { range = $0 })
+            Text("JustTCG market history · Drag to explore")
+                .font(.caption).foregroundStyle(.secondary).padding(.horizontal, 16)
+            MarketHistoryStatusView(isLoading: isLoading, error: error, hasHistory: !points.isEmpty,
+                                    retry: { retryID += 1 }).padding(.horizontal, 16)
+        }
+        .task(id: request) { await load() }
+        .task(id: retryID) { if retryID > 0 { await load() } }
+    }
+
+    @MainActor
+    private func load() async {
+        points = await CardMarketHistoryService.shared.cached(request)
+        isLoading = true
+        error = nil
+        defer { isLoading = false }
+        do {
+            let resolved = await request.resolvingMarketMapping(in: runtimes)
+            let result = try await CardMarketHistoryService.shared.history(for: resolved)
+            try Task.checkCancellation()
+            points = result
+        } catch is CancellationError { return }
+        catch { self.error = error.localizedDescription }
+    }
+}
+
+private struct MarketHistoryStatusView: View {
+    let isLoading: Bool
+    let error: String?
+    let hasHistory: Bool
+    let retry: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if isLoading {
+                ProgressView("Loading market history…").font(.caption)
+            } else if let error {
+                Text(hasHistory ? "Showing saved JustTCG history. \(error)" : error)
+                    .font(.caption).foregroundStyle(.secondary)
+                Button("Retry history", action: retry).font(.subheadline).frame(minHeight: 44)
+            }
+            Text("Market prices are independent of when you added this card. Lines connect prices reported by JustTCG.")
+                .font(.caption).foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+#if DEBUG
+enum CardMarketHistoryFixture {
+    static var points: [JustTCGHistoryPoint] {
+        let today = Calendar(identifier: .gregorian).startOfDay(for: .now)
+        return (0..<365).map { (index: Int) -> JustTCGHistoryPoint in
+            let trend: Double = 32.0 - Double(index) * 0.018
+            let wave: Double = sin(Double(index) / 15.0) * 2.2
+            let timestamp = today.addingTimeInterval(Double(index - 364) * 86_400.0).timeIntervalSince1970
+            return JustTCGHistoryPoint(p: trend + wave, t: timestamp)
+        }
+    }
+}
+#endif
+
 private struct PriceHistoryChartView: View {
     let model: PriceHistoryChartModel
     let currencyCode: String
@@ -2517,7 +2615,7 @@ private struct PriceHistoryChartView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if model.isPlotRangeFitted {
+            if model.isPlotRangeFitted && !model.isProviderHistory {
                 Text("Fitted to available data")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -2528,11 +2626,11 @@ private struct PriceHistoryChartView: View {
             }
 
             if model.samples.isEmpty {
-                Label("History is being recorded", systemImage: "chart.xyaxis.line")
+                Label("No market history available", systemImage: "chart.xyaxis.line")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, minHeight: 174)
-                Text("Price history is recorded on this device. It will appear after the first successful check here.")
+                Text("Historical prices appear here when JustTCG provides data for this exact printing.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -2546,10 +2644,6 @@ private struct PriceHistoryChartView: View {
                 )
             } else {
                 Chart {
-                    RuleMark(y: .value("Floor", model.yDomain.lowerBound))
-                        .foregroundStyle(.secondary.opacity(0.22))
-                        .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-
                     ForEach(model.segments) { segment in
                         if segment.samples.count > 1 {
                             ForEach(segment.samples) { sample in
@@ -2559,7 +2653,7 @@ private struct PriceHistoryChartView: View {
                                     yEnd: .value("Unit price", sample.amount.doubleValue),
                                     series: .value("Known span area", segment.id)
                                 )
-                                .interpolationMethod(.stepEnd)
+                                .interpolationMethod(.linear)
                                 .foregroundStyle(areaGradient)
 
                                 LineMark(
@@ -2567,7 +2661,7 @@ private struct PriceHistoryChartView: View {
                                     y: .value("Unit price", sample.amount.doubleValue),
                                     series: .value("Known span", segment.id)
                                 )
-                                .interpolationMethod(.stepEnd)
+                                .interpolationMethod(.linear)
                                 .foregroundStyle(lineColor)
                                 .lineStyle(
                                     StrokeStyle(
@@ -2586,7 +2680,7 @@ private struct PriceHistoryChartView: View {
                             y: .value("Unit price", sample.amount.doubleValue)
                         )
                         .foregroundStyle(sample.kind?.chartLabel == nil ? lineColor : .orange)
-                        .symbolSize(sample.isObservation ? 18 : 0)
+                        .symbolSize(model.isProviderHistory ? 0 : (sample.isObservation ? 18 : 0))
                         .annotation(position: .top, alignment: .leading) {
                             if let label = sample.annotationLabel {
                                 Text(label)
@@ -2602,7 +2696,7 @@ private struct PriceHistoryChartView: View {
                             .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 3]))
                         if let sample = model.sample(at: selectedDate) {
                             PointMark(
-                                x: .value("Selected date", selectedDate),
+                                x: .value("Selected date", sample.date),
                                 y: .value("Recorded unit price", sample.amount.doubleValue)
                             )
                             .foregroundStyle(.primary)
@@ -2657,7 +2751,7 @@ private struct PriceHistoryChartView: View {
                         "\($0.amount.formatted(currencyCode: currencyCode)), \($0.date.formatted(date: .abbreviated, time: .shortened))"
                     } ?? "Not checked, \(date.formatted(date: .abbreviated, time: .omitted))"
                 } ?? model.summary)
-                .accessibilityHint("Drag horizontally to explore recorded prices. Unchecked days have no price.")
+                .accessibilityHint("Drag horizontally to explore historical market prices. Lines connect provider observations.")
                 .accessibilityAdjustableAction { direction in
                     let index = selectedDate.flatMap { date in model.samples.lastIndex(where: { $0.date <= date }) }
                     let next = direction == .increment
@@ -2729,7 +2823,7 @@ private struct CardDetailSinglePricePoint: View {
                     .font(.title2.weight(.semibold).monospacedDigit())
             }
             .frame(maxWidth: .infinity)
-            Text("First recorded price · \(sample.date.formatted(date: .abbreviated, time: .shortened))")
+            Text("Market price · \(sample.date.formatted(date: .abbreviated, time: .omitted))")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             if let annotationLabel = sample.annotationLabel {
@@ -2737,7 +2831,7 @@ private struct CardDetailSinglePricePoint: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.orange)
             } else {
-                Text("A line appears after another changed price is recorded.")
+                Text("JustTCG has one price available for this period.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

@@ -46,6 +46,19 @@ private final class LorcanaPricingProtocol: URLProtocol {
 /// Synthetic physical review evidence exercises contracts, never catalog coverage.
 @MainActor
 final class LorcanaPricingTests: XCTestCase {
+    func testMarketHistoryUsesReviewedLorcanaProductAndFinishMapping() async throws {
+        let registry = try registry(mappings: [mapping()])
+        let runtimes = try CardGameRuntimeContainer(runtimes: [LorcanaGameRuntime(registry: registry).runtime])
+        let card = try LorcanaCatalogAdapter(registry: registry).resolution(forPrintingID: id()).card
+        let foil = await CardMarketHistoryRequest(card: card, variant: .foil, printRun: nil)
+            .resolvingMarketMapping(in: runtimes)
+        XCTAssertEqual(foil.lookups, [.tcgplayerID("510153")])
+        XCTAssertEqual(foil.providerPrinting, "Holofoil")
+        let normal = await CardMarketHistoryRequest(card: card, variant: .normal, printRun: nil)
+            .resolvingMarketMapping(in: runtimes)
+        XCTAssertTrue(normal.lookups.isEmpty, "An unmapped finish must not borrow the foil product")
+    }
+
     private let now = Date.now
     private let canonical = UUID(uuidString: "82000000-0000-0000-0000-000000000001")!
     private func id(_ index: Int = 1) -> UUID {

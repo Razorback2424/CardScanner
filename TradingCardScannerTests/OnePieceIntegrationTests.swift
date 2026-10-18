@@ -106,6 +106,19 @@ private final class OnePieceRecoveryReadGate: @unchecked Sendable {
 
 @MainActor
 final class OnePieceIntegrationTests: XCTestCase {
+    func testMarketHistoryUsesReviewedOnePieceProductAndFinishMapping() async throws {
+        let registry = try registry(count: 1, withMarketMapping: true)
+        let runtimes = try CardGameRuntimeContainer(runtimes: [OnePieceGameRuntime(registry: registry).runtime])
+        let card = try OnePieceCatalogAdapter(registry: registry).resolution(forPrintingID: uuid(1)).card
+        let foil = await CardMarketHistoryRequest(card: card, variant: .foil, printRun: nil)
+            .resolvingMarketMapping(in: runtimes)
+        XCTAssertEqual(foil.lookups, [.tcgplayerID("454664")])
+        XCTAssertEqual(foil.providerPrinting, "Foil")
+        let normal = await CardMarketHistoryRequest(card: card, variant: .normal, printRun: nil)
+            .resolvingMarketMapping(in: runtimes)
+        XCTAssertTrue(normal.lookups.isEmpty, "An unmapped finish must not borrow the foil product")
+    }
+
     func testOnePieceSealedAddUndoAndExactVendorRepricingRespectRuntimeGates() async throws {
         let registry = try registry()
         let (_, container) = try model(registry: registry)

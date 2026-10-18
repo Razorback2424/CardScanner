@@ -147,6 +147,7 @@
 		A00100F1 /* CollectionProjectionActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F1 /* CollectionProjectionActor.swift */; };
 		A00100F2 /* StoreRevisionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100F2 /* StoreRevisionMonitor.swift */; };
 		A00100D0 /* PriceRefreshTargets.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D0 /* PriceRefreshTargets.swift */; };
+		AC181001 /* CardMarketHistoryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC181001 /* CardMarketHistoryService.swift */; };
 		A00100D1 /* BackgroundPriceRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D1 /* BackgroundPriceRefresh.swift */; };
 		A00100D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00100D2 /* AppDelegate.swift */; };
 		A0010034 /* CollectionQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010034 /* CollectionQuery.swift */; };
@@ -486,6 +487,7 @@
 		B00100F1 /* CollectionProjectionActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionProjectionActor.swift; sourceTree = "<group>"; };
 		B00100F2 /* StoreRevisionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreRevisionMonitor.swift; sourceTree = "<group>"; };
 		B00100D0 /* PriceRefreshTargets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceRefreshTargets.swift; sourceTree = "<group>"; };
+		BC181001 /* CardMarketHistoryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardMarketHistoryService.swift; sourceTree = "<group>"; };
 		B00100D1 /* BackgroundPriceRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundPriceRefresh.swift; sourceTree = "<group>"; };
 		B00100D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0010034 /* CollectionQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionQuery.swift; sourceTree = "<group>"; };
@@ -899,6 +901,7 @@
 				B00100F1 /* CollectionProjectionActor.swift */,
 				B00100F2 /* StoreRevisionMonitor.swift */,
 				B00100D0 /* PriceRefreshTargets.swift */,
+				BC181001 /* CardMarketHistoryService.swift */,
 				B00100D1 /* BackgroundPriceRefresh.swift */,
 				B0010034 /* CollectionQuery.swift */,
 				B0010040 /* MagicSetSnapshot.swift */,
@@ -1413,6 +1416,7 @@
 				A00100F1 /* CollectionProjectionActor.swift in Sources */,
 				A00100F2 /* StoreRevisionMonitor.swift in Sources */,
 				A00100D0 /* PriceRefreshTargets.swift in Sources */,
+				AC181001 /* CardMarketHistoryService.swift in Sources */,
 				A00100D1 /* BackgroundPriceRefresh.swift in Sources */,
 				A0010034 /* CollectionQuery.swift in Sources */,
 				A00100A5 /* RemovalUndoBanner.swift in Sources */,

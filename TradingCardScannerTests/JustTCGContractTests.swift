@@ -8,6 +8,98 @@ import XCTest
 /// omission read as "no price". None of those throw; they just produce wrong
 /// numbers in someone's collection.
 final class JustTCGContractTests: XCTestCase {
+    @MainActor
+    func testDetailFetchesFullProviderHistoryAndCachesItWithoutOwnershipCutoff() async throws {
+        let suite = "MarketHistory-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        let service = CardMarketHistoryService(transport: .init(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture-key"), root: root)
+        let card = CollectedCard(collectionKey: "history-test", game: .magic, providerID: "test-printing",
+                                 name: "Test", setName: "Test", setCode: "tst", cardNumber: "1",
+                                 rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .nonfoil,
+                                 variantResolution: .userConfirmed)
+        card.justTCGVariantID = "normal-nm"
+        card.dateAdded = .now
+        let request = CardMarketHistoryRequest(card: card)
+        RecordingURLProtocol.reset(body: #"{"data":[{"variants":[{"uuid":"foil-nm","printing":"Foil","priceHistory":[{"p":900,"t":1700000000}]},{"uuid":"normal-nm","printing":"Normal","priceHistory":[{"p":25,"t":1700200000},{"p":20,"t":1700000000},{"p":-1,"t":1700300000},{"p":22,"t":1700200000},{"p":999,"t":9999999999}]}]}]}"#)
+        let points = try await service.history(for: request)
+        XCTAssertEqual(points.map(\.p), [20, 22])
+        XCTAssertTrue(points.allSatisfy { Date(timeIntervalSince1970: $0.t) < card.dateAdded })
+        let url = try XCTUnwrap(RecordingURLProtocol.recorded().first)
+        let query = Dictionary(uniqueKeysWithValues: URLComponents(url: url, resolvingAgainstBaseURL: false)!.queryItems!.map { ($0.name, $0.value ?? "") })
+        XCTAssertEqual(query["variantId"], "normal-nm")
+        XCTAssertEqual(query["include_price_history"], "true")
+        XCTAssertEqual(query["priceHistoryDuration"], "1y")
+        XCTAssertNil(query["updated_after"])
+        let repeated = try await service.history(for: request)
+        XCTAssertEqual(repeated, points)
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+
+        // A later rolling window must retain older downloaded points for ALL.
+        RecordingURLProtocol.reset(body: #"{"data":[{"variants":[{"uuid":"normal-nm","priceHistory":[{"p":24,"t":1700400000}]}]}]}"#)
+        let later = Date.now.addingTimeInterval(7 * 3600)
+        async let first = service.history(for: request, now: later)
+        async let second = service.history(for: request, now: later)
+        let (merged, parallel) = try await (first, second)
+        XCTAssertEqual(merged.map(\.p), [20, 22, 24])
+        XCTAssertEqual(parallel, merged, "Concurrent callers must receive the complete merged history")
+        XCTAssertEqual(RecordingURLProtocol.recorded().count, 1)
+        card.justTCGVariantID = "newly-resolved-handle"
+        let retained = await service.cached(CardMarketHistoryRequest(card: card))
+        XCTAssertEqual(retained, merged, "Resolving a vendor handle must not discard earlier history")
+        card.justTCGVariantID = "foil-nm"
+        card.variantID = PhysicalVariant.foil.id
+        let otherFinish = await service.cached(CardMarketHistoryRequest(card: card))
+        XCTAssertTrue(otherFinish.isEmpty)
+    }
+
+    @MainActor
+    func testGradedHistoryUsesV2ExactVariantAndUSDMarket() async throws {
+        let suite = "GradedHistory-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(suite)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [RecordingURLProtocol.self]
+        var settings = JustTCGTransport.Configuration()
+        settings.baseURL = URL(string: "https://justtcg.test")!
+        settings.minimumRequestInterval = 0
+        let service = CardMarketHistoryService(transport: .init(configuration: settings,
+            session: URLSession(configuration: config), ledger: .init(defaults: defaults),
+            pacer: .init(), apiKeyOverride: "fixture-key"), root: root)
+        let card = CollectedCard(collectionKey: "graded-history-test", game: .pokemon,
+            providerID: "test-printing", name: "Test", setName: "Test", setCode: "tst", cardNumber: "1",
+            rarity: nil, imageURL: nil, thumbnailURL: nil, variant: .holo, variantResolution: .userConfirmed)
+        card.itemKindRaw = CollectionItemKind.gradedCard.rawValue
+        card.justTCGVariantID = "psa10"
+        RecordingURLProtocol.reset(body: #"{"data":[{"id":"card","variants":[{"id":"psa9","type":"graded","markets":[{"currency":"USD","price_history":[{"t":1700000000,"p":50}]}]},{"id":"psa10","type":"graded","markets":[{"currency":"EUR","price_history":[{"t":1700000000,"p":90}]},{"currency":"USD","price_history":[{"t":1700000000,"p":100}]}]}]}]}"#)
+        let points = try await service.history(for: .init(card: card))
+        XCTAssertEqual(points.map(\.p), [100])
+        let url = try XCTUnwrap(RecordingURLProtocol.recorded().first)
+        XCTAssertEqual(url.path, "/v2/cards")
+        let query = Dictionary(uniqueKeysWithValues: URLComponents(url: url, resolvingAgainstBaseURL: false)!.queryItems!.map { ($0.name, $0.value ?? "") })
+        XCTAssertEqual(query["variant_id"], "psa10")
+        XCTAssertEqual(query["include"], "price_history.1y")
+        XCTAssertEqual(query["regions"], "NA")
+    }
+
+    func testProviderHistoryDecodesBothSchemasWithoutRelabelingForeignCurrency() throws {
+        let v1 = try JSONDecoder().decode(JustTCGVariant.self, from: Data(#"{"currency":"EUR","priceHistory":[{"t":1700000000,"p":15}]}"#.utf8))
+        XCTAssertTrue(v1.historyUSD.isEmpty)
+        let v2 = try JSONDecoder().decode(JustTCGVariant.self, from: Data(#"{"markets":[{"currency":"EUR","price_history":[{"t":1700000000,"p":15}]},{"currency":"USD","price_history":[{"t":1700000000,"p":20}]}]}"#.utf8))
+        XCTAssertEqual(v2.historyUSD.map(\.p), [20])
+    }
+
     func testOnePieceSealedWireParametersAndPaginationUseVendorIdentities() async throws {
         let suite = "OnePieceSealedWire-\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))

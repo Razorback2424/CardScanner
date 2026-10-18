@@ -1421,6 +1421,20 @@ final class PricingTests: XCTestCase {
 }
 
 final class PriceHistoryChartModelTests: XCTestCase {
+    func testMarketHistoryIsContinuousWithoutLocalChecksAndScrubsToProviderDates() throws {
+        let points = [JustTCGHistoryPoint(p: 10, t: date(day: 0).timeIntervalSince1970),
+                      JustTCGHistoryPoint(p: 15, t: date(day: 20).timeIntervalSince1970)]
+        let model = PriceHistoryChartModel.market(points: points, range: .all, now: date(day: 21))
+        XCTAssertEqual(model.samples.count, 2)
+        XCTAssertEqual(model.segments.count, 1)
+        XCTAssertFalse(model.hasGaps)
+        XCTAssertEqual(model.checkedDayCount, 0)
+        XCTAssertEqual(model.sample(at: date(day: 15))?.date, date(day: 20))
+        XCTAssertEqual(model.sample(at: date(day: 15))?.amount, Money(rounding: 15))
+        let week = PriceHistoryChartModel.market(points: points, range: .oneWeek, now: date(day: 21))
+        XCTAssertEqual(week.samples.map(\.amount), [Money(rounding: 15)!])
+    }
+
     private let instrumentKey = "pokemon:test-set-001:normal"
     private let timeZone = TimeZone(secondsFromGMT: 0)!
 
