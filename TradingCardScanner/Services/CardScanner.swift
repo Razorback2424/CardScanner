@@ -2,6 +2,7 @@ import Combine
 import AVFoundation
 import Foundation
 import ImageIO
+import OSLog
 import Vision
 
 /// The scan region is defined once in Vision's normalized coordinates after the
@@ -465,6 +466,7 @@ enum CameraIssue: Equatable {
     case permissionDenied
     case unavailable
     case configurationFailed
+    case recognitionFailed
 
     var message: String {
         switch self {
@@ -474,6 +476,8 @@ enum CameraIssue: Equatable {
             return "The back camera is unavailable on this device."
         case .configurationFailed:
             return "The camera could not be started. Try closing and reopening the scanner."
+        case .recognitionFailed:
+            return "Card reading stopped. Close and reopen the scanner to try again."
         }
     }
 }
@@ -684,6 +688,8 @@ final class ScannerDebugVisionOverlay: ObservableObject {
 @MainActor
 final class CardScannerUIState: ObservableObject {
     @Published private(set) var cameraIssue: CameraIssue?
+    private var captureIssue: CameraIssue?
+    private var recognitionFailed = false
     @Published private(set) var lens: CameraLens = .standard
     @Published private(set) var subjectMode: ScanSubjectMode = .raw
     /// Only the lenses this particular device actually has. An iPhone SE has no
@@ -706,6 +712,18 @@ final class CardScannerUIState: ObservableObject {
     }
 
     func setCameraIssue(_ issue: CameraIssue?) {
+        captureIssue = issue
+        updateCameraIssue()
+    }
+
+    func setRecognitionFailed(_ failed: Bool) {
+        recognitionFailed = failed
+        updateCameraIssue()
+    }
+
+    private func updateCameraIssue() {
+        let issue = captureIssue ?? (recognitionFailed ? .recognitionFailed : nil)
+        guard cameraIssue != issue else { return }
         cameraIssue = issue
     }
 
@@ -847,11 +865,15 @@ final class CardScanner: NSObject, ObservableObject {
         qos: .userInitiated
     )
     private let videoOutput = AVCaptureVideoDataOutput()
-    private let footerRequest = VNRecognizeTextRequest()
-    private let fullCardTextRequest = VNRecognizeTextRequest()
-    private let titleRequest = VNRecognizeTextRequest()
-    private let labelRequest = VNRecognizeTextRequest()
-    private let trackingSequenceHandler = VNSequenceRequestHandler()
+    private var footerRequest = VNRecognizeTextRequest()
+    private var fullCardTextRequest = VNRecognizeTextRequest()
+    private var titleRequest = VNRecognizeTextRequest()
+    private var labelRequest = VNRecognizeTextRequest()
+    private var consecutiveVisionFailures = 0
+    nonisolated private static let logger = Logger(subsystem: "com.seankeller.CardScanner", category: "Scanner")
+    // Sequence handlers cache tracking state. Keep that state scoped to one
+    // physical presentation rather than accumulating trackers across a stack.
+    private var trackingSequenceHandler: VNSequenceRequestHandler?
 
     private var isConfigured = false
     private var isPaused = false
@@ -860,6 +882,7 @@ final class CardScanner: NSObject, ObservableObject {
     /// stale callback must not resurrect the camera off-screen.
     private var wantsRunning = false
     private var startRequestID = UUID()
+    private var runtimeRecoveryRequestID: UUID?
     /// Wall-clock time at which recognition was paused. The latch's absence
     /// clock is compensated on resume because no OCR observations were produced
     /// during this interval.
@@ -867,6 +890,10 @@ final class CardScanner: NSObject, ObservableObject {
     private var videoInput: AVCaptureDeviceInput?
     private var interruptionObserver: NSObjectProtocol?
     private var interruptionEndedObserver: NSObjectProtocol?
+    private var runtimeErrorObserver: NSObjectProtocol?
+#if DEBUG
+    private var runtimeRestartOverrideForTesting: (() -> Bool)?
+#endif
     /// Written on `sessionQueue`; `uiState.lens` is the main-thread mirror for
     /// the UI.
     private var currentLens: CameraLens = .standard
@@ -1060,6 +1087,14 @@ final class CardScanner: NSObject, ObservableObject {
             }
         }
 
+        runtimeErrorObserver = NotificationCenter.default.addObserver(
+            forName: AVCaptureSession.runtimeErrorNotification,
+            object: session,
+            queue: nil
+        ) { [weak self] notification in
+            self?.handleCameraRuntimeError(notification.userInfo?[AVCaptureSessionErrorKey] as? AVError)
+        }
+
         // Resolved from the cached hardware probe rather than queried per launch.
         let lenses: [CameraLens] = CameraCapabilities.hasMacroLens() ? [.standard, .macro] : [.standard]
 
@@ -1078,6 +1113,41 @@ final class CardScanner: NSObject, ObservableObject {
         }
         if let interruptionEndedObserver {
             NotificationCenter.default.removeObserver(interruptionEndedObserver)
+        }
+        if let runtimeErrorObserver {
+            NotificationCenter.default.removeObserver(runtimeErrorObserver)
+        }
+    }
+
+    private func handleCameraRuntimeError(_ error: AVError?) {
+        sessionQueue.async { [weak self] in
+            guard let self, self.wantsRunning else { return }
+            Self.logger.error("Camera runtime error: code=\(error?.code.rawValue ?? 0)")
+            DispatchQueue.main.async { [weak self] in self?.onCameraInterruption?() }
+            self.setCameraIssue(.configurationFailed)
+
+            // A media-services reset is recoverable without replacing the
+            // user's session. All starts stay on the camera queue and respect
+            // wantsRunning, so a late error cannot reopen an off-screen camera.
+            guard error?.code == .mediaServicesWereReset,
+                  self.runtimeRecoveryRequestID != self.startRequestID else { return }
+            self.runtimeRecoveryRequestID = self.startRequestID
+            let recovered: Bool
+#if DEBUG
+            if let restart = self.runtimeRestartOverrideForTesting {
+                recovered = restart()
+            } else {
+                if !self.session.isRunning { self.session.startRunning() }
+                recovered = self.session.isRunning
+            }
+#else
+            if !self.session.isRunning { self.session.startRunning() }
+            recovered = self.session.isRunning
+#endif
+            if recovered {
+                self.setCameraIssue(nil)
+                DispatchQueue.main.async { [weak self] in self?.onCameraInterruptionEnded?() }
+            }
         }
     }
 
@@ -1188,6 +1258,7 @@ final class CardScanner: NSObject, ObservableObject {
     func stop() {
         visionQueue.async { [weak self] in
             guard let self else { return }
+            self.markTrackerContinuityLost()
             self.cancelHeldRepeatAuthorizationOnVisionQueue()
             self.clearActiveSlab(cause: .lifecycle)
         }
@@ -1630,6 +1701,38 @@ final class CardScanner: NSObject, ObservableObject {
         installModeROIs()
     }
 
+    private func rebuildTextRequests() {
+        footerRequest = VNRecognizeTextRequest()
+        fullCardTextRequest = VNRecognizeTextRequest()
+        titleRequest = VNRecognizeTextRequest()
+        labelRequest = VNRecognizeTextRequest()
+        configureTextRequest()
+    }
+
+    private func recordVisionFrameFailure(_ error: Error) {
+        // One bad frame is routine. Rebuild once after a sustained failure,
+        // then explain the problem if the fresh requests also keep failing.
+        // Retain the latch: recovery is not evidence that a new card arrived.
+        guard consecutiveVisionFailures < 6 else { return }
+        consecutiveVisionFailures += 1
+        if [1, 3, 6].contains(consecutiveVisionFailures) {
+            let failure = error as NSError
+            Self.logger.error("Vision frame failed: domain=\(failure.domain, privacy: .public) code=\(failure.code) consecutive=\(self.consecutiveVisionFailures)")
+        }
+        if consecutiveVisionFailures == 3 {
+            rebuildTextRequests()
+            recordDiagnostic("visionRequestsRebuilt")
+        } else if consecutiveVisionFailures == 6 {
+            updateUI { $0.setRecognitionFailed(true) }
+        }
+    }
+
+    private func recordVisionFrameSuccess() {
+        guard consecutiveVisionFailures > 0 else { return }
+        consecutiveVisionFailures = 0
+        updateUI { $0.setRecognitionFailed(false) }
+    }
+
     private func configureAndStartIfNeeded(for requestID: UUID) {
         sessionQueue.async { [weak self] in
             guard let self else { return }
@@ -1812,33 +1915,9 @@ final class CardScanner: NSObject, ObservableObject {
         orientation: CGImagePropertyOrientation,
         at now: CFAbsoluteTime
     ) {
-        if trackerRequest != nil {
-            // OCR confirmation starts a new lineage, but is not proof that the
-            // prior presentation physically exited. Drop the old tracker and
-            // let committed session history govern repeat confirmation.
-            terminateTrackerWithoutSpatialProof()
-        }
-        guard trackerSeedGate.canSeed(subject) else {
-            // Later OCR is not a spatial reset. Keep the identity consumed and
-            // let the view model suppress it without creating a new lineage.
-            return
-        }
-
-        let seedObservation = VNDetectedObjectObservation(
-            boundingBox: spatialTrackingConfiguration.seedRect
-        )
-        let request = VNTrackObjectRequest(detectedObjectObservation: seedObservation)
-        request.trackingLevel = .fast
-
-        trackerEncounterID = encounterID
-        trackerSeedSubject = subject
-        trackerPresentationToken = nil
-        trackerRequest = request
-        trackerLifecycle = .provisional(encounterID: encounterID)
-        spatialExitAccumulator.reset()
-        cadence.markRan(.tracking, at: now)
-        recordDiagnostic("trackerSeeded")
-        PerformanceSignpost.emitEvent("trackerSeeded", "encounter=\(encounterID.uuidString)")
+        guard let request = beginTrackingPresentation(
+            encounterID: encounterID, subject: subject, at: now
+        ), let trackingSequenceHandler else { return }
 
         // Establish the sequence on the same pixel buffer that confirmed the
         // encounter. If Vision does not return a result for this seed, retain
@@ -1857,6 +1936,43 @@ final class CardScanner: NSObject, ObservableObject {
         }
     }
 
+    private func beginTrackingPresentation(
+        encounterID: UUID,
+        subject: ScanSubject,
+        at now: CFAbsoluteTime
+    ) -> VNTrackObjectRequest? {
+        if trackerRequest != nil {
+            // OCR confirmation starts a new lineage, but is not proof that the
+            // prior presentation physically exited. Drop the old tracker and
+            // let committed session history govern repeat confirmation.
+            terminateTrackerWithoutSpatialProof()
+        }
+        guard trackerSeedGate.canSeed(subject) else {
+            // Later OCR is not a spatial reset. Keep the identity consumed and
+            // let the view model suppress it without creating a new lineage.
+            return nil
+        }
+
+        let seedObservation = VNDetectedObjectObservation(
+            boundingBox: spatialTrackingConfiguration.seedRect
+        )
+        let request = VNTrackObjectRequest(detectedObjectObservation: seedObservation)
+        request.trackingLevel = .fast
+        trackingSequenceHandler = VNSequenceRequestHandler()
+
+        trackerEncounterID = encounterID
+        trackerSeedSubject = subject
+        trackerPresentationToken = nil
+        trackerRequest = request
+        trackerLifecycle = .provisional(encounterID: encounterID)
+        spatialExitAccumulator.reset()
+        cadence.markRan(.tracking, at: now)
+        recordDiagnostic("trackerSeeded")
+        PerformanceSignpost.emitEvent("trackerSeeded", "encounter=\(encounterID.uuidString)")
+
+        return request
+    }
+
     /// Runs on a frame selected by `ScanCadenceScheduler`. The scheduler has
     /// already marked tracking as run, which prevents a tracker pass from being
     /// selected again ahead of the next footer OCR pass.
@@ -1865,7 +1981,7 @@ final class CardScanner: NSObject, ObservableObject {
         orientation: CGImagePropertyOrientation,
         at now: CFAbsoluteTime
     ) {
-        guard let request = trackerRequest else { return }
+        guard let request = trackerRequest, let trackingSequenceHandler else { return }
 
         do {
             try trackingSequenceHandler.perform(
@@ -1898,6 +2014,7 @@ final class CardScanner: NSObject, ObservableObject {
                 let subject = trackerSubjectForExit
                 request.isLastFrame = true
                 trackerRequest = nil
+                self.trackingSequenceHandler = nil
                 trackerEncounterID = nil
                 trackerSeedSubject = nil
                 trackerPresentationToken = nil
@@ -1983,6 +2100,7 @@ final class CardScanner: NSObject, ObservableObject {
         }
         trackerRequest?.isLastFrame = true
         trackerRequest = nil
+        trackingSequenceHandler = nil
         trackerEncounterID = nil
         trackerSeedSubject = nil
         trackerPresentationToken = nil
@@ -2003,6 +2121,7 @@ final class CardScanner: NSObject, ObservableObject {
     private func terminateTrackerWithoutSpatialProof() {
         trackerRequest?.isLastFrame = true
         trackerRequest = nil
+        trackingSequenceHandler = nil
         trackerEncounterID = nil
         trackerSeedSubject = nil
         trackerPresentationToken = nil
@@ -2921,6 +3040,45 @@ final class CardScanner: NSObject, ObservableObject {
         visionQueue.sync { isPaused }
     }
 
+    // Exercise the production ownership boundary without requiring a camera or
+    // asking Vision to track a synthetic image. Weak references in tests verify
+    // that replacement/lifecycle cleanup releases the old sequence and request.
+    func beginTrackingPresentationForTesting(_ subject: ScanSubject) {
+        visionQueue.sync {
+            _ = beginTrackingPresentation(encounterID: UUID(), subject: subject, at: 0)
+        }
+    }
+
+    var trackingSequenceForTesting: VNSequenceRequestHandler? {
+        visionQueue.sync { trackingSequenceHandler }
+    }
+
+    var trackingRequestForTesting: VNTrackObjectRequest? {
+        visionQueue.sync { trackerRequest }
+    }
+
+    var footerRequestForTesting: VNRecognizeTextRequest {
+        visionQueue.sync { footerRequest }
+    }
+
+    func receiveVisionFrameResultForTesting(error: Error? = nil) {
+        visionQueue.sync {
+            if let error { recordVisionFrameFailure(error) }
+            else { recordVisionFrameSuccess() }
+        }
+    }
+
+    func prepareRuntimeRecoveryForTesting(wantsRunning: Bool, restart: @escaping () -> Bool) {
+        sessionQueue.sync {
+            self.wantsRunning = wantsRunning
+            runtimeRestartOverrideForTesting = restart
+        }
+    }
+
+    func drainSessionQueueForTesting() {
+        sessionQueue.sync {}
+    }
+
     var subjectModeForTesting: ScanSubjectMode {
         visionQueue.sync { subjectMode }
     }
@@ -3324,6 +3482,10 @@ final class CardScanner: NSObject, ObservableObject {
 
     /// Callers must be on `visionQueue`.
     private func resetObservationState() {
+        markTrackerContinuityLost()
+        consecutiveVisionFailures = 0
+        rebuildTextRequests()
+        updateUI { $0.setRecognitionFailed(false) }
         resetConfirmationWindow()
         latch.releaseAndForget()
         cancelHeldRepeatAuthorizationOnVisionQueue()
@@ -3517,6 +3679,14 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: AVCaptureConnection
     ) {
+        // Drain Vision/Objective-C temporaries after every frame even during a
+        // continuous capture run; ARC alone does not drain autoreleased objects.
+        autoreleasepool {
+            processFrame(sampleBuffer)
+        }
+    }
+
+    private func processFrame(_ sampleBuffer: CMSampleBuffer) {
         let now = CFAbsoluteTimeGetCurrent()
         PerformanceSignpost.emitEvent(
             "frameReceived",
@@ -3705,7 +3875,9 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
                 footerIdentifier: footerIdentifier,
                 at: now
             )
+            recordVisionFrameSuccess()
         } catch {
+            recordVisionFrameFailure(error)
 #if DEBUG
             updateDebugVisionOverlay([])
 #endif
@@ -3713,8 +3885,8 @@ extension CardScanner: AVCaptureVideoDataOutputSampleBufferDelegate {
             // pipeline as a miss so it counts as absence evidence for the latch
             // as well as the confirmation window, then let the next frame try.
             historicalAttempt = nil
-        magicHistoricalWindow.reset()
-        magicHistoricalLiveWindow.reset()
+            magicHistoricalWindow.reset()
+            magicHistoricalLiveWindow.reset()
             handleFooterOutcome(
                 .nothing,
                 footerLines: [],

@@ -300,6 +300,21 @@ actor PokemonCatalogEngine {
                 )
 
             case let .pokemonHistorical(evidence):
+                // A shared reprint footer is already ambiguous on device. Do
+                // not turn the offline factory's nil (no unique card) into a
+                // provider request before offering those known printings.
+                if !PokemonHistoricalIdentityResolver.membershipIdentities(
+                    for: evidence.number, in: registry
+                ).isEmpty {
+                    let candidates = await offline.candidates(for: evidence.number)
+                    if case let .ambiguous(matches) = PokemonHistoricalIdentityResolver.resolve(
+                        evidence,
+                        candidateSetIDs: candidates.map(\.setID),
+                        in: candidates
+                    ) {
+                        throw PokemonHistoricalCatalogError.ambiguous(matches)
+                    }
+                }
                 if let card = await offline.historicalCard(for: evidence) {
                     return CatalogResolution(card, path: .cacheHit)
                 }

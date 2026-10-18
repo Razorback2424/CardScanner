@@ -248,6 +248,30 @@ final class ScanParserTests: XCTestCase {
         XCTAssertFalse(PokemonNameMatcher.agrees(cardName: "Mew", readings: ["New"]))
     }
 
+    func testDeltaSpeciesTitleDoesNotEliminateItsClassicReprint() {
+        for reading in ["Metagross", "Metagross δ", "Metagros δ"] {
+            XCTAssertEqual(
+                PokemonNameMatcher.matches(["Metagross δ", "Metagross"], readings: [reading]),
+                [0, 1],
+                reading
+            )
+        }
+        XCTAssertFalse(PokemonNameMatcher.agrees(cardName: "Metang", readings: ["Metagross δ"]))
+        XCTAssertFalse(PokemonNameMatcher.agrees(cardName: "Pikachu VMAX", readings: ["Pikachu"]))
+    }
+
+    func testDenominatorInferencePreservesClassicFooterCollisions() {
+        let registry = PokemonCatalogRegistry.bundledSeed
+        let profile = PokemonScanProfile(
+            registry: registry,
+            knownOfficialCounts: ["swsh8": 264, "swsh9": 172, "sv02": 193]
+        )
+        for footer in ["114/264", "123/172", "203/193"] {
+            XCTAssertNil(profile.inferredIdentifier(from: officialNumber(footer)), footer)
+        }
+        XCTAssertNotNil(profile.inferredIdentifier(from: officialNumber("1/193")))
+    }
+
     func testConfirmationWindowPrefersCodeReadAndMergesHistoricalReadings() throws {
         let code = try XCTUnwrap(ScanParser.parsePokemon("ASC 015/217"))
         let inferred = ScanSubject(
