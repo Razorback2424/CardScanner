@@ -257,7 +257,12 @@ struct CardGameRuntimeContainer: Sendable {
     @MainActor
     func makeCollectionNormalizer() -> CollectionCatalogNormalizer {
         CollectionCatalogNormalizer(gameRegistry: registry, gameImportAdapters: makeImportAdapters(),
-                                    gameActivationSources: runtimes.values.compactMap(\.activationSource))
+                                    gameActivationSources: runtimes.values.compactMap(\.activationSource),
+                                    pokemonRegistry: { [coordinator = legacyBindings.pokemon] in
+                                        guard let coordinator else { return .bundledSeed }
+                                        await coordinator.loadPersistedOrBundled()
+                                        return await coordinator.registry
+                                    })
     }
 
     func currentImportAdapters() async -> GameImportAdapterRegistry {

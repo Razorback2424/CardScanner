@@ -619,7 +619,11 @@ final class CollectedCard {
 
     private var imageURLIsDirect: Bool {
         guard let imageURL else { return false }
-        let path = URL(string: imageURL)?.path.lowercased() ?? ""
+        let url = URL(string: imageURL)
+        // Signed catalog artwork can be a complete, extensionless Scrydex
+        // URL. Only TCGdex stems need the /high.png and /low.png derivatives.
+        if url?.host?.lowercased() == "images.scrydex.com" { return true }
+        let path = url?.path.lowercased() ?? ""
         return path.hasSuffix(".jpg") || path.hasSuffix(".jpeg")
             || path.hasSuffix(".png") || path.hasSuffix(".webp")
     }

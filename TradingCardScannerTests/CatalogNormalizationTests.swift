@@ -112,7 +112,7 @@ final class CatalogNormalizationTests: XCTestCase {
 
     private func makeContext() throws -> ModelContext {
         let container = try ModelContainer(
-            for: CollectedCard.self, PriceRecord.self,
+            for: CollectedCard.self, PriceRecord.self, LocalArtworkOverride.self,
             configurations: ModelConfiguration(isStoredInMemoryOnly: true)
         )
         self.container = container
@@ -285,6 +285,68 @@ final class CatalogNormalizationTests: XCTestCase {
         card.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion - 1
 
         XCTAssertTrue(CollectionCatalogNormalizer.needsNormalization(card))
+    }
+
+    func testSavedScrydexArtworkKeepsItsCompleteExtensionlessURL() {
+        let card = importedCard(setName: "30th Classic Collection", cardNumber: "003", name: "Metagross")
+        card.imageURL = "https://images.scrydex.com/pokemon/me55c-003/large"
+        card.thumbnailURL = nil
+
+        XCTAssertEqual(card.highImageURL?.absoluteString, card.imageURL)
+        XCTAssertEqual(card.lowImageURL?.absoluteString, card.imageURL)
+
+        card.imageURL = "https://assets.tcgdex.net/en/me/me55c/003"
+        XCTAssertEqual(card.highImageURL?.absoluteString, card.imageURL! + "/high.png")
+        XCTAssertEqual(card.lowImageURL?.absoluteString, card.imageURL! + "/low.png")
+    }
+
+    func testClassicCollectionArtworkRepairsSavedGridAndDetailURLsWithoutProviderDirectory() async throws {
+        let artwork = CatalogCardArtwork(
+            localID: "003",
+            thumbnailURL: "https://images.scrydex.com/pokemon/me55c-003/small",
+            imageURL: "https://images.scrydex.com/pokemon/me55c-003/large"
+        )
+        let descriptor = PokemonCatalogSetDescriptor(
+            providerSetID: "30th-c", displayName: "30th Celebration Classic Collection",
+            releaseDate: nil, releaseOrder: 23, recognitionKind: .notScannable,
+            printedCode: "30C", officialCount: nil, printedPrefix: nil,
+            catalogLocalIDPrefix: nil, localIDPadWidth: nil, scanEnabled: false,
+            logoURL: nil, symbolURL: nil, cardArtwork: [artwork]
+        )
+        let registry = PokemonCatalogRegistry(release: PokemonCatalogRelease(
+            schemaVersion: PokemonCatalogRelease.currentSchemaVersion,
+            revision: 1, generatedAt: .now, sets: [descriptor]
+        ))
+        let context = try makeContext()
+        let card = CollectedCard(
+            collectionKey: "30th-c-003#holo", game: .pokemon, providerID: "30th-c-003",
+            name: "Metagross", setName: "30th Classic Collection", setCode: "30TH-C",
+            cardNumber: "003", rarity: nil, imageURL: nil, thumbnailURL: nil,
+            variant: .holo, variantResolution: .imported
+        )
+        card.catalogProviderID = card.providerID
+        card.catalogMetadataCheckedAt = .now
+        card.catalogMetadataVersion = CollectionCatalogNormalizer.metadataVersion - 1
+        context.insert(card)
+        try context.save()
+
+        // This source has no English directory: signed artwork must work offline
+        // and despite the saved set name differing from Browse's display name.
+        await CollectionCatalogNormalizer(
+            tcgdex: RecordedTCGdexSource(), pokemonRegistry: { registry }
+        ).normalizeImportedCards(in: context)
+
+        let saved = try persistedCard(withKey: card.collectionKey, from: context)
+        XCTAssertEqual(saved.highImageURL?.absoluteString, artwork.imageURL)
+        XCTAssertEqual(saved.lowImageURL?.absoluteString, artwork.thumbnailURL)
+        XCTAssertEqual(saved.setCode, "30TH-C")
+        XCTAssertEqual(saved.variant, .holo)
+        XCTAssertFalse(CollectionCatalogNormalizer.needsNormalization(saved))
+        let projection = await CollectionProjectionActor.makeBackground(modelContainer: context.container)
+        let snapshot = await projection.snapshot()
+        let row = try XCTUnwrap(snapshot.rowsByCollectionKey[card.collectionKey])
+        XCTAssertEqual(row.highImageURL, saved.highImageURL)
+        XCTAssertEqual(row.lowImageURL, saved.lowImageURL)
     }
 
     // MARK: - Definitive sealed misses

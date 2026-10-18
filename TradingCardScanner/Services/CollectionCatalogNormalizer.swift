@@ -90,7 +90,8 @@ final class CollectionCatalogNormalizer: ObservableObject {
     /// 8: retry missing sealed artwork against TCGplayer's direct product CDN,
     /// and locally rewrite legacy gateway URLs without spending a request.
     /// 9: retry missing Pokémon artwork through exact TCGdex card details.
-    nonisolated static let metadataVersion = 9
+    /// 10: repair saved Pokémon artwork from the active signed Browse catalog.
+    nonisolated static let metadataVersion = 10
     private var requestsAnotherPass = false
     /// Input discovery now suspends at the model actor. Keep the same
     /// single-flight guarantee that the old synchronous discovery had, so a
@@ -103,11 +104,13 @@ final class CollectionCatalogNormalizer: ObservableObject {
         justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared),
         gameRegistry: CardGameRegistry = .standard,
         gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
-        gameActivationSources: [any GameCatalogActivationSource] = []
+        gameActivationSources: [any GameCatalogActivationSource] = [],
+        pokemonRegistry: @escaping @Sendable () async -> PokemonCatalogRegistry = { .bundledSeed }
     ) {
         self.gameRegistry = gameRegistry
         self.resolver = ImportedCatalogBatchResolver(tcgdex: tcgdex, justTCG: justTCG,
-            gameImportAdapters: gameImportAdapters, gameActivationSources: gameActivationSources)
+            gameImportAdapters: gameImportAdapters, gameActivationSources: gameActivationSources,
+            pokemonRegistry: pokemonRegistry)
     }
 
     /// Production callers use a context dedicated to catalog normalization.
@@ -532,6 +535,7 @@ actor CollectionCatalogNormalizationInputActor: BackgroundModelActor {
 /// Stateless and Sendable so the two provider-specific strategies can run in
 /// parallel without sharing mutable lookup state.
 private struct ImportedCatalogBatchResolver: Sendable {
+    private let pokemonRegistry: @Sendable () async -> PokemonCatalogRegistry
     private let gameImportAdapters: GameImportAdapterRegistry
     private let gameActivationSources: [CardGame: any GameCatalogActivationSource]
     private let tcgdex: any TCGdexCatalogSource
@@ -544,9 +548,11 @@ private struct ImportedCatalogBatchResolver: Sendable {
         tcgdex: any TCGdexCatalogSource = TCGdexService(),
         justTCG: JustTCGV1Client = JustTCGV1Client(transport: JustTCGTransport.shared),
         gameImportAdapters: GameImportAdapterRegistry = try! .init(adapters: []),
-        gameActivationSources: [any GameCatalogActivationSource] = []
+        gameActivationSources: [any GameCatalogActivationSource] = [],
+        pokemonRegistry: @escaping @Sendable () async -> PokemonCatalogRegistry = { .bundledSeed }
     ) {
         self.tcgdex = tcgdex
+        self.pokemonRegistry = pokemonRegistry
         self.justTCG = justTCG
         self.gameImportAdapters = gameImportAdapters
         self.gameActivationSources = Dictionary(gameActivationSources.map { ($0.game, $0) },
@@ -770,9 +776,40 @@ private struct ImportedCatalogBatchResolver: Sendable {
     private func resolvePokemon(
         _ requests: [GameImportRequest]
     ) async -> [String: ImportedCatalogMetadata] {
+        guard !requests.isEmpty else { return [:] }
+        let registry = await pokemonRegistry()
+        var result: [String: ImportedCatalogMetadata] = [:]
+        // Browse can display signed artwork even when TCGdex has no image.
+        // Repair the saved URLs from that same authority, by exact printing
+        // identity, before attempting any network discovery or set-name match.
+        for request in requests {
+            let providerID = request.catalogProviderID ?? request.sourceProviderID
+            guard let separator = providerID.lastIndex(of: "-") else { continue }
+            let localID = String(providerID[providerID.index(after: separator)...])
+            guard
+                  let descriptor = registry.descriptor(
+                    forProviderSetID: String(providerID[..<separator])
+                  ),
+                  let artwork = descriptor.cardArtwork?.first(where: {
+                    CatalogIdentityNormalization.localNumber($0.localID)
+                        == CatalogIdentityNormalization.localNumber(localID)
+                  }) else { continue }
+            result[request.identityKey] = ImportedCatalogMetadata(
+                providerID: providerID,
+                setCode: registry.printedCode(forProviderSetID: descriptor.providerSetID)
+                    ?? descriptor.providerSetID.uppercased(),
+                rarity: nil,
+                imageURL: artwork.imageURL,
+                thumbnailURL: artwork.thumbnailURL,
+                tcgplayerURL: nil,
+                setReleaseOrder: descriptor.releaseOrder ?? 0,
+                updatesProviderPurchaseURL: false
+            )
+        }
+        let requests = requests.filter { result[$0.identityKey] == nil }
         guard !requests.isEmpty,
               let directory = try? await tcgdex.fetchSetDirectory(locale: .en) else {
-            return [:]
+            return result
         }
 
         var requestsBySetID: [String: [GameImportRequest]] = [:]
@@ -799,8 +836,6 @@ private struct ImportedCatalogBatchResolver: Sendable {
             .map { (setID: $0.key, requests: $0.value, locale: TCGdexLocale.en) }
             + japaneseRequestsBySetID.sorted { $0.key < $1.key }
                 .map { (setID: $0.key, requests: $0.value, locale: TCGdexLocale.ja) }
-        let registry = PokemonCatalogRegistry.bundledSeed
-        var result: [String: ImportedCatalogMetadata] = [:]
         var cursor = 0
 
         await withTaskGroup(of: [String: ImportedCatalogMetadata].self) { group in
