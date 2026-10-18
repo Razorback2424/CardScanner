@@ -141,6 +141,7 @@ enum PortfolioHistoryEngine {
             accountingInterval: interval,
             contributions: input.contributions.contributions(in: interval),
             movementDetails: input.contributions.movementDetails(in: interval),
+            additions: input.contributions.additions(in: interval),
             hasEligibleMarketMovement: input.contributions.hasEligibleMarketMovement(in: interval)
         )
     }

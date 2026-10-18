@@ -218,6 +218,9 @@ enum PortfolioCardMovementState: Equatable, Sendable {
 /// market update on that portfolio day.
 struct PortfolioContributionIndex: Equatable, Sendable {
     var byDay: [Date: [String: Money]] = [:]
+    /// Acquisition value and first prices learned later, keyed by the exact
+    /// collection identity. Kept separate from market movement.
+    var additionsByDay: [Date: [String: Money]] = [:]
     /// Enriched contribution data from the same replay that produced `byDay`.
     /// `byDay` remains as a compatibility projection for portfolio rows and
     /// existing history consumers.
@@ -247,6 +250,18 @@ struct PortfolioContributionIndex: Equatable, Sendable {
             }
         }
         return result.filter { !$0.value.isZero }
+    }
+
+    func additions(in interval: PortfolioAccountingInterval) -> [String: Money] {
+        var result: [String: Money] = [:]
+        let days = interval.includedClosedDays
+            + (interval.includesLiveDay ? [interval.liveDay].compactMap { $0 } : [])
+        for day in days {
+            for (key, amount) in additionsByDay[day, default: [:]] {
+                result[key, default: .zero] += amount
+            }
+        }
+        return result
     }
 
     func hasEligibleMarketMovement(in interval: PortfolioAccountingInterval) -> Bool {
@@ -366,6 +381,7 @@ struct PortfolioHistoryResult: Equatable, Sendable {
     var accountingInterval: PortfolioAccountingInterval?
     var contributions: [String: Money]
     var movementDetails: [String: PortfolioContributionDetail] = [:]
+    var additions: [String: Money] = [:]
     var hasEligibleMarketMovement: Bool
 
     var isEmpty: Bool { points.isEmpty }

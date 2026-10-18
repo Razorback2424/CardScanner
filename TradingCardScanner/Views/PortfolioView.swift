@@ -306,6 +306,13 @@ struct PortfolioView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+#if DEBUG
+            .task(id: activeHistoryResult) {
+                guard ProcessInfo.processInfo.arguments.contains("PortfolioAdditions"),
+                      let summary = portfolio.summary, let result = activeHistoryResult else { return }
+                detailsDestination = PortfolioDetailsDestination(summary: summary, historyResult: result)
+            }
+#endif
             .navigationDestination(item: $detailsDestination) { destination in
                 PortfolioDetailsView(
                     portfolio: portfolio,
@@ -1529,6 +1536,9 @@ private struct PortfolioDetailsView: View {
     let fallbackSummary: PortfolioSummary
     @ObservedObject var refresh: PriceRefreshController
     let snapshotHistoryResult: PortfolioHistoryResult?
+#if DEBUG
+    @State private var showsAdditionsDebugScreen = false
+#endif
 
     private var summary: PortfolioSummary { portfolio.summary ?? fallbackSummary }
     private var historyResult: PortfolioHistoryResult? { snapshotHistoryResult ?? history.activeResult }
@@ -1582,6 +1592,17 @@ private struct PortfolioDetailsView: View {
         }
         .navigationTitle("Pricing & Data")
         .navigationBarTitleDisplayMode(.inline)
+#if DEBUG
+        .navigationDestination(isPresented: $showsAdditionsDebugScreen) {
+            if let result = historyResult {
+                PortfolioAdditionsView(result: result, holdings: portfolio.holdings)
+            }
+        }
+        .task {
+            let arguments = ProcessInfo.processInfo.arguments
+            showsAdditionsDebugScreen = arguments.contains("PortfolioAdditions") && arguments.contains("cards")
+        }
+#endif
     }
 
     @ViewBuilder
@@ -1592,10 +1613,15 @@ private struct PortfolioDetailsView: View {
                 LabeledContent("Current portfolio value", value: accounting.endValue.formatted())
                 LabeledContent("Portfolio value change", value: signed(accounting.totalChange))
                 if PortfolioHistoryDisplay.hasBreakdown(accounting) {
-                    LabeledContent(
-                        "Cards added",
-                        value: signed(accounting.added + accounting.newlyAddedValue)
-                    )
+                    NavigationLink {
+                        PortfolioAdditionsView(result: result, holdings: portfolio.holdings)
+                    } label: {
+                        LabeledContent(
+                            "Cards added",
+                            value: signed(accounting.added + accounting.newlyAddedValue)
+                        )
+                    }
+                    .accessibilityHint("Shows the cards and values that make up this amount")
                     .padding(.leading, 16)
                     LabeledContent("Cards removed", value: signed(-accounting.removed))
                         .padding(.leading, 16)
@@ -1718,6 +1744,125 @@ private struct PortfolioDetailsView: View {
         Calendar.autoupdatingCurrent.isDate(date, inSameDayAs: .now)
             ? date.formatted(date: .omitted, time: .shortened)
             : date.formatted(date: .abbreviated, time: .shortened)
+    }
+}
+
+/// Uses the frozen period's replay values, rather than today's card prices or
+/// activity timestamps, which cannot explain additions first priced later.
+private struct PortfolioAdditionsView: View {
+    let result: PortfolioHistoryResult
+    let holdings: [PortfolioHoldingSnapshot]
+    @Environment(\.modelContext) private var modelContext
+    @State private var historicalLabels: [String: CardLabel] = [:]
+    @State private var historyLoadFailed = false
+
+    private struct CardLabel {
+        let name: String
+        let detail: String
+    }
+
+    private var total: Money {
+        guard let accounting = result.accounting else { return .zero }
+        return accounting.added + accounting.newlyAddedValue
+    }
+
+    private var unitemizedValue: Money {
+        total - result.additions.values.reduce(.zero, +)
+    }
+
+    private var labelsByKey: [String: CardLabel] {
+        var labels = historicalLabels
+        for holding in holdings where result.additions[holding.collectionKey] != nil {
+            labels[holding.collectionKey] = CardLabel(name: holding.name, detail: holding.detail)
+        }
+        return labels
+    }
+
+    var body: some View {
+        let labels = labelsByKey
+        let keys = result.additions.keys.sorted {
+            let lhs = labels[$0]?.name ?? $0
+            let rhs = labels[$1]?.name ?? $1
+            return lhs == rhs ? $0 < $1 : lhs.localizedStandardCompare(rhs) == .orderedAscending
+        }
+        List {
+            Section {
+                LabeledContent("Cards added", value: PortfolioHistoryDisplay.signedCurrency(total))
+            } header: {
+                Text("\(result.range.rawValue) total")
+            } footer: {
+                Text("Values reflect when cards were added, including first prices learned later in this period. Market price changes are shown separately in Pricing & Data.")
+            }
+
+            Section("Cards in this amount") {
+                ForEach(keys, id: \.self) { key in
+                    let card = labels[key] ?? CardLabel(
+                        name: "Card details unavailable",
+                        detail: "This card’s name is unavailable in this device’s history."
+                    )
+                    VStack(alignment: .leading, spacing: 4) {
+                        LabeledContent {
+                            Text(PortfolioHistoryDisplay.signedCurrency(result.additions[key] ?? .zero))
+                                .monospacedDigit()
+                        } label: {
+                            Text(card.name)
+                        }
+                        if !card.detail.isEmpty {
+                            Text(card.detail)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+                if result.additions.isEmpty && unitemizedValue.isZero {
+                    Text("No cards contributed added value during this period.")
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            if !unitemizedValue.isZero {
+                Section {
+                    LabeledContent("Unitemized value", value: PortfolioHistoryDisplay.signedCurrency(unitemizedValue))
+                } footer: {
+                    Text("The recorded total includes value whose card details are unavailable in this device’s replay history.")
+                }
+            }
+            if historyLoadFailed {
+                Section {
+                    Text("Some historical card names couldn’t be loaded.")
+                        .foregroundStyle(.secondary)
+                    Button("Retry") { loadHistoricalLabels() }
+                }
+            }
+        }
+        .navigationTitle("Cards Added")
+        .navigationBarTitleDisplayMode(.inline)
+        .task { loadHistoricalLabels() }
+    }
+
+    private func loadHistoricalLabels() {
+        let keys = Array(result.additions.keys)
+        do {
+            let activities = try modelContext.fetch(FetchDescriptor<CollectionActivity>(
+                predicate: #Predicate { keys.contains($0.collectionKey) },
+                sortBy: [SortDescriptor(\CollectionActivity.occurredAt, order: .reverse)]
+            ))
+            var labels: [String: CardLabel] = [:]
+            for activity in activities where labels[activity.collectionKey] == nil {
+                labels[activity.collectionKey] = CardLabel(
+                    name: activity.name,
+                    detail: [activity.game.label, activity.setName, activity.cardNumber,
+                             activity.pokemonPrintRun?.label, activity.variantLabel,
+                             activity.magicTreatmentEvidence.displayLabel]
+                        .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · ")
+                )
+            }
+            historicalLabels = labels
+            historyLoadFailed = false
+        } catch {
+            historyLoadFailed = true
+        }
     }
 }
 

@@ -141,6 +141,32 @@ final class PortfolioHistoryEngineTests: XCTestCase {
         XCTAssertEqual(result.accountingInterval?.includedClosedDays, [dayTwo])
     }
 
+    func testAdditionBreakdownUsesOnlySelectedClosedDaysAndTheIncludedLiveDay() {
+        var index = PortfolioContributionIndex()
+        index.additionsByDay = [
+            date(1): ["anchor": money(100)],
+            date(2): ["added": money(20)],
+            date(3): ["added": money(5), "newly-priced": money(7)]
+        ]
+        let source = PortfolioHistoryInput(
+            closes: [close(1, value: 100), close(2, value: 120, added: 20)],
+            summary: PortfolioSummary(
+                currentValue: money(132),
+                attribution: PortfolioClose.Attribution(added: money(5), newlyAddedValue: money(7))
+            ),
+            epoch: date(1), timeZoneIdentifier: "UTC", now: date(3, hour: 12),
+            contributions: index
+        )
+        let result = PortfolioHistoryEngine.calculate(input: source, range: .all)
+        XCTAssertEqual(result.additions, ["added": money(25), "newly-priced": money(7)])
+        XCTAssertEqual(result.additions.values.reduce(.zero, +), money(32))
+
+        let closedOnly = PortfolioAccountingInterval(
+            anchorDate: date(1), includedClosedDays: [date(2)], includesLiveDay: false, liveDay: date(3)
+        )
+        XCTAssertEqual(index.additions(in: closedOnly), ["added": money(20)])
+    }
+
     func testScrubHeadlineUsesActualSelectedValueWhenItDiffersFromPlottedMovement() throws {
         let result = PortfolioHistoryEngine.calculate(
             input: input(

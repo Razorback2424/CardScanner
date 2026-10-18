@@ -92,6 +92,7 @@ struct PortfolioReplayDay: Sendable, Equatable {
     /// Enriched position impacts from the same market updates.
     var movementDetails: [String: PortfolioContributionDetail]
     var hasEligibleMarketMovement: Bool
+    var additions: [String: Money] = [:]
 
     var flow: Money { added - removed }
 }
@@ -106,6 +107,7 @@ struct PortfolioReplayLive: Sendable, Equatable {
     var contributions: [String: Money]
     var movementDetails: [String: PortfolioContributionDetail]
     var hasEligibleMarketMovement: Bool
+    var additions: [String: Money] = [:]
 }
 
 extension PortfolioReplayLive {
@@ -307,7 +309,7 @@ enum PortfolioReplayEngine {
 
         var operationIndex = 0
         var observationIndex = 0
-        var pendingNewlyAddedQuantities: [String: Int] = [:]
+        var pendingNewlyAddedQuantities = PendingAdditions()
 
         var day = PortfolioCalendar.day(containing: prepared.epoch, in: prepared.timeZone)
         var boundary = PortfolioCalendar.boundary(afterDay: day, in: prepared.timeZone)
@@ -408,12 +410,16 @@ enum PortfolioReplayEngine {
                 excludedQuantity: state.excludedQuantity,
                 contributions: accumulator.contributions,
                 movementDetails: accumulator.movementDetails,
-                hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement
+                hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement,
+                additions: accumulator.additions
             )
         }
 
         var contributionIndex = PortfolioContributionIndex()
         for finished in days {
+            if !finished.additions.isEmpty {
+                contributionIndex.additionsByDay[finished.displayDay] = finished.additions
+            }
             if !finished.contributions.isEmpty {
                 contributionIndex.byDay[finished.displayDay] = finished.contributions
             }
@@ -425,6 +431,9 @@ enum PortfolioReplayEngine {
             }
         }
         if let live {
+            if !live.additions.isEmpty {
+                contributionIndex.additionsByDay[live.day] = live.additions
+            }
             if !live.contributions.isEmpty {
                 contributionIndex.byDay[live.day] = live.contributions
             }
@@ -458,13 +467,48 @@ enum PortfolioReplayEngine {
         var contributions: [String: Money] = [:]
         var movementDetails: [String: PortfolioContributionDetail] = [:]
         var hasEligibleMarketMovement = false
+        var additions: [String: Money] = [:]
+    }
+
+    /// Preserve the existing instrument-level pending total while retaining
+    /// the identities needed to explain a first price learned after adding.
+    private struct PendingAdditions {
+        var positionsByInstrument: [String: [String: Int]] = [:]
+
+        func quantity(for instrument: String) -> Int {
+            positionsByInstrument[instrument, default: [:]].values.reduce(0, +)
+        }
+
+        mutating func add(_ quantity: Int, position: String, instrument: String) {
+            positionsByInstrument[instrument, default: [:]][position, default: 0] += quantity
+        }
+
+        @discardableResult
+        mutating func take(_ quantity: Int, instrument: String, preferring position: String? = nil) -> [String: Int] {
+            var positions = positionsByInstrument[instrument, default: [:]]
+            var remaining = quantity
+            var taken: [String: Int] = [:]
+            // A removal consumes its own position first. The stable fallback
+            // preserves replay's instrument-level semantics for shared prices.
+            let keys = [position].compactMap { $0 } + positions.keys.sorted().filter { $0 != position }
+            for key in keys where remaining > 0 {
+                let count = min(remaining, positions[key, default: 0])
+                guard count > 0 else { continue }
+                taken[key] = count
+                remaining -= count
+                positions[key, default: 0] -= count
+                if positions[key] == 0 { positions.removeValue(forKey: key) }
+            }
+            positionsByInstrument[instrument] = positions.isEmpty ? nil : positions
+            return taken
+        }
     }
 
     private nonisolated static func apply(
         _ observation: ObservationEntry,
         to state: inout PortfolioReplayState,
         into accumulator: inout DayAccumulator,
-        pendingNewlyAddedQuantities: inout [String: Int]
+        pendingNewlyAddedQuantities: inout PendingAdditions
     ) {
         let instrument = observation.instrumentKey
         let old = state.prices[instrument]
@@ -479,7 +523,7 @@ enum PortfolioReplayEngine {
         let newlyAddedQuantity: Int
         if old == nil, new != nil {
             newlyAddedQuantity = min(
-                max(pendingNewlyAddedQuantities[instrument, default: 0], 0),
+                max(pendingNewlyAddedQuantities.quantity(for: instrument), 0),
                 max(quantity, 0)
             )
         } else {
@@ -514,9 +558,12 @@ enum PortfolioReplayEngine {
         } else {
             accumulator.newlyAddedValue += difference * newlyAddedQuantity
             accumulator.pricingAdjustment += difference * (quantity - newlyAddedQuantity)
+            for (position, count) in pendingNewlyAddedQuantities.take(newlyAddedQuantity, instrument: instrument) {
+                accumulator.additions[position, default: .zero] += difference * count
+            }
         }
 
-        pendingNewlyAddedQuantities.removeValue(forKey: instrument)
+        pendingNewlyAddedQuantities.positionsByInstrument.removeValue(forKey: instrument)
         // The time-weighted link comes off the same state transition, in the
         // same pass, so performance can never disagree with attribution.
         if isMarketMovement, quantity != 0, old != new {
@@ -540,7 +587,7 @@ enum PortfolioReplayEngine {
         _ operation: PreparedOperation,
         to state: inout PortfolioReplayState,
         into accumulator: inout DayAccumulator,
-        pendingNewlyAddedQuantities: inout [String: Int]
+        pendingNewlyAddedQuantities: inout PendingAdditions
     ) {
         // Correction legs move together or the ledger does not balance: an
         // observation between them would value one identity before a price
@@ -562,23 +609,21 @@ enum PortfolioReplayEngine {
                     accumulator.removed += -value
                 case .acquire, .recordExisting, .initialBalance:
                     accumulator.added += value
+                    accumulator.additions[event.collectionKey, default: .zero] += value
                 }
             }
 
             if event.deltaQuantity > 0,
                (event.kind == .acquire || event.kind == .recordExisting),
                price == nil {
-                pendingNewlyAddedQuantities[event.priceStorageKey, default: 0] += event.deltaQuantity
-            } else if event.deltaQuantity < 0 {
-                let remaining = max(
-                    pendingNewlyAddedQuantities[event.priceStorageKey, default: 0] + event.deltaQuantity,
-                    0
+                pendingNewlyAddedQuantities.add(
+                    event.deltaQuantity, position: event.collectionKey, instrument: event.priceStorageKey
                 )
-                if remaining == 0 {
-                    pendingNewlyAddedQuantities.removeValue(forKey: event.priceStorageKey)
-                } else {
-                    pendingNewlyAddedQuantities[event.priceStorageKey] = remaining
-                }
+            } else if event.deltaQuantity < 0 {
+                pendingNewlyAddedQuantities.take(
+                    event.deltaQuantity == .min ? .max : -event.deltaQuantity,
+                    instrument: event.priceStorageKey, preferring: event.collectionKey
+                )
             }
 
             state.apply(
@@ -635,7 +680,8 @@ enum PortfolioReplayEngine {
             carriedForwardValue: carriedForwardValue,
             contributions: accumulator.contributions,
             movementDetails: accumulator.movementDetails,
-            hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement
+            hasEligibleMarketMovement: accumulator.hasEligibleMarketMovement,
+            additions: accumulator.additions
         )
     }
 

@@ -222,6 +222,10 @@ struct ContentView: View {
             case "PortfolioHistory":
                 PortfolioDebugFixtures.seedHistoryIfNeeded(in: modelContext)
                 history.range = .all
+            case "PortfolioAdditions":
+                PortfolioDebugFixtures.seedTodayIfNeeded(in: modelContext)
+                PortfolioDebugFixtures.seedAdditionsIfNeeded(in: modelContext)
+                history.range = .oneDay
             default:
                 break
             }
