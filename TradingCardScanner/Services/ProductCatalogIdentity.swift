@@ -57,10 +57,11 @@ enum ProductCatalogIdentity {
     ) -> String? {
         if game == .pokemonJapan, let japaneseSetID {
             let prefix = japaneseSetID.lowercased() + "-"
-            let matches = directory.slugs.filter { $0.hasPrefix(prefix) }
+            let matches = Set(directory.slugs.filter { $0.hasPrefix(prefix) })
             // Exactly one or nothing. Two candidates means the prefix is not the
             // identity we assumed it was, and picking either would be a guess.
-            if matches.count == 1 { return matches[0] }
+            if matches.count == 1 { return matches.first }
+            if matches.count > 1 { return nil }
         }
         return directory.slug(forCatalogSetName: setName, game: game)
     }
@@ -185,6 +186,7 @@ struct ProductSetDirectory: Sendable {
     /// rather than on name.
     let slugs: [String]
     private let byName: [String: String]
+    private let ambiguousNames: Set<String>
     private let namedSets: [NamedSet]
 
     init(sets: [(id: String, name: String?)]) {
@@ -209,13 +211,22 @@ struct ProductSetDirectory: Sendable {
         }
 
         var byName: [String: String] = [:]
+        var ambiguousNames = Set<String>()
         for tier in (0..<tiers.count).reversed() {
+            // Ambiguity at a stronger tier blocks weaker aliases. A unique
+            // stronger match may still override ambiguity at a weaker tier.
+            for key in ambiguous[tier] {
+                byName.removeValue(forKey: key)
+                ambiguousNames.insert(key)
+            }
             for (key, id) in tiers[tier] where !ambiguous[tier].contains(key) {
                 byName[key] = id
+                ambiguousNames.remove(key)
             }
         }
         self.slugs = slugs
         self.byName = byName
+        self.ambiguousNames = ambiguousNames
         self.namedSets = namedSets
     }
 
@@ -248,7 +259,9 @@ struct ProductSetDirectory: Sendable {
 
     /// The vendor set that carries this catalog set, or nil when none does.
     func slug(forCatalogSetName name: String, game: ProductCatalogIdentity.Game) -> String? {
-        if let matched = byName[CatalogIdentityNormalization.canonicalText(name)] {
+        let key = CatalogIdentityNormalization.canonicalText(name)
+        guard !ambiguousNames.contains(key) else { return nil }
+        if let matched = byName[key] {
             return matched
         }
         if game == .magic {
